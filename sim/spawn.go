@@ -100,6 +100,19 @@ const (
 	TrafficSourceHistorical
 )
 
+func (ts TrafficSource) String() string {
+	switch ts {
+	case TrafficSourceScenario:
+		return "Scenario"
+	case TrafficSourceTimetable:
+		return "Timetable"
+	case TrafficSourceHistorical:
+		return "Historical"
+	default:
+		return "unknown"
+	}
+}
+
 // LaunchConfig collects settings related to launching aircraft in the sim; it's
 // passed back and forth between client and server: server provides them so client
 // can draw the UI for what's available, then client returns one back when launching.

@@ -93,11 +93,13 @@ type ScenarioSpec struct {
 	MagneticVariation       float32
 	WindSpecifier           *wx.WindSpecifier
 	Timetables              []sim.TimetableSummary
+	// TrafficSources are the sources this scenario can be flown with, in the
+	// order they should be offered. A scenario that gives no airlines can't
+	// generate its own traffic, so it offers only the published sources.
+	TrafficSources []sim.TrafficSource
 	// HistoricalFlightInterval is the range of times this facility has
-	// historical flight data for; HaveHistoricalFlights says whether it has any
-	// at all.
+	// historical flight data for.
 	HistoricalFlightInterval util.TimeInterval
-	HaveHistoricalFlights    bool
 
 	LaunchConfig sim.LaunchConfig
 
@@ -242,34 +244,45 @@ const NewSimRPC = "SimManager.NewSim"
 func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 	lg := sm.lg.With(slog.String("sim_name", req.NewSimName))
 
-	if nsc := sm.makeSimConfiguration(req, lg); nsc != nil {
-		s := sim.NewSim(*nsc, lg)
-		session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
-		pos := s.ScenarioRootPosition()
-		return sm.Add(session, result, pos, req.Initials, req.Privileged, true)
-	} else {
-		return ErrInvalidSimConfiguration
+	nsc, err := sm.makeSimConfiguration(req, lg)
+	if err != nil {
+		return err
 	}
+	s := sim.NewSim(*nsc, lg)
+	session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
+	pos := s.ScenarioRootPosition()
+	return sm.Add(session, result, pos, req.Initials, req.Privileged, true)
 }
 
 // makeSimConfiguration only accesses read-only SimManager members that are set at
 // construction time; no mutex necessary.
-func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *sim.NewSimConfiguration {
+func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (*sim.NewSimConfiguration, error) {
 	facility, ok := sm.scenarioGroups[req.Facility]
 	if !ok {
 		lg.Errorf("%s: unknown facility", req.Facility)
-		return nil
+		return nil, ErrInvalidSimConfiguration
 	}
 	sg, ok := facility[req.GroupName]
 	if !ok {
 		lg.Errorf("%s: unknown scenario group", req.GroupName)
-		return nil
+		return nil, ErrInvalidSimConfiguration
 	}
 	sc, ok := sg.Scenarios[req.ScenarioName]
 	if !ok {
 		lg.Errorf("%s: unknown scenario", req.ScenarioName)
-		return nil
+		return nil, ErrInvalidSimConfiguration
 	}
+
+	// The traffic sources a scenario can be flown with are the server's to
+	// decide: it is the one that knows which airline lists, timetables, and
+	// flight data are there. Don't take the client's word for it.
+	spec := sm.scenarioCatalogs[req.Facility][req.GroupName].Scenarios[req.ScenarioName]
+	if !slices.Contains(spec.TrafficSources, req.ScenarioSpec.LaunchConfig.TrafficSource) {
+		lg.Errorf("%s/%s: requested %s traffic, which this scenario doesn't offer",
+			req.Facility, req.ScenarioName, req.ScenarioSpec.LaunchConfig.TrafficSource)
+		return nil, ErrInvalidTrafficSource
+	}
+
 	briefMarkdown, err := sm.loadBrief(req.Facility)
 	if err != nil {
 		lg.Warnf("unable to load brief for %q: %v", req.Facility, err)
@@ -335,7 +348,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		}
 	}
 
-	return &nsc
+	return &nsc, nil
 }
 
 type JoinSimRequest struct {

@@ -26,6 +26,7 @@ func TestNormalizeTrafficSourceConfig(t *testing.T) {
 		Timetables: []sim.TimetableSummary{
 			{ID: "development-test", Name: "Development Test"},
 		},
+		TrafficSources: []sim.TrafficSource{sim.TrafficSourceScenario, sim.TrafficSourceTimetable},
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource:                sim.TrafficSourceTimetable,
 			TimetableStartMinute:         2000,
@@ -53,6 +54,7 @@ func TestNormalizeTrafficSourceConfig(t *testing.T) {
 
 func TestNormalizeTrafficSourceConfigWithoutTimetables(t *testing.T) {
 	spec := &server.ScenarioSpec{
+		TrafficSources: []sim.TrafficSource{sim.TrafficSourceScenario},
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource: sim.TrafficSourceTimetable,
 			TimetableID:   "missing",
@@ -71,6 +73,7 @@ func TestNormalizeTrafficSourceConfigWithoutTimetables(t *testing.T) {
 
 func TestNormalizeTrafficSourceConfigWithoutHistoricalFlights(t *testing.T) {
 	spec := &server.ScenarioSpec{
+		TrafficSources: []sim.TrafficSource{sim.TrafficSourceScenario},
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource: sim.TrafficSourceHistorical,
 		},
@@ -80,6 +83,23 @@ func TestNormalizeTrafficSourceConfigWithoutHistoricalFlights(t *testing.T) {
 
 	if spec.LaunchConfig.TrafficSource != sim.TrafficSourceScenario {
 		t.Fatalf("TrafficSource = %v, want scenario", spec.LaunchConfig.TrafficSource)
+	}
+}
+
+// A scenario with no airlines of its own can't be flown from the scenario
+// source, so the client must start on one the server actually offers.
+func TestNormalizeTrafficSourceConfigWithoutScenarioTraffic(t *testing.T) {
+	spec := &server.ScenarioSpec{
+		TrafficSources: []sim.TrafficSource{sim.TrafficSourceHistorical},
+		LaunchConfig: sim.LaunchConfig{
+			TrafficSource: sim.TrafficSourceScenario,
+		},
+	}
+
+	normalizeTrafficSourceConfig(spec)
+
+	if spec.LaunchConfig.TrafficSource != sim.TrafficSourceHistorical {
+		t.Fatalf("TrafficSource = %v, want historical", spec.LaunchConfig.TrafficSource)
 	}
 }
 

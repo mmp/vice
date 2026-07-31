@@ -19,6 +19,7 @@ var (
 	ErrInvalidControllerToken    = errors.New("Invalid controller token")
 	ErrInvalidPassword           = errors.New("Invalid password")
 	ErrInvalidSimConfiguration   = errors.New("Invalid SimConfiguration")
+	ErrInvalidTrafficSource      = errors.New("Traffic source is not available for this scenario")
 	ErrNoNamedSim                = errors.New("No Sim with that name")
 	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
 	ErrRPCTimeout                = errors.New("RPC call timed out")
@@ -110,6 +111,7 @@ var errorStringToError = map[string]error{
 	ErrInvalidControllerToken.Error():    ErrInvalidControllerToken,
 	ErrInvalidPassword.Error():           ErrInvalidPassword,
 	ErrInvalidSimConfiguration.Error():   ErrInvalidSimConfiguration,
+	ErrInvalidTrafficSource.Error():      ErrInvalidTrafficSource,
 	ErrNoNamedSim.Error():                ErrNoNamedSim,
 	ErrNoSimForControllerToken.Error():   ErrNoSimForControllerToken,
 	ErrRPCTimeout.Error():                ErrRPCTimeout,

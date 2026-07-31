@@ -157,14 +157,13 @@ func normalizeTrafficSourceConfig(spec *server.ScenarioSpec) {
 	lc.PublishedArrivalPercentage = min(max(lc.PublishedArrivalPercentage, 0), 100)
 	lc.PublishedDeparturePercentage = min(max(lc.PublishedDeparturePercentage, 0), 100)
 
-	if lc.TrafficSource == sim.TrafficSourceHistorical && !spec.HaveHistoricalFlights {
-		lc.TrafficSource = sim.TrafficSourceScenario
+	// The server decides which sources a scenario can be flown with; fall back
+	// to the first it offers rather than one it would refuse.
+	if !slices.Contains(spec.TrafficSources, lc.TrafficSource) && len(spec.TrafficSources) > 0 {
+		lc.TrafficSource = spec.TrafficSources[0]
 	}
 
 	if len(spec.Timetables) == 0 {
-		if lc.TrafficSource == sim.TrafficSourceTimetable {
-			lc.TrafficSource = sim.TrafficSourceScenario
-		}
 		lc.TimetableID = ""
 		return
 	}
@@ -198,44 +197,38 @@ func timetableStartMinute(start time.Time, airport string) (int, error) {
 	return local.Hour()*60 + local.Minute(), nil
 }
 
+func (c *NewSimConfiguration) trafficSourceTooltip(source sim.TrafficSource, spec *server.ScenarioSpec) string {
+	switch source {
+	case sim.TrafficSourceScenario:
+		return "Traffic generated from the scenario's own definitions, at the arrival\n" +
+			"and departure rates you set."
+	case sim.TrafficSourceTimetable:
+		return "Fly a curated daily timetable for " + spec.PrimaryAirport + ", starting at the\n" +
+			"selected time. Overflights remain randomly generated."
+	case sim.TrafficSourceHistorical:
+		return "Fly the traffic that really operated at " + c.NewSimRequest.Facility +
+			" on the selected date,\nfrom recorded flight data."
+	default:
+		return ""
+	}
+}
+
 func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 	lc := &spec.LaunchConfig
 
+	// Only the sources the server says it will run this scenario with are
+	// offered: a scenario that gives no airlines has no traffic of its own to
+	// generate, and most facilities have no timetable.
 	imgui.Text("IFR traffic source:")
-	imgui.SameLine()
-	imgui.RadioButtonIntPtr("Scenario", (*int32)(&lc.TrafficSource), int32(sim.TrafficSourceScenario))
-	if imgui.IsItemHovered() {
-		imgui.SetTooltip("Traffic generated from the scenario's own definitions, at the arrival\n" +
-			"and departure rates you set.")
-	}
-
-	imgui.SameLine()
-	if !spec.HaveHistoricalFlights {
-		imgui.BeginDisabled()
-	}
-	imgui.RadioButtonIntPtr("Historical", (*int32)(&lc.TrafficSource),
-		int32(sim.TrafficSourceHistorical))
-	if imgui.IsItemHoveredV(imgui.HoveredFlagsAllowWhenDisabled) {
-		if spec.HaveHistoricalFlights {
-			imgui.SetTooltip("Fly the traffic that really operated at " + c.NewSimRequest.Facility +
-				" on the selected date,\nfrom recorded flight data.")
-		} else {
-			imgui.SetTooltip("No historical flight data is available for " + c.NewSimRequest.Facility + ".")
-		}
-	}
-	if !spec.HaveHistoricalFlights {
-		imgui.EndDisabled()
-	}
-
-	// A timetable is offered only where one exists; unlike historical data it is
-	// curated per airport, so most scenarios will never have one.
-	if len(spec.Timetables) > 0 {
+	for _, source := range spec.TrafficSources {
 		imgui.SameLine()
-		imgui.RadioButtonIntPtr("Timetable", (*int32)(&lc.TrafficSource),
-			int32(sim.TrafficSourceTimetable))
+		if len(spec.TrafficSources) == 1 {
+			imgui.Text(source.String())
+		} else {
+			imgui.RadioButtonIntPtr(source.String(), (*int32)(&lc.TrafficSource), int32(source))
+		}
 		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Fly a curated daily timetable for " + spec.PrimaryAirport + ", starting at the\n" +
-				"selected time. Overflights remain randomly generated.")
+			imgui.SetTooltip(c.trafficSourceTooltip(source, spec))
 		}
 	}
 
@@ -2494,8 +2487,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 // flight data covers, less a final day so that a sim started near the end still
 // has traffic to fly.
 func (c *NewSimConfiguration) startTimeIntervals(spec *server.ScenarioSpec) []util.TimeInterval {
-	if spec == nil || !spec.HaveHistoricalFlights ||
-		spec.LaunchConfig.TrafficSource != sim.TrafficSourceHistorical {
+	if spec == nil || spec.LaunchConfig.TrafficSource != sim.TrafficSourceHistorical {
 		return c.availableWXIntervals
 	}
 

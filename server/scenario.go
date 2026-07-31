@@ -1791,6 +1791,9 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 			MagneticVariation:       sg.MagneticVariation,
 			WindSpecifier:           scenario.WindSpecifier,
 		}
+		if canGenerateScenarioTraffic(sg, &lc) {
+			spec.TrafficSources = append(spec.TrafficSources, sim.TrafficSourceScenario)
+		}
 
 		catalog.Scenarios[name] = spec
 	}
@@ -1803,11 +1806,49 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 	}
 }
 
+// canGenerateScenarioTraffic reports whether the scenario has the airline lists
+// its own traffic generator samples from. They are optional; without them the
+// scenario can only be flown from a timetable or historical data, which bring
+// their own callsigns and aircraft types.
+func canGenerateScenarioTraffic(sg *scenarioGroup, lc *sim.LaunchConfig) bool {
+	for airport := range lc.DepartureRates {
+		ap, ok := sg.Airports[airport]
+		if !ok {
+			return false
+		}
+		if !slices.ContainsFunc(ap.Departures,
+			func(dep av.Departure) bool { return len(dep.Airlines) > 0 }) {
+			return false
+		}
+	}
+
+	for flow, airports := range lc.InboundFlowRates {
+		inboundFlow, ok := sg.InboundFlows[flow]
+		if !ok {
+			return false
+		}
+		for airport := range airports {
+			if airport == "overflights" {
+				continue // overflights always come from the scenario's own airlines
+			}
+			if !slices.ContainsFunc(inboundFlow.Arrivals,
+				func(arr av.Arrival) bool { return len(arr.Airlines[airport]) > 0 }) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
 func attachTimetables(catalogs map[string]map[string]*ScenarioCatalog, timetables sim.TimetableCatalog) {
 	for _, facilityCatalogs := range catalogs {
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
 				scenario.Timetables = timetables.SummariesForAirport(scenario.PrimaryAirport)
+				if len(scenario.Timetables) > 0 {
+					scenario.TrafficSources = append(scenario.TrafficSources, sim.TrafficSourceTimetable)
+				}
 			}
 		}
 	}
@@ -1826,7 +1867,29 @@ func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCat
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
 				scenario.HistoricalFlightInterval = interval
-				scenario.HaveHistoricalFlights = true
+				scenario.TrafficSources = append(scenario.TrafficSources, sim.TrafficSourceHistorical)
+			}
+		}
+	}
+}
+
+// finalizeTrafficSources settles which source each scenario starts on, once
+// every source has had its say. A scenario with nothing at all to fly is a
+// scenario file that needs fixing.
+func finalizeTrafficSources(catalogs map[string]map[string]*ScenarioCatalog, e *util.ErrorLogger) {
+	for facility, facilityCatalogs := range catalogs {
+		for name, catalog := range facilityCatalogs {
+			for scenarioName, scenario := range catalog.Scenarios {
+				if len(scenario.TrafficSources) == 0 {
+					e.ErrorString("%s/%s/%s: no traffic source can fly this scenario: it gives no "+
+						"airlines and the facility has neither historical flight data nor a timetable",
+						facility, name, scenarioName)
+					continue
+				}
+				slices.Sort(scenario.TrafficSources)
+				if !slices.Contains(scenario.TrafficSources, scenario.LaunchConfig.TrafficSource) {
+					scenario.LaunchConfig.TrafficSource = scenario.TrafficSources[0]
+				}
 			}
 		}
 	}
@@ -2612,6 +2675,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		attachTimetables(catalogs, timetableCatalog)
 	}
 	attachHistoricalFlightIntervals(catalogs)
+	finalizeTrafficSources(catalogs, e)
 
 	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))
 	return scenarioGroups, catalogs, mapSpecs, briefs, extraScenarioErrors
@@ -2656,31 +2720,6 @@ func LookupScenario(tracon, scenarioName string, scenarioGroups map[string]map[s
 	return nil, nil, fmt.Errorf("scenario not found: %s/%s", tracon, scenarioName)
 }
 
-// CreateLaunchConfig creates a properly initialized LaunchConfig from scenario data
-func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.LaunchConfig {
-	// Create VFR airports map
-	vfrAirports := make(map[string]*av.Airport)
-	for name, ap := range scenarioGroup.Airports {
-		if ap.VFRRateSum() > 0 {
-			vfrAirports[name] = ap
-		}
-	}
-
-	// Check for VFR reporting regions
-	haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(scenarioGroup.FacilityConfig.FacilityAdaptation.Controllers),
-		func(cfg *sim.STARSController) bool { return cfg.FlightFollowingAirspace != nil })
-
-	// Create proper LaunchConfig
-	return sim.MakeLaunchConfig(
-		scenario.DepartureRunways,
-		*scenario.VFRRateScale,
-		*scenario.VFFRequestRate,
-		vfrAirports,
-		scenario.InboundFlowDefaultRates,
-		haveVFRReportingRegions,
-	)
-}
-
 // CreateNewSimConfiguration creates a NewSimConfiguration from scenario components
 func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenarioGroup, scenarioName string) (*sim.NewSimConfiguration, error) {
 	scenario, ok := scenarioGroup.Scenarios[scenarioName]
@@ -2696,7 +2735,7 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 	newSimConfig := &sim.NewSimConfiguration{
 		Facility:                scenarioGroup.TRACON,
 		Description:             scenarioName,
-		LaunchConfig:            CreateLaunchConfig(scenario, scenarioGroup),
+		LaunchConfig:            simConfig.LaunchConfig,
 		DepartureRunways:        simConfig.DepartureRunways,
 		ArrivalRunways:          simConfig.ArrivalRunways,
 		PrimaryAirport:          simConfig.PrimaryAirport,
