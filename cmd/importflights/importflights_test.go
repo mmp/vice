@@ -257,6 +257,12 @@ func TestWriteFlightData(t *testing.T) {
 	imp.buckets[bucket{airport: "KMSP", departure: true}] = []record{duplicate, duplicate}
 	imp.buckets[bucket{airport: "KMSP"}] = []record{arrival}
 
+	// A facility standing in for made-up airports, with a flight between two of
+	// its donors so that both ends get renamed.
+	borrowed := record{callsign: sym.id("UAL1"), other: sym.id("KTEB"), acType: sym.id("B737"),
+		day: april10, minute: 8 * 60}
+	imp.buckets[bucket{airport: "KEWR", departure: true}] = []record{borrowed}
+
 	imp.daysPresent["2026-04"] = make(map[string]bool)
 	for day := 1; day <= 30; day++ {
 		imp.daysPresent["2026-04"][fmt.Sprintf("2026-04-%02d", day)] = true
@@ -266,6 +272,8 @@ func TestWriteFlightData(t *testing.T) {
 		"M98": {departures: map[string]bool{"KMSP": true}, arrivals: map[string]bool{"KMSP": true}},
 		// A facility with no flights imported gets no file at all.
 		"XYZ": {departures: map[string]bool{"KZZZ": true}, arrivals: map[string]bool{}},
+		"AAC": {departures: map[string]bool{"KEWR": true}, arrivals: map[string]bool{},
+			substituted: map[string]string{"KEWR": "KAAC", "KTEB": "4Y3"}},
 	}
 
 	dir := t.TempDir()
@@ -295,6 +303,23 @@ func TestWriteFlightData(t *testing.T) {
 	if !slices.Equal(flights, expected) {
 		t.Errorf("got %+v, expected %+v", flights, expected)
 	}
+
+	// The borrowed flight is written out under the made-up airports at both ends.
+	data, err = os.ReadFile(filepath.Join(dir, "AAC.flt"))
+	if err != nil {
+		t.Fatalf("read: %v", err)
+	}
+	flights, err = av.DecodeFlights(data)
+	if err != nil {
+		t.Fatalf("DecodeFlights: %v", err)
+	}
+	expected = []av.Flight{
+		{Airport: "KAAC", Callsign: "UAL1", Other: "4Y3", AircraftType: "B737",
+			Day: april10, Minute: 8 * 60, Departure: true},
+	}
+	if !slices.Equal(flights, expected) {
+		t.Errorf("got %+v, expected %+v", flights, expected)
+	}
 }
 
 func TestRestrictFacilities(t *testing.T) {
@@ -310,6 +335,26 @@ func TestRestrictFacilities(t *testing.T) {
 	}
 	if !slices.Equal(slices.Sorted(maps.Keys(facilities["N90"].departures)), []string{"KJFK"}) {
 		t.Errorf("KLGA should have been dropped: %v", facilities["N90"].departures)
+	}
+}
+
+func TestSubstituteAirports(t *testing.T) {
+	f := makeFacility()
+	f.add(f.departures, "KMSP") // a real airport is taken as it is
+	f.add(f.departures, "KAAC") // a made-up one is swapped for its donor
+	f.add(f.departures, "4Y3")  // and so is one with a three-character id
+	f.add(f.departures, "X23")  // which is otherwise not in the source data
+
+	if !slices.Equal(slices.Sorted(maps.Keys(f.departures)), []string{"KEWR", "KMSP", "KTEB"}) {
+		t.Errorf("gathered %v", slices.Sorted(maps.Keys(f.departures)))
+	}
+	for donor, expected := range map[string]string{"KEWR": "KAAC", "KTEB": "4Y3"} {
+		if got := f.name(donor); got != expected {
+			t.Errorf("%s stands in for %q, expected %q", donor, got, expected)
+		}
+	}
+	if got := f.name("KMSP"); got != "KMSP" {
+		t.Errorf("KMSP was renamed to %q", got)
 	}
 }
 

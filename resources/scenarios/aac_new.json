@@ -2943,8 +2943,52 @@
           "airlines": {
             "KAAC": [
               {
-                "airport": "KLGA",
-                "icao": "UPS"
+                "airport": "KORD",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KORD",
+                "icao": "UAL"
+              },
+              {
+                "airport": "KORD",
+                "icao": "ENY"
+              },
+              {
+                "airport": "KORD",
+                "icao": "SKW"
+              },
+              {
+                "airport": "KMDW",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KMSP",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KMSP",
+                "icao": "SKW"
+              },
+              {
+                "airport": "KDTW",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KDTW",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KSTL",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KMCI",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KIND",
+                "icao": "RPA"
               }
             ]
           }
@@ -3114,8 +3158,52 @@
           "airlines": {
             "KAAC": [
               {
-                "airport": "KLAS",
+                "airport": "KATL",
                 "icao": "DAL"
+              },
+              {
+                "airport": "KATL",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KCLT",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KCLT",
+                "icao": "JIA"
+              },
+              {
+                "airport": "KDCA",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KBWI",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KEWR",
+                "icao": "UAL"
+              },
+              {
+                "airport": "KLGA",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KLGA",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KBOS",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KBNA",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KMEM",
+                "icao": "FDX"
               }
             ]
           }
@@ -3136,8 +3224,52 @@
           "airlines": {
             "KAAC": [
               {
-                "airport": "KBOI",
+                "airport": "KMCO",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KMCO",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KTPA",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KFLL",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KFLL",
+                "icao": "NKS"
+              },
+              {
+                "airport": "KMIA",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KJAX",
+                "icao": "AAY"
+              },
+              {
+                "airport": "KMSY",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KIAH",
                 "icao": "UAL"
+              },
+              {
+                "airport": "KIAH",
+                "icao": "ASH"
+              },
+              {
+                "airport": "KHOU",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KLIT",
+                "icao": "SKW"
               }
             ]
           }
@@ -3209,8 +3341,52 @@
           "airlines": {
             "KAAC": [
               {
+                "airport": "KDFW",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KDFW",
+                "icao": "ENY"
+              },
+              {
+                "airport": "KDFW",
+                "icao": "SKW"
+              },
+              {
+                "airport": "KDAL",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KAUS",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KSAT",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KPHX",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KPHX",
+                "icao": "SWA"
+              },
+              {
                 "airport": "KLAS",
                 "icao": "JBU"
+              },
+              {
+                "airport": "KLAS",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KLAX",
+                "icao": "UAL"
+              },
+              {
+                "airport": "KABQ",
+                "icao": "SWA"
               }
             ]
           }
@@ -3324,8 +3500,52 @@
           "airlines": {
             "KAAC": [
               {
-                "airport": "KBWI",
+                "airport": "KDEN",
+                "icao": "UAL"
+              },
+              {
+                "airport": "KDEN",
+                "icao": "SKW"
+              },
+              {
+                "airport": "KDEN",
+                "icao": "FFT"
+              },
+              {
+                "airport": "KSLC",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KSLC",
+                "icao": "SKW"
+              },
+              {
+                "airport": "KSEA",
+                "icao": "ASA"
+              },
+              {
+                "airport": "KSEA",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KPDX",
+                "icao": "ASA"
+              },
+              {
+                "airport": "KBOI",
+                "icao": "UAL"
+              },
+              {
+                "airport": "KICT",
+                "icao": "SKW"
+              },
+              {
+                "airport": "KOMA",
                 "icao": "SWA"
+              },
+              {
+                "airport": "KCOS",
+                "icao": "SKW"
               }
             ]
           }

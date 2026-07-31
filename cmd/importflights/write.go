@@ -35,15 +35,20 @@ func writeFlightData(dir string, imp *importer, facilities map[string]*facility,
 
 		var flights []av.Flight
 		for airport := range f.airports() {
+			// An airport standing in for a made-up one is written out under the
+			// name the scenarios fly, at both ends of the flight: the Academy
+			// scenarios route traffic between their own airports, so a hop
+			// between two donors has to arrive as one between their stand-ins.
+			name := f.name(airport)
 			for _, departure := range []bool{true, false} {
 				if departure && !f.departures[airport] || !departure && !f.arrivals[airport] {
 					continue
 				}
 				for _, r := range imp.buckets[bucket{airport: airport, departure: departure}] {
 					flights = append(flights, av.Flight{
-						Airport:      airport,
+						Airport:      name,
 						Callsign:     imp.symbols.string(r.callsign),
-						Other:        imp.symbols.string(r.other),
+						Other:        f.name(imp.symbols.string(r.other)),
 						AircraftType: imp.symbols.string(r.acType),
 						Day:          r.day,
 						Minute:       int(r.minute),

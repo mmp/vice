@@ -17,6 +17,10 @@
 // facility and is otherwise left alone; pass every source file in one go, since
 // each run rewrites a facility's file from scratch.
 //
+// The FAA Academy scenarios fly made-up airports that the source data knows
+// nothing about; each one borrows a real airport's traffic, per
+// substituteAirports below.
+//
 // Each flight records the airport it departs from or arrives at, its callsign,
 // the airport at the other end, the UTC date and time, and the aircraft type.
 // See aviation/flights.go for how that is stored.
@@ -109,10 +113,25 @@ func main() {
 type facility struct {
 	departures map[string]bool
 	arrivals   map[string]bool
+
+	// substituted maps each donor airport back to the made-up airport whose
+	// traffic it stands in for, so that the flights are written out under the
+	// airport the scenarios actually fly.
+	substituted map[string]string
 }
 
 func makeFacility() *facility {
-	return &facility{departures: make(map[string]bool), arrivals: make(map[string]bool)}
+	return &facility{departures: make(map[string]bool), arrivals: make(map[string]bool),
+		substituted: make(map[string]string)}
+}
+
+// name returns the airport a flight should be recorded under: the made-up
+// airport when this one is standing in for it, and otherwise the airport itself.
+func (f *facility) name(airport string) string {
+	if substituted, ok := f.substituted[airport]; ok {
+		return substituted
+	}
+	return airport
 }
 
 func (f *facility) airports() map[string]bool {
@@ -122,11 +141,38 @@ func (f *facility) airports() map[string]bool {
 	return all
 }
 
+// substituteAirports lifts a real airport's traffic for a made-up one. The FAA
+// Academy scenarios fly fictional airports, so the source data has nothing for
+// them; each one borrows the flights of a real airport with the traffic rate
+// and character it wants. Donors must be four-character ICAO codes: that is all
+// the source data's airport lists hold.
+var substituteAirports = map[string]string{
+	"KAAC": "KEWR", // Academy: Newark
+	"KBRT": "KBED", // Bartles: Hanscom Field, Boston's business jet reliever
+	"KJKE": "KWRI", // Jeske: McGuire AFB, for the military traffic
+	"4Y3":  "KTEB", // James: Teterboro
+	"4V4":  "KOXC", // Viney: Waterbury-Oxford, turboprops and light singles
+}
+
+// add records an airport the facility works, taking the substitute for a
+// made-up one. Airports that still aren't identified by an ICAO code can't
+// appear in the source data, so they are left out.
+func (f *facility) add(airports map[string]bool, airport string) {
+	if substitute, ok := substituteAirports[airport]; ok {
+		f.substituted[substitute] = airport
+		airport = substitute
+	}
+	if len(airport) == 4 {
+		airports[airport] = true
+	}
+}
+
 // gatherFacilities returns the airports each facility works, taken from the
 // scenarios it runs. The scenario group type isn't exported, so the scenarios
 // are loaded and picked over here rather than passed around. Airports that
 // aren't identified by an ICAO code can't appear in the source data, so they
-// are left out.
+// are left out, and the made-up ones the Academy scenarios fly are swapped for
+// the real airports whose traffic stands in for them.
 func gatherFacilities(e *util.ErrorLogger, lg *log.Logger) map[string]*facility {
 	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups("", "", "", e, lg)
 	if e.HaveErrors() {
@@ -139,14 +185,12 @@ func gatherFacilities(e *util.ErrorLogger, lg *log.Logger) map[string]*facility 
 		for _, sg := range groups {
 			for _, sc := range sg.Scenarios {
 				for _, runway := range sc.DepartureRunways {
-					if len(runway.Airport) == 4 {
-						f.departures[runway.Airport] = true
-					}
+					f.add(f.departures, runway.Airport)
 				}
 				for _, rates := range sc.InboundFlowDefaultRates {
 					for airport := range rates {
-						if airport != "overflights" && len(airport) == 4 {
-							f.arrivals[airport] = true
+						if airport != "overflights" {
+							f.add(f.arrivals, airport)
 						}
 					}
 				}
