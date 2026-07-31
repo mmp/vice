@@ -112,7 +112,7 @@ type Sim struct {
 	Rand *rand.Rand
 
 	// User-selected scenario start time before Vice rewinds the clock for prespawn.
-	startTime Time
+	StartTime Time
 
 	// historicalFlights are the flights a scenario using historical traffic was
 	// launched with, in time order.
@@ -172,11 +172,6 @@ type NewSimConfiguration struct {
 	LaunchConfig       LaunchConfig
 	Fixes              map[string]math.Point2LL
 	VFRReportingPoints []av.VFRReportingPoint
-
-	// HistoricalFlights are the flights to fly when LaunchConfig.TrafficSource
-	// is TrafficSourceHistorical: those at the scenario's airports over the
-	// sim's first several hours, in time order.
-	HistoricalFlights []av.Flight
 
 	ControlPositions        map[TCP]*av.Controller
 	ControllerAirspace      map[TCP][]string
@@ -267,8 +262,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		Rand: rand.Make(),
 
-		startTime:         NewSimTime(config.StartTime.UTC()),
-		historicalFlights: config.HistoricalFlights,
+		StartTime: NewSimTime(config.StartTime.UTC()),
 
 		SquawkWarnedACIDs: make(map[ACID]any),
 
@@ -464,6 +458,10 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	restoreControllerFields(s.ControlPositions)
 	restoreControllerFields(s.State.Controllers)
 	restoreERAMCoordinationGeometry(s.State.ERAMCoordination, lg)
+
+	// The historical flights are derived from the facility's flight data, so
+	// they are read here rather than saved with the sim.
+	s.loadHistoricalFlights()
 }
 
 // restoreERAMCoordinationGeometry re-derives the json:"-" geometry (zone-area

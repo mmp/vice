@@ -83,96 +83,45 @@ func TestNormalizeTrafficSourceConfigWithoutHistoricalFlights(t *testing.T) {
 	}
 }
 
-// The timetable start time is interpreted in the airport's local time zone,
-// from av.DB.AirportTimeZones; KMSP is in America/Chicago.
-func TestTimetableStartTimeUTCSummer(t *testing.T) {
-	base := time.Date(2026, time.July, 14, 3, 25, 0, 0, time.UTC)
-
-	got, err := timetableStartTimeUTC(base, 14*60, "KMSP")
+// The sim start time is chosen in UTC; a timetable needs it as a local clock
+// time at its airport, from av.DB.AirportTimeZones. KMSP is America/Chicago.
+func TestTimetableStartMinuteSummer(t *testing.T) {
+	// 19:00Z on July 14 is 14:00 CDT.
+	got, err := timetableStartMinute(time.Date(2026, time.July, 14, 19, 0, 0, 0, time.UTC), "KMSP")
 	if err != nil {
-		t.Fatalf("timetableStartTimeUTC: %v", err)
+		t.Fatalf("timetableStartMinute: %v", err)
 	}
-
-	want := time.Date(2026, time.July, 14, 19, 0, 0, 0, time.UTC)
-	if !got.Equal(want) {
-		t.Fatalf("timetableStartTimeUTC = %s, want %s", got, want)
+	if want := 14 * 60; got != want {
+		t.Fatalf("timetableStartMinute = %d, want %d", got, want)
 	}
 }
 
-func TestTimetableStartTimeUTCWinter(t *testing.T) {
-	base := time.Date(2026, time.January, 14, 3, 25, 0, 0, time.UTC)
-
-	got, err := timetableStartTimeUTC(base, 14*60, "KMSP")
+func TestTimetableStartMinuteWinter(t *testing.T) {
+	// 20:00Z on January 14 is 14:00 CST; the same local time is an hour later
+	// in UTC than it is in summer.
+	got, err := timetableStartMinute(time.Date(2026, time.January, 14, 20, 0, 0, 0, time.UTC), "KMSP")
 	if err != nil {
-		t.Fatalf("timetableStartTimeUTC: %v", err)
+		t.Fatalf("timetableStartMinute: %v", err)
 	}
-
-	want := time.Date(2026, time.January, 14, 20, 0, 0, 0, time.UTC)
-	if !got.Equal(want) {
-		t.Fatalf("timetableStartTimeUTC = %s, want %s", got, want)
+	if want := 14 * 60; got != want {
+		t.Fatalf("timetableStartMinute = %d, want %d", got, want)
 	}
 }
 
-func TestTimetableStartTimeUTCPreservesSelectedScenarioDate(t *testing.T) {
-	// Even though 02:00Z on July 15 is still July 14 in Minneapolis,
-	// the selected Vice scenario date remains July 15.
-	base := time.Date(2026, time.July, 15, 2, 0, 0, 0, time.UTC)
-
-	got, err := timetableStartTimeUTC(base, 23*60, "KMSP")
+func TestTimetableStartMinuteAcrossLocalMidnight(t *testing.T) {
+	// 04:00Z on July 16 is still 23:00 CDT on July 15.
+	got, err := timetableStartMinute(time.Date(2026, time.July, 16, 4, 0, 0, 0, time.UTC), "KMSP")
 	if err != nil {
-		t.Fatalf("timetableStartTimeUTC: %v", err)
+		t.Fatalf("timetableStartMinute: %v", err)
 	}
-
-	// 23:00 CDT on July 15 is 04:00Z on July 16.
-	want := time.Date(2026, time.July, 16, 4, 0, 0, 0, time.UTC)
-	if !got.Equal(want) {
-		t.Fatalf("timetableStartTimeUTC = %s, want %s", got, want)
+	if want := 23 * 60; got != want {
+		t.Fatalf("timetableStartMinute = %d, want %d", got, want)
 	}
 }
 
-func TestTimetableStartTimeUTCRejectsUnknownAirport(t *testing.T) {
-	_, err := timetableStartTimeUTC(
-		time.Date(2026, time.July, 14, 0, 0, 0, 0, time.UTC),
-		14*60,
-		"XXXX",
-	)
-	if err == nil {
+func TestTimetableStartMinuteRejectsUnknownAirport(t *testing.T) {
+	if _, err := timetableStartMinute(time.Date(2026, time.July, 14, 0, 0, 0, 0, time.UTC),
+		"XXXX"); err == nil {
 		t.Fatal("expected unknown-airport error")
-	}
-}
-
-func TestParseTimetableStartTime(t *testing.T) {
-	tests := map[string]int{
-		"1400":  14 * 60,
-		"14:00": 14 * 60,
-		"9:30":  9*60 + 30,
-		"0930":  9*60 + 30,
-		"9":     9 * 60,
-	}
-
-	for input, want := range tests {
-		got, ok := parseTimetableStartTime(input)
-		if !ok {
-			t.Errorf("parseTimetableStartTime(%q) rejected valid time", input)
-			continue
-		}
-		if got != want {
-			t.Errorf("parseTimetableStartTime(%q) = %d, want %d", input, got, want)
-		}
-	}
-}
-
-func TestParseTimetableStartTimeRejectsInvalidValues(t *testing.T) {
-	for _, input := range []string{
-		"",
-		"25:00",
-		"14:99",
-		"2400",
-		"abcd",
-		"12:30:00",
-	} {
-		if _, ok := parseTimetableStartTime(input); ok {
-			t.Errorf("parseTimetableStartTime(%q) accepted invalid time", input)
-		}
 	}
 }

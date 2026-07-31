@@ -69,7 +69,58 @@ const (
 
 	// idleDelay parks a spawn timer when there is nothing left to spawn.
 	idleDelay = 365 * 24 * time.Hour
+
+	// historicalFlightWindow is how much flight data a sim is launched with. A
+	// sim running longer than this runs out of historical traffic.
+	historicalFlightWindow = 8 * time.Hour
 )
+
+// loadHistoricalFlights gathers the flights a scenario using historical traffic
+// flies: those at its airports over the window starting at the selected time.
+// They are derived from the facility's flight data rather than saved with the
+// sim, so this runs on restore as well as at launch; the provider skips
+// whatever is already in the past, so a restored sim picks up where it left off.
+func (s *Sim) loadHistoricalFlights() {
+	s.historicalFlights = nil
+	if s.State.LaunchConfig.TrafficSource != TrafficSourceHistorical {
+		return
+	}
+
+	data, err := av.ReadFlightData(util.GetResourcesFS(), s.State.Facility)
+	if err != nil || data == nil {
+		s.lg.Errorf("%s: no historical flight data: %v", s.State.Facility, err)
+		return
+	}
+
+	// Every airport the scenario generates IFR traffic at, not just the primary
+	// one; departures and arrivals separately, since a scenario often departs
+	// airports it doesn't land.
+	departureAirports := make(map[string]bool)
+	arrivalAirports := make(map[string]bool)
+	lc := &s.State.LaunchConfig
+	for airport := range lc.DepartureRates {
+		departureAirports[airport] = true
+	}
+	for _, rates := range lc.InboundFlowRates {
+		for airport := range rates {
+			if airport != "overflights" {
+				arrivalAirports[airport] = true
+			}
+		}
+	}
+
+	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
+	// before the selected time, and it warms up by flying the traffic from that
+	// half hour the same way the scenario's own generator would.
+	start := s.StartTime.Time()
+	flights, err := av.FlightsInWindow(data, departureAirports, arrivalAirports, av.DB.Airlines,
+		start.Add(-PrespawnDuration), start.Add(historicalFlightWindow))
+	if err != nil {
+		s.lg.Errorf("%s historical flight data: %v", s.State.Facility, err)
+		return
+	}
+	s.historicalFlights = flights
+}
 
 func includeTimetableFlight(flight TimetableFlight, percentage int) bool {
 	percentage = min(max(percentage, 0), 100)
@@ -205,7 +256,7 @@ func newTimetableTrafficProvider(s *Sim, timetable Timetable, startMinute int,
 		if minutes >= minutesPerTimetableDay-prespawnMinutes {
 			minutes -= minutesPerTimetableDay
 		}
-		published := s.startTime.Add(time.Duration(minutes) * time.Minute).Time().UTC()
+		published := s.StartTime.Add(time.Duration(minutes) * time.Minute).Time().UTC()
 
 		other := flight.Destination
 		if !departure {
@@ -262,7 +313,7 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	rerouted := make(map[string]string)
 	var unroutable []string
 	missed := 0
-	earliest := s.startTime.Add(-PrespawnDuration)
+	earliest := s.StartTime.Add(-PrespawnDuration)
 	if s.State.SimTime.After(earliest) {
 		earliest = s.State.SimTime
 	}
@@ -444,8 +495,8 @@ func (p *publishedTrafficProvider) createIFRDeparture(s *Sim, airport string,
 			p.discardedDepartures = make(map[string]int)
 		}
 		if p.discardedDepartures[pair] == 0 {
-			fmt.Printf("Dropping published departures %s to %s: no plausible route in this scenario\n",
-				airport, published.flight.Other)
+			fmt.Printf("Dropping published departures %s to %s: %v\n", airport,
+				published.flight.Other, err)
 		}
 		p.discardedDepartures[pair]++
 		return nil, p.departureDelay(s, airport), nil
@@ -557,12 +608,14 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 	switch lc.TrafficSource {
 	case TrafficSourceHistorical:
 		if len(s.historicalFlights) == 0 {
-			fmt.Printf("Traffic source: historical, but no flights were provided\n")
+			fmt.Printf("Traffic source: historical, but no flights were found for %s from %s\n",
+				s.State.Facility, s.StartTime.Time().Format("2006-01-02 15:04Z"))
 			s.trafficProvider = errorTrafficProvider{
-				err: errors.New("no historical flight data was provided for this scenario")}
+				err: fmt.Errorf("no historical flight data for %s at this time", s.State.Facility)}
 		} else {
-			fmt.Printf("Traffic source: historical, %d flights provided from %s\n", len(s.historicalFlights),
-				s.startTime.Time().Format("2006-01-02 15:04Z"))
+			fmt.Printf("Traffic source: historical, %d flights found for %s from %s\n",
+				len(s.historicalFlights), s.State.Facility,
+				s.StartTime.Time().Format("2006-01-02 15:04Z"))
 			s.trafficProvider = newHistoricalTrafficProvider(s, s.historicalFlights,
 				lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
 		}

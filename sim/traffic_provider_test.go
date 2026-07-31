@@ -4,6 +4,7 @@
 package sim
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -16,7 +17,7 @@ import (
 // arrivals from the origins the tests use.
 func publishedProviderTestSim(start Time) *Sim {
 	return &Sim{
-		startTime: start,
+		StartTime: start,
 		State: &CommonState{
 			DynamicState: DynamicState{
 				SimTime: NewSimTime(start.Time().Add(-PrespawnDuration)),
@@ -179,5 +180,57 @@ func TestPublishedTrafficProviderWaitsForPublishedTime(t *testing.T) {
 	}
 	if delay != 5*time.Minute {
 		t.Fatalf("delay = %s, want 5m", delay)
+	}
+}
+
+// A sim that has been saved and reloaded must keep flying its published
+// traffic. The start time anchors a timetable's daily cycle, so if it doesn't
+// survive the round trip every flight lands in the distant past, is judged
+// already missed, and the sim runs with no traffic at all and no complaint.
+func TestPublishedTrafficSurvivesSaveAndReload(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	timetable := Timetable{
+		Airport: "KMSP",
+		Flights: []TimetableFlight{
+			{Callsign: "DAL1", Origin: "KMSP", Destination: "KORD", PublishedMinute: 14*60 + 2},
+			{Callsign: "DAL2", Origin: "KATL", Destination: "KMSP", PublishedMinute: 14*60 + 12},
+		},
+	}
+
+	s := publishedProviderTestSim(start)
+	before := newTimetableTrafficProvider(s, timetable, 14*60, 100, 100)
+	if len(before.departures) != 1 || len(before.arrivals) != 1 {
+		t.Fatalf("before reload: %d departures/%d arrivals, want 1/1",
+			len(before.departures), len(before.arrivals))
+	}
+
+	encoded, err := json.Marshal(s)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var reloaded Sim
+	if err := json.Unmarshal(encoded, &reloaded); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if reloaded.StartTime != s.StartTime {
+		t.Fatalf("StartTime = %s after reload, want %s", reloaded.StartTime.Time(), s.StartTime.Time())
+	}
+
+	after := newTimetableTrafficProvider(&reloaded, timetable, 14*60, 100, 100)
+	if len(after.departures) != len(before.departures) || len(after.arrivals) != len(before.arrivals) {
+		t.Fatalf("after reload: %d departures/%d arrivals, want %d/%d",
+			len(after.departures), len(after.arrivals), len(before.departures), len(before.arrivals))
+	}
+	for i := range before.departures {
+		if after.departures[i].spawn != before.departures[i].spawn {
+			t.Errorf("departure %s spawns at %s after reload, want %s", before.departures[i].flight.Callsign,
+				after.departures[i].spawn.Time(), before.departures[i].spawn.Time())
+		}
+	}
+	for i := range before.arrivals {
+		if after.arrivals[i].spawn != before.arrivals[i].spawn {
+			t.Errorf("arrival %s spawns at %s after reload, want %s", before.arrivals[i].flight.Callsign,
+				after.arrivals[i].spawn.Time(), before.arrivals[i].spawn.Time())
+		}
 	}
 }

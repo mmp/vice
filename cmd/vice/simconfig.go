@@ -52,8 +52,7 @@ type NewSimConfiguration struct {
 	selectedTCPs        map[sim.TCP]bool
 
 	// New UI state for improved flow
-	filterText             string // search/filter for scenario selection
-	timetableStartTimeText string
+	filterText string // search/filter for scenario selection
 
 	// Weather filter UI state
 	weatherFilter      wx.WeatherFilter
@@ -140,7 +139,6 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.ScenarioSpec = spec
 	c.ScenarioName = scenarioName
 	normalizeTrafficSourceConfig(c.ScenarioSpec)
-	c.timetableStartTimeText = formatTimetableStartTime(spec.LaunchConfig.TimetableStartMinute)
 	c.savedVFRDepartureRateScale = spec.LaunchConfig.VFRDepartureRateScale
 	c.initDefaultWindDirection()
 	c.fetchSeq++
@@ -187,114 +185,17 @@ func selectedTimetableSummary(spec *server.ScenarioSpec) (sim.TimetableSummary, 
 	}
 	return sim.TimetableSummary{}, false
 }
-func formatTimetableStartTime(minutes int) string {
-	minutes = ((minutes % (24 * 60)) + (24 * 60)) % (24 * 60)
-	return fmt.Sprintf("%02d:%02d", minutes/60, minutes%60)
-}
 
-func parseTimetableStartTime(value string) (int, bool) {
-	value = strings.TrimSpace(value)
-	if value == "" {
-		return 0, false
-	}
-
-	var hour, minute int
-
-	if strings.Contains(value, ":") {
-		parts := strings.Split(value, ":")
-		if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
-			return 0, false
-		}
-
-		var err error
-		hour, err = strconv.Atoi(parts[0])
-		if err != nil {
-			return 0, false
-		}
-
-		minute, err = strconv.Atoi(parts[1])
-		if err != nil {
-			return 0, false
-		}
-	} else {
-		if len(value) > 4 {
-			return 0, false
-		}
-
-		number, err := strconv.Atoi(value)
-		if err != nil {
-			return 0, false
-		}
-
-		switch len(value) {
-		case 1, 2:
-			hour = number
-		case 3:
-			hour = number / 100
-			minute = number % 100
-		case 4:
-			hour = number / 100
-			minute = number % 100
-		default:
-			return 0, false
-		}
-	}
-
-	if hour < 0 || hour > 23 || minute < 0 || minute > 59 {
-		return 0, false
-	}
-
-	return hour*60 + minute, true
-}
-
-func timetableStartTimeUTC(base time.Time, startMinute int, airport string) (time.Time, error) {
+// timetableStartMinute is the sim start time as a local clock time at the
+// timetable's airport, which is how a timetable's own times are expressed. The
+// start time is chosen once, above; a timetable just needs it in local terms.
+func timetableStartMinute(start time.Time, airport string) (int, error) {
 	location, ok := av.DB.AirportTimeZones[airport]
 	if !ok {
-		return time.Time{}, fmt.Errorf("no time zone is known for %s", airport)
+		return 0, fmt.Errorf("no time zone is known for %s", airport)
 	}
-
-	startMinute = ((startMinute % (24 * 60)) + (24 * 60)) % (24 * 60)
-
-	// Preserve the calendar date selected by Vice's UTC weather/time picker,
-	// but interpret the timetable's clock time in the airport timezone.
-	scenarioDate := base.UTC()
-	localStart := time.Date(
-		scenarioDate.Year(),
-		scenarioDate.Month(),
-		scenarioDate.Day(),
-		startMinute/60,
-		startMinute%60,
-		0,
-		0,
-		location,
-	)
-
-	return localStart.UTC(), nil
-}
-
-func (c *NewSimConfiguration) synchronizeTimetableStartTime(spec *server.ScenarioSpec) error {
-	if spec == nil || spec.LaunchConfig.TrafficSource != sim.TrafficSourceTimetable {
-		return nil
-	}
-
-	if _, ok := selectedTimetableSummary(spec); !ok {
-		return fmt.Errorf(
-			"selected timetable %q was not found",
-			spec.LaunchConfig.TimetableID,
-		)
-	}
-
-	startTime, err := timetableStartTimeUTC(
-		c.NewSimRequest.StartTime,
-		spec.LaunchConfig.TimetableStartMinute,
-		spec.PrimaryAirport,
-	)
-	if err != nil {
-		return err
-	}
-
-	c.NewSimRequest.StartTime = startTime
-	return nil
+	local := start.In(location)
+	return local.Hour()*60 + local.Minute(), nil
 }
 
 func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
@@ -303,6 +204,10 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 	imgui.Text("IFR traffic source:")
 	imgui.SameLine()
 	imgui.RadioButtonIntPtr("Scenario", (*int32)(&lc.TrafficSource), int32(sim.TrafficSourceScenario))
+	if imgui.IsItemHovered() {
+		imgui.SetTooltip("Traffic generated from the scenario's own definitions, at the arrival\n" +
+			"and departure rates you set.")
+	}
 
 	imgui.SameLine()
 	if !spec.HaveHistoricalFlights {
@@ -310,33 +215,31 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 	}
 	imgui.RadioButtonIntPtr("Historical", (*int32)(&lc.TrafficSource),
 		int32(sim.TrafficSourceHistorical))
+	if imgui.IsItemHoveredV(imgui.HoveredFlagsAllowWhenDisabled) {
+		if spec.HaveHistoricalFlights {
+			imgui.SetTooltip("Fly the traffic that really operated at " + c.NewSimRequest.Facility +
+				" on the selected date,\nfrom recorded flight data.")
+		} else {
+			imgui.SetTooltip("No historical flight data is available for " + c.NewSimRequest.Facility + ".")
+		}
+	}
 	if !spec.HaveHistoricalFlights {
 		imgui.EndDisabled()
 	}
 
-	imgui.SameLine()
-	if len(spec.Timetables) == 0 {
-		imgui.BeginDisabled()
-	}
-	imgui.RadioButtonIntPtr("Timetable", (*int32)(&lc.TrafficSource),
-		int32(sim.TrafficSourceTimetable))
-	if len(spec.Timetables) == 0 {
-		imgui.EndDisabled()
-	}
-
-	if !spec.HaveHistoricalFlights && len(spec.Timetables) == 0 {
-		imgui.TextDisabled("No historical flight data is available for " + c.NewSimRequest.Facility +
-			" and no built-in timetables are available for " + spec.PrimaryAirport + ".")
-		return
+	// A timetable is offered only where one exists; unlike historical data it is
+	// curated per airport, so most scenarios will never have one.
+	if len(spec.Timetables) > 0 {
+		imgui.SameLine()
+		imgui.RadioButtonIntPtr("Timetable", (*int32)(&lc.TrafficSource),
+			int32(sim.TrafficSourceTimetable))
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Fly a curated daily timetable for " + spec.PrimaryAirport + ", starting at the\n" +
+				"selected time. Overflights remain randomly generated.")
+		}
 	}
 
 	normalizeTrafficSourceConfig(spec)
-
-	if lc.TrafficSource == sim.TrafficSourceHistorical {
-		imgui.TextDisabled(fmt.Sprintf("Flying the traffic that really operated on %s.",
-			c.NewSimRequest.StartTime.UTC().Format("2006-01-02")))
-		return
-	}
 
 	if lc.TrafficSource != sim.TrafficSourceTimetable {
 		return
@@ -360,47 +263,6 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 		}
 		imgui.EndCombo()
 	}
-
-	if selected.Description != "" {
-		imgui.TextWrapped(selected.Description)
-	}
-
-	imgui.Text("Start Time (Airport Local Time):")
-	imgui.SameLine()
-	imgui.SetNextItemWidth(100)
-
-	if c.timetableStartTimeText == "" {
-		c.timetableStartTimeText = formatTimetableStartTime(lc.TimetableStartMinute)
-	}
-
-	if imgui.InputTextWithHint(
-		"##timetableStartTime",
-		"14:00",
-		&c.timetableStartTimeText,
-		0,
-		nil,
-	) {
-		if minutes, ok := parseTimetableStartTime(c.timetableStartTimeText); ok {
-			lc.TimetableStartMinute = minutes
-
-			if err := c.synchronizeTimetableStartTime(spec); err != nil {
-				c.displayError = err
-			} else {
-				c.displayError = nil
-			}
-		}
-	}
-
-	if _, ok := parseTimetableStartTime(c.timetableStartTimeText); !ok {
-		imgui.SameLine()
-		imgui.TextDisabled("Enter HH:MM or HHMM")
-	} else {
-		imgui.SameLine()
-		imgui.TextDisabled("UTC: " + c.NewSimRequest.StartTime.UTC().Format("1504Z"))
-	}
-
-	imgui.TextDisabled("Times use the selected airport's local time.")
-	imgui.TextDisabled("IFR arrivals and departures are generated from the selected timetable.")
 }
 
 // initDefaultWindDirection computes the default wind direction range from the scenario's runways.
@@ -1620,74 +1482,15 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	return false
 }
 
-// historicalFlightWindow is how much flight data a sim is launched with. A sim
-// running longer than this runs out of historical traffic.
-const historicalFlightWindow = 8 * time.Hour
-
-// historicalFlights gathers the flights at the scenario's airports over the
-// window starting at the selected time.
-func (c *NewSimConfiguration) historicalFlights() ([]av.Flight, error) {
-	facility := c.NewSimRequest.Facility
-	data, err := av.ReadFlightData(util.GetResourcesFS(), facility)
-	if err != nil || data == nil {
-		return nil, fmt.Errorf("no historical flight data for %s", facility)
-	}
-
-	// Every airport the scenario generates IFR traffic at, not just the
-	// primary one; departures and arrivals separately, since a scenario often
-	// departs airports it doesn't land.
-	departureAirports := make(map[string]bool)
-	arrivalAirports := make(map[string]bool)
-	lc := &c.ScenarioSpec.LaunchConfig
-	for airport := range lc.DepartureRates {
-		departureAirports[airport] = true
-	}
-	for _, rates := range lc.InboundFlowRates {
-		for airport := range rates {
-			if airport != "overflights" {
-				arrivalAirports[airport] = true
-			}
-		}
-	}
-
-	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
-	// before the selected time, and it warms up by flying the traffic from
-	// that half hour the same way the scenario's own generator would.
-	start := c.NewSimRequest.StartTime.UTC()
-	flights, err := av.FlightsInWindow(data, departureAirports, arrivalAirports, av.DB.Airlines,
-		start.Add(-sim.PrespawnDuration), start.Add(historicalFlightWindow))
-	if err != nil {
-		return nil, fmt.Errorf("%s flight data: %w", facility, err)
-	}
-	if len(flights) == 0 {
-		return nil, fmt.Errorf("%s has no historical flights from %s", facility,
-			start.Format("2006-01-02 15:04Z"))
-	}
-	return flights, nil
-}
-
 func (c *NewSimConfiguration) Start(config *Config) error {
 	c.ScenarioSpec.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
 
-	c.NewSimRequest.HistoricalFlights = nil
-	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
-		flights, err := c.historicalFlights()
+	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceTimetable {
+		minutes, err := timetableStartMinute(c.NewSimRequest.StartTime, c.ScenarioSpec.PrimaryAirport)
 		if err != nil {
 			return err
 		}
-		c.NewSimRequest.HistoricalFlights = flights
-	}
-
-	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceTimetable {
-		minutes, ok := parseTimetableStartTime(c.timetableStartTimeText)
-		if !ok {
-			return fmt.Errorf("invalid timetable start time %q", c.timetableStartTimeText)
-		}
-
 		c.ScenarioSpec.LaunchConfig.TimetableStartMinute = minutes
-		if err := c.synchronizeTimetableStartTime(c.ScenarioSpec); err != nil {
-			return err
-		}
 	}
 
 	if c.newSimType == NewSimJoinRemote {
@@ -2646,7 +2449,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		}
 		if local, ok := c.startTimeLocal(); ok {
 			imgui.SameLine()
-			imgui.TextDisabled(local)
+			imgui.Text(local)
 		}
 
 		// METAR

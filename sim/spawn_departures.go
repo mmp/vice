@@ -833,23 +833,21 @@ func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.Runwa
 	if perf, ok := av.DB.AircraftPerformance[aircraftType]; ok {
 		engineType = perf.Engine.AircraftType
 	}
-	if routes := eligibleAirportPairRoutes(av.DB.RoutesBetween(departureAirport, destination),
-		engineType); len(routes) > 0 {
-		for _, route := range routes {
-			if c, ok := departureForRoute(route, candidates); ok {
-				return c.ap, c.rwy, c.exitRoutes, c.dep, route.Route, nil
-			}
+	for _, route := range eligibleAirportPairRoutes(av.DB.RoutesBetween(departureAirport, destination),
+		engineType) {
+		if c, ok := departureForRoute(route, candidates); ok {
+			return c.ap, c.rwy, c.exitRoutes, c.dep, route.Route, nil
 		}
-		return nil, nil, nil, nil, "", fmt.Errorf("%w: the filed routes to %s leave through unmodeled exits",
-			errNoScenarioRoute, destination)
 	}
 
-	// The pair isn't in the route database; substitute the modeled departure
-	// whose destination airport is closest to the flight's real one. Heading
-	// still gates plausibility: from JFK, every Florida destination is within
-	// a few degrees of Ocean City's heading, but a route the scenario models
-	// in some other direction entirely is no way to leave, however close its
-	// destination.
+	// Either the pair isn't in the route database or every route it has leaves
+	// through an exit this scenario doesn't model: a scenario that works one
+	// corner of an airport has no reason to model the gate a filed route uses.
+	// Either way, substitute the modeled departure whose destination airport is
+	// closest to the flight's real one. Heading still gates plausibility: from
+	// JFK, every Florida destination is within a few degrees of Ocean City's
+	// heading, but a route the scenario models in some other direction entirely
+	// is no way to leave, however close its destination.
 	origin, originOK := av.DB.Airports[departureAirport]
 	trueAirport, trueOK := av.DB.Airports[destination]
 	if !originOK || !trueOK {

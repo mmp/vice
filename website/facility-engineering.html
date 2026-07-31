@@ -4677,17 +4677,48 @@
     in the timetable data.
   </p>
 
+  <h3 class="section-heading">Historical Flight Data</h3>
+
   <p>
-    Historical traffic instead uses per-facility flight data imported from
-    ADS-B derived records with <code>cmd/importflights</code>, covering every
-    airport the facility works over however many years have been imported; when
-    such data is available for a facility, the "Historical" traffic source can
-    be selected. Departures whose real routing is not modeled by the scenario
-    file the routes from the FAA's preferred route database (imported with
-    <code>cmd/importroutes</code>) or follow the scenario route toward the
-    nearest modeled destination. See
-    <code>resources/traffic/README.md</code> for the details of both data
-    formats.
+    Historical traffic comes from per-facility flight data stored under
+    <code>resources/traffic/flights/</code>, one file per facility named as the
+    scenarios name it: <code>N90.flt</code>, <code>ZBW.flt</code>, and so on.
+    Each file holds the departures and arrivals at every airport that facility
+    generates IFR traffic at, over however many years have been imported. An
+    airport worked by more than one facility appears in each of their files, so
+    a sim only ever needs to read one. When such a file exists for a facility,
+    the "Historical" traffic source can be selected.
+  </p>
+
+  <p>
+    Each flight records the airport it departs from or arrives at, its
+    callsign, the airport at the other end, the date, the UTC time, and the
+    aircraft type. Times are when the aircraft actually took off or touched
+    down, so a sim launched with this source flies the traffic that really
+    operated on the selected date. <code>aviation/flights.go</code> documents
+    the file format and reads it back.
+  </p>
+
+  <p>
+    The files are written by <code>cmd/importflights</code> from the
+    <a href="https://github.com/MrAirspace/aircraft-flight-schedules">MrAirspace/aircraft-flight-schedules</a>
+    dataset, which extracts flights from ADS-B position reports and is
+    published quarterly under ODbL-1.0. Pass every quarter for a year in one
+    run, since each run rewrites a facility's file from scratch:
+  </p>
+
+  <pre><code>go run ./cmd/importflights ~/av/aircraft-flight-schedules/*.parquet</code></pre>
+
+  <p>
+    Because the data records only where each flight actually went, a scenario
+    will not model every destination that turns up. A departure whose real
+    destination the scenario models is flown directly. Otherwise, if the FAA's
+    preferred route database (imported with <code>cmd/importroutes</code>)
+    knows how the city pair is really flown and one of its routes leaves
+    through an exit the scenario models, the flight takes that exit and files
+    that route. Failing both, the flight is sent to the modeled destination
+    nearest its real one, provided that destination lies in roughly the same
+    direction; a flight with nowhere plausible to go is not launched.
   </p>
 </section><!--//section-->
             <section class="docs-section" id="fe-vfr">

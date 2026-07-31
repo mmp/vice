@@ -414,14 +414,22 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	}
 
 	// If every real route leaves through an exit the scenario doesn't model,
-	// the scenario doesn't work this flight.
+	// fall back to the modeled destination nearest the real one rather than
+	// dropping the flight: a scenario that works one corner of an airport has
+	// no reason to model the gate a filed route happens to use.
 	seedTestRoutes(t, []av.AirportPairRoute{
 		{Route: "KORG WSSST J22 KTGT", Type: "H"},
 	})
-	_, _, _, _, _, err = s.resolvePublishedDeparture("KORG", "30L",
+	_, _, _, dep, filedRoute, err = s.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "B738")
-	if !errors.Is(err, errNoScenarioRoute) {
-		t.Fatalf("unmodeled exits: err = %v, want errNoScenarioRoute", err)
+	if err != nil {
+		t.Fatalf("unmodeled exits: %v", err)
+	}
+	if dep.Exit != "EAST" {
+		t.Errorf("exit = %q, want the directional fallback EAST", dep.Exit)
+	}
+	if filedRoute != "" {
+		t.Errorf("filed route = %q, want the scenario departure's own route", filedRoute)
 	}
 }
 
