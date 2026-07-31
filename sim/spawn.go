@@ -200,12 +200,20 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRat
 	lc.InboundFlowEnabled = make(map[string]map[string]bool)
 	for flow, airportOverflights := range inbound {
 		lc.InboundFlowRates[flow] = maps.Clone(airportOverflights)
-		for ap, rate := range airportOverflights {
+		for ap := range airportOverflights {
 			if ap != "overflights" {
 				if lc.InboundFlowEnabled[flow] == nil {
 					lc.InboundFlowEnabled[flow] = make(map[string]bool)
 				}
-				lc.InboundFlowEnabled[flow][ap] = rate > 0
+				// Every flow the scenario lists for an airport is a way into
+				// it. The rate says how much traffic the scenario's own
+				// generator should make and nothing more, so it has no bearing
+				// here: published traffic is the only thing that consults these
+				// and it arrives when its data says, not at some rate. A flow a
+				// scenario leaves dialed to zero is still one its controllers
+				// work, so start them all on and let the user turn off the ones
+				// they don't want.
+				lc.InboundFlowEnabled[flow][ap] = true
 			}
 		}
 	}

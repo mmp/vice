@@ -390,24 +390,23 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 }
 
 // inboundFlowForArrival returns the scenario inbound flow that carries traffic
-// from origin to arrivalAirport. More than one flow can serve an origin, so
-// prefer one the scenario is actually landing traffic through; the flows are
-// held in a map, so the choice is also sorted to keep it from varying between
-// runs.
+// from origin to arrivalAirport. Only the flows this scenario works count:
+// putting an arrival on one it doesn't model would hand the controller traffic
+// down a feeder nobody is working. More than one flow can serve an origin and
+// the flows are held in a map, so the choice is sorted to keep it from varying
+// between runs.
 func (s *Sim) inboundFlowForArrival(arrivalAirport, origin string) (string, bool) {
 	var candidates []string
 	for group, inboundFlow := range s.State.InboundFlows {
+		if !s.State.LaunchConfig.InboundFlowEnabled[group][arrivalAirport] {
+			continue
+		}
 		if _, err := resolvePublishedArrival(inboundFlow.Arrivals, arrivalAirport, origin); err == nil {
 			candidates = append(candidates, group)
 		}
 	}
 	slices.Sort(candidates)
 
-	for _, group := range candidates {
-		if s.State.LaunchConfig.InboundFlowEnabled[group][arrivalAirport] {
-			return group, true
-		}
-	}
 	if len(candidates) > 0 {
 		return candidates[0], true
 	}
@@ -417,7 +416,10 @@ func (s *Sim) inboundFlowForArrival(arrivalAirport, origin string) (string, bool
 // nearestRoutedOrigin finds the airport closest to origin that the scenario has
 // an arrival route from. Real traffic comes from far more airports than a
 // scenario names, so this lets a flight from an unlisted airport arrive the way
-// its neighbors do rather than not at all.
+// its neighbors do rather than not at all. Only the flows this scenario works
+// are considered, for the same reason inboundFlowForArrival skips the rest: an
+// origin reachable only down a flow the scenario doesn't model is no substitute
+// at all.
 func (s *Sim) nearestRoutedOrigin(arrivalAirport, origin string) (string, bool) {
 	from, ok := av.DB.Airports[origin]
 	if !ok {
@@ -425,7 +427,10 @@ func (s *Sim) nearestRoutedOrigin(arrivalAirport, origin string) (string, bool) 
 	}
 
 	best, bestDistance := "", float32(0)
-	for _, inboundFlow := range s.State.InboundFlows {
+	for group, inboundFlow := range s.State.InboundFlows {
+		if !s.State.LaunchConfig.InboundFlowEnabled[group][arrivalAirport] {
+			continue
+		}
 		for _, arrival := range inboundFlow.Arrivals {
 			for _, airline := range arrival.Airlines[arrivalAirport] {
 				candidate, ok := av.DB.Airports[airline.Airport]

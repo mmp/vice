@@ -37,8 +37,11 @@ func TestMakeLaunchConfigTrafficSourceDefaults(t *testing.T) {
 	}
 }
 
-// The enabled maps mirror whether each flow's default rate is non-zero and
-// leave overflights out entirely: they stay randomly generated.
+// Departure enables mirror whether each runway's default rate is non-zero.
+// Inbound flows don't: every flow a scenario lists for an airport is a way into
+// it whatever its rate, since the enables are what published arrivals consult
+// and those arrive when their data says. Overflights are left out entirely;
+// they stay randomly generated.
 func TestMakeLaunchConfigEnabledDefaults(t *testing.T) {
 	dep := []DepartureRunway{
 		{Airport: "KJFK", Runway: "13R", Category: "North", DefaultRate: 6},
@@ -61,7 +64,8 @@ func TestMakeLaunchConfigEnabledDefaults(t *testing.T) {
 	}
 
 	inboundWant := map[string]map[string]bool{
-		"PROUD": {"KLGA": true, "KJFK": false},
+		// KJFK is listed at rate zero and is enabled all the same.
+		"PROUD": {"KLGA": true, "KJFK": true},
 		"CAMRN": {"KJFK": true},
 	}
 	for flow, want := range inboundWant {

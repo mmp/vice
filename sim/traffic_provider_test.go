@@ -15,6 +15,11 @@ import (
 // the user-selected start time, the sim clock rewound for prespawn (which is
 // when the provider is first built), and a "TEST" inbound flow that lands KMSP
 // arrivals from the origins the tests use.
+//
+// The flow's rate is zero on purpose: that is how much traffic the scenario's own
+// generator makes and has no bearing on published arrivals, which arrive when the
+// data says. Listing the flow at all is what makes it a way into KMSP, so it is
+// enabled here exactly as MakeLaunchConfig would leave it.
 func publishedProviderTestSim(start Time) *Sim {
 	return &Sim{
 		StartTime: start,
@@ -22,6 +27,7 @@ func publishedProviderTestSim(start Time) *Sim {
 			DynamicState: DynamicState{
 				SimTime: NewSimTime(start.Time().Add(-PrespawnDuration)),
 				LaunchConfig: LaunchConfig{
+					InboundFlowRates:   map[string]map[string]float32{"TEST": {"KMSP": 0}},
 					InboundFlowEnabled: map[string]map[string]bool{"TEST": {"KMSP": true}},
 				},
 			},
