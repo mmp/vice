@@ -51,6 +51,7 @@ var (
 	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
 	logDir                = flag.String("logdir", "", "log file `directory`")
 	lintScenarios         = flag.Bool("lint", false, "check the validity of the built-in scenarios")
+	lintArrivals          = flag.Bool("lintarrivals", false, "check that the airports an arrival's traffic comes from lie in the direction it flies in from")
 	runServer             = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
 	serverAddress         = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
 	scenarioFilename      = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
@@ -206,6 +207,39 @@ func runLint(lg *log.Logger) error {
 		airports := util.SortedMapKeys(ap)
 		fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
 	}
+	return nil
+}
+
+// runLintArrivals reports arrival origins that don't lie in the direction their
+// arrival flies in from. It is its own thing rather than part of -lint: the
+// scenarios it reports on are valid, and what it finds costs their own traffic
+// nothing--only published traffic reads the origins as geography. See
+// lintarrivals.go.
+func runLintArrivals(lg *log.Logger) error {
+	if err := cliInit(); err != nil {
+		return err
+	}
+
+	var e util.ErrorLogger
+	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename,
+		*scenarioBriefFilename, &e, lg)
+	if e.HaveErrors() {
+		e.PrintErrors(nil)
+		return fmt.Errorf("scenario validation failed")
+	}
+
+	total := 0
+	for tracon, groups := range util.SortedMap(scenarioGroups) {
+		for _, name := range util.SortedMapKeys(groups) {
+			sg := groups[name]
+			problems := checkArrivalOrigins(sg.InboundFlows, sg.NmPerLongitude)
+			printArrivalOriginProblems(tracon+"/"+name, problems)
+			total += len(problems)
+		}
+	}
+	fmt.Printf("\n%d arrival origins lie more than %d degrees from the direction their "+
+		"arrival flies in from.\n", total, maxArrivalOriginHeadingDifference)
+
 	return nil
 }
 
@@ -803,6 +837,8 @@ func main() {
 	switch {
 	case *lintScenarios:
 		err = runLint(lg)
+	case *lintArrivals:
+		err = runLintArrivals(lg)
 	case *listScenarios:
 		err = runListScenarios(lg)
 	case *runSim != "":
