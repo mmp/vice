@@ -4,7 +4,10 @@ This directory holds the traffic data behind the sim's two non-scenario IFR
 traffic sources. A scenario's own traffic definitions are the third source and
 live in the scenario JSON, not here.
 
-## Historical flight data (`*.flt`)
+    flights/<FACILITY>.flt      historical flight data, one file per facility
+    timetables/<AIRPORT>/*.csv  curated daily timetables, one directory per airport
+
+## Historical flight data (`flights/*.flt`)
 
 One file per facility, named as the scenarios name it: `N90.flt`, `ZBW.flt`, and
 so on. Each holds the departures and arrivals at every airport that facility
@@ -26,7 +29,7 @@ are when the aircraft actually took off or touched down, so a sim launched with
 this source flies the traffic that really operated on the selected date.
 `aviation/flights.go` documents the file format and reads them back.
 
-## Built-in timetables (`<AIRPORT>/*.csv`)
+## Built-in timetables (`timetables/<AIRPORT>/*.csv`)
 
 Curated daily timetables are stored with one subdirectory per airport; each CSV
 file in an airport's directory is offered as a selectable timetable for

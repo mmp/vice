@@ -2605,7 +2605,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	loadEmergencies(e)
 
-	timetableCatalog, err := sim.LoadTimetableCatalog(util.GetResourcesFS(), "schedules")
+	timetableCatalog, err := sim.LoadTimetableCatalog(util.GetResourcesFS(), "traffic/timetables")
 	if err != nil {
 		e.Error(err)
 	} else {

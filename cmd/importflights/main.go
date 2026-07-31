@@ -3,13 +3,13 @@
 // SPDX: GPL-3.0-only
 //
 // Imports historical flight data into the per-facility flight data files under
-// resources/schedules. Input is one or more parquet files from the
+// resources/traffic/flights. Input is one or more parquet files from the
 // MrAirspace/aircraft-flight-schedules dataset, which is derived from ADS-B
 // position reports and published quarterly:
 //
 //	https://github.com/MrAirspace/aircraft-flight-schedules
 //
-// One file is written per facility, e.g. resources/schedules/N90.flt,
+// One file is written per facility, e.g. resources/traffic/flights/N90.flt,
 // holding the departures and arrivals at every airport that facility generates
 // IFR traffic at, over however many years the source files span. Facilities are
 // named as the scenarios name them, so a sim running at N90 or ZBW reads the
@@ -43,7 +43,7 @@ import (
 )
 
 func main() {
-	out := flag.String("out", "resources/schedules", "`directory` to write flight data files to")
+	out := flag.String("out", "resources/traffic/flights", "`directory` to write flight data files to")
 	airports := flag.String("airports", "", "comma-separated `airports` to import, if not all of them")
 	minCoverage := flag.Float64("mincoverage", 0.9,
 		"`fraction` of a month's days the input must cover for its files to be written")

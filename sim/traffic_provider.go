@@ -568,7 +568,7 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 		}
 
 	case TrafficSourceTimetable:
-		catalog, err := LoadTimetableCatalog(util.GetResourcesFS(), "schedules")
+		catalog, err := LoadTimetableCatalog(util.GetResourcesFS(), "traffic/timetables")
 		if err != nil {
 			s.trafficProvider = errorTrafficProvider{err: err}
 			return s.trafficProvider

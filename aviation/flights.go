@@ -85,7 +85,7 @@ func SortFlights(flights []Flight) {
 }
 
 // Historical flight data is stored one file per facility under
-// resources/schedules, named for the facility the scenarios use: N90.flt,
+// resources/traffic/flights, named for the facility the scenarios use: N90.flt,
 // ZBW.flt, and so on. A file holds the departures and arrivals at every airport
 // that facility works over a period of past months or years.
 //
@@ -133,7 +133,7 @@ const (
 	flightDataVersion = 2
 
 	// FlightDataDirectory is where facility flight data lives in the resources.
-	FlightDataDirectory = "schedules"
+	FlightDataDirectory = "traffic/flights"
 
 	// FlightDataExtension is the suffix of a facility's flight data file.
 	FlightDataExtension = ".flt"
