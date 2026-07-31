@@ -2,20 +2,20 @@
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 //
-// Imports real-world flight data into the per-airport schedule files under
+// Imports historical flight data into the per-facility flight data files under
 // resources/schedules. Input is one or more parquet files from the
 // MrAirspace/aircraft-flight-schedules dataset, which is derived from ADS-B
 // position reports and published quarterly:
 //
 //	https://github.com/MrAirspace/aircraft-flight-schedules
 //
-// One file is written per facility, e.g. resources/schedules/N90.flt, holding
-// the departures and arrivals at every airport that facility generates IFR
-// traffic at, over however many years the source files span. Facilities are
+// One file is written per facility, e.g. resources/schedules/N90.flt,
+// holding the departures and arrivals at every airport that facility generates
+// IFR traffic at, over however many years the source files span. Facilities are
 // named as the scenarios name them, so a sim running at N90 or ZBW reads the
 // file of the same name. A file is replaced when there are flights for its
 // facility and is otherwise left alone; pass every source file in one go, since
-// each run rewrites a facility's schedule from scratch.
+// each run rewrites a facility's file from scratch.
 //
 // Each flight records the airport it departs from or arrives at, its callsign,
 // the airport at the other end, the UTC date and time, and the aircraft type.
@@ -43,7 +43,7 @@ import (
 )
 
 func main() {
-	out := flag.String("out", "resources/schedules", "`directory` to write schedule files to")
+	out := flag.String("out", "resources/schedules", "`directory` to write flight data files to")
 	airports := flag.String("airports", "", "comma-separated `airports` to import, if not all of them")
 	minCoverage := flag.Float64("mincoverage", 0.9,
 		"`fraction` of a month's days the input must cover for its files to be written")
@@ -90,7 +90,7 @@ func main() {
 
 	imp.report()
 
-	if err := writeSchedules(*out, imp, facilities, *minCoverage, *dryRun); err != nil {
+	if err := writeFlightData(*out, imp, facilities, *minCoverage, *dryRun); err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
@@ -99,7 +99,7 @@ func main() {
 ///////////////////////////////////////////////////////////////////////////
 
 // facility is the set of airports one facility generates IFR traffic at, and
-// gets one schedule file. A facility is a TRACON, or an ARTCC for the scenarios
+// gets one flight data file. A facility is a TRACON, or an ARTCC for the scenarios
 // that are run out of one; it is the same name the scenarios are grouped under,
 // so a sim can find the flights it needs from the facility it is running.
 //

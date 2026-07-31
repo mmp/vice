@@ -84,7 +84,8 @@ import (
 // 74: ERAM MCA, RA, TimeView prefs added
 // 75: ERAM MCA/RA/TimeView positions moved to exported per-view Position fields
 // 76: backfill ERAM BeaconCodeView and CheckList prefs (both were added without bumping the version, so 74/75 saves may have them zero-valued)
-const ViceSerializeVersion = 76
+// 77: historical flight data: ScenarioSpec gained HistoricalFlightInterval/HaveHistoricalFlights, NewSimRequest gained HistoricalFlights, LaunchConfig gained enable maps
+const ViceSerializeVersion = 77
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

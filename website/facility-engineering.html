@@ -188,7 +188,7 @@
             <li class="nav-item"><a class="nav-link scrollto" href="#fe-approaches">Approaches</a></li>
             <li class="nav-item"><a class="nav-link scrollto" href="#fe-departures">Departures</a></li>
             <li class="nav-item"><a class="nav-link scrollto" href="#fe-arrivals">Arrivals and Overflights</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-real-world-schedules">Real World Schedules</a></li>
+            <li class="nav-item"><a class="nav-link scrollto" href="#fe-timetables">Timetables and Historical Traffic</a></li>
             <li class="nav-item"><a class="nav-link scrollto" href="#fe-vfr">VFR Aircraft</a></li>
             <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Controller Airspace</a></li>
             <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
@@ -4634,38 +4634,60 @@
                 </tbody>
               </table>
             </section>
-            <section class="docs-section" id="fe-real-world-schedules">
-  <h2 class="section-heading">Real World Schedules</h2>
+            <section class="docs-section" id="fe-timetables">
+  <h2 class="section-heading">Timetables and Historical Traffic</h2>
 
   <p>
-    <i>vice</i> supports built-in real-world airline schedules as an alternative
-    to the procedurally generated traffic normally defined in scenario files.
-    Each airport may provide one or more schedules, allowing facilities to
-    offer different traffic sets such as weekday, weekend, or seasonal
-    operations.
+    When creating a sim, <i>vice</i> offers a choice of three IFR traffic
+    sources. <b>Scenario</b> is the procedurally generated traffic defined in
+    the scenario files, driven by the departure and arrival rates the user
+    sets. <b>Timetable</b> flies a curated daily timetable for the scenario's
+    primary airport. <b>Historical</b> flies the traffic that really operated
+    at the facility on the selected date. The rest of this section covers the
+    latter two.
   </p>
 
   <p>
-    Schedule metadata is stored in
-    <code>resources/schedules/&lt;ICAO&gt;/schedules.json</code>. Each manifest
-    entry references a CSV file containing scheduled flights. The airport is
-    inferred from the directory name, so it does not need to be specified in
-    the manifest itself.
+    A timetable is a single day's cycle of airline operations, without dates,
+    played from a user-selected local start time. Each airport may provide one
+    or more of them, allowing facilities to offer different traffic sets such as
+    weekday, weekend, or seasonal operations.
   </p>
 
   <p>
-    Each scheduled flight specifies a callsign, aircraft type, origin,
-    destination, scheduled time, and whether it is a cargo flight. When a
-    schedule is selected, <i>vice</i> generates departures, arrivals, and
-    overflights for the active scenario from this data.
+    Timetables are CSV files stored under
+    <code>resources/schedules/&lt;ICAO&gt;/</code>; each CSV file in an
+    airport's directory is automatically discovered and offered as a selectable
+    timetable for scenarios at that airport. The airport is inferred from the
+    directory name and the timetable's name from the file name.
   </p>
 
   <p>
-    If a scheduled flight's origin or destination matches an airport already
-    defined in the scenario, <i>vice</i> automatically reuses the existing
-    departure and arrival routes from that scenario. This allows real-world
-    schedules to integrate with existing scenario definitions without requiring
-    duplicate route information in the schedule data.
+    Each flight in a timetable specifies a callsign, aircraft type, origin,
+    destination, published time, and whether it is a cargo flight. When a
+    timetable is selected, <i>vice</i> generates departures and arrivals for the
+    active scenario from this data; overflights remain randomly generated.
+  </p>
+
+  <p>
+    If a flight's origin or destination matches an airport already defined in
+    the scenario, <i>vice</i> automatically reuses the existing departure and
+    arrival routes from that scenario. This allows timetables to integrate with
+    existing scenario definitions without requiring duplicate route information
+    in the timetable data.
+  </p>
+
+  <p>
+    Historical traffic instead uses per-facility flight data imported from
+    ADS-B derived records with <code>cmd/importflights</code>, covering every
+    airport the facility works over however many years have been imported; when
+    such data is available for a facility, the "Historical" traffic source can
+    be selected. Departures whose real routing is not modeled by the scenario
+    file the routes from the FAA's preferred route database (imported with
+    <code>cmd/importroutes</code>) or follow the scenario route toward the
+    nearest modeled destination. See
+    <code>resources/schedules/README.md</code> for the details of both data
+    formats.
   </p>
 </section><!--//section-->
             <section class="docs-section" id="fe-vfr">

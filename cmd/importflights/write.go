@@ -2,7 +2,7 @@
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 //
-// Turning what was imported into the schedule files: gathering each facility's
+// Turning what was imported into the flight data files: gathering each facility's
 // flights, leaving out the months the source data barely covers, and encoding
 // the rest.
 
@@ -19,12 +19,12 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// writeSchedules writes one file per facility, holding the departures and
+// writeFlightData writes one file per facility, holding the departures and
 // arrivals at every airport it works over however many years the source data
 // spans. A file is replaced when there are flights for its facility and is
 // otherwise left alone. An airport worked by more than one facility appears in
 // each of their files, so that every file stands on its own.
-func writeSchedules(dir string, imp *importer, facilities map[string]*facility,
+func writeFlightData(dir string, imp *importer, facilities map[string]*facility,
 	minCoverage float64, dryRun bool) error {
 	covered := coveredMonths(imp.daysPresent, minCoverage)
 	droppedMonths := make(map[string]int)
@@ -75,7 +75,7 @@ func writeSchedules(dir string, imp *importer, facilities map[string]*facility,
 			if err := os.MkdirAll(dir, 0o755); err != nil {
 				return err
 			}
-			if err := os.WriteFile(filepath.Join(dir, scheduleFilename(name)), encoded, 0o644); err != nil {
+			if err := os.WriteFile(filepath.Join(dir, flightDataFilename(name)), encoded, 0o644); err != nil {
 				return err
 			}
 		}
@@ -102,8 +102,8 @@ func writeSchedules(dir string, imp *importer, facilities map[string]*facility,
 	return nil
 }
 
-// scheduleFilename returns the name of a facility's flight data file.
-func scheduleFilename(facility string) string {
+// flightDataFilename returns the name of a facility's flight data file.
+func flightDataFilename(facility string) string {
 	return facility + av.FlightDataExtension
 }
 
@@ -126,7 +126,7 @@ func monthCoverage(daysPresent map[string]map[string]bool, month string) float64
 }
 
 // dropSparseFlights removes the flights that fall in months the source data
-// barely covers, so that a schedule isn't replaced by one holding a couple of
+// barely covers, so that a file isn't replaced by one holding a couple of
 // stray days either side of a quarter boundary.
 func dropSparseFlights(flights []av.Flight, covered map[string]bool) (kept []av.Flight,
 	dropped map[string]int) {

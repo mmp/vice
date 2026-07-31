@@ -1,4 +1,4 @@
-// sim/schedule_test.go
+// sim/timetable_test.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -9,15 +9,15 @@ import (
 	"testing"
 )
 
-func TestLoadScheduleCSV(t *testing.T) {
+func TestLoadTimetableCSV(t *testing.T) {
 	input := `destination,time,callsign,cargo,aircraft_type,origin,ignored
 KATL,14:05,dal1045,false,A321,KMSP,value
 KMSP,14:17,FDX1412,yes,B763,KMEM,value
 `
 
-	flights, err := LoadScheduleCSV(strings.NewReader(input))
+	flights, err := LoadTimetableCSV(strings.NewReader(input))
 	if err != nil {
-		t.Fatalf("LoadScheduleCSV: %v", err)
+		t.Fatalf("LoadTimetableCSV: %v", err)
 	}
 	if len(flights) != 2 {
 		t.Fatalf("got %d flights, want 2", len(flights))
@@ -25,23 +25,23 @@ KMSP,14:17,FDX1412,yes,B763,KMEM,value
 
 	departure := flights[0]
 	if departure.Callsign != "DAL1045" || departure.Origin != "KMSP" || departure.Destination != "KATL" ||
-		departure.AircraftType != "A321" || departure.ScheduledMinute != 14*60+5 || departure.Cargo {
+		departure.AircraftType != "A321" || departure.PublishedMinute != 14*60+5 || departure.Cargo {
 		t.Errorf("unexpected departure: %#v", departure)
 	}
-	if got := departure.OperationAt("kmsp"); got != ScheduleOperationDeparture {
-		t.Errorf("departure OperationAt = %v, want %v", got, ScheduleOperationDeparture)
+	if got := departure.OperationAt("kmsp"); got != TimetableOperationDeparture {
+		t.Errorf("departure OperationAt = %v, want %v", got, TimetableOperationDeparture)
 	}
 
 	arrival := flights[1]
 	if !arrival.Cargo {
 		t.Errorf("cargo = false, want true")
 	}
-	if got := arrival.OperationAt("KMSP"); got != ScheduleOperationArrival {
-		t.Errorf("arrival OperationAt = %v, want %v", got, ScheduleOperationArrival)
+	if got := arrival.OperationAt("KMSP"); got != TimetableOperationArrival {
+		t.Errorf("arrival OperationAt = %v, want %v", got, TimetableOperationArrival)
 	}
 }
 
-func TestLoadScheduleCSVValidation(t *testing.T) {
+func TestLoadTimetableCSVValidation(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
@@ -76,7 +76,7 @@ func TestLoadScheduleCSVValidation(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			_, err := LoadScheduleCSV(strings.NewReader(test.input))
+			_, err := LoadTimetableCSV(strings.NewReader(test.input))
 			if err == nil || !strings.Contains(err.Error(), test.want) {
 				t.Fatalf("error = %v, want containing %q", err, test.want)
 			}
@@ -84,16 +84,16 @@ func TestLoadScheduleCSVValidation(t *testing.T) {
 	}
 }
 
-func TestScheduledFlightOperationAt(t *testing.T) {
+func TestTimetableFlightOperationAt(t *testing.T) {
 	tests := []struct {
 		name   string
-		flight ScheduledFlight
-		want   ScheduleOperation
+		flight TimetableFlight
+		want   TimetableOperation
 	}{
-		{"departure", ScheduledFlight{Origin: "KMSP", Destination: "KATL"}, ScheduleOperationDeparture},
-		{"arrival", ScheduledFlight{Origin: "KATL", Destination: "KMSP"}, ScheduleOperationArrival},
-		{"unrelated", ScheduledFlight{Origin: "KATL", Destination: "KDTW"}, ScheduleOperationUnknown},
-		{"same airport", ScheduledFlight{Origin: "KMSP", Destination: "KMSP"}, ScheduleOperationUnknown},
+		{"departure", TimetableFlight{Origin: "KMSP", Destination: "KATL"}, TimetableOperationDeparture},
+		{"arrival", TimetableFlight{Origin: "KATL", Destination: "KMSP"}, TimetableOperationArrival},
+		{"unrelated", TimetableFlight{Origin: "KATL", Destination: "KDTW"}, TimetableOperationUnknown},
+		{"same airport", TimetableFlight{Origin: "KMSP", Destination: "KMSP"}, TimetableOperationUnknown},
 	}
 
 	for _, test := range tests {

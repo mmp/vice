@@ -112,7 +112,11 @@ type Sim struct {
 	Rand *rand.Rand
 
 	// User-selected scenario start time before Vice rewinds the clock for prespawn.
-	scheduleStart Time
+	startTime Time
+
+	// historicalFlights are the flights a scenario using historical traffic was
+	// launched with, in time order.
+	historicalFlights []av.Flight
 
 	// Runtime-only source for automatically generated IFR traffic. This is
 	// intentionally unexported so it is not part of saved simulation state.
@@ -168,6 +172,11 @@ type NewSimConfiguration struct {
 	LaunchConfig       LaunchConfig
 	Fixes              map[string]math.Point2LL
 	VFRReportingPoints []av.VFRReportingPoint
+
+	// HistoricalFlights are the flights to fly when LaunchConfig.TrafficSource
+	// is TrafficSourceHistorical: those at the scenario's airports over the
+	// sim's first several hours, in time order.
+	HistoricalFlights []av.Flight
 
 	ControlPositions        map[TCP]*av.Controller
 	ControllerAirspace      map[TCP][]string
@@ -258,7 +267,8 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		Rand: rand.Make(),
 
-		scheduleStart: NewSimTime(config.StartTime.UTC()),
+		startTime:         NewSimTime(config.StartTime.UTC()),
+		historicalFlights: config.HistoricalFlights,
 
 		SquawkWarnedACIDs: make(map[ACID]any),
 

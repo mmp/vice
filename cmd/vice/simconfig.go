@@ -52,8 +52,8 @@ type NewSimConfiguration struct {
 	selectedTCPs        map[sim.TCP]bool
 
 	// New UI state for improved flow
-	filterText            string // search/filter for scenario selection
-	scheduleStartTimeText string
+	filterText             string // search/filter for scenario selection
+	timetableStartTimeText string
 
 	// Weather filter UI state
 	weatherFilter      wx.WeatherFilter
@@ -139,8 +139,8 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.GroupName = groupName
 	c.ScenarioSpec = spec
 	c.ScenarioName = scenarioName
-	normalizeScheduleLaunchConfig(c.ScenarioSpec)
-	c.scheduleStartTimeText = formatScheduleStartTime(spec.LaunchConfig.ScheduleStartMinute)
+	normalizeTrafficSourceConfig(c.ScenarioSpec)
+	c.timetableStartTimeText = formatTimetableStartTime(spec.LaunchConfig.TimetableStartMinute)
 	c.savedVFRDepartureRateScale = spec.LaunchConfig.VFRDepartureRateScale
 	c.initDefaultWindDirection()
 	c.fetchSeq++
@@ -153,40 +153,46 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	go c.fetchMETAR(seq, facility, airports, spec)
 }
 
-func normalizeScheduleLaunchConfig(spec *server.ScenarioSpec) {
+func normalizeTrafficSourceConfig(spec *server.ScenarioSpec) {
 	lc := &spec.LaunchConfig
-	lc.ScheduleStartMinute = min(max(lc.ScheduleStartMinute, 0), 24*60-1)
-	lc.ScheduleArrivalPercentage = min(max(lc.ScheduleArrivalPercentage, 0), 100)
-	lc.ScheduleDeparturePercentage = min(max(lc.ScheduleDeparturePercentage, 0), 100)
+	lc.TimetableStartMinute = min(max(lc.TimetableStartMinute, 0), 24*60-1)
+	lc.PublishedArrivalPercentage = min(max(lc.PublishedArrivalPercentage, 0), 100)
+	lc.PublishedDeparturePercentage = min(max(lc.PublishedDeparturePercentage, 0), 100)
 
-	if len(spec.RealWorldSchedules) == 0 {
-		lc.TrafficSource = sim.TrafficSourceRandom
-		lc.ScheduleID = ""
+	if lc.TrafficSource == sim.TrafficSourceHistorical && !spec.HaveHistoricalFlights {
+		lc.TrafficSource = sim.TrafficSourceScenario
+	}
+
+	if len(spec.Timetables) == 0 {
+		if lc.TrafficSource == sim.TrafficSourceTimetable {
+			lc.TrafficSource = sim.TrafficSourceScenario
+		}
+		lc.TimetableID = ""
 		return
 	}
 
-	for _, schedule := range spec.RealWorldSchedules {
-		if schedule.ID == lc.ScheduleID {
+	for _, timetable := range spec.Timetables {
+		if timetable.ID == lc.TimetableID {
 			return
 		}
 	}
-	lc.ScheduleID = spec.RealWorldSchedules[0].ID
+	lc.TimetableID = spec.Timetables[0].ID
 }
 
-func selectedScheduleSummary(spec *server.ScenarioSpec) (sim.BuiltInScheduleSummary, bool) {
-	for _, schedule := range spec.RealWorldSchedules {
-		if schedule.ID == spec.LaunchConfig.ScheduleID {
-			return schedule, true
+func selectedTimetableSummary(spec *server.ScenarioSpec) (sim.TimetableSummary, bool) {
+	for _, timetable := range spec.Timetables {
+		if timetable.ID == spec.LaunchConfig.TimetableID {
+			return timetable, true
 		}
 	}
-	return sim.BuiltInScheduleSummary{}, false
+	return sim.TimetableSummary{}, false
 }
-func formatScheduleStartTime(minutes int) string {
+func formatTimetableStartTime(minutes int) string {
 	minutes = ((minutes % (24 * 60)) + (24 * 60)) % (24 * 60)
 	return fmt.Sprintf("%02d:%02d", minutes/60, minutes%60)
 }
 
-func parseScheduleStartTime(value string) (int, bool) {
+func parseTimetableStartTime(value string) (int, bool) {
 	value = strings.TrimSpace(value)
 	if value == "" {
 		return 0, false
@@ -241,21 +247,16 @@ func parseScheduleStartTime(value string) (int, bool) {
 	return hour*60 + minute, true
 }
 
-func adjustScheduleStartTime(minutes, adjustment int) int {
-	const minutesPerDay = 24 * 60
-	return ((minutes+adjustment)%minutesPerDay + minutesPerDay) % minutesPerDay
-}
-
-func scheduleStartTimeUTC(base time.Time, startMinute int, timezone string) (time.Time, error) {
-	location, err := time.LoadLocation(timezone)
-	if err != nil {
-		return time.Time{}, fmt.Errorf("load schedule timezone %q: %w", timezone, err)
+func timetableStartTimeUTC(base time.Time, startMinute int, airport string) (time.Time, error) {
+	location, ok := av.DB.AirportTimeZones[airport]
+	if !ok {
+		return time.Time{}, fmt.Errorf("no time zone is known for %s", airport)
 	}
 
 	startMinute = ((startMinute % (24 * 60)) + (24 * 60)) % (24 * 60)
 
 	// Preserve the calendar date selected by Vice's UTC weather/time picker,
-	// but interpret the schedule's clock time in the airport timezone.
+	// but interpret the timetable's clock time in the airport timezone.
 	scenarioDate := base.UTC()
 	localStart := time.Date(
 		scenarioDate.Year(),
@@ -271,23 +272,22 @@ func scheduleStartTimeUTC(base time.Time, startMinute int, timezone string) (tim
 	return localStart.UTC(), nil
 }
 
-func (c *NewSimConfiguration) synchronizeScheduleStartTime(spec *server.ScenarioSpec) error {
-	if spec == nil || spec.LaunchConfig.TrafficSource != sim.TrafficSourceRealWorldSchedule {
+func (c *NewSimConfiguration) synchronizeTimetableStartTime(spec *server.ScenarioSpec) error {
+	if spec == nil || spec.LaunchConfig.TrafficSource != sim.TrafficSourceTimetable {
 		return nil
 	}
 
-	schedule, ok := selectedScheduleSummary(spec)
-	if !ok {
+	if _, ok := selectedTimetableSummary(spec); !ok {
 		return fmt.Errorf(
-			"selected real-world schedule %q was not found",
-			spec.LaunchConfig.ScheduleID,
+			"selected timetable %q was not found",
+			spec.LaunchConfig.TimetableID,
 		)
 	}
 
-	startTime, err := scheduleStartTimeUTC(
+	startTime, err := timetableStartTimeUTC(
 		c.NewSimRequest.StartTime,
-		spec.LaunchConfig.ScheduleStartMinute,
-		schedule.Timezone,
+		spec.LaunchConfig.TimetableStartMinute,
+		spec.PrimaryAirport,
 	)
 	if err != nil {
 		return err
@@ -302,35 +302,57 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 
 	imgui.Text("IFR traffic source:")
 	imgui.SameLine()
-	imgui.RadioButtonIntPtr("Random", (*int32)(&lc.TrafficSource), int32(sim.TrafficSourceRandom))
+	imgui.RadioButtonIntPtr("Scenario", (*int32)(&lc.TrafficSource), int32(sim.TrafficSourceScenario))
 
 	imgui.SameLine()
-	if len(spec.RealWorldSchedules) == 0 {
+	if !spec.HaveHistoricalFlights {
 		imgui.BeginDisabled()
 	}
-	imgui.RadioButtonIntPtr("Real World Schedule", (*int32)(&lc.TrafficSource), int32(sim.TrafficSourceRealWorldSchedule))
-	if len(spec.RealWorldSchedules) == 0 {
+	imgui.RadioButtonIntPtr("Historical", (*int32)(&lc.TrafficSource),
+		int32(sim.TrafficSourceHistorical))
+	if !spec.HaveHistoricalFlights {
 		imgui.EndDisabled()
-		imgui.TextDisabled("No built-in schedules are available for " + spec.PrimaryAirport + ".")
+	}
+
+	imgui.SameLine()
+	if len(spec.Timetables) == 0 {
+		imgui.BeginDisabled()
+	}
+	imgui.RadioButtonIntPtr("Timetable", (*int32)(&lc.TrafficSource),
+		int32(sim.TrafficSourceTimetable))
+	if len(spec.Timetables) == 0 {
+		imgui.EndDisabled()
+	}
+
+	if !spec.HaveHistoricalFlights && len(spec.Timetables) == 0 {
+		imgui.TextDisabled("No historical flight data is available for " + c.NewSimRequest.Facility +
+			" and no built-in timetables are available for " + spec.PrimaryAirport + ".")
 		return
 	}
 
-	if lc.TrafficSource != sim.TrafficSourceRealWorldSchedule {
+	normalizeTrafficSourceConfig(spec)
+
+	if lc.TrafficSource == sim.TrafficSourceHistorical {
+		imgui.TextDisabled(fmt.Sprintf("Flying the traffic that really operated on %s.",
+			c.NewSimRequest.StartTime.UTC().Format("2006-01-02")))
 		return
 	}
 
-	normalizeScheduleLaunchConfig(spec)
-	selected, _ := selectedScheduleSummary(spec)
+	if lc.TrafficSource != sim.TrafficSourceTimetable {
+		return
+	}
 
-	imgui.Text("Schedule:")
+	selected, _ := selectedTimetableSummary(spec)
+
+	imgui.Text("Timetable:")
 	imgui.SameLine()
 	imgui.SetNextItemWidth(260)
-	if imgui.BeginCombo("##realWorldSchedule", selected.Name) {
-		for _, schedule := range spec.RealWorldSchedules {
-			isSelected := schedule.ID == lc.ScheduleID
-			if imgui.SelectableBoolV(schedule.Name, isSelected, 0, imgui.Vec2{}) {
-				lc.ScheduleID = schedule.ID
-				selected = schedule
+	if imgui.BeginCombo("##timetable", selected.Name) {
+		for _, timetable := range spec.Timetables {
+			isSelected := timetable.ID == lc.TimetableID
+			if imgui.SelectableBoolV(timetable.Name, isSelected, 0, imgui.Vec2{}) {
+				lc.TimetableID = timetable.ID
+				selected = timetable
 			}
 			if isSelected {
 				imgui.SetItemDefaultFocus()
@@ -347,21 +369,21 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 	imgui.SameLine()
 	imgui.SetNextItemWidth(100)
 
-	if c.scheduleStartTimeText == "" {
-		c.scheduleStartTimeText = formatScheduleStartTime(lc.ScheduleStartMinute)
+	if c.timetableStartTimeText == "" {
+		c.timetableStartTimeText = formatTimetableStartTime(lc.TimetableStartMinute)
 	}
 
 	if imgui.InputTextWithHint(
-		"##scheduleStartTime",
+		"##timetableStartTime",
 		"14:00",
-		&c.scheduleStartTimeText,
+		&c.timetableStartTimeText,
 		0,
 		nil,
 	) {
-		if minutes, ok := parseScheduleStartTime(c.scheduleStartTimeText); ok {
-			lc.ScheduleStartMinute = minutes
+		if minutes, ok := parseTimetableStartTime(c.timetableStartTimeText); ok {
+			lc.TimetableStartMinute = minutes
 
-			if err := c.synchronizeScheduleStartTime(spec); err != nil {
+			if err := c.synchronizeTimetableStartTime(spec); err != nil {
 				c.displayError = err
 			} else {
 				c.displayError = nil
@@ -369,38 +391,16 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 		}
 	}
 
-	if _, ok := parseScheduleStartTime(c.scheduleStartTimeText); !ok {
+	if _, ok := parseTimetableStartTime(c.timetableStartTimeText); !ok {
 		imgui.SameLine()
 		imgui.TextDisabled("Enter HH:MM or HHMM")
 	} else {
 		imgui.SameLine()
 		imgui.TextDisabled("UTC: " + c.NewSimRequest.StartTime.UTC().Format("1504Z"))
 	}
-	arrivalPercentage := int32(lc.ScheduleArrivalPercentage)
-	imgui.SetNextItemWidth(260)
-	if imgui.SliderInt(
-		"Scheduled IFR arrival percentage",
-		&arrivalPercentage,
-		0,
-		100,
-	) {
-		lc.ScheduleArrivalPercentage = int(arrivalPercentage)
-	}
-
-	departurePercentage := int32(lc.ScheduleDeparturePercentage)
-	imgui.SetNextItemWidth(260)
-	if imgui.SliderInt(
-		"Scheduled IFR departure percentage",
-		&departurePercentage,
-		0,
-		100,
-	) {
-		lc.ScheduleDeparturePercentage = int(departurePercentage)
-	}
 
 	imgui.TextDisabled("Times use the selected airport's local time.")
-	imgui.TextDisabled("Departure times represent runway departures; pushback and taxi are not simulated.")
-	imgui.TextDisabled("IFR arrivals and departures are generated from the selected schedule.")
+	imgui.TextDisabled("IFR arrivals and departures are generated from the selected timetable.")
 }
 
 // initDefaultWindDirection computes the default wind direction range from the scenario's runways.
@@ -1551,42 +1551,32 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 		imgui.PopStyleColor()
 	}
 
-	// Scheduled IFR traffic or random IFR controls.
+	// Published IFR traffic or the scenario's own rate controls; drawDepartureUI
+	// and drawArrivalUI show the appropriate controls for the traffic source.
+	// The rate-derived totals mean nothing when the data decides the traffic, so
+	// leave them out of the headers then.
 	lc := &c.ScenarioSpec.LaunchConfig
-	if lc.TrafficSource == sim.TrafficSourceRealWorldSchedule {
-		imgui.Text("IFR arrivals and departures are controlled by the selected schedule.")
-		imgui.TextDisabled(fmt.Sprintf(
-			"Scheduled IFR arrivals: %d%%",
-			lc.ScheduleArrivalPercentage,
-		))
-		imgui.TextDisabled(fmt.Sprintf(
-			"Scheduled IFR departures: %d%%",
-			lc.ScheduleDeparturePercentage,
-		))
-		imgui.Spacing()
-	} else {
-		if lc.HaveDepartures() {
-			depRate := lc.TotalDepartureRate()
-			headerText := fmt.Sprintf(
-				"Departures (Total: %d/hr)###departures",
-				int(depRate+0.5),
-			)
-			if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
-				drawDepartureUI(lc, p)
-				imgui.Spacing()
-			}
+	if lc.HaveDepartures() {
+		headerText := "Departures###departures"
+		if lc.TrafficSource == sim.TrafficSourceScenario {
+			headerText = fmt.Sprintf("Departures (Total: %d/hr)###departures",
+				int(lc.TotalDepartureRate()+0.5))
 		}
+		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+			drawDepartureUI(lc, p)
+			imgui.Spacing()
+		}
+	}
 
-		if lc.HaveArrivals() {
-			arrRate := lc.TotalArrivalRate()
-			headerText := fmt.Sprintf(
-				"Arrivals (Total: %d/hr)###arrivals",
-				int(arrRate+0.5),
-			)
-			if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
-				drawArrivalUI(lc, p)
-				imgui.Spacing()
-			}
+	if lc.HaveArrivals() {
+		headerText := "Arrivals###arrivals"
+		if lc.TrafficSource == sim.TrafficSourceScenario {
+			headerText = fmt.Sprintf("Arrivals (Total: %d/hr)###arrivals",
+				int(lc.TotalArrivalRate()+0.5))
+		}
+		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+			drawArrivalUI(lc, p)
+			imgui.Spacing()
 		}
 	}
 
@@ -1609,16 +1599,6 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 		}
 	}
 
-	// Go-around probability still applies to scheduled arrivals.
-	imgui.SetNextItemWidth(220)
-	imgui.SliderFloatV(
-		"Go around probability",
-		&lc.GoAroundRate,
-		0,
-		1,
-		"%.02f",
-		0,
-	)
 	// Overflights (collapsible)
 	if lc.HaveOverflights() {
 		ofRate := lc.TotalOverflightRate()
@@ -1640,41 +1620,72 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	return false
 }
 
-func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
-	// Check rate limits and clamp if necessary
-	const rateLimit = 100.0
-	rateClamped := false
-	if !c.ScenarioSpec.LaunchConfig.CheckRateLimits(rateLimit) {
-		c.ScenarioSpec.LaunchConfig.ClampRates(rateLimit)
-		rateClamped = true
+// historicalFlightWindow is how much flight data a sim is launched with. A sim
+// running longer than this runs out of historical traffic.
+const historicalFlightWindow = 8 * time.Hour
+
+// historicalFlights gathers the flights at the scenario's airports over the
+// window starting at the selected time.
+func (c *NewSimConfiguration) historicalFlights() ([]av.Flight, error) {
+	facility := c.NewSimRequest.Facility
+	data, err := av.ReadFlightData(util.GetResourcesFS(), facility)
+	if err != nil || data == nil {
+		return nil, fmt.Errorf("no historical flight data for %s", facility)
 	}
 
-	// Display error message if rates were clamped
-	if rateClamped {
-		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
-		imgui.Text(fmt.Sprintf("Launch rates will be reduced to stay within the %d aircraft/hour limit", int(rateLimit)))
-		imgui.PopStyleColor()
+	// Every airport the scenario generates IFR traffic at, not just the
+	// primary one; departures and arrivals separately, since a scenario often
+	// departs airports it doesn't land.
+	departureAirports := make(map[string]bool)
+	arrivalAirports := make(map[string]bool)
+	lc := &c.ScenarioSpec.LaunchConfig
+	for airport := range lc.DepartureRates {
+		departureAirports[airport] = true
+	}
+	for _, rates := range lc.InboundFlowRates {
+		for airport := range rates {
+			if airport != "overflights" {
+				arrivalAirports[airport] = true
+			}
+		}
 	}
 
-	drawDepartureUI(&c.ScenarioSpec.LaunchConfig, p)
-	drawVFRDepartureUI(&c.ScenarioSpec.LaunchConfig, p)
-	drawArrivalUI(&c.ScenarioSpec.LaunchConfig, p)
-	drawOverflightUI(&c.ScenarioSpec.LaunchConfig, p)
-	drawEmergencyAircraftUI(&c.ScenarioSpec.LaunchConfig, p)
-	return false
+	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
+	// before the selected time, and it warms up by flying the traffic from
+	// that half hour the same way the scenario's own generator would.
+	start := c.NewSimRequest.StartTime.UTC()
+	flights, err := av.FlightsInWindow(data, departureAirports, arrivalAirports, av.DB.Airlines,
+		start.Add(-sim.PrespawnDuration), start.Add(historicalFlightWindow))
+	if err != nil {
+		return nil, fmt.Errorf("%s flight data: %w", facility, err)
+	}
+	if len(flights) == 0 {
+		return nil, fmt.Errorf("%s has no historical flights from %s", facility,
+			start.Format("2006-01-02 15:04Z"))
+	}
+	return flights, nil
 }
 
 func (c *NewSimConfiguration) Start(config *Config) error {
 	c.ScenarioSpec.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
 
-	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceRealWorldSchedule {
-		minutes, ok := parseScheduleStartTime(c.scheduleStartTimeText)
+	c.NewSimRequest.HistoricalFlights = nil
+	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
+		flights, err := c.historicalFlights()
+		if err != nil {
+			return err
+		}
+		c.NewSimRequest.HistoricalFlights = flights
+	}
+
+	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceTimetable {
+		minutes, ok := parseTimetableStartTime(c.timetableStartTimeText)
 		if !ok {
-			return fmt.Errorf("invalid schedule start time %q", c.scheduleStartTimeText)
+			return fmt.Errorf("invalid timetable start time %q", c.timetableStartTimeText)
 		}
 
-		c.ScenarioSpec.LaunchConfig.ScheduleStartMinute = minutes
-		if err := c.synchronizeScheduleStartTime(c.ScenarioSpec); err != nil {
+		c.ScenarioSpec.LaunchConfig.TimetableStartMinute = minutes
+		if err := c.synchronizeTimetableStartTime(c.ScenarioSpec); err != nil {
 			return err
 		}
 	}
@@ -1712,7 +1723,178 @@ func (c *NewSimConfiguration) Start(config *Config) error {
 	return nil
 }
 
+// drawPublishedDepartureUI and drawPublishedArrivalUI stand in for the rate
+// controls when the sim is flying historical or timetable traffic: how much
+// there is and where it goes comes from the data, so what is left to choose is
+// how much of it to fly and which flows are active.
+func drawPublishedDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
+	label := util.Select(lc.TrafficSource == sim.TrafficSourceHistorical,
+		"Percentage of historical departures", "Percentage of timetable departures")
+	value := int32(lc.PublishedDeparturePercentage)
+	imgui.SetNextItemWidth(260)
+	if imgui.SliderInt(label, &value, 0, 100) {
+		lc.PublishedDeparturePercentage = int(value)
+		changed = true
+	}
+
+	airportDepartures := make(map[string]int) // key is e.g. KJFK, then count of runways cross categories.
+	for ap, runwayEnabled := range lc.DepartureEnabled {
+		for _, categories := range runwayEnabled {
+			airportDepartures[ap] = airportDepartures[ap] + len(categories)
+		}
+	}
+	maxDepartureCategories := 0
+	for _, n := range airportDepartures {
+		maxDepartureCategories = max(n, maxDepartureCategories)
+	}
+	if maxDepartureCategories == 0 {
+		return
+	}
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	adrColumns := min(3, maxDepartureCategories)
+	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+	if imgui.BeginTableV("departureRunways", int32(1+3*adrColumns), flags, imgui.Vec2{tableScale * float32(200+250*adrColumns), 0}, 0.) {
+		imgui.TableSetupColumn("Airport")
+		for range adrColumns {
+			imgui.TableSetupColumn("Runway")
+			imgui.TableSetupColumn("Category")
+			imgui.TableSetupColumn("Active")
+		}
+		imgui.TableHeadersRow()
+
+		for airport := range util.SortedMap(lc.DepartureEnabled) {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(airport)
+
+			imgui.PushIDStr(airport)
+			adrColumn := 0
+			for runway := range util.SortedMap(lc.DepartureEnabled[airport]) {
+				imgui.PushIDStr(string(runway))
+
+				for category := range util.SortedMap(lc.DepartureEnabled[airport][runway]) {
+					imgui.TableNextColumn()
+					imgui.Text(runway.Base()) // don't include extras in the UI
+					imgui.TableNextColumn()
+
+					imgui.PushIDStr(category)
+
+					if category == "" {
+						imgui.Text("(All)")
+					} else {
+						imgui.Text(category)
+					}
+					imgui.TableNextColumn()
+
+					enabled := lc.DepartureEnabled[airport][runway][category]
+					if imgui.Checkbox("##enabled", &enabled) {
+						lc.DepartureEnabled[airport][runway][category] = enabled
+						changed = true
+					}
+
+					adrColumn++
+
+					if adrColumn < airportDepartures[airport] && adrColumn%adrColumns == 0 {
+						// Overflow
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+					}
+
+					imgui.PopID()
+				}
+				imgui.PopID()
+			}
+			imgui.PopID()
+		}
+		imgui.EndTable()
+	}
+
+	imgui.Separator()
+
+	return
+}
+
+func drawPublishedArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
+	label := util.Select(lc.TrafficSource == sim.TrafficSourceHistorical,
+		"Percentage of historical arrivals", "Percentage of timetable arrivals")
+	value := int32(lc.PublishedArrivalPercentage)
+	imgui.SetNextItemWidth(260)
+	if imgui.SliderInt(label, &value, 0, 100) {
+		lc.PublishedArrivalPercentage = int(value)
+		changed = true
+	}
+
+	// Go-arounds still apply; the arrival pushes don't, since when aircraft
+	// show up is what the data says.
+	changed = imgui.SliderFloatV("Go around probability", &lc.GoAroundRate, 0, 1, "%.02f", 0) || changed
+
+	numAirportFlows := make(map[string]int)
+	for _, groupEnabled := range lc.InboundFlowEnabled {
+		for ap := range groupEnabled {
+			numAirportFlows[ap] = numAirportFlows[ap] + 1
+		}
+	}
+	if len(numAirportFlows) == 0 { // no arrivals
+		return
+	}
+	maxAirportFlows := 0
+	for _, n := range numAirportFlows {
+		maxAirportFlows = max(n, maxAirportFlows)
+	}
+
+	aarColumns := min(3, maxAirportFlows)
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+	if imgui.BeginTableV("arrivalgroups", int32(1+2*aarColumns), flags, imgui.Vec2{tableScale * float32(150+250*aarColumns), 0}, 0.) {
+		imgui.TableSetupColumn("Airport")
+		for range aarColumns {
+			imgui.TableSetupColumn("Arrival")
+			imgui.TableSetupColumn("Active")
+		}
+		imgui.TableHeadersRow()
+
+		for ap := range util.SortedMap(numAirportFlows) {
+			imgui.PushIDStr(ap)
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(ap)
+
+			aarCol := 0
+			for group, apEnabled := range util.SortedMap(lc.InboundFlowEnabled) {
+				imgui.PushIDStr(group)
+				if enabled, ok := apEnabled[ap]; ok {
+					if aarCol > 0 && aarCol%aarColumns == 0 {
+						// Overflow
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+					}
+
+					imgui.TableNextColumn()
+					imgui.Text(group)
+					imgui.TableNextColumn()
+					if imgui.Checkbox("##enabled", &enabled) {
+						lc.InboundFlowEnabled[group][ap] = enabled
+						changed = true
+					}
+					aarCol++
+				}
+				imgui.PopID()
+			}
+			imgui.PopID()
+		}
+		imgui.EndTable()
+	}
+
+	imgui.Separator()
+
+	return
+}
+
 func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
+	if lc.TrafficSource != sim.TrafficSourceScenario {
+		return drawPublishedDepartureUI(lc, p)
+	}
 	if len(lc.DepartureRates) == 0 {
 		return
 	}
@@ -1841,6 +2023,9 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	if len(numAirportFlows) == 0 { // no arrivals
 		return
 	}
+	if lc.TrafficSource != sim.TrafficSourceScenario {
+		return drawPublishedArrivalUI(lc, p)
+	}
 	maxAirportFlows := 0
 	for _, n := range numAirportFlows {
 		maxAirportFlows = max(n, maxAirportFlows)
@@ -1932,6 +2117,10 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 		return
 	}
 
+	if lc.TrafficSource != sim.TrafficSourceScenario {
+		imgui.TextDisabled("Overflights are randomly generated; these rates apply with any traffic source.")
+	}
+
 	ofColumns := min(3, len(overflightGroups))
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
@@ -1971,11 +2160,6 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 	}
 
 	return
-}
-
-func drawEmergencyAircraftUI(lc *sim.LaunchConfig, p platform.Platform) {
-	imgui.SliderFloatV("Emergency Aircraft Rate (per hour)", &lc.EmergencyAircraftRate,
-		0, 20, util.Select(lc.EmergencyAircraftRate == 0, "never", "%.1f"), imgui.SliderFlagsNone)
 }
 
 func controllerDisplayLabel(controllers map[av.ControlPosition]*av.Controller, pos av.ControlPosition) string {
@@ -2455,10 +2639,14 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.Text("Start time:")
 		imgui.TableNextColumn()
 		metar := c.airportMETAR[metarAirports[0]]
-		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, ui.fixedFont)
+		TimePicker(&c.NewSimRequest.StartTime, c.startTimeIntervals(c.ScenarioSpec), metar, ui.fixedFont)
 		imgui.SameLine()
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
 			c.updateStartTimeForRunways(c.ScenarioSpec)
+		}
+		if local, ok := c.startTimeLocal(); ok {
+			imgui.SameLine()
+			imgui.TextDisabled(local)
 		}
 
 		// METAR
@@ -2498,6 +2686,56 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 	}
 }
 
+// startTimeIntervals returns the times a sim may start at. When the scenario is
+// flying historical traffic the weather intervals are narrowed to the days the
+// flight data covers, less a final day so that a sim started near the end still
+// has traffic to fly.
+func (c *NewSimConfiguration) startTimeIntervals(spec *server.ScenarioSpec) []util.TimeInterval {
+	if spec == nil || !spec.HaveHistoricalFlights ||
+		spec.LaunchConfig.TrafficSource != sim.TrafficSourceHistorical {
+		return c.availableWXIntervals
+	}
+
+	flights := spec.HistoricalFlightInterval
+	flights[1] = flights[1].Add(-24 * time.Hour)
+
+	var intervals []util.TimeInterval
+	for _, iv := range c.availableWXIntervals {
+		start, end := iv[0].UTC(), iv[1].UTC()
+		if start.Before(flights[0]) {
+			start = flights[0]
+		}
+		if end.After(flights[1]) {
+			end = flights[1]
+		}
+		if start.Before(end) {
+			intervals = append(intervals, util.TimeInterval{start, end})
+		}
+	}
+	return intervals
+}
+
+// startTimeLocal formats the start time in the primary airport's local time,
+// which is how a controller working it thinks about the clock.
+func (c *NewSimConfiguration) startTimeLocal() (string, bool) {
+	if c.ScenarioSpec == nil {
+		return "", false
+	}
+	location, ok := av.DB.AirportTimeZones[c.ScenarioSpec.PrimaryAirport]
+	if !ok {
+		return "", false
+	}
+	return c.NewSimRequest.StartTime.In(location).Format("15:04 local"), true
+}
+
+// Default sim start times are picked between these local hours at the primary
+// airport, so that nobody inadvertently runs a sim in the middle of the night
+// and wonders where the traffic is.
+const (
+	defaultStartLocalHourMin = 7  // 7am
+	defaultStartLocalHourMax = 19 // 7pm
+)
+
 func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpec) {
 	c.weatherFilterError = ""
 
@@ -2517,18 +2755,30 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpe
 	}
 
 	if apMETAR, ok := c.airportMETAR[ap]; ok && len(apMETAR) > 0 {
-		// Sample using the combined weather filter (ground winds + winds aloft)
-		sampledMETAR := wx.SampleWeatherWithFilter(
-			apMETAR,
-			c.atmosByTime,
-			c.availableWXIntervals,
-			&c.weatherFilter,
-			c.windsAloftAltitudes,
-			spec.MagneticVariation)
+		intervals := c.startTimeIntervals(spec)
+		location := av.DB.AirportTimeZones[spec.PrimaryAirport]
 
-		if sampledMETAR != nil {
+		// Sample using the combined weather filter (ground winds + winds
+		// aloft), retrying for a daytime start at the primary airport: a sim
+		// inadvertently started in the middle of the night has hardly any
+		// traffic to work. If the weather filter only matches nighttime, the
+		// weather wins and the last sample is kept.
+		var sampledMETAR *wx.METAR
+		var startTime time.Time
+		for range 25 {
+			sampledMETAR = wx.SampleWeatherWithFilter(
+				apMETAR,
+				c.atmosByTime,
+				intervals,
+				&c.weatherFilter,
+				c.windsAloftAltitudes,
+				spec.MagneticVariation)
+			if sampledMETAR == nil {
+				break
+			}
+
 			// Start at a random time between the sampled METAR and the next one
-			startTime := sampledMETAR.Time.UTC()
+			startTime = sampledMETAR.Time.UTC()
 			idx, _ := slices.BinarySearchFunc(apMETAR, sampledMETAR.Time, func(m wx.METAR, t time.Time) int {
 				return m.Time.Compare(t)
 			})
@@ -2536,6 +2786,17 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpe
 				validDuration := apMETAR[idx+1].Time.Sub(sampledMETAR.Time)
 				startTime = startTime.Add(rand.Make().DurationRange(0, validDuration))
 			}
+
+			if location == nil {
+				break
+			}
+			if hour := startTime.In(location).Hour(); hour >= defaultStartLocalHourMin &&
+				hour < defaultStartLocalHourMax {
+				break
+			}
+		}
+
+		if sampledMETAR != nil {
 			c.StartTime = startTime
 
 			// Set VFR launch rate to zero if selected weather is IMC;

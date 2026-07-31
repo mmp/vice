@@ -84,7 +84,7 @@ func SortFlights(flights []Flight) {
 	})
 }
 
-// Real-world flight data is stored one file per facility under
+// Historical flight data is stored one file per facility under
 // resources/schedules, named for the facility the scenarios use: N90.flt,
 // ZBW.flt, and so on. A file holds the departures and arrivals at every airport
 // that facility works over a period of past months or years.

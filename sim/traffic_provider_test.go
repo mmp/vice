@@ -6,120 +6,137 @@ package sim
 import (
 	"testing"
 	"time"
+
+	av "github.com/mmp/vice/aviation"
 )
 
-func TestScheduleTrafficProviderOrdersDeparturesFromSelectedStartTime(t *testing.T) {
-	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.Local))
-	schedule := BuiltInSchedule{
+// publishedProviderTestSim builds the minimal Sim the published-traffic provider needs:
+// the user-selected start time, the sim clock rewound for prespawn (which is
+// when the provider is first built), and a "TEST" inbound flow that lands KMSP
+// arrivals from the origins the tests use.
+func publishedProviderTestSim(start Time) *Sim {
+	return &Sim{
+		startTime: start,
+		State: &CommonState{
+			DynamicState: DynamicState{
+				SimTime: NewSimTime(start.Time().Add(-PrespawnDuration)),
+				LaunchConfig: LaunchConfig{
+					InboundFlowEnabled: map[string]map[string]bool{"TEST": {"KMSP": true}},
+				},
+			},
+			InboundFlows: map[string]*av.InboundFlow{
+				"TEST": {
+					Arrivals: []av.Arrival{{
+						Airlines: map[string][]av.ArrivalAirline{
+							"KMSP": {
+								{Airport: "KATL"},
+								{Airport: "KORD"},
+								{Airport: "KDEN"},
+							},
+						},
+					}},
+				},
+			},
+		},
+	}
+}
+
+func TestPublishedTrafficProviderOrdersDeparturesFromSelectedStartTime(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
-			{Callsign: "DAL2", Origin: "KMSP", Destination: "KATL", ScheduledMinute: 14*60 + 10},
-			{Callsign: "DAL1", Origin: "KMSP", Destination: "KORD", ScheduledMinute: 14*60 + 2},
-			{Callsign: "DAL0", Origin: "KMSP", Destination: "KDEN", ScheduledMinute: 13*60 + 55},
-			{Callsign: "DAL3", Origin: "KATL", Destination: "KMSP", ScheduledMinute: 14*60 + 1},
+		Flights: []TimetableFlight{
+			{Callsign: "DAL2", Origin: "KMSP", Destination: "KATL", PublishedMinute: 14*60 + 10},
+			{Callsign: "DAL1", Origin: "KMSP", Destination: "KORD", PublishedMinute: 14*60 + 2},
+			{Callsign: "DAL0", Origin: "KMSP", Destination: "KDEN", PublishedMinute: 13*60 + 55},
+			{Callsign: "DAL3", Origin: "KATL", Destination: "KMSP", PublishedMinute: 14*60 + 1},
 		},
 	}
 
-	provider := newScheduleTrafficProvider(
-		schedule,
-		14*60,
-		start,
-		100,
-		100,
-	)
+	provider := newTimetableTrafficProvider(publishedProviderTestSim(start), timetable, 14*60, 100, 100)
 	if len(provider.departures) != 3 {
 		t.Fatalf("got %d departures, want 3", len(provider.departures))
 	}
 
+	// DAL0's published time is a few minutes before the selected start, so it
+	// spawns during the prespawn warm-up rather than wrapping to the end of
+	// the day.
 	want := []struct {
 		callsign string
-		offset   time.Duration
+		spawn    Time
 	}{
-		{"DAL1", 2 * time.Minute},
-		{"DAL2", 10 * time.Minute},
-		{"DAL0", 23*time.Hour + 55*time.Minute},
+		{"DAL0", start.Add(-5 * time.Minute)},
+		{"DAL1", start.Add(2 * time.Minute)},
+		{"DAL2", start.Add(10 * time.Minute)},
 	}
 	for i, expected := range want {
 		got := provider.departures[i]
-		if got.flight.Callsign != expected.callsign || got.offset != expected.offset {
-			t.Errorf("departure %d = %s at %s, want %s at %s", i, got.flight.Callsign, got.offset,
-				expected.callsign, expected.offset)
+		if got.flight.Callsign != expected.callsign || got.spawn != expected.spawn {
+			t.Errorf("departure %d = %s at %s, want %s at %s", i, got.flight.Callsign,
+				got.spawn.Time(), expected.callsign, expected.spawn.Time())
 		}
 	}
 }
 
-func TestScheduleTrafficProviderOrdersArrivalsFromSelectedStartTime(t *testing.T) {
-	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.Local))
-	schedule := BuiltInSchedule{
+func TestPublishedTrafficProviderOrdersArrivalsFromSelectedStartTime(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
-			{Callsign: "DAL102", Origin: "KATL", Destination: "KMSP", ScheduledMinute: 14*60 + 12},
-			{Callsign: "DAL101", Origin: "KORD", Destination: "KMSP", ScheduledMinute: 14*60 + 3},
-			{Callsign: "DAL100", Origin: "KDEN", Destination: "KMSP", ScheduledMinute: 13*60 + 50},
-			{Callsign: "DAL200", Origin: "KMSP", Destination: "KATL", ScheduledMinute: 14*60 + 1},
+		Flights: []TimetableFlight{
+			{Callsign: "DAL102", Origin: "KATL", Destination: "KMSP", PublishedMinute: 14*60 + 12},
+			{Callsign: "DAL101", Origin: "KORD", Destination: "KMSP", PublishedMinute: 14*60 + 3},
+			{Callsign: "DAL100", Origin: "KDEN", Destination: "KMSP", PublishedMinute: 13*60 + 50},
+			{Callsign: "DAL200", Origin: "KMSP", Destination: "KATL", PublishedMinute: 14*60 + 1},
 		},
 	}
 
-	provider := newScheduleTrafficProvider(
-		schedule,
-		14*60,
-		start,
-		100,
-		100,
-	)
+	provider := newTimetableTrafficProvider(publishedProviderTestSim(start), timetable, 14*60, 100, 100)
 	if len(provider.arrivals) != 3 {
 		t.Fatalf("got %d arrivals, want 3", len(provider.arrivals))
 	}
 
+	// Arrivals spawn flightSpawnLead ahead of their published arrival times;
+	// DAL100's published time is before the selected start, so it spawns
+	// during the prespawn warm-up.
 	want := []struct {
 		callsign string
-		offset   time.Duration
+		spawn    Time
 	}{
-		{"DAL101", 3 * time.Minute},
-		{"DAL102", 12 * time.Minute},
-		{"DAL100", 23*time.Hour + 50*time.Minute},
+		{"DAL100", start.Add(-10*time.Minute - flightSpawnLead)},
+		{"DAL101", start.Add(3*time.Minute - flightSpawnLead)},
+		{"DAL102", start.Add(12*time.Minute - flightSpawnLead)},
 	}
 
 	for i, expected := range want {
 		got := provider.arrivals[i]
-		if got.flight.Callsign != expected.callsign || got.offset != expected.offset {
-			t.Errorf(
-				"arrival %d = %s at %s, want %s at %s",
-				i,
-				got.flight.Callsign,
-				got.offset,
-				expected.callsign,
-				expected.offset,
-			)
+		if got.flight.Callsign != expected.callsign || got.spawn != expected.spawn {
+			t.Errorf("arrival %d = %s at %s, want %s at %s", i, got.flight.Callsign,
+				got.spawn.Time(), expected.callsign, expected.spawn.Time())
+		}
+		if got.group != "TEST" {
+			t.Errorf("arrival %d group = %q, want TEST", i, got.group)
 		}
 	}
 }
 
-func TestScheduleTrafficProviderWaitsForPublishedArrivalTime(t *testing.T) {
-	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.Local))
-	provider := newScheduleTrafficProvider(BuiltInSchedule{
+func TestPublishedTrafficProviderWaitsForPublishedArrivalTime(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := publishedProviderTestSim(start)
+	provider := newTimetableTrafficProvider(s, Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{{
+		Flights: []TimetableFlight{{
 			Callsign:        "DAL321",
 			Origin:          "KORD",
 			Destination:     "KMSP",
 			AircraftType:    "A320",
-			ScheduledMinute: 14*60 + 7,
+			PublishedMinute: 14*60 + 7,
 		}},
-	},
-		14*60,
-		start,
-		100,
-		100,
-	)
+	}, 14*60, 100, 100)
 
-	s := &Sim{
-		State: &CommonState{
-			DynamicState: DynamicState{
-				SimTime: start,
-			},
-		},
-	}
+	// The arrival is due to spawn flightSpawnLead before its published 14:07
+	// arrival, i.e. at 13:52; ten minutes before that, nothing should be
+	// created yet.
+	s.State.SimTime = start.Add(-8*time.Minute - flightSpawnLead)
 
 	ac, delay, err := provider.createInbound(
 		s,
@@ -133,27 +150,26 @@ func TestScheduleTrafficProviderWaitsForPublishedArrivalTime(t *testing.T) {
 	if ac != nil {
 		t.Fatal("created arrival before its published time")
 	}
-	if delay != 7*time.Minute {
-		t.Fatalf("delay = %s, want 7m", delay)
+	if delay != 15*time.Minute {
+		t.Fatalf("delay = %s, want 15m", delay)
 	}
 }
 
-func TestScheduleTrafficProviderWaitsForPublishedTime(t *testing.T) {
-	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.Local))
-	provider := newScheduleTrafficProvider(BuiltInSchedule{
+func TestPublishedTrafficProviderWaitsForPublishedTime(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := publishedProviderTestSim(start)
+	provider := newTimetableTrafficProvider(s, Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{{
+		Flights: []TimetableFlight{{
 			Callsign: "DAL123", Origin: "KMSP", Destination: "KORD", AircraftType: "A320",
-			ScheduledMinute: 14*60 + 5,
+			PublishedMinute: 14*60 + 5,
 		}},
-	},
-		14*60,
-		start,
-		100,
-		100,
-	)
+	}, 14*60, 100, 100)
 
-	s := &Sim{State: &CommonState{DynamicState: DynamicState{SimTime: start}}}
+	// A timetable's published departure times are pushback, so the departure
+	// spawns at its published 14:05 time exactly.
+	s.State.SimTime = start
+
 	ac, delay, err := provider.createIFRDeparture(s, "KMSP", "12L")
 	if err != nil {
 		t.Fatalf("createIFRDeparture: %v", err)

@@ -3,7 +3,7 @@
 // SPDX: GPL-3.0-only
 //
 // Imports the FAA's city-pair route databases into resources/routes.csv.zst,
-// which real-world scheduled traffic uses to file realistic routes. Input is
+// which published traffic uses to file realistic routes. Input is
 // the preferred routes and coded departure route (CDR) files published by the
 // FAA's Route Management Tool; both are downloaded when not given on the
 // command line:

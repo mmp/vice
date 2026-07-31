@@ -1,4 +1,4 @@
-// sim/schedule_validate.go
+// sim/timetable_validate.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -11,36 +11,36 @@ import (
 )
 
 const (
-	scheduledDepartureActiveMinutes = 45
-	scheduledArrivalActiveMinutes   = 45
-	minutesPerScheduleDay           = 24 * 60
+	timetableDepartureActiveMinutes = 45
+	timetableArrivalActiveMinutes   = 45
+	minutesPerTimetableDay          = 24 * 60
 )
 
-type scheduledCallsignUse struct {
-	flight ScheduledFlight
+type timetableCallsignUse struct {
+	flight TimetableFlight
 	row    int
 	start  int
 	end    int
 }
 
-func scheduledFlightActiveWindow(
-	flight ScheduledFlight,
+func timetableFlightActiveWindow(
+	flight TimetableFlight,
 	airport string,
 ) (start int, end int) {
 	switch flight.OperationAt(airport) {
-	case ScheduleOperationDeparture:
-		return flight.ScheduledMinute,
-			flight.ScheduledMinute + scheduledDepartureActiveMinutes
+	case TimetableOperationDeparture:
+		return flight.PublishedMinute,
+			flight.PublishedMinute + timetableDepartureActiveMinutes
 
-	case ScheduleOperationArrival:
-		return flight.ScheduledMinute - scheduledArrivalActiveMinutes,
-			flight.ScheduledMinute
+	case TimetableOperationArrival:
+		return flight.PublishedMinute - timetableArrivalActiveMinutes,
+			flight.PublishedMinute
 
 	default:
-		return flight.ScheduledMinute, flight.ScheduledMinute
+		return flight.PublishedMinute, flight.PublishedMinute
 	}
 }
-func scheduleWindowsOverlap(
+func timetableWindowsOverlap(
 	firstStart int,
 	firstEnd int,
 	secondStart int,
@@ -49,25 +49,25 @@ func scheduleWindowsOverlap(
 	return firstStart < secondEnd && secondStart < firstEnd
 }
 
-// validateBuiltInSchedule checks schedule-wide rules that cannot be validated
+// validateTimetable checks timetable-wide rules that cannot be validated
 // while parsing an individual CSV row.
-func validateBuiltInSchedule(schedule BuiltInSchedule) error {
-	seenRows := make(map[ScheduledFlight]int)
-	callsignUses := make(map[string][]scheduledCallsignUse)
+func validateTimetable(timetable Timetable) error {
+	seenRows := make(map[TimetableFlight]int)
+	callsignUses := make(map[string][]timetableCallsignUse)
 
-	for index, flight := range schedule.Flights {
+	for index, flight := range timetable.Flights {
 		row := index + 2
 
-		if flight.OperationAt(schedule.Airport) == ScheduleOperationUnknown {
+		if flight.OperationAt(timetable.Airport) == TimetableOperationUnknown {
 			return fmt.Errorf(
 				"row %d callsign %s is neither an arrival nor departure at %s",
 				row,
 				flight.Callsign,
-				schedule.Airport,
+				timetable.Airport,
 			)
 		}
 
-		aircraftType := normalizeScheduledAircraftType(flight.AircraftType)
+		aircraftType := normalizeAircraftType(flight.AircraftType)
 		if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
 			return fmt.Errorf(
 				"row %d callsign %s uses unknown aircraft type %s",
@@ -103,10 +103,10 @@ func validateBuiltInSchedule(schedule BuiltInSchedule) error {
 			)
 		}
 		seenRows[flight] = row
-		start, end := scheduledFlightActiveWindow(flight, schedule.Airport)
+		start, end := timetableFlightActiveWindow(flight, timetable.Airport)
 		callsignUses[flight.Callsign] = append(
 			callsignUses[flight.Callsign],
-			scheduledCallsignUse{
+			timetableCallsignUse{
 				flight: flight,
 				row:    row,
 				start:  start,
@@ -123,11 +123,11 @@ func validateBuiltInSchedule(schedule BuiltInSchedule) error {
 
 				overlaps := false
 				for _, dayOffset := range []int{
-					-minutesPerScheduleDay,
+					-minutesPerTimetableDay,
 					0,
-					minutesPerScheduleDay,
+					minutesPerTimetableDay,
 				} {
-					if scheduleWindowsOverlap(
+					if timetableWindowsOverlap(
 						first.start,
 						first.end,
 						second.start+dayOffset,

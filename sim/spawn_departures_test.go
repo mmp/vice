@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"errors"
 	"slices"
 	"testing"
 	"time"
@@ -238,5 +239,257 @@ func TestSamePavementRunways(t *testing.T) {
 	// Intersecting runways no longer share the same-pavement group.
 	if slices.Contains(got, av.RunwayID("36")) {
 		t.Errorf("samePavementRunways = %v, shouldn't include intersecting runway 36", got)
+	}
+}
+
+// publishedDepartureSim builds a Sim whose test airport KORG has departures to
+// KNOR via the NORTH exit and to the given eastern destination via EAST, both
+// off runway 30L in the "jet" category.
+func publishedDepartureSim(eastDestination string) *Sim {
+	return &Sim{State: &CommonState{
+		NmPerLongitude: testNmPerLongitude,
+		Airports: map[string]*av.Airport{
+			"KORG": {
+				Departures: []av.Departure{
+					{Exit: "NORTH", Destination: "KNOR"},
+					{Exit: "EAST", Destination: eastDestination},
+				},
+				ExitCategories: map[av.ExitID]string{"NORTH": "jet", "EAST": "jet"},
+				DepartureRoutes: map[av.RunwayID]map[av.ExitID]*av.ExitRoute{
+					"30L": {"NORTH": {}, "EAST": {}},
+				},
+			},
+		},
+		DepartureRunways: []DepartureRunway{
+			{Airport: "KORG", Runway: "30L", Category: "jet"},
+		},
+	}}
+}
+
+// seedTestAirports adds airports to av.DB for the duration of the test: the
+// origin at the origin, KTGT due east, KEAS nearly so, KFAR due east but far
+// past KTGT, KNOR due north, and KSOU due south.
+func seedTestAirports(t *testing.T) {
+	codes := []string{"KORG", "KTGT", "KEAS", "KFAR", "KNOR", "KSOU"}
+	original := make(map[string]av.FAAAirport)
+	for _, code := range codes {
+		if airport, ok := av.DB.Airports[code]; ok {
+			original[code] = airport
+		}
+	}
+	t.Cleanup(func() {
+		for _, code := range codes {
+			if airport, ok := original[code]; ok {
+				av.DB.Airports[code] = airport
+			} else {
+				delete(av.DB.Airports, code)
+			}
+		}
+	})
+
+	nm := func(x, y float32) math.Point2LL {
+		return math.NM2LL([2]float32{x, y}, testNmPerLongitude)
+	}
+	av.DB.Airports["KORG"] = av.FAAAirport{Id: "KORG", Location: nm(0, 0)}
+	av.DB.Airports["KTGT"] = av.FAAAirport{Id: "KTGT", Location: nm(100, 0)}
+	av.DB.Airports["KEAS"] = av.FAAAirport{Id: "KEAS", Location: nm(80, 10)}
+	av.DB.Airports["KFAR"] = av.FAAAirport{Id: "KFAR", Location: nm(300, 0)}
+	av.DB.Airports["KNOR"] = av.FAAAirport{Id: "KNOR", Location: nm(0, 80)}
+	av.DB.Airports["KSOU"] = av.FAAAirport{Id: "KSOU", Location: nm(0, -80)}
+}
+
+// seedTestRoutes replaces the route database entries for KORG->KTGT for the
+// duration of the test.
+func seedTestRoutes(t *testing.T, routes []av.AirportPairRoute) {
+	pair := av.AirportPair{From: "KORG", To: "KTGT"}
+	original, hadOriginal := av.DB.AirportPairRoutes[pair]
+	t.Cleanup(func() {
+		if hadOriginal {
+			av.DB.AirportPairRoutes[pair] = original
+		} else {
+			delete(av.DB.AirportPairRoutes, pair)
+		}
+	})
+	av.DB.AirportPairRoutes[pair] = routes
+}
+
+func TestResolvePublishedDepartureExactDestination(t *testing.T) {
+	s := publishedDepartureSim("KTGT")
+
+	_, _, _, dep, filedRoute, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738")
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if dep.Destination != "KTGT" {
+		t.Fatalf("destination = %q, want KTGT", dep.Destination)
+	}
+	if filedRoute != "" {
+		t.Fatalf("filed route = %q, want the scenario departure's own route", filedRoute)
+	}
+}
+
+func TestResolvePublishedDepartureByProximity(t *testing.T) {
+	seedTestAirports(t)
+	s := publishedDepartureSim("KEAS")
+
+	_, _, _, dep, filedRoute, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738")
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if dep.Destination != "KEAS" {
+		t.Fatalf("destination = %q, want nearby KEAS", dep.Destination)
+	}
+	if filedRoute != "" {
+		t.Fatalf("filed route = %q, want the scenario departure's own route", filedRoute)
+	}
+
+	// A destination dead on the flight's heading but far beyond it loses to
+	// one nearby: from JFK, Florida is within a few degrees of Ocean City,
+	// but a KOXB flight should follow a Norfolk route, not an Orlando one.
+	ap := s.State.Airports["KORG"]
+	ap.Departures = append(ap.Departures, av.Departure{Exit: "FARWY", Destination: "KFAR"})
+	ap.ExitCategories["FARWY"] = "jet"
+	ap.DepartureRoutes["30L"]["FARWY"] = &av.ExitRoute{}
+
+	_, _, _, dep, _, err = s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738")
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if dep.Destination != "KEAS" {
+		t.Fatalf("destination = %q, want KEAS over on-heading but distant KFAR", dep.Destination)
+	}
+}
+
+// A flight whose real destination no modeled route heads anywhere near isn't
+// forced through an unrelated gate; it just isn't launched.
+func TestResolvePublishedDepartureDropsFarDestinations(t *testing.T) {
+	seedTestAirports(t)
+	s := publishedDepartureSim("KEAS")
+
+	_, _, _, _, _, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KSOU", "B738")
+	if !errors.Is(err, errNoScenarioRoute) {
+		t.Fatalf("resolvePublishedDeparture to KSOU: err = %v, want errNoScenarioRoute", err)
+	}
+}
+
+// When the FAA route database knows how a city pair is flown, the flight
+// takes the modeled exit its real route passes through and files that route.
+func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
+	seedTestAirports(t)
+	s := publishedDepartureSim("KEAS")
+
+	seedTestRoutes(t, []av.AirportPairRoute{
+		{Route: "KORG NORTH J111 KTGT", Type: "H"},
+	})
+	_, _, _, dep, filedRoute, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738")
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	// Direction alone would pick EAST/KEAS; the filed route says NORTH.
+	if dep.Exit != "NORTH" {
+		t.Errorf("exit = %q, want NORTH from the route database", dep.Exit)
+	}
+	if filedRoute != "KORG NORTH J111 KTGT" {
+		t.Errorf("filed route = %q, want the database route", filedRoute)
+	}
+
+	// A CDR names its departure fix explicitly even when the route string
+	// doesn't include the exit.
+	seedTestRoutes(t, []av.AirportPairRoute{
+		{Route: "KORG ZZZZZ J111 KTGT", DepartureFix: "NORTH", Type: "CDR"},
+	})
+	_, _, _, dep, filedRoute, err = s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738")
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if dep.Exit != "NORTH" || filedRoute != "KORG ZZZZZ J111 KTGT" {
+		t.Errorf("got exit %q route %q, want NORTH via the CDR departure fix",
+			dep.Exit, filedRoute)
+	}
+
+	// If every real route leaves through an exit the scenario doesn't model,
+	// the scenario doesn't work this flight.
+	seedTestRoutes(t, []av.AirportPairRoute{
+		{Route: "KORG WSSST J22 KTGT", Type: "H"},
+	})
+	_, _, _, _, _, err = s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738")
+	if !errors.Is(err, errNoScenarioRoute) {
+		t.Fatalf("unmodeled exits: err = %v, want errNoScenarioRoute", err)
+	}
+}
+
+// A piston can't fly a route that needs RNAV; with no eligible database route
+// it falls back to the directional match.
+func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
+	seedTestAirports(t)
+	s := publishedDepartureSim("KEAS")
+
+	seedTestRoutes(t, []av.AirportPairRoute{
+		{Route: "KORG NORTH J111 KTGT", Type: "H", RNAVRequired: true},
+	})
+
+	_, _, _, dep, filedRoute, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738")
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture for a jet: %v", err)
+	}
+	if dep.Exit != "NORTH" || filedRoute == "" {
+		t.Errorf("jet got exit %q route %q, want the RNAV database route via NORTH",
+			dep.Exit, filedRoute)
+	}
+
+	_, _, _, dep, filedRoute, err = s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "C172")
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture for a piston: %v", err)
+	}
+	if dep.Destination != "KEAS" || filedRoute != "" {
+		t.Errorf("piston got %q route %q, want the directional fallback to KEAS",
+			dep.Destination, filedRoute)
+	}
+}
+
+// A flight must fly the route to where it really went, whatever the category
+// rates say. KJFK is the case that caught this: its only KATL departure exits
+// at RBV in the "Southwest" category, which carries the smallest rate of the
+// four on 22R, so picking a category by rate sent most Atlanta flights out over
+// the water instead.
+func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
+	s := &Sim{State: &CommonState{
+		NmPerLongitude: testNmPerLongitude,
+		Airports: map[string]*av.Airport{
+			"KJFK": {
+				Departures: []av.Departure{
+					{Exit: "WAVEY", Destination: "KMCO"},
+					{Exit: "RBV", Destination: "KATL"},
+				},
+				ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "RBV": "Southwest"},
+				DepartureRoutes: map[av.RunwayID]map[av.ExitID]*av.ExitRoute{
+					"22R": {"WAVEY": {}, "RBV": {}},
+				},
+			},
+		},
+		DepartureRunways: []DepartureRunway{
+			{Airport: "KJFK", Runway: "22R", Category: "Water", DefaultRate: 8},
+			{Airport: "KJFK", Runway: "22R", Category: "Southwest", DefaultRate: 5},
+		},
+	}}
+
+	// Water is listed first and carries the larger rate; neither should matter.
+	_, _, _, dep, _, err := s.resolvePublishedDeparture("KJFK", "22R",
+		[]string{"Water", "Southwest"}, "KATL", "B738")
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if dep.Exit != "RBV" || dep.Destination != "KATL" {
+		t.Errorf("Atlanta departure got exit %q to %q, expected RBV to KATL",
+			dep.Exit, dep.Destination)
 	}
 }

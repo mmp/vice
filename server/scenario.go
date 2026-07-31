@@ -1803,11 +1803,30 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 	}
 }
 
-func attachBuiltInSchedules(catalogs map[string]map[string]*ScenarioCatalog, schedules sim.BuiltInScheduleCatalog) {
+func attachTimetables(catalogs map[string]map[string]*ScenarioCatalog, timetables sim.TimetableCatalog) {
 	for _, facilityCatalogs := range catalogs {
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
-				scenario.RealWorldSchedules = schedules.SummariesForAirport(scenario.PrimaryAirport)
+				scenario.Timetables = timetables.SummariesForAirport(scenario.PrimaryAirport)
+			}
+		}
+	}
+}
+
+// attachHistoricalFlightIntervals records the range of times each facility has
+// historical flight data for, so that the client can offer start times the data
+// actually covers.
+func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCatalog) {
+	resources := util.GetResourcesFS()
+	for facility, facilityCatalogs := range catalogs {
+		interval, err := av.FacilityFlightInterval(resources, facility)
+		if err != nil || interval.Start().IsZero() {
+			continue
+		}
+		for _, catalog := range facilityCatalogs {
+			for _, scenario := range catalog.Scenarios {
+				scenario.HistoricalFlightInterval = interval
+				scenario.HaveHistoricalFlights = true
 			}
 		}
 	}
@@ -2586,12 +2605,13 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	loadEmergencies(e)
 
-	scheduleCatalog, err := sim.LoadBuiltInScheduleCatalog(util.GetResourcesFS(), "schedules")
+	timetableCatalog, err := sim.LoadTimetableCatalog(util.GetResourcesFS(), "schedules")
 	if err != nil {
 		e.Error(err)
 	} else {
-		attachBuiltInSchedules(catalogs, scheduleCatalog)
+		attachTimetables(catalogs, timetableCatalog)
 	}
+	attachHistoricalFlightIntervals(catalogs)
 
 	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))
 	return scenarioGroups, catalogs, mapSpecs, briefs, extraScenarioErrors

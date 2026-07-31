@@ -130,7 +130,7 @@ func (s *symbols) string(id uint32) string {
 	return s.strings[id]
 }
 
-// record is one flight in one schedule file. It is kept small and comparable:
+// record is one flight in one flight data file. It is kept small and comparable:
 // there are millions of them and duplicates are removed by sorting.
 type record struct {
 	callsign uint32
@@ -140,7 +140,7 @@ type record struct {
 	day      uint16 // UTC date, in days from 1970-01-01
 }
 
-// bucket collects the flights that go into one half of one airport's schedule.
+// bucket collects the flights that go into one half of one airport's flights.
 // Departures and arrivals are gathered separately and merged when the file is
 // written, which keeps record small.
 type bucket struct {
@@ -274,7 +274,7 @@ func (imp *importer) noteDay(timestamp string) {
 	days[day] = true
 }
 
-// add files one flight under the airport whose schedule it belongs to. Times
+// add files one flight under the airport whose flights it belongs to. Times
 // are recorded in UTC, as the source data gives them; the seconds are dropped.
 func (imp *importer) add(airport, other, callsign, aircraftType, timestamp string, departure bool) {
 	utc, ok := parseTime(timestamp)

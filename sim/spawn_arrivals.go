@@ -21,17 +21,17 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-const scheduledArrivalMinSpawnSeparationNM = 10
+const publishedArrivalMinSpawnSeparationNM = 10
 
-var errScheduledArrivalSpawnConflict = errors.New("scheduled arrival spawn point occupied")
+var errPublishedArrivalSpawnConflict = errors.New("published arrival spawn point occupied")
 
-func (s *Sim) scheduledArrivalSpawnConflict(candidate *Aircraft) bool {
+func (s *Sim) publishedArrivalSpawnConflict(candidate *Aircraft) bool {
 	for _, existing := range s.Aircraft {
 		if !existing.IsArrival() {
 			continue
 		}
 		if math.NMDistance2LL(candidate.Position(), existing.Position()) <
-			scheduledArrivalMinSpawnSeparationNM {
+			publishedArrivalMinSpawnSeparationNM {
 			return true
 		}
 	}
@@ -214,15 +214,15 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	return ac, s.associateAtSpawn(ac, nasFp)
 }
 
-func resolveScheduledArrival(arrivals []av.Arrival, arrivalAirport,
+func resolvePublishedArrival(arrivals []av.Arrival, arrivalAirport,
 	origin string) (*av.Arrival, error) {
-	arrivalAirport = normalizeScheduleCode(arrivalAirport)
-	origin = normalizeScheduleCode(origin)
+	arrivalAirport = normalizeAirportCode(arrivalAirport)
+	origin = normalizeAirportCode(origin)
 
 	for i := range arrivals {
 		arr := &arrivals[i]
 		for _, airline := range arr.Airlines[arrivalAirport] {
-			if normalizeScheduleCode(airline.Airport) == origin {
+			if normalizeAirportCode(airline.Airport) == origin {
 				return arr, nil
 			}
 		}
@@ -231,33 +231,28 @@ func resolveScheduledArrival(arrivals []av.Arrival, arrivalAirport,
 	return nil, fmt.Errorf("no arrival route from %s to %s", origin, arrivalAirport)
 }
 
-// createScheduledArrivalNoLock creates an arrival using the published
+// createPublishedArrivalNoLock creates an arrival using the published
 // callsign, aircraft type, origin, and destination. Vice continues to resolve
 // the STAR, initial controller, altitude, and spawn geometry from the scenario.
-func (s *Sim) createScheduledArrivalNoLock(flight ScheduledFlight, group,
-	arrivalAirport string) (*Aircraft, error) {
-	if flight.OperationAt(arrivalAirport) != ScheduleOperationArrival {
-		return nil, fmt.Errorf("%s is not an arrival at %s",
-			flight.Callsign, arrivalAirport)
-	}
+// The route flown is the one from origin, which is the flight's own origin
+// unless the scenario has no route from there.
+func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, origin, group string,
+	substituted bool) (*Aircraft, error) {
+	arrivalAirport := flight.Airport
 
 	inboundFlow, ok := s.State.InboundFlows[group]
 	if !ok {
 		return nil, fmt.Errorf("unknown inbound flow %s", group)
 	}
 
-	arr, err := resolveScheduledArrival(
-		inboundFlow.Arrivals,
-		arrivalAirport,
-		flight.Origin,
-	)
+	arr, err := resolvePublishedArrival(inboundFlow.Arrivals, arrivalAirport, origin)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", flight.Callsign, err)
 	}
 
 	callsign := strings.ToUpper(strings.TrimSpace(flight.Callsign))
 	if callsign == "" {
-		return nil, fmt.Errorf("scheduled arrival callsign is empty")
+		return nil, fmt.Errorf("published arrival callsign is empty")
 	}
 	if av.CallsignClashesWithExisting(
 		s.currentCallsigns(),
@@ -265,12 +260,12 @@ func (s *Sim) createScheduledArrivalNoLock(flight ScheduledFlight, group,
 		s.EnforceUniqueCallsignSuffix,
 	) {
 		return nil, fmt.Errorf(
-			"scheduled arrival callsign %s is already in use",
+			"published arrival callsign %s is already in use",
 			callsign,
 		)
 	}
 
-	aircraftType := normalizeScheduledAircraftType(flight.AircraftType)
+	aircraftType := normalizeAircraftType(flight.AircraftType)
 	if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
 		return nil, fmt.Errorf(
 			"aircraft type %s is not present in the performance database",
@@ -282,11 +277,13 @@ func (s *Sim) createScheduledArrivalNoLock(flight ScheduledFlight, group,
 		ADSBCallsign: av.ADSBCallsign(callsign),
 		Mode:         av.TransponderModeAltitude,
 	}
+	// The flight plan keeps the real origin even when another airport's route
+	// is being flown.
 	ac.InitializeFlightPlan(
 		av.FlightRulesIFR,
 		aircraftType,
-		normalizeScheduleCode(flight.Origin),
-		normalizeScheduleCode(flight.Destination),
+		normalizeAirportCode(flight.Other),
+		normalizeAirportCode(flight.Airport),
 	)
 
 	if err := ac.InitializeArrival(s.State.Airports[arrivalAirport], arr,
@@ -294,9 +291,16 @@ func (s *Sim) createScheduledArrivalNoLock(flight ScheduledFlight, group,
 		s.wxModel, s.State.SimTime, s.lg); err != nil {
 		return nil, err
 	}
-	if s.scheduledArrivalSpawnConflict(ac) {
-		return nil, errScheduledArrivalSpawnConflict
+	if s.publishedArrivalSpawnConflict(ac) {
+		return nil, errPublishedArrivalSpawnConflict
 	}
+
+	route := "own route"
+	if substituted {
+		route = "nearest route, from " + origin
+	}
+	fmt.Printf("%s: arrival %s->%s via %s %s (%s)\n", callsign, flight.Other, arrivalAirport,
+		group, util.Select(arr.STAR == "", arr.Route, arr.STAR), route)
 
 	return s.finalizeArrivalNoLock(ac, arr, group, arrivalAirport)
 }

@@ -2,155 +2,155 @@ package sim
 
 import "testing"
 
-func TestValidateBuiltInSchedule(t *testing.T) {
-	schedule := BuiltInSchedule{
+func TestValidateTimetable(t *testing.T) {
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
+		Flights: []TimetableFlight{
 			{
 				Callsign:        "DAL100",
 				Origin:          "KMSP",
 				Destination:     "KORD",
 				AircraftType:    "A320",
-				ScheduledMinute: 600,
+				PublishedMinute: 600,
 			},
 		},
 	}
 
-	if err := validateBuiltInSchedule(schedule); err != nil {
+	if err := validateTimetable(timetable); err != nil {
 		t.Fatalf("unexpected validation error: %v", err)
 	}
 }
 
-func TestValidateBuiltInScheduleRejectsDuplicateRows(t *testing.T) {
-	flight := ScheduledFlight{
+func TestValidateTimetableRejectsDuplicateRows(t *testing.T) {
+	flight := TimetableFlight{
 		Callsign:        "DAL100",
 		Origin:          "KMSP",
 		Destination:     "KORD",
 		AircraftType:    "A320",
-		ScheduledMinute: 600,
+		PublishedMinute: 600,
 	}
 
-	schedule := BuiltInSchedule{
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
+		Flights: []TimetableFlight{
 			flight,
 			flight,
 		},
 	}
 
-	if err := validateBuiltInSchedule(schedule); err == nil {
+	if err := validateTimetable(timetable); err == nil {
 		t.Fatal("expected duplicate row validation error")
 	}
 }
-func TestValidateBuiltInScheduleAllowsCallsignReuse(t *testing.T) {
-	schedule := BuiltInSchedule{
+func TestValidateTimetableAllowsCallsignReuse(t *testing.T) {
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
+		Flights: []TimetableFlight{
 			{
 				Callsign:        "DAL100",
 				Origin:          "KMSP",
 				Destination:     "KORD",
 				AircraftType:    "A320",
-				ScheduledMinute: 600,
+				PublishedMinute: 600,
 			},
 			{
 				Callsign:        "DAL100",
 				Origin:          "KORD",
 				Destination:     "KMSP",
 				AircraftType:    "A320",
-				ScheduledMinute: 780,
+				PublishedMinute: 780,
 			},
 		},
 	}
 
-	if err := validateBuiltInSchedule(schedule); err != nil {
+	if err := validateTimetable(timetable); err != nil {
 		t.Fatalf("unexpected validation error: %v", err)
 	}
 }
-func TestValidateBuiltInScheduleRejectsOverlappingCallsignReuse(t *testing.T) {
-	schedule := BuiltInSchedule{
+func TestValidateTimetableRejectsOverlappingCallsignReuse(t *testing.T) {
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
+		Flights: []TimetableFlight{
 			{
 				Callsign:        "DAL100",
 				Origin:          "KMSP",
 				Destination:     "KORD",
 				AircraftType:    "A320",
-				ScheduledMinute: 9 * 60,
+				PublishedMinute: 9 * 60,
 			},
 			{
 				Callsign:        "DAL100",
 				Origin:          "KORD",
 				Destination:     "KMSP",
 				AircraftType:    "A320",
-				ScheduledMinute: 9*60 + 20,
+				PublishedMinute: 9*60 + 20,
 			},
 		},
 	}
 
-	if err := validateBuiltInSchedule(schedule); err == nil {
+	if err := validateTimetable(timetable); err == nil {
 		t.Fatal("expected overlapping callsign validation error")
 	}
 }
-func TestValidateBuiltInScheduleRejectsCrossMidnightCallsignOverlap(t *testing.T) {
-	schedule := BuiltInSchedule{
+func TestValidateTimetableRejectsCrossMidnightCallsignOverlap(t *testing.T) {
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
+		Flights: []TimetableFlight{
 			{
 				Callsign:        "DAL200",
 				Origin:          "KMSP",
 				Destination:     "KORD",
 				AircraftType:    "A320",
-				ScheduledMinute: 23*60 + 55,
+				PublishedMinute: 23*60 + 55,
 			},
 			{
 				Callsign:        "DAL200",
 				Origin:          "KORD",
 				Destination:     "KMSP",
 				AircraftType:    "A320",
-				ScheduledMinute: 10,
+				PublishedMinute: 10,
 			},
 		},
 	}
 
-	if err := validateBuiltInSchedule(schedule); err == nil {
+	if err := validateTimetable(timetable); err == nil {
 		t.Fatal("expected cross-midnight callsign validation error")
 	}
 }
-func TestValidateBuiltInScheduleRejectsUnknownOriginAirport(t *testing.T) {
-	schedule := BuiltInSchedule{
+func TestValidateTimetableRejectsUnknownOriginAirport(t *testing.T) {
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
+		Flights: []TimetableFlight{
 			{
 				Callsign:        "DAL300",
 				Origin:          "KZZZ",
 				Destination:     "KMSP",
 				AircraftType:    "A320",
-				ScheduledMinute: 12 * 60,
+				PublishedMinute: 12 * 60,
 			},
 		},
 	}
 
-	if err := validateBuiltInSchedule(schedule); err == nil {
+	if err := validateTimetable(timetable); err == nil {
 		t.Fatal("expected unknown origin airport validation error")
 	}
 }
 
-func TestValidateBuiltInScheduleRejectsUnknownDestinationAirport(t *testing.T) {
-	schedule := BuiltInSchedule{
+func TestValidateTimetableRejectsUnknownDestinationAirport(t *testing.T) {
+	timetable := Timetable{
 		Airport: "KMSP",
-		Flights: []ScheduledFlight{
+		Flights: []TimetableFlight{
 			{
 				Callsign:        "DAL301",
 				Origin:          "KMSP",
 				Destination:     "KZZZ",
 				AircraftType:    "A320",
-				ScheduledMinute: 13 * 60,
+				PublishedMinute: 13 * 60,
 			},
 		},
 	}
 
-	if err := validateBuiltInSchedule(schedule); err == nil {
+	if err := validateTimetable(timetable); err == nil {
 		t.Fatal("expected unknown destination airport validation error")
 	}
 }

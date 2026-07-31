@@ -223,8 +223,8 @@ func TestRecordTime(t *testing.T) {
 		})
 	}
 }
-func TestScheduleFilename(t *testing.T) {
-	if got := scheduleFilename("N90"); got != "N90.flt" {
+func TestFlightDataFilename(t *testing.T) {
+	if got := flightDataFilename("N90"); got != "N90.flt" {
 		t.Errorf("got %q, expected N90.flt", got)
 	}
 }
@@ -244,7 +244,7 @@ func TestDaysInMonth(t *testing.T) {
 		}
 	}
 }
-func TestWriteSchedules(t *testing.T) {
+func TestWriteFlightData(t *testing.T) {
 	sym := makeSymbols()
 	imp := &importer{symbols: sym, buckets: make(map[bucket][]record),
 		daysPresent: make(map[string]map[string]bool)}
@@ -269,8 +269,8 @@ func TestWriteSchedules(t *testing.T) {
 	}
 
 	dir := t.TempDir()
-	if err := writeSchedules(dir, imp, facilities, 0.9, false); err != nil {
-		t.Fatalf("writeSchedules: %v", err)
+	if err := writeFlightData(dir, imp, facilities, 0.9, false); err != nil {
+		t.Fatalf("writeFlightData: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(dir, "XYZ.flt")); !os.IsNotExist(err) {
 		t.Errorf("wrote a file for a facility with no flights")

@@ -92,7 +92,12 @@ type ScenarioSpec struct {
 	PrimaryAirport          string
 	MagneticVariation       float32
 	WindSpecifier           *wx.WindSpecifier
-	RealWorldSchedules      []sim.BuiltInScheduleSummary
+	Timetables              []sim.TimetableSummary
+	// HistoricalFlightInterval is the range of times this facility has
+	// historical flight data for; HaveHistoricalFlights says whether it has any
+	// at all.
+	HistoricalFlightInterval util.TimeInterval
+	HaveHistoricalFlights    bool
 
 	LaunchConfig sim.LaunchConfig
 
@@ -184,6 +189,11 @@ type NewSimRequest struct {
 
 	ScenarioSpec *ScenarioSpec
 	StartTime    time.Time
+
+	// HistoricalFlights carries the flights the sim should fly when the
+	// scenario is using historical traffic: those at its airports over the
+	// first several hours from StartTime, in time order.
+	HistoricalFlights []av.Flight
 
 	RequirePassword bool
 	Password        string
@@ -277,6 +287,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 	nsc := sim.NewSimConfiguration{
 		Facility:                    req.Facility,
 		LaunchConfig:                req.ScenarioSpec.LaunchConfig,
+		HistoricalFlights:           req.HistoricalFlights,
 		FacilityAdaptation:          deep.MustCopy(sg.FacilityConfig.FacilityAdaptation),
 		DisableTFRRestrictionAreas:  sg.FacilityConfig.DisableTFRRestrictionAreas,
 		EnforceUniqueCallsignSuffix: req.EnforceUniqueCallsignSuffix,
