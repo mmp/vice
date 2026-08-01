@@ -115,11 +115,12 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*Aircra
 // initializes the flight plan and navigation, builds the NAS flight plan with
 // controller assignments, optionally sets up a go-around, and registers with STARS.
 func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraft, error) {
-	// Select a random arrival route that serves this airport
+	// Select a random arrival route that serves this airport. The scenario's
+	// own generator needs airlines to fly; a route that only lists the airport
+	// is there for published traffic.
 	arrivals := s.State.InboundFlows[group].Arrivals
 	idx := rand.SampleFiltered(s.Rand, arrivals, func(ar av.Arrival) bool {
-		_, ok := ar.Airlines[arrivalAirport]
-		return ok
+		return len(ar.Airlines[arrivalAirport]) > 0
 	})
 
 	if idx == -1 {
@@ -128,12 +129,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 	arr := arrivals[idx]
 
-	airlines := arr.Airlines[arrivalAirport]
-	if len(airlines) == 0 {
-		return nil, fmt.Errorf("no airlines for arrival group %s airport %s", group, arrivalAirport)
-	}
-
-	ac, err := filterAndSampleAircraft(s, airlines,
+	ac, err := filterAndSampleAircraft(s, arr.Airlines[arrivalAirport],
 		func(al av.ArrivalAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
 		func(al av.ArrivalAirline) (string, string) { return al.Airport, arrivalAirport },
 		fmt.Sprintf("arrivals to %q", arrivalAirport))
@@ -222,41 +218,92 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	return ac, s.associateAtSpawn(ac, nasFp)
 }
 
-func resolvePublishedArrival(arrivals []av.Arrival, arrivalAirport,
-	origin string) (*av.Arrival, error) {
+// arrivalListingOrigin returns the arrival that names origin among the airlines
+// it lands at arrivalAirport: the scenario says in so many words that this is
+// how traffic from there comes in.
+func arrivalListingOrigin(candidates []candidateArrival, arrivalAirport,
+	origin string) (candidateArrival, bool) {
 	arrivalAirport = normalizeAirportCode(arrivalAirport)
 	origin = normalizeAirportCode(origin)
 
-	for i := range arrivals {
-		arr := &arrivals[i]
-		for _, airline := range arr.Airlines[arrivalAirport] {
+	for _, c := range candidates {
+		for _, airline := range c.arr.Airlines[arrivalAirport] {
 			if normalizeAirportCode(airline.Airport) == origin {
-				return arr, nil
+				return c, true
 			}
 		}
 	}
+	return candidateArrival{}, false
+}
 
-	return nil, fmt.Errorf("no arrival route from %s to %s", origin, arrivalAirport)
+// arrivalForCityPair returns the arrival a real route for the city pair comes in
+// on, together with that route so the flight can file it. The route database
+// says how a pair is really flown--ORF to JFK arrives on the CAMRN5--so a
+// scenario that works the STAR works the flight whether or not it happens to
+// list Norfolk among its origins. The routes are tried in the order the pair is
+// really flown, and within one the arrival matching furthest along it wins:
+// that is where the flight enters the terminal area, while an earlier fix is
+// only somewhere it passed on the way in.
+func arrivalForCityPair(candidates []candidateArrival, arrivalAirport, origin,
+	aircraftType string) (candidateArrival, string, bool) {
+	arrivalAirport = normalizeAirportCode(arrivalAirport)
+	origin = normalizeAirportCode(origin)
+
+	routes := av.DB.RoutesBetween(origin, arrivalAirport)
+	for _, route := range eligibleAirportPairRoutes(routes, engineTypeFor(aircraftType)) {
+		fixes := enrouteFixes(route.Route)
+		best, bestIndex := candidateArrival{}, -1
+		for _, c := range candidates {
+			for _, fix := range arrivalFixes(c.arr) {
+				if i := slices.Index(fixes, fix); i > bestIndex {
+					best, bestIndex = c, i
+				}
+			}
+		}
+		if bestIndex != -1 {
+			return best, route.Route, true
+		}
+	}
+	return candidateArrival{}, "", false
+}
+
+// arrivalFixes returns the points a real route would name if it came in on this
+// arrival: the STAR it flies and the fixes it actually flies over. The arrival's
+// "route" is not among them--that is the string shown on the flight strip rather
+// than the route flown, and it ends at the airport, which every route into the
+// airport also does.
+func arrivalFixes(arr *av.Arrival) []string {
+	var fixes []string
+	if arr.STAR != "" {
+		fixes = append(fixes, arr.STAR)
+	}
+	for _, wp := range arr.Waypoints {
+		// Waypoints synthesized during deserialization are prefixed with an
+		// underscore and are no part of any filed route.
+		if !strings.HasPrefix(wp.Fix, "_") {
+			fixes = append(fixes, wp.Fix)
+		}
+	}
+	return fixes
 }
 
 // createPublishedArrivalNoLock creates an arrival using the published
 // callsign, aircraft type, origin, and destination. Vice continues to resolve
 // the STAR, initial controller, altitude, and spawn geometry from the scenario.
-// The route flown is the one from origin, which is the flight's own origin
-// unless the scenario has no route from there.
-func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, origin, group string,
-	substituted bool) (*Aircraft, error) {
+// The arrival flown and the route filed were resolved when the flight was
+// queued; filedRoute is empty when the arrival's own route is flown.
+func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, published publishedFlight) (*Aircraft, error) {
 	arrivalAirport := flight.Airport
 
-	inboundFlow, ok := s.State.InboundFlows[group]
+	placement := published.placement
+	inboundFlow, ok := s.State.InboundFlows[placement.group]
 	if !ok {
-		return nil, fmt.Errorf("unknown inbound flow %s", group)
+		return nil, fmt.Errorf("unknown inbound flow %s", placement.group)
 	}
-
-	arr, err := resolvePublishedArrival(inboundFlow.Arrivals, arrivalAirport, origin)
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", flight.Callsign, err)
+	if placement.index < 0 || placement.index >= len(inboundFlow.Arrivals) {
+		return nil, fmt.Errorf("%s: no arrival route in %s", flight.Callsign, placement.group)
 	}
+	arr := &inboundFlow.Arrivals[placement.index]
 
 	callsign := strings.ToUpper(strings.TrimSpace(flight.Callsign))
 	if callsign == "" {
@@ -302,15 +349,16 @@ func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, origin, group strin
 	if s.publishedArrivalSpawnConflict(ac) {
 		return nil, errPublishedArrivalSpawnConflict
 	}
-
-	route := "own route"
-	if substituted {
-		route = "nearest route, from " + origin
+	if placement.filedRoute != "" {
+		// The flight files the route the pair is really flown on; within the
+		// facility it still flies the scenario's arrival geometry.
+		ac.FlightPlan.Route = placement.filedRoute
 	}
-	fmt.Printf("%s: arrival %s->%s via %s %s (%s)\n", callsign, flight.Other, arrivalAirport,
-		group, util.Select(arr.STAR == "", arr.Route, arr.STAR), route)
 
-	return s.finalizeArrivalNoLock(ac, arr, group, arrivalAirport)
+	fmt.Printf("%s: arrival %s->%s via %s %s (%s)\n", callsign, flight.Other, arrivalAirport,
+		placement.group, util.Select(arr.STAR == "", arr.Route, arr.STAR), placement.how)
+
+	return s.finalizeArrivalNoLock(ac, arr, placement.group, arrivalAirport)
 }
 func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	callsigns := slices.Collect(maps.Keys(s.Aircraft))

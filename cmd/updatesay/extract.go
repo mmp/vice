@@ -76,8 +76,7 @@ func ExtractFromInboundFlows(flows map[string]*av.InboundFlow, fixes map[string]
 				if arrival.STAR != "" {
 					stars[base].FullNames[arrival.STAR] = struct{}{}
 				}
-				// Get airports from Airlines map
-				for airportICAO := range arrival.Airlines {
+				for _, airportICAO := range arrival.ServedAirports() {
 					stars[base].Airports[airportICAO] = struct{}{}
 				}
 				// Also get airports from RunwayWaypoints

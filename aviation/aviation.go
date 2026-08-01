@@ -159,8 +159,26 @@ type Arrival struct {
 
 	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
 
-	// Airport -> arrival airlines
+	// Airports the arrival serves, for scenarios that don't give airline
+	// lists; ServedAirports is the union of these and the Airlines keys.
+	Airports []string `json:"airports"`
+
+	// Airport -> arrival airlines. Optional: without it the scenario can't
+	// generate its own arrivals here, but published traffic still can.
 	Airlines map[string][]ArrivalAirline `json:"airlines"`
+}
+
+// ServedAirports returns the airports the arrival brings traffic to, in sorted
+// order.
+func (ar Arrival) ServedAirports() []string {
+	airports := slices.Clone(ar.Airports)
+	for ap := range ar.Airlines {
+		if !slices.Contains(airports, ap) {
+			airports = append(airports, ap)
+		}
+	}
+	slices.Sort(airports)
+	return airports
 }
 
 type AirlineSpecifier struct {
@@ -1030,12 +1048,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			}
 		}
 
-		if len(ar.Airlines) == 0 {
-			e.ErrorString("no \"airlines\" specified for arrivals")
-			return
-		}
-
-		for icao := range ar.Airlines {
+		for _, icao := range ar.ServedAirports() {
 			airport, ok := DB.Airports[icao]
 			if !ok {
 				e.ErrorString("airport %q not found in database", icao)
@@ -1187,11 +1200,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
 	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
-	for arrivalAirport := range ar.Airlines {
+	served := ar.ServedAirports()
+	if len(served) == 0 {
+		e.ErrorString(`must specify the arrival's airports in "airports" or "airlines"`)
+	}
+	for _, arrivalAirport := range served {
 		e.Push("Arrival airport " + arrivalAirport)
-		if len(ar.Airlines[arrivalAirport]) == 0 {
-			e.ErrorString(`no "airlines" specified for arrivals to %q`, arrivalAirport)
-		}
 		for i := range ar.Airlines[arrivalAirport] {
 			ar.Airlines[arrivalAirport][i].Check(e)
 			if _, ok := DB.Airports[ar.Airlines[arrivalAirport][i].Airport]; !ok {
@@ -1208,12 +1222,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	if ar.ExpectApproach.A != nil { // Given a single string
-		if len(ar.Airlines) > 1 {
+		if len(served) > 1 {
 			e.ErrorString(`There are multiple arrival airports but only one approach in "expect_approach"`)
 		}
-		// Ugly way to get the key from a one-element map
-		var airport string
-		for airport = range ar.Airlines {
+		airport := ""
+		if len(served) > 0 {
+			airport = served[0]
 		}
 		// We checked the arrival airports were valid above, no need to issue an error if not found.
 		if ap, ok := airports[airport]; ok {
@@ -1226,7 +1240,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		}
 	} else if ar.ExpectApproach.B != nil {
 		for airport, appr := range *ar.ExpectApproach.B {
-			if _, ok := ar.Airlines[airport]; !ok {
+			if !slices.Contains(served, airport) {
 				e.ErrorString(
 					`airport %q is listed in "expect_approach" but is not in arrival airports`,
 					airport,

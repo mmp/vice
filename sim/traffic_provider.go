@@ -72,6 +72,12 @@ const (
 	historicalFlightWindow = 8 * time.Hour
 )
 
+// PublishedArrivalMaxHeadingDifference is how far an origin may lie from the
+// direction an arrival flies in from and still plausibly come in on it. Gates
+// are rarely less than this far apart, so a smaller difference doesn't say the
+// traffic would come in anywhere else.
+const PublishedArrivalMaxHeadingDifference = 60 // degrees
+
 // loadHistoricalFlights gathers the flights a scenario using historical traffic
 // flies: those at its airports over the window starting at the selected time.
 // They are derived from the facility's flight data rather than saved with the
@@ -158,6 +164,27 @@ func normalizeAirportCode(value string) string {
 	return strings.ToUpper(strings.TrimSpace(value))
 }
 
+// enrouteFixes returns the fixes a real route names between its endpoints. A
+// route reads "ORIGIN ...fixes... DESTINATION", so its two ends are airport
+// identifiers rather than points to match a scenario's exits or arrivals
+// against: every route into JFK ends with "JFK".
+func enrouteFixes(route string) []string {
+	fixes := strings.Fields(route)
+	if len(fixes) <= 2 {
+		return nil
+	}
+	return fixes[1 : len(fixes)-1]
+}
+
+// engineTypeFor is how an aircraft is classified when choosing among a city
+// pair's real routes: jets fly the high-altitude ones, everything else the low.
+func engineTypeFor(aircraftType string) string {
+	if perf, ok := av.DB.AircraftPerformance[normalizeAircraftType(aircraftType)]; ok {
+		return perf.Engine.AircraftType
+	}
+	return ""
+}
+
 func normalizeAircraftType(value string) string {
 	aircraftType := strings.ToUpper(strings.TrimSpace(value))
 
@@ -186,19 +213,53 @@ type publishedFlight struct {
 	flight av.Flight
 	spawn  Time
 
-	// origin is the airport whose arrival route this flight follows. It is the
-	// flight's own origin unless the scenario has no route from there, in which
-	// case it is the nearest origin that does have one.
-	origin string
+	// placement is how the arrival was fitted into the scenario. It is resolved
+	// once, here: more than one flow can serve an origin and the flows are held
+	// in a map, so resolving it per call would pick a different one each time
+	// and no flow would ever agree that the arrival was its own.
+	placement arrivalPlacement
+}
 
-	// group is the inbound flow the arrival is flown by. It is resolved once,
-	// here: more than one flow can serve an origin and the flows are held in a
-	// map, so resolving it per call would pick a different one each time and no
-	// flow would ever agree that the arrival was its own.
+// arrivalPlacement is the inbound flow and arrival a published flight comes in
+// on, the route it files when the route database is what found it, the airport
+// standing in for its origin if the scenario has no way to fly it from where it
+// really came from, and how the choice was made, for reporting.
+type arrivalPlacement struct {
+	group      string
+	index      int
+	filedRoute string
+	substitute string
+	how        string
+}
+
+// candidateArrival is an arrival an inbound flow the scenario is running could
+// bring a published flight in on. Only the flows it works count: putting an
+// arrival on one it doesn't model would hand the controller traffic down a
+// feeder nobody is working.
+type candidateArrival struct {
 	group string
+	index int
+	arr   *av.Arrival
+}
 
-	// substituted records that origin isn't the flight's own origin.
-	substituted bool
+// candidateArrivals gathers them in sorted flow order, so that a choice between
+// equally good ones doesn't vary between runs.
+func (s *Sim) candidateArrivals(arrivalAirport string) []candidateArrival {
+	arrivalAirport = normalizeAirportCode(arrivalAirport)
+
+	var candidates []candidateArrival
+	for _, group := range util.SortedMapKeys(s.State.InboundFlows) {
+		if !s.State.LaunchConfig.InboundFlowEnabled[group][arrivalAirport] {
+			continue
+		}
+		arrivals := s.State.InboundFlows[group].Arrivals
+		for i := range arrivals {
+			if slices.Contains(arrivals[i].ServedAirports(), arrivalAirport) {
+				candidates = append(candidates, candidateArrival{group, i, &arrivals[i]})
+			}
+		}
+	}
+	return candidates
 }
 
 // publishedTrafficProvider emits the flights a scenario was launched with--from
@@ -209,6 +270,10 @@ type publishedTrafficProvider struct {
 	departures []publishedFlight
 
 	arrivals []publishedFlight
+
+	// routed indexes the route database, which both directions consult to fit a
+	// city pair it doesn't cover to one it does.
+	routed routedPairs
 
 	// discardedArrivals counts the arrivals dropped at each airport because the
 	// scenario lands no traffic there. It is reported the first time an airport
@@ -305,7 +370,7 @@ func newHistoricalTrafficProvider(s *Sim, flights []av.Flight, arrivalPercentage
 // can't be placed at all are reported.
 func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	departureSpawnLead time.Duration) *publishedTrafficProvider {
-	p := &publishedTrafficProvider{}
+	p := &publishedTrafficProvider{routed: makeRoutedPairs()}
 
 	rerouted := make(map[string]string)
 	var unroutable []string
@@ -335,24 +400,18 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 			continue
 		}
 
-		origin, substituted := flight.Other, false
-		group, ok := s.inboundFlowForArrival(flight.Airport, origin)
+		placement, ok := s.placeArrival(flight.Airport, flight.Other, flight.AircraftType,
+			p.routed.originsByDestination)
 		if !ok {
-			substitute, ok := s.nearestRoutedOrigin(flight.Airport, origin)
-			if !ok {
-				unroutable = append(unroutable, origin+"->"+flight.Airport)
-				continue
-			}
-			rerouted[origin+"->"+flight.Airport] = substitute
-			origin, substituted = substitute, true
-			if group, ok = s.inboundFlowForArrival(flight.Airport, origin); !ok {
-				unroutable = append(unroutable, origin+"->"+flight.Airport)
-				continue
-			}
+			unroutable = append(unroutable, flight.Other+"->"+flight.Airport)
+			continue
+		}
+		if placement.substitute != "" {
+			rerouted[flight.Other+"->"+flight.Airport] = placement.substitute
 		}
 
 		p.arrivals = append(p.arrivals, publishedFlight{flight: flight, spawn: spawn,
-			origin: origin, group: group, substituted: substituted})
+			placement: placement})
 	}
 
 	if len(flights) > 0 {
@@ -389,62 +448,175 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	return p
 }
 
-// inboundFlowForArrival returns the scenario inbound flow that carries traffic
-// from origin to arrivalAirport. Only the flows this scenario works count:
-// putting an arrival on one it doesn't model would hand the controller traffic
-// down a feeder nobody is working. More than one flow can serve an origin and
-// the flows are held in a map, so the choice is sorted to keep it from varying
-// between runs.
-func (s *Sim) inboundFlowForArrival(arrivalAirport, origin string) (string, bool) {
-	var candidates []string
-	for group, inboundFlow := range s.State.InboundFlows {
-		if !s.State.LaunchConfig.InboundFlowEnabled[group][arrivalAirport] {
-			continue
-		}
-		if _, err := resolvePublishedArrival(inboundFlow.Arrivals, arrivalAirport, origin); err == nil {
-			candidates = append(candidates, group)
-		}
+// placeArrival decides how a published flight into arrivalAirport from origin is
+// flown: the inbound flow and arrival that carry it, the route it files, and the
+// airport standing in for its origin when the scenario has no way to fly it from
+// where it really came from.
+func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
+	routedOrigins map[string][]string) (arrivalPlacement, bool) {
+	candidates := s.candidateArrivals(arrivalAirport)
+	if len(candidates) == 0 {
+		return arrivalPlacement{}, false
 	}
-	slices.Sort(candidates)
 
-	if len(candidates) > 0 {
-		return candidates[0], true
+	// An arrival that names the origin is the scenario saying in so many words
+	// that this is how traffic from there comes in.
+	if c, ok := arrivalListingOrigin(candidates, arrivalAirport, origin); ok {
+		return c.placement("", "", "own route"), true
 	}
-	return "", false
+
+	// Failing that, the route database says how the pair is really flown.
+	if c, route, ok := arrivalForCityPair(candidates, arrivalAirport, origin, aircraftType); ok {
+		return c.placement(route, "", "faa route"), true
+	}
+
+	// Neither knows this origin, so fly the flight the way the nearest airport
+	// one of them does know is flown: from JFK, Norfolk stands in for Kill Devil
+	// Hills. Real traffic comes from far more airports than either source
+	// covers, and arriving as one's neighbors do beats not arriving at all. The
+	// flight files its own route rather than the substitute's, which starts
+	// somewhere it has never been.
+	if substitute, ok := s.nearestRoutedOrigin(candidates, arrivalAirport, origin, routedOrigins); ok {
+		how := "nearest route, from " + substitute
+		if c, ok := arrivalListingOrigin(candidates, arrivalAirport, substitute); ok {
+			return c.placement("", substitute, how), true
+		}
+		if c, _, ok := arrivalForCityPair(candidates, arrivalAirport, substitute, aircraftType); ok {
+			return c.placement("", substitute, how), true
+		}
+	}
+
+	return s.arrivalFromDirection(candidates, arrivalAirport, origin)
 }
 
-// nearestRoutedOrigin finds the airport closest to origin that the scenario has
-// an arrival route from. Real traffic comes from far more airports than a
-// scenario names, so this lets a flight from an unlisted airport arrive the way
-// its neighbors do rather than not at all. Only the flows this scenario works
-// are considered, for the same reason inboundFlowForArrival skips the rest: an
-// origin reachable only down a flow the scenario doesn't model is no substitute
-// at all.
-func (s *Sim) nearestRoutedOrigin(arrivalAirport, origin string) (string, bool) {
-	from, ok := av.DB.Airports[origin]
-	if !ok {
+func (c candidateArrival) placement(filedRoute, substitute, how string) arrivalPlacement {
+	return arrivalPlacement{group: c.group, index: c.index, filedRoute: filedRoute,
+		substitute: substitute, how: how}
+}
+
+// publishedArrivalHeadingTie is how close two arrivals' directions must be for
+// which of them starts farther out to decide between them. Inside this they are
+// the same way in as far as an approaching flight is concerned, and the one that
+// starts farthest out is the gate: the closer one is a feeder that turns traffic
+// onto a downwind inside the TRACON.
+const publishedArrivalHeadingTie = 10 // degrees
+
+// publishedSubstituteFraction is how much of the trip an airport drawn from the
+// route database may be away from the airport it stands in for, at either end.
+const publishedSubstituteFraction = 0.5
+
+// arrivalFromDirection picks the arrival that comes in from closest to the
+// direction the origin lies in. This is the last resort: a scenario that names
+// no origins and whose traffic the route database doesn't cover says where its
+// traffic comes from only through where its arrivals appear, so that geometry is
+// all that is left to go on.
+func (s *Sim) arrivalFromDirection(candidates []candidateArrival, arrivalAirport,
+	origin string) (arrivalPlacement, bool) {
+	ap, apOK := av.DB.Airports[normalizeAirportCode(arrivalAirport)]
+	from, fromOK := av.DB.Airports[normalizeAirportCode(origin)]
+	if !apOK || !fromOK {
+		return arrivalPlacement{}, false
+	}
+	toOrigin := math.GreatCircleHeading(ap.Location, from.Location)
+
+	best, bestBucket, bestDistance := -1, 0, float32(0)
+	for i, c := range candidates {
+		if len(c.arr.Waypoints) == 0 {
+			continue
+		}
+		spawn := c.arr.Waypoints[0].Location
+		fromGate := math.Heading2LL(ap.Location, spawn, s.State.NmPerLongitude)
+		difference := math.HeadingDifference(fromGate, toOrigin)
+		if difference > PublishedArrivalMaxHeadingDifference {
+			continue
+		}
+		// Quantizing the difference lets how far out an arrival starts decide
+		// between ones pointing much the same way, without letting it override a
+		// meaningfully better-aligned one.
+		bucket := int(difference) / publishedArrivalHeadingTie
+		distance := math.NMDistance2LL(ap.Location, spawn)
+		if best == -1 || bucket < bestBucket || (bucket == bestBucket && distance > bestDistance) {
+			best, bestBucket, bestDistance = i, bucket, distance
+		}
+	}
+	if best == -1 {
+		return arrivalPlacement{}, false
+	}
+	return candidates[best].placement("", "", "nearest gate"), true
+}
+
+// nearestRoutedOrigin finds the airport closest to origin that there is some way
+// to fly this arrival airport from: either an arrival the scenario is running
+// names it, or the route database has a route for the pair. The substitute must
+// lie in the same direction as the real origin, or it would come in through the
+// wrong gate however close it is.
+func (s *Sim) nearestRoutedOrigin(candidates []candidateArrival, arrivalAirport, origin string,
+	routedOrigins map[string][]string) (string, bool) {
+	arrivalAirport = normalizeAirportCode(arrivalAirport)
+	ap, apOK := av.DB.Airports[arrivalAirport]
+	from, fromOK := av.DB.Airports[normalizeAirportCode(origin)]
+	if !apOK || !fromOK {
 		return "", false
+	}
+	toOrigin := math.GreatCircleHeading(ap.Location, from.Location)
+
+	possible := make(map[string]bool)
+	for _, c := range candidates {
+		for _, airline := range c.arr.Airlines[arrivalAirport] {
+			possible[normalizeAirportCode(airline.Airport)] = true
+		}
+	}
+
+	// The route database covers thousands of airports, so searching it without
+	// a bound turns up a nearest one for any origin at all: Bangor is the
+	// closest airport with a JFK route to Zurich, and its only route there is a
+	// terminal-en-route one. A stand-in says how traffic arrives only if it is a
+	// neighbor of the real origin rather than merely the closest thing on the
+	// way, so it has to be a small part of the trip. A scenario's own origins
+	// are curated and stand without that test.
+	limit := publishedSubstituteFraction * math.NMDistance2LL(from.Location, ap.Location)
+	for _, routed := range routedOrigins[arrivalAirport] {
+		if location, ok := av.DB.Airports[routed]; ok &&
+			math.NMDistance2LL(from.Location, location.Location) <= limit {
+			possible[routed] = true
+		}
 	}
 
 	best, bestDistance := "", float32(0)
-	for group, inboundFlow := range s.State.InboundFlows {
-		if !s.State.LaunchConfig.InboundFlowEnabled[group][arrivalAirport] {
+	for candidate := range possible {
+		location, ok := av.DB.Airports[candidate]
+		if !ok || candidate == arrivalAirport {
 			continue
 		}
-		for _, arrival := range inboundFlow.Arrivals {
-			for _, airline := range arrival.Airlines[arrivalAirport] {
-				candidate, ok := av.DB.Airports[airline.Airport]
-				if !ok {
-					continue
-				}
-				d := math.NMDistance2LL(from.Location, candidate.Location)
-				if best == "" || d < bestDistance {
-					best, bestDistance = airline.Airport, d
-				}
-			}
+		if math.HeadingDifference(math.GreatCircleHeading(ap.Location, location.Location),
+			toOrigin) > PublishedArrivalMaxHeadingDifference {
+			continue
+		}
+		if d := math.NMDistance2LL(from.Location, location.Location); best == "" || d < bestDistance {
+			best, bestDistance = candidate, d
 		}
 	}
 	return best, best != ""
+}
+
+// routedPairs indexes the route database both ways, so that finding a stand-in
+// for a city pair it doesn't cover doesn't walk the whole thing per flight.
+type routedPairs struct {
+	originsByDestination map[string][]string
+	destinationsByOrigin map[string][]string
+}
+
+func makeRoutedPairs() routedPairs {
+	routed := routedPairs{
+		originsByDestination: make(map[string][]string),
+		destinationsByOrigin: make(map[string][]string),
+	}
+	for pair := range av.DB.AirportPairRoutes {
+		from, to := normalizeAirportCode(pair.From), normalizeAirportCode(pair.To)
+		routed.originsByDestination[to] = append(routed.originsByDestination[to], from)
+		routed.destinationsByOrigin[from] = append(routed.destinationsByOrigin[from], to)
+	}
+	return routed
 }
 
 func (p *publishedTrafficProvider) createIFRDeparture(s *Sim, airport string,
@@ -484,7 +656,8 @@ func (p *publishedTrafficProvider) createIFRDeparture(s *Sim, airport string,
 	}
 	slices.Sort(categories)
 
-	ac, err := s.createPublishedIFRDepartureNoLock(published.flight, airport, runway, categories)
+	ac, err := s.createPublishedIFRDepartureNoLock(published.flight, airport, runway,
+		categories, p.routed.destinationsByOrigin)
 	p.departures = append(p.departures[:index], p.departures[index+1:]...)
 
 	if errors.Is(err, errNoScenarioRoute) {
@@ -528,8 +701,7 @@ func (p *publishedTrafficProvider) createInbound(s *Sim, group string,
 		return nil, published.spawn.Sub(s.State.SimTime), nil
 	}
 
-	ac, err := s.createPublishedArrivalNoLock(published.flight, published.origin,
-		group, published.substituted)
+	ac, err := s.createPublishedArrivalNoLock(published.flight, published)
 	if errors.Is(err, errPublishedArrivalSpawnConflict) {
 		// Leave this arrival where it is and retry shortly, so that it keeps
 		// its place while the preceding one moves clear of the spawn point.
@@ -549,7 +721,7 @@ func (p *publishedTrafficProvider) nextArrivalFor(s *Sim, group string,
 	rates map[string]float32) int {
 	for i := 0; i < len(p.arrivals); {
 		published := p.arrivals[i]
-		if published.group != group {
+		if published.placement.group != group {
 			i++
 			continue
 		}

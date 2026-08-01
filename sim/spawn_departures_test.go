@@ -316,16 +316,16 @@ func seedTestRoutes(t *testing.T, routes []av.AirportPairRoute) {
 func TestResolvePublishedDepartureExactDestination(t *testing.T) {
 	s := publishedDepartureSim("KTGT")
 
-	_, _, _, dep, filedRoute, err := s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KTGT", "B738")
+	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
 	}
-	if dep.Destination != "KTGT" {
-		t.Fatalf("destination = %q, want KTGT", dep.Destination)
+	if placement.dep.Destination != "KTGT" {
+		t.Fatalf("destination = %q, want KTGT", placement.dep.Destination)
 	}
-	if filedRoute != "" {
-		t.Fatalf("filed route = %q, want the scenario departure's own route", filedRoute)
+	if placement.filedRoute != "" {
+		t.Fatalf("filed route = %q, want the scenario departure's own route", placement.filedRoute)
 	}
 }
 
@@ -333,16 +333,16 @@ func TestResolvePublishedDepartureByProximity(t *testing.T) {
 	seedTestAirports(t)
 	s := publishedDepartureSim("KEAS")
 
-	_, _, _, dep, filedRoute, err := s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KTGT", "B738")
+	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
 	}
-	if dep.Destination != "KEAS" {
-		t.Fatalf("destination = %q, want nearby KEAS", dep.Destination)
+	if placement.dep.Destination != "KEAS" {
+		t.Fatalf("destination = %q, want nearby KEAS", placement.dep.Destination)
 	}
-	if filedRoute != "" {
-		t.Fatalf("filed route = %q, want the scenario departure's own route", filedRoute)
+	if placement.filedRoute != "" {
+		t.Fatalf("filed route = %q, want the scenario departure's own route", placement.filedRoute)
 	}
 
 	// A destination dead on the flight's heading but far beyond it loses to
@@ -353,13 +353,13 @@ func TestResolvePublishedDepartureByProximity(t *testing.T) {
 	ap.ExitCategories["FARWY"] = "jet"
 	ap.DepartureRoutes["30L"]["FARWY"] = &av.ExitRoute{}
 
-	_, _, _, dep, _, err = s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KTGT", "B738")
+	placement, err = s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
 	}
-	if dep.Destination != "KEAS" {
-		t.Fatalf("destination = %q, want KEAS over on-heading but distant KFAR", dep.Destination)
+	if placement.dep.Destination != "KEAS" {
+		t.Fatalf("destination = %q, want KEAS over on-heading but distant KFAR", placement.dep.Destination)
 	}
 }
 
@@ -369,8 +369,8 @@ func TestResolvePublishedDepartureDropsFarDestinations(t *testing.T) {
 	seedTestAirports(t)
 	s := publishedDepartureSim("KEAS")
 
-	_, _, _, _, _, err := s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KSOU", "B738")
+	_, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KSOU", "B738", nil)
 	if !errors.Is(err, errNoScenarioRoute) {
 		t.Fatalf("resolvePublishedDeparture to KSOU: err = %v, want errNoScenarioRoute", err)
 	}
@@ -385,17 +385,17 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	seedTestRoutes(t, []av.AirportPairRoute{
 		{Route: "KORG NORTH J111 KTGT", Type: "H"},
 	})
-	_, _, _, dep, filedRoute, err := s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KTGT", "B738")
+	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
 	}
 	// Direction alone would pick EAST/KEAS; the filed route says NORTH.
-	if dep.Exit != "NORTH" {
-		t.Errorf("exit = %q, want NORTH from the route database", dep.Exit)
+	if placement.dep.Exit != "NORTH" {
+		t.Errorf("exit = %q, want NORTH from the route database", placement.dep.Exit)
 	}
-	if filedRoute != "KORG NORTH J111 KTGT" {
-		t.Errorf("filed route = %q, want the database route", filedRoute)
+	if placement.filedRoute != "KORG NORTH J111 KTGT" {
+		t.Errorf("filed route = %q, want the database route", placement.filedRoute)
 	}
 
 	// A CDR names its departure fix explicitly even when the route string
@@ -403,14 +403,14 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	seedTestRoutes(t, []av.AirportPairRoute{
 		{Route: "KORG ZZZZZ J111 KTGT", DepartureFix: "NORTH", Type: "CDR"},
 	})
-	_, _, _, dep, filedRoute, err = s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KTGT", "B738")
+	placement, err = s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
 	}
-	if dep.Exit != "NORTH" || filedRoute != "KORG ZZZZZ J111 KTGT" {
+	if placement.dep.Exit != "NORTH" || placement.filedRoute != "KORG ZZZZZ J111 KTGT" {
 		t.Errorf("got exit %q route %q, want NORTH via the CDR departure fix",
-			dep.Exit, filedRoute)
+			placement.dep.Exit, placement.filedRoute)
 	}
 
 	// If every real route leaves through an exit the scenario doesn't model,
@@ -420,16 +420,16 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	seedTestRoutes(t, []av.AirportPairRoute{
 		{Route: "KORG WSSST J22 KTGT", Type: "H"},
 	})
-	_, _, _, dep, filedRoute, err = s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KTGT", "B738")
+	placement, err = s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("unmodeled exits: %v", err)
 	}
-	if dep.Exit != "EAST" {
-		t.Errorf("exit = %q, want the directional fallback EAST", dep.Exit)
+	if placement.dep.Exit != "EAST" {
+		t.Errorf("exit = %q, want the directional fallback EAST", placement.dep.Exit)
 	}
-	if filedRoute != "" {
-		t.Errorf("filed route = %q, want the scenario departure's own route", filedRoute)
+	if placement.filedRoute != "" {
+		t.Errorf("filed route = %q, want the scenario departure's own route", placement.filedRoute)
 	}
 }
 
@@ -443,24 +443,24 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 		{Route: "KORG NORTH J111 KTGT", Type: "H", RNAVRequired: true},
 	})
 
-	_, _, _, dep, filedRoute, err := s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KTGT", "B738")
+	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture for a jet: %v", err)
 	}
-	if dep.Exit != "NORTH" || filedRoute == "" {
+	if placement.dep.Exit != "NORTH" || placement.filedRoute == "" {
 		t.Errorf("jet got exit %q route %q, want the RNAV database route via NORTH",
-			dep.Exit, filedRoute)
+			placement.dep.Exit, placement.filedRoute)
 	}
 
-	_, _, _, dep, filedRoute, err = s.resolvePublishedDeparture("KORG", "30L",
-		[]string{"jet"}, "KTGT", "C172")
+	placement, err = s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "C172", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture for a piston: %v", err)
 	}
-	if dep.Destination != "KEAS" || filedRoute != "" {
+	if placement.dep.Destination != "KEAS" || placement.filedRoute != "" {
 		t.Errorf("piston got %q route %q, want the directional fallback to KEAS",
-			dep.Destination, filedRoute)
+			placement.dep.Destination, placement.filedRoute)
 	}
 }
 
@@ -491,13 +491,211 @@ func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
 	}}
 
 	// Water is listed first and carries the larger rate; neither should matter.
-	_, _, _, dep, _, err := s.resolvePublishedDeparture("KJFK", "22R",
-		[]string{"Water", "Southwest"}, "KATL", "B738")
+	placement, err := s.resolvePublishedDeparture("KJFK", "22R",
+		[]string{"Water", "Southwest"}, "KATL", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
 	}
-	if dep.Exit != "RBV" || dep.Destination != "KATL" {
+	if placement.dep.Exit != "RBV" || placement.dep.Destination != "KATL" {
 		t.Errorf("Atlanta departure got exit %q to %q, expected RBV to KATL",
-			dep.Exit, dep.Destination)
+			placement.dep.Exit, placement.dep.Destination)
+	}
+}
+
+// seedTestExits adds the NORTH and EAST fixes to av.DB for the duration of the
+// test, north and east of KORG respectively.
+func seedTestExits(t *testing.T) {
+	original := make(map[string]av.Fix)
+	for _, fix := range []string{"NORTH", "EAST"} {
+		if f, ok := av.DB.Fixes[fix]; ok {
+			original[fix] = f
+		}
+	}
+	t.Cleanup(func() {
+		for _, fix := range []string{"NORTH", "EAST"} {
+			if f, ok := original[fix]; ok {
+				av.DB.Fixes[fix] = f
+			} else {
+				delete(av.DB.Fixes, fix)
+			}
+		}
+	})
+
+	nm := func(x, y float32) math.Point2LL {
+		return math.NM2LL([2]float32{x, y}, testNmPerLongitude)
+	}
+	av.DB.Fixes["NORTH"] = av.Fix{Id: "NORTH", Location: nm(0, 20)}
+	av.DB.Fixes["EAST"] = av.Fix{Id: "EAST", Location: nm(20, 0)}
+}
+
+// publishedOnlyDepartureSim is publishedDepartureSim for an airport authored
+// for published traffic only: it gives the same exits off 30L but no
+// "departures" at all.
+func publishedOnlyDepartureSim() *Sim {
+	s := publishedDepartureSim("KTGT")
+	s.State.Airports["KORG"].Departures = nil
+	return s
+}
+
+func TestCompatibleDeparturesWithoutDepartures(t *testing.T) {
+	s := publishedOnlyDepartureSim()
+
+	candidates := s.compatibleDepartures("KORG", "30L", []string{"jet"})
+	if len(candidates) != 2 {
+		t.Fatalf("got %d candidates, want one per exit off the runway", len(candidates))
+	}
+	for _, c := range candidates {
+		if c.dep.Destination != "" {
+			t.Errorf("synthesized candidate for %q has destination %q, want none",
+				c.dep.Exit, c.dep.Destination)
+		}
+	}
+	exits := []av.ExitID{candidates[0].dep.Exit, candidates[1].dep.Exit}
+	for _, want := range []av.ExitID{"NORTH", "EAST"} {
+		if !slices.Contains(exits, want) {
+			t.Errorf("candidate exits %v, missing %q", exits, want)
+		}
+	}
+
+	// The synthesized departures are distinct, not repeated views of one entry.
+	if candidates[0].dep == candidates[1].dep {
+		t.Error("both candidates point at the same departure")
+	}
+}
+
+// With no destinations to be nearest to, a published departure leaves by the
+// exit lying closest to the direction it is really going.
+func TestResolvePublishedDepartureByExitDirection(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	s := publishedOnlyDepartureSim()
+
+	for _, tc := range []struct {
+		destination string
+		exit        av.ExitID
+	}{{"KTGT", "EAST"}, {"KNOR", "NORTH"}} {
+		placement, err := s.resolvePublishedDeparture("KORG", "30L",
+			[]string{"jet"}, tc.destination, "B738", nil)
+		if err != nil {
+			t.Fatalf("resolvePublishedDeparture to %s: %v", tc.destination, err)
+		}
+		if placement.dep.Exit != tc.exit {
+			t.Errorf("departure to %s got exit %q, want %q", tc.destination, placement.dep.Exit, tc.exit)
+		}
+		if placement.filedRoute != "" {
+			t.Errorf("departure to %s filed %q, want no route", tc.destination, placement.filedRoute)
+		}
+	}
+
+	// Nothing heads south, so a southbound flight isn't launched at all.
+	_, err := s.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, "KSOU", "B738", nil)
+	if !errors.Is(err, errNoScenarioRoute) {
+		t.Errorf("resolvePublishedDeparture to KSOU: err = %v, want errNoScenarioRoute", err)
+	}
+}
+
+// A route naming more than one modeled exit leaves through the first of them;
+// the others are only fixes further along the way. "JFK DIXIE T438 ARD PNE" is
+// the real case: it goes out over DIXIE, whatever order the scenario happens to
+// list its departures in.
+func TestDepartureForRouteTakesTheFirstExitAlongIt(t *testing.T) {
+	route := av.AirportPairRoute{Route: "JFK DIXIE T438 ARD PNE"}
+	departures := []av.Departure{{Exit: "ARD"}, {Exit: "DIXIE"}}
+	candidates := []candidateDeparture{{dep: &departures[0]}, {dep: &departures[1]}}
+
+	c, ok := departureForRoute(route, candidates)
+	if !ok {
+		t.Fatal("departureForRoute found no exit on the route")
+	}
+	if c.dep.Exit != "DIXIE" {
+		t.Errorf("left through %q, expected DIXIE", c.dep.Exit)
+	}
+}
+
+// A route names the SID that reaches an exit as often as the exit fix itself.
+// JFK to Las Vegas is the real case: the scenario models the DEEZZ exit and the
+// route names DEEZZ6, the SID that gets there.
+func TestDepartureForRouteMatchesTheSID(t *testing.T) {
+	route := av.AirportPairRoute{
+		Route:        "KJFK DEEZZ6 CANDR J60 DJB CPONE JOT J60 HVE GGAPP CHOWW4 KLAS",
+		DepartureFix: "CANDR",
+	}
+	departures := []av.Departure{{Exit: "DEEZZ"}}
+	exitRoutes := map[av.ExitID]*av.ExitRoute{"DEEZZ": {SID: "DEEZZ6"}}
+	candidates := []candidateDeparture{{exitRoutes: exitRoutes, dep: &departures[0]}}
+
+	c, ok := departureForRoute(route, candidates)
+	if !ok {
+		t.Fatal("departureForRoute didn't match the DEEZZ6 SID")
+	}
+	if c.dep.Exit != "DEEZZ" {
+		t.Errorf("left through %q, expected DEEZZ", c.dep.Exit)
+	}
+}
+
+// The identifiers at a route's ends are airports, not fixes to leave through.
+func TestDepartureForRouteIgnoresTheAirportIdentifiers(t *testing.T) {
+	route := av.AirportPairRoute{Route: "JFK MERIT ROBUC3 BOS"}
+	departures := []av.Departure{{Exit: "BOS"}, {Exit: "JFK"}}
+	candidates := []candidateDeparture{{dep: &departures[0]}, {dep: &departures[1]}}
+
+	if _, ok := departureForRoute(route, candidates); ok {
+		t.Error("matched an exit named after one of the route's airports")
+	}
+}
+
+// A destination the route database doesn't cover leaves through the exit a
+// route to its nearest neighbor uses: Vero Beach has no route from JFK, but
+// Orlando 66nm away goes out over WAVEY, which is the Florida gate. The flight
+// files its own route, since Orlando's goes somewhere it isn't headed.
+func TestResolvePublishedDepartureSubstitutesANearbyDestination(t *testing.T) {
+	av.InitDB()
+
+	s := &Sim{State: &CommonState{
+		NmPerLongitude: 45,
+		Airports: map[string]*av.Airport{
+			"KJFK": {
+				ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "COATE": "North"},
+				DepartureRoutes: map[av.RunwayID]map[av.ExitID]*av.ExitRoute{
+					"22R": {"WAVEY": {SID: "JFK5"}, "COATE": {SID: "JFK5"}},
+				},
+			},
+		},
+		DepartureRunways: []DepartureRunway{
+			{Airport: "KJFK", Runway: "22R", Category: "Water"},
+			{Airport: "KJFK", Runway: "22R", Category: "North"},
+		},
+	}}
+
+	placement, err := s.resolvePublishedDeparture("KJFK", "22R", []string{"Water", "North"},
+		"KVRB", "B738", makeRoutedPairs().destinationsByOrigin)
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture to KVRB: %v", err)
+	}
+	if placement.dep.Exit != "WAVEY" {
+		t.Errorf("left through %q, expected WAVEY", placement.dep.Exit)
+	}
+	if placement.filedRoute != "" {
+		t.Errorf("filed route = %q, want the substitute's route left unfiled", placement.filedRoute)
+	}
+}
+
+// The route database still wins over direction when it knows the city pair.
+func TestResolvePublishedDepartureWithoutDeparturesUsesRouteDatabase(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	seedTestRoutes(t, []av.AirportPairRoute{{Route: "KORG NORTH J1 KTGT", Type: "H"}})
+	s := publishedOnlyDepartureSim()
+
+	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if placement.dep.Exit != "NORTH" {
+		t.Errorf("exit = %q, want the NORTH exit the real route uses", placement.dep.Exit)
+	}
+	if placement.filedRoute != "KORG NORTH J1 KTGT" {
+		t.Errorf("filed route = %q, want the real route", placement.filedRoute)
 	}
 }

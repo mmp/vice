@@ -120,8 +120,8 @@ func TestPublishedTrafficProviderOrdersArrivalsFromSelectedStartTime(t *testing.
 			t.Errorf("arrival %d = %s at %s, want %s at %s", i, got.flight.Callsign,
 				got.spawn.Time(), expected.callsign, expected.spawn.Time())
 		}
-		if got.group != "TEST" {
-			t.Errorf("arrival %d group = %q, want TEST", i, got.group)
+		if got.placement.group != "TEST" {
+			t.Errorf("arrival %d group = %q, want TEST", i, got.placement.group)
 		}
 	}
 }

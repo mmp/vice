@@ -3928,9 +3928,10 @@
                   <tr>
                     <td>"departures"</td>
                     <td>Array of objects</td>
-                    <td>Each object in the array defines a departure to a destination, including one or more airlines that fly that departure,
+                    <td>(<i>Optional</i>) Each object in the array defines a departure to a destination, including one or more airlines that fly that departure,
                       the type of aircraft flown, and information about the aircraft's path.  See <a href="#fe-departures">below for details
-                        of the departure object</a>.</td>
+                        of the departure object</a>. Omit it only in a scenario meant to be flown from a timetable or historical data, which
+                      brings its own destinations; see <a href="#fe-timetables">Timetables and Historical Traffic</a>.</td>
                   </tr>
                   <tr>
                     <td>"exit_categories"</td>
@@ -4193,8 +4194,9 @@
                   <tr>
                     <td>"airlines"</td>
                     <td>Array of objects</td>
-                    <td>Each object specifies an airline and the types of aircraft it flies on the route. See <a href="#fe-airlines-aircraft">Airlines
-                        and Aircraft</a> for the form of the airline objects.</td>
+                    <td>(<i>Optional</i>) Each object specifies an airline and the types of aircraft it flies on the route. See <a href="#fe-airlines-aircraft">Airlines
+                        and Aircraft</a> for the form of the airline objects. Without it the scenario's own generator can't fly this departure,
+                      though published traffic still uses its exit and route.</td>
                   </tr>
                   <tr>
                     <td>"description"</td>
@@ -4204,8 +4206,9 @@
                   <tr>
                     <td>"destination"</td>
                     <td>String</td>
-                    <td>The ICAO airport code for the destination. This is only used in flight strips and for the aircraft's datablock on the
-                      radar scope; it does not affect its routing.</td>
+                    <td>The ICAO airport code for the destination. For the scenario's own traffic this is only used in flight strips and for the
+                      aircraft's datablock on the radar scope and does not affect routing, but published traffic reads it as a statement of where
+                      this exit goes; see <a href="#fe-timetables">Timetables and Historical Traffic</a>.</td>
                   </tr>
                   <tr>
                     <td>"exit"</td>
@@ -4286,9 +4289,17 @@
                   <tr>
                     <td>"airlines"</td>
                     <td>Object</td>
-                    <td>Destination airports and airlines for the arrivals. These objects include both the members
+                    <td>(<i>Optional</i>) Destination airports and airlines for the arrivals. These objects include both the members
                       "icao", "fleet", and "types" members of the airline object documented in <a href="#fe-airlines-aircraft">Airlines and Aircraft</a>
-                      as well as some additional fields. See the example below.</td>
+                      as well as some additional fields. See the example below. Omit it only in a scenario meant to be flown from
+                      a timetable or historical data, and name the airports the arrival serves in "airports" instead; see
+                      <a href="#fe-timetables">Timetables and Historical Traffic</a>.</td>
+                  </tr>
+                  <tr>
+                    <td>"airports"</td>
+                    <td>Array of strings</td>
+                    <td>(<i>Optional</i>) The airports the arrival brings traffic to, for arrivals that give no "airlines" to
+                      imply them. The two may be combined; the arrival serves the union.</td>
                   </tr>
                   <tr>
                     <td>"assigned_altitude"</td>
@@ -4648,6 +4659,20 @@
   </p>
 
   <p>
+    Only the sources a scenario can actually be flown with are offered, and the
+    server decides which those are. "Timetable" appears where the primary
+    airport has one and "Historical" where the facility has flight data.
+    "Scenario" appears only where the scenario gives the airline lists its own
+    generator samples from: those lists are optional, so a facility meant to be
+    flown from recorded traffic can leave out every airport's "departures" and
+    every arrival's "airlines" and be offered the published sources alone. An
+    arrival that gives no "airlines" must name the airports it serves in
+    "airports" instead, and overflights always need their airlines since they
+    are randomly generated under every traffic source. A scenario that no
+    source can fly is a load error.
+  </p>
+
+  <p>
     A timetable is a single day's cycle of airline operations, without dates,
     played from a user-selected local start time. Each airport may provide one
     or more of them, allowing facilities to offer different traffic sets such as
@@ -4718,7 +4743,51 @@
     through an exit the scenario models, the flight takes that exit and files
     that route. Failing both, the flight is sent to the modeled destination
     nearest its real one, provided that destination lies in roughly the same
-    direction; a flight with nowhere plausible to go is not launched.
+    direction. Failing even that, it leaves through the exit a real route to the
+    nearest airport the database <i>does</i> cover uses &mdash; Vero Beach has no
+    route from JFK, but Orlando 66nm away goes out over WAVEY &mdash; so long as
+    that airport is close enough to be a neighbor of the real destination rather
+    than merely the nearest thing in that direction. Last, an airport that gives
+    no "departures" names no destinations to be nearest to, so its flights leave
+    by the exit lying closest to the direction they are really going. A flight
+    with nowhere plausible to go is not launched. A substituted route is used
+    only to choose the exit and is never filed, since it goes somewhere the
+    flight isn't headed.
+  </p>
+
+  <p>
+    Arrivals are placed the same way. An arrival that names the flight's origin
+    among its "airlines" flies it outright. Otherwise the route database is
+    consulted: a real route for the city pair that comes in over one of the
+    scenario's STARs or arrival fixes puts the flight on that arrival and files
+    that route, which is how a Norfolk flight into JFK ends up on the CAMRN5.
+    Failing that, the flight is flown the way the nearest airport either source
+    <i>does</i> know is flown &mdash; Norfolk stands in for Kill Devil Hills,
+    which no route covers &mdash; provided that airport lies in the same
+    direction and is a small enough part of the trip to be a neighbor of the
+    real origin rather than merely the closest thing on the way. Only when none
+    of that applies does the flight come in through the gate lying closest to
+    the direction its origin lies in, preferring the one that starts farthest
+    out where two point much the same way, since the closer of them is a feeder
+    onto a downwind rather than a way into the airspace.
+  </p>
+
+  <p>
+    An arrival is matched against a real route on the STAR it flies and the
+    fixes it flies over, never on its "route", which is the string shown on the
+    flight strip rather than the route flown. The identifiers at a route's two
+    ends are its airports and are not matched against either &mdash; every route
+    into JFK ends with "JFK". A departure leaves through the first of a route's
+    fixes that the scenario models and an arrival comes in over the last, those
+    being where each one enters and leaves the airspace. A route names either an
+    exit fix or the SID that reaches it, so both count: JFK to Las Vegas files
+    "KJFK DEEZZ6 CANDR J60&hellip;", and DEEZZ6 is the SID for the DEEZZ exit.
+  </p>
+
+  <p>
+    An origin more than 60 degrees away from the direction an arrival flies in
+    from is never plausible, which is what
+    <code>vice&nbsp;-lintarrivals</code> checks the scenario files for.
   </p>
 </section><!--//section-->
             <section class="docs-section" id="fe-vfr">

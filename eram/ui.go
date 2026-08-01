@@ -149,8 +149,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 					imgui.Text(name)
 
 					imgui.TableNextColumn()
-					airports := util.SortedMapKeys(arr.Airlines)
-					imgui.Text(strings.Join(airports, ", "))
+					imgui.Text(strings.Join(arr.ServedAirports(), ", "))
 
 					imgui.TableNextColumn()
 					if arr.Description != "" {

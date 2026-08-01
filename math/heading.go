@@ -105,6 +105,19 @@ func Heading2LL(from Point2LL, to Point2LL, nmPerLongitude float32) TrueHeading 
 	return TrueHeading(NormalizeHeading(angle))
 }
 
+// GreatCircleHeading returns the initial true heading from one point toward
+// another along a great circle. The flat approximation Heading2LL uses is fine
+// over a TRACON but not over an ocean: Tokyo is west of Anchorage the way an
+// airplane flies and southeast of it the way a flat map draws, and it is the
+// airplane that matters when the question is where traffic comes from.
+func GreatCircleHeading(from, to Point2LL) TrueHeading {
+	lat1, lat2 := Radians(from[1]), Radians(to[1])
+	dLon := Radians(to[0] - from[0])
+	y := Sin(dLon) * Cos(lat2)
+	x := Cos(lat1)*Sin(lat2) - Sin(lat1)*Cos(lat2)*Cos(dLon)
+	return TrueHeading(NormalizeHeading(Degrees(Atan2(y, x))))
+}
+
 func VectorHeading(v [2]float32) TrueHeading {
 	// Note that atan2() normally measures w.r.t. the +x axis and angles
 	// are positive for counter-clockwise. We want to measure w.r.t. +y and

@@ -238,7 +238,7 @@ func runLintArrivals(lg *log.Logger) error {
 		}
 	}
 	fmt.Printf("\n%d arrival origins lie more than %d degrees from the direction their "+
-		"arrival flies in from.\n", total, maxArrivalOriginHeadingDifference)
+		"arrival flies in from.\n", total, sim.PublishedArrivalMaxHeadingDifference)
 
 	return nil
 }

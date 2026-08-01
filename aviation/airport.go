@@ -21,7 +21,9 @@ type Airport struct {
 	TowerListIndex int `json:"tower_list"`
 
 	Approaches map[string]*Approach `json:"approaches,omitempty"`
-	Departures []Departure          `json:"departures,omitempty"`
+	// Departures is optional: an airport that only ever sees published
+	// traffic needs no more than its "departure_routes" to fly it.
+	Departures []Departure `json:"departures,omitempty"`
 
 	VFR struct {
 		Randoms VFRRandomsSpec `json:"random_routes"`
@@ -434,10 +436,6 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			e.ErrorString("destination airport %q unknown", dep.Destination)
 		}
 
-		if len(dep.Airlines) == 0 {
-			e.ErrorString(`No "airlines" specified for departure`)
-		}
-
 		// Make sure that all runways have a route to the exit
 		for rwy := range ap.DepartureRoutes {
 			if _, ok := LookupRunway(icao, rwy.Base()); !ok {
@@ -763,14 +761,16 @@ func (er ExitRoute) FinalHeading() int {
 type Departure struct {
 	Exit ExitID `json:"exit"`
 
-	Destination         string                  `json:"destination"`
-	Altitudes           util.SingleOrArray[int] `json:"altitude,omitempty"`
-	Route               string                  `json:"route"`
-	RouteWaypoints      WaypointArray           // not specified in user JSON
-	Airlines            []DepartureAirline      `json:"airlines"`
-	Scratchpad          string                  `json:"scratchpad"`           // optional
-	SecondaryScratchpad string                  `json:"secondary_scratchpad"` // optional
-	Description         string                  `json:"description"`
+	Destination    string                  `json:"destination"`
+	Altitudes      util.SingleOrArray[int] `json:"altitude,omitempty"`
+	Route          string                  `json:"route"`
+	RouteWaypoints WaypointArray           // not specified in user JSON
+	// Airlines is optional: without it the scenario can't generate its own
+	// departures here, but published traffic still flies the exit and route.
+	Airlines            []DepartureAirline `json:"airlines"`
+	Scratchpad          string             `json:"scratchpad"`           // optional
+	SecondaryScratchpad string             `json:"secondary_scratchpad"` // optional
+	Description         string             `json:"description"`
 }
 
 type DepartureAirline struct {

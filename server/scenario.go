@@ -309,14 +309,18 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 				}
 			}
 
-			if len(ap.Departures) == 0 {
-				e.ErrorString(`no "departures" specified for airport`)
-			}
-
+			// An airport with no "departures" is authored for published traffic
+			// only; its exits then come from "departure_routes" alone.
 			if rwy.Category != "" {
-				found := slices.ContainsFunc(ap.Departures, func(dep av.Departure) bool {
-					return ap.ExitCategories[dep.Exit] == rwy.Category
-				})
+				var found bool
+				if len(ap.Departures) > 0 {
+					found = slices.ContainsFunc(ap.Departures, func(dep av.Departure) bool {
+						return ap.ExitCategories[dep.Exit] == rwy.Category
+					})
+				} else {
+					found = util.SeqContainsFunc(maps.Keys(ap.DepartureRoutes[rwy.Runway]),
+						func(exit av.ExitID) bool { return ap.ExitCategories[exit] == rwy.Category })
+				}
 				if !found {
 					e.ErrorString("no departures have exit category %q", rwy.Category)
 				}
@@ -573,7 +577,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 						// arrivals in the group.
 						found := false
 						for _, ar := range flow.Arrivals {
-							if _, ok := ar.Airlines[airport]; ok {
+							if slices.Contains(ar.ServedAirports(), airport) {
 								found = true
 
 								// Make sure the airport has at least one

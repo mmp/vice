@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
 
@@ -21,17 +22,11 @@ import (
 // without noticing.
 //
 // Published traffic reads the same field as a statement of where a flow's
-// traffic comes from: a real flight is flown by the flow that lists its origin,
-// and one from an airport no flow lists is flown by the flow whose origins are
-// nearest to it. Origins that don't match the direction their arrival flies in
-// from therefore send real flights in through the wrong gate. Checking them is
-// what this does.
-
-// maxArrivalOriginHeadingDifference is how far an origin may lie from the
-// direction its arrival flies in from before it is worth reporting. Gates are
-// rarely less than this far apart, so a smaller difference doesn't say the
-// traffic would come in anywhere else.
-const maxArrivalOriginHeadingDifference = 60
+// traffic comes from: a real flight is flown by the flow that lists its origin
+// ahead of any other way of placing it, and one from an airport no flow lists
+// is flown by the flow whose origins are nearest to it. Origins that don't
+// match the direction their arrival flies in from therefore send real flights
+// in through the wrong gate. Checking them is what this does.
 
 // minArrivalSpawnDistance is how far out an arrival must appear for where it
 // appears to say anything about where its traffic came from. Inside of this a
@@ -90,7 +85,7 @@ func eachArrivalGate(flows map[string]*av.InboundFlow, nmPerLongitude float32,
 			// from, which is what its origins should agree with.
 			spawn := arr.Waypoints[0].Location
 
-			for _, airport := range util.SortedMapKeys(arr.Airlines) {
+			for _, airport := range arr.ServedAirports() {
 				ap, ok := av.DB.Airports[airport]
 				if !ok || math.NMDistance2LL(ap.Location, spawn) < minArrivalSpawnDistance {
 					continue // unknown, or a feeder rather than a gate
@@ -136,9 +131,9 @@ func checkArrivalOrigins(flows map[string]*av.InboundFlow, nmPerLongitude float3
 			}
 			seen[key] = true
 
-			toOrigin := greatCircleHeading(ap.Location, origin.Location)
+			toOrigin := math.GreatCircleHeading(ap.Location, origin.Location)
 			difference := math.HeadingDifference(gate.fromGate, toOrigin)
-			if difference <= maxArrivalOriginHeadingDifference {
+			if difference <= sim.PublishedArrivalMaxHeadingDifference {
 				continue
 			}
 
@@ -161,19 +156,6 @@ func checkArrivalOrigins(flows map[string]*av.InboundFlow, nmPerLongitude float3
 		return strings.Compare(a.gate.flow, b.gate.flow)
 	})
 	return problems
-}
-
-// greatCircleHeading returns the initial true heading from one point toward
-// another along a great circle. The flat approximation the sim uses is fine over
-// a TRACON but not over an ocean: Tokyo is west of Anchorage the way an airplane
-// flies and southeast of it the way a flat map draws, and it is the airplane
-// this is asking about.
-func greatCircleHeading(from, to math.Point2LL) math.TrueHeading {
-	lat1, lat2 := math.Radians(from[1]), math.Radians(to[1])
-	dLon := math.Radians(to[0] - from[0])
-	y := math.Sin(dLon) * math.Cos(lat2)
-	x := math.Cos(lat1)*math.Sin(lat2) - math.Sin(lat1)*math.Cos(lat2)*math.Cos(dLon)
-	return math.TrueHeading(math.NormalizeHeading(math.Degrees(math.Atan2(y, x))))
 }
 
 // printArrivalOriginProblems writes a facility's problems out, worst first.
