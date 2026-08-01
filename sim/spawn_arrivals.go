@@ -25,6 +25,12 @@ const publishedArrivalMinSpawnSeparationNM = 10
 
 var errPublishedArrivalSpawnConflict = errors.New("published arrival spawn point occupied")
 
+// errCallsignInUse means another aircraft is already flying a published flight's
+// callsign: the inbound leg of a turnaround that hasn't landed yet, most often.
+// A published callsign is the real one and can't be resampled, so the flight is
+// discarded rather than flown under a different one.
+var errCallsignInUse = errors.New("callsign is already in use")
+
 func (s *Sim) publishedArrivalSpawnConflict(candidate *Aircraft) bool {
 	for _, existing := range s.Aircraft {
 		if !existing.IsArrival() {
@@ -314,10 +320,7 @@ func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, published published
 		callsign,
 		s.EnforceUniqueCallsignSuffix,
 	) {
-		return nil, fmt.Errorf(
-			"published arrival callsign %s is already in use",
-			callsign,
-		)
+		return nil, fmt.Errorf("published arrival %s: %w", callsign, errCallsignInUse)
 	}
 
 	aircraftType := normalizeAircraftType(flight.AircraftType)

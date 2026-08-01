@@ -5,6 +5,8 @@ package sim
 
 import (
 	"encoding/json"
+	"fmt"
+	"slices"
 	"testing"
 	"time"
 
@@ -186,6 +188,149 @@ func TestPublishedTrafficProviderWaitsForPublishedTime(t *testing.T) {
 	}
 	if delay != 5*time.Minute {
 		t.Fatalf("delay = %s, want 5m", delay)
+	}
+}
+
+// testFlight is one published flight on a fixed day, named the way the flight
+// data names them: the facility airport it operates at and the airport at the
+// other end.
+func testFlight(callsign, airport, other string, departure bool, hour, minute int) av.Flight {
+	return av.Flight{
+		Airport:      airport,
+		Callsign:     callsign,
+		Other:        other,
+		AircraftType: "C560",
+		Day:          av.FlightDataDayNumber(time.Date(2026, time.July, 14, 0, 0, 0, 0, time.UTC)),
+		Minute:       hour*60 + minute,
+		Departure:    departure,
+	}
+}
+
+func flightNames(flights []av.Flight) []string {
+	names := make([]string, len(flights))
+	for i, f := range flights {
+		direction := "arrives"
+		if f.Departure {
+			direction = "departs"
+		}
+		names[i] = fmt.Sprintf("%s %s %s", f.Callsign, direction, f.Airport)
+	}
+	return names
+}
+
+// A flight whose ADS-B track came in pieces is recorded once per piece, so it
+// must be flown once rather than as several aircraft sharing a callsign.
+func TestDropRepeatedRecords(t *testing.T) {
+	for _, test := range []struct {
+		name    string
+		flights []av.Flight
+		want    []string
+	}{
+		{
+			name: "the same departure recorded twice a minute apart",
+			flights: []av.Flight{
+				testFlight("JTL881", "KORD", "KBMG", true, 11, 33),
+				testFlight("JTL881", "KORD", "KBMG", true, 11, 34),
+			},
+			want: []string{"JTL881 departs KORD"},
+		},
+		{
+			name: "repeats that disagree about the other airport are still one flight",
+			flights: []av.Flight{
+				testFlight("UAL219", "KORD", "PHNL", true, 14, 55),
+				testFlight("UAL219", "KORD", "KHAF", true, 14, 55),
+			},
+			want: []string{"UAL219 departs KORD"},
+		},
+		{
+			name: "a turnaround is two operations, not a repeat",
+			flights: []av.Flight{
+				testFlight("AAL2151", "KMSP", "KCLT", false, 17, 7),
+				testFlight("AAL2151", "KMSP", "KCLT", true, 17, 47),
+			},
+			want: []string{"AAL2151 arrives KMSP", "AAL2151 departs KMSP"},
+		},
+		{
+			name: "the same operation hours later is a second flight",
+			flights: []av.Flight{
+				testFlight("N435FG", "KMDW", "KJAX", true, 8, 0),
+				testFlight("N435FG", "KMDW", "KJAX", true, 18, 6),
+			},
+			want: []string{"N435FG departs KMDW", "N435FG departs KMDW"},
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			kept, dropped := dropRepeatedRecords(test.flights)
+			if got := flightNames(kept); !slices.Equal(got, test.want) {
+				t.Errorf("kept %v, want %v", got, test.want)
+			}
+			if want := len(test.flights) - len(test.want); dropped != want {
+				t.Errorf("dropped %d, want %d", dropped, want)
+			}
+		})
+	}
+}
+
+// A flight between two of a facility's airports is recorded at both ends, so it
+// must be flown once--as its departure--rather than as two aircraft sharing a
+// callsign.
+func TestDropReturnedLegs(t *testing.T) {
+	for _, test := range []struct {
+		name    string
+		flights []av.Flight
+		want    []string
+	}{
+		{
+			name: "leg recorded at both ends flies as its departure",
+			flights: []av.Flight{
+				testFlight("N5367H", "KARR", "KDPA", true, 20, 43),
+				testFlight("N5367H", "KDPA", "KARR", false, 20, 50),
+			},
+			want: []string{"N5367H departs KARR"},
+		},
+		{
+			name: "arrival from outside the facility is untouched",
+			flights: []av.Flight{
+				testFlight("DAL1", "KMSP", "KATL", false, 14, 12),
+			},
+			want: []string{"DAL1 arrives KMSP"},
+		},
+		{
+			name: "each leg of a round trip is recognized on its own",
+			flights: []av.Flight{
+				testFlight("N37RD", "KLOT", "KARR", true, 16, 33),
+				testFlight("N37RD", "KARR", "KLOT", false, 16, 45),
+				testFlight("N37RD", "KARR", "KLOT", true, 17, 21),
+				testFlight("N37RD", "KLOT", "KARR", false, 17, 32),
+			},
+			want: []string{"N37RD departs KLOT", "N37RD departs KARR"},
+		},
+		{
+			name: "the same callsign flown again hours later is a separate flight",
+			flights: []av.Flight{
+				testFlight("JLG426", "KMDW", "KDPA", true, 10, 0),
+				testFlight("JLG426", "KDPA", "KMDW", false, 16, 0),
+			},
+			want: []string{"JLG426 departs KMDW", "JLG426 arrives KDPA"},
+		},
+		{
+			name: "a departure elsewhere doesn't stand in for the arrival's own",
+			flights: []av.Flight{
+				testFlight("EJA610", "KORD", "KMDW", true, 2, 28),
+				testFlight("EJA610", "KDPA", "KARR", false, 2, 44),
+			},
+			want: []string{"EJA610 departs KORD", "EJA610 arrives KDPA"},
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			kept, dropped := dropReturnedLegs(test.flights)
+			if got := flightNames(kept); !slices.Equal(got, test.want) {
+				t.Errorf("kept %v, want %v", got, test.want)
+			}
+			if want := len(test.flights) - len(test.want); dropped != want {
+				t.Errorf("dropped %d, want %d", dropped, want)
+			}
+		})
 	}
 }
 

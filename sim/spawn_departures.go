@@ -704,7 +704,7 @@ func (s *Sim) createPublishedIFRDepartureNoLock(flight av.Flight, departureAirpo
 	}
 
 	if av.CallsignClashesWithExisting(s.currentCallsigns(), callsign, s.EnforceUniqueCallsignSuffix) {
-		return nil, fmt.Errorf("published departure callsign %s is already in use", callsign)
+		return nil, fmt.Errorf("published departure %s: %w", callsign, errCallsignInUse)
 	}
 
 	aircraftType := normalizeAircraftType(flight.AircraftType)

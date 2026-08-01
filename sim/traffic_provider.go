@@ -70,6 +70,17 @@ const (
 	// historicalFlightWindow is how much flight data a sim is launched with. A
 	// sim running longer than this runs out of historical traffic.
 	historicalFlightWindow = 8 * time.Hour
+
+	// intraFacilityLegWindow bounds how long after a departure its arrival at
+	// another of the facility's airports may be, so that a callsign flown twice
+	// in one day isn't mistaken for a single leg.
+	intraFacilityLegWindow = 3 * time.Hour
+
+	// repeatedRecordWindow is how close two records of the same operation have
+	// to be to be the same one recorded twice. An aircraft can't take off from
+	// an airport twice this close together--it is still flying the first one--so
+	// nothing this near is a second operation.
+	repeatedRecordWindow = 30 * time.Minute
 )
 
 // PublishedArrivalMaxHeadingDifference is how far an origin may lie from the
@@ -283,6 +294,22 @@ type publishedTrafficProvider struct {
 	// discardedDepartures likewise counts the departures dropped for each city
 	// pair the scenario has no plausible route for.
 	discardedDepartures map[string]int
+
+	// discardedClashes likewise counts the flights dropped for each callsign
+	// something else was already flying when they came due.
+	discardedClashes map[string]int
+}
+
+// noteCallsignClash reports a published flight discarded because its callsign
+// was in use, the first time each one turns up.
+func (p *publishedTrafficProvider) noteCallsignClash(callsign string, err error) {
+	if p.discardedClashes == nil {
+		p.discardedClashes = make(map[string]int)
+	}
+	if p.discardedClashes[callsign] == 0 {
+		fmt.Printf("Dropping %v\n", err)
+	}
+	p.discardedClashes[callsign]++
 }
 
 // newTimetableTrafficProvider prepares a built-in timetable's flights. A
@@ -363,6 +390,82 @@ func newHistoricalTrafficProvider(s *Sim, flights []av.Flight, arrivalPercentage
 	return newPublishedTrafficProvider(s, kept, flightSpawnLead)
 }
 
+// dropRepeatedRecords removes a record of an operation that is already there.
+// The historical data is derived from ADS-B tracks, and a flight whose track
+// came in pieces is recorded once per piece, minutes apart and sometimes
+// disagreeing about the airport at the other end. Only identical records are
+// merged when the data is written, so the rest arrive here and would otherwise
+// spawn as several aircraft sharing a callsign.
+func dropRepeatedRecords(flights []av.Flight) ([]av.Flight, int) {
+	// operation identifies what a record says the aircraft did, without the time
+	// or the far-end airport: those are what the repeats disagree about.
+	type operation struct {
+		callsign, airport string
+		departure         bool
+	}
+
+	last := make(map[operation]time.Time)
+	kept := make([]av.Flight, 0, len(flights))
+	dropped := 0
+	for _, flight := range flights {
+		key := operation{flight.Callsign, flight.Airport, flight.Departure}
+		if previous, ok := last[key]; ok &&
+			!flight.Time().After(previous.Add(repeatedRecordWindow)) {
+			dropped++
+			continue
+		}
+		last[key] = flight.Time()
+		kept = append(kept, flight)
+	}
+	return kept, dropped
+}
+
+// dropReturnedLegs removes the arrival record of a flight between two airports
+// the facility works. Such a flight is recorded twice, once at each end: a
+// facility's flight data has to stand on its own, so a leg from one of its
+// airports to another appears as a departure at the first and an arrival at the
+// second. Flying both spawns two aircraft sharing a callsign, and since the leg
+// is short the arrival comes due while the departure is still at the gate. The
+// departure is the half flown: it starts where the aircraft really was.
+//
+// A departure is matched at most once, so an aircraft that flies from one of the
+// facility's airports to another and back has each of its legs recognized rather
+// than the first departure standing for both.
+func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
+	// leg identifies a flight by callsign and where it flew between, so that an
+	// arrival can find the departure that recorded the same leg at its far end.
+	type leg struct {
+		callsign, from, to string
+	}
+
+	pending := make(map[leg][]time.Time)
+	for _, flight := range flights {
+		if flight.Departure {
+			key := leg{flight.Callsign, flight.Airport, flight.Other}
+			pending[key] = append(pending[key], flight.Time())
+		}
+	}
+
+	kept := make([]av.Flight, 0, len(flights))
+	dropped := 0
+	for _, flight := range flights {
+		if !flight.Departure {
+			key := leg{flight.Callsign, flight.Other, flight.Airport}
+			// Flights come in time order, so the oldest unmatched departure of
+			// this leg is the one that ends here.
+			if times := pending[key]; len(times) > 0 &&
+				!flight.Time().Before(times[0]) &&
+				!flight.Time().After(times[0].Add(intraFacilityLegWindow)) {
+				pending[key] = times[1:]
+				dropped++
+				continue
+			}
+		}
+		kept = append(kept, flight)
+	}
+	return kept, dropped
+}
+
 // newPublishedTrafficProvider builds the spawn queues from flights in time
 // order; departures spawn departureSpawnLead ahead of their published times and
 // arrivals flightSpawnLead ahead of theirs. Arrivals whose origin no inbound
@@ -371,6 +474,12 @@ func newHistoricalTrafficProvider(s *Sim, flights []av.Flight, arrivalPercentage
 func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	departureSpawnLead time.Duration) *publishedTrafficProvider {
 	p := &publishedTrafficProvider{routed: makeRoutedPairs()}
+
+	// One real flight must enter the sim once, however many records it left in
+	// the data: the second aircraft to reach the runway under a callsign is
+	// turned away, and there is no second callsign to give it.
+	flights, repeated := dropRepeatedRecords(flights)
+	flights, returned := dropReturnedLegs(flights)
 
 	rerouted := make(map[string]string)
 	var unroutable []string
@@ -427,6 +536,12 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	fmt.Printf("Published traffic: %d departures, %d arrivals to fly", len(p.departures), len(p.arrivals))
 	if missed > 0 {
 		fmt.Printf("; skipped %d flights already due before the clock starts", missed)
+	}
+	if repeated > 0 {
+		fmt.Printf("; merged %d flights the data records more than once", repeated)
+	}
+	if returned > 0 {
+		fmt.Printf("; %d arrivals from another of the facility's airports are flying as departures", returned)
 	}
 	fmt.Printf("\n")
 
@@ -676,6 +791,10 @@ func (p *publishedTrafficProvider) createIFRDeparture(s *Sim, airport string,
 		p.discardedDepartures[pair]++
 		return nil, p.departureDelay(s, airport), nil
 	}
+	if errors.Is(err, errCallsignInUse) {
+		p.noteCallsignClash(published.flight.Callsign, err)
+		return nil, p.departureDelay(s, airport), nil
+	}
 	return ac, p.departureDelay(s, airport), err
 }
 
@@ -709,6 +828,10 @@ func (p *publishedTrafficProvider) createInbound(s *Sim, group string,
 	}
 	p.arrivals = append(p.arrivals[:index], p.arrivals[index+1:]...)
 
+	if errors.Is(err, errCallsignInUse) {
+		p.noteCallsignClash(published.flight.Callsign, err)
+		return nil, p.arrivalDelay(s, group, rates), nil
+	}
 	return ac, p.arrivalDelay(s, group, rates), err
 }
 
