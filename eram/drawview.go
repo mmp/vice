@@ -5,6 +5,7 @@
 package eram
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -780,6 +781,11 @@ func (ep *ERAMPane) applyRowSource(v *View, titleFont *renderer.Font) {
 
 	if rs.SelectableState != nil && rs.OnRowToggle != nil {
 		panic("ViewRowSource: SelectableState and OnRowToggle are mutually exclusive")
+	}
+	if rs.VisibleRows < 1 || rs.MaxCols < 1 {
+		panic(fmt.Sprintf("ViewRowSource %q: VisibleRows (%d) and MaxCols (%d) must both be at least 1; "+
+			"a zero here usually means the view's preferences were never initialized",
+			v.ID, rs.VisibleRows, rs.MaxCols))
 	}
 
 	font := ep.ERAMFont(rs.FontIndex)

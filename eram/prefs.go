@@ -319,6 +319,15 @@ func makeDefaultPreferences() *Preferences {
 	prefs.WX.Font = 2
 	prefs.WX.Bright = 80
 
+	prefs.BeaconCodeView.Visible = false
+	prefs.BeaconCodeView.Position = [2]float32{100, 900}
+	prefs.BeaconCodeView.Opaque = false
+	prefs.BeaconCodeView.ShowBorder = true
+	prefs.BeaconCodeView.Lines = 11
+	prefs.BeaconCodeView.Col = 5
+	prefs.BeaconCodeView.Font = 2
+	prefs.BeaconCodeView.Bright = 100
+
 	prefs.CheckList.Visible = checkListHidden
 	prefs.CheckList.Position = [2]float32{100, 900}
 	prefs.CheckList.Opaque = false
@@ -423,6 +432,23 @@ func (p *Preferences) Upgrade(from, to int) {
 			p.CheckList.Font = 2
 			p.CheckList.Highlight = 40
 			p.CheckList.Text = 76
+		}
+	}
+	if from < 79 {
+		// makeDefaultPreferences() never initialized BeaconCodeView, so prefs
+		// created at versions 76-78 still have it zero-valued even though the
+		// version-76 upgrade above backfills older saves.
+		if p.BeaconCodeView.Lines == 0 {
+			p.BeaconCodeView.ShowBorder = true
+			p.BeaconCodeView.Lines = 11
+			p.BeaconCodeView.Col = 5
+			p.BeaconCodeView.Font = 2
+			p.BeaconCodeView.Bright = 100
+		}
+		// Position was never set by any earlier upgrade either; a dragged view
+		// never lands exactly on the origin, so zero means uninitialized.
+		if p.BeaconCodeView.Position == [2]float32{} {
+			p.BeaconCodeView.Position = [2]float32{100, 900}
 		}
 	}
 }

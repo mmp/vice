@@ -86,7 +86,8 @@ import (
 // 76: backfill ERAM BeaconCodeView and CheckList prefs (both were added without bumping the version, so 74/75 saves may have them zero-valued)
 // 77: historical flight data: ScenarioSpec gained HistoricalFlightInterval/HaveHistoricalFlights, Sim gained StartTime, LaunchConfig gained enable maps
 // 78: ScenarioSpec.HaveHistoricalFlights replaced by TrafficSources, the traffic sources the server will run the scenario with
-const ViceSerializeVersion = 78
+// 79: backfill ERAM BeaconCodeView prefs again (makeDefaultPreferences never initialized them, so 76-78 saves have them zero-valued)
+const ViceSerializeVersion = 79
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

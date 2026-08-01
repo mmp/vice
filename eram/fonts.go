@@ -6,11 +6,16 @@ import (
 	"slices"
 	"strconv"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 )
 
 func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
+	// Clamp before indexing: a view whose Font preference was never
+	// initialized passes 0, which would otherwise index off the front of
+	// systemFont.
+	size = math.Clamp(size, 1, 4)
 	if runtime.GOOS == "darwin" {
 		if size == 1 {
 			return ep.systemFont[10] // Smaller size for macOS
@@ -20,14 +25,7 @@ func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
 	if size == 4 {
 		size = 3 // Missing one font, so skip it for now
 	}
-	if size < 1 {
-		size = 1
-	}
-	if size > 3 {
-		size = 3
-	}
-	size -= 1
-	return ep.systemFont[size]
+	return ep.systemFont[size-1]
 }
 
 func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
