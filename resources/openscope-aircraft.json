@@ -7154,6 +7154,47 @@
       }
     },
     {
+      "name": "ATR 42-600",
+      "icao": "AT46",
+      "engines": {
+        "number": 2,
+        "type": "T"
+      },
+      "weightClass": "L",
+      "category": {
+        "srs": 3,
+        "lahso": 3,
+        "cwt": "G"
+      },
+      "ceiling": 25000,
+      "rate": {
+        "climb": 1600,
+        "descent": 1800,
+        "accelerate": 5.9,
+        "decelerate": 3
+      },
+      "runway": {
+        "takeoff": 1.09,
+        "landing": 1.03
+      },
+      "speed": {
+        "min": 100,
+        "landing": 120,
+        "cruise": 299,
+        "cruiseM": null,
+        "max": 325,
+        "maxM": null
+      },
+      "capability": {
+        "ils": true,
+        "fix": true
+      },
+      "turn": {
+        "maxBankAngle": 25,
+        "maxBankRate": 5
+      }
+    },
+    {
       "name": "ATR 72-500",
       "icao": "AT72",
       "engines": {

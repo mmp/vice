@@ -5105,8 +5105,7 @@
               "icao": "LXJ"
             },
             {
-              "icao": "WUP",
-              "fleet": "jet"
+              "icao": "WUP"
             }
           ],
           "destination": "KSDL",
@@ -6177,8 +6176,7 @@
               "fleet": "GAjet"
             },
             {
-              "icao": "WUP",
-              "fleet": "jet"
+              "icao": "WUP"
             }
           ],
           "destination": "KDAL",
@@ -22279,7 +22277,6 @@
               },
               {
                 "icao": "WUP",
-                "fleet": "jet",
                 "airport": "KSDL"
               },
               {
@@ -22486,7 +22483,6 @@
               },
               {
                 "icao": "WUP",
-                "fleet": "jet",
                 "airport": "KAPA"
               },
               {
@@ -22509,7 +22505,6 @@
               },
               {
                 "icao": "WUP",
-                "fleet": "jet",
                 "airport": "KSDL"
               }
             ]
@@ -22749,7 +22744,6 @@
               },
               {
                 "icao": "WUP",
-                "fleet": "turbine",
                 "airport": "KAPA"
               },
               {
@@ -22764,7 +22758,6 @@
               },
               {
                 "icao": "WUP",
-                "fleet": "turbine",
                 "airport": "KSDL"
               }
             ]
@@ -23128,7 +23121,6 @@
               },
               {
                 "icao": "USC",
-                "fleet": "jet",
                 "airport": "KSUS"
               },
               {

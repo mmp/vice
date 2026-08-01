@@ -3278,6 +3278,22 @@
       }
     },
     {
+      "icao": "aip",
+      "name": "Alpine Air Express",
+      "callsign": {
+        "name": "Alpine Air",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["B190", 60],
+          ["BE99", 14],
+          ["B350", 1],
+          ["C208", 1]
+        ]
+      }
+    },
+    {
       "icao": "aiz",
       "name": "Arkia Israeli Airlines",
       "callsign": {
@@ -7170,7 +7186,7 @@
       "icao": "xoj",
       "name": "Exojet",
       "callsign": {
-        "name": "Exojet",
+        "name": "X-O-jet",
         "callsignFormats": ["##", "###"]
       },
       "fleets": {
@@ -7178,6 +7194,17 @@
           ["CRJ2", 3],
           ["C750", 26]
         ]
+      }
+    },
+    {
+      "icao": "xlj",
+      "name": "XCEL Jet",
+      "callsign": {
+        "name": "Excel Jet",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [["LJ40", 4]]
       }
     },
     {
@@ -7237,21 +7264,13 @@
       "name": "Wheels up Private Jets",
       "callsign": {
         "name": "Up Jet",
-        "callsignFormats": ["##", "###"]
+        "callsignFormats": ["##", "###", "####"]
       },
       "fleets": {
         "default": [
-          ["E55P", 20],
-          ["CL30", 20],
-          ["CL35", 20],
-          ["B350", 10]
-        ],
-        "jet": [
-          ["E55P", 20],
-          ["CL30", 20],
-          ["CL35", 20]
-        ],
-        "turbine": [["B350", 10]]
+          ["E55P", 59],
+          ["CL30", 39]
+        ]
       }
     },
     {
@@ -10504,7 +10523,13 @@
           ["E135", 15],
           ["E140", 1],
           ["E145", 33]
-        ]
+        ],
+        "jets": [
+          ["E135", 15],
+          ["E140", 1],
+          ["E145", 33]
+        ],
+        "ATR": [["AT46", 3]]
       }
     },
     {
@@ -11895,10 +11920,10 @@
       },
       "fleets": {
         "default": [
-          ["E190", 10],
-          ["BCS3", 37]
+          ["E190", 6],
+          ["BCS3", 56]
         ],
-        "long": [["BCS3", 37]]
+        "long": [["BCS3", 56]]
       }
     },
     {
@@ -13344,6 +13369,17 @@
       }
     },
     {
+      "icao": "pcm",
+      "name": "West Air",
+      "callsign": {
+        "name": "Pac Valley",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["C208", 33]]
+      }
+    },
+    {
       "icao": "pdt",
       "name": "Piedmont Airlines",
       "callsign": {
@@ -14675,9 +14711,10 @@
       },
       "fleets": {
         "default": [
-          ["B738", 16],
-          ["B739", 5]
-        ]
+          ["B738", 64],
+          ["B739", 3]
+        ],
+        "cargo": [["B738", 20]]
       }
     },
     {
@@ -14909,6 +14946,27 @@
       }
     },
     {
+      "icao": "sis",
+      "name": "Silver Air",
+      "callsign": {
+        "name": "Silver Speed",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["GLF5", 3],
+          ["C750", 3],
+          ["C25B", 2],
+          ["C560", 2],
+          ["GLEX", 1],
+          ["CL60", 1],
+          ["C680", 1],
+          ["GALX", 1],
+          ["GLF4", 1]
+        ]
+      }
+    },
+    {
       "icao": "sjo",
       "name": "Spring Airlines Japan",
       "callsign": {
@@ -14965,7 +15023,7 @@
       "name": "SkyWest",
       "callsign": {
         "name": "SkyWest",
-        "callsignFormats": ["####", "###@"]
+        "callsignFormats": ["####", "####", "####", "####", "###@"]
       },
       "fleets": {
         "default": [
@@ -18360,7 +18418,7 @@
       "icao": "xa",
       "name": "General Aviation Mexico",
       "callsign": {
-        "name": "Xray Alpha",
+        "name": "X-Ray Alpha",
         "callsignFormats": ["@@@"]
       },
       "fleets": {
@@ -19785,16 +19843,11 @@
       "icao": "usc",
       "name": "Airnet II",
       "callsign": {
-        "name": "Star Check",
-        "callsignFormats": ["#", "##", "###"]
+        "name": "Starcheck",
+        "callsignFormats": ["1##"]
       },
       "fleets": {
-        "default": [
-          ["BE58", 7],
-          ["LJ35", 13]
-        ],
-        "jet": [["LJ35", 13]],
-        "piston": [["BE58", 7]]
+        "default": [["LJ35", 24]]
       }
     },
     {
@@ -20065,6 +20118,64 @@
       }
     },
     {
+      "icao": "SNAKE",
+      "name": "USMC",
+      "callsign": {
+        "name": "Snake",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["F18S", 22]]
+      }
+    },
+    {
+      "icao": "RAIDR",
+      "name": "USMC",
+      "callsign": {
+        "name": "RAIDR",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["C30J", 15]]
+      }
+    },
+    {
+      "icao": "GRZLY",
+      "name": "USMC",
+      "callsign": {
+        "name": "GRIZZLY",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["C560", 15],
+          ["BE20", 10]
+        ]
+      }
+    },
+    {
+      "icao": "DEVIL",
+      "name": "USMC",
+      "callsign": {
+        "name": "RED DEVIL",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["F18S", 22]]
+      }
+    },
+    {
+      "icao": "KNITE",
+      "name": "USMC",
+      "callsign": {
+        "name": "KNIGHT",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["F18S", 22]]
+      }
+    },
+    {
       "icao": "joker",
       "name": "USAF",
       "callsign": {
@@ -20073,6 +20184,17 @@
       },
       "fleets": {
         "default": [["F15", 10]]
+      }
+    },
+    {
+      "icao": "tyson",
+      "name": "USAF",
+      "callsign": {
+        "name": "TYSON",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["B738", 2]]
       }
     },
     {
