@@ -1365,7 +1365,23 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	// SIMULATION SETTINGS section
 	drawSectionHeader("Simulation Settings")
 
+	// A published flight's callsign is the one it really used, so a clash can't
+	// be settled by drawing another: the flight would be thrown away instead.
+	// Only the scenario's own generator can resample, so the setting is offered
+	// only there.
+	publishedTraffic := c.ScenarioSpec != nil &&
+		c.ScenarioSpec.LaunchConfig.TrafficSource != sim.TrafficSourceScenario
+	if publishedTraffic {
+		imgui.BeginDisabled()
+		c.NewSimRequest.EnforceUniqueCallsignSuffix = false
+	}
 	imgui.Checkbox("Ensure unique callsign suffixes", &c.NewSimRequest.EnforceUniqueCallsignSuffix)
+	if publishedTraffic {
+		imgui.EndDisabled()
+		imgui.SameLine()
+		imgui.Text("(" + c.ScenarioSpec.LaunchConfig.TrafficSource.String() +
+			" traffic flies the callsigns it really used)")
+	}
 
 	imgui.Text("Readback error interval:")
 	imgui.SameLine()
