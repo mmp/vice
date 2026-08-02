@@ -343,7 +343,7 @@ func (c *ControlClient) LoadVideoMapLibrary(filename string) (*av.MapLibrary, er
 		}
 	}
 	var vmf av.MapLibrary
-	err := c.client.callWithTimeout(server.GetMapLibraryRPC, &server.MapLibraryArgs{
+	err := c.client.CallWithTimeout(server.GetMapLibraryRPC, &server.MapLibraryArgs{
 		Filename: filename,
 	}, &vmf)
 	return &vmf, err
@@ -354,7 +354,7 @@ func (c *ControlClient) LoadVideoMapLibrary(filename string) (*av.MapLibrary, er
 // State.ScenarioBrief.
 func (c *ControlClient) ReloadScenarioBrief() error {
 	var result server.ReloadScenarioBriefResult
-	err := c.client.callWithTimeout(server.ReloadScenarioBriefRPC, server.ReloadScenarioBriefArgs{
+	err := c.client.CallWithTimeout(server.ReloadScenarioBriefRPC, server.ReloadScenarioBriefArgs{
 		Facility: c.State.Facility,
 	}, &result)
 	if err != nil {
@@ -366,7 +366,7 @@ func (c *ControlClient) ReloadScenarioBrief() error {
 
 func (c *ControlClient) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.AircraftDisplayState, error) {
 	var state sim.AircraftDisplayState
-	err := c.client.callWithTimeout(server.GetAircraftDisplayStateRPC, &server.AircraftSpecifier{
+	err := c.client.CallWithTimeout(server.GetAircraftDisplayStateRPC, &server.AircraftSpecifier{
 		ControllerToken: c.controllerToken,
 		Callsign:        callsign,
 	}, &state)
@@ -375,7 +375,7 @@ func (c *ControlClient) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.A
 
 func (c *ControlClient) GetSerializeSim() (*sim.Sim, error) {
 	var s sim.Sim
-	err := c.client.callWithTimeout(server.GetSerializeSimRPC, c.controllerToken, &s)
+	err := c.client.CallWithTimeout(server.GetSerializeSimRPC, c.controllerToken, &s)
 	return &s, err
 }
 
