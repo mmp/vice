@@ -792,8 +792,7 @@ func (s *Sim) isVirtualController(pos ControlPosition) bool {
 	if _, ok := s.ControlPositions[TCP(pos)]; !ok {
 		return false
 	}
-	humanPositions := s.ScenarioDefaultConsolidation.AllPositions()
-	return !slices.Contains(humanPositions, TCP(pos))
+	return !s.ScenarioDefaultConsolidation.IsHumanPosition(pos)
 }
 
 ///////////////////////////////////////////////////////////////////////////
