@@ -106,22 +106,7 @@ func (s *Sim) loadHistoricalFlights() {
 		return
 	}
 
-	// Every airport the scenario generates IFR traffic at, not just the primary
-	// one; departures and arrivals separately, since a scenario often departs
-	// airports it doesn't land.
-	departureAirports := make(map[string]bool)
-	arrivalAirports := make(map[string]bool)
-	lc := &s.State.LaunchConfig
-	for airport := range lc.DepartureRates {
-		departureAirports[airport] = true
-	}
-	for _, rates := range lc.InboundFlowRates {
-		for airport := range rates {
-			if airport != "overflights" {
-				arrivalAirports[airport] = true
-			}
-		}
-	}
+	departureAirports, arrivalAirports := s.State.LaunchConfig.IFRAirports()
 
 	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
 	// before the selected time, and it warms up by flying the traffic from that
@@ -134,6 +119,25 @@ func (s *Sim) loadHistoricalFlights() {
 		return
 	}
 	s.historicalFlights = flights
+}
+
+// IFRAirports returns every airport the scenario generates IFR traffic at, departures and
+// arrivals separately. It reads the rate maps, not the enable maps: which flows are switched on
+// can change while a sim runs, so that is judged flight by flight at spawn.
+func (lc *LaunchConfig) IFRAirports() (departures, arrivals map[string]bool) {
+	departures = make(map[string]bool)
+	arrivals = make(map[string]bool)
+	for airport := range lc.DepartureRates {
+		departures[airport] = true
+	}
+	for _, rates := range lc.InboundFlowRates {
+		for airport := range rates {
+			if airport != "overflights" {
+				arrivals[airport] = true
+			}
+		}
+	}
+	return
 }
 
 func includeTimetableFlight(flight TimetableFlight, percentage int) bool {
