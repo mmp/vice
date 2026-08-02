@@ -73,6 +73,7 @@ type NewSimConfiguration struct {
 	airportMETAR    map[string][]wx.METAR
 	metarAirports   []string
 	metarFacility   string
+	metarWidth      int // characters; see metarText
 	fetchMETARError error
 
 	// Winds aloft data for the current facility
@@ -740,6 +741,12 @@ func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports [
 	c.fetchMETARError = metarErr
 	c.metarAirports = airports
 	c.metarFacility = facility
+	c.metarWidth = 0
+	for _, ms := range metars {
+		for _, m := range ms {
+			c.metarWidth = max(c.metarWidth, len(metarObservation(m)))
+		}
+	}
 	c.atmosByTime = atmosByTime
 	c.isTRACON = isTRACON
 	c.windsAloftAltitudes = windsAloftAltitudes
@@ -753,10 +760,25 @@ func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports [
 	c.updateStartTimeForRunways(spec)
 }
 
+// metarObservation is the observation as it is shown in the configuration
+// window: without its report type and without the remarks.
+func metarObservation(m wx.METAR) string {
+	return strings.TrimPrefix(strings.TrimPrefix(m.Observation(), "METAR "), "SPECI ")
+}
+
+// metarText pads the observation out to the width of the longest one on hand.
+// The METAR is drawn in a fixed-width font and is the widest thing in the
+// window, so without this the window resizes under the cursor as the start time
+// is scrubbed from one observation to the next.
+func (c *NewSimConfiguration) metarText(m wx.METAR) string {
+	return fmt.Sprintf("%-*s", c.metarWidth, metarObservation(m))
+}
+
 func (c *NewSimConfiguration) clearWeatherLocked() {
 	c.airportMETAR = nil
 	c.metarAirports = nil
 	c.metarFacility = ""
+	c.metarWidth = 0
 	c.fetchMETARError = nil
 	c.atmosByTime = nil
 	c.isTRACON = false
@@ -2849,9 +2871,10 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
 			c.updateStartTimeForRunways(c.ScenarioSpec)
 		}
-		if local, ok := c.startTimeLocal(); ok {
+		if location, ok := av.DB.AirportTimeZones[c.ScenarioSpec.PrimaryAirport]; ok {
 			imgui.SameLine()
-			imgui.Text(local)
+			LocalTimeSlider(&c.NewSimRequest.StartTime, location, c.startTimeIntervals(c.ScenarioSpec),
+				timeSliderWidth)
 		}
 
 		// METAR
@@ -2861,7 +2884,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.TableNextColumn()
 		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
 		ui.fixedFont.ImguiPush()
-		imgui.Text(strings.TrimPrefix(strings.TrimPrefix(currentMetar.Observation(), "METAR "), "SPECI "))
+		imgui.Text(c.metarText(currentMetar))
 		imgui.PopFont()
 
 		if c.showAllMETAR && len(metarAirports) > 1 {
@@ -2872,7 +2895,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 				imgui.TableNextColumn()
 				ui.fixedFont.ImguiPush()
 				m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
-				imgui.Text(strings.TrimPrefix(strings.TrimPrefix(m.Observation(), "METAR "), "SPECI "))
+				imgui.Text(c.metarText(m))
 				imgui.PopFont()
 			}
 		}
@@ -2917,19 +2940,6 @@ func (c *NewSimConfiguration) startTimeIntervals(spec *server.ScenarioSpec) []ut
 		}
 	}
 	return intervals
-}
-
-// startTimeLocal formats the start time in the primary airport's local time,
-// which is how a controller working it thinks about the clock.
-func (c *NewSimConfiguration) startTimeLocal() (string, bool) {
-	if c.ScenarioSpec == nil {
-		return "", false
-	}
-	location, ok := av.DB.AirportTimeZones[c.ScenarioSpec.PrimaryAirport]
-	if !ok {
-		return "", false
-	}
-	return c.NewSimRequest.StartTime.In(location).Format("15:04 local"), true
 }
 
 // Default sim start times are picked between these local hours at the primary
