@@ -267,12 +267,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 			s.VirtualControllers = append(s.VirtualControllers, tcp)
 		}
 	}
-	addControllersFromWaypoints := func(route []av.Waypoint) {
-		for _, wp := range route {
-			addController(sim.TCP(wp.HandoffController()))
-			for _, group := range wp.ActionGroups() {
-				addController(sim.TCP(group.Actions.HandoffController))
-			}
+	addControllersFromWaypoints := func(route av.WaypointArray) {
+		for _, tcp := range route.HandoffControllers() {
+			addController(sim.TCP(tcp))
 		}
 	}
 	// Make sure all of the controllers used in airspace awareness will be there.
@@ -1784,6 +1781,8 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 			func(cc *sim.STARSController) bool { return len(cc.FlightFollowingAirspace) > 0 })
 		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, *scenario.VFFRequestRate,
 			vfrAirports, scenario.InboundFlowDefaultRates, haveVFRReportingRegions)
+		sim.MarkBackgroundTraffic(sg.Airports, sg.InboundFlows, &scenario.ControllerConfiguration,
+			sg.FacilityConfig.ControlPositions, &lc)
 
 		spec := &ScenarioSpec{
 			ControllerConfiguration: &scenario.ControllerConfiguration,
@@ -2672,7 +2671,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	loadEmergencies(e)
 
-	timetableCatalog, err := sim.LoadTimetableCatalog(util.GetResourcesFS(), "traffic/timetables")
+	timetableCatalog, err := sim.LoadBuiltinTimetables()
 	if err != nil {
 		e.Error(err)
 	} else {

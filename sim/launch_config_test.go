@@ -103,3 +103,79 @@ func TestDepartureEnabledEqual(t *testing.T) {
 		t.Errorf("maps with different keys reported equal")
 	}
 }
+
+// backgroundRateConfig is a launch config with traffic at two airports, one of
+// which the scenario flies purely for realism.
+func backgroundRateConfig() *LaunchConfig {
+	return &LaunchConfig{
+		DepartureRateScale:   1,
+		InboundFlowRateScale: 1,
+		DepartureRates: map[string]map[av.RunwayID]map[string]float32{
+			"KMSP": {"30L": {"": 20}},
+			"KSTP": {"32": {"": 5}},
+		},
+		DepartureBackground: map[string]map[av.RunwayID]map[string]bool{
+			"KSTP": {"32": {"": true}},
+		},
+		InboundFlowRates: map[string]map[string]float32{
+			"WORKED":     {"KMSP": 30, "overflights": 4},
+			"BACKGROUND": {"KMSP": 12, "overflights": 6},
+		},
+		InboundFlowBackground: map[string]map[string]bool{
+			"BACKGROUND": {"KMSP": true, "overflights": true},
+		},
+	}
+}
+
+// The Worked rates leave out the traffic nobody works; the Total ones, which
+// bound what the sim generates, count all of it.
+func TestWorkedRatesExcludeBackgroundTraffic(t *testing.T) {
+	lc := backgroundRateConfig()
+
+	for _, test := range []struct {
+		name       string
+		total      float32
+		worked     float32
+		wantTotal  float32
+		wantWorked float32
+	}{
+		{"departures", lc.TotalDepartureRate(), lc.WorkedDepartureRate(), 25, 20},
+		{"arrivals", lc.TotalArrivalRate(), lc.WorkedArrivalRate(), 42, 30},
+		{"overflights", lc.TotalOverflightRate(), lc.WorkedOverflightRate(), 10, 4},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			if test.total != test.wantTotal {
+				t.Errorf("total %s rate = %v, want %v", test.name, test.total, test.wantTotal)
+			}
+			if test.worked != test.wantWorked {
+				t.Errorf("worked %s rate = %v, want %v", test.name, test.worked, test.wantWorked)
+			}
+		})
+	}
+
+	// The rate scales apply to both alike.
+	lc.DepartureRateScale, lc.InboundFlowRateScale = 2, 2
+	if got := lc.WorkedDepartureRate(); got != 40 {
+		t.Errorf("scaled worked departure rate = %v, want 40", got)
+	}
+	if got := lc.WorkedArrivalRate(); got != 60 {
+		t.Errorf("scaled worked arrival rate = %v, want 60", got)
+	}
+}
+
+// A config nobody classified--one built without a scenario to walk--has to go on
+// reporting all of its traffic rather than none of it.
+func TestWorkedRatesWithoutClassification(t *testing.T) {
+	lc := backgroundRateConfig()
+	lc.DepartureBackground, lc.InboundFlowBackground = nil, nil
+
+	if got, want := lc.WorkedDepartureRate(), lc.TotalDepartureRate(); got != want {
+		t.Errorf("worked departure rate = %v, want the total %v", got, want)
+	}
+	if got, want := lc.WorkedArrivalRate(), lc.TotalArrivalRate(); got != want {
+		t.Errorf("worked arrival rate = %v, want the total %v", got, want)
+	}
+	if got, want := lc.WorkedOverflightRate(), lc.TotalOverflightRate(); got != want {
+		t.Errorf("worked overflight rate = %v, want the total %v", got, want)
+	}
+}

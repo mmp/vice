@@ -10,6 +10,8 @@ import (
 	"path"
 	"sort"
 	"strings"
+
+	"github.com/mmp/vice/util"
 )
 
 // Timetable describes one timetable distributed in Vice's resources.
@@ -84,64 +86,132 @@ func (c TimetableCatalog) ForAirport(airport string) []Timetable {
 	return timetables
 }
 
+// timetableResourceRoot is where the built-in timetables live in the resources.
+const timetableResourceRoot = "traffic/timetables"
+
+// LoadBuiltinTimetables reads every timetable Vice ships with. Only the server
+// wants them all, and only at startup, to record which airports have one; a sim
+// or a preview flies a single timetable and should ask for that airport's alone.
+func LoadBuiltinTimetables() (TimetableCatalog, error) {
+	return LoadTimetableCatalog(util.GetResourcesFS(), timetableResourceRoot)
+}
+
+// LoadAirportTimetables reads the timetables Vice ships with for one airport.
+func LoadAirportTimetables(airport string) (TimetableCatalog, error) {
+	return LoadTimetableCatalogForAirport(util.GetResourcesFS(), timetableResourceRoot, airport)
+}
+
+// LoadTimetableCatalogForAirport is LoadTimetableCatalog for a single airport,
+// reading only that airport's directory. Finding one timetable shouldn't cost
+// more each time a timetable is added for some other airport, which is what
+// parsing every airport's CSVs to find it would come to. An airport with no
+// directory of its own has no timetables, which is not an error.
+func LoadTimetableCatalogForAirport(filesystem fs.FS, root, airport string) (TimetableCatalog, error) {
+	if normalizeAirportCode(airport) == "" {
+		return TimetableCatalog{}, nil
+	}
+	return loadTimetables(filesystem, root, normalizeAirportCode(airport))
+}
+
 // LoadTimetableCatalog discovers CSV files in airport directories
 // directly below root. For example, timetables/KMSP/Summer Weekday.csv is
 // exposed as a KMSP timetable named "Summer Weekday".
 func LoadTimetableCatalog(filesystem fs.FS, root string) (TimetableCatalog, error) {
-	var catalog TimetableCatalog
-	seen := make(map[string]string)
+	return loadTimetables(filesystem, root, "")
+}
+
+// loadTimetables reads the timetables below root: all of them, or only those of
+// the airport onlyAirport names if it is non-empty. An airport's directory is
+// named for it, but not necessarily in the same case, so match directories
+// rather than assume a name: reading the root costs nothing next to parsing the
+// CSVs below it.
+func loadTimetables(filesystem fs.FS, root, onlyAirport string) (TimetableCatalog, error) {
 	root = path.Clean(root)
-
-	err := fs.WalkDir(filesystem, root, func(filename string, entry fs.DirEntry, walkErr error) error {
-		if walkErr != nil {
-			return walkErr
-		}
-		if entry.IsDir() || !strings.EqualFold(path.Ext(entry.Name()), ".csv") {
-			return nil
-		}
-
-		// Only load CSV files directly inside an airport directory:
-		// root/KMSP/Timetable.csv. Nested files are intentionally ignored.
-		directory := path.Dir(filename)
-		if path.Dir(directory) != root {
-			return nil
-		}
-
-		airport := normalizeAirportCode(path.Base(directory))
-		if airport == "" {
-			return fmt.Errorf("%s: unable to determine airport from directory", filename)
-		}
-
-		name := strings.TrimSpace(strings.TrimSuffix(entry.Name(), path.Ext(entry.Name())))
-		if name == "" {
-			return fmt.Errorf("%s: timetable filename must have a name before the .csv extension", filename)
-		}
-
-		key := airport + "/" + strings.ToLower(name)
-		if previous, ok := seen[key]; ok {
-			return fmt.Errorf("duplicate built-in timetable %q in %s and %s", airport+"/"+name, previous, filename)
-		}
-
-		timetable, err := loadDiscoveredTimetable(filesystem, filename, airport, name)
-		if err != nil {
-			return err
-		}
-
-		seen[key] = filename
-		catalog.Timetables = append(catalog.Timetables, timetable)
-		return nil
-	})
+	directories, err := fs.ReadDir(filesystem, root)
 	if err != nil {
 		return TimetableCatalog{}, fmt.Errorf("load built-in timetables: %w", err)
 	}
 
-	sort.Slice(catalog.Timetables, func(i, j int) bool {
-		if catalog.Timetables[i].Airport != catalog.Timetables[j].Airport {
-			return catalog.Timetables[i].Airport < catalog.Timetables[j].Airport
+	var catalog TimetableCatalog
+	seen := make(map[string]string)
+	for _, directory := range directories {
+		if !directory.IsDir() {
+			continue
 		}
-		return catalog.Timetables[i].Name < catalog.Timetables[j].Name
-	})
+		airport := normalizeAirportCode(directory.Name())
+		if onlyAirport != "" && airport != onlyAirport {
+			continue
+		}
+
+		// Two directories naming the same airport: neither holds all of the
+		// airport's timetables, so no load of them can be trusted.
+		if previous, ok := seen[airport]; ok {
+			return TimetableCatalog{}, fmt.Errorf("load built-in timetables: %s has timetables in "+
+				"both %s and %s", airport, previous, directory.Name())
+		}
+		seen[airport] = directory.Name()
+
+		timetables, err := loadAirportTimetables(filesystem, root, directory.Name())
+		if err != nil {
+			return TimetableCatalog{}, fmt.Errorf("load built-in timetables: %w", err)
+		}
+		catalog.Timetables = append(catalog.Timetables, timetables...)
+	}
+
+	sortTimetables(catalog.Timetables)
 	return catalog, nil
+}
+
+// loadAirportTimetables reads the CSV files directly inside one airport's
+// directory. Nested files are intentionally ignored.
+func loadAirportTimetables(filesystem fs.FS, root, directory string) ([]Timetable, error) {
+	airport := normalizeAirportCode(directory)
+	if airport == "" {
+		return nil, fmt.Errorf("%s: unable to determine airport from directory", path.Join(root, directory))
+	}
+
+	entries, err := fs.ReadDir(filesystem, path.Join(root, directory))
+	if err != nil {
+		return nil, err
+	}
+
+	var timetables []Timetable
+	seen := make(map[string]string)
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.EqualFold(path.Ext(entry.Name()), ".csv") {
+			continue
+		}
+		filename := path.Join(root, directory, entry.Name())
+
+		name := strings.TrimSpace(strings.TrimSuffix(entry.Name(), path.Ext(entry.Name())))
+		if name == "" {
+			return nil, fmt.Errorf("%s: timetable filename must have a name before the .csv extension", filename)
+		}
+
+		key := strings.ToLower(name)
+		if previous, ok := seen[key]; ok {
+			return nil, fmt.Errorf("duplicate built-in timetable %q in %s and %s", airport+"/"+name,
+				previous, filename)
+		}
+
+		timetable, err := loadDiscoveredTimetable(filesystem, filename, airport, name)
+		if err != nil {
+			return nil, err
+		}
+
+		seen[key] = filename
+		timetables = append(timetables, timetable)
+	}
+	return timetables, nil
+}
+
+func sortTimetables(timetables []Timetable) {
+	sort.Slice(timetables, func(i, j int) bool {
+		if timetables[i].Airport != timetables[j].Airport {
+			return timetables[i].Airport < timetables[j].Airport
+		}
+		return timetables[i].Name < timetables[j].Name
+	})
 }
 
 func loadDiscoveredTimetable(
