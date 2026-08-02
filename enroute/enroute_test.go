@@ -85,16 +85,16 @@ func TestAirwayDirection(t *testing.T) {
 	}
 	ruleDown := RouteRule{Type: "airway", ID: "ZZ99", Direction: "down"}
 	ruleBoth := RouteRule{Type: "airway", ID: "ZZ99", Direction: "both"}
-	if !routeRuleMatches(ruleDown, down, "A B C") {
+	if !routeRuleMatches(ruleDown, down, "A B C", "") {
 		t.Error("down rule should match a down-flying flight")
 	}
-	if routeRuleMatches(ruleDown, up, "C B A") {
+	if routeRuleMatches(ruleDown, up, "C B A", "") {
 		t.Error("down rule should NOT match an up-flying flight")
 	}
-	if !routeRuleMatches(ruleBoth, up, "C B A") {
+	if !routeRuleMatches(ruleBoth, up, "C B A", "") {
 		t.Error("both rule should match either direction")
 	}
-	if !routeRuleMatches(ruleBoth, down, "A B C") {
+	if !routeRuleMatches(ruleBoth, down, "A B C", "") {
 		t.Error("both rule should match either direction")
 	}
 }
@@ -134,7 +134,7 @@ func TestAirwayDirectionAdjacentFixes(t *testing.T) {
 		t.Errorf("direction with no trailing neighbor = %q, want \"\" (undetermined)", d)
 	}
 	ruleDown := RouteRule{Type: "airway", ID: "ZZ99", Direction: "down"}
-	if routeRuleMatches(ruleDown, noNeighbor, "X A") {
+	if routeRuleMatches(ruleDown, noNeighbor, "X A", "") {
 		t.Error("directional rule should NOT match when direction is undetermined")
 	}
 }
@@ -356,5 +356,34 @@ func TestDeriveCoordinationFix(t *testing.T) {
 	t.Logf("north arrival (zone) rule=%s fix=%s", res.Rule, res.Fix)
 	if !res.OK || res.Fix != "NNN" {
 		t.Errorf("zone arrival from north: got (%q, ok=%v), want NNN", res.Fix, res.OK)
+	}
+}
+
+// TestWaypointsRule exercises the "waypoints" route rule type: it matches the
+// fixes the flight flies over, not its filed route string, skipping
+// synthesized and lat-long waypoints, and a longer sequence can't be shadowed
+// by a rule matching a sub-run of it.
+func TestWaypointsRule(t *testing.T) {
+	traj := &Trajectory{
+		FlightType: av.FlightTypeArrival,
+		Waypoints: []av.Waypoint{
+			{Fix: "N041.15.44.343,W089.22.56.202"},
+			{Fix: "PLANO"},
+			{Fix: "_synth"},
+			{Fix: "DPA"},
+		},
+	}
+	entry := &ArtsCoordEntry{RouteBased: []RouteRule{
+		{Type: "waypoints", ID: "PLANO DPA JOT", DefaultFix: "XXX"},
+		{Type: "waypoints", ID: "PLANO DPA", DefaultFix: "PLA"},
+	}}
+	// The filed route says nothing about the flown waypoints.
+	res := DeriveCoordinationFix(entry, traj, Attrs{}, av.FlightTypeArrival, "/. KRENA")
+	if !res.OK || res.Fix != "PLA" {
+		t.Errorf("waypoints rule: got (%q, ok=%v), want PLA", res.Fix, res.OK)
+	}
+
+	if got := NamedFixes(traj.Waypoints); len(got) != 2 || got[0] != "PLANO" || got[1] != "DPA" {
+		t.Errorf("NamedFixes = %v, want [PLANO DPA]", got)
 	}
 }

@@ -1348,15 +1348,23 @@
                                         <tr>
                                           <td>"type"</td>
                                           <td>String</td>
-                                          <td>What the rule matches: "sid", "star", "airway", or
-                                            "string".</td>
+                                          <td>What the rule matches: "sid", "star", "airway",
+                                            "string", or "waypoints".</td>
                                         </tr>
                                         <tr>
                                           <td>"id"</td>
                                           <td>String</td>
                                           <td>The procedure or airway id, or for "string" the route
                                             text to look for&mdash;a single fix or several fixes that
-                                            must appear as a contiguous run in the filed route.</td>
+                                            must appear as a contiguous run in the filed route. For
+                                            "waypoints", a space-separated fix sequence matched
+                                            against the fixes the flight actually flies over rather
+                                            than its filed route string: the flight's named waypoints,
+                                            ignoring synthesized waypoints and raw lat-long positions
+                                            and with the trailing destination airport dropped. The
+                                            sequence must match starting at the flight's first fix,
+                                            so approach or runway fixes appended past the adapted
+                                            sequence don't disturb the match.</td>
                                         </tr>
                                         <tr>
                                           <td>"direction"</td>
@@ -1364,9 +1372,9 @@
                                           <td>(<i>Optional</i>) "up", "down", or "both". This only
                                             affects "airway" rules: "down" matches flights flying the
                                             airway in the order its fixes are defined, "up" the
-                                            opposite, and "both" (the default) either way. For "sid",
-                                            "star", and "string" rules, this field is accepted but does
-                                            not affect matching.</td>
+                                            opposite, and "both" (the default) either way. For other
+                                            rule types, this field is accepted but does not affect
+                                            matching.</td>
                                         </tr>
                                         <tr>
                                           <td>"altitude_kind"</td>

@@ -34,10 +34,12 @@ type ArtsCoordEntry struct {
 	ZoneBased  []ZoneArea  `json:"zone_based"`
 }
 
-// RouteRule matches a filed route and supplies a coordination fix.
+// RouteRule matches a filed route and supplies a coordination fix. The
+// "waypoints" type matches the fixes the flight actually flies over rather
+// than its filed route string.
 type RouteRule struct {
-	Type         string     `json:"type"`          // sid | star | airway | string
-	ID           string     `json:"id"`            // procedure/route/airway id; for "string", the route string
+	Type         string     `json:"type"`          // sid | star | airway | string | waypoints
+	ID           string     `json:"id"`            // procedure/route/airway id; for "string"/"waypoints", the fix sequence
 	Direction    string     `json:"direction"`     // up | down | both (airway only; sid/star = down)
 	AltitudeKind string     `json:"altitude_kind"` // "Assigned" (default) | "Trajectory": which altitude the fix criteria compare
 	Fixes        []CoordFix `json:"fixes"`         // criteria-ordered; first match wins
@@ -188,11 +190,11 @@ func Validate(coord map[string]*ArtsCoordEntry, restrictions []Restriction, e *u
 		for i, r := range entry.RouteBased {
 			e.Push(fmt.Sprintf("route_based[%d]", i))
 			switch strings.ToLower(r.Type) {
-			case "sid", "star", "airway", "string":
+			case "sid", "star", "airway", "string", "waypoints":
 			case "":
-				e.ErrorString(`"type" is required (sid, star, airway, or string)`)
+				e.ErrorString(`"type" is required (sid, star, airway, string, or waypoints)`)
 			default:
-				e.ErrorString(`invalid "type" %q: want sid, star, airway, or string`, r.Type)
+				e.ErrorString(`invalid "type" %q: want sid, star, airway, string, or waypoints`, r.Type)
 			}
 			if r.ID == "" {
 				e.ErrorString(`"id" is required`)
@@ -366,8 +368,9 @@ type Result struct {
 func DeriveCoordinationFix(entry *ArtsCoordEntry, traj *Trajectory,
 	attrs Attrs, ft av.TypeOfFlight, routeStr string) Result {
 	// route_based first.
+	flownSeq := strings.Join(FlownFixes(traj.Waypoints, attrs.DestAirport), " ")
 	for _, rule := range entry.RouteBased {
-		if !routeRuleMatches(rule, traj.Waypoints, routeStr) {
+		if !routeRuleMatches(rule, traj.Waypoints, routeStr, flownSeq) {
 			continue
 		}
 		fix := selectCoordFix(rule.Fixes, rule.DefaultFix, traj, attrs, rule.AltitudeKind)
@@ -400,7 +403,7 @@ func DeriveCoordinationFix(entry *ArtsCoordEntry, traj *Trajectory,
 // route: sid/star by the presence of SID/STAR waypoints plus the procedure id
 // appearing as a token in the filed route string; airway by a matching Airway
 // on some waypoint; "string" by the id appearing in the route.
-func routeRuleMatches(rule RouteRule, wps []av.Waypoint, routeStr string) bool {
+func routeRuleMatches(rule RouteRule, wps []av.Waypoint, routeStr, flownSeq string) bool {
 	switch strings.ToLower(rule.Type) {
 	case "star":
 		return hasFlag(wps, av.Waypoint.OnSTAR) && routeHasToken(routeStr, rule.ID)
@@ -427,8 +430,46 @@ func routeRuleMatches(rule RouteRule, wps []av.Waypoint, routeStr string) bool {
 		// adapted route, e.g. "TUBBA CURSD"); match if the filed route is that
 		// string or contains its fixes as a contiguous run.
 		return routeStr == rule.ID || routeContainsSequence(routeStr, rule.ID)
+	case "waypoints":
+		// Unlike the filed-route types, this matches the fixes the flight
+		// actually flies over, anchored at the start of its route: approach,
+		// runway, and airway fixes appended past the adapted sequence can't
+		// disturb the match.
+		return flownSeq == rule.ID || strings.HasPrefix(flownSeq, rule.ID+" ")
 	}
 	return false
+}
+
+// NamedFixes returns the proper fix names along a route's waypoints, skipping
+// synthesized waypoints, raw lat-long positions, and adjacent repeats.
+func NamedFixes(wps []av.Waypoint) []string {
+	var fixes []string
+	for _, wp := range wps {
+		if wp.Fix == "" || strings.HasPrefix(wp.Fix, "_") {
+			continue
+		}
+		if _, err := math.ParseLatLong([]byte(wp.Fix)); err == nil {
+			continue
+		}
+		if len(fixes) > 0 && fixes[len(fixes)-1] == wp.Fix {
+			continue
+		}
+		fixes = append(fixes, wp.Fix)
+	}
+	return fixes
+}
+
+// FlownFixes returns the fix names a "waypoints" rule is matched against: the
+// named fixes along the route with the trailing destination airport dropped
+// (nav appends it to every route, and adapted rule sequences end where the
+// adapted route does, not at the field). (Exported so adaptation tooling can
+// build rule ids the matcher will accept.)
+func FlownFixes(wps []av.Waypoint, destAirport string) []string {
+	fixes := NamedFixes(wps)
+	if n := len(fixes); n > 0 && destAirport != "" && fixes[n-1] == destAirport {
+		fixes = fixes[:n-1]
+	}
+	return fixes
 }
 
 // routeContainsSequence reports whether the tokens of id appear as a contiguous
