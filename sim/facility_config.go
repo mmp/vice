@@ -684,6 +684,13 @@ func (fc *FacilityConfig) validateERAMAdaptation(e *util.ErrorLogger) {
 	// Pseudo-ERAM coordination adaptation.
 	enroute.Validate(fa.ArtsCoordination, fa.Restrictions, e)
 
+	// ERAM facilities may also adapt fix pairs: an ARTCC-primary scenario
+	// self-hosts its coordination (keyed by the ARTCC's own id) and assigns
+	// owners for its inbound flows from the same fix-pair tables STARS uses.
+	validateAircraftClasses("tcp_assignment_classes", fa.TCPAssignmentClasses, e)
+	fa.FixPairConfiguration.validate(fa, fc.ControlPositions, e)
+	validateAutoScratchpad(fa.AutoScratchpadAssignment, e)
+
 	// Validate area configs if present.
 	if len(fa.Areas) > 0 {
 		usedAreas := make(map[string]bool)

@@ -1317,7 +1317,10 @@
                         <p>Each key is the computer id of one of this center's TRACONs&mdash;its
                           "stars_id" in this facility's <a href="#fe-facility-config">"handoff_ids"</a>,
                           for example <code>"AAA"</code> for A80&mdash;so one center config can serve
-                          several TRACONs. Route rules are tried first and the zone rules act as the
+                          several TRACONs. A TRACON the center has no handoff id for is keyed by its
+                          own facility id, and for scenarios where the center itself is the primary
+                          facility, its coordination is adapted under the center's own id (e.g.
+                          <code>"ZNY"</code>). Route rules are tried first and the zone rules act as the
                           catch-all, so a zone area typically yields a coarse partition that the
                           TRACON's fix-pair reassignment then narrows to a real gate or meter fix.
                           Each value has the following members:</p>

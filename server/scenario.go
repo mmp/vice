@@ -876,11 +876,27 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 // computer id (its stars_id in the ARTCC's handoff_ids). configs holds all
 // the facility configs, loaded — with any coordination geometry parsed and
 // validated — before scenario groups are processed; the result is shared
-// read-only. Returns nil for ARTCC-primary scenarios (no single child
-// computer id) and for TRACONs whose host adapts no coordination for them.
+// read-only. An ARTCC-primary scenario self-hosts: its own config's
+// arts_coordination entry keyed by the ARTCC's id covers flights inbound
+// from adjacent centers. Returns nil for facilities whose host adapts no
+// coordination for them.
 func resolveERAMCoordination(sg *scenarioGroup, configs map[string]*sim.FacilityConfig) *enroute.Coordination {
 	if sg.TRACON == "" || sg.TRACON == sg.ARTCC {
-		return nil
+		// ARTCC-primary: the center's coordination is adapted in its own
+		// config under its own facility id.
+		afc := configs[configurationsPath(sg.ARTCC, sg.ARTCC)]
+		if afc == nil {
+			return nil
+		}
+		entry, ok := afc.FacilityAdaptation.ArtsCoordination[sg.ARTCC]
+		if !ok {
+			return nil
+		}
+		return &enroute.Coordination{
+			ComputerID:   sg.ARTCC,
+			Coord:        entry,
+			Restrictions: afc.FacilityAdaptation.Restrictions,
+		}
 	}
 	// TRACON scenarios frequently omit "artcc"; derive the host ARTCC.
 	artcc := sg.ARTCC
@@ -894,16 +910,15 @@ func resolveERAMCoordination(sg *scenarioGroup, configs map[string]*sim.Facility
 	if afc == nil {
 		return nil
 	}
-	// The TRACON's computer id is its stars_id in the ARTCC's handoff_ids.
-	computerID := ""
+	// The TRACON's computer id is its stars_id in the ARTCC's handoff_ids;
+	// a TRACON the host has no handoff id for (e.g. the fictional Academy
+	// facility) is keyed by its own id.
+	computerID := sg.TRACON
 	for _, hid := range afc.HandoffIDs {
 		if hid.ID == sg.TRACON {
 			computerID = hid.StarsID
 			break
 		}
-	}
-	if computerID == "" {
-		return nil
 	}
 	entry, ok := afc.FacilityAdaptation.ArtsCoordination[computerID]
 	if !ok {
