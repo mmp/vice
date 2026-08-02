@@ -70,6 +70,17 @@ const (
 	// historicalFlightWindow is how much flight data a sim is launched with. A
 	// sim running longer than this runs out of historical traffic.
 	historicalFlightWindow = 8 * time.Hour
+
+	// intraFacilityLegWindow bounds how long after a departure its arrival at
+	// another of the facility's airports may be, so that a callsign flown twice
+	// in one day isn't mistaken for a single leg.
+	intraFacilityLegWindow = 3 * time.Hour
+
+	// repeatedRecordWindow is how close two records of the same operation have
+	// to be to be the same one recorded twice. An aircraft can't take off from
+	// an airport twice this close together--it is still flying the first one--so
+	// nothing this near is a second operation.
+	repeatedRecordWindow = 30 * time.Minute
 )
 
 // PublishedArrivalMaxHeadingDifference is how far an origin may lie from the
@@ -95,22 +106,7 @@ func (s *Sim) loadHistoricalFlights() {
 		return
 	}
 
-	// Every airport the scenario generates IFR traffic at, not just the primary
-	// one; departures and arrivals separately, since a scenario often departs
-	// airports it doesn't land.
-	departureAirports := make(map[string]bool)
-	arrivalAirports := make(map[string]bool)
-	lc := &s.State.LaunchConfig
-	for airport := range lc.DepartureRates {
-		departureAirports[airport] = true
-	}
-	for _, rates := range lc.InboundFlowRates {
-		for airport := range rates {
-			if airport != "overflights" {
-				arrivalAirports[airport] = true
-			}
-		}
-	}
+	departureAirports, arrivalAirports := s.State.LaunchConfig.IFRAirports()
 
 	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
 	// before the selected time, and it warms up by flying the traffic from that
@@ -123,6 +119,25 @@ func (s *Sim) loadHistoricalFlights() {
 		return
 	}
 	s.historicalFlights = flights
+}
+
+// IFRAirports returns every airport the scenario generates IFR traffic at, departures and
+// arrivals separately. It reads the rate maps, not the enable maps: which flows are switched on
+// can change while a sim runs, so that is judged flight by flight at spawn.
+func (lc *LaunchConfig) IFRAirports() (departures, arrivals map[string]bool) {
+	departures = make(map[string]bool)
+	arrivals = make(map[string]bool)
+	for airport := range lc.DepartureRates {
+		departures[airport] = true
+	}
+	for _, rates := range lc.InboundFlowRates {
+		for airport := range rates {
+			if airport != "overflights" {
+				arrivals[airport] = true
+			}
+		}
+	}
+	return
 }
 
 func includeTimetableFlight(flight TimetableFlight, percentage int) bool {
@@ -283,6 +298,22 @@ type publishedTrafficProvider struct {
 	// discardedDepartures likewise counts the departures dropped for each city
 	// pair the scenario has no plausible route for.
 	discardedDepartures map[string]int
+
+	// discardedClashes likewise counts the flights dropped for each callsign
+	// something else was already flying when they came due.
+	discardedClashes map[string]int
+}
+
+// noteCallsignClash reports a published flight discarded because its callsign
+// was in use, the first time each one turns up.
+func (p *publishedTrafficProvider) noteCallsignClash(callsign string, err error) {
+	if p.discardedClashes == nil {
+		p.discardedClashes = make(map[string]int)
+	}
+	if p.discardedClashes[callsign] == 0 {
+		fmt.Printf("Dropping %v\n", err)
+	}
+	p.discardedClashes[callsign]++
 }
 
 // newTimetableTrafficProvider prepares a built-in timetable's flights. A
@@ -293,6 +324,14 @@ type publishedTrafficProvider struct {
 // times, so departures spawn at them directly.
 func newTimetableTrafficProvider(s *Sim, timetable Timetable, startMinute int,
 	arrivalPercentage, departurePercentage int) *publishedTrafficProvider {
+	flights := timetableFlights(s.StartTime, timetable, startMinute, arrivalPercentage, departurePercentage)
+	return newPublishedTrafficProvider(s, flights, 0)
+}
+
+// timetableFlights anchors a timetable's daily cycle to the sim's start time,
+// giving each flight it will fly a date and a time like the historical data has.
+func timetableFlights(startTime Time, timetable Timetable, startMinute int,
+	arrivalPercentage, departurePercentage int) []av.Flight {
 	const prespawnMinutes = initialSimSeconds / 60
 
 	var flights []av.Flight
@@ -318,7 +357,7 @@ func newTimetableTrafficProvider(s *Sim, timetable Timetable, startMinute int,
 		if minutes >= minutesPerTimetableDay-prespawnMinutes {
 			minutes -= minutesPerTimetableDay
 		}
-		published := s.StartTime.Add(time.Duration(minutes) * time.Minute).Time().UTC()
+		published := startTime.Add(time.Duration(minutes) * time.Minute).Time().UTC()
 
 		other := flight.Destination
 		if !departure {
@@ -342,7 +381,7 @@ func newTimetableTrafficProvider(s *Sim, timetable Timetable, startMinute int,
 		return strings.Compare(a.Callsign, b.Callsign)
 	})
 
-	return newPublishedTrafficProvider(s, flights, 0)
+	return flights
 }
 
 // newHistoricalTrafficProvider prepares the historical flights a sim was
@@ -350,6 +389,13 @@ func newTimetableTrafficProvider(s *Sim, timetable Timetable, startMinute int,
 // or touched down, so departures spawn flightSpawnLead ahead of them.
 func newHistoricalTrafficProvider(s *Sim, flights []av.Flight, arrivalPercentage,
 	departurePercentage int) *publishedTrafficProvider {
+	return newPublishedTrafficProvider(s,
+		includedHistoricalFlights(flights, arrivalPercentage, departurePercentage), flightSpawnLead)
+}
+
+// includedHistoricalFlights returns the flights the requested percentages keep.
+func includedHistoricalFlights(flights []av.Flight, arrivalPercentage,
+	departurePercentage int) []av.Flight {
 	kept := make([]av.Flight, 0, len(flights))
 	for _, flight := range flights {
 		percentage := arrivalPercentage
@@ -360,7 +406,343 @@ func newHistoricalTrafficProvider(s *Sim, flights []av.Flight, arrivalPercentage
 			kept = append(kept, flight)
 		}
 	}
-	return newPublishedTrafficProvider(s, kept, flightSpawnLead)
+	return kept
+}
+
+const (
+	// TrafficCountsWindow is how far past the selected start time the New Sim
+	// dialog previews traffic, and TrafficCountsPad is how much further to
+	// either side TrafficCounts reaches, so that the dialog's smoothing has
+	// data past both edges of what it draws.
+	TrafficCountsWindow = 2 * time.Hour
+	TrafficCountsPad    = 30 * time.Minute
+
+	// TrafficCountsMinutes is how many one-minute counts TrafficCounts returns.
+	TrafficCountsMinutes = int((TrafficCountsWindow + 2*TrafficCountsPad) / time.Minute)
+)
+
+// trafficCountsSpan is the span of flight times TrafficCounts counts for a
+// preview starting at start. Flights operate on whole minutes, so the span
+// lines up with them however precise a start time the user picked.
+func trafficCountsSpan(start time.Time) (first, last time.Time) {
+	first = start.UTC().Truncate(time.Minute).Add(-TrafficCountsPad)
+	return first, first.Add(time.Duration(TrafficCountsMinutes) * time.Minute)
+}
+
+// TrafficCounts counts, minute by minute, the departures and arrivals a published traffic source
+// will fly over the window starting TrafficCountsPad before start. It filters by airport: an
+// airport with no enabled, worked flow flies nothing. Finer than that it doesn't go--at spawn the
+// provider resolves each flight against the scenario's routes and drops the few it can't fit, so
+// these counts run slightly high, and disabling some but not all of an airport's flows doesn't
+// move them. Nor can it count arrivals the scenario has no inbound flow to bring in, which
+// requires a running sim, or overflights, which no source publishes--their rate in the launch
+// config says all there is to say about them.
+//
+// historical is the facility's flights on and around the day previewed, however much of them the
+// caller has on hand; the window and the scenario's airports are selected from it here.
+func TrafficCounts(lc *LaunchConfig, start time.Time, primaryAirport string,
+	historical []av.Flight) (departures, arrivals []uint16, err error) {
+	first, last := trafficCountsSpan(start)
+	start = first.Add(TrafficCountsPad)
+
+	var flights []av.Flight
+	switch lc.TrafficSource {
+	case TrafficSourceTimetable:
+		catalog, err := LoadAirportTimetables(primaryAirport)
+		if err != nil {
+			return nil, nil, err
+		}
+		timetable, ok := catalog.Find(primaryAirport, lc.TimetableID)
+		if !ok {
+			return nil, nil, fmt.Errorf("timetable %q not found for %s", lc.TimetableID, primaryAirport)
+		}
+		flights = timetableFlights(NewSimTime(start), timetable, lc.TimetableStartMinute,
+			lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
+
+	case TrafficSourceHistorical:
+		departureAirports, arrivalAirports := lc.IFRAirports()
+		selected := av.SelectFlights(historical, departureAirports, arrivalAirports,
+			av.DB.Airlines, first, last)
+		flights = includedHistoricalFlights(selected, lc.PublishedArrivalPercentage,
+			lc.PublishedDeparturePercentage)
+
+	default:
+		return nil, nil, fmt.Errorf("%s traffic comes from the launch config's rates, "+
+			"so there is nothing to preview", lc.TrafficSource)
+	}
+
+	flights, _ = dropRepeatedRecords(flights)
+	flights, _ = dropReturnedLegs(flights)
+
+	departures = make([]uint16, TrafficCountsMinutes)
+	arrivals = make([]uint16, TrafficCountsMinutes)
+	for _, flight := range flights {
+		minute := int(flight.Time().Sub(first) / time.Minute)
+		if minute < 0 || minute >= TrafficCountsMinutes {
+			continue
+		}
+		if flight.Departure {
+			if lc.departsAirport(flight.Airport) {
+				departures[minute]++
+			}
+		} else if lc.landsAirport(flight.Airport) {
+			arrivals[minute]++
+		}
+	}
+	return departures, arrivals, nil
+}
+
+// departsAirport reports whether any of an airport's departure flows are both
+// enabled and a human's to work, and landsAirport whether any inbound flow into
+// it is. Published traffic leaves from and lands at the flows the user leaves
+// on, so an airport with all of them off flies nothing; and traffic the
+// scenario flies purely for realism is nothing the user will see, so a preview
+// of what they are in for leaves it out.
+func (lc *LaunchConfig) departsAirport(airport string) bool {
+	for runway, categories := range lc.DepartureEnabled[airport] {
+		for category, enabled := range categories {
+			if enabled && !lc.DepartureIsBackground(airport, runway, category) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (lc *LaunchConfig) landsAirport(airport string) bool {
+	for flow, airports := range lc.InboundFlowEnabled {
+		if airports[airport] && !lc.InboundFlowIsBackground(flow, airport) {
+			return true
+		}
+	}
+	return false
+}
+
+// MarkBackgroundTraffic records which of a scenario's traffic no human
+// controller ever works. A scenario often flies a neighboring airport's
+// operations so that the scope looks like the real thing, handled start to
+// finish by virtual controllers; a departure position's scenario may land its
+// airport the same way. That traffic is not what someone choosing a scenario is
+// signing up for, so it is marked once, when the scenario catalogs are built,
+// and left out of what we report they will see.
+//
+// It errs towards saying traffic is worked: leaving it in overstates the
+// workload, whereas wrongly calling it background hides traffic the user will
+// actually have to work.
+func MarkBackgroundTraffic(airports map[string]*av.Airport, flows map[string]*av.InboundFlow,
+	cc *ControllerConfiguration, controlPositions map[TCP]*av.Controller, lc *LaunchConfig) {
+	bc := backgroundClassifier{cc: cc, controlPositions: controlPositions}
+
+	for airport, runwayRates := range lc.DepartureRates {
+		ap, ok := airports[airport]
+		if !ok {
+			continue
+		}
+		for runway, categoryRates := range runwayRates {
+			for category := range categoryRates {
+				if bc.departureIsBackground(ap, runway, category) {
+					markDepartureBackground(lc, airport, runway, category)
+				}
+			}
+		}
+	}
+
+	for flow, airportRates := range lc.InboundFlowRates {
+		inboundFlow, ok := flows[flow]
+		if !ok {
+			continue
+		}
+		for airport := range airportRates {
+			if bc.inboundIsBackground(inboundFlow, airport, cc.InboundAssignments[flow]) {
+				markInboundBackground(lc, flow, airport)
+			}
+		}
+	}
+}
+
+func markDepartureBackground(lc *LaunchConfig, airport string, runway av.RunwayID, category string) {
+	if lc.DepartureBackground == nil {
+		lc.DepartureBackground = make(map[string]map[av.RunwayID]map[string]bool)
+	}
+	if lc.DepartureBackground[airport] == nil {
+		lc.DepartureBackground[airport] = make(map[av.RunwayID]map[string]bool)
+	}
+	if lc.DepartureBackground[airport][runway] == nil {
+		lc.DepartureBackground[airport][runway] = make(map[string]bool)
+	}
+	lc.DepartureBackground[airport][runway][category] = true
+}
+
+func markInboundBackground(lc *LaunchConfig, flow, airport string) {
+	if lc.InboundFlowBackground == nil {
+		lc.InboundFlowBackground = make(map[string]map[string]bool)
+	}
+	if lc.InboundFlowBackground[flow] == nil {
+		lc.InboundFlowBackground[flow] = make(map[string]bool)
+	}
+	lc.InboundFlowBackground[flow][airport] = true
+}
+
+// backgroundClassifier judges a scenario's traffic against its default
+// consolidation and the facility's defined positions.
+type backgroundClassifier struct {
+	cc               *ControllerConfiguration
+	controlPositions map[TCP]*av.Controller
+}
+
+// isHuman and isVirtual are not each other's negation: a position the facility
+// doesn't define is neither, and the sim treats such a reference as no reason
+// to keep a departure from its human controller. Both mirror
+// Sim.isVirtualController.
+func (bc backgroundClassifier) isHuman(pos av.ControlPosition) bool {
+	return pos != "" && bc.cc.DefaultConsolidation.IsHumanPosition(pos)
+}
+
+func (bc backgroundClassifier) isVirtual(pos av.ControlPosition) bool {
+	if _, ok := bc.controlPositions[TCP(pos)]; !ok {
+		return false
+	}
+	return !bc.cc.DefaultConsolidation.IsHumanPosition(pos)
+}
+
+func (bc backgroundClassifier) reachesHuman(wps av.WaypointArray, atHandoff av.ControlPosition) bool {
+	if wps.HasHumanHandoff() && bc.isHuman(atHandoff) {
+		return true
+	}
+	return slices.ContainsFunc(wps.HandoffControllers(), bc.isHuman)
+}
+
+// departureIsBackground reports whether every route a departure flow may fly
+// stays with virtual controllers the whole way. The category selects the exits
+// the same way spawnDepartures does; a flow with no route to judge is left
+// alone.
+func (bc backgroundClassifier) departureIsBackground(ap *av.Airport, runway av.RunwayID, category string) bool {
+	judged := 0
+	for exit, route := range ap.DepartureRoutes[runway] {
+		if category != "" && category != ap.ExitCategories[exit] {
+			continue
+		}
+		judged++
+
+		// Mirrors assignDepartureController: the departure is a human's from the
+		// start unless the airport or the route gives it to a virtual controller.
+		virtualStart := (ap.DepartureController != "" && bc.isVirtual(ap.DepartureController)) ||
+			(route.DepartureController != "" && bc.isVirtual(route.DepartureController))
+		if !virtualStart || bc.reachesHuman(route.Waypoints, route.HandoffController) {
+			return false
+		}
+	}
+	return judged > 0
+}
+
+// inboundIsBackground reports whether everything a flow brings to an airport
+// stays with virtual controllers; airport is "overflights" for the flow's
+// overflights, which serve no airport in particular.
+func (bc backgroundClassifier) inboundIsBackground(flow *av.InboundFlow, airport string, assignment TCP) bool {
+	handoff := av.ControlPosition(assignment)
+
+	if airport == "overflights" {
+		for _, of := range flow.Overflights {
+			if bc.isHuman(of.InitialController) || bc.reachesHuman(of.Waypoints, handoff) {
+				return false
+			}
+		}
+		return len(flow.Overflights) > 0
+	}
+
+	judged := 0
+	for _, arr := range flow.Arrivals {
+		if !slices.Contains(arr.ServedAirports(), airport) {
+			continue
+		}
+		judged++
+
+		if bc.isHuman(arr.InitialController) || bc.reachesHuman(arr.Waypoints, handoff) {
+			return false
+		}
+		for _, runwayWaypoints := range arr.RunwayWaypoints[airport] {
+			if bc.reachesHuman(runwayWaypoints, handoff) {
+				return false
+			}
+		}
+	}
+	return judged > 0
+}
+
+// dropRepeatedRecords removes a record of an operation that is already there.
+// The historical data is derived from ADS-B tracks, and a flight whose track
+// came in pieces is recorded once per piece, minutes apart and sometimes
+// disagreeing about the airport at the other end. Only identical records are
+// merged when the data is written, so the rest arrive here and would otherwise
+// spawn as several aircraft sharing a callsign.
+func dropRepeatedRecords(flights []av.Flight) ([]av.Flight, int) {
+	// operation identifies what a record says the aircraft did, without the time
+	// or the far-end airport: those are what the repeats disagree about.
+	type operation struct {
+		callsign, airport string
+		departure         bool
+	}
+
+	last := make(map[operation]time.Time)
+	kept := make([]av.Flight, 0, len(flights))
+	dropped := 0
+	for _, flight := range flights {
+		key := operation{flight.Callsign, flight.Airport, flight.Departure}
+		if previous, ok := last[key]; ok &&
+			!flight.Time().After(previous.Add(repeatedRecordWindow)) {
+			dropped++
+			continue
+		}
+		last[key] = flight.Time()
+		kept = append(kept, flight)
+	}
+	return kept, dropped
+}
+
+// dropReturnedLegs removes the arrival record of a flight between two airports
+// the facility works. Such a flight is recorded twice, once at each end: a
+// facility's flight data has to stand on its own, so a leg from one of its
+// airports to another appears as a departure at the first and an arrival at the
+// second. Flying both spawns two aircraft sharing a callsign, and since the leg
+// is short the arrival comes due while the departure is still at the gate. The
+// departure is the half flown: it starts where the aircraft really was.
+//
+// A departure is matched at most once, so an aircraft that flies from one of the
+// facility's airports to another and back has each of its legs recognized rather
+// than the first departure standing for both.
+func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
+	// leg identifies a flight by callsign and where it flew between, so that an
+	// arrival can find the departure that recorded the same leg at its far end.
+	type leg struct {
+		callsign, from, to string
+	}
+
+	pending := make(map[leg][]time.Time)
+	for _, flight := range flights {
+		if flight.Departure {
+			key := leg{flight.Callsign, flight.Airport, flight.Other}
+			pending[key] = append(pending[key], flight.Time())
+		}
+	}
+
+	kept := make([]av.Flight, 0, len(flights))
+	dropped := 0
+	for _, flight := range flights {
+		if !flight.Departure {
+			key := leg{flight.Callsign, flight.Other, flight.Airport}
+			// Flights come in time order, so the oldest unmatched departure of
+			// this leg is the one that ends here.
+			if times := pending[key]; len(times) > 0 &&
+				!flight.Time().Before(times[0]) &&
+				!flight.Time().After(times[0].Add(intraFacilityLegWindow)) {
+				pending[key] = times[1:]
+				dropped++
+				continue
+			}
+		}
+		kept = append(kept, flight)
+	}
+	return kept, dropped
 }
 
 // newPublishedTrafficProvider builds the spawn queues from flights in time
@@ -371,6 +753,12 @@ func newHistoricalTrafficProvider(s *Sim, flights []av.Flight, arrivalPercentage
 func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	departureSpawnLead time.Duration) *publishedTrafficProvider {
 	p := &publishedTrafficProvider{routed: makeRoutedPairs()}
+
+	// One real flight must enter the sim once, however many records it left in
+	// the data: the second aircraft to reach the runway under a callsign is
+	// turned away, and there is no second callsign to give it.
+	flights, repeated := dropRepeatedRecords(flights)
+	flights, returned := dropReturnedLegs(flights)
 
 	rerouted := make(map[string]string)
 	var unroutable []string
@@ -427,6 +815,12 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	fmt.Printf("Published traffic: %d departures, %d arrivals to fly", len(p.departures), len(p.arrivals))
 	if missed > 0 {
 		fmt.Printf("; skipped %d flights already due before the clock starts", missed)
+	}
+	if repeated > 0 {
+		fmt.Printf("; merged %d flights the data records more than once", repeated)
+	}
+	if returned > 0 {
+		fmt.Printf("; %d arrivals from another of the facility's airports are flying as departures", returned)
 	}
 	fmt.Printf("\n")
 
@@ -676,6 +1070,10 @@ func (p *publishedTrafficProvider) createIFRDeparture(s *Sim, airport string,
 		p.discardedDepartures[pair]++
 		return nil, p.departureDelay(s, airport), nil
 	}
+	if errors.Is(err, errCallsignInUse) {
+		p.noteCallsignClash(published.flight.Callsign, err)
+		return nil, p.departureDelay(s, airport), nil
+	}
 	return ac, p.departureDelay(s, airport), err
 }
 
@@ -709,6 +1107,10 @@ func (p *publishedTrafficProvider) createInbound(s *Sim, group string,
 	}
 	p.arrivals = append(p.arrivals[:index], p.arrivals[index+1:]...)
 
+	if errors.Is(err, errCallsignInUse) {
+		p.noteCallsignClash(published.flight.Callsign, err)
+		return nil, p.arrivalDelay(s, group, rates), nil
+	}
 	return ac, p.arrivalDelay(s, group, rates), err
 }
 
@@ -788,7 +1190,7 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 		}
 
 	case TrafficSourceTimetable:
-		catalog, err := LoadTimetableCatalog(util.GetResourcesFS(), "traffic/timetables")
+		catalog, err := LoadAirportTimetables(s.State.PrimaryAirport)
 		if err != nil {
 			s.trafficProvider = errorTrafficProvider{err: err}
 			return s.trafficProvider

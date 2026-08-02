@@ -216,6 +216,12 @@ func (pc PositionConsolidation) AllPositions() []TCP {
 	return util.SortedMapKeys(positions)
 }
 
+// IsHumanPosition reports whether pos is one a human may sign in to, which is
+// to say one the consolidation tree covers.
+func (pc PositionConsolidation) IsHumanPosition(pos ControlPosition) bool {
+	return slices.Contains(pc.AllPositions(), TCP(pos))
+}
+
 // Validate checks the configuration for errors
 func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
 	e.Push(`"configuration"`)

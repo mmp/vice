@@ -25,6 +25,14 @@ import (
 	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
+	"github.com/hashicorp/golang-lru/v2/expirable"
+)
+
+const (
+	// flightDataCacheEntries and flightDataCacheTTL bound the flight data the
+	// traffic preview holds on to; see SimManager.flightData.
+	flightDataCacheEntries = 16
+	flightDataCacheTTL     = 15 * time.Minute
 )
 
 // briefRegistry holds the per-facility brief metadata gathered at
@@ -68,6 +76,11 @@ type SimManager struct {
 	providersReady chan struct{}
 	mapSpecs       map[string]*av.MapLibrarySpec
 	lg             *log.Logger
+
+	// flightData holds historical flights for the traffic preview, keyed by facility and the day
+	// previewed. An entry runs to a couple of megabytes at the busiest facilities, so this many of
+	// them is tens of megabytes at most.
+	flightData *expirable.LRU[string, []av.Flight]
 
 	// Stats and internal details
 	mu        util.LoggingMutex
@@ -158,6 +171,8 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenario
 		local:          isLocal,
 		providersReady: make(chan struct{}),
 		lg:             lg,
+		flightData: expirable.NewLRU[string, []av.Flight](flightDataCacheEntries, nil,
+			flightDataCacheTTL),
 	}
 
 	// Initialize WX provider asynchronously so the server can start
@@ -831,6 +846,104 @@ func (sm *SimManager) GetAtmosGrid(args wx.GetAtmosArgs, result *wx.GetAtmosResu
 	result.AtmosByPointSOA, result.Time, result.NextTime, err =
 		provider.GetAtmosGrid(args.Facility, args.Time, args.PrimaryAirport)
 	return err
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Traffic preview
+
+const GetTrafficCountsRPC = "SimManager.GetTrafficCounts"
+
+type TrafficCountsArgs struct {
+	Facility     string
+	GroupName    string
+	ScenarioName string
+	StartTime    time.Time
+	LaunchConfig sim.LaunchConfig
+}
+
+// TrafficCountsResult holds one count per minute over the window
+// sim.TrafficCounts covers, which begins sim.TrafficCountsPad before the
+// requested start time.
+type TrafficCountsResult struct {
+	Departures []uint16
+	Arrivals   []uint16
+}
+
+// GetTrafficCounts reports how much published traffic a scenario would fly starting at a given
+// time.
+//
+// Like makeSimConfiguration, this touches no session state: the scenario catalogs are set at
+// construction and read-only after it, the flight data cache carries its own lock, and the launch
+// config it works from arrived with the request. So it doesn't acquire sm.mu, and several clients
+// previewing at once don't wait on each other or on the sims the server is running.
+func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficCountsResult) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	spec, err := sm.findScenarioSpec(args)
+	if err != nil {
+		return err
+	}
+
+	var historical []av.Flight
+	if args.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
+		if historical, err = sm.facilityFlights(args.Facility, args.StartTime); err != nil {
+			return err
+		}
+	}
+
+	result.Departures, result.Arrivals, err = sim.TrafficCounts(&args.LaunchConfig, args.StartTime,
+		spec.PrimaryAirport, historical)
+	return err
+}
+
+// findScenarioSpec finds the scenario a preview asks about and checks that it can be flown the
+// way the request says. Which traffic sources a scenario offers is the server's to decide, so don't
+// take the client's word for it here any more than makeSimConfiguration does. The catalogs are
+// init-immutable, so no mutex; the returned spec is shared and must only be read.
+func (sm *SimManager) findScenarioSpec(args *TrafficCountsArgs) (*ScenarioSpec, error) {
+	catalog, ok := sm.scenarioCatalogs[args.Facility][args.GroupName]
+	if !ok {
+		return nil, ErrInvalidSimConfiguration
+	}
+	spec, ok := catalog.Scenarios[args.ScenarioName]
+	if !ok {
+		return nil, ErrInvalidSimConfiguration
+	}
+	if !slices.Contains(spec.TrafficSources, args.LaunchConfig.TrafficSource) {
+		return nil, ErrInvalidTrafficSource
+	}
+	return spec, nil
+}
+
+// facilityFlights returns the flights a facility recorded on and around the day a preview starts
+// on, which is as far as a window starting on it can reach in either direction. Only the day is
+// kept, as the busiest facilities decode to over a million flights and >200 MB.
+func (sm *SimManager) facilityFlights(facility string, day time.Time) ([]av.Flight, error) {
+	key := facility + "/" + day.UTC().Format(time.DateOnly)
+	if flights, ok := sm.flightData.Get(key); ok {
+		return flights, nil
+	}
+
+	data, err := av.ReadFlightData(util.GetResourcesFS(), facility)
+	if err != nil {
+		return nil, err
+	}
+	var days []av.Flight
+	if data != nil {
+		flights, err := av.DecodeFlights(data)
+		if err != nil {
+			return nil, err
+		}
+		first := av.FlightDataDayNumber(day.Add(-24 * time.Hour))
+		last := av.FlightDataDayNumber(day.Add(24 * time.Hour))
+		for _, flight := range flights {
+			if flight.Day >= first && flight.Day <= last {
+				days = append(days, flight)
+			}
+		}
+	}
+	sm.flightData.Add(key, days)
+	return days, nil
 }
 
 const ReloadScenarioBriefRPC = "SimManager.ReloadScenarioBrief"

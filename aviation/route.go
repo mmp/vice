@@ -630,6 +630,26 @@ func (wa WaypointArray) HasHumanHandoff() bool {
 	})
 }
 
+// HandoffControllers returns the positions the route names as handoff targets,
+// whether at a waypoint itself or in one of its conditional action groups.
+// These are the /hoXX handoffs, which name where the track goes; the bare /ho
+// of HasHumanHandoff leaves that to whoever is working the flow.
+func (wa WaypointArray) HandoffControllers() []ControlPosition {
+	var controllers []ControlPosition
+	add := func(pos ControlPosition) {
+		if pos != "" && !slices.Contains(controllers, pos) {
+			controllers = append(controllers, pos)
+		}
+	}
+	for _, wp := range wa {
+		add(wp.HandoffController())
+		for _, group := range wp.ActionGroups() {
+			add(group.Actions.HandoffController)
+		}
+	}
+	return controllers
+}
+
 func (wa WaypointArray) Encode() string {
 	var entries []string
 	for _, w := range wa {

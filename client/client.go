@@ -151,7 +151,7 @@ type RPCClient struct {
 	*rpc.Client
 }
 
-func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) error {
+func (c *RPCClient) CallWithTimeout(serviceMethod string, args any, reply any) error {
 	pc := &pendingCall{
 		Call:      c.Go(serviceMethod, args, reply, nil),
 		IssueTime: time.Now(),
@@ -268,7 +268,7 @@ func (c *ControlClient) Disconnect() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	if err := c.client.callWithTimeout(server.SignOffRPC, c.controllerToken, nil); err != nil {
+	if err := c.client.CallWithTimeout(server.SignOffRPC, c.controllerToken, nil); err != nil {
 		c.lg.Errorf("Error signing off from sim: %v", err)
 	}
 	c.State.Tracks = nil
@@ -599,7 +599,7 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 		} else {
 			var cr server.ConnectResult
 			start := time.Now()
-			if err := client.callWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
+			if err := client.CallWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
 				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
@@ -626,7 +626,7 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 		return
 	}
 
-	err = client.callWithTimeout(server.BroadcastRPC, &server.BroadcastMessage{
+	err = client.CallWithTimeout(server.BroadcastRPC, &server.BroadcastMessage{
 		Password: password,
 		Message:  msg,
 	}, nil)

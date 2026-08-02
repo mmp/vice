@@ -68,7 +68,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap, ad
 			errorLogger.Error(err)
 		} else {
 			var cr server.ConnectResult
-			if err := client.callWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
+			if err := client.CallWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
 				errorLogger.Error(err)
 			} else {
 				cm.LocalServer = &Server{
@@ -111,7 +111,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials string, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 
-	if err := srv.callWithTimeout(server.NewSimRPC, config, &result); err != nil {
+	if err := srv.CallWithTimeout(server.NewSimRPC, config, &result); err != nil {
 		err = server.TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
@@ -208,7 +208,7 @@ func (cm *ConnectionManager) UpdateRunningSims() error {
 
 func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials string, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
-	if err := srv.callWithTimeout(server.ConnectToSimRPC, config, &result); err != nil {
+	if err := srv.CallWithTimeout(server.ConnectToSimRPC, config, &result); err != nil {
 		err = server.TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main

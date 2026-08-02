@@ -151,6 +151,14 @@ type LaunchConfig struct {
 	// airport -> runway -> category -> enabled; which flows timetable and
 	// historical traffic launch from. Scenario traffic uses the rates instead.
 	DepartureEnabled map[string]map[av.RunwayID]map[string]bool
+	// airport -> runway -> category -> the traffic there is nobody's to work.
+	// A scenario flies a neighboring airport's operations for realism, start to
+	// finish under virtual controllers; it fills out the scope but it isn't
+	// traffic the user signed up for, so it stays out of what we report they
+	// will see. Keyed like DepartureEnabled, and only the true entries are
+	// present: an absent one is traffic a human works, which is the common case
+	// and the safe assumption for a config that was never classified.
+	DepartureBackground map[string]map[av.RunwayID]map[string]bool
 
 	VFRDepartureRateScale   float32
 	VFRAirportRates         map[string]float32 // name -> VFRRateSum()
@@ -162,7 +170,12 @@ type LaunchConfig struct {
 	// inbound flow -> airport -> enabled; which flows timetable and historical
 	// traffic land. Overflights aren't included: they are always randomly
 	// generated, so their rates apply regardless of the traffic source.
-	InboundFlowEnabled          map[string]map[string]bool
+	InboundFlowEnabled map[string]map[string]bool
+	// inbound flow -> airport -> the traffic there is nobody's to work; see
+	// DepartureBackground. Overflights are included here, under the same
+	// "overflights" key the rates use, since a flow may carry those for realism
+	// as readily as it carries arrivals.
+	InboundFlowBackground       map[string]map[string]bool
 	InboundFlowRateScale        float32
 	ArrivalPushes               bool
 	ArrivalPushFrequencyMinutes int
@@ -302,6 +315,59 @@ func (lc *LaunchConfig) HaveOverflights() bool {
 		}
 	}
 	return false
+}
+
+// The Worked rates are the Total ones less the traffic no human ever works, and
+// are what to report to someone deciding whether to fly a scenario: a departure
+// position whose scenario also lands a neighboring airport for realism is not
+// signing up for those arrivals. The Total rates remain what the sim will
+// generate, which is what the rate limits care about.
+
+func (lc *LaunchConfig) WorkedDepartureRate() float32 {
+	var sum float32
+	for airport, runwayRates := range lc.DepartureRates {
+		for runway, categoryRates := range runwayRates {
+			for category, rate := range categoryRates {
+				if !lc.DepartureIsBackground(airport, runway, category) {
+					sum += scaleRate(rate, lc.DepartureRateScale)
+				}
+			}
+		}
+	}
+	return sum
+}
+
+func (lc *LaunchConfig) WorkedArrivalRate() float32 {
+	return lc.workedInboundRate(false)
+}
+
+func (lc *LaunchConfig) WorkedOverflightRate() float32 {
+	return lc.workedInboundRate(true)
+}
+
+func (lc *LaunchConfig) workedInboundRate(overflights bool) float32 {
+	var sum float32
+	for flow, flowRates := range lc.InboundFlowRates {
+		for airport, rate := range flowRates {
+			if (airport == "overflights") == overflights &&
+				!lc.InboundFlowIsBackground(flow, airport) {
+				sum += scaleRate(rate, lc.InboundFlowRateScale)
+			}
+		}
+	}
+	return sum
+}
+
+// DepartureIsBackground and InboundFlowIsBackground report traffic that no human
+// controller works. They read the maps rather than indexing them directly so
+// that a launch config nobody classified--one built without a scenario to walk--
+// reports everything as the user's traffic, as it was before any of this.
+func (lc *LaunchConfig) DepartureIsBackground(airport string, runway av.RunwayID, category string) bool {
+	return lc.DepartureBackground[airport][runway][category]
+}
+
+func (lc *LaunchConfig) InboundFlowIsBackground(flow, airport string) bool {
+	return lc.InboundFlowBackground[flow][airport]
 }
 
 // CheckRateLimits returns true if both total departure rates and total inbound flow rates

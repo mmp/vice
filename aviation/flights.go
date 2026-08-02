@@ -612,7 +612,15 @@ func FlightsInWindow(data []byte, departureAirports, arrivalAirports map[string]
 	if err != nil {
 		return nil, err
 	}
+	return SelectFlights(flights, departureAirports, arrivalAirports, airlines, start, end), nil
+}
 
+// SelectFlights is FlightsInWindow for flights that have already been decoded.
+// Decoding a facility's data costs enough that anything asking about several
+// windows of it--the New Sim dialog previews a fresh one each time the start
+// time moves--wants to do it once and select from the result.
+func SelectFlights(flights []Flight, departureAirports, arrivalAirports map[string]bool,
+	airlines map[string]Airline, start, end time.Time) []Flight {
 	// The window can only hold flights on the days it touches.
 	firstDay := FlightDataDayNumber(start)
 	lastDay := FlightDataDayNumber(end)
@@ -646,5 +654,5 @@ func FlightsInWindow(data []byte, departureAirports, arrivalAirports map[string]
 		}
 		return strings.Compare(a.Callsign, b.Callsign)
 	})
-	return window, nil
+	return window
 }

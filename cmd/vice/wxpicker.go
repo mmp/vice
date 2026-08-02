@@ -516,6 +516,76 @@ func drawTimeSelector(date *time.Time) bool {
 	return changed
 }
 
+// LocalTimeSlider scrubs date across the local day (in loc) that contains it,
+// midnight to midnight, which is how a controller working the position thinks
+// about the clock. Returns true if the time was changed.
+func LocalTimeSlider(date *time.Time, loc *time.Location, intervals []util.TimeInterval, width float32) bool {
+	// We lose the timezone when the times come through RPC from the server,
+	// so reestablish it here, as TimePicker does.
+	validDays := getValidFullDays(util.MapSlice(intervals, func(ti util.TimeInterval) util.TimeInterval {
+		return util.TimeInterval{ti[0].UTC(), ti[1].UTC()}
+	}))
+	if len(validDays) == 0 {
+		return false
+	}
+
+	local := date.In(loc)
+	midnight := time.Date(local.Year(), local.Month(), local.Day(), 0, 0, 0, 0, loc)
+	// Daylight saving time makes some local days 23 or 25 hours long.
+	dayMinutes := int32(midnight.AddDate(0, 0, 1).Sub(midnight) / time.Minute)
+
+	minMinute, maxMinute := validLocalMinutes(midnight, dayMinutes, validDays)
+	curMinute := min(max(int32(local.Sub(midnight)/time.Minute), minMinute), maxMinute)
+
+	imgui.PushItemWidth(width)
+	defer imgui.PopItemWidth()
+
+	// Take the label from the time itself rather than from the minute count so
+	// that it follows the clock across a daylight saving change.
+	label := midnight.Add(time.Duration(curMinute) * time.Minute).Format("15:04 local")
+	if imgui.SliderIntV("##localTimeSlider", &curMinute, minMinute, maxMinute, label,
+		imgui.SliderFlagsAlwaysClamp) {
+		*date = midnight.Add(time.Duration(curMinute) * time.Minute).UTC()
+		return true
+	}
+	return false
+}
+
+// validLocalMinutes returns the range of minutes after local midnight that keep
+// the corresponding UTC time on one of validDays, so that scrubbing can't land
+// on a day with no weather available. The UTC date rolls over at exactly one
+// point in a local day, so the usable minutes are contiguous and only one end of
+// the day is ever trimmed.
+func validLocalMinutes(midnight time.Time, dayMinutes int32, validDays []time.Time) (int32, int32) {
+	dayStart := midnight.UTC()
+	rollover := int32(dayStart.Truncate(24*time.Hour).Add(24*time.Hour).Sub(dayStart) / time.Minute)
+	if rollover >= dayMinutes {
+		// The local day sits within a single UTC day, as in UTC itself.
+		return 0, dayMinutes - 1
+	}
+
+	firstOk := isValidDay(dayStart, validDays)
+	secondOk := isValidDay(dayStart.Add(time.Duration(rollover)*time.Minute), validDays)
+	switch {
+	case firstOk && secondOk:
+		return 0, dayMinutes - 1
+	case firstOk:
+		return 0, rollover - 1
+	case secondOk:
+		return rollover, dayMinutes - 1
+	default:
+		// Neither day has weather; the picker moves the date onto one that does.
+		return 0, dayMinutes - 1
+	}
+}
+
+// isValidDay reports whether t falls on one of the given full days.
+func isValidDay(t time.Time, validDays []time.Time) bool {
+	_, found := slices.BinarySearchFunc(validDays, t.UTC().Truncate(24*time.Hour),
+		func(a, b time.Time) int { return a.Compare(b) })
+	return found
+}
+
 // drawMonthNavigation renders the month navigation buttons and header
 // Returns true if the month was changed
 func drawMonthNavigation(date *time.Time, validDays []time.Time, columnWidth float32) bool {

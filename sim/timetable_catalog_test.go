@@ -177,3 +177,43 @@ func TestLoadTimetableCatalogMissingRoot(t *testing.T) {
 		t.Fatalf("got error %v, want wrapped missing-root error", err)
 	}
 }
+
+// Loading one airport's timetables must not depend on--or even look at--what
+// other airports publish, so that the cost of finding one holds steady as
+// timetables are added.
+func TestLoadTimetableCatalogForAirport(t *testing.T) {
+	filesystem := fstest.MapFS{
+		"timetables/KMSP/summer_weekday.csv": &fstest.MapFile{Data: []byte(validTimetableCSV)},
+		"timetables/KMSP/other/nested.csv":   &fstest.MapFile{Data: []byte(validTimetableCSV)},
+		// Another airport's timetable, and one that wouldn't parse at all: if
+		// either is read, the KMSP lookup below notices.
+		"timetables/KATL/weekday.csv": &fstest.MapFile{Data: []byte(
+			"callsign,origin,destination,aircraft_type,time\nDAL2,KATL,KMSP,A321,09:00\n")},
+		"timetables/KORD/broken.csv": &fstest.MapFile{Data: []byte("nonsense\n")},
+	}
+
+	catalog, err := LoadTimetableCatalogForAirport(filesystem, "timetables", "kmsp")
+	if err != nil {
+		t.Fatalf("LoadTimetableCatalogForAirport: %v", err)
+	}
+	if len(catalog.Timetables) != 1 {
+		t.Fatalf("got %d timetables, want only KMSP's one: %+v", len(catalog.Timetables), catalog.Timetables)
+	}
+	if got := catalog.Timetables[0]; got.Airport != "KMSP" || got.ID != "summer_weekday" {
+		t.Fatalf("got %+v, want the KMSP summer_weekday timetable", got)
+	}
+
+	// An airport that publishes nothing has no timetables, which is not an error.
+	catalog, err = LoadTimetableCatalogForAirport(filesystem, "timetables", "KDEN")
+	if err != nil {
+		t.Fatalf("LoadTimetableCatalogForAirport for an airport with none: %v", err)
+	}
+	if len(catalog.Timetables) != 0 {
+		t.Fatalf("got %d timetables for KDEN, want 0", len(catalog.Timetables))
+	}
+
+	// Reading everything, on the other hand, does have to report the bad file.
+	if _, err := LoadTimetableCatalog(filesystem, "timetables"); err == nil {
+		t.Error("loading every timetable ignored the malformed one")
+	}
+}

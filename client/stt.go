@@ -477,7 +477,7 @@ func ReportWhisperBenchmark(remoteServer *Server, lg *log.Logger) bool {
 	// Send the report asynchronously - we don't need to wait for the response
 	go func() {
 		var reply struct{}
-		err := remoteServer.callWithTimeout(server.ReportWhisperBenchmarkRPC, whisperBenchmarkReport, &reply)
+		err := remoteServer.CallWithTimeout(server.ReportWhisperBenchmarkRPC, whisperBenchmarkReport, &reply)
 		if err != nil {
 			lg.Warnf("Failed to report whisper benchmark: %v", err)
 		} else {
