@@ -1110,7 +1110,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
 	// departure assignment above when adapted.
 	s.deriveERAMFixPair(&nasFp, ac)
-	s.applyFixPairAssignment(&nasFp)
+	s.applyFixPairAssignment(&nasFp, ac)
 	// A fully-contained (internal) flight whose exit fix is a local-arrival
 	// airport is reclassified as an arrival for display/processing. The initial
 	// owner stays the departure controller assigned above; ownership is

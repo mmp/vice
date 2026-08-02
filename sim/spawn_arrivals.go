@@ -193,7 +193,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	// pipeline then reassigns the pair and assigns the owning position,
 	// overriding the inbound-flow default above.
 	s.deriveERAMFixPair(&nasFp, ac)
-	s.applyFixPairAssignment(&nasFp)
+	s.applyFixPairAssignment(&nasFp, ac)
 	s.applyAutoScratchpadAssignment(&nasFp)
 
 	s.maybeSetGoAround(ac, s.State.LaunchConfig.GoAroundRate)
@@ -560,7 +560,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
 	// inbound-flow default above when adapted.
 	s.deriveERAMFixPair(&nasFp, ac)
-	s.applyFixPairAssignment(&nasFp)
+	s.applyFixPairAssignment(&nasFp, ac)
 	s.applyAutoScratchpadAssignment(&nasFp)
 
 	if err := s.assignSquawk(ac, &nasFp); err != nil {

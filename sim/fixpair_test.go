@@ -187,6 +187,37 @@ func TestFixPairActiveRunway(t *testing.T) {
 		t.Errorf("runway 27 rule should not fire on a 4R/9 config, got %+v", got)
 	}
 }
+func TestFixPairDepartureRunway(t *testing.T) {
+	// departure_runway matches the flight's own runway, unlike active_runway
+	// which matches the facility's active-runway list: with both 35L and 36R
+	// active, the rules split departures by the runway each one actually uses.
+	cfg := &FixPairConfiguration{Reassignments: []FixPairReassignment{
+		{FpFixPair: [2]string{"DFW", "*"}, TypeOfFlight: "P", DepartureRunway: "36R", DerivedFixPair: [2]string{"DF1", "*"}},
+		{FpFixPair: [2]string{"DFW", "*"}, TypeOfFlight: "P", DepartureRunway: "35L", DerivedFixPair: [2]string{"DF2", "*"}},
+	}}
+	both := []string{"35L", "36R"}
+	east := FixPairInput{Entry: "DFW", Exit: "MLC", FlightType: av.FlightTypeDeparture,
+		ActiveRunways: both, DepartureRunway: "36R"}
+	if got := cfg.Reassign(east, nil); got.Entry != "DF1" {
+		t.Errorf("36R departure should derive DF1, got %+v", got)
+	}
+	west := FixPairInput{Entry: "DFW", Exit: "MLC", FlightType: av.FlightTypeDeparture,
+		ActiveRunways: both, DepartureRunway: "35L"}
+	if got := cfg.Reassign(west, nil); got.Entry != "DF2" {
+		t.Errorf("35L departure should derive DF2, got %+v", got)
+	}
+	// Unset criterion matches any runway; arrivals carry no departure runway.
+	anyCfg := &FixPairConfiguration{Reassignments: []FixPairReassignment{
+		{FpFixPair: [2]string{"DFW", "*"}, DerivedFixPair: [2]string{"DF3", "*"}},
+	}}
+	arr := FixPairInput{Entry: "DFW", Exit: "BOS", FlightType: av.FlightTypeArrival}
+	if got := anyCfg.Reassign(arr, nil); got.Entry != "DF3" {
+		t.Errorf("unset departure_runway should match any flight, got %+v", got)
+	}
+	if got := cfg.Reassign(arr, nil); got.Entry != "DFW" {
+		t.Errorf("runway-specific rules should not fire for an arrival, got %+v", got)
+	}
+}
 func TestFixPairLevel(t *testing.T) {
 	// Departures use the requested altitude; arrivals/overflights the assigned
 	// altitude, each falling back to the other when unset.
@@ -382,7 +413,7 @@ func TestApplyFixPairAssignment(t *testing.T) {
 		{"catch-all even with empty entry", "", "1U"},
 	} {
 		fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: tc.entry, ExitFix: "BOS"}
-		if !s.applyFixPairAssignment(fp) {
+		if !s.applyFixPairAssignment(fp, &Aircraft{}) {
 			t.Errorf("%s: applyFixPairAssignment returned false", tc.name)
 			continue
 		}
@@ -399,7 +430,7 @@ func TestApplyFixPairAssignment(t *testing.T) {
 	}
 	// Human-owned departure: owner becomes the fix-pair position.
 	dep := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "BOS", ExitFix: "ORW", TrackingController: "1D"}
-	if !s.applyFixPairAssignment(dep) {
+	if !s.applyFixPairAssignment(dep, &Aircraft{}) {
 		t.Errorf("human departure: applyFixPairAssignment returned false")
 	}
 	if dep.TrackingController != "1L" || dep.InboundHandoffController != "1L" {
@@ -407,7 +438,7 @@ func TestApplyFixPairAssignment(t *testing.T) {
 	}
 	// Virtual (auto-release) departure: owner stays virtual; only handoff set.
 	vdep := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "BOS", ExitFix: "ORW", TrackingController: "9V"}
-	if !s.applyFixPairAssignment(vdep) {
+	if !s.applyFixPairAssignment(vdep, &Aircraft{}) {
 		t.Errorf("virtual departure: applyFixPairAssignment returned false")
 	}
 	if vdep.TrackingController != "9V" {
@@ -430,7 +461,7 @@ func TestApplyFixPairAssignment(t *testing.T) {
 		},
 	}
 	rfp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS"}
-	if !s.applyFixPairAssignment(rfp) {
+	if !s.applyFixPairAssignment(rfp, &Aircraft{}) {
 		t.Errorf("reassigned arrival: applyFixPairAssignment returned false")
 	}
 	if rfp.EntryFix != "PVA" || rfp.DerivedEntryFix != "ROB" {
@@ -451,7 +482,7 @@ func TestApplyFixPairAssignment(t *testing.T) {
 	s.State.FacilityAdaptation.FixPairConfiguration = nil
 	fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS",
 		InboundHandoffController: "9Z"}
-	if s.applyFixPairAssignment(fp) {
+	if s.applyFixPairAssignment(fp, &Aircraft{}) {
 		t.Errorf("applyFixPairAssignment should be a no-op with no config")
 	}
 	if fp.InboundHandoffController != "9Z" {

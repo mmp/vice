@@ -2604,6 +2604,17 @@
                                             runways at the primary airport.</td>
                                         </tr>
                                         <tr>
+                                          <td>"departure_runway"</td>
+                                          <td>String</td>
+                                          <td>(<i>Optional</i>) The flight's own departure runway,
+                                            matched exactly against the runway id as given in the
+                                            scenario (which may carry a suffix, e.g. "15R.Props");
+                                            arrivals and overflights never match. Unlike
+                                            "active_runway", this distinguishes simultaneous
+                                            departures off different runways when both are active.
+                                            This is a vice extension, not a DMS criterion.</td>
+                                        </tr>
+                                        <tr>
                                           <td>"derived_fix_pair"</td>
                                           <td>Array of two strings</td>
                                           <td>The derived [entry, exit] pair; <code>*</code> keeps the

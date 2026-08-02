@@ -69,8 +69,14 @@ type FixPairReassignment struct {
 	TypeOfFlight string    `json:"type_of_flight"` // "A" | "P" | "E" | "*"
 	// ActiveRunway matches when it is one of the active runways at the
 	// facility's primary airport ("*" or unset = any).
-	ActiveRunway   string    `json:"active_runway"`
-	DerivedFixPair [2]string `json:"derived_fix_pair"` // [derived1, derived2]; "" or "*" keeps original
+	ActiveRunway string `json:"active_runway"`
+	// DepartureRunway matches the flight's own departure runway exactly
+	// ("*" or unset = any). This is a vice extension, not a DMS criterion:
+	// it distinguishes simultaneous departures off different runways (e.g.
+	// east- vs west-side splits), which active_runway cannot when both
+	// runways are active.
+	DepartureRunway string    `json:"departure_runway"`
+	DerivedFixPair  [2]string `json:"derived_fix_pair"` // [derived1, derived2]; "" or "*" keeps original
 }
 
 // matches reports whether all reassignment criteria fire for in.
@@ -81,7 +87,8 @@ func (r FixPairReassignment) matches(in FixPairInput, classes map[string][]strin
 		r.AltBands.matches(in) &&
 		matchACTypeClass(classes, r.ACType, in.ACType) &&
 		matchACIDPattern(r.ACID, in.ACID) &&
-		matchActiveRunway(r.ActiveRunway, in.ActiveRunways)
+		matchActiveRunway(r.ActiveRunway, in.ActiveRunways) &&
+		wildcardMatch(r.DepartureRunway, in.DepartureRunway)
 }
 
 // LevelBand is a reassignment level criterion: an inclusive [lower,upper] band
@@ -174,13 +181,14 @@ type FixPair struct {
 
 // FixPairInput carries the aircraft attributes the fix-pair engine matches on.
 type FixPairInput struct {
-	Entry, Exit   string
-	FlightType    av.TypeOfFlight
-	Level         int // hundreds of feet (see fixPairLevel)
-	VFR, OTP      bool
-	ACType        string // aircraft type, e.g. "A320"
-	ACID          string
-	ActiveRunways []string // active runways at the primary airport
+	Entry, Exit     string
+	FlightType      av.TypeOfFlight
+	Level           int // hundreds of feet (see fixPairLevel)
+	VFR, OTP        bool
+	ACType          string // aircraft type, e.g. "A320"
+	ACID            string
+	ActiveRunways   []string // active runways at the primary airport
+	DepartureRunway string   // the flight's own departure runway; empty for arrivals/overflights
 }
 
 // flightTypeCode maps a TypeOfFlight to its adapted A/P/E code.
@@ -386,21 +394,22 @@ func (s *Sim) activePrimaryRunways() []string {
 // plan; it returns true in that case. Facilities without a
 // fix_pair_configuration are left untouched so the caller keeps its existing
 // inbound-flow assignment.
-func (s *Sim) applyFixPairAssignment(nasFp *NASFlightPlan) bool {
+func (s *Sim) applyFixPairAssignment(nasFp *NASFlightPlan, ac *Aircraft) bool {
 	cfg := s.State.FacilityAdaptation.FixPairConfiguration
 	if cfg == nil {
 		return false
 	}
 	in := FixPairInput{
-		Entry:         nasFp.EntryFix,
-		Exit:          nasFp.ExitFix,
-		FlightType:    nasFp.TypeOfFlight,
-		Level:         fixPairLevel(nasFp),
-		VFR:           nasFp.Rules == av.FlightRulesVFR,
-		OTP:           nasFp.VFROTP,
-		ACType:        nasFp.AircraftType,
-		ACID:          string(nasFp.ACID),
-		ActiveRunways: s.activePrimaryRunways(),
+		Entry:           nasFp.EntryFix,
+		Exit:            nasFp.ExitFix,
+		FlightType:      nasFp.TypeOfFlight,
+		Level:           fixPairLevel(nasFp),
+		VFR:             nasFp.Rules == av.FlightRulesVFR,
+		OTP:             nasFp.VFROTP,
+		ACType:          nasFp.AircraftType,
+		ACID:            string(nasFp.ACID),
+		ActiveRunways:   s.activePrimaryRunways(),
+		DepartureRunway: ac.FlightPlan.DepartureRunway,
 	}
 	// Reassignment may substitute a derived pair; the flight plan keeps its
 	// actual fixes and carries the substitutions separately.
@@ -507,6 +516,9 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 		if rwy := r.ActiveRunway; rwy != "" && rwy != "*" && !validRunwayId(rwy) {
 			e.ErrorString(`"active_runway" %q is not a valid runway id`, rwy)
 		}
+		// departure_runway matches the scenario's departure runway id
+		// exactly, and those may carry suffixes ("15R.Props", "12R_17"), so
+		// its format isn't checked.
 		for _, ep := range []string{r.FpFixPair[0], r.FpFixPair[1], r.DerivedFixPair[0], r.DerivedFixPair[1]} {
 			if !fa.resolveEndpoint(ep) {
 				e.ErrorString("fix %q is not an adapted significant point or airport", ep)
