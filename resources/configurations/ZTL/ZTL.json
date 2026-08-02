@@ -515,26 +515,22 @@
       ]
     },
     "configurations": {
-
       "T43": {
-
-          "default_consolidation": {
-
-            "43": []
-          },
-          "inbound_assignments": {
-              "PARQR6 - LNDIZ": "43",
-              "PARQR6 - TAFTT": "43"
-          }
+        "default_consolidation": {
+          "43": []
+        },
+        "inbound_assignments": {
+          "PARQR6 - LNDIZ": "43",
+          "PARQR6 - TAFTT": "43"
         }
-      },
-      "center": "N036.47.56.0,W080.48.51.0",
-      "range": 600,
-      "max_distance": 350,
-      "video_map_file": "videomaps/ZTL.mappack"
-
+      }
+    },
+    "center": "N036.47.56.0,W080.48.51.0",
+    "range": 600,
+    "max_distance": 350,
+    "video_map_file": "videomaps/ZTL.mappack"
   },
-  
+
   "handoff_ids": [
     {
       "id": "A80",
