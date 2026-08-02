@@ -1648,7 +1648,9 @@
                       <td>Airports that can be used as fix-pair endpoints, for
                         <a href="#fe-pseudo-eram">fix-pair</a> rules that name an airport rather than a
                         significant point. Each key is the id used in those rules; these display like
-                        significant points, and each value has the following members:</td>
+                        significant points. For an airport in vice's aviation database, an empty object
+                        suffices (e.g. <code>"DET": {}</code>)&mdash;the name and location are then
+                        taken from the database. Each value has the following members:</td>
                     </tr>
                     <tr><td colspan="3">
                         <details class="json-fields"><summary>"airports" members</summary>
@@ -1660,13 +1662,17 @@
                               <tr>
                                 <td>"name"</td>
                                 <td>String</td>
-                                <td>The airport's name, shown as the point's description on the
-                                  scope.</td>
+                                <td>(<i>Optional</i>) The airport's name, shown as the point's
+                                  description on the scope; defaults to the name in the aviation
+                                  database.</td>
                               </tr>
                               <tr>
                                 <td>"location"</td>
                                 <td>String</td>
-                                <td>The airport's <a href="#fe-locations">position</a>.</td>
+                                <td>(<i>Optional</i>) The airport's
+                                  <a href="#fe-locations">position</a>; defaults to the location in
+                                  the aviation database. Required for airports not in the
+                                  database.</td>
                               </tr>
                               <tr>
                                 <td>"abbreviation"</td>
@@ -3057,8 +3063,7 @@
                                 <td>"short_name"</td>
                                 <td>String</td>
                                 <td>A three-letter abbreviation for the fix that is used when it is shown as the scratchpad in datablocks.
-                                  If not specified, then if the fix's name has four letters and starts with a "K" (i.e., it's an airport),
-                                  the last three letters are used. Otherwise the first three letters of the fix's name are used.
+                                  If not specified, the first three characters of the fix's name are used.
                                   No two fixes may have the same "short_name".
                                   (May only be specified for fixes with more than three characters in their name.)</td>
                               </tr>

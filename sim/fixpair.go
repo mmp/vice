@@ -469,12 +469,31 @@ func (s *Sim) setOwningPosition(nasFp *NASFlightPlan, tcp TCP) {
 	}
 }
 
-// resolveEndpoint reports whether a fix-pair endpoint id can match a flight
+// FixPairFixID returns the id a flight plan carries for a fix: flight plans
+// hold 3-character fix ids, so a longer adapted significant point is replaced
+// by its short name, which defaults to the first three characters of its
+// name. Unadapted fixes are returned unchanged. (Exported for
+// cmd/convertassignments, which derives the same ids statically.)
+func (fa *FacilityAdaptation) FixPairFixID(fix string) string {
+	if len(fix) <= 3 {
+		return fix
+	}
+	if sp, ok := fa.SignificantPoints[fix]; ok {
+		if sp.ShortName != "" {
+			return sp.ShortName
+		}
+		return fix[:3]
+	}
+	return fix
+}
+
+// ResolveEndpoint reports whether a fix-pair endpoint id can match a flight
 // plan's entry/exit fix at this facility. Flight plans carry 3-character fix
 // ids, so an endpoint must be a significant point's name of at most 3
-// characters, a significant point's short name, or an airport. "*" and "" are
-// wildcards and always resolve.
-func (fa *FacilityAdaptation) resolveEndpoint(id string) bool {
+// characters, a significant point's short name (which defaults to the first
+// three characters of a longer name), or an airport. "*" and "" are wildcards
+// and always resolve.
+func (fa *FacilityAdaptation) ResolveEndpoint(id string) bool {
 	if id == "" || id == "*" {
 		return true
 	}
@@ -482,9 +501,9 @@ func (fa *FacilityAdaptation) resolveEndpoint(id string) bool {
 	if _, ok := fa.SignificantPoints[id]; ok && len(id) <= 3 {
 		return true
 	}
-	//... or by short name (the longer-named case).
-	for _, sp := range fa.SignificantPoints {
-		if sp.ShortName == id {
+	//... or by short name, explicit or defaulted (the longer-named case).
+	for name, sp := range fa.SignificantPoints {
+		if sp.ShortName == id || (sp.ShortName == "" && len(name) > 3 && name[:3] == id) {
 			return true
 		}
 	}
@@ -529,7 +548,7 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 		// exactly, and those may carry suffixes ("15R.Props", "12R_17"), so
 		// its format isn't checked.
 		for _, ep := range []string{r.FpFixPair[0], r.FpFixPair[1], r.DerivedFixPair[0], r.DerivedFixPair[1]} {
-			if !fa.resolveEndpoint(ep) {
+			if !fa.ResolveEndpoint(ep) {
 				e.ErrorString("fix %q is not an adapted significant point or airport", ep)
 			}
 		}
@@ -547,10 +566,10 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 	for _, b := range buckets {
 		for i, row := range b.rows {
 			e.Push(fmt.Sprintf("fix_pair_assignments.%s[%d]", b.name, i))
-			if !fa.resolveEndpoint(row.FixPair[0]) {
+			if !fa.ResolveEndpoint(row.FixPair[0]) {
 				e.ErrorString("entry %q is not an adapted significant point or airport", row.FixPair[0])
 			}
-			if !fa.resolveEndpoint(row.FixPair[1]) {
+			if !fa.ResolveEndpoint(row.FixPair[1]) {
 				e.ErrorString("exit %q is not an adapted significant point or airport", row.FixPair[1])
 			}
 			if len(row.TCP) == 0 {

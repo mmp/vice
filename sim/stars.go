@@ -442,16 +442,24 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		fa.Center = pos
 	}
 
-	// Resolve fix-pair airport locations and check their abbreviations
-	// (the same single-character rule as significant points).
+	// Resolve fix-pair airport locations and check their abbreviations (the
+	// same single-character rule as significant points). The name and
+	// location default from the airport database, so most entries are empty.
 	for id, ap := range fa.Airports {
 		if abbrev := ap.Abbreviation; len(abbrev) > 1 {
 			e.ErrorString("airports[%s]: abbreviation %q must be a single character", id, abbrev)
 		}
-		if ap.LocationStr == "" {
-			continue
+		faa, inDB := av.DB.LookupAirport(id)
+		if ap.Name == "" && inDB {
+			ap.Name = faa.Name
 		}
-		if pos, ok := loc.Locate(ap.LocationStr); ok {
+		if ap.LocationStr == "" {
+			if inDB {
+				ap.Location = faa.Location
+			} else {
+				e.ErrorString(`airports[%s]: no "location" given and airport not in database`, id)
+			}
+		} else if pos, ok := loc.Locate(ap.LocationStr); ok {
 			ap.Location = pos
 		} else {
 			e.ErrorString("airports[%s]: unknown location %q", id, ap.LocationStr)

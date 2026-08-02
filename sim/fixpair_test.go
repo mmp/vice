@@ -238,6 +238,7 @@ func TestResolveEndpoint(t *testing.T) {
 	fa := &FacilityAdaptation{
 		SignificantPoints: map[string]SignificantPoint{
 			"ROBUCC": {ShortName: "ROB"},
+			"SAYCH":  {}, // short name defaults to SAY
 			"PVA":    {},
 		},
 		Airports: map[string]*FixPairAirport{"BOS": {}},
@@ -250,12 +251,32 @@ func TestResolveEndpoint(t *testing.T) {
 		{"", true},
 		{"PVA", true},     // 3-char significant point by name
 		{"ROB", true},     // longer point's short name
+		{"SAY", true},     // longer point's defaulted short name
 		{"BOS", true},     // airport
 		{"ROBUCC", false}, // full name longer than a flight plan fix carries
 		{"ZZZ", false},
 	} {
-		if got := fa.resolveEndpoint(tc.id); got != tc.want {
-			t.Errorf("resolveEndpoint(%q) = %v, want %v", tc.id, got, tc.want)
+		if got := fa.ResolveEndpoint(tc.id); got != tc.want {
+			t.Errorf("ResolveEndpoint(%q) = %v, want %v", tc.id, got, tc.want)
+		}
+	}
+}
+
+func TestFixPairFixID(t *testing.T) {
+	fa := &FacilityAdaptation{
+		SignificantPoints: map[string]SignificantPoint{
+			"ROBUCC": {ShortName: "ROB"},
+			"SAYCH":  {},
+		},
+	}
+	for _, tc := range []struct{ fix, want string }{
+		{"PVA", "PVA"},           // short fixes pass through
+		{"ROBUCC", "ROB"},        // adapted short name
+		{"SAYCH", "SAY"},         // defaulted short name
+		{"UNADAPTD", "UNADAPTD"}, // not a significant point
+	} {
+		if got := fa.FixPairFixID(tc.fix); got != tc.want {
+			t.Errorf("FixPairFixID(%q) = %q, want %q", tc.fix, got, tc.want)
 		}
 	}
 }
