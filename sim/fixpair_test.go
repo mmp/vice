@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
+	"maps"
+	"slices"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
@@ -259,6 +261,26 @@ func TestResolveEndpoint(t *testing.T) {
 		if got := fa.ResolveEndpoint(tc.id); got != tc.want {
 			t.Errorf("ResolveEndpoint(%q) = %v, want %v", tc.id, got, tc.want)
 		}
+	}
+}
+
+func TestExpandPlanGroups(t *testing.T) {
+	var e util.ErrorLogger
+	tcp := map[string]TCP{"FOO,BAR": "1A", "BAZ": "1B", "*": "1C"}
+	expandPlanGroups(tcp, &e)
+	if e.HaveErrors() {
+		t.Errorf("unexpected errors: %v", slices.Collect(e.Errors()))
+	}
+	want := map[string]TCP{"FOO": "1A", "BAR": "1A", "BAZ": "1B", "*": "1C"}
+	if !maps.Equal(tcp, want) {
+		t.Errorf("expanded = %v, want %v", tcp, want)
+	}
+
+	// A plan appearing under two keys is an error.
+	var e2 util.ErrorLogger
+	expandPlanGroups(map[string]TCP{"FOO,BAR": "1A", "FOO": "1B"}, &e2)
+	if !e2.HaveErrors() {
+		t.Errorf("duplicate plan across keys should error")
 	}
 }
 

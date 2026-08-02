@@ -49,10 +49,11 @@ type FixPairAssignments struct {
 }
 
 // FixPairAssignmentRow maps a fix pair [entry, exit] ("*" = any) to the owning
-// TCP per Configuration Plan.
+// TCP per Configuration Plan. A "tcp" key may name several plans at once,
+// comma-separated ("FOO,BAR": "1A"); such keys are expanded at load.
 type FixPairAssignmentRow struct {
 	FixPair [2]string      `json:"fix_pair"` // [entry, exit]
-	TCP     map[string]TCP `json:"tcp"`      // config plan id -> owning logical TCP
+	TCP     map[string]TCP `json:"tcp"`      // config plan id(s) -> owning logical TCP
 	// RNAV marks the fix pair as an RNAV route ("RNAV Route?" in the Fix Pair
 	// Configurations Window): matching flights are identified as RNAV and
 	// display the RNAV symbol in their data blocks.
@@ -575,6 +576,7 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 			if len(row.TCP) == 0 {
 				e.ErrorString(`no "tcp" assignments given`)
 			}
+			expandPlanGroups(row.TCP, e)
 			for plan, tcp := range row.TCP {
 				if plan != "*" && len(c.Plans) > 0 {
 					if _, ok := c.Plans[plan]; !ok {
@@ -586,6 +588,30 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 				}
 			}
 			e.Pop()
+		}
+	}
+}
+
+// expandPlanGroups rewrites "tcp" keys that name several plans at once
+// ("FOO,BAR": "1A") into one entry per plan, so lookups by the active plan
+// stay simple.
+func expandPlanGroups(tcp map[string]TCP, e *util.ErrorLogger) {
+	for key, pos := range tcp {
+		if !strings.Contains(key, ",") {
+			continue
+		}
+		delete(tcp, key)
+		for plan := range strings.SplitSeq(key, ",") {
+			plan = strings.TrimSpace(plan)
+			if plan == "" {
+				e.ErrorString(`empty plan in "tcp" key %q`, key)
+				continue
+			}
+			if _, ok := tcp[plan]; ok {
+				e.ErrorString(`plan %q appears in more than one "tcp" key`, plan)
+				continue
+			}
+			tcp[plan] = pos
 		}
 	}
 }

@@ -2655,7 +2655,11 @@
                                           <td>Map of strings to strings</td>
                                           <td>Maps each configuration plan id to the position that owns
                                             matching flights when that plan is active; <code>*</code>
-                                            may be used as a catch-all plan id. The adaptation may name
+                                            may be used as a catch-all plan id. A key may also list
+                                            several plans, comma-separated&mdash;<code>"tcp": {
+                                            "FOO,BAR": "1A", "BAZ": "1B" }</code>&mdash;as shorthand
+                                            for repeating the same assignment; each plan may appear in
+                                            only one key. The adaptation may name
                                             positions beyond those a given scenario loads: if the
                                             winning row assigns a position the scenario doesn't have,
                                             no fix-pair assignment is made and the flight keeps its
