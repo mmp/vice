@@ -248,17 +248,16 @@
       ]
     },
     "configurations": {
-      "C61":{
-        "default_consolidation":{
-          "61":[]
+      "C61": {
+        "default_consolidation": {
+          "61": []
         },
-        "inbound_assignments":{
-          "BLUZZ5 UH (BNA)":"61",
-          "BLUZZ5 UH (RAMRD)":"61",
-          "J73 UH":"61",
-          "J46 UH":"61"
+        "inbound_assignments": {
+          "BLUZZ5 UH (BNA)": "61",
+          "BLUZZ5 UH (RAMRD)": "61",
+          "J73 UH": "61",
+          "J46 UH": "61"
         }
-
       }
     },
     "center": "N034.33.44.903,W089.05.31.622",

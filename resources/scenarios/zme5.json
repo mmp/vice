@@ -1,309 +1,308 @@
 {
-    "artcc": "ZME",
-    "area": "ZME Area 1",
-    "name": "ZME Area 1",
-    "airports":{
-        "KBNA":{
-            "approaches":{
-                "I0L":{
-                    "cifp_id":"I20L"
-                }
-            }
-        },
-        "KMEM":{
-            "approaches":{
-                "I6R":{
-                    "cifp_id":"I36R"
-                }
-            }
+  "artcc": "ZME",
+  "area": "ZME Area 1",
+  "name": "ZME Area 1",
+  "airports": {
+    "KBNA": {
+      "approaches": {
+        "I0L": {
+          "cifp_id": "I20L"
         }
-
+      }
     },
-    "default_scenario": "ZME 61 Clarksville Ultra-High",
-    "magnetic_adjustment": -3.0,
-    "scenarios":{
-        "ZME 61 Clarksville Ultra-High":{
-        "configuration": "C61",
-        "default_map_group": "ZMEHI",
-        "departure_runways": [],
-        "arrival_runways": [
-            {
-                "airport": "KMEM",
-                "runway": "36R"
-            }
-        ],
-        "inbound_rates": {
-            "BLUZZ5 UH (BNA)":{
-                "overflights": 10
-            },
-            "BLUZZ5 UH (RAMRD)":{
-                "overflights": 10
-            },
-            "J73 UH":{
-                "overflights": 10
-        },
-            "J46 UH":{
-                "overflights": 10
+    "KMEM": {
+      "approaches": {
+        "I6R": {
+          "cifp_id": "I36R"
         }
+      }
     }
-    }
-    },
-    "inbound_flows":{
+  },
+  "default_scenario": "ZME 61 Clarksville Ultra-High",
+  "magnetic_adjustment": -3.0,
+  "scenarios": {
+    "ZME 61 Clarksville Ultra-High": {
+      "configuration": "C61",
+      "default_map_group": "ZMEHI",
+      "departure_runways": [],
+      "arrival_runways": [
+        {
+          "airport": "KMEM",
+          "runway": "36R"
+        }
+      ],
+      "inbound_rates": {
         "BLUZZ5 UH (BNA)": {
-                    "overflights": [
-                        {
-                            "airlines": [
-                                {
-                                    "departure_airport": "KORD",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "N",
-                                    "fleet": "fastGA"
-                                },
-                                {
-                                    "departure_airport": "KRDU",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                },
-                                {
-                                    "departure_airport": "KDCA",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                },
-                                {
-                                    "departure_airport": "KBOS",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "DAL"
-                                },
-                                {
-                                    "departure_airport": "KLGA",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "SWA"
-                                },
-                                {
-                                    "departure_airport": "KJFK",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "ACA"
-                                },
-                                {
-                                    "departure_airport": "KMKE",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                }
-                            ],
-                            "initial_altitude": 38000,
-                            "assigned_altitude": 38000,
-                            "initial_controller": "I83",
-                            "initial_speed": 300,
-                            "waypoints": "LOZ/ho BNA CITAN KELNE SPKER BLUZZ LTOWN/delete"
-                        },
-                       {
-                            "airlines": [
-                                {
-                                    "departure_airport": "KORD",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "N",
-                                    "fleet": "fastGA"
-                                },
-                                {
-                                    "departure_airport": "KRDU",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                },
-                                {
-                                    "departure_airport": "KDCA",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                },
-                                {
-                                    "departure_airport": "KBOS",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "DAL"
-                                },
-                                {
-                                    "departure_airport": "KLGA",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "SWA"
-                                },
-                                {
-                                    "departure_airport": "KJFK",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "ACA"
-                                },
-                                {
-                                    "departure_airport": "KMKE",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                }
-                            ],
-                            "initial_altitude": 36000,
-                            "assigned_altitude": 36000,
-                            "initial_controller": "I83",
-                            "initial_speed": 300,
-                            "waypoints": "LOZ/ho BNA CITAN KELNE SPKER BLUZZ LTOWN/delete"
-                        }
-                    ]
-             },
-             "BLUZZ5 UH (RAMRD)": {
-                    "overflights": [
-                        {
-                            "airlines": [
-                                {
-                                    "departure_airport": "KIND",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "N",
-                                    "fleet": "fastGA"
-                                },
-                                {
-                                    "departure_airport": "KIND",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                },
-                                {
-                                    "departure_airport": "KPIT",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "UAL"
-                                },
-                                 {
-                                    "departure_airport": "KPIT",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAY"
-                                },
-                                {
-                                    "departure_airport": "KCLE",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "DAL"
-                                },
-                                {
-                                    "departure_airport": "KBUF",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "SWA"
-                                },
-                                {
-                                    "departure_airport": "KCMH",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "ACA"
-                                },
-                                {
-                                    "departure_airport": "KSDF",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                }
-                            ],
-                            "initial_altitude": 36000,
-                            "assigned_altitude": 36000,
-                            "initial_controller": "I83",
-                            "initial_speed": 300,
-                            "waypoints": "RYANS/ho RAMRD HARET AXXEL SPKER BLUZZ LTOWN/delete"
-                        }
-                    ]
-             },
-              "J73 UH": {
-                    "overflights": [
-                        {
-                            "airlines": [
-                                {
-                                    "departure_airport": "KTPA",
-                                    "arrival_airport": "KORD",
-                                    "icao": "N",
-                                    "fleet": "fastGA"
-                                },
-                                {
-                                    "departure_airport": "KTPA",
-                                    "arrival_airport": "KMDW",
-                                    "icao": "SWA"
-                                },
-                                {
-                                    "departure_airport": "KJAX",
-                                    "arrival_airport": "KMDW",
-                                    "icao": "AAY"
-                                },
-                                 {
-                                    "departure_airport": "KMIA",
-                                    "arrival_airport": "KMEM",
-                                    "icao": "AAL"
-                                },
-                                {
-                                    "departure_airport": "KATL",
-                                    "arrival_airport": "KSEA",
-                                    "icao": "DAL"
-                                },
-                                {
-                                    "departure_airport": "KATL",
-                                    "arrival_airport": "KMSP",
-                                    "icao": "DAL"
-                                },
-                                {
-                                    "departure_airport": "KBHM",
-                                    "arrival_airport": "KBOI",
-                                    "icao": "AAY"
-                                },
-                                {
-                                    "departure_airport": "KTPA",
-                                    "arrival_airport": "CYWG",
-                                    "icao": "ACA"
-                                }
-                            ],
-                            "initial_altitude": 40000,
-                            "assigned_altitude": 40000,
-                            "initial_controller": "T43",
-                            "initial_speed": 300,
-                            "waypoints": "LGC N035.15.49.108,W086.15.09.173/ho BNA PXV ELIOE/delete"
-                        }
-                    ]
-             },
-              "J46 UH": {
-                    "overflights": [
-                        {
-                            "airlines": [
-                                {
-                                    "departure_airport": "KRDU",
-                                    "arrival_airport": "KPHX",
-                                    "icao": "N",
-                                    "fleet": "fastGA"
-                                },
-                                {
-                                    "departure_airport": "KRDU",
-                                    "arrival_airport": "KLAX",
-                                    "icao": "AAL"
-                                },
-                                {
-                                    "departure_airport": "KATL",
-                                    "arrival_airport": "KSFO",
-                                    "icao": "DAL"
-                                },
-                                 {
-                                    "departure_airport": "KCLT",
-                                    "arrival_airport": "KABQ",
-                                    "icao": "AAL"
-                                },
-                                {
-                                    "departure_airport": "KATL",
-                                    "arrival_airport": "KSEA",
-                                    "icao": "DAL"
-                                },
-                                {
-                                    "departure_airport": "KATL",
-                                    "arrival_airport": "KABQ",
-                                    "icao": "DAL"
-                                },
-                                {
-                                    "departure_airport": "KRDU",
-                                    "arrival_airport": "KDFW",
-                                    "icao": "AAY"
-                                },
-                                {
-                                    "departure_airport": "KRDU",
-                                    "arrival_airport": "KLBB",
-                                    "icao": "DAL"
-                                }
-                            ],
-                            "initial_altitude": 34000,
-                            "assigned_altitude": 34000,
-                            "initial_controller": "T43",
-                            "initial_speed": 300,
-                            "waypoints": "VXV N036.00.49.658,W085.07.45.243/ho RABOW J46 ARG/delete"
-                        }
-                    ]
-             }                                            
-    }  
+          "overflights": 10
+        },
+        "BLUZZ5 UH (RAMRD)": {
+          "overflights": 10
+        },
+        "J73 UH": {
+          "overflights": 10
+        },
+        "J46 UH": {
+          "overflights": 10
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "BLUZZ5 UH (BNA)": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KMEM",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KRDU",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KDCA",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMEM",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KLGA",
+              "arrival_airport": "KMEM",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMEM",
+              "icao": "ACA"
+            },
+            {
+              "departure_airport": "KMKE",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 38000,
+          "initial_controller": "I83",
+          "initial_speed": 300,
+          "waypoints": "LOZ/ho BNA CITAN KELNE SPKER BLUZZ LTOWN/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KMEM",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KRDU",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KDCA",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMEM",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KLGA",
+              "arrival_airport": "KMEM",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMEM",
+              "icao": "ACA"
+            },
+            {
+              "departure_airport": "KMKE",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "I83",
+          "initial_speed": 300,
+          "waypoints": "LOZ/ho BNA CITAN KELNE SPKER BLUZZ LTOWN/delete"
+        }
+      ]
+    },
+    "BLUZZ5 UH (RAMRD)": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KIND",
+              "arrival_airport": "KMEM",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KIND",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KPIT",
+              "arrival_airport": "KMEM",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KPIT",
+              "arrival_airport": "KMEM",
+              "icao": "AAY"
+            },
+            {
+              "departure_airport": "KCLE",
+              "arrival_airport": "KMEM",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KBUF",
+              "arrival_airport": "KMEM",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KCMH",
+              "arrival_airport": "KMEM",
+              "icao": "ACA"
+            },
+            {
+              "departure_airport": "KSDF",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "I83",
+          "initial_speed": 300,
+          "waypoints": "RYANS/ho RAMRD HARET AXXEL SPKER BLUZZ LTOWN/delete"
+        }
+      ]
+    },
+    "J73 UH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KTPA",
+              "arrival_airport": "KORD",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KTPA",
+              "arrival_airport": "KMDW",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KJAX",
+              "arrival_airport": "KMDW",
+              "icao": "AAY"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KMEM",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KSEA",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KMSP",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KBHM",
+              "arrival_airport": "KBOI",
+              "icao": "AAY"
+            },
+            {
+              "departure_airport": "KTPA",
+              "arrival_airport": "CYWG",
+              "icao": "ACA"
+            }
+          ],
+          "initial_altitude": 40000,
+          "assigned_altitude": 40000,
+          "initial_controller": "T43",
+          "initial_speed": 300,
+          "waypoints": "LGC N035.15.49.108,W086.15.09.173/ho BNA PXV ELIOE/delete"
+        }
+      ]
+    },
+    "J46 UH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KRDU",
+              "arrival_airport": "KPHX",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KRDU",
+              "arrival_airport": "KLAX",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KSFO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KABQ",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KSEA",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KABQ",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KRDU",
+              "arrival_airport": "KDFW",
+              "icao": "AAY"
+            },
+            {
+              "departure_airport": "KRDU",
+              "arrival_airport": "KLBB",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "T43",
+          "initial_speed": 300,
+          "waypoints": "VXV N036.00.49.658,W085.07.45.243/ho RABOW J46 ARG/delete"
+        }
+      ]
+    }
+  }
 }

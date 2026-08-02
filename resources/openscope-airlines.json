@@ -3278,22 +3278,6 @@
       }
     },
     {
-      "icao": "aip",
-      "name": "Alpine Air Express",
-      "callsign": {
-        "name": "Alpine Air",
-        "callsignFormats": ["###"]
-      },
-      "fleets": {
-        "default": [
-          ["B190", 60],
-          ["BE99", 14],
-          ["B350", 1],
-          ["C208", 1]
-        ]
-      }
-    },
-    {
       "icao": "aiz",
       "name": "Arkia Israeli Airlines",
       "callsign": {
@@ -4515,7 +4499,6 @@
         "bcs3": [["BCS3", 22]],
         "b733": [
           ["B733", 5],
-          ["B733", 4],
           ["BCS3", 22],
           ["DH8D", 12]
         ]
@@ -4616,6 +4599,29 @@
           ["E55P", 1],
           ["P28A", 5]
         ],
+        "cessna": [
+          ["C208", 2],
+          ["C337", 5],
+          ["C510", 2],
+          ["C550", 5],
+          ["C750", 2]
+        ],
+        "lightGA": [
+          ["BE36", 5],
+          ["C172", 5],
+          ["C182", 5],
+          ["C208", 1],
+          ["P28A", 5]
+        ],
+        "fastGA": [
+          ["C510", 1],
+          ["C550", 2],
+          ["C750", 1],
+          ["E135", 1],
+          ["E50P", 1],
+          ["E545", 1],
+          ["E55P", 1]
+        ],
         "GApiston": [
           ["BE36", 5],
           ["C172", 5],
@@ -4636,29 +4642,6 @@
           ["C510", 3],
           ["C550", 7],
           ["C750", 3],
-          ["E135", 1],
-          ["E50P", 1],
-          ["E545", 1],
-          ["E55P", 1]
-        ],
-        "cessna": [
-          ["C208", 2],
-          ["C337", 5],
-          ["C510", 2],
-          ["C550", 5],
-          ["C750", 2]
-        ],
-        "lightGA": [
-          ["BE36", 5],
-          ["C172", 5],
-          ["C182", 5],
-          ["C208", 1],
-          ["P28A", 5]
-        ],
-        "fastGA": [
-          ["C510", 1],
-          ["C550", 2],
-          ["C750", 1],
           ["E135", 1],
           ["E50P", 1],
           ["E545", 1],
@@ -5657,6 +5640,18 @@
       }
     },
     {
+      "icao": "cre",
+      "name": "Jet Out",
+      "callsign": {
+        "name": "Cream City",
+        "length": 3,
+        "callsignFormats": ["###", "##"]
+      },
+      "fleets": {
+        "default": [["C25C", 8]]
+      }
+    },
+    {
       "icao": "crk",
       "name": "Hong Kong Airlines",
       "callsign": {
@@ -6089,14 +6084,10 @@
           ["BE36", 5],
           ["C172", 5],
           ["C182", 5],
-          ["C208", 1],
           ["C208", 2],
           ["C337", 5],
-          ["C510", 1],
           ["C510", 2],
-          ["C550", 2],
           ["C550", 5],
-          ["C750", 1],
           ["C750", 2],
           ["E135", 1],
           ["E50P", 1],
@@ -6585,6 +6576,29 @@
           ["B744", 13],
           ["B748", 19]
         ]
+      }
+    },
+    {
+      "icao": "dow",
+      "name": "Best Jets International",
+      "callsign": {
+        "name": "Downtown",
+        "length": 3,
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C680", 8],
+          ["CL30", 8],
+          ["F900", 8],
+          ["F2TH", 8],
+          ["GLF5", 8],
+          ["E170", 8],
+          ["B350", 1],
+          ["E55P", 2]
+        ],
+        "turbine": [["B350", 1]],
+        "jet": [["E55P", 2]]
       }
     },
     {
@@ -7197,17 +7211,6 @@
       }
     },
     {
-      "icao": "xlj",
-      "name": "XCEL Jet",
-      "callsign": {
-        "name": "Excel Jet",
-        "callsignFormats": ["##", "###"]
-      },
-      "fleets": {
-        "default": [["LJ40", 4]]
-      }
-    },
-    {
       "icao": "xsr",
       "name": "Airshare",
       "callsign": {
@@ -7268,6 +7271,8 @@
       },
       "fleets": {
         "default": [
+          ["B350", 59],
+          ["BE40", 39],
           ["E55P", 59],
           ["CL30", 39]
         ]
@@ -8440,7 +8445,7 @@
       "name": "Finnair",
       "callsign": {
         "name": "Finnair",
-        "callsignFormats": ["#", "#@@", "##", "###", "##@", "#@@", "####"]
+        "callsignFormats": ["#", "#@@", "##", "###", "##@", "####"]
       },
       "fleets": {
         "default": [
@@ -9019,14 +9024,10 @@
           ["BE36", 5],
           ["C172", 5],
           ["C182", 5],
-          ["C208", 1],
           ["C208", 2],
           ["C337", 5],
-          ["C510", 1],
           ["C510", 2],
-          ["C550", 2],
           ["C550", 5],
-          ["C750", 1],
           ["C750", 2],
           ["E135", 1],
           ["E50P", 1],
@@ -11920,7 +11921,7 @@
       },
       "fleets": {
         "default": [
-          ["E190", 6],
+          ["E190", 10],
           ["BCS3", 56]
         ],
         "long": [["BCS3", 56]]
@@ -12040,6 +12041,160 @@
           ["RV12", 1],
           ["RV14", 1],
           ["VELO", 1]
+        ],
+        "GAjet": [
+          ["BE4W", 1],
+          ["C25A", 1],
+          ["C25B", 1],
+          ["C25C", 5],
+          ["C25M", 1],
+          ["C500", 10],
+          ["C501", 1],
+          ["C525", 1],
+          ["C56X", 1],
+          ["C650", 1],
+          ["C68A", 1],
+          ["C700", 1],
+          ["SF50", 1],
+          ["F900", 1],
+          ["FA10", 1],
+          ["FA50", 1],
+          ["FA6X", 1],
+          ["FA7X", 5],
+          ["LJ31", 1],
+          ["LJ35", 1],
+          ["ASTR", 5],
+          ["G150", 1],
+          ["G280", 1],
+          ["GA5C", 1],
+          ["GA7C", 1],
+          ["H25A", 1],
+          ["H25B", 5],
+          ["H25C", 1],
+          ["HA4T", 1],
+          ["PRM1", 5],
+          ["WW23", 1],
+          ["WW24", 1],
+          ["PC24", 1],
+          ["C510", 1],
+          ["C550", 10],
+          ["C750", 1],
+          ["CL60", 1],
+          ["E50P", 1],
+          ["E55P", 1],
+          ["CL35", 1],
+          ["CL30", 1],
+          ["GLF4", 1],
+          ["GLF5", 1],
+          ["BE40", 1],
+          ["E545", 5],
+          ["E550", 5],
+          ["F2TH", 1],
+          ["GALX", 1],
+          ["GL5T", 1],
+          ["GLEX", 1],
+          ["HDJT", 1],
+          ["LJ40", 1],
+          ["LJ45", 1],
+          ["LJ60", 1],
+          ["LJ75", 1]
+        ],
+        "GAmultipiston": [
+          ["AC50", 1],
+          ["AC52", 1],
+          ["AC56", 1],
+          ["AC68", 1],
+          ["AC72", 1],
+          ["B58T", 1],
+          ["BE55", 1],
+          ["BE56", 1],
+          ["BE58", 1],
+          ["BE60", 1],
+          ["BE65", 1],
+          ["BE70", 1],
+          ["BE76", 1],
+          ["BE80", 1],
+          ["BE88", 1],
+          ["BE95", 1],
+          ["C303", 1],
+          ["C310", 1],
+          ["C320", 1],
+          ["C404", 1],
+          ["C414", 1],
+          ["C421", 1],
+          ["P337", 1],
+          ["DA62", 1],
+          ["GA7", 1],
+          ["AEST", 1],
+          ["PA23", 1],
+          ["PA27", 1],
+          ["PA30", 1],
+          ["PA31", 1],
+          ["PA34", 1],
+          ["PA44", 1],
+          ["P212", 1]
+        ],
+        "GAturbine": [
+          ["AC80", 1],
+          ["AC90", 1],
+          ["AC95", 1],
+          ["B36T", 1],
+          ["B60T", 1],
+          ["BE10", 1],
+          ["BE9L", 1],
+          ["BE9T", 1],
+          ["C441", 1],
+          ["K100", 1],
+          ["K900", 1],
+          ["EPIC", 1],
+          ["SW3", 1],
+          ["SW4", 1],
+          ["EVOT", 1],
+          ["M600", 1],
+          ["P46T", 1],
+          ["PAY1", 1],
+          ["PAY2", 1],
+          ["PAY3", 1],
+          ["PAY4", 1],
+          ["TBM7", 1],
+          ["TBM8", 1],
+          ["TBM9", 1],
+          ["B350", 1],
+          ["BE20", 1],
+          ["BE99", 1],
+          ["C208", 1],
+          ["P180", 1],
+          ["PC12", 1]
+        ],
+        "cessna": [
+          ["C150", 5],
+          ["C172", 6],
+          ["C182", 5],
+          ["C208", 2],
+          ["C337", 5],
+          ["C510", 2],
+          ["C550", 5],
+          ["C750", 2]
+        ],
+        "lightGA": [
+          ["AA1", 5],
+          ["AA5", 5],
+          ["BE36", 5],
+          ["C150", 5],
+          ["C172", 5],
+          ["C182", 5],
+          ["C208", 1],
+          ["P28A", 5]
+        ],
+        "fastGA": [
+          ["C510", 2],
+          ["C550", 4],
+          ["C750", 2],
+          ["E135", 2],
+          ["E50P", 2],
+          ["E545", 2],
+          ["E55P", 2],
+          ["HDJT", 1]
         ],
         "GApiston": [
           ["AC11", 1],
@@ -12235,131 +12390,6 @@
           ["AC80", 1],
           ["AC90", 1],
           ["AC95", 1],
-          ["B36T", 1],
-          ["B60T", 1],
-          ["BE10", 1],
-          ["BE9L", 1],
-          ["BE9T", 1],
-          ["C441", 1],
-          ["K100", 1],
-          ["K900", 1],
-          ["EPIC", 1],
-          ["SW3", 1],
-          ["SW4", 1],
-          ["EVOT", 1],
-          ["M600", 1],
-          ["P46T", 1],
-          ["PAY1", 1],
-          ["PAY2", 1],
-          ["PAY3", 1],
-          ["PAY4", 1],
-          ["TBM7", 1],
-          ["TBM8", 1],
-          ["TBM9", 1],
-          ["B350", 1],
-          ["BE20", 1],
-          ["BE99", 1],
-          ["C208", 1],
-          ["P180", 1],
-          ["PC12", 1]
-        ],
-        "GAjet": [
-          ["BE4W", 1],
-          ["C25A", 1],
-          ["C25B", 1],
-          ["C25C", 5],
-          ["C25M", 1],
-          ["C500", 10],
-          ["C501", 1],
-          ["C525", 1],
-          ["C56X", 1],
-          ["C650", 1],
-          ["C68A", 1],
-          ["C700", 1],
-          ["SF50", 1],
-          ["F900", 1],
-          ["FA10", 1],
-          ["FA50", 1],
-          ["FA6X", 1],
-          ["FA7X", 5],
-          ["LJ31", 1],
-          ["LJ35", 1],
-          ["ASTR", 5],
-          ["G150", 1],
-          ["G280", 1],
-          ["GA5C", 1],
-          ["GA7C", 1],
-          ["H25A", 1],
-          ["H25B", 5],
-          ["H25C", 1],
-          ["HA4T", 1],
-          ["PRM1", 5],
-          ["WW23", 1],
-          ["WW24", 1],
-          ["PC24", 1],
-          ["C510", 1],
-          ["C550", 10],
-          ["C750", 1],
-          ["CL60", 1],
-          ["E50P", 1],
-          ["E55P", 1],
-          ["CL35", 1],
-          ["CL30", 1],
-          ["GLF4", 1],
-          ["GLF5", 1],
-          ["BE40", 1],
-          ["E545", 5],
-          ["E550", 5],
-          ["F2TH", 1],
-          ["GALX", 1],
-          ["GL5T", 1],
-          ["GLEX", 1],
-          ["HDJT", 1],
-          ["LJ40", 1],
-          ["LJ45", 1],
-          ["LJ60", 1],
-          ["LJ75", 1]
-        ],
-        "GAmultipiston": [
-          ["AC50", 1],
-          ["AC52", 1],
-          ["AC56", 1],
-          ["AC68", 1],
-          ["AC72", 1],
-          ["B58T", 1],
-          ["BE55", 1],
-          ["BE56", 1],
-          ["BE58", 1],
-          ["BE60", 1],
-          ["BE65", 1],
-          ["BE70", 1],
-          ["BE76", 1],
-          ["BE80", 1],
-          ["BE88", 1],
-          ["BE95", 1],
-          ["C303", 1],
-          ["C310", 1],
-          ["C320", 1],
-          ["C404", 1],
-          ["C414", 1],
-          ["C421", 1],
-          ["P337", 1],
-          ["DA62", 1],
-          ["GA7", 1],
-          ["AEST", 1],
-          ["PA23", 1],
-          ["PA27", 1],
-          ["PA30", 1],
-          ["PA31", 1],
-          ["PA34", 1],
-          ["PA44", 1],
-          ["P212", 1]
-        ],
-        "GAturbine": [
-          ["AC80", 1],
-          ["AC90", 1],
-          ["AC95", 1],
-          ["B36T", 1],
           ["B60T", 1],
           ["BE10", 1],
           ["BE9L", 1],
@@ -12473,36 +12503,6 @@
           ["LJ45", 1],
           ["LJ60", 1],
           ["LJ75", 1]
-        ],
-        "cessna": [
-          ["C150", 5],
-          ["C172", 6],
-          ["C182", 5],
-          ["C208", 2],
-          ["C337", 5],
-          ["C510", 2],
-          ["C550", 5],
-          ["C750", 2]
-        ],
-        "lightGA": [
-          ["AA1", 5],
-          ["AA5", 5],
-          ["BE36", 5],
-          ["C150", 5],
-          ["C172", 5],
-          ["C182", 5],
-          ["C208", 1],
-          ["P28A", 5]
-        ],
-        "fastGA": [
-          ["C510", 2],
-          ["C550", 4],
-          ["C750", 2],
-          ["E135", 2],
-          ["E50P", 2],
-          ["E545", 2],
-          ["E55P", 2],
-          ["HDJT", 1]
         ]
       }
     },
@@ -12569,6 +12569,266 @@
       },
       "fleets": {
         "default": [["GLF5", 8]]
+      }
+    },
+    {
+      "icao": "are",
+      "name": "LAN Colombia",
+      "callsign": {
+        "name": "Lan Colombia",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["A320", 10]]
+      }
+    },
+    {
+      "icao": "cap",
+      "name": "Civil Air Patrol",
+      "callsign": {
+        "name": "CAP",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["C152", 10],
+          ["C182", 13],
+          ["C172", 10],
+          ["T206", 2],
+          ["C82S", 1],
+          ["C82T", 1]
+        ]
+      }
+    },
+    {
+      "icao": "cyt",
+      "name": "Crystal Air",
+      "callsign": {
+        "name": "Crystal Air",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["C25C", 1],
+          ["SF50", 1]
+        ]
+      }
+    },
+    {
+      "icao": "frg",
+      "name": "Freight Runners Express",
+      "callsign": {
+        "name": "Freight Runners",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [
+          ["E120", 4],
+          ["BE99", 10],
+          ["SB20", 6]
+        ]
+      }
+    },
+    {
+      "icao": "fwk",
+      "name": "Flightworks Inc.",
+      "callsign": {
+        "name": "Flightworks",
+        "callsignFormats": ["###", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["CL60", 4],
+          ["F2TH", 1],
+          ["H25B", 1]
+        ]
+      }
+    },
+    {
+      "icao": "her",
+      "name": "Hera Flight",
+      "callsign": {
+        "name": "Hera",
+        "callsignFormats": ["###", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["C750", 5],
+          ["CL30", 1],
+          ["CL60", 2],
+          ["FA20", 1],
+          ["GLF4", 4],
+          ["LJ60", 2]
+        ]
+      }
+    },
+    {
+      "icao": "hrt",
+      "name": "Chartright Air",
+      "callsign": {
+        "name": "Chartright",
+        "callsignFormats": ["###", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["C560", 18],
+          ["C56X", 2],
+          ["CL30", 16],
+          ["CL35", 8],
+          ["F2TH", 3],
+          ["GALX", 4],
+          ["H25B", 1],
+          ["LJ45", 1],
+          ["CL60", 11],
+          ["GL5T", 11],
+          ["G280", 2],
+          ["C750", 1],
+          ["GLF4", 1]
+        ]
+      }
+    },
+    {
+      "icao": "jnx",
+      "name": "Fly Dreams",
+      "callsign": {
+        "name": "Nexa",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["C560", 4],
+          ["C56X", 2],
+          ["CL30", 1],
+          ["CL35", 3],
+          ["F2TH", 2],
+          ["GALX", 2],
+          ["H25B", 1],
+          ["LJ45", 1]
+        ]
+      }
+    },
+    {
+      "icao": "lbq",
+      "name": "Quest Diagnostics",
+      "callsign": {
+        "name": "Labquest",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 20],
+          ["E50P", 1],
+          ["F2TH", 1]
+        ]
+      }
+    },
+    {
+      "icao": "pfa",
+      "name": "Paris Air",
+      "callsign": {
+        "name": "Paris Air",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["P28A", 50]]
+      }
+    },
+    {
+      "icao": "pjc",
+      "name": "Pittsburgh Jet Center",
+      "callsign": {
+        "name": "Pittsburgh Jet",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C25B", 3],
+          ["C25C", 1],
+          ["C56X", 8],
+          ["C680", 1],
+          ["CL60", 1],
+          ["G280", 1],
+          ["GLF4", 1]
+        ]
+      }
+    },
+    {
+      "icao": "rkj",
+      "name": "Arca Jet",
+      "callsign": {
+        "name": "Arca Jet",
+        "callsignFormats": ["###", "##"]
+      },
+      "fleets": {
+        "default": [["C750", 11]]
+      }
+    },
+    {
+      "icao": "sfy",
+      "name": "Skyborne Airline Academy",
+      "callsign": {
+        "name": "Sky Flite",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 50],
+          ["P28R", 1],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "tcf",
+      "name": "Florida Institute of Technology",
+      "callsign": {
+        "name": "Tech Flight",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 50],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "ftt",
+      "name": "Flight Fast Track",
+      "callsign": {
+        "name": "Fast Air",
+        "callsignFormats": ["#"]
+      },
+      "fleets": {
+        "default": [["P28A", 10]]
+      }
+    },
+    {
+      "icao": "ubt",
+      "name": "Norse Atlantic UK",
+      "callsign": {
+        "name": "Longboat",
+        "callsignFormats": ["##@", "#@@", "###"]
+      },
+      "fleets": {
+        "default": [["B789", 7]]
+      }
+    },
+    {
+      "icao": "sjj",
+      "name": "Spirit Jets",
+      "callsign": {
+        "name": "Spirit Jet",
+        "callsignFormats": ["###", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["CL60", 10],
+          ["H25B", 15],
+          ["CL35", 5],
+          ["GLF5", 3],
+          ["CL30", 1]
+        ]
       }
     },
     {
@@ -13369,17 +13629,6 @@
       }
     },
     {
-      "icao": "pcm",
-      "name": "West Air",
-      "callsign": {
-        "name": "Pac Valley",
-        "callsignFormats": ["####"]
-      },
-      "fleets": {
-        "default": [["C208", 33]]
-      }
-    },
-    {
       "icao": "pdt",
       "name": "Piedmont Airlines",
       "callsign": {
@@ -13962,10 +14211,7 @@
           ["B77W", 48]
         ],
         "a359": [["A359", 26]],
-        "b77w": [
-          ["B77W", 48],
-          ["B77W", 40]
-        ],
+        "b77w": [["B77W", 48]],
         "b788": [["B788", 30]],
         "jfk": [
           ["A359", 1],
@@ -14712,7 +14958,7 @@
       "fleets": {
         "default": [
           ["B738", 64],
-          ["B739", 3]
+          ["B739", 5]
         ],
         "cargo": [["B738", 20]]
       }
@@ -14946,27 +15192,6 @@
       }
     },
     {
-      "icao": "sis",
-      "name": "Silver Air",
-      "callsign": {
-        "name": "Silver Speed",
-        "callsignFormats": ["##", "###"]
-      },
-      "fleets": {
-        "default": [
-          ["GLF5", 3],
-          ["C750", 3],
-          ["C25B", 2],
-          ["C560", 2],
-          ["GLEX", 1],
-          ["CL60", 1],
-          ["C680", 1],
-          ["GALX", 1],
-          ["GLF4", 1]
-        ]
-      }
-    },
-    {
       "icao": "sjo",
       "name": "Spring Airlines Japan",
       "callsign": {
@@ -15023,7 +15248,7 @@
       "name": "SkyWest",
       "callsign": {
         "name": "SkyWest",
-        "callsignFormats": ["####", "####", "####", "####", "###@"]
+        "callsignFormats": ["####", "###@"]
       },
       "fleets": {
         "default": [
@@ -15415,14 +15640,12 @@
           ["A20N", 3],
           ["A21N", 1],
           ["A319", 5],
-          ["A319", 5],
           ["A320", 23],
           ["A321", 15]
         ],
         "short": [
           ["A20N", 3],
           ["A21N", 1],
-          ["A319", 5],
           ["A319", 5],
           ["A320", 23],
           ["A321", 15]
@@ -16272,7 +16495,6 @@
           ["A333", 40],
           ["B38M", 11],
           ["B39M", 1],
-          ["B737", 1],
           ["B737", 1],
           ["B738", 63],
           ["B739", 15],
@@ -20118,64 +20340,6 @@
       }
     },
     {
-      "icao": "SNAKE",
-      "name": "USMC",
-      "callsign": {
-        "name": "Snake",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [["F18S", 22]]
-      }
-    },
-    {
-      "icao": "RAIDR",
-      "name": "USMC",
-      "callsign": {
-        "name": "RAIDR",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [["C30J", 15]]
-      }
-    },
-    {
-      "icao": "GRZLY",
-      "name": "USMC",
-      "callsign": {
-        "name": "GRIZZLY",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [
-          ["C560", 15],
-          ["BE20", 10]
-        ]
-      }
-    },
-    {
-      "icao": "DEVIL",
-      "name": "USMC",
-      "callsign": {
-        "name": "RED DEVIL",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [["F18S", 22]]
-      }
-    },
-    {
-      "icao": "KNITE",
-      "name": "USMC",
-      "callsign": {
-        "name": "KNIGHT",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [["F18S", 22]]
-      }
-    },
-    {
       "icao": "joker",
       "name": "USAF",
       "callsign": {
@@ -20184,17 +20348,6 @@
       },
       "fleets": {
         "default": [["F15", 10]]
-      }
-    },
-    {
-      "icao": "tyson",
-      "name": "USAF",
-      "callsign": {
-        "name": "TYSON",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [["B738", 2]]
       }
     },
     {
@@ -20323,20 +20476,6 @@
       },
       "fleets": {
         "default": [["BE40", 10]]
-      }
-    },
-    {
-      "icao": "e",
-      "name": "USAF Air EVAC",
-      "callsign": {
-        "name": "E",
-        "callsignFormats": ["#####"]
-      },
-      "fleets": {
-        "default": [
-          ["C130", 10],
-          ["C17", 10]
-        ]
       }
     },
     {
@@ -20520,14 +20659,151 @@
       }
     },
     {
-      "icao": "cre",
-      "name": "Jet Out",
+      "icao": "aip",
+      "name": "Alpine Air Express",
       "callsign": {
-        "name": "Cream City",
-        "callsignFormats": ["###", "##"]
+        "name": "Alpine Air",
+        "callsignFormats": ["###", "####"]
       },
       "fleets": {
-        "default": [["C25C", 8]]
+        "default": [
+          ["B190", 60],
+          ["BE99", 14],
+          ["B350", 1],
+          ["C208", 1],
+          ["BE20", 1]
+        ]
+      }
+    },
+    {
+      "icao": "xlj",
+      "name": "Xcel Jet",
+      "callsign": {
+        "name": "Xcel Jet",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ40", 4],
+          ["LJ45", 13],
+          ["GALX", 1]
+        ]
+      }
+    },
+    {
+      "icao": "pcm",
+      "name": "Westair Industries",
+      "callsign": {
+        "name": "Pac Valley",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["C208", 33]]
+      }
+    },
+    {
+      "icao": "sis",
+      "name": "Scott Aviation",
+      "callsign": {
+        "name": "Silverspeed",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["GLF5", 19],
+          ["C750", 14],
+          ["C25B", 20],
+          ["C560", 2],
+          ["GLEX", 10],
+          ["CL60", 3],
+          ["C680", 1],
+          ["GALX", 1],
+          ["GLF4", 7],
+          ["CL35", 18],
+          ["H25B", 11],
+          ["CRJ2", 5],
+          ["PC12", 5],
+          ["C56X", 3],
+          ["GL5T", 3],
+          ["CL30", 2]
+        ]
+      }
+    },
+    {
+      "icao": "SNAKE",
+      "name": "USMC",
+      "callsign": {
+        "name": "Snake",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["F18S", 22]]
+      }
+    },
+    {
+      "icao": "RAIDR",
+      "name": "USMC",
+      "callsign": {
+        "name": "RAIDR",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["C30J", 15]]
+      }
+    },
+    {
+      "icao": "GRZLY",
+      "name": "USMC",
+      "callsign": {
+        "name": "GRIZZLY",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["C560", 15],
+          ["BE20", 10]
+        ]
+      }
+    },
+    {
+      "icao": "DEVIL",
+      "name": "USMC",
+      "callsign": {
+        "name": "RED DEVIL",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["F18S", 22]]
+      }
+    },
+    {
+      "icao": "KNITE",
+      "name": "USMC",
+      "callsign": {
+        "name": "KNIGHT",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["F18S", 22]]
+      }
+    },
+    {
+      "icao": "tyson",
+      "name": "Tyson",
+      "callsign": {
+        "name": "Tyson",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["B738", 11],
+          ["B737", 30],
+          ["A320", 9],
+          ["B733", 4],
+          ["A321", 3],
+          ["E145", 3],
+          ["B734", 2]
+        ]
       }
     },
     {
@@ -20663,41 +20939,11 @@
       }
     },
     {
-      "icao": "dow",
-      "name": "Best Jets International",
-      "callsign": {
-        "name": "Downtown",
-        "callsignFormats": ["##", "###"]
-      },
-      "fleets": {
-        "default": [
-          ["B350", 1],
-          ["E55P", 2]
-        ],
-        "turbine": [["B350", 1]],
-        "jet": [["E55P", 2]]
-      }
-    },
-    {
       "icao": "nsh",
       "name": "Sterling Aviation LLC",
       "callsign": {
         "name": "North Shore",
         "callsignFormats": ["#", "##", "###"]
-      },
-      "fleets": {
-        "default": [
-          ["F2TH", 1],
-          ["H25B", 1]
-        ]
-      }
-    },
-    {
-      "icao": "fwk",
-      "name": "Flightworks Inc.",
-      "callsign": {
-        "name": "Flightworks",
-        "callsignFormats": ["##", "###"]
       },
       "fleets": {
         "default": [
@@ -20759,32 +21005,6 @@
       }
     },
     {
-      "icao": "lbq",
-      "name": "Quest Diagnostics",
-      "callsign": {
-        "name": "Labquest",
-        "callsignFormats": ["###"]
-      },
-      "fleets": {
-        "default": [
-          ["PC12", 20],
-          ["E50P", 1],
-          ["F2TH", 1]
-        ]
-      }
-    },
-    {
-      "icao": "pcm",
-      "name": "Westair Industries",
-      "callsign": {
-        "name": "Pac Valley",
-        "callsignFormats": ["####"]
-      },
-      "fleets": {
-        "default": [["C208", 1]]
-      }
-    },
-    {
       "icao": "jtz",
       "name": "Nicholas Air",
       "callsign": {
@@ -20814,38 +21034,6 @@
         "default": [
           ["DA40", 11],
           ["DA42", 2]
-        ]
-      }
-    },
-    {
-      "icao": "cap",
-      "name": "Civil Air Patrol",
-      "callsign": {
-        "name": "CAP",
-        "callsignFormats": ["###", "####"]
-      },
-      "fleets": {
-        "default": [
-          ["C182", 13],
-          ["C172", 10],
-          ["T206", 2],
-          ["C82S", 1],
-          ["C82T", 1]
-        ]
-      }
-    },
-    {
-      "icao": "aip",
-      "name": "Alpine Air Express",
-      "callsign": {
-        "name": "Alpine Air",
-        "callsignFormats": ["###", "####"]
-      },
-      "fleets": {
-        "default": [
-          ["B190", 17],
-          ["BE99", 2],
-          ["BE20", 1]
         ]
       }
     },
@@ -20919,36 +21107,6 @@
           ["P28A", 10],
           ["PA44", 3],
           ["C172", 1]
-        ]
-      }
-    },
-    {
-      "icao": "frg",
-      "name": "Freight Runners Express",
-      "callsign": {
-        "name": "Freight Runners",
-        "callsignFormats": ["####"]
-      },
-      "fleets": {
-        "default": [
-          ["SB20", 6],
-          ["BE99", 5],
-          ["E120", 3]
-        ]
-      }
-    },
-    {
-      "icao": "sfy",
-      "name": "Skyborne Airline Academy",
-      "callsign": {
-        "name": "Sky Flite",
-        "callsignFormats": ["###"]
-      },
-      "fleets": {
-        "default": [
-          ["P28A", 12],
-          ["P28R", 1],
-          ["PA44", 1]
         ]
       }
     },
@@ -21067,25 +21225,6 @@
       }
     },
     {
-      "icao": "pjc",
-      "name": "Pittsburgh Jet Center",
-      "callsign": {
-        "name": "Pittsburgh Jet",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [
-          ["C56X", 8],
-          ["C25B", 2],
-          ["C25C", 1],
-          ["C680", 1],
-          ["CL60", 1],
-          ["G280", 1],
-          ["GLF4", 1]
-        ]
-      }
-    },
-    {
       "icao": "bbq",
       "name": "Eastern Air Express",
       "callsign": {
@@ -21152,22 +21291,6 @@
           ["G280", 2],
           ["LJ60", 2],
           ["FA7X", 1]
-        ]
-      }
-    },
-    {
-      "icao": "her",
-      "name": "Hera Flight",
-      "callsign": {
-        "name": "Hera",
-        "callsignFormats": ["##", "###"]
-      },
-      "fleets": {
-        "default": [
-          ["C750", 5],
-          ["GLF4", 4],
-          ["LJ60", 2],
-          ["CL30", 1]
         ]
       }
     },
@@ -21405,55 +21528,6 @@
       }
     },
     {
-      "icao": "tcf",
-      "name": "Florida Institute of Technology",
-      "callsign": {
-        "name": "Tech Flight",
-        "callsignFormats": ["###"]
-      },
-      "fleets": {
-        "default": [
-          ["P28A", 14],
-          ["PA44", 1]
-        ]
-      }
-    },
-    {
-      "icao": "hrt",
-      "name": "Chartright Air",
-      "callsign": {
-        "name": "Chartright",
-        "callsignFormats": ["##", "###"]
-      },
-      "fleets": {
-        "default": [
-          ["C560", 18],
-          ["CL30", 16],
-          ["CL60", 11],
-          ["GL5T", 11],
-          ["CL35", 8],
-          ["GALX", 4],
-          ["F2TH", 3],
-          ["C56X", 2],
-          ["G280", 2],
-          ["C750", 1],
-          ["GLF4", 1],
-          ["LJ45", 1]
-        ]
-      }
-    },
-    {
-      "icao": "are",
-      "name": "LAN Colombia",
-      "callsign": {
-        "name": "Lan Colombia",
-        "callsignFormats": ["####"]
-      },
-      "fleets": {
-        "default": [["A320", 1]]
-      }
-    },
-    {
       "icao": "wwi",
       "name": "Worldwide Jet Charter",
       "callsign": {
@@ -21595,23 +21669,6 @@
       }
     },
     {
-      "icao": "sjj",
-      "name": "Spirit Jets",
-      "callsign": {
-        "name": "Spirit Jet",
-        "callsignFormats": ["##", "###"]
-      },
-      "fleets": {
-        "default": [
-          ["H25B", 15],
-          ["CL60", 10],
-          ["CL35", 5],
-          ["GLF5", 3],
-          ["CL30", 1]
-        ]
-      }
-    },
-    {
       "icao": "dzr",
       "name": "Midwest Aviation",
       "callsign": {
@@ -21671,17 +21728,6 @@
       }
     },
     {
-      "icao": "rkj",
-      "name": "Arca Jet",
-      "callsign": {
-        "name": "Arca Jet",
-        "callsignFormats": ["##", "###"]
-      },
-      "fleets": {
-        "default": [["C750", 1]]
-      }
-    },
-    {
       "icao": "jus",
       "name": "USA Jet Airlines",
       "callsign": {
@@ -21718,25 +21764,6 @@
         "default": [
           ["BE20", 3],
           ["BE9L", 1]
-        ]
-      }
-    },
-    {
-      "icao": "tyson",
-      "name": "Tyson",
-      "callsign": {
-        "name": "Tyson",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [
-          ["B737", 30],
-          ["B738", 11],
-          ["A320", 9],
-          ["B733", 4],
-          ["A321", 3],
-          ["E145", 3],
-          ["B734", 2]
         ]
       }
     },
@@ -21970,17 +21997,6 @@
           ["C25A", 2],
           ["F2TH", 2]
         ]
-      }
-    },
-    {
-      "icao": "ubt",
-      "name": "Norse Atlantic UK",
-      "callsign": {
-        "name": "Longboat",
-        "callsignFormats": ["###"]
-      },
-      "fleets": {
-        "default": [["B789", 1]]
       }
     },
     {
@@ -22245,31 +22261,6 @@
           ["F2TH", 2],
           ["GALX", 2],
           ["GLEX", 1]
-        ]
-      }
-    },
-    {
-      "icao": "sis",
-      "name": "Scott Aviation",
-      "callsign": {
-        "name": "Silverspeed",
-        "callsignFormats": ["##", "###"]
-      },
-      "fleets": {
-        "default": [
-          ["C25B", 20],
-          ["GLF5", 19],
-          ["CL35", 18],
-          ["C750", 14],
-          ["H25B", 11],
-          ["GLEX", 10],
-          ["GLF4", 7],
-          ["CRJ2", 5],
-          ["PC12", 5],
-          ["C56X", 3],
-          ["CL60", 3],
-          ["GL5T", 3],
-          ["CL30", 2]
         ]
       }
     },
@@ -22714,20 +22705,6 @@
           ["DA40", 13],
           ["PA44", 1],
           ["S22T", 1]
-        ]
-      }
-    },
-    {
-      "icao": "xlj",
-      "name": "Xcel Jet",
-      "callsign": {
-        "name": "Xcel Jet",
-        "callsignFormats": ["###"]
-      },
-      "fleets": {
-        "default": [
-          ["LJ45", 13],
-          ["GALX", 1]
         ]
       }
     },

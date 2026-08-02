@@ -265,7 +265,6 @@
   "KZLOV": "Kozlov",
   "LADYJ": "Lady J",
   "LAKES": "Lakes",
-  "LAKEE": "Lake-e",
   "LALUZ": "Laylas",
   "LAVAA": "Lava",
   "LAXX": "Lax",
@@ -350,7 +349,6 @@
   "NOKXI": "Noksi",
   "NOTWN": "No Town",
   "NTHNS": "Nathans",
-  "NUAL": "Newhall",
   "NUBLE": "Noble",
   "NUEVO": "Nuevo",
   "NYTES": "Nights",
@@ -414,7 +412,6 @@
   "RDRNR": "Road Runner",
   "RDSOX": "Red Socks",
   "REBLL": "Rebel",
-  "REDIN": "Red-in",
   "REGAE": "Reggae",
   "RENO": "Reno",
   "REP": "Republic",
@@ -489,7 +486,6 @@
   "SUNNE": "Sunny",
   "SWABR": "Swabber",
   "SWF": "Stewart",
-  "SWOLF": "Seawolf",
   "SWPFX": "Swipfix",
   "SWTSR": "Sweatser",
   "SYR": "Syracuse",
@@ -552,5 +548,9 @@
   "ZIMMR": "Zimmer",
   "ZIONZ": "Zions",
   "ZMBRO": "Zambro",
-  "ZZOOO": "Zoo"
+  "ZZOOO": "Zoo",
+  "LAKEE": "Lake-e",
+  "NUAL": "Newhall",
+  "REDIN": "Red-in",
+  "SWOLF": "Seawolf"
 }
