@@ -434,6 +434,15 @@ func (s *Sim) applyFixPairAssignment(nasFp *NASFlightPlan, ac *Aircraft) bool {
 	if !ok {
 		return false
 	}
+	// The adaptation may name positions beyond what this scenario loads
+	// (excess adaptation is tolerated); leave the caller's assignment in
+	// place rather than handing off to a position that doesn't exist.
+	if _, ok := s.ControlPositions[tcp]; !ok {
+		if s.lg != nil {
+			s.lg.Infof("fixpair: %s tcp %s not among loaded control positions; skipping", nasFp.ACID, tcp)
+		}
+		return false
+	}
 	s.setOwningPosition(nasFp, tcp)
 	if s.lg != nil {
 		s.lg.Infof("fixpair: %s type=%v pair=%s/%s plan=%q -> tcp=%s (tracking=%s handoff=%s)",

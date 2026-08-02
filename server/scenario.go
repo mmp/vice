@@ -1375,6 +1375,23 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			config.GoAroundAssignments[spec] = tcp
 		}
 	}
+	// Rewrite the owning TCPs in fix-pair assignment rows, first normalizing
+	// any short-prefix neighbor references to their canonical form.
+	// (Reassignment rules and arts_coordination reference only fixes, not
+	// positions.)
+	if fpc := fa.FixPairConfiguration; fpc != nil {
+		for _, rows := range [][]sim.FixPairAssignmentRow{
+			fpc.Assignments.Arrival, fpc.Assignments.Departure, fpc.Assignments.Overflight,
+		} {
+			for i := range rows {
+				for plan, tcp := range rows[i].TCP {
+					tcp = sg.resolveController(tcp)
+					rewriteControlPosition(&tcp)
+					rows[i].TCP[plan] = tcp
+				}
+			}
+		}
+	}
 
 	for _, flow := range sg.InboundFlows {
 		for i := range flow.Arrivals {

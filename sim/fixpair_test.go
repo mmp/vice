@@ -394,6 +394,7 @@ func TestApplyFixPairAssignment(t *testing.T) {
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
 	s := NewTestSim(lg)
 	s.State.ConfigurationId = "CNE"
+	s.ControlPositions = map[TCP]*av.Controller{"1D": {}, "1L": {}, "1M": {}, "1U": {}, "9V": {}}
 	s.State.FacilityAdaptation.FixPairConfiguration = &FixPairConfiguration{
 		Plans: map[string]string{"CNE": "Northeast", "CSW": "Southwest"},
 		Assignments: FixPairAssignments{
@@ -423,7 +424,6 @@ func TestApplyFixPairAssignment(t *testing.T) {
 	}
 	// Departures: the fix-pair sets the OWNER (TrackingController/OwningTCW) when
 	// the departure is owned by a human position, not just the handoff target.
-	s.ControlPositions = map[TCP]*av.Controller{"1D": {}, "1L": {}, "9V": {}}
 	s.ScenarioDefaultConsolidation = PositionConsolidation{"1D": {"1L"}} // 9V is virtual (not in tree)
 	s.State.FacilityAdaptation.FixPairConfiguration.Assignments.Departure = []FixPairAssignmentRow{
 		{FixPair: [2]string{"BOS", "*"}, TCP: map[string]TCP{"CNE": "1L"}},
@@ -475,6 +475,24 @@ func TestApplyFixPairAssignment(t *testing.T) {
 	}
 	if !rfp.RNAV {
 		t.Errorf("RNAV fix-pair row should mark the flight RNAV")
+	}
+
+	// A row whose TCP isn't among the loaded control positions is skipped
+	// (excess adaptation is tolerated), keeping the caller's assignment.
+	s.State.FacilityAdaptation.FixPairConfiguration = &FixPairConfiguration{
+		Assignments: FixPairAssignments{
+			Arrival: []FixPairAssignmentRow{
+				{FixPair: [2]string{"PVA", "*"}, TCP: map[string]TCP{"*": "7X"}}, // 7X not loaded
+			},
+		},
+	}
+	xfp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS",
+		InboundHandoffController: "1L"}
+	if s.applyFixPairAssignment(xfp, &Aircraft{}) {
+		t.Errorf("row with unloaded TCP should not assign")
+	}
+	if xfp.InboundHandoffController != "1L" {
+		t.Errorf("unloaded-TCP row clobbered InboundHandoffController: %q", xfp.InboundHandoffController)
 	}
 
 	// No fix_pair_configuration adapted: the pipeline is a no-op (keeps whatever

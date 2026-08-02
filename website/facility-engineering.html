@@ -2649,7 +2649,11 @@
                                           <td>Map of strings to strings</td>
                                           <td>Maps each configuration plan id to the position that owns
                                             matching flights when that plan is active; <code>*</code>
-                                            may be used as a catch-all plan id.</td>
+                                            may be used as a catch-all plan id. The adaptation may name
+                                            positions beyond those a given scenario loads: if the
+                                            winning row assigns a position the scenario doesn't have,
+                                            no fix-pair assignment is made and the flight keeps its
+                                            default ownership.</td>
                                         </tr>
                                         <tr>
                                           <td>"rnav"</td>
