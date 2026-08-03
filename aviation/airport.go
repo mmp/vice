@@ -383,6 +383,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 			for exit := range strings.SplitSeq(string(exitList), ",") {
 				exit = strings.TrimSpace(exit)
+				if exit == "" {
+					// A trailing comma in the list; not an exit.
+					continue
+				}
 				if _, ok := seenExits[exit]; ok {
 					e.ErrorString("%s: exit repeatedly specified in routes", exit)
 				}
