@@ -786,6 +786,7 @@ func makeCircleAirportFilters(id string, description string, radius float32,
 		ap, ok := av.DB.Airports[apname]
 		if !ok {
 			e.ErrorString("Airport %q not found", apname)
+			continue
 		}
 		if len(apname) == 4 {
 			apname = apname[1:]
@@ -812,6 +813,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 		ap, ok := av.DB.Airports[apname]
 		if !ok {
 			e.ErrorString("Airport %q not found", apname)
+			continue
 		}
 		if len(apname) == 4 {
 			apname = apname[1:]
@@ -949,25 +951,25 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	// facility config. This is a scenario-group concern because it uses
 	// the scenario group's airport lists.
 	fa := &sg.FacilityConfig.FacilityAdaptation
-	controlledAirports := slices.Collect(
-		util.Seq2Keys(
-			util.FilterSeq2(maps.All(sg.Airports), func(name string, ap *av.Airport) bool {
-				return len(ap.Departures) > 0 || len(ap.Approaches) > 0
-			})))
-	allAirports := slices.Collect(maps.Keys(sg.Airports))
+	// Sorted so that the regions come out in a consistent order; STARS assigns
+	// system map ids to them by walking the slices.
+	allAirports := util.SortedMapKeys(sg.Airports)
+	ifrAirports := util.FilterSlice(allAirports, func(name string) bool {
+		return sg.Airports[name].HasIFROperations()
+	})
 	nmPerLongitude := math.NMPerLongitudeAt(fa.Center)
 
 	if len(fa.Filters.ArrivalDrop) == 0 {
-		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 500, controlledAirports, nmPerLongitude, e)
+		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 500, ifrAirports, nmPerLongitude, e)
 	}
 	if len(fa.Filters.Departure) == 0 {
-		fa.Filters.Departure = makePolygonAirportFilters("DEP", "DEPARTURE", 0.5, 500, controlledAirports, nmPerLongitude, e)
+		fa.Filters.Departure = makePolygonAirportFilters("DEP", "DEPARTURE", 0.5, 500, ifrAirports, nmPerLongitude, e)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
-		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 3000, controlledAirports, e)
+		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 3000, ifrAirports, e)
 	}
 	if len(fa.Filters.InhibitMSAW) == 0 {
-		fa.Filters.InhibitMSAW = makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 3000, controlledAirports, e)
+		fa.Filters.InhibitMSAW = makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 3000, ifrAirports, e)
 	}
 	if len(fa.Filters.SurfaceTracking) == 0 {
 		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 200, allAirports, nmPerLongitude, e)

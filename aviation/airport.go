@@ -723,6 +723,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 }
 
+func (ap Airport) HasIFROperations() bool {
+	return len(ap.Approaches) > 0 || len(ap.DepartureRoutes) > 0
+}
+
 func (ap Airport) VFRRateSum() float32 {
 	sum := ap.VFR.Randoms.Rate
 	for _, spec := range ap.VFR.Routes {

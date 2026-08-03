@@ -637,8 +637,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 
 			// Filter out VFR-only
 			airports = util.FilterSlice(airports, func(icao string) bool {
-				ap := ctx.Client.State.Airports[icao]
-				return len(ap.Departures) > 0 || len(ap.Approaches) > 0
+				return ctx.Client.State.Airports[icao].HasIFROperations()
 			})
 
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
