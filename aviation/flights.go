@@ -105,8 +105,14 @@ func SortFlights(flights []Flight) {
 // Times are UTC, split into a day and a minute of the day, both delta encoded
 // within each run of a callsign, so a daily flight costs one day step of one
 // and whatever its departure time wandered by. Days are counted from the first
-// day in the file; the header records that day and the last one, so the range a
-// file covers can be read without decompressing anything.
+// day in the file, which the header records.
+//
+// The header also records the stretches of time the file has flights for. The
+// data comes from an outside source that has gone down for days at a time, and
+// a quiet airport goes stretches with nothing of its own to fly, so the span
+// from the first flight to the last is not the same as the times a sim can be
+// started at. Keeping them in the header is what lets that be read without
+// decompressing anything.
 //
 // The streams appear in the file in this order.
 const (
@@ -129,8 +135,17 @@ const (
 const (
 	flightDataMagic = "VFLT"
 	// Bumped to 2 when times went from local to the airport to UTC, so that a
-	// file written before then is rejected rather than read hours off.
-	flightDataVersion = 2
+	// file written before then is rejected rather than read hours off, and to 3
+	// when the header stopped recording the last day and started recording the
+	// stretches of time the file has flights for.
+	flightDataVersion = 3
+
+	// flightDataGap is how long the data has to go without a single flight
+	// before the file calls it a gap rather than a lull. A quiet airport sits
+	// idle most of the night, so anything much shorter would call every night a
+	// gap and leave such a facility with no time a sim could start at; the
+	// outages this is here to catch run for days.
+	flightDataGap = 24 * time.Hour
 
 	// FlightDataDirectory is where facility flight data lives in the resources.
 	FlightDataDirectory = "traffic/flights"
@@ -295,15 +310,19 @@ func EncodeFlights(flights []Flight) ([]byte, error) {
 
 	// Days are stored relative to the first one in the file so that they stay
 	// small however far from the epoch the data is.
-	var firstDay, lastDay uint16
+	var firstDay uint16
 	for i, f := range flights {
 		if i == 0 || f.Day < firstDay {
 			firstDay = f.Day
 		}
-		if i == 0 || f.Day > lastDay {
-			lastDay = f.Day
-		}
 	}
+
+	// SortFlights groups each airport's flights together rather than putting
+	// them all in time order, so the times are gathered and sorted on their own
+	// to find the stretches the file covers.
+	times := util.MapSlice(flights, Flight.Time)
+	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
+	intervals := util.FindTimeIntervals(times, flightDataGap)
 
 	for i, f := range flights {
 		base, number := SplitCallsign(f.Callsign)
@@ -346,13 +365,15 @@ func EncodeFlights(flights []Flight) ([]byte, error) {
 	streams[streamDays] = appendVarints(deltaEncodeRuns(days, runs))
 	streams[streamMinutes] = appendVarints(deltaEncodeRuns(minutes, runs))
 
-	return writeStreams(firstDay, lastDay, len(flights), streams)
+	return writeStreams(firstDay, len(flights), intervals, streams)
 }
 
 // writeStreams compresses each stream and assembles the file: the magic and
-// version, the days the data covers and the number of flights, the compressed
-// length of each stream, and then the streams themselves.
-func writeStreams(firstDay, lastDay uint16, count int, streams [][]byte) ([]byte, error) {
+// version, the first day, the number of flights, the stretches of time the file
+// has flights for, the compressed length of each stream, and then the streams
+// themselves.
+func writeStreams(firstDay uint16, count int, intervals []util.TimeInterval,
+	streams [][]byte) ([]byte, error) {
 	compressed := make([][]byte, len(streams))
 	for i, stream := range streams {
 		var buf bytes.Buffer
@@ -373,11 +394,21 @@ func writeStreams(firstDay, lastDay uint16, count int, streams [][]byte) ([]byte
 	out.WriteString(flightDataMagic)
 	out.WriteByte(flightDataVersion)
 	var scratch [binary.MaxVarintLen64]byte
-	for _, v := range []uint64{uint64(firstDay), uint64(lastDay), uint64(count)} {
-		out.Write(scratch[:binary.PutUvarint(scratch[:], v)])
+	putUvarint := func(v uint64) { out.Write(scratch[:binary.PutUvarint(scratch[:], v)]) }
+	putUvarint(uint64(firstDay))
+	putUvarint(uint64(count))
+
+	// Intervals are stored as minutes from the start of the first day, which is
+	// what the times in the streams are measured from as well.
+	start := FlightDataDate(firstDay)
+	putUvarint(uint64(len(intervals)))
+	for _, iv := range intervals {
+		putUvarint(uint64(iv[0].Sub(start) / time.Minute))
+		putUvarint(uint64(iv[1].Sub(start) / time.Minute))
 	}
+
 	for _, stream := range compressed {
-		out.Write(scratch[:binary.PutUvarint(scratch[:], uint64(len(stream)))])
+		putUvarint(uint64(len(stream)))
 	}
 	for _, stream := range compressed {
 		out.Write(stream)
@@ -387,10 +418,11 @@ func writeStreams(firstDay, lastDay uint16, count int, streams [][]byte) ([]byte
 
 // flightDataHeader is everything before the compressed streams.
 type flightDataHeader struct {
-	firstDay, lastDay uint16
-	count             int
-	lengths           []uint64
-	streamsAt         int // offset of the first compressed stream
+	firstDay  uint16
+	count     int
+	intervals []util.TimeInterval
+	lengths   []uint64
+	streamsAt int // offset of the first compressed stream
 }
 
 func readFlightDataHeader(data []byte) (flightDataHeader, error) {
@@ -407,16 +439,41 @@ func readFlightDataHeader(data []byte) (flightDataHeader, error) {
 	if err != nil {
 		return h, err
 	}
-	last, err := binary.ReadUvarint(r)
-	if err != nil {
-		return h, err
-	}
 	count, err := binary.ReadUvarint(r)
 	if err != nil {
 		return h, err
 	}
+	numIntervals, err := binary.ReadUvarint(r)
+	if err != nil {
+		return h, err
+	}
 
-	h.firstDay, h.lastDay, h.count = uint16(first), uint16(last), int(count)
+	h.firstDay, h.count = uint16(first), int(count)
+
+	// The intervals are appended rather than allocated up front: the count comes
+	// from the file, so a corrupt one would otherwise ask for as much memory as
+	// it liked.
+	day := FlightDataDate(h.firstDay)
+	for range numIntervals {
+		start, err := binary.ReadUvarint(r)
+		if err != nil {
+			return h, err
+		}
+		end, err := binary.ReadUvarint(r)
+		if err != nil {
+			return h, err
+		}
+		if end < start {
+			return h, fmt.Errorf("flight data interval ends before it starts")
+		}
+		iv := util.TimeInterval{day.Add(time.Duration(start) * time.Minute),
+			day.Add(time.Duration(end) * time.Minute)}
+		if n := len(h.intervals); n > 0 && iv[0].Before(h.intervals[n-1][1]) {
+			return h, fmt.Errorf("flight data intervals are out of order")
+		}
+		h.intervals = append(h.intervals, iv)
+	}
+
 	h.lengths = make([]uint64, numStreams)
 	for i := range h.lengths {
 		if h.lengths[i], err = binary.ReadUvarint(r); err != nil {
@@ -427,16 +484,15 @@ func readFlightDataHeader(data []byte) (flightDataHeader, error) {
 	return h, nil
 }
 
-// FlightDataInterval returns the range of days a facility's flight data covers.
-// It reads only the header, so it doesn't decompress anything.
-func FlightDataInterval(data []byte) (util.TimeInterval, error) {
+// FlightDataIntervals returns the stretches of time a facility's flight data
+// has flights for; it has a gap wherever the list does. It reads only the
+// header, so it doesn't decompress anything.
+func FlightDataIntervals(data []byte) ([]util.TimeInterval, error) {
 	h, err := readFlightDataHeader(data)
 	if err != nil {
-		return util.TimeInterval{}, err
+		return nil, err
 	}
-	// The last day is covered in full.
-	return util.TimeInterval{FlightDataDate(h.firstDay),
-		FlightDataDate(h.lastDay).Add(24 * time.Hour)}, nil
+	return h.intervals, nil
 }
 
 func readStreams(data []byte) (flightDataHeader, [][]byte, error) {
@@ -591,14 +647,14 @@ func ReadFlightData(resources fs.FS, facility string) ([]byte, error) {
 	return data, err
 }
 
-// FacilityFlightInterval returns the range of times a facility has flight data
-// for; the interval is zero if it has none.
-func FacilityFlightInterval(resources fs.FS, facility string) (util.TimeInterval, error) {
+// FacilityFlightIntervals returns the stretches of time a facility has flight
+// data for; the result is empty if it has none.
+func FacilityFlightIntervals(resources fs.FS, facility string) ([]util.TimeInterval, error) {
 	data, err := ReadFlightData(resources, facility)
 	if err != nil || data == nil {
-		return util.TimeInterval{}, err
+		return nil, err
 	}
-	return FlightDataInterval(data)
+	return FlightDataIntervals(data)
 }
 
 // FlightsInWindow returns the flights at the given airports that take off or

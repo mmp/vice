@@ -110,9 +110,9 @@ type ScenarioSpec struct {
 	// order they should be offered. A scenario that gives no airlines can't
 	// generate its own traffic, so it offers only the published sources.
 	TrafficSources []sim.TrafficSource
-	// HistoricalFlightInterval is the range of times this facility has
-	// historical flight data for.
-	HistoricalFlightInterval util.TimeInterval
+	// HistoricalFlightIntervals are the stretches of time this facility has
+	// historical flight data for; the data has a gap wherever the list does.
+	HistoricalFlightIntervals []util.TimeInterval
 
 	LaunchConfig sim.LaunchConfig
 

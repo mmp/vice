@@ -1891,19 +1891,25 @@ func attachTimetables(catalogs map[string]map[string]*ScenarioCatalog, timetable
 	}
 }
 
-// attachHistoricalFlightIntervals records the range of times each facility has
-// historical flight data for, so that the client can offer start times the data
-// actually covers.
-func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCatalog) {
+// attachHistoricalFlightIntervals records the stretches of time each facility
+// has historical flight data for, so that the client can offer start times the
+// data actually covers. A facility with no data at all is left alone; one whose
+// file can't be read is reported, since that is otherwise indistinguishable
+// from having none.
+func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCatalog, lg *log.Logger) {
 	resources := util.GetResourcesFS()
 	for facility, facilityCatalogs := range catalogs {
-		interval, err := av.FacilityFlightInterval(resources, facility)
-		if err != nil || interval.Start().IsZero() {
+		intervals, err := av.FacilityFlightIntervals(resources, facility)
+		if err != nil {
+			lg.Errorf("%s: historical flight data: %v", facility, err)
+			continue
+		}
+		if len(intervals) == 0 {
 			continue
 		}
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
-				scenario.HistoricalFlightInterval = interval
+				scenario.HistoricalFlightIntervals = intervals
 				scenario.TrafficSources = append(scenario.TrafficSources, sim.TrafficSourceHistorical)
 			}
 		}
@@ -2711,7 +2717,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	} else {
 		attachTimetables(catalogs, timetableCatalog)
 	}
-	attachHistoricalFlightIntervals(catalogs)
+	attachHistoricalFlightIntervals(catalogs, lg)
 	finalizeTrafficSources(catalogs, e)
 
 	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))

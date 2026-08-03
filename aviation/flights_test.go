@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mmp/vice/util"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
@@ -110,7 +111,7 @@ func TestEncodeFlightsRoundTrip(t *testing.T) {
 	}
 }
 
-func TestFlightDataIntervalCoversTheData(t *testing.T) {
+func TestFlightDataIntervalsCoverTheData(t *testing.T) {
 	flights := testFlights()
 	SortFlights(flights)
 	encoded, err := EncodeFlights(flights)
@@ -118,18 +119,118 @@ func TestFlightDataIntervalCoversTheData(t *testing.T) {
 		t.Fatalf("EncodeFlights: %v", err)
 	}
 
-	interval, err := FlightDataInterval(encoded)
+	intervals, err := FlightDataIntervals(encoded)
 	if err != nil {
-		t.Fatalf("FlightDataInterval: %v", err)
+		t.Fatalf("FlightDataIntervals: %v", err)
 	}
 	for _, f := range flights {
-		if f.Date().Before(interval[0]) || !f.Date().Before(interval[1]) {
-			t.Fatalf("%s on %v is outside %v..%v", f.Callsign, f.Date(), interval[0], interval[1])
+		if !slices.ContainsFunc(intervals, func(iv util.TimeInterval) bool {
+			return iv.Contains(f.Time())
+		}) {
+			t.Fatalf("%s at %v is outside %v", f.Callsign, f.Time(), intervals)
 		}
 	}
-	// The header must agree with the data without decompressing it.
-	if expected := time.Date(2025, time.July, 1, 0, 0, 0, 0, time.UTC); !interval[0].Equal(expected) {
-		t.Errorf("interval starts at %v, expected %v", interval[0], expected)
+
+	// These flights run every day with nothing like a day's break, so they are
+	// one stretch: an ordinary facility's data must not come apart into pieces.
+	if len(intervals) != 1 {
+		t.Fatalf("got %d intervals, expected 1: %v", len(intervals), intervals)
+	}
+	// The header must agree with the data without decompressing it. The first
+	// flight is SKW775E, eight minutes into the first day.
+	expected := time.Date(2025, time.July, 1, 0, 8, 0, 0, time.UTC)
+	if !intervals[0].Start().Equal(expected) {
+		t.Errorf("interval starts at %v, expected %v", intervals[0].Start(), expected)
+	}
+}
+
+// The source data has gone down for days at a time, and a sim started in the
+// hole has nothing to fly. The stretches the header records are what keeps
+// those times from being offered, so they have to break in the right places --
+// in particular at the exact time the data comes back, not at the following
+// midnight.
+func TestFlightDataIntervalsSplitAtGaps(t *testing.T) {
+	base := FlightDataDayNumber(time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC))
+	var flights []Flight
+	add := func(day uint16, minute int) {
+		flights = append(flights, Flight{Airport: "KMSP", Callsign: "DAL1062", Other: "KATL",
+			AircraftType: "B753", Day: base + day, Minute: minute, Departure: true})
+	}
+	// Hourly flights for three days, nothing for the next two, then resuming at
+	// 18:00 on the day after that.
+	for day := uint16(0); day < 3; day++ {
+		for hour := 0; hour < 24; hour++ {
+			add(day, hour*60)
+		}
+	}
+	for hour := 18; hour < 24; hour++ {
+		add(5, hour*60)
+	}
+
+	SortFlights(flights)
+	encoded, err := EncodeFlights(flights)
+	if err != nil {
+		t.Fatalf("EncodeFlights: %v", err)
+	}
+	intervals, err := FlightDataIntervals(encoded)
+	if err != nil {
+		t.Fatalf("FlightDataIntervals: %v", err)
+	}
+
+	expected := []util.TimeInterval{
+		{time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC),
+			time.Date(2026, time.May, 3, 23, 0, 0, 0, time.UTC)},
+		{time.Date(2026, time.May, 6, 18, 0, 0, 0, time.UTC),
+			time.Date(2026, time.May, 6, 23, 0, 0, 0, time.UTC)},
+	}
+	if !slices.Equal(intervals, expected) {
+		t.Errorf("got %v, expected %v", intervals, expected)
+	}
+}
+
+// A quiet airport can sit idle most of the night. That is a lull, not a gap:
+// treating it as one would break the data into stretches too short to start a
+// sim in and leave such a facility with no time to offer at all.
+func TestFlightDataIntervalsKeepOvernightLulls(t *testing.T) {
+	base := FlightDataDayNumber(time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC))
+	var flights []Flight
+	// Two flights a day, twenty hours apart.
+	for day := uint16(0); day < 10; day++ {
+		for _, minute := range []int{2 * 60, 22 * 60} {
+			flights = append(flights, Flight{Airport: "KASE", Callsign: "SKW775", Other: "KDEN",
+				AircraftType: "CRJ2", Day: base + day, Minute: minute, Departure: true})
+		}
+	}
+
+	SortFlights(flights)
+	encoded, err := EncodeFlights(flights)
+	if err != nil {
+		t.Fatalf("EncodeFlights: %v", err)
+	}
+	intervals, err := FlightDataIntervals(encoded)
+	if err != nil {
+		t.Fatalf("FlightDataIntervals: %v", err)
+	}
+	if len(intervals) != 1 {
+		t.Errorf("got %d intervals, expected 1: %v", len(intervals), intervals)
+	}
+}
+
+func TestFlightDataIntervalsSingleFlight(t *testing.T) {
+	day := FlightDataDayNumber(time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC))
+	encoded, err := EncodeFlights([]Flight{{Airport: "KMSP", Callsign: "DAL1062", Other: "KATL",
+		AircraftType: "B753", Day: day, Minute: 9 * 60, Departure: true}})
+	if err != nil {
+		t.Fatalf("EncodeFlights: %v", err)
+	}
+	intervals, err := FlightDataIntervals(encoded)
+	if err != nil {
+		t.Fatalf("FlightDataIntervals: %v", err)
+	}
+	expected := time.Date(2026, time.May, 1, 9, 0, 0, 0, time.UTC)
+	if len(intervals) != 1 || !intervals[0].Start().Equal(expected) ||
+		!intervals[0].End().Equal(expected) {
+		t.Errorf("got %v, expected one interval at %v", intervals, expected)
 	}
 }
 
@@ -162,14 +263,22 @@ func TestEncodeFlightsEmpty(t *testing.T) {
 	if len(flights) != 0 {
 		t.Errorf("decoded %d flights from empty data", len(flights))
 	}
+	intervals, err := FlightDataIntervals(encoded)
+	if err != nil {
+		t.Fatalf("FlightDataIntervals: %v", err)
+	}
+	if len(intervals) != 0 {
+		t.Errorf("got %v from empty data, expected nothing", intervals)
+	}
 }
 
 func TestDecodeFlightsRejectsGarbage(t *testing.T) {
 	for _, data := range [][]byte{
 		nil,
 		[]byte("nope"),
-		[]byte("VFLT\x02"),                  // wrong version
-		append([]byte("VFLT\x01"), 0xff, 1), // truncated
+		[]byte("VFLT\x02"),               // an older version
+		append([]byte("VFLT\x03"), 0xff), // truncated mid-varint
+		append([]byte("VFLT\x03"), 0, 0, 1, 9, 1), // one interval, ending before it starts
 	} {
 		if _, err := DecodeFlights(data); err == nil {
 			t.Errorf("decoded %q without complaining", data)

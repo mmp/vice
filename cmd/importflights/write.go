@@ -75,6 +75,7 @@ func writeFlightData(dir string, imp *importer, facilities map[string]*facility,
 		if err != nil {
 			return fmt.Errorf("%s: %w", name, err)
 		}
+		reportFlightGaps(name, encoded)
 
 		if !dryRun {
 			if err := os.MkdirAll(dir, 0o755); err != nil {
@@ -105,6 +106,24 @@ func writeFlightData(dir string, imp *importer, facilities map[string]*facility,
 		8*float64(bytes)/float64(max(flightCount, 1)))
 
 	return nil
+}
+
+// reportFlightGaps names the stretches a facility has no flights at all for.
+// They are stretches a sim can't be started in, so they are worth seeing: some
+// are the source data having gone down and some are a quiet airport's off
+// season, and only the person running the import can tell which.
+func reportFlightGaps(name string, encoded []byte) {
+	intervals, err := av.FlightDataIntervals(encoded)
+	if err != nil {
+		fmt.Printf("%s: reading back the flight data: %v\n", name, err)
+		return
+	}
+	for i := 1; i < len(intervals); i++ {
+		from, to := intervals[i-1].End(), intervals[i].Start()
+		fmt.Printf("%s: no flights from %s to %s (%.0f hours)\n", name,
+			from.Format("2006-01-02 15:04Z"), to.Format("2006-01-02 15:04Z"),
+			to.Sub(from).Hours())
+	}
 }
 
 // flightDataFilename returns the name of a facility's flight data file.

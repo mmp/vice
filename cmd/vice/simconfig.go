@@ -2915,31 +2915,28 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 }
 
 // startTimeIntervals returns the times a sim may start at. When the scenario is
-// flying historical traffic the weather intervals are narrowed to the days the
-// flight data covers, less a final day so that a sim started near the end still
-// has traffic to fly.
+// flying historical traffic the weather intervals are narrowed to the stretches
+// the flight data covers, each less a final day so that a sim started near the
+// end of one still has traffic to fly. A stretch with less than that in it is
+// no use to anyone and drops out.
 func (c *NewSimConfiguration) startTimeIntervals(spec *server.ScenarioSpec) []util.TimeInterval {
 	if spec == nil || spec.LaunchConfig.TrafficSource != sim.TrafficSourceHistorical {
 		return c.availableWXIntervals
 	}
 
-	flights := spec.HistoricalFlightInterval
-	flights[1] = flights[1].Add(-24 * time.Hour)
+	// The times come back from the server in the local zone, so they are put
+	// back in UTC before being compared with anything.
+	flights := util.MapSlice(spec.HistoricalFlightIntervals, func(iv util.TimeInterval) util.TimeInterval {
+		return util.TimeInterval{iv[0].UTC(), iv[1].UTC().Add(-24 * time.Hour)}
+	})
+	flights = util.FilterSliceInPlace(flights, func(iv util.TimeInterval) bool {
+		return iv[0].Before(iv[1])
+	})
 
-	var intervals []util.TimeInterval
-	for _, iv := range c.availableWXIntervals {
-		start, end := iv[0].UTC(), iv[1].UTC()
-		if start.Before(flights[0]) {
-			start = flights[0]
-		}
-		if end.After(flights[1]) {
-			end = flights[1]
-		}
-		if start.Before(end) {
-			intervals = append(intervals, util.TimeInterval{start, end})
-		}
-	}
-	return intervals
+	wx := util.MapSlice(c.availableWXIntervals, func(iv util.TimeInterval) util.TimeInterval {
+		return util.TimeInterval{iv[0].UTC(), iv[1].UTC()}
+	})
+	return util.IntersectIntervals(wx, flights)
 }
 
 // Default sim start times are picked between these local hours at the primary
