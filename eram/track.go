@@ -521,6 +521,7 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	cb.LineWidth(2, ctx.DPIScale)
+	font := ep.ERAMFont(ep.currentPrefs().FDBSize)
 	for _, trk := range tracks {
 		db := dbs[trk.ADSBCallsign]
 		if db == nil {
@@ -546,13 +547,27 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 		}
 
 		v := util.Select(dbType == FullDatablock, ep.leaderLineVectorWithLength(*dir, state.LeaderLineLength), ep.leaderLineVectorNoLength(*dir))
-		if dbType == FullDatablock {
-			if !ctx.UserOwnsFlightPlan(trk.FlightPlan) && (*dir == math.NorthEast || *dir == math.East) {
-				v = math.Scale2f(v, 0.7) // shorten the leader line for FDBs that are not tracked by the user
+		pv := math.Scale2f(v, ctx.DrawPixelScale)
+
+		if fdb, ok := db.(*fullDatablock); ok && dbType == FullDatablock {
+			if over, l := fdb.leadOverhang(font), math.Length2f(pv); over > 0 {
+				var pull float32
+				switch *dir {
+				case math.East, math.NorthEast:
+					if pv[0] > 0 {
+						pull = over * l / pv[0]
+					}
+				case math.North:
+					pull = dbInkHeight*float32(font.Size) + dbLeaderClearance*font.LookupGlyph(' ').AdvanceX
+				}
+				if pull > 0 && l > pull {
+					pv = math.Scale2f(pv, (l-pull)/l)
+				}
 			}
 		}
 
-		p1 := math.Add2f(p0, math.Scale2f(v, ctx.DrawPixelScale))
+		p0[1] += 0.5
+		p1 := math.Add2f(p0, pv)
 		if dbType == FullDatablock {
 			ld.AddLine(p0, p1, color)
 		}
