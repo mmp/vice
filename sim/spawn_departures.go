@@ -685,7 +685,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 		return nil, err
 	}
 
-	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, exitRoutes, "")
+	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, exitRoutes)
 }
 
 // createPublishedIFRDepartureNoLock creates a departure using the published
@@ -730,8 +730,8 @@ func (s *Sim) createPublishedIFRDepartureNoLock(flight av.Flight, departureAirpo
 	fmt.Printf("%s: departure %s->%s runway %s exit %s (%s)\n", callsign, departureAirport,
 		flight.Other, runway, placement.dep.Exit, placement.how)
 
-	return s.initializeIFRDepartureNoLock(ac, placement.ap, departureAirport, runway, placement.dep,
-		placement.exitRoutes, placement.filedRoute)
+	return s.initializeIFRDepartureNoLock(ac, placement.ap, departureAirport, runway, &placement.dep,
+		placement.exitRoutes)
 }
 
 func (s *Sim) departureConfiguration(departureAirport string, runway av.RunwayID,
@@ -818,17 +818,81 @@ func (s *Sim) compatibleDepartures(departureAirport string, runway av.RunwayID,
 	return candidates
 }
 
-// departurePlacement is the exit a published flight leaves through, the route it
-// files if a real one for its own city pair is what found the exit, and how the
-// choice was made, for reporting.
+// departurePlacement is the departure a published flight flies and how the
+// choice was made, for reporting. Its departure is a resolved copy of the
+// candidate's: one authored by the scenario carries its own route, while one
+// synthesized for an airport that names no departures gets the route here.
 type departurePlacement struct {
-	candidateDeparture
-	filedRoute string
+	ap         *av.Airport
+	rwy        *DepartureRunway
+	exitRoutes map[av.ExitID]*av.ExitRoute
+	dep        av.Departure
 	how        string
 }
 
-func (c candidateDeparture) placement(filedRoute, how string) departurePlacement {
-	return departurePlacement{candidateDeparture: c, filedRoute: filedRoute, how: how}
+// placement resolves the candidate into the departure the flight flies. route
+// is the real-world route that found the exit, if one did; a departure with no
+// route of its own falls back to flying to its exit fix, since without that its
+// route ends with the scenario's vector off the runway and it would head
+// straight for its destination from wherever that leaves it.
+func (s *Sim) placement(c candidateDeparture, route, how string) departurePlacement {
+	p := departurePlacement{ap: c.ap, rwy: c.rwy, exitRoutes: c.exitRoutes, dep: *c.dep, how: how}
+
+	if route != "" {
+		sid := ""
+		if exitRoute, ok := c.exitRoutes[c.dep.Exit]; ok {
+			sid = exitRoute.SID
+		}
+		p.dep.Route = departureRouteFromExit(route, c.dep.Exit, sid)
+	} else if len(p.dep.RouteWaypoints) > 0 {
+		return p
+	} else {
+		p.dep.Route = string(c.dep.Exit.Base())
+	}
+	p.dep.RouteWaypoints = s.departureRouteWaypoints(p.dep.Route)
+
+	return p
+}
+
+// departureRouteFromExit trims a real-world route to the part a departure
+// flies, which starts at the exit fix it leaves through.
+func departureRouteFromExit(route string, exit av.ExitID, sid string) string {
+	fix := string(exit.Base())
+	fields := strings.Fields(route)
+
+	if i := slices.Index(fields, fix); i != -1 {
+		// The route names the exit; fly it from there.
+		return strings.Join(fields[i:], " ")
+	}
+	if i := slices.Index(fields, sid); sid != "" && i != -1 {
+		// It names the SID that reaches the exit--JFK to Las Vegas files "KJFK
+		// DEEZZ6 CANDR J60...", where DEEZZ6 is the SID for the DEEZZ
+		// exit--and the exit takes that token's place.
+		return strings.Join(append([]string{fix}, fields[i+1:]...), " ")
+	}
+	if len(fields) > 1 {
+		// A coded departure route names its departure fix separately from the
+		// route, which starts at the origin; the exit leads the rest of it.
+		return strings.Join(append([]string{fix}, fields[1:]...), " ")
+	}
+	return fix
+}
+
+// departureRouteWaypoints locates the fixes of a departure's enroute route,
+// stopping at the point where the sim lets the aircraft go: the fixes past
+// there are never flown and every one of them is sent to the clients on every
+// update. Fixes it can't place--SID and STAR names, radial/DME fixes--drop out.
+func (s *Sim) departureRouteWaypoints(route string) av.WaypointArray {
+	wps := av.RouteWaypoints(route).InitializeLocations(s.State, s.State.NmPerLongitude,
+		s.State.MagneticVariation, true /* allowSlop */, nil)
+
+	cull := s.cullDistance()
+	if i := slices.IndexFunc(wps, func(wp av.Waypoint) bool {
+		return math.NMDistance2LL(wp.Location, s.State.Center) > cull
+	}); i != -1 {
+		wps = wps[:i+1] // keep the first one past it so the aircraft flies out on course
+	}
+	return wps
 }
 
 // resolvePublishedDeparture finds the scenario departure a published flight
@@ -856,13 +920,13 @@ func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.Runwa
 
 	for _, c := range candidates {
 		if c.dep.Destination != "" && normalizeAirportCode(c.dep.Destination) == destination {
-			return c.placement("", "own route"), nil
+			return s.placement(c, "", "own route"), nil
 		}
 	}
 
 	engineType := engineTypeFor(aircraftType)
 	if c, route, ok := departureForCityPair(departureAirport, destination, engineType, candidates); ok {
-		return c.placement(route, "faa route via "+c.dep.Exit.Base()), nil
+		return s.placement(c, route, "faa route via "+c.dep.Exit.Base()), nil
 	}
 
 	// Either the pair isn't in the route database or every route it has leaves
@@ -898,7 +962,7 @@ func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.Runwa
 		}
 	}
 	if best.dep != nil {
-		return best.placement("", "nearest route, to "+best.dep.Destination), nil
+		return s.placement(best, "", "nearest route, to "+best.dep.Destination), nil
 	}
 
 	// The scenario models nowhere near where this flight is going, but the route
@@ -907,7 +971,7 @@ func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.Runwa
 	for _, substitute := range substituteDestinations(origin.Location, trueAirport.Location,
 		destination, routedDestinations[departureAirport], s.State.NmPerLongitude) {
 		if c, _, ok := departureForCityPair(departureAirport, substitute, engineType, candidates); ok {
-			return c.placement("", "nearest route, to "+substitute), nil
+			return s.placement(c, "", "nearest route, to "+substitute), nil
 		}
 	}
 
@@ -916,7 +980,7 @@ func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.Runwa
 	// one leaves, which is what the destinations stood in for.
 	if c, ok := exitTowardDestination(candidates, origin.Location, trueHeading,
 		s.State.NmPerLongitude); ok {
-		return c.placement("", "nearest gate"), nil
+		return s.placement(c, "", "nearest gate"), nil
 	}
 	return departurePlacement{}, fmt.Errorf("%w: no modeled departure heads toward %s",
 		errNoScenarioRoute, destination)
@@ -1061,18 +1125,12 @@ func departureForRoute(route av.AirportPairRoute, candidates []candidateDepartur
 }
 
 func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport string,
-	runway av.RunwayID, dep *av.Departure, exitRoutes map[av.ExitID]*av.ExitRoute,
-	filedRoute string) (*Aircraft, error) {
+	runway av.RunwayID, dep *av.Departure, exitRoutes map[av.ExitID]*av.ExitRoute) (*Aircraft, error) {
 	exitRoute := exitRoutes[dep.Exit]
 	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
-	}
-	if filedRoute != "" {
-		// The flight files its preferred route; within the facility it still
-		// flies the scenario's departure geometry.
-		ac.FlightPlan.Route = filedRoute
 	}
 
 	// Departures aren't immediately associated, but the STARSComputer will

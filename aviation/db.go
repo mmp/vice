@@ -1118,6 +1118,28 @@ func (d StaticDatabase) RoutesBetween(from, to string) []AirportPairRoute {
 	return d.AirportPairRoutes[AirportPair{From: from, To: to}]
 }
 
+// RouteWaypoints converts a real-world route from the city-pair database into
+// waypoints. An airway name attaches to the fix before it, so
+// InitializeLocations fills in the fixes it passes through. The returned
+// waypoints have no Location: the caller must run InitializeLocations on them,
+// which is also what discards the tokens that aren't fixes at all--SID and STAR
+// names, radial/DME fixes like SLI341/019.
+//
+// This deliberately doesn't go through the scenario route parser, which
+// understands vice's "/" waypoint modifiers and so can't read the routes that
+// name such fixes.
+func RouteWaypoints(route string) WaypointArray {
+	var waypoints WaypointArray
+	for _, field := range strings.Fields(route) {
+		if _, ok := DB.Airways[field]; ok && len(waypoints) > 0 {
+			waypoints[len(waypoints)-1].InitExtra().Airway = field
+		} else {
+			waypoints = append(waypoints, Waypoint{Fix: field})
+		}
+	}
+	return waypoints
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
