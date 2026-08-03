@@ -604,8 +604,8 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 		ac.FlightPlan.Altitude =
 			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, r)
 	}
-	if arr.Route != "" {
-		ac.FlightPlan.Route = arr.Route
+	if arr.FlightStripDisplayRoute != "" {
+		ac.FlightPlan.Route = arr.FlightStripDisplayRoute
 	} else {
 		ac.FlightPlan.Route = "/. " + arr.STAR
 	}

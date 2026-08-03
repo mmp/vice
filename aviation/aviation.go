@@ -142,8 +142,11 @@ type Arrival struct {
 	RunwayWaypoints map[string]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
 	SpawnWaypoint   string                              `json:"spawn"`            // if "waypoints" aren't specified
 	CruiseAltitudes util.SingleOrArray[int]             `json:"cruise_altitude"`
-	Route           string                              `json:"route"`
 	STAR            string                              `json:"star"`
+
+	// Note: this is *only* used for flight strips displayed to the user; it should not in any way
+	// be referenced for an aircraft's route: Waypoints should always be used for that.
+	FlightStripDisplayRoute string `json:"route"`
 
 	// DerivedSTAR is the STAR the arrival's waypoints run along, worked out at
 	// load for an arrival that spells them out instead of naming a STAR to take
@@ -1090,13 +1093,13 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	if ar.Route == "" && ar.STAR == "" {
+	if ar.FlightStripDisplayRoute == "" && ar.STAR == "" {
 		e.ErrorString(`neither "route" nor "star" specified`)
 		return
 	}
 
-	if ar.Route != "" {
-		r := strings.TrimPrefix(strings.TrimPrefix(ar.Route, "/."), "./")
+	if ar.FlightStripDisplayRoute != "" {
+		r := strings.TrimPrefix(strings.TrimPrefix(ar.FlightStripDisplayRoute, "/."), "./")
 		for word := range strings.FieldsSeq(r) {
 			if strings.Contains(word, "/") {
 				e.ErrorString(`"route" word %q contains a slash; did you mean "waypoints"? (confusingly, "waypoints" specifies the route flown, "route" is only used for flight strips)`, word)
@@ -1104,8 +1107,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		}
 	}
 
-	if ar.Route != "" {
-		e.Push("Route " + ar.Route)
+	if ar.FlightStripDisplayRoute != "" {
+		e.Push("FlightStripDisplayRoute " + ar.FlightStripDisplayRoute)
 	} else {
 		e.Push("Route " + ar.STAR)
 	}

@@ -361,10 +361,11 @@ func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, published published
 	}
 
 	fmt.Printf("%s: arrival %s->%s via %s %s (%s)\n", callsign, flight.Other, arrivalAirport,
-		placement.group, util.Select(arr.STAR == "", arr.Route, arr.STAR), placement.how)
+		placement.group, util.Select(arr.STAR == "", arr.FlightStripDisplayRoute, arr.STAR), placement.how)
 
 	return s.finalizeArrivalNoLock(ac, arr, placement.group, arrivalAirport)
 }
+
 func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	callsigns := slices.Collect(maps.Keys(s.Aircraft))
 	for _, fp := range s.STARSComputer.FlightPlans {
