@@ -436,6 +436,14 @@ func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
+func (ss *CommonState) Similar(fix string) []string {
+	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(ss.Fixes), nil, nil)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
+	return util.Select(len(d1) > 0, d1, d2)
+}
+
 func (ss *CommonState) LocateDME(s string) (math.Point2LL, int, bool) {
 	return av.DB.LookupDME(s)
 }

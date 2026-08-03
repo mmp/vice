@@ -5,6 +5,7 @@
 package aviation
 
 import (
+	"slices"
 	"strings"
 	"testing"
 
@@ -256,5 +257,40 @@ func TestParseActionGroupErrorIncludesWaypointContext(t *testing.T) {
 		if !strings.Contains(err.Error(), want) {
 			t.Fatalf("expected error %q to include %q", err, want)
 		}
+	}
+}
+
+// A real-world route from the city-pair database is space-separated fix and
+// airway identifiers, with none of the "/" modifiers the scenario route parser
+// understands. Every waypoint that survives has a location to fly to.
+func TestRouteWaypoints(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: map[string][]Airway{
+		"Q75": {{Name: "Q75", Fixes: []AirwayFix{{Fix: "BIGGY"}, {Fix: "MIDDL"}, {Fix: "TEUFL"}}}},
+	}}
+	t.Cleanup(func() { DB = oldDB })
+
+	loc := testLocator{
+		"BIGGY": math.Point2LL{-74.5, 40.4},
+		"MIDDL": math.Point2LL{-75.5, 39.4},
+		"TEUFL": math.Point2LL{-76.5, 38.4},
+		"TPA":   math.Point2LL{-82.5, 28.0},
+	}
+
+	// SLI341/019 is a radial/DME fix: the database has a handful and none of
+	// them can be placed, so they drop out rather than derailing the route.
+	wps := RouteWaypoints("BIGGY Q75 TEUFL DADES2 SLI341/019 TPA").
+		InitializeLocations(loc, 45, 12, true /* allowSlop */, nil)
+
+	var got []string
+	for _, wp := range wps {
+		if wp.Location.IsZero() {
+			t.Errorf("waypoint %q has no location", wp.Fix)
+		}
+		got = append(got, wp.Fix)
+	}
+	want := []string{"BIGGY", "MIDDL", "TEUFL", "TPA"}
+	if !slices.Equal(got, want) {
+		t.Errorf("route waypoints = %v, want %v", got, want)
 	}
 }
