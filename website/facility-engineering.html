@@ -487,8 +487,10 @@
                 <li> <code>/lt</code><i>heading</i>: turn left to the specified track heading at the fix (wind-corrected, like <code>/t</code>)</li>
                 <li> <code>/rt</code><i>heading</i>: turn right to the specified track heading at the fix (wind-corrected, like <code>/t</code>)</li>
                 <li> Heading specifiers and action specifiers such as <code>/ho</code>, <code>/po</code>, <code>/tc</code>, scratchpad changes, <code>/c</code>, and <code>/d</code> may be chained in order using <code>@</code> conditions.</li>
-                <li> <code>@a</code><i>altitude</i>: after an action group, fly its heading until reaching the specified altitude in feet, then start the next action group.
-                  For example, <code>_EWR4_4La/h039@a500/r055</code> flies heading 039 after <code>_EWR4_4La</code> until 500 feet, then turns right to heading 055.</li>
+                <li> <code>@a</code><i>altitude</i>: after an action group, fly its heading until reaching the specified altitude in feet MSL, then start the next action group.
+                  For example, <code>_EWR4_4La/h039@a500/r055</code> flies heading 039 after <code>_EWR4_4La</code> until 500 feet, then turns right to heading 055.
+                  Note that this is in feet, unlike <code>/c</code> and <code>/d</code>, which are in hundreds of feet; an altitude at or
+                  below the departure airport's field elevation is an error, since the action group would end immediately.</li>
                 <li> <code>@d</code><i>distance</i><i>fix</i>: after an action group, fly its heading until reaching the given DME distance from the named fix or navaid.
                   For example, <code>_EWR4_4La/h039@a500/r055@d4.0IEZA/l290/ho5W</code> flies heading 039 until 500 feet, turns right to heading 055 until D4.0 from IEZA, then turns left to heading 290 and hands off to 5W.</li>
                 <li> <code>/ld</code>: left direct to the next fix (force a left turn to reach the next waypoint)</li>

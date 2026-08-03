@@ -160,12 +160,12 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220"
+            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220"
+            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220"
           }
         },
         "22R.Background": {
@@ -216,12 +216,12 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
-            "waypoints": "KEWR-22R/h039@a5/r055@d4.0IEZA/l290"
+            "waypoints": "KEWR-22R/h039@a500/r055@d4.0IEZA/l290"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
-            "waypoints": "KEWR-22R/h039@a5/r055@d4.0IEZA/l290"
+            "waypoints": "KEWR-22R/h039@a500/r055@d4.0IEZA/l290"
           }
         },
         "4L.Background": {
@@ -237,7 +237,7 @@
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/ho4P N040.44.12.772,W074.06.38.886/a3000+"
           },
-          "COATE,GAYEL,HAAYS,NEION,": {
+          "COATE,GAYEL,HAAYS,NEION": {
             "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "EWR5",

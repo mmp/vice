@@ -824,7 +824,7 @@ func (wa WaypointArray) RouteString() string {
 	return strings.Join(r, " ")
 }
 
-func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[ControlPosition]*Controller, checkScratchpads func(string) bool) {
+func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, elevation int, controllers map[ControlPosition]*Controller, checkScratchpads func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	wa.checkBasics(e, controllers, checkScratchpads)
@@ -836,6 +836,15 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[Cont
 		e.Push(wp.Fix)
 		if wp.IAF() || wp.IF() || wp.FAF() {
 			e.ErrorString("Unexpected IAF/IF/FAF specification in departure")
+		}
+		for _, group := range wp.ActionGroups() {
+			// @a altitudes are MSL, so one at or below the field elevation
+			// is met the moment the aircraft starts rolling and the action
+			// group ends immediately. Almost always a missing factor of 100.
+			if group.Until.Type == WaypointActionAltitude && group.Until.Altitude <= elevation {
+				e.ErrorString("@a%d is at or below the %d' field elevation, so it takes effect immediately. Is it supposed to be @a%d?",
+					group.Until.Altitude, elevation, group.Until.Altitude*100)
+			}
 		}
 		if war := wp.AltitudeRestriction(); war != nil {
 			// Make sure it's generally reasonable

@@ -489,30 +489,26 @@
       "departure_routes": {
         "16": {
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SHIPP,WAVEY,WHITE": {
-            "cleared_altitude": 7000,
-            "handoff_controller": "1L",
+            "cleared_altitude": 3000,
             "sid": "HPN8",
-            "waypoints": "KHPN-34/h163@a8 N041.03.28.067,W073.38.12.599/ho/h270"
+            "waypoints": "KHPN-34/h163@a800/r320"
           },
           "DIXIE": {
-            "cleared_altitude": 6000,
-            "handoff_controller": "1L",
+            "cleared_altitude": 3000,
             "sid": "HPN8",
-            "waypoints": "KHPN-34/h163@a8 N041.03.28.067,W073.38.12.599/ho/h270"
+            "waypoints": "KHPN-34/h163@a800/r320"
           }
         },
         "34": {
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SHIPP,WAVEY,WHITE": {
-            "cleared_altitude": 7000,
-            "handoff_controller": "1L",
+            "cleared_altitude": 3000,
             "sid": "HPN8",
-            "waypoints": "KHPN-16/h343@a10 N041.03.28.067,W073.38.12.599/ho/h270"
+            "waypoints": "KHPN-16/h343@a1000/h295"
           },
           "DIXIE": {
-            "cleared_altitude": 6000,
-            "handoff_controller": "1L",
+            "cleared_altitude": 3000,
             "sid": "HPN8",
-            "waypoints": "KHPN-16/h343@a10 N041.03.28.067,W073.38.12.599/ho/h270"
+            "waypoints": "KHPN-16/h343@a1000/h295"
           }
         }
       },

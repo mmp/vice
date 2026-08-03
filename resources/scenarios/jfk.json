@@ -734,17 +734,17 @@
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 5000,
             "sid": "SKORR6.RNGRR",
-            "waypoints": "KJFK-13R/h314@a5 SKORR/a2500+/s210- METSS/a2500+/s250- RNGRR/h225"
+            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- METSS/a2500+/s250- RNGRR/h225"
           },
           "BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
             "cleared_altitude": 5000,
             "sid": "SKORR6.YNKEE",
-            "waypoints": "KJFK-13R/h314@a5 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/h187"
+            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/h187"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
             "sid": "DEEZZ6",
-            "waypoints": "KJFK-13R/h314@a5 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/h187"
+            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/h187"
           }
         },
         "4L": {

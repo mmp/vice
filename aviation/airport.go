@@ -379,7 +379,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				}
 			}
 
-			route.Waypoints.CheckDeparture(e, controlPositions, checkScratchpad)
+			route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
 
 			for exit := range strings.SplitSeq(string(exitList), ",") {
 				exit = strings.TrimSpace(exit)
