@@ -145,6 +145,11 @@ type Arrival struct {
 	Route           string                              `json:"route"`
 	STAR            string                              `json:"star"`
 
+	// DerivedSTAR is the STAR the arrival's waypoints run along, worked out at
+	// load for an arrival that spells them out instead of naming a STAR to take
+	// them from. Not specified in user JSON.
+	DerivedSTAR string
+
 	InitialController   ControlPosition         `json:"initial_controller"`
 	InitialAltitudes    util.SingleOrArray[int] `json:"initial_altitude"`
 	AssignedAltitude    float32                 `json:"assigned_altitude"`
@@ -999,6 +1004,87 @@ func MachToTAS(mach float32, temp Temperature) float32 {
 ///////////////////////////////////////////////////////////////////////////
 // Arrival
 
+// deriveSTAR returns the STAR the arrival comes in on. An arrival that takes
+// its waypoints from a STAR by name gives "star" and needs none of this; one
+// that spells them out doesn't have to say where they came from, though a real
+// route into the airport names the STAR rather than the fixes it passes over,
+// so it is worth working out.
+//
+// A scenario's arrival need not follow the charted STAR: it starts where its
+// traffic reaches the facility, which may be short of the STAR or already on
+// it, and from there it is free to fly its own way in. So the STAR it comes in
+// on is whichever of the airport's it passes over the most of--and only if it
+// passes over more of that one than of any other, since the STARs into an
+// airport converge on the same last few fixes and what they all share says
+// nothing about which this is. A single fix in common is enough only when the
+// arrival starts there, which is an arrival joining a STAR and leaving it
+// again; anywhere else it is a fix two routes happen to share.
+//
+// This is a guess and it can be wrong, so an arrival that gives "star" is
+// taken at its word and never comes through here.
+func (ar *Arrival) deriveSTAR() string {
+	var fixes []string
+	for _, wp := range ar.Waypoints {
+		// Waypoints synthesized during deserialization are no part of a STAR.
+		if !strings.HasPrefix(wp.Fix, "_") {
+			fixes = append(fixes, wp.Fix)
+		}
+	}
+	if len(fixes) == 0 {
+		return ""
+	}
+
+	best, bestShared, tied := "", 0, false
+	for _, icao := range ar.ServedAirports() {
+		ap, ok := DB.Airports[icao]
+		if !ok {
+			continue
+		}
+		for _, name := range util.SortedMapKeys(ap.STARs) {
+			shared, starts := 0, false
+			score := func(wps WaypointArray) {
+				shared = max(shared, sharedFixes(fixes, wps))
+				starts = starts || slices.ContainsFunc(wps,
+					func(wp Waypoint) bool { return wp.Fix == fixes[0] })
+			}
+			// The runway transitions count as much as the transitions in: an
+			// arrival that starts inside the facility flies only those.
+			star := ap.STARs[name]
+			for _, wps := range star.Transitions {
+				score(wps)
+			}
+			for _, wps := range star.RunwayWaypoints {
+				score(wps)
+			}
+			if shared < 2 && !starts {
+				// One fix in common that the arrival doesn't even begin at is a
+				// fix two routes happen to share, not evidence of anything.
+				continue
+			}
+			if shared > bestShared {
+				best, bestShared, tied = name, shared, false
+			} else if shared == bestShared && name != best {
+				tied = true
+			}
+		}
+	}
+	if tied {
+		return ""
+	}
+	return best
+}
+
+// sharedFixes is how many of the fixes the waypoints also pass over.
+func sharedFixes(fixes []string, wps WaypointArray) int {
+	n := 0
+	for _, fix := range fixes {
+		if slices.ContainsFunc(wps, func(wp Waypoint) bool { return wp.Fix == fix }) {
+			n++
+		}
+	}
+	return n
+}
+
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
 	airports map[string]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
@@ -1195,6 +1281,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	for i := range ar.Waypoints {
 		ar.Waypoints[i].SetOnSTAR(true)
+	}
+
+	if ar.STAR == "" {
+		ar.DerivedSTAR = ar.deriveSTAR()
 	}
 
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil

@@ -325,3 +325,95 @@ func TestLocalSquawkCodePool(t *testing.T) {
 		t.Errorf("unexpected code %s", c)
 	}
 }
+
+// An arrival that spells out its waypoints rather than naming a STAR to take
+// them from is still recognizably on one, so long as the STARs into the airport
+// haven't converged by the time it starts.
+func TestDeriveSTAR(t *testing.T) {
+	star := func(fixes ...string) STAR {
+		var wps WaypointArray
+		for _, f := range fixes {
+			wps = append(wps, Waypoint{Fix: f})
+		}
+		return STAR{Transitions: map[string]WaypointArray{"ALL": wps}}
+	}
+
+	// Two STARs that come in from different directions and merge for the last
+	// two fixes, as the STARs into an airport tend to; MIPP4 also has a runway
+	// transition off the end of it.
+	mipp4 := star("MIPP", "LIZZI", "BEUTY", "APPLE", "PROUD")
+	mipp4.RunwayWaypoints = map[string]WaypointArray{
+		"13": star("PROUD", "KRANN", "CRADL", "ETHYN").Transitions["ALL"],
+	}
+
+	oldDB := DB
+	DB = &StaticDatabase{Airports: map[string]FAAAirport{
+		"KTST": {Id: "KTST", STARs: map[string]STAR{
+			"MIPP4":  mipp4,
+			"PROUD2": star("HOLEY", "BRAND", "KORRY", "APPLE", "PROUD"),
+		}},
+		"KNOS": {Id: "KNOS"},
+	}}
+	t.Cleanup(func() { DB = oldDB })
+
+	arrival := func(airport string, fixes ...string) *Arrival {
+		ar := &Arrival{Airports: []string{airport}}
+		for _, f := range fixes {
+			ar.Waypoints = append(ar.Waypoints, Waypoint{Fix: f})
+		}
+		return ar
+	}
+
+	for _, tc := range []struct {
+		name string
+		arr  *Arrival
+		want string
+	}{
+		{
+			name: "runs along one of the STARs",
+			arr:  arrival("KTST", "LIZZI", "BEUTY", "APPLE", "PROUD"),
+			want: "MIPP4",
+		},
+		{
+			name: "carries on past the end of the STAR",
+			arr:  arrival("KTST", "_handoff", "HOLEY", "BRAND", "KORRY", "APPLE", "PROUD", "RWY13"),
+			want: "PROUD2",
+		},
+		{
+			name: "joins the STAR at one fix and leaves again",
+			arr:  arrival("KTST", "LIZZI", "OWNWY", "RWY13"),
+			want: "MIPP4",
+		},
+		{
+			name: "crosses one fix of a STAR it doesn't start on",
+			arr:  arrival("KTST", "OWNWY", "KORRY", "RWY13"),
+			want: "",
+		},
+		{
+			name: "flies only the runway transition off the end",
+			arr:  arrival("KTST", "KRANN", "CRADL", "ETHYN"),
+			want: "MIPP4",
+		},
+		{
+			name: "only on the part the STARs share",
+			arr:  arrival("KTST", "APPLE", "PROUD"),
+			want: "",
+		},
+		{
+			name: "one fix in common is a coincidence",
+			arr:  arrival("KTST", "PROUD", "ELSEW"),
+			want: "",
+		},
+		{
+			name: "airport has no STARs",
+			arr:  arrival("KNOS", "LIZZI", "BEUTY", "APPLE", "PROUD"),
+			want: "",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := tc.arr.deriveSTAR(); got != tc.want {
+				t.Errorf("deriveSTAR = %q, want %q", got, tc.want)
+			}
+		})
+	}
+}

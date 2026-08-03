@@ -280,8 +280,10 @@ func arrivalForCityPair(candidates []candidateArrival, arrivalAirport, origin,
 // airport also does.
 func arrivalFixes(arr *av.Arrival) []string {
 	var fixes []string
-	if arr.STAR != "" {
-		fixes = append(fixes, arr.STAR)
+	// An arrival names its STAR only when it takes its waypoints from one;
+	// otherwise the STAR its waypoints run along was worked out at load.
+	if star := util.Select(arr.STAR != "", arr.STAR, arr.DerivedSTAR); star != "" {
+		fixes = append(fixes, star)
 	}
 	for _, wp := range arr.Waypoints {
 		// Waypoints synthesized during deserialization are prefixed with an
