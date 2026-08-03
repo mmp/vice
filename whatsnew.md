@@ -11,6 +11,7 @@
   - Fixed bugs with redirected handoff datablocks and recalling redirected handoffs
 - ERAM
   - Added confict alert detection (Michael Trokel)
+  - Fix leader line alignment with datablocks (Jud Lopez)
 - Facility engineering
   - For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)
   - Scenarios may now specify "default_consolidation", overriding the config's consolidation (radarcontacto)
