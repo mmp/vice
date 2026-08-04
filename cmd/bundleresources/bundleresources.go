@@ -64,6 +64,13 @@ func walkResourcesDirectory(eg *errgroup.Group) chan string {
 				return nil
 			}
 
+			if ptr, err := isLFSPointer(path); err != nil {
+				return err
+			} else if ptr {
+				return fmt.Errorf("%s: file holds a git lfs pointer, not its contents. "+
+					"Run \"git lfs checkout\" before bundling resources", path)
+			}
+
 			filesChan <- path
 
 			return nil
@@ -77,6 +84,30 @@ func isTemporaryFile(name string) bool {
 	return strings.HasPrefix(base, ".") ||
 		(strings.HasPrefix(base, "#") && strings.HasSuffix(base, "#")) ||
 		strings.HasSuffix(base, "~")
+}
+
+// First line of a git lfs pointer file. Uploading one of these instead of
+// the file it stands for is silent and disastrous--vice's clients happily
+// download the 130-byte pointer text--so we check for it rather than trust
+// that git lfs materialized everything.
+const lfsPointerPrefix = "version https://git-lfs.github.com/spec/v1"
+
+func isLFSPointer(path string) (bool, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return false, err
+	}
+	defer file.Close()
+
+	buf := make([]byte, len(lfsPointerPrefix))
+	if _, err := io.ReadFull(file, buf); err == io.EOF || err == io.ErrUnexpectedEOF {
+		// Shorter than the prefix, so it can't be a pointer.
+		return false, nil
+	} else if err != nil {
+		return false, err
+	}
+
+	return string(buf) == lfsPointerPrefix, nil
 }
 
 func sha256file(path string) (string, error) {
