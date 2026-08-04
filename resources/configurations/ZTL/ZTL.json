@@ -531,109 +531,167 @@
       "C43": {
         "default_consolidation": {
           "43": ["42", "44", "45", "47", "48"]
-          },
-          "inbound_assignments": {
-            "PARQR6 - LNDIZ": "43",
-            "PARQR6 - TAFTT": "43",
-            "TRAKS4 - OTONE": "43",
-            "OZZZI2": "43",
-            "Q103": "43",
-            "J85 (42)": "42",
-            "J85 (43)": "43",
-            "Q40": "43"
+        },
+        "inbound_assignments": {
+          "PARQR6 - LNDIZ": "43",
+          "PARQR6 - TAFTT": "43",
+          "TRAKS4 - OTONE": "43",
+          "OZZZI2": "43",
+          "Q103": "43",
+          "J85 (42)": "42",
+          "J85 (43)": "43",
+          "Q40": "43"
         }
       },
       "H32": {
         "default_consolidation": {
           "32": ["28", "33", "34"]
-          },
-        "departure_assignments": {
         },
-          "inbound_assignments": {
-            "BANKR7": "32",
-            "JONZE7": "32",
-            "TRAK4 - BURGG": "34",
-            "Q60 (33)": "33",
-            "Q60 (28)": "28",
-            "Q64 (33)": "33",
-            "Q64 (28)": "28",
-            "Q103": "32"
-
+        "departure_assignments": {},
+        "inbound_assignments": {
+          "BANKR7": "32",
+          "JONZE7": "32",
+          "TRAK4 - BURGG": "34",
+          "Q60 (33)": "33",
+          "Q60 (28)": "28",
+          "Q64 (33)": "33",
+          "Q64 (28)": "28",
+          "Q103": "32"
         }
       },
       "H28": {
         "default_consolidation": {
           "28": []
-          },
-        "departure_assignments": {
         },
-          "inbound_assignments": {
-            "Q60 (28)": "28",
-            "Q64 (28)": "28",
-            "Q103 (28)": "28",
-            "Q93": "28"
+        "departure_assignments": {},
+        "inbound_assignments": {
+          "Q60 (28)": "28",
+          "Q64 (28)": "28",
+          "Q103 (28)": "28",
+          "Q93": "28"
         }
       },
       "C32": {
         "default_consolidation": {
           "32": ["28", "29", "30", "31", "33", "34"]
-          },
+        },
         "departure_assignments": {
           "KCLT": "30"
         },
-          "inbound_assignments": {
-            "BANKR7": "32",
-            "JONZE7": "32",
-            "TRAK4 - BURGG": "34",
-            "SPA - HMV": "34",
-            "Q60 (33)": "33",
-            "Q60 (28)": "28",
-            "Q64 (33)": "33",
-            "Q64 (28)": "28",
-            "Q103": "32"
-
+        "inbound_assignments": {
+          "BANKR7": "32",
+          "JONZE7": "32",
+          "TRAK4 - BURGG": "34",
+          "SPA - HMV": "34",
+          "Q60 (33)": "33",
+          "Q60 (28)": "28",
+          "Q64 (33)": "33",
+          "Q64 (28)": "28",
+          "Q103": "32"
         }
       },
       "B15": {
         "default_consolidation": {
           "15": []
-          },
-        "departure_assignments": {
         },
-          "inbound_assignments": {
-            "Q103": "15",
-            "J85": "15",
-            "Q40": "15"
-
+        "departure_assignments": {},
+        "inbound_assignments": {
+          "Q103": "15",
+          "J85": "15",
+          "Q40": "15"
         }
       },
       "D16": {
         "default_consolidation": {
           "16": []
-          },
+        },
         "departure_assignments": {
           "KATL": "16"
-
         },
-          "inbound_assignments": {
-        }
+        "inbound_assignments": {}
       },
       "C50": {
         "default_consolidation": {
-          "50": ["18","16","49","15"]
-          },
+          "50": ["18", "16", "49", "15"]
+        },
         "departure_assignments": {
           "KATL": "16"
-
         },
-          "inbound_assignments": {
-            "OZZZI2": "18",
-            "ONDRE1": "18",
-            "WORXS2": "49",
-            "BOBZY7": "50",
-            "Q103": "15",
-            "J85": "15",
-            "Q40": "15"
+        "inbound_assignments": {
+          "OZZZI2": "18",
+          "ONDRE1": "18",
+          "WORXS2": "49",
+          "BOBZY7": "50",
+          "Q103": "15",
+          "J85": "15",
+          "Q40": "15"
+        }
+      },
+      "T21": {
+        "default_consolidation": {
+          "21": []
+        },
+        "departure_assignments": {
+          "KATL": "21"
+        },
+        "inbound_assignments": {
+          "CHOPZ - KCSG": "21",
+          "SPA - KLGC": "21"
+        }
+      },
+      "T20": {
+        "default_consolidation": {
+          "20": []
+        },
+        "departure_assignments": {},
+        "inbound_assignments": {
+          "JJEDI4 - LARZZ": "20",
+          "JJEDI4 - TYFTR": "20",
+          "JJEDI4 - SKWKR": "20",
+          "JJEDI4 - EEWOK": "20"
+        }
+      },
+      "T19": {
+        "default_consolidation": {
+          "19": []
+        },
+        "departure_assignments": {},
+        "inbound_assignments": {
+          "NEWHP": "19",
+          "LAYUH": "19"
+        }
+      },
+      "C20": {
+        "default_consolidation": {
+          "20": ["19", "21", "24", "22", "23", "27"]
+        },
+        "departure_assignments": {
+          "KATL": "19"
+        },
+        "inbound_assignments": {
+          "CHOPZ - KCSG": "21",
+          "SPA - KLGC": "21",
+          "JJEDI4 - LARZZ": "20",
+          "JJEDI4 - TYFTR": "20",
+          "JJEDI4 - SKWKR": "20",
+          "JJEDI4 - EEWOK": "20",
+          "Q89 (22)": "22",
+          "Q89 (27)": "27",
+          "Q118 (22)": "22",
+          "Q118 (27)": "27",
+          "Q64 (22)": "22",
+          "Q64 (23)": "23"
+        }
+      },
+      "U23": {
+        "default_consolidation": {
+          "23": ["27"]
+        },
+        "departure_assignments": {},
+        "inbound_assignments": {
+          "Q89 (27)": "27",
+          "Q118 (27)": "27",
+          "Q64 (23)": "23"
         }
       }
     },
