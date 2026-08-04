@@ -35,12 +35,15 @@ jobs:
         go-version-file: go.mod
         cache-dependency-path: go.sum
 
+    # The key must cover every path .gitattributes tracks with LFS; a path
+    # missing here means its objects go stale in the cache and the working-tree
+    # files stay as pointer files.
     - name: Restore LFS objects cache
       id: lfs-cache
       uses: actions/cache@v5
       with:
         path: .git/lfs/objects
-        key: lfs-objects-v1-${{ hashFiles('resources/videomaps/**', 'resources/wx/**') }}
+        key: lfs-objects-v2-${{ hashFiles('.gitattributes', 'resources/videomaps/**', 'resources/wx/**', 'resources/traffic/flights/**') }}
 
     - name: Fetch LFS
       if: steps.lfs-cache.outputs.cache-hit != 'true'
@@ -125,10 +128,17 @@ jobs:
       run: go test -v ./...
 
     - name: Restore LFS objects cache
+      id: lfs-cache
       uses: actions/cache@v5
       with:
         path: .git/lfs/objects
-        key: lfs-objects-v1-${{ hashFiles('resources/videomaps/**', 'resources/wx/**') }}
+        key: lfs-objects-v2-${{ hashFiles('.gitattributes', 'resources/videomaps/**', 'resources/wx/**', 'resources/traffic/flights/**') }}
+
+    - name: Fetch LFS
+      if: steps.lfs-cache.outputs.cache-hit != 'true'
+      run: |
+        git lfs install
+        git lfs pull
 
     - name: Materialize LFS working-tree files
       run: |

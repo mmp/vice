@@ -32,31 +32,29 @@ jobs:
     - name: Build vice
       run: ./build.sh
 
-    - name: Cache videomaps
-      id: cache-videomaps
+    # The key must cover every path .gitattributes tracks with LFS; a path
+    # missing here means its objects go stale in the cache and the working-tree
+    # files stay as pointer files.
+    - name: Restore LFS objects cache
+      id: lfs-cache
       uses: actions/cache@v5
       with:
-        path: resources/videomaps
-        key: videomaps-${{ hashFiles('resources/videomaps/**') }}
+        path: .git/lfs/objects
+        key: lfs-objects-v2-${{ hashFiles('.gitattributes', 'resources/videomaps/**', 'resources/wx/**', 'resources/traffic/flights/**') }}
 
-    - name: Cache wx resources
-      id: cache-wx
-      uses: actions/cache@v5
-      with:
-        path: resources/wx
-        key: wx-${{ hashFiles('resources/wx/**') }}
-
-    - name: Fetch videomaps from LFS
-      if: steps.cache-videomaps.outputs.cache-hit != 'true'
+    - name: Fetch LFS
+      if: steps.lfs-cache.outputs.cache-hit != 'true'
       run: |
         git lfs install
-        git lfs pull --include="resources/videomaps/*"
+        git lfs pull
 
-    - name: Fetch wx resources from LFS
-      if: steps.cache-wx.outputs.cache-hit != 'true'
+    # The cache holds git's object store, not the working tree, so on a cache
+    # hit the files are still pointers until they're checked out. This copies
+    # from the local object store and downloads nothing.
+    - name: Materialize LFS working-tree files
       run: |
         git lfs install
-        git lfs pull --include="resources/wx/**"
+        git lfs checkout
 
     - name: Check scenarios
       run: ./vice -lint
