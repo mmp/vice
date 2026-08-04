@@ -1,5 +1,5 @@
 - New scenario: ZJX Central-Geneva (manaphy), ZTL (AsianEvxn), ZME (Noah Hunt)
-- Scenario updates: ZNY, ZAU, C90 (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA, SCT (Ketan K), F11 (Michael Knight)
+- Scenario updates: ZNY, ZAU, C90 (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA, SCT (Ketan K), F11 (Michael Knight), C90 (Shane)
 - Added support for using real-world flight data in scenarios) (Shane, Logan S)
 - Added support for fix pairs for controller assignment (radarcontacto)
 - Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection
@@ -13,6 +13,7 @@
 - ERAM
   - Added confict alert detection (Michael Trokel)
   - Fix leader line alignment with datablocks (Jud Lopez)
+  - Added support for middle-click of callsign in datablock running QF command
 - Facility engineering
   - For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)
   - Scenarios may now specify "default_consolidation", overriding the config's consolidation (radarcontacto)
