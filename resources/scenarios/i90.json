@@ -456,6 +456,15 @@
         "R29": {
           "cifp_id": "R29"
         },
+        "I35": {
+          "runway": "35",
+          "type": "ILS",
+          "waypoints": [
+            "CLL ROWDY/a2000+/lpt45/pta2000/iaf/faf/flyover",
+            "COUTH/iaf JERBA/a2000+/if ROWDY/a2000+/faf",
+            "OSUME/iaf/arc15.0CLL JERBA/a2000+/if ROWDY/a2000+/faf"
+          ]
+        },
         "R35": {
           "cifp_id": "R35"
         },
