@@ -332,6 +332,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 		ScenarioRange:               sc.Range,
 		DefaultMaps:                 sc.DefaultMaps,
 		DefaultMapGroup:             sc.DefaultMapGroup,
+		AlwaysMaps:                  sc.AlwaysMaps,
 		InboundFlows:                sg.InboundFlows,
 		Airspace:                    sg.Airspace,
 		ControllerAirspace:          sc.Airspace,

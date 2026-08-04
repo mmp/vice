@@ -262,7 +262,11 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 				vm = ep.allVideoMaps[i]
 			}
 			label := vm.LabelLine1 + "\n" + vm.LabelLine2
-			_, vis := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2, " ")]
+			key := combine(vm.LabelLine1, vm.LabelLine2, " ")
+			_, vis := ps.VideoMapVisible[key]
+			// Always-displayed maps are drawn whatever the controller does, so
+			// show them lit and ignore clicks on them.
+			_, forced := ep.forcedVideoMaps[key]
 			nextRow := false
 			if (i == 10 && !second) || (i == 30 && second) {
 				nextRow = true
@@ -271,12 +275,12 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 				break
 			}
 
-			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis, nextRow) {
-				if label != "" {
+			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis || forced, nextRow) {
+				if label != "" && !forced {
 					if vis {
-						delete(ps.VideoMapVisible, combine(vm.LabelLine1, vm.LabelLine2, " "))
+						delete(ps.VideoMapVisible, key)
 					} else {
-						ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2, " ")] = nil
+						ps.VideoMapVisible[key] = nil
 					}
 				}
 			}
@@ -424,16 +428,13 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 				ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 			}
 
-			// One button per BCG (brightness group) in the current
-			// group's bcgMenu, skipping empty placeholder slots.
+			// One button per BCG (brightness group) in the current group's
+			// bcgMenu, followed by any used only by always-displayed maps.
 			toolbarDrawState.buttonCursor = e0
 			// Overlay buttons should receive input even if occlusion is active
 			toolbarDrawState.processingOcclusion = true
 			drawn := 0
-			for _, name := range ep.bcgNames {
-				if name == "" {
-					continue
-				}
+			for _, name := range ep.brightnessBCGNames {
 				label := fmt.Sprintf("%s\n%d", name, ps.VideoMapBrightness[name])
 				if drawn == 10 {
 					toolbarDrawState.buttonCursor = [2]float32{e0[0], e0[1] - buttonSize(buttonFull, scale)[1] - 2}
@@ -2153,6 +2154,9 @@ func (ep *ERAMPane) isTornOffButtonActive(name string) bool {
 			return ps.CRR.DisplayFixes
 		}
 		if key, ok := ep.videoMapKeyForButton(name); ok {
+			if _, forced := ep.forcedVideoMaps[key]; forced {
+				return true
+			}
 			if ps.VideoMapVisible != nil {
 				if _, visible := ps.VideoMapVisible[key]; visible {
 					return true
@@ -2384,6 +2388,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	_ = pos
 
 	if key, ok := ep.videoMapKeyForButton(buttonName); ok {
+		if _, forced := ep.forcedVideoMaps[key]; forced {
+			return // always displayed; not the controller's to turn off
+		}
 		if ps.VideoMapVisible == nil {
 			ps.VideoMapVisible = make(map[string]interface{})
 		}

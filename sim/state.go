@@ -92,6 +92,10 @@ type CommonState struct {
 	ScenarioRange             float32
 	ScenarioDefaultVideoMaps  []string
 	ScenarioDefaultVideoGroup string
+	// ERAMAlwaysVideoMaps are the video maps the ERAM scope displays no matter
+	// which geomap group is loaded, resolved from the scenario's "always_maps"
+	// if it has any and the facility's otherwise.
+	ERAMAlwaysVideoMaps []av.ERAMMapRef
 
 	FacilityAdaptation FacilityAdaptation
 	// ERAMCoordination is the pseudo-ERAM adaptation this sim uses to derive
@@ -257,6 +261,13 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
+	// A scenario's always-displayed video maps replace the facility's rather
+	// than adding to them.
+	alwaysVideoMaps := config.FacilityAdaptation.ERAMAlwaysMaps
+	if len(config.AlwaysMaps) > 0 {
+		alwaysVideoMaps = config.AlwaysMaps
+	}
+
 	ss := &CommonState{
 		DynamicState: DynamicState{
 			CurrentConsolidation: make(map[TCW]*TCPConsolidation),
@@ -295,6 +306,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		ScenarioRange:             config.ScenarioRange,
 		ScenarioDefaultVideoMaps:  config.DefaultMaps,
 		ScenarioDefaultVideoGroup: config.DefaultMapGroup,
+		ERAMAlwaysVideoMaps:       alwaysVideoMaps,
 
 		FacilityAdaptation: deep.MustCopy(config.FacilityAdaptation),
 		ERAMCoordination:   config.ERAMCoordination,

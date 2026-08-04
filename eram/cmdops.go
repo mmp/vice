@@ -465,34 +465,23 @@ func handleMapRequestList(ep *ERAMPane, ctx *panes.Context) (CommandStatus, erro
 }
 
 func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (CommandStatus, error) {
-	vmf, err := ctx.Client.LoadVideoMapLibrary(ctx.Client.State.ControllerVideoMapFile)
+	mapFile := ctx.Client.State.ControllerVideoMapFile
+	vmf, err := ctx.Client.LoadVideoMapLibrary(mapFile)
 	if err != nil {
 		return CommandStatus{}, err
 	}
 
-	maps, ok := vmf.ERAMMapGroups[groupName]
-	if !ok {
+	if _, ok := vmf.ERAMMapGroups[groupName]; !ok {
 		return CommandStatus{}, ErrERAMMapUnavailable
 	}
 
 	ps := ep.currentPrefs()
-	ps.VideoMapGroup = groupName
 
-	// Get rid of all visible maps
+	// Get rid of all visible maps; the adapted always-displayed ones are
+	// unaffected since they aren't tracked here.
 	ps.VideoMapVisible = make(map[string]interface{})
 
-	ep.videoMapLabel = maps.LabelLine1 + "\n" + maps.LabelLine2
-	ep.allVideoMaps = maps.Maps
-	ep.bcgNames = maps.BCGNames
-
-	for _, name := range maps.BCGNames {
-		if name == "" {
-			continue
-		}
-		if ps.VideoMapBrightness[name] == 0 {
-			ps.VideoMapBrightness[name] = 12
-		}
-	}
+	ep.setVideoMapGroup(vmf, groupName, ctx.Client.State.ERAMAlwaysVideoMaps, mapFile, ctx.Lg)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "MAP REQUEST", ps.VideoMapGroup},
