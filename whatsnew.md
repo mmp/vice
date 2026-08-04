@@ -21,3 +21,4 @@
   - Added "fix_pair_configuration" to assign a flight's initial owning position from its entry/exit fix pair, per configuration plan, with reassignment rules (altitude, aircraft class, callsign, active runway) and RNAV route designation (radarcontacto)
   - Added "tcp_assignment_classes" and "automatic_handoff_classes" to name aircraft classes for fix-pair and handoff-filter matching (radarcontacto)
   - Added "automatic_scratchpad_assignment" to default a flight's scratchpads from its fixes, altitude, and flight type (radarcontacto)
+  - ARTCC configs and ERAM scenarios may specify "always_maps": video maps that are displayed whatever geomap is loaded, with no filter-menu button
