@@ -67,8 +67,11 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		if ext := db.Fields[DBFieldMain]; ext.Inside(mouse.Pos) {
 			ep.drawOutlineRectangle(ld, ext, colors.yellow)
 		}
-		if db.Fields[DBFieldCallsign].Inside(mouse.Pos) {
-			// TODO: check what this does
+		// Middle-clicking the callsign runs the QF flight plan readout for the track.
+		if db.Fields[DBFieldCallsign].Inside(mouse.Pos) && ep.mouseTertiaryClicked(mouse) {
+			status, err := handleFlightPlanReadout(ep, ctx, &trk)
+			ep.applyCommandStatus(ctx, status, err)
+			ep.clearMouseTertiaryConsumed(mouse)
 		}
 		if db.Fields[DBFieldVCI].Inside(mouse.Pos) {
 			state.HoverVCI = true
