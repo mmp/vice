@@ -145,6 +145,11 @@ type Aircraft struct {
 	VisualApproachRequestDistance float32
 
 	TouchAndGosRemaining int // >0 means pattern aircraft; decremented each lap
+
+	// HoldingSince is when a VFR arrival started orbiting to wait for a slot
+	// in the pattern; it orders the queue of aircraft waiting to get in.
+	// Zero when the aircraft isn't holding.
+	HoldingSince Time
 }
 
 func (ac *Aircraft) GetRadarTrack(now Time) av.RadarTrack {

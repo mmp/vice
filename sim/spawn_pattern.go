@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"cmp"
 	"fmt"
 	"log/slog"
 	"slices"
@@ -449,13 +450,43 @@ func (s *Sim) recordPatternTouchAndGo(ac *Aircraft, airport string, rwyId string
 }
 
 // sequenceVFRLanding is called when a VFR arrival passes its
-// SequenceVFRLanding waypoint. It evaluates current wind, traffic, and
-// approach angle to decide: straight-in, 45-to-downwind, or orbit.
+// SequenceVFRLanding waypoint. It either sends the aircraft into the
+// pattern or puts it in an orbit to wait its turn.
 func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 	airport := ac.FlightPlan.ArrivalAirport
+
+	if !s.arrivalsMustHold(airport) {
+		s.enterPattern(ac, airport)
+		return
+	}
+
+	if isHoldingArrival(ac) {
+		// Already orbiting; keep flying the current orbit and recheck at
+		// its next waypoint.
+		return
+	}
+
+	wps := s.generateOrbitWaypoints(airport)
+	if len(wps) == 0 {
+		return
+	}
+	ac.Nav.Waypoints = wps
+	ac.Nav.Heading = nav.NavHeading{}
+	if ac.HoldingSince.IsZero() {
+		ac.HoldingSince = s.State.SimTime
+	}
+	s.lg.Info("VFR arrival entering orbit",
+		slog.String("callsign", string(ac.ADSBCallsign)),
+		slog.String("airport", airport))
+}
+
+// enterPattern sends a VFR arrival to the runway, either straight in or via
+// a 45-degree entry to downwind depending on the angle it's coming from and
+// whether the final is clear.
+func (s *Sim) enterPattern(ac *Aircraft, airport string) {
 	rwy, opp, ok := s.currentVFRRunway(airport)
 	if !ok {
-		s.lg.Warn("sequenceVFRLanding: no runway", slog.String("airport", airport))
+		s.lg.Warn("enterPattern: no runway", slog.String("airport", airport))
 		return
 	}
 	faaAP, ok := av.DB.Airports[airport]
@@ -463,42 +494,58 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 		return
 	}
 
-	if s.patternClearForEntry(airport) {
-		hdgToRwy := math.Heading2LL(ac.Position(), rwy.Threshold, s.State.NmPerLongitude)
-		if math.HeadingDifference(hdgToRwy, math.MagneticToTrue(rwy.Heading, s.State.MagneticVariation)) <= 60 && s.finalClear(airport) {
-			wps := generateStraightInWaypoints(rwy, faaAP.Elevation,
-				s.State.NmPerLongitude, s.State.MagneticVariation)
-			ac.Nav.Waypoints = wps
-			ac.Nav.Heading = nav.NavHeading{}
-			s.lg.Info("VFR arrival straight-in",
-				slog.String("callsign", string(ac.ADSBCallsign)),
-				slog.String("airport", airport))
-		} else {
-			wps := generatePatternEntryWaypoints(rwy, opp, faaAP.Elevation,
-				s.State.NmPerLongitude, s.State.MagneticVariation)
-			ac.Nav.Waypoints = wps
-			ac.Nav.Heading = nav.NavHeading{}
-			s.lg.Info("VFR arrival 45-to-downwind",
-				slog.String("callsign", string(ac.ADSBCallsign)),
-				slog.String("airport", airport))
-		}
+	hdgToRwy := math.Heading2LL(ac.Position(), rwy.Threshold, s.State.NmPerLongitude)
+	if math.HeadingDifference(hdgToRwy, math.MagneticToTrue(rwy.Heading, s.State.MagneticVariation)) <= 60 && s.finalClear(airport) {
+		ac.Nav.Waypoints = generateStraightInWaypoints(rwy, faaAP.Elevation,
+			s.State.NmPerLongitude, s.State.MagneticVariation)
+		s.lg.Info("VFR arrival straight-in",
+			slog.String("callsign", string(ac.ADSBCallsign)),
+			slog.String("airport", airport))
 	} else {
-		if len(ac.Nav.Waypoints) > 0 && ac.Nav.Waypoints[0].VFRPhase == av.VFRPhaseOrbit {
-			// Already orbiting; keep flying the current orbit and recheck
-			// at its next waypoint.
-			return
-		}
-
-		wps := s.generateOrbitWaypoints(airport)
-		if len(wps) == 0 {
-			return
-		}
-		ac.Nav.Waypoints = wps
-		ac.Nav.Heading = nav.NavHeading{}
-		s.lg.Info("VFR arrival entering orbit",
+		ac.Nav.Waypoints = generatePatternEntryWaypoints(rwy, opp, faaAP.Elevation,
+			s.State.NmPerLongitude, s.State.MagneticVariation)
+		s.lg.Info("VFR arrival 45-to-downwind",
 			slog.String("callsign", string(ac.ADSBCallsign)),
 			slog.String("airport", airport))
 	}
+	ac.Nav.Heading = nav.NavHeading{}
+	ac.HoldingSince = Time{}
+}
+
+// admitHoldingArrivals lets the arrival that has been waiting the longest
+// into the pattern at each airport where there's now room for one. Orbiting
+// aircraft only reconsider when they reach an orbit waypoint, so without
+// this a later arrival would regularly take the slot out from under an
+// aircraft that had been holding for much longer.
+func (s *Sim) admitHoldingArrivals() {
+	for _, ac := range s.holdingArrivalsToAdmit() {
+		s.enterPattern(ac, ac.FlightPlan.ArrivalAirport)
+	}
+}
+
+// holdingArrivalsToAdmit returns the arrival that has been holding the
+// longest at each airport where the pattern is currently clear for one to
+// enter, ordered by callsign.
+func (s *Sim) holdingArrivalsToAdmit() []*Aircraft {
+	airports := make(map[string]any)
+	for _, ac := range s.Aircraft {
+		if isHoldingArrival(ac) {
+			airports[ac.FlightPlan.ArrivalAirport] = nil
+		}
+	}
+
+	var admit []*Aircraft
+	for airport := range airports {
+		if !s.patternClearForEntry(airport) {
+			continue
+		}
+		if ac := s.longestHoldingArrival(airport); ac != nil {
+			admit = append(admit, ac)
+		}
+	}
+	slices.SortFunc(admit, func(a, b *Aircraft) int { return cmp.Compare(a.ADSBCallsign, b.ADSBCallsign) })
+
+	return admit
 }
 
 // isPatternAircraft reports whether the callsign is one of the airport's
@@ -513,17 +560,51 @@ func (s *Sim) isPatternAircraft(airport string, callsign av.ADSBCallsign) bool {
 		func(pa PatternAircraft) bool { return pa.ADSBCallsign == callsign })
 }
 
+// isHoldingArrival returns true if the aircraft is flying an orbit, waiting
+// for its turn to enter the pattern.
+func isHoldingArrival(ac *Aircraft) bool {
+	return len(ac.Nav.Waypoints) > 0 && ac.Nav.Waypoints[0].VFRPhase == av.VFRPhaseOrbit
+}
+
 // orbitingArrivals returns the number of VFR arrivals that are holding in
 // an orbit, waiting to enter the pattern at the given airport.
 func (s *Sim) orbitingArrivals(airport string) int {
 	n := 0
 	for _, ac := range s.Aircraft {
-		if ac.FlightPlan.ArrivalAirport == airport && len(ac.Nav.Waypoints) > 0 &&
-			ac.Nav.Waypoints[0].VFRPhase == av.VFRPhaseOrbit {
+		if ac.FlightPlan.ArrivalAirport == airport && isHoldingArrival(ac) {
 			n++
 		}
 	}
 	return n
+}
+
+// arrivalsMustHold returns true if an arrival reaching its sequencing point
+// at the given airport has to go into an orbit rather than heading for the
+// runway: either there's no room in the pattern or another arrival is
+// already holding, in which case that one goes first (admitHoldingArrivals
+// lets it in when the pattern clears).
+func (s *Sim) arrivalsMustHold(airport string) bool {
+	return !s.patternClearForEntry(airport) || s.longestHoldingArrival(airport) != nil
+}
+
+// longestHoldingArrival returns the VFR arrival that has been holding the
+// longest for a slot in the pattern at the given airport, or nil if none is
+// holding. Ties are broken by callsign so that the result doesn't depend on
+// map iteration order.
+func (s *Sim) longestHoldingArrival(airport string) *Aircraft {
+	var longest *Aircraft
+	for _, ac := range s.Aircraft {
+		if ac.FlightPlan.ArrivalAirport != airport || !isHoldingArrival(ac) {
+			continue
+		}
+		if longest == nil {
+			longest = ac
+		} else if c := ac.HoldingSince.Compare(longest.HoldingSince); c < 0 ||
+			(c == 0 && ac.ADSBCallsign < longest.ADSBCallsign) {
+			longest = ac
+		}
+	}
+	return longest
 }
 
 // patternClearForEntry returns true if no pattern aircraft is on downwind

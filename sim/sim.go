@@ -1344,6 +1344,7 @@ func (s *Sim) updateState() {
 
 		s.updatePatternPhases()
 		s.relievePatternPressure()
+		s.admitHoldingArrivals()
 		s.spawnAircraft()
 
 		s.ERAMComputer.Update(s)

@@ -91,8 +91,15 @@ func (s *Sim) spawnDepartures() {
 				depState.NextIFRSpawn = now.Add(max(time.Millisecond, delay))
 			}
 			if now.After(depState.NextVFRSpawn) {
-				if ac, err := s.makeNewVFRDeparture(airport, runway); ac != nil && err == nil {
+				ac, err := s.makeNewVFRDeparture(airport, runway)
+				launched := ac != nil && err == nil
+				if launched {
 					s.addDepartureToPool(ac, runway, false /* not manual launch */)
+				}
+				// Also skip the slot if there was nowhere to send the
+				// aircraft; otherwise we'd try again every second for as
+				// long as arrivals are backed up.
+				if launched || errors.Is(err, errNoVFRDestination) {
 					depState.NextVFRSpawn = now.Add(randomWait(depState.VFRSpawnRate, false, s.Rand))
 				}
 			}
@@ -445,6 +452,11 @@ func (s *Sim) makeNewIFRDeparture(airport string, runway av.RunwayID) (ac *Aircr
 	return
 }
 
+// errNoVFRDestination is returned when arrivals are backed up at every
+// airport that takes VFR traffic, leaving nowhere to send a VFR departure
+// at the moment.
+var errNoVFRDestination = errors.New("no VFR destination airport is accepting arrivals")
+
 // vfrDestinationWeight returns the weight for sampling ap as the
 // destination of a random VFR departure. Airports where arrivals are
 // already backed up waiting to land are excluded so that we don't keep
@@ -492,28 +504,39 @@ func (s *Sim) makeNewVFRDeparture(depart string, runway av.RunwayID) (ac *Aircra
 			}
 		}
 
-		if sampledRoute != nil && s.orbitingArrivals(sampledRoute.Destination) > 0 {
-			// Arrivals are backed up at the route's destination; hold off
-			// on this one and try again later.
+		if sampledRandoms == nil && sampledRoute == nil {
+			// Nothing with a nonzero rate to sample from.
 			return
 		}
 
-		for range 5 {
-			depState.VFRAttempts++
+		if sampledRoute != nil && s.orbitingArrivals(sampledRoute.Destination) > 0 {
+			// Arrivals are backed up at the route's destination; hold off
+			// on this one and try again later.
+			return nil, errNoVFRDestination
+		}
 
+		for range 5 {
+			var arrive, fleet string
+			var routeWps []av.Waypoint
 			if sampledRandoms != nil {
 				// Sample destination airport: may be where we started from.
-				arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
+				dest, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
 					s.vfrDestinationWeight)
 				if !ok {
-					s.lg.Errorf("%s: unable to sample VFR destination airport???", depart)
-					continue
+					// Arrivals are backed up at every airport that takes
+					// VFR traffic; wait for one of them to clear.
+					return nil, errNoVFRDestination
 				}
-				ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, sampledRandoms.Fleet, nil, s.State.SimTime)
-			} else if sampledRoute != nil {
-				ac, _, err = s.createUncontrolledVFRDeparture(depart, sampledRoute.Destination, sampledRoute.Fleet,
-					sampledRoute.Waypoints, s.State.SimTime)
+				arrive, fleet = dest, sampledRandoms.Fleet
+			} else {
+				arrive, fleet, routeWps = sampledRoute.Destination, sampledRoute.Fleet, sampledRoute.Waypoints
 			}
+
+			// Only count attempts where we actually went looking for a
+			// route; the circuit breaker above is about routes that can't
+			// be found, not about destinations being busy.
+			depState.VFRAttempts++
+			ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, s.State.SimTime)
 
 			if err == nil && ac != nil {
 				ac.ReleaseTime = s.State.SimTime
@@ -1208,25 +1231,30 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	for range 50 {
-		// Sample destination airport: may be where we started from.
-		arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
-			s.vfrDestinationWeight)
+	// Sample destination airport: may be where we started from.
+	arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
+		s.vfrDestinationWeight)
+	if !ok {
+		// Arrivals are backed up everywhere, but a controller asked for this
+		// aircraft, so send it somewhere anyway.
+		arrive, ok = rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
+			func(ap string) float32 { return s.State.Airports[ap].VFRRateSum() })
 		if !ok {
 			return nil, nil
 		}
-		if ap, ok := s.State.Airports[departureAirport]; !ok || ap.VFRRateSum() == 0 {
-			// This shouldn't happen...
-			return nil, nil
-		} else {
-			ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.State.SimTime)
-			if ac != nil && err == nil {
-				s.publish()
-			}
-			return ac, err
-		}
 	}
-	return nil, nil
+
+	ap, ok := s.State.Airports[departureAirport]
+	if !ok || ap.VFRRateSum() == 0 {
+		// This shouldn't happen...
+		return nil, nil
+	}
+
+	ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.State.SimTime)
+	if ac != nil && err == nil {
+		s.publish()
+	}
+	return ac, err
 }
 
 func departureGateDelay(ac *Aircraft, trafficSource TrafficSource, r *rand.Rand) time.Duration {
