@@ -801,18 +801,28 @@ func (rs *RadarSite) CheckVisibility(p math.Point2LL, altitude int) (primary, se
 
 func cleanRunway(rwy string) string {
 	// The runway may have extra text to distinguish different
-	// configurations (e.g., "13.JFK-ILS-13"). Find the prefix that is
-	// an actual runway specifier to use in the search below.
-	for i, ch := range rwy {
-		if ch >= '0' && ch <= '9' {
-			continue
-		} else if ch == 'L' || ch == 'R' || ch == 'C' || ch == 'W' {
-			return rwy[:i+1]
-		} else {
-			return rwy[:i]
-		}
+	// configurations (e.g., "13.JFK-ILS-13" or "22L,22R"). Find the
+	// prefix that is an actual runway specifier to use in the search
+	// below. Identifiers are usually a number plus an optional L/R/C/W,
+	// but the CIFP also has the likes of "15U" (unpaved) and "NE"/"SW"
+	// (unnumbered turf strips).
+	n := 0
+	for n < len(rwy) && rwy[n] >= '0' && rwy[n] <= '9' {
+		n++
 	}
-	return rwy
+	if n == 0 {
+		for n < len(rwy) && rwy[n] >= 'A' && rwy[n] <= 'Z' {
+			n++
+		}
+		return rwy[:n]
+	}
+	if n < len(rwy) && (rwy[n] == 'L' || rwy[n] == 'R' || rwy[n] == 'C' || rwy[n] == 'W') {
+		n++
+	}
+	if n < len(rwy) && rwy[n] == 'U' {
+		n++
+	}
+	return rwy[:n]
 }
 
 func LookupRunway(icao, rwy string) (Runway, bool) {
