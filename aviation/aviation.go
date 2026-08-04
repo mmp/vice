@@ -1255,6 +1255,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 			if _, ok := DB.Airports[ap]; !ok {
 				e.ErrorString("airport is unknown")
+				e.Pop()
 				continue
 			}
 
