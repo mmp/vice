@@ -1109,7 +1109,7 @@
           "exit": "LOOSE",
           "destination": "KDCA",
           "altitude": 35000,
-          "route": "TRYTN4 LOOSE Q34 SITTR TRUPS5",
+          "route": "TRYTN4 LOOSE Q34 SITTR TRUPS6",
           "airlines": [
             {
               "icao": "AAL",
@@ -1553,7 +1553,7 @@
           "exit": "HANUH",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "FORCK3 HANUH LYING FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE5",
+          "route": "FORCK3 HANUH LYING FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE7",
           "airlines": [
             {
               "icao": "AAL",
@@ -3034,7 +3034,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_AFW_16L/h153"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -3044,7 +3044,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_AFW_16L/h166"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -3076,7 +3076,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "33.0242,-97.3254/a1223+/h155"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -3086,7 +3086,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_AFW_34R/h346"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP": {
@@ -5307,7 +5307,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "32.7792,-97.3528/a1600+/h085"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -5317,7 +5317,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_FTW_16/h164"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
@@ -5344,7 +5344,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "32.8639,-97.3742/a1210+/h092"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -5354,7 +5354,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_FTW_34/h344"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -5814,7 +5814,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "33.2307,-97.2007/a1143+/h180"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -5824,7 +5824,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_DTO_36R/h357"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
@@ -5856,22 +5856,22 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_DTO_18L/h180"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_DTO_18L/h180"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_DTO_18L/h177"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_DTO_18L/h177"
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
@@ -6915,7 +6915,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "32.6442,-97.0879/a2500+/h316"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -6925,7 +6925,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_GKY_16/h162"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
@@ -6957,7 +6957,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 2000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "32.6963,-97.1025/a1400+/h313"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -6967,7 +6967,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 2000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_GKY_34/h342"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -7399,7 +7399,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_GPM_18/h192"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -7409,7 +7409,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_GPM_18/h192"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
@@ -7441,7 +7441,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 2000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_GPM_36/h300"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -7451,7 +7451,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 2000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_GPM_36/h300"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -8239,7 +8239,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_FWS_36L/h013"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -8249,7 +8249,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_FWS_36L/h357"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -8281,7 +8281,7 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_FWS_18R/h177"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
@@ -8291,7 +8291,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_FWS_18R/h177"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
@@ -8555,12 +8555,12 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_NFW_18/h180"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_NFW_18/h180"
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
@@ -8577,12 +8577,12 @@
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH1",
+            "sid": "BOTCH2",
             "waypoints": "_NFW_36/h360"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR3",
+            "sid": "NANDR4",
             "waypoints": "_NFW_36/h360"
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
@@ -10251,7 +10251,7 @@
     "EESAT4_DN_NF": {
       "arrivals": [
         {
-          "waypoints": "OXAKY/ho1S UDELY MUZZY/a10000 KLLEY/a8000 YEAGR/ho EESAT KEFDE/h312",
+          "waypoints": "N031.56.05.390,W095.35.44.450/ho1S UDELY MUZZY/a10000 KLLEY/a8000 YEAGR/ho EESAT KEFDE/h312",
           "star": "EESAT4",
           "initial_controller": "C62",
           "initial_altitude": 10000,

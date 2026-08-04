@@ -1861,7 +1861,7 @@
           ],
           "destination": "KCLT",
           "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT LCOLN VHP J24 FLM TAFTT PARQR4"
+          "route": "JEDET ZMBRO ODI J30 JOT LCOLN VHP J24 FLM TAFTT PARQR6"
         },
         {
           "airlines": [
@@ -1984,7 +1984,7 @@
           ],
           "destination": "KDCA",
           "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 BUCKO FRDMM6"
+          "route": "TAXEE COULT LMFRY DLL J34 BUCKO FRDMM7"
         },
         {
           "airlines": [
@@ -2557,7 +2557,7 @@
           ],
           "destination": "KIAD",
           "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ5"
+          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ6"
         },
         {
           "airlines": [
@@ -3147,7 +3147,7 @@
           ],
           "destination": "KMSY",
           "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO KK60I ARG MCB TRSSH1"
+          "route": "FOBUG DOKTR CORDY RST ALO KK60I ARG MCB TRSSH2"
         },
         {
           "airlines": [
@@ -4029,7 +4029,7 @@
           ],
           "destination": "KTPA",
           "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO STL DITZL VLKNN ACORI MAATY5"
+          "route": "FOBUG DOKTR CORDY RST ALO STL DITZL VLKNN ACORI MAATY6"
         },
         {
           "airlines": [
@@ -5740,7 +5740,7 @@
           ],
           "destination": "KIAD",
           "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ5"
+          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ6"
         },
         {
           "airlines": [
@@ -5751,7 +5751,7 @@
           ],
           "destination": "KIAD",
           "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ5"
+          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ6"
         },
         {
           "airlines": [
@@ -7315,9 +7315,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO IRK J45 STL J45 DENNI Q19 HITMN ACORI VUUDU1"
+          "route": "FOBUG DOKTR CORDY RST ALO IRK J45 STL J45 DENNI Q19 HITMN ACORI VUUDU2"
         },
         {
           "airlines": [
@@ -8220,7 +8220,7 @@
           ],
           "destination": "KIAD",
           "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ5"
+          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ6"
         },
         {
           "airlines": [
@@ -23554,11 +23554,11 @@
               {
                 "icao": "N",
                 "fleet": "GAjet",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "N",
@@ -23898,7 +23898,7 @@
               {
                 "icao": "N",
                 "fleet": "GAturbine",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "N",

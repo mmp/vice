@@ -190,7 +190,10 @@
           "cifp_id": "R15"
         },
         "RZ9": {
-          "cifp_id": "RZ19"
+          "full_name": "RNAV Z Runway 19",
+          "runway": "19",
+          "type": "RNAV",
+          "waypoints": ["DARIC/a2700+/s180-/if SUNEY/a2000+/faf GREYZ/arc1.4 FONVI/arc0.9 JUBOL WIRSO/arc0.8 FIROP"]
         },
         "RIV": {
           "full_name": "River Visual Runway 19",
@@ -2499,7 +2502,7 @@
           ],
           "destination": "KCLR",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY6",
+          "route": "GLANC AIROW CHSLY8",
           "scratchpad": "SCR"
         },
         {
@@ -2527,7 +2530,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY6",
+          "route": "GLANC AIROW CHSLY8",
           "scratchpad": "SCR"
         },
         {
@@ -2543,7 +2546,7 @@
           ],
           "destination": "KMSY",
           "exit": "GLANC",
-          "route": "GLANC OLZI Q52 CHOPZ MGMRY CATLN Q56 SJI MNSTR1",
+          "route": "GLANC OLZI Q52 CHOPZ MGMRY CATLN Q56 SJI MNSTR2",
           "scratchpad": "SCR"
         },
         {
@@ -3219,7 +3222,7 @@
           ],
           "destination": "KCLT",
           "exit": "READE",
-          "route": "READE AIROW CHSLY6",
+          "route": "READE AIROW CHSLY8",
           "scratchpad": "KAL"
         },
         {
@@ -3388,7 +3391,7 @@
           ],
           "destination": "KMSY",
           "exit": "DRAIK",
-          "route": "DRAIK KIDDO Q22 CATLN SJI MNSTR1",
+          "route": "DRAIK KIDDO Q22 CATLN SJI MNSTR2",
           "scratchpad": "KAL"
         },
         {
@@ -4597,7 +4600,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY6",
+          "route": "GLANC AIROW CHSLY8",
           "scratchpad": "TSC"
         },
         {
@@ -4615,7 +4618,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY6",
+          "route": "GLANC AIROW CHSLY8",
           "scratchpad": "TSC"
         },
         {
@@ -4629,7 +4632,7 @@
           ],
           "destination": "KMSY",
           "exit": "GLANC",
-          "route": "GLANC COLZI Q52 CHOPZ MGMRY CATLN Q56 SJI MNSTR1",
+          "route": "GLANC COLZI Q52 CHOPZ MGMRY CATLN Q56 SJI MNSTR2",
           "scratchpad": "TSC"
         },
         {
@@ -4935,7 +4938,7 @@
               {
                 "icao": "AAL",
                 "fleet": "short",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JIA",
@@ -5346,11 +5349,11 @@
         }
       ]
     },
-    "DEALE3/MIIDY3": {
+    "DEALE3/MIIDY4": {
       "arrivals": [
         {
           "spawn": "LAFLN",
-          "star": "MIIDY3",
+          "star": "MIIDY4",
           "initial_controller": "W51",
           "initial_altitude": 18000,
           "assigned_altitude": 11000,
@@ -5457,7 +5460,7 @@
         }
       ]
     },
-    "FRDMM6": {
+    "FRDMM7": {
       "arrivals": [
         {
           "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250",
@@ -5471,7 +5474,7 @@
               "33": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
             }
           },
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -5530,11 +5533,11 @@
         }
       ]
     },
-    "RAVNN8": {
+    "RAVNN9": {
       "arrivals": [
         {
           "spawn": "ACROW",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "W05",
           "initial_altitude": 21000,
           "initial_speed": 280,
@@ -5601,7 +5604,7 @@
         },
         {
           "spawn": "ECHOZ",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "W05",
           "initial_altitude": 20000,
           "initial_speed": 280,
@@ -5667,7 +5670,7 @@
         }
       ]
     },
-    "TRUPS5": {
+    "TRUPS6": {
       "arrivals": [
         {
           "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250",
@@ -5681,7 +5684,7 @@
               "33": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
             }
           },
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -5723,7 +5726,7 @@
         }
       ]
     },
-    "HYPER9": {
+    "HYPER1": {
       "arrivals": [
         {
           "waypoints": "DELRO N039.55.32.455,W076.42.37.946/ho LIRCH/a14000 BINNS HYPER/a10000/s250",
@@ -5744,7 +5747,7 @@
               "34L": "HYPER/a10000/s250 PHATT/a9000/flyover/h230"
             }
           },
-          "star": "HYPER9",
+          "star": "HYPER1",
           "initial_controller": "N26",
           "initial_altitude": 17000,
           "assigned_altitude": 14000,
@@ -5946,7 +5949,7 @@
         }
       ]
     },
-    "PRTZL1": {
+    "PRTZL2": {
       "arrivals": [
         {
           "waypoints": "PRTZL N039.58.31.601,W077.08.08.314/ho HYPER/s250",
@@ -5961,7 +5964,7 @@
               "1R": "HYPER SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/h191"
             }
           },
-          "star": "PRTZL1",
+          "star": "PRTZL2",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "assigned_altitude": 9000,
@@ -5992,22 +5995,22 @@
         }
       ]
     },
-    "CAVLR6": {
+    "CAVLR7": {
       "arrivals": [
         {
           "waypoints": "N037.48.21.104,W077.29.37.835 JROBB/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250",
           "runway_waypoints": {
             "KIAD": {
               "30": "CAVLR/a10000/s250 KASDY/a7000 COINZ/a6000/s210/flyover/h10",
-              "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "19C": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "19R": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
+              "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
+              "19C": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
+              "19R": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
               "1L": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
               "1C": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
               "1R": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026"
             }
           },
-          "star": "CAVLR6",
+          "star": "CAVLR7",
           "initial_controller": "W20",
           "initial_altitude": 17000,
           "initial_speed": 300,
@@ -6049,15 +6052,15 @@
           "runway_waypoints": {
             "KIAD": {
               "30": "CAVLR/a10000/s250 KASDY/a7000 COINZ/a6000/s210/flyover/h10",
-              "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "19C": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "19R": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
+              "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
+              "19C": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
+              "19R": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
               "1L": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
               "1C": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
               "1R": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026"
             }
           },
-          "star": "CAVLR6",
+          "star": "CAVLR7",
           "initial_controller": "W20",
           "initial_altitude": 23000,
           "initial_speed": 300,
@@ -6176,7 +6179,7 @@
               {
                 "icao": "N",
                 "fleet": "fastGA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "ASH",
@@ -6291,7 +6294,7 @@
               },
               {
                 "icao": "LXJ",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "N",
@@ -6303,7 +6306,7 @@
         }
       ]
     },
-    "WAYNZ1.N": {
+    "WAYNZ2.N": {
       "arrivals": [
         {
           "waypoints": "PRIVO/ho DAFIX/a12000 WAYNZ/a10000/s250 MAPEL/a7000",
@@ -6315,7 +6318,7 @@
               "1R": "MAPEL/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191"
             }
           },
-          "star": "WAYNZ1",
+          "star": "WAYNZ2",
           "initial_controller": "N26",
           "initial_altitude": 15000,
           "assigned_altitude": 12000,
@@ -6402,7 +6405,7 @@
         }
       ]
     },
-    "WAYNZ1.S": {
+    "WAYNZ2.S": {
       "arrivals": [
         {
           "waypoints": "PRIVO/ho DAFIX/a12000 WAYNZ/a10000/s250",
@@ -6413,7 +6416,7 @@
               "19R": "WAYNZ/a10000/s250 SULII/a10000/flyover/h180"
             }
           },
-          "star": "WAYNZ1",
+          "star": "WAYNZ2",
           "initial_controller": "N26",
           "initial_altitude": 15000,
           "assigned_altitude": 12000,
@@ -6495,16 +6498,16 @@
         }
       ]
     },
-    "GIBBZ5.MGW": {
+    "GIBBZ6.MGW": {
       "arrivals": [
         {
           "waypoints": "TABBE/a17000-23000 KIKKR/a14000-16000/ho IGGGY/a14000- MOSLE/a11000/s250 MONNK/a10000- BMICH/a9000+ THZMN/a7000 GIBBZ/a6000",
           "runway_waypoints": {
             "KIAD": {
               "30": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192",
-              "19L": "GIBBZ/a6000 SUNYJ UDIYU KUKSE MATTC/flyover/h10",
-              "19C": "GIBBZ/a6000 SUNYJ UDIYU KUKSE MATTC/flyover/h10",
-              "19R": "GIBBZ/a6000 SUNYJ UDIYU KUKSE MATTC/flyover/h10",
+              "19L": "GIBBZ/a6000 SUNYJ TATAA/a6000/s210/flyover/h9",
+              "19C": "GIBBZ/a6000 SUNYJ TATAA/a6000/s210/flyover/h9",
+              "19R": "GIBBZ/a6000 SUNYJ TATAA/a6000/s210/flyover/h9",
               "1L": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192",
               "1C": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192",
               "1R": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192"
@@ -6516,7 +6519,7 @@
               "16R": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192"
             }
           },
-          "star": "GIBBZ5",
+          "star": "GIBBZ6",
           "initial_controller": "W05",
           "initial_altitude": 22000,
           "initial_speed": 280,
@@ -6710,16 +6713,16 @@
         }
       ]
     },
-    "GIBBZ5.BURTT": {
+    "GIBBZ6.BURTT": {
       "arrivals": [
         {
           "waypoints": "BBONE/a15000-19000 N038.41.09.149,W078.34.00.682/ho KILMR/a11000/s250 OTTTO/a9000 MAAAY/a7000 RYPIN/a6000 GIBBZ/a6000",
           "runway_waypoints": {
             "KIAD": {
               "30": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192",
-              "19L": "GIBBZ/a6000 SUNYJ UDIYU KUKSE MATTC/flyover/h10",
-              "19C": "GIBBZ/a6000 SUNYJ UDIYU KUKSE MATTC/flyover/h10",
-              "19R": "GIBBZ/a6000 SUNYJ UDIYU KUKSE MATTC/flyover/h10",
+              "19L": "GIBBZ/a6000 SUNYJ TATAA/a6000/s210/flyover/h9",
+              "19C": "GIBBZ/a6000 SUNYJ TATAA/a6000/s210/flyover/h9",
+              "19R": "GIBBZ/a6000 SUNYJ TATAA/a6000/s210/flyover/h9",
               "1L": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192",
               "1C": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192",
               "1R": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192"
@@ -6731,7 +6734,7 @@
               "16R": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192"
             }
           },
-          "star": "GIBBZ5",
+          "star": "GIBBZ6",
           "initial_controller": "W37",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -7211,28 +7214,28 @@
         "CAPSS4": {
           "KDCA": 15
         },
-        "DEALE3/MIIDY3": {
+        "DEALE3/MIIDY4": {
           "KBWI": 10,
           "KDCA": 10
         },
-        "FRDMM6": {
+        "FRDMM7": {
           "KDCA": 10
         },
-        "TRUPS5": {
+        "TRUPS6": {
           "KDCA": 10
         },
-        "GIBBZ5.MGW": {
+        "GIBBZ6.MGW": {
           "KIAD": 8,
           "KHEF": 2
         },
-        "GIBBZ5.BURTT": {
+        "GIBBZ6.BURTT": {
           "KIAD": 8,
           "KHEF": 1
         },
-        "PRTZL1": {
+        "PRTZL2": {
           "KIAD": 2
         },
-        "CAVLR6": {
+        "CAVLR7": {
           "KIAD": 15
         },
         "TRSTN4": {
@@ -7241,11 +7244,11 @@
         "TIKEE4": {
           "KHEF": 2
         },
-        "HYPER9": {
+        "HYPER1": {
           "KIAD": 15,
           "KHEF": 3
         },
-        "WAYNZ1.N": {
+        "WAYNZ2.N": {
           "KIAD": 8
         },
         "DUCXS5.NEAVL": {
@@ -7269,7 +7272,7 @@
         "ANTHM5": {
           "KBWI": 15
         },
-        "RAVNN8": {
+        "RAVNN9": {
           "KBWI": 15
         },
         "TRISH4.NUGGY": {
@@ -7417,10 +7420,10 @@
         "ANTHM5": {
           "KBWI": 15
         },
-        "RAVNN8": {
+        "RAVNN9": {
           "KBWI": 15
         },
-        "DEALE3/MIIDY3": {
+        "DEALE3/MIIDY4": {
           "KBWI": 10,
           "KDCA": 10
         },
@@ -7439,24 +7442,24 @@
         "ARLFT2": {
           "overflights": 1
         },
-        "FRDMM6": {
+        "FRDMM7": {
           "KDCA": 10
         },
-        "TRUPS5": {
+        "TRUPS6": {
           "KDCA": 10
         },
-        "GIBBZ5.MGW": {
+        "GIBBZ6.MGW": {
           "KIAD": 8,
           "KHEF": 2
         },
-        "GIBBZ5.BURTT": {
+        "GIBBZ6.BURTT": {
           "KIAD": 8,
           "KHEF": 1
         },
-        "PRTZL1": {
+        "PRTZL2": {
           "KIAD": 2
         },
-        "CAVLR6": {
+        "CAVLR7": {
           "KIAD": 15
         },
         "TRSTN4": {
@@ -7465,11 +7468,11 @@
         "TIKEE4": {
           "KHEF": 2
         },
-        "HYPER9": {
+        "HYPER1": {
           "KIAD": 15,
           "KHEF": 3
         },
-        "WAYNZ1.S": {
+        "WAYNZ2.S": {
           "KIAD": 8
         },
         "DUCXS5.NEAVL": {

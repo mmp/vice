@@ -308,9 +308,9 @@
               "icao": "DPJ"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "OOD",
-          "route": "OOD TEBEE HAYDO SBY KEMPR YLEEE ZILLS Y289 DULEE CLMNT2"
+          "route": "OOD TEBEE HAYDO SBY KEMPR YLEEE ZILLS Y289 DULEE CLMNT3"
         },
         {
           "airlines": [
@@ -4606,7 +4606,7 @@
                 "icao": "AAL"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "FFT"
               },
               {
@@ -4626,7 +4626,7 @@
                 "icao": "LXJ"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "AAL"
               },
               {

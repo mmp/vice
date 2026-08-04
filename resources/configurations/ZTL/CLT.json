@@ -65,8 +65,8 @@
     "configurations": {
       "18L": {
         "inbound_assignments": {
-          "CHSLY6_18LFINAL": "1A",
-          "STOCR4_18LFINAL": "1A"
+          "CHSLY8_18LFINAL": "1A",
+          "STOCR6_18LFINAL": "1A"
         },
         "default_consolidation": {
           "1A": []
@@ -74,8 +74,8 @@
       },
       "36R": {
         "inbound_assignments": {
-          "CHSLY6_NORTHEAST_36RFINAL": "1A",
-          "STOCR4_NORTHEAST_36RFINAL": "1A"
+          "CHSLY8_NORTHEAST_36RFINAL": "1A",
+          "STOCR6_NORTHEAST_36RFINAL": "1A"
         },
         "departure_assignments": {
           "KCLT": "1A"
@@ -86,12 +86,12 @@
       },
       "KCL": {
         "inbound_assignments": {
-          "BANKR5": "1D",
-          "CHSLY6": "1H",
-          "FLIPZ4": "1U",
-          "JONZE5": "1D",
-          "PARQR4": "1U",
-          "STOCR4": "1H"
+          "BANKR7": "1D",
+          "CHSLY8": "1H",
+          "FILPZ6": "1U",
+          "JONZE7": "1D",
+          "PARQR6": "1U",
+          "STOCR6": "1H"
         },
         "departure_assignments": {
           "KCLT": "1W"
@@ -109,11 +109,11 @@
       },
       "KC1": {
         "inbound_assignments": {
-          "BANKR5_NORTHWEST_36LFINAL": "1F",
-          "CHSLY6_NORTHEAST_36RFINAL": "1F",
-          "JONZE5_NORTHWEST_36LFINAL": "1F",
-          "NORTHWEST_36LFINAL": "1F",
-          "STOCR4_NORTHEAST_36RFINAL": "1F"
+          "BANKR7_NORTHWEST_1LFINAL": "1F",
+          "CHSLY8_NORTHEAST_36RFINAL": "1F",
+          "JONZE7_NORTHWEST_1LFINAL": "1F",
+          "NORTHWEST_1LFINAL": "1F",
+          "STOCR6_NORTHEAST_36RFINAL": "1F"
         },
         "departure_assignments": {
           "KCLT": "1F"
@@ -124,11 +124,11 @@
       },
       "KC2": {
         "inbound_assignments": {
-          "CHSLY6_18LFINAL": "1F",
-          "FLIPZ4_18RFINAL": "1F",
-          "PARQR4_18RFINAL": "1F",
-          "SOUTHWEST_18RFINAL": "1F",
-          "STOCR4_18LFINAL": "1F"
+          "CHSLY8_18LFINAL": "1F",
+          "FILPZ6_19RFINAL": "1F",
+          "PARQR6_19RFINAL": "1F",
+          "SOUTHWEST_19RFINAL": "1F",
+          "STOCR6_18LFINAL": "1F"
         },
         "default_consolidation": {
           "1F": []

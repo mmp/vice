@@ -500,7 +500,10 @@
           "cifp_id": "R15"
         },
         "RZ9": {
-          "cifp_id": "RZ19"
+          "full_name": "RNAV Z Runway 19",
+          "runway": "19",
+          "type": "RNAV",
+          "waypoints": ["DARIC/a2700+/s180-/if SUNEY/a2000+/faf GREYZ/arc1.4 FONVI/arc0.9 JUBOL WIRSO/arc0.8 FIROP"]
         },
         "RY9": {
           "full_name": "RNAV Y Runway 19",
@@ -1389,7 +1392,7 @@
               {
                 "icao": "AAL",
                 "fleet": "short",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JIA",
@@ -1505,7 +1508,7 @@
               {
                 "icao": "AAL",
                 "fleet": "short",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JIA",
@@ -2138,7 +2141,7 @@
         {
           "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
           "cruise_altitude": 33000,
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 8000,
           "initial_speed": 250,
@@ -2229,7 +2232,7 @@
         {
           "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
           "cruise_altitude": 33000,
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 8000,
           "initial_speed": 250,
@@ -2333,7 +2336,7 @@
               {
                 "icao": "AAL",
                 "fleet": "short",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JIA",
@@ -2576,7 +2579,7 @@
       "arrivals": [
         {
           "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
           "initial_speed": 240,
@@ -2636,7 +2639,7 @@
         },
         {
           "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,
           "initial_speed": 240,
@@ -2739,7 +2742,7 @@
               {
                 "icao": "AAL",
                 "fleet": "short",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JIA",
@@ -2998,7 +3001,7 @@
         {
           "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
           "cruise_altitude": 33000,
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 8000,
           "initial_speed": 250,
@@ -3089,7 +3092,7 @@
         {
           "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
           "cruise_altitude": 33000,
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 8000,
           "initial_speed": 250,
@@ -3193,7 +3196,7 @@
               {
                 "icao": "AAL",
                 "fleet": "short",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JIA",
@@ -3461,7 +3464,7 @@
       "arrivals": [
         {
           "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
           "initial_speed": 240,
@@ -3479,7 +3482,7 @@
         },
         {
           "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
           "initial_speed": 240,
@@ -3535,7 +3538,7 @@
         },
         {
           "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,
           "initial_speed": 240,
@@ -3569,7 +3572,7 @@
         },
         {
           "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,
           "initial_speed": 240,
@@ -3699,7 +3702,7 @@
               {
                 "icao": "AAL",
                 "fleet": "short",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "DAL",
@@ -3725,7 +3728,7 @@
         }
       ]
     },
-    "FRDMM6": {
+    "FRDMM7": {
       "arrivals": [
         {
           "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250",
@@ -3739,7 +3742,7 @@
               "33": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
             }
           },
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -3803,7 +3806,7 @@
               "1L": "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/t189"
             }
           },
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 20000,
           "initial_speed": 280,
@@ -3832,11 +3835,11 @@
         }
       ]
     },
-    "FRDMM6.LN": {
+    "FRDMM7.LN": {
       "arrivals": [
         {
           "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY/a4000/s210 N038.39.18.709,W077.06.28.339 N038.39.33.719,W077.02.15.021/a3000 KATRN/a2500 BADDN/a1600 KDCA-1/a200/delete",
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -3895,11 +3898,11 @@
         }
       ]
     },
-    "FRDMM6.LS": {
+    "FRDMM7.LS": {
       "arrivals": [
         {
           "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/a3000/clearapp",
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -3958,11 +3961,11 @@
         }
       ]
     },
-    "FRDMM6.LN.F": {
+    "FRDMM7.LN.F": {
       "arrivals": [
         {
           "waypoints": "PLDGE/a15000-17000/s280/ho1L WEWIL/a14000+/spspMTV NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250/ho1J LETZZ/a8000 RLLLL/a6000/s250/ho1V VCTRY/a4000/s210 N038.39.18.709,W077.06.28.339 N038.39.33.719,W077.02.15.021/a3000 KATRN/a2500 BADDN/a1600 KDCA-1/a200/delete",
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -4021,11 +4024,11 @@
         }
       ]
     },
-    "FRDMM6.LS.F": {
+    "FRDMM7.LS.F": {
       "arrivals": [
         {
           "waypoints": "PLDGE/a15000-17000/s280/ho1L WEWIL/a14000+/spspRIV NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250/ho1J FRDMM/a8000/s240/ho1J N038.57.57.104,W077.26.55.429/ho1V STAND TGTHR FERGI/a3000/clearapp",
-          "star": "FRDMM6",
+          "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -4084,11 +4087,11 @@
         }
       ]
     },
-    "TRUPS5.LN": {
+    "TRUPS6.LN": {
       "arrivals": [
         {
           "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000 SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY/a4000/s210 N038.39.18.709,W077.06.28.339 N038.39.33.719,W077.02.15.021/a3000 KATRN/a2500 BADDN/a1600 KDCA-1/a200/delete",
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -4154,11 +4157,11 @@
         }
       ]
     },
-    "TRUPS5.LS": {
+    "TRUPS6.LS": {
       "arrivals": [
         {
           "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000 SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/a3000/clearapp",
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -4224,11 +4227,11 @@
         }
       ]
     },
-    "TRUPS5.LN.F": {
+    "TRUPS6.LN.F": {
       "arrivals": [
         {
           "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho1L SUPRT/a14000-17000/s280/spspMTV OOURR/a13000-/s250 TRUPS/a11000/s250 LETZZ/a8000/ho1J RLLLL/a6000/s250/ho1V VCTRY/a4000/s210 N038.39.18.709,W077.06.28.339 N038.39.33.719,W077.02.15.021/a3000 KATRN/a2500 BADDN/a1600 KDCA-1/a200/delete",
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -4294,11 +4297,11 @@
         }
       ]
     },
-    "TRUPS5.LS.F": {
+    "TRUPS6.LS.F": {
       "arrivals": [
         {
           "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho1L SUPRT/a14000-17000/s280/spspRIV OOURR/a13000-/s250 TRUPS/a11000/s250 FRDMM/a8000/s240/ho1J N038.57.57.104,W077.26.55.429/ho1V STAND TGTHR FERGI/a3000/clearapp",
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -4582,7 +4585,7 @@
             },
             {
               "departure_airport": "KBWI",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "SWA"
             },
             {
@@ -4652,7 +4655,7 @@
             },
             {
               "departure_airport": "KBWI",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "SWA"
             },
             {
@@ -4934,7 +4937,7 @@
             },
             {
               "departure_airport": "KBWI",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "SWA"
             },
             {
@@ -5054,7 +5057,7 @@
             },
             {
               "departure_airport": "KIAD",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "UAL",
               "fleet": "b772"
             },
@@ -6511,19 +6514,19 @@
         }
       ]
     },
-    "RAVNN8.N": {
+    "RAVNN9.N": {
       "arrivals": [
         {
           "waypoints": "WHHTE/a23000 ACROW/a21000+/ho DFORT/a18000+ WALKN/a15000-17000/s280 JAYOH/a11000-12000 CAPKO/a9000/s250",
           "runway_waypoints": {
             "KBWI": {
-              "15R": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN ZARTZ/a4000/s210 ZOEYY/a4000/clearapp",
+              "15R": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN ZARTZ/a4000/s210 WEXUM/a4000/clearapp",
               "33L": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
               "10": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN HUTOO/a4000/delete",
-              "28": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 TOGAH/a5000/s210 BMTTR/a4000 FHRST/a4000/delete"
+              "28": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 TOGAH/a5000/s210 BMTTR/a4000 GINZU/a4000/delete"
             }
           },
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "W14",
           "initial_altitude": 23000,
           "initial_speed": 300,
@@ -6562,7 +6565,7 @@
               },
               {
                 "icao": "SWA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "SWA",
@@ -6622,13 +6625,13 @@
           "waypoints": "YAEGR/a27000 AKELL/a24000+/s290 CAASH/a22000+/s280/ho ECHOZ/a20000+ DNKEY/a19000 FIMBO/a16000 UDUDE/a13000+ REXEE/a12000+ ELDEE/a11000- CAPKO/a9000/s250",
           "runway_waypoints": {
             "KBWI": {
-              "15R": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN ZARTZ/a4000/s210 ZOEYY/a4000/clearapp",
+              "15R": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN ZARTZ/a4000/s210 WEXUM/a4000/clearapp",
               "33L": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
               "10": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN HUTOO/a4000/delete",
-              "28": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 TOGAH/a5000/s210 BMTTR/a4000 FHRST/a4000/delete"
+              "28": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 TOGAH/a5000/s210 BMTTR/a4000 GINZU/a4000/delete"
             }
           },
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "W02",
           "initial_altitude": 27000,
           "initial_speed": 300,
@@ -6719,19 +6722,19 @@
         }
       ]
     },
-    "RAVNN8.S": {
+    "RAVNN9.S": {
       "arrivals": [
         {
           "waypoints": "WHHTE/a23000 ACROW/a21000+/ho DFORT/a18000+ WALKN/a15000-17000/s280 JAYOH/a11000-12000 CAPKO/a9000/s250",
           "runway_waypoints": {
             "KBWI": {
-              "15R": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN ZARTZ/a4000/s210 ZOEYY/a4000/clearapp",
+              "15R": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN ZARTZ/a4000/s210 WEXUM/a4000/clearapp",
               "33L": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
               "10": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN HUTOO/a4000/delete",
-              "28": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 TOGAH/a5000/s210 BMTTR/a4000 FHRST/a4000/delete"
+              "28": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 TOGAH/a5000/s210 BMTTR/a4000 GINZU/a4000/delete"
             }
           },
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "W14",
           "initial_altitude": 23000,
           "initial_speed": 300,
@@ -6770,7 +6773,7 @@
               },
               {
                 "icao": "SWA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "SWA",
@@ -6830,13 +6833,13 @@
           "waypoints": "YAEGR/a27000 AKELL/a24000+/s290 CAASH/a22000+/s280/ho ECHOZ/a20000+ DNKEY/a19000 FIMBO/a16000 UDUDE/a13000+ REXEE/a12000+ ELDEE/a11000- CAPKO/a9000/s250",
           "runway_waypoints": {
             "KBWI": {
-              "15R": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN ZARTZ/a4000/s210 ZOEYY/a4000/clearapp",
+              "15R": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN ZARTZ/a4000/s210 WEXUM/a4000/clearapp",
               "33L": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
               "10": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 NAVEY/a5000/s230 ANCRR/a4000/s210 LURRL HUNNN HUTOO/a4000/delete",
-              "28": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 TOGAH/a5000/s210 BMTTR/a4000 FHRST/a4000/delete"
+              "28": "CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 TOGAH/a5000/s210 BMTTR/a4000 GINZU/a4000/delete"
             }
           },
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "W02",
           "initial_altitude": 27000,
           "initial_speed": 300,
@@ -6927,7 +6930,7 @@
         }
       ]
     },
-    "TRUPS5": {
+    "TRUPS6": {
       "arrivals": [
         {
           "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250",
@@ -6941,7 +6944,7 @@
               "33": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
             }
           },
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -7007,7 +7010,7 @@
         },
         {
           "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/t189",
-          "star": "TRUPS5",
+          "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -7184,15 +7187,15 @@
         "DEALE3.N": {
           "KDCA": 10
         },
-        "FRDMM6": {
+        "FRDMM7": {
           "KDCA": 10,
           "KADW": 2
         },
-        "TRUPS5": {
+        "TRUPS6": {
           "KDCA": 10,
           "KADW": 2
         },
-        "RAVNN8.N": {
+        "RAVNN9.N": {
           "KBWI": 10
         },
         "JRV.TAPPA.6": {
@@ -7277,13 +7280,13 @@
         "DEALE3.S": {
           "KDCA": 10
         },
-        "FRDMM6": {
+        "FRDMM7": {
           "KDCA": 10
         },
-        "TRUPS5": {
+        "TRUPS6": {
           "KDCA": 10
         },
-        "RAVNN8.S": {
+        "RAVNN9.S": {
           "KBWI": 10
         },
         "CONLE5.S": {
@@ -7338,10 +7341,10 @@
         "BUNZZ3/RNLDI4": {
           "overflights": 10
         },
-        "FRDMM6.LS": {
+        "FRDMM7.LS": {
           "KDCA": 15
         },
-        "TRUPS5.LS": {
+        "TRUPS6.LS": {
           "KDCA": 15
         }
       },
@@ -7369,10 +7372,10 @@
         "BUNZZ3/RNLDI4": {
           "overflights": 10
         },
-        "FRDMM6.LN": {
+        "FRDMM7.LN": {
           "KDCA": 6
         },
-        "TRUPS5.LN": {
+        "TRUPS6.LN": {
           "KDCA": 6
         }
       },
@@ -7403,10 +7406,10 @@
         "CLTCH3/JDUBB4/SCRAM6.IAD": {
           "overflights": 10
         },
-        "FRDMM6.LS.F": {
+        "FRDMM7.LS.F": {
           "KDCA": 6
         },
-        "TRUPS5.LS.F": {
+        "TRUPS6.LS.F": {
           "KDCA": 6
         }
       },
@@ -7434,10 +7437,10 @@
         "CLTCH3/JDUBB4/SCRAM6.IAD": {
           "overflights": 10
         },
-        "FRDMM6.LN.F": {
+        "FRDMM7.LN.F": {
           "KDCA": 6
         },
-        "TRUPS5.LN.F": {
+        "TRUPS6.LN.F": {
           "KDCA": 6
         }
       },
@@ -7462,10 +7465,10 @@
         "CONLE5.S": {
           "overflights": 5
         },
-        "FRDMM6.LS.F": {
+        "FRDMM7.LS.F": {
           "KDCA": 6
         },
-        "TRUPS5.LS.F": {
+        "TRUPS6.LS.F": {
           "KDCA": 6
         }
       },
@@ -7515,10 +7518,10 @@
         "CONLE5.N": {
           "overflights": 5
         },
-        "FRDMM6.LN.F": {
+        "FRDMM7.LN.F": {
           "KDCA": 6
         },
-        "TRUPS5.LN.F": {
+        "TRUPS6.LN.F": {
           "KDCA": 6
         }
       },

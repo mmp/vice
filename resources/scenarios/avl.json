@@ -145,7 +145,7 @@
           "exit": "JJENY",
           "destination": "KCLT",
           "altitude": 11000,
-          "route": "JJENY FILPZ4",
+          "route": "JJENY FILPZ6",
           "airlines": [
             {
               "icao": "JIA",
@@ -229,7 +229,7 @@
           "exit": "JJENY",
           "destination": "KCLT",
           "altitude": 11000,
-          "route": "JJENY FILPZ4",
+          "route": "JJENY FILPZ6",
           "airlines": [
             {
               "icao": "PDT",

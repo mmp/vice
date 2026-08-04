@@ -110,7 +110,7 @@
           ],
           "destination": "KCLT",
           "exit": "NELIE",
-          "route": "NELIE Q75 GVE AIROW CHSLY6"
+          "route": "NELIE Q75 GVE AIROW CHSLY8"
         },
         {
           "airlines": [
@@ -294,7 +294,7 @@
           ],
           "destination": "KIAD",
           "exit": "BAF",
-          "route": "BAF HYPER9"
+          "route": "BAF HYPER1"
         },
         {
           "airlines": [

@@ -258,7 +258,7 @@
           "DEFUN": "11",
           "J2": "11",
           "BULZI CEW IRUBE": "11",
-          "DEFUN.MAATY5": "11",
+          "DEFUN.MAATY6": "11",
           "DEFUN.BANGZ2": "11",
           "DEFUN.FROGZ5": "11",
           "DEFUN.GRNCH5": "11",
@@ -285,7 +285,7 @@
           "DEFUN": "11",
           "J2": "11",
           "BULZI CEW IRUBE": "11",
-          "DEFUN.MAATY5": "11",
+          "DEFUN.MAATY6": "11",
           "DEFUN.BANGZ2": "11",
           "DEFUN.FROGZ5": "11",
           "DEFUN.GRNCH5": "11",
@@ -326,7 +326,7 @@
           "KRVUR.DADES2": "33",
           "ZOOSS.MARQO3": "33",
           "ZPLEN.TEEKY4": "33",
-          "ZPLEN.VUUDU1": "33",
+          "ZPLEN.VUUDU2": "33",
           "OTK KGNV": "33",
           "Q118": "33"
         },
@@ -391,7 +391,7 @@
       },
       "J88": {
         "inbound_assignments": {
-          "MAATY5": "88",
+          "MAATY6": "88",
           "BANGZ2": "88",
           "PLYER.PIKKR7": "88"
         },

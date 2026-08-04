@@ -385,7 +385,7 @@
         }
       ]
     },
-    "ZPLEN.VUUDU1": {
+    "ZPLEN.VUUDU2": {
       "overflights": [
         {
           "airlines": [
@@ -399,13 +399,13 @@
             { "departure_airport": "KPTK", "arrival_airport": "KBCT", "icao": "N", "fleet": "GAjet" },
             {
               "departure_airport": "KORD",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "AAL",
               "types": ["A319", "B738", "B38M"]
             },
-            { "departure_airport": "KORD", "arrival_airport": "KPBI", "icao": "UAL", "types": ["B738", "B739"] },
-            { "departure_airport": "KATL", "arrival_airport": "KPBI", "icao": "DAL", "types": ["A321"] },
-            { "departure_airport": "KDTW", "arrival_airport": "KPBI", "icao": "DAL", "types": ["A320"] }
+            { "departure_airport": "KORD", "arrival_airport": "KDJT", "icao": "UAL", "types": ["B738", "B739"] },
+            { "departure_airport": "KATL", "arrival_airport": "KDJT", "icao": "DAL", "types": ["A321"] },
+            { "departure_airport": "KDTW", "arrival_airport": "KDJT", "icao": "DAL", "types": ["A320"] }
           ],
           "initial_altitude": 35000,
           "assigned_altitude": 33000,
@@ -514,7 +514,7 @@
         "KRVUR.DADES2": { "overflights": 2 },
         "ZOOSS.MARQO3": { "overflights": 5 },
         "ZPLEN.TEEKY4": { "overflights": 10 },
-        "ZPLEN.VUUDU1": { "overflights": 4 },
+        "ZPLEN.VUUDU2": { "overflights": 4 },
         "OTK KGNV": { "overflights": 2 },
         "Q118": { "overflights": 10 }
       },

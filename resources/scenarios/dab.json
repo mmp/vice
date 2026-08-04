@@ -517,7 +517,7 @@
           ],
           "destination": "KCLT",
           "exit": "CRG",
-          "route": "CRG VIYAP CHECR STOCR4"
+          "route": "CRG VIYAP CHECR STOCR6"
         },
         {
           "airlines": [
@@ -1202,9 +1202,9 @@
               "icao": "LXJ"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "SMYRA.J",
-          "route": "SMYRA MLB CPTAN CPTAN3"
+          "route": "SMYRA MLB CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -1465,9 +1465,9 @@
               "icao": "LXJ"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "SMYRA.J",
-          "route": "SMYRA MLB CPTAN CPTAN3"
+          "route": "SMYRA MLB CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -1732,9 +1732,9 @@
               "icao": "LXJ"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "SMYRA.J",
-          "route": "SMYRA MLB CPTAN CPTAN3"
+          "route": "SMYRA MLB CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -1999,9 +1999,9 @@
               "icao": "LXJ"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "SMYRA.J",
-          "route": "SMYRA MLB CPTAN CPTAN3"
+          "route": "SMYRA MLB CPTAN CPTAN4"
         },
         {
           "airlines": [

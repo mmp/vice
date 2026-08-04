@@ -2084,7 +2084,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KCLT",
           "exit": "VIYAP",
-          "route": "VIYAP CHECR STOCR4"
+          "route": "VIYAP CHECR STOCR6"
         },
         {
           "airlines": [
@@ -2428,7 +2428,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KBWI",
           "exit": "VIYAP",
-          "route": "VIYAP Q87 RAYVO Q113 AARNN THHMP RAVNN8"
+          "route": "VIYAP Q87 RAYVO Q113 AARNN THHMP RAVNN9"
         },
         {
           "airlines": [
@@ -3581,7 +3581,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KSWF",
           "exit": "VIYAP",
-          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC JAMIE CONFR Q481 DPK TRESA1"
+          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC JAMIE CONFR Q481 DPK TRESA2"
         },
         {
           "airlines": [
@@ -3863,7 +3863,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KPWM",
           "exit": "VIYAP",
-          "route": "VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q133 zJFK BDR SCOGS3"
+          "route": "VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q133 zJFK BDR SCOGS4"
         },
         {
           "airlines": [
@@ -3939,7 +3939,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KPVU",
           "exit": "OSPRY",
-          "route": "OSPRY GDUNN CHIVE CODGR CIGAR Y290 BLVNS REDFN Q105 HRV J58 AEX GGGSPS KENTO JNC YMONT TAYTR3"
+          "route": "OSPRY GDUNN CHIVE CODGR CIGAR Y290 BLVNS REDFN Q105 HRV J58 AEX GGGSPS KENTO JNC YMONT TAYTR4"
         },
         {
           "airlines": [
@@ -4459,7 +4459,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KIAD",
           "exit": "VIYAP",
-          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR6"
+          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR7"
         },
         {
           "airlines": [
@@ -4533,9 +4533,9 @@
             }
           ],
           "altitude": [19000, 21000, 23000],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "BORRD",
-          "route": "BORRD CPTAN3"
+          "route": "BORRD CPTAN4"
         },
         {
           "airlines": [
@@ -4682,9 +4682,9 @@
             }
           ],
           "altitude": [13000, 15000, 17000, 19000, 21000],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "BORRD",
-          "route": "BORRD CPTAN3"
+          "route": "BORRD CPTAN4"
         },
         {
           "airlines": [
@@ -4724,7 +4724,7 @@
           "altitude": [21000, 23000, 25000, 27000, 29000],
           "destination": "KFXE",
           "exit": "BORRD",
-          "route": "BORRD CPTAN3"
+          "route": "BORRD CPTAN4"
         },
         {
           "airlines": [
@@ -4997,7 +4997,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KCLT",
           "exit": "VIYAP",
-          "route": "VIYAP CHECR STOCR4"
+          "route": "VIYAP CHECR STOCR6"
         },
         {
           "airlines": [
@@ -6963,7 +6963,7 @@
           "altitude": [21000, 23000, 25000],
           "destination": "KFXE",
           "exit": "DDANY",
-          "route": "DDANY BORRD CPTAN3"
+          "route": "DDANY BORRD CPTAN4"
         },
         {
           "airlines": [
@@ -7014,9 +7014,9 @@
             }
           ],
           "altitude": [9000, 11000, 13000, 15000],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "DDANY",
-          "route": "DDANY BORRD CPTAN3"
+          "route": "DDANY BORRD CPTAN4"
         },
         {
           "airlines": [
@@ -7121,7 +7121,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KCLT",
           "exit": "WORMS",
-          "route": "WORMS GUANO BKENI VIYAP CHECR STOCR4"
+          "route": "WORMS GUANO BKENI VIYAP CHECR STOCR6"
         },
         {
           "airlines": [
@@ -8140,7 +8140,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KJQF",
           "exit": "WORMS",
-          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO WANSA JOOLS1"
+          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO WANSA JOOLS3"
         },
         {
           "airlines": [
@@ -8440,7 +8440,7 @@
           "destination": "KSWF",
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "exit": "WORMS",
-          "route": "WORMS GUANO BKENI VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q481 DPK TRESA1"
+          "route": "WORMS GUANO BKENI VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q481 DPK TRESA2"
         },
         {
           "airlines": [
@@ -8958,9 +8958,9 @@
             }
           ],
           "altitude": [12000, 14000, 16000, 18000],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "DDANY",
-          "route": "DDANY BORRD CPTAN3"
+          "route": "DDANY BORRD CPTAN4"
         },
         {
           "airlines": [
@@ -9124,7 +9124,7 @@
           "altitude": [17000, 19000, 21000],
           "destination": "KFXE",
           "exit": "DDANY",
-          "route": "DDANY BORRD CPTAN3"
+          "route": "DDANY BORRD CPTAN4"
         },
         {
           "airlines": [
@@ -10021,10 +10021,10 @@
               "types": ["CRJ2"]
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "DDANY",
           "altitude": [14000, 16000, 18000],
-          "route": "DDANY BORRD CPTAN3"
+          "route": "DDANY BORRD CPTAN4"
         },
         {
           "airlines": [
@@ -11134,10 +11134,10 @@
               "fleet": "fastGA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "VALKA",
           "altitude": [15000, 17000, 19000],
-          "route": "VALKA CPTAN CPTAN3"
+          "route": "VALKA CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -11185,7 +11185,7 @@
           "destination": "KIAD",
           "exit": "WORMS",
           "altitude": [31000, 33000, 35000, 37000, 39000],
-          "route": "WORMS GUANO BKENI VIYAP Q87 ALWZZ BZNGA DORRN CAVLR6"
+          "route": "WORMS GUANO BKENI VIYAP Q87 ALWZZ BZNGA DORRN CAVLR7"
         },
         {
           "airlines": [
@@ -11722,7 +11722,7 @@
           "destination": "KFXE",
           "exit": "VALKA",
           "altitude": [11000, 13000, 15000],
-          "route": "VALKA CPTAN CPTAN3"
+          "route": "VALKA CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -27399,24 +27399,24 @@
           "airlines": {
             "KORL": [
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "N",
                 "fleet": "fastGA"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "NJM"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "EJA"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "LXJ"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "SJJ"
               }
             ]

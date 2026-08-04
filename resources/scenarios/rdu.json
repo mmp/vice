@@ -996,7 +996,7 @@
           "exit": "SHPRD",
           "destination": "KMSY",
           "altitude": 36000,
-          "route": "SHPRD4 SHPRD BURGG Q22 CATLN SJI MNSTR1",
+          "route": "SHPRD4 SHPRD BURGG Q22 CATLN SJI MNSTR2",
           "airlines": [
             {
               "icao": "MXY",

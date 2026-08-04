@@ -70,7 +70,7 @@
           "altitude": 39000,
           "destination": "KJQF",
           "exit": "CAMJO",
-          "route": "LLRGO1 CAMJO HEPAR WANSA JOOLS1"
+          "route": "LLRGO1 CAMJO HEPAR WANSA JOOLS3"
         },
         {
           "airlines": [{ "icao": "AAY" }],
@@ -398,7 +398,7 @@
           "altitude": [32000, 34000, 36000],
           "destination": "KMSY",
           "exit": "ENDED",
-          "route": "ENDED2 ENDED LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI MNSTR1"
+          "route": "ENDED2 ENDED LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI MNSTR2"
         },
         {
           "airlines": [{ "icao": "MXY" }, { "icao": "N", "fleet": "fastGA" }],
@@ -709,7 +709,7 @@
           "altitude": [35000, 41000, 45000],
           "destination": "KIAD",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO HEPAR Q99 OGRAE BZNGA DORRN CAVLR6"
+          "route": "TIDES1 CAMJO HEPAR Q99 OGRAE BZNGA DORRN CAVLR7"
         },
         {
           "airlines": [{ "icao": "AAY" }],
@@ -793,7 +793,7 @@
           "altitude": [27000, 29000, 31000, 33000, 35000, 37000, 41000],
           "destination": "KCLT",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO TWINS PONZE BANKR5"
+          "route": "TIDES1 CAMJO TWINS PONZE BANKR7"
         },
         {
           "airlines": [{ "icao": "AAL" }],
@@ -863,7 +863,7 @@
           "altitude": [35000, 39000],
           "destination": "KPWM",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 LLUND BDR SCOGS3"
+          "route": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 LLUND BDR SCOGS4"
         },
         {
           "airlines": [{ "icao": "MXY" }, { "icao": "N", "fleet": "fastGA" }],
@@ -926,7 +926,7 @@
           "altitude": [35000, 37000, 39000, 41000],
           "destination": "KBWI",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 OGRAE GOOOB THHMP RAVNN8"
+          "route": "TIDES1 CAMJO Q99 OGRAE GOOOB THHMP RAVNN9"
         },
         {
           "airlines": [{ "icao": "SWA" }],
@@ -1040,7 +1040,7 @@
     }
   },
   "inbound_flows": {
-    "MAATY5": {
+    "MAATY6": {
       "arrivals": [
         {
           "airlines": {
@@ -1101,7 +1101,7 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "HEVVN/ho LEGGT GOJOE AAHOY MAATY ROOKR SCLOP/delete",
-          "route": "MAATY5"
+          "route": "MAATY6"
         },
         {
           "airlines": {
@@ -1118,7 +1118,7 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "HEVVN/ho LEGGT GOJOE AAHOY MAATY GOOFS/delete",
-          "route": "MAATY5"
+          "route": "MAATY6"
         }
       ]
     },
@@ -1354,7 +1354,7 @@
         }
       ],
       "inbound_rates": {
-        "MAATY5": { "KTPA": 15, "KLAL": 5 },
+        "MAATY6": { "KTPA": 15, "KLAL": 5 },
         "BANGZ2": { "KPIE": 5, "KSRQ": 10 },
         "PLYER.PIKKR7": { "KPGD": 10 }
       },

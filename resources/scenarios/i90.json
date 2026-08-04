@@ -447,9 +447,6 @@
         "B17": {
           "cifp_id": "B17"
         },
-        "I35": {
-          "cifp_id": "I35"
-        },
         "R11": {
           "cifp_id": "R11"
         },
@@ -3328,7 +3325,7 @@
         {
           "exit": "DPATY",
           "destination": "KBWI",
-          "route": "STRYA8 DPATY KM21M DAREE LUMAY Q58 PEETT THHMP RAVNN8",
+          "route": "STRYA8 DPATY KM21M DAREE LUMAY Q58 PEETT THHMP RAVNN9",
           "airlines": [
             {
               "icao": "SWA"

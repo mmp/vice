@@ -639,7 +639,7 @@
           ],
           "destination": "KMSY",
           "exit": "RAMRD",
-          "route": "CHCLL6 RAMRD BNA IGB MCB TRSSH1",
+          "route": "CHCLL6 RAMRD BNA IGB MCB TRSSH2",
           "scratchpad": "CHC"
         },
         {
@@ -798,7 +798,7 @@
           ],
           "destination": "KCLT",
           "exit": "SHIPR",
-          "route": "KENLN6 SHIPR TAFTT PARQR4",
+          "route": "KENLN6 SHIPR TAFTT PARQR6",
           "scratchpad": "KEN"
         },
         {
@@ -1147,7 +1147,7 @@
           ],
           "destination": "KTPA",
           "exit": "SHIPR",
-          "route": "KENLN6 SHIPR JEDER Q118 THRSR HONID MAATY5",
+          "route": "KENLN6 SHIPR JEDER Q118 THRSR HONID MAATY6",
           "scratchpad": "KEN"
         },
         {
@@ -1234,9 +1234,9 @@
               "icao": "AAY"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "SHIPR",
-          "route": "KENLN6 SHIPR VXV FISHO Q93 KENLL CPTAN3",
+          "route": "KENLN6 SHIPR VXV FISHO Q93 KENLL CPTAN4",
           "scratchpad": "KEN"
         },
         {
@@ -5002,7 +5002,7 @@
               },
               {
                 "icao": "AAY",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "AAY",
@@ -5198,7 +5198,7 @@
               },
               {
                 "icao": "AAY",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "AAY",
@@ -5394,7 +5394,7 @@
               },
               {
                 "icao": "AAY",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "AAY",

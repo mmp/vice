@@ -1263,7 +1263,7 @@
           ],
           "destination": "KCLT",
           "exit": "CTW",
-          "route": "CTW JPU HVQ LNDIZ PARQR4"
+          "route": "CTW JPU HVQ LNDIZ PARQR6"
         },
         {
           "airlines": [
@@ -1293,7 +1293,7 @@
           ],
           "destination": "KIAD",
           "exit": "DILNE",
-          "route": "DILNE GIBBZ GIBBZ5"
+          "route": "DILNE GIBBZ GIBBZ6"
         }
       ],
       "exit_categories": {

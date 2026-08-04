@@ -437,7 +437,7 @@
           "MIP4": "1D",
           "VALRE1": "1V",
           "BOUNO5": "1X",
-          "RICED4": "1X",
+          "EEGOR1": "1X",
           "NOBBI1": "1V"
         },
         "departure_assignments": {
@@ -602,7 +602,7 @@
         "inbound_assignments": {
           "BOUNO5": "1X",
           "HAARP4": "1V",
-          "RICED4": "1X",
+          "EEGOR1": "1X",
           "VALRE1": "1X"
         },
         "departure_assignments": {

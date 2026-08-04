@@ -152,7 +152,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KIAD",
           "exit": "GZG",
-          "route": "GZG SITTR GIBBZ5"
+          "route": "GZG SITTR GIBBZ6"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "LXJ" }],
@@ -180,7 +180,7 @@
           "altitude": [21000, 23000, 25000, 27000],
           "destination": "KCLT",
           "exit": "COMDY",
-          "route": "COMDY FILPZ4"
+          "route": "COMDY FILPZ6"
         },
         {
           "airlines": [{ "icao": "ENY" }, { "icao": "N", "fleet": "fastGA" }],
@@ -201,7 +201,7 @@
           "altitude": [25000, 27000, 29000, 31000],
           "destination": "KDCA",
           "exit": "VXV",
-          "route": "VXV SITTR TRUPS5"
+          "route": "VXV SITTR TRUPS6"
         },
         {
           "airlines": [{ "icao": "EDV" }, { "icao": "DAL" }, { "icao": "N", "fleet": "fastGA" }],

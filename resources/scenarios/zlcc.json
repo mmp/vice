@@ -18,13 +18,13 @@
     }
   },
   "inbound_flows": {
-    "QWENN6.MLF": {
+    "QWENN7.MLF": {
       "arrivals": [
         {
-          "waypoints": "BLIPP/ho Q842 WINEN MLF BEVRR DTA UINTA FRNZY/a14000/s250 QWENN/a11000/s230",
+          "waypoints": "BLIPP/ho Q842 WINEN MLF BEVRR/a31000- DTA LAZLO JAMMN/a15000/s250 SCHAW/a12000 QWENN/a11000/s230",
           "cruise_altitude": 35000,
-          "star": "QWENN6",
-          "route": "QWENN6",
+          "star": "QWENN7",
+          "route": "QWENN7",
           "initial_controller": "L16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -45,13 +45,13 @@
         }
       ]
     },
-    "QWENN6.BCE": {
+    "QWENN7.BCE": {
       "arrivals": [
         {
-          "waypoints": "N037.15.00.851,W111.57.07.542/ho BCE RRICH MARNN NEEBO/a14000/s250 QWENN/a11000/s230",
+          "waypoints": "N037.15.00.851,W111.57.07.542/ho BCE HOPIN/a30000- LEEVT JAMMN/a15000/s250 SCHAW/a12000 QWENN/a11000/s230",
           "cruise_altitude": 35000,
-          "star": "QWENN6",
-          "route": "QWENN6",
+          "star": "QWENN7",
+          "route": "QWENN7",
           "initial_controller": "L16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -90,10 +90,10 @@
         }
       ],
       "inbound_rates": {
-        "QWENN6.MLF": {
+        "QWENN7.MLF": {
           "KSLC": 20
         },
-        "QWENN6.BCE": {
+        "QWENN7.BCE": {
           "KSLC": 20
         }
       },

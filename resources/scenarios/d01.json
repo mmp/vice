@@ -1531,7 +1531,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KDCA",
           "exit": "ZIRKL",
-          "route": "ZIRKL LEFAM Q90 WELKY JAVAS J64 WHETT J30 BUCKO FRDMM6"
+          "route": "ZIRKL LEFAM Q90 WELKY JAVAS J64 WHETT J30 BUCKO FRDMM7"
         },
         {
           "airlines": [
@@ -1564,7 +1564,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KIAD",
           "exit": "ZIRKL",
-          "route": "ZIRKL LMN BDF ROD APE MGW GIBBZ5"
+          "route": "ZIRKL LMN BDF ROD APE MGW GIBBZ6"
         },
         {
           "airlines": [
@@ -1953,7 +1953,7 @@
           "altitude": [33000, 35000, 37000, 39000],
           "destination": "KBWI",
           "exit": "SHAYK",
-          "route": "SHAYK MCI STL J134 FLM HVQ CACYE RAVNN8"
+          "route": "SHAYK MCI STL J134 FLM HVQ CACYE RAVNN9"
         },
         {
           "airlines": [
@@ -1972,7 +1972,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KCLT",
           "exit": "SHAYK",
-          "route": "SHAYK ANX KOOOP JHAUN  ESTEE GUMMA SKYWA FILPZ4"
+          "route": "SHAYK ANX KOOOP JHAUN  ESTEE GUMMA SKYWA FILPZ6"
         },
         {
           "airlines": [

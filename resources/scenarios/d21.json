@@ -928,7 +928,7 @@
           ],
           "destination": "KCLT",
           "exit": "STAZE",
-          "route": "STAZE TAFTT PARQR4"
+          "route": "STAZE TAFTT PARQR6"
         }
       ],
       "exit_categories": {
@@ -1774,7 +1774,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               }
             ],
             "KPTK": [

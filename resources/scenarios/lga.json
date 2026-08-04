@@ -1583,19 +1583,19 @@
               },
               {
                 "icao": "DAL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "AAL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "LXJ",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "RPA",
@@ -2330,24 +2330,24 @@
               },
               {
                 "icao": "VJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JSX",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "N",
                 "fleet": "fastGA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JSX",
@@ -2394,11 +2394,11 @@
         }
       ]
     },
-    "RICED4": {
+    "EEGOR1": {
       "arrivals": [
         {
-          "waypoints": "SARDI/ho RICED/a9000 KEYED BDR ALIXX RYMES/h288",
-          "route": "/. RICED4",
+          "waypoints": "SARDI/ho RICED/a9000 KEYED EEGOR ALIXX RYMES/h288",
+          "route": "/. EEGOR1",
           "initial_controller": "W32",
           "initial_altitude": 10000,
           "assigned_altitude": 9000,

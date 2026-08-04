@@ -62,7 +62,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CEW OTK SAV JROSS FLLGG STOCR4",
+          "route": "CEW OTK SAV JROSS FLLGG STOCR6",
           "airlines": [
             {
               "icao": "JIA",
@@ -206,7 +206,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CEW OTK SAV JROSS FLLGG STOCR4",
+          "route": "CEW OTK SAV JROSS FLLGG STOCR6",
           "airlines": [
             {
               "icao": "JIA",
@@ -290,7 +290,7 @@
           "exit": "BDOCK",
           "destination": "KBWI",
           "altitude": 35000,
-          "route": "MAREO5 BDOCK APE NUSMM ANTHM3",
+          "route": "MAREO1 BDOCK APE NUSMM ANTHM3",
           "airlines": [
             {
               "icao": "SWA",
@@ -386,7 +386,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "CEW MCN PONZE BANKR5",
+          "route": "CEW MCN PONZE BANKR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -458,7 +458,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "CEW MCN PONZE BANKR5",
+          "route": "CEW MCN PONZE BANKR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -530,7 +530,7 @@
           "exit": "IPTAY",
           "destination": "KCLT",
           "altitude": 34000,
-          "route": "ESTRR5 IPTAY CHOPZ MGM CEW PENSI",
+          "route": "ESTRR7 IPTAY CHOPZ MGM CEW PENSI",
           "airlines": [
             {
               "icao": "AAL",
@@ -626,7 +626,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CEW OTK SAV JROSS FLLGG STOCR4",
+          "route": "CEW OTK SAV JROSS FLLGG STOCR6",
           "airlines": [
             {
               "icao": "JIA",

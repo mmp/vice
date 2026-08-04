@@ -82,7 +82,7 @@
           ],
           "destination": "KCLT",
           "exit": "JROSS",
-          "route": "JROSS FLLGG STOCR4"
+          "route": "JROSS FLLGG STOCR6"
         },
         {
           "airlines": [
@@ -156,7 +156,7 @@
           ],
           "destination": "KIAD",
           "exit": "JROSS",
-          "route": "JROSS FLO RDU BZNGA DORRN CAVLR6"
+          "route": "JROSS FLO RDU BZNGA DORRN CAVLR7"
         },
         {
           "airlines": [
@@ -186,7 +186,7 @@
           ],
           "destination": "KBWI",
           "exit": "JROSS",
-          "route": "JROSS Q87 RAYVO Q113 AARNN THHMP RAVNN8"
+          "route": "JROSS Q87 RAYVO Q113 AARNN THHMP RAVNN9"
         },
         {
           "airlines": [
@@ -377,7 +377,7 @@
           ],
           "destination": "KMSY",
           "exit": "SMALZ",
-          "route": "SMALZ BYYOU AMG CEW SJI MNSTR1"
+          "route": "SMALZ BYYOU AMG CEW SJI MNSTR2"
         }
       ],
       "exit_categories": {
@@ -489,7 +489,7 @@
           ],
           "destination": "KCLT",
           "exit": "CHS",
-          "route": "CHS STOCR4"
+          "route": "CHS STOCR6"
         },
         {
           "airlines": [

@@ -310,7 +310,7 @@
         {
           "exit": "TRM",
           "destination": "KIAD",
-          "route": "TRM DRK JARLO GIBBZ5",
+          "route": "TRM DRK JARLO GIBBZ6",
           "airlines": [
             {
               "icao": "N",
@@ -1846,7 +1846,7 @@
           "destination": "KIAD",
           "exit": "TGOLD",
           "scratchpad": "ZOI",
-          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
+          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
         },
         {
           "airlines": [
@@ -2229,7 +2229,7 @@
           "destination": "KIAD",
           "exit": "IPL.E",
           "scratchpad": "SAI",
-          "route": "IPL CUVAM MANRS JUDTH TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
+          "route": "IPL CUVAM MANRS JUDTH TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
         },
         {
           "airlines": [
@@ -2577,7 +2577,7 @@
           "destination": "KIAD",
           "exit": "TGOLD",
           "scratchpad": "ZOI",
-          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
+          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
         },
         {
           "airlines": [

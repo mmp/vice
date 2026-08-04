@@ -54,12 +54,12 @@
           },
           "MAREO": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_23R/h050"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_23R/h050 MAREO"
           },
           "MEARZ": {
@@ -101,12 +101,12 @@
           },
           "MAREO": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_23L/h050"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_23L/h050 MAREO"
           },
           "MEARZ": {
@@ -148,12 +148,12 @@
           },
           "MAREO": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_32/h140"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_32/h140 MAREO"
           },
           "MEARZ": {
@@ -195,12 +195,12 @@
           },
           "MAREO": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_05R/h230"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_05R/h230 MAREO"
           },
           "MEARZ": {
@@ -242,12 +242,12 @@
           },
           "MAREO": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_05L/h230"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_05L/h230 MAREO"
           },
           "MEARZ": {
@@ -289,12 +289,12 @@
           },
           "MAREO": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_14/h320"
           },
           "BDOCK": {
             "cleared_altitude": 5000,
-            "sid": "MAREO5",
+            "sid": "MAREO1",
             "waypoints": "_IND_14/h320 MAREO"
           },
           "MEARZ": {

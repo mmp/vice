@@ -17,8 +17,9 @@ import (
 )
 
 var (
-	dryRun = flag.Bool("dry-run", false, "Show what would be done and estimate cost, don't query Claude")
-	sample = flag.Bool("sample", false, "Query Claude for only one chunk of each category to evaluate quality")
+	dryRun  = flag.Bool("dry-run", false, "Show what would be done and estimate cost, don't query Claude")
+	sample  = flag.Bool("sample", false, "Query Claude for only one chunk of each category to evaluate quality")
+	listAll = flag.Bool("list", false, "With -dry-run: print all missing items rather than just samples")
 )
 
 func main() {
@@ -105,14 +106,21 @@ func main() {
 		// Show 3-letter items that will be queried via Opus
 		printThreeLetterItems("3-letter SIDs for Opus", missingThreeLetterSIDs)
 		printThreeLetterItems("3-letter STARs for Opus", missingThreeLetterSTARs)
+		max := 20
+		if *listAll {
+			max = len(missingFiveLetterFixes) + len(missingSIDs) + len(missingSTARs)
+			if len(vorPronunciations) > 0 {
+				fmt.Printf("\nVOR pronunciations from database: %v\n", vorPronunciations)
+			}
+		}
 		if len(missingFiveLetterFixes) > 0 {
-			fmt.Printf("\nSample missing 5-letter fixes (up to 20): %v\n", sampleItems(missingFiveLetterFixes, 20))
+			fmt.Printf("\nMissing 5-letter fixes (up to %d): %v\n", max, sampleItems(missingFiveLetterFixes, max))
 		}
 		if len(missingSIDs) > 0 {
-			fmt.Printf("Sample missing SIDs (up to 20): %v\n", sampleItems(missingSIDs, 20))
+			fmt.Printf("Missing SIDs (up to %d): %v\n", max, sampleItems(missingSIDs, max))
 		}
 		if len(missingSTARs) > 0 {
-			fmt.Printf("Sample missing STARs (up to 20): %v\n", sampleItems(missingSTARs, 20))
+			fmt.Printf("Missing STARs (up to %d): %v\n", max, sampleItems(missingSTARs, max))
 		}
 		return
 	}

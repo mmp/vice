@@ -47,15 +47,15 @@
         },
         "departure_assignments": {
           "KBNA": "1X",
-          "KBNA/CHADM4": "1Y",
-          "KBNA/DANLS4": "1X",
-          "KBNA/DRURY4": "1X",
-          "KBNA/FLAME4": "1Y",
+          "KBNA/CHADM5": "1Y",
+          "KBNA/DANLS5": "1X",
+          "KBNA/DRURY5": "1X",
+          "KBNA/FLAME5": "1Y",
           "KBNA/GDOGG4": "1X",
           "KBNA/KRSTA4": "1Y",
-          "KBNA/PARDN4": "1X",
-          "KBNA/TAZMO4": "1Y",
-          "KBNA/TIPPN4": "1Y"
+          "KBNA/PARDN5": "1X",
+          "KBNA/TAZMO5": "1Y",
+          "KBNA/TIPPN5": "1Y"
         },
         "default_consolidation": {
           "1E": ["1F"],

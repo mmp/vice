@@ -421,7 +421,7 @@
           "exit": "JYMSE",
           "destination": "KCLT",
           "altitude": 26000,
-          "route": "MLTRE3 JYMSE FLLGG STOCR4",
+          "route": "MLTRE3 JYMSE FLLGG STOCR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -505,7 +505,7 @@
           "exit": "FILLI",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "SWPFX3 FILLI FLLGG STOCR4",
+          "route": "SWPFX3 FILLI FLLGG STOCR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -565,7 +565,7 @@
           "exit": "FILLI",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "SWPFX3 FILLI FLLGG STOCR4",
+          "route": "SWPFX3 FILLI FLLGG STOCR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -733,7 +733,7 @@
           "exit": "JYMSE",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "MLTRE3 JYMSE FLLGG STOCR4",
+          "route": "MLTRE3 JYMSE FLLGG STOCR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -1009,7 +1009,7 @@
           "exit": "FILLI",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "SWPFX3 FILLI FLLGG STOCR4",
+          "route": "SWPFX3 FILLI FLLGG STOCR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -1069,7 +1069,7 @@
           "exit": "FILLI",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "SWPFX3 FILLI FLLGG STOCR4",
+          "route": "SWPFX3 FILLI FLLGG STOCR6",
           "airlines": [
             {
               "icao": "AAL",

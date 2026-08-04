@@ -244,10 +244,10 @@
           "TRISH4 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
-          "HYPER9 (RBV - 55)": "55",
-          "HYPER9 (PARKE)": "39",
-          "HYPER9 (FILGA)": "42",
-          "HYPER9 (GANDE)": "42",
+          "HYPER1 (RBV - 55)": "55",
+          "HYPER1 (PARKE)": "39",
+          "HYPER1 (FILGA)": "42",
+          "HYPER1 (GANDE)": "42",
           "Overflights (Area B)": "42"
         },
         "departure_assignments": {
@@ -345,8 +345,8 @@
         "inbound_assignments": {
           "TRISH4 (42)": "42",
           "CLIPR3 (NELIE 42)": "42",
-          "HYPER9 (FILGA)": "42",
-          "HYPER9 (GANDE)": "42",
+          "HYPER1 (FILGA)": "42",
+          "HYPER1 (GANDE)": "42",
           "Overflights": "42"
         },
         "default_consolidation": {
@@ -358,9 +358,9 @@
           "TRISH4 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
-          "HYPER9 (RBV - 55)": "55",
-          "HYPER9 (FILGA)": "42",
-          "HYPER9 (GANDE)": "42",
+          "HYPER1 (RBV - 55)": "55",
+          "HYPER1 (FILGA)": "42",
+          "HYPER1 (GANDE)": "42",
           "Overflights": "42"
         },
         "default_consolidation": {
@@ -387,7 +387,7 @@
           "CLIPR3 (NELIE)": "55",
           "CLIPR3 (BIGGY)": "55",
           "TRISH4": "55",
-          "HYPER9 (RBV - 55)": "55"
+          "HYPER1 (RBV - 55)": "55"
         },
         "default_consolidation": {
           "55": []
@@ -399,9 +399,9 @@
       },
       "N39": {
         "inbound_assignments": {
-          "HYPER9 (RBV - 39)": "39",
-          "HYPER9 (PARKE)": "39",
-          "HYPER9 (GANDE/FILGA - 39)": "39"
+          "HYPER1 (RBV - 39)": "39",
+          "HYPER1 (PARKE)": "39",
+          "HYPER1 (GANDE/FILGA - 39)": "39"
         },
         "default_consolidation": {
           "39": []
@@ -429,10 +429,10 @@
           "TRISH4 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
-          "HYPER9 (RBV - 55)": "55",
-          "HYPER9 (PARKE)": "39",
-          "HYPER9 (FILGA)": "42",
-          "HYPER9 (GANDE)": "42",
+          "HYPER1 (RBV - 55)": "55",
+          "HYPER1 (PARKE)": "39",
+          "HYPER1 (FILGA)": "42",
+          "HYPER1 (GANDE)": "42",
           "Overflights": "42"
         },
         "default_consolidation": {
@@ -474,10 +474,10 @@
           "TRISH4 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
-          "HYPER9 (RBV - 55)": "55",
-          "HYPER9 (PARKE)": "39",
-          "HYPER9 (FILGA)": "42",
-          "HYPER9 (GANDE)": "42",
+          "HYPER1 (RBV - 55)": "55",
+          "HYPER1 (PARKE)": "39",
+          "HYPER1 (FILGA)": "42",
+          "HYPER1 (GANDE)": "42",
           "Overflights": "42"
         },
         "default_consolidation": {
@@ -540,8 +540,8 @@
         "inbound_assignments": {
           "BOJID4 (26)": "26",
           "BUNTS3 (26)": "26",
-          "HYPER9 - SARAA (26)": "26",
-          "HYPER9 - HIKES (26)": "26",
+          "HYPER1 - SARAA (26)": "26",
+          "HYPER1 - HIKES (26)": "26",
           "HAR5 (26)": "26",
           "TRISH4 (26)": "26",
           "Overflights": "26"
@@ -577,8 +577,8 @@
         "inbound_assignments": {
           "TRISH4 (25)": "25",
           "CLIPR3 (25)": "25",
-          "HYPER9 - SARAA (26)": "26",
-          "HYPER9 - HIKES (26)": "26",
+          "HYPER1 - SARAA (26)": "26",
+          "HYPER1 - HIKES (26)": "26",
           "HAR5 (26)": "26",
           "TRISH4 (26)": "26",
           "Overflights": "26"
@@ -591,8 +591,8 @@
         "inbound_assignments": {
           "TRISH4 (25)": "26",
           "CLIPR3 (25)": "26",
-          "HYPER9 - SARAA (26)": "26",
-          "HYPER9 - HIKES (26)": "26",
+          "HYPER1 - SARAA (26)": "26",
+          "HYPER1 - HIKES (26)": "26",
           "HAR5 (27)": "26",
           "TRISH4 (27)": "26",
           "Overflights": "26",
@@ -731,8 +731,8 @@
           "PUCKY1 - YODAA": "36",
           "Overflights (35)": "35",
           "CLIPR3 (25)": "25",
-          "HYPER9 - SARAA (26)": "26",
-          "HYPER9 - HIKES (26)": "26",
+          "HYPER1 - SARAA (26)": "26",
+          "HYPER1 - HIKES (26)": "26",
           "HAR5 (27)": "27",
           "TRISH4 (27)": "27",
           "Overflights": "26",
@@ -812,10 +812,10 @@
           "TRISH4 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
-          "HYPER9 (RBV - 55)": "55",
-          "HYPER9 (PARKE)": "39",
-          "HYPER9 (FILGA)": "42",
-          "HYPER9 (GANDE)": "42",
+          "HYPER1 (RBV - 55)": "55",
+          "HYPER1 (PARKE)": "39",
+          "HYPER1 (FILGA)": "42",
+          "HYPER1 (GANDE)": "42",
           "Overflights (Area B)": "42"
         },
         "departure_assignments": {
