@@ -67,8 +67,11 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		if ext := db.Fields[DBFieldMain]; ext.Inside(mouse.Pos) {
 			ep.drawOutlineRectangle(ld, ext, colors.yellow)
 		}
-		if db.Fields[DBFieldCallsign].Inside(mouse.Pos) {
-			// TODO: check what this does
+		// Middle-clicking the callsign runs the QF flight plan readout for the track.
+		if db.Fields[DBFieldCallsign].Inside(mouse.Pos) && ep.mouseTertiaryClicked(mouse) {
+			status, err := handleFlightPlanReadout(ep, ctx, &trk)
+			ep.applyCommandStatus(ctx, status, err)
+			ep.clearMouseTertiaryConsumed(mouse)
 		}
 		if db.Fields[DBFieldVCI].Inside(mouse.Pos) {
 			state.HoverVCI = true
@@ -130,7 +133,7 @@ func (ep *ERAMPane) drawOutlineRectangle(ld *renderer.ColoredLinesDrawBuilder, e
 // LineExtent returns the outline for a full line of the specified width.
 func (l DatablockLayout) LineExtent(line, cols int) math.Extent2D {
 	top := l.lineTop(line)
-	x0 := l.Anchor[0] + l.lineShift(line)
+	x0 := l.Anchor[0] + l.lineShift(line, 0)
 	x1 := x0 + l.CharWidth*float32(cols)
 	y0 := top - l.LineHeight
 	return math.Extent2D{P0: [2]float32{x0, y0}, P1: [2]float32{x1, top}}
@@ -139,7 +142,7 @@ func (l DatablockLayout) LineExtent(line, cols int) math.Extent2D {
 // FieldExtent returns the outline for the specified field.
 func (l DatablockLayout) FieldExtent(spec DatablockFieldSpec) math.Extent2D {
 	top := l.lineTop(spec.Line)
-	x0 := l.Anchor[0] + l.lineShift(spec.Line) + l.CharWidth*float32(spec.Col)
+	x0 := l.Anchor[0] + l.lineShift(spec.Line, spec.Col) + l.CharWidth*float32(spec.Col)
 	x1 := x0 + l.CharWidth*float32(spec.Cols)
 	y0 := top - l.LineHeight
 	return math.Extent2D{P0: [2]float32{x0, y0}, P1: [2]float32{x1, top}}
@@ -149,11 +152,14 @@ func (l DatablockLayout) lineTop(line int) float32 {
 	return l.Anchor[1] + l.LineHeight - float32(line)*l.LineHeight*l.LineSpacing
 }
 
-func (l DatablockLayout) lineShift(line int) float32 {
-	if line == 2 || line == 3 {
-		return -l.CharWidth * dbLineOffsetScale
+func (l DatablockLayout) lineShift(line, col int) float32 {
+	if line != dbVCILine && line != dbCIDLine {
+		return 0
 	}
-	return 0
+	if col < dbLeadFieldChars {
+		return -l.CharWidth * (dbLineOffsetScale + dbLeadFieldGap)
+	}
+	return -l.CharWidth * dbLeadFieldChars
 }
 
 // DatablockOutlines provides field and line outlines for a datablock.
@@ -168,6 +174,16 @@ const (
 	dbLineOffsetScale = 2
 	dbOutlinePadding  = 2
 	dbOutlineYOffset  = -2
+
+	dbCallsignLine   = 1
+	dbVCILine        = 2
+	dbCIDLine        = 3
+	dbLeadFieldChars = 2
+
+	dbLeadFieldGap    = 1.0 / 3.0
+	dbLeaderClearance = 0.5
+	dbInkHeight       = 0.85
+	dbLeaderInkInset  = 0.2
 )
 
 // dbFieldSpan returns the column span [start, start+n) of the visible
@@ -217,11 +233,6 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 	if ep.datablockType(ctx, trk) != FullDatablock {
 		return DatablockOutlines{}, false
 	}
-	anchor, ok := ep.fullDatablockAnchor(ctx, trk, transforms)
-	if !ok {
-		return DatablockOutlines{}, false
-	}
-
 	ps := ep.currentPrefs()
 	font := ep.ERAMFont(ps.FDBSize)
 	if font == nil {
@@ -230,6 +241,11 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 
 	fdb := ep.buildFullDatablock(ctx, trk)
 	if fdb == nil {
+		return DatablockOutlines{}, false
+	}
+
+	anchor, ok := ep.fullDatablockAnchor(ctx, trk, fdb, transforms)
+	if !ok {
 		return DatablockOutlines{}, false
 	}
 
@@ -327,12 +343,12 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 	return outlines, true
 }
 
-func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track,
+func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track, db *fullDatablock,
 	transforms radar.ScopeTransformations) ([2]float32, bool) {
 	if ep.TrackState[trk.ADSBCallsign] == nil {
 		return [2]float32{}, false
 	}
-	end, _ := ep.datablockAnchor(ctx, trk, FullDatablock, transforms)
+	end, _ := ep.datablockAnchor(ctx, trk, db, FullDatablock, transforms)
 	return end, true
 }
 

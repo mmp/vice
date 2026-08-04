@@ -106,8 +106,12 @@ type scenario struct {
 	Range           float32       `json:"range"`
 	DefaultMaps     []string      `json:"default_maps"`
 	DefaultMapGroup string        `json:"default_map_group"`
-	VFRRateScale    *float32      `json:"vfr_rate_scale"`
-	VFFRequestRate  *int32        `json:"flight_following_request_rate,omitempty"`
+	// AlwaysMaps names ERAM video maps that are displayed no matter which
+	// geomap group is loaded; if non-empty it replaces the facility's
+	// "always_maps".
+	AlwaysMaps     []av.ERAMMapRef `json:"always_maps,omitempty"`
+	VFRRateScale   *float32        `json:"vfr_rate_scale"`
+	VFFRequestRate *int32          `json:"flight_following_request_rate,omitempty"`
 }
 
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSpec *av.MapLibrarySpec) {
@@ -633,6 +637,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 				"<path to *.mappack> to show available video map groups for a facility.", s.DefaultMapGroup)
 		}
 	}
+	validateERAMAlwaysMaps(s.AlwaysMaps, sg.ARTCC != "", mapSpec, e)
 
 	if s.VFRRateScale == nil { // unspecified -> default to 1
 		one := float32(1)
@@ -1433,6 +1438,28 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	sg.FacilityConfig.ControlPositions = pos
 }
 
+// validateERAMAlwaysMaps checks that each always-displayed video map reference
+// resolves in the given video map file. These maps are drawn by the ERAM scope,
+// so specifying any for a TRACON is an error.
+func validateERAMAlwaysMaps(refs []av.ERAMMapRef, isARTCC bool, mapSpec *av.MapLibrarySpec, e *util.ErrorLogger) {
+	if len(refs) == 0 {
+		return
+	}
+	if !isARTCC {
+		e.ErrorString(`"always_maps" is only valid for ARTCC facilities, which use the ERAM scope`)
+		return
+	}
+	for _, ref := range refs {
+		if !mapSpec.HasMapGroup(ref.Group) {
+			e.ErrorString(`video map group %q in "always_maps" not found. Use -listmaps `+
+				"<path to *.mappack> to show available video map groups for a facility.", ref.Group)
+		} else if !mapSpec.HasERAMMap(ref) {
+			e.ErrorString(`video map %q in "always_maps" not found in group %q. Use -listmaps `+
+				"<path to *.mappack> to show available video maps for a facility.", ref.Map, ref.Group)
+		}
+	}
+}
+
 // PostDeserializeFacilityAdaptation validates FacilityAdaptation fields that
 // require the scenario group's Locator, mapSpec, or airport data. Self-contained
 // validation is done earlier in FacilityAdaptation.ValidateConfig.
@@ -1477,6 +1504,8 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			}
 		}
 	}
+
+	validateERAMAlwaysMaps(s.ERAMAlwaysMaps, sg.ARTCC != "", mapSpec, e)
 
 	// Video map labels are validated in fc.validateSTARSAdaptation.
 
@@ -1891,19 +1920,25 @@ func attachTimetables(catalogs map[string]map[string]*ScenarioCatalog, timetable
 	}
 }
 
-// attachHistoricalFlightIntervals records the range of times each facility has
-// historical flight data for, so that the client can offer start times the data
-// actually covers.
-func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCatalog) {
+// attachHistoricalFlightIntervals records the stretches of time each facility
+// has historical flight data for, so that the client can offer start times the
+// data actually covers. A facility with no data at all is left alone; one whose
+// file can't be read is reported, since that is otherwise indistinguishable
+// from having none.
+func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCatalog, lg *log.Logger) {
 	resources := util.GetResourcesFS()
 	for facility, facilityCatalogs := range catalogs {
-		interval, err := av.FacilityFlightInterval(resources, facility)
-		if err != nil || interval.Start().IsZero() {
+		intervals, err := av.FacilityFlightIntervals(resources, facility)
+		if err != nil {
+			lg.Errorf("%s: historical flight data: %v", facility, err)
+			continue
+		}
+		if len(intervals) == 0 {
 			continue
 		}
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
-				scenario.HistoricalFlightInterval = interval
+				scenario.HistoricalFlightIntervals = intervals
 				scenario.TrafficSources = append(scenario.TrafficSources, sim.TrafficSourceHistorical)
 			}
 		}
@@ -2711,7 +2746,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	} else {
 		attachTimetables(catalogs, timetableCatalog)
 	}
-	attachHistoricalFlightIntervals(catalogs)
+	attachHistoricalFlightIntervals(catalogs, lg)
 	finalizeTrafficSources(catalogs, e)
 
 	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))
@@ -2794,6 +2829,7 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		ScenarioRange:           scenario.Range,
 		DefaultMaps:             scenario.DefaultMaps,
 		DefaultMapGroup:         scenario.DefaultMapGroup,
+		AlwaysMaps:              scenario.AlwaysMaps,
 		Airspace:                scenarioGroup.Airspace,
 		ControllerAirspace:      scenario.Airspace,
 		VirtualControllers:      scenario.VirtualControllers,
