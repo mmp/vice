@@ -20,3 +20,4 @@
   - Added "fix_pair_configuration" to assign a flight's initial owning position from its entry/exit fix pair, per configuration plan, with reassignment rules (altitude, aircraft class, callsign, active runway) and RNAV route designation (radarcontacto)
   - Added "tcp_assignment_classes" and "automatic_handoff_classes" to name aircraft classes for fix-pair and handoff-filter matching (radarcontacto)
   - Added "automatic_scratchpad_assignment" to default a flight's scratchpads from its fixes, altitude, and flight type (radarcontacto)
+- Updated to AIRAC 260806: CLT runways renumbered (18C/36C are now 19L/1R, 18R/36L are now 19R/1L), KPBI is now KDJT, many procedure updates

@@ -37,8 +37,8 @@
           "full_name": "LDA Runway 35",
           "cifp_id": "X35"
         },
-        "RZ5": {
-          "cifp_id": "RZ35"
+        "R35": {
+          "cifp_id": "R35"
         }
       },
       "departure_routes": {
@@ -704,15 +704,15 @@
         }
       ]
     },
-    "QWENN6.BCE": {
+    "QWENN7.BCE": {
       "arrivals": [
         {
           "waypoints": "NEEBO/a14000/s250/ho QWENN/a11000/s250/h344",
-          "star": "QWENN6",
+          "star": "QWENN7",
           "initial_controller": "C11",
           "initial_altitude": 14000,
           "initial_speed": 300,
-          "description": "QWENN6",
+          "description": "QWENN7",
           "expect_approach": null,
           "airlines": {
             "KSLC": [
@@ -754,15 +754,15 @@
         }
       ]
     },
-    "QWENN6.MLF": {
+    "QWENN7.MLF": {
       "arrivals": [
         {
           "waypoints": "FRNZY/a14000/s250/ho QWENN/a11000/s250/h344",
-          "star": "QWENN6",
+          "star": "QWENN7",
           "initial_controller": "C11",
           "initial_altitude": 14000,
           "initial_speed": 300,
-          "description": "QWENN6",
+          "description": "QWENN7",
           "expect_approach": null,
           "airlines": {
             "KSLC": [
@@ -1140,10 +1140,10 @@
         "JAZZZ1": {
           "KSLC": 10
         },
-        "QWENN6.BCE": {
+        "QWENN7.BCE": {
           "KSLC": 5
         },
-        "QWENN6.MLF": {
+        "QWENN7.MLF": {
           "KSLC": 5
         },
         "YUTES1.N": {

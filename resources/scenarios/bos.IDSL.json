@@ -8324,9 +8324,9 @@
         },
         {
           "exit": "SSOXS.J.9.4/9",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": [36000, 43000, 34000, 32000, 28000],
-          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KPBI",
+          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KDJT",
           "airlines": [
             {
               "icao": "DAL",
@@ -8378,7 +8378,7 @@
           "exit": "SSOXS.J.9.4/9",
           "destination": "KBCT",
           "altitude": [38000],
-          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT2 KBCT",
+          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT3 KBCT",
           "airlines": [
             {
               "icao": "EJA",
@@ -11419,9 +11419,9 @@
         },
         {
           "exit": "SSOXS.J.9.4L/9+4R",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": [36000, 43000, 34000, 32000, 28000],
-          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KPBI",
+          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KDJT",
           "airlines": [
             {
               "icao": "DAL",
@@ -11473,7 +11473,7 @@
           "exit": "SSOXS.J.9.4L/9+4R",
           "destination": "KBCT",
           "altitude": [38000],
-          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT2 KBCT",
+          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT3 KBCT",
           "airlines": [
             {
               "icao": "EJA",
@@ -17778,9 +17778,9 @@
         },
         {
           "exit": "SSOXS.J.27.33/27",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": [36000, 43000, 34000, 32000, 28000],
-          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KPBI",
+          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KDJT",
           "airlines": [
             {
               "icao": "DAL",
@@ -17832,7 +17832,7 @@
           "exit": "SSOXS.J.27.33/27",
           "destination": "KBCT",
           "altitude": [38000],
-          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT2 KBCT",
+          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT3 KBCT",
           "airlines": [
             {
               "icao": "EJA",
@@ -20857,9 +20857,9 @@
         },
         {
           "exit": "SSOXS.J.33L.27+32/33",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": [36000, 43000, 34000, 32000, 28000],
-          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KPBI",
+          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KDJT",
           "airlines": [
             {
               "icao": "DAL",
@@ -20911,7 +20911,7 @@
           "exit": "SSOXS.J.33L.27+32/33",
           "destination": "KBCT",
           "altitude": [38000],
-          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT2 KBCT",
+          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT3 KBCT",
           "airlines": [
             {
               "icao": "EJA",
@@ -24344,9 +24344,9 @@
         },
         {
           "exit": "SSOXS.J.33L.27/33",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": [36000, 43000, 34000, 32000, 28000],
-          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KPBI",
+          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KDJT",
           "airlines": [
             {
               "icao": "DAL",
@@ -24398,7 +24398,7 @@
           "exit": "SSOXS.J.33L.27/33",
           "destination": "KBCT",
           "altitude": [38000],
-          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT2 KBCT",
+          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT3 KBCT",
           "airlines": [
             {
               "icao": "EJA",
@@ -30682,9 +30682,9 @@
         },
         {
           "exit": "SSOXS.J.9.4/9",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": [36000, 43000, 34000, 32000, 28000],
-          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KPBI",
+          "route": "SSOXS BUZRD SEY HTO J174 ORF J121 JMACK DEDDY CAKET Q97 KENLL CPTAN2 KDJT",
           "airlines": [
             {
               "icao": "DAL",
@@ -30736,7 +30736,7 @@
           "exit": "SSOXS.J.9.4/9",
           "destination": "KBCT",
           "altitude": [38000],
-          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT2 KBCT",
+          "route": "SSOXS BUZRD SEY HTO J174 SWL CEBEE WETRO DIW AR19 JENKS DULEE CLMNT3 KBCT",
           "airlines": [
             {
               "icao": "EJA",
@@ -36968,7 +36968,7 @@
               {
                 "icao": "DAL",
                 "types": ["A319"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "DAL",
@@ -37473,7 +37473,7 @@
               {
                 "icao": "JBU",
                 "types": ["A320"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -38023,7 +38023,7 @@
               {
                 "icao": "JBU",
                 "types": ["A321"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -39554,7 +39554,7 @@
               {
                 "icao": "DAL",
                 "types": ["A319"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "DAL",
@@ -40059,7 +40059,7 @@
               {
                 "icao": "JBU",
                 "types": ["A320"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -40609,7 +40609,7 @@
               {
                 "icao": "JBU",
                 "types": ["A321"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -42140,7 +42140,7 @@
               {
                 "icao": "DAL",
                 "types": ["A319"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "DAL",
@@ -42645,7 +42645,7 @@
               {
                 "icao": "JBU",
                 "types": ["A320"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -43195,7 +43195,7 @@
               {
                 "icao": "JBU",
                 "types": ["A321"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -44721,7 +44721,7 @@
               {
                 "icao": "DAL",
                 "types": ["A319"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "DAL",
@@ -45226,7 +45226,7 @@
               {
                 "icao": "JBU",
                 "types": ["A320"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -45776,7 +45776,7 @@
               {
                 "icao": "JBU",
                 "types": ["A321"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -47302,7 +47302,7 @@
               {
                 "icao": "DAL",
                 "types": ["A319"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "DAL",
@@ -47807,7 +47807,7 @@
               {
                 "icao": "JBU",
                 "types": ["A320"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -48357,7 +48357,7 @@
               {
                 "icao": "JBU",
                 "types": ["A321"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -49883,7 +49883,7 @@
               {
                 "icao": "DAL",
                 "types": ["A319"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "DAL",
@@ -50388,7 +50388,7 @@
               {
                 "icao": "JBU",
                 "types": ["A320"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -50938,7 +50938,7 @@
               {
                 "icao": "JBU",
                 "types": ["A321"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -55187,7 +55187,7 @@
               {
                 "icao": "DAL",
                 "types": ["A319"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "DAL",
@@ -55707,7 +55707,7 @@
               {
                 "icao": "JBU",
                 "types": ["A320"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -56257,7 +56257,7 @@
               {
                 "icao": "JBU",
                 "types": ["A321"],
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",

@@ -589,7 +589,7 @@
           "exit": "SPI",
           "destination": "KCLT",
           "altitude": 37000,
-          "route": "LAKES5 SPI TILMN FLM TAFTT PARQR4",
+          "route": "LAKES5 SPI TILMN FLM TAFTT PARQR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -601,7 +601,7 @@
           "exit": "BUM",
           "destination": "KMSY",
           "altitude": 39000,
-          "route": "RACER8 BUM LIT MCB TRSSH1",
+          "route": "RACER8 BUM LIT MCB TRSSH2",
           "airlines": [
             {
               "icao": "SWA",
@@ -1189,7 +1189,7 @@
           "exit": "COU",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "LAKES5 COU NMANN TINGS TAZZA FILPZ4",
+          "route": "LAKES5 COU NMANN TINGS TAZZA FILPZ6",
           "airlines": [
             {
               "icao": "AAL",

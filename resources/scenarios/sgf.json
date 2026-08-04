@@ -240,7 +240,7 @@
           ],
           "altitude": 35000,
           "destination": "KCLT",
-          "route": "SGF V159 DGD BNA VXV COMDY FILPZ4",
+          "route": "SGF V159 DGD BNA VXV COMDY FILPZ6",
           "exit": "SGF"
         },
         {
@@ -518,7 +518,7 @@
         {
           "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF",
           "cruise_altitude": 32000,
-          "route": "BOBZY5 BNA J46 ARG SGF",
+          "route": "BOBZY7 BNA J46 ARG SGF",
           "initial_controller": "C94",
           "initial_altitude": 16000,
           "initial_speed": 250,

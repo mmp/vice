@@ -2267,12 +2267,12 @@
         }
       ]
     },
-    "HYPER9 (PARKE)": {
+    "HYPER1 (PARKE)": {
       "arrivals": [
         {
           "waypoints": "N040.40.54.345,W074.37.24.396 N040.40.37.275,W074.47.03.321/ho PARKE JETTZ SARAA LRP JOANE DELRO LIRCH/delete",
           "cruise_altitude": 22000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. PARKE JETTZ SARAA LRP JOANE DELRO LIRCH",
           "initial_controller": "N5W",
           "initial_altitude": 17000,
@@ -2301,12 +2301,12 @@
         }
       ]
     },
-    "HYPER9 (FILGA)": {
+    "HYPER1 (FILGA)": {
       "arrivals": [
         {
           "waypoints": "FILGA/ho KEAVR BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH/delete",
           "cruise_altitude": 36000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. KEAVR BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH",
           "initial_controller": "B20",
           "initial_altitude": 36000,
@@ -2343,12 +2343,12 @@
         }
       ]
     },
-    "HYPER9 (GANDE)": {
+    "HYPER1 (GANDE)": {
       "arrivals": [
         {
           "waypoints": "GANDE/ho KEAVR BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH/delete",
           "cruise_altitude": 36000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. GANDE KEAVR BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH",
           "initial_controller": "B20",
           "initial_altitude": 36000,
@@ -2385,12 +2385,12 @@
         }
       ]
     },
-    "HYPER9 (GANDE/FILGA - 39)": {
+    "HYPER1 (GANDE/FILGA - 39)": {
       "arrivals": [
         {
           "waypoints": "KEAVR/ho BOTLS/a280 JETTZ SARAA LRP JOANE DELRO LIRCH/delete",
           "cruise_altitude": 36000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH",
           "initial_controller": "B20",
           "initial_altitude": 36000,
@@ -2427,12 +2427,12 @@
         }
       ]
     },
-    "HYPER9 (RBV - 39)": {
+    "HYPER1 (RBV - 39)": {
       "arrivals": [
         {
           "waypoints": "N040.23.34.860,W074.03.27.284 RBV BANKK N040.19.48.363,W075.17.12.550/ho HIKES LRP JOANE DELRO LIRCH/delete",
           "cruise_altitude": 22000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. HIKES LRP JOANE DELRO LIRCH",
           "initial_controller": "55",
           "initial_altitude": 22000,
@@ -2449,12 +2449,12 @@
         }
       ]
     },
-    "HYPER9 (RBV - 55)": {
+    "HYPER1 (RBV - 55)": {
       "arrivals": [
         {
           "waypoints": "N040.23.34.860,W074.03.27.284 RBV/ho BANKK N040.19.48.363,W075.17.12.550 HIKES LRP JOANE DELRO LIRCH/delete",
           "cruise_altitude": 22000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. BANKK HIKES LRP JOANE DELRO LIRCH",
           "initial_controller": "N5S",
           "initial_altitude": 17000,
@@ -2650,13 +2650,13 @@
         }
       ],
       "inbound_rates": {
-        "HYPER9 (RBV - 39)": {
+        "HYPER1 (RBV - 39)": {
           "KIAD": 10
         },
-        "HYPER9 (PARKE)": {
+        "HYPER1 (PARKE)": {
           "KIAD": 25
         },
-        "HYPER9 (GANDE/FILGA - 39)": {
+        "HYPER1 (GANDE/FILGA - 39)": {
           "KIAD": 25
         },
         "J60": {
@@ -2717,13 +2717,13 @@
         "CLIPR3 (NELIE 42)": {
           "KDCA": 25
         },
-        "HYPER9 (RBV - 55)": {
+        "HYPER1 (RBV - 55)": {
           "KIAD": 15
         },
-        "HYPER9 (GANDE)": {
+        "HYPER1 (GANDE)": {
           "KIAD": 15
         },
-        "HYPER9 (FILGA)": {
+        "HYPER1 (FILGA)": {
           "KIAD": 15
         },
         "Overflights": {
@@ -2787,7 +2787,7 @@
         "TRISH4": {
           "KBWI": 25
         },
-        "HYPER9 (RBV - 55)": {
+        "HYPER1 (RBV - 55)": {
           "KIAD": 15
         }
       },
@@ -2897,16 +2897,16 @@
         "CLIPR3 (NELIE 42)": {
           "KDCA": 15
         },
-        "HYPER9 (RBV - 55)": {
+        "HYPER1 (RBV - 55)": {
           "KIAD": 15
         },
-        "HYPER9 (PARKE)": {
+        "HYPER1 (PARKE)": {
           "KIAD": 15
         },
-        "HYPER9 (FILGA)": {
+        "HYPER1 (FILGA)": {
           "KIAD": 15
         },
-        "HYPER9 (GANDE)": {
+        "HYPER1 (GANDE)": {
           "KIAD": 15
         },
         "Overflights": {
@@ -3089,16 +3089,16 @@
         "CLIPR3 (NELIE 42)": {
           "KDCA": 15
         },
-        "HYPER9 (RBV - 55)": {
+        "HYPER1 (RBV - 55)": {
           "KIAD": 15
         },
-        "HYPER9 (PARKE)": {
+        "HYPER1 (PARKE)": {
           "KIAD": 15
         },
-        "HYPER9 (GANDE)": {
+        "HYPER1 (GANDE)": {
           "KIAD": 15
         },
-        "HYPER9 (FILGA)": {
+        "HYPER1 (FILGA)": {
           "KIAD": 15
         },
         "Overflights": {

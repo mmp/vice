@@ -73,7 +73,7 @@
         },
         "departure_assignments": {
           "KHND": "1Y",
-          "KLAS/GIDGT3": "1M",
+          "KLAS/GIDGT4": "1M",
           "KLAS/JOHKR5": "1D",
           "KLAS/LOHLA3": "1M",
           "KLAS/NIITZ4": "1D",
@@ -104,7 +104,7 @@
         "departure_assignments": {
           "KHND": "1Y",
           "KLAS/FRNCK1": "1M",
-          "KLAS/GIDGT3": "1M",
+          "KLAS/GIDGT4": "1M",
           "KLAS/JOHKR5": "1D",
           "KLAS/LOHLA3": "1D",
           "KLAS/NIITZ4": "1M",

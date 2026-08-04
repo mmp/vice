@@ -175,8 +175,8 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "QWENN6.MLF": "44",
-          "QWENN6.BCE": "44"
+          "QWENN7.MLF": "44",
+          "QWENN7.BCE": "44"
         },
         "default_consolidation": {
           "44": []

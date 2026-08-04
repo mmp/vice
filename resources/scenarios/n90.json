@@ -689,7 +689,7 @@
           "altitude": 38000,
           "destination": "KMSY",
           "exit": "BIGGY",
-          "route": "BIGGY Q75 GVE LYH COLZI Q52 CHOPZ MGMRY SJI MNSTR1"
+          "route": "BIGGY Q75 GVE LYH COLZI Q52 CHOPZ MGMRY SJI MNSTR2"
         },
         {
           "airlines": [
@@ -2138,9 +2138,9 @@
               "icao": "JBU"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WAVEY",
-          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT3"
         },
         {
           "airlines": [
@@ -3086,9 +3086,9 @@
               "icao": "JBU"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "ZIMMZ",
-          "route": "ZIMMZ Q42 MIKYG Q480 AIR HVQ J85 SPA ENEME VUUDU1"
+          "route": "ZIMMZ Q42 MIKYG Q480 AIR HVQ J85 SPA ENEME VUUDU2"
         },
         {
           "airlines": [
@@ -3714,7 +3714,7 @@
             }
           ],
           "altitude": 43000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 WOPNR CPTAN2"
         },
@@ -4398,7 +4398,7 @@
             }
           ],
           "altitude": 43000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 WOPNR CPTAN2"
         },
@@ -5046,7 +5046,7 @@
             }
           ],
           "altitude": 43000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 WOPNR CPTAN2"
         },
@@ -5693,7 +5693,7 @@
             }
           ],
           "altitude": 43000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 WOPNR CPTAN2"
         },
@@ -7580,7 +7580,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -7646,7 +7646,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -7712,7 +7712,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -7869,7 +7869,7 @@
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "GJS",
@@ -7950,7 +7950,7 @@
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "GJS",
@@ -8236,19 +8236,19 @@
               },
               {
                 "icao": "DAL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "AAL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "LXJ",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "RPA",
@@ -8983,24 +8983,24 @@
               },
               {
                 "icao": "VJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JSX",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "N",
                 "fleet": "fastGA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JSX",
@@ -9178,7 +9178,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -9244,7 +9244,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -9310,7 +9310,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -9488,7 +9488,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -9554,7 +9554,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -9620,7 +9620,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -9701,7 +9701,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -10372,7 +10372,7 @@
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "GJS",

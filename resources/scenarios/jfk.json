@@ -1219,7 +1219,7 @@
           "destination": "KCLT",
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "exit": "RBV",
-          "route": "RBV Q430 COPES Q75 GVE AIROW CHSLY6"
+          "route": "RBV Q430 COPES Q75 GVE AIROW CHSLY8"
         },
         {
           "airlines": [
@@ -2150,7 +2150,7 @@
           "destination": "KMSY",
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "exit": "RBV",
-          "route": "RBV Q430 COPES Q75 GSO BURGG Q22 CATLN Q56 SJI MNSTR1"
+          "route": "RBV Q430 COPES Q75 GSO BURGG Q22 CATLN Q56 SJI MNSTR2"
         },
         {
           "airlines": [
@@ -3069,9 +3069,9 @@
               "icao": "JBU"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WAVEY",
-          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT2"
+          "route": "WAVEY EMJAY J174 SWL CEBEE WETRO YLEEE ZILLS Y289 DULEE CLMNT3"
         },
         {
           "airlines": [

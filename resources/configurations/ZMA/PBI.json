@@ -77,14 +77,14 @@
           "BR64V.MRLIN": "1F",
           "T208/LIFRR2.E": "1P",
           "T208/LIFRR2.W": "1P",
-          "CLMNT2": "1I",
-          "CPTAN3": "1I",
-          "JESTR1": "1I",
-          "MAHHI3": "1F",
-          "VUUDU1": "1P"
+          "CLMNT3": "1I",
+          "CPTAN4": "1I",
+          "JESTR2": "1I",
+          "MAHHI4": "1F",
+          "VUUDU2": "1P"
         },
         "departure_assignments": {
-          "KPBI": "1B",
+          "KDJT": "1B",
           "KBCT": "1F"
         },
         "default_consolidation": {
@@ -195,7 +195,7 @@
           "PBI-245S SUA CLASS D",
           "FPR-214S FPR CLASS D"
         ],
-        "altimeters": ["KPBI", "KSUA", "KBCT"]
+        "altimeters": ["KDJT", "KSUA", "KBCT"]
       },
       "2": {
         "center": "KFPR",
@@ -266,7 +266,7 @@
         }
       ],
       "ssa": {
-        "altimeters": ["KPBI", "KFPR", "KSUA", "KVRB", "KBCT"]
+        "altimeters": ["KDJT", "KFPR", "KSUA", "KVRB", "KBCT"]
       }
     },
     "filters": {

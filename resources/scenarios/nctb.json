@@ -404,7 +404,7 @@
           "type": "RNAV",
           "full_name": "FMS Bridge Visual Runway 28R",
           "waypoints": [
-            "ARCHI/iaf/a7000 TRDOW/a6000+ GAROW/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+",
+            "ARCHI/iaf/a7000 TRBOW/a6000+ GAROW/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+",
             "EDDYY/iaf/a6000+ SIDBY/iaf/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+"
           ]
         },
@@ -1829,7 +1829,7 @@
           ],
           "altitude": 39000,
           "destination": "KIAD",
-          "route": "TIPRE Q126 RALEY Q126 KREYK KU60Q KD63S SHOOP KD66Y PECKS Q114 LEONG MZV BDF ROD APE MGW GIBBZ5",
+          "route": "TIPRE Q126 RALEY Q126 KREYK KU60Q KD63S SHOOP KD66Y PECKS Q114 LEONG MZV BDF ROD APE MGW GIBBZ6",
           "exit": "TIPRE"
         },
         {
@@ -1924,7 +1924,7 @@
           ],
           "altitude": 39000,
           "destination": "KIAD",
-          "route": "TIPRE Q126 RALEY Q126 KREYK KU60Q KD63S SHOOP KD66Y PECKS Q114 LEONG MZV BDF ROD APE MGW GIBBZ5",
+          "route": "TIPRE Q126 RALEY Q126 KREYK KU60Q KD63S SHOOP KD66Y PECKS Q114 LEONG MZV BDF ROD APE MGW GIBBZ6",
           "exit": "TIPRE.28RT"
         },
         {

@@ -83,7 +83,7 @@
           ],
           "destination": "KIAD",
           "exit": "SOPHA",
-          "route": "SOPHA LENDS AR16 SEELO YERBA MAYKR TRSSK CAVLR6"
+          "route": "SOPHA LENDS AR16 SEELO YERBA MAYKR TRSSK CAVLR7"
         },
         {
           "airlines": [
@@ -755,7 +755,7 @@
       ],
       "hold_for_release": true
     },
-    "KPBI": {
+    "KDJT": {
       "approaches": {
         "I0L": { "cifp_id": "I10L" },
         "RY0L": { "cifp_id": "RY10L" },
@@ -768,64 +768,64 @@
         "10L": {
           "JAYMC": {
             "cleared_altitude": 11000,
-            "sid": "OLAKE3",
+            "sid": "OLAKE4",
             "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR SONNC AHABB/a6000+ BAGGR/a10000+ OLAKE/a11000+ JAYMC"
           },
           "MATLK,KPASA,SHRKS,SMELZ,VIYAP": {
             "cleared_altitude": 11000,
-            "sid": "TBIRD7",
+            "sid": "TBIRD8",
             "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR SONNC AHABB/a6000+ BAGGR/a10000+ TBIRD SIGME PANNT MATLK"
           },
           "CHEFS": {
             "cleared_altitude": 11000,
-            "sid": "TBIRD7",
+            "sid": "TBIRD8",
             "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR SONNC AHABB/a6000+ BAGGR/a10000+ TBIRD CHEFS"
           },
           "LENDS": {
             "cleared_altitude": 12000,
-            "sid": "SLIDZ3",
+            "sid": "SLIDZ4",
             "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR SLIDZ/a10000+ FIXAS/a12000+ QUIZR"
           },
           "HALBI": {
             "cleared_altitude": 7000,
-            "sid": "MIXAE4",
+            "sid": "MIXAE5",
             "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR HEFFE/a7000 MIXAE/a7000+ HALBI"
           },
           "WELLY": {
             "cleared_altitude": 4000,
-            "sid": "WELLY4",
+            "sid": "WELLY5",
             "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR/h110 SLAAM WELLY"
           }
         },
         "28R": {
           "JAYMC": {
             "cleared_altitude": 11000,
-            "sid": "OLAKE3",
+            "sid": "OLAKE4",
             "waypoints": "CRYER/a2500+ UTLEY/a4000+ BAGGR/a10000+ OLAKE/a11000+ JAYMC"
           },
           "MATLK,KPASA,SHRKS,SMELZ,VIYAP": {
             "cleared_altitude": 11000,
-            "sid": "TBIRD7",
+            "sid": "TBIRD8",
             "waypoints": "CRYER/a2500+ UTLEY/a4000+ BAGGR/a10000+ TBIRD SIGME PANNT MATLK"
           },
           "CHEFS": {
             "cleared_altitude": 11000,
-            "sid": "TBIRD7",
+            "sid": "TBIRD8",
             "waypoints": "CRYER/a2500+ UTLEY/a4000+ BAGGR/a10000+ TBIRD CHEFS"
           },
           "LENDS": {
             "cleared_altitude": 12000,
-            "sid": "SLIDZ3",
+            "sid": "SLIDZ4",
             "waypoints": "CRYER/a2500+ UTLEY/a4000+ FINNS PYRUT/a7000+ SLIDZ/a10000+ FIXAS/a12000+ QUIZR"
           },
           "HALBI": {
             "cleared_altitude": 7000,
-            "sid": "MIXAE4",
+            "sid": "MIXAE5",
             "waypoints": "CRYER/a2500+ UTLEY/a4000+ FINNS PYRUT/a7000 HEFFE/a7000 MIXAE/a7000+ HALBI"
           },
           "WELLY": {
             "cleared_altitude": 4000,
-            "sid": "WELLY4",
+            "sid": "WELLY5",
             "waypoints": "CRYER MYZNR SLAAM WELLY"
           }
         }
@@ -934,7 +934,7 @@
           ],
           "destination": "KIAD",
           "exit": "LENDS",
-          "route": "LENDS GRUBR Y299 SEELO GARIC Q129 YERBA MAYKR TRSSK CAVLR6"
+          "route": "LENDS GRUBR Y299 SEELO GARIC Q129 YERBA MAYKR TRSSK CAVLR7"
         },
         {
           "airlines": [
@@ -1264,17 +1264,17 @@
     }
   },
   "inbound_flows": {
-    "CLMNT2": {
+    "CLMNT3": {
       "arrivals": [
         {
-          "star": "CLMNT2",
+          "star": "CLMNT3",
           "spawn": "HEMSI@0.5",
           "initial_controller": "C20",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
           "airlines": {
-            "KPBI": [
+            "KDJT": [
               {
                 "icao": "JBU",
                 "fleet": "short",
@@ -1390,7 +1390,7 @@
           }
         },
         {
-          "star": "CLMNT2",
+          "star": "CLMNT3",
           "spawn": "HEMSI@0.5",
           "initial_controller": "C20",
           "initial_altitude": 15000,
@@ -1435,17 +1435,17 @@
         }
       ]
     },
-    "CPTAN3": {
+    "CPTAN4": {
       "arrivals": [
         {
-          "star": "CPTAN3",
+          "star": "CPTAN4",
           "spawn": "CAARL",
           "initial_controller": "C04",
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
           "airlines": {
-            "KPBI": [
+            "KDJT": [
               {
                 "icao": "UAL",
                 "fleet": "short",
@@ -1498,7 +1498,7 @@
           }
         },
         {
-          "star": "CPTAN3",
+          "star": "CPTAN4",
           "spawn": "CAARL",
           "initial_controller": "C04",
           "initial_altitude": 14000,
@@ -1523,7 +1523,7 @@
         },
         {
           "waypoints": "N027.30.08.768,W080.01.12.702/ho CPTAN/a10000-11000/s250 SNKLR/a6000+ KLUBZ/a5000 JUUNO HUSPU JESNA WHILE/a5000/h210",
-          "star": "CPTAN3",
+          "star": "CPTAN4",
           "initial_controller": "C20",
           "initial_altitude": 13000,
           "initial_speed": 280,
@@ -1563,18 +1563,18 @@
         }
       ]
     },
-    "JESTR1": {
+    "JESTR2": {
       "arrivals": [
         {
           "waypoints": "JESTR/a19000- POLOO N027.12.53.478,W080.13.22.304/ho RASAE/a7000 LINKE JESNA/a5000/flyover/h185",
-          "star": "JESTR1",
+          "star": "JESTR2",
           "initial_controller": "C20",
           "initial_altitude": 19000,
           "cleared_altitude": 7000,
           "initial_speed": 260,
           "expect_approach": null,
           "airlines": {
-            "KPBI": [
+            "KDJT": [
               {
                 "icao": "N",
                 "fleet": "GAturbine",
@@ -1612,7 +1612,7 @@
         },
         {
           "waypoints": "JESTR/a19000- LLNCH N027.15.40.196,W080.41.52.353/ho DOWDI AIRBT MARKT/a5000/flyover/h120",
-          "star": "JESTR1",
+          "star": "JESTR2",
           "initial_controller": "C20",
           "initial_altitude": 19000,
           "initial_speed": 260,
@@ -1656,23 +1656,23 @@
         }
       ]
     },
-    "MAHHI3": {
+    "MAHHI4": {
       "arrivals": [
         {
           "waypoints": "N026.13.11.770,W079.16.06.769 N026.19.34.733,W079.27.20.945/ho PREDA/a5000 MAHHI MRLIN",
           "runway_waypoints": {
-            "KPBI": {
+            "KDJT": {
               "10L": "MRLIN FENTA IBAME/flyover/h279",
               "28R": "MRLIN FEEGA/flyover/h334"
             }
           },
-          "star": "MAHHI3",
+          "star": "MAHHI4",
           "initial_controller": "C47",
           "initial_altitude": 10000,
           "initial_speed": 280,
           "expect_approach": null,
           "airlines": {
-            "KPBI": [
+            "KDJT": [
               {
                 "icao": "GPD",
                 "airport": "MYCZ"
@@ -1699,7 +1699,7 @@
         },
         {
           "waypoints": "N026.13.11.770,W079.16.06.769 N026.19.34.733,W079.27.20.945/ho PREDA/a5000 MAHHI MRLIN FZONE/flyover/h270",
-          "star": "MAHHI3",
+          "star": "MAHHI4",
           "initial_controller": "C47",
           "initial_altitude": 10000,
           "initial_speed": 280,
@@ -1726,7 +1726,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "airlines": {
-            "KPBI": [
+            "KDJT": [
               {
                 "icao": "JRE",
                 "airport": "MYAM"
@@ -1780,7 +1780,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "airlines": {
-            "KPBI": [
+            "KDJT": [
               {
                 "icao": "JRE",
                 "airport": "MYAM"
@@ -2219,7 +2219,7 @@
       "arrivals": [
         {
           "waypoints": "VUUDU OWLLL/a9000/s250/d050 N026.55.00.251,W080.41.53.919/ho MSQTO/flyover/h050",
-          "route": "VUUDU1",
+          "route": "VUUDU2",
           "initial_controller": "1P",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2263,7 +2263,7 @@
       "arrivals": [
         {
           "waypoints": "VUUDU OWLLL/a9000/s250/d050 N026.58.55.832,W080.39.46.917/h080/ho",
-          "route": "VUUDU1",
+          "route": "VUUDU2",
           "initial_controller": "1P",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2671,17 +2671,17 @@
         }
       ]
     },
-    "VUUDU1": {
+    "VUUDU2": {
       "arrivals": [
         {
-          "star": "VUUDU1",
+          "star": "VUUDU2",
           "spawn": "SHRVY",
           "initial_controller": "C47",
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
           "airlines": {
-            "KPBI": [
+            "KDJT": [
               {
                 "icao": "UAL",
                 "fleet": "short",
@@ -2793,7 +2793,7 @@
           }
         },
         {
-          "star": "VUUDU1",
+          "star": "VUUDU2",
           "spawn": "SHRVY",
           "initial_controller": "C47",
           "initial_altitude": 13000,
@@ -2860,7 +2860,7 @@
           }
         },
         {
-          "star": "VUUDU1",
+          "star": "VUUDU2",
           "spawn": "SHRVY",
           "initial_controller": "C47",
           "initial_altitude": 13000,
@@ -2935,12 +2935,12 @@
   },
   "name": "PBI TRACON",
   "default_scenario": "PBI Main - East",
-  "primary_airport": "KPBI",
+  "primary_airport": "KDJT",
   "scenarios": {
     "PBI Main - East": {
       "arrival_runways": [
         {
-          "airport": "KPBI",
+          "airport": "KDJT",
           "runway": "10L"
         },
         {
@@ -2962,34 +2962,34 @@
       ],
       "inbound_rates": {
         "BR64V.MRLIN": {
-          "KPBI": 3
+          "KDJT": 3
         },
         "BR21V.PBI": {
-          "KPBI": 2
+          "KDJT": 2
         },
-        "CLMNT2": {
-          "KPBI": 10,
+        "CLMNT3": {
+          "KDJT": 10,
           "KBCT": 3
         },
-        "CPTAN3": {
-          "KPBI": 5,
+        "CPTAN4": {
+          "KDJT": 5,
           "KBCT": 2
         },
-        "JESTR1": {
-          "KPBI": 4,
+        "JESTR2": {
+          "KDJT": 4,
           "KBCT": 3,
           "KFXE": 2,
           "KPMP": 2
         },
-        "MAHHI3": {
-          "KPBI": 3,
+        "MAHHI4": {
+          "KDJT": 3,
           "KBCT": 2
         },
         "T208/LIFRR2.E": {
           "overflights": 6
         },
-        "VUUDU1": {
-          "KPBI": 12,
+        "VUUDU2": {
+          "KDJT": 12,
           "KBCT": 3,
           "KSUA": 2
         }
@@ -2998,7 +2998,7 @@
       "default_maps": ["PBI-401S PBI AIRSPACE", "PBI-250S LAKE OKEECHOBEE"],
       "departure_runways": [
         {
-          "airport": "KPBI",
+          "airport": "KDJT",
           "rate": 15,
           "runway": "10L"
         },
@@ -3015,7 +3015,7 @@
     "PBI Main - West": {
       "arrival_runways": [
         {
-          "airport": "KPBI",
+          "airport": "KDJT",
           "runway": "28R"
         },
         {
@@ -3037,31 +3037,31 @@
       ],
       "inbound_rates": {
         "BR64V.MRLIN": {
-          "KPBI": 4
+          "KDJT": 4
         },
-        "CLMNT2": {
-          "KPBI": 10,
+        "CLMNT3": {
+          "KDJT": 10,
           "KBCT": 3
         },
-        "CPTAN3": {
-          "KPBI": 5,
+        "CPTAN4": {
+          "KDJT": 5,
           "KBCT": 2
         },
-        "JESTR1": {
-          "KPBI": 4,
+        "JESTR2": {
+          "KDJT": 4,
           "KBCT": 3,
           "KFXE": 2,
           "KPMP": 2
         },
-        "MAHHI3": {
-          "KPBI": 3,
+        "MAHHI4": {
+          "KDJT": 3,
           "KBCT": 2
         },
         "T208/LIFRR2.W": {
           "overflights": 6
         },
-        "VUUDU1": {
-          "KPBI": 12,
+        "VUUDU2": {
+          "KDJT": 12,
           "KBCT": 3,
           "KSUA": 2
         }
@@ -3070,7 +3070,7 @@
       "default_maps": ["PBI-401S PBI AIRSPACE", "PBI-250S LAKE OKEECHOBEE"],
       "departure_runways": [
         {
-          "airport": "KPBI",
+          "airport": "KDJT",
           "rate": 15,
           "runway": "28R"
         },

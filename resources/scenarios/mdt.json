@@ -148,7 +148,7 @@
           ],
           "destination": "KCLT",
           "exit": "VINNY",
-          "route": "VINNY EMI GVE AIROW CHSLY6"
+          "route": "VINNY EMI GVE AIROW CHSLY8"
         },
         {
           "airlines": [
@@ -238,7 +238,7 @@
           "altitude": 16000,
           "destination": "KIAD",
           "exit": "WILSS",
-          "route": "WILSS WAYNZ1"
+          "route": "WILSS WAYNZ2"
         },
         {
           "airlines": [
@@ -822,7 +822,7 @@
           ],
           "destination": "KIAD",
           "exit": "LRP",
-          "route": "LRP DELRO LIRCH HYPER9"
+          "route": "LRP DELRO LIRCH HYPER1"
         },
         {
           "airlines": [

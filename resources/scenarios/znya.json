@@ -329,7 +329,7 @@
           "exit": "MXE",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ LNDIZ PARQR4",
+          "route": "MXE PENSY J110 FLIRT J6 HVQ LNDIZ PARQR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -363,9 +363,9 @@
         },
         {
           "exit": "STOEN",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": 32000,
-          "route": "STOEN Q75 ENEME VUUDU1",
+          "route": "STOEN Q75 ENEME VUUDU2",
           "airlines": [
             {
               "icao": "AAL",
@@ -413,7 +413,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -545,7 +545,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -641,7 +641,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 34000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -701,7 +701,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -1025,7 +1025,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 38000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "FFT",
@@ -1229,7 +1229,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 30000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "UPS",
@@ -2073,12 +2073,12 @@
         }
       ]
     },
-    "HYPER9 - SARAA (26)": {
+    "HYPER1 - SARAA (26)": {
       "arrivals": [
         {
           "waypoints": "SARAA/ho26 LRP JOANE DELRO LIRCH CRAIN/delete",
           "cruise_altitude": 35000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. SARAA LRP JOANE DELRO LIRCH CRAIN",
           "initial_controller": "39",
           "initial_altitude": 20000,
@@ -2095,12 +2095,12 @@
         }
       ]
     },
-    "HYPER9 - HIKES (26)": {
+    "HYPER1 - HIKES (26)": {
       "arrivals": [
         {
           "waypoints": "HIKES/ho26 LRP JOANE DELRO LIRCH CRAIN/delete",
           "cruise_altitude": 35000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. HIKES LRP JOANE DELRO LIRCH CRAIN",
           "initial_controller": "39",
           "initial_altitude": 22000,
@@ -3206,10 +3206,10 @@
         }
       ],
       "inbound_rates": {
-        "HYPER9 - SARAA (26)": {
+        "HYPER1 - SARAA (26)": {
           "KIAD": 20
         },
-        "HYPER9 - HIKES (26)": {
+        "HYPER1 - HIKES (26)": {
           "KIAD": 15
         },
         "HAR5 (26)": {
@@ -3273,10 +3273,10 @@
         }
       ],
       "inbound_rates": {
-        "HYPER9 - SARAA (26)": {
+        "HYPER1 - SARAA (26)": {
           "KIAD": 20
         },
-        "HYPER9 - HIKES (26)": {
+        "HYPER1 - HIKES (26)": {
           "KIAD": 15
         },
         "HAR5 (26)": {
@@ -3329,10 +3329,10 @@
         }
       ],
       "inbound_rates": {
-        "HYPER9 - SARAA (26)": {
+        "HYPER1 - SARAA (26)": {
           "KIAD": 20
         },
-        "HYPER9 - HIKES (26)": {
+        "HYPER1 - HIKES (26)": {
           "KIAD": 15
         },
         "HAR5 (26)": {

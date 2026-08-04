@@ -1220,7 +1220,7 @@
           "exit": "BNA",
           "destination": "KBCT",
           "altitude": 31000,
-          "route": "DRUSE5 BNA ACORI VUUDU1",
+          "route": "DRUSE5 BNA ACORI VUUDU2",
           "airlines": [
             {
               "icao": "wup",
@@ -1308,7 +1308,7 @@
           "exit": "IIU",
           "destination": "KCLE",
           "altitude": 29000,
-          "route": "TEDDD5 IIU Q108 SITTR TRUPS5",
+          "route": "TEDDD5 IIU Q108 SITTR TRUPS6",
           "airlines": [
             {
               "icao": "SWA",
@@ -1408,7 +1408,7 @@
           "exit": "IIU",
           "destination": "KIAD",
           "altitude": 31000,
-          "route": "TEDDD5 IIU Q108 SITTR GIBBZ5",
+          "route": "TEDDD5 IIU Q108 SITTR GIBBZ6",
           "airlines": [
             {
               "icao": "UAL",
@@ -1602,9 +1602,9 @@
         },
         {
           "exit": "BNA",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": 31000,
-          "route": "DRUSE5 BNA ACORI VUUDU1",
+          "route": "DRUSE5 BNA ACORI VUUDU2",
           "airlines": [
             {
               "icao": "HPJ",
@@ -1644,7 +1644,7 @@
           "exit": "MYERZ",
           "destination": "KTPA",
           "altitude": 31000,
-          "route": "CHUUC6 MYERZ MEMFS DEFUN MAATY5",
+          "route": "CHUUC6 MYERZ MEMFS DEFUN MAATY6",
           "airlines": [
             {
               "icao": "SWA",
@@ -3971,7 +3971,7 @@
               "26L": "WEIZZ/a10000 EERRR/a8500 DSETH/a4000 CSX/a2000 N038.43.28.978,W090.23.05.952 N038.42.56.445,W090.23.47.288 N038.42.15.864,W090.24.54.387 N038.41.43.660,W090.26.35.077 EAVES/a2000 KSUS-26L/a200/delete"
             },
             "KCPS": {
-              "30L": "WEIZZ/a10000 JULYA/a7000 PAMMM/a4000 SUGAR/a3000 N038.28.49.371,W089.48.30.690 N038.27.09.080,W089.48.26.433 N038.25.52.958,W089.49.29.659 N038.25.28.074,W089.50.55.819 N038.25.29.393,W089.52.10.609 N038.26.09.520,W089.53.27.073/a2500 EBOPE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
+              "30L": "WEIZZ/a10000 JULYA/a7000 PAMMM/a4000 SUGAR/a3000 N038.28.49.371,W089.48.30.690 N038.27.09.080,W089.48.26.433 N038.25.52.958,W089.49.29.659 N038.25.28.074,W089.50.55.819 N038.25.29.393,W089.52.10.609 N038.26.09.520,W089.53.27.073/a2500 ILETE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
             },
             "KBLV": {
               "32R": "WEIZZ/a10000 JULYA/a7000 PAMMM/a4000 DUTMY/a3000 N038.26.19.023,W089.29.42.284 N038.24.04.317,W089.28.50.895 N038.22.14.783,W089.30.34.249 N038.21.43.102,W089.32.12.577 N038.22.04.497,W089.35.07.891 EGNOC/a2400 GOOEY/a2200 KBLV-32R/a200/delete"
@@ -4358,7 +4358,7 @@
           "waypoints": "DIXEE/a13000 EVVNS/a9000",
           "runway_waypoints": {
             "KCPS": {
-              "30L": "EVVNS/a9000 ESSAR/a4000 HOLLT/a2500 N038.23.15.579,W089.56.18.103 N038.24.46.161,W089.54.29.366 EBOPE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
+              "30L": "EVVNS/a9000 ESSAR/a4000 HOLLT/a2500 N038.23.15.579,W089.56.18.103 N038.24.46.161,W089.54.29.366 ILETE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
             },
             "KBLV": {
               "32L": "EVVNS/a9000 ESSAR/a5000 HOLLT/a4000 N038.23.13.272,W089.53.35.341 N038.20.53.897,W089.51.11.859 N038.18.14.512,W089.49.08.400 N038.15.40.869,W089.47.34.357 N038.15.45.016,W089.42.46.873 N038.17.14.609,W089.39.30.574 N038.19.05.777,W089.39.06.075/a2500 N038.21.15.471,W089.39.19.918 BLVIL/a2400 KBLV-32L/a200/delete"
@@ -4442,7 +4442,7 @@
           "waypoints": "FARMR/a13000 FASHE/a8000",
           "runway_waypoints": {
             "KCPS": {
-              "30L": "FASHE/a8000 PAMMM/a5000 N038.39.21.827,W089.53.51.271 N038.30.44.206,W089.51.34.711 N038.27.59.479,W089.52.30.988 EBOPE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
+              "30L": "FASHE/a8000 PAMMM/a5000 N038.39.21.827,W089.53.51.271 N038.30.44.206,W089.51.34.711 N038.27.59.479,W089.52.30.988 ILETE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
             },
             "KBLV": {
               "32R": "FASHE/a8000 PAMMM/a7000 DUTMY/a3000 N038.25.12.803,W089.28.42.381 N038.22.31.675,W089.31.59.229 EGNOC/a2500 GOOEY/a2200 KBLV-32R/a200/delete"

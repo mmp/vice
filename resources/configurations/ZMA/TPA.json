@@ -71,10 +71,10 @@
         "inbound_assignments": {
           "BLFRG3.NO.Finals": "1F",
           "DADES2.NO.Finals": "1F",
-          "MAATY5.NO.Finals": "1F",
+          "MAATY6.NO.Finals": "1F",
           "BLFRG3.SO.Finals": "1F",
           "DADES2.SO.Finals": "1F",
-          "MAATY5.SO.Finals": "1F"
+          "MAATY6.SO.Finals": "1F"
         },
         "default_consolidation": {
           "1F": []
@@ -86,7 +86,7 @@
           "BLFRG3": "1G",
           "DADES2": "1E",
           "LUBBR4": "1E",
-          "MAATY5": "1W",
+          "MAATY6": "1W",
           "RAYZZ3": "1W"
         },
         "departure_assignments": {
@@ -106,7 +106,7 @@
           "BLFRG3": "1G",
           "DADES2": "1E",
           "LUBBR4": "1E",
-          "MAATY5": "1W",
+          "MAATY6": "1W",
           "RAYZZ3": "1W"
         },
         "departure_assignments": {

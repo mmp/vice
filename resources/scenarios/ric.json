@@ -366,7 +366,7 @@
           ],
           "destination": "KCLT",
           "exit": "READE",
-          "route": "READE AIROW CHSLY6",
+          "route": "READE AIROW CHSLY8",
           "scratchpad": "KAL"
         },
         {
@@ -541,7 +541,7 @@
           ],
           "destination": "KMSY",
           "exit": "DRAIK",
-          "route": "DRAIK KIDDO Q22 CATLN SJI MNSTR1",
+          "route": "DRAIK KIDDO Q22 CATLN SJI MNSTR2",
           "scratchpad": "KAL"
         },
         {
@@ -865,7 +865,7 @@
           ],
           "destination": "KIAD",
           "exit": "BNTLY",
-          "route": "BNTLY CAVLR6",
+          "route": "BNTLY CAVLR7",
           "scratchpad": "IAD"
         },
         {
@@ -1829,7 +1829,7 @@
               },
               {
                 "icao": "LXJ",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "N",

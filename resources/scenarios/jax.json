@@ -678,9 +678,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "KENLL",
-          "route": "KENLL CPTAN3"
+          "route": "KENLL CPTAN4"
         },
         {
           "airlines": [
@@ -840,9 +840,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "KENLL",
-          "route": "KENLL CPTAN3"
+          "route": "KENLL CPTAN4"
         },
         {
           "airlines": [
@@ -1008,9 +1008,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "KENLL",
-          "route": "KENLL CPTAN3"
+          "route": "KENLL CPTAN4"
         },
         {
           "airlines": [
@@ -1176,9 +1176,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "KENLL",
-          "route": "KENLL CPTAN3"
+          "route": "KENLL CPTAN4"
         },
         {
           "airlines": [
@@ -1359,9 +1359,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "KENLL",
-          "route": "KENLL CPTAN3"
+          "route": "KENLL CPTAN4"
         },
         {
           "airlines": [
@@ -1533,9 +1533,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "KENLL",
-          "route": "KENLL CPTAN3"
+          "route": "KENLL CPTAN4"
         },
         {
           "airlines": [
@@ -1698,9 +1698,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "KENLL",
-          "route": "KENLL CPTAN3"
+          "route": "KENLL CPTAN4"
         },
         {
           "airlines": [

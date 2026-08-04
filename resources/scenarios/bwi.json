@@ -1159,7 +1159,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY6",
+          "route": "GLANC AIROW CHSLY8",
           "scratchpad": "TSC"
         },
         {
@@ -1177,7 +1177,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY6",
+          "route": "GLANC AIROW CHSLY8",
           "scratchpad": "TSC"
         },
         {
@@ -1191,7 +1191,7 @@
           ],
           "destination": "KMSY",
           "exit": "GLANC",
-          "route": "GLANC COLZI Q52 CHOPZ MGMRY CATLN Q56 SJI MNSTR1",
+          "route": "GLANC COLZI Q52 CHOPZ MGMRY CATLN Q56 SJI MNSTR2",
           "scratchpad": "TSC"
         },
         {
@@ -1681,11 +1681,11 @@
         }
       ]
     },
-    "DEALE3/MIIDY3": {
+    "DEALE3/MIIDY4": {
       "arrivals": [
         {
           "spawn": "LAFLN",
-          "star": "MIIDY3",
+          "star": "MIIDY4",
           "initial_controller": "W51",
           "initial_altitude": 18000,
           "assigned_altitude": 11000,
@@ -1792,11 +1792,11 @@
         }
       ]
     },
-    "RAVNN8.15R": {
+    "RAVNN9.15R": {
       "arrivals": [
         {
           "spawn": "CAPKO",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -1917,7 +1917,7 @@
         },
         {
           "spawn": "CAPKO",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -1927,7 +1927,7 @@
             "KMTN": [
               {
                 "icao": "WUP",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "WMN",
@@ -1956,11 +1956,11 @@
         }
       ]
     },
-    "RAVNN8.28": {
+    "RAVNN9.28": {
       "arrivals": [
         {
           "spawn": "CAPKO",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -2081,7 +2081,7 @@
         },
         {
           "spawn": "CAPKO",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -2091,7 +2091,7 @@
             "KMTN": [
               {
                 "icao": "WUP",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "WMN",
@@ -2120,11 +2120,11 @@
         }
       ]
     },
-    "RAVNN8.10": {
+    "RAVNN9.10": {
       "arrivals": [
         {
           "spawn": "CAPKO",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -2245,7 +2245,7 @@
         },
         {
           "spawn": "CAPKO",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -2255,7 +2255,7 @@
             "KMTN": [
               {
                 "icao": "WUP",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "WMN",
@@ -2284,11 +2284,11 @@
         }
       ]
     },
-    "RAVNN8.33L": {
+    "RAVNN9.33L": {
       "arrivals": [
         {
           "spawn": "CAPKO",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -2409,7 +2409,7 @@
         },
         {
           "spawn": "CAPKO",
-          "star": "RAVNN8",
+          "star": "RAVNN9",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -2419,7 +2419,7 @@
             "KMTN": [
               {
                 "icao": "WUP",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "WMN",
@@ -3510,11 +3510,11 @@
           "KBWI": 10,
           "KMTN": 1
         },
-        "RAVNN8.28": {
+        "RAVNN9.28": {
           "KBWI": 10,
           "KMTN": 1
         },
-        "DEALE3/MIIDY3": {
+        "DEALE3/MIIDY4": {
           "KBWI": 6,
           "KDCA": 10
         },
@@ -3596,11 +3596,11 @@
           "KBWI": 10,
           "KMTN": 1
         },
-        "RAVNN8.33L": {
+        "RAVNN9.33L": {
           "KBWI": 10,
           "KMTN": 1
         },
-        "DEALE3/MIIDY3": {
+        "DEALE3/MIIDY4": {
           "KBWI": 6,
           "KDCA": 10
         },
@@ -3682,11 +3682,11 @@
           "KBWI": 10,
           "KMTN": 1
         },
-        "RAVNN8.15R": {
+        "RAVNN9.15R": {
           "KBWI": 10,
           "KMTN": 1
         },
-        "DEALE3/MIIDY3": {
+        "DEALE3/MIIDY4": {
           "KBWI": 6,
           "KDCA": 10
         },
@@ -3764,11 +3764,11 @@
           "KBWI": 10,
           "KMTN": 1
         },
-        "RAVNN8.10": {
+        "RAVNN9.10": {
           "KBWI": 10,
           "KMTN": 1
         },
-        "DEALE3/MIIDY3": {
+        "DEALE3/MIIDY4": {
           "KBWI": 6,
           "KDCA": 10
         },

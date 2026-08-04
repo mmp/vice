@@ -500,7 +500,7 @@
           "altitude": 38000,
           "destination": "KMSY",
           "exit": "BIGGY",
-          "route": "BIGGY Q75 GVE LYH COLZI Q52 CHOPZ MGMRY SJI MNSTR1"
+          "route": "BIGGY Q75 GVE LYH COLZI Q52 CHOPZ MGMRY SJI MNSTR2"
         },
         {
           "airlines": [
@@ -1004,7 +1004,7 @@
             }
           ],
           "altitude": 36000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 DEBRL Q97 MALET DDANY STOOP"
         },
@@ -2137,7 +2137,7 @@
           "altitude": 38000,
           "destination": "KMSY",
           "exit": "BIGGY",
-          "route": "BIGGY Q75 GVE LYH COLZI Q52 CHOPZ MGMRY SJI MNSTR1"
+          "route": "BIGGY Q75 GVE LYH COLZI Q52 CHOPZ MGMRY SJI MNSTR2"
         },
         {
           "airlines": [
@@ -2614,7 +2614,7 @@
             }
           ],
           "altitude": 36000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "WHITE J209 VILLS J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 DEBRL Q97 MALET DDANY STOOP"
         },

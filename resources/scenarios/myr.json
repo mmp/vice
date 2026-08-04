@@ -116,7 +116,7 @@
           ],
           "destination": "KEWR",
           "exit": "OKNEE",
-          "route": "OKNEE MLLET3"
+          "route": "OKNEE MLLET5"
         },
         {
           "airlines": [
@@ -127,7 +127,7 @@
           ],
           "destination": "KEWR",
           "exit": "OKNEE",
-          "route": "OKNEE MLLET3"
+          "route": "OKNEE MLLET5"
         },
         {
           "airlines": [

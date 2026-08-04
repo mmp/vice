@@ -613,7 +613,7 @@
           "destination": "KJQF",
           "exit": "NITTS",
           "altitude": [33000, 35000, 37000, 39000, 41000],
-          "route": "NITTS WILON CAMJO HEPAR WIGVO WANSA JOOLS1"
+          "route": "NITTS WILON CAMJO HEPAR WIGVO WANSA JOOLS3"
         },
         {
           "airlines": [
@@ -841,7 +841,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KJQF",
           "exit": "CAMJO",
-          "route": "BAYPO2 CAMJO HEPAR WANSA JOOLS1"
+          "route": "BAYPO2 CAMJO HEPAR WANSA JOOLS3"
         },
         {
           "airlines": [
@@ -1013,7 +1013,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KBWI",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 OGRAE GOOOB THHMP RAVNN8"
+          "route": "TIDES1 CAMJO Q99 OGRAE GOOOB THHMP RAVNN9"
         },
         {
           "airlines": [
@@ -1044,7 +1044,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KCLT",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO TWINS PONZE BANKR5"
+          "route": "TIDES1 CAMJO TWINS PONZE BANKR7"
         },
         {
           "airlines": [
@@ -1621,7 +1621,7 @@
           "destination": "KCLT",
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "exit": "CAMJO",
-          "route": "BAYPO2 CAMJO TWINS PONZE BANKR5"
+          "route": "BAYPO2 CAMJO TWINS PONZE BANKR7"
         },
         {
           "airlines": [

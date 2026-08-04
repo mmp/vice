@@ -117,7 +117,7 @@
           "exit": "VIYAP",
           "destination": "KIAD",
           "altitude": 37000,
-          "route": "VIYAP Q87 JROSS FLO RDU BZNGA DORRN CAVLR6",
+          "route": "VIYAP Q87 JROSS FLO RDU BZNGA DORRN CAVLR7",
           "airlines": [
             {
               "icao": "FFT",
@@ -129,7 +129,7 @@
           "exit": "VIYAP",
           "destination": "KIAD",
           "altitude": 37000,
-          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR6",
+          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR7",
           "airlines": [
             {
               "icao": "UAL",
@@ -141,7 +141,7 @@
           "exit": "VIYAP",
           "destination": "KIAD",
           "altitude": 35000,
-          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR6",
+          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR7",
           "airlines": [
             {
               "icao": "UAL",
@@ -391,7 +391,7 @@
           "exit": "CRG",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CRG VIYAP CHECR STOCR4",
+          "route": "CRG VIYAP CHECR STOCR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -494,9 +494,9 @@
         },
         {
           "exit": "OMN",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": 28000,
-          "route": "OMN DEBRL CPTAN3",
+          "route": "OMN DEBRL CPTAN4",
           "airlines": [
             {
               "icao": "NKS",
@@ -693,27 +693,27 @@
           "airlines": [
             {
               "departure_airport": "KCLT",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "AAL"
             },
             {
               "departure_airport": "KDCA",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "DAL"
             },
             {
               "departure_airport": "KDCA",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "DAL"
             },
             {
               "departure_airport": "KGSP",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "ENY"
             },
             {
               "departure_airport": "KDCA",
-              "arrival_airport": "KPBI",
+              "arrival_airport": "KDJT",
               "icao": "EDV"
             }
           ],

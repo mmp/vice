@@ -757,7 +757,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ4",
+          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ6",
           "airlines": [
             {
               "icao": "AAL",
@@ -793,7 +793,7 @@
           "exit": "DRLER",
           "destination": "KDCA",
           "altitude": 39000,
-          "route": "TRUPR3 DRLER FAM J78 HVQ TRUPS5",
+          "route": "TRUPR3 DRLER FAM J78 HVQ TRUPS6",
           "airlines": [
             {
               "icao": "SWA",
@@ -949,7 +949,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ4",
+          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ6",
           "airlines": [
             {
               "icao": "AAL",
@@ -1153,7 +1153,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ4",
+          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ6",
           "airlines": [
             {
               "icao": "AAL",

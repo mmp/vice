@@ -1948,7 +1948,7 @@
         }
       ]
     },
-    "MAATY5": {
+    "MAATY6": {
       "arrivals": [
         {
           "airlines": {
@@ -2022,7 +2022,7 @@
           "cruise_altitude": 33000,
           "initial_speed": 280,
           "speed_restriction": 250,
-          "star": "MAATY5",
+          "star": "MAATY6",
           "initial_controller": "J30",
           "runway_waypoints": {
             "KTPA": {
@@ -2254,7 +2254,7 @@
         }
       ]
     },
-    "MAATY5.SO.Finals": {
+    "MAATY6.SO.Finals": {
       "arrivals": [
         {
           "airlines": {
@@ -2310,7 +2310,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
-          "star": "MAATY5",
+          "star": "MAATY6",
           "initial_controller": "1W",
           "waypoints": "N028.39.12.145,W083.09.01.653 AAHOY MAATY/a8000-11000/s250 ROOKR N028.16.33.843,W082.47.31.034/ho SCLOP/a5000/s230/h097"
         }
@@ -2404,7 +2404,7 @@
         }
       ]
     },
-    "MAATY5.NO.Finals": {
+    "MAATY6.NO.Finals": {
       "arrivals": [
         {
           "airlines": {
@@ -2460,7 +2460,7 @@
           "initial_altitude": 10000,
           "initial_speed": 280,
           "speed_restriction": 250,
-          "star": "MAATY5",
+          "star": "MAATY6",
           "initial_controller": "1W",
           "waypoints": "N028.10.49.333,W082.48.34.205 BLOUT/ho CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187"
         }
@@ -2601,7 +2601,7 @@
           "KTPA": 5,
           "KPIE": 0
         },
-        "MAATY5": {
+        "MAATY6": {
           "KTPA": 5,
           "KLAL": 0
         },
@@ -2682,7 +2682,7 @@
         "DADES2.NO.Finals": {
           "KTPA": 12
         },
-        "MAATY5.NO.Finals": {
+        "MAATY6.NO.Finals": {
           "KTPA": 12
         }
       },
@@ -2733,7 +2733,7 @@
           "KTPA": 5,
           "KPIE": 0
         },
-        "MAATY5": {
+        "MAATY6": {
           "KTPA": 5,
           "KLAL": 0
         },
@@ -2814,7 +2814,7 @@
         "DADES2.SO.Finals": {
           "KTPA": 12
         },
-        "MAATY5.SO.Finals": {
+        "MAATY6.SO.Finals": {
           "KTPA": 12
         }
       },

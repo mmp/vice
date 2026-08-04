@@ -185,12 +185,12 @@
         "26R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -247,12 +247,12 @@
         "26L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -309,12 +309,12 @@
         "8R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -371,12 +371,12 @@
         "8L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -433,12 +433,12 @@
         "8L.CFG2": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -495,12 +495,12 @@
         "1R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -557,12 +557,12 @@
         "1L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -619,12 +619,12 @@
         "19R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -681,12 +681,12 @@
         "19L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT3",
+            "sid": "GIDGT4",
             "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -822,7 +822,7 @@
           ],
           "destination": "KSLC",
           "exit": "FRNCK.8",
-          "route": "FRNCK MLF QWENN6"
+          "route": "FRNCK MLF QWENN7"
         },
         {
           "airlines": [

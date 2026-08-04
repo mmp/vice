@@ -47,24 +47,24 @@
         "29": {
           "SYR, HANAA, CAM": {
             "assigned_altitude": 3000,
-            "sid": "HSKEL3",
+            "sid": "HSKEL4",
             "waypoints": "ALIEH HSKEL BAUER"
           },
           "NELIE, CCC, BAF": {
             "assigned_altitude": 3000,
-            "sid": "NUBLE4",
+            "sid": "RBELA1",
             "waypoints": "GORHM NUBLE RBELA"
           }
         },
         "11": {
           "NELIE, BAF, CCC": {
             "assigned_altitude": 3000,
-            "sid": "NUBLE4",
-            "waypoints": "AHRON PEAAK WHYOO ORCHD/a10000 FOSCO NUBLE RBELA"
+            "sid": "RBELA1",
+            "waypoints": "PMMKN HLFWY WHYOO ORCHD/a10000 FOSCO NUBLE RBELA"
           },
           "SYR, HANAA, CAM": {
             "assigned_altitude": 3000,
-            "sid": "HSKEL3",
+            "sid": "HSKEL4",
             "waypoints": "AHRON LIZLU MRKEE ALIEH HSKEL BAUER"
           }
         }
@@ -100,7 +100,7 @@
           ],
           "destination": "KJFK",
           "exit": "CCC",
-          "route": "NUBLE4 CCC PARCH4",
+          "route": "RBELA1 CCC PARCH4",
           "scratchpad": "CCC"
         },
         {
@@ -111,7 +111,7 @@
           ],
           "destination": "KBNA",
           "exit": "CAM",
-          "route": "HSKEL3 CAM ALB J49 PSB Q71 GEFFS HVQ YOCKY GROAT PASLY4",
+          "route": "HSKEL4 CAM ALB J49 PSB Q71 GEFFS HVQ YOCKY GROAT PASLY4",
           "scratchpad": "CAM"
         }
       ],
@@ -123,7 +123,7 @@
       "arrivals": [
         {
           "waypoints": "CCC FOSTY BILJE BUOYY/ho SHAUN CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
-          "route": "SCOGS3",
+          "route": "SCOGS4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
           "initial_speed": 270,
@@ -191,7 +191,7 @@
       "arrivals": [
         {
           "waypoints": "BUOYY SHAUN/ho CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
-          "route": "SCOGS3",
+          "route": "SCOGS4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
           "initial_speed": 270,

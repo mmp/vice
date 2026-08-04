@@ -93,7 +93,7 @@
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
-            "sid": "TRTON2",
+            "sid": "TRTON3",
             "waypoints": "KLAX-25R/h090 TRTON/a8000+ DARRK/a12000- FIXIT IKAYE"
           }
         },
@@ -130,7 +130,7 @@
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
-            "sid": "TRTON2",
+            "sid": "TRTON3",
             "waypoints": "KLAX-25L/h090 TRTON/a8000+ DARRK/a12000- FIXIT IKAYE"
           }
         },
@@ -162,7 +162,7 @@
           },
           "FICKY.E": {
             "cleared_altitude": 3000,
-            "sid": "TRTON2",
+            "sid": "TRTON3",
             "waypoints": "KLAX-24L/h071 TRTON/a8000+ DARRK/a12000- BNANO DONKS"
           },
           "RZS.E": {
@@ -172,7 +172,7 @@
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
-            "sid": "TRTON2",
+            "sid": "TRTON3",
             "waypoints": "KLAX-24L/h071 TRTON/a8000+ DARRK/a12000- FIXIT IKAYE"
           }
         },
@@ -4329,7 +4329,7 @@
           "destination": "KIAD",
           "exit": "TGOLD",
           "scratchpad": "ZOI",
-          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
+          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
         },
         {
           "airlines": [
@@ -4673,7 +4673,7 @@
           "destination": "KIAD",
           "exit": "IPL.E",
           "scratchpad": "SAI",
-          "route": "SAYOW2 IPL CUVAM MANRS JUDTH TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
+          "route": "SAYOW2 IPL CUVAM MANRS JUDTH TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
         },
         {
           "airlines": [
@@ -5017,7 +5017,7 @@
           "destination": "KIAD",
           "exit": "TGOLD",
           "scratchpad": "ZOI",
-          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
+          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
         },
         {
           "airlines": [
@@ -5418,7 +5418,7 @@
           "destination": "KCLT",
           "exit": "MTBAL",
           "scratchpad": "MTB",
-          "route": "MTBAL CNERY BLH SALOM J169 KOFFA KA24Q TXO J74 IRW OKM ECIGE TROVE HCH TAZZA FILPZ4"
+          "route": "MTBAL CNERY BLH SALOM J169 KOFFA KA24Q TXO J74 IRW OKM ECIGE TROVE HCH TAZZA FILPZ6"
         },
         {
           "airlines": [

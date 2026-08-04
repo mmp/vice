@@ -27,7 +27,7 @@
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
-            "sid": "TRTON2",
+            "sid": "TRTON3",
             "waypoints": "KLAX-25R/h090 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
             "handoff_controller": "14"
           }
@@ -41,7 +41,7 @@
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
-            "sid": "TRTON2",
+            "sid": "TRTON3",
             "waypoints": "KLAX-25L/h090 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
             "handoff_controller": "14"
           }
@@ -49,7 +49,7 @@
         "6R": {
           "FICKY.E": {
             "cleared_altitude": 3000,
-            "sid": "TRTON2",
+            "sid": "TRTON3",
             "waypoints": "KLAX-24L/h071 TRTON/a8000+/ho DARRK/a12000- BNANO DONKS",
             "handoff_controller": "14"
           },
@@ -61,7 +61,7 @@
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
-            "sid": "TRTON2",
+            "sid": "TRTON3",
             "waypoints": "KLAX-24L/h071 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
             "handoff_controller": "14"
           }
@@ -1272,7 +1272,7 @@
           ],
           "destination": "KCLT",
           "exit": "MTBAL",
-          "route": "MTBAL CNERY BLH SALOM J169 KOFFA KA24Q TXO J74 IRW OKM ECIGE TROVE HCH TAZZA FILPZ4"
+          "route": "MTBAL CNERY BLH SALOM J169 KOFFA KA24Q TXO J74 IRW OKM ECIGE TROVE HCH TAZZA FILPZ6"
         },
         {
           "airlines": [

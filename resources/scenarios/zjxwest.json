@@ -85,7 +85,7 @@
           "altitude": 33000,
           "destination": "KCLT",
           "exit": "CEW",
-          "route": "PENSI CEW MCN PONZE BANKR5"
+          "route": "PENSI CEW MCN PONZE BANKR7"
         },
         {
           "airlines": [{ "icao": "RPA" }],
@@ -405,7 +405,7 @@
           "altitude": 35000,
           "destination": "KCLT",
           "exit": "CORKY",
-          "route": "CORKY ACORI CSG BESTT JONZE5"
+          "route": "CORKY ACORI CSG BESTT JONZE7"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "JIA" }],
@@ -565,7 +565,7 @@
     "KEYW": { "approaches": { "R9": { "cifp_id": "R9" } } },
     "KMIA": { "approaches": { "I8R": { "cifp_id": "I8R" } } },
     "KFLL": { "approaches": { "I0L": { "cifp_id": "I10L" } } },
-    "KPBI": { "approaches": { "I0L": { "cifp_id": "I10L" } } },
+    "KDJT": { "approaches": { "I0L": { "cifp_id": "I10L" } } },
     "KJAX": { "approaches": { "I8": { "cifp_id": "IY8" } } }
   },
   "inbound_flows": {
@@ -693,7 +693,7 @@
         }
       ]
     },
-    "DEFUN.MAATY5": {
+    "DEFUN.MAATY6": {
       "overflights": [
         {
           "airlines": [
@@ -1594,7 +1594,7 @@
           "runway": "10L"
         },
         {
-          "airport": "KPBI",
+          "airport": "KDJT",
           "runway": "10L"
         }
       ],
@@ -1602,7 +1602,7 @@
         "DEFUN": { "overflights": 10 },
         "J2": { "overflights": 10 },
         "BULZI CEW IRUBE": { "overflights": 5 },
-        "DEFUN.MAATY5": { "overflights": 10 },
+        "DEFUN.MAATY6": { "overflights": 10 },
         "DEFUN.BANGZ2": { "overflights": 10 },
         "DEFUN.FROGZ5": { "overflights": 10 },
         "DEFUN.GRNCH5": { "overflights": 10 },
@@ -1708,7 +1708,7 @@
           "runway": "10L"
         },
         {
-          "airport": "KPBI",
+          "airport": "KDJT",
           "runway": "10L"
         }
       ],
@@ -1716,7 +1716,7 @@
         "DEFUN": { "overflights": 10 },
         "J2": { "overflights": 10 },
         "BULZI CEW IRUBE": { "overflights": 5 },
-        "DEFUN.MAATY5": { "overflights": 10 },
+        "DEFUN.MAATY6": { "overflights": 10 },
         "DEFUN.BANGZ2": { "overflights": 10 },
         "DEFUN.FROGZ5": { "overflights": 10 },
         "DEFUN.GRNCH5": { "overflights": 10 },

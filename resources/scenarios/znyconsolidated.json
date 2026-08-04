@@ -287,8 +287,8 @@
             { "icao": "RPA" }
           ],
           "altitude": [34000, 36000, 38000, 430000],
-          "destination": "KPBI",
-          "route": "WHITE Q409 CRPLR EARZZ Q131 WAALT Y289 DULEE CLMNT2",
+          "destination": "KDJT",
+          "route": "WHITE Q409 CRPLR EARZZ Q131 WAALT Y289 DULEE CLMNT3",
           "exit": "WHITE"
         },
         {
@@ -2899,7 +2899,7 @@
           "exit": "MXE",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ LNDIZ PARQR4",
+          "route": "MXE PENSY J110 FLIRT J6 HVQ LNDIZ PARQR6",
           "airlines": [
             {
               "icao": "AAL",
@@ -2933,9 +2933,9 @@
         },
         {
           "exit": "STOEN",
-          "destination": "KPBI",
+          "destination": "KDJT",
           "altitude": 32000,
-          "route": "STOEN Q75 ENEME VUUDU1",
+          "route": "STOEN Q75 ENEME VUUDU2",
           "airlines": [
             {
               "icao": "AAL",
@@ -2983,7 +2983,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -3115,7 +3115,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -3211,7 +3211,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 34000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -3271,7 +3271,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -3595,7 +3595,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 38000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "FFT",
@@ -3799,7 +3799,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 30000,
-          "route": "STOEN Q75 GVE AIROW CHSLY6",
+          "route": "STOEN Q75 GVE AIROW CHSLY8",
           "airlines": [
             {
               "icao": "UPS",
@@ -5894,7 +5894,7 @@
             "KISP": [
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "SWA",
@@ -5981,7 +5981,7 @@
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "JBU",
@@ -6289,12 +6289,12 @@
         }
       ]
     },
-    "HYPER9 (PARKE)": {
+    "HYPER1 (PARKE)": {
       "arrivals": [
         {
           "waypoints": "N040.40.54.345,W074.37.24.396 N040.40.37.275,W074.47.03.321/ho PARKE JETTZ SARAA LRP JOANE DELRO LIRCH BINNS HYPER SIGBE MOWAT HUSEL/delete",
           "cruise_altitude": 22000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. PARKE JETTZ SARAA LRP JOANE DELRO LIRCH BINNS HYPER SIGBE MOWAT HUSEL",
           "initial_controller": "N5W",
           "initial_altitude": 17000,
@@ -6323,12 +6323,12 @@
         }
       ]
     },
-    "HYPER9 (FILGA)": {
+    "HYPER1 (FILGA)": {
       "arrivals": [
         {
           "waypoints": "FILGA/ho KEAVR BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH BINNS HYPER SIGBE MOWAT HUSEL/delete",
           "cruise_altitude": 36000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. KEAVR BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH BINNS HYPER SIGBE MOWAT HUSEL",
           "initial_controller": "B20",
           "initial_altitude": 36000,
@@ -6365,12 +6365,12 @@
         }
       ]
     },
-    "HYPER9 (GANDE)": {
+    "HYPER1 (GANDE)": {
       "arrivals": [
         {
           "waypoints": "GANDE/ho KEAVR BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH BINNS HYPER SIGBE MOWAT HUSEL/delete",
           "cruise_altitude": 36000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. KEAVR BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH BINNS HYPER SIGBE MOWAT HUSEL",
           "initial_controller": "B20",
           "initial_altitude": 36000,
@@ -6407,12 +6407,12 @@
         }
       ]
     },
-    "HYPER9 (RBV - 55)": {
+    "HYPER1 (RBV - 55)": {
       "arrivals": [
         {
           "waypoints": "N040.23.34.860,W074.03.27.284 RBV/ho BANKK N040.19.48.363,W075.17.12.550 HIKES LRP JOANE DELRO LIRCH BINNS HYPER SIGBE MOWAT HUSEL/delete",
           "cruise_altitude": 22000,
-          "star": "HYPER9",
+          "star": "HYPER1",
           "route": "/. BANKK HIKES LRP JOANE DELRO LIRCH BINNS HYPER SIGBE MOWAT HUSEL",
           "initial_controller": "N5S",
           "initial_altitude": 17000,
@@ -6452,7 +6452,7 @@
               },
               {
                 "icao": "DAL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "AMX",
@@ -7087,16 +7087,16 @@
         "CLIPR3 (NELIE 42)": {
           "KDCA": 1
         },
-        "HYPER9 (RBV - 55)": {
+        "HYPER1 (RBV - 55)": {
           "KIAD": 1
         },
-        "HYPER9 (PARKE)": {
+        "HYPER1 (PARKE)": {
           "KIAD": 1
         },
-        "HYPER9 (GANDE)": {
+        "HYPER1 (GANDE)": {
           "KIAD": 1
         },
-        "HYPER9 (FILGA)": {
+        "HYPER1 (FILGA)": {
           "KIAD": 1
         },
         "OWENZ": {
