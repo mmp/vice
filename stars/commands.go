@@ -861,32 +861,9 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 // and route.
 func calculateAirspace(ctx *panes.Context, trk *sim.Track) (string, error) {
 	area := ctx.UserController().Area
-	for _, rules := range ctx.FacilityAdaptation.AirspaceAwarenessForArea(area) {
-		fp := trk.FlightPlan
-		for _, fix := range rules.Fix {
-			// Does the fix in the rules match the route?
-			if fix != "ALL" && fp.ExitFix != fix {
-				continue
-			}
-
-			// Does the final altitude satisfy the altitude range, if specified?
-			alt := rules.AltitudeRange
-			if !(alt[0] == 0 && alt[1] == 0) /* none specified */ &&
-				(fp.RequestedAltitude < alt[0] || fp.RequestedAltitude > alt[1]) {
-				continue
-			}
-
-			// Finally make sure any aircraft type specified in the rules
-			// in the matches.
-			if perf, ok := av.DB.AircraftPerformance[fp.AircraftType]; ok {
-				engineType := perf.Engine.AircraftType
-				if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, engineType) {
-					return rules.ReceivingController, nil
-				}
-			}
-		}
+	if tcp, ok := ctx.FacilityAdaptation.AirspaceAwarenessController(area, trk.FlightPlan); ok {
+		return tcp, nil
 	}
-
 	return "", ErrSTARSIllegalPosition
 }
 

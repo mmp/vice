@@ -304,7 +304,7 @@ func (fa *FacilityAdaptation) ScratchpadForFix(fix string, area string) (string,
 
 // AirspaceAwarenessForArea returns the airspace awareness rules for a
 // given area. Area-level entries come first so they take priority (since
-// calculateAirspace returns on the first match), with facility-level
+// AirspaceAwarenessController returns on the first match), with facility-level
 // entries as fallback.
 func (fa *FacilityAdaptation) AirspaceAwarenessForArea(area string) []AirspaceAwareness {
 	if area != "" {
@@ -313,6 +313,39 @@ func (fa *FacilityAdaptation) AirspaceAwarenessForArea(area string) []AirspaceAw
 		}
 	}
 	return fa.AirspaceAwareness
+}
+
+// AirspaceAwarenessController returns the controller responsible for a flight
+// given the exit fix and requested altitude in its flight plan, per the
+// airspace awareness rules in effect for area.
+func (fa *FacilityAdaptation) AirspaceAwarenessController(area string, fp *NASFlightPlan) (string, bool) {
+	for _, rules := range fa.AirspaceAwarenessForArea(area) {
+		for _, fix := range rules.Fix {
+			// A rule names a fix in full, while a flight plan carries
+			// 3-character fix ids, so the rule's name is shortened the same way
+			// the exit fix was to compare them.
+			if fix != "ALL" && fp.ExitFix != fa.FixPairFixID(fix) {
+				continue
+			}
+
+			// Does the final altitude satisfy the altitude range, if specified?
+			alt := rules.AltitudeRange
+			if !(alt[0] == 0 && alt[1] == 0) /* none specified */ &&
+				(fp.RequestedAltitude < alt[0] || fp.RequestedAltitude > alt[1]) {
+				continue
+			}
+
+			// Finally make sure any aircraft type specified in the rules
+			// matches.
+			if perf, ok := av.DB.AircraftPerformance[fp.AircraftType]; ok {
+				engineType := perf.Engine.AircraftType
+				if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, engineType) {
+					return rules.ReceivingController, true
+				}
+			}
+		}
+	}
+	return "", false
 }
 
 // VideoMapFileForArea returns the effective video map file for a given
