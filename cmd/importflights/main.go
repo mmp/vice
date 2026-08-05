@@ -84,7 +84,8 @@ func main() {
 	fmt.Printf("Importing %d departure and %d arrival airports across %d facilities\n",
 		len(departureAirports), len(arrivalAirports), len(facilities))
 
-	imp := makeImporter(departureAirports, arrivalAirports, av.DB.AircraftPerformance, av.DB.Airlines)
+	imp := makeImporter(departureAirports, arrivalAirports, av.DB.Airports, av.DB.AircraftPerformance,
+		av.DB.Airlines)
 	for _, path := range flag.Args() {
 		if err := readFlights(path, imp); err != nil {
 			fmt.Printf("%v\n", err)

@@ -152,6 +152,7 @@ type bucket struct {
 type importer struct {
 	departureAirports map[string]bool
 	arrivalAirports   map[string]bool
+	airports          map[string]av.FAAAirport
 	performance       map[string]av.AircraftPerformance
 	airlines          map[string]av.Airline
 
@@ -170,10 +171,11 @@ type importer struct {
 	badCallsign         int64
 	badTimestamp        int64
 	unknownOtherAirport int64
-	unknownAircraftType int64
+	missingAircraftType int64
 
-	// unknownTypes counts the flights dropped for each unusable aircraft type,
-	// which is what tells us what to add to aircraftTypeRewrites.
+	// unknownTypes counts the flights seen for each aircraft type that isn't in
+	// the aircraft database. Those flights are still imported, but a sim skips
+	// them until the type is added to openscope-aircraft.json.
 	unknownTypes map[string]int64
 
 	// unknownAirlines counts the flights seen for each callsign prefix that
@@ -182,11 +184,12 @@ type importer struct {
 	unknownAirlines map[string]int64
 }
 
-func makeImporter(departureAirports, arrivalAirports map[string]bool,
+func makeImporter(departureAirports, arrivalAirports map[string]bool, airports map[string]av.FAAAirport,
 	performance map[string]av.AircraftPerformance, airlines map[string]av.Airline) *importer {
 	return &importer{
 		departureAirports: departureAirports,
 		arrivalAirports:   arrivalAirports,
+		airports:          airports,
 		performance:       performance,
 		airlines:          airlines,
 		symbols:           makeSymbols(),
@@ -236,22 +239,27 @@ func (imp *importer) processRow(row *flightRow) {
 		imp.unknownAirlines[base]++
 	}
 
-	aircraftType, ok := normalizeAircraftType(row.AircraftType, imp.performance)
-	if !ok {
-		imp.unknownAircraftType++
-		imp.unknownTypes[aircraftType]++
+	// A type Vice doesn't know is imported all the same and counted so that the
+	// report says what to add to openscope-aircraft.json; a row with no type at
+	// all says nothing to import.
+	aircraftType := strings.ToUpper(strings.TrimSpace(row.AircraftType))
+	if aircraftType == "" || aircraftType == "-" {
+		imp.missingAircraftType++
 		return
+	}
+	if _, ok := imp.performance[aircraftType]; !ok {
+		imp.unknownTypes[aircraftType]++
 	}
 
 	if departure {
-		if _, ok := av.DB.Airports[destination]; !ok {
+		if _, ok := imp.airports[destination]; !ok {
 			imp.unknownOtherAirport++
 		} else {
 			imp.add(origin, destination, callsign, aircraftType, row.OriginTime, true)
 		}
 	}
 	if arrival {
-		if _, ok := av.DB.Airports[origin]; !ok {
+		if _, ok := imp.airports[origin]; !ok {
 			imp.unknownOtherAirport++
 		} else {
 			imp.add(destination, origin, callsign, aircraftType, row.DestinationTime, false)
@@ -294,8 +302,8 @@ func (imp *importer) add(airport, other, callsign, aircraftType, timestamp strin
 	imp.recordsEmitted++
 }
 
-// report summarizes what was read and what had to be thrown away. The list of
-// unusable aircraft types is what tells us what to add to aircraftTypeRewrites.
+// report summarizes what was read and what had to be thrown away, plus what
+// was imported that Vice doesn't yet know how to fly.
 func (imp *importer) report() {
 	fmt.Printf("\nRead %s flights, kept %s\n", commas(imp.rowsRead), commas(imp.recordsEmitted))
 	fmt.Printf("Skipped:\n")
@@ -305,7 +313,7 @@ func (imp *importer) report() {
 	}{
 		{"not an airport we simulate", imp.notTargetAirport},
 		{"couldn't tell where it flew between", imp.unresolvedEndpoints},
-		{"unknown aircraft type", imp.unknownAircraftType},
+		{"no aircraft type", imp.missingAircraftType},
 		{"departed and arrived at the same airport", imp.sameEndpoints},
 		{"other airport not in the database", imp.unknownOtherAirport},
 		{"unusable callsign", imp.badCallsign},
@@ -317,8 +325,8 @@ func (imp *importer) report() {
 	}
 
 	if len(imp.unknownTypes) > 0 {
-		fmt.Printf("\n%d unknown aircraft types (add to aircraftTypeRewrites as needed):\n",
-			len(imp.unknownTypes))
+		fmt.Printf("\n%d aircraft types not in openscope-aircraft.json "+
+			"(their flights are imported but sims skip them):\n", len(imp.unknownTypes))
 		printCounts(imp.unknownTypes)
 	}
 
@@ -427,33 +435,6 @@ func resolveEndpoints(origins, destinations, route []string) (origin, destinatio
 	}
 
 	return origin, destination, ok
-}
-
-// aircraftTypeRewrites maps aircraft types as they appear in the source data to
-// the ICAO designators Vice knows about. Add entries here when the import
-// reports types that are missing or misnamed in the data. Most of these are
-// variants that Vice doesn't model separately from the rest of their family.
-var aircraftTypeRewrites = map[string]string{
-	"B717": "B712", // 717-200
-	"E45X": "E145", // ERJ-145XR
-	"CRJ1": "CRJ2", // CRJ-100
-	"AT73": "AT72", // ATR 72-200
-	"BE30": "B350", // Super King Air 300
-	"GA6C": "GLF6", // Gulfstream G600
-}
-
-// normalizeAircraftType applies aircraftTypeRewrites and confirms that the
-// result is an aircraft Vice can fly. Aircraft performance is passed in rather
-// than read from av.DB so that this can be tested without loading the database.
-func normalizeAircraftType(value string, performance map[string]av.AircraftPerformance) (string, bool) {
-	aircraftType := strings.ToUpper(strings.TrimSpace(value))
-	if rewritten, ok := aircraftTypeRewrites[aircraftType]; ok {
-		aircraftType = rewritten
-	}
-	if _, ok := performance[aircraftType]; !ok {
-		return aircraftType, false
-	}
-	return aircraftType, true
 }
 
 // timeLayout is the format of the timestamps in the source data. They are UTC.

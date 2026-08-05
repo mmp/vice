@@ -325,11 +325,10 @@ func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, published published
 		return nil, fmt.Errorf("published arrival %s: %w", callsign, errCallsignInUse)
 	}
 
-	aircraftType := normalizeAircraftType(flight.AircraftType)
-	if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
+	if _, ok := av.DB.AircraftPerformance[flight.AircraftType]; !ok {
 		return nil, fmt.Errorf(
 			"aircraft type %s is not present in the performance database",
-			aircraftType,
+			flight.AircraftType,
 		)
 	}
 
@@ -341,7 +340,7 @@ func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, published published
 	// is being flown.
 	ac.InitializeFlightPlan(
 		av.FlightRulesIFR,
-		aircraftType,
+		flight.AircraftType,
 		normalizeAirportCode(flight.Other),
 		normalizeAirportCode(flight.Airport),
 	)

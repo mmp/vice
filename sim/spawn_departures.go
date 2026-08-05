@@ -730,16 +730,15 @@ func (s *Sim) createPublishedIFRDepartureNoLock(flight av.Flight, departureAirpo
 		return nil, fmt.Errorf("published departure %s: %w", callsign, errCallsignInUse)
 	}
 
-	aircraftType := normalizeAircraftType(flight.AircraftType)
-	if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
+	if _, ok := av.DB.AircraftPerformance[flight.AircraftType]; !ok {
 		return nil, fmt.Errorf(
 			"aircraft type %s is not present in the performance database",
-			aircraftType,
+			flight.AircraftType,
 		)
 	}
 
 	placement, err := s.resolvePublishedDeparture(departureAirport, runway, categories,
-		flight.Other, aircraftType, routedDestinations)
+		flight.Other, flight.AircraftType, routedDestinations)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", flight.Callsign, err)
 	}
@@ -748,7 +747,7 @@ func (s *Sim) createPublishedIFRDepartureNoLock(flight av.Flight, departureAirpo
 		ADSBCallsign: av.ADSBCallsign(callsign),
 		Mode:         av.TransponderModeAltitude,
 	}
-	ac.InitializeFlightPlan(av.FlightRulesIFR, aircraftType, departureAirport, flight.Other)
+	ac.InitializeFlightPlan(av.FlightRulesIFR, flight.AircraftType, departureAirport, flight.Other)
 
 	fmt.Printf("%s: departure %s->%s runway %s exit %s (%s)\n", callsign, departureAirport,
 		flight.Other, runway, placement.dep.Exit, placement.how)

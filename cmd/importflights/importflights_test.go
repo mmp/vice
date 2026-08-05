@@ -110,27 +110,42 @@ func TestResolveEndpoints(t *testing.T) {
 	}
 }
 
-func TestNormalizeAircraftType(t *testing.T) {
-	performance := map[string]av.AircraftPerformance{"B738": {}, "B712": {}}
+// A type the aircraft database doesn't have is imported all the same and
+// counted, so that the report says what to add to openscope-aircraft.json. A
+// row with no type at all is skipped.
+func TestUnknownAircraftTypes(t *testing.T) {
+	imp := makeTestImporter("KMSP")
+	row := flightRow{
+		Callsign:            "DAL88",
+		AircraftType:        " b738 ",
+		OriginTime:          "2026-03-30 14:04:59",
+		OriginAirports:      "['KMSP']",
+		DestinationTime:     "2026-03-30 16:00:00",
+		DestinationAirports: "['KORD']",
+		Route:               "-",
+	}
+	imp.processRow(&row)
+	row.AircraftType = "E45X"
+	imp.processRow(&row)
+	row.AircraftType = "-"
+	imp.processRow(&row)
 
-	for _, tc := range []struct {
-		value    string
-		expected string
-		ok       bool
-	}{
-		{"B738", "B738", true},
-		{"b738", "B738", true},
-		{" B738 ", "B738", true},
-		{"B717", "B712", true}, // rewritten
-		{"-", "-", false},
-		{"", "", false},
-		{"PA18", "PA18", false},
-	} {
-		got, ok := normalizeAircraftType(tc.value, performance)
-		if got != tc.expected || ok != tc.ok {
-			t.Errorf("normalizeAircraftType(%q) = %q, %v; expected %q, %v",
-				tc.value, got, ok, tc.expected, tc.ok)
-		}
+	if got := imp.unknownTypes["E45X"]; got != 1 {
+		t.Errorf("E45X counted %d times, expected 1", got)
+	}
+	if _, ok := imp.unknownTypes["B738"]; ok {
+		t.Errorf("B738 is in the aircraft database but was counted as unknown")
+	}
+	if imp.missingAircraftType != 1 {
+		t.Errorf("missingAircraftType = %d, expected 1", imp.missingAircraftType)
+	}
+
+	types := make(map[string]int)
+	for _, r := range imp.buckets[bucket{airport: "KMSP", departure: true}] {
+		types[imp.symbols.string(r.acType)]++
+	}
+	if got := map[string]int{"B738": 1, "E45X": 1}; !maps.Equal(types, got) {
+		t.Errorf("imported types %v, expected %v", types, got)
 	}
 }
 
@@ -152,6 +167,7 @@ func TestParseTime(t *testing.T) {
 // database lookups involved.
 func makeTestImporter(airport string) *importer {
 	return makeImporter(map[string]bool{airport: true}, map[string]bool{airport: true},
+		map[string]av.FAAAirport{airport: {}, "KORD": {}},
 		map[string]av.AircraftPerformance{"B738": {}}, map[string]av.Airline{"DAL": {}})
 }
 
@@ -159,11 +175,9 @@ func makeTestImporter(airport string) *importer {
 // report can list what's missing from openscope-airlines.json.
 func TestUnknownAirlineCallsigns(t *testing.T) {
 	imp := makeTestImporter("KMSP")
-	// The aircraft type is left unknown so that processRow returns before it
-	// consults av.DB, which isn't loaded in tests.
 	row := flightRow{
 		Callsign:            "ZZZ123",
-		AircraftType:        "ZZZZ",
+		AircraftType:        "B738",
 		OriginTime:          "2026-03-30 14:04:59",
 		OriginAirports:      "['KMSP']",
 		DestinationTime:     "2026-03-30 16:00:00",

@@ -172,9 +172,9 @@ func includeHistoricalFlight(flight av.Flight, percentage int) bool {
 	return int(stableFlightHash(flight.Callsign+flight.Airport+flight.Other)%100) < percentage
 }
 
-// normalizeAirportCode and normalizeAircraftType clean up the identifiers that
-// arrive with a published flight. Both traffic sources need them: a timetable's
-// come from hand-edited CSV and historical ones from an outside dataset.
+// normalizeAirportCode cleans up the airport identifiers that arrive with a
+// published flight. Both traffic sources need it: a timetable's come from
+// hand-edited CSV and historical ones from an outside dataset.
 func normalizeAirportCode(value string) string {
 	return strings.ToUpper(strings.TrimSpace(value))
 }
@@ -194,21 +194,10 @@ func enrouteFixes(route string) []string {
 // engineTypeFor is how an aircraft is classified when choosing among a city
 // pair's real routes: jets fly the high-altitude ones, everything else the low.
 func engineTypeFor(aircraftType string) string {
-	if perf, ok := av.DB.AircraftPerformance[normalizeAircraftType(aircraftType)]; ok {
+	if perf, ok := av.DB.AircraftPerformance[aircraftType]; ok {
 		return perf.Engine.AircraftType
 	}
 	return ""
-}
-
-func normalizeAircraftType(value string) string {
-	aircraftType := strings.ToUpper(strings.TrimSpace(value))
-
-	switch aircraftType {
-	case "B717":
-		return "B712"
-	default:
-		return aircraftType
-	}
 }
 
 // stableFlightHash hashes a flight's identity so the same percentage

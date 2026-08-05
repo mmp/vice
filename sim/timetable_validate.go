@@ -67,13 +67,12 @@ func validateTimetable(timetable Timetable) error {
 			)
 		}
 
-		aircraftType := normalizeAircraftType(flight.AircraftType)
-		if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
+		if _, ok := av.DB.AircraftPerformance[flight.AircraftType]; !ok {
 			return fmt.Errorf(
 				"row %d callsign %s uses unknown aircraft type %s",
 				row,
 				flight.Callsign,
-				aircraftType,
+				flight.AircraftType,
 			)
 		}
 		if _, ok := av.DB.Airports[flight.Origin]; !ok {
