@@ -2,6 +2,7 @@ package stt
 
 import (
 	"encoding/json"
+	"maps"
 	"os"
 	"regexp"
 	"strings"
@@ -87,9 +88,7 @@ func (tf TestFile) BuildAircraftMap() map[string]Aircraft {
 			if code, ok := ac.CandidateApproaches[telephony]; ok {
 				if approachFixes, ok := ac.ApproachFixes[code]; ok {
 					fixes := make(map[string]string, len(ac.Fixes)+len(approachFixes))
-					for spoken, fix := range ac.Fixes {
-						fixes[spoken] = fix
-					}
+					maps.Copy(fixes, ac.Fixes)
 					for spoken, fix := range approachFixes {
 						if _, exists := fixes[spoken]; !exists {
 							fixes[spoken] = fix

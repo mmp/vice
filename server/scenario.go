@@ -2607,9 +2607,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			if catalogs[facility] == nil {
 				catalogs[facility] = make(map[string]*ScenarioCatalog)
 			}
-			for name, c := range m {
-				catalogs[facility][name] = c
-			}
+			maps.Copy(catalogs[facility], m)
 		}
 	}
 
@@ -2648,9 +2646,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				if catalogs[facility] == nil {
 					catalogs[facility] = make(map[string]*ScenarioCatalog)
 				}
-				for name, c := range m {
-					catalogs[facility][name] = c
-				}
+				maps.Copy(catalogs[facility], m)
 			}
 			if scenarioGroups[extraScenarioFacility] == nil {
 				scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)

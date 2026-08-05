@@ -726,7 +726,7 @@ func invokeHandler(handler any, values []any, isThen bool, thenVariant string) s
 		if val == nil {
 			// nil for optional parameters
 			args[i] = reflect.Zero(paramType)
-		} else if paramType.Kind() == reflect.Ptr {
+		} else if paramType.Kind() == reflect.Pointer {
 			// Pointer parameter (optional)
 			ptr := reflect.New(paramType.Elem())
 			ptr.Elem().Set(reflect.ValueOf(val))
