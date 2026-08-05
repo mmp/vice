@@ -178,7 +178,7 @@ func TestExpectDirectReducesDelay(t *testing.T) {
 	fNoExpect := makeFlight(t)
 	fNoExpect.nav.AssignHeading(math.MagneticHeading(360), av.TurnClosest, fNoExpect.simTime, 0)
 	// Wait for heading to take effect
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		wxs := fNoExpect.weather(fNoExpect.nav.FlightState.Altitude)
 		fNoExpect.nav.UpdateWithWeather(fNoExpect.callsign, wxs, nil, &fNoExpect.fp, fNoExpect.simTime, nil)
 		fNoExpect.simTime = fNoExpect.simTime.Add(1e9) // 1 second
@@ -189,7 +189,7 @@ func TestExpectDirectReducesDelay(t *testing.T) {
 	// With ExpectDirect
 	fExpect := makeFlight(t)
 	fExpect.nav.AssignHeading(math.MagneticHeading(360), av.TurnClosest, fExpect.simTime, 0)
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		wxs := fExpect.weather(fExpect.nav.FlightState.Altitude)
 		fExpect.nav.UpdateWithWeather(fExpect.callsign, wxs, nil, &fExpect.fp, fExpect.simTime, nil)
 		fExpect.simTime = fExpect.simTime.Add(1e9)

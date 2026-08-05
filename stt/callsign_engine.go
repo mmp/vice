@@ -354,7 +354,7 @@ func findExactSpokenKeyMatch(tokens []Token, candidates []callsignMatchResult) *
 
 		// Build the phrase from tokens
 		parts := make([]string, totalTokens)
-		for j := 0; j < totalTokens; j++ {
+		for j := range totalTokens {
 			parts[j] = tokens[c.Skip+j].Text
 		}
 		phrase := strings.Join(parts, " ")

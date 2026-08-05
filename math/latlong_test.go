@@ -118,7 +118,7 @@ func TestPathBytesShortStream(t *testing.T) {
 // catch any bit-cast / byte-split / delta arithmetic mistakes.
 func TestPathBytesFuzzy(t *testing.T) {
 	r := rand.New(rand.NewPCG(42, 0xa5a5a5a5))
-	for trial := 0; trial < 32; trial++ {
+	for trial := range 32 {
 		n := 1 + r.IntN(500)
 		pts := make([]Point2LL, n)
 		// Walk randomly so adjacent values are similar (the realistic case).

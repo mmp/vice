@@ -66,7 +66,7 @@ func testFlights() []Flight {
 		flights = append(flights, Flight{Airport: airport, Callsign: callsign, Other: other,
 			AircraftType: acType, Day: base + day, Minute: minute, Departure: departure})
 	}
-	for day := uint16(0); day < 300; day++ {
+	for day := range uint16(300) {
 		add("KMSP", "DAL1062", "KATL", "B753", day, 5*60+31+int(day)%7, true) // daily, wandering
 		add("KMSP", "DAL1062", "KATL", "B753", day, 22*60+int(day)%11, false) // and back again
 		add("KSTP", "DAL1062", "KATL", "B753", day, 9*60, true)               // same callsign, elsewhere
@@ -80,7 +80,7 @@ func testFlights() []Flight {
 	// Flight numbers with leading zeros must not be confused with the same
 	// number without them: that would merge two callsigns into one run and
 	// throw off every time that follows.
-	for day := uint16(0); day < 5; day++ {
+	for day := range uint16(5) {
 		add("KMSP", "AAL123", "KDFW", "A321", day, 7*60, true)
 		add("KMSP", "AAL0123", "KDFW", "A321", day, 14*60, true)
 		add("KMSP", "AAL00123", "KDFW", "A321", day, 19*60, true)
@@ -158,8 +158,8 @@ func TestFlightDataIntervalsSplitAtGaps(t *testing.T) {
 	}
 	// Hourly flights for three days, nothing for the next two, then resuming at
 	// 18:00 on the day after that.
-	for day := uint16(0); day < 3; day++ {
-		for hour := 0; hour < 24; hour++ {
+	for day := range uint16(3) {
+		for hour := range 24 {
 			add(day, hour*60)
 		}
 	}
@@ -195,7 +195,7 @@ func TestFlightDataIntervalsKeepOvernightLulls(t *testing.T) {
 	base := FlightDataDayNumber(time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC))
 	var flights []Flight
 	// Two flights a day, twenty hours apart.
-	for day := uint16(0); day < 10; day++ {
+	for day := range uint16(10) {
 		for _, minute := range []int{2 * 60, 22 * 60} {
 			flights = append(flights, Flight{Airport: "KASE", Callsign: "SKW775", Other: "KDEN",
 				AircraftType: "CRJ2", Day: base + day, Minute: minute, Departure: true})

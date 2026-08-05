@@ -385,7 +385,7 @@ func parseDigitSequence(words []string) (int, string, int) {
 // intPow10 returns 10^n for small n.
 func intPow10(n int) int {
 	result := 1
-	for i := 0; i < n; i++ {
+	for range n {
 		result *= 10
 	}
 	return result

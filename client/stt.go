@@ -559,7 +559,7 @@ func benchmarkModel(lg *log.Logger, modelName string) (int64, *whisper.Model, er
 	// Warmup passes to trigger shader compilation, memory allocation,
 	// and bring GPU up to full power state.
 	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Warming up %s...", modelName))
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		if _, err := runPass(); err != nil {
 			lg.Warnf("whisper-benchmark: %s warmup pass %d failed: %v", modelName, i+1, err)
 			return 0, nil, err
@@ -572,7 +572,7 @@ func benchmarkModel(lg *log.Logger, modelName string) (int64, *whisper.Model, er
 	const numPasses = 3
 	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Benchmarking %s...", modelName))
 	var minLatency int64 = -1
-	for i := 0; i < numPasses; i++ {
+	for i := range numPasses {
 		lat, err := runPass()
 		if err != nil {
 			lg.Warnf("whisper-benchmark: %s pass %d failed: %v", modelName, i+1, err)

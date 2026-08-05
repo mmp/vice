@@ -93,7 +93,7 @@ func TestSelectByIndex(t *testing.T) {
 
 	// Verify different indices return different points (mostly)
 	seen := make(map[Point2LL]bool)
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		p := tree.selectByIndex(i)
 		seen[p] = true
 	}

@@ -112,8 +112,8 @@ func TestSaveEntryCarriesReason(t *testing.T) {
 func screenContains(screen tcell.SimulationScreen, sub string) bool {
 	cells, w, h := screen.GetContents()
 	var b []rune
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
+	for y := range h {
+		for x := range w {
 			b = append(b, cells[y*w+x].Runes...)
 		}
 		b = append(b, '\n')

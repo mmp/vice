@@ -114,7 +114,7 @@ func validateTimetable(timetable Timetable) error {
 		)
 	}
 	for callsign, uses := range callsignUses {
-		for firstIndex := 0; firstIndex < len(uses); firstIndex++ {
+		for firstIndex := range uses {
 			first := uses[firstIndex]
 
 			for secondIndex := firstIndex + 1; secondIndex < len(uses); secondIndex++ {

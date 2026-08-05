@@ -258,7 +258,7 @@ func (h *eramAltAParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	}
 
 	// All 3 characters must be digits
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		if !isNum(field[i]) {
 			return nil, text, false, nil
 		}
@@ -301,7 +301,7 @@ func (h *eramAltIParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	}
 
 	// All 3 characters must be digits
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		if !isNum(altStr[i]) {
 			return nil, text, false, nil
 		}
