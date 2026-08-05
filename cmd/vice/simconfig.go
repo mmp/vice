@@ -450,9 +450,9 @@ func (c *NewSimConfiguration) drawTrafficPlotAxes(drawList *imgui.DrawList, spec
 	labelColor := imgui.ColorU32Vec4(imgui.Vec4{1, 1, 1, .5})
 
 	start := c.NewSimRequest.StartTime.Truncate(time.Minute)
-	location, _ := trafficPlotLocation(spec.PrimaryAirport)
+	clock := makeAirportClock(spec.PrimaryAirport)
 	for minute := range window {
-		t := start.Add(time.Duration(minute) * time.Minute).In(location)
+		t := start.Add(time.Duration(minute) * time.Minute).In(clock.loc)
 		if t.Minute()%30 != 0 {
 			continue
 		}
@@ -471,20 +471,9 @@ func (c *NewSimConfiguration) drawTrafficPlotAxes(drawList *imgui.DrawList, spec
 	drawList.AddTextVec2(imgui.Vec2{X: p1.X - imgui.CalcTextSize(label).X - 3, Y: p0.Y + 1}, labelColor, label)
 }
 
-// trafficPlotLocation is the time zone the plot's clock times are given in: the
-// airport's, which is how a controller working it thinks about the clock. Zulu
-// stands in for an airport with no time zone on file, and says so.
-func trafficPlotLocation(airport string) (*time.Location, bool) {
-	if location, ok := av.DB.AirportTimeZones[airport]; ok {
-		return location, true
-	}
-	return time.UTC, false
-}
-
 func (c *NewSimConfiguration) trafficPlotTime(spec *server.ScenarioSpec, minute int) string {
 	t := c.NewSimRequest.StartTime.Truncate(time.Minute).Add(time.Duration(minute) * time.Minute)
-	location, local := trafficPlotLocation(spec.PrimaryAirport)
-	return t.In(location).Format(util.Select(local, "15:04 local", "15:04Z"))
+	return makeAirportClock(spec.PrimaryAirport).format(t, "15:04")
 }
 
 func drawTrafficPlotLegend(color imgui.Vec4, label string, count int) {
@@ -2867,16 +2856,14 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.Text("Start time:")
 		imgui.TableNextColumn()
 		metar := c.airportMETAR[metarAirports[0]]
-		TimePicker(&c.NewSimRequest.StartTime, c.startTimeIntervals(c.ScenarioSpec), metar, ui.fixedFont)
+		clock := makeAirportClock(c.ScenarioSpec.PrimaryAirport)
+		TimePicker(&c.NewSimRequest.StartTime, clock, c.startTimeIntervals(c.ScenarioSpec), metar, ui.fixedFont)
 		imgui.SameLine()
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
 			c.updateStartTimeForRunways(c.ScenarioSpec)
 		}
-		if location, ok := av.DB.AirportTimeZones[c.ScenarioSpec.PrimaryAirport]; ok {
-			imgui.SameLine()
-			LocalTimeSlider(&c.NewSimRequest.StartTime, location, c.startTimeIntervals(c.ScenarioSpec),
-				timeSliderWidth)
-		}
+		imgui.SameLine()
+		TimeSlider(&c.NewSimRequest.StartTime, clock, timeSliderWidth)
 
 		// METAR
 		imgui.TableNextRow()
