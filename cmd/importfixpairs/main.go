@@ -1108,14 +1108,14 @@ func validateConfig(path string, contents []byte) []string {
 // errorId extracts the quoted id from a validation message containing
 // prefix<id>suffix.
 func errorId(err, prefix, suffix string) (string, bool) {
-	i := strings.Index(err, prefix)
-	if i == -1 {
+	_, after, ok := strings.Cut(err, prefix)
+	if !ok {
 		return "", false
 	}
-	rest := err[i+len(prefix):]
-	j := strings.Index(rest, suffix)
-	if j == -1 {
+	rest := after
+	before, _, ok := strings.Cut(rest, suffix)
+	if !ok {
 		return "", false
 	}
-	return rest[:j], true
+	return before, true
 }

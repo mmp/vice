@@ -313,11 +313,11 @@ func TestE2E_STTToSim(t *testing.T) {
 
 // splitCallsignAndCommands splits "DAL43 EVA22L" into ("DAL43", "EVA22L").
 func splitCallsignAndCommands(sttResult string) (string, string) {
-	idx := strings.IndexByte(sttResult, ' ')
-	if idx < 0 {
+	before, after, ok := strings.Cut(sttResult, " ")
+	if !ok {
 		return sttResult, ""
 	}
-	return sttResult[:idx], sttResult[idx+1:]
+	return before, after
 }
 
 // guessRunway extracts a runway identifier from a command string for test setup.

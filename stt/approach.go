@@ -471,11 +471,11 @@ var approachPhraseBoundary = map[string]bool{
 // assigned approach string like "ILS Runway 21 Left", or 0 if none.
 func assignedRunwayDir(assignedApproach string) byte {
 	upper := strings.ToUpper(assignedApproach)
-	idx := strings.Index(upper, "RUNWAY")
-	if idx == -1 {
+	_, after, ok := strings.Cut(upper, "RUNWAY")
+	if !ok {
 		return 0
 	}
-	for _, c := range strings.TrimSpace(upper[idx+6:]) {
+	for _, c := range strings.TrimSpace(after) {
 		switch {
 		case c >= '0' && c <= '9' || c == ' ':
 			continue
@@ -493,11 +493,11 @@ func assignedRunwayDir(assignedApproach string) byte {
 // "r-nav zulu runway one two" -> "12", 0).
 func candidateRunway(spokenName string) (digits string, dir byte) {
 	lower := strings.ToLower(spokenName)
-	idx := strings.Index(lower, "runway ")
-	if idx < 0 {
+	_, after, ok := strings.Cut(lower, "runway ")
+	if !ok {
 		return "", 0
 	}
-	for _, w := range strings.Fields(lower[idx+len("runway "):]) {
+	for _, w := range strings.Fields(after) {
 		if d, ok := digitWords[w]; ok {
 			digits += d
 			continue
@@ -799,14 +799,14 @@ func matchesAssignedRunway(approachID, assignedApproach string) bool {
 
 	// Extract runway designator from assigned approach (e.g., "18R" from "ILS Runway 18R")
 	assignedUpper := strings.ToUpper(assignedApproach)
-	runwayIdx := strings.Index(assignedUpper, "RUNWAY")
-	if runwayIdx == -1 {
+	_, after, ok := strings.Cut(assignedUpper, "RUNWAY")
+	if !ok {
 		// No "RUNWAY" keyword, try matching just by direction
 		return approachMatchesAssigned(approachID, assignedApproach)
 	}
 
 	// Get everything after "RUNWAY " and trim
-	runwayPart := strings.TrimSpace(assignedUpper[runwayIdx+6:])
+	runwayPart := strings.TrimSpace(after)
 	// runwayPart is now something like "18R" or "22L" or "9"
 
 	// Extract the numeric part and direction from the assigned runway
@@ -862,10 +862,10 @@ func matchesAssignedRunway(approachID, assignedApproach string) bool {
 // "ils z runway 6" → "z", "rnav yankee runway 13l" → "y".
 func extractAssignedVariant(assignedLower string) string {
 	var rest string
-	if idx := strings.Index(assignedLower, "rnav"); idx != -1 {
-		rest = strings.TrimSpace(assignedLower[idx+4:])
-	} else if idx := strings.Index(assignedLower, "ils"); idx != -1 {
-		rest = strings.TrimSpace(assignedLower[idx+3:])
+	if _, after, ok := strings.Cut(assignedLower, "rnav"); ok {
+		rest = strings.TrimSpace(after)
+	} else if _, after, ok := strings.Cut(assignedLower, "ils"); ok {
+		rest = strings.TrimSpace(after)
 	} else {
 		return ""
 	}
@@ -1412,11 +1412,11 @@ func approachTypeMatches(spokenLower, approachType string) bool {
 // pilot trimmed the trailing digit) with niner/nine normalized as equivalent.
 // Returns true when the candidate has no "runway " marker (don't gate it).
 func runwayConsistent(candidateLower, spokenRunwayNum string) bool {
-	idx := strings.Index(candidateLower, "runway ")
-	if idx == -1 {
+	_, after, ok := strings.Cut(candidateLower, "runway ")
+	if !ok {
 		return true
 	}
-	candFirst, _, _ := strings.Cut(candidateLower[idx+7:], " ")
+	candFirst, _, _ := strings.Cut(after, " ")
 	spokenFirst, _, _ := strings.Cut(spokenRunwayNum, " ")
 	if candFirst == "niner" {
 		candFirst = "nine"
@@ -1432,13 +1432,13 @@ func runwayConsistent(candidateLower, spokenRunwayNum string) bool {
 // This prevents "two" from matching "two two left" since the candidate starts with "two two".
 func runwayMatches(spokenLower, runwaySpoken string) bool {
 	// Find "runway " in the candidate
-	idx := strings.Index(spokenLower, "runway ")
-	if idx == -1 {
+	_, after, ok := strings.Cut(spokenLower, "runway ")
+	if !ok {
 		return false
 	}
 
 	// Get the part after "runway "
-	runwayPart := spokenLower[idx+7:] // len("runway ") == 7
+	runwayPart := after // len("runway ") == 7
 
 	// The candidate's runway should start with our extracted runway
 	// e.g., "niner" matches "niner" or "niner left"

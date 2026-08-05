@@ -194,8 +194,8 @@ func (m STARSMacro) IsSlew() bool {
 
 func (m STARSMacro) Name() string {
 	n := strings.TrimSuffix(m.Input, "[SLEW]")
-	if idx := strings.IndexByte(n, ']'); idx != -1 {
-		return n[idx+1:]
+	if _, after, ok := strings.Cut(n, "]"); ok {
+		return after
 	}
 	return n
 }

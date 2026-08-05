@@ -1401,8 +1401,8 @@ func cleanButtonName(name string) string {
 	// Hot path: called ~5× per button per frame. Avoid strings.Split's
 	// slice allocation by slicing to the first '\n' directly.
 	firstLine := name
-	if i := strings.IndexByte(name, '\n'); i >= 0 {
-		firstLine = name[:i]
+	if before, _, ok := strings.Cut(name, "\n"); ok {
+		firstLine = before
 	}
 	switch firstLine {
 	case "RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME", "NX LVL":
