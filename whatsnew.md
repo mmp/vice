@@ -14,6 +14,7 @@
   - Added confict alert detection (Michael Trokel)
   - Fix leader line alignment with datablocks (Jud Lopez)
   - Added support for middle-click of callsign in datablock running QF command
+  - Added support for always-displayed maps
 - Facility engineering
   - For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)
   - Scenarios may now specify "default_consolidation", overriding the config's consolidation (radarcontacto)
@@ -23,4 +24,3 @@
   - Added "fix_pair_configuration" to assign a flight's initial owning position from its entry/exit fix pair, per configuration plan, with reassignment rules (altitude, aircraft class, callsign, active runway) and RNAV route designation (radarcontacto)
   - Added "tcp_assignment_classes" and "automatic_handoff_classes" to name aircraft classes for fix-pair and handoff-filter matching (radarcontacto)
   - Added "automatic_scratchpad_assignment" to default a flight's scratchpads from its fixes, altitude, and flight type (radarcontacto)
-  - ARTCC configs and ERAM scenarios may specify "always_maps": video maps that are always displayed

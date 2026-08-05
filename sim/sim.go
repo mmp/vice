@@ -199,7 +199,6 @@ type NewSimConfiguration struct {
 	ScenarioRange     float32
 	DefaultMaps       []string
 	DefaultMapGroup   string
-	AlwaysMaps        []av.ERAMMapRef
 	Airspace          av.Airspace
 
 	PilotErrorInterval float32

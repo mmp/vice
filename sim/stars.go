@@ -98,11 +98,7 @@ type FacilityAdaptation struct {
 		Symbol           string         `json:"symbol"`
 	} `json:"untracked_position_symbol_overrides"`
 
-	VideoMapFile string `json:"video_map_file"`
-	// ERAMAlwaysMaps names ERAM video maps that are displayed no matter which
-	// geomap group is loaded; they get no filter-menu button and can't be
-	// turned off. A scenario's "always_maps" replaces this list.
-	ERAMAlwaysMaps     []av.ERAMMapRef               `json:"always_maps,omitempty"`
+	VideoMapFile       string                        `json:"video_map_file"`
 	CoordinationFixes  map[string]av.AdaptationFixes `json:"coordination_fixes"`
 	SingleCharAIDs     map[string]string             `json:"single_char_aids"`
 	Monitor            string                        `json:"monitor"`

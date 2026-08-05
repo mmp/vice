@@ -68,17 +68,6 @@ func (m ERAMMap) IsEmpty() bool {
 	return len(m.Lines) == 0 && len(m.Symbols) == 0 && len(m.Labels) == 0
 }
 
-// ERAMMapRef names a single ERAM map by its group and the map's combined
-// label; the label alone isn't unique across groups.
-type ERAMMapRef struct {
-	Group string `json:"group"`
-	Map   string `json:"map"`
-}
-
-func (r ERAMMapRef) String() string {
-	return r.Map + " in group " + r.Group
-}
-
 // Bounds returns the lat/lon bounding box covering every feature in the
 // map (line vertices, symbol positions, and label positions). Returns
 // an empty Extent2D if the map has no features.
@@ -115,25 +104,6 @@ func featureBounds(lines []MapLine, symbols []MapSymbol, labels []MapLabel) math
 type MapLibrary struct {
 	Maps          map[string]STARSMap
 	ERAMMapGroups map[string]ERAMMapGroup
-}
-
-// LookupERAMMap returns the map the reference names along with the group
-// that holds it; the group is needed to interpret the map's per-feature
-// BCGIndex values. If a group has multiple maps with the reference's
-// label, the first is returned. An empty label never resolves: unlabeled
-// entries in Maps are placeholders that hold an empty filter-menu slot's
-// position, not maps that can be named.
-func (l *MapLibrary) LookupERAMMap(ref ERAMMapRef) (ERAMMap, ERAMMapGroup, bool) {
-	g, ok := l.ERAMMapGroups[ref.Group]
-	if !ok || ref.Map == "" {
-		return ERAMMap{}, ERAMMapGroup{}, false
-	}
-	for _, m := range g.Maps {
-		if combineLabels(m.LabelLine1, m.LabelLine2) == ref.Map {
-			return m, g, true
-		}
-	}
-	return ERAMMap{}, ERAMMapGroup{}, false
 }
 
 // ---------- per-feature types -------------------------------------------
@@ -347,26 +317,6 @@ func (s *MapLibrarySpec) STARSMapId(name string) int {
 		}
 	}
 	return 0
-}
-
-// HasERAMMap returns true if the group the reference names exists and
-// holds a map with the reference's combined label. As with LookupERAMMap,
-// an empty label never matches.
-func (s *MapLibrarySpec) HasERAMMap(ref ERAMMapRef) bool {
-	if s == nil || s.header == nil || ref.Map == "" {
-		return false
-	}
-	for _, g := range s.header.ERAMGroups {
-		if g.Name != ref.Group {
-			continue
-		}
-		for _, m := range g.Maps {
-			if combineLabels(m.LabelLine1, m.LabelLine2) == ref.Map {
-				return true
-			}
-		}
-	}
-	return false
 }
 
 // HasMapGroup returns true if name matches an ERAM group's name.

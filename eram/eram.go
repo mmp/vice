@@ -229,19 +229,8 @@ type ERAMPane struct {
 	bcgNames      []string     `json:"-"` // current group's bcgMenu; index-stable, may include empty slots
 	videoMapLabel string       `json:"-"`
 	// baseVideoMap is the current group's own always-displayed geometry.
-	baseVideoMap av.ERAMMap `json:"-"`
-	// alwaysVideoMaps are adapted maps from other geomap groups that are drawn
-	// no matter which group is loaded; they have no filter-menu button. They're
-	// kept grouped since BCGIndex is an index into the owning group's bcgMenu.
-	alwaysVideoMaps []alwaysVideoMapGroup `json:"-"`
-	// forcedVideoMaps holds the combined labels of adapted always-displayed
-	// maps that are in the current group: those are drawn along with the rest
-	// of the group so that they use its BCG table and light up their button.
-	forcedVideoMaps map[string]interface{} `json:"-"`
-	// brightnessBCGNames are the BCGs the MAP BRIGHT menu offers: the current
-	// group's, followed by any used only by alwaysVideoMaps.
-	brightnessBCGNames []string `json:"-"`
-	currentFacility    string   `json:"-"`
+	baseVideoMap    av.ERAMMap `json:"-"`
+	currentFacility string     `json:"-"`
 
 	eramCursors map[string]*platform.Cursor `json:"-"` // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
 
@@ -357,14 +346,6 @@ type ERAMPane struct {
 	// allocations.
 	visibleTracks           []sim.Track `json:"-"`
 	fdbIdx, ldbIdx, eldbIdx []int       `json:"-"`
-}
-
-// alwaysVideoMapGroup holds the always-displayed maps adapted from a single
-// geomap group, along with that group's BCG names.
-type alwaysVideoMapGroup struct {
-	name     string
-	bcgNames []string
-	maps     []av.ERAMMap
 }
 
 func NewERAMPane() *ERAMPane {
@@ -1060,7 +1041,18 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	bcgRGB := ep.bcgColors(ep.bcgNames)
+	// Precompute a BCGIndex → RGB lookup table once per frame so the hot
+	// path becomes an array index. The 0 slot and any out-of-range or
+	// empty-named slot stay at the zero value (black/invisible), matching
+	// the previous defensive bcgColor closure.
+	var bcgRGB [256]renderer.RGB
+	base := colors.videoMapBase
+	for i, name := range ep.bcgNames {
+		if name == "" {
+			continue
+		}
+		bcgRGB[i+1] = ps.VideoMapBrightness[name].ScaleRGB(base)
+	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
@@ -1076,40 +1068,14 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	ep.drawVideoMapFeatures(ep.baseVideoMap, &bcgRGB, transforms, ld, td, &solidLineBuf)
 
 	for _, vm := range ep.allVideoMaps {
-		label := combine(vm.LabelLine1, vm.LabelLine2, " ")
-		_, visible := ps.VideoMapVisible[label]
-		_, forced := ep.forcedVideoMaps[label]
-		if !visible && !forced {
+		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2, " ")]; !ok {
 			continue
 		}
 		ep.drawVideoMapFeatures(vm, &bcgRGB, transforms, ld, td, &solidLineBuf)
 	}
 
-	for _, a := range ep.alwaysVideoMaps {
-		rgb := ep.bcgColors(a.bcgNames)
-		for _, vm := range a.maps {
-			ep.drawVideoMapFeatures(vm, &rgb, transforms, ld, td, &solidLineBuf)
-		}
-	}
-
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
-}
-
-// bcgColors returns a BCGIndex → RGB lookup table for the given geomap group's
-// BCG names so that the draw path becomes an array index. The 0 slot and any
-// out-of-range or empty-named slot stay at the zero value (black/invisible).
-func (ep *ERAMPane) bcgColors(bcgNames []string) [256]renderer.RGB {
-	ps := ep.currentPrefs()
-	var bcgRGB [256]renderer.RGB
-	base := colors.videoMapBase
-	for i, name := range bcgNames {
-		if name == "" || i+1 >= len(bcgRGB) {
-			continue
-		}
-		bcgRGB[i+1] = ps.VideoMapBrightness[name].ScaleRGB(base)
-	}
-	return bcgRGB
 }
 
 func (ep *ERAMPane) drawVideoMapFeatures(vm av.ERAMMap, bcgRGB *[256]renderer.RGB, transforms radar.ScopeTransformations,
@@ -1220,7 +1186,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 		return
 	}
 
-	ep.setVideoMapGroup(vmf, ps.VideoMapGroup, ss.ERAMAlwaysVideoMaps, ss.ControllerVideoMapFile, lg)
+	ep.setVideoMapGroup(vmf, ps.VideoMapGroup)
 
 	for _, name := range ss.ControllerDefaultVideoMaps {
 		if slices.ContainsFunc(ep.allVideoMaps, func(v av.ERAMMap) bool { return combine(v.LabelLine1, v.LabelLine2, " ") == name }) {
@@ -1230,11 +1196,9 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 }
 
 // setVideoMapGroup makes the named geomap group the current one: it fills in
-// the filter menu, resolves the adapted always-displayed maps, and gives any
-// BCG that doesn't have a brightness yet the default one. mapFile is the video
-// map file vmf came from, for error reporting.
-func (ep *ERAMPane) setVideoMapGroup(vmf *av.MapLibrary, group string, alwaysMaps []av.ERAMMapRef,
-	mapFile string, lg *log.Logger) {
+// the filter menu and gives any BCG that doesn't have a brightness yet the
+// default one.
+func (ep *ERAMPane) setVideoMapGroup(vmf *av.MapLibrary, group string) {
 	ps := ep.currentPrefs()
 	maps := vmf.ERAMMapGroups[group]
 
@@ -1248,48 +1212,13 @@ func (ep *ERAMPane) setVideoMapGroup(vmf *av.MapLibrary, group string, alwaysMap
 	ep.bcgNames = maps.BCGNames
 	ep.videoMapLabel = combine(maps.LabelLine1, maps.LabelLine2, "\n")
 
-	// Always-displayed maps that are in the current group are drawn along with
-	// the rest of it; the others are drawn separately, grouped by the geomap
-	// they came from so that their BCG indices resolve against it.
-	ep.alwaysVideoMaps = nil
-	ep.forcedVideoMaps = make(map[string]interface{})
-	for _, ref := range alwaysMaps {
-		m, g, ok := vmf.LookupERAMMap(ref)
-		if !ok {
-			// The server validated the reference, so this only happens if the
-			// client's copy of the video map file is out of date.
-			lg.Errorf("%s: always-displayed video map not found in %s", ref, mapFile)
+	for _, name := range maps.BCGNames {
+		if name == "" { // empty placeholder slot
 			continue
 		}
-		if g.Name == group {
-			ep.forcedVideoMaps[combine(m.LabelLine1, m.LabelLine2, " ")] = nil
-			continue
+		if _, ok := ps.VideoMapBrightness[name]; !ok { // only set default if missing
+			ps.VideoMapBrightness[name] = 12
 		}
-		idx := slices.IndexFunc(ep.alwaysVideoMaps, func(a alwaysVideoMapGroup) bool { return a.name == g.Name })
-		if idx == -1 {
-			ep.alwaysVideoMaps = append(ep.alwaysVideoMaps, alwaysVideoMapGroup{name: g.Name, bcgNames: g.BCGNames})
-			idx = len(ep.alwaysVideoMaps) - 1
-		}
-		ep.alwaysVideoMaps[idx].maps = append(ep.alwaysVideoMaps[idx].maps, m)
-	}
-
-	ep.brightnessBCGNames = nil
-	addBCGs := func(names []string) {
-		for _, name := range names {
-			if name == "" { // empty placeholder slot
-				continue
-			}
-			if _, ok := ps.VideoMapBrightness[name]; !ok { // only set default if missing
-				ps.VideoMapBrightness[name] = 12
-			}
-			if !slices.Contains(ep.brightnessBCGNames, name) {
-				ep.brightnessBCGNames = append(ep.brightnessBCGNames, name)
-			}
-		}
-	}
-	addBCGs(maps.BCGNames)
-	for _, a := range ep.alwaysVideoMaps {
-		addBCGs(a.bcgNames)
 	}
 }
 

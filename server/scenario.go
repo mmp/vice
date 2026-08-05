@@ -106,12 +106,8 @@ type scenario struct {
 	Range           float32       `json:"range"`
 	DefaultMaps     []string      `json:"default_maps"`
 	DefaultMapGroup string        `json:"default_map_group"`
-	// AlwaysMaps names ERAM video maps that are displayed no matter which
-	// geomap group is loaded; if non-empty it replaces the facility's
-	// "always_maps".
-	AlwaysMaps     []av.ERAMMapRef `json:"always_maps,omitempty"`
-	VFRRateScale   *float32        `json:"vfr_rate_scale"`
-	VFFRequestRate *int32          `json:"flight_following_request_rate,omitempty"`
+	VFRRateScale    *float32      `json:"vfr_rate_scale"`
+	VFFRequestRate  *int32        `json:"flight_following_request_rate,omitempty"`
 }
 
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSpec *av.MapLibrarySpec) {
@@ -637,7 +633,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 				"<path to *.mappack> to show available video map groups for a facility.", s.DefaultMapGroup)
 		}
 	}
-	validateERAMAlwaysMaps(s.AlwaysMaps, sg.ARTCC != "", mapSpec, e)
 
 	if s.VFRRateScale == nil { // unspecified -> default to 1
 		one := float32(1)
@@ -1438,28 +1433,6 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	sg.FacilityConfig.ControlPositions = pos
 }
 
-// validateERAMAlwaysMaps checks that each always-displayed video map reference
-// resolves in the given video map file. These maps are drawn by the ERAM scope,
-// so specifying any for a TRACON is an error.
-func validateERAMAlwaysMaps(refs []av.ERAMMapRef, isARTCC bool, mapSpec *av.MapLibrarySpec, e *util.ErrorLogger) {
-	if len(refs) == 0 {
-		return
-	}
-	if !isARTCC {
-		e.ErrorString(`"always_maps" is only valid for ARTCC facilities, which use the ERAM scope`)
-		return
-	}
-	for _, ref := range refs {
-		if !mapSpec.HasMapGroup(ref.Group) {
-			e.ErrorString(`video map group %q in "always_maps" not found. Use -listmaps `+
-				"<path to *.mappack> to show available video map groups for a facility.", ref.Group)
-		} else if !mapSpec.HasERAMMap(ref) {
-			e.ErrorString(`video map %q in "always_maps" not found in group %q. Use -listmaps `+
-				"<path to *.mappack> to show available video maps for a facility.", ref.Map, ref.Group)
-		}
-	}
-}
-
 // PostDeserializeFacilityAdaptation validates FacilityAdaptation fields that
 // require the scenario group's Locator, mapSpec, or airport data. Self-contained
 // validation is done earlier in FacilityAdaptation.ValidateConfig.
@@ -1504,8 +1477,6 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			}
 		}
 	}
-
-	validateERAMAlwaysMaps(s.ERAMAlwaysMaps, sg.ARTCC != "", mapSpec, e)
 
 	// Video map labels are validated in fc.validateSTARSAdaptation.
 
@@ -2829,7 +2800,6 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		ScenarioRange:           scenario.Range,
 		DefaultMaps:             scenario.DefaultMaps,
 		DefaultMapGroup:         scenario.DefaultMapGroup,
-		AlwaysMaps:              scenario.AlwaysMaps,
 		Airspace:                scenarioGroup.Airspace,
 		ControllerAirspace:      scenario.Airspace,
 		VirtualControllers:      scenario.VirtualControllers,

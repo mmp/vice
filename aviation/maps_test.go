@@ -115,15 +115,6 @@ func buildSyntheticLibrary() *MapLibrary {
 					// Placeholder holding the position of an empty filter-menu
 					// slot: no label, no geometry, not nameable.
 					{},
-					{
-						// Same label as a map in ZLAWEST; labels are unique
-						// only within a group.
-						LabelLine1: "MVA",
-						Lines: []MapLine{{
-							Points: []math.Point2LL{{-74.5, 41.0}, {-74.6, 41.1}},
-							Style:  LineStyleSolid,
-						}},
-					},
 				},
 			},
 			// ZLA-MVA case: two maps with identical (LabelLine1, LabelLine2).
@@ -311,82 +302,13 @@ func TestERAMBaseMap(t *testing.T) {
 	if err != nil {
 		t.Fatalf("parseMapLibraryHeader: %v", err)
 	}
-	spec := &MapLibrarySpec{header: hdr}
-	if spec.HasERAMMap(ERAMMapRef{Group: "ZNYMAP", Map: ""}) {
-		t.Error("ZNYMAP: base map is referenceable by empty label")
-	}
 
 	// ZNYMAP also carries an unlabeled placeholder in Maps, holding an empty
 	// filter-menu slot's position. Neither it nor the base map may be
-	// nameable, or an empty "default_maps"/"always_maps" entry would validate.
+	// nameable, or an empty "default_maps" entry would validate.
+	spec := &MapLibrarySpec{header: hdr}
 	if spec.HasMap("") {
 		t.Error(`HasMap("") is true; unlabeled placeholders must not be nameable`)
-	}
-	if _, _, ok := got.LookupERAMMap(ERAMMapRef{Group: "ZNYMAP", Map: ""}); ok {
-		t.Error("LookupERAMMap resolved an empty label")
-	}
-}
-
-// TestERAMMapRefLookup verifies that a (group, label) reference resolves to
-// the map in that group even when another group uses the same label, and that
-// the group it comes back with is the one whose BCG names its features index.
-func TestERAMMapRefLookup(t *testing.T) {
-	orig := buildSyntheticLibrary()
-	var buf bytes.Buffer
-	if err := SaveMapLibrary(&buf, orig); err != nil {
-		t.Fatalf("save: %v", err)
-	}
-	got, err := decodeFromBytes(buf.Bytes())
-	if err != nil {
-		t.Fatalf("load: %v", err)
-	}
-
-	zny, znyGroup, ok := got.LookupERAMMap(ERAMMapRef{Group: "ZNYMAP", Map: "MVA"})
-	if !ok {
-		t.Fatal("ZNYMAP MVA not found")
-	}
-	if znyGroup.Name != "ZNYMAP" {
-		t.Errorf("ZNYMAP MVA: came back with group %q", znyGroup.Name)
-	}
-	if !reflect.DeepEqual(znyGroup.BCGNames, orig.ERAMMapGroups["ZNYMAP"].BCGNames) {
-		t.Errorf("ZNYMAP MVA: BCG names %v, want %v", znyGroup.BCGNames,
-			orig.ERAMMapGroups["ZNYMAP"].BCGNames)
-	}
-
-	zla, zlaGroup, ok := got.LookupERAMMap(ERAMMapRef{Group: "ZLAWEST", Map: "MVA"})
-	if !ok {
-		t.Fatal("ZLAWEST MVA not found")
-	}
-	if zlaGroup.Name != "ZLAWEST" {
-		t.Errorf("ZLAWEST MVA: came back with group %q", zlaGroup.Name)
-	}
-	if reflect.DeepEqual(zny.Lines[0].Points, zla.Lines[0].Points) {
-		t.Error("the two MVA maps resolved to the same geometry")
-	}
-
-	if _, _, ok := got.LookupERAMMap(ERAMMapRef{Group: "ZNYMAP", Map: "NO SUCH"}); ok {
-		t.Error("unknown label resolved")
-	}
-	if _, _, ok := got.LookupERAMMap(ERAMMapRef{Group: "NO SUCH", Map: "MVA"}); ok {
-		t.Error("unknown group resolved")
-	}
-
-	hdr, _, err := parseMapLibraryHeader(buf.Bytes())
-	if err != nil {
-		t.Fatalf("parse header: %v", err)
-	}
-	spec := &MapLibrarySpec{header: hdr}
-	for _, ref := range []ERAMMapRef{{Group: "ZNYMAP", Map: "MVA"}, {Group: "ZLAWEST", Map: "MVA"},
-		{Group: "ZNYMAP", Map: "HIGH SECTOR"}} {
-		if !spec.HasERAMMap(ref) {
-			t.Errorf("spec missing %s", ref)
-		}
-	}
-	for _, ref := range []ERAMMapRef{{Group: "ZNYMAP", Map: "NO SUCH"}, {Group: "NO SUCH", Map: "MVA"},
-		{Group: "ZLAWEST", Map: "HIGH SECTOR"}} {
-		if spec.HasERAMMap(ref) {
-			t.Errorf("spec has %s, which doesn't exist", ref)
-		}
 	}
 }
 

@@ -465,8 +465,7 @@ func handleMapRequestList(ep *ERAMPane, ctx *panes.Context) (CommandStatus, erro
 }
 
 func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (CommandStatus, error) {
-	mapFile := ctx.Client.State.ControllerVideoMapFile
-	vmf, err := ctx.Client.LoadVideoMapLibrary(mapFile)
+	vmf, err := ctx.Client.LoadVideoMapLibrary(ctx.Client.State.ControllerVideoMapFile)
 	if err != nil {
 		return CommandStatus{}, err
 	}
@@ -477,11 +476,10 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 
 	ps := ep.currentPrefs()
 
-	// Get rid of all visible maps; the adapted always-displayed ones are
-	// unaffected since they aren't tracked here.
+	// Get rid of all visible maps
 	ps.VideoMapVisible = make(map[string]interface{})
 
-	ep.setVideoMapGroup(vmf, groupName, ctx.Client.State.ERAMAlwaysVideoMaps, mapFile, ctx.Lg)
+	ep.setVideoMapGroup(vmf, groupName)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "MAP REQUEST", ps.VideoMapGroup},

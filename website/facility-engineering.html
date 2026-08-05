@@ -1310,22 +1310,6 @@
                       <td>Assigns a letter to an airport to display in an ERAM datablock.</td>
                     </tr>
                     <tr>
-                      <td>"always_maps"</td>
-                      <td>Array of objects</td>
-                      <td><p>Video maps that are displayed no matter which geomap the controller has
-                          loaded. They are not offered in the VIDEOMAP filter menu and cannot be turned
-                          off; loading another geomap with <code>MR</code> leaves them displayed.</p>
-                        <p>A map's label is unique only within its geomap, so each entry names both:
-                          <code>{ "group": "AREAA", "map": "SEC BND" }</code>, where "group" is a geomap
-                          name and "map" is the map's label with its two lines joined by a space. Run
-                          <code>vice -listmaps &lt;path to *.mappack&gt;</code> to see both for a
-                          facility. The brightness of these maps is controlled by their BCGs in the MAP
-                          BRIGHT menu, which lists any that the loaded geomap doesn't already have.</p>
-                        <p>A scenario's <a href="#fe-scenarios">"always_maps"</a>, if it has any,
-                          replaces this list rather than adding to it.</p>
-                      </td>
-                    </tr>
-                    <tr>
                       <td>"arts_coordination"</td>
                       <td>Object</td>
                       <td><p>Rules that decide a flight's <i>coordination fix</i>: the fix at which it
@@ -5110,15 +5094,6 @@
                       The object key is a controller id and the value is an array of strings, each of which
                       corresponds to an airspace volume defined in the <a href="#fe-airspace">"airspace"</a>
                       section of the scenario group.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>"always_maps"</td>
-                    <td>Array of objects</td>
-                    <td><i>(ERAM only, Optional)</i> Video maps that are displayed no matter which geomap
-                      the controller has loaded, given as <code>{ "group": "AREAA", "map": "SEC BND" }</code>
-                      objects. If the scenario specifies any, they replace the facility's
-                      <a href="#fe-config-eram">"always_maps"</a>; see there for the details.
                     </td>
                   </tr>
                   <tr>
