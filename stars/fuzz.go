@@ -323,11 +323,11 @@ func (fc *FuzzController) mutate(text string) string {
 	case 3: // Truncate
 		return text[:fc.r.Intn(len(text))]
 	case 4: // Append garbage
-		var sb string
+		var sb strings.Builder
 		for range fc.r.IntRange(1, 5) {
-			sb += string(fc.randomChar())
+			sb.WriteString(string(fc.randomChar()))
 		}
-		return text + sb
+		return text + sb.String()
 	}
 	return text
 }

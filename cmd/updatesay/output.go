@@ -9,6 +9,7 @@ import (
 	"maps"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/mmp/vice/util"
 )
@@ -33,19 +34,20 @@ func LoadSayFile(path string) (map[string]string, error) {
 func SaveSayFile(path string, data map[string]string) error {
 	// Build ordered JSON manually to preserve key order.
 	// json.Marshal with a map doesn't preserve order.
-	result := "{\n"
+	var result strings.Builder
+	result.WriteString("{\n")
 	i := 0
 	for k, v := range util.SortedMap(data) {
 		keyJSON, _ := json.Marshal(k)
 		valJSON, _ := json.Marshal(v)
-		result += "  " + string(keyJSON) + ": " + string(valJSON)
+		result.WriteString("  " + string(keyJSON) + ": " + string(valJSON))
 		if i < len(data)-1 {
-			result += ","
+			result.WriteString(",")
 		}
-		result += "\n"
+		result.WriteString("\n")
 		i++
 	}
-	result += "}\n"
+	result.WriteString("}\n")
 
 	// Atomic write: write to temp file in same directory, then rename
 	dir := filepath.Dir(path)
@@ -63,7 +65,7 @@ func SaveSayFile(path string, data map[string]string) error {
 		}
 	}()
 
-	if _, err := tmpFile.WriteString(result); err != nil {
+	if _, err := tmpFile.WriteString(result.String()); err != nil {
 		tmpFile.Close()
 		return err
 	}

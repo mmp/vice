@@ -583,7 +583,7 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 
 	// Consume the approach phrase up to a command boundary, gathering signals.
 	end := i
-	spokenDigits := ""
+	var spokenDigits strings.Builder
 	var spokenDir byte
 	var spokenVariant string
 	for j := i; j < len(tokens); j++ {
@@ -601,7 +601,7 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 		end = j
 		switch {
 		case tokens[j].Type == TokenNumber:
-			spokenDigits += tokens[j].Text
+			spokenDigits.WriteString(tokens[j].Text)
 		default:
 			if v, ok := ConvertNATOLetter(w); ok && (v == "z" || v == "y") {
 				spokenVariant = v
@@ -638,10 +638,10 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 		// through the garble), as opposed to leaning only on the assigned
 		// approach.
 		score, evidence := 0.0, false
-		if candDigits != "" && strings.Contains(spokenDigits, candDigits) {
+		if candDigits != "" && strings.Contains(spokenDigits.String(), candDigits) {
 			score += 3.0
 			evidence = true
-		} else if candDigits != "" && spokenDigits != "" && strings.HasSuffix(spokenDigits, candDigits[len(candDigits)-1:]) {
+		} else if candDigits != "" && spokenDigits.String() != "" && strings.HasSuffix(spokenDigits.String(), candDigits[len(candDigits)-1:]) {
 			score += 1.0
 			evidence = true
 		}
@@ -698,7 +698,7 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 		return "", 0
 	}
 	logLocalStt("  matchGarbledApproach: digits=%q dir=%c variant=%q -> %q (score=%.1f)",
-		spokenDigits, dirOrDash(spokenDir), spokenVariant, best, bestScore)
+		spokenDigits.String(), dirOrDash(spokenDir), spokenVariant, best, bestScore)
 	return best, end + 1
 }
 
@@ -810,11 +810,11 @@ func matchesAssignedRunway(approachID, assignedApproach string) bool {
 	// runwayPart is now something like "18R" or "22L" or "9"
 
 	// Extract the numeric part and direction from the assigned runway
-	var assignedNum string
+	var assignedNum strings.Builder
 	var assignedDir byte
 	for i, c := range runwayPart {
 		if c >= '0' && c <= '9' {
-			assignedNum += string(c)
+			assignedNum.WriteString(string(c))
 		} else if c == 'L' || c == 'R' || c == 'C' {
 			assignedDir = byte(c)
 			break
@@ -825,7 +825,7 @@ func matchesAssignedRunway(approachID, assignedApproach string) bool {
 		_ = i
 	}
 
-	if assignedNum == "" {
+	if assignedNum.String() == "" {
 		return false
 	}
 
@@ -854,7 +854,7 @@ func matchesAssignedRunway(approachID, assignedApproach string) bool {
 	// Check if runway numbers match
 	// The approach ID may use a compressed format: "8R" for runway 18R, "2L" for 22L
 	// So we check if the assigned runway ends with the ID runway number
-	return strings.HasSuffix(assignedNum, idNum)
+	return strings.HasSuffix(assignedNum.String(), idNum)
 }
 
 // extractAssignedVariant extracts the variant letter (z/y/x/w) from an

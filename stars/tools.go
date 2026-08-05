@@ -1050,13 +1050,14 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 		return str + sig.Name
 	}
 
-	str := format(*closest)
+	var str strings.Builder
+	str.WriteString(format(*closest))
 
 	// Up to 5 additional, if they are within 1nm of the selected point
 	n := 0
 	for _, sig := range sp.significantPointsSlice {
 		if sig.Name != closest.Name && math.NMDistance2LL(sig.Location, closest.Location) < 1 {
-			str += "\n" + format(sig)
+			str.WriteString("\n" + format(sig))
 			n++
 			if n == 5 {
 				break
@@ -1064,7 +1065,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 		}
 	}
 
-	return CommandStatus{Output: str}
+	return CommandStatus{Output: str.String()}
 }
 
 func (sp *STARSPane) drawScenarioHolds(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,

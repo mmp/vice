@@ -709,11 +709,11 @@ func postProcessTurnGarbled(tokens []string, i int) ([]string, int, bool) {
 	if digitCount < 1 {
 		return nil, 0, false
 	}
-	var digitStr string
+	var digitStr strings.Builder
 	for j := i + 3; j < i+3+digitCount; j++ {
-		digitStr += tokens[j]
+		digitStr.WriteString(tokens[j])
 	}
-	nextNum := ParseNumber(digitStr)
+	nextNum := ParseNumber(digitStr.String())
 	if nextNum >= 10 && nextNum <= 99 {
 		combined := 200 + nextNum
 		if combined <= 360 {

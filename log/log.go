@@ -312,43 +312,44 @@ func (l *Logger) ReportCrash(err any) {
 	}
 
 	// Format the report information
-	report := fmt.Sprintf("Crashed: %v\n", err)
-	report += fmt.Sprintf("Time: %s\n\n", now.Format(time.RFC3339))
+	var report strings.Builder
+	report.WriteString(fmt.Sprintf("Crashed: %v\n", err))
+	report.WriteString(fmt.Sprintf("Time: %s\n\n", now.Format(time.RFC3339)))
 
-	report += "== System Info ==\n"
-	report += fmt.Sprintf("CPU: %s (%d cores)\n", sysInfo.CPUModel, sysInfo.CPUCores)
-	report += fmt.Sprintf("CPU Vendor: %s\n", sysInfo.CPUVendor)
+	report.WriteString("== System Info ==\n")
+	report.WriteString(fmt.Sprintf("CPU: %s (%d cores)\n", sysInfo.CPUModel, sysInfo.CPUCores))
+	report.WriteString(fmt.Sprintf("CPU Vendor: %s\n", sysInfo.CPUVendor))
 	// Include just a few key CPU flags that are relevant for debugging
 	relevantFlags := filterRelevantCPUFlags(sysInfo.CPUFlags)
 	if len(relevantFlags) > 0 {
-		report += fmt.Sprintf("CPU Flags: %s\n", strings.Join(relevantFlags, ", "))
+		report.WriteString(fmt.Sprintf("CPU Flags: %s\n", strings.Join(relevantFlags, ", ")))
 	}
 	if sysInfo.GPURenderer != "" {
-		report += fmt.Sprintf("GPU: %s (%s)\n", sysInfo.GPURenderer, sysInfo.GPUVendor)
+		report.WriteString(fmt.Sprintf("GPU: %s (%s)\n", sysInfo.GPURenderer, sysInfo.GPUVendor))
 	}
-	report += fmt.Sprintf("Go: %s\n", sysInfo.GoVersion)
-	report += fmt.Sprintf("OS/Arch: %s/%s\n\n", sysInfo.OS, sysInfo.Arch)
+	report.WriteString(fmt.Sprintf("Go: %s\n", sysInfo.GoVersion))
+	report.WriteString(fmt.Sprintf("OS/Arch: %s/%s\n\n", sysInfo.OS, sysInfo.Arch))
 
-	report += "== Build Info ==\n"
+	report.WriteString("== Build Info ==\n")
 	if bi, ok := debug.ReadBuildInfo(); ok {
 		for _, setting := range bi.Settings {
-			report += setting.Key + ": " + setting.Value + "\n"
+			report.WriteString(setting.Key + ": " + setting.Value + "\n")
 		}
 	}
-	report += "\n== Stack Trace ==\n"
-	report += string(debug.Stack())
+	report.WriteString("\n== Stack Trace ==\n")
+	report.WriteString(string(debug.Stack()))
 
 	// Print it to stdout
-	fmt.Println(report)
+	fmt.Println(report.String())
 
 	// Try to save it to disk locally as a backup
 	fn := filepath.Join(l.LogDir, "crash-"+now.Format(time.RFC3339)+".txt")
-	_ = os.WriteFile(fn, []byte(report), 0o600)
+	_ = os.WriteFile(fn, []byte(report.String()), 0o600)
 
 	// Send via RPC if we have a client
 	if rpcClient != nil {
 		crashReport := &CrashReport{
-			Report:    report,
+			Report:    report.String(),
 			System:    sysInfo,
 			Timestamp: now,
 		}

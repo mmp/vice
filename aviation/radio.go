@@ -920,10 +920,10 @@ func GetCallsignSpoken(callsign string, cwtCategory string) string {
 	}
 
 	// Extract trailing letters from flight number (e.g., "22J" → suffix=" juliet")
-	var suffix string
+	var suffix strings.Builder
 	if suffixIdx := strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); suffixIdx != -1 {
 		for _, ch := range fnum[suffixIdx:] {
-			suffix += " " + strings.ToLower(spokenLetters[string(ch)])
+			suffix.WriteString(" " + strings.ToLower(spokenLetters[string(ch)]))
 		}
 		fnum = fnum[:suffixIdx]
 	}
@@ -938,7 +938,7 @@ func GetCallsignSpoken(callsign string, cwtCategory string) string {
 	}
 
 	// Build result with spoken flight number
-	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix)
+	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix.String())
 
 	// Add heavy/super suffix
 	if cwtCategory == "A" {
@@ -1236,10 +1236,10 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 
 	// peel off any trailing letters
-	var suffix string
+	var suffix strings.Builder
 	if suffixIdx := strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); suffixIdx != -1 {
 		for _, ch := range fnum[suffixIdx:] {
-			suffix += " " + spokenLetters[string(ch)]
+			suffix.WriteString(" " + spokenLetters[string(ch)])
 		}
 		fnum = fnum[:suffixIdx]
 	}
@@ -1257,7 +1257,7 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 		tel = ""
 	}
 
-	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix)
+	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix.String())
 
 	return result
 }
@@ -1272,11 +1272,11 @@ func sayFlightNumber(id string) string {
 		return groupForm(n)
 	} else {
 		// Digits individually
-		s := ""
+		var s strings.Builder
 		for _, d := range id {
-			s += sayDigit(int(d-'0')) + " "
+			s.WriteString(sayDigit(int(d-'0')) + " ")
 		}
-		return s
+		return s.String()
 	}
 }
 

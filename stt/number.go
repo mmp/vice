@@ -79,7 +79,8 @@ func DecodeNumber(tokens []Token, pos int, ctx NumberContext) []NumberCandidate 
 	// The extended readings are scored by the digit words' similarity and
 	// compete with the unextended interpretations.
 	if tokens[pos].Type == TokenNumber {
-		text := tokens[pos].Text
+		var text strings.Builder
+		text.WriteString(tokens[pos].Text)
 		extra := 0
 		digitConf := 1.0
 		// Filler words interrupting a heading's digit run ("one ah nine or
@@ -94,7 +95,7 @@ func DecodeNumber(tokens []Token, pos int, ctx NumberContext) []NumberCandidate 
 				if extra == 0 && pendingFillers == 0 {
 					break
 				}
-				text += tokens[p].Text
+				text.WriteString(tokens[p].Text)
 				extra += pendingFillers + 1
 				pendingFillers = 0
 				continue
@@ -106,7 +107,7 @@ func DecodeNumber(tokens []Token, pos int, ctx NumberContext) []NumberCandidate 
 			// "to" sandwiched between digits is the digit "two"
 			// ("two to zero" -> 220).
 			if (w == "to" || w == "too") && p+1 < len(tokens) && tokens[p+1].Type == TokenNumber {
-				text += "2"
+				text.WriteString("2")
 				extra += pendingFillers + 1
 				pendingFillers = 0
 				digitConf *= 0.85
@@ -124,14 +125,14 @@ func DecodeNumber(tokens []Token, pos int, ctx NumberContext) []NumberCandidate 
 			if d == "" {
 				break
 			}
-			text += d
+			text.WriteString(d)
 			extra += pendingFillers + 1
 			pendingFillers = 0
 			digitConf *= ds
 		}
 		if extra > 0 {
-			if v, err := strconv.Atoi(text); err == nil {
-				synth := append([]Token{{Text: text, Type: TokenNumber, Value: v}}, tokens[pos+1+extra:]...)
+			if v, err := strconv.Atoi(text.String()); err == nil {
+				synth := append([]Token{{Text: text.String(), Type: TokenNumber, Value: v}}, tokens[pos+1+extra:]...)
 				for _, c := range kindCandidates(synth, 0, ctx) {
 					c.Consumed += extra
 					c.Score *= digitConf

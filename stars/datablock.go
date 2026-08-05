@@ -1615,11 +1615,11 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 			}
 		}
 		if alts, warn := sp.WarnOutsideAirspace(ctx, trk); warn {
-			altStrs := ""
+			var altStrs strings.Builder
 			for _, a := range alts {
-				altStrs += fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100)
+				altStrs.WriteString(fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100))
 			}
-			addAlert("AS"+altStrs, false, true)
+			addAlert("AS"+altStrs.String(), false, true)
 		}
 	} else if dbtype == PartialDatablock {
 		fa := ctx.FacilityAdaptation

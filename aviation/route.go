@@ -653,132 +653,133 @@ func (wa WaypointArray) HandoffControllers() []ControlPosition {
 func (wa WaypointArray) Encode() string {
 	var entries []string
 	for _, w := range wa {
-		s := w.Fix
+		var s strings.Builder
+		s.WriteString(w.Fix)
 		if ar := w.AltitudeRestriction(); ar != nil {
-			s += "/a" + ar.Encoded()
+			s.WriteString("/a" + ar.Encoded())
 		}
 		if sr := w.SpeedRestriction(); sr != nil {
-			s += "/s" + sr.Encoded()
+			s.WriteString("/s" + sr.Encoded())
 		}
 		if pt := w.ProcedureTurn(); pt != nil {
 			if pt.Type == PTStandard45 {
 				if !pt.RightTurns {
-					s += "/lpt45"
+					s.WriteString("/lpt45")
 				} else {
-					s += "/pt45"
+					s.WriteString("/pt45")
 				}
 			} else {
 				if !pt.RightTurns {
-					s += "/lhilpt"
+					s.WriteString("/lhilpt")
 				} else {
-					s += "/hilpt"
+					s.WriteString("/hilpt")
 				}
 			}
 			if pt.MinuteLimit != 0 {
-				s += fmt.Sprintf("%.1fmin", pt.MinuteLimit)
+				s.WriteString(fmt.Sprintf("%.1fmin", pt.MinuteLimit))
 			} else if pt.NmLimit != 0 {
-				s += fmt.Sprintf("%.1fnm", pt.NmLimit)
+				s.WriteString(fmt.Sprintf("%.1fnm", pt.NmLimit))
 			}
 			if pt.Entry180NoPT {
-				s += "/nopt180"
+				s.WriteString("/nopt180")
 			}
 			if pt.ExitAltitude != 0 {
-				s += fmt.Sprintf("/pta%d", pt.ExitAltitude)
+				s.WriteString(fmt.Sprintf("/pta%d", pt.ExitAltitude))
 			}
 		}
 		if w.IAF() {
-			s += "/iaf"
+			s.WriteString("/iaf")
 		}
 		if w.IF() {
-			s += "/if"
+			s.WriteString("/if")
 		}
 		if w.FAF() {
-			s += "/faf"
+			s.WriteString("/faf")
 		}
 		if w.NoPT() {
-			s += "/nopt"
+			s.WriteString("/nopt")
 		}
 		if w.HumanHandoff() {
-			s += "/ho"
+			s.WriteString("/ho")
 		}
 		if hc := w.HandoffController(); hc != "" {
-			s += "/ho" + string(hc)
+			s.WriteString("/ho" + string(hc))
 		}
 		if po := w.PointOut(); po != "" {
-			s += "/po" + string(po)
+			s.WriteString("/po" + string(po))
 		}
 		if w.ClearApproach() {
-			s += "/clearapp"
+			s.WriteString("/clearapp")
 		}
 		if w.InterceptApproach() {
-			s += "/intercept"
+			s.WriteString("/intercept")
 		}
 		if w.FlyOver() {
-			s += "/flyover"
+			s.WriteString("/flyover")
 		}
 		if w.Delete() {
-			s += "/delete"
+			s.WriteString("/delete")
 		}
 		if w.Land() {
-			s += "/land"
+			s.WriteString("/land")
 		}
 		if heading := w.WaypointActions().Heading; heading != nil {
-			s += heading.Encoded()
+			s.WriteString(heading.Encoded())
 		}
 		if arc := w.Arc(); arc != nil {
 			if arc.Fix != "" {
-				s += fmt.Sprintf("/arc%.1f%s", arc.Radius, arc.Fix)
+				s.WriteString(fmt.Sprintf("/arc%.1f%s", arc.Radius, arc.Fix))
 			} else {
-				s += fmt.Sprintf("/arc%.1f", arc.Length)
+				s.WriteString(fmt.Sprintf("/arc%.1f", arc.Length))
 			}
 		}
 		for _, group := range w.ActionGroups() {
-			s += group.Encoded()
+			s.WriteString(group.Encoded())
 		}
 		if aw := w.Airway(); aw != "" {
-			s += "/airway" + aw
+			s.WriteString("/airway" + aw)
 		}
 		if w.OnSID() {
-			s += "/sid"
+			s.WriteString("/sid")
 		}
 		if w.OnSTAR() {
-			s += "/star"
+			s.WriteString("/star")
 		}
 		if w.OnApproach() {
-			s += "/appr"
+			s.WriteString("/appr")
 		}
 		if w.AirworkRadius() != 0 {
-			s += fmt.Sprintf("/airwork%dnm%dm", w.AirworkRadius(), w.AirworkMinutes())
+			s.WriteString(fmt.Sprintf("/airwork%dnm%dm", w.AirworkRadius(), w.AirworkMinutes()))
 		}
 		if w.Radius() != 0 {
-			s += fmt.Sprintf("/radius%.1f", w.Radius())
+			s.WriteString(fmt.Sprintf("/radius%.1f", w.Radius()))
 		}
 		if w.Shift() != 0 {
-			s += fmt.Sprintf("/shift%.1f", w.Shift())
+			s.WriteString(fmt.Sprintf("/shift%.1f", w.Shift()))
 		}
 		if ps := w.PrimaryScratchpad(); ps != "" {
-			s += "/spsp" + ps
+			s.WriteString("/spsp" + ps)
 		}
 		if w.ClearPrimaryScratchpad() {
-			s += "/cpsp"
+			s.WriteString("/cpsp")
 		}
 		if ss := w.SecondaryScratchpad(); ss != "" {
-			s += "/sssp" + ss
+			s.WriteString("/sssp" + ss)
 		}
 		if w.ClearSecondaryScratchpad() {
-			s += "/cssp"
+			s.WriteString("/cssp")
 		}
 		if w.TransferComms() {
-			s += "/tc"
+			s.WriteString("/tc")
 		}
 		if ca := w.ClimbAltitude(); ca != 0 {
-			s += fmt.Sprintf("/c%d", ca/100)
+			s.WriteString(fmt.Sprintf("/c%d", ca/100))
 		}
 		if da := w.DescendAltitude(); da != 0 {
-			s += fmt.Sprintf("/d%d", da/100)
+			s.WriteString(fmt.Sprintf("/d%d", da/100))
 		}
 
-		entries = append(entries, s)
+		entries = append(entries, s.String())
 	}
 
 	return strings.Join(entries, " ")
@@ -1799,7 +1800,8 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 
 		if pos, ok := loc.Locate(wp.Fix); !ok {
 			if e != nil && !allowSlop {
-				errstr := "unable to locate waypoint."
+				var errstr strings.Builder
+				errstr.WriteString("unable to locate waypoint.")
 				if sim := loc.Similar(wp.Fix); len(sim) > 0 {
 					dist := make(map[string]float32)
 					for _, s := range sim {
@@ -1817,13 +1819,13 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 					})
 
 					if len(sim) > 0 {
-						errstr += " Did you mean: "
+						errstr.WriteString(" Did you mean: ")
 					}
 					for _, s := range sim {
-						errstr += fmt.Sprintf("%s (%.1fnm) ", s, dist[s])
+						errstr.WriteString(fmt.Sprintf("%s (%.1fnm) ", s, dist[s]))
 					}
 				}
-				e.ErrorString("%s", errstr)
+				e.ErrorString("%s", errstr.String())
 			}
 		} else {
 			wa[i].Location = pos

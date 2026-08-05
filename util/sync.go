@@ -12,6 +12,7 @@ import (
 	gomath "math"
 	"runtime"
 	"slices"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -60,13 +61,14 @@ func DumpHeldMutexes(lg *log.Logger) string {
 	heldMutexesMutex.Lock()
 	defer heldMutexesMutex.Unlock()
 
-	s := fmt.Sprintf("%d mutexes held\n\n", len(heldMutexes))
+	var s strings.Builder
+	s.WriteString(fmt.Sprintf("%d mutexes held\n\n", len(heldMutexes)))
 	for m := range heldMutexes {
-		s += fmt.Sprintf("Mutex %p\n", m)
-		s += m.String(lg)
-		s += "\n"
+		s.WriteString(fmt.Sprintf("Mutex %p\n", m))
+		s.WriteString(m.String(lg))
+		s.WriteString("\n")
 	}
-	return s
+	return s.String()
 }
 
 func (l *LoggingMutex) Lock(lg *log.Logger) {

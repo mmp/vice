@@ -1483,16 +1483,17 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 		// Format TCPs for display (SSA style: "primary *sec1 sec2")
 		fmtTCPs := func(cons server.TCPConsolidation) string {
-			result := controllerDisplayLabel(controllersForGroup, av.ControlPosition(cons.PrimaryTCP))
+			var result strings.Builder
+			result.WriteString(controllerDisplayLabel(controllersForGroup, av.ControlPosition(cons.PrimaryTCP)))
 			for _, sec := range cons.SecondaryTCPs {
 				prefix := ""
 				if sec.Type == sim.ConsolidationBasic {
 					prefix = "*"
 				}
-				result += " " + prefix +
-					controllerDisplayLabel(controllersForGroup, av.ControlPosition(sec.TCP))
+				result.WriteString(" " + prefix +
+					controllerDisplayLabel(controllersForGroup, av.ControlPosition(sec.TCP)))
 			}
-			return result
+			return result.String()
 		}
 
 		// Compute covered TCPs (primary at an occupied TCW)
@@ -2469,13 +2470,13 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 						))
 					}
 
-					s := ""
+					var s strings.Builder
 					for len(p) > 3 {
-						s += strings.Join(p[:3], ", ") + "\n"
+						s.WriteString(strings.Join(p[:3], ", ") + "\n")
 						p = p[3:]
 					}
-					s += strings.Join(p, ", ")
-					imgui.Text(s)
+					s.WriteString(strings.Join(p, ", "))
+					imgui.Text(s.String())
 				}
 			}
 
