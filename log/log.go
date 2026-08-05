@@ -373,11 +373,8 @@ func filterRelevantCPUFlags(flags []string) []string {
 	relevant := []string{"avx", "avx2", "avx512f", "sse4_1", "sse4_2", "sse4a", "ssse3", "fma"}
 	var result []string
 	for _, flag := range flags {
-		for _, r := range relevant {
-			if flag == r {
-				result = append(result, flag)
-				break
-			}
+		if slices.Contains(relevant, flag) {
+			result = append(result, flag)
 		}
 	}
 	return result

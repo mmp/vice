@@ -1380,10 +1380,8 @@ func (ep *ERAMPane) customButtonColor(button string) renderer.RGB {
 
 	labels := toolbarLabel[ep.activeToolbarMenu]
 	// Check if button matches any of the labels in the current menu
-	for _, label := range labels {
-		if button == label {
-			return colors.toolbar.activeButton
-		}
+	if slices.Contains(labels, button) {
+		return colors.toolbar.activeButton
 	}
 	// If button doesn't match any label, use the menu color
 	return menuColor[ep.activeToolbarMenu]

@@ -496,12 +496,7 @@ func routeContainsSequence(routeStr, id string) bool {
 }
 
 func hasFlag(wps []av.Waypoint, pred func(av.Waypoint) bool) bool {
-	for _, wp := range wps {
-		if pred(wp) {
-			return true
-		}
-	}
-	return false
+	return slices.ContainsFunc(wps, pred)
 }
 
 func airwayMatches(wps []av.Waypoint, id string) bool {

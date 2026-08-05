@@ -187,12 +187,7 @@ func (vs *VisualScenario) PendingTransmissions() []PendingTransmissionType {
 
 // HasPendingTransmission checks if a specific transmission type is pending.
 func (vs *VisualScenario) HasPendingTransmission(txType PendingTransmissionType) bool {
-	for _, t := range vs.PendingTransmissions() {
-		if t == txType {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(vs.PendingTransmissions(), txType)
 }
 
 // ClearPendingTransmissions removes all pending transmissions.

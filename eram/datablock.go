@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -701,13 +702,7 @@ func shortFieldERAMID(prefix, position string, handoffIDs []sim.HandoffID) strin
 	}
 	for _, hid := range handoffIDs {
 		ids := []string{hid.StarsID, hid.TwoCharStarsID, hid.SingleCharStarsID, hid.Prefix}
-		found := false
-		for _, id := range ids {
-			if id == prefix {
-				found = true
-				break
-			}
-		}
+		found := slices.Contains(ids, prefix)
 		if !found {
 			continue
 		}
