@@ -253,6 +253,8 @@ type AircraftPerformance struct {
 	WeightClass string  `json:"weightClass"`
 	Ceiling     float32 `json:"ceiling"`
 	Engine      struct {
+		// AircraftType is "P" for piston, "T" for turboprop, "J" for jet, and
+		// "H" for rotorcraft.
 		AircraftType string `json:"type"`
 	} `json:"engines"`
 	Rate struct {
@@ -602,8 +604,9 @@ func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 			fmt.Fprintf(os.Stderr, "%s: aircraft V2 %.0f seems suspiciously high (vs min %.01f)",
 				ac.ICAO, ac.Speed.V2, ac.Speed.Min)
 		}
-		if t := ac.Engine.AircraftType; t != "P" && t != "T" && t != "J" {
-			fmt.Fprintf(os.Stderr, "%s: aircraft type %q should be \"P\", \"T\", or \"J\".\n", ac.ICAO, t)
+		if t := ac.Engine.AircraftType; t != "P" && t != "T" && t != "J" && t != "H" {
+			fmt.Fprintf(os.Stderr, `%s: aircraft type %q should be "P", "T", "J", or "H".\n`,
+				ac.ICAO, t)
 		}
 		if ac.Turn.MaxBankAngle < 5 {
 			fmt.Fprintf(os.Stderr, "%s: aircraft maximum bank angle %f is suspiciously low", ac.ICAO, ac.Turn.MaxBankAngle)

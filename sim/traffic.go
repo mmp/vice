@@ -460,6 +460,7 @@ func TrafficCounts(lc *LaunchConfig, start time.Time, primaryAirport string,
 			"so there is nothing to preview", lc.TrafficSource)
 	}
 
+	flights, _ = dropRotorcraft(flights)
 	flights, _ = dropRepeatedRecords(flights)
 	flights, _ = dropReturnedLegs(flights)
 
@@ -658,6 +659,23 @@ func (bc backgroundClassifier) inboundIsBackground(flow *av.InboundFlow, airport
 	return judged > 0
 }
 
+// dropRotorcraft removes the flights there is no way to fly. Helicopters are a
+// fair share of the traffic at some facilities and the data records them like
+// anything else, but everything Vice flies is flown as a fixed-wing aircraft,
+// so they are left on the ground rather than flown as one.
+func dropRotorcraft(flights []av.Flight) ([]av.Flight, int) {
+	kept := make([]av.Flight, 0, len(flights))
+	dropped := 0
+	for _, flight := range flights {
+		if engineTypeFor(flight.AircraftType) == "H" {
+			dropped++
+			continue
+		}
+		kept = append(kept, flight)
+	}
+	return kept, dropped
+}
+
 // dropRepeatedRecords removes a record of an operation that is already there.
 // The historical data is derived from ADS-B tracks, and a flight whose track
 // came in pieces is recorded once per piece, minutes apart and sometimes
@@ -743,6 +761,7 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	departureSpawnLead time.Duration) *publishedTrafficProvider {
 	p := &publishedTrafficProvider{routed: makeRoutedPairs()}
 
+	flights, rotorcraft := dropRotorcraft(flights)
 	// One real flight must enter the sim once, however many records it left in
 	// the data: the second aircraft to reach the runway under a callsign is
 	// turned away, and there is no second callsign to give it.
@@ -804,6 +823,9 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	fmt.Printf("Published traffic: %d departures, %d arrivals to fly", len(p.departures), len(p.arrivals))
 	if missed > 0 {
 		fmt.Printf("; skipped %d flights already due before the clock starts", missed)
+	}
+	if rotorcraft > 0 {
+		fmt.Printf("; left out %d helicopter flights", rotorcraft)
 	}
 	if repeated > 0 {
 		fmt.Printf("; merged %d flights the data records more than once", repeated)
