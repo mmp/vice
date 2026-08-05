@@ -672,7 +672,7 @@ func phaseApply(statePath, evalDir, testsDir, acceptedPath, diagnosesPath string
 		return err
 	}
 	accepted := make(map[string]bool)
-	for _, line := range strings.Fields(string(acceptedData)) {
+	for line := range strings.FieldsSeq(string(acceptedData)) {
 		accepted[filepath.Base(line)] = true
 	}
 

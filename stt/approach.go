@@ -497,7 +497,7 @@ func candidateRunway(spokenName string) (digits string, dir byte) {
 	if !ok {
 		return "", 0
 	}
-	for _, w := range strings.Fields(after) {
+	for w := range strings.FieldsSeq(after) {
 		if d, ok := digitWords[w]; ok {
 			digits += d
 			continue

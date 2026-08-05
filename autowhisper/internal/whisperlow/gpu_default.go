@@ -103,7 +103,7 @@ func getMacChipName() string {
 	}
 
 	// Look for "Chip:" line
-	for _, line := range strings.Split(string(out), "\n") {
+	for line := range strings.SplitSeq(string(out), "\n") {
 		line = strings.TrimSpace(line)
 		if after, ok := strings.CutPrefix(line, "Chip:"); ok {
 			return strings.TrimSpace(after)
@@ -122,8 +122,8 @@ func getMacGPUCoreCount() int {
 	}
 
 	// Look for "Total Number of Cores:" line under GPU section
-	lines := strings.Split(string(out), "\n")
-	for _, line := range lines {
+	lines := strings.SplitSeq(string(out), "\n")
+	for line := range lines {
 		line = strings.TrimSpace(line)
 		if after, ok := strings.CutPrefix(line, "Total Number of Cores:"); ok {
 			numStr := strings.TrimSpace(after)

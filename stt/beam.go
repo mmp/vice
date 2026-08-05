@@ -246,7 +246,7 @@ func applyMatch(st beamState, match CommandMatch, newPos int, ac Aircraft) beamS
 		// A handler may emit multiple space-separated commands (e.g.,
 		// "D{fix} A{fix}/I"). Split so each is tracked, categorized, and
 		// post-processed individually.
-		for _, cmd := range strings.Fields(match.Command) {
+		for cmd := range strings.FieldsSeq(match.Command) {
 			st.commands = append(st.commands, cmd)
 			st.totalConf += match.Confidence
 

@@ -399,7 +399,7 @@ func parseAirportList(value string) []string {
 // the callsign wasn't found.
 func parseRoute(value string) []string {
 	var route []string
-	for _, airport := range strings.Split(value, "-") {
+	for airport := range strings.SplitSeq(value, "-") {
 		if len(airport) == 4 {
 			route = append(route, airport)
 		}

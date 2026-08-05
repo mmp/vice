@@ -342,7 +342,7 @@ func parseVideoMapContent(content string) (*VideoMapBlock, error) {
 			// Format: "lat,lon/d16000 lat,lon PUCKY/c18000"
 			// strings.Fields tolerates runs of whitespace so a brief author's
 			// alignment spaces don't break the videomap.
-			for _, pstr := range strings.Fields(value) {
+			for pstr := range strings.FieldsSeq(value) {
 				// Split coordinate from annotation
 				coordStr, annotationStr, _ := strings.Cut(pstr, "/")
 
@@ -661,7 +661,7 @@ func parseConfigOptions(content string) ([]ConfigOption, []string) {
 	var errors []string
 	seen := make(map[string]struct{})
 
-	for _, line := range strings.Split(content, "\n") {
+	for line := range strings.SplitSeq(content, "\n") {
 		line = strings.TrimSpace(line)
 		if line == "" {
 			continue

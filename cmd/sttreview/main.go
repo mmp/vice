@@ -1292,8 +1292,8 @@ func saveEntry(entry LogEntry, correction, outputDir string) (string, error) {
 // extractExpectApproachID extracts the approach ID from a command string containing an "E" command.
 // Returns empty string if no expect approach command is found.
 func extractExpectApproachID(command string) string {
-	parts := strings.Fields(command)
-	for _, part := range parts {
+	parts := strings.FieldsSeq(command)
+	for part := range parts {
 		if strings.HasPrefix(part, "E") && len(part) > 1 {
 			approachID := part[1:]
 			// Strip LAHSO suffix if present (e.g., "EI22L/LAHSO26" -> "I22L")

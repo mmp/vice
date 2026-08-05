@@ -1133,7 +1133,7 @@ func (d StaticDatabase) RoutesBetween(from, to string) []AirportPairRoute {
 // name such fixes.
 func RouteWaypoints(route string) WaypointArray {
 	var waypoints WaypointArray
-	for _, field := range strings.Fields(route) {
+	for field := range strings.FieldsSeq(route) {
 		if _, ok := DB.Airways[field]; ok && len(waypoints) > 0 {
 			waypoints[len(waypoints)-1].InitExtra().Airway = field
 		} else {

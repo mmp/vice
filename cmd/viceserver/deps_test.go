@@ -34,9 +34,9 @@ func TestNoUIDeps(t *testing.T) {
 	if err != nil {
 		t.Fatalf("go list ./cmd/...: %v", err)
 	}
-	cmds := strings.Fields(string(pkgsOut))
+	cmds := strings.FieldsSeq(string(pkgsOut))
 
-	for _, cmd := range cmds {
+	for cmd := range cmds {
 		if uiCmds[cmd] {
 			continue
 		}
@@ -46,7 +46,7 @@ func TestNoUIDeps(t *testing.T) {
 			continue
 		}
 		deps := make(map[string]struct{})
-		for _, d := range strings.Fields(string(out)) {
+		for d := range strings.FieldsSeq(string(out)) {
 			deps[d] = struct{}{}
 		}
 		for _, f := range forbidden {

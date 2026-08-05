@@ -521,7 +521,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			var ar *av.AltitudeRestriction
 			var sr *av.SpeedRestriction
 			if rest != "" {
-				for _, cmd := range strings.Split(rest, "/") {
+				for cmd := range strings.SplitSeq(rest, "/") {
 					if len(cmd) == 0 {
 						return nil, ErrInvalidCommandSyntax
 					}

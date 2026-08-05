@@ -61,8 +61,8 @@ func parseTemplateElements(template string) ([]templateElement, error) {
 				})
 			} else {
 				// Just optional literal words
-				words := strings.Fields(inner)
-				for _, word := range words {
+				words := strings.FieldsSeq(inner)
+				for word := range words {
 					var keywords []string
 					if strings.Contains(word, "|") {
 						keywords = strings.Split(word, "|")

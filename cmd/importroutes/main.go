@@ -317,7 +317,7 @@ func cullCDRs(cdrs []route, airportLocation, fixLocation func(string) (math.Poin
 func routeLengthRatio(orig, dest math.Point2LL, routeStr string,
 	fixLocation func(string) (math.Point2LL, bool)) float32 {
 	points := []math.Point2LL{orig}
-	for _, token := range strings.Fields(routeStr) {
+	for token := range strings.FieldsSeq(routeStr) {
 		if p, ok := fixLocation(token); ok {
 			points = append(points, p)
 		}
