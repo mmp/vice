@@ -30,10 +30,9 @@ const artccBaseRadius = 330.0 // radius (nm) at which rate=4 produces ~4MB outpu
 func artccAtmosDownsampleRate(radius float32) int {
 	// rate = 4 * (radius / baseRadius)²
 	ratio := float64(radius) / artccBaseRadius
-	rate := int(4*ratio*ratio + 0.5) // round to nearest int
-	if rate < 1 {
-		rate = 1
-	}
+	rate := max(
+		// round to nearest int
+		int(4*ratio*ratio+0.5), 1)
 	return rate
 }
 

@@ -1148,10 +1148,7 @@ func handleAltimAdd(ep *ERAMPane, ctx *panes.Context, airport string) (CommandSt
 		ep.AltimSetAirports = slices.Delete(ep.AltimSetAirports, i, i+1)
 		// Adjust scroll offset if needed after removal
 		ps := ep.currentPrefs()
-		maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
-		if maxOffset < 0 {
-			maxOffset = 0
-		}
+		maxOffset := max(len(ep.AltimSetAirports)-ps.AltimSet.Lines, 0)
 		if ep.altimSetScroll.Offset > maxOffset {
 			ep.altimSetScroll.Offset = maxOffset
 		}
@@ -1189,10 +1186,7 @@ func handleWXReportAdd(ep *ERAMPane, ctx *panes.Context, airport string) (Comman
 		ep.WXReportStations = slices.Delete(ep.WXReportStations, i, i+1)
 		// Adjust scroll offset if needed after removal
 		ps := ep.currentPrefs()
-		maxOffset := len(ep.WXReportStations) - ps.WX.Lines
-		if maxOffset < 0 {
-			maxOffset = 0
-		}
+		maxOffset := max(len(ep.WXReportStations)-ps.WX.Lines, 0)
 		if ep.wxScroll.Offset > maxOffset {
 			ep.wxScroll.Offset = maxOffset
 		}

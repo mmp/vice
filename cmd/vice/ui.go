@@ -1022,10 +1022,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 					ui.testPTTLevelMu.Lock()
 					const windowSize = 800 // ~50ms at 16kHz
 					for offset := 0; offset < len(samples); offset += windowSize {
-						end := offset + windowSize
-						if end > len(samples) {
-							end = len(samples)
-						}
+						end := min(offset+windowSize, len(samples))
 						window := samples[offset:end]
 						var sumSq float64
 						for _, s := range window {

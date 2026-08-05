@@ -45,10 +45,7 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 
 	commands := strings.Fields(commandStr)
 
-	delayReduction := audioDuration - callsignAudioOffset
-	if delayReduction < 0 {
-		delayReduction = 0
-	}
+	delayReduction := max(audioDuration-callsignAudioOffset, 0)
 
 	// Parse addressing form suffix from callsign: /T indicates type+trailing3 addressing
 	// (e.g., "skyhawk 3 alpha bravo" instead of "november 1 2 3 alpha bravo")

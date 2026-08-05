@@ -367,10 +367,7 @@ func jaroSimilarity(s1, s2 string) float64 {
 	}
 
 	// Calculate match window
-	matchWindow := max(len(s1), len(s2))/2 - 1
-	if matchWindow < 0 {
-		matchWindow = 0
-	}
+	matchWindow := max(max(len(s1), len(s2))/2-1, 0)
 
 	s1Matches := make([]bool, len(s1))
 	s2Matches := make([]bool, len(s2))

@@ -511,10 +511,7 @@ func stripQSFreeTextIndicator(s string) string {
 func placeScratchpadArrowAfterText(dst *[8]dbChar, fieldEText string, c renderer.RGB) {
 	// Place arrow one cell after the last visible character (trim trailing spaces).
 	t := strings.TrimRight(fieldEText, " ")
-	idx := len(t)
-	if idx < 0 {
-		idx = 0
-	}
+	idx := max(len(t), 0)
 	if idx >= len(dst) {
 		// If the field is full, fall back to the last cell.
 		idx = len(dst) - 1
