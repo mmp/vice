@@ -55,9 +55,13 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 		if err != nil {
 			return err
 		}
+		// CRC filter index 0 means "always displayed"; those features all
+		// land in the group's single base map.
+		var baseMap av.ERAMMap
+
 		drops := map[int]int{}
 		for si := range sources {
-			dispatchERAMFeatures(&sources[si], filterMaps, geoMap.BCGMenu, drops)
+			dispatchERAMFeatures(&sources[si], filterMaps, &baseMap, geoMap.BCGMenu, drops)
 		}
 		warnBCGDrops(geoMap.Name, geoMap.BCGMenu, drops)
 
@@ -70,9 +74,23 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 			LabelLine1: geoMap.LabelLine1,
 			LabelLine2: geoMap.LabelLine2,
 			BCGNames:   geoMap.BCGMenu,
+			BaseMap:    baseMap,
 		}
-		for _, m := range filterMaps {
+		// Keep group.Maps index-aligned with the source filterMenu: the ERAM
+		// toolbar lays its buttons out positionally, so compacting empty
+		// slots away would shift every button past a hole. Empty slots become
+		// label-less placeholders that draw as blank buttons; trailing ones
+		// are trimmed since the toolbar already renders past the end.
+		last := -1
+		for fi, m := range filterMaps {
+			if m != nil {
+				last = fi
+			}
+		}
+		for fi := 0; fi <= last; fi++ {
+			m := filterMaps[fi]
 			if m == nil {
+				group.Maps = append(group.Maps, av.ERAMMap{})
 				continue
 			}
 			group.Maps = append(group.Maps, *m)
@@ -80,6 +98,13 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 			totalLines += len(m.Lines)
 			totalSymbols += len(m.Symbols)
 			totalLabels += len(m.Labels)
+		}
+		if !baseMap.IsEmpty() {
+			log.Printf("ERAM geomap %q: base map (always displayed): %d lines, %d symbols, %d labels",
+				geoMap.Name, len(baseMap.Lines), len(baseMap.Symbols), len(baseMap.Labels))
+			totalLines += len(baseMap.Lines)
+			totalSymbols += len(baseMap.Symbols)
+			totalLabels += len(baseMap.Labels)
 		}
 		lib.ERAMMapGroups[geoMap.Name] = group
 	}
@@ -119,13 +144,15 @@ func loadERAMSources(cwd, artcc string, ids []string) ([]loadedSource, error) {
 // the feature's effective Filters set.
 //
 // filterMaps is indexed by 0-based filter index. A nil entry means the filter is skipped (empty
-// labels). The renderer resolves BCG (brightness) per feature against the group's BCGNames at draw
+// labels). baseMap receives features tagged with CRC filter index 0, which are always displayed.
+// The renderer resolves BCG (brightness) per feature against the group's BCGNames at draw
 // time; this importer passes BCGIndex through. Features whose BCG is unset, out-of-range, or
 // points at an empty-named slot would render as invisible black at runtime (bcgRGB[0] and empty
 // slots are never populated), so we drop them entirely here and tally one count per dropped
 // source feature (not per filter placement) in drops, keyed by the raw effective BCG value so
 // out-of-range originals like 300 are reported as 300 rather than the post-clamp 255.
-func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, bcgMenu []string, drops map[int]int) {
+func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, baseMap *av.ERAMMap,
+	bcgMenu []string, drops map[int]int) {
 	clampPositive := func(v, dflt int) int {
 		switch {
 		case v <= 0:
@@ -141,6 +168,20 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, bcgMenu [
 	// clamping into uint8.
 	invalidSlot := func(raw int) bool {
 		return raw <= 0 || raw > len(bcgMenu) || bcgMenu[raw-1] == ""
+	}
+	// target resolves a CRC filter index to the map that should receive the feature. ERAM's
+	// filter state has bits for filters 1-40 only, so index 0 has nothing to toggle: it is
+	// CRC's "always displayed" sentinel and its geometry goes to the group's base map rather
+	// than to a filter-menu slot. nil means the feature is dropped.
+	target := func(filterIdx int) *av.ERAMMap {
+		if filterIdx == 0 {
+			return baseMap
+		}
+		fi := filterIdx - 1
+		if fi < 0 || fi >= len(filterMaps) {
+			return nil
+		}
+		return filterMaps[fi] // nil for an empty filter-menu slot
 	}
 
 	for i := range src.features {
@@ -160,15 +201,15 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, bcgMenu [
 			thickness := uint8(clampPositive(eff.Thickness, 1))
 			bcg := uint8(eff.BCG) // safe: invalidSlot rejected anything > len(bcgMenu) (≤255 in practice).
 			for _, filterIdx := range eff.Filters {
-				fi := filterIdx - 1
-				if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
+				dst := target(filterIdx)
+				if dst == nil {
 					continue
 				}
 				for _, pts := range polylines {
 					if len(pts) < 2 {
 						continue
 					}
-					filterMaps[fi].Lines = append(filterMaps[fi].Lines, av.MapLine{
+					dst.Lines = append(dst.Lines, av.MapLine{
 						Points:    pts,
 						Style:     style,
 						Thickness: thickness,
@@ -195,11 +236,11 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, bcgMenu [
 				// Join multi-line labels into a single MapLabel.
 				text := strings.Join(f.Properties.Text, "\n")
 				for _, filterIdx := range eff.Filters {
-					fi := filterIdx - 1
-					if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
+					dst := target(filterIdx)
+					if dst == nil {
 						continue
 					}
-					filterMaps[fi].Labels = append(filterMaps[fi].Labels, av.MapLabel{
+					dst.Labels = append(dst.Labels, av.MapLabel{
 						P:         p,
 						Text:      text,
 						Size:      size,
@@ -226,11 +267,11 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, bcgMenu [
 				size := uint8(clampPositive(eff.Size, 1))
 				bcg := uint8(eff.BCG)
 				for _, filterIdx := range eff.Filters {
-					fi := filterIdx - 1
-					if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
+					dst := target(filterIdx)
+					if dst == nil {
 						continue
 					}
-					filterMaps[fi].Symbols = append(filterMaps[fi].Symbols, av.MapSymbol{
+					dst.Symbols = append(dst.Symbols, av.MapSymbol{
 						P:        p,
 						Style:    style,
 						Size:     size,

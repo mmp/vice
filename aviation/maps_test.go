@@ -6,9 +6,7 @@ package aviation
 
 import (
 	"bytes"
-	"compress/flate"
 	"encoding/binary"
-	"io"
 	"reflect"
 	"testing"
 
@@ -84,6 +82,18 @@ func buildSyntheticLibrary() *MapLibrary {
 				LabelLine1: "ZNY",
 				LabelLine2: "ARTCC",
 				BCGNames:   []string{"BASE", "HI SEC", "", "SPARE"},
+				// Always-displayed geometry: no label, no filter-menu slot.
+				BaseMap: ERAMMap{
+					Lines: []MapLine{{
+						Points:    []math.Point2LL{{-75.0, 39.0}, {-75.1, 39.1}, {-75.2, 39.0}},
+						Style:     LineStyleLongDashed,
+						Thickness: 2,
+						BCGIndex:  1,
+					}},
+					Symbols: []MapSymbol{{
+						P: math.Point2LL{-75.05, 39.05}, Style: SymbolStyleNDB, Size: 2, BCGIndex: 1,
+					}},
+				},
 				Maps: []ERAMMap{
 					{
 						LabelLine1: "BASE",
@@ -102,6 +112,9 @@ func buildSyntheticLibrary() *MapLibrary {
 							P: math.Point2LL{-73.5, 40.5}, Style: SymbolStyleVOR, Size: 1,
 						}},
 					},
+					// Placeholder holding the position of an empty filter-menu
+					// slot: no label, no geometry, not nameable.
+					{},
 					{
 						// Same label as a map in ZLAWEST; labels are unique
 						// only within a group.
@@ -259,6 +272,61 @@ func TestDuplicateERAMLabels(t *testing.T) {
 	}
 }
 
+// TestERAMBaseMap verifies that a group's always-displayed base map survives
+// roundtrip with its geometry intact, that a group without one decodes to an
+// empty BaseMap (the omitted-wire-key path that pre-base-map files also take),
+// and that the base map is not exposed as a named, referenceable map.
+func TestERAMBaseMap(t *testing.T) {
+	orig := buildSyntheticLibrary()
+	var buf bytes.Buffer
+	if err := SaveMapLibrary(&buf, orig); err != nil {
+		t.Fatalf("save: %v", err)
+	}
+	got, err := decodeFromBytes(buf.Bytes())
+	if err != nil {
+		t.Fatalf("load: %v", err)
+	}
+
+	want := orig.ERAMMapGroups["ZNYMAP"].BaseMap
+	gotBase := got.ERAMMapGroups["ZNYMAP"].BaseMap
+	if gotBase.IsEmpty() {
+		t.Fatal("ZNYMAP: base map lost in roundtrip")
+	}
+	if !reflect.DeepEqual(gotBase, want) {
+		t.Errorf("ZNYMAP base map mismatch:\n got %+v\nwant %+v", gotBase, want)
+	}
+
+	// ZLAWEST has no base map, so both wire keys are omitted.
+	if b := got.ERAMMapGroups["ZLAWEST"].BaseMap; !b.IsEmpty() {
+		t.Errorf("ZLAWEST: got base map %+v, want none", b)
+	}
+
+	// The base map has no label, so it must not be reachable as a normal map:
+	// it consumes no filter-menu slot and can't be named from scenario JSON.
+	if n := len(got.ERAMMapGroups["ZNYMAP"].Maps); n != len(orig.ERAMMapGroups["ZNYMAP"].Maps) {
+		t.Errorf("ZNYMAP: got %d maps, want %d — base map leaked into Maps",
+			n, len(orig.ERAMMapGroups["ZNYMAP"].Maps))
+	}
+	hdr, _, err := parseMapLibraryHeader(buf.Bytes())
+	if err != nil {
+		t.Fatalf("parseMapLibraryHeader: %v", err)
+	}
+	spec := &MapLibrarySpec{header: hdr}
+	if spec.HasERAMMap(ERAMMapRef{Group: "ZNYMAP", Map: ""}) {
+		t.Error("ZNYMAP: base map is referenceable by empty label")
+	}
+
+	// ZNYMAP also carries an unlabeled placeholder in Maps, holding an empty
+	// filter-menu slot's position. Neither it nor the base map may be
+	// nameable, or an empty "default_maps"/"always_maps" entry would validate.
+	if spec.HasMap("") {
+		t.Error(`HasMap("") is true; unlabeled placeholders must not be nameable`)
+	}
+	if _, _, ok := got.LookupERAMMap(ERAMMapRef{Group: "ZNYMAP", Map: ""}); ok {
+		t.Error("LookupERAMMap resolved an empty label")
+	}
+}
+
 // TestERAMMapRefLookup verifies that a (group, label) reference resolves to
 // the map in that group even when another group uses the same label, and that
 // the group it comes back with is the one whose BCG names its features index.
@@ -362,63 +430,9 @@ func TestWrongMagic(t *testing.T) {
 
 // ---------- test helpers -----------------------------------------------
 
-// decodeFromBytes parses a serialized library from an in-memory buffer.
-// Mirrors the body of LoadMapLibrary without the fs.FS plumbing.
+// decodeFromBytes parses a serialized library from an in-memory buffer. It
+// runs the loader's own decode path rather than a copy of it, so a field
+// added to the wire format can't be silently untested here.
 func decodeFromBytes(data []byte) (*MapLibrary, error) {
-	hdr, body, err := parseMapLibraryHeader(data)
-	if err != nil {
-		return nil, err
-	}
-	fr := flate.NewReader(bytes.NewReader(body))
-	defer fr.Close()
-	geom, err := io.ReadAll(fr)
-	if err != nil {
-		return nil, err
-	}
-
-	lib := &MapLibrary{
-		Maps:          make(map[string]STARSMap, len(hdr.STARSMaps)),
-		ERAMMapGroups: make(map[string]ERAMMapGroup, len(hdr.ERAMGroups)),
-	}
-	for _, e := range hdr.STARSMaps {
-		lines, symbols, labels, err := decodeGeometry(geom, e.GeomOffset, e.GeomLen)
-		if err != nil {
-			return nil, err
-		}
-		lib.Maps[e.Name] = STARSMap{
-			Name:     e.Name,
-			Label:    e.Label,
-			Id:       e.Id,
-			Group:    int(e.Group),
-			Category: int(e.Category),
-			Color:    int(e.Color),
-			Lines:    lines,
-			Symbols:  symbols,
-			Labels:   labels,
-		}
-	}
-	for _, g := range hdr.ERAMGroups {
-		group := ERAMMapGroup{
-			Name:       g.Name,
-			LabelLine1: g.LabelLine1,
-			LabelLine2: g.LabelLine2,
-			BCGNames:   g.BCGNames,
-			Maps:       make([]ERAMMap, len(g.Maps)),
-		}
-		for i, m := range g.Maps {
-			lines, symbols, labels, err := decodeGeometry(geom, m.GeomOffset, m.GeomLen)
-			if err != nil {
-				return nil, err
-			}
-			group.Maps[i] = ERAMMap{
-				LabelLine1: m.LabelLine1,
-				LabelLine2: m.LabelLine2,
-				Lines:      lines,
-				Symbols:    symbols,
-				Labels:     labels,
-			}
-		}
-		lib.ERAMMapGroups[g.Name] = group
-	}
-	return lib, nil
+	return decodeMapLibrary(data, "<memory>")
 }

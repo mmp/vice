@@ -276,7 +276,9 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			}
 
 			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis || forced, nextRow) {
-				if label != "" && !forced {
+				// key is empty both past the end of the filter menu and for
+				// label-less placeholder slots inside it; neither is clickable.
+				if key != "" && !forced {
 					if vis {
 						delete(ps.VideoMapVisible, key)
 					} else {

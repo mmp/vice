@@ -57,6 +57,15 @@ type ERAMMapGroup struct {
 	LabelLine2 string
 	BCGNames   []string // BCGs in source order; per feature BCGIndex references this.
 	Maps       []ERAMMap
+
+	// BaseMap is drawn whenever this group is loaded: the geometry can't be toggled off and
+	// consumes no filter-menu slot. BCGIndex resolves against BCGNames as for any other map.
+	BaseMap ERAMMap
+}
+
+// IsEmpty reports whether m holds no geometry at all.
+func (m ERAMMap) IsEmpty() bool {
+	return len(m.Lines) == 0 && len(m.Symbols) == 0 && len(m.Labels) == 0
 }
 
 // ERAMMapRef names a single ERAM map by its group and the map's combined
@@ -111,10 +120,12 @@ type MapLibrary struct {
 // LookupERAMMap returns the map the reference names along with the group
 // that holds it; the group is needed to interpret the map's per-feature
 // BCGIndex values. If a group has multiple maps with the reference's
-// label, the first is returned.
+// label, the first is returned. An empty label never resolves: unlabeled
+// entries in Maps are placeholders that hold an empty filter-menu slot's
+// position, not maps that can be named.
 func (l *MapLibrary) LookupERAMMap(ref ERAMMapRef) (ERAMMap, ERAMMapGroup, bool) {
 	g, ok := l.ERAMMapGroups[ref.Group]
-	if !ok {
+	if !ok || ref.Map == "" {
 		return ERAMMap{}, ERAMMapGroup{}, false
 	}
 	for _, m := range g.Maps {
@@ -276,6 +287,10 @@ type wireERAMGroup struct {
 	LabelLine2 string          `msgpack:"l2"`
 	BCGNames   []string        `msgpack:"b"`
 	Maps       []wireERAMEntry `msgpack:"m"`
+
+	// Base geometry for the group, drawn unconditionally.
+	BaseGeomOffset uint32 `msgpack:"bo,omitempty"`
+	BaseGeomLen    uint32 `msgpack:"bz,omitempty"`
 }
 
 type wireERAMEntry struct {
@@ -297,9 +312,11 @@ type MapLibrarySpec struct {
 }
 
 // HasMap returns true if name matches a STARS map's Name, or matches
-// the combined label of any ERAM map within any group.
+// the combined label of any ERAM map within any group. An empty name
+// never matches, so the unlabeled placeholders that hold empty
+// filter-menu slots' positions stay invisible to name lookup.
 func (s *MapLibrarySpec) HasMap(name string) bool {
-	if s == nil || s.header == nil {
+	if s == nil || s.header == nil || name == "" {
 		return false
 	}
 	for _, m := range s.header.STARSMaps {
@@ -333,9 +350,10 @@ func (s *MapLibrarySpec) STARSMapId(name string) int {
 }
 
 // HasERAMMap returns true if the group the reference names exists and
-// holds a map with the reference's combined label.
+// holds a map with the reference's combined label. As with LookupERAMMap,
+// an empty label never matches.
 func (s *MapLibrarySpec) HasERAMMap(ref ERAMMapRef) bool {
-	if s == nil || s.header == nil {
+	if s == nil || s.header == nil || ref.Map == "" {
 		return false
 	}
 	for _, g := range s.header.ERAMGroups {
@@ -435,7 +453,19 @@ func LoadMapLibrary(path string) (*MapLibrary, error) {
 	}
 	defer f.Close()
 
-	hdr, body, err := readMapLibraryHeader(f)
+	contents, err := io.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+	return decodeMapLibrary(contents, path)
+}
+
+// decodeMapLibrary turns a complete video map file into a MapLibrary. Split out
+// of LoadMapLibrary so tests can decode from memory through exactly the same
+// code the loader uses rather than a parallel copy of it. path is only used in
+// error messages.
+func decodeMapLibrary(contents []byte, path string) (*MapLibrary, error) {
+	hdr, body, err := parseMapLibraryHeader(contents)
 	if err != nil {
 		return nil, err
 	}
@@ -493,6 +523,13 @@ func LoadMapLibrary(path string) (*MapLibrary, error) {
 				Labels:     labels,
 			}
 		}
+		if g.BaseGeomLen > 0 {
+			lines, symbols, labels, err := decodeGeometry(geom, g.BaseGeomOffset, g.BaseGeomLen)
+			if err != nil {
+				return nil, fmt.Errorf("video map %s: ERAM %s base map: %w", path, g.Name, err)
+			}
+			group.BaseMap = ERAMMap{Lines: lines, Symbols: symbols, Labels: labels}
+		}
 		lib.ERAMMapGroups[g.Name] = group
 	}
 
@@ -517,20 +554,9 @@ func HashCheckLoadMapLibrary(path string, wantHash []byte) (*MapLibrary, error) 
 	return LoadMapLibrary(path)
 }
 
-// readMapLibraryHeader reads and validates the magic + header length +
-// header msgpack. It returns the decoded header and the remaining bytes
-// (the flate-compressed geometry region).
-func readMapLibraryHeader(f fs.File) (*wireFileHeader, []byte, error) {
-	contents, err := io.ReadAll(f)
-	if err != nil {
-		return nil, nil, err
-	}
-	return parseMapLibraryHeader(contents)
-}
-
-// parseMapLibraryHeader runs the actual magic/length/msgpack validation
-// against an in-memory slice. Split out so tests can exercise the
-// header parser without bringing up an fs.FS.
+// parseMapLibraryHeader runs the magic/length/msgpack validation against
+// an in-memory slice and returns the decoded header along with the
+// remaining bytes (the flate-compressed geometry region).
 func parseMapLibraryHeader(contents []byte) (*wireFileHeader, []byte, error) {
 	if len(contents) < 8 {
 		return nil, nil, errors.New("video map file too short")
@@ -597,6 +623,13 @@ func SaveMapLibrary(w io.Writer, lib *MapLibrary) error {
 				GeomOffset: offset,
 				GeomLen:    uint32(len(payload)),
 			}
+		}
+		if !g.BaseMap.IsEmpty() {
+			offset := uint32(geom.Len())
+			payload := encodeGeometry(g.BaseMap.Lines, g.BaseMap.Symbols, g.BaseMap.Labels)
+			geom.Write(payload)
+			wg.BaseGeomOffset = offset
+			wg.BaseGeomLen = uint32(len(payload))
 		}
 		hdr.ERAMGroups = append(hdr.ERAMGroups, wg)
 	}
@@ -690,8 +723,12 @@ func PrintMapLibrary(path string, e *util.ErrorLogger) {
 		fmt.Printf("\nERAM GROUPS\n")
 		for g := range util.SortedMapValues(vmf.ERAMMapGroups) {
 			fmt.Printf("  %s (%s / %s)\n", g.Name, g.LabelLine1, g.LabelLine2)
-			for _, m := range g.Maps {
-				fmt.Printf("    %s\n", combineLabels(m.LabelLine1, m.LabelLine2))
+			if !g.BaseMap.IsEmpty() {
+				fmt.Printf("    [base map: %d lines, %d symbols, %d labels]\n",
+					len(g.BaseMap.Lines), len(g.BaseMap.Symbols), len(g.BaseMap.Labels))
+			}
+			for i, m := range g.Maps {
+				fmt.Printf("    %2d  %s\n", i+1, combineLabels(m.LabelLine1, m.LabelLine2))
 			}
 			fmt.Printf("\n")
 		}

@@ -228,6 +228,8 @@ type ERAMPane struct {
 	allVideoMaps  []av.ERAMMap `json:"-"`
 	bcgNames      []string     `json:"-"` // current group's bcgMenu; index-stable, may include empty slots
 	videoMapLabel string       `json:"-"`
+	// baseVideoMap is the current group's own always-displayed geometry.
+	baseVideoMap av.ERAMMap `json:"-"`
 	// alwaysVideoMaps are adapted maps from other geomap groups that are drawn
 	// no matter which group is loaded; they have no filter-menu button. They're
 	// kept grouped since BCGIndex is an index into the owning group's bcgMenu.
@@ -1069,6 +1071,10 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	defer renderer.ReturnTextDrawBuilder(td)
 	var solidLineBuf [][2]float32 // reuse across all lines/maps
 
+	// The current group's base map is always drawn; it has no filter-menu
+	// button for the controller to turn off.
+	ep.drawVideoMapFeatures(ep.baseVideoMap, &bcgRGB, transforms, ld, td, &solidLineBuf)
+
 	for _, vm := range ep.allVideoMaps {
 		label := combine(vm.LabelLine1, vm.LabelLine2, " ")
 		_, visible := ps.VideoMapVisible[label]
@@ -1238,6 +1244,7 @@ func (ep *ERAMPane) setVideoMapGroup(vmf *av.MapLibrary, group string, alwaysMap
 	}
 
 	ep.allVideoMaps = maps.Maps
+	ep.baseVideoMap = maps.BaseMap
 	ep.bcgNames = maps.BCGNames
 	ep.videoMapLabel = combine(maps.LabelLine1, maps.LabelLine2, "\n")
 
