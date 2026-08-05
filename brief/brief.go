@@ -740,10 +740,10 @@ func validateConfigConditionSyntax(markdown string) []string {
 
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
-		if strings.HasPrefix(trimmed, "```") {
+		if after, ok := strings.CutPrefix(trimmed, "```"); ok {
 			if !inFence {
 				inFence = true
-				fenceInfo = strings.TrimSpace(strings.TrimPrefix(trimmed, "```"))
+				fenceInfo = strings.TrimSpace(after)
 				currentConfigGroup = ""
 				if rest, ok := strings.CutPrefix(fenceInfo, "configurations"); ok {
 					currentConfigGroup = strings.TrimSpace(rest)

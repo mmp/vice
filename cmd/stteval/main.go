@@ -341,8 +341,8 @@ func consistencyFlags(transcript, current string) []string {
 				continue
 			}
 			cands = append(cands, t.Text, t.Text+"0")
-			if strings.HasSuffix(t.Text, "0") {
-				cands = append(cands, strings.TrimSuffix(t.Text, "0"))
+			if before, ok := strings.CutSuffix(t.Text, "0"); ok {
+				cands = append(cands, before)
 			}
 			if t.Value >= 1000 && t.Value%100 == 0 {
 				cands = append(cands, strconv.Itoa(t.Value/100))

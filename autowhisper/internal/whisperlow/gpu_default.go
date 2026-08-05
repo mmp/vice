@@ -105,8 +105,8 @@ func getMacChipName() string {
 	// Look for "Chip:" line
 	for _, line := range strings.Split(string(out), "\n") {
 		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "Chip:") {
-			return strings.TrimSpace(strings.TrimPrefix(line, "Chip:"))
+		if after, ok := strings.CutPrefix(line, "Chip:"); ok {
+			return strings.TrimSpace(after)
 		}
 	}
 
@@ -125,8 +125,8 @@ func getMacGPUCoreCount() int {
 	lines := strings.Split(string(out), "\n")
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "Total Number of Cores:") {
-			numStr := strings.TrimSpace(strings.TrimPrefix(line, "Total Number of Cores:"))
+		if after, ok := strings.CutPrefix(line, "Total Number of Cores:"); ok {
+			numStr := strings.TrimSpace(after)
 			if n, err := strconv.Atoi(numStr); err == nil {
 				return n
 			}

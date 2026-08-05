@@ -240,8 +240,8 @@ func parseSpeedUntil(untilStr string) *av.SpeedUntil {
 	untilStr = strings.ToUpper(untilStr)
 
 	// Check for DME pattern: digits followed by DME
-	if strings.HasSuffix(untilStr, "DME") {
-		numStr := strings.TrimSuffix(untilStr, "DME")
+	if before, ok := strings.CutSuffix(untilStr, "DME"); ok {
+		numStr := before
 		if n, err := strconv.Atoi(numStr); err == nil && n > 0 {
 			return &av.SpeedUntil{DME: n}
 		}
