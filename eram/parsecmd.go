@@ -767,10 +767,10 @@ func (gm greedyMatcher) acceptsClick() bool   { return gm.inner.acceptsClick() }
 
 // Common reflect types used in function binding
 var (
-	trackType      = reflect.TypeOf((*sim.Track)(nil))
-	trackStateType = reflect.TypeOf((*TrackState)(nil))
-	statusType     = reflect.TypeOf(CommandStatus{})
-	errorInterface = reflect.TypeOf((*error)(nil)).Elem()
+	trackType      = reflect.TypeFor[*sim.Track]()
+	trackStateType = reflect.TypeFor[*TrackState]()
+	statusType     = reflect.TypeFor[CommandStatus]()
+	errorInterface = reflect.TypeFor[error]()
 )
 
 // normalizeType maps *TrackState to *sim.Track for type comparison.
@@ -867,9 +867,9 @@ func validateReturnTypes(funcType reflect.Type) error {
 
 // initialArgTypes lists the allowed initial argument types for command handlers.
 var initialArgTypes = []reflect.Type{
-	reflect.TypeOf((*ERAMPane)(nil)),
-	reflect.TypeOf((*panes.Context)(nil)),
-	reflect.TypeOf((*PrefrenceSet)(nil)),
+	reflect.TypeFor[*ERAMPane](),
+	reflect.TypeFor[*panes.Context](),
+	reflect.TypeFor[*PrefrenceSet](),
 }
 
 // countInitialArgs counts how many initial arguments a function expects.
@@ -943,9 +943,9 @@ func (cmd userCommand) bindArgs(ep *ERAMPane, extractedArgs []any) []any {
 
 // initialArgProviders maps initial arg types to functions that provide their values.
 var initialArgProviders = map[reflect.Type]func(ep *ERAMPane, ctx *panes.Context) reflect.Value{
-	reflect.TypeOf((*ERAMPane)(nil)):      func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep) },
-	reflect.TypeOf((*panes.Context)(nil)): func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ctx) },
-	reflect.TypeOf((*PrefrenceSet)(nil)):  func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep.currentPrefs()) },
+	reflect.TypeFor[*ERAMPane]():      func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep) },
+	reflect.TypeFor[*panes.Context](): func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ctx) },
+	reflect.TypeFor[*PrefrenceSet]():  func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep.currentPrefs()) },
 }
 
 // call invokes the command handler function with the provided arguments.

@@ -126,7 +126,7 @@ func isAlphaNum(ch byte) bool {
 }
 
 // fpSpecType is the Go type for FlightPlanSpecifier.
-var fpSpecType = reflect.TypeOf(sim.FlightPlanSpecifier{})
+var fpSpecType = reflect.TypeFor[sim.FlightPlanSpecifier]()
 
 ///////////////////////////////////////////////////////////////////////////
 // Parser implementations
@@ -177,7 +177,7 @@ func trackFromFLID(ctx *panes.Context, id string) *sim.Track {
 	return nil
 }
 
-func (h *trackParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
+func (h *trackParser) GoType() reflect.Type { return reflect.TypeFor[*sim.Track]() }
 func (h *trackParser) AcceptsClick() bool   { return true }
 
 // trackListParser matches 1..maxTrackList tracks separated by '/' and/or
@@ -243,7 +243,7 @@ func (h *trackListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Command
 	return tracks, "", true, nil
 }
 
-func (h *trackListParser) GoType() reflect.Type { return reflect.TypeOf([]*sim.Track(nil)) }
+func (h *trackListParser) GoType() reflect.Type { return reflect.TypeFor[[]*sim.Track]() }
 func (h *trackListParser) AcceptsClick() bool   { return true }
 
 // eramAltAParser parses assigned altitude (3 digits, e.g., "350" for FL350)
@@ -273,7 +273,7 @@ func (h *eramAltAParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	return alt * 100, remaining, true, nil
 }
 
-func (h *eramAltAParser) GoType() reflect.Type { return reflect.TypeOf(0) }
+func (h *eramAltAParser) GoType() reflect.Type { return reflect.TypeFor[int]() }
 func (h *eramAltAParser) AcceptsClick() bool   { return false }
 
 // eramAltIParser parses interim altitude with optional P/L prefix (e.g., "230", "P230", "L180")
@@ -316,7 +316,7 @@ func (h *eramAltIParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	return InterimAltitude{Altitude: alt * 100, Type: interimType}, remaining, true, nil
 }
 
-func (h *eramAltIParser) GoType() reflect.Type { return reflect.TypeOf(InterimAltitude{}) }
+func (h *eramAltIParser) GoType() reflect.Type { return reflect.TypeFor[InterimAltitude]() }
 func (h *eramAltIParser) AcceptsClick() bool   { return false }
 
 // InterimAltitude holds an interim altitude value with optional type (P for procedure, L for local)
@@ -378,7 +378,7 @@ func isSectorID(field string) bool {
 	return false
 }
 
-func (h *sectorIDParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *sectorIDParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *sectorIDParser) AcceptsClick() bool   { return false }
 
 // sectorIDListParser parses one or more sector ids
@@ -399,7 +399,7 @@ func (l *sectorIDListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Comm
 	return sectors, "", true, nil
 }
 
-func (l *sectorIDListParser) GoType() reflect.Type { return reflect.TypeOf([]string{}) }
+func (l *sectorIDListParser) GoType() reflect.Type { return reflect.TypeFor[[]string]() }
 func (l *sectorIDListParser) AcceptsClick() bool   { return false }
 
 // fixParser parses navigation fix names and returns the fix name (validation happens in handler)
@@ -428,7 +428,7 @@ func (h *fixParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput,
 	return field, text[end:], true, nil
 }
 
-func (h *fixParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *fixParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *fixParser) AcceptsClick() bool   { return false }
 
 // numberParser parses integer numbers.
@@ -467,7 +467,7 @@ func (h *numberParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 	return n, remainder, true, nil
 }
 
-func (h *numberParser) GoType() reflect.Type { return reflect.TypeOf(0) }
+func (h *numberParser) GoType() reflect.Type { return reflect.TypeFor[int]() }
 func (h *numberParser) AcceptsClick() bool   { return false }
 
 // fieldParser extracts a single space-delimited field (token).
@@ -483,7 +483,7 @@ func (h *fieldParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInpu
 	return field, remaining, true, nil
 }
 
-func (h *fieldParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *fieldParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *fieldParser) AcceptsClick() bool   { return false }
 
 // allTextParser captures all remaining text from the current position, though it special cases and
@@ -504,7 +504,7 @@ func (h *allTextParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandIn
 	return prefix, text[len(prefix):], true, nil
 }
 
-func (h *allTextParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *allTextParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *allTextParser) AcceptsClick() bool   { return false }
 
 // posParser handles click position as lat/long (for commands that need position without a track)
@@ -521,7 +521,7 @@ func (h *posParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput,
 	return input.mousePositions[0], text, true, nil
 }
 
-func (h *posParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
+func (h *posParser) GoType() reflect.Type { return reflect.TypeFor[math.Point2LL]() }
 func (h *posParser) AcceptsClick() bool   { return true }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -543,7 +543,7 @@ func (h *acidParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput
 	return sim.ACID(text[:i]), text[i:], true, nil
 }
 
-func (h *acidParser) GoType() reflect.Type { return reflect.TypeOf(sim.ACID("")) }
+func (h *acidParser) GoType() reflect.Type { return reflect.TypeFor[sim.ACID]() }
 func (h *acidParser) AcceptsClick() bool   { return false }
 
 // laOptionParser parses trailing options for LA commands: /speed, T, and T/speed
@@ -573,7 +573,7 @@ func (h *laOptionParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	return o, remainder, true, nil
 }
 
-func (h *laOptionParser) GoType() reflect.Type { return reflect.TypeOf(laOptions{}) }
+func (h *laOptionParser) GoType() reflect.Type { return reflect.TypeFor[laOptions]() }
 func (h *laOptionParser) AcceptsClick() bool   { return false }
 
 // beaconParser parses beacon/squawk codes (4 octal digits)
@@ -593,7 +593,7 @@ func (h *beaconParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 	}
 }
 
-func (h *beaconParser) GoType() reflect.Type { return reflect.TypeOf(av.Squawk(0)) }
+func (h *beaconParser) GoType() reflect.Type { return reflect.TypeFor[av.Squawk]() }
 func (h *beaconParser) AcceptsClick() bool   { return false }
 
 // beaconListParser parses 1+ beacon/squawk codes separated by spaces
@@ -618,7 +618,7 @@ func (h *beaconListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Comman
 	return codes, "", len(codes) > 0, nil
 }
 
-func (h *beaconListParser) GoType() reflect.Type { return reflect.TypeOf([]av.Squawk{}) }
+func (h *beaconListParser) GoType() reflect.Type { return reflect.TypeFor[[]av.Squawk]() }
 func (h *beaconListParser) AcceptsClick() bool   { return false }
 
 // mapGroupParser parses video map group names
@@ -636,7 +636,7 @@ func (h *mapGroupParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	return field, remaining, true, nil
 }
 
-func (h *mapGroupParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *mapGroupParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *mapGroupParser) AcceptsClick() bool   { return false }
 
 // crrLabelParser parses CRR group labels (1-5 alphanumeric characters)
@@ -665,7 +665,7 @@ func (h *crrLabelParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	return strings.ToUpper(field), remaining, true, nil
 }
 
-func (h *crrLabelParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *crrLabelParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *crrLabelParser) AcceptsClick() bool   { return false }
 
 // crrLocParser parses CRR location tokens (//FIX, //FRD, //lat/long)
@@ -696,7 +696,7 @@ func (h *crrLocParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 	return CRRLocation{Location: loc, Token: token}, remaining, true, nil
 }
 
-func (h *crrLocParser) GoType() reflect.Type { return reflect.TypeOf(CRRLocation{}) }
+func (h *crrLocParser) GoType() reflect.Type { return reflect.TypeFor[CRRLocation]() }
 func (h *crrLocParser) AcceptsClick() bool   { return false }
 
 // locSymParser matches the location symbol 'w' embedded in text from clicking.
@@ -730,7 +730,7 @@ func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 	return input.mousePositions[idx], remaining, true, nil
 }
 
-func (h *locSymParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
+func (h *locSymParser) GoType() reflect.Type { return reflect.TypeFor[math.Point2LL]() }
 func (h *locSymParser) AcceptsClick() bool   { return true } // Uses click position from input
 
 // minutesParse parses minutes for QU
@@ -751,7 +751,7 @@ func (h *minutesParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandIn
 	return minutes, remaining, true, nil
 }
 
-func (h *minutesParser) GoType() reflect.Type { return reflect.TypeOf(0) }
+func (h *minutesParser) GoType() reflect.Type { return reflect.TypeFor[int]() }
 func (h *minutesParser) AcceptsClick() bool   { return false }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -780,7 +780,7 @@ func (h *hsfTextParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandIn
 	return field, remaining, true, nil
 }
 
-func (h *hsfTextParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *hsfTextParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *hsfTextParser) AcceptsClick() bool   { return false }
 
 // Headings don't have to be actual headings, just cannot be > 4 characters.
@@ -803,7 +803,7 @@ func (h *hsfHeadingParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Comman
 	return field, remaining, true, nil
 }
 
-func (h *hsfHeadingParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *hsfHeadingParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *hsfHeadingParser) AcceptsClick() bool   { return false }
 
 // hsfSpeedParser parses QS speed/mach scratchpad entries. It returns the canonical
@@ -907,7 +907,7 @@ func (h *hsfSpeedParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	}
 }
 
-func (h *hsfSpeedParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *hsfSpeedParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *hsfSpeedParser) AcceptsClick() bool   { return false }
 
 func allDigits(s string) bool {

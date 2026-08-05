@@ -29,7 +29,7 @@ type altitudeParser struct {
 }
 
 func (p *altitudeParser) goType() reflect.Type {
-	return reflect.TypeOf(0)
+	return reflect.TypeFor[int]()
 }
 
 func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -89,7 +89,7 @@ type headingParser struct {
 }
 
 func (p *headingParser) goType() reflect.Type {
-	return reflect.TypeOf(0)
+	return reflect.TypeFor[int]()
 }
 
 func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -139,7 +139,7 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 type speedParser struct{}
 
 func (p *speedParser) goType() reflect.Type {
-	return reflect.TypeOf(0)
+	return reflect.TypeFor[int]()
 }
 
 func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -176,7 +176,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 type machParser struct{}
 
 func (p *machParser) goType() reflect.Type {
-	return reflect.TypeOf(0)
+	return reflect.TypeFor[int]()
 }
 
 func (p *machParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -195,7 +195,7 @@ func (p *machParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, stri
 type fixParser struct{}
 
 func (p *fixParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *fixParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -242,7 +242,7 @@ type approachParser struct {
 }
 
 func (p *approachParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *approachParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -285,7 +285,7 @@ type visualApproachParser struct {
 func (p *visualApproachParser) anchored() bool { return true }
 
 func (p *visualApproachParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *visualApproachParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -324,7 +324,7 @@ func (p *visualApproachParser) parse(tokens []Token, pos int, ac Aircraft) (any,
 type squawkParser struct{}
 
 func (p *squawkParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *squawkParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -346,7 +346,7 @@ type degreesParser struct{}
 
 func (p *degreesParser) goType() reflect.Type {
 	// Returns a struct with deg and dir
-	return reflect.TypeOf(degreesResult{})
+	return reflect.TypeFor[degreesResult]()
 }
 
 type degreesResult struct {
@@ -372,7 +372,7 @@ func (p *degreesParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 type sidParser struct{}
 
 func (p *sidParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *sidParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -393,7 +393,7 @@ func (p *sidParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 type starParser struct{}
 
 func (p *starParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *starParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -417,7 +417,7 @@ type rangeParser struct {
 }
 
 func (p *rangeParser) goType() reflect.Type {
-	return reflect.TypeOf(0)
+	return reflect.TypeFor[int]()
 }
 
 func (p *rangeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -455,7 +455,7 @@ func (p *rangeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 type trafficParser struct{}
 
 func (p *trafficParser) goType() reflect.Type {
-	return reflect.TypeOf(trafficResult{})
+	return reflect.TypeFor[trafficResult]()
 }
 
 type trafficResult struct {
@@ -494,7 +494,7 @@ func (p *trafficParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 // the simulator treats it as informational chatter.
 type trafficVisualSepParser struct{}
 
-func (p *trafficVisualSepParser) goType() reflect.Type { return reflect.TypeOf(true) }
+func (p *trafficVisualSepParser) goType() reflect.Type { return reflect.TypeFor[bool]() }
 
 func (p *trafficVisualSepParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
 	if pos >= len(tokens) {
@@ -522,7 +522,7 @@ func (p *trafficVisualSepParser) parse(tokens []Token, pos int, ac Aircraft) (an
 type holdParser struct{}
 
 func (p *holdParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *holdParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -546,7 +546,7 @@ func (p *holdParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, stri
 type textParser struct{}
 
 func (p *textParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *textParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
@@ -566,7 +566,7 @@ func (p *textParser) parse(tokens []Token, pos int, ac Aircraft) (value any, con
 type atisLetterParser struct{}
 
 func (p *atisLetterParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *atisLetterParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
@@ -643,7 +643,7 @@ var positionVetoKeywords = map[string]bool{
 type facilityWordParser struct{}
 
 func (p *facilityWordParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *facilityWordParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
@@ -670,7 +670,7 @@ type aircraftTypeParser struct{}
 var aircraftMakerWords = []string{"boeing", "airbus", "bus", "embraer", "cessna", "gulfstream", "md"}
 
 func (p *aircraftTypeParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *aircraftTypeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -723,7 +723,7 @@ type garbledWordParser struct {
 }
 
 func (p *garbledWordParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *garbledWordParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
@@ -747,7 +747,7 @@ func (p *garbledWordParser) parse(tokens []Token, pos int, ac Aircraft) (value a
 type speedUntilParser struct{}
 
 func (p *speedUntilParser) goType() reflect.Type {
-	return reflect.TypeOf(speedUntilResult{})
+	return reflect.TypeFor[speedUntilResult]()
 }
 
 func (p *speedUntilParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -767,7 +767,7 @@ func (p *speedUntilParser) parse(tokens []Token, pos int, ac Aircraft) (any, int
 type dmeParser struct{}
 
 func (p *dmeParser) goType() reflect.Type {
-	return reflect.TypeOf(0)
+	return reflect.TypeFor[int]()
 }
 
 func (p *dmeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -786,7 +786,7 @@ func (p *dmeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 type standaloneAltitudeParser struct{}
 
 func (p *standaloneAltitudeParser) goType() reflect.Type {
-	return reflect.TypeOf(0)
+	return reflect.TypeFor[int]()
 }
 
 func (p *standaloneAltitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -808,7 +808,7 @@ func (p *standaloneAltitudeParser) parse(tokens []Token, pos int, ac Aircraft) (
 type contactFrequencyParser struct{}
 
 func (p *contactFrequencyParser) goType() reflect.Type {
-	return reflect.TypeOf("")
+	return reflect.TypeFor[string]()
 }
 
 func (p *contactFrequencyParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -862,7 +862,7 @@ func (p *contactFrequencyParser) parse(tokens []Token, pos int, ac Aircraft) (an
 // (integer with ×1000 scaling, matching av.NewFrequency).
 type frequencyValueParser struct{}
 
-func (p *frequencyValueParser) goType() reflect.Type { return reflect.TypeOf(av.Frequency(0)) }
+func (p *frequencyValueParser) goType() reflect.Type { return reflect.TypeFor[av.Frequency]() }
 
 func (p *frequencyValueParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
 	if pos+2 >= len(tokens) {
@@ -901,7 +901,7 @@ func (p *frequencyValueParser) parse(tokens []Token, pos int, ac Aircraft) (any,
 // Returns the short abbreviation (N, S, E, W, NE, NW, SE, SW) as a string.
 type compassDirParser struct{}
 
-func (p *compassDirParser) goType() reflect.Type { return reflect.TypeOf("") }
+func (p *compassDirParser) goType() reflect.Type { return reflect.TypeFor[string]() }
 
 var compassDirections = map[string]string{
 	"north": "N", "south": "S", "east": "E", "west": "W",
