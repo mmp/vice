@@ -5,8 +5,11 @@
 package aviation
 
 import (
+	"slices"
+	"strings"
 	"testing"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
@@ -416,4 +419,102 @@ func TestDeriveSTAR(t *testing.T) {
 			}
 		})
 	}
+}
+
+// An arrival that names none of the airports it serves takes them from the FAA
+// CIFP's entry for its STAR, and failing that serves every airport in the
+// scenario.
+func TestArrivalServedAirports(t *testing.T) {
+	fixes := []string{"MIPP", "LIZZI", "BEUTY", "APPLE", "PROUD"}
+	var wps WaypointArray
+	loc := testLocator{}
+	dbFixes := make(map[string]Fix)
+	for i, f := range fixes {
+		p := math.Point2LL{float32(-73 - i), float32(40 + i)}
+		wps = append(wps, Waypoint{Fix: f})
+		loc[f] = p
+		dbFixes[f] = Fix{Id: f, Location: p}
+	}
+	mipp4 := STAR{Transitions: map[string]WaypointArray{"ALL": wps}}
+
+	oldDB := DB
+	// MIPP4 serves two of the three airports; the CIFP records it once under
+	// each of them.
+	DB = &StaticDatabase{
+		Airports: map[string]FAAAirport{
+			"KTST": {Id: "KTST", STARs: map[string]STAR{"MIPP4": mipp4}},
+			"KNOS": {Id: "KNOS", STARs: map[string]STAR{"MIPP4": mipp4}},
+			"KOTH": {Id: "KOTH"},
+		},
+		Fixes: dbFixes,
+	}
+	t.Cleanup(func() { DB = oldDB })
+
+	scenarioAirports := map[string]*Airport{"KTST": {}, "KNOS": {}, "KOTH": {}}
+	controlPositions := map[ControlPosition]*Controller{"1T": {}}
+
+	for _, tc := range []struct {
+		name string
+		arr  Arrival
+		want []string
+	}{
+		{
+			name: "takes the airports from the STAR",
+			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP"},
+			want: []string{"KNOS", "KTST"},
+		},
+		{
+			name: "airports given win over the STAR's",
+			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []string{"KTST"}},
+			want: []string{"KTST"},
+		},
+		{
+			name: "airlines imply the airports too",
+			arr: Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
+				Airlines: map[string][]ArrivalAirline{"KNOS": nil}},
+			want: []string{"KNOS"},
+		},
+		{
+			name: "serves the whole scenario without a STAR to go on",
+			arr:  Arrival{FlightStripDisplayRoute: "MIPP LIZZI", Waypoints: wps},
+			want: []string{"KNOS", "KOTH", "KTST"},
+		},
+		{
+			name: "a STAR the CIFP hasn't got is no help either",
+			arr:  Arrival{STAR: "NOPE1", Waypoints: wps},
+			want: []string{"KNOS", "KOTH", "KTST"},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var e util.ErrorLogger
+			arr := tc.arr
+			arr.InitialController = "1T"
+			arr.InitialAltitudes = []int{10000}
+			arr.InitialSpeed = 250
+			arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+				func(string) bool { return true }, &e)
+
+			if got := arr.ServedAirports(); !slices.Equal(got, tc.want) {
+				t.Errorf("ServedAirports = %v, want %v (errors: %s)", got, tc.want, e.String())
+			}
+		})
+	}
+
+	// An arrival that takes its waypoints from a STAR no airport in the
+	// scenario is charted for can't be built at all, and says so once rather
+	// than once per airport.
+	t.Run("no waypoints and an uncharted STAR", func(t *testing.T) {
+		var e util.ErrorLogger
+		arr := Arrival{STAR: "NOPE1", SpawnWaypoint: "MIPP", InitialController: "1T",
+			InitialAltitudes: []int{10000}, InitialSpeed: 250}
+		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			func(string) bool { return true }, &e)
+
+		if !strings.Contains(e.String(), `STAR "NOPE1" isn't charted`) {
+			t.Errorf("didn't get the expected error; got: %s", e.String())
+		}
+		if n := strings.Count(e.String(), "isn't charted"); n != 1 {
+			t.Errorf("reported the uncharted STAR %d times, want 1: %s", n, e.String())
+		}
+	})
 }

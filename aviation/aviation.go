@@ -168,7 +168,10 @@ type Arrival struct {
 	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
 
 	// Airports the arrival serves, for scenarios that don't give airline
-	// lists; ServedAirports is the union of these and the Airlines keys.
+	// lists; ServedAirports is the union of these and the Airlines keys. An
+	// arrival that names none of its own takes the ones the FAA CIFP charts
+	// its STAR for, or--if it names no STAR, or one the CIFP doesn't
+	// have--every airport in the scenario. Filled in at load either way.
 	Airports []string `json:"airports"`
 
 	// Airport -> arrival airlines. Optional: without it the scenario can't
@@ -187,6 +190,21 @@ func (ar Arrival) ServedAirports() []string {
 	}
 	slices.Sort(airports)
 	return airports
+}
+
+// starAirports returns the airports among those given that the FAA CIFP charts
+// the named STAR for, in sorted order. A STAR serving several airports is
+// recorded once under each of them, so the ones whose entry has it are the ones
+// it is charted for.
+func starAirports(star string, airports map[string]*Airport) []string {
+	var icaos []string
+	for icao := range airports {
+		if _, ok := DB.Airports[icao].STARs[star]; ok {
+			icaos = append(icaos, icao)
+		}
+	}
+	slices.Sort(icaos)
+	return icaos
 }
 
 type AirlineSpecifier struct {
@@ -1124,6 +1142,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 	defer e.Pop()
 
+	// An arrival that names no airports of its own serves the ones the FAA
+	// charts its STAR for.
+	if len(ar.ServedAirports()) == 0 && ar.STAR != "" {
+		ar.Airports = starAirports(ar.STAR, airports)
+	}
+
 	if len(ar.Waypoints) == 0 {
 		// STAR details are coming from the FAA CIFP; make sure
 		// everything is ok so we don't get into trouble when we
@@ -1134,6 +1158,11 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		}
 		if ar.SpawnWaypoint == "" {
 			e.ErrorString(`must specify "spawn" if "waypoints" aren't given with arrival`)
+			return
+		}
+		if len(ar.ServedAirports()) == 0 {
+			e.ErrorString("STAR %q isn't charted for any of the scenario's airports; "+
+				`name the airports it serves in "airports" or spell out its "waypoints"`, ar.STAR)
 			return
 		}
 
@@ -1297,6 +1326,13 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		ar.Waypoints[i].SetOnSTAR(true)
 	}
 
+	// An arrival that still names none--one that spells out its own waypoints
+	// and either names no STAR or names one the CIFP doesn't have--serves every
+	// airport in the scenario.
+	if len(ar.ServedAirports()) == 0 {
+		ar.Airports = util.SortedMapKeys(airports)
+	}
+
 	if ar.STAR == "" {
 		ar.DerivedSTAR = ar.deriveSTAR()
 	}
@@ -1305,9 +1341,6 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
 	served := ar.ServedAirports()
-	if len(served) == 0 {
-		e.ErrorString(`must specify the arrival's airports in "airports" or "airlines"`)
-	}
 	for _, arrivalAirport := range served {
 		e.Push("Arrival airport " + arrivalAirport)
 		for i := range ar.Airlines[arrivalAirport] {
@@ -1327,7 +1360,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	if ar.ExpectApproach.A != nil { // Given a single string
 		if len(served) > 1 {
-			e.ErrorString(`There are multiple arrival airports but only one approach in "expect_approach"`)
+			e.ErrorString(`There are multiple arrival airports but only one approach in "expect_approach"; ` +
+				`name the airports it serves in "airports"`)
 		}
 		airport := ""
 		if len(served) > 0 {

@@ -4326,17 +4326,25 @@
                   <tr>
                     <td>"airlines"</td>
                     <td>Object</td>
-                    <td>(<i>Optional</i>) Destination airports and airlines for the arrivals. These objects include both the members
+                    <td>(<i>Optional</i>) The airlines flying the arrival, used when <i>vice</i> generates the scenario's
+                      own traffic. Its members are the arrival airports and each gives an array of airlines together with the
+                      <i>departure</i> airport they come in from. These objects include both the members
                       "icao", "fleet", and "types" members of the airline object documented in <a href="#fe-airlines-aircraft">Airlines and Aircraft</a>
                       as well as some additional fields. See the example below. Omit it only in a scenario meant to be flown from
-                      a timetable or historical data, and name the airports the arrival serves in "airports" instead; see
+                      a timetable or historical data, which brings its own airlines; see
                       <a href="#fe-timetables">Timetables and Historical Traffic</a>.</td>
                   </tr>
                   <tr>
                     <td>"airports"</td>
                     <td>Array of strings</td>
-                    <td>(<i>Optional</i>) The airports the arrival brings traffic to, for arrivals that give no "airlines" to
-                      imply them. The two may be combined; the arrival serves the union.</td>
+                    <td>(<i>Optional</i>) The <i>arrival</i> airports the arrival brings traffic to. (Not to be confused with
+                      the "airport" member of each entry in "airlines", which is a <i>departure</i> airport.) This is what lets
+                      <i>vice</i> work out which arrivals a flight from a timetable or from historical data may be flown in on;
+                      see <a href="#fe-timetables">Timetables and Historical Traffic</a>.
+                      If it isn't given, the arrival serves the airports the FAA CIFP charts its "star" for.  If the CIFP
+                      hasn't got that STAR&mdash;or no "star" is named at all&mdash;the arrival serves every airport in the
+                      scenario group, leaving it to each scenario's "inbound_rates" to say which ones it actually feeds.
+                      Any airports named in "airlines" are served as well; the arrival serves the union.</td>
                   </tr>
                   <tr>
                     <td>"assigned_altitude"</td>
@@ -4431,7 +4439,9 @@
                   <tr>
                     <td>"star"</td>
                     <td>(<i>Optional</i>) String</td>
-                    <td>Name of the STAR that the aircraft is flying.</td>
+                    <td>Name of the STAR that the aircraft is flying. If the FAA CIFP has it, it supplies the
+                      arrival's waypoints (see below) and, for an arrival that names none itself, the
+                      "airports" it serves.</td>
                   </tr>
                 </tbody>
               </table>
@@ -4504,6 +4514,9 @@
                   </tr>
                 </tbody>
               </table>
+              <p>The CIFP also says which airports each STAR serves: one that serves several of them is recorded once under
+                each, so <code>-routes</code> lists it for every one of them.  That is where an arrival that names no
+                "airports" of its own takes them from, narrowed to the airports the scenario group has.</p>
               <p>Alternatively, the waypoints may be specified manually using one required and one optional member.
                 <table class="table">
                   <thead>
@@ -4703,10 +4716,11 @@
     generator samples from: those lists are optional, so a facility meant to be
     flown from recorded traffic can leave out every airport's "departures" and
     every arrival's "airlines" and be offered the published sources alone. An
-    arrival that gives no "airlines" must name the airports it serves in
-    "airports" instead, and overflights always need their airlines since they
-    are randomly generated under every traffic source. A scenario that no
-    source can fly is a load error.
+    arrival that gives no "airlines" takes the airports it serves from
+    "airports", or from the FAA CIFP's entry for its "star", or&mdash;failing
+    both&mdash;serves every airport in the scenario group. Overflights always
+    need their airlines since they are randomly generated under every traffic
+    source. A scenario that no source can fly is a load error.
   </p>
 
   <p>
