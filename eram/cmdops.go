@@ -477,7 +477,7 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 	ps := ep.currentPrefs()
 
 	// Get rid of all visible maps
-	ps.VideoMapVisible = make(map[string]interface{})
+	ps.VideoMapVisible = make(map[string]any)
 
 	ep.setVideoMapGroup(vmf, groupName)
 

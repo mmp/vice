@@ -667,7 +667,7 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 
 	// Ensure map fields exist
 	if ep.prefSet.Current.VideoMapVisible == nil {
-		ep.prefSet.Current.VideoMapVisible = make(map[string]interface{})
+		ep.prefSet.Current.VideoMapVisible = make(map[string]any)
 	}
 	if ep.prefSet.Current.VideoMapBrightness == nil {
 		ep.prefSet.Current.VideoMapBrightness = make(map[string]radar.Brightness)
@@ -1204,7 +1204,7 @@ func (ep *ERAMPane) setVideoMapGroup(vmf *av.MapLibrary, group string) {
 
 	ps.VideoMapGroup = group
 	if ps.VideoMapVisible == nil {
-		ps.VideoMapVisible = make(map[string]interface{})
+		ps.VideoMapVisible = make(map[string]any)
 	}
 
 	ep.allVideoMaps = maps.Maps

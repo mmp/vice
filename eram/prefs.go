@@ -25,7 +25,7 @@ type Preferences struct {
 
 	// QuickLookPositions []QuickLookPositiosn // find out more about this
 
-	VideoMapVisible map[string]interface{}
+	VideoMapVisible map[string]any
 
 	DisplayToolbar bool
 
@@ -222,7 +222,7 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.DisplayToolbar = true
 	prefs.Range = 300
-	prefs.VideoMapVisible = make(map[string]interface{})
+	prefs.VideoMapVisible = make(map[string]any)
 
 	prefs.CharSize.Line4 = 0
 	prefs.CharSize.RDB = 1
@@ -275,7 +275,7 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.FDBLdrLength = 1 // Default to normal mode
 
-	prefs.VideoMapVisible = make(map[string]interface{})
+	prefs.VideoMapVisible = make(map[string]any)
 	prefs.VideoMapBrightness = make(map[string]radar.Brightness)
 
 	// CRR defaults

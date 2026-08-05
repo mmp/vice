@@ -20,7 +20,7 @@ func (ep *ERAMPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB {
 }
 
 func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.ArrivalsColor)
@@ -72,7 +72,7 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms rad
 }
 
 func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.ApproachesColor)
@@ -102,7 +102,7 @@ func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ra
 }
 
 func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.DeparturesColor)
@@ -136,7 +136,7 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms r
 }
 
 func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.OverflightsColor)
@@ -165,7 +165,7 @@ func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms 
 }
 
 func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.AirspaceColor)
@@ -219,7 +219,7 @@ func (ep *ERAMPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.Scop
 	// draw the same one.  (This is especially important since the
 	// placement of the labels depends on the inbound/outbound segments,
 	// which may be different for different uses of the waypoint...)
-	drawnWaypoints := make(map[string]interface{})
+	drawnWaypoints := make(map[string]any)
 
 	ep.drawScenarioArrivalRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 	ep.drawScenarioApproachRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)

@@ -2393,7 +2393,7 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 
 	if key, ok := ep.videoMapKeyForButton(buttonName); ok {
 		if ps.VideoMapVisible == nil {
-			ps.VideoMapVisible = make(map[string]interface{})
+			ps.VideoMapVisible = make(map[string]any)
 		}
 		if _, vis := ps.VideoMapVisible[key]; vis {
 			delete(ps.VideoMapVisible, key)

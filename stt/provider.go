@@ -1106,7 +1106,7 @@ func stripAltimeterSuffix(tokens []Token) []Token {
 
 // logging helpers
 
-func (p *Transcriber) logInfo(format string, args ...interface{}) {
+func (p *Transcriber) logInfo(format string, args ...any) {
 	if p.lg != nil {
 		p.lg.Infof(format, args...)
 	}
