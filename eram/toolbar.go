@@ -163,7 +163,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		main := "ATC\nTOOLS"
 		toolbarDrawState.customButton[main] = colors.toolbar.activeButton
 		toolbarDrawState.customButton["WX"] = colors.toolbar.button
-		drawButtonSamePosition(ctx, main)
+		ep.drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -197,7 +197,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		}
 		main := "FONT"
 		toolbarDrawState.customButton[main] = colors.toolbar.activeButton // Set the custom
-		drawButtonSamePosition(ctx, main)
+		ep.drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -243,7 +243,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		}
 		main := ep.videoMapLabel
 		toolbarDrawState.customButton[main] = colors.toolbar.activeButton // Set the custom button color for VIDEOMAP
-		drawButtonSamePosition(ctx, main)
+		ep.drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -305,7 +305,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
 
-		drawButtonSamePosition(ctx, "BRIGHT")
+		ep.drawButtonSamePosition(ctx, "BRIGHT")
 		if ep.drawToolbarFullButton(ctx, "BRIGHT", 0, scale, false, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -528,7 +528,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		}
 
 		ps := ep.currentPrefs()
-		drawButtonSamePosition(ctx, main)
+		ep.drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -580,7 +580,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
-		drawButtonSamePosition(ctx, "RADAR\nFILTER")
+		ep.drawButtonSamePosition(ctx, "RADAR\nFILTER")
 		if ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -637,7 +637,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
-		drawButtonSamePosition(ctx, "VIEWS")
+		ep.drawButtonSamePosition(ctx, "VIEWS")
 		if ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -739,7 +739,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
-		drawButtonSamePosition(ctx, "CHECK\nLISTS")
+		ep.drawButtonSamePosition(ctx, "CHECK\nLISTS")
 		if ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale) // Reset the button position to the default
@@ -784,7 +784,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		}
 		main := "DB\nFIELDS"
 		toolbarDrawState.customButton[main] = colors.toolbar.activeButton // Set the custom
-		drawButtonSamePosition(ctx, main)
+		ep.drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -867,7 +867,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		toolbarDrawState.customButton["SPEED"] = colors.toolbar.greenButton
 		toolbarDrawState.customButton["SIZE"] = colors.toolbar.greenButton
 		toolbarDrawState.customButton["VOLUME"] = colors.toolbar.greenButton
-		drawButtonSamePosition(ctx, "CURSOR")
+		ep.drawButtonSamePosition(ctx, "CURSOR")
 		if ep.drawToolbarFullButton(ctx, "CURSOR", 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
@@ -893,8 +893,8 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 }
 
 // Set the location of the new button to the same as when it was in the main toolbar
-func drawButtonSamePosition(ctx *panes.Context, text string) {
-	if pos, ok := toolbarDrawState.buttonPositions[text]; ok {
+func (ep *ERAMPane) drawButtonSamePosition(ctx *panes.Context, text string) {
+	if pos, ok := toolbarDrawState.buttonPositions[ep.buttonPositionKey(text)]; ok {
 		toolbarDrawState.buttonDrawStartPos = [2]float32{pos[0], ctx.PaneExtent.Height() - pos[1]}
 		toolbarDrawState.buttonDrawStartPos[0] -= 10
 		toolbarDrawState.buttonCursor = toolbarDrawState.buttonDrawStartPos
@@ -1065,8 +1065,8 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
 
 	if ep.activeToolbarMenu == toolbarMain {
-		if slices.Contains(menuButtons, text) || text == ep.videoMapLabel {
-			toolbarDrawState.buttonPositions[cleanButtonName(text)] = [2]float32{p0[0], ctx.PaneExtent.Height() - p0[1]}
+		if key := ep.buttonPositionKey(text); slices.Contains(menuButtons, key) {
+			toolbarDrawState.buttonPositions[key] = [2]float32{p0[0], ctx.PaneExtent.Height() - p0[1]}
 		}
 	}
 
@@ -1125,8 +1125,9 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 			}
 		}
 
-		if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
-			toolbarDrawState.buttonPositions[cleanButtonName(text)] = [2]float32{p0[0], ctx.PaneExtent.Height() - p0[1]}
+		key := ep.buttonPositionKey(text)
+		if _, ok := toolbarDrawState.buttonPositions[key]; !ok {
+			toolbarDrawState.buttonPositions[key] = [2]float32{p0[0], ctx.PaneExtent.Height() - p0[1]}
 		}
 	} else if hasFlag(flags, buttonTearoff) {
 		// Check if this button has been torn off - use gray if so
@@ -1410,6 +1411,17 @@ func cleanButtonName(name string) string {
 		return firstLine
 	}
 	return name
+}
+
+// buttonPositionKey returns the key under which the given button's position in
+// the main toolbar is recorded. The video map button is labeled with the
+// current geomap's name, which changes when a different geomap is selected, so
+// it is always recorded under the stable "VIDEOMAP" name.
+func (ep *ERAMPane) buttonPositionKey(text string) string {
+	if text == ep.videoMapLabel {
+		return "VIDEOMAP"
+	}
+	return cleanButtonName(text)
 }
 
 func (ep *ERAMPane) buttonVerticalOffset(ctx *panes.Context) {
@@ -2295,15 +2307,8 @@ func (ep *ERAMPane) setTearoffMenuAnchor(ctx *panes.Context, buttonName string, 
 	gap := float32(1)
 	mainPos := [2]float32{pos[0] + tearoffSz[0] + gap, pos[1]}
 	displayText := ep.getTornOffButtonText(buttonName)
-	key := cleanButtonName(displayText)
 	position := [2]float32{mainPos[0], ctx.PaneExtent.Height() - mainPos[1]}
-	toolbarDrawState.buttonPositions[key] = position
-	if displayText != key {
-		toolbarDrawState.buttonPositions[displayText] = position
-	}
-	if buttonName != key && buttonName != displayText {
-		toolbarDrawState.buttonPositions[buttonName] = position
-	}
+	toolbarDrawState.buttonPositions[ep.buttonPositionKey(displayText)] = position
 }
 
 func (ep *ERAMPane) tearoffMenuAnchor(buttonName string, menuID int) string {
