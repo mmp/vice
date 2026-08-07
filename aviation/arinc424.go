@@ -1029,7 +1029,7 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 	} else {
 		base := transitions[""]
 
-		for t, w := range transitions {
+		for t, w := range util.SortedMap(transitions) {
 			if t != "" {
 				sp := spliceTransition(w, base)
 				if sp == nil {
