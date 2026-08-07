@@ -141,3 +141,36 @@ func TestPathBytesFuzzy(t *testing.T) {
 		}
 	}
 }
+
+func TestNMDistanceToSegment2LL(t *testing.T) {
+	// Point2LL is [longitude, latitude].
+	a, b := Point2LL{0, 0}, Point2LL{10, 0}
+	oneDegree := NMDistance2LL(Point2LL{0, 0}, Point2LL{0, 1})
+
+	cases := []struct {
+		name    string
+		p, a, b Point2LL
+		want    float32
+	}{
+		{name: "abeam", p: Point2LL{5, 1}, a: a, b: b, want: oneDegree},
+		{name: "abeam south", p: Point2LL{5, -1}, a: a, b: b, want: oneDegree},
+		{name: "past b", p: Point2LL{15, 0}, a: a, b: b, want: 5 * oneDegree},
+		{name: "before a", p: Point2LL{-5, 0}, a: a, b: b, want: 5 * oneDegree},
+		{name: "on segment", p: Point2LL{3, 0}, a: a, b: b, want: 0},
+		{name: "at endpoint", p: a, a: a, b: b, want: 0},
+		{name: "degenerate segment", p: Point2LL{5, 1}, a: a, b: a,
+			want: NMDistance2LL(Point2LL{5, 1}, a)},
+		{name: "near antipodal", p: Point2LL{179, -1}, a: Point2LL{0, 0}, b: Point2LL{1, 1},
+			want: NMDistance2LL(Point2LL{179, -1}, Point2LL{1, 1})},
+	}
+	for _, c := range cases {
+		got := NMDistanceToSegment2LL(c.p, c.a, c.b)
+		if Abs(got-c.want) > 1 {
+			t.Errorf("%s: got %v, want %v", c.name, got, c.want)
+		}
+		// The segment is undirected.
+		if rev := NMDistanceToSegment2LL(c.p, c.b, c.a); Abs(rev-got) > 0.1 {
+			t.Errorf("%s: reversed segment gave %v, forward gave %v", c.name, rev, got)
+		}
+	}
+}

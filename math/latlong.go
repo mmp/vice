@@ -323,6 +323,53 @@ func NMDistance2LL(a Point2LL, b Point2LL) float32 {
 	return float32(dm * 0.000539957)
 }
 
+// NMDistanceToSegment2LL returns the distance in nautical miles from p to the
+// great-circle segment between a and b: the spherical cross-track distance
+// where p lies abeam the segment and otherwise the distance to the nearer
+// endpoint.
+func NMDistanceToSegment2LL(p, a, b Point2LL) float32 {
+	// https://www.movable-type.co.uk/scripts/latlong.html
+	const R = 6371000 // metres
+	rad := func(d float32) float64 { return float64(d) / 180 * gomath.Pi }
+
+	// Angular distance and initial bearing from one point to another, in
+	// radians.
+	angular := func(from, to Point2LL) float64 {
+		lat1, lat2 := rad(from[1]), rad(to[1])
+		dlat, dlon := lat2-lat1, rad(to[0])-rad(from[0])
+		x := Sqr(gomath.Sin(dlat/2)) + gomath.Cos(lat1)*gomath.Cos(lat2)*Sqr(gomath.Sin(dlon/2))
+		return 2 * gomath.Atan2(gomath.Sqrt(x), gomath.Sqrt(1-x))
+	}
+	bearing := func(from, to Point2LL) float64 {
+		lat1, lat2 := rad(from[1]), rad(to[1])
+		dlon := rad(to[0]) - rad(from[0])
+		y := gomath.Sin(dlon) * gomath.Cos(lat2)
+		x := gomath.Cos(lat1)*gomath.Sin(lat2) - gomath.Sin(lat1)*gomath.Cos(lat2)*gomath.Cos(dlon)
+		return gomath.Atan2(y, x)
+	}
+
+	d12 := angular(a, b)
+	if d12 == 0 {
+		return NMDistance2LL(p, a)
+	}
+
+	d13 := angular(a, p)
+	rel := bearing(a, p) - bearing(a, b)
+	if gomath.Cos(rel) < 0 {
+		// p lies behind a. Take the min since for near-antipodal points b
+		// may still be the nearer endpoint.
+		return min(NMDistance2LL(p, a), NMDistance2LL(p, b))
+	}
+
+	dxt := gomath.Asin(gomath.Sin(d13) * gomath.Sin(rel))
+	dat := gomath.Acos(Clamp(gomath.Cos(d13)/gomath.Cos(dxt), -1, 1))
+	if dat > d12 {
+		// p lies past b.
+		return min(NMDistance2LL(p, a), NMDistance2LL(p, b))
+	}
+	return float32(gomath.Abs(dxt) * R * 0.000539957)
+}
+
 // Fast but approximate distance between latlongs.
 func NMDistance2LLFast(a Point2LL, b Point2LL, nmPerLongitude float32) float32 {
 	anm, bnm := LL2NM(a, nmPerLongitude), LL2NM(b, nmPerLongitude)
