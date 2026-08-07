@@ -5,6 +5,7 @@
 package aviation
 
 import (
+	"encoding/json"
 	"fmt"
 	"iter"
 	"maps"
@@ -39,6 +40,10 @@ type Airport struct {
 
 	// runway -> (exit -> route)
 	DepartureRoutes map[RunwayID]map[ExitID]*ExitRoute `json:"departure_routes"`
+
+	// TrafficRoutes gives the routes published traffic between this airport
+	// and specific other airports flies.
+	TrafficRoutes TrafficRoutes `json:"traffic_routes"`
 
 	CRDARegions map[string]*CRDARegion `json:"crda_regions"`
 	CRDAPairs   []CRDAPair             `json:"crda_pairs"`
@@ -441,6 +446,69 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Pop()
 	}
 
+	e.Push(`"traffic_routes"`)
+	checkTrafficRouteAirports := func(routes map[string]TrafficRouteSet) map[string]TrafficRouteSet {
+		if len(routes) == 0 {
+			return routes
+		}
+		checked := make(map[string]TrafficRouteSet, len(routes))
+		for _, other := range util.SortedMapKeys(routes) {
+			norm := strings.ToUpper(strings.TrimSpace(other))
+			if norm == icao {
+				e.ErrorString("%s: routes to or from the airport itself", other)
+			} else if _, ok := DB.Airports[norm]; !ok {
+				e.ErrorString("%s: airport unknown", other)
+			} else if _, ok := checked[norm]; ok {
+				e.ErrorString("%s: airport repeatedly specified", other)
+			} else {
+				checked[norm] = routes[other]
+			}
+		}
+		return checked
+	}
+	ap.TrafficRoutes.Departures = checkTrafficRouteAirports(ap.TrafficRoutes.Departures)
+	ap.TrafficRoutes.Arrivals = checkTrafficRouteAirports(ap.TrafficRoutes.Arrivals)
+
+	checkTrafficRoute := func(r TrafficRoute) bool {
+		if r.Route == "" {
+			e.ErrorString("route may not be empty")
+			return false
+		}
+		wps := RouteWaypoints(r.Route).InitializeLocations(loc, nmPerLongitude, magneticVariation,
+			true /* allowSlop */, e)
+		if !slices.ContainsFunc(wps, func(wp Waypoint) bool { return !wp.Location.IsZero() }) {
+			e.ErrorString("%s: no locatable fixes in route", r.Route)
+			return false
+		}
+		return true
+	}
+	for _, other := range util.SortedMapKeys(ap.TrafficRoutes.Departures) {
+		e.Push("Departure " + other)
+		for _, r := range ap.TrafficRoutes.Departures[other] {
+			if checkTrafficRoute(r) && !ap.routeReachesExit(r.Route, icao) {
+				e.ErrorString(`%s: route reaches no exit in "departure_routes"`, r.Route)
+			}
+		}
+		e.Pop()
+	}
+	for _, other := range util.SortedMapKeys(ap.TrafficRoutes.Arrivals) {
+		e.Push("Arrival " + other)
+		for _, r := range ap.TrafficRoutes.Arrivals[other] {
+			if !checkTrafficRoute(r) {
+				continue
+			}
+			// A final token that looks like a procedure name must be one of
+			// the airport's STARs; anything else is likely a typo.
+			if token := routeProcedureToken(r.Route, icao); token != "" {
+				if star, _ := RouteSTAR(r.Route, icao); star == "" {
+					e.ErrorString("%s: %q matches no STAR at %s", r.Route, token, icao)
+				}
+			}
+		}
+		e.Pop()
+	}
+	e.Pop()
+
 	for i, dep := range ap.Departures {
 		e.Push("Departure exit " + string(dep.Exit))
 		e.Push("Destination " + dep.Destination)
@@ -798,6 +866,73 @@ type Departure struct {
 
 type DepartureAirline struct {
 	AirlineSpecifier
+}
+
+// TrafficRoutes says how published traffic between an airport and specific
+// other airports is routed, keyed by the other airport's ICAO code.
+type TrafficRoutes struct {
+	Departures map[string]TrafficRouteSet `json:"departures"`
+	Arrivals   map[string]TrafficRouteSet `json:"arrivals"`
+}
+
+// TrafficRoute is one route and the aircraft classes it applies to.
+type TrafficRoute struct {
+	Route    string        `json:"route"`
+	Aircraft AircraftClass `json:"aircraft,omitempty"`
+}
+
+// TrafficRouteSet is the routes for one city pair; a bare JSON string is
+// shorthand for a single route open to all aircraft.
+type TrafficRouteSet []TrafficRoute
+
+func (ts *TrafficRouteSet) UnmarshalJSON(b []byte) error {
+	if len(b) > 0 && b[0] == '"' {
+		var route string
+		if err := json.Unmarshal(b, &route); err != nil {
+			return err
+		}
+		*ts = TrafficRouteSet{TrafficRoute{Route: route}}
+		return nil
+	}
+	var routes []TrafficRoute
+	if err := json.Unmarshal(b, &routes); err != nil {
+		return err
+	}
+	*ts = routes
+	return nil
+}
+
+// Routes returns the routes the given aircraft type may fly, in listed order.
+func (ts TrafficRouteSet) Routes(acType string) []string {
+	var routes []string
+	for _, r := range ts {
+		if r.Aircraft.Matches(acType) {
+			routes = append(routes, r.Route)
+		}
+	}
+	return routes
+}
+
+// routeReachesExit reports whether a departure route out of the airport flies
+// over one of its exits or files a SID that leads to one.
+func (ap *Airport) routeReachesExit(route, icao string) bool {
+	fields := strings.Fields(route)
+	if len(fields) > 0 && TokenNamesAirport(fields[0], icao) {
+		fields = fields[1:]
+	}
+	for _, exitRoutes := range ap.DepartureRoutes {
+		for exit, er := range exitRoutes {
+			if slices.Contains(fields, exit.Base()) {
+				return true
+			}
+			if er.SID != "" && slices.ContainsFunc(fields, func(f string) bool {
+				return ProcedureBase(f) == ProcedureBase(er.SID)
+			}) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 type ApproachType int

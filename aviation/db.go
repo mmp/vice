@@ -55,6 +55,7 @@ type StaticDatabase struct {
 	ATCTs               map[string]ATCT
 	MVAs                map[string][]MVA // TRACON -> MVAs
 	AirportPairRoutes   map[AirportPair][]AirportPairRoute
+	ScrapedRoutes       map[AirportPair][]ScrapedRoute
 	ERAMAdaptations     map[string]ERAMAdaptation
 	BravoAirspace       map[string][]AirspaceVolume
 	CharlieAirspace     map[string][]AirspaceVolume
@@ -394,6 +395,7 @@ func doInitDB() {
 	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
 	wg.Go(func() { db.AirportPairRoutes = parseAirportPairRoutes() })
+	wg.Go(func() { db.ScrapedRoutes = parseScrapedRoutes() })
 	wg.Go(func() { db.ERAMAdaptations = parseAdaptations() })
 	wg.Go(func() {
 		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
@@ -1142,6 +1144,12 @@ func RouteWaypoints(route string) WaypointArray {
 		}
 	}
 	return waypoints
+}
+
+// ScrapedRoutesBetween returns the recently filed routes from one airport to
+// another, or nil if the pair hasn't been scraped.
+func (d StaticDatabase) ScrapedRoutesBetween(from, to string) []ScrapedRoute {
+	return d.ScrapedRoutes[AirportPair{From: from, To: to}]
 }
 
 ///////////////////////////////////////////////////////////////////////////

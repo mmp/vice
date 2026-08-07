@@ -165,6 +165,10 @@ type Arrival struct {
 	CoordinationFix     string                  `json:"coordination_fix"`
 	IsRNAV              bool                    `json:"is_rnav"`
 
+	// Aircraft restricts which types of flights the arrival carries; it's
+	// used when selecting arrivals with real-world traffic.
+	Aircraft AircraftClass `json:"aircraft,omitempty"`
+
 	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
 
 	// Airports the arrival serves, for scenarios that don't give airline
@@ -1980,4 +1984,108 @@ func CWTDirectlyBehindSeparation(front, back string) float32 {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
 	}
 	return cwtBehindLookup[f][b]
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// AircraftClass is a bitmask selecting aircraft for route matching: by engine
+// type, or for jets by weight, since heavies are routed differently at some
+// facilities. In JSON it is a string or array of strings among "prop",
+// "turboprop", "jet", "heavy", and "nonheavy", where "jet" covers both jet
+// classes; the zero value admits every aircraft.
+type AircraftClass uint8
+
+const (
+	AircraftClassProp AircraftClass = 1 << iota
+	AircraftClassTurboprop
+	AircraftClassHeavyJet
+	AircraftClassNonheavyJet
+)
+
+var aircraftClassNames = map[string]AircraftClass{
+	"prop":      AircraftClassProp,
+	"turboprop": AircraftClassTurboprop,
+	"jet":       AircraftClassHeavyJet | AircraftClassNonheavyJet,
+	"heavy":     AircraftClassHeavyJet,
+	"nonheavy":  AircraftClassNonheavyJet,
+}
+
+// AircraftClassOf returns the class an aircraft type falls in, or zero if the
+// type is unknown.
+func AircraftClassOf(acType string) AircraftClass {
+	perf, ok := DB.AircraftPerformance[acType]
+	if !ok {
+		return 0
+	}
+	switch perf.Engine.AircraftType {
+	case "P":
+		return AircraftClassProp
+	case "T":
+		return AircraftClassTurboprop
+	case "J":
+		if perf.WeightClass == "H" || perf.WeightClass == "J" {
+			return AircraftClassHeavyJet
+		}
+		return AircraftClassNonheavyJet
+	}
+	return 0
+}
+
+// Matches reports whether the aircraft type falls in the class; an
+// unrestricted class matches every type and an unknown type matches no
+// restricted class.
+func (c AircraftClass) Matches(acType string) bool {
+	return c == 0 || c&AircraftClassOf(acType) != 0
+}
+
+func (c *AircraftClass) UnmarshalJSON(b []byte) error {
+	var names []string
+	if len(b) > 0 && b[0] == '"' {
+		var s string
+		if err := json.Unmarshal(b, &s); err != nil {
+			return err
+		}
+		names = []string{s}
+	} else if err := json.Unmarshal(b, &names); err != nil {
+		return err
+	}
+
+	*c = 0
+	for _, name := range names {
+		class, ok := aircraftClassNames[name]
+		if !ok {
+			return fmt.Errorf("%q: unknown aircraft class; options: %s", name,
+				strings.Join(util.SortedMapKeys(aircraftClassNames), ", "))
+		}
+		*c |= class
+	}
+	return nil
+}
+
+func (c AircraftClass) MarshalJSON() ([]byte, error) {
+	var names []string
+	if c&AircraftClassProp != 0 {
+		names = append(names, "prop")
+	}
+	if c&AircraftClassTurboprop != 0 {
+		names = append(names, "turboprop")
+	}
+	switch c & (AircraftClassHeavyJet | AircraftClassNonheavyJet) {
+	case AircraftClassHeavyJet | AircraftClassNonheavyJet:
+		names = append(names, "jet")
+	case AircraftClassHeavyJet:
+		names = append(names, "heavy")
+	case AircraftClassNonheavyJet:
+		names = append(names, "nonheavy")
+	}
+	if len(names) == 1 {
+		return json.Marshal(names[0])
+	}
+	return json.Marshal(names)
+}
+
+// CheckJSON implements util.JSONChecker; class values are validated during
+// unmarshaling.
+func (c *AircraftClass) CheckJSON(json any) bool {
+	return util.TypeCheckJSON[string](json) || util.TypeCheckJSON[[]string](json)
 }

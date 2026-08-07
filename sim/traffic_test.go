@@ -12,18 +12,30 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 )
 
 // publishedProviderTestSim builds the minimal Sim the published-traffic provider needs:
 // the user-selected start time, the sim clock rewound for prespawn (which is
-// when the provider is first built), and a "TEST" inbound flow that lands KMSP
-// arrivals from the origins the tests use.
+// when the provider is first built), and a "TEST" inbound flow into KMSP. The
+// aviation database is swapped for a synthetic one with no city-pair routes,
+// so every arrival places through the great-circle gate and the tests stay
+// independent of the real route data.
 //
 // The flow's rate is zero on purpose: that is how much traffic the scenario's own
 // generator makes and has no bearing on published arrivals, which arrive when the
 // data says. Listing the flow at all is what makes it a way into KMSP, so it is
 // enabled here exactly as MakeLaunchConfig would leave it.
-func publishedProviderTestSim(start Time) *Sim {
+func publishedProviderTestSim(t *testing.T, start Time) *Sim {
+	oldDB := av.DB
+	av.DB = &av.StaticDatabase{Airports: map[string]av.FAAAirport{
+		"KMSP": {Id: "KMSP", Location: math.Point2LL{-93.2, 44.9}},
+		"KATL": {Id: "KATL", Location: math.Point2LL{-84.4, 33.6}},
+		"KORD": {Id: "KORD", Location: math.Point2LL{-87.9, 42.0}},
+		"KDEN": {Id: "KDEN", Location: math.Point2LL{-104.7, 39.9}},
+	}}
+	t.Cleanup(func() { av.DB = oldDB })
+
 	return &Sim{
 		StartTime: start,
 		State: &CommonState{
@@ -35,16 +47,19 @@ func publishedProviderTestSim(start Time) *Sim {
 				},
 			},
 			InboundFlows: map[string]*av.InboundFlow{
+				// Two gates, so that each of the origins above has one
+				// pointing plausibly its way.
 				"TEST": {
-					Arrivals: []av.Arrival{{
-						Airlines: map[string][]av.ArrivalAirline{
-							"KMSP": {
-								{Airport: "KATL"},
-								{Airport: "KORD"},
-								{Airport: "KDEN"},
-							},
+					Arrivals: []av.Arrival{
+						{
+							Airports:  []string{"KMSP"},
+							Waypoints: av.WaypointArray{{Fix: "GATSE", Location: math.Point2LL{-92.5, 44.0}}},
 						},
-					}},
+						{
+							Airports:  []string{"KMSP"},
+							Waypoints: av.WaypointArray{{Fix: "GATWE", Location: math.Point2LL{-95.5, 44.7}}},
+						},
+					},
 				},
 			},
 		},
@@ -63,7 +78,7 @@ func TestPublishedTrafficProviderOrdersDeparturesFromSelectedStartTime(t *testin
 		},
 	}
 
-	provider := newTimetableTrafficProvider(publishedProviderTestSim(start), timetable, 14*60, 100, 100)
+	provider := newTimetableTrafficProvider(publishedProviderTestSim(t, start), timetable, 14*60, 100, 100)
 	if len(provider.departures) != 3 {
 		t.Fatalf("got %d departures, want 3", len(provider.departures))
 	}
@@ -100,7 +115,7 @@ func TestPublishedTrafficProviderOrdersArrivalsFromSelectedStartTime(t *testing.
 		},
 	}
 
-	provider := newTimetableTrafficProvider(publishedProviderTestSim(start), timetable, 14*60, 100, 100)
+	provider := newTimetableTrafficProvider(publishedProviderTestSim(t, start), timetable, 14*60, 100, 100)
 	if len(provider.arrivals) != 3 {
 		t.Fatalf("got %d arrivals, want 3", len(provider.arrivals))
 	}
@@ -131,7 +146,7 @@ func TestPublishedTrafficProviderOrdersArrivalsFromSelectedStartTime(t *testing.
 
 func TestPublishedTrafficProviderWaitsForPublishedArrivalTime(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
-	s := publishedProviderTestSim(start)
+	s := publishedProviderTestSim(t, start)
 	provider := newTimetableTrafficProvider(s, Timetable{
 		Airport: "KMSP",
 		Flights: []TimetableFlight{{
@@ -167,7 +182,7 @@ func TestPublishedTrafficProviderWaitsForPublishedArrivalTime(t *testing.T) {
 
 func TestPublishedTrafficProviderWaitsForPublishedTime(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
-	s := publishedProviderTestSim(start)
+	s := publishedProviderTestSim(t, start)
 	provider := newTimetableTrafficProvider(s, Timetable{
 		Airport: "KMSP",
 		Flights: []TimetableFlight{{
@@ -349,7 +364,7 @@ func TestPublishedTrafficSurvivesSaveAndReload(t *testing.T) {
 		},
 	}
 
-	s := publishedProviderTestSim(start)
+	s := publishedProviderTestSim(t, start)
 	before := newTimetableTrafficProvider(s, timetable, 14*60, 100, 100)
 	if len(before.departures) != 1 || len(before.arrivals) != 1 {
 		t.Fatalf("before reload: %d departures/%d arrivals, want 1/1",

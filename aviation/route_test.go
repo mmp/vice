@@ -5,6 +5,7 @@
 package aviation
 
 import (
+	"encoding/json"
 	"slices"
 	"strings"
 	"testing"
@@ -292,5 +293,86 @@ func TestRouteWaypoints(t *testing.T) {
 	want := []string{"BIGGY", "MIDDL", "TEUFL", "TPA"}
 	if !slices.Equal(got, want) {
 		t.Errorf("route waypoints = %v, want %v", got, want)
+	}
+}
+
+func TestRouteSTAR(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{
+		Airports: map[string]FAAAirport{
+			"KSAN": {Id: "KSAN", STARs: map[string]STAR{"LUCKI1": {}}},
+			"KJFK": {Id: "KJFK", STARs: map[string]STAR{"LENDY6": {}, "PARCH4": {}}},
+			"KFLL": {Id: "KFLL", STARs: map[string]STAR{"CUUDA4": {}}},
+		},
+		Airways: map[string][]Airway{"Q86": nil, "J121": nil},
+	}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, tc := range []struct {
+		route, icao string
+		star, entry string
+	}{
+		{"KORD PIPPN PWE PLNDL Q86 TTRUE LUCKI1 KSAN", "KSAN", "LUCKI1", "TTRUE"},
+		// The route files a stale revision of the STAR.
+		{"KORD TTRUE LUCKI2 KSAN", "KSAN", "LUCKI1", "TTRUE"},
+		// The token ahead of the STAR is an airway, not an entry fix.
+		{"KORD PWE Q86 LUCKI1 KSAN", "KSAN", "LUCKI1", ""},
+		// No trailing airport token, and the airport in its 3-letter form.
+		{"PMM ELX LENDY6", "KJFK", "LENDY6", "ELX"},
+		{"EWR WHITE Q409 MAJIK CUUDA3 FLL", "KFLL", "CUUDA4", "MAJIK"},
+		// Routes that end with a plain fix or an airway name no STAR.
+		{"CAMRN ROBER KJFK", "KJFK", "", ""},
+		{"LGA V16 J121 KJFK", "KJFK", "", ""},
+		// A procedure the airport doesn't chart names no STAR.
+		{"KORD TTRUE LUCKI1 KJFK", "KJFK", "", ""},
+	} {
+		star, entry := RouteSTAR(tc.route, tc.icao)
+		if star != tc.star || entry != tc.entry {
+			t.Errorf("RouteSTAR(%q, %s) = %q, %q; want %q, %q",
+				tc.route, tc.icao, star, entry, tc.star, tc.entry)
+		}
+	}
+}
+
+func TestHourRanges(t *testing.T) {
+	for _, tc := range []struct {
+		encoded string
+		hours   []int
+	}{
+		{"", nil},
+		{"5", []int{5}},
+		{"6-9", []int{6, 7, 8, 9}},
+		{"0-2,22-23", []int{0, 1, 2, 22, 23}},
+		{"3,11-12,23", []int{3, 11, 12, 23}},
+	} {
+		var h HourRanges
+		for _, hour := range tc.hours {
+			h.Add(hour)
+		}
+		if got := h.String(); got != tc.encoded {
+			t.Errorf("hours %v encoded as %q, want %q", tc.hours, got, tc.encoded)
+		}
+
+		var rt HourRanges
+		if err := json.Unmarshal([]byte(`"`+tc.encoded+`"`), &rt); err != nil {
+			t.Errorf("%q: %v", tc.encoded, err)
+		} else if rt != h {
+			t.Errorf("%q decoded to %b, want %b", tc.encoded, rt, h)
+		}
+
+		for hour := range 24 {
+			want := false
+			for _, in := range tc.hours {
+				want = want || in == hour
+			}
+			if got := h.Contains(hour); got != want {
+				t.Errorf("%q Contains(%d) = %v, want %v", tc.encoded, hour, got, want)
+			}
+		}
+	}
+
+	var h HourRanges
+	if err := json.Unmarshal([]byte(`"25"`), &h); err == nil {
+		t.Errorf("hour 25 did not error")
 	}
 }

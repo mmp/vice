@@ -162,11 +162,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = ""
-	if len(ac.FlightPlan.ArrivalAirport) == 4 {
-		nasFp.ExitFix = ac.FlightPlan.ArrivalAirport[1:]
-	} else {
-		nasFp.ExitFix = ac.FlightPlan.ArrivalAirport
-	}
+	nasFp.ExitFix = av.TrimICAOPrefix(ac.FlightPlan.ArrivalAirport)
 	nasFp.TrackingController = arr.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
 	ac.ControllerFrequency = arr.InitialController
@@ -224,75 +220,225 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	return ac, s.associateAtSpawn(ac, nasFp)
 }
 
-// arrivalListingOrigin returns the arrival that names origin among the airlines
-// it lands at arrivalAirport: the scenario says in so many words that this is
-// how traffic from there comes in.
-func arrivalListingOrigin(candidates []candidateArrival, arrivalAirport,
-	origin string) (candidateArrival, bool) {
-	arrivalAirport = normalizeAirportCode(arrivalAirport)
-	origin = normalizeAirportCode(origin)
-
-	for _, c := range candidates {
-		for _, airline := range c.arr.Airlines[arrivalAirport] {
-			if normalizeAirportCode(airline.Airport) == origin {
-				return c, true
-			}
+// suitableArrivals filters the candidates to those the aircraft can fly: the
+// arrival's aircraft classes and its altitudes both have to admit it.
+func suitableArrivals(candidates []candidateArrival, aircraftType string) []candidateArrival {
+	perf, ok := av.DB.AircraftPerformance[aircraftType]
+	return util.FilterSlice(candidates, func(c candidateArrival) bool {
+		if !c.arr.Aircraft.Matches(aircraftType) {
+			return false
 		}
-	}
-	return candidateArrival{}, false
+		return !ok || arrivalWithinCeiling(c.arr, perf)
+	})
 }
 
-// arrivalForCityPair returns the arrival a real route for the city pair comes in
-// on, together with that route so the flight can file it. The route database
-// says how a pair is really flown--ORF to JFK arrives on the CAMRN5--so a
-// scenario that works the STAR works the flight whether or not it happens to
-// list Norfolk among its origins. The routes are tried in the order the pair is
-// really flown, and within one the arrival matching furthest along it wins:
-// that is where the flight enters the terminal area, while an earlier fix is
-// only somewhere it passed on the way in.
-func arrivalForCityPair(candidates []candidateArrival, arrivalAirport, origin,
-	aircraftType string) (candidateArrival, string, bool) {
-	arrivalAirport = normalizeAirportCode(arrivalAirport)
-	origin = normalizeAirportCode(origin)
+// arrivalWithinCeiling reports whether the aircraft can fly the arrival's
+// altitudes: the lowest one it may spawn at has to be within its ceiling. The
+// arrival's cruise altitudes have no say--they fill in the filed altitude on
+// the flight strip and are never flown.
+func arrivalWithinCeiling(arr *av.Arrival, perf av.AircraftPerformance) bool {
+	if len(arr.InitialAltitudes) > 0 {
+		return float32(slices.Min(arr.InitialAltitudes)) <= perf.Ceiling
+	}
+	if len(arr.Waypoints) > 0 {
+		if wp := arr.Waypoints[0]; wp.HasAltitudeRestriction() && wp.AltRestriction.Range[0] > perf.Ceiling {
+			return false
+		}
+	}
+	return true
+}
 
-	routes := av.DB.RoutesBetween(origin, arrivalAirport)
-	for _, route := range eligibleAirportPairRoutes(routes, engineTypeFor(aircraftType)) {
-		fixes := enrouteFixes(route.Route)
-		best, bestIndex := candidateArrival{}, -1
-		for _, c := range candidates {
-			for _, fix := range arrivalFixes(c.arr) {
-				if i := slices.Index(fixes, fix); i > bestIndex {
-					best, bestIndex = c, i
+// matchArrivalRoutes matches each route in turn against the candidates,
+// returning the first one of them can fly. The first route's failure is the
+// one reported: it is the preferred way the pair is flown.
+func matchArrivalRoutes(candidates []candidateArrival, aircraftType string, routes []string,
+	arrivalAirport, origin string) (candidateArrival, string, error) {
+	var firstErr error
+	for _, route := range routes {
+		c, err := matchArrivalRoute(candidates, aircraftType, route, arrivalAirport, origin)
+		if err == nil {
+			return c, route, nil
+		}
+		if firstErr == nil {
+			firstErr = err
+		}
+	}
+	if firstErr == nil {
+		firstErr = errNoPlausibleArrival
+	}
+	return candidateArrival{}, "", firstErr
+}
+
+// matchArrivalRoute finds the candidate arrival a filed route into the airport
+// comes in on. A route that ends with a STAR belongs to the arrivals flying
+// that STAR, and the CIFP transition the route joins it at says which of them
+// the flight actually reaches. A route with no STAR--GA and terminal-en-route
+// traffic--comes in through the gate nearest its origin. Suitability is
+// judged here rather than up front so that the errors can tell an inactive
+// STAR apart from active arrivals that don't admit the aircraft.
+func matchArrivalRoute(candidates []candidateArrival, aircraftType, route, arrivalAirport,
+	origin string) (candidateArrival, error) {
+	star, entry := av.RouteSTAR(route, normalizeAirportCode(arrivalAirport))
+	if star == "" {
+		suitable := suitableArrivals(candidates, aircraftType)
+		if len(suitable) == 0 {
+			return candidateArrival{}, errNoSuitableArrival
+		}
+		if c, ok := nearestSpawnToOrigin(suitable, arrivalAirport, origin); ok {
+			return c, nil
+		}
+		return candidateArrival{}, errNoPlausibleArrival
+	}
+
+	matching := util.FilterSlice(candidates, func(c candidateArrival) bool {
+		// An arrival names its STAR only when it takes its waypoints from
+		// one; otherwise the STAR its waypoints run along was worked out at
+		// load.
+		arrSTAR := util.Select(c.arr.STAR != "", c.arr.STAR, c.arr.DerivedSTAR)
+		return arrSTAR != "" && av.ProcedureBase(arrSTAR) == av.ProcedureBase(star)
+	})
+	if len(matching) == 0 {
+		return candidateArrival{}, fmt.Errorf("%w %s into %s", errArrivalSTARInactive,
+			star, arrivalAirport)
+	}
+	matching = suitableArrivals(matching, aircraftType)
+	if len(matching) == 0 {
+		return candidateArrival{}, fmt.Errorf("%w among those flying the %s",
+			errNoSuitableArrival, star)
+	}
+	if len(matching) == 1 {
+		return matching[0], nil
+	}
+
+	// Several arrivals fly the STAR; walking the CIFP transition the route
+	// enters through says which of them the flight reaches, the one joined
+	// soonest after the entry fix winning: that is the gate, while a later
+	// join is a feeder it would only pass on the way in.
+	cifp := av.DB.Airports[normalizeAirportCode(arrivalAirport)].STARs[star]
+	if entry != "" {
+		best, bestJoin := -1, 0
+		for _, name := range util.SortedMapKeys(cifp.Transitions) {
+			wps := cifp.Transitions[name]
+			entryIndex := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == entry })
+			if entryIndex == -1 {
+				continue
+			}
+			for i, c := range matching {
+				fixes := arrivalWaypointFixes(c.arr)
+				join := slices.IndexFunc(wps[entryIndex:],
+					func(wp av.Waypoint) bool { return fixes[wp.Fix] })
+				if join != -1 && (best == -1 || join < bestJoin) {
+					best, bestJoin = i, join
 				}
 			}
 		}
-		if bestIndex != -1 {
-			return best, route.Route, true
+		if best != -1 {
+			return matching[best], nil
 		}
 	}
-	return candidateArrival{}, "", false
+
+	// The entry fix is unknown or on no charted transition; the route's own
+	// fixes are the next best evidence, the arrival matching furthest along
+	// it winning: that is where the flight enters the terminal area, while an
+	// earlier fix is only somewhere it passed on the way in.
+	best, bestIndex := -1, -1
+	fixes := enrouteFixes(route)
+	for i, c := range matching {
+		for fix := range arrivalWaypointFixes(c.arr) {
+			if j := slices.Index(fixes, fix); j > bestIndex {
+				best, bestIndex = i, j
+			}
+		}
+	}
+	if best != -1 {
+		return matching[best], nil
+	}
+
+	// Nothing on the route pins it down; the gate nearest the great circle
+	// from the origin is the most plausible.
+	if c, ok := arrivalNearestArc(matching, arrivalAirport, origin); ok {
+		return c, nil
+	}
+	return matching[0], nil
 }
 
-// arrivalFixes returns the points a real route would name if it came in on this
-// arrival: the STAR it flies and the fixes it actually flies over. The arrival's
-// "route" is not among them--that is the string shown on the flight strip rather
-// than the route flown, and it ends at the airport, which every route into the
-// airport also does.
-func arrivalFixes(arr *av.Arrival) []string {
-	var fixes []string
-	// An arrival names its STAR only when it takes its waypoints from one;
-	// otherwise the STAR its waypoints run along was worked out at load.
-	if star := util.Select(arr.STAR != "", arr.STAR, arr.DerivedSTAR); star != "" {
-		fixes = append(fixes, star)
-	}
+// arrivalWaypointFixes is the set of real fixes the arrival flies over.
+// Waypoints synthesized during deserialization are prefixed with an underscore
+// and are no part of any charted route.
+func arrivalWaypointFixes(arr *av.Arrival) map[string]bool {
+	fixes := make(map[string]bool)
 	for _, wp := range arr.Waypoints {
-		// Waypoints synthesized during deserialization are prefixed with an
-		// underscore and are no part of any filed route.
 		if !strings.HasPrefix(wp.Fix, "_") {
-			fixes = append(fixes, wp.Fix)
+			fixes[wp.Fix] = true
 		}
 	}
 	return fixes
+}
+
+// nearestSpawnToOrigin picks the arrival whose spawn point lies nearest the
+// origin, gated by heading so the flight doesn't come in through a gate
+// pointing somewhere else entirely.
+func nearestSpawnToOrigin(candidates []candidateArrival, arrivalAirport,
+	origin string) (candidateArrival, bool) {
+	ap, apOK := av.DB.Airports[normalizeAirportCode(arrivalAirport)]
+	from, fromOK := av.DB.Airports[normalizeAirportCode(origin)]
+	if !apOK || !fromOK {
+		return candidateArrival{}, false
+	}
+	toOrigin := math.GreatCircleHeading(ap.Location, from.Location)
+
+	best, bestDistance := -1, float32(0)
+	for i, c := range candidates {
+		if len(c.arr.Waypoints) == 0 {
+			continue
+		}
+		spawn := c.arr.Waypoints[0].Location
+		if math.HeadingDifference(math.GreatCircleHeading(ap.Location, spawn),
+			toOrigin) > publishedArrivalMaxHeadingDifference {
+			continue
+		}
+		if d := math.NMDistance2LL(spawn, from.Location); best == -1 || d < bestDistance {
+			best, bestDistance = i, d
+		}
+	}
+	if best == -1 {
+		return candidateArrival{}, false
+	}
+	return candidates[best], true
+}
+
+// arrivalNearestArc is the last resort when no route covers the pair, foreign
+// origins mostly: the gate nearest the great circle the flight actually flies,
+// among those pointing plausibly toward its origin at all. With one gate
+// active a bare minimum-distance pick would take any flight from anywhere.
+func arrivalNearestArc(candidates []candidateArrival, arrivalAirport,
+	origin string) (candidateArrival, bool) {
+	ap, apOK := av.DB.Airports[normalizeAirportCode(arrivalAirport)]
+	from, fromOK := av.DB.Airports[normalizeAirportCode(origin)]
+	if !apOK || !fromOK {
+		return candidateArrival{}, false
+	}
+	toOrigin := math.GreatCircleHeading(ap.Location, from.Location)
+
+	best, bestDistance := -1, float32(0)
+	for i, c := range candidates {
+		if len(c.arr.Waypoints) == 0 {
+			continue
+		}
+		spawn := c.arr.Waypoints[0].Location
+		if math.HeadingDifference(math.GreatCircleHeading(ap.Location, spawn),
+			toOrigin) > publishedArrivalMaxHeadingDifference {
+			continue
+		}
+		d := math.NMDistanceToSegment2LL(spawn, from.Location, ap.Location)
+		if best == -1 || d < bestDistance {
+			best, bestDistance = i, d
+		}
+	}
+	if best == -1 {
+		return candidateArrival{}, false
+	}
+	return candidates[best], true
 }
 
 // createPublishedArrivalNoLock creates an arrival using the published

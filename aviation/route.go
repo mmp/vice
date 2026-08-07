@@ -1,5 +1,5 @@
 // aviation/route.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package aviation
@@ -7,7 +7,9 @@ package aviation
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"log/slog"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -1941,6 +1943,66 @@ type STAR struct {
 	RunwayWaypoints map[string]WaypointArray
 }
 
+// ProcedureBase strips a SID or STAR's revision number: CUUDA3 and CUUDA4 are
+// revisions of the same arrival.
+func ProcedureBase(name string) string {
+	return strings.TrimRight(name, "0123456789")
+}
+
+// TokenNamesAirport reports whether a route token names the airport, as
+// either its ICAO id or its domestic name.
+func TokenNamesAirport(token, icao string) bool {
+	return token == icao || token == TrimICAOPrefix(icao)
+}
+
+// routeProcedureToken returns the last token of a route into or out of the
+// airport if it looks like a procedure name--it ends with a revision digit
+// and isn't an airway--or "" otherwise.
+func routeProcedureToken(route, icao string) string {
+	fields := strings.Fields(route)
+	if n := len(fields); n > 0 && TokenNamesAirport(fields[n-1], icao) {
+		fields = fields[:n-1]
+	}
+	if len(fields) == 0 {
+		return ""
+	}
+	last := fields[len(fields)-1]
+	if c := last[len(last)-1]; c < '0' || c > '9' {
+		return ""
+	}
+	if _, ok := DB.Airways[last]; ok {
+		return ""
+	}
+	return last
+}
+
+// RouteSTAR returns the STAR a filed route into the airport ends with, under
+// the name the current CIFP charts it, along with the fix filed ahead of it
+// on the route, or empty strings if it names none. A route may carry a stale
+// revision--CUUDA3 where the cycle has CUUDA4--so procedures match on their
+// base names.
+func RouteSTAR(route, icao string) (star, entry string) {
+	token := routeProcedureToken(route, icao)
+	if token == "" {
+		return "", ""
+	}
+
+	names := util.SortedMapKeys(DB.Airports[icao].STARs)
+	i := slices.IndexFunc(names, func(name string) bool { return ProcedureBase(name) == ProcedureBase(token) })
+	if i == -1 {
+		return "", ""
+	}
+	name := names[i]
+
+	fields := strings.Fields(route)
+	if i := slices.Index(fields, token); i > 0 {
+		if _, ok := DB.Airways[fields[i-1]]; !ok {
+			entry = fields[i-1]
+		}
+	}
+	return name, entry
+}
+
 func (s STAR) Check(e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -2770,4 +2832,149 @@ func ClosestRayRouteIntersection(origin math.Point2LL, heading math.TrueHeading,
 		}
 	}
 	return best, found
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// ScrapedRoute is one way a city pair has recently been flown, taken from
+// recently filed flight plans by cmd/scraperoutes.
+type ScrapedRoute struct {
+	Route string `json:"route"`
+	// Count is how many times the route was filed over the sampled period.
+	Count int `json:"count"`
+	// Aircraft is the classes observed flying the route; zero means no one
+	// looked.
+	Aircraft AircraftClass `json:"aircraft,omitempty"`
+	// MinAltitude and MaxAltitude bound the filed cruise altitudes, in feet.
+	MinAltitude int `json:"min_altitude,omitempty"`
+	MaxAltitude int `json:"max_altitude,omitempty"`
+	// Hours is the local hours of day the route has been observed filed at:
+	// noise abatement runs some routes only at night.
+	Hours HourRanges `json:"hours,omitempty"`
+}
+
+// ScrapedRouteSet is everything the scraper knows about one city pair. An
+// entry with no routes still records that the pair was looked up, so that it
+// isn't fetched again until it goes stale.
+type ScrapedRouteSet struct {
+	// Updated is the YYYY-MM-DD day the pair was last fetched, which is what
+	// cmd/scraperoutes judges staleness by.
+	Updated string         `json:"updated"`
+	Routes  []ScrapedRoute `json:"routes,omitempty"`
+}
+
+// ScrapedRoutesPath is where the scraped route database lives in the
+// resources, keyed by "KSFO-KPDX"-style directed city pairs.
+const ScrapedRoutesPath = "scraped-routes.json"
+
+// ReadScrapedRoutes parses the scraped route database, or returns an empty
+// map if none has been written yet.
+func ReadScrapedRoutes(resources fs.StatFS) (map[string]ScrapedRouteSet, error) {
+	sets := make(map[string]ScrapedRouteSet)
+	if _, err := resources.Stat(ScrapedRoutesPath); err != nil {
+		return sets, nil
+	}
+	b, err := fs.ReadFile(resources, ScrapedRoutesPath)
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(b, &sets); err != nil {
+		return nil, fmt.Errorf("%s: %w", ScrapedRoutesPath, err)
+	}
+	return sets, nil
+}
+
+// parseScrapedRoutes loads the scraped route database for route selection,
+// most-filed routes first.
+func parseScrapedRoutes() map[AirportPair][]ScrapedRoute {
+	sets, err := ReadScrapedRoutes(util.GetResourcesFS())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
+
+	routes := make(map[AirportPair][]ScrapedRoute)
+	for key, set := range sets {
+		if len(set.Routes) == 0 {
+			continue
+		}
+		from, to, ok := strings.Cut(key, "-")
+		if !ok {
+			fmt.Fprintf(os.Stderr, "%s: %q isn't a FROM-TO city pair\n", ScrapedRoutesPath, key)
+			os.Exit(1)
+		}
+		routes[AirportPair{From: from, To: to}] = set.Routes
+	}
+	return routes
+}
+
+// HourRanges is a set of hours of the day, held as a bit per hour and encoded
+// in JSON as ranges like "6-9,22-23".
+type HourRanges uint32
+
+// Contains reports whether the hour is in the set.
+func (h HourRanges) Contains(hour int) bool {
+	return h&(1<<(((hour%24)+24)%24)) != 0
+}
+
+// Add puts the hour in the set.
+func (h *HourRanges) Add(hour int) {
+	*h |= 1 << (((hour % 24) + 24) % 24)
+}
+
+func (h HourRanges) String() string {
+	var ranges []string
+	for hour := 0; hour < 24; {
+		if !h.Contains(hour) {
+			hour++
+			continue
+		}
+		end := hour
+		for end+1 < 24 && h.Contains(end+1) {
+			end++
+		}
+		if end == hour {
+			ranges = append(ranges, strconv.Itoa(hour))
+		} else {
+			ranges = append(ranges, fmt.Sprintf("%d-%d", hour, end))
+		}
+		hour = end + 1
+	}
+	return strings.Join(ranges, ",")
+}
+
+func (h HourRanges) MarshalJSON() ([]byte, error) {
+	return json.Marshal(h.String())
+}
+
+func (h *HourRanges) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+
+	*h = 0
+	if s == "" {
+		return nil
+	}
+	for r := range strings.SplitSeq(s, ",") {
+		first, last, isRange := strings.Cut(r, "-")
+		start, err := strconv.Atoi(first)
+		if err != nil {
+			return fmt.Errorf("%q: %w", r, err)
+		}
+		end := start
+		if isRange {
+			if end, err = strconv.Atoi(last); err != nil {
+				return fmt.Errorf("%q: %w", r, err)
+			}
+		}
+		if start < 0 || end > 23 || start > end {
+			return fmt.Errorf("%q: hours must run from 0 to 23", r)
+		}
+		for hour := start; hour <= end; hour++ {
+			h.Add(hour)
+		}
+	}
+	return nil
 }
