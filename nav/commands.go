@@ -617,9 +617,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 	p, ok := func() (math.Point2LL, bool) {
 		if p, ok := av.DB.LookupWaypoint(fix); ok {
 			return p, true
-		} else if ap, ok := av.DB.Airports[fix]; ok {
-			return ap.Location, true
-		} else if ap, ok := av.DB.Airports["K"+fix]; len(fix) == 3 && ok {
+		} else if ap, ok := av.DB.LookupAirport(fix); ok {
 			return ap.Location, true
 		}
 		return math.Point2LL{}, false

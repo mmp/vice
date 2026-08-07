@@ -180,16 +180,17 @@ func (d StaticDatabase) LookupDME(f string) (math.Point2LL, int, bool) {
 	return math.Point2LL{}, 0, false
 }
 
-func (d StaticDatabase) LookupAirport(name string) (FAAAirport, bool) {
-	if ap, ok := d.Airports[name]; ok {
+// LookupAirport returns the airport with the given id, which may be either an
+// ICAO id or the domestic name of an airport in one of the FAA's regions.
+func (d StaticDatabase) LookupAirport(id string) (FAAAirport, bool) {
+	if ap, ok := d.Airports[id]; ok {
 		return ap, true
-	} else if len(name) == 3 {
-		if ap, ok := d.Airports["K"+name]; ok {
-			return ap, true
-		} else if ap, ok := d.Airports["P"+name]; ok {
-			return ap, true
-		} else if ap, ok := d.Airports["T"+name]; ok {
-			return ap, true
+	}
+	if len(id) == 3 {
+		for _, prefix := range icaoRegionPrefixes {
+			if ap, ok := d.Airports[string(prefix)+id]; ok {
+				return ap, true
+			}
 		}
 	}
 	return FAAAirport{}, false

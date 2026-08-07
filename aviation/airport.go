@@ -48,6 +48,21 @@ type Airport struct {
 	DepartureRunwaysAsOne []string               `json:"departure_runways_as_one"`
 }
 
+// icaoRegionPrefixes are the leading letters of the ICAO ids in the regions
+// the FAA works: the contiguous US (K), Alaska, Hawaii, and the Pacific
+// territories (P), and Puerto Rico and the Virgin Islands (T). Airports in
+// those regions are named domestically by their ICAO id without it.
+const icaoRegionPrefixes = "KPT"
+
+// TrimICAOPrefix returns the domestic name of an airport's ICAO id, dropping
+// the leading region letter. Ids from elsewhere are returned unchanged.
+func TrimICAOPrefix(icao string) string {
+	if len(icao) == 4 && strings.ContainsRune(icaoRegionPrefixes, rune(icao[0])) {
+		return icao[1:]
+	}
+	return icao
+}
+
 type VFRRandomsSpec struct {
 	Rate  float32 `json:"rate"`
 	Fleet string  `json:"fleet"`

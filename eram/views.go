@@ -77,7 +77,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 func altimRow(ctx *panes.Context, icao string, color renderer.RGB,
 	font *renderer.Font, textWidth func(string) float32) Row {
 
-	displayID := altimDisplayID(icao)
+	displayID := av.TrimICAOPrefix(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
 	if !hasMetar {
 		return Row{ID: icao, Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
@@ -120,16 +120,6 @@ func altimMetarForDisplay(metar wx.METAR) (timeStr string, altStr string, altRaw
 	}
 
 	return
-}
-
-// altimDisplayID returns the short display identifier for an ICAO code.
-// US airports (K + 3-letter IATA), Pacific territories (P + 3-letter IATA),
-// and Caribbean territories (T + 3-letter IATA) drop the leading letter for display.
-func altimDisplayID(icao string) string {
-	if len(icao) == 4 && (icao[0] == 'K' || icao[0] == 'P' || icao[0] == 'T') {
-		return icao[1:]
-	}
-	return icao
 }
 
 // altimSetPopup is the popup-interface impl for the ALTIM SET configuration menu.
@@ -531,16 +521,6 @@ func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 ///////////////////////////////////////////////////////////////////////////
 // WX View
 
-// wxDisplayID returns the short display identifier for an ICAO code.
-// US airports (K + 3-letter IATA), Pacific territories (P + 3-letter IATA),
-// and Caribbean territories (T + 3-letter IATA) drop the leading letter for display.
-func wxDisplayID(icao string) string {
-	if len(icao) == 4 && (icao[0] == 'K' || icao[0] == 'P' || icao[0] == 'T') {
-		return icao[1:]
-	}
-	return icao
-}
-
 // drawWXView renders the WX floating window.
 func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
@@ -550,7 +530,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 
 	var rows []Row
 	for _, icao := range ep.WXReportStations {
-		rows = append(rows, Row{ID: icao, Label: wxDisplayID(icao), Body: wxMetarBody(ctx, icao)})
+		rows = append(rows, Row{ID: icao, Label: av.TrimICAOPrefix(icao), Body: wxMetarBody(ctx, icao)})
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{

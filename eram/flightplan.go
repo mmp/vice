@@ -504,9 +504,7 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	if spec.ExitFixIsIntermediate.IsSet && spec.ExitFixIsIntermediate.Get() {
 		// TODO: validate?
 		return true, nil
-	} else if _, ok := av.DB.Airports[spec.ExitFix.Get()]; ok {
-		return true, nil
-	} else if _, ok := av.DB.Airports["K"+spec.ExitFix.Get()]; ok {
+	} else if _, ok := av.DB.LookupAirport(spec.ExitFix.Get()); ok {
 		return true, nil
 	} else {
 		return false, ErrERAMIllegalAirport

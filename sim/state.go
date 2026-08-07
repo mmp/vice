@@ -164,7 +164,7 @@ func makeDerivedState(s *Sim) DerivedState {
 		ds.ReleaseDepartures = append(ds.ReleaseDepartures,
 			ReleaseDeparture{
 				ADSBCallsign:        ac.ADSBCallsign,
-				DepartureAirport:    "K" + fp.EntryFix,
+				DepartureAirport:    ac.FlightPlan.DepartureAirport,
 				DepartureController: fp.InboundHandoffController,
 				Released:            ac.Released,
 				Squawk:              ac.Squawk,

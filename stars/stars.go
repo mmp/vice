@@ -846,8 +846,8 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 				CRDAPair: pair,
 				Source:   ap.CRDARegions[pair.SourceRegion],
 				Ghost:    ap.CRDARegions[pair.GhostRegion],
-				Airport:  name[1:], // drop the ICAO prefix ("K", "P", or "T")
-				Index:    idx + 1,  // 1-based
+				Airport:  av.TrimICAOPrefix(name),
+				Index:    idx + 1, // 1-based
 			})
 		}
 	}
@@ -1872,9 +1872,7 @@ func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 	center := ss.GetInitialCenter()
 	for name, ap := range av.DB.Airports {
 		if math.NMDistance2LL(ap.Location, center) < 250 {
-			if len(name) == 4 {
-				name = name[1:]
-			}
+			name = av.TrimICAOPrefix(name)
 			tryAdd(name, name+" AIRPORT", ap.Location)
 
 			for _, rwy := range ap.Runways {

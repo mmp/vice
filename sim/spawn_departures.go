@@ -1163,11 +1163,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	isTRACON := av.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
 	nasFp.Route = ac.FlightPlan.Route
-	if len(ac.FlightPlan.DepartureAirport) == 4 {
-		nasFp.EntryFix = ac.FlightPlan.DepartureAirport[1:]
-	} else {
-		nasFp.EntryFix = ac.FlightPlan.DepartureAirport
-	}
+	nasFp.EntryFix = av.TrimICAOPrefix(ac.FlightPlan.DepartureAirport)
 	// The flight plan carries the exit's 3-character fix id when one is
 	// adapted; fix-pair endpoints and adapted fix criteria match against it.
 	nasFp.ExitFix = s.State.FacilityAdaptation.FixPairFixID(shortExit)
