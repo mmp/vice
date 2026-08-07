@@ -280,222 +280,6 @@
           }
         }
       },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "FFT"
-            }
-          ],
-          "destination": "KTPA",
-          "exit": "STOEN",
-          "route": "STOEN Q75 TEUFL BAAMF DADES1"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
-              "icao": "AAL"
-            }
-          ],
-          "destination": "LEMD",
-          "exit": "DITCH",
-          "route": "DITCH V312 JIMEE WAVEY SHLEP YAHOO CARAC JEBBY 4400N/05000W 4500N/04000W 4600N/03000W 4500N/02000W RETEN EPOPO ADORO ZMR"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DPJ"
-            }
-          ],
-          "destination": "KDJT",
-          "exit": "OOD",
-          "route": "OOD TEBEE HAYDO SBY KEMPR YLEEE ZILLS Y289 DULEE CLMNT3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "LXJ"
-            }
-          ],
-          "destination": "KBED",
-          "exit": "DITCH",
-          "route": "DITCH Q437 HNNAH Q450 DPK MAD HFD DREEM2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "AAL"
-            }
-          ],
-          "destination": "KRDU",
-          "exit": "OOD",
-          "route": "OOD TEBEE HAYDO TRPOD TAQLE1"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "NKS"
-            }
-          ],
-          "destination": "KFLL",
-          "exit": "OOD",
-          "route": "OOD TEBEE HAYDO SBY KEMPR CHIEZ Y291 MAJIK CUUDA2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KMDW",
-          "exit": "PTW",
-          "route": "PTW SARAA RAV PSB J60 ASHEN BAGEL PANGG3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "AAL"
-            }
-          ],
-          "destination": "KPHX",
-          "exit": "PTW",
-          "route": "PTW SARAA RAV PSB J60 IOW LNK HLC J64 PUB ALS J102 GUP EAGUL6"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "VTE"
-            }
-          ],
-          "destination": "KPBG",
-          "exit": "DITCH",
-          "route": "DITCH Q437 LLUND CAM"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "FFT"
-            }
-          ],
-          "destination": "KMCO",
-          "exit": "OOD",
-          "route": "OOD TEBEE HAYDO SBY J79 KATZN ISO J121 CHS IGARY Q85 LPERD SNFLD2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
-            }
-          ],
-          "destination": "KATL",
-          "exit": "STOEN",
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "JIA"
-            }
-          ],
-          "destination": "KTYS",
-          "exit": "STOEN",
-          "route": "STOEN REEFI EMI J48 CSN FANPO Q40 ALEAN VXV"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
-            }
-          ],
-          "destination": "KMSP",
-          "exit": "PTW",
-          "route": "PTW SARAA RAV PSB J60 DJB J34 ADALE KAMMA KKILR3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "NKS"
-            }
-          ],
-          "destination": "KDTW",
-          "exit": "MXE",
-          "route": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "AAL"
-            }
-          ],
-          "destination": "KCLT",
-          "exit": "STOEN",
-          "route": "STOEN Q75 TOOBN Q75 GVE LYH CHSLY5"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "AAL"
-            }
-          ],
-          "destination": "KBNA",
-          "exit": "MXE",
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "FFT"
-            }
-          ],
-          "destination": "TJSJ",
-          "exit": "OOD",
-          "route": "OOD TEBEE HAYDO SIE B24 AZEZU RESQU SKPPR L455 MCOOP L455 LENNT M423 PLING RTE7 SAALR"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "PDT"
-            }
-          ],
-          "destination": "KRIC",
-          "exit": "OOD",
-          "route": "OOD TEBEE HAYDO SBY V1 JAMIE"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "LXJ"
-            }
-          ],
-          "altitude": 4000,
-          "destination": "KABE",
-          "exit": "FJC",
-          "route": "FJC"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DPJ"
-            }
-          ],
-          "altitude": 7000,
-          "destination": "KEWR",
-          "exit": "RUUTH",
-          "route": "RUUTH V123 RBV"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "LXJ"
-            }
-          ],
-          "altitude": 11000,
-          "destination": "KJFK",
-          "exit": "DITCH",
-          "route": "DITCH V312 WINKK V44 CAMRN"
-        }
-      ],
       "exit_categories": {
         "ARD": "North",
         "DITCH": "South",
@@ -4391,42 +4175,6 @@
     "BOJID4/HAR5": {
       "arrivals": [
         {
-          "airlines": {
-            "KPHL": [
-              {
-                "airport": "KDEN",
-                "icao": "AAL"
-              },
-              {
-                "airport": "CYYZ",
-                "icao": "PDT"
-              },
-              {
-                "airport": "KIND",
-                "icao": "JIA"
-              },
-              {
-                "airport": "KDAY",
-                "icao": "JIA"
-              },
-              {
-                "airport": "CYYZ",
-                "icao": "JZA"
-              },
-              {
-                "airport": "KCVG",
-                "icao": "PDT"
-              },
-              {
-                "airport": "KLAX",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KORD",
-                "icao": "AAL"
-              }
-            ]
-          },
           "assigned_altitude": 8000,
           "cruise_altitude": 39000,
           "initial_altitude": 9000,
@@ -4467,42 +4215,6 @@
     "FINAL27_NORTH": {
       "arrivals": [
         {
-          "airlines": {
-            "KPHL": [
-              {
-                "airport": "KDEN",
-                "icao": "AAL"
-              },
-              {
-                "airport": "CYYZ",
-                "icao": "PDT"
-              },
-              {
-                "airport": "KIND",
-                "icao": "JIA"
-              },
-              {
-                "airport": "KDAY",
-                "icao": "JIA"
-              },
-              {
-                "airport": "CYYZ",
-                "icao": "JZA"
-              },
-              {
-                "airport": "KCVG",
-                "icao": "PDT"
-              },
-              {
-                "airport": "KLAX",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KORD",
-                "icao": "AAL"
-              }
-            ]
-          },
           "assigned_altitude": 4000,
           "cruise_altitude": 39000,
           "expect_approach": "27R",
@@ -4519,30 +4231,6 @@
     "FINAL27_SOUTH": {
       "arrivals": [
         {
-          "airlines": {
-            "KPHL": [
-              {
-                "airport": "KLAS",
-                "icao": "AAL"
-              },
-              {
-                "airport": "MMUN",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KATL",
-                "icao": "FFT"
-              },
-              {
-                "airport": "KMEM",
-                "icao": "JIA"
-              }
-            ]
-          },
           "assigned_altitude": 4000,
           "cruise_altitude": 37000,
           "expect_approach": "27R",
@@ -4551,6 +4239,7 @@
           "initial_speed": 220,
           "speed_restriction": 220,
           "star": "PAATS4",
+          "airports": ["KPHL"],
           "scratchpad": "27R",
           "waypoints": "N039.39.39.130,W075.08.38.554 CHPMN/ho PSOUT MKORD/h087"
         }
@@ -4559,30 +4248,6 @@
     "FINAL17_NORTH": {
       "arrivals": [
         {
-          "airlines": {
-            "KPHL": [
-              {
-                "airport": "KBUF",
-                "icao": "JIA"
-              },
-              {
-                "airport": "KBOS",
-                "icao": "JBU"
-              },
-              {
-                "airport": "KPIT",
-                "icao": "FFT"
-              },
-              {
-                "airport": "KPWM",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KCLE",
-                "icao": "NKS"
-              }
-            ]
-          },
           "assigned_altitude": 5000,
           "cruise_altitude": 37000,
           "expect_approach": "17Z",
@@ -4599,46 +4264,6 @@
     "JIIMS4": {
       "arrivals": [
         {
-          "airlines": {
-            "KPHL": [
-              {
-                "airport": "KJAX",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KDJT",
-                "icao": "FFT"
-              },
-              {
-                "airport": "KFLL",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KCHS",
-                "icao": "PDT"
-              },
-              {
-                "airport": "KMCO",
-                "icao": "NKS"
-              },
-              {
-                "airport": "KBCT",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KDJT",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KBOS",
-                "icao": "JBU"
-              },
-              {
-                "airport": "KBOS",
-                "icao": "RPA"
-              }
-            ]
-          },
           "initial_altitude": 9000,
           "initial_controller": "W32",
           "initial_speed": 250,
@@ -4650,30 +4275,6 @@
     "PAATS4": {
       "arrivals": [
         {
-          "airlines": {
-            "KPHL": [
-              {
-                "airport": "KLAS",
-                "icao": "AAL"
-              },
-              {
-                "airport": "MMUN",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KTPA",
-                "icao": "AAL"
-              },
-              {
-                "airport": "KATL",
-                "icao": "FFT"
-              },
-              {
-                "airport": "KMEM",
-                "icao": "JIA"
-              }
-            ]
-          },
           "assigned_altitude": 10000,
           "cruise_altitude": 37000,
           "initial_altitude": 10000,
@@ -4687,26 +4288,6 @@
     "SPUDS7": {
       "arrivals": [
         {
-          "airlines": {
-            "KPHL": [
-              {
-                "airport": "KPIT",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "KALB",
-                "icao": "EJA"
-              },
-              {
-                "airport": "KBUF",
-                "icao": "LXJ"
-              },
-              {
-                "airport": "CYUL",
-                "icao": "PDT"
-              }
-            ]
-          },
           "assigned_altitude": 10000,
           "initial_altitude": 10000,
           "initial_controller": "C26",

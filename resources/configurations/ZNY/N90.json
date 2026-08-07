@@ -280,7 +280,9 @@
           "(JFK) ZIGGI": "2G",
           "BDR1": "3R",
           "HUD4": "5H",
-          "PARCH4": "2K"
+          "PARCH4": "2K",
+          "PAWLN1": "2K",
+          "SARDI1": "2K"
         },
         "departure_assignments": {
           "KCDW": "4N",
@@ -537,25 +539,21 @@
       },
       "JFK": {
         "inbound_assignments": {
-          "DENNA1": "3R",
-          "LOVES1": "3R",
-          "NELIE4": "3B",
           "CAMRN5": "2G",
-          "Intra-TRACON (ISP/HVN)": "3H",
           "Intra-TRACON (JFK/FRG East)": "2K",
           "Intra-TRACON (JFK/FRG West)": "2G",
           "OWENZ": "2G",
           "PARCH4": "2K",
-          "PUCKY1": "2E"
+          "PUCKY1": "2E",
+          "SARDI1": "2K",
+          "PAWLN1": "2K"
         },
         "departure_assignments": {
           "KFRG": "2K",
-          "KHVN": "3H",
-          "KISP": "3H",
           "KJFK": "2J"
         },
         "default_consolidation": {
-          "2G": ["2A", "2J", "2K", "3H"],
+          "2G": ["2A", "2J", "2K"],
           "2K": ["2E", "2M"]
         }
       },
@@ -614,25 +612,21 @@
       },
       "J22": {
         "default_consolidation": {
-          "2G": ["2E", "2J", "2K", "3H"],
+          "2G": ["2E", "2J", "2K"],
           "2K": ["2A", "2M"]
         },
         "inbound_assignments": {
-          "DENNA1": "3R",
-          "LOVES1": "3R",
-          "NELIE4": "3B",
           "CAMRN5": "2G",
-          "Intra-TRACON (ISP/HVN)": "3H",
           "Intra-TRACON (JFK/FRG East)": "2K",
           "Intra-TRACON (JFK/FRG West)": "2G",
           "OWENZ": "2G",
           "PARCH4": "2K",
+          "SARDI1": "2K",
+          "PAWLN1": "2K",
           "PUCKY1": "2E"
         },
         "departure_assignments": {
           "KFRG": "2K",
-          "KHVN": "3H",
-          "KISP": "3H",
           "KJFK": "2J"
         }
       },
@@ -642,16 +636,14 @@
           "2K": ["2M"]
         },
         "inbound_assignments": {
-          "DENNA1": "3R",
-          "LOVES1": "3R",
-          "NELIE4": "3B",
           "CAMRN5": "2G",
-          "Intra-TRACON (ISP/HVN)": "3H",
           "Intra-TRACON (JFK/FRG East)": "2K",
           "Intra-TRACON (JFK/FRG West)": "2G",
           "OWENZ": "2G",
           "PARCH4": "2K",
-          "PUCKY1": "2E"
+          "PUCKY1": "2E",
+          "SARDI1": "2K",
+          "PAWLN1": "2K"
         },
         "departure_assignments": {
           "KFRG": "2K",
@@ -662,25 +654,21 @@
       },
       "J04": {
         "default_consolidation": {
-          "2G": ["2A", "2K", "3H"],
+          "2G": ["2A", "2K"],
           "2K": ["2E", "2J", "2M"]
         },
         "inbound_assignments": {
-          "DENNA1": "3R",
-          "LOVES1": "3R",
-          "NELIE4": "3B",
           "CAMRN5": "2G",
-          "Intra-TRACON (ISP/HVN)": "3H",
           "Intra-TRACON (JFK/FRG East)": "2K",
           "Intra-TRACON (JFK/FRG West)": "2G",
           "OWENZ": "2G",
           "PARCH4": "2K",
-          "PUCKY1": "2E"
+          "PUCKY1": "2E",
+          "SARDI1": "2K",
+          "PAWLN1": "2K"
         },
         "departure_assignments": {
           "KFRG": "2K",
-          "KHVN": "3H",
-          "KISP": "3H",
           "KJFK": "2J"
         }
       },

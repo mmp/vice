@@ -89,297 +89,6 @@
           }
         }
       },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "icao": "JBU"
-            }
-          ],
-          "destination": "KCLT",
-          "exit": "BIGGY",
-          "route": "BIGGY Q75 GVE LYH CHSLY5"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "icao": "NKS"
-            },
-            {
-              "icao": "JBU"
-            }
-          ],
-          "destination": "KMCO",
-          "exit": "WHITE",
-          "route": "WHITE Q409 CRPLR Q85 LPERD GTOUT1"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "icao": "JBU"
-            },
-            {
-              "icao": "NKS"
-            },
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KATL",
-          "exit": "LANNA",
-          "route": "LANNA J48 MOL FLASK OZZZI1"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KDCA",
-          "exit": "BIGGY",
-          "route": "BIGGY Q75 MXE CLIPR#"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KIAD",
-          "exit": "PARKE",
-          "route": "PARKE HYPER#"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KORF",
-          "exit": "WHITE",
-          "route": "WHITE Q409 TRPOD JAMIE CCV ORF"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KMDW",
-          "exit": "NEWEL",
-          "route": "NEWEL J60 ASHEN BAGEL PANGG4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KCLE",
-          "exit": "NEWEL",
-          "route": "NEWEL J60 PSB UPPRR TRYBE4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KMEM",
-          "exit": "PARKE",
-          "route": "PARKE J6 HVQ Q68 RYANS BWG BLUZZ3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KIND",
-          "exit": "ZIMMZ",
-          "route": "ZIMMZ Q42 HIDON RINTE SNKPT2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KCVG",
-          "exit": "PARKE",
-          "route": "PARKE J6 COLNS GAVNN6"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            },
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KBNA",
-          "exit": "PARKE",
-          "route": "PARKE J6 HVQ Q68 YOCKY GROAT PASLY4"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "icao": "JBU"
-            },
-            {
-              "icao": "NKS"
-            }
-          ],
-          "destination": "KMIA",
-          "exit": "WHITE",
-          "route": "WHITE Q409 CRPLR BGBRD Q101 SKARP Y313 HOAGG BNFSH2"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "icao": "JBU"
-            },
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KBOS",
-          "exit": "MERIT",
-          "route": "MERIT ROBUC3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KBGR",
-          "exit": "GREKI",
-          "route": "GREKI V419 JUDDS CAM BGR"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KPWM",
-          "exit": "GREKI",
-          "route": "GREKI JUDDS CAM CDOGG4"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "ACA"
-            },
-            {
-              "fleet": "jfk",
-              "icao": "WJA"
-            }
-          ],
-          "destination": "CYUL",
-          "exit": "GREKI",
-          "route": "GREKI JUDDS CAM JASDU PBERG CARTER#"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            },
-            {
-              "fleet": "short",
-              "icao": "ACA"
-            },
-            {
-              "fleet": "jfk",
-              "icao": "WJA"
-            }
-          ],
-          "destination": "CYYZ",
-          "exit": "GAYEL",
-          "route": "GAYEL Q818 WOZEE LINNG3"
-        }
-      ],
       "exit_categories": {
         "SAX": "North",
         "COATE": "North",
@@ -488,6 +197,11 @@
       "departure_controller": "1Y",
       "departure_routes": {
         "16": {
+          "MERIT,BAYYS,GREKI,BDR": {
+            "cleared_altitude": 3000,
+            "sid": "HPN8",
+            "waypoints": "KHPN-34/h163@a800/r320"
+          },
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "sid": "HPN8",
@@ -500,6 +214,11 @@
           }
         },
         "34": {
+          "MERIT,BAYYS,GREKI,BDR": {
+            "cleared_altitude": 3000,
+            "sid": "HPN8",
+            "waypoints": "KHPN-16/h343@a1000/h295"
+          },
           "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SHIPP,WAVEY,WHITE": {
             "cleared_altitude": 3000,
             "sid": "HPN8",
@@ -511,109 +230,17 @@
             "waypoints": "KHPN-16/h343@a1000/h295"
           }
         }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ],
-          "destination": "KDCA",
-          "exit": "BIGGY",
-          "route": "BIGGY Q75 MXE CLIPR3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EJA"
-            }
-          ],
-          "destination": "KMDW",
-          "exit": "NEWEL",
-          "route": "NEWEL J50 ASHEN BAGEL PANGG5 MDW"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ],
-          "destination": "KPHL",
-          "exit": "DIXIE",
-          "route": "JFK V16 DIXIE VCN V184 OOD"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EJA"
-            }
-          ],
-          "destination": "KORF",
-          "exit": "WHITE",
-          "route": "WHITE Q409 TRPOD JAMIE CCV ORF"
-        }
-      ]
-    },
-    "KJFK": {
-      "departure_controller": "2J",
-      "departure_routes": {
-        "13R": {
-          "SAX": {
-            "cleared_altitude": 8000,
-            "handoff_controller": "1L",
-            "sid": "JFK5",
-            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h320"
-          },
-          "HAAYS,NEION,COATE": {
-            "cleared_altitude": 9000,
-            "handoff_controller": "1L",
-            "sid": "JFK5",
-            "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h320"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "icao": "JBU"
-            }
-          ],
-          "destination": "KCMH",
-          "exit": "NEION",
-          "route": "NEION J223 CORDS J132 ULW BENEE"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "QXE",
-              "fleet": "short"
-            }
-          ],
-          "destination": "KAVP",
-          "exit": "SAX",
-          "route": "SAX EXAGE"
-        }
-      ],
-      "exit_categories": {
-        "SAX": "North",
-        "HAAYS": "North",
-        "NEION": "North",
-        "COATE": "North"
       }
     },
     "KEWR": {
+      "approaches": {
+        "I2L": {
+          "cifp_id": "I22L"
+        },
+        "I4R": {
+          "cifp_id": "I4R"
+        }
+      },
       "departure_controller": "4N",
       "departure_routes": {
         "22R": {
@@ -622,6 +249,30 @@
             "handoff_controller": "1L",
             "sid": "EWR5",
             "waypoints": "N040.37.34.200,W074.10.48.000 N040.39.29.400,W074.15.37.800/ho N040.50.39.600,W074.08.24.000/h040"
+          },
+          "BIGGY,LANNA,PARKE": {
+            "departure_controller": "4N",
+            "cleared_altitude": 17000,
+            "sid": "EWR5",
+            "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5W SBJ/a11000+/hoC39"
+          },
+          "ELIOT,NEWEL,ZIMMZ": {
+            "departure_controller": "4N",
+            "cleared_altitude": 17000,
+            "sid": "EWR5",
+            "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5W N040.41.28.842,W074.26.01.734/a10000/hoC39"
+          },
+          "COATE,GAYEL,HAAYS,NEION": {
+            "departure_controller": "4N",
+            "cleared_altitude": 17000,
+            "sid": "EWR5",
+            "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5T N040.51.50.929,W074.24.37.386/a10000/hoC56"
+          },
+          "DIXIE,WHITE": {
+            "departure_controller": "4N",
+            "sid": "EWR5",
+            "cleared_altitude": 6000,
+            "waypoints": "_EWR4_22Ra/ho5S ELVAE COL/c170/hoC68"
           }
         },
         "4L": {
@@ -629,55 +280,55 @@
             "cleared_altitude": 5000,
             "handoff_controller": "1L",
             "sid": "EWR5",
-            "waypoints": "N040.44.02.400,W074.06.25.800/ho N040.49.00.600,W074.03.19.200/h130"
+            "waypoints": "N040.44.02.400,W074.06.25.800/ho N040.49.00.600,W074.03.19.200"
+          },
+          "BIGGY,ELIOT,LANNA,NEWEL,PARKE,SAX,ZIMMZ": {
+            "departure_controller": "4N",
+            "cleared_altitude": 17000,
+            "sid": "EWR5",
+            "waypoints": "_EWR4_4La/ho5W N040.44.12.772,W074.06.38.886/a3000+/ho5W N040.46.08.554,W074.15.42.874/a8000-"
+          },
+          "SBJ,ARD": {
+            "departure_controller": "4N",
+            "cleared_altitude": 7000,
+            "sid": "EWR5",
+            "waypoints": "_EWR4_4La/ho4P N040.44.12.772,W074.06.38.886/a3000+"
+          },
+          "COATE,GAYEL,HAAYS,NEION": {
+            "departure_controller": "4N",
+            "cleared_altitude": 17000,
+            "sid": "EWR5",
+            "waypoints": "_EWR4_4La/ho5T N040.44.12.772,W074.06.38.886/a3000+ N040.46.40.744,W074.12.31.190/a8000-"
+          },
+          "DIXIE,WHITE": {
+            "departure_controller": "4N",
+            "sid": "EWR5",
+            "cleared_altitude": 6000,
+            "waypoints": "KEWR-22R/ho5S N040.44.56.415,W074.05.59.472 N040.45.47.955,W074.18.50.383 ELVAE COL/c170/hoC68"
           }
         }
       },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "fleet": "short",
-              "icao": "DAL"
-            }
-          ],
-          "destination": "KBOS",
-          "exit": "MERIT",
-          "route": "MERIT ROBUC3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "FFT"
-            }
-          ],
-          "destination": "KPWM",
-          "exit": "GREKI",
-          "route": "GREKI JUDDS CAM CDOGG4 PWM"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "AAL"
-            }
-          ],
-          "destination": "TXKF",
-          "exit": "WAVEY",
-          "route": "WAVEY KINGG KINER L461 BOVIC MOMOM1"
-        }
-      ],
       "exit_categories": {
-        "SAX": "East",
-        "HAAYS": "East",
-        "NEION": "East",
-        "SHIPP": "East",
-        "WAVEY": "East",
+        "BAYYS": "East",
+        "BDR": "East",
+        "BIGGY": "West",
+        "COATE": "North",
+        "DIXIE": "South",
+        "ELIOT": "West",
+        "GAYEL": "North",
+        "GREKI": "East",
+        "HAAYS": "North",
+        "LANNA": "West",
         "MERIT": "East",
-        "GREKI": "East"
+        "NEION": "North",
+        "NEWEL": "West",
+        "PARKE": "West",
+        "SAX": "North",
+        "SBJ": "West",
+        "SHIPP": "South",
+        "WAVEY": "South",
+        "WHITE": "South",
+        "ZIMMZ": "West"
       }
     },
     "KDXR": {
@@ -777,37 +428,7 @@
           "initial_speed": 250,
           "scratchpad": "I13",
           "expect_approach": "I13",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "WJA",
-                "fleet": "jfk",
-                "airport": "KATL"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -822,38 +443,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "WJA",
-                "fleet": "jfk",
-                "airport": "CYYZ"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -868,37 +458,7 @@
           "initial_speed": 250,
           "scratchpad": "I22",
           "expect_approach": "I22",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "WJA",
-                "fleet": "jfk",
-                "airport": "KATL"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -913,37 +473,7 @@
           "initial_speed": 250,
           "scratchpad": "I22",
           "expect_approach": "I22",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "WJA",
-                "fleet": "jfk",
-                "airport": "KATL"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -958,37 +488,7 @@
           "initial_speed": 250,
           "scratchpad": "I4",
           "expect_approach": "I4",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "WJA",
-                "fleet": "jfk",
-                "airport": "KATL"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1003,37 +503,7 @@
           "initial_speed": 250,
           "scratchpad": "L31",
           "expect_approach": "L31",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "WJA",
-                "fleet": "jfk",
-                "airport": "KATL"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1048,37 +518,7 @@
           "initial_speed": 250,
           "scratchpad": "R31",
           "expect_approach": "RX1",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "WJA",
-                "fleet": "jfk",
-                "airport": "KATL"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1094,32 +534,7 @@
           "initial_speed": 250,
           "scratchpad": "I13",
           "expect_approach": "I13",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KPWM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "CYYZ"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1135,32 +550,7 @@
           "initial_speed": 250,
           "scratchpad": "I22",
           "expect_approach": "I22",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KPWM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "CYYZ"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1176,32 +566,7 @@
           "initial_speed": 250,
           "scratchpad": "I4",
           "expect_approach": "I4",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KPWM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "CYYZ"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1217,32 +582,7 @@
           "initial_speed": 250,
           "scratchpad": "I4",
           "expect_approach": "I4",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KPWM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "CYYZ"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1258,32 +598,7 @@
           "initial_speed": 250,
           "scratchpad": "L31",
           "expect_approach": "L31",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KPWM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "CYYZ"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1299,32 +614,7 @@
           "initial_speed": 250,
           "scratchpad": "R31",
           "expect_approach": "RX1",
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "RPA",
-                "airport": "KPWM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "CYYZ"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1338,108 +628,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 270,
           "speed_restriction": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "ACA",
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "RPA",
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "EDV",
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "POE",
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "JZA",
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "EDV",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "JZA",
-                "airport": "CYUL"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBTV"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KBTV"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KBTV"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KPWM"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KBGR"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KALB"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KMKE"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KMKE"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KROC"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KSYR"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KSYR"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KORH"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1453,417 +642,7 @@
           "initial_altitude": 13000,
           "initial_speed": 290,
           "speed_restriction": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "AAL",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KMSY"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMSY"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KMSY"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KTPA"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KTPA"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KDCA"
-              },
-              {
-                "icao": "AAL",
-                "airport": "TNCA"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KFLL"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KFLL"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KFLL"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KFLL"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KFLL"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KRSW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KRSW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KAVL"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KAVL"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KATL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KATL"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KATL"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KCHS"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCHS"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCHO"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KCHO"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCAE"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KCAE"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KGSO"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KGSO"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KGSP"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KGSP"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KJAX"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KJAX"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KLIT"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KLIT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KORF"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KORF"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KRIC"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KRIC"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KROA"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KROA"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KSAV"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KSAV"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KILM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KILM"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KEYW"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KMYR"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KMYR"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KMYR"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KPNS"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "ASH",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KMSY"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KMSY"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMSY"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSRQ"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KSRQ"
-              },
-              {
-                "icao": "TIV",
-                "airport": "KSRQ"
-              },
-              {
-                "icao": "DAL",
-                "airport": "MYNN"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KBHM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KHSV"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KTYS"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KLEX"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KSDF"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KHXD"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KECP"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KDAL"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KHOU"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KIAD"
-              },
-              {
-                "icao": "ASH",
-                "airport": "KIAD"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KIAD"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -1877,244 +656,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 290,
           "speed_restriction": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "UAL",
-                "airport": "KORD"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KORD"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KORD"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KORD"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KORD"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KORD"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KBZN"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KCLE"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KCLE"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KCMH"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KDSM"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KDSM"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KDSM"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDSM"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KXNA"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KXNA"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KIND"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KIND"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KMSN"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KMSN"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KMEM"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KMEM"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KBNA"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KBNA"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KBNA"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KBNA"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KOKC"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KOKC"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KPIT"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KPIT"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KPIT"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KSTL"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KSTL"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KSTL"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KTUL"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KTUL"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KGRR"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMCI"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KMCI"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMSP"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KMSP"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSLC"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KIND"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KIND"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KOMA"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KOMA"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "TJSJ"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KMDW"
-              }
-            ]
-          }
+          "airports": ["KLGA"]
         }
       ]
     },
@@ -2127,19 +669,7 @@
           "initial_altitude": 9000,
           "assigned_altitude": 6000,
           "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KHPN": [
-              {
-                "icao": "LXJ",
-                "airport": "KLEB"
-              },
-              {
-                "icao": "KAP",
-                "airport": "KLEB"
-              }
-            ]
-          }
+          "airports": ["KHPN"]
         }
       ]
     },
@@ -2152,245 +682,7 @@
           "initial_altitude": 13000,
           "assigned_altitude": 11000,
           "initial_speed": 290,
-          "expect_approach": null,
-          "airlines": {
-            "KHPN": [
-              {
-                "icao": "JIA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "TCN",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KDCA"
-              },
-              {
-                "icao": "ENY",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "VJA",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "FFL",
-                "airport": "KCHS"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KCHS"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KCHS"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KMYR"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "HPJ",
-                "airport": "KRDU"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KSAV"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KSAV"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KVRB"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KVRB"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KDAB"
-              },
-              {
-                "icao": "VJA",
-                "airport": "KJAX"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KJAX"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KJAX"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KSRQ"
-              },
-              {
-                "icao": "CYO",
-                "airport": "KSRQ"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KSRQ"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KATL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KATL"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KFLL"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KFLL"
-              },
-              {
-                "icao": "SGX",
-                "airport": "KFLL"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KRSW"
-              },
-              {
-                "icao": "EJM",
-                "airport": "KRSW"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KRSW"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "CYO",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "JBU",
-                "airport": "TJSJ"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KTPA"
-              },
-              {
-                "icao": "VJA",
-                "airport": "KTPA"
-              },
-              {
-                "icao": "VJA",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "JSX",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KDJT"
-              },
-              {
-                "icao": "JSX",
-                "airport": "KFXE"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KFXE"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KFXE"
-              },
-              {
-                "icao": "JSX",
-                "airport": "KOPF"
-              },
-              {
-                "icao": "EJM",
-                "airport": "KOPF"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KOPF"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KAPF"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KAPF"
-              },
-              {
-                "icao": "JSX",
-                "airport": "KAPF"
-              },
-              {
-                "icao": "WUP",
-                "airport": "KAPF"
-              }
-            ]
-          }
+          "airports": ["KHPN"]
         }
       ]
     },
@@ -2403,24 +695,7 @@
           "initial_altitude": 10000,
           "assigned_altitude": 9000,
           "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KHPN": [
-              {
-                "icao": "BMA",
-                "airport": "TXKF"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "TXKF"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "TXKF"
-              }
-            ]
-          }
+          "airports": ["KHPN"]
         }
       ]
     },
@@ -2433,37 +708,33 @@
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
           "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KHPN": [
-              {
-                "icao": "ENY",
-                "airport": "KORD"
-              },
-              {
-                "icao": "EJM",
-                "airport": "KMVY"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KMSP"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KACK"
-              }
-            ]
-          }
+          "airports": ["KHPN"]
+        }
+      ]
+    },
+    "EWR 22L": {
+      "arrivals": [
+        {
+          "waypoints": "N041.02.20.171,W074.33.43.269 N041.03.47.169,W074.21.00.653/d50 N041.03.51.221,W074.15.52.432/s210 N041.02.11.808,W074.12.13.996/d40 N040.56.59.810,W074.06.50.504/d30 N040.53.06.872,W074.04.17.794/s180 IZEKO GIMEE/a2500 BUZZD/a1500/s140 KEWR-22L/delete",
+          "route": "/.",
+          "initial_controller": "4P",
+          "initial_altitude": 7000,
+          "initial_speed": 250,
+          "airports": ["KEWR"]
         }
       ]
     }
   },
   "default_scenario": "LGA Dep 13 Land 22 HPN 16",
   "fixes": {
+    "_EWR4_22Ra": "N040.38.28.969,W074.10.11.993",
+    "_EWR4_4La": "N040.45.33.714,W074.05.08.743",
+    "_EWR_11": "N040.42.10.096,W074.10.50.473",
+    "_EWR_22L": "N040.42.05.592,W074.09.32.827",
+    "_EWR_22R": "N040.42.04.246,W074.09.47.603",
+    "_EWR_29": "N040.42.04.259,W074.09.22.527",
+    "_EWR_4L": "N040.40.45.790,W074.10.36.795",
+    "_EWR_4R": "N040.40.39.678,W074.10.27.566",
     "_FRG_1": "N040.43.20.230,W073.24.51.229",
     "_FRG_14": "N040.44.02.898,W073.25.17.486",
     "_FRG_14a": "N040.38.37.868,W073.22.41.398",
@@ -2489,15 +760,6 @@
     "_ISP_6": "N040.47.18.743,W073.06.44.022",
     "_ISP_6a": "N040.50.43.281,W073.02.11.698",
     "_ISP_6b": "N040.50.28.573,W073.09.10.827",
-    "_JFK_13L": "N040.39.26.976,W073.47.24.277",
-    "_JFK_13R": "N040.38.53.537,W073.49.00.188",
-    "_JFK_22L": "N040.38.41.232,W073.45.18.511",
-    "_JFK_22R": "N040.39.00.362,W073.45.49.053",
-    "_JFK_31L": "N040.37.41.000,W073.46.20.227",
-    "_JFK_31R": "N040.38.35.986,W073.45.31.503",
-    "_JFK_4L": "N040.37.19.370,W073.47.08.045",
-    "_JFK_4La": "N040.39.21.332,W073.45.32.849",
-    "_JFK_4R": "N040.37.31.661,W073.46.12.894",
     "_LGA_13": "N040.46.56.029,W073.52.42.359",
     "_LGA_13a": "N040.48.06.479,W073.55.40.914",
     "_LGA_13b": "N040.45.36.529,W073.49.23.397",
@@ -2527,7 +789,8 @@
         {
           "airport": "KHPN",
           "runway": "16"
-        }
+        },
+        { "airport": "KEWR", "runway": "22L" }
       ],
       "inbound_rates": {
         "PROUD2": {
@@ -2538,7 +801,8 @@
         },
         "VADDR1": {
           "KLGA": 10
-        }
+        },
+        "EWR 22L": { "KEWR": 40 }
       },
       "configuration": "LGA",
       "default_maps": ["LGA-HPN ARR/DEP"],
@@ -2568,14 +832,26 @@
           "runway": "13"
         },
         {
-          "airport": "KJFK",
-          "category": "North",
+          "airport": "KEWR",
+          "category": "East",
           "rate": 6,
-          "runway": "13R"
+          "runway": "22R"
         },
         {
           "airport": "KEWR",
-          "category": "East",
+          "category": "West",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "category": "North",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "category": "South",
           "rate": 6,
           "runway": "22R"
         },
@@ -2603,7 +879,8 @@
         {
           "airport": "KHPN",
           "runway": "34"
-        }
+        },
+        { "airport": "KEWR", "runway": "22L" }
       ],
       "inbound_rates": {
         "PROUD2": {
@@ -2614,7 +891,8 @@
         },
         "VADDR1": {
           "KLGA": 10
-        }
+        },
+        "EWR 22L": { "KEWR": 40 }
       },
       "configuration": "LGA",
       "default_maps": ["LGA-HPN ARR/DEP"],
@@ -2644,21 +922,33 @@
           "runway": "13"
         },
         {
-          "airport": "KJFK",
-          "category": "North",
-          "rate": 6,
-          "runway": "13R"
-        },
-        {
           "airport": "KEWR",
           "category": "East",
           "rate": 6,
           "runway": "22R"
         },
         {
+          "airport": "KEWR",
+          "category": "West",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "category": "North",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "category": "South",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
           "airport": "KHPN",
           "rate": 6,
-          "runway": "16"
+          "runway": "34"
         }
       ],
       "wind": {
@@ -2679,7 +969,8 @@
         {
           "airport": "KHPN",
           "runway": "16"
-        }
+        },
+        { "airport": "KEWR", "runway": "22L" }
       ],
       "inbound_rates": {
         "PROUD2": {
@@ -2690,7 +981,8 @@
         },
         "VADDR1": {
           "KLGA": 10
-        }
+        },
+        "EWR 22L": { "KEWR": 40 }
       },
       "configuration": "LGA",
       "default_maps": ["LGA-HPN ARR/DEP"],
@@ -2720,21 +1012,33 @@
           "runway": "31"
         },
         {
-          "airport": "KJFK",
-          "category": "North",
-          "rate": 6,
-          "runway": "13R"
-        },
-        {
           "airport": "KEWR",
           "category": "East",
           "rate": 6,
           "runway": "22R"
         },
         {
+          "airport": "KEWR",
+          "category": "West",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "category": "North",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "category": "South",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
           "airport": "KHPN",
           "rate": 6,
-          "runway": "34"
+          "runway": "16"
         }
       ],
       "wind": {
@@ -2755,7 +1059,8 @@
         {
           "airport": "KHPN",
           "runway": "34"
-        }
+        },
+        { "airport": "KEWR", "runway": "22L" }
       ],
       "inbound_rates": {
         "PROUD2": {
@@ -2766,7 +1071,8 @@
         },
         "VADDR1": {
           "KLGA": 10
-        }
+        },
+        "EWR 22L": { "KEWR": 40 }
       },
       "configuration": "LGA",
       "default_maps": ["LGA-HPN ARR/DEP"],
@@ -2796,14 +1102,26 @@
           "runway": "31"
         },
         {
-          "airport": "KJFK",
-          "category": "North",
+          "airport": "KEWR",
+          "category": "East",
           "rate": 6,
-          "runway": "13R"
+          "runway": "22R"
         },
         {
           "airport": "KEWR",
-          "category": "East",
+          "category": "West",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "category": "North",
+          "rate": 6,
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "category": "South",
           "rate": 6,
           "runway": "22R"
         },
@@ -2873,14 +1191,26 @@
           "runway": "4"
         },
         {
-          "airport": "KJFK",
-          "category": "North",
+          "airport": "KEWR",
+          "category": "East",
           "rate": 6,
-          "runway": "13R"
+          "runway": "4L"
         },
         {
           "airport": "KEWR",
-          "category": "East",
+          "category": "West",
+          "rate": 6,
+          "runway": "4L"
+        },
+        {
+          "airport": "KEWR",
+          "category": "North",
+          "rate": 6,
+          "runway": "4L"
+        },
+        {
+          "airport": "KEWR",
+          "category": "South",
           "rate": 6,
           "runway": "4L"
         },
