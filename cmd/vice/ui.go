@@ -341,7 +341,8 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	activeModal := hasActiveModalDialogs()
 	if controlClient != nil {
 		// Keep the Messages pane current even when modal dialogs suppress normal window drawing.
-		config.MessagesPane.ProcessEvents(ui.showMessages && !activeModal, events, controlClient, p, lg)
+		config.MessagesPane.ProcessEvents(ui.showMessages && !activeModal, config.DisplaySimLogs,
+			events, controlClient, p, lg)
 	}
 
 	if controlClient != nil && !activeModal {
@@ -1201,6 +1202,12 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			config.ScenarioBriefFile = ""
 		}
 		imgui.EndGroup()
+
+		imgui.Separator()
+		imgui.Checkbox("Display simulation logging", &config.DisplaySimLogs)
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Show details about the current sim run in the Messages window")
+		}
 	}
 
 	imgui.End()

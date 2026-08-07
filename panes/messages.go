@@ -149,7 +149,8 @@ func (mp *MessagesPane) DrawWindow(show *bool, p platform.Platform, unpinnedWind
 
 }
 
-func (mp *MessagesPane) ProcessEvents(playSound bool, events []sim.Event, c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) ProcessEvents(playSound, showSimLogging bool, events []sim.Event, c *client.ControlClient,
+	p platform.Platform, lg *log.Logger) {
 	for _, event := range events {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
@@ -221,6 +222,12 @@ func (mp *MessagesPane) ProcessEvents(playSound bool, events []sim.Event, c *cli
 					error:    true,
 				})
 			mp.shouldAutoScroll = true
+
+		case sim.SimLogMessageEvent:
+			if showSimLogging {
+				mp.messages = append(mp.messages, Message{contents: event.WrittenText, system: true})
+				mp.shouldAutoScroll = true
+			}
 
 		case sim.STTCommandEvent:
 			// Display the controller's STT transcript and resulting command

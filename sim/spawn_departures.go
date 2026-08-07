@@ -749,7 +749,7 @@ func (s *Sim) createPublishedIFRDepartureNoLock(flight av.Flight, departureAirpo
 	}
 	ac.InitializeFlightPlan(av.FlightRulesIFR, flight.AircraftType, departureAirport, flight.Other)
 
-	fmt.Printf("%s: departure %s->%s runway %s exit %s (%s)\n", callsign, departureAirport,
+	s.log("%s: departure %s->%s runway %s exit %s (%s)", callsign, departureAirport,
 		flight.Other, runway, placement.dep.Exit, placement.how)
 
 	return s.initializeIFRDepartureNoLock(ac, placement.ap, departureAirport, runway, &placement.dep,

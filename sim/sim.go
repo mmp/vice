@@ -572,6 +572,16 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Time("push_end", s.PushEnd.Time()))
 }
 
+// log prints the provided message to stdout and posts it to the clients' event streams so that it
+// may be shown in the messages pane.
+func (s *Sim) log(format string, args ...any) {
+	text := fmt.Sprintf(format, args...)
+	fmt.Println(text)
+	if s.eventStream != nil {
+		s.eventStream.Post(Event{Type: SimLogMessageEvent, WrittenText: text})
+	}
+}
+
 func (s *Sim) TogglePause() {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

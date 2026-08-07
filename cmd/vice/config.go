@@ -73,6 +73,10 @@ type ConfigNoSim struct {
 	VideoMapFile      string
 	ScenarioBriefFile string
 
+	// DisplaySimLogs enables logging of basic information about a Sim's execution (notably, things
+	// likely to be useful for facility engineering) in the MessagesPane.
+	DisplaySimLogs bool
+
 	NoBriefAtScenarioStart bool
 
 	// Which child windows are open (persisted across sessions)

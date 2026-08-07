@@ -295,12 +295,12 @@ type publishedTrafficProvider struct {
 
 // noteCallsignClash reports a published flight discarded because its callsign
 // was in use, the first time each one turns up.
-func (p *publishedTrafficProvider) noteCallsignClash(callsign string, err error) {
+func (p *publishedTrafficProvider) noteCallsignClash(s *Sim, callsign string, err error) {
 	if p.discardedClashes == nil {
 		p.discardedClashes = make(map[string]int)
 	}
 	if p.discardedClashes[callsign] == 0 {
-		fmt.Printf("Dropping %v\n", err)
+		s.log("Dropping due to callsign clash %v", err)
 	}
 	p.discardedClashes[callsign]++
 }
@@ -815,7 +815,7 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 		if flights[0].Departure {
 			lead = departureSpawnLead
 		}
-		fmt.Printf("Published traffic: clock starts %s, first flight %s spawns %s\n",
+		s.log("Published traffic: clock starts %s, first flight %s spawns %s",
 			earliest.Time().Format("2006-01-02 15:04:05Z"),
 			flights[0].Time().Format("2006-01-02 15:04:05Z"),
 			flights[0].Time().Add(-lead).Format("2006-01-02 15:04:05Z"))
@@ -1082,7 +1082,7 @@ func (p *publishedTrafficProvider) createIFRDeparture(s *Sim, airport string,
 		return nil, p.departureDelay(s, airport), nil
 	}
 	if errors.Is(err, errCallsignInUse) {
-		p.noteCallsignClash(published.flight.Callsign, err)
+		p.noteCallsignClash(s, published.flight.Callsign, err)
 		return nil, p.departureDelay(s, airport), nil
 	}
 	return ac, p.departureDelay(s, airport), err
@@ -1119,7 +1119,7 @@ func (p *publishedTrafficProvider) createInbound(s *Sim, group string,
 	p.arrivals = append(p.arrivals[:index], p.arrivals[index+1:]...)
 
 	if errors.Is(err, errCallsignInUse) {
-		p.noteCallsignClash(published.flight.Callsign, err)
+		p.noteCallsignClash(s, published.flight.Callsign, err)
 		return nil, p.arrivalDelay(s, group, rates), nil
 	}
 	return ac, p.arrivalDelay(s, group, rates), err
@@ -1149,7 +1149,7 @@ func (p *publishedTrafficProvider) nextArrivalFor(s *Sim, group string,
 				p.discardedArrivals = make(map[string]int)
 			}
 			if p.discardedArrivals[airport] == 0 {
-				fmt.Printf("Discarding published arrivals at %s: %s lands no traffic there\n",
+				s.log("Discarding published arrivals at %s: %s lands no traffic there",
 					airport, group)
 			}
 			p.discardedArrivals[airport]++
@@ -1188,12 +1188,12 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 	switch lc.TrafficSource {
 	case TrafficSourceHistorical:
 		if len(s.historicalFlights) == 0 {
-			fmt.Printf("Traffic source: historical, but no flights were found for %s from %s\n",
+			s.log("Traffic source: historical, but no flights were found for %s from %s",
 				s.State.Facility, s.StartTime.Time().Format("2006-01-02 15:04Z"))
 			s.trafficProvider = errorTrafficProvider{
 				err: fmt.Errorf("no historical flight data for %s at this time", s.State.Facility)}
 		} else {
-			fmt.Printf("Traffic source: historical, %d flights found for %s from %s\n",
+			s.log("Traffic source: historical, %d flights found for %s from %s",
 				len(s.historicalFlights), s.State.Facility,
 				s.StartTime.Time().Format("2006-01-02 15:04Z"))
 			s.trafficProvider = newHistoricalTrafficProvider(s, s.historicalFlights,
@@ -1212,12 +1212,12 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 				lc.TimetableID, s.State.PrimaryAirport)}
 			return s.trafficProvider
 		}
-		fmt.Printf("Traffic source: timetable %q for %s\n", timetable.Name, timetable.Airport)
+		s.log("Traffic source: timetable %q for %s", timetable.Name, timetable.Airport)
 		s.trafficProvider = newTimetableTrafficProvider(s, timetable, lc.TimetableStartMinute,
 			lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
 
 	default:
-		fmt.Printf("Traffic source: scenario\n")
+		s.log("Traffic source: scenario")
 		s.trafficProvider = scenarioTrafficProvider{}
 	}
 	return s.trafficProvider

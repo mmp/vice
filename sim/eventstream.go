@@ -260,6 +260,7 @@ const (
 	STTCommandEvent
 	FlightPlanDirectEvent
 	FDAMLeaderLineEvent
+	SimLogMessageEvent
 )
 
 func (t EventType) String() string {
@@ -268,7 +269,7 @@ func (t EventType) String() string {
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
 		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect",
-		"FDAMLeaderLine"}[t]
+		"FDAMLeaderLine", "SimLogMessage"}[t]
 }
 
 type Event struct {

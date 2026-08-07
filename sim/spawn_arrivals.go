@@ -359,7 +359,7 @@ func (s *Sim) createPublishedArrivalNoLock(flight av.Flight, published published
 		ac.FlightPlan.Route = placement.filedRoute
 	}
 
-	fmt.Printf("%s: arrival %s->%s via %s %s (%s)\n", callsign, flight.Other, arrivalAirport,
+	s.log("%s: arrival %s->%s via %s %s (%s)", callsign, flight.Other, arrivalAirport,
 		placement.group, util.Select(arr.STAR == "", arr.FlightStripDisplayRoute, arr.STAR), placement.how)
 
 	return s.finalizeArrivalNoLock(ac, arr, placement.group, arrivalAirport)
