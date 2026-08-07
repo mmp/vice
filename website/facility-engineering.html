@@ -168,37 +168,14 @@
     <div class="docs-wrapper">
       <div class="docs-sidebar" id="docs-sidebar">
         <nav class="docs-nav navbar" id="docs-nav">
-          <ul class="section-items list-unstyled nav flex-column pb-3">
-            <li class="nav-item section-title"><a class="nav-link scrollto" href="#section-basics"><span class="theme-icon-holder me-2"><i class="fas fa-book-open"></i></span>Basics</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-faq">FAQ</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-locations">Specifying Locations</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-local-server">Running a Server Locally</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-routes">Aircraft Routes</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-airlines-aircraft">Airlines and Aircraft</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-emergencies">Emergencies</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-speech">Speech</a></li>
-            <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-facility-config"><span class="theme-icon-holder me-2"><i class="fas fa-wrench"></i></span>Facility Configuration</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-config-common">Common</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-config-eram">ERAM</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-config-stars">STARS</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-pseudo-eram">Coordination Fixes and Fix Pairs</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-video-maps">Video Maps</a></li>
-            <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-scenario-groups"><span class="theme-icon-holder me-2"><i class="fas fa-plane-departure"></i></span>Scenario Groups</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-airports">Airports</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-approaches">Approaches</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-departures">Departures</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-arrivals">Arrivals and Overflights</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-timetables">Timetables and Historical Traffic</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-vfr">VFR Aircraft</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Controller Airspace</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
-            <li class="nav-item"><a class="nav-link scrollto" href="#fe-briefings">Briefings</a></li>
-          </ul>
+          <!-- Generated at load time by assets/js/sidebar.js from the page's
+               articles and headings; do not hand-edit. -->
+          <ul class="section-items list-unstyled nav flex-column pb-3"></ul>
         </nav><!--//docs-nav-->
       </div><!--//docs-sidebar-->
       <div class="docs-content">
         <div class="container">
-          <article class="docs-article" id="section-facility-engineering">
+          <article class="docs-article" id="section-facility-engineering" data-nav-icon="fas fa-info-circle">
             <header class="docs-header">
               <h1 class="docs-heading">Facility Engineering</h1>
               <section class="docs-intro">
@@ -224,7 +201,7 @@
             </header>
           </article>
 
-          <article class="docs-article" id="section-basics">
+          <article class="docs-article" id="section-basics" data-nav-icon="fas fa-book-open">
             <header class="docs-header">
               <h1 class="docs-heading">Basics</h1>
             </header>
@@ -256,7 +233,7 @@
                 </p>
 
             <section class="docs-section" id="fe-faq">
-              <h2 class="section-heading">Facility Engineering FAQ</h2>
+              <h2 class="section-heading" data-nav-title="FAQ">Facility Engineering FAQ</h2>
               <table class="table">
                 <thead>
                   <tr>
@@ -445,7 +422,7 @@
             </section><!--//section-->
 
             <section class="docs-section" id="fe-routes">
-              <h2 class="section-heading">Routes</h2>
+              <h2 class="section-heading" data-nav-title="Aircraft Routes">Routes</h2>
               <p>When an aircraft's route is given, <i>vice</i> allows airways to be used to describe the route,
                 which simplifies the route specification when an aircraft is in fact flying along an airway.
                 Airways are given as part of the route; for example "WHITE V1 DPK" has the aircraft join V1
@@ -833,12 +810,10 @@
                 for more natural-sounding speech. Files with single string values have one canonical pronunciation.</p>
             </section><!--//section-->
           </article>
-          <article class="docs-article" id="section-facility-config">
+          <article class="docs-article" id="section-facility-config" data-nav-icon="fas fa-wrench">
             <header class="docs-header">
               <h1 class="docs-heading">Facility Configuration</h1>
             </header>
-            <section class="docs-section" id="fe-facility-config">
-              <h2 class="section-heading">Facility Configuration</h2>
               <p>Facility-wide settings are defined in separate JSON files, stored in
                 the <a href="https://github.com/mmp/vice/tree/master/resources/configurations"><code>resources/configurations/</code></a>
                 directory. They're organized by ARTCC and facility name (e.g., <code>resources/configurations/ZNY/N90.json</code>).
@@ -992,7 +967,7 @@
                 </tbody>
               </table>
               <section class="docs-section" id="fe-config-common">
-                <h3 class="section-heading">Common</h3>
+                <h2 class="section-heading">Common</h2>
                 <p>The following settings in the "facility_adaptations" object of the
                   <a href="#fe-facility-config">facility configuration file</a> apply to all scope types:
                 </p>
@@ -1293,7 +1268,7 @@
                 </table>
               </section><!--//section-->
               <section class="docs-section" id="fe-config-eram">
-                <h3 class="section-heading">ERAM</h3>
+                <h2 class="section-heading">ERAM</h2>
                 <p>The following settings in the "facility_adaptations" object are specific to the ERAM radar scope:</p><div class="json-controls"><button class="expand-all">Expand All</button> <button class="collapse-all">Collapse All</button></div>
                 <table class="table">
                   <thead>
@@ -1632,7 +1607,7 @@
                 </table>
               </section><!--//section-->
               <section class="docs-section" id="fe-config-stars">
-                <h3 class="section-heading">STARS</h3>
+                <h2 class="section-heading">STARS</h2>
                 <p>The following settings in the "facility_adaptations" object are specific to the STARS radar scope:</p><div class="json-controls"><button class="expand-all">Expand All</button> <button class="collapse-all">Collapse All</button></div>
                 <table class="table">
                   <thead>
@@ -1888,13 +1863,13 @@
                               </td></tr>
                           </tbody></table>
 
-                          <h4>Clock Phase Timesharing</h4>
+                          <h3>Clock Phase Timesharing</h3>
                           <p>Several datablock fields cycle their content according to the clock phase sequence.
                             The default sequence <code>[1,2,1,3]</code> with intervals <code>[2,1,2,1]</code> produces
                             a 6-second cycle: phase 1 for 2s, phase 2 for 1s, phase 1 again for 2s, phase 3 for 1s.
                             Limited datablocks have no timesharing; all fields are static.</p>
 
-                          <h5>Full Datablock (FDB)</h5>
+                          <h4>Full Datablock (FDB)</h4>
                           <table class="table">
                             <thead><tr><th>Field</th><th>Phase 1</th><th>Phase 2</th><th>Phase 3</th><th>Phase 4</th></tr></thead>
                             <tbody>
@@ -1928,7 +1903,7 @@
                             </tbody>
                           </table>
 
-                          <h5>Partial Datablock (PDB)</h5>
+                          <h4>Partial Datablock (PDB)</h4>
                           <table class="table">
                             <thead><tr><th>Field</th><th>Phase 1</th><th>Phase 2</th><th>Phase 3</th><th>Phase 4</th></tr></thead>
                             <tbody>
@@ -1944,7 +1919,7 @@
                             </tbody>
                           </table>
 
-                          <h4>Datablock Configuration Fields</h4>
+                          <h3>Datablock Configuration Fields</h3>
                           <table class="table"><thead><tr><th>Element</th><th>Type</th><th>Description</th></tr></thead><tbody>
                               <tr>
                                 <td>"allow_long_scratchpad"</td>
@@ -3251,7 +3226,7 @@
                 </table>
               </section><!--//section-->
               <section class="docs-section" id="fe-pseudo-eram">
-                <h3 class="section-heading">Coordination Fixes and Fix Pairs</h3>
+                <h2 class="section-heading">Coordination Fixes and Fix Pairs</h2>
                 <p>In the real NAS a TRACON's STARS does not work out a flight's entry and exit fixes
                   itself. The enroute host computer does: it builds the flight's trajectory, decides
                   where the flight will cross the terminal boundary, picks the <i>coordination fix</i>,
@@ -3298,7 +3273,7 @@
                   <a href="#fe-config-common">configuration</a> wherever a fix pair matches.</p>
               </section><!--//section-->
               <section class="docs-section" id="fe-video-maps">
-                <h3 class="section-heading">Video Maps</h3>
+                <h2 class="section-heading">Video Maps</h2>
                 <p>Video maps are specified separately from the rest of the configuration since they require fairly large files and are not generally edited by hand.
                   They are stored in a single <code>.mappack</code> file per facility (named <code>&lt;facility&gt;.mappack</code>).
                   Two utilities are available to generate maps for <i>vice</i> from other formats:
@@ -3317,7 +3292,7 @@
                     in whichever directory you put them. (They are signed and notarized, but you
                     may need to right-click → Open on first run.)</li>
                 </ul>
-                <h4 id="fe-video-maps-crc2vice">crc2vice</h4>
+                <h3 id="fe-video-maps-crc2vice">crc2vice</h3>
                 <p><code>crc2vice</code> extracts both STARS and ERAM video maps from an installed CRC ARTCC
                   and converts them to <i>vice</i>'s internal format.</p>
                 <p>Usage:</p>
@@ -3338,7 +3313,7 @@
                     in your <code>%AppData%\Local\Vice</code> directory, or pass the path to a file via the
                     <code>-videomap</code> command-line option to <i>vice</i>.</li>
                 </ul>
-                <h4 id="fe-video-maps-dat2vice">dat2vice</h4>
+                <h3 id="fe-video-maps-dat2vice">dat2vice</h3>
                 <p><code>dat2vice</code>  extracts video maps from the FAA DAT video map file format and converts them to <i>vice</i>'s internal format.</p>
                 <p><code>dat2vice</code> takes a <i>manifest</i> file that specifies the filenames of the DAT
                   files to convert as well as additional information about each one:</p>
@@ -3443,7 +3418,7 @@
               </section><!--//section-->
             </section><!--//section-->
           </article>
-          <article class="docs-article" id="section-scenario-groups">
+          <article class="docs-article" id="section-scenario-groups" data-nav-icon="fas fa-plane-departure">
             <header class="docs-header">
               <h1 class="docs-heading">Scenario Groups</h1>
             </header>
@@ -3594,7 +3569,7 @@
               </table>
             </section><!--//section-->
             <section class="docs-section" id="fe-airports">
-              <h3 class="section-heading">Airports</h3>
+              <h2 class="section-heading">Airports</h2>
               <p>The airports in a scenario group are specified via the "airports" member of the scenario group.
                 Each airports is a separate member, named according to the airport's ICAO code (e.g., "KJFK").
                 The airport object then has the following member variables:
@@ -4009,7 +3984,7 @@
               </table>
             </section><!--//section-->
             <section class="docs-section" id="fe-approaches">
-              <h3 class="section-heading">Approaches</h3>
+              <h2 class="section-heading">Approaches</h2>
               <p>The member names in the airport "approaches" object give the abbreviated name of each approach,
                 as used in <i>vice</i>'s <a href="#atc-commands">ATC commands</a>.</p>
               <p>Approaches may be specified using data automatically loaded from the
@@ -4091,7 +4066,7 @@
               </table>
             </section>
             <section class="docs-section" id="fe-departures">
-              <h3 class="section-heading">Departures</h3>
+              <h2 class="section-heading">Departures</h2>
               <p>There are two pieces for specifying departures: their initial route leaving the airport, which depends on the active departure runway,
                 and their subsequent route out of the TRACON, which does not. These two parts are specified separately.</p>
               <p>The "departure_routes" object in the airport definition gives the initial routing for departures,
@@ -4295,7 +4270,7 @@
               </table>
             </section>
             <section class="docs-section" id="fe-arrivals">
-              <h3 class="section-heading">Arrivals and Overflights</h3>
+              <h2 class="section-heading">Arrivals and Overflights</h2>
               <p>Arrivals and overflights are specified via the "inbound_flows" variable,
                 which allows specifying the ways that aircraft from adjacent facilities
                 enter the TRACON.  "inbound_flows" has two members, "arrivals" and
@@ -4310,7 +4285,7 @@
                 multiple STARs have the same initial route, they should be
                 together as well.
               </p>
-              <h4 id="fe-arrivals-section">Arrivals</h4>
+              <h3 id="fe-arrivals-section">Arrivals</h3>
               <p>Each object stored in the "arrivals" array corresponds to a STAR.
                 These objects have the following members:
               </p>
@@ -4567,7 +4542,7 @@
      }
   },
               </pre>
-              <h4 id="fe-overflights">Overflights</h4>
+              <h3 id="fe-overflights">Overflights</h3>
               <p>An overflight is an aircraft that enters the TRACON already airborne, and flies through it
                 without landing. Overflights are also specified in "inbound_flows" in the "overflights"
                 member, which is an array of overflight specifiers.  Each specifier may have the following
@@ -4842,7 +4817,7 @@
   </p>
 </section><!--//section-->
             <section class="docs-section" id="fe-vfr">
-              <h3 class="section-heading">VFR Aircraft</h3>
+              <h2 class="section-heading">VFR Aircraft</h2>
               <p><i>vice</i> allows the specification of VFR "distractor" aircraft in scenarios;
                 this provides realistic extra clutter in the scope and sometimes aircraft that need to be
                 accounted for when vectoring IFR aircraft.
@@ -4987,7 +4962,7 @@
               </div><br>
             </section><!--//section-->
             <section class="docs-section" id="fe-airspace">
-              <h3 class="section-heading">Controller Airspace</h3>
+              <h2 class="section-heading">Controller Airspace</h2>
               <p>Airspace volumes representing areas that particular controllers are responsible for may optionally be specified
                 using the "airspace" object in the scenario group. If specified, <i>vice</i> will show an
                 alert when aircraft owned by a controller are outside of their airspace.
@@ -5087,7 +5062,7 @@
               </pre>
             </section><!--//section-->
             <section class="docs-section" id="fe-scenarios">
-              <h3 class="section-heading">Scenarios</h3>
+              <h2 class="section-heading">Scenarios</h2>
               <p>Scenarios pull together components from the definitions in scenario groups in order to present specific
                 control scenarios to the user.  The scenarios object's members are the names of the scenarios.
               </p>
@@ -5353,7 +5328,7 @@
             </section><!--//section-->
 
             <section class="docs-section" id="fe-briefings">
-              <h3 class="section-heading">Briefings</h3>
+              <h2 class="section-heading">Briefings</h2>
               <p>A <i>scenario brief</i> is a Markdown document that describes a
                 facility's procedures, airspace, and conventions. Briefs are
                 shown to the controller in the scenario info window, below the
@@ -5380,7 +5355,7 @@
                 reloads it from disk, so iteration on a brief is fast: edit the Markdown,
                 switch back to <i>vice</i>, and reload.</p>
 
-              <h4>Supported Markdown</h4>
+              <h3>Supported Markdown</h3>
               <p>Here are some of the main differences from standard Markdown:
               <ul>
                 <li>Headings at levels 1 and 2 (<code>#</code> and <code>##</code>)
@@ -5414,7 +5389,7 @@
                   this is also discussed below.</li>
               </ul>
 
-              <h4>Configuration Selectors</h4>
+              <h3>Configuration Selectors</h3>
               <p>A fenced code block with the info string
                 <code>configurations</code> creates a radio button group that allows the
                 user to select among various configurations or scenario options.
@@ -5447,7 +5422,7 @@
                 The user's selection persists as they navigate through the
                 brief and as conditional content is shown and hidden.</p>
 
-              <h4>Conditional Blocks</h4>
+              <h3>Conditional Blocks</h3>
               <p>Portions of a brief can be shown or hidden based on runtime
                 context using <code>::: if</code> and <code>::: endif</code>
                 directives. When the condition does not match, every line between the opening
@@ -5492,7 +5467,7 @@
 [...]
 ::: endif tcp:1*,tcp:2*</code></pre>
 
-              <h4>Annotated Video Maps</h4>
+              <h3>Annotated Video Maps</h3>
               <p>A fenced code block with the info string <code>videomap</code>
                 embeds an inline rendering of one or more video maps,
                 optionally overlaid with lines, polygons, fixes, points,
@@ -5651,6 +5626,9 @@ label: Control for turns up to 60 right
     <script src="assets/js/highlight-custom.js"></script>
     <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>
     <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script>
+    <!-- Builds the sidebar from the page structure; must precede docs.js,
+         which reads the sidebar links and starts Gumshoe as it loads. -->
+    <script src="assets/js/sidebar.js"></script>
     <script src="assets/js/docs.js"></script>
     <script>
       document.querySelectorAll('.json-controls .expand-all').forEach(function(btn) {
