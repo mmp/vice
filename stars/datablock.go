@@ -1536,7 +1536,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, trk sim.Track) bool 
 			}) {
 		return true
 	}
-	if _, warn := sp.WarnOutsideAirspace(ctx, trk); warn {
+	if _, warn := sp.WarnOutsideAirspace(trk); warn {
 		return true
 	}
 
@@ -1614,7 +1614,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 				addAlert("CA", !sp.CAAircraft[idx].Acknowledged, true)
 			}
 		}
-		if alts, warn := sp.WarnOutsideAirspace(ctx, trk); warn {
+		if alts, warn := sp.WarnOutsideAirspace(trk); warn {
 			var altStrs strings.Builder
 			for _, a := range alts {
 				altStrs.WriteString(fmt.Sprintf("/%d-%d", a[0]/100, a[1]/100))

@@ -104,7 +104,10 @@ type TrackState struct {
 	DBAcknowledged av.Squawk
 
 	FirstRadarTrackTime sim.Time
+
 	EnteredOurAirspace  bool
+	OutsideAirspace     bool
+	OutsideAirspaceAlts [][2]int
 
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd sim.Time
@@ -524,6 +527,8 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 
 	// Update low altitude alerts now that we have updated tracks
 	sp.updateMSAWs(ctx)
+
+	sp.updateOutsideAirspace(ctx)
 
 	// History tracks are updated after a radar track update, only if
 	// H_RATE seconds have elapsed (4-94).
@@ -1050,27 +1055,42 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, transforms radar.Scop
 	historyBuilder.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][2]int, bool) {
-	// Only report on ones that are tracked by us
-	if trk.IsAssociated() && !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
-		return nil, false
-	}
+func (sp *STARSPane) updateOutsideAirspace(ctx *panes.Context) {
+	vols := ctx.Client.AirspaceForTCW(ctx.UserTCW)
 
-	if trk.OnApproach {
-		// No warnings once they're flying the approach
+	for _, trk := range sp.visibleTracks {
+		state := sp.TrackState[trk.ADSBCallsign]
+		state.OutsideAirspace, state.OutsideAirspaceAlts = false, nil
+
+		// Only report on ones that are tracked by us
+		if trk.IsAssociated() && !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
+			continue
+		}
+
+		if trk.OnApproach {
+			// No warnings once they're flying the approach
+			continue
+		}
+
+		inside, alts := av.InAirspace(state.track.Location, state.track.TrueAltitude, vols)
+		if inside {
+			state.EnteredOurAirspace = true
+		} else if state.EnteredOurAirspace {
+			state.OutsideAirspace, state.OutsideAirspaceAlts = true, alts
+		}
+	}
+}
+
+// WarnOutsideAirspace reports whether the datablock should show an alert for
+// the track having left the user's airspace, along with the altitude ranges
+// of the airspace at its position.
+func (sp *STARSPane) WarnOutsideAirspace(trk sim.Track) ([][2]int, bool) {
+	if !sp.DisplayOutsideAirspaceWarning {
 		return nil, false
 	}
 
 	state := sp.TrackState[trk.ADSBCallsign]
-	vols := ctx.Client.AirspaceForTCW(ctx.UserTCW)
-
-	inside, alts := av.InAirspace(state.track.Location, state.track.TrueAltitude, vols)
-	if state.EnteredOurAirspace && !inside {
-		return alts, true
-	} else if inside {
-		state.EnteredOurAirspace = true
-	}
-	return nil, false
+	return state.OutsideAirspaceAlts, state.OutsideAirspace
 }
 
 func (sp *STARSPane) updateCAAircraft(ctx *panes.Context) {

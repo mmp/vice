@@ -51,6 +51,9 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 
 	imgui.Checkbox("Invert numeric keypad", &sp.FlipNumericKeypad)
 
+	imgui.Checkbox("Display error when owned aircraft are outside of your airspace",
+		&sp.DisplayOutsideAirspaceWarning)
+
 	if imgui.BeginComboV("TGT GEN Key", string(sp.TgtGenKey), imgui.ComboFlagsHeightLarge) {
 		for _, key := range []byte{';', ','} {
 			if imgui.SelectableBoolV(string(key), key == sp.TgtGenKey, 0, imgui.Vec2{}) {

@@ -134,8 +134,9 @@ type STARSPane struct {
 	CRDAPairs []STARSCRDAPair
 
 	// Various UI state
-	FlipNumericKeypad bool
-	TgtGenKey         byte
+	FlipNumericKeypad             bool
+	DisplayOutsideAirspaceWarning bool
+	TgtGenKey                     byte
 
 	FontSelection int32
 
