@@ -7,7 +7,10 @@ package aviation
 import (
 	"encoding/json"
 	"slices"
+	"strings"
 	"testing"
+
+	"github.com/mmp/vice/util"
 )
 
 func TestTrafficRouteSetUnmarshal(t *testing.T) {
@@ -53,14 +56,89 @@ func TestTrafficRouteSetRoutes(t *testing.T) {
 	}
 }
 
+func TestExitRoutesUnmarshal(t *testing.T) {
+	var er ExitRoutes
+	if err := json.Unmarshal([]byte(`{"sid": "LGA7", "cleared_altitude": 5000}`), &er); err != nil {
+		t.Fatalf("single route: %v", err)
+	}
+	if len(er) != 1 || er[0].SID != "LGA7" || er[0].ClearedAltitude != 5000 || er[0].Aircraft != 0 {
+		t.Errorf("single route gave %+v", er[0])
+	}
+
+	if err := json.Unmarshal([]byte(`[
+		{"sid": "LGA7", "cleared_altitude": 2000, "aircraft": ["prop", "turboprop"]},
+		{"sid": "LGA7", "cleared_altitude": 4000}
+	]`), &er); err != nil {
+		t.Fatalf("list: %v", err)
+	}
+	if len(er) != 2 || er[0].Aircraft != AircraftClassProp|AircraftClassTurboprop ||
+		er[1].Aircraft != 0 || er[1].ClearedAltitude != 4000 {
+		t.Errorf("list gave %+v, %+v", er[0], er[1])
+	}
+}
+
+func TestExitRoutesForAircraft(t *testing.T) {
+	seedTestPerformance(t)
+
+	slow := &ExitRoute{ClearedAltitude: 2000, Aircraft: AircraftClassProp | AircraftClassTurboprop}
+	heavy := &ExitRoute{ClearedAltitude: 4000, Aircraft: AircraftClassHeavyJet}
+	er := ExitRoutes{slow, heavy}
+
+	for _, tc := range []struct {
+		acType string
+		want   *ExitRoute
+	}{
+		{"C172", slow},
+		{"DH8D", slow},
+		{"B77W", heavy},
+		{"B738", nil}, // nonheavy jets have nowhere to go
+		{"ZZZZ", nil},
+	} {
+		if got := er.ForAircraft(tc.acType); got != tc.want {
+			t.Errorf("ForAircraft(%s) = %+v, want %+v", tc.acType, got, tc.want)
+		}
+	}
+
+	// A route with no "aircraft" takes everything that is left.
+	any := &ExitRoute{ClearedAltitude: 5000}
+	if got := append(er, any).ForAircraft("B738"); got != any {
+		t.Errorf("catch-all route: got %+v, want %+v", got, any)
+	}
+
+	routes := ExitRoutesForAircraft(map[ExitID]ExitRoutes{"NORTH": er, "SOUTH": {any}}, "B738")
+	if len(routes) != 1 || routes["SOUTH"] != any {
+		t.Errorf("exits with no route for the aircraft should drop out; got %+v", routes)
+	}
+}
+
+// A misspelled member must be reported as such however the routes are given.
+func TestExitRoutesCheckJSONErrors(t *testing.T) {
+	for _, js := range []string{
+		`{"clered_altitude": 5000}`,
+		`[{"sid": "LGA7", "cleared_altitude": 5000}, {"clered_altitude": 5000}]`,
+	} {
+		var value any
+		if err := json.Unmarshal([]byte(js), &value); err != nil {
+			t.Fatalf("%s: %v", js, err)
+		}
+
+		var e util.ErrorLogger
+		var er ExitRoutes
+		er.CheckJSONErrors(value, &e)
+		if !strings.Contains(e.String(), "clered_altitude") {
+			t.Errorf("%s: got errors %q, expected the misspelled member to be named", js, e.String())
+		}
+	}
+}
+
 func TestRouteReachesExit(t *testing.T) {
 	ap := &Airport{
-		DepartureRoutes: map[RunwayID]map[ExitID]*ExitRoute{
+		DepartureRoutes: map[RunwayID]map[ExitID]ExitRoutes{
 			"22R": {
-				"WHITE": &ExitRoute{SID: "PORTT4"},
-				"HANKO": &ExitRoute{SID: "CUTTN2"},
-				"BNA":   &ExitRoute{SID: "PENCL2"},
-				"OCN.D": &ExitRoute{},
+				"WHITE": {{SID: "PORTT4"}},
+				"HANKO": {{SID: "CUTTN2"}},
+				"BNA":   {{SID: "PENCL2"}},
+				"OCN.D": {{}},
 			},
 		},
 	}

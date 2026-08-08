@@ -38,8 +38,8 @@ type Airport struct {
 
 	ExitCategories map[ExitID]string `json:"exit_categories"`
 
-	// runway -> (exit -> route)
-	DepartureRoutes map[RunwayID]map[ExitID]*ExitRoute `json:"departure_routes"`
+	// runway -> (exit -> routes)
+	DepartureRoutes map[RunwayID]map[ExitID]ExitRoutes `json:"departure_routes"`
 
 	// TrafficRoutes gives the routes published traffic between this airport
 	// and specific other airports flies.
@@ -362,11 +362,11 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	// Departure routes are specified in the JSON as comma-separated lists
 	// of exits. We'll split those out into individual entries in the
 	// Airport's DepartureRoutes, one per exit, for convenience of future code.
-	splitDepartureRoutes := make(map[RunwayID]map[ExitID]*ExitRoute)
+	splitDepartureRoutes := make(map[RunwayID]map[ExitID]ExitRoutes)
 	for rwy, rwyRoutes := range ap.DepartureRoutes {
 		e.Push("Departure runway " + string(rwy))
 		seenExits := make(map[string]any)
-		splitDepartureRoutes[rwy] = make(map[ExitID]*ExitRoute)
+		splitDepartureRoutes[rwy] = make(map[ExitID]ExitRoutes)
 
 		r, ok := LookupRunway(icao, rwy.Base())
 		if !ok {
@@ -377,29 +377,65 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			e.ErrorString("missing opposite runway")
 		}
 
-		for exitList, route := range rwyRoutes {
+		for exitList, routes := range rwyRoutes {
 			e.Push("Exit " + string(exitList))
-			route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
-
-			route.Waypoints = append([]Waypoint{
-				{
-					Fix:      rwy.Base(),
-					Location: r.Threshold,
-				},
-				{
-					Fix:      rwy.Base() + "-mid",
-					Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
-				}}, route.Waypoints...)
-
-			for i := range route.Waypoints {
-				route.Waypoints[i].SetOnSID(true)
-
-				if route.Waypoints[i].TransferComms() {
-					route.WaitToContactDeparture = true
-				}
+			if len(routes) == 0 {
+				e.ErrorString("no departure routes given")
 			}
 
-			route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
+			var taken AircraftClass // the classes the routes so far leave to no one else
+			for i, route := range routes {
+				if len(routes) > 1 {
+					e.Push(fmt.Sprintf("Route %d", i+1))
+				}
+
+				if route.Aircraft.coveredBy(taken) {
+					e.ErrorString("no aircraft fly the route; earlier routes take all of the ones it allows")
+				}
+				taken |= route.Aircraft.expand()
+
+				route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+
+				route.Waypoints = append([]Waypoint{
+					{
+						Fix:      rwy.Base(),
+						Location: r.Threshold,
+					},
+					{
+						Fix:      rwy.Base() + "-mid",
+						Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
+					}}, route.Waypoints...)
+
+				for i := range route.Waypoints {
+					route.Waypoints[i].SetOnSID(true)
+
+					if route.Waypoints[i].TransferComms() {
+						route.WaitToContactDeparture = true
+					}
+				}
+
+				route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
+
+				if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff() }) {
+					if route.HandoffController == "" {
+						e.ErrorString(`no "handoff_controller" specified even though route has "/ho"`)
+					} else if _, ok := controlPositions[route.HandoffController]; !ok {
+						e.ErrorString("control position %q unknown in scenario", route.HandoffController)
+					}
+				} else if route.HandoffController != "" {
+					e.ErrorString(`"handoff_controller" specified but won't be used since route has no "/ho"`)
+				}
+
+				if route.AssignedAltitude == 0 && route.ClearedAltitude == 0 {
+					e.ErrorString(`must specify either "assigned_altitude" or "cleared_altitude"`)
+				} else if route.AssignedAltitude != 0 && route.ClearedAltitude != 0 {
+					e.ErrorString(`cannot specify both "assigned_altitude" and "cleared_altitude"`)
+				}
+
+				if len(routes) > 1 {
+					e.Pop()
+				}
+			}
 
 			for exit := range strings.SplitSeq(string(exitList), ",") {
 				exit = strings.TrimSpace(exit)
@@ -412,39 +448,13 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				}
 				seenExits[exit] = nil
 
-				splitDepartureRoutes[rwy][ExitID(exit)] = route
+				splitDepartureRoutes[rwy][ExitID(exit)] = routes
 			}
 			e.Pop()
 		}
 		e.Pop()
 	}
 	ap.DepartureRoutes = splitDepartureRoutes
-
-	for rwy, routes := range ap.DepartureRoutes {
-		e.Push("Departure runway " + string(rwy))
-		for exit, route := range routes {
-			e.Push("Exit " + string(exit))
-
-			if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff() }) {
-				if route.HandoffController == "" {
-					e.ErrorString(`no "handoff_controller" specified even though route has "/ho"`)
-				} else if _, ok := controlPositions[route.HandoffController]; !ok {
-					e.ErrorString("control position %q unknown in scenario", route.HandoffController)
-				}
-			} else if route.HandoffController != "" {
-				e.ErrorString(`"handoff_controller" specified but won't be used since route has no "/ho"`)
-			}
-
-			if route.AssignedAltitude == 0 && route.ClearedAltitude == 0 {
-				e.ErrorString(`must specify either "assigned_altitude" or "cleared_altitude"`)
-			} else if route.AssignedAltitude != 0 && route.ClearedAltitude != 0 {
-				e.ErrorString(`cannot specify both "assigned_altitude" and "cleared_altitude"`)
-			}
-
-			e.Pop()
-		}
-		e.Pop()
-	}
 
 	e.Push(`"traffic_routes"`)
 	checkTrafficRouteAirports := func(routes map[string]TrafficRouteSet) map[string]TrafficRouteSet {
@@ -835,7 +845,62 @@ type ExitRoute struct {
 	// optional, the initial tracking controller for the departure.
 	DepartureController ControlPosition `json:"departure_controller"`
 
+	// Aircraft restricts which types of flights take the route; it's used
+	// when an exit routes them differently.
+	Aircraft AircraftClass `json:"aircraft,omitempty"`
+
 	WaitToContactDeparture bool // whether the aircraft waits until a /TC point to contact departure
+}
+
+// ExitRoutes gives the ways departures leave via an exit; a bare JSON object
+// is shorthand for a single route open to all aircraft. A departure flies the
+// first route its aircraft type is admitted to, so the routes need not cover
+// every type: one with no route is not launched.
+type ExitRoutes []*ExitRoute
+
+func (er *ExitRoutes) UnmarshalJSON(b []byte) error {
+	var routes util.SingleOrArray[*ExitRoute]
+	if err := routes.UnmarshalJSON(b); err != nil {
+		return err
+	}
+	*er = ExitRoutes(routes)
+	return nil
+}
+
+// CheckJSONErrors checks the routes in either form themselves so that a
+// misspelled member is reported as such rather than as an unexpected shape.
+func (er *ExitRoutes) CheckJSONErrors(json any, e *util.ErrorLogger) {
+	array, ok := json.([]any)
+	if !ok {
+		util.TypeCheckJSONErrors[ExitRoute](json, e)
+		return
+	}
+	for i, route := range array {
+		e.Push(fmt.Sprintf("Route %d", i+1))
+		util.TypeCheckJSONErrors[ExitRoute](route, e)
+		e.Pop()
+	}
+}
+
+// ForAircraft returns the route the given aircraft type flies, or nil if none
+// of the routes takes it.
+func (er ExitRoutes) ForAircraft(acType string) *ExitRoute {
+	if i := slices.IndexFunc(er, func(r *ExitRoute) bool { return r.Aircraft.Matches(acType) }); i != -1 {
+		return er[i]
+	}
+	return nil
+}
+
+// ExitRoutesForAircraft returns the route to each exit that the given aircraft
+// type flies, leaving out the exits it has no route to.
+func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[ExitID]*ExitRoute {
+	m := make(map[ExitID]*ExitRoute, len(routes))
+	for exit, er := range routes {
+		if r := er.ForAircraft(acType); r != nil {
+			m[exit] = r
+		}
+	}
+	return m
 }
 
 // FinalHeading returns the final heading from the exit route's waypoints.
@@ -921,14 +986,16 @@ func (ap *Airport) routeReachesExit(route, icao string) bool {
 		fields = fields[1:]
 	}
 	for _, exitRoutes := range ap.DepartureRoutes {
-		for exit, er := range exitRoutes {
+		for exit, routes := range exitRoutes {
 			if slices.Contains(fields, exit.Base()) {
 				return true
 			}
-			if er.SID != "" && slices.ContainsFunc(fields, func(f string) bool {
-				return ProcedureBase(f) == ProcedureBase(er.SID)
-			}) {
-				return true
+			for _, er := range routes {
+				if er.SID != "" && slices.ContainsFunc(fields, func(f string) bool {
+					return ProcedureBase(f) == ProcedureBase(er.SID)
+				}) {
+					return true
+				}
 			}
 		}
 	}

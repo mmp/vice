@@ -59,6 +59,28 @@ func TestAircraftClassMatches(t *testing.T) {
 	}
 }
 
+func TestAircraftClassCoveredBy(t *testing.T) {
+	jet := AircraftClassHeavyJet | AircraftClassNonheavyJet
+	all := jet | AircraftClassProp | AircraftClassTurboprop
+	for _, tc := range []struct {
+		class, classes AircraftClass
+		want           bool
+	}{
+		{jet, jet, true},
+		{AircraftClassHeavyJet, jet, true},
+		{jet, AircraftClassHeavyJet, false},
+		{jet, 0, false},                 // nothing has been taken yet
+		{0, all, true},                  // the zero value admits everything...
+		{0, jet, false},                 // ...so only everything covers it
+		{AircraftClassProp, jet, false}, // disjoint classes
+		{jet | AircraftClassProp, jet, false},
+	} {
+		if got := tc.class.coveredBy(tc.classes); got != tc.want {
+			t.Errorf("%b coveredBy %b = %v, want %v", tc.class, tc.classes, got, tc.want)
+		}
+	}
+}
+
 func TestAircraftClassJSON(t *testing.T) {
 	for _, tc := range []struct {
 		json string

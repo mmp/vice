@@ -744,12 +744,12 @@ func TestMarkBackgroundDepartures(t *testing.T) {
 			airports := map[string]*av.Airport{
 				"KTST": {
 					DepartureController: test.airportController,
-					DepartureRoutes: map[av.RunwayID]map[av.ExitID]*av.ExitRoute{
-						"30L": {"EXIT": {
+					DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+						"30L": {"EXIT": {{
 							DepartureController: test.routeController,
 							HandoffController:   test.handoffController,
 							Waypoints:           testWaypoints(t, test.route),
-						}},
+						}}},
 					},
 				},
 			}
@@ -772,10 +772,10 @@ func TestMarkBackgroundDeparturesByCategory(t *testing.T) {
 		"KTST": {
 			DepartureController: virtualPosition,
 			ExitCategories:      map[av.ExitID]string{"NORTH": "North", "SOUTH": "South"},
-			DepartureRoutes: map[av.RunwayID]map[av.ExitID]*av.ExitRoute{
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
 				"30L": {
-					"NORTH": {HandoffController: humanPosition, Waypoints: testWaypoints(t, "FIXA FIXB/ho")},
-					"SOUTH": {Waypoints: testWaypoints(t, "FIXA FIXB")},
+					"NORTH": {{HandoffController: humanPosition, Waypoints: testWaypoints(t, "FIXA FIXB/ho")}},
+					"SOUTH": {{Waypoints: testWaypoints(t, "FIXA FIXB")}},
 				},
 			},
 		},

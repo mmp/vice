@@ -707,7 +707,15 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 		return nil, err
 	}
 
-	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, exitRoutes)
+	// The airline decides the aircraft type, so only now can the routes it
+	// flies be worked out; the exit may have none for it.
+	routes := av.ExitRoutesForAircraft(exitRoutes, ac.FlightPlan.AircraftType)
+	if _, ok := routes[dep.Exit]; !ok {
+		return nil, fmt.Errorf("%s/%s: no route to %s for a %s", departureAirport, rwy.Runway,
+			dep.Exit, ac.FlightPlan.AircraftType)
+	}
+
+	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, routes)
 }
 
 // createPublishedIFRDepartureNoLock creates a departure using the published
@@ -756,7 +764,7 @@ func (s *Sim) createPublishedIFRDepartureNoLock(flight av.Flight, departureAirpo
 }
 
 func (s *Sim) departureConfiguration(departureAirport string, runway av.RunwayID,
-	category string) (*av.Airport, *DepartureRunway, map[av.ExitID]*av.ExitRoute, error) {
+	category string) (*av.Airport, *DepartureRunway, map[av.ExitID]av.ExitRoutes, error) {
 	ap := s.State.Airports[departureAirport]
 	if ap == nil {
 		return nil, nil, nil, av.ErrUnknownAirport
@@ -795,17 +803,19 @@ type candidateDeparture struct {
 }
 
 // compatibleDepartures collects the exits the given runway categories can
-// launch, one candidate per exit: published traffic brings its own
-// destination, and the routes say which exit it really leaves through. The
-// scenario's "departures" have no say here; they belong to its own generator.
+// launch the aircraft type out of, one candidate per exit: published traffic
+// brings its own destination, and the routes say which exit it really leaves
+// through. The scenario's "departures" have no say here; they belong to its
+// own generator.
 func (s *Sim) compatibleDepartures(departureAirport string, runway av.RunwayID,
-	categories []string) []candidateDeparture {
+	categories []string, aircraftType string) []candidateDeparture {
 	var candidates []candidateDeparture
 	for _, category := range categories {
-		ap, rwy, exitRoutes, err := s.departureConfiguration(departureAirport, runway, category)
+		ap, rwy, allRoutes, err := s.departureConfiguration(departureAirport, runway, category)
 		if err != nil {
 			continue
 		}
+		exitRoutes := av.ExitRoutesForAircraft(allRoutes, aircraftType)
 
 		inCategory := func(exit av.ExitID) bool {
 			return rwy.Category == "" || rwy.Category == ap.ExitCategories[exit]
@@ -932,9 +942,10 @@ func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.Runwa
 	departureAirport = normalizeAirportCode(departureAirport)
 	destination = normalizeAirportCode(destination)
 
-	candidates := s.compatibleDepartures(departureAirport, runway, categories)
+	candidates := s.compatibleDepartures(departureAirport, runway, categories, aircraftType)
 	if len(candidates) == 0 {
-		return departurePlacement{}, fmt.Errorf("no compatible departure route for runway %s", runway)
+		return departurePlacement{}, fmt.Errorf("no compatible departure route for runway %s and a %s",
+			runway, aircraftType)
 	}
 
 	scenarioRoutes := func(to string) []string {

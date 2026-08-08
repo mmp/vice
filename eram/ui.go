@@ -255,19 +255,24 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 
 					exitRoutes := ap.DepartureRoutes[rwy]
 
-					// Multiple routes may have the same waypoints, so
+					encode := func(routes av.ExitRoutes) string {
+						return strings.Join(util.MapSlice(routes,
+							func(r *av.ExitRoute) string { return r.Waypoints.Encode() }), " / ")
+					}
+
+					// Multiple exits may have the same waypoints, so
 					// we'll reverse-engineer that here so we can present
 					// them together in the UI.
 					routeToExit := make(map[string][]string)
-					for exit, exitRoute := range util.SortedMap(exitRoutes) {
-						r := exitRoute.Waypoints.Encode()
+					for exit, routes := range util.SortedMap(exitRoutes) {
+						r := encode(routes)
 						routeToExit[r] = append(routeToExit[r], string(exit))
 					}
 
-					for exit, exitRoute := range util.SortedMap(exitRoutes) {
+					for exit, routes := range util.SortedMap(exitRoutes) {
 						// Draw the row only when we hit the first exit
 						// that uses the corresponding route route.
-						r := exitRoute.Waypoints.Encode()
+						r := encode(routes)
 						if routeToExit[r][0] != string(exit) {
 							continue
 						}
@@ -294,7 +299,9 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 							imgui.Text(strings.Join(routeToExit[r], ", "))
 						}
 						imgui.TableNextColumn()
-						imgui.Text(exitRoute.Description)
+						descriptions := util.MapSlice(routes, func(r *av.ExitRoute) string { return r.Description })
+						imgui.Text(strings.Join(util.FilterSlice(descriptions,
+							func(d string) bool { return d != "" }), ", "))
 					}
 				}
 			}

@@ -623,18 +623,21 @@ func (bc backgroundClassifier) reachesHuman(wps av.WaypointArray, atHandoff av.C
 // alone.
 func (bc backgroundClassifier) departureIsBackground(ap *av.Airport, runway av.RunwayID, category string) bool {
 	judged := 0
-	for exit, route := range ap.DepartureRoutes[runway] {
+	for exit, routes := range ap.DepartureRoutes[runway] {
 		if category != "" && category != ap.ExitCategories[exit] {
 			continue
 		}
-		judged++
 
-		// Mirrors assignDepartureController: the departure is a human's from the
-		// start unless the airport or the route gives it to a virtual controller.
-		virtualStart := (ap.DepartureController != "" && bc.isVirtual(ap.DepartureController)) ||
-			(route.DepartureController != "" && bc.isVirtual(route.DepartureController))
-		if !virtualStart || bc.reachesHuman(route.Waypoints, route.HandoffController) {
-			return false
+		for _, route := range routes {
+			judged++
+
+			// Mirrors assignDepartureController: the departure is a human's from the
+			// start unless the airport or the route gives it to a virtual controller.
+			virtualStart := (ap.DepartureController != "" && bc.isVirtual(ap.DepartureController)) ||
+				(route.DepartureController != "" && bc.isVirtual(route.DepartureController))
+			if !virtualStart || bc.reachesHuman(route.Waypoints, route.HandoffController) {
+				return false
+			}
 		}
 	}
 	return judged > 0

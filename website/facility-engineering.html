@@ -4098,6 +4098,35 @@
                 their "exit" specifier. 
               </p>
               <p>
+                An exit may also be given an array of routes rather than a single one, where each route's
+                "aircraft" says which aircraft fly it. Departures take the first route in the array that
+                their aircraft type is allowed on:
+              </p>
+              <pre>
+"departure_routes": {
+  "4": {
+    "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": [
+      {
+        "cleared_altitude": 2000,
+        "sid": "LGA7",
+        "aircraft": ["prop", "turboprop"],
+        "waypoints": "KLGA-22/h360"
+      },
+      {
+        "cleared_altitude": 4000,
+        "sid": "LGA7",
+        "waypoints": "KLGA-22/h360"
+      }
+    ],
+    ...
+              </pre>
+              <p>
+                Because the routes are tried in order, a route with no "aircraft" takes everything the ones
+                before it don't; it's an error for a route to be unreachable because earlier ones already
+                cover all of the aircraft it allows. The routes need not cover every aircraft type, though:
+                a departure with no route to its exit isn't launched.
+              </p>
+              <p>
                 The departure route specification includes the following members:
               </p>
               <table class="table">
@@ -4110,6 +4139,13 @@
                 </thead>
                 <tbody>
 
+                  <tr>
+                    <td>"aircraft"</td>
+                    <td>String or array of strings</td>
+                    <td><i>(Optional)</i> The aircraft that fly the route, given as one or more of
+                      "prop", "turboprop", "jet", "heavy", and "nonheavy", where "jet" covers both heavy
+                      and nonheavy jets. If it isn't given, all aircraft fly the route.</td>
+                  </tr>
                   <tr>
                     <td>"assigned_altitude"</td>
                     <td>Number</td>

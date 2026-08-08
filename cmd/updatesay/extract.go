@@ -29,19 +29,21 @@ func NewProcedureInfo() *ProcedureInfo {
 // SIDs are stored with their associated airport ICAO codes and full names.
 func ExtractFromAirports(airports map[string]*av.Airport, fixes map[string]struct{}, sids map[string]*ProcedureInfo) {
 	for icao, airport := range airports {
-		// DepartureRoutes: runway -> (exit -> route)
+		// DepartureRoutes: runway -> (exit -> routes)
 		for _, exitRoutes := range airport.DepartureRoutes {
-			for _, route := range exitRoutes {
-				if base := extractBaseName(route.SID); base != "" {
-					if sids[base] == nil {
-						sids[base] = NewProcedureInfo()
+			for _, routes := range exitRoutes {
+				for _, route := range routes {
+					if base := extractBaseName(route.SID); base != "" {
+						if sids[base] == nil {
+							sids[base] = NewProcedureInfo()
+						}
+						sids[base].Airports[icao] = struct{}{}
+						if route.SID != "" {
+							sids[base].FullNames[route.SID] = struct{}{}
+						}
 					}
-					sids[base].Airports[icao] = struct{}{}
-					if route.SID != "" {
-						sids[base].FullNames[route.SID] = struct{}{}
-					}
+					addFixesFromWaypoints(route.Waypoints, fixes)
 				}
-				addFixesFromWaypoints(route.Waypoints, fixes)
 			}
 		}
 

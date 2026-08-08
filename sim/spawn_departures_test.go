@@ -14,6 +14,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 )
 
 const testNmPerLongitude = 60
@@ -251,8 +252,8 @@ func publishedDepartureSim() *Sim {
 		Airports: map[string]*av.Airport{
 			"KORG": {
 				ExitCategories: map[av.ExitID]string{"NORTH": "jet", "EAST": "jet"},
-				DepartureRoutes: map[av.RunwayID]map[av.ExitID]*av.ExitRoute{
-					"30L": {"NORTH": {}, "EAST": {}},
+				DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+					"30L": {"NORTH": {{}}, "EAST": {{}}},
 				},
 			},
 		},
@@ -441,8 +442,8 @@ func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
 		Airports: map[string]*av.Airport{
 			"KJFK": {
 				ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "RBV": "Southwest"},
-				DepartureRoutes: map[av.RunwayID]map[av.ExitID]*av.ExitRoute{
-					"22R": {"WAVEY": {}, "RBV": {}},
+				DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+					"22R": {"WAVEY": {{}}, "RBV": {{}}},
 				},
 			},
 		},
@@ -493,7 +494,7 @@ func seedTestExits(t *testing.T) {
 func TestCompatibleDeparturesSynthesizesPerExit(t *testing.T) {
 	s := publishedDepartureSim()
 
-	candidates := s.compatibleDepartures("KORG", "30L", []string{"jet"})
+	candidates := s.compatibleDepartures("KORG", "30L", []string{"jet"}, "B738")
 	if len(candidates) != 2 {
 		t.Fatalf("got %d candidates, want one per exit off the runway", len(candidates))
 	}
@@ -507,6 +508,34 @@ func TestCompatibleDeparturesSynthesizesPerExit(t *testing.T) {
 	// The synthesized departures are distinct, not repeated views of one entry.
 	if candidates[0].dep == candidates[1].dep {
 		t.Error("both candidates point at the same departure")
+	}
+}
+
+// An exit whose routes are all for other aircraft is no way for this one to
+// leave, so it isn't offered as a candidate.
+func TestCompatibleDeparturesMindsAircraftClasses(t *testing.T) {
+	av.InitDB()
+
+	s := publishedDepartureSim()
+	s.State.Airports["KORG"].DepartureRoutes["30L"] = map[av.ExitID]av.ExitRoutes{
+		"NORTH": {{Aircraft: av.AircraftClassProp | av.AircraftClassTurboprop}},
+		"EAST":  {{Aircraft: av.AircraftClassProp}, {}},
+	}
+
+	for _, tc := range []struct {
+		aircraftType string
+		exits        []av.ExitID
+	}{
+		{"C172", []av.ExitID{"NORTH", "EAST"}},
+		{"B738", []av.ExitID{"EAST"}}, // only the catch-all route takes jets
+	} {
+		candidates := s.compatibleDepartures("KORG", "30L", []string{"jet"}, tc.aircraftType)
+		exits := util.MapSlice(candidates, func(c candidateDeparture) av.ExitID { return c.dep.Exit })
+		slices.Sort(exits)
+		want := slices.Sorted(slices.Values(tc.exits))
+		if !slices.Equal(exits, want) {
+			t.Errorf("%s: candidate exits %v, want %v", tc.aircraftType, exits, want)
+		}
 	}
 }
 
@@ -605,8 +634,8 @@ func TestResolvePublishedDepartureSubstitutesANearbyDestination(t *testing.T) {
 		Airports: map[string]*av.Airport{
 			"KJFK": {
 				ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "COATE": "North"},
-				DepartureRoutes: map[av.RunwayID]map[av.ExitID]*av.ExitRoute{
-					"22R": {"WAVEY": {SID: "JFK5"}, "COATE": {SID: "JFK5"}},
+				DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+					"22R": {"WAVEY": {{SID: "JFK5"}}, "COATE": {{SID: "JFK5"}}},
 				},
 			},
 		},

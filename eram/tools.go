@@ -123,8 +123,11 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms r
 					continue
 				}
 
-				for exit, exitRoute := range util.SortedMap(exitRoutes) {
-					if ep.scopeDraw.departures[name][string(rwy)][string(exit)] {
+				for exit, routes := range util.SortedMap(exitRoutes) {
+					if !ep.scopeDraw.departures[name][string(rwy)][string(exit)] {
+						continue
+					}
+					for _, exitRoute := range routes {
 						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr, color)
 					}

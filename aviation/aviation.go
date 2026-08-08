@@ -2038,6 +2038,22 @@ func (c AircraftClass) Matches(acType string) bool {
 	return c == 0 || c&AircraftClassOf(acType) != 0
 }
 
+// expand returns the classes the value admits, spelling out the every-aircraft
+// meaning of the zero value.
+func (c AircraftClass) expand() AircraftClass {
+	if c == 0 {
+		return AircraftClassProp | AircraftClassTurboprop | AircraftClassHeavyJet | AircraftClassNonheavyJet
+	}
+	return c
+}
+
+// coveredBy reports whether every class the value admits is set in the given
+// bitmask of classes, which unlike an AircraftClass means just the ones it has
+// set: a zero mask covers nothing.
+func (c AircraftClass) coveredBy(classes AircraftClass) bool {
+	return c.expand()&^classes == 0
+}
+
 func (c *AircraftClass) UnmarshalJSON(b []byte) error {
 	var names []string
 	if len(b) > 0 && b[0] == '"' {

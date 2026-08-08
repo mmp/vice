@@ -301,8 +301,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 					airportExits[rwy.Airport][string(exit)] = nil
 				}
 
-				for _, r := range routes {
-					addControllersFromWaypoints(r.Waypoints)
+				for _, exitRoutes := range routes {
+					for _, r := range exitRoutes {
+						addControllersFromWaypoints(r.Waypoints)
+					}
 				}
 			}
 
@@ -410,11 +412,12 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 				// Only check for a human controller to be covering the track if there isn't
 				// a virtual controller assigned to it.
 				exitRoutes := ap.DepartureRoutes[rwy.Runway]
-				for fix, route := range exitRoutes {
+				for fix, routes := range exitRoutes {
 					fixCategory := ap.ExitCategories[fix]
 					if rwy.Category != "" && fixCategory == "" {
+						sids := util.MapSlice(routes, func(r *av.ExitRoute) string { return r.SID })
 						e.ErrorString(`exit fix %q (SID %s) has no entry in "exit_categories" but runway uses category %q`,
-							fix, route.SID, rwy.Category)
+							fix, strings.Join(sids, ", "), rwy.Category)
 					}
 					if rwy.Category == "" || fixCategory == rwy.Category {
 						if activeAirportSIDs[rwy.Airport] == nil {
@@ -423,10 +426,12 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 						if activeAirportRunways[rwy.Airport] == nil {
 							activeAirportRunways[rwy.Airport] = make(map[string]any)
 						}
-						if route.DepartureController != "" {
-							addController(sim.TCP(route.DepartureController))
+						for _, route := range routes {
+							if route.DepartureController != "" {
+								addController(sim.TCP(route.DepartureController))
+							}
+							activeAirportSIDs[rwy.Airport][route.SID] = nil
 						}
-						activeAirportSIDs[rwy.Airport][route.SID] = nil
 						activeAirportRunways[rwy.Airport][string(rwy.Runway)] = nil
 					}
 				}
@@ -728,14 +733,16 @@ func (sg *scenarioGroup) resolveControllerRefs() {
 			ap.DepartureController = resolve(ap.DepartureController)
 		}
 		for _, exitRoutes := range ap.DepartureRoutes {
-			for _, route := range exitRoutes {
-				if route.HandoffController != "" {
-					route.HandoffController = resolve(route.HandoffController)
+			for _, routes := range exitRoutes {
+				for _, route := range routes {
+					if route.HandoffController != "" {
+						route.HandoffController = resolve(route.HandoffController)
+					}
+					if route.DepartureController != "" {
+						route.DepartureController = resolve(route.DepartureController)
+					}
+					resolveWaypoints(route.Waypoints)
 				}
-				if route.DepartureController != "" {
-					route.DepartureController = resolve(route.DepartureController)
-				}
-				resolveWaypoints(route.Waypoints)
 			}
 		}
 		for _, appr := range ap.Approaches {
@@ -1327,9 +1334,11 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		rewriteControlPosition(&ap.DepartureController)
 
 		for _, exitroutes := range ap.DepartureRoutes {
-			for _, route := range exitroutes {
-				rewriteControlPosition(&route.HandoffController)
-				rewriteWaypoints(route.Waypoints)
+			for _, routes := range exitroutes {
+				for _, route := range routes {
+					rewriteControlPosition(&route.HandoffController)
+					rewriteWaypoints(route.Waypoints)
+				}
 			}
 		}
 
@@ -1648,9 +1657,11 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 		hfr := ap.HoldForRelease
 		for _, rwy := range ap.DepartureRoutes {
-			for _, exitRoute := range rwy {
-				if exitRoute.HoldForRelease {
-					hfr = true
+			for _, exitRoutes := range rwy {
+				for _, route := range exitRoutes {
+					if route.HoldForRelease {
+						hfr = true
+					}
 				}
 			}
 		}

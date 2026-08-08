@@ -189,10 +189,15 @@ func CheckJSON[T any](contents []byte, e *ErrorLogger) {
 // unmarshaled JSON values are type-compatible with the given type T.
 func TypeCheckJSON[T any](json any) bool {
 	var e ErrorLogger
-	ty := reflect.TypeFor[T]()
-	structTypeCache := make(map[reflect.Type]map[string]reflect.Type)
-	typeCheckJSON(json, ty, structTypeCache, &e)
+	TypeCheckJSONErrors[T](json, &e)
 	return !e.HaveErrors()
+}
+
+// TypeCheckJSONErrors typechecks raw unmarshaled JSON values against the given
+// type T, reporting whatever doesn't fit to e.
+func TypeCheckJSONErrors[T any](json any, e *ErrorLogger) {
+	structTypeCache := make(map[reflect.Type]map[string]reflect.Type)
+	typeCheckJSON(json, reflect.TypeFor[T](), structTypeCache, e)
 }
 
 // JSONChecker is an interface that allows types that implement custom JSON
@@ -202,9 +207,23 @@ type JSONChecker interface {
 	CheckJSON(json any) bool
 }
 
+// JSONErrorChecker is implemented by types that check their JSON themselves;
+// it takes precedence over JSONChecker so that a type whose JSON may take
+// multiple forms can still report what is wrong inside it rather than only
+// that its shape is unexpected.
+type JSONErrorChecker interface {
+	CheckJSONErrors(json any, e *ErrorLogger)
+}
+
 func typeCheckJSON(json any, ty reflect.Type, structTypeCache map[reflect.Type]map[string]reflect.Type, e *ErrorLogger) {
 	for ty.Kind() == reflect.Pointer {
 		ty = ty.Elem()
+	}
+
+	ecty := reflect.TypeFor[JSONErrorChecker]()
+	if ty.Implements(ecty) || reflect.PointerTo(ty).Implements(ecty) {
+		reflect.New(ty).Interface().(JSONErrorChecker).CheckJSONErrors(json, e)
+		return
 	}
 
 	// Use the type's JSONChecker, if there is one.

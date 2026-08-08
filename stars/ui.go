@@ -235,18 +235,20 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 					}
 
 					exitRoutes := ap.DepartureRoutes[rwy]
-					for exit, exitRoute := range util.SortedMap(exitRoutes) {
-						group := sidGroups[exitRoute.SID]
-						if !slices.Contains(group.Runways, string(rwy)) {
-							group.Runways = append(group.Runways, string(rwy))
+					for exit, routes := range util.SortedMap(exitRoutes) {
+						for _, exitRoute := range routes {
+							group := sidGroups[exitRoute.SID]
+							if !slices.Contains(group.Runways, string(rwy)) {
+								group.Runways = append(group.Runways, string(rwy))
+							}
+							if !slices.Contains(group.Exits, string(exit)) {
+								group.Exits = append(group.Exits, string(exit))
+							}
+							if exitRoute.Description != "" && !slices.Contains(group.Descriptions, exitRoute.Description) {
+								group.Descriptions = append(group.Descriptions, exitRoute.Description)
+							}
+							sidGroups[exitRoute.SID] = group
 						}
-						if !slices.Contains(group.Exits, string(exit)) {
-							group.Exits = append(group.Exits, string(exit))
-						}
-						if exitRoute.Description != "" && !slices.Contains(group.Descriptions, exitRoute.Description) {
-							group.Descriptions = append(group.Descriptions, exitRoute.Description)
-						}
-						sidGroups[exitRoute.SID] = group
 					}
 				}
 
