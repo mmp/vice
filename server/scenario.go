@@ -1891,29 +1891,42 @@ func attachTimetables(catalogs map[string]map[string]*ScenarioCatalog, timetable
 	}
 }
 
-// attachHistoricalFlightIntervals records the stretches of time each facility
-// has historical flight data for, so that the client can offer start times the
-// data actually covers. A facility with no data at all is left alone; one whose
-// file can't be read is reported, since that is otherwise indistinguishable
-// from having none.
+// attachHistoricalFlightIntervals records the stretches of time the historical
+// flight data covers, so that the client can offer start times the data
+// actually covers. The stretches are the same everywhere--the source goes down
+// for all of it at once--so what decides whether a scenario can be flown from
+// it is whether the cells its airports are in hold anything.
 func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCatalog, lg *log.Logger) {
 	resources := util.GetResourcesFS()
-	for facility, facilityCatalogs := range catalogs {
-		intervals, err := av.FacilityFlightIntervals(resources, facility)
-		if err != nil {
-			lg.Errorf("%s: historical flight data: %v", facility, err)
-			continue
-		}
-		if len(intervals) == 0 {
-			continue
-		}
+	intervals, err := av.FlightDataIntervals(resources)
+	if err != nil {
+		lg.Errorf("historical flight data: %v", err)
+		return
+	}
+	if len(intervals) == 0 {
+		return
+	}
+
+	for _, facilityCatalogs := range catalogs {
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
+				if !haveFlightDataCells(scenario) {
+					continue
+				}
 				scenario.HistoricalFlightIntervals = intervals
 				scenario.TrafficSources = append(scenario.TrafficSources, sim.TrafficSourceHistorical)
 			}
 		}
 	}
+}
+
+// haveFlightDataCells reports whether any of the cells covering a scenario's
+// airports has flight data at all.
+func haveFlightDataCells(scenario *ScenarioSpec) bool {
+	departures, arrivals := scenario.LaunchConfig.IFRAirports()
+	return slices.ContainsFunc(av.FlightDataCells(departures, arrivals), func(cell string) bool {
+		return util.ResourceExists(av.FlightDataPath(cell))
+	})
 }
 
 // finalizeTrafficSources settles which source each scenario starts on, once

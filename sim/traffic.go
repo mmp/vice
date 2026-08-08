@@ -114,25 +114,20 @@ func (s *Sim) loadHistoricalFlights() {
 		return
 	}
 
-	data, err := av.ReadFlightData(util.GetResourcesFS(), s.State.Facility)
-	if err != nil || data == nil {
-		s.lg.Errorf("%s: no historical flight data: %v", s.State.Facility, err)
+	departureAirports, arrivalAirports := s.State.LaunchConfig.IFRAirports()
+	flights, err := av.ReadFlightDataCells(util.GetResourcesFS(),
+		av.FlightDataCells(departureAirports, arrivalAirports))
+	if err != nil {
+		s.lg.Errorf("%s historical flight data: %v", s.State.Facility, err)
 		return
 	}
-
-	departureAirports, arrivalAirports := s.State.LaunchConfig.IFRAirports()
 
 	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
 	// before the selected time, and it warms up by flying the traffic from that
 	// half hour the same way the scenario's own generator would.
 	start := s.StartTime.Time()
-	flights, err := av.FlightsInWindow(data, departureAirports, arrivalAirports, av.DB.Airlines,
+	s.historicalFlights = av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
 		start.Add(-PrespawnDuration), start.Add(historicalFlightWindow))
-	if err != nil {
-		s.lg.Errorf("%s historical flight data: %v", s.State.Facility, err)
-		return
-	}
-	s.historicalFlights = flights
 }
 
 // IFRAirports returns every airport the scenario generates IFR traffic at, departures and

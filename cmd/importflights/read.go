@@ -131,8 +131,9 @@ func (s *symbols) string(id uint32) string {
 }
 
 // record is one flight in one flight data file. It is kept small and comparable:
-// there are millions of them and duplicates are removed by sorting.
+// there are tens of millions of them and duplicates are removed by sorting.
 type record struct {
+	airport  uint32
 	callsign uint32
 	other    uint32
 	acType   uint32
@@ -140,21 +141,40 @@ type record struct {
 	day      uint16 // UTC date, in days from 1970-01-01
 }
 
-// bucket collects the flights that go into one half of one airport's flights.
+// bucket collects the flights that go into one half of one cell's file.
 // Departures and arrivals are gathered separately and merged when the file is
 // written, which keeps record small.
 type bucket struct {
-	airport   string
+	cell      string
 	departure bool
+}
+
+// airportCell is where an airport's flights go, and whether it has flights of
+// its own at all: only the airports the FAA controls do.
+type airportCell struct {
+	cell string
+	keep bool
+}
+
+// substitute is a made-up airport standing on a real one's traffic, and the
+// cell its flights are filed under.
+type substitute struct {
+	airport string
+	cell    string
 }
 
 // importer accumulates the flights read from the source files.
 type importer struct {
-	departureAirports map[string]bool
-	arrivalAirports   map[string]bool
-	airports          map[string]av.FAAAirport
-	performance       map[string]av.AircraftPerformance
-	airlines          map[string]av.Airline
+	airports    map[string]av.FAAAirport
+	performance map[string]av.AircraftPerformance
+	airlines    map[string]av.Airline
+
+	// cells records where each airport seen so far files its flights, since
+	// working that out over and over for tens of millions of rows is waste.
+	cells map[string]airportCell
+
+	// donors maps each real airport to the made-up one that borrows its traffic.
+	donors map[string]substitute
 
 	symbols *symbols
 	buckets map[bucket][]record
@@ -167,7 +187,7 @@ type importer struct {
 	recordsEmitted      int64
 	unresolvedEndpoints int64
 	sameEndpoints       int64
-	notTargetAirport    int64
+	notFAAAirport       int64
 	badCallsign         int64
 	badTimestamp        int64
 	unknownOtherAirport int64
@@ -184,25 +204,51 @@ type importer struct {
 	unknownAirlines map[string]int64
 }
 
-func makeImporter(departureAirports, arrivalAirports map[string]bool, airports map[string]av.FAAAirport,
-	performance map[string]av.AircraftPerformance, airlines map[string]av.Airline) *importer {
-	return &importer{
-		departureAirports: departureAirports,
-		arrivalAirports:   arrivalAirports,
-		airports:          airports,
-		performance:       performance,
-		airlines:          airlines,
-		symbols:           makeSymbols(),
-		buckets:           make(map[bucket][]record),
-		daysPresent:       make(map[string]map[string]bool),
-		unknownTypes:      make(map[string]int64),
-		unknownAirlines:   make(map[string]int64),
+func makeImporter(airports map[string]av.FAAAirport, performance map[string]av.AircraftPerformance,
+	airlines map[string]av.Airline) (*importer, error) {
+	donors := make(map[string]substitute, len(av.FlightDataSubstitutes))
+	for fictional, donor := range av.FlightDataSubstitutes {
+		ap, ok := airports[fictional]
+		if !ok {
+			return nil, fmt.Errorf("%s: made-up airport isn't in custom_airports.json, "+
+				"so there is nowhere to file the traffic it borrows from %s", fictional, donor)
+		}
+		donors[donor] = substitute{airport: fictional, cell: av.FlightDataCell(ap.Location)}
 	}
+
+	return &importer{
+		airports:        airports,
+		performance:     performance,
+		airlines:        airlines,
+		cells:           make(map[string]airportCell),
+		donors:          donors,
+		symbols:         makeSymbols(),
+		buckets:         make(map[bucket][]record),
+		daysPresent:     make(map[string]map[string]bool),
+		unknownTypes:    make(map[string]int64),
+		unknownAirlines: make(map[string]int64),
+	}, nil
+}
+
+// cellFor returns the cell an airport's flights are filed under, and whether it
+// has flights of its own at all: an airport the FAA doesn't control is only
+// ever the far end of somebody else's flight.
+func (imp *importer) cellFor(icao string) (string, bool) {
+	if c, ok := imp.cells[icao]; ok {
+		return c.cell, c.keep
+	}
+
+	var c airportCell
+	if ap, ok := imp.airports[icao]; ok && ap.FAAControlled() {
+		c = airportCell{cell: av.FlightDataCell(ap.Location), keep: true}
+	}
+	imp.cells[strings.Clone(icao)] = c
+	return c.cell, c.keep
 }
 
 // processRow turns one row of source data into up to two records: one for the
-// airport it departed from and one for the airport it arrived at, when those
-// are airports our scenarios use.
+// airport it departed from and one for the airport it arrived at, for whichever
+// of those the FAA controls.
 func (imp *importer) processRow(row *flightRow) {
 	imp.rowsRead++
 	imp.noteDay(row.OriginTime)
@@ -218,10 +264,10 @@ func (imp *importer) processRow(row *flightRow) {
 		return
 	}
 
-	departure := imp.departureAirports[origin]
-	arrival := imp.arrivalAirports[destination]
+	originCell, departure := imp.cellFor(origin)
+	destinationCell, arrival := imp.cellFor(destination)
 	if !departure && !arrival {
-		imp.notTargetAirport++
+		imp.notFAAAirport++
 		return
 	}
 
@@ -255,14 +301,15 @@ func (imp *importer) processRow(row *flightRow) {
 		if _, ok := imp.airports[destination]; !ok {
 			imp.unknownOtherAirport++
 		} else {
-			imp.add(origin, destination, callsign, aircraftType, row.OriginTime, true)
+			imp.add(originCell, origin, destination, callsign, aircraftType, row.OriginTime, true)
 		}
 	}
 	if arrival {
 		if _, ok := imp.airports[origin]; !ok {
 			imp.unknownOtherAirport++
 		} else {
-			imp.add(destination, origin, callsign, aircraftType, row.DestinationTime, false)
+			imp.add(destinationCell, destination, origin, callsign, aircraftType,
+				row.DestinationTime, false)
 		}
 	}
 }
@@ -282,17 +329,34 @@ func (imp *importer) noteDay(timestamp string) {
 	days[day] = true
 }
 
-// add files one flight under the airport whose flights it belongs to. Times
-// are recorded in UTC, as the source data gives them; the seconds are dropped.
-func (imp *importer) add(airport, other, callsign, aircraftType, timestamp string, departure bool) {
+// add files one flight under the cell whose file it belongs in. Times are
+// recorded in UTC, as the source data gives them; the seconds are dropped.
+func (imp *importer) add(cell, airport, other, callsign, aircraftType, timestamp string,
+	departure bool) {
 	utc, ok := parseTime(timestamp)
 	if !ok {
 		imp.badTimestamp++
 		return
 	}
+	imp.file(cell, airport, other, callsign, aircraftType, utc, departure)
 
-	key := bucket{airport: airport, departure: departure}
+	// A made-up airport is filed alongside the real one it stands on, and the
+	// far end is renamed too: the Academy scenarios route traffic between their
+	// own airports, so a hop between two donors has to arrive as one between
+	// their stand-ins.
+	if sub, ok := imp.donors[airport]; ok {
+		if far, ok := imp.donors[other]; ok {
+			other = far.airport
+		}
+		imp.file(sub.cell, sub.airport, other, callsign, aircraftType, utc, departure)
+	}
+}
+
+func (imp *importer) file(cell, airport, other, callsign, aircraftType string, utc time.Time,
+	departure bool) {
+	key := bucket{cell: cell, departure: departure}
 	imp.buckets[key] = append(imp.buckets[key], record{
+		airport:  imp.symbols.id(airport),
 		callsign: imp.symbols.id(callsign),
 		other:    imp.symbols.id(other),
 		acType:   imp.symbols.id(aircraftType),
@@ -311,7 +375,7 @@ func (imp *importer) report() {
 		what string
 		n    int64
 	}{
-		{"not an airport we simulate", imp.notTargetAirport},
+		{"neither end an FAA airport", imp.notFAAAirport},
 		{"couldn't tell where it flew between", imp.unresolvedEndpoints},
 		{"no aircraft type", imp.missingAircraftType},
 		{"departed and arrived at the same airport", imp.sameEndpoints},

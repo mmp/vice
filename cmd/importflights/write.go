@@ -2,7 +2,7 @@
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 //
-// Turning what was imported into the flight data files: gathering each facility's
+// Turning what was imported into the flight data files: gathering each cell's
 // flights, leaving out the months the source data barely covers, and encoding
 // the rest.
 
@@ -19,43 +19,42 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// writeFlightData writes one file per facility, holding the departures and
-// arrivals at every airport it works over however many years the source data
-// spans. A file is replaced when there are flights for its facility and is
-// otherwise left alone. An airport worked by more than one facility appears in
-// each of their files, so that every file stands on its own.
-func writeFlightData(dir string, imp *importer, facilities map[string]*facility,
-	minCoverage float64, dryRun bool) error {
+// writeFlightData writes one file per grid cell, holding the departures and
+// arrivals at every airport in it over however many years the source data
+// spans, plus the metadata the cells share. Whatever was in the directory
+// before is replaced: a run imports everything, so a file it didn't write is a
+// file with no business being there.
+func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool) error {
 	covered := coveredMonths(imp.daysPresent, minCoverage)
 	droppedMonths := make(map[string]int)
 	files, flightCount, bytes := 0, 0, 0
+	var intervals []util.TimeInterval
+	written := make(map[string]bool)
 
-	for _, name := range util.SortedMapKeys(facilities) {
-		f := facilities[name]
+	if !dryRun {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			return err
+		}
+	}
 
+	for _, cell := range cells(imp.buckets) {
 		var flights []av.Flight
-		for airport := range f.airports() {
-			// An airport standing in for a made-up one is written out under the
-			// name the scenarios fly, at both ends of the flight: the Academy
-			// scenarios route traffic between their own airports, so a hop
-			// between two donors has to arrive as one between their stand-ins.
-			name := f.name(airport)
-			for _, departure := range []bool{true, false} {
-				if departure && !f.departures[airport] || !departure && !f.arrivals[airport] {
-					continue
-				}
-				for _, r := range imp.buckets[bucket{airport: airport, departure: departure}] {
-					flights = append(flights, av.Flight{
-						Airport:      name,
-						Callsign:     imp.symbols.string(r.callsign),
-						Other:        f.name(imp.symbols.string(r.other)),
-						AircraftType: imp.symbols.string(r.acType),
-						Day:          r.day,
-						Minute:       int(r.minute),
-						Departure:    departure,
-					})
-				}
+		for _, departure := range []bool{true, false} {
+			key := bucket{cell: cell, departure: departure}
+			for _, r := range imp.buckets[key] {
+				flights = append(flights, av.Flight{
+					Airport:      imp.symbols.string(r.airport),
+					Callsign:     imp.symbols.string(r.callsign),
+					Other:        imp.symbols.string(r.other),
+					AircraftType: imp.symbols.string(r.acType),
+					Day:          r.day,
+					Minute:       int(r.minute),
+					Departure:    departure,
+				})
 			}
+			// The records are of no further use, and there are enough of them
+			// that it is worth letting them go as we work through the cells.
+			delete(imp.buckets, key)
 		}
 
 		av.SortFlights(flights)
@@ -70,25 +69,34 @@ func writeFlightData(dir string, imp *importer, facilities map[string]*facility,
 		if len(flights) == 0 {
 			continue
 		}
+		intervals = append(intervals, av.FlightIntervals(flights)...)
 
 		encoded, err := av.EncodeFlights(flights)
 		if err != nil {
-			return fmt.Errorf("%s: %w", name, err)
+			return fmt.Errorf("%s: %w", cell, err)
 		}
-		reportFlightGaps(name, encoded)
 
+		name := flightDataFilename(cell)
 		if !dryRun {
-			if err := os.MkdirAll(dir, 0o755); err != nil {
-				return err
-			}
-			if err := os.WriteFile(filepath.Join(dir, flightDataFilename(name)), encoded, 0o644); err != nil {
+			if err := os.WriteFile(filepath.Join(dir, name), encoded, 0o644); err != nil {
 				return err
 			}
 		}
+		written[name] = true
 
 		files++
 		flightCount += len(flights)
 		bytes += len(encoded)
+	}
+
+	intervals = av.MergeFlightIntervals(intervals)
+	if !dryRun {
+		if err := writeMetadata(dir, intervals); err != nil {
+			return err
+		}
+		if err := removeStaleFiles(dir, written); err != nil {
+			return err
+		}
 	}
 
 	for _, month := range util.SortedMapKeys(droppedMonths) {
@@ -96,6 +104,7 @@ func writeFlightData(dir string, imp *importer, facilities map[string]*facility,
 		fmt.Printf("%s: source data covers %d of %d days; left %s flights out\n",
 			month, len(imp.daysPresent[month]), daysInMonth(year, m), commas(int64(droppedMonths[month])))
 	}
+	reportFlightGaps(intervals)
 
 	verb := "Wrote"
 	if dryRun {
@@ -108,27 +117,60 @@ func writeFlightData(dir string, imp *importer, facilities map[string]*facility,
 	return nil
 }
 
-// reportFlightGaps names the stretches a facility has no flights at all for.
-// They are stretches a sim can't be started in, so they are worth seeing: some
-// are the source data having gone down and some are a quiet airport's off
-// season, and only the person running the import can tell which.
-func reportFlightGaps(name string, encoded []byte) {
-	intervals, err := av.FlightDataIntervals(encoded)
-	if err != nil {
-		fmt.Printf("%s: reading back the flight data: %v\n", name, err)
-		return
+// cells returns the cells that have flights, in order.
+func cells(buckets map[bucket][]record) []string {
+	names := make(map[string]bool)
+	for key := range buckets {
+		names[key.cell] = true
 	}
+	return util.SortedMapKeys(names)
+}
+
+// writeMetadata records what the cells have in common.
+func writeMetadata(dir string, intervals []util.TimeInterval) error {
+	encoded, err := av.EncodeFlightDataMetadata(intervals)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(dir, av.FlightDataMetadataName), append(encoded, '\n'), 0o644)
+}
+
+// removeStaleFiles deletes the flight data files this run didn't write, which
+// is how the files of a previous import that named them differently go away.
+func removeStaleFiles(dir string, written map[string]bool) error {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		name := entry.Name()
+		if filepath.Ext(name) != av.FlightDataExtension || written[name] {
+			continue
+		}
+		if err := os.Remove(filepath.Join(dir, name)); err != nil {
+			return err
+		}
+		fmt.Printf("%s: removed, this import has no flights for it\n", name)
+	}
+	return nil
+}
+
+// reportFlightGaps names the stretches the data has no flights at all for. They
+// are stretches a sim can't be started in, so they are worth seeing: they are
+// the source data having gone down, and only the person running the import can
+// say whether that is expected.
+func reportFlightGaps(intervals []util.TimeInterval) {
 	for i := 1; i < len(intervals); i++ {
 		from, to := intervals[i-1].End(), intervals[i].Start()
-		fmt.Printf("%s: no flights from %s to %s (%.0f hours)\n", name,
+		fmt.Printf("No flights anywhere from %s to %s (%.0f hours)\n",
 			from.Format("2006-01-02 15:04Z"), to.Format("2006-01-02 15:04Z"),
 			to.Sub(from).Hours())
 	}
 }
 
-// flightDataFilename returns the name of a facility's flight data file.
-func flightDataFilename(facility string) string {
-	return facility + av.FlightDataExtension
+// flightDataFilename returns the name of a cell's flight data file.
+func flightDataFilename(cell string) string {
+	return cell + av.FlightDataExtension
 }
 
 // coveredMonths returns the months the source data covers well enough to be

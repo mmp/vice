@@ -10,10 +10,12 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 )
 
 func TestParseAirportList(t *testing.T) {
@@ -114,7 +116,7 @@ func TestResolveEndpoints(t *testing.T) {
 // counted, so that the report says what to add to openscope-aircraft.json. A
 // row with no type at all is skipped.
 func TestUnknownAircraftTypes(t *testing.T) {
-	imp := makeTestImporter("KMSP")
+	imp := makeTestImporter(t)
 	row := flightRow{
 		Callsign:            "DAL88",
 		AircraftType:        " b738 ",
@@ -141,7 +143,7 @@ func TestUnknownAircraftTypes(t *testing.T) {
 	}
 
 	types := make(map[string]int)
-	for _, r := range imp.buckets[bucket{airport: "KMSP", departure: true}] {
+	for _, r := range imp.buckets[bucket{cell: cellOf("KMSP"), departure: true}] {
 		types[imp.symbols.string(r.acType)]++
 	}
 	if got := map[string]int{"B738": 1, "E45X": 1}; !maps.Equal(types, got) {
@@ -163,18 +165,41 @@ func TestParseTime(t *testing.T) {
 	}
 }
 
-// makeTestImporter builds an importer for a single airport with no scenario or
-// database lookups involved.
-func makeTestImporter(airport string) *importer {
-	return makeImporter(map[string]bool{airport: true}, map[string]bool{airport: true},
-		map[string]av.FAAAirport{airport: {}, "KORD": {}},
-		map[string]av.AircraftPerformance{"B738": {}}, map[string]av.Airline{"DAL": {}})
+// testAirports is an airport database with just enough in it to import: a
+// couple of US airports, one abroad, and the made-up ones the Academy flies,
+// which carry no country of their own just as custom_airports.json leaves them.
+var testAirports = map[string]av.FAAAirport{
+	"KMSP": {Country: "US", Location: math.Point2LL{-93.22, 44.88}},
+	"KORD": {Country: "US", Location: math.Point2LL{-87.90, 41.98}},
+	"KEWR": {Country: "US", Location: math.Point2LL{-74.17, 40.69}},
+	"KTEB": {Country: "US", Location: math.Point2LL{-74.06, 40.85}},
+	"CYYZ": {Country: "CA", Location: math.Point2LL{-79.63, 43.68}},
+	"KAAC": {Location: math.Point2LL{-95.68, 36.17}},
+	"KBRT": {Location: math.Point2LL{-95.94, 36.45}},
+	"KJKE": {Location: math.Point2LL{-95.62, 35.92}},
+	"4Y3":  {Location: math.Point2LL{-95.35, 36.39}},
+	"4V4":  {Location: math.Point2LL{-95.39, 35.98}},
+}
+
+// cellOf is where testAirports puts an airport's flights.
+func cellOf(airport string) string { return av.FlightDataCell(testAirports[airport].Location) }
+
+// makeTestImporter builds an importer over testAirports, with no resource
+// loading involved.
+func makeTestImporter(t *testing.T) *importer {
+	t.Helper()
+	imp, err := makeImporter(testAirports, map[string]av.AircraftPerformance{"B738": {}},
+		map[string]av.Airline{"DAL": {}})
+	if err != nil {
+		t.Fatalf("makeImporter: %v", err)
+	}
+	return imp
 }
 
 // A callsign whose prefix isn't in the airline database is counted so that the
 // report can list what's missing from openscope-airlines.json.
 func TestUnknownAirlineCallsigns(t *testing.T) {
-	imp := makeTestImporter("KMSP")
+	imp := makeTestImporter(t)
 	row := flightRow{
 		Callsign:            "ZZZ123",
 		AircraftType:        "B738",
@@ -220,10 +245,10 @@ func TestRecordTime(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			imp := makeTestImporter("KMSP")
-			imp.add("KMSP", "KORD", "DAL1234", "B738", tc.utc, true)
+			imp := makeTestImporter(t)
+			imp.add(cellOf("KMSP"), "KMSP", "KORD", "DAL1234", "B738", tc.utc, true)
 
-			key := bucket{airport: "KMSP", departure: true}
+			key := bucket{cell: cellOf("KMSP"), departure: true}
 			records := imp.buckets[key]
 			if len(records) != 1 {
 				t.Fatalf("expected one record in %v, got %d (buckets %v)", key, len(records), imp.buckets)
@@ -238,8 +263,8 @@ func TestRecordTime(t *testing.T) {
 	}
 }
 func TestFlightDataFilename(t *testing.T) {
-	if got := flightDataFilename("N90"); got != "N90.flt" {
-		t.Errorf("got %q, expected N90.flt", got)
+	if got := flightDataFilename("N40W074"); got != "N40W074.flt" {
+		t.Errorf("got %q, expected N40W074.flt", got)
 	}
 }
 func TestDaysInMonth(t *testing.T) {
@@ -258,47 +283,115 @@ func TestDaysInMonth(t *testing.T) {
 		}
 	}
 }
+
+// Only the airports the FAA controls get flights of their own; everywhere else
+// is at most the far end of somebody else's.
+func TestOnlyFAAAirportsAreImported(t *testing.T) {
+	imp := makeTestImporter(t)
+	row := flightRow{
+		Callsign:            "DAL88",
+		AircraftType:        "B738",
+		OriginTime:          "2026-03-30 14:04:59",
+		OriginAirports:      "['KMSP']",
+		DestinationTime:     "2026-03-30 16:00:00",
+		DestinationAirports: "['CYYZ']",
+		Route:               "-",
+	}
+	imp.processRow(&row)
+
+	// The departure from KMSP is kept; the arrival at Toronto is not.
+	if n := len(imp.buckets[bucket{cell: cellOf("KMSP"), departure: true}]); n != 1 {
+		t.Errorf("KMSP has %d departures, expected 1", n)
+	}
+	if n := len(imp.buckets[bucket{cell: cellOf("CYYZ")}]); n != 0 {
+		t.Errorf("CYYZ has %d arrivals, expected none", n)
+	}
+
+	// Neither end ours is nothing to import at all.
+	row.OriginAirports = "['CYYZ']"
+	row.DestinationAirports = "['CYUL']"
+	imp.processRow(&row)
+	if imp.notFAAAirport != 1 {
+		t.Errorf("notFAAAirport = %d, expected 1", imp.notFAAAirport)
+	}
+}
+
+// A made-up airport is filed alongside the real one whose traffic it borrows,
+// in its own cell, and a hop between two donors arrives as one between their
+// stand-ins.
+func TestSubstituteAirports(t *testing.T) {
+	imp := makeTestImporter(t)
+	imp.add(cellOf("KEWR"), "KEWR", "KTEB", "UAL1", "B738", "2026-04-10 08:00:00", true)
+
+	newark := imp.buckets[bucket{cell: cellOf("KEWR"), departure: true}]
+	if len(newark) != 1 || imp.symbols.string(newark[0].airport) != "KEWR" ||
+		imp.symbols.string(newark[0].other) != "KTEB" {
+		t.Errorf("the real flight was not filed as it was flown: %+v", newark)
+	}
+
+	academy := imp.buckets[bucket{cell: cellOf("KAAC"), departure: true}]
+	if len(academy) != 1 {
+		t.Fatalf("the Academy has %d flights, expected 1", len(academy))
+	}
+	if got := imp.symbols.string(academy[0].airport); got != "KAAC" {
+		t.Errorf("filed under %q, expected KAAC", got)
+	}
+	if got := imp.symbols.string(academy[0].other); got != "4Y3" {
+		t.Errorf("bound for %q, expected 4Y3", got)
+	}
+
+	// A flight to somewhere with no stand-in keeps the real airport at the far
+	// end: only the Academy's own airports are made up.
+	imp.add(cellOf("KEWR"), "KEWR", "KORD", "UAL2", "B738", "2026-04-10 09:00:00", true)
+	academy = imp.buckets[bucket{cell: cellOf("KAAC"), departure: true}]
+	if len(academy) != 2 || imp.symbols.string(academy[1].other) != "KORD" {
+		t.Errorf("bound for %q, expected KORD", imp.symbols.string(academy[1].other))
+	}
+}
+
 func TestWriteFlightData(t *testing.T) {
-	sym := makeSymbols()
-	imp := &importer{symbols: sym, buckets: make(map[bucket][]record),
-		daysPresent: make(map[string]map[string]bool)}
+	imp := makeTestImporter(t)
+	sym := imp.symbols
 
 	april10 := av.FlightDataDayNumber(time.Date(2026, time.April, 10, 0, 0, 0, 0, time.UTC))
-	duplicate := record{callsign: sym.id("DAL1234"), other: sym.id("KSFO"), acType: sym.id("B737"),
-		day: april10, minute: 6*60 + 30}
-	arrival := record{callsign: sym.id("UAL99"), other: sym.id("KSFO"), acType: sym.id("B737"),
-		day: april10, minute: 7 * 60}
-	imp.buckets[bucket{airport: "KMSP", departure: true}] = []record{duplicate, duplicate}
-	imp.buckets[bucket{airport: "KMSP"}] = []record{arrival}
+	duplicate := record{airport: sym.id("KMSP"), callsign: sym.id("DAL1234"), other: sym.id("KSFO"),
+		acType: sym.id("B737"), day: april10, minute: 6*60 + 30}
+	arrival := record{airport: sym.id("KMSP"), callsign: sym.id("UAL99"), other: sym.id("KSFO"),
+		acType: sym.id("B737"), day: april10, minute: 7 * 60}
+	imp.buckets[bucket{cell: cellOf("KMSP"), departure: true}] = []record{duplicate, duplicate}
+	imp.buckets[bucket{cell: cellOf("KMSP")}] = []record{arrival}
 
-	// A facility standing in for made-up airports, with a flight between two of
-	// its donors so that both ends get renamed.
-	borrowed := record{callsign: sym.id("UAL1"), other: sym.id("KTEB"), acType: sym.id("B737"),
-		day: april10, minute: 8 * 60}
-	imp.buckets[bucket{airport: "KEWR", departure: true}] = []record{borrowed}
+	// A flight in a month the source data barely covers, which leaves its cell
+	// with nothing and so no file at all.
+	sparse := record{airport: sym.id("KORD"), callsign: sym.id("AAL1"), other: sym.id("KSFO"),
+		acType: sym.id("B737"), minute: 6 * 60,
+		day: av.FlightDataDayNumber(time.Date(2026, time.March, 31, 0, 0, 0, 0, time.UTC))}
+	imp.buckets[bucket{cell: cellOf("KORD"), departure: true}] = []record{sparse}
 
+	imp.daysPresent["2026-03"] = map[string]bool{"2026-03-31": true}
 	imp.daysPresent["2026-04"] = make(map[string]bool)
 	for day := 1; day <= 30; day++ {
 		imp.daysPresent["2026-04"][fmt.Sprintf("2026-04-%02d", day)] = true
 	}
 
-	facilities := map[string]*facility{
-		"M98": {departures: map[string]bool{"KMSP": true}, arrivals: map[string]bool{"KMSP": true}},
-		// A facility with no flights imported gets no file at all.
-		"XYZ": {departures: map[string]bool{"KZZZ": true}, arrivals: map[string]bool{}},
-		"AAC": {departures: map[string]bool{"KEWR": true}, arrivals: map[string]bool{},
-			substituted: map[string]string{"KEWR": "KAAC", "KTEB": "4Y3"}},
+	// A file left over from an earlier import that this one has nothing for.
+	dir := t.TempDir()
+	stale := filepath.Join(dir, "N90"+av.FlightDataExtension)
+	if err := os.WriteFile(stale, []byte("old"), 0o644); err != nil {
+		t.Fatal(err)
 	}
 
-	dir := t.TempDir()
-	if err := writeFlightData(dir, imp, facilities, 0.9, false); err != nil {
+	if err := writeFlightData(dir, imp, 0.9, false); err != nil {
 		t.Fatalf("writeFlightData: %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(dir, "XYZ.flt")); !os.IsNotExist(err) {
-		t.Errorf("wrote a file for a facility with no flights")
+	if _, err := os.Stat(stale); !os.IsNotExist(err) {
+		t.Errorf("a file this import has no flights for was left behind")
+	}
+	if _, err := os.Stat(filepath.Join(dir, cellOf("KORD")+av.FlightDataExtension)); !os.IsNotExist(err) {
+		t.Errorf("wrote a file for a cell whose only flights were dropped")
 	}
 
-	data, err := os.ReadFile(filepath.Join(dir, "M98.flt"))
+	data, err := os.ReadFile(filepath.Join(dir, cellOf("KMSP")+av.FlightDataExtension))
 	if err != nil {
 		t.Fatalf("read: %v", err)
 	}
@@ -318,57 +411,12 @@ func TestWriteFlightData(t *testing.T) {
 		t.Errorf("got %+v, expected %+v", flights, expected)
 	}
 
-	// The borrowed flight is written out under the made-up airports at both ends.
-	data, err = os.ReadFile(filepath.Join(dir, "AAC.flt"))
+	metadata, err := os.ReadFile(filepath.Join(dir, av.FlightDataMetadataName))
 	if err != nil {
 		t.Fatalf("read: %v", err)
 	}
-	flights, err = av.DecodeFlights(data)
-	if err != nil {
-		t.Fatalf("DecodeFlights: %v", err)
-	}
-	expected = []av.Flight{
-		{Airport: "KAAC", Callsign: "UAL1", Other: "4Y3", AircraftType: "B737",
-			Day: april10, Minute: 8 * 60, Departure: true},
-	}
-	if !slices.Equal(flights, expected) {
-		t.Errorf("got %+v, expected %+v", flights, expected)
-	}
-}
-
-func TestRestrictFacilities(t *testing.T) {
-	facilities := map[string]*facility{
-		"N90": {departures: map[string]bool{"KJFK": true, "KLGA": true},
-			arrivals: map[string]bool{"KJFK": true}},
-		"A80": {departures: map[string]bool{"KATL": true}, arrivals: map[string]bool{"KATL": true}},
-	}
-	restrict(facilities, []string{"KJFK"})
-
-	if len(facilities) != 1 || facilities["N90"] == nil {
-		t.Fatalf("expected only N90 to survive, got %v", slices.Sorted(maps.Keys(facilities)))
-	}
-	if !slices.Equal(slices.Sorted(maps.Keys(facilities["N90"].departures)), []string{"KJFK"}) {
-		t.Errorf("KLGA should have been dropped: %v", facilities["N90"].departures)
-	}
-}
-
-func TestSubstituteAirports(t *testing.T) {
-	f := makeFacility()
-	f.add(f.departures, "KMSP") // a real airport is taken as it is
-	f.add(f.departures, "KAAC") // a made-up one is swapped for its donor
-	f.add(f.departures, "4Y3")  // and so is one with a three-character id
-	f.add(f.departures, "X23")  // which is otherwise not in the source data
-
-	if !slices.Equal(slices.Sorted(maps.Keys(f.departures)), []string{"KEWR", "KMSP", "KTEB"}) {
-		t.Errorf("gathered %v", slices.Sorted(maps.Keys(f.departures)))
-	}
-	for donor, expected := range map[string]string{"KEWR": "KAAC", "KTEB": "4Y3"} {
-		if got := f.name(donor); got != expected {
-			t.Errorf("%s stands in for %q, expected %q", donor, got, expected)
-		}
-	}
-	if got := f.name("KMSP"); got != "KMSP" {
-		t.Errorf("KMSP was renamed to %q", got)
+	if !strings.Contains(string(metadata), "2026-04-10T06:30:00Z") {
+		t.Errorf("metadata doesn't cover the flights that were written: %s", metadata)
 	}
 }
 

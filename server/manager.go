@@ -31,7 +31,9 @@ import (
 const (
 	// flightDataCacheEntries and flightDataCacheTTL bound the flight data the
 	// traffic preview holds on to; see SimManager.flightData.
-	flightDataCacheEntries = 16
+	// A scenario's airports usually fall in one cell but can be spread over
+	// several, so this is well above the number of scenarios a client previews.
+	flightDataCacheEntries = 64
 	flightDataCacheTTL     = 15 * time.Minute
 )
 
@@ -77,8 +79,8 @@ type SimManager struct {
 	mapSpecs       map[string]*av.MapLibrarySpec
 	lg             *log.Logger
 
-	// flightData holds historical flights for the traffic preview, keyed by facility and the day
-	// previewed. An entry runs to a couple of megabytes at the busiest facilities, so this many of
+	// flightData holds historical flights for the traffic preview, keyed by cell and the day
+	// previewed. An entry runs to a couple of megabytes at the busiest cells, so this many of
 	// them is tens of megabytes at most.
 	flightData *expirable.LRU[string, []av.Flight]
 
@@ -110,8 +112,8 @@ type ScenarioSpec struct {
 	// order they should be offered. A scenario that gives no airlines can't
 	// generate its own traffic, so it offers only the published sources.
 	TrafficSources []sim.TrafficSource
-	// HistoricalFlightIntervals are the stretches of time this facility has
-	// historical flight data for; the data has a gap wherever the list does.
+	// HistoricalFlightIntervals are the stretches of time the historical flight
+	// data covers; it has a gap wherever the list does.
 	HistoricalFlightIntervals []util.TimeInterval
 
 	LaunchConfig sim.LaunchConfig
@@ -886,7 +888,7 @@ func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficC
 
 	var historical []av.Flight
 	if args.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
-		if historical, err = sm.facilityFlights(args.Facility, args.StartTime); err != nil {
+		if historical, err = sm.scenarioFlights(&args.LaunchConfig, args.StartTime); err != nil {
 			return err
 		}
 	}
@@ -915,16 +917,16 @@ func (sm *SimManager) findScenarioSpec(args *TrafficCountsArgs) (*ScenarioSpec, 
 	return spec, nil
 }
 
-// facilityFlights returns the flights a facility recorded on and around the day a preview starts
-// on, which is as far as a window starting on it can reach in either direction. Only the day is
-// kept, as the busiest facilities decode to over a million flights and >200 MB.
-func (sm *SimManager) facilityFlights(facility string, day time.Time) ([]av.Flight, error) {
-	key := facility + "/" + day.UTC().Format(time.DateOnly)
+// cellFlights returns the flights a cell recorded on and around the day a preview starts on, which
+// is as far as a window starting on it can reach in either direction. Only the day is kept, as the
+// busiest cells decode to over a million flights and >200 MB.
+func (sm *SimManager) cellFlights(cell string, day time.Time) ([]av.Flight, error) {
+	key := cell + "/" + day.UTC().Format(time.DateOnly)
 	if flights, ok := sm.flightData.Get(key); ok {
 		return flights, nil
 	}
 
-	data, err := av.ReadFlightData(util.GetResourcesFS(), facility)
+	data, err := av.ReadFlightData(util.GetResourcesFS(), cell)
 	if err != nil {
 		return nil, err
 	}
@@ -944,6 +946,19 @@ func (sm *SimManager) facilityFlights(facility string, day time.Time) ([]av.Flig
 	}
 	sm.flightData.Add(key, days)
 	return days, nil
+}
+
+// scenarioFlights gathers cellFlights over every cell a scenario's airports fall in.
+func (sm *SimManager) scenarioFlights(lc *sim.LaunchConfig, day time.Time) ([]av.Flight, error) {
+	var flights []av.Flight
+	for _, cell := range av.FlightDataCells(lc.IFRAirports()) {
+		cellFlights, err := sm.cellFlights(cell, day)
+		if err != nil {
+			return nil, err
+		}
+		flights = append(flights, cellFlights...)
+	}
+	return flights, nil
 }
 
 const ReloadScenarioBriefRPC = "SimManager.ReloadScenarioBrief"

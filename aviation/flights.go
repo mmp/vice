@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"compress/flate"
 	"encoding/binary"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -19,6 +20,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
@@ -33,6 +35,19 @@ type Flight struct {
 	Day          uint16 // UTC date, in days from 1970-01-01
 	Minute       int    // minutes after UTC midnight
 	Departure    bool
+}
+
+// FlightDataSubstitutes gives the real airport whose traffic each made-up
+// airport borrows. The FAA Academy scenarios fly fictional airports that the
+// source data knows nothing about, so each one stands on the flights of a real
+// airport with the traffic rate and character it wants. Donors must be
+// four-character ICAO codes: that is all the source data's airport lists hold.
+var FlightDataSubstitutes = map[string]string{
+	"KAAC": "KEWR", // Academy: Newark
+	"KBRT": "KBED", // Bartles: Hanscom Field, Boston's business jet reliever
+	"KJKE": "KWRI", // Jeske: McGuire AFB, for the military traffic
+	"4Y3":  "KTEB", // James: Teterboro
+	"4V4":  "KOXC", // Viney: Waterbury-Oxford, turboprops and light singles
 }
 
 // Date returns the UTC calendar date the flight operates on.
@@ -84,17 +99,20 @@ func SortFlights(flights []Flight) {
 	})
 }
 
-// Historical flight data is stored one file per facility under
-// resources/traffic/flights, named for the facility the scenarios use: N90.flt,
-// ZBW.flt, and so on. A file holds the departures and arrivals at every airport
-// that facility works over a period of past months or years.
+// Historical flight data is stored one file per cell of a grid of latitude and
+// longitude under resources/traffic/flights, named for the cell's southwest
+// corner: N40W074.flt, N32W112.flt, and so on. A file holds the departures and
+// arrivals at every airport in its cell over a period of past months or years.
+// An airport's flights are stored in exactly one file, so a sim reads the files
+// covering the airports its scenario flies--usually one--and lets SelectFlights
+// drop the rest of the cell.
 //
 // A file is stored a column at a time rather than a flight at a time: each
 // field becomes its own stream and each stream is flate compressed on its own.
 //
 // The airport the flight is at and the airport at the other end get separate
-// streams and separate dictionaries: a facility works a handful of airports
-// while its traffic reaches hundreds, so sharing one dictionary would cost an
+// streams and separate dictionaries: a cell holds a handful of busy airports
+// while their traffic reaches hundreds, so sharing one dictionary would cost an
 // extra byte on every index for no gain.
 //
 // Flights are sorted by airport, then by callsign, then by direction, then by
@@ -107,12 +125,10 @@ func SortFlights(flights []Flight) {
 // and whatever its departure time wandered by. Days are counted from the first
 // day in the file, which the header records.
 //
-// The header also records the stretches of time the file has flights for. The
-// data comes from an outside source that has gone down for days at a time, and
-// a quiet airport goes stretches with nothing of its own to fly, so the span
-// from the first flight to the last is not the same as the times a sim can be
-// started at. Keeping them in the header is what lets that be read without
-// decompressing anything.
+// The stretches of time the data covers are a property of the import as a
+// whole rather than of any one cell--the source has gone down for days at a
+// time--so they live in metadata.json alongside the cells rather than being
+// repeated in every file.
 //
 // The streams appear in the file in this order.
 const (
@@ -135,23 +151,33 @@ const (
 const (
 	flightDataMagic = "VFLT"
 	// Bumped to 2 when times went from local to the airport to UTC, so that a
-	// file written before then is rejected rather than read hours off, and to 3
-	// when the header stopped recording the last day and started recording the
-	// stretches of time the file has flights for.
-	flightDataVersion = 3
+	// file written before then is rejected rather than read hours off, to 3 when
+	// the header stopped recording the last day and started recording the
+	// stretches of time the file has flights for, and to 4 when files went from
+	// one per facility to one per grid cell and those stretches moved to
+	// metadata.json.
+	flightDataVersion = 4
 
 	// flightDataGap is how long the data has to go without a single flight
-	// before the file calls it a gap rather than a lull. A quiet airport sits
-	// idle most of the night, so anything much shorter would call every night a
-	// gap and leave such a facility with no time a sim could start at; the
-	// outages this is here to catch run for days.
+	// before it is called a gap rather than a lull. Anything much shorter would
+	// call every night a gap; the outages this is here to catch run for days.
 	flightDataGap = 24 * time.Hour
 
-	// FlightDataDirectory is where facility flight data lives in the resources.
+	// FlightDataDirectory is where historical flight data lives in the resources.
 	FlightDataDirectory = "traffic/flights"
 
-	// FlightDataExtension is the suffix of a facility's flight data file.
+	// FlightDataExtension is the suffix of a flight data cell file.
 	FlightDataExtension = ".flt"
+
+	// FlightDataMetadataName is the file in FlightDataDirectory holding what the
+	// cells have in common.
+	FlightDataMetadataName = "metadata.json"
+
+	// flightDataCellDegrees is how much latitude and longitude one cell spans:
+	// about 120 nm north to south, and 90 to 110 across the continental US.
+	// Making cells smaller costs no space--a flight is stored once however the
+	// grid is drawn--but it splits the data over more files for a sim to open.
+	flightDataCellDegrees = 2
 
 	// notANumber marks a callsign whose flight number isn't numeric, which is
 	// how registration callsigns like N484EM are recorded.
@@ -317,13 +343,6 @@ func EncodeFlights(flights []Flight) ([]byte, error) {
 		}
 	}
 
-	// SortFlights groups each airport's flights together rather than putting
-	// them all in time order, so the times are gathered and sorted on their own
-	// to find the stretches the file covers.
-	times := util.MapSlice(flights, Flight.Time)
-	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
-	intervals := util.FindTimeIntervals(times, flightDataGap)
-
 	for i, f := range flights {
 		base, number := SplitCallsign(f.Callsign)
 		baseIndices[i] = bases.index(base)
@@ -365,15 +384,13 @@ func EncodeFlights(flights []Flight) ([]byte, error) {
 	streams[streamDays] = appendVarints(deltaEncodeRuns(days, runs))
 	streams[streamMinutes] = appendVarints(deltaEncodeRuns(minutes, runs))
 
-	return writeStreams(firstDay, len(flights), intervals, streams)
+	return writeStreams(firstDay, len(flights), streams)
 }
 
 // writeStreams compresses each stream and assembles the file: the magic and
-// version, the first day, the number of flights, the stretches of time the file
-// has flights for, the compressed length of each stream, and then the streams
-// themselves.
-func writeStreams(firstDay uint16, count int, intervals []util.TimeInterval,
-	streams [][]byte) ([]byte, error) {
+// version, the first day, the number of flights, the compressed length of each
+// stream, and then the streams themselves.
+func writeStreams(firstDay uint16, count int, streams [][]byte) ([]byte, error) {
 	compressed := make([][]byte, len(streams))
 	for i, stream := range streams {
 		var buf bytes.Buffer
@@ -398,15 +415,6 @@ func writeStreams(firstDay uint16, count int, intervals []util.TimeInterval,
 	putUvarint(uint64(firstDay))
 	putUvarint(uint64(count))
 
-	// Intervals are stored as minutes from the start of the first day, which is
-	// what the times in the streams are measured from as well.
-	start := FlightDataDate(firstDay)
-	putUvarint(uint64(len(intervals)))
-	for _, iv := range intervals {
-		putUvarint(uint64(iv[0].Sub(start) / time.Minute))
-		putUvarint(uint64(iv[1].Sub(start) / time.Minute))
-	}
-
 	for _, stream := range compressed {
 		putUvarint(uint64(len(stream)))
 	}
@@ -420,7 +428,6 @@ func writeStreams(firstDay uint16, count int, intervals []util.TimeInterval,
 type flightDataHeader struct {
 	firstDay  uint16
 	count     int
-	intervals []util.TimeInterval
 	lengths   []uint64
 	streamsAt int // offset of the first compressed stream
 }
@@ -443,36 +450,8 @@ func readFlightDataHeader(data []byte) (flightDataHeader, error) {
 	if err != nil {
 		return h, err
 	}
-	numIntervals, err := binary.ReadUvarint(r)
-	if err != nil {
-		return h, err
-	}
 
 	h.firstDay, h.count = uint16(first), int(count)
-
-	// The intervals are appended rather than allocated up front: the count comes
-	// from the file, so a corrupt one would otherwise ask for as much memory as
-	// it liked.
-	day := FlightDataDate(h.firstDay)
-	for range numIntervals {
-		start, err := binary.ReadUvarint(r)
-		if err != nil {
-			return h, err
-		}
-		end, err := binary.ReadUvarint(r)
-		if err != nil {
-			return h, err
-		}
-		if end < start {
-			return h, fmt.Errorf("flight data interval ends before it starts")
-		}
-		iv := util.TimeInterval{day.Add(time.Duration(start) * time.Minute),
-			day.Add(time.Duration(end) * time.Minute)}
-		if n := len(h.intervals); n > 0 && iv[0].Before(h.intervals[n-1][1]) {
-			return h, fmt.Errorf("flight data intervals are out of order")
-		}
-		h.intervals = append(h.intervals, iv)
-	}
 
 	h.lengths = make([]uint64, numStreams)
 	for i := range h.lengths {
@@ -482,17 +461,6 @@ func readFlightDataHeader(data []byte) (flightDataHeader, error) {
 	}
 	h.streamsAt = len(data) - r.Len()
 	return h, nil
-}
-
-// FlightDataIntervals returns the stretches of time a facility's flight data
-// has flights for; it has a gap wherever the list does. It reads only the
-// header, so it doesn't decompress anything.
-func FlightDataIntervals(data []byte) ([]util.TimeInterval, error) {
-	h, err := readFlightDataHeader(data)
-	if err != nil {
-		return nil, err
-	}
-	return h.intervals, nil
 }
 
 func readStreams(data []byte) (flightDataHeader, [][]byte, error) {
@@ -631,50 +599,165 @@ func DecodeFlights(data []byte) ([]Flight, error) {
 	return flights, nil
 }
 
-// FlightDataPath is where a facility's flight data lives in the resources.
-func FlightDataPath(facility string) string {
-	return path.Join(FlightDataDirectory, facility+FlightDataExtension)
+// FlightDataCell names the flight data file an airport's flights are stored in:
+// the cell of latitude and longitude holding it, named for the cell's southwest
+// corner. Import and runtime both go through here, so that they always agree on
+// where an airport's flights are.
+func FlightDataCell(p math.Point2LL) string {
+	lat := floorDegrees(p.Latitude())
+	long := floorDegrees(p.Longitude())
+
+	hemisphere := func(v int, positive, negative byte) (byte, int) {
+		if v < 0 {
+			return negative, -v
+		}
+		return positive, v
+	}
+	ns, latitude := hemisphere(lat, 'N', 'S')
+	ew, longitude := hemisphere(long, 'E', 'W')
+	return fmt.Sprintf("%c%02d%c%03d", ns, latitude, ew, longitude)
 }
 
-// ReadFlightData returns a facility's flight data file, or nil if there is none
-// for it. Not every facility has one, but a file that is there and can't be
+// floorDegrees rounds a coordinate down to the start of the cell holding it.
+func floorDegrees(v float32) int {
+	d := int(v) / flightDataCellDegrees * flightDataCellDegrees
+	if v < 0 && float32(d) != v {
+		d -= flightDataCellDegrees
+	}
+	return d
+}
+
+// FlightDataCells returns the cells holding the given airports' flights, with
+// no repeats. Airports the database doesn't know are left out: there can be no
+// flight data for an airport with no position.
+func FlightDataCells(airports ...map[string]bool) []string {
+	var cells []string
+	for _, set := range airports {
+		for icao := range set {
+			ap, ok := DB.Airports[icao]
+			if !ok {
+				continue
+			}
+			if cell := FlightDataCell(ap.Location); !slices.Contains(cells, cell) {
+				cells = append(cells, cell)
+			}
+		}
+	}
+	slices.Sort(cells)
+	return cells
+}
+
+// FlightDataPath is where a cell's flight data lives in the resources.
+func FlightDataPath(cell string) string {
+	return path.Join(FlightDataDirectory, cell+FlightDataExtension)
+}
+
+// ReadFlightData returns a cell's flight data file, or nil if there is none for
+// it. Most cells have no flights at all, but a file that is there and can't be
 // read is an error like any other.
-func ReadFlightData(resources fs.FS, facility string) ([]byte, error) {
-	data, err := fs.ReadFile(resources, FlightDataPath(facility))
+func ReadFlightData(resources fs.FS, cell string) ([]byte, error) {
+	data, err := fs.ReadFile(resources, FlightDataPath(cell))
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil, nil
 	}
 	return data, err
 }
 
-// FacilityFlightIntervals returns the stretches of time a facility has flight
-// data for; the result is empty if it has none.
-func FacilityFlightIntervals(resources fs.FS, facility string) ([]util.TimeInterval, error) {
-	data, err := ReadFlightData(resources, facility)
-	if err != nil || data == nil {
-		return nil, err
+// ReadFlightDataCells decodes the flight data for each of the given cells and
+// returns all of it together. Cells with no data contribute nothing.
+func ReadFlightDataCells(resources fs.FS, cells []string) ([]Flight, error) {
+	var flights []Flight
+	for _, cell := range cells {
+		data, err := ReadFlightData(resources, cell)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", cell, err)
+		}
+		if data == nil {
+			continue
+		}
+		cellFlights, err := DecodeFlights(data)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", cell, err)
+		}
+		flights = append(flights, cellFlights...)
 	}
-	return FlightDataIntervals(data)
+	return flights, nil
 }
 
-// FlightsInWindow returns the flights at the given airports that take off or
-// touch down between start and end, in time order. This is what a sim is handed
-// when it launches: the flights it needs and nothing else. Flights whose
-// callsign prefix isn't in airlines (pass DB.Airlines) are left out; the sim
-// can't voice a callsign it has no telephony for.
-func FlightsInWindow(data []byte, departureAirports, arrivalAirports map[string]bool,
-	airlines map[string]Airline, start, end time.Time) ([]Flight, error) {
-	flights, err := DecodeFlights(data)
+// FlightDataIntervals returns the stretches of time the flight data covers; it
+// has a gap wherever the list does. They come from metadata.json rather than
+// from the cells, since the source data goes down for everywhere at once. The
+// result is empty when there is no flight data at all.
+func FlightDataIntervals(resources fs.FS) ([]util.TimeInterval, error) {
+	data, err := fs.ReadFile(resources, path.Join(FlightDataDirectory, FlightDataMetadataName))
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}
-	return SelectFlights(flights, departureAirports, arrivalAirports, airlines, start, end), nil
+
+	var metadata flightDataMetadata
+	if err := json.Unmarshal(data, &metadata); err != nil {
+		return nil, fmt.Errorf("%s: %w", FlightDataMetadataName, err)
+	}
+	return metadata.Intervals, nil
 }
 
-// SelectFlights is FlightsInWindow for flights that have already been decoded.
-// Decoding a facility's data costs enough that anything asking about several
-// windows of it--the New Sim dialog previews a fresh one each time the start
-// time moves--wants to do it once and select from the result.
+// flightDataMetadata is what metadata.json holds: everything about an import
+// that isn't particular to one cell.
+type flightDataMetadata struct {
+	Intervals []util.TimeInterval `json:"intervals"`
+}
+
+// EncodeFlightDataMetadata renders the contents of metadata.json.
+func EncodeFlightDataMetadata(intervals []util.TimeInterval) ([]byte, error) {
+	return json.MarshalIndent(flightDataMetadata{Intervals: intervals}, "", "  ")
+}
+
+// FlightIntervals returns the stretches of time a set of flights covers,
+// splitting wherever they go a full day without one.
+func FlightIntervals(flights []Flight) []util.TimeInterval {
+	times := util.MapSlice(flights, Flight.Time)
+	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
+	return util.FindTimeIntervals(times, flightDataGap)
+}
+
+// MergeFlightIntervals combines the intervals of several sets of flights into
+// the intervals of all of them together, joining any two that are less than a
+// full day apart. Computing the intervals a cell at a time and merging here
+// gives the same answer as gathering every flight's time at once, without
+// holding tens of millions of them in memory to sort.
+func MergeFlightIntervals(intervals []util.TimeInterval) []util.TimeInterval {
+	if len(intervals) == 0 {
+		return nil
+	}
+
+	sorted := slices.Clone(intervals)
+	slices.SortFunc(sorted, func(a, b util.TimeInterval) int { return a.Start().Compare(b.Start()) })
+
+	merged := sorted[:1]
+	for _, iv := range sorted[1:] {
+		last := &merged[len(merged)-1]
+		if iv.Start().Sub(last.End()) > flightDataGap {
+			merged = append(merged, iv)
+		} else if iv.End().After(last.End()) {
+			last[1] = iv.End()
+		}
+	}
+	return merged
+}
+
+// SelectFlights returns the flights at the given airports that take off or
+// touch down between start and end, in time order. This is what a sim is handed
+// when it launches: the flights it needs and nothing else, out of everything
+// its cells hold. Flights whose callsign prefix isn't in airlines (pass
+// DB.Airlines) are left out; the sim can't voice a callsign it has no telephony
+// for.
+//
+// Decoding a cell costs enough that anything asking about several windows of
+// it--the New Sim dialog previews a fresh one each time the start time
+// moves--wants to do it once and select from the result.
 func SelectFlights(flights []Flight, departureAirports, arrivalAirports map[string]bool,
 	airlines map[string]Airline, start, end time.Time) []Flight {
 	// The window can only hold flights on the days it touches.
