@@ -258,6 +258,226 @@
           "J73 UH": "61",
           "J46 UH": "61"
         }
+      },
+      "C63": {
+        "default_consolidation": {
+          "63": ["62"]
+        },
+        "inbound_assignments": {
+          "BLUZZ5 HI (BNA)": "62",
+          "BLUZZ5 HI (RAMRD)": "63",
+          "J73 HI": "62",
+          "J46 HI": "62"
+        }
+      },
+      "C46": {
+        "default_consolidation": {
+          "46": ["43", "45"]
+        },
+        "inbound_assignments": {
+          "WEST overflights HI": "45",
+          "WEST overflights UH": "43",
+          "EAST overflights HI": "46",
+          "NORTH overflights HI": "45",
+          "SOUTH overflights UH": "45",
+          "SOUTH overflights HI": "46",
+          "WEST UH": "43"
+        }
+      },
+      "C33": {
+        "default_consolidation": {
+          "33": ["34", "26", "25", "05", "07"]
+        },
+        "inbound_assignments": {
+          "WEST HI": "25",
+          "WEST UH": "33",
+          "EAST HI": "26",
+          "NORTH HI": "25",
+          "SOUTH UH": "33",
+          "SOUTH HI": "26",
+          "WEST UH 2": "33"
+        }
+      },
+      "C20": {
+        "default_consolidation": {
+          "20": ["44", "21", "28"]
+        },
+        "inbound_assignments": {
+          "WEST overflights HI": "21",
+          "WEST overflights UH": "20",
+          "EAST overflights HI": "44",
+          "NORTH overflights HI": "44",
+          "SOUTH overflights UH": "44",
+          "SOUTH overflights HI": "20",
+          "WEST UH": "20",
+          "SOUTH UH GA": "20"
+        }
+      },
+      "C31": {
+        "default_consolidation": {
+          "31": ["30", "32", "13", "12", "14", "42"]
+        },
+        "inbound_assignments": {
+          "WEST HI": "31",
+          "WEST UH": "32",
+          "EAST HI": "30",
+          "NORTH HI": "30",
+          "SOUTH UH": "32",
+          "SOUTH HI": "31",
+          "WEST UH 2": "32",
+          "SOUTH UH GA": "32",
+          "NORTH HI 2": "30"
+        }
+      },
+      "C27": {
+        "default_consolidation": {
+          "27": ["19", "35", "20", "03", "04"]
+        },
+        "inbound_assignments": {
+          "WEST HI": "27",
+          "WEST UH": "19",
+          "EAST HI": "27",
+          "NORTH HI": "22",
+          "SOUTH UH": "35",
+          "SOUTH HI": "27",
+          "WEST UH 2": "19",
+          "SOUTH UH GA": "19"
+        }
+      },
+      "C22": {
+        "default_consolidation": {
+          "22": [
+            "02",
+            "01",
+            "67",
+            "66",
+            "65",
+            "13",
+            "40",
+            "60",
+            "41",
+            "05",
+            "07",
+            "04",
+            "03",
+            "15",
+            "12",
+            "14",
+            "42",
+            "27",
+            "25",
+            "26",
+            "63",
+            "62",
+            "31",
+            "30",
+            "46",
+            "45",
+            "44",
+            "21",
+            "28",
+            "35",
+            "34",
+            "19",
+            "33",
+            "61",
+            "32",
+            "43",
+            "20"
+          ]
+        },
+        "inbound_assignments": {
+          "WEST HI": "22",
+          "WEST HI 2": "22",
+          "WEST UH": "19",
+          "EAST HI": "27",
+          "EAST UH": "27",
+          "NORTH HI": "22",
+          "SOUTH UH": "35",
+          "SOUTH HI": "27",
+          "WEST UH 2": "19",
+          "SOUTH UH GA": "19",
+          "SOUTH UH GA 2": "19",
+          "SOUTH overflights UH 2": "35",
+          "SOUTH overflights HI 2": "27",
+          "NORTH overflights HI 2": "22",
+          "EAST overflights HI 2": "27",
+          "WEST overflights HI 2": "22",
+          "WEST overflights UH 2": "19",
+          "WEST UH 6": "19",
+          "SOUTH overflights UH": "35",
+          "SOUTH overflights HI": "27",
+          "NORTH overflights HI": "22",
+          "EAST overflights HI": "27",
+          "WEST UH 5": "19",
+          "WEST overflights UH": "19",
+          "WEST overflights HI": "22",
+          "BLUZZ5 UH (RAMRD)": "61",
+          "BLUZZ5 UH (BNA)": "61",
+          "SOUTH UH 2": "35",
+          "SOUTH HI 2": "27",
+          "NORTH HI 2": "22",
+          "EAST HI 2": "27",
+          "WEST UH 4": "19",
+          "WEST UH 3": "19"
+        }
+      },
+      "H61": {
+        "default_consolidation": {
+          "61": ["63", "62"]
+        },
+        "inbound_assignments": {
+          "BLUZZ5 HI (BNA)": "62",
+          "BLUZZ5 HI (RAMRD)": "63",
+          "J73 HI": "62",
+          "J46 HI": "62",
+          "BLUZZ5 UH (BNA)": "61",
+          "BLUZZ5 UH (RAMRD)": "61",
+          "J73 UH": "61",
+          "J46 UH": "61"
+        }
+      },
+      "L41": {
+        "default_consolidation": {
+          "41": ["60", "40"]
+        },
+        "departure_assignments": {
+          "KBNA": "40"
+        },
+        "inbound_assignments": {
+          "RYYMN3 - NMANN": "41",
+          "RYYMN3 - TONES": "41",
+          "RYYMN3 - LOONE": "41",
+          "PASLY5 - CUTRR": "41",
+          "SWFFT3 - EDDDY": "40",
+          "SWFFT3 - THRSR": "40",
+          "SWFFT3 - RKMRT": "40"
+        }
+      },
+      "M61": {
+        "default_consolidation": {
+          "63": ["60", "62", "61", "40", "41"]
+        },
+        "departure_assignments": {
+          "KBNA": "40"
+        },
+        "inbound_assignments": {
+          "RYYMN3 - NMANN": "41",
+          "RYYMN3 - TONES": "41",
+          "RYYMN3 - LOONE": "41",
+          "PASLY5 - CUTRR": "41",
+          "SWFFT3 - EDDDY": "40",
+          "SWFFT3 - THRSR": "40",
+          "SWFFT3 - RKMRT": "40",
+          "BLUZZ5 HI (BNA)": "62",
+          "BLUZZ5 HI (RAMRD)": "63",
+          "J73 HI": "62",
+          "J46 HI": "62",
+          "BLUZZ5 UH (BNA)": "61",
+          "BLUZZ5 UH (RAMRD)": "61",
+          "J73 UH": "61",
+          "J46 UH": "61"
+        }
       }
     },
     "center": "N034.33.44.903,W089.05.31.622",

@@ -1,0 +1,477 @@
+{
+  "artcc": "ZME",
+  "area": "ZME Area 1",
+  "name": "ZME Area 1",
+  "airports": {
+    "KMEM": {
+      "approaches": {
+        "I36L": {
+          "cifp_id": "I36L"
+        }
+      }
+    },
+    "KBNA": {
+      "approaches": {
+        "I2R": {
+          "cifp_id": "I2R"
+        }
+      }
+    }
+  },
+  "default_scenario": "ZME Area 1",
+  "magnetic_adjustment": -3.0,
+  "scenarios": {
+    "ZME Area 1": {
+      "configuration": "C33",
+      "default_map_group": "ZMEHI",
+      "departure_runways": [],
+      "arrival_runways": [
+        {
+          "airport": "KMEM",
+          "runway": "36L"
+        }
+      ],
+      "inbound_rates": {
+        "WEST HI": {
+          "overflights": 5
+        },
+        "WEST UH": {
+          "overflights": 5
+        },
+        "EAST HI": {
+          "overflights": 5
+        },
+        "NORTH HI": {
+          "overflights": 5
+        },
+        "SOUTH HI": {
+          "overflights": 5
+        },
+        "SOUTH UH": {
+          "overflights": 5
+        },
+        "WEST UH 2": {
+          "overflights": 5
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "WEST HI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KRDU",
+              "arrival_airport": "KDFW",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KPHX",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KDCA",
+              "arrival_airport": "KLAX",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KJAX",
+              "arrival_airport": "KSAN",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KDFW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMKE",
+              "arrival_airport": "KDFW",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_controller": "T43",
+          "initial_speed": 300,
+          "waypoints": "RMG CALCO BNA/ho OMDUE LUKKY ZALDA IRW/delete"
+        }
+      ]
+    },
+    "WEST UH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KDFW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMKE",
+              "arrival_airport": "KDFW",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 38000,
+          "initial_controller": "T43",
+          "initial_speed": 350,
+          "waypoints": "RMG CALCO BNA/ho OMDUE LUKKY ZALDA IRW/delete"
+        }
+      ]
+    },
+    "WEST UH 2": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KIND",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KIND",
+              "arrival_airport": "KMSY",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCVG",
+              "arrival_airport": "KHOU",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCVG",
+              "arrival_airport": "KSAT",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KDTW",
+              "arrival_airport": "MMUN",
+              "icao": "AMX"
+            },
+            {
+              "departure_airport": "KDTW",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KMDW",
+              "arrival_airport": "KSAT",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "initial_altitude": 40000,
+          "assigned_altitude": 43000,
+          "initial_controller": "T43",
+          "initial_speed": 375,
+          "waypoints": "VXV BNA/ho J46 TUL/delete"
+        }
+      ]
+    },
+    "EAST HI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KPHX",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KDCA",
+              "arrival_airport": "KLAX",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KJAX",
+              "arrival_airport": "KSAN",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KDFW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KDFW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMKE",
+              "arrival_airport": "KDFW",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "H46",
+          "initial_speed": 300,
+          "waypoints": "TUL/ho J46 ZESAM HUMMS HXW BWG DVK/delete"
+        }
+      ]
+    },
+    "EAST UH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KDFW",
+              "arrival_airport": "KCVG",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KPHX",
+              "arrival_airport": "KRDU",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KABQ",
+              "arrival_airport": "KATL",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KABQ",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KDEN",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KJAX",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KATL",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "K94",
+          "initial_speed": 300,
+          "waypoints": "BVO/ho RZC PLIED OMDUE BNA VXV ATL/delete"
+        }
+      ]
+    },
+    "NORTH HI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KMDW",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KORD",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "MMUN",
+              "arrival_airport": "KSTL",
+              "icao": "AMX"
+            },
+            {
+              "departure_airport": "KEYW",
+              "arrival_airport": "KDTW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KHOU",
+              "arrival_airport": "KRDU",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KIND",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KCVG",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 36000,
+          "initial_controller": "T43",
+          "initial_speed": 300,
+          "waypoints": "VUZ J151 BEATS/ho DITZL CPUTO PXV/delete"
+        }
+      ]
+    },
+    "SOUTH HI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMDW",
+              "arrival_airport": "KMSY",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KMSY",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KSTL",
+              "arrival_airport": "KMSY",
+              "icao": "AMX"
+            },
+            {
+              "departure_airport": "KDTW",
+              "arrival_airport": "KEYW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KHOU",
+              "arrival_airport": "KRDU",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KIND",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KCVG",
+              "arrival_airport": "KMSY",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "I83",
+          "initial_speed": 300,
+          "waypoints": "PXV/ho J29 ELD/delete"
+        }
+      ]
+    },
+    "SOUTH UH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMDW",
+              "arrival_airport": "KMSY",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KMSY",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KMKE",
+              "arrival_airport": "KMSY",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KMSY",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KSTL",
+              "arrival_airport": "KMSY",
+              "icao": "AMX"
+            },
+            {
+              "departure_airport": "KDTW",
+              "arrival_airport": "KEYW",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KHOU",
+              "arrival_airport": "KRDU",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KIND",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KCVG",
+              "arrival_airport": "KMSY",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 40000,
+          "assigned_altitude": 40000,
+          "initial_controller": "I83",
+          "initial_speed": 300,
+          "waypoints": "PXV/ho J29 ELD/delete"
+        }
+      ]
+    }
+  }
+}
