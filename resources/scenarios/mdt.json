@@ -2805,7 +2805,6 @@
   },
   "default_scenario": "MDT West Flow",
   "name": "KMDT",
-  "primary_airport": "KMDT",
   "scenarios": {
     "MDT West Flow": {
       "arrival_runways": [

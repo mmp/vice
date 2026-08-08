@@ -1,7 +1,6 @@
 {
   "tracon": "F11",
   "name": "Central Florida TRACON",
-  "primary_airport": "KMCO",
   "default_scenario": "CO1 MCO/S ORL/E SFB/E",
   "fixes": {
     "WORMS.CITR": "N29.00.45.600,W81.22.48.600",

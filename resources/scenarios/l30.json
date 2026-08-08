@@ -5163,7 +5163,6 @@
   },
   "magnetic_adjustment": 2,
   "name": "L30 TRACON",
-  "primary_airport": "KLAS",
   "scenarios": {
     "CFG1 (Depart 19L/R/26R Land 19R/26L)": {
       "airspace": {

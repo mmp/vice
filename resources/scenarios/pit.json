@@ -1087,7 +1087,6 @@
     "_AGC_10": "N040.21.15.814,W079.56.28.183"
   },
   "name": "KPIT",
-  "primary_airport": "KPIT",
   "reporting_points": ["ETG", "LEJOY", "AIR", "EARED", "CUTTA", "AIR"],
   "scenarios": {
     "PIT West (ARR 28L/R)": {

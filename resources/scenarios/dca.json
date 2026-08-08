@@ -7145,7 +7145,6 @@
     "_DCA_33": "N38.50.59.364,W77.01.56.277"
   },
   "name": "Mount Vernon Area",
-  "primary_airport": "KDCA",
   "reporting_points": ["CAPSS", "HOYAS", "BAL", "EYESS", "DEALE", "SEPII", "FORGT", "TRUPS", "OOURR", "DFORT"],
   "scenarios": {
     "MTV - DCA North": {

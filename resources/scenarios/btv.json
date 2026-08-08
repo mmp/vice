@@ -1911,7 +1911,6 @@
       ]
     }
   },
-  "primary_airport": "KBTV",
   "default_scenario": "KBTV NORTH",
   "name": "BTV",
   "vfr_reporting_points": [

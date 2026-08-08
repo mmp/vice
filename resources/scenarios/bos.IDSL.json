@@ -1,7 +1,6 @@
 {
   "tracon": "A90",
   "name": "Initial Departure",
-  "primary_airport": "KBOS",
   "default_scenario": "ID/SL 33/27",
   "airports": {
     "KORH": {

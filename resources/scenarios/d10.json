@@ -1,7 +1,6 @@
 {
   "tracon": "D10",
   "name": "D10",
-  "primary_airport": "KDFW",
   "default_scenario": "D10 COMBINED NF",
   "airports": {
     "KDFW": {

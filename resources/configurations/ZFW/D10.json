@@ -152,6 +152,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KDFW" } },
     "configurations": {
       "10X": {
         "inbound_assignments": {

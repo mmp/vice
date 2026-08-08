@@ -37,6 +37,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KCVG" } },
     "center": "KCVG",
     "controllers": {
       "1B": {},

@@ -7907,7 +7907,6 @@
   ],
   "default_scenario": "San Diego - SAN West",
   "name": "San Diego Area",
-  "primary_airport": "KSAN",
   "scenarios": {
     "San Diego - SAN West": {
       "airspace": {

@@ -4858,7 +4858,6 @@
   },
   "magnetic_adjustment": 2,
   "name": "KAAC Dep",
-  "primary_airport": "KAAC",
   "scenarios": {
     "North Departure": {
       "center": "N036.10.21.070,W095.39.34.832",

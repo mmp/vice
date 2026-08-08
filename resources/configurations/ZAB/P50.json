@@ -571,6 +571,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KPHX" },
       "coordination": [
         {
           "name": "SDL",

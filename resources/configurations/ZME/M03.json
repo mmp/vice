@@ -60,9 +60,7 @@
           "airports": ["KOLV"]
         }
       ],
-      "ssa": {
-        "altimeters": ["KMEM", "KOLV"]
-      }
+      "ssa": { "system_altimeter": "KMEM", "altimeters": ["KMEM", "KOLV"] }
     },
     "configurations": {
       "N27": {

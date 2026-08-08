@@ -248,7 +248,6 @@
       ]
     }
   },
-  "primary_airport": "KPWM",
   "default_scenario": "Land West",
   "name": "PWM",
   "scenarios": {

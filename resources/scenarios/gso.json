@@ -652,7 +652,6 @@
   },
   "magnetic_adjustment": -1,
   "name": "KGSO",
-  "primary_airport": "KGSO",
   "scenarios": {
     "KGSO Runway 5L/5R, KINT Runway 33": {
       "airspace": {

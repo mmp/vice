@@ -4349,7 +4349,6 @@
   ],
   "default_scenario": "Burbank - 08/15 LAW",
   "name": "Burbank Area",
-  "primary_airport": "KBUR",
   "scenarios": {
     "Burbank - 08/15 LAW": {
       "arrival_runways": [

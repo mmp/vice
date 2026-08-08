@@ -3611,7 +3611,6 @@
   },
   "default_scenario": "Empire - West/LAXW",
   "name": "Empire Area",
-  "primary_airport": "KONT",
   "scenarios": {
     "Empire - West/LAXW": {
       "airspace": {

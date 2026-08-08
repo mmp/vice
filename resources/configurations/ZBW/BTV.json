@@ -17,6 +17,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KBTV" } },
     "monitor": "mdm4",
     "configurations": {
       "15x": {

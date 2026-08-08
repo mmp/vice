@@ -107,6 +107,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KMIA" } },
     "configurations": {
       "KMI": {
         "inbound_assignments": {

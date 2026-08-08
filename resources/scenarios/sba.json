@@ -943,7 +943,6 @@
   },
   "default_scenario": "SBA 07/15",
   "name": "KSBA",
-  "primary_airport": "KSBA",
   "scenarios": {
     "SBA 07/15": {
       "airspace": {

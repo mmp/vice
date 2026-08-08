@@ -1333,7 +1333,6 @@
     "_SBN_9R": "N041.42.15.754,W086.19.45.617"
   },
   "name": "KSBN",
-  "primary_airport": "KSBN",
   "scenarios": {
     "SBN - North Flow": {
       "arrival_runways": [

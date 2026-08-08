@@ -383,7 +383,6 @@
   },
   "default_scenario": "Land West",
   "name": "Big Sky - BOI",
-  "primary_airport": "KBOI",
   "scenarios": {
     "Land West": {
       "arrival_runways": [

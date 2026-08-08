@@ -1350,7 +1350,6 @@
   },
   "default_scenario": "KORF East",
   "name": "KORF",
-  "primary_airport": "KORF",
   "scenarios": {
     "KORF East": {
       "arrival_runways": [

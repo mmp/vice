@@ -307,9 +307,7 @@
           "airports": ["KSSF"]
         }
       ],
-      "ssa": {
-        "altimeters": ["KSAT", "KBAZ", "KSSF", "KSKF", "5C1"]
-      }
+      "ssa": { "system_altimeter": "KSAT", "altimeters": ["KSAT", "KBAZ", "KSSF", "KSKF", "5C1"] }
     },
     "datablocks": {
       "force_ql_self": true

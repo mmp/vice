@@ -3731,7 +3731,6 @@
     "_ROLLN2_24R_FINAL": "N41.34.00.993,W81.28.26.780"
   },
   "name": "KCLE",
-  "primary_airport": "KCLE",
   "scenarios": {
     "KCLE North": {
       "airspace": {

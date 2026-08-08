@@ -5017,7 +5017,6 @@
   "default_scenario": "KMIA East (No Sats)",
   "magnetic_adjustment": -2,
   "name": "KMIA",
-  "primary_airport": "KMIA",
   "reporting_points": ["BHHIA", "CUUDA", "CUURT", "CSTAL", "ENRGY", "FROGZ", "SNDBR", "VIICE", "OLAHS", "TEEKY"],
   "scenarios": {
     "KMIA East (No Sats)": {

@@ -737,7 +737,6 @@
   },
   "default_scenario": "KLBB 17R/26",
   "name": "KLBB",
-  "primary_airport": "KLBB",
   "scenarios": {
     "KLBB 17R/26": {
       "arrival_runways": [

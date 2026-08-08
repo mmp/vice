@@ -6873,7 +6873,6 @@
     "_CLT_1L": "N35.12.02.249,W80.57.55.061"
   },
   "name": "KCLT",
-  "primary_airport": "KCLT",
   "scenarios": {
     "KCLT Land 18L/19L/19R Depart 19L/18L": {
       "airspace": {

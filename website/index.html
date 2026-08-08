@@ -6699,7 +6699,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="ssa-system-list.png" srcset="ssa-system-list-2x.png 2x" width="209" height="128">
             </div>
             <br>
-            <p>The red triangle indicates that STARS is functioning correctly; in <i>vice</i> it will always be there. The first line of text shows the current zulu time 03:07:27 and the altimeter at the primary airport for the current scenario, PHL. The following line shows the network status (always "OK/OK/NA" in <i>vice</i>) as well as the current radar mode, FUSED. Next is the current range shown from the scope's center, 17nm, and the length of predicted track lines (PTLs), 0.5 minutes. Next are the altitude filters, first for unassociated tracks and then for associated tracks (both in hundreds of feet.) The next few line again shows the altimeter at PHL and contains the altimeters at nearby airports in multi-airport scenarios.</p>
+            <p>The red triangle indicates that STARS is functioning correctly; in <i>vice</i> it will always be there. The first line of text shows the current zulu time 03:07:27 and the system altimeter adapted for the position being worked, PHL. The following line shows the network status (always "OK/OK/NA" in <i>vice</i>) as well as the current radar mode, FUSED. Next is the current range shown from the scope's center, 17nm, and the length of predicted track lines (PTLs), 0.5 minutes. Next are the altitude filters, first for unassociated tracks and then for associated tracks (both in hundreds of feet.) The next few lines again show the altimeter at PHL and contain the altimeters at nearby airports in multi-airport scenarios.</p>
             <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 6S" indicates that TCP 6S has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  Finally, we can see that <a href="#crda">CRDA</a> has been enabled for the runway pair 27R/17, with the "S" indicating "stagger" mode.</p>
             <p>The SSA list is always visible; a keyboard command is
             available to position it:</p>
@@ -6813,7 +6813,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>QL: quick looked sectors</li>
               <li>CRDA: active CRDA pairs</li>
               <li>WX: available and displayed weather precipitation levels</li>
-              <li>ALTSTG: show altimeter at primary airport</li>
+              <li>ALTSTG: show the system altimeter for the position being worked</li>
               <li>CODES: show selected beacon codes</li>
               <li>PTL: length of predicted track lines</li>
               <li>INTRAIL: ATPA in-trail status: "INTRAIL ON", or "INTRAIL OFF:" followed by

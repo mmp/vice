@@ -439,7 +439,7 @@ func trafficCountsSpan(start time.Time) (first, last time.Time) {
 //
 // historical is the facility's flights on and around the day previewed, however much of them the
 // caller has on hand; the window and the scenario's airports are selected from it here.
-func TrafficCounts(lc *LaunchConfig, start time.Time, primaryAirport string,
+func TrafficCounts(lc *LaunchConfig, start time.Time,
 	historical []av.Flight) (departures, arrivals []uint16, err error) {
 	first, last := trafficCountsSpan(start)
 	start = first.Add(TrafficCountsPad)
@@ -447,13 +447,13 @@ func TrafficCounts(lc *LaunchConfig, start time.Time, primaryAirport string,
 	var flights []av.Flight
 	switch lc.TrafficSource {
 	case TrafficSourceTimetable:
-		catalog, err := LoadAirportTimetables(primaryAirport)
+		catalog, err := LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
 			return nil, nil, err
 		}
-		timetable, ok := catalog.Find(primaryAirport, lc.TimetableID)
+		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
 		if !ok {
-			return nil, nil, fmt.Errorf("timetable %q not found for %s", lc.TimetableID, primaryAirport)
+			return nil, nil, fmt.Errorf("timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
 		}
 		flights = timetableFlights(NewSimTime(start), timetable, lc.TimetableStartMinute,
 			lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
@@ -1305,15 +1305,15 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 		}
 
 	case TrafficSourceTimetable:
-		catalog, err := LoadAirportTimetables(s.State.PrimaryAirport)
+		catalog, err := LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
 			s.trafficProvider = errorTrafficProvider{err: err}
 			return s.trafficProvider
 		}
-		timetable, ok := catalog.Find(s.State.PrimaryAirport, lc.TimetableID)
+		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
 		if !ok {
 			s.trafficProvider = errorTrafficProvider{err: fmt.Errorf("timetable %q not found for %s",
-				lc.TimetableID, s.State.PrimaryAirport)}
+				lc.TimetableID, lc.TimetableAirport)}
 			return s.trafficProvider
 		}
 		s.log("Traffic source: timetable %q for %s", timetable.Name, timetable.Airport)

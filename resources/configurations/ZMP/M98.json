@@ -586,9 +586,7 @@
           "airports": ["KSTP"]
         }
       ],
-      "ssa": {
-        "altimeters": ["KMSP", "KFCM", "KANE", "KSTP", "KMIC"]
-      }
+      "ssa": { "system_altimeter": "KMSP", "altimeters": ["KMSP", "KFCM", "KANE", "KSTP", "KMIC"] }
     }
   },
   "handoff_ids": [

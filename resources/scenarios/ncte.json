@@ -3287,7 +3287,6 @@
   },
   "default_scenario": "Area E CA - SMFS",
   "name": "NCT Area E",
-  "primary_airport": "KSMF",
   "scenarios": {
     "Area E CA - SMFN": {
       "center": "N038.41.41.010,W121.35.27.420",

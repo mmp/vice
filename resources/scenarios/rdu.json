@@ -1689,7 +1689,6 @@
   },
   "default_scenario": "KRDU East",
   "name": "KRDU",
-  "primary_airport": "KRDU",
   "scenarios": {
     "KRDU East": {
       "arrival_runways": [

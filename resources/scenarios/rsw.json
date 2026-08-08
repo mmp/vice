@@ -406,7 +406,6 @@
   },
   "default_scenario": "Runway 06",
   "name": "KRSW",
-  "primary_airport": "KRSW",
   "scenarios": {
     "Runway 06": {
       "configuration": "RSW",

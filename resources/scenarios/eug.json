@@ -1560,7 +1560,6 @@
   },
   "default_scenario": "South",
   "name": "Eugene",
-  "primary_airport": "KEUG",
   "scenarios": {
     "North": {
       "configuration": "RE",

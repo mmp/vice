@@ -712,9 +712,7 @@
           "airports": ["KSGR"]
         }
       ],
-      "ssa": {
-        "altimeters": ["KIAH", "KHOU", "KBPT", "KCLL"]
-      }
+      "ssa": { "system_altimeter": "KIAH", "altimeters": ["KIAH", "KHOU", "KBPT", "KCLL"] }
     }
   },
   "handoff_ids": [

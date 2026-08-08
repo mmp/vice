@@ -62,6 +62,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KSLC" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

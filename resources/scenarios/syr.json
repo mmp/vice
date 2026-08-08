@@ -1877,7 +1877,6 @@
     "BTV250070": "N043.33.41.745,W074.46.42.035"
   },
   "name": "KSYR",
-  "primary_airport": "KSYR",
   "scenarios": {
     "SYR WEST": {
       "arrival_runways": [

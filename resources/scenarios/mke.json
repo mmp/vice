@@ -1827,7 +1827,6 @@
   },
   "default_scenario": "Milwaukee North Flow",
   "name": "KMKE",
-  "primary_airport": "KMKE",
   "reporting_points": ["SUDDS", "ZOWRO", "BRAVE", "BAE", "RAYNR"],
   "scenarios": {
     "Milwaukee North Flow": {

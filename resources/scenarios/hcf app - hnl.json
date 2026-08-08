@@ -2874,7 +2874,6 @@
   },
   "default_scenario": "HNL - 4/8",
   "name": "HCF APP",
-  "primary_airport": "PHNL",
   "scenarios": {
     "HNL - 4/8": {
       "arrival_runways": [

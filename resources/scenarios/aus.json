@@ -1357,7 +1357,6 @@
     "_AUS_36R": "N30.10.44.748,W97.39.26.092"
   },
   "name": "KAUS",
-  "primary_airport": "KAUS",
   "scenarios": {
     "AUS TRACON South": {
       "airspace": {

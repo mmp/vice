@@ -312,7 +312,6 @@
       ]
     }
   },
-  "primary_airport": "KBGR",
   "default_scenario": "Land South",
   "name": "BGR",
   "vfr_reporting_points": [

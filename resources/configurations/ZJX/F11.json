@@ -1717,9 +1717,7 @@
       "display_rnav_symbol": true
     },
     "lists": {
-      "ssa": {
-        "altimeters": ["KMCO", "KSFB", "KORL", "KMLB", "KLEE"]
-      },
+      "ssa": { "system_altimeter": "KMCO", "altimeters": ["KMCO", "KSFB", "KORL", "KMLB", "KLEE"] },
       "coordination": [
         {
           "name": ".      ORL COORD",

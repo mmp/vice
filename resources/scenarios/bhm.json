@@ -737,7 +737,6 @@
   },
   "magnetic_adjustment": -1,
   "name": "KBHM",
-  "primary_airport": "KBHM",
   "reporting_points": ["KIOSK", "DIODE", "NULLS", "SHIMS", "NESTS", "LYMPH", "HERKO", "WANDS"],
   "scenarios": {
     "KBHM Runway 24": {

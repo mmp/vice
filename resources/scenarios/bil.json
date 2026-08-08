@@ -234,7 +234,6 @@
   },
   "default_scenario": "Land West",
   "name": "BIL",
-  "primary_airport": "KBIL",
   "scenarios": {
     "Land West": {
       "arrival_runways": [

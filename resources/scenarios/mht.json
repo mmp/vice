@@ -775,7 +775,6 @@
   },
   "default_scenario": "KMHT South",
   "name": "Manchester Area",
-  "primary_airport": "KMHT",
   "scenarios": {
     "KMHT South": {
       "arrival_runways": [

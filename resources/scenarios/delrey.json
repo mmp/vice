@@ -6345,7 +6345,6 @@
     "_HHR": "N033.55.22.787,W118.20.05.886"
   },
   "name": "Del Rey Area",
-  "primary_airport": "KLAX",
   "scenarios": {
     "Del Rey - LAXE/SNAS": {
       "arrival_runways": [

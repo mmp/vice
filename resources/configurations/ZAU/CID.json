@@ -23,6 +23,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KCID" } },
     "configurations": {
       "27X": {
         "inbound_assignments": {

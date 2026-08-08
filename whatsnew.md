@@ -24,3 +24,6 @@
   - Added "fix_pair_configuration" to assign a flight's initial owning position from its entry/exit fix pair, per configuration plan, with reassignment rules (altitude, aircraft class, callsign, active runway) and RNAV route designation (radarcontacto)
   - Added "tcp_assignment_classes" and "automatic_handoff_classes" to name aircraft classes for fix-pair and handoff-filter matching (radarcontacto)
   - Added "automatic_scratchpad_assignment" to default a flight's scratchpads from its fixes, altitude, and flight type (radarcontacto)
+  - Added "traffic_routes" to airports, giving the routes traffic between them and specific other airports flies when a scenario is flown from a timetable or historical data
+  - Added "aircraft" to arrivals, restricting which classes of aircraft an arrival carries
+  - Removed "primary_airport"; replaced with facility "weather_station", "lists"."ssa"."system_altimeter" (overridable per area)

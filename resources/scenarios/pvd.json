@@ -1989,7 +1989,6 @@
     "PVD_ILS23_10": "N041.54.03.479,W071.16.40.854"
   },
   "name": "KPVD",
-  "primary_airport": "KPVD",
   "scenarios": {
     "PVD RY23": {
       "arrival_runways": [

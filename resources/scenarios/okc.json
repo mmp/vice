@@ -1569,7 +1569,6 @@
   },
   "default_scenario": "KOKC South",
   "name": "KOKC",
-  "primary_airport": "KOKC",
   "scenarios": {
     "KOKC South": {
       "arrival_runways": [

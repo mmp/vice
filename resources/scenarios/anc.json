@@ -1093,7 +1093,6 @@
   },
   "default_scenario": "ANC 07/33",
   "name": "A11",
-  "primary_airport": "PANC",
   "scenarios": {
     "ANC 07/33": {
       "arrival_runways": [

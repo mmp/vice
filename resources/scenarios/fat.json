@@ -687,7 +687,6 @@
   },
   "default_scenario": "FAT 29",
   "name": "FAT TRACON",
-  "primary_airport": "KFAT",
   "scenarios": {
     "FAT 29": {
       "arrival_runways": [

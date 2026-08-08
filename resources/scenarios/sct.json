@@ -13395,7 +13395,6 @@
   },
   "default_scenario": "SCT - LAW SANW SNAS BUR8/15",
   "name": "SoCal Combined",
-  "primary_airport": "KLAX",
   "scenarios": {
     "SCT - LAW SANW SNAS BUR8/15": {
       "arrival_runways": [

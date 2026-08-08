@@ -44419,7 +44419,6 @@
     "06A-13": "N032.27.49.784,W085.41.02.200"
   },
   "name": "KATL",
-  "primary_airport": "KATL",
   "scenarios": {
     "A80 Combined (West)": {
       "airspace": {

@@ -5632,7 +5632,6 @@
   "fixes": {},
   "reporting_points": ["HHOOD", "KRATR", "VANTZ"],
   "name": "P80",
-  "primary_airport": "KPDX",
   "scenarios": {
     "KPDX West": {
       "arrival_runways": [

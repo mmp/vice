@@ -11230,7 +11230,6 @@
     "_DEN_35R": "N39.49.55.270,W104.38.30.043"
   },
   "name": "KDEN",
-  "primary_airport": "KDEN",
   "scenarios": {
     "North Calm": {
       "arrival_runways": [

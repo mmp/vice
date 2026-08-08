@@ -4519,7 +4519,6 @@
     "_rvrd14": "N039.49.23.699,W075.22.51.176"
   },
   "name": "KPHL",
-  "primary_airport": "KPHL",
   "reporting_points": ["BOJID", "HIFAL", "JIIMS", "PAATS", "PSOUT", "SPUDS", "TRAGG"],
   "scenarios": {
     "KPHL 27R/17 Final": {

@@ -12,6 +12,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KASE" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

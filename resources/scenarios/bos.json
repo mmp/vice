@@ -1,7 +1,6 @@
 {
   "tracon": "A90",
   "name": "BOS Area",
-  "primary_airport": "KBOS",
   "default_scenario": "BOS 4/9",
   "airports": {
     "KORH": {

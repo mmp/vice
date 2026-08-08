@@ -427,7 +427,6 @@
   },
   "default_scenario": "TYS Dep 23L Land 23L/23R",
   "name": "KTYS",
-  "primary_airport": "KTYS",
   "scenarios": {
     "TYS Dep 23L Land 23L/23R": {
       "configuration": "TYS",

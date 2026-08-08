@@ -17,6 +17,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KTYS" } },
     "configurations": {
       "TYS": {
         "departure_assignments": {

@@ -13,6 +13,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KCPR" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

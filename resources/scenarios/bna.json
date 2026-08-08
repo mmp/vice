@@ -1499,7 +1499,6 @@
   },
   "default_scenario": "KBNA South",
   "name": "KBNA",
-  "primary_airport": "KBNA",
   "scenarios": {
     "KBNA South": {
       "arrival_runways": [

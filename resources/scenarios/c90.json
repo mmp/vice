@@ -12304,7 +12304,6 @@
     "_PWK_16": "N042.07.23.353,W087.54.24.147"
   },
   "name": "KORD",
-  "primary_airport": "KORD",
   "scenarios": {
     "KORD West": {
       "airspace": {

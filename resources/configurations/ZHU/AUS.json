@@ -240,6 +240,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KAUS" },
       "coordination": [
         {
           "name": "SAN MARCOS",

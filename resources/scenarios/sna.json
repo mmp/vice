@@ -4858,7 +4858,6 @@
   ],
   "default_scenario": "Coast - SNAS/LAXW",
   "name": "Coast Area",
-  "primary_airport": "KSNA",
   "scenarios": {
     "Coast - SNAS/LAXW": {
       "airspace": {

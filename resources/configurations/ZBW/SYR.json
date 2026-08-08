@@ -224,6 +224,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KSYR" },
       "coordination": [
         {
           "name": "GRIFFISS",

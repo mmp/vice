@@ -1563,7 +1563,6 @@
   },
   "default_scenario": "KCHS North",
   "name": "KCHS",
-  "primary_airport": "KCHS",
   "scenarios": {
     "KCHS North": {
       "arrival_runways": [

@@ -27,6 +27,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KSAV" } },
     "configurations": {
       "10X": {
         "inbound_assignments": {

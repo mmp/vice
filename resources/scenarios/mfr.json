@@ -567,7 +567,6 @@
   },
   "default_scenario": "14",
   "name": "Medford",
-  "primary_airport": "KMFR",
   "scenarios": {
     "14": {
       "configuration": "RM",

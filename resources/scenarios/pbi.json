@@ -2935,7 +2935,6 @@
   },
   "name": "PBI TRACON",
   "default_scenario": "PBI Main - East",
-  "primary_airport": "KDJT",
   "scenarios": {
     "PBI Main - East": {
       "arrival_runways": [

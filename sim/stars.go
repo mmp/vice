@@ -53,6 +53,12 @@ type FacilityAdaptation struct {
 	Scratchpads       map[string]string                    `json:"scratchpads"`
 	SignificantPoints map[string]SignificantPoint          `json:"significant_points"`
 
+	// WeatherStation is the METAR station standing in for the facility when no
+	// gridded weather is available for it: winds aloft are synthesized from its
+	// observations and pattern traffic consults it when its own airport has no
+	// METAR. Defaults to the SSA system altimeter.
+	WeatherStation string `json:"weather_station,omitempty"`
+
 	// Airports are fix-pair endpoints that name an airport rather than a
 	// significant point.
 	Airports map[string]*FixPairAirport `json:"airports,omitempty"`
@@ -152,8 +158,12 @@ type FacilityAdaptation struct {
 	Lists struct {
 		Coordination []CoordinationList `json:"coordination"`
 		SSA          struct {
-			Altimeters        []string `json:"altimeters"`
-			FlashOnATISUpdate bool     `json:"flash_on_atis_update"`
+			Altimeters []string `json:"altimeters"`
+			// SystemAltimeter is the station whose setting the SSA ALTSTG field
+			// shows (5-55); it also heads the altimeter list when none is
+			// adapted. A STARSArea may override it for its positions.
+			SystemAltimeter   string `json:"system_altimeter,omitempty"`
+			FlashOnATISUpdate bool   `json:"flash_on_atis_update"`
 		} `json:"ssa"`
 		VFR struct {
 			Format string `json:"format"`
@@ -238,18 +248,21 @@ type STARSController struct {
 // within a TRACON area. Controller-specific settings in Controllers
 // override or append these defaults.
 type STARSArea struct {
-	DefaultAirport                  string              `json:"default_airport,omitempty"` // CRDA default airport for this area
-	VideoMapFile                    string              `json:"video_map_file,omitempty"`
-	VideoMapNames                   []string            `json:"video_maps,omitempty"`
-	DefaultMaps                     []string            `json:"default_maps,omitempty"`
-	Center                          math.Point2LL       `json:"-"`
-	CenterString                    string              `json:"center,omitempty"`
-	Range                           float32             `json:"range,omitempty"`
-	MonitoredBeaconCodeBlocksString *string             `json:"beacon_code_blocks,omitempty"`
-	MonitoredBeaconCodeBlocks       []av.Squawk         `json:"-"`
-	Altimeters                      []string            `json:"altimeters,omitempty"`
-	Scratchpads                     map[string]string   `json:"scratchpads,omitempty"`
-	AirspaceAwareness               []AirspaceAwareness `json:"airspace_awareness,omitempty"`
+	DefaultAirport                  string        `json:"default_airport,omitempty"` // CRDA default airport for this area
+	VideoMapFile                    string        `json:"video_map_file,omitempty"`
+	VideoMapNames                   []string      `json:"video_maps,omitempty"`
+	DefaultMaps                     []string      `json:"default_maps,omitempty"`
+	Center                          math.Point2LL `json:"-"`
+	CenterString                    string        `json:"center,omitempty"`
+	Range                           float32       `json:"range,omitempty"`
+	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks,omitempty"`
+	MonitoredBeaconCodeBlocks       []av.Squawk   `json:"-"`
+	Altimeters                      []string      `json:"altimeters,omitempty"`
+	// SystemAltimeter overrides the facility's SSA system altimeter for
+	// positions in this area.
+	SystemAltimeter   string              `json:"system_altimeter,omitempty"`
+	Scratchpads       map[string]string   `json:"scratchpads,omitempty"`
+	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness,omitempty"`
 }
 
 // CurrentDatablockClockPhase returns the current clock phase (1-4)

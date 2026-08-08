@@ -1043,7 +1043,6 @@
     "_SSF_32": "29.341560966666666,98.47202061666667"
   },
   "name": "KSAT",
-  "primary_airport": "KSAT",
   "scenarios": {
     "SAT DEP 13R + 04 LAND 13R": {
       "arrival_runways": [

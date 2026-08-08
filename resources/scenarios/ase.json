@@ -341,7 +341,6 @@
     "_ASE": "39.223202,-106.869003"
   },
   "name": "KASE",
-  "primary_airport": "KASE",
   "scenarios": {
     "VMC 15": {
       "airspace": {

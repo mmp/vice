@@ -6462,7 +6462,6 @@
   },
   "magnetic_adjustment": 2,
   "name": "KAAC",
-  "primary_airport": "KAAC",
   "reporting_points": ["ATOKA", "AVANT", "BARTS", "COLIN", "KILLR", "MAYES", "NOBLE", "PRYOR", "REELI", "SHAWN"],
   "scenarios": {
     "West": {

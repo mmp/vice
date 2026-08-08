@@ -89,7 +89,8 @@ import (
 // 79: backfill ERAM BeaconCodeView prefs again (makeDefaultPreferences never initialized them, so 76-78 saves have them zero-valued)
 // 80: GetTrafficCounts RPC
 // 81: ScenarioSpec.HistoricalFlightInterval replaced by HistoricalFlightIntervals, the stretches of time a facility's flight data actually covers
-const ViceSerializeVersion = 81
+// 82: primary airport replaced by per-purpose settings: facility weather_station and system_altimeter, LaunchConfig.TimetableAirport
+const ViceSerializeVersion = 82
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

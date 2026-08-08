@@ -35,7 +35,7 @@ type Provider struct {
 // servicing calling code requests.
 type weatherBackend interface {
 	getPrecipURL(facility string, t time.Time) (string, time.Time, error)
-	getAtmosGrid(facility string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error)
+	getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error)
 }
 
 type atmosGridResult struct {
@@ -46,9 +46,9 @@ type atmosGridResult struct {
 }
 
 type atmosGridCacheKey struct {
-	facility       string
-	primaryAirport string
-	time           time.Time
+	facility string
+	station  string
+	time     time.Time
 }
 
 const (
@@ -114,33 +114,33 @@ func (p *Provider) GetPrecipURL(facility string, t time.Time) (string, time.Time
 // GetAtmosGrid returns atmospheric grid for simulation.
 // GCS and RPC provide full spatial grids; local fallback provides a single
 // averaged sample. Returns atmos, its time, and the next time in the series.
-// If primaryAirport is non-empty and no atmos data is available, creates a
-// fallback grid from the primary airport's METAR wind data.
-func (p *Provider) GetAtmosGrid(facility string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error) {
-	if ar, ok := p.lookupAtmosGridCache(facility, t, primaryAirport); ok {
+// If station is non-empty and no atmos data is available, creates a
+// fallback grid from that station's METAR wind data.
+func (p *Provider) GetAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
+	if ar, ok := p.lookupAtmosGridCache(facility, t, station); ok {
 		return ar.atmos, ar.time, ar.nextTime, nil
 	}
 
-	ar := p.getAtmosGridFromBackend(facility, t, primaryAirport)
+	ar := p.getAtmosGridFromBackend(facility, t, station)
 	if ar.err != nil && p.backend != p.resources {
 		p.lg.Warnf("Falling back to local atmos resources: %v", ar.err)
-		ar.atmos, ar.time, ar.nextTime, ar.err = p.resources.getAtmosGrid(facility, t, primaryAirport)
+		ar.atmos, ar.time, ar.nextTime, ar.err = p.resources.getAtmosGrid(facility, t, station)
 	}
 
 	if ar.err == nil {
-		p.cacheAtmosGrid(facility, primaryAirport, ar)
+		p.cacheAtmosGrid(facility, station, ar)
 	}
 	return ar.atmos, ar.time, ar.nextTime, ar.err
 }
 
-func (p *Provider) lookupAtmosGridCache(facility string, t time.Time, primaryAirport string) (atmosGridResult, bool) {
+func (p *Provider) lookupAtmosGridCache(facility string, t time.Time, station string) (atmosGridResult, bool) {
 	if p.atmosGridCache == nil {
 		return atmosGridResult{}, false
 	}
 
 	t = t.UTC()
 	for _, key := range p.atmosGridCache.Keys() {
-		if key.facility != facility || key.primaryAirport != primaryAirport {
+		if key.facility != facility || key.station != station {
 			continue
 		}
 
@@ -159,23 +159,23 @@ func (p *Provider) lookupAtmosGridCache(facility string, t time.Time, primaryAir
 	return atmosGridResult{}, false
 }
 
-func (p *Provider) cacheAtmosGrid(facility, primaryAirport string, ar atmosGridResult) {
+func (p *Provider) cacheAtmosGrid(facility, station string, ar atmosGridResult) {
 	if p.atmosGridCache == nil || ar.atmos == nil || ar.time.IsZero() {
 		return
 	}
 	key := atmosGridCacheKey{
-		facility:       facility,
-		primaryAirport: primaryAirport,
-		time:           ar.time.UTC(),
+		facility: facility,
+		station:  station,
+		time:     ar.time.UTC(),
 	}
 	ar.time = ar.time.UTC()
 	ar.nextTime = ar.nextTime.UTC()
 	p.atmosGridCache.Add(key, ar)
 }
 
-func (p *Provider) getAtmosGridFromBackend(facility string, t time.Time, primaryAirport string) atmosGridResult {
+func (p *Provider) getAtmosGridFromBackend(facility string, t time.Time, station string) atmosGridResult {
 	if p.backend == p.resources {
-		atmos, atmosTime, nextTime, err := p.backend.getAtmosGrid(facility, t, primaryAirport)
+		atmos, atmosTime, nextTime, err := p.backend.getAtmosGrid(facility, t, station)
 		return atmosGridResult{atmos: atmos, time: atmosTime, nextTime: nextTime, err: err}
 	}
 
@@ -184,7 +184,7 @@ func (p *Provider) getAtmosGridFromBackend(facility string, t time.Time, primary
 	// let the normal resources fallback path handle the request.
 	ch := make(chan atmosGridResult, 1)
 	go func() {
-		atmos, atmosTime, nextTime, err := p.backend.getAtmosGrid(facility, t, primaryAirport)
+		atmos, atmosTime, nextTime, err := p.backend.getAtmosGrid(facility, t, station)
 		ch <- atmosGridResult{atmos: atmos, time: atmosTime, nextTime: nextTime, err: err}
 	}()
 
@@ -292,10 +292,10 @@ func (g *gcsBackend) getPrecipURL(facility string, t time.Time) (string, time.Ti
 	return url, nextTime, nil
 }
 
-func (g *gcsBackend) getAtmosGrid(facility string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error) {
+func (g *gcsBackend) getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
 	times, ok := g.atmosManifest.GetTimestamps(facility)
 	if !ok {
-		atmos, err := createFallbackAtmos(primaryAirport, t)
+		atmos, err := createFallbackAtmos(station, facility, t)
 		return atmos, time.Time{}, time.Time{}, err
 	}
 
@@ -335,7 +335,7 @@ type PrecipURL struct {
 type GetAtmosArgs struct {
 	Facility       string
 	Time           time.Time
-	PrimaryAirport string
+	WeatherStation string
 }
 
 type GetAtmosResult struct {
@@ -400,8 +400,8 @@ func (r *rpcBackend) getPrecipURL(facility string, t time.Time) (string, time.Ti
 	return result.URL, result.NextTime, nil
 }
 
-func (r *rpcBackend) getAtmosGrid(facility string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error) {
-	args := GetAtmosArgs{Facility: facility, Time: t, PrimaryAirport: primaryAirport}
+func (r *rpcBackend) getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
+	args := GetAtmosArgs{Facility: facility, Time: t, WeatherStation: station}
 	var result GetAtmosResult
 	if err := r.call(GetAtmosGridRPC, args, &result); err != nil {
 		return nil, time.Time{}, time.Time{}, err
@@ -430,11 +430,11 @@ func (r *resourcesBackend) getPrecipURL(facility string, t time.Time) (string, t
 	return "", time.Time{}, errors.New("precipitation data not available in offline mode")
 }
 
-func (r *resourcesBackend) getAtmosGrid(facility string, tGet time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error) {
+func (r *resourcesBackend) getAtmosGrid(facility string, tGet time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
 	atmosByTime, err := GetAtmosByTime(facility)
 	if err != nil {
 		// No atmos data for this facility; try to create fallback from METAR.
-		atmos, fallbackErr := createFallbackAtmos(primaryAirport, tGet)
+		atmos, fallbackErr := createFallbackAtmos(station, facility, tGet)
 		if fallbackErr != nil {
 			return nil, time.Time{}, time.Time{}, fmt.Errorf("%s: no atmos data and fallback failed: %w", facility, fallbackErr)
 		}
@@ -478,23 +478,29 @@ func (r *resourcesBackend) getAtmosGrid(facility string, tGet time.Time, primary
 	return &atmosByPointSOA, t0, t1, nil
 }
 
-func createFallbackAtmos(primaryAirport string, t time.Time) (*AtmosByPointSOA, error) {
-	metarMap, err := GetMETAR([]string{primaryAirport})
+// createFallbackAtmos synthesizes an atmospheric grid for facility from the
+// observations at its weather station. The single sample stack sits at the
+// facility's center rather than at the station, since it stands in for the
+// weather over the whole facility.
+func createFallbackAtmos(station, facility string, t time.Time) (*AtmosByPointSOA, error) {
+	fac, ok := av.DB.LookupFacility(facility)
+	if !ok {
+		return nil, fmt.Errorf("%s: unknown facility", facility)
+	}
+
+	metarMap, err := GetMETAR([]string{station})
 	if err != nil {
 		return nil, err
 	}
-	metarSOA, ok := metarMap[primaryAirport]
+	metarSOA, ok := metarMap[station]
 	if !ok {
-		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
+		return nil, fmt.Errorf("no METAR data for %s", station)
 	}
 
-	metars := metarSOA.Decode(primaryAirport)
+	metars := metarSOA.Decode(station)
 	if len(metars) == 0 {
-		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
+		return nil, fmt.Errorf("no METAR data for %s", station)
 	}
 
-	metar := METARForTime(metars, t)
-	ap := av.DB.Airports[primaryAirport]
-
-	return MakeFallbackAtmosFromMETAR(metar, ap.Location)
+	return MakeFallbackAtmosFromMETAR(METARForTime(metars, t), fac.Center())
 }

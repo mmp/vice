@@ -809,7 +809,6 @@
   "default_scenario": "ABQ - East Flow",
   "magnetic_adjustment": -8,
   "name": "KABQ",
-  "primary_airport": "KABQ",
   "scenarios": {
     "ABQ - East Flow": {
       "arrival_runways": [

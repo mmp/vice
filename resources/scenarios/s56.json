@@ -1119,7 +1119,6 @@
   },
   "default_scenario": "North Flow SIMULs",
   "name": "S56",
-  "primary_airport": "KSLC",
   "scenarios": {
     "North Flow SIMULs": {
       "arrival_runways": [

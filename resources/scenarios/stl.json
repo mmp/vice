@@ -5495,7 +5495,6 @@
   },
   "default_scenario": "St. Louis Southeast",
   "name": "KSTL",
-  "primary_airport": "KSTL",
   "vfr_reporting_points": [
     {
       "description": "St. Louis Airport",

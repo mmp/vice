@@ -1099,6 +1099,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KORD" },
       "coordination": [
         {
           "name": "PWK",

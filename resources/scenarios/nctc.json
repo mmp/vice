@@ -5178,7 +5178,6 @@
   },
   "default_scenario": "Area C - SFOW",
   "name": "NCT Area C",
-  "primary_airport": "KOAK",
   "scenarios": {
     "Area C - SFOW": {
       "arrival_runways": [

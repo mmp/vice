@@ -407,6 +407,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KLAS" },
       "coordination": [
         {
           "name": "HENDERSON",

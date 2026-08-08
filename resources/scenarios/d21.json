@@ -1,7 +1,6 @@
 {
   "tracon": "D21",
   "name": "D21",
-  "primary_airport": "KDTW",
   "airports": {
     "KDTW": {
       "approaches": {

@@ -4569,7 +4569,6 @@
   },
   "default_scenario": "Area B - SFOW (DEP 01s)",
   "name": "NCT Area B",
-  "primary_airport": "KSFO",
   "scenarios": {
     "Area B - SFOW (RWYS 28)": {
       "center": "KSFO",

@@ -13,7 +13,8 @@
     "1M": {
       "frequency": 124300,
       "callsign": "Radar Medford (MFR)",
-      "radio_name": "Cascade Approach"
+      "radio_name": "Cascade Approach",
+      "area": "2"
     },
     "1R": {
       "frequency": 119400,
@@ -72,7 +73,11 @@
           "HOSPITAL APPROACHES",
           "EUG DOLPHIN MOA",
           "STADIUMS"
-        ]
+        ],
+        "system_altimeter": "KEUG"
+      },
+      "2": {
+        "system_altimeter": "KMFR"
       }
     },
     "center": "KEUG",
@@ -83,7 +88,10 @@
           "id": "1R",
           "airports": ["KMFR"]
         }
-      ]
+      ],
+      "ssa": {
+        "system_altimeter": "KEUG"
+      }
     },
     "airspace_awareness": [
       {

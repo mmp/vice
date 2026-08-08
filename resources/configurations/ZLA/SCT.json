@@ -2205,7 +2205,8 @@
           "711S EOVM SCT",
           "300S EMPB LW SCT",
           "500S SB WEST SCT"
-        ]
+        ],
+        "system_altimeter": "KBUR"
       },
       "2": {
         "center": "N034.01.46.059,W117.57.17.869",
@@ -2260,7 +2261,8 @@
           "204S PM INB SCT",
           "740S EMERGENCY SCT",
           "221S LAA GPS SCT"
-        ]
+        ],
+        "system_altimeter": "KLAX"
       },
       "3": {
         "airspace_awareness": [
@@ -2346,7 +2348,8 @@
           "012S TOWER GPS SCT",
           "323S PSP SPECIAL RNAV 31L SCT",
           "240S LAX W SCT"
-        ]
+        ],
+        "system_altimeter": "KONT"
       },
       "4": {
         "airspace_awareness": [
@@ -2446,7 +2449,8 @@
           "",
           "740S EMERGENCY SCT",
           "724S AIRWAY SCT"
-        ]
+        ],
+        "system_altimeter": "KSNA"
       },
       "5": {
         "center": "N032.58.54.191,W117.06.14.057",
@@ -2503,7 +2507,8 @@
           "564S SAN 2 SCT",
           "",
           "560S SAN 296 SCT"
-        ]
+        ],
+        "system_altimeter": "KSAN"
       },
       "6": {
         "video_maps": [
@@ -2554,7 +2559,8 @@
         },
         "center": "N033.41.38.744,W118.21.53.717",
         "range": 35,
-        "altimeters": ["KHHR", "KLAX", "KLGB", "KSMO", "KTOA"]
+        "altimeters": ["KHHR", "KLAX", "KLGB", "KSMO", "KTOA"],
+        "system_altimeter": "KLAX"
       }
     },
     "lists": {
@@ -2609,7 +2615,10 @@
           "id": "56",
           "airports": ["KNKX"]
         }
-      ]
+      ],
+      "ssa": {
+        "system_altimeter": "KLAX"
+      }
     },
     "datablocks": {
       "clock_phase": {

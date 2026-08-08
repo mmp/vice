@@ -2661,7 +2661,6 @@
   },
   "magnetic_adjustment": -2,
   "name": "KDAB",
-  "primary_airport": "KDAB",
   "scenarios": {
     "Daytona East": {
       "arrival_runways": [

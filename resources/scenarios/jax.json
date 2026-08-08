@@ -3925,7 +3925,6 @@
   },
   "default_scenario": "KJAX East, No Vitts",
   "name": "KJAX",
-  "primary_airport": "KJAX",
   "reporting_points": ["BASSS", "WILON", "ESENT", "CRG", "KJAX", "KFHB", "KNIP", "KVQQ", "KCRG", "OCF", "GNV", "OMN"],
   "vfr_reporting_points": [
     {

@@ -576,7 +576,6 @@
   },
   "magnetic_adjustment": -1,
   "name": "KAVL",
-  "primary_airport": "KAVL",
   "scenarios": {
     "KAVL Land and Depart Runway 17": {
       "airspace": {

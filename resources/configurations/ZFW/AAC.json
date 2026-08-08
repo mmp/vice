@@ -67,6 +67,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KAAC" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

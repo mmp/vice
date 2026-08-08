@@ -182,25 +182,40 @@ func normalizeTrafficSourceConfig(spec *server.ScenarioSpec) {
 	}
 
 	if len(spec.Timetables) == 0 {
-		lc.TimetableID = ""
+		lc.TimetableID, lc.TimetableAirport = "", ""
 		return
 	}
 
 	for _, timetable := range spec.Timetables {
-		if timetable.ID == lc.TimetableID {
+		if timetable.ID == lc.TimetableID && timetable.Airport == lc.TimetableAirport {
 			return
 		}
 	}
-	lc.TimetableID = spec.Timetables[0].ID
+	lc.TimetableID, lc.TimetableAirport = spec.Timetables[0].ID, spec.Timetables[0].Airport
 }
 
+// A scenario may offer timetables for more than one of its airports, so it
+// takes both the id and the airport to name one.
 func selectedTimetableSummary(spec *server.ScenarioSpec) (sim.TimetableSummary, bool) {
 	for _, timetable := range spec.Timetables {
-		if timetable.ID == spec.LaunchConfig.TimetableID {
+		if timetable.ID == spec.LaunchConfig.TimetableID &&
+			timetable.Airport == spec.LaunchConfig.TimetableAirport {
 			return timetable, true
 		}
 	}
 	return sim.TimetableSummary{}, false
+}
+
+// timetableLabel names a timetable in the picker. Timetables at different
+// airports may share a name, so the airport goes in the label when the
+// scenario offers more than one airport's.
+func timetableLabel(spec *server.ScenarioSpec, timetable sim.TimetableSummary) string {
+	for _, other := range spec.Timetables {
+		if other.Airport != timetable.Airport {
+			return av.TrimICAOPrefix(timetable.Airport) + " " + timetable.Name
+		}
+	}
+	return timetable.Name
 }
 
 // timetableStartMinute is the sim start time as a local clock time at the
@@ -221,8 +236,8 @@ func (c *NewSimConfiguration) trafficSourceTooltip(source sim.TrafficSource, spe
 		return "Traffic generated from the scenario's own definitions, at the arrival\n" +
 			"and departure rates you set."
 	case sim.TrafficSourceTimetable:
-		return "Fly a curated daily timetable for " + spec.PrimaryAirport + ", starting at the\n" +
-			"selected time. Overflights remain randomly generated."
+		return "Fly a curated daily timetable, starting at the selected time.\n" +
+			"Overflights remain randomly generated."
 	case sim.TrafficSourceHistorical:
 		return "Fly the traffic that really operated at " + c.NewSimRequest.Facility +
 			" on the selected date,\nfrom recorded flight data."
@@ -258,12 +273,11 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec, p p
 		imgui.Text("Timetable:")
 		imgui.SameLine()
 		imgui.SetNextItemWidth(260)
-		if imgui.BeginCombo("##timetable", selected.Name) {
+		if imgui.BeginCombo("##timetable", timetableLabel(spec, selected)) {
 			for _, timetable := range spec.Timetables {
-				isSelected := timetable.ID == lc.TimetableID
-				if imgui.SelectableBoolV(timetable.Name, isSelected, 0, imgui.Vec2{}) {
-					lc.TimetableID = timetable.ID
-					selected = timetable
+				isSelected := timetable.ID == lc.TimetableID && timetable.Airport == lc.TimetableAirport
+				if imgui.SelectableBoolV(timetableLabel(spec, timetable), isSelected, 0, imgui.Vec2{}) {
+					lc.TimetableID, lc.TimetableAirport = timetable.ID, timetable.Airport
 				}
 				if isSelected {
 					imgui.SetItemDefaultFocus()
@@ -450,7 +464,7 @@ func (c *NewSimConfiguration) drawTrafficPlotAxes(drawList *imgui.DrawList, spec
 	labelColor := imgui.ColorU32Vec4(imgui.Vec4{1, 1, 1, .5})
 
 	start := c.NewSimRequest.StartTime.Truncate(time.Minute)
-	clock := makeAirportClock(spec.PrimaryAirport)
+	clock := makeScenarioClock(spec)
 	for minute := range window {
 		t := start.Add(time.Duration(minute) * time.Minute).In(clock.loc)
 		if t.Minute()%30 != 0 {
@@ -473,7 +487,7 @@ func (c *NewSimConfiguration) drawTrafficPlotAxes(drawList *imgui.DrawList, spec
 
 func (c *NewSimConfiguration) trafficPlotTime(spec *server.ScenarioSpec, minute int) string {
 	t := c.NewSimRequest.StartTime.Truncate(time.Minute).Add(time.Duration(minute) * time.Minute)
-	return makeAirportClock(spec.PrimaryAirport).format(t, "15:04")
+	return makeScenarioClock(spec).format(t, "15:04")
 }
 
 func drawTrafficPlotLegend(color imgui.Vec4, label string, count int) {
@@ -555,7 +569,7 @@ func (c *NewSimConfiguration) updateTrafficPreview(spec *server.ScenarioSpec) {
 	if spec.LaunchConfig.TrafficSource == sim.TrafficSourceTimetable {
 		// Where a timetable's day starts, worked out the same way Start() works
 		// it out, so that the preview and the sim it previews agree.
-		minutes, err := timetableStartMinute(c.NewSimRequest.StartTime, spec.PrimaryAirport)
+		minutes, err := timetableStartMinute(c.NewSimRequest.StartTime, spec.LaunchConfig.TimetableAirport)
 		if err != nil {
 			c.trafficPreviewKey, c.trafficPreviewError = key, err
 			c.trafficPreviewRetryAt = time.Now().Add(trafficPreviewRetryDelay)
@@ -646,24 +660,28 @@ func (c *NewSimConfiguration) initDefaultWindDirection() {
 		return
 	}
 
-	// Calculate average runway heading
+	// Average the headings of every runway the scenario works, at all of its
+	// airports: they are aligned with the prevailing wind, so their average
+	// points into it.
 	var sumRunwayVecs [2]float32
-	ap := c.ScenarioSpec.PrimaryAirport
-	if dbap, ok := av.DB.Airports[ap]; ok {
+	addRunway := func(airport string, id av.RunwayID) {
+		dbap, ok := av.DB.Airports[airport]
+		if !ok {
+			return
+		}
 		for _, rwy := range dbap.Runways {
-			if slices.ContainsFunc(c.ScenarioSpec.DepartureRunways, func(r sim.DepartureRunway) bool {
-				return r.Airport == ap && r.Runway.Base() == rwy.Id
-			}) {
+			if rwy.Id == id.Base() {
 				// HeadingVector expects TrueHeading; we pass magnetic headings here,
 				// but the constant magnetic variation cancels in the vector average.
 				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(math.TrueHeading(rwy.Heading)))
 			}
-			if slices.ContainsFunc(c.ScenarioSpec.ArrivalRunways, func(r sim.ArrivalRunway) bool {
-				return r.Airport == ap && r.Runway.Base() == rwy.Id
-			}) {
-				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(math.TrueHeading(rwy.Heading)))
-			}
 		}
+	}
+	for _, rwy := range c.ScenarioSpec.DepartureRunways {
+		addRunway(rwy.Airport, rwy.Runway)
+	}
+	for _, rwy := range c.ScenarioSpec.ArrivalRunways {
+		addRunway(rwy.Airport, rwy.Runway)
 	}
 
 	// Runway headings from the database are already magnetic, so the
@@ -1900,7 +1918,7 @@ func (c *NewSimConfiguration) Start(config *Config) error {
 	c.ScenarioSpec.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
 
 	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceTimetable {
-		minutes, err := timetableStartMinute(c.NewSimRequest.StartTime, c.ScenarioSpec.PrimaryAirport)
+		minutes, err := timetableStartMinute(c.NewSimRequest.StartTime, c.ScenarioSpec.LaunchConfig.TimetableAirport)
 		if err != nil {
 			return err
 		}
@@ -2840,11 +2858,14 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 	imgui.Separator()
 
 	// Start time and METAR section
+	// The airports the scenario is actually worked at come first; the rest are
+	// context.
+	scenarioAirports := c.ScenarioSpec.AllAirports()
 	metarAirports := util.SortedMapKeys(c.airportMETAR)
-	if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
-		metarAirports = slices.Delete(metarAirports, idx, idx+1)
-		metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
-	}
+	slices.SortStableFunc(metarAirports, func(a, b string) int {
+		return util.Select(slices.Contains(scenarioAirports, b), 1, 0) -
+			util.Select(slices.Contains(scenarioAirports, a), 1, 0)
+	})
 
 	if imgui.BeginTableV("timeAndMetar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
 		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 70, 0)
@@ -2856,7 +2877,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.Text("Start time:")
 		imgui.TableNextColumn()
 		metar := c.airportMETAR[metarAirports[0]]
-		clock := makeAirportClock(c.ScenarioSpec.PrimaryAirport)
+		clock := makeScenarioClock(c.ScenarioSpec)
 		TimePicker(&c.NewSimRequest.StartTime, clock, c.startTimeIntervals(c.ScenarioSpec), metar, ui.fixedFont)
 		imgui.SameLine()
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
@@ -2946,20 +2967,13 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpe
 	if len(airports) == 0 {
 		return
 	}
-	var ap string
-	if slices.Contains(airports, spec.PrimaryAirport) {
-		ap = spec.PrimaryAirport
-	} else {
-		ap = airports[0]
-	}
-
-	if apMETAR, ok := c.airportMETAR[ap]; ok && len(apMETAR) > 0 {
+	if apMETAR, ok := c.airportMETAR[airports[0]]; ok && len(apMETAR) > 0 {
 		intervals := c.startTimeIntervals(spec)
-		location := av.DB.AirportTimeZones[spec.PrimaryAirport]
+		clock := makeScenarioClock(spec)
 
 		// Sample using the combined weather filter (ground winds + winds
-		// aloft), retrying for a daytime start at the primary airport: a sim
-		// inadvertently started in the middle of the night has hardly any
+		// aloft), retrying for a daytime start where the scenario is flown: a
+		// sim inadvertently started in the middle of the night has hardly any
 		// traffic to work. If the weather filter only matches nighttime, the
 		// weather wins and the last sample is kept.
 		var sampledMETAR *wx.METAR
@@ -2986,10 +3000,10 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpe
 				startTime = startTime.Add(rand.Make().DurationRange(0, validDuration))
 			}
 
-			if location == nil {
+			if !clock.local {
 				break
 			}
-			if hour := startTime.In(location).Hour(); hour >= defaultStartLocalHourMin &&
+			if hour := startTime.In(clock.loc).Hour(); hour >= defaultStartLocalHourMin &&
 				hour < defaultStartLocalHourMax {
 				break
 			}

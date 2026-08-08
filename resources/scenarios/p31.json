@@ -815,7 +815,6 @@
   "default_scenario": "KPNS Depart 8 Land 17",
   "magnetic_adjustment": -2,
   "name": "KPNS",
-  "primary_airport": "KPNS",
   "scenarios": {
     "KPNS Depart 8 Land 17": {
       "arrival_runways": [

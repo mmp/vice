@@ -1541,55 +1541,133 @@
       "VLREE": "VLR"
     },
     "significant_points": {
-      "ALANN": { "short_name": "ALA" },
-      "ALCOA": { "short_name": "ALC" },
-      "ALLBE": { "short_name": "ALL" },
-      "AMAKR": { "short_name": "AMK" },
+      "ALANN": {
+        "short_name": "ALA"
+      },
+      "ALCOA": {
+        "short_name": "ALC"
+      },
+      "ALLBE": {
+        "short_name": "ALL"
+      },
+      "AMAKR": {
+        "short_name": "AMK"
+      },
       "AVE": {},
-      "BAART": { "short_name": "BAA" },
+      "BAART": {
+        "short_name": "BAA"
+      },
       "BSR": {},
-      "BEBOP": { "short_name": "BEB" },
-      "CINNY": { "short_name": "CIN" },
-      "DEDHD": { "short_name": "DHD" },
-      "DOSCO": { "short_name": "DOS" },
-      "EBAYE": { "short_name": "EBY" },
+      "BEBOP": {
+        "short_name": "BEB"
+      },
+      "CINNY": {
+        "short_name": "CIN"
+      },
+      "DEDHD": {
+        "short_name": "DHD"
+      },
+      "DOSCO": {
+        "short_name": "DOS"
+      },
+      "EBAYE": {
+        "short_name": "EBY"
+      },
       "ENI": {},
       "FMG": {},
-      "YYUNG": { "short_name": "FOI" },
+      "YYUNG": {
+        "short_name": "FOI"
+      },
       "FRA": {},
-      "FRAME": { "short_name": "FRM" },
-      "FROGO": { "short_name": "FRO" },
-      "FTHIL": { "short_name": "FTL" },
-      "GOBBS": { "short_name": "GOB" },
-      "GRTFL": { "short_name": "GRT" },
-      "HOBOA": { "short_name": "HOB" },
-      "HRNER": { "short_name": "HRN" },
-      "KAYEX": { "short_name": "KAY" },
-      "KTINA": { "short_name": "KTI" },
-      "LANDO": { "short_name": "LDO" },
-      "LIDAT": { "short_name": "LID" },
+      "FRAME": {
+        "short_name": "FRM"
+      },
+      "FROGO": {
+        "short_name": "FRO"
+      },
+      "FTHIL": {
+        "short_name": "FTL"
+      },
+      "GOBBS": {
+        "short_name": "GOB"
+      },
+      "GRTFL": {
+        "short_name": "GRT"
+      },
+      "HOBOA": {
+        "short_name": "HOB"
+      },
+      "HRNER": {
+        "short_name": "HRN"
+      },
+      "KAYEX": {
+        "short_name": "KAY"
+      },
+      "KTINA": {
+        "short_name": "KTI"
+      },
+      "LANDO": {
+        "short_name": "LDO"
+      },
+      "LIDAT": {
+        "short_name": "LID"
+      },
       "LIN": {},
-      "MACHU": { "short_name": "MAC" },
-      "MACUS": { "short_name": "MCS" },
-      "MOGEE": { "short_name": "MOG" },
-      "MOXEE": { "short_name": "MOX" },
-      "NTELL": { "short_name": "NTE" },
+      "MACHU": {
+        "short_name": "MAC"
+      },
+      "MACUS": {
+        "short_name": "MCS"
+      },
+      "MOGEE": {
+        "short_name": "MOG"
+      },
+      "MOXEE": {
+        "short_name": "MOX"
+      },
+      "NTELL": {
+        "short_name": "NTE"
+      },
       "OAL": {},
-      "OAKEY": { "short_name": "OKY" },
-      "ORRCA": { "short_name": "ORR" },
+      "OAKEY": {
+        "short_name": "OKY"
+      },
+      "ORRCA": {
+        "short_name": "ORR"
+      },
       "PXN": {},
-      "REBRG": { "short_name": "RBR" },
+      "REBRG": {
+        "short_name": "RBR"
+      },
       "RDD": {},
       "RBL": {},
-      "RALEY": { "short_name": "RLY" },
-      "PRNCS": { "short_name": "PRN" },
-      "SERFR": { "short_name": "SFR" },
-      "SIGNA": { "short_name": "SIG" },
-      "SYRAH": { "short_name": "SRH" },
-      "SUSEY": { "short_name": "SSY" },
-      "TARVR": { "short_name": "TAR" },
-      "TIPRE": { "short_name": "TPR" },
-      "VLREE": { "short_name": "VLR" }
+      "RALEY": {
+        "short_name": "RLY"
+      },
+      "PRNCS": {
+        "short_name": "PRN"
+      },
+      "SERFR": {
+        "short_name": "SFR"
+      },
+      "SIGNA": {
+        "short_name": "SIG"
+      },
+      "SYRAH": {
+        "short_name": "SRH"
+      },
+      "SUSEY": {
+        "short_name": "SSY"
+      },
+      "TARVR": {
+        "short_name": "TAR"
+      },
+      "TIPRE": {
+        "short_name": "TPR"
+      },
+      "VLREE": {
+        "short_name": "VLR"
+      }
     },
     "video_map_file": "videomaps/ZOA-stars.mappack",
     "airspace_awareness": [
@@ -1984,7 +2062,8 @@
             "altitude_range": [15000, 29000],
             "receiving_controller": "4Q"
           }
-        ]
+        ],
+        "system_altimeter": "KSJC"
       },
       "2": {
         "video_maps": [
@@ -2027,7 +2106,8 @@
         ],
         "center": "KSFO",
         "range": 80,
-        "altimeters": ["KSFO"]
+        "altimeters": ["KSFO"],
+        "system_altimeter": "KSFO"
       },
       "3": {
         "video_maps": [
@@ -2070,7 +2150,8 @@
         ],
         "center": "ALTAM",
         "range": 60,
-        "altimeters": ["KOAK", "KHWD", "KSCK", "KLVK", "KMOD", "KMER"]
+        "altimeters": ["KOAK", "KHWD", "KSCK", "KLVK", "KMOD", "KMER"],
+        "system_altimeter": "KOAK"
       },
       "4": {
         "video_maps": [
@@ -2114,7 +2195,8 @@
         ],
         "center": "KOAK",
         "range": 50,
-        "altimeters": ["KSFO", "KOAK"]
+        "altimeters": ["KSFO", "KOAK"],
+        "system_altimeter": "KSFO"
       },
       "5": {
         "video_maps": [
@@ -2188,7 +2270,8 @@
             "altitude_range": [19000, 23000],
             "receiving_controller": "C46"
           }
-        ]
+        ],
+        "system_altimeter": "KSMF"
       },
       "8": {
         "video_maps": [
@@ -2231,7 +2314,8 @@
         ],
         "center": "FMG",
         "range": 45,
-        "altimeters": ["KRNO"]
+        "altimeters": ["KRNO"],
+        "system_altimeter": "KRNO"
       }
     },
     "lists": {
@@ -2278,7 +2362,8 @@
         }
       ],
       "ssa": {
-        "altimeters": ["KSJC", "KMRY", "KSNS", "KPAO"]
+        "altimeters": ["KSJC", "KMRY", "KSNS", "KPAO"],
+        "system_altimeter": "KSFO"
       }
     }
   },

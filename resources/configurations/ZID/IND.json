@@ -52,6 +52,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KIND" } },
     "configurations": {
       "KIN": {
         "inbound_assignments": {

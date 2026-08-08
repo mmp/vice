@@ -368,7 +368,6 @@
   },
   "magnetic_adjustment": -1,
   "name": "KAGS",
-  "primary_airport": "KAGS",
   "scenarios": {
     "KAGS Land and Depart Runway 17/8": {
       "airspace": {

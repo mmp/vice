@@ -37,6 +37,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KSBA" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

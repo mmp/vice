@@ -595,7 +595,6 @@
     "_LBO36": "N037.38.27.170,W092.39.09.426"
   },
   "name": "KSGF",
-  "primary_airport": "KSGF",
   "scenarios": {
     "Land South": {
       "arrival_runways": [

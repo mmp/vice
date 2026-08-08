@@ -68,8 +68,11 @@ type FixPairReassignment struct {
 	ACType       string    `json:"ac_type"`        // an adapted "tcp_assignment" aircraft type class, or "*"
 	ACID         string    `json:"acid"`           // callsign pattern (see matchACIDPattern)
 	TypeOfFlight string    `json:"type_of_flight"` // "A" | "P" | "E" | "*"
-	// ActiveRunway matches when it is one of the active runways at the
-	// facility's primary airport ("*" or unset = any).
+	// ActiveRunway names a runway as "AIRPORT/RUNWAY" (e.g. "KJFK/22L") and
+	// matches when it is active in the scenario ("*" or unset = any). DMS
+	// scopes the criterion to the adapted Main ATIS/GSI airport; naming the
+	// airport here is the general form, which a facility working more than
+	// one airport needs.
 	ActiveRunway string `json:"active_runway"`
 	// DepartureRunway matches the flight's own departure runway exactly
 	// ("*" or unset = any). This is a vice extension, not a DMS criterion:
@@ -188,7 +191,7 @@ type FixPairInput struct {
 	VFR, OTP        bool
 	ACType          string // aircraft type, e.g. "A320"
 	ACID            string
-	ActiveRunways   []string // active runways at the primary airport
+	ActiveRunways   []string // the scenario's active runways, as "AIRPORT/RUNWAY"
 	DepartureRunway string   // the flight's own departure runway; empty for arrivals/overflights
 }
 
@@ -218,8 +221,8 @@ func matchFlightType(field string, ft av.TypeOfFlight) bool {
 }
 
 // matchActiveRunway reports whether an adapted active-runway criterion is
-// satisfied: "" or "*" matches any, otherwise the runway must be one of the
-// active runways at the primary airport.
+// satisfied: "" or "*" matches any, otherwise the adapted "AIRPORT/RUNWAY"
+// must be one of the scenario's active runways.
 func matchActiveRunway(field string, active []string) bool {
 	return field == "" || field == "*" || slices.Contains(active, field)
 }
@@ -368,14 +371,15 @@ func fixPairLevel(fp *NASFlightPlan) int {
 	return fp.RequestedAltitude / 100
 }
 
-// activePrimaryRunways returns the active runways at the facility's primary
-// airport; an adapted "active_runway" reassignment criterion is matched
-// against these.
-func (s *Sim) activePrimaryRunways() []string {
+// activeRunways returns the scenario's active runways as "AIRPORT/RUNWAY"; an
+// adapted "active_runway" reassignment criterion is matched against these.
+// Scenario runway ids may carry a suffix ("13.EWR"), and several of them can
+// name the same runway, so they are reduced to their base and deduplicated.
+func (s *Sim) activeRunways() []string {
 	var rwys []string
 	add := func(airport string, rwy av.RunwayID) {
-		if airport == s.State.PrimaryAirport && !slices.Contains(rwys, string(rwy)) {
-			rwys = append(rwys, string(rwy))
+		if id := airport + "/" + rwy.Base(); !slices.Contains(rwys, id) {
+			rwys = append(rwys, id)
 		}
 	}
 	for _, r := range s.State.DepartureRunways {
@@ -409,7 +413,7 @@ func (s *Sim) applyFixPairAssignment(nasFp *NASFlightPlan, ac *Aircraft) bool {
 		OTP:             nasFp.VFROTP,
 		ACType:          nasFp.AircraftType,
 		ACID:            string(nasFp.ACID),
-		ActiveRunways:   s.activePrimaryRunways(),
+		ActiveRunways:   s.activeRunways(),
 		DepartureRunway: ac.FlightPlan.DepartureRunway,
 	}
 	// Reassignment may substitute a derived pair; the flight plan keeps its
@@ -542,8 +546,15 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 				e.ErrorString(`"ac_type" %q is not a class in "tcp_assignment_classes"`, ac)
 			}
 		}
-		if rwy := r.ActiveRunway; rwy != "" && rwy != "*" && !validRunwayId(rwy) {
-			e.ErrorString(`"active_runway" %q is not a valid runway id`, rwy)
+		if spec := r.ActiveRunway; spec != "" && spec != "*" {
+			airport, runway, ok := strings.Cut(spec, "/")
+			if !ok {
+				e.ErrorString(`"active_runway" %q must be given as "AIRPORT/RUNWAY"`, spec)
+			} else if _, ok := av.DB.Airports[airport]; !ok {
+				e.ErrorString(`"active_runway": airport %q unknown`, airport)
+			} else if !av.AirportHasRunway(airport, av.RunwayID(runway)) {
+				e.ErrorString(`"active_runway": runway %q is not a valid runway at %q`, runway, airport)
+			}
 		}
 		// departure_runway matches the scenario's departure runway id
 		// exactly, and those may carry suffixes ("15R.Props", "12R_17"), so
@@ -614,19 +625,6 @@ func expandPlanGroups(tcp map[string]TCP, e *util.ErrorLogger) {
 			tcp[plan] = pos
 		}
 	}
-}
-
-// validRunwayId reports whether s looks like a runway id: one or two digits
-// optionally followed by L, R, or C.
-func validRunwayId(s string) bool {
-	n := 0
-	for n < len(s) && s[n] >= '0' && s[n] <= '9' {
-		n++
-	}
-	if n < 1 || n > 2 {
-		return false
-	}
-	return n == len(s) || (n == len(s)-1 && (s[n] == 'L' || s[n] == 'R' || s[n] == 'C'))
 }
 
 ///////////////////////////////////////////////////////////////////////////

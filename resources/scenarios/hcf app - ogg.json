@@ -2244,7 +2244,6 @@
   },
   "default_scenario": "OGG - North Flow",
   "name": "HCF APP - OGG",
-  "primary_airport": "PHOG",
   "scenarios": {
     "OGG - North Flow": {
       "airspace": {

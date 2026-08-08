@@ -104,7 +104,6 @@ type ScenarioCatalog struct {
 
 type ScenarioSpec struct {
 	ControllerConfiguration *sim.ControllerConfiguration
-	PrimaryAirport          string
 	MagneticVariation       float32
 	WindSpecifier           *wx.WindSpecifier
 	Timetables              []sim.TimetableSummary
@@ -327,7 +326,6 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 		WindSpecifier:               sc.WindSpecifier,
 		Airports:                    sg.Airports,
 		Fixes:                       sg.Fixes,
-		PrimaryAirport:              sg.PrimaryAirport,
 		Center:                      util.Select(sc.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center, sc.Center),
 		Range:                       util.Select(sc.Range == 0, sg.FacilityConfig.FacilityAdaptation.Range, sc.Range),
 		ScenarioCenter:              sc.Center,
@@ -846,7 +844,7 @@ func (sm *SimManager) GetAtmosGrid(args wx.GetAtmosArgs, result *wx.GetAtmosResu
 
 	var err error
 	result.AtmosByPointSOA, result.Time, result.NextTime, err =
-		provider.GetAtmosGrid(args.Facility, args.Time, args.PrimaryAirport)
+		provider.GetAtmosGrid(args.Facility, args.Time, args.WeatherStation)
 	return err
 }
 
@@ -881,40 +879,39 @@ type TrafficCountsResult struct {
 func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficCountsResult) error {
 	defer sm.lg.CatchAndReportCrash()
 
-	spec, err := sm.findScenarioSpec(args)
-	if err != nil {
+	if err := sm.checkPreviewScenario(args); err != nil {
 		return err
 	}
 
 	var historical []av.Flight
+	var err error
 	if args.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
 		if historical, err = sm.scenarioFlights(&args.LaunchConfig, args.StartTime); err != nil {
 			return err
 		}
 	}
 
-	result.Departures, result.Arrivals, err = sim.TrafficCounts(&args.LaunchConfig, args.StartTime,
-		spec.PrimaryAirport, historical)
+	result.Departures, result.Arrivals, err = sim.TrafficCounts(&args.LaunchConfig, args.StartTime, historical)
 	return err
 }
 
-// findScenarioSpec finds the scenario a preview asks about and checks that it can be flown the
-// way the request says. Which traffic sources a scenario offers is the server's to decide, so don't
-// take the client's word for it here any more than makeSimConfiguration does. The catalogs are
-// init-immutable, so no mutex; the returned spec is shared and must only be read.
-func (sm *SimManager) findScenarioSpec(args *TrafficCountsArgs) (*ScenarioSpec, error) {
+// checkPreviewScenario reports whether the scenario a preview asks about exists and can be flown
+// the way the request says. Which traffic sources a scenario offers is the server's to decide, so
+// don't take the client's word for it here any more than makeSimConfiguration does. The catalogs
+// are init-immutable, so no mutex.
+func (sm *SimManager) checkPreviewScenario(args *TrafficCountsArgs) error {
 	catalog, ok := sm.scenarioCatalogs[args.Facility][args.GroupName]
 	if !ok {
-		return nil, ErrInvalidSimConfiguration
+		return ErrInvalidSimConfiguration
 	}
 	spec, ok := catalog.Scenarios[args.ScenarioName]
 	if !ok {
-		return nil, ErrInvalidSimConfiguration
+		return ErrInvalidSimConfiguration
 	}
 	if !slices.Contains(spec.TrafficSources, args.LaunchConfig.TrafficSource) {
-		return nil, ErrInvalidTrafficSource
+		return ErrInvalidTrafficSource
 	}
-	return spec, nil
+	return nil
 }
 
 // cellFlights returns the flights a cell recorded on and around the day a preview starts on, which

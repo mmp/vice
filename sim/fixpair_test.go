@@ -178,26 +178,32 @@ func TestMatchACTypeClass(t *testing.T) {
 }
 func TestFixPairActiveRunway(t *testing.T) {
 	cfg := &FixPairConfiguration{Reassignments: []FixPairReassignment{
-		{FpFixPair: [2]string{"PVA", "*"}, ActiveRunway: "27", DerivedFixPair: [2]string{"ROB", "*"}},
+		{FpFixPair: [2]string{"PVA", "*"}, ActiveRunway: "KBOS/27", DerivedFixPair: [2]string{"ROB", "*"}},
 	}}
-	on27 := FixPairInput{Entry: "PVA", Exit: "BOS", ActiveRunways: []string{"27", "22L"}}
+	on27 := FixPairInput{Entry: "PVA", Exit: "BOS", ActiveRunways: []string{"KBOS/27", "KBOS/22L"}}
 	if got := cfg.Reassign(on27, nil); got.Entry != "ROB" {
 		t.Errorf("active runway 27 should reassign entry to ROB, got %+v", got)
 	}
-	on4 := FixPairInput{Entry: "PVA", Exit: "BOS", ActiveRunways: []string{"4R", "9"}}
+	on4 := FixPairInput{Entry: "PVA", Exit: "BOS", ActiveRunways: []string{"KBOS/4R", "KBOS/9"}}
 	if got := cfg.Reassign(on4, nil); got.Entry != "PVA" {
 		t.Errorf("runway 27 rule should not fire on a 4R/9 config, got %+v", got)
+	}
+	// The airport qualifies the runway: 27 at some other airport the facility
+	// works is a different runway and must not fire the rule.
+	elsewhere := FixPairInput{Entry: "PVA", Exit: "BOS", ActiveRunways: []string{"KMHT/27", "KBOS/4R"}}
+	if got := cfg.Reassign(elsewhere, nil); got.Entry != "PVA" {
+		t.Errorf("27 at another airport should not fire a KBOS/27 rule, got %+v", got)
 	}
 }
 func TestFixPairDepartureRunway(t *testing.T) {
 	// departure_runway matches the flight's own runway, unlike active_runway
-	// which matches the facility's active-runway list: with both 35L and 36R
+	// which matches the scenario's active-runway list: with both 35L and 36R
 	// active, the rules split departures by the runway each one actually uses.
 	cfg := &FixPairConfiguration{Reassignments: []FixPairReassignment{
 		{FpFixPair: [2]string{"DFW", "*"}, TypeOfFlight: "P", DepartureRunway: "36R", DerivedFixPair: [2]string{"DF1", "*"}},
 		{FpFixPair: [2]string{"DFW", "*"}, TypeOfFlight: "P", DepartureRunway: "35L", DerivedFixPair: [2]string{"DF2", "*"}},
 	}}
-	both := []string{"35L", "36R"}
+	both := []string{"KDFW/35L", "KDFW/36R"}
 	east := FixPairInput{Entry: "DFW", Exit: "MLC", FlightType: av.FlightTypeDeparture,
 		ActiveRunways: both, DepartureRunway: "36R"}
 	if got := cfg.Reassign(east, nil); got.Entry != "DF1" {
@@ -360,7 +366,7 @@ func TestFixPairValidate(t *testing.T) {
 		Plans: map[string]string{"CNE": "flow"},
 		Reassignments: []FixPairReassignment{
 			{FpFixPair: [2]string{"PVA", "*"}, TypeOfFlight: "A", ACType: "J",
-				ActiveRunway: "22L", DerivedFixPair: [2]string{"ROB", "BOS"}},
+				ActiveRunway: "KBOS/22L", DerivedFixPair: [2]string{"ROB", "BOS"}},
 		},
 		Assignments: FixPairAssignments{
 			Arrival: []FixPairAssignmentRow{{FixPair: [2]string{"ROB", "BOS"}, TCP: map[string]TCP{"CNE": "1M"}}},
@@ -377,7 +383,9 @@ func TestFixPairValidate(t *testing.T) {
 			{FpFixPair: [2]string{"NOPE", "*"}},      // unknown fp fix
 			{DerivedFixPair: [2]string{"*", "GONE"}}, // unknown derived fix
 			{ACType: "X"},                            // undefined aircraft type class
-			{ActiveRunway: "27Q"},                    // bad runway id
+			{ActiveRunway: "22L"},                    // active_runway missing its airport
+			{ActiveRunway: "KZZZ/22L"},               // active_runway names an unknown airport
+			{ActiveRunway: "KBOS/99"},                // no such runway at the airport
 		},
 		Assignments: FixPairAssignments{
 			Arrival: []FixPairAssignmentRow{
@@ -388,8 +396,8 @@ func TestFixPairValidate(t *testing.T) {
 			},
 		},
 	}
-	if n := validCount(bad); n != 10 {
-		t.Errorf("bad config reported %d errors, want 10", n)
+	if n := validCount(bad); n != 12 {
+		t.Errorf("bad config reported %d errors, want 12", n)
 	}
 }
 func TestLevelBandRoundTrip(t *testing.T) {

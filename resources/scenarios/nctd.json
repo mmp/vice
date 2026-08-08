@@ -6974,7 +6974,6 @@
   },
   "default_scenario": "Area D - SFOW (L28/D01)",
   "name": "NCT Area D",
-  "primary_airport": "KSFO",
   "scenarios": {
     "Area D - SFOW (28/28 RT)": {
       "airspace": {

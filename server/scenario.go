@@ -48,8 +48,7 @@ type scenarioGroup struct {
 	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
 	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
 
-	AllowFixRedefinitions bool   `json:"allow_fix_redefinitions"`
-	PrimaryAirport        string `json:"primary_airport"`
+	AllowFixRedefinitions bool `json:"allow_fix_redefinitions"`
 
 	ReportingPointStrings []string            `json:"reporting_points"`
 	ReportingPoints       []av.ReportingPoint // not in JSON
@@ -416,19 +415,24 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 						e.ErrorString(`exit fix %q (SID %s) has no entry in "exit_categories" but runway uses category %q`,
 							fix, route.SID, rwy.Category)
 					}
-					if rwy.Category == "" || fixCategory == rwy.Category {
-						if activeAirportSIDs[rwy.Airport] == nil {
-							activeAirportSIDs[rwy.Airport] = make(map[string]any)
-						}
-						if activeAirportRunways[rwy.Airport] == nil {
-							activeAirportRunways[rwy.Airport] = make(map[string]any)
-						}
-						if route.DepartureController != "" {
-							addController(sim.TCP(route.DepartureController))
-						}
-						activeAirportSIDs[rwy.Airport][route.SID] = nil
-						activeAirportRunways[rwy.Airport][string(rwy.Runway)] = nil
+					if rwy.Category != "" && fixCategory != rwy.Category {
+						continue
 					}
+					if route.DepartureController != "" {
+						// The route names the controller its departures start
+						// with, so as with the airport-wide setting there is no
+						// human assignment to look for.
+						addController(sim.TCP(route.DepartureController))
+						continue
+					}
+					if activeAirportSIDs[rwy.Airport] == nil {
+						activeAirportSIDs[rwy.Airport] = make(map[string]any)
+					}
+					if activeAirportRunways[rwy.Airport] == nil {
+						activeAirportRunways[rwy.Airport] = make(map[string]any)
+					}
+					activeAirportSIDs[rwy.Airport][route.SID] = nil
+					activeAirportRunways[rwy.Airport][string(rwy.Runway)] = nil
 				}
 			}
 		}
@@ -613,6 +617,33 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 		}
 	}
 
+	// The SSA ALTSTG field shows the system altimeter for the position being
+	// worked: the area's if it adapts one, otherwise the facility's. A
+	// facility config may be shared by groups working different parts of it,
+	// so only check the ones this scenario's own positions resolve to.
+	if sg.ARTCC == "" {
+		fa := &sg.FacilityConfig.FacilityAdaptation
+		reported := make(map[string]bool)
+		for _, tcp := range humanPositions {
+			airport, what := fa.Lists.SSA.SystemAltimeter, `"system_altimeter"`
+			if ctrl, ok := sg.FacilityConfig.ControlPositions[tcp]; ok {
+				if area, ok := fa.Areas[ctrl.Area]; ok && area.SystemAltimeter != "" {
+					airport = area.SystemAltimeter
+					what = fmt.Sprintf(`area %s "system_altimeter"`, ctrl.Area)
+				}
+			}
+			if reported[airport] {
+				continue
+			}
+			reported[airport] = true
+			if airport == "" {
+				e.ErrorString("controller %q: no %s adapted for its area or the facility", tcp, what)
+			} else if _, ok := sg.Airports[airport]; !ok {
+				e.ErrorString(`Airport %q in %s not found in scenario group "airports"`, airport, what)
+			}
+		}
+	}
+
 	if s.CenterString != "" {
 		if pos, ok := sg.Locate(s.CenterString); !ok {
 			e.ErrorString(`unknown location %q specified for "center"`, s.CenterString)
@@ -646,6 +677,12 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 
 ///////////////////////////////////////////////////////////////////////////
 // ScenarioGroup
+
+// facility is the radar facility the group is flown at: its TRACON for STARS
+// scenarios, its ARTCC for ERAM ones.
+func (sg *scenarioGroup) facility() string {
+	return util.Select(sg.TRACON == "", sg.ARTCC, sg.TRACON)
+}
 
 func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
@@ -1098,18 +1135,13 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			e.Pop()
 		}
 	}
-	if sg.ARTCC == "" {
-		if sg.PrimaryAirport == "" {
-			e.ErrorString(`"primary_airport" not specified`)
-		} else if ap, ok := av.DB.Airports[sg.PrimaryAirport]; !ok {
-			e.ErrorString(`"primary_airport" %q unknown`, sg.PrimaryAirport)
-		} else if mvar, err := av.DB.MagneticGrid.Lookup(ap.Location); err != nil {
-			e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
-		} else {
-			sg.MagneticVariation = mvar + sg.MagneticAdjustment
-		}
-	} else if mvar, err := av.DB.MagneticGrid.Lookup(sg.FacilityConfig.FacilityAdaptation.Center); err != nil {
-		e.ErrorString("%s: unable to find magnetic declination: %v", sg.ARTCC, err)
+	// One facility, one magnetic variation: it is sampled at the facility's
+	// published center, so groups covering different parts of the same
+	// facility agree on it.
+	if fac, ok := av.DB.LookupFacility(sg.facility()); !ok {
+		e.ErrorString("%s: facility unknown", sg.facility())
+	} else if mvar, err := av.DB.MagneticGrid.Lookup(fac.Center()); err != nil {
+		e.ErrorString("%s: unable to find magnetic declination: %v", sg.facility(), err)
 	} else {
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
@@ -1636,6 +1668,37 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			e.ErrorString(`Airport %q in "altimeters" not found in scenario group "airports"`, ap)
 		}
 	}
+	// The weather station stands in for the facility when it has no gridded
+	// weather; the system altimeter is that airport when nothing else says so.
+	if s.WeatherStation == "" {
+		s.WeatherStation = s.Lists.SSA.SystemAltimeter
+	}
+	if s.WeatherStation != "" {
+		if _, ok := av.DB.Airports[s.WeatherStation]; !ok {
+			e.ErrorString(`"weather_station" %q unknown`, s.WeatherStation)
+		}
+	} else if sg.ARTCC == "" {
+		e.ErrorString(`neither "weather_station" nor "system_altimeter" specified`)
+	}
+
+	// Fix-pair active-runway criteria name an airport the facility works; the
+	// runway itself is checked against the database in FixPairConfiguration.
+	if fpc := s.FixPairConfiguration; fpc != nil {
+		e.Push("fix_pair_configuration")
+		for i, r := range fpc.Reassignments {
+			if r.ActiveRunway == "" || r.ActiveRunway == "*" {
+				continue
+			}
+			e.Push(fmt.Sprintf("fix_pair_reassignment[%d]", i))
+			if airport, _, ok := strings.Cut(r.ActiveRunway, "/"); ok {
+				if _, ok := sg.Airports[airport]; !ok {
+					e.ErrorString(`"active_runway": airport %q not found in scenario group "airports"`, airport)
+				}
+			}
+			e.Pop()
+		}
+		e.Pop()
+	}
 
 	// Hold for release validation (require sg.Airports).
 	for airport, ap := range sg.Airports {
@@ -1824,7 +1887,6 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 			Description:             scenario.Description,
 			DepartureRunways:        scenario.DepartureRunways,
 			ArrivalRunways:          scenario.ArrivalRunways,
-			PrimaryAirport:          sg.PrimaryAirport,
 			MagneticVariation:       sg.MagneticVariation,
 			WindSpecifier:           scenario.WindSpecifier,
 		}
@@ -1882,7 +1944,10 @@ func attachTimetables(catalogs map[string]map[string]*ScenarioCatalog, timetable
 	for _, facilityCatalogs := range catalogs {
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
-				scenario.Timetables = timetables.SummariesForAirport(scenario.PrimaryAirport)
+				for _, airport := range scenario.AllAirports() {
+					scenario.Timetables = append(scenario.Timetables,
+						timetables.SummariesForAirport(airport)...)
+				}
 				if len(scenario.Timetables) > 0 {
 					scenario.TrafficSources = append(scenario.TrafficSources, sim.TrafficSourceTimetable)
 				}
@@ -2009,18 +2074,13 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 
 // facilityConfigPath derives the path to the facility configuration file
 // from the scenario group's TRACON/ARTCC fields. The convention is:
-// configurations/<ARTCC>/<facility>.json where facility is the TRACON
-// (for STARS scenarios) or the ARTCC itself (for ERAM scenarios).
+// configurations/<ARTCC>/<facility>.json.
 func facilityConfigPath(sg *scenarioGroup) string {
-	facility := sg.TRACON
-	if facility == "" {
-		facility = sg.ARTCC
-	}
 	artcc := sg.ARTCC
 	if artcc == "" {
 		artcc = av.DB.ARTCCForFacility(sg.TRACON)
 	}
-	return configurationsPath(artcc, facility)
+	return configurationsPath(artcc, sg.facility())
 }
 
 // configurationsPath returns the path of facility's configuration file, which
@@ -2050,10 +2110,9 @@ var (
 )
 
 // loadFacilityConfig loads and unmarshals a facility configuration file.
-// Results are cached so that shared facilities (like N90, referenced by
-// jfk.json, lga.json, etc.) are only loaded once. JSON validation
-// (duplicate keys, unknown fields) is performed here; call PostDeserialize
-// separately for semantic validation.
+// Results are cached so that a facility several scenario groups share is only
+// loaded once. JSON validation (duplicate keys, unknown fields) is performed
+// here; call PostDeserialize separately for semantic validation.
 func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim.FacilityConfig {
 	facilityConfigCacheMu.Lock()
 	fc, ok := facilityConfigCache[path]
@@ -2512,7 +2571,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			// shared across all scenario groups for a TRACON, but sub-area
 			// scenarios only define a subset of airports.
 			addFromSibling := func(airport string) {
-				if _, ok := sg.Airports[airport]; ok {
+				if _, ok := sg.Airports[airport]; airport == "" || ok {
 					return
 				}
 				for _, sibling := range tracon {
@@ -2790,7 +2849,6 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		LaunchConfig:            simConfig.LaunchConfig,
 		DepartureRunways:        simConfig.DepartureRunways,
 		ArrivalRunways:          simConfig.ArrivalRunways,
-		PrimaryAirport:          simConfig.PrimaryAirport,
 		Airports:                scenarioGroup.Airports,
 		Fixes:                   scenarioGroup.Fixes,
 		VFRReportingPoints:      scenarioGroup.VFRReportingPoints,

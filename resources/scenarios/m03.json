@@ -4614,7 +4614,6 @@
   },
   "default_scenario": "M03 MEM North+27 Sats North",
   "name": "M03",
-  "primary_airport": "KMEM",
   "scenarios": {
     "M03 MEM North+27 Sats North": {
       "airspace": {

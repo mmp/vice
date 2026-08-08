@@ -549,7 +549,6 @@
     "_CID13": "N042.00.20.118,W091.51.55.063"
   },
   "name": "KCID",
-  "primary_airport": "KCID",
   "scenarios": {
     "CID - 27": {
       "arrival_runways": [

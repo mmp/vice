@@ -47,6 +47,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KPNS" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

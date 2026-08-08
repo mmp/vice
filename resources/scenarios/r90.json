@@ -2551,7 +2551,6 @@
     "_OFF_31": "41.109195, -95.892045"
   },
   "name": "R90",
-  "primary_airport": "KOMA",
   "scenarios": {
     "OMA NORTH": {
       "arrival_runways": [

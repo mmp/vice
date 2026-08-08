@@ -2558,7 +2558,6 @@
   "default_scenario": "Multiplayer (S OPS)",
   "magnetic_adjustment": -0.75,
   "name": "KTPA",
-  "primary_airport": "KTPA",
   "scenarios": {
     "Multiplayer (N OPS)": {
       "airspace": {

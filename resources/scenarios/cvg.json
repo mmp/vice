@@ -6597,7 +6597,6 @@
     "_OXD_23": "N39.30.20.10,W84.46.48.00"
   },
   "name": "KCVG",
-  "primary_airport": "KCVG",
   "scenarios": {
     "CVG North Sats North": {
       "airspace": {

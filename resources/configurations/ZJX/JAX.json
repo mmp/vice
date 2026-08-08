@@ -92,6 +92,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KJAX" } },
     "configurations": {
       "KJA": {
         "inbound_assignments": {

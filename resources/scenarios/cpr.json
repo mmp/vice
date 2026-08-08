@@ -284,7 +284,6 @@
     "_CPR26": "N042.54.31.800,W106.26.58.800"
   },
   "name": "KCPR",
-  "primary_airport": "KCPR",
   "scenarios": {
     "Land West": {
       "arrival_runways": [

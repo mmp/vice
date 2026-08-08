@@ -3504,7 +3504,6 @@
     "_PHX_25R": "N33.25.51.642,W111.59.36.050"
   },
   "name": "KPHX",
-  "primary_airport": "KPHX",
   "scenarios": {
     "P50 - West": {
       "arrival_runways": [

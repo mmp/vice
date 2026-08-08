@@ -759,7 +759,6 @@
     "_IND_32": "N39.43.12.744, W86.16.13.392"
   },
   "name": "KIND",
-  "primary_airport": "KIND",
   "scenarios": {
     "KIND Southwest": {
       "arrival_runways": [

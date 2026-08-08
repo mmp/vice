@@ -3,37 +3,44 @@
     "1B": {
       "callsign": "BWI_B_APP",
       "frequency": 125525,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "4"
     },
     "1H": {
       "callsign": "BWI_H_APP",
       "frequency": 133850,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "4"
     },
     "1W": {
       "callsign": "BWI_W_APP",
       "frequency": 128700,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "4"
     },
     "1G": {
       "callsign": "BWI_G_APP",
       "frequency": 124550,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "4"
     },
     "1P": {
       "callsign": "BWI_P_APP",
       "frequency": 133750,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "4"
     },
     "1N": {
       "callsign": "BWI_N_APP",
       "frequency": 119000,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "4"
     },
     "1S": {
       "callsign": "BWI_S_APP",
       "frequency": 119700,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "4"
     },
     "1Z": {
       "callsign": "BWI_Z_APP",
@@ -315,7 +322,6 @@
           "FINAL_SE": "1V",
           "FINAL_SNW": "1V",
           "FINAL_SS": "1V",
-
           "FINAL_ND.IMC": "1V",
           "FINAL_NNW.IMC": "1V",
           "FINAL_NS.IMC": "1V",
@@ -789,7 +795,6 @@
           "RVMPCT115S",
           "RVMPCT812S",
           "RVMPCT122S",
-
           "RVMPCT112S",
           "RVMPCT114S",
           "RVMPCT113S",
@@ -834,7 +839,6 @@
           "RVMPCT115S",
           "RVMPCT812S",
           "RVMPCT122S",
-
           "RVMPCT112S",
           "RVMPCT114S",
           "RVMPCT113S",
@@ -879,7 +883,6 @@
           "RVMPCT115S",
           "RVMPCT812S",
           "RVMPCT122S",
-
           "RVMPCT112S",
           "RVMPCT114S",
           "RVMPCT113S",
@@ -924,7 +927,6 @@
           "RVMPCT115S",
           "RVMPCT812S",
           "RVMPCT122S",
-
           "RVMPCT112S",
           "RVMPCT114S",
           "RVMPCT113S",
@@ -969,7 +971,6 @@
           "RVMPCT115S",
           "RVMPCT812S",
           "RVMPCT122S",
-
           "RVMPCT112S",
           "RVMPCT114S",
           "RVMPCT113S",
@@ -1022,7 +1023,6 @@
           "RVMPCT115S",
           "RVMPCT812S",
           "RVMPCT122S",
-
           "RVMPCT112S",
           "RVMPCT114S",
           "RVMPCT113S",
@@ -1370,20 +1370,46 @@
       "RAMAY": "RAM"
     },
     "significant_points": {
-      "AGARD": { "short_name": "DCR" },
-      "BUFFR": { "short_name": "BFR" },
+      "AGARD": {
+        "short_name": "DCR"
+      },
+      "BUFFR": {
+        "short_name": "BFR"
+      },
       "DQO": {},
-      "FLASK": { "short_name": "CLH" },
-      "GLANC": { "short_name": "SCR" },
-      "HOUKY": { "short_name": "OTO" },
-      "JERES": { "short_name": "JER" },
-      "MAULS": { "short_name": "CLH" },
-      "MELTN": { "short_name": "JDB" },
-      "OTTTO": { "short_name": "OTO" },
-      "RAMAY": { "short_name": "RAM" },
-      "RRSIN": { "short_name": "JDB" },
-      "SCOOB": { "short_name": "AME" },
-      "SWANN": { "short_name": "SOK" }
+      "FLASK": {
+        "short_name": "CLH"
+      },
+      "GLANC": {
+        "short_name": "SCR"
+      },
+      "HOUKY": {
+        "short_name": "OTO"
+      },
+      "JERES": {
+        "short_name": "JER"
+      },
+      "MAULS": {
+        "short_name": "CLH"
+      },
+      "MELTN": {
+        "short_name": "JDB"
+      },
+      "OTTTO": {
+        "short_name": "OTO"
+      },
+      "RAMAY": {
+        "short_name": "RAM"
+      },
+      "RRSIN": {
+        "short_name": "JDB"
+      },
+      "SCOOB": {
+        "short_name": "AME"
+      },
+      "SWANN": {
+        "short_name": "SOK"
+      }
     },
     "video_map_file": "videomaps/ZDC-PCT.mappack",
     "monitor": "mdm3",
@@ -1787,7 +1813,6 @@
           "RVMPCT438S",
           "RVMPCT425S",
           "RVMPCT828SMVAS",
-
           "RVMPCT427S",
           "RVMPCT428S",
           "RVMPCT429S",
@@ -1839,7 +1864,8 @@
           "BUFFR": "BFR",
           "DQO": "DQO",
           "JERES": "JS2"
-        }
+        },
+        "system_altimeter": "KDCA"
       },
       "2": {
         "default_airport": "KRIC",
@@ -1850,7 +1876,6 @@
           "RVMPCT849SEOVMS",
           "RVMPCT619S",
           "RVMPCT638S",
-
           "RVMPCT615S",
           "RVMPCT617S",
           "RVMPCT664S",
@@ -1886,7 +1911,8 @@
         ],
         "center": "NABBS",
         "range": 75,
-        "altimeters": ["KCHO", "KRIC", "KSBY", "KWAL"]
+        "altimeters": ["KCHO", "KRIC", "KSBY", "KWAL"],
+        "system_altimeter": "KRIC"
       },
       "3": {
         "center": "GIBBZ",
@@ -1941,7 +1967,6 @@
           "RVMPCT317S",
           "RVMPCT820S",
           "RVMPCT338S",
-
           "RVMPCT312S",
           "RVMPCT849SEOVMS",
           "RVMPCT313S",
@@ -1972,7 +1997,8 @@
           "RVMPCT802S",
           "RVMPCT825S",
           "RVMPCT367S"
-        ]
+        ],
+        "system_altimeter": "KIAD"
       },
       "23": {
         "video_maps": [
@@ -1982,7 +2008,6 @@
           "RVMPCT317S",
           "RVMPCT820S",
           "RVMPCT338S",
-
           "RVMPCT312S",
           "RVMPCT849SEOVMS",
           "RVMPCT313S",
@@ -2013,7 +2038,8 @@
           "RVMPCT802S",
           "RVMPCT825S",
           "RVMPCT367S"
-        ]
+        ],
+        "system_altimeter": "KIAD"
       },
       "25": {
         "video_maps": [
@@ -2023,7 +2049,6 @@
           "RVMPCT317S",
           "RVMPCT820S",
           "RVMPCT338S",
-
           "RVMPCT312S",
           "RVMPCT849SEOVMS",
           "RVMPCT313S",
@@ -2054,7 +2079,74 @@
           "RVMPCT802S",
           "RVMPCT825S",
           "RVMPCT808S"
-        ]
+        ],
+        "system_altimeter": "KIAD"
+      },
+      "4": {
+        "center": "HENRX",
+        "range": 50,
+        "default_airport": "KDCA",
+        "altimeters": ["KADW", "KCGS", "KDAA", "KDCA"],
+        "video_maps": [
+          "RVMPCT460S",
+          "RVMPCT461S",
+          "RVMPCT463S",
+          "RVMPCT438S",
+          "RVMPCT425S",
+          "RVMPCT828SMVAS",
+          "RVMPCT427S",
+          "RVMPCT428S",
+          "RVMPCT429S",
+          "RVMPCT808S",
+          "RVMPCT421S",
+          "RVMPCT422S",
+          "RVMPCT430S",
+          "RVMPCT431S",
+          "RVMPCT043S",
+          "RVMPCT462S",
+          "RVMPCT433S",
+          "",
+          "",
+          "",
+          "RVMPCT417S",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT849SEOVMS",
+          "RVMPCT819S",
+          "RVMPCT832S",
+          "RVMPCT806S",
+          "RVMPCT807S",
+          "RVMPCT811S",
+          "RVMPCT812S",
+          "RVMPCT805S",
+          "RVMPCT439S",
+          "RVMPCT442S",
+          "RVMPCT441S",
+          "RVMPCT444S",
+          "RVMPCT821S"
+        ],
+        "scratchpads": {
+          "COLIN": "AME",
+          "SCOOB": "AME",
+          "RAMAY": "FXR",
+          "RRSIN": "JDB",
+          "MELTN": "JDB",
+          "FLASK": "CLH",
+          "JERES.N": "JS2",
+          "BUFFR.N": "BFR",
+          "JERES.S": "JS2",
+          "BUFFR.S": "BFR",
+          "MAULS": "CLH",
+          "OTTTO": "FXO",
+          "MCRAY": "MCR",
+          "GLANC": "SCR",
+          "SWANN": "SWN",
+          "AGARD": "DKA",
+          "BUFFR": "BFR",
+          "DQO": "DQO",
+          "JERES": "JS2"
+        },
+        "system_altimeter": "KBWI"
       }
     },
     "lists": {
@@ -2084,7 +2176,10 @@
           "id": "CHO",
           "airports": ["KCHO"]
         }
-      ]
+      ],
+      "ssa": {
+        "system_altimeter": "KDCA"
+      }
     },
     "stars_macros": [
       {

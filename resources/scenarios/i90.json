@@ -2,7 +2,6 @@
   "tracon": "I90",
   "name": "Consolidated",
   "default_scenario": "I90 - IAH West HOU 13",
-  "primary_airport": "KIAH",
   "airports": {
     "00R": {
       "vfr": {
