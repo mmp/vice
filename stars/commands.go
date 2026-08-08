@@ -256,6 +256,18 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				sp.drawRoutePoints = sp.drawRoutePoints[:n-1]
 			}
 
+		case imgui.KeyV:
+			if ctx.Keyboard.KeyControl() {
+				pasted := strings.ToUpper(ctx.Platform.GetClipboard().GetClipboard())
+				var b strings.Builder
+				for _, r := range pasted {
+					if r >= 32 && r < 127 {
+						b.WriteRune(r)
+					}
+				}
+				sp.previewAreaInput += strings.ReplaceAll(b.String(), "`", STARSTriangleCharacter)
+			}
+
 		case imgui.KeyEnd:
 			sp.setCommandMode(ctx, CommandModeMin)
 
