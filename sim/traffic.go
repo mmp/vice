@@ -782,6 +782,9 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	flights, returned := dropReturnedLegs(flights)
 
 	missed, unplaceable := 0, 0
+	// Why the arrivals that can't be flown can't be, so that a scenario losing
+	// a stream says which one rather than only how many.
+	dropped := make(map[string]int)
 	earliest := s.StartTime.Add(-PrespawnDuration)
 	if s.State.SimTime.After(earliest) {
 		earliest = s.State.SimTime
@@ -811,6 +814,7 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 			p.routed)
 		if err != nil {
 			unplaceable++
+			dropped[err.Error()]++
 		}
 		p.arrivals = append(p.arrivals, publishedFlight{flight: flight, spawn: spawn,
 			placement: placement, dropReason: err})
@@ -844,6 +848,9 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 		summary += fmt.Sprintf("; %d arrivals from another of the facility's airports are flying as departures", returned)
 	}
 	s.log("%s", summary)
+	for _, reason := range util.SortedMapKeys(dropped) {
+		s.log("Unflyable arrivals: %d x %s", dropped[reason], reason)
+	}
 
 	return p
 }
