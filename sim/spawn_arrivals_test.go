@@ -79,6 +79,44 @@ func TestPlaceArrivalDropsInactiveSTAR(t *testing.T) {
 	}
 }
 
+// A final takes traffic from every STAR that funnels into it: once a flight is
+// on the final, which STAR it flew is no part of the work left. An arrival
+// naming its feeds takes them all, without flying any of them itself.
+func TestPlaceArrivalTakesSTARFeeds(t *testing.T) {
+	av.InitDB()
+
+	arrivals := []av.Arrival{
+		{STARFeeds: []string{"PARCH4"}, Airports: []string{"KJFK"}},
+		{STARFeeds: []string{"CAMRN5", "LENDY8"}, Airports: []string{"KJFK"}},
+	}
+	s := placeArrivalTestSim("KJFK", arrivals, nil)
+
+	// KORF to KJFK really arrives on the CAMRN.
+	placement, err := s.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if err != nil {
+		t.Fatalf("placeArrival found no way to fly KORF->KJFK: %v", err)
+	}
+	if placement.index != 1 {
+		t.Errorf("placed on arrival %d, expected the final fed by the CAMRN at 1", placement.index)
+	}
+}
+
+// The feeds say which STARs an arrival takes and no more; a flight off one it
+// doesn't name is still dropped.
+func TestPlaceArrivalDropsUnfedSTAR(t *testing.T) {
+	av.InitDB()
+
+	arrivals := []av.Arrival{
+		{STARFeeds: []string{"PARCH4", "LENDY8"}, Airports: []string{"KJFK"}},
+	}
+	s := placeArrivalTestSim("KJFK", arrivals, nil)
+
+	_, err := s.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if !errors.Is(err, errArrivalSTARInactive) {
+		t.Errorf("placeArrival = %v, expected the flight dropped for its unfed STAR", err)
+	}
+}
+
 // A route the scenario gives for the city pair beats whatever the route
 // database says: KORF to KJFK really arrives on the CAMRN, but the scenario
 // says in so many words to fly it in on the PARCH.

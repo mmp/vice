@@ -144,6 +144,11 @@ type Arrival struct {
 	CruiseAltitudes util.SingleOrArray[int]             `json:"cruise_altitude"`
 	STAR            string                              `json:"star"`
 
+	// STARFeeds are the STARs whose traffic the arrival takes; this is useful e.g. for getting
+	// real-world traffic wired up for finals scenarios since we generally get traffic after they've
+	// flown STARs in that case.
+	STARFeeds []string `json:"star_feeds"`
+
 	// Note: this is *only* used for flight strips displayed to the user; it should not in any way
 	// be referenced for an aircraft's route: Waypoints should always be used for that.
 	FlightStripDisplayRoute string `json:"route"`
@@ -194,6 +199,21 @@ func (ar Arrival) ServedAirports() []string {
 	}
 	slices.Sort(airports)
 	return airports
+}
+
+// ServedSTARs returns the STARs whose traffic the arrival takes, in the order
+// they were given.
+func (ar Arrival) ServedSTARs() []string {
+	if len(ar.STARFeeds) > 0 {
+		return ar.STARFeeds
+	}
+	if ar.STAR != "" {
+		return []string{ar.STAR}
+	}
+	if ar.DerivedSTAR != "" {
+		return []string{ar.DerivedSTAR}
+	}
+	return nil
 }
 
 // starAirports returns the airports among those given that the FAA CIFP charts
@@ -1339,6 +1359,20 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	if ar.STAR == "" {
 		ar.DerivedSTAR = ar.deriveSTAR()
+	}
+
+	for _, star := range ar.STARFeeds {
+		if !slices.ContainsFunc(ar.ServedAirports(), func(icao string) bool {
+			ap, ok := DB.Airports[icao]
+			if !ok {
+				return false
+			}
+			_, ok = ap.STARs[star]
+			return ok
+		}) {
+			e.ErrorString(`"star_feeds" %q isn't charted for any of the airports the arrival serves: %s`,
+				star, strings.Join(ar.ServedAirports(), ", "))
+		}
 	}
 
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil

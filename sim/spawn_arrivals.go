@@ -270,12 +270,12 @@ func matchArrivalRoutes(candidates []candidateArrival, aircraftType string, rout
 }
 
 // matchArrivalRoute finds the candidate arrival a filed route into the airport
-// comes in on. A route that ends with a STAR belongs to the arrivals flying
-// that STAR, and the CIFP transition the route joins it at says which of them
-// the flight actually reaches. A route with no STAR--GA and terminal-en-route
-// traffic--comes in through the gate nearest its origin. Suitability is
-// judged here rather than up front so that the errors can tell an inactive
-// STAR apart from active arrivals that don't admit the aircraft.
+// comes in on. A route that ends with a STAR belongs to the arrivals that take
+// that STAR's traffic, and the CIFP transition the route joins it at says which
+// of them the flight actually reaches. A route with no STAR--GA and
+// terminal-en-route traffic--comes in through the gate nearest its origin.
+// Suitability is judged here rather than up front so that the errors can tell
+// an inactive STAR apart from active arrivals that don't admit the aircraft.
 func matchArrivalRoute(candidates []candidateArrival, aircraftType, route, arrivalAirport,
 	origin string) (candidateArrival, error) {
 	star, entry := av.RouteSTAR(route, normalizeAirportCode(arrivalAirport))
@@ -291,11 +291,9 @@ func matchArrivalRoute(candidates []candidateArrival, aircraftType, route, arriv
 	}
 
 	matching := util.FilterSlice(candidates, func(c candidateArrival) bool {
-		// An arrival names its STAR only when it takes its waypoints from
-		// one; otherwise the STAR its waypoints run along was worked out at
-		// load.
-		arrSTAR := util.Select(c.arr.STAR != "", c.arr.STAR, c.arr.DerivedSTAR)
-		return arrSTAR != "" && av.ProcedureBase(arrSTAR) == av.ProcedureBase(star)
+		return slices.ContainsFunc(c.arr.ServedSTARs(), func(s string) bool {
+			return av.ProcedureBase(s) == av.ProcedureBase(star)
+		})
 	})
 	if len(matching) == 0 {
 		return candidateArrival{}, fmt.Errorf("%w %s into %s", errArrivalSTARInactive,
