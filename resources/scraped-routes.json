@@ -5,10 +5,7 @@
       {
         "route": "SENVI VIGMA ALLEX HANAA FLOSI4",
         "count": 21,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 20000,
         "max_altitude": 34000,
         "hours": "1-2,6-7,10,14,17"
@@ -21,10 +18,7 @@
       {
         "route": "IKLAX REEDO VIBRU HENDI SYR HNK FLOSI4",
         "count": 31,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 24000,
         "max_altitude": 26000,
         "hours": "0,5-6,8-9,14-18"
@@ -446,10 +440,7 @@
       {
         "route": "YVR SEA BUWZO KRATR3",
         "count": 21,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 19000,
         "max_altitude": 27000,
         "hours": "0,8,13,15,17-18"
@@ -478,10 +469,7 @@
       {
         "route": "YVR MARNR MARNR8",
         "count": 29,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 13000,
         "max_altitude": 15000,
         "hours": "9,12-13,17-19,21-22"
@@ -2806,10 +2794,7 @@
       {
         "route": "MUFIN",
         "count": 2,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 4000,
         "max_altitude": 6000,
         "hours": "1,9"
@@ -3763,10 +3748,7 @@
       {
         "route": "ELOEL3 FORSS BIEST LIKES4",
         "count": 4,
-        "aircraft": [
-          "turboprop",
-          "jet"
-        ],
+        "aircraft": ["turboprop", "jet"],
         "min_altitude": 9000,
         "max_altitude": 23000,
         "hours": "7,15,22"
@@ -3823,10 +3805,7 @@
       {
         "route": "BNDIA3 BNDIA",
         "count": 14,
-        "aircraft": [
-          "turboprop",
-          "jet"
-        ],
+        "aircraft": ["turboprop", "jet"],
         "min_altitude": 6000,
         "max_altitude": 12000,
         "hours": "4-5,7,10,14,19"
@@ -4082,10 +4061,7 @@
       {
         "route": "JJIMY",
         "count": 4,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 1500,
         "max_altitude": 7000,
         "hours": "15,18"
@@ -4148,10 +4124,7 @@
       {
         "route": "ENE PEASE STEVO LWRNC",
         "count": 52,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 4000,
         "max_altitude": 18000,
         "hours": "3-4,6-9,11,14-17,21"
@@ -4336,10 +4309,7 @@
       {
         "route": "MRICA SWTEE SWTEE2",
         "count": 12,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 9000,
         "max_altitude": 9000,
         "hours": "0-1,7,19-20,22-23"
@@ -4347,10 +4317,7 @@
       {
         "route": "MRICA GAD SWTEE SWTEE2",
         "count": 7,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 9000,
         "max_altitude": 19000,
         "hours": "5,8-9,14,19"
@@ -5683,10 +5650,7 @@
       {
         "route": "SAILL BUEEL JOTBA HHOOD6",
         "count": 35,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 22000,
         "max_altitude": 40000,
         "hours": "2,5,9,12-13,15-16,20-22"
@@ -5855,11 +5819,7 @@
       {
         "route": "ROARR GOODE V293",
         "count": 8,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 9000,
         "max_altitude": 22000,
         "hours": "7-8,10,15-16,21"
@@ -6415,10 +6375,7 @@
       {
         "route": "VNY4 GMN KLIDE",
         "count": 12,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 20000,
         "max_altitude": 28000,
         "hours": "6,8,15-17"
@@ -6951,10 +6908,7 @@
       {
         "route": "CSN",
         "count": 22,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 7000,
         "max_altitude": 15000,
         "hours": "1,3,6,9-10,14,19"
@@ -8332,10 +8286,7 @@
       {
         "route": "OCN",
         "count": 18,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 4000,
         "max_altitude": 4000,
         "hours": "7-11,19"
@@ -8377,10 +8328,7 @@
       {
         "route": "TRM BLH TIRON",
         "count": 2,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 23000,
         "max_altitude": 29000,
         "hours": "10,15"
@@ -9448,10 +9396,7 @@
       {
         "route": "GARL6",
         "count": 26,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 5000,
         "max_altitude": 21000,
         "hours": "2,6-9,15-17,21-23"
@@ -10100,10 +10045,7 @@
       {
         "route": "CMK",
         "count": 4,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 3000,
         "max_altitude": 4000,
         "hours": "6,10,14"
@@ -10382,10 +10324,7 @@
       {
         "route": "CVO V495 UBG",
         "count": 2,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 5000,
         "max_altitude": 10000,
         "hours": "11,21"
@@ -11665,10 +11604,7 @@
       {
         "route": "CVV",
         "count": 4,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 3000,
         "max_altitude": 5000,
         "hours": "15-16"
@@ -11823,10 +11759,7 @@
       {
         "route": "EEGOR ALIXX RYMES",
         "count": 19,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 4000,
         "max_altitude": 18000,
         "hours": "8,11,13-14,16-18,20-21"
@@ -11883,10 +11816,7 @@
       {
         "route": "EEGOR ALIXX RYMES",
         "count": 6,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 4000,
         "max_altitude": 11000,
         "hours": "7,11,18"
@@ -12981,10 +12911,7 @@
       {
         "route": "AABEE",
         "count": 3,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 3000,
         "max_altitude": 8000,
         "hours": "9,16"
@@ -13255,10 +13182,7 @@
       {
         "route": "MERIT HFD DREEM3",
         "count": 9,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 13000,
         "max_altitude": 21000,
         "hours": "6,12,16-17,21"
@@ -13266,10 +13190,7 @@
       {
         "route": "CMK V3 HFD DREEM3",
         "count": 3,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 9000,
         "max_altitude": 10000,
         "hours": "10,14"
@@ -13310,10 +13231,7 @@
       {
         "route": "CMK T634 BETHA HTO",
         "count": 22,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 5000,
         "max_altitude": 15000,
         "hours": "6-8,10,13,16,18,20-21"
@@ -13339,10 +13257,7 @@
       {
         "route": "ESJAY V623 SAX",
         "count": 11,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 4000,
         "max_altitude": 10000,
         "hours": "5-7,11,18-19"
@@ -13408,10 +13323,7 @@
       {
         "route": "CMK T634 DENNA",
         "count": 7,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 5000,
         "max_altitude": 30000,
         "hours": "7,14,20"
@@ -13445,11 +13357,7 @@
       {
         "route": "IGN",
         "count": 5,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 4000,
         "max_altitude": 5000,
         "hours": "8,11,14"
@@ -13475,11 +13383,7 @@
       {
         "route": "ESJAY V623 SAX",
         "count": 50,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 2000,
         "max_altitude": 43000,
         "hours": "7-14,17-22"
@@ -14036,10 +13940,7 @@
       {
         "route": "CSN",
         "count": 23,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 6000,
         "max_altitude": 12000,
         "hours": "1,8-9,12-13,16,22-23"
@@ -21860,10 +21761,7 @@
       {
         "route": "GTH163021 BGTOE SWVAY4",
         "count": 7,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 7000,
         "max_altitude": 17000,
         "hours": "18,23"
@@ -22735,10 +22633,7 @@
       {
         "route": "HFMAN CRVZA2",
         "count": 12,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 3000,
         "max_altitude": 45000,
         "hours": "5,8,11,14-15,18,20-21,23"
@@ -22804,10 +22699,7 @@
       {
         "route": "AABEE",
         "count": 2,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 3000,
         "max_altitude": 4000,
         "hours": "6,14"
@@ -24330,10 +24222,7 @@
       {
         "route": "JKSN1 OED MOXEE OCITY3",
         "count": 9,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 20000,
         "max_altitude": 32000,
         "hours": "13,16"
@@ -25849,10 +25738,7 @@
       {
         "route": "MOHAK ARLIN4",
         "count": 2,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 13000,
         "max_altitude": 15000,
         "hours": "16,22"
@@ -26005,11 +25891,7 @@
       {
         "route": "NUEVO8 EUGEN",
         "count": 16,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 5500,
         "max_altitude": 18000,
         "hours": "7,9-14"
@@ -26017,10 +25899,7 @@
       {
         "route": "SALAD5 ALTAM EUGEN",
         "count": 6,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 7000,
         "max_altitude": 7000,
         "hours": "5,8,22"
@@ -28308,10 +28187,7 @@
       {
         "route": "EEGOR ALIXX RYMES",
         "count": 12,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 4000,
         "max_altitude": 8000,
         "hours": "8,10,12,21"
@@ -28506,10 +28382,7 @@
       {
         "route": "WETWO KIOSK",
         "count": 21,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 8000,
         "max_altitude": 41000,
         "hours": "0-1,3,10-11,16,21-22"
@@ -28566,10 +28439,7 @@
       {
         "route": "BTG J1 SEA PAE GRIZZ1",
         "count": 37,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 20000,
         "max_altitude": 28000,
         "hours": "10-11,13,15,17,19-23"
@@ -28754,10 +28624,7 @@
       {
         "route": "BTG V23",
         "count": 21,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 9000,
         "max_altitude": 15000,
         "hours": "0,10,14-15,21-22"
@@ -28833,10 +28700,7 @@
       {
         "route": "BTG V23 OED",
         "count": 5,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 7000,
         "max_altitude": 11000,
         "hours": "6-8,12"
@@ -28981,10 +28845,7 @@
       {
         "route": "CUKIS T302 JJETT T355 HERBS",
         "count": 9,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 8000,
         "max_altitude": 15000,
         "hours": "5-8"
@@ -29476,10 +29337,7 @@
       {
         "route": "FYRBD1 MOHAK V66 BZA",
         "count": 21,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 12000,
         "max_altitude": 16000,
         "hours": "4-6,10-11,15,18-19,23"
@@ -29513,10 +29371,7 @@
       {
         "route": "STRRM1 STRRM BASER DINGO DINGO6",
         "count": 84,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 9000,
         "max_altitude": 25000,
         "hours": "1,5,7-13,15-23"
@@ -29859,10 +29714,7 @@
       {
         "route": "IGN V157 VALRE V157 HAARP",
         "count": 4,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 8000,
         "max_altitude": 8000,
         "hours": "16,18"
@@ -30168,10 +30020,7 @@
       {
         "route": "V389 FQF",
         "count": 5,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 10000,
         "max_altitude": 11000,
         "hours": "3,12,19-20"
@@ -30197,10 +30046,7 @@
       {
         "route": "FREDO",
         "count": 36,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 2000,
         "max_altitude": 70000,
         "hours": "2,6-11,13-19"
@@ -30225,10 +30071,7 @@
       {
         "route": "DITTI1 DAHLI PIETZ",
         "count": 4,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 24000,
         "max_altitude": 28000,
         "hours": "14,18,23"
@@ -30581,11 +30424,7 @@
       {
         "route": "ROZBO5 ROZBO",
         "count": 9,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 7000,
         "max_altitude": 19000,
         "hours": "5,7-8,15"
@@ -30661,11 +30500,7 @@
       {
         "route": "CSN",
         "count": 5,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 2300,
         "max_altitude": 11000,
         "hours": "12,20,23"
@@ -30717,10 +30552,7 @@
       {
         "route": "ENE PEASE STEVO LWRNC",
         "count": 38,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 4000,
         "max_altitude": 14000,
         "hours": "6-13,15-19,21"
@@ -31728,11 +31560,7 @@
       {
         "route": "V550 CWK",
         "count": 13,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 5000,
         "max_altitude": 23000,
         "hours": "6-9,16,19,22"
@@ -32054,10 +31882,7 @@
       {
         "route": "GVO HABUT",
         "count": 4,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 7000,
         "max_altitude": 9000,
         "hours": "12,19"
@@ -32065,10 +31890,7 @@
       {
         "route": "MQO GVO HABUT",
         "count": 2,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 7000,
         "max_altitude": 7000,
         "hours": "8,17"
@@ -33222,10 +33044,7 @@
       {
         "route": "PAE GRIZZ1",
         "count": 87,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 10000,
         "max_altitude": 20000,
         "hours": "1,5,9-22"
@@ -33254,10 +33073,7 @@
       {
         "route": "ALPSE YDC MENBO NORET IGVEP7",
         "count": 28,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 25000,
         "max_altitude": 37000,
         "hours": "6-11,15-16,20,23"
@@ -33416,10 +33232,7 @@
       {
         "route": "PAE MADEE MADEE7",
         "count": 23,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 6000,
         "max_altitude": 12000,
         "hours": "7-9,12,14-17,22-23"
@@ -34811,10 +34624,7 @@
       {
         "route": "KIZER GUANO",
         "count": 6,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 3000,
         "max_altitude": 4000,
         "hours": "9,14"
@@ -37025,10 +36835,7 @@
       {
         "route": "BORRN6 MNURE WLEEE7",
         "count": 7,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 10000,
         "max_altitude": 18000,
         "hours": "6,10-13"
@@ -37041,10 +36848,7 @@
       {
         "route": "OILER",
         "count": 2,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 3000,
         "max_altitude": 7000,
         "hours": "6,14"
@@ -37107,10 +36911,7 @@
       {
         "route": "FFU",
         "count": 5,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 19000,
         "max_altitude": 33000,
         "hours": "7,15-16,20"
@@ -38586,11 +38387,7 @@
       {
         "route": "JAURN",
         "count": 3,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 9000,
         "max_altitude": 11000,
         "hours": "11,14,21"
@@ -38901,10 +38698,7 @@
       {
         "route": "UBG",
         "count": 4,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 6000,
         "max_altitude": 6000,
         "hours": "16,21"
@@ -39610,10 +39404,7 @@
       {
         "route": "SLI",
         "count": 8,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 2000,
         "max_altitude": 4000,
         "hours": "10,14-15,18,22"
@@ -39779,10 +39570,7 @@
       {
         "route": "HHERO3 IKAYE CADAB",
         "count": 4,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 16000,
         "max_altitude": 20000,
         "hours": "10,12,14,18"
@@ -39961,10 +39749,7 @@
       {
         "route": "CEXAN",
         "count": 2,
-        "aircraft": [
-          "prop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "nonheavy"],
         "min_altitude": 4000,
         "max_altitude": 5000,
         "hours": "8,10"
@@ -40666,10 +40451,7 @@
       {
         "route": "BREZY V39 CMK",
         "count": 38,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 3000,
         "max_altitude": 24000,
         "hours": "3,5-12,14-15,17-21"
@@ -43190,10 +42972,7 @@
       {
         "route": "TAGIB UJ68 NLD",
         "count": 20,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 21000,
         "max_altitude": 29000,
         "hours": "10-20"
@@ -45149,10 +44928,7 @@
       {
         "route": "BET",
         "count": 10,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 17000,
         "max_altitude": 41000,
         "hours": "0,2-3,11-12,14,16"
@@ -45189,10 +44965,7 @@
       {
         "route": "DLG GASTO TED",
         "count": 21,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 20000,
         "max_altitude": 39000,
         "hours": "0,8-10,12-15,21"
@@ -45200,10 +44973,7 @@
       {
         "route": "DLG GASTO",
         "count": 10,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 19000,
         "max_altitude": 39000,
         "hours": "9-10,12,14,16-17,20"
@@ -45323,10 +45093,7 @@
       {
         "route": "FAI TAGER",
         "count": 15,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 12000,
         "max_altitude": 30000,
         "hours": "1,11-12,14-15,17"
@@ -45342,10 +45109,7 @@
       {
         "route": "FAI",
         "count": 7,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 18000,
         "max_altitude": 35000,
         "hours": "1,15,17,20"
@@ -45398,10 +45162,7 @@
       {
         "route": "JNU ASORT3 ASORT YESKA TED",
         "count": 22,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 14000,
         "max_altitude": 43000,
         "hours": "8-16,19,21"
@@ -45417,10 +45178,7 @@
       {
         "route": "JNU ASORT3 ASORT ELLAM TED",
         "count": 3,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 10000,
         "max_altitude": 34000,
         "hours": "10,21"
@@ -45436,10 +45194,7 @@
       {
         "route": "GASTO",
         "count": 28,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 9000,
         "max_altitude": 41000,
         "hours": "9,11-13,15-18"
@@ -45447,10 +45202,7 @@
       {
         "route": "GASTO TED",
         "count": 28,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 19000,
         "max_altitude": 29000,
         "hours": "7,9-11,13-15,17,21"
@@ -46008,10 +45760,7 @@
       {
         "route": "TED J501 BET BET",
         "count": 10,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 22000,
         "max_altitude": 32000,
         "hours": "5-6,8-9,12,17"
@@ -46134,10 +45883,7 @@
       {
         "route": "CAWIN LIBER5 FAI",
         "count": 49,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 22000,
         "max_altitude": 41000,
         "hours": "6,10,12,15-16,18-23"
@@ -46145,10 +45891,7 @@
       {
         "route": "FAI",
         "count": 18,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 16000,
         "max_altitude": 40000,
         "hours": "0,3-4,6,9-10,12,16-19,21-22"
@@ -46185,10 +45928,7 @@
       {
         "route": "TED J115",
         "count": 17,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 22000,
         "max_altitude": 38000,
         "hours": "9-12,15-16"
@@ -46493,10 +46233,7 @@
       {
         "route": "OTZ TAGER",
         "count": 4,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 25000,
         "max_altitude": 41000,
         "hours": "8,13,17"
@@ -46504,10 +46241,7 @@
       {
         "route": "OTZ",
         "count": 3,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 25000,
         "max_altitude": 37000,
         "hours": "2,4,20"
@@ -46718,10 +46452,7 @@
       {
         "route": "V20 HOKLA JULLE5",
         "count": 173,
-        "aircraft": [
-          "turboprop",
-          "jet"
-        ],
+        "aircraft": ["turboprop", "jet"],
         "min_altitude": 14000,
         "max_altitude": 22000,
         "hours": "4-20,22-23"
@@ -46729,11 +46460,7 @@
       {
         "route": "V7 LNY JULLE5",
         "count": 38,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 4000,
         "max_altitude": 22000,
         "hours": "2,6-7,11-17,19-21"
@@ -46746,11 +46473,7 @@
       {
         "route": "V15",
         "count": 271,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 5000,
         "max_altitude": 19000,
         "hours": "0,3-23"
@@ -47304,11 +47027,7 @@
       {
         "route": "PALAY3 LNY VECKI9",
         "count": 200,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "jet"
-        ],
+        "aircraft": ["prop", "turboprop", "jet"],
         "min_altitude": 5000,
         "max_altitude": 23000,
         "hours": "0,2-21,23"
@@ -47321,11 +47040,7 @@
       {
         "route": "KEOLA3 LIH",
         "count": 225,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "jet"
-        ],
+        "aircraft": ["prop", "turboprop", "jet"],
         "min_altitude": 10000,
         "max_altitude": 16000,
         "hours": "2-23"
@@ -47333,10 +47048,7 @@
       {
         "route": "KEOLA3 KEOLA HNL258R LIH148R LIH",
         "count": 39,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 6000,
         "max_altitude": 8000,
         "hours": "2,4-7,10-11,15,18"
@@ -47365,11 +47077,7 @@
       {
         "route": "PALAY3 LNY",
         "count": 200,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 5000,
         "max_altitude": 9000,
         "hours": "5-19,22"
@@ -47382,11 +47090,7 @@
       {
         "route": "PALAY3 LNY CAMPS4",
         "count": 239,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 7000,
         "max_altitude": 15000,
         "hours": "0-21,23"
@@ -47651,11 +47355,7 @@
       {
         "route": "JULLE5",
         "count": 174,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 2500,
         "max_altitude": 10000,
         "hours": "5-19,21-23"
@@ -47824,10 +47524,7 @@
       {
         "route": "MAUI5 OGG LNY JULLE5",
         "count": 253,
-        "aircraft": [
-          "turboprop",
-          "jet"
-        ],
+        "aircraft": ["turboprop", "jet"],
         "min_altitude": 10000,
         "max_altitude": 16000,
         "hours": "0-1,5-23"
@@ -47840,10 +47537,7 @@
       {
         "route": "V22 OKALA V16 LNY JULLE5",
         "count": 143,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 10000,
         "max_altitude": 26000,
         "hours": "2,5-9,11-22"
@@ -47851,10 +47545,7 @@
       {
         "route": "PARIS4 PARIS V2 UPP V16 LNY JULLE5",
         "count": 28,
-        "aircraft": [
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 12000,
         "max_altitude": 26000,
         "hours": "2-7"
@@ -49421,11 +49112,7 @@
       {
         "route": "PALCO7 PALCO RTE6 CHAKA SNGRA REKUA SJU",
         "count": 74,
-        "aircraft": [
-          "prop",
-          "turboprop",
-          "nonheavy"
-        ],
+        "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 4000,
         "max_altitude": 10000,
         "hours": "0,3-8,10-11,13-19"
@@ -49438,10 +49125,7 @@
       {
         "route": "HMLTN9 CHAKA SNGRA REKUA SJU",
         "count": 38,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 6000,
         "max_altitude": 6000,
         "hours": "0,4-10,13-19"
@@ -49918,10 +49602,7 @@
       {
         "route": "STT RTE6 CHAKA SNGRA REKUA SJU",
         "count": 37,
-        "aircraft": [
-          "prop",
-          "turboprop"
-        ],
+        "aircraft": ["prop", "turboprop"],
         "min_altitude": 4000,
         "max_altitude": 14000,
         "hours": "0-2,4,7,9-19"

@@ -3881,7 +3881,22 @@
       "arrivals": [
         {
           "waypoints": "DOWNE DOYRS/a10000+ N034.00.05.149,W118.23.43.471/ho CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
-          "star_feeds": ["BASET5", "BIGBR3", "BOGET2", "BRUEN2", "DIRBY2", "GOATZ2", "HUULL2", "KIMMO3", "LEENA8", "MDNYT2", "OLAAA2", "RYDRR2", "VISTA3", "WAYVE1"],
+          "star_feeds": [
+            "BASET5",
+            "BIGBR3",
+            "BOGET2",
+            "BRUEN2",
+            "DIRBY2",
+            "GOATZ2",
+            "HUULL2",
+            "KIMMO3",
+            "LEENA8",
+            "MDNYT2",
+            "OLAAA2",
+            "RYDRR2",
+            "VISTA3",
+            "WAYVE1"
+          ],
           "star": "MDNYT2",
           "is_rnav": true,
           "initial_controller": "2F",
