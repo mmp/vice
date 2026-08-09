@@ -10,11 +10,12 @@
 - STT: fixed few bugs with fixes in an aircraft's route not being recognized
 - STARS
   - Fixed bugs with redirected handoff datablocks and recalling redirected handoffs
+  - "Outside owned airspace" alerts are no longer shown in datablocks by default. (Can be reenabled in settings.)
 - ERAM
   - Added confict alert detection (Michael Trokel)
   - Fix leader line alignment with datablocks (Jud Lopez)
   - Added support for middle-click of callsign in datablock running QF command
-  - Added support for always-displayed maps
+  - Added support for always-displayed maps (must re-run `crc2vice` on source maps)
 - Facility engineering
   - For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)
   - Scenarios may now specify "default_consolidation", overriding the config's consolidation (radarcontacto)
@@ -26,6 +27,7 @@
   - Added "automatic_scratchpad_assignment" to default a flight's scratchpads from its fixes, altitude, and flight type (radarcontacto)
   - Added "traffic_routes" to airports, giving the routes traffic between them and specific other airports flies when a scenario is flown from a timetable or historical data
   - Added "aircraft" to arrivals, restricting which classes of aircraft an arrival carries
+  - "departure_routes" may specify an array of routes with individual ones using "aircraft" to limit valid aircraft types 
   - Removed "primary_airport"; replaced with facility "weather_station", "lists"."ssa"."system_altimeter" (overridable per area)
   - Arrivals must now give the airports they serve in "airports" unless they name a "star" the FAA CIFP charts
   - An arrival's "star" must be charted for at least one of the airports it serves, whether or not it supplies the waypoints
