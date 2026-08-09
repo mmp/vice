@@ -441,6 +441,7 @@
           "description": "jet",
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -478,6 +479,7 @@
           "initial_speed": 200,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -506,6 +508,7 @@
           "description": "jet",
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -540,6 +543,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -573,6 +577,7 @@
           "description": "prop",
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -600,6 +605,7 @@
           "description": "prop",
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -628,6 +634,7 @@
           "initial_speed": 280,
           "description": "jet",
           "expect_approach": null,
+          "airports": ["KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -658,6 +665,7 @@
           "initial_speed": 250,
           "description": "jet",
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -695,6 +703,7 @@
           "initial_speed": 200,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -723,6 +732,7 @@
           "initial_speed": 280,
           "description": "jet",
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -760,6 +770,7 @@
           "initial_speed": 200,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {
@@ -787,6 +798,7 @@
           "initial_speed": 200,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRE", "KMYR"],
           "airlines": {
             "KMYR": [
               {

@@ -988,6 +988,7 @@
           "initial_speed": 270,
           "description": "BITTA",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -1159,6 +1160,7 @@
           "initial_speed": 270,
           "description": "DENNS",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -1264,6 +1266,7 @@
           "initial_speed": 270,
           "description": "ZIGIE/APACK",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -1326,6 +1329,7 @@
           "initial_speed": 270,
           "description": "BITTA",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -1489,6 +1493,7 @@
           "initial_speed": 270,
           "description": "DENNS",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -1586,6 +1591,7 @@
           "initial_speed": 270,
           "description": "ZIGIE/APACK",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -1647,6 +1653,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -1858,6 +1865,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2065,11 +2073,12 @@
         {
           "waypoints": "HAWYN/a17000-19000/hoC02 OPAHH/a8000+/ho KAENA/a6000-8000 SELIC/a4000/s220",
           "cruise_altitude": 30000,
-          "star": "KAENA3",
+          "star": "KAENA5",
           "initial_controller": "C02",
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2115,6 +2124,7 @@
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2227,6 +2237,7 @@
           "initial_speed": 280,
           "description": "LIH",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2315,6 +2326,7 @@
           "initial_speed": 280,
           "description": "SOK",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2352,6 +2364,7 @@
           "initial_speed": 280,
           "description": "LIH",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2440,6 +2453,7 @@
           "initial_speed": 280,
           "description": "SOK",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2479,6 +2493,7 @@
           "initial_speed": 130,
           "description": "MKK",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2510,6 +2525,7 @@
           "initial_speed": 180,
           "description": "OGG",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2544,6 +2560,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2576,6 +2593,7 @@
           "initial_speed": 200,
           "description": "Props",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2601,6 +2619,7 @@
           "initial_speed": 270,
           "description": "Jets",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2634,6 +2653,7 @@
           "initial_speed": 270,
           "description": "Jets",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2671,6 +2691,7 @@
           "initial_speed": 200,
           "description": "Props",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2696,6 +2717,7 @@
           "initial_speed": 270,
           "description": "Jets",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2729,6 +2751,7 @@
           "initial_speed": 270,
           "description": "Jets",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2766,6 +2789,7 @@
           "initial_speed": 270,
           "description": "CHOKO",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2799,6 +2823,7 @@
           "initial_speed": 270,
           "description": "CARRP",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2826,6 +2851,7 @@
           "initial_speed": 270,
           "description": "CHOKO",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {
@@ -2854,6 +2880,7 @@
           "initial_speed": 270,
           "description": "CARRP",
           "expect_approach": null,
+          "airports": ["PHNL"],
           "airlines": {
             "PHNL": [
               {

@@ -410,6 +410,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGSO"],
           "airlines": {
             "KGSO": [
               {
@@ -435,6 +436,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KINT"],
           "airlines": {
             "KINT": [
               {
@@ -459,6 +461,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGSO"],
           "airlines": {
             "KGSO": [
               {
@@ -488,6 +491,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGSO"],
           "airlines": {
             "KGSO": [
               {
@@ -509,6 +513,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KINT"],
           "airlines": {
             "KINT": [
               {
@@ -528,12 +533,13 @@
       "arrivals": [
         {
           "waypoints": "KHAOS TRAKS/ho DEMNZ PDMNT/h80",
-          "star": "TRAKS4N",
+          "star": "TRAKS4",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KGSO"],
           "airlines": {
             "KGSO": [
               {
@@ -566,6 +572,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KINT"],
           "airlines": {
             "KINT": [
               {
@@ -585,12 +592,13 @@
       "arrivals": [
         {
           "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL GLFRD/h60",
-          "star": "TRAKS4S",
+          "star": "TRAKS4",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KGSO"],
           "airlines": {
             "KGSO": [
               {
@@ -623,6 +631,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KINT"],
           "airlines": {
             "KINT": [
               {

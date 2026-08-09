@@ -772,6 +772,7 @@
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
           "initial_speed": 300,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -811,6 +812,7 @@
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
           "initial_speed": 300,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -846,6 +848,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_speed": 300,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -885,6 +888,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_speed": 300,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -920,6 +924,7 @@
           "initial_altitude": 31000,
           "assigned_altitude": 31000,
           "initial_speed": 300,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -955,6 +960,7 @@
           "initial_altitude": 29000,
           "assigned_altitude": 29000,
           "initial_speed": 300,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -985,12 +991,12 @@
         {
           "waypoints": "N034.42.29.816,W082.56.26.398 N033.49.20.018,W083.43.03.737/ho GRANT GIMLY/delete",
           "cruise_altitude": 34000,
-          "star": "CHOPZ",
           "route": "/. CHOPZ",
           "initial_controller": "42",
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
           "initial_speed": 300,
+          "airports": ["KCSG"],
           "airlines": {
             "KCSG": [
               {
@@ -1018,12 +1024,12 @@
         {
           "waypoints": "SPA N033.35.17.697,W083.41.23.294/ho GRANT GIMLY/delete",
           "cruise_altitude": 34000,
-          "star": "SPA",
           "route": "/. SPA",
           "initial_controller": "32",
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
           "initial_speed": 300,
+          "airports": ["KLGC"],
           "airlines": {
             "KLGC": [
               {

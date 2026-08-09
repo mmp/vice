@@ -283,6 +283,7 @@
           "initial_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {
@@ -316,6 +317,7 @@
           "initial_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {
@@ -345,6 +347,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {
@@ -381,6 +384,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {

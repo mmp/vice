@@ -710,6 +710,7 @@
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -736,6 +737,7 @@
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -761,6 +763,7 @@
           "initial_controller": "B20",
           "initial_altitude": 23000,
           "initial_speed": 300,
+          "airports": ["KJFK"],
           "airlines": {
             "KJFK": [
               {
@@ -1021,6 +1024,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_speed": 300,
+          "airports": ["KJFK"],
           "airlines": {
             "KJFK": [
               {
@@ -1425,6 +1429,7 @@
           "initial_altitude": 28000,
           "assigned_altitude": 28000,
           "initial_speed": 300,
+          "airports": ["KPIT"],
           "airlines": {
             "KPIT": [
               {
@@ -1455,6 +1460,7 @@
           "initial_altitude": 33000,
           "assigned_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KMMU", "KTEB"],
           "airlines": {
             "KTEB": [
               {
@@ -1884,6 +1890,7 @@
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
           "initial_speed": 300,
+          "airports": ["KPIT"],
           "airlines": {
             "KPIT": [
               {
@@ -1914,6 +1921,7 @@
           "initial_altitude": 20000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
+          "airports": ["KMMU", "KTEB"],
           "airlines": {
             "KTEB": [
               {
@@ -1955,6 +1963,7 @@
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
+          "airports": ["KITH"],
           "airlines": {
             "KITH": [
               {
@@ -1977,6 +1986,7 @@
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
           "initial_speed": 300,
+          "airports": ["KITH"],
           "airlines": {
             "KITH": [
               {
@@ -1998,6 +2008,7 @@
           "initial_controller": "49",
           "initial_altitude": 23000,
           "initial_speed": 300,
+          "airports": ["KJFK"],
           "airlines": {
             "KJFK": [
               {

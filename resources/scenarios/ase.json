@@ -211,6 +211,7 @@
     "LAWSN": {
       "arrivals": [
         {
+          "airports": ["KASE"],
           "airlines": {
             "KASE": [
               {
@@ -245,6 +246,7 @@
           "waypoints": "N039.37.27.994,W106.08.45.942 N039.36.38.652,W106.14.29.403/ho WERNR ZAKOR DBL"
         },
         {
+          "airports": ["KASE"],
           "airlines": {
             "KASE": [
               {
@@ -273,6 +275,7 @@
     "HAREI": {
       "arrivals": [
         {
+          "airports": ["KASE"],
           "airlines": {
             "KASE": [
               {
@@ -304,6 +307,7 @@
     "LOYYD": {
       "arrivals": [
         {
+          "airports": ["KASE"],
           "airlines": {
             "KASE": [
               {

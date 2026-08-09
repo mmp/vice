@@ -470,6 +470,7 @@
           "initial_altitude": 17000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSDF"],
           "airlines": {
             "KSDF": [
               {
@@ -509,6 +510,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSDF"],
           "airlines": {
             "KSDF": [
               {
@@ -547,6 +549,7 @@
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSDF"],
           "airlines": {
             "KSDF": [
               {

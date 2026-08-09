@@ -1179,6 +1179,7 @@
           "initial_speed": 250,
           "secondary_scratchpad": "Z",
           "expect_approach": "Z0R",
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -1254,6 +1255,7 @@
           "initial_speed": 250,
           "secondary_scratchpad": "Z",
           "expect_approach": "Z0R",
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -1316,6 +1318,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -1374,6 +1377,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -1441,6 +1445,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -1534,6 +1539,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -1680,6 +1686,7 @@
           "initial_speed": 220,
           "expect_approach": "Z0R",
           "secondary_scratchpad": "GZ",
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -1780,6 +1787,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -1912,6 +1920,7 @@
           "initial_speed": 270,
           "expect_approach": "I4R",
           "scratchpad": "I4R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2085,6 +2094,7 @@
           "initial_speed": 270,
           "expect_approach": "I5L",
           "scratchpad": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2195,6 +2205,7 @@
           "cleared_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": "I7R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2327,6 +2338,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -2442,6 +2454,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -2492,6 +2505,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -2519,6 +2533,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KLGB", "KSNA", "KTOA"],
           "airlines": {
             "KLGB": [
               {
@@ -2585,6 +2600,7 @@
           "initial_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KLGB", "KSNA", "KTOA"],
           "airlines": {
             "KLGB": [
               {
@@ -2915,6 +2931,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KLGB", "KSNA", "KTOA"],
           "airlines": {
             "KLGB": [
               {
@@ -3253,6 +3270,7 @@
           "initial_altitude": 6000,
           "initial_speed": 120,
           "expect_approach": null,
+          "airports": ["KLGB", "KSNA", "KTOA"],
           "airlines": {
             "KLGB": [
               {
@@ -3596,6 +3614,7 @@
           "initial_altitude": 6000,
           "initial_speed": 120,
           "expect_approach": null,
+          "airports": ["KLGB", "KSNA", "KTOA"],
           "airlines": {
             "KLGB": [
               {
@@ -3947,6 +3966,7 @@
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -3991,6 +4011,7 @@
           "initial_altitude": 13000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -4012,6 +4033,7 @@
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -4081,6 +4103,7 @@
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -4133,6 +4156,7 @@
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -4170,6 +4194,7 @@
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -4192,6 +4217,7 @@
           "initial_altitude": 12000,
           "initial_speed": 260,
           "expect_approach": null,
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -4262,6 +4288,7 @@
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {

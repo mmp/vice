@@ -573,6 +573,7 @@
     "BRHMA": {
       "arrivals": [
         {
+          "airports": ["KLBB"],
           "airlines": {
             "KLBB": [
               {
@@ -614,6 +615,7 @@
     "OWUPO": {
       "arrivals": [
         {
+          "airports": ["KLBB"],
           "airlines": {
             "KLBB": [
               {
@@ -636,6 +638,7 @@
     "SJT": {
       "arrivals": [
         {
+          "airports": ["KLBB"],
           "airlines": {
             "KLBB": [
               {
@@ -666,6 +669,7 @@
     "GTH": {
       "arrivals": [
         {
+          "airports": ["KLBB"],
           "airlines": {
             "KLBB": [
               {
@@ -693,6 +697,7 @@
     "FLATT": {
       "arrivals": [
         {
+          "airports": ["KLBB"],
           "airlines": {
             "KLBB": [
               {
@@ -715,6 +720,7 @@
     "ABI": {
       "arrivals": [
         {
+          "airports": ["KLBB"],
           "airlines": {
             "KLBB": [
               {

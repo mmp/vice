@@ -4907,6 +4907,7 @@
           "initial_speed": 290,
           "expect_approach": null,
           "scratchpad": "CAP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -5024,6 +5025,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "CLP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -5077,6 +5079,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "SKL",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -5122,6 +5125,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -5172,6 +5176,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -5201,6 +5206,7 @@
           "initial_speed": 280,
           "scratchpad": "ATM",
           "expect_approach": null,
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -5360,6 +5366,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "MDY",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -5420,6 +5427,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "DLE",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -5480,6 +5488,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "FRD",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -5543,6 +5552,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -5610,6 +5620,7 @@
           "initial_speed": 280,
           "expect_approach": "I3L",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -5690,6 +5701,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "TRP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -5753,6 +5765,7 @@
           "assigned_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHEF", "KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -5970,6 +5983,7 @@
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6015,6 +6029,7 @@
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6065,6 +6080,7 @@
           "initial_altitude": 23000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6224,6 +6240,7 @@
           "initial_altitude": 10500,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KHEF"],
           "airlines": {
             "KHEF": [
               {
@@ -6274,6 +6291,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHEF"],
           "airlines": {
             "KHEF": [
               {
@@ -6324,6 +6342,7 @@
           "assigned_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6422,6 +6441,7 @@
           "assigned_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6524,6 +6544,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHEF", "KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6739,6 +6760,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHEF", "KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6865,6 +6887,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KRIC"],
           "airlines": {
             "KRIC": [
               {
@@ -6886,6 +6909,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KRIC"],
           "airlines": {
             "KRIC": [
               {
@@ -6915,6 +6939,7 @@
           "initial_altitude": 21000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRIC"],
           "airlines": {
             "KRIC": [
               {
@@ -6953,6 +6978,7 @@
           "initial_altitude": 21000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRIC"],
           "airlines": {
             "KRIC": [
               {
@@ -6994,6 +7020,7 @@
           "initial_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRIC"],
           "airlines": {
             "KRIC": [
               {
@@ -7044,6 +7071,7 @@
           "initial_altitude": 22000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRIC"],
           "airlines": {
             "KRIC": [
               {
@@ -7089,6 +7117,7 @@
           "assigned_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCHO"],
           "airlines": {
             "KCHO": [
               {
@@ -7126,6 +7155,7 @@
           "assigned_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCHO"],
           "airlines": {
             "KCHO": [
               {

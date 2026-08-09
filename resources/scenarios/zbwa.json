@@ -145,6 +145,7 @@
           "initial_controller": "38",
           "initial_altitude": 38000,
           "initial_speed": 300,
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {

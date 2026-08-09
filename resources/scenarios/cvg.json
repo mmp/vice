@@ -4315,6 +4315,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "CVG",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -4432,6 +4433,7 @@
           "initial_speed": 210,
           "expect_approach": "I6L",
           "scratchpad": "I6L",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -4549,6 +4551,7 @@
           "initial_speed": 210,
           "expect_approach": "I8R",
           "scratchpad": "I8R",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -4678,6 +4681,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "scratchpad": "CVG",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -4715,6 +4719,7 @@
           "initial_speed": 250,
           "expect_approach": "I6R",
           "scratchpad": "I6R",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -4752,6 +4757,7 @@
           "initial_speed": 210,
           "expect_approach": "I8L",
           "scratchpad": "I8L",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -4789,6 +4795,7 @@
           "initial_speed": 270,
           "expect_approach": null,
           "scratchpad": "LUK",
+          "airports": ["KLUK"],
           "airlines": {
             "KLUK": [
               {
@@ -4831,6 +4838,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "CVG",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -5027,6 +5035,7 @@
           "initial_speed": 250,
           "expect_approach": "I6R",
           "scratchpad": "I6R",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -5223,6 +5232,7 @@
           "initial_speed": 250,
           "expect_approach": "I8L",
           "scratchpad": "I8L",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -5431,6 +5441,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "CVG",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -5621,6 +5632,7 @@
           "initial_speed": 250,
           "expect_approach": "I6L",
           "scratchpad": "I6L",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -5811,6 +5823,7 @@
           "initial_speed": 210,
           "expect_approach": "I8R",
           "scratchpad": "I8R",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -6013,6 +6026,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "CVG",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -6117,6 +6131,7 @@
           "initial_speed": 250,
           "expect_approach": "I6R",
           "scratchpad": "I6R",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -6221,6 +6236,7 @@
           "initial_speed": 250,
           "expect_approach": "I8L",
           "scratchpad": "I8L",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -6325,6 +6341,7 @@
           "initial_speed": 240,
           "expect_approach": null,
           "scratchpad": "CVG",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -6362,6 +6379,7 @@
           "initial_speed": 240,
           "expect_approach": null,
           "scratchpad": "CVG",
+          "airports": ["KCVG"],
           "airlines": {
             "KCVG": [
               {
@@ -6409,6 +6427,7 @@
           "initial_speed": 240,
           "initial_controller": "C20",
           "scratchpad": "LUK",
+          "airports": ["KLUK"],
           "airlines": {
             "KLUK": [
               {

@@ -230,6 +230,7 @@
           "initial_altitude": 29000,
           "assigned_altitude": 29000,
           "initial_speed": 300,
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -276,6 +277,7 @@
           "initial_altitude": 29000,
           "assigned_altitude": 29000,
           "initial_speed": 300,
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -312,12 +314,13 @@
         {
           "waypoints": "N033.46.31.200,W083.59.49.041/ho BURGG MURKY TRAKS DEMNZ EARLL GLFRD/delete",
           "cruise_altitude": 32000,
-          "star": "TRAK4",
+          "star": "TRAKS4",
           "route": "/. TRAK4",
           "initial_controller": "22",
           "initial_altitude": 32000,
           "assigned_altitude": 32000,
           "initial_speed": 300,
+          "airports": ["KGSO"],
           "airlines": {
             "KGSO": [
               {
@@ -350,12 +353,12 @@
         {
           "waypoints": "N033.53.05.362,W081.42.16.029/ho SPA HMV/delete",
           "cruise_altitude": 30000,
-          "star": "SPA",
           "route": "/. SPA HMV",
           "initial_controller": "J30",
           "initial_altitude": 30000,
           "assigned_altitude": 30000,
           "initial_speed": 300,
+          "airports": ["KTRI"],
           "airlines": {
             "KTRI": [
               {

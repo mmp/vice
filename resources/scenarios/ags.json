@@ -221,6 +221,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAGS"],
           "airlines": {
             "KAGS": [
               {
@@ -246,6 +247,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAGS"],
           "airlines": {
             "KAGS": [
               {
@@ -267,6 +269,7 @@
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KAGS"],
           "airlines": {
             "KAGS": [
               {
@@ -292,6 +295,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAGS"],
           "airlines": {
             "KAGS": [
               {
@@ -322,6 +326,7 @@
           "initial_speed": 250,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KAGS"],
           "airlines": {
             "KAGS": [
               {
@@ -343,6 +348,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAGS"],
           "airlines": {
             "KAGS": [
               {

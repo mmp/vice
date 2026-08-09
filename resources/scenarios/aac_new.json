@@ -2932,7 +2932,7 @@
     "REELI": {
       "arrivals": [
         {
-          "star": "TULSA4",
+          "route": "/. TULSA4",
           "initial_altitude": 14000,
           "initial_speed": 260,
           "initial_controller": "C51",
@@ -2940,6 +2940,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -3012,6 +3013,7 @@
               "30": "N036.55.58.493,W094.56.27.332 4Y3"
             }
           },
+          "airports": ["4Y3", "KJKE"],
           "airlines": {
             "KJKE": [
               {
@@ -3044,6 +3046,7 @@
               "28L": "PRIOR N036.45.38.410,W094.57.06.745 KAAC"
             }
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -3081,6 +3084,7 @@
               "30": "PRIOR 4Y3"
             }
           },
+          "airports": ["4Y3", "KAAC", "KJKE"],
           "airlines": {
             "KAAC": [
               {
@@ -3126,6 +3130,7 @@
               "30": "PRIOR 4Y3"
             }
           },
+          "airports": ["4Y3", "KJKE"],
           "airlines": {
             "4Y3": [
               {
@@ -3155,6 +3160,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -3213,7 +3219,7 @@
     "KILLR": {
       "arrivals": [
         {
-          "star": "TUL4",
+          "route": "/. TUL4",
           "initial_altitude": 13000,
           "initial_speed": 260,
           "initial_controller": "C51",
@@ -3221,6 +3227,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -3281,6 +3288,7 @@
           "initial_speed": 280,
           "initial_controller": "C51",
           "waypoints": "N035.16.00.095,W095.08.48.826 N035.23.51.710,W095.10.04.165/ho 4Y3",
+          "airports": ["4Y3"],
           "airlines": {
             "4Y3": [
               {
@@ -3302,6 +3310,7 @@
           "initial_speed": 280,
           "initial_controller": "C51",
           "waypoints": "N035.16.00.095,W095.08.48.826 N035.23.51.710,W095.10.04.165/ho 4Y3",
+          "airports": ["4Y3", "KAAC", "KJKE"],
           "airlines": {
             "4Y3": [
               {
@@ -3329,7 +3338,7 @@
     "ATOKA": {
       "arrivals": [
         {
-          "star": "TUL4",
+          "route": "/. TUL4",
           "initial_altitude": 15000,
           "initial_speed": 260,
           "speed_restriction": 260,
@@ -3338,6 +3347,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -3418,6 +3428,7 @@
               "30": "N035.42.16.029,W096.26.12.225 4Y3"
             }
           },
+          "airports": ["4Y3", "KAAC", "KJKE"],
           "airlines": {
             "KAAC": [
               {
@@ -3461,6 +3472,7 @@
               "30": "N035.42.16.029,W096.26.12.225 4Y3"
             }
           },
+          "airports": ["4Y3", "KAAC", "KJKE"],
           "airlines": {
             "KAAC": [
               {
@@ -3488,7 +3500,7 @@
     "BARTS": {
       "arrivals": [
         {
-          "star": "TUL4",
+          "route": "/. TUL4",
           "initial_altitude": 16000,
           "initial_speed": 260,
           "speed_restriction": 260,
@@ -3497,6 +3509,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -3577,6 +3590,7 @@
               "30": "N036.41.38.469,W096.20.41.317 4Y3"
             }
           },
+          "airports": ["4Y3", "KAAC", "KJKE"],
           "airlines": {
             "KAAC": [
               {
@@ -3623,6 +3637,7 @@
               "30": "N036.41.38.469,W096.20.41.317 4Y3"
             }
           },
+          "airports": ["4Y3", "KAAC", "KJKE"],
           "airlines": {
             "KAAC": [
               {
@@ -3653,7 +3668,7 @@
     "BARTS_FINAL": {
       "arrivals": [
         {
-          "star": "TULSA4",
+          "route": "/. TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1N",
@@ -3661,6 +3676,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -3843,8 +3859,8 @@
     "ATOKA_FINAL": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "5NM South Downwind",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1S",
@@ -3852,6 +3868,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4030,8 +4047,8 @@
           }
         },
         {
+          "route": "/. TULSA4",
           "description": "6NM South Downwind",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1S",
@@ -4039,6 +4056,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4221,7 +4239,7 @@
     "ATOKA_FINAL_6NM": {
       "arrivals": [
         {
-          "star": "TULSA4",
+          "route": "/. TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1S",
@@ -4229,6 +4247,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4400,7 +4419,7 @@
     "REELI_FINAL": {
       "arrivals": [
         {
-          "star": "TULSA4",
+          "route": "/. TULSA4",
           "initial_altitude": 11000,
           "cleared_altitude": 6000,
           "initial_speed": 250,
@@ -4409,6 +4428,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4444,6 +4464,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4504,6 +4525,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4564,6 +4586,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4624,6 +4647,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4684,6 +4708,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4748,6 +4773,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4817,6 +4843,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4875,6 +4902,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -4924,6 +4952,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5003,6 +5032,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5045,8 +5075,8 @@
     "BARTS_CWT_A": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "CWT A",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1N",
@@ -5054,6 +5084,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5114,6 +5145,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5174,6 +5206,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5234,6 +5267,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5294,6 +5328,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5349,8 +5384,8 @@
     "BARTS_CWT_B": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "CWT B",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1N",
@@ -5358,6 +5393,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5418,8 +5454,8 @@
     "BARTS_CWT_C": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "CWT C",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1N",
@@ -5427,6 +5463,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5476,8 +5513,8 @@
     "BARTS_CWT_D": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "CWT D",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1N",
@@ -5485,6 +5522,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5525,8 +5563,8 @@
     "BARTS_CWT_E_F_G": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "CWT E,F & G",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1N",
@@ -5534,6 +5572,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5604,8 +5643,8 @@
     "BARTS_CWT_H_I": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "CWT D",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1N",
@@ -5613,6 +5652,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5655,8 +5695,8 @@
     "ATOKA_STAGGER": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "RY28L Automatic Arrivals",
-          "star": "TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 210,
           "initial_controller": "1S",
@@ -5665,6 +5705,7 @@
           "expect_approach": {
             "KAAC": "R8L"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -5834,7 +5875,7 @@
     "BARTS_STAGGER": {
       "arrivals": [
         {
-          "star": "TULSA4",
+          "route": "/. TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 210,
           "initial_controller": "1N",
@@ -5843,6 +5884,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -6012,8 +6054,8 @@
     "MAYES_STAGGER": {
       "arrivals": [
         {
+          "route": "/. TULSA4",
           "description": "RY28L Automatic Arrivals",
-          "star": "TULSA4",
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
           "initial_speed": 170,
@@ -6023,6 +6065,7 @@
           "expect_approach": {
             "KAAC": "R8L"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -6203,6 +6246,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -6225,6 +6269,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -6247,6 +6292,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -6271,6 +6317,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -6291,6 +6338,7 @@
           "expect_approach": {
             "KAAC": "I8R"
           },
+          "airports": ["KAAC"],
           "airlines": {
             "KAAC": [
               {
@@ -6311,6 +6359,7 @@
           "expect_approach": {
             "KJKE": "I27"
           },
+          "airports": ["KJKE"],
           "airlines": {
             "KJKE": [
               {
@@ -6331,6 +6380,7 @@
           "expect_approach": {
             "4Y3": "I30"
           },
+          "airports": ["4Y3"],
           "airlines": {
             "4Y3": [
               {
@@ -6351,6 +6401,7 @@
           "expect_approach": {
             "KBRT": "I13"
           },
+          "airports": ["KBRT"],
           "airlines": {
             "KBRT": [
               {
@@ -6371,6 +6422,7 @@
           "expect_approach": {
             "KBRT": "I13"
           },
+          "airports": ["KBRT"],
           "airlines": {
             "KBRT": [
               {

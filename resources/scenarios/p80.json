@@ -2440,6 +2440,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -2478,6 +2479,7 @@
           "star": "HELNS6",
           "initial_speed": 300,
           "spawn": "BUWZO@.2",
+          "airports": ["KHIO", "KPDX"],
           "airlines": {
             "KHIO": [
               {
@@ -2536,6 +2538,7 @@
           "initial_speed": 170,
           "assigned_altitude": 7000,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -2574,6 +2577,7 @@
           "initial_speed": 170,
           "assigned_altitude": 8000,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -2611,6 +2615,7 @@
           "initial_altitude": 15000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -2639,12 +2644,13 @@
           "waypoints": "SODDA/a17000+/s280 RABBI/a13000+/s270/ho HHOOD/a9000-15000/s250 BEEVS BLRUN SSDEE/a9000-11000 THEID/a8000-10000/s240 EMZEY/a7000-8000/s230 CIZZL/a6000+/s210/h281",
           "cruise_altitude": 34000,
           "route": "/. HHOOD",
-          "star": "HHOOD5",
+          "star": "HHOOD6",
           "initial_controller": "C34",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "scratchpad": "RHO",
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -2727,7 +2733,7 @@
         {
           "waypoints": "EMZEY/a7000+/s230 CIZZL/a6000+/s210/h281/ho",
           "cruise_altitude": 34000,
-          "star": "HHOOD5",
+          "star": "HHOOD6",
           "initial_controller": "1N",
           "initial_altitude": 7000,
           "assigned_altitude": 5000,
@@ -2735,6 +2741,7 @@
           "speed_restriction": 210,
           "scratchpad": "I0L",
           "expect_approach": "I0L",
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -3043,12 +3050,13 @@
           "waypoints": "SODDA/a17000+/s280 RABBI/a13000+/s270/ho HHOOD/a9000-15000/s250 BEEVS/a7100+ BLRUN SHAFR/a6700/s210/flyover KPDX",
           "cruise_altitude": 34000,
           "route": "/. HHOOD",
-          "star": "HHOOD5",
+          "star": "HHOOD6",
           "scratchpad": "RHO",
           "initial_controller": "C34",
           "initial_altitude": 17200,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -3111,7 +3119,7 @@
         {
           "waypoints": "HHOOD/a9000-15000/s250 N045.32.15.516,W121.54.26.180/ho SHAFR/a6700/s210/h259",
           "cruise_altitude": 34000,
-          "star": "HHOOD5",
+          "star": "HHOOD6",
           "initial_controller": "1N",
           "initial_altitude": 9000,
           "assigned_altitude": 6700,
@@ -3119,6 +3127,7 @@
           "speed_restriction": 210,
           "scratchpad": "I8R",
           "expect_approach": "I8R",
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -3432,6 +3441,7 @@
           "initial_altitude": 21000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -3474,7 +3484,7 @@
         {
           "waypoints": "VOODU/a5000/s210/ho DOUHH NNUTT/h278",
           "cruise_altitude": 34000,
-          "star": "KRATR2",
+          "star": "KRATR3",
           "initial_controller": "1N",
           "initial_altitude": 5000,
           "assigned_altitude": 5000,
@@ -3482,6 +3492,7 @@
           "speed_restriction": 210,
           "scratchpad": "I0L",
           "expect_approach": "I0L",
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -3570,6 +3581,7 @@
           "initial_altitude": 21000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -3612,7 +3624,7 @@
         {
           "waypoints": "LIQWD/a6000 N045.43.30.282,W122.25.23.831/ho SSSUN/s210 SHYNE/h108",
           "cruise_altitude": 34000,
-          "star": "KRATR2",
+          "star": "KRATR3",
           "initial_controller": "1N",
           "initial_altitude": 6000,
           "assigned_altitude": 6000,
@@ -3620,6 +3632,7 @@
           "speed_restriction": 210,
           "scratchpad": "I8R",
           "expect_approach": "I8L",
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -3707,6 +3720,7 @@
           "initial_altitude": 18000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -4004,6 +4018,7 @@
           "initial_altitude": 18000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -4302,6 +4317,7 @@
           "initial_altitude": 17000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -4683,7 +4699,7 @@
         {
           "waypoints": "SSAIL/a6000-8000 N045.28.18.266,W122.45.55.178/ho MYCRO/a5000/s210 BBREW PUBBB/h305",
           "cruise_altitude": 34000,
-          "star": "TMBERS3",
+          "star": "TMBRS4",
           "initial_controller": "1D",
           "initial_altitude": 6000,
           "assigned_altitude": 5000,
@@ -4691,6 +4707,7 @@
           "speed_restriction": 210,
           "scratchpad": "I0R",
           "expect_approach": "I0R",
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -5004,6 +5021,7 @@
           "scratchpad": "RTM",
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {
@@ -5316,7 +5334,7 @@
         {
           "waypoints": "FLOWR/a7000-9000 N045.20.24.165,W122.33.37.227/ho ROAGE/a4000+/s210/h103",
           "cruise_altitude": 34000,
-          "star": "TMBERS3",
+          "star": "TMBRS4",
           "initial_controller": "1D",
           "initial_altitude": 9000,
           "assigned_altitude": 5000,
@@ -5324,6 +5342,7 @@
           "speed_restriction": 210,
           "scratchpad": "I8L",
           "expect_approach": "I8L",
+          "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
               {

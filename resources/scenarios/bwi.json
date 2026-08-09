@@ -1455,6 +1455,7 @@
           "initial_speed": 280,
           "secondary_scratchpad": "ATM",
           "expect_approach": null,
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -1575,6 +1576,7 @@
           "initial_speed": 280,
           "secondary_scratchpad": "ATM",
           "expect_approach": null,
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -1692,6 +1694,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "secondary_scratchpad": "MDY",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -1752,6 +1755,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "DLE",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1803,6 +1807,7 @@
           "expect_approach": "I5R",
           "scratchpad": "15R",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -1923,6 +1928,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "secondary_scratchpad": "RVN",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -1967,6 +1973,7 @@
           "expect_approach": "I28",
           "scratchpad": "R28",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2087,6 +2094,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "secondary_scratchpad": "RVN",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -2131,6 +2139,7 @@
           "expect_approach": "I10",
           "scratchpad": "R10",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2251,6 +2260,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "secondary_scratchpad": "RVN",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -2295,6 +2305,7 @@
           "expect_approach": "I3L",
           "scratchpad": "33L",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2415,6 +2426,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "secondary_scratchpad": "RVN",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -2465,6 +2477,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "SKL",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2517,6 +2530,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "CLP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2563,6 +2577,7 @@
           "initial_speed": 280,
           "expect_approach": "I3L",
           "secondary_scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2608,6 +2623,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "secondary_scratchpad": "TSH",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -2650,6 +2666,7 @@
           "initial_speed": 280,
           "expect_approach": "I5R",
           "secondary_scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2695,6 +2712,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "secondary_scratchpad": "TSH",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -2737,6 +2755,7 @@
           "initial_speed": 280,
           "expect_approach": "I10",
           "secondary_scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2782,6 +2801,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "secondary_scratchpad": "TSH",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -2824,6 +2844,7 @@
           "initial_speed": 280,
           "expect_approach": "I28",
           "secondary_scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2869,6 +2890,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "secondary_scratchpad": "TSH",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -2911,6 +2933,7 @@
           "initial_speed": 250,
           "expect_approach": "I3L",
           "secondary_scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2935,6 +2958,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "secondary_scratchpad": "TSH",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -2970,6 +2994,7 @@
           "initial_speed": 250,
           "expect_approach": "I5R",
           "secondary_scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2994,6 +3019,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "secondary_scratchpad": "TSH",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -3029,6 +3055,7 @@
           "initial_speed": 250,
           "expect_approach": "I10",
           "secondary_scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -3053,6 +3080,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "secondary_scratchpad": "TSH",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -3088,6 +3116,7 @@
           "initial_speed": 250,
           "expect_approach": "I28",
           "secondary_scratchpad": "TSH",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -3112,6 +3141,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "secondary_scratchpad": "TSH",
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -3146,6 +3176,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMTN"],
           "airlines": {
             "KMTN": [
               {
@@ -3173,6 +3204,7 @@
           "initial_altitude": 5000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KESN"],
           "airlines": {
             "KESN": [
               {
@@ -3217,6 +3249,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KESN", "KMTN"],
           "airlines": {
             "KMTN": [
               {

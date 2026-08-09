@@ -3639,6 +3639,7 @@
           "initial_speed": 280,
           "scratchpad": "OA1",
           "expect_approach": null,
+          "airports": ["KOAK"],
           "airlines": {
             "KOAK": [
               {
@@ -3732,6 +3733,7 @@
           "initial_altitude": 26000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSUU"],
           "airlines": {
             "KSUU": [
               {
@@ -3764,6 +3766,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSUU"],
           "airlines": {
             "KSUU": [
               {
@@ -4066,6 +4069,7 @@
           "initial_speed": 300,
           "scratchpad": "OA1",
           "expect_approach": null,
+          "airports": ["KOAK"],
           "airlines": {
             "KOAK": [
               {
@@ -4107,6 +4111,7 @@
           "initial_altitude": 28000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KHWD"],
           "airlines": {
             "KHWD": [
               {
@@ -4146,6 +4151,7 @@
           "initial_speed": 300,
           "scratchpad": "OA1",
           "expect_approach": null,
+          "airports": ["KOAK"],
           "airlines": {
             "KOAK": [
               {
@@ -4187,6 +4193,7 @@
           "initial_altitude": 28000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KHWD"],
           "airlines": {
             "KHWD": [
               {
@@ -4226,6 +4233,7 @@
           "initial_speed": 280,
           "scratchpad": "OA1",
           "expect_approach": null,
+          "airports": ["KOAK"],
           "airlines": {
             "KOAK": [
               {
@@ -4311,6 +4319,7 @@
           "initial_speed": 280,
           "scratchpad": "HWD",
           "expect_approach": null,
+          "airports": ["KHWD"],
           "airlines": {
             "KHWD": [
               {
@@ -4351,6 +4360,7 @@
           "initial_speed": 280,
           "scratchpad": "OA1",
           "expect_approach": null,
+          "airports": ["KOAK"],
           "airlines": {
             "KOAK": [
               {
@@ -4436,6 +4446,7 @@
           "initial_speed": 280,
           "scratchpad": "HWD",
           "expect_approach": null,
+          "airports": ["KHWD"],
           "airlines": {
             "KHWD": [
               {
@@ -4475,6 +4486,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KOAK"],
           "airlines": {
             "KOAK": [
               {
@@ -4546,6 +4558,7 @@
           "initial_altitude": 18000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KHWD"],
           "airlines": {
             "KHWD": [
               {
@@ -4572,6 +4585,7 @@
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KMOD"],
           "airlines": {
             "KMOD": [
               {
@@ -4606,6 +4620,7 @@
           "initial_altitude": 14000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KSCK"],
           "airlines": {
             "KSCK": [
               {
@@ -4644,6 +4659,7 @@
           "initial_altitude": 14000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KSCK"],
           "airlines": {
             "KSCK": [
               {
@@ -4678,6 +4694,7 @@
           "initial_altitude": 22000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KLVK"],
           "airlines": {
             "KLVK": [
               {
@@ -4709,6 +4726,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAC"],
           "airlines": {
             "KSAC": [
               {
@@ -4742,6 +4760,7 @@
           "initial_speed": 300,
           "assigned_altitude": 20000,
           "expect_approach": null,
+          "airports": ["KMHR"],
           "airlines": {
             "KMHR": [
               {
@@ -4764,6 +4783,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSCK"],
           "airlines": {
             "KSCK": [
               {
@@ -4799,6 +4819,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMOD"],
           "airlines": {
             "KMOD": [
               {
@@ -4926,6 +4947,7 @@
           "initial_speed": 300,
           "scratchpad": "SM1",
           "expect_approach": null,
+          "airports": ["KSMF"],
           "airlines": {
             "KSMF": [
               {
@@ -5005,6 +5027,7 @@
           "initial_speed": 280,
           "scratchpad": "OA1",
           "expect_approach": null,
+          "airports": ["KOAK"],
           "airlines": {
             "KOAK": [
               {

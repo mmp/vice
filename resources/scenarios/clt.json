@@ -4838,6 +4838,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -4902,6 +4903,7 @@
           "expect_approach": "I1L",
           "scratchpad": "L",
           "secondary_scratchpad": "21K",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -4974,6 +4976,7 @@
           "initial_altitude": 16000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -5207,6 +5210,7 @@
           "initial_speed": 210,
           "expect_approach": "I6R",
           "scratchpad": "R",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -5441,6 +5445,7 @@
           "expect_approach": "I8L",
           "scratchpad": "L",
           "secondary_scratchpad": "21K",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -5683,6 +5688,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -5827,6 +5833,7 @@
           "expect_approach": "I9R",
           "scratchpad": "R",
           "secondary_scratchpad": "21K",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -5979,6 +5986,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -6083,6 +6091,7 @@
           "expect_approach": "I1L",
           "scratchpad": "L",
           "secondary_scratchpad": "21K",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -6187,6 +6196,7 @@
           "expect_approach": "I9R",
           "scratchpad": "R",
           "secondary_scratchpad": "21K",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -6299,6 +6309,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -6388,6 +6399,7 @@
           "expect_approach": "I9R",
           "scratchpad": "R",
           "secondary_scratchpad": "21K",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -6478,6 +6490,7 @@
           "expect_approach": "I1L",
           "scratchpad": "L",
           "secondary_scratchpad": "21K",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -6575,6 +6588,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -6673,6 +6687,7 @@
           "initial_speed": 250,
           "expect_approach": "I6R",
           "scratchpad": "R",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {
@@ -6772,6 +6787,7 @@
           "expect_approach": "I8L",
           "scratchpad": "L",
           "secondary_scratchpad": "21K",
+          "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
               {

@@ -1223,6 +1223,7 @@
           "initial_altitude": 25000,
           "initial_speed": 310,
           "expect_approach": null,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -1395,6 +1396,7 @@
           "initial_speed": 280,
           "scratchpad": "I5L",
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -1563,6 +1565,7 @@
           "initial_speed": 280,
           "scratchpad": "I5L",
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -1679,6 +1682,7 @@
           "initial_altitude": 29000,
           "initial_speed": 310,
           "expect_approach": null,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -1852,6 +1856,7 @@
           "initial_speed": 280,
           "scratchpad": "I6L",
           "expect_approach": "I6L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2034,6 +2039,7 @@
           "initial_altitude": 29000,
           "initial_speed": 310,
           "expect_approach": null,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2145,6 +2151,7 @@
           "initial_speed": 280,
           "scratchpad": "I7R",
           "expect_approach": "I7R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2249,11 +2256,12 @@
       "arrivals": [
         {
           "waypoints": "EMMLN N034.20.14.854,W117.16.35.031/ho CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 RNDAL/a6000/h250",
-          "star": "EMMLN1 KHHR",
+          "star": "EMMLN3",
           "initial_controller": "3N",
           "initial_altitude": 10000,
           "initial_speed": 310,
           "expect_approach": null,
+          "airports": ["KHHR"],
           "airlines": {
             "KHHR": [
               {
@@ -2280,6 +2288,7 @@
           "initial_speed": 250,
           "scratchpad": "I5L",
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2373,6 +2382,7 @@
           "initial_speed": 210,
           "scratchpad": "I5L",
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2505,6 +2515,7 @@
           "initial_speed": 250,
           "scratchpad": "I5L",
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2598,6 +2609,7 @@
           "initial_speed": 210,
           "scratchpad": "I5L",
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2729,6 +2741,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2839,6 +2852,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2966,6 +2980,7 @@
           "initial_speed": 240,
           "scratchpad": "I4R",
           "expect_approach": "I4R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -3228,6 +3243,7 @@
           "initial_speed": 240,
           "scratchpad": "R25",
           "expect_approach": "R25",
+          "airports": ["KHHR"],
           "airlines": {
             "KHHR": [
               {
@@ -3250,6 +3266,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHHR", "KLAX"],
           "airlines": {
             "KHHR": [
               {
@@ -3452,6 +3469,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -3624,6 +3642,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -3734,6 +3753,7 @@
           "initial_altitude": 17000,
           "initial_speed": 310,
           "expect_approach": null,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -3866,6 +3886,7 @@
           "initial_speed": 280,
           "scratchpad": "I6R",
           "expect_approach": "I6R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -3894,6 +3915,7 @@
           "initial_controller": "C13",
           "initial_altitude": 16000,
           "initial_speed": 280,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -4049,6 +4071,7 @@
           "initial_controller": "C13",
           "initial_altitude": 14000,
           "initial_speed": 310,
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {

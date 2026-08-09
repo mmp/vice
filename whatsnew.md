@@ -27,3 +27,5 @@
   - Added "traffic_routes" to airports, giving the routes traffic between them and specific other airports flies when a scenario is flown from a timetable or historical data
   - Added "aircraft" to arrivals, restricting which classes of aircraft an arrival carries
   - Removed "primary_airport"; replaced with facility "weather_station", "lists"."ssa"."system_altimeter" (overridable per area)
+  - Arrivals must now give the airports they serve in "airports" unless they name a "star" the FAA CIFP charts
+  - An arrival's "star" must be charted for at least one of the airports it serves, whether or not it supplies the waypoints

@@ -281,6 +281,7 @@
           "initial_speed": 300,
           "description": "CARTR1",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -362,6 +363,7 @@
           "initial_speed": 300,
           "description": "CARTR1",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -443,6 +445,7 @@
           "initial_speed": 300,
           "description": "JAZZZ1",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -529,12 +532,13 @@
       "arrivals": [
         {
           "waypoints": "SPANE/a19000/s280/ho LEEHY  FFU/a17000+ DRYVE/a15000+ PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
-          "star": "PITTT1",
+          "star": "PITTT2",
           "initial_controller": "C32",
           "initial_altitude": 19000,
           "initial_speed": 280,
           "description": "PITTT1",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -621,12 +625,13 @@
       "arrivals": [
         {
           "waypoints": "JAMMN/a17000/s250/ho DRAPR/a14000-15000 SPIEK/a13000-14000 HEIRY PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
-          "star": "PITTT1",
+          "star": "PITTT2",
           "initial_controller": "C11",
           "initial_altitude": 17000,
           "initial_speed": 300,
           "description": "PITTT1",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -714,6 +719,7 @@
           "initial_speed": 300,
           "description": "QWENN7",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -764,6 +770,7 @@
           "initial_speed": 300,
           "description": "QWENN7",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -818,6 +825,7 @@
           "initial_speed": 300,
           "description": "SKEES6",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -883,6 +891,7 @@
           "initial_speed": 300,
           "description": "SKEES6",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -942,12 +951,13 @@
       "arrivals": [
         {
           "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES GOGGL BUSHH/a12000 SURYP/a11000/h164",
-          "star": "YUTES1",
+          "star": "YUTES2",
           "initial_controller": "C40",
           "initial_altitude": 24000,
           "initial_speed": 300,
           "description": "YUTES1",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {
@@ -1031,12 +1041,13 @@
       "arrivals": [
         {
           "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES DUGGY JAXXX/a12000 MAGNE LAWVA/a11000/h344",
-          "star": "YUTES1",
+          "star": "YUTES2",
           "initial_controller": "C40",
           "initial_altitude": 24000,
           "initial_speed": 300,
           "description": "YUTES1",
           "expect_approach": null,
+          "airports": ["KSLC"],
           "airlines": {
             "KSLC": [
               {

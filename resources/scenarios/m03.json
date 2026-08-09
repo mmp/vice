@@ -2249,6 +2249,7 @@
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2282,6 +2283,7 @@
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2315,6 +2317,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2352,6 +2355,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2389,6 +2393,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2410,6 +2415,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2454,6 +2460,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2498,6 +2505,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2539,6 +2547,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2580,6 +2589,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2624,6 +2634,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2668,6 +2679,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2712,6 +2724,7 @@
           "initial_altitude": 8000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2741,6 +2754,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2785,6 +2799,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2829,6 +2844,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2873,6 +2889,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMEM"],
           "airlines": {
             "KMEM": [
               {
@@ -2917,6 +2934,7 @@
           "initial_altitude": 4000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KOLV"],
           "airlines": {
             "KOLV": [
               {
@@ -2938,6 +2956,7 @@
           "initial_altitude": 3000,
           "initial_speed": 210,
           "expect_approach": null,
+          "airports": ["KOLV"],
           "airlines": {
             "KOLV": [
               {

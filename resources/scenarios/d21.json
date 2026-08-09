@@ -1440,6 +1440,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1486,6 +1487,7 @@
           "initial_speed": 250,
           "scratchpad": "I1L",
           "expect_approach": "I1L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1524,6 +1526,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1553,6 +1556,7 @@
           "initial_speed": 230,
           "scratchpad": "I3R",
           "expect_approach": "I3R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1582,6 +1586,7 @@
           "initial_speed": 210,
           "scratchpad": "I7L",
           "expect_approach": "I7L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1617,6 +1622,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1655,6 +1661,7 @@
           "initial_speed": 260,
           "scratchpad": "I3R",
           "expect_approach": "I3R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1685,6 +1692,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1712,6 +1720,7 @@
           "initial_speed": 260,
           "scratchpad": "I1L",
           "expect_approach": "I1L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1739,6 +1748,7 @@
           "initial_speed": 260,
           "scratchpad": "I7R",
           "expect_approach": "I7R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1765,6 +1775,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDET", "KPTK", "KYIP"],
           "airlines": {
             "KDET": [
               {
@@ -1819,6 +1830,7 @@
           "initial_altitude": 30000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDET"],
           "airlines": {
             "KDET": [
               {
@@ -1848,6 +1860,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1892,6 +1905,7 @@
           "initial_speed": 260,
           "scratchpad": "I4L",
           "expect_approach": "I4L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1935,6 +1949,7 @@
           "initial_speed": 260,
           "scratchpad": "I7R",
           "expect_approach": "I7R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -1981,6 +1996,7 @@
           "initial_speed": 280,
           "scratchpad": "I2R",
           "expect_approach": "I2R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2021,6 +2037,7 @@
           "initial_speed": 280,
           "scratchpad": "I2R",
           "expect_approach": "I2R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2060,6 +2077,7 @@
           "initial_speed": 280,
           "scratchpad": "I7L",
           "expect_approach": "I7L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2092,6 +2110,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2131,6 +2150,7 @@
           "initial_speed": 230,
           "scratchpad": "I4L",
           "expect_approach": "I4L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2176,6 +2196,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2212,6 +2233,7 @@
           "initial_speed": 250,
           "scratchpad": "I1L",
           "expect_approach": "I1L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2249,6 +2271,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2294,6 +2317,7 @@
           "initial_speed": 240,
           "scratchpad": "I4L",
           "expect_approach": "I4L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2332,6 +2356,7 @@
           "initial_speed": 240,
           "scratchpad": "I7R",
           "expect_approach": "I7R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2369,6 +2394,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2408,6 +2434,7 @@
           "initial_speed": 240,
           "scratchpad": "I3R",
           "expect_approach": "I3R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2447,6 +2474,7 @@
           "initial_speed": 210,
           "scratchpad": "I7R",
           "expect_approach": "I7R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2485,6 +2513,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2522,6 +2551,7 @@
           "initial_speed": 240,
           "scratchpad": "I2R",
           "expect_approach": "I2R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2558,6 +2588,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2591,6 +2622,7 @@
           "initial_speed": 230,
           "scratchpad": "I4L",
           "expect_approach": "I4L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2623,6 +2655,7 @@
           "initial_altitude": 26000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPTK", "KYIP"],
           "airlines": {
             "KPTK": [
               {
@@ -2672,6 +2705,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDET", "KPTK", "KYIP"],
           "airlines": {
             "KDET": [
               {
@@ -2714,6 +2748,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2752,6 +2787,7 @@
           "initial_speed": 230,
           "scratchpad": "I2R",
           "expect_approach": "I2R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2789,6 +2825,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPTK", "KYIP"],
           "airlines": {
             "KPTK": [
               {
@@ -2829,6 +2866,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2856,6 +2894,7 @@
           "initial_speed": 260,
           "scratchpad": "I1L",
           "expect_approach": "I1L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2883,6 +2922,7 @@
           "initial_speed": 260,
           "scratchpad": "I7R",
           "expect_approach": "I7R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2918,6 +2958,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -2964,6 +3005,7 @@
           "initial_speed": 250,
           "scratchpad": "I2R",
           "expect_approach": "I2R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -3003,6 +3045,7 @@
           "initial_speed": 250,
           "scratchpad": "I7L",
           "expect_approach": "I7L",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -3048,6 +3091,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {
@@ -3082,6 +3126,7 @@
           "initial_speed": 250,
           "scratchpad": "I3R",
           "expect_approach": "I3R",
+          "airports": ["KDTW"],
           "airlines": {
             "KDTW": [
               {

@@ -2124,6 +2124,7 @@
           "initial_controller": "C30",
           "initial_altitude": 15000,
           "initial_speed": 250,
+          "airports": ["KCRG", "KFHB", "KGNV", "KNRB", "KOCF", "KVQQ"],
           "airlines": {
             "KCRG": [
               {
@@ -2175,6 +2176,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "description": "jets",
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2249,6 +2251,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "description": "props",
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2318,6 +2321,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "description": "jet",
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2392,6 +2396,7 @@
           "initial_speed": 250,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2461,6 +2466,7 @@
           "initial_speed": 250,
           "description": "jet",
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2535,6 +2541,7 @@
           "initial_speed": 250,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2598,11 +2605,12 @@
       "arrivals": [
         {
           "waypoints": "BASLE WYTOK JABOR HOTAR HEBIN HABIK/h203",
-          "star": "BASLE.HOTAR1",
+          "star": "HOTAR1",
           "initial_controller": "C54",
           "initial_altitude": 40000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGJ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2623,6 +2631,7 @@
           "initial_altitude": 20400,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KJAX"],
           "airlines": {
             "KJAX": [
               {
@@ -2670,6 +2679,7 @@
           "initial_altitude": 20400,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KJAX"],
           "airlines": {
             "KJAX": [
               {
@@ -2717,6 +2727,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KJAX"],
           "airlines": {
             "KJAX": [
               {
@@ -2774,6 +2785,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "description": "prop",
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2848,6 +2860,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "description": "jet",
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -2916,6 +2929,7 @@
           "initial_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KJAX"],
           "airlines": {
             "KJAX": [
               {
@@ -2973,6 +2987,7 @@
           "description": "jets",
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KHEG", "KNIP", "KNRB", "KVQQ"],
           "airlines": {
             "KCRG": [
               {
@@ -3025,6 +3040,7 @@
           "description": "prop",
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KHEG", "KNIP", "KNRB", "KVQQ"],
           "airlines": {
             "KCRG": [
               {
@@ -3078,6 +3094,7 @@
           "description": "SGJ jets",
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGJ"],
           "airlines": {
             "KSGJ": [
               {
@@ -3096,6 +3113,7 @@
           "description": "SGJ props",
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGJ"],
           "airlines": {
             "KSGJ": [
               {
@@ -3114,6 +3132,7 @@
           "description": "jets Vitts",
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGNV", "KOCF"],
           "airlines": {
             "KGNV": [
               {
@@ -3139,6 +3158,7 @@
           "description": "prop Vitts",
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGNV", "KOCF"],
           "airlines": {
             "KGNV": [
               {
@@ -3168,6 +3188,7 @@
           "description": "jet",
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -3241,6 +3262,7 @@
           "initial_speed": 250,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -3318,6 +3340,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KCRG": [
               {
@@ -3386,6 +3409,7 @@
           "initial_altitude": 24000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KJAX"],
           "airlines": {
             "KJAX": [
               {
@@ -3414,6 +3438,7 @@
           "initial_altitude": 22000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KJAX"],
           "airlines": {
             "KJAX": [
               {
@@ -3447,6 +3472,7 @@
           "initial_speed": 250,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -3521,6 +3547,7 @@
           "initial_speed": 250,
           "description": "jet",
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -3594,6 +3621,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "description": "jet",
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {
@@ -3667,6 +3695,7 @@
           "initial_speed": 250,
           "description": "prop",
           "expect_approach": null,
+          "airports": ["KCRG", "KFHB", "KGNV", "KHEG", "KNIP", "KNRB", "KOCF", "KSGJ", "KVQQ"],
           "airlines": {
             "KSGJ": [
               {

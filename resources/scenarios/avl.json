@@ -398,6 +398,7 @@
           "initial_altitude": 11000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KAVL"],
           "airlines": {
             "KAVL": [
               {
@@ -422,6 +423,7 @@
           "initial_altitude": 13000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAVL"],
           "airlines": {
             "KAVL": [
               {
@@ -451,6 +453,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAVL"],
           "airlines": {
             "KAVL": [
               {
@@ -480,6 +483,7 @@
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KAVL"],
           "airlines": {
             "KAVL": [
               {
@@ -525,6 +529,7 @@
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KAVL"],
           "airlines": {
             "KAVL": [
               {
@@ -549,6 +554,7 @@
           "initial_altitude": 18000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAVL"],
           "airlines": {
             "KAVL": [
               {

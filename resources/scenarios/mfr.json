@@ -373,6 +373,7 @@
           "initial_speed": 290,
           "scratchpad": "MFR",
           "expect_approach": null,
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {
@@ -396,6 +397,7 @@
           "initial_speed": 250,
           "scratchpad": "MFR",
           "expect_approach": null,
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {
@@ -416,6 +418,7 @@
           "scratchpad": "MFR",
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {
@@ -436,6 +439,7 @@
           "initial_speed": 290,
           "scratchpad": "SAM",
           "expect_approach": null,
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {
@@ -463,6 +467,7 @@
           "scratchpad": "MFR",
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {
@@ -483,6 +488,7 @@
           "initial_speed": 290,
           "scratchpad": "MFR",
           "expect_approach": null,
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {
@@ -502,6 +508,7 @@
           "initial_speed": 290,
           "scratchpad": "SAM",
           "expect_approach": null,
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {
@@ -521,6 +528,7 @@
           "scratchpad": "SAM",
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {
@@ -544,6 +552,7 @@
           "initial_speed": 290,
           "expect_approach": null,
           "scratchpad": "SAM",
+          "airports": ["KMFR"],
           "airlines": {
             "KMFR": [
               {

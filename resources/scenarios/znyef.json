@@ -569,6 +569,7 @@
           "initial_altitude": 14000,
           "assigned_altitude": 14000,
           "initial_speed": 300,
+          "airports": ["KJFK"],
           "airlines": {
             "KJFK": [
               {
@@ -625,6 +626,7 @@
           "initial_altitude": 10000,
           "assigned_altitude": 10000,
           "initial_speed": 300,
+          "airports": ["KEWR"],
           "airlines": {
             "KEWR": [
               {
@@ -655,6 +657,7 @@
           "initial_altitude": 21000,
           "assigned_altitude": 21000,
           "initial_speed": 300,
+          "airports": ["KBDR", "KHVN", "KISP", "KOXC"],
           "airlines": {
             "KOXC": [
               {
@@ -740,6 +743,7 @@
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
           "initial_speed": 300,
+          "airports": ["KHPN"],
           "airlines": {
             "KHPN": [
               {
@@ -770,6 +774,7 @@
           "initial_altitude": 36000,
           "assigned_altitude": 36000,
           "initial_speed": 300,
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -792,6 +797,7 @@
           "initial_altitude": 20000,
           "assigned_altitude": 20000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {

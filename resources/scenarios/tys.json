@@ -319,6 +319,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KTYS"],
           "airlines": {
             "KTYS": [
               { "icao": "FFT", "airport": "KDEN" },
@@ -361,6 +362,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KTYS"],
           "airlines": {
             "KTYS": [
               { "icao": "AAY", "airport": "KEWR" },
@@ -394,6 +396,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KTYS"],
           "airlines": {
             "KTYS": [
               { "icao": "AAY", "airport": "KFLL" },

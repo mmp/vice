@@ -6140,6 +6140,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -6163,6 +6164,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -6205,6 +6207,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSQL"],
           "airlines": {
             "KSQL": [
               {
@@ -6228,6 +6231,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KPAO"],
           "airlines": {
             "KPAO": [
               {
@@ -6255,6 +6259,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -6273,6 +6278,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -6291,6 +6297,7 @@
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSQL"],
           "airlines": {
             "KSQL": [
               {
@@ -6314,6 +6321,7 @@
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KPAO"],
           "airlines": {
             "KPAO": [
               {
@@ -6341,6 +6349,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -6367,6 +6376,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -6872,6 +6882,7 @@
           "initial_speed": 280,
           "scratchpad": "OA1",
           "expect_approach": "RZ30",
+          "airports": ["KOAK"],
           "airlines": {
             "KOAK": [
               {
@@ -6918,6 +6929,7 @@
           "initial_altitude": 27000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {

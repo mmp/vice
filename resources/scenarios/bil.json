@@ -144,6 +144,7 @@
           "initial_altitude": 15000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBIL"],
           "airlines": {
             "KBIL": [
               {
@@ -176,6 +177,7 @@
           "initial_altitude": 16000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBIL"],
           "airlines": {
             "KBIL": [
               {
@@ -200,6 +202,7 @@
           "initial_altitude": 17000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBIL"],
           "airlines": {
             "KBIL": [
               {
@@ -220,6 +223,7 @@
           "initial_altitude": 15000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBIL"],
           "airlines": {
             "KBIL": [
               {

@@ -139,6 +139,7 @@
     "SLC": {
       "arrivals": [
         {
+          "airports": ["KCPR"],
           "airlines": {
             "KCPR": [
               {
@@ -160,6 +161,7 @@
     "DEN": {
       "arrivals": [
         {
+          "airports": ["KCPR"],
           "airlines": {
             "KCPR": [
               {
@@ -191,6 +193,7 @@
     "JAC": {
       "arrivals": [
         {
+          "airports": ["KCPR"],
           "airlines": {
             "KCPR": [
               {
@@ -213,6 +216,7 @@
     "MEM": {
       "arrivals": [
         {
+          "airports": ["KCPR"],
           "airlines": {
             "KCPR": [
               {
@@ -235,6 +239,7 @@
     "NE-GA": {
       "arrivals": [
         {
+          "airports": ["KCPR"],
           "airlines": {
             "KCPR": [
               {
@@ -256,6 +261,7 @@
     "SE-GA": {
       "arrivals": [
         {
+          "airports": ["KCPR"],
           "airlines": {
             "KCPR": [
               {

@@ -8793,11 +8793,11 @@
       "arrivals": [
         {
           "waypoints": "TTT KDFW",
-          "star": "INSTRUCTOR",
           "initial_controller": "C62",
           "initial_altitude": 500,
           "initial_speed": 100,
           "expect_approach": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -8813,11 +8813,11 @@
       "arrivals": [
         {
           "waypoints": "TTT KDFW",
-          "star": "RPO",
           "initial_controller": "C62",
           "initial_altitude": 500,
           "initial_speed": 100,
           "expect_approach": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -8838,6 +8838,7 @@
           "initial_altitude": 27000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -8871,6 +8872,7 @@
           "initial_altitude": 27000,
           "initial_speed": 280,
           "expect_approach": "W3L",
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -8905,6 +8907,7 @@
           "initial_speed": 280,
           "expect_approach": "W3L",
           "scratchpad": "13L",
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -8937,6 +8940,7 @@
           "initial_controller": "C62",
           "initial_altitude": 11000,
           "initial_speed": 280,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -8970,6 +8974,7 @@
           "initial_altitude": 27000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -9003,6 +9008,7 @@
           "initial_altitude": 27000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9065,6 +9071,7 @@
           "initial_speed": 290,
           "expect_approach": "I7C",
           "scratchpad": "17C",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9127,6 +9134,7 @@
           "initial_speed": 290,
           "expect_approach": "I7C",
           "scratchpad": "17C",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9189,6 +9197,7 @@
           "initial_speed": 290,
           "expect_approach": "I7L",
           "scratchpad": "17L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9250,6 +9259,7 @@
           "initial_altitude": 27000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9298,6 +9308,7 @@
           "initial_speed": 290,
           "expect_approach": "I8R",
           "scratchpad": "18R",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9346,6 +9357,7 @@
           "initial_speed": 290,
           "expect_approach": "I8R",
           "scratchpad": "18R",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9394,6 +9406,7 @@
           "initial_speed": 290,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9443,6 +9456,7 @@
           "initial_speed": 290,
           "expect_approach": "I5C",
           "scratchpad": "35C",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9492,6 +9506,7 @@
           "initial_speed": 280,
           "expect_approach": "I5C",
           "scratchpad": "35C",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9682,6 +9697,7 @@
           "initial_speed": 280,
           "expect_approach": "I1R",
           "scratchpad": "31R",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -9872,6 +9888,7 @@
           "initial_speed": 280,
           "expect_approach": "I5R",
           "scratchpad": "35R",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -10061,6 +10078,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10111,6 +10129,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": "I1R",
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10156,6 +10175,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10189,6 +10209,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": "I1L",
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10223,6 +10244,7 @@
           "initial_speed": 280,
           "expect_approach": "I1L",
           "scratchpad": "W",
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10256,6 +10278,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": "I34",
+          "airports": ["KADS"],
           "airlines": {
             "KADS": [
               {
@@ -10280,6 +10303,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": "I34",
+          "airports": ["KADS"],
           "airlines": {
             "KADS": [
               {
@@ -10303,6 +10327,7 @@
           "initial_controller": "C62",
           "initial_altitude": 10000,
           "initial_speed": 250,
+          "airports": ["KADS", "KHQZ", "KTKI"],
           "airlines": {
             "KADS": [
               {
@@ -10342,12 +10367,13 @@
       "arrivals": [
         {
           "waypoints": "HAKIN MONTE/a7000/ho ANDYA FINGR/s250/h230",
-          "star": "FINGR9",
+          "star": "FINGR1",
           "initial_controller": "C62",
           "initial_altitude": 7000,
           "initial_speed": 190,
           "expect_approach": "I7L",
           "scratchpad": "DFW",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -10368,6 +10394,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10417,6 +10444,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10461,11 +10489,12 @@
       "arrivals": [
         {
           "waypoints": "MASTY/a16000+/ho GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/h113",
-          "star": "HERBZ1",
+          "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KADS", "KDAL", "KDTO"],
           "airlines": {
             "KDAL": [
               {
@@ -10526,11 +10555,12 @@
       "arrivals": [
         {
           "waypoints": "MASTY/a16000+/ho1S GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240 FUNKY WEGUL/a4000 QUYNN/a3000/s190 FACIA/clearapp BOKLE/delete",
-          "star": "HERBZ1",
+          "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": "I1R",
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10575,11 +10605,12 @@
       "arrivals": [
         {
           "waypoints": "JABEV/ho1D MASTY/a16000 GREGS/a10000-11000/s250 GUUCH/a6000-8000/ho HERBZ/a6000/s240/tc CROEW/a5000/s240/h113",
-          "star": "HERBZ1",
+          "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KADS", "KDAL", "KTKI"],
           "airlines": {
             "KDAL": [
               {
@@ -10641,11 +10672,12 @@
       "arrivals": [
         {
           "waypoints": "JTROE/a16000+/ho1N MASTY/a16000+ GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/ho HIBIL/a4000 HUDIL/h190/tc",
-          "star": "HERBZ1",
+          "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": "I1R",
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10686,11 +10718,12 @@
         },
         {
           "waypoints": "JTROE/a16000+/ho1N MASTY/a16000+ GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/ho HIBIL/a3000 HUDIL/h175/tc",
-          "star": "HERBZ1",
+          "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLNC", "KRBD"],
           "airlines": {
             "KRBD": [
               {
@@ -10719,6 +10752,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10764,11 +10798,12 @@
       "arrivals": [
         {
           "waypoints": "MASTY/a16000+/ho GREGS/a11000/s250 MNKEE JFRYE/h143",
-          "star": "HERBZ1",
+          "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KADS", "KDAL", "KDTO", "KHQZ", "KLNC", "KRBD", "KTKI"],
           "airlines": {
             "KDAL": [
               {
@@ -10874,11 +10909,12 @@
       "arrivals": [
         {
           "waypoints": "JTROE/a16000+/ho1D MASTY/a16000+ GREGS/a11000/s250/ho BLECO/a5000 MNKEE JFRYE/h143",
-          "star": "HERBZ1",
+          "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -10919,11 +10955,12 @@
         },
         {
           "waypoints": "JTROE/a16000+ MASTY/a16000+/ho1D GREGS/a11000/s250/ho1N BLECO/a3000 MNKEE JFRYE/h143",
-          "star": "HERBZ1",
+          "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KADS", "KTKI"],
           "airlines": {
             "KADS": [
               {
@@ -10956,6 +10993,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -11014,6 +11052,7 @@
           "initial_speed": 280,
           "expect_approach": "I6L",
           "scratchpad": "36L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -11072,6 +11111,7 @@
           "initial_speed": 280,
           "expect_approach": "I6L",
           "scratchpad": "36L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -11128,6 +11168,7 @@
           "initial_speed": 280,
           "expect_approach": "R1L",
           "scratchpad": "31L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -11178,11 +11219,12 @@
       "arrivals": [
         {
           "waypoints": "BRRUS/ho SLUGG/a6000 LIKES/h44",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAFW", "KDTO", "KFTW", "KTKI"],
           "airlines": {
             "KAFW": [
               {
@@ -11215,11 +11257,12 @@
         },
         {
           "waypoints": "BRRUS/ho SLUGG/a5000 LIKES/h44",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 7000,
           "initial_speed": 180,
           "expect_approach": null,
+          "airports": ["KDTO", "KFTW"],
           "airlines": {
             "KFTW": [
               {
@@ -11243,11 +11286,12 @@
       "arrivals": [
         {
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a6000/ho LIKES/h044",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": "I4R",
+          "airports": ["KAFW"],
           "airlines": {
             "KAFW": [
               {
@@ -11260,11 +11304,12 @@
         },
         {
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a5000 LIKES CURLE/a3000/clearapp",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": "R34",
+          "airports": ["KFTW"],
           "airlines": {
             "KFTW": [
               {
@@ -11282,11 +11327,12 @@
         },
         {
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a7000/ho LIKES/h44",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": "R36R",
+          "airports": ["KDTO"],
           "airlines": {
             "KDTO": [
               {
@@ -11308,11 +11354,12 @@
       "arrivals": [
         {
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a7000/ho LIKES/h005/tc",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": "I6L",
+          "airports": ["KAFW"],
           "airlines": {
             "KAFW": [
               {
@@ -11325,11 +11372,12 @@
         },
         {
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a5000/ho LIKES/h360/tc",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 7000,
           "initial_speed": 270,
           "expect_approach": "I16",
+          "airports": ["KFTW"],
           "airlines": {
             "KFTW": [
               {
@@ -11347,11 +11395,12 @@
         },
         {
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a5000/ho LIKES/h020/tc",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": "I8L",
+          "airports": ["KDTO"],
           "airlines": {
             "KDTO": [
               {
@@ -11373,12 +11422,13 @@
       "arrivals": [
         {
           "waypoints": "BRRUS/ho SLUGG/a8000 LIKES/h44",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 12000,
           "assigned_altitude": 8000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KAFW", "KDTO", "KFTW", "KTKI"],
           "airlines": {
             "KAFW": [
               {
@@ -11412,11 +11462,12 @@
         },
         {
           "waypoints": "BRRUS/ho SLUGG/a5000 LIKES/h44",
-          "star": "LIKES3",
+          "star": "LIKES4",
           "initial_controller": "C62",
           "initial_altitude": 7000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KAFW", "KDTO", "KFTW", "KTKI"],
           "airlines": {
             "KAFW": [
               {
@@ -11459,6 +11510,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KADS", "KTKI"],
           "airlines": {
             "KADS": [
               {
@@ -11490,6 +11542,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KADS", "KTKI"],
           "airlines": {
             "KADS": [
               {
@@ -11521,6 +11574,7 @@
           "initial_altitude": 18000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -11574,6 +11628,7 @@
           "initial_altitude": 18000,
           "initial_speed": 290,
           "expect_approach": "I1R",
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -11627,6 +11682,7 @@
           "initial_altitude": 18000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -11680,6 +11736,7 @@
           "initial_altitude": 26000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KDAL"],
           "airlines": {
             "KDAL": [
               {
@@ -11734,6 +11791,7 @@
           "assigned_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KAFW", "KDTO", "KFWS", "KGKY", "KGPM", "KLNC", "KNFW", "KRBD"],
           "airlines": {
             "KAFW": [
               {
@@ -11811,6 +11869,7 @@
           "assigned_altitude": 6000,
           "initial_speed": 240,
           "expect_approach": "I4R",
+          "airports": ["KAFW"],
           "airlines": {
             "KAFW": [
               {
@@ -11833,6 +11892,7 @@
           "assigned_altitude": 6000,
           "initial_speed": 240,
           "expect_approach": "R36R",
+          "airports": ["KDTO"],
           "airlines": {
             "KDTO": [
               {
@@ -11854,6 +11914,7 @@
           "initial_altitude": 8000,
           "initial_speed": 240,
           "expect_approach": "I4R",
+          "airports": ["KAFW"],
           "airlines": {
             "KAFW": [
               {
@@ -11875,6 +11936,7 @@
           "initial_altitude": 8000,
           "initial_speed": 240,
           "expect_approach": "I34",
+          "airports": ["KFTW"],
           "airlines": {
             "KFTW": [
               {
@@ -11897,6 +11959,7 @@
           "initial_altitude": 8000,
           "initial_speed": 240,
           "expect_approach": "R36R",
+          "airports": ["KDTO"],
           "airlines": {
             "KDTO": [
               {
@@ -11918,6 +11981,7 @@
           "initial_altitude": 12000,
           "initial_speed": 240,
           "expect_approach": "I6L",
+          "airports": ["KAFW"],
           "airlines": {
             "KAFW": [
               {
@@ -11939,6 +12003,7 @@
           "initial_altitude": 12000,
           "initial_speed": 240,
           "expect_approach": "I16",
+          "airports": ["KFTW"],
           "airlines": {
             "KFTW": [
               {
@@ -11956,6 +12021,7 @@
           "initial_altitude": 12000,
           "initial_speed": 240,
           "expect_approach": "I8L",
+          "airports": ["KDTO"],
           "airlines": {
             "KDTO": [
               {
@@ -11977,6 +12043,7 @@
           "initial_altitude": 12000,
           "initial_speed": 240,
           "expect_approach": "I6L",
+          "airports": ["KAFW"],
           "airlines": {
             "KAFW": [
               {
@@ -11998,6 +12065,7 @@
           "initial_altitude": 12000,
           "initial_speed": 240,
           "expect_approach": "I18",
+          "airports": ["KNFW"],
           "airlines": {
             "KNFW": [
               {
@@ -12014,6 +12082,7 @@
           "initial_altitude": 12000,
           "initial_speed": 240,
           "expect_approach": "I16",
+          "airports": ["KFTW"],
           "airlines": {
             "KFTW": [
               {
@@ -12031,6 +12100,7 @@
           "initial_altitude": 12000,
           "initial_speed": 240,
           "expect_approach": "R8R",
+          "airports": ["KFWS"],
           "airlines": {
             "KFWS": [
               {
@@ -12048,6 +12118,7 @@
           "initial_altitude": 12000,
           "initial_speed": 240,
           "expect_approach": "I8L",
+          "airports": ["KDTO"],
           "airlines": {
             "KDTO": [
               {
@@ -12070,6 +12141,7 @@
           "initial_speed": 290,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -12277,6 +12349,7 @@
           "initial_speed": 290,
           "expect_approach": "I7L",
           "scratchpad": "17L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -12484,6 +12557,7 @@
           "initial_speed": 290,
           "expect_approach": "I7L",
           "scratchpad": "17L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -12660,6 +12734,7 @@
           "initial_speed": 290,
           "expect_approach": "I7C",
           "scratchpad": "17C",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -12835,6 +12910,7 @@
           "initial_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KADS", "KTKI"],
           "airlines": {
             "KADS": [
               {
@@ -12870,6 +12946,7 @@
           "initial_altitude": 6000,
           "initial_speed": 180,
           "expect_approach": null,
+          "airports": ["KADS", "KTKI"],
           "airlines": {
             "KADS": [
               {
@@ -12908,6 +12985,7 @@
           "initial_altitude": 6000,
           "initial_speed": 180,
           "expect_approach": null,
+          "airports": ["KLNC", "KRBD"],
           "airlines": {
             "KRBD": [
               {
@@ -12936,6 +13014,7 @@
           "initial_altitude": 3000,
           "initial_speed": 150,
           "expect_approach": "R36",
+          "airports": ["KTKI"],
           "airlines": {
             "KTKI": [
               {
@@ -12953,6 +13032,7 @@
           "initial_altitude": 3000,
           "initial_speed": 150,
           "expect_approach": "I34",
+          "airports": ["KADS"],
           "airlines": {
             "KADS": [
               {
@@ -12974,6 +13054,7 @@
           "initial_altitude": 5000,
           "initial_speed": 180,
           "expect_approach": null,
+          "airports": ["KADS"],
           "airlines": {
             "KADS": [
               {
@@ -12991,6 +13072,7 @@
           "initial_altitude": 5000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KTKI"],
           "airlines": {
             "KTKI": [
               {
@@ -13008,6 +13090,7 @@
           "initial_altitude": 5000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KRBD"],
           "airlines": {
             "KRBD": [
               {
@@ -13029,6 +13112,7 @@
           "initial_altitude": 5000,
           "initial_speed": 180,
           "expect_approach": "I16",
+          "airports": ["KADS"],
           "airlines": {
             "KADS": [
               {
@@ -13046,6 +13130,7 @@
           "initial_altitude": 5000,
           "initial_speed": 150,
           "expect_approach": "I18",
+          "airports": ["KTKI"],
           "airlines": {
             "KTKI": [
               {
@@ -13063,6 +13148,7 @@
           "initial_altitude": 5000,
           "initial_speed": 150,
           "expect_approach": "RZ13",
+          "airports": ["KRBD"],
           "airlines": {
             "KRBD": [
               {
@@ -13084,6 +13170,7 @@
           "initial_altitude": 3000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KADS"],
           "airlines": {
             "KADS": [
               {
@@ -13101,6 +13188,7 @@
           "initial_altitude": 3000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KTKI"],
           "airlines": {
             "KTKI": [
               {
@@ -13122,6 +13210,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGKY"],
           "airlines": {
             "KGKY": [
               {
@@ -13139,6 +13228,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGPM", "KRBD"],
           "airlines": {
             "KRBD": [
               {
@@ -13167,6 +13257,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGKY"],
           "airlines": {
             "KGKY": [
               {
@@ -13184,6 +13275,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGPM", "KRBD"],
           "airlines": {
             "KRBD": [
               {
@@ -13213,6 +13305,7 @@
           "initial_speed": 290,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -13271,6 +13364,7 @@
           "initial_speed": 290,
           "expect_approach": "I6L",
           "scratchpad": "36L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -13329,6 +13423,7 @@
           "initial_speed": 250,
           "expect_approach": "I6L",
           "scratchpad": "36L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -13386,6 +13481,7 @@
           "initial_speed": 250,
           "expect_approach": "R1L",
           "scratchpad": "31L",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -13437,12 +13533,13 @@
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho CAINE SASIE/a10000 BLECO TRUUK/h190",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 12000,
           "assigned_altitude": 10000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KAFW", "KDTO", "KFTW", "KFWS", "KGKY", "KGPM", "KNFW"],
           "airlines": {
             "KAFW": [
               {
@@ -13512,12 +13609,13 @@
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a10000/ho GRABE/a6000 BLECO TRUUK/h190",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 10000,
           "assigned_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAFW", "KFTW"],
           "airlines": {
             "KAFW": [
               {
@@ -13550,12 +13648,13 @@
         },
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a10000/ho GRABE/a4000 BLECO TRUUK/h190",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 10000,
           "assigned_altitude": 4000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KDTO"],
           "airlines": {
             "KDTO": [
               {
@@ -13571,11 +13670,12 @@
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a4000 BLECO TRUUK/h190",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": "I6L",
+          "airports": ["KAFW"],
           "airlines": {
             "KAFW": [
               {
@@ -13597,11 +13697,12 @@
         },
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a4000 BLECO TRUUK/h190",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": "I16",
+          "airports": ["KFTW"],
           "airlines": {
             "KFTW": [
               {
@@ -13618,11 +13719,12 @@
         },
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a3000 BLECO TRUUK/h190",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": "I8L",
+          "airports": ["KDTO"],
           "airlines": {
             "KDTO": [
               {
@@ -13638,11 +13740,12 @@
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1D CAINE SASIE/a10000 GRABE/a6000 BLECO TRUUK N033.14.17.482,W097.20.45.327 N033.05.56.986,W097.25.03.616/a4000/s210 N032.42.24.873,W097.20.54.666 N032.42.56.582,W097.17.21.860/s190 UCCOL/clearapp",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": "I4R",
+          "airports": ["KAFW"],
           "airlines": {
             "KAFW": [
               {
@@ -13655,11 +13758,12 @@
         },
         {
           "waypoints": "PRIZZ/ho1D CAINE SASIE/a10000 GRABE/a6000 BLECO TRUUK N033.16.49.190,W097.20.42.471 N033.04.57.550,W097.27.37.781/s210/h185/ho N032.55.14.382,W097.29.12.127 ",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": "I34",
+          "airports": ["KFTW"],
           "airlines": {
             "KFTW": [
               {
@@ -13680,12 +13784,13 @@
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho CAINE SASIE/a11000 BLECO TRUUK/h190",
-          "star": "TRUUK2",
+          "star": "TRUUK3",
           "initial_controller": "C37",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KAFW", "KDTO", "KFTW", "KFWS", "KGKY", "KGPM", "KNFW"],
           "airlines": {
             "KAFW": [
               {
@@ -13771,6 +13876,7 @@
           "initial_speed": 290,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -13853,6 +13959,7 @@
           "initial_speed": 290,
           "expect_approach": "I7C",
           "scratchpad": "17C",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -13920,6 +14027,7 @@
           "initial_speed": 290,
           "expect_approach": "I8R",
           "scratchpad": "18R",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -13985,12 +14093,13 @@
       "arrivals": [
         {
           "waypoints": "WURDZ/ho GREKE MOTZA/a8000 WESAT/h130",
-          "star": "WESAT2",
+          "star": "WESAT3",
           "initial_controller": "C75",
           "initial_altitude": 15000,
           "initial_speed": 250,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KAFW", "KFTW", "KFWS", "KGKY", "KGPM", "KNFW", "KRBD"],
           "airlines": {
             "KAFW": [
               {
@@ -14057,12 +14166,13 @@
         },
         {
           "waypoints": "GREKE/ho MOTZA WESAT/h130",
-          "star": "WESAT2",
+          "star": "WESAT3",
           "initial_controller": "C75",
           "initial_altitude": 7000,
           "initial_speed": 250,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KAFW", "KFTW", "KFWS", "KGKY", "KGPM", "KLNC", "KNFW", "KRBD"],
           "airlines": {
             "KAFW": [
               {
@@ -14126,12 +14236,13 @@
       "arrivals": [
         {
           "waypoints": "WURDZ/ho1D GREKE MOTZA/a8000 WESAT N033.06.32.692,W097.33.21.791 N032.59.02.225,W097.31.17.453/a5000/h170/s210/ho",
-          "star": "WESAT2",
+          "star": "WESAT3",
           "initial_controller": "C75",
           "initial_altitude": 15000,
           "initial_speed": 270,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KFTW", "KGKY", "KNFW"],
           "airlines": {
             "KFTW": [
               {
@@ -14183,6 +14294,7 @@
           "initial_altitude": 20000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -14245,6 +14357,7 @@
           "initial_speed": 290,
           "expect_approach": "I5R",
           "scratchpad": "35R",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -14307,6 +14420,7 @@
           "initial_speed": 250,
           "expect_approach": "I5R",
           "scratchpad": "35R",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -14369,6 +14483,7 @@
           "initial_speed": 250,
           "expect_approach": "I1R",
           "scratchpad": "31R",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -14431,6 +14546,7 @@
           "initial_speed": 250,
           "expect_approach": "I5C",
           "scratchpad": "35C",
+          "airports": ["KDFW"],
           "airlines": {
             "KDFW": [
               {
@@ -14492,6 +14608,7 @@
           "initial_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KADS", "KTKI"],
           "airlines": {
             "KTKI": [
               {
@@ -14520,6 +14637,7 @@
           "initial_altitude": 6000,
           "initial_speed": 180,
           "expect_approach": null,
+          "airports": ["KADS", "KDFW", "KTKI"],
           "airlines": {
             "KTKI": [
               {
@@ -14554,6 +14672,7 @@
           "initial_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": "R36",
+          "airports": ["KTKI"],
           "airlines": {
             "KTKI": [
               {
@@ -14575,6 +14694,7 @@
           "initial_altitude": 6000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KDFW", "KTKI"],
           "airlines": {
             "KTKI": [
               {

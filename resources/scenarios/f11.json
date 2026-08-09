@@ -12942,6 +12942,7 @@
               "31": "ALYNA BUDLE/a6000/h263"
             }
           },
+          "airports": ["KISM", "KLEE", "KMCO", "KORL", "KSFB"],
           "airlines": {
             "KMCO": [
               {
@@ -13201,6 +13202,7 @@
               "31": "ALYNA BUDLE/a6000/h263"
             }
           },
+          "airports": ["KISM", "KLEE", "KMCO", "KORL", "KSFB"],
           "airlines": {
             "KMCO": [
               {
@@ -13889,6 +13891,7 @@
           "initial_speed": 110,
           "route": "KORL NYTES2 NYTES RDSOX",
           "waypoints": "KORL-25/c15/ho1V NYTES N028.37.59.257,W081.13.52.516 N028.37.59.257,W081.13.52.516/c20 N028.37.59.257,W081.13.52.516/c30/ho1D/h255 KNEED",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -13953,6 +13956,7 @@
           "initial_speed": 110,
           "route": "KSFB RDSOX",
           "waypoints": "KSFB-27R/c30 N028.51.01.319,W081.10.43.029 N028.51.38.577,W081.19.58.443/c50 N028.51.38.577,W081.19.58.443 N028.51.38.577,W081.19.58.443/ho1W/c70 N028.51.38.577,W081.19.58.443/c160/hoC14 RDSOX/c290",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -14007,6 +14011,7 @@
           "initial_speed": 110,
           "route": "KSFB RDSOX",
           "waypoints": "KSFB-27R/c30 N028.51.01.319,W081.10.43.029 N028.51.38.577,W081.19.58.443/c50 N028.51.38.577,W081.19.58.443 N028.51.38.577,W081.19.58.443/ho1D N028.51.38.577,W081.19.58.443 RDSOX",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -14360,6 +14365,7 @@
           "initial_speed": 110,
           "route": "KNEED KORL",
           "waypoints": "N028.05.19.084,W082.07.39.008/ho1D KORL",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -14391,6 +14397,7 @@
           "initial_speed": 110,
           "route": "KNEED KSFB",
           "waypoints": "N028.05.19.084,W082.07.39.008/ho1D KSFB",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -14426,6 +14433,7 @@
           "initial_speed": 110,
           "route": "KNEED KISM",
           "waypoints": "N028.05.19.084,W082.07.39.008/ho1D KISM",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -14457,6 +14465,7 @@
           "initial_speed": 110,
           "route": "KNEED KORL",
           "waypoints": "N028.19.29.274,W082.06.19.000/ho1D KORL",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -14488,6 +14497,7 @@
           "initial_speed": 110,
           "route": "KNEED KSFB",
           "waypoints": "N028.19.29.274,W082.06.19.000/ho1D KSFB",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -14523,6 +14533,7 @@
           "initial_speed": 110,
           "route": "KNEED KISM",
           "waypoints": "N028.19.29.274,W082.06.19.000/ho1D KISM",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -14554,6 +14565,7 @@
           "initial_speed": 110,
           "route": "KNEED KORL",
           "waypoints": "N028.20.55.146,W082.09.11.980/ho1D KORL",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -14585,6 +14597,7 @@
           "initial_speed": 110,
           "route": "KNEED KSFB",
           "waypoints": "N028.20.55.146,W082.09.11.980/ho1D KSFB",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -14620,6 +14633,7 @@
           "initial_speed": 110,
           "route": "KNEED KISM",
           "waypoints": "N028.20.55.146,W082.09.11.980/ho1D KISM",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -14651,6 +14665,7 @@
           "initial_speed": 110,
           "route": "KNEED KORL",
           "waypoints": "N028.05.19.084,W082.07.39.008/ho1D KORL",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -14682,6 +14697,7 @@
           "initial_speed": 110,
           "route": "KNEED KSFB",
           "waypoints": "N028.05.19.084,W082.07.39.008/ho1D KSFB",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -14717,6 +14733,7 @@
           "initial_speed": 110,
           "route": "KNEED KISM",
           "waypoints": "N028.05.19.084,W082.07.39.008/ho1D KISM",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -14748,6 +14765,7 @@
           "initial_speed": 110,
           "route": "KNEED KORL",
           "waypoints": "N028.19.29.274,W082.06.19.000/ho1D KORL",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -14779,6 +14797,7 @@
           "initial_speed": 110,
           "route": "KNEED KSFB",
           "waypoints": "N028.19.29.274,W082.06.19.000/ho1D KSFB",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -14814,6 +14833,7 @@
           "initial_speed": 110,
           "route": "KNEED KISM",
           "waypoints": "N028.19.29.274,W082.06.19.000/ho1D KISM",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -14845,6 +14865,7 @@
           "initial_speed": 110,
           "route": "KNEED KORL",
           "waypoints": "N028.20.55.146,W082.09.11.980/ho1D KORL",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -14876,6 +14897,7 @@
           "initial_speed": 110,
           "route": "KNEED KSFB",
           "waypoints": "N028.20.55.146,W082.09.11.980/ho1D KSFB",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -14911,6 +14933,7 @@
           "initial_speed": 110,
           "route": "KNEED KISM",
           "waypoints": "N028.20.55.146,W082.09.11.980/ho1D KISM",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -14942,6 +14965,7 @@
           "initial_speed": 110,
           "route": "KMLB KISM",
           "waypoints": "N028.10.31.384,W080.54.14.013/ho/h270 KISM",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -14973,6 +14997,7 @@
           "initial_speed": 110,
           "route": "MLB KORL",
           "waypoints": "N028.20.10.851,W080.56.24.805 N028.20.10.851,W080.56.24.805/h277/ho1D KORL",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -15230,6 +15255,7 @@
           "initial_controller": "C58",
           "initial_speed": 250,
           "waypoints": "OMN/ho LAMMA/a12000 JESUP COZMO BITHO",
+          "airports": ["KISM", "KMCO", "KTIX"],
           "airlines": {
             "KMCO": [
               {
@@ -15331,6 +15357,7 @@
           "initial_controller": "C58",
           "initial_speed": 250,
           "waypoints": "OMN/ho LAMMA/a15000 JESUP COZMO BITHO",
+          "airports": ["KCOI", "KMLB"],
           "airlines": {
             "KCOI": [
               {
@@ -15439,6 +15466,7 @@
           "initial_speed": 290,
           "expect_approach": "I8R",
           "waypoints": "GRTNG/a17000/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -15715,6 +15743,7 @@
           "initial_speed": 290,
           "expect_approach": "R6L",
           "waypoints": "GRTNG/a17000/s290/ho GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000/s250 HARAM DORII/a8000/s220 BRICE/a5000/s210/h186",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -15992,6 +16021,7 @@
           "expect_approach": "I8R",
           "scratchpad": "IR",
           "waypoints": "BLAYK/ho1G BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -16269,6 +16299,7 @@
           "expect_approach": "I8R",
           "scratchpad": "IR",
           "waypoints": "BLAYK/ho1G BUNIE/a7000/s230 YAGGO/a6000/s210/h107",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -16542,6 +16573,7 @@
           "expect_approach": "I7R",
           "scratchpad": "IZ",
           "waypoints": "BLAYK/d80/ho1G BUNIE/s210/h090",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -16819,6 +16851,7 @@
           "expect_approach": "R6L",
           "scratchpad": "GL",
           "waypoints": "WHOVL HARAM DORII/a8000+/s220/ho1G BRICE/a5000/s210/h186",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -17095,6 +17128,7 @@
           "initial_controller": "C58",
           "expect_approach": "I7L",
           "waypoints": "FORYU/a13000+/s280/ho NICCK/a12000-14000 BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE BANYA/a7000/s210/h250",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -17456,6 +17490,7 @@
           "expect_approach": "I7L",
           "scratchpad": "IE",
           "waypoints": "BGBBY GTOUT/a9000-11000/ho1M TUGLE BANYA/a7000/s210",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -17817,6 +17852,7 @@
           "expect_approach": "I7L",
           "scratchpad": "IE",
           "waypoints": "BGBBY GTOUT/a9000-11000/ho1M TUGLE BANYA/a7000/s210",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -18174,6 +18210,7 @@
           "expect_approach": "I7R",
           "scratchpad": "IZ",
           "waypoints": "BGBBY GTOUT/a9000-11000/ho1M TUGLE/h250/d80/s210",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -18535,6 +18572,7 @@
           "expect_approach": "I5R",
           "scratchpad": "IE",
           "waypoints": "HIGGZ/a10000/s250 VOSSS/a8000+/s230/ho1M SUNDE/a6000+ CUBAL/a5000/s210/h186",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -18906,6 +18944,7 @@
               "36R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186"
             }
           },
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -19181,6 +19220,7 @@
           "initial_controller": "C15",
           "is_rnav": true,
           "waypoints": "BRKWL/ho JAFAR RINGG FLIPY/a11000/s250",
+          "airports": ["KISM", "KORL"],
           "airlines": {
             "KORL": [
               {
@@ -19411,6 +19451,7 @@
               "36R": "JOKRS LORRA/a7000/s210/h096"
             }
           },
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -19436,6 +19477,7 @@
           "initial_controller": "Z67",
           "is_rnav": true,
           "waypoints": "FAZES/ho MOANS/a13000 JOKRS ZALEK/h043",
+          "airports": ["KISM", "KLEE", "KMLB", "KORL", "KSFB"],
           "airlines": {
             "KORL": [
               {
@@ -19967,6 +20009,7 @@
           "initial_controller": "C15",
           "initial_speed": 250,
           "waypoints": "OCF/ho ALADN SHIMM LEESE ORL",
+          "airports": ["KISM", "KMCO", "KORL"],
           "airlines": {
             "KMCO": [
               {
@@ -20010,6 +20053,7 @@
           "initial_controller": "Z23",
           "initial_speed": 250,
           "waypoints": "DOWNN/ho MOANS MINEE UNITY ORL",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -20039,6 +20083,7 @@
           "initial_controller": "Z23",
           "initial_speed": 250,
           "waypoints": "DOWNN/ho MOANS MINEE UNITY ORL",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -20068,6 +20113,7 @@
           "initial_controller": "11E",
           "initial_speed": 250,
           "waypoints": "LAL/ho ANDRO MINEE UNITY ORL",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -20097,6 +20143,7 @@
           "initial_controller": "11E",
           "initial_speed": 250,
           "waypoints": "LAL/ho ANDRO MINEE UNITY ORL",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -20122,6 +20169,7 @@
           "initial_controller": "11E",
           "initial_speed": 110,
           "waypoints": "LAL/ho ANDRO MINEE UNITY ORL",
+          "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
               {
@@ -20421,6 +20469,7 @@
           "initial_controller": "Z23",
           "initial_speed": 110,
           "waypoints": "DOWNN/ho MOANS MINEE UNITY ORL",
+          "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
               {
@@ -20660,6 +20709,7 @@
           "initial_controller": "11E",
           "initial_speed": 280,
           "waypoints": "LAL/ho ANDRO MINEE UNITY ORL",
+          "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
               {
@@ -21165,6 +21215,7 @@
           "initial_controller": "Z23",
           "initial_speed": 280,
           "waypoints": "DOWNN/ho MOANS MINEE UNITY ORL",
+          "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
               {
@@ -21790,6 +21841,7 @@
           "initial_controller": "1L",
           "initial_speed": 280,
           "waypoints": "DOWNN MOANS/h010/d60/ho1D",
+          "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
               {
@@ -22417,6 +22469,7 @@
           "waypoints": "CHEFS/a19000-21000/s280 MOOTS/a15000+/ho MUNGI HIJON PARRX/a9000-11000/s250 HAANZ/a8000-9000/s220 WONMR/a6000/s210/h006",
           "is_rnav": true,
           "expect_approach": "I7L",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -22519,6 +22572,7 @@
           "expect_approach": "I7L",
           "scratchpad": "IE",
           "waypoints": "PARRX/ho1M HAANZ/a8000-9000/s220 WONMR/a6000/s210/h006",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -22621,6 +22675,7 @@
           "expect_approach": "I5R",
           "scratchpad": "IE",
           "waypoints": "MUNGI/ho1M HIJON MMADD/a6000/s210/h302",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -22723,6 +22778,7 @@
           "expect_approach": "I5L",
           "scratchpad": "IZ",
           "waypoints": "MUNGI/ho1M HIJON/a8000/s210/h275",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -22821,6 +22877,7 @@
           "expect_approach": "I5R",
           "scratchpad": "IE",
           "waypoints": "MUNGI/ho1M HIJON MMADD/a6000/s210/h302",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -22922,6 +22979,7 @@
           "waypoints": "CHEFS/a19000-21000/s280 MOOTS/a15000+/ho MUNGI HIJON MMADD/a6000/s210/h302",
           "is_rnav": true,
           "expect_approach": "I5R",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -23022,6 +23080,7 @@
           "initial_speed": 280,
           "waypoints": "CHEFS/a19000-21000/s280 MOOTS/a15000+/ho MUNGI BLOKD/a12000/s250/h345",
           "is_rnav": true,
+          "airports": ["KISM", "KLEE", "KORL", "KSFB"],
           "airlines": {
             "KORL": [
               {
@@ -23553,6 +23612,7 @@
           "expect_approach": "R6L",
           "waypoints": "BULKS/a19000-20000/s280/ho PRICY/a13000-16000/s250 BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
           "is_rnav": true,
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -23731,6 +23791,7 @@
           "scratchpad": "KG",
           "route": "./ KISM",
           "waypoints": "N028.32.50.514,W081.52.57.767 JENSN/a2000 FOJSO/a2000 TOTNY/a1700 EHECU/a760 KISM-6/a45",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -23753,6 +23814,7 @@
           "expect_approach": "I8R",
           "waypoints": "BULKS/a19000-20000/s280/ho PRICY/a13000-16000/s250 BOCCE JUMBA TAYYE/a10000-12000 ARHIP GIRAF/a8000+/s220 DVOLA/a6000/s210/h006",
           "is_rnav": true,
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -23933,6 +23995,7 @@
           "is_rnav": true,
           "scratchpad": "IR",
           "waypoints": "TAYYE ARHIP/ho1G GIRAF/a8000+/s220 DVOLA/a6000/s210/h006",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -24113,6 +24176,7 @@
           "is_rnav": true,
           "scratchpad": "GL",
           "waypoints": "BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -24293,6 +24357,7 @@
           "is_rnav": true,
           "scratchpad": "IZ",
           "waypoints": "BOCCE JUMBA AMADS/a9000- LORRA/a8000/s210/h095",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -24469,6 +24534,7 @@
           "is_rnav": true,
           "scratchpad": "GL",
           "waypoints": "BOCCE JUMBA AMADS/a9000- LORRA/a7000/s210/h096",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -24646,6 +24712,7 @@
           "initial_controller": "Z67",
           "initial_speed": 280,
           "waypoints": "BULKS/a19000/s280/ho PRICY/a13000-16000/s250 BOCCE OTKEE/a11000/h056",
+          "airports": ["KISM", "KLEE", "KMLB", "KORL", "KSFB"],
           "airlines": {
             "KORL": [
               {
@@ -25089,6 +25156,7 @@
           "initial_controller": "1L",
           "initial_speed": 280,
           "waypoints": "BULKS/a19000/s280 PRICY/a13000-16000/s250/d60 BOCCE/h010/ho1D",
+          "airports": ["KISM", "KLEE", "KMLB", "KORL", "KSFB"],
           "airlines": {
             "KORL": [
               {
@@ -25532,6 +25600,7 @@
           "initial_controller": "C15",
           "initial_speed": 250,
           "waypoints": "WANDD/ho SHREK STNKY/h115",
+          "airports": ["KISM", "KMCO", "KORL", "KSFB"],
           "airlines": {
             "KMCO": [
               {
@@ -25791,6 +25860,7 @@
           "is_rnav": true,
           "initial_speed": 250,
           "waypoints": "N027.41.43.832,W080.45.09.750/ho MATLK SLOAO/a6000+ ODDEL/h360",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -25818,6 +25888,7 @@
           "is_rnav": true,
           "initial_speed": 250,
           "waypoints": "N027.41.43.832,W080.45.09.750/ho MATLK SLOAO/a6000+ ODDEL/h360",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -25844,6 +25915,7 @@
           "is_rnav": true,
           "initial_speed": 250,
           "waypoints": "TRV MATLK/ho SLOAO/a6000 DORMS/h015",
+          "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX", "X04"],
           "airlines": {
             "KSFB": [
               {
@@ -26086,6 +26158,7 @@
           "is_rnav": true,
           "initial_speed": 250,
           "waypoints": "TTHOR/a12000 OWEDN/a8000-11000/s250/ho THANO/a7000-9000 RAGNR/a7000- LOKII/a5000 MUNKZ/a5000/s210/h201",
+          "airports": ["KLEE", "KORL", "KSFB"],
           "airlines": {
             "KORL": [
               {
@@ -26407,6 +26480,7 @@
           "scratchpad": "TI",
           "initial_speed": 250,
           "waypoints": "THANO/a7000-9000 RAGNR/a7000- LOKII/a5000 MUNKZ/a5000/s210 N028.50.50.415,W081.32.34.302/a3000/h220/ho1D",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -26500,6 +26574,7 @@
           "is_rnav": true,
           "initial_speed": 250,
           "waypoints": "THANO/a7000-9000 RAGNR/a7000- LOKII/a5000 MUNKZ/a5000/s210 N028.52.28.867,W081.19.45.095/d30 N028.57.20.629,W081.43.09.147 N028.57.20.629,W081.43.09.147 N028.57.20.629,W081.43.09.147 ACMOF/a1800 ZIRIL/a1100 KLEE-13/a100/delete",
+          "airports": ["KLEE"],
           "airlines": {
             "KLEE": [
               {
@@ -26593,6 +26668,7 @@
           "is_rnav": true,
           "initial_speed": 250,
           "waypoints": "THANO/a7000-9000 RAGNR/a7000- LOKII/a5000 MUNKZ/a5000/s210 N028.53.32.786,W081.25.30.917/d30 UDUZI UGMAH/a2000 KSFB-9L/a100/delete",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -26747,6 +26823,7 @@
           "is_rnav": true,
           "initial_speed": 290,
           "waypoints": "FORYU/a13000+/ho NICCK SNFLD GTOUT/a12000-16000/s280 TUGLE HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000 CUBAL/a5000/s210",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27106,6 +27183,7 @@
           "is_rnav": true,
           "initial_speed": 290,
           "waypoints": "FORYU/a13000+/ho NICCK SNFLD/a10000+ JRRYY SECOY/a9000",
+          "airports": ["KISM"],
           "airlines": {
             "KISM": [
               {
@@ -27204,6 +27282,7 @@
           "route": "./ KORL",
           "scratchpad": "TI",
           "waypoints": "N028.20.22.421,W080.53.55.830 N028.20.22.421,W080.53.55.830/ho1D N028.25.50.301,W081.18.46.043 N028.26.20.314,W081.28.57.322/d20 DNMOR/a2000 SWLTR/a1020 KORL-7/a109/delete",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -27234,6 +27313,7 @@
           "route": "./ KSFB",
           "scratchpad": "FI",
           "waypoints": "N029.00.29.601,W081.21.19.220 UDUZI/a2500 UGMAH/a2000 KSFB-9L/a100/delete",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -27264,6 +27344,7 @@
           "route": "./ KSFB",
           "scratchpad": "W31",
           "waypoints": "KSFB-27R/c110 WORMS/ho31N",
+          "airports": ["KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -27294,6 +27375,7 @@
           "route": "./ KORL",
           "scratchpad": "TI",
           "waypoints": "N028.10.00.018,W081.51.20.401 N028.10.00.018,W081.51.20.401 ESRAQ/a2000 DNMOR/a2000 SWLTR/a1020 KORL-7/a109/delete",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -27316,6 +27398,7 @@
           "route": "./ KORL",
           "scratchpad": "TI",
           "waypoints": "N029.01.24.038,W081.18.19.072 N029.01.24.038,W081.18.19.072/ho1N N028.38.57.959,W081.39.32.744/ho1D N028.31.15.517,W081.34.46.331/a2000 DNMOR/a2000 SWLTR/a1020 KORL-7/a109/delete",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -27341,6 +27424,7 @@
           "initial_speed": 210,
           "route": "KORL WORMS GUANO KIZER",
           "waypoints": "KORL-25/c15/ho1V NYTES N028.39.51.634,W081.14.14.379/c20 N028.44.58.736,W081.16.13.059/c30 WORMS/c50/ho31N KIZER GUANO BKENI VIYAP/delete",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -27374,6 +27458,7 @@
           "initial_speed": 110,
           "route": "KORL WORMS GUANO KIZER",
           "waypoints": "KORL-25/c15/ho1V NYTES N028.39.51.634,W081.14.14.379/c20 N028.44.58.736,W081.16.13.059/c30/ho1N WORMS/c50/ho31N KIZER GUANO BKENI VIYAP/delete",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -27395,6 +27480,7 @@
           "initial_speed": 210,
           "route": "KORL WORMS GUANO KIZER",
           "waypoints": "KORL-25/c15/ho1V NYTES N028.39.51.634,W081.14.14.379/c20 N028.39.36.020,W081.08.15.785/c30 N028.41.15.048,W080.58.14.641/ho1A/c50 N028.32.36.623,W080.53.42.866/ho1E/c70 DEARY TRV/delete",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -27428,6 +27514,7 @@
           "initial_speed": 110,
           "route": "KORL DEARY",
           "waypoints": "KORL-25/c15/ho1V NYTES N028.39.51.634,W081.14.14.379/c20 N028.39.36.020,W081.08.15.785 N028.41.15.048,W080.58.14.641/ho1A/c50 N028.32.36.623,W080.53.42.866/ho1E/c70 DEARY TRV/delete",
+          "airports": ["KORL"],
           "airlines": {
             "KORL": [
               {
@@ -27462,6 +27549,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W31",
           "waypoints": "KMCO-17R JWOLF/c70   JIRAN BIGSE GOTHA/a7000- FATHE MDBOG/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27499,6 +27587,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W33",
           "waypoints": "KMCO-17R JWOLF/c70   JIRAN BIGSE GOTHA/a7000- FATHE MDBOG/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27536,6 +27625,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W35",
           "waypoints": "KMCO-17R JWOLF/c70   JIRAN BIGSE GOTHA/a7000- FATHE MDBOG/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27573,6 +27663,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W37",
           "waypoints": "KMCO-17R JWOLF/c70   JIRAN BIGSE GOTHA/a7000- FATHE MDBOG/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27610,6 +27701,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W39",
           "waypoints": "KMCO-17R JWOLF/c70   JIRAN BIGSE GOTHA/a7000- FATHE MDBOG/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27647,6 +27739,7 @@
           "route": "KMCO RDSOX1 JFRYS",
           "scratchpad": "R30",
           "waypoints": "KMCO-18L FACTS/c70 EARRS  LEFTI BLOSM/a7000- RDSOX/c160/delete ",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27684,6 +27777,7 @@
           "route": "KMCO RDSOX1 JFRYS",
           "scratchpad": "R32",
           "waypoints": "KMCO-18L FACTS/c70 EARRS  LEFTI BLOSM/a7000- RDSOX/c160/delete ",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27721,6 +27815,7 @@
           "route": "KMCO RDSOX1 JFRYS",
           "scratchpad": "R34",
           "waypoints": "KMCO-18L FACTS/c70 EARRS  LEFTI BLOSM/a7000- RDSOX/c160/delete ",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27758,6 +27853,7 @@
           "route": "KMCO RDSOX1 JFRYS",
           "scratchpad": "R38",
           "waypoints": "KMCO-18L FACTS/c70 EARRS  LEFTI BLOSM/a7000- RDSOX/c160/delete ",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27795,6 +27891,7 @@
           "route": "KMCO RDSOX1 JFRYS",
           "scratchpad": "R36",
           "waypoints": "KMCO-18L FACTS/c70 EARRS  LEFTI BLOSM/a7000- RDSOX/c160/delete ",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -27836,6 +27933,7 @@
           "initial_controller": "1B",
           "expect_approach": "I7L",
           "waypoints": "FORYU/a13000+/s280 NICCK/a12000-14000 BGBBY/a10000+/s250 GTOUT/a9000-11000 TUGLE/ho1M BANYA/a7000/s210 HERVI/a4000 FONIK/a3000 SEEDO/a2500 COCAS/a1500 KMCO-17L/a90/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28192,6 +28290,7 @@
           "waypoints": "CHEFS/a19000-21000/s280 MOOTS/a15000+ MUNGI HIJON/ho1M PARRX/a9000-11000/s250 HAANZ/a8000-9000/s220 WONMR/a6000/s210 PTMAN/s200 FONIK/a3000 SEEDO/a2500 COCAS/a1500 KMCO-17R/a90/delete",
           "is_rnav": true,
           "expect_approach": "I7L",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28289,6 +28388,7 @@
           "expect_approach": "I8R",
           "waypoints": "BULKS/a19000-20000/s280 PRICY/a13000-16000/s250 BOCCE JUMBA TAYYE/a10000-12000 ARHIP/ho1M GIRAF/a8000+/s220 DVOLA/a6000/s210 LYENS/s200 FBIAN/a3000 HAMMY/a3000 TUFFE/a2200 KMCO-18R/a94/delete",
           "is_rnav": true,
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28464,6 +28564,7 @@
           "initial_speed": 290,
           "expect_approach": "I8R",
           "waypoints": "GRTNG/a17000/s290/ho1L GRNCH BUGGZ/a11000-16000/s280 BLAYK/ho1M BUNIE/a7000/s230 YAGGO/a6000/s210 NAVAL/a4000 ONNER/a3000 HAMMY/a3000 TUFFE/a2200 KMCO-18R/a94/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28740,6 +28841,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W31",
           "waypoints": "KMCO-35L KAAPE/c70 N028.18.42.713,W081.11.47.574 N028.21.14.338,W081.03.10.914/c160 BUFFI FATHE/c330 VIYAP/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28777,6 +28879,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W33",
           "waypoints": "KMCO-35L KAAPE/c70 N028.18.42.713,W081.11.47.574 N028.21.14.338,W081.03.10.914/c160 BUFFI FATHE/c330 VIYAP/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28814,6 +28917,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W35",
           "waypoints": "KMCO-35L KAAPE/c70 N028.18.42.713,W081.11.47.574 N028.21.14.338,W081.03.10.914/c160 BUFFI FATHE/c330 VIYAP/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28851,6 +28955,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W37",
           "waypoints": "KMCO-35L KAAPE/c70 N028.18.42.713,W081.11.47.574 N028.21.14.338,W081.03.10.914/c160 BUFFI FATHE/c330 VIYAP/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28888,6 +28993,7 @@
           "route": "KMCO FATHE4 VIYAP",
           "scratchpad": "W39",
           "waypoints": "KMCO-35L KAAPE/c70 N028.18.42.713,W081.11.47.574 N028.21.14.338,W081.03.10.914/c160 BUFFI FATHE/c330 VIYAP/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28925,6 +29031,7 @@
           "scratchpad": "J31",
           "route": "KMCO FATHE4 VIYAP",
           "waypoints": "KMCO-36R VILNS/c70 N028.17.18.386,W081.23.26.332 N028.26.13.709,W081.31.45.441/c160 MDUSA JEEMY/c290 PAINN/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28962,6 +29069,7 @@
           "scratchpad": "J33",
           "route": "KMCO FATHE4 VIYAP",
           "waypoints": "KMCO-36R VILNS/c70 N028.17.18.386,W081.23.26.332 N028.26.13.709,W081.31.45.441/c160 MDUSA JEEMY/c290 PAINN/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -28999,6 +29107,7 @@
           "scratchpad": "J35",
           "route": "KMCO FATHE4 VIYAP",
           "waypoints": "KMCO-36R VILNS/c70 N028.17.18.386,W081.23.26.332 N028.26.13.709,W081.31.45.441/c160 MDUSA JEEMY/c290 PAINN/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -29036,6 +29145,7 @@
           "scratchpad": "J37",
           "route": "KMCO FATHE4 VIYAP",
           "waypoints": "KMCO-36R VILNS/c70 N028.17.18.386,W081.23.26.332 N028.26.13.709,W081.31.45.441/c160 MDUSA JEEMY/c290 PAINN/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -29073,6 +29183,7 @@
           "scratchpad": "J39",
           "route": "KMCO FATHE4 VIYAP",
           "waypoints": "KMCO-36R VILNS/c70 N028.17.18.386,W081.23.26.332 N028.26.13.709,W081.31.45.441/c160 MDUSA JEEMY/c290 PAINN/delete",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -29113,6 +29224,7 @@
           "initial_speed": 110,
           "route": "./ LAL YOJIX T336 DEARY",
           "waypoints": "LAL/ho YOJIX T336 DEARY",
+          "airports": ["KCOI", "KMLB", "KTIX", "X59"],
           "airlines": {
             "KMLB": [
               {
@@ -29207,6 +29319,7 @@
           "initial_speed": 110,
           "route": "./ OCF VIZTA",
           "waypoints": "OCF/ho VIZTA",
+          "airports": ["KCOI", "KISM", "KLEE", "KMLB", "KORL", "KSFB", "KTIX", "X04", "X23", "X59"],
           "airlines": {
             "KORL": [
               {
@@ -29589,6 +29702,7 @@
           "initial_speed": 110,
           "route": "./ LAL KNEED",
           "waypoints": "LAL/ho KNEED",
+          "airports": ["KISM", "KLEE", "KORL", "KSFB", "X04", "X23"],
           "airlines": {
             "KORL": [
               {
@@ -29773,6 +29887,7 @@
           "initial_speed": 110,
           "route": "./ BARBS GUANO",
           "waypoints": "ROYES BARBS/ho GUANO/h180",
+          "airports": ["KISM", "KLEE", "KORL", "KSFB", "X04", "X23"],
           "airlines": {
             "X04": [
               {
@@ -30101,6 +30216,7 @@
           "initial_speed": 110,
           "route": "./ OMN GTOUT",
           "waypoints": "OMN/ho GTOUT/h180",
+          "airports": ["KORL", "KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -30153,6 +30269,7 @@
           "initial_speed": 110,
           "route": "./ VALKA",
           "waypoints": "TRV/ho VALKA",
+          "airports": ["KCOI", "KMLB", "KTIX", "X59"],
           "airlines": {
             "KMLB": [
               {

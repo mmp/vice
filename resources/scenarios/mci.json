@@ -1610,6 +1610,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIXD", "KMCI", "KMKC", "KOJC", "KSTJ"],
           "airlines": {
             "KIXD": [
               {
@@ -1816,6 +1817,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIXD", "KMCI", "KMKC", "KOJC", "KSTJ"],
           "airlines": {
             "KIXD": [
               {
@@ -2022,6 +2024,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIXD", "KMCI", "KMKC", "KOJC", "KSTJ"],
           "airlines": {
             "KIXD": [
               {
@@ -2228,6 +2231,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIXD", "KMCI", "KMKC", "KOJC", "KSTJ"],
           "airlines": {
             "KIXD": [
               {

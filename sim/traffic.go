@@ -272,7 +272,7 @@ func (s *Sim) candidateArrivals(arrivalAirport string) []candidateArrival {
 		}
 		arrivals := s.State.InboundFlows[group].Arrivals
 		for i := range arrivals {
-			if slices.Contains(arrivals[i].ServedAirports(), arrivalAirport) {
+			if slices.Contains(arrivals[i].Airports, arrivalAirport) {
 				candidates = append(candidates, candidateArrival{group, i, &arrivals[i]})
 			}
 		}
@@ -652,7 +652,7 @@ func (bc backgroundClassifier) inboundIsBackground(flow *av.InboundFlow, airport
 
 	judged := 0
 	for _, arr := range flow.Arrivals {
-		if !slices.Contains(arr.ServedAirports(), airport) {
+		if !slices.Contains(arr.Airports, airport) {
 			continue
 		}
 		judged++

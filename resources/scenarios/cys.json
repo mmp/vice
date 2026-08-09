@@ -249,6 +249,7 @@
     "DEN": {
       "arrivals": [
         {
+          "airports": ["KCYS"],
           "airlines": {
             "KCYS": [
               {
@@ -270,6 +271,7 @@
     "BZN": {
       "arrivals": [
         {
+          "airports": ["KCYS"],
           "airlines": {
             "KCYS": [
               {
@@ -291,6 +293,7 @@
     "OMA": {
       "arrivals": [
         {
+          "airports": ["KCYS"],
           "airlines": {
             "KCYS": [
               {
@@ -325,6 +328,7 @@
     "SEA": {
       "arrivals": [
         {
+          "airports": ["KCYS"],
           "airlines": {
             "KCYS": [
               {

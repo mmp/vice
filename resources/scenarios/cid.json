@@ -382,14 +382,15 @@
     "EAST CID ARR": {
       "arrivals": [
         {
+          "route": "/. EAST CID ARR",
           "waypoints": "N041.54.15.276,W090.41.48.700 N041.54.08.149,W090.53.39.653/ho CID",
           "cruise_altitude": 22000,
-          "star": "EAST CID ARR",
           "initial_controller": "C35",
           "initial_altitude": 13000,
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCID"],
           "airlines": {
             "KCID": [
               {
@@ -417,14 +418,15 @@
     "WEST CID ARR": {
       "arrivals": [
         {
+          "route": "/. WEST CID ARR",
           "waypoints": "N041.46.59.270,W092.42.17.319 N041.47.38.189,W092.35.31.182/ho N041.48.50.699,W092.23.44.185 CID",
           "cruise_altitude": 35000,
-          "star": "WEST CID ARR",
           "initial_controller": "C35",
           "initial_altitude": 11000,
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCID"],
           "airlines": {
             "KCID": [
               {
@@ -455,14 +457,15 @@
     "NORTH CID ARR": {
       "arrivals": [
         {
+          "route": "/. NORTH CID ARR",
           "waypoints": "N042.29.03.516,W091.56.56.500 N042.21.41.000,W091.54.37.606/ho CID",
           "cruise_altitude": 23000,
-          "star": "NORTH CID ARR",
           "initial_controller": "C35",
           "initial_altitude": 16000,
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCID"],
           "airlines": {
             "KCID": [
               {
@@ -477,14 +480,15 @@
     "SOUTHEAST CID ARR": {
       "arrivals": [
         {
+          "route": "/. SOUTHEAST CID ARR",
           "waypoints": "N041.19.37.995,W091.02.17.631 N041.23.07.298,W091.06.56.024/ho CID",
           "cruise_altitude": 36000,
-          "star": "SOUTHEAST CID ARR",
           "initial_controller": "C35",
           "initial_altitude": 15000,
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCID"],
           "airlines": {
             "KCID": [
               {
@@ -519,14 +523,15 @@
     "WEST IOW ARR": {
       "arrivals": [
         {
+          "route": "/. WEST IOW ARR",
           "waypoints": "N041.32.55.163,W092.20.44.284 N041.33.00.436,W092.12.16.770/ho IOW",
           "cruise_altitude": 13000,
-          "star": "WEST IOW ARR",
           "initial_controller": "C35",
           "initial_altitude": 13000,
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KIOW"],
           "airlines": {
             "KIOW": [
               {

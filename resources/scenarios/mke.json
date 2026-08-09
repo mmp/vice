@@ -941,6 +941,7 @@
     "GOPAC3": {
       "arrivals": [
         {
+          "airports": ["KENW", "KMKE", "KMWC", "KOSH", "KUES"],
           "airlines": {
             "KMKE": [
               {
@@ -1048,6 +1049,7 @@
           "waypoints": "KPACK ZOWRO/ho LEEDR GOPAC TAAIL/h073"
         },
         {
+          "airports": ["KENW", "KMKE", "KMWC", "KOSH", "KUES"],
           "airlines": {
             "KMKE": [
               {
@@ -1156,6 +1158,7 @@
     "SUDDS": {
       "arrivals": [
         {
+          "airports": ["KENW", "KMKE", "KMWC", "KOSH", "KUES"],
           "airlines": {
             "KMKE": [
               {
@@ -1267,6 +1270,7 @@
     "BRAVE": {
       "arrivals": [
         {
+          "airports": ["KENW", "KMKE", "KMWC", "KOSH", "KUES"],
           "airlines": {
             "KMKE": [
               {
@@ -1383,6 +1387,7 @@
     "BAE": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1418,6 +1423,7 @@
     "RAYNR": {
       "arrivals": [
         {
+          "airports": ["KENW", "KMKE", "KMWC", "KOSH", "KUES"],
           "airlines": {
             "KMKE": [
               {
@@ -1524,6 +1530,7 @@
     "19R_Final_SouthEast": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1555,6 +1562,7 @@
     "19R_Final_SouthWest": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1586,6 +1594,7 @@
     "19R_Final_West": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1622,6 +1631,7 @@
     "19R_Final_East": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1658,6 +1668,7 @@
     "1L_Final_NorthEast": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1689,6 +1700,7 @@
     "1L_Final_NorthWest": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1711,7 +1723,7 @@
           "initial_altitude": 7000,
           "initial_controller": "1E",
           "initial_speed": 250,
-          "star": "BAE",
+          "route": "BAE",
           "expect_approach": "I1L",
           "waypoints": "BAE N043.04.28.931,W088.12.18.006/ho N043.01.13.210,W088.03.40.495"
         }
@@ -1720,6 +1732,7 @@
     "1L_Final_West": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1756,6 +1769,7 @@
     "1L_Final_East": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {
@@ -1792,6 +1806,7 @@
     "1L_Final_South": {
       "arrivals": [
         {
+          "airports": ["KMKE"],
           "airlines": {
             "KMKE": [
               {

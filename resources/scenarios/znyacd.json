@@ -2200,6 +2200,7 @@
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -2290,6 +2291,7 @@
           "initial_altitude": 25000,
           "assigned_altitude": 25000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -2380,6 +2382,7 @@
           "initial_altitude": 25000,
           "assigned_altitude": 25000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -2470,6 +2473,7 @@
           "initial_altitude": 25000,
           "assigned_altitude": 25000,
           "initial_speed": 300,
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2523,6 +2527,7 @@
           "initial_controller": "C48",
           "initial_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KLGA"],
           "airlines": {
             "KLGA": [
               {
@@ -2565,6 +2570,7 @@
           "initial_controller": "C48",
           "initial_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KLGA"],
           "airlines": {
             "KLGA": [
               {
@@ -2607,6 +2613,7 @@
           "initial_controller": "C48",
           "initial_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KLGA"],
           "airlines": {
             "KLGA": [
               {
@@ -2649,6 +2656,7 @@
           "initial_controller": "C48",
           "initial_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KEWR"],
           "airlines": {
             "KEWR": [
               {
@@ -2691,6 +2699,7 @@
           "initial_controller": "C48",
           "initial_altitude": 25000,
           "initial_speed": 300,
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -2728,6 +2737,7 @@
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -2834,6 +2844,7 @@
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
           "initial_speed": 300,
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -2864,6 +2875,7 @@
           "initial_altitude": 20000,
           "assigned_altitude": 20000,
           "initial_speed": 300,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -2886,6 +2898,7 @@
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
           "initial_speed": 300,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -2908,6 +2921,7 @@
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
           "initial_speed": 300,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -2962,6 +2976,7 @@
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
           "initial_speed": 300,
+          "airports": ["KWRI"],
           "airlines": {
             "KWRI": [
               {
@@ -2984,6 +2999,7 @@
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
           "initial_speed": 300,
+          "airports": ["KWRI"],
           "airlines": {
             "KWRI": [
               {
@@ -3006,6 +3022,7 @@
           "initial_altitude": 16000,
           "assigned_altitude": 16000,
           "initial_speed": 300,
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -3068,6 +3085,7 @@
           "initial_altitude": 27000,
           "assigned_altitude": 16000,
           "initial_speed": 300,
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -3130,6 +3148,7 @@
           "initial_altitude": 20000,
           "assigned_altitude": 20000,
           "initial_speed": 300,
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -3178,12 +3197,13 @@
         {
           "waypoints": "COPES/ho25 MXE NUGGY TROYZ BELAY TRISH CLIPR BAL EYESS BRUNC FELTY/delete",
           "cruise_altitude": 34000,
-          "star": "TRISH4",
+          "star": "CLIPR3",
           "route": "/. COPES MXE NUGGY TROYZ BELAY TRISH CLIPR BAL EYESS BRUNC FELTY",
           "initial_controller": "55",
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
           "initial_speed": 300,
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3487,6 +3507,7 @@
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -3513,6 +3534,7 @@
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -3538,6 +3560,7 @@
           "initial_controller": "B20",
           "initial_altitude": 23000,
           "initial_speed": 300,
+          "airports": ["KJFK"],
           "airlines": {
             "KJFK": [
               {
@@ -3798,6 +3821,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_speed": 300,
+          "airports": ["KJFK"],
           "airlines": {
             "KJFK": [
               {
@@ -4202,6 +4226,7 @@
           "initial_altitude": 28000,
           "assigned_altitude": 28000,
           "initial_speed": 300,
+          "airports": ["KPIT"],
           "airlines": {
             "KPIT": [
               {
@@ -4232,6 +4257,7 @@
           "initial_altitude": 33000,
           "assigned_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KMMU", "KTEB"],
           "airlines": {
             "KTEB": [
               {
@@ -4272,6 +4298,7 @@
           "initial_controller": "26",
           "initial_altitude": 11000,
           "initial_speed": 300,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {

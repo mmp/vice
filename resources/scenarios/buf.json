@@ -462,6 +462,7 @@
           "assigned_altitude": 6000,
           "initial_speed": 140,
           "expect_approach": null,
+          "airports": ["KIAG"],
           "airlines": {
             "KIAG": [
               {
@@ -485,6 +486,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KBUF"],
           "airlines": {
             "KBUF": [
               {
@@ -515,6 +517,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBUF"],
           "airlines": {
             "KBUF": [
               {
@@ -541,6 +544,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KBUF", "KIAG"],
           "airlines": {
             "KBUF": [
               {
@@ -585,6 +589,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KBUF"],
           "airlines": {
             "KBUF": [
               {
@@ -617,6 +622,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBUF"],
           "airlines": {
             "KBUF": [
               {
@@ -639,6 +645,7 @@
           "assigned_altitude": 8500,
           "initial_speed": 140,
           "expect_approach": null,
+          "airports": ["KIAG"],
           "airlines": {
             "KIAG": [
               {
@@ -662,6 +669,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KBUF", "KIAG"],
           "airlines": {
             "KBUF": [
               {
@@ -701,6 +709,7 @@
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUF"],
           "airlines": {
             "KBUF": [
               {

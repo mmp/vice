@@ -698,6 +698,7 @@
     "CLASH5.OATHE": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -873,6 +874,7 @@
     "CLASH5.KIISS": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -920,6 +922,7 @@
           "waypoints": "N038.05.52.125,W100.31.39.536/ho KIISS DYLLN WAIYN/a30000+ LYNKN RRUSL CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -1128,6 +1131,7 @@
           "waypoints": "GCK/ho KIISS DYLLN WAIYN/a30000+ LYNKN RRUSL CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -1175,6 +1179,7 @@
     "NIIXX4.HALEN": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -1288,6 +1293,7 @@
     "NIIXX4.ZIGEE": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -1364,6 +1370,7 @@
     "DBRY5.HBU": {
       "arrivals": [
         {
+          "airports": ["KCOS"],
           "airlines": {
             "KCOS": [
               {
@@ -1389,6 +1396,7 @@
     "DBRY5.ALS": {
       "arrivals": [
         {
+          "airports": ["KCOS"],
           "airlines": {
             "KCOS": [
               {
@@ -1419,6 +1427,7 @@
     "OZZZY5.GLD": {
       "arrivals": [
         {
+          "airports": ["KCOS"],
           "airlines": {
             "KCOS": [
               {
@@ -1439,6 +1448,7 @@
     "OZZZY5.LAA": {
       "arrivals": [
         {
+          "airports": ["KCOS"],
           "airlines": {
             "KCOS": [
               {
@@ -1460,6 +1470,7 @@
           "waypoints": "N037.57.50.745,W101.01.27.149/ho GCK LAA/a28000 TULLL/a27000 HYMNS/a23000 HGO/a17000 OZZZY/a14000/s250 ADANE"
         },
         {
+          "airports": ["KCOS"],
           "airlines": {
             "KCOS": [
               {

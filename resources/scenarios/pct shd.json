@@ -2430,6 +2430,7 @@
           "initial_speed": 280,
           "description": "Jets",
           "expect_approach": null,
+          "airports": ["KHEF", "KIAD", "KJYO"],
           "airlines": {
             "KIAD": [
               {
@@ -2696,6 +2697,7 @@
           "initial_speed": 250,
           "description": "Props",
           "expect_approach": null,
+          "airports": ["KHEF", "KIAD", "KJYO"],
           "airlines": {
             "KIAD": [
               {
@@ -2818,6 +2820,7 @@
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -2853,6 +2856,7 @@
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -2893,6 +2897,7 @@
           "initial_altitude": 23000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -3053,6 +3058,7 @@
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -3093,6 +3099,7 @@
           "initial_altitude": 23000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -3253,6 +3260,7 @@
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -3293,6 +3301,7 @@
           "initial_altitude": 23000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -3452,6 +3461,7 @@
           "initial_altitude": 10500,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KHEF"],
           "airlines": {
             "KHEF": [
               {
@@ -3494,6 +3504,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHEF"],
           "airlines": {
             "KHEF": [
               {
@@ -3532,6 +3543,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KJYO"],
           "airlines": {
             "KJYO": [
               {
@@ -3599,6 +3611,7 @@
           "assigned_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -3698,6 +3711,7 @@
           "assigned_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -3805,6 +3819,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHEF", "KIAD", "KJYO"],
           "airlines": {
             "KIAD": [
               {
@@ -4054,6 +4069,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHEF", "KIAD", "KJYO"],
           "airlines": {
             "KIAD": [
               {
@@ -4203,7 +4219,7 @@
       "arrivals": [
         {
           "waypoints": "HUSEL/a4000 N038.59.57.569,W077.21.22.763/ho YACKK TICON/h191",
-          "star": "HYPER1/PRTZL2/WAYNZ2",
+          "star_feeds": ["HYPER1", "PRTZL2", "WAYNZ2"],
           "initial_controller": "3M",
           "initial_altitude": 4000,
           "assigned_altitude": 3000,
@@ -4211,6 +4227,7 @@
           "expect_approach": "I1R",
           "scratchpad": "R1R",
           "secondary_scratchpad": "HYP",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -4471,13 +4488,14 @@
       "arrivals": [
         {
           "waypoints": "HUSEL/a4000 N038.59.57.569,W077.21.22.763/ho YACKK TICON/h191",
-          "star": "HYPER1/PRTZL2/WAYNZ2",
+          "star_feeds": ["HYPER1", "PRTZL2", "WAYNZ2"],
           "initial_controller": "3M",
           "initial_altitude": 4000,
           "initial_speed": 250,
           "expect_approach": "I1R",
           "scratchpad": "R1R",
           "secondary_scratchpad": "HYP",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -4745,6 +4763,7 @@
           "expect_approach": "I1L",
           "scratchpad": "R1L",
           "secondary_scratchpad": "GBZ",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -4991,6 +5010,7 @@
           "expect_approach": "I1C",
           "scratchpad": "R1C",
           "secondary_scratchpad": "GBZ",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -5237,6 +5257,7 @@
           "expect_approach": "I1C",
           "scratchpad": "R1C",
           "secondary_scratchpad": "CAV",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -5420,6 +5441,7 @@
           "expect_approach": "I1C",
           "scratchpad": "R1C",
           "secondary_scratchpad": "CAV",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -5603,6 +5625,7 @@
           "expect_approach": "I9L",
           "scratchpad": "19L",
           "secondary_scratchpad": "CAV",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -5786,6 +5809,7 @@
           "expect_approach": "I9L",
           "scratchpad": "19L",
           "secondary_scratchpad": "CAV",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -5969,6 +5993,7 @@
           "expect_approach": "I9R",
           "scratchpad": "19R",
           "secondary_scratchpad": "GBZ",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6215,6 +6240,7 @@
           "expect_approach": "I9C",
           "scratchpad": "19C",
           "secondary_scratchpad": "GBZ",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6462,6 +6488,7 @@
           "expect_approach": "I9C",
           "scratchpad": "19C",
           "secondary_scratchpad": "WNZ",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6546,6 +6573,7 @@
           "expect_approach": "I9C",
           "scratchpad": "19C",
           "secondary_scratchpad": "HYP",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6745,6 +6773,7 @@
           "expect_approach": "I9C",
           "scratchpad": "19C",
           "secondary_scratchpad": "WNZ",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {
@@ -6829,6 +6858,7 @@
           "expect_approach": "I9C",
           "scratchpad": "19C",
           "secondary_scratchpad": "HYP",
+          "airports": ["KIAD"],
           "airlines": {
             "KIAD": [
               {

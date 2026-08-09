@@ -1066,6 +1066,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KNGU", "KORF", "KPHF"],
           "airlines": {
             "KORF": [
               {
@@ -1126,6 +1127,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KORF", "KPHF"],
           "airlines": {
             "KORF": [
               {
@@ -1176,6 +1178,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KNGU", "KORF"],
           "airlines": {
             "KORF": [
               {
@@ -1242,6 +1245,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KNGU", "KORF"],
           "airlines": {
             "KORF": [
               {
@@ -1288,6 +1292,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPHF"],
           "airlines": {
             "KPHF": [
               {
@@ -1312,6 +1317,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPHF"],
           "airlines": {
             "KPHF": [
               {
@@ -1336,6 +1342,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KORF"],
           "airlines": {
             "KORF": [
               {

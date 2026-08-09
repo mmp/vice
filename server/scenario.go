@@ -578,7 +578,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 						// arrivals in the group.
 						found := false
 						for _, ar := range flow.Arrivals {
-							if slices.Contains(ar.ServedAirports(), airport) {
+							if slices.Contains(ar.Airports, airport) {
 								found = true
 
 								// Make sure the airport has at least one

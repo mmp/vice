@@ -1413,6 +1413,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KRDU"],
           "airlines": {
             "KRDU": [
               {
@@ -1475,6 +1476,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KRDU"],
           "airlines": {
             "KRDU": [
               {
@@ -1547,6 +1549,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KRDU"],
           "airlines": {
             "KRDU": [
               {
@@ -1605,11 +1608,12 @@
               "5R": "KAROO/a12000- MUFLY/a9000+/s250 OCHRE/a7000+/s220 STINT/a6000/s210/flyover/h234"
             }
           },
-          "star": "TAQLE2",
+          "star": "TAQLE3",
           "initial_controller": "C20",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KRDU"],
           "airlines": {
             "KRDU": [
               {

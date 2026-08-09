@@ -618,6 +618,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["PANC"],
           "airlines": {
             "PANC": [
               {
@@ -778,6 +779,7 @@
           "initial_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["PANC"],
           "airlines": {
             "PANC": [
               {
@@ -818,6 +820,7 @@
           "initial_altitude": 22000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["PANC"],
           "airlines": {
             "PANC": [
               {
@@ -855,6 +858,7 @@
           "assigned_altitude": 9000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["PANC"],
           "airlines": {
             "PANC": [
               {
@@ -946,6 +950,7 @@
           "initial_altitude": 22000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["PANC"],
           "airlines": {
             "PANC": [
               {
