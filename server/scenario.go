@@ -1997,7 +1997,8 @@ func haveFlightDataCells(scenario *ScenarioSpec) bool {
 // finalizeTrafficSources settles which source each scenario starts on, once
 // every source has had its say. A scenario with nothing at all to fly is a
 // scenario file that needs fixing.
-func finalizeTrafficSources(catalogs map[string]map[string]*ScenarioCatalog, e *util.ErrorLogger) {
+func finalizeTrafficSources(catalogs map[string]map[string]*ScenarioCatalog,
+	scenarioGroups map[string]map[string]*scenarioGroup, e *util.ErrorLogger) {
 	for facility, facilityCatalogs := range catalogs {
 		for name, catalog := range facilityCatalogs {
 			for scenarioName, scenario := range catalog.Scenarios {
@@ -2011,9 +2012,44 @@ func finalizeTrafficSources(catalogs map[string]map[string]*ScenarioCatalog, e *
 				if !slices.Contains(scenario.TrafficSources, scenario.LaunchConfig.TrafficSource) {
 					scenario.LaunchConfig.TrafficSource = scenario.TrafficSources[0]
 				}
+
+				// Published traffic files real routes, so a scenario that can
+				// only be flown from it needs arrivals that say which STARs'
+				// traffic they take; without them every flight in is dropped.
+				if slices.Contains(scenario.TrafficSources, sim.TrafficSourceScenario) {
+					continue
+				}
+				if sg, ok := scenarioGroups[facility][name]; ok {
+					for _, airport := range airportsWithoutSTARArrivals(sg, &scenario.LaunchConfig) {
+						e.ErrorString("%s/%s/%s: no arrival into %s takes any STAR's traffic, so "+
+							`real-world traffic has nowhere to put it; give them "star_feeds"`,
+							facility, name, scenarioName, airport)
+					}
+				}
 			}
 		}
 	}
+}
+
+// airportsWithoutSTARArrivals returns the airports the scenario lands traffic
+// at that no active arrival takes STAR traffic into, in sorted order.
+func airportsWithoutSTARArrivals(sg *scenarioGroup, lc *sim.LaunchConfig) []string {
+	served := make(map[string]bool)
+	for flow, airports := range lc.InboundFlowRates {
+		inboundFlow, ok := sg.InboundFlows[flow]
+		if !ok {
+			continue
+		}
+		for airport := range airports {
+			if airport == "overflights" || served[airport] {
+				continue
+			}
+			served[airport] = slices.ContainsFunc(inboundFlow.Arrivals, func(arr av.Arrival) bool {
+				return slices.Contains(arr.Airports, airport) && len(arr.ServedSTARs()) > 0
+			})
+		}
+	}
+	return util.FilterSlice(util.SortedMapKeys(served), func(airport string) bool { return !served[airport] })
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2786,7 +2822,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		attachTimetables(catalogs, timetableCatalog)
 	}
 	attachHistoricalFlightIntervals(catalogs, lg)
-	finalizeTrafficSources(catalogs, e)
+	finalizeTrafficSources(catalogs, scenarioGroups, e)
 
 	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))
 	return scenarioGroups, catalogs, mapSpecs, briefs, extraScenarioErrors
