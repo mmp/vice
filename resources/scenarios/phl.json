@@ -4222,7 +4222,8 @@
           "initial_controller": "1N",
           "initial_speed": 220,
           "speed_restriction": 220,
-          "star": "BOJID4",
+          "star_feeds": ["BOJID4", "BUNTS3", "SLATT6", "SPUDS7"],
+          "airports": ["KPHL"],
           "scratchpad": "27R",
           "waypoints": "BOJID N040.01.51.140,W075.11.43.262/ho HIFAL EYRIE FERUS/h085"
         }
@@ -4238,7 +4239,7 @@
           "initial_controller": "1S",
           "initial_speed": 220,
           "speed_restriction": 220,
-          "star": "PAATS4",
+          "star_feeds": ["JIIMS4", "PAATS4"],
           "airports": ["KPHL"],
           "scratchpad": "27R",
           "waypoints": "N039.39.39.130,W075.08.38.554 CHPMN/ho PSOUT MKORD/h087"
@@ -4255,7 +4256,9 @@
           "initial_controller": "1N",
           "initial_speed": 220,
           "speed_restriction": 220,
-          "star": "BOJID4",
+          "aircraft": ["prop", "turboprop"],
+          "star_feeds": ["BOJID4", "BUNTS3", "SLATT6", "SPUDS7"],
+          "airports": ["KPHL"],
           "scratchpad": "17Z",
           "waypoints": "N040.05.01.382,W075.44.56.319 N040.04.20.458,W075.35.49.255/ho/h110"
         }

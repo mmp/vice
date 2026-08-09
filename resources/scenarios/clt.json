@@ -4895,6 +4895,7 @@
       "arrivals": [
         {
           "waypoints": "BANKR/a13000-22000 DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/h90/ho",
+          "star_feeds": ["BANKR7", "JOOLS3"],
           "cruise_altitude": 35000,
           "star": "BANKR7",
           "initial_controller": "1D",
@@ -5203,6 +5204,7 @@
       "arrivals": [
         {
           "waypoints": "WHIZE/a10000-12000 CAATT/a10000/s210/ho EPAYE/h183",
+          "star_feeds": ["BANKR7", "BTSEY2", "CHSLY8", "FILPZ6", "JONZE7", "LIINN3", "MAJIC4", "MLLET5", "PARQR6"],
           "cruise_altitude": 34000,
           "star": "CHSLY8",
           "initial_controller": "1H",
@@ -5437,6 +5439,7 @@
       "arrivals": [
         {
           "waypoints": "KRISS/a11000-12000 NODEW/a8000-9000/s230/ho HEELZ/a6000/s210/h270",
+          "star_feeds": ["CHSLY8", "MAJIC4"],
           "cruise_altitude": 34000,
           "star": "CHSLY8",
           "initial_controller": "1H",
@@ -5825,6 +5828,7 @@
       "arrivals": [
         {
           "waypoints": "ERHRT/a10000-/s210/ho FISHN/a7000/s210/h90",
+          "star_feeds": ["FILPZ6", "LIINN3"],
           "cruise_altitude": 37000,
           "star": "FILPZ6",
           "initial_controller": "1U",
@@ -6188,6 +6192,7 @@
       "arrivals": [
         {
           "waypoints": "FREEK/a10000-11000 DOSBE AAIRE/a10000/s210/ho JRDEN/a6000/h3",
+          "star_feeds": ["BANKR7", "CHSLY8", "JONZE7", "JOOLS3", "MAJIC4", "MLLET5", "RASLN3", "STOCR6"],
           "cruise_altitude": 37000,
           "star": "JONZE7",
           "initial_controller": "1D",
@@ -6391,6 +6396,7 @@
       "arrivals": [
         {
           "waypoints": "NCOMA/a11000 BOATN/a8000/s210/ho CAMPR/h92",
+          "star_feeds": ["BTSEY2", "PARQR6"],
           "cruise_altitude": 32000,
           "star": "PARQR6",
           "initial_controller": "1U",
@@ -6481,6 +6487,7 @@
       "arrivals": [
         {
           "waypoints": "CEDOX/s210/ho VALLL/h183",
+          "star_feeds": ["BTSEY2", "CHSLY8", "FILPZ6", "LIINN3", "MAJIC4", "MLLET5", "PARQR6", "RASLN3", "STOCR6"],
           "cruise_altitude": 32000,
           "star": "PARQR6",
           "initial_controller": "1U",
@@ -6680,6 +6687,7 @@
       "arrivals": [
         {
           "waypoints": "FIBBR/a11000-14000/s250 TYMER/a8000-11000 TERIE/a6000-8000/ho GATEE/a6000/s210/h273",
+          "star_feeds": ["RASLN3", "STOCR6"],
           "cruise_altitude": 32000,
           "star": "STOCR6",
           "initial_controller": "1H",
@@ -6779,6 +6787,7 @@
       "arrivals": [
         {
           "waypoints": "DOOMY/a10000-11000 POORE LEEKS/a10000/s210/ho HANDO/a8000/h3",
+          "star_feeds": ["BANKR7", "BTSEY2", "FILPZ6", "JONZE7", "LIINN3", "MLLET5", "PARQR6", "RASLN3", "STOCR6"],
           "cruise_altitude": 32000,
           "star": "STOCR6",
           "initial_controller": "1H",

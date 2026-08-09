@@ -18992,6 +18992,7 @@
       "arrivals": [
         {
           "waypoints": "SHURT/ho FOGER HITTT YURII/h95",
+          "star_feeds": ["CHPPR1", "HOBTT3", "SITTH3"],
           "cruise_altitude": 34000,
           "star": "HOBTT3",
           "initial_controller": "1Y",
@@ -19113,6 +19114,7 @@
       "arrivals": [
         {
           "waypoints": "SHURT/ho FOGER HITTT YURII/h95",
+          "star_feeds": ["CHPPR1", "HOBTT3", "SITTH3"],
           "cruise_altitude": 34000,
           "star": "HOBTT3",
           "initial_controller": "1Y",
@@ -19801,6 +19803,7 @@
       "arrivals": [
         {
           "waypoints": "GAASS KLOWD/ho KUNFU TRAPE SNEVE/h275",
+          "star_feeds": ["ONDRE1", "OZZZI2"],
           "star": "OZZZI2",
           "initial_controller": "C43",
           "initial_altitude": 10000,
@@ -21044,6 +21047,7 @@
       "arrivals": [
         {
           "waypoints": "FRYES SHURT/ho REMAC DACTL STUMP/h275",
+          "star_feeds": ["HOBTT3", "JJEDI4", "SITTH3"],
           "star": "SITTH3",
           "initial_controller": "C43",
           "initial_altitude": 12000,
@@ -21175,6 +21179,7 @@
       "arrivals": [
         {
           "waypoints": "FRYES SHURT/ho REMAC DACTL STUMP/h275",
+          "star_feeds": ["HOBTT3", "JJEDI4", "SITTH3"],
           "star": "SITTH3",
           "initial_controller": "C43",
           "initial_altitude": 12000,

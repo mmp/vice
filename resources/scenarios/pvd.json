@@ -910,6 +910,7 @@
     "PQ_PVD_2316": {
       "arrivals": [
         {
+          "star_feeds": ["WIPOR4"],
           "airports": ["KPVD"],
           "airlines": {
             "KPVD": [

@@ -7351,6 +7351,7 @@
           "initial_speed": 250,
           "speed_restriction": 210,
           "star": "BENKY6",
+          "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "WYNDE3"],
           "scratchpad": "I8C",
           "waypoints": "PETAH JORJO/ho MONKZ TONIE/h093"
         }
@@ -7976,6 +7977,7 @@
           "initial_speed": 250,
           "speed_restriction": 250,
           "star": "ERNNY8",
+          "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
           "scratchpad": "I7C",
           "waypoints": "ERNNY PAPPI/h160/ho"
         }
@@ -8758,6 +8760,7 @@
           "initial_speed": 250,
           "speed_restriction": 220,
           "star": "FYTTE7",
+          "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "JVL1", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
           "scratchpad": "I7R",
           "waypoints": "SOOLU KURKK/ho VULCN HIMGO/h093"
         }
@@ -8829,6 +8832,7 @@
           "initial_speed": 250,
           "speed_restriction": 220,
           "star": "FYTTE7",
+          "star_feeds": ["ERNNY8", "ESSPO5", "FYTTE7", "JVL1", "MADII7", "VEECK5", "WYNDE3"],
           "scratchpad": "I9L",
           "waypoints": "COGSS MADII/h200/ho"
         }

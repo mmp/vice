@@ -9500,6 +9500,7 @@
       "arrivals": [
         {
           "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210/tc ROCKZ/a8000/s210 JEKIL/h176",
+          "star_feeds": ["BRDJE5", "CAINE2", "DAWGZ2", "FINGR1", "SEEVR4"],
           "star": "BRDJE5",
           "initial_controller": "1E",
           "initial_altitude": 18000,
@@ -9691,6 +9692,7 @@
       "arrivals": [
         {
           "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/h125/s210/tc N032.45.02.925,W096.39.25.466/a7000/h125",
+          "star_feeds": ["BRDJE5", "CAINE2", "DAWGZ2", "FINGR1", "SEEVR4"],
           "star": "BRDJE5",
           "initial_controller": "1E",
           "initial_altitude": 18000,
@@ -9882,6 +9884,7 @@
       "arrivals": [
         {
           "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210/tc ROCKZ/a8000/s210 JEKIL/h176",
+          "star_feeds": ["BRDJE5", "CAINE2", "DAWGZ2", "FINGR1", "SEEVR4"],
           "star": "BRDJE5",
           "initial_controller": "1E",
           "initial_altitude": 18000,
@@ -11105,6 +11108,7 @@
       "arrivals": [
         {
           "waypoints": "VKTRY/a15000-18000/s280/ho JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210/tc KBOOM/a8000/s210 FUEWL/h176",
+          "star_feeds": ["GIBBI2", "JOVEM6", "SHAAM2", "VKTRY2"],
           "star": "JOVEM6",
           "initial_controller": "1W",
           "initial_altitude": 17000,
@@ -11162,6 +11166,7 @@
       "arrivals": [
         {
           "waypoints": "VKTRY/a15000-18000/s280/ho JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210 KBOOM/a9000/s210/h135/tc",
+          "star_feeds": ["GIBBI2", "JOVEM6", "SHAAM2", "VKTRY2"],
           "star": "JOVEM6",
           "initial_controller": "1W",
           "initial_altitude": 17000,
@@ -13417,6 +13422,7 @@
       "arrivals": [
         {
           "waypoints": "BOOVE/a9000-11000/s250/ho ISABL/a7000-9000/s250 SOCKK/a5000/s230/h77",
+          "star_feeds": ["BOOVE7", "PAWLZ3", "SHMPP3", "SOCKK4", "TILLA3", "ZROBA1"],
           "star": "SOCKK4",
           "initial_controller": "1W",
           "initial_altitude": 9000,
@@ -13475,6 +13481,7 @@
       "arrivals": [
         {
           "waypoints": "BOOVE/a9000-11000/s250/ho ESIKE/a5000/s210/h075",
+          "star_feeds": ["BOOVE7", "PAWLZ3", "SHMPP3", "SOCKK4", "TILLA3", "ZROBA1"],
           "star": "SOCKK4",
           "initial_controller": "1W",
           "initial_altitude": 9000,
@@ -14414,6 +14421,7 @@
       "arrivals": [
         {
           "waypoints": "HOWDY/a11000-12000/s250/ho BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
+          "star_feeds": ["BEREE3", "CABBY2", "FORNY3", "WHINY4", "YEAGR4"],
           "star": "WHINY4",
           "initial_controller": "1E",
           "initial_altitude": 11000,
@@ -14477,6 +14485,7 @@
       "arrivals": [
         {
           "waypoints": "HOWDY/a11000-12000/s250/ho TULOY/a5000",
+          "star_feeds": ["BEREE3", "CABBY2", "FORNY3", "WHINY4", "YEAGR4"],
           "star": "WHINY4",
           "initial_controller": "1E",
           "initial_altitude": 11000,
@@ -14540,6 +14549,7 @@
       "arrivals": [
         {
           "waypoints": "HOWDY/a11000-12000/s250/ho BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
+          "star_feeds": ["BEREE3", "CABBY2", "FORNY3", "WHINY4", "YEAGR4"],
           "star": "WHINY4",
           "initial_controller": "1E",
           "initial_altitude": 11000,

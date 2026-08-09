@@ -1849,6 +1849,7 @@
       "arrivals": [
         {
           "waypoints": "BIGBR/a13000-14000 DRYSS/a10000-12000 TOMYS/a9000+ CLIFY/a7000/s220/ho HNCHE SASSI/a7000/s210/h251",
+          "star_feeds": ["ANJLL4", "BIGBR3", "MDNYT2"],
           "star": "BIGBR3",
           "is_rnav": true,
           "initial_controller": "2F",
@@ -2144,6 +2145,7 @@
       "arrivals": [
         {
           "waypoints": "SHRTZ/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000+/s220/ho WNDFL/a6000/s210 NIKEY/h251",
+          "star_feeds": ["BASET5", "BRUEN2", "DIRBY2", "GOATZ2", "HLYWD1", "OLAAA2", "SEAVU2", "SNSTT2"],
           "star": "BRUEN2",
           "is_rnav": true,
           "initial_controller": "2F",
@@ -3879,6 +3881,7 @@
       "arrivals": [
         {
           "waypoints": "DOWNE DOYRS/a10000+ N034.00.05.149,W118.23.43.471/ho CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
+          "star_feeds": ["BASET5", "BIGBR3", "BOGET2", "BRUEN2", "DIRBY2", "GOATZ2", "HUULL2", "KIMMO3", "LEENA8", "MDNYT2", "OLAAA2", "RYDRR2", "VISTA3", "WAYVE1"],
           "star": "MDNYT2",
           "is_rnav": true,
           "initial_controller": "2F",
@@ -4066,6 +4069,7 @@
       "arrivals": [
         {
           "waypoints": "DANYY/a14000-17000 N034.22.07.752,W119.02.54.929/ho ZUUMA/a9000-11000/s250 DEEZY/a8000+/s220 WAKER/a6000/s210",
+          "star_feeds": ["BAYST1", "IRNMN2", "MOOR4", "SADDE8", "ZUUMA4"],
           "star": "ZUUMA4",
           "is_rnav": true,
           "initial_controller": "C13",

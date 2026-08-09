@@ -10149,6 +10149,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "FLATI5",
+          "star_feeds": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"],
           "speed_restriction": 250,
           "waypoints": "FLATI/a19000-22000/s270 ELLDO/a16000-19000/s250 TOTTT/a15000-17000 YESSS SKEWD/a13000-15000/s250 LEKEE/a12000+ XCUTV CAPTJ/a11000/s210/h083/ho"
         }
@@ -10230,6 +10231,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "SSKII4",
+          "star_feeds": ["LARKS3", "POWDR1", "SSKII4", "TBARR4"],
           "speed_restriction": 250,
           "waypoints": "SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP JIBAT/a11000/s210/h082/ho"
         }
@@ -10301,6 +10303,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "AALLE4",
+          "star_feeds": ["AALLE4", "LANDR3"],
           "speed_restriction": 250,
           "waypoints": "AALLE/a19000 HEDDD/a16000-19000/s250 CRUNK/a14000/h222/ho"
         }
@@ -10402,6 +10405,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "CLASH5",
+          "star_feeds": ["CLASH5", "DANDD1"],
           "speed_restriction": 250,
           "waypoints": "CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250 ERVNN/a14000 FIDLS/a13000/s210/h351/ho"
         }
@@ -10586,6 +10590,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "NIIXX4",
+          "star_feeds": ["NIIXX4", "QUAIL1"],
           "speed_restriction": 250,
           "waypoints": "NIIXX/a19000-22000/s280 HAGGR/a15000-19000/s250 GEILS/a14000/h317/ho"
         }
@@ -10687,6 +10692,7 @@
           "scratchpad": "R07",
           "secondary_scratchpad": "ILS",
           "star": "CLASH5",
+          "star_feeds": ["CLASH5", "DANDD1", "NIIXX4", "QUAIL1"],
           "speed_restriction": 250,
           "waypoints": "CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250 JURKY/a15000-17000 ROOTZ/a13000-15000/s250 RPIDS BBOOK/a11000/s210/h263/ho"
         }
@@ -10758,6 +10764,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "AALLE4",
+          "star_feeds": ["AALLE4", "LANDR3", "LAWGR4"],
           "speed_restriction": 250,
           "waypoints": "AALLE/a19000 HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT HAITR/a11000/s210/h263/ho"
         }
@@ -10837,6 +10844,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "FLATI5",
+          "star_feeds": ["FLATI5", "RAMMS8"],
           "speed_restriction": 250,
           "waypoints": "ELLDO/a16000-19000/s250 MLVVA/a14000/h132/ho"
         }
@@ -10899,6 +10907,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "LONGZ4",
+          "star_feeds": ["LONGZ4", "TOMSN9"],
           "speed_restriction": 250,
           "waypoints": "FLNEL/a16000-19000/s250 GILPN/a14000 BASHE/a13000/s210/h170/ho"
         }
@@ -10980,6 +10989,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "SSKII4",
+          "star_feeds": ["POWDR1", "SSKII4"],
           "waypoints": "BGDEE/a17000-19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352/ho"
         }
       ]
@@ -11060,6 +11070,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "TBARR4",
+          "star_feeds": ["LARKS3", "TBARR4"],
           "waypoints": "MNARK/a17000-19000/s250 SUMTT/a14000/h033/ho"
         }
       ]

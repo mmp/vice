@@ -1679,6 +1679,7 @@
       "arrivals": [
         {
           "waypoints": "KAYNN/a7000- LAXBB/a5000/s230/ho KLEVR/a5000/s200/clearapp",
+          "star_feeds": ["OHSEA3", "RUKKI1", "TANDY6"],
           "star": "OHSEA3",
           "is_rnav": true,
           "initial_controller": "4R",

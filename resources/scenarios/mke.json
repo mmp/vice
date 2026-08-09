@@ -1732,6 +1732,7 @@
     "1L_Final_West": {
       "arrivals": [
         {
+          "star_feeds": ["GOPAC3"],
           "airports": ["KMKE"],
           "airlines": {
             "KMKE": [

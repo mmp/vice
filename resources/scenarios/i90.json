@@ -10971,6 +10971,7 @@
         {
           "spawn": "DOOBI@0.0",
           "star": "DOOBI3",
+          "star_feeds": ["DOOBI3", "HUDZY5", "SKNRD5"],
           "initial_controller": "1D",
           "initial_altitude": 15000,
           "initial_speed": 250,
@@ -11224,6 +11225,7 @@
         {
           "spawn": "DRLLR@0.0",
           "star": "DRLLR5",
+          "star_feeds": ["BAZBL1", "DRLLR5", "RIICE1"],
           "initial_controller": "1N",
           "initial_altitude": 14000,
           "initial_speed": 250,
@@ -11582,6 +11584,7 @@
       "arrivals": [
         {
           "waypoints": "N030.24.02.401,W094.41.59.906 KENNN",
+          "star_feeds": ["GESNR2", "OHIIO4"],
           "star": "GESNR2",
           "initial_controller": "1D",
           "initial_altitude": 14000,
@@ -11985,6 +11988,7 @@
         {
           "spawn": "MPORT@0.0",
           "star": "GUSHR3",
+          "star_feeds": ["BAZBL1", "DRLLR5", "GUSHR3", "RIICE1"],
           "initial_controller": "1N",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -12344,6 +12348,7 @@
         {
           "spawn": "GMANN@0.0",
           "star": "HTOWN3",
+          "star_feeds": ["DUUUK4", "HTOWN3", "TEJAS5"],
           "initial_controller": "1X",
           "initial_altitude": 13000,
           "initial_speed": 250,
@@ -12857,6 +12862,7 @@
         {
           "spawn": "MSCOT@0.0",
           "star": "MSCOT4",
+          "star_feeds": ["GUSHR3", "MSCOT4", "TTORO3"],
           "initial_controller": "1N",
           "initial_altitude": 10000,
           "initial_speed": 280,
@@ -13216,6 +13222,7 @@
         {
           "spawn": "KONZZ@0.0",
           "star": "NNCEE2",
+          "star_feeds": ["GILCO5", "LINKK1", "NNCEE2", "SOULL1"],
           "initial_controller": "1G",
           "initial_altitude": 12000,
           "initial_speed": 280,
@@ -13535,6 +13542,7 @@
       "arrivals": [
         {
           "waypoints": "N030.16.54.402,W094.41.32.495 SKNRD/a16000-/s280",
+          "star_feeds": ["DOOBI3", "HUDZY5", "SKNRD5", "ZEEKK3"],
           "star": "SKNRD5",
           "initial_controller": "1D",
           "initial_altitude": 16000,
@@ -13789,6 +13797,7 @@
         {
           "spawn": "CITTE@0.9",
           "star": "TEJAS5",
+          "star_feeds": ["DUUUK4", "HTOWN3", "TEJAS5"],
           "initial_controller": "1X",
           "initial_altitude": 12000,
           "initial_speed": 250,
@@ -13982,6 +13991,7 @@
         {
           "spawn": "SUUNR@0.0",
           "star": "TTORO3",
+          "star_feeds": ["MSCOT4", "TTORO3"],
           "initial_controller": "1N",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -14341,6 +14351,7 @@
         {
           "spawn": "ZEEKK@0.0",
           "star": "ZEEKK3",
+          "star_feeds": ["GESNR2", "OHIIO4", "ZEEKK3"],
           "initial_controller": "1D",
           "initial_altitude": 13000,
           "initial_speed": 250,

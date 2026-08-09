@@ -1550,6 +1550,7 @@
       "arrivals": [
         {
           "waypoints": "CLDON/a9000-10000/ho MERCA/a7000/s210/h284",
+          "star_feeds": ["CRAKN2", "HTROD2"],
           "star": "CRAKN2",
           "initial_controller": "1F",
           "initial_altitude": 10000,
@@ -1648,6 +1649,7 @@
       "arrivals": [
         {
           "waypoints": "HHUNT/a12000-15000 CUUGR/a9000-11000/s260/ho",
+          "star_feeds": ["CUUGR2", "TPGUN2"],
           "runway_waypoints": {
             "KDTW": {
               "3R": "CUUGR/a9000-11000/s260 ROOAD ROYYY/a8000/s210/h216",
@@ -1892,6 +1894,7 @@
       "arrivals": [
         {
           "waypoints": "HYPED/a12000-15000/s250 MERFI/a12000/ho",
+          "star_feeds": ["GRAYT2", "LAYKS2", "RKCTY2"],
           "runway_waypoints": {
             "KDTW": {
               "3R": "MERFI/a12000 QWYNN SPRTS/a12000/s210/h216",
@@ -2144,6 +2147,7 @@
       "arrivals": [
         {
           "waypoints": "VCTRZ/a8000-10000 MAAZE GRBAC/a5000/s210/h141",
+          "star_feeds": ["HAYLL3", "VCTRZ2"],
           "star": "HAYLL3",
           "initial_controller": "1F",
           "initial_altitude": 9000,
@@ -2428,6 +2432,7 @@
       "arrivals": [
         {
           "waypoints": "KLYNK/a9000-10000/ho BRDER/a6000/s210/h281",
+          "star_feeds": ["BONZZ2", "KLYNK3"],
           "star": "KLYNK3",
           "initial_controller": "1F",
           "initial_altitude": 9000,
@@ -2616,6 +2621,7 @@
       "arrivals": [
         {
           "waypoints": "FAAVA/a6000/ho SIZOR/a6000/s210/h123",
+          "star_feeds": ["HANBL3", "LECTR3"],
           "star": "LECTR3",
           "initial_controller": "1F",
           "initial_altitude": 6000,
@@ -3113,6 +3119,7 @@
       "arrivals": [
         {
           "waypoints": "BOUTU/a12000-15000 ROOAD/a12000/s250/ho",
+          "star_feeds": ["FERRL2", "WNGNT2"],
           "runway_waypoints": {
             "KDTW": {
               "3R": "ROOAD/a12000/s250 SPRTS/a12000/s210/h216",
