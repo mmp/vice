@@ -2024,18 +2024,22 @@ func finalizeTrafficSources(catalogs map[string]map[string]*ScenarioCatalog,
 					scenario.LaunchConfig.TrafficSource = scenario.TrafficSources[0]
 				}
 
-				// Published traffic files real routes, so a scenario that can
-				// only be flown from it needs arrivals that say which STARs'
-				// traffic they take; without them every flight in is dropped.
+				// A scenario that can only be flown from published traffic has
+				// nothing to fly at an airport none of its arrivals takes STAR
+				// traffic into. How much of an airport's traffic is placed is
+				// not something a load-time check can see--it depends on what
+				// really flew--so this only catches losing all of it.
 				if slices.Contains(scenario.TrafficSources, sim.TrafficSourceScenario) {
 					continue
 				}
-				if sg, ok := scenarioGroups[facility][name]; ok {
-					for _, airport := range airportsWithoutSTARArrivals(sg, &scenario.LaunchConfig) {
-						e.ErrorString("%s/%s/%s: no arrival into %s takes any STAR's traffic, so "+
-							`real-world traffic has nowhere to put it; give them "star_feeds"`,
-							facility, name, scenarioName, airport)
-					}
+				sg, ok := scenarioGroups[facility][name]
+				if !ok {
+					continue
+				}
+				for _, airport := range airportsWithoutSTARArrivals(sg, &scenario.LaunchConfig) {
+					e.ErrorString("%s/%s/%s: no arrival into %s takes any STAR's traffic, so "+
+						`published traffic there is all dropped; give them "star_feeds"`,
+						facility, name, scenarioName, airport)
 				}
 			}
 		}
@@ -2043,7 +2047,8 @@ func finalizeTrafficSources(catalogs map[string]map[string]*ScenarioCatalog,
 }
 
 // airportsWithoutSTARArrivals returns the airports the scenario lands traffic
-// at that no active arrival takes STAR traffic into, in sorted order.
+// at that no active arrival takes STAR traffic into, in sorted order. Those
+// lose every flight that files a STAR, which is all of the airline traffic.
 func airportsWithoutSTARArrivals(sg *scenarioGroup, lc *sim.LaunchConfig) []string {
 	served := make(map[string]bool)
 	for flow, airports := range lc.InboundFlowRates {
