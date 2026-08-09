@@ -1288,6 +1288,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
@@ -1343,6 +1344,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
@@ -1394,6 +1396,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
@@ -1457,6 +1460,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
@@ -1520,6 +1524,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
@@ -1569,7 +1574,6 @@
   },
   "default_scenario": "KOKC South",
   "name": "KOKC",
-  "primary_airport": "KOKC",
   "scenarios": {
     "KOKC South": {
       "arrival_runways": [

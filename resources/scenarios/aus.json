@@ -654,6 +654,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAUS"],
           "airlines": {
             "KAUS": [
               {
@@ -699,6 +700,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAUS"],
           "airlines": {
             "KAUS": [
               {
@@ -744,6 +746,7 @@
           "initial_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHYI"],
           "airlines": {
             "KHYI": [
               {
@@ -774,11 +777,12 @@
         {
           "waypoints": "SZAGI LAIKS/a12000/ho BOYZZ/a8000 TRVSS/a8000 RATTT/a5000/s220 LAIDY/a5000/s210/h180",
           "cruise_altitude": 37000,
-          "star": "LAIKS3",
+          "star": "LAIKS4",
           "initial_controller": "C50",
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAUS"],
           "airlines": {
             "KAUS": [
               {
@@ -841,11 +845,12 @@
         {
           "waypoints": "SZAGI LAIKS/a12000/ho BOYZZ/a8000 CRLOS/a5000 HOUKM/a5000/s210/h142",
           "cruise_altitude": 37000,
-          "star": "LAIKS3",
+          "star": "LAIKS4",
           "initial_controller": "C50",
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAUS"],
           "airlines": {
             "KAUS": [
               {
@@ -913,6 +918,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAUS"],
           "airlines": {
             "KAUS": [
               {
@@ -974,6 +980,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAUS"],
           "airlines": {
             "KAUS": [
               {
@@ -1035,6 +1042,7 @@
           "initial_altitude": 4000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGTU"],
           "airlines": {
             "KGTU": [
               {
@@ -1060,6 +1068,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAUS"],
           "airlines": {
             "KAUS": [
               {
@@ -1173,6 +1182,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAUS"],
           "airlines": {
             "KAUS": [
               {
@@ -1357,7 +1367,6 @@
     "_AUS_36R": "N30.10.44.748,W97.39.26.092"
   },
   "name": "KAUS",
-  "primary_airport": "KAUS",
   "scenarios": {
     "AUS TRACON South": {
       "airspace": {

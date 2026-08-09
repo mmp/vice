@@ -1047,6 +1047,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KHXD", "KSAV", "KTBR"],
           "airlines": {
             "KSAV": [
               {
@@ -1123,6 +1124,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KHXD", "KSAV", "KTBR"],
           "airlines": {
             "KSAV": [
               {
@@ -1235,6 +1237,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KHXD", "KSAV", "KTBR"],
           "airlines": {
             "KSAV": [
               {
@@ -1355,6 +1358,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KHXD", "KSAV", "KTBR"],
           "airlines": {
             "KSAV": [
               {
@@ -1419,7 +1423,6 @@
   },
   "magnetic_adjustment": -0.5,
   "name": "KSAV",
-  "primary_airport": "KSAV",
   "reporting_points": ["LOTTS", "PLZZZ", "SOOOP", "VIYAP"],
   "scenarios": {
     "SAV Dep 10 Ldg 10/1 Sats North": {

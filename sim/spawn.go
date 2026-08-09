@@ -129,9 +129,12 @@ type LaunchConfig struct {
 	// scenario's own rate-based traffic generator, a built-in timetable, or
 	// historical flight data.
 	TrafficSource TrafficSource
-	// TimetableID identifies the selected built-in timetable when TrafficSource
-	// is TrafficSourceTimetable.
-	TimetableID string
+	// TimetableID and TimetableAirport identify the selected built-in timetable
+	// when TrafficSource is TrafficSourceTimetable; a scenario may offer
+	// timetables for more than one of its airports, so the id alone doesn't
+	// name one.
+	TimetableID      string
+	TimetableAirport string
 	// TimetableStartMinute is the selected local start time, expressed as
 	// minutes after midnight at the timetable's airport.
 	TimetableStartMinute int
@@ -482,6 +485,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 	// the provider's queue.
 	providerChanged := lc.TrafficSource != s.State.LaunchConfig.TrafficSource ||
 		lc.TimetableID != s.State.LaunchConfig.TimetableID ||
+		lc.TimetableAirport != s.State.LaunchConfig.TimetableAirport ||
 		lc.TimetableStartMinute != s.State.LaunchConfig.TimetableStartMinute ||
 		lc.PublishedArrivalPercentage != s.State.LaunchConfig.PublishedArrivalPercentage ||
 		lc.PublishedDeparturePercentage != s.State.LaunchConfig.PublishedDeparturePercentage ||

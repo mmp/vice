@@ -27,6 +27,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KALB" } },
     "configurations": {
       "EAS": {
         "inbound_assignments": {

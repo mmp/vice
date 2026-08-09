@@ -206,6 +206,7 @@
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBGR"],
           "airlines": {
             "KBGR": [
               {
@@ -238,6 +239,7 @@
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBGR"],
           "airlines": {
             "KBGR": [
               {
@@ -262,6 +264,7 @@
           "initial_altitude": 9000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBGR", "KBHB"],
           "airlines": {
             "KBGR": [
               {
@@ -292,6 +295,7 @@
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBGR"],
           "airlines": {
             "KBGR": [
               {
@@ -312,7 +316,6 @@
       ]
     }
   },
-  "primary_airport": "KBGR",
   "default_scenario": "Land South",
   "name": "BGR",
   "vfr_reporting_points": [

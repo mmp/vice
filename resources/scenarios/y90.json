@@ -990,6 +990,7 @@
           "initial_altitude": 19000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBAF", "KBDL", "KCEF"],
           "airlines": {
             "KBDL": [
               {
@@ -1060,6 +1061,7 @@
           "initial_altitude": 7000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBDL"],
           "airlines": {
             "KBDL": [
               {
@@ -1081,6 +1083,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBDL", "KHFD", "KORH"],
           "airlines": {
             "KBDL": [
               {
@@ -1162,6 +1165,7 @@
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBDL"],
           "airlines": {
             "KBDL": [
               {
@@ -1203,6 +1207,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBDL"],
           "airlines": {
             "KBDL": [
               {
@@ -1226,7 +1231,6 @@
     "WV": "42.329245317543226, -71.91885540900438"
   },
   "name": "KBDL",
-  "primary_airport": "KBDL",
   "vfr_reporting_points": [
     {
       "description": "Bradley",

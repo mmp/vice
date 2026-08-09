@@ -17,6 +17,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "PHOG" } },
     "configurations": {
       "CF1": {
         "inbound_assignments": {

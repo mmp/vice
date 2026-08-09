@@ -1075,6 +1075,7 @@
     "West/South": {
       "arrivals": [
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1093,6 +1094,7 @@
           "waypoints": "KUTSE HGR SCAPE N040.08.24.945,W077.16.56.400/a9000/ho HAR"
         },
         {
+          "airports": ["KCXY", "KLNS", "KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1206,6 +1208,7 @@
           "waypoints": "N039.36.49.735,W078.04.45.919 REEES/a15000 SCAPE N040.08.24.945,W077.16.56.400/a9000/ho HAR"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1229,6 +1232,7 @@
           "waypoints": "N040.29.35.582,W078.20.48.925 N040.24.07.792,W077.43.17.552/a11000 N040.21.06.723,W077.23.47.865/a9000/ho HAR"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1265,6 +1269,7 @@
           "waypoints": "N040.33.20.582,W078.33.22.835 N040.28.15.643,W078.03.03.966/a11000 N040.20.24.440,W077.17.26.804/a9000/ho HAR"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1283,6 +1288,7 @@
           "waypoints": "N040.12.18.377,W078.23.58.659 COFAX N040.17.38.985,W077.43.20.216/a11000 N040.18.28.108,W077.17.43.421/a9000/ho HAR"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1306,6 +1312,7 @@
           "waypoints": "MIROY J152 JUNEY/a9000/ho HAR"
         },
         {
+          "airports": ["KCXY", "KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1330,6 +1337,7 @@
           "waypoints": "N040.23.11.020,W078.19.41.497/ho HAR"
         },
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1347,6 +1355,7 @@
           "waypoints": "N039.36.49.735,W078.04.45.919/ho REEES T299 HAR"
         },
         {
+          "airports": ["KCXY"],
           "airlines": {
             "KCXY": [
               {
@@ -1365,6 +1374,7 @@
           "waypoints": "N040.09.01.818,W078.05.31.759/ho HAR"
         },
         {
+          "airports": ["KCXY"],
           "airlines": {
             "KCXY": [
               {
@@ -1383,6 +1393,7 @@
           "waypoints": "BAABS T291 VINNY/ho T291 HAR"
         },
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1401,6 +1412,7 @@
           "waypoints": "HYPER/ho V143 LRP"
         },
         {
+          "airports": ["KCXY"],
           "airlines": {
             "KCXY": [
               {
@@ -1419,6 +1431,7 @@
           "waypoints": "N040.33.12.411,W077.30.15.847/ho HAR"
         },
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1437,6 +1450,7 @@
           "waypoints": "N041.03.30.552,W076.49.52.373/ho RAV"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1454,6 +1468,7 @@
           "waypoints": "N039.40.38.635,W078.04.50.423 SCAPE N040.07.36.234,W077.17.39.219/a9000/ho HAR"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1472,6 +1487,7 @@
           "waypoints": "N039.40.50.321,W077.58.08.735 SCAPE N040.06.47.592,W077.18.54.997/a9000/ho HAR"
         },
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1490,6 +1506,7 @@
           "waypoints": "N040.34.00.065,W077.23.02.794 N040.19.16.118,W076.58.23.814/a9000/ho"
         },
         {
+          "airports": ["KCXY"],
           "airlines": {
             "KCXY": [
               {
@@ -1508,6 +1525,7 @@
           "waypoints": "N040.34.31.595,W077.26.41.806 N040.25.03.424,W077.13.28.731/a9000/ho HAR"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1574,6 +1592,7 @@
     "North/NE": {
       "arrivals": [
         {
+          "airports": ["KCXY"],
           "airlines": {
             "KCXY": [
               {
@@ -1592,6 +1611,7 @@
           "waypoints": "N040.52.36.317,W075.47.24.689 N040.34.42.609,W076.27.22.318/a9000/ho HAR"
         },
         {
+          "airports": ["KCXY"],
           "airlines": {
             "KCXY": [
               {
@@ -1610,6 +1630,7 @@
           "waypoints": "N040.52.36.317,W075.47.24.689/ho HAR"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1629,6 +1650,7 @@
           "waypoints": "KABE-6 ETX DUMMR/ho HWANG BOBSS HAR"
         },
         {
+          "airports": ["KCXY", "KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1668,6 +1690,7 @@
           "waypoints": "LYTEL V93 DUMMR/a9000/ho V162 HWANG/a8000"
         },
         {
+          "airports": ["KCXY"],
           "airlines": {
             "KCXY": [
               {
@@ -1687,6 +1710,7 @@
           "waypoints": "KXLL-25 ETX DUMMR/ho HWANG"
         },
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1705,6 +1729,7 @@
           "waypoints": "N040.55.47.602,W075.52.17.475 N040.27.57.598,W076.07.03.358/ho"
         },
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1723,6 +1748,7 @@
           "waypoints": "N040.57.50.169,W077.08.33.858/ho SEG RAV"
         },
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1761,6 +1787,7 @@
     "East": {
       "arrivals": [
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1779,6 +1806,7 @@
           "waypoints": "HYPER/ho V143 LRP"
         },
         {
+          "airports": ["KLNS"],
           "airlines": {
             "KLNS": [
               {
@@ -1797,6 +1825,7 @@
           "waypoints": "TOWIN BUSKY KATVE/ho HOUTN WEPNA"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -1814,6 +1843,7 @@
           "waypoints": "MXE N039.56.42.163,W076.13.13.048/a10000/ho N039.56.54.701,W076.14.12.539/a9000 DELRO"
         },
         {
+          "airports": ["KMDT"],
           "airlines": {
             "KMDT": [
               {
@@ -2805,7 +2835,6 @@
   },
   "default_scenario": "MDT West Flow",
   "name": "KMDT",
-  "primary_airport": "KMDT",
   "scenarios": {
     "MDT West Flow": {
       "arrival_runways": [

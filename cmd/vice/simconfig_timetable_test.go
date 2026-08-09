@@ -22,9 +22,8 @@ func TestMain(m *testing.M) {
 
 func TestNormalizeTrafficSourceConfig(t *testing.T) {
 	spec := &server.ScenarioSpec{
-		PrimaryAirport: "KMSP",
 		Timetables: []sim.TimetableSummary{
-			{ID: "development-test", Name: "Development Test"},
+			{ID: "development-test", Name: "Development Test", Airport: "KMSP"},
 		},
 		TrafficSources: []sim.TrafficSource{sim.TrafficSourceScenario, sim.TrafficSourceTimetable},
 		LaunchConfig: sim.LaunchConfig{
@@ -39,6 +38,9 @@ func TestNormalizeTrafficSourceConfig(t *testing.T) {
 
 	if got, want := spec.LaunchConfig.TimetableID, "development-test"; got != want {
 		t.Fatalf("TimetableID = %q, want %q", got, want)
+	}
+	if got, want := spec.LaunchConfig.TimetableAirport, "KMSP"; got != want {
+		t.Fatalf("TimetableAirport = %q, want %q", got, want)
 	}
 	if got, want := spec.LaunchConfig.TimetableStartMinute, 1439; got != want {
 		t.Fatalf("TimetableStartMinute = %d, want %d", got, want)
@@ -68,6 +70,9 @@ func TestNormalizeTrafficSourceConfigWithoutTimetables(t *testing.T) {
 	}
 	if spec.LaunchConfig.TimetableID != "" {
 		t.Fatalf("TimetableID = %q, want empty", spec.LaunchConfig.TimetableID)
+	}
+	if spec.LaunchConfig.TimetableAirport != "" {
+		t.Fatalf("TimetableAirport = %q, want empty", spec.LaunchConfig.TimetableAirport)
 	}
 }
 

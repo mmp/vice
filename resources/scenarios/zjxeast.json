@@ -196,6 +196,7 @@
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
           "initial_speed": 300,
+          "airports": ["KJAX"],
           "airlines": {
             "KJAX": [
               {
@@ -243,6 +244,7 @@
           "initial_altitude": 36000,
           "assigned_altitude": 36000,
           "initial_speed": 300,
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -538,6 +540,7 @@
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
           "initial_speed": 300,
+          "airports": ["KDAB"],
           "airlines": {
             "KDAB": [
               {
@@ -585,6 +588,7 @@
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
           "initial_speed": 300,
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -627,6 +631,7 @@
           "initial_controller": "66",
           "initial_altitude": 34000,
           "initial_speed": 300,
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -971,11 +976,12 @@
       "arrivals": [
         {
           "waypoints": "FISHO/ho Q75 TEUFL KYYUU WNWUD/d270 SSPAZ/delete",
-          "star": "LUBBR3",
+          "star": "LUBBR4",
           "route": "/. LUBBR3",
           "initial_controller": "66",
           "initial_altitude": 34000,
           "initial_speed": 300,
+          "airports": ["KSRQ"],
           "airlines": {
             "KSRQ": [
               {
@@ -1023,6 +1029,7 @@
           "initial_altitude": 31000,
           "assigned_altitude": 31000,
           "initial_speed": 300,
+          "airports": ["KCHS"],
           "airlines": {
             "KCHS": [
               {

@@ -2105,6 +2105,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KBKL", "KCAK", "KCGF", "KCLE"],
           "airlines": {
             "KBKL": [
               {
@@ -2217,6 +2218,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -2270,6 +2272,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -2325,6 +2328,7 @@
           "speed_restriction": 210,
           "scratchpad": "I6L",
           "expect_approach": "I6L",
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -2380,6 +2384,7 @@
           "speed_restriction": 210,
           "scratchpad": "I4R",
           "expect_approach": "I4R",
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -2434,6 +2439,7 @@
           "assigned_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMFD"],
           "airlines": {
             "KMFD": [
               {
@@ -2466,6 +2472,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCAK"],
           "airlines": {
             "KCAK": [
               {
@@ -2513,12 +2520,13 @@
               "6R": "ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 RUHSH/a6000+/s210"
             }
           },
-          "star": "ROKNN3",
+          "star": "ROKNN4",
           "initial_controller": "C66",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KBKL", "KCGF", "KCLE"],
           "airlines": {
             "KBKL": [
               {
@@ -2615,12 +2623,13 @@
       "arrivals": [
         {
           "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 KWENE/a6000+/s210 DAYZD/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
-          "star": "ROKNN3",
+          "star": "ROKNN4",
           "initial_controller": "C66",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -2681,12 +2690,13 @@
       "arrivals": [
         {
           "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 CLAPT/a7000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799",
-          "star": "ROKNN3",
+          "star": "ROKNN4",
           "initial_controller": "C66",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -2748,13 +2758,14 @@
         {
           "waypoints": "DEVOH/a8000-14000/ho KINCS/a7000-9000 KWENE/a6000+/s210 DAYZD/a4000 BETLL/a2900",
           "cruise_altitude": 33000,
-          "star": "ROKNN3",
+          "star": "ROKNN4",
           "initial_controller": "2A",
           "initial_altitude": 9000,
           "initial_speed": 250,
           "speed_restriction": 210,
           "scratchpad": "I6L",
           "expect_approach": "I6L",
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -2816,13 +2827,14 @@
         {
           "waypoints": "SEPLN/a8000-10000/ho DAHOO/a7000/s210/h58",
           "cruise_altitude": 33000,
-          "star": "ROKNN3",
+          "star": "ROKNN4",
           "initial_controller": "2A",
           "initial_altitude": 9000,
           "initial_speed": 250,
           "speed_restriction": 210,
           "scratchpad": "I4R",
           "expect_approach": "I4R",
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -2905,6 +2917,7 @@
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KBKL", "KCGF", "KCLE"],
           "airlines": {
             "KBKL": [
               {
@@ -3012,6 +3025,7 @@
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -3091,6 +3105,7 @@
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -3172,6 +3187,7 @@
           "speed_restriction": 210,
           "scratchpad": "I6L",
           "expect_approach": "I6L",
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -3253,6 +3269,7 @@
           "speed_restriction": 210,
           "scratchpad": "I4R",
           "expect_approach": "I4R",
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -3348,6 +3365,7 @@
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KBKL", "KCGF", "KCLE"],
           "airlines": {
             "KBKL": [
               {
@@ -3438,6 +3456,7 @@
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -3500,6 +3519,7 @@
           "initial_speed": 280,
           "speed_restriction": 280,
           "expect_approach": null,
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -3564,6 +3584,7 @@
           "speed_restriction": 210,
           "scratchpad": "I6L",
           "expect_approach": "I6L",
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -3628,6 +3649,7 @@
           "speed_restriction": 210,
           "scratchpad": "I4R",
           "expect_approach": "I4R",
+          "airports": ["KCLE"],
           "airlines": {
             "KCLE": [
               {
@@ -3697,6 +3719,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCAK"],
           "airlines": {
             "KCAK": [
               {
@@ -3731,7 +3754,6 @@
     "_ROLLN2_24R_FINAL": "N41.34.00.993,W81.28.26.780"
   },
   "name": "KCLE",
-  "primary_airport": "KCLE",
   "scenarios": {
     "KCLE North": {
       "airspace": {

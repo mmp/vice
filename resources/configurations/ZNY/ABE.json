@@ -17,6 +17,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KABE" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

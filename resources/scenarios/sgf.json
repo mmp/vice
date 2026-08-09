@@ -418,6 +418,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGF"],
           "airlines": {
             "KSGF": [
               {
@@ -439,6 +440,7 @@
           "initial_altitude": 4000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KLBO"],
           "airlines": {
             "KLBO": [
               {
@@ -460,6 +462,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGF"],
           "airlines": {
             "KSGF": [
               {
@@ -485,6 +488,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGF"],
           "airlines": {
             "KSGF": [
               {
@@ -506,6 +510,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGF"],
           "airlines": {
             "KSGF": [
               {
@@ -523,6 +528,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGF"],
           "airlines": {
             "KSGF": [
               {
@@ -548,6 +554,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGF"],
           "airlines": {
             "KSGF": [
               {
@@ -569,6 +576,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSGF"],
           "airlines": {
             "KSGF": [
               {
@@ -595,7 +603,6 @@
     "_LBO36": "N037.38.27.170,W092.39.09.426"
   },
   "name": "KSGF",
-  "primary_airport": "KSGF",
   "scenarios": {
     "Land South": {
       "arrival_runways": [

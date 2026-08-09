@@ -420,6 +420,7 @@
           "assigned_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KFAT"],
           "airlines": {
             "KFAT": [
               {
@@ -495,6 +496,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KFAT"],
           "airlines": {
             "KFAT": [
               {
@@ -523,6 +525,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KFAT"],
           "airlines": {
             "KFAT": [
               {
@@ -552,6 +555,7 @@
           "assigned_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KFAT"],
           "airlines": {
             "KFAT": [
               {
@@ -588,6 +592,7 @@
           "assigned_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KFAT"],
           "airlines": {
             "KFAT": [
               {
@@ -624,6 +629,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KFAT"],
           "airlines": {
             "KFAT": [
               {
@@ -659,6 +665,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KFAT"],
           "airlines": {
             "KFAT": [
               {
@@ -687,7 +694,6 @@
   },
   "default_scenario": "FAT 29",
   "name": "FAT TRACON",
-  "primary_airport": "KFAT",
   "scenarios": {
     "FAT 29": {
       "arrival_runways": [

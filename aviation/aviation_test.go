@@ -422,9 +422,8 @@ func TestDeriveSTAR(t *testing.T) {
 }
 
 // An arrival that names none of the airports it serves takes them from the FAA
-// CIFP's entry for its STAR, and failing that serves every airport in the
-// scenario.
-func TestArrivalServedAirports(t *testing.T) {
+// CIFP's entry for its STAR, and must name them itself if that isn't an option.
+func TestArrivalAirports(t *testing.T) {
 	fixes := []string{"MIPP", "LIZZI", "BEUTY", "APPLE", "PROUD"}
 	var wps WaypointArray
 	loc := testLocator{}
@@ -457,6 +456,7 @@ func TestArrivalServedAirports(t *testing.T) {
 		name string
 		arr  Arrival
 		want []string
+		err  string
 	}{
 		{
 			name: "takes the airports from the STAR",
@@ -469,20 +469,46 @@ func TestArrivalServedAirports(t *testing.T) {
 			want: []string{"KTST"},
 		},
 		{
-			name: "airlines imply the airports too",
-			arr: Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
-				Airlines: map[string][]ArrivalAirline{"KNOS": nil}},
-			want: []string{"KNOS"},
+			name: "airports given are sorted",
+			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []string{"KTST", "KNOS"}},
+			want: []string{"KNOS", "KTST"},
 		},
 		{
-			name: "serves the whole scenario without a STAR to go on",
+			name: "airlines don't imply the airports",
+			arr: Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
+				Airlines: map[string][]ArrivalAirline{"KNOS": nil}},
+			want: []string{"KNOS", "KTST"},
+		},
+		{
+			name: "airlines into an airport the arrival doesn't serve",
+			arr: Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []string{"KTST"},
+				Airlines: map[string][]ArrivalAirline{"KNOS": nil}},
+			err: `"airlines" gives airlines into "KNOS"`,
+		},
+		{
+			name: "an airport the scenario hasn't got",
+			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []string{"KNIL"}},
+			err:  `arrival airport "KNIL" unknown`,
+		},
+		{
+			name: "must name the airports without a STAR to go on",
 			arr:  Arrival{FlightStripDisplayRoute: "MIPP LIZZI", Waypoints: wps},
-			want: []string{"KNOS", "KOTH", "KTST"},
+			err:  `must name the airports the arrival serves`,
 		},
 		{
 			name: "a STAR the CIFP hasn't got is no help either",
 			arr:  Arrival{STAR: "NOPE1", Waypoints: wps},
-			want: []string{"KNOS", "KOTH", "KTST"},
+			err:  `STAR "NOPE1" isn't charted`,
+		},
+		{
+			name: "spelling out the waypoints doesn't excuse an uncharted STAR",
+			arr:  Arrival{STAR: "MIPP4", Waypoints: wps, Airports: []string{"KOTH"}},
+			err:  `"star" "MIPP4" isn't charted for any of the airports the arrival serves: KOTH`,
+		},
+		{
+			name: "one of the airports having the STAR is enough",
+			arr:  Arrival{STAR: "MIPP4", Waypoints: wps, Airports: []string{"KOTH", "KTST"}},
+			want: []string{"KOTH", "KTST"},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -494,8 +520,12 @@ func TestArrivalServedAirports(t *testing.T) {
 			arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
 				func(string) bool { return true }, &e)
 
-			if got := arr.ServedAirports(); !slices.Equal(got, tc.want) {
-				t.Errorf("ServedAirports = %v, want %v (errors: %s)", got, tc.want, e.String())
+			if tc.err != "" {
+				if !strings.Contains(e.String(), tc.err) {
+					t.Errorf("expected an error matching %q; got: %s", tc.err, e.String())
+				}
+			} else if !slices.Equal(arr.Airports, tc.want) {
+				t.Errorf("Airports = %v, want %v (errors: %s)", arr.Airports, tc.want, e.String())
 			}
 		})
 	}

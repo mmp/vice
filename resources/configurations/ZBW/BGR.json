@@ -63,6 +63,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KBGR" },
       "coordination": [
         {
           "name": "BHB",

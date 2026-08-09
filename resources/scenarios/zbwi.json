@@ -140,6 +140,7 @@
           "initial_controller": "17",
           "initial_altitude": 38000,
           "initial_speed": 300,
+          "airports": ["KJFK"],
           "airlines": {
             "KJFK": [
               {
@@ -182,6 +183,7 @@
           "initial_controller": "19",
           "initial_altitude": 22000,
           "initial_speed": 300,
+          "airports": ["KJFK"],
           "airlines": {
             "KJFK": [
               {

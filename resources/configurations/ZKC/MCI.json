@@ -67,6 +67,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KMCI" } },
     "configurations": {
       "KMC": {
         "inbound_assignments": {

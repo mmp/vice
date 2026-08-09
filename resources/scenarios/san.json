@@ -3078,6 +3078,7 @@
           "cleared_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -3214,6 +3215,7 @@
           "cleared_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -3260,6 +3262,7 @@
           "cleared_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -3396,6 +3399,7 @@
           "cleared_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -3440,6 +3444,7 @@
           "initial_altitude": [10000, 12000, 14000, 16000],
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KSEE": [
               {
@@ -3495,6 +3500,7 @@
           "cleared_altitude": 9000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KSEE": [
               {
@@ -3550,6 +3556,7 @@
           "assigned_altitude": 12000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KSEE": [
               {
@@ -3608,6 +3615,7 @@
           "initial_altitude": [10000, 12000, 14000, 16000],
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KSEE": [
               {
@@ -3663,6 +3671,7 @@
           "cleared_altitude": 9000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KSEE": [
               {
@@ -3718,6 +3727,7 @@
           "assigned_altitude": 12000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KSEE": [
               {
@@ -3779,6 +3789,7 @@
           "initial_speed": 250,
           "expect_approach": "I4",
           "secondary_scratchpad": "I",
+          "airports": ["KCRQ"],
           "airlines": {
             "KCRQ": [
               {
@@ -3845,6 +3856,7 @@
           "initial_speed": 250,
           "expect_approach": "RZ4",
           "secondary_scratchpad": "GZ",
+          "airports": ["KCRQ"],
           "airlines": {
             "KCRQ": [
               {
@@ -3874,6 +3886,7 @@
           "initial_altitude": 25000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -4064,6 +4077,7 @@
           "initial_altitude": 25000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -4276,6 +4290,7 @@
           "initial_altitude": 25000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -4466,6 +4481,7 @@
           "initial_altitude": 22000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -4679,6 +4695,7 @@
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KNZY", "KSDM"],
           "airlines": {
             "KSDM": [
               {
@@ -4738,6 +4755,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -4754,6 +4772,7 @@
           "initial_altitude": 23000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -4808,6 +4827,7 @@
           "initial_altitude": 11000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -4847,6 +4867,7 @@
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -4891,6 +4912,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -4939,6 +4961,7 @@
           "initial_altitude": 13000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -4989,6 +5012,7 @@
           "initial_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -5063,6 +5087,7 @@
           "initial_altitude": [9000, 11000],
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -5107,6 +5132,7 @@
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -5151,6 +5177,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMYF", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -5199,6 +5226,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMYF", "KSDM", "KSEE"],
           "airlines": {
             "KMYF": [
               {
@@ -5275,6 +5303,7 @@
           "initial_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -5304,6 +5333,7 @@
           "initial_altitude": 7000,
           "initial_speed": 180,
           "expect_approach": null,
+          "airports": ["KCRQ"],
           "airlines": {
             "KCRQ": [
               {
@@ -5340,6 +5370,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCRQ"],
           "airlines": {
             "KCRQ": [
               {
@@ -5432,6 +5463,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -5539,6 +5571,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -5620,6 +5653,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -5700,6 +5734,7 @@
           "initial_altitude": 10000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KMYF"],
           "airlines": {
             "KMYF": [
               {
@@ -5758,6 +5793,7 @@
           "initial_altitude": 24000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -5847,6 +5883,7 @@
           "initial_altitude": 24000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -5932,6 +5969,7 @@
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KNZY", "KSDM"],
           "airlines": {
             "KSDM": [
               {
@@ -5991,6 +6029,7 @@
           "assigned_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KNKX"],
           "airlines": {
             "KNKX": [
               {
@@ -6026,6 +6065,7 @@
           "assigned_altitude": 16000,
           "initial_speed": 500,
           "expect_approach": null,
+          "airports": ["KNKX"],
           "airlines": {
             "KNKX": [
               {
@@ -6067,6 +6107,7 @@
           "initial_altitude": 5500,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KNZY"],
           "airlines": {
             "KNZY": [
               {
@@ -6092,6 +6133,7 @@
           "initial_speed": 250,
           "secondary_scratchpad": "Y",
           "expect_approach": "RY7",
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -6120,6 +6162,7 @@
           "initial_speed": 270,
           "secondary_scratchpad": "Y",
           "expect_approach": "RY7",
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -6284,6 +6327,7 @@
           "initial_speed": 270,
           "secondary_scratchpad": "L",
           "expect_approach": "L27",
+          "airports": ["KSAN"],
           "airlines": {
             "KSAN": [
               {
@@ -6451,6 +6495,7 @@
           "initial_speed": 250,
           "secondary_scratchpad": "I8R",
           "expect_approach": "I8R",
+          "airports": ["KMYF"],
           "airlines": {
             "KMYF": [
               {
@@ -6495,6 +6540,7 @@
           "initial_altitude": [7000, 9000, 11000, 13000, 15000],
           "initial_speed": 250,
           "expect_approach": "VORA6",
+          "airports": ["KSDM"],
           "airlines": {
             "KSDM": [
               {
@@ -6548,6 +6594,7 @@
           "initial_speed": 250,
           "secondary_scratchpad": "I8R",
           "expect_approach": "I8R",
+          "airports": ["KMYF"],
           "airlines": {
             "KMYF": [
               {
@@ -6593,6 +6640,7 @@
           "initial_speed": 250,
           "secondary_scratchpad": "LOC",
           "expect_approach": "LOCD",
+          "airports": ["KSEE"],
           "airlines": {
             "KSEE": [
               {
@@ -7907,7 +7955,6 @@
   ],
   "default_scenario": "San Diego - SAN West",
   "name": "San Diego Area",
-  "primary_airport": "KSAN",
   "scenarios": {
     "San Diego - SAN West": {
       "airspace": {

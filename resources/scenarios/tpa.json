@@ -1805,6 +1805,7 @@
     "BLFRG3": {
       "arrivals": [
         {
+          "airports": ["KPIE", "KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -1870,6 +1871,7 @@
     "DADES2": {
       "arrivals": [
         {
+          "airports": ["KPIE", "KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -1951,6 +1953,7 @@
     "MAATY6": {
       "arrivals": [
         {
+          "airports": ["KLAL", "KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2043,6 +2046,7 @@
     "RAYZZ3": {
       "arrivals": [
         {
+          "airports": ["KLAL", "KPIE", "KSRQ", "KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2132,6 +2136,7 @@
     "BANGZ3": {
       "arrivals": [
         {
+          "airports": ["KPIE", "KSRQ"],
           "airlines": {
             "KSRQ": [
               {
@@ -2170,7 +2175,7 @@
           "initial_speed": 280,
           "speed_restriction": 250,
           "initial_controller": "J30",
-          "star": "BANGZ3",
+          "star": "BANGZ2",
           "runway_waypoints": {
             "KSRQ": {
               "32": "BANGZ KIDLE ALROE MAHAR FIVDO MURDO/flyover/a3000/h228",
@@ -2188,6 +2193,7 @@
     "LUBBR4": {
       "arrivals": [
         {
+          "airports": ["KSRQ"],
           "airlines": {
             "KSRQ": [
               {
@@ -2257,6 +2263,7 @@
     "MAATY6.SO.Finals": {
       "arrivals": [
         {
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2319,6 +2326,7 @@
     "DADES2.SO.Finals": {
       "arrivals": [
         {
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2373,6 +2381,7 @@
     "BLFRG3.SO.Finals": {
       "arrivals": [
         {
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2407,6 +2416,7 @@
     "MAATY6.NO.Finals": {
       "arrivals": [
         {
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2469,6 +2479,7 @@
     "DADES2.NO.Finals": {
       "arrivals": [
         {
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2523,6 +2534,7 @@
     "BLFRG3.NO.Finals": {
       "arrivals": [
         {
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2558,7 +2570,6 @@
   "default_scenario": "Multiplayer (S OPS)",
   "magnetic_adjustment": -0.75,
   "name": "KTPA",
-  "primary_airport": "KTPA",
   "scenarios": {
     "Multiplayer (N OPS)": {
       "airspace": {

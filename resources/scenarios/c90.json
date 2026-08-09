@@ -6799,6 +6799,7 @@
     "BENKY6": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -7234,6 +7235,7 @@
     "TRTLL6": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -7290,6 +7292,7 @@
     "BENKY6_FINALWW": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -7348,6 +7351,7 @@
           "initial_speed": 250,
           "speed_restriction": 210,
           "star": "BENKY6",
+          "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "WYNDE3"],
           "scratchpad": "I8C",
           "waypoints": "PETAH JORJO/ho MONKZ TONIE/h093"
         }
@@ -7356,6 +7360,7 @@
     "ENDEE6": {
       "arrivals": [
         {
+          "airports": ["KMDW"],
           "airlines": {
             "KMDW": [
               {
@@ -7403,7 +7408,7 @@
           "initial_altitude": 10000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "ENDEE6.OHHMY",
+          "star": "ENDEE8",
           "runway_waypoints": {
             "KMDW": {
               "4R": "STKNY/a6000 ALQUE/a6000/h047",
@@ -7415,6 +7420,7 @@
           "waypoints": "JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
         },
         {
+          "airports": ["KMDW"],
           "airlines": {
             "KMDW": [
               {
@@ -7462,7 +7468,7 @@
           "initial_altitude": 10000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "ENDEE6.JALAP",
+          "star": "ENDEE8",
           "runway_waypoints": {
             "KMDW": {
               "4R": "STKNY/a6000 ALQUE/a6000/h047",
@@ -7474,6 +7480,7 @@
           "waypoints": "JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
         },
         {
+          "airports": ["KMDW"],
           "airlines": {
             "KMDW": [
               {
@@ -7521,7 +7528,7 @@
           "initial_altitude": 10000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "ENDEE6.IRK",
+          "star": "ENDEE8",
           "runway_waypoints": {
             "KMDW": {
               "4R": "STKNY/a6000 ALQUE/a6000/h047",
@@ -7533,6 +7540,7 @@
           "waypoints": "JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
         },
         {
+          "airports": ["KMDW"],
           "airlines": {
             "KMDW": [
               {
@@ -7580,7 +7588,7 @@
           "initial_altitude": 10000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "ENDEE6.MAGOO",
+          "star": "ENDEE8",
           "runway_waypoints": {
             "KMDW": {
               "4R": "STKNY/a6000 ALQUE/a6000/h047",
@@ -7592,6 +7600,7 @@
           "waypoints": "JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
         },
         {
+          "airports": ["KMDW"],
           "airlines": {
             "KMDW": [
               {
@@ -7639,7 +7648,7 @@
           "initial_altitude": 23000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "ENDEE6.PHEEB",
+          "star": "ENDEE8",
           "runway_waypoints": {
             "KMDW": {
               "4R": "STKNY/a6000 ALQUE/a6000/h047",
@@ -7655,6 +7664,7 @@
     "ERNNY8": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -7763,6 +7773,7 @@
     "FINALW_WN": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -7966,6 +7977,7 @@
           "initial_speed": 250,
           "speed_restriction": 250,
           "star": "ERNNY8",
+          "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
           "scratchpad": "I7C",
           "waypoints": "ERNNY PAPPI/h160/ho"
         }
@@ -7974,6 +7986,7 @@
     "FISSK6/PANGG5": {
       "arrivals": [
         {
+          "airports": ["KMDW"],
           "airlines": {
             "KMDW": [
               {
@@ -8021,7 +8034,7 @@
           "initial_altitude": 18000,
           "initial_controller": "21N",
           "initial_speed": 250,
-          "star": "FISSK6",
+          "star": "FISSK7",
           "runway_waypoints": {
             "KMDW": {
               "4R": "HALIE/a6000 OLCYK/a4000+/h278",
@@ -8034,6 +8047,7 @@
           "waypoints": "GOTNE/a18000- FISSK VEECK OZZEY AZUMO/ho HALIE/a6000"
         },
         {
+          "airports": ["KMDW"],
           "airlines": {
             "KMDW": [
               {
@@ -8073,7 +8087,7 @@
           "initial_altitude": 13000,
           "initial_controller": "21N",
           "initial_speed": 250,
-          "star": "PANGG5",
+          "star": "PANGG7",
           "runway_waypoints": {
             "KMDW": {
               "4R": "HALIE/a6000 OLCYK/a4000+/h278",
@@ -8090,6 +8104,7 @@
     "FYTTE7": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -8682,6 +8697,7 @@
     "FYTTE7_FINALNW": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -8744,6 +8760,7 @@
           "initial_speed": 250,
           "speed_restriction": 220,
           "star": "FYTTE7",
+          "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "JVL1", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
           "scratchpad": "I7R",
           "waypoints": "SOOLU KURKK/ho VULCN HIMGO/h093"
         }
@@ -8752,6 +8769,7 @@
     "FYTTE7_FINALNE": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -8814,6 +8832,7 @@
           "initial_speed": 250,
           "speed_restriction": 220,
           "star": "FYTTE7",
+          "star_feeds": ["ERNNY8", "ESSPO5", "FYTTE7", "JVL1", "MADII7", "VEECK5", "WYNDE3"],
           "scratchpad": "I9L",
           "waypoints": "COGSS MADII/h200/ho"
         }
@@ -8822,6 +8841,7 @@
     "SHAIN2": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -9237,6 +9257,7 @@
     "VEECK5": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -9912,6 +9933,7 @@
     "VEECK5_FINALWW": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -9980,6 +10002,7 @@
     "WATSN4": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -10363,6 +10386,7 @@
     "WYNDE2": {
       "arrivals": [
         {
+          "airports": ["KORD"],
           "airlines": {
             "KORD": [
               {
@@ -11096,7 +11120,7 @@
           "initial_altitude": 20000,
           "initial_controller": "C81",
           "initial_speed": 280,
-          "star": "WYNDE2",
+          "star": "WYNDE3",
           "runway_waypoints": {
             "KORD": {
               "9L": "ERNNY PAPPI TUBEZ VULCN KURKK BAMBB/h273",
@@ -11121,6 +11145,7 @@
     "FIYER": {
       "arrivals": [
         {
+          "airports": ["KARR", "KDPA", "KGYY", "KLOT", "KPWK"],
           "airlines": {
             "KPWK": [
               {
@@ -11316,7 +11341,7 @@
           "initial_altitude": 4000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "FIYER",
+          "route": "FIYER",
           "runway_waypoints": {
             "KPWK": {
               "16": "OBK/h254"
@@ -11330,6 +11355,7 @@
     "KRENA": {
       "arrivals": [
         {
+          "airports": ["KARR", "KDPA", "KGYY", "KLOT", "KPWK"],
           "airlines": {
             "KPWK": [
               {
@@ -11525,7 +11551,7 @@
           "initial_altitude": 5000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "KRENA",
+          "route": "KRENA",
           "runway_waypoints": {
             "KPWK": {
               "16": "KRENA/h114"
@@ -11539,6 +11565,7 @@
     "PLANO": {
       "arrivals": [
         {
+          "airports": ["KARR", "KDPA", "KGYY", "KLOT", "KPWK"],
           "airlines": {
             "KPWK": [
               {
@@ -11734,7 +11761,7 @@
           "initial_altitude": 6000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "KRENA",
+          "route": "KRENA",
           "runway_waypoints": {
             "KPWK": {
               "16": "DPA/h360"
@@ -11761,6 +11788,7 @@
     "MOTIF": {
       "arrivals": [
         {
+          "airports": ["KARR", "KDPA", "KGYY", "KLOT", "KPWK"],
           "airlines": {
             "KPWK": [
               {
@@ -11956,7 +11984,7 @@
           "initial_altitude": 5000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "MOTIF",
+          "route": "MOTIF",
           "runway_waypoints": {
             "KLOT": {
               "2": "JOT/h027",
@@ -11969,6 +11997,7 @@
           "waypoints": "N040.59.40.911,W088.40.32.235/ho MOTIF JOT"
         },
         {
+          "airports": ["KGYY"],
           "airlines": {
             "KGYY": [
               {
@@ -12012,7 +12041,7 @@
           "initial_altitude": 5000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "MOTIF",
+          "route": "MOTIF",
           "runway_waypoints": {
             "KLOT": {
               "2": "JOT/h027",
@@ -12029,6 +12058,7 @@
     "GSH9": {
       "arrivals": [
         {
+          "airports": ["KGYY"],
           "airlines": {
             "KGYY": [
               {
@@ -12072,7 +12102,7 @@
           "initial_altitude": 11000,
           "initial_controller": "21N",
           "initial_speed": 250,
-          "star": "GSH9",
+          "route": "GSH9",
           "speed_restriction": 250,
           "waypoints": "FWA BAGEL GSH MEGGZ AWSUM IROCK/ho HALIE/a6000 CGT"
         }
@@ -12081,6 +12111,7 @@
     "LUCIT2": {
       "arrivals": [
         {
+          "airports": ["KGYY"],
           "airlines": {
             "KGYY": [
               {
@@ -12124,11 +12155,12 @@
           "initial_altitude": 11000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "LUCIT2",
+          "star": "LUCIT3",
           "speed_restriction": 250,
           "waypoints": "EDENS HERWK/a10000/ho UJEAN/a10000 LUCIT/a4000 HTDOG/a4000"
         },
         {
+          "airports": ["KGYY"],
           "airlines": {
             "KGYY": [
               {
@@ -12172,11 +12204,12 @@
           "initial_altitude": 24000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "LUCIT2",
+          "star": "LUCIT3",
           "speed_restriction": 250,
           "waypoints": "SOHOW HAAYQ/a24000 WUNTZ COOKS/a17000 DABOZ/a17000 USTIS/a15000 ROEPR/a11000-13000/ho WYDIK/a8000-11000 LUCIT/a4000 HTDOG/a4000/h034"
         },
         {
+          "airports": ["KGYY"],
           "airlines": {
             "KGYY": [
               {
@@ -12220,11 +12253,12 @@
           "initial_altitude": 24000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "LUCIT2",
+          "star": "LUCIT3",
           "speed_restriction": 250,
           "waypoints": "SOHOW HAAYQ/a24000 WUNTZ COOKS/a17000 DABOZ/a17000 USTIS/a15000 ROEPR/a11000-13000/ho WYDIK/a8000-11000 LUCIT/a4000 HTDOG/a4000/h034"
         },
         {
+          "airports": ["KGYY"],
           "airlines": {
             "KGYY": [
               {
@@ -12268,7 +12302,7 @@
           "initial_altitude": 24000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "star": "LUCIT2",
+          "star": "LUCIT3",
           "speed_restriction": 250,
           "waypoints": "MACES KKOPA/a24000 HLMIT/a12000 POSOC/a11000/ho GRIDZ/a8000-10000 LUCIT/a4000 HTDOG/a4000/h034"
         }
@@ -12304,7 +12338,6 @@
     "_PWK_16": "N042.07.23.353,W087.54.24.147"
   },
   "name": "KORD",
-  "primary_airport": "KORD",
   "scenarios": {
     "KORD West": {
       "airspace": {

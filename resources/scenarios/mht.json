@@ -491,6 +491,7 @@
           "initial_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMHT", "KPSM"],
           "airlines": {
             "KMHT": [
               {
@@ -561,6 +562,7 @@
           "initial_altitude": 7000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMHT", "KPSM"],
           "airlines": {
             "KMHT": [
               {
@@ -631,6 +633,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KMHT", "KPSM"],
           "airlines": {
             "KMHT": [
               {
@@ -697,6 +700,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KMHT"],
           "airlines": {
             "KMHT": [
               {
@@ -775,7 +779,6 @@
   },
   "default_scenario": "KMHT South",
   "name": "Manchester Area",
-  "primary_airport": "KMHT",
   "scenarios": {
     "KMHT South": {
       "arrival_runways": [

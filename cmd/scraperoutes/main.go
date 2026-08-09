@@ -13,7 +13,7 @@
 // fetched most-flown first, and refetched after they go stale (60 days, by
 // default).
 //
-//	go run ./cmd/scraperoutes [-facility NCT] [-limit 25] [-dryrun]
+//	go run ./cmd/scraperoutes [-cell N40W074] [-limit 25] [-dryrun]
 package main
 
 import (
@@ -35,13 +35,11 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/util"
 )
 
 func main() {
-	facility := flag.String("facility", "", "only process pairs from this `facility`'s flight data")
+	cell := flag.String("cell", "", "only process pairs from this flight data `cell`, e.g. N40W074")
 	limit := flag.Int("limit", 25, "maximum `number` of city pairs to fetch routes for in this run")
 	minCount := flag.Int("mincount", 100, "skip pairs the flight data records fewer than `count` flights for")
 	delay := flag.Duration("delay", 10*time.Second, "`wait` between web requests")
@@ -52,16 +50,8 @@ func main() {
 
 	av.InitDB()
 
-	var e util.ErrorLogger
-	lg := log.New(false, "warn", "")
-	scenarioAirports := gatherScenarioAirports(&e, lg)
-	if e.HaveErrors() {
-		e.PrintErrors(lg)
-		os.Exit(1)
-	}
-
 	sets := readRouteSets(*dbPath)
-	if consolidateSets(sets, scenarioAirports) {
+	if consolidateSets(sets) {
 		fmt.Printf("Consolidated previously recorded routes\n")
 		if !*dryRun {
 			writeRouteSets(*dbPath, sets)
@@ -69,7 +59,7 @@ func main() {
 	}
 	stale := time.Now().AddDate(0, 0, -*recheck).Format("2006-01-02")
 
-	pairs := gatherPairs(*facility, scenarioAirports)
+	pairs := gatherPairs(*cell)
 	pairs = util.FilterSlice(pairs, func(p pair) bool {
 		if p.count < *minCount {
 			return false
@@ -92,8 +82,7 @@ func main() {
 		}
 		fetched++
 
-		routes, err := fetchRoutes(client, pr.from, pr.to,
-			scenarioAirports[pr.from], scenarioAirports[pr.to])
+		routes, err := fetchRoutes(client, pr.from, pr.to, domestic(pr.from), domestic(pr.to))
 		if err != nil {
 			fmt.Printf("%s->%s: %v\n", pr.from, pr.to, err)
 			continue
@@ -157,10 +146,10 @@ type pair struct {
 func (p pair) key() string { return p.from + "-" + p.to }
 
 // gatherPairs walks the flight data and returns the directed city pairs that
-// have no FAA route and touch an airport some scenario flies, most flights
-// first. An airport shared by facilities appears in each of their files with
-// the same flights, so a pair's count is the largest any one facility gives.
-func gatherPairs(onlyFacility string, scenarioAirports map[string]bool) []pair {
+// have no FAA route, most flights first. A pair is recorded in the cell of the
+// airport it departs and again in the cell of the one it lands at, so its count
+// is the larger of what the two give.
+func gatherPairs(onlyCell string) []pair {
 	resources := util.GetResourcesFS()
 	files, err := fs.Glob(resources, av.FlightDataDirectory+"/*"+av.FlightDataExtension)
 	if err != nil {
@@ -171,16 +160,12 @@ func gatherPairs(onlyFacility string, scenarioAirports map[string]bool) []pair {
 	counts := make(map[string]int)
 	endpoints := make(map[string][2]string)
 	for _, file := range files {
-		facility := strings.TrimSuffix(path.Base(file), av.FlightDataExtension)
-		if onlyFacility != "" && !strings.EqualFold(facility, onlyFacility) {
-			continue
-		}
-		if facility == "AAC" {
-			// The Academy's airports are made up; there is nothing to look up.
+		cell := strings.TrimSuffix(path.Base(file), av.FlightDataExtension)
+		if onlyCell != "" && !strings.EqualFold(cell, onlyCell) {
 			continue
 		}
 
-		data, err := av.ReadFlightData(resources, facility)
+		data, err := av.ReadFlightData(resources, cell)
 		if err != nil || data == nil {
 			continue
 		}
@@ -208,7 +193,7 @@ func gatherPairs(onlyFacility string, scenarioAirports map[string]bool) []pair {
 	var pairs []pair
 	for key, n := range counts {
 		from, to := endpoints[key][0], endpoints[key][1]
-		if !scenarioAirports[from] && !scenarioAirports[to] {
+		if madeUpAirport(from) || madeUpAirport(to) {
 			continue
 		}
 		if _, ok := av.DB.Airports[from]; !ok {
@@ -232,25 +217,18 @@ func gatherPairs(onlyFacility string, scenarioAirports map[string]bool) []pair {
 	return pairs
 }
 
-// gatherScenarioAirports returns the set of airports any scenario flies. The
-// scenario group type isn't exported, so the groups are loaded and picked
-// over here rather than passed around.
-func gatherScenarioAirports(e *util.ErrorLogger, lg *log.Logger) map[string]bool {
-	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups("", "", "", e, lg)
-	if e.HaveErrors() {
-		return nil
-	}
-
-	airports := make(map[string]bool)
-	for _, groups := range scenarioGroups {
-		for _, sg := range groups {
-			for icao := range sg.Airports {
-				airports[icao] = true
-			}
-		}
-	}
-	return airports
+// madeUpAirport reports whether an airport is one of the fictional ones the FAA
+// Academy scenarios fly. They stand on a real airport's traffic, which is why
+// they turn up in the flight data at all, but no real route was ever filed to
+// one and the Academy is not to be flown on real-world routes regardless.
+func madeUpAirport(icao string) bool {
+	_, ok := av.FlightDataSubstitutes[icao]
+	return ok
 }
+
+// domestic reports whether an airport is one the FAA controls, which is what
+// decides the end of an oceanic route worth keeping.
+func domestic(icao string) bool { return av.DB.Airports[icao].FAAControlled() }
 
 ///////////////////////////////////////////////////////////////////////////
 // FlightAware's IFR route analyzer
@@ -389,7 +367,7 @@ func cullRareRoutes(routes []av.ScrapedRoute) []av.ScrapedRoute {
 // already in the database, so that entries recorded under older rules are
 // cleaned up in place rather than refetched. It reports whether anything
 // changed.
-func consolidateSets(sets map[string]av.ScrapedRouteSet, scenarioAirports map[string]bool) bool {
+func consolidateSets(sets map[string]av.ScrapedRouteSet) bool {
 	changed := false
 	for key, set := range sets {
 		from, to, ok := strings.Cut(key, "-")
@@ -400,8 +378,7 @@ func consolidateSets(sets map[string]av.ScrapedRouteSet, scenarioAirports map[st
 		var order []string
 		merged := make(map[string]*av.ScrapedRoute)
 		for _, r := range set.Routes {
-			route := consolidateRoute(cleanRoute(r.Route, from, to),
-				scenarioAirports[from], scenarioAirports[to])
+			route := consolidateRoute(cleanRoute(r.Route, from, to), domestic(from), domestic(to))
 			if route == "" {
 				continue
 			}

@@ -204,6 +204,7 @@
           "initial_controller": "C48",
           "initial_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KLGA"],
           "airlines": {
             "KLGA": [
               {
@@ -246,6 +247,7 @@
           "initial_controller": "C48",
           "initial_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KLGA"],
           "airlines": {
             "KLGA": [
               {
@@ -288,6 +290,7 @@
           "initial_controller": "C48",
           "initial_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KLGA"],
           "airlines": {
             "KLGA": [
               {
@@ -330,6 +333,7 @@
           "initial_controller": "C48",
           "initial_altitude": 33000,
           "initial_speed": 300,
+          "airports": ["KEWR"],
           "airlines": {
             "KEWR": [
               {
@@ -372,6 +376,7 @@
           "initial_controller": "C48",
           "initial_altitude": 25000,
           "initial_speed": 300,
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -412,6 +417,7 @@
           "initial_controller": "51",
           "initial_altitude": 12000,
           "initial_speed": 300,
+          "airports": ["KPHL"],
           "airlines": {
             "KPHL": [
               {
@@ -437,6 +443,7 @@
           "initial_controller": "26",
           "initial_altitude": 11000,
           "initial_speed": 300,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {

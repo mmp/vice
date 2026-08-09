@@ -33,6 +33,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KBUF" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

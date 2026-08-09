@@ -162,6 +162,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KCHS" },
       "coordination": [
         {
           "name": ".    JZI",

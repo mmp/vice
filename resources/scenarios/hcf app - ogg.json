@@ -922,6 +922,7 @@
           "initial_speed": 270,
           "description": "ZIGIE",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -971,6 +972,7 @@
           "initial_speed": 270,
           "description": "APACK",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1020,6 +1022,7 @@
           "initial_speed": 270,
           "description": "BITTA",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1174,6 +1177,7 @@
           "initial_speed": 270,
           "description": "DENNS",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1323,6 +1327,7 @@
           "initial_speed": 270,
           "description": "FITES",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1392,6 +1397,7 @@
           "initial_speed": 270,
           "description": "Z Track",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1441,6 +1447,7 @@
           "initial_speed": 270,
           "description": "A Track",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1490,6 +1497,7 @@
           "initial_speed": 270,
           "description": "B Track",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1645,6 +1653,7 @@
           "initial_speed": 270,
           "description": "D Track",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1794,6 +1803,7 @@
           "initial_speed": 270,
           "description": "F Track",
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1861,6 +1871,7 @@
           "initial_altitude": 13000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1894,6 +1905,7 @@
           "initial_altitude": 25000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1926,6 +1938,7 @@
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1953,6 +1966,7 @@
           "initial_altitude": 16000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -1980,6 +1994,7 @@
           "initial_altitude": 13000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -2013,6 +2028,7 @@
           "initial_altitude": 25000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -2045,6 +2061,7 @@
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -2072,6 +2089,7 @@
           "initial_altitude": 16000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["PHOG"],
           "airlines": {
             "PHOG": [
               {
@@ -2244,7 +2262,6 @@
   },
   "default_scenario": "OGG - North Flow",
   "name": "HCF APP - OGG",
-  "primary_airport": "PHOG",
   "scenarios": {
     "OGG - North Flow": {
       "airspace": {

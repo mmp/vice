@@ -2052,6 +2052,7 @@
           "assigned_altitude": 27000,
           "initial_speed": 300,
           "expect_approach": "I1L",
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2104,6 +2105,7 @@
           "assigned_altitude": 27000,
           "initial_speed": 300,
           "expect_approach": "I36",
+          "airports": ["KPIE"],
           "airlines": {
             "KPIE": [
               {
@@ -2215,6 +2217,7 @@
           "initial_controller": "68",
           "initial_altitude": 30000,
           "initial_speed": 280,
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {
@@ -2274,12 +2277,13 @@
       "arrivals": [
         {
           "waypoints": "KYYUU/a32000 WNWUD/a30000/ho SSPAZ/a27000 BATTN LUBBR ZEBON RUNNE BREKR WUDDY LYFIE MURDO/a3000+ KSRQ-32/a44/delete",
-          "star": "LUBBR3",
+          "star": "LUBBR4",
           "route": "/. LUBBR3",
           "initial_controller": "78",
           "initial_altitude": 32000,
           "initial_speed": 300,
           "assigned_altitude": 27000,
+          "airports": ["KSRQ"],
           "airlines": {
             "KSRQ": [
               {
@@ -2334,12 +2338,13 @@
         },
         {
           "waypoints": "KYYUU/a32000 WNWUD/a30000/ho SSPAZ/a27000 BATTN LUBBR ZEBON ZEPHR/a3000+ KLAL-10/a44/delete",
-          "star": "LUBBR3",
+          "star": "LUBBR4",
           "route": "/. LUBBR3",
           "initial_controller": "78",
           "initial_altitude": 32000,
           "initial_speed": 300,
           "assigned_altitude": 27000,
+          "airports": ["KLAL"],
           "airlines": {
             "KLAL": [
               {
@@ -2359,12 +2364,13 @@
         },
         {
           "waypoints": "KYYUU/a32000 WNWUD/a30000/ho SSPAZ/a27000 BATTN LUBBR ZEBON RUNNE BREKR WUDDY LYFIE ROSTY/a3000+ KPGD-4/a44/delete",
-          "star": "LUBBR3",
+          "star": "LUBBR4",
           "route": "/. LUBBR3",
           "initial_controller": "78",
           "initial_altitude": 32000,
           "initial_speed": 300,
           "assigned_altitude": 27000,
+          "airports": ["KPGD"],
           "airlines": {
             "KPGD": [
               {
@@ -2415,6 +2421,7 @@
           "initial_altitude": 24000,
           "initial_speed": 290,
           "assigned_altitude": 24000,
+          "airports": ["KISM", "KORL", "KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -2459,6 +2466,7 @@
           "initial_altitude": 24000,
           "initial_speed": 290,
           "assigned_altitude": 24000,
+          "airports": ["KISM", "KORL", "KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -2503,6 +2511,7 @@
           "initial_altitude": 24000,
           "initial_speed": 290,
           "assigned_altitude": 24000,
+          "airports": ["KISM", "KORL", "KSFB"],
           "airlines": {
             "KSFB": [
               {
@@ -2546,11 +2555,12 @@
       "arrivals": [
         {
           "waypoints": "HEVVN LEGGT/a27000/ho88 GOJOE AAHOY MAATY/a11000 ROOKR BLOUT CBASS TOOTH/a5000/s210 HICAY PJMAL/s190 ANAZE/a2400 ZELTO/a1300 KTPA-1R/a25/delete",
-          "star": "MAATY4",
+          "star": "MAATY6",
           "route": "/. MAATY4",
           "initial_controller": "17",
           "initial_altitude": 30000,
           "initial_speed": 300,
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               {
@@ -2574,6 +2584,7 @@
           "initial_speed": 300,
           "assigned_altitude": 27000,
           "expect_approach": "R6L",
+          "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
               {

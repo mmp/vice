@@ -6,10 +6,13 @@ package aviation
 
 import (
 	"bytes"
+	"path"
 	"slices"
 	"testing"
+	"testing/fstest"
 	"time"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -111,18 +114,11 @@ func TestEncodeFlightsRoundTrip(t *testing.T) {
 	}
 }
 
-func TestFlightDataIntervalsCoverTheData(t *testing.T) {
+func TestFlightIntervalsCoverTheData(t *testing.T) {
 	flights := testFlights()
 	SortFlights(flights)
-	encoded, err := EncodeFlights(flights)
-	if err != nil {
-		t.Fatalf("EncodeFlights: %v", err)
-	}
 
-	intervals, err := FlightDataIntervals(encoded)
-	if err != nil {
-		t.Fatalf("FlightDataIntervals: %v", err)
-	}
+	intervals := FlightIntervals(flights)
 	for _, f := range flights {
 		if !slices.ContainsFunc(intervals, func(iv util.TimeInterval) bool {
 			return iv.Contains(f.Time())
@@ -132,12 +128,11 @@ func TestFlightDataIntervalsCoverTheData(t *testing.T) {
 	}
 
 	// These flights run every day with nothing like a day's break, so they are
-	// one stretch: an ordinary facility's data must not come apart into pieces.
+	// one stretch: an ordinary cell's data must not come apart into pieces.
 	if len(intervals) != 1 {
 		t.Fatalf("got %d intervals, expected 1: %v", len(intervals), intervals)
 	}
-	// The header must agree with the data without decompressing it. The first
-	// flight is SKW775E, eight minutes into the first day.
+	// The first flight is SKW775E, eight minutes into the first day.
 	expected := time.Date(2025, time.July, 1, 0, 8, 0, 0, time.UTC)
 	if !intervals[0].Start().Equal(expected) {
 		t.Errorf("interval starts at %v, expected %v", intervals[0].Start(), expected)
@@ -145,11 +140,11 @@ func TestFlightDataIntervalsCoverTheData(t *testing.T) {
 }
 
 // The source data has gone down for days at a time, and a sim started in the
-// hole has nothing to fly. The stretches the header records are what keeps
+// hole has nothing to fly. The stretches metadata.json records are what keeps
 // those times from being offered, so they have to break in the right places --
 // in particular at the exact time the data comes back, not at the following
 // midnight.
-func TestFlightDataIntervalsSplitAtGaps(t *testing.T) {
+func TestFlightIntervalsSplitAtGaps(t *testing.T) {
 	base := FlightDataDayNumber(time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC))
 	var flights []Flight
 	add := func(day uint16, minute int) {
@@ -168,14 +163,7 @@ func TestFlightDataIntervalsSplitAtGaps(t *testing.T) {
 	}
 
 	SortFlights(flights)
-	encoded, err := EncodeFlights(flights)
-	if err != nil {
-		t.Fatalf("EncodeFlights: %v", err)
-	}
-	intervals, err := FlightDataIntervals(encoded)
-	if err != nil {
-		t.Fatalf("FlightDataIntervals: %v", err)
-	}
+	intervals := FlightIntervals(flights)
 
 	expected := []util.TimeInterval{
 		{time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC),
@@ -190,8 +178,8 @@ func TestFlightDataIntervalsSplitAtGaps(t *testing.T) {
 
 // A quiet airport can sit idle most of the night. That is a lull, not a gap:
 // treating it as one would break the data into stretches too short to start a
-// sim in and leave such a facility with no time to offer at all.
-func TestFlightDataIntervalsKeepOvernightLulls(t *testing.T) {
+// sim in and leave such a cell with no time to offer at all.
+func TestFlightIntervalsKeepOvernightLulls(t *testing.T) {
 	base := FlightDataDayNumber(time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC))
 	var flights []Flight
 	// Two flights a day, twenty hours apart.
@@ -203,34 +191,98 @@ func TestFlightDataIntervalsKeepOvernightLulls(t *testing.T) {
 	}
 
 	SortFlights(flights)
-	encoded, err := EncodeFlights(flights)
-	if err != nil {
-		t.Fatalf("EncodeFlights: %v", err)
-	}
-	intervals, err := FlightDataIntervals(encoded)
-	if err != nil {
-		t.Fatalf("FlightDataIntervals: %v", err)
-	}
-	if len(intervals) != 1 {
+	if intervals := FlightIntervals(flights); len(intervals) != 1 {
 		t.Errorf("got %d intervals, expected 1: %v", len(intervals), intervals)
 	}
 }
 
-func TestFlightDataIntervalsSingleFlight(t *testing.T) {
+func TestFlightIntervalsSingleFlight(t *testing.T) {
 	day := FlightDataDayNumber(time.Date(2026, time.May, 1, 0, 0, 0, 0, time.UTC))
-	encoded, err := EncodeFlights([]Flight{{Airport: "KMSP", Callsign: "DAL1062", Other: "KATL",
+	intervals := FlightIntervals([]Flight{{Airport: "KMSP", Callsign: "DAL1062", Other: "KATL",
 		AircraftType: "B753", Day: day, Minute: 9 * 60, Departure: true}})
-	if err != nil {
-		t.Fatalf("EncodeFlights: %v", err)
-	}
-	intervals, err := FlightDataIntervals(encoded)
-	if err != nil {
-		t.Fatalf("FlightDataIntervals: %v", err)
-	}
+
 	expected := time.Date(2026, time.May, 1, 9, 0, 0, 0, time.UTC)
 	if len(intervals) != 1 || !intervals[0].Start().Equal(expected) ||
 		!intervals[0].End().Equal(expected) {
 		t.Errorf("got %v, expected one interval at %v", intervals, expected)
+	}
+}
+
+// The intervals are worked out a cell at a time and merged, which has to give
+// the same answer as looking at every flight's time at once: a stretch one cell
+// sits out is only a gap if every other cell sits it out too.
+func TestMergeFlightIntervals(t *testing.T) {
+	day := func(d int, hour int) time.Time {
+		return time.Date(2026, time.May, d, hour, 0, 0, 0, time.UTC)
+	}
+	merged := MergeFlightIntervals([]util.TimeInterval{
+		// A cell that quit on the 3rd and came back on the 6th.
+		{day(1, 0), day(3, 12)},
+		{day(6, 0), day(9, 0)},
+		// A quiet one that flew a day at a time in between, closing the hole.
+		{day(4, 6), day(4, 6)},
+		{day(5, 5), day(5, 5)},
+		// And one that only ever flew on the 8th, inside what is already covered.
+		{day(8, 3), day(8, 20)},
+	})
+
+	expected := []util.TimeInterval{{day(1, 0), day(9, 0)}}
+	if !slices.Equal(merged, expected) {
+		t.Errorf("got %v, expected %v", merged, expected)
+	}
+
+	// With nothing to bridge the hole it stays a gap.
+	merged = MergeFlightIntervals([]util.TimeInterval{{day(1, 0), day(3, 12)}, {day(6, 0), day(9, 0)}})
+	expected = []util.TimeInterval{{day(1, 0), day(3, 12)}, {day(6, 0), day(9, 0)}}
+	if !slices.Equal(merged, expected) {
+		t.Errorf("got %v, expected %v", merged, expected)
+	}
+}
+
+func TestFlightDataMetadataRoundTrip(t *testing.T) {
+	intervals := []util.TimeInterval{
+		{time.Date(2025, time.July, 1, 0, 8, 0, 0, time.UTC),
+			time.Date(2026, time.May, 4, 23, 51, 0, 0, time.UTC)},
+	}
+	encoded, err := EncodeFlightDataMetadata(intervals)
+	if err != nil {
+		t.Fatalf("EncodeFlightDataMetadata: %v", err)
+	}
+
+	resources := fstest.MapFS{
+		path.Join(FlightDataDirectory, FlightDataMetadataName): &fstest.MapFile{Data: encoded},
+	}
+	decoded, err := FlightDataIntervals(resources)
+	if err != nil {
+		t.Fatalf("FlightDataIntervals: %v", err)
+	}
+	if !slices.Equal(decoded, intervals) {
+		t.Errorf("got %v, expected %v", decoded, intervals)
+	}
+
+	// No metadata at all is how "there is no flight data" reads, not an error.
+	if decoded, err := FlightDataIntervals(fstest.MapFS{}); err != nil || len(decoded) != 0 {
+		t.Errorf("got %v, %v from empty resources, expected nothing", decoded, err)
+	}
+}
+
+func TestFlightDataCell(t *testing.T) {
+	for _, tc := range []struct {
+		latitude, longitude float32
+		expected            string
+	}{
+		{40.64, -73.78, "N40W074"},   // KJFK
+		{33.94, -118.41, "N32W120"},  // KLAX
+		{61.17, -150.0, "N60W150"},   // PANC, right on a cell boundary
+		{21.32, -157.92, "N20W158"},  // PHNL
+		{13.48, 144.80, "N12E144"},   // PGUM, the far side of the date line
+		{-14.33, -170.71, "S16W172"}, // NSTU, south of the equator
+		{0, 0, "N00E000"},
+		{-0.5, -0.5, "S02W002"}, // and just the other side of both lines
+	} {
+		if cell := FlightDataCell(math.Point2LL{tc.longitude, tc.latitude}); cell != tc.expected {
+			t.Errorf("(%g, %g): got %q, expected %q", tc.latitude, tc.longitude, cell, tc.expected)
+		}
 	}
 }
 
@@ -263,22 +315,15 @@ func TestEncodeFlightsEmpty(t *testing.T) {
 	if len(flights) != 0 {
 		t.Errorf("decoded %d flights from empty data", len(flights))
 	}
-	intervals, err := FlightDataIntervals(encoded)
-	if err != nil {
-		t.Fatalf("FlightDataIntervals: %v", err)
-	}
-	if len(intervals) != 0 {
-		t.Errorf("got %v from empty data, expected nothing", intervals)
-	}
 }
 
 func TestDecodeFlightsRejectsGarbage(t *testing.T) {
 	for _, data := range [][]byte{
 		nil,
 		[]byte("nope"),
-		[]byte("VFLT\x02"),               // an older version
-		append([]byte("VFLT\x03"), 0xff), // truncated mid-varint
-		append([]byte("VFLT\x03"), 0, 0, 1, 9, 1), // one interval, ending before it starts
+		[]byte("VFLT\x03"),               // an older version
+		append([]byte("VFLT\x04"), 0xff), // truncated mid-varint
+		append([]byte("VFLT\x04"), 0, 1), // no stream lengths follow the count
 	} {
 		if _, err := DecodeFlights(data); err == nil {
 			t.Errorf("decoded %q without complaining", data)
@@ -311,7 +356,7 @@ func TestFlightSurvivesMsgpack(t *testing.T) {
 	}
 }
 
-func TestFlightsInWindow(t *testing.T) {
+func TestSelectFlights(t *testing.T) {
 	day := FlightDataDayNumber(time.Date(2026, time.April, 15, 0, 0, 0, 0, time.UTC))
 	flights := []Flight{
 		{Airport: "KMSP", Callsign: "DAL1", Other: "KATL", AircraftType: "B738",
@@ -326,39 +371,28 @@ func TestFlightsInWindow(t *testing.T) {
 			Day: day, Minute: 8*60 + 30, Departure: true},
 	}
 	SortFlights(flights)
-	encoded, err := EncodeFlights(flights)
-	if err != nil {
-		t.Fatalf("EncodeFlights: %v", err)
-	}
 
 	start := FlightDataDate(day).Add(8 * time.Hour)
 	msp := map[string]bool{"KMSP": true}
 	airlines := map[string]Airline{"DAL": {}}
-	window, err := FlightsInWindow(encoded, msp, msp, airlines, start, start.Add(2*time.Hour))
-	if err != nil {
-		t.Fatalf("FlightsInWindow: %v", err)
+	callsignsIn := func(window []Flight) []string {
+		var callsigns []string
+		for _, f := range window {
+			callsigns = append(callsigns, f.Callsign)
+		}
+		return callsigns
 	}
 
-	var callsigns []string
-	for _, f := range window {
-		callsigns = append(callsigns, f.Callsign)
-	}
-	// KSTP isn't wanted, DAL3 is outside the window, XXX5 isn't an airline, and
-	// the rest come back in time order.
-	if !slices.Equal(callsigns, []string{"DAL1", "DAL2"}) {
+	// KSTP is in the cell but isn't wanted, DAL3 is outside the window, XXX5
+	// isn't an airline, and the rest come back in time order.
+	window := SelectFlights(flights, msp, msp, airlines, start, start.Add(2*time.Hour))
+	if callsigns := callsignsIn(window); !slices.Equal(callsigns, []string{"DAL1", "DAL2"}) {
 		t.Errorf("got %v, expected [DAL1 DAL2]", callsigns)
 	}
 
 	// An airport a scenario only departs contributes no arrivals.
-	window, err = FlightsInWindow(encoded, msp, nil, airlines, start, start.Add(2*time.Hour))
-	if err != nil {
-		t.Fatalf("FlightsInWindow: %v", err)
-	}
-	callsigns = nil
-	for _, f := range window {
-		callsigns = append(callsigns, f.Callsign)
-	}
-	if !slices.Equal(callsigns, []string{"DAL1"}) {
+	window = SelectFlights(flights, msp, nil, airlines, start, start.Add(2*time.Hour))
+	if callsigns := callsignsIn(window); !slices.Equal(callsigns, []string{"DAL1"}) {
 		t.Errorf("got %v, expected just the departure DAL1", callsigns)
 	}
 }

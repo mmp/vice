@@ -359,6 +359,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KDAB" },
       "coordination": [
         {
           "name": ".      OMN COORD",

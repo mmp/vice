@@ -33,6 +33,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KGSO" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

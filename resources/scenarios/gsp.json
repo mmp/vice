@@ -283,6 +283,7 @@
           "initial_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {
@@ -316,6 +317,7 @@
           "initial_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {
@@ -345,6 +347,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {
@@ -381,6 +384,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {
@@ -420,7 +424,6 @@
     "_GSP_22": "N34.54.30.210,W82.12.32.492"
   },
   "name": "KGSP",
-  "primary_airport": "KGSP",
   "reporting_points": ["TDAAY", "TYRES", "SPA"],
   "scenarios": {
     "KGSP Runway 22": {

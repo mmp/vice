@@ -2158,6 +2158,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDAB"],
           "airlines": {
             "KDAB": [
               {
@@ -2287,6 +2288,7 @@
           "initial_altitude": 4000,
           "initial_speed": 110,
           "expect_approach": null,
+          "airports": ["KDED"],
           "airlines": {
             "KDED": [
               {
@@ -2379,6 +2381,7 @@
           "initial_altitude": 3000,
           "initial_speed": 110,
           "expect_approach": null,
+          "airports": ["KDAB", "KDED", "KEVB", "KFIN", "KOMN"],
           "airlines": {
             "KDAB": [
               {
@@ -2441,6 +2444,7 @@
           "initial_altitude": 4000,
           "initial_speed": 110,
           "expect_approach": null,
+          "airports": ["KDAB", "KEVB", "KFIN", "KOMN"],
           "airlines": {
             "KDAB": [
               {
@@ -2496,6 +2500,7 @@
           "initial_altitude": 3000,
           "initial_speed": 110,
           "expect_approach": null,
+          "airports": ["KDAB", "KDED", "KEVB", "KFIN", "KOMN"],
           "airlines": {
             "KDAB": [
               {
@@ -2558,6 +2563,7 @@
           "initial_altitude": 5000,
           "initial_speed": 105,
           "expect_approach": null,
+          "airports": ["KDAB", "KDED", "KEVB", "KFIN", "KOMN"],
           "airlines": {
             "KDAB": [
               {
@@ -2661,7 +2667,6 @@
   },
   "magnetic_adjustment": -2,
   "name": "KDAB",
-  "primary_airport": "KDAB",
   "scenarios": {
     "Daytona East": {
       "arrival_runways": [

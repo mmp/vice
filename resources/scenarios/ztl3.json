@@ -222,6 +222,7 @@
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
           "initial_speed": 300,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -264,6 +265,7 @@
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
           "initial_speed": 300,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {

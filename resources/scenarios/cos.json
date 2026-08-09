@@ -563,6 +563,7 @@
     "OZZZY5": {
       "arrivals": [
         {
+          "airports": ["KCOS"],
           "airlines": {
             "KCOS": [
               {
@@ -629,6 +630,7 @@
     "DEBERRY5": {
       "arrivals": [
         {
+          "airports": ["KCOS"],
           "airlines": {
             "KCOS": [
               {
@@ -684,6 +686,7 @@
     "DEN": {
       "arrivals": [
         {
+          "airports": ["KCOS", "KFLY"],
           "airlines": {
             "KCOS": [
               {
@@ -735,6 +738,7 @@
     "DEN.NW": {
       "arrivals": [
         {
+          "airports": ["KCOS"],
           "airlines": {
             "KCOS": [
               {
@@ -773,7 +777,6 @@
     "KFLY-15": "N038.56.56.912,W104.34.18.728"
   },
   "name": "KCOS",
-  "primary_airport": "KCOS",
   "scenarios": {
     "North VMC": {
       "arrival_runways": [

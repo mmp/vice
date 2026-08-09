@@ -20,7 +20,7 @@ func (b *testAtmosBackend) getPrecipURL(facility string, t time.Time) (string, t
 	return "", time.Time{}, nil
 }
 
-func (b *testAtmosBackend) getAtmosGrid(facility string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error) {
+func (b *testAtmosBackend) getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
 	b.calls++
 	return b.soa, b.t0, b.t1, nil
 }

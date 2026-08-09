@@ -80,12 +80,14 @@
     "1P": {
       "callsign": "MHT_P_APP",
       "frequency": 125825,
-      "radio_name": "Boston Approach"
+      "radio_name": "Boston Approach",
+      "area": "2"
     },
     "1J": {
       "callsign": "MHT_J_APP",
       "frequency": 127350,
-      "radio_name": "Boston Approach"
+      "radio_name": "Boston Approach",
+      "area": "2"
     },
     "1N": {
       "callsign": "ACK_N_APP",
@@ -155,17 +157,20 @@
     "1E": {
       "callsign": "MHT_E_APP",
       "frequency": 125050,
-      "radio_name": "Boston Approach"
+      "radio_name": "Boston Approach",
+      "area": "2"
     },
     "1Z": {
       "callsign": "MHT_Z_APP",
       "frequency": 124900,
-      "radio_name": "Boston Approach"
+      "radio_name": "Boston Approach",
+      "area": "2"
     },
     "1W": {
       "callsign": "MHT_W_APP",
       "frequency": 134750,
-      "radio_name": "Boston Approach"
+      "radio_name": "Boston Approach",
+      "area": "2"
     }
   },
   "facility_adaptations": {
@@ -761,7 +766,6 @@
           "ZBW SPLIT 3"
         ]
       },
-
       "1Z": {
         "center": "KMHT",
         "video_map_file": "videomaps/ZBW-stars.mappack",
@@ -983,7 +987,11 @@
           "ODO OTHER SATELLITES",
           ""
         ],
-        "video_map_file": "videomaps/ZBW-A90.mappack"
+        "video_map_file": "videomaps/ZBW-A90.mappack",
+        "system_altimeter": "KBOS"
+      },
+      "2": {
+        "system_altimeter": "KMHT"
       }
     },
     "monitor": "mdm3",
@@ -1030,7 +1038,8 @@
         }
       ],
       "ssa": {
-        "altimeters": ["KBOS", "KFMH", "KMHT"]
+        "altimeters": ["KBOS", "KFMH", "KMHT"],
+        "system_altimeter": "KBOS"
       }
     },
     "stars_macros": [

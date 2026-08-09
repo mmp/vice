@@ -265,9 +265,7 @@
           "airports": ["KSUA"]
         }
       ],
-      "ssa": {
-        "altimeters": ["KDJT", "KFPR", "KSUA", "KVRB", "KBCT"]
-      }
+      "ssa": { "system_altimeter": "KDJT", "altimeters": ["KDJT", "KFPR", "KSUA", "KVRB", "KBCT"] }
     },
     "filters": {
       "inhibit_ca": [

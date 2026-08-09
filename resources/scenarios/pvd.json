@@ -209,6 +209,7 @@
     "GON": {
       "arrivals": [
         {
+          "airports": ["KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -233,6 +234,7 @@
     "WIPOR": {
       "arrivals": [
         {
+          "airports": ["KOQU", "KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -278,7 +280,7 @@
           "initial_altitude": 21000,
           "initial_controller": "C46",
           "initial_speed": 310,
-          "star": "WIPOR3",
+          "star": "WIPOR4",
           "runway_waypoints": {
             "KPVD": {
               "23": "SAUGY WAWIK SEABE NOSUH/h047",
@@ -315,6 +317,7 @@
     "JORDN": {
       "arrivals": [
         {
+          "airports": ["KOQU", "KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -461,6 +464,7 @@
     "PEAKE": {
       "arrivals": [
         {
+          "airports": ["KOQU", "KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -510,6 +514,7 @@
     "PQ_PVD_2316_COMBINED": {
       "arrivals": [
         {
+          "airports": ["KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -550,6 +555,7 @@
           "waypoints": "SAUGY/ho WAWIK/a5000 NOSUH/h047"
         },
         {
+          "airports": ["KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -594,6 +600,7 @@
     "PQ_OQU_2316_COMBINED": {
       "arrivals": [
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -627,6 +634,7 @@
           "waypoints": "N042.07.32.471,W071.49.26.995/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -660,6 +668,7 @@
           "waypoints": "N042.01.29.346,W072.09.34.365/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -693,6 +702,7 @@
           "waypoints": "N041.44.02.102,W072.16.41.568/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -726,6 +736,7 @@
           "waypoints": "N041.28.53.642,W072.02.27.216/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -759,6 +770,7 @@
           "waypoints": "N041.21.14.592,W071.50.58.813/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -792,6 +804,7 @@
           "waypoints": "N041.15.58.763,W071.33.42.418/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -825,6 +838,7 @@
           "waypoints": "N041.17.58.775,W071.18.26.295/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -858,6 +872,7 @@
           "waypoints": "N041.40.56.488,W071.02.31.034/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -895,6 +910,8 @@
     "PQ_PVD_2316": {
       "arrivals": [
         {
+          "star_feeds": ["WIPOR4"],
+          "airports": ["KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -939,6 +956,7 @@
     "PQ_OQU_2316": {
       "arrivals": [
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -972,6 +990,7 @@
           "waypoints": "N042.07.32.471,W071.49.26.995/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1005,6 +1024,7 @@
           "waypoints": "N042.01.29.346,W072.09.34.365/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1038,6 +1058,7 @@
           "waypoints": "N041.44.02.102,W072.16.41.568/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1071,6 +1092,7 @@
           "waypoints": "N041.28.53.642,W072.02.27.216/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1104,6 +1126,7 @@
           "waypoints": "N041.21.14.592,W071.50.58.813/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1137,6 +1160,7 @@
           "waypoints": "N041.15.58.763,W071.33.42.418/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1170,6 +1194,7 @@
           "waypoints": "N041.17.58.775,W071.18.26.295/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1203,6 +1228,7 @@
           "waypoints": "N041.40.56.488,W071.02.31.034/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1240,6 +1266,7 @@
     "PQ_PVD_0516": {
       "arrivals": [
         {
+          "airports": ["KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -1280,6 +1307,7 @@
           "waypoints": "N041.42.11.442,W072.15.24.060 WIPOR N041.35.46.234,W072.04.09.856/a11000+/ho ORW LAFAY/a5000 "
         },
         {
+          "airports": ["KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -1324,6 +1352,7 @@
     "PQ_OQU_0516": {
       "arrivals": [
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1357,6 +1386,7 @@
           "waypoints": "N042.07.32.471,W071.49.26.995/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1390,6 +1420,7 @@
           "waypoints": "N042.01.29.346,W072.09.34.365/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1423,6 +1454,7 @@
           "waypoints": "N041.44.02.102,W072.16.41.568/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1456,6 +1488,7 @@
           "waypoints": "N041.28.53.642,W072.02.27.216/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1489,6 +1522,7 @@
           "waypoints": "N041.15.58.763,W071.33.42.418/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1522,6 +1556,7 @@
           "waypoints": "N041.17.58.775,W071.18.26.295/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1555,6 +1590,7 @@
           "waypoints": "N041.40.56.488,W071.02.31.034/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1592,6 +1628,7 @@
     "PQ_PVD_0534": {
       "arrivals": [
         {
+          "airports": ["KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -1632,6 +1669,7 @@
           "waypoints": "N041.42.11.442,W072.15.24.060 WIPOR N041.35.46.234,W072.04.09.856/a11000+/ho ORW LAFAY/a5000 "
         },
         {
+          "airports": ["KPVD"],
           "airlines": {
             "KPVD": [
               {
@@ -1676,6 +1714,7 @@
     "PQ_OQU_0534": {
       "arrivals": [
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1709,6 +1748,7 @@
           "waypoints": "N042.07.32.471,W071.49.26.995/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1742,6 +1782,7 @@
           "waypoints": "N042.01.29.346,W072.09.34.365/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1775,6 +1816,7 @@
           "waypoints": "N041.44.02.102,W072.16.41.568/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1808,6 +1850,7 @@
           "waypoints": "N041.28.53.642,W072.02.27.216/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1841,6 +1884,7 @@
           "waypoints": "N041.15.58.763,W071.33.42.418/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1874,6 +1918,7 @@
           "waypoints": "N041.17.58.775,W071.18.26.295/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1907,6 +1952,7 @@
           "waypoints": "N041.46.33.397,W070.37.26.621/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1940,6 +1986,7 @@
           "waypoints": "N041.28.54.658,W070.42.21.879/ho KOQU"
         },
         {
+          "airports": ["KOQU"],
           "airlines": {
             "KOQU": [
               {
@@ -1989,7 +2036,6 @@
     "PVD_ILS23_10": "N041.54.03.479,W071.16.40.854"
   },
   "name": "KPVD",
-  "primary_airport": "KPVD",
   "scenarios": {
     "PVD RY23": {
       "arrival_runways": [

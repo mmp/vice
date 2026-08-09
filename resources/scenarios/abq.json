@@ -609,6 +609,7 @@
     "BRRTO1": {
       "arrivals": [
         {
+          "airports": ["KABQ"],
           "airlines": {
             "KABQ": [
               {
@@ -646,6 +647,7 @@
     "COLTR4": {
       "arrivals": [
         {
+          "airports": ["KABQ"],
           "airlines": {
             "KABQ": [
               {
@@ -684,6 +686,7 @@
     "LOWBO3": {
       "arrivals": [
         {
+          "airports": ["KABQ"],
           "airlines": {
             "KABQ": [
               {
@@ -731,6 +734,7 @@
     "LZZRD4": {
       "arrivals": [
         {
+          "airports": ["KABQ"],
           "airlines": {
             "KABQ": [
               {
@@ -760,6 +764,7 @@
     "SNDIA4": {
       "arrivals": [
         {
+          "airports": ["KABQ"],
           "airlines": {
             "KABQ": [
               {
@@ -809,7 +814,6 @@
   "default_scenario": "ABQ - East Flow",
   "magnetic_adjustment": -8,
   "name": "KABQ",
-  "primary_airport": "KABQ",
   "scenarios": {
     "ABQ - East Flow": {
       "arrival_runways": [

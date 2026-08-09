@@ -944,6 +944,7 @@
           "initial_altitude": 10000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KBTV", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1014,6 +1015,7 @@
           "initial_altitude": 7000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KBTV", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1052,6 +1054,7 @@
           "initial_altitude": 8000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KBTV", "KFSO", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1134,6 +1137,7 @@
           "initial_altitude": 7000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KBTV", "KFSO", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1216,6 +1220,7 @@
           "initial_altitude": 17000,
           "initial_speed": 330,
           "expect_approach": null,
+          "airports": ["KBTV", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1311,6 +1316,7 @@
           "initial_altitude": 10000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KBTV", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1381,6 +1387,7 @@
           "initial_altitude": 7000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KBTV", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1419,6 +1426,7 @@
           "initial_altitude": 8000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KBTV", "KFSO", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1501,6 +1509,7 @@
           "initial_altitude": 7000,
           "initial_speed": 160,
           "expect_approach": null,
+          "airports": ["KBTV", "KFSO", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1583,6 +1592,7 @@
           "initial_altitude": 17000,
           "initial_speed": 330,
           "expect_approach": null,
+          "airports": ["KBTV", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1678,6 +1688,7 @@
           "initial_altitude": 17000,
           "initial_speed": 330,
           "expect_approach": null,
+          "airports": ["KBTV", "KFSO", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1799,6 +1810,7 @@
           "initial_altitude": 17000,
           "initial_speed": 330,
           "expect_approach": null,
+          "airports": ["KBTV", "KFSO", "KPBG"],
           "airlines": {
             "KBTV": [
               {
@@ -1911,7 +1923,6 @@
       ]
     }
   },
-  "primary_airport": "KBTV",
   "default_scenario": "KBTV NORTH",
   "name": "BTV",
   "vfr_reporting_points": [

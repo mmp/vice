@@ -40,6 +40,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KSBN" } },
     "configurations": {
       "SBN": {
         "inbound_assignments": {

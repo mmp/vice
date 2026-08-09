@@ -209,6 +209,7 @@
           "initial_altitude": 14000,
           "initial_speed": 260,
           "expect_approach": null,
+          "airports": ["KBOI"],
           "airlines": {
             "KBOI": [
               {
@@ -233,6 +234,7 @@
           "initial_altitude": 16000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBOI"],
           "airlines": {
             "KBOI": [
               {
@@ -257,6 +259,7 @@
           "initial_altitude": 21000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBOI"],
           "airlines": {
             "KBOI": [
               {
@@ -289,6 +292,7 @@
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KBOI"],
           "airlines": {
             "KBOI": [
               {
@@ -317,6 +321,7 @@
           "initial_altitude": 15000,
           "initial_speed": 260,
           "expect_approach": null,
+          "airports": ["KBOI"],
           "airlines": {
             "KBOI": [
               {
@@ -357,6 +362,7 @@
           "initial_altitude": 15000,
           "initial_speed": 260,
           "expect_approach": null,
+          "airports": ["KBOI"],
           "airlines": {
             "KBOI": [
               {
@@ -383,7 +389,6 @@
   },
   "default_scenario": "Land West",
   "name": "Big Sky - BOI",
-  "primary_airport": "KBOI",
   "scenarios": {
     "Land West": {
       "arrival_runways": [

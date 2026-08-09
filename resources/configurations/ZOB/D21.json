@@ -92,6 +92,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KDTW" } },
     "configurations": {
       "43X": {
         "inbound_assignments": {

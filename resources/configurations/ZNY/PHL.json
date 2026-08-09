@@ -67,6 +67,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KPHL" } },
     "configurations": {
       "21X": {
         "inbound_assignments": {

@@ -1584,6 +1584,7 @@
       ]
     },
     "lists": {
+      "ssa": { "system_altimeter": "KATL" },
       "coordination": [
         {
           "name": "FULTON COUNTY",

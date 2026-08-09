@@ -1683,6 +1683,7 @@
           "initial_altitude": 28000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KMHR"],
           "airlines": {
             "KMHR": [
               {
@@ -1705,6 +1706,7 @@
           "initial_altitude": 28000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KMHR"],
           "airlines": {
             "KMHR": [
               {
@@ -1738,6 +1740,7 @@
           "initial_altitude": 14000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -1764,6 +1767,7 @@
           "initial_altitude": 20500,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCCR", "KSUU"],
           "airlines": {
             "KSUU": [
               {
@@ -1807,6 +1811,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCCR", "KSUU"],
           "airlines": {
             "KSUU": [
               {
@@ -1864,6 +1869,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSMF"],
           "airlines": {
             "KSMF": [
               {
@@ -1889,6 +1895,7 @@
           "initial_altitude": 20000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -1936,6 +1943,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2003,6 +2011,7 @@
           "initial_altitude": 20000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2050,6 +2059,7 @@
           "initial_altitude": 20000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2114,6 +2124,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2158,6 +2169,7 @@
           "initial_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2189,6 +2201,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSAC"],
           "airlines": {
             "KSAC": [
               {
@@ -2223,6 +2236,7 @@
           "initial_speed": 300,
           "assigned_altitude": 14000,
           "expect_approach": null,
+          "airports": ["KMHR"],
           "airlines": {
             "KMHR": [
               {
@@ -2250,6 +2264,7 @@
           "initial_altitude": 26000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2333,6 +2348,7 @@
           "initial_altitude": 22000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSMF"],
           "airlines": {
             "KSMF": [
               {
@@ -2394,6 +2410,7 @@
           "initial_altitude": 22000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSMF"],
           "airlines": {
             "KSMF": [
               {
@@ -2456,6 +2473,7 @@
           "initial_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSMF"],
           "airlines": {
             "KSMF": [
               {
@@ -2529,6 +2547,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "description": "ORRCA",
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2570,6 +2589,7 @@
           "initial_speed": 280,
           "description": "SLEAT",
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2634,6 +2654,7 @@
           "initial_speed": 280,
           "description": "KENNO",
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -2705,6 +2726,7 @@
           "initial_speed": 280,
           "description": "MVA",
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -3171,6 +3193,7 @@
           "initial_controller": "C42",
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSMF"],
           "airlines": {
             "KSMF": [
               {
@@ -3227,6 +3250,7 @@
           "initial_altitude": 28000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KRNO"],
           "airlines": {
             "KRNO": [
               {
@@ -3287,7 +3311,6 @@
   },
   "default_scenario": "Area E CA - SMFS",
   "name": "NCT Area E",
-  "primary_airport": "KSMF",
   "scenarios": {
     "Area E CA - SMFN": {
       "center": "N038.41.41.010,W121.35.27.420",

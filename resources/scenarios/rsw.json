@@ -338,6 +338,7 @@
           "initial_controller": "C47",
           "initial_altitude": 16000,
           "initial_speed": 250,
+          "airports": ["KRSW"],
           "airlines": {
             "KRSW": [
               { "icao": "DAL", "airport": "KATL" },
@@ -367,6 +368,7 @@
           "initial_controller": "C07",
           "initial_altitude": 13000,
           "initial_speed": 180,
+          "airports": ["KRSW"],
           "airlines": {
             "KRSW": [
               { "icao": "SIL", "airport": "KEYW" },
@@ -393,6 +395,7 @@
           "initial_controller": "C07",
           "initial_altitude": 12000,
           "initial_speed": 250,
+          "airports": ["KRSW"],
           "airlines": {
             "KRSW": [
               { "icao": "AAL", "airport": "KMIA" },
@@ -406,7 +409,6 @@
   },
   "default_scenario": "Runway 06",
   "name": "KRSW",
-  "primary_airport": "KRSW",
   "scenarios": {
     "Runway 06": {
       "configuration": "RSW",

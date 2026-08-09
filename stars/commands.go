@@ -443,13 +443,27 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	}
 }
 
+// minWindDrawAltitudeIndex is the lowest wind-grid altitude worth drawing:
+// the first at or above the lowest of the scenario's airports, since nothing
+// below the ground is of any use.
 func (sp *STARSPane) minWindDrawAltitudeIndex(ctx *panes.Context) int {
-	if sp.atmosGrid != nil {
-		elev := av.DB.Airports[ctx.Client.State.PrimaryAirport].Elevation
-		for i := range sp.atmosGrid.Res[2] - 1 {
-			if sp.atmosGrid.AltitudeForIndex(i) >= float32(elev) {
-				return i
-			}
+	if sp.atmosGrid == nil {
+		return 0
+	}
+	var elevations []int
+	for icao := range ctx.Client.State.Airports {
+		if ap, ok := av.DB.Airports[icao]; ok {
+			elevations = append(elevations, ap.Elevation)
+		}
+	}
+	if len(elevations) == 0 {
+		return 0
+	}
+	elev := slices.Min(elevations)
+
+	for i := range sp.atmosGrid.Res[2] - 1 {
+		if sp.atmosGrid.AltitudeForIndex(i) >= float32(elev) {
+			return i
 		}
 	}
 	return 0

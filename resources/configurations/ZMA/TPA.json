@@ -66,6 +66,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KTPA" } },
     "configurations": {
       "FIN": {
         "inbound_assignments": {

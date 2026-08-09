@@ -535,7 +535,7 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 	spec := wx.GetAtmosArgs{
 		Facility:       c.State.Facility,
 		Time:           t,
-		PrimaryAirport: c.State.PrimaryAirport,
+		WeatherStation: c.State.FacilityAdaptation.WeatherStation,
 	}
 	var result wx.GetAtmosResult
 	c.addCall(makeRPCCall(c.client.Go(wx.GetAtmosGridRPC, spec, &result, nil),

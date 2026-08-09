@@ -74,6 +74,24 @@ type FAAAirport struct {
 	ARTCC      string
 }
 
+// faaCountries are the ISO country codes of the places the FAA runs air traffic
+// control: the fifty states and the territories.
+var faaCountries = map[string]bool{
+	"US": true, // the fifty states, including Alaska and Hawaii
+	"PR": true, // Puerto Rico
+	"VI": true, // US Virgin Islands
+	"GU": true, // Guam
+	"MP": true, // Northern Mariana Islands
+	"AS": true, // American Samoa
+	"UM": true, // Midway, Wake, and the other minor outlying islands
+}
+
+// FAAControlled reports whether the FAA runs air traffic control at the
+// airport. The airport database is worldwide, so this is what tells the
+// airports Vice might one day simulate from the ones that are only ever the far
+// end of somebody else's flight.
+func (ap FAAAirport) FAAControlled() bool { return faaCountries[ap.Country] }
+
 // Facility represents a geographic facility with a center point and radius.
 // Both TRACONs and ARTCCs use this structure for weather data handling.
 type Facility struct {

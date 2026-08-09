@@ -168,7 +168,6 @@ type NewSimConfiguration struct {
 	Brief       string
 
 	Airports           map[string]*av.Airport
-	PrimaryAirport     string
 	DepartureRunways   []DepartureRunway
 	ArrivalRunways     []ArrivalRunway
 	InboundFlows       map[string]*av.InboundFlow
@@ -235,8 +234,9 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		VFRReportingPoints: config.VFRReportingPoints,
 
-		wxModel: wx.MakeModel(config.WXProvider, config.Facility, config.PrimaryAirport, config.StartTime.UTC(), lg),
-		METAR:   make(map[string][]wx.METAR),
+		wxModel: wx.MakeModel(config.WXProvider, config.Facility, config.FacilityAdaptation.WeatherStation,
+			config.StartTime.UTC(), lg),
+		METAR: make(map[string][]wx.METAR),
 
 		ATISChangedTime: make(map[string]Time),
 
@@ -459,7 +459,8 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 
 	s.wxProvider = provider
 	if s.wxModel == nil {
-		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.PrimaryAirport, s.State.SimTime.Time(), s.lg)
+		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.FacilityAdaptation.WeatherStation,
+			s.State.SimTime.Time(), s.lg)
 	}
 
 	// Restore json:"-" fields that are lost during JSON config save/load.

@@ -319,6 +319,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KTYS"],
           "airlines": {
             "KTYS": [
               { "icao": "FFT", "airport": "KDEN" },
@@ -361,6 +362,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KTYS"],
           "airlines": {
             "KTYS": [
               { "icao": "AAY", "airport": "KEWR" },
@@ -394,6 +396,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KTYS"],
           "airlines": {
             "KTYS": [
               { "icao": "AAY", "airport": "KFLL" },
@@ -427,7 +430,6 @@
   },
   "default_scenario": "TYS Dep 23L Land 23L/23R",
   "name": "KTYS",
-  "primary_airport": "KTYS",
   "scenarios": {
     "TYS Dep 23L Land 23L/23R": {
       "configuration": "TYS",

@@ -6149,6 +6149,7 @@
     "AALLE4": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -6277,6 +6278,7 @@
           "waypoints": "SDOUT/a30000-32000/s280 MALTE BBOTL/ho AALLE/a19000 HEDDD/a16000-19000/s250"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -6431,6 +6433,7 @@
     "CLASH5": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -6786,6 +6789,7 @@
     "FLATI5": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -7018,6 +7022,7 @@
     "LAWGR4": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -7294,6 +7299,7 @@
     "LONGZ4": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -7419,6 +7425,7 @@
           "waypoints": "BIVVY/a23000-27000/s280 VESTL/a21000-25000/ho LONGZ/a19000-22000/s270 FLNEL/a16000-19000/s250"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -7461,6 +7468,7 @@
           "waypoints": "BELGN N040.12.10.824,W106.03.39.396/ho LONGZ/a19000-22000/s270 FLNEL/a16000-19000/s250"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -7503,6 +7511,7 @@
     "NIIXX4": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -7660,6 +7669,7 @@
     "SSKII4": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -7832,6 +7842,7 @@
           "waypoints": "KTOOO/a23000-29000 KLOWN/a21000-25000/ho SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -7873,6 +7884,7 @@
     "TBARR4": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -8060,6 +8072,7 @@
     "RAMMS8": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8104,6 +8117,7 @@
     "LARKS3": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8148,6 +8162,7 @@
     "TOMSN9": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8192,6 +8207,7 @@
     "LANDR3": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8232,6 +8248,7 @@
           "waypoints": "FONTO LIBIE/ho LANDR/a17000/s250 YONDR PHLAT DVV"
         },
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8285,6 +8302,7 @@
     "POWDR1": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8329,6 +8347,7 @@
     "DANDD1": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8373,6 +8392,7 @@
           "waypoints": "KIPPY N039.06.47.139,W103.33.19.923/ho CLEVE DANDD/a19000/s250 PEEDE GOAVS DVV"
         },
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8426,6 +8446,7 @@
     "QUAIL1": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8482,6 +8503,7 @@
           "waypoints": "HGO N038.52.36.948,W103.41.19.449/ho CONAL QUAIL/a17000/s250 JEFEL CELMI FQF"
         },
         {
+          "airports": ["KAPA", "KBJC", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8535,6 +8557,7 @@
     "BRNKO4": {
       "arrivals": [
         {
+          "airports": ["KAPA"],
           "airlines": {
             "KAPA": [
               {
@@ -8558,6 +8581,7 @@
           "waypoints": "ELWAY N040.44.10.451,W103.41.24.530/ho BRNKO/a14000-16000 PICKK/a14000- BLTZZ/a12000/s250 BWLIN/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
         },
         {
+          "airports": ["KBJC"],
           "airlines": {
             "KBJC": [
               {
@@ -8581,6 +8605,7 @@
     "DUNNN6": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8624,6 +8649,7 @@
           }
         },
         {
+          "airports": ["KBJC"],
           "airlines": {
             "KBJC": [
               {
@@ -8647,6 +8673,7 @@
           "waypoints": "XPAIN DUNNN/a19000-22000 IMAGN/a16000 N039.01.42.159,W104.06.50.833/ho BYEBI/a14000/s250 XBGIN/a13000-14000 GATME/a12000 OLLVR/a12000 HERLY/a11000 CROWZ/a10000/h327"
         },
         {
+          "airports": ["KAPA"],
           "airlines": {
             "KAPA": [
               {
@@ -8680,6 +8707,7 @@
     "PINNR3": {
       "arrivals": [
         {
+          "airports": ["KAPA", "KFNL", "KGXY"],
           "airlines": {
             "KAPA": [
               {
@@ -8713,6 +8741,7 @@
           "waypoints": "BANNA CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
         },
         {
+          "airports": ["KBJC"],
           "airlines": {
             "KBJC": [
               {
@@ -8736,6 +8765,7 @@
     "ZOMBZ6": {
       "arrivals": [
         {
+          "airports": ["KAPA"],
           "airlines": {
             "KAPA": [
               {
@@ -8765,6 +8795,7 @@
     "Final-NW-Gates-LN": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -8838,6 +8869,7 @@
           "waypoints": "YESSS BAACK/a13000+ BABAA/a12000/s250/ho HIMOM/a11000/s210/h173"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -8893,6 +8925,7 @@
     "Final-NE-Gates-LN": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -8958,6 +8991,7 @@
           "waypoints": "DEELO/a15000-17000 FULLA/a13000-15000/s250 FFFAT/ho DOGGG/a11000/s210/h173"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9065,6 +9099,7 @@
     "Final-CLASH-LN": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9164,6 +9199,7 @@
     "Final-NIIXX-LN": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9237,6 +9273,7 @@
     "Final-SSKII-LN": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9316,6 +9353,7 @@
     "Final-TBARR-LN": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9395,6 +9433,7 @@
     "Final-SW-Gates-LS": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9469,6 +9508,7 @@
           "waypoints": "TLRID/a15000-17000 EPPIC/a13000-15000/s240/ho RDDVL CLFFF/a11000/s210/h353"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9548,6 +9588,7 @@
     "Final-SE-Gates-LS": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9643,6 +9684,7 @@
           "waypoints": "JURKY/a15000-17000 JAAAM/a13000-15000/s250 HUDPI/ho QWIKE/a11000/s210/h353"
         },
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9716,6 +9758,7 @@
     "Final-AALLE-LS": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9785,6 +9828,7 @@
     "Final-LAWGR-LS": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9893,6 +9937,7 @@
     "Final-FLATI-LS": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -9971,6 +10016,7 @@
     "Final-LONGZ-LS": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10032,6 +10078,7 @@
     "Final-NW-Gates-LW": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10102,6 +10149,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "FLATI5",
+          "star_feeds": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"],
           "speed_restriction": 250,
           "waypoints": "FLATI/a19000-22000/s270 ELLDO/a16000-19000/s250 TOTTT/a15000-17000 YESSS SKEWD/a13000-15000/s250 LEKEE/a12000+ XCUTV CAPTJ/a11000/s210/h083/ho"
         }
@@ -10110,6 +10158,7 @@
     "Final-SW-Gates-LW": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10182,6 +10231,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "SSKII4",
+          "star_feeds": ["LARKS3", "POWDR1", "SSKII4", "TBARR4"],
           "speed_restriction": 250,
           "waypoints": "SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP JIBAT/a11000/s210/h082/ho"
         }
@@ -10190,6 +10240,7 @@
     "Final-AALLE-LW": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10252,6 +10303,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "AALLE4",
+          "star_feeds": ["AALLE4", "LANDR3"],
           "speed_restriction": 250,
           "waypoints": "AALLE/a19000 HEDDD/a16000-19000/s250 CRUNK/a14000/h222/ho"
         }
@@ -10260,6 +10312,7 @@
     "Final-CLASH-LW": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10352,6 +10405,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "CLASH5",
+          "star_feeds": ["CLASH5", "DANDD1"],
           "speed_restriction": 250,
           "waypoints": "CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250 ERVNN/a14000 FIDLS/a13000/s210/h351/ho"
         }
@@ -10360,6 +10414,7 @@
     "Final-LAWGR-LW": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10468,6 +10523,7 @@
     "Final-NIIXX-LW": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10534,6 +10590,7 @@
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "NIIXX4",
+          "star_feeds": ["NIIXX4", "QUAIL1"],
           "speed_restriction": 250,
           "waypoints": "NIIXX/a19000-22000/s280 HAGGR/a15000-19000/s250 GEILS/a14000/h317/ho"
         }
@@ -10542,6 +10599,7 @@
     "Final-SE-Gates-LE": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10634,6 +10692,7 @@
           "scratchpad": "R07",
           "secondary_scratchpad": "ILS",
           "star": "CLASH5",
+          "star_feeds": ["CLASH5", "DANDD1", "NIIXX4", "QUAIL1"],
           "speed_restriction": 250,
           "waypoints": "CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250 JURKY/a15000-17000 ROOTZ/a13000-15000/s250 RPIDS BBOOK/a11000/s210/h263/ho"
         }
@@ -10642,6 +10701,7 @@
     "Final-NE-Gates-LE": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10704,6 +10764,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "AALLE4",
+          "star_feeds": ["AALLE4", "LANDR3", "LAWGR4"],
           "speed_restriction": 250,
           "waypoints": "AALLE/a19000 HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT HAITR/a11000/s210/h263/ho"
         }
@@ -10712,6 +10773,7 @@
     "Final-FLATI-LE": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10782,6 +10844,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "FLATI5",
+          "star_feeds": ["FLATI5", "RAMMS8"],
           "speed_restriction": 250,
           "waypoints": "ELLDO/a16000-19000/s250 MLVVA/a14000/h132/ho"
         }
@@ -10790,6 +10853,7 @@
     "Final-LONGZ-LE": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10843,6 +10907,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "LONGZ4",
+          "star_feeds": ["LONGZ4", "TOMSN9"],
           "speed_restriction": 250,
           "waypoints": "FLNEL/a16000-19000/s250 GILPN/a14000 BASHE/a13000/s210/h170/ho"
         }
@@ -10851,6 +10916,7 @@
     "Final-SSKII-LE": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -10923,6 +10989,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "SSKII4",
+          "star_feeds": ["POWDR1", "SSKII4"],
           "waypoints": "BGDEE/a17000-19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352/ho"
         }
       ]
@@ -10930,6 +10997,7 @@
     "Final-TBARR-LE": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -11002,6 +11070,7 @@
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "TBARR4",
+          "star_feeds": ["LARKS3", "TBARR4"],
           "waypoints": "MNARK/a17000-19000/s250 SUMTT/a14000/h033/ho"
         }
       ]
@@ -11009,6 +11078,7 @@
     "COS Arrivals/Overflights": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -11088,6 +11158,7 @@
     "CYS Arrivals/Overflights": {
       "arrivals": [
         {
+          "airports": ["KDEN"],
           "airlines": {
             "KDEN": [
               {
@@ -11106,6 +11177,7 @@
           "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho DEN"
         },
         {
+          "airports": ["KAPA", "KBKF"],
           "airlines": {
             "KAPA": [
               {
@@ -11145,6 +11217,7 @@
           "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho BJC"
         },
         {
+          "airports": ["KBJC", "KCFO", "KFNL", "KGXY"],
           "airlines": {
             "KFNL": [
               {
@@ -11230,7 +11303,6 @@
     "_DEN_35R": "N39.49.55.270,W104.38.30.043"
   },
   "name": "KDEN",
-  "primary_airport": "KDEN",
   "scenarios": {
     "North Calm": {
       "arrival_runways": [

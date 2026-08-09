@@ -22,6 +22,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "KFAT" } },
     "areas": {
       "1": {
         "video_maps": [

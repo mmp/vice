@@ -351,6 +351,60 @@ func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, paneExtent math.Extent2
 		style, td, "PREVIEW AREA (P)", ld)
 }
 
+// systemAltimeter returns the station whose setting the SSA ALTSTG field shows
+// (5-55): the area's adapted one if the user's position is in an area that
+// gives one, otherwise the facility's.
+func systemAltimeter(ctx *panes.Context) string {
+	if area := ctx.UserController().Area; area != "" {
+		if ac, ok := ctx.FacilityAdaptation.Areas[area]; ok && ac.SystemAltimeter != "" {
+			return ac.SystemAltimeter
+		}
+	}
+	return ctx.FacilityAdaptation.Lists.SSA.SystemAltimeter
+}
+
+// altimeterAirports returns the airports the SSA altimeter list covers: the
+// controller's adapted list first, then the area's, then the facility's, and
+// failing all of those the scenario's own IFR airports.
+func (sp *STARSPane) altimeterAirports(ctx *panes.Context) []string {
+	if cc, ok := ctx.FacilityAdaptation.Controllers[ctx.UserPrimaryPosition()]; ok && len(cc.Altimeters) > 0 {
+		return cc.Altimeters
+	}
+	if area := ctx.UserController().Area; area != "" {
+		if ac, ok := ctx.FacilityAdaptation.Areas[area]; ok && len(ac.Altimeters) > 0 {
+			return ac.Altimeters
+		}
+	}
+	if fa := ctx.FacilityAdaptation.Lists.SSA.Altimeters; len(fa) > 0 {
+		return fa
+	}
+
+	airports := util.FilterSlice(util.SortedMapKeys(ctx.Client.State.Airports), func(icao string) bool {
+		return ctx.Client.State.Airports[icao].HasIFROperations()
+	})
+
+	// Sort via 1. system altimeter, 2. tower list index, 3. alphabetic
+	system := systemAltimeter(ctx)
+	sort.Slice(airports, func(i, j int) bool {
+		if airports[i] == system {
+			return true
+		} else if airports[j] == system {
+			return false
+		} else {
+			a, b := ctx.Client.State.Airports[airports[i]], ctx.Client.State.Airports[airports[j]]
+			ai := util.Select(a.TowerListIndex != 0, a.TowerListIndex, 1000)
+			bi := util.Select(b.TowerListIndex != 0, b.TowerListIndex, 1000)
+			if ai != bi {
+				return ai < bi
+			}
+		}
+		return airports[i] < airports[j]
+	})
+
+	// 2-79: no more than 6 are displayed.
+	return airports[:min(len(airports), 6)]
+}
+
 func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle renderer.TextStyle, td *renderer.TextDrawBuilder,
 	transforms radar.ScopeTransformations, ld *renderer.ColoredLinesDrawBuilder, paneExtent math.Extent2D, cb *renderer.CommandBuffer) math.Extent2D {
 	ps := sp.currentPrefs()
@@ -423,7 +477,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 			text += ctx.InterpolatedSimTime.UTC().Format("1504/05 ")
 		}
 		if filter.All || filter.Altimeter {
-			if metar, ok := ctx.Client.State.METAR[ctx.Client.State.PrimaryAirport]; ok {
+			if metar, ok := ctx.Client.State.METAR[systemAltimeter(ctx)]; ok {
 				text += fmt.Sprintf("%4.2f", metar.Altimeter_inHg())
 			}
 		}
@@ -608,52 +662,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	}
 
 	if filter.All || filter.AirportWeather {
-		// Check for controller-specific altimeters first, then per-area,
-		// then facility-level SSA altimeters, then auto-discover.
-		var airports []string
-		if cc, ok := ctx.FacilityAdaptation.Controllers[ctx.UserPrimaryPosition()]; ok {
-			airports = cc.Altimeters
-		}
-		if len(airports) == 0 {
-			if area := ctx.UserController().Area; area != "" {
-				if ac, ok := ctx.FacilityAdaptation.Areas[area]; ok {
-					airports = ac.Altimeters
-				}
-			}
-		}
-		if len(airports) == 0 {
-			airports = ctx.FacilityAdaptation.Lists.SSA.Altimeters
-		}
-		if len(airports) == 0 {
-			airports = util.SortedMapKeys(ctx.Client.State.Airports)
-
-			// Filter out VFR-only
-			airports = util.FilterSlice(airports, func(icao string) bool {
-				return ctx.Client.State.Airports[icao].HasIFROperations()
-			})
-
-			// Sort via 1. primary? 2. tower list index, 3. alphabetic
-			sort.Slice(airports, func(i, j int) bool {
-				if airports[i] == ctx.Client.State.PrimaryAirport {
-					return true
-				} else if airports[j] == ctx.Client.State.PrimaryAirport {
-					return false
-				} else {
-					a, b := ctx.Client.State.Airports[airports[i]], ctx.Client.State.Airports[airports[j]]
-					ai := util.Select(a.TowerListIndex != 0, a.TowerListIndex, 1000)
-					bi := util.Select(b.TowerListIndex != 0, b.TowerListIndex, 1000)
-					if ai != bi {
-						return ai < bi
-					}
-				}
-				return airports[i] < airports[j]
-			})
-
-			// 2-79: no more than 6 are displayed.
-			if len(airports) > 6 {
-				airports = airports[:6]
-			}
-		}
+		airports := sp.altimeterAirports(ctx)
 
 		var altimeters []string
 		for _, ap := range airports {

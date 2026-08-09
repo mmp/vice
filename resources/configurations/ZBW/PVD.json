@@ -247,9 +247,7 @@
           "airports": ["KOQU"]
         }
       ],
-      "ssa": {
-        "altimeters": ["KPVD"]
-      }
+      "ssa": { "system_altimeter": "KPVD", "altimeters": ["KPVD"] }
     },
     "stars_macros": [
       {

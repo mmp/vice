@@ -1194,7 +1194,8 @@
           "AWYS__VICTOR AIRWAYS",
           "RNAV9__CYS RNAV RWY 09"
         ],
-        "center": "KDEN"
+        "center": "KDEN",
+        "system_altimeter": "KDEN"
       },
       "5": {
         "video_maps": [
@@ -1210,7 +1211,8 @@
           "GJT SATS",
           "GJT VFR"
         ],
-        "center": "KGJT"
+        "center": "KGJT",
+        "system_altimeter": "KGJT"
       },
       "6": {
         "video_maps": [
@@ -1227,7 +1229,8 @@
           "RNAV9__CYS RNAV RWY 09"
         ],
         "center": "KCYS",
-        "range": 30
+        "range": 30,
+        "system_altimeter": "KCYS"
       },
       "2": {
         "center": "KDEN"
@@ -1260,7 +1263,10 @@
           "id": "G",
           "airports": ["KGJT"]
         }
-      ]
+      ],
+      "ssa": {
+        "system_altimeter": "KDEN"
+      }
     },
     "datablocks": {
       "clock_phase": {

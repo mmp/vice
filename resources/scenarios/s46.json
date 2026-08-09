@@ -308,6 +308,7 @@
           "initial_altitude": 12000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -360,6 +361,7 @@
           "initial_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -437,6 +439,7 @@
           "initial_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -524,6 +527,7 @@
           "initial_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -611,6 +615,7 @@
           "initial_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -977,6 +982,7 @@
           "initial_altitude": 12000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -1274,6 +1280,7 @@
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -1362,6 +1369,7 @@
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -1450,6 +1458,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -1538,6 +1547,7 @@
           "initial_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -1626,6 +1636,7 @@
           "initial_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -1923,6 +1934,7 @@
           "initial_altitude": 18000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -2220,6 +2232,7 @@
           "initial_altitude": 14000,
           "initial_speed": 200,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -2257,6 +2270,7 @@
           "initial_altitude": 14000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSEA"],
           "airlines": {
             "KSEA": [
               {
@@ -2299,7 +2313,6 @@
     "_SEA_34Rb": "N47.25.52.203,W122.18.28.895"
   },
   "name": "KSEA",
-  "primary_airport": "KSEA",
   "reporting_points": ["GLASR", "RADDY", "KRIEG", "JAWBN", "MARNR", "OLM", "SKYKO"],
   "scenarios": {
     "KSEA South": {

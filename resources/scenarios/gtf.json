@@ -79,6 +79,7 @@
           "initial_altitude": 13000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KGTF"],
           "airlines": {
             "KGTF": [
               {
@@ -111,6 +112,7 @@
           "initial_altitude": 13000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KGTF"],
           "airlines": {
             "KGTF": [
               {
@@ -137,7 +139,6 @@
   },
   "default_scenario": "Land North",
   "name": "GTF",
-  "primary_airport": "KGTF",
   "scenarios": {
     "Land North": {
       "arrival_runways": [

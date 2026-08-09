@@ -2,7 +2,6 @@
   "tracon": "I90",
   "name": "Consolidated",
   "default_scenario": "I90 - IAH West HOU 13",
-  "primary_airport": "KIAH",
   "airports": {
     "00R": {
       "vfr": {
@@ -6024,6 +6023,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -6127,6 +6127,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -6182,6 +6183,7 @@
           "initial_altitude": 14000,
           "initial_speed": 210,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -6214,6 +6216,7 @@
           "initial_altitude": 17000,
           "initial_speed": 210,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -6237,6 +6240,7 @@
           "initial_altitude": 14000,
           "initial_speed": 210,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -6268,6 +6272,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -6309,6 +6314,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -6371,6 +6377,7 @@
           "initial_altitude": 22500,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -6403,6 +6410,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -6424,6 +6432,7 @@
           "initial_altitude": 11000,
           "initial_speed": 210,
           "expect_approach": null,
+          "airports": ["KEFD", "KGLS", "KHOU", "KSGR"],
           "airlines": {
             "KEFD": [
               {
@@ -6486,6 +6495,7 @@
           "initial_altitude": 25500,
           "initial_speed": 280,
           "expect_approach": "I6L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -6575,6 +6585,7 @@
           "initial_altitude": 25500,
           "initial_speed": 280,
           "expect_approach": "I6L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -6749,6 +6760,7 @@
           "initial_altitude": 27000,
           "initial_speed": 280,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -6992,6 +7004,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7104,6 +7117,7 @@
           "initial_altitude": 26000,
           "initial_speed": 280,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7125,6 +7139,7 @@
           "initial_altitude": 24500,
           "initial_speed": 280,
           "expect_approach": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7220,6 +7235,7 @@
           "initial_altitude": 24500,
           "initial_speed": 280,
           "expect_approach": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7376,6 +7392,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7405,6 +7422,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7648,6 +7666,7 @@
           "initial_altitude": 21500,
           "initial_speed": 280,
           "expect_approach": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7760,6 +7779,7 @@
           "initial_altitude": 21300,
           "initial_speed": 280,
           "expect_approach": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7781,6 +7801,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7939,6 +7960,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7961,6 +7983,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -7992,6 +8015,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -8027,6 +8051,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -8108,6 +8133,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -8140,6 +8166,7 @@
           "initial_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -8186,6 +8213,7 @@
           "initial_altitude": 26000,
           "initial_speed": 280,
           "expect_approach": "I27",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -8351,6 +8379,7 @@
           "initial_altitude": 26000,
           "initial_speed": 280,
           "expect_approach": "I27",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -8516,6 +8545,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -8538,6 +8568,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -8565,6 +8596,7 @@
           "initial_altitude": 24000,
           "initial_speed": 20,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -8586,6 +8618,7 @@
           "initial_altitude": 29000,
           "initial_speed": 280,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -8751,6 +8784,7 @@
           "initial_altitude": 29000,
           "initial_speed": 280,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -8916,6 +8950,7 @@
           "initial_altitude": 9000,
           "initial_speed": 210,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -8938,6 +8973,7 @@
           "initial_altitude": 9000,
           "initial_speed": 210,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -8964,6 +9000,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -8984,6 +9021,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -9004,6 +9042,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -9041,6 +9080,7 @@
           "initial_altitude": 13000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -9078,6 +9118,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -9114,6 +9155,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -9146,6 +9188,7 @@
           "initial_altitude": 13000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -9178,6 +9221,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDWH"],
           "airlines": {
             "KDWH": [
               {
@@ -9214,6 +9258,7 @@
           "initial_altitude": 29000,
           "initial_speed": 280,
           "expect_approach": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -9303,6 +9348,7 @@
           "initial_altitude": 29000,
           "initial_speed": 280,
           "expect_approach": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -9477,6 +9523,7 @@
           "initial_altitude": 15000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KEFD", "KGLS", "KHOU", "KSGR", "KTME"],
           "airlines": {
             "KHOU": [
               {
@@ -9597,6 +9644,7 @@
           "initial_altitude": 15000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KEFD", "KGLS", "KSGR", "KTME"],
           "airlines": {
             "KEFD": [
               {
@@ -9695,6 +9743,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KEFD", "KGLS", "KSGR", "KTME"],
           "airlines": {
             "KEFD": [
               {
@@ -9797,6 +9846,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": "I27",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -9955,6 +10005,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": "I27",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -9977,6 +10028,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I27",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -10008,6 +10060,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I27",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -10043,6 +10096,7 @@
           "initial_altitude": 14000,
           "initial_speed": 210,
           "expect_approach": null,
+          "airports": ["KEFD", "KHOU", "KSGR"],
           "airlines": {
             "KHOU": [
               {
@@ -10084,6 +10138,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGLS", "KHOU", "KSGR"],
           "airlines": {
             "KHOU": [
               {
@@ -10129,6 +10184,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -10151,6 +10207,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -10178,6 +10235,7 @@
           "initial_altitude": 21000,
           "initial_speed": 20,
           "expect_approach": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -10199,6 +10257,7 @@
           "initial_altitude": 13000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KEFD", "KGLS", "KHOU", "KSGR", "KTME"],
           "airlines": {
             "KEFD": [
               {
@@ -10326,6 +10385,7 @@
           "initial_altitude": 15000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KEFD", "KGLS", "KSGR", "KTME"],
           "airlines": {
             "KEFD": [
               {
@@ -10440,6 +10500,7 @@
           "initial_altitude": 31000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGLS", "KHOU", "KSGR"],
           "airlines": {
             "KGLS": [
               {
@@ -10545,6 +10606,7 @@
           "initial_altitude": 31000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KGLS", "KHOU", "KSGR"],
           "airlines": {
             "KGLS": [
               {
@@ -10634,6 +10696,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -10729,6 +10792,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -10885,6 +10949,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -10906,11 +10971,13 @@
         {
           "spawn": "DOOBI@0.0",
           "star": "DOOBI3",
+          "star_feeds": ["DOOBI3", "HUDZY5", "SKNRD5"],
           "initial_controller": "1D",
           "initial_altitude": 15000,
           "initial_speed": 250,
           "expect_approach": "I6L",
           "scratchpad": "I6L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -11158,11 +11225,13 @@
         {
           "spawn": "DRLLR@0.0",
           "star": "DRLLR5",
+          "star_feeds": ["BAZBL1", "DRLLR5", "RIICE1"],
           "initial_controller": "1N",
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": "I6R",
           "scratchpad": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -11515,12 +11584,14 @@
       "arrivals": [
         {
           "waypoints": "N030.24.02.401,W094.41.59.906 KENNN",
+          "star_feeds": ["GESNR2", "OHIIO4"],
           "star": "GESNR2",
           "initial_controller": "1D",
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": "I8L",
           "scratchpad": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -11917,11 +11988,13 @@
         {
           "spawn": "MPORT@0.0",
           "star": "GUSHR3",
+          "star_feeds": ["BAZBL1", "DRLLR5", "GUSHR3", "RIICE1"],
           "initial_controller": "1N",
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": "I8R",
           "scratchpad": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -12275,11 +12348,13 @@
         {
           "spawn": "GMANN@0.0",
           "star": "HTOWN3",
+          "star_feeds": ["DUUUK4", "HTOWN3", "TEJAS5"],
           "initial_controller": "1X",
           "initial_altitude": 13000,
           "initial_speed": 250,
           "expect_approach": "I8R",
           "scratchpad": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -12472,6 +12547,7 @@
           "initial_speed": 250,
           "expect_approach": "I27",
           "scratchpad": "I27",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -12786,11 +12862,13 @@
         {
           "spawn": "MSCOT@0.0",
           "star": "MSCOT4",
+          "star_feeds": ["GUSHR3", "MSCOT4", "TTORO3"],
           "initial_controller": "1N",
           "initial_altitude": 10000,
           "initial_speed": 280,
           "expect_approach": "I6R",
           "scratchpad": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -13144,11 +13222,13 @@
         {
           "spawn": "KONZZ@0.0",
           "star": "NNCEE2",
+          "star_feeds": ["GILCO5", "LINKK1", "NNCEE2", "SOULL1"],
           "initial_controller": "1G",
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": "I9",
           "scratchpad": "I9",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -13462,12 +13542,14 @@
       "arrivals": [
         {
           "waypoints": "N030.16.54.402,W094.41.32.495 SKNRD/a16000-/s280",
+          "star_feeds": ["DOOBI3", "HUDZY5", "SKNRD5", "ZEEKK3"],
           "star": "SKNRD5",
           "initial_controller": "1D",
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": "I8L",
           "scratchpad": "I8L",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -13715,11 +13797,13 @@
         {
           "spawn": "CITTE@0.9",
           "star": "TEJAS5",
+          "star_feeds": ["DUUUK4", "HTOWN3", "TEJAS5"],
           "initial_controller": "1X",
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": "I27",
           "scratchpad": "I27",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -13907,11 +13991,13 @@
         {
           "spawn": "SUUNR@0.0",
           "star": "TTORO3",
+          "star_feeds": ["MSCOT4", "TTORO3"],
           "initial_controller": "1N",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": "I8R",
           "scratchpad": "I8R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -14265,11 +14351,13 @@
         {
           "spawn": "ZEEKK@0.0",
           "star": "ZEEKK3",
+          "star_feeds": ["GESNR2", "OHIIO4", "ZEEKK3"],
           "initial_controller": "1D",
           "initial_altitude": 13000,
           "initial_speed": 250,
           "expect_approach": "I6R",
           "scratchpad": "I6R",
+          "airports": ["KIAH"],
           "airlines": {
             "KIAH": [
               {
@@ -14527,6 +14615,7 @@
           "initial_speed": 280,
           "expect_approach": "I3R",
           "scratchpad": "I3R",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -14670,6 +14759,7 @@
           "initial_speed": 250,
           "expect_approach": "I3R",
           "scratchpad": "I3R",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -14807,6 +14897,7 @@
           "initial_speed": 250,
           "expect_approach": "I3R",
           "scratchpad": "I3R",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -14919,6 +15010,7 @@
           "initial_speed": 280,
           "expect_approach": "I3R",
           "scratchpad": "I3R",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -15054,6 +15146,7 @@
           "initial_speed": 280,
           "expect_approach": "I1L",
           "scratchpad": "I1L",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -15197,6 +15290,7 @@
           "initial_speed": 250,
           "expect_approach": "I1L",
           "scratchpad": "I1L",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -15334,6 +15428,7 @@
           "initial_speed": 250,
           "expect_approach": "I1L",
           "scratchpad": "I1L",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -15446,6 +15541,7 @@
           "initial_speed": 280,
           "expect_approach": "I1L",
           "scratchpad": "I1L",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -15581,6 +15677,7 @@
           "initial_speed": 240,
           "expect_approach": "I4",
           "scratchpad": "I4",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -15724,6 +15821,7 @@
           "initial_speed": 250,
           "expect_approach": "I4",
           "scratchpad": "I4",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -15861,6 +15959,7 @@
           "initial_speed": 250,
           "expect_approach": "I4",
           "scratchpad": "I4",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -15973,6 +16072,7 @@
           "initial_speed": 280,
           "expect_approach": "I4",
           "scratchpad": "I4",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -16108,6 +16208,7 @@
           "initial_speed": 280,
           "expect_approach": "R22",
           "scratchpad": "R22",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -16251,6 +16352,7 @@
           "initial_speed": 250,
           "expect_approach": "R22",
           "scratchpad": "R22",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -16388,6 +16490,7 @@
           "initial_speed": 250,
           "expect_approach": "R22",
           "scratchpad": "R22",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -16500,6 +16603,7 @@
           "initial_speed": 280,
           "expect_approach": "R22",
           "scratchpad": "R22",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -16635,6 +16739,7 @@
           "initial_speed": 280,
           "expect_approach": "I3R",
           "scratchpad": "I3R",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -16656,6 +16761,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "scratchpad": null,
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {
@@ -16677,6 +16783,7 @@
           "initial_speed": 250,
           "expect_approach": "I3R",
           "scratchpad": "I3R",
+          "airports": ["KHOU"],
           "airlines": {
             "KHOU": [
               {

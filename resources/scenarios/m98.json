@@ -12754,6 +12754,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": "I30R",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -13094,6 +13095,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": "I12L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -13434,6 +13436,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": "I35",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -13774,6 +13777,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I30L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -14165,6 +14169,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I30L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -14440,6 +14445,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I12R",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -14831,6 +14837,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I12R",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -15106,6 +15113,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I35",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -15497,6 +15505,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I35",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -15772,6 +15781,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I30L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -16163,6 +16173,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I30L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -16438,6 +16449,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I30L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -17023,6 +17035,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I12R",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -17608,6 +17621,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I35",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -18193,6 +18207,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I30R",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -18613,6 +18628,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I12L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -19033,6 +19049,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": "I35",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -19453,6 +19470,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": "I30L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -20102,6 +20120,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": "I12R",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -20751,6 +20770,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": "I35",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -21400,6 +21420,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": "I30R",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -21520,6 +21541,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": "I12L",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -21640,6 +21662,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": "I35",
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -21750,6 +21773,7 @@
           "initial_controller": "C10",
           "initial_speed": 250,
           "initial_altitude": 10000,
+          "airports": ["KANE", "KFCM", "KSTP"],
           "airlines": {
             "KFCM": [
               {
@@ -21952,6 +21976,7 @@
           "initial_controller": "C10",
           "initial_speed": 250,
           "initial_altitude": 10000,
+          "airports": ["KANE", "KFCM", "KSTP"],
           "airlines": {
             "KFCM": [
               {
@@ -22156,6 +22181,7 @@
           "initial_controller": "C05",
           "initial_altitude": 5000,
           "initial_speed": 250,
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -22176,6 +22202,7 @@
           "initial_controller": "C05",
           "initial_altitude": 4000,
           "initial_speed": 250,
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -22196,6 +22223,7 @@
           "initial_controller": "C05",
           "initial_altitude": 4000,
           "initial_speed": 195,
+          "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
@@ -22216,6 +22244,7 @@
           "initial_controller": "C09",
           "initial_speed": 250,
           "initial_altitude": 10000,
+          "airports": ["KANE", "KFCM", "KSTP"],
           "airlines": {
             "KFCM": [
               {
@@ -22516,6 +22545,7 @@
           "initial_controller": "C09",
           "initial_speed": 250,
           "initial_altitude": 10000,
+          "airports": ["KANE", "KFCM", "KSTP"],
           "airlines": {
             "KFCM": [
               {
@@ -22769,6 +22799,7 @@
           "initial_controller": "C07",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -22789,6 +22820,7 @@
           "initial_controller": "C07",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -22804,6 +22836,7 @@
           "initial_controller": "C07",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -22819,6 +22852,7 @@
           "initial_controller": "C09",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -22834,6 +22868,7 @@
           "initial_controller": "C09",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KANE"],
           "airlines": {
             "KANE": [
               {
@@ -22849,6 +22884,7 @@
           "initial_controller": "C09",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -22864,6 +22900,7 @@
           "initial_controller": "C07",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KANE"],
           "airlines": {
             "KANE": [
               {
@@ -22883,6 +22920,7 @@
           "initial_controller": "11W",
           "initial_speed": 250,
           "initial_altitude": 10000,
+          "airports": ["KANE", "KFCM", "KSTP"],
           "airlines": {
             "KFCM": [
               {
@@ -23212,6 +23250,7 @@
           "initial_controller": "C06",
           "initial_speed": 250,
           "initial_altitude": 10000,
+          "airports": ["KANE", "KFCM", "KSTP"],
           "airlines": {
             "KFCM": [
               {
@@ -23624,6 +23663,7 @@
           "initial_controller": "C06",
           "initial_speed": 250,
           "initial_altitude": 10000,
+          "airports": ["KANE", "KFCM", "KSTP"],
           "airlines": {
             "KFCM": [
               {
@@ -23968,6 +24008,7 @@
           "initial_controller": "11W",
           "initial_speed": 250,
           "initial_altitude": 6000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -23993,6 +24034,7 @@
           "initial_controller": "11W",
           "initial_speed": 250,
           "initial_altitude": 6000,
+          "airports": ["KSTP"],
           "airlines": {
             "KSTP": [
               {
@@ -24016,6 +24058,7 @@
           "initial_controller": "11W",
           "initial_speed": 250,
           "initial_altitude": 6000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -24040,6 +24083,7 @@
           "initial_controller": "C05",
           "initial_speed": 250,
           "initial_altitude": 4000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -24061,6 +24105,7 @@
           "initial_controller": "C05",
           "initial_speed": 250,
           "initial_altitude": 4000,
+          "airports": ["KANE"],
           "airlines": {
             "KANE": [
               {
@@ -24076,6 +24121,7 @@
           "initial_controller": "C05",
           "initial_speed": 250,
           "initial_altitude": 8000,
+          "airports": ["KANE"],
           "airlines": {
             "KANE": [
               {
@@ -24095,6 +24141,7 @@
           "initial_controller": "C07",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KFCM"],
           "airlines": {
             "KFCM": [
               {
@@ -24116,6 +24163,7 @@
           "initial_controller": "C05",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KSTP"],
           "airlines": {
             "KSTP": [
               {
@@ -24140,6 +24188,7 @@
           "initial_controller": "C09",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KANE"],
           "airlines": {
             "KANE": [
               {
@@ -24165,6 +24214,7 @@
           "initial_controller": "C10",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KANE", "KSTP"],
           "airlines": {
             "KANE": [
               {
@@ -24188,6 +24238,7 @@
           "initial_controller": "C10",
           "initial_speed": 250,
           "initial_altitude": 5000,
+          "airports": ["KANE"],
           "airlines": {
             "KANE": [
               {
@@ -24208,7 +24259,6 @@
   },
   "fixes": {},
   "name": "M98",
-  "primary_airport": "KMSP",
   "vfr_reporting_points": [
     {
       "description": "3M Center",

@@ -1323,6 +1323,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCHS", "KJZI"],
           "airlines": {
             "KCHS": [
               {
@@ -1417,6 +1418,7 @@
           "initial_altitude": 11000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCHS", "KJZI"],
           "airlines": {
             "KCHS": [
               {
@@ -1495,6 +1497,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KCHS", "KJZI"],
           "airlines": {
             "KCHS": [
               {
@@ -1563,7 +1566,6 @@
   },
   "default_scenario": "KCHS North",
   "name": "KCHS",
-  "primary_airport": "KCHS",
   "scenarios": {
     "KCHS North": {
       "arrival_runways": [

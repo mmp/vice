@@ -317,6 +317,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KMDT" },
       "coordination": [
         {
           "name": ".       CXY",

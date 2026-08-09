@@ -114,25 +114,20 @@ func (s *Sim) loadHistoricalFlights() {
 		return
 	}
 
-	data, err := av.ReadFlightData(util.GetResourcesFS(), s.State.Facility)
-	if err != nil || data == nil {
-		s.lg.Errorf("%s: no historical flight data: %v", s.State.Facility, err)
+	departureAirports, arrivalAirports := s.State.LaunchConfig.IFRAirports()
+	flights, err := av.ReadFlightDataCells(util.GetResourcesFS(),
+		av.FlightDataCells(departureAirports, arrivalAirports))
+	if err != nil {
+		s.lg.Errorf("%s historical flight data: %v", s.State.Facility, err)
 		return
 	}
-
-	departureAirports, arrivalAirports := s.State.LaunchConfig.IFRAirports()
 
 	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
 	// before the selected time, and it warms up by flying the traffic from that
 	// half hour the same way the scenario's own generator would.
 	start := s.StartTime.Time()
-	flights, err := av.FlightsInWindow(data, departureAirports, arrivalAirports, av.DB.Airlines,
+	s.historicalFlights = av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
 		start.Add(-PrespawnDuration), start.Add(historicalFlightWindow))
-	if err != nil {
-		s.lg.Errorf("%s historical flight data: %v", s.State.Facility, err)
-		return
-	}
-	s.historicalFlights = flights
 }
 
 // IFRAirports returns every airport the scenario generates IFR traffic at, departures and
@@ -277,7 +272,7 @@ func (s *Sim) candidateArrivals(arrivalAirport string) []candidateArrival {
 		}
 		arrivals := s.State.InboundFlows[group].Arrivals
 		for i := range arrivals {
-			if slices.Contains(arrivals[i].ServedAirports(), arrivalAirport) {
+			if slices.Contains(arrivals[i].Airports, arrivalAirport) {
 				candidates = append(candidates, candidateArrival{group, i, &arrivals[i]})
 			}
 		}
@@ -444,7 +439,7 @@ func trafficCountsSpan(start time.Time) (first, last time.Time) {
 //
 // historical is the facility's flights on and around the day previewed, however much of them the
 // caller has on hand; the window and the scenario's airports are selected from it here.
-func TrafficCounts(lc *LaunchConfig, start time.Time, primaryAirport string,
+func TrafficCounts(lc *LaunchConfig, start time.Time,
 	historical []av.Flight) (departures, arrivals []uint16, err error) {
 	first, last := trafficCountsSpan(start)
 	start = first.Add(TrafficCountsPad)
@@ -452,13 +447,13 @@ func TrafficCounts(lc *LaunchConfig, start time.Time, primaryAirport string,
 	var flights []av.Flight
 	switch lc.TrafficSource {
 	case TrafficSourceTimetable:
-		catalog, err := LoadAirportTimetables(primaryAirport)
+		catalog, err := LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
 			return nil, nil, err
 		}
-		timetable, ok := catalog.Find(primaryAirport, lc.TimetableID)
+		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
 		if !ok {
-			return nil, nil, fmt.Errorf("timetable %q not found for %s", lc.TimetableID, primaryAirport)
+			return nil, nil, fmt.Errorf("timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
 		}
 		flights = timetableFlights(NewSimTime(start), timetable, lc.TimetableStartMinute,
 			lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
@@ -660,7 +655,7 @@ func (bc backgroundClassifier) inboundIsBackground(flow *av.InboundFlow, airport
 
 	judged := 0
 	for _, arr := range flow.Arrivals {
-		if !slices.Contains(arr.ServedAirports(), airport) {
+		if !slices.Contains(arr.Airports, airport) {
 			continue
 		}
 		judged++
@@ -1313,15 +1308,15 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 		}
 
 	case TrafficSourceTimetable:
-		catalog, err := LoadAirportTimetables(s.State.PrimaryAirport)
+		catalog, err := LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
 			s.trafficProvider = errorTrafficProvider{err: err}
 			return s.trafficProvider
 		}
-		timetable, ok := catalog.Find(s.State.PrimaryAirport, lc.TimetableID)
+		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
 		if !ok {
 			s.trafficProvider = errorTrafficProvider{err: fmt.Errorf("timetable %q not found for %s",
-				lc.TimetableID, s.State.PrimaryAirport)}
+				lc.TimetableID, lc.TimetableAirport)}
 			return s.trafficProvider
 		}
 		s.log("Traffic source: timetable %q for %s", timetable.Name, timetable.Airport)

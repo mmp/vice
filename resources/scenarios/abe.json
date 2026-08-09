@@ -336,6 +336,7 @@
           "initial_speed": 250,
           "description": "EWR S sats",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -355,6 +356,7 @@
           "initial_speed": 250,
           "description": "EWR via BWZ",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -375,6 +377,7 @@
           "initial_speed": 250,
           "description": "EWR N sats",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -418,6 +421,7 @@
           "initial_speed": 250,
           "description": "MDT departures",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -438,6 +442,7 @@
           "initial_speed": 250,
           "description": "RDG departures",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -461,6 +466,7 @@
           "assigned_altitude": 4000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -513,6 +519,7 @@
           "initial_speed": 250,
           "description": "via KRAZE",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -560,6 +567,7 @@
           "initial_speed": 250,
           "description": "via SNOWY",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -607,6 +615,7 @@
           "initial_speed": 250,
           "description": "via SLATT",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -659,6 +668,7 @@
           "initial_speed": 250,
           "description": "via V162 DUMMR",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -702,6 +712,7 @@
           "initial_speed": 250,
           "description": "via V93 DUMMR",
           "expect_approach": null,
+          "airports": ["KABE"],
           "airlines": {
             "KABE": [
               {
@@ -725,7 +736,6 @@
   },
   "default_scenario": "KABE Depart 6 Land 6",
   "name": "KABE",
-  "primary_airport": "KABE",
   "reporting_points": ["BWZ", "DUMMR", "ETX", "FJC", "FLOAT", "HUO", "KRAZE", "SLATT", "SNOWY"],
   "scenarios": {
     "KABE Depart 24 Land 24": {

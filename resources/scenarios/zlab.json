@@ -2134,6 +2134,7 @@
           "initial_altitude": [29000, 31000, 33000, 35000],
           "initial_speed": 300,
           "expect_approach": "I6R",
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -2186,6 +2187,7 @@
           "initial_altitude": [29000, 31000, 33000],
           "initial_speed": 300,
           "expect_approach": "RYL",
+          "airports": ["KPSP"],
           "airlines": {
             "KPSP": [
               {
@@ -2246,6 +2248,7 @@
           "initial_altitude": 32000,
           "initial_speed": 300,
           "expect_approach": "I4R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2417,6 +2420,7 @@
           "initial_altitude": 32000,
           "initial_speed": 300,
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {

@@ -37,6 +37,7 @@
     }
   },
   "facility_adaptations": {
+    "lists": { "ssa": { "system_altimeter": "PHNL" } },
     "configurations": {
       "STD": {
         "inbound_assignments": {

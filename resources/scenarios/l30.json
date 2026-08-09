@@ -1927,6 +1927,7 @@
           "initial_speed": 250,
           "scratchpad": "BOG",
           "expect_approach": null,
+          "airports": ["KHND"],
           "airlines": {
             "KHND": [
               {
@@ -1968,6 +1969,7 @@
           "initial_speed": 250,
           "scratchpad": "CHO",
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2141,6 +2143,7 @@
           "initial_speed": 280,
           "scratchpad": "CTL",
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2262,6 +2265,7 @@
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVGT"],
           "airlines": {
             "KVGT": [
               {
@@ -2293,6 +2297,7 @@
           "initial_speed": 280,
           "scratchpad": "GAM",
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2311,6 +2316,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHND"],
           "airlines": {
             "KHND": [
               {
@@ -2342,6 +2348,7 @@
           "initial_speed": 280,
           "scratchpad": "JSN",
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2359,6 +2366,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2381,6 +2389,7 @@
           "initial_speed": 280,
           "scratchpad": "JSN",
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2398,6 +2407,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2420,6 +2430,7 @@
           "initial_speed": 280,
           "scratchpad": "JSN",
           "expect_approach": "RY9R",
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2437,6 +2448,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": "RY9R",
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2459,6 +2471,7 @@
           "initial_speed": 280,
           "scratchpad": "JSN",
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2476,6 +2489,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2498,6 +2512,7 @@
           "initial_speed": 280,
           "scratchpad": "NTN",
           "expect_approach": null,
+          "airports": ["KVGT"],
           "airlines": {
             "KVGT": [
               {
@@ -2524,6 +2539,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KHND"],
           "airlines": {
             "KHND": [
               {
@@ -2555,6 +2571,7 @@
           "initial_speed": 280,
           "scratchpad": "RKS",
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2641,6 +2658,7 @@
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2706,6 +2724,7 @@
           "initial_speed": 280,
           "scratchpad": "RDZ",
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2756,6 +2775,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KLAS"],
           "airlines": {
             "KLAS": [
               {
@@ -2786,6 +2806,7 @@
           "initial_speed": 250,
           "scratchpad": "WYL",
           "expect_approach": null,
+          "airports": ["KVGT"],
           "airlines": {
             "KVGT": [
               {
@@ -5163,7 +5184,6 @@
   },
   "magnetic_adjustment": 2,
   "name": "L30 TRACON",
-  "primary_airport": "KLAS",
   "scenarios": {
     "CFG1 (Depart 19L/R/26R Land 19R/26L)": {
       "airspace": {

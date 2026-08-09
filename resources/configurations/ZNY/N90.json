@@ -278,8 +278,7 @@
           "(ISPN) SEY V34 CREAM": "3B",
           "(ISPN) T320 RICED KEYED": "3B",
           "(JFK) ZIGGI": "2G",
-          "BDR1": "3R",
-          "HUD4": "5H",
+          "TRESA2": "5H",
           "PARCH4": "2K",
           "PAWLN1": "2K",
           "SARDI1": "2K"
@@ -579,9 +578,9 @@
           "Intra-TRACON Via HTO": "3B",
           "Intra-TRACON Via LOVES": "3R",
           "Intra-TRACON Via MAD": "3O",
-          "SARDI1": "3H",
           "LOVES1": "3R",
-          "NELIE4": "3B"
+          "NELIE4": "3B",
+          "SARDI1.ISP": "3H"
         },
         "departure_assignments": {
           "KHVN": "3H",
@@ -1409,7 +1408,8 @@
           "JFK ARR/DEP RWY 31L/R"
         ],
         "center": "KLGA",
-        "range": 60
+        "range": 60,
+        "system_altimeter": "KLGA"
       },
       "2": {
         "default_airport": "KJFK",
@@ -1472,7 +1472,8 @@
             "altitude_range": [11000, 99999],
             "receiving_controller": "B17"
           }
-        ]
+        ],
+        "system_altimeter": "KJFK"
       },
       "3": {
         "default_airport": "KISP",
@@ -1507,7 +1508,8 @@
           "EOVM",
           "MVA"
         ],
-        "center": "KISP"
+        "center": "KISP",
+        "system_altimeter": "KISP"
       },
       "4": {
         "default_airport": "KEWR",
@@ -1598,7 +1600,8 @@
             "altitude_range": [10000, 999999],
             "receiving_controller": "81B"
           }
-        ]
+        ],
+        "system_altimeter": "KEWR"
       },
       "5": {
         "default_airport": "KSWF",
@@ -1639,7 +1642,8 @@
           "EOVM",
           "",
           ""
-        ]
+        ],
+        "system_altimeter": "KSWF"
       }
     },
     "datablocks": {
@@ -1672,7 +1676,8 @@
         }
       ],
       "ssa": {
-        "altimeters": ["KJFK", "KLGA", "KEWR", "KTEB", "KISP", "KHPN"]
+        "altimeters": ["KJFK", "KLGA", "KEWR", "KTEB", "KISP", "KHPN"],
+        "system_altimeter": "KEWR"
       }
     }
   },

@@ -1043,6 +1043,7 @@
           "initial_controller": "T11",
           "initial_altitude": 33000,
           "initial_speed": 400,
+          "airports": ["KPNS", "KVPS"],
           "airlines": {
             "KPNS": [
               { "icao": "JIA", "airport": "KCLT" },
@@ -1064,6 +1065,7 @@
           "initial_altitude": 35000,
           "initial_controller": "T11",
           "initial_speed": 400,
+          "airports": ["KPNS"],
           "airlines": {
             "KPNS": [
               { "icao": "ENY", "airport": "KORD" },
@@ -1079,6 +1081,7 @@
           "initial_controller": "T11",
           "initial_altitude": 31000,
           "initial_speed": 400,
+          "airports": ["KVPS"],
           "airlines": {
             "KVPS": [{ "icao": "ENY", "airport": "KORD" }]
           }
@@ -1090,6 +1093,7 @@
           "initial_controller": "H63",
           "initial_altitude": 33000,
           "initial_speed": 400,
+          "airports": ["KTLH"],
           "airlines": {
             "KTLH": [{ "icao": "JIA", "airport": "KDFW" }]
           }
@@ -1105,6 +1109,7 @@
           "initial_controller": "H37",
           "initial_altitude": 37000,
           "initial_speed": 440,
+          "airports": ["KPNS"],
           "airlines": {
             "KPNS": [
               { "icao": "AAL", "airport": "KDFW" },
@@ -1131,6 +1136,7 @@
           "initial_controller": "17",
           "initial_altitude": 24000,
           "initial_speed": 400,
+          "airports": ["KPNS"],
           "airlines": {
             "KPNS": [
               { "icao": "ENY", "airport": "KMIA" },
@@ -1149,6 +1155,7 @@
           "initial_altitude": 36000,
           "initial_speed": 440,
           "initial_controller": "17",
+          "airports": ["KVPS"],
           "airlines": {
             "KVPS": [{ "icao": "ENY", "airport": "KMIA" }]
           }
@@ -1164,6 +1171,7 @@
           "initial_controller": "H63",
           "initial_altitude": 33000,
           "initial_speed": 440,
+          "airports": ["KECP"],
           "airlines": {
             "KECP": [
               { "icao": "JIA", "airport": "KDFW" },

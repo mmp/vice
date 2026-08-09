@@ -3019,6 +3019,7 @@
           "initial_altitude": 27000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -3241,6 +3242,7 @@
           "initial_speed": 280,
           "scratchpad": "SF1",
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -3298,6 +3300,7 @@
           "initial_speed": 280,
           "scratchpad": "SJ1",
           "expect_approach": "Z3L",
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -3340,6 +3343,7 @@
           "initial_altitude": 12000,
           "initial_speed": 280,
           "expect_approach": "Z3L",
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -3385,6 +3389,7 @@
           "initial_speed": 300,
           "scratchpad": "SF1",
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -3607,6 +3612,7 @@
           "initial_speed": 300,
           "scratchpad": "SJ1",
           "expect_approach": null,
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -3795,6 +3801,7 @@
           "initial_speed": 300,
           "scratchpad": "SF1",
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -3900,6 +3907,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -3923,6 +3931,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -3941,6 +3950,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSQL"],
           "airlines": {
             "KSQL": [
               {
@@ -3968,6 +3978,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -3986,6 +3997,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -4004,6 +4016,7 @@
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSQL"],
           "airlines": {
             "KSQL": [
               {
@@ -4031,6 +4044,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -4053,6 +4067,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -4079,6 +4094,7 @@
           "initial_altitude": 10000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSJC"],
           "airlines": {
             "KSJC": [
               {
@@ -4097,6 +4113,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -4204,6 +4221,7 @@
           "initial_speed": 280,
           "scratchpad": "SF1",
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -4292,6 +4310,7 @@
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -4439,6 +4458,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -4511,6 +4531,7 @@
           "initial_altitude": 27000,
           "initial_speed": 300,
           "expect_approach": null,
+          "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
               {
@@ -4569,7 +4590,6 @@
   },
   "default_scenario": "Area B - SFOW (DEP 01s)",
   "name": "NCT Area B",
-  "primary_airport": "KSFO",
   "scenarios": {
     "Area B - SFOW (RWYS 28)": {
       "center": "KSFO",

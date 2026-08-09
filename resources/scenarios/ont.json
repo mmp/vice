@@ -1124,6 +1124,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -1185,6 +1186,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I30",
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -1218,6 +1220,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -1279,6 +1282,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I30",
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -1312,6 +1316,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "Z2L",
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -1373,6 +1378,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I30",
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -1422,6 +1428,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "Z2L",
+          "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
               {
@@ -1483,6 +1490,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I30",
+          "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
               {
@@ -1532,6 +1540,7 @@
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -1586,6 +1595,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSBD"],
           "airlines": {
             "KSBD": [
               {
@@ -1623,6 +1633,7 @@
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -1677,6 +1688,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSBD"],
           "airlines": {
             "KSBD": [
               {
@@ -1721,6 +1733,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPSP"],
           "airlines": {
             "KPSP": [
               {
@@ -1764,6 +1777,7 @@
           "initial_altitude": 20000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KPSP"],
           "airlines": {
             "KPSP": [
               {
@@ -1812,6 +1826,7 @@
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -1855,6 +1870,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -1883,6 +1899,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
               {
@@ -1926,6 +1943,7 @@
           "initial_altitude": 20000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -1969,6 +1987,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -2008,6 +2027,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
               {
@@ -2050,6 +2070,7 @@
           "initial_altitude": 29000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
               {
@@ -2089,6 +2110,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPSP"],
           "airlines": {
             "KPSP": [
               {
@@ -2151,6 +2173,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPSP"],
           "airlines": {
             "KPSP": [
               {
@@ -2212,6 +2235,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KONT"],
           "airlines": {
             "KONT": [
               {
@@ -2247,6 +2271,7 @@
           "assigned_altitude": 7000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSBD"],
           "airlines": {
             "KSBD": [
               {
@@ -2281,6 +2306,7 @@
           "initial_altitude": 24000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KONT", "KSBD"],
           "airlines": {
             "KONT": [
               {
@@ -2360,6 +2386,7 @@
           "initial_altitude": 32000,
           "initial_speed": 300,
           "expect_approach": "I4R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2531,6 +2558,7 @@
           "initial_altitude": 32000,
           "initial_speed": 300,
           "expect_approach": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2641,6 +2669,7 @@
           "initial_altitude": 29000,
           "initial_speed": 300,
           "scratchpad": "I6L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -2814,6 +2843,7 @@
           "initial_speed": 300,
           "expect_approach": "I7R",
           "scratchpad": "I7R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -3611,7 +3641,6 @@
   },
   "default_scenario": "Empire - West/LAXW",
   "name": "Empire Area",
-  "primary_airport": "KONT",
   "scenarios": {
     "Empire - West/LAXW": {
       "airspace": {

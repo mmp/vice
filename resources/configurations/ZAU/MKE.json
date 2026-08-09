@@ -265,6 +265,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KMKE" },
       "coordination": [
         {
           "name": "OSH",

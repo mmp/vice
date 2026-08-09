@@ -804,6 +804,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPIT"],
           "airlines": {
             "KPIT": [
               {
@@ -858,6 +859,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPIT"],
           "airlines": {
             "KPIT": [
               {
@@ -912,6 +914,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPIT"],
           "airlines": {
             "KPIT": [
               {
@@ -955,6 +958,7 @@
           "assigned_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAGC"],
           "airlines": {
             "KAGC": [
               {
@@ -984,11 +988,12 @@
             }
           },
           "cruise_altitude": 19000,
-          "star": "JESEY4",
+          "star": "JESEY5",
           "initial_controller": "C55",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KPIT"],
           "airlines": {
             "KPIT": [
               {
@@ -1027,6 +1032,7 @@
           "assigned_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAGC"],
           "airlines": {
             "KAGC": [
               {
@@ -1057,6 +1063,7 @@
           "assigned_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KAGC"],
           "airlines": {
             "KAGC": [
               {
@@ -1087,7 +1094,6 @@
     "_AGC_10": "N040.21.15.814,W079.56.28.183"
   },
   "name": "KPIT",
-  "primary_airport": "KPIT",
   "reporting_points": ["ETG", "LEJOY", "AIR", "EARED", "CUTTA", "AIR"],
   "scenarios": {
     "PIT West (ARR 28L/R)": {

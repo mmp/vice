@@ -1356,6 +1356,7 @@
           "initial_speed": 290,
           "expect_approach": null,
           "scratchpad": "CAP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1472,6 +1473,7 @@
           "initial_speed": 290,
           "expect_approach": null,
           "scratchpad": "CAP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1587,6 +1589,7 @@
           "initial_speed": 250,
           "expect_approach": null,
           "scratchpad": "CLP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1655,6 +1658,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "SKL",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1706,6 +1710,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "CLP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1774,6 +1779,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "SKL",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1825,6 +1831,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "DLE",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1875,6 +1882,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "DLE",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -1927,6 +1935,7 @@
           "scratchpad": "DLE",
           "secondary_scratchpad": "MTV",
           "expect_approach": "MTV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2025,6 +2034,7 @@
           "scratchpad": "CLP",
           "secondary_scratchpad": "MTV",
           "expect_approach": "MTV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2095,6 +2105,7 @@
           "scratchpad": "SKL",
           "secondary_scratchpad": "MTV",
           "expect_approach": "MTV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2149,6 +2160,7 @@
           "scratchpad": "FRD",
           "secondary_scratchpad": "MTV",
           "expect_approach": "MTV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2240,6 +2252,7 @@
           "scratchpad": "TRP",
           "secondary_scratchpad": "MTV",
           "expect_approach": "MTV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2312,6 +2325,7 @@
           "scratchpad": "CAP",
           "secondary_scratchpad": "MTV",
           "expect_approach": "MTV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2381,6 +2395,7 @@
           "scratchpad": "DLE",
           "secondary_scratchpad": "RIV",
           "expect_approach": "RIV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2464,6 +2479,7 @@
           "scratchpad": "CLP",
           "secondary_scratchpad": "RIV",
           "expect_approach": "RIV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2534,6 +2550,7 @@
           "scratchpad": "SKL",
           "secondary_scratchpad": "RIV",
           "expect_approach": "RIV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2586,6 +2603,7 @@
           "scratchpad": "FRD",
           "secondary_scratchpad": "RIV",
           "expect_approach": "RIV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2646,6 +2664,7 @@
           "scratchpad": "FRD",
           "secondary_scratchpad": "RIV",
           "expect_approach": "RIV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2718,6 +2737,7 @@
           "scratchpad": "CAP",
           "secondary_scratchpad": "RIV",
           "expect_approach": "RIV",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2787,6 +2807,7 @@
           "scratchpad": "DLE",
           "secondary_scratchpad": "ILS",
           "expect_approach": "ILS",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2885,6 +2906,7 @@
           "scratchpad": "CLP",
           "secondary_scratchpad": "ILS",
           "expect_approach": "ILS",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -2955,6 +2977,7 @@
           "scratchpad": "SKL",
           "secondary_scratchpad": "ILS",
           "expect_approach": "ILS",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3009,6 +3032,7 @@
           "scratchpad": "FRD",
           "secondary_scratchpad": "ILS",
           "expect_approach": "ILS",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3100,6 +3124,7 @@
           "scratchpad": "TRP",
           "secondary_scratchpad": "ILS",
           "expect_approach": "ILS",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3172,6 +3197,7 @@
           "scratchpad": "CAP",
           "secondary_scratchpad": "ILS",
           "expect_approach": "ILS",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3241,6 +3267,7 @@
           "scratchpad": "DLE",
           "secondary_scratchpad": "RNY",
           "expect_approach": "RY9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3284,6 +3311,7 @@
           "scratchpad": "DLE",
           "secondary_scratchpad": "RNZ",
           "expect_approach": "RZ9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3334,6 +3362,7 @@
           "scratchpad": "CLP",
           "secondary_scratchpad": "RNY",
           "expect_approach": "RY9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3389,6 +3418,7 @@
           "scratchpad": "CLP",
           "secondary_scratchpad": "RNZ",
           "expect_approach": "RZ9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3419,6 +3449,7 @@
           "scratchpad": "SKL",
           "secondary_scratchpad": "RNY",
           "expect_approach": "RY9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3471,6 +3502,7 @@
           "scratchpad": "FRD",
           "secondary_scratchpad": "RNY",
           "expect_approach": "RY9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3489,6 +3521,7 @@
           "scratchpad": "FRD",
           "secondary_scratchpad": "RNZ",
           "expect_approach": "RZ9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3545,6 +3578,7 @@
           "scratchpad": "FRD",
           "secondary_scratchpad": "RNY",
           "expect_approach": "RY9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3579,6 +3613,7 @@
           "scratchpad": "FRD",
           "secondary_scratchpad": "RNZ",
           "expect_approach": "RZ9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3631,6 +3666,7 @@
           "scratchpad": "CAP",
           "secondary_scratchpad": "RNY",
           "expect_approach": "RY9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3682,6 +3718,7 @@
           "scratchpad": "CAP",
           "secondary_scratchpad": "RNZ",
           "expect_approach": "RZ9",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3748,6 +3785,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "FRD",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3812,6 +3850,7 @@
           "initial_speed": 280,
           "expect_approach": "I1L",
           "scratchpad": "FRA",
+          "airports": ["KADW"],
           "airlines": {
             "KADW": [
               {
@@ -3845,6 +3884,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "FRD",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3908,6 +3948,7 @@
           "initial_speed": 280,
           "expect_approach": "RIV",
           "scratchpad": "FRD",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -3971,6 +4012,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "secondary_scratchpad": "FRD",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -4034,6 +4076,7 @@
           "initial_speed": 280,
           "expect_approach": "RIV",
           "secondary_scratchpad": "FRD",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -4097,6 +4140,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "secondary_scratchpad": "TRP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -4167,6 +4211,7 @@
           "initial_speed": 280,
           "expect_approach": "RIV",
           "secondary_scratchpad": "TRP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -4237,6 +4282,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "secondary_scratchpad": "TRP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -4307,6 +4353,7 @@
           "initial_speed": 280,
           "expect_approach": "RIV",
           "secondary_scratchpad": "TRP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -6532,6 +6579,7 @@
           "initial_speed": 300,
           "expect_approach": "I3L",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -6637,6 +6685,7 @@
           "initial_speed": 300,
           "expect_approach": "I3L",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -6740,6 +6789,7 @@
           "initial_speed": 300,
           "expect_approach": "I5R",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -6845,6 +6895,7 @@
           "initial_speed": 300,
           "expect_approach": "I5R",
           "secondary_scratchpad": "RVN",
+          "airports": ["KBWI"],
           "airlines": {
             "KBWI": [
               {
@@ -6950,6 +7001,7 @@
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "TRP",
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -7016,6 +7068,7 @@
           "initial_speed": 280,
           "expect_approach": "I1L",
           "scratchpad": "TRA",
+          "airports": ["KADW"],
           "airlines": {
             "KADW": [
               {
@@ -7060,6 +7113,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -7081,6 +7135,7 @@
           "initial_altitude": 4000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDAA"],
           "airlines": {
             "KDAA": [
               {
@@ -7102,6 +7157,7 @@
           "initial_altitude": 5000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -7123,6 +7179,7 @@
           "initial_altitude": 4000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDCA"],
           "airlines": {
             "KDCA": [
               {
@@ -7145,7 +7202,6 @@
     "_DCA_33": "N38.50.59.364,W77.01.56.277"
   },
   "name": "Mount Vernon Area",
-  "primary_airport": "KDCA",
   "reporting_points": ["CAPSS", "HOYAS", "BAL", "EYESS", "DEALE", "SEPII", "FORGT", "TRUPS", "OOURR", "DFORT"],
   "scenarios": {
     "MTV - DCA North": {

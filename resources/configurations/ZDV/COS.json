@@ -109,6 +109,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KCOS" },
       "coordination": [
         {
           "name": "Meadow Lake",

@@ -1273,6 +1273,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDJT"],
           "airlines": {
             "KDJT": [
               {
@@ -1396,6 +1397,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KBCT"],
           "airlines": {
             "KBCT": [
               {
@@ -1444,6 +1446,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDJT"],
           "airlines": {
             "KDJT": [
               {
@@ -1504,6 +1507,7 @@
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KBCT"],
           "airlines": {
             "KBCT": [
               {
@@ -1528,6 +1532,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KBCT"],
           "airlines": {
             "KBCT": [
               {
@@ -1573,6 +1578,7 @@
           "cleared_altitude": 7000,
           "initial_speed": 260,
           "expect_approach": null,
+          "airports": ["KBCT", "KDJT"],
           "airlines": {
             "KDJT": [
               {
@@ -1617,6 +1623,7 @@
           "initial_altitude": 19000,
           "initial_speed": 260,
           "expect_approach": null,
+          "airports": ["KFXE", "KPMP"],
           "airlines": {
             "KPMP": [
               {
@@ -1671,6 +1678,7 @@
           "initial_altitude": 10000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDJT"],
           "airlines": {
             "KDJT": [
               {
@@ -1704,6 +1712,7 @@
           "initial_altitude": 10000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KBCT"],
           "airlines": {
             "KBCT": [
               {
@@ -1725,6 +1734,7 @@
           "initial_altitude": 15000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDJT"],
           "airlines": {
             "KDJT": [
               {
@@ -1779,6 +1789,7 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KDJT"],
           "airlines": {
             "KDJT": [
               {
@@ -2011,6 +2022,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KVRB"],
           "airlines": {
             "KVRB": [
               {
@@ -2062,6 +2074,7 @@
           "assigned_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KVRB"],
           "airlines": {
             "KVRB": [
               {
@@ -2107,6 +2120,7 @@
           "assigned_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVRB"],
           "airlines": {
             "KVRB": [
               {
@@ -2137,6 +2151,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2177,6 +2192,7 @@
           "assigned_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2225,6 +2241,7 @@
           "initial_speed": 250,
           "expect_approach": "R12",
           "secondary_scratchpad": "GPS",
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2269,6 +2286,7 @@
           "initial_speed": 250,
           "expect_approach": "R30",
           "secondary_scratchpad": "GPS",
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2312,6 +2330,7 @@
           "initial_altitude": 16000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2364,6 +2383,7 @@
           "assigned_altitude": 6000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KVRB"],
           "airlines": {
             "KVRB": [
               {
@@ -2407,6 +2427,7 @@
           "initial_altitude": 6000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KVRB"],
           "airlines": {
             "KVRB": [
               {
@@ -2443,6 +2464,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVRB"],
           "airlines": {
             "KVRB": [
               {
@@ -2464,6 +2486,7 @@
           "initial_altitude": 6000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2514,6 +2537,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2543,6 +2567,7 @@
           "initial_altitude": 6000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KVRB"],
           "airlines": {
             "KVRB": [
               {
@@ -2580,6 +2605,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVRB"],
           "airlines": {
             "KVRB": [
               {
@@ -2601,6 +2627,7 @@
           "initial_altitude": 6000,
           "initial_speed": 150,
           "expect_approach": "R30",
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2651,6 +2678,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": "R30",
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2680,6 +2708,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KDJT"],
           "airlines": {
             "KDJT": [
               {
@@ -2799,6 +2828,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KBCT"],
           "airlines": {
             "KBCT": [
               {
@@ -2866,6 +2896,7 @@
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KSUA"],
           "airlines": {
             "KSUA": [
               {
@@ -2935,7 +2966,6 @@
   },
   "name": "PBI TRACON",
   "default_scenario": "PBI Main - East",
-  "primary_airport": "KDJT",
   "scenarios": {
     "PBI Main - East": {
       "arrival_runways": [

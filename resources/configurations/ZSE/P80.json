@@ -241,9 +241,7 @@
       }
     },
     "lists": {
-      "ssa": {
-        "altimeters": ["KPDX", "KHIO", "KUAO"]
-      }
+      "ssa": { "system_altimeter": "KPDX", "altimeters": ["KPDX", "KHIO", "KUAO"] }
     }
   },
   "handoff_ids": [

@@ -1,7 +1,6 @@
 {
   "tracon": "A90",
   "name": "Initial Departure",
-  "primary_airport": "KBOS",
   "default_scenario": "ID/SL 33/27",
   "airports": {
     "KORH": {
@@ -36478,6 +36477,7 @@
               "32": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s210 BRODI/a6000 BECHH/a5000/s220 SCITU/a5000/s210/h150"
             }
           },
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -39064,6 +39064,7 @@
           "initial_speed": 270,
           "waypoints": "N042.39.26.331,W072.17.26.447 DUBLE/a13000/s270/ho BASEZ JFUND BADCA/a9000+/s250 WACHU/a7000/s210 SSAAM AADMS/h148",
           "expect_approach": "I5R",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -41650,6 +41651,7 @@
           "initial_speed": 270,
           "waypoints": "N042.39.26.331,W072.17.26.447 DUBLE/a13000/s270/ho BASEZ JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s220 REVER SEHAG/a6000/s210/h093",
           "expect_approach": "I27",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -44231,6 +44233,7 @@
           "initial_speed": 270,
           "waypoints": "N042.39.26.331,W072.17.26.447 DUBLE/a13000/s270/ho BASEZ JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS ISLAY/a6000/s220 LWLND/a6000/s210/h035",
           "expect_approach": "I2L",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -46812,6 +46815,7 @@
           "initial_speed": 270,
           "waypoints": "N042.39.26.331,W072.17.26.447 DUBLE/a13000/s270/ho BASEZ JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s210 BRODI/a6000 BECHH/a5000/s220 SCITU/a5000/s210/h150",
           "expect_approach": "I3L",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -49393,6 +49397,7 @@
           "initial_speed": 270,
           "waypoints": "N042.39.26.331,W072.17.26.447 DUBLE/a13000/s270/ho BASEZ JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s220 GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
           "expect_approach": "I4R",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -51969,6 +51974,7 @@
       "arrivals": [
         {
           "description": "9,000",
+          "airports": ["KPSM"],
           "airlines": {
             "KPSM": [
               {
@@ -52000,6 +52006,7 @@
           "waypoints": "FOSTY/ho WOONS BOS KPSM"
         },
         {
+          "airports": ["KASH", "KMHT"],
           "airlines": {
             "KMHT": [
               {
@@ -52038,6 +52045,7 @@
         },
         {
           "description": "7,000",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -52073,6 +52081,7 @@
           "waypoints": "FOSTY/ho WOONS"
         },
         {
+          "airports": ["KPSM"],
           "airlines": {
             "KPSM": [
               {
@@ -52104,6 +52113,7 @@
           "waypoints": "FOSTY/ho WOONS BOS KPSM"
         },
         {
+          "airports": ["KMHT"],
           "airlines": {
             "KMHT": [
               {
@@ -52135,6 +52145,7 @@
           "waypoints": "FOSTY/ho WOONS KMHT"
         },
         {
+          "airports": ["KASH"],
           "airlines": {
             "KASH": [
               {
@@ -52151,6 +52162,7 @@
         },
         {
           "description": "5,000",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -52187,6 +52199,7 @@
       "arrivals": [
         {
           "description": "3,000",
+          "airports": ["KBED", "KBVY", "KLWM", "KOWD"],
           "airlines": {
             "KBVY": [
               {
@@ -52271,6 +52284,7 @@
     "GDM": {
       "arrivals": [
         {
+          "airports": ["KBED", "KBOS", "KBVY", "KLWM", "KOWD"],
           "airlines": {
             "KBOS": [
               {
@@ -52357,6 +52371,7 @@
     "GDM.15R": {
       "arrivals": [
         {
+          "airports": ["KBED", "KBOS", "KBVY", "KLWM", "KOWD"],
           "airlines": {
             "KBOS": [
               {
@@ -52428,6 +52443,7 @@
     "FREDO": {
       "arrivals": [
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -52455,6 +52471,7 @@
           "waypoints": "N041.36.47.057,W070.19.15.871/ho FREDO KBOS"
         },
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -52486,6 +52503,7 @@
     "LWRNC.SAT": {
       "arrivals": [
         {
+          "airports": ["KBED", "KBVY", "KLWM", "KOWD"],
           "airlines": {
             "KBED": [
               {
@@ -52584,6 +52602,7 @@
           "waypoints": "PSM/ho LWRNC/flyover"
         },
         {
+          "airports": ["KBED", "KBVY", "KLWM", "KOWD"],
           "airlines": {
             "KBED": [
               {
@@ -52686,6 +52705,7 @@
     "LWRNC": {
       "arrivals": [
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -52710,6 +52730,7 @@
           "waypoints": "PSM/ho LWRNC/h182"
         },
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -52753,6 +52774,7 @@
             }
           },
           "waypoints": "N042.41.51.721,W069.58.08.104/ho EURRO/a10000+ OOSHN/a9000-14000/s250",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -52877,6 +52899,7 @@
     "OOSHN5.15R": {
       "arrivals": [
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -53007,6 +53030,7 @@
     "OOSHN5.4R": {
       "arrivals": [
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -53143,6 +53167,7 @@
           "star": "OOSHN5",
           "waypoints": "N042.41.51.721,W069.58.08.104/ho EURRO/a10000+ OOSHN/a9000-14000/s250 TTERI/a9000+/s250 WAATR PLGRM BECHH/a5000/s220 SCITU/a5000/s210/h150",
           "expect_approach": "I3L",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -53273,6 +53298,7 @@
           "star": "OOSHN5",
           "waypoints": "N042.41.51.721,W069.58.08.104/ho EURRO/a10000+ OOSHN/a9000-14000/s250 GRGIO/a9000- BRGIT/a7000 ADDDA/a6000/s220 LEEZI/a6000/s210/h035",
           "expect_approach": "I2L",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -53403,6 +53429,7 @@
           "star": "OOSHN5",
           "waypoints": "N042.41.51.721,W069.58.08.104/ho EURRO/a10000+ OOSHN/a9000-14000/s250 PUDJJ AYBEE/a6000/s210/h272",
           "expect_approach": "I27",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -53527,6 +53554,7 @@
     "ZELKA2": {
       "arrivals": [
         {
+          "airports": ["KBED"],
           "airlines": {
             "KBED": [
               {
@@ -53600,6 +53628,7 @@
           "scratchpad": "RBED"
         },
         {
+          "airports": ["KLWM"],
           "airlines": {
             "KLWM": [
               {
@@ -53645,6 +53674,7 @@
           "scratchpad": "RLWM"
         },
         {
+          "airports": ["KBVY"],
           "airlines": {
             "KBVY": [
               {
@@ -53694,6 +53724,7 @@
     "DREEM3": {
       "arrivals": [
         {
+          "airports": ["KBED"],
           "airlines": {
             "KBED": [
               {
@@ -53774,6 +53805,7 @@
           "waypoints": "DVANY GRAYM/ho GASSE/a5000 DREEM"
         },
         {
+          "airports": ["KLWM"],
           "airlines": {
             "KLWM": [
               {
@@ -53819,6 +53851,7 @@
           "waypoints": "DVANY/a11000 GRAYM/ho GASSE/a5000+ DREEM RRENA/a3100+ RIKAH/a3000+/h078"
         },
         {
+          "airports": ["KBVY"],
           "airlines": {
             "KBVY": [
               {
@@ -53885,6 +53918,7 @@
           },
           "speed_restriction": 260,
           "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -53995,6 +54029,7 @@
           "speed_restriction": 260,
           "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY JAYNA/a11000/s250 BOXRS/a8000/s250 CHERS/a6000/s220 RDHOK/a6000/s210 TKMAN/a6000/s210/h329",
           "expect_approach": "I5R",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -54105,6 +54140,7 @@
           "speed_restriction": 260,
           "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
           "expect_approach": "I4R",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -54215,6 +54251,7 @@
           "speed_restriction": 260,
           "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY JAYNA/a11000/s250 ANSLY/a8000/s240 BEREI/a6000-7000/s220 BBOGG/a6000/s210/h060",
           "expect_approach": "I3L",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -54325,6 +54362,7 @@
           "speed_restriction": 260,
           "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY KRANN/a11000-12000/s250 CRADL/a8000-10000 KLEBB/a8000/s250 ETHYN/a5000/s250 PTRIK/a5000/s220 TAALE/a5000/s210/h035",
           "expect_approach": "I2L",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -54435,6 +54473,7 @@
           "speed_restriction": 260,
           "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY KRANN/a11000-12000/s250 CRADL/a8000-10000 KLEBB HOKDU/a5000/s210/h024",
           "expect_approach": "I27",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -54538,6 +54577,7 @@
     "KLANE": {
       "arrivals": [
         {
+          "airports": ["KPSM"],
           "airlines": {
             "KPSM": [
               {
@@ -54561,6 +54601,7 @@
     "BASUU.SB": {
       "arrivals": [
         {
+          "airports": ["KBED"],
           "airlines": {
             "KBED": [
               {
@@ -54582,6 +54623,7 @@
           "waypoints": "N043.00.46.746,W071.41.43.811/ho KBED"
         },
         {
+          "airports": ["6B6"],
           "airlines": {
             "6B6": [
               {
@@ -54598,6 +54640,7 @@
           "waypoints": "N043.00.46.746,W071.41.43.811/ho 6B6"
         },
         {
+          "airports": ["KOWD"],
           "airlines": {
             "KOWD": [
               {
@@ -54623,6 +54666,7 @@
     "AL.SB": {
       "arrivals": [
         {
+          "airports": ["KBED"],
           "airlines": {
             "KBED": [
               {
@@ -54644,6 +54688,7 @@
           "waypoints": "N042.01.38.437,W071.04.44.738 N042.06.28.696,W071.18.52.525/ho/h360"
         },
         {
+          "airports": ["6B6"],
           "airlines": {
             "6B6": [
               {
@@ -54660,6 +54705,7 @@
           "waypoints": "N042.01.38.437,W071.04.44.738 N042.06.28.696,W071.18.52.525/ho/h360"
         },
         {
+          "airports": ["KFIT"],
           "airlines": {
             "KFIT": [
               {
@@ -54697,6 +54743,7 @@
               "32": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s210 BRODI/a6000 BECHH/a5000/s220 SCITU/a5000/s210/h150"
             }
           },
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -57327,6 +57374,7 @@
     "FV.ROBUC.4R": {
       "arrivals": [
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -57451,6 +57499,7 @@
           "description": "7,000",
           "expect_approach": "R4L",
           "scratchpad": "R4L",
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -57486,6 +57535,7 @@
     "FV.FREDO.4L": {
       "arrivals": [
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {
@@ -57507,6 +57557,7 @@
     "FV.LD.4L": {
       "arrivals": [
         {
+          "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
               {

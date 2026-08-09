@@ -14,9 +14,9 @@ import (
 )
 
 type Model struct {
-	provider       *Provider
-	facility       string
-	primaryAirport string
+	provider *Provider
+	facility string
+	station  string
 
 	grids     [2]*AtmosGrid
 	times     [2]time.Time
@@ -34,12 +34,12 @@ type AtmosResult struct {
 	Err      error
 }
 
-func MakeModel(provider *Provider, facility string, primaryAirport string, startTime time.Time, lg *log.Logger) *Model {
+func MakeModel(provider *Provider, facility string, station string, startTime time.Time, lg *log.Logger) *Model {
 	m := &Model{
-		provider:       provider,
-		facility:       facility,
-		primaryAirport: primaryAirport,
-		lg:             lg,
+		provider: provider,
+		facility: facility,
+		station:  station,
+		lg:       lg,
 	}
 	if !aviation.DB.IsFacility(facility) {
 		return m
@@ -59,7 +59,7 @@ func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
 
 	go func() {
 		defer close(ch)
-		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.facility, t, m.primaryAirport)
+		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.facility, t, m.station)
 		ar := AtmosResult{
 			Time:     atmosTime,
 			NextTime: nextTime,

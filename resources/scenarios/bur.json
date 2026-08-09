@@ -2530,6 +2530,7 @@
           "assigned_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR", "KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -2611,6 +2612,7 @@
           "cleared_altitude": 9000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBUR", "KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -2671,6 +2673,7 @@
           "assigned_altitude": 9000,
           "initial_speed": 270,
           "expect_approach": null,
+          "airports": ["KBUR", "KVNY"],
           "airlines": {
             "KBUR": [
               {
@@ -2713,6 +2716,7 @@
           "initial_altitude": 7000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KWHP"],
           "airlines": {
             "KWHP": [
               {
@@ -2730,6 +2734,7 @@
           "initial_altitude": 7000,
           "initial_speed": 150,
           "expect_approach": null,
+          "airports": ["KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -2751,6 +2756,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -2809,6 +2815,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
               {
@@ -2871,6 +2878,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR", "KVNY"],
           "airlines": {
             "KBUR": [
               {
@@ -2981,6 +2989,7 @@
           "initial_altitude": 7000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR", "KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -3092,6 +3101,7 @@
           "initial_altitude": 17000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
               {
@@ -3177,6 +3187,7 @@
           "initial_altitude": 17000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -3282,6 +3293,7 @@
           "initial_altitude": 17000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSMO"],
           "airlines": {
             "KSMO": [
               {
@@ -3338,6 +3350,7 @@
           "initial_altitude": 17000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCMA", "KOXR"],
           "airlines": {
             "KCMA": [
               {
@@ -3495,6 +3508,7 @@
           "initial_altitude": 26000,
           "initial_speed": 280,
           "expect_approach": "I4R",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -3786,6 +3800,7 @@
           "initial_speed": 270,
           "expect_approach": "I5L",
           "scratchpad": "I5L",
+          "airports": ["KLAX"],
           "airlines": {
             "KLAX": [
               {
@@ -3903,6 +3918,7 @@
           "initial_altitude": 18000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
               {
@@ -3984,6 +4000,7 @@
           "initial_altitude": 17000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
               {
@@ -4041,6 +4058,7 @@
           "initial_altitude": 18000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -4071,12 +4089,13 @@
               "34L": "IVINS/a8000+ MIKEI/a7000 EHUNT/a6000/h126"
             }
           },
-          "star": "ROKKR3",
+          "star": "IVINS2",
           "is_rnav": true,
           "initial_controller": "C13",
           "initial_altitude": 18000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -4135,6 +4154,7 @@
           "initial_altitude": 18000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KSMO"],
           "airlines": {
             "KSMO": [
               {
@@ -4162,6 +4182,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
               {
@@ -4223,6 +4244,7 @@
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -4263,6 +4285,7 @@
           "initial_altitude": [9000, 11000],
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBUR", "KVNY"],
           "airlines": {
             "KVNY": [
               {
@@ -4349,7 +4372,6 @@
   ],
   "default_scenario": "Burbank - 08/15 LAW",
   "name": "Burbank Area",
-  "primary_airport": "KBUR",
   "scenarios": {
     "Burbank - 08/15 LAW": {
       "arrival_runways": [

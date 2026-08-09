@@ -335,6 +335,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -361,6 +362,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -387,6 +389,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -413,6 +416,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -439,6 +443,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -472,6 +477,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -510,6 +516,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -538,6 +545,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -566,6 +574,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -592,6 +601,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -618,6 +628,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -650,6 +661,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -682,6 +694,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -712,6 +725,7 @@
           "assigned_altitude": 11000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KBHM"],
           "airlines": {
             "KBHM": [
               {
@@ -737,7 +751,6 @@
   },
   "magnetic_adjustment": -1,
   "name": "KBHM",
-  "primary_airport": "KBHM",
   "reporting_points": ["KIOSK", "DIODE", "NULLS", "SHIMS", "NESTS", "LYMPH", "HERKO", "WANDS"],
   "scenarios": {
     "KBHM Runway 24": {

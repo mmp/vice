@@ -784,6 +784,7 @@
     "PSB": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -815,6 +816,7 @@
     "HNK": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -846,6 +848,7 @@
     "ROC": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -877,6 +880,7 @@
     "CTR": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -908,6 +912,7 @@
     "CON": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -939,6 +944,7 @@
     "BTV": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -970,6 +976,7 @@
     "BUF": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1011,6 +1018,7 @@
     "DKK": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1062,6 +1070,7 @@
     "ELZ": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1123,6 +1132,7 @@
     "CFBHIGH": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1184,6 +1194,7 @@
     "DNYLOW": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1210,6 +1221,7 @@
     "CODDI": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -1236,6 +1248,7 @@
     "GALWA": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -1262,6 +1275,7 @@
     "MARIA": {
       "arrivals": [
         {
+          "airports": ["KRME"],
           "airlines": {
             "KRME": [
               {
@@ -1288,6 +1302,7 @@
     "CFBLOW": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1361,6 +1376,7 @@
     "ULWLOW": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1434,6 +1450,7 @@
     "GEELOW": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1507,6 +1524,7 @@
     "ARTLOW": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1580,6 +1598,7 @@
     "CAMHIGH": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1611,6 +1630,7 @@
     "CAMLOW": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1669,6 +1689,7 @@
     "ALBHIGH": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1700,6 +1721,7 @@
     "ALBLOW": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1758,6 +1780,7 @@
     "SLKHIGH": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1789,6 +1812,7 @@
     "SLKLOW": {
       "arrivals": [
         {
+          "airports": ["KSYR"],
           "airlines": {
             "KSYR": [
               {
@@ -1877,7 +1901,6 @@
     "BTV250070": "N043.33.41.745,W074.46.42.035"
   },
   "name": "KSYR",
-  "primary_airport": "KSYR",
   "scenarios": {
     "SYR WEST": {
       "arrival_runways": [

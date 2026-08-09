@@ -15,6 +15,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -43,18 +44,22 @@ const (
 	windDotRadius   = 8
 )
 
-// airportClock is the clock the new sim UI shows times on: the local one at the
-// scenario's primary airport, which is how a controller working it thinks about
-// the time of day. Every airport a scenario names must have a time zone, so the
+// airportClock is the clock the new sim UI shows times on: the local one where
+// the scenario is flown, which is how a controller working it thinks about the
+// time of day. Every airport a scenario names must have a time zone, so the
 // fall back to Zulu is only for one this build doesn't know.
 type airportClock struct {
 	loc   *time.Location
 	local bool
 }
 
-func makeAirportClock(airport string) airportClock {
-	if loc, ok := av.DB.AirportTimeZones[airport]; ok {
-		return airportClock{loc: loc, local: true}
+// makeScenarioClock is the clock for a scenario. Its airports are all in the
+// same time zone in practice, so the first one that has one speaks for the rest.
+func makeScenarioClock(spec *server.ScenarioSpec) airportClock {
+	for _, airport := range spec.AllAirports() {
+		if loc, ok := av.DB.AirportTimeZones[airport]; ok {
+			return airportClock{loc: loc, local: true}
+		}
 	}
 	return airportClock{loc: time.UTC}
 }

@@ -611,7 +611,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 	}
 	if arr.FlightStripDisplayRoute != "" {
 		ac.FlightPlan.Route = arr.FlightStripDisplayRoute
-	} else {
+	} else if arr.STAR != "" {
 		ac.FlightPlan.Route = "/. " + arr.STAR
 	}
 	ac.TypeOfFlight = av.FlightTypeArrival

@@ -18073,6 +18073,7 @@
           "speed_restriction": 290,
           "scratchpad": "CHP",
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18165,6 +18166,7 @@
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18244,6 +18246,7 @@
           "speed_restriction": 210,
           "scratchpad": "NR8",
           "expect_approach": "I8L",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18323,6 +18326,7 @@
           "speed_restriction": 210,
           "scratchpad": "NR9",
           "expect_approach": "I9R",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18409,13 +18413,14 @@
               "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95"
             }
           },
-          "star": "GLAVN1",
+          "star": "GLAVN2",
           "initial_controller": "C43",
           "initial_altitude": 22000,
           "initial_speed": 290,
           "speed_restriction": 290,
           "scratchpad": "GLA",
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18501,12 +18506,13 @@
               "9R": "STHRN YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95"
             }
           },
-          "star": "GLAVN1",
+          "star": "GLAVN2",
           "initial_controller": "C43",
           "initial_altitude": 15000,
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18578,13 +18584,14 @@
       "arrivals": [
         {
           "waypoints": "STHRN/ho YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95",
-          "star": "GLAVN1",
+          "star": "GLAVN2",
           "initial_controller": "C43",
           "initial_altitude": 10000,
           "initial_speed": 210,
           "speed_restriction": 210,
           "scratchpad": "NR9",
           "expect_approach": "I9R",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18656,12 +18663,13 @@
       "arrivals": [
         {
           "waypoints": "SMAWG/ho GNDLF/a11000/s250 HALRR/a10000/s250 SHULR/a8000 JNGLE QUBIT/h5",
-          "star": "GNDLF2",
+          "star": "GNDLF3",
           "initial_controller": "C43",
           "initial_altitude": 13000,
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18721,7 +18729,7 @@
       "arrivals": [
         {
           "waypoints": "SHULR/ho JNGLE QUBIT/h5",
-          "star": "GNDLF2",
+          "star": "GNDLF3",
           "initial_controller": "C43",
           "scratchpad": "NR9",
           "initial_altitude": 8000,
@@ -18729,6 +18737,7 @@
           "initial_speed": 210,
           "speed_restriction": 210,
           "expect_approach": "I9R",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18788,7 +18797,7 @@
       "arrivals": [
         {
           "waypoints": "SHULR/ho JNGLE QUBIT/h5",
-          "star": "GNDLF2",
+          "star": "GNDLF3",
           "initial_controller": "C43",
           "scratchpad": "NR0",
           "initial_altitude": 8000,
@@ -18796,6 +18805,7 @@
           "initial_speed": 210,
           "speed_restriction": 210,
           "expect_approach": "I10",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18864,12 +18874,13 @@
               "28": "ENSLL/a12000 EAGYL SHURT FOGER HITTT YURII/h95"
             }
           },
-          "star": "HOBTT2",
+          "star": "HOBTT3",
           "initial_controller": "C43",
           "initial_altitude": 22000,
           "initial_speed": 290,
           "speed_restriction": 290,
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -18981,8 +18992,9 @@
       "arrivals": [
         {
           "waypoints": "SHURT/ho FOGER HITTT YURII/h95",
+          "star_feeds": ["CHPPR1", "HOBTT3", "SITTH3"],
           "cruise_altitude": 34000,
-          "star": "HOBTT2",
+          "star": "HOBTT3",
           "initial_controller": "1Y",
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
@@ -18990,6 +19002,7 @@
           "speed_restriction": 220,
           "scratchpad": "I7L",
           "expect_approach": "I7L",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -19101,8 +19114,9 @@
       "arrivals": [
         {
           "waypoints": "SHURT/ho FOGER HITTT YURII/h95",
+          "star_feeds": ["CHPPR1", "HOBTT3", "SITTH3"],
           "cruise_altitude": 34000,
-          "star": "HOBTT2",
+          "star": "HOBTT3",
           "initial_controller": "1Y",
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
@@ -19110,6 +19124,7 @@
           "speed_restriction": 220,
           "scratchpad": "I28",
           "expect_approach": "I28",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -19221,11 +19236,12 @@
       "arrivals": [
         {
           "waypoints": "N032.48.59.790,W083.26.05.551 DTSTR/a14000/s280/ho WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII/a8000 GRHAM POOBA/h4",
-          "star": "JJEDI3",
+          "star": "JJEDI4",
           "initial_controller": "C43",
           "initial_altitude": 19000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -19349,7 +19365,7 @@
         {
           "waypoints": "GRHAM/ho POOBA/h4",
           "cruise_altitude": 35000,
-          "star": "JJEDI3",
+          "star": "JJEDI4",
           "initial_controller": "1H",
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
@@ -19357,6 +19373,7 @@
           "speed_restriction": 220,
           "scratchpad": "I7L",
           "expect_approach": "I7L",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -19480,7 +19497,7 @@
         {
           "waypoints": "GRHAM/ho POOBA/h4",
           "cruise_altitude": 35000,
-          "star": "JJEDI3",
+          "star": "JJEDI4",
           "initial_controller": "1H",
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
@@ -19488,6 +19505,7 @@
           "speed_restriction": 220,
           "scratchpad": "I28",
           "expect_approach": "I28",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -19611,7 +19629,7 @@
         {
           "waypoints": "KLOWD/ho SWEPT KYMMY KEAVY/h95",
           "cruise_altitude": 35000,
-          "star": "GLAVN1",
+          "star": "GLAVN2",
           "initial_controller": "1D",
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
@@ -19619,6 +19637,7 @@
           "speed_restriction": 220,
           "scratchpad": "I6R",
           "expect_approach": "I6R",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -19784,7 +19803,8 @@
       "arrivals": [
         {
           "waypoints": "GAASS KLOWD/ho KUNFU TRAPE SNEVE/h275",
-          "star": "OZZZI1",
+          "star_feeds": ["ONDRE1", "OZZZI2"],
+          "star": "OZZZI2",
           "initial_controller": "C43",
           "initial_altitude": 10000,
           "initial_speed": 210,
@@ -19792,6 +19812,7 @@
           "assigned_altitude": 6000,
           "scratchpad": "NR8",
           "expect_approach": "I8L",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -20033,6 +20054,7 @@
           "initial_speed": 290,
           "scratchpad": "OND",
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -20089,6 +20111,7 @@
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -20134,6 +20157,7 @@
           "speed_restriction": 220,
           "scratchpad": "I6R",
           "expect_approach": "I6R",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -20184,12 +20208,13 @@
               "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275"
             }
           },
-          "star": "OZZZI1",
+          "star": "OZZZI2",
           "initial_controller": "C43",
           "initial_altitude": 19000,
           "initial_speed": 290,
           "scratchpad": "OZZ",
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -20425,12 +20450,13 @@
               "9R": "HAARY KILRR FRYES SHURT REMAC DACTL STUMP/h275"
             }
           },
-          "star": "OZZZI1",
+          "star": "OZZZI2",
           "initial_controller": "C43",
           "initial_altitude": 15000,
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -20653,7 +20679,7 @@
         {
           "waypoints": "CALLA/ho POSEY SLVAA ROMMM/h275",
           "cruise_altitude": 34000,
-          "star": "OZZZI1",
+          "star": "OZZZI2",
           "initial_controller": "1Y",
           "initial_altitude": 10000,
           "assigned_altitude": 8000,
@@ -20661,6 +20687,7 @@
           "speed_restriction": 220,
           "scratchpad": "I7L",
           "expect_approach": "I7L",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -20891,12 +20918,13 @@
               "9R": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275"
             }
           },
-          "star": "SITTH2",
+          "star": "SITTH3",
           "initial_controller": "C43",
           "initial_altitude": 15000,
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -21019,7 +21047,8 @@
       "arrivals": [
         {
           "waypoints": "FRYES SHURT/ho REMAC DACTL STUMP/h275",
-          "star": "SITTH2",
+          "star_feeds": ["HOBTT3", "JJEDI4", "SITTH3"],
+          "star": "SITTH3",
           "initial_controller": "C43",
           "initial_altitude": 12000,
           "initial_speed": 210,
@@ -21027,6 +21056,7 @@
           "assigned_altitude": 5000,
           "scratchpad": "NR9",
           "expect_approach": "I9R",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -21149,7 +21179,8 @@
       "arrivals": [
         {
           "waypoints": "FRYES SHURT/ho REMAC DACTL STUMP/h275",
-          "star": "SITTH2",
+          "star_feeds": ["HOBTT3", "JJEDI4", "SITTH3"],
+          "star": "SITTH3",
           "initial_controller": "C43",
           "initial_altitude": 12000,
           "initial_speed": 210,
@@ -21157,6 +21188,7 @@
           "assigned_altitude": 5000,
           "scratchpad": "NR0",
           "expect_approach": "I10",
+          "airports": ["KATL"],
           "airlines": {
             "KATL": [
               {
@@ -21285,6 +21317,22 @@
           "initial_altitude": 12000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -21972,6 +22020,22 @@
           "initial_altitude": 10000,
           "expect_approach": null,
           "initial_speed": 250,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -22695,6 +22759,23 @@
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -23491,6 +23572,23 @@
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -24219,12 +24317,29 @@
       "arrivals": [
         {
           "waypoints": "LUKIE/ho WRGNZ/a11000/s250 SKYME CADUR LOGEN LOGEC BAPPY DECLN/h275",
-          "star": "WRGNZ2.LUKIE",
+          "star": "WRGNZ3",
           "initial_controller": "C43",
           "description": "Turbojets",
           "initial_altitude": 12000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -24949,12 +25064,29 @@
         },
         {
           "waypoints": "WOGOM/ho WRGNZ/a11000/s250 SKYME CADUR LOGEN LOGEC BAPPY DECLN/h275",
-          "star": "WRGNZ2.WOGOM",
+          "star": "WRGNZ3",
           "initial_controller": "C43",
           "description": "Turbojets",
           "initial_altitude": 12000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -25679,13 +25811,30 @@
         },
         {
           "waypoints": "NOKIE/ho WRGNZ/a11000/s250 SKYME CADUR LOGEN LOGEC BAPPY DECLN/h275",
-          "star": "WRGNZ2.NOKIE",
+          "star": "WRGNZ3",
           "initial_controller": "C43",
           "description": "Turbojets",
           "initial_altitude": 12000,
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -26410,12 +26559,29 @@
         },
         {
           "waypoints": "LUKIE/ho WRGNZ/a8000 SKYME CADUR LOGEN LOGEC BAPPY DECLN/h275",
-          "star": "WRGNZ2.LUKIE",
+          "star": "WRGNZ3",
           "initial_controller": "C43",
           "description": "Turboprops/props",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -27160,12 +27326,29 @@
         },
         {
           "waypoints": "WOGOM/ho WRGNZ/a8000 SKYME CADUR LOGEN LOGEC BAPPY DECLN/h275",
-          "star": "WRGNZ2.WOGOM",
+          "star": "WRGNZ3",
           "initial_controller": "C43",
           "description": "Turboprops/props",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -27910,12 +28093,29 @@
         },
         {
           "waypoints": "NOKIE/ho WRGNZ/a8000 SKYME CADUR LOGEN LOGEC BAPPY DECLN/h275",
-          "star": "WRGNZ2.NOKIE",
+          "star": "WRGNZ3",
           "initial_controller": "C43",
           "description": "Turboprops/props",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -28669,6 +28869,23 @@
           "initial_altitude": 12000,
           "initial_speed": 290,
           "expect_approach": null,
+          "airports": [
+            "6A2",
+            "D73",
+            "KCCO",
+            "KCTJ",
+            "KCVC",
+            "KFFC",
+            "KFTY",
+            "KHMP",
+            "KLZU",
+            "KMGE",
+            "KPDK",
+            "KPUJ",
+            "KRYY",
+            "KVPC",
+            "KWDR"
+          ],
           "airlines": {
             "KFTY": [
               {
@@ -29453,6 +29670,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["6A2", "KCCO", "KFFC", "KHMP"],
           "airlines": {
             "KHMP": [
               {
@@ -29776,6 +29994,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCTJ", "KFTY", "KLZU", "KMGE", "KPDK", "KRYY"],
           "airlines": {
             "KMGE": [
               {
@@ -30255,6 +30474,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["6A1", "KDBN", "KMCN", "KMLJ", "KOPN", "KPXE", "KWRB"],
           "airlines": {
             "KMLJ": [
               {
@@ -30816,6 +31036,7 @@
           "initial_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAHN", "KCPP", "KGVL", "KJCA", "KWDR"],
           "airlines": {
             "KAHN": [
               {
@@ -31217,6 +31438,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAHN", "KCPP", "KGVL", "KJCA", "KWDR"],
           "airlines": {
             "KAHN": [
               {
@@ -31618,6 +31840,7 @@
           "initial_altitude": 6000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAHN", "KCPP", "KGVL", "KJCA", "KWDR"],
           "airlines": {
             "KAHN": [
               {
@@ -32023,6 +32246,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["53A", "6A1", "KDBN", "KMAC", "KMCN", "KMLJ", "KOPN", "KPXE"],
           "airlines": {
             "KMCN": [
               {
@@ -32658,6 +32882,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["53A", "6A1", "KDBN", "KMAC", "KMCN", "KMLJ", "KOPN", "KPXE"],
           "airlines": {
             "KMCN": [
               {
@@ -33293,6 +33518,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["53A", "6A1", "KDBN", "KMAC", "KMCN", "KMLJ", "KOPN", "KPXE"],
           "airlines": {
             "KMCN": [
               {
@@ -33928,6 +34154,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["53A", "6A1", "KDBN", "KMAC", "KMCN", "KMLJ", "KOPN", "KPXE"],
           "airlines": {
             "KMCN": [
               {
@@ -34563,6 +34790,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["53A", "6A1", "KDBN", "KMAC", "KMCN", "KMLJ", "KOPN", "KPXE"],
           "airlines": {
             "KMCN": [
               {
@@ -35198,6 +35426,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["53A", "6A1", "KDBN", "KMAC", "KMCN", "KMLJ", "KOPN", "KPXE"],
           "airlines": {
             "KMCN": [
               {
@@ -35837,6 +36066,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["6A2", "KCCO", "KFFC", "KHMP"],
           "airlines": {
             "KHMP": [
               {
@@ -36160,6 +36390,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCTJ", "KFTY", "KLZU", "KMGE", "KPDK", "KRYY"],
           "airlines": {
             "KMGE": [
               {
@@ -36639,6 +36870,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["06A", "KAUO", "KCSG", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -37118,6 +37350,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["06A", "KAUO", "KCSG", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -37597,6 +37830,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["06A", "KAUO", "KCSG", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -38076,6 +38310,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["06A", "KAUO", "KCSG", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -38555,6 +38790,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["6A2", "KCCO", "KFFC", "KHMP"],
           "airlines": {
             "KHMP": [
               {
@@ -38878,6 +39114,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCTJ", "KFTY", "KLZU", "KMGE", "KPDK", "KRYY"],
           "airlines": {
             "KMGE": [
               {
@@ -39361,6 +39598,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAUO", "KCSG", "KEUF", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -39840,6 +40078,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAUO", "KCSG", "KEUF", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -40319,6 +40558,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAUO", "KCSG", "KEUF", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -40798,6 +41038,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAUO", "KCSG", "KEUF", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -41277,6 +41518,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAUO", "KCSG", "KEUF", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -41756,6 +41998,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KAUO", "KCSG", "KEUF", "KLGC", "KLSF", "KPIM"],
           "airlines": {
             "KCSG": [
               {
@@ -42239,6 +42482,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCTJ", "KFTY", "KLZU", "KMGE", "KPDK", "KRYY"],
           "airlines": {
             "KMGE": [
               {
@@ -42718,6 +42962,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["KCTJ", "KFTY", "KLZU", "KMGE", "KPDK", "KRYY"],
           "airlines": {
             "KMGE": [
               {
@@ -43197,6 +43442,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["6A2", "KCCO", "KFFC", "KHMP"],
           "airlines": {
             "KHMP": [
               {
@@ -43520,6 +43766,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["6A2", "KCCO", "KFFC", "KHMP"],
           "airlines": {
             "KHMP": [
               {
@@ -43843,6 +44090,7 @@
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
+          "airports": ["6A1", "KDBN", "KMCN", "KMLJ", "KOPN", "KPXE", "KWRB"],
           "airlines": {
             "KMLJ": [
               {
@@ -44419,7 +44667,6 @@
     "06A-13": "N032.27.49.784,W085.41.02.200"
   },
   "name": "KATL",
-  "primary_airport": "KATL",
   "scenarios": {
     "A80 Combined (West)": {
       "airspace": {

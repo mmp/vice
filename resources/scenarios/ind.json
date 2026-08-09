@@ -540,6 +540,7 @@
           "initial_altitude": 26000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIND"],
           "airlines": {
             "KIND": [
               {
@@ -578,6 +579,7 @@
           "initial_altitude": 26000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIND"],
           "airlines": {
             "KIND": [
               {
@@ -611,6 +613,7 @@
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIND"],
           "airlines": {
             "KIND": [
               {
@@ -645,6 +648,7 @@
           "initial_altitude": 15500,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIND"],
           "airlines": {
             "KIND": [
               {
@@ -683,6 +687,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIND"],
           "airlines": {
             "KIND": [
               {
@@ -737,6 +742,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airports": ["KIND"],
           "airlines": {
             "KIND": [
               {
@@ -759,7 +765,6 @@
     "_IND_32": "N39.43.12.744, W86.16.13.392"
   },
   "name": "KIND",
-  "primary_airport": "KIND",
   "scenarios": {
     "KIND Southwest": {
       "arrival_runways": [

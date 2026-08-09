@@ -1043,6 +1043,7 @@
     "MAATY6": {
       "arrivals": [
         {
+          "airports": ["KTPA"],
           "airlines": {
             "KTPA": [
               { "icao": "AAL", "airport": "KDFW" },
@@ -1104,6 +1105,7 @@
           "route": "MAATY6"
         },
         {
+          "airports": ["KLAL"],
           "airlines": {
             "KLAL": [
               { "icao": "VXP", "airport": "KATL" },
@@ -1125,6 +1127,7 @@
     "BANGZ2": {
       "arrivals": [
         {
+          "airports": ["KPIE"],
           "airlines": {
             "KPIE": [
               { "icao": "AAY", "airport": "KBLV" },
@@ -1170,6 +1173,7 @@
           "route": "BANGZ2"
         },
         {
+          "airports": ["KSRQ"],
           "airlines": {
             "KSRQ": [
               { "icao": "AAY", "airport": "KCAK" },
@@ -1243,6 +1247,7 @@
     "PLYER.PIKKR7": {
       "arrivals": [
         {
+          "airports": ["KPGD"],
           "airlines": {
             "KPGD": [
               { "icao": "AAY", "airport": "KCAK" },
