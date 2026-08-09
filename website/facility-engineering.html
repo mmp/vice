@@ -193,9 +193,6 @@
                   and the
                   <a href="https://github.com/mmp/vice/tree/master/resources/videomaps"><code>resources/videomaps/</code> directory</a> for
                   the video map definitions.
-                  Files in those directories with names ending with a "zst" suffix have been compressed using <a href="https://facebook.github.io/zstd/">zstandard</a>;
-                  in order to examine their contents, you'll want to install zstandard or another decompression program that supports that
-                  format.
                 </p>
               </section><!--//docs-intro-->
             </header>
@@ -818,7 +815,7 @@
                 the <a href="https://github.com/mmp/vice/tree/master/resources/configurations"><code>resources/configurations/</code></a>
                 directory. They're organized by ARTCC and facility name (e.g., <code>resources/configurations/ZNY/N90.json</code>).
                 When a scenario is loaded, <i>vice</i> automatically loads the corresponding facility configuration
-                based on the scenario's "tracon" field.
+                based on the scenario's "tracon" field for a TRACON scenario or its "artcc" field for an enroute (ERAM) scenario.
               </p>
               <p>Each facility configuration file may contain the following top-level elements:</p>
               <table class="table">
@@ -1015,6 +1012,13 @@
                                   for controllers in this area. Overridden by per-controller
                                   <code>"altimeters"</code> and overrides the facility-level
                                   <code>"facility_adaptations"."lists"."ssa"."altimeters"</code> setting.</td>
+                              </tr>
+                              <tr>
+                                <td>"system_altimeter"</td>
+                                <td>String</td>
+                                <td>The station whose setting the SSA's ALTSTG field shows for controllers in this
+                                  area, overriding the facility-level
+                                  <code>"facility_adaptations"."lists"."ssa"."system_altimeter"</code>.</td>
                               </tr>
                               <tr>
                                 <td>"beacon_code_blocks"</td>
@@ -2583,8 +2587,9 @@
                                         <tr>
                                           <td>"active_runway"</td>
                                           <td>String</td>
-                                          <td>(<i>Optional</i>) A runway that must be among the active
-                                            runways at the primary airport.</td>
+                                          <td>(<i>Optional</i>) A runway that must be active in the
+                                            scenario, given as "AIRPORT/RUNWAY" (e.g. "KJFK/22L"). The
+                                            airport must be one of the scenario group's "airports".</td>
                                         </tr>
                                         <tr>
                                           <td>"departure_runway"</td>
@@ -2781,10 +2786,17 @@
                                           <td>"altimeters"</td>
                                           <td>Array of strings</td>
                                           <td>If specified, lists the airports whose altimeters are displayed in the SSA list; no more than 6 airports can be given.
-                                            The first altimeter value is also shown at the top of the list.
                                             If "altimeters" is not specified and if there are more than 6 airports in a scenario, only altimeters for the
-                                            first 6 in alphabetical order will be shown and the first one will be shown at the top of the list.
+                                            first 6 will be shown, ordered by "system_altimeter" first, then tower list index, then alphabetically.
                                           </td>
+                                        </tr>
+                                        <tr>
+                                          <td>"system_altimeter"</td>
+                                          <td>String</td>
+                                          <td>The station whose setting the SSA's ALTSTG field shows, and the airport that
+                                            heads the altimeter list when "altimeters" is not given. It must be one of the
+                                            scenario group's "airports". An area may override it with its own
+                                            <code>"areas"."&lt;area&gt;"."system_altimeter"</code>.</td>
                                         </tr>
                                         <tr>
                                           <td>"flash_on_atis_update"</td>
@@ -2965,7 +2977,7 @@
                               <tr>
                                 <td>"color"</td>
                                 <td>Number</td>
-                                <td>(<i>Optional</i>) The color index for the restriction area display.</td>
+                                <td>(<i>Optional</i>) The color index, 1 to 8, for the restriction area display.</td>
                               </tr>
                               <tr>
                                 <td>"hide_id"</td>
@@ -2980,7 +2992,8 @@
                               <tr>
                                 <td>"text"</td>
                                 <td>Array of two strings</td>
-                                <td>(<i>Optional</i>) Each string defines a line of text displayed with the restriction area.</td>
+                                <td>(<i>Optional</i>) Each string defines a line of text displayed with the restriction area,
+                                  at most 32 characters long.</td>
                               </tr>
                               <tr>
                                 <td>"text_position"</td>
@@ -3148,6 +3161,14 @@
                       <td>"use_legacy_font"</td>
                       <td>Boolean</td>
                       <td>If "true", causes the legacy STARS font to be used in the STARS display.</td>
+                    </tr>
+                    <tr>
+                      <td>"weather_station"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) The METAR station whose weather stands in when <i>vice</i> is
+                        unable to reach the <i>vice</i> server to download the atmospheric wind model and
+                        weather radar. Defaults to
+                        <a href="#fe-config-stars">"lists"."ssa"."system_altimeter"</a>.</td>
                     </tr>
                     <tr>
                       <td>"stars_macros"</td>
@@ -3511,12 +3532,6 @@
                     <td>"name"</td>
                     <td>String</td>
                     <td>The name for the scenario group.  This name cannot be the same as the name for any of the other scenario groups.</td>
-                  </tr>
-                  <tr>
-                    <td>"primary_airport"</td>
-                    <td>String</td>
-                    <td>The main airport for the scenario.
-                      This is used to determine which airport's altimeter and winds to include at the top of the SSA list in the STARS radar scope.</td>
                   </tr>
                   <tr>
                     <td>"reporting_points"</td>
@@ -3942,8 +3957,7 @@
                     <td>Array of objects</td>
                     <td>(<i>Optional</i>) Each object in the array defines a departure to a destination, including one or more airlines that fly that departure,
                       the type of aircraft flown, and information about the aircraft's path.  See <a href="#fe-departures">below for details
-                        of the departure object</a>. Omit it only in a scenario meant to be flown from a timetable or historical data, which
-                      brings its own destinations; see <a href="#fe-timetables">Timetables and Historical Traffic</a>.</td>
+                        of the departure object</a>. If unspecified, real-world traffic is always used.</td>
                   </tr>
                   <tr>
                     <td>"exit_categories"</td>
@@ -3973,6 +3987,75 @@
                       If "tower_list" is unspecified, the airport has the lowest priority.
                       The 3 tower lists in the STARS scope are then assigned using this priority, with ties broken by
                       airport name sorted alphabetically.</td>
+                  </tr>
+                  <tr>
+                    <td>"traffic_routes"</td>
+                    <td>Object</td>
+                    <td>(<i>Optional</i>) Gives routes to use for departures from and or arrivals to this
+                      airport. See
+                      <a href="#fe-route-matching">Route Matching</a> for details about how routes
+                      are matched to flights.</td>
+                  </tr>
+                  <tr><td colspan="3">
+                      <details class="json-fields"><summary>"traffic_routes" members</summary>
+                        <table class="table">
+                          <thead>
+                            <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                <td>"departures"</td>
+                                <td>Object</td>
+                                <td>Map from destination airport ICAO codes to route specifications.</td>
+                              </tr>
+                              <tr>
+                                <td>"arrivals"</td>
+                                <td>Object</td>
+                                <td>Map from origination airport ICAO codes to route specifications.</td>
+                              </tr>
+                          </tbody>
+                        </table>
+                        <p>Route specifications may be a single string or an array of route objects.
+                          If an array is given, each item is considered in turn, with the first matching one used.
+                        Each route object has the following members:</p>
+                        <table class="table">
+                          <thead>
+                            <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>"aircraft"</td>
+                              <td>String or array of strings</td>
+                              <td>If the route is limited to a certain set of aircraft types, they may
+                                be specified as one or more of "prop", "turboprop", "jet", "nonheavy", or "heavy".
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>"route"</td>
+                              <td>String</td>
+                              <td>String giving the aircraft's route.</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <p>Here is an example showing some of these features: 
+  <pre>
+"KEWR": {
+  ...
+  "traffic_routes": {
+    "departures": {
+      "KFLL": [
+        { "route": "ELVAE NECCK WHITE Q409 CRPLR KOOKI Q161 CHIEZ Y291 MAJIK CUUDA3",
+          "aircraft": "jet" },
+        { "route": "DIALO V276 SIE V1 SAWED", "aircraft": [ "prop", "turboprop" ] }
+      ],
+      "KBOS": "MERIT ROBUC3"
+    },
+    "arrivals": {
+      "KORD": "PMM ELX J70 LVZ LENDY6"
+    }
+  }
+}</pre>
+                      </details>
                   </tr>
                   <tr>
                     <td>"vfr"</td>
@@ -4243,8 +4326,7 @@
                     <td>"airlines"</td>
                     <td>Array of objects</td>
                     <td>(<i>Optional</i>) Each object specifies an airline and the types of aircraft it flies on the route. See <a href="#fe-airlines-aircraft">Airlines
-                        and Aircraft</a> for the form of the airline objects. Without it the scenario's own generator can't fly this departure,
-                      though published traffic still uses its exit and route.</td>
+                        and Aircraft</a> for the form of the airline objects.</td>
                   </tr>
                   <tr>
                     <td>"description"</td>
@@ -4254,9 +4336,8 @@
                   <tr>
                     <td>"destination"</td>
                     <td>String</td>
-                    <td>The ICAO airport code for the destination. For the scenario's own traffic this is only used in flight strips and for the
-                      aircraft's datablock on the radar scope and does not affect routing, but published traffic reads it as a statement of where
-                      this exit goes; see <a href="#fe-timetables">Timetables and Historical Traffic</a>.</td>
+                    <td>The ICAO airport code for the destination. This is only used in flight strips and for the
+                      aircraft's datablock on the radar scope and does not affect routing.</td>
                   </tr>
                   <tr>
                     <td>"exit"</td>
@@ -4335,27 +4416,65 @@
                 </thead>
                 <tbody>
                   <tr>
+                    <td>"aircraft"</td>
+                    <td>String or array of strings</td>
+                    <td>(<i>Optional</i>) Restricts which timetable and historical flights the arrival may carry, as
+                      one or more of "prop", "turboprop", "jet", "heavy", and "nonheavy"&mdash;the last two being heavy
+                      and non-heavy jets. If unspecified, all aircraft are admitted. See
+                      <a href="#fe-route-matching">Route Matching</a>.</td>
+                  </tr>
+                  <tr>
                     <td>"airlines"</td>
                     <td>Object</td>
                     <td>(<i>Optional</i>) The airlines flying the arrival, used when <i>vice</i> generates the scenario's
                       own traffic. Its members are the arrival airports and each gives an array of airlines together with the
                       <i>departure</i> airport they come in from. These objects include both the members
                       "icao", "fleet", and "types" members of the airline object documented in <a href="#fe-airlines-aircraft">Airlines and Aircraft</a>
-                      as well as some additional fields. See the example below. Omit it only in a scenario meant to be flown from
-                      a timetable or historical data, which brings its own airlines; see
-                      <a href="#fe-timetables">Timetables and Historical Traffic</a>.</td>
+                      as well as some additional fields. See the example below. Every airport it names must be one of the
+                      arrival's "airports". This may be omitted in a scenario only meant to be flown using
+                      a timetable or historical data.</td>
                   </tr>
+                  <tr><td colspan="3">
+                      <details class="json-fields"><summary>"airlines" example</summary>
+                        <p>Here is an (old) excerpt from the CAMRN4 arrival group at KJFK:</p>
+<pre>
+  "airports": ["KFRG", "KJFK"],
+  "airlines": {
+      "KFRG": [
+          {
+              "airport": "KDCA",
+              "icao": "EJA"
+          },
+          ...
+      ],
+      "KJFK": [
+          {
+              "airport": "MMMY",
+              "fleet": "long",
+              "icao": "AMX"
+          },
+          ...
+      ]
+  }
+</pre>
+              <p>CAMRN4 serves both KFRG and KJFK, though with different airlines
+                and different departure airports for the arrivals. The specified departure airports (here, KDCA and MMMY)
+                are only used so that flight strips and data blocks on the scope are realistic, but the specified airlines
+                are used to select the type of aircraft from their fleets.  As elsewhere, a value for "fleet" may be specified
+                to limit which types of aircraft may be chosen.
+              </p>
+
+
                   <tr>
                     <td>"airports"</td>
                     <td>Array of strings</td>
-                    <td>(<i>Optional</i>) The <i>arrival</i> airports the arrival brings traffic to. (Not to be confused with
-                      the "airport" member of each entry in "airlines", which is a <i>departure</i> airport.) This is what lets
-                      <i>vice</i> work out which arrivals a flight from a timetable or from historical data may be flown in on;
-                      see <a href="#fe-timetables">Timetables and Historical Traffic</a>.
-                      If it isn't given, the arrival serves the airports the FAA CIFP charts its "star" for.  If the CIFP
-                      hasn't got that STAR&mdash;or no "star" is named at all&mdash;the arrival serves every airport in the
-                      scenario group, leaving it to each scenario's "inbound_rates" to say which ones it actually feeds.
-                      Any airports named in "airlines" are served as well; the arrival serves the union.</td>
+                    <td>The <i>arrival</i> airports the arrival brings traffic to.
+                      Each of them must be an airport of the scenario group, and it is left to each scenario's "inbound_rates"
+                      to say which of them the arrival actually feeds.
+                      It may only be left out by an arrival that names a "star" the FAA CIFP charts for airports in the
+                      scenario group.
+                      (This information is necessary for <i>vice</i> to work out which arrival to use for historical
+                      flights.</td>
                   </tr>
                   <tr>
                     <td>"assigned_altitude"</td>
@@ -4429,8 +4548,10 @@
                   <tr>
                     <td>"route"</td>
                     <td>String</td>
-                    <td>(<i>Optional</i>) The aircraft's remaining route. (This is only used for displaying the
-                      aircraft's flight plan, e.g. in flight strips.)</td>
+                    <td>(<i>Optional</i>) The aircraft's remaining route. <b>This is only used for displaying the
+                        aircraft's flight plan, e.g. in flight strips; it does not affect navigation.</b>
+                      Without it the flight plan shows the "star",
+                      and an arrival that gives neither shows no route at all.</td>
                   </tr>
                   <tr>
                     <td>"scratchpad"</td>
@@ -4450,42 +4571,19 @@
                   <tr>
                     <td>"star"</td>
                     <td>(<i>Optional</i>) String</td>
-                    <td>Name of the STAR that the aircraft is flying. If the FAA CIFP has it, it supplies the
-                      arrival's waypoints (see below) and, for an arrival that names none itself, the
-                      "airports" it serves.</td>
+                    <td>Name of the STAR corresponding to the arrival. If the FAA CIFP has it, the arrival's
+                      "waypoints" and "airports" are automatically set.</td>
+                  </tr>
+                  <tr>
+                    <td>"star_feeds"</td>
+                    <td>(<i>Optional</i>) Array of strings</td>
+                    <td>Names of the STARs whose real-world traffic the arrival takes. Use them for an
+                      arrival that starts downstream of the STARs its traffic flew&mdash;a final picking up
+                      aircraft another controller has already sequenced&mdash;where several STARs converge
+                      onto the same path. See <a href="#fe-route-matching">Route Matching</a>.</td>
                   </tr>
                 </tbody>
               </table>
-              <p>STARs are sometimes able to deliver aircraft to multiple airports. Therefore, the "airlines" member
-                is an object with airport names as members.  Each of the airports is associated with an array of objects
-                that specify departure airports, airlines, and (optionally) airline fleets.  Here is an excerpt from the
-                CAMRN4 arrival group at KJFK:
-              </p>
-              <pre>
-  "airlines": {
-      "KFRG": [
-          {
-              "airport": "KDCA",
-              "icao": "EJA"
-          },
-          ...
-      ],
-      "KJFK": [
-          {
-              "airport": "MMMY",
-              "fleet": "long",
-              "icao": "AMX"
-          },
-          ...
-      ]
-  }
-              </pre>
-              <p>We can see that CAMRN4 applies to both the KFRG and KJFK airports, though with different airlines
-                and different departure airports for the arrivals. The specified departure airports (here, KDCA and MMMY)
-                are only used so that flight strips and data blocks on the scope are realistic, but the specified airlines
-                are used to select the type of aircraft from their fleets.  As elsewhere, a value for "fleet" may be specified
-                to limit which types of aircraft may be chosen.
-              </p>
               <p>There are two ways to specify a STAR's waypoints: automatically using data loaded from the
                 <a href="https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/">FAA CIFP</a> or
                 manually.  To use CIFP data, ensure that the STAR is available by running vice from the command-line
@@ -4526,8 +4624,8 @@
                 </tbody>
               </table>
               <p>The CIFP also says which airports each STAR serves: one that serves several of them is recorded once under
-                each, so <code>-routes</code> lists it for every one of them.  That is where an arrival that names no
-                "airports" of its own takes them from, narrowed to the airports the scenario group has.</p>
+                each, so <code>-routes</code> lists it for every one of them.  That is where an arrival that leaves out
+                "airports" takes them from, narrowed to the airports the scenario group has.</p>
               <p>Alternatively, the waypoints may be specified manually using one required and one optional member.
                 <table class="table">
                   <thead>
@@ -4706,152 +4804,80 @@
                 </tbody>
               </table>
             </section>
+
             <section class="docs-section" id="fe-timetables">
-  <h2 class="section-heading">Timetables and Historical Traffic</h2>
+              <h2 class="section-heading">Timetables and Historical Traffic</h2>
 
-  <p>
-    When creating a sim, <i>vice</i> offers a choice of three IFR traffic
-    sources. <b>Scenario</b> is the procedurally generated traffic defined in
-    the scenario files, driven by the departure and arrival rates the user
-    sets. <b>Timetable</b> flies a curated daily timetable for the scenario's
-    primary airport. <b>Historical</b> flies the traffic that really operated
-    at the facility on the selected date. The rest of this section covers the
-    latter two.
-  </p>
+              <p>When a sim is created, one of three sources of IFR traffic may be selected,
+                though not all are available in all scenarios. They are:</p>
+              <ul>
+              <li><i>Scenario</i>: procedurally generated traffic based on traffic rates specified in
+                scenario files (Per-airport "departures" and per-arrival "airlines" specifiers.)</li>
+              <li><i>Timetable</i>: flights specified by a curated daily timetable for one of the
+                scenario's airports. (Per-airport CSV files.)</li>
+              <li><i>Historical</i>: the real-world flights at the facility on the selected date.
+                (This data is built-in to <i>vice</i>.)</li>
+              </ul>
+              <p>
+                Timetables are CSV files stored under
+                <code>resources/traffic/timetables/&lt;ICAO&gt;/</code>; each CSV file in an
+                airport's directory is automatically discovered and offered as a selectable
+                timetable for scenarios at that airport. The airport is inferred from the
+                directory name and the timetable's name from the file name.
+              </p>
+              <p>The entries in each line of a timetable CSV file are:
+                callsign, origin airport ICAO, destination airport ICAO, aircraft type,
+                departure/arrival time (in local time at the airport), and a true/false
+                value indicating whether it is a cargo carrier.</p>
 
-  <p>
-    Only the sources a scenario can actually be flown with are offered, and the
-    server decides which those are. "Timetable" appears where the primary
-    airport has one and "Historical" where the facility has flight data.
-    "Scenario" appears only where the scenario gives the airline lists its own
-    generator samples from: those lists are optional, so a facility meant to be
-    flown from recorded traffic can leave out every airport's "departures" and
-    every arrival's "airlines" and be offered the published sources alone. An
-    arrival that gives no "airlines" takes the airports it serves from
-    "airports", or from the FAA CIFP's entry for its "star", or&mdash;failing
-    both&mdash;serves every airport in the scenario group. Overflights always
-    need their airlines since they are randomly generated under every traffic
-    source. A scenario that no source can fly is a load error.
-  </p>
+              <h3 class="section-heading" id="fe-route-matching">Route Matching</h3>
 
-  <p>
-    A timetable is a single day's cycle of airline operations, without dates,
-    played from a user-selected local start time. Each airport may provide one
-    or more of them, allowing facilities to offer different traffic sets such as
-    weekday, weekend, or seasonal operations.
-  </p>
+              <p>The timetable and historical flight data that <i>vice</i> uses
+                record where each flight went but not how it got there: no
+                SIDs, STARs, airways, altitudes or waypoints. <i>vice</i> therefore works out a
+                realistic route for every published flight, the same way for both sources.
+                Routes come from three places, checked in the following priority order:</p>
+              <ul>
+                <li>A route the scenario itself gives for the exact city pair, in the
+                  airport's "traffic_routes" defined in the scenario.</li>
+                <li>A recently-filed route for the exact city pair from <i>vice</i>'s
+                  database of recent flights, stored in <code>resources/scraped-routes.json</code>.</li>
+                <li>real-world route for the exact city pair from the FAA's preferred
+                  route and coded departure route databases.</li>
+              </ul>
+              <p>Neither of the two route databases has good coverage of small airports,
+                so if a route is not found with an exact airport match, the route to/from a
+                nearby airport is used as a substitute. In the rare case that no suitable route
+                can be found, the aircraft's flight is not included in the sim.</p>
 
-  <p>
-    Timetables are CSV files stored under
-    <code>resources/traffic/timetables/&lt;ICAO&gt;/</code>; each CSV file in an
-    airport's directory is automatically discovered and offered as a selectable
-    timetable for scenarios at that airport. The airport is inferred from the
-    directory name and the timetable's name from the file name.
-  </p>
+              <p>For departures, the selected route should have one of the facility's exit
+                fixes. In turn, a suitable initial departure specified by "departure_routes"
+                is found for the aircraft based on the exit and the runways in use.</p>
 
-  <p>
-    Each flight in a timetable specifies a callsign, aircraft type, origin,
-    destination, published time, and whether it is a cargo flight. When a
-    timetable is selected, <i>vice</i> generates departures and arrivals for the
-    active scenario from this data; overflights remain randomly generated.
-  </p>
+              <p>For arrivals, determining which arrival from "inbound_flows" for an aircraft to use
+                is a bit more complicated. The following rules are applied in this order:
+              </p>
+              <ul>
+                <li>If an aircraft's route ends in a STAR and the corresponding
+                STAR is active, then that STAR is used. (For convenience, <i>vice</i> ignores revision
+                numbers, so a route filing the CUUDA3 still matches a scenario with
+                the CUUDA4.)</li>
+                <li>If an aircraft's STAR is listed in an arrival's "star_feeds", that arrival
+                  is used. This is especially useful for "finals" scenarios where the aircraft
+                  spawn after having flown the STAR: each final feeder can be specified
+                  to carry the appropriate STAR or STARs' traffic.
+                <li>If an aircraft's route does not include a STAR (typical of GA and terminal-en-route
+                  traffic) uses an arrival whose spawn point lies closest the aircraft's origin,
+                  so long as its "aircraft" classes (if any) admit the aircraft type and its altitudes
+                  are within the aircraft's ceiling, so a Skyhawk is never handed an arrival
+                  that starts at FL240.</li>
+                <li>If there is no route at all for the aircraft (primarily obscure foreign airports),
+                  <i>vice</i> falls back to considering the great-circle route between the origin
+                  airport and the destination airport, selecting the arrival whose start point
+                  is closest to it.</li>
+              </ul>
+            </section><!--//section-->
 
-  <p>
-    If a flight's origin or destination matches an airport already defined in
-    the scenario, <i>vice</i> automatically reuses the existing departure and
-    arrival routes from that scenario. This allows timetables to integrate with
-    existing scenario definitions without requiring duplicate route information
-    in the timetable data.
-  </p>
-
-  <h3 class="section-heading">Historical Flight Data</h3>
-
-  <p>
-    Historical traffic comes from per-facility flight data stored under
-    <code>resources/traffic/flights/</code>, one file per facility named as the
-    scenarios name it: <code>N90.flt</code>, <code>ZBW.flt</code>, and so on.
-    Each file holds the departures and arrivals at every airport that facility
-    generates IFR traffic at, over however many years have been imported. An
-    airport worked by more than one facility appears in each of their files, so
-    a sim only ever needs to read one. When such a file exists for a facility,
-    the "Historical" traffic source can be selected.
-  </p>
-
-  <p>
-    Each flight records the airport it departs from or arrives at, its
-    callsign, the airport at the other end, the date, the UTC time, and the
-    aircraft type. Times are when the aircraft actually took off or touched
-    down, so a sim launched with this source flies the traffic that really
-    operated on the selected date. <code>aviation/flights.go</code> documents
-    the file format and reads it back.
-  </p>
-
-  <p>
-    The files are written by <code>cmd/importflights</code> from the
-    <a href="https://github.com/MrAirspace/aircraft-flight-schedules">MrAirspace/aircraft-flight-schedules</a>
-    dataset, which extracts flights from ADS-B position reports and is
-    published quarterly under ODbL-1.0. Pass every quarter for a year in one
-    run, since each run rewrites a facility's file from scratch:
-  </p>
-
-  <pre><code>go run ./cmd/importflights ~/av/aircraft-flight-schedules/*.parquet</code></pre>
-
-  <p>
-    Because the data records only where each flight actually went, a scenario
-    will not model every destination that turns up. A departure whose real
-    destination the scenario models is flown directly. Otherwise, if the FAA's
-    preferred route database (imported with <code>cmd/importroutes</code>)
-    knows how the city pair is really flown and one of its routes leaves
-    through an exit the scenario models, the flight takes that exit and files
-    that route. Failing both, the flight is sent to the modeled destination
-    nearest its real one, provided that destination lies in roughly the same
-    direction. Failing even that, it leaves through the exit a real route to the
-    nearest airport the database <i>does</i> cover uses &mdash; Vero Beach has no
-    route from JFK, but Orlando 66nm away goes out over WAVEY &mdash; so long as
-    that airport is close enough to be a neighbor of the real destination rather
-    than merely the nearest thing in that direction. Last, an airport that gives
-    no "departures" names no destinations to be nearest to, so its flights leave
-    by the exit lying closest to the direction they are really going. A flight
-    with nowhere plausible to go is not launched. A substituted route is used
-    only to choose the exit and is never filed, since it goes somewhere the
-    flight isn't headed.
-  </p>
-
-  <p>
-    Arrivals are placed the same way. An arrival that names the flight's origin
-    among its "airlines" flies it outright. Otherwise the route database is
-    consulted: a real route for the city pair that comes in over one of the
-    scenario's STARs or arrival fixes puts the flight on that arrival and files
-    that route, which is how a Norfolk flight into JFK ends up on the CAMRN5.
-    Failing that, the flight is flown the way the nearest airport either source
-    <i>does</i> know is flown &mdash; Norfolk stands in for Kill Devil Hills,
-    which no route covers &mdash; provided that airport lies in the same
-    direction and is a small enough part of the trip to be a neighbor of the
-    real origin rather than merely the closest thing on the way. Only when none
-    of that applies does the flight come in through the gate lying closest to
-    the direction its origin lies in, preferring the one that starts farthest
-    out where two point much the same way, since the closer of them is a feeder
-    onto a downwind rather than a way into the airspace.
-  </p>
-
-  <p>
-    An arrival is matched against a real route on the STAR it flies and the
-    fixes it flies over, never on its "route", which is the string shown on the
-    flight strip rather than the route flown. The identifiers at a route's two
-    ends are its airports and are not matched against either &mdash; every route
-    into JFK ends with "JFK". A departure leaves through the first of a route's
-    fixes that the scenario models and an arrival comes in over the last, those
-    being where each one enters and leaves the airspace. A route names either an
-    exit fix or the SID that reaches it, so both count: JFK to Las Vegas files
-    "KJFK DEEZZ6 CANDR J60&hellip;", and DEEZZ6 is the SID for the DEEZZ exit.
-  </p>
-
-  <p>
-    An origin more than 60 degrees away from the direction an arrival flies in
-    from is never plausible, which is what
-    <code>vice&nbsp;-lintarrivals</code> checks the scenario files for.
-  </p>
-</section><!--//section-->
             <section class="docs-section" id="fe-vfr">
               <h2 class="section-heading">VFR Aircraft</h2>
               <p><i>vice</i> allows the specification of VFR "distractor" aircraft in scenarios;
