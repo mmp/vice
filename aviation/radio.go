@@ -1059,9 +1059,16 @@ func ApproachTelephonyComponents(approach string) (types []string, runway string
 	lastRunway := false
 
 	for word := range strings.FieldsSeq(approach) {
+		lower := strings.ToLower(word)
+		// The runway's side may be spelled out as its own word ("Runway 4
+		// Right"); it belongs with the runway, not ahead of it.
+		if len(rwy) > 0 && (lower == "left" || lower == "right" || lower == "center") {
+			rwy = append(rwy, lower)
+			continue
+		}
 		if lastRunway {
 			// Handle runway number and suffix (e.g., "22L")
-			for _, ch := range strings.ToLower(word) {
+			for _, ch := range lower {
 				switch ch {
 				case 'l':
 					rwy = append(rwy, "left")
@@ -1076,7 +1083,6 @@ func ApproachTelephonyComponents(approach string) (types []string, runway string
 			lastRunway = false
 		} else {
 			upper := strings.ToUpper(word)
-			lower := strings.ToLower(word)
 			if lower == "runway" {
 				lastRunway = true
 			} else if upper == "ILS" {
