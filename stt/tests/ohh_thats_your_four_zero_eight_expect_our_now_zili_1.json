@@ -37,10 +37,10 @@
         "lantern": "LNTRN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "ApproachFixes": {
         "L27": {
@@ -77,14 +77,11 @@
         }
       },
       "AssignedApproach": "RNAV Z Runway 27",
-      "SID": "",
       "STAR": "COMIX2",
       "Altitude": 10313,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "B E thirty-six niner hotel lima": {
       "Callsign": "N809HL",
@@ -96,7 +93,7 @@
         "Zeklu": "ZEKLU"
       },
       "CandidateApproaches": {
-        "V O R runway two six right": "VORA"
+        "VOR Runway 26R": "VORA"
       },
       "ApproachFixes": {
         "VORA": {
@@ -107,14 +104,12 @@
         }
       },
       "AssignedApproach": "VOR Runway 26R",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 5054,
       "State": "arrival",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "B E thirty-six one uniform brahvo": {
       "Callsign": "N891UB",
@@ -124,7 +119,7 @@
         "Ramona": "KRNM"
       },
       "CandidateApproaches": {
-        "r-nav runway two seven": "RB"
+        "RNAV Runway 27": "RB"
       },
       "ApproachFixes": {
         "RB": {
@@ -134,15 +129,12 @@
           "meddy": "MEDDI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Southwest four 60": {
       "Callsign": "SWA460",
@@ -154,17 +146,11 @@
         "Padrz": "PADRZ",
         "Winfield": "WNFLD"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "PADRZ2",
-      "STAR": "",
       "Altitude": 3387,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     },
     "bonanza niner hotel lima": {
       "Callsign": "N809HL",
@@ -176,7 +162,7 @@
         "Zeklu": "ZEKLU"
       },
       "CandidateApproaches": {
-        "V O R runway two six right": "VORA"
+        "VOR Runway 26R": "VORA"
       },
       "ApproachFixes": {
         "VORA": {
@@ -187,14 +173,12 @@
         }
       },
       "AssignedApproach": "VOR Runway 26R",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 5054,
       "State": "arrival",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "bonanza one uniform brahvo": {
       "Callsign": "N891UB",
@@ -204,7 +188,7 @@
         "Ramona": "KRNM"
       },
       "CandidateApproaches": {
-        "r-nav runway two seven": "RB"
+        "RNAV Runway 27": "RB"
       },
       "ApproachFixes": {
         "RB": {
@@ -214,15 +198,12 @@
           "meddy": "MEDDI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation one kilo kilo": {
       "Callsign": "N631KK",
@@ -233,17 +214,12 @@
         "Hofmann": "HFMNN",
         "Padrz": "PADRZ"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "PADRZ2",
-      "STAR": "",
       "Altitude": 8015,
       "State": "departure",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november eight niner one uniform brahvo": {
       "Callsign": "N891UB",
@@ -253,7 +229,7 @@
         "Ramona": "KRNM"
       },
       "CandidateApproaches": {
-        "r-nav runway two seven": "RB"
+        "RNAV Runway 27": "RB"
       },
       "ApproachFixes": {
         "RB": {
@@ -263,15 +239,11 @@
           "meddy": "MEDDI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "5D",
-      "TrackingController": "5D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5D"
     },
     "november eight zero niner hotel lima": {
       "Callsign": "N809HL",
@@ -283,7 +255,7 @@
         "Zeklu": "ZEKLU"
       },
       "CandidateApproaches": {
-        "V O R runway two six right": "VORA"
+        "VOR Runway 26R": "VORA"
       },
       "ApproachFixes": {
         "VORA": {
@@ -294,14 +266,11 @@
         }
       },
       "AssignedApproach": "VOR Runway 26R",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 5054,
       "State": "arrival",
       "ControllerFrequency": "5D",
-      "TrackingController": "5D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5D"
     },
     "november six three one kilo kilo": {
       "Callsign": "N631KK",
@@ -312,17 +281,11 @@
         "Hofmann": "HFMNN",
         "Padrz": "PADRZ"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "PADRZ2",
-      "STAR": "",
       "Altitude": 8015,
       "State": "departure",
       "ControllerFrequency": "5D",
-      "TrackingController": "5D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5D"
     }
   },
   "logs": [

@@ -1,0 +1,22 @@
+{
+  "msg": "STT command",
+  "transcript": "Southwest Forty Nine Ninety Four expect the RNAV the Zulu runway three zero left approach",
+  "callsign": "SWA4994",
+  "command": "EZ3L",
+  "reason": "a filler word between the type and the variant must not lose the variant: spoken Zulu selects Z3L, not Y3L",
+  "stt_aircraft": {
+    "Southwest 49 94": {
+      "Callsign": "SWA4994",
+      "AircraftType": "B738",
+      "CandidateApproaches": {
+        "ILS Runway 30L": "I3L",
+        "RNAV Y Runway 30L": "Y3L",
+        "RNAV Y Runway 30R": "Y3R",
+        "RNAV Z Runway 30L": "Z3L",
+        "RNAV Z Runway 30R": "Z3R"
+      },
+      "Altitude": 6000,
+      "State": "arrival"
+    }
+  }
+}

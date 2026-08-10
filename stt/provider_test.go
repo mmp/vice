@@ -651,7 +651,7 @@ func TestATISInformation(t *testing.T) {
 					State:    "arrival",
 					Fixes:    map[string]string{"Mike": "MYNEE"},
 					CandidateApproaches: map[string]string{
-						"I L S runway three zero": "I30",
+						"ILS Runway 30": "I30",
 					},
 					ApproachFixes: map[string]map[string]string{"I30": {"Mynee": "MYNEE"}},
 				},
@@ -782,7 +782,7 @@ func TestCompoundCommands(t *testing.T) {
 					State:            "arrival",
 					AssignedApproach: "I2L", // Required for cleared approach validation
 					CandidateApproaches: map[string]string{
-						"I L S runway two two left": "I2L",
+						"ILS Runway 22L": "I2L",
 					},
 				},
 			},
@@ -798,7 +798,7 @@ func TestCompoundCommands(t *testing.T) {
 					State:            "arrival",
 					AssignedApproach: "ILS Runway 28C",
 					CandidateApproaches: map[string]string{
-						"I L S runway two eight center": "I8C",
+						"ILS Runway 28C": "I8C",
 					},
 				},
 			},
@@ -867,7 +867,7 @@ func TestCompoundCommands(t *testing.T) {
 					State:            "arrival",
 					AssignedApproach: "ILS Runway 28L",
 					CandidateApproaches: map[string]string{
-						"I L S runway two eight left": "I28L",
+						"ILS Runway 28L": "I28L",
 					},
 				},
 			},
@@ -883,7 +883,7 @@ func TestCompoundCommands(t *testing.T) {
 					State:            "arrival",
 					AssignedApproach: "ILS Runway 36",
 					CandidateApproaches: map[string]string{
-						"I L S runway three six": "I36",
+						"ILS Runway 36": "I36",
 					},
 				},
 			},
@@ -1166,7 +1166,7 @@ func TestNavigationCommands(t *testing.T) {
 					Altitude:            19000,
 					State:               "arrival",
 					Fixes:               map[string]string{"Pucky": "PUCKY"},
-					CandidateApproaches: map[string]string{"I L S runway two two left": "I22L"},
+					CandidateApproaches: map[string]string{"ILS Runway 22L": "I22L"},
 				},
 			},
 			expected: "AAL870 DPUCKY/H180 EI22L",
@@ -1244,7 +1244,7 @@ func TestNavigationCommands(t *testing.T) {
 					Callsign:            "AWE491",
 					Altitude:            5000,
 					State:               "departure",
-					CandidateApproaches: map[string]string{"i l s runway nine": "I9"},
+					CandidateApproaches: map[string]string{"ILS Runway 9": "I9"},
 				},
 			},
 			expected: "AWE491 EI9",
@@ -1259,7 +1259,7 @@ func TestNavigationCommands(t *testing.T) {
 					State:               "arrival",
 					AssignedApproach:    "RIV",
 					Fixes:               map[string]string{"Fergi": "FERGI"},
-					CandidateApproaches: map[string]string{"River Visual runway one niner": "RIV"},
+					CandidateApproaches: map[string]string{"River Visual Runway 19": "RIV"},
 				},
 			},
 			expected: "DAL8499 AFERGI/CRIV",
@@ -1274,7 +1274,7 @@ func TestNavigationCommands(t *testing.T) {
 					State:               "arrival",
 					AssignedApproach:    "RIV",
 					Fixes:               map[string]string{"Fergi": "FERGI"},
-					CandidateApproaches: map[string]string{"River Visual runway one niner": "RIV"},
+					CandidateApproaches: map[string]string{"River Visual Runway 19": "RIV"},
 				},
 			},
 			expected: "DAL8499 AFERGI/CSIRIV",
@@ -1622,10 +1622,10 @@ func TestCallsignMatchingPriority(t *testing.T) {
 			transcript: "JetBlue leaf thirteen cleared ILS runway four right approach",
 			aircraft: map[string]Aircraft{
 				"JetBlue eight 13": {Callsign: "JBU813", State: "arrival",
-					CandidateApproaches: map[string]string{"I L S runway four right": "I4R"},
+					CandidateApproaches: map[string]string{"ILS Runway 4R": "I4R"},
 					AssignedApproach:    "ILS Runway 4R"},
 				"JetBlue 44 86": {Callsign: "JBU4486", State: "arrival",
-					CandidateApproaches: map[string]string{"I L S runway four right": "I4R"},
+					CandidateApproaches: map[string]string{"ILS Runway 4R": "I4R"},
 					AssignedApproach:    "ILS Runway 4R"},
 			},
 			expected: "JBU813 CI4R",
@@ -2141,6 +2141,11 @@ func TestNormalizeTranscript(t *testing.T) {
 		// processAndDigit: multi-digit on either side → "and" is a connector, dropped
 		{"8000 and 250", []string{"8000", "250"}},
 		{"5 and 8000", []string{"5", "8000"}},
+		// collapseRepetitions: a whisper loop collapses...
+		{"x ray x ray x ray jet", []string{"x", "ray", "jet"}},
+		// ...but repeated digits are content, spelled out or not.
+		{"november three three three mike echo", []string{"november", "3", "3", "3", "mike", "echo"}},
+		{"november 3 3 3 mike echo", []string{"november", "3", "3", "3", "mike", "echo"}},
 	}
 
 	for _, tt := range tests {
@@ -2660,8 +2665,8 @@ func TestVisualApproachSTTPatterns(t *testing.T) {
 			ac: Aircraft{
 				State: "arrival",
 				CandidateApproaches: map[string]string{
-					"Visual belmont runway two two left": "VB2L", // charted visual — should NOT match
-					"I L S runway two two left":          "I22L",
+					"Visual belmont Runway 22L": "VB2L", // charted visual — should NOT match
+					"ILS Runway 22L":            "I22L",
 				},
 				CandidateVisualApproaches: map[string]string{
 					"visual runway two two left":          "22L",
@@ -2794,7 +2799,7 @@ func TestVisualApproachSTTPatterns(t *testing.T) {
 			ac: Aircraft{
 				State: "arrival",
 				CandidateApproaches: map[string]string{
-					"Mount Vernon Visual runway one": "MTV",
+					"Mount Vernon Visual Runway 1": "MTV",
 				},
 				CandidateVisualApproaches: map[string]string{
 					"visual runway one":          "1",
@@ -2817,7 +2822,7 @@ func TestVisualApproachSTTPatterns(t *testing.T) {
 			ac: Aircraft{
 				State: "arrival",
 				CandidateApproaches: map[string]string{
-					"Mount Vernon Visual runway one": "MTV",
+					"Mount Vernon Visual Runway 1": "MTV",
 				},
 				CandidateVisualApproaches: map[string]string{
 					"visual runway one":          "1",
@@ -2840,7 +2845,7 @@ func TestVisualApproachSTTPatterns(t *testing.T) {
 			ac: Aircraft{
 				State: "arrival",
 				CandidateApproaches: map[string]string{
-					"Mount Vernon Visual runway one": "MTV",
+					"Mount Vernon Visual Runway 1": "MTV",
 				},
 				CandidateVisualApproaches: map[string]string{
 					"visual runway one":          "1",
@@ -3651,7 +3656,7 @@ func TestValidateCommands(t *testing.T) {
 		{
 			name:         "expect approach valid for local departure with approaches",
 			commands:     []string{"EI22L"},
-			ac:           Aircraft{State: "departure", CandidateApproaches: map[string]string{"i l s runway two two left": "I22L"}},
+			ac:           Aircraft{State: "departure", CandidateApproaches: map[string]string{"ILS Runway 22L": "I22L"}},
 			expectedLen:  1,
 			minConf:      0.9,
 			expectErrors: false,
@@ -3659,7 +3664,7 @@ func TestValidateCommands(t *testing.T) {
 		{
 			name:         "expedite descent valid for local departure with approaches",
 			commands:     []string{"ED"},
-			ac:           Aircraft{Altitude: 10000, State: "departure", CandidateApproaches: map[string]string{"i l s runway two two left": "I22L"}},
+			ac:           Aircraft{Altitude: 10000, State: "departure", CandidateApproaches: map[string]string{"ILS Runway 22L": "I22L"}},
 			expectedLen:  1,
 			minConf:      0.9,
 			expectErrors: false,
@@ -4278,7 +4283,7 @@ func TestApproachFixInjection(t *testing.T) {
 					State:    "arrival",
 					Fixes:    map[string]string{}, // ROSLY not in aircraft's route
 					CandidateApproaches: map[string]string{
-						"i l s runway two two left": "I22L",
+						"ILS Runway 22L": "I22L",
 					},
 					ApproachFixes: map[string]map[string]string{
 						"I22L": {
@@ -4299,7 +4304,7 @@ func TestApproachFixInjection(t *testing.T) {
 					State:    "arrival",
 					Fixes:    map[string]string{}, // MERIT not in route
 					CandidateApproaches: map[string]string{
-						"i l s runway two eight center": "I28C",
+						"ILS Runway 28C": "I28C",
 					},
 					ApproachFixes: map[string]map[string]string{
 						"I28C": {
@@ -4323,7 +4328,7 @@ func TestApproachFixInjection(t *testing.T) {
 						"merit": "MRIT1", // Aircraft already has MERIT in route (different code)
 					},
 					CandidateApproaches: map[string]string{
-						"rnav runway three six": "R36",
+						"RNAV Runway 36": "R36",
 					},
 					ApproachFixes: map[string]map[string]string{
 						"R36": {
@@ -4372,8 +4377,8 @@ func TestAssignedApproachPreference(t *testing.T) {
 						"bunker": "BUNKR",
 					},
 					CandidateApproaches: map[string]string{
-						"i l s runway one zero left":  "I0L",
-						"i l s runway one zero right": "I0R",
+						"ILS Runway 10L": "I0L",
+						"ILS Runway 10R": "I0R",
 					},
 					AssignedApproach: "ILS Runway 10R", // Expecting 10 Right
 				},
@@ -4388,9 +4393,9 @@ func TestAssignedApproachPreference(t *testing.T) {
 					Callsign: "DAL456",
 					State:    "arrival",
 					CandidateApproaches: map[string]string{
-						"i l s runway two eight left":   "I28L",
-						"i l s runway two eight center": "I28C",
-						"i l s runway two eight right":  "I28R",
+						"ILS Runway 28L": "I28L",
+						"ILS Runway 28C": "I28C",
+						"ILS Runway 28R": "I28R",
 					},
 					AssignedApproach: "ILS Runway 28C", // Expected center, but pilot said left
 				},
@@ -4405,8 +4410,8 @@ func TestAssignedApproachPreference(t *testing.T) {
 					Callsign: "UAL789",
 					State:    "arrival",
 					CandidateApproaches: map[string]string{
-						"i l s runway three six left":  "I36L",
-						"i l s runway three six right": "I36R",
+						"ILS Runway 36L": "I36L",
+						"ILS Runway 36R": "I36R",
 					},
 					AssignedApproach: "", // No assigned approach
 				},

@@ -29,8 +29,8 @@
         "bris": "BRISS"
       },
       "CandidateApproaches": {
-        "I L S runway six": "I6",
-        "I L S runway three three": "I33"
+        "ILS Runway 33": "I33",
+        "ILS Runway 6": "I6"
       },
       "ApproachFixes": {
         "I33": {
@@ -45,14 +45,11 @@
           "Penna": "PENNA"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "DPK3",
       "Altitude": 15096,
       "State": "arrival",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "6",
         "24",
@@ -69,17 +66,11 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6717,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna skylane four juliet kilo": {
       "Callsign": "N54JK",
@@ -90,17 +81,11 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6717,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november five four juliet kilo": {
       "Callsign": "N54JK",
@@ -111,17 +96,10 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6717,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "skylane four juliet kilo": {
       "Callsign": "N54JK",
@@ -132,17 +110,11 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6717,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

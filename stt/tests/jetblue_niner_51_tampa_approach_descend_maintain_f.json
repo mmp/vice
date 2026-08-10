@@ -26,10 +26,10 @@
         "Tampa": "KTPA"
       },
       "CandidateApproaches": {
-        "I L S runway one niner left": "I9L",
-        "I L S runway one niner right": "I9R",
-        "r-nav runway one niner left": "R9L",
-        "r-nav runway one niner right": "R9R"
+        "ILS Runway 19L": "I9L",
+        "ILS Runway 19R": "I9R",
+        "RNAV Runway 19L": "R9L",
+        "RNAV Runway 19R": "R9R"
       },
       "ApproachFixes": {
         "I9L": {
@@ -61,13 +61,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 19R",
-      "SID": "",
       "STAR": "MAATY4",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28",
@@ -85,10 +83,10 @@
         "slop": "SCLOP"
       },
       "CandidateApproaches": {
-        "I L S runway one niner left": "I9L",
-        "I L S runway one niner right": "I9R",
-        "r-nav runway one niner left": "R9L",
-        "r-nav runway one niner right": "R9R"
+        "ILS Runway 19L": "I9L",
+        "ILS Runway 19R": "I9R",
+        "RNAV Runway 19L": "R9L",
+        "RNAV Runway 19R": "R9R"
       },
       "ApproachFixes": {
         "I9L": {
@@ -119,14 +117,11 @@
           "Zeshy": "ZESHY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MAATY4",
       "Altitude": 5928,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28",
@@ -143,10 +138,10 @@
         "Tampa": "KTPA"
       },
       "CandidateApproaches": {
-        "I L S runway one niner left": "I9L",
-        "I L S runway one niner right": "I9R",
-        "r-nav runway one niner left": "R9L",
-        "r-nav runway one niner right": "R9R"
+        "ILS Runway 19L": "I9L",
+        "ILS Runway 19R": "I9R",
+        "RNAV Runway 19L": "R9L",
+        "RNAV Runway 19R": "R9R"
       },
       "ApproachFixes": {
         "I9L": {
@@ -178,13 +173,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 19L",
-      "SID": "",
       "STAR": "DADES1",
       "Altitude": 3000,
       "State": "on approach",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28",
@@ -201,10 +194,10 @@
         "Tampa": "KTPA"
       },
       "CandidateApproaches": {
-        "I L S runway one niner left": "I9L",
-        "I L S runway one niner right": "I9R",
-        "r-nav runway one niner left": "R9L",
-        "r-nav runway one niner right": "R9R"
+        "ILS Runway 19L": "I9L",
+        "ILS Runway 19R": "I9R",
+        "RNAV Runway 19L": "R9L",
+        "RNAV Runway 19R": "R9R"
       },
       "ApproachFixes": {
         "I9L": {
@@ -236,13 +229,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 19L",
-      "SID": "",
       "STAR": "DADES1",
       "Altitude": 3349,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28",

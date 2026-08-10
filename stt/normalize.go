@@ -479,7 +479,13 @@ func processAndDigit(w string, ctx *normalizeContext) ([]string, int, bool) {
 // (NATO spelling like "sierra sierra"), and repeated digits are real
 // content ("seven seven seven" for a 777), so both are left alone.
 func collapseRepetitions(words []string) []string {
+	// This runs before the digit words are turned into digits, so a digit
+	// spoken as a word counts too: GA callsigns are always spelled out
+	// ("november three three three mike echo").
 	isDigits := func(w string) bool {
+		if _, ok := digitWords[w]; ok {
+			return true
+		}
 		for _, r := range w {
 			if r < '0' || r > '9' {
 				return false

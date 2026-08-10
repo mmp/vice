@@ -30,7 +30,7 @@
         "Troys": "TROYZ"
       },
       "CandidateApproaches": {
-        "I L S runway one": "I1"
+        "ILS Runway 1": "I1"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -43,14 +43,11 @@
           "Katrin": "KATRN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "CLIPR3",
       "Altitude": 17619,
       "State": "arrival",
       "ControllerFrequency": "55",
       "TrackingController": "55",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",
@@ -71,7 +68,7 @@
         "grain": "GREIN"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -85,14 +82,11 @@
           "Wyane": "WYANE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "ROBUC3",
       "Altitude": 33000,
       "State": "arrival",
       "ControllerFrequency": "68",
       "TrackingController": "56",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -118,7 +112,7 @@
         "Zirman": "ZMRMN"
       },
       "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
+        "ILS Runway 27R": "I7R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven right": "27R",
@@ -132,14 +126,10 @@
           "Martin": "MRTIN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 14000,
       "State": "arrival",
       "ControllerFrequency": "66",
       "TrackingController": "PPP1P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "17",
         "35"
@@ -158,7 +148,7 @@
         "Tampa": "KTPA"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -172,14 +162,11 @@
           "Wyane": "WYANE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "ROBUC3",
       "Altitude": 33000,
       "State": "arrival",
       "ControllerFrequency": "68",
       "TrackingController": "56",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -204,7 +191,7 @@
         "Stink": "STINK"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -218,14 +205,10 @@
           "Wyane": "WYANE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 36000,
       "State": "overflight",
       "ControllerFrequency": "86",
       "TrackingController": "86",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -250,7 +233,7 @@
         "Solberg": "SBJ"
       },
       "CandidateApproaches": {
-        "I L S runway one": "I1"
+        "ILS Runway 1": "I1"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -263,14 +246,11 @@
           "Katrin": "KATRN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "CLIPR3",
       "Altitude": 35774,
       "State": "arrival",
       "ControllerFrequency": "42",
       "TrackingController": "42",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",
@@ -291,7 +271,7 @@
         "Stern": "STERN"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -305,14 +285,10 @@
           "Wyane": "WYANE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 36000,
       "State": "overflight",
       "ControllerFrequency": "86",
       "TrackingController": "86",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -337,18 +313,10 @@
         "Park": "PARKE",
         "Towin": "TOWIN"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 34000,
       "State": "overflight",
       "ControllerFrequency": "42",
-      "TrackingController": "42",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "42"
     },
     "Southwest niner 92": {
       "Callsign": "SWA992",
@@ -363,7 +331,7 @@
         "Solberg": "SBJ"
       },
       "CandidateApproaches": {
-        "I L S runway three three left": "I3L"
+        "ILS Runway 33L": "I3L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three three left": "33L",
@@ -378,14 +346,11 @@
           "Splat": "SPLAT"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "TRISH4",
       "Altitude": 34000,
       "State": "arrival",
       "ControllerFrequency": "42",
       "TrackingController": "42",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28"
@@ -404,7 +369,7 @@
         "Washington Dulles": "KIAD"
       },
       "CandidateApproaches": {
-        "I L S runway one right": "I1R"
+        "ILS Runway 1R": "I1R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one right": "1R",
@@ -429,15 +394,11 @@
           "grasp": "GRASK"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "HYPER9",
       "Altitude": 29443,
       "State": "arrival",
       "ControllerFrequency": "42",
-      "TrackingController": "42",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "42"
     },
     "Speedbird seven golf hotel": {
       "Callsign": "BAW7GH",
@@ -452,7 +413,7 @@
         "Washington Dulles": "KIAD"
       },
       "CandidateApproaches": {
-        "I L S runway one right": "I1R"
+        "ILS Runway 1R": "I1R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one right": "1R",
@@ -477,15 +438,11 @@
           "grasp": "GRASK"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "HYPER9",
       "Altitude": 36000,
       "State": "arrival",
       "ControllerFrequency": "42",
-      "TrackingController": "42",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "42"
     },
     "United 42": {
       "Callsign": "UAL42",
@@ -500,7 +457,7 @@
         "Washington Dulles": "KIAD"
       },
       "CandidateApproaches": {
-        "I L S runway one right": "I1R"
+        "ILS Runway 1R": "I1R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one right": "1R",
@@ -525,15 +482,11 @@
           "grasp": "GRASK"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "HYPER9",
       "Altitude": 28000,
       "State": "arrival",
       "ControllerFrequency": "42",
-      "TrackingController": "42",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "42"
     },
     "United 58": {
       "Callsign": "UAL58",
@@ -545,18 +498,11 @@
         "Queen Beatrix": "TNCA",
         "squad": "SQUAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "EWR5",
-      "STAR": "",
       "Altitude": 33000,
       "State": "departure",
       "ControllerFrequency": "66",
-      "TrackingController": "66",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "66"
     },
     "citation six victor kebeck": {
       "Callsign": "N276VQ/T",
@@ -570,18 +516,11 @@
         "Tampa": "KTPA",
         "Towin": "TOWIN"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 34000,
       "State": "overflight",
       "ControllerFrequency": "42",
       "TrackingController": "42",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november two seven six victor kebeck": {
       "Callsign": "N276VQ",
@@ -595,18 +534,10 @@
         "Tampa": "KTPA",
         "Towin": "TOWIN"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 34000,
       "State": "overflight",
       "ControllerFrequency": "42",
-      "TrackingController": "42",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "42"
     }
   },
   "logs": [

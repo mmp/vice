@@ -34,9 +34,9 @@
         "Wyane": "WYANE"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L",
-        "r-nav x-ray runway two two left": "X2L",
-        "r-nav yankee runway two two left": "Y2L"
+        "ILS Runway 22L": "I2L",
+        "RNAV X Runway 22L": "X2L",
+        "RNAV Y Runway 22L": "Y2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -64,13 +64,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "JFUND2",
       "Altitude": 12298,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -93,8 +91,8 @@
         "Teterboro": "KTEB"
       },
       "CandidateApproaches": {
-        "I L S runway two niner": "I29",
-        "r-nav runway two niner": "R29"
+        "ILS Runway 29": "I29",
+        "RNAV Runway 29": "R29"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two niner": "29",
@@ -116,13 +114,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 29",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1L",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "5",
         "23"
@@ -144,9 +139,9 @@
         "Wyane": "WYANE"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L",
-        "r-nav x-ray runway two two left": "X2L",
-        "r-nav yankee runway two two left": "Y2L"
+        "ILS Runway 22L": "I2L",
+        "RNAV X Runway 22L": "X2L",
+        "RNAV Y Runway 22L": "Y2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -174,13 +169,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "ROBUC3",
       "Altitude": 11012,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -206,9 +199,9 @@
         "Wyane": "WYANE"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L",
-        "r-nav x-ray runway two two left": "X2L",
-        "r-nav yankee runway two two left": "Y2L"
+        "ILS Runway 22L": "I2L",
+        "RNAV X Runway 22L": "X2L",
+        "RNAV Y Runway 22L": "Y2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -236,13 +229,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "ROBUC3",
       "Altitude": 6853,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -265,8 +256,8 @@
         "rikah": "RIKAH"
       },
       "CandidateApproaches": {
-        "r-nav runway three four": "R34",
-        "r-nav runway two seven": "R27"
+        "RNAV Runway 27": "R27",
+        "RNAV Runway 34": "R34"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three four": "34",
@@ -288,14 +279,11 @@
           "wassup": "WUSUP"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "DREEM3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "16",
         "34",
@@ -317,8 +305,8 @@
         "rikah": "RIKAH"
       },
       "CandidateApproaches": {
-        "I L S runway two niner": "I29",
-        "r-nav runway two niner": "R29"
+        "ILS Runway 29": "I29",
+        "RNAV Runway 29": "R29"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two niner": "29",
@@ -340,13 +328,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 29",
-      "SID": "",
       "STAR": "DREEM3",
       "Altitude": 2046,
       "State": "arrival",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "5",
         "23"
@@ -361,18 +347,11 @@
         "Bruin": "BRUWN",
         "Queen Beatrix": "TNCA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BRUWN7",
-      "STAR": "",
       "Altitude": 14000,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "C37",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C37"
     },
     "Shamrock one 78": {
       "Callsign": "EIN178",
@@ -389,9 +368,9 @@
         "Wyane": "WYANE"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L",
-        "r-nav x-ray runway two two left": "X2L",
-        "r-nav yankee runway two two left": "Y2L"
+        "ILS Runway 22L": "I2L",
+        "RNAV X Runway 22L": "X2L",
+        "RNAV Y Runway 22L": "Y2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -419,13 +398,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "OOSHN5",
       "Altitude": 10047,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -455,9 +432,9 @@
         "Wyane": "WYANE"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L",
-        "r-nav x-ray runway two two left": "X2L",
-        "r-nav yankee runway two two left": "Y2L"
+        "ILS Runway 22L": "I2L",
+        "RNAV X Runway 22L": "X2L",
+        "RNAV Y Runway 22L": "Y2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -485,13 +462,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "ROBUC3",
       "Altitude": 15388,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -517,9 +492,9 @@
         "Wyane": "WYANE"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L",
-        "r-nav x-ray runway two two left": "X2L",
-        "r-nav yankee runway two two left": "Y2L"
+        "ILS Runway 22L": "I2L",
+        "RNAV X Runway 22L": "X2L",
+        "RNAV Y Runway 22L": "Y2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -547,13 +522,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "ROBUC3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -575,18 +548,12 @@
         "Hanscom": "KBED",
         "Teterboro": "KTEB"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HNSCM5",
-      "STAR": "",
       "Altitude": 2131,
       "State": "departure",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november four zero niner three yankee": {
       "Callsign": "N4093Y",
@@ -598,18 +565,11 @@
         "Hanscom": "KBED",
         "Teterboro": "KTEB"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HNSCM5",
-      "STAR": "",
       "Altitude": 2131,
       "State": "departure",
       "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1B"
     }
   },
   "logs": [

@@ -1,0 +1,48 @@
+{
+  "msg": "STT command",
+  "transcript": "Air Canada one sixteen at New York Approach expect ILS runway two two left",
+  "callsign": "ACA116",
+  "command": "EI2L",
+  "reason": "\"New York Approach\" is a position ID, not the fix KEWR (\"Newark\"); \"expect\" must not be absorbed into the approach phrase and read as a clearance",
+  "stt_aircraft": {
+    "Air Canada one 16": {
+      "Callsign": "ACA116",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Hayed": "HAYED",
+        "Newark": "KEWR",
+        "Racki": "RACKI",
+        "Slate Run": "SLT",
+        "Toronto Lester B. Pearson": "CYYZ",
+        "Williamsport": "FQM",
+        "megs": "MEGSS"
+      },
+      "CandidateApproaches": {
+        "ILS Runway 22L": "I2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "STAR": "FQM3",
+      "Altitude": 33000,
+      "State": "arrival",
+      "ControllerFrequency": "72",
+      "TrackingController": "72",
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  }
+}

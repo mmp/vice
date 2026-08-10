@@ -27,23 +27,31 @@
         "Kennedy": "KJFK"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway four Left": "I4L",
-        "I L S runway four Right": "I4R",
-        "I L S runway one three Left": "I3L",
-        "I L S runway three one Left": "I1L",
-        "I L S runway three one Right": "I1R",
-        "I L S runway two two Left": "I2L",
-        "I L S runway two two Right": "I2R",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two Left": "R2L",
-        "r-nav zulu runway four Left": "R4L",
-        "r-nav zulu runway four Right": "R4R",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R",
-        "r-nav zulu runway three one Left": "R1L",
-        "r-nav zulu runway three one Right": "R1R",
-        "r-nav zulu runway two two Right": "R2R"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13 Left": "I3L",
+        "ILS Runway 22 Left": "I2L",
+        "ILS Runway 22 Right": "I2R",
+        "ILS Runway 31 Left": "I1L",
+        "ILS Runway 31 Right": "I1R",
+        "ILS Runway 4 Left": "I4L",
+        "ILS Runway 4 Right": "I4R",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22 Left": "R2L",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R",
+        "RNAV Z Runway 22 Right": "R2R",
+        "RNAV Z Runway 31 Left": "R1L",
+        "RNAV Z Runway 31 Right": "R1R",
+        "RNAV Z Runway 4 Left": "R4L",
+        "RNAV Z Runway 4 Right": "R4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -157,13 +165,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 4 Left",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -189,15 +194,7 @@
         "31L",
         "13L",
         "31R"
-      ],
-      "CandidateVisualApproaches": {
-        "visual runway two two left": "22L",
-        "visual approach runway two two left": "22L",
-        "visual two two left": "22L",
-        "visual runway one three left": "13L",
-        "visual approach runway one three left": "13L",
-        "visual one three left": "13L"
-      }
+      ]
     },
     "American eight 38": {
       "Callsign": "AAL838",
@@ -218,23 +215,31 @@
         "Tapper": "TAPPR"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway four Left": "I4L",
-        "I L S runway four Right": "I4R",
-        "I L S runway one three Left": "I3L",
-        "I L S runway three one Left": "I1L",
-        "I L S runway three one Right": "I1R",
-        "I L S runway two two Left": "I2L",
-        "I L S runway two two Right": "I2R",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two Left": "R2L",
-        "r-nav zulu runway four Left": "R4L",
-        "r-nav zulu runway four Right": "R4R",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R",
-        "r-nav zulu runway three one Left": "R1L",
-        "r-nav zulu runway three one Right": "R1R",
-        "r-nav zulu runway two two Right": "R2R"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13 Left": "I3L",
+        "ILS Runway 22 Left": "I2L",
+        "ILS Runway 22 Right": "I2R",
+        "ILS Runway 31 Left": "I1L",
+        "ILS Runway 31 Right": "I1R",
+        "ILS Runway 4 Left": "I4L",
+        "ILS Runway 4 Right": "I4R",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22 Left": "R2L",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R",
+        "RNAV Z Runway 22 Right": "R2R",
+        "RNAV Z Runway 31 Left": "R1L",
+        "RNAV Z Runway 31 Right": "R1R",
+        "RNAV Z Runway 4 Left": "R4L",
+        "RNAV Z Runway 4 Right": "R4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -348,13 +353,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22 Right",
-      "SID": "",
       "STAR": "PUCKY1",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -380,15 +383,7 @@
         "31L",
         "13L",
         "31R"
-      ],
-      "CandidateVisualApproaches": {
-        "visual runway two two left": "22L",
-        "visual approach runway two two left": "22L",
-        "visual two two left": "22L",
-        "visual runway one three left": "13L",
-        "visual approach runway one three left": "13L",
-        "visual one three left": "13L"
-      }
+      ]
     },
     "Caribbean Airlines niner 43": {
       "Callsign": "BWA943",
@@ -400,23 +395,31 @@
         "Kennedy": "KJFK"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway four Left": "I4L",
-        "I L S runway four Right": "I4R",
-        "I L S runway one three Left": "I3L",
-        "I L S runway three one Left": "I1L",
-        "I L S runway three one Right": "I1R",
-        "I L S runway two two Left": "I2L",
-        "I L S runway two two Right": "I2R",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two Left": "R2L",
-        "r-nav zulu runway four Left": "R4L",
-        "r-nav zulu runway four Right": "R4R",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R",
-        "r-nav zulu runway three one Left": "R1L",
-        "r-nav zulu runway three one Right": "R1R",
-        "r-nav zulu runway two two Right": "R2R"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13 Left": "I3L",
+        "ILS Runway 22 Left": "I2L",
+        "ILS Runway 22 Right": "I2R",
+        "ILS Runway 31 Left": "I1L",
+        "ILS Runway 31 Right": "I1R",
+        "ILS Runway 4 Left": "I4L",
+        "ILS Runway 4 Right": "I4R",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22 Left": "R2L",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R",
+        "RNAV Z Runway 22 Right": "R2R",
+        "RNAV Z Runway 31 Left": "R1L",
+        "RNAV Z Runway 31 Right": "R1R",
+        "RNAV Z Runway 4 Left": "R4L",
+        "RNAV Z Runway 4 Right": "R4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -530,13 +533,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4 Left",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -562,15 +563,7 @@
         "31L",
         "13L",
         "31R"
-      ],
-      "CandidateVisualApproaches": {
-        "visual runway two two left": "22L",
-        "visual approach runway two two left": "22L",
-        "visual two two left": "22L",
-        "visual runway one three left": "13L",
-        "visual approach runway one three left": "13L",
-        "visual one three left": "13L"
-      }
+      ]
     },
     "Delta 58 heavy": {
       "Callsign": "DAL58",
@@ -583,23 +576,31 @@
         "Zetal": "ZETAL"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway four Left": "I4L",
-        "I L S runway four Right": "I4R",
-        "I L S runway one three Left": "I3L",
-        "I L S runway three one Left": "I1L",
-        "I L S runway three one Right": "I1R",
-        "I L S runway two two Left": "I2L",
-        "I L S runway two two Right": "I2R",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two Left": "R2L",
-        "r-nav zulu runway four Left": "R4L",
-        "r-nav zulu runway four Right": "R4R",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R",
-        "r-nav zulu runway three one Left": "R1L",
-        "r-nav zulu runway three one Right": "R1R",
-        "r-nav zulu runway two two Right": "R2R"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13 Left": "I3L",
+        "ILS Runway 22 Left": "I2L",
+        "ILS Runway 22 Right": "I2R",
+        "ILS Runway 31 Left": "I1L",
+        "ILS Runway 31 Right": "I1R",
+        "ILS Runway 4 Left": "I4L",
+        "ILS Runway 4 Right": "I4R",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22 Left": "R2L",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R",
+        "RNAV Z Runway 22 Right": "R2R",
+        "RNAV Z Runway 31 Left": "R1L",
+        "RNAV Z Runway 31 Right": "R1R",
+        "RNAV Z Runway 4 Left": "R4L",
+        "RNAV Z Runway 4 Right": "R4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -713,13 +714,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4 Right",
-      "SID": "",
       "STAR": "PUCKY1",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -745,15 +744,7 @@
         "31L",
         "13L",
         "31R"
-      ],
-      "CandidateVisualApproaches": {
-        "visual runway two two left": "22L",
-        "visual approach runway two two left": "22L",
-        "visual two two left": "22L",
-        "visual runway one three left": "13L",
-        "visual approach runway one three left": "13L",
-        "visual one three left": "13L"
-      }
+      ]
     },
     "Looft-hansa 58 39 heavy": {
       "Callsign": "DLH5839",
@@ -766,23 +757,31 @@
         "Zetal": "ZETAL"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway four Left": "I4L",
-        "I L S runway four Right": "I4R",
-        "I L S runway one three Left": "I3L",
-        "I L S runway three one Left": "I1L",
-        "I L S runway three one Right": "I1R",
-        "I L S runway two two Left": "I2L",
-        "I L S runway two two Right": "I2R",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two Left": "R2L",
-        "r-nav zulu runway four Left": "R4L",
-        "r-nav zulu runway four Right": "R4R",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R",
-        "r-nav zulu runway three one Left": "R1L",
-        "r-nav zulu runway three one Right": "R1R",
-        "r-nav zulu runway two two Right": "R2R"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13 Left": "I3L",
+        "ILS Runway 22 Left": "I2L",
+        "ILS Runway 22 Right": "I2R",
+        "ILS Runway 31 Left": "I1L",
+        "ILS Runway 31 Right": "I1R",
+        "ILS Runway 4 Left": "I4L",
+        "ILS Runway 4 Right": "I4R",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22 Left": "R2L",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R",
+        "RNAV Z Runway 22 Right": "R2R",
+        "RNAV Z Runway 31 Left": "R1L",
+        "RNAV Z Runway 31 Right": "R1R",
+        "RNAV Z Runway 4 Left": "R4L",
+        "RNAV Z Runway 4 Right": "R4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -896,13 +895,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4 Right",
-      "SID": "",
       "STAR": "PARCH3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -928,15 +925,7 @@
         "31L",
         "13L",
         "31R"
-      ],
-      "CandidateVisualApproaches": {
-        "visual runway two two left": "22L",
-        "visual approach runway two two left": "22L",
-        "visual two two left": "22L",
-        "visual runway one three left": "13L",
-        "visual approach runway one three left": "13L",
-        "visual one three left": "13L"
-      }
+      ]
     },
     "Virgin eight 35 echo heavy": {
       "Callsign": "VIR835E",
@@ -948,23 +937,31 @@
         "Kennedy": "KJFK"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway four Left": "I4L",
-        "I L S runway four Right": "I4R",
-        "I L S runway one three Left": "I3L",
-        "I L S runway three one Left": "I1L",
-        "I L S runway three one Right": "I1R",
-        "I L S runway two two Left": "I2L",
-        "I L S runway two two Right": "I2R",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two Left": "R2L",
-        "r-nav zulu runway four Left": "R4L",
-        "r-nav zulu runway four Right": "R4R",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R",
-        "r-nav zulu runway three one Left": "R1L",
-        "r-nav zulu runway three one Right": "R1R",
-        "r-nav zulu runway two two Right": "R2R"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13 Left": "I3L",
+        "ILS Runway 22 Left": "I2L",
+        "ILS Runway 22 Right": "I2R",
+        "ILS Runway 31 Left": "I1L",
+        "ILS Runway 31 Right": "I1R",
+        "ILS Runway 4 Left": "I4L",
+        "ILS Runway 4 Right": "I4R",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22 Left": "R2L",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R",
+        "RNAV Z Runway 22 Right": "R2R",
+        "RNAV Z Runway 31 Left": "R1L",
+        "RNAV Z Runway 31 Right": "R1R",
+        "RNAV Z Runway 4 Left": "R4L",
+        "RNAV Z Runway 4 Right": "R4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -1078,13 +1075,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4 Left",
-      "SID": "",
       "STAR": "PARCH3",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -1110,15 +1105,7 @@
         "31L",
         "13L",
         "31R"
-      ],
-      "CandidateVisualApproaches": {
-        "visual runway two two left": "22L",
-        "visual approach runway two two left": "22L",
-        "visual two two left": "22L",
-        "visual runway one three left": "13L",
-        "visual approach runway one three left": "13L",
-        "visual one three left": "13L"
-      }
+      ]
     },
     "WestJet 71 57": {
       "Callsign": "WJA7157",
@@ -1129,23 +1116,31 @@
         "Kennedy": "KJFK"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway four Left": "I4L",
-        "I L S runway four Right": "I4R",
-        "I L S runway one three Left": "I3L",
-        "I L S runway three one Left": "I1L",
-        "I L S runway three one Right": "I1R",
-        "I L S runway two two Left": "I2L",
-        "I L S runway two two Right": "I2R",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two Left": "R2L",
-        "r-nav zulu runway four Left": "R4L",
-        "r-nav zulu runway four Right": "R4R",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R",
-        "r-nav zulu runway three one Left": "R1L",
-        "r-nav zulu runway three one Right": "R1R",
-        "r-nav zulu runway two two Right": "R2R"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13 Left": "I3L",
+        "ILS Runway 22 Left": "I2L",
+        "ILS Runway 22 Right": "I2R",
+        "ILS Runway 31 Left": "I1L",
+        "ILS Runway 31 Right": "I1R",
+        "ILS Runway 4 Left": "I4L",
+        "ILS Runway 4 Right": "I4R",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22 Left": "R2L",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R",
+        "RNAV Z Runway 22 Right": "R2R",
+        "RNAV Z Runway 31 Left": "R1L",
+        "RNAV Z Runway 31 Right": "R1R",
+        "RNAV Z Runway 4 Left": "R4L",
+        "RNAV Z Runway 4 Right": "R4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -1259,13 +1254,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4 Right",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 2017,
       "State": "cleared approach",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -1291,15 +1284,7 @@
         "31L",
         "13L",
         "31R"
-      ],
-      "CandidateVisualApproaches": {
-        "visual runway two two left": "22L",
-        "visual approach runway two two left": "22L",
-        "visual two two left": "22L",
-        "visual runway one three left": "13L",
-        "visual approach runway one three left": "13L",
-        "visual one three left": "13L"
-      }
+      ]
     },
     "WestJet 74": {
       "Callsign": "WJA74",
@@ -1309,23 +1294,31 @@
         "Kennedy": "KJFK"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway four Left": "I4L",
-        "I L S runway four Right": "I4R",
-        "I L S runway one three Left": "I3L",
-        "I L S runway three one Left": "I1L",
-        "I L S runway three one Right": "I1R",
-        "I L S runway two two Left": "I2L",
-        "I L S runway two two Right": "I2R",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two Left": "R2L",
-        "r-nav zulu runway four Left": "R4L",
-        "r-nav zulu runway four Right": "R4R",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R",
-        "r-nav zulu runway three one Left": "R1L",
-        "r-nav zulu runway three one Right": "R1R",
-        "r-nav zulu runway two two Right": "R2R"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13 Left": "I3L",
+        "ILS Runway 22 Left": "I2L",
+        "ILS Runway 22 Right": "I2R",
+        "ILS Runway 31 Left": "I1L",
+        "ILS Runway 31 Right": "I1R",
+        "ILS Runway 4 Left": "I4L",
+        "ILS Runway 4 Right": "I4R",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22 Left": "R2L",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R",
+        "RNAV Z Runway 22 Right": "R2R",
+        "RNAV Z Runway 31 Left": "R1L",
+        "RNAV Z Runway 31 Right": "R1R",
+        "RNAV Z Runway 4 Left": "R4L",
+        "RNAV Z Runway 4 Right": "R4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -1438,14 +1431,11 @@
           "Veru": "VERRU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -1471,15 +1461,7 @@
         "31L",
         "13L",
         "31R"
-      ],
-      "CandidateVisualApproaches": {
-        "visual runway two two left": "22L",
-        "visual approach runway two two left": "22L",
-        "visual two two left": "22L",
-        "visual runway one three left": "13L",
-        "visual approach runway one three left": "13L",
-        "visual one three left": "13L"
-      }
+      ]
     }
   },
   "logs": [
@@ -1510,7 +1492,7 @@
     "[local-stt]     result 2: \"Caribbean Airlines niner 43\" (airline=0.667, flight=0.000, skip=0)",
     "[local-stt]     result 3: \"Virgin eight 35 echo heavy\" (airline=0.667, flight=0.000, skip=0)",
     "[local-stt]     pattern \"airline_only\": selected \"American 38 46\" (airline=0.71, flight=0.00, skip=0)",
-    "[local-stt]     pattern \"airline_only\": below MinScore (1.21 < 1.30) for \"American 38 46\"",
+    "[local-stt]     pattern \"airline_only\": below MinScore (1.21 \u003c 1.30) for \"American 38 46\"",
     "[local-stt]   pattern \"flight_only\": 2 results",
     "[local-stt]     result 0: \"Virgin eight 35 echo heavy\" (airline=0.500, flight=0.942, skip=0)",
     "[local-stt]     result 1: \"American eight 38\" (airline=0.500, flight=0.822, skip=0)",
@@ -1518,27 +1500,27 @@
     "[local-stt]   pattern \"airline_flight\" matched: \"VIR835E\" (conf=0.82, consumed=4, addressingForm=0, spokenKey=\"Virgin eight 35 echo heavy\")",
     "[local-stt] callsign match: Callsign=\"VIR835E\" SpokenKey=\"Virgin eight 35 echo heavy\" Conf=0.82 Consumed=4",
     "[local-stt] aircraft context: State=\"arrival\" Altitude=3000 Fixes=4 Approaches=17 AssignedApproach=\"ILS Runway 4 Left\" LAHSORunways=[4L 22R 4R 22L 4L 22R 13L 31R 13L 31R 13R 31L 4L 22R 4L 22R 4R 22L 13L 31R 13R 31L 13L 31R]",
-    "[local-stt]   fix: \"Crystal\" -> \"KRSTL\"",
-    "[local-stt]   fix: \"Kennedy\" -> \"KJFK\"",
-    "[local-stt]   fix: \"J F K\" -> \"KJFK\"",
-    "[local-stt]   fix: \"Aroke\" -> \"AROKE\"",
-    "[local-stt]   approach: \"r-nav zulu runway one three Left\" -> \"R3L\"",
-    "[local-stt]   approach: \"I L S runway one three Left\" -> \"I3L\"",
-    "[local-stt]   approach: \"I L S runway two two Left\" -> \"I2L\"",
-    "[local-stt]   approach: \"r-nav zulu runway two two Right\" -> \"R2R\"",
-    "[local-stt]   approach: \"I L S runway three one Right\" -> \"I1R\"",
-    "[local-stt]   approach: \"r-nav zulu runway four Left\" -> \"R4L\"",
-    "[local-stt]   approach: \"r-nav zulu runway one three Right\" -> \"R3R\"",
-    "[local-stt]   approach: \"r-nav zulu runway four Right\" -> \"R4R\"",
-    "[local-stt]   approach: \"r-nav x-ray runway two two Left\" -> \"R2L\"",
-    "[local-stt]   approach: \"I L S runway two two Right\" -> \"I2R\"",
-    "[local-stt]   approach: \"r-nav zulu runway three one Left\" -> \"R1L\"",
-    "[local-stt]   approach: \"r-nav zulu runway three one Right\" -> \"R1R\"",
-    "[local-stt]   approach: \"I L S runway four Right\" -> \"I4R\"",
-    "[local-stt]   approach: \"Parkway Visual runway one three Left\" -> \"PVA\"",
-    "[local-stt]   approach: \"Belmont Visual runway two two Left\" -> \"BVA\"",
-    "[local-stt]   approach: \"I L S runway three one Left\" -> \"I1L\"",
-    "[local-stt]   approach: \"I L S runway four Left\" -> \"I4L\"",
+    "[local-stt]   fix: \"Crystal\" -\u003e \"KRSTL\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Aroke\" -\u003e \"AROKE\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three Left\" -\u003e \"R3L\"",
+    "[local-stt]   approach: \"I L S runway one three Left\" -\u003e \"I3L\"",
+    "[local-stt]   approach: \"I L S runway two two Left\" -\u003e \"I2L\"",
+    "[local-stt]   approach: \"r-nav zulu runway two two Right\" -\u003e \"R2R\"",
+    "[local-stt]   approach: \"I L S runway three one Right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav zulu runway four Left\" -\u003e \"R4L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three Right\" -\u003e \"R3R\"",
+    "[local-stt]   approach: \"r-nav zulu runway four Right\" -\u003e \"R4R\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two Left\" -\u003e \"R2L\"",
+    "[local-stt]   approach: \"I L S runway two two Right\" -\u003e \"I2R\"",
+    "[local-stt]   approach: \"r-nav zulu runway three one Left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"r-nav zulu runway three one Right\" -\u003e \"R1R\"",
+    "[local-stt]   approach: \"I L S runway four Right\" -\u003e \"I4R\"",
+    "[local-stt]   approach: \"Parkway Visual runway one three Left\" -\u003e \"PVA\"",
+    "[local-stt]   approach: \"Belmont Visual runway two two Left\" -\u003e \"BVA\"",
+    "[local-stt]   approach: \"I L S runway three one Left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"I L S runway four Left\" -\u003e \"I4L\"",
     "[local-stt] command tokens after disregard: 6",
     "[local-stt]   token[0]: Text=\"cleared\" Type=0 Value=-1",
     "[local-stt]   token[1]: Text=\"ils\" Type=0 Value=-1",
@@ -1549,7 +1531,7 @@
     "[local-stt] ParseCommands: 6 tokens",
     "[local-stt]   extractFix: trying to match tokens[0]=\"ils\" against 4 fixes",
     "[local-stt]   extractFix: no match found for \"ils\"",
-    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"four right\" -> \"I4R\" (consumed=4)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"four right\" -\u003e \"I4R\" (consumed=4)",
     "[local-stt]   matched command: \"CI4R\" (conf=1.00, consumed=5, isThen=false)",
     "[local-stt]   no match at token[5]=\"approach\", skipping",
     "[local-stt] ParseCommands: result=[CI4R] (avgConf=1.00)",

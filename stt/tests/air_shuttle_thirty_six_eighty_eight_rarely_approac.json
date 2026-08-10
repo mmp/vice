@@ -30,14 +30,13 @@
         "shoe": "SCHOO"
       },
       "CandidateApproaches": {
-        "I L S runway five left": "I5L",
-        "I L S runway five right": "I5R",
-        "r-nav yankee runway five left": "Y5L",
-        "r-nav yankee runway five right": "Y5R",
-        "r-nav zulu runway five left": "Z5L",
-        "r-nav zulu runway five right": "Z5R"
+        "ILS Runway 5L": "I5L",
+        "ILS Runway 5R": "I5R",
+        "RNAV Y Runway 5L": "Y5L",
+        "RNAV Y Runway 5R": "Y5R",
+        "RNAV Z Runway 5L": "Z5L",
+        "RNAV Z Runway 5R": "Z5R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I5L": {
           "Boula": "BOULE",
@@ -90,14 +89,11 @@
           "peck it": "PECIT"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "DMSTR2",
       "Altitude": 15000,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32"
@@ -120,14 +116,13 @@
         "shoe": "SCHOO"
       },
       "CandidateApproaches": {
-        "I L S runway five left": "I5L",
-        "I L S runway five right": "I5R",
-        "r-nav yankee runway five left": "Y5L",
-        "r-nav yankee runway five right": "Y5R",
-        "r-nav zulu runway five left": "Z5L",
-        "r-nav zulu runway five right": "Z5R"
+        "ILS Runway 5L": "I5L",
+        "ILS Runway 5R": "I5R",
+        "RNAV Y Runway 5L": "Y5L",
+        "RNAV Y Runway 5R": "Y5R",
+        "RNAV Z Runway 5L": "Z5L",
+        "RNAV Z Runway 5R": "Z5R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I5L": {
           "Boula": "BOULE",
@@ -181,13 +176,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 5L",
-      "SID": "",
       "STAR": "BLOGS3",
       "Altitude": 13539,
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32"
@@ -200,18 +193,11 @@
         "Lwood": "LWOOD",
         "Opus": "OPUSS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "LWOOD5",
-      "STAR": "",
       "Altitude": 5783,
       "State": "departure",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "SkyWest three 97 charlie": {
       "Callsign": "SKW397C",
@@ -231,14 +217,13 @@
         "shoe": "SCHOO"
       },
       "CandidateApproaches": {
-        "I L S runway five left": "I5L",
-        "I L S runway five right": "I5R",
-        "r-nav yankee runway five left": "Y5L",
-        "r-nav yankee runway five right": "Y5R",
-        "r-nav zulu runway five left": "Z5L",
-        "r-nav zulu runway five right": "Z5R"
+        "ILS Runway 5L": "I5L",
+        "ILS Runway 5R": "I5R",
+        "RNAV Y Runway 5L": "Y5L",
+        "RNAV Y Runway 5R": "Y5R",
+        "RNAV Z Runway 5L": "Z5L",
+        "RNAV Z Runway 5R": "Z5R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I5L": {
           "Boula": "BOULE",
@@ -292,13 +277,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 5L",
-      "SID": "",
       "STAR": "ALDAN4",
       "Altitude": 12854,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32"
@@ -310,18 +293,11 @@
       "Fixes": {
         "Shepherd": "SHPRD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "SHPRD4",
-      "STAR": "",
       "Altitude": 9092,
       "State": "departure",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     }
   },
   "logs": [

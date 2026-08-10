@@ -849,8 +849,8 @@ func render(screen tcell.Screen, state *AppState) {
 					y++
 
 					apprLine := " "
-					for spoken, id := range util.SortedMap(ac.CandidateApproaches) {
-						part := fmt.Sprintf("%s→%s  ", spoken, id)
+					for fullName, apprID := range util.SortedMap(ac.CandidateApproaches) {
+						part := fmt.Sprintf("%s→%s  ", fullName, apprID)
 						if len(apprLine)+len(part) > width-2 {
 							if y < maxY {
 								drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, apprLine))

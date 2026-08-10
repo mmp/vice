@@ -38,11 +38,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -90,13 +90,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -129,11 +127,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -181,13 +179,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PUCKY1",
       "Altitude": 19000,
       "State": "arrival",
       "ControllerFrequency": "2E",
       "TrackingController": "2E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -206,11 +202,11 @@
         "Kennedy": "KJFK"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -257,14 +253,10 @@
           "Rivra": "RIVRA"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10065,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -297,11 +289,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -349,13 +341,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PARCH4",
       "Altitude": 12000,
       "State": "arrival",
       "ControllerFrequency": "2K",
       "TrackingController": "2K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -372,17 +362,11 @@
         "Gayel": "GAYEL",
         "Muslin": "MSLIN"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 3846,
       "State": "departure",
       "ControllerFrequency": "2J",
-      "TrackingController": "5E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5E"
     },
     "Etihad six heavy": {
       "Callsign": "ETD6",
@@ -390,17 +374,11 @@
       "Fixes": {
         "Merrit": "MERIT"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 961,
       "State": "departure",
       "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2J"
     }
   }
 }

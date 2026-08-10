@@ -30,17 +30,16 @@
         "pearly": "PERLY"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -127,13 +126,11 @@
         }
       },
       "AssignedApproach": "ILS Y Runway 4R",
-      "SID": "",
       "STAR": "INOYI1",
       "Altitude": 3743,
       "State": "cleared approach",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -158,17 +155,16 @@
         "pearly": "PERLY"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -255,13 +251,10 @@
         }
       },
       "AssignedApproach": "ILS Y Runway 4R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 8000,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -285,17 +278,16 @@
         "Selic": "SELIC"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -382,13 +374,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8L",
-      "SID": "",
       "STAR": "OPACA4",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -415,17 +405,16 @@
         "Shigi": "SHIGI"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -512,13 +501,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 4L",
-      "SID": "",
       "STAR": "BOOKE8",
       "Altitude": 9322,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -543,17 +530,16 @@
         "pearly": "PERLY"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -640,13 +626,11 @@
         }
       },
       "AssignedApproach": "ILS Y Runway 4R",
-      "SID": "",
       "STAR": "MAGGI3",
       "Altitude": 5000,
       "State": "cleared approach",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -671,17 +655,16 @@
         "pearly": "PERLY"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -768,13 +751,11 @@
         }
       },
       "AssignedApproach": "ILS Y Runway 4R",
-      "SID": "",
       "STAR": "MAGGI3",
       "Altitude": 12796,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -798,17 +779,16 @@
         "Shells": "SHLLS"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -895,13 +875,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8L",
-      "SID": "",
       "STAR": "KLANI4",
       "Altitude": 8876,
       "State": "cleared approach",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -916,70 +894,33 @@
     "cessna one seventy-two three charlie kilo": {
       "Callsign": "N793CK/T",
       "AircraftType": "C172",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 2500,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november seven niner three charlie kilo": {
       "Callsign": "N793CK",
       "AircraftType": "C172",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 2500,
       "State": "arrival",
       "ControllerFrequency": "1H",
-      "TrackingController": "1H",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1H"
     },
     "november six seven seven two brahvo": {
       "Callsign": "N6772B",
-      "AircraftType": "",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 9500,
-      "State": "",
-      "ControllerFrequency": "1H",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "1H"
     },
     "skyhawk three charlie kilo": {
       "Callsign": "N793CK/T",
       "AircraftType": "C172",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 2500,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

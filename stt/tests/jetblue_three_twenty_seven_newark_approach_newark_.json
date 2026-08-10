@@ -32,9 +32,8 @@
         "Zeze": "ZEZEE"
       },
       "CandidateApproaches": {
-        "r-nav runway two two": "R22"
+        "RNAV Runway 22": "R22"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R22": {
           "Apart": "APART",
@@ -46,13 +45,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 22",
-      "SID": "",
       "STAR": "JAIKE4",
       "Altitude": 6981,
       "State": "arrival",
       "ControllerFrequency": "4H",
       "TrackingController": "4H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28"
@@ -76,9 +73,8 @@
         "Zavpi": "ZAVPI"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I2L": {
           "Buzzed": "BUZZD",
@@ -88,14 +84,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 13681,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -113,12 +106,11 @@
         "Unveil": "UNVIL"
       },
       "CandidateApproaches": {
-        "I L S runway one niner": "I19",
-        "r-nav x-ray runway one niner": "RX9",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "ILS Runway 19": "I19",
+        "RNAV X Runway 19": "RX9",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I19": {
           "Nippy": "NIPIE",
@@ -152,7 +144,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 19",
-      "SID": "",
       "STAR": "MAZIE",
       "Altitude": 4000,
       "State": "arrival",
@@ -176,12 +167,11 @@
         "Unveil": "UNVIL"
       },
       "CandidateApproaches": {
-        "I L S runway one niner": "I19",
-        "r-nav x-ray runway one niner": "RX9",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "ILS Runway 19": "I19",
+        "RNAV X Runway 19": "RX9",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I19": {
           "Nippy": "NIPIE",
@@ -215,7 +205,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 19",
-      "SID": "",
       "STAR": "MAZIE",
       "Altitude": 4000,
       "State": "arrival",
@@ -239,12 +228,11 @@
         "Unveil": "UNVIL"
       },
       "CandidateApproaches": {
-        "I L S runway one niner": "I19",
-        "r-nav x-ray runway one niner": "RX9",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "ILS Runway 19": "I19",
+        "RNAV X Runway 19": "RX9",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I19": {
           "Nippy": "NIPIE",
@@ -278,13 +266,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 19",
-      "SID": "",
       "STAR": "MAZIE",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "4H",
       "TrackingController": "4H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "6",
         "24"
@@ -302,12 +288,11 @@
         "Unveil": "UNVIL"
       },
       "CandidateApproaches": {
-        "I L S runway one niner": "I19",
-        "r-nav x-ray runway one niner": "RX9",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "ILS Runway 19": "I19",
+        "RNAV X Runway 19": "RX9",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I19": {
           "Nippy": "NIPIE",
@@ -341,7 +326,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 19",
-      "SID": "",
       "STAR": "MAZIE",
       "Altitude": 4000,
       "State": "arrival",

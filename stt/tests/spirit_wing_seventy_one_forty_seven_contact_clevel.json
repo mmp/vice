@@ -31,7 +31,7 @@
         "Pontiac": "KPTK"
       },
       "CandidateApproaches": {
-        "r-nav runway two seven left": "R7L"
+        "RNAV Runway 27L": "R7L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven left": "27L",
@@ -48,15 +48,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 27L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PETTE2",
-      "Route": null,
       "Altitude": 4000,
       "State": "cleared approach",
       "ControllerFrequency": "1P",
       "TrackingController": "1P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "18",
         "36"
@@ -82,9 +78,9 @@
         "cobbo": "COBBO"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two one left": "21L",
@@ -135,15 +131,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 21L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "HTROD2",
-      "Route": null,
       "Altitude": 7508,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",
@@ -162,20 +154,11 @@
         "Metro": "KDTW",
         "Sinker": "SINKR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "BARII2",
-      "STAR": "",
-      "Route": null,
       "Altitude": 17000,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "C48",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C48"
     },
     "Delta 91 67 heavy": {
       "Callsign": "DAL9167",
@@ -198,9 +181,9 @@
         "Vali": "VALLI"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two one left": "21L",
@@ -251,15 +234,11 @@
         }
       },
       "AssignedApproach": "ILS Z Runway 22R",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "LAYKS2",
-      "Route": null,
       "Altitude": 6613,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",
@@ -291,9 +270,9 @@
         "cobbo": "COBBO"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two one left": "21L",
@@ -344,15 +323,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 21L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "FERRL2",
-      "Route": null,
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",
@@ -374,20 +349,11 @@
         "Metro": "KDTW",
         "Surf": "SUURF"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "HHOWE3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 7029,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "Delta three 91": {
       "Callsign": "DAL391",
@@ -401,20 +367,11 @@
         "Money": "MONEE",
         "Vesa": "VESSA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "MIGGY2",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9661,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "ExecJet 19 86": {
       "Callsign": "EJA1986",
@@ -425,20 +382,11 @@
         "Kzlov": "KZLOV",
         "Wins": "WINNZ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "KZLOV2",
-      "STAR": "",
-      "Route": null,
       "Altitude": 3000,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "ExecJet 24 zero six": {
       "Callsign": "EJA2406",
@@ -449,7 +397,7 @@
         "Pontiac": "KPTK"
       },
       "CandidateApproaches": {
-        "r-nav runway two seven left": "R7L"
+        "RNAV Runway 27L": "R7L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven left": "27L",
@@ -465,16 +413,11 @@
           "Lehra": "LEHRA"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PETTE2",
-      "Route": null,
       "Altitude": 6646,
       "State": "arrival",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "18",
         "36"
@@ -494,7 +437,7 @@
         "Pontiac": "KPTK"
       },
       "CandidateApproaches": {
-        "r-nav runway two seven left": "R7L"
+        "RNAV Runway 27L": "R7L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven left": "27L",
@@ -511,15 +454,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 27L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PETTE2",
-      "Route": null,
       "Altitude": 3106,
       "State": "cleared approach",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "18",
         "36"
@@ -535,20 +474,11 @@
         "Willow Run": "KYIP",
         "calvin": "CLVIN"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CLVIN3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 14948,
       "State": "departure",
       "ControllerFrequency": "1Y",
-      "TrackingController": "C48",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C48"
     },
     "Flexjet seven 98": {
       "Callsign": "LXJ798",
@@ -558,20 +488,11 @@
         "Oakland County": "KPTK",
         "Pontiac": "KPTK"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "SNDRS3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 2953,
       "State": "departure",
       "ControllerFrequency": "1P",
-      "TrackingController": "1P",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1P"
     },
     "Spirit Wings 14 zero five": {
       "Callsign": "NKS1405",
@@ -586,20 +507,11 @@
         "Vesa": "VESSA",
         "fords": "FORDZ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "MIGGY2",
-      "STAR": "",
-      "Route": null,
       "Altitude": 5527,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "Spirit Wings 71 41": {
       "Callsign": "NKS7141",
@@ -612,20 +524,11 @@
         "Matract": "MTRCT",
         "Metro": "KDTW"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "KAYLN3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 12026,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "C48",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C48"
     }
   },
   "logs": [

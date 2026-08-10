@@ -24,17 +24,11 @@
         "Greki": "GREKI",
         "Judds": "JUDDS"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 2582,
       "State": "departure",
       "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2J"
     },
     "Delta 32": {
       "Callsign": "DAL32",
@@ -57,12 +51,12 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 22L": "I2L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22L": "R2L",
+        "RNAV Z Runway 13 Left": "R3L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -109,13 +103,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -131,17 +123,11 @@
       "Fixes": {
         "Neon": "NEION"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 5656,
       "State": "departure",
       "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2J"
     },
     "JetBlue 6789": {
       "Callsign": "JBU6789",
@@ -164,12 +150,12 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 22L": "I2L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22L": "R2L",
+        "RNAV Z Runway 13 Left": "R3L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -216,13 +202,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "",
       "Altitude": 8749,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -234,21 +217,11 @@
     },
     "november 119SB": {
       "Callsign": "N119SB",
-      "AircraftType": "",
       "Fixes": {
         "Danbury": "KDXR"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 785,
-      "State": "",
-      "ControllerFrequency": "2G",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "2G"
     }
   },
   "logs": [

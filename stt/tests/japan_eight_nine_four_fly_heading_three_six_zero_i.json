@@ -25,10 +25,10 @@
         "Nantucket": "KACK"
       },
       "CandidateApproaches": {
-        "I L S runway three three left": "I3L",
-        "Visual Approach runway three three right": "VA3R",
-        "r-nav x-ray runway three three left": "X3L",
-        "r-nav zulu runway three three left": "Z3L"
+        "ILS Runway 33L": "I3L",
+        "RNAV X Runway 33L": "X3L",
+        "RNAV Z Runway 33L": "Z3L",
+        "Visual Approach Runway 33R": "VA3R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three three left": "33L",
@@ -72,13 +72,10 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 33R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1I",
       "TrackingController": "1I",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -100,10 +97,10 @@
         "Boston": "KBOS"
       },
       "CandidateApproaches": {
-        "I L S runway three three left": "I3L",
-        "Visual Approach runway three three right": "VA3R",
-        "r-nav x-ray runway three three left": "X3L",
-        "r-nav zulu runway three three left": "Z3L"
+        "ILS Runway 33L": "I3L",
+        "RNAV X Runway 33L": "X3L",
+        "RNAV Z Runway 33L": "Z3L",
+        "Visual Approach Runway 33R": "VA3R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three three left": "33L",
@@ -147,13 +144,10 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 33R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1I",
       "TrackingController": "1X",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -180,10 +174,10 @@
         "Scitu": "SCITU"
       },
       "CandidateApproaches": {
-        "I L S runway three three left": "I3L",
-        "Visual Approach runway three three right": "VA3R",
-        "r-nav x-ray runway three three left": "X3L",
-        "r-nav zulu runway three three left": "Z3L"
+        "ILS Runway 33L": "I3L",
+        "RNAV X Runway 33L": "X3L",
+        "RNAV Z Runway 33L": "Z3L",
+        "Visual Approach Runway 33R": "VA3R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three three left": "33L",
@@ -227,13 +221,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 33L",
-      "SID": "",
       "STAR": "JFUND2",
       "Altitude": 3764,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -260,10 +252,10 @@
         "Neemoy": "NIMOY"
       },
       "CandidateApproaches": {
-        "I L S runway three three left": "I3L",
-        "Visual Approach runway three three right": "VA3R",
-        "r-nav x-ray runway three three left": "X3L",
-        "r-nav zulu runway three three left": "Z3L"
+        "ILS Runway 33L": "I3L",
+        "RNAV X Runway 33L": "X3L",
+        "RNAV Z Runway 33L": "Z3L",
+        "Visual Approach Runway 33R": "VA3R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three three left": "33L",
@@ -307,13 +299,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 33L",
-      "SID": "",
       "STAR": "ROBUC3",
       "Altitude": 4225,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",

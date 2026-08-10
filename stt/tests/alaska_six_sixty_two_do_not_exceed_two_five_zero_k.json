@@ -38,10 +38,10 @@
         "lantern": "LNTRN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -84,14 +84,11 @@
         }
       },
       "AssignedApproach": "RNAV Z Runway 27",
-      "SID": "",
       "STAR": "COMIX2",
       "Altitude": 11089,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "SkyWest 78 37": {
       "Callsign": "SKW7837",
@@ -107,10 +104,10 @@
         "lantern": "LNTRN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -152,15 +149,11 @@
           "reebo": "REEBO"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "COMIX2",
       "Altitude": 14796,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "SkyWest four 69 uniform": {
       "Callsign": "SKW469U",
@@ -171,10 +164,10 @@
         "San Diego": "KSAN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -216,15 +209,10 @@
           "reebo": "REEBO"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "Southwest 54 20": {
       "Callsign": "SWA5420",
@@ -245,10 +233,10 @@
         "Vida": "VYDDA"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -291,14 +279,11 @@
         }
       },
       "AssignedApproach": "RNAV Z Runway 27",
-      "SID": "",
       "STAR": "COMIX2",
       "Altitude": 7213,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "grumman yankee three sierra romeo": {
       "Callsign": "N493SR/T",
@@ -317,8 +302,8 @@
         "bagel": "BAKEL"
       },
       "CandidateApproaches": {
-        "I L S runway two eight right": "I8R",
-        "r-nav runway two eight right": "R8R"
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28R": "R8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two eight right": "28R",
@@ -345,8 +330,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 28R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 11486,
       "State": "arrival",
       "ControllerFrequency": "5N",
@@ -374,8 +357,8 @@
         "bagel": "BAKEL"
       },
       "CandidateApproaches": {
-        "I L S runway two eight right": "I8R",
-        "r-nav runway two eight right": "R8R"
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28R": "R8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two eight right": "28R",
@@ -402,13 +385,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 28R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 11486,
       "State": "arrival",
       "ControllerFrequency": "5N",
       "TrackingController": "5N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "5",
         "23"
@@ -416,14 +396,13 @@
     },
     "november one eight one whiskey zulu": {
       "Callsign": "N181WZ",
-      "AircraftType": "",
       "Fixes": {
         "McClellan-Palomar": "KCRQ"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I4",
-        "r-nav yankee runway two four": "RY4",
-        "r-nav zulu runway two four": "RZ4"
+        "ILS Runway 24": "I4",
+        "RNAV Y Runway 24": "RY4",
+        "RNAV Z Runway 24": "RZ4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two four": "24",
@@ -476,35 +455,19 @@
           "wagav": "WAGAV"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 2729,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     },
     "november one two four foxtrot charlie": {
       "Callsign": "N124FC",
-      "AircraftType": "",
       "Fixes": {
         "": "L65",
         "McClellan-Palomar": "KCRQ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3415,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     }
   },
   "logs": [

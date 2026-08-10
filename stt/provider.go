@@ -157,8 +157,8 @@ func (p *Transcriber) decodeInternal(
 	for spokenName, fixID := range ac.Fixes {
 		logLocalStt("  fix: %q -> %q", spokenName, fixID)
 	}
-	for spokenName, apprID := range ac.CandidateApproaches {
-		logLocalStt("  approach: %q -> %q", spokenName, apprID)
+	for fullName, apprID := range ac.CandidateApproaches {
+		logLocalStt("  approach: %q -> %q", fullName, apprID)
 	}
 	for spokenName, runway := range ac.CandidateVisualApproaches {
 		logLocalStt("  visual approach: %q -> %q", spokenName, runway)
@@ -250,6 +250,10 @@ func (p *Transcriber) decodeInternal(
 	noCommands := len(validation.ValidCommands) == 0 && parse.conf == 0
 	informationalOnly := len(validation.ValidCommands) == 0 && parse.conf > 0 &&
 		parse.kinds != 0 && !parse.sawKind(kindCommand)
+	// ROLLBACK leads the whole response, ahead of the callsign: the client
+	// splits the decoded string at the first space, so sim sees "ROLLBACK"
+	// as the callsign and takes the real one from the first command
+	// (RunAircraftControlCommands).
 	rollbackPrefix := ""
 	if rollback && len(validation.ValidCommands) > 0 {
 		rollbackPrefix = "ROLLBACK "
@@ -261,7 +265,7 @@ func (p *Transcriber) decodeInternal(
 			output = rollbackPrefix + strings.Join(validation.ValidCommands, " ")
 		}
 	} else if len(validation.ValidCommands) > 0 {
-		output = callsign + " " + rollbackPrefix + strings.Join(validation.ValidCommands, " ")
+		output = rollbackPrefix + callsign + " " + strings.Join(validation.ValidCommands, " ")
 	} else if informationalOnly {
 		switch {
 		case parse.sawKind(kindPositionID) && parse.sawKind(kindSignOff):
@@ -591,7 +595,7 @@ func (p *Transcriber) BuildAircraftContext(
 
 					for code, appr := range ap.Approaches {
 						if appr.Runway == ar.Runway.Base() {
-							sttAc.CandidateApproaches[av.GetApproachTelephony(appr.FullName)] = code
+							sttAc.CandidateApproaches[appr.FullName] = code
 
 							// Build fixes map for this approach
 							approachFixes := make(map[string]string)

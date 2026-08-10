@@ -37,12 +37,12 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 22L": "I2L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22L": "R2L",
+        "RNAV Z Runway 13 Left": "R3L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -89,13 +89,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -126,12 +124,12 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 22L": "I2L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22L": "R2L",
+        "RNAV Z Runway 13 Left": "R3L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -178,13 +176,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -216,12 +211,12 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 22L": "I2L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22L": "R2L",
+        "RNAV Z Runway 13 Left": "R3L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -268,13 +263,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PARCH4",
       "Altitude": 12000,
       "State": "arrival",
       "ControllerFrequency": "2K",
       "TrackingController": "2K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -293,12 +286,12 @@
         "Vadder": "VADDR"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 22L": "I2L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22L": "R2L",
+        "RNAV Z Runway 13 Left": "R3L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -344,14 +337,11 @@
           "Silgy": "SILJY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "PUCKY1",
       "Altitude": 13000,
       "State": "arrival",
       "ControllerFrequency": "2E",
       "TrackingController": "2E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -383,12 +373,12 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 22L": "I2L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV X Runway 22L": "R2L",
+        "RNAV Z Runway 13 Left": "R3L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -435,13 +425,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PUCKY1",
       "Altitude": 19000,
       "State": "arrival",
       "ControllerFrequency": "2E",
       "TrackingController": "2E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -453,39 +441,19 @@
     },
     "november five zero two two": {
       "Callsign": "N5022",
-      "AircraftType": "",
       "Fixes": {
         "Danbury": "KDXR"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1520,
-      "State": "",
-      "ControllerFrequency": "2G",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "2G"
     },
     "november four three seven three foxtrot": {
       "Callsign": "N4373F",
-      "AircraftType": "",
       "Fixes": {
         "Danbury": "KDXR"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1944,
-      "State": "",
-      "ControllerFrequency": "2G",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "2G"
     }
   }
 }

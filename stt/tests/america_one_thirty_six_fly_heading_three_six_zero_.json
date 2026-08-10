@@ -26,10 +26,10 @@
         "Kennedy": "KJFK"
       },
       "CandidateApproaches": {
-        "I L S runway four left": "I4L",
-        "I L S runway four right": "I4R",
-        "r-nav yankee runway four left": "R4L",
-        "r-nav yankee runway four right": "R4R"
+        "ILS Runway 4L": "I4L",
+        "ILS Runway 4R": "I4R",
+        "RNAV Y Runway 4L": "R4L",
+        "RNAV Y Runway 4R": "R4R"
       },
       "ApproachFixes": {
         "I4L": {
@@ -49,14 +49,10 @@
           "Veru": "VERRU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 9000,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -68,21 +64,11 @@
     },
     "november five two zero hotel mike": {
       "Callsign": "N520HM",
-      "AircraftType": "",
       "Fixes": {
         "Danbury": "KDXR"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1516,
-      "State": "",
-      "ControllerFrequency": "2G",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "2G"
     }
   },
   "logs": [

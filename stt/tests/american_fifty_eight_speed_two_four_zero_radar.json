@@ -31,10 +31,10 @@
         "Sky Harbor": "KPHX"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "ApproachFixes": {
         "I26": {
@@ -70,14 +70,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 25L",
-      "SID": "",
       "STAR": "PINNG1",
       "Altitude": 8649,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "SpokenVariants": null,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Delta 76": {
       "Callsign": "DAL76",
@@ -93,10 +90,10 @@
         "Sky Harbor": "KPHX"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "ApproachFixes": {
         "I26": {
@@ -132,14 +129,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 25L",
-      "SID": "",
       "STAR": "HYDRR1",
       "Altitude": 8019,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "SpokenVariants": null,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     }
   },
   "logs": [

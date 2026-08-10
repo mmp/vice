@@ -27,10 +27,9 @@
         "fuzzy": "FUZYY"
       },
       "CandidateApproaches": {
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R"
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Fort Lauderdale": "FLL",
@@ -47,14 +46,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28R",
-      "SID": "",
       "STAR": "CUUDA3",
       "Altitude": 4106,
       "State": "arrival",
       "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1R"
     },
     "American 29 75": {
       "Callsign": "AAL2975",
@@ -68,11 +64,10 @@
         "Tubbs": "TUBBZ"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two seven": "I27",
-        "r-nav runway two six right": "R6R"
+        "ILS Runway 27": "I27",
+        "ILS Runway 30": "I30",
+        "RNAV Runway 26R": "R6R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I27": {
           "Chaz": "CHHAZ",
@@ -95,13 +90,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 26R",
-      "SID": "",
       "STAR": "FROGZ4",
       "Altitude": 20566,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "12",
         "30",
@@ -121,18 +114,11 @@
       "Fixes": {
         "Austin": "AUSTI"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "MAYNR3",
-      "STAR": "",
       "Altitude": 14000,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "ExecJet 32 zero five": {
       "Callsign": "EJA3205",
@@ -144,18 +130,11 @@
         "Kay bunk": "KBUNK",
         "Tidez": "TIDEZ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HROCK2",
-      "STAR": "",
       "Altitude": 1790,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "JetBlue 46 27": {
       "Callsign": "JBU4627",
@@ -175,10 +154,9 @@
         "carnival": "CRNVL"
       },
       "CandidateApproaches": {
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R"
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Fort Lauderdale": "FLL",
@@ -195,14 +173,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28L",
-      "SID": "",
       "STAR": "BHHIA3",
       "Altitude": 11814,
       "State": "arrival",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Spirit Wings 92 95": {
       "Callsign": "NKS9295",
@@ -220,10 +195,9 @@
         "fuzzy": "FUZYY"
       },
       "CandidateApproaches": {
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R"
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Fort Lauderdale": "FLL",
@@ -240,14 +214,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28R",
-      "SID": "",
       "STAR": "TEEKY4",
       "Altitude": 11706,
       "State": "arrival",
       "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1R"
     },
     "United four": {
       "Callsign": "UAL4",
@@ -259,18 +230,11 @@
         "Russ": "RUSSS",
         "crocs": "KROCS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HURCN4",
-      "STAR": "",
       "Altitude": 2582,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "United one 96": {
       "Callsign": "UAL196",
@@ -280,18 +244,11 @@
         "Jones": "JOENZ",
         "Niblet": "NIBLT"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HURCN4",
-      "STAR": "",
       "Altitude": 10863,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "United seven 78": {
       "Callsign": "UAL778",
@@ -305,11 +262,10 @@
         "Tubbs": "TUBBZ"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two seven": "I27",
-        "r-nav runway two six right": "R6R"
+        "ILS Runway 27": "I27",
+        "ILS Runway 30": "I30",
+        "RNAV Runway 26R": "R6R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I27": {
           "Chaz": "CHHAZ",
@@ -332,13 +288,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 26R",
-      "SID": "",
       "STAR": "BNFSH3",
       "Altitude": 13260,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "12",
         "30",

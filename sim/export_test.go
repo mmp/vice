@@ -54,6 +54,7 @@ func MakeTestAircraft(callsign av.ADSBCallsign, runway string) *Aircraft {
 			ArrivalAirport: "KJFK",
 		},
 		Nav: nav.Nav{
+			Rand: vrand.Make(),
 			FlightState: nav.FlightState{
 				Position:                [2]float32{0, 5.0 / 60}, // 5nm north
 				Heading:                 180,

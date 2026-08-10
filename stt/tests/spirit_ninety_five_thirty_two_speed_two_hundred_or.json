@@ -27,9 +27,9 @@
         "Jhunt": "JHUNT"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -58,14 +58,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 4760,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Air Shuttle 80 61": {
       "Callsign": "ASH8061",
@@ -80,9 +77,9 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -111,14 +108,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "American 33": {
       "Callsign": "AAL33",
@@ -134,9 +128,9 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -165,14 +159,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6706,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "American three 59": {
       "Callsign": "AAL359",
@@ -187,9 +178,9 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -218,14 +209,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "FLIPZ4",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Delta 26": {
       "Callsign": "DAL26",
@@ -239,9 +227,9 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -270,14 +258,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6000,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Spirit Wings 95 32": {
       "Callsign": "NKS9532",
@@ -292,9 +277,9 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -323,14 +308,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Spirit Wings 98 24": {
       "Callsign": "NKS9824",
@@ -346,9 +328,9 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -377,14 +359,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 8210,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "United 20 96": {
       "Callsign": "UAL2096",
@@ -395,9 +374,9 @@
         "Jhunt": "JHUNT"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -426,14 +405,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 3571,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "United 55 60": {
       "Callsign": "UAL5560",
@@ -448,9 +424,9 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -479,14 +455,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "United niner": {
       "Callsign": "UAL9",
@@ -499,9 +472,9 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I8C": {
@@ -530,14 +503,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "FLIPZ4",
       "Altitude": 5710,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     }
   },
   "logs": [
@@ -586,16 +556,16 @@
     "[local-stt]   pattern \"airline_flight\" matched: \"NKS9532\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Spirit Wings 95 32\")",
     "[local-stt] callsign match: Callsign=\"NKS9532\" SpokenKey=\"Spirit Wings 95 32\" Conf=1.00 Consumed=3",
     "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=7 Approaches=3 AssignedApproach=\"ILS Runway 18R\" LAHSORunways=[]",
-    "[local-stt]   fix: \"Charlotte Douglas\" -> \"KCLT\"",
-    "[local-stt]   fix: \"Rudkey\" -> \"RUDKY\"",
-    "[local-stt]   fix: \"Nella\" -> \"NELLA\"",
-    "[local-stt]   fix: \"Woven\" -> \"WOVEN\"",
-    "[local-stt]   fix: \"Emers\" -> \"EMERS\"",
-    "[local-stt]   fix: \"Jhunt\" -> \"JHUNT\"",
-    "[local-stt]   fix: \"Awed\" -> \"AUUDD\"",
-    "[local-stt]   approach: \"I L S runway one eight left\" -> \"I8L\"",
-    "[local-stt]   approach: \"I L S runway one eight right\" -> \"I8R\"",
-    "[local-stt]   approach: \"I L S runway one eight center\" -> \"I8C\"",
+    "[local-stt]   fix: \"Charlotte Douglas\" -\u003e \"KCLT\"",
+    "[local-stt]   fix: \"Rudkey\" -\u003e \"RUDKY\"",
+    "[local-stt]   fix: \"Nella\" -\u003e \"NELLA\"",
+    "[local-stt]   fix: \"Woven\" -\u003e \"WOVEN\"",
+    "[local-stt]   fix: \"Emers\" -\u003e \"EMERS\"",
+    "[local-stt]   fix: \"Jhunt\" -\u003e \"JHUNT\"",
+    "[local-stt]   fix: \"Awed\" -\u003e \"AUUDD\"",
+    "[local-stt]   approach: \"I L S runway one eight left\" -\u003e \"I8L\"",
+    "[local-stt]   approach: \"I L S runway one eight right\" -\u003e \"I8R\"",
+    "[local-stt]   approach: \"I L S runway one eight center\" -\u003e \"I8C\"",
     "[local-stt] command tokens after disregard: 14",
     "[local-stt]   token[0]: Text=\"speed\" Type=0 Value=-1",
     "[local-stt]   token[1]: Text=\"2\" Type=1 Value=2",
@@ -618,8 +588,8 @@
     "[local-stt]   no match at token[3]=\"or\", skipping",
     "[local-stt]   no match at token[4]=\"less\", skipping",
     "[local-stt]   extractFix: trying to match tokens[0]=\"nella\" against 7 fixes",
-    "[local-stt]   extractFix: matched \"nella\" -> \"NELLA\" (exact)",
-    "[local-stt]   extractFix: matched \"nella\" -> \"NELLA\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: matched \"nella\" -\u003e \"NELLA\" (exact)",
+    "[local-stt]   extractFix: matched \"nella\" -\u003e \"NELLA\" (fuzzy 1.00)",
     "[local-stt]   matched command: \"DNELLA\" (conf=1.00, consumed=3, isThen=false)",
     "[local-stt]   no match at token[8]=\"oznega\", skipping",
     "[local-stt]   extractFix: trying to match tokens[0]=\"ils\" against 7 fixes",
@@ -628,7 +598,7 @@
     "[local-stt]   extractFix: no match found for \"18\"",
     "[local-stt]   extractFix: trying to match tokens[0]=\"right\" against 7 fixes",
     "[local-stt]   extractFix: no match found for \"right\"",
-    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"one eight right\" -> \"I8R\" (consumed=3)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"one eight right\" -\u003e \"I8R\" (consumed=3)",
     "[local-stt]   matched command: \"CI8R\" (conf=1.00, consumed=4, isThen=false)",
     "[local-stt]   no match at token[13]=\"approach\", skipping",
     "[local-stt] ParseCommands: result=[DNELLA CI8R] (avgConf=1.00)",

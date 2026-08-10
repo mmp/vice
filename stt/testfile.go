@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/sim"
 )
 
@@ -17,8 +16,8 @@ import (
 // review queue. Callsign and Command hold the expected decoder output
 // (both empty means the expected output is silence).
 type TestFile struct {
-	Time              string              `json:"time"`
-	Level             string              `json:"level"`
+	Time              string              `json:"time,omitempty"`
+	Level             string              `json:"level,omitempty"`
 	Msg               string              `json:"msg"`
 	Callstack         []string            `json:"callstack,omitempty"`
 	Transcript        string              `json:"transcript"`
@@ -84,18 +83,20 @@ func (tf TestFile) BuildAircraftMap() map[string]Aircraft {
 			ac.Callsign += "/T"
 		}
 		if ac.AssignedApproach != "" && len(ac.ApproachFixes) > 0 {
-			telephony := av.GetApproachTelephony(ac.AssignedApproach)
-			if code, ok := ac.CandidateApproaches[telephony]; ok {
-				if approachFixes, ok := ac.ApproachFixes[code]; ok {
-					fixes := make(map[string]string, len(ac.Fixes)+len(approachFixes))
-					maps.Copy(fixes, ac.Fixes)
-					for spoken, fix := range approachFixes {
-						if _, exists := fixes[spoken]; !exists {
-							fixes[spoken] = fix
-						}
-					}
-					ac.Fixes = fixes
+			for fullName, apprID := range ac.CandidateApproaches {
+				approachFixes, ok := ac.ApproachFixes[apprID]
+				if !strings.EqualFold(fullName, ac.AssignedApproach) || !ok {
+					continue
 				}
+				fixes := make(map[string]string, len(ac.Fixes)+len(approachFixes))
+				maps.Copy(fixes, ac.Fixes)
+				for spoken, fix := range approachFixes {
+					if _, exists := fixes[spoken]; !exists {
+						fixes[spoken] = fix
+					}
+				}
+				ac.Fixes = fixes
+				break
 			}
 		}
 		aircraft[key] = ac

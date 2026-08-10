@@ -31,17 +31,17 @@
         "grit": "GRITT"
       },
       "CandidateApproaches": {
-        "I L S runway eight right": "I8R",
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "Localizer runway eight left": "L8L",
-        "r-nav runway niner": "R9",
-        "r-nav yankee runway eight left": "RY8L",
-        "r-nav yankee runway eight right": "RY8R",
-        "r-nav yankee runway one two": "RY12",
-        "r-nav zulu runway eight left": "RZ8L",
-        "r-nav zulu runway eight right": "RZ8R",
-        "r-nav zulu runway one two": "RZ12"
+        "ILS Runway 12": "I12",
+        "ILS Runway 8R": "I8R",
+        "ILS Runway 9": "I9",
+        "Localizer Runway 8L": "L8L",
+        "RNAV Runway 9": "R9",
+        "RNAV Y Runway 12": "RY12",
+        "RNAV Y Runway 8L": "RY8L",
+        "RNAV Y Runway 8R": "RY8R",
+        "RNAV Z Runway 12": "RZ12",
+        "RNAV Z Runway 8L": "RZ8L",
+        "RNAV Z Runway 8R": "RZ8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -125,15 +125,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 9",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "VIICE2",
-      "Route": null,
       "Altitude": 9001,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -160,17 +156,17 @@
         "grit": "GRITT"
       },
       "CandidateApproaches": {
-        "I L S runway eight right": "I8R",
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "Localizer runway eight left": "L8L",
-        "r-nav runway niner": "R9",
-        "r-nav yankee runway eight left": "RY8L",
-        "r-nav yankee runway eight right": "RY8R",
-        "r-nav yankee runway one two": "RY12",
-        "r-nav zulu runway eight left": "RZ8L",
-        "r-nav zulu runway eight right": "RZ8R",
-        "r-nav zulu runway one two": "RZ12"
+        "ILS Runway 12": "I12",
+        "ILS Runway 8R": "I8R",
+        "ILS Runway 9": "I9",
+        "Localizer Runway 8L": "L8L",
+        "RNAV Runway 9": "R9",
+        "RNAV Y Runway 12": "RY12",
+        "RNAV Y Runway 8L": "RY8L",
+        "RNAV Y Runway 8R": "RY8R",
+        "RNAV Z Runway 12": "RZ12",
+        "RNAV Z Runway 8L": "RZ8L",
+        "RNAV Z Runway 8R": "RZ8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -254,15 +250,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 9",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "SNDBR3",
-      "Route": null,
       "Altitude": 8000,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -295,17 +287,17 @@
         "scar": "SCHAR"
       },
       "CandidateApproaches": {
-        "I L S runway eight right": "I8R",
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "Localizer runway eight left": "L8L",
-        "r-nav runway niner": "R9",
-        "r-nav yankee runway eight left": "RY8L",
-        "r-nav yankee runway eight right": "RY8R",
-        "r-nav yankee runway one two": "RY12",
-        "r-nav zulu runway eight left": "RZ8L",
-        "r-nav zulu runway eight right": "RZ8R",
-        "r-nav zulu runway one two": "RZ12"
+        "ILS Runway 12": "I12",
+        "ILS Runway 8R": "I8R",
+        "ILS Runway 9": "I9",
+        "Localizer Runway 8L": "L8L",
+        "RNAV Runway 9": "R9",
+        "RNAV Y Runway 12": "RY12",
+        "RNAV Y Runway 8L": "RY8L",
+        "RNAV Y Runway 8R": "RY8R",
+        "RNAV Z Runway 12": "RZ12",
+        "RNAV Z Runway 8L": "RZ8L",
+        "RNAV Z Runway 8R": "RZ8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -389,15 +381,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 9",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "FROGZ5",
-      "Route": null,
       "Altitude": 11034,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -432,17 +420,17 @@
         "piano": "PIANA"
       },
       "CandidateApproaches": {
-        "I L S runway eight right": "I8R",
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "Localizer runway eight left": "L8L",
-        "r-nav runway niner": "R9",
-        "r-nav yankee runway eight left": "RY8L",
-        "r-nav yankee runway eight right": "RY8R",
-        "r-nav yankee runway one two": "RY12",
-        "r-nav zulu runway eight left": "RZ8L",
-        "r-nav zulu runway eight right": "RZ8R",
-        "r-nav zulu runway one two": "RZ12"
+        "ILS Runway 12": "I12",
+        "ILS Runway 8R": "I8R",
+        "ILS Runway 9": "I9",
+        "Localizer Runway 8L": "L8L",
+        "RNAV Runway 9": "R9",
+        "RNAV Y Runway 12": "RY12",
+        "RNAV Y Runway 8L": "RY8L",
+        "RNAV Y Runway 8R": "RY8R",
+        "RNAV Z Runway 12": "RZ12",
+        "RNAV Z Runway 8L": "RZ8L",
+        "RNAV Z Runway 8R": "RZ8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -526,15 +514,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 12",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CSTAL3",
-      "Route": null,
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -569,17 +553,17 @@
         "piano": "PIANA"
       },
       "CandidateApproaches": {
-        "I L S runway eight right": "I8R",
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "Localizer runway eight left": "L8L",
-        "r-nav runway niner": "R9",
-        "r-nav yankee runway eight left": "RY8L",
-        "r-nav yankee runway eight right": "RY8R",
-        "r-nav yankee runway one two": "RY12",
-        "r-nav zulu runway eight left": "RZ8L",
-        "r-nav zulu runway eight right": "RZ8R",
-        "r-nav zulu runway one two": "RZ12"
+        "ILS Runway 12": "I12",
+        "ILS Runway 8R": "I8R",
+        "ILS Runway 9": "I9",
+        "Localizer Runway 8L": "L8L",
+        "RNAV Runway 9": "R9",
+        "RNAV Y Runway 12": "RY12",
+        "RNAV Y Runway 8L": "RY8L",
+        "RNAV Y Runway 8R": "RY8R",
+        "RNAV Z Runway 12": "RZ12",
+        "RNAV Z Runway 8L": "RZ8L",
+        "RNAV Z Runway 8R": "RZ8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -663,15 +647,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 12",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "BNFSH3",
-      "Route": null,
       "Altitude": 11013,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -702,17 +682,17 @@
         "piano": "PIANA"
       },
       "CandidateApproaches": {
-        "I L S runway eight right": "I8R",
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "Localizer runway eight left": "L8L",
-        "r-nav runway niner": "R9",
-        "r-nav yankee runway eight left": "RY8L",
-        "r-nav yankee runway eight right": "RY8R",
-        "r-nav yankee runway one two": "RY12",
-        "r-nav zulu runway eight left": "RZ8L",
-        "r-nav zulu runway eight right": "RZ8R",
-        "r-nav zulu runway one two": "RZ12"
+        "ILS Runway 12": "I12",
+        "ILS Runway 8R": "I8R",
+        "ILS Runway 9": "I9",
+        "Localizer Runway 8L": "L8L",
+        "RNAV Runway 9": "R9",
+        "RNAV Y Runway 12": "RY12",
+        "RNAV Y Runway 8L": "RY8L",
+        "RNAV Y Runway 8R": "RY8R",
+        "RNAV Z Runway 12": "RZ12",
+        "RNAV Z Runway 8L": "RZ8L",
+        "RNAV Z Runway 8R": "RZ8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -796,15 +776,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 12",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "BNFSH3",
-      "Route": null,
       "Altitude": 12000,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -836,17 +812,17 @@
         "piano": "PIANA"
       },
       "CandidateApproaches": {
-        "I L S runway eight right": "I8R",
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "Localizer runway eight left": "L8L",
-        "r-nav runway niner": "R9",
-        "r-nav yankee runway eight left": "RY8L",
-        "r-nav yankee runway eight right": "RY8R",
-        "r-nav yankee runway one two": "RY12",
-        "r-nav zulu runway eight left": "RZ8L",
-        "r-nav zulu runway eight right": "RZ8R",
-        "r-nav zulu runway one two": "RZ12"
+        "ILS Runway 12": "I12",
+        "ILS Runway 8R": "I8R",
+        "ILS Runway 9": "I9",
+        "Localizer Runway 8L": "L8L",
+        "RNAV Runway 9": "R9",
+        "RNAV Y Runway 12": "RY12",
+        "RNAV Y Runway 8L": "RY8L",
+        "RNAV Y Runway 8R": "RY8R",
+        "RNAV Z Runway 12": "RZ12",
+        "RNAV Z Runway 8L": "RZ8L",
+        "RNAV Z Runway 8R": "RZ8R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -930,15 +906,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 12",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "BNFSH3",
-      "Route": null,
       "Altitude": 9785,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",

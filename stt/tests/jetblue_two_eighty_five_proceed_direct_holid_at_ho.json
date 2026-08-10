@@ -27,8 +27,8 @@
         "Lori": "LORII"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -47,14 +47,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10R",
-      "SID": "",
       "STAR": "BHHIA3",
       "Altitude": 4000,
       "State": "cleared approach",
       "ControllerFrequency": "1J",
-      "TrackingController": "1J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1J"
     },
     "JetBlue two 85": {
       "Callsign": "JBU285",
@@ -67,8 +64,8 @@
         "gamvy": "GAMVE"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -87,14 +84,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
       "STAR": "CUUDA3",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1R"
     },
     "Spirit Wings 32 84": {
       "Callsign": "NKS3284",
@@ -112,8 +106,8 @@
         "gamvy": "GAMVE"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -132,14 +126,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
       "STAR": "CUUDA3",
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1R"
     }
   },
   "logs": [

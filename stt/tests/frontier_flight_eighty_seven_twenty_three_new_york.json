@@ -38,11 +38,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -90,13 +90,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -126,11 +123,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -178,13 +175,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4105,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -201,17 +196,11 @@
         "Gayel": "GAYEL",
         "Muslin": "MSLIN"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 3137,
       "State": "departure",
       "ControllerFrequency": "2J",
-      "TrackingController": "5E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5E"
     },
     "Delta seven 35 heavy": {
       "Callsign": "DAL735",
@@ -234,11 +223,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -286,13 +275,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PUCKY1",
       "Altitude": 15163,
       "State": "arrival",
       "ControllerFrequency": "2E",
       "TrackingController": "2E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -323,11 +310,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -374,14 +361,11 @@
           "Rivra": "RIVRA"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -414,11 +398,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -466,13 +450,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PARCH4",
       "Altitude": 12000,
       "State": "arrival",
       "ControllerFrequency": "2K",
       "TrackingController": "2K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -488,17 +470,11 @@
       "Fixes": {
         "Danbury": "KDXR"
       },
-      "CandidateApproaches": {},
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1531,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november two seven niner zero romeo": {
       "Callsign": "N2790R",
@@ -506,17 +482,10 @@
       "Fixes": {
         "Danbury": "KDXR"
       },
-      "CandidateApproaches": {},
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1531,
       "State": "arrival",
       "ControllerFrequency": "2G",
-      "TrackingController": "2G",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2G"
     },
     "skyhawk niner zero romeo": {
       "Callsign": "N2790R",
@@ -524,17 +493,11 @@
       "Fixes": {
         "Danbury": "KDXR"
       },
-      "CandidateApproaches": {},
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1531,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

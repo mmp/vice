@@ -88,7 +88,8 @@ func tryImplicitApproachMatch(tokens []Token, ac Aircraft) (string, int) {
 	// Try to match an approach reference using type+runway matching
 	// Don't use the fallback for implicit matches - those are contextual and shouldn't
 	// infer an approach from a mismatched runway number
-	appr, _, consumed := matchApproachByTypeAndNumberWithFallback(tokens, ac.CandidateApproaches, ac.AssignedApproach, false)
+	approaches := candidateApproaches(ac.CandidateApproaches)
+	appr, _, consumed := matchApproachByTypeAndNumberWithFallback(tokens, approaches, ac.AssignedApproach, false)
 	if consumed == 0 {
 		return "", 0
 	}
@@ -100,7 +101,7 @@ func tryImplicitApproachMatch(tokens []Token, ac Aircraft) (string, int) {
 
 	// Determine if this should be "expect" or "cleared" based on assigned approach
 	prefix := "E" // Default to expect
-	if ac.AssignedApproach != "" && approachMatchesAssigned(appr, ac.AssignedApproach) {
+	if c, ok := candidateWithId(approaches, appr); ok && c.matchesAssigned(ac.AssignedApproach) {
 		// Aircraft already has this approach assigned, so hearing it again means cleared
 		prefix = "C"
 	}

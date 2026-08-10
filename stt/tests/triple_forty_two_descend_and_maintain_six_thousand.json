@@ -33,10 +33,10 @@
         "Smoot": "SMOOT"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -74,8 +74,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAPSS4",
       "Route": [
         "BULII",
@@ -92,7 +90,6 @@
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -116,10 +113,10 @@
         "Together": "TGTHR"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -157,8 +154,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "FRDMM6",
       "Route": [
         "FRDMM",
@@ -171,7 +166,6 @@
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -194,10 +188,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -235,8 +229,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CLIPR3",
       "Route": [
         "EDDWD",
@@ -248,7 +240,6 @@
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -271,10 +262,10 @@
         "Together": "TGTHR"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -312,8 +303,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "TRUPS5",
       "Route": [
         "STAND",
@@ -325,7 +314,6 @@
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -346,10 +334,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -387,8 +375,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAPSS4",
       "Route": [
         "PACKE",
@@ -398,7 +384,6 @@
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -420,10 +405,10 @@
         "Thane": "THANE"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -461,8 +446,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "DEALE3",
       "Route": [
         "THANE",
@@ -473,7 +456,6 @@
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -498,10 +480,10 @@
         "Smoot": "SMOOT"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -539,8 +521,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAPSS4",
       "Route": [
         "MOEJO",
@@ -554,7 +534,6 @@
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",

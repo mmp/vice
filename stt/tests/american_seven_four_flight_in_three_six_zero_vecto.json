@@ -29,20 +29,11 @@
         "Room": "ROOOM",
         "Yoloo": "YOLOO"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "AGERS1",
-      "STAR": "",
-      "Route": null,
       "Altitude": 2467,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "American 82 heavy": {
       "Callsign": "AAL82",
@@ -53,20 +44,11 @@
         "Mark": "MARCK",
         "Miami": "KMIA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "FOLZZ3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 4669,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Frontier Flight 72 zero two": {
       "Callsign": "FFT7202",
@@ -82,11 +64,11 @@
         "gamvy": "GAMVE"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R",
-        "r-nav runway one zero right": "R0R",
-        "r-nav yankee runway one zero left": "RY0L",
-        "r-nav zulu runway one zero left": "RZ0L"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R",
+        "RNAV Runway 10R": "R0R",
+        "RNAV Y Runway 10L": "RY0L",
+        "RNAV Z Runway 10L": "RZ0L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one zero left": "10L",
@@ -140,16 +122,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "OLAHS3",
-      "Route": null,
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Spirit Wings 69 12": {
       "Callsign": "NKS6912",
@@ -164,11 +141,11 @@
         "Lori": "LORII"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R",
-        "r-nav runway one zero right": "R0R",
-        "r-nav yankee runway one zero left": "RY0L",
-        "r-nav zulu runway one zero left": "RZ0L"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R",
+        "RNAV Runway 10R": "R0R",
+        "RNAV Y Runway 10L": "RY0L",
+        "RNAV Z Runway 10L": "RZ0L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one zero left": "10L",
@@ -222,16 +199,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10R",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "TEEKY4",
-      "Route": null,
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1R",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "WestJet 46": {
       "Callsign": "WJA46",
@@ -245,11 +217,11 @@
         "gamvy": "GAMVE"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R",
-        "r-nav runway one zero right": "R0R",
-        "r-nav yankee runway one zero left": "RY0L",
-        "r-nav zulu runway one zero left": "RZ0L"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R",
+        "RNAV Runway 10R": "R0R",
+        "RNAV Y Runway 10L": "RY0L",
+        "RNAV Z Runway 10L": "RZ0L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one zero left": "10L",
@@ -303,16 +275,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CUUDA3",
-      "Route": null,
       "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1R"
     }
   },
   "logs": [

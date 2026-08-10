@@ -32,10 +32,10 @@
         "lantern": "LNTRN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -77,9 +77,6 @@
           "reebo": "REEBO"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "COMIX2",
       "Route": [
         "COMIX",
@@ -93,9 +90,7 @@
       "Altitude": 14620,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "American 53 70": {
       "Callsign": "AAL5370",
@@ -112,13 +107,7 @@
         "Zoo": "ZZOOO",
         "grider": "GRIDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "ZZOOO4",
-      "STAR": "",
       "Route": [
         "JETTI",
         "ZZOOO",
@@ -136,9 +125,7 @@
       "Altitude": 3836,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     },
     "Southwest 65 30": {
       "Callsign": "SWA6530",
@@ -154,13 +141,7 @@
         "Zoo": "ZZOOO",
         "grider": "GRIDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "ZZOOO4",
-      "STAR": "",
       "Route": [
         "ZZOOO",
         "ANRMN",
@@ -177,9 +158,7 @@
       "Altitude": 7851,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     },
     "T-B-M eight fifty one kilo sierra": {
       "Callsign": "N551KS/T",
@@ -193,13 +172,7 @@
         "Seal Beach": "SLI",
         "Seaward": "CWARD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CWARD2",
-      "STAR": "",
       "Route": [
         "GYWNN",
         "PADRZ",
@@ -213,8 +186,7 @@
       "State": "departure",
       "ControllerFrequency": "5W",
       "TrackingController": "C25",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "T-B-M eight hundred one kilo sierra": {
       "Callsign": "N551KS/T",
@@ -228,13 +200,7 @@
         "Seal Beach": "SLI",
         "Seaward": "CWARD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CWARD2",
-      "STAR": "",
       "Route": [
         "GYWNN",
         "PADRZ",
@@ -248,8 +214,7 @@
       "State": "departure",
       "ControllerFrequency": "5W",
       "TrackingController": "C25",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november five five one kilo sierra": {
       "Callsign": "N551KS",
@@ -263,13 +228,7 @@
         "Seal Beach": "SLI",
         "Seaward": "CWARD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CWARD2",
-      "STAR": "",
       "Route": [
         "GYWNN",
         "PADRZ",
@@ -282,75 +241,37 @@
       "Altitude": 6712,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "C25",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C25"
     },
     "november four six one uniform hotel": {
       "Callsign": "N461UH",
-      "AircraftType": "",
       "Fixes": {
         "McClellan-Palomar": "KCRQ",
         "Riverside Municipal": "KRAL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 7232,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     },
     "november niner five one four kebeck": {
       "Callsign": "N9514Q",
-      "AircraftType": "",
       "Fixes": {
         "Hemet Ryan": "KHMT",
         "McClellan-Palomar": "KCRQ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 7500,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     },
     "november six four five alpha charlie": {
       "Callsign": "N645AC",
-      "AircraftType": "",
       "Fixes": {
         "Catalina": "KAVX",
         "McClellan-Palomar": "KCRQ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 6500,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     }
   },
   "logs": [

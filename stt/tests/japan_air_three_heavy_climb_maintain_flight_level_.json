@@ -28,17 +28,16 @@
         "Selic": "SELIC"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -125,13 +124,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8L",
-      "SID": "",
       "STAR": "MAGGI3",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -150,18 +147,11 @@
         "Maggie": "MAGGI",
         "Molokai": "MKK"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "MKK5",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "All Nippon three super": {
       "Callsign": "ANA3",
@@ -169,18 +159,11 @@
       "Fixes": {
         "Pupi": "PUPPI"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "KEOLA3",
-      "STAR": "",
       "Altitude": 24000,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "Hawaiian six 49 heavy": {
       "Callsign": "HAL649",
@@ -188,18 +171,11 @@
       "Fixes": {
         "Apack": "APACK"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "MKK5",
-      "STAR": "",
       "Altitude": 24000,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "Hawaiian three 53 heavy": {
       "Callsign": "HAL353",
@@ -208,18 +184,11 @@
         "Seryu": "SERYU",
         "Toads": "TOADS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "MKK5",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "Japan Air three heavy": {
       "Callsign": "JAL3",
@@ -227,18 +196,11 @@
       "Fixes": {
         "Lilia": "LILIA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "KEOLA3",
-      "STAR": "",
       "Altitude": 24000,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "Japan Air two heavy": {
       "Callsign": "JAL2",
@@ -246,18 +208,11 @@
       "Fixes": {
         "Keola": "KEOLA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "KEOLA3",
-      "STAR": "",
       "Altitude": 2209,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "Sawtooth eight 23": {
       "Callsign": "STT823",
@@ -270,17 +225,16 @@
         "Selic": "SELIC"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -367,13 +321,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8L",
-      "SID": "",
       "STAR": "JULLE5",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -387,37 +339,13 @@
     },
     "november niner zero five kilo brahvo": {
       "Callsign": "N905KB",
-      "AircraftType": "",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10500,
-      "State": "",
-      "ControllerFrequency": "1H",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "1H"
     },
     "november seven zero seven three golf": {
       "Callsign": "N7073G",
-      "AircraftType": "",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6000,
-      "State": "",
-      "ControllerFrequency": "1H",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "1H"
     }
   },
   "logs": [

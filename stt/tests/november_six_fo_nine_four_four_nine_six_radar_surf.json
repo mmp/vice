@@ -20,53 +20,29 @@
     "cessna one eighty-two four niner six": {
       "Callsign": "N94496/T",
       "AircraftType": "C182",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3111,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna skylane four niner six": {
       "Callsign": "N94496/T",
       "AircraftType": "C182",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3111,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna skymaster two four pahpah": {
       "Callsign": "N6224P/T",
       "AircraftType": "C337",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 8497,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation zero five kebeck": {
       "Callsign": "N4005Q/T",
@@ -81,13 +57,12 @@
         "Shand": "SHAND"
       },
       "CandidateApproaches": {
-        "I L S yankee runway two six left": "Y6L",
-        "I L S zulu runway two six left": "Z6L",
-        "r-nav runway two six left": "R6L",
-        "r-nav yankee runway one niner right": "RY9R",
-        "r-nav zulu runway one niner right": "RZ9R"
+        "ILS Y Runway 26L": "Y6L",
+        "ILS Z Runway 26L": "Z6L",
+        "RNAV Runway 26L": "R6L",
+        "RNAV Y Runway 19R": "RY9R",
+        "RNAV Z Runway 19R": "RZ9R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R6L": {
           "Bishop": "BISHP",
@@ -130,7 +105,6 @@
         }
       },
       "AssignedApproach": "ILS Z Runway 26L",
-      "SID": "",
       "STAR": "RKSTR4",
       "Altitude": 8348,
       "State": "arrival",
@@ -161,13 +135,12 @@
         "Shand": "SHAND"
       },
       "CandidateApproaches": {
-        "I L S yankee runway two six left": "Y6L",
-        "I L S zulu runway two six left": "Z6L",
-        "r-nav runway two six left": "R6L",
-        "r-nav yankee runway one niner right": "RY9R",
-        "r-nav zulu runway one niner right": "RZ9R"
+        "ILS Y Runway 26L": "Y6L",
+        "ILS Z Runway 26L": "Z6L",
+        "RNAV Runway 26L": "R6L",
+        "RNAV Y Runway 19R": "RY9R",
+        "RNAV Z Runway 19R": "RZ9R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R6L": {
           "Bishop": "BISHP",
@@ -210,13 +183,11 @@
         }
       },
       "AssignedApproach": "ILS Z Runway 26L",
-      "SID": "",
       "STAR": "RKSTR4",
       "Altitude": 8348,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -231,70 +202,36 @@
     "november niner four four niner six": {
       "Callsign": "N94496",
       "AircraftType": "C182",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3111,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "november six two two four pahpah": {
       "Callsign": "N6224P",
       "AircraftType": "C337",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 8497,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "skylane four niner six": {
       "Callsign": "N94496/T",
       "AircraftType": "C182",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3111,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "skymaster two four pahpah": {
       "Callsign": "N6224P/T",
       "AircraftType": "C337",
-      "Fixes": {},
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 8497,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

@@ -32,9 +32,9 @@
         "Zisur": "ZISUR"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "r-nav yankee runway one zero left": "RY0L",
-        "r-nav zulu runway one zero left": "RZ0L"
+        "ILS Runway 10L": "I0L",
+        "RNAV Y Runway 10L": "RY0L",
+        "RNAV Z Runway 10L": "RZ0L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one zero left": "10L",
@@ -62,15 +62,10 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 10L",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32"
@@ -87,9 +82,9 @@
         "Palm Beach": "KPBI"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "r-nav yankee runway one zero left": "RY0L",
-        "r-nav zulu runway one zero left": "RZ0L"
+        "ILS Runway 10L": "I0L",
+        "RNAV Y Runway 10L": "RY0L",
+        "RNAV Z Runway 10L": "RZ0L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one zero left": "10L",
@@ -116,16 +111,11 @@
           "Zisur": "ZISUR"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CLMNT2",
-      "Route": null,
       "Altitude": 12049,
       "State": "arrival",
       "ControllerFrequency": "1I",
       "TrackingController": "1I",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32"
@@ -145,9 +135,9 @@
         "Zisur": "ZISUR"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "r-nav yankee runway one zero left": "RY0L",
-        "r-nav zulu runway one zero left": "RZ0L"
+        "ILS Runway 10L": "I0L",
+        "RNAV Y Runway 10L": "RY0L",
+        "RNAV Z Runway 10L": "RZ0L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one zero left": "10L",
@@ -175,15 +165,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CLMNT2",
-      "Route": null,
       "Altitude": 5339,
       "State": "arrival",
       "ControllerFrequency": "1I",
       "TrackingController": "1I",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32"
@@ -199,9 +185,9 @@
         "Tarty": "TARTY"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "r-nav yankee runway one zero left": "RY0L",
-        "r-nav zulu runway one zero left": "RZ0L"
+        "ILS Runway 10L": "I0L",
+        "RNAV Y Runway 10L": "RY0L",
+        "RNAV Z Runway 10L": "RZ0L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one zero left": "10L",
@@ -228,16 +214,11 @@
           "Zisur": "ZISUR"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "VUUDU1",
-      "Route": null,
       "Altitude": 11058,
       "State": "arrival",
       "ControllerFrequency": "1P",
       "TrackingController": "1P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32"
@@ -254,9 +235,9 @@
         "Zisur": "ZISUR"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "r-nav yankee runway one zero left": "RY0L",
-        "r-nav zulu runway one zero left": "RZ0L"
+        "ILS Runway 10L": "I0L",
+        "RNAV Y Runway 10L": "RY0L",
+        "RNAV Z Runway 10L": "RZ0L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one zero left": "10L",
@@ -284,15 +265,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "VUUDU1",
-      "Route": null,
       "Altitude": 4040,
       "State": "arrival",
       "ControllerFrequency": "1P",
       "TrackingController": "1P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32"
@@ -308,20 +285,11 @@
         "Quizer": "QUIZR",
         "Slides": "SLIDZ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "SLIDZ3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 7797,
       "State": "departure",
       "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1B"
     },
     "embraer phenom one hundred three victor sierra": {
       "Callsign": "N953VS/T",
@@ -337,20 +305,12 @@
         "Welly": "WELLY",
         "slam": "SLAAM"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "MYZNR3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 8193,
       "State": "departure",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november niner five three victor sierra": {
       "Callsign": "N953VS",
@@ -366,20 +326,11 @@
         "Welly": "WELLY",
         "slam": "SLAAM"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "MYZNR3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 8193,
       "State": "departure",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "phenom one hundred three victor sierra": {
       "Callsign": "N953VS/T",
@@ -395,20 +346,12 @@
         "Welly": "WELLY",
         "slam": "SLAAM"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "MYZNR3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 8193,
       "State": "departure",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

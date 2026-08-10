@@ -26,18 +26,11 @@
         "Skids": "SKIDS",
         "Yens": "YENNS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1Q",
       "TrackingController": "1Q",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "H-A four twenty Honda-jet zero romeo lima": {
       "Callsign": "N690RL/T",
@@ -49,9 +42,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -60,7 +52,6 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "DNKIN2",
       "Altitude": 10816,
       "State": "cleared approach",
@@ -81,18 +72,11 @@
         "Skids": "SKIDS",
         "Yens": "YENNS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1Q",
       "TrackingController": "1Q",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Honda-jet zero romeo lima": {
       "Callsign": "N690RL/T",
@@ -104,9 +88,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -115,7 +98,6 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "DNKIN2",
       "Altitude": 10816,
       "State": "cleared approach",
@@ -137,18 +119,11 @@
         "Wrkit": "WRKIT",
         "snider": "SNIDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "SNIDR1",
-      "STAR": "",
       "Altitude": 3220,
       "State": "departure",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "Southwest two 39": {
       "Callsign": "SWA239",
@@ -158,18 +133,11 @@
         "Wemar": "WEMAR",
         "snider": "SNIDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "SNIDR1",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "United two": {
       "Callsign": "UAL2",
@@ -178,18 +146,11 @@
         "Alice": "ALISS",
         "Tartar": "TATAR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "ALISS6",
-      "STAR": "",
       "Altitude": 8465,
       "State": "departure",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "embraer phenom three hundred five eight delta": {
       "Callsign": "N6858D/T",
@@ -206,9 +167,8 @@
         "ganly": "GANLE"
       },
       "CandidateApproaches": {
-        "r-nav runway three two": "R32"
+        "RNAV Runway 32": "R32"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R32": {
           "Felma": "FELMA",
@@ -222,7 +182,6 @@
         }
       },
       "AssignedApproach": "RNAV Runway 32",
-      "SID": "",
       "STAR": "CRVZA2",
       "Altitude": 5134,
       "State": "arrival",
@@ -244,9 +203,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -255,7 +213,6 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "QERVO3",
       "Altitude": 13818,
       "State": "arrival",
@@ -277,9 +234,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -288,7 +244,6 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "DNKIN2",
       "Altitude": 16884,
       "State": "arrival",
@@ -309,28 +264,17 @@
         "Skids": "SKIDS",
         "Yens": "YENNS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1Q",
-      "TrackingController": "1Q",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Q"
     },
     "november four zero seven yankee mike": {
       "Callsign": "N407YM",
-      "AircraftType": "",
-      "Fixes": {},
       "CandidateApproaches": {
-        "I L S runway one six": "I16",
-        "r-nav runway one six": "R16"
+        "ILS Runway 16": "I16",
+        "RNAV Runway 16": "R16"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I16": {
           "Famdo": "FAMDO",
@@ -348,15 +292,10 @@
           "Zilen": "ZILEN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 2500,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "november six eight five eight delta": {
       "Callsign": "N6858D",
@@ -373,9 +312,8 @@
         "ganly": "GANLE"
       },
       "CandidateApproaches": {
-        "r-nav runway three two": "R32"
+        "RNAV Runway 32": "R32"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R32": {
           "Felma": "FELMA",
@@ -389,13 +327,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 32",
-      "SID": "",
       "STAR": "CRVZA2",
       "Altitude": 5134,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28"
@@ -411,9 +347,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -422,13 +357,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "DNKIN2",
       "Altitude": 10816,
       "State": "cleared approach",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "17",
         "35"
@@ -444,9 +377,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -455,13 +387,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "QERVO3",
       "Altitude": 13818,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "17",
         "35"
@@ -477,9 +407,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -488,13 +417,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "DNKIN2",
       "Altitude": 16884,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "17",
         "35"
@@ -515,9 +442,8 @@
         "ganly": "GANLE"
       },
       "CandidateApproaches": {
-        "r-nav runway three two": "R32"
+        "RNAV Runway 32": "R32"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R32": {
           "Felma": "FELMA",
@@ -531,7 +457,6 @@
         }
       },
       "AssignedApproach": "RNAV Runway 32",
-      "SID": "",
       "STAR": "CRVZA2",
       "Altitude": 5134,
       "State": "arrival",
@@ -553,9 +478,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -564,7 +488,6 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "QERVO3",
       "Altitude": 13818,
       "State": "arrival",
@@ -586,9 +509,8 @@
         "Wughe": "WUGHE"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R13": {
           "Ekivy": "EKIVY",
@@ -597,7 +519,6 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "DNKIN2",
       "Altitude": 16884,
       "State": "arrival",

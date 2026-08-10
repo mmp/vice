@@ -43,14 +43,13 @@
         "kicked": "KRIKT"
       },
       "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "I L S runway one right": "I1R",
-        "r-nav yankee runway one left": "Y1L",
-        "r-nav yankee runway one right": "Y1R",
-        "r-nav zulu runway one left": "Z1L",
-        "r-nav zulu runway one right": "Z1R"
+        "ILS Runway 1L": "I1L",
+        "ILS Runway 1R": "I1R",
+        "RNAV Y Runway 1L": "Y1L",
+        "RNAV Y Runway 1R": "Y1R",
+        "RNAV Z Runway 1L": "Z1L",
+        "RNAV Z Runway 1R": "Z1R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I1L": {
           "Cyprus": "CYPRE",
@@ -156,13 +155,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 1L",
-      "SID": "",
       "STAR": "JSONN4",
       "Altitude": 6965,
       "State": "arrival",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -182,11 +179,10 @@
         "Topeka": "TOP"
       },
       "CandidateApproaches": {
-        "I L S runway three six": "I36",
-        "Visual Approach runway three six": "V36",
-        "r-nav runway three six": "R36"
+        "ILS Runway 36": "I36",
+        "RNAV Runway 36": "R36",
+        "Visual Approach Runway 36": "V36"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I36": {
           "Frels": "FRELS",
@@ -216,7 +212,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 36",
-      "SID": "",
       "STAR": "RUDDH3",
       "Altitude": 12459,
       "State": "arrival",
@@ -258,14 +253,13 @@
         "skis": "SDKIS"
       },
       "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "I L S runway one right": "I1R",
-        "r-nav yankee runway one left": "Y1L",
-        "r-nav yankee runway one right": "Y1R",
-        "r-nav zulu runway one left": "Z1L",
-        "r-nav zulu runway one right": "Z1R"
+        "ILS Runway 1L": "I1L",
+        "ILS Runway 1R": "I1R",
+        "RNAV Y Runway 1L": "Y1L",
+        "RNAV Y Runway 1R": "Y1R",
+        "RNAV Z Runway 1L": "Z1L",
+        "RNAV Z Runway 1R": "Z1R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I1L": {
           "Cyprus": "CYPRE",
@@ -371,13 +365,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 1L",
-      "SID": "",
       "STAR": "JSONN4",
       "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -397,11 +389,10 @@
         "Topeka": "TOP"
       },
       "CandidateApproaches": {
-        "I L S runway three six": "I36",
-        "Visual Approach runway three six": "V36",
-        "r-nav runway three six": "R36"
+        "ILS Runway 36": "I36",
+        "RNAV Runway 36": "R36",
+        "Visual Approach Runway 36": "V36"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I36": {
           "Frels": "FRELS",
@@ -431,7 +422,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 36",
-      "SID": "",
       "STAR": "RUDDH3",
       "Altitude": 12459,
       "State": "arrival",
@@ -455,11 +445,10 @@
         "Topeka": "TOP"
       },
       "CandidateApproaches": {
-        "I L S runway three six": "I36",
-        "Visual Approach runway three six": "V36",
-        "r-nav runway three six": "R36"
+        "ILS Runway 36": "I36",
+        "RNAV Runway 36": "R36",
+        "Visual Approach Runway 36": "V36"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I36": {
           "Frels": "FRELS",
@@ -489,13 +478,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 36",
-      "SID": "",
       "STAR": "RUDDH3",
       "Altitude": 12459,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22"

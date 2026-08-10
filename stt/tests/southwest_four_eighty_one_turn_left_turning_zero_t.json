@@ -29,11 +29,11 @@
         "Tyner": "TYNER"
       },
       "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
+        "ILS Runway 1L": "I1L",
+        "RNAV Y Runway 1L": "RY1L",
+        "RNAV Y Runway 1R": "RY1R",
+        "RNAV Z Runway 1L": "RZ1L",
+        "RNAV Z Runway 1R": "RZ1R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -90,13 +90,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 1L",
-      "SID": "",
       "STAR": "DADES1",
       "Altitude": 3781,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "SpokenVariants": null,
       "LAHSORunways": [
         "10",
         "28",
@@ -115,11 +113,11 @@
         "Tyner": "TYNER"
       },
       "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
+        "ILS Runway 1L": "I1L",
+        "RNAV Y Runway 1L": "RY1L",
+        "RNAV Y Runway 1R": "RY1R",
+        "RNAV Z Runway 1L": "RZ1L",
+        "RNAV Z Runway 1R": "RZ1R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -176,13 +174,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 1L",
-      "SID": "",
       "STAR": "MAATY4",
       "Altitude": 3785,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "SpokenVariants": null,
       "LAHSORunways": [
         "10",
         "28",
@@ -201,11 +197,11 @@
         "Tyner": "TYNER"
       },
       "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
+        "ILS Runway 1L": "I1L",
+        "RNAV Y Runway 1L": "RY1L",
+        "RNAV Y Runway 1R": "RY1R",
+        "RNAV Z Runway 1L": "RZ1L",
+        "RNAV Z Runway 1R": "RZ1R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -262,13 +258,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 1L",
-      "SID": "",
       "STAR": "DADES1",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "SpokenVariants": null,
       "LAHSORunways": [
         "10",
         "28",
@@ -288,11 +282,11 @@
         "Tyner": "TYNER"
       },
       "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
+        "ILS Runway 1L": "I1L",
+        "RNAV Y Runway 1L": "RY1L",
+        "RNAV Y Runway 1R": "RY1R",
+        "RNAV Z Runway 1L": "RZ1L",
+        "RNAV Z Runway 1R": "RZ1R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -349,13 +343,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 1L",
-      "SID": "",
       "STAR": "MAATY4",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "SpokenVariants": null,
       "LAHSORunways": [
         "10",
         "28",

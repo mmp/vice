@@ -29,7 +29,7 @@
         "Toronto Lester B. Pearson": "CYYZ"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -45,13 +45,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "FLOSI4",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -69,7 +67,7 @@
         "Newark": "KEWR"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -85,13 +83,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "FLOSI4",
       "Altitude": 3105,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -113,11 +109,11 @@
         "Vings": "VINGS"
       },
       "CandidateApproaches": {
-        "I L S runway six": "I6",
-        "I L S zulu runway six": "IZ6",
-        "r-nav x-ray runway six": "RX6",
-        "r-nav yankee runway six": "RY6",
-        "r-nav zulu runway six": "RZ6"
+        "ILS Runway 6": "I6",
+        "ILS Z Runway 6": "IZ6",
+        "RNAV X Runway 6": "RX6",
+        "RNAV Y Runway 6": "RY6",
+        "RNAV Z Runway 6": "RZ6"
       },
       "CandidateVisualApproaches": {
         "visual approach runway six": "6",
@@ -182,13 +178,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 6",
-      "SID": "",
       "STAR": "JAIKE4",
       "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "4H",
       "TrackingController": "4U",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19"
@@ -207,7 +201,7 @@
         "Newark": "KEWR"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -223,13 +217,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 4199,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -247,7 +239,7 @@
         "Orlando": "KMCO"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -263,13 +255,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 3082,
       "State": "cleared approach",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -292,7 +282,7 @@
         "Philbo": "PHLBO"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -308,7 +298,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 8234,
       "State": "arrival",
@@ -334,11 +323,11 @@
         "Vings": "VINGS"
       },
       "CandidateApproaches": {
-        "I L S runway six": "I6",
-        "I L S zulu runway six": "IZ6",
-        "r-nav x-ray runway six": "RX6",
-        "r-nav yankee runway six": "RY6",
-        "r-nav zulu runway six": "RZ6"
+        "ILS Runway 6": "I6",
+        "ILS Z Runway 6": "IZ6",
+        "RNAV X Runway 6": "RX6",
+        "RNAV Y Runway 6": "RY6",
+        "RNAV Z Runway 6": "RZ6"
       },
       "CandidateVisualApproaches": {
         "visual approach runway six": "6",
@@ -403,8 +392,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 6",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "4H",
@@ -429,11 +416,11 @@
         "Vings": "VINGS"
       },
       "CandidateApproaches": {
-        "I L S runway six": "I6",
-        "I L S zulu runway six": "IZ6",
-        "r-nav x-ray runway six": "RX6",
-        "r-nav yankee runway six": "RY6",
-        "r-nav zulu runway six": "RZ6"
+        "ILS Runway 6": "I6",
+        "ILS Z Runway 6": "IZ6",
+        "RNAV X Runway 6": "RX6",
+        "RNAV Y Runway 6": "RY6",
+        "RNAV Z Runway 6": "RZ6"
       },
       "CandidateVisualApproaches": {
         "visual approach runway six": "6",
@@ -498,13 +485,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 6",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "4H",
       "TrackingController": "4U",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19"
@@ -527,7 +511,7 @@
         "Philbo": "PHLBO"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -543,13 +527,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 8234,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -569,11 +551,11 @@
         "Vings": "VINGS"
       },
       "CandidateApproaches": {
-        "I L S runway six": "I6",
-        "I L S zulu runway six": "IZ6",
-        "r-nav x-ray runway six": "RX6",
-        "r-nav yankee runway six": "RY6",
-        "r-nav zulu runway six": "RZ6"
+        "ILS Runway 6": "I6",
+        "ILS Z Runway 6": "IZ6",
+        "RNAV X Runway 6": "RX6",
+        "RNAV Y Runway 6": "RY6",
+        "RNAV Z Runway 6": "RZ6"
       },
       "CandidateVisualApproaches": {
         "visual approach runway six": "6",
@@ -638,8 +620,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 6",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "4H",

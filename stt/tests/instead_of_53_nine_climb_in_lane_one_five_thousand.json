@@ -36,10 +36,10 @@
         "Vida": "VYDDA"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -82,14 +82,11 @@
         }
       },
       "AssignedApproach": "RNAV Z Runway 27",
-      "SID": "",
       "STAR": "COMIX2",
       "Altitude": 9280,
       "State": "cleared approach",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "ExecJet 53 98": {
       "Callsign": "EJA5398",
@@ -102,18 +99,11 @@
         "Padrz": "PADRZ",
         "Sebby": "SEBBY"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "PADRZ2",
-      "STAR": "",
       "Altitude": 8000,
       "State": "departure",
       "ControllerFrequency": "5D",
-      "TrackingController": "C31",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C31"
     },
     "Fedex 72 52": {
       "Callsign": "FDX7252",
@@ -126,18 +116,11 @@
         "Padrz": "PADRZ",
         "San Diego": "KSAN"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "PADRZ2",
-      "STAR": "",
       "Altitude": 15000,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "C31",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C31"
     },
     "SkyWest two zero three whiskey": {
       "Callsign": "SKW203W",
@@ -159,10 +142,10 @@
         "Vida": "VYDDA"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -205,14 +188,10 @@
         }
       },
       "AssignedApproach": "RNAV Z Runway 27",
-      "SID": "",
-      "STAR": "",
       "Altitude": 12529,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "United 57 74": {
       "Callsign": "UAL5774",
@@ -228,18 +207,11 @@
         "Zoo": "ZZOOO",
         "grider": "GRIDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "ZZOOO4",
-      "STAR": "",
       "Altitude": 2700,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     },
     "musketeer two pahpah delta": {
       "Callsign": "N352PD/T",
@@ -248,38 +220,21 @@
         "Catalina": "KAVX",
         "McClellan-Palomar": "KCRQ"
       },
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": {},
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3651,
       "State": "arrival",
       "ControllerFrequency": "5W",
       "TrackingController": "5W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november four": {
       "Callsign": "N4",
-      "AircraftType": "",
       "Fixes": {
         "Catalina": "KAVX",
         "Oceanside Municipal": "KOKB"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6500,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     },
     "november three five two pahpah delta": {
       "Callsign": "N352PD",
@@ -288,18 +243,10 @@
         "Catalina": "KAVX",
         "McClellan-Palomar": "KCRQ"
       },
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": {},
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3651,
       "State": "arrival",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     }
   },
   "logs": [

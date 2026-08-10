@@ -30,10 +30,10 @@
         "Yohan": "YOHAN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I3R": {
@@ -61,13 +61,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "BOOVE7",
       "Altitude": 4000,
       "State": "cleared approach",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -89,10 +87,10 @@
         "Zing": "ZINGG"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I3R": {
@@ -120,13 +118,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17C",
-      "SID": "",
       "STAR": "SEEVR4",
       "Altitude": 4000,
       "State": "cleared approach",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -147,10 +143,10 @@
         "Yohan": "YOHAN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I3R": {
@@ -178,13 +174,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "VKTRY2",
       "Altitude": 6067,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -203,17 +197,11 @@
         "Fireman": "FIRMN",
         "Yamel": "YAMEL"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BLECO8",
-      "STAR": "",
       "Altitude": 2857,
       "State": "departure",
       "ControllerFrequency": "1Z",
-      "TrackingController": "1Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Z"
     },
     "Envoy 98 zero one": {
       "Callsign": "ENY9801",
@@ -229,10 +217,10 @@
         "Whoot": "WHOOT"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I3R": {
@@ -259,14 +247,11 @@
           "Yohan": "YOHAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BEREE3",
       "Altitude": 17428,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -281,17 +266,11 @@
         "Sweedia": "SWDIA",
         "Zerlu": "ZERLU"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "ZACHH4",
-      "STAR": "",
       "Altitude": 10694,
       "State": "departure",
       "ControllerFrequency": "1Z",
-      "TrackingController": "1Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Z"
     },
     "Southwest six 37": {
       "Callsign": "SWA637",
@@ -304,17 +283,11 @@
         "Kitty": "KKITY",
         "Tiger": "TYGGR"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "KKITY5",
-      "STAR": "",
       "Altitude": 5577,
       "State": "departure",
       "ControllerFrequency": "1Z",
-      "TrackingController": "1Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Z"
     },
     "Southwest two 64": {
       "Callsign": "SWA264",
@@ -323,17 +296,11 @@
         "Akuna": "AKUNA",
         "Tikes": "TIKYS"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "SWTSR6",
-      "STAR": "",
       "Altitude": 7401,
       "State": "departure",
       "ControllerFrequency": "1Z",
-      "TrackingController": "1Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Z"
     },
     "Spirit Wings 27 48": {
       "Callsign": "NKS2748",
@@ -346,10 +313,10 @@
         "Yeah but": "YAHBT"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I3R": {
@@ -376,14 +343,11 @@
           "Yohan": "YOHAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "SEEVR4",
       "Altitude": 13930,
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -404,10 +368,10 @@
         "Zing": "ZINGG"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I3R": {
@@ -435,13 +399,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17C",
-      "SID": "",
       "STAR": "BEREE3",
       "Altitude": 5117,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -465,10 +427,10 @@
         "Yohan": "YOHAN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
       "ApproachFixes": {
         "I3R": {
@@ -496,13 +458,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "BOOVE7",
       "Altitude": 13473,
       "State": "arrival",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -512,21 +472,11 @@
     },
     "november four seven six zero": {
       "Callsign": "N4760",
-      "AircraftType": "",
       "Fixes": {
         "Cleburne": "KCPT"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 7467,
-      "State": "",
-      "ControllerFrequency": "1E",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "1E"
     }
   },
   "logs": [

@@ -30,11 +30,11 @@
         "Zulab": "ZULAB"
       },
       "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "V O R runway three one Left": "V1L",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
+        "ILS Runway 31L": "I1L",
+        "ILS Runway 31R": "I1R",
+        "RNAV Runway 31L": "R1L",
+        "RNAV Runway 31R": "R1R",
+        "VOR Runway 31 Left": "V1L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three one left": "31L",
@@ -76,15 +76,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 31R",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PUCKY1",
-      "Route": null,
       "Altitude": 2500,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -106,11 +102,11 @@
         "Zulab": "ZULAB"
       },
       "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "V O R runway three one Left": "V1L",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
+        "ILS Runway 31L": "I1L",
+        "ILS Runway 31R": "I1R",
+        "RNAV Runway 31L": "R1L",
+        "RNAV Runway 31R": "R1R",
+        "VOR Runway 31 Left": "V1L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three one left": "31L",
@@ -152,15 +148,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 31R",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PUCKY1",
-      "Route": null,
       "Altitude": 4295,
       "State": "cleared approach",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -182,11 +174,11 @@
         "Zulab": "ZULAB"
       },
       "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "V O R runway three one Left": "V1L",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
+        "ILS Runway 31L": "I1L",
+        "ILS Runway 31R": "I1R",
+        "RNAV Runway 31L": "R1L",
+        "RNAV Runway 31R": "R1R",
+        "VOR Runway 31 Left": "V1L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three one left": "31L",
@@ -228,15 +220,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 31R",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAMRN5",
-      "Route": null,
       "Altitude": 5000,
       "State": "cleared approach",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -258,11 +246,11 @@
         "Zulab": "ZULAB"
       },
       "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "V O R runway three one Left": "V1L",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
+        "ILS Runway 31L": "I1L",
+        "ILS Runway 31R": "I1R",
+        "RNAV Runway 31L": "R1L",
+        "RNAV Runway 31R": "R1R",
+        "VOR Runway 31 Left": "V1L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three one left": "31L",
@@ -304,15 +292,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 31R",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAMRN5",
-      "Route": null,
       "Altitude": 895,
       "State": "cleared approach",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -335,11 +319,11 @@
         "İstanbul": "LTFM"
       },
       "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "V O R runway three one Left": "V1L",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
+        "ILS Runway 31L": "I1L",
+        "ILS Runway 31R": "I1R",
+        "RNAV Runway 31L": "R1L",
+        "RNAV Runway 31R": "R1R",
+        "VOR Runway 31 Left": "V1L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three one left": "31L",
@@ -381,15 +365,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 31R",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",

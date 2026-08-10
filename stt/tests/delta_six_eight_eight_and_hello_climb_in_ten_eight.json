@@ -34,12 +34,12 @@
         "Syrup": "SURYP"
       },
       "CandidateApproaches": {
-        "I L S runway three four left": "I4L",
-        "I L S runway three four right": "I4R",
-        "L D A runway three five": "X35",
-        "r-nav yankee runway three four right": "R4R",
-        "r-nav zulu runway three five": "RZ5",
-        "r-nav zulu runway three four left": "R4L"
+        "ILS Runway 34L": "I4L",
+        "ILS Runway 34R": "I4R",
+        "LDA Runway 35": "X35",
+        "RNAV Y Runway 34R": "R4R",
+        "RNAV Z Runway 34L": "R4L",
+        "RNAV Z Runway 35": "RZ5"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three five": "35",
@@ -114,15 +114,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 34R",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "YUTES1",
-      "Route": null,
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32",
@@ -141,20 +137,11 @@
         "Spokane": "KGEG",
         "scowl": "SCOVL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CGULL1",
-      "STAR": "",
-      "Route": null,
       "Altitude": 5702,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "Delta 30 39": {
       "Callsign": "DAL3039",
@@ -163,20 +150,11 @@
         "Boise Air Terminal/Gowen": "KBOI",
         "Salt Lake City": "KSLC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CGULL1",
-      "STAR": "",
-      "Route": null,
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "Delta 46": {
       "Callsign": "DAL46",
@@ -188,20 +166,11 @@
         "Scant": "SCANT",
         "Trila": "TRILA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "ARCHZ1",
-      "STAR": "",
-      "Route": null,
       "Altitude": 12000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "Delta 55 38": {
       "Callsign": "DAL5538",
@@ -216,20 +185,11 @@
         "Ski": "SKIII",
         "spine": "SPINE"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "RUGGD3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "Delta 61": {
       "Callsign": "DAL61",
@@ -241,20 +201,11 @@
         "Scant": "SCANT",
         "Trila": "TRILA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "ARCHZ1",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "Delta 75 66": {
       "Callsign": "DAL7566",
@@ -266,20 +217,11 @@
         "Rugged": "RUGGD",
         "Salt Lake City": "KSLC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "RUGGD3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "Delta 79": {
       "Callsign": "DAL79",
@@ -292,20 +234,11 @@
         "Salt Lake City": "KSLC",
         "scowl": "SCOVL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CGULL1",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "Delta 82": {
       "Callsign": "DAL82",
@@ -317,12 +250,12 @@
         "Syrup": "SURYP"
       },
       "CandidateApproaches": {
-        "I L S runway three four left": "I4L",
-        "I L S runway three four right": "I4R",
-        "L D A runway three five": "X35",
-        "r-nav yankee runway three four right": "R4R",
-        "r-nav zulu runway three five": "RZ5",
-        "r-nav zulu runway three four left": "R4L"
+        "ILS Runway 34L": "I4L",
+        "ILS Runway 34R": "I4R",
+        "LDA Runway 35": "X35",
+        "RNAV Y Runway 34R": "R4R",
+        "RNAV Z Runway 34L": "R4L",
+        "RNAV Z Runway 35": "RZ5"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three five": "35",
@@ -396,16 +329,11 @@
           "peddle": "PEDLE"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CARTR1",
-      "Route": null,
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32",
@@ -429,12 +357,12 @@
         "flag": "FLLAG"
       },
       "CandidateApproaches": {
-        "I L S runway three four left": "I4L",
-        "I L S runway three four right": "I4R",
-        "L D A runway three five": "X35",
-        "r-nav yankee runway three four right": "R4R",
-        "r-nav zulu runway three five": "RZ5",
-        "r-nav zulu runway three four left": "R4L"
+        "ILS Runway 34L": "I4L",
+        "ILS Runway 34R": "I4R",
+        "LDA Runway 35": "X35",
+        "RNAV Y Runway 34R": "R4R",
+        "RNAV Z Runway 34L": "R4L",
+        "RNAV Z Runway 35": "RZ5"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three five": "35",
@@ -509,15 +437,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 34L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CARTR1",
-      "Route": null,
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32",
@@ -534,20 +458,11 @@
         "Gull": "CGULL",
         "Salt Lake City": "KSLC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CGULL1",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "Delta seven 72": {
       "Callsign": "DAL772",
@@ -557,12 +472,12 @@
         "Salt Lake City": "KSLC"
       },
       "CandidateApproaches": {
-        "I L S runway three four left": "I4L",
-        "I L S runway three four right": "I4R",
-        "L D A runway three five": "X35",
-        "r-nav yankee runway three four right": "R4R",
-        "r-nav zulu runway three five": "RZ5",
-        "r-nav zulu runway three four left": "R4L"
+        "ILS Runway 34L": "I4L",
+        "ILS Runway 34R": "I4R",
+        "LDA Runway 35": "X35",
+        "RNAV Y Runway 34R": "R4R",
+        "RNAV Z Runway 34L": "R4L",
+        "RNAV Z Runway 35": "RZ5"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three five": "35",
@@ -636,16 +551,11 @@
           "peddle": "PEDLE"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CARTR1",
-      "Route": null,
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32",
@@ -660,20 +570,11 @@
         "Harry Reid": "KLAS",
         "Salt Lake City": "KSLC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "ARCHZ1",
-      "STAR": "",
-      "Route": null,
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "SkyWest 12 34": {
       "Callsign": "SKW1234",
@@ -685,12 +586,12 @@
         "Syrup": "SURYP"
       },
       "CandidateApproaches": {
-        "I L S runway three four left": "I4L",
-        "I L S runway three four right": "I4R",
-        "L D A runway three five": "X35",
-        "r-nav yankee runway three four right": "R4R",
-        "r-nav zulu runway three five": "RZ5",
-        "r-nav zulu runway three four left": "R4L"
+        "ILS Runway 34L": "I4L",
+        "ILS Runway 34R": "I4R",
+        "LDA Runway 35": "X35",
+        "RNAV Y Runway 34R": "R4R",
+        "RNAV Z Runway 34L": "R4L",
+        "RNAV Z Runway 35": "RZ5"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three five": "35",
@@ -764,16 +665,11 @@
           "peddle": "PEDLE"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CARTR1",
-      "Route": null,
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32",
@@ -790,12 +686,12 @@
         "Sky Harbor": "KPHX"
       },
       "CandidateApproaches": {
-        "I L S runway three four left": "I4L",
-        "I L S runway three four right": "I4R",
-        "L D A runway three five": "X35",
-        "r-nav yankee runway three four right": "R4R",
-        "r-nav zulu runway three five": "RZ5",
-        "r-nav zulu runway three four left": "R4L"
+        "ILS Runway 34L": "I4L",
+        "ILS Runway 34R": "I4R",
+        "LDA Runway 35": "X35",
+        "RNAV Y Runway 34R": "R4R",
+        "RNAV Z Runway 34L": "R4L",
+        "RNAV Z Runway 35": "RZ5"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three five": "35",
@@ -869,16 +765,11 @@
           "peddle": "PEDLE"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "QWENN6",
-      "Route": null,
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32",
@@ -893,20 +784,11 @@
         "Chicago O'Hare": "KORD",
         "Salt Lake City": "KSLC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "RUGGD3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "SkyWest one zero niner delta": {
       "Callsign": "SKW109D",
@@ -916,12 +798,12 @@
         "Salt Lake City": "KSLC"
       },
       "CandidateApproaches": {
-        "I L S runway three four left": "I4L",
-        "I L S runway three four right": "I4R",
-        "L D A runway three five": "X35",
-        "r-nav yankee runway three four right": "R4R",
-        "r-nav zulu runway three five": "RZ5",
-        "r-nav zulu runway three four left": "R4L"
+        "ILS Runway 34L": "I4L",
+        "ILS Runway 34R": "I4R",
+        "LDA Runway 35": "X35",
+        "RNAV Y Runway 34R": "R4R",
+        "RNAV Z Runway 34L": "R4L",
+        "RNAV Z Runway 35": "RZ5"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three five": "35",
@@ -995,16 +877,11 @@
           "peddle": "PEDLE"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "YUTES1",
-      "Route": null,
       "Altitude": 26538,
       "State": "arrival",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32",
@@ -1020,12 +897,12 @@
         "San Francisco": "KSFO"
       },
       "CandidateApproaches": {
-        "I L S runway three four left": "I4L",
-        "I L S runway three four right": "I4R",
-        "L D A runway three five": "X35",
-        "r-nav yankee runway three four right": "R4R",
-        "r-nav zulu runway three five": "RZ5",
-        "r-nav zulu runway three four left": "R4L"
+        "ILS Runway 34L": "I4L",
+        "ILS Runway 34R": "I4R",
+        "LDA Runway 35": "X35",
+        "RNAV Y Runway 34R": "R4R",
+        "RNAV Z Runway 34L": "R4L",
+        "RNAV Z Runway 35": "RZ5"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three five": "35",
@@ -1099,16 +976,11 @@
           "peddle": "PEDLE"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "YUTES1",
-      "Route": null,
       "Altitude": 8000,
       "State": "arrival",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "14",
         "32",
@@ -1126,20 +998,11 @@
         "Rugged": "RUGGD",
         "Salt Lake City": "KSLC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "RUGGD3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "United eight": {
       "Callsign": "UAL8",
@@ -1153,20 +1016,11 @@
         "Ski": "SKIII",
         "spine": "SPINE"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "RUGGD3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "United eight 23": {
       "Callsign": "UAL823",
@@ -1178,20 +1032,11 @@
         "Rugged": "RUGGD",
         "Salt Lake City": "KSLC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "RUGGD3",
-      "STAR": "",
-      "Route": null,
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     }
   },
   "logs": [

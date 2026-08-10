@@ -34,10 +34,10 @@
         "reebo": "REEBO"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -79,9 +79,6 @@
           "reebo": "REEBO"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "LUCKI1",
       "Route": [
         "JACKK",
@@ -94,9 +91,7 @@
       "Altitude": 14196,
       "State": "arrival",
       "ControllerFrequency": "5E",
-      "TrackingController": "5E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5E"
     }
   },
   "logs": [

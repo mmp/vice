@@ -28,16 +28,16 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -102,14 +102,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "BACHR4",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "Southwest 36 47": {
       "Callsign": "SWA3647",
@@ -121,16 +118,16 @@
         "Nate": "NNATE"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -195,14 +192,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "BACHR4",
       "Altitude": 2000,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "Southwest 66 43": {
       "Callsign": "SWA6643",
@@ -215,16 +209,16 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -289,14 +283,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "HIBIL3",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "Southwest 79 45": {
       "Callsign": "SWA7945",
@@ -311,16 +302,16 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -385,14 +376,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "MNNDO4",
       "Altitude": 7173,
       "State": "arrival",
       "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1S"
     },
     "Southwest four 33": {
       "Callsign": "SWA433",
@@ -407,16 +395,16 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -481,14 +469,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "BACHR4",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "Southwest niner 58": {
       "Callsign": "SWA958",
@@ -501,16 +486,16 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -575,14 +560,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "MNNDO4",
       "Altitude": 2696,
       "State": "arrival",
       "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1S"
     },
     "Southwest seven 80": {
       "Callsign": "SWA780",
@@ -595,16 +577,16 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -669,14 +651,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "HERBZ1",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "Sun Country six 35": {
       "Callsign": "SCX635",
@@ -689,16 +668,16 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -763,14 +742,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "HIBIL3",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     }
   },
   "logs": [

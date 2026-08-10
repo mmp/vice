@@ -1,0 +1,81 @@
+{
+  "msg": "STT command",
+  "transcript": "Dynasty Eighty Seven heavy four miles from Dumba to left fitting three one zero maintain four thousand feet till established on a localizer clear ILS runway two eight right approach maintain one eight zero knots until Axmul",
+  "callsign": "CAL87",
+  "command": "L310 A40 CI8R S180/UAXMUL",
+  "reason": "as above with \"clear\" for \"cleared\" and \"on a localizer\"",
+  "stt_aircraft": {
+    "Dynasty 87": {
+      "Callsign": "CAL87",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Archie": "ARCHI",
+        "Axmul": "AXMUL",
+        "Dumba": "DUMBA",
+        "Eddie": "EDDYY",
+        "Freely": "FRELY",
+        "Girr": "GIRRR",
+        "San Francisco": "KSFO",
+        "Sepin": "CEPIN",
+        "Sidney": "SIDBY",
+        "Ziled": "ZILED"
+      },
+      "CandidateApproaches": {
+        "FMS Bridge Visual Runway 28R": "FMS",
+        "GLS Runway 28L": "GLL",
+        "GLS Runway 28R": "GLR",
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28L": "R8L",
+        "RNAV Y Runway 28R": "Y8R",
+        "RNAV Z Runway 28R": "Z8R",
+        "Tipp Toe Visual Runway 28L": "TTL",
+        "Tipp Toe Visual Runway 28R": "TTR"
+      },
+      "ApproachFixes": {
+        "I8R": {
+          "Archie": "ARCHI",
+          "Axmul": "AXMUL",
+          "Dumba": "DUMBA",
+          "Eddie": "EDDYY",
+          "Girr": "GIRRR",
+          "Sepin": "CEPIN",
+          "Sidney": "SIDBY",
+          "Ziled": "ZILED"
+        },
+        "Y8R": {
+          "Archie": "ARCHI",
+          "Dong": "DONNG",
+          "Eddie": "EDDYY",
+          "Fabla": "FABLA",
+          "Guts": "GUTTS",
+          "Joseph": "JOSUF",
+          "Sidney": "SIDBY",
+          "wibni": "WIBNI"
+        },
+        "Z8R": {
+          "Archie": "ARCHI",
+          "Axmul": "AXMUL",
+          "Dumba": "DUMBA",
+          "Eddie": "EDDYY",
+          "Girr": "GIRRR",
+          "Sepin": "CEPIN",
+          "Sidney": "SIDBY",
+          "Ziled": "ZILED"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28R",
+      "STAR": "DYAMD5",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "2Z",
+      "TrackingController": "2Z",
+      "LAHSORunways": [
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    }
+  }
+}

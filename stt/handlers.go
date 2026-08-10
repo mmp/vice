@@ -1476,6 +1476,16 @@ func registerAllCommands() {
 		WithName("at_fix_intercept_approach"),
 		WithPriority(15),
 	)
+	// With the runway named: "at FIX join the two eight right final approach
+	// course". The runway designator must be spelled out in the template —
+	// "left"/"right" are command boundaries, so the slack can't reach past
+	// them to the "approach" that follows.
+	registerSTTCommand(
+		"at {fix} intercept|join [the] [runway] {num:1-36} [left|right|center] [final] approach [course]",
+		func(fix string, _ int) string { return fmt.Sprintf("A%s/I", fix) },
+		WithName("at_fix_intercept_approach_runway"),
+		WithPriority(16),
+	)
 
 	// "[proceed] direct FIX intercept the localizer" — preserves the explicit
 	// "direct" instruction and adds an at-fix intercept. Emits two commands:
@@ -1498,6 +1508,12 @@ func registerAllCommands() {
 		func(fix string) string { return fmt.Sprintf("D%s A%s/I", fix, fix) },
 		WithName("direct_fix_intercept_approach"),
 		WithPriority(15),
+	)
+	registerSTTCommand(
+		"direct|proceed [direct] [to] [at] {fix} intercept|join [the] [runway] {num:1-36} [left|right|center] [final] approach [course]",
+		func(fix string, _ int) string { return fmt.Sprintf("D%s A%s/I", fix, fix) },
+		WithName("direct_fix_intercept_approach_runway"),
+		WithPriority(16),
 	)
 
 	registerSTTCommand(
@@ -1654,6 +1670,13 @@ func registerAllCommands() {
 		func() string { return "I" },
 		WithName("intercept_approach_course"),
 		WithPriority(11),
+	)
+	// Pattern: "join the two eight right final approach course"
+	registerSTTCommand(
+		"intercept|join|set [the] [runway] {num:1-36} [left|right|center] [final] approach [course]",
+		func(_ int) string { return "I" },
+		WithName("intercept_approach_course_runway"),
+		WithPriority(12),
 	)
 	// Pattern: standalone "localizer" without "intercept" keyword.
 	// When "localizer" appears alone (e.g., after a heading command), it means

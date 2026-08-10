@@ -26,13 +26,12 @@
         "Zillda": "ZLLDA"
       },
       "CandidateApproaches": {
-        "I L S yankee runway two six left": "Y6L",
-        "I L S zulu runway two six left": "Z6L",
-        "r-nav runway two six left": "R6L",
-        "r-nav yankee runway one niner right": "RY9R",
-        "r-nav zulu runway one niner right": "RZ9R"
+        "ILS Y Runway 26L": "Y6L",
+        "ILS Z Runway 26L": "Z6L",
+        "RNAV Runway 26L": "R6L",
+        "RNAV Y Runway 19R": "RY9R",
+        "RNAV Z Runway 19R": "RZ9R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R6L": {
           "Bishop": "BISHP",
@@ -74,14 +73,11 @@
           "Shand": "SHAND"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "COKTL4",
       "Altitude": 24053,
       "State": "arrival",
       "ControllerFrequency": "1G",
       "TrackingController": "1G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",

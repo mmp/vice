@@ -25,10 +25,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -62,8 +62,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAPSS4",
       "Route": [
         "KDCA"
@@ -72,7 +70,6 @@
       "State": "arrival",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -93,10 +90,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -130,8 +127,6 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CLIPR3",
       "Route": [
         "DARIC",
@@ -141,7 +136,6 @@
       "State": "arrival",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -164,10 +158,10 @@
         "Together": "TGTHR"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -201,8 +195,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "FRDMM6",
       "Route": [
         "STAND",
@@ -214,7 +206,6 @@
       "State": "arrival",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -234,10 +225,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -271,8 +262,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CLIPR3",
       "Route": [
         "KDCA"
@@ -281,7 +270,6 @@
       "State": "arrival",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -301,10 +289,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -338,8 +326,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CLIPR3",
       "Route": [
         "KDCA"
@@ -348,7 +334,6 @@
       "State": "cleared approach",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -369,10 +354,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -406,8 +391,6 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAPSS4",
       "Route": [
         "DARIC",
@@ -417,7 +400,6 @@
       "State": "arrival",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -438,10 +420,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -475,8 +457,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAPSS4",
       "Route": [
         "DARIC",
@@ -486,7 +466,6 @@
       "State": "arrival",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",
@@ -506,10 +485,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "River Visual runway one niner": "RIV",
-        "r-nav runway one five": "R15",
-        "r-nav yankee runway one niner": "RY9",
-        "r-nav zulu runway one niner": "RZ9"
+        "RNAV Runway 15": "R15",
+        "RNAV Y Runway 19": "RY9",
+        "RNAV Z Runway 19": "RZ9",
+        "River Visual Runway 19": "RIV"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one five": "15",
@@ -543,8 +522,6 @@
         }
       },
       "AssignedApproach": "River Visual Runway 19",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "DEALE3",
       "Route": [
         "KDCA"
@@ -553,7 +530,6 @@
       "State": "arrival",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1",
         "19",

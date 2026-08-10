@@ -24,18 +24,12 @@
         "Alfomso Mengo": "CAM",
         "Chester": "CTR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BDL6",
-      "STAR": "",
       "Altitude": 3652,
       "State": "departure",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Grumman Tiger seven sierra foxtrot": {
       "Callsign": "N177SF",
@@ -44,18 +38,12 @@
         "Alfomso Mengo": "CAM",
         "Chester": "CTR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BDL6",
-      "STAR": "",
       "Altitude": 3652,
       "State": "departure",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "JetBlue 73 10": {
       "Callsign": "JBU7310",
@@ -69,10 +57,9 @@
         "bris": "BRISS"
       },
       "CandidateApproaches": {
-        "I L S runway six": "I6",
-        "I L S runway three three": "I33"
+        "ILS Runway 33": "I33",
+        "ILS Runway 6": "I6"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I33": {
           "Hadux": "HADUX",
@@ -86,14 +73,11 @@
           "Penna": "PENNA"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "DPK3",
       "Altitude": 15090,
       "State": "arrival",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "6",
         "24",
@@ -109,18 +93,11 @@
         "Deer Park": "DPK",
         "General Madariaga": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BDL6",
-      "STAR": "",
       "Altitude": 6000,
       "State": "departure",
       "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1B"
     },
     "cessna one fifty four four four": {
       "Callsign": "N79444",
@@ -131,18 +108,11 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 8000,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna one seventy-two six five one": {
       "Callsign": "N8651",
@@ -153,18 +123,11 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6081,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november eight six five one": {
       "Callsign": "N8651",
@@ -175,18 +138,10 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6081,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "november one seven seven sierra foxtrot": {
       "Callsign": "N177SF",
@@ -195,18 +150,11 @@
         "Alfomso Mengo": "CAM",
         "Chester": "CTR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BDL6",
-      "STAR": "",
       "Altitude": 3652,
       "State": "departure",
       "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1B"
     },
     "november seven niner four four four": {
       "Callsign": "N79444",
@@ -217,18 +165,10 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 8000,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "skyhawk six five one": {
       "Callsign": "N8651",
@@ -239,18 +179,11 @@
         "Islip": "KISP",
         "MacArthur": "KISP"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6081,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

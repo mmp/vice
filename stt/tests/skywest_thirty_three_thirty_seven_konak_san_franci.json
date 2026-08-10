@@ -35,16 +35,16 @@
         "Wetor": "WETOR"
       },
       "CandidateApproaches": {
-        "FMS Bridge Visual runway two eight right": "FMS",
-        "GLS runway two eight left": "GLL",
-        "GLS runway two eight right": "GLR",
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R",
-        "Tipp Toe Visual runway two eight left": "TTL",
-        "Tipp Toe Visual runway two eight right": "TTR",
-        "r-nav runway two eight left": "R8L",
-        "r-nav yankee runway two eight right": "Y8R",
-        "r-nav zulu runway two eight right": "Z8R"
+        "FMS Bridge Visual Runway 28R": "FMS",
+        "GLS Runway 28L": "GLL",
+        "GLS Runway 28R": "GLR",
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28L": "R8L",
+        "RNAV Y Runway 28R": "Y8R",
+        "RNAV Z Runway 28R": "Z8R",
+        "Tipp Toe Visual Runway 28L": "TTL",
+        "Tipp Toe Visual Runway 28R": "TTR"
       },
       "ApproachFixes": {
         "FMS": {
@@ -146,13 +146,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28L",
-      "SID": "",
       "STAR": "SERFR4",
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1L",
         "19R",
@@ -181,16 +179,16 @@
         "Wetor": "WETOR"
       },
       "CandidateApproaches": {
-        "FMS Bridge Visual runway two eight right": "FMS",
-        "GLS runway two eight left": "GLL",
-        "GLS runway two eight right": "GLR",
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R",
-        "Tipp Toe Visual runway two eight left": "TTL",
-        "Tipp Toe Visual runway two eight right": "TTR",
-        "r-nav runway two eight left": "R8L",
-        "r-nav yankee runway two eight right": "Y8R",
-        "r-nav zulu runway two eight right": "Z8R"
+        "FMS Bridge Visual Runway 28R": "FMS",
+        "GLS Runway 28L": "GLL",
+        "GLS Runway 28R": "GLR",
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28L": "R8L",
+        "RNAV Y Runway 28R": "Y8R",
+        "RNAV Z Runway 28R": "Z8R",
+        "Tipp Toe Visual Runway 28L": "TTL",
+        "Tipp Toe Visual Runway 28R": "TTR"
       },
       "ApproachFixes": {
         "FMS": {
@@ -292,13 +290,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28L",
-      "SID": "",
       "STAR": "BDEGA4",
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "2B",
       "TrackingController": "2B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1L",
         "19R",
@@ -317,16 +313,16 @@
         "San Francisco": "KSFO"
       },
       "CandidateApproaches": {
-        "FMS Bridge Visual runway two eight right": "FMS",
-        "GLS runway two eight left": "GLL",
-        "GLS runway two eight right": "GLR",
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R",
-        "Tipp Toe Visual runway two eight left": "TTL",
-        "Tipp Toe Visual runway two eight right": "TTR",
-        "r-nav runway two eight left": "R8L",
-        "r-nav yankee runway two eight right": "Y8R",
-        "r-nav zulu runway two eight right": "Z8R"
+        "FMS Bridge Visual Runway 28R": "FMS",
+        "GLS Runway 28L": "GLL",
+        "GLS Runway 28R": "GLR",
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28L": "R8L",
+        "RNAV Y Runway 28R": "Y8R",
+        "RNAV Z Runway 28R": "Z8R",
+        "Tipp Toe Visual Runway 28L": "TTL",
+        "Tipp Toe Visual Runway 28R": "TTR"
       },
       "ApproachFixes": {
         "FMS": {
@@ -428,13 +424,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28L",
-      "SID": "",
       "STAR": "BDEGA4",
       "Altitude": 2576,
       "State": "on approach",
       "ControllerFrequency": "2B",
       "TrackingController": "2B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1L",
         "19R",
@@ -462,16 +456,16 @@
         "Ziled": "ZILED"
       },
       "CandidateApproaches": {
-        "FMS Bridge Visual runway two eight right": "FMS",
-        "GLS runway two eight left": "GLL",
-        "GLS runway two eight right": "GLR",
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R",
-        "Tipp Toe Visual runway two eight left": "TTL",
-        "Tipp Toe Visual runway two eight right": "TTR",
-        "r-nav runway two eight left": "R8L",
-        "r-nav yankee runway two eight right": "Y8R",
-        "r-nav zulu runway two eight right": "Z8R"
+        "FMS Bridge Visual Runway 28R": "FMS",
+        "GLS Runway 28L": "GLL",
+        "GLS Runway 28R": "GLR",
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28L": "R8L",
+        "RNAV Y Runway 28R": "Y8R",
+        "RNAV Z Runway 28R": "Z8R",
+        "Tipp Toe Visual Runway 28L": "TTL",
+        "Tipp Toe Visual Runway 28R": "TTR"
       },
       "ApproachFixes": {
         "FMS": {
@@ -573,13 +567,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28R",
-      "SID": "",
       "STAR": "DYAMD5",
       "Altitude": 9419,
       "State": "arrival",
       "ControllerFrequency": "2Z",
       "TrackingController": "2Z",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1L",
         "19R",
@@ -600,16 +592,16 @@
         "San Francisco": "KSFO"
       },
       "CandidateApproaches": {
-        "FMS Bridge Visual runway two eight right": "FMS",
-        "GLS runway two eight left": "GLL",
-        "GLS runway two eight right": "GLR",
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R",
-        "Tipp Toe Visual runway two eight left": "TTL",
-        "Tipp Toe Visual runway two eight right": "TTR",
-        "r-nav runway two eight left": "R8L",
-        "r-nav yankee runway two eight right": "Y8R",
-        "r-nav zulu runway two eight right": "Z8R"
+        "FMS Bridge Visual Runway 28R": "FMS",
+        "GLS Runway 28L": "GLL",
+        "GLS Runway 28R": "GLR",
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28L": "R8L",
+        "RNAV Y Runway 28R": "Y8R",
+        "RNAV Z Runway 28R": "Z8R",
+        "Tipp Toe Visual Runway 28L": "TTL",
+        "Tipp Toe Visual Runway 28R": "TTR"
       },
       "ApproachFixes": {
         "FMS": {
@@ -711,13 +703,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28L",
-      "SID": "",
       "STAR": "SERFR4",
       "Altitude": 4818,
       "State": "on approach",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1L",
         "19R",
@@ -747,16 +737,16 @@
         "Wetor": "WETOR"
       },
       "CandidateApproaches": {
-        "FMS Bridge Visual runway two eight right": "FMS",
-        "GLS runway two eight left": "GLL",
-        "GLS runway two eight right": "GLR",
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R",
-        "Tipp Toe Visual runway two eight left": "TTL",
-        "Tipp Toe Visual runway two eight right": "TTR",
-        "r-nav runway two eight left": "R8L",
-        "r-nav yankee runway two eight right": "Y8R",
-        "r-nav zulu runway two eight right": "Z8R"
+        "FMS Bridge Visual Runway 28R": "FMS",
+        "GLS Runway 28L": "GLL",
+        "GLS Runway 28R": "GLR",
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28L": "R8L",
+        "RNAV Y Runway 28R": "Y8R",
+        "RNAV Z Runway 28R": "Z8R",
+        "Tipp Toe Visual Runway 28L": "TTL",
+        "Tipp Toe Visual Runway 28R": "TTR"
       },
       "ApproachFixes": {
         "FMS": {
@@ -858,13 +848,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 28L",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10112,
       "State": "arrival",
       "ControllerFrequency": "2B",
       "TrackingController": "2B",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "1L",
         "19R",

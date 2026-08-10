@@ -36,9 +36,9 @@
         "Vali": "VALLI"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -81,13 +81,11 @@
         }
       },
       "AssignedApproach": "ILS Z Runway 22R",
-      "SID": "",
       "STAR": "RKCTY2",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",
@@ -119,9 +117,9 @@
         "cobbo": "COBBO"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -164,13 +162,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 21L",
-      "SID": "",
       "STAR": "HANBL3",
       "Altitude": 3000,
       "State": "cleared approach",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",
@@ -199,9 +195,9 @@
         "Vali": "VALLI"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -244,13 +240,11 @@
         }
       },
       "AssignedApproach": "ILS Z Runway 22R",
-      "SID": "",
       "STAR": "LAYKS2",
       "Altitude": 4173,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",
@@ -279,9 +273,9 @@
         "cobbo": "COBBO"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -324,13 +318,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 21L",
-      "SID": "",
       "STAR": "TPGUN2",
       "Altitude": 5912,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",
@@ -361,9 +353,9 @@
         "cobbo": "COBBO"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -406,13 +398,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 21L",
-      "SID": "",
       "STAR": "HTROD2",
       "Altitude": 12000,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",
@@ -442,9 +432,9 @@
         "Vali": "VALLI"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S yankee runway two two right": "Y2R",
-        "I L S zulu runway two two right": "I2R"
+        "ILS Runway 21L": "I1L",
+        "ILS Y Runway 22R": "Y2R",
+        "ILS Z Runway 22R": "I2R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -487,13 +477,11 @@
         }
       },
       "AssignedApproach": "ILS Z Runway 22R",
-      "SID": "",
       "STAR": "VCTRZ2",
       "Altitude": 9403,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9L",
         "27R",

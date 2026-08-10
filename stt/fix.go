@@ -96,6 +96,14 @@ func fixMatchScore(phrase, spokenName, fixID string) float64 {
 	return score
 }
 
+// positionWords name a controller position: the word a facility name ends
+// with when a controller identifies themselves. "tower" is deliberately
+// absent — it follows a fix often enough as its own command ("direct BAKEL,
+// contact tower").
+var positionWords = map[string]bool{
+	"approach": true, "departure": true, "center": true,
+}
+
 // fixCandidates scores every fix against the 1-3 token spans at the start
 // of tokens and returns the viable candidates best-first. An exact spoken
 // match at the longest span wins outright.
@@ -108,10 +116,22 @@ func fixCandidates(tokens []Token, fixes map[string]string) []fixCandidate {
 		}
 		phrase := strings.Join(parts, " ")
 
+		// A name that isn't an exact match and runs into a position word is
+		// the controller's own facility ("New York Approach", which scores
+		// 0.87 against the fix "Newark"), not a fix the aircraft is being
+		// sent to. The lookahead covers the rest of a two-word facility name,
+		// matching the position_id template's two {facility_word} slots.
+		facilityName := false
+		for k := length; k < min(length+2, len(tokens)) && !facilityName; k++ {
+			facilityName = positionWords[strings.ToLower(tokens[k].Text)]
+		}
+
 		for spokenName, fixID := range fixes {
-			if score := fixMatchScore(phrase, spokenName, fixID); score > 0 {
-				cands = append(cands, fixCandidate{fix: fixID, score: score, consumed: length})
+			score := fixMatchScore(phrase, spokenName, fixID)
+			if score == 0 || (facilityName && score < 1) {
+				continue
 			}
+			cands = append(cands, fixCandidate{fix: fixID, score: score, consumed: length})
 		}
 	}
 

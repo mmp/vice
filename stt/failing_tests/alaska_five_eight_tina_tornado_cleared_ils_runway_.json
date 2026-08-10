@@ -43,12 +43,12 @@
         "snack": "SNNAK"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -166,9 +166,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 25L",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "CRCUS",
         "KRAIN",
@@ -183,9 +180,7 @@
       "Altitude": 16065,
       "State": "cleared approach",
       "ControllerFrequency": "2F",
-      "TrackingController": "2F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2F"
     },
     "Alaska 59": {
       "Callsign": "ASA59",
@@ -209,12 +204,12 @@
         "skull": "SKOLL"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -332,9 +327,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 24R",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "JUUSE",
         "CLIFY",
@@ -345,9 +337,7 @@
       "Altitude": 9701,
       "State": "arrival",
       "ControllerFrequency": "2Z",
-      "TrackingController": "2Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2Z"
     },
     "Alaska five 18": {
       "Callsign": "ASA518",
@@ -376,12 +366,12 @@
         "snack": "SNNAK"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -499,9 +489,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 25L",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "SLI",
         "TRNDO",
@@ -510,9 +497,7 @@
       "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "2D",
-      "TrackingController": "2D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2D"
     },
     "American 77 42": {
       "Callsign": "AAL7742",
@@ -540,12 +525,12 @@
         "snack": "SNNAK"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -663,9 +648,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 25L",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "HUNDA",
         "GIGII",
@@ -674,9 +656,7 @@
       "Altitude": 4339,
       "State": "cleared approach",
       "ControllerFrequency": "2F",
-      "TrackingController": "2F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2F"
     },
     "American five 31": {
       "Callsign": "AAL531",
@@ -705,12 +685,12 @@
         "snack": "SNNAK"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -828,9 +808,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 25L",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "GAATE",
         "HUNDA",
@@ -840,9 +817,7 @@
       "Altitude": 6793,
       "State": "cleared approach",
       "ControllerFrequency": "2F",
-      "TrackingController": "2F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2F"
     },
     "Delta 87 63": {
       "Callsign": "DAL8763",
@@ -862,12 +837,12 @@
         "skull": "SKOLL"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -985,9 +960,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 24R",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "SEAVU",
         "KLAX"
@@ -995,9 +967,7 @@
       "Altitude": 14161,
       "State": "arrival",
       "ControllerFrequency": "2F",
-      "TrackingController": "2F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2F"
     },
     "Delta five zero five": {
       "Callsign": "DAL505",
@@ -1018,12 +988,12 @@
         "skull": "SKOLL"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -1141,9 +1111,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 24R",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "GADDO",
         "KLAX"
@@ -1151,9 +1118,7 @@
       "Altitude": 5236,
       "State": "arrival",
       "ControllerFrequency": "2Z",
-      "TrackingController": "2Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2Z"
     },
     "Delta two 84": {
       "Callsign": "DAL284",
@@ -1173,12 +1138,12 @@
         "skull": "SKOLL"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -1296,9 +1261,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 24R",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "DECOR",
         "BREEA",
@@ -1312,9 +1274,7 @@
       "Altitude": 9134,
       "State": "cleared approach",
       "ControllerFrequency": "2F",
-      "TrackingController": "2F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2F"
     },
     "SkyWest 75 69": {
       "Callsign": "SKW7569",
@@ -1342,12 +1302,12 @@
         "snack": "SNNAK"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -1465,9 +1425,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 25L",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "KRAIN",
         "TAROC",
@@ -1481,9 +1438,7 @@
       "Altitude": 10195,
       "State": "cleared approach",
       "ControllerFrequency": "2F",
-      "TrackingController": "2F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2F"
     },
     "United one": {
       "Callsign": "UAL1",
@@ -1511,12 +1466,12 @@
         "snack": "SNNAK"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two four right": "I4R",
-        "r-nav yankee runway two five left": "RY5L",
-        "r-nav yankee runway two four right": "RY4R",
-        "r-nav zulu runway two five left": "RZ5L",
-        "r-nav zulu runway two four right": "RZ4R"
+        "ILS Runway 24R": "I4R",
+        "ILS Runway 25L": "I5L",
+        "RNAV Y Runway 24R": "RY4R",
+        "RNAV Y Runway 25L": "RY5L",
+        "RNAV Z Runway 24R": "RZ4R",
+        "RNAV Z Runway 25L": "RZ5L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -1634,9 +1589,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 25L",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "CRCUS",
         "KRAIN",
@@ -1651,9 +1603,7 @@
       "Altitude": 21261,
       "State": "arrival",
       "ControllerFrequency": "2F",
-      "TrackingController": "2F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2F"
     }
   },
   "logs": [

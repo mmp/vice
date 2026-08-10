@@ -44,9 +44,9 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "DAL43",
 					AircraftType: "A321",
 					CandidateApproaches: map[string]string{
-						"I L S runway two two left":  "I22L",
-						"I L S runway two two right": "I22R",
-						"Visual runway two two left": "V22L",
+						"ILS Runway 22L":    "I22L",
+						"ILS Runway 22R":    "I22R",
+						"Visual Runway 22L": "V22L",
 					},
 					CandidateVisualApproaches: map[string]string{
 						"visual runway two two left":          "22L",
@@ -70,8 +70,8 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "AAL1232",
 					AircraftType: "A321",
 					CandidateApproaches: map[string]string{
-						"I L S runway three one right":  "I31R",
-						"Visual runway three one right": "V31R",
+						"ILS Runway 31R":    "I31R",
+						"Visual Runway 31R": "V31R",
 					},
 					CandidateVisualApproaches: map[string]string{
 						"visual runway three one right":          "31R",
@@ -107,8 +107,8 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "SWA247",
 					AircraftType: "B738",
 					CandidateApproaches: map[string]string{
-						"I L S runway two six":  "I26",
-						"Visual runway two six": "V26",
+						"ILS Runway 26":    "I26",
+						"Visual Runway 26": "V26",
 					},
 					CandidateVisualApproaches: map[string]string{
 						"visual runway two six":          "26",
@@ -136,8 +136,8 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "SCX505",
 					AircraftType: "B738",
 					CandidateApproaches: map[string]string{
-						"I L S runway one two right":  "I12R",
-						"Visual runway one two right": "VR1",
+						"ILS Runway 12R":    "I12R",
+						"Visual Runway 12R": "VR1",
 					},
 					CandidateVisualApproaches: map[string]string{
 						"visual runway one two right":          "12R",
@@ -179,8 +179,8 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "DAL43",
 					AircraftType: "A321",
 					CandidateApproaches: map[string]string{
-						"I L S runway two two left":  "I22L",
-						"Visual runway two two left": "V22L",
+						"ILS Runway 22L":    "I22L",
+						"Visual Runway 22L": "V22L",
 					},
 					CandidateVisualApproaches: map[string]string{
 						"visual runway two two left":          "22L",
@@ -207,8 +207,8 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "DAL43",
 					AircraftType: "A321",
 					CandidateApproaches: map[string]string{
-						"I L S runway two two left":               "I22L",
-						"Mount Vernon Visual runway two two left": "MTV",
+						"ILS Runway 22L":                 "I22L",
+						"Mount Vernon Visual Runway 22L": "MTV",
 					},
 					CandidateVisualApproaches: map[string]string{
 						"visual runway two two left":          "22L",

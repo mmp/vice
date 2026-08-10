@@ -24,17 +24,11 @@
         "Lee County": "RSW",
         "Sabe": "SABEE"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "GANDY8",
-      "STAR": "",
       "Altitude": 12000,
       "State": "departure",
       "ControllerFrequency": "1G",
-      "TrackingController": "C46",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C46"
     },
     "American niner 23": {
       "Callsign": "AAL923",
@@ -43,17 +37,11 @@
         "Dormer": "DORMR",
         "sykes": "SYKES"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "DORMR3",
-      "STAR": "",
       "Altitude": 2453,
       "State": "departure",
       "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1G"
     },
     "Delta 10 71": {
       "Callsign": "DAL1071",
@@ -63,17 +51,11 @@
         "Ecake": "ECAKE",
         "Finki": "FINKI"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BAYPO2",
-      "STAR": "",
       "Altitude": 4678,
       "State": "departure",
       "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1G"
     },
     "Moxy one 24": {
       "Callsign": "MXY124",
@@ -81,17 +63,11 @@
       "Fixes": {
         "Camjo": "CAMJO"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BAYPO2",
-      "STAR": "",
       "Altitude": 12000,
       "State": "departure",
       "ControllerFrequency": "1G",
-      "TrackingController": "J30",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "J30"
     },
     "Southwest 11 70": {
       "Callsign": "SWA1170",
@@ -105,10 +81,10 @@
         "Tampa": "KTPA"
       },
       "CandidateApproaches": {
-        "I L S runway one niner left": "I9L",
-        "I L S runway one niner right": "I9R",
-        "r-nav runway one niner left": "R9L",
-        "r-nav runway one niner right": "R9R"
+        "ILS Runway 19L": "I9L",
+        "ILS Runway 19R": "I9R",
+        "RNAV Runway 19L": "R9L",
+        "RNAV Runway 19R": "R9R"
       },
       "ApproachFixes": {
         "I9L": {
@@ -140,13 +116,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 19L",
-      "SID": "",
       "STAR": "BLFRG2",
       "Altitude": 11638,
       "State": "arrival",
       "ControllerFrequency": "1G",
       "TrackingController": "1G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28",
@@ -165,10 +139,10 @@
         "Tampa": "KTPA"
       },
       "CandidateApproaches": {
-        "I L S runway one niner left": "I9L",
-        "I L S runway one niner right": "I9R",
-        "r-nav runway one niner left": "R9L",
-        "r-nav runway one niner right": "R9R"
+        "ILS Runway 19L": "I9L",
+        "ILS Runway 19R": "I9R",
+        "RNAV Runway 19L": "R9L",
+        "RNAV Runway 19R": "R9R"
       },
       "ApproachFixes": {
         "I9L": {
@@ -200,13 +174,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 19L",
-      "SID": "",
       "STAR": "BLFRG2",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1G",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28",
@@ -217,18 +189,11 @@
     "Spirit Wings 87 56": {
       "Callsign": "NKS8756",
       "AircraftType": "A321",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "ENDED2",
-      "STAR": "",
       "Altitude": 12000,
       "State": "departure",
       "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1G"
     },
     "United 86": {
       "Callsign": "UAL86",
@@ -238,17 +203,11 @@
         "Ecake": "ECAKE",
         "Finki": "FINKI"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BAYPO2",
-      "STAR": "",
       "Altitude": 4568,
       "State": "departure",
       "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1G"
     }
   },
   "logs": [

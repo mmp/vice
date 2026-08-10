@@ -35,14 +35,14 @@
         "woovon": "WUVON"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two eight right": "I8R",
-        "r-nav yankee runway three zero": "RY30",
-        "r-nav yankee runway two eight left": "RY8L",
-        "r-nav yankee runway two eight right": "RY8R",
-        "r-nav zulu runway three zero": "RZ30",
-        "r-nav zulu runway two eight left": "RZ8L",
-        "r-nav zulu runway two eight right": "RZ8R"
+        "ILS Runway 28R": "I8R",
+        "ILS Runway 30": "I30",
+        "RNAV Y Runway 28L": "RY8L",
+        "RNAV Y Runway 28R": "RY8R",
+        "RNAV Y Runway 30": "RY30",
+        "RNAV Z Runway 28L": "RZ8L",
+        "RNAV Z Runway 28R": "RZ8R",
+        "RNAV Z Runway 30": "RZ30"
       },
       "ApproachFixes": {
         "I30": {
@@ -138,13 +138,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 30",
-      "SID": "",
       "STAR": "OAKES3",
       "Altitude": 18131,
       "State": "arrival",
       "ControllerFrequency": "3S",
       "TrackingController": "3S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -168,14 +166,14 @@
         "woovon": "WUVON"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two eight right": "I8R",
-        "r-nav yankee runway three zero": "RY30",
-        "r-nav yankee runway two eight left": "RY8L",
-        "r-nav yankee runway two eight right": "RY8R",
-        "r-nav zulu runway three zero": "RZ30",
-        "r-nav zulu runway two eight left": "RZ8L",
-        "r-nav zulu runway two eight right": "RZ8R"
+        "ILS Runway 28R": "I8R",
+        "ILS Runway 30": "I30",
+        "RNAV Y Runway 28L": "RY8L",
+        "RNAV Y Runway 28R": "RY8R",
+        "RNAV Y Runway 30": "RY30",
+        "RNAV Z Runway 28L": "RZ8L",
+        "RNAV Z Runway 28R": "RZ8R",
+        "RNAV Z Runway 30": "RZ30"
       },
       "ApproachFixes": {
         "I30": {
@@ -271,13 +269,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 30",
-      "SID": "",
       "STAR": "OAKES3",
       "Altitude": 10340,
       "State": "arrival",
       "ControllerFrequency": "3S",
       "TrackingController": "3S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -292,14 +288,14 @@
         "Metropolitan Oakland": "KOAK"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two eight right": "I8R",
-        "r-nav yankee runway three zero": "RY30",
-        "r-nav yankee runway two eight left": "RY8L",
-        "r-nav yankee runway two eight right": "RY8R",
-        "r-nav zulu runway three zero": "RZ30",
-        "r-nav zulu runway two eight left": "RZ8L",
-        "r-nav zulu runway two eight right": "RZ8R"
+        "ILS Runway 28R": "I8R",
+        "ILS Runway 30": "I30",
+        "RNAV Y Runway 28L": "RY8L",
+        "RNAV Y Runway 28R": "RY8R",
+        "RNAV Y Runway 30": "RY30",
+        "RNAV Z Runway 28L": "RZ8L",
+        "RNAV Z Runway 28R": "RZ8R",
+        "RNAV Z Runway 30": "RZ30"
       },
       "ApproachFixes": {
         "I30": {
@@ -394,14 +390,11 @@
           "grove": "GROVE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "PIRAT3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "3M",
       "TrackingController": "3M",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -420,8 +413,8 @@
         "Wraps": "WRAPS"
       },
       "CandidateApproaches": {
-        "runway one seven left": "17L",
-        "runway one seven right": "17R"
+        "Runway 17L": "17L",
+        "Runway 17R": "17R"
       },
       "ApproachFixes": {
         "17L": {
@@ -433,15 +426,11 @@
           "Jarnu": "JARNU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "SUUTR4",
       "Altitude": 19158,
       "State": "arrival",
       "ControllerFrequency": "3S",
-      "TrackingController": "5P",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5P"
     },
     "Southwest 40 16": {
       "Callsign": "SWA4016",
@@ -462,14 +451,14 @@
         "woovon": "WUVON"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two eight right": "I8R",
-        "r-nav yankee runway three zero": "RY30",
-        "r-nav yankee runway two eight left": "RY8L",
-        "r-nav yankee runway two eight right": "RY8R",
-        "r-nav zulu runway three zero": "RZ30",
-        "r-nav zulu runway two eight left": "RZ8L",
-        "r-nav zulu runway two eight right": "RZ8R"
+        "ILS Runway 28R": "I8R",
+        "ILS Runway 30": "I30",
+        "RNAV Y Runway 28L": "RY8L",
+        "RNAV Y Runway 28R": "RY8R",
+        "RNAV Y Runway 30": "RY30",
+        "RNAV Z Runway 28L": "RZ8L",
+        "RNAV Z Runway 28R": "RZ8R",
+        "RNAV Z Runway 30": "RZ30"
       },
       "ApproachFixes": {
         "I30": {
@@ -565,13 +554,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 30",
-      "SID": "",
       "STAR": "WNDSR2",
       "Altitude": 6031,
       "State": "arrival",
       "ControllerFrequency": "3G",
       "TrackingController": "3G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -595,14 +582,14 @@
         "woovon": "WUVON"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two eight right": "I8R",
-        "r-nav yankee runway three zero": "RY30",
-        "r-nav yankee runway two eight left": "RY8L",
-        "r-nav yankee runway two eight right": "RY8R",
-        "r-nav zulu runway three zero": "RZ30",
-        "r-nav zulu runway two eight left": "RZ8L",
-        "r-nav zulu runway two eight right": "RZ8R"
+        "ILS Runway 28R": "I8R",
+        "ILS Runway 30": "I30",
+        "RNAV Y Runway 28L": "RY8L",
+        "RNAV Y Runway 28R": "RY8R",
+        "RNAV Y Runway 30": "RY30",
+        "RNAV Z Runway 28L": "RZ8L",
+        "RNAV Z Runway 28R": "RZ8R",
+        "RNAV Z Runway 30": "RZ30"
       },
       "ApproachFixes": {
         "I30": {
@@ -698,13 +685,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 30",
-      "SID": "",
       "STAR": "EMZOH4",
       "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "3S",
       "TrackingController": "3S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -726,8 +711,8 @@
         "Wesch": "WESCH"
       },
       "CandidateApproaches": {
-        "Localizer runway two eight left": "L8L",
-        "r-nav runway two eight left": "R8L"
+        "Localizer Runway 28L": "L8L",
+        "RNAV Runway 28L": "R8L"
       },
       "ApproachFixes": {
         "L8L": {
@@ -751,14 +736,12 @@
         }
       },
       "AssignedApproach": "RNAV Runway 28L",
-      "SID": "",
       "STAR": "PXN6",
       "Altitude": 7608,
       "State": "cleared approach",
       "ControllerFrequency": "3S",
       "TrackingController": "3S",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna caravan five five seven": {
       "Callsign": "N14557",
@@ -774,8 +757,8 @@
         "Wesch": "WESCH"
       },
       "CandidateApproaches": {
-        "Localizer runway two eight left": "L8L",
-        "r-nav runway two eight left": "R8L"
+        "Localizer Runway 28L": "L8L",
+        "RNAV Runway 28L": "R8L"
       },
       "ApproachFixes": {
         "L8L": {
@@ -799,14 +782,12 @@
         }
       },
       "AssignedApproach": "RNAV Runway 28L",
-      "SID": "",
       "STAR": "PXN6",
       "Altitude": 7608,
       "State": "cleared approach",
       "ControllerFrequency": "3S",
       "TrackingController": "3S",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna four forty-one eight kebeck uniform": {
       "Callsign": "N368QU",
@@ -819,9 +800,9 @@
         "gains": "GAYNS"
       },
       "CandidateApproaches": {
-        "I L S runway two five right": "I5R",
-        "Localizer runway two five right": "L5R",
-        "r-nav runway two five right": "R5R"
+        "ILS Runway 25R": "I5R",
+        "Localizer Runway 25R": "L5R",
+        "RNAV Runway 25R": "R5R"
       },
       "ApproachFixes": {
         "I5R": {
@@ -850,14 +831,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 25R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4369,
       "State": "cleared approach",
       "ControllerFrequency": "3Y",
       "TrackingController": "3Y",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "conquest eight kebeck uniform": {
       "Callsign": "N368QU",
@@ -870,9 +848,9 @@
         "gains": "GAYNS"
       },
       "CandidateApproaches": {
-        "I L S runway two five right": "I5R",
-        "Localizer runway two five right": "L5R",
-        "r-nav runway two five right": "R5R"
+        "ILS Runway 25R": "I5R",
+        "Localizer Runway 25R": "L5R",
+        "RNAV Runway 25R": "R5R"
       },
       "ApproachFixes": {
         "I5R": {
@@ -901,14 +879,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 25R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4369,
       "State": "cleared approach",
       "ControllerFrequency": "3Y",
       "TrackingController": "3Y",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "embraer phenom one hundred seven golf mike": {
       "Callsign": "N467GM",
@@ -929,14 +904,14 @@
         "woovon": "WUVON"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two eight right": "I8R",
-        "r-nav yankee runway three zero": "RY30",
-        "r-nav yankee runway two eight left": "RY8L",
-        "r-nav yankee runway two eight right": "RY8R",
-        "r-nav zulu runway three zero": "RZ30",
-        "r-nav zulu runway two eight left": "RZ8L",
-        "r-nav zulu runway two eight right": "RZ8R"
+        "ILS Runway 28R": "I8R",
+        "ILS Runway 30": "I30",
+        "RNAV Y Runway 28L": "RY8L",
+        "RNAV Y Runway 28R": "RY8R",
+        "RNAV Y Runway 30": "RY30",
+        "RNAV Z Runway 28L": "RZ8L",
+        "RNAV Z Runway 28R": "RZ8R",
+        "RNAV Z Runway 30": "RZ30"
       },
       "ApproachFixes": {
         "I30": {
@@ -1031,8 +1006,6 @@
           "grove": "GROVE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "EMZOH4",
       "Altitude": 11979,
       "State": "arrival",
@@ -1065,14 +1038,14 @@
         "woovon": "WUVON"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two eight right": "I8R",
-        "r-nav yankee runway three zero": "RY30",
-        "r-nav yankee runway two eight left": "RY8L",
-        "r-nav yankee runway two eight right": "RY8R",
-        "r-nav zulu runway three zero": "RZ30",
-        "r-nav zulu runway two eight left": "RZ8L",
-        "r-nav zulu runway two eight right": "RZ8R"
+        "ILS Runway 28R": "I8R",
+        "ILS Runway 30": "I30",
+        "RNAV Y Runway 28L": "RY8L",
+        "RNAV Y Runway 28R": "RY8R",
+        "RNAV Y Runway 30": "RY30",
+        "RNAV Z Runway 28L": "RZ8L",
+        "RNAV Z Runway 28R": "RZ8R",
+        "RNAV Z Runway 30": "RZ30"
       },
       "ApproachFixes": {
         "I30": {
@@ -1167,14 +1140,11 @@
           "grove": "GROVE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "EMZOH4",
       "Altitude": 11979,
       "State": "arrival",
       "ControllerFrequency": "3S",
       "TrackingController": "3S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -1196,8 +1166,8 @@
         "Wesch": "WESCH"
       },
       "CandidateApproaches": {
-        "Localizer runway two eight left": "L8L",
-        "r-nav runway two eight left": "R8L"
+        "Localizer Runway 28L": "L8L",
+        "RNAV Runway 28L": "R8L"
       },
       "ApproachFixes": {
         "L8L": {
@@ -1221,14 +1191,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 28L",
-      "SID": "",
       "STAR": "PXN6",
       "Altitude": 7608,
       "State": "cleared approach",
       "ControllerFrequency": "3S",
-      "TrackingController": "3S",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "3S"
     },
     "november three six eight kebeck uniform": {
       "Callsign": "N368QU",
@@ -1241,9 +1208,9 @@
         "gains": "GAYNS"
       },
       "CandidateApproaches": {
-        "I L S runway two five right": "I5R",
-        "Localizer runway two five right": "L5R",
-        "r-nav runway two five right": "R5R"
+        "ILS Runway 25R": "I5R",
+        "Localizer Runway 25R": "L5R",
+        "RNAV Runway 25R": "R5R"
       },
       "ApproachFixes": {
         "I5R": {
@@ -1272,14 +1239,10 @@
         }
       },
       "AssignedApproach": "RNAV Runway 25R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4369,
       "State": "cleared approach",
       "ControllerFrequency": "3Y",
-      "TrackingController": "3Y",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "3Y"
     },
     "phenom one hundred seven golf mike": {
       "Callsign": "N467GM",
@@ -1300,14 +1263,14 @@
         "woovon": "WUVON"
       },
       "CandidateApproaches": {
-        "I L S runway three zero": "I30",
-        "I L S runway two eight right": "I8R",
-        "r-nav yankee runway three zero": "RY30",
-        "r-nav yankee runway two eight left": "RY8L",
-        "r-nav yankee runway two eight right": "RY8R",
-        "r-nav zulu runway three zero": "RZ30",
-        "r-nav zulu runway two eight left": "RZ8L",
-        "r-nav zulu runway two eight right": "RZ8R"
+        "ILS Runway 28R": "I8R",
+        "ILS Runway 30": "I30",
+        "RNAV Y Runway 28L": "RY8L",
+        "RNAV Y Runway 28R": "RY8R",
+        "RNAV Y Runway 30": "RY30",
+        "RNAV Z Runway 28L": "RZ8L",
+        "RNAV Z Runway 28R": "RZ8R",
+        "RNAV Z Runway 30": "RZ30"
       },
       "ApproachFixes": {
         "I30": {
@@ -1402,8 +1365,6 @@
           "grove": "GROVE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "EMZOH4",
       "Altitude": 11979,
       "State": "arrival",

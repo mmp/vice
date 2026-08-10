@@ -25,17 +25,11 @@
         "Kay bola": "KBOLA",
         "Mark": "MARCK"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "FOLZZ3",
-      "STAR": "",
       "Altitude": 4970,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "American 80 82": {
       "Callsign": "AAL8082",
@@ -56,9 +50,9 @@
         "piano": "PIANA"
       },
       "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
+        "ILS Runway 12": "I12",
+        "ILS Runway 9": "I9",
+        "RNAV Runway 8L": "R8L"
       },
       "ApproachFixes": {
         "I12": {
@@ -78,13 +72,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 12",
-      "SID": "",
       "STAR": "BNFSH3",
       "Altitude": 11392,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -111,9 +103,9 @@
         "scar": "SCHAR"
       },
       "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
+        "ILS Runway 12": "I12",
+        "ILS Runway 9": "I9",
+        "RNAV Runway 8L": "R8L"
       },
       "ApproachFixes": {
         "I12": {
@@ -133,13 +125,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 9",
-      "SID": "",
       "STAR": "FROGZ4",
       "Altitude": 9627,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -168,9 +158,9 @@
         "piano": "PIANA"
       },
       "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
+        "ILS Runway 12": "I12",
+        "ILS Runway 9": "I9",
+        "RNAV Runway 8L": "R8L"
       },
       "ApproachFixes": {
         "I12": {
@@ -190,13 +180,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 12",
-      "SID": "",
       "STAR": "BNFSH3",
       "Altitude": 8295,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -223,8 +211,8 @@
         "Lori": "LORII"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -243,14 +231,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10R",
-      "SID": "",
       "STAR": "TEEKY3",
       "Altitude": 10597,
       "State": "arrival",
       "ControllerFrequency": "1J",
-      "TrackingController": "1J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1J"
     },
     "Delta five 41": {
       "Callsign": "DAL541",
@@ -262,8 +247,8 @@
         "gamvy": "GAMVE"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -282,14 +267,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
       "STAR": "CUUDA3",
       "Altitude": 4000,
       "State": "cleared approach",
       "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1R"
     },
     "Frontier Flight 64 69": {
       "Callsign": "FFT6469",
@@ -301,9 +283,9 @@
         "grit": "GRITT"
       },
       "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
+        "ILS Runway 12": "I12",
+        "ILS Runway 9": "I9",
+        "RNAV Runway 8L": "R8L"
       },
       "ApproachFixes": {
         "I12": {
@@ -323,13 +305,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 9",
-      "SID": "",
       "STAR": "VIICE2",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -354,8 +334,8 @@
         "gamvy": "GAMVE"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -374,14 +354,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
       "STAR": "CUUDA3",
       "Altitude": 8000,
       "State": "arrival",
       "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1R"
     },
     "JetBlue 53 zero five": {
       "Callsign": "JBU5305",
@@ -394,8 +371,8 @@
         "gamvy": "GAMVE"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -414,14 +391,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
       "STAR": "OLAHS3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "JetBlue 86": {
       "Callsign": "JBU86",
@@ -436,8 +410,8 @@
         "Lori": "LORII"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -456,14 +430,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10R",
-      "SID": "",
       "STAR": "BHHIA3",
       "Altitude": 7110,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "JetBlue seven 82": {
       "Callsign": "JBU782",
@@ -479,8 +450,8 @@
         "gamvy": "GAMVE"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -499,14 +470,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
       "STAR": "CUUDA3",
       "Altitude": 8000,
       "State": "arrival",
       "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1R"
     },
     "Lan Chile seven 11": {
       "Callsign": "LAN711",
@@ -515,9 +483,9 @@
         "Miami": "KMIA"
       },
       "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
+        "ILS Runway 12": "I12",
+        "ILS Runway 9": "I9",
+        "RNAV Runway 8L": "R8L"
       },
       "ApproachFixes": {
         "I12": {
@@ -537,13 +505,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 9",
-      "SID": "",
       "STAR": "SNDBR3",
       "Altitude": 1354,
       "State": "cleared approach",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -563,17 +529,11 @@
       "Fixes": {
         "E-teck": "ETECK"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "FEALX2",
-      "STAR": "",
       "Altitude": 4000,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Spirit Wings 26 83": {
       "Callsign": "NKS2683",
@@ -583,17 +543,11 @@
         "Alton": "ALTNN",
         "perts": "PERTS"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "ALTNN2",
-      "STAR": "",
       "Altitude": 13000,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "Spirit Wings 51 18": {
       "Callsign": "NKS5118",
@@ -604,9 +558,9 @@
         "grit": "GRITT"
       },
       "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
+        "ILS Runway 12": "I12",
+        "ILS Runway 9": "I9",
+        "RNAV Runway 8L": "R8L"
       },
       "ApproachFixes": {
         "I12": {
@@ -626,13 +580,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 9",
-      "SID": "",
       "STAR": "FROGZ4",
       "Altitude": 3591,
       "State": "cleared approach",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -653,17 +605,11 @@
         "Hrock": "HROCK",
         "Jones": "JOENZ"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HROCK2",
-      "STAR": "",
       "Altitude": 8083,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Spirit Wings 57 83": {
       "Callsign": "NKS5783",
@@ -674,8 +620,8 @@
         "Lori": "LORII"
       },
       "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
+        "ILS Runway 10L": "I0L",
+        "ILS Runway 10R": "I0R"
       },
       "ApproachFixes": {
         "I0L": {
@@ -694,14 +640,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 10R",
-      "SID": "",
       "STAR": "TEEKY3",
       "Altitude": 4244,
       "State": "cleared approach",
       "ControllerFrequency": "1J",
-      "TrackingController": "1J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1J"
     },
     "Spirit Wings 64 12": {
       "Callsign": "NKS6412",
@@ -711,17 +654,11 @@
         "Moreno": "MRENO",
         "Niblet": "NIBLT"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BNGOS4",
-      "STAR": "",
       "Altitude": 4157,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "Surinam 97 51": {
       "Callsign": "SLM9751",
@@ -736,9 +673,9 @@
         "grit": "GRITT"
       },
       "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
+        "ILS Runway 12": "I12",
+        "ILS Runway 9": "I9",
+        "RNAV Runway 8L": "R8L"
       },
       "ApproachFixes": {
         "I12": {
@@ -758,13 +695,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 9",
-      "SID": "",
       "STAR": "VIICE2",
       "Altitude": 9125,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",

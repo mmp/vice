@@ -268,6 +268,10 @@ var confusionTable = map[string][]confusion{
 	"on": {{"one", 0.92}},
 	// "disseminate one thousand eight" for "descend and maintain ...".
 	"disseminate": {{"descend maintain", 0.85}, {"descend", 0.85}},
+	// The colloquial "till"/"til" for "until"; letter similarity doesn't
+	// reach the keyword threshold ("till"/"until" scores 0.48).
+	"till": {{"until", 0.9}},
+	"til":  {{"until", 0.9}},
 }
 
 type confusion struct {

@@ -24,7 +24,7 @@
         "LaGuardia": "KLGA"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "ApproachFixes": {
         "I22": {
@@ -33,13 +33,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -54,7 +51,7 @@
         "Yoman": "YOMAN"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "ApproachFixes": {
         "I22": {
@@ -63,13 +60,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -84,7 +78,7 @@
         "Yoman": "YOMAN"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "ApproachFixes": {
         "I22": {
@@ -93,13 +87,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -113,7 +104,7 @@
         "LaGuardia": "KLGA"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "ApproachFixes": {
         "I22": {
@@ -122,13 +113,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3639,
       "State": "on approach",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -142,7 +130,7 @@
         "LaGuardia": "KLGA"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "ApproachFixes": {
         "I22": {
@@ -151,13 +139,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3825,
       "State": "on approach",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -172,7 +157,7 @@
         "Yoman": "YOMAN"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "ApproachFixes": {
         "I22": {
@@ -181,13 +166,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"

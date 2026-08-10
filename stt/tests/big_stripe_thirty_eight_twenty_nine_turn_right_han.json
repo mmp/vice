@@ -32,10 +32,10 @@
         "Zerlo": "ZERLO"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -79,14 +79,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26",
-      "SID": "",
       "STAR": "BRUSR1",
       "Altitude": 2966,
       "State": "cleared approach",
       "ControllerFrequency": "1A",
-      "TrackingController": "1A",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1A"
     },
     "Alaska seven 21": {
       "Callsign": "ASA721",
@@ -105,10 +102,10 @@
         "Zerlo": "ZERLO"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -152,14 +149,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26",
-      "SID": "",
       "STAR": "BRUSR1",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1A",
-      "TrackingController": "1A",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1A"
     },
     "Bigstripe 38 29": {
       "Callsign": "JSX3829",
@@ -172,8 +166,8 @@
         "Yolow": "YOLOW"
       },
       "CandidateApproaches": {
-        "V O R runway two one": "VORA21",
-        "r-nav runway two one": "RD21"
+        "RNAV Runway 21": "RD21",
+        "VOR Runway 21": "VORA21"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two one": "21",
@@ -214,15 +208,11 @@
           "Phoenix": "PXR"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "DSERT2",
       "Altitude": 12000,
       "State": "arrival",
       "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1B"
     },
     "Delta 25 52": {
       "Callsign": "DAL2552",
@@ -240,10 +230,10 @@
         "Zerlo": "ZERLO"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -287,14 +277,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 4000,
       "State": "cleared approach",
       "ControllerFrequency": "1A",
-      "TrackingController": "1A",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1A"
     },
     "Envoy 91 19": {
       "Callsign": "ENY9119",
@@ -317,10 +304,10 @@
         "Zilub": "ZILUB"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -364,14 +351,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26",
-      "SID": "",
       "STAR": "BRUSR1",
       "Altitude": 14861,
       "State": "arrival",
       "ControllerFrequency": "1A",
-      "TrackingController": "1A",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1A"
     },
     "Pac Coast six 47": {
       "Callsign": "PXT647",
@@ -386,8 +370,8 @@
         "Wilup": "WILUP"
       },
       "CandidateApproaches": {
-        "V O R runway two one": "VORA21",
-        "r-nav runway two one": "RD21"
+        "RNAV Runway 21": "RD21",
+        "VOR Runway 21": "VORA21"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two one": "21",
@@ -429,14 +413,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 21",
-      "SID": "",
       "STAR": "DSERT2",
       "Altitude": 2873,
       "State": "cleared approach",
       "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1B"
     },
     "United 95": {
       "Callsign": "UAL95",
@@ -453,10 +434,10 @@
         "Zerlo": "ZERLO"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -500,14 +481,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 1854,
       "State": "cleared approach",
       "ControllerFrequency": "1A",
-      "TrackingController": "1A",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1A"
     },
     "United niner 35": {
       "Callsign": "UAL935",
@@ -526,10 +504,10 @@
         "Zerlo": "ZERLO"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -573,14 +551,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1A",
-      "TrackingController": "1A",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1A"
     },
     "United three 28": {
       "Callsign": "UAL328",
@@ -601,10 +576,10 @@
         "Zerlo": "ZERLO"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -648,14 +623,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 13840,
       "State": "arrival",
       "ControllerFrequency": "1A",
-      "TrackingController": "1A",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1A"
     },
     "evo turbo one juliet lima": {
       "Callsign": "N141JL/T",
@@ -667,18 +639,12 @@
         "Scottsdale": "KSDL",
         "Snoble": "SNOBL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "SNOBL",
-      "STAR": "",
       "Altitude": 2924,
       "State": "departure",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "lancair evo T one juliet lima": {
       "Callsign": "N141JL/T",
@@ -690,18 +656,12 @@
         "Scottsdale": "KSDL",
         "Snoble": "SNOBL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "SNOBL",
-      "STAR": "",
       "Altitude": 2924,
       "State": "departure",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november one four one juliet lima": {
       "Callsign": "N141JL",
@@ -713,18 +673,11 @@
         "Scottsdale": "KSDL",
         "Snoble": "SNOBL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "SNOBL",
-      "STAR": "",
       "Altitude": 2924,
       "State": "departure",
       "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1B"
     }
   },
   "logs": [

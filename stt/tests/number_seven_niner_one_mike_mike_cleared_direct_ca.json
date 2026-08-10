@@ -27,10 +27,9 @@
         "Surley": "SURLE"
       },
       "CandidateApproaches": {
-        "I L S runway three three": "I33",
-        "I L S runway two four": "I24"
+        "ILS Runway 24": "I24",
+        "ILS Runway 33": "I33"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I24": {
           "Kibbe": "KIBBE",
@@ -43,13 +42,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 24",
-      "SID": "",
       "STAR": "DPK3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -63,18 +60,11 @@
       "Fixes": {
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BDL6",
-      "STAR": "",
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1B"
     },
     "Grumman Cheetah one mike mike": {
       "Callsign": "N791MM/T",
@@ -82,18 +72,12 @@
       "Fixes": {
         "Calverton": "CCC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "CSTL9",
-      "STAR": "",
       "Altitude": 2187,
       "State": "departure",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Grumman Cheetah six x-ray kebeck": {
       "Callsign": "N126XQ/T",
@@ -102,18 +86,11 @@
         "Belt": "BELTT",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1835,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Grumman Tiger one mike mike": {
       "Callsign": "N791MM/T",
@@ -121,18 +98,12 @@
       "Fixes": {
         "Calverton": "CCC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "CSTL9",
-      "STAR": "",
       "Altitude": 2187,
       "State": "departure",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Grumman Tiger six x-ray kebeck": {
       "Callsign": "N126XQ/T",
@@ -141,18 +112,11 @@
         "Belt": "BELTT",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1835,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Southwest two 82": {
       "Callsign": "SWA282",
@@ -164,10 +128,9 @@
         "Surley": "SURLE"
       },
       "CandidateApproaches": {
-        "I L S runway three three": "I33",
-        "I L S runway two four": "I24"
+        "ILS Runway 24": "I24",
+        "ILS Runway 33": "I33"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I24": {
           "Kibbe": "KIBBE",
@@ -180,13 +143,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 24",
-      "SID": "",
       "STAR": "DPK3",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -205,10 +166,9 @@
         "bris": "BRISS"
       },
       "CandidateApproaches": {
-        "I L S runway three three": "I33",
-        "I L S runway two four": "I24"
+        "ILS Runway 24": "I24",
+        "ILS Runway 33": "I33"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I24": {
           "Kibbe": "KIBBE",
@@ -221,13 +181,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 24",
-      "SID": "",
       "STAR": "DPK3",
       "Altitude": 7695,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33",
@@ -241,18 +199,11 @@
       "Fixes": {
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1945,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna one seventy-two three zulu brahvo": {
       "Callsign": "N493ZB/T",
@@ -263,18 +214,11 @@
         "MacArthur": "KISP",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3000,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna skylane niner x-ray foxtrot": {
       "Callsign": "N139XF/T",
@@ -282,18 +226,11 @@
       "Fixes": {
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1945,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation X three six whiskey": {
       "Callsign": "N9036W/T",
@@ -304,18 +241,11 @@
         "MacArthur": "KISP",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation ten three six whiskey": {
       "Callsign": "N9036W/T",
@@ -326,18 +256,11 @@
         "MacArthur": "KISP",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation three six whiskey": {
       "Callsign": "N9036W/T",
@@ -348,18 +271,11 @@
         "MacArthur": "KISP",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november four niner three zulu brahvo": {
       "Callsign": "N493ZB",
@@ -370,18 +286,10 @@
         "MacArthur": "KISP",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3000,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "november niner zero three six whiskey": {
       "Callsign": "N9036W",
@@ -392,18 +300,10 @@
         "MacArthur": "KISP",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10000,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "november one three niner x-ray foxtrot": {
       "Callsign": "N139XF",
@@ -411,18 +311,10 @@
       "Fixes": {
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1945,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "november one two six x-ray kebeck": {
       "Callsign": "N126XQ",
@@ -431,18 +323,10 @@
         "Belt": "BELTT",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1835,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "november seven niner one mike mike": {
       "Callsign": "N791MM",
@@ -450,18 +334,11 @@
       "Fixes": {
         "Calverton": "CCC"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "CSTL9",
-      "STAR": "",
       "Altitude": 2187,
       "State": "departure",
       "ControllerFrequency": "1H",
-      "TrackingController": "1H",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1H"
     },
     "skyhawk three zulu brahvo": {
       "Callsign": "N493ZB/T",
@@ -472,18 +349,11 @@
         "MacArthur": "KISP",
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3000,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "skylane niner x-ray foxtrot": {
       "Callsign": "N139XF/T",
@@ -491,18 +361,11 @@
       "Fixes": {
         "Madison": "MAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 1945,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

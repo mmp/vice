@@ -36,9 +36,9 @@
         "Welev": "WELEV"
       },
       "CandidateApproaches": {
-        "I L S runway two eight center": "I8C",
-        "I L S runway two seven center": "I7C",
-        "I L S runway two seven right": "I7R"
+        "ILS Runway 27C": "I7C",
+        "ILS Runway 27R": "I7R",
+        "ILS Runway 28C": "I8C"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two eight center": "28C",
@@ -84,13 +84,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
       "STAR": "FYTTE7",
       "Altitude": 7387,
       "State": "arrival",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -119,9 +117,9 @@
         "Welev": "WELEV"
       },
       "CandidateApproaches": {
-        "I L S runway two eight center": "I8C",
-        "I L S runway two seven center": "I7C",
-        "I L S runway two seven right": "I7R"
+        "ILS Runway 27C": "I7C",
+        "ILS Runway 27R": "I7R",
+        "ILS Runway 28C": "I8C"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two eight center": "28C",
@@ -167,13 +165,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
       "STAR": "BENKY6",
       "Altitude": 9000,
       "State": "arrival",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -205,9 +201,9 @@
         "Vulcan": "VULCN"
       },
       "CandidateApproaches": {
-        "I L S runway two eight center": "I8C",
-        "I L S runway two seven center": "I7C",
-        "I L S runway two seven right": "I7R"
+        "ILS Runway 27C": "I7C",
+        "ILS Runway 27R": "I7R",
+        "ILS Runway 28C": "I8C"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two eight center": "28C",
@@ -253,13 +249,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 27C",
-      "SID": "",
       "STAR": "WYNDE2",
       "Altitude": 9000,
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -292,9 +286,9 @@
         "Welev": "WELEV"
       },
       "CandidateApproaches": {
-        "I L S runway two eight center": "I8C",
-        "I L S runway two seven center": "I7C",
-        "I L S runway two seven right": "I7R"
+        "ILS Runway 27C": "I7C",
+        "ILS Runway 27R": "I7R",
+        "ILS Runway 28C": "I8C"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two eight center": "28C",
@@ -340,13 +334,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
       "STAR": "FYTTE7",
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",

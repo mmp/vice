@@ -38,10 +38,10 @@
         "lantern": "LNTRN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven": "27",
@@ -84,8 +84,6 @@
         }
       },
       "AssignedApproach": "RNAV Z Runway 27",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "COMIX2",
       "Route": [
         "LNTRN",
@@ -97,9 +95,7 @@
       "Altitude": 10644,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "American 53 70": {
       "Callsign": "AAL5370",
@@ -115,13 +111,7 @@
         "Zoo": "ZZOOO",
         "grider": "GRIDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "ZZOOO4",
-      "STAR": "",
       "Route": [
         "ZZOOO",
         "ANRMN",
@@ -138,9 +128,7 @@
       "Altitude": 9692,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     },
     "Southwest 29 44": {
       "Callsign": "SWA2944",
@@ -154,13 +142,7 @@
         "San Diego": "KSAN",
         "Winfield": "WNFLD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "PADRZ2",
-      "STAR": "",
       "Route": [
         "WNFLD",
         "KERNL",
@@ -177,9 +159,7 @@
       "Altitude": 1382,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     },
     "Southwest 65 30": {
       "Callsign": "SWA6530",
@@ -193,13 +173,7 @@
         "Sky Harbor": "KPHX",
         "grider": "GRIDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "ZZOOO4",
-      "STAR": "",
       "Route": [
         "JORRJ",
         "GRIDR",
@@ -214,75 +188,37 @@
       "Altitude": 12899,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     },
     "november four six one uniform hotel": {
       "Callsign": "N461UH",
-      "AircraftType": "",
       "Fixes": {
         "McClellan-Palomar": "KCRQ",
         "Riverside Municipal": "KRAL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 8401,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     },
     "november niner five one four kebeck": {
       "Callsign": "N9514Q",
-      "AircraftType": "",
       "Fixes": {
         "Hemet Ryan": "KHMT",
         "McClellan-Palomar": "KCRQ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 6002,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     },
     "november six four five alpha charlie": {
       "Callsign": "N645AC",
-      "AircraftType": "",
       "Fixes": {
         "Catalina": "KAVX",
         "McClellan-Palomar": "KCRQ"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 5763,
       "State": "vfr flight following",
-      "ControllerFrequency": "5W",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5W"
     }
   },
   "logs": [

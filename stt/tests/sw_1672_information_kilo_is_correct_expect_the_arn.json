@@ -35,10 +35,10 @@
         "Vida": "VYDDA"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "ApproachFixes": {
         "L27": {
@@ -76,14 +76,11 @@
         }
       },
       "AssignedApproach": "RNAV Z Runway 27",
-      "SID": "",
       "STAR": "COMIX2",
       "Altitude": 7119,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "SkyWest 86 37": {
       "Callsign": "SKW8637",
@@ -94,10 +91,10 @@
         "San Diego": "KSAN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "ApproachFixes": {
         "L27": {
@@ -134,15 +131,11 @@
           "reebo": "REEBO"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "LAXX1",
       "Altitude": 13000,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     },
     "Southwest 16 72": {
       "Callsign": "SWA1672",
@@ -157,10 +150,10 @@
         "lantern": "LNTRN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "ApproachFixes": {
         "L27": {
@@ -197,15 +190,11 @@
           "reebo": "REEBO"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "COMIX2",
       "Altitude": 15419,
       "State": "arrival",
       "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5N"
     }
   },
   "logs": [

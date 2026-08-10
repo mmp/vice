@@ -32,14 +32,14 @@
         "Zemos": "ZEMOS"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
-        "visual runway two six": "26",
         "visual approach runway two six": "26",
+        "visual runway two six": "26",
         "visual two six": "26"
       },
       "ApproachFixes": {
@@ -76,14 +76,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 26",
-      "SID": "",
       "STAR": "BRUSR1",
       "Altitude": 7016,
       "State": "arrival",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     },
     "Southwest two 47": {
       "Callsign": "SWA247",
@@ -100,14 +97,14 @@
         "Zemos": "ZEMOS"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
-        "visual runway two six": "26",
         "visual approach runway two six": "26",
+        "visual runway two six": "26",
         "visual two six": "26"
       },
       "ApproachFixes": {
@@ -144,14 +141,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 26",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 6239,
       "State": "arrival",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     }
   },
   "logs": [

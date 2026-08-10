@@ -29,17 +29,11 @@
         "Zoo": "ZZOOO",
         "grider": "GRIDR"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "ZZOOO4",
-      "STAR": "",
       "Altitude": 3946,
       "State": "departure",
       "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5W"
     },
     "United eight 73": {
       "Callsign": "UAL873",
@@ -52,10 +46,10 @@
         "San Diego": "KSAN"
       },
       "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
+        "Localizer Runway 27": "L27",
+        "RNAV Y Runway 27": "RY7",
+        "RNAV Z Runway 27": "RZ7",
+        "Visual Runway 27": "V27"
       },
       "ApproachFixes": {
         "L27": {
@@ -91,15 +85,10 @@
           "reebo": "REEBO"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10680,
       "State": "arrival",
       "ControllerFrequency": "5E",
-      "TrackingController": "5E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5E"
     },
     "citation mustang niner zero alpha": {
       "Callsign": "N4290A",
@@ -117,10 +106,10 @@
         "recco": "RECCO"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I4",
-        "r-nav x-ray runway two four": "RX4",
-        "r-nav yankee runway two four": "RY4",
-        "r-nav zulu runway two four": "RZ4"
+        "ILS Runway 24": "I4",
+        "RNAV X Runway 24": "RX4",
+        "RNAV Y Runway 24": "RY4",
+        "RNAV Z Runway 24": "RZ4"
       },
       "ApproachFixes": {
         "I4": {
@@ -175,15 +164,12 @@
           "wagav": "WAGAV"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "mustang niner zero alpha": {
       "Callsign": "N4290A",
@@ -201,10 +187,10 @@
         "recco": "RECCO"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I4",
-        "r-nav x-ray runway two four": "RX4",
-        "r-nav yankee runway two four": "RY4",
-        "r-nav zulu runway two four": "RZ4"
+        "ILS Runway 24": "I4",
+        "RNAV X Runway 24": "RX4",
+        "RNAV Y Runway 24": "RY4",
+        "RNAV Z Runway 24": "RZ4"
       },
       "ApproachFixes": {
         "I4": {
@@ -259,15 +245,12 @@
           "wagav": "WAGAV"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november four two niner zero alpha": {
       "Callsign": "N4290A",
@@ -285,10 +268,10 @@
         "recco": "RECCO"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I4",
-        "r-nav x-ray runway two four": "RX4",
-        "r-nav yankee runway two four": "RY4",
-        "r-nav zulu runway two four": "RZ4"
+        "ILS Runway 24": "I4",
+        "RNAV X Runway 24": "RX4",
+        "RNAV Y Runway 24": "RY4",
+        "RNAV Z Runway 24": "RZ4"
       },
       "ApproachFixes": {
         "I4": {
@@ -343,15 +326,11 @@
           "wagav": "WAGAV"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOREN KARRO JLI",
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "5D",
-      "TrackingController": "5D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5D"
     }
   },
   "logs": [

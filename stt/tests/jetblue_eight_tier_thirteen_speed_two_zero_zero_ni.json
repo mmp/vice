@@ -28,12 +28,12 @@
         "Winnie": "WINNI"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "Visual Approach runway four left": "VA4L",
-        "Visual Approach runway four right": "VA4R",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
+        "ILS Runway 15R, then visual approach left traffic to Runway 4L": "I5RC",
+        "ILS Runway 4R": "I4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 4R": "R4R",
+        "Visual Approach Runway 4L": "VA4L",
+        "Visual Approach Runway 4R": "VA4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -75,13 +75,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "OOSHN5",
       "Altitude": 9106,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -103,22 +101,12 @@
     },
     "Delta one 43": {
       "Callsign": "DAL143",
-      "AircraftType": "",
       "Fixes": {
         "Alfomso Mengo": "CAM",
         "Paige": "PAYGE"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5000,
-      "State": "",
-      "ControllerFrequency": "1D",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "1D"
     },
     "ExecJet 27 58": {
       "Callsign": "EJA2758",
@@ -126,17 +114,11 @@
       "Fixes": {
         "Hyland": "HYLND"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HYLND7",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Flexjet 51": {
       "Callsign": "LXJ51",
@@ -149,17 +131,11 @@
         "Gullet": "GLLET",
         "Wyometh": "WYMTH"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BLZZR6",
-      "STAR": "",
       "Altitude": 1253,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "JetBlue 44 86": {
       "Callsign": "JBU4486",
@@ -179,12 +155,12 @@
         "Wintah": "WINTA"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "Visual Approach runway four left": "VA4L",
-        "Visual Approach runway four right": "VA4R",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
+        "ILS Runway 15R, then visual approach left traffic to Runway 4L": "I5RC",
+        "ILS Runway 4R": "I4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 4R": "R4R",
+        "Visual Approach Runway 4L": "VA4L",
+        "Visual Approach Runway 4R": "VA4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -226,13 +202,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "JFUND2",
       "Altitude": 13115,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -268,12 +242,12 @@
         "Winnie": "WINNI"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "Visual Approach runway four left": "VA4L",
-        "Visual Approach runway four right": "VA4R",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
+        "ILS Runway 15R, then visual approach left traffic to Runway 4L": "I5RC",
+        "ILS Runway 4R": "I4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 4R": "R4R",
+        "Visual Approach Runway 4L": "VA4L",
+        "Visual Approach Runway 4R": "VA4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -315,13 +289,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "JFUND2",
       "Altitude": 8393,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -373,22 +345,22 @@
     "[local-stt]   pattern \"airline_flight\" matched: \"JBU813\" (conf=0.96, consumed=2, addressingForm=0, spokenKey=\"JetBlue eight 13\")",
     "[local-stt] callsign match: Callsign=\"JBU813\" SpokenKey=\"JetBlue eight 13\" Conf=0.96 Consumed=2",
     "[local-stt] aircraft context: State=\"arrival\" Altitude=8393 Fixes=10 Approaches=6 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L 9 27 14 32 15L 33R 15R 33L]",
-    "[local-stt]   fix: \"Grifi\" -> \"GRIFI\"",
-    "[local-stt]   fix: \"Jobee\" -> \"JOBEE\"",
-    "[local-stt]   fix: \"Boston\" -> \"KBOS\"",
-    "[local-stt]   fix: \"Nabbo\" -> \"NABBO\"",
-    "[local-stt]   fix: \"Harris\" -> \"HRRIS\"",
-    "[local-stt]   fix: \"Space-eyed\" -> \"SPYSD\"",
-    "[local-stt]   fix: \"Gabe\" -> \"GGABE\"",
-    "[local-stt]   fix: \"Goshi\" -> \"GOSHI\"",
-    "[local-stt]   fix: \"Winnie\" -> \"WINNI\"",
-    "[local-stt]   fix: \"Milt\" -> \"MILTT\"",
-    "[local-stt]   approach: \"Visual Approach runway four right\" -> \"VA4R\"",
-    "[local-stt]   approach: \"r-nav runway four left\" -> \"R4L\"",
-    "[local-stt]   approach: \"I L S runway one five right then visual approach left traffic to runway four left\" -> \"I5RC\"",
-    "[local-stt]   approach: \"Visual Approach runway four left\" -> \"VA4L\"",
-    "[local-stt]   approach: \"I L S runway four right\" -> \"I4R\"",
-    "[local-stt]   approach: \"r-nav runway four right\" -> \"R4R\"",
+    "[local-stt]   fix: \"Grifi\" -\u003e \"GRIFI\"",
+    "[local-stt]   fix: \"Jobee\" -\u003e \"JOBEE\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Nabbo\" -\u003e \"NABBO\"",
+    "[local-stt]   fix: \"Harris\" -\u003e \"HRRIS\"",
+    "[local-stt]   fix: \"Space-eyed\" -\u003e \"SPYSD\"",
+    "[local-stt]   fix: \"Gabe\" -\u003e \"GGABE\"",
+    "[local-stt]   fix: \"Goshi\" -\u003e \"GOSHI\"",
+    "[local-stt]   fix: \"Winnie\" -\u003e \"WINNI\"",
+    "[local-stt]   fix: \"Milt\" -\u003e \"MILTT\"",
+    "[local-stt]   approach: \"Visual Approach runway four right\" -\u003e \"VA4R\"",
+    "[local-stt]   approach: \"r-nav runway four left\" -\u003e \"R4L\"",
+    "[local-stt]   approach: \"I L S runway one five right then visual approach left traffic to runway four left\" -\u003e \"I5RC\"",
+    "[local-stt]   approach: \"Visual Approach runway four left\" -\u003e \"VA4L\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt]   approach: \"r-nav runway four right\" -\u003e \"R4R\"",
     "[local-stt] command tokens after disregard: 4",
     "[local-stt]   token[0]: Text=\"tier\" Type=0 Value=-1",
     "[local-stt]   token[1]: Text=\"13\" Type=1 Value=13",

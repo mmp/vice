@@ -31,9 +31,9 @@
         "Zelow": "ZELOW"
       },
       "CandidateApproaches": {
-        "I L S runway two eight": "I28",
-        "I L S runway two seven left": "I7L",
-        "I L S runway two six right": "I6R"
+        "ILS Runway 26R": "I6R",
+        "ILS Runway 27L": "I7L",
+        "ILS Runway 28": "I28"
       },
       "ApproachFixes": {
         "I28": {
@@ -56,14 +56,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26R",
-      "SID": "",
       "STAR": "GLAVN1",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1O",
-      "TrackingController": "1O",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1O"
     },
     "Frontier Flight 44 46": {
       "Callsign": "FFT4446",
@@ -77,9 +74,9 @@
         "Zelow": "ZELOW"
       },
       "CandidateApproaches": {
-        "I L S runway two eight": "I28",
-        "I L S runway two seven left": "I7L",
-        "I L S runway two six right": "I6R"
+        "ILS Runway 26R": "I6R",
+        "ILS Runway 27L": "I7L",
+        "ILS Runway 28": "I28"
       },
       "ApproachFixes": {
         "I28": {
@@ -102,14 +99,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26R",
-      "SID": "",
       "STAR": "ONDRE1",
       "Altitude": 4566,
       "State": "arrival",
       "ControllerFrequency": "1O",
-      "TrackingController": "1O",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1O"
     }
   },
   "logs": [

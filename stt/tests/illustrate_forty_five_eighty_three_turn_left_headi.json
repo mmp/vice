@@ -32,9 +32,9 @@
         "Trape": "TRAPE"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S runway niner right": "I9R",
-        "I L S runway one zero": "I10"
+        "ILS Runway 10": "I10",
+        "ILS Runway 8L": "I8L",
+        "ILS Runway 9R": "I9R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -68,14 +68,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8L",
-      "SID": "",
       "STAR": "OZZZI1",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1O",
-      "TrackingController": "1O",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1O"
     },
     "Delta 28": {
       "Callsign": "DAL28",
@@ -93,9 +90,9 @@
         "Trape": "TRAPE"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S runway niner right": "I9R",
-        "I L S runway one zero": "I10"
+        "ILS Runway 10": "I10",
+        "ILS Runway 8L": "I8L",
+        "ILS Runway 9R": "I9R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -129,14 +126,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8L",
-      "SID": "",
       "STAR": "OZZZI1",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1O",
-      "TrackingController": "1O",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1O"
     },
     "Frontier Flight 50 22": {
       "Callsign": "FFT5022",
@@ -151,9 +145,9 @@
         "Schel": "SCHEL"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S runway niner right": "I9R",
-        "I L S runway one zero": "I10"
+        "ILS Runway 10": "I10",
+        "ILS Runway 8L": "I8L",
+        "ILS Runway 9R": "I9R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -187,14 +181,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8L",
-      "SID": "",
       "STAR": "OZZZI1",
       "Altitude": 4000,
       "State": "cleared approach",
       "ControllerFrequency": "1O",
-      "TrackingController": "1O",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1O"
     },
     "KLM 48 99 heavy": {
       "Callsign": "KLM4899",
@@ -212,9 +203,9 @@
         "Trape": "TRAPE"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S runway niner right": "I9R",
-        "I L S runway one zero": "I10"
+        "ILS Runway 10": "I10",
+        "ILS Runway 8L": "I8L",
+        "ILS Runway 9R": "I9R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight left": "8L",
@@ -248,14 +239,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8L",
-      "SID": "",
       "STAR": "OZZZI1",
       "Altitude": 5456,
       "State": "arrival",
       "ControllerFrequency": "1O",
-      "TrackingController": "1O",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1O"
     }
   },
   "logs": [

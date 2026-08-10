@@ -69,31 +69,34 @@ func MatchCallsignCandidates(tokens []Token, aircraft map[string]Aircraft) []Cal
 	return callsignCandidates(tokens, aircraft)
 }
 
-// Aircraft holds context for a single aircraft for STT processing.
+// Aircraft holds context for a single aircraft for STT processing. Zero
+// means "unknown"/"none" throughout, so the JSON tags omit empty values:
+// this struct is logged verbatim with every transmission and stored in the
+// test corpus, where zeroes are pure noise.
 type Aircraft struct {
 	Callsign                  string
-	AircraftType              string                       // Aircraft type code (e.g., "C172", "BE36")
-	Fixes                     map[string]string            // spoken name -> fix ID
-	CandidateApproaches       map[string]string            // spoken name -> approach ID
-	CandidateVisualApproaches map[string]string            // spoken name -> runway ID for active plain visual approaches
-	ApproachFixes             map[string]map[string]string // approach ID -> (spoken name -> fix ID)
-	AssignedApproach          string
-	ExpectedDirectFix         string // Fix the controller said to "expect direct" (if any)
-	SID                       string
-	STAR                      string
-	Route                     []string                   // Ordered route waypoint fix names (full route, no truncation)
-	Altitude                  int                        // Current altitude in feet
-	Heading                   int                        // Current magnetic heading in degrees (0 if unknown)
-	Speed                     int                        // Current groundspeed in knots (0 if unknown)
-	AssignedAltitude          int                        // Controller-assigned altitude in feet (0 if none)
-	AssignedHeading           int                        // Controller-assigned heading in degrees (0 if none)
-	AssignedSpeed             int                        // Controller-assigned speed in knots (0 if none, or if assigned in mach)
-	AssignedMach              int                        // Controller-assigned mach in hundredths, e.g. 78 for M0.78 (0 if none, or if assigned in knots)
-	State                     string                     // "departure", "arrival", "cleared approach", "overflight", "vfr flight following"
-	ControllerFrequency       string                     // Current controller position the aircraft is tuned to
-	TrackingController        string                     // Controller tracking this aircraft (from flight plan)
-	AddressingForm            sim.CallsignAddressingForm // How this aircraft was addressed (based on which key matched)
-	LAHSORunways              []string                   // Runways that intersect the approach runway (for LAHSO matching)
+	AircraftType              string                       `json:",omitempty"` // Aircraft type code (e.g., "C172", "BE36")
+	Fixes                     map[string]string            `json:",omitempty"` // spoken name -> fix ID
+	CandidateApproaches       map[string]string            `json:",omitempty"` // canonical name ("RNAV Z Runway 28R") -> approach ID
+	CandidateVisualApproaches map[string]string            `json:",omitempty"` // spoken name -> runway ID for active plain visual approaches
+	ApproachFixes             map[string]map[string]string `json:",omitempty"` // approach ID -> (spoken name -> fix ID)
+	AssignedApproach          string                       `json:",omitempty"`
+	ExpectedDirectFix         string                       `json:",omitempty"` // Fix the controller said to "expect direct" (if any)
+	SID                       string                       `json:",omitempty"`
+	STAR                      string                       `json:",omitempty"`
+	Route                     []string                     `json:",omitempty"` // Ordered route waypoint fix names (full route, no truncation)
+	Altitude                  int                          `json:",omitempty"` // Current altitude in feet
+	Heading                   int                          `json:",omitempty"` // Current magnetic heading in degrees (0 if unknown)
+	Speed                     int                          `json:",omitempty"` // Current groundspeed in knots (0 if unknown)
+	AssignedAltitude          int                          `json:",omitempty"` // Controller-assigned altitude in feet (0 if none)
+	AssignedHeading           int                          `json:",omitempty"` // Controller-assigned heading in degrees (0 if none)
+	AssignedSpeed             int                          `json:",omitempty"` // Controller-assigned speed in knots (0 if none, or if assigned in mach)
+	AssignedMach              int                          `json:",omitempty"` // Controller-assigned mach in hundredths, e.g. 78 for M0.78 (0 if none, or if assigned in knots)
+	State                     string                       `json:",omitempty"` // "departure", "arrival", "cleared approach", "overflight", "vfr flight following"
+	ControllerFrequency       string                       `json:",omitempty"` // Current controller position the aircraft is tuned to
+	TrackingController        string                       `json:",omitempty"` // Controller tracking this aircraft (from flight plan)
+	AddressingForm            sim.CallsignAddressingForm   `json:",omitempty"` // How this aircraft was addressed (based on which key matched)
+	LAHSORunways              []string                     `json:",omitempty"` // Runways that intersect the approach runway (for LAHSO matching)
 }
 
 // findWeightClassTokenIndex checks the early tokens (callsign region) for "heavy" or "super".

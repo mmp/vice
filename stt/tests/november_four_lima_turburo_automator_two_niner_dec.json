@@ -26,20 +26,11 @@
         "J F K": "KJFK",
         "Kennedy": "KJFK"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "SKORR6.YNKEE",
-      "STAR": "",
-      "Route": null,
       "Altitude": 8973,
       "State": "departure",
       "ControllerFrequency": "2J",
-      "TrackingController": "B17",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "B17"
     },
     "Delta 97 heavy": {
       "Callsign": "DAL97",
@@ -54,11 +45,11 @@
         "Zulab": "ZULAB"
       },
       "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "V O R runway three one Left": "V1L",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
+        "ILS Runway 31L": "I1L",
+        "ILS Runway 31R": "I1R",
+        "RNAV Runway 31L": "R1L",
+        "RNAV Runway 31R": "R1R",
+        "VOR Runway 31 Left": "V1L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three one left": "31L",
@@ -100,15 +91,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 31R",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "2K",
       "TrackingController": "2K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -127,20 +113,11 @@
         "Norfolk": "KORF",
         "White": "WHITE"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "LGA7",
-      "STAR": "",
-      "Route": null,
       "Altitude": 5917,
       "State": "departure",
       "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2J"
     },
     "JetBlue 93 94": {
       "Callsign": "JBU9394",
@@ -153,11 +130,11 @@
         "Zachs": "ZACHS"
       },
       "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "V O R runway three one Left": "V1L",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
+        "ILS Runway 31L": "I1L",
+        "ILS Runway 31R": "I1R",
+        "RNAV Runway 31L": "R1L",
+        "RNAV Runway 31R": "R1R",
+        "VOR Runway 31 Left": "V1L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three one left": "31L",
@@ -199,15 +176,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 31L",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 5965,
       "State": "cleared approach",
       "ControllerFrequency": "2G",
       "TrackingController": "2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -229,43 +201,23 @@
         "Robbinsville": "RBV",
         "Score": "SKORR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "SKORR6.RNGRR",
-      "STAR": "",
-      "Route": null,
       "Altitude": 1845,
       "State": "departure",
       "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2J"
     },
     "november four lima": {
       "Callsign": "N4L",
-      "AircraftType": "",
       "Fixes": {
         "Danbury": "KDXR",
         "Farmingdale": "KFRG",
         "Republic": "KFRG"
       },
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": {},
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 2611,
       "State": "arrival",
       "ControllerFrequency": "2G",
-      "TrackingController": "2G",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "2G"
     }
   },
   "logs": [

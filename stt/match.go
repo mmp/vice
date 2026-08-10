@@ -388,17 +388,17 @@ func (m *slotMatcher) extend(tokens []Token, ac Aircraft, skipWords []string, al
 		return nil, sayAgain
 	}
 
-	value, consumed, sayAgain := m.parser.parse(tokens, pos, ac)
+	value, consumed, score, sayAgain := parseSlot(m.parser, tokens, pos, ac)
 	if consumed > 0 {
 		ext := pm
 		ext.values = append(slices.Clone(pm.values), value)
 		ext.pos = pos + consumed
-		// Slot values currently score 1.0; slot parsers will supply their
-		// own scores once they produce ranked candidates. Exception: the
-		// {garbled_word} and {facility_word} slots consume tokens as
-		// noise, so they earn only the noise baseline — a template
-		// absorbing garbage must not outrank an interpretation that
-		// explains the same tokens.
+		// Slots score 1.0 unless the parser reports its match quality (see
+		// confidenceParser). Exception: the {garbled_word} and
+		// {facility_word} slots consume tokens as noise, so they earn only
+		// the noise baseline — a template absorbing garbage must not
+		// outrank an interpretation that explains the same tokens.
+		ext.logScore += math.Log(score)
 		switch m.parser.(type) {
 		case *garbledWordParser, *facilityWordParser:
 			ext.logScore += float64(consumed) * math.Log(scoreTokenBaseline)
@@ -453,14 +453,14 @@ func (m *slotMatcher) extend(tokens []Token, ac Aircraft, skipWords []string, al
 				break
 			}
 
-			value, consumed, _ = m.parser.parse(tokens, checkPos, ac)
+			value, consumed, score, _ = parseSlot(m.parser, tokens, checkPos, ac)
 			if consumed > 0 {
 				// As in matchRequiredWord, skipped noise earns the baseline.
 				skipped := countNonFiller(tokens[pos:checkPos])
 				ext := pm
 				ext.values = append(slices.Clone(pm.values), value)
 				ext.pos = checkPos + consumed
-				ext.logScore += float64(skipped) * math.Log(scoreTokenBaseline)
+				ext.logScore += math.Log(score) + float64(skipped)*math.Log(scoreTokenBaseline)
 				ext.nTok += consumed + skipped
 				return []partialMatch{ext}, ""
 			}

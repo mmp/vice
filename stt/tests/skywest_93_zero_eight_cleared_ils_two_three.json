@@ -32,10 +32,10 @@
         "Zerlo": "ZERLO"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -79,16 +79,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 26",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "EAGUL6",
-      "Route": null,
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     }
   },
   "logs": [

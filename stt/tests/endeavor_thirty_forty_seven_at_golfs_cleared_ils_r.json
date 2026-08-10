@@ -29,12 +29,12 @@
         "Will Rogers World": "KOKC"
       },
       "CandidateApproaches": {
-        "I L S runway one seven left": "I7L",
-        "I L S runway one seven right": "I7R",
-        "r-nav yankee runway one seven left": "Y7L",
-        "r-nav yankee runway one seven right": "Y7R",
-        "r-nav zulu runway one seven left": "Z7L",
-        "r-nav zulu runway one seven right": "Z7R"
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 17R": "I7R",
+        "RNAV Y Runway 17L": "Y7L",
+        "RNAV Y Runway 17R": "Y7R",
+        "RNAV Z Runway 17L": "Z7L",
+        "RNAV Z Runway 17R": "Z7R"
       },
       "ApproachFixes": {
         "I7L": {
@@ -99,13 +99,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17R",
-      "SID": "",
       "STAR": "CAMET3",
       "Altitude": 11419,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -118,17 +116,11 @@
         "Para": "PHARA",
         "funnel": "FUNNL"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "FUNNL3",
-      "STAR": "",
       "Altitude": 6530,
       "State": "departure",
       "ControllerFrequency": "1S",
-      "TrackingController": "C51",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C51"
     },
     "Endeavor 30 47": {
       "Callsign": "EDV3047",
@@ -139,12 +131,12 @@
         "golfs": "GOLFS"
       },
       "CandidateApproaches": {
-        "I L S runway one seven left": "I7L",
-        "I L S runway one seven right": "I7R",
-        "r-nav yankee runway one seven left": "Y7L",
-        "r-nav yankee runway one seven right": "Y7R",
-        "r-nav zulu runway one seven left": "Z7L",
-        "r-nav zulu runway one seven right": "Z7R"
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 17R": "I7R",
+        "RNAV Y Runway 17L": "Y7L",
+        "RNAV Y Runway 17R": "Y7R",
+        "RNAV Z Runway 17L": "Z7L",
+        "RNAV Z Runway 17R": "Z7R"
       },
       "ApproachFixes": {
         "I7L": {
@@ -209,13 +201,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17L",
-      "SID": "",
       "STAR": "MURAH3",
       "Altitude": 5879,
       "State": "cleared approach",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -232,12 +222,12 @@
         "golfs": "GOLFS"
       },
       "CandidateApproaches": {
-        "I L S runway one seven left": "I7L",
-        "I L S runway one seven right": "I7R",
-        "r-nav yankee runway one seven left": "Y7L",
-        "r-nav yankee runway one seven right": "Y7R",
-        "r-nav zulu runway one seven left": "Z7L",
-        "r-nav zulu runway one seven right": "Z7R"
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 17R": "I7R",
+        "RNAV Y Runway 17L": "Y7L",
+        "RNAV Y Runway 17R": "Y7R",
+        "RNAV Z Runway 17L": "Z7L",
+        "RNAV Z Runway 17R": "Z7R"
       },
       "ApproachFixes": {
         "I7L": {
@@ -302,13 +292,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17L",
-      "SID": "",
       "STAR": "MURAH3",
       "Altitude": 9995,
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -323,17 +311,11 @@
         "Zeewe": "ZEEWE",
         "squirrel": "SQRRL"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "STPHN3",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1S"
     },
     "United 12 zero zero": {
       "Callsign": "UAL1200",
@@ -347,12 +329,12 @@
         "Will Rogers World": "KOKC"
       },
       "CandidateApproaches": {
-        "I L S runway one seven left": "I7L",
-        "I L S runway one seven right": "I7R",
-        "r-nav yankee runway one seven left": "Y7L",
-        "r-nav yankee runway one seven right": "Y7R",
-        "r-nav zulu runway one seven left": "Z7L",
-        "r-nav zulu runway one seven right": "Z7R"
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 17R": "I7R",
+        "RNAV Y Runway 17L": "Y7L",
+        "RNAV Y Runway 17R": "Y7R",
+        "RNAV Z Runway 17L": "Z7L",
+        "RNAV Z Runway 17R": "Z7R"
       },
       "ApproachFixes": {
         "I7L": {
@@ -417,13 +399,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17R",
-      "SID": "",
       "STAR": "CAMET3",
       "Altitude": 4465,
       "State": "cleared approach",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -443,12 +423,12 @@
         "will": "WWILL"
       },
       "CandidateApproaches": {
-        "I L S runway one seven left": "I7L",
-        "I L S runway one seven right": "I7R",
-        "r-nav yankee runway one seven left": "Y7L",
-        "r-nav yankee runway one seven right": "Y7R",
-        "r-nav zulu runway one seven left": "Z7L",
-        "r-nav zulu runway one seven right": "Z7R"
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 17R": "I7R",
+        "RNAV Y Runway 17L": "Y7L",
+        "RNAV Y Runway 17R": "Y7R",
+        "RNAV Z Runway 17L": "Z7L",
+        "RNAV Z Runway 17R": "Z7R"
       },
       "ApproachFixes": {
         "I7L": {
@@ -513,13 +493,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17R",
-      "SID": "",
       "STAR": "GHOST3",
       "Altitude": 10637,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"

@@ -32,10 +32,10 @@
         "Wazzup": "WAZUP"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway seven right": "I7R",
-        "Visual runway eight": "V08",
-        "Visual runway seven right": "V7R"
+        "ILS Runway 7R": "I7R",
+        "ILS Runway 8": "I8",
+        "Visual Runway 7R": "V7R",
+        "Visual Runway 8": "V08"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -80,14 +80,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 8",
-      "SID": "",
       "STAR": "BRUSR1",
       "Altitude": 5088,
       "State": "arrival",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     },
     "Delta 28": {
       "Callsign": "DAL28",
@@ -104,10 +101,10 @@
         "Wazzup": "WAZUP"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway seven right": "I7R",
-        "Visual runway eight": "V08",
-        "Visual runway seven right": "V7R"
+        "ILS Runway 7R": "I7R",
+        "ILS Runway 8": "I8",
+        "Visual Runway 7R": "V7R",
+        "Visual Runway 8": "V08"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -152,14 +149,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 8",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 4264,
       "State": "arrival",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     },
     "Looft-hansa 15 kilo heavy": {
       "Callsign": "DLH15K",
@@ -175,10 +169,10 @@
         "Wazzup": "WAZUP"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway seven right": "I7R",
-        "Visual runway eight": "V08",
-        "Visual runway seven right": "V7R"
+        "ILS Runway 7R": "I7R",
+        "ILS Runway 8": "I8",
+        "Visual Runway 7R": "V7R",
+        "Visual Runway 8": "V08"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -223,14 +217,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 8",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     },
     "SkyWest 44 zero seven": {
       "Callsign": "SKW4407",
@@ -242,10 +233,10 @@
         "Wazzup": "WAZUP"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway seven right": "I7R",
-        "Visual runway eight": "V08",
-        "Visual runway seven right": "V7R"
+        "ILS Runway 7R": "I7R",
+        "ILS Runway 8": "I8",
+        "Visual Runway 7R": "V7R",
+        "Visual Runway 8": "V08"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -290,14 +281,11 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 8",
-      "SID": "",
       "STAR": "BRUSR1",
       "Altitude": 3000,
       "State": "cleared approach",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     },
     "Southwest 19 29": {
       "Callsign": "SWA1929",
@@ -316,10 +304,10 @@
         "Totie": "TOTIE"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway seven right": "I7R",
-        "Visual runway eight": "V08",
-        "Visual runway seven right": "V7R"
+        "ILS Runway 7R": "I7R",
+        "ILS Runway 8": "I8",
+        "Visual Runway 7R": "V7R",
+        "Visual Runway 8": "V08"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -364,14 +352,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 7R ",
-      "SID": "",
       "STAR": "PINNG1",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Southwest 70 35": {
       "Callsign": "SWA7035",
@@ -388,10 +373,10 @@
         "Totie": "TOTIE"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway seven right": "I7R",
-        "Visual runway eight": "V08",
-        "Visual runway seven right": "V7R"
+        "ILS Runway 7R": "I7R",
+        "ILS Runway 8": "I8",
+        "Visual Runway 7R": "V7R",
+        "Visual Runway 8": "V08"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -436,14 +421,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 7R ",
-      "SID": "",
       "STAR": "HYDRR1",
       "Altitude": 5452,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Speedbird three tango zulu heavy": {
       "Callsign": "BAW3TZ",
@@ -461,10 +443,10 @@
         "Wazzup": "WAZUP"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway seven right": "I7R",
-        "Visual runway eight": "V08",
-        "Visual runway seven right": "V7R"
+        "ILS Runway 7R": "I7R",
+        "ILS Runway 8": "I8",
+        "Visual Runway 7R": "V7R",
+        "Visual Runway 8": "V08"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -509,14 +491,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 8",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 8534,
       "State": "arrival",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     },
     "WestJet 58 44": {
       "Callsign": "WJA5844",
@@ -528,10 +507,10 @@
         "Wazzup": "WAZUP"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway seven right": "I7R",
-        "Visual runway eight": "V08",
-        "Visual runway seven right": "V7R"
+        "ILS Runway 7R": "I7R",
+        "ILS Runway 8": "I8",
+        "Visual Runway 7R": "V7R",
+        "Visual Runway 8": "V08"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -576,14 +555,11 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 8",
-      "SID": "",
       "STAR": "EAGUL6",
       "Altitude": 3000,
       "State": "cleared approach",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     }
   },
   "logs": [

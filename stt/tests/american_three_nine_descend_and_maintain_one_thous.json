@@ -33,9 +33,8 @@
         "Kwene": "KWENE"
       },
       "CandidateApproaches": {
-        "I L S runway six left": "I6L"
+        "ILS Runway 6L": "I6L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I6L": {
           "Betll": "BETLL",
@@ -50,13 +49,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 6L",
-      "SID": "",
       "STAR": "BRWNZ4",
       "Altitude": 2000,
       "State": "cleared approach",
       "ControllerFrequency": "2F",
       "TrackingController": "2F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28"

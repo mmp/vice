@@ -24,17 +24,16 @@
         "Daniel K Inouye": "PHNL"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -120,14 +119,11 @@
           "Zusly": "XUSLY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MAGGI3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -147,18 +143,11 @@
         "Sebyi": "SEBYI",
         "Secel": "SECEL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "OPIHI3",
-      "STAR": "",
       "Altitude": 9380,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "Fiji three 25": {
       "Callsign": "FJI325",
@@ -166,18 +155,11 @@
       "Fixes": {
         "Opihi": "OPIHI"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "OPIHI3",
-      "STAR": "",
       "Altitude": 35000,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "Hawaiian seven hundred heavy": {
       "Callsign": "HAL700",
@@ -186,17 +168,16 @@
         "Daniel K Inouye": "PHNL"
       },
       "CandidateApproaches": {
-        "I L S runway eight left": "I8L",
-        "I L S yankee runway four right": "IY4R",
-        "I L S zulu runway four right": "IZ4R",
-        "r-nav runway eight right": "R8R",
-        "r-nav runway four left": "R4L",
-        "r-nav yankee runway eight left": "Y8L",
-        "r-nav yankee runway four right": "Y4R",
-        "r-nav zulu runway eight left": "Z8L",
-        "r-nav zulu runway four right": "Z4R"
+        "ILS Runway 8L": "I8L",
+        "ILS Y Runway 4R": "IY4R",
+        "ILS Z Runway 4R": "IZ4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 8R": "R8R",
+        "RNAV Y Runway 4R": "Y4R",
+        "RNAV Y Runway 8L": "Y8L",
+        "RNAV Z Runway 4R": "Z4R",
+        "RNAV Z Runway 8L": "Z8L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Figure": "FGTRE",
@@ -282,14 +263,11 @@
           "Zusly": "XUSLY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOOKE8",
       "Altitude": 6500,
       "State": "arrival",
       "ControllerFrequency": "1H",
       "TrackingController": "1H",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -307,18 +285,11 @@
       "Fixes": {
         "Keola": "KEOLA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "KEOLA3",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "U.P.S. four 43 heavy": {
       "Callsign": "UPS443",
@@ -326,35 +297,16 @@
       "Fixes": {
         "Keola": "KEOLA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "KEOLA3",
-      "STAR": "",
       "Altitude": 34474,
       "State": "departure",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "november two seven eight kilo yankee": {
       "Callsign": "N278KY",
-      "AircraftType": "",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 7500,
-      "State": "",
-      "ControllerFrequency": "1H",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "1H"
     }
   },
   "logs": [

@@ -199,14 +199,19 @@ func (p *fixParser) goType() reflect.Type {
 }
 
 func (p *fixParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	value, consumed, _, sayAgain := p.parseScored(tokens, pos, ac)
+	return value, consumed, sayAgain
+}
+
+func (p *fixParser) parseScored(tokens []Token, pos int, ac Aircraft) (any, int, float64, string) {
 	if pos >= len(tokens) || len(ac.Fixes) == 0 {
-		return nil, 0, "FIX"
+		return nil, 0, 1, "FIX"
 	}
 
 	// Delegate to existing extractFix function
-	fix, _, consumed := extractFix(tokens[pos:], ac.Fixes)
+	fix, score, consumed := extractFix(tokens[pos:], ac.Fixes)
 	if consumed > 0 {
-		return fix, consumed, ""
+		return fix, consumed, score, ""
 	}
 
 	// Only request a repeat when the failing token could plausibly be a
@@ -217,10 +222,10 @@ func (p *fixParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 	if tokens[pos].Type == TokenWord && !IsCommandKeyword(w) && !IsFillerWord(w) &&
 		!positionVetoKeywords[w] {
 		if _, nato := ConvertNATOLetter(w); !nato {
-			return nil, 0, "FIX"
+			return nil, 0, 1, "FIX"
 		}
 	}
-	return nil, 0, ""
+	return nil, 0, 1, ""
 }
 
 // approachParser extracts approach names.
@@ -246,25 +251,30 @@ func (p *approachParser) goType() reflect.Type {
 }
 
 func (p *approachParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	value, consumed, _, sayAgain := p.parseScored(tokens, pos, ac)
+	return value, consumed, sayAgain
+}
+
+func (p *approachParser) parseScored(tokens []Token, pos int, ac Aircraft) (any, int, float64, string) {
 	if pos >= len(tokens) || len(ac.CandidateApproaches) == 0 {
-		return nil, 0, "APPROACH"
+		return nil, 0, 1, "APPROACH"
 	}
 
 	// Delegate to existing extractApproach function
 	// Pass the assigned approach so we prefer it when there are ties
-	appr, _, consumed := extractApproach(tokens[pos:], ac.CandidateApproaches, ac.AssignedApproach, p.garbledFallback, p.garbledRequireEvidence)
+	appr, score, consumed := extractApproach(tokens[pos:], candidateApproaches(ac.CandidateApproaches), ac.AssignedApproach, p.garbledFallback, p.garbledRequireEvidence)
 	if consumed == 0 {
-		return nil, 0, "APPROACH"
+		return nil, 0, 1, "APPROACH"
 	}
 
 	// Handle LAHSO if allowed
 	if p.allowLAHSO && pos+consumed < len(tokens) {
 		if lahsoRwy, lahsoConsumed := extractLAHSO(tokens[pos+consumed:], ac.LAHSORunways); lahsoConsumed > 0 {
-			return appr + "/LAHSO" + lahsoRwy, consumed + lahsoConsumed, ""
+			return appr + "/LAHSO" + lahsoRwy, consumed + lahsoConsumed, score, ""
 		}
 	}
 
-	return appr, consumed, ""
+	return appr, consumed, score, ""
 }
 
 // anchoredParser is an optional extension of typeParser. Parsers that
@@ -276,6 +286,25 @@ func (p *approachParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 type anchoredParser interface {
 	typeParser
 	anchored() bool
+}
+
+// confidenceParser is an optional extension of typeParser for slots whose
+// match quality varies: fix and approach names are matched fuzzily, and
+// without their score a 0.87 "New York" -> "Newark" reading ranks in the
+// beam exactly as high as an exact one.
+type confidenceParser interface {
+	typeParser
+	parseScored(tokens []Token, pos int, ac Aircraft) (value any, consumed int, score float64, sayAgain string)
+}
+
+// parseSlot runs a slot parser, taking its match quality when it reports one
+// and 1 otherwise.
+func parseSlot(p typeParser, tokens []Token, pos int, ac Aircraft) (any, int, float64, string) {
+	if cp, ok := p.(confidenceParser); ok {
+		return cp.parseScored(tokens, pos, ac)
+	}
+	value, consumed, sayAgain := p.parse(tokens, pos, ac)
+	return value, consumed, 1, sayAgain
 }
 
 type visualApproachParser struct {
@@ -302,7 +331,7 @@ func (p *visualApproachParser) parse(tokens []Token, pos int, ac Aircraft) (any,
 	// visual"; when the words just before "visual" resemble a named
 	// candidate's leading word ("a very" for "River"), the span belongs to
 	// that approach — yield so the named-approach template wins.
-	if precedingResemblesNamedVisual(tokens, pos, ac.CandidateApproaches) {
+	if precedingResemblesNamedVisual(tokens, pos, candidateApproaches(ac.CandidateApproaches)) {
 		return nil, 0, ""
 	}
 

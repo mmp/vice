@@ -34,10 +34,10 @@
         "Victory": "VCTRY"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -69,13 +69,11 @@
         }
       },
       "AssignedApproach": "Mount Vernon Visual Runway 1",
-      "SID": "",
       "STAR": "TRUPS5",
       "Altitude": 17628,
       "State": "arrival",
       "ControllerFrequency": "1L",
       "TrackingController": "1L",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",

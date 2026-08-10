@@ -29,13 +29,12 @@
         "Waksi": "WAKSI"
       },
       "CandidateApproaches": {
-        "I L S yankee runway two six left": "Y6L",
-        "I L S zulu runway two six left": "Z6L",
-        "r-nav runway two six left": "R6L",
-        "r-nav yankee runway one niner right": "RY9R",
-        "r-nav zulu runway one niner right": "RZ9R"
+        "ILS Y Runway 26L": "Y6L",
+        "ILS Z Runway 26L": "Z6L",
+        "RNAV Runway 26L": "R6L",
+        "RNAV Y Runway 19R": "RY9R",
+        "RNAV Z Runway 19R": "RZ9R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R6L": {
           "Bishop": "BISHP",
@@ -78,13 +77,11 @@
         }
       },
       "AssignedApproach": "RNAV Y Runway 19R",
-      "SID": "",
       "STAR": "CHOWW4",
       "Altitude": 2764,
       "State": "cleared approach",
       "ControllerFrequency": "1T",
       "TrackingController": "1T",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -108,13 +105,12 @@
         "Waksi": "WAKSI"
       },
       "CandidateApproaches": {
-        "I L S yankee runway two six left": "Y6L",
-        "I L S zulu runway two six left": "Z6L",
-        "r-nav runway two six left": "R6L",
-        "r-nav yankee runway one niner right": "RY9R",
-        "r-nav zulu runway one niner right": "RZ9R"
+        "ILS Y Runway 26L": "Y6L",
+        "ILS Z Runway 26L": "Z6L",
+        "RNAV Runway 26L": "R6L",
+        "RNAV Y Runway 19R": "RY9R",
+        "RNAV Z Runway 19R": "RZ9R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R6L": {
           "Bishop": "BISHP",
@@ -157,13 +153,11 @@
         }
       },
       "AssignedApproach": "RNAV Y Runway 19R",
-      "SID": "",
       "STAR": "CHOWW4",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1T",
       "TrackingController": "1T",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -189,13 +183,12 @@
         "Waksi": "WAKSI"
       },
       "CandidateApproaches": {
-        "I L S yankee runway two six left": "Y6L",
-        "I L S zulu runway two six left": "Z6L",
-        "r-nav runway two six left": "R6L",
-        "r-nav yankee runway one niner right": "RY9R",
-        "r-nav zulu runway one niner right": "RZ9R"
+        "ILS Y Runway 26L": "Y6L",
+        "ILS Z Runway 26L": "Z6L",
+        "RNAV Runway 26L": "R6L",
+        "RNAV Y Runway 19R": "RY9R",
+        "RNAV Z Runway 19R": "RZ9R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R6L": {
           "Bishop": "BISHP",
@@ -238,13 +231,11 @@
         }
       },
       "AssignedApproach": "RNAV Y Runway 19R",
-      "SID": "",
       "STAR": "JAYSN3",
       "Altitude": 8431,
       "State": "arrival",
       "ControllerFrequency": "1T",
       "TrackingController": "1T",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -273,13 +264,12 @@
         "Zillda": "ZLLDA"
       },
       "CandidateApproaches": {
-        "I L S yankee runway two six left": "Y6L",
-        "I L S zulu runway two six left": "Z6L",
-        "r-nav runway two six left": "R6L",
-        "r-nav yankee runway one niner right": "RY9R",
-        "r-nav zulu runway one niner right": "RZ9R"
+        "ILS Y Runway 26L": "Y6L",
+        "ILS Z Runway 26L": "Z6L",
+        "RNAV Runway 26L": "R6L",
+        "RNAV Y Runway 19R": "RY9R",
+        "RNAV Z Runway 19R": "RZ9R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R6L": {
           "Bishop": "BISHP",
@@ -322,13 +312,11 @@
         }
       },
       "AssignedApproach": "RNAV Y Runway 19R",
-      "SID": "",
       "STAR": "COKTL4",
       "Altitude": 15890,
       "State": "arrival",
       "ControllerFrequency": "1G",
       "TrackingController": "1G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",
@@ -352,13 +340,12 @@
         "Waksi": "WAKSI"
       },
       "CandidateApproaches": {
-        "I L S yankee runway two six left": "Y6L",
-        "I L S zulu runway two six left": "Z6L",
-        "r-nav runway two six left": "R6L",
-        "r-nav yankee runway one niner right": "RY9R",
-        "r-nav zulu runway one niner right": "RZ9R"
+        "ILS Y Runway 26L": "Y6L",
+        "ILS Z Runway 26L": "Z6L",
+        "RNAV Runway 26L": "R6L",
+        "RNAV Y Runway 19R": "RY9R",
+        "RNAV Z Runway 19R": "RZ9R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "R6L": {
           "Bishop": "BISHP",
@@ -401,13 +388,11 @@
         }
       },
       "AssignedApproach": "RNAV Y Runway 19R",
-      "SID": "",
       "STAR": "CHOWW4",
       "Altitude": 5300,
       "State": "arrival",
       "ControllerFrequency": "1T",
       "TrackingController": "1T",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8L",
         "26R",

@@ -11,8 +11,8 @@
         "Detroit": "KDTW"
       },
       "CandidateApproaches": {
-        "I L S runway two one left": "I1L",
-        "I L S runway two one right": "I1R"
+        "ILS Runway 21L": "I1L",
+        "ILS Runway 21R": "I1R"
       },
       "ApproachFixes": {
         "I1L": {
@@ -22,15 +22,10 @@
           "Bogey": "BOGEY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 8000,
       "State": "arrival",
       "ControllerFrequency": "DTW",
-      "TrackingController": "DTW",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "DTW"
     }
   }
 }

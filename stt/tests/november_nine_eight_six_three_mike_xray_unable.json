@@ -34,9 +34,9 @@
         "recco": "RECCO"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I4",
-        "r-nav yankee runway two four": "RY4",
-        "r-nav zulu runway two four": "RZ4"
+        "ILS Runway 24": "I4",
+        "RNAV Y Runway 24": "RY4",
+        "RNAV Z Runway 24": "RZ4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two four": "24",
@@ -90,8 +90,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 24",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "LEGOZ4",
       "Route": [
         "KCRQ"
@@ -100,30 +98,17 @@
       "State": "cleared approach",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november niner six three mike x-ray": {
       "Callsign": "N963MX",
-      "AircraftType": "",
       "Fixes": {
         "": "F70",
         "Catalina": "KAVX"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 7500,
       "State": "vfr flight following",
-      "ControllerFrequency": "5E",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "5E"
     },
     "november two seven three november echo": {
       "Callsign": "N273NE",
@@ -142,9 +127,9 @@
         "recco": "RECCO"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I4",
-        "r-nav yankee runway two four": "RY4",
-        "r-nav zulu runway two four": "RZ4"
+        "ILS Runway 24": "I4",
+        "RNAV Y Runway 24": "RY4",
+        "RNAV Z Runway 24": "RZ4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two four": "24",
@@ -198,8 +183,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 24",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "LEGOZ4",
       "Route": [
         "KCRQ"
@@ -207,9 +190,7 @@
       "Altitude": 4656,
       "State": "cleared approach",
       "ControllerFrequency": "5D",
-      "TrackingController": "5D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "5D"
     },
     "super king air three november echo": {
       "Callsign": "N273NE/T",
@@ -228,9 +209,9 @@
         "recco": "RECCO"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I4",
-        "r-nav yankee runway two four": "RY4",
-        "r-nav zulu runway two four": "RZ4"
+        "ILS Runway 24": "I4",
+        "RNAV Y Runway 24": "RY4",
+        "RNAV Z Runway 24": "RZ4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two four": "24",
@@ -284,8 +265,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 24",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "LEGOZ4",
       "Route": [
         "KCRQ"
@@ -294,8 +273,7 @@
       "State": "cleared approach",
       "ControllerFrequency": "5D",
       "TrackingController": "5D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

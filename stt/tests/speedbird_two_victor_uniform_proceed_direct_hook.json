@@ -30,10 +30,10 @@
         "scali": "SCALI"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R",
-        "r-nav RNP runway one eight left": "R8L",
-        "r-nav RNP runway one eight right": "R8R"
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R",
+        "RNAV RNP Runway 18L": "R8L",
+        "RNAV RNP Runway 18R": "R8R"
       },
       "ApproachFixes": {
         "I8L": {
@@ -87,14 +87,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18L",
-      "SID": "",
       "STAR": "SEWZY6",
       "Altitude": 5045,
       "State": "arrival",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "Delta two 43": {
       "Callsign": "DAL243",
@@ -105,10 +102,10 @@
         "ute": "UTEEE"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R",
-        "r-nav RNP runway one eight left": "R8L",
-        "r-nav RNP runway one eight right": "R8R"
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R",
+        "RNAV RNP Runway 18L": "R8L",
+        "RNAV RNP Runway 18R": "R8R"
       },
       "ApproachFixes": {
         "I8L": {
@@ -162,14 +159,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "LAIKS3",
       "Altitude": 4275,
       "State": "cleared approach",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "ExecJet 40 39": {
       "Callsign": "EJA4039",
@@ -181,7 +175,7 @@
         "yoytu": "YOYTU"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
       "ApproachFixes": {
         "R13": {
@@ -191,13 +185,11 @@
         }
       },
       "AssignedApproach": "RNAV Runway 13",
-      "SID": "",
       "STAR": "GABOO1",
       "Altitude": 7843,
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -223,10 +215,10 @@
         "x-wing": "XWING"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R",
-        "r-nav RNP runway one eight left": "R8L",
-        "r-nav RNP runway one eight right": "R8R"
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R",
+        "RNAV RNP Runway 18L": "R8L",
+        "RNAV RNP Runway 18R": "R8R"
       },
       "ApproachFixes": {
         "I8L": {
@@ -280,14 +272,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18L",
-      "SID": "",
       "STAR": "WLEEE7",
       "Altitude": 8504,
       "State": "arrival",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "Southwest 37 31": {
       "Callsign": "SWA3731",
@@ -306,10 +295,10 @@
         "ute": "UTEEE"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R",
-        "r-nav RNP runway one eight left": "R8L",
-        "r-nav RNP runway one eight right": "R8R"
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R",
+        "RNAV RNP Runway 18L": "R8L",
+        "RNAV RNP Runway 18R": "R8R"
       },
       "ApproachFixes": {
         "I8L": {
@@ -363,14 +352,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "DXEEE3",
       "Altitude": 11478,
       "State": "arrival",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "Southwest six 97": {
       "Callsign": "SWA697",
@@ -379,17 +365,11 @@
         "Guards": "GARDS",
         "bendia": "BNDIA"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BNDIA3",
-      "STAR": "",
       "Altitude": 5437,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "Speedbird two charlie victor heavy": {
       "Callsign": "BAW2CV",
@@ -400,17 +380,11 @@
         "Jay-Jo": "JAYJO",
         "zenzi": "ZENZI"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "ILEXI4",
-      "STAR": "",
       "Altitude": 5014,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "Speedbird two victor uniform heavy": {
       "Callsign": "BAW2VU",
@@ -421,17 +395,11 @@
         "Hook": "HOOKK",
         "Jay-Jo": "JAYJO"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "ILEXI4",
-      "STAR": "",
       "Altitude": 2933,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "Tecnam Traveller six hotel tango": {
       "Callsign": "N26HT/T",
@@ -440,7 +408,7 @@
         "San Marcos": "KHYI"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
       "ApproachFixes": {
         "R13": {
@@ -449,9 +417,6 @@
           "yoytu": "YOYTU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 2416,
       "State": "arrival",
       "ControllerFrequency": "1W",
@@ -478,10 +443,10 @@
         "scali": "SCALI"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R",
-        "r-nav RNP runway one eight left": "R8L",
-        "r-nav RNP runway one eight right": "R8R"
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R",
+        "RNAV RNP Runway 18L": "R8L",
+        "RNAV RNP Runway 18R": "R8R"
       },
       "ApproachFixes": {
         "I8L": {
@@ -535,14 +500,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18L",
-      "SID": "",
       "STAR": "WLEEE7",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "cessna one seventy-two two four seven": {
       "Callsign": "N3247/T",
@@ -550,17 +512,11 @@
       "Fixes": {
         "College Station": "CLL"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation mustang eight two six": {
       "Callsign": "N6826/T",
@@ -570,17 +526,11 @@
         "Marks": "MARCS",
         "craze": "CRAYS"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6000,
       "State": "overflight",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation mustang five eight x-ray": {
       "Callsign": "N6458X/T",
@@ -589,17 +539,11 @@
         "Easterwood": "KCLL",
         "San Marcos": "KHYI"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation mustang one delta pahpah": {
       "Callsign": "N531DP/T",
@@ -608,7 +552,7 @@
         "San Marcos": "KHYI"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
       "ApproachFixes": {
         "R13": {
@@ -617,9 +561,6 @@
           "yoytu": "YOYTU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5500,
       "State": "arrival",
       "ControllerFrequency": "1W",
@@ -640,17 +581,11 @@
         "Marks": "MARCS",
         "craze": "CRAYS"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6000,
       "State": "overflight",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "mustang five eight x-ray": {
       "Callsign": "N6458X/T",
@@ -659,17 +594,11 @@
         "Easterwood": "KCLL",
         "San Marcos": "KHYI"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "departure",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "mustang one delta pahpah": {
       "Callsign": "N531DP/T",
@@ -678,7 +607,7 @@
         "San Marcos": "KHYI"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
       "ApproachFixes": {
         "R13": {
@@ -687,9 +616,6 @@
           "yoytu": "YOYTU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5500,
       "State": "arrival",
       "ControllerFrequency": "1W",
@@ -709,7 +635,7 @@
         "San Marcos": "KHYI"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
       "ApproachFixes": {
         "R13": {
@@ -718,14 +644,10 @@
           "yoytu": "YOYTU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5500,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -741,17 +663,10 @@
         "Marks": "MARCS",
         "craze": "CRAYS"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 6000,
       "State": "overflight",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "november six four five eight x-ray": {
       "Callsign": "N6458X",
@@ -760,17 +675,10 @@
         "Easterwood": "KCLL",
         "San Marcos": "KHYI"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4000,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "november three two four seven": {
       "Callsign": "N3247",
@@ -778,17 +686,10 @@
       "Fixes": {
         "College Station": "CLL"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1E"
     },
     "november two six hotel tango": {
       "Callsign": "N26HT",
@@ -797,7 +698,7 @@
         "San Marcos": "KHYI"
       },
       "CandidateApproaches": {
-        "r-nav runway one three": "R13"
+        "RNAV Runway 13": "R13"
       },
       "ApproachFixes": {
         "R13": {
@@ -806,14 +707,10 @@
           "yoytu": "YOYTU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 2416,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -827,17 +724,11 @@
       "Fixes": {
         "College Station": "CLL"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

@@ -29,12 +29,11 @@
         "Mow": "MOWWW"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I3R": {
           "Hodax": "HODAX",
@@ -60,14 +59,11 @@
           "Yohan": "YOHAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOOVE7",
       "Altitude": 14719,
       "State": "arrival",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -92,12 +88,11 @@
         "Zing": "ZINGG"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I3R": {
           "Hodax": "HODAX",
@@ -124,13 +119,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17C",
-      "SID": "",
       "STAR": "BEREE3",
       "Altitude": 15388,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -152,12 +145,11 @@
         "Zman": "ZMMAN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I3R": {
           "Hodax": "HODAX",
@@ -184,13 +176,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "VKTRY2",
       "Altitude": 8856,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -211,18 +201,17 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I3L": {
           "Nate": "NNATE",
@@ -286,14 +275,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "BACHR4",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Envoy 64 40": {
       "Callsign": "ENY6440",
@@ -303,18 +289,11 @@
         "See More": "CMORE",
         "Tikes": "TIKYS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "AKUNA9",
-      "STAR": "",
       "Altitude": 13314,
       "State": "departure",
       "ControllerFrequency": "1Z",
-      "TrackingController": "1Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Z"
     },
     "Envoy 64 51": {
       "Callsign": "ENY6451",
@@ -329,12 +308,11 @@
         "Zing": "ZINGG"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I3R": {
           "Hodax": "HODAX",
@@ -361,13 +339,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 17C",
-      "SID": "",
       "STAR": "BEREE3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -387,18 +363,17 @@
         "Wades": "WADES"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I3L": {
           "Nate": "NNATE",
@@ -462,14 +437,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "MNNDO4",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1S"
     },
     "Southwest 15 53": {
       "Callsign": "SWA1553",
@@ -481,18 +453,17 @@
         "Nate": "NNATE"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "I L S runway one three right": "I3R",
-        "r-nav whiskey runway one three left": "W3L",
-        "r-nav whiskey runway one three right": "W3R",
-        "r-nav x-ray runway one three left": "X3L",
-        "r-nav x-ray runway one three right": "X3R",
-        "r-nav yankee runway one three left": "Y3L",
-        "r-nav yankee runway one three right": "Y3R",
-        "r-nav zulu runway one three left": "Z3L",
-        "r-nav zulu runway one three right": "Z3R"
+        "ILS Runway 13L": "I3L",
+        "ILS Runway 13R": "I3R",
+        "RNAV W Runway 13L": "W3L",
+        "RNAV W Runway 13R": "W3R",
+        "RNAV X Runway 13L": "X3L",
+        "RNAV X Runway 13R": "X3R",
+        "RNAV Y Runway 13L": "Y3L",
+        "RNAV Y Runway 13R": "Y3R",
+        "RNAV Z Runway 13L": "Z3L",
+        "RNAV Z Runway 13R": "Z3R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I3L": {
           "Nate": "NNATE",
@@ -556,14 +527,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 13L",
-      "SID": "",
       "STAR": "HIBIL3",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "Southwest 60 71": {
       "Callsign": "SWA6071",
@@ -574,18 +542,11 @@
         "Kitty": "KKITY",
         "Tiger": "TYGGR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "KKITY5",
-      "STAR": "",
       "Altitude": 8000,
       "State": "departure",
       "ControllerFrequency": "1Z",
-      "TrackingController": "1Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Z"
     },
     "Spirit Wings 13 99": {
       "Callsign": "NKS1399",
@@ -598,12 +559,11 @@
         "Yeah but": "YAHBT"
       },
       "CandidateApproaches": {
-        "I L S runway one eight right": "I8R",
-        "I L S runway one seven center": "I7C",
-        "I L S runway one seven left": "I7L",
-        "I L S runway one three right": "I3R"
+        "ILS Runway 13R": "I3R",
+        "ILS Runway 17C": "I7C",
+        "ILS Runway 17L": "I7L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I3R": {
           "Hodax": "HODAX",
@@ -629,14 +589,11 @@
           "Yohan": "YOHAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "SEEVR4",
       "Altitude": 13400,
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",

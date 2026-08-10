@@ -25,11 +25,11 @@
         "Kennedy": "KJFK"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -77,13 +77,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 2000,
       "State": "cleared approach",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -113,11 +111,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -165,13 +163,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -201,11 +197,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -253,13 +249,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 3942,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -301,25 +295,25 @@
     "[local-stt]   pattern \"exact_phrase\" matched: \"JBU6041\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"JetBlue 60 41\")",
     "[local-stt] callsign match: Callsign=\"JBU6041\" SpokenKey=\"JetBlue 60 41\" Conf=1.00 Consumed=3",
     "[local-stt] aircraft context: State=\"arrival\" Altitude=3942 Fixes=14 Approaches=5 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[13L 31R 13L 31R 13R 31L]",
-    "[local-stt]   fix: \"J F K\" -> \"KJFK\"",
-    "[local-stt]   fix: \"Cimble\" -> \"CIMBL\"",
-    "[local-stt]   fix: \"Hair\" -> \"HAIRR\"",
-    "[local-stt]   fix: \"Tapper\" -> \"TAPPR\"",
-    "[local-stt]   fix: \"Detgy\" -> \"DETGY\"",
-    "[local-stt]   fix: \"Haupt\" -> \"HAUPT\"",
-    "[local-stt]   fix: \"Lefer\" -> \"LEFER\"",
-    "[local-stt]   fix: \"Deer Park\" -> \"DPK\"",
-    "[local-stt]   fix: \"Kennedy\" -> \"KJFK\"",
-    "[local-stt]   fix: \"Seagull\" -> \"CEEGL\"",
-    "[local-stt]   fix: \"Rosley\" -> \"ROSLY\"",
-    "[local-stt]   fix: \"Zalpo\" -> \"ZALPO\"",
-    "[local-stt]   fix: \"Norton\" -> \"NRTON\"",
-    "[local-stt]   fix: \"Sajul\" -> \"SAJUL\"",
-    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -> \"R2L\"",
-    "[local-stt]   approach: \"Belmont Visual runway two two Left\" -> \"BVA\"",
-    "[local-stt]   approach: \"I L S runway two two left\" -> \"I2L\"",
-    "[local-stt]   approach: \"r-nav runway two two right\" -> \"R2R\"",
-    "[local-stt]   approach: \"I L S runway two two right\" -> \"I2R\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Cimble\" -\u003e \"CIMBL\"",
+    "[local-stt]   fix: \"Hair\" -\u003e \"HAIRR\"",
+    "[local-stt]   fix: \"Tapper\" -\u003e \"TAPPR\"",
+    "[local-stt]   fix: \"Detgy\" -\u003e \"DETGY\"",
+    "[local-stt]   fix: \"Haupt\" -\u003e \"HAUPT\"",
+    "[local-stt]   fix: \"Lefer\" -\u003e \"LEFER\"",
+    "[local-stt]   fix: \"Deer Park\" -\u003e \"DPK\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Seagull\" -\u003e \"CEEGL\"",
+    "[local-stt]   fix: \"Rosley\" -\u003e \"ROSLY\"",
+    "[local-stt]   fix: \"Zalpo\" -\u003e \"ZALPO\"",
+    "[local-stt]   fix: \"Norton\" -\u003e \"NRTON\"",
+    "[local-stt]   fix: \"Sajul\" -\u003e \"SAJUL\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"R2L\"",
+    "[local-stt]   approach: \"Belmont Visual runway two two Left\" -\u003e \"BVA\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt]   approach: \"r-nav runway two two right\" -\u003e \"R2R\"",
+    "[local-stt]   approach: \"I L S runway two two right\" -\u003e \"I2R\"",
     "[local-stt] command tokens after disregard: 4",
     "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
     "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",

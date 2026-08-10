@@ -24,20 +24,10 @@
         "Denver": "KDEN",
         "Great Falls": "GTF"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 9915,
       "State": "departure",
       "ControllerFrequency": "1A",
-      "TrackingController": "C19",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C19"
     },
     "United 82 82": {
       "Callsign": "UAL8282",
@@ -48,7 +38,7 @@
         "gtf": "gtf"
       },
       "CandidateApproaches": {
-        "I L S runway three": "I3"
+        "ILS Runway 3": "I3"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three": "3",
@@ -63,16 +53,10 @@
           "hoxek": "HOXEK"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 13000,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "17",
         "35"

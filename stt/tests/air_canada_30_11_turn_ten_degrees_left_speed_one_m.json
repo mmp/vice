@@ -34,8 +34,8 @@
         "Zarid": "ZARID"
       },
       "CandidateApproaches": {
-        "I L S runway four": "I4",
-        "r-nav yankee runway four": "R4"
+        "ILS Runway 4": "I4",
+        "RNAV Y Runway 4": "R4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four": "4",
@@ -68,15 +68,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 4",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -104,8 +99,8 @@
         "Zarid": "ZARID"
       },
       "CandidateApproaches": {
-        "I L S runway four": "I4",
-        "r-nav yankee runway four": "R4"
+        "ILS Runway 4": "I4",
+        "RNAV Y Runway 4": "R4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four": "4",
@@ -138,15 +133,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PROUD2",
-      "Route": null,
       "Altitude": 9923,
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -169,8 +160,8 @@
         "Zarid": "ZARID"
       },
       "CandidateApproaches": {
-        "I L S runway four": "I4",
-        "r-nav yankee runway four": "R4"
+        "ILS Runway 4": "I4",
+        "RNAV Y Runway 4": "R4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four": "4",
@@ -203,15 +194,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 4",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 4986,
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -238,8 +224,8 @@
         "Zarid": "ZARID"
       },
       "CandidateApproaches": {
-        "I L S runway four": "I4",
-        "r-nav yankee runway four": "R4"
+        "ILS Runway 4": "I4",
+        "RNAV Y Runway 4": "R4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four": "4",
@@ -272,15 +258,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 4",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -303,8 +284,8 @@
         "Zarid": "ZARID"
       },
       "CandidateApproaches": {
-        "I L S runway four": "I4",
-        "r-nav yankee runway four": "R4"
+        "ILS Runway 4": "I4",
+        "RNAV Y Runway 4": "R4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four": "4",
@@ -337,15 +318,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PROUD2",
-      "Route": null,
       "Altitude": 2968,
       "State": "cleared approach",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -375,8 +352,8 @@
         "Zarid": "ZARID"
       },
       "CandidateApproaches": {
-        "I L S runway four": "I4",
-        "r-nav yankee runway four": "R4"
+        "ILS Runway 4": "I4",
+        "RNAV Y Runway 4": "R4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four": "4",
@@ -409,15 +386,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PROUD2",
-      "Route": null,
       "Altitude": 10000,
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -442,8 +415,8 @@
         "Zarid": "ZARID"
       },
       "CandidateApproaches": {
-        "I L S runway four": "I4",
-        "r-nav yankee runway four": "R4"
+        "ILS Runway 4": "I4",
+        "RNAV Y Runway 4": "R4"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four": "4",
@@ -476,15 +449,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 4",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
-      "Route": null,
       "Altitude": 7084,
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"

@@ -28,18 +28,11 @@
         "Jacksonville": "KJAX",
         "Jet In": "JETIN"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JETIN2",
-      "STAR": "",
       "Altitude": 3971,
       "State": "departure",
       "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "SkyWest 92 26": {
       "Callsign": "SKW9226",
@@ -52,10 +45,10 @@
         "Philly": "KPHL"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S yankee runway one four": "I14",
-        "r-nav zulu runway eight": "RZ8",
-        "r-nav zulu runway one four": "R14"
+        "ILS Runway 8": "I8",
+        "ILS Y Runway 14": "I14",
+        "RNAV Z Runway 14": "R14",
+        "RNAV Z Runway 8": "RZ8"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -88,13 +81,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8",
-      "SID": "",
       "STAR": "LUNNI2",
       "Altitude": 8000,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -115,10 +106,10 @@
         "Libby": "LIBBY"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S yankee runway one four": "I14",
-        "r-nav zulu runway eight": "RZ8",
-        "r-nav zulu runway one four": "R14"
+        "ILS Runway 8": "I8",
+        "ILS Y Runway 14": "I14",
+        "RNAV Z Runway 14": "R14",
+        "RNAV Z Runway 8": "RZ8"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -151,13 +142,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8",
-      "SID": "",
       "STAR": "MARQO3",
       "Altitude": 2000,
       "State": "cleared approach",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -175,10 +164,10 @@
         "Libby": "LIBBY"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S yankee runway one four": "I14",
-        "r-nav zulu runway eight": "RZ8",
-        "r-nav zulu runway one four": "R14"
+        "ILS Runway 8": "I8",
+        "ILS Y Runway 14": "I14",
+        "RNAV Z Runway 14": "R14",
+        "RNAV Z Runway 8": "RZ8"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -211,13 +200,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8",
-      "SID": "",
       "STAR": "OHDEA2",
       "Altitude": 9000,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -236,10 +223,10 @@
         "Libby": "LIBBY"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S yankee runway one four": "I14",
-        "r-nav zulu runway eight": "RZ8",
-        "r-nav zulu runway one four": "R14"
+        "ILS Runway 8": "I8",
+        "ILS Y Runway 14": "I14",
+        "RNAV Z Runway 14": "R14",
+        "RNAV Z Runway 8": "RZ8"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -272,13 +259,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8",
-      "SID": "",
       "STAR": "QUBEN2",
       "Altitude": 13000,
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -295,10 +280,10 @@
         "Teebow": "TEBOW"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S yankee runway one four": "I14",
-        "r-nav zulu runway eight": "RZ8",
-        "r-nav zulu runway one four": "R14"
+        "ILS Runway 8": "I8",
+        "ILS Y Runway 14": "I14",
+        "RNAV Z Runway 14": "R14",
+        "RNAV Z Runway 8": "RZ8"
       },
       "CandidateVisualApproaches": {
         "visual approach runway eight": "8",
@@ -330,14 +315,11 @@
           "Zoluv": "ZOLUV"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "TEBOW2",
       "Altitude": 6659,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",

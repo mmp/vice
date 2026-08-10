@@ -34,12 +34,12 @@
         "Waylan": "WAYLN"
       },
       "CandidateApproaches": {
-        "I L S runway two zero left": "I0L",
-        "I L S runway two zero right": "I0R",
-        "r-nav yankee runway two zero left": "Y0L",
-        "r-nav yankee runway two zero right": "Y0R",
-        "r-nav zulu runway two zero left": "Z0L",
-        "r-nav zulu runway two zero right": "Z0R"
+        "ILS Runway 20L": "I0L",
+        "ILS Runway 20R": "I0R",
+        "RNAV Y Runway 20L": "Y0L",
+        "RNAV Y Runway 20R": "Y0R",
+        "RNAV Z Runway 20L": "Z0L",
+        "RNAV Z Runway 20R": "Z0R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two zero left": "20L",
@@ -118,13 +118,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 20L",
-      "SID": "",
       "STAR": "PASLY5",
       "Altitude": 6170,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31",

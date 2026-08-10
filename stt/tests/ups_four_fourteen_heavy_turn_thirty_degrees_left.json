@@ -31,7 +31,7 @@
         "Zavpi": "ZAVPI"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "ApproachFixes": {
         "I2L": {
@@ -43,13 +43,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -73,7 +71,7 @@
         "Zavpi": "ZAVPI"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "ApproachFixes": {
         "I2L": {
@@ -85,13 +83,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 11861,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -110,7 +106,7 @@
         "Zavpi": "ZAVPI"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "ApproachFixes": {
         "I2L": {
@@ -122,13 +118,10 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "",
       "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"

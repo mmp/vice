@@ -25,10 +25,10 @@
         "Nantucket": "KACK"
       },
       "CandidateApproaches": {
-        "I L S runway three three left": "I3L",
-        "Visual Approach runway three three right": "VA3R",
-        "r-nav x-ray runway three three left": "X3L",
-        "r-nav zulu runway three three left": "Z3L"
+        "ILS Runway 33L": "I3L",
+        "RNAV X Runway 33L": "X3L",
+        "RNAV Z Runway 33L": "Z3L",
+        "Visual Approach Runway 33R": "VA3R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three three left": "33L",
@@ -72,13 +72,10 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 33R",
-      "SID": "",
-      "STAR": "",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1I",
       "TrackingController": "1I",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",

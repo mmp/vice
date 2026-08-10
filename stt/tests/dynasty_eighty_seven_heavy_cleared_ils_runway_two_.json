@@ -3,7 +3,7 @@
   "transcript": "Dynasty Eighty Seven heavy four miles from Dumba to left fitting three one zero maintain four thousand feet until established from the localizer cleared ILS runway two eight right approach maintain one eight zero knots until Axmul",
   "callsign": "CAL87",
   "command": "L310 A40 CI8R S180/UAXMUL",
-  "reason": "until-established-on-the-localizer clause must not leave 'localizer' dangling to be misread as an approach; the clearance is a clean 'cleared ILS runway 28R' -> CI8R",
+  "reason": "until-established-on-the-localizer clause must not leave 'localizer' dangling to be misread as an approach; the clearance is a clean 'cleared ILS runway 28R' -\u003e CI8R",
   "stt_aircraft": {
     "Dynasty 87": {
       "Callsign": "CAL87",
@@ -21,16 +21,16 @@
         "Ziled": "ZILED"
       },
       "CandidateApproaches": {
-        "FMS Bridge Visual runway two eight right": "FMS",
-        "GLS runway two eight left": "GLL",
-        "GLS runway two eight right": "GLR",
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R",
-        "Tipp Toe Visual runway two eight left": "TTL",
-        "Tipp Toe Visual runway two eight right": "TTR",
-        "r-nav runway two eight left": "R8L",
-        "r-nav yankee runway two eight right": "Y8R",
-        "r-nav zulu runway two eight right": "Z8R"
+        "FMS Bridge Visual Runway 28R": "FMS",
+        "GLS Runway 28L": "GLL",
+        "GLS Runway 28R": "GLR",
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R",
+        "RNAV Runway 28L": "R8L",
+        "RNAV Y Runway 28R": "Y8R",
+        "RNAV Z Runway 28R": "Z8R",
+        "Tipp Toe Visual Runway 28L": "TTL",
+        "Tipp Toe Visual Runway 28R": "TTR"
       },
       "ApproachFixes": {
         "I8R": {
@@ -70,8 +70,12 @@
       "State": "arrival",
       "ControllerFrequency": "2Z",
       "TrackingController": "2Z",
-      "AddressingForm": 0,
-      "LAHSORunways": ["1L", "19R", "1R", "19L"]
+      "LAHSORunways": [
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
     }
   }
 }

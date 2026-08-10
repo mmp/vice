@@ -25,18 +25,11 @@
         "Orosz": "OROSZ",
         "Tyler": "TILLR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "OROSZ2",
-      "STAR": "",
       "Altitude": 3438,
       "State": "departure",
       "ControllerFrequency": "1V",
-      "TrackingController": "1V",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1V"
     },
     "Southwest 81 36": {
       "Callsign": "SWA8136",
@@ -51,12 +44,11 @@
         "Wabt": "WABBT"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "IZ8",
-        "V O R runway eight": "VOR8",
-        "r-nav Visual runway one five": "RV5",
-        "r-nav runway eight": "RY8"
+        "ILS Runway 8": "IZ8",
+        "RNAV Runway 8": "RY8",
+        "RNAV Visual Runway 15": "RV5",
+        "VOR Runway 8": "VOR8"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "IY8": {
           "Buddy": "BUDDE",
@@ -114,14 +106,11 @@
           "Ventura": "VTU"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "JANNY5",
       "Altitude": 14000,
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -144,12 +133,11 @@
         "Ventura": "VTU"
       },
       "CandidateApproaches": {
-        "I L S runway eight": "IZ8",
-        "V O R runway eight": "VOR8",
-        "r-nav Visual runway one five": "RV5",
-        "r-nav runway eight": "RZ8"
+        "ILS Runway 8": "IZ8",
+        "RNAV Runway 8": "RZ8",
+        "RNAV Visual Runway 15": "RV5",
+        "VOR Runway 8": "VOR8"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "IY8": {
           "Buddy": "BUDDE",
@@ -208,13 +196,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 8",
-      "SID": "",
       "STAR": "JANNY5",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1F",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "8",
         "26",
@@ -233,10 +219,9 @@
         "Van Nuys": "KVNY"
       },
       "CandidateApproaches": {
-        "I L S yankee runway one six right": "IYR",
-        "I L S zulu runway one six right": "IZR"
+        "ILS Y Runway 16R": "IYR",
+        "ILS Z Runway 16R": "IZR"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "IYR": {
           "Fillmore": "FIM",
@@ -255,15 +240,12 @@
           "furry": "FURRY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "JANNY5",
       "Altitude": 10662,
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation niner three delta": {
       "Callsign": "N2293D/T",
@@ -276,10 +258,9 @@
         "Van Nuys": "KVNY"
       },
       "CandidateApproaches": {
-        "I L S yankee runway one six right": "IYR",
-        "I L S zulu runway one six right": "IZR"
+        "ILS Y Runway 16R": "IYR",
+        "ILS Z Runway 16R": "IZR"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "IYR": {
           "Fillmore": "FIM",
@@ -298,15 +279,12 @@
           "furry": "FURRY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "JANNY5",
       "Altitude": 10662,
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "citation ten niner three delta": {
       "Callsign": "N2293D/T",
@@ -319,10 +297,9 @@
         "Van Nuys": "KVNY"
       },
       "CandidateApproaches": {
-        "I L S yankee runway one six right": "IYR",
-        "I L S zulu runway one six right": "IZR"
+        "ILS Y Runway 16R": "IYR",
+        "ILS Z Runway 16R": "IZR"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "IYR": {
           "Fillmore": "FIM",
@@ -341,32 +318,17 @@
           "furry": "FURRY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "JANNY5",
       "Altitude": 10662,
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november seven two two foxtrot echo": {
       "Callsign": "N722FE",
-      "AircraftType": "",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 10500,
-      "State": "",
-      "ControllerFrequency": "1M",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "1M"
     },
     "november two two niner three delta": {
       "Callsign": "N2293D",
@@ -379,10 +341,9 @@
         "Van Nuys": "KVNY"
       },
       "CandidateApproaches": {
-        "I L S yankee runway one six right": "IYR",
-        "I L S zulu runway one six right": "IZR"
+        "ILS Y Runway 16R": "IYR",
+        "ILS Z Runway 16R": "IZR"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "IYR": {
           "Fillmore": "FIM",
@@ -401,15 +362,11 @@
           "furry": "FURRY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "JANNY5",
       "Altitude": 10662,
       "State": "arrival",
       "ControllerFrequency": "1J",
-      "TrackingController": "1J",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1J"
     }
   },
   "logs": [

@@ -29,8 +29,8 @@
         "Sarasota": "SRQ"
       },
       "CandidateApproaches": {
-        "I L S runway one four": "I14",
-        "r-nav runway one four": "R14"
+        "ILS Runway 14": "I14",
+        "RNAV Runway 14": "R14"
       },
       "ApproachFixes": {
         "I14": {
@@ -48,7 +48,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 14",
-      "SID": "",
       "STAR": "BANGZ1",
       "Altitude": 3257,
       "State": "arrival",
@@ -72,8 +71,8 @@
         "Sarasota": "SRQ"
       },
       "CandidateApproaches": {
-        "I L S runway one four": "I14",
-        "r-nav runway one four": "R14"
+        "ILS Runway 14": "I14",
+        "RNAV Runway 14": "R14"
       },
       "ApproachFixes": {
         "I14": {
@@ -91,7 +90,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 14",
-      "SID": "",
       "STAR": "BANGZ1",
       "Altitude": 3257,
       "State": "arrival",
@@ -116,8 +114,8 @@
         "wipso": "WIPSO"
       },
       "CandidateApproaches": {
-        "I L S runway one eight": "I18",
-        "r-nav runway one eight": "R18"
+        "ILS Runway 18": "I18",
+        "RNAV Runway 18": "R18"
       },
       "ApproachFixes": {
         "I18": {
@@ -136,13 +134,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18",
-      "SID": "",
       "STAR": "BLFRG2",
       "Altitude": 11110,
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1D",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22"
@@ -162,10 +158,10 @@
         "slop": "SCLOP"
       },
       "CandidateApproaches": {
-        "I L S runway one niner left": "I9L",
-        "I L S runway one niner right": "I9R",
-        "r-nav runway one niner left": "R9L",
-        "r-nav runway one niner right": "R9R"
+        "ILS Runway 19L": "I9L",
+        "ILS Runway 19R": "I9R",
+        "RNAV Runway 19L": "R9L",
+        "RNAV Runway 19R": "R9R"
       },
       "ApproachFixes": {
         "I9L": {
@@ -197,13 +193,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 19R",
-      "SID": "",
       "STAR": "MAATY4",
       "Altitude": 12424,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28",
@@ -224,10 +218,10 @@
         "Tampa": "KTPA"
       },
       "CandidateApproaches": {
-        "I L S runway one niner left": "I9L",
-        "I L S runway one niner right": "I9R",
-        "r-nav runway one niner left": "R9L",
-        "r-nav runway one niner right": "R9R"
+        "ILS Runway 19L": "I9L",
+        "ILS Runway 19R": "I9R",
+        "RNAV Runway 19L": "R9L",
+        "RNAV Runway 19R": "R9R"
       },
       "ApproachFixes": {
         "I9L": {
@@ -259,13 +253,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 19L",
-      "SID": "",
       "STAR": "DADES1",
       "Altitude": 10539,
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28",
@@ -282,8 +274,8 @@
         "Sarasota": "KSRQ"
       },
       "CandidateApproaches": {
-        "I L S runway one four": "I14",
-        "r-nav runway one four": "R14"
+        "ILS Runway 14": "I14",
+        "RNAV Runway 14": "R14"
       },
       "ApproachFixes": {
         "I14": {
@@ -301,13 +293,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 14",
-      "SID": "",
       "STAR": "RAYZZ2",
       "Altitude": 3000,
       "State": "cleared approach",
       "ControllerFrequency": "1W",
       "TrackingController": "1S",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22"
@@ -325,8 +315,8 @@
         "Sarasota": "SRQ"
       },
       "CandidateApproaches": {
-        "I L S runway one four": "I14",
-        "r-nav runway one four": "R14"
+        "ILS Runway 14": "I14",
+        "RNAV Runway 14": "R14"
       },
       "ApproachFixes": {
         "I14": {
@@ -344,13 +334,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 14",
-      "SID": "",
       "STAR": "BANGZ1",
       "Altitude": 3257,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22"

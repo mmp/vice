@@ -26,11 +26,10 @@
         "Jhunt": "JHUNT"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -58,14 +57,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 3224,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Air Shuttle 80 61": {
       "Callsign": "ASH8061",
@@ -80,11 +76,10 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -112,14 +107,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "American 33": {
       "Callsign": "AAL33",
@@ -134,11 +126,10 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -166,14 +157,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "American 50": {
       "Callsign": "AAL50",
@@ -189,11 +177,10 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -221,14 +208,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 7370,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Delta 26": {
       "Callsign": "DAL26",
@@ -241,11 +225,10 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -273,14 +256,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 5218,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Delta six 92": {
       "Callsign": "DAL692",
@@ -296,11 +276,10 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -328,14 +307,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 9153,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Spirit Wings 95 32": {
       "Callsign": "NKS9532",
@@ -348,11 +324,10 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -380,14 +355,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6000,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "Spirit Wings 98 24": {
       "Callsign": "NKS9824",
@@ -403,11 +375,10 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -435,14 +406,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6408,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "United 55 60": {
       "Callsign": "UAL5560",
@@ -457,11 +425,10 @@
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -489,14 +456,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "JONZE5",
       "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "United niner": {
       "Callsign": "UAL9",
@@ -508,11 +472,10 @@
         "Jhunt": "JHUNT"
       },
       "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
+        "ILS Runway 18C": "I8C",
+        "ILS Runway 18L": "I8L",
+        "ILS Runway 18R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8C": {
           "Fersa": "FERSA",
@@ -540,14 +503,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
       "STAR": "FLIPZ4",
       "Altitude": 4210,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     }
   },
   "logs": [

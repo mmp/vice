@@ -27,7 +27,7 @@
         "Newark": "KEWR"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -37,13 +37,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "FLOSI4",
       "Altitude": 5639,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -62,7 +60,7 @@
         "Philbo": "PHLBO"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -72,13 +70,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 7901,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -92,7 +88,7 @@
         "Newark": "KEWR"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -102,13 +98,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 2000,
       "State": "on approach",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -126,7 +120,7 @@
         "Philbo": "PHLBO"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -135,14 +129,11 @@
           "Kilma": "KILMA"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 8712,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -161,7 +152,7 @@
         "Philbo": "PHLBO"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -171,13 +162,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 5346,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -199,7 +188,7 @@
         "Somto": "SOMTO"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -209,13 +198,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "PHLBO4",
       "Altitude": 11621,
       "State": "arrival",
       "ControllerFrequency": "4P",
       "TrackingController": "4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"

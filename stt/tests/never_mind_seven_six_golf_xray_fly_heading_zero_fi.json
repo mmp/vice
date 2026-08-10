@@ -27,13 +27,7 @@
         "Ronald Reagan Washington National": "KDCA",
         "San Francisco": "KSFO"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "REBLL5",
-      "STAR": "",
       "Route": [
         "DUDDD",
         "REBLL",
@@ -58,9 +52,7 @@
       "Altitude": 11319,
       "State": "departure",
       "ControllerFrequency": "1Y",
-      "TrackingController": "1Y",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Y"
     },
     "American 66 zero zero": {
       "Callsign": "AAL6600",
@@ -78,10 +70,10 @@
         "Victory": "VCTRY"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -113,8 +105,6 @@
         }
       },
       "AssignedApproach": "Mount Vernon Visual Runway 1",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "FRDMM6",
       "Route": [
         "SEPII",
@@ -129,7 +119,6 @@
       "State": "arrival",
       "ControllerFrequency": "1L",
       "TrackingController": "1L",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",
@@ -155,10 +144,10 @@
         "Victory": "VCTRY"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -190,8 +179,6 @@
         }
       },
       "AssignedApproach": "Mount Vernon Visual Runway 1",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "TRUPS5",
       "Route": [
         "RLLLL",
@@ -203,7 +190,6 @@
       "State": "arrival",
       "ControllerFrequency": "1L",
       "TrackingController": "1L",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",
@@ -227,13 +213,7 @@
         "Syracuse Hancock": "KSYR",
         "beets": "BEETS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "HORTO4",
-      "STAR": "",
       "Route": [
         "RGIII",
         "MELOE",
@@ -247,9 +227,7 @@
       "Altitude": 4180,
       "State": "departure",
       "ControllerFrequency": "1Y",
-      "TrackingController": "1Y",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Y"
     },
     "Brickyard 68 53": {
       "Callsign": "RPA6853",
@@ -262,10 +240,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -297,8 +275,6 @@
         }
       },
       "AssignedApproach": "Mount Vernon Visual Runway 1",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "CAPSS4",
       "Route": [
         "HALLL",
@@ -309,7 +285,6 @@
       "State": "arrival",
       "ControllerFrequency": "1J",
       "TrackingController": "1J",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",
@@ -331,13 +306,6 @@
         "Washington Dulles": "KIAD",
         "grim": "GRIIM"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "GRIIM",
         "SOOKI",
@@ -348,8 +316,7 @@
       "State": "overflight",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Embraer E-R-J one thirty-five six eight two": {
       "Callsign": "N4682/T",
@@ -361,13 +328,6 @@
         "Washington Dulles": "KIAD",
         "grim": "GRIIM"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "GRIIM",
         "SOOKI",
@@ -378,8 +338,7 @@
       "State": "overflight",
       "ControllerFrequency": "1K",
       "TrackingController": "1K",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "Endeavor 83 91": {
       "Callsign": "EDV8391",
@@ -391,13 +350,7 @@
         "Metro": "KDTW",
         "Ronald Reagan Washington National": "KDCA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "HORTO4",
-      "STAR": "",
       "Route": [
         "BUFFR",
         "MCRAY",
@@ -410,9 +363,7 @@
       "Altitude": 11520,
       "State": "departure",
       "ControllerFrequency": "1Y",
-      "TrackingController": "1Y",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Y"
     },
     "Envoy 13 77": {
       "Callsign": "ENY1377",
@@ -426,10 +377,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -461,8 +412,6 @@
         }
       },
       "AssignedApproach": "Mount Vernon Visual Runway 1",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "SKILS5",
       "Route": [
         "HITEK",
@@ -473,7 +422,6 @@
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",
@@ -487,7 +435,6 @@
     },
     "Reach five 72 heavy": {
       "Callsign": "RCH572",
-      "AircraftType": "",
       "Fixes": {
         "Agard": "AGARD",
         "Brussels": "EBBR",
@@ -498,13 +445,6 @@
         "Vali": "VAALI",
         "speak": "SPEAK"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "VAALI",
         "TUNDR",
@@ -517,11 +457,7 @@
         "EBBR"
       ],
       "Altitude": 3000,
-      "State": "",
-      "ControllerFrequency": "1K",
-      "TrackingController": "",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "ControllerFrequency": "1K"
     },
     "Southwest 49 zero two": {
       "Callsign": "SWA4902",
@@ -542,7 +478,7 @@
         "Udude": "UDUDE"
       },
       "CandidateApproaches": {
-        "I L S runway three three left": "I3L"
+        "ILS Runway 33L": "I3L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three three left": "33L",
@@ -558,8 +494,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 33L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "RAVNN8",
       "Route": [
         "FIMBO",
@@ -576,7 +510,6 @@
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "10",
         "28"
@@ -593,13 +526,7 @@
         "Kirk": "KERRK",
         "Ronald Reagan Washington National": "KDCA"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
       "SID": "CLTCH3",
-      "STAR": "",
       "Route": [
         "BRUTL",
         "BUTRZ",
@@ -622,9 +549,7 @@
       "Altitude": 8751,
       "State": "departure",
       "ControllerFrequency": "1Y",
-      "TrackingController": "1Y",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Y"
     },
     "United four zero two": {
       "Callsign": "UAL402",
@@ -636,13 +561,6 @@
         "Sky Harbor": "KPHX",
         "Washington Dulles": "KIAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "OTTTO",
         "COLNS",
@@ -653,9 +571,7 @@
       "Altitude": 13755,
       "State": "overflight",
       "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1L"
     },
     "United one": {
       "Callsign": "UAL1",
@@ -667,10 +583,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -701,9 +617,6 @@
           "Nadse": "NADSE"
         }
       },
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "DEALE3",
       "Route": [
         "HITEK",
@@ -714,7 +627,6 @@
       "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",
@@ -737,10 +649,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -772,9 +684,6 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 33",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "KDCA"
       ],
@@ -805,10 +714,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -840,9 +749,6 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 33",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "KDCA"
       ],
@@ -873,10 +779,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -908,9 +814,6 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 33",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "KDCA"
       ],
@@ -940,13 +843,6 @@
         "Washington Dulles": "KIAD",
         "grim": "GRIIM"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "GRIIM",
         "SOOKI",
@@ -956,9 +852,7 @@
       "Altitude": 10000,
       "State": "overflight",
       "ControllerFrequency": "1K",
-      "TrackingController": "1K",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1K"
     },
     "november niner seven six golf x-ray": {
       "Callsign": "N976GX",
@@ -971,10 +865,10 @@
         "Ronald Reagan Washington National": "KDCA"
       },
       "CandidateApproaches": {
-        "I L S runway one": "ILS",
-        "Mount Vernon Visual runway one": "MTV",
-        "r-nav runway one": "R1",
-        "r-nav runway three three": "R33"
+        "ILS Runway 1": "ILS",
+        "Mount Vernon Visual Runway 1": "MTV",
+        "RNAV Runway 1": "R1",
+        "RNAV Runway 33": "R33"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one": "1",
@@ -1006,9 +900,6 @@
         }
       },
       "AssignedApproach": "Visual Approach Runway 33",
-      "ExpectedDirectFix": "",
-      "SID": "",
-      "STAR": "",
       "Route": [
         "KDCA"
       ],
@@ -1016,7 +907,6 @@
       "State": "arrival",
       "ControllerFrequency": "1V",
       "TrackingController": "1V",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4",
         "22",

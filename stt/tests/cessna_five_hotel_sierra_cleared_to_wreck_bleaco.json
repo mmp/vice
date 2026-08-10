@@ -30,10 +30,9 @@
         "Wigzu": "WIGZU"
       },
       "CandidateApproaches": {
-        "I L S runway one six left": "I6L",
-        "r-nav runway one six left": "R6L"
+        "ILS Runway 16L": "I6L",
+        "RNAV Runway 16L": "R6L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I6L": {
           "Argue": "ARGUE",
@@ -49,14 +48,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 16L",
-      "SID": "",
       "STAR": "TRUUK2",
       "Altitude": 7502,
       "State": "arrival",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Sun Country three 80": {
       "Callsign": "SCX380",
@@ -67,10 +63,9 @@
         "Wigzu": "WIGZU"
       },
       "CandidateApproaches": {
-        "I L S runway one six left": "I6L",
-        "r-nav runway one six left": "R6L"
+        "ILS Runway 16L": "I6L",
+        "RNAV Runway 16L": "R6L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I6L": {
           "Argue": "ARGUE",
@@ -86,14 +81,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 16L",
-      "SID": "",
       "STAR": "TRUUK2",
       "Altitude": 3691,
       "State": "cleared approach",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "VANDY 96": {
       "Callsign": "VANDY96",
@@ -107,10 +99,9 @@
         "Wigzu": "WIGZU"
       },
       "CandidateApproaches": {
-        "I L S runway one six left": "I6L",
-        "r-nav runway one six left": "R6L"
+        "ILS Runway 16L": "I6L",
+        "RNAV Runway 16L": "R6L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I6L": {
           "Argue": "ARGUE",
@@ -126,14 +117,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 16L",
-      "SID": "",
       "STAR": "WESAT2",
       "Altitude": 11424,
       "State": "arrival",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "cessna P three thirty-seven two x-ray echo": {
       "Callsign": "N232XE/T",
@@ -146,10 +134,9 @@
         "Wigzu": "WIGZU"
       },
       "CandidateApproaches": {
-        "I L S runway one six left": "I6L",
-        "r-nav runway one six left": "R6L"
+        "ILS Runway 16L": "I6L",
+        "RNAV Runway 16L": "R6L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I6L": {
           "Argue": "ARGUE",
@@ -165,14 +152,12 @@
         }
       },
       "AssignedApproach": "ILS Runway 16L",
-      "SID": "",
       "STAR": "LIKES3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna one fifty eight brahvo mike": {
       "Callsign": "N618BM/T",
@@ -180,18 +165,11 @@
       "Fixes": {
         "Granbury": "KGDJ"
       },
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4144,
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cessna one seventy-two five hotel sierra": {
       "Callsign": "N685HS/T",
@@ -203,18 +181,12 @@
         "Cuzno": "CUZNO",
         "Nander": "NANDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "TEX5",
-      "STAR": "",
       "Altitude": 6000,
       "State": "departure",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "cherokee seven four six": {
       "Callsign": "N50746/T",
@@ -224,18 +196,12 @@
         "Cuzno": "CUZNO",
         "Nander": "NANDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "TEX5",
-      "STAR": "",
       "Altitude": 2677,
       "State": "departure",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "columbia three fifty eight charlie november": {
       "Callsign": "N978CN/T",
@@ -243,18 +209,12 @@
       "Fixes": {
         "Tris": "TRISS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "GARL6",
-      "STAR": "",
       "Altitude": 4948,
       "State": "departure",
       "ControllerFrequency": "1M",
       "TrackingController": "1N",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "king air niner eight victor": {
       "Callsign": "N4698V/T",
@@ -265,18 +225,12 @@
         "Roo": "ROOOO",
         "Ruffs": "RUFFS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BOTCH1",
-      "STAR": "",
       "Altitude": 2792,
       "State": "departure",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "king air ninety niner eight victor": {
       "Callsign": "N4698V/T",
@@ -287,18 +241,12 @@
         "Roo": "ROOOO",
         "Ruffs": "RUFFS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BOTCH1",
-      "STAR": "",
       "Altitude": 2792,
       "State": "departure",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "king air seven sierra pahpah": {
       "Callsign": "N717SP/T",
@@ -306,18 +254,12 @@
       "Fixes": {
         "Grabe": "GRABE"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "NANDR3",
-      "STAR": "",
       "Altitude": 3850,
       "State": "departure",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november five zero seven four six": {
       "Callsign": "N50746",
@@ -327,18 +269,11 @@
         "Cuzno": "CUZNO",
         "Nander": "NANDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "TEX5",
-      "STAR": "",
       "Altitude": 2677,
       "State": "departure",
       "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1M"
     },
     "november four eight niner yankee lima": {
       "Callsign": "N489YL",
@@ -349,10 +284,9 @@
         "Pink": "PINCK"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "r-nav runway one eight left": "R18L"
+        "ILS Runway 18L": "I8L",
+        "RNAV Runway 18L": "R18L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Pink": "PINCK"
@@ -369,14 +303,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 18L",
-      "SID": "",
       "STAR": "LIKES3",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1M"
     },
     "november four six niner eight victor": {
       "Callsign": "N4698V",
@@ -387,18 +318,11 @@
         "Roo": "ROOOO",
         "Ruffs": "RUFFS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BOTCH1",
-      "STAR": "",
       "Altitude": 2792,
       "State": "departure",
       "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1M"
     },
     "november four two one alpha pahpah": {
       "Callsign": "N421AP",
@@ -408,10 +332,9 @@
         "Likes": "LIKES"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "r-nav runway one eight left": "R18L"
+        "ILS Runway 18L": "I8L",
+        "RNAV Runway 18L": "R18L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Pink": "PINCK"
@@ -427,15 +350,11 @@
           "jeluv": "JELUV"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "LIKES3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1M"
     },
     "november niner seven eight charlie november": {
       "Callsign": "N978CN",
@@ -443,18 +362,11 @@
       "Fixes": {
         "Tris": "TRISS"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "GARL6",
-      "STAR": "",
       "Altitude": 4948,
       "State": "departure",
       "ControllerFrequency": "1M",
-      "TrackingController": "1N",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1N"
     },
     "november seven one seven sierra pahpah": {
       "Callsign": "N717SP",
@@ -462,18 +374,11 @@
       "Fixes": {
         "Grabe": "GRABE"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "NANDR3",
-      "STAR": "",
       "Altitude": 3850,
       "State": "departure",
       "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1M"
     },
     "november six eight five hotel sierra": {
       "Callsign": "N685HS",
@@ -485,18 +390,11 @@
         "Cuzno": "CUZNO",
         "Nander": "NANDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "TEX5",
-      "STAR": "",
       "Altitude": 6000,
       "State": "departure",
       "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1M"
     },
     "november six one eight brahvo mike": {
       "Callsign": "N618BM",
@@ -504,18 +402,10 @@
       "Fixes": {
         "Granbury": "KGDJ"
       },
-      "CandidateApproaches": {},
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 4144,
       "State": "arrival",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "november two three two x-ray echo": {
       "Callsign": "N232XE",
@@ -528,10 +418,9 @@
         "Wigzu": "WIGZU"
       },
       "CandidateApproaches": {
-        "I L S runway one six left": "I6L",
-        "r-nav runway one six left": "R6L"
+        "ILS Runway 16L": "I6L",
+        "RNAV Runway 16L": "R6L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I6L": {
           "Argue": "ARGUE",
@@ -547,14 +436,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 16L",
-      "SID": "",
       "STAR": "LIKES3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1M"
     },
     "piper cherokee seven four six": {
       "Callsign": "N50746/T",
@@ -564,18 +450,12 @@
         "Cuzno": "CUZNO",
         "Nander": "NANDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "TEX5",
-      "STAR": "",
       "Altitude": 2677,
       "State": "departure",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "piper seneca one alpha pahpah": {
       "Callsign": "N421AP/T",
@@ -585,10 +465,9 @@
         "Likes": "LIKES"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "r-nav runway one eight left": "R18L"
+        "ILS Runway 18L": "I8L",
+        "RNAV Runway 18L": "R18L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Pink": "PINCK"
@@ -604,15 +483,12 @@
           "jeluv": "JELUV"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "LIKES3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "pressurized skymaster two x-ray echo": {
       "Callsign": "N232XE/T",
@@ -625,10 +501,9 @@
         "Wigzu": "WIGZU"
       },
       "CandidateApproaches": {
-        "I L S runway one six left": "I6L",
-        "r-nav runway one six left": "R6L"
+        "ILS Runway 16L": "I6L",
+        "RNAV Runway 16L": "R6L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I6L": {
           "Argue": "ARGUE",
@@ -644,14 +519,12 @@
         }
       },
       "AssignedApproach": "ILS Runway 16L",
-      "SID": "",
       "STAR": "LIKES3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "seneca one alpha pahpah": {
       "Callsign": "N421AP/T",
@@ -661,10 +534,9 @@
         "Likes": "LIKES"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "r-nav runway one eight left": "R18L"
+        "ILS Runway 18L": "I8L",
+        "RNAV Runway 18L": "R18L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Pink": "PINCK"
@@ -680,15 +552,12 @@
           "jeluv": "JELUV"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "LIKES3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "skyhawk five hotel sierra": {
       "Callsign": "N685HS/T",
@@ -700,18 +569,12 @@
         "Cuzno": "CUZNO",
         "Nander": "NANDR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "TEX5",
-      "STAR": "",
       "Altitude": 6000,
       "State": "departure",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "travel air niner yankee lima": {
       "Callsign": "N489YL/T",
@@ -722,10 +585,9 @@
         "Pink": "PINCK"
       },
       "CandidateApproaches": {
-        "I L S runway one eight left": "I8L",
-        "r-nav runway one eight left": "R18L"
+        "ILS Runway 18L": "I8L",
+        "RNAV Runway 18L": "R18L"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Pink": "PINCK"
@@ -742,14 +604,12 @@
         }
       },
       "AssignedApproach": "ILS Runway 18L",
-      "SID": "",
       "STAR": "LIKES3",
       "Altitude": 3000,
       "State": "arrival",
       "ControllerFrequency": "1M",
       "TrackingController": "1M",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     }
   },
   "logs": [

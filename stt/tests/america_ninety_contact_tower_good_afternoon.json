@@ -29,7 +29,7 @@
         "Seika": "SEIKA"
       },
       "CandidateApproaches": {
-        "I L S runway two eight center": "I8C"
+        "ILS Runway 28C": "I8C"
       },
       "ApproachFixes": {
         "I8C": {
@@ -44,13 +44,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28C",
-      "SID": "",
       "STAR": "BENKY6",
       "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4R",
         "22L"
@@ -65,7 +63,7 @@
         "Seika": "SEIKA"
       },
       "CandidateApproaches": {
-        "I L S runway two eight center": "I8C"
+        "ILS Runway 28C": "I8C"
       },
       "ApproachFixes": {
         "I8C": {
@@ -80,13 +78,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28C",
-      "SID": "",
       "STAR": "BENKY6",
       "Altitude": 5209,
       "State": "cleared approach",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4R",
         "22L"
@@ -104,7 +100,7 @@
         "Seika": "SEIKA"
       },
       "CandidateApproaches": {
-        "I L S runway two eight center": "I8C"
+        "ILS Runway 28C": "I8C"
       },
       "ApproachFixes": {
         "I8C": {
@@ -119,13 +115,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28C",
-      "SID": "",
       "STAR": "VEECK5",
       "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "1W",
       "TrackingController": "1W",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4R",
         "22L"

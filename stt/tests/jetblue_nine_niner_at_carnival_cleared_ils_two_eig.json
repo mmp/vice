@@ -28,18 +28,11 @@
         "Seaweed": "CWEAD",
         "cozy": "COOZY"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "KLADA2",
-      "STAR": "",
       "Altitude": 1485,
       "State": "departure",
       "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1W"
     },
     "JetBlue 99": {
       "Callsign": "JBU99",
@@ -52,10 +45,9 @@
         "carnival": "CRNVL"
       },
       "CandidateApproaches": {
-        "I L S runway two eight left": "I8L",
-        "I L S runway two eight right": "I8R"
+        "ILS Runway 28L": "I8L",
+        "ILS Runway 28R": "I8R"
       },
-      "CandidateVisualApproaches": null,
       "ApproachFixes": {
         "I8L": {
           "Fort Lauderdale": "FLL",
@@ -72,14 +64,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 28L",
-      "SID": "",
       "STAR": "OLAHS3",
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1Z",
-      "TrackingController": "1Z",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1Z"
     }
   },
   "logs": [

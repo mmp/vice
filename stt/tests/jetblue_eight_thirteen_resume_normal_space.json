@@ -28,12 +28,12 @@
         "Winnie": "WINNI"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "Visual Approach runway four left": "VA4L",
-        "Visual Approach runway four right": "VA4R",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
+        "ILS Runway 15R, then visual approach left traffic to Runway 4L": "I5RC",
+        "ILS Runway 4R": "I4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 4R": "R4R",
+        "Visual Approach Runway 4L": "VA4L",
+        "Visual Approach Runway 4R": "VA4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -75,13 +75,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "OOSHN5",
       "Altitude": 9106,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -108,17 +106,11 @@
         "Alfomso Mengo": "CAM",
         "Paige": "PAYGE"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HYLND7",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "C37",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "C37"
     },
     "ExecJet 27 58": {
       "Callsign": "EJA2758",
@@ -126,17 +118,11 @@
       "Fixes": {
         "Hyland": "HYLND"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "HYLND7",
-      "STAR": "",
       "Altitude": 5000,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "Flexjet 51": {
       "Callsign": "LXJ51",
@@ -149,17 +135,11 @@
         "Gullet": "GLLET",
         "Wyometh": "WYMTH"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "BLZZR6",
-      "STAR": "",
       "Altitude": 2678,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "JetBlue 44 86": {
       "Callsign": "JBU4486",
@@ -179,12 +159,12 @@
         "Wintah": "WINTA"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "Visual Approach runway four left": "VA4L",
-        "Visual Approach runway four right": "VA4R",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
+        "ILS Runway 15R, then visual approach left traffic to Runway 4L": "I5RC",
+        "ILS Runway 4R": "I4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 4R": "R4R",
+        "Visual Approach Runway 4L": "VA4L",
+        "Visual Approach Runway 4R": "VA4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -226,13 +206,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "JFUND2",
       "Altitude": 12202,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -267,12 +245,12 @@
         "Winnie": "WINNI"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "Visual Approach runway four left": "VA4L",
-        "Visual Approach runway four right": "VA4R",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
+        "ILS Runway 15R, then visual approach left traffic to Runway 4L": "I5RC",
+        "ILS Runway 4R": "I4R",
+        "RNAV Runway 4L": "R4L",
+        "RNAV Runway 4R": "R4R",
+        "Visual Approach Runway 4L": "VA4L",
+        "Visual Approach Runway 4R": "VA4R"
       },
       "ApproachFixes": {
         "I4R": {
@@ -314,13 +292,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
       "STAR": "JFUND2",
       "Altitude": 7717,
       "State": "arrival",
       "ControllerFrequency": "1R",
       "TrackingController": "1R",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",

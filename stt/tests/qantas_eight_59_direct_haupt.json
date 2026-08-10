@@ -36,11 +36,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -87,13 +87,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -113,11 +111,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -164,13 +162,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "PARCH4",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -191,11 +187,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -242,13 +238,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -269,11 +263,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -320,13 +314,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -347,11 +339,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -398,13 +390,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4000,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -433,11 +423,11 @@
         "Zalpo": "ZALPO"
       },
       "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
+        "Belmont Visual Runway 22 Left": "BVA",
+        "ILS Runway 22L": "I2L",
+        "ILS Runway 22R": "I2R",
+        "RNAV Runway 22R": "R2R",
+        "RNAV X Runway 22L": "R2L"
       },
       "ApproachFixes": {
         "BVA": {
@@ -484,13 +474,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4308,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R",
@@ -529,16 +517,16 @@
     "[local-stt]   pattern \"airline_flight\" matched: \"QFA859\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Qantas eight 59 heavy\")",
     "[local-stt] callsign match: Callsign=\"QFA859\" SpokenKey=\"Qantas eight 59 heavy\" Conf=1.00 Consumed=2",
     "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=5 Approaches=5 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[13L 31R 13L 31R 13R 31L]",
-    "[local-stt]   fix: \"Zalpo\" -> \"ZALPO\"",
-    "[local-stt]   fix: \"Kennedy\" -> \"KJFK\"",
-    "[local-stt]   fix: \"J F K\" -> \"KJFK\"",
-    "[local-stt]   fix: \"Lefer\" -> \"LEFER\"",
-    "[local-stt]   fix: \"Rosley\" -> \"ROSLY\"",
-    "[local-stt]   approach: \"Belmont Visual runway two two Left\" -> \"BVA\"",
-    "[local-stt]   approach: \"r-nav runway two two right\" -> \"R2R\"",
-    "[local-stt]   approach: \"I L S runway two two right\" -> \"I2R\"",
-    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -> \"R2L\"",
-    "[local-stt]   approach: \"I L S runway two two left\" -> \"I2L\"",
+    "[local-stt]   fix: \"Zalpo\" -\u003e \"ZALPO\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Lefer\" -\u003e \"LEFER\"",
+    "[local-stt]   fix: \"Rosley\" -\u003e \"ROSLY\"",
+    "[local-stt]   approach: \"Belmont Visual runway two two Left\" -\u003e \"BVA\"",
+    "[local-stt]   approach: \"r-nav runway two two right\" -\u003e \"R2R\"",
+    "[local-stt]   approach: \"I L S runway two two right\" -\u003e \"I2R\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"R2L\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
     "[local-stt] command tokens after disregard: 2",
     "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
     "[local-stt]   token[1]: Text=\"haupt\" Type=0 Value=-1",
@@ -550,6 +538,6 @@
     "[local-stt] ParseCommands: no commands found",
     "[local-stt] parsed commands: [] (conf=0.00)",
     "[local-stt] validated commands: [] (conf=0.00)",
-    "[local-stt] === DecodeTranscript END: \"QFA859 AGAIN\" (conf=1.00, time=515.8\u00b5s) ==="
+    "[local-stt] === DecodeTranscript END: \"QFA859 AGAIN\" (conf=1.00, time=515.8µs) ==="
   ]
 }

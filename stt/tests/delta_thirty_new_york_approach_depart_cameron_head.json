@@ -30,10 +30,10 @@
         "Silgy": "SILJY"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R"
+        "ILS Runway 13L": "I3L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -61,13 +61,11 @@
         }
       },
       "AssignedApproach": "RNAV Z Runway 13 Left",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4152,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",
@@ -92,10 +90,10 @@
         "cars": "KARRS"
       },
       "CandidateApproaches": {
-        "I L S runway one three left": "I3L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav zulu runway one three Left": "R3L",
-        "r-nav zulu runway one three Right": "R3R"
+        "ILS Runway 13L": "I3L",
+        "Parkway Visual Runway 13 Left": "PVA",
+        "RNAV Z Runway 13 Left": "R3L",
+        "RNAV Z Runway 13 Right": "R3R"
       },
       "ApproachFixes": {
         "I3L": {
@@ -122,14 +120,11 @@
           "Pebo": "PEEBO"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 10540,
       "State": "arrival",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "4L",
         "22R",

@@ -32,10 +32,10 @@
         "Tucson International Airport / Morris Air National Guard Base": "KTUS"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -79,16 +79,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 25L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "PINNG1",
-      "Route": null,
       "Altitude": 8791,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     },
     "United four 57": {
       "Callsign": "UAL457",
@@ -104,10 +99,10 @@
         "Sky Harbor": "KPHX"
       },
       "CandidateApproaches": {
-        "I L S runway two five left": "I5L",
-        "I L S runway two six": "I26",
-        "Visual runway two five left": "V5L",
-        "Visual runway two six": "V26"
+        "ILS Runway 25L": "I5L",
+        "ILS Runway 26": "I26",
+        "Visual Runway 25L": "V5L",
+        "Visual Runway 26": "V26"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two five left": "25L",
@@ -151,16 +146,11 @@
         }
       },
       "AssignedApproach": "Visual Runway 25L",
-      "ExpectedDirectFix": "",
-      "SID": "",
       "STAR": "HYDRR1",
-      "Route": null,
       "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1F"
     }
   },
   "logs": [

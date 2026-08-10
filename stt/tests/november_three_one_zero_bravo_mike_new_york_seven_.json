@@ -29,18 +29,11 @@
         "Popon": "POPPN",
         "whup": "WHTUP"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "EWR5",
-      "STAR": "",
       "Altitude": 14079,
       "State": "departure",
       "ControllerFrequency": "66",
-      "TrackingController": "66",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "66"
     },
     "Alaska three 43": {
       "Callsign": "ASA343",
@@ -56,7 +49,7 @@
         "Vibes": "VIBES"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -69,14 +62,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 21950,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -92,7 +82,7 @@
         "rees": "REEES"
       },
       "CandidateApproaches": {
-        "I L S runway three one": "I31"
+        "ILS Runway 31": "I31"
       },
       "CandidateVisualApproaches": {
         "visual approach runway three one": "31",
@@ -105,15 +95,10 @@
           "Matjoy": "MTJOY"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 18000,
       "State": "arrival",
       "ControllerFrequency": "27",
-      "TrackingController": "27",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "27"
     },
     "American 32 26 heavy": {
       "Callsign": "AAL3226",
@@ -126,7 +111,7 @@
         "Pucky": "PUCKY"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -139,14 +124,11 @@
           "Zetal": "ZETAL"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "PUCKY1",
       "Altitude": 20675,
       "State": "arrival",
       "ControllerFrequency": "36",
       "TrackingController": "NNN2K",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R"
@@ -165,18 +147,11 @@
         "Kennedy": "KJFK",
         "Newel": "NEWEL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 17361,
       "State": "departure",
       "ControllerFrequency": "36",
-      "TrackingController": "36",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "36"
     },
     "Spirit Wings 88 48": {
       "Callsign": "NKS8848",
@@ -190,18 +165,10 @@
         "Metro": "KDTW",
         "View": "VIEEW"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 34000,
       "State": "overflight",
       "ControllerFrequency": "35",
-      "TrackingController": "35",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "35"
     },
     "citation zero brahvo mike": {
       "Callsign": "N310BM/T",
@@ -216,18 +183,11 @@
         "Matcaf": "MTCAF",
         "Yost": "YYOST"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 25000,
       "State": "overflight",
       "ControllerFrequency": "35",
       "TrackingController": "35",
-      "AddressingForm": 1,
-      "LAHSORunways": null
+      "AddressingForm": 1
     },
     "november three one zero brahvo mike": {
       "Callsign": "N310BM",
@@ -242,18 +202,10 @@
         "Matcaf": "MTCAF",
         "Yost": "YYOST"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 25000,
       "State": "overflight",
       "ControllerFrequency": "35",
-      "TrackingController": "35",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "35"
     }
   },
   "logs": [

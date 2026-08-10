@@ -29,7 +29,7 @@
         "Toronto Lester B. Pearson": "CYYZ"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -45,14 +45,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "FQM3",
       "Altitude": 16600,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "NNN4P",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -70,18 +67,11 @@
         "Popon": "POPPN",
         "whup": "WHTUP"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "EWR5",
-      "STAR": "",
       "Altitude": 20994,
       "State": "departure",
       "ControllerFrequency": "66",
-      "TrackingController": "66",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "66"
     },
     "Air Portugal 43 heavy": {
       "Callsign": "TAP43",
@@ -92,18 +82,11 @@
         "Jenny": "JENYY",
         "Newark": "KEWR"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "EWR5",
-      "STAR": "",
       "Altitude": 33000,
       "State": "departure",
       "ControllerFrequency": "66",
-      "TrackingController": "80",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "80"
     },
     "Alaska 96": {
       "Callsign": "ASA96",
@@ -119,7 +102,7 @@
         "megs": "MEGSS"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -135,14 +118,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "FQM3",
       "Altitude": 30055,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -160,18 +140,10 @@
         "View": "VIEEW",
         "Wozee": "WOZEE"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 35995,
       "State": "overflight",
       "ControllerFrequency": "35",
-      "TrackingController": "35",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "35"
     },
     "American one 98": {
       "Callsign": "AAL198",
@@ -187,7 +159,7 @@
         "Tragg": "TRAGG"
       },
       "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
+        "ILS Runway 27R": "I7R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven right": "27R",
@@ -201,14 +173,11 @@
           "Martin": "MRTIN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOJID4",
       "Altitude": 18409,
       "State": "arrival",
       "ControllerFrequency": "27",
       "TrackingController": "27",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "17",
         "35"
@@ -228,7 +197,7 @@
         "Wilkes": "WLKES"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -241,14 +210,11 @@
           "Zetal": "ZETAL"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "PUCKY1",
       "Altitude": 35000,
       "State": "arrival",
       "ControllerFrequency": "49",
       "TrackingController": "49",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R"
@@ -267,18 +233,11 @@
         "Kennedy": "KJFK",
         "Newel": "NEWEL"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 5839,
       "State": "departure",
       "ControllerFrequency": "36",
-      "TrackingController": "36",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "36"
     },
     "Delta eight 18": {
       "Callsign": "DAL818",
@@ -294,7 +253,7 @@
         "Vibes": "VIBES"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -307,14 +266,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 33000,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -333,18 +289,10 @@
         "Park": "PARKE",
         "Towin": "TOWIN"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 34000,
       "State": "overflight",
       "ControllerFrequency": "42",
-      "TrackingController": "42",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "42"
     },
     "Endeavor 38 82": {
       "Callsign": "EDV3882",
@@ -357,18 +305,10 @@
         "Metro": "KDTW",
         "View": "VIEEW"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 32000,
       "State": "overflight",
       "ControllerFrequency": "35",
-      "TrackingController": "35",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "35"
     },
     "Endeavor 58 66": {
       "Callsign": "EDV5866",
@@ -380,7 +320,7 @@
         "Savannah Hilton Head": "KSAV"
       },
       "CandidateApproaches": {
-        "I L S runway four right": "I4R"
+        "ILS Runway 4R": "I4R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway four right": "4R",
@@ -393,14 +333,11 @@
           "Zetal": "ZETAL"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 11336,
       "State": "arrival",
       "ControllerFrequency": "68",
       "TrackingController": "NNN2G",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13L",
         "31R"
@@ -419,18 +356,11 @@
         "Newel": "NEWEL",
         "Ravine": "RAV"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 24139,
       "State": "departure",
       "ControllerFrequency": "36",
-      "TrackingController": "36",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "36"
     },
     "JetBlue 98": {
       "Callsign": "JBU98",
@@ -445,7 +375,7 @@
         "Southwest Florida": "KRSW"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -459,14 +389,11 @@
           "Wyane": "WYANE"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "ROBUC3",
       "Altitude": 25000,
       "State": "arrival",
       "ControllerFrequency": "68",
       "TrackingController": "B34",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "9",
         "27",
@@ -491,18 +418,11 @@
         "Tyson": "TYSUN",
         "midst": "MIDST"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "JFK5",
-      "STAR": "",
       "Altitude": 36000,
       "State": "departure",
       "ControllerFrequency": "36",
-      "TrackingController": "36",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "36"
     },
     "United five 89": {
       "Callsign": "UAL589",
@@ -513,18 +433,11 @@
         "Princess Juliana": "TNCM",
         "squad": "SQUAD"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
       "SID": "EWR5",
-      "STAR": "",
       "Altitude": 39000,
       "State": "departure",
       "ControllerFrequency": "66",
-      "TrackingController": "66",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "66"
     }
   },
   "logs": [

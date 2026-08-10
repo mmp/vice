@@ -26,17 +26,10 @@
         "Marthas Vineyard": "MVY",
         "Providence": "PVD"
       },
-      "CandidateApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 2951,
       "State": "departure",
       "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "1D"
     },
     "citation two tango brahvo": {
       "Callsign": "N852TB",
@@ -52,7 +45,7 @@
         "Waivs": "WAIVS"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I24"
+        "ILS Runway 24": "I24"
       },
       "ApproachFixes": {
         "I24": {
@@ -62,7 +55,6 @@
         }
       },
       "AssignedApproach": "ILS Runway 24",
-      "SID": "",
       "STAR": "DEEPO2",
       "Altitude": 11000,
       "State": "arrival",
@@ -88,7 +80,7 @@
         "Waivs": "WAIVS"
       },
       "CandidateApproaches": {
-        "I L S runway two four": "I24"
+        "ILS Runway 24": "I24"
       },
       "ApproachFixes": {
         "I24": {
@@ -98,13 +90,11 @@
         }
       },
       "AssignedApproach": "ILS Runway 24",
-      "SID": "",
       "STAR": "DEEPO2",
       "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "1N",
       "TrackingController": "1N",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "15",
         "33"

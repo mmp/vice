@@ -30,7 +30,7 @@
         "megs": "MEGSS"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -46,14 +46,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "FQM3",
       "Altitude": 33000,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -72,7 +69,7 @@
         "megs": "MEGSS"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -88,14 +85,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "FQM3",
       "Altitude": 23394,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -115,7 +109,7 @@
         "Sweet": "SWEET"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -131,14 +125,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "FQM3",
       "Altitude": 18726,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -158,7 +149,7 @@
         "Vibes": "VIBES"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -171,14 +162,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 25848,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -199,7 +187,7 @@
         "Tragg": "TRAGG"
       },
       "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
+        "ILS Runway 27R": "I7R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven right": "27R",
@@ -213,14 +201,11 @@
           "Martin": "MRTIN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOJID4",
       "Altitude": 18016,
       "State": "arrival",
       "ControllerFrequency": "27",
       "TrackingController": "27",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "17",
         "35"
@@ -240,7 +225,7 @@
         "Tragg": "TRAGG"
       },
       "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
+        "ILS Runway 27R": "I7R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two seven right": "27R",
@@ -254,14 +239,11 @@
           "Martin": "MRTIN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "BOJID4",
       "Altitude": 25000,
       "State": "arrival",
       "ControllerFrequency": "27",
       "TrackingController": "27",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "17",
         "35"
@@ -281,7 +263,7 @@
         "Metro": "KDTW"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -294,14 +276,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 12179,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -321,7 +300,7 @@
         "megs": "MEGSS"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -337,14 +316,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "FQM3",
       "Altitude": 29242,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -364,7 +340,7 @@
         "Vibes": "VIBES"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -377,14 +353,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 18667,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -403,7 +376,7 @@
         "Sweet": "SWEET"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -419,14 +392,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "FQM3",
       "Altitude": 14993,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -446,7 +416,7 @@
         "megs": "MEGSS"
       },
       "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
+        "ILS Runway 22L": "I2L"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two left": "22L",
@@ -462,14 +432,11 @@
           "Zavpi": "ZAVPI"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "FQM3",
       "Altitude": 33000,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "11",
         "29"
@@ -489,7 +456,7 @@
         "White Plains": "KHPN"
       },
       "CandidateApproaches": {
-        "I L S runway one right": "I1R"
+        "ILS Runway 1R": "I1R"
       },
       "CandidateVisualApproaches": {
         "visual approach runway one right": "1R",
@@ -514,15 +481,11 @@
           "grasp": "GRASK"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "HYPER9",
       "Altitude": 20000,
       "State": "arrival",
       "ControllerFrequency": "26",
-      "TrackingController": "26",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "26"
     },
     "Jazz niner 25": {
       "Callsign": "JZA925",
@@ -537,7 +500,7 @@
         "Vibes": "VIBES"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -550,14 +513,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 31839,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -576,7 +536,7 @@
         "Vibes": "VIBES"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -589,14 +549,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 17435,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -614,18 +571,10 @@
         "Lancaster": "LRP",
         "Same": "SAAME"
       },
-      "CandidateApproaches": null,
-      "CandidateVisualApproaches": null,
-      "ApproachFixes": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
       "Altitude": 34000,
       "State": "overflight",
       "ControllerFrequency": "26",
-      "TrackingController": "26",
-      "AddressingForm": 0,
-      "LAHSORunways": null
+      "TrackingController": "26"
     },
     "United 74 97": {
       "Callsign": "UAL7497",
@@ -640,7 +589,7 @@
         "Vibes": "VIBES"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -653,14 +602,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 26931,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
@@ -679,7 +625,7 @@
         "Vibes": "VIBES"
       },
       "CandidateApproaches": {
-        "I L S runway two two": "I22"
+        "ILS Runway 22": "I22"
       },
       "CandidateVisualApproaches": {
         "visual approach runway two two": "22",
@@ -692,14 +638,11 @@
           "Yoman": "YOMAN"
         }
       },
-      "AssignedApproach": "",
-      "SID": "",
       "STAR": "MIP4",
       "Altitude": 12653,
       "State": "arrival",
       "ControllerFrequency": "72",
       "TrackingController": "72",
-      "AddressingForm": 0,
       "LAHSORunways": [
         "13",
         "31"
