@@ -1003,7 +1003,7 @@ func makeWhisperPrompt(state SimState) string {
 				if wp.FAF() {
 					break
 				}
-				if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
+				if av.IsNamedFix(wp.Fix) {
 					fixes = addFix(fixes, wp.Fix)
 				}
 			}

@@ -266,6 +266,24 @@ func (wp Waypoint) OnApproach() bool        { return wp.Flags&WaypointFlagOnAppr
 func (wp Waypoint) SyntheticCrossing() bool {
 	return wp.Flags&WaypointFlagSyntheticCrossing != 0
 }
+
+// IsNamedFix reports whether a waypoint name is a published fix or navaid
+// identifier someone could say on the radio, as opposed to one of the points
+// routes are built out of: scenario helper fixes ("_EWR4_22Ra"), runway
+// thresholds and midpoints ("22R", "1-mid"), lat/long waypoints, and CIFP
+// procedure fixes ("CF13L", "RW22L"). Published identifiers are three to five
+// letters and never contain a digit.
+func IsNamedFix(fix string) bool {
+	if len(fix) < 3 || len(fix) > 5 {
+		return false
+	}
+	for _, ch := range fix {
+		if (ch < 'A' || ch > 'Z') && (ch < 'a' || ch > 'z') {
+			return false
+		}
+	}
+	return true
+}
 func (wp Waypoint) HasAltitudeRestriction() bool {
 	return wp.Flags&WaypointFlagHasAltRestriction != 0
 }

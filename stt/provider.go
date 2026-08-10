@@ -601,10 +601,8 @@ func (p *Transcriber) BuildAircraftContext(
 							approachFixes := make(map[string]string)
 							for _, wps := range appr.Waypoints {
 								for _, wp := range wps {
-									fix := wp.Fix
-									// Skip internal fixes (start with underscore) and invalid lengths
-									if len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_' {
-										approachFixes[av.GetFixTelephony(fix)] = fix
+									if av.IsNamedFix(wp.Fix) {
+										approachFixes[av.GetFixTelephony(wp.Fix)] = wp.Fix
 									}
 								}
 							}

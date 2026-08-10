@@ -225,17 +225,18 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 	var fixes []string
 	p := ac.Nav.FlightState.Position
 
-	isValidFix := func(fix string) bool {
-		return len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_'
-	}
-
-	// Include arrival and departure airports so STT can match airport
-	// names (e.g. "Kennedy 12 o'clock 12 miles" for AP command).
-	if ac.FlightPlan.ArrivalAirport != "" {
-		fixes = append(fixes, ac.FlightPlan.ArrivalAirport)
-	}
-	if ac.FlightPlan.DepartureAirport != "" {
-		fixes = append(fixes, ac.FlightPlan.DepartureAirport)
+	// Include the arrival and departure airports so STT can match airport
+	// names (e.g. "Kennedy 12 o'clock 12 miles" for the AP command), but
+	// only the ones the aircraft is near: an airport 100nm behind or ahead
+	// is never named, and carrying it only costs a slot in the fix
+	// vocabulary and in the whisper prompt.
+	for _, id := range []string{ac.FlightPlan.ArrivalAirport, ac.FlightPlan.DepartureAirport} {
+		if id == "" {
+			continue
+		}
+		if ap, ok := av.DB.LookupAirport(id); !ok || math.NMDistance2LL(p, ap.Location) <= 100 {
+			fixes = append(fixes, id)
+		}
 	}
 
 	if isERAM {
@@ -244,7 +245,7 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 			if math.NMDistance2LL(p, wp.Location) > 300 && len(fixes) > 0 {
 				break
 			}
-			if isValidFix(wp.Fix) {
+			if av.IsNamedFix(wp.Fix) {
 				fixes = append(fixes, wp.Fix)
 				routeFixes++
 				if routeFixes >= 5 {
@@ -260,14 +261,14 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 		// so skip fixes we've already taken.
 		exit := ac.FlightPlan.Exit.Base()
 		for _, wp := range ac.Nav.AssignedWaypoints() {
-			if isValidFix(wp.Fix) && (wp.OnSID() || wp.Fix == exit) && !slices.Contains(fixes, wp.Fix) {
+			if av.IsNamedFix(wp.Fix) && (wp.OnSID() || wp.Fix == exit) && !slices.Contains(fixes, wp.Fix) {
 				fixes = append(fixes, wp.Fix)
 			}
 		}
 	} else if ac.IsArrival() {
 		// Include all remaining route waypoints, regardless of distance.
 		for _, wp := range ac.Nav.AssignedWaypoints() {
-			if isValidFix(wp.Fix) && !slices.Contains(fixes, wp.Fix) {
+			if av.IsNamedFix(wp.Fix) && !slices.Contains(fixes, wp.Fix) {
 				fixes = append(fixes, wp.Fix)
 			}
 		}
@@ -277,7 +278,7 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 		// included.
 		haveRouteFix := false
 		for _, wp := range ac.Nav.AssignedWaypoints() {
-			if !isValidFix(wp.Fix) || slices.Contains(fixes, wp.Fix) {
+			if !av.IsNamedFix(wp.Fix) || slices.Contains(fixes, wp.Fix) {
 				continue
 			}
 			if !haveRouteFix || math.NMDistance2LL(p, wp.Location) <= 120 {
@@ -298,7 +299,7 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 		if !joinedApproach {
 			for _, wps := range ac.Nav.Approach.Assigned.Waypoints {
 				for _, wp := range wps {
-					if isValidFix(wp.Fix) && !slices.Contains(fixes, wp.Fix) {
+					if av.IsNamedFix(wp.Fix) && !slices.Contains(fixes, wp.Fix) {
 						fixes = append(fixes, wp.Fix)
 					}
 				}
@@ -310,15 +311,14 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 }
 
 // GetRouteFixes returns the ordered list of fix names from the aircraft's
-// assigned route. Synthetic underscore-prefixed waypoints and anything
-// outside the 3-5 character length range are skipped, so lat/long-only
-// waypoints and internal nav markers are excluded. Unlike GetSTTFixes,
-// the list is not distance- or count-truncated and the dep/arr airports
-// are not auto-prepended.
+// assigned route; only the ones that are published fix names (IsNamedFix)
+// are included, so lat/long waypoints and internal nav markers are
+// excluded. Unlike GetSTTFixes, the list is not distance- or
+// count-truncated and the dep/arr airports are not auto-prepended.
 func (ac *Aircraft) GetRouteFixes() []string {
 	var fixes []string
 	for _, wp := range ac.Nav.AssignedWaypoints() {
-		if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
+		if av.IsNamedFix(wp.Fix) {
 			fixes = append(fixes, wp.Fix)
 		}
 	}

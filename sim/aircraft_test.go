@@ -18,6 +18,9 @@ func wp(fix string, latDeg float32) av.Waypoint {
 	return av.Waypoint{Fix: fix, Location: math.Point2LL{0, latDeg}}
 }
 
+// The aircraft sits at (0, 0), thousands of miles from both KJFK and KBOS,
+// so neither airport appears in these fixes; see
+// TestGetSTTFixes_AirportsOnlyWhenNear.
 func makeAircraftForSTTFixes(wps []av.Waypoint) *Aircraft {
 	return &Aircraft{
 		FlightPlan: av.FlightPlan{
@@ -51,7 +54,7 @@ func TestGetSTTFixes_STARS_DepartureSIDAndExit(t *testing.T) {
 	ac.FlightPlan.Exit = "EXITF"
 
 	got := ac.GetSTTFixes(false)
-	want := []string{"KBOS", "KJFK", "SIDAA", "SIDBB", "EXITF"}
+	want := []string{"SIDAA", "SIDBB", "EXITF"}
 	if !equalStrings(got, want) {
 		t.Errorf("STARS departure: got %v, want %v", got, want)
 	}
@@ -67,7 +70,7 @@ func TestGetSTTFixes_STARS_ArrivalFullRoute(t *testing.T) {
 	ac.TypeOfFlight = av.FlightTypeArrival
 
 	got := ac.GetSTTFixes(false)
-	want := []string{"KBOS", "KJFK", "NEAR", "MIDDL", "FAR"}
+	want := []string{"NEAR", "MIDDL", "FAR"}
 	if !equalStrings(got, want) {
 		t.Errorf("STARS arrival: got %v, want %v", got, want)
 	}
@@ -85,7 +88,7 @@ func TestGetSTTFixes_STARS_ArrivalExpectedApproach(t *testing.T) {
 	ac.Nav.Approach.Assigned = appr
 
 	got := ac.GetSTTFixes(false)
-	want := []string{"KBOS", "KJFK", "NEAR", "TRANS", "FINAL"}
+	want := []string{"NEAR", "TRANS", "FINAL"}
 	if !equalStrings(got, want) {
 		t.Errorf("expecting approach: got %v, want %v", got, want)
 	}
@@ -99,7 +102,7 @@ func TestGetSTTFixes_STARS_ArrivalExpectedApproach(t *testing.T) {
 	ac.Nav.Approach.Assigned = appr
 
 	got = ac.GetSTTFixes(false)
-	want = []string{"KBOS", "KJFK", "FINAL"}
+	want = []string{"FINAL"}
 	if !equalStrings(got, want) {
 		t.Errorf("joined approach: got %v, want %v", got, want)
 	}
@@ -116,7 +119,7 @@ func TestGetSTTFixes_STARS_Overflight120NM(t *testing.T) {
 	ac.TypeOfFlight = av.FlightTypeOverflight
 
 	got := ac.GetSTTFixes(false)
-	want := []string{"KBOS", "KJFK", "NEAR", "MIDDL"}
+	want := []string{"NEAR", "MIDDL"}
 	if !equalStrings(got, want) {
 		t.Errorf("STARS overflight: got %v, want %v", got, want)
 	}
@@ -131,7 +134,7 @@ func TestGetSTTFixes_STARS_OverflightFirstFixAlwaysIncluded(t *testing.T) {
 	ac.TypeOfFlight = av.FlightTypeOverflight
 
 	got := ac.GetSTTFixes(false)
-	want := []string{"KBOS", "KJFK", "FIRST"}
+	want := []string{"FIRST"}
 	if !equalStrings(got, want) {
 		t.Errorf("STARS overflight: got %v, want %v", got, want)
 	}
@@ -150,7 +153,7 @@ func TestGetSTTFixes_ERAM_Allows300NMAndCapsAt5(t *testing.T) {
 	ac := makeAircraftForSTTFixes(wps)
 
 	got := ac.GetSTTFixes(true)
-	want := []string{"KBOS", "KJFK", "ALPHA", "BRAVO", "CHARL", "DELTA", "ECHO"}
+	want := []string{"ALPHA", "BRAVO", "CHARL", "DELTA", "ECHO"}
 	if !equalStrings(got, want) {
 		t.Errorf("ERAM: got %v, want %v", got, want)
 	}
@@ -166,7 +169,7 @@ func TestGetSTTFixes_ERAM_CullsBeyond300NM(t *testing.T) {
 	ac := makeAircraftForSTTFixes(wps)
 
 	got := ac.GetSTTFixes(true)
-	want := []string{"KBOS", "KJFK", "NEAR", "MID"}
+	want := []string{"NEAR", "MID"}
 	if !equalStrings(got, want) {
 		t.Errorf("ERAM: got %v, want %v", got, want)
 	}
@@ -183,9 +186,43 @@ func TestGetSTTFixes_SkipsInternalAndShortFixes(t *testing.T) {
 	ac := makeAircraftForSTTFixes(wps)
 
 	got := ac.GetSTTFixes(false)
-	want := []string{"KBOS", "KJFK", "GOOD"}
+	want := []string{"GOOD"}
 	if !equalStrings(got, want) {
 		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+// An airport is worth naming only when the aircraft is near it: a Teterboro
+// departure is never sent direct to Orlando, and carrying it costs a slot in
+// the fix vocabulary and in the whisper prompt. The same rule applies to both
+// airports whatever the type of flight.
+func TestGetSTTFixes_AirportsOnlyWhenNear(t *testing.T) {
+	jfk, ok := av.DB.LookupAirport("KJFK")
+	if !ok {
+		t.Fatal("KJFK not in the database")
+	}
+
+	for _, tc := range []struct {
+		name               string
+		departure, arrival string
+		want               []string
+	}{
+		{"both near", "KJFK", "KLGA", []string{"KLGA", "KJFK", "GOOD"}},
+		{"distant destination", "KJFK", "KMCO", []string{"KJFK", "GOOD"}},
+		{"distant origin", "KMCO", "KLGA", []string{"KLGA", "GOOD"}},
+		{"both distant", "KMCO", "KSFO", []string{"GOOD"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ac := makeAircraftForSTTFixes([]av.Waypoint{{Fix: "GOOD", Location: jfk.Location}})
+			ac.Nav.FlightState.Position = jfk.Location
+			ac.FlightPlan.DepartureAirport = tc.departure
+			ac.FlightPlan.ArrivalAirport = tc.arrival
+			ac.TypeOfFlight = av.FlightTypeArrival
+
+			if got := ac.GetSTTFixes(false); !equalStrings(got, tc.want) {
+				t.Errorf("got %v, want %v", got, tc.want)
+			}
+		})
 	}
 }
 
