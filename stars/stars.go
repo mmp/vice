@@ -1896,14 +1896,15 @@ func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 		}
 	}
 
-	// Alias significant points by short name — in the lookup map only, so the
-	// display slice has no duplicates. Flight plans carry the 3-character
-	// short name for points with longer names, so lookups by flight-plan fix
-	// must resolve through it.
-	for _, pt := range sp.significantPointsSlice {
-		if pt.ShortName != "" {
-			if _, ok := sp.significantPoints[pt.ShortName]; !ok {
-				sp.significantPoints[pt.ShortName] = pt
+	// Flight plans carry the 3-character fix id of an adapted significant
+	// point: its short name, or the first three characters of its name when no
+	// short name is adapted. Alias the points by that id so lookups by
+	// flight-plan fix resolve.
+	fa := &ss.FacilityAdaptation
+	for _, name := range slices.Sorted(maps.Keys(fa.SignificantPoints)) {
+		if id := fa.FixPairFixID(name); id != name {
+			if _, ok := sp.significantPoints[id]; !ok {
+				sp.significantPoints[id] = fa.SignificantPoints[name]
 			}
 		}
 	}
