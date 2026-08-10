@@ -893,7 +893,7 @@
       ],
       "departure_routes": {
         "22R": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
             "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220"
@@ -901,7 +901,7 @@
           "DIXIE,WHITE": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220"
+            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220 ELVAE NECCK"
           }
         },
         "22R.Background": {
@@ -957,7 +957,7 @@
           "DIXIE,WHITE": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
-            "waypoints": "KEWR-22R/h039@a500/r055@d4.0IEZA/l290"
+            "waypoints": "KEWR-22R/h039@a500/r055@d4.0IEZA/l290 ELVAE NECCK"
           }
         },
         "4L.Background": {
@@ -1028,7 +1028,7 @@
             "departure_controller": "4N",
             "sid": "EWR5",
             "cleared_altitude": 6000,
-            "waypoints": "_EWR4_22Ra/ho5S ELVAE COL/c170/hoC68"
+            "waypoints": "_EWR4_22Ra/ho5S ELVAE NECCK/c170/hoC68"
           }
         },
         "4L.LGA": {
@@ -1061,7 +1061,7 @@
             "departure_controller": "4N",
             "sid": "EWR5",
             "cleared_altitude": 6000,
-            "waypoints": "KEWR-22R/ho5S N040.44.56.415,W074.05.59.472 N040.45.47.955,W074.18.50.383 ELVAE COL/c170/hoC68"
+            "waypoints": "KEWR-22R/ho5S N040.44.56.415,W074.05.59.472 N040.45.47.955,W074.18.50.383 ELVAE NECCK/c170/hoC68"
           }
         },
         "22R.LIB": {
@@ -2126,24 +2126,39 @@
       },
       "departure_routes": {
         "19": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
-            "waypoints": "_TEB4_1a/h280"
+            "waypoints": "KTEB-1/h195@a900/r280"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 2000,
+            "sid": "TEB4",
+            "waypoints": "KTEB-1/h195@a900/r280 ELVAE NECCK"
           }
         },
         "24": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 2000,
-            "sid": "RUUDY6",
-            "waypoints": "DAVIM WENTZ/a1500 RUUDY/h280"
+            "sid": "WENTZ1",
+            "waypoints": "KTEB-6/h240@a520 DAVIM WENTZ/a1500 RUUDY/h280"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 2000,
+            "sid": "WENTZ1",
+            "waypoints": "KTEB-6/h240@a520 DAVIM WENTZ/a1500 RUUDY/h280 ELVAE NECCK"
           }
         },
         "1": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,WHITE,ZIMMZ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
-            "waypoints": "_TEB4_1a/h280"
+            "waypoints": "KTEB-19/h040@d2.3TEB/l280"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 2000,
+            "sid": "TEB4",
+            "waypoints": "KTEB-19/h040@d2.3TEB/l280 ELVAE NECCK"
           }
         },
         "1.Background": {
@@ -2189,31 +2204,31 @@
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "departure_controller": "4N",
             "cleared_altitude": 17000,
-            "sid": "RUUDY6",
+            "sid": "WENTZ1",
             "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5W RUUDY/a10000 "
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "departure_controller": "4N",
             "cleared_altitude": 17000,
-            "sid": "RUUDY6",
+            "sid": "WENTZ1",
             "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5T RUUDY/a10000 "
           },
           "DIXIE,WHITE": {
             "departure_controller": "4N",
             "cleared_altitude": 17000,
-            "sid": "RUUDY6",
+            "sid": "WENTZ1",
             "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5S N040.41.54.921,W074.16.00.507/a6000"
           },
           "BREZY": {
             "departure_controller": "4N",
             "cleared_altitude": 6000,
-            "sid": "RUUDY6",
+            "sid": "WENTZ1",
             "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho1V N040.50.03.936,W074.17.53.638/a6000"
           },
           "SBJ, ARD": {
             "departure_controller": "4N",
             "cleared_altitude": 8000,
-            "sid": "RUUDY6",
+            "sid": "WENTZ1",
             "handoff_controller": "4P",
             "waypoints": "DAVIM WENTZ/a1500/ho N040.48.49.421,W074.11.52.573/a2000 N040.41.06.513,W074.23.03.343/a7000"
           }
@@ -2295,17 +2310,27 @@
       },
       "departure_routes": {
         "5": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SHIPP,WAVEY,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
-            "waypoints": "_MMU5_049/a1700+/h160"
+            "waypoints": "KMMU-23/h049@a1700/r160"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 2000,
+            "sid": "MMU7",
+            "waypoints": "KMMU-23/h049@a1700/r160 ELVAE NECCK"
           }
         },
         "23": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SHIPP,WAVEY,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
-            "waypoints": "_MMU23_229/a600 _MMU23_210/a2000+/h160"
+            "waypoints": "KMMU-5/h229@a600/h210@a2000/l160"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 2000,
+            "sid": "MMU7",
+            "waypoints": "KMMU-5/h229@a600/h210@a2000/l160"
           }
         },
         "23.LIB": {
@@ -2364,16 +2389,25 @@
       },
       "departure_routes": {
         "8": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SHIPP,WAVEY,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 3000,
             "sid": "MMU7",
             "waypoints": "KDXR-26/h260"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 3000,
+            "sid": "MMU7",
+            "waypoints": "KDXR-26/h260 ELVAE NECCK"
           }
         },
         "26": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SHIPP,WAVEY,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 3000,
             "waypoints": "KDXR-8/h080"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 3000,
+            "waypoints": "KDXR-8/h080 ELVAE NECCK"
           }
         }
       },
@@ -3879,7 +3913,7 @@
           "airports": ["KFRG", "KJFK"]
         },
         {
-          "waypoints": "N040.22.20.785,W074.20.53.347 N040.20.55.984,W074.16.57.636/ho COL JFK",
+          "waypoints": "N040.22.20.785,W074.20.53.347 N040.20.55.984,W074.16.57.636/ho NECCK JFK",
           "cruise_altitude": 9000,
           "route": "/. COL",
           "initial_controller": "4P",
@@ -4689,7 +4723,7 @@
         {
           "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
           "cruise_altitude": 39000,
-          "star": "PHLBO4",
+          "star_feeds": ["PHLBO4", "FQM3" ],
           "initial_controller": "4P",
           "initial_altitude": 6000,
           "initial_speed": 250,
