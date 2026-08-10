@@ -36,7 +36,6 @@ const (
 	calendarColumnWidth = 270
 	pickerTableWidth    = 800
 	okButtonWidth       = 50
-	okButtonHeight      = 25
 
 	// Wind arrow dimensions
 	arrowHeadLength = 15
@@ -775,16 +774,20 @@ func drawTimePickerPopup(date *time.Time, clock airportClock, validDays []time.T
 
 		imgui.Separator()
 		changed = TimeSlider(date, clock, timeSliderWidth) || changed
+		calendarBottomY := imgui.CursorPosY()
 
 		// Right side: METAR display
 		imgui.TableNextColumn()
 		largeFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.LargeFontAwesomeOnly, Size: 64})
 		drawMETARDisplay(metars[metarIdx], monospaceFont, largeFont)
 
-		// "Ok" button--push the button to the bottom using available space
-		availableHeight := imgui.ContentRegionAvail().Y
-		if availableHeight > okButtonHeight {
-			imgui.SetCursorPosY(imgui.CursorPosY() + availableHeight - okButtonHeight)
+		// "Ok" button--push it down to the bottom of the calendar column. The
+		// target y comes from the calendar's height rather than
+		// ContentRegionAvail().Y: the popup auto-resizes to fit its contents, so
+		// measuring against the window's bottom edge feeds this frame's layout
+		// back into next frame's window size and the popup grows without bound.
+		if y := calendarBottomY - imgui.FrameHeight(); y > imgui.CursorPosY() {
+			imgui.SetCursorPosY(y)
 		}
 		// Now draw it all the way to the right.
 		availableWidth := imgui.ContentRegionAvail().X
