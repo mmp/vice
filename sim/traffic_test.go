@@ -17,10 +17,10 @@ import (
 
 // publishedProviderTestSim builds the minimal Sim the published-traffic provider needs:
 // the user-selected start time, the sim clock rewound for prespawn (which is
-// when the provider is first built), and a "TEST" inbound flow into KMSP. The
-// aviation database is swapped for a synthetic one with no city-pair routes,
-// so every arrival places through the great-circle gate and the tests stay
-// independent of the real route data.
+// when the provider is first built), a "TEST" inbound flow into KMSP, and two
+// departure runways there with a gate apiece. The aviation database is swapped
+// for a synthetic one with no city-pair routes, so every flight places through
+// the great-circle gate and the tests stay independent of the real route data.
 //
 // The flow's rate is zero on purpose: that is how much traffic the scenario's own
 // generator makes and has no bearing on published arrivals, which arrive when the
@@ -28,23 +28,45 @@ import (
 // enabled here exactly as MakeLaunchConfig would leave it.
 func publishedProviderTestSim(t *testing.T, start Time) *Sim {
 	oldDB := av.DB
-	av.DB = &av.StaticDatabase{Airports: map[string]av.FAAAirport{
-		"KMSP": {Id: "KMSP", Location: math.Point2LL{-93.2, 44.9}},
-		"KATL": {Id: "KATL", Location: math.Point2LL{-84.4, 33.6}},
-		"KORD": {Id: "KORD", Location: math.Point2LL{-87.9, 42.0}},
-		"KDEN": {Id: "KDEN", Location: math.Point2LL{-104.7, 39.9}},
-	}}
+	av.DB = &av.StaticDatabase{
+		Airports: map[string]av.FAAAirport{
+			"KMSP": {Id: "KMSP", Location: math.Point2LL{-93.2, 44.9}},
+			"KATL": {Id: "KATL", Location: math.Point2LL{-84.4, 33.6}},
+			"KORD": {Id: "KORD", Location: math.Point2LL{-87.9, 42.0}},
+			"KDEN": {Id: "KDEN", Location: math.Point2LL{-104.7, 39.9}},
+		},
+		Fixes: map[string]av.Fix{
+			"DEPSE": {Id: "DEPSE", Location: math.Point2LL{-92.0, 44.0}},
+			"DEPSW": {Id: "DEPSW", Location: math.Point2LL{-94.5, 44.0}},
+		},
+	}
 	t.Cleanup(func() { av.DB = oldDB })
 
 	return &Sim{
 		StartTime: start,
 		State: &CommonState{
+			NmPerLongitude: 45,
 			DynamicState: DynamicState{
 				SimTime: NewSimTime(start.Time().Add(-PrespawnDuration)),
 				LaunchConfig: LaunchConfig{
 					InboundFlowRates:   map[string]map[string]float32{"TEST": {"KMSP": 0}},
 					InboundFlowEnabled: map[string]map[string]bool{"TEST": {"KMSP": true}},
+					DepartureEnabled: map[string]map[av.RunwayID]map[string]bool{
+						"KMSP": {"12L": {"": true}, "30R": {"": true}},
+					},
 				},
+			},
+			Airports: map[string]*av.Airport{
+				"KMSP": {
+					DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+						"12L": {"DEPSE": {{}}},
+						"30R": {"DEPSW": {{}}},
+					},
+				},
+			},
+			DepartureRunways: []DepartureRunway{
+				{Airport: "KMSP", Runway: "12L"},
+				{Airport: "KMSP", Runway: "30R"},
 			},
 			InboundFlows: map[string]*av.InboundFlow{
 				// Two gates, so that each of the origins above has one
@@ -204,6 +226,65 @@ func TestPublishedTrafficProviderWaitsForPublishedTime(t *testing.T) {
 	}
 	if delay != 5*time.Minute {
 		t.Fatalf("delay = %s, want 5m", delay)
+	}
+}
+
+// The runways at an airport hold different gates, so a runway steps over the
+// flights that leave through another's rather than dropping them. JFK departing
+// 13L/R is the case that caught this: the north and east gates are off 13L and
+// the south and west ones off 13R, so whichever runway asked first was dropping
+// the other's flights.
+func TestPublishedDeparturesWaitForTheirRunway(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := publishedProviderTestSim(t, start)
+	s.State.SimTime = start
+
+	p := &publishedTrafficProvider{departures: []publishedFlight{
+		{flight: testFlight("DAL1", "KMSP", "KORD", true, 14, 0), spawn: start},
+		{flight: testFlight("DAL2", "KMSP", "KDEN", true, 14, 1), spawn: start},
+	}}
+
+	// KORD lies out the southeast gate, which only 12L launches.
+	if got := p.nextDepartureFor(s, "KMSP", "12L"); got != 0 {
+		t.Errorf("12L takes departure %d, want DAL1 to KORD", got)
+	}
+	// 30R holds the southwest gate, so DAL1 isn't its to fly; it takes DAL2
+	// rather than dropping DAL1 to get to it.
+	if got := p.nextDepartureFor(s, "KMSP", "30R"); got != 1 {
+		t.Errorf("30R takes departure %d, want DAL2 to KDEN", got)
+	}
+	if len(p.departures) != 2 {
+		t.Errorf("%d departures left in the queue, want both still waiting", len(p.departures))
+	}
+}
+
+// A flight no runway at the airport can fly is dropped when it comes due, which
+// is when the drop is worth reporting; leaving it in the queue any longer would
+// stall the departures behind it.
+func TestPublishedDeparturesDropWhatNoRunwayFlies(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := publishedProviderTestSim(t, start)
+	// Due north of KMSP: neither gate heads anywhere near it.
+	av.DB.Airports["KGFK"] = av.FAAAirport{Id: "KGFK", Location: math.Point2LL{-93.2, 48.0}}
+
+	p := &publishedTrafficProvider{departures: []publishedFlight{
+		{flight: testFlight("DAL1", "KMSP", "KGFK", true, 14, 0), spawn: start},
+	}}
+
+	s.State.SimTime = NewSimTime(start.Time().Add(-time.Minute))
+	if got := p.nextDepartureFor(s, "KMSP", "12L"); got != -1 {
+		t.Errorf("12L takes departure %d, want none", got)
+	}
+	if len(p.departures) != 1 {
+		t.Error("dropped a departure before its published time")
+	}
+
+	s.State.SimTime = start
+	if got := p.nextDepartureFor(s, "KMSP", "12L"); got != -1 {
+		t.Errorf("12L takes departure %d, want none", got)
+	}
+	if len(p.departures) != 0 {
+		t.Error("kept a departure no runway can fly")
 	}
 }
 

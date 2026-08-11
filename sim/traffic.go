@@ -1116,67 +1116,112 @@ func hourDistance(h av.HourRanges, hour int) int {
 
 func (p *publishedTrafficProvider) createIFRDeparture(s *Sim, airport string,
 	runway av.RunwayID) (*Aircraft, time.Duration, error) {
-	// Find the next departure from this airport; the queue holds every airport
-	// the facility works and each runway asks for its own.
-	index := -1
-	for i := range p.departures {
-		if p.departures[i].flight.Airport == airport {
-			index = i
-			break
-		}
+	categories := s.State.LaunchConfig.enabledDepartureCategories(airport, runway)
+	if len(categories) == 0 {
+		// This runway isn't launching anything in this scenario. Leave its
+		// flights for the other runways and check back rather than dropping
+		// them, in case a flow is enabled while the sim runs.
+		return nil, time.Minute, nil
 	}
+
+	index := p.nextDepartureFor(s, airport, runway)
 	if index < 0 {
 		return nil, idleDelay, nil
 	}
-
 	published := p.departures[index]
 	if s.State.SimTime.Before(published.spawn) {
 		return nil, published.spawn.Sub(s.State.SimTime), nil
 	}
 
-	// The enabled flows say which categories this runway is launching, and
-	// nothing more: how many aircraft go where comes from the flights
-	// themselves.
-	var categories []string
-	for category, enabled := range s.State.LaunchConfig.DepartureEnabled[airport][runway] {
-		if enabled {
-			categories = append(categories, category)
-		}
-	}
-	if len(categories) == 0 {
-		// This runway isn't launching anything in this scenario. Leave the
-		// flight for another runway at the airport and check back rather than
-		// holding it, in case a flow is enabled while the sim runs.
-		return nil, time.Minute, nil
-	}
-	slices.Sort(categories)
-
 	ac, err := s.createPublishedIFRDepartureNoLock(published.flight, airport, runway,
 		categories, p.routed.destinationsByOrigin)
 	p.departures = append(p.departures[:index], p.departures[index+1:]...)
 
-	if errors.Is(err, errNoScenarioRoute) {
-		// The scenario doesn't model where this flight went, so it isn't
-		// launched. The queue is per-airport, so the flight isn't offered to
-		// another runway; scenarios run one departure configuration per
-		// airport, so nothing is lost.
-		s.log("%s: dropped departure %s->%s (%s): %v", published.flight.Callsign,
-			airport, published.flight.Other, published.flight.AircraftType, err)
-		return nil, p.departureDelay(s, airport), nil
-	}
 	if errors.Is(err, errCallsignInUse) {
 		p.noteCallsignClash(s, published.flight.Callsign, err)
-		return nil, p.departureDelay(s, airport), nil
+		return nil, p.departureDelay(s, airport, runway), nil
 	}
-	return ac, p.departureDelay(s, airport), err
+	return ac, p.departureDelay(s, airport, runway), err
 }
 
-// departureDelay is how long until the next departure from an airport is due.
-func (p *publishedTrafficProvider) departureDelay(s *Sim, airport string) time.Duration {
-	for i := range p.departures {
-		if p.departures[i].flight.Airport == airport {
-			return max(time.Millisecond, p.departures[i].spawn.Sub(s.State.SimTime))
+// nextDepartureFor returns the index of the next departure this runway should
+// launch, or -1 if it has none. A published flight leaves through the gate its
+// real route uses, so a runway steps over the flights that belong to another
+// runway the scenario is launching from rather than dropping them: JFK
+// departing 13L/R works the north and east gates off 13L and the south and west
+// ones off 13R. Flights no runway can fly are dropped as they come due, which
+// is when the drop is worth reporting.
+func (p *publishedTrafficProvider) nextDepartureFor(s *Sim, airport string,
+	runway av.RunwayID) int {
+	for i := 0; i < len(p.departures); {
+		published := p.departures[i]
+		if published.flight.Airport != airport {
+			i++
+			continue
 		}
+
+		err := p.departureFits(s, published.flight, runway)
+		if err == nil {
+			return i
+		}
+		if s.State.SimTime.Before(published.spawn) ||
+			p.anotherRunwayFits(s, published.flight, runway) {
+			i++
+			continue
+		}
+
+		s.log("%s: dropped departure %s->%s (%s): %v", published.flight.Callsign,
+			airport, published.flight.Other, published.flight.AircraftType, err)
+		p.departures = append(p.departures[:i], p.departures[i+1:]...)
+	}
+	return -1
+}
+
+// departureFits reports whether a runway can fly a published departure, giving
+// the reason when it can't.
+func (p *publishedTrafficProvider) departureFits(s *Sim, flight av.Flight, runway av.RunwayID) error {
+	categories := s.State.LaunchConfig.enabledDepartureCategories(flight.Airport, runway)
+	if len(categories) == 0 {
+		return fmt.Errorf("%s: the scenario launches nothing from this runway", runway)
+	}
+	_, err := s.findPublishedDeparture(flight.Airport, runway, categories, flight.Other,
+		flight.AircraftType, p.routed.destinationsByOrigin)
+	return err
+}
+
+// anotherRunwayFits reports whether some runway other than this one can fly a
+// published departure, in which case it waits for that runway rather than being
+// dropped.
+func (p *publishedTrafficProvider) anotherRunwayFits(s *Sim, flight av.Flight,
+	runway av.RunwayID) bool {
+	for other := range s.State.LaunchConfig.DepartureEnabled[flight.Airport] {
+		if other != runway && p.departureFits(s, flight, other) == nil {
+			return true
+		}
+	}
+	return false
+}
+
+// enabledDepartureCategories returns the categories the scenario is launching
+// from a runway, and nothing more: how many aircraft go where comes from the
+// published flights themselves.
+func (lc *LaunchConfig) enabledDepartureCategories(airport string, runway av.RunwayID) []string {
+	var categories []string
+	for category, enabled := range lc.DepartureEnabled[airport][runway] {
+		if enabled {
+			categories = append(categories, category)
+		}
+	}
+	slices.Sort(categories)
+	return categories
+}
+
+// departureDelay is how long until the next departure this runway launches is
+// due.
+func (p *publishedTrafficProvider) departureDelay(s *Sim, airport string,
+	runway av.RunwayID) time.Duration {
+	if i := p.nextDepartureFor(s, airport, runway); i >= 0 {
+		return max(time.Millisecond, p.departures[i].spawn.Sub(s.State.SimTime))
 	}
 	return idleDelay
 }
