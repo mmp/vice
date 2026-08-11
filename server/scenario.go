@@ -205,10 +205,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 	for ctrl, vnames := range s.Airspace {
 		e.Push("airspace")
 
-		// Verify controller is in configuration
-		found := slices.Contains(s.ControllerConfiguration.AllPositions(), ctrl)
-		if !found {
-			e.ErrorString("Controller %q not used in scenario", ctrl)
+		// Only a position a human may staff can be given airspace; one that
+		// isn't in the consolidation tree is virtual.
+		if !slices.Contains(s.ControllerConfiguration.AllPositions(), ctrl) {
+			e.ErrorString(`Controller %q is not in "default_consolidation" for this scenario, `+
+				`so it is a virtual position and cannot be given airspace`, ctrl)
 		}
 		for _, vname := range vnames {
 			if _, ok := sg.Airspace.Volumes[vname]; !ok {
