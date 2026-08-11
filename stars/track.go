@@ -1132,6 +1132,12 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context) {
 			return false
 		}
 
+		// Background traffic that virtual controllers are working can't be
+		// maneuvered, so alerting on it is only a distraction.
+		if trka.VirtuallyControlled && trkb.VirtuallyControlled {
+			return false
+		}
+
 		// Quick outs before more expensive checks: using approximate
 		// distance; don't bother if they're >10nm apart or have >5000'
 		// vertical separation.

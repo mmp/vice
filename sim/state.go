@@ -212,6 +212,8 @@ func makeDerivedState(s *Sim) DerivedState {
 			ATPAVolume:                ac.ATPAVolume(),
 			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
 			RequestedFlightFollowing:  ac.RequestedFlightFollowing,
+			VirtuallyControlled: ac.NASFlightPlan != nil &&
+				s.isVirtualController(ac.NASFlightPlan.TrackingController),
 		}
 
 		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
@@ -622,4 +624,5 @@ type Track struct {
 	IsTentative               bool   // first 5 seconds after first contact
 	CWTCategory               string // True CWT from aircraft performance DB, not from NAS flight plan
 	RequestedFlightFollowing  bool   // VFR aircraft that has requested flight following
+	VirtuallyControlled       bool   // tracked by a virtual controller rather than a human one
 }
