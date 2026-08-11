@@ -147,23 +147,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 			s.ControllerConfiguration.DefaultConsolidation = deep.MustCopy(config.DefaultConsolidation)
 		}
 
-		// Auto-add airspace controllers to consolidation if they're valid
-		// control positions but missing from the consolidation tree.
-		if len(s.ControllerConfiguration.DefaultConsolidation) > 0 {
-			allPos := s.ControllerConfiguration.AllPositions()
-			root, rootErr := s.ControllerConfiguration.DefaultConsolidation.RootPosition()
-			if rootErr == nil {
-				for ctrl := range s.Airspace {
-					if !slices.Contains(allPos, ctrl) {
-						if _, inFacility := sg.FacilityConfig.ControlPositions[sg.resolveController(ctrl)]; inFacility {
-							s.ControllerConfiguration.DefaultConsolidation[root] = append(
-								s.ControllerConfiguration.DefaultConsolidation[root], ctrl)
-						}
-					}
-				}
-			}
-		}
-
 		// Filter assignments to only include entries targeting positions that
 		// exist as known controllers. The facility config's full assignments
 		// cover all positions in the TRACON, but some may reference
@@ -837,8 +820,8 @@ func makeCircleAirportFilters(id string, description string, radius float32,
 		}
 		regions = append(regions, sim.FilterRegion{
 			AirspaceVolume: av.AirspaceVolume{
-				Id:          id + apname,
-				Description: description + " " + apname,
+				Id:          apname + id,
+				Description: apname + " " + description,
 				Type:        av.AirspaceVolumeCircle,
 				Floor:       0,
 				Ceiling:     ap.Elevation + ceiling,
@@ -902,8 +885,8 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 
 		regions = append(regions, sim.FilterRegion{
 			AirspaceVolume: av.AirspaceVolume{
-				Id:          id + apname,
-				Description: description + " " + apname,
+				Id:          apname + id,
+				Description: apname + " " + description,
 				Type:        av.AirspaceVolumePolygon,
 				Floor:       0,
 				Ceiling:     ap.Elevation + ceiling,
@@ -912,6 +895,62 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 		})
 	}
 	return regions
+}
+
+// pruneAirportFilters removes the filter regions for airports the scenario
+// doesn't use. A facility's adaptation covers all of its airports but a
+// scenario generally uses only a few of them; the rest are just clutter in
+// the processing areas list. A region that doesn't cover any of the
+// facility's airports (e.g. a facility-wide suppression area) is always kept.
+//
+// Which airports count depends on what the filter does. Alerting and
+// acquisition are only of interest where the scenario has IFR traffic.
+// Arrival drop and surface tracking, however, determine whether an aircraft
+// has a track at all: surface tracking is what keeps aircraft on the ground
+// from painting, so pruning it at an airport with VFR traffic would put
+// taxiing aircraft on the scope. Filters that aren't tied to an airport at
+// all--secondary drop and VFR inhibit, which restrict airspace--are left
+// alone.
+func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []string, dep []sim.DepartureRunway,
+	arr []sim.ArrivalRunway, vfrRates map[string]float32) {
+	ifr := make(map[string]bool)
+	for _, rwy := range dep {
+		ifr[rwy.Airport] = true
+	}
+	for _, rwy := range arr {
+		ifr[rwy.Airport] = true
+	}
+	any := maps.Clone(ifr)
+	for icao, rate := range vfrRates {
+		if rate > 0 {
+			any[icao] = true
+		}
+	}
+
+	prune := func(regions *sim.FilterRegions, active map[string]bool) {
+		*regions = util.FilterSlice(*regions, func(r sim.FilterRegion) bool {
+			covered := false
+			for _, name := range airports {
+				ap, ok := av.DB.Airports[name]
+				if !ok || !r.Inside(ap.Location, ap.Elevation) {
+					continue
+				}
+				if active[name] {
+					return true
+				}
+				covered = true
+			}
+			return !covered
+		})
+	}
+
+	f := &fa.Filters
+	prune(&f.AutoAcquisition, ifr)
+	prune(&f.Departure, ifr)
+	prune(&f.InhibitCA, ifr)
+	prune(&f.InhibitMSAW, ifr)
+	prune(&f.ArrivalDrop, any)
+	prune(&f.SurfaceTracking, any)
 }
 
 // resolveERAMCoordination returns this TRACON's pseudo-ERAM coordination
@@ -991,8 +1030,8 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.FacilityConfig.FacilityAdaptation.Center)
 
-	// Auto-create default airport filters if none were specified in the
-	// facility config. This is a scenario-group concern because it uses
+	// Create default airport filters for the airports the facility config
+	// doesn't cover itself. This is a scenario-group concern because it uses
 	// the scenario group's airport lists.
 	fa := &sg.FacilityConfig.FacilityAdaptation
 	// Sorted so that the regions come out in a consistent order; STARS assigns
@@ -1003,36 +1042,40 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	})
 	nmPerLongitude := math.NMPerLongitudeAt(fa.Center)
 
-	if len(fa.Filters.ArrivalDrop) == 0 {
-		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 500, ifrAirports, nmPerLongitude, e)
+	// An airport that one of the config's own regions already covers doesn't
+	// get a default one.
+	uncovered := func(regions sim.FilterRegions, airports []string) []string {
+		return util.FilterSlice(airports, func(name string) bool {
+			ap, ok := av.DB.Airports[name]
+			return !ok || !regions.Inside(ap.Location, ap.Elevation)
+		})
 	}
-	if len(fa.Filters.Departure) == 0 {
-		fa.Filters.Departure = makePolygonAirportFilters("DEP", "DEPARTURE", 0.5, 500, ifrAirports, nmPerLongitude, e)
-	}
-	if len(fa.Filters.InhibitCA) == 0 {
-		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 3000, ifrAirports, e)
-	}
-	if len(fa.Filters.InhibitMSAW) == 0 {
-		fa.Filters.InhibitMSAW = makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 3000, ifrAirports, e)
-	}
-	if len(fa.Filters.SurfaceTracking) == 0 {
-		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 200, allAirports, nmPerLongitude, e)
-	}
+	arrivalDrop := makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 500,
+		uncovered(fa.Filters.ArrivalDrop, ifrAirports), nmPerLongitude, e)
+	departure := makePolygonAirportFilters("DEP", "DEPARTURE", 0.5, 500,
+		uncovered(fa.Filters.Departure, ifrAirports), nmPerLongitude, e)
+	inhibitCA := makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 3000,
+		uncovered(fa.Filters.InhibitCA, ifrAirports), e)
+	inhibitMSAW := makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 3000,
+		uncovered(fa.Filters.InhibitMSAW, ifrAirports), e)
+	surfaceTracking := makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 200,
+		uncovered(fa.Filters.SurfaceTracking, allAirports), nmPerLongitude, e)
 
-	// Validate the newly created airport filters (user-defined ones are
-	// validated inside fa.PostDeserialize).
-	checkAirportFilter := func(f sim.FilterRegions) {
-		for i, filt := range f {
-			e.Push(filt.Description)
-			f[i].AirspaceVolume.PostDeserialize(sg, e)
+	// Validate the newly created airport filters (the config's own are
+	// validated inside fa.PostDeserialize) and add them to the adapted ones.
+	addAirportFilters := func(regions, created sim.FilterRegions) sim.FilterRegions {
+		for i := range created {
+			e.Push(created[i].Description)
+			created[i].AirspaceVolume.PostDeserialize(sg, e)
 			e.Pop()
 		}
+		return append(regions, created...)
 	}
-	checkAirportFilter(fa.Filters.ArrivalDrop)
-	checkAirportFilter(fa.Filters.Departure)
-	checkAirportFilter(fa.Filters.InhibitCA)
-	checkAirportFilter(fa.Filters.InhibitMSAW)
-	checkAirportFilter(fa.Filters.SurfaceTracking)
+	fa.Filters.ArrivalDrop = addAirportFilters(fa.Filters.ArrivalDrop, arrivalDrop)
+	fa.Filters.Departure = addAirportFilters(fa.Filters.Departure, departure)
+	fa.Filters.InhibitCA = addAirportFilters(fa.Filters.InhibitCA, inhibitCA)
+	fa.Filters.InhibitMSAW = addAirportFilters(fa.Filters.InhibitMSAW, inhibitMSAW)
+	fa.Filters.SurfaceTracking = addAirportFilters(fa.Filters.SurfaceTracking, surfaceTracking)
 
 	if sg.ARTCC == "" {
 		if sg.TRACON == "" {
@@ -2925,6 +2968,9 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		HandoffIDs:              scenarioGroup.FacilityConfig.HandoffIDs,
 		ERAMCoordination:        scenarioGroup.ERAMCoordination,
 	}
+
+	pruneAirportFilters(&newSimConfig.FacilityAdaptation, util.SortedMapKeys(scenarioGroup.Airports),
+		simConfig.DepartureRunways, simConfig.ArrivalRunways, simConfig.LaunchConfig.VFRAirportRates)
 
 	// LoadScenarioGroups already validated emergencies.json; re-parse to hand the list to the sim.
 	newSimConfig.Emergencies = loadEmergencies(nil)

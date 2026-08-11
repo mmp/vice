@@ -346,6 +346,9 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 		ERAMCoordination:            sg.ERAMCoordination,
 	}
 
+	pruneAirportFilters(&nsc.FacilityAdaptation, util.SortedMapKeys(sg.Airports),
+		sc.DepartureRunways, sc.ArrivalRunways, nsc.LaunchConfig.VFRAirportRates)
+
 	// Look up historical TFRs for this facility and time.
 	artcc := sg.ARTCC
 	if artcc == "" {
