@@ -2400,7 +2400,7 @@
     "HYPER1 (GANDE/FILGA - 39)": {
       "arrivals": [
         {
-          "waypoints": "KEAVR/ho BOTLS/a280 JETTZ SARAA LRP JOANE DELRO LIRCH/delete",
+          "waypoints": "KEAVR/ho BOTLS/a28000 JETTZ SARAA LRP JOANE DELRO LIRCH/delete",
           "cruise_altitude": 36000,
           "star": "HYPER1",
           "route": "/. BOTLS JETTZ SARAA LRP JOANE DELRO LIRCH",

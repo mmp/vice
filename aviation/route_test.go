@@ -245,6 +245,35 @@ func TestCheckArrivalInterceptRequiresApproach(t *testing.T) {
 	}
 }
 
+func TestCheckArrivalCatchesHundredsOfFeetAltitudes(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	check := func(route string) bool {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var e util.ErrorLogger
+		WaypointArray(wps).CheckArrival(&e, nil, false, func(string) bool { return true })
+		return e.HaveErrors()
+	}
+
+	if !check("CCC/a120 ROBER/a50 ZULAB/a1800 KJFK-31R/a100") {
+		t.Error("expected errors for altitude restrictions given in hundreds of feet")
+	}
+	if !check("CAMRN/a120+ MEALS/a300- ZULAB/a1800 KJFK-31L/a100") {
+		t.Error("expected errors for at or above/below restrictions in hundreds of feet")
+	}
+	if check("CCC/a12000 ROBER/a5000 ZULAB/a1800 KJFK-31R/a100") {
+		t.Error("unexpected errors for altitude restrictions in feet")
+	}
+	if check("CCC/a12000 ROBER/a5000 ZULAB/a001/s130 KJFK-31R/delete") {
+		t.Error("unexpected errors at the deletion waypoint and the one before it")
+	}
+}
+
 func TestParseActionGroupErrorIncludesWaypointContext(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}

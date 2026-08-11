@@ -994,6 +994,10 @@ func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, 
 	}
 }
 
+// minCrossingAltitude is the lowest altitude restriction we accept at an
+// arrival's intermediate waypoints.
+const minCrossingAltitude float32 = 500
+
 func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPosition]*Controller, approachAssigned bool,
 	checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
@@ -1002,10 +1006,30 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 	wa.checkDescending(e)
 	haveHO := false
 
-	for _, wp := range wa {
+	for i, wp := range wa {
 		e.Push(wp.Fix)
 		if wp.IAF() || wp.IF() || wp.FAF() {
 			e.ErrorString("Unexpected IAF/IF/FAF specification in arrival")
+		}
+		// Unlike the /c and /d modifiers, /a altitudes are in feet; a very
+		// low one is almost always a missing factor of 100. Waypoints at
+		// the end of the route are exempt, since the aircraft is at the
+		// runway there and low altitudes are expected.
+		atEnd := i+1 == len(wa) || wp.Delete() || wa[i+1].Delete()
+		if ar := wp.AltitudeRestriction(); ar != nil && !atEnd {
+			alt := ar.Range[0]
+			if ar.Range[1] != MaxAltitude {
+				alt = max(alt, ar.Range[1])
+			}
+			if alt > 0 && alt < minCrossingAltitude {
+				scaled := *ar
+				scaled.Range[0] *= 100
+				if scaled.Range[1] != MaxAltitude {
+					scaled.Range[1] *= 100
+				}
+				e.ErrorString("/a%s is below %s, which is almost certainly not intended. Is it supposed to be /a%s?",
+					ar.Encoded(), FormatAltitude(minCrossingAltitude), scaled.Encoded())
+			}
 		}
 		if wp.ClearApproach() && !approachAssigned {
 			e.ErrorString("/clearapp specified but no approach has been assigned")
