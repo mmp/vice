@@ -668,6 +668,7 @@
           "EAST SAT ARR": "5M",
           "NORTH CRQ ARR": "5D",
           "NORTH SAT ARR": "5M",
+          "V317 SAN ARR": "5E",
           "SOUTHEAST MYF ARR": "5E",
           "W291 NZY ARR": "5Z",
           "W291 NKX ARR": "5M",
@@ -701,6 +702,7 @@
           "CHASR2.IPL": "5E",
           "LUCKI1.HEELX": "5E",
           "LUCKI1.MOMAR": "5E",
+          "V317 SAN ARR": "5E",
           "SOUTHEAST MYF ARR": "5E",
           "EAST SAT ARR": "5E",
           "FIN_W NORTH SECTOR FEED": "5E",
@@ -2564,6 +2566,7 @@
       }
     },
     "lists": {
+      "ssa": { "system_altimeter": "KLAX" },
       "coordination": [
         {
           "name": "HAWTHORNE",
@@ -2615,10 +2618,7 @@
           "id": "56",
           "airports": ["KNKX"]
         }
-      ],
-      "ssa": {
-        "system_altimeter": "KLAX"
-      }
+      ]
     },
     "datablocks": {
       "clock_phase": {

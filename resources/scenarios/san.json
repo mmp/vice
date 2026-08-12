@@ -310,7 +310,7 @@
         {
           "exit": "TRM",
           "destination": "KIAD",
-          "route": "TRM DRK JARLO GIBBZ6",
+          "route": "TRM DRK JARLO GIBBZ5",
           "airlines": [
             {
               "icao": "N",
@@ -1846,7 +1846,7 @@
           "destination": "KIAD",
           "exit": "TGOLD",
           "scratchpad": "ZOI",
-          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
+          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
         },
         {
           "airlines": [
@@ -2229,7 +2229,7 @@
           "destination": "KIAD",
           "exit": "IPL.E",
           "scratchpad": "SAI",
-          "route": "IPL CUVAM MANRS JUDTH TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
+          "route": "IPL CUVAM MANRS JUDTH TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
         },
         {
           "airlines": [
@@ -2577,7 +2577,7 @@
           "destination": "KIAD",
           "exit": "TGOLD",
           "scratchpad": "ZOI",
-          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ6"
+          "route": "ZZOOO4 TGOLD PXR J18 ABQ BVO SGF FAM PXV J78 DACOS JARLO GIBBZ5"
         },
         {
           "airlines": [
@@ -4061,6 +4061,40 @@
               {
                 "icao": "UAL",
                 "airport": "KIAD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "QXE",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SKW",
+                "fleet": "long",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SKW",
+                "fleet": "long",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KLAS"
               }
             ]
           }
@@ -4465,6 +4499,74 @@
               {
                 "icao": "UAL",
                 "airport": "KIAD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "QXE",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SKW",
+                "fleet": "long",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SKW",
+                "fleet": "long",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "QXE",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SKW",
+                "fleet": "long",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SKW",
+                "fleet": "long",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KLAS"
               }
             ]
           }
@@ -4695,7 +4797,7 @@
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
-          "airports": ["KNZY", "KSDM"],
+          "airports": ["KSDM", "KNZY"],
           "airlines": {
             "KSDM": [
               {
@@ -5226,7 +5328,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
-          "airports": ["KMYF", "KSDM", "KSEE"],
+          "airports": ["KMYF", "KSEE", "KSDM"],
           "airlines": {
             "KMYF": [
               {
@@ -5643,88 +5745,6 @@
         }
       ]
     },
-    "PLYYA2.DIRBY": {
-      "arrivals": [
-        {
-          "waypoints": "DIRBY/a19000 PITTD/a16500-/ho4Y OHBEA/a15000+/d110/ho PLYYA/a11000+ MNLYT/a4000+ SARGS/a2100",
-          "star": "PLYYA2",
-          "is_rnav": true,
-          "initial_controller": "C22",
-          "initial_altitude": 19000,
-          "initial_speed": 280,
-          "expect_approach": null,
-          "airports": ["KSAN"],
-          "airlines": {
-            "KSAN": [
-              {
-                "icao": "ASA",
-                "airport": "PHNL"
-              },
-              {
-                "icao": "ASA",
-                "airport": "PHKO"
-              },
-              {
-                "icao": "ASA",
-                "airport": "PHOG"
-              },
-              {
-                "icao": "SWA",
-                "airport": "PHOG"
-              },
-              {
-                "icao": "ASA",
-                "airport": "PHNL"
-              },
-              {
-                "icao": "SWA",
-                "airport": "PHNL"
-              },
-              {
-                "icao": "ASA",
-                "airport": "PHLI"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KSFO"
-              }
-            ]
-          }
-        }
-      ]
-    },
     "SOUTHEAST MYF ARR": {
       "arrivals": [
         {
@@ -5776,6 +5796,31 @@
                 "icao": "N",
                 "fleet": "GAsinglepiston",
                 "airport": "KDVT"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "V317 SAN ARR": {
+      "arrivals": [
+        {
+          "waypoints": "IPL JONDA N032.40.39.857,W116.16.56.564/ho BROWS PGY",
+          "route": "IPL V317 PGY",
+          "initial_controller": "C09",
+          "initial_altitude": 8000,
+          "initial_speed": 180,
+          "expect_approach": null,
+          "airports": ["KSAN"],
+          "airlines": {
+            "KSAN": [
+              {
+                "icao": "PCM",
+                "airport": "KIPL"
+              },
+              {
+                "icao": "PCM",
+                "airport": "KIPL"
               }
             ]
           }
@@ -5969,7 +6014,7 @@
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
-          "airports": ["KNZY", "KSDM"],
+          "airports": ["KSDM", "KNZY"],
           "airlines": {
             "KSDM": [
               {
@@ -8030,6 +8075,9 @@
         "SOUTHEAST MYF ARR": {
           "KMYF": 2
         },
+        "V317 SAN ARR": {
+          "KSAN": 1
+        },
         "NORTH CRQ ARR": {
           "KCRQ": 2
         },
@@ -8158,6 +8206,9 @@
         },
         "SOUTHEAST MYF ARR": {
           "KMYF": 2
+        },
+        "V317 SAN ARR": {
+          "KSAN": 1
         },
         "EAST SAT ARR": {
           "KSEE": 2,

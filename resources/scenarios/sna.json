@@ -1679,7 +1679,6 @@
       "arrivals": [
         {
           "waypoints": "KAYNN/a7000- LAXBB/a5000/s230/ho KLEVR/a5000/s200/clearapp",
-          "star_feeds": ["OHSEA3", "RUKKI1", "TANDY6"],
           "star": "OHSEA3",
           "is_rnav": true,
           "initial_controller": "4R",
@@ -2534,7 +2533,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
-          "airports": ["KLGB", "KSNA", "KTOA"],
+          "airports": ["KLGB", "KTOA", "KSNA"],
           "airlines": {
             "KLGB": [
               {
@@ -2601,7 +2600,7 @@
           "initial_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
-          "airports": ["KLGB", "KSNA", "KTOA"],
+          "airports": ["KLGB", "KTOA", "KSNA"],
           "airlines": {
             "KLGB": [
               {
@@ -2932,7 +2931,7 @@
           "assigned_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
-          "airports": ["KLGB", "KSNA", "KTOA"],
+          "airports": ["KLGB", "KTOA", "KSNA"],
           "airlines": {
             "KLGB": [
               {
@@ -3271,7 +3270,7 @@
           "initial_altitude": 6000,
           "initial_speed": 120,
           "expect_approach": null,
-          "airports": ["KLGB", "KSNA", "KTOA"],
+          "airports": ["KLGB", "KTOA", "KSNA"],
           "airlines": {
             "KLGB": [
               {
@@ -3615,7 +3614,7 @@
           "initial_altitude": 6000,
           "initial_speed": 120,
           "expect_approach": null,
-          "airports": ["KLGB", "KSNA", "KTOA"],
+          "airports": ["KLGB", "KTOA", "KSNA"],
           "airlines": {
             "KLGB": [
               {

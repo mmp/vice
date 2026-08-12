@@ -210,6 +210,35 @@
         "default_consolidation": {
           "18": []
         }
+      },
+      "12": {
+        "inbound_assignments": {
+          "OLAAA2/SCBBY2/THRNE4": "12",
+          "EAST CRQ ARR": "12"
+        },
+        "default_consolidation": {
+          "12": []
+        }
+      },
+      "09": {
+        "inbound_assignments": {
+          "LUCKI1.MOMAR": "09",
+          "LUCKI1.HOGGZ": "09"
+        },
+        "default_consolidation": {
+          "09": []
+        }
+      },
+      "9@2": {
+        "inbound_assignments": {
+          "OLAAA2/SCBBY2/THRNE4": "12",
+          "EAST CRQ ARR": "12",
+          "LUCKI1.MOMAR": "12",
+          "LUCKI1.HOGGZ": "12"
+        },
+        "default_consolidation": {
+          "12": ["09"]
+        }
       }
     },
     "center": "KWANG",
