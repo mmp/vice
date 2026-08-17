@@ -1240,16 +1240,6 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	// The flight plan carries the exit's 3-character fix id when one is
 	// adapted; fix-pair endpoints and adapted fix criteria match against it.
 	nasFp.ExitFix = s.State.FacilityAdaptation.FixPairFixID(shortExit)
-	if dep.Scratchpad != "" {
-		nasFp.Scratchpad = dep.Scratchpad
-	} else if sp1 := s.State.FacilityAdaptation.Datablocks.Scratchpad1; sp1.DisplayExitFix ||
-		sp1.DisplayExitFix1 || sp1.DisplayExitGate || sp1.DisplayAltExitGate {
-		// Don't set the scratchpad; it will be set automatically.
-	} else if sp, ok := s.State.FacilityAdaptation.Scratchpads[string(dep.Exit)]; ok {
-		nasFp.Scratchpad = sp
-	} else {
-		nasFp.Scratchpad = s.State.FacilityAdaptation.Scratchpads[shortExit]
-	}
 	nasFp.SecondaryScratchpad = dep.SecondaryScratchpad
 	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
@@ -1257,6 +1247,17 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 
 	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))
+
+	// Adapted scratchpads are per-area, so this must follow the controller assignment above.
+	if dep.Scratchpad != "" {
+		nasFp.Scratchpad = dep.Scratchpad
+	} else if sp1 := s.State.FacilityAdaptation.Datablocks.Scratchpad1; sp1.DisplayExitFix ||
+		sp1.DisplayExitFix1 || sp1.DisplayExitGate || sp1.DisplayAltExitGate {
+		// Don't set the scratchpad; it will be set automatically.
+	} else {
+		nasFp.Scratchpad = s.State.FacilityAdaptation.ScratchpadForExit(dep.Exit,
+			s.areaForTCP(nasFp.TrackingController))
+	}
 
 	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
 	// departure assignment above when adapted.

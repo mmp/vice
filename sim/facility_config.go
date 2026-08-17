@@ -530,8 +530,10 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		}
 	}
 
-	// Scratchpads + display_exit_fix mutual exclusion.
-	if len(fa.Scratchpads) > 0 {
+	// Scratchpads + display_exit_fix mutual exclusion; per-area scratchpads
+	// are just as much at odds with displaying the exit fix automatically.
+	if len(fa.Scratchpads) > 0 ||
+		util.MapContains(fa.Areas, func(_ string, ac *STARSArea) bool { return len(ac.Scratchpads) > 0 }) {
 		sp1 := fa.Datablocks.Scratchpad1
 		if sp1.DisplayExitFix || sp1.DisplayExitFix1 || sp1.DisplayExitGate || sp1.DisplayAltExitGate {
 			e.ErrorString(`cannot both specify "scratchpads" and "display_exit_fix"/"display_exit_fix_1"/"display_exit_gate"/"display_alternate_exit_gate"`)

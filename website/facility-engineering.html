@@ -999,11 +999,10 @@
                               <tr>
                                 <td>"airspace_awareness"</td>
                                 <td>Array of objects</td>
-                                <td>Per-area airspace awareness rules that take priority over the facility-level
-                                  <a href="#fe-airspace-awareness">"airspace_awareness"</a> for controllers in this area.
-                                  Same format as the top-level airspace awareness array.
-                                  Area entries are checked first; facility-level entries are used as fallback
-                                  for fixes not matched by area entries.</td>
+                                <td>Airspace awareness rules for controllers in this area, replacing the facility-level
+                                  <a href="#fe-airspace-awareness">"airspace_awareness"</a> entirely: those are used only
+                                  for areas that do not specify their own.
+                                  Same format as the top-level airspace awareness array.</td>
                               </tr>
                               <tr>
                                 <td>"altimeters"</td>
@@ -1057,9 +1056,12 @@
                               <tr>
                                 <td>"scratchpads"</td>
                                 <td>Map of strings to strings</td>
-                                <td>Per-area scratchpad assignments, overriding the facility-level
-                                  <a href="#fe-scratchpads">"scratchpads"</a> for controllers in this area.
-                                  Same format as the top-level scratchpads map.</td>
+                                <td>Scratchpad assignments for departures worked by this area, replacing the facility-level
+                                  <a href="#fe-scratchpads">"scratchpads"</a> entirely: those are used only for areas that
+                                  do not specify their own. It must therefore cover every exit fix the area's departures
+                                  use; a departure whose exit is not in the map gets no scratchpad.
+                                  Same format as the top-level scratchpads map. The area is the one that the
+                                  departure controller for the flight belongs to.</td>
                               </tr>
                               <tr>
                                 <td>"video_map_file"</td>
@@ -3020,7 +3022,10 @@
                     <tr>
                       <td>"scratchpads"</td>
                       <td>Map of strings to strings</td>
-                      <td>Each member specifies a scratchpad entry that is assigned when a departing aircraft has a given exit fix.  Example: <code>"MERIT": "MER"</code></td>
+                      <td>Each member specifies a scratchpad entry that is assigned when a departing aircraft has a given exit fix.
+                        Example: <code>"MERIT": "MER"</code>. A key may include the exit's dot-separated suffix
+                        (e.g. <code>"MERIT.N"</code>), which takes precedence over an entry for the fix name alone; this is how
+                        two SIDs that share an exit fix are given different scratchpads.</td>
                     </tr>
                     <tr>
                       <td>"significant_points"</td>

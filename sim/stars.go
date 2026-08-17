@@ -298,32 +298,28 @@ func (fa *FacilityAdaptation) DefaultAirportForArea(area string) string {
 	return ""
 }
 
-// ScratchpadForFix returns the scratchpad code for a given fix,
-// checking area-specific scratchpads first, then falling back to
-// facility-level scratchpads.
-func (fa *FacilityAdaptation) ScratchpadForFix(fix string, area string) (string, bool) {
-	if area != "" {
-		if ac, ok := fa.Areas[area]; ok && ac.Scratchpads != nil {
-			if sp, ok := ac.Scratchpads[fix]; ok {
-				return sp, true
-			}
-		}
+// ScratchpadForExit returns the adapted scratchpad for a departure's exit. An
+// area that adapts its own scratchpads is the only source for departures in
+// it; the facility-wide scratchpads apply otherwise. Within a map, an entry
+// for the full exit id wins over one for its base fix name, which is how two
+// SIDs sharing an exit fix get different scratchpads.
+func (fa *FacilityAdaptation) ScratchpadForExit(exit av.ExitID, area string) string {
+	sp := fa.Scratchpads
+	if ac, ok := fa.Areas[area]; ok && len(ac.Scratchpads) > 0 {
+		sp = ac.Scratchpads
 	}
-	if sp, ok := fa.Scratchpads[fix]; ok {
-		return sp, true
+	if s, ok := sp[string(exit)]; ok {
+		return s
 	}
-	return "", false
+	return sp[exit.Base()]
 }
 
-// AirspaceAwarenessForArea returns the airspace awareness rules for a
-// given area. Area-level entries come first so they take priority (since
-// AirspaceAwarenessController returns on the first match), with facility-level
-// entries as fallback.
+// AirspaceAwarenessForArea returns the airspace awareness rules in effect for
+// a given area. An area that adapts its own rules is the only source for
+// controllers in it; the facility-wide rules apply otherwise.
 func (fa *FacilityAdaptation) AirspaceAwarenessForArea(area string) []AirspaceAwareness {
-	if area != "" {
-		if ac, ok := fa.Areas[area]; ok && len(ac.AirspaceAwareness) > 0 {
-			return slices.Concat(ac.AirspaceAwareness, fa.AirspaceAwareness)
-		}
+	if ac, ok := fa.Areas[area]; ok && len(ac.AirspaceAwareness) > 0 {
+		return ac.AirspaceAwareness
 	}
 	return fa.AirspaceAwareness
 }
@@ -385,14 +381,12 @@ func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, 
 		return config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
 	}
 
-	if ctrl, ok := s.ControlPositions[tcp]; ok && ctrl.Area != "" {
-		if ac, ok := fa.Areas[ctrl.Area]; ok && len(ac.VideoMapNames) > 0 {
-			dm := s.State.ScenarioDefaultVideoMaps
-			if len(dm) == 0 {
-				dm = ac.DefaultMaps
-			}
-			return ac.VideoMapNames, dm, ac.MonitoredBeaconCodeBlocks
+	if ac, ok := fa.Areas[s.areaForTCP(tcp)]; ok && len(ac.VideoMapNames) > 0 {
+		dm := s.State.ScenarioDefaultVideoMaps
+		if len(dm) == 0 {
+			dm = ac.DefaultMaps
 		}
+		return ac.VideoMapNames, dm, ac.MonitoredBeaconCodeBlocks
 	}
 
 	return nil, s.State.ScenarioDefaultVideoMaps, fa.MonitoredBeaconCodeBlocks
@@ -409,10 +403,7 @@ func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
 		return config.VideoMapFile
 	}
 
-	if ctrl, ok := s.ControlPositions[tcp]; ok {
-		return fa.VideoMapFileForArea(ctrl.Area)
-	}
-	return fa.VideoMapFile
+	return fa.VideoMapFileForArea(s.areaForTCP(tcp))
 }
 
 type CoordinationList struct {

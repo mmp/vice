@@ -811,6 +811,15 @@ func (s *Sim) isTRACONController(pos ControlPosition) bool {
 	return ok && !ctrl.ERAMFacility
 }
 
+// areaForTCP returns the TRACON area a control position belongs to, or "" if
+// it has none.
+func (s *Sim) areaForTCP(tcp TCP) string {
+	if ctrl, ok := s.ControlPositions[tcp]; ok {
+		return ctrl.Area
+	}
+	return ""
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
