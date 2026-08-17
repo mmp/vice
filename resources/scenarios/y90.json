@@ -989,8 +989,6 @@
           "initial_controller": "N56",
           "initial_altitude": 19000,
           "initial_speed": 250,
-          "expect_approach": null,
-          "airports": ["KBAF", "KBDL", "KCEF"],
           "airlines": {
             "KBDL": [
               {
@@ -1060,7 +1058,6 @@
           "initial_controller": "N56",
           "initial_altitude": 7000,
           "initial_speed": 250,
-          "expect_approach": null,
           "airports": ["KBDL"],
           "airlines": {
             "KBDL": [
@@ -1082,8 +1079,6 @@
           "initial_controller": "C37",
           "initial_altitude": 9000,
           "initial_speed": 250,
-          "expect_approach": null,
-          "airports": ["KBDL", "KHFD", "KORH"],
           "airlines": {
             "KBDL": [
               {
@@ -1164,8 +1159,6 @@
           "initial_controller": "C37",
           "initial_altitude": 14000,
           "initial_speed": 250,
-          "expect_approach": null,
-          "airports": ["KBDL"],
           "airlines": {
             "KBDL": [
               {
@@ -1206,7 +1199,6 @@
           "initial_controller": "C37",
           "initial_altitude": 10000,
           "initial_speed": 250,
-          "expect_approach": null,
           "airports": ["KBDL"],
           "airlines": {
             "KBDL": [
@@ -1424,12 +1416,12 @@
         {
           "airport": "KBDL",
           "rate": 20,
-          "runway": "6"
+          "runway": "24"
         },
         {
           "airport": "KBDL",
           "rate": 20,
-          "runway": "6/33 33"
+          "runway": "24/33 33"
         },
         {
           "airport": "KHFD",
@@ -1452,44 +1444,6 @@
           "runway": "33"
         }
       ],
-      "wind": {
-        "direction": "300-0"
-      }
-    },
-    "BDL Sequencing Practice": {
-      "arrival_runways": [
-        {
-          "airport": "KBDL",
-          "runway": "24"
-        },
-        {
-          "airport": "KBDL",
-          "runway": "33"
-        }
-      ],
-      "inbound_rates": {
-        "STELA1.Jets": {
-          "KBDL": 15
-        },
-        "STELA1.Ga": {
-          "KBDL": 8
-        },
-        "DPK3": {
-          "KBDL": 15
-        },
-        "KEYNN": {
-          "KBDL": 3
-        }
-      },
-      "configuration": "CNW",
-      "airspace": {
-        "1H": ["BDL_H_APP2433"],
-        "1W": ["BDL_W_APP2433"],
-        "1Z": ["BDL_Z_APP2433"],
-        "1F": ["BDL_F_APP2433"],
-        "1B": ["BDL_B_APP2433"]
-      },
-      "default_maps": ["Y90 RWY 24/33", "BDL_TWR 24/33", "Y90 COASTLINE"],
       "wind": {
         "direction": "300-0"
       }
