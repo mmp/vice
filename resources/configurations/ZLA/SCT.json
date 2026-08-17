@@ -1210,7 +1210,8 @@
         },
         "departure_assignments": {
           "KLGB": "4R",
-          "KSNA": "4A"
+          "KSNA": "4A",
+          "KSNA/ANAHM2": "4B"
         },
         "default_consolidation": {
           "4R": ["4B", "4T"],
@@ -1240,7 +1241,8 @@
         },
         "departure_assignments": {
           "KLGB": "4R",
-          "KSNA": "4Y"
+          "KSNA": "4Y",
+          "KSNA/ANAHM2": "4B"
         },
         "default_consolidation": {
           "4R": ["4B", "4T"],
@@ -1262,7 +1264,8 @@
         },
         "departure_assignments": {
           "KLGB": "4R",
-          "KSNA": "4Y"
+          "KSNA": "4Y",
+          "KSNA/ANAHM2": "4B"
         },
         "default_consolidation": {
           "4R": ["4B", "4T"],
@@ -1840,9 +1843,7 @@
       "AVE": {},
       "AVRRY": {},
       "BAKEL": {},
-      "BEALE": {
-        "short_name": "BEL"
-      },
+      "BEALE": { "short_name": "BEL" },
       "BLAZN": {},
       "BLCKD": {},
       "BLH": {},
@@ -1851,25 +1852,15 @@
       "CHKNN": {},
       "CIVET": {},
       "CLEEE": {},
-      "CNERY": {
-        "short_name": "CNR"
-      },
-      "COREZ": {
-        "short_name": "COZ"
-      },
-      "CSTRO": {
-        "short_name": "CTO"
-      },
-      "CSTWY": {
-        "short_name": "CWY"
-      },
+      "CNERY": { "short_name": "CNR" },
+      "COREZ": { "short_name": "COZ" },
+      "CSTRO": { "short_name": "CTO" },
+      "CSTWY": { "short_name": "CWY" },
       "DAG": {},
       "DINTY": {},
       "EHF": {},
       "GMN": {},
-      "HAILO": {
-        "short_name": "HAL"
-      },
+      "HAILO": { "short_name": "HAL" },
       "HEC": {},
       "IKAYE": {},
       "IPL": {},
@@ -1877,9 +1868,7 @@
       "LAS": {},
       "LAX": {},
       "MALIT": {},
-      "MISEN": {
-        "short_name": "MIS"
-      },
+      "MISEN": { "short_name": "MIS" },
       "MTBAL": {},
       "NIKKL": {},
       "OCN": {},

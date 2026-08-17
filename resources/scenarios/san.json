@@ -934,6 +934,12 @@
             "is_rnav": true,
             "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
           },
+          "OROSZ": {
+            "cleared_altitude": 3000,
+            "sid": "PADRZ2",
+            "is_rnav": true,
+            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+          },
           "CHKNN": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
@@ -946,7 +952,7 @@
             "is_rnav": true,
             "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ IKAYE"
           },
-          "SXC,MALIT": {
+          "SXC,MALIT,DINTY": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,

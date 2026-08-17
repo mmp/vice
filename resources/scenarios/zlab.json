@@ -134,8 +134,7 @@
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/ho ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE",
-            "handoff_controller": "18"
+            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/po18 ZOOMM/a16000+/ho38 SEBBY PLAYY ARCUS YELAH WYZEE"
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,
@@ -211,8 +210,7 @@
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/ho ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE",
-            "handoff_controller": "18"
+            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/po18 ZOOMM/a16000+/ho38 SEBBY PLAYY ARCUS YELAH WYZEE"
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,
@@ -288,8 +286,7 @@
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/ho ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE",
-            "handoff_controller": "18"
+            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/po18 ZOOMM/a16000+/ho38 SEBBY PLAYY ARCUS YELAH WYZEE"
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,

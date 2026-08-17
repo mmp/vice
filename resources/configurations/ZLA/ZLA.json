@@ -239,6 +239,17 @@
         "default_consolidation": {
           "12": ["09"]
         }
+      },
+      "21": {
+        "inbound_assignments": {
+          "COMIX2.HUULK": "22",
+          "COMIX2.LAX": "22",
+          "COMIX2.SXC": "22",
+          "LEGOZ4.LANDO": "22"
+        },
+        "default_consolidation": {
+          "21": ["22"]
+        }
       }
     },
     "center": "KWANG",

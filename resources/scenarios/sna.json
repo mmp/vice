@@ -144,6 +144,48 @@
             "is_rnav": true,
             "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000- TANGL SHIRR/a7000+ DANAH PIGGN/a9000+ WIILD WAGAV OTAYY"
           },
+          "VTU": {
+            "assigned_altitude": 2000,
+            "sid": "ANAHM2",
+            "aircraft": ["prop"],
+            "waypoints": "KSNA-2L/h222 SLI WILMA LAX SADDE VTU"
+          },
+          "LHS": {
+            "assigned_altitude": 2000,
+            "sid": "ANAHM2",
+            "aircraft": ["prop"],
+            "waypoints": "KSNA-2L/h222 SLI POXKU BAYJY DARTS LHS"
+          },
+          "HEC": {
+            "assigned_altitude": 2000,
+            "sid": "ANAHM2",
+            "aircraft": ["prop"],
+            "waypoints": "KSNA-2L/h222 SLI POXKU PDZ APLES/a10000+ HEC"
+          },
+          "SLI": {
+            "assigned_altitude": 5000,
+            "sid": "MUSEL8",
+            "aircraft": ["turboprop"],
+            "waypoints": "N033.39.25.383,W117.52.47.276/h177 MUSEL SLI"
+          },
+          "OCN": {
+            "assigned_altitude": 5000,
+            "sid": "MUSEL8",
+            "aircraft": ["turboprop"],
+            "waypoints": "N033.39.25.383,W117.52.47.276/h177 MUSEL OCN"
+          },
+          "TRM": {
+            "assigned_altitude": 5000,
+            "sid": "MUSEL8",
+            "aircraft": ["turboprop"],
+            "waypoints": "N033.39.25.383,W117.52.47.276/h177 MUSEL TEYKI HAPPE BALDI CORLA TRM"
+          },
+          "DAG": {
+            "assigned_altitude": 5000,
+            "sid": "MUSEL8",
+            "aircraft": ["turboprop"],
+            "waypoints": "N033.39.25.383,W117.52.47.276/h177 MUSEL SLI POM GARDY DAG"
+          },
           "PACIF": {
             "assigned_altitude": 5000,
             "waypoints": "N033.38.51.175,W117.53.09.825/h175"
@@ -193,6 +235,29 @@
           "PACIF,DANAH": {
             "assigned_altitude": 5000,
             "waypoints": "N033.41.21.097,W117.51.37.128/l240"
+          },
+          "VTU": {
+            "assigned_altitude": 2000,
+            "sid": "ANAHM2",
+            "aircraft": ["prop"],
+            "departure_controller": "4B",
+            "waypoints": "KSNA-20R/h242 SLI WILMA LAX SADDE VTU"
+          },
+          "LHS": {
+            "assigned_altitude": 2000,
+            "sid": "ANAHM2",
+            "aircraft": ["prop"],
+            "waypoints": "KSNA-20R/h332 SLI POXKU BAYJY DARTS LHS"
+          },
+          "HEC": {
+            "assigned_altitude": 2000,
+            "sid": "ANAHM2",
+            "aircraft": ["prop"],
+            "waypoints": "KSNA-20R/h332 SLI POXKU PDZ APLES/a10000+ HEC"
+          },
+          "SLI,OCN,TRM,DAG": {
+            "assigned_altitude": 5000,
+            "waypoints": "N033.41.21.097,W117.51.37.128/l355"
           }
         }
       },
@@ -241,6 +306,38 @@
           "destination": "KSAN",
           "exit": "PACIF",
           "route": "PACIF V208 HUBRD CARDI MZB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KVNY",
+          "exit": "SLI",
+          "altitude": 6000,
+          "route": "SLI V23 LAX CANOG"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KBUR",
+          "exit": "SLI",
+          "altitude": 6000,
+          "route": "SLI V23 LAX SILEX"
         },
         {
           "airlines": [
@@ -878,37 +975,143 @@
       },
       "departure_routes": {
         "30": {
+          "CSTRO": {
+            "cleared_altitude": 3000,
+            "sid": "TOPMM5",
+            "is_rnav": true,
+            "departure_controller": "6L",
+            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+          },
+          "COREZ": {
+            "cleared_altitude": 3000,
+            "sid": "TOPMM5",
+            "is_rnav": true,
+            "departure_controller": "6L",
+            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+          },
+          "VTU": {
+            "assigned_altitude": 3000,
+            "departure_controller": "6L",
+            "waypoints": "KLGB-12/h301@a400/l270 VTU"
+          },
+          "SXC": {
+            "assigned_altitude": 3000,
+            "departure_controller": "4R",
+            "waypoints": "KLGB-12/h301@a1500/l180 SXC GOATZ MALIT ROSIN FICKY"
+          },
           "AVRRY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/h180 FRITR/a5000+ DOTSS AREAE PEELR"
+            "waypoints": "KLGB-12/h301@a1500/h180 FRITR/a5000+ DOTSS AREAE PEELR MTBAL"
           },
           "CNERY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/h180 FRITR/a5000+ DOTSS WIILD BLCKD/a25000+"
+            "waypoints": "KLGB-12/h301@a1500/h180 FRITR/a5000+ DOTSS WIILD BLCKD CSTWY"
+          },
+          "TCATE": {
+            "assigned_altitude": 3000,
+            "sid": "FRITR3",
+            "is_rnav": true,
+            "waypoints": "KLGB-12/h301@a1500/h180 FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "assigned_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/h180 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-12/h301@a1500/h180 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         },
         "12": {
+          "CSTRO": {
+            "cleared_altitude": 3000,
+            "sid": "TOPMM5",
+            "is_rnav": true,
+            "departure_controller": "4B",
+            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c060/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+          },
+          "COREZ": {
+            "cleared_altitude": 3000,
+            "sid": "TOPMM5",
+            "is_rnav": true,
+            "departure_controller": "4B",
+            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c060/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+          },
+          "VTU": {
+            "assigned_altitude": 3000,
+            "departure_controller": "4B",
+            "waypoints": "KLGB-12/h301 VTU"
+          },
+          "SXC": {
+            "assigned_altitude": 3000,
+            "departure_controller": "4B",
+            "waypoints": "KLGB-12/h301 SXC GOATZ MALIT ROSIN FICKY"
+          },
           "AVRRY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS AREAE PEELR"
+            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS AREAE PEELR MTBAL"
           },
           "CNERY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS WIILD BLCKD/a25000+"
+            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS WIILD BLCKD CSTWY"
+          },
+          "TCATE": {
+            "assigned_altitude": 3000,
+            "sid": "FRITR3",
+            "is_rnav": true,
+            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS WIILD TCATE"
+          },
+          "BEALE,MISEN": {
+            "assigned_altitude": 3000,
+            "sid": "ZOOMM3",
+            "is_rnav": true,
+            "waypoints": "KLGB-30/h121 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+          }
+        },
+        "12.E": {
+          "CSTRO": {
+            "cleared_altitude": 3000,
+            "sid": "TOPMM5",
+            "is_rnav": true,
+            "waypoints": "KLGB-30 OMMAA/a3000 PLTAA/c060/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+          },
+          "COREZ": {
+            "cleared_altitude": 3000,
+            "sid": "TOPMM5",
+            "is_rnav": true,
+            "waypoints": "KLGB-30 OMMAA/a3000 PLTAA/c060/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+          },
+          "VTU": {
+            "assigned_altitude": 3000,
+            "waypoints": "KLGB-30/h121 SXC VTU"
+          },
+          "SXC": {
+            "assigned_altitude": 3000,
+            "waypoints": "KLGB-30/h121 SXC GOATZ MALIT ROSIN FICKY"
+          },
+          "AVRRY": {
+            "assigned_altitude": 3000,
+            "sid": "FRITR3",
+            "is_rnav": true,
+            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS AREAE PEELR MTBAL"
+          },
+          "CNERY": {
+            "assigned_altitude": 3000,
+            "sid": "FRITR3",
+            "is_rnav": true,
+            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS WIILD BLCKD CSTWY"
+          },
+          "TCATE": {
+            "assigned_altitude": 3000,
+            "sid": "FRITR3",
+            "is_rnav": true,
+            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "assigned_altitude": 3000,
