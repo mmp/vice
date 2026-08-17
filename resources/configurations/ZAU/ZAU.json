@@ -270,7 +270,62 @@
         }
       ]
     },
-    "configurations": {}
+    "configurations": {
+      "C25": {
+        "inbound_assignments": {
+          "WYNDE3": "25"
+        },
+        "default_consolidation": { "25": ["26"] }
+      },
+      "B35": {
+        "inbound_assignments": {
+          "WATSN4": "35",
+          "PANGG7": "35",
+          "FISSK7": "35",
+          "JHW": "35",
+          "DUBLN1": "35"
+        },
+        "default_consolidation": { "35": ["36"] }
+      },
+      "C44": {
+        "departure_assignments": {
+          "KORD": "44"
+        },
+        "default_consolidation": { "44": ["46"] }
+      },
+      "C52": {
+        "inbound_assignments": {
+          "BENKY6": "52",
+          "TRTLL6": "52"
+        },
+        "default_consolidation": { "52": ["51", "55"] }
+      },
+      "C60": {
+        "departure_assignments": {
+          "KORD": "60"
+        },
+        "inbound_assignments": {
+          "KKILR4": "60",
+          "KKILR4.S": "60"
+        },
+        "default_consolidation": { "60": ["62", "63", "64"] }
+      },
+      "C75": {
+        "inbound_assignments": {
+          "FYTTE7": "75",
+          "FYTTE7.N": "75",
+          "BLUEM5": "75",
+          "BLUEM5.E": "75",
+          "BLUEM5.W": "75",
+          "BLUEM5.S": "75"
+        },
+        "default_consolidation": { "75": ["74", "77"] }
+      }
+    },
+    "center": "N041.58.08.296,W088.33.38.078",
+    "range": 600,
+    "max_distance": 350,
+    "video_map_file": "videomaps/ZAU.mappack"
   },
   "handoff_ids": [
     {

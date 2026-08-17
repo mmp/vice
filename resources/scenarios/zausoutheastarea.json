@@ -1,0 +1,577 @@
+{
+  "artcc": "ZAU",
+  "area": "Southeast Area",
+  "name": "ZAU Southeast Area",
+  "airports": {
+    "KORD": {
+      "approaches": {
+        "I7C": {
+          "cifp_id": "IC27"
+        },
+        "I7R": {
+          "cifp_id": "I27R"
+        }
+      },
+      "departure_controller": "O1B",
+      "departure_routes": {
+        "22L": {
+          "ACITO": {
+            "cleared_altitude": 15000,
+            "sid": "ORD9",
+            "waypoints": "KORD-4R N041.44.34.058,W087.57.15.507/ho ACITO ADELL ARLYN STL/delete",
+            "handoff_controller": "44"
+          },
+          "BACEN": {
+            "cleared_altitude": 15000,
+            "sid": "ORD9",
+            "waypoints": "KORD-4R N041.42.17.072,W087.54.35.354/ho BACEN BLOKR BEKKI ENL/delete",
+            "handoff_controller": "44"
+          },
+          "CMSKY": {
+            "cleared_altitude": 15000,
+            "sid": "ORD9",
+            "waypoints": "KORD-4R N041.44.05.109,W087.51.49.158/ho CMSKY CARYN CYBIL PXV/delete",
+            "handoff_controller": "44"
+          },
+          "DENNT": {
+            "cleared_altitude": 15000,
+            "sid": "ORD9",
+            "waypoints": "KORD-4R N041.44.05.109,W087.51.49.158/ho DENNT DARCY DREGS DONVE BWG/delete",
+            "handoff_controller": "44"
+          },
+          "DENNT.E": {
+            "cleared_altitude": 15000,
+            "sid": "ORD9",
+            "waypoints": "KORD-4R N041.44.19.638,W087.51.08.563/ho DENNT DARCY DREGS DUMGE SCOTO/delete",
+            "handoff_controller": "44"
+          },
+          "EARND": {
+            "cleared_altitude": 15000,
+            "sid": "ORD9",
+            "waypoints": "N041.43.30.145,W087.48.58.293/ho EARND ELANR EMMLY ERECO IIU/delete",
+            "handoff_controller": "44"
+          },
+          "EARND.E": {
+            "cleared_altitude": 15000,
+            "sid": "ORD9",
+            "waypoints": "KORD-4R N041.43.30.145,W087.48.58.293/ho EARND ELANR EMMLY ETAME EMEGE FLM/delete",
+            "handoff_controller": "44"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KDFW",
+          "altitude": [28000, 30000, 32000, 34000, 36000, 38000],
+          "exit": "ACITO",
+          "route": "ACITO ADELL ARLYN STL RZC FSM RRNET SEEVR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KMEM",
+          "altitude": [28000, 30000, 32000, 34000, 36000],
+          "exit": "BACEN",
+          "route": "BACEN BLOKR BEKKI FAM WHOLL BRBBQ3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KCLT",
+          "altitude": [29000, 31000, 33000, 35000, 37000],
+          "exit": "EARND.E",
+          "route": "EARND ELANR EMMLY ETAME EMEGE FLM TAFTT PARQR6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KTPA",
+          "altitude": [29000, 31000, 33000, 35000, 37000],
+          "exit": "DENNT.E",
+          "route": "DENNT DARCY DREGS DUMGE SCOTO SWAPP LUCKK HONID MAATY6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KATL",
+          "altitude": [29000, 31000, 33000, 35000, 37000],
+          "exit": "CMSKY",
+          "route": "CMSKY CARYN CYBIL PXV HITMN NEWBB IHAVE MTHEW CHPPR1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KFLL",
+          "altitude": [29000, 31000, 33000, 35000, 37000],
+          "exit": "CMSKY",
+          "route": "CMSKY CARYN CYBIL PXV HITMN ACORI TEEKY4"
+        }
+      ],
+      "exit_categories": {
+        "ACITO": "ACITO",
+        "BACEN": "BACEN",
+        "CMSKY": "CMSKY",
+        "DENNT": "DENNT",
+        "DENNT.E": "DENNT.E",
+        "EARND": "EARND",
+        "EARND.E": "EARND.E"
+      }
+    },
+    "KMDW": {
+      "approaches": {
+        "Y1R": {
+          "cifp_id": "RY31R"
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "FYTTE7": {
+      "arrivals": [
+        {
+          "waypoints": "RST/ho ZZIPR WELCM TEEOO MITEE BHAWK/a26000-/a21000+ STNLE/a21000-/a17000+/s280 CUUPP CHMPN CLSBY/a15000-/a13000+/s270 FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
+          "star": "FYTTE7",
+          "route": "/. FYTTE7",
+          "initial_controller": "P11",
+          "initial_altitude": 35000,
+          "assigned_altitude": 31000,
+          "initial_speed": 300,
+          "airlines": {
+            "KORD": [
+              {
+                "icao": "UAL",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "AAL",
+                "airport": "CYWG"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMSP"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "FOD/ho MYRRS SAAYY BENNR JBAGS BHAWK/a26000-/a21000+ STNLE/a21000-/a17000+/s280 CUUPP CHMPN CLSBY/a15000-/a13000+/s270 FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
+          "star": "FYTTE7",
+          "route": "/. FYTTE7",
+          "initial_controller": "P11",
+          "initial_altitude": 35000,
+          "assigned_altitude": 31000,
+          "initial_speed": 300,
+          "airlines": {
+            "KORD": [
+              {
+                "icao": "UAL",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KSLC"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "FYTTE7.N": {
+      "arrivals": [
+        {
+          "waypoints": "N044.58.43.576,W088.20.17.175 SHIKY BOWNN/a24000+ HYYDE/a22000-/a17000+/ho JAKSA/a15000/s280 MOOPS/a14000+ FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
+          "star": "FYTTE7",
+          "route": "/. FYTTE7.N",
+          "initial_controller": "64",
+          "initial_altitude": 31000,
+          "assigned_altitude": 15000,
+          "initial_speed": 300,
+          "airlines": {
+            "KORD": [
+              {
+                "icao": "UAE",
+                "airport": "OMDB"
+              },
+              {
+                "icao": "AAL",
+                "airport": "EGLL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "LFPG"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "FISSK7": {
+      "arrivals": [
+        {
+          "waypoints": "IIU N039.20.56.176,W085.53.53.825/ho DROSE TROLY GOTNE FISSK/a11000 VEECK OZZEY AZUMO/delete",
+          "star": "FISSK7",
+          "route": "/. FISSK7",
+          "initial_controller": "I83",
+          "initial_altitude": 28000,
+          "assigned_altitude": 24000,
+          "initial_speed": 300,
+          "airlines": {
+            "KMDW": [
+              {
+                "icao": "SWA",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KBNA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "PANGG7": {
+      "arrivals": [
+        {
+          "waypoints": "N040.07.49.253,W083.49.28.560/ho FWA MAKKI/a24000 BAGEL PANGG MEGGZ/a11000 AWSUM/a10000 IROCK/delete",
+          "star": "PANGG7",
+          "route": "/. PANGG7",
+          "initial_controller": "I83",
+          "initial_altitude": 30000,
+          "assigned_altitude": 28000,
+          "initial_speed": 300,
+          "airlines": {
+            "KMDW": [
+              {
+                "icao": "FFT",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMYR"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N041.28.11.729,W083.43.19.172/ho ASHEN FNLYY/a24000 BAGEL PANGG MEGGZ/a11000 AWSUM/a10000 IROCK/delete",
+          "star": "PANGG7",
+          "route": "/. PANGG7",
+          "initial_controller": "C48",
+          "initial_altitude": 30000,
+          "assigned_altitude": 30000,
+          "initial_speed": 300,
+          "airlines": {
+            "KMDW": [
+              {
+                "icao": "FFT",
+                "airport": "KCLE"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KCLE"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLGA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    "WATSN4": {
+      "arrivals": [
+        {
+          "waypoints": "HEVAN/ho BONNT FRIDG WATSN HAUPO MKITA PRISE HULLS STYLE DWEEB CENAK NCHLS/a9000/delete",
+          "star": "WATSN4",
+          "route": "/. WATSN4",
+          "initial_controller": "I83",
+          "initial_altitude": 28000,
+          "assigned_altitude": 28000,
+          "initial_speed": 300,
+          "airlines": {
+            "KORD": [
+              {
+                "icao": "UAL",
+                "airport": "KFLL",
+                "fleet": "short"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA",
+                "fleet": "short"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "ELEOT/ho NOLNN DAIFE WATSN HAUPO MKITA PRISE HULLS STYLE DWEEB CENAK NCHLS/a9000/delete",
+          "star": "WATSN4",
+          "route": "/. WATSN4",
+          "initial_controller": "C48",
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_speed": 300,
+          "airlines": {
+            "KORD": [
+              {
+                "icao": "UAL",
+                "airport": "KCLE",
+                "fleet": "short"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KJFK"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KLGA"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "ROD/ho FWA PRONK WATSN HAUPO MKITA PRISE HULLS STYLE DWEEB CENAK NCHLS/a9000/delete",
+          "star": "WATSN4",
+          "route": "/. WATSN4",
+          "initial_controller": "I83",
+          "initial_altitude": 30000,
+          "assigned_altitude": 30000,
+          "initial_speed": 300,
+          "airlines": {
+            "KORD": [
+              {
+                "icao": "UAL",
+                "airport": "KMYR",
+                "fleet": "short"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMYR",
+                "fleet": "short"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMYR"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "JHW": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KDEN",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KPHX",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KDEN",
+              "arrival_airport": "KLGA",
+              "icao": "SWA"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "46",
+          "initial_speed": 440,
+          "waypoints": "EON/ho N041.38.50.996,W083.23.05.705/delete JHW"
+        }
+      ]
+    },
+    "DUBLN1": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KCMH",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KCMH",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KCMH",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KCMH",
+              "icao": "RPA"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 29000,
+          "initial_controller": "81",
+          "initial_speed": 300,
+          "waypoints": "ADIME/ho SEWTO FWA BRYEN/a23000 CHDRS IKALE MELZZ DUBLN/a7000/delete"
+        }
+      ]
+    },
+    "BLUEM5.E": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBNA",
+              "arrival_airport": "KMSP",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KMSP",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KMSP",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KMSP",
+              "icao": "SWA"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 38000,
+          "initial_controller": "94",
+          "initial_speed": 300,
+          "waypoints": "JOT N041.39.32.126,W088.54.12.694/ho MNOSO KICKR OOPEE/a24000+ LAZYY/a16000+/s280 BLUEM/a10000/s280/delete"
+        }
+      ]
+    },
+    "BLUEM5.W": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMEM",
+              "arrival_airport": "KMSP",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 36000,
+          "initial_controller": "94",
+          "initial_speed": 300,
+          "waypoints": "N039.57.38.757,W090.58.17.085 N041.12.07.967,W091.28.46.254/ho IOW MNOSO KICKR OOPEE/a24000+ LAZYY/a16000+/s280 BLUEM/a10000/s280/delete"
+        }
+      ]
+    },
+    "BLUEM5.S": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KLIT",
+              "arrival_airport": "KMSP",
+              "icao": "RPA"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KMSP",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 34000,
+          "initial_controller": "94",
+          "initial_speed": 300,
+          "waypoints": "N039.55.04.234,W092.31.39.398 SKBOZ N041.13.33.084,W092.30.23.977/ho MNOSO KICKR OOPEE/a24000+ LAZYY/a16000+/s280 BLUEM/a10000/s280/delete"
+        }
+      ]
+    }
+  },
+  "default_scenario": "BEARZ Sectors 35+36",
+  "magnetic_adjustment": -2.8,
+  "scenarios": {
+    "BEARZ Sectors 35+36": {
+      "configuration": "B35",
+      "default_map_group": "ZAUMAP",
+      "arrival_runways": [
+        {
+          "airport": "KORD",
+          "runway": "27C"
+        },
+        {
+          "airport": "KMDW",
+          "runway": "31R"
+        }
+      ],
+      "inbound_rates": {
+        "JHW": { "overflights": 2 },
+        "DUBLN1": { "overflights": 2 },
+        "WATSN4": {
+          "KORD": 30
+        },
+        "FISSK7": {
+          "KMDW": 10
+        },
+        "PANGG7": {
+          "KMDW": 10
+        }
+      }
+    }
+  }
+}
