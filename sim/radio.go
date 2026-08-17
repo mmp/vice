@@ -478,6 +478,12 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestApproachClearance:
+		// Drop the request if it went moot between enqueue and dispatch: the
+		// clearance came in, or the aircraft is no longer tracking the
+		// approach course waiting for one.
+		if ac.Nav.Approach.EffectivelyCleared() || !ac.Nav.InterceptedButNotCleared() {
+			return "", ""
+		}
 		rt = av.MakeContactTransmission("[are we cleared for the approach|looking for the approach|we're going to need the approach here shortly]")
 		rt.Type = av.RadioTransmissionUnexpected
 
