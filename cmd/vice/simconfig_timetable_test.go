@@ -15,7 +15,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	// timetableStartTimeUTC needs av.DB.AirportTimeZones.
+	// timetableStartTimeUTC needs the airport database to find time zones.
 	av.InitDB()
 	os.Exit(m.Run())
 }
@@ -109,7 +109,7 @@ func TestNormalizeTrafficSourceConfigWithoutScenarioTraffic(t *testing.T) {
 }
 
 // The sim start time is chosen in UTC; a timetable needs it as a local clock
-// time at its airport, from av.DB.AirportTimeZones. KMSP is America/Chicago.
+// time at its airport. KMSP is America/Chicago.
 func TestTimetableStartMinuteSummer(t *testing.T) {
 	// 19:00Z on July 14 is 14:00 CDT.
 	got, err := timetableStartMinute(time.Date(2026, time.July, 14, 19, 0, 0, 0, time.UTC), "KMSP")

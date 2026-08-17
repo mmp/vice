@@ -8,7 +8,24 @@ import (
 	"fmt"
 	"slices"
 	"time"
+
+	// Embed the time zone database: Windows has no system copy, and time zones
+	// have to resolve everywhere Vice runs.
+	_ "time/tzdata"
+
+	"github.com/bradfitz/latlong"
 )
+
+// TimeZoneAt returns the local time zone at a point. It fails for a point that
+// isn't in any time zone, which for our purposes means one out over the ocean.
+func TimeZoneAt(lat, long float32) (*time.Location, bool) {
+	zone := latlong.LookupZoneName(float64(lat), float64(long))
+	if zone == "" {
+		return nil, false
+	}
+	loc, err := time.LoadLocation(zone)
+	return loc, err == nil
+}
 
 // TimeInterval represents a time interval with start and end times
 type TimeInterval [2]time.Time

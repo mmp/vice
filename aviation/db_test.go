@@ -122,3 +122,44 @@ func TestAircraftClassJSON(t *testing.T) {
 		t.Errorf("unknown class in list did not error")
 	}
 }
+
+func TestAirportTimeZone(t *testing.T) {
+	InitDB()
+
+	// Airports where a guess from longitude alone, or from the state the
+	// airport is in, gets the zone wrong.
+	for _, tc := range []struct {
+		airport string
+		want    string
+	}{
+		{"KJFK", "America/New_York"},
+		{"KATL", "America/New_York"},
+		{"KTRI", "America/New_York"}, // east Tennessee, not Central
+		{"KLSF", "America/New_York"}, // Fort Benning, hard against the Central line
+		{"KEUF", "America/Chicago"},  // Eufaula, the Alabama side of the same line
+		{"KVPS", "America/Chicago"},  // the Florida panhandle
+		{"KGYY", "America/Chicago"},  // northwest Indiana
+		{"KORD", "America/Chicago"},
+		{"KMSP", "America/Chicago"},
+		{"KDEN", "America/Denver"},
+		{"KBOI", "America/Boise"},
+		{"KPHX", "America/Phoenix"}, // no daylight saving time
+		{"KLAX", "America/Los_Angeles"},
+		{"KSDM", "America/Los_Angeles"}, // on the Mexican border
+		{"KDTW", "America/Detroit"},
+		{"KIND", "America/Indiana/Indianapolis"},
+		{"PANC", "America/Anchorage"},
+		{"PHNL", "Pacific/Honolulu"},
+	} {
+		loc, ok := DB.AirportTimeZone(tc.airport)
+		if !ok {
+			t.Errorf("%s: no time zone", tc.airport)
+		} else if loc.String() != tc.want {
+			t.Errorf("%s: got %s, want %s", tc.airport, loc, tc.want)
+		}
+	}
+
+	if _, ok := DB.AirportTimeZone("XXXX"); ok {
+		t.Errorf("unknown airport returned a time zone")
+	}
+}

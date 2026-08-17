@@ -152,3 +152,22 @@ func TestIntersectAllIntervals(t *testing.T) {
 		}
 	}
 }
+
+func TestTimeZoneAt(t *testing.T) {
+	// The scenario centers vice looks zones up at are usually well inside one,
+	// but an ARTCC can be centered out over water: ZJX's center is in the Gulf.
+	for _, tc := range []struct {
+		lat, long float32
+		want      string
+	}{
+		{33.640236, -84.428360, "America/New_York"}, // A80
+		{29, -85.338051, ""},                        // ZJX
+	} {
+		loc, ok := TimeZoneAt(tc.lat, tc.long)
+		if ok != (tc.want != "") {
+			t.Errorf("%f, %f: got ok %v, want %v", tc.lat, tc.long, ok, tc.want != "")
+		} else if ok && loc.String() != tc.want {
+			t.Errorf("%f, %f: got %s, want %s", tc.lat, tc.long, loc, tc.want)
+		}
+	}
+}

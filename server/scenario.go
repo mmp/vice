@@ -109,6 +109,12 @@ type scenario struct {
 	VFFRequestRate  *int32        `json:"flight_following_request_rate,omitempty"`
 }
 
+// center is where the scenario's radar display is centered: the scenario's own
+// center if it gives one, otherwise the facility's.
+func (s *scenario) center(sg *scenarioGroup) math.Point2LL {
+	return util.Select(s.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center, s.Center)
+}
+
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSpec *av.MapLibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -1209,9 +1215,6 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
 			sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.Scratchpads, sg.Airports,
 			sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
-		if _, ok := av.DB.AirportTimeZones[name]; !ok {
-			e.ErrorString("no time zone for this airport; add it to resources/airport-timezones.json")
-		}
 		e.Pop()
 	}
 
@@ -1944,6 +1947,7 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 			ArrivalRunways:          scenario.ArrivalRunways,
 			MagneticVariation:       sg.MagneticVariation,
 			WindSpecifier:           scenario.WindSpecifier,
+			Center:                  scenario.center(sg),
 		}
 		if canGenerateScenarioTraffic(sg, &lc) {
 			spec.TrafficSources = append(spec.TrafficSources, sim.TrafficSourceScenario)
@@ -2957,7 +2961,7 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		MagneticVariation:       scenarioGroup.MagneticVariation,
 		NmPerLongitude:          scenarioGroup.NmPerLongitude,
 		WindSpecifier:           scenario.WindSpecifier,
-		Center:                  util.Select(scenario.Center.IsZero(), scenarioGroup.FacilityConfig.FacilityAdaptation.Center, scenario.Center),
+		Center:                  scenario.center(scenarioGroup),
 		Range:                   util.Select(scenario.Range == 0, scenarioGroup.FacilityConfig.FacilityAdaptation.Range, scenario.Range),
 		ScenarioCenter:          scenario.Center,
 		ScenarioRange:           scenario.Range,

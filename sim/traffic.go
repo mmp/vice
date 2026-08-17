@@ -1033,7 +1033,7 @@ func makeRoutedPairs() routedPairs {
 // localHour returns the hour of day at the airport at the sim's current time,
 // if the airport's time zone is known.
 func (s *Sim) localHour(airport string) (int, bool) {
-	loc, ok := av.DB.AirportTimeZones[airport]
+	loc, ok := av.DB.AirportTimeZone(airport)
 	if !ok {
 		return 0, false
 	}

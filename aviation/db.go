@@ -21,8 +21,8 @@ import (
 	"sync"
 	"time"
 
-	// Embed the time zone database: Windows has no system copy, and airport
-	// time zones have to resolve everywhere Vice runs.
+	// Embed the time zone database: Windows has no system copy, and the zone
+	// names in TFR NOTAMs have to resolve everywhere Vice runs.
 	_ "time/tzdata"
 
 	"github.com/mmp/vice/log"
@@ -47,7 +47,6 @@ type StaticDatabase struct {
 	Callsigns           map[string]string            // 3 letter -> callsign
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
-	AirportTimeZones    map[string]*time.Location // ICAO -> local time zone
 	Airlines            map[string]Airline
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
@@ -395,7 +394,6 @@ func doInitDB() {
 	var customAirports map[string]FAAAirport
 	wg.Go(func() { db.Airports, customAirports = parseAirports() })
 	wg.Go(func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft() })
-	wg.Go(func() { db.AirportTimeZones = parseAirportTimeZones() })
 	wg.Go(func() { db.Airlines, db.Callsigns = parseAirlines() })
 	var airports map[string]FAAAirport
 	wg.Go(func() {
@@ -640,38 +638,26 @@ func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 	return aliases, ap
 }
 
-// parseAirportTimeZones returns the local time zone of each airport Vice
-// simulates. The airports are grouped by zone in the JSON so that the file
-// stays short: there are only a handful of distinct zones.
-func parseAirportTimeZones() map[string]*time.Location {
-	const filename = "airport-timezones.json"
+// borderAirportTimeZones covers the airports that sit closer to a time zone
+// boundary than the roughly 3km the boundaries are resolved to, so that looking
+// the zone up from the airport's position puts it on the wrong side.
+var borderAirportTimeZones = map[string]string{
+	"KLSF": "America/New_York", // Fort Benning, a mile east of the Chattahoochee
+}
 
-	r := util.LoadResource(filename)
-	defer r.Close()
-
-	var zones map[string][]string
-	if err := util.UnmarshalJSON(r, &zones); err != nil {
-		fmt.Fprintf(os.Stderr, "%s: %v\n", filename, err)
-		os.Exit(1)
+// AirportTimeZone returns the local time zone at an airport, from where it is.
+// It fails for an airport that isn't in the database or that isn't in any time
+// zone.
+func (d *StaticDatabase) AirportTimeZone(id string) (*time.Location, bool) {
+	ap, ok := d.Airports[id]
+	if !ok {
+		return nil, false
 	}
-
-	locations := make(map[string]*time.Location)
-	for zone, airports := range zones {
-		location, err := time.LoadLocation(zone)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s: %v\n", filename, err)
-			os.Exit(1)
-		}
-		for _, airport := range airports {
-			if previous, ok := locations[airport]; ok {
-				fmt.Fprintf(os.Stderr, "%s: %s is listed under both %s and %s\n", filename,
-					airport, previous, zone)
-				os.Exit(1)
-			}
-			locations[airport] = location
-		}
+	if zone, ok := borderAirportTimeZones[id]; ok {
+		loc, err := time.LoadLocation(zone)
+		return loc, err == nil
 	}
-	return locations
+	return util.TimeZoneAt(ap.Location.Latitude(), ap.Location.Longitude())
 }
 
 func parseAirlines() (map[string]Airline, map[string]string) {

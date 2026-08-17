@@ -222,7 +222,7 @@ func timetableLabel(spec *server.ScenarioSpec, timetable sim.TimetableSummary) s
 // timetable's airport, which is how a timetable's own times are expressed. The
 // start time is chosen once, above; a timetable just needs it in local terms.
 func timetableStartMinute(start time.Time, airport string) (int, error) {
-	location, ok := av.DB.AirportTimeZones[airport]
+	location, ok := av.DB.AirportTimeZone(airport)
 	if !ok {
 		return 0, fmt.Errorf("no time zone is known for %s", airport)
 	}

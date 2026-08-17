@@ -45,18 +45,24 @@ const (
 
 // airportClock is the clock the new sim UI shows times on: the local one where
 // the scenario is flown, which is how a controller working it thinks about the
-// time of day. Every airport a scenario names must have a time zone, so the
-// fall back to Zulu is only for one this build doesn't know.
+// time of day. It falls back to Zulu only for a scenario that can't be placed
+// in a time zone at all.
 type airportClock struct {
 	loc   *time.Location
 	local bool
 }
 
-// makeScenarioClock is the clock for a scenario. Its airports are all in the
-// same time zone in practice, so the first one that has one speaks for the rest.
+// makeScenarioClock is the clock for a scenario. Its airports aren't
+// necessarily all in one time zone--A80 spans Eastern and Central--so the zone
+// comes from where the scenario is centered rather than from any one of them.
+// An ARTCC can be centered out over water, though (ZJX's center is in the Gulf),
+// and then its airports are all there is to go on.
 func makeScenarioClock(spec *server.ScenarioSpec) airportClock {
+	if loc, ok := util.TimeZoneAt(spec.Center.Latitude(), spec.Center.Longitude()); ok {
+		return airportClock{loc: loc, local: true}
+	}
 	for _, airport := range spec.AllAirports() {
-		if loc, ok := av.DB.AirportTimeZones[airport]; ok {
+		if loc, ok := av.DB.AirportTimeZone(airport); ok {
 			return airportClock{loc: loc, local: true}
 		}
 	}

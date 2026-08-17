@@ -18,6 +18,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
@@ -120,6 +121,7 @@ type ScenarioSpec struct {
 	Description      string
 	DepartureRunways []sim.DepartureRunway
 	ArrivalRunways   []sim.ArrivalRunway
+	Center           math.Point2LL
 }
 
 func (s *ScenarioSpec) AllAirports() []string {
