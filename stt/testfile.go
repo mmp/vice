@@ -21,6 +21,7 @@ type TestFile struct {
 	Msg               string              `json:"msg"`
 	Callstack         []string            `json:"callstack,omitempty"`
 	Transcript        string              `json:"transcript"`
+	WhisperPrompt     string              `json:"whisper_prompt,omitempty"`
 	WhisperDurationMs float64             `json:"whisper_duration_ms,omitempty"`
 	Duration          int64               `json:"duration,omitempty"`
 	AudioDurationMs   float64             `json:"audio_duration_ms,omitempty"`

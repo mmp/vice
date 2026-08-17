@@ -710,6 +710,20 @@ func render(screen tcell.Screen, state *AppState) {
 				y++
 			}
 
+			// The initial prompt, which determines the vocabulary whisper had available.
+			if entry.WhisperPrompt != "" && y < maxY {
+				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+				drawText(screen, 0, y, width, styleContextLabel, " Whisper Prompt:")
+				y++
+				for _, line := range wrapText(entry.WhisperPrompt, width-2, width-2) {
+					if y >= maxY {
+						break
+					}
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf(" %-*s", width-1, line))
+					y++
+				}
+			}
+
 			// Determine which callsign to show context for
 			contextCallsign := entryCallsign
 			if state.correction != "" && state.correction != " " {

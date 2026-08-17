@@ -942,25 +942,113 @@ func IsSTTAvailable() bool {
 	return GetWhisperModelError() == nil
 }
 
-// whisperPromptTokenLimit is whisper.cpp's cap on the initial prompt: it
-// keeps the last n_text_ctx/2 = 224 tokens and silently drops the start.
-const whisperPromptTokenLimit = 224
+// whisperPromptTokenLimit is whisper.cpp's cap on the initial prompt: with no rolling context it
+// keeps the last max_prompt_ctx-1 = n_text_ctx/2-1 = 223 tokens and silently drops the start.
+// (whisper.cpp/src/whisper.cpp:6919 and 7117-7120.)
+const whisperPromptTokenLimit = 223
 
 func makeWhisperPrompt(state SimState) string {
 	// Since whisper truncates an over-long initial prompt by dropping tokens from its start, we'll
 	// first assemble the prompt in decreasing order of importance and then reverse it before
 	// returning it so that the most important items then sit at the end, where they survive
 	// truncation.
+	//
+	// Fix names outrank callsign telephony: they are invented words that whisper has no chance of
+	// spelling without being primed, whereas a garbled airline name is still within reach of the
+	// callsign matcher's phonetic scoring.
 	var promptParts []string
 
-	// Callsign telephony is highest priority. Include the aircraft on the user's frequency—the
-	// ones the user may be talking to—matching the set that BuildAircraftContext gives the
-	// command parser. (Not the tracks the user owns: a handed-off aircraft stays on the user's
-	// frequency until its comms are transferred, and conversely.)
+	// Include the aircraft on the user's frequency—the ones the user may be talking to—matching
+	// the set that BuildAircraftContext gives the command parser. (Not the tracks the user owns: a
+	// handed-off aircraft stays on the user's frequency until its comms are transferred, and
+	// conversely.)
 	onFrequencyTracks := maps.Collect(util.FilterSeq2(maps.All(state.Tracks),
 		func(_ av.ADSBCallsign, trk *sim.Track) bool {
 			return state.UserControlsPosition(trk.ControllerFrequency)
 		}))
+
+	// Deduplicate fixes across aircraft and approaches; each addFix call appends the fix's
+	// telephony to the prompt only if the fix hasn't been added already.
+	seenFixes := make(map[string]struct{})
+	addFix := func(fix string) {
+		if _, ok := seenFixes[fix]; !ok {
+			seenFixes[fix] = struct{}{}
+			promptParts = append(promptParts, av.GetFixTelephony(fix))
+		}
+	}
+
+	// approachEntryFixes returns the fixes from the approach's entry legs: everything up to but
+	// not including the FAF.
+	approachEntryFixes := func(appr *av.Approach) []string {
+		var fixes []string
+		for _, wps := range appr.Waypoints {
+			for _, wp := range wps {
+				if wp.FAF() {
+					break
+				}
+				if av.IsNamedFix(wp.Fix) {
+					fixes = append(fixes, wp.Fix)
+				}
+			}
+		}
+		return fixes
+	}
+
+	// Take the arrival airport plus up to this many route fixes from each aircraft's candidate
+	// fixes; the rest of them may be poorly transcribed but can still be handled by fuzzy
+	// matching in the command parser.
+	const maxRouteFixesPerAircraft = 5
+
+	// Collect each aircraft's fixes before emitting any of them so that they can be emitted rank
+	// by rank across aircraft: if the prompt is then truncated, each aircraft loses its farthest
+	// fixes rather than one aircraft losing all of them.
+	var routeFixes [][]string
+	for _, trk := range util.SortedMap(onFrequencyTracks) {
+		// A locally-arriving aircraft's arrival airport is always included; beyond it, take the
+		// first (nearest) route fixes up to the limit. Other airports are skipped: the departure
+		// airport is behind the aircraft and a non-local destination is far away, so neither
+		// will be spoken.
+		_, localArrival := state.Airports[trk.ArrivalAirport]
+		var fixes []string
+		nRouteFixes := 0
+		for _, fix := range trk.Fixes {
+			if fix == trk.ArrivalAirport || fix == trk.DepartureAirport {
+				if localArrival && fix == trk.ArrivalAirport {
+					fixes = append(fixes, fix)
+				}
+			} else if nRouteFixes < maxRouteFixesPerAircraft {
+				fixes = append(fixes, fix)
+				nRouteFixes++
+			}
+		}
+
+		// For an assigned approach, always include its entry leg fixes,
+		// without counting them against the cap.
+		if trk.Approach != "" {
+			if ap, ok := state.Airports[trk.ArrivalAirport]; ok {
+				for _, appr := range ap.Approaches {
+					if appr.FullName == trk.Approach {
+						fixes = append(fixes, approachEntryFixes(appr)...)
+						break
+					}
+				}
+			}
+		}
+
+		routeFixes = append(routeFixes, fixes)
+	}
+
+	var maxFixes int
+	for _, fixes := range routeFixes {
+		maxFixes = max(maxFixes, len(fixes))
+	}
+	for rank := range maxFixes {
+		for _, fixes := range routeFixes {
+			if rank < len(fixes) {
+				addFix(fixes[rank])
+			}
+		}
+	}
 
 	for _, trk := range util.SortedMap(onFrequencyTracks) {
 		callsign := string(trk.ADSBCallsign)
@@ -982,74 +1070,6 @@ func makeWhisperPrompt(state SimState) string {
 				}
 			}
 		}
-	}
-
-	// Deduplicate fixes across aircraft and approaches; each addFix call appends the fix to the
-	// given slice only if it hasn't been seen yet.
-	seenFixes := make(map[string]struct{})
-	addFix := func(fixes []string, fix string) []string {
-		if _, ok := seenFixes[fix]; !ok {
-			seenFixes[fix] = struct{}{}
-			fixes = append(fixes, fix)
-		}
-		return fixes
-	}
-
-	// addApproachEntryFixes adds the fixes from the approach's entry legs—everything up to but not
-	// including the FAF—to the given fixes slice and returns it.
-	addApproachEntryFixes := func(fixes []string, appr *av.Approach) []string {
-		for _, wps := range appr.Waypoints {
-			for _, wp := range wps {
-				if wp.FAF() {
-					break
-				}
-				if av.IsNamedFix(wp.Fix) {
-					fixes = addFix(fixes, wp.Fix)
-				}
-			}
-		}
-		return fixes
-	}
-
-	// Take the arrival airport plus up to this many route fixes from each aircraft's candidate
-	// fixes; the rest of them may be poorly transcribed but can still be handled by fuzzy
-	// matching in the command parser.
-	const maxRouteFixesPerAircraft = 5
-
-	var routeFixes []string
-	for _, trk := range util.SortedMap(onFrequencyTracks) {
-		// A locally-arriving aircraft's arrival airport is always included; beyond it, take the
-		// first (nearest) route fixes up to the limit. Other airports are skipped: the departure
-		// airport is behind the aircraft and a non-local destination is far away, so neither
-		// will be spoken.
-		_, localArrival := state.Airports[trk.ArrivalAirport]
-		nRouteFixes := 0
-		for _, fix := range trk.Fixes {
-			if fix == trk.ArrivalAirport || fix == trk.DepartureAirport {
-				if localArrival && fix == trk.ArrivalAirport {
-					routeFixes = addFix(routeFixes, fix)
-				}
-			} else if nRouteFixes < maxRouteFixesPerAircraft {
-				routeFixes = addFix(routeFixes, fix)
-				nRouteFixes++
-			}
-		}
-
-		// For an assigned approach, always include its entry leg fixes,
-		// without counting them against the cap.
-		if trk.Approach != "" {
-			if ap, ok := state.Airports[trk.ArrivalAirport]; ok {
-				for _, appr := range ap.Approaches {
-					if appr.FullName == trk.Approach {
-						routeFixes = addApproachEntryFixes(routeFixes, appr)
-						break
-					}
-				}
-			}
-		}
-	}
-	for _, fix := range routeFixes {
-		promptParts = append(promptParts, av.GetFixTelephony(fix))
 	}
 
 	// Next, the approaches. Their names repeat both the approach type and the runway (e.g.,
@@ -1099,7 +1119,7 @@ func makeWhisperPrompt(state SimState) string {
 			for _, appr := range ap.Approaches {
 				if appr.Runway == ar.Runway.Base() {
 					activeApproaches[appr.FullName] = struct{}{}
-					apprFixes = addApproachEntryFixes(apprFixes, appr)
+					apprFixes = append(apprFixes, approachEntryFixes(appr)...)
 				}
 			}
 		}
@@ -1115,7 +1135,7 @@ func makeWhisperPrompt(state SimState) string {
 		promptParts = append(promptParts, apprRunways...)
 	}
 	for _, fix := range apprFixes {
-		promptParts = append(promptParts, av.GetFixTelephony(fix))
+		addFix(fix)
 	}
 
 	// Include SIDs and STARs only when an on-frequency aircraft is flying them.
@@ -1199,6 +1219,7 @@ func (c *ControlClient) GetAndClearPTTReleaseTime() time.Time {
 type streamingSTT struct {
 	transcriber *whisper.Transcriber
 	state       SimState // Snapshot of state at start of streaming
+	prompt      string   // Initial prompt given to whisper, logged with the transcript
 }
 
 // StartStreamingSTT begins a transcription session.
@@ -1232,6 +1253,7 @@ func (c *ControlClient) StartStreamingSTT(lg *log.Logger) error {
 	c.streamingSTT = &streamingSTT{
 		transcriber: st,
 		state:       state,
+		prompt:      prompt,
 	}
 	// Hold speech playback during recording/processing
 	c.sttActive = true
@@ -1367,6 +1389,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 				WhisperDuration:   totalDuration,
 				AudioDuration:     audioDuration,
 				WhisperTranscript: finalText,
+				WhisperPrompt:     sttSession.prompt,
 				WhisperModel:      whisperModelName,
 				AircraftContext:   aircraftCtx,
 				STTDebugLogs:      debugLogs,
@@ -1391,6 +1414,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 			WhisperDuration:   totalDuration,
 			AudioDuration:     audioDuration,
 			WhisperTranscript: finalText,
+			WhisperPrompt:     sttSession.prompt,
 			WhisperProcessor:  whisper.ProcessorDescription(),
 			WhisperModel:      whisperModelName,
 			AircraftContext:   aircraftCtx,

@@ -898,12 +898,12 @@ func SplitCallsign(callsign string) (prefix, number string) {
 	return callsign, ""
 }
 
-// GetCallsignSpoken returns the spoken telephony string for a callsign,
-// formatted as it would be pronounced (for Whisper prompts).
+// GetCallsignSpoken returns the spoken telephony string for a callsign, formatted as it would be
+// pronounced. It is the speech-to-text spelling: it feeds the whisper initial prompt and keys the
+// command parser's aircraft context, so it uses the plain telephony name rather than
+// sayAirlineMap's voice-synthesis respellings.
 // Example: "JBU520" → "jetblue five 20", "BAW22J" → "speedbird 22 juliet"
 func GetCallsignSpoken(callsign string, cwtCategory string) string {
-	loadPronunciationsIfNeeded()
-
 	prefix, fnum := SplitCallsign(callsign)
 
 	// GA N-numbers: spell out character by character
@@ -928,14 +928,7 @@ func GetCallsignSpoken(callsign string, cwtCategory string) string {
 		fnum = fnum[:suffixIdx]
 	}
 
-	// Get telephony with override
-	var tel string
-	if t, ok := DB.Callsigns[prefix]; ok {
-		tel = t
-	}
-	if tel2, ok := sayAirlineMap[tel]; ok {
-		tel = tel2
-	}
+	tel := DB.Callsigns[prefix]
 
 	// Build result with spoken flight number
 	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix.String())

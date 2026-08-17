@@ -28,6 +28,7 @@ type AircraftCommandRequest struct {
 	WhisperDuration   time.Duration
 	AudioDuration     time.Duration
 	WhisperTranscript string
+	WhisperPrompt     string
 	WhisperModel      string
 	AircraftContext   map[string]stt.Aircraft
 	STTDebugLogs      []string
@@ -493,6 +494,7 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 		WhisperDuration:   req.WhisperDuration,
 		AudioDuration:     req.AudioDuration,
 		WhisperTranscript: req.WhisperTranscript,
+		WhisperPrompt:     req.WhisperPrompt,
 		WhisperProcessor:  processorDesc,
 		WhisperModel:      req.WhisperModel,
 		AircraftContext:   req.AircraftContext,
