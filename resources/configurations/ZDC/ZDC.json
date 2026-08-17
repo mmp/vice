@@ -257,6 +257,94 @@
     }
   },
   "facility_adaptations": {
+    "configurations": {
+      "32": {
+        "inbound_assignments": {
+          "WIGOL3 (32)": "32",
+          "CAVLR7 (32)": "32",
+          "COATT5 (32)": "32",
+          "POWTN5 (32)": "32",
+          "SPIDR5 (32)": "32",
+          "DUCXS5 (32)": "32",
+          "OUTLA1.MAULS (32)": "32",
+          "ALDAN4.MELTN (32)": "32",
+          "ALDAN4.KPASS (32)": "32",
+          "ALDAN4.FRIKY (32)": "32",
+          "CHSLY8 (32)": "32",
+          "PAATS4.GVE (32)": "32"
+        },
+        "default_consolidation": {
+          "32": []
+        }
+      },
+      "52": {
+        "inbound_assignments": {
+          "WIGOL3 (52)": "52",
+          "POWTN5 (52)": "52",
+          "SPIDR5 (52)": "52",
+          "OUTLA1.MAULS (52)": "52",
+          "ALDAN4.KPASS (52)": "52",
+          "ALDAN4.FRIKY (52)": "52",
+          "PAATS4.GVE (52)": "52"
+        },
+        "default_consolidation": {
+          "52": []
+        }
+      },
+      "36": {
+        "inbound_assignments": {
+          "Overflights": "36",
+          "CLT Overflights": "36",
+          "RAVNN9 - ZTL": "36",
+          "RAVNN9 - JAX": "36",
+          "CHSLY8": "36",
+          "CAPSS4": "36",
+          "CAVLR7": "36",
+          "DUCXS5": "36",
+          "KOHLS1": "36"
+        },
+        "default_consolidation": {
+          "36": []
+        }
+      },
+      "37": {
+        "inbound_assignments": {
+          "Overflights": "37",
+          "RAVNN9.CACYE": "37",
+          "RAVNN9.CJAAE": "37",
+          "TRUPS6.SITTR": "37",
+          "TRUPS6.HVQ": "37",
+          "GIBBZ6.SITTR": "37",
+          "GIBBZ6.HVQ": "37",
+          "SPIDR5": "37",
+          "OUTLA1": "37"
+        },
+        "default_consolidation": {
+          "37": []
+        }
+      },
+      "DC1": {
+        "inbound_assignments": {
+          "ALDAN4.FRIKY (52)": "52",
+          "ALDAN4.KPASS (52)": "52",
+          "ALDAN4.MELTN (32)": "32",
+          "CAVLR7 (32)": "32",
+          "COATT5 (32)": "32",
+          "CHSLY8 (32)": "32",
+          "DUCXS5 (32)": "32",
+          "SPIDR5 (52)": "52",
+          "POWTN5 (52)": "52",
+          "OUTLA1.MAULS (52)": "52",
+          "PAATS4.GVE (52)": "52"
+        },
+        "default_consolidation": {
+          "32": ["52"]
+        }
+      }
+    },
+    "center": "N037.33.35.208,W077.10.07.681",
+    "range": 480,
+    "video_map_file": "videomaps/ZDC.mappack",
     "coordination_fixes": {
       "DYLIN": [
         {
@@ -384,8 +472,7 @@
           "from": "ZDC"
         }
       ]
-    },
-    "configurations": {}
+    }
   },
   "handoff_ids": [
     {

@@ -1,0 +1,631 @@
+{
+  "artcc": "ZDC",
+  "area": "Area 2",
+  "name": "ZDC Area 2",
+  "airports": {
+    "KBWI": {
+      "approaches": {
+        "I3L": {
+          "cifp_id": "I33L"
+        }
+      }
+    },
+    "KDCA": {
+      "approaches": {
+        "I1": {
+          "cifp_id": "I1"
+        }
+      }
+    },
+    "KIAD": {
+      "approaches": {
+        "I1C": {
+          "cifp_id": "IC1"
+        }
+      }
+    },
+    "KRIC": {
+      "approaches": {
+        "I2": {
+          "cifp_id": "I2"
+        }
+      }
+    },
+    "KORF": {
+      "approaches": {
+        "I5": {
+          "cifp_id": "I5"
+        }
+      }
+    },
+    "KCLT": {
+      "approaches": {
+        "I3R": {
+          "cifp_id": "I36R"
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "RAVNN9 - ZTL": {
+      "arrivals": [
+        {
+          "waypoints": "DRIVN FEGNO/ho GULFY RDU THHMP FZEEK WHHTE ACROW/delete",
+          "cruise_altitude": [29000, 31000, 33000, 35000],
+          "star": "RAVNN9",
+          "route": "/. RDU THHMP RAVNN9",
+          "initial_controller": "T33",
+          "initial_altitude": [29000, 31000, 33000, 35000],
+          "initial_speed": 300,
+          "airlines": {
+            "KBWI": [
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "SWA",
+                "airport": "MMUN"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KHOU"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KAUS"
+              },
+              {
+                "icao": "VTE",
+                "airport": "KMCN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RAVNN9 - JAX": {
+      "arrivals": [
+        {
+          "waypoints": "RAYVO HUXOS/ho AARNN THHMP FZEEK WHHTE ACROW/delete",
+          "cruise_altitude": 33000,
+          "star": "RAVNN9",
+          "route": "/. RAYVO Q113 AARNN THHMP RAVNN9",
+          "initial_controller": "J47",
+          "initial_altitude": [29000, 31000, 33000, 35000, 37000],
+          "initial_speed": 300,
+          "airlines": {
+            "KBWI": [
+              {
+                "icao": "SWA",
+                "airport": "KMYR"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KJAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KAUS"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMIA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CHSLY8": {
+      "arrivals": [
+        {
+          "waypoints": "CCV COUPN/ho ARGAL PELTS FEDOX SDAIL WLLSH CHSLY SLPOH CAATT/delete",
+          "cruise_altitude": 28000,
+          "star": "CHSLY8",
+          "route": "/. COUPN CHSLY8",
+          "initial_controller": "09",
+          "initial_altitude": [28000, 30000, 32000, 34000],
+          "initial_speed": 300,
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "JIA",
+                "airport": "KORF"
+              },
+              {
+                "icao": "PDT",
+                "airport": "KPHF"
+              },
+              {
+                "icao": "PDT",
+                "airport": "KSBY"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KPHL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KBWI"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CAPSS4": {
+      "arrivals": [
+        {
+          "waypoints": "RAYVO CEELY/ho Q113 AARNN WAVES KSETT ELAPP/delete",
+          "cruise_altitude": 37000,
+          "star": "CAPSS4",
+          "route": "/. CEELY Q113 AARNN WAVES CAPSS4",
+          "initial_controller": "J48",
+          "initial_altitude": [31000, 33000, 35000, 37000],
+          "initial_speed": 300,
+          "airlines": {
+            "KDCA": [
+              {
+                "icao": "AAL",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KTPA"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KDJT"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KHOU"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CAVLR7": {
+      "arrivals": [
+        {
+          "waypoints": "BWAGS WNGUD/ho Q99 SHIRY DORRN BNTLY/delete",
+          "cruise_altitude": 37000,
+          "star": "CAVLR7",
+          "route": "/. WNGUD Q99 SHIRY DORRN CAVLR7",
+          "initial_controller": "J48",
+          "initial_altitude": 33000,
+          "initial_speed": 300,
+          "airlines": {
+            "KIAD": [
+              {
+                "icao": "ASH",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KAUS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DUCXS5": {
+      "arrivals": [
+        {
+          "waypoints": "JROSS Q87 REDFH/ho Q87 NOWAE NEAVL PULDY THINA/delete",
+          "cruise_altitude": 35000,
+          "star": "DUCXS5",
+          "route": "/. REDFH Q87 NOWAE NEAVL DUCXS5",
+          "initial_controller": "J47",
+          "initial_altitude": [31000, 33000, 35000],
+          "initial_speed": 300,
+          "airlines": {
+            "KRIC": [
+              {
+                "icao": "JBU",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDJT"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KMSY"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "KOHLS1": {
+      "arrivals": [
+        {
+          "waypoints": "NYLLA Q54 CHYPS/ho Q54 NUTZE KOHLS DRONE/delete",
+          "cruise_altitude": 27000,
+          "star": "KOHLS1",
+          "route": "/. CHYPS Q54 NUTZE KOHLS1",
+          "initial_controller": "T33",
+          "initial_altitude": [27000, 29000, 31000],
+          "initial_speed": 300,
+          "airlines": {
+            "KORF": [
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KDFW"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Overflights": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KLGA",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KAPF",
+              "arrival_airport": "KTEB",
+              "icao": "EJA"
+            },
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KBDL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": [31000, 33000, 35000, 37000],
+          "initial_controller": "J48",
+          "initial_speed": 300,
+          "waypoints": "RAYVO CEELY/ho Q113 RIDDN HURTS/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KEWR",
+              "icao": "AAl"
+            },
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KDJT",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KJFK",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KBOS",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": [31000, 33000, 35000, 37000],
+          "initial_controller": "J48",
+          "initial_speed": 300,
+          "waypoints": "BWAGS WNGUD/ho Q99 QUART/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KLGA",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KAPF",
+              "arrival_airport": "KTEB",
+              "icao": "EJA"
+            },
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KBDL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": [31000, 33000, 35000, 37000],
+          "initial_controller": "J48",
+          "initial_speed": 300,
+          "waypoints": "RAYVO HINTZ/ho Q87 RIDDN/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KLGA",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KAPF",
+              "arrival_airport": "KTEB",
+              "icao": "EJA"
+            },
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KBDL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": [31000, 33000, 35000, 37000],
+          "initial_controller": "J48",
+          "initial_speed": 300,
+          "waypoints": "DARRL IDDAA/ho Q64 MARCL Q113 RIDDN HURTS/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KLGA",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KAPF",
+              "arrival_airport": "KTEB",
+              "icao": "EJA"
+            },
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KBDL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": [31000, 33000, 35000, 37000],
+          "initial_controller": "J48",
+          "initial_speed": 300,
+          "waypoints": "DARRL IDDAA/ho Q64 DADDS Q87 RIDDN RIDDN HURTS/delete"
+        }
+      ]
+    },
+    "CLT Overflights": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KJFK",
+              "icao": "EDV"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KJFK",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KBOS",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KBDL",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 21000,
+          "assigned_altitude": 23000,
+          "cruise_altitude": [31000, 33000, 35000, 37000],
+          "initial_controller": "09",
+          "initial_speed": 300,
+          "waypoints": "MESHY GULFY BARMY/ho BATTA RDU TYI Q64 SAWED/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KORF",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KORF",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KORF",
+              "icao": "JIA"
+            }
+          ],
+          "initial_altitude": 21000,
+          "assigned_altitude": 23000,
+          "initial_controller": "09",
+          "initial_speed": 300,
+          "waypoints": "MESHY GULFY BARMY/ho BATTA RDU TYI KOHLS DRONE/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KJFK",
+              "icao": "EDV"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KJFK",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KEWR",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 21000,
+          "assigned_altitude": 23000,
+          "cruise_altitude": [31000, 33000, 35000],
+          "initial_controller": "09",
+          "initial_speed": 300,
+          "waypoints": "MUNBE LILIC/ho KILNS DURST AUDII NOWAE Q87 HURTS/delete"
+        }
+      ]
+    }
+  },
+  "default_scenario": "ZDC 36 - Raliegh",
+  "scenarios": {
+    "ZDC 36 - Raliegh": {
+      "configuration": "36",
+      "default_map_group": "MAIN",
+      "default_maps": [],
+      "arrival_runways": [
+        {
+          "airport": "KIAD",
+          "runway": "1C"
+        },
+        {
+          "airport": "KDCA",
+          "runway": "1"
+        },
+        {
+          "airport": "KBWI",
+          "runway": "33L"
+        },
+        {
+          "airport": "KRIC",
+          "runway": "2"
+        },
+        {
+          "airport": "KORF",
+          "runway": "5"
+        },
+        {
+          "airport": "KCLT",
+          "runway": "36R"
+        }
+      ],
+      "inbound_rates": {
+        "RAVNN9 - ZTL": {
+          "KBWI": 10
+        },
+        "RAVNN9 - JAX": {
+          "KBWI": 10
+        },
+        "CHSLY8": {
+          "KCLT": 10
+        },
+        "CAPSS4": {
+          "KDCA": 15
+        },
+        "CAVLR7": {
+          "KIAD": 15
+        },
+        "DUCXS5": {
+          "KRIC": 5
+        },
+        "KOHLS1": {
+          "KORF": 4
+        },
+        "Overflights": {
+          "overflights": 10
+        },
+        "CLT Overflights": {
+          "overflights": 7
+        }
+      },
+      "wind": {
+        "direction": "300-30",
+        "speed": "5+",
+        "flight_rules": "VMC"
+      }
+    }
+  }
+}
