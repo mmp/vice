@@ -70,9 +70,10 @@ type Aircraft struct {
 	SID string
 
 	// Arrival-related state
-	STAR                string
-	STARRunwayWaypoints map[string]av.WaypointArray
-	GotContactTower     bool
+	STAR                  string
+	STARRunwayWaypoints   map[string]av.WaypointArray
+	GotContactTower       bool
+	AskedAboutTowerSwitch bool
 
 	NASFlightPlan *NASFlightPlan
 

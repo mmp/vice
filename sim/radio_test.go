@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/math"
 )
 
 // TestPopReadyContactPrioritizesResponses verifies that a pilot's response or
@@ -89,5 +90,95 @@ func TestPopReadyContactAbbreviatedVFRIsInitial(t *testing.T) {
 		t.Fatal("expected a ready contact")
 	} else if pc.ADSBCallsign != "N509EZ" {
 		t.Fatalf("expected N509EZ (response) before the abbreviated VFR request, got %s", pc.ADSBCallsign)
+	}
+}
+
+// makeTowerSwitchAircraft returns an aircraft cleared for the approach and past
+// the FAF, positioned the given distance north of the runway threshold.
+func makeTowerSwitchAircraft(engineType string, distance float32) *Aircraft {
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.Nav.Perf.Engine.AircraftType = engineType
+	ac.Nav.FlightState.Position = math.Point2LL{0, distance / 60}
+	ac.Nav.Approach.Cleared = true
+	ac.Nav.Approach.PassedFAF = true
+	return ac
+}
+
+// TestTowerSwitchDistanceGate verifies that the pilot only asks about switching
+// to tower once close to the runway. Aircraft cleared for a visual approach
+// cross a synthetic FAF marker that can sit far from the field, so passing it
+// alone must not trigger the question.
+func TestTowerSwitchDistanceGate(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		engine   string
+		distance float32
+		want     bool
+	}{
+		{"jet just inside", "J", 4.5, true},
+		{"jet just outside", "J", 5.5, false},
+		{"jet cleared visual far out", "J", 20, false},
+		{"turboprop inside jet range", "T", 4, false},
+		{"turboprop just inside", "T", 2.5, true},
+		{"piston just inside", "P", 2.5, true},
+		{"piston just outside", "P", 3.5, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := shouldAskAboutTowerSwitch(makeTowerSwitchAircraft(tc.engine, tc.distance)); got != tc.want {
+				t.Errorf("shouldAskAboutTowerSwitch() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+
+	// Close in, but the approach isn't underway: no question either way.
+	notCleared := makeTowerSwitchAircraft("J", 2)
+	notCleared.Nav.Approach.Cleared = false
+	if shouldAskAboutTowerSwitch(notCleared) {
+		t.Error("expected no question when not cleared for the approach")
+	}
+
+	beforeFAF := makeTowerSwitchAircraft("J", 2)
+	beforeFAF.Nav.Approach.PassedFAF = false
+	if shouldAskAboutTowerSwitch(beforeFAF) {
+		t.Error("expected no question before the FAF")
+	}
+
+	noApproach := makeTowerSwitchAircraft("J", 2)
+	noApproach.Nav.Approach.Assigned = nil
+	if shouldAskAboutTowerSwitch(noApproach) {
+		t.Error("expected no question without an assigned approach")
+	}
+}
+
+// TestTowerSwitchTransmissionGoesStale verifies that a queued tower-switch
+// question is dropped at dispatch if it went moot while waiting to be spoken,
+// either because the controller sent the aircraft to tower or because it is no
+// longer flying the approach (go-around, cancelled clearance).
+func TestTowerSwitchTransmissionGoesStale(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	tcp := TCP("125.0")
+
+	for _, tc := range []struct {
+		name  string
+		spoil func(*Aircraft)
+	}{
+		{"sent to tower", func(ac *Aircraft) { ac.GotContactTower = true }},
+		{"no longer cleared", func(ac *Aircraft) { ac.Nav.Approach.Cleared = false }},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := NewTestSim(lg)
+			ac := makeTowerSwitchAircraft("J", 2)
+			s.Aircraft[ac.ADSBCallsign] = ac
+
+			pc := &PendingContact{ADSBCallsign: ac.ADSBCallsign, TCP: tcp, Type: PendingTransmissionRequestTowerSwitch}
+			if spoken, _ := s.GenerateContactTransmission(pc); spoken == "" {
+				t.Fatal("expected a transmission before the question goes stale")
+			}
+
+			tc.spoil(ac)
+			if spoken, _ := s.GenerateContactTransmission(pc); spoken != "" {
+				t.Errorf("expected the stale question to be dropped, got %q", spoken)
+			}
+		})
 	}
 }

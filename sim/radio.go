@@ -55,7 +55,7 @@ const (
 	PendingTransmissionRequestVisual                                           // Spontaneous "field in sight, requesting visual"
 	PendingTransmissionRequestVectors                                          // Pilot requesting vectors (overshot localizer)
 	PendingTransmissionRequestAltitude                                         // Pilot requesting altitude after being vectored off STAR
-	PendingTransmissionRequestTowerSwitch                                      // Pilot passed the FAF without being sent to tower
+	PendingTransmissionRequestTowerSwitch                                      // Pilot is close in on the approach without being sent to tower
 )
 
 // FutureFrequencyChange represents a pilot switching to a new frequency.
@@ -506,9 +506,10 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestTowerSwitch:
-		// If the controller sent the aircraft to tower between enqueue and
-		// dispatch, drop the now-moot question.
-		if ac.GotContactTower {
+		// Drop the question if it went moot between enqueue and dispatch: the
+		// controller sent the aircraft to tower, or it's no longer flying the
+		// approach at all (went around, clearance cancelled, vectored off).
+		if ac.GotContactTower || !ac.Nav.Approach.Cleared {
 			return "", ""
 		}
 		rt = av.MakeContactTransmission("[should we switch to tower|do you want us with tower|should we contact tower]")

@@ -49,6 +49,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 
 	ac.WentAround = true
 	ac.GotContactTower = false
+	ac.AskedAboutTowerSwitch = false
 	ac.SpacingGoAroundDeclined = false
 	ac.GoAroundOnRunwayHeading = proc.IsRunwayHeading
 

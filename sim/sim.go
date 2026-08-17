@@ -1037,6 +1037,31 @@ func (s *Sim) cullDistance() float32 {
 	return util.Select(av.DB.IsARTCC(s.State.Facility), float32(400), float32(200))
 }
 
+// Distance from the runway threshold at which a pilot who still hasn't been
+// sent to tower asks about switching. Jets cover the last few miles faster, so
+// they ask further out.
+const (
+	jetTowerSwitchDistance   = 5
+	otherTowerSwitchDistance = 3
+)
+
+// shouldAskAboutTowerSwitch reports whether an aircraft is far enough along the
+// approach that not having been switched to tower is worth a radio call.  The
+// distance check matters for visual approaches, where the FAF marker is a
+// synthetic glideslope anchor that may sit many miles from the runway.
+func shouldAskAboutTowerSwitch(ac *Aircraft) bool {
+	appr := ac.Nav.Approach.Assigned
+	if appr == nil || !ac.Nav.Approach.Cleared || !ac.Nav.Approach.PassedFAF {
+		return false
+	}
+
+	d := float32(otherTowerSwitchDistance)
+	if ac.Nav.Perf.Engine.AircraftType == "J" {
+		d = jetTowerSwitchDistance
+	}
+	return math.NMDistance2LL(ac.Position(), appr.Threshold) <= d
+}
+
 // separate so time management can be outside this so we can do the prespawn stuff...
 func (s *Sim) updateState() {
 	now := s.State.SimTime
@@ -1156,9 +1181,10 @@ func (s *Sim) updateState() {
 				}
 			}
 
-			if passedWaypoint != nil && passedWaypoint.FAF() && ac.IsAssociated() &&
-				ac.Nav.Approach.Cleared && !ac.GotContactTower {
-				// Passed the FAF without being sent to tower: ask about switching.
+			if ac.IsAssociated() && !ac.GotContactTower && !ac.AskedAboutTowerSwitch &&
+				shouldAskAboutTowerSwitch(ac) {
+				// Close to the runway and still not sent to tower: ask about switching.
+				ac.AskedAboutTowerSwitch = true
 				s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestTowerSwitch)
 			}
 
