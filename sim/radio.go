@@ -76,7 +76,7 @@ type PendingContact struct {
 	ReportDepartureHeading bool                    // For departures: include assigned heading
 	HasQueuedEmergency     bool                    // For departures: trigger emergency after contact
 	PrebuiltTransmission   *av.RadioTransmission   // For emergency transmissions: pre-built message
-	FirstInFacility        bool                    // For arrivals: first contact in this TRACON facility
+	FirstInFacility        bool                    // First contact with a controller in this facility
 }
 
 // hasPendingCheckIn reports whether the aircraft has a pending arrival or
@@ -232,28 +232,18 @@ func (s *Sim) enqueueControllerContact(ac *Aircraft, tcp TCP, fromPos ControlPos
 		TCP:             tcp,
 		ReadyTime:       s.State.SimTime.Add(switchDelay + listenDelay),
 		Type:            util.Select(ac.IsDeparture(), PendingTransmissionDeparture, PendingTransmissionArrival),
-		FirstInFacility: s.isFirstFacilityContact(fromPos, tcp),
+		FirstInFacility: s.isFirstFacilityContact(fromPos),
 	})
 }
 
-// isFirstFacilityContact returns true if transitioning from fromPos to
-// toTCP represents the aircraft's first contact in a TRACON facility.
-// This is true when the target is a local TRACON controller and the
-// source is external (ERAM center or a different TRACON).
-func (s *Sim) isFirstFacilityContact(fromPos ControlPosition, toTCP TCP) bool {
-	toCtrl, ok := s.State.Controllers[ControlPosition(toTCP)]
-	if !ok || toCtrl.ERAMFacility {
-		return false // Target is not a TRACON controller
-	}
-
-	fromCtrl, ok := s.State.Controllers[fromPos]
-	if !ok {
+// isFirstFacilityContact reports whether the aircraft is making its first
+// call to a controller in this facility: the source position belongs to
+// another facility, or is unknown.
+func (s *Sim) isFirstFacilityContact(fromPos ControlPosition) bool {
+	if _, ok := s.State.Controllers[s.State.ResolveController(fromPos)]; !ok {
 		return true // Unknown source, assume new facility
 	}
-
-	// If the source is external (ERAM or different TRACON), this is the
-	// first contact in the local TRACON facility.
-	return fromCtrl.IsExternal()
+	return s.State.IsExternalController(fromPos)
 }
 
 // virtualControllerTransferComms handles the comms transfer when a handoff
@@ -418,10 +408,8 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt = ac.ContactMessage(s.ReportingPoints)
 		rt.Type = av.RadioTransmissionContact
 
-		// Append ATIS information only when this is the first contact
-		// in a TRACON facility (not when transferring between
-		// controllers in the same facility, and not for ERAM controllers).
-		if pc.FirstInFacility {
+		// Pilots only give the ATIS when they first contact a TRACON controller in a facility.
+		if pc.FirstInFacility && s.isTRACONController(pc.TCP) && !ac.IsOverflight() {
 			arrivalAirport := ac.FlightPlan.ArrivalAirport
 			if letter, ok := s.State.ATISLetter[arrivalAirport]; ok && letter != "" {
 				if s.Rand.Float32() < 0.85 { // 85% of aircraft give the ATIS

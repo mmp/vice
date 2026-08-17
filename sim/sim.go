@@ -806,6 +806,11 @@ func (s *Sim) isVirtualController(pos ControlPosition) bool {
 	return !s.ScenarioDefaultConsolidation.IsHumanPosition(pos)
 }
 
+func (s *Sim) isTRACONController(pos ControlPosition) bool {
+	ctrl, ok := s.State.Controllers[pos]
+	return ok && !ctrl.ERAMFacility
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
