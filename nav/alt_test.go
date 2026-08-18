@@ -973,3 +973,62 @@ func TestVectorOffSTARHoldsAltitude(t *testing.T) {
 		}
 	}
 }
+
+// newDepartureOnSID returns a departure climbing on its filed route (no
+// assigned heading) on a SID with crossing restrictions; it supplies the
+// route, aircraft, and cruise altitude, so the caller sets only the altitudes
+// the aircraft is flying.
+func newDepartureOnSID(t *testing.T, cfg ArrivalConfig) *FlightTest {
+	t.Helper()
+	cfg.Waypoints = "IAH TTAPS/a4000- BOTLL/a5000- MMUGS GRAYN/a11000+ YOKEM SBI LLA"
+	cfg.DepartureAirport = "KIAH"
+	cfg.ArrivalAirport = "KMCO"
+	cfg.AircraftType = "B739"
+	cfg.InitialSpeed = 210
+
+	f := NewArrivalFlight(t, cfg)
+	f.nav.FinalAltitude = 35000
+	f.nav.FlightState.InitialDepartureClimb = true
+	return f
+}
+
+// TestDepartOnCourseKeepsSIDRestrictions verifies that a departure sent on
+// course to cruise by a virtual controller still crosses the SID's fixes at
+// their charted altitudes. Cruise is a clearance limit here, not an
+// assignment: an assigned altitude would shadow the restrictions entirely in
+// TargetAltitude.
+func TestDepartOnCourseKeepsSIDRestrictions(t *testing.T) {
+	f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500, ClearedAltitude: 5000})
+
+	f.nav.DepartOnCourse(35000, "LLA", f.simTime)
+
+	if f.nav.Altitude.Assigned != nil {
+		t.Fatalf("expected no assigned altitude, got %.0f", *f.nav.Altitude.Assigned)
+	}
+
+	f.BeforeFix("TTAPS", func(f *FlightTest) { f.AssertAltitudeBelow(4000) })
+	// The level-off for BOTLL's restriction overshoots by ~10 ft.
+	f.BeforeFix("BOTLL", func(f *FlightTest) { f.AssertAltitudeBelow(5050) })
+	f.AtFix("GRAYN", func(f *FlightTest) { f.AssertAltitudeAbove(11000) })
+	f.Run()
+}
+
+// TestDepartOnCourseKeepsAssignedAltitude verifies that a departure the
+// controller has already climbed above the SID's crossing restrictions doesn't
+// have them reinstated when it is sent on course; the assigned altitude
+// canceled them and the aircraft must not descend to comply.
+func TestDepartOnCourseKeepsAssignedAltitude(t *testing.T) {
+	f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 6000, AssignedAltitude: 6000})
+
+	f.nav.DepartOnCourse(35000, "LLA", f.simTime)
+
+	if f.nav.Altitude.Assigned == nil || *f.nav.Altitude.Assigned != 35000 {
+		t.Fatalf("expected assigned altitude 35000, got %v", f.nav.Altitude.Assigned)
+	}
+
+	f.BeforeFix("TTAPS", func(f *FlightTest) {
+		f.AssertNotDescending()
+		f.AssertAltitudeAbove(6000)
+	})
+	f.Run()
+}

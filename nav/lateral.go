@@ -89,7 +89,7 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 		// regular route and don't (potentially) skip waypoints and go
 		// straight to the exit; however, the altitude should be changed
 		if !nav.RouteAltitudeActions {
-			nav.setAssignedAltitude(alt)
+			nav.climbToCruise(alt)
 		}
 		nav.Speed = NavSpeed{}
 		return
@@ -104,10 +104,24 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 		nav.Waypoints = nav.Waypoints[idx:]
 	}
 	if !nav.RouteAltitudeActions {
-		nav.setAssignedAltitude(alt)
+		nav.climbToCruise(alt)
 	}
 	nav.Speed = NavSpeed{}
 	nav.EnqueueOnCourse(simTime)
+}
+
+// climbToCruise sends the aircraft up to the given cruise altitude. A
+// controller-issued altitude cancels the published altitude restrictions along
+// the route, so if the aircraft has one (even one that is still waiting on a
+// speed change), cruise is assigned the same way. Otherwise the aircraft is
+// still climbing to a clearance limit and any remaining restrictions continue
+// to apply.
+func (nav *Nav) climbToCruise(alt float32) {
+	if nav.Altitude.Assigned != nil || nav.Altitude.AfterSpeed != nil {
+		nav.setAssignedAltitude(alt)
+	} else {
+		nav.Altitude = NavAltitude{Cleared: &alt}
+	}
 }
 
 func (nav *Nav) Check(lg *log.Logger) {
