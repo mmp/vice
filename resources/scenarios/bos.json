@@ -635,7 +635,7 @@
           },
           "CELTK.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
-            "sid": "CELTK7",
+            "sid": "LOGAN4",
             "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
           },
           "CELTK.J.4R.4/9": {
@@ -665,7 +665,7 @@
           },
           "PATSS.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
-            "sid": "PATSS7",
+            "sid": "LOGAN4",
             "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
           },
           "PATSS.J.4R.4/9": {
@@ -705,7 +705,7 @@
           },
           "CELTK.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
-            "sid": "CELTK7",
+            "sid": "LOGAN4",
             "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
           },
           "CELTK.J.4R.4L/9+4R": {
@@ -735,7 +735,7 @@
           },
           "PATSS.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
-            "sid": "PATSS7",
+            "sid": "LOGAN4",
             "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
           },
           "PATSS.J.4R.4L/9+4R": {
