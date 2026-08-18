@@ -174,6 +174,15 @@ if defined VULKAN_SDK (
     echo VULKAN_SDK environment variable not set
 )
 
+REM Ship the Vulkan loader. It isn't part of Windows--GPU drivers and the
+REM Vulkan SDK installer are what put it in System32--but ggml-vulkan imports
+REM it at load time, so on a machine whose driver has no Vulkan support
+REM vice.exe dies in the loader before main() runs. With the loader present
+REM but no driver behind it, instance creation fails cleanly and whisper.cpp
+REM falls back to the CPU.
+if !VULKAN_AVAILABLE!==1 call :copy_vulkan_loader
+if errorlevel 1 exit /b 1
+
 REM Build sherpa-onnx if needed.
 REM sherpa-onnx's fetched dependencies (kaldifst, simple-sentencepiece) add
 REM MSVC-specific compiler flags (/wd*, /std:c++14) that break MinGW/GCC.
@@ -388,6 +397,9 @@ if !VULKAN_AVAILABLE!==1 set BUILD_TAGS=!BUILD_TAGS!,vulkan
 go build -tags !BUILD_TAGS! -ldflags="-s -w -H=windowsgui" -o vice.exe .\cmd\vice
 if errorlevel 1 exit /b 1
 
+powershell -NoProfile -ExecutionPolicy Bypass -File windows\check-imports.ps1
+if errorlevel 1 exit /b 1
+
 echo Build complete: vice.exe
 
 REM Build tools. -extldflags=-static bakes the MinGW C/C++ runtime (libgcc,
@@ -425,4 +437,15 @@ if not exist "%MANIFEST%" goto :eof
 REM Use PowerShell script to parse JSON and sync models
 powershell -NoProfile -ExecutionPolicy Bypass -File windows\sync-models.ps1 -ManifestPath "%MANIFEST%" -ModelsDir "%MODELS_DIR%" -StampPath "%STAMP%"
 if errorlevel 1 exit /b 1
+goto :eof
+
+:copy_vulkan_loader
+if exist "windows\vulkan-1.dll" goto :eof
+if not exist "%SystemRoot%\System32\vulkan-1.dll" (
+    echo Error: vulkan-1.dll not found in %SystemRoot%\System32
+    echo The Vulkan SDK installer puts it there; reinstall the SDK.
+    exit /b 1
+)
+echo Copying vulkan-1.dll to windows/
+copy "%SystemRoot%\System32\vulkan-1.dll" "windows\" >nul
 goto :eof

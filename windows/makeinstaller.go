@@ -186,6 +186,9 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
           <Component Id="onnxruntime" Guid='a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'>
             <File KeyPath="yes" Source="windows/onnxruntime.dll"></File>
           </Component>
+          <Component Id="vulkanloader" Guid='790cb745-37f0-4b97-a35b-9eb715288b60'>
+            <File KeyPath="yes" Source="windows/vulkan-1.dll"></File>
+          </Component>
           <Directory Id="MyFontsFolder" Name="fonts">
             <Component Id="FontsId" Guid="333b7858-8503-4310-b039-e1341613dada">
 {{range .FontFiles}}                <File Id="{{.Id}}" Source="{{.Source}}" {{if .KeyPath}}KeyPath="yes" {{end}}/>
@@ -266,6 +269,7 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
       <ComponentRef Id="libwinpthread" />
       <ComponentRef Id="sherpaonnx" />
       <ComponentRef Id="onnxruntime" />
+      <ComponentRef Id="vulkanloader" />
       <ComponentRef Id="FontsId" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
