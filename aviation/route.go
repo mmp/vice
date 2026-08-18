@@ -1997,25 +1997,30 @@ func TokenNamesAirport(token, icao string) bool {
 	return token == icao || token == TrimICAOPrefix(icao)
 }
 
+// TokenNamesProcedure reports whether a route token names a SID or a STAR:
+// it ends with a revision digit and isn't an airway.
+func TokenNamesProcedure(token string) bool {
+	if token == "" {
+		return false
+	}
+	if c := token[len(token)-1]; c < '0' || c > '9' {
+		return false
+	}
+	_, airway := DB.Airways[token]
+	return !airway
+}
+
 // routeProcedureToken returns the last token of a route into or out of the
-// airport if it looks like a procedure name--it ends with a revision digit
-// and isn't an airway--or "" otherwise.
+// airport if it names a procedure, or "" otherwise.
 func routeProcedureToken(route, icao string) string {
 	fields := strings.Fields(route)
 	if n := len(fields); n > 0 && TokenNamesAirport(fields[n-1], icao) {
 		fields = fields[:n-1]
 	}
-	if len(fields) == 0 {
+	if len(fields) == 0 || !TokenNamesProcedure(fields[len(fields)-1]) {
 		return ""
 	}
-	last := fields[len(fields)-1]
-	if c := last[len(last)-1]; c < '0' || c > '9' {
-		return ""
-	}
-	if _, ok := DB.Airways[last]; ok {
-		return ""
-	}
-	return last
+	return fields[len(fields)-1]
 }
 
 // RouteSTAR returns the STAR a filed route into the airport ends with, under

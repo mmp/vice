@@ -881,10 +881,11 @@ func (s *Sim) placement(choice departureChoice, departureAirport string) departu
 
 // departureRoute is the part of a filed route a departure flies and files:
 // everything past the origin airport token, in full--the fixes between the
-// airport and the exit are flown, not trimmed away. A SID token drops out,
-// since the scenario's exit route flies the SID's fixes off the runway; the
-// exit fix is put in front only when neither the route nor the exit route
-// reaches it, so that "direct on course" still goes out over the gate--JFK to
+// airport and the exit are flown, not trimmed away. A leading SID token drops
+// out whichever SID it names, since it's the scenario's exit route that flies
+// the fixes off the runway and its SID that goes on the flight plan; the exit
+// fix is put in front only when neither the route nor the exit route reaches
+// it, so that "direct on course" still goes out over the gate--JFK to
 // Cleveland files "KJFK DEEZZ6 CANDR J60...", and with the DEEZZ6 exit route
 // authored as plain vectors, DEEZZ has to lead the route itself.
 func departureRoute(route, departureAirport string, exit av.ExitID, exitRoute *av.ExitRoute) string {
@@ -892,11 +893,8 @@ func departureRoute(route, departureAirport string, exit av.ExitID, exitRoute *a
 	if len(fields) > 0 && av.TokenNamesAirport(fields[0], departureAirport) {
 		fields = fields[1:]
 	}
-	if exitRoute.SID != "" {
-		fields = slices.DeleteFunc(fields, func(f string) bool {
-			c := f[len(f)-1]
-			return c >= '0' && c <= '9' && av.ProcedureBase(f) == av.ProcedureBase(exitRoute.SID)
-		})
+	if len(fields) > 0 && av.TokenNamesProcedure(fields[0]) {
+		fields = fields[1:]
 	}
 
 	fix := exit.Base()

@@ -737,6 +737,19 @@ func TestDepartureRoute(t *testing.T) {
 			want: "HANKO MEM RZC",
 		},
 		{
+			// The filed SID isn't the one the exit route flies: BOS files the
+			// RNAV SSOXS7 where the scenario put the flight on vectors off the
+			// runway. It drops out just the same and LOGAN4 goes on the flight
+			// plan; two SIDs must not end up on the route.
+			name:    "filed SID isn't the one the exit route flies",
+			route:   "BOS SSOXS7 SSOXS Q167 ZIZZI DEALE3 DCA",
+			airport: "KBOS",
+			exit:    "SSOXS.P.14.22/15",
+			exitRoute: av.ExitRoute{SID: "LOGAN4",
+				Waypoints: av.WaypointArray{{Fix: "KBOS-22L"}}},
+			want: "SSOXS Q167 ZIZZI DEALE3 DCA",
+		},
+		{
 			name:      "stale SID revision in the filed route",
 			route:     "KATL CUTTN1 HANKO MEM RZC",
 			airport:   "KATL",
