@@ -445,6 +445,44 @@
             "departure_controller": "1L"
           }
         },
+        "13.Background.JFKConey.LGABelmont": {
+          "BAYYS,GREKI,MERIT": {
+            "cleared_altitude": 10000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-31/ho5E _LGA7_WTSa _LGA7_WTSb/radius1 N040.56.34.912,W073.36.31.113/radius3/tc/ph",
+            "departure_controller": "1L"
+          },
+          "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
+            "cleared_altitude": 15000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-31/ho5W _LGA7_WTSa _LGA7_WTSb/radius1 _LGA7_WTSc/radius1.5/ph/tc",
+            "departure_controller": "1L"
+          },
+          "COATE,GAYEL,NEION": {
+            "cleared_altitude": 15000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-31/ho5T _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc",
+            "departure_controller": "1L"
+          },
+          "COATE.P,GAYEL.P": {
+            "cleared_altitude": 14000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-31/ho5T _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc",
+            "departure_controller": "1L"
+          },
+          "HAAYS": {
+            "cleared_altitude": 12000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-31/ho5T _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc",
+            "departure_controller": "1L"
+          },
+          "WHITE": {
+            "cleared_altitude": 12000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-31/ho5S _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h220/tc",
+            "departure_controller": "1L"
+          }
+        },
         "13.Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
@@ -1481,6 +1519,44 @@
             "departure_controller": "2J"
           }
         },
+        "22R.Background": {
+          "ARD,DIXIE,RBV,WHITE": {
+            "departure_controller": "2J",
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L/ph/ho5S N040.32.34.577,W073.50.37.939/tc"
+          },
+          "SHIPP,WAVEY": {
+            "departure_controller": "2J",
+            "cleared_altitude": 12000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L/hoC56@a3000 N040.33.40.770,W073.39.17.693/tc"
+          },
+          "BAYYS,GREKI,MERIT,BDR": {
+            "departure_controller": "2J",
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L/ph/ho5E@a2500 N040.50.46.728,W073.20.26.211/h040/tc"
+          },
+          "COATE,GAYEL,HAAYS,NEION": {
+            "departure_controller": "2J",
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L/ph/ho5E@a2500 N040.48.30.388,W073.27.28.114/h360/tc"
+          },
+          "BETTE,HAPIE": {
+            "departure_controller": "2J",
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L/hoB17@a3000 N040.33.40.770,W073.39.17.693/tc"
+          },
+          "DEEZZ": {
+            "departure_controller": "2J",
+            "cleared_altitude": 17000,
+            "sid": "DEEZZ6",
+            "waypoints": "KJFK-4L/ph/ho5E@a2500 N040.48.30.388,W073.27.28.114/tc"
+          }
+        },
         "22R.AutoEast": {
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
@@ -1500,21 +1576,21 @@
         "31L.LIB": {
           "ARD,RBV": {
             "cleared_altitude": 11000,
-            "sid": "SKORR5.RNGRR",
+            "sid": "SKORR6.RNGRR",
             "handoff_controller": "5S",
             "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223/tc",
             "departure_controller": "2J"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
-            "sid": "SKORR5.YNKEE",
+            "sid": "SKORR6.YNKEE",
             "handoff_controller": "5E",
             "waypoints": "_JFK_13R/ho SKORR CESID/radius1/a2500+ N040.39.02.230,W073.39.31.343/radius2 N040.44.47.571,W073.32.55.946/radius2/tc/ph",
             "departure_controller": "2J"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
-            "sid": "SKORR5.YNKEE",
+            "sid": "SKORR6.YNKEE",
             "handoff_controller": "5E",
             "waypoints": "_JFK_13R/ho SKORR CESID/radius1/a2500+ N040.41.41.065,W073.32.39.631/radius2 N040.47.36.101,W073.33.12.837/radius2/tc/ph",
             "departure_controller": "2J"
@@ -1528,7 +1604,7 @@
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
-            "sid": "SKORR5.RNGRR",
+            "sid": "SKORR6.RNGRR",
             "handoff_controller": "5S",
             "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/tc/h223",
             "departure_controller": "2J"
@@ -1619,6 +1695,126 @@
             "sid": "JFK5",
             "handoff_controller": "5S",
             "waypoints": "KJFK-22R/ho _JFK5_4La RBV",
+            "departure_controller": "2J"
+          }
+        },
+        "4L.Background": {
+          "ARD": {
+            "cleared_altitude": 9000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-22R/ho5S/h099@a3000",
+            "departure_controller": "2J"
+          },
+          "SHIPP,WAVEY": {
+            "departure_controller": "2J",
+            "cleared_altitude": 12000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-22R/hoC56/h099@a3000"
+          },
+          "BETTE,HAPIE": {
+            "departure_controller": "2J",
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/hoB17/h155@a3000"
+          },
+          "BAYYS,GREKI,MERIT": {
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-22R/ho5E/h099@a3000 N040.51.06.009,W073.21.43.088/tc/h040",
+            "departure_controller": "2J"
+          },
+          "COATE,GAYEL,HAAYS,NEION": {
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-22R/ho5E/h099@a3000 N040.49.21.282,W073.27.56.486/tc/h360",
+            "departure_controller": "2J"
+          },
+          "DEEZZ": {
+            "cleared_altitude": 17000,
+            "sid": "DEEZZ5",
+            "waypoints": "KJFK-22R/ho5E/h099@a3000 N040.49.21.282,W073.27.56.486/tc/h360",
+            "departure_controller": "2J"
+          },
+          "DIXIE,WHITE": {
+            "cleared_altitude": 7000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-22R/ho5S/h099@a3000",
+            "departure_controller": "2J"
+          },
+          "RBV": {
+            "cleared_altitude": 9000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-22R/ho5S/h099@a3000",
+            "departure_controller": "2J"
+          }
+        },
+        "13R.Background": {
+          "ARD,DIXIE,RBV,WHITE": {
+            "departure_controller": "2J",
+            "cleared_altitude": 9000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/ho5S/h185@a3000"
+          },
+          "SHIPP,WAVEY": {
+            "departure_controller": "2J",
+            "cleared_altitude": 12000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/hoC56/h170@a3000"
+          },
+          "COATE,GAYEL,HAAYS,NEION": {
+            "departure_controller": "2J",
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/ho5E/h110@a3000 N040.47.08.649,W073.26.06.760/radius1/tc"
+          },
+          "BAYYS,BDR,GREKI,MERIT": {
+            "departure_controller": "2J",
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/ho5E/h110@a3000 N040.47.08.649,W073.26.06.760/radius1/tc"
+          },
+          "BETTE,HAPIE": {
+            "departure_controller": "2J",
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-31L/hoB17/h155@a3000"
+          },
+          "DEEZZ": {
+            "departure_controller": "2J",
+            "cleared_altitude": 17000,
+            "sid": "DEEZZ6",
+            "waypoints": "KJFK-31L/ho5E/h109@a5000"
+          }
+        },
+        "31L.Background": {
+          "BAYYS,GREKI,MERIT": {
+            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.53.02.958,W073.20.29.617/tc",
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
+            "departure_controller": "2J"
+          },
+          "COATE,GAYEL,HAAYS,NEION": {
+            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.42.13.502,W073.29.27.288 N040.49.23.822,W073.28.30.049/h010/tc",
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "departure_controller": "2J"
+          },
+          "DEEZZ": {
+            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.42.13.502,W073.29.27.288 N040.49.23.822,W073.28.30.049/h010/tc",
+            "cleared_altitude": 17000,
+            "sid": "DEEZZ6",
+            "departure_controller": "2J"
+          },
+          "DIXIE,WHITE": {
+            "waypoints": "KJFK-13R/h314@a500 SKORR/ho5S/a2500+/s210- METSS/a2500+/s250-/tc RNGRR",
+            "cleared_altitude": 7000,
+            "sid": "JFK5",
+            "departure_controller": "2J"
+          },
+          "RBV": {
+            "waypoints": "KJFK-13R/h314@a500 SKORR/ho5S/a2500+/s210- METSS/a2500+/s250-/tc RNGRR",
+            "cleared_altitude": 11000,
+            "sid": "JFK5",
             "departure_controller": "2J"
           }
         }
@@ -1887,7 +2083,7 @@
       "hold_for_release": true,
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       },
       "tower_list": 3
@@ -2070,7 +2266,7 @@
       "tower_list": 5,
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       },
       "departure_controller": "1Y",
@@ -2205,13 +2401,13 @@
             "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "WENTZ1",
-            "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5W RUUDY/a10000 "
+            "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5W RUUDY/a10000"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "WENTZ1",
-            "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5T RUUDY/a10000 "
+            "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5T RUUDY/a10000"
           },
           "DIXIE,WHITE": {
             "departure_controller": "4N",
@@ -2436,7 +2632,7 @@
       },
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       }
     },
@@ -2454,7 +2650,7 @@
       },
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         },
         "routes": [
           {
@@ -2614,7 +2810,7 @@
       },
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       }
     },
@@ -2704,7 +2900,7 @@
       "hold_for_release": true,
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       },
       "tower_list": 4
@@ -2866,7 +3062,7 @@
       },
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       }
     },
@@ -2931,7 +3127,7 @@
       "hold_for_release": true,
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       },
       "tower_list": 9
@@ -2939,21 +3135,21 @@
     "21N": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 1
         }
       }
     },
     "KACK": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 2
         }
       }
     },
     "KGON": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 2
         }
       },
       "approaches": {
@@ -2965,109 +3161,109 @@
     "KMMK": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 2
         }
       }
     },
     "KSNC": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 2
         }
       }
     },
     "N69": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 1
         }
       }
     },
     "39N": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 2
         }
       }
     },
     "KBLM": {
       "vfr": {
         "random_routes": {
-          "rate": 10
+          "rate": 5
         }
       }
     },
     "KHWV": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       }
     },
     "11N": {
       "vfr": {
         "random_routes": {
-          "rate": 3
+          "rate": 2
         }
       }
     },
     "47N": {
       "vfr": {
         "random_routes": {
-          "rate": 3
+          "rate": 1
         }
       }
     },
     "KFWN": {
       "vfr": {
         "random_routes": {
-          "rate": 3
+          "rate": 2
         }
       }
     },
     "KMJX": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         }
       }
     },
     "KPNE": {
       "vfr": {
         "random_routes": {
-          "rate": 7
+          "rate": 4
         }
       }
     },
     "1N7": {
       "vfr": {
         "random_routes": {
-          "rate": 10
+          "rate": 5
         }
       }
     },
     "KTTN": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 3
         },
         "routes": [
           {
-            "rate": 8,
+            "rate": 4,
             "waypoints": "N040.21.49.295,W074.46.38.822/a3000+ N040.25.33.924,W074.40.05.868/a3000-5500/airwork20m15nm N040.20.26.390,W074.43.53.505/a2500 N040.18.19.305,W074.46.39.920/a1000+",
             "destination": "KTTN",
             "fleet": "lightGA",
             "description": "Airwork bothers 39N"
           },
           {
-            "rate": 8,
+            "rate": 4,
             "waypoints": "N040.20.31.402,W074.53.35.066/a2000+ N040.27.10.577,W074.56.14.038/a2000-5500/airwork20m15nm N040.20.25.991,W074.44.41.872/a1500+ N040.17.12.865,W074.47.40.949/a1000+",
             "destination": "KTTN",
             "fleet": "lightGA",
             "description": "Airwork bothers SBJ"
           },
           {
-            "rate": 8,
+            "rate": 4,
             "waypoints": "N040.17.16.999,W074.41.17.526/a1500+ N040.22.18.395,W074.29.58.077/a1400-3500/airwork20m15nm N040.20.12.231,W074.43.09.999/a1500+ N040.17.57.951,W074.47.17.796/a400+",
             "destination": "KTTN",
             "fleet": "lightGA",
@@ -3081,12 +3277,12 @@
         "routes": [
           {
             "destination": "KSEG",
-            "rate": 8,
+            "rate": 4,
             "waypoints": "KDXR/radius30/a10000-17000 KHPN/radius40/a10000-17000 KMMU/radius20/a10000-17000/land"
           },
           {
             "destination": "KRDG",
-            "rate": 8,
+            "rate": 4,
             "waypoints": "KDXR/radius30/a10000-17000 KHPN/radius40/a10000-17000 RBV/radius20/a10000-12000/land"
           }
         ]
@@ -3097,7 +3293,7 @@
         "routes": [
           {
             "destination": "KRDG",
-            "rate": 8,
+            "rate": 4,
             "waypoints": "KGBR/radius30/a10000-17000 KSWF/radius40/a10000-17000 RBV/radius20/a10000-12000/land"
           }
         ]
@@ -3108,12 +3304,12 @@
         "routes": [
           {
             "destination": "KIJD",
-            "rate": 10,
+            "rate": 5,
             "waypoints": "RBV/radius30/a10000-17000 KHPN/radius40/a10000-17000 KDXR/radius20/a10000-12000/land"
           },
           {
             "destination": "KPSF",
-            "rate": 8,
+            "rate": 3,
             "waypoints": "RBV/radius30/a10000-17000 KSWF/radius40/a10000-17000 KGBR/radius20/a10000-12000/land"
           }
         ]
@@ -3124,7 +3320,7 @@
         "routes": [
           {
             "destination": "KIJD",
-            "rate": 10,
+            "rate": 5,
             "waypoints": "KMMU/radius30/a10000-17000 KHPN/radius40/a10000-17000 KDXR/radius20/a10000-17000/land"
           }
         ]
@@ -3666,7 +3862,6 @@
           "route": "/. BOUNO5",
           "initial_controller": "B46",
           "initial_altitude": 17000,
-          "assigned_altitude": null,
           "initial_speed": 250,
           "speed_restriction": 250,
           "description": "BOUNO5/Overflight into HPN",
@@ -3801,33 +3996,60 @@
         }
       ]
     },
-    "PARCH4.Background": {
+    "PARCH4.Background31R": {
       "arrivals": [
         {
           "cruise_altitude": 22000,
-          "waypoints": "PARCH CCC/ho2K/d90 ROBER/d50/ho2A N040.36.10.252,W073.13.29.280/d30 CATOD MALDE/d019 ZULAB/d001 JFK/delete",
-          "route": "PARCH CCC ROBER",
+          "waypoints": "PARCH CCC/ho2K/a12000 ROBER/a5000/ho2A/s210 N040.35.54.748,W073.20.13.494/a5000/clearapp CATOD/a3000 MALDE/a3000 ZULAB/a1800- KJFK-31R/a100/delete",
+          "route": "/. PARCH4",
+          "star": "PARCH4",
           "initial_controller": "B32",
           "initial_altitude": 13000,
-          "assigned_altitude": 12000,
+          "cleared_altitude": 100,
           "initial_speed": 250,
           "speed_restriction": 250,
+          "expect_approach": "I1R",
           "airports": ["KJFK"]
         }
       ]
     },
-    "SARDI1.ISP": {
+    "PARCH4.Background22R": {
       "arrivals": [
         {
-          "spawn": "SHERL",
           "cruise_altitude": 22000,
-          "star": "SARDI1",
-          "initial_controller": "C66",
-          "initial_altitude": 7000,
-          "assigned_altitude": 7000,
+          "waypoints": "PARCH CCC/ho2K/a12000 ROBER/a5000/ho2A N040.40.19.697,W073.16.49.039 N040.46.57.265,W073.20.21.624/d20 N040.49.49.956,W073.29.08.199/s210 N040.49.43.694,W073.35.40.988/s180/clearapp CORVT/a2000 MATTR/a1900 KJFK-22R/a100/delete",
+          "route": "/. PARCH4",
+          "star": "PARCH4",
+          "initial_controller": "B32",
+          "initial_altitude": 13000,
+          "cleared_altitude": 100,
           "initial_speed": 250,
           "speed_restriction": 250,
-          "expect_approach": null,
+          "expect_approach": "I2R",
+          "airports": ["KJFK"]
+        }
+      ]
+    },
+    "SARDI1": {
+      "arrivals": [
+        {
+          "waypoints": "PLUME SHERL DUNEE/ho3H/d70 KOPPY SARDI UPTWN/ho DPK",
+          "cruise_altitude": 31000,
+          "star": "SARDI1",
+          "initial_controller": "B17",
+          "initial_altitude": 12000,
+          "assigned_altitude": 7000,
+          "initial_speed": 300,
+          "airports": ["KFRG"]
+        },
+        {
+          "spawn": "PLUME",
+          "cruise_altitude": 22000,
+          "star": "SARDI1",
+          "initial_controller": "B17",
+          "initial_altitude": 12000,
+          "assigned_altitude": 7000,
+          "initial_speed": 300,
           "airports": ["KOXC", "KISP", "KHVN", "KBDR", "KFOK", "KGON"]
         }
       ]
@@ -3838,6 +4060,7 @@
           "waypoints": "N040.12.34.307,W073.43.07.417 N040.16.13.896,W073.40.17.843/ho/h40",
           "cruise_altitude": 39000,
           "star": "CAMRN5",
+          "star_feeds": ["CAMRN5", "PUCKY1"],
           "initial_controller": "2G",
           "initial_altitude": 8000,
           "assigned_altitude": 4000,
@@ -3852,14 +4075,14 @@
     "CAMRN/PUCKY1.Finals31": {
       "arrivals": [
         {
-          "waypoints": "CAMRN N040.15.12.510,W073.41.24.640/ho N040.19.46.880,W073.38.09.605/h40",
+          "waypoints": "KARRS/ho2K CAMRN/a12000/s250/ho N040.15.12.510,W073.41.24.640/tc/h040",
           "cruise_altitude": 39000,
           "star": "CAMRN5",
-          "initial_controller": "2K",
-          "initial_altitude": 8000,
-          "assigned_altitude": 4000,
-          "initial_speed": 250,
-          "speed_restriction": 250,
+          "star_feeds": ["CAMRN5", "PUCKY1"],
+          "initial_controller": "C56",
+          "initial_altitude": 16000,
+          "cleared_altitude": 4000,
+          "initial_speed": 300,
           "expect_approach": "I1R",
           "scratchpad": "I1R",
           "airports": ["KJFK"]
@@ -3929,7 +4152,7 @@
     "PUCKY1.Finals13": {
       "arrivals": [
         {
-          "waypoints": "LGA N040.42.02.048,W073.41.55.759 N040.30.44.604,W073.38.21.855/a8000/h180/ho",
+          "waypoints": "LGA N040.42.02.048,W073.41.55.759/ho N040.30.44.604,W073.38.21.855/a8000/h180/tc",
           "cruise_altitude": 37000,
           "star": "PUCKY1",
           "initial_controller": "2J",
@@ -3958,12 +4181,12 @@
     "PARCH4.Finals22": {
       "arrivals": [
         {
-          "waypoints": "CCC/a12000/s250 ROBER/ho CRAIL/h283",
+          "waypoints": "PARCH/ho2K CCC/a12000/s250 ROBER/a5000/ho N040.41.02.942,W073.13.49.495/radius1/tc/r010",
           "star_feeds": ["PARCH4", "PAWLN1"],
           "route": "/. PARCH4",
-          "initial_controller": "2K",
-          "initial_altitude": 12000,
-          "assigned_altitude": 5000,
+          "initial_controller": "B46",
+          "initial_altitude": 15000,
+          "cleared_altitude": 5000,
           "initial_speed": 250,
           "star": "PARCH4",
           "expect_approach": "I2L",
@@ -3975,12 +4198,12 @@
     "PARCH4.Finals31": {
       "arrivals": [
         {
-          "waypoints": "CCC/s250 ROBER/ho/h229 JFK/h278",
+          "waypoints": "PARCH/ho2K CCC/s250/ho ROBER/h250/a5000/tc",
           "star_feeds": ["PARCH4", "PAWLN1"],
           "route": "/. PARCH4",
-          "initial_controller": "2K",
-          "initial_altitude": 12000,
-          "assigned_altitude": 5000,
+          "initial_controller": "B46",
+          "initial_altitude": 15000,
+          "cleared_altitude": 5000,
           "initial_speed": 250,
           "expect_approach": "I1R",
           "scratchpad": "I1R",
@@ -3992,7 +4215,7 @@
     "PARCH4.Finals13": {
       "arrivals": [
         {
-          "waypoints": "CCC/s250 ROBER/ho/h280",
+          "waypoints": "CCC/s250 ROBER/a5000/ho N040.35.19.235,W073.09.06.789/a3000/tc/ph",
           "route": "/. PARCH4",
           "initial_controller": "2K",
           "initial_altitude": 12000,
@@ -4008,7 +4231,7 @@
     "PARCH4.Finals4": {
       "arrivals": [
         {
-          "waypoints": "CCC/a12000/s250 N040.44.28.702,W072.58.44.606/a5000+ ROBER N040.36.11.118,W073.07.18.656/a4000/ho2J N040.19.44.051,W073.38.10.374/ho2G N040.16.39.453,W073.28.30.461 N040.19.44.051,W073.38.10.374/ho",
+          "waypoints": "CCC/a12000/s250 N040.44.28.702,W072.58.44.606/a5000+ ROBER N040.36.11.118,W073.07.18.656/a4000/ho/ph",
           "route": "/. PARCH4",
           "initial_controller": "2K",
           "initial_altitude": 12000,
@@ -4041,7 +4264,7 @@
     "PUCKY1.Finals4": {
       "arrivals": [
         {
-          "waypoints": "LGA N040.42.02.048,W073.41.55.759 N040.30.44.604,W073.38.21.855/a8000/h180/ho",
+          "waypoints": "VADDR N040.42.02.048,W073.41.55.759/ho N040.30.44.604,W073.38.21.855/a8000/h180/tc",
           "cruise_altitude": 37000,
           "star": "PUCKY1",
           "initial_controller": "2J",
@@ -4053,42 +4276,41 @@
         }
       ]
     },
-    "SARDI1": {
+    "SARDI1.ISP.Background24": {
       "arrivals": [
         {
-          "waypoints": "PLUME SHERL DUNEE/ho3H/d70 KOPPY SARDI UPTWN/ho DPK",
-          "cruise_altitude": 31000,
+          "waypoints": "PLUME SHERL/ho3H DUNEE KOPPY SARDI/d40 CCC/d20/clearapp UKEGE/a1400 JUMUM/a940 KISP-24/a100/delete",
+          "expect_approach": "I24",
           "star": "SARDI1",
+          "star_feeds": ["SARDI1", "NELIE4"],
           "initial_controller": "B17",
           "initial_altitude": 12000,
-          "assigned_altitude": 10000,
+          "assigned_altitude": 7000,
           "initial_speed": 300,
-          "airports": ["KFRG"]
+          "airports": ["KISP"]
         }
       ]
     },
-    "CAMRN5.Background31": {
+    "CAMRN5.Background31L": {
       "arrivals": [
         {
-          "cruise_altitude": 39000,
-          "waypoints": "CAMRN/d50 N040.09.01.859,W073.44.36.599 N040.16.22.781,W073.35.54.583 N040.24.42.083,W073.29.15.148/d20 ZACHS/a020 MEALS/a018 JFK/a001/delete",
+          "cruise_altitude": 31000,
+          "waypoints": "KARRS/ho2G CAMRN/a12000/s250/d40/clearapp/ho2A ZACHS/a2000/s210 MEALS/a1800/s150- KJFK-31L/a100/delete",
+          "route": "/. CAMRN5",
           "star": "CAMRN5",
-          "initial_controller": "4A",
-          "initial_altitude": 12000,
-          "assigned_altitude": 11000,
+          "initial_controller": "C68",
+          "initial_altitude": 18000,
+          "cleared_altitude": 100,
           "initial_speed": 300,
-          "speed_restriction": 250,
           "expect_approach": "I1L",
-          "scratchpad": "I1L",
           "airports": ["KJFK"]
         }
       ]
     },
-    "CAMRN5.Background22": {
+    "CAMRN5.Background22L": {
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "route": "CAMRN N040.06.19.934,W073.49.44.875 N040.15.31.324,W073.41.31.809 N040.25.32.221,W073.33.00.422 N040.33.32.654,W073.27.11.826 N040.37.27.637,W073.26.33.237 N040.41.01.280,W073.27.18.198 N040.46.08.376,W073.29.23.223 N040.48.23.494,W073.32.35.126 N040.48.13.002,W073.34.39.794 ROSLY ZALPO N040.38.47.151,W073.45.17.523",
           "waypoints": "CAMRN/d50 N040.06.19.934,W073.49.44.875/d40 N040.15.31.324,W073.41.31.809 N040.25.32.221,W073.33.00.422 N040.33.32.654,W073.27.11.826 N040.37.27.637,W073.26.33.237 N040.41.01.280,W073.27.18.198 N040.46.08.376,W073.29.23.223 N040.48.23.494,W073.32.35.126 N040.48.13.002,W073.34.39.794/d30 ROSLY/d019 ZALPO/d001 N040.38.47.151,W073.45.17.523/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
@@ -4101,46 +4323,43 @@
         }
       ]
     },
-    "CAMRN5.Background4": {
+    "CAMRN5.Background4L": {
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "route": "CAMRN N040.07.31.840,W073.49.08.345 N040.14.55.014,W073.52.55.598 N040.19.16.530,W073.54.13.848 ZETAL EBBEE JFK",
-          "waypoints": "CAMRN/d50 N040.07.31.840,W073.49.08.345/d40 N040.14.55.014,W073.52.55.598/d20 N040.19.16.530,W073.54.13.848 ZETAL/d015 EBBEE/d001 JFK/delete",
+          "waypoints": "CAMRN/d50 N040.07.10.979,W073.47.02.167 N040.17.06.164,W073.56.53.946/d20/s210 N040.22.55.515,W073.57.56.019/s180/clearapp AROKE/a2000 KRSTL/a1500 KJFK-4L/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "expect_approach": "I4R",
-          "scratchpad": "I4R",
+          "expect_approach": "I4L",
+          "scratchpad": "I4L",
           "airports": ["KJFK"]
         }
       ]
     },
-    "CAMRN5.Background13": {
+    "CAMRN5.Background13L": {
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "route": "CAMRN N040.07.31.840,W073.49.08.345 N040.14.55.014,W073.52.55.598 N040.19.16.530,W073.54.13.848 ASALT CNRSE LEISA SILJY ROBJE N040.38.49.953,W073.45.55.453",
-          "waypoints": "CAMRN/d50 N040.07.31.840,W073.49.08.345/d40 N040.14.55.014,W073.52.55.598/d30 N040.19.16.530,W073.54.13.848 ASALT/d20 CNRSE/d15 LEISA/d10 SILJY/d005 ROBJE/d001 N040.38.49.953,W073.45.55.453/delete",
+          "waypoints": "CAMRN/d50 N040.07.31.840,W073.49.08.345/d40 N040.14.55.014,W073.52.55.598/d30 N040.19.16.530,W073.54.13.848/s210 ASALT/a2000/s180/clearapp CNRSE/a1500 LEISA/a1000 SILJY/a500 KJFK-13L/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "expect_approach": "I4R",
+          "expect_approach": "R3L",
           "scratchpad": "I4R",
           "airports": ["KJFK"]
         }
       ]
     },
-    "PUCKY1.Background22": {
+    "PUCKY1.Background22L": {
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "route": "PUCKY N040.50.56.588,W074.00.50.454 N040.32.49.258,W073.58.58.201 N040.28.39.895,W073.57.10.453 N040.24.44.829,W073.50.28.765 N040.22.40.203,W073.45.12.194 N040.22.41.329,W073.37.23.875 N040.25.02.023,W073.30.36.254 N040.30.15.957,W073.27.07.185 N040.35.52.139,W073.23.54.265 N040.39.31.234,W073.23.25.123 N040.43.23.718,W073.24.25.191 N040.45.07.937,W073.27.08.915 N040.47.59.571,W073.33.45.851 N040.47.48.873,W073.37.15.662 ROSLY ZALPO N040.38.47.151,W073.45.17.523",
-          "waypoints": "PUCKY/d160/po2J N040.50.56.588,W074.00.50.454/d130 N040.32.49.258,W073.58.58.201/d80 N040.28.39.895,W073.57.10.453/d40 N040.24.44.829,W073.50.28.765 N040.22.40.203,W073.45.12.194 N040.22.41.329,W073.37.23.875 N040.25.02.023,W073.30.36.254 N040.30.15.957,W073.27.07.185 N040.35.52.139,W073.23.54.265 N040.39.31.234,W073.23.25.123 N040.43.23.718,W073.24.25.191 N040.45.07.937,W073.27.08.915 N040.47.59.571,W073.33.45.851/d30 N040.47.48.873,W073.37.15.662 ROSLY/d019 ZALPO/d001 N040.38.47.151,W073.45.17.523/delete",
+          "waypoints": "PUCKY/d160 N040.43.49.673,W074.03.54.942/d130 N040.26.58.876,W074.00.12.414 N040.23.43.924,W073.54.06.405/d40 N040.23.08.575,W073.36.18.973 N040.38.09.701,W073.26.05.579/s210 N040.45.56.758,W073.28.45.375/d30 N040.48.13.524,W073.35.07.424/s180/clearapp ROSLY/a3000 ZALPO/a1800 KJFK-22L/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -4152,12 +4371,11 @@
         }
       ]
     },
-    "PUCKY1.Background31": {
+    "PUCKY1.Background31R": {
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "route": "PUCKY N040.50.31.430,W074.02.55.204 N040.27.41.201,W073.58.05.220 N040.21.37.979,W073.52.28.709 N040.19.32.351,W073.47.57.264 N040.18.30.827,W073.43.21.013 N040.18.36.567,W073.36.34.985 N040.24.21.470,W073.29.48.491 N040.26.43.688,W073.28.43.095",
-          "waypoints": "PUCKY/d160/po2J N040.45.53.077,W074.01.50.879/d130 N040.33.04.213,W073.59.11.879/d80 N040.21.37.979,W073.52.28.709/d40 N040.19.32.351,W073.47.57.264 N040.18.30.827,W073.43.21.013 N040.18.36.567,W073.36.34.985 N040.24.21.470,W073.29.48.491 N040.26.43.688,W073.28.43.095/d30 CATOD MALDE/d019 ZULAB/d001 N040.38.36.082,W073.45.24.966/delete",
+          "waypoints": "PUCKY/d160 N040.45.53.077,W074.01.50.879/d130 N040.33.04.213,W073.59.11.879/d80 N040.21.37.979,W073.52.28.709/d40 N040.19.32.351,W073.47.57.264 N040.18.30.827,W073.43.21.013 N040.18.36.567,W073.36.34.985 N040.24.21.470,W073.29.48.491 N040.26.43.688,W073.28.43.095/d30 CATOD MALDE/d019 ZULAB/d001 N040.38.36.082,W073.45.24.966/delete",
           "initial_controller": "4A",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -4169,12 +4387,11 @@
         }
       ]
     },
-    "PUCKY1.Background4": {
+    "PUCKY1.Background4R": {
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "route": "PUCKY VADDR N040.47.52.814,W073.36.49.240 N040.40.25.094,W073.30.25.378 N040.34.50.080,W073.29.54.589 N040.28.58.888,W073.34.03.621 N040.24.18.709,W073.37.24.451 N040.22.14.742,W073.44.25.612 N040.23.01.901,W073.51.36.304 N040.24.43.483,W073.53.57.780",
-          "waypoints": "PUCKY/d160/po2J VADDR/d130 N040.47.52.814,W073.36.49.240 N040.40.25.094,W073.30.25.378/d80 N040.34.50.080,W073.29.54.589 N040.28.58.888,W073.34.03.621/d50 N040.24.18.709,W073.37.24.451/d40 N040.22.14.742,W073.44.25.612/d30 N040.23.01.901,W073.51.36.304/d20 ZETAL/d015 EBBEE/d001 JFK/delete",
+          "waypoints": "PUCKY/d160/po2J VADDR/d130 N040.43.27.041,W073.41.13.901/d80/radius1 N040.25.45.103,W073.38.54.210/d40/radius0.5 N040.19.15.088,W073.52.25.193/d30/radius0.5 ZETAL/a2000/clearapp EBBEE/a1500 KJFK-4R/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -4186,12 +4403,11 @@
         }
       ]
     },
-    "PUCKY1.Background13": {
+    "PUCKY1.Background13L": {
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "route": "PUCKY VADDR N040.47.52.814,W073.36.49.240 N040.40.25.094,W073.30.25.378 N040.34.50.080,W073.29.54.589 N040.28.58.888,W073.34.03.621 N040.24.18.709,W073.37.24.451 N040.22.14.742,W073.44.25.612 N040.23.01.901,W073.51.36.304 N040.24.43.483,W073.53.57.780",
-          "waypoints": "PUCKY/d160/po2J VADDR/d130 N040.47.52.814,W073.36.49.240 N040.40.25.094,W073.30.25.378/d80 N040.34.50.080,W073.29.54.589 N040.28.58.888,W073.34.03.621/d50 N040.24.18.709,W073.37.24.451/d40 N040.22.14.742,W073.44.25.612/d30 N040.23.01.901,W073.51.36.304 ASALT/d20 CNRSE/d15 LEISA/d10 SILJY/d005 ROBJE/d001 N040.38.49.953,W073.45.55.453/delete",
+          "waypoints": "PUCKY/d160/po2J VADDR/d130 N040.43.27.041,W073.41.13.901/d80/radius1 N040.25.45.103,W073.38.54.210/d40/radius0.5 N040.19.15.088,W073.52.25.193/d30/radius0.5 ASALT/a2000/clearapp CNRSE/a1500 LEISA/a1000 KJFK-13L/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -4537,9 +4753,10 @@
     "MIP4 LGA background 22/13": {
       "arrivals": [
         {
-          "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000 N040.32.02.937,W074.08.54.814/a7000 APPLE/a4000/ho1F PROUD N040.44.46.198,W073.59.15.807/a4000 N040.57.58.422,W073.49.24.743/a4000/s210 N040.58.20.505,W073.46.27.451/a3000 N040.57.43.687,W073.44.47.805/a2000 N040.55.25.012,W073.45.27.246/a2000/s180 GREKO/a1900 N040.47.11.355,W073.52.10.526/a001 LGA/delete",
+          "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000 N040.32.02.937,W074.08.54.814/a7000 APPLE/a4000/ho1F PROUD N040.44.46.198,W073.59.15.807/a4000 N040.57.58.422,W073.49.24.743/a4000/s210 N040.58.20.505,W073.46.27.451/a3000 N040.57.43.687,W073.44.47.805/a2000 N040.55.25.012,W073.45.27.246/a2000/s180/clearapp GREKO/a1900 N040.47.11.355,W073.52.10.526/a001 LGA/delete",
           "cruise_altitude": 35000,
           "star": "MIP4",
+          "star_feeds": ["PROUD2", "APPLE3"],
           "initial_controller": "1D",
           "initial_altitude": 10000,
           "initial_speed": 300,
@@ -4552,9 +4769,10 @@
     "MIP4 LGA background 22/31": {
       "arrivals": [
         {
-          "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000 N040.32.02.937,W074.08.54.814/a7000/ho1F APPLE/a4000 PROUD N040.43.35.364,W073.54.52.767/a4000 N040.45.50.331,W073.47.53.226/a4000 N040.51.04.031,W073.43.07.829/a3000/s210 N040.53.58.879,W073.40.36.987/a3000/s180 N040.55.05.470,W073.43.14.119/a2000 N040.53.53.345,W073.46.34.042/a2000 GREKO/a1900/s180 N040.47.11.355,W073.52.10.526/a001/s130 LGA/delete",
+          "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000 N040.32.02.937,W074.08.54.814/a7000/ho1F APPLE/a4000 PROUD N040.43.35.364,W073.54.52.767/a4000 N040.45.50.331,W073.47.53.226/a4000 N040.51.04.031,W073.43.07.829/a3000/s210 N040.53.58.879,W073.40.36.987/a3000/s180 N040.55.05.470,W073.43.14.119/a2000 N040.53.53.345,W073.46.34.042/a2000/clearapp GREKO/a1900/s180 N040.47.11.355,W073.52.10.526/a001/s130 KLGA-22/delete",
           "cruise_altitude": 35000,
           "star": "MIP4",
+          "star_feeds": ["PROUD2", "APPLE3"],
           "initial_controller": "1D",
           "initial_altitude": 10000,
           "initial_speed": 300,
@@ -4570,6 +4788,7 @@
           "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000/ho1F N040.32.02.937,W074.08.54.814/a7000/ho1F APPLE/a4000 BENNG/a3000/clearapp",
           "cruise_altitude": 35000,
           "star": "MIP4",
+          "star_feeds": ["PROUD2", "APPLE3"],
           "initial_controller": "1D",
           "initial_altitude": 10000,
           "initial_speed": 300,
@@ -4723,7 +4942,7 @@
         {
           "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
           "cruise_altitude": 39000,
-          "star_feeds": ["PHLBO4", "FQM3" ],
+          "star_feeds": ["PHLBO4", "FQM3"],
           "initial_controller": "4P",
           "initial_altitude": 6000,
           "initial_speed": 250,
@@ -6269,6 +6488,10 @@
         },
         {
           "airport": "KJFK",
+          "runway": "31L"
+        },
+        {
+          "airport": "KJFK",
           "runway": "31R"
         }
       ],
@@ -6326,10 +6549,13 @@
         "BOUNO5.ISP": {
           "KHPN": 5
         },
-        "PARCH4.Background": {
+        "PARCH4.Background31R": {
           "KJFK": 25
         },
-        "SARDI1.ISP": {
+        "CAMRN5.Background31L": {
+          "KJFK": 25
+        },
+        "SARDI1": {
           "KHVN": 5,
           "KISP": 7,
           "KBDR": 2,
@@ -6413,6 +6639,10 @@
         },
         {
           "airport": "KJFK",
+          "runway": "31L"
+        },
+        {
+          "airport": "KJFK",
           "runway": "31R"
         },
         {
@@ -6477,10 +6707,13 @@
           "KBDR": 2,
           "KOXC": 2
         },
-        "PARCH4.Background": {
+        "PARCH4.Background31R": {
           "KJFK": 25
         },
-        "SARDI1.ISP": {
+        "CAMRN5.Background31L": {
+          "KJFK": 25
+        },
+        "SARDI1": {
           "KHVN": 5,
           "KISP": 7,
           "KBDR": 2,
@@ -6529,6 +6762,10 @@
           "go_around": {
             "altitude": 2000
           }
+        },
+        {
+          "airport": "KJFK",
+          "runway": "31L"
         },
         {
           "airport": "KJFK",
@@ -6628,10 +6865,13 @@
         "BOUNO5.ISP": {
           "KHPN": 5
         },
-        "PARCH4.Background": {
+        "PARCH4.Background31R": {
           "KJFK": 25
         },
-        "SARDI1.ISP": {
+        "CAMRN5.Background31L": {
+          "KJFK": 25
+        },
+        "SARDI1": {
           "KHVN": 5,
           "KISP": 7,
           "KBDR": 2,
@@ -6687,6 +6927,10 @@
           "go_around": {
             "altitude": 2000
           }
+        },
+        {
+          "airport": "KJFK",
+          "runway": "31L"
         },
         {
           "airport": "KJFK",
@@ -6776,10 +7020,13 @@
         "BOUNO5.ISP": {
           "KHPN": 5
         },
-        "PARCH4.Background": {
+        "PARCH4.Background31R": {
           "KJFK": 25
         },
-        "SARDI1.ISP": {
+        "CAMRN5.Background31L": {
+          "KJFK": 25
+        },
+        "SARDI1": {
           "KHVN": 5,
           "KISP": 7,
           "KBDR": 2,
@@ -6814,6 +7061,11 @@
           "airport": "KBDR",
           "rate": 5,
           "runway": "6"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 10,
+          "runway": "31L.Background"
         }
       ],
       "wind": {
@@ -6829,6 +7081,14 @@
             "heading": 220,
             "altitude": 2000
           }
+        },
+        {
+          "airport": "KISP",
+          "runway": "24"
+        },
+        {
+          "airport": "KLGA",
+          "runway": "22"
         },
         {
           "airport": "KJFK",
@@ -6875,6 +7135,12 @@
         "PARCH4": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "MIP4 LGA background 22/31": {
+          "KLGA": 30
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 1
         }
       },
       "configuration": "JFK",
@@ -6916,6 +7182,11 @@
           }
         },
         {
+          "airport": "KLGA",
+          "runway": "22"
+        },
+        { "airport": "KISP", "runway": "24" },
+        {
           "airport": "KJFK",
           "runway": "13L",
           "go_around": {
@@ -6925,19 +7196,20 @@
         }
       ],
       "airspace": {
-        "2G": ["CAMRN_13RL"],
-        "2K": ["ROBER_4RL"],
-        "2E": ["LENDY_13RL"],
-        "2A": ["JFK_FINAL_13RL"],
-        "2M": ["JFK_SATELITE_13RL"],
         "2J": ["JFK_DEP_13RL"]
       },
       "inbound_rates": {
-        "CAMRN5.Background13": {
+        "CAMRN5.Background13L": {
           "KJFK": 10
         },
-        "PUCKY1.Background13": {
+        "PUCKY1.Background13L": {
           "KJFK": 10
+        },
+        "MIP4 LGA background 22/13": {
+          "KLGA": 30
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 10
         }
       },
       "configuration": "N2J",
@@ -6951,7 +7223,7 @@
         {
           "airport": "KLGA",
           "rate": 15,
-          "runway": "31.JFK"
+          "runway": "13.Background.JFKConey.LGABelmont"
         }
       ],
       "wind": {
@@ -6983,6 +7255,11 @@
             "heading": 170,
             "altitude": 3000
           }
+        },
+        { "airport": "KISP", "runway": "24" },
+        {
+          "airport": "KLGA",
+          "runway": "22"
         }
       ],
       "airspace": {
@@ -7021,6 +7298,12 @@
         "PARCH4": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 10
+        },
+        "MIP4 LGA background 22/13": {
+          "KLGA": 1
         }
       },
       "configuration": "JFK",
@@ -7056,29 +7339,28 @@
             "altitude": 2000
           }
         },
+        { "airport": "KISP", "runway": "24" },
         {
           "airport": "KJFK",
-          "runway": "22L",
-          "go_around": {
-            "heading": 220,
-            "altitude": 3000
-          }
+          "runway": "22L"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22R"
         }
       ],
       "airspace": {
-        "2G": ["CAMRN_22RL"],
-        "2K": ["ROBER_22RL"],
-        "2E": ["LENDY_22RL"],
-        "2A": ["JFK_FINAL_22RL"],
-        "2M": ["JFK_SATELITE_22RL"],
         "2J": ["JFK_DEP_22RL"]
       },
       "inbound_rates": {
-        "CAMRN5.Background22": {
+        "PARCH4.Background22R": {
           "KJFK": 10
         },
-        "PUCKY1.Background22": {
+        "PUCKY1.Background22L": {
           "KJFK": 10
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 10
         }
       },
       "configuration": "N2J",
@@ -7117,6 +7399,8 @@
             "altitude": 3000
           }
         },
+        { "airport": "KLGA", "runway": "22" },
+        { "airport": "KISP", "runway": "24" },
         {
           "airport": "KJFK",
           "runway": "22R",
@@ -7162,7 +7446,11 @@
         "PARCH4": {
           "KFRG": 0,
           "KJFK": 12
-        }
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 10
+        },
+        "MIP4 LGA background 22/13": { "KLGA": 1 }
       },
       "configuration": "J22",
       "default_maps": ["JFK ARR/DEP RWY 22L/R"],
@@ -7193,7 +7481,7 @@
         },
         {
           "airport": "KLGA",
-          "rate": 0,
+          "rate": 1,
           "runway": "13.LGAConey"
         },
         {
@@ -7216,29 +7504,32 @@
             "altitude": 2000
           }
         },
+        { "airport": "KISP", "runway": "24" },
         {
           "airport": "KJFK",
-          "runway": "13L",
-          "go_around": {
-            "heading": 140,
-            "altitude": 3000
-          }
-        }
+          "runway": "31L"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "31L"
+        },
+        { "airport": "KLGA", "runway": "22" }
       ],
       "airspace": {
-        "2G": ["CAMRN_31RL"],
-        "2K": ["ROBER_31RL"],
-        "2E": ["LENDY_31RL"],
-        "2A": ["JFK_FINAL_31RL"],
-        "2M": ["JFK_SATELITE_31RL"],
         "2J": ["JFK_DEP_31RL"]
       },
       "inbound_rates": {
-        "CAMRN5.Background31": {
+        "CAMRN5.Background31L": {
           "KJFK": 10
         },
-        "PUCKY1.Background31": {
+        "PARCH4.Background31R": {
           "KJFK": 10
+        },
+        "MIP4 LGA background 22/31": {
+          "KLGA": 10
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 10
         }
       },
       "configuration": "N2J",
@@ -7269,6 +7560,8 @@
             "altitude": 2000
           }
         },
+        { "airport": "KLGA", "runway": "22" },
+        { "airport": "KISP", "runway": "24" },
         {
           "airport": "KJFK",
           "runway": "31R",
@@ -7322,6 +7615,12 @@
         "PARCH4": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 10
+        },
+        "MIP4 LGA background 22/31": {
+          "KLGA": 10
         }
       },
       "configuration": "J31",
@@ -7357,6 +7656,11 @@
             "altitude": 2000
           }
         },
+        { "airport": "KLGA", "runway": "4" },
+        {
+          "airport": "KJFK",
+          "runway": "4L"
+        },
         {
           "airport": "KJFK",
           "runway": "4R",
@@ -7367,19 +7671,17 @@
         }
       ],
       "airspace": {
-        "2G": ["CAMRN_4RL"],
-        "2K": ["ROBER_4RL"],
-        "2E": ["LENDY_4RL"],
-        "2A": ["JFK_FINAL_4RL"],
-        "2M": ["JFK_SATELITE_4RL"],
         "2J": ["JFK_DEP_4RL"]
       },
       "inbound_rates": {
-        "CAMRN5.Background4": {
+        "CAMRN5.Background4L": {
           "KJFK": 10
         },
-        "PUCKY1.Background4": {
+        "PUCKY1.Background4R": {
           "KJFK": 10
+        },
+        "MIP4 LGA background 4": {
+          "KLGA": 1
         }
       },
       "configuration": "N2J",
@@ -7410,6 +7712,7 @@
             "altitude": 2000
           }
         },
+        { "airport": "KLGA", "runway": "4" },
         {
           "airport": "KJFK",
           "runway": "4R",
@@ -7463,6 +7766,9 @@
         "PARCH4": {
           "KFRG": 0,
           "KJFK": 12
+        },
+        "MIP4 LGA background 4": {
+          "KLGA": 1
         }
       },
       "configuration": "J04",
@@ -7505,6 +7811,10 @@
             "heading": 170,
             "altitude": 3000
           }
+        },
+        {
+          "airport": "KLGA",
+          "runway": "22"
         }
       ],
       "airspace": {
@@ -7519,10 +7829,25 @@
         },
         "PUCKY1.Finals13": {
           "KJFK": 7
+        },
+        "MIP4 LGA background 22/13": {
+          "KLGA": 30
         }
       },
       "configuration": "JFF",
       "default_maps": ["JFK ARR/DEP RWY 13L/R"],
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "rate": 15,
+          "runway": "13R.Background"
+        },
+        {
+          "airport": "KLGA",
+          "rate": 15,
+          "runway": "13.Background.JFKConey.LGABelmont"
+        }
+      ],
       "wind": {
         "direction": "100-160"
       }
@@ -7537,6 +7862,8 @@
             "altitude": 3000
           }
         },
+        { "airport": "KLGA", "runway": "22" },
+        { "airport": "KISP", "runway": "24" },
         {
           "airport": "KJFK",
           "runway": "22R",
@@ -7555,10 +7882,21 @@
         },
         "CAMRN/PUCKY1.Finals22": {
           "KJFK": 24
-        }
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 10
+        },
+        "MIP4 LGA background 22/13": { "KLGA": 1 }
       },
       "configuration": "JFF",
       "default_maps": ["JFK ARR/DEP RWY 22L/R"],
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "rate": 15,
+          "runway": "22R.Background"
+        }
+      ],
       "wind": {
         "direction": "190-250"
       }
@@ -7573,6 +7911,8 @@
             "altitude": 3000
           }
         },
+        { "airport": "KLGA", "runway": "22" },
+        { "airport": "KISP", "runway": "24" },
         {
           "airport": "KJFK",
           "runway": "31R",
@@ -7591,10 +7931,28 @@
         },
         "CAMRN/PUCKY1.Finals31": {
           "KJFK": 29
+        },
+        "SARDI1.ISP.Background24": {
+          "KISP": 10
+        },
+        "MIP4 LGA background 22/31": {
+          "KLGA": 10
         }
       },
       "configuration": "JFF",
       "default_maps": ["JFK ARR/DEP RWY 31L/R"],
+      "departure_runways": [
+        {
+          "airport": "KLGA",
+          "rate": 15,
+          "runway": "31.JFK"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 15,
+          "runway": "31L.Background"
+        }
+      ],
       "wind": {
         "direction": "280-340"
       }
@@ -7609,6 +7967,7 @@
             "altitude": 3000
           }
         },
+        { "airport": "KLGA", "runway": "4" },
         {
           "airport": "KJFK",
           "runway": "4R",
@@ -7619,8 +7978,7 @@
         }
       ],
       "airspace": {
-        "2A": ["JFK_FINAL_4RL"],
-        "2G": ["CAMRN_4RL"]
+        "2A": ["JFK_FINAL_4RL", "CAMRN_4RL"]
       },
       "inbound_rates": {
         "PARCH4.Finals4": {
@@ -7631,8 +7989,23 @@
         },
         "PUCKY1.Finals4": {
           "KJFK": 7
+        },
+        "MIP4 LGA background 4": {
+          "KLGA": 1
         }
       },
+      "departure_runways": [
+        {
+          "airport": "KLGA",
+          "rate": 40,
+          "runway": "13.LGAConey"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 40,
+          "runway": "13R.Background"
+        }
+      ],
       "configuration": "JF4",
       "default_maps": ["JFK ARR/DEP RWY 4L/R"],
       "wind": {

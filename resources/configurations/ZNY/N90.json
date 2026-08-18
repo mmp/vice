@@ -281,7 +281,7 @@
           "TRESA2": "5H",
           "PARCH4": "2K",
           "PAWLN1": "2K",
-          "SARDI1": "2K"
+          "SARDI1": "3H"
         },
         "departure_assignments": {
           "KCDW": "4N",
@@ -515,12 +515,8 @@
         }
       },
       "N2J": {
-        "inbound_assignments": {
-          "CAMRN5.Background31": "2G"
-        },
         "departure_assignments": {
-          "KJFK": "2J",
-          "KISP": "3H"
+          "KJFK": "2J"
         },
         "default_consolidation": {
           "2J": []
@@ -580,7 +576,7 @@
           "Intra-TRACON Via MAD": "3O",
           "LOVES1": "3R",
           "NELIE4": "3B",
-          "SARDI1.ISP": "3H"
+          "SARDI1": "3H"
         },
         "departure_assignments": {
           "KHVN": "3H",
@@ -910,11 +906,23 @@
           "center": "KPOU"
         }
       ],
+      "inhibit_msaw": [
+        {
+          "id": "TEBNOSA",
+          "description": "TEB MSAW SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 2000,
+          "radius": 6,
+          "center": "KTEB"
+        }
+      ],
       "quicklook": [
         {
           "id": "QLCONEY",
           "description": "CONEY QUICKLOOK",
           "type": "polygon",
+          "tcps": "2J",
           "floor": 0,
           "ceiling": 15000,
           "vertices": "N040.42.06.773,W073.47.11.726 N040.41.10.042,W073.53.10.814 N040.31.45.125,W074.00.45.620 N040.25.52.052,W074.04.46.441 N040.22.58.015,W074.00.21.505"
@@ -1508,7 +1516,7 @@
           "EOVM",
           "MVA"
         ],
-        "center": "KISP",
+        "center": "N040.59.56.937,W072.46.31.983",
         "system_altimeter": "KISP"
       },
       "4": {
