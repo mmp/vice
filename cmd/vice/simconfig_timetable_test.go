@@ -27,10 +27,10 @@ func TestNormalizeTrafficSourceConfig(t *testing.T) {
 		},
 		TrafficSources: []sim.TrafficSource{sim.TrafficSourceScenario, sim.TrafficSourceTimetable},
 		LaunchConfig: sim.LaunchConfig{
-			TrafficSource:                sim.TrafficSourceTimetable,
-			TimetableStartMinute:         2000,
-			PublishedArrivalPercentage:   -5,
-			PublishedDeparturePercentage: 150,
+			TrafficSource:               sim.TrafficSourceTimetable,
+			TimetableStartMinute:        2000,
+			PublishedArrivalRateScale:   -0.5,
+			PublishedDepartureRateScale: 10,
 		},
 	}
 
@@ -45,12 +45,13 @@ func TestNormalizeTrafficSourceConfig(t *testing.T) {
 	if got, want := spec.LaunchConfig.TimetableStartMinute, 1439; got != want {
 		t.Fatalf("TimetableStartMinute = %d, want %d", got, want)
 	}
-	if got, want := spec.LaunchConfig.PublishedArrivalPercentage, 0; got != want {
-		t.Fatalf("PublishedArrivalPercentage = %d, want %d", got, want)
+	if got, want := spec.LaunchConfig.PublishedArrivalRateScale, float32(0); got != want {
+		t.Fatalf("PublishedArrivalRateScale = %f, want %f", got, want)
 	}
 
-	if got, want := spec.LaunchConfig.PublishedDeparturePercentage, 100; got != want {
-		t.Fatalf("PublishedDeparturePercentage = %d, want %d", got, want)
+	if got, want := spec.LaunchConfig.PublishedDepartureRateScale,
+		float32(sim.MaxPublishedRateScale); got != want {
+		t.Fatalf("PublishedDepartureRateScale = %f, want %f", got, want)
 	}
 }
 

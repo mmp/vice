@@ -22,17 +22,17 @@ func TestMakeLaunchConfigTrafficSourceDefaults(t *testing.T) {
 	if lc.TimetableStartMinute != 0 {
 		t.Fatalf("TimetableStartMinute = %d, want 0", lc.TimetableStartMinute)
 	}
-	if lc.PublishedArrivalPercentage != 100 {
+	if lc.PublishedArrivalRateScale != 1 {
 		t.Fatalf(
-			"PublishedArrivalPercentage = %d, want 100",
-			lc.PublishedArrivalPercentage,
+			"PublishedArrivalRateScale = %f, want 1",
+			lc.PublishedArrivalRateScale,
 		)
 	}
 
-	if lc.PublishedDeparturePercentage != 100 {
+	if lc.PublishedDepartureRateScale != 1 {
 		t.Fatalf(
-			"PublishedDeparturePercentage = %d, want 100",
-			lc.PublishedDeparturePercentage,
+			"PublishedDepartureRateScale = %f, want 1",
+			lc.PublishedDepartureRateScale,
 		)
 	}
 }

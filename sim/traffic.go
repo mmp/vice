@@ -68,8 +68,9 @@ const (
 	// idleDelay parks a spawn timer when there is nothing left to spawn.
 	idleDelay = 365 * 24 * time.Hour
 
-	// historicalFlightWindow is how much flight data a sim is launched with. A
-	// sim running longer than this runs out of historical traffic.
+	// historicalFlightWindow is how much of the sim's clock a sim is launched
+	// with flight data for. A sim running longer than this runs out of
+	// historical traffic.
 	historicalFlightWindow = 8 * time.Hour
 
 	// intraFacilityLegWindow bounds how long after a departure its arrival at
@@ -124,10 +125,14 @@ func (s *Sim) loadHistoricalFlights() {
 
 	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
 	// before the selected time, and it warms up by flying the traffic from that
-	// half hour the same way the scenario's own generator would.
+	// half hour the same way the scenario's own generator would. Both ends reach
+	// as far as the fastest rate scale reads through the data, since the scale
+	// can be raised while the sim runs and this is the only place the flights
+	// are gathered.
 	start := s.StartTime.Time()
 	s.historicalFlights = av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
-		start.Add(-PrespawnDuration), start.Add(historicalFlightWindow))
+		start.Add(-MaxPublishedRateScale*PrespawnDuration),
+		start.Add(MaxPublishedRateScale*historicalFlightWindow))
 }
 
 // IFRAirports returns every airport the scenario generates IFR traffic at, departures and
@@ -149,36 +154,12 @@ func (lc *LaunchConfig) IFRAirports() (departures, arrivals map[string]bool) {
 	return
 }
 
-func includeTimetableFlight(flight TimetableFlight, percentage int) bool {
-	percentage = min(max(percentage, 0), 100)
-
-	// Zero explicitly disables this direction, including cargo.
-	if percentage == 0 {
-		return false
-	}
-
-	if percentage == 100 || flight.Cargo {
-		return true
-	}
-
-	// Use a stable hash so the same percentage consistently selects the same
-	// flights each time the scenario is loaded.
-	return int(stableFlightHash(flight.Callsign+flight.Origin+flight.Destination)%100) < percentage
-}
-
-// includeHistoricalFlight is includeTimetableFlight for historical flight data,
-// which doesn't record which flights are cargo.
-func includeHistoricalFlight(flight av.Flight, percentage int) bool {
-	percentage = min(max(percentage, 0), 100)
-
-	if percentage == 0 {
-		return false
-	}
-	if percentage == 100 {
-		return true
-	}
-
-	return int(stableFlightHash(flight.Callsign+flight.Airport+flight.Other)%100) < percentage
+// publishedTrafficTime is when a flight published at t operates in a sim that
+// started at start: its offset from the start, drawn in by the rate scale. That
+// is how a rate scale of two flies twice the traffic--every flight in the data
+// still flies, the sim just reads through the day twice as fast.
+func publishedTrafficTime(t, start time.Time, scale float32) time.Time {
+	return start.Add(time.Duration(float64(t.Sub(start)) / float64(scale)))
 }
 
 // normalizeAirportCode cleans up the airport identifiers that arrive with a
@@ -207,17 +188,6 @@ func engineTypeFor(aircraftType string) string {
 		return perf.Engine.AircraftType
 	}
 	return ""
-}
-
-// stableFlightHash hashes a flight's identity so the same percentage
-// consistently selects the same flights each time the scenario is loaded.
-func stableFlightHash(key string) uint32 {
-	hash := uint32(2166136261)
-	for i := 0; i < len(key); i++ {
-		hash ^= uint32(key[i])
-		hash *= 16777619
-	}
-	return hash
 }
 
 // publishedFlight is one flight waiting to enter the simulation, together with
@@ -321,39 +291,34 @@ func (p *publishedTrafficProvider) noteCallsignClash(s *Sim, callsign string, er
 // half hour before the start fall in the prespawn window rather than wrapping
 // to the end of the day. Published departure times are treated as pushback
 // times, so departures spawn at them directly.
-func newTimetableTrafficProvider(s *Sim, timetable Timetable, startMinute int,
-	arrivalPercentage, departurePercentage int) *publishedTrafficProvider {
-	flights := timetableFlights(s.StartTime, timetable, startMinute, arrivalPercentage, departurePercentage)
-	return newPublishedTrafficProvider(s, flights, 0)
+func newTimetableTrafficProvider(s *Sim, timetable Timetable) *publishedTrafficProvider {
+	return newPublishedTrafficProvider(s, timetableFlights(s.StartTime, timetable, &s.State.LaunchConfig), 0)
 }
 
 // timetableFlights anchors a timetable's daily cycle to the sim's start time,
 // giving each flight it will fly a date and a time like the historical data has.
-func timetableFlights(startTime Time, timetable Timetable, startMinute int,
-	arrivalPercentage, departurePercentage int) []av.Flight {
+// The times are the timetable's own; the rate scale draws them in when the
+// flights are queued, so it only comes in here to say how much of the cycle's
+// tail wraps around into the prespawn window.
+func timetableFlights(startTime Time, timetable Timetable, lc *LaunchConfig) []av.Flight {
 	const prespawnMinutes = initialSimSeconds / 60
+	departureScale := math.Clamp(lc.PublishedDepartureRateScale, 0, MaxPublishedRateScale)
+	arrivalScale := math.Clamp(lc.PublishedArrivalRateScale, 0, MaxPublishedRateScale)
 
 	var flights []av.Flight
 	for _, flight := range timetable.Flights {
-		var departure bool
-		switch flight.OperationAt(timetable.Airport) {
-		case TimetableOperationDeparture:
-			if !includeTimetableFlight(flight, departurePercentage) {
-				continue
-			}
-			departure = true
-
-		case TimetableOperationArrival:
-			if !includeTimetableFlight(flight, arrivalPercentage) {
-				continue
-			}
-
-		default:
+		operation := flight.OperationAt(timetable.Airport)
+		if operation == TimetableOperationUnknown {
 			continue
 		}
+		departure := operation == TimetableOperationDeparture
+		scale := arrivalScale
+		if departure {
+			scale = departureScale
+		}
 
-		minutes := (flight.PublishedMinute - startMinute + minutesPerTimetableDay) % minutesPerTimetableDay
-		if minutes >= minutesPerTimetableDay-prespawnMinutes {
+		minutes := (flight.PublishedMinute - lc.TimetableStartMinute + minutesPerTimetableDay) % minutesPerTimetableDay
+		if minutes >= minutesPerTimetableDay-int(prespawnMinutes*scale) {
 			minutes -= minutesPerTimetableDay
 		}
 		published := startTime.Add(time.Duration(minutes) * time.Minute).Time().UTC()
@@ -386,26 +351,8 @@ func timetableFlights(startTime Time, timetable Timetable, startMinute int,
 // newHistoricalTrafficProvider prepares the historical flights a sim was
 // handed, in time order. Their published times are when they actually took off
 // or touched down, so departures spawn flightSpawnLead ahead of them.
-func newHistoricalTrafficProvider(s *Sim, flights []av.Flight, arrivalPercentage,
-	departurePercentage int) *publishedTrafficProvider {
-	return newPublishedTrafficProvider(s,
-		includedHistoricalFlights(flights, arrivalPercentage, departurePercentage), flightSpawnLead)
-}
-
-// includedHistoricalFlights returns the flights the requested percentages keep.
-func includedHistoricalFlights(flights []av.Flight, arrivalPercentage,
-	departurePercentage int) []av.Flight {
-	kept := make([]av.Flight, 0, len(flights))
-	for _, flight := range flights {
-		percentage := arrivalPercentage
-		if flight.Departure {
-			percentage = departurePercentage
-		}
-		if includeHistoricalFlight(flight, percentage) {
-			kept = append(kept, flight)
-		}
-	}
-	return kept
+func newHistoricalTrafficProvider(s *Sim, flights []av.Flight) *publishedTrafficProvider {
+	return newPublishedTrafficProvider(s, flights, flightSpawnLead)
 }
 
 const (
@@ -420,16 +367,19 @@ const (
 	TrafficCountsMinutes = int((TrafficCountsWindow + 2*TrafficCountsPad) / time.Minute)
 )
 
-// trafficCountsSpan is the span of flight times TrafficCounts counts for a
-// preview starting at start. Flights operate on whole minutes, so the span
-// lines up with them however precise a start time the user picked.
+// trafficCountsSpan is the span of the sim's clock TrafficCounts counts over
+// for a preview starting at start, and first is the minute its counts begin at.
+// Flights operate on whole minutes, so the span lines up with them however
+// precise a start time the user picked.
 func trafficCountsSpan(start time.Time) (first, last time.Time) {
 	first = start.UTC().Truncate(time.Minute).Add(-TrafficCountsPad)
 	return first, first.Add(time.Duration(TrafficCountsMinutes) * time.Minute)
 }
 
 // TrafficCounts counts, minute by minute, the departures and arrivals a published traffic source
-// will fly over the window starting TrafficCountsPad before start. It filters by airport: an
+// will fly over the window starting TrafficCountsPad before start. The minutes are the sim's, so
+// the rate scales apply here as they do in the sim: flying at twice the rate reads through twice as
+// much of the data over the same stretch of clock. It filters by airport: an
 // airport with no enabled, worked flow flies nothing. Finer than that it doesn't go--at spawn the
 // provider resolves each flight against the scenario's routes and drops the few it can't fit, so
 // these counts run slightly high, and disabling some but not all of an airport's flows doesn't
@@ -443,6 +393,8 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 	historical []av.Flight) (departures, arrivals []uint16, err error) {
 	first, last := trafficCountsSpan(start)
 	start = first.Add(TrafficCountsPad)
+	departureScale := math.Clamp(lc.PublishedDepartureRateScale, 0, MaxPublishedRateScale)
+	arrivalScale := math.Clamp(lc.PublishedArrivalRateScale, 0, MaxPublishedRateScale)
 
 	var flights []av.Flight
 	switch lc.TrafficSource {
@@ -455,15 +407,17 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 		if !ok {
 			return nil, nil, fmt.Errorf("timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
 		}
-		flights = timetableFlights(NewSimTime(start), timetable, lc.TimetableStartMinute,
-			lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
+		flights = timetableFlights(NewSimTime(start), timetable, lc)
 
 	case TrafficSourceHistorical:
+		// The window is on the sim's clock, so the flights that land in it are
+		// the ones the faster of the two scales reaches: the counts and the
+		// cleanup filters that follow all work from the times in the data.
+		scale := max(departureScale, arrivalScale)
 		departureAirports, arrivalAirports := lc.IFRAirports()
-		selected := av.SelectFlights(historical, departureAirports, arrivalAirports,
-			av.DB.Airlines, first, last)
-		flights = includedHistoricalFlights(selected, lc.PublishedArrivalPercentage,
-			lc.PublishedDeparturePercentage)
+		flights = av.SelectFlights(historical, departureAirports, arrivalAirports, av.DB.Airlines,
+			start.Add(time.Duration(float64(first.Sub(start))*float64(scale))),
+			start.Add(time.Duration(float64(last.Sub(start))*float64(scale))))
 
 	default:
 		return nil, nil, fmt.Errorf("%s traffic comes from the launch config's rates, "+
@@ -477,7 +431,14 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 	departures = make([]uint16, TrafficCountsMinutes)
 	arrivals = make([]uint16, TrafficCountsMinutes)
 	for _, flight := range flights {
-		minute := int(flight.Time().Sub(first) / time.Minute)
+		scale := arrivalScale
+		if flight.Departure {
+			scale = departureScale
+		}
+		if scale == 0 {
+			continue
+		}
+		minute := int(publishedTrafficTime(flight.Time(), start, scale).Sub(first) / time.Minute)
 		if minute < 0 || minute >= TrafficCountsMinutes {
 			continue
 		}
@@ -790,12 +751,20 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 		earliest = s.State.SimTime
 	}
 
+	start := s.StartTime.Time()
+	departureScale := math.Clamp(s.State.LaunchConfig.PublishedDepartureRateScale, 0, MaxPublishedRateScale)
+	arrivalScale := math.Clamp(s.State.LaunchConfig.PublishedArrivalRateScale, 0, MaxPublishedRateScale)
+
 	for _, flight := range flights {
-		lead := flightSpawnLead
+		lead, scale := flightSpawnLead, arrivalScale
 		if flight.Departure {
-			lead = departureSpawnLead
+			lead, scale = departureSpawnLead, departureScale
 		}
-		spawn := NewSimTime(flight.Time().Add(-lead))
+		if scale == 0 {
+			// This direction flies nothing.
+			continue
+		}
+		spawn := NewSimTime(publishedTrafficTime(flight.Time(), start, scale).Add(-lead))
 		// A flight whose spawn time has already gone by has been missed.
 		// Prespawn rewinds the clock before the selected start time, so compare
 		// against where the clock actually begins. Releasing a backlog all at
@@ -821,14 +790,16 @@ func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
 	}
 
 	if len(flights) > 0 {
-		lead := flightSpawnLead
+		lead, scale := flightSpawnLead, arrivalScale
 		if flights[0].Departure {
-			lead = departureSpawnLead
+			lead, scale = departureSpawnLead, departureScale
 		}
-		s.log("Published traffic: clock starts %s, first flight %s spawns %s",
-			earliest.Time().Format("2006-01-02 15:04:05Z"),
-			flights[0].Time().Format("2006-01-02 15:04:05Z"),
-			flights[0].Time().Add(-lead).Format("2006-01-02 15:04:05Z"))
+		if scale > 0 {
+			s.log("Published traffic: clock starts %s, first flight %s spawns %s",
+				earliest.Time().Format("2006-01-02 15:04:05Z"),
+				flights[0].Time().Format("2006-01-02 15:04:05Z"),
+				publishedTrafficTime(flights[0].Time(), start, scale).Add(-lead).Format("2006-01-02 15:04:05Z"))
+		}
 	}
 	summary := fmt.Sprintf("Published traffic: %d departures, %d arrivals to fly",
 		len(p.departures), len(p.arrivals)-unplaceable)
@@ -1355,8 +1326,7 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 			s.log("Traffic source: historical, %d flights found for %s from %s",
 				len(s.historicalFlights), s.State.Facility,
 				s.StartTime.Time().Format("2006-01-02 15:04Z"))
-			s.trafficProvider = newHistoricalTrafficProvider(s, s.historicalFlights,
-				lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
+			s.trafficProvider = newHistoricalTrafficProvider(s, s.historicalFlights)
 		}
 
 	case TrafficSourceTimetable:
@@ -1372,8 +1342,7 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 			return s.trafficProvider
 		}
 		s.log("Traffic source: timetable %q for %s", timetable.Name, timetable.Airport)
-		s.trafficProvider = newTimetableTrafficProvider(s, timetable, lc.TimetableStartMinute,
-			lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
+		s.trafficProvider = newTimetableTrafficProvider(s, timetable)
 
 	default:
 		s.log("Traffic source: scenario")

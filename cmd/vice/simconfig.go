@@ -172,8 +172,8 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 func normalizeTrafficSourceConfig(spec *server.ScenarioSpec) {
 	lc := &spec.LaunchConfig
 	lc.TimetableStartMinute = min(max(lc.TimetableStartMinute, 0), 24*60-1)
-	lc.PublishedArrivalPercentage = min(max(lc.PublishedArrivalPercentage, 0), 100)
-	lc.PublishedDeparturePercentage = min(max(lc.PublishedDeparturePercentage, 0), 100)
+	lc.PublishedArrivalRateScale = math.Clamp(lc.PublishedArrivalRateScale, 0, sim.MaxPublishedRateScale)
+	lc.PublishedDepartureRateScale = math.Clamp(lc.PublishedDepartureRateScale, 0, sim.MaxPublishedRateScale)
 
 	// The server decides which sources a scenario can be flown with; fall back
 	// to the first it offers rather than one it would refuse.
@@ -617,9 +617,9 @@ func trafficPreviewKey(req *server.NewSimRequest, spec *server.ScenarioSpec) str
 	lc := &spec.LaunchConfig
 
 	var b strings.Builder
-	fmt.Fprintf(&b, "%s/%s/%s %s %s %s %d%% %d%%", req.Facility, req.GroupName, req.ScenarioName,
+	fmt.Fprintf(&b, "%s/%s/%s %s %s %s %.1f %.1f", req.Facility, req.GroupName, req.ScenarioName,
 		req.StartTime.UTC().Format("2006-01-02T15:04"), lc.TrafficSource, lc.TimetableID,
-		lc.PublishedArrivalPercentage, lc.PublishedDeparturePercentage)
+		lc.PublishedArrivalRateScale, lc.PublishedDepartureRateScale)
 
 	// Which flows are on decides what flies, so it decides the counts as well.
 	for airport, runways := range util.SortedMap(lc.DepartureEnabled) {
@@ -1961,16 +1961,13 @@ func (c *NewSimConfiguration) Start(config *Config) error {
 // drawPublishedDepartureUI and drawPublishedArrivalUI stand in for the rate
 // controls when the sim is flying historical or timetable traffic: how much
 // there is and where it goes comes from the data, so what is left to choose is
-// how much of it to fly and which flows are active.
+// how fast to fly it and which flows are active.
 func drawPublishedDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	label := util.Select(lc.TrafficSource == sim.TrafficSourceHistorical,
-		"Percentage of historical departures", "Percentage of timetable departures")
-	value := int32(lc.PublishedDeparturePercentage)
+		"Historical departure rate scale", "Timetable departure rate scale")
 	imgui.SetNextItemWidth(260)
-	if imgui.SliderInt(label, &value, 0, 100) {
-		lc.PublishedDeparturePercentage = int(value)
-		changed = true
-	}
+	changed = imgui.SliderFloatV(label, &lc.PublishedDepartureRateScale, 0, sim.MaxPublishedRateScale,
+		"%.1f", imgui.SliderFlagsNoInput)
 
 	airportDepartures := make(map[string]int) // key is e.g. KJFK, then count of runways cross categories.
 	for ap, runwayEnabled := range lc.DepartureEnabled {
@@ -2052,13 +2049,10 @@ func drawPublishedDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (change
 
 func drawPublishedArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	label := util.Select(lc.TrafficSource == sim.TrafficSourceHistorical,
-		"Percentage of historical arrivals", "Percentage of timetable arrivals")
-	value := int32(lc.PublishedArrivalPercentage)
+		"Historical arrival rate scale", "Timetable arrival rate scale")
 	imgui.SetNextItemWidth(260)
-	if imgui.SliderInt(label, &value, 0, 100) {
-		lc.PublishedArrivalPercentage = int(value)
-		changed = true
-	}
+	changed = imgui.SliderFloatV(label, &lc.PublishedArrivalRateScale, 0, sim.MaxPublishedRateScale,
+		"%.1f", imgui.SliderFlagsNoInput)
 
 	// Go-arounds still apply; the arrival pushes don't, since when aircraft
 	// show up is what the data says.

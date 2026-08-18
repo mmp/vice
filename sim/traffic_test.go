@@ -49,8 +49,13 @@ func publishedProviderTestSim(t *testing.T, start Time) *Sim {
 			DynamicState: DynamicState{
 				SimTime: NewSimTime(start.Time().Add(-PrespawnDuration)),
 				LaunchConfig: LaunchConfig{
-					InboundFlowRates:   map[string]map[string]float32{"TEST": {"KMSP": 0}},
-					InboundFlowEnabled: map[string]map[string]bool{"TEST": {"KMSP": true}},
+					// The tests all start at 14:00, which is where their
+					// timetables' days start too.
+					TimetableStartMinute:        14 * 60,
+					PublishedArrivalRateScale:   1,
+					PublishedDepartureRateScale: 1,
+					InboundFlowRates:            map[string]map[string]float32{"TEST": {"KMSP": 0}},
+					InboundFlowEnabled:          map[string]map[string]bool{"TEST": {"KMSP": true}},
 					DepartureEnabled: map[string]map[av.RunwayID]map[string]bool{
 						"KMSP": {"12L": {"": true}, "30R": {"": true}},
 					},
@@ -100,7 +105,7 @@ func TestPublishedTrafficProviderOrdersDeparturesFromSelectedStartTime(t *testin
 		},
 	}
 
-	provider := newTimetableTrafficProvider(publishedProviderTestSim(t, start), timetable, 14*60, 100, 100)
+	provider := newTimetableTrafficProvider(publishedProviderTestSim(t, start), timetable)
 	if len(provider.departures) != 3 {
 		t.Fatalf("got %d departures, want 3", len(provider.departures))
 	}
@@ -137,7 +142,7 @@ func TestPublishedTrafficProviderOrdersArrivalsFromSelectedStartTime(t *testing.
 		},
 	}
 
-	provider := newTimetableTrafficProvider(publishedProviderTestSim(t, start), timetable, 14*60, 100, 100)
+	provider := newTimetableTrafficProvider(publishedProviderTestSim(t, start), timetable)
 	if len(provider.arrivals) != 3 {
 		t.Fatalf("got %d arrivals, want 3", len(provider.arrivals))
 	}
@@ -178,7 +183,7 @@ func TestPublishedTrafficProviderWaitsForPublishedArrivalTime(t *testing.T) {
 			AircraftType:    "A320",
 			PublishedMinute: 14*60 + 7,
 		}},
-	}, 14*60, 100, 100)
+	})
 
 	// The arrival is due to spawn flightSpawnLead before its published 14:07
 	// arrival, i.e. at 13:52; ten minutes before that, nothing should be
@@ -211,7 +216,7 @@ func TestPublishedTrafficProviderWaitsForPublishedTime(t *testing.T) {
 			Callsign: "DAL123", Origin: "KMSP", Destination: "KORD", AircraftType: "A320",
 			PublishedMinute: 14*60 + 5,
 		}},
-	}, 14*60, 100, 100)
+	})
 
 	// A timetable's published departure times are pushback, so the departure
 	// spawns at its published 14:05 time exactly.
@@ -285,6 +290,48 @@ func TestPublishedDeparturesDropWhatNoRunwayFlies(t *testing.T) {
 	}
 	if len(p.departures) != 0 {
 		t.Error("kept a departure no runway can fly")
+	}
+}
+
+// The rate scale draws published flights in towards the start time rather than
+// leaving any of them out: at 2x, a flight twenty minutes into the data operates
+// ten minutes into the sim. Each direction is scaled on its own.
+func TestPublishedTrafficProviderScalesRates(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := publishedProviderTestSim(t, start)
+	s.State.LaunchConfig.PublishedDepartureRateScale = 2
+
+	p := newHistoricalTrafficProvider(s, []av.Flight{
+		testFlight("DAL1", "KMSP", "KORD", true, 14, 20),
+		testFlight("DAL2", "KMSP", "KATL", true, 14, 40),
+		testFlight("DAL3", "KMSP", "KDEN", false, 14, 30),
+	})
+
+	// Historical flights of both kinds spawn flightSpawnLead ahead of the time
+	// they operate at.
+	wantDepartures := []struct {
+		callsign string
+		spawn    Time
+	}{
+		{"DAL1", start.Add(10*time.Minute - flightSpawnLead)},
+		{"DAL2", start.Add(20*time.Minute - flightSpawnLead)},
+	}
+	if len(p.departures) != len(wantDepartures) {
+		t.Fatalf("got %d departures, want %d", len(p.departures), len(wantDepartures))
+	}
+	for i, expected := range wantDepartures {
+		if got := p.departures[i]; got.flight.Callsign != expected.callsign || got.spawn != expected.spawn {
+			t.Errorf("departure %d = %s at %s, want %s at %s", i, got.flight.Callsign,
+				got.spawn.Time(), expected.callsign, expected.spawn.Time())
+		}
+	}
+
+	if len(p.arrivals) != 1 {
+		t.Fatalf("got %d arrivals, want 1", len(p.arrivals))
+	}
+	if want := start.Add(30*time.Minute - flightSpawnLead); p.arrivals[0].spawn != want {
+		t.Errorf("arrival spawns at %s with arrivals at 1x, want %s",
+			p.arrivals[0].spawn.Time(), want.Time())
 	}
 }
 
@@ -446,7 +493,7 @@ func TestPublishedTrafficSurvivesSaveAndReload(t *testing.T) {
 	}
 
 	s := publishedProviderTestSim(t, start)
-	before := newTimetableTrafficProvider(s, timetable, 14*60, 100, 100)
+	before := newTimetableTrafficProvider(s, timetable)
 	if len(before.departures) != 1 || len(before.arrivals) != 1 {
 		t.Fatalf("before reload: %d departures/%d arrivals, want 1/1",
 			len(before.departures), len(before.arrivals))
@@ -464,7 +511,7 @@ func TestPublishedTrafficSurvivesSaveAndReload(t *testing.T) {
 		t.Fatalf("StartTime = %s after reload, want %s", reloaded.StartTime.Time(), s.StartTime.Time())
 	}
 
-	after := newTimetableTrafficProvider(&reloaded, timetable, 14*60, 100, 100)
+	after := newTimetableTrafficProvider(&reloaded, timetable)
 	if len(after.departures) != len(before.departures) || len(after.arrivals) != len(before.arrivals) {
 		t.Fatalf("after reload: %d departures/%d arrivals, want %d/%d",
 			len(after.departures), len(after.arrivals), len(before.departures), len(before.arrivals))
@@ -496,13 +543,13 @@ var previewStart = time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC)
 // published traffic; listing the flows at all is what makes them ways in and out.
 func previewLaunchConfig() *LaunchConfig {
 	return &LaunchConfig{
-		TrafficSource:                TrafficSourceHistorical,
-		PublishedArrivalPercentage:   100,
-		PublishedDeparturePercentage: 100,
-		DepartureRates:               map[string]map[av.RunwayID]map[string]float32{"KMSP": {"30L": {"": 0}}},
-		DepartureEnabled:             map[string]map[av.RunwayID]map[string]bool{"KMSP": {"30L": {"": true}}},
-		InboundFlowRates:             map[string]map[string]float32{"TEST": {"KMSP": 0}},
-		InboundFlowEnabled:           map[string]map[string]bool{"TEST": {"KMSP": true}},
+		TrafficSource:               TrafficSourceHistorical,
+		PublishedArrivalRateScale:   1,
+		PublishedDepartureRateScale: 1,
+		DepartureRates:              map[string]map[av.RunwayID]map[string]float32{"KMSP": {"30L": {"": 0}}},
+		DepartureEnabled:            map[string]map[av.RunwayID]map[string]bool{"KMSP": {"30L": {"": true}}},
+		InboundFlowRates:            map[string]map[string]float32{"TEST": {"KMSP": 0}},
+		InboundFlowEnabled:          map[string]map[string]bool{"TEST": {"KMSP": true}},
 	}
 }
 
@@ -524,6 +571,18 @@ func totalCount(counts []uint16) int {
 		total += int(count)
 	}
 	return total
+}
+
+// lastCountedMinute is the last minute anything was counted in, or -1 if
+// nothing was.
+func lastCountedMinute(counts []uint16) int {
+	last := -1
+	for minute, count := range counts {
+		if count > 0 {
+			last = minute
+		}
+	}
+	return last
 }
 
 func TestTrafficCountsBinsOperationsByMinute(t *testing.T) {
@@ -587,12 +646,16 @@ func TestTrafficCountsSkipsDisabledFlows(t *testing.T) {
 	}
 }
 
-func TestTrafficCountsHonorsPublishedPercentages(t *testing.T) {
+// A rate scale doesn't pick and choose among the flights: they all fly, in less
+// of the sim's clock. So the preview counts the same operations either way, and
+// scaling up is visible in how far into the window the last one falls.
+func TestTrafficCountsHonorsPublishedRateScales(t *testing.T) {
 	var flights []av.Flight
 	for i := range 40 {
 		flights = append(flights, testFlight(fmt.Sprintf("DAL%d", i), "KMSP", "KORD", true, 14, 2*i))
 		flights = append(flights, testFlight(fmt.Sprintf("AAL%d", i), "KMSP", "KDEN", false, 14, 2*i+1))
 	}
+	pad := int(TrafficCountsPad / time.Minute)
 
 	all := previewLaunchConfig()
 	departures, arrivals, err := TrafficCounts(all, previewStart, flights)
@@ -600,42 +663,42 @@ func TestTrafficCountsHonorsPublishedPercentages(t *testing.T) {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
 	if got := totalCount(departures); got != 40 {
-		t.Fatalf("%d departures at 100%%, want 40", got)
+		t.Fatalf("%d departures at 1x, want 40", got)
 	}
 	if got := totalCount(arrivals); got != 40 {
-		t.Fatalf("%d arrivals at 100%%, want 40", got)
+		t.Fatalf("%d arrivals at 1x, want 40", got)
+	}
+	if got, want := lastCountedMinute(departures), pad+78; got != want {
+		t.Errorf("last departure at minute %d at 1x, want %d", got, want)
 	}
 
 	none := previewLaunchConfig()
-	none.PublishedDeparturePercentage = 0
+	none.PublishedDepartureRateScale = 0
 	departures, arrivals, err = TrafficCounts(none, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
 	if got := totalCount(departures); got != 0 {
-		t.Errorf("%d departures at 0%%, want 0", got)
+		t.Errorf("%d departures at 0x, want 0", got)
 	}
 	if got := totalCount(arrivals); got != 40 {
-		t.Errorf("%d arrivals with departures at 0%%, want 40", got)
+		t.Errorf("%d arrivals with departures at 0x, want 40", got)
 	}
 
-	// Half is flown by the same flights every time it is asked for, so that
-	// moving the start time back and forth doesn't shuffle the traffic.
-	half := previewLaunchConfig()
-	half.PublishedDeparturePercentage = 50
-	first, _, err := TrafficCounts(half, previewStart, flights)
+	fast := previewLaunchConfig()
+	fast.PublishedDepartureRateScale = 2
+	departures, arrivals, err = TrafficCounts(fast, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
-	second, _, err := TrafficCounts(half, previewStart, flights)
-	if err != nil {
-		t.Fatalf("TrafficCounts: %v", err)
+	if got := totalCount(departures); got != 40 {
+		t.Errorf("%d departures at 2x, want 40", got)
 	}
-	if !slices.Equal(first, second) {
-		t.Error("half the departures came out differently the second time")
+	if got, want := lastCountedMinute(departures), pad+39; got != want {
+		t.Errorf("last departure at minute %d at 2x, want %d", got, want)
 	}
-	if got := totalCount(first); got == 0 || got == 40 {
-		t.Errorf("%d departures at 50%%, want some but not all of the 40", got)
+	if got, want := lastCountedMinute(arrivals), pad+79; got != want {
+		t.Errorf("last arrival at minute %d with departures at 2x, want %d", got, want)
 	}
 }
 

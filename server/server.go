@@ -90,7 +90,8 @@ import (
 // 80: GetTrafficCounts RPC
 // 81: ScenarioSpec.HistoricalFlightInterval replaced by HistoricalFlightIntervals, the stretches of time a facility's flight data actually covers
 // 82: primary airport replaced by per-purpose settings: facility weather_station and system_altimeter, LaunchConfig.TimetableAirport
-const ViceSerializeVersion = 82
+// 83: LaunchConfig's published traffic percentages replaced by rate scales
+const ViceSerializeVersion = 83
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

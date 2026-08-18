@@ -100,6 +100,10 @@ const (
 	TrafficSourceHistorical
 )
 
+// MaxPublishedRateScale is how much faster than the data's own pace published
+// traffic can be flown.
+const MaxPublishedRateScale = 4
+
 func (ts TrafficSource) String() string {
 	switch ts {
 	case TrafficSourceScenario:
@@ -138,13 +142,16 @@ type LaunchConfig struct {
 	// TimetableStartMinute is the selected local start time, expressed as
 	// minutes after midnight at the timetable's airport.
 	TimetableStartMinute int
-	// PublishedArrivalPercentage is the percentage of published IFR arrivals to
-	// use; it applies to both timetable and historical traffic.
-	PublishedArrivalPercentage int
+	// PublishedArrivalRateScale is how fast published IFR arrivals are flown as
+	// a multiple of the rate the data holds them at: the sim reads through the
+	// arrivals at that multiple of real time, anchored at the sim's start time,
+	// so two flies the whole day's traffic in half the time rather than half of
+	// its flights. It applies to both timetable and historical traffic.
+	PublishedArrivalRateScale float32
 
-	// PublishedDeparturePercentage is the percentage of published IFR departures
-	// to use; it applies to both timetable and historical traffic.
-	PublishedDeparturePercentage int
+	// PublishedDepartureRateScale is PublishedArrivalRateScale for published IFR
+	// departures.
+	PublishedDepartureRateScale float32
 
 	GoAroundRate         float32
 	EnableTowerGoArounds bool
@@ -190,19 +197,19 @@ type LaunchConfig struct {
 func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRate int32,
 	vfrAirports map[string]*av.Airport, inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
 	lc := LaunchConfig{
-		TrafficSource:                TrafficSourceScenario,
-		PublishedArrivalPercentage:   100,
-		PublishedDeparturePercentage: 100,
-		GoAroundRate:                 0.01,
-		DepartureRateScale:           1,
-		VFRDepartureRateScale:        vfrRateScale,
-		VFRAirportRates:              make(map[string]float32),
-		VFFRequestRate:               vffRequestRate,
-		HaveVFRReportingRegions:      haveVFRReportingRegions,
-		InboundFlowRateScale:         1,
-		ArrivalPushFrequencyMinutes:  20,
-		ArrivalPushLengthMinutes:     10,
-		EmergencyAircraftRate:        0,
+		TrafficSource:               TrafficSourceScenario,
+		PublishedArrivalRateScale:   1,
+		PublishedDepartureRateScale: 1,
+		GoAroundRate:                0.01,
+		DepartureRateScale:          1,
+		VFRDepartureRateScale:       vfrRateScale,
+		VFRAirportRates:             make(map[string]float32),
+		VFFRequestRate:              vffRequestRate,
+		HaveVFRReportingRegions:     haveVFRReportingRegions,
+		InboundFlowRateScale:        1,
+		ArrivalPushFrequencyMinutes: 20,
+		ArrivalPushLengthMinutes:    10,
+		EmergencyAircraftRate:       0,
 	}
 
 	for icao, ap := range vfrAirports {
@@ -480,15 +487,15 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 
 	s.lg.Info("Set launch config", slog.Any("launch_config", lc))
 
-	// The timetable selection, the percentages, and the per-flow enables all
-	// decide which flights are flown, so changing any of them has to rebuild
-	// the provider's queue.
+	// The timetable selection, the rate scales, and the per-flow enables all
+	// decide which flights are flown and when, so changing any of them has to
+	// rebuild the provider's queue.
 	providerChanged := lc.TrafficSource != s.State.LaunchConfig.TrafficSource ||
 		lc.TimetableID != s.State.LaunchConfig.TimetableID ||
 		lc.TimetableAirport != s.State.LaunchConfig.TimetableAirport ||
 		lc.TimetableStartMinute != s.State.LaunchConfig.TimetableStartMinute ||
-		lc.PublishedArrivalPercentage != s.State.LaunchConfig.PublishedArrivalPercentage ||
-		lc.PublishedDeparturePercentage != s.State.LaunchConfig.PublishedDeparturePercentage ||
+		lc.PublishedArrivalRateScale != s.State.LaunchConfig.PublishedArrivalRateScale ||
+		lc.PublishedDepartureRateScale != s.State.LaunchConfig.PublishedDepartureRateScale ||
 		!departureEnabledEqual(lc.DepartureEnabled, s.State.LaunchConfig.DepartureEnabled) ||
 		!maps.EqualFunc(lc.InboundFlowEnabled, s.State.LaunchConfig.InboundFlowEnabled, maps.Equal)
 
