@@ -1007,9 +1007,27 @@ func TestDepartOnCourseKeepsSIDRestrictions(t *testing.T) {
 	}
 
 	f.BeforeFix("TTAPS", func(f *FlightTest) { f.AssertAltitudeBelow(4000) })
-	// The level-off for BOTLL's restriction overshoots by ~10 ft.
-	f.BeforeFix("BOTLL", func(f *FlightTest) { f.AssertAltitudeBelow(5050) })
+	f.BeforeFix("BOTLL", func(f *FlightTest) { f.AssertAltitudeBelow(5000) })
 	f.AtFix("GRAYN", func(f *FlightTest) { f.AssertAltitudeAbove(11000) })
+	f.Run()
+}
+
+// TestLevelOffAtSIDRestrictionIsStable verifies that an aircraft holding a
+// SID's crossing restriction stays there. The restriction carried forward from
+// the fix behind it is lower (SID restrictions step up), and applying it used
+// to command a descent every other tick, leaving the aircraft porpoising a few
+// feet either side of the restriction until it reached the fix.
+func TestLevelOffAtSIDRestrictionIsStable(t *testing.T) {
+	f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500, ClearedAltitude: 5000})
+
+	f.nav.DepartOnCourse(35000, "LLA", f.simTime)
+
+	// Between TTAPS and BOTLL the aircraft climbs from 4,000 to BOTLL's 5,000
+	// and holds it: it should never descend and never exceed the restriction.
+	f.BetweenFixes("TTAPS", "BOTLL", func(f *FlightTest) {
+		f.AssertNotDescending()
+		f.AssertAltitudeBelow(5000)
+	})
 	f.Run()
 }
 

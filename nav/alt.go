@@ -349,7 +349,10 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 			}
 			// Not time yet
 			if ar := nav.Altitude.Restriction; ar != nil {
-				return ar.TargetAltitude(nav.FlightState.Altitude), MaximumRate, false
+				// The restriction carried forward from the fix behind us may
+				// be lower than what the route ahead requires (SID
+				// restrictions step up); it doesn't supersede the target.
+				return max(ar.TargetAltitude(nav.FlightState.Altitude), target.altitude), MaximumRate, false
 			}
 			if nav.Altitude.Cleared != nil && *nav.Altitude.Cleared < nav.FlightState.Altitude {
 				return *nav.Altitude.Cleared, MaximumRate, false
