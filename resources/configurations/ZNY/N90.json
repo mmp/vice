@@ -225,15 +225,17 @@
       "frequency": 119500,
       "radio_name": "Teterboro Tower"
     },
-    "45": {
+    "4K": {
       "callsign": "MMU_TWR",
-      "frequency": 118100,
-      "radio_name": "Morristown Tower"
+      "frequency": 119400,
+      "radio_name": "Morristown Tower",
+      "scope_char": "5"
     },
-    "41": {
+    "4T": {
       "callsign": "CDW_TWR",
       "frequency": 119800,
-      "radio_name": "Caldwell Tower"
+      "radio_name": "Caldwell Tower",
+      "scope_char": "1"
     },
     "5A": {
       "callsign": "SWF_TWR",
@@ -321,13 +323,15 @@
           "MAZIE": "4H",
           "PHL": "4P",
           "PHLBO4": "4P",
-          "WRI": "4P"
+          "WRI": "4P",
+          "WRISATS": "4H"
         },
         "departure_assignments": {
           "KCDW": "4N",
           "KEWR": "4N",
           "KMMU": "4N",
-          "KTEB": "4N"
+          "KTEB": "4N",
+          "KLGA": "1L"
         },
         "default_consolidation": {
           "4P": ["4A", "4M", "4N", "4U", "4W"],
@@ -345,6 +349,7 @@
           "PHL": "4P",
           "PHLBO4": "4P",
           "WRI": "4P",
+          "WRISATS": "4H",
           "JAIKE4 MUGZY NE": "4U",
           "MAZIE MUGZY NE": "4U",
           "South 22 background": "4P",
@@ -359,10 +364,77 @@
           "KCDW": "4N",
           "KEWR": "4N",
           "KMMU": "4N",
-          "KTEB": "4N"
+          "KTEB": "4N",
+          "KLGA": "1L"
         },
         "default_consolidation": {
           "4N": []
+        }
+      },
+      "ESP": {
+        "inbound_assignments": {
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P",
+          "WRISATS": "4H",
+          "JAIKE4 MUGZY NE": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KLGA": "1L"
+        },
+        "default_consolidation": {
+          "4P": ["4H", "4N", "4W"]
+        }
+      },
+      "ENA": {
+        "inbound_assignments": {
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P",
+          "WRISATS": "4H",
+          "JAIKE4 MUGZY NE": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KLGA": "1L"
+        },
+        "default_consolidation": {
+          "4A": ["4W", "4S", "4N", "4U"]
         }
       },
       "EWU": {
@@ -380,10 +452,11 @@
         },
         "departure_assignments": {
           "KEWR": "4N",
-          "KTEB": "4N"
+          "KTEB": "4N",
+          "KLGA": "1L"
         },
         "default_consolidation": {
-          "4U": []
+          "4U": ["4S"]
         }
       },
       "EWP": {
@@ -394,6 +467,7 @@
           "PHL": "4P",
           "PHLBO4": "4P",
           "WRI": "4P",
+          "WRISATS": "4H",
           "PHL Prop": "4P",
           "MIP4 LGA background 22/13": "1D",
           "MIP4 LGA background 22/31": "1D",
@@ -402,10 +476,11 @@
         },
         "departure_assignments": {
           "KEWR": "4N",
-          "KTEB": "4N"
+          "KTEB": "4N",
+          "KLGA": "1L"
         },
         "default_consolidation": {
-          "4P": []
+          "4P": ["4H", "4M"]
         }
       },
       "EWA": {
@@ -425,10 +500,35 @@
         },
         "departure_assignments": {
           "KEWR": "4N",
-          "KTEB": "4N"
+          "KTEB": "4N",
+          "KLGA": "1L"
         },
         "default_consolidation": {
           "4A": []
+        }
+      },
+      "EWF": {
+        "inbound_assignments": {
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "LVZ4": "4S",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "South": "4A",
+          "South29": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KEWR": "4N",
+          "KTEB": "4N",
+          "KLGA": "1L"
+        },
+        "default_consolidation": {
+          "4A": ["4U", "4S"]
         }
       },
       "LGA": {
@@ -1675,12 +1775,20 @@
         {
           "name": ".    TEB",
           "id": "A",
-          "airports": ["KTEB"]
+          "airports": ["KTEB"],
+          "yellow_entries": true
         },
         {
           "name": ".    MMU",
           "id": "B",
-          "airports": ["KMMU"]
+          "airports": ["KMMU"],
+          "yellow_entries": true
+        },
+        {
+          "name": ".    CDW",
+          "id": "C",
+          "airports": ["KCDW"],
+          "yellow_entries": true
         }
       ],
       "ssa": {
