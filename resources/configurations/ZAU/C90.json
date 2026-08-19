@@ -125,8 +125,8 @@
     "configurations": {
       "13L": {
         "inbound_assignments": {
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U"
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U"
         },
         "departure_assignments": {
           "KMDW": "1U"
@@ -143,7 +143,7 @@
           "MADII7": "1Y",
           "TRTLL6": "1X",
           "VEECK5": "1E",
-          "WYNDE2": "1Z"
+          "WYNDE3_W": "1Z"
         },
         "departure_assignments": {
           "KORD": "1Z",
@@ -166,13 +166,13 @@
       "KOR": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FYTTE7": "1Y",
           "MADII7": "1Y",
           "TRTLL6": "1X",
           "VEECK5": "1E",
-          "WYNDE2": "1Z"
+          "WYNDE3_W": "1Z"
         },
         "departure_assignments": {
           "KMDW": "1S",
@@ -196,8 +196,8 @@
       "KO1": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FIYER": "1A",
           "FYTTE7": "1Y",
           "GSH9": "1U",
@@ -208,7 +208,7 @@
           "PLANO": "1L",
           "TRTLL6": "1X",
           "VEECK5": "1E",
-          "WYNDE2": "1Z"
+          "WYNDE3_W": "1Z"
         },
         "departure_assignments": {
           "KARR": "1L",
@@ -237,8 +237,8 @@
       "KO2": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FIYER": "1A",
           "FYTTE7": "1Y",
           "KRENA": "1A",
@@ -246,7 +246,7 @@
           "PLANO": "1L",
           "TRTLL6": "1X",
           "VEECK5": "1E",
-          "WYNDE2": "1Z"
+          "WYNDE3_W": "1Z"
         },
         "departure_assignments": {
           "KMDW": "1S",
@@ -272,10 +272,10 @@
         "inbound_assignments": {
           "BENKY6": "1Z",
           "FYTTE7": "1Y",
-          "MADII7": "1Y",
+          "ERNNY8": "1Y",
           "TRTLL6": "1Z",
           "VEECK5": "1E",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KORD": "1Z",
@@ -298,13 +298,13 @@
       "KO3": {
         "inbound_assignments": {
           "BENKY6": "1Z",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FYTTE7": "1Y",
-          "MADII7": "1Y",
+          "ERNNY8": "1Y",
           "TRTLL6": "1Z",
           "VEECK5": "1E",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KMDW": "1S",
@@ -328,8 +328,8 @@
       "KO4": {
         "inbound_assignments": {
           "BENKY6": "1Z",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FIYER": "1A",
           "FYTTE7": "1Y",
           "GSH9": "1U",
@@ -340,7 +340,7 @@
           "PLANO": "1L",
           "TRTLL6": "1Z",
           "VEECK5": "1E",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KARR": "1L",
@@ -369,8 +369,8 @@
       "KO5": {
         "inbound_assignments": {
           "BENKY6": "1Z",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FIYER": "1A",
           "FYTTE7": "1Y",
           "KRENA": "1A",
@@ -378,7 +378,7 @@
           "PLANO": "1L",
           "TRTLL6": "1Z",
           "VEECK5": "1E",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KMDW": "1S",
@@ -403,12 +403,13 @@
       "KO6": {
         "inbound_assignments": {
           "BENKY6": "1X",
+          "ESSPO5": "1E",
           "ERNNY8": "1J",
           "FYTTE7": "1Y",
           "SHAIN2": "1Z",
           "TRTLL6": "1X",
           "VEECK5": "1E",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KORD": "1Z",
@@ -431,14 +432,15 @@
       "4RX": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
+          "ENDEE8": "1P",
           "ERNNY8": "1J",
-          "FISSK6/PANGG5": "1U",
+          "ESSPO5": "1E",
+          "FISSK7/PANGG7": "1U",
           "FYTTE7": "1Y",
           "SHAIN2": "1Z",
           "TRTLL6": "1X",
           "VEECK5": "1E",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KMDW": "1S",
@@ -462,9 +464,9 @@
       "KO7": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
+          "ENDEE8": "1P",
           "ERNNY8": "1J",
-          "FISSK6/PANGG5": "1U",
+          "FISSK7/PANGG7": "1U",
           "FIYER": "1A",
           "FYTTE7": "1Y",
           "GSH9": "1U",
@@ -475,7 +477,7 @@
           "TRTLL6": "1X",
           "VEECK5": "1E",
           "WATSN4": "1Z",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KARR": "1L",
@@ -504,9 +506,9 @@
       "KO8": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
+          "ENDEE8": "1P",
           "ERNNY8": "1Y",
-          "FISSK6/PANGG5": "1U",
+          "FISSK7/PANGG7": "1U",
           "FIYER": "1A",
           "FYTTE7": "1Y",
           "GSH9": "1U",
@@ -517,7 +519,7 @@
           "SHAIN2": "1Z",
           "TRTLL6": "1X",
           "VEECK5": "1E",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KARR": "1L",
@@ -554,7 +556,7 @@
           "SHAIN2": "1Z",
           "TRTLL6": "1X",
           "VEECK5": "1E",
-          "WYNDE2": "1J"
+          "WYNDE3_E": "1J"
         },
         "departure_assignments": {
           "KORD": "1Z",
@@ -577,7 +579,8 @@
       },
       "KO9": {
         "inbound_assignments": {
-          "FYTTE7_FINALNE": "1F"
+          "FYTTE7_FINALNE": "1F",
+          "WYNDE3_FINALNE": "1F"
         },
         "default_consolidation": {
           "1F": []
@@ -591,7 +594,7 @@
           "TRTLL6": "1X",
           "VEECK5": "1E",
           "WATSN4": "1Z",
-          "WYNDE2": "1J"
+          "WYNDE3_W": "1J"
         },
         "departure_assignments": {
           "KORD": "1Z",
@@ -614,7 +617,8 @@
       "KOB": {
         "inbound_assignments": {
           "FINALW_WN": "1Z",
-          "WATSN4": "1Z"
+          "WATSN4": "1Z",
+          "BENKY6_FINALWZ": "1Z"
         },
         "default_consolidation": {
           "1Z": []
@@ -635,14 +639,14 @@
       "22L": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FYTTE7": "1Y",
           "MADII7": "1Y",
           "TRTLL6": "1X",
           "VEECK5": "1E",
           "WATSN4": "1Z",
-          "WYNDE2": "1J"
+          "WYNDE3_W": "1J"
         },
         "departure_assignments": {
           "KMDW": "1S",
@@ -666,8 +670,8 @@
       "31R": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FIYER": "1A",
           "FYTTE7": "1Y",
           "GSH9": "1U",
@@ -679,7 +683,7 @@
           "TRTLL6": "1X",
           "VEECK5": "1E",
           "WATSN4": "1Z",
-          "WYNDE2": "1J"
+          "WYNDE3_W": "1J"
         },
         "departure_assignments": {
           "KARR": "1L",
@@ -708,8 +712,8 @@
       "KOD": {
         "inbound_assignments": {
           "BENKY6": "1X",
-          "ENDEE6": "1P",
-          "FISSK6/PANGG5": "1U",
+          "ENDEE8": "1P",
+          "FISSK7/PANGG7": "1U",
           "FIYER": "1A",
           "FYTTE7": "1Y",
           "KRENA": "1A",
@@ -718,7 +722,7 @@
           "TRTLL6": "1X",
           "VEECK5": "1E",
           "WATSN4": "1Z",
-          "WYNDE2": "1J"
+          "WYNDE3_W": "1J"
         },
         "departure_assignments": {
           "KMDW": "1S",
@@ -751,7 +755,7 @@
           "TRTLL6": "1X",
           "VEECK5": "1E",
           "WATSN4": "1Z",
-          "WYNDE2": "1J"
+          "WYNDE3_W": "1J"
         },
         "departure_assignments": {
           "KORD": "1Z",
@@ -774,7 +778,8 @@
       },
       "KOF": {
         "inbound_assignments": {
-          "FYTTE7_FINALNW": "1F"
+          "FYTTE7_FINALNW": "1F",
+          "FINALW_NF": "1F"
         },
         "default_consolidation": {
           "1F": []
@@ -783,7 +788,8 @@
       "KOG": {
         "inbound_assignments": {
           "BENKY6_FINALWW": "1W",
-          "VEECK5_FINALWW": "1W"
+          "VEECK5_FINALWW": "1W",
+          "FINALW_WS": "1W"
         },
         "default_consolidation": {
           "1W": []
