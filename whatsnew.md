@@ -1,11 +1,14 @@
-- New scenarios: ZJX Central-Geneva (manaphy), ZTL (AsianEvxn), ZME (Noah Hunt), ZDC (Ryan H), ZAU (Zach Styka)
-- Scenario updates: ZNY, ZAU, C90, Y90 (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA, SCT, ZLA (Ketan K), F11 (Michael Knight), C90 (Shane, Zach Styka), I90 (Ethan Hawes), EWR (aq86_)
+- New scenarios: ZJX Central-Geneva (manaphy), ZTL (AsianEvxn), ZME (Noah Hunt), ZDC (Ryan H), ZAU (Zach Styka), ZFW (obmna)
+- Scenario updates: ZNY, ZAU, C90, Y90 (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA, SCT, ZLA (Ketan K), F11 (Michael Knight), C90 (Shane, Zach Styka), I90 (Ethan Hawes), EWR (aq86_), OKC (obmna)
 - Added support for using real-world flight data in scenarios) (Shane, Logan S)
 - Added support for fix pairs for controller assignment (radarcontacto)
 - Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection
+- Fixed bug with departures climbing past restrictions in their SID
 - Fixed bug where departures would climb to cruise altitude even if they had /cALT in their upcoming route
 - Fixed bug where virtual controllers wouldn't accept redirected handoffs
 - Fixed bug where VFR aircraft could end up swarming an airport
+- Fixed bug where overflights would check in with the ATIS
+- Fixed a number of STT bugs
 - Updated to AIRAC 260806
 - STT: fixed few bugs with fixes in an aircraft's route not being recognized
 - STARS
@@ -31,3 +34,4 @@
   - Removed "primary_airport"; replaced with facility "weather_station", "lists"."ssa"."system_altimeter" (overridable per area)
   - Arrivals must now give the airports they serve in "airports" unless they name a "star" the FAA CIFP charts
   - An arrival's "star" must be charted for at least one of the airports it serves, whether or not it supplies the waypoints
+  - Per-area adaptations of scratchpads and airspace awareness now override facility-level, don't augment.

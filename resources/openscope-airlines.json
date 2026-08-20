@@ -20420,6 +20420,17 @@
       }
     },
     {
+      "icao": "shoot",
+      "name": "USAF",
+      "callsign": {
+        "name": "SHOOT",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["T38", 10]]
+      }
+    },
+    {
       "icao": "canon",
       "name": "USAF",
       "callsign": {

@@ -359,9 +359,31 @@
           "to": "OKC",
           "from": "ZFW"
         }
+      ],
+      "RIFFL": [
+        {
+          "type": "route",
+          "to": "OKC",
+          "from": "ZFW"
+        }
       ]
     },
-    "configurations": {}
+    "configurations": {
+      "C25": {
+        "default_consolidation": {
+          "25": []
+        },
+        "inbound_assignments": {
+          "Q33 UH": "25",
+          "J29 UH": "25",
+          "ELD-SQS": "25"
+        }
+      }
+    },
+    "center": "N033.06.15.595,W097.23.57.808",
+    "range": 600,
+    "max_distance": 350,
+    "video_map_file": "videomaps/ZFW.mappack"
   },
   "handoff_ids": [
     {

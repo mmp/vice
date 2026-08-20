@@ -1,0 +1,397 @@
+{
+  "artcc": "ZFW",
+  "area": "ZFW Area 5",
+  "name": "ZFW Area 5",
+  "airports": {
+    "KDFW": {
+      "approaches": {
+        "I7L": {
+          "cifp_id": "I17L"
+        }
+      }
+    }
+  },
+  "default_scenario": "ZFW 25 Union Ultra-Hi",
+  "magnetic_adjustment": 3.0,
+  "scenarios": {
+    "ZFW 25 Union Ultra-Hi": {
+      "configuration": "C25",
+      "default_map_group": "ZFW",
+      "departure_runways": [],
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "17L"
+        }
+      ],
+      "inbound_rates": {
+        "Q33 UH": {
+          "overflights": 10
+        },
+        "J29 UH": {
+          "overflights": 10
+        },
+        "ELD-SQS": {
+          "overflights": 10
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "Q33 UH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSUS",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KSTL",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KMDW",
+              "arrival_airport": "KHOU",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KTVC",
+              "arrival_airport": "KIAH",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KGRR",
+              "arrival_airport": "KIAH",
+              "icao": "ASH"
+            },
+            {
+              "departure_airport": "CYUL",
+              "arrival_airport": "KIAH",
+              "icao": "ROU"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "M43",
+          "initial_speed": 300,
+          "waypoints": "EDWAH/ho Q33 SWEUP/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSUS",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KSTL",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KMDW",
+              "arrival_airport": "KHOU",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KTVC",
+              "arrival_airport": "KIAH",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KGRR",
+              "arrival_airport": "KIAH",
+              "icao": "ASH"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 38000,
+          "initial_controller": "M43",
+          "initial_speed": 300,
+          "waypoints": "EDWAH/ho Q33 SWEUP/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KPWK",
+              "arrival_airport": "KHOU",
+              "icao": "LXJ"
+            }
+          ],
+          "initial_altitude": 43000,
+          "assigned_altitude": 43000,
+          "initial_controller": "M43",
+          "initial_speed": 300,
+          "waypoints": "EDWAH/ho Q33 SWEUP/delete"
+        }
+      ]
+    },
+    "J29 UH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSUS",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KSAT",
+              "arrival_airport": "KBNA",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KMEM",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KLIT",
+              "icao": "ASH"
+            },
+            {
+              "departure_airport": "KAUS",
+              "arrival_airport": "KJFK",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KPHL",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
+          "initial_controller": "86",
+          "initial_speed": 300,
+          "waypoints": "N032.28.43.219,W093.22.28.461/ho MIXIE J29 TOZZI/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSUS",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KSAT",
+              "arrival_airport": "KBNA",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KMEM",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KLIT",
+              "icao": "ASH"
+            },
+            {
+              "departure_airport": "KAUS",
+              "arrival_airport": "KJFK",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KPHL",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_controller": "86",
+          "initial_speed": 300,
+          "waypoints": "N032.28.43.219,W093.22.28.461/ho MIXIE J29 TOZZI/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSUS",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KAUS",
+              "arrival_airport": "KBNA",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KSAT",
+              "arrival_airport": "KBNA",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KMEM",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KLIT",
+              "icao": "ASH"
+            },
+            {
+              "departure_airport": "KAUS",
+              "arrival_airport": "KJFK",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KPHL",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 39000,
+          "assigned_altitude": 39000,
+          "initial_controller": "86",
+          "initial_speed": 300,
+          "waypoints": "N032.28.43.219,W093.22.28.461/ho MIXIE J29 TOZZI/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KDWH",
+              "arrival_airport": "KHPN",
+              "icao": "LXJ"
+            }
+          ],
+          "initial_altitude": 45000,
+          "assigned_altitude": 45000,
+          "initial_controller": "86",
+          "initial_speed": 300,
+          "waypoints": "N032.28.43.219,W093.22.28.461/ho MIXIE J29 TOZZI/delete"
+        }
+      ]
+    },
+    "ELD-SQS": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSUS",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KDFW",
+              "arrival_airport": "KCLT",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KDFW",
+              "arrival_airport": "KATL",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KDFW",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KTVC",
+              "arrival_airport": "KIAH",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KGRR",
+              "arrival_airport": "KIAH",
+              "icao": "ASH"
+            }
+          ],
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
+          "initial_controller": "90",
+          "initial_speed": 300,
+          "waypoints": "N032.56.31.960,W094.50.09.539/ho FORCK ELD SQS/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSUS",
+              "arrival_airport": "KHOU",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KDAL",
+              "arrival_airport": "KCLT",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KDAL",
+              "arrival_airport": "KATL",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KMDW",
+              "arrival_airport": "KHOU",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KTVC",
+              "arrival_airport": "KIAH",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KGRR",
+              "arrival_airport": "KIAH",
+              "icao": "ASH"
+            }
+          ],
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_controller": "90",
+          "initial_speed": 300,
+          "waypoints": "N032.56.31.960,W094.50.09.539/ho FORCK ELD SQS/delete"
+        }
+      ]
+    }
+  }
+}

@@ -345,12 +345,12 @@
           "OLFRD,MOOSE": {
             "cleared_altitude": 5000,
             "sid": "MUDDE3",
-            "waypoints": "KOKC-17R/h010 GLOPS MUDDE"
+            "waypoints": "KOKC-17R/h310 GLOPS MUDDE"
           },
           "MUDDE": {
             "cleared_altitude": 5000,
             "sid": "MUDDE3",
-            "waypoints": "KOKC-17R/h010 GLOPS"
+            "waypoints": "KOKC-17R/h310 GLOPS"
           },
           "YOUSE": {
             "cleared_altitude": 5000,
@@ -380,12 +380,12 @@
           "KAYOS": {
             "cleared_altitude": 5000,
             "sid": "SSYKO3",
-            "waypoints": "KOKC-17R/h310 CASTN SSYKO"
+            "waypoints": "KOKC-17R/h010 CASTN SSYKO"
           },
           "SSYKO": {
             "cleared_altitude": 5000,
             "sid": "SSYKO3",
-            "waypoints": "KOKC-17R/h310 CASTN"
+            "waypoints": "KOKC-17R/h010 CASTN"
           },
           "ZEEWE": {
             "cleared_altitude": 5000,
@@ -440,22 +440,22 @@
           "BELMN": {
             "cleared_altitude": 5000,
             "sid": "WENDY3",
-            "waypoints": "KOKC-17R/h310 POKSS WENDY"
+            "waypoints": "KOKC-17R/h010 POKSS WENDY"
           },
           "HNGER": {
             "cleared_altitude": 5000,
             "sid": "WENDY3",
-            "waypoints": "KOKC-17R/h310 POKSS WENDY LARKO"
+            "waypoints": "KOKC-17R/h010 POKSS WENDY LARKO"
           },
           "LARKO": {
             "cleared_altitude": 5000,
             "sid": "WENDY3",
-            "waypoints": "KOKC-17R/h310 POKSS WENDY"
+            "waypoints": "KOKC-17R/h010 POKSS WENDY"
           },
           "WENDY": {
             "cleared_altitude": 5000,
             "sid": "WENDY3",
-            "waypoints": "KOKC-17R/h310 POKSS"
+            "waypoints": "KOKC-17R/h010 POKSS"
           }
         },
         "35R": {
@@ -482,12 +482,12 @@
           "OLFRD,MOOSE": {
             "cleared_altitude": 5000,
             "sid": "MUDDE3",
-            "waypoints": "KOKC-17L/h010 GLOPS MUDDE"
+            "waypoints": "KOKC-17L/h310 GLOPS MUDDE"
           },
           "MUDDE": {
             "cleared_altitude": 5000,
             "sid": "MUDDE3",
-            "waypoints": "KOKC-17L/h010 GLOPS"
+            "waypoints": "KOKC-17L/h310 GLOPS"
           },
           "YOUSE": {
             "cleared_altitude": 5000,
@@ -517,12 +517,12 @@
           "KAYOS": {
             "cleared_altitude": 5000,
             "sid": "SSYKO3",
-            "waypoints": "KOKC-17L/h310 CASTN SSYKO"
+            "waypoints": "KOKC-17L/h010 CASTN SSYKO"
           },
           "SSYKO": {
             "cleared_altitude": 5000,
             "sid": "SSYKO3",
-            "waypoints": "KOKC-17L/h310 CASTN"
+            "waypoints": "KOKC-17L/h010 CASTN"
           },
           "ZEEWE": {
             "cleared_altitude": 5000,
@@ -577,22 +577,22 @@
           "BELMN": {
             "cleared_altitude": 5000,
             "sid": "WENDY3",
-            "waypoints": "KOKC-17L/h310 POKSS WENDY"
+            "waypoints": "KOKC-17L/h010 POKSS WENDY"
           },
           "HNGER": {
             "cleared_altitude": 5000,
             "sid": "WENDY3",
-            "waypoints": "KOKC-17L/h310 POKSS WENDY LARKO"
+            "waypoints": "KOKC-17L/h010 POKSS WENDY LARKO"
           },
           "LARKO": {
             "cleared_altitude": 5000,
             "sid": "WENDY3",
-            "waypoints": "KOKC-17L/h310 POKSS WENDY"
+            "waypoints": "KOKC-17L/h010 POKSS WENDY"
           },
           "WENDY": {
             "cleared_altitude": 5000,
             "sid": "WENDY3",
-            "waypoints": "KOKC-17L/h310 POKSS"
+            "waypoints": "KOKC-17L/h010 POKSS"
           }
         }
       },
@@ -1284,39 +1284,37 @@
             }
           },
           "star": "CAMET3",
-          "initial_controller": "C51",
+          "initial_controller": "C35",
           "initial_altitude": 12000,
           "initial_speed": 250,
           "expect_approach": null,
-          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KLAX"
-              },
-              {
                 "icao": "UAL",
                 "fleet": "short",
-                "airport": "KLAX"
+                "airport": "KDEN"
               },
               {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KLAX"
+                "icao": "SKW",
+                "airport": "KSLC"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KDEN"
               },
               {
                 "icao": "SWA",
-                "airport": "KPHX"
+                "airport": "KDEN"
               },
               {
                 "icao": "FFT",
                 "airport": "KDEN"
               },
               {
-                "icao": "NKS",
-                "airport": "KLAX"
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KAPA"
               },
               {
                 "icao": "ASA",
@@ -1340,26 +1338,23 @@
             }
           },
           "star": "GHOST3",
-          "initial_controller": "C51",
+          "initial_controller": "C35",
           "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
-          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KLAX"
+                "icao": "UPS",
+                "airport": "KABQ"
               },
               {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KLAX"
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KTDW"
               },
               {
-                "icao": "AAL",
-                "fleet": "short",
+                "icao": "SKW",
                 "airport": "KLAX"
               },
               {
@@ -1367,12 +1362,20 @@
                 "airport": "KPHX"
               },
               {
-                "icao": "FFT",
-                "airport": "KDEN"
+                "icao": "AAY",
+                "airport": "KLAS"
               },
               {
-                "icao": "NKS",
-                "airport": "KLAX"
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "BBQ",
+                "airport": "KIWA"
               }
             ]
           }
@@ -1392,25 +1395,19 @@
             }
           },
           "star": "MURAH3",
-          "initial_controller": "K54",
-          "initial_altitude": 17000,
+          "initial_controller": "K62",
+          "initial_altitude": 14000,
           "initial_speed": 280,
           "expect_approach": null,
-          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KATL"
+                "icao": "FDX",
+                "airport": "KTUL"
               },
               {
-                "icao": "EDV",
-                "airport": "KATL"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KCLT"
+                "icao": "UPS",
+                "airport": "KTUL"
               },
               {
                 "icao": "AAL",
@@ -1418,25 +1415,24 @@
                 "airport": "KCLT"
               },
               {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "ASH",
-                "airport": "KSAT"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KIAH"
+                "icao": "SWA",
+                "airport": "KBNA"
               },
               {
                 "icao": "SWA",
-                "airport": "KDAL"
+                "airport": "KMDW"
               },
               {
-                "icao": "FFT",
-                "airport": "KDAL"
+                "icao": "SKW",
+                "airport": "KORD"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KMSP"
               }
             ]
           }
@@ -1455,31 +1451,30 @@
               "35R": "WAYMN YUKKY/a9000- CROPE/a4000+/s210"
             }
           },
-          "star": "MURAH3",
-          "initial_controller": "C51",
+          "star": "TSDEL3",
+          "initial_controller": "C53",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
-          "airports": ["KOKC"],
           "airlines": {
             "KOKC": [
               {
-                "icao": "DAL",
+                "icao": "AAL",
                 "fleet": "short",
-                "airport": "KATL"
+                "airport": "KDFW"
               },
               {
-                "icao": "EDV",
-                "airport": "KATL"
+                "icao": "ENY",
+                "airport": "KMIA"
               },
               {
-                "icao": "JIA",
-                "airport": "KCLT"
+                "icao": "SWA",
+                "airport": "KHOU"
               },
               {
                 "icao": "AAL",
                 "fleet": "short",
-                "airport": "KCLT"
+                "airport": "KDFW"
               },
               {
                 "icao": "UAL",
@@ -1487,11 +1482,11 @@
                 "airport": "KIAH"
               },
               {
-                "icao": "ASH",
-                "airport": "KSAT"
+                "icao": "EJA",
+                "airport": "KDAL"
               },
               {
-                "icao": "NKS",
+                "icao": "UCA",
                 "airport": "KIAH"
               },
               {
@@ -1499,8 +1494,12 @@
                 "airport": "KDAL"
               },
               {
-                "icao": "FFT",
-                "airport": "KDAL"
+                "icao": "ASH",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KJKA"
               }
             ]
           }
@@ -1519,12 +1518,32 @@
               "35R": "BASTS SPAMS/a5000+ CROPE/a4000+/s210"
             }
           },
-          "star": "MURAH3",
-          "initial_controller": "C51",
+          "star": "YUCKS3",
+          "initial_controller": "C35",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
-          "airports": ["KOKC"],
+          "airlines": {
+            "KOKC": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KMAF"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RIFFL3": {
+      "arrivals": [
+        {
+          "star": "RIFFL3",
+          "initial_controller": "C38",
+          "initial_altitude": 14000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "waypoints": "DIMPL/a11000-17000/s280/ho RIFFL/a10000-15000/s250 FAKEY AACES/a6000+",
           "airlines": {
             "KOKC": [
               {
@@ -1533,38 +1552,65 @@
                 "airport": "KATL"
               },
               {
-                "icao": "EDV",
-                "airport": "KATL"
+                "icao": "FDX",
+                "airport": "KMEM"
               },
               {
-                "icao": "JIA",
-                "airport": "KCLT"
+                "icao": "UPS",
+                "airport": "KSDF"
               },
               {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KCLT"
+                "icao": "AAY",
+                "airport": "KSFB"
               },
               {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "ASH",
-                "airport": "KSAT"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KIAH"
+                "icao": "AAY",
+                "airport": "KVPS"
               },
               {
                 "icao": "SWA",
-                "airport": "KDAL"
-              },
+                "airport": "KMCO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DFW-SWO": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "arrival_airport": "KSWO",
+              "departure_airport": "KDFW",
+              "icao": "SKW",
+              "types": ["CRJ7"]
+            }
+          ],
+          "initial_altitude": 20000,
+          "initial_controller": "C53",
+          "assigned_altitude": 16000,
+          "initial_speed": 270,
+          "description": "SWO arrival",
+          "waypoints": "N034.40.33.361,W097.07.33.378/ho KRMSN KSWO/delete"
+        }
+      ]
+    },
+    "ENDOKC38": {
+      "arrivals": [
+        {
+          "route": "ALCEM..IRW",
+          "initial_controller": "21W",
+          "initial_altitude": 13000,
+          "initial_speed": 300,
+          "expect_approach": null,
+          "airports": ["KOKC"],
+          "waypoints": "BOZCO/ho ALCEM IRW",
+          "airlines": {
+            "KOKC": [
               {
-                "icao": "FFT",
-                "airport": "KDAL"
+                "icao": "SHOOT",
+                "airport": "KEND"
               }
             ]
           }
@@ -1588,19 +1634,28 @@
       ],
       "inbound_rates": {
         "CAMET3": {
-          "KOKC": 10
+          "KOKC": 5
         },
         "GHOST3": {
-          "KOKC": 10
+          "KOKC": 5
         },
         "MURAH3": {
-          "KOKC": 10
+          "KOKC": 7
         },
         "TSDEL3": {
-          "KOKC": 5
+          "KOKC": 7
         },
         "YUCKS3": {
+          "KOKC": 1
+        },
+        "RIFFL3": {
           "KOKC": 5
+        },
+        "ENDOKC38": {
+          "KOKC": 2
+        },
+        "DFW-SWO": {
+          "overflights": 1
         }
       },
       "configuration": "KO1",
@@ -1608,13 +1663,13 @@
       "departure_runways": [
         {
           "airport": "KOKC",
-          "rate": 20,
+          "rate": 15,
           "runway": "17R",
           "category": "West"
         },
         {
           "airport": "KOKC",
-          "rate": 20,
+          "rate": 15,
           "runway": "17L",
           "category": "East"
         }
@@ -1636,19 +1691,28 @@
       ],
       "inbound_rates": {
         "CAMET3": {
-          "KOKC": 10
+          "KOKC": 5
         },
         "GHOST3": {
-          "KOKC": 10
+          "KOKC": 5
         },
         "MURAH3": {
-          "KOKC": 10
+          "KOKC": 7
         },
         "TSDEL3": {
-          "KOKC": 5
+          "KOKC": 7
         },
         "YUCKS3": {
+          "KOKC": 1
+        },
+        "RIFFL3": {
           "KOKC": 5
+        },
+        "ENDOKC38": {
+          "KOKC": 2
+        },
+        "DFW-SWO": {
+          "overflights": 1
         }
       },
       "configuration": "KOK",
@@ -1656,13 +1720,13 @@
       "departure_runways": [
         {
           "airport": "KOKC",
-          "rate": 20,
+          "rate": 15,
           "runway": "35L",
           "category": "West"
         },
         {
           "airport": "KOKC",
-          "rate": 20,
+          "rate": 15,
           "runway": "35R",
           "category": "East"
         }
