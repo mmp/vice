@@ -5,6 +5,7 @@
 package main
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"maps"
@@ -95,6 +96,11 @@ type NewSimConfiguration struct {
 	trafficPreviewPending    string
 	trafficPreviewDepartures []uint16
 	trafficPreviewArrivals   []uint16
+	// trafficPreviewOperations is the preview's traffic totaled by airport.
+	// nil means no counts have arrived since the scenario or traffic source
+	// was selected--never that a window was quiet--and it keeps the last
+	// answer while a refetch for a scrubbed start time is in flight.
+	trafficPreviewOperations map[string]int
 	trafficPreviewError      error
 	trafficPreviewRetryAt    time.Time
 }
@@ -253,6 +259,7 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec, p p
 	// offered: a scenario that gives no airlines has no traffic of its own to
 	// generate, and most facilities have no timetable.
 	imgui.Text("IFR traffic source:")
+	prevSource := lc.TrafficSource
 	for _, source := range spec.TrafficSources {
 		imgui.SameLine()
 		if len(spec.TrafficSources) == 1 {
@@ -263,6 +270,10 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec, p p
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip(c.trafficSourceTooltip(source, spec))
 		}
+	}
+	if lc.TrafficSource != prevSource {
+		// Counts from one source must never rank another's airports.
+		c.clearTrafficPreviewLocked()
 	}
 
 	normalizeTrafficSourceConfig(spec)
@@ -607,6 +618,11 @@ func (c *NewSimConfiguration) fetchTrafficPreview(srv *client.Server, key string
 	c.trafficPreviewError = err
 	if err != nil {
 		c.trafficPreviewRetryAt = time.Now().Add(trafficPreviewRetryDelay)
+	} else if result.AirportOperations != nil {
+		c.trafficPreviewOperations = result.AirportOperations
+	} else {
+		// gob drops empty maps, and nil is reserved for "no answer yet".
+		c.trafficPreviewOperations = make(map[string]int)
 	}
 }
 
@@ -649,6 +665,7 @@ func (c *NewSimConfiguration) clearTrafficPreviewLocked() {
 	c.trafficPreviewPending = ""
 	c.trafficPreviewDepartures = nil
 	c.trafficPreviewArrivals = nil
+	c.trafficPreviewOperations = nil
 	c.trafficPreviewError = nil
 	c.trafficPreviewRetryAt = time.Time{}
 }
@@ -2851,14 +2868,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 	imgui.Separator()
 
 	// Start time and METAR section
-	// The airports the scenario is actually worked at come first; the rest are
-	// context.
-	scenarioAirports := c.ScenarioSpec.AllAirports()
-	metarAirports := util.SortedMapKeys(c.airportMETAR)
-	slices.SortStableFunc(metarAirports, func(a, b string) int {
-		return util.Select(slices.Contains(scenarioAirports, b), 1, 0) -
-			util.Select(slices.Contains(scenarioAirports, a), 1, 0)
-	})
+	metarAirports, haveOrder := c.metarAirportsByTraffic(c.ScenarioSpec)
 
 	if imgui.BeginTableV("timeAndMetar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
 		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 70, 0)
@@ -2879,33 +2889,35 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.SameLine()
 		TimeSlider(&c.NewSimRequest.StartTime, clock, timeSliderWidth)
 
-		// METAR
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("METAR:")
-		imgui.TableNextColumn()
-		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
-		ui.fixedFont.ImguiPush()
-		imgui.Text(c.metarText(currentMetar))
-		imgui.PopFont()
+		// METAR, held back until the airport to lead with is known.
+		if haveOrder {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("METAR:")
+			imgui.TableNextColumn()
+			currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
+			ui.fixedFont.ImguiPush()
+			imgui.Text(c.metarText(currentMetar))
+			imgui.PopFont()
 
-		if c.showAllMETAR && len(metarAirports) > 1 {
-			for i := 1; i < len(metarAirports); i++ {
-				ap := metarAirports[i]
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.TableNextColumn()
-				ui.fixedFont.ImguiPush()
-				m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
-				imgui.Text(c.metarText(m))
-				imgui.PopFont()
+			if c.showAllMETAR && len(metarAirports) > 1 {
+				for i := 1; i < len(metarAirports); i++ {
+					ap := metarAirports[i]
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.TableNextColumn()
+					ui.fixedFont.ImguiPush()
+					m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
+					imgui.Text(c.metarText(m))
+					imgui.PopFont()
+				}
 			}
 		}
 
 		imgui.EndTable()
 	}
 
-	if len(metarAirports) > 1 && !c.showAllMETAR {
+	if haveOrder && len(metarAirports) > 1 && !c.showAllMETAR {
 		if imgui.Button("Show all airport METAR") {
 			c.showAllMETAR = true
 		}
@@ -2940,6 +2952,40 @@ func (c *NewSimConfiguration) validStartDays(spec *server.ScenarioSpec) []time.T
 	return getValidFullDays(intervals, makeScenarioClock(spec))
 }
 
+// metarAirportsByTraffic returns the airports METAR was fetched for, busiest
+// first: the airport a controller spends the session watching is the one whose
+// weather they care about. The selected traffic source decides what "busiest"
+// means--the launch config's rates for scenario traffic, the timetable's
+// airport for timetable traffic, the server's flight counts for historical
+// traffic. Historical counts arrive by RPC, so until the first answer lands
+// the order isn't known: the airports come back alphabetical, as before, and
+// ok is false. Called with c.mu held.
+func (c *NewSimConfiguration) metarAirportsByTraffic(spec *server.ScenarioSpec) (airports []string, ok bool) {
+	airports = util.SortedMapKeys(c.airportMETAR)
+
+	var score func(ap string) float32
+	switch spec.LaunchConfig.TrafficSource {
+	case sim.TrafficSourceTimetable:
+		score = func(ap string) float32 {
+			return float32(util.Select(ap == spec.LaunchConfig.TimetableAirport, 1, 0))
+		}
+	case sim.TrafficSourceHistorical:
+		if c.trafficPreviewOperations == nil {
+			return airports, false
+		}
+		score = func(ap string) float32 { return float32(c.trafficPreviewOperations[ap]) }
+	default:
+		rates := spec.LaunchConfig.WorkedAirportRates()
+		score = func(ap string) float32 { return rates[ap] }
+	}
+
+	// A stable sort over the already-alphabetical keys keeps ties alphabetical.
+	slices.SortStableFunc(airports, func(a, b string) int {
+		return cmp.Compare(score(b), score(a))
+	})
+	return airports, true
+}
+
 // Default sim start times are picked between these local hours at the primary
 // airport, so that nobody inadvertently runs a sim in the middle of the night
 // and wonders where the traffic is.
@@ -2955,12 +3001,12 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpe
 		return
 	}
 
-	airports := spec.AllAirports()
+	airports, _ := c.metarAirportsByTraffic(spec)
 	if len(airports) == 0 {
 		return
 	}
-	apMETAR, ok := c.airportMETAR[airports[0]]
-	if !ok || len(apMETAR) == 0 {
+	apMETAR := c.airportMETAR[airports[0]]
+	if len(apMETAR) == 0 {
 		return
 	}
 	days := c.validStartDays(spec)

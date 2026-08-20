@@ -387,10 +387,13 @@ func trafficCountsSpan(start time.Time) (first, last time.Time) {
 // requires a running sim, or overflights, which no source publishes--their rate in the launch
 // config says all there is to say about them.
 //
+// operations is the same traffic broken out by airport, departures and arrivals together, so a
+// caller can see where the traffic goes as well as when it comes.
+//
 // historical is the facility's flights on and around the day previewed, however much of them the
 // caller has on hand; the window and the scenario's airports are selected from it here.
 func TrafficCounts(lc *LaunchConfig, start time.Time,
-	historical []av.Flight) (departures, arrivals []uint16, err error) {
+	historical []av.Flight) (departures, arrivals []uint16, operations map[string]int, err error) {
 	first, last := trafficCountsSpan(start)
 	start = first.Add(TrafficCountsPad)
 	departureScale := math.Clamp(lc.PublishedDepartureRateScale, 0, MaxPublishedRateScale)
@@ -401,11 +404,11 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 	case TrafficSourceTimetable:
 		catalog, err := LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
 		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
 		if !ok {
-			return nil, nil, fmt.Errorf("timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
+			return nil, nil, nil, fmt.Errorf("timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
 		}
 		flights = timetableFlights(NewSimTime(start), timetable, lc)
 
@@ -420,7 +423,7 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 			start.Add(time.Duration(float64(last.Sub(start))*float64(scale))))
 
 	default:
-		return nil, nil, fmt.Errorf("%s traffic comes from the launch config's rates, "+
+		return nil, nil, nil, fmt.Errorf("%s traffic comes from the launch config's rates, "+
 			"so there is nothing to preview", lc.TrafficSource)
 	}
 
@@ -430,6 +433,7 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 
 	departures = make([]uint16, TrafficCountsMinutes)
 	arrivals = make([]uint16, TrafficCountsMinutes)
+	operations = make(map[string]int)
 	for _, flight := range flights {
 		scale := arrivalScale
 		if flight.Departure {
@@ -445,12 +449,14 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 		if flight.Departure {
 			if lc.departsAirport(flight.Airport) {
 				departures[minute]++
+				operations[flight.Airport]++
 			}
 		} else if lc.landsAirport(flight.Airport) {
 			arrivals[minute]++
+			operations[flight.Airport]++
 		}
 	}
-	return departures, arrivals, nil
+	return departures, arrivals, operations, nil
 }
 
 // departsAirport reports whether any of an airport's departure flows are both

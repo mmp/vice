@@ -868,10 +868,11 @@ type TrafficCountsArgs struct {
 
 // TrafficCountsResult holds one count per minute over the window
 // sim.TrafficCounts covers, which begins sim.TrafficCountsPad before the
-// requested start time.
+// requested start time, plus the same traffic totaled by airport.
 type TrafficCountsResult struct {
-	Departures []uint16
-	Arrivals   []uint16
+	Departures        []uint16
+	Arrivals          []uint16
+	AirportOperations map[string]int
 }
 
 // GetTrafficCounts reports how much published traffic a scenario would fly starting at a given
@@ -896,7 +897,8 @@ func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficC
 		}
 	}
 
-	result.Departures, result.Arrivals, err = sim.TrafficCounts(&args.LaunchConfig, args.StartTime, historical)
+	result.Departures, result.Arrivals, result.AirportOperations, err =
+		sim.TrafficCounts(&args.LaunchConfig, args.StartTime, historical)
 	return err
 }
 

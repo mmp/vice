@@ -368,6 +368,31 @@ func (lc *LaunchConfig) workedInboundRate(overflights bool) float32 {
 	return sum
 }
 
+// WorkedAirportRates breaks WorkedDepartureRate and WorkedArrivalRate out by
+// airport: how much IFR traffic an hour a human controller works at each of
+// the scenario's airports. Overflights belong to no airport and aren't
+// included.
+func (lc *LaunchConfig) WorkedAirportRates() map[string]float32 {
+	rates := make(map[string]float32)
+	for airport, runwayRates := range lc.DepartureRates {
+		for runway, categoryRates := range runwayRates {
+			for category, rate := range categoryRates {
+				if !lc.DepartureIsBackground(airport, runway, category) {
+					rates[airport] += scaleRate(rate, lc.DepartureRateScale)
+				}
+			}
+		}
+	}
+	for flow, flowRates := range lc.InboundFlowRates {
+		for airport, rate := range flowRates {
+			if airport != "overflights" && !lc.InboundFlowIsBackground(flow, airport) {
+				rates[airport] += scaleRate(rate, lc.InboundFlowRateScale)
+			}
+		}
+	}
+	return rates
+}
+
 // DepartureIsBackground and InboundFlowIsBackground report traffic that no human
 // controller works. They read the maps rather than indexing them directly so
 // that a launch config nobody classified--one built without a scenario to walk--

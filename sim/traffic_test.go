@@ -595,7 +595,7 @@ func TestTrafficCountsBinsOperationsByMinute(t *testing.T) {
 		testFlight("DAL5", "KMSP", "KBOS", true, 17, 0), // past the end
 	}
 
-	departures, arrivals, err := TrafficCounts(previewLaunchConfig(), previewStart, flights)
+	departures, arrivals, _, err := TrafficCounts(previewLaunchConfig(), previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -621,7 +621,7 @@ func TestTrafficCountsSkipsDisabledFlows(t *testing.T) {
 
 	noDepartures := previewLaunchConfig()
 	noDepartures.DepartureEnabled["KMSP"]["30L"][""] = false
-	departures, arrivals, err := TrafficCounts(noDepartures, previewStart, flights)
+	departures, arrivals, _, err := TrafficCounts(noDepartures, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -634,7 +634,7 @@ func TestTrafficCountsSkipsDisabledFlows(t *testing.T) {
 
 	noArrivals := previewLaunchConfig()
 	noArrivals.InboundFlowEnabled["TEST"]["KMSP"] = false
-	departures, arrivals, err = TrafficCounts(noArrivals, previewStart, flights)
+	departures, arrivals, _, err = TrafficCounts(noArrivals, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -658,7 +658,7 @@ func TestTrafficCountsHonorsPublishedRateScales(t *testing.T) {
 	pad := int(TrafficCountsPad / time.Minute)
 
 	all := previewLaunchConfig()
-	departures, arrivals, err := TrafficCounts(all, previewStart, flights)
+	departures, arrivals, _, err := TrafficCounts(all, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -674,7 +674,7 @@ func TestTrafficCountsHonorsPublishedRateScales(t *testing.T) {
 
 	none := previewLaunchConfig()
 	none.PublishedDepartureRateScale = 0
-	departures, arrivals, err = TrafficCounts(none, previewStart, flights)
+	departures, arrivals, _, err = TrafficCounts(none, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -687,7 +687,7 @@ func TestTrafficCountsHonorsPublishedRateScales(t *testing.T) {
 
 	fast := previewLaunchConfig()
 	fast.PublishedDepartureRateScale = 2
-	departures, arrivals, err = TrafficCounts(fast, previewStart, flights)
+	departures, arrivals, _, err = TrafficCounts(fast, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -710,7 +710,7 @@ func TestTrafficCountsMergesRepeatedRecords(t *testing.T) {
 		testFlight("DAL1", "KMSP", "KORD", true, 14, 12),
 	}
 
-	departures, _, err := TrafficCounts(previewLaunchConfig(), previewStart, flights)
+	departures, _, _, err := TrafficCounts(previewLaunchConfig(), previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -724,7 +724,7 @@ func TestTrafficCountsMergesRepeatedRecords(t *testing.T) {
 func TestTrafficCountsRejectsScenarioTraffic(t *testing.T) {
 	lc := previewLaunchConfig()
 	lc.TrafficSource = TrafficSourceScenario
-	if _, _, err := TrafficCounts(lc, previewStart, nil); err == nil {
+	if _, _, _, err := TrafficCounts(lc, previewStart, nil); err == nil {
 		t.Error("previewing scenario traffic succeeded, want an error")
 	}
 }
@@ -741,7 +741,7 @@ func TestTrafficCountsSkipsBackgroundTraffic(t *testing.T) {
 	backgroundDepartures.DepartureBackground = map[string]map[av.RunwayID]map[string]bool{
 		"KMSP": {"30L": {"": true}},
 	}
-	departures, arrivals, err := TrafficCounts(backgroundDepartures, previewStart, flights)
+	departures, arrivals, _, err := TrafficCounts(backgroundDepartures, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -754,7 +754,7 @@ func TestTrafficCountsSkipsBackgroundTraffic(t *testing.T) {
 
 	backgroundArrivals := previewLaunchConfig()
 	backgroundArrivals.InboundFlowBackground = map[string]map[string]bool{"TEST": {"KMSP": true}}
-	departures, arrivals, err = TrafficCounts(backgroundArrivals, previewStart, flights)
+	departures, arrivals, _, err = TrafficCounts(backgroundArrivals, previewStart, flights)
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -766,6 +766,36 @@ func TestTrafficCountsSkipsBackgroundTraffic(t *testing.T) {
 	}
 }
 
+// The per-airport totals are the same traffic the minute counts hold, just
+// keyed the other way, so an airport with nothing worked--flows off or flown
+// only for realism--doesn't appear at all.
+func TestTrafficCountsAirportOperations(t *testing.T) {
+	lc := previewLaunchConfig()
+	lc.DepartureRates["KSTP"] = map[av.RunwayID]map[string]float32{"32": {"": 0}}
+	lc.DepartureEnabled["KSTP"] = map[av.RunwayID]map[string]bool{"32": {"": true}}
+	lc.DepartureBackground = map[string]map[av.RunwayID]map[string]bool{
+		"KSTP": {"32": {"": true}},
+	}
+
+	flights := []av.Flight{
+		testFlight("DAL1", "KMSP", "KORD", true, 14, 10),
+		testFlight("DAL2", "KMSP", "KDEN", false, 14, 20),
+		testFlight("DAL3", "KMSP", "KATL", false, 14, 30),
+		testFlight("SCX1", "KSTP", "KMDW", true, 14, 40),
+	}
+
+	departures, arrivals, operations, err := TrafficCounts(lc, previewStart, flights)
+	if err != nil {
+		t.Fatalf("TrafficCounts: %v", err)
+	}
+	if got, want := operations, map[string]int{"KMSP": 3}; !maps.Equal(got, want) {
+		t.Errorf("operations = %v, want %v", got, want)
+	}
+	if got, want := totalCount(departures)+totalCount(arrivals), 3; got != want {
+		t.Errorf("minute counts total %d, want %d to match the operations", got, want)
+	}
+}
+
 // An airport a background flow serves is still the user's if some other flow
 // brings them traffic there.
 func TestTrafficCountsKeepsAirportsWithOneWorkedFlow(t *testing.T) {
@@ -774,7 +804,7 @@ func TestTrafficCountsKeepsAirportsWithOneWorkedFlow(t *testing.T) {
 	lc.InboundFlowEnabled["QUIET"] = map[string]bool{"KMSP": true}
 	lc.InboundFlowBackground = map[string]map[string]bool{"QUIET": {"KMSP": true}}
 
-	_, arrivals, err := TrafficCounts(lc, previewStart,
+	_, arrivals, _, err := TrafficCounts(lc, previewStart,
 		[]av.Flight{testFlight("DAL2", "KMSP", "KDEN", false, 14, 20)})
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)

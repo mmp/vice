@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"maps"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
@@ -160,6 +161,22 @@ func TestWorkedRatesExcludeBackgroundTraffic(t *testing.T) {
 	}
 	if got := lc.WorkedArrivalRate(); got != 60 {
 		t.Errorf("scaled worked arrival rate = %v, want 60", got)
+	}
+}
+
+// WorkedAirportRates splits the worked departure and arrival rates by airport,
+// applying the rate scales and leaving out background traffic, overflights, and
+// with them any airport with nothing worked at all.
+func TestWorkedAirportRates(t *testing.T) {
+	lc := backgroundRateConfig()
+
+	if got, want := lc.WorkedAirportRates(), map[string]float32{"KMSP": 50}; !maps.Equal(got, want) {
+		t.Errorf("WorkedAirportRates = %v, want %v", got, want)
+	}
+
+	lc.DepartureRateScale, lc.InboundFlowRateScale = 2, 2
+	if got, want := lc.WorkedAirportRates(), map[string]float32{"KMSP": 100}; !maps.Equal(got, want) {
+		t.Errorf("scaled WorkedAirportRates = %v, want %v", got, want)
 	}
 }
 
