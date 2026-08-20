@@ -825,10 +825,9 @@ func (c *NewSimConfiguration) computeAvailableWXIntervals(facility string) {
 
 	if len(facilityIntervals) == 0 {
 		// Just use the METAR.
-		c.availableWXIntervals = wx.MergeAndAlignToMidnight(metarIntervals)
+		c.availableWXIntervals = metarIntervals
 	} else {
-		// Intersect METAR intervals with facility intervals and align to midnight
-		c.availableWXIntervals = wx.MergeAndAlignToMidnight(metarIntervals, facilityIntervals)
+		c.availableWXIntervals = util.IntersectIntervals(metarIntervals, facilityIntervals)
 	}
 }
 
@@ -2872,7 +2871,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.TableNextColumn()
 		metar := c.airportMETAR[metarAirports[0]]
 		clock := makeScenarioClock(c.ScenarioSpec)
-		TimePicker(&c.NewSimRequest.StartTime, clock, c.startTimeIntervals(c.ScenarioSpec), metar, ui.fixedFont)
+		TimePicker(&c.NewSimRequest.StartTime, clock, c.validStartDays(c.ScenarioSpec), metar, ui.fixedFont)
 		imgui.SameLine()
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
 			c.updateStartTimeForRunways(c.ScenarioSpec)
@@ -2917,29 +2916,28 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 	}
 }
 
-// startTimeIntervals returns the times a sim may start at. When the scenario is
-// flying historical traffic the weather intervals are narrowed to the stretches
-// the flight data covers, each less a final day so that a sim started near the
-// end of one still has traffic to fly. A stretch with less than that in it is
+// validStartDays returns the local days a sim may start on: whole days on the
+// scenario's clock covered by weather and, for historical traffic, by flight
+// data with at least a day left to fly, so that a sim started near the end of
+// a stretch still has traffic to work. A stretch with less than that in it is
 // no use to anyone and drops out.
-func (c *NewSimConfiguration) startTimeIntervals(spec *server.ScenarioSpec) []util.TimeInterval {
-	if spec == nil || spec.LaunchConfig.TrafficSource != sim.TrafficSourceHistorical {
-		return c.availableWXIntervals
+func (c *NewSimConfiguration) validStartDays(spec *server.ScenarioSpec) []time.Time {
+	if spec == nil {
+		return nil
 	}
 
-	// The times come back from the server in the local zone, so they are put
-	// back in UTC before being compared with anything.
-	flights := util.MapSlice(spec.HistoricalFlightIntervals, func(iv util.TimeInterval) util.TimeInterval {
-		return util.TimeInterval{iv[0].UTC(), iv[1].UTC().Add(-24 * time.Hour)}
-	})
-	flights = util.FilterSliceInPlace(flights, func(iv util.TimeInterval) bool {
-		return iv[0].Before(iv[1])
-	})
+	intervals := c.availableWXIntervals
+	if spec.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
+		flights := util.MapSlice(spec.HistoricalFlightIntervals, func(iv util.TimeInterval) util.TimeInterval {
+			return util.TimeInterval{iv[0], iv[1].Add(-24 * time.Hour)}
+		})
+		flights = util.FilterSliceInPlace(flights, func(iv util.TimeInterval) bool {
+			return iv[0].Before(iv[1])
+		})
+		intervals = util.IntersectIntervals(intervals, flights)
+	}
 
-	wx := util.MapSlice(c.availableWXIntervals, func(iv util.TimeInterval) util.TimeInterval {
-		return util.TimeInterval{iv[0].UTC(), iv[1].UTC()}
-	})
-	return util.IntersectIntervals(wx, flights)
+	return getValidFullDays(intervals, makeScenarioClock(spec))
 }
 
 // Default sim start times are picked between these local hours at the primary
@@ -2961,60 +2959,63 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpe
 	if len(airports) == 0 {
 		return
 	}
-	if apMETAR, ok := c.airportMETAR[airports[0]]; ok && len(apMETAR) > 0 {
-		intervals := c.startTimeIntervals(spec)
-		clock := makeScenarioClock(spec)
+	apMETAR, ok := c.airportMETAR[airports[0]]
+	if !ok || len(apMETAR) == 0 {
+		return
+	}
+	days := c.validStartDays(spec)
+	if len(days) == 0 {
+		return
+	}
+	clock := makeScenarioClock(spec)
 
-		// Sample using the combined weather filter (ground winds + winds
-		// aloft), retrying for a daytime start where the scenario is flown: a
-		// sim inadvertently started in the middle of the night has hardly any
-		// traffic to work. If the weather filter only matches nighttime, the
-		// weather wins and the last sample is kept.
-		var sampledMETAR *wx.METAR
-		var startTime time.Time
-		for range 25 {
-			sampledMETAR = wx.SampleWeatherWithFilter(
-				apMETAR,
-				c.atmosByTime,
-				intervals,
-				&c.weatherFilter,
-				c.windsAloftAltitudes,
-				spec.MagneticVariation)
-			if sampledMETAR == nil {
-				break
-			}
+	// Sample a METAR matching the combined weather filter (ground winds +
+	// winds aloft), preferring the daytime hours of the valid days: a sim
+	// inadvertently started in the middle of the night has hardly any traffic
+	// to work. Each valid day is covered midnight to midnight, so its daytime
+	// slice is covered too. If the weather filter only matches at night, the
+	// weather wins and the whole days are sampled instead.
+	sample := func(windows []util.TimeInterval) *wx.METAR {
+		return wx.SampleWeatherWithFilter(apMETAR, c.atmosByTime, windows, &c.weatherFilter,
+			c.windsAloftAltitudes, spec.MagneticVariation)
+	}
+	var m *wx.METAR
+	var windows []util.TimeInterval
+	if clock.local {
+		windows = dayWindows(days, clock, defaultStartLocalHourMin, defaultStartLocalHourMax)
+		m = sample(windows)
+	}
+	if m == nil {
+		windows = dayWindows(days, clock, 0, 24)
+		m = sample(windows)
+	}
+	if m == nil {
+		c.weatherFilterError = "No weather matching filters found"
+		return
+	}
 
-			// Start at a random time between the sampled METAR and the next one
-			startTime = sampledMETAR.Time.UTC()
-			idx, _ := slices.BinarySearchFunc(apMETAR, sampledMETAR.Time, func(m wx.METAR, t time.Time) int {
-				return m.Time.Compare(t)
-			})
-			if idx+1 < len(apMETAR) {
-				validDuration := apMETAR[idx+1].Time.Sub(sampledMETAR.Time)
-				startTime = startTime.Add(rand.Make().DurationRange(0, validDuration))
-			}
+	// Start at a random time between the sampled METAR and the next one,
+	// staying inside the window the METAR was drawn from.
+	startTime := m.Time.UTC()
+	end := m.Time
+	if i := slices.IndexFunc(windows, func(iv util.TimeInterval) bool { return iv.Contains(m.Time) }); i != -1 {
+		end = windows[i].End()
+	}
+	idx, _ := slices.BinarySearchFunc(apMETAR, m.Time, func(m wx.METAR, t time.Time) int {
+		return m.Time.Compare(t)
+	})
+	if idx+1 < len(apMETAR) && apMETAR[idx+1].Time.Before(end) {
+		end = apMETAR[idx+1].Time
+	}
+	startTime = startTime.Add(rand.Make().DurationRange(0, end.Sub(m.Time)))
 
-			if !clock.local {
-				break
-			}
-			if hour := startTime.In(clock.loc).Hour(); hour >= defaultStartLocalHourMin &&
-				hour < defaultStartLocalHourMax {
-				break
-			}
-		}
+	c.StartTime = startTime
 
-		if sampledMETAR != nil {
-			c.StartTime = startTime
-
-			// Set VFR launch rate to zero if selected weather is IMC;
-			// restore the original value if VMC.
-			if !sampledMETAR.IsVMC() {
-				spec.LaunchConfig.VFRDepartureRateScale = 0
-			} else {
-				spec.LaunchConfig.VFRDepartureRateScale = c.savedVFRDepartureRateScale
-			}
-		} else {
-			c.weatherFilterError = "No weather matching filters found"
-		}
+	// Set VFR launch rate to zero if selected weather is IMC;
+	// restore the original value if VMC.
+	if !m.IsVMC() {
+		spec.LaunchConfig.VFRDepartureRateScale = 0
+	} else {
+		spec.LaunchConfig.VFRDepartureRateScale = c.savedVFRDepartureRateScale
 	}
 }

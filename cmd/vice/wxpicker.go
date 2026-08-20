@@ -81,6 +81,14 @@ func (c airportClock) startOfDay(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, c.loc)
 }
 
+// onDay is the instant with t's time of day on the clock but on the day
+// starting at day. Seconds are dropped, matching the picker's minute
+// granularity.
+func (c airportClock) onDay(t, day time.Time) time.Time {
+	t, day = t.In(c.loc), day.In(c.loc)
+	return time.Date(day.Year(), day.Month(), day.Day(), t.Hour(), t.Minute(), 0, 0, c.loc).UTC()
+}
+
 // getValidFullDays returns a sorted list of days at the airport where the whole
 // day, midnight to midnight on its clock, is covered by intervals. Only those
 // can be started in: any time of day on one of them has weather for it.
@@ -108,6 +116,18 @@ func getValidFullDays(intervals []util.TimeInterval, clock airportClock) []time.
 	}
 
 	return days
+}
+
+// dayWindows returns the [fromHour, toHour) slice of each day on the clock.
+// The hours follow the day's own wall clock, so windows on daylight saving
+// transition days still start and end at the named hours.
+func dayWindows(days []time.Time, clock airportClock, fromHour, toHour int) []util.TimeInterval {
+	return util.MapSlice(days, func(d time.Time) util.TimeInterval {
+		d = d.In(clock.loc)
+		from := time.Date(d.Year(), d.Month(), d.Day(), fromHour, 0, 0, 0, clock.loc)
+		to := time.Date(d.Year(), d.Month(), d.Day(), toHour, 0, 0, 0, clock.loc)
+		return util.TimeInterval{from, to}
+	})
 }
 
 // dayWeatherStatus returns weather status for the day starting at dayStart
@@ -589,7 +609,7 @@ func drawMonthNavigation(date *time.Time, clock airportClock, validDays []time.T
 			return a.Compare(b)
 		})
 		if idx > 0 {
-			*date = validDays[idx-1].UTC()
+			*date = clock.onDay(*date, validDays[idx-1])
 			changed = true
 		}
 	}
@@ -619,7 +639,7 @@ func drawMonthNavigation(date *time.Time, clock airportClock, validDays []time.T
 			return a.Compare(b)
 		})
 		if idx < len(validDays) {
-			*date = validDays[idx].UTC()
+			*date = clock.onDay(*date, validDays[idx])
 			changed = true
 		}
 	}
@@ -686,8 +706,7 @@ func drawCalendarGrid(date *time.Time, clock airportClock, validDays []time.Time
 				dayStart := monthStart.AddDate(0, 0, day-1)
 				if drawCurrentMonthDayButton(dayStart, day == local.Day(), validDays, metars) {
 					// Only the day changes; the time of day stays as it was.
-					*date = time.Date(dayStart.Year(), dayStart.Month(), dayStart.Day(),
-						local.Hour(), local.Minute(), 0, 0, clock.loc).UTC()
+					*date = clock.onDay(*date, dayStart)
 					changed = true
 				}
 				day++
@@ -725,8 +744,8 @@ func drawCalendar(date *time.Time, clock airportClock, validDays []time.Time, me
 	return changed
 }
 
-// validateAndAdjustDate validates the date is within valid days and adjusts if necessary
-// Returns true if the date was changed
+// validateAndAdjustDate moves the date to the nearest valid day, keeping its
+// time of day. Returns true if the date was changed.
 func validateAndAdjustDate(date *time.Time, clock airportClock, validDays []time.Time) bool {
 	if len(validDays) == 0 {
 		return false
@@ -745,17 +764,17 @@ func validateAndAdjustDate(date *time.Time, clock airportClock, validDays []time
 	// Current day is not valid, find the nearest valid day
 	if idx >= len(validDays) {
 		// After all valid days, use the last one
-		*date = validDays[len(validDays)-1].UTC()
+		*date = clock.onDay(*date, validDays[len(validDays)-1])
 	} else if idx == 0 {
 		// Before all valid days, use the first one
-		*date = validDays[0].UTC()
+		*date = clock.onDay(*date, validDays[0])
 	} else {
 		// Between two valid days, pick the closer one
 		prevDay, nextDay := validDays[idx-1], validDays[idx]
 		if dayStart.Sub(prevDay) < nextDay.Sub(dayStart) {
-			*date = prevDay.UTC()
+			*date = clock.onDay(*date, prevDay)
 		} else {
-			*date = nextDay.UTC()
+			*date = clock.onDay(*date, nextDay)
 		}
 	}
 	return true // changed the date
@@ -810,10 +829,8 @@ func drawTimePickerPopup(date *time.Time, clock airportClock, validDays []time.T
 
 // TimePicker displays a calendar widget for time selection and displays
 // the METAR for the selected time.  Returns true if the time was changed.
-func TimePicker(date *time.Time, clock airportClock, intervals []util.TimeInterval, metars []wx.METAR,
+func TimePicker(date *time.Time, clock airportClock, validDays []time.Time, metars []wx.METAR,
 	monospaceFont *renderer.Font) bool {
-	// Compute valid days from intervals
-	validDays := getValidFullDays(intervals, clock)
 	if len(validDays) == 0 {
 		return false
 	}
