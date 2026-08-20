@@ -95,10 +95,7 @@ func (s *Sim) deriveERAMFixPair(nasFp *NASFlightPlan, ac *Aircraft) enroute.Resu
 	// boundary-crossing route/zone partition. Skip route/zone selection
 	// entirely; there is no interfacility handoff.
 	if nasFp.TypeOfFlight == av.FlightTypeDeparture && s.State.Airports[destAirport] != nil {
-		exit := destAirport
-		if len(exit) == 4 { // KCPP -> CPP, matching how EntryFix strips the ICAO prefix
-			exit = exit[1:]
-		}
+		exit := av.TrimICAOPrefix(destAirport) // KCPP -> CPP, matching how EntryFix strips it
 		nasFp.ExitFix = exit
 		nasFp.CoordinationFix = exit
 		// The exit fix is a local-arrival airport; the caller reclassifies the
@@ -113,6 +110,10 @@ func (s *Sim) deriveERAMFixPair(nasFp *NASFlightPlan, ac *Aircraft) enroute.Resu
 	if !res.OK {
 		return res
 	}
+	// Coordination rules name a fix in full, while a flight plan carries
+	// 3-character fix ids; store the id so the fix pairs, adapted fix criteria,
+	// and airspace awareness rules that match against it can.
+	res.Fix = s.State.FacilityAdaptation.FixPairFixID(res.Fix)
 	switch nasFp.TypeOfFlight {
 	case av.FlightTypeArrival, av.FlightTypeOverflight:
 		nasFp.EntryFix = res.Fix

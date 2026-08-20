@@ -1020,6 +1020,50 @@ func resolveERAMCoordination(sg *scenarioGroup, configs map[string]*sim.Facility
 	}
 }
 
+// validateCoordinationFixes checks that each coordination fix the host's
+// arts_coordination can hand this facility is one the facility can match.
+// Flight plans carry 3-character fix ids, so a fix that is neither an adapted
+// significant point nor an airport here is derived and then silently matched by
+// nothing: not fix pairs, not adapted fix criteria, not airspace awareness.
+func validateCoordinationFixes(ec *enroute.Coordination, fa *sim.FacilityAdaptation, facility string,
+	e *util.ErrorLogger) {
+	if ec == nil || ec.Coord == nil {
+		return
+	}
+	e.Push(facility)
+	defer e.Pop()
+	e.Push(fmt.Sprintf("arts_coordination[%s]", ec.ComputerID))
+	defer e.Pop()
+
+	checkFix := func(fix string) {
+		if fix != "" && !fa.ResolveEndpoint(fa.FixPairFixID(fix)) {
+			e.ErrorString("%s : fix is neither an adapted significant point nor an airport at this facility",
+				fix)
+		}
+	}
+	checkFixes := func(fixes []enroute.CoordFix, defaultFix string) {
+		for _, cf := range fixes {
+			checkFix(cf.Fix)
+		}
+		checkFix(defaultFix)
+	}
+
+	for i, r := range ec.Coord.RouteBased {
+		e.Push(fmt.Sprintf("route_based[%d]", i))
+		checkFixes(r.Fixes, r.DefaultFix)
+		e.Pop()
+	}
+	for i, za := range ec.Coord.ZoneBased {
+		e.Push(fmt.Sprintf("zone_based[%d]", i))
+		for _, bucket := range [][]enroute.ZoneEntry{za.Arrival, za.Departure, za.Overflight} {
+			for _, ze := range bucket {
+				checkFixes(ze.Fixes, ze.DefaultFix)
+			}
+		}
+		e.Pop()
+	}
+}
+
 func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*ScenarioCatalog,
 	mapSpec *av.MapLibrarySpec, mapSpecs map[string]*av.MapLibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
@@ -2655,6 +2699,9 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	// Phase 2: Attach validated configs to scenario groups and load
 	// neighbor controllers. No further config validation is done here.
+	// Every scenario group for a facility resolves the same coordination
+	// against the same adaptation, so its fixes are checked once.
+	coordinationChecked := make(map[string]bool)
 	for _, tracon := range scenarioGroups {
 		for name, sg := range tracon {
 			fc := loadFacilityConfig(resourcesFS, facilityConfigPath(sg), e)
@@ -2665,6 +2712,11 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 			sg.FacilityConfig = *deep.MustCopy(fc)
 			sg.ERAMCoordination = resolveERAMCoordination(sg, facilityConfigs)
+			if path := facilityConfigPath(sg); !coordinationChecked[path] {
+				coordinationChecked[path] = true
+				validateCoordinationFixes(sg.ERAMCoordination, &sg.FacilityConfig.FacilityAdaptation,
+					sg.facility(), e)
+			}
 
 			// Add missing airports referenced by altimeters and coordination
 			// lists from sibling scenario groups. The facility config is
@@ -2802,6 +2854,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				strings.Join(util.SortedMapKeys(mapSpecs), ", "))
 		} else {
 			extraScenario.ERAMCoordination = resolveERAMCoordination(extraScenario, facilityConfigs)
+			validateCoordinationFixes(extraScenario.ERAMCoordination, fa, extraScenario.facility(), &extraE)
 			extraScenario.PostDeserialize(&extraE, localCatalogs, mapSpec, mapSpecs)
 		}
 

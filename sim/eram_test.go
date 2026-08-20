@@ -48,6 +48,63 @@ func TestDeriveERAMFixPairFullyContained(t *testing.T) {
 	}
 }
 
+// TestDeriveERAMFixPairNormalizesFix verifies that a coordination fix an
+// arts_coordination rule names in full is stored on the flight plan as the
+// 3-character id flight plans carry, so that the fix pairs, adapted fix
+// criteria, and airspace awareness rules matching against it can.
+func TestDeriveERAMFixPairNormalizesFix(t *testing.T) {
+	coordSim := func(points map[string]SignificantPoint, fix string) *Sim {
+		return &Sim{
+			State: &CommonState{
+				ERAMCoordination: &enroute.Coordination{
+					Coord: &enroute.ArtsCoordEntry{
+						RouteBased: []enroute.RouteRule{{Type: "string", ID: fix, DefaultFix: fix}},
+					},
+				},
+				Airports:           map[string]*av.Airport{},
+				FacilityAdaptation: FacilityAdaptation{SignificantPoints: points},
+			},
+		}
+	}
+
+	for _, tc := range []struct {
+		name   string
+		points map[string]SignificantPoint
+		fix    string
+		want   string
+	}{
+		{"adapted short name", map[string]SignificantPoint{"BOSOX": {ShortName: "BOX"}}, "BOSOX", "BOX"},
+		{"short name defaults to the first three characters",
+			map[string]SignificantPoint{"ROBUCC": {}}, "ROBUCC", "ROB"},
+		{"unadapted fix is left alone", nil, "ROBUCC", "ROBUCC"},
+		{"already a 3-character id", map[string]SignificantPoint{"PVD": {}}, "PVD", "PVD"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := coordSim(tc.points, tc.fix)
+
+			ac := &Aircraft{TypeOfFlight: av.FlightTypeDeparture,
+				FlightPlan: av.FlightPlan{DepartureAirport: "KBOS", ArrivalAirport: "KORD"}}
+			fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, Route: tc.fix}
+			if res := s.deriveERAMFixPair(fp, ac); !res.OK || res.Fix != tc.want {
+				t.Errorf("departure: got fix=%q ok=%v, want %q/true", res.Fix, res.OK, tc.want)
+			}
+			if fp.ExitFix != tc.want {
+				t.Errorf("departure ExitFix = %q, want %q", fp.ExitFix, tc.want)
+			}
+
+			// An arrival's coordination fix lands on the entry side and is
+			// normalized the same way.
+			arrAc := &Aircraft{TypeOfFlight: av.FlightTypeArrival,
+				FlightPlan: av.FlightPlan{DepartureAirport: "KORD", ArrivalAirport: "KBOS"}}
+			arrFp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, Route: tc.fix}
+			s.deriveERAMFixPair(arrFp, arrAc)
+			if arrFp.EntryFix != tc.want {
+				t.Errorf("arrival EntryFix = %q, want %q", arrFp.EntryFix, tc.want)
+			}
+		})
+	}
+}
+
 // TestAssignedLevelForCoord verifies that ARTS coordination's "Assigned"
 // altitude compares against the flight's actual operational level rather than
 // always falling back to filed cruise, per fixPairLevel, when
