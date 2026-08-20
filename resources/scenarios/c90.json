@@ -7413,14 +7413,14 @@
           },
           "assigned_altitude": 10000,
           "cruise_altitude": 35000,
-          "expect_approach": "I8C",
+          "expect_approach": "I7C",
           "initial_altitude": 11000,
           "initial_controller": "1X",
           "initial_speed": 250,
           "speed_restriction": 210,
           "star": "BENKY6",
           "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "WYNDE3"],
-          "scratchpad": "28C",
+          "scratchpad": "27C",
           "waypoints": "AHSTN PETAH/ho JORJO MONKZ TONIE/h093"
         }
       ]
@@ -8155,7 +8155,7 @@
           "star": "ERNNY8",
           "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
           "scratchpad": "27C",
-          "waypoints": "WYNDE FIYER/ho ERNNY PAPPI/h140"
+          "waypoints": "PAITN WYNDE/ho FIYER ERNNY PAPPI/h120"
         }
       ]
     },
@@ -8360,14 +8360,14 @@
           },
           "assigned_altitude": 6000,
           "cruise_altitude": 32000,
-          "expect_approach": "I7C",
+          "expect_approach": "I8C",
           "initial_altitude": 11000,
           "initial_controller": "1J",
           "initial_speed": 250,
           "speed_restriction": 250,
           "star": "ERNNY8",
           "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
-          "scratchpad": "27C",
+          "scratchpad": "28C",
           "waypoints": "WYNDE FIYER/h170/ho"
         }
       ]
