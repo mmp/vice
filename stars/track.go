@@ -457,6 +457,13 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 			continue
 		}
 
+		// Background traffic that virtual controllers are working can't be
+		// maneuvered, so alerting on it is only a distraction.
+		if trk.VirtuallyControlled {
+			state.MSAW = false
+			continue
+		}
+
 		pilotAlt := trk.FlightPlan.PilotReportedAltitude
 		if (trk.FlightPlan.InhibitModeCAltitudeDisplay || trk.Mode != av.TransponderModeAltitude) && pilotAlt == 0 {
 			// We can use pilot reported for low altitude alerts: 5-167.
