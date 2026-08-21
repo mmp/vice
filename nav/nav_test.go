@@ -553,6 +553,14 @@ func (f *FlightTest) AssignSpeed(spd float32) {
 	f.nav.AssignSpeed(&sr, false)
 }
 
+// AssignSpeedAfterAltitude issues "then reduce speed to spd", to be complied
+// with after reaching the assigned altitude.
+func (f *FlightTest) AssignSpeedAfterAltitude(spd float32) {
+	f.t.Helper()
+	sr := av.MakeAtSpeedRestriction(spd)
+	f.nav.AssignSpeed(&sr, true)
+}
+
 func (f *FlightTest) ExpectApproach(id string) {
 	f.t.Helper()
 	airport := f.makeAirport()

@@ -68,7 +68,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (av.Comm
 
 	// If there's an exact speed change in progress (>=20kt remaining or any Mach change),
 	// defer the speed assignment until after the altitude change completes.
-	if sr := nav.Speed.Assigned; sr != nil {
+	if sr := nav.Speed.Assigned; sr != nil && direction != av.AltitudeMaintain {
 		if spd, exact := sr.ExactValue(); exact &&
 			(sr.IsMach || math.Abs(spd-nav.FlightState.IAS) >= 20) {
 			srCopy := *sr

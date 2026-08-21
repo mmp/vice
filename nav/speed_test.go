@@ -327,3 +327,114 @@ func TestAfterFixDescendAltitude(t *testing.T) {
 
 	f.Run()
 }
+
+// TestDeferredSpeedHoldsCurrentSpeed verifies that a speed reduction
+// deferred by a subsequent altitude assignment ("reduce speed to 180",
+// then "descend and maintain 6,000") is flown by holding the current speed
+// during the descent rather than accelerating back to the default speed
+// profile.
+func TestDeferredSpeedHoldsCurrentSpeed(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/star DETGY/star HAUPT/star LEFER/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  8000,
+		InitialSpeed:     250,
+		OnSTAR:           true,
+	})
+
+	var deferredIAS float32
+	f.AfterTicks(5, func(f *FlightTest) {
+		f.AssignSpeed(180)
+	})
+	f.AfterTicks(25, func(f *FlightTest) {
+		// Still more than 20kts from 180, so the reduction is deferred.
+		f.AssignAltitude(6000)
+		if f.nav.Speed.AfterAltitude == nil {
+			t.Fatalf("speed assignment was not deferred by the descent")
+		}
+		deferredIAS = f.nav.FlightState.IAS
+	})
+
+	f.BeforeFix("DETGY", func(f *FlightTest) {
+		if deferredIAS > 0 {
+			f.AssertSpeedBelow(deferredIAS + 1)
+		}
+	})
+
+	// Once level at 6,000, the deferred reduction takes effect.
+	f.AfterTicks(300, func(f *FlightTest) {
+		f.AssertAltitudeNear(6000, 50)
+		f.AssertSpeedNear(180, 5)
+	})
+
+	f.Run()
+}
+
+// TestThenSpeedHoldsCurrentSpeed verifies the same for an explicitly
+// deferred assignment: "descend and maintain 6,000, then reduce speed to
+// 180".
+func TestThenSpeedHoldsCurrentSpeed(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/star DETGY/star HAUPT/star LEFER/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  8000,
+		InitialSpeed:     210,
+		OnSTAR:           true,
+	})
+
+	var deferredIAS float32
+	f.AfterTicks(5, func(f *FlightTest) {
+		f.AssignAltitude(6000)
+		f.AssignSpeedAfterAltitude(180)
+		deferredIAS = f.nav.FlightState.IAS
+	})
+
+	f.BeforeFix("DETGY", func(f *FlightTest) {
+		if deferredIAS > 0 {
+			f.AssertSpeedBelow(deferredIAS + 1)
+		}
+	})
+
+	f.AfterTicks(300, func(f *FlightTest) {
+		f.AssertAltitudeNear(6000, 50)
+		f.AssertSpeedNear(180, 5)
+	})
+
+	f.Run()
+}
+
+// TestSpeedNotDeferredWhenLevel verifies that restating the altitude an
+// aircraft is already level at does not defer an in-progress speed
+// reduction; there is no level off to defer it to, so it would never take
+// effect.
+func TestSpeedNotDeferredWhenLevel(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/star DETGY/star HAUPT/star LEFER/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  8000,
+		InitialSpeed:     250,
+		OnSTAR:           true,
+	})
+
+	f.AfterTicks(5, func(f *FlightTest) {
+		f.AssignSpeed(180)
+	})
+	f.AfterTicks(25, func(f *FlightTest) {
+		f.AssignAltitude(8000)
+		if f.nav.Speed.AfterAltitude != nil {
+			t.Errorf("speed assignment deferred to the current altitude")
+		}
+	})
+
+	f.AfterTicks(150, func(f *FlightTest) {
+		f.AssertSpeedNear(180, 5)
+	})
+
+	f.Run()
+}

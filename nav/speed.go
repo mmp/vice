@@ -100,7 +100,24 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bo
 		return 0, false
 	}
 }
+
+// TargetSpeed returns the IAS the aircraft is currently trying to fly and
+// the rate at which it should get there.
 func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *av.AirspaceGrid) (float32, float32) {
+	spd, rate := nav.selectTargetSpeed(targetAltitude, fp, wxs, arrivalMETAR, bravo)
+
+	// A speed assignment deferred until an altitude is reached ("descend
+	// and maintain 6,000, then reduce speed to 180") is flown by holding
+	// the current speed until level off. Anything that slows the aircraft
+	// still applies, but it must not accelerate in the meantime.
+	if nav.Speed.AfterAltitude != nil {
+		spd = min(spd, nav.FlightState.IAS)
+	}
+
+	return spd, rate
+}
+
+func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *av.AirspaceGrid) (float32, float32) {
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
 			return spd, rate
