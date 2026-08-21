@@ -1,0 +1,648 @@
+{
+  "artcc": "ZTL",
+  "area": "ZTL Area 2",
+  "name": "ZTL Unarm 31",
+  "airports": {
+    "KCLT": {
+      "approaches": {
+        "I8L": {
+          "cifp_id": "I18L"
+        },
+        "I9L": {
+          "cifp_id": "I19L"
+        },
+        "I9R": {
+          "cifp_id": "I19R"
+        },
+        "I1L": {
+          "cifp_id": "I1L"
+        },
+        "I1R": {
+          "cifp_id": "I1R"
+        },
+        "I6R": {
+          "cifp_id": "I36R"
+        }
+      },
+      "departure_controller": "C1W",
+      "departure_routes": {
+        "18L": {
+          "ESTRR": {
+            "cleared_altitude": 16000,
+            "sid": "ESTRR7",
+            "waypoints": "GINNN/ho ESTRR",
+            "handoff_controller": "31"
+          },
+          "BOBZY": {
+            "cleared_altitude": 16000,
+            "sid": "BOBZY7",
+            "waypoints": "LACHN/ho YNGUN BOBZY",
+            "handoff_controller": "31"
+          }
+        },
+        "1L": {
+          "ESTRR": {
+            "cleared_altitude": 16000,
+            "sid": "ESTRR7",
+            "waypoints": "GINNN/ho ESTRR",
+            "handoff_controller": "31"
+          },
+          "BOBZY": {
+            "cleared_altitude": 16000,
+            "sid": "BOBZY7",
+            "waypoints": "LACHN/ho YNGUN BOBZY",
+            "handoff_controller": "31"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "UAL"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000
+          ],
+          "destination": "KIAH",
+          "exit": "ESTRR",
+          "route": "ESTRR IPTAY CHOPZ THRSR SARKK AEX DOOBI3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000
+          ],
+          "destination": "KHOU",
+          "exit": "ESTRR",
+          "route": "ESTRR IPTAY CHOPZ TWOUP Q22 CATLN Q56 SJI"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            32000,
+            34000
+          ],
+          "destination": "KDFW",
+          "exit": "ESTRR",
+          "route": "ESTRR IPTAY CHOPZ"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": [
+            22000,
+            24000
+          ],
+          "destination": "KATL",
+          "exit": "BOBZY",
+          "route": "BOBZY TNSLY LEAVI OZZZI2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": [
+            32000,
+            34000
+          ],
+          "destination": "KSLC",
+          "exit": "BOBZY",
+          "route": "BOBZY TNSLY"
+        }
+      ]
+    },
+    "KGSP": {
+      "approaches": {
+        "I22": {
+          "cifp_id": "I22"
+        }
+      },
+      "departure_controller": "S1W",
+      "departure_routes": {
+        "22": {
+          "DRIVN,ACERB": {
+            "assigned_altitude": 10000,
+            "sid": "BIMMR3",
+            "is_rnav": true,
+            "waypoints": "ZNTRM ZZCAR/s250/ho",
+            "handoff_controller": "31"
+          },
+          "JLENA": {
+            "assigned_altitude": 10000,
+            "sid": "BWALL2",
+            "is_rnav": true,
+            "waypoints": "HALJO ALYSA/ho",
+            "handoff_controller": "31"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000
+          ],
+          "destination": "KDCA",
+          "exit": "DRIVN",
+          "route": "DRIVN JOOLI Q56 KIWII WAVES"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000
+          ],
+          "destination": "KLGA",
+          "exit": "DRIVN",
+          "route": "DRIVN EVING Q60 HURTS HUBBS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UPS"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": [
+            32000,
+            34000
+          ],
+          "destination": "KSDF",
+          "exit": "JLENA",
+          "route": "JLENA LAFOX"
+        }
+      ]
+    }
+  },
+  "default_scenario": "ZTL 31 Unarm Low - CLT South",
+  "magnetic_adjustment": -7.0,
+  "scenarios": {
+    "ZTL 31 Unarm Low - CLT South": {
+      "configuration": "L31",
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KCLT",
+          "rate": 8,
+          "runway": "18L"
+        },
+        {
+          "airport": "KGSP",
+          "rate": 4,
+          "runway": "22"
+        }
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "18L"
+        },
+        {
+          "airport": "KCLT",
+          "runway": "19L"
+        },
+        {
+          "airport": "KCLT",
+          "runway": "19R"
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22"
+        }
+      ],
+      "inbound_rates": {
+        "MCHLN2_UNARM31": {
+          "KGSP": 2
+        },
+        "CAE_UNARM31": {
+          "overflights": 2
+        },
+        "AGS_UNARM31": {
+          "overflights": 1
+        },
+        "HKY_SVH_CLT_UNARM31": {
+          "overflights": 1
+        },
+        "HKY_SVH_SHINE_UNARM31": {
+          "overflights": 1
+        },
+        "BANKR7": {
+          "KCLT": 7
+        },
+        "JONZE7": {
+          "KCLT": 9
+        }
+      }
+    },
+    "ZTL 31 Unarm Low - CLT North": {
+      "configuration": "L31",
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KCLT",
+          "rate": 8,
+          "runway": "1L"
+        },
+        {
+          "airport": "KGSP",
+          "rate": 4,
+          "runway": "22"
+        }
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "1L"
+        },
+        {
+          "airport": "KCLT",
+          "runway": "1R"
+        },
+        {
+          "airport": "KCLT",
+          "runway": "36R"
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22"
+        }
+      ],
+      "inbound_rates": {
+        "MCHLN2_UNARM31": {
+          "KGSP": 2
+        },
+        "CAE_UNARM31": {
+          "overflights": 2
+        },
+        "AGS_UNARM31": {
+          "overflights": 1
+        },
+        "HKY_SVH_CLT_UNARM31": {
+          "overflights": 1
+        },
+        "HKY_SVH_SHINE_UNARM31": {
+          "overflights": 1
+        },
+        "BANKR7": {
+          "KCLT": 7
+        },
+        "JONZE7": {
+          "KCLT": 9
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "MCHLN2_UNARM31": {
+      "arrivals": [
+        {
+          "waypoints": "PROVN/ho MCHLN/a11000 TYRES/d40 KGSP/delete",
+          "cruise_altitude": [
+            17000,
+            19000,
+            21000
+          ],
+          "star": "MCHLN2",
+          "route": "/. MCHLN2",
+          "initial_controller": "24",
+          "initial_altitude": 17000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "is_rnav": true,
+          "airlines": {
+            "KGSP": [
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KAGS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CAE_UNARM31": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KCAE",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KDFW",
+              "arrival_airport": "KCAE",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KCAE",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KBNA",
+              "arrival_airport": "KCAE",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KIND",
+              "arrival_airport": "KCUB",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "initial_altitude": 23000,
+          "assigned_altitude": 17000,
+          "initial_controller": "32",
+          "initial_speed": 280,
+          "waypoints": "SPA/ho UNARM CAE/d50 _CAE_OUT/delete"
+        }
+      ]
+    },
+    "AGS_UNARM31": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KAGS",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KDFW",
+              "arrival_airport": "KAGS",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KAGS",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KBNA",
+              "arrival_airport": "KAGS",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "initial_altitude": 25000,
+          "assigned_altitude": 23000,
+          "initial_controller": "32",
+          "initial_speed": 270,
+          "waypoints": "SPA/ho IRQ/a11000/d50 KAGS _AGS_OUT/delete"
+        }
+      ]
+    },
+    "HKY_SVH_CLT_UNARM31": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KHKY",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KAGS",
+              "arrival_airport": "KHKY",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KSVH",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KCAE",
+              "arrival_airport": "KSVH",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "initial_altitude": 23000,
+          "assigned_altitude": 23000,
+          "initial_controller": "32",
+          "initial_speed": 240,
+          "waypoints": "SPA/ho UNARM CLT/a17000/d60 KHKY _HKY_OUT/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KSVH",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KAGS",
+              "arrival_airport": "KSVH",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "initial_altitude": 23000,
+          "assigned_altitude": 23000,
+          "initial_controller": "32",
+          "initial_speed": 230,
+          "waypoints": "SPA/ho UNARM CLT/a17000/d50 KSVH _SVH_OUT/delete"
+        }
+      ]
+    },
+    "HKY_SVH_SHINE_UNARM31": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KHKY",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KSVH",
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "initial_altitude": 23000,
+          "assigned_altitude": 23000,
+          "initial_controller": "32",
+          "initial_speed": 230,
+          "waypoints": "SPA/ho GENOD/a11000/d60 KHKY _HKY_OUT/delete"
+        }
+      ]
+    },
+    "BANKR7": {
+      "arrivals": [
+        {
+          "cruise_altitude": 29000,
+          "star": "BANKR7",
+          "route": "/. BANKR7",
+          "initial_controller": "32",
+          "initial_altitude": 24000,
+          "initial_speed": 270,
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KHOU"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KHOU"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KSAT"
+              }
+            ]
+          },
+          "is_rnav": true,
+          "cleared_altitude": 7000,
+          "waypoints": "CRDET/ho BANKR/a13000-22000 DEBBT/a12000-21000/s250",
+          "runway_waypoints": {
+            "KCLT": {
+              "18L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d50 _CLT_OUT/delete",
+              "19L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d50 _CLT_OUT/delete",
+              "19R": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d50 _CLT_OUT/delete",
+              "1L": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d50 _CLT_BANKR_N_OUT/delete",
+              "1R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d50 _CLT_BANKR_N_OUT/delete",
+              "36R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d50 _CLT_BANKR_N_OUT/delete"
+            }
+          }
+        }
+      ]
+    },
+    "JONZE7": {
+      "arrivals": [
+        {
+          "cruise_altitude": 29000,
+          "star": "JONZE7",
+          "route": "/. JONZE7",
+          "initial_controller": "32",
+          "initial_altitude": 24000,
+          "initial_speed": 270,
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMSY"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KLAX"
+              }
+            ]
+          },
+          "is_rnav": true,
+          "cleared_altitude": 7000,
+          "waypoints": "CAAKE/ho JONZE/a11000-21000/s250",
+          "runway_waypoints": {
+            "KCLT": {
+              "18L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d50 _CLT_OUT/delete",
+              "19L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d50 _CLT_OUT/delete",
+              "19R": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d50 _CLT_OUT/delete",
+              "1L": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d40 _CLT_JONZE_N_OUT/delete",
+              "1R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d40 _CLT_JONZE_N_OUT/delete",
+              "36R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d40 _CLT_JONZE_N_OUT/delete"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "fixes": {
+    "_CLT_OUT": "JRDEN@003/25",
+    "_CAE_OUT": "CAE@140/15",
+    "_AGS_OUT": "KAGS@150/12",
+    "_HKY_OUT": "KHKY@310/10",
+    "_SVH_OUT": "KSVH@330/10",
+    "_CLT_BANKR_N_OUT": "BLNCE@090/25",
+    "_CLT_JONZE_N_OUT": "CHELE@090/25"
+  }
+}
