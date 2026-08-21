@@ -2125,7 +2125,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 	playMSAWSound := !ps.DisableMSAW && func() bool {
 		for _, trk := range sp.visibleTracks {
 			if trk.IsUnassociated() || trk.FlightPlan.DisableMSAW {
-				return false
+				continue
 			}
 			state := sp.TrackState[trk.ADSBCallsign]
 			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW &&
