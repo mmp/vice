@@ -612,11 +612,19 @@
         },
         "default_consolidation": {
           "2A": []
+        },
+
+        "scratchpad_leader_line_directions": {
+          "I2L": "SE"
         }
       },
       "N2J": {
+        "inbound_assignments": {
+          "CAMRN5.Background31": "2G"
+        },
         "departure_assignments": {
-          "KJFK": "2J"
+          "KJFK": "2J",
+          "KISP": "3H"
         },
         "default_consolidation": {
           "2J": []
@@ -803,6 +811,9 @@
       },
       "BETTE": {},
       "BIGGY": {},
+      "BOPLY": {
+        "short_name": "T43"
+      },
       "BREZY": {},
       "BRISS": {},
       "BWZ": {},
@@ -819,7 +830,7 @@
       "GAYEL": {},
       "GREKI": {},
       "HAAYS": {
-        "short_name": "HAY"
+        "short_name": "HAA"
       },
       "HAPIE": {},
       "HFD": {},
@@ -1760,7 +1771,7 @@
         "intervals": [2, 1.5, 2, 1.5]
       },
       "fdb": {
-        "display_requested_altitude": true
+        "display_requested_altitude": false
       },
       "pdb": {
         "hide_gs": true
@@ -1791,6 +1802,7 @@
           "yellow_entries": true
         }
       ],
+
       "ssa": {
         "altimeters": ["KJFK", "KLGA", "KEWR", "KTEB", "KISP", "KHPN"],
         "system_altimeter": "KEWR"

@@ -13873,7 +13873,7 @@
       "icao": "ptr",
       "name": "Porter Airlines",
       "callsign": {
-        "name": "Porter Air",
+        "name": "Dash Port",
         "callsignFormats": ["####"]
       },
       "fleets": {
