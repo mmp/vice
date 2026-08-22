@@ -1396,27 +1396,58 @@ func (FrequencySnippetFormatter) Written(arg any) string {
 }
 
 func (FrequencySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	f := arg.(Frequency)
+	f := int(arg.(Frequency))
 	whole := (f / 1000) % 100
 	frac := (f % 1000) / 10 // Two digits after decimal
 
-	switch r.Intn(3) {
+	switch r.Intn(4) {
 	case 0:
 		// Two digit pairs: "twenty-three forty-five" or "twenty-eight twenty"
-		return fmt.Sprintf("%d %d", whole, frac)
+		return fmt.Sprintf("%d %s", whole, sayFrequencyPair(frac))
 	case 1:
 		// With "one" prefix: "one twenty-three point forty-five" or "one twenty-eight point two"
-		if frac%10 == 0 {
-			return fmt.Sprintf("one %d point %d", whole, frac/10)
-		}
-		return fmt.Sprintf("one %d point %d", whole, frac)
-	default:
+		return fmt.Sprintf("one %d point %s", whole, sayFrequencyPoint(frac))
+	case 2:
 		// Without "one": "twenty-three point forty-five" or "twenty-eight point two"
-		if frac%10 == 0 {
-			return fmt.Sprintf("%d point %d", whole, frac/10)
-		}
-		return fmt.Sprintf("%d point %d", whole, frac)
+		return fmt.Sprintf("%d point %s", whole, sayFrequencyPoint(frac))
+	default:
+		// Digit by digit: "one two three point four five"
+		return sayDigits(f/1000, 3) + " point " + sayFrequencyDigits(frac)
 	}
+}
+
+// The following return the spoken form of the two digits after a frequency's
+// decimal point, given frac in [0,99]; each of the forms used above says them
+// differently. Note that all of them must handle frac < 10, where the leading
+// zero is significant: 127.05 is "point zero five", not "point five".
+
+// sayFrequencyPair returns the digits as the second half of a digit pair:
+// "twenty-three forty-five", "twenty-three zero five".
+func sayFrequencyPair(frac int) string {
+	if frac == 0 {
+		return "zero"
+	} else if frac < 10 {
+		return "zero " + sayDigit(frac)
+	}
+	return strconv.Itoa(frac)
+}
+
+// sayFrequencyPoint returns the digits as a number following "point", where a
+// lone trailing zero is dropped: "point forty-five", "point niner".
+func sayFrequencyPoint(frac int) string {
+	if frac >= 10 && frac%10 == 0 {
+		return strconv.Itoa(frac / 10)
+	}
+	return sayFrequencyPair(frac)
+}
+
+// sayFrequencyDigits returns the digits individually, as in the digit by digit
+// form: "point four five", "point zero five", "point niner".
+func sayFrequencyDigits(frac int) string {
+	if frac%10 == 0 {
+		return sayDigit(frac / 10)
+	}
+	return sayDigits(frac, 2)
 }
 
 func (FrequencySnippetFormatter) Validate(arg any) error {

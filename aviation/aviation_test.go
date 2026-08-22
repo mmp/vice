@@ -30,6 +30,40 @@ func TestFrequencyFormat(t *testing.T) {
 	}
 }
 
+func TestFrequencySpoken(t *testing.T) {
+	// Each frequency should give exactly these spoken forms, in particular
+	// keeping the leading zero of fractions below .10.
+	for _, fs := range []struct {
+		f       Frequency
+		spokens []string
+	}{
+		{f: Frequency(127050), spokens: []string{"27 zero five", "one 27 point zero five",
+			"27 point zero five", "one two seven point zero five"}},
+		{f: Frequency(118075), spokens: []string{"18 zero seven", "one 18 point zero seven",
+			"18 point zero seven", "one one eight point zero seven"}},
+		{f: Frequency(121900), spokens: []string{"21 90", "one 21 point 9", "21 point 9",
+			"one two one point niner"}},
+		{f: Frequency(133450), spokens: []string{"33 45", "one 33 point 45", "33 point 45",
+			"one three three point four five"}},
+		{f: Frequency(128000), spokens: []string{"28 zero", "one 28 point zero", "28 point zero",
+			"one two eight point zero"}},
+	} {
+		r := rand.Make()
+		var got []string
+		for seed := range 100 {
+			r.Seed(uint64(seed))
+			if s := (FrequencySnippetFormatter{}).Spoken(r, fs.f); !slices.Contains(got, s) {
+				got = append(got, s)
+			}
+		}
+		slices.Sort(got)
+		want := slices.Sorted(slices.Values(fs.spokens))
+		if !slices.Equal(got, want) {
+			t.Errorf("Frequency %s spoken forms %q; expected %q", fs.f, got, want)
+		}
+	}
+}
+
 func TestParseSquawk(t *testing.T) {
 	for _, squawk := range []string{"", "1", "11111", "7778", "0801", "9000"} {
 		if _, err := ParseSquawk(squawk); err == nil {
