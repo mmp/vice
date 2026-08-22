@@ -1899,42 +1899,42 @@
     "airspace_awareness": [
       {
         "fixes": ["CNERY", "CLEEE", "DOTSS", "CAHIL", "BEALE"],
-        "altitude_range": [13000, 23000],
+        "altitude_range": [13000, 999999],
         "receiving_controller": "C21"
       },
       {
         "fixes": ["SCTRR", "STOKD", "MCKEY", "HHERO", "RIZIN", "DARRK", "IKAYE", "DINTY", "FICKY"],
-        "altitude_range": [13000, 23000],
+        "altitude_range": [13000, 999999],
         "receiving_controller": "C14"
       },
       {
         "fixes": ["OROSZ", "EHF", "COREZ", "CSTRO"],
-        "altitude_range": [13000, 23000],
+        "altitude_range": [13000, 999999],
         "receiving_controller": "C15"
       },
       {
         "fixes": ["LAS", "MISEN"],
-        "altitude_range": [13000, 23000],
+        "altitude_range": [13000, 999999],
         "receiving_controller": "C18"
       },
       {
         "fixes": ["TNP", "BLH"],
-        "altitude_range": [13000, 23000],
+        "altitude_range": [13000, 999999],
         "receiving_controller": "C10"
       },
       {
         "fixes": ["AVRRY", "MTBAL", "OTAYY", "DINTY", "MALIT", "SXC"],
-        "altitude_range": [13000, 23000],
+        "altitude_range": [13000, 999999],
         "receiving_controller": "C12"
       },
       {
         "fixes": ["EHF", "COREZ", "LAS", "MISEN", "GMN", "POM"],
-        "altitude_range": [13000, 23000],
+        "altitude_range": [13000, 999999],
         "receiving_controller": "C18"
       },
       {
         "fixes": ["PMD"],
-        "altitude_range": [13000, 23000],
+        "altitude_range": [13000, 999999],
         "receiving_controller": "C19"
       }
     ],
@@ -2259,22 +2259,22 @@
         "airspace_awareness": [
           {
             "fixes": ["TNP", "BLH"],
-            "altitude_range": [15000, 23000],
+            "altitude_range": [15000, 999999],
             "receiving_controller": "C10"
           },
           {
             "fixes": ["AVRRY", "MTBAL", "OTAYY", "DINTY", "MALIT", "SXC"],
-            "altitude_range": [14000, 23000],
+            "altitude_range": [14000, 999999],
             "receiving_controller": "C12"
           },
           {
             "fixes": ["EHF", "COREZ", "LAS", "MISEN", "GMN", "POM"],
-            "altitude_range": [14000, 23000],
+            "altitude_range": [14000, 999999],
             "receiving_controller": "C18"
           },
           {
             "fixes": ["PMD"],
-            "altitude_range": [15000, 23000],
+            "altitude_range": [15000, 999999],
             "receiving_controller": "C19"
           }
         ],

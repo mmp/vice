@@ -268,17 +268,17 @@
     "airspace_awareness": [
       {
         "fixes": ["FRNCK", "TUKRR", "VERKN"],
-        "altitude_range": [19000, 23000],
+        "altitude_range": [19000, 999999],
         "receiving_controller": "C07"
       },
       {
         "fixes": ["HOCEE", "SSKEE", "ZAYNE"],
-        "altitude_range": [19000, 23000],
+        "altitude_range": [19000, 999999],
         "receiving_controller": "C08"
       },
       {
         "fixes": ["KENNO"],
-        "altitude_range": [19000, 23000],
+        "altitude_range": [19000, 999999],
         "receiving_controller": "C16"
       },
       {
@@ -288,7 +288,7 @@
       },
       {
         "fixes": ["BLAQQ", "HEC", "LVELL"],
-        "altitude_range": [19000, 23000],
+        "altitude_range": [19000, 999999],
         "receiving_controller": "C06"
       }
     ],

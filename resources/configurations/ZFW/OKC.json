@@ -179,22 +179,22 @@
     "airspace_awareness": [
       {
         "fixes": ["MUDDE", "KRMSN"],
-        "altitude_range": [0, 15000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "C53"
       },
       {
         "fixes": ["FUNNL", "RDHWK", "TEBRD"],
-        "altitude_range": [0, 15000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "C38"
       },
       {
         "fixes": ["STPHN", "OLGUY", "THRPE"],
-        "altitude_range": [0, 15000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "C35"
       },
       {
         "fixes": ["WENDY", "TRUPR"],
-        "altitude_range": [0, 15000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "K62"
       }
     ],

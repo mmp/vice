@@ -1711,27 +1711,27 @@
     "airspace_awareness": [
       {
         "fixes": ["RAMAY", "OTTTO"],
-        "altitude_range": [0, 17000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "W05"
       },
       {
         "fixes": ["SCOOB", "COLIN"],
-        "altitude_range": [0, 19000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "W11"
       },
       {
         "fixes": ["MAULS", "FLASK", "MELTN", "RRSIN", "GLANC"],
-        "altitude_range": [0, 21000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "W60"
       },
       {
         "fixes": ["JERES", "MCRAY"],
-        "altitude_range": [0, 17000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "W06"
       },
       {
         "fixes": ["SWANN", "AGARD", "DQO"],
-        "altitude_range": [10000, 19000],
+        "altitude_range": [10000, 999999],
         "receiving_controller": "W17"
       }
     ],

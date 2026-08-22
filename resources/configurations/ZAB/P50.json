@@ -477,27 +477,27 @@
     "airspace_awareness": [
       {
         "fixes": ["ZEPER"],
-        "altitude_range": [21000, 23000],
+        "altitude_range": [21000, 999999],
         "receiving_controller": "C43"
       },
       {
         "fixes": ["IZZZO", "FYRBD"],
-        "altitude_range": [21000, 25000],
+        "altitude_range": [21000, 999999],
         "receiving_controller": "C42"
       },
       {
         "fixes": ["BNYRD", "ECLPS"],
-        "altitude_range": [21000, 25000],
+        "altitude_range": [21000, 999999],
         "receiving_controller": "C46"
       },
       {
         "fixes": ["FORPE", "BROAK"],
-        "altitude_range": [21000, 31000],
+        "altitude_range": [21000, 999999],
         "receiving_controller": "C38"
       },
       {
         "fixes": ["MRBIL", "QUAKY"],
-        "altitude_range": [21000, 29000],
+        "altitude_range": [21000, 999999],
         "receiving_controller": "C45"
       }
     ],

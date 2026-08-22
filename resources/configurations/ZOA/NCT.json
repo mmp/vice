@@ -1673,7 +1673,7 @@
     "airspace_awareness": [
       {
         "fixes": ["NTELL", "KAYEX", "SUSEY", "KTINA", "JFREE", "VLREE", "TECKY"],
-        "altitude_range": [19000, 27000],
+        "altitude_range": [19000, 999999],
         "receiving_controller": "C11"
       },
       {
@@ -1688,7 +1688,7 @@
       },
       {
         "fixes": ["GRTFL", "DEDHD", "HRNER", "RBL", "SGD", "ENI", "PYE", "SUU", "CCR", "RAGGS", "BURDE"],
-        "altitude_range": [19000, 23000],
+        "altitude_range": [19000, 999999],
         "receiving_controller": "C41"
       },
       {
@@ -1698,7 +1698,7 @@
       },
       {
         "fixes": ["ORRCA", "MOGEE", "TIPRE", "SYRAH", "ORANG", "FTHIL", "FROGO", "HNW", "FRA"],
-        "altitude_range": [19000, 29000],
+        "altitude_range": [19000, 999999],
         "receiving_controller": "C29"
       }
     ],
@@ -2044,7 +2044,7 @@
         "airspace_awareness": [
           {
             "fixes": ["NTELL", "JFREE", "VLREE", "TECKY"],
-            "altitude_range": [19000, 27000],
+            "altitude_range": [19000, 999999],
             "receiving_controller": "C11"
           },
           {
@@ -2242,32 +2242,32 @@
         "airspace_awareness": [
           {
             "fixes": ["RBL"],
-            "altitude_range": [19000, 23000],
+            "altitude_range": [19000, 999999],
             "receiving_controller": "C42"
           },
           {
             "fixes": ["CINNY", "BEBOP", "SGD", "ENI", "PYE", "SUU", "CCR", "RAGGS", "BURDE"],
-            "altitude_range": [11000, 23000],
+            "altitude_range": [11000, 999999],
             "receiving_controller": "C41"
           },
           {
             "fixes": ["FTHIL", "FROGO", "HNW", "FRA"],
-            "altitude_range": [19000, 29000],
+            "altitude_range": [19000, 999999],
             "receiving_controller": "C29"
           },
           {
             "fixes": ["MACUS", "SHUFL", "RALEY", "MVA", "OAL", "DUDES", "DARBI", "MRLET", "SWR"],
-            "altitude_range": [19000, 23000],
+            "altitude_range": [19000, 999999],
             "receiving_controller": "C44"
           },
           {
             "fixes": ["PYGOW", "CRDDZ", "HALLE", "BLKJK", "LLC", "FMG"],
-            "altitude_range": [19000, 29000],
+            "altitude_range": [19000, 999999],
             "receiving_controller": "C45"
           },
           {
             "fixes": ["YERIN", "PEKSE"],
-            "altitude_range": [19000, 23000],
+            "altitude_range": [19000, 999999],
             "receiving_controller": "C46"
           }
         ],

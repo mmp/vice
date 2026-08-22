@@ -321,22 +321,22 @@
     "airspace_awareness": [
       {
         "fixes": ["LENDS"],
-        "altitude_range": [0, 12000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "C20"
       },
       {
         "fixes": ["HALBI"],
-        "altitude_range": [0, 9000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "C21"
       },
       {
         "fixes": ["CHEFS", "KPASA", "MATLK", "SHRKS", "SMELZ", "VIYAP"],
-        "altitude_range": [0, 11000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "C46"
       },
       {
         "fixes": ["WELLY"],
-        "altitude_range": [0, 10000],
+        "altitude_range": [0, 999999],
         "receiving_controller": "C47"
       }
     ],
