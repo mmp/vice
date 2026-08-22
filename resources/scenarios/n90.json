@@ -4420,37 +4420,37 @@
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/ph/ho5S N040.32.34.577,W073.50.37.939/tc"
+            "waypoints": "KJFK-4L/ho5S@a2500"
           },
           "SHIPP,WAVEY": {
             "departure_controller": "2J",
             "cleared_altitude": 12000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/hoC56@a3000 N040.33.40.770,W073.39.17.693/tc"
+            "waypoints": "KJFK-4L/hoC56@a2000/l110"
           },
           "BAYYS,GREKI,MERIT,BDR": {
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/ph/ho5E@a2500 N040.50.46.728,W073.20.26.211/h040/tc"
+            "waypoints": "KJFK-4L/ho5E@a2500 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "departure_controller": "2J",
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/ph/ho5E@a2500 N040.48.30.388,W073.27.28.114/h360/tc"
+            "waypoints": "KJFK-4L/ho5E@a2500 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           },
           "BETTE,HAPIE": {
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/hoB17@a3000 N040.33.40.770,W073.39.17.693/tc"
+            "waypoints": "KJFK-4L/hoB17@a3000/l110"
           },
           "DEEZZ": {
             "departure_controller": "2J",
             "cleared_altitude": 17000,
             "sid": "DEEZZ6",
-            "waypoints": "KJFK-4L/ph/ho5E@a2500 N040.48.30.388,W073.27.28.114/tc"
+            "waypoints": "KJFK-4L/ho5E@a2500  N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           }
         },
         "22R.AutoEast": {
@@ -4661,13 +4661,13 @@
             "departure_controller": "2J",
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-31L/ho5E/h110@a3000 N040.47.08.649,W073.26.06.760/radius1/tc"
+            "waypoints": "KJFK-31L/ho5E/h110@a3000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           },
           "BAYYS,BDR,GREKI,MERIT": {
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-31L/ho5E/h110@a3000 N040.47.08.649,W073.26.06.760/radius1/tc"
+            "waypoints": "KJFK-31L/ho5E/h110@a3000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           },
           "BETTE,HAPIE": {
             "departure_controller": "2J",
@@ -4679,7 +4679,7 @@
             "departure_controller": "2J",
             "cleared_altitude": 17000,
             "sid": "DEEZZ6",
-            "waypoints": "KJFK-31L/ho5E/h109@a5000"
+            "waypoints": "KJFK-31L/ho5E@a2000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           }
         },
         "31L.Background": {
@@ -11929,18 +11929,18 @@
         }
       ]
     },
-    "CAMRN5.Background4L": {
+    "CAMRN5.Background4R": {
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "waypoints": "CAMRN/d50 N040.07.10.979,W073.47.02.167 N040.17.06.164,W073.56.53.946/d20/s210 N040.22.55.515,W073.57.56.019/s180/clearapp AROKE/a2000 KRSTL/a1500 KJFK-4L/a100/delete",
+          "waypoints": "CAMRN/d50 N040.07.10.979,W073.47.02.167 N040.17.06.164,W073.56.53.946/d20/s210 N040.22.55.515,W073.57.56.019/s180/clearapp ZETAL/a2000 EBBEE/a1500 KJFK-4R/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "expect_approach": "I4L",
-          "scratchpad": "I4L",
+          "expect_approach": "I4R",
+          "scratchpad": "I4R",
           "airports": ["KJFK"]
         }
       ]
@@ -11989,22 +11989,6 @@
           "speed_restriction": 250,
           "expect_approach": "I1R",
           "scratchpad": "I1R",
-          "airports": ["KJFK"]
-        }
-      ]
-    },
-    "PUCKY1.Background4R": {
-      "arrivals": [
-        {
-          "cruise_altitude": 39000,
-          "waypoints": "PUCKY/d160/po2J VADDR/d130 N040.43.27.041,W073.41.13.901/d80/radius1 N040.25.45.103,W073.38.54.210/d40/radius0.5 N040.19.15.088,W073.52.25.193/d30/radius0.5 ZETAL/a2000/clearapp EBBEE/a1500 KJFK-4R/a100/delete",
-          "initial_controller": "4A",
-          "initial_altitude": 19000,
-          "assigned_altitude": 19000,
-          "initial_speed": 300,
-          "speed_restriction": 250,
-          "expect_approach": "I4R",
-          "scratchpad": "I4R",
           "airports": ["KJFK"]
         }
       ]
@@ -12254,11 +12238,28 @@
     "EWR 22L": {
       "arrivals": [
         {
-          "waypoints": "N041.02.20.171,W074.33.43.269 N041.03.47.169,W074.21.00.653/d50 N041.03.51.221,W074.15.52.432/s210 N041.02.11.808,W074.12.13.996/d40 N040.56.59.810,W074.06.50.504/d30 N040.53.06.872,W074.04.17.794/s180 IZEKO GIMEE/a2500 BUZZD/a1500/s140 KEWR-22L/delete",
+          "waypoints": "HELON FLOSI CRANK/a7000 N041.03.47.169,W074.21.00.653/d50 N041.03.51.221,W074.15.52.432/s210 N041.02.11.808,W074.12.13.996/d40 N040.56.59.810,W074.06.50.504/d30 N040.53.06.872,W074.04.17.794/s180 IZEKO GIMEE/a2500 BUZZD/a1500/s140 KEWR-22L/a100/delete",
           "star_feeds": ["BRAND1", "FLOSI4", "FQM3", "PENNS2", "PHLBO4", "SHAFF7"],
+          "expect_approach": "I2L",
+          "scratchpad": "I2L",
           "route": "/.",
           "initial_controller": "4P",
-          "initial_altitude": 7000,
+          "initial_altitude": 12000,
+          "initial_speed": 250,
+          "airports": ["KEWR"]
+        }
+      ]
+    },
+    "EWR 4R": {
+      "arrivals": [
+        {
+          "waypoints": "HELON FLOSI CRANK/a7000 N040.57.19.324,W074.32.33.643/d50 N040.31.09.639,W074.32.01.591/d30/s210 N040.28.27.893,W074.20.47.662/s180/clearapp GRITY/a2800 DOOIN/a1700 KEWR-4R/a100/delete",
+          "star_feeds": ["BRAND1", "FLOSI4", "FQM3", "PENNS2", "PHLBO4", "SHAFF7"],
+          "route": "/.",
+          "expect_approach": "I4R",
+          "scratchpad": "I4R",
+          "initial_controller": "4P",
+          "initial_altitude": 12000,
           "initial_speed": 250,
           "airports": ["KEWR"]
         }
@@ -20282,10 +20283,7 @@
         "2J": ["JFK_DEP_4RL"]
       },
       "inbound_rates": {
-        "CAMRN5.Background4L": {
-          "KJFK": 10
-        },
-        "PUCKY1.Background4R": {
+        "CAMRN5.Background4R": {
           "KJFK": 10
         },
         "MIP4 LGA background 4": {
@@ -20656,6 +20654,10 @@
           "runway": "16"
         },
         {
+          "airport": "KJFK",
+          "runway": "13R"
+        },
+        {
           "airport": "KEWR",
           "runway": "22L"
         }
@@ -20669,6 +20671,12 @@
         },
         "VADDR1": {
           "KLGA": 10
+        },
+        "CAMRN5.Background13L": {
+          "KJFK": 10
+        },
+        "PUCKY1.Background13L": {
+          "KJFK": 10
         },
         "EWR 22L": {
           "KEWR": 40
@@ -20700,6 +20708,11 @@
           "category": "West",
           "rate": 20,
           "runway": "13"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 35,
+          "runway": "13R.Background"
         },
         {
           "airport": "KEWR",
@@ -20751,8 +20764,12 @@
           "runway": "34"
         },
         {
+          "airport": "KJFK",
+          "runway": "13R"
+        },
+        {
           "airport": "KEWR",
-          "runway": "22L"
+          "runway": "4R"
         }
       ],
       "inbound_rates": {
@@ -20765,7 +20782,13 @@
         "VADDR1": {
           "KLGA": 10
         },
-        "EWR 22L": {
+        "CAMRN5.Background13L": {
+          "KJFK": 10
+        },
+        "PUCKY1.Background13L": {
+          "KJFK": 10
+        },
+        "EWR 4R": {
           "KEWR": 40
         }
       },
@@ -20800,30 +20823,35 @@
           "airport": "KEWR",
           "category": "East",
           "rate": 6,
-          "runway": "22R.LGA"
+          "runway": "4L.LGA"
         },
         {
           "airport": "KEWR",
           "category": "West",
           "rate": 6,
-          "runway": "22R.LGA"
+          "runway": "4L.LGA"
         },
         {
           "airport": "KEWR",
           "category": "North",
           "rate": 6,
-          "runway": "22R.LGA"
+          "runway": "4L.LGA"
         },
         {
           "airport": "KEWR",
           "category": "South",
           "rate": 6,
-          "runway": "22R.LGA"
+          "runway": "4L.LGA"
         },
         {
           "airport": "KHPN",
           "rate": 6,
           "runway": "34"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 35,
+          "runway": "13R.Background"
         }
       ],
       "wind": {
@@ -20840,6 +20868,10 @@
             "handoff_controller": "1D",
             "hold_departures": []
           }
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22L"
         },
         {
           "airport": "KHPN",
@@ -20860,6 +20892,12 @@
         "VADDR1": {
           "KLGA": 10
         },
+        "CAMRN5.Background22L": {
+          "KJFK": 10
+        },
+        "PUCKY1.Background22L": {
+          "KJFK": 10
+        },
         "EWR 22L": {
           "KEWR": 40
         }
@@ -20890,6 +20928,11 @@
           "category": "West",
           "rate": 20,
           "runway": "31"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 35,
+          "runway": "22R.Background"
         },
         {
           "airport": "KEWR",
@@ -20942,7 +20985,11 @@
         },
         {
           "airport": "KEWR",
-          "runway": "22L"
+          "runway": "4L"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4L"
         }
       ],
       "inbound_rates": {
@@ -20955,7 +21002,10 @@
         "VADDR1": {
           "KLGA": 10
         },
-        "EWR 22L": {
+        "CAMRN5.Background4R": {
+          "KJFK": 10
+        },
+        "EWR 4R": {
           "KEWR": 40
         }
       },
@@ -20990,25 +21040,30 @@
           "airport": "KEWR",
           "category": "East",
           "rate": 6,
-          "runway": "22R.LGA"
+          "runway": "4L.LGA"
         },
         {
           "airport": "KEWR",
           "category": "West",
           "rate": 6,
-          "runway": "22R.LGA"
+          "runway": "4L.LGA"
         },
         {
           "airport": "KEWR",
           "category": "North",
           "rate": 6,
-          "runway": "22R.LGA"
+          "runway": "4L.LGA"
         },
         {
           "airport": "KEWR",
           "category": "South",
           "rate": 6,
-          "runway": "22R.LGA"
+          "runway": "4L.LGA"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 30,
+          "runway": "4L.Background"
         },
         {
           "airport": "KHPN",
@@ -21035,6 +21090,14 @@
         {
           "airport": "KHPN",
           "runway": "34"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4R"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "4R"
         }
       ],
       "inbound_rates": {
@@ -21046,6 +21109,12 @@
         },
         "VADDR1": {
           "KLGA": 10
+        },
+        "CAMRN5.Background4R": {
+          "KJFK": 10
+        },
+        "EWR 4R": {
+          "KEWR": 40
         }
       },
       "configuration": "LGA",
@@ -21103,6 +21172,16 @@
           "airport": "KHPN",
           "rate": 6,
           "runway": "34"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 30,
+          "runway": "4L.Background"
+        },
+        {
+          "airport": "KEWR",
+          "rate": 30,
+          "runway": "4L.LGA"
         }
       ],
       "wind": {
@@ -21119,6 +21198,14 @@
             "handoff_controller": "1L",
             "hold_departures": []
           }
+        },
+        {
+          "airport": "KEWR",
+          "runway": "4R"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4R"
         }
       ],
       "inbound_rates": {
@@ -21128,10 +21215,28 @@
         "MIP4": {
           "KLGA": 15
         },
+        "CAMRN5.Background4R": {
+          "KJFK": 10
+        },
+        "EWR 4R": {
+          "KEWR": 10
+        },
         "Finals-HAARP-L4/D13": {
           "KLGA": 22
         }
       },
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "rate": 35,
+          "runway": "4L.Background"
+        },
+        {
+          "airport": "KEWR",
+          "rate": 35,
+          "runway": "4L.LGA"
+        }
+      ],
       "configuration": "1DF",
       "default_maps": ["LGA-HPN ARR/DEP"],
       "range": 23,
@@ -21179,9 +21284,23 @@
             "handoff_controller": "1D",
             "hold_departures": []
           }
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22L"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "22L"
         }
       ],
       "inbound_rates": {
+        "CAMRN5.Background22L": {
+          "KJFK": 30
+        },
+        "EWR 22L": {
+          "KEWR": 30
+        },
         "Finals-EMPYR-ILS22/D13-R": {
           "KLGA": 32
         },
@@ -21189,6 +21308,23 @@
           "KLGA": 14
         }
       },
+      "departure_runways": [
+        {
+          "airport": "KLGA",
+          "rate": 30,
+          "runway": "13.EWR"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 30,
+          "runway": "22R.Background"
+        },
+        {
+          "airport": "KEWR",
+          "rate": 30,
+          "runway": "22R.LGA"
+        }
+      ],
       "configuration": "LGF",
       "default_maps": ["LGA-HPN ARR/DEP"],
       "range": 23,
@@ -21206,6 +21342,14 @@
             "handoff_controller": "1D",
             "hold_departures": []
           }
+        },
+        {
+          "airport": "KJFK",
+          "runway": "22R"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "22R"
         }
       ],
       "inbound_rates": {
@@ -21214,8 +21358,31 @@
         },
         "Finals-HAARP-ILS22": {
           "KLGA": 22
+        },
+        "CAMRN5.Background22L": {
+          "KJFK": 30
+        },
+        "EWR 22L": {
+          "KEWR": 30
         }
       },
+      "departure_runways": [
+        {
+          "airport": "KLGA",
+          "rate": 30,
+          "runway": "31.EWR"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 30,
+          "runway": "22R.Background"
+        },
+        {
+          "airport": "KEWR",
+          "rate": 30,
+          "runway": "22R.LGA"
+        }
+      ],
       "configuration": "LGF",
       "default_maps": ["LGA-HPN ARR/DEP"],
       "range": 23,
@@ -21233,9 +21400,23 @@
             "handoff_controller": "1V",
             "hold_departures": []
           }
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4R"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "4R"
         }
       ],
       "inbound_rates": {
+        "CAMRN5.Background4R": {
+          "KJFK": 10
+        },
+        "EWR 4R": {
+          "KEWR": 10
+        },
         "Finals-EMPYR-ILS4": {
           "KLGA": 22
         },
@@ -21243,6 +21424,23 @@
           "KLGA": 22
         }
       },
+      "departure_runways": [
+        {
+          "airport": "KLGA",
+          "rate": 30,
+          "runway": "13.EWR"
+        },
+        {
+          "airport": "KEWR",
+          "rate": 30,
+          "runway": "4L.LGA"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 30,
+          "runway": "4L.Background"
+        }
+      ],
       "configuration": "LGF",
       "default_maps": ["LGA-HPN ARR/DEP"],
       "range": 23,
@@ -21260,9 +21458,23 @@
             "handoff_controller": "1V",
             "hold_departures": []
           }
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4R"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "4R"
         }
       ],
       "inbound_rates": {
+        "CAMRN5.Background4R": {
+          "KJFK": 10
+        },
+        "EWR 4R": {
+          "KEWR": 10
+        },
         "Finals-EMPYR-ILS4": {
           "KLGA": 22
         },
@@ -21270,6 +21482,23 @@
           "KLGA": 22
         }
       },
+      "departure_runways": [
+        {
+          "airport": "KLGA",
+          "rate": 30,
+          "runway": "31.EWR"
+        },
+        {
+          "airport": "KEWR",
+          "rate": 30,
+          "runway": "4L.LGA"
+        },
+        {
+          "airport": "KJFK",
+          "rate": 30,
+          "runway": "4L.Background"
+        }
+      ],
       "configuration": "LGF",
       "default_maps": ["LGA-HPN ARR/DEP"],
       "range": 23,
@@ -21494,9 +21723,23 @@
         {
           "airport": "KLGA",
           "runway": "4"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "4R"
+        },
+        {
+          "airport": "KJFK",
+          "runway": "4R"
         }
       ],
       "inbound_rates": {
+        "CAMRN5.Background13L": {
+          "KJFK": 10
+        },
+        "EWR 4R": {
+          "KEWR": 10
+        },
         "WRI DIXIE": {
           "overflights": 5
         },
@@ -21577,15 +21820,29 @@
       ],
       "arrival_runways": [
         {
+          "airport": "KJFK",
+          "runway": "22L"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "22L"
+        },
+        {
           "airport": "KLGA",
-          "runway": "4"
+          "runway": "22"
         }
       ],
       "inbound_rates": {
+        "CAMRN5.Background22L": {
+          "KJFK": 10
+        },
+        "EWR 22L": {
+          "KEWR": 10
+        },
         "WRI DIXIE": {
           "overflights": 5
         },
-        "MIP4 LGA background 4": {
+        "MIP4 LGA background 22/31": {
           "KLGA": 20
         }
       }
