@@ -980,14 +980,17 @@ func registerToolsCommands() {
 	})
 
 	// 6.13.23 Toggle display of requested altitude for all FDBs
-	registerCommand(CommandModeMultiFunc, "RA", func(sp *STARSPane) {
-		sp.DisplayRequestedAltitude = !sp.DisplayRequestedAltitude
+	registerCommand(CommandModeMultiFunc, "RA", func(sp *STARSPane, ctx *panes.Context) {
+		b := !sp.displayRequestedAltitude(ctx)
+		sp.OverrideDisplayRequestedAltitude = &b
 	})
 	registerCommand(CommandModeMultiFunc, "RAE", func(sp *STARSPane) {
-		sp.DisplayRequestedAltitude = true
+		b := true
+		sp.OverrideDisplayRequestedAltitude = &b
 	})
 	registerCommand(CommandModeMultiFunc, "RAI", func(sp *STARSPane) {
-		sp.DisplayRequestedAltitude = false
+		b := false
+		sp.OverrideDisplayRequestedAltitude = &b
 	})
 
 	// 6.13.24 Toggle display of requested altitude for a single Full data block
@@ -1027,7 +1030,7 @@ func registerToolsCommands() {
 
 			state := sp.TrackState[trk.ADSBCallsign]
 			if state.DisplayRequestedAltitude == nil {
-				b := sp.DisplayRequestedAltitude
+				b := sp.displayRequestedAltitude(ctx)
 				state.DisplayRequestedAltitude = &b
 			}
 			*state.DisplayRequestedAltitude = !*state.DisplayRequestedAltitude

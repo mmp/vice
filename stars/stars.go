@@ -143,7 +143,7 @@ type STARSPane struct {
 	DisplayBeaconCode        av.Squawk
 	DisplayBeaconCodeEndTime sim.Time
 
-	DisplayRequestedAltitude bool
+	OverrideDisplayRequestedAltitude *bool
 
 	// When VFR flight plans were first seen (used for sorting in VFR list)
 	VFRFPFirstSeen map[sim.ACID]sim.Time
@@ -821,8 +821,18 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
+// displayRequestedAltitude returns whether requested altitude should be
+// displayed in full data blocks, honoring the controller's override of the
+// adapted setting if they have made one.
+func (sp *STARSPane) displayRequestedAltitude(ctx *panes.Context) bool {
+	if sp.OverrideDisplayRequestedAltitude != nil {
+		return *sp.OverrideDisplayRequestedAltitude
+	}
+	return ctx.FacilityAdaptation.Datablocks.FDB.DisplayRequestedAltitude
+}
+
 func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-	sp.DisplayRequestedAltitude = client.State.FacilityAdaptation.Datablocks.FDB.DisplayRequestedAltitude
+	sp.OverrideDisplayRequestedAltitude = nil
 
 	sp.initPrefsForLoadedSim(client.State, pl)
 
@@ -876,6 +886,12 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 	sp.drawRoutePoints = nil
 	sp.showListFrames = false
 	sp.activeSpinner = nil
+	sp.OverrideDisplayRequestedAltitude = nil
+	sp.CoastSuspendIndex = 0
+	sp.DisplayBeaconCode = 0
+	sp.DisplayBeaconCodeEndTime = sim.Time{}
+	sp.wxHistoryDraw = 0
+	sp.wxNextHistoryStepTime = sim.Time{}
 	clear(sp.DuplicateBeacons)
 	clear(sp.ReleaseRequests)
 	clear(sp.PointOuts)

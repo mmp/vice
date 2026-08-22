@@ -1001,7 +1001,7 @@ func (sp *STARSPane) fillFDBField5(ctx *panes.Context, trk sim.Track, sfp *sim.N
 		if state != nil && state.DisplayRequestedAltitude != nil && !*state.DisplayRequestedAltitude {
 			return false
 		}
-		if state == nil || (state.DisplayRequestedAltitude == nil && !sp.DisplayRequestedAltitude) {
+		if state == nil || (state.DisplayRequestedAltitude == nil && !sp.displayRequestedAltitude(ctx)) {
 			return false
 		}
 		if alt := sfp.RequestedAltitude; alt != 0 {
