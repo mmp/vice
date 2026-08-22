@@ -57,6 +57,10 @@
      data-nav-skip-children         Leave every entry *inside* this element out.
                                     Used on the collapsed older-releases block
                                     so ~80 release headings stay out of the nav.
+
+   Headings inside a <details> are left out too, and reported. A collapsed
+   <details> gives its contents no layout box, so the heading's offsetTop is 0
+   and clicking its sidebar link scrolls to the top of the page instead.
 */
 
 (function () {
@@ -127,6 +131,12 @@
 
             const title = navText(el);
             if (!title) return;
+
+            if (el.closest('details')) {
+                problems.push('#' + article.id + ': "' + title + '" is inside a <details>, so ' +
+                              'it cannot be scrolled to; left out of the sidebar.');
+                return;
+            }
 
             entries.push({ level: level, title: title, id: anchorFor(el), el: el });
         });
