@@ -204,6 +204,13 @@ func (sc *STARSComputer) Update(s *Sim) {
 						ACID: fp.ACID,
 					})
 
+					// If it was handed off virtual-to-virtual before the
+					// track associated, send it on course now.
+					if s.DeferredOnCourse[fp.ACID] {
+						delete(s.DeferredOnCourse, fp.ACID)
+						s.enqueueDepartOnCourse(ac.ADSBCallsign)
+					}
+
 					// Remove it from the released departures list
 					sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
 						func(ac2 *Aircraft) bool { return ac.ADSBCallsign == ac2.ADSBCallsign })

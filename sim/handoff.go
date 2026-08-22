@@ -164,6 +164,14 @@ func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
 		if callsign, ok := s.callsignForACID(fp.ACID); ok {
 			// aircraft is a departure that will likely never talk to a human, send it on course (mainly so it climbs up to cruise)
 			s.enqueueDepartOnCourse(callsign)
+		} else {
+			// The handoff came before the track associated (departures tag
+			// up a few seconds after leaving the surface tracking filter);
+			// send it on course when it does.
+			if s.DeferredOnCourse == nil {
+				s.DeferredOnCourse = make(map[ACID]bool)
+			}
+			s.DeferredOnCourse[fp.ACID] = true
 		}
 	}
 }

@@ -87,6 +87,10 @@ type Sim struct {
 	FutureFrequencyChanges []FutureFrequencyChange
 	DeferredContacts       map[av.ADSBCallsign]map[ControlPosition]TCP
 	FutureOnCourse         []FutureOnCourse
+	// DeferredOnCourse holds departures that were handed off between two
+	// virtual controllers before their tracks associated; they are sent on
+	// course when association happens.
+	DeferredOnCourse       map[ACID]bool
 	FutureSquawkChanges    []FutureChangeSquawk
 	FutureEmergencyUpdates []FutureEmergencyUpdate
 	FutureFieldChecks      map[av.ADSBCallsign]*FutureFieldCheck
