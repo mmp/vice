@@ -1338,6 +1338,12 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context) {
 					continue
 				}
 				leading, trailing := runwayAircraft[i-1], runwayAircraft[i]
+
+				// Don't clutter the scope with alert cones for virtually-controlled tracks.
+				if trailing.VirtuallyControlled {
+					continue
+				}
+
 				leadingState, trailingState := sp.TrackState[leading.ADSBCallsign], sp.TrackState[trailing.ADSBCallsign]
 				trailingState.IntrailDistance =
 					math.NMDistance2LL(leadingState.track.Location, trailingState.track.Location)
