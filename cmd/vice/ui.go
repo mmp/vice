@@ -427,7 +427,7 @@ func showAboutDialog() {
 
 	ui.aboutFont.ImguiPush()
 	center("vice")
-	center(renderer.FontAwesomeIconCopyright + "2023-2025 Matt Pharr")
+	center(renderer.FontAwesomeIconCopyright + "2023-2026 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
 	if imgui.IsItemHovered() && imgui.IsMouseClickedBool(imgui.MouseButton(0)) {
 		browser.OpenURL("https://www.gnu.org/licenses/gpl-3.0.html")
@@ -444,7 +444,7 @@ func showAboutDialog() {
 	credits := `Additional credits:
 - Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Michael Knight, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Shane, Rick R, Logan S, Samuel Valencia, Jordan Williams, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: AsianEvxn, Connor Allen, anguse, Elliot B, Adam Bolek, Brody Carty, Lucas Chan, CiceroIsBack, Aaron Flett, Mike Fries, Ryan G, gagostin1, Gecko, Giovanni, Ryan H, Thomas Halpin, Ethan Hawes, Jason Helkenberg, Trey Hensley, Noah Hunt, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, obamna,  Shane, Andrew S, Logan S, Zach Styka, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
+- Facility engineering: Gus Agostinho, AsianEvxn, Connor Allen, anguse, Elliot B, Adam Bolek, Brody Carty, Lucas Chan, CiceroIsBack, Aaron Flett, Mike Fries, Ryan G, Gecko, Giovanni, Ryan H, Thomas Halpin, Ethan Hawes, Jason Helkenberg, Trey Hensley, Noah Hunt, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, obamna,  Shane, Andrew S, Logan S, Zach Styka, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to all of the VATSIM ARTCCs and to the FAA, from whence the original maps came.
 - Additionally: OpenScope for the aircraft performance and airline databases, ourairports.com for the airport database, and for the FAA for being awesome about providing the CIFP, MVA specifications, and other useful aviation data digitally.
 - One more thing: see the file CREDITS.txt in the vice source code distribution for third-party software, fonts, sounds, etc.`
