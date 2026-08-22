@@ -1,0 +1,253 @@
+{
+  "artcc": "ZTL",
+  "area": "ZTL Area 2",
+  "name": "ZTL Locas 30",
+  "default_scenario": "ZTL 30 Locas Low - CLT South",
+  "magnetic_adjustment": -7.0,
+  "airports": {
+    "KCLT": {
+      "departure_controller": "C1W",
+      "departure_routes": {
+        "18L": {
+          "BEAVY": {
+            "cleared_altitude": 16000,
+            "sid": "BEAVY8",
+            "waypoints": "UGANG/ho",
+            "handoff_controller": "30"
+          },
+          "ICONS": {
+            "cleared_altitude": 16000,
+            "sid": "ICONS7",
+            "waypoints": "GILFN/ho",
+            "handoff_controller": "30"
+          },
+          "KWEEN": {
+            "cleared_altitude": 16000,
+            "sid": "KWEEN7",
+            "waypoints": "HMMPY/ho",
+            "handoff_controller": "30"
+          },
+          "LILLS": {
+            "cleared_altitude": 13000,
+            "sid": "LILLS5",
+            "waypoints": "N035.08.40.504,W080.54.03.850/ho LAMDE",
+            "handoff_controller": "30"
+          },
+          "BARMY": {
+            "cleared_altitude": 16000,
+            "sid": "BARMY7",
+            "waypoints": "MESHY/ho GULFY",
+            "handoff_controller": "30"
+          },
+          "KILNS": {
+            "cleared_altitude": 16000,
+            "sid": "KILNS7",
+            "waypoints": "MUNBE/ho LILIC",
+            "handoff_controller": "30"
+          }
+        },
+        "1R": {
+          "BEAVY": {
+            "cleared_altitude": 16000,
+            "sid": "BEAVY8",
+            "waypoints": "UGANG/ho",
+            "handoff_controller": "30"
+          },
+          "ICONS": {
+            "cleared_altitude": 16000,
+            "sid": "ICONS7",
+            "waypoints": "GILFN/ho",
+            "handoff_controller": "30"
+          },
+          "KWEEN": {
+            "cleared_altitude": 16000,
+            "sid": "KWEEN7",
+            "waypoints": "HMMPY/ho",
+            "handoff_controller": "30"
+          },
+          "LILLS": {
+            "cleared_altitude": 13000,
+            "sid": "LILLS5",
+            "waypoints": "N035.16.16.300,W080.55.00.265/ho LAMDE",
+            "handoff_controller": "30"
+          },
+          "BARMY": {
+            "cleared_altitude": 16000,
+            "sid": "BARMY7",
+            "waypoints": "MESHY/ho GULFY",
+            "handoff_controller": "30"
+          },
+          "KILNS": {
+            "cleared_altitude": 16000,
+            "sid": "KILNS7",
+            "waypoints": "MUNBE/ho LILIC",
+            "handoff_controller": "30"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            36000
+          ],
+          "destination": "KMIA",
+          "exit": "ICONS",
+          "route": "ICONS NOOKS WURFL/c360 Q83 JEVED Q97 DEBRL/delete CSTAL3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": [
+            38000
+          ],
+          "destination": "KMIA",
+          "exit": "ICONS",
+          "route": "ICONS NOOKS WURFL/c380 Q83 JEVED Q97 DEBRL/delete CSTAL3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            23000
+          ],
+          "destination": "KMYR",
+          "exit": "KWEEN",
+          "route": "KWEEN UNJAM/c230 KMYR/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": [
+            37000
+          ],
+          "destination": "KMIA",
+          "exit": "KWEEN",
+          "route": "KWEEN PITRW/c370 Y436 OGGRE DUUNK Y313 HOAGG/delete BNFSH3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            36000
+          ],
+          "destination": "KMSY",
+          "exit": "BEAVY",
+          "route": "BEAVY JENDO/c360 MAVRC ALLMA CEW J2 SJI/delete MNSTR2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "altitude": [
+            35000
+          ],
+          "destination": "KJFK",
+          "exit": "BARMY",
+          "route": "BARMY TYI/c350 Q64 SAWED Q108 SIE/delete CAMRN5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": [
+            33000
+          ],
+          "destination": "KBWI",
+          "exit": "BARMY",
+          "route": "BARMY RDU/c330 THHMP/delete RAVNN9"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "altitude": [
+            31000
+          ],
+          "destination": "KDCA",
+          "exit": "KILNS",
+          "route": "KILNS AUDII/c310 WAVES/delete CAPSS4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "PDT"
+            }
+          ],
+          "altitude": [
+            13000
+          ],
+          "destination": "KFAY",
+          "exit": "LILLS",
+          "route": "LILLS V296 FAY/delete"
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "ZTL 30 Locas Low - CLT South": {
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KCLT",
+          "rate": 34,
+          "runway": "18L"
+        }
+      ],
+      "arrival_runways": [],
+      "configuration": "L30"
+    },
+    "ZTL 30 Locas Low - CLT North": {
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KCLT",
+          "rate": 34,
+          "runway": "1R"
+        }
+      ],
+      "arrival_runways": [],
+      "configuration": "L30"
+    }
+  }
+}

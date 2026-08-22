@@ -1,0 +1,389 @@
+{
+  "artcc": "ZTL",
+  "area": "ZTL Area 2",
+  "name": "ZTL Leeon 29",
+  "default_scenario": "ZTL 29 Leeon Low - CLT South",
+  "magnetic_adjustment": -7.0,
+  "airports": {
+    "KCLT": {
+      "approaches": {
+        "I8L": {
+          "cifp_id": "I18L"
+        },
+        "I9R": {
+          "cifp_id": "I19R"
+        },
+        "I1L": {
+          "cifp_id": "I1L"
+        },
+        "I1R": {
+          "cifp_id": "I1R"
+        },
+        "I6R": {
+          "cifp_id": "I36R"
+        }
+      }
+    },
+    "KGSO": {
+      "departure_controller": "G1W",
+      "departure_routes": {
+        "23L": {
+          "CARWN": {
+            "cleared_altitude": 12000,
+            "sid": "TRI9",
+            "waypoints": "GSO/ho BOLTT CARWN/c270 LEAVI/delete",
+            "handoff_controller": "29"
+          },
+          "BAWDS": {
+            "cleared_altitude": 12000,
+            "sid": "TRSHA1",
+            "waypoints": "GSO/ho WHAYN TRSHA BAWDS/c270 VXV/delete",
+            "handoff_controller": "29"
+          },
+          "SBV": {
+            "cleared_altitude": 12000,
+            "sid": "QUAK8",
+            "waypoints": "GSO/ho JEANY SBV/c270/delete",
+            "handoff_controller": "29"
+          }
+        },
+        "5R": {
+          "CARWN": {
+            "cleared_altitude": 12000,
+            "sid": "TRI9",
+            "waypoints": "GSO/ho BOLTT CARWN/c270 LEAVI/delete",
+            "handoff_controller": "29"
+          },
+          "BAWDS": {
+            "cleared_altitude": 12000,
+            "sid": "TRSHA1",
+            "waypoints": "GSO/ho WHAYN TRSHA BAWDS/c270 VXV/delete",
+            "handoff_controller": "29"
+          },
+          "SBV": {
+            "cleared_altitude": 12000,
+            "sid": "QUAK8",
+            "waypoints": "GSO/ho JEANY SBV/c270/delete",
+            "handoff_controller": "29"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "FDX"
+            }
+          ],
+          "altitude": [
+            24000,
+            26000,
+            28000,
+            30000
+          ],
+          "destination": "KATL",
+          "exit": "CARWN",
+          "route": "CARWN LEAVI OZZZI2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "altitude": [
+            29000,
+            31000,
+            33000
+          ],
+          "destination": "KORD",
+          "exit": "BAWDS",
+          "route": "BAWDS VXV FOUNT CVG VHP WWODD HANBL3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "altitude": [
+            29000,
+            31000,
+            33000
+          ],
+          "destination": "KDTW",
+          "exit": "BAWDS",
+          "route": "BAWDS VXV FOUNT CVG VHP WWODD HANBL3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "PDT"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "altitude": [
+            25000,
+            27000,
+            29000
+          ],
+          "destination": "KPHL",
+          "exit": "SBV",
+          "route": "SBV BBDOL PAATS4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "altitude": [
+            25000,
+            27000,
+            29000
+          ],
+          "destination": "KLGA",
+          "exit": "SBV",
+          "route": "SBV"
+        }
+      ]
+    },
+    "KGSP": {
+      "approaches": {
+        "I22": {
+          "cifp_id": "I22"
+        }
+      }
+    }
+  },
+  "fixes": {
+    "_CLT_CHSLY_S_OUT": "HEELZ@270/25",
+    "_CLT_CHSLY_N_OUT": "EPAYE@183/25"
+  },
+  "inbound_flows": {
+    "CHSLY8-AIROW": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "ASH",
+                "airport": "KIAD"
+              }
+            ]
+          },
+          "initial_controller": "W36",
+          "initial_altitude": 27000,
+          "initial_speed": 280,
+          "cleared_altitude": 6000,
+          "cruise_altitude": 33000,
+          "star": "CHSLY8",
+          "route": "/. CHSLY8",
+          "is_rnav": true,
+          "waypoints": "BLUEJ/ho BURRZ/a24000-27000/s280 SKLES/a22000+ DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/d40 _CLT_CHSLY_S_OUT/delete"
+        }
+      ]
+    },
+    "CHSLY8-RDU": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KRDU"
+              }
+            ]
+          },
+          "initial_controller": "W27",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "assigned_altitude": 23000,
+          "waypoints": "CATAR/ho SDAIL/a17000-23000/s280 WLLSH/a16000+/s270 CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/d40 _CLT_CHSLY_S_OUT/delete",
+          "cruise_altitude": 24000,
+          "star": "CHSLY8",
+          "route": "/. CHSLY8",
+          "is_rnav": true
+        }
+      ]
+    },
+    "CHSLY8-AIROW-N": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "ASH",
+                "airport": "KIAD"
+              }
+            ]
+          },
+          "initial_controller": "W36",
+          "initial_altitude": 27000,
+          "initial_speed": 280,
+          "cleared_altitude": 10000,
+          "cruise_altitude": 33000,
+          "star": "CHSLY8",
+          "route": "/. CHSLY8",
+          "is_rnav": true,
+          "waypoints": "BLUEJ/ho BURRZ/a24000-27000/s280 SKLES/a22000+ DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/d50 _CLT_CHSLY_N_OUT/delete"
+        }
+      ]
+    },
+    "CHSLY8-RDU-N": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KRDU"
+              }
+            ]
+          },
+          "initial_controller": "W27",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "assigned_altitude": 23000,
+          "waypoints": "CATAR/ho SDAIL/a17000-23000/s280 WLLSH/a16000+/s270 CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/d50 _CLT_CHSLY_N_OUT/delete",
+          "cruise_altitude": 24000,
+          "star": "CHSLY8",
+          "route": "/. CHSLY8",
+          "is_rnav": true
+        }
+      ]
+    },
+    "GSP-JUNNR": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KGSP": [
+              {
+                "icao": "RPA",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "PDT",
+                "airport": "KPHL"
+              }
+            ]
+          },
+          "initial_controller": "45",
+          "initial_altitude": 23000,
+          "assigned_altitude": 23000,
+          "initial_speed": 290,
+          "cruise_altitude": 23000,
+          "route": "GMONY WAMUR JUNNR YELKS SPA",
+          "waypoints": "GMONY/ho WAMUR JUNNR YELKS SPA/delete",
+          "airports": [
+            "KGSP"
+          ]
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "ZTL 29 Leeon Low - CLT South": {
+      "configuration": "L29",
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KGSO",
+          "rate": 12,
+          "runway": "23L"
+        }
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "18L"
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22"
+        }
+      ],
+      "inbound_rates": {
+        "CHSLY8-AIROW": {
+          "KCLT": 6
+        },
+        "CHSLY8-RDU": {
+          "KCLT": 4
+        },
+        "GSP-JUNNR": {
+          "KGSP": 3
+        }
+      }
+    },
+    "ZTL 29 Leeon Low - CLT North": {
+      "configuration": "L29",
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KGSO",
+          "rate": 12,
+          "runway": "5R"
+        }
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "1L"
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22"
+        }
+      ],
+      "inbound_rates": {
+        "CHSLY8-AIROW-N": {
+          "KCLT": 6
+        },
+        "CHSLY8-RDU-N": {
+          "KCLT": 4
+        },
+        "GSP-JUNNR": {
+          "KGSP": 3
+        }
+      }
+    }
+  }
+}

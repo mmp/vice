@@ -714,6 +714,37 @@
           "BANKR7-N": "31",
           "JONZE7-N": "31"
         }
+      },
+      "L30": {
+        "default_consolidation": {
+          "30": []
+        },
+        "departure_assignments": {
+          "KCLT/BEAVY8": "30",
+          "KCLT/ICONS7": "30",
+          "KCLT/KWEEN7": "30",
+          "KCLT/LILLS5": "30",
+          "KCLT/BARMY7": "30",
+          "KCLT/KILNS7": "30"
+        },
+        "inbound_assignments": {}
+      },
+      "L29": {
+        "default_consolidation": {
+          "29": []
+        },
+        "departure_assignments": {
+          "KGSO/TRI9": "29",
+          "KGSO/TRSHA1": "29",
+          "KGSO/QUAK8": "29"
+        },
+        "inbound_assignments": {
+          "CHSLY8-AIROW": "29",
+          "CHSLY8-RDU": "29",
+          "CHSLY8-AIROW-N": "29",
+          "CHSLY8-RDU-N": "29",
+          "GSP-JUNNR": "29"
+        }
       }
     },
     "center": "N036.15.25.378,W081.54.35.546",
