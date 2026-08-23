@@ -126,7 +126,10 @@ type ModalDialogClient interface {
 	Title() string
 	Opening()
 	Buttons() []ModalDialogButton
-	Draw() int /* returns index of equivalently-clicked button; out of range if none */
+	// Draw returns the index of an equivalently-clicked button (out of range if
+	// none). For dialogs with no buttons, returning a non-negative value closes
+	// the dialog.
+	Draw() int
 }
 
 // FixedSizeDialogClient is an optional interface that dialog clients can implement
@@ -219,6 +222,11 @@ func (m *ModalDialogBox) Draw() {
 			if b.disabled {
 				imgui.EndDisabled()
 			}
+		}
+		if len(buttons) == 0 && selIndex >= 0 {
+			imgui.CloseCurrentPopup()
+			m.closed = true
+			m.isOpen = false
 		}
 		imgui.EndPopup()
 	}
@@ -789,48 +797,6 @@ func uiShowConnectOrBenchmarkDialog(mgr *client.ConnectionManager, allowCancel b
 	}
 }
 
-// WaitForWhisperBenchmark blocks with a progress dialog until whisper benchmark completes.
-// This runs its own mini event loop before the main loop starts, similar to ShowFatalErrorDialog.
-// Only shows dialog if actual benchmarking is in progress (not when loading a cached model).
-func WaitForWhisperBenchmark(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
-	// Only show dialog if we're actually benchmarking, not just loading a cached model
-	if !client.IsWhisperBenchmarking() {
-		return
-	}
-
-	// Create a simple modal client that just shows benchmark progress
-	benchClient := &benchmarkWaitModalClient{}
-	d := NewModalDialogBox(benchClient, p)
-	runModalEventLoop(p, d, func() bool { return !client.IsWhisperBenchmarking() })
-}
-
-// benchmarkWaitModalClient is a simple modal client for the blocking benchmark wait dialog
-type benchmarkWaitModalClient struct{}
-
-func (b *benchmarkWaitModalClient) Title() string {
-	return "Initializing Speech Recognition"
-}
-
-func (b *benchmarkWaitModalClient) Opening() {}
-
-func (b *benchmarkWaitModalClient) Buttons() []ModalDialogButton {
-	return nil
-}
-
-func (b *benchmarkWaitModalClient) Draw() int {
-	imgui.Text("\nBenchmarking whisper models to find the best one for your system...\n\n")
-
-	status := client.GetWhisperBenchmarkStatus()
-	if status != "" {
-		imgui.Text("Status: ")
-		imgui.SameLine()
-		imgui.TextColored(imgui.Vec4{X: 0.5, Y: 0.8, Z: 0.5, W: 1}, status)
-	}
-
-	imgui.Text("\n")
-	return -1
-}
-
 // rebenchmarkModalClient is used when the user triggers a re-benchmark from settings
 type rebenchmarkModalClient struct {
 	config *Config
@@ -844,14 +810,7 @@ func (r *rebenchmarkModalClient) Title() string {
 func (r *rebenchmarkModalClient) Opening() {}
 
 func (r *rebenchmarkModalClient) Buttons() []ModalDialogButton {
-	// While benchmarking, no buttons (no way to close). Once the benchmark
-	// finishes, expose an OK button so Draw() can auto-press it via the
-	// returned selIndex — that's the mechanism the modal framework uses to
-	// actually mark the dialog closed.
-	if client.IsWhisperBenchmarking() {
-		return nil
-	}
-	return []ModalDialogButton{{text: "OK", action: func() bool { return true }}}
+	return nil
 }
 
 func (r *rebenchmarkModalClient) Draw() int {
@@ -866,8 +825,7 @@ func (r *rebenchmarkModalClient) Draw() int {
 
 	imgui.Text("\n")
 
-	// Auto-press the OK button (added by Buttons() above) the same frame
-	// benchmarking completes so the dialog closes itself.
+	// Close when benchmarking completes
 	if !client.IsWhisperBenchmarking() {
 		return 0
 	}

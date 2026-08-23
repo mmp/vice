@@ -634,6 +634,16 @@ func PreloadWhisperModel(lg *log.Logger, uploadDone <-chan struct{},
 		defer close(whisperModelDone)
 		defer lg.CatchAndReportCrash()
 
+		// Clear the benchmarking flag on every exit path: the early returns
+		// below never set it, but ForceWhisperRebenchmark sets it before
+		// starting us, and leaving it stranded true permanently hangs the
+		// benchmark progress dialogs.
+		defer func() {
+			whisperBenchmarkStatusMu.Lock()
+			whisperIsBenchmarking = false
+			whisperBenchmarkStatusMu.Unlock()
+		}()
+
 		if uploadDone != nil {
 			// Only show the wait status if we'd actually block; a
 			// closed channel receives instantly so the common
@@ -697,10 +707,6 @@ func PreloadWhisperModel(lg *log.Logger, uploadDone <-chan struct{},
 		whisperBenchmarkStatusMu.Unlock()
 
 		runBenchmark(lg, currentDeviceID)
-
-		whisperBenchmarkStatusMu.Lock()
-		whisperIsBenchmarking = false
-		whisperBenchmarkStatusMu.Unlock()
 	}()
 }
 

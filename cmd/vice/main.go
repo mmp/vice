@@ -639,10 +639,6 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	// before the prior run's crash report reaches the server.
 	startBackgroundModelLoading(config, plat, lg, uploadDone)
 
-	// Wait for whisper benchmark to complete before loading saved sim.
-	// This shows a progress dialog if benchmarking is still in progress.
-	WaitForWhisperBenchmark(render, plat, lg)
-
 	// Restore previously-saved simulation if available.
 	if c, arp := loadSavedSim(mgr, config, plat, lg); c != nil {
 		controlClient = c
