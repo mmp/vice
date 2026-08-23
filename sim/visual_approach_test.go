@@ -244,8 +244,9 @@ func (vs *VisualScenario) ExpectIMC(intent av.CommandIntent) {
 
 // makeVisualTestAircraft creates an arrival aircraft with an ILS approach
 // assigned, on frequency, positioned at the given location heading in the
-// given direction. Suitable for canRequestVisualApproach and
-// checkSpontaneousVisualRequest tests.
+// given direction. Its arrival airport is at the origin (the zero
+// ArrivalAirportLocation), matching makeVisualTestSim. Suitable for
+// canRequestVisualApproach and checkSpontaneousVisualRequest tests.
 func makeVisualTestAircraft(pos math.Point2LL, heading math.MagneticHeading) *Aircraft {
 	return makeVisualTestAircraftAlt(pos, heading, 3000) // default 3000ft MSL
 }
@@ -2139,6 +2140,86 @@ func TestAirportInSightInquiryClearsFutureFieldCheckEvenIfAlreadyInSight(t *test
 	vs.ExpectFieldInSight(intent)
 	if len(vs.Sim.FutureFieldChecks) != 0 {
 		t.Fatalf("queued FutureFieldCheck should be cleared, got %d", len(vs.Sim.FutureFieldChecks))
+	}
+}
+
+// Visibility checks must not depend on the sim's airport list: VFR flights
+// routinely land at satellite fields that aren't among the scenario's airports,
+// and looking one up there previously yielded a nil airport and a crash.
+func TestAirportVisibilityAirportNotInScenario(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
+	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
+
+	// A field the scenario doesn't model; the aircraft still knows where it is.
+	vs.AC.FlightPlan.ArrivalAirport = "KXYZ"
+
+	elig := vs.Sim.checkAirportVisibility(vs.AC)
+	if !elig.FieldInSight {
+		t.Errorf("FieldInSight = false, want true (reason %v)", elig.Reason)
+	}
+	if math.Abs(elig.Distance-5) > 0.1 {
+		t.Errorf("Distance = %f, want 5", elig.Distance)
+	}
+
+	if _, ok := vs.AirportAdvisory(12, 5).(av.LookForFieldIntent); !ok {
+		t.Error("AP should yield a LookForFieldIntent")
+	}
+}
+
+// With no METAR for the arrival airport, the nearest one stands in for it.
+func TestAirportVisibilityFallsBackToNearestMETAR(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
+	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
+
+	vs.AC.FlightPlan.ArrivalAirport = "KXYZ"
+	vs.Sim.State.METAR["KJFK"] = wx.METAR{ICAO: "KJFK", Raw: "KJFK 1SM OVC003"}
+
+	if elig := vs.Sim.checkAirportVisibility(vs.AC); elig.Reason != visualEligibilityIMC {
+		t.Errorf("Reason = %v, want visualEligibilityIMC", elig.Reason)
+	}
+
+	// A sim with no weather at all still reads as VMC rather than IMC.
+	clear(vs.Sim.State.METAR)
+	if elig := vs.Sim.checkAirportVisibility(vs.AC); !elig.FieldInSight {
+		t.Errorf("FieldInSight = false with no METAR, want true (reason %v)", elig.Reason)
+	}
+}
+
+// AP only makes sense for arrivals; asking a departure or an overflight to look
+// for its destination gets an unable.
+func TestAirportAdvisoryUnableForNonArrival(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
+
+	for _, tc := range []struct {
+		name string
+		ft   av.TypeOfFlight
+	}{
+		{"departure", av.FlightTypeDeparture},
+		{"overflight", av.FlightTypeOverflight},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
+			vs.AC.TypeOfFlight = tc.ft
+
+			if _, ok := vs.AirportAdvisory(12, 5).(av.UnableIntent); !ok {
+				t.Error("AP advisory should be unable for a non-arrival")
+			}
+
+			intent, err := vs.Sim.AirportInSightInquiry(vs.tcw, vs.callsign)
+			if err != nil {
+				t.Fatalf("AirportInSightInquiry error: %v", err)
+			}
+			if _, ok := intent.(av.UnableIntent); !ok {
+				t.Error("bare AP should be unable for a non-arrival")
+			}
+
+			if len(vs.Sim.FutureFieldChecks) != 0 {
+				t.Errorf("no FutureFieldCheck should be queued, got %d", len(vs.Sim.FutureFieldChecks))
+			}
+		})
 	}
 }
 

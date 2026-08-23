@@ -16,6 +16,11 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+// notLandingHere is the response to an airport advisory for an aircraft that
+// isn't landing in the sim's airspace; asking a departure or an overflight to
+// look for its destination is meaningless.
+var notLandingHere = av.MakeUnableIntent("unable, we're not landing here")
+
 // AirportInSightInquiry handles the bare "AP" command. The controller asks
 // "do you have the field in sight?" without specifying a direction; the
 // pilot's response depends on weather, ceiling, and distance to the airport —
@@ -26,6 +31,9 @@ func (s *Sim) AirportInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (av.Comma
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			if !ac.IsArrival() {
+				return notLandingHere
+			}
 			if ac.FieldInSight || ac.RequestedVisualApproach || ac.Nav.Approach.Cleared {
 				s.cancelFutureFieldCheck(ac.ADSBCallsign)
 				return av.LookForFieldFound
@@ -107,6 +115,10 @@ func (s *Sim) AirportAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles i
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			if !ac.IsArrival() {
+				return notLandingHere
+			}
+
 			// If the pilot already has the field in sight — or is already
 			// cleared for an approach — just confirm.
 			if ac.FieldInSight || ac.RequestedVisualApproach || ac.Nav.Approach.Cleared {
@@ -242,6 +254,9 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 				// needs.
 				if ac.Nav.Approach.AssignedId != approach {
 					ap := s.State.Airports[ac.FlightPlan.ArrivalAirport]
+					if ap == nil {
+						return av.MakeUnableIntent("unable, we can't accept a visual approach there")
+					}
 					if intent := ac.ExpectApproach(approach, ap); intent != nil {
 						if _, unable := intent.(av.UnableIntent); unable {
 							return intent
@@ -431,32 +446,34 @@ type VisualEligibility struct {
 
 // checkAirportVisibility determines whether the aircraft can see the field.
 func (s *Sim) checkAirportVisibility(ac *Aircraft) VisualEligibility {
-	arrivalAirport := ac.FlightPlan.ArrivalAirport
-	ap := s.State.Airports[arrivalAirport]
+	apLoc := ac.ArrivalAirportLocation()
+	apElev := ac.ArrivalAirportElevation()
 
-	// Must be VMC at the arrival airport. If there's no METAR for the airport
-	// (e.g. a newly added TRACON whose weather hasn't been ingested yet),
-	// assume VMC.
-	metar, ok := s.State.METAR[arrivalAirport]
+	// Must be VMC at the arrival airport. The arrival airport may not be one of
+	// the sim's airports (e.g. a satellite field a VFR is headed for), in which
+	// case there's no METAR for it; fall back to the nearest one.
+	metar, ok := s.State.METAR[ac.FlightPlan.ArrivalAirport]
+	if !ok {
+		metar, _ = s.nearestMETAR(apLoc)
+		ok = metar.ICAO != ""
+	}
+	// A zero METAR reports IMC, so only take its word for it if we found one.
 	if ok && !metar.IsVMC() {
 		return VisualEligibility{Reason: visualEligibilityIMC}
 	}
 
 	// Aircraft above the ceiling is in the clouds → can't see the field.
 	if ceiling, err := metar.Ceiling(); err == nil {
-		if faa, ok := av.DB.Airports[arrivalAirport]; ok {
-			if ac.Altitude() > float32(faa.Elevation+ceiling) {
-				return VisualEligibility{Reason: visualEligibilityIMC}
-			}
+		if ac.Altitude() > apElev+float32(ceiling) {
+			return VisualEligibility{Reason: visualEligibilityIMC}
 		}
 	}
 
 	// Must be within effective visual range (METAR visibility + altitude bonus).
-	faa := av.DB.Airports[arrivalAirport]
-	altAGL := max(0, ac.Altitude()-float32(faa.Elevation))
+	altAGL := max(0, ac.Altitude()-apElev)
 
 	maxRange := metar.EffectiveVisualRange(altAGL, 0)
-	dist := math.NMDistance2LL(ac.Position(), ap.Location)
+	dist := math.NMDistance2LL(ac.Position(), apLoc)
 	if dist > maxRange {
 		reason := util.Select(metar.HasObscuration(), visualEligibilityObscured, visualEligibilityOutOfRange)
 		return VisualEligibility{
@@ -467,7 +484,7 @@ func (s *Sim) checkAirportVisibility(ac *Aircraft) VisualEligibility {
 	}
 
 	// The airport must be within the pilot's forward visibility arc.
-	bearingToAirport := math.TrueToMagnetic(math.Heading2LL(ac.Position(), ap.Location, ac.NmPerLongitude()), ac.MagneticVariation())
+	bearingToAirport := math.TrueToMagnetic(math.Heading2LL(ac.Position(), apLoc, ac.NmPerLongitude()), ac.MagneticVariation())
 	if math.HeadingDifference(ac.Heading(), bearingToAirport) > visualMaxBearingOff {
 		return VisualEligibility{
 			Distance:         dist,
@@ -545,8 +562,7 @@ func (s *Sim) checkSpontaneousVisualRequest(ac *Aircraft) {
 	}
 
 	if ac.VisualApproachRequestDistance > 0 {
-		ap := s.State.Airports[ac.FlightPlan.ArrivalAirport]
-		dist := math.NMDistance2LL(ac.Position(), ap.Location)
+		dist := math.NMDistance2LL(ac.Position(), ac.ArrivalAirportLocation())
 		if dist > ac.VisualApproachRequestDistance {
 			return
 		}
