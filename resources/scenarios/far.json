@@ -1,0 +1,1400 @@
+{
+  "tracon": "FAR",
+  "airports": {
+    "KFAR": {
+      "approaches": {
+        "R9": {
+          "cifp_id": "R9"
+        },
+        "R18": {
+          "cifp_id": "R18"
+        },
+        "I18": {
+          "full_name": "ILS Runway 18",
+          "runway": "18",
+          "type": "ILS",
+          "waypoints": ["KENIE/faf/a2500+"]
+        },
+        "R27": {
+          "cifp_id": "R27"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        },
+        "I36": {
+          "cifp_id": "I36"
+        }
+      },
+      "departure_routes": {
+        "9": {
+          "MOT": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 MOT"
+          },
+          "PAWSS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 PAWSS"
+          },
+          "TVF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 TVF"
+          },
+          "BJI": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 BJI"
+          },
+          "AXN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 AXN"
+          },
+          "FSD": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 FSD"
+          },
+          "ABR": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 ABR"
+          },
+          "JMS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 JMS"
+          },
+          "HSTIN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 HSTIN"
+          },
+          "WINDD": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 WINDD"
+          },
+          "RST": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 RST"
+          },
+          "RWF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 RWF"
+          },
+          "GOLLF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR27/h086 GOLLF"
+          }
+        },
+        "18": {
+          "MOT": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 MOT"
+          },
+          "PAWSS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 PAWSS"
+          },
+          "TVF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 TVF"
+          },
+          "BJI": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 BJI"
+          },
+          "AXN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 AXN"
+          },
+          "FSD": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 FSD"
+          },
+          "ABR": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 ABR"
+          },
+          "JMS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 JMS"
+          },
+          "HSTIN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 HSTIN"
+          },
+          "WINDD": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 WINDD"
+          },
+          "RST": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 RST"
+          },
+          "RWF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 RWF"
+          },
+          "GOLLF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR36/h176 GOLLF"
+          }
+        },
+        "27": {
+          "MOT": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 MOT"
+          },
+          "PAWSS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 PAWSS"
+          },
+          "TVF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 TVF"
+          },
+          "BJI": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 BJI"
+          },
+          "AXN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 AXN"
+          },
+          "FSD": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 FSD"
+          },
+          "ABR": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 ABR"
+          },
+          "JMS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 JMS"
+          },
+          "HSTIN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 HSTIN"
+          },
+          "WINDD": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 WINDD"
+          },
+          "RST": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 RST"
+          },
+          "RWF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 RWF"
+          },
+          "GOLLF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR9/h266 GOLLF"
+          }
+        },
+        "36": {
+          "MOT": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 MOT"
+          },
+          "PAWSS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 PAWSS"
+          },
+          "TVF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 TVF"
+          },
+          "BJI": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 BJI"
+          },
+          "AXN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 AXN"
+          },
+          "FSD": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 FSD"
+          },
+          "ABR": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 ABR"
+          },
+          "JMS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 JMS"
+          },
+          "HSTIN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 HSTIN"
+          },
+          "WINDD": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 WINDD"
+          },
+          "RST": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 RST"
+          },
+          "RWF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 RWF"
+          },
+          "GOLLF": {
+            "cleared_altitude": 5000,
+            "waypoints": "_FAR18/h356 GOLLF"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "cpt"
+            },
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KMOT",
+          "route": "MOT",
+          "exit": "MOT"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "cpt"
+            },
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KXWA",
+          "route": "MOT XWA",
+          "exit": "MOT"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "aip"
+            },
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            }
+          ],
+          "altitude": 14000,
+          "destination": "KMOT",
+          "route": "MOT",
+          "exit": "MOT"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "aip"
+            },
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            }
+          ],
+          "altitude": 14000,
+          "destination": "KXWA",
+          "route": "MOT XWA",
+          "exit": "MOT"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "ndu"
+            }
+          ],
+          "altitude": 6000,
+          "destination": "KGFK",
+          "route": "PAWSS V181 GFK",
+          "exit": "GFK"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "altitude": 10000,
+          "destination": "KGFK",
+          "route": "PAWSS V181 GFK",
+          "exit": "GFK"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "cpt"
+            },
+            {
+              "fleet": "default",
+              "icao": "aip"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KTVF",
+          "route": "TVF",
+          "exit": "TVF"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KDLH",
+          "route": "BJI DLH",
+          "exit": "BJI"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "cpt"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KBJI",
+          "route": "BJI",
+          "exit": "BJI"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            }
+          ],
+          "altitude": 15000,
+          "destination": "KDLH",
+          "route": "BJI DLH",
+          "exit": "BJI"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "b752",
+              "icao": "fdx"
+            }
+          ],
+          "altitude": 37000,
+          "destination": "KMEM",
+          "route": "RWF SAAGS WHOLL BRBBQ3",
+          "exit": "RWF"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "aay"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KSFB",
+          "route": "RWF DSM IRK FAM J151 VUZ KYLEG TTHOR3",
+          "exit": "RWF"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "b752",
+              "icao": "ups"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KSDF",
+          "route": "RST DBQ BDF SHARE JMONY2",
+          "exit": "RST"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KSTP",
+          "route": "GOLLF GEP1",
+          "exit": "GOLLF"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KFCM",
+          "route": "GOLLF GEP1",
+          "exit": "GOLLF"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KSTP",
+          "route": "GOLLF GEP1",
+          "exit": "GOLLF"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KFCM",
+          "route": "GOLLF GEP1",
+          "exit": "GOLLF"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "edv"
+            },
+            {
+              "fleet": "b73x",
+              "icao": "dal"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KMSP",
+          "route": "WINDD BAINY3",
+          "exit": "WINDD"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "skw"
+            },
+            {
+              "fleet": "default",
+              "icao": "eny"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KORD",
+          "route": "HSTIN Q156 ZZIPR FYTTE7",
+          "exit": "HSTIN"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KFSD",
+          "route": "FSD",
+          "exit": "FSD"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            }
+          ],
+          "altitude": 25000,
+          "destination": "KFSD",
+          "route": "FSD",
+          "exit": "FSD"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "eny"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KDFW",
+          "route": "FSD MCI RRNET SEEVR4",
+          "exit": "FSD"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "altitude": 6000,
+          "destination": "KABR",
+          "route": "ABR",
+          "exit": "ABR"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KRAP",
+          "route": "ABR RAP",
+          "exit": "ABR"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "altitude": 12000,
+          "destination": "KABR",
+          "route": "ABR",
+          "exit": "ABR"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "altitude": 16000,
+          "destination": "KRAP",
+          "route": "ABR RAP",
+          "exit": "ABR"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "eja"
+            },
+            {
+              "fleet": "default",
+              "icao": "skw"
+            },
+            {
+              "fleet": "default",
+              "icao": "fft"
+            },
+            {
+              "fleet": "short",
+              "icao": "ual"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KDEN",
+          "route": "ABR NYTRO AALLE4",
+          "exit": "ABR"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "aay"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            }
+          ],
+          "altitude": 36000,
+          "destination": "KLAS",
+          "route": "ABR KD87W KU72S KU63Q STEWW CHOWW4",
+          "exit": "ABR"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "cpt"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KBIS",
+          "route": "JMS",
+          "exit": "JMS"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "cpt"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KDIK",
+          "route": "JMS DIK",
+          "exit": "JMS"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            },
+            {
+              "fleet": "default",
+              "icao": "aip"
+            }
+          ],
+          "altitude": 12000,
+          "destination": "KBIS",
+          "route": "JMS",
+          "exit": "JMS"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "eja"
+            },
+            {
+              "fleet": "default",
+              "icao": "aip"
+            }
+          ],
+          "altitude": 16000,
+          "destination": "KDIK",
+          "route": "JMS DIK",
+          "exit": "JMS"
+        }
+      ],
+      "exit_categories": {
+        "MOT": "WEST",
+        "GFK": "NORTH",
+        "TVF": "NORTH",
+        "BJI": "EAST",
+        "RWF": "SOUTH",
+        "RST": "SOUTH",
+        "GOLLF": "EAST",
+        "WINDD": "EAST",
+        "HSTIN": "SOUTH",
+        "FSD": "SOUTH",
+        "ABR": "SOUTH",
+        "JMS": "WEST"
+      },
+      "tower_list": 1
+    }
+  },
+  "inbound_flows": {
+    "NW FAR ARR HIGH": {
+      "arrivals": [
+        {
+          "waypoints": "N047.09.46.200,W097.58.19.800 N047.04.02.400,W097.42.27.000/ho FAR",
+          "cruise_altitude": 15000,
+          "initial_controller": "C24",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "aip",
+                "fleet": "default",
+                "airport": "KMOT"
+              },
+              {
+                "icao": "aip",
+                "fleet": "default",
+                "airport": "KXWA"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KMOT"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KMOT"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KXWA"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KXWA"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KXWA"
+              },
+              {
+                "icao": "cpt",
+                "fleet": "default",
+                "airport": "KXWA"
+              },
+              {
+                "icao": "cpt",
+                "fleet": "default",
+                "airport": "KMOT"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "N FAR ARR LOW": {
+      "arrivals": [
+        {
+          "waypoints": "N047.36.10.800,W097.05.15.000 N047.26.51.600,W097.02.34.800/ho FAR",
+          "cruise_altitude": 5000,
+          "initial_controller": "21E",
+          "initial_altitude": 5000,
+          "assigned_altitude": 5000,
+          "initial_speed": 120,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "ndu",
+                "fleet": "default",
+                "airport": "KGFK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "E FAR ARR LOW": {
+      "arrivals": [
+        {
+          "waypoints": "N047.12.53.400,W095.41.51.600 N047.06.39.00,W095.58.15.000/ho FAR",
+          "cruise_altitude": 6000,
+          "initial_controller": "C25",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 120,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "cpt",
+                "fleet": "default",
+                "airport": "KBJI"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KBJI"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KDLH"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KDLH"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KBJI"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "E FAR ARR HIGH": {
+      "arrivals": [
+        {
+          "waypoints": "N047.12.53.400,W095.41.51.600 N047.06.39.00,W095.58.15.000/ho FAR",
+          "cruise_altitude": 14000,
+          "initial_controller": "C25",
+          "initial_altitude": 12000,
+          "assigned_altitude": 12000,
+          "initial_speed": 250,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KDLH"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KDLH"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KDLH"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SE FAR ARR LOW": {
+      "arrivals": [
+        {
+          "waypoints": "N046.17.30.600,W095.54.01.200 N046.28.51.600,W096.17.23.400/ho FAR",
+          "cruise_altitude": 6000,
+          "initial_controller": "C24",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 120,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KFCM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KSTP"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KFCM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KSTP"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SE FAR ARR HIGH": {
+      "arrivals": [
+        {
+          "waypoints": "N046.17.30.600,W095.54.01.200 N046.28.56.400,W096.17.26.400/ho FAR",
+          "cruise_altitude": 20000,
+          "initial_controller": "C11",
+          "initial_altitude": 10000,
+          "assigned_altitude": 10000,
+          "initial_speed": 250,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "dal",
+                "fleet": "b73x",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "edv",
+                "fleet": "default",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KSTP"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KFCM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KSTP"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KFCM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KSTP"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KFCM"
+              },
+              {
+                "icao": "skw",
+                "fleet": "default",
+                "airport": "KORD"
+              },
+              {
+                "icao": "eny",
+                "fleet": "default",
+                "airport": "KORD"
+              },
+              {
+                "icao": "fdx",
+                "fleet": "b752",
+                "airport": "KMEM"
+              },
+              {
+                "icao": "aay",
+                "fleet": "default",
+                "airport": "KSFB"
+              },
+              {
+                "icao": "ups",
+                "fleet": "b752",
+                "airport": "KSDF"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SW FAR ARR HIGH": {
+      "arrivals": [
+        {
+          "waypoints": "N046.20.01.800,W097.20.46.800 N046.26.49.200,W097.12.34.800/ho FAR",
+          "cruise_altitude": 35000,
+          "initial_controller": "C24",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KRAP"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KRAP"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KABR"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "ual",
+                "fleet": "short",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "aay",
+                "fleet": "default",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "skw",
+                "fleet": "default",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "fft",
+                "fleet": "default",
+                "airport": "KDEN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "W FAR ARR LOW": {
+      "arrivals": [
+        {
+          "waypoints": "N046.51.21.600,W097.47.48.600 N046.50.03.000,W097.36.48.000/ho FAR",
+          "cruise_altitude": 7000,
+          "initial_controller": "C24",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 120,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KBIS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KDIK"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KBIS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KDIK"
+              },
+              {
+                "icao": "cpt",
+                "fleet": "default",
+                "airport": "KBIS"
+              },
+              {
+                "icao": "cpt",
+                "fleet": "default",
+                "airport": "KDIK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "W FAR ARR HIGH": {
+      "arrivals": [
+        {
+          "waypoints": "N046.51.21.600,W097.47.48.600 N046.50.03.000,W097.36.48.000/ho FAR",
+          "cruise_altitude": 15000,
+          "initial_controller": "C24",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "airports": [ "KFAR" ],
+          "airlines": {
+            "KFAR": [
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KBIS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KDIK"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KBIS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KDIK"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KBIS"
+              },
+              {
+                "icao": "eja",
+                "fleet": "default",
+                "airport": "KDIK"
+              },
+              {
+                "icao": "aip",
+                "fleet": "default",
+                "airport": "KBIS"
+              },
+              {
+                "icao": "aip",
+                "fleet": "default",
+                "airport": "KDIK"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "FAR - 36",
+  "fixes": {
+    "_FAR": "46.91187781551483,-96.82852503945666",
+    "_FAR9": "46.927143,-96.82733",
+    "_FAR27": "46.92700,-96.80212",
+    "_FAR18": "46.93287,-96.81612",
+    "_FAR36": "46.90821,-96.81641",
+    "_FAR13": "46.91413,-96.82150",
+    "_FAR31": "46.90647,-96.81118",
+    "AA": "47.01033,-96.81716"
+  },
+  "name": "KFAR",
+  "scenarios": {
+    "FAR - 36": {
+      "arrival_runways": [
+        {
+          "airport": "KFAR",
+          "runway": "36"
+        }
+      ],
+      "inbound_rates": {
+        "NW FAR ARR HIGH": {
+          "KFAR": 1
+        },
+        "N FAR ARR LOW": {
+          "KFAR": 4
+        },
+        "E FAR ARR LOW": {
+          "KFAR": 1
+        },
+        "E FAR ARR HIGH": {
+          "KFAR": 1
+        },
+        "SE FAR ARR LOW": {
+          "KFAR": 1
+        },
+        "SE FAR ARR HIGH": {
+          "KFAR": 3
+        },
+        "SW FAR ARR HIGH": {
+          "KFAR": 2
+        },
+        "W FAR ARR LOW": {
+          "KFAR": 1
+        },
+        "W FAR ARR HIGH": {
+          "KFAR": 1
+        }
+      },
+      "configuration": "36X",
+      "default_maps": ["FAR 003 RWY36"],
+      "departure_runways": [
+        {
+          "airport": "KFAR",
+          "rate": 10,
+          "runway": "36"
+        }
+      ],
+      "wind": {
+        "direction": "310-050"
+      }
+    },
+    "FAR - 18": {
+      "arrival_runways": [
+        {
+          "airport": "KFAR",
+          "runway": "18"
+        }
+      ],
+      "inbound_rates": {
+        "NW FAR ARR HIGH": {
+          "KFAR": 1
+        },
+        "N FAR ARR LOW": {
+          "KFAR": 4
+        },
+        "E FAR ARR LOW": {
+          "KFAR": 1
+        },
+        "E FAR ARR HIGH": {
+          "KFAR": 1
+        },
+        "SE FAR ARR LOW": {
+          "KFAR": 1
+        },
+        "SE FAR ARR HIGH": {
+          "KFAR": 3
+        },
+        "SW FAR ARR HIGH": {
+          "KFAR": 2
+        },
+        "W FAR ARR LOW": {
+          "KFAR": 1
+        },
+        "W FAR ARR HIGH": {
+          "KFAR": 1
+        }
+      },
+      "configuration": "18X",
+      "default_maps": ["FAR 002 RWY18"],
+      "departure_runways": [
+        {
+          "airport": "KFAR",
+          "rate": 10,
+          "runway": "18"
+        }
+      ],
+      "wind": {
+        "direction": "130-230"
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "control_positions": {
-    "1R": {
+    "1A": {
       "callsign": "LTS_APP",
       "frequency": 125100,
       "radio_name": "Altus Approach"
@@ -11,21 +11,94 @@
       "radio_name": "Altus Tower"
     }
   },
+  "facility_adaptations": {
+    "weather_station": "KLTS",
+    "configurations": {
+      "18X": {
+        "inbound_assignments": {
+          "Spaceport Arrival": "1A",
+          "Tinker Arrival": "1A",
+          "Robbins Arrival": "1A",
+          "AR197 Arrival": "1A"
+        },
+        "departure_assignments": {
+          "KLTS": "1A"
+        },
+        "default_consolidation": {
+          "1A": []
+        }
+      },
+      "36X": {
+        "inbound_assignments": {
+          "Spaceport Arrival": "1A",
+          "Tinker Arrival": "1A",
+          "Robbins Arrival": "1A",
+          "AR197 Arrival": "1A"
+        },
+        "departure_assignments": {
+          "KLTS": "1A"
+        },
+        "default_consolidation": {
+          "1A": []
+        }
+      }
+    },
+    "center": "34.66497676388447, -99.26710642015811",
+    "radar_sites": {
+      "LTS": {
+        "char": "S",
+        "position": "34.66348633054342, -99.28167230687048",
+        "elevation": 1488,
+        "primary_range": 55,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      }
+    },
+    "range": 60,
+    "scratchpads": {
+      "BFV": "BFV",
+      "ROCKN": "RKN",
+      "SPS": "SPS",
+      "CDS": "CDS"
+    },
+    "significant_points": {
+      "BFV": {},
+      "ROCKN": {},
+      "SPS": {},
+      "CDS": {}
+    },
+    "video_map_file": "videomaps/ZFW-stars.mappack",
+    "areas": {
+      "1": {
+        "system_altimeter": "KLTS",
+        "video_maps": [
+          "LTS MAIN",
+          "LTS TRSA",
+          "LTS R5061",
+          "LTS MVA",
+          "LTS DELTA",
+          "LTS MOA",
+          "SPS BNDY",
+          "ZFW__ZFW",
+          "FSI BNDY",
+          "GEO__GEO"
+        ]
+      }
+    }
+  },
   "handoff_ids": [
-    {
-      "id": "FSI",
-      "prefix": "2"
-    },
-    {
-      "id": "SPS",
-      "prefix": "1"
-    },
     {
       "id": "ZFW",
       "prefix": "C"
+    },
+    {
+      "id": "SPS",
+      "prefix": "2"
+    },
+    {
+      "id": "FSI",
+      "prefix": "3"
     }
-  ],
-  "facility_adaptations": {
-    "configurations": {}
-  }
+  ]
 }

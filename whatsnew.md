@@ -1,4 +1,4 @@
-- New scenarios: ZJX Central-Geneva (manaphy), ZTL (AsianEvxn), ZME (Noah Hunt), ZDC (Ryan H), ZAU (Zach Styka), ZFW (obmna), ZTL (Gus Agostinho)
+- New scenarios: ZJX Central-Geneva (manaphy), ZTL (AsianEvxn), ZME (Noah Hunt), ZDC (Ryan H), ZAU (Zach Styka), ZFW (obmna), ZTL (Gus Agostinho), FAR, LTS (Peyton)
 - Scenario updates: ZNY, ZAU, C90, Y90 (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA, SCT, ZLA (Ketan K), F11 (Michael Knight), C90 (Shane, Zach Styka), I90 (Ethan Hawes), EWR (aq86_), OKC (obmna)
 - Added support for using real-world flight data in scenarios) (Shane, Logan S)
 - Added support for fix pairs for controller assignment (radarcontacto)

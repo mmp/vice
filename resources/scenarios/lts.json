@@ -1,0 +1,566 @@
+{
+  "tracon": "LTS",
+  "airports": {
+    "KLTS": {
+      "approaches": {
+        "I18L": {
+          "full_name": "ILS Runway 18 Left",
+          "runway": "18L",
+          "type": "ILS",
+          "waypoints": ["JEPKI/iaf/a4000+ WOTSI/a3500+ JABLI/faf/a2900+ ZEXIX/a2040+"]
+        },
+        "RY8R": {
+          "full_name": "RNAV Y Runway 18 Right",
+          "runway": "18R",
+          "type": "RNAV",
+          "waypoints": [
+            "JONAA/iaf MRTHA/if/a3800+ CUDLO/a3500 HOGIS/faf/a2900+ FEGUS/a2040+",
+            "MRTHA/iaf/a3800+ CUDLO/a3500 HOGIS/faf/a2900+ FEGUS/a2040+",
+            "JUDOE/iaf MRTHA/iaf/a3800+ CUDLO/a3500 HOGIS/faf/a2900+ FEGUS/a2040+"
+          ]
+        },
+        "IZ8R": {
+          "full_name": "ILS Z Runway 18 Right",
+          "runway": "18R",
+          "type": "ILS",
+          "waypoints": ["MRTHA/iaf/a3800+ WATGA/a3300+ HOGIS/faf/a2900+ JAGUG/a2040+"]
+        },
+        "RZ8L": {
+          "full_name": "RNAV Z Runway 18 Left",
+          "runway": "18L",
+          "type": "RNAV",
+          "waypoints": [
+            "JONAA/iaf JEPKI/if/a4000+ HOGRU/a3400+ JABLI/faf/a2900+ JIDGU/a2040+",
+            "JEPKI/iaf/a4000+ HOGRU/a3400+ JABLI/faf/a2900+ JIDGU/a2040+",
+            "JUDOE/iaf JEPKI/if/a4000+ HOGRU/a3400+ JABLI/faf/a2900+ JIDGU/a2040+"
+          ]
+        },
+        "RZ8R": {
+          "full_name": "RNAV Z Runway 18 Right",
+          "runway": "18R",
+          "type": "RNAV",
+          "waypoints": [
+            "JONAA/iaf MRTHA/if/a3800+ CUDLO/a3500+ HOGIS/faf/a2900+ FEGUS/a2040+",
+            "MRTHA/iaf/a3800+ CUDLO/a3500+ HOGIS/faf/a2900+ FEGUS/a2040+",
+            "JUDOE/iaf MRTHA/if/a3800+ CUDLO/a3500+ HOGIS/faf/a2900+ FEGUS/a2040+"
+          ]
+        },
+        "RX8R": {
+          "full_name": "RNAV X Runway 18 Right",
+          "runway": "18R",
+          "type": "RNAV",
+          "waypoints": [
+            "ZOCKS/iaf/a8000 FOXIN/a5500+ PELUE/a4300+/s200-/arc3.7 AFAVO/a3400+/s200-/arc1.8 DEWBO/a3200+/s200-/arc1.8 HOGIS/faf/a2900+"
+          ]
+        },
+        "RY8L": {
+          "full_name": "RNAV Y Runway 18 Left",
+          "runway": "18L",
+          "type": "RNAV",
+          "waypoints": ["JEPKI/iaf/a4000+ HOGRU/a3400+ JABLI/faf/a2900+"]
+        },
+        "I36R": {
+          "full_name": "ILS Runway 36 Right",
+          "runway": "36R",
+          "type": "ILS",
+          "waypoints": ["CIPNO/iaf/a3100+ CINVA/faf/a2900+ WIGTO/a1780+"]
+        },
+        "RY6L": {
+          "full_name": "RNAV Y Runway 36 Left",
+          "runway": "36L",
+          "type": "RNAV",
+          "waypoints": [
+            "MORGE/iaf OKKIE/if/a3100+ WAVIS/a3100 LODNE/faf/a3000+ SACYO/a1800+",
+            "OKKIE/iaf/a3100+ WAVIS/a3100 LODNE/faf/a3000+ SACYO/a1800+",
+            "FIBEK/iaf OKKIE/if/a3100+ WAVIS/a3100 LODNE/faf/a3000+ SACYO/a1800+"
+          ]
+        },
+        "IZ6L": {
+          "full_name": "ILS Z Runway 36 Left",
+          "runway": "36L",
+          "type": "ILS",
+          "waypoints": ["OKKIE/iaf/a3100+ LODNE/faf/a3000+ SACYO/a1800+"]
+        },
+        "RZ6L": {
+          "full_name": "RNAV Z Runway 36 Left",
+          "runway": "36L",
+          "type": "RNAV",
+          "waypoints": [
+            "MORGE/iaf OKKIE/if/a3100+ LODNE/faf/a3000+ SACYO/a1800+",
+            "OKKIE/iaf/a3100+ LODNE/faf/a3000+ SACYO/a1800+",
+            "FIBEK/iaf OKKIE/if/a3100+ LODNE/faf/a3000+ SACYO/a1800+"
+          ]
+        },
+        "RZ6R": {
+          "full_name": "RNAV Z Runway 36 Right",
+          "runway": "36R",
+          "type": "RNAV",
+          "waypoints": [
+            "MORGE/iaf CIPNO/if/a3100+ CINVA/faf/a2900+ WIGTO/a1780+",
+            "CIPNO/iaf/a3100+ CINVA/faf/a2900+ WIGTO/a1780+",
+            "FIBEK/iaf CIPNO/if/a3100+ CINVA/faf/a2900+ WIGTO/a1780+"
+          ]
+        },
+        "RX6L": {
+          "full_name": "RNAV X Runway 36 Left",
+          "runway": "36L",
+          "type": "RNAV",
+          "waypoints": [
+            "ZOCKS/iaf/a8000 JETEN/a5500+ WOTEM/a4300+/s200-/arc3.7 BEVEH/a3500+/s200-/arc1.8 ODAGE/a3300+/s200-/arc1.8 LODNE/faf/a3000+"
+          ]
+        },
+        "RY6R": {
+          "full_name": "RNAV Y Runway 36 Right",
+          "runway": "36R",
+          "type": "RNAV",
+          "waypoints": ["CIPNO/iaf/a3100+ CINVA/faf/a2900+"]
+        },
+        "V18R": {
+          "full_name": "VOR Runway 18 Right",
+          "runway": "18R",
+          "type": "VOR",
+          "waypoints": [
+            "ZOCKS/iaf/a4000-9000/arc17.2 BLAIR/if/a3800+ WEDNI/a3300+ AXENE/faf/a3000+ JETOT/a2040+",
+            "BLAIR/iaf/a3800+ WEDNI/a3300+ AXENE/faf/a3000+ JETOT/a2040+"
+          ]
+        },
+        "V36L": {
+          "full_name": "VOR Runway 36 Left",
+          "runway": "36L",
+          "type": "VOR",
+          "waypoints": [
+            "ZOCKS/iaf/a4000-9000/arc19 HESSS/if/a3100+ CAXOX/faf/a3000+ HALAB/a1840+",
+            "HESSS/iaf/a3100+ CAXOX/faf/a3000+ HALAB/a1840+"
+          ]
+        }
+      },
+      "departure_routes": {
+        "18R": {
+          "BFV": {
+            "cleared_altitude": 9000,
+            "sid": "ROCKN3",
+            "waypoints": "WUDUR/a7000- AUDDI/a7000- KENNL/a7000- WONLI/a7000- ROCKN BFV"
+          },
+          "ROCKN": {
+            "cleared_altitude": 9000,
+            "sid": "ROCKN3",
+            "waypoints": "WUDUR/a7000- AUDDI/a7000- KENNL/a7000- WONLI/a7000- ROCKN"
+          },
+          "SPS": {
+            "cleared_altitude": 9000,
+            "sid": "OKKIE3",
+            "waypoints": "CEBEX/a7000- OKKIE/a4000-7000 FEDER SPS"
+          },
+          "LTS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_LTS36L/h176"
+          },
+          "CDS": {
+            "cleared_altitude": 9000,
+            "sid": "OKKIE3",
+            "waypoints": "CEBEX/a7000- OKKIE/a4000-7000 CDS"
+          }
+        },
+        "36L": {
+          "BFV": {
+            "cleared_altitude": 9000,
+            "sid": "ROCKN3",
+            "waypoints": "BUDBE ROCKN BFV"
+          },
+          "ROCKN": {
+            "cleared_altitude": 9000,
+            "sid": "ROCKN3",
+            "waypoints": "BUDBE ROCKN"
+          },
+          "SPS": {
+            "cleared_altitude": 9000,
+            "sid": "OKKIE3",
+            "waypoints": "BUDBE/a7000- JUNGO/a7000- KENNL/a7000- OKKIE/a4000-7000 FEDER SPS"
+          },
+          "LTS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_LTS18R/h356"
+          },
+          "CDS": {
+            "cleared_altitude": 9000,
+            "sid": "OKKIE3",
+            "waypoints": "BUDBE/a7000- JUNGO/a7000- KENNL/a7000- OKKIE/a4000-7000 CDS"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "OILER"
+            },
+            {
+              "fleet": "default",
+              "icao": "NITRO"
+            },
+            {
+              "fleet": "default",
+              "icao": "JUMBO"
+            },
+            {
+              "fleet": "default",
+              "icao": "TRIBE"
+            },
+            {
+              "fleet": "default",
+              "icao": "CHAOS"
+            },
+            {
+              "fleet": "default",
+              "icao": "DASH"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KCSM",
+          "route": "BFV",
+          "exit": "BFV"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "OILER"
+            },
+            {
+              "fleet": "default",
+              "icao": "NITRO"
+            },
+            {
+              "fleet": "default",
+              "icao": "CHAOS"
+            },
+            {
+              "fleet": "default",
+              "icao": "DASH"
+            }
+          ],
+          "altitude": 15000,
+          "destination": "KTIK",
+          "route": "ROCKN BROMA CCASH1",
+          "exit": "ROCKN"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "JUMBO"
+            },
+            {
+              "fleet": "default",
+              "icao": "TRIBE"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KWRB",
+          "route": "SPS BYP SQS LGC",
+          "exit": "SPS"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "OILER"
+            },
+            {
+              "fleet": "default",
+              "icao": "NITRO"
+            },
+            {
+              "fleet": "default",
+              "icao": "JUMBO"
+            },
+            {
+              "fleet": "default",
+              "icao": "TRIBE"
+            },
+            {
+              "fleet": "default",
+              "icao": "CHAOS"
+            },
+            {
+              "fleet": "default",
+              "icao": "DASH"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KLTS",
+          "route": "LTS",
+          "exit": "LTS"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "OILER"
+            },
+            {
+              "fleet": "default",
+              "icao": "NITRO"
+            },
+            {
+              "fleet": "default",
+              "icao": "CHAOS"
+            },
+            {
+              "fleet": "default",
+              "icao": "DASH"
+            }
+          ],
+          "altitude": 24000,
+          "destination": "KLTS",
+          "route": "CDS ARIP",
+          "exit": "CDS"
+        }
+      ],
+      "exit_categories": {
+        "BFV": "North",
+        "ROCKN": "North",
+        "SPS": "South",
+        "LTS": "Local",
+        "CDS": "West"
+      },
+      "tower_list": 1
+    }
+  },
+  "inbound_flows": {
+    "Spaceport Arrival": {
+      "arrivals": [
+        {
+          "waypoints": "BFV N035.03.18.000,W099.13.37.200/ho LTS",
+          "cruise_altitude": 8000,
+          "initial_controller": "C35",
+          "initial_altitude": 8000,
+          "assigned_altitude": 8000,
+          "initial_speed": 250,
+          "airports": [ "KLTS" ],
+          "airlines": {
+            "KLTS": [
+              {
+                "icao": "OILER",
+                "fleet": "default",
+                "airport": "KCSM"
+              },
+              {
+                "icao": "NITRO",
+                "fleet": "default",
+                "airport": "KCSM"
+              },
+              {
+                "icao": "JUMBO",
+                "fleet": "default",
+                "airport": "KCSM"
+              },
+              {
+                "icao": "TRIBE",
+                "fleet": "default",
+                "airport": "KCSM"
+              },
+              {
+                "icao": "CHAOS",
+                "fleet": "default",
+                "airport": "KCSM"
+              },
+              {
+                "icao": "DASH",
+                "fleet": "default",
+                "airport": "KCSM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Tinker Arrival": {
+      "arrivals": [
+        {
+          "waypoints": "N035.02.03.000,W098.35.10.800 N034.58.40.200,W098.44.49.200/ho HBR LTS",
+          "cruise_altitude": 14000,
+          "initial_controller": "C35",
+          "initial_altitude": 8000,
+          "assigned_altitude": 8000,
+          "initial_speed": 250,
+          "airports": [ "KLTS" ],
+          "airlines": {
+            "KLTS": [
+              {
+                "icao": "OILER",
+                "fleet": "default",
+                "airport": "KTIK"
+              },
+              {
+                "icao": "NITRO",
+                "fleet": "default",
+                "airport": "KTIK"
+              },
+              {
+                "icao": "CHAOS",
+                "fleet": "default",
+                "airport": "KTIK"
+              },
+              {
+                "icao": "DASH",
+                "fleet": "default",
+                "airport": "KTIK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Robbins Arrival": {
+      "arrivals": [
+        {
+          "waypoints": "N034.30.06.600,W098.28.48.000 N034.33.29.400,W098.44.06.600/ho LTS",
+          "cruise_altitude": 34000,
+          "initial_controller": "C34",
+          "initial_altitude": 8000,
+          "assigned_altitude": 8000,
+          "initial_speed": 250,
+          "airports": [ "KLTS" ],
+          "airlines": {
+            "KLTS": [
+              {
+                "icao": "JUMBO",
+                "fleet": "default",
+                "airport": "KWRB"
+              },
+              {
+                "icao": "TRIBE",
+                "fleet": "default",
+                "airport": "KWRB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "AR197 Arrival": {
+      "arrivals": [
+        {
+          "waypoints": "N034.33.29.400,W100.40.42.000 N034.35.39.600,W100.15.04.200/ho LTS",
+          "cruise_altitude": 24000,
+          "initial_controller": "C34",
+          "initial_altitude": 9000,
+          "assigned_altitude": 9000,
+          "initial_speed": 250,
+          "airports": [ "KLTS" ],
+          "airlines": {
+            "KLTS": [
+              {
+                "icao": "OILER",
+                "fleet": "default",
+                "airport": "KLTS"
+              },
+              {
+                "icao": "NITRO",
+                "fleet": "default",
+                "airport": "KLTS"
+              },
+              {
+                "icao": "CHAOS",
+                "fleet": "default",
+                "airport": "KLTS"
+              },
+              {
+                "icao": "DASH",
+                "fleet": "default",
+                "airport": "KLTS"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "LTS - 36",
+  "fixes": {
+    "ARIP": "N034.11.48.000,W101.47.56.400",
+    "_LTS18R": "34.68247868479536, -99.27382790483871",
+    "_LTS36L": "34.64555660294955, -99.2738296064445"
+  },
+  "name": "KLTS",
+  "scenarios": {
+    "LTS - 36": {
+      "arrival_runways": [
+        {
+          "airport": "KLTS",
+          "runway": "36L"
+        },
+        {
+          "airport": "KLTS",
+          "runway": "36R"
+        }
+      ],
+      "inbound_rates": {
+        "Spaceport Arrival": {
+          "KLTS": 4
+        },
+        "Tinker Arrival": {
+          "KLTS": 1
+        },
+        "Robbins Arrival": {
+          "KLTS": 1
+        },
+        "AR197 Arrival": {
+          "KLTS": 4
+        }
+      },
+      "configuration": "36X",
+      "default_maps": ["LTS MAIN"],
+      "departure_runways": [
+        {
+          "airport": "KLTS",
+          "rate": 10,
+          "runway": "36L"
+        }
+      ],
+      "wind": {
+        "direction": "310-050"
+      }
+    },
+    "LTS - 18": {
+      "arrival_runways": [
+        {
+          "airport": "KLTS",
+          "runway": "18L"
+        },
+        {
+          "airport": "KLTS",
+          "runway": "18R"
+        }
+      ],
+      "inbound_rates": {
+        "Spaceport Arrival": {
+          "KLTS": 4
+        },
+        "Tinker Arrival": {
+          "KLTS": 1
+        },
+        "Robbins Arrival": {
+          "KLTS": 1
+        },
+        "AR197 Arrival": {
+          "KLTS": 4
+        }
+      },
+      "configuration": "18X",
+      "default_maps": ["LTS MAIN"],
+      "departure_runways": [
+        {
+          "airport": "KLTS",
+          "rate": 10,
+          "runway": "18R"
+        }
+      ],
+      "wind": {
+        "direction": "130-230"
+      }
+    }
+  }
+}

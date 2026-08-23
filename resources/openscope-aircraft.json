@@ -11075,7 +11075,7 @@
       }
     },
     {
-      "name": "Boeing Globemaster",
+      "name": "Boeing C-17 Globemaster",
       "icao": "C17",
       "engines": {
         "number": 4,
@@ -11089,22 +11089,22 @@
       },
       "ceiling": 45000,
       "rate": {
-        "climb": 2000,
-        "descent": 2500,
-        "accelerate": 3,
-        "decelerate": 2
+        "climb": 2500,
+        "descent": 2200,
+        "accelerate": 7,
+        "decelerate": 5
       },
       "runway": {
-        "takeoff": 1.905,
-        "landing": 1.478
+        "takeoff": 2.5,
+        "landing": 1.0
       },
       "speed": {
-        "min": 120,
-        "landing": 115,
-        "cruise": 310,
-        "cruiseM": 0.75,
-        "max": 460,
-        "maxM": 0.76
+        "min": 150,
+        "landing": 135,
+        "cruise": 450,
+        "cruiseM": 0.77,
+        "max": 480,
+        "maxM": 0.82
       },
       "capability": {
         "ils": true,
@@ -15631,6 +15631,47 @@
         "cruiseM": 0.77,
         "max": 540,
         "maxM": 0.8
+      },
+      "capability": {
+        "ils": true,
+        "fix": true
+      },
+      "turn": {
+        "maxBankAngle": 25,
+        "maxBankRate": 5
+      }
+    },
+    {
+      "name": "Boeing KC-135R",
+      "icao": "K35R",
+      "engines": {
+        "number": 4,
+        "type": "J"
+      },
+      "weightClass": "H",
+      "category": {
+        "srs": 3,
+        "lahso": null,
+        "cwt": "C"
+      },
+      "ceiling": 50000,
+      "rate": {
+        "climb": 2500,
+        "descent": 1800,
+        "accelerate": 7,
+        "decelerate": 5
+      },
+      "runway": {
+        "takeoff": 2.7,
+        "landing": 0.8
+      },
+      "speed": {
+        "min": 150,
+        "landing": 135,
+        "cruise": 460,
+        "cruiseM": 0.77,
+        "max": 504,
+        "maxM": 0.9
       },
       "capability": {
         "ils": true,

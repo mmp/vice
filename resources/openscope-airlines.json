@@ -20799,6 +20799,72 @@
       }
     },
     {
+      "icao": "OILER",
+      "name": "US Air Force",
+      "callsign": {
+        "name": "Oiler",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["K35R", 1]]
+      }
+    },
+    {
+      "icao": "NITRO",
+      "name": "US Air Force",
+      "callsign": {
+        "name": "Nitro",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["K35R", 1]]
+      }
+    },
+    {
+      "icao": "JUMBO",
+      "name": "US Air Force",
+      "callsign": {
+        "name": "Jumbo",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["C17", 1]]
+      }
+    },
+    {
+      "icao": "TRIBE",
+      "name": "US Air Force",
+      "callsign": {
+        "name": "Tribe",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["C17", 1]]
+      }
+    },
+    {
+      "icao": "CHAOS",
+      "name": "US Air Force",
+      "callsign": {
+        "name": "Chaos",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["B762", 1]]
+      }
+    },
+    {
+      "icao": "DASH",
+      "name": "US Air Force",
+      "callsign": {
+        "name": "Dash",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["B762", 1]]
+      }
+    },
+    {
       "icao": "tyson",
       "name": "Tyson",
       "callsign": {
@@ -21103,7 +21169,10 @@
         "callsignFormats": ["###", "####"]
       },
       "fleets": {
-        "default": [["C208", 1]]
+        "default": [
+          ["C208", 30],
+          ["C408", 10]
+        ]
       }
     },
     {

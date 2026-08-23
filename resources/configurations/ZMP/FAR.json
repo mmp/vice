@@ -1,32 +1,141 @@
 {
   "control_positions": {
-    "1E": {
-      "callsign": "FAR_E_APP",
+    "1A": {
+      "callsign": "FAR_N_APP",
       "frequency": 120400,
-      "radio_name": "Fargo Approach"
+      "radio_name": "Fargo approach"
+    },
+    "1B": {
+      "callsign": "FAR_S_APP",
+      "frequency": 125125,
+      "radio_name": "Fargo approach"
     },
     "1T": {
       "callsign": "FAR_TWR",
       "frequency": 133800,
-      "radio_name": "Fargo Tower"
+      "radio_name": "Fargo tower"
+    }
+  },
+  "facility_adaptations": {
+    "weather_station": "KFAR",
+    "configurations": {
+      "36X": {
+        "inbound_assignments": {
+          "NW FAR ARR HIGH": "1A",
+          "N FAR ARR LOW": "1A",
+          "NE FAR ARR": "1A",
+          "E FAR ARR LOW": "1A",
+          "E FAR ARR HIGH": "1A",
+          "SE FAR ARR LOW": "1A",
+          "SE FAR ARR HIGH": "1A",
+          "S FAR ARR LOW": "1A",
+          "S FAR ARR HIGH": "1A",
+          "SW FAR ARR HIGH": "1A",
+          "W FAR ARR LOW": "1A",
+          "W FAR ARR HIGH": "1A"
+        },
+        "departure_assignments": {
+          "KFAR": "1A"
+        },
+        "default_consolidation": {
+          "1A": ["1B"]
+        }
+      },
+      "18X": {
+        "inbound_assignments": {
+          "NW FAR ARR HIGH": "1A",
+          "N FAR ARR LOW": "1A",
+          "NE FAR ARR": "1A",
+          "E FAR ARR LOW": "1A",
+          "E FAR ARR HIGH": "1A",
+          "SE FAR ARR LOW": "1A",
+          "SE FAR ARR HIGH": "1A",
+          "S FAR ARR LOW": "1A",
+          "S FAR ARR HIGH": "1A",
+          "SW FAR ARR HIGH": "1A",
+          "W FAR ARR LOW": "1A",
+          "W FAR ARR HIGH": "1A"
+        },
+        "departure_assignments": {
+          "KFAR": "1A"
+        },
+        "default_consolidation": {
+          "1A": ["1B"]
+        }
+      }
     },
-    "1W": {
-      "callsign": "FAR_W_APP",
-      "frequency": 125125,
-      "radio_name": "Fargo Approach"
+    "center": "46.92172280577498,-96.81624791351915",
+    "radar_sites": {
+      "FAR": {
+        "char": "S",
+        "position": "46.91187781551483,-96.82852503945666",
+        "elevation": 961,
+        "primary_range": 55,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      }
+    },
+    "range": 60,
+    "scratchpads": {
+      "MOT": "MOT",
+      "PAWSS": "PAW",
+      "TVF": "TVF",
+      "BJI": "BJI",
+      "AXN": "AXN",
+      "FSD": "FSD",
+      "ABR": "ABR",
+      "JMS": "JMS",
+      "HSTIN": "HST",
+      "WINDD": "WIN",
+      "RST": "RST",
+      "RWF": "RWF",
+      "GOLLF": "GOL"
+    },
+    "significant_points": {
+      "MOT": {},
+      "PAWSS": {},
+      "TVF": {},
+      "BJI": {},
+      "AXN": {},
+      "FSD": {},
+      "ABR": {},
+      "JMS": {},
+      "HSTIN": {},
+      "WINDD": {},
+      "RST": {},
+      "RWF": {},
+      "GOLLF": {}
+    },
+    "video_map_file": "videomaps/ZMP-stars.mappack",
+    "areas": {
+      "1": {
+        "system_altimeter": "KFAR",
+        "video_maps": [
+          "FAR 001 TOWER",
+          "FAR 002 RWY18",
+          "FAR 003 RWY36",
+          "FAR 004 ROADS",
+          "FAR 005 3NM MVA",
+          "FAR 006 RNAV",
+          "FAR 007 SATRNAV",
+          "FAR 008 FLOOD",
+          "FAR 009 GPSSAT",
+          "FAR 010 5NM MVA",
+          "FAR 022 FLCK 18",
+          "FAR 023 FLCK 36"
+        ]
+      }
     }
   },
   "handoff_ids": [
     {
-      "id": "RDR",
-      "prefix": "1"
-    },
-    {
       "id": "ZMP",
       "prefix": "C"
+    },
+    {
+      "id": "RDR",
+      "prefix": "2"
     }
-  ],
-  "facility_adaptations": {
-    "configurations": {}
-  }
+  ]
 }
