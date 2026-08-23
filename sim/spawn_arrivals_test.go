@@ -2,12 +2,15 @@ package sim
 
 import (
 	"errors"
+	"io"
+	"log/slog"
 	"slices"
 	"strings"
 	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 )
 
@@ -320,42 +323,49 @@ func TestSuitableArrivals(t *testing.T) {
 // works, so one stuck at the head would stall all of them.
 func TestZeroRateArrivalsDoNotBlock(t *testing.T) {
 	day := av.FlightDataDayNumber(time.Date(2026, time.April, 15, 0, 0, 0, 0, time.UTC))
-	arrival := func(airport, callsign, group string) publishedFlight {
-		return publishedFlight{
-			flight: av.Flight{Airport: airport, Callsign: callsign, Other: "KATL",
-				AircraftType: "B738", Day: day, Minute: 8 * 60},
-			placement: arrivalPlacement{group: group},
+	spawn := NewSimTime(time.Date(2026, time.April, 15, 8, 0, 0, 0, time.UTC))
+	arrival := func(airport, callsign, group string) ScheduledArrival {
+		return ScheduledArrival{
+			ScheduledFlight: ScheduledFlight{Callsign: callsign, AircraftType: "B738",
+				DepartureAirport: "KATL", ArrivalAirport: airport,
+				Source: TrafficSourceHistorical, SpawnTime: spawn, Day: day, Minute: 8 * 60},
+			Group: group,
 		}
 	}
 
-	p := &publishedTrafficProvider{arrivals: []publishedFlight{
+	s := &Sim{
+		lg:       &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))},
+		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
+		State: &CommonState{DynamicState: DynamicState{
+			SimTime: spawn,
+			LaunchConfig: LaunchConfig{
+				InboundFlowRates: map[string]map[string]float32{
+					"PUCKY1": {"KFRG": 0, "KJFK": 12},
+					"CAMRN5": {"KJFK": 12},
+				},
+				InboundFlowEnabled: map[string]map[string]bool{
+					"PUCKY1": {"KFRG": false, "KJFK": true},
+					"CAMRN5": {"KJFK": true},
+				},
+			}}},
+	}
+	s.Schedule.Arrivals = []ScheduledArrival{
 		arrival("KFRG", "DAL1", "PUCKY1"), // PUCKY1 lands nothing at KFRG
 		arrival("KFRG", "DAL2", "PUCKY1"),
 		arrival("KJFK", "DAL3", "PUCKY1"), // but it does at KJFK
 		arrival("KJFK", "DAL4", "CAMRN5"), // and this one belongs to another flow
-	}}
-
-	s := &Sim{State: &CommonState{DynamicState: DynamicState{
-		LaunchConfig: LaunchConfig{InboundFlowEnabled: map[string]map[string]bool{
-			"PUCKY1": {"KFRG": false, "KJFK": true},
-			"CAMRN5": {"KJFK": true},
-		}}}}}
-	rates := map[string]float32{"KFRG": 0, "KJFK": 12}
-
-	index := p.nextArrivalFor(s, "PUCKY1", rates)
-	if index < 0 {
-		t.Fatal("PUCKY1 found nothing to fly")
-	}
-	if got := p.arrivals[index].flight.Callsign; got != "DAL3" {
-		t.Errorf("PUCKY1 picked %s, expected DAL3 with the KFRG arrivals discarded", got)
-	}
-	if p.discardedArrivals["KFRG"] != 2 {
-		t.Errorf("discarded %v, expected both KFRG arrivals", p.discardedArrivals)
 	}
 
-	// The other flow steps over PUCKY1's rather than queueing behind it.
-	if index := p.nextArrivalFor(s, "CAMRN5", rates); index < 0 ||
-		p.arrivals[index].flight.Callsign != "DAL4" {
-		t.Errorf("CAMRN5 did not find its own arrival")
+	// The KFRG arrivals are discarded when due rather than deferring, so the
+	// KJFK ones behind them are reached; creating those fails in this bare
+	// test sim (there are no inbound flows to fly), but only after they were
+	// taken up in their turn.
+	s.spawnScheduledArrivals()
+
+	if s.discardedArrivals["KFRG"] != 2 {
+		t.Errorf("discarded %v, expected both KFRG arrivals", s.discardedArrivals)
+	}
+	if n := len(s.Schedule.Arrivals); n != 0 {
+		t.Errorf("%d arrivals left in the queue, expected all processed", n)
 	}
 }

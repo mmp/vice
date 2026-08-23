@@ -34,32 +34,20 @@ type AircraftCommandRequest struct {
 	STTDebugLogs      []string
 }
 
-func (c *ControlClient) TakeOrReturnLaunchControl() {
-	c.addCall(makeRPCCall(c.client.Go(server.TakeOrReturnLaunchControlRPC, c.controllerToken, nil, nil),
-		func(err error) {
-			if err != nil {
-				c.PostEvent(sim.Event{
-					Type:        sim.StatusMessageEvent,
-					WrittenText: err.Error(),
-				})
-			}
-		}))
+func (c *ControlClient) LaunchAircraft(flight sim.LaunchFlight, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.LaunchAircraftRPC, &server.LaunchAircraftArgs{
+		ControllerToken: c.controllerToken,
+		Flight:          flight,
+	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) LaunchDeparture(ac sim.Aircraft, rwy string) {
-	c.addCall(makeRPCCall(c.client.Go(server.LaunchAircraftRPC, &server.LaunchAircraftArgs{
+func (c *ControlClient) RecycleLaunchAircraft(flight sim.LaunchFlight, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.RecycleLaunchAircraftRPC, &server.RecycleLaunchAircraftArgs{
 		ControllerToken: c.controllerToken,
-		Aircraft:        ac,
-		DepartureRunway: rwy,
-	}, nil, nil), nil))
-}
-
-func (c *ControlClient) LaunchArrivalOverflight(ac sim.Aircraft) {
-	c.addCall(makeRPCCall(c.client.Go(server.LaunchAircraftRPC, &server.LaunchAircraftArgs{
-		ControllerToken: c.controllerToken,
-		Aircraft:        ac,
-		DepartureRunway: "",
-	}, nil, nil), nil))
+		Flight:          flight,
+	}, &update, nil), &update, callback))
 }
 
 func (c *ControlClient) AddMETARAirport(airport string) {
@@ -277,32 +265,6 @@ func (c *ControlClient) SetWaypointCommands(commands string) {
 	}, nil, nil), nil))
 }
 
-func (c *ControlClient) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *sim.Aircraft,
-	callback func(error)) {
-	c.addCall(makeRPCCall(c.client.Go(server.CreateDepartureRPC, &server.CreateDepartureArgs{
-		ControllerToken: c.controllerToken,
-		Airport:         airport,
-		Runway:          runway,
-		Category:        category,
-		Rules:           rules,
-	}, ac, nil), callback))
-}
-
-func (c *ControlClient) CreateArrival(group, airport string, ac *sim.Aircraft, callback func(error)) {
-	c.addCall(makeRPCCall(c.client.Go(server.CreateArrivalRPC, &server.CreateArrivalArgs{
-		ControllerToken: c.controllerToken,
-		Group:           group,
-		Airport:         airport,
-	}, ac, nil), callback))
-}
-
-func (c *ControlClient) CreateOverflight(group string, ac *sim.Aircraft, callback func(error)) {
-	c.addCall(makeRPCCall(c.client.Go(server.CreateOverflightRPC, &server.CreateOverflightArgs{
-		ControllerToken: c.controllerToken,
-		Group:           group,
-	}, ac, nil), callback))
-}
-
 func (c *ControlClient) CreateRestrictionArea(ra av.RestrictionArea, callback func(int, error)) {
 	var result server.CreateRestrictionAreaResultArgs
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.CreateRestrictionAreaRPC, &server.RestrictionAreaArgs{
@@ -435,14 +397,6 @@ func (c *ControlClient) DeleteAllAircraft(callback func(err error)) {
 	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.DeleteAllAircraftRPC, &server.DeleteAircraftArgs{
 		ControllerToken: c.controllerToken,
-	}, &update, nil), &update, callback))
-}
-
-func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(err error)) {
-	var update server.SimStateUpdate
-	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.DeleteAircraftRPC, &server.DeleteAircraftListArgs{
-		ControllerToken: c.controllerToken,
-		Aircraft:        aircraft,
 	}, &update, nil), &update, callback))
 }
 

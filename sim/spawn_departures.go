@@ -72,28 +72,22 @@ func exitRoutesHaveVariedSIDs(exitRoutes map[av.ExitID]*av.ExitRoute) bool {
 	return false
 }
 
-func (s *Sim) spawnDepartures() {
+// spawnVFRDepartures spawns rate-based VFR departures. VFR traffic isn't part
+// of the pregenerated schedule: its destinations depend on live arrival
+// congestion and its routes on the wind-selected runway.
+func (s *Sim) spawnVFRDepartures() {
+	if s.State.LaunchConfig.DepartureMode != LaunchAutomatic {
+		return
+	}
 	now := s.State.SimTime
 
 	for airport, runways := range s.DepartureState {
 		for runway, depState := range runways {
-			// Possibly spawn another aircraft, depending on how much time has
-			// passed since the last one.
-			if now.After(depState.NextIFRSpawn) {
-				ac, delay, err := s.activeTrafficProvider().createIFRDeparture(s, airport, runway)
-				if err != nil {
-					s.lg.Warnf("unable to create IFR departure: %v", err)
-				}
-				if ac != nil && err == nil {
-					s.addDepartureToPool(ac, runway, false /* not manual launch */)
-				}
-				depState.NextIFRSpawn = now.Add(max(time.Millisecond, delay))
-			}
 			if now.After(depState.NextVFRSpawn) {
 				ac, err := s.makeNewVFRDeparture(airport, runway)
 				launched := ac != nil && err == nil
 				if launched {
-					s.addDepartureToPool(ac, runway, false /* not manual launch */)
+					s.addDepartureToPool(ac, runway, false /* not manual launch */, TrafficSourceScenario)
 				}
 				// Also skip the slot if there was nowhere to send the
 				// aircraft; otherwise we'd try again every second for as
@@ -426,31 +420,6 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 	return wait
 }
 
-func (s *Sim) makeNewIFRDeparture(airport string, runway av.RunwayID) (ac *Aircraft, err error) {
-	depState := s.DepartureState[airport][runway]
-	if len(depState.Gate) >= 10 {
-		// There's a backup; hold off on more.
-		return
-	}
-
-	if depState.IFRSpawnRate == 0 {
-		return
-	}
-
-	if rates, ok := s.State.LaunchConfig.DepartureRates[airport][runway]; ok {
-		category, rateSum := sampleRateMap(rates, s.State.LaunchConfig.DepartureRateScale, s.Rand)
-		if rateSum > 0 {
-			ac, err = s.createIFRDepartureNoLock(airport, runway, category)
-
-			if ac != nil && !ac.HoldForRelease {
-				ac.ReleaseTime = s.State.SimTime
-			}
-		}
-	}
-
-	return
-}
-
 // errNoVFRDestination is returned when arrivals are backed up at every
 // airport that takes VFR traffic, leaving nowhere to send a VFR departure
 // at the moment.
@@ -587,7 +556,6 @@ func (rls *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
 		return
 	}
 	rls.IFRSpawnRate = r
-	rls.NextIFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
 	rls.cullDepartures(s)
 }
 
@@ -611,7 +579,7 @@ func (rls RunwayLaunchState) Dump(airport string, runway av.RunwayID, now Time) 
 		strings.Join(util.MapSlice(rls.ReleasedVFR, callsign), ", "),
 		strings.Join(util.MapSlice(rls.Sequenced, callsign), ", "))
 	if rls.IFRSpawnRate > 0 {
-		fmt.Printf("    next IFR in %s, rate %f\n", rls.NextIFRSpawn.Sub(now), rls.IFRSpawnRate)
+		fmt.Printf("    IFR rate %f\n", rls.IFRSpawnRate)
 	}
 	if rls.VFRSpawnRate > 0 {
 		fmt.Printf("    next VFR in %s, rate %f\n", rls.NextVFRSpawn.Sub(now), rls.VFRSpawnRate)
@@ -670,87 +638,22 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 	nasFp.InboundHandoffController = pos
 }
 
-func (s *Sim) CreateIFRDeparture(departureAirport string, runway av.RunwayID, category string) (*Aircraft, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-	ac, err := s.createIFRDepartureNoLock(departureAirport, runway, category)
-	if err == nil {
-		s.publish()
-	}
-	return ac, err
-}
-
-// createIFRDepartureNoLock creates an IFR departure aircraft from the specified airport/runway.
-// It validates the airport and runway, selects a random departure route, samples an
-// aircraft/airline, initializes the flight plan and navigation, builds the NAS flight
-// plan, assigns controller (handling virtual vs human controllers), and registers with STARS.
-func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.RunwayID, category string) (*Aircraft, error) {
-	ap, rwy, exitRoutes, err := s.departureConfiguration(departureAirport, runway, category)
+// createScheduledIFRDeparture creates the scenario IFR departure a schedule
+// entry describes; the runway, category, departure route, and identity were
+// all sampled when the entry was generated. All resource allocation--squawk,
+// flight strip, flight plan, list index--happens here.
+func (s *Sim) createScheduledIFRDeparture(e ScheduledDeparture) (*Aircraft, error) {
+	ap, rwy, exitRoutes, err := s.departureConfiguration(e.DepartureAirport, e.Runway, e.Category)
 	if err != nil {
 		return nil, err
 	}
-
-	// Sample uniformly, minding the category, if specified. The scenario's own
-	// generator needs airlines to fly; a departure without them is there for
-	// published traffic.
-	idx := rand.SampleFiltered(s.Rand, ap.Departures,
-		func(d av.Departure) bool {
-			_, ok := exitRoutes[d.Exit]
-			return ok && len(d.Airlines) > 0 &&
-				(rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
-		})
-	if idx == -1 {
-		return nil, fmt.Errorf("%s/%s: unable to find a valid departure", departureAirport, rwy.Runway)
+	if e.DepartureIndex < 0 || e.DepartureIndex >= len(ap.Departures) {
+		return nil, fmt.Errorf("%s/%s: no departure at index %d", e.DepartureAirport, rwy.Runway,
+			e.DepartureIndex)
 	}
-	dep := &ap.Departures[idx]
+	dep := &ap.Departures[e.DepartureIndex]
 
-	ac, err := filterAndSampleAircraft(s, dep.Airlines,
-		func(al av.DepartureAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
-		func(al av.DepartureAirline) (string, string) { return departureAirport, dep.Destination },
-		fmt.Sprintf("departures at %q", departureAirport))
-	if err != nil {
-		return nil, err
-	}
-
-	// The airline decides the aircraft type, so only now can the routes it
-	// flies be worked out; the exit may have none for it.
-	routes := av.ExitRoutesForAircraft(exitRoutes, ac.FlightPlan.AircraftType)
-	if _, ok := routes[dep.Exit]; !ok {
-		return nil, fmt.Errorf("%s/%s: no route to %s for a %s", departureAirport, rwy.Runway,
-			dep.Exit, ac.FlightPlan.AircraftType)
-	}
-
-	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, routes)
-}
-
-// createPublishedIFRDepartureNoLock creates a departure using the published
-// identity from a timetable or from historical flight data. Vice still resolves
-// the runway, exit, SID, route, altitude, and controller assignment from the
-// active scenario.
-// The categories are the ones the scenario is launching from this runway; the
-// one used is whichever gets the aircraft closest to where it really went,
-// rather than one sampled by rate. Published traffic takes its share of each
-// exit from the flights themselves.
-func (s *Sim) createPublishedIFRDepartureNoLock(flight av.Flight, departureAirport string,
-	runway av.RunwayID, categories []string, routedDestinations map[string][]string) (*Aircraft, error) {
-	callsign := strings.ToUpper(strings.TrimSpace(flight.Callsign))
-	if callsign == "" {
-		return nil, fmt.Errorf("published departure callsign is empty")
-	}
-
-	if av.CallsignClashesWithExisting(s.currentCallsigns(), callsign, s.EnforceUniqueCallsignSuffix) {
-		return nil, fmt.Errorf("published departure %s: %w", callsign, errCallsignInUse)
-	}
-
-	if _, ok := av.DB.AircraftPerformance[flight.AircraftType]; !ok {
-		return nil, fmt.Errorf(
-			"aircraft type %s is not present in the performance database",
-			flight.AircraftType,
-		)
-	}
-
-	placement, err := s.resolvePublishedDeparture(departureAirport, runway, categories,
-		flight.Other, flight.AircraftType, routedDestinations)
+	callsign, err := s.resolveScheduledCallsign(&e.ScheduledFlight, "departure")
 	if err != nil {
 		return nil, err
 	}
@@ -759,12 +662,59 @@ func (s *Sim) createPublishedIFRDepartureNoLock(flight av.Flight, departureAirpo
 		ADSBCallsign: av.ADSBCallsign(callsign),
 		Mode:         av.TransponderModeAltitude,
 	}
-	ac.InitializeFlightPlan(av.FlightRulesIFR, flight.AircraftType, departureAirport, flight.Other)
+	ac.InitializeFlightPlan(av.FlightRulesIFR, e.AircraftType, e.DepartureAirport, dep.Destination)
 
-	s.log("%s: departure %s->%s runway %s exit %s (%s)", callsign, departureAirport,
-		flight.Other, runway, placement.dep.Exit, placement.how)
+	routes := av.ExitRoutesForAircraft(exitRoutes, e.AircraftType)
+	if _, ok := routes[dep.Exit]; !ok {
+		return nil, fmt.Errorf("%s/%s: no route to %s for a %s", e.DepartureAirport, rwy.Runway,
+			dep.Exit, e.AircraftType)
+	}
 
-	return s.initializeIFRDepartureNoLock(ac, placement.ap, departureAirport, runway, &placement.dep,
+	return s.initializeIFRDepartureNoLock(ac, ap, e.DepartureAirport, e.Runway, dep, routes)
+}
+
+// createPublishedIFRDeparture creates a departure using the published identity
+// from a timetable or from historical flight data. Vice still resolves the
+// exit, SID, route, altitude, and controller assignment from the active
+// scenario.
+// The categories are the ones the scenario is launching from this runway; the
+// one used is whichever gets the aircraft closest to where it really went,
+// rather than one sampled by rate. Published traffic takes its share of each
+// exit from the flights themselves.
+func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.RunwayID,
+	categories []string) (*Aircraft, error) {
+	callsign := strings.ToUpper(strings.TrimSpace(e.Callsign))
+	if callsign == "" {
+		return nil, fmt.Errorf("published departure callsign is empty")
+	}
+
+	if av.CallsignClashesWithExisting(s.currentCallsigns(), callsign, s.EnforceUniqueCallsignSuffix) {
+		return nil, fmt.Errorf("published departure %s: %w", callsign, errCallsignInUse)
+	}
+
+	if _, ok := av.DB.AircraftPerformance[e.AircraftType]; !ok {
+		return nil, fmt.Errorf(
+			"aircraft type %s is not present in the performance database",
+			e.AircraftType,
+		)
+	}
+
+	placement, err := s.resolvePublishedDeparture(e.DepartureAirport, runway, categories,
+		e.ArrivalAirport, e.AircraftType, s.routedPairsIndex().destinationsByOrigin)
+	if err != nil {
+		return nil, err
+	}
+
+	ac := &Aircraft{
+		ADSBCallsign: av.ADSBCallsign(callsign),
+		Mode:         av.TransponderModeAltitude,
+	}
+	ac.InitializeFlightPlan(av.FlightRulesIFR, e.AircraftType, e.DepartureAirport, e.ArrivalAirport)
+
+	s.log("%s: departure %s->%s runway %s exit %s (%s)", callsign, e.DepartureAirport,
+		e.ArrivalAirport, runway, placement.dep.Exit, placement.how)
+
+	return s.initializeIFRDepartureNoLock(ac, placement.ap, e.DepartureAirport, runway, &placement.dep,
 		placement.exitRoutes)
 }
 
@@ -1298,11 +1248,10 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	return ac, err
 }
 
-// Note that this may fail without an error if it's having trouble finding a route.
-func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
+// sampleVFRDeparture samples a VFR departure from the given airport for a
+// manual launch slot. Note that it may fail without an error if it's having
+// trouble finding a route.
+func (s *Sim) sampleVFRDeparture(departureAirport string) (*Aircraft, error) {
 	// Sample destination airport: may be where we started from.
 	arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
 		s.vfrDestinationWeight)
@@ -1323,9 +1272,6 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 	}
 
 	ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.State.SimTime)
-	if ac != nil && err == nil {
-		s.publish()
-	}
 	return ac, err
 }
 

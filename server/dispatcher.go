@@ -48,18 +48,6 @@ func (sd *dispatcher) SignOff(token string, _ *struct{}) error {
 	return sd.sm.SignOff(token)
 }
 
-const TakeOrReturnLaunchControlRPC = "Sim.TakeOrReturnLaunchControl"
-
-func (sd *dispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
-	defer sd.sm.lg.CatchAndReportCrash()
-
-	c := sd.sm.LookupController(token)
-	if c == nil {
-		return ErrNoSimForControllerToken
-	}
-	return c.sim.TakeOrReturnLaunchControl(c.tcw)
-}
-
 type SetSimRateArgs struct {
 	ControllerToken string
 	Rate            float32
@@ -594,25 +582,6 @@ func (sd *dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *SimState
 	return err
 }
 
-type DeleteAircraftListArgs struct {
-	ControllerToken string
-	Aircraft        []sim.Aircraft
-}
-
-const DeleteAircraftRPC = "Sim.DeleteAircraft"
-
-func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *SimStateUpdate) error {
-	defer sd.sm.lg.CatchAndReportCrash()
-
-	c := sd.sm.LookupController(da.ControllerToken)
-	if c == nil {
-		return ErrNoSimForControllerToken
-	}
-	err := c.sim.DeleteAircraftSlice(c.tcw, da.Aircraft)
-	*update = c.GetStateUpdate()
-	return err
-}
-
 type SendRouteCoordinatesArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
@@ -775,93 +744,39 @@ func (sd *dispatcher) SetWaypointCommands(args *SetWaypointCommandsArgs, _ *stru
 
 type LaunchAircraftArgs struct {
 	ControllerToken string
-	Aircraft        sim.Aircraft
-	DepartureRunway string
+	Flight          sim.LaunchFlight
 }
 
 const LaunchAircraftRPC = "Sim.LaunchAircraft"
 
-func (sd *dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {
+func (sd *dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	c := sd.sm.LookupController(ls.ControllerToken)
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	c.sim.LaunchAircraft(ls.Aircraft, av.RunwayID(ls.DepartureRunway))
-	return nil
-}
-
-type CreateDepartureArgs struct {
-	ControllerToken string
-	Airport         string
-	Runway          string
-	Category        string
-	Rules           av.FlightRules
-}
-
-const CreateDepartureRPC = "Sim.CreateDeparture"
-
-func (sd *dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircraft) error {
-	defer sd.sm.lg.CatchAndReportCrash()
-
-	c := sd.sm.LookupController(da.ControllerToken)
-	if c == nil {
-		return ErrNoSimForControllerToken
-	}
-	var ac *sim.Aircraft
-	var err error
-	if da.Rules == av.FlightRulesIFR {
-		ac, err = c.sim.CreateIFRDeparture(da.Airport, av.RunwayID(da.Runway), da.Category)
-	} else {
-		ac, err = c.sim.CreateVFRDeparture(da.Airport)
-	}
-
-	if ac != nil && err == nil {
-		*depAc = *ac
+	err := c.sim.LaunchAircraft(c.tcw, ls.Flight)
+	if err == nil {
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
 
-type CreateArrivalArgs struct {
-	ControllerToken string
-	Group           string
-	Airport         string
-}
+type RecycleLaunchAircraftArgs LaunchAircraftArgs
 
-const CreateArrivalRPC = "Sim.CreateArrival"
+const RecycleLaunchAircraftRPC = "Sim.RecycleLaunchAircraft"
 
-func (sd *dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *sim.Aircraft) error {
+func (sd *dispatcher) RecycleLaunchAircraft(rs *RecycleLaunchAircraftArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	c := sd.sm.LookupController(aa.ControllerToken)
+	c := sd.sm.LookupController(rs.ControllerToken)
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	ac, err := c.sim.CreateArrival(aa.Group, aa.Airport)
+	err := c.sim.RecycleLaunchAircraft(c.tcw, rs.Flight)
 	if err == nil {
-		*arrAc = *ac
-	}
-	return err
-}
-
-type CreateOverflightArgs struct {
-	ControllerToken string
-	Group           string
-}
-
-const CreateOverflightRPC = "Sim.CreateOverflight"
-
-func (sd *dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *sim.Aircraft) error {
-	defer sd.sm.lg.CatchAndReportCrash()
-
-	c := sd.sm.LookupController(oa.ControllerToken)
-	if c == nil {
-		return ErrNoSimForControllerToken
-	}
-	ac, err := c.sim.CreateOverflight(oa.Group)
-	if err == nil {
-		*ofAc = *ac
+		*update = c.GetStateUpdate()
 	}
 	return err
 }

@@ -64,13 +64,8 @@ type Sim struct {
 	// Airport -> runway -> state
 	DepartureState map[string]map[av.RunwayID]*RunwayLaunchState
 	// Airport -> pattern state
-	PatternState map[string]*PatternState
-	// Key is inbound flow group name
-	NextInboundSpawn map[string]Time
-	// Key is inbound flow group name; overflights spawn on their own timer
-	// since they are always rate-based, regardless of the traffic source.
-	NextOverflightSpawn map[string]Time
-	NextVFFRequest      Time
+	PatternState   map[string]*PatternState
+	NextVFFRequest Time
 
 	Handoffs  map[ACID]Handoff
 	PointOuts map[ACID][]PointOut
@@ -113,21 +108,52 @@ type Sim struct {
 	prespawnUncontrolledOnly bool
 	prespawnPatternEligible  bool
 
-	NextPushStart Time // both w.r.t. sim time
-	PushEnd       Time
-
 	Rand *rand.Rand
 
 	// User-selected scenario start time before Vice rewinds the clock for prespawn.
 	StartTime Time
 
-	// historicalFlights are the flights a scenario using historical traffic was
-	// launched with, in time order.
-	historicalFlights []av.Flight
+	// Schedule holds the pregenerated IFR traffic the sim flies, for every
+	// traffic source.
+	Schedule FlightSchedule
 
-	// Runtime-only source for automatically generated IFR traffic. This is
-	// intentionally unexported so it is not part of saved simulation state.
-	trafficProvider trafficProvider
+	// When each kind's launches were switched to manual, so that switching
+	// back to automatic pushes its schedule later by the time spent there:
+	// every flight resumes as far from launch as it was when manual mode
+	// began, rather than a backlog spawning at once. Zero when automatic.
+	DepartureManualSince  Time
+	ArrivalManualSince    Time
+	OverflightManualSince Time
+
+	// routed caches the route-database index published departures consult.
+	routed *routedPairs
+
+	// discardedArrivals counts the published arrivals dropped at each airport
+	// because the scenario lands no traffic there, and discardedClashes the
+	// published flights dropped for each callsign something else was already
+	// flying; each is reported the first time it turns up.
+	discardedArrivals map[string]int
+	discardedClashes  map[string]int
+
+	// The manual launch slots' pending flights, serialized with the sim so a
+	// restored one shows the same aircraft. They hold no allocated resources.
+	// Keys are airport/runway/category for departures, group/airport for
+	// arrivals, the flow group for overflights, and the airport for VFR.
+	PendingDepartures  map[string]*ScheduledDeparture
+	PendingArrivals    map[string]*ScheduledArrival
+	PendingOverflights map[string]*ScheduledOverflight
+	PendingVFR         map[string]*Aircraft
+
+	// nextVFRSample throttles retries after failed VFR route sampling; it is
+	// just a retry timer, so a restored sim starting it fresh is fine.
+	nextVFRSample map[string]Time
+
+	// The launch control slots most recently built, cached per publication
+	// generation since every client's state update carries them.
+	launchSlotsBuilt     bool
+	launchSlotGen        uint64
+	launchDepartureSlots []DepartureLaunchSlot
+	launchInboundSlots   []InboundLaunchSlot
 
 	VoiceAssigner *VoiceAssigner
 
@@ -220,10 +246,8 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 	s := &Sim{
 		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
 
-		DepartureState:      make(map[string]map[av.RunwayID]*RunwayLaunchState),
-		PatternState:        make(map[string]*PatternState),
-		NextInboundSpawn:    make(map[string]Time),
-		NextOverflightSpawn: make(map[string]Time),
+		DepartureState: make(map[string]map[av.RunwayID]*RunwayLaunchState),
+		PatternState:   make(map[string]*PatternState),
 
 		ControlPositions:     config.ControlPositions,
 		InboundAssignments:   config.ControllerConfiguration.InboundAssignments,
@@ -457,10 +481,6 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 		s.Rand = rand.Make()
 	}
 
-	if s.NextOverflightSpawn == nil {
-		s.NextOverflightSpawn = make(map[string]Time)
-	}
-
 	s.wxProvider = provider
 	if s.wxModel == nil {
 		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.FacilityAdaptation.WeatherStation,
@@ -471,10 +491,6 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	restoreControllerFields(s.ControlPositions)
 	restoreControllerFields(s.State.Controllers)
 	restoreERAMCoordinationGeometry(s.State.ERAMCoordination, lg)
-
-	// The historical flights are derived from the facility's flight data, so
-	// they are read here rather than saved with the sim.
-	s.loadHistoricalFlights()
 }
 
 // restoreERAMCoordinationGeometry re-derives the json:"-" geometry (zone-area
@@ -569,12 +585,11 @@ func (s *Sim) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.Any("state", s.State),
 		slog.Any("departure_state", s.DepartureState),
-		slog.Any("next_inbound_spawn", s.NextInboundSpawn),
-		slog.Any("next_overflight_spawn", s.NextOverflightSpawn),
+		slog.Int("scheduled_departures", len(s.Schedule.Departures)),
+		slog.Int("scheduled_arrivals", len(s.Schedule.Arrivals)),
+		slog.Int("scheduled_overflights", len(s.Schedule.Overflights)),
 		slog.Any("automatic_handoffs", s.Handoffs),
-		slog.Any("automatic_pointouts", s.PointOuts),
-		slog.Time("next_push_start", s.NextPushStart.Time()),
-		slog.Time("push_end", s.PushEnd.Time()))
+		slog.Any("automatic_pointouts", s.PointOuts))
 }
 
 // log prints the provided message to stdout and posts it to the clients' event streams so that it

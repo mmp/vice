@@ -92,7 +92,8 @@ import (
 // 82: primary airport replaced by per-purpose settings: facility weather_station and system_altimeter, LaunchConfig.TimetableAirport
 // 83: LaunchConfig's published traffic percentages replaced by rate scales
 // 84: TrafficCountsResult gained AirportOperations, the preview's traffic totaled by airport
-const ViceSerializeVersion = 84
+// 85: pregenerated FlightSchedule replaced the traffic providers; launch control rework: server-side launch slots, LaunchFlight-keyed launch/recycle RPCs, Create*/DeleteAircraft RPCs and LaunchConfig.Controller removed
+const ViceSerializeVersion = 85
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

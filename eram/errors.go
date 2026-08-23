@@ -86,7 +86,6 @@ var eramErrorRemap = map[error]*ERAMError{
 	sim.ErrNoMatchingFlightPlan:            ErrERAMIllegalACID,
 	sim.ErrNoScratchpad:                    ErrERAMIllegalValue,
 	sim.ErrNoVFRAircraftForFlightFollowing: ErrERAMIllegalACID,
-	sim.ErrNotLaunchController:             ErrIllegalUserAction,
 	sim.ErrTCPAlreadyConsolidated:          ErrIllegalUserAction,
 	sim.ErrTCPNotConsolidated:              ErrIllegalUserAction,
 	sim.ErrTCWIsConsolidated:               ErrERAMIllegalPosition,

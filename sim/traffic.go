@@ -1,4 +1,4 @@
-// sim/traffic_provider.go
+// sim/traffic.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -17,42 +17,6 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// trafficProvider supplies automatically generated IFR aircraft to the
-// simulation. It also controls when the next departure request should occur;
-// scenario traffic uses a rate-based delay while timetable and historical
-// traffic use the next flight's published time. createInbound's rates map
-// arrival airports only: overflights aren't part of any traffic source's data,
-// so the Sim generates them itself on a rate-based timer.
-type trafficProvider interface {
-	createIFRDeparture(s *Sim, airport string, runway av.RunwayID) (*Aircraft, time.Duration, error)
-	createInbound(s *Sim, group string, rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error)
-}
-
-// scenarioTrafficProvider generates traffic from the scenario's own
-// definitions: the user sets the departure and arrival rates and the aircraft,
-// routes, and spacing are sampled from what the scenario declares.
-type scenarioTrafficProvider struct{}
-
-func (scenarioTrafficProvider) createIFRDeparture(s *Sim, airport string, runway av.RunwayID) (*Aircraft, time.Duration, error) {
-	ac, err := s.makeNewIFRDeparture(airport, runway)
-	depState := s.DepartureState[airport][runway]
-	return ac, randomWait(depState.IFRSpawnRate, false, s.Rand), err
-}
-
-func (scenarioTrafficProvider) createInbound(s *Sim, group string,
-	rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error) {
-	airport, rateSum := sampleRateMap(
-		rates,
-		s.State.LaunchConfig.InboundFlowRateScale,
-		s.Rand,
-	)
-
-	delay := randomWait(rateSum, pushActive, s.Rand)
-
-	ac, err := s.createArrivalNoLock(group, airport)
-	return ac, delay, err
-}
-
 const (
 	// flightSpawnLead is how far ahead of a flight's published time it enters
 	// the simulation. Historical published times are when the aircraft
@@ -64,9 +28,6 @@ const (
 	// departure is ready to leave the gate, so that it reaches the runway
 	// about when it really did.
 	flightTaxiAllowance = 5 * time.Minute
-
-	// idleDelay parks a spawn timer when there is nothing left to spawn.
-	idleDelay = 365 * 24 * time.Hour
 
 	// historicalFlightWindow is how much of the sim's clock a sim is launched
 	// with flight data for. A sim running longer than this runs out of
@@ -103,37 +64,6 @@ var (
 	// direction.
 	errNoPlausibleArrival = errors.New("no plausible arrival to fly")
 )
-
-// loadHistoricalFlights gathers the flights a scenario using historical traffic
-// flies: those at its airports over the window starting at the selected time.
-// They are derived from the facility's flight data rather than saved with the
-// sim, so this runs on restore as well as at launch; the provider skips
-// whatever is already in the past, so a restored sim picks up where it left off.
-func (s *Sim) loadHistoricalFlights() {
-	s.historicalFlights = nil
-	if s.State.LaunchConfig.TrafficSource != TrafficSourceHistorical {
-		return
-	}
-
-	departureAirports, arrivalAirports := s.State.LaunchConfig.IFRAirports()
-	flights, err := av.ReadFlightDataCells(util.GetResourcesFS(),
-		av.FlightDataCells(departureAirports, arrivalAirports))
-	if err != nil {
-		s.lg.Errorf("%s historical flight data: %v", s.State.Facility, err)
-		return
-	}
-
-	// Reach back to cover prespawn: the sim's clock starts PrespawnDuration
-	// before the selected time, and it warms up by flying the traffic from that
-	// half hour the same way the scenario's own generator would. Both ends reach
-	// as far as the fastest rate scale reads through the data, since the scale
-	// can be raised while the sim runs and this is the only place the flights
-	// are gathered.
-	start := s.StartTime.Time()
-	s.historicalFlights = av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
-		start.Add(-MaxPublishedRateScale*PrespawnDuration),
-		start.Add(MaxPublishedRateScale*historicalFlightWindow))
-}
 
 // IFRAirports returns every airport the scenario generates IFR traffic at, departures and
 // arrivals separately. It reads the rate maps, not the enable maps: which flows are switched on
@@ -190,24 +120,6 @@ func engineTypeFor(aircraftType string) string {
 	return ""
 }
 
-// publishedFlight is one flight waiting to enter the simulation, together with
-// the time it should be spawned.
-type publishedFlight struct {
-	flight av.Flight
-	spawn  Time
-
-	// placement is how the arrival was fitted into the scenario. It is resolved
-	// once, here: more than one flow can serve an origin and the flows are held
-	// in a map, so resolving it per call would pick a different one each time
-	// and no flow would ever agree that the arrival was its own.
-	placement arrivalPlacement
-
-	// dropReason is why no placement could be found for an arrival. The flight
-	// keeps its place in the queue so that the drop is reported when its spawn
-	// time comes around rather than in a heap at launch.
-	dropReason error
-}
-
 // arrivalPlacement is the inbound flow and arrival a published flight comes in
 // on, the route it files when the route database is what found it, the airport
 // standing in for its origin if the scenario has no way to fly it from where it
@@ -248,51 +160,6 @@ func (s *Sim) candidateArrivals(arrivalAirport string) []candidateArrival {
 		}
 	}
 	return candidates
-}
-
-// publishedTrafficProvider emits the flights a scenario was launched with--from
-// a built-in timetable or from historical flight data--in published order.
-// Departures are spawned at the gate ahead of their published time; arrivals
-// are spawned ahead of their touchdown time.
-type publishedTrafficProvider struct {
-	departures []publishedFlight
-
-	arrivals []publishedFlight
-
-	// routed indexes the route database, which both directions consult to fit a
-	// city pair it doesn't cover to one it does.
-	routed routedPairs
-
-	// discardedArrivals counts the arrivals dropped at each airport because the
-	// scenario lands no traffic there. It is reported the first time an airport
-	// turns up so the reason is visible without a line per flight.
-	discardedArrivals map[string]int
-
-	// discardedClashes likewise counts the flights dropped for each callsign
-	// something else was already flying when they came due.
-	discardedClashes map[string]int
-}
-
-// noteCallsignClash reports a published flight discarded because its callsign
-// was in use, the first time each one turns up.
-func (p *publishedTrafficProvider) noteCallsignClash(s *Sim, callsign string, err error) {
-	if p.discardedClashes == nil {
-		p.discardedClashes = make(map[string]int)
-	}
-	if p.discardedClashes[callsign] == 0 {
-		s.log("Dropping due to callsign clash %v", err)
-	}
-	p.discardedClashes[callsign]++
-}
-
-// newTimetableTrafficProvider prepares a built-in timetable's flights. A
-// timetable is a daily cycle without dates, so each flight is anchored to the
-// user-selected start time and the day plays out from there; flights in the
-// half hour before the start fall in the prespawn window rather than wrapping
-// to the end of the day. Published departure times are treated as pushback
-// times, so departures spawn at them directly.
-func newTimetableTrafficProvider(s *Sim, timetable Timetable) *publishedTrafficProvider {
-	return newPublishedTrafficProvider(s, timetableFlights(s.StartTime, timetable, &s.State.LaunchConfig), 0)
 }
 
 // timetableFlights anchors a timetable's daily cycle to the sim's start time,
@@ -346,13 +213,6 @@ func timetableFlights(startTime Time, timetable Timetable, lc *LaunchConfig) []a
 	})
 
 	return flights
-}
-
-// newHistoricalTrafficProvider prepares the historical flights a sim was
-// handed, in time order. Their published times are when they actually took off
-// or touched down, so departures spawn flightSpawnLead ahead of them.
-func newHistoricalTrafficProvider(s *Sim, flights []av.Flight) *publishedTrafficProvider {
-	return newPublishedTrafficProvider(s, flights, flightSpawnLead)
 }
 
 const (
@@ -732,106 +592,6 @@ func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
 	return kept, dropped
 }
 
-// newPublishedTrafficProvider builds the spawn queues from flights in time
-// order; departures spawn departureSpawnLead ahead of their published times and
-// arrivals flightSpawnLead ahead of theirs. Arrivals the scenario has no way to
-// fly stay in the queue with the reason, to be reported when their spawn times
-// come around.
-func newPublishedTrafficProvider(s *Sim, flights []av.Flight,
-	departureSpawnLead time.Duration) *publishedTrafficProvider {
-	p := &publishedTrafficProvider{routed: makeRoutedPairs()}
-
-	flights, rotorcraft := dropRotorcraft(flights)
-	// One real flight must enter the sim once, however many records it left in
-	// the data: the second aircraft to reach the runway under a callsign is
-	// turned away, and there is no second callsign to give it.
-	flights, repeated := dropRepeatedRecords(flights)
-	flights, returned := dropReturnedLegs(flights)
-
-	missed, unplaceable := 0, 0
-	// Why the arrivals that can't be flown can't be, so that a scenario losing
-	// a stream says which one rather than only how many.
-	dropped := make(map[string]int)
-	earliest := s.StartTime.Add(-PrespawnDuration)
-	if s.State.SimTime.After(earliest) {
-		earliest = s.State.SimTime
-	}
-
-	start := s.StartTime.Time()
-	departureScale := math.Clamp(s.State.LaunchConfig.PublishedDepartureRateScale, 0, MaxPublishedRateScale)
-	arrivalScale := math.Clamp(s.State.LaunchConfig.PublishedArrivalRateScale, 0, MaxPublishedRateScale)
-
-	for _, flight := range flights {
-		lead, scale := flightSpawnLead, arrivalScale
-		if flight.Departure {
-			lead, scale = departureSpawnLead, departureScale
-		}
-		if scale == 0 {
-			// This direction flies nothing.
-			continue
-		}
-		spawn := NewSimTime(publishedTrafficTime(flight.Time(), start, scale).Add(-lead))
-		// A flight whose spawn time has already gone by has been missed.
-		// Prespawn rewinds the clock before the selected start time, so compare
-		// against where the clock actually begins. Releasing a backlog all at
-		// once would swamp the runways rather than fill them.
-		if spawn.Before(earliest) {
-			missed++
-			continue
-		}
-
-		if flight.Departure {
-			p.departures = append(p.departures, publishedFlight{flight: flight, spawn: spawn})
-			continue
-		}
-
-		placement, err := s.placeArrival(flight.Airport, flight.Other, flight.AircraftType,
-			p.routed)
-		if err != nil {
-			unplaceable++
-			dropped[err.Error()]++
-		}
-		p.arrivals = append(p.arrivals, publishedFlight{flight: flight, spawn: spawn,
-			placement: placement, dropReason: err})
-	}
-
-	if len(flights) > 0 {
-		lead, scale := flightSpawnLead, arrivalScale
-		if flights[0].Departure {
-			lead, scale = departureSpawnLead, departureScale
-		}
-		if scale > 0 {
-			s.log("Published traffic: clock starts %s, first flight %s spawns %s",
-				earliest.Time().Format("2006-01-02 15:04:05Z"),
-				flights[0].Time().Format("2006-01-02 15:04:05Z"),
-				publishedTrafficTime(flights[0].Time(), start, scale).Add(-lead).Format("2006-01-02 15:04:05Z"))
-		}
-	}
-	summary := fmt.Sprintf("Published traffic: %d departures, %d arrivals to fly",
-		len(p.departures), len(p.arrivals)-unplaceable)
-	if unplaceable > 0 {
-		summary += fmt.Sprintf("; %d arrivals have no route to fly and will be dropped", unplaceable)
-	}
-	if missed > 0 {
-		summary += fmt.Sprintf("; skipped %d flights already due before the clock starts", missed)
-	}
-	if rotorcraft > 0 {
-		summary += fmt.Sprintf("; left out %d helicopter flights", rotorcraft)
-	}
-	if repeated > 0 {
-		summary += fmt.Sprintf("; merged %d flights the data records more than once", repeated)
-	}
-	if returned > 0 {
-		summary += fmt.Sprintf("; %d arrivals from another of the facility's airports are flying as departures", returned)
-	}
-	s.log("%s", summary)
-	for _, reason := range util.SortedMapKeys(dropped) {
-		s.log("Unflyable arrivals: %d x %s", dropped[reason], reason)
-	}
-
-	return p
-}
-
 // placeArrival decides how a published flight into arrivalAirport from origin
 // is flown: the inbound flow and arrival that carry it, the route it files, and
 // the airport standing in for its origin when neither the scenario nor the
@@ -1091,94 +851,6 @@ func hourDistance(h av.HourRanges, hour int) int {
 	return 12
 }
 
-func (p *publishedTrafficProvider) createIFRDeparture(s *Sim, airport string,
-	runway av.RunwayID) (*Aircraft, time.Duration, error) {
-	categories := s.State.LaunchConfig.enabledDepartureCategories(airport, runway)
-	if len(categories) == 0 {
-		// This runway isn't launching anything in this scenario. Leave its
-		// flights for the other runways and check back rather than dropping
-		// them, in case a flow is enabled while the sim runs.
-		return nil, time.Minute, nil
-	}
-
-	index := p.nextDepartureFor(s, airport, runway)
-	if index < 0 {
-		return nil, idleDelay, nil
-	}
-	published := p.departures[index]
-	if s.State.SimTime.Before(published.spawn) {
-		return nil, published.spawn.Sub(s.State.SimTime), nil
-	}
-
-	ac, err := s.createPublishedIFRDepartureNoLock(published.flight, airport, runway,
-		categories, p.routed.destinationsByOrigin)
-	p.departures = append(p.departures[:index], p.departures[index+1:]...)
-
-	if errors.Is(err, errCallsignInUse) {
-		p.noteCallsignClash(s, published.flight.Callsign, err)
-		return nil, p.departureDelay(s, airport, runway), nil
-	}
-	return ac, p.departureDelay(s, airport, runway), err
-}
-
-// nextDepartureFor returns the index of the next departure this runway should
-// launch, or -1 if it has none. A published flight leaves through the gate its
-// real route uses, so a runway steps over the flights that belong to another
-// runway the scenario is launching from rather than dropping them: JFK
-// departing 13L/R works the north and east gates off 13L and the south and west
-// ones off 13R. Flights no runway can fly are dropped as they come due, which
-// is when the drop is worth reporting.
-func (p *publishedTrafficProvider) nextDepartureFor(s *Sim, airport string,
-	runway av.RunwayID) int {
-	for i := 0; i < len(p.departures); {
-		published := p.departures[i]
-		if published.flight.Airport != airport {
-			i++
-			continue
-		}
-
-		err := p.departureFits(s, published.flight, runway)
-		if err == nil {
-			return i
-		}
-		if s.State.SimTime.Before(published.spawn) ||
-			p.anotherRunwayFits(s, published.flight, runway) {
-			i++
-			continue
-		}
-
-		s.log("%s: dropped departure %s->%s (%s): %v", published.flight.Callsign,
-			airport, published.flight.Other, published.flight.AircraftType, err)
-		p.departures = append(p.departures[:i], p.departures[i+1:]...)
-	}
-	return -1
-}
-
-// departureFits reports whether a runway can fly a published departure, giving
-// the reason when it can't.
-func (p *publishedTrafficProvider) departureFits(s *Sim, flight av.Flight, runway av.RunwayID) error {
-	categories := s.State.LaunchConfig.enabledDepartureCategories(flight.Airport, runway)
-	if len(categories) == 0 {
-		return fmt.Errorf("%s: the scenario launches nothing from this runway", runway)
-	}
-	_, err := s.findPublishedDeparture(flight.Airport, runway, categories, flight.Other,
-		flight.AircraftType, p.routed.destinationsByOrigin)
-	return err
-}
-
-// anotherRunwayFits reports whether some runway other than this one can fly a
-// published departure, in which case it waits for that runway rather than being
-// dropped.
-func (p *publishedTrafficProvider) anotherRunwayFits(s *Sim, flight av.Flight,
-	runway av.RunwayID) bool {
-	for other := range s.State.LaunchConfig.DepartureEnabled[flight.Airport] {
-		if other != runway && p.departureFits(s, flight, other) == nil {
-			return true
-		}
-	}
-	return false
-}
-
 // enabledDepartureCategories returns the categories the scenario is launching
 // from a runway, and nothing more: how many aircraft go where comes from the
 // published flights themselves.
@@ -1191,168 +863,4 @@ func (lc *LaunchConfig) enabledDepartureCategories(airport string, runway av.Run
 	}
 	slices.Sort(categories)
 	return categories
-}
-
-// departureDelay is how long until the next departure this runway launches is
-// due.
-func (p *publishedTrafficProvider) departureDelay(s *Sim, airport string,
-	runway av.RunwayID) time.Duration {
-	if i := p.nextDepartureFor(s, airport, runway); i >= 0 {
-		return max(time.Millisecond, p.departures[i].spawn.Sub(s.State.SimTime))
-	}
-	return idleDelay
-}
-
-func (p *publishedTrafficProvider) createInbound(s *Sim, group string,
-	rates map[string]float32, _ bool) (*Aircraft, time.Duration, error) {
-	index := p.nextArrivalFor(s, group, rates)
-	if index < 0 {
-		// Nothing left for this flow; come back if unplaceable arrivals still
-		// wait to be reported.
-		return nil, p.pendingDropDelay(s), nil
-	}
-
-	published := p.arrivals[index]
-	if s.State.SimTime.Before(published.spawn) {
-		return nil, published.spawn.Sub(s.State.SimTime), nil
-	}
-
-	ac, err := s.createPublishedArrivalNoLock(published.flight, published)
-	if errors.Is(err, errPublishedArrivalSpawnConflict) {
-		// Leave this arrival where it is and retry shortly, so that it keeps
-		// its place while the preceding one moves clear of the spawn point.
-		return nil, 5 * time.Second, nil
-	}
-	p.arrivals = append(p.arrivals[:index], p.arrivals[index+1:]...)
-
-	if errors.Is(err, errCallsignInUse) {
-		p.noteCallsignClash(s, published.flight.Callsign, err)
-		return nil, p.arrivalDelay(s, group, rates), nil
-	}
-	return ac, p.arrivalDelay(s, group, rates), err
-}
-
-// nextArrivalFor returns the index of the next arrival this inbound flow should
-// create, or -1 if it has none left. Each arrival belongs to exactly one flow,
-// so a flow steps over the others' rather than waiting behind them. Arrivals the
-// scenario can't fly are discarded here rather than held: leaving one at the
-// head of the queue would stall every arrival behind it.
-func (p *publishedTrafficProvider) nextArrivalFor(s *Sim, group string,
-	rates map[string]float32) int {
-	for i := 0; i < len(p.arrivals); {
-		published := p.arrivals[i]
-
-		if published.dropReason != nil {
-			// No placement was found when the queue was built; report the
-			// drop when the flight would have spawned, whichever flow's scan
-			// gets there first.
-			if s.State.SimTime.Before(published.spawn) {
-				i++
-				continue
-			}
-			s.log("%s: dropped arrival %s->%s (%s): %v", published.flight.Callsign,
-				published.flight.Other, published.flight.Airport, published.flight.AircraftType,
-				published.dropReason)
-			p.arrivals = append(p.arrivals[:i], p.arrivals[i+1:]...)
-			continue
-		}
-
-		if published.placement.group != group {
-			i++
-			continue
-		}
-
-		// The rates map is filtered upstream to hold only airports whose
-		// arrivals are in automatic mode.
-		_, automatic := rates[published.flight.Airport]
-		if !automatic || !s.State.LaunchConfig.InboundFlowEnabled[group][published.flight.Airport] {
-			// This scenario isn't landing traffic at that airport.
-			airport := published.flight.Airport
-			if p.discardedArrivals == nil {
-				p.discardedArrivals = make(map[string]int)
-			}
-			if p.discardedArrivals[airport] == 0 {
-				s.log("Discarding published arrivals at %s: %s lands no traffic there",
-					airport, group)
-			}
-			p.discardedArrivals[airport]++
-			p.arrivals = append(p.arrivals[:i], p.arrivals[i+1:]...)
-			continue
-		}
-		return i
-	}
-	return -1
-}
-
-func (p *publishedTrafficProvider) arrivalDelay(s *Sim, group string,
-	rates map[string]float32) time.Duration {
-	if index := p.nextArrivalFor(s, group, rates); index >= 0 {
-		return max(time.Millisecond, p.arrivals[index].spawn.Sub(s.State.SimTime))
-	}
-	return p.pendingDropDelay(s)
-}
-
-// pendingDropDelay is how long until the next arrival that couldn't be placed
-// is due to be reported, so that an otherwise idle flow still comes back to
-// say so.
-func (p *publishedTrafficProvider) pendingDropDelay(s *Sim) time.Duration {
-	delay := idleDelay
-	for i := range p.arrivals {
-		if p.arrivals[i].dropReason != nil {
-			delay = min(delay, max(time.Millisecond, p.arrivals[i].spawn.Sub(s.State.SimTime)))
-		}
-	}
-	return delay
-}
-
-type errorTrafficProvider struct{ err error }
-
-func (p errorTrafficProvider) createIFRDeparture(_ *Sim, _ string, _ av.RunwayID) (*Aircraft, time.Duration, error) {
-	return nil, time.Minute, p.err
-}
-func (p errorTrafficProvider) createInbound(_ *Sim, _ string,
-	_ map[string]float32, _ bool) (*Aircraft, time.Duration, error) {
-	return nil, time.Minute, p.err
-}
-
-func (s *Sim) activeTrafficProvider() trafficProvider {
-	if s.trafficProvider != nil {
-		return s.trafficProvider
-	}
-
-	lc := &s.State.LaunchConfig
-	switch lc.TrafficSource {
-	case TrafficSourceHistorical:
-		if len(s.historicalFlights) == 0 {
-			s.log("Traffic source: historical, but no flights were found for %s from %s",
-				s.State.Facility, s.StartTime.Time().Format("2006-01-02 15:04Z"))
-			s.trafficProvider = errorTrafficProvider{
-				err: fmt.Errorf("no historical flight data for %s at this time", s.State.Facility)}
-		} else {
-			s.log("Traffic source: historical, %d flights found for %s from %s",
-				len(s.historicalFlights), s.State.Facility,
-				s.StartTime.Time().Format("2006-01-02 15:04Z"))
-			s.trafficProvider = newHistoricalTrafficProvider(s, s.historicalFlights)
-		}
-
-	case TrafficSourceTimetable:
-		catalog, err := LoadAirportTimetables(lc.TimetableAirport)
-		if err != nil {
-			s.trafficProvider = errorTrafficProvider{err: err}
-			return s.trafficProvider
-		}
-		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
-		if !ok {
-			s.trafficProvider = errorTrafficProvider{err: fmt.Errorf("timetable %q not found for %s",
-				lc.TimetableID, lc.TimetableAirport)}
-			return s.trafficProvider
-		}
-		s.log("Traffic source: timetable %q for %s", timetable.Name, timetable.Airport)
-		s.trafficProvider = newTimetableTrafficProvider(s, timetable)
-
-	default:
-		s.log("Traffic source: scenario")
-		s.trafficProvider = scenarioTrafficProvider{}
-	}
-	return s.trafficProvider
 }

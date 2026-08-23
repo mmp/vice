@@ -29,11 +29,10 @@ type RunwayLaunchState struct {
 	IFRSpawnRate float32
 	VFRSpawnRate float32
 
-	// For each runway, when to create the next departing aircraft, based
-	// on the runway departure rate. The actual time an aircraft is
-	// launched may be later, e.g. if we need longer for wake turbulence
-	// separation, etc.
-	NextIFRSpawn Time
+	// NextVFRSpawn is when to create the runway's next VFR departure, based
+	// on its VFR rate; IFR departures come from the schedule. The actual
+	// time an aircraft is launched may be later, e.g. if we need longer for
+	// wake turbulence separation, etc.
 	NextVFRSpawn Time
 
 	// Aircraft follow the following flows:
@@ -121,9 +120,6 @@ func (ts TrafficSource) String() string {
 // passed back and forth between client and server: server provides them so client
 // can draw the UI for what's available, then client returns one back when launching.
 type LaunchConfig struct {
-	// Controller is the TCW in charge of the launch settings; if empty then
-	// launch control may be taken by any signed in controller.
-	Controller TCW
 	// LaunchManual or LaunchAutomatic, separate for each aircraft type
 	DepartureMode  int32
 	ArrivalMode    int32
@@ -441,19 +437,13 @@ func sumRateMap2(rates map[av.RunwayID]map[string]float32, scale float32) float3
 	return sum
 }
 
-// departureEnabledEqual reports whether two airport -> runway -> category ->
-// enabled maps hold the same values.
-func departureEnabledEqual(a, b map[string]map[av.RunwayID]map[string]bool) bool {
-	return maps.EqualFunc(a, b, func(a, b map[av.RunwayID]map[string]bool) bool {
-		return maps.EqualFunc(a, b, maps.Equal)
-	})
-}
-
 func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	// Update the next spawn time for any rates that changed.
+	old := s.State.LaunchConfig
+
+	// Update the runway launch state for any rates that changed.
 	for ap, rwyRates := range lc.DepartureRates {
 		for rwy, categoryRates := range rwyRates {
 			r := sumRateMap(categoryRates, lc.DepartureRateScale)
@@ -467,41 +457,18 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 		s.DepartureState[name][av.RunwayID(rwy.Id)].setVFRRate(s, r)
 	}
 
-	for group, groupRates := range lc.InboundFlowRates {
-		oldRates := s.State.LaunchConfig.InboundFlowRates[group]
-
-		var newSum, oldSum float32
-		for ap, rate := range groupRates {
-			if ap != "overflights" {
-				newSum += rate
-				oldSum += oldRates[ap]
-			}
-		}
-		newSum *= lc.InboundFlowRateScale
-		oldSum *= s.State.LaunchConfig.InboundFlowRateScale
-		if newSum != oldSum {
-			s.NextInboundSpawn[group] = s.State.SimTime.Add(randomInitialWait(newSum, s.Rand))
-		}
-
-		newOverflight := groupRates["overflights"] * lc.InboundFlowRateScale
-		oldOverflight := oldRates["overflights"] * s.State.LaunchConfig.InboundFlowRateScale
-		if newOverflight != oldOverflight {
-			s.NextOverflightSpawn[group] = s.State.SimTime.Add(randomInitialWait(newOverflight, s.Rand))
-		}
-	}
-
-	if lc.VFRDepartureRateScale != s.State.LaunchConfig.VFRDepartureRateScale {
+	if lc.VFRDepartureRateScale != old.VFRDepartureRateScale {
 		r := scaleRate(patternSpawnRate, lc.VFRDepartureRateScale)
 		for _, ps := range s.PatternState {
 			ps.NextSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
 		}
 	}
 
-	if lc.VFFRequestRate != s.State.LaunchConfig.VFFRequestRate {
+	if lc.VFFRequestRate != old.VFFRequestRate {
 		s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(lc.VFFRequestRate), s.Rand))
 	}
 
-	if lc.EmergencyAircraftRate != s.State.LaunchConfig.EmergencyAircraftRate {
+	if lc.EmergencyAircraftRate != old.EmergencyAircraftRate {
 		if lc.EmergencyAircraftRate > 0 {
 			delay := max(5*time.Minute, randomInitialWait(lc.EmergencyAircraftRate, s.Rand))
 			s.NextEmergencyTime = s.State.SimTime.Add(delay)
@@ -512,73 +479,15 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 
 	s.lg.Info("Set launch config", slog.Any("launch_config", lc))
 
-	// The timetable selection, the rate scales, and the per-flow enables all
-	// decide which flights are flown and when, so changing any of them has to
-	// rebuild the provider's queue.
-	providerChanged := lc.TrafficSource != s.State.LaunchConfig.TrafficSource ||
-		lc.TimetableID != s.State.LaunchConfig.TimetableID ||
-		lc.TimetableAirport != s.State.LaunchConfig.TimetableAirport ||
-		lc.TimetableStartMinute != s.State.LaunchConfig.TimetableStartMinute ||
-		lc.PublishedArrivalRateScale != s.State.LaunchConfig.PublishedArrivalRateScale ||
-		lc.PublishedDepartureRateScale != s.State.LaunchConfig.PublishedDepartureRateScale ||
-		!departureEnabledEqual(lc.DepartureEnabled, s.State.LaunchConfig.DepartureEnabled) ||
-		!maps.EqualFunc(lc.InboundFlowEnabled, s.State.LaunchConfig.InboundFlowEnabled, maps.Equal)
-
 	s.State.LaunchConfig = lc
-	if providerChanged {
-		s.trafficProvider = nil
-		for _, runways := range s.DepartureState {
-			for _, depState := range runways {
-				depState.NextIFRSpawn = s.State.SimTime
-			}
-		}
-	}
+	s.applyScheduleConfigChanges(&old)
+
 	s.publish()
 	return nil
 }
 
-func (s *Sim) TakeOrReturnLaunchControl(tcw TCW) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != tcw {
-		return ErrNotLaunchController
-	} else if lctrl == "" {
-		s.State.LaunchConfig.Controller = tcw
-		s.eventStream.Post(Event{
-			Type:        StatusMessageEvent,
-			WrittenText: string(tcw) + " is now controlling aircraft launches.",
-		})
-		s.lg.Debugf("%s: now controlling launches", tcw)
-		s.publish()
-		return nil
-	} else {
-		s.eventStream.Post(Event{
-			Type:        StatusMessageEvent,
-			WrittenText: string(s.State.LaunchConfig.Controller) + " is no longer controlling aircraft launches.",
-		})
-		s.lg.Debugf("%s: no longer controlling launches", tcw)
-		s.State.LaunchConfig.Controller = ""
-		s.publish()
-		return nil
-	}
-}
-
-func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway av.RunwayID) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	if departureRunway != "" && ac.HoldForRelease {
-		s.addDepartureToPool(&ac, departureRunway, true /* manual launch */)
-	} else {
-		s.addAircraftNoLock(ac)
-	}
-	s.publish()
-}
-
-func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch bool) {
-	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel,
-		s.State.LaunchConfig.TrafficSource, s.Rand)
+func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch bool, source TrafficSource) {
+	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel, source, s.Rand)
 
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)
@@ -653,7 +562,8 @@ func (s *Sim) Prespawn() {
 	start := time.Now()
 	s.lg.Info("starting aircraft prespawn")
 
-	s.setInitialSpawnTimes(s.State.SimTime)
+	s.initDepartureState(s.State.SimTime)
+	s.generateSchedule()
 
 	s.mu.Lock(s.lg)
 
@@ -694,9 +604,12 @@ func (s *Sim) Prespawn() {
 	godump.Dump(s.State.LaunchConfig)
 }
 
-func (s *Sim) setInitialSpawnTimes(now Time) {
-	// Randomize next spawn time for departures and arrivals; may be before
-	// or after the current time.
+// initDepartureState builds the per-runway departure state and the VFR and
+// pattern spawn timers. IFR departures, arrivals, and overflights need no
+// timers: they come from the schedule.
+func (s *Sim) initDepartureState(now Time) {
+	// Randomize the next VFR spawn time; may be before or after the current
+	// time.
 	randomDelay := func(rate float32) Time {
 		if rate == 0 {
 			return now.Add(365 * 24 * time.Hour)
@@ -706,50 +619,13 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 		return now.Add(time.Duration(delta * float32(time.Second)))
 	}
 
-	if s.State.LaunchConfig.ArrivalPushes {
-		// Figure out when the next arrival push will start
-		freq := time.Duration(s.State.LaunchConfig.ArrivalPushFrequencyMinutes) * time.Minute
-		s.NextPushStart = now.Add(s.Rand.DurationRange(1*time.Minute, freq+1*time.Minute))
-	}
-
-	for group, rates := range s.State.LaunchConfig.InboundFlowRates {
-		var rateSum float32
-		for ap, rate := range rates {
-			if ap != "overflights" {
-				rateSum += scaleRate(rate, s.State.LaunchConfig.InboundFlowRateScale)
-			}
-		}
-
-		nextInboundSpawn := randomDelay(rateSum)
-		if s.State.LaunchConfig.TrafficSource != TrafficSourceScenario {
-			// The published-traffic provider owns arrival timing, so ask it immediately
-			// for the next published runway-arrival event.
-			nextInboundSpawn = now
-		}
-		s.NextInboundSpawn[group] = nextInboundSpawn
-
-		// Overflights are always rate-based, no matter the traffic source.
-		if rate, ok := rates["overflights"]; ok {
-			s.NextOverflightSpawn[group] = randomDelay(
-				scaleRate(rate, s.State.LaunchConfig.InboundFlowRateScale))
-		}
-	}
-
 	for name := range s.State.DepartureAirports {
 		s.DepartureState[name] = make(map[av.RunwayID]*RunwayLaunchState)
 
 		if runwayRates, ok := s.State.LaunchConfig.DepartureRates[name]; ok {
 			for rwy, rate := range runwayRates {
-				r := sumRateMap(rate, s.State.LaunchConfig.DepartureRateScale)
-				nextIFRSpawn := randomDelay(r)
-				if s.State.LaunchConfig.TrafficSource != TrafficSourceScenario {
-					// The published-traffic provider owns the timing. Ask it immediately
-					// for the next published runway departure.
-					nextIFRSpawn = now
-				}
 				s.DepartureState[name][rwy] = &RunwayLaunchState{
-					IFRSpawnRate: r,
-					NextIFRSpawn: nextIFRSpawn,
+					IFRSpawnRate: sumRateMap(rate, s.State.LaunchConfig.DepartureRateScale),
 				}
 			}
 		}
@@ -790,22 +666,6 @@ func sumRateMap(rates map[string]float32, scale float32) float32 {
 	return sum
 }
 
-// sampleRateMap randomly samples elements from a map of some type T to a
-// rate with probability proportional to the element's rate.
-func sampleRateMap[T comparable](rates map[T]float32, scale float32, r *rand.Rand) (T, float32) {
-	var rateSum float32
-	var result T
-	for item, rate := range rates {
-		rate = scaleRate(rate, scale)
-		rateSum += rate
-		// Weighted reservoir sampling...
-		if rateSum == 0 || r.Float32() < rate/rateSum {
-			result = item
-		}
-	}
-	return result, rateSum
-}
-
 func randomWait(rate float32, pushActive bool, r *rand.Rand) time.Duration {
 	if rate == 0 {
 		return 365 * 24 * time.Hour
@@ -830,14 +690,10 @@ func randomInitialWait(rate float32, r *rand.Rand) time.Duration {
 }
 
 func (s *Sim) spawnAircraft() {
-	// Spawn each type independently based on its mode
-	if s.State.LaunchConfig.ArrivalMode == LaunchAutomatic ||
-		s.State.LaunchConfig.OverflightMode == LaunchAutomatic {
-		s.spawnArrivalsAndOverflights()
-	}
-	if s.State.LaunchConfig.DepartureMode == LaunchAutomatic {
-		s.spawnDepartures()
-	}
+	s.extendSchedule()
+	s.spawnScheduledFlights()
+	s.spawnVFRDepartures()
+	s.refillPendingLaunches()
 	// Pattern aircraft complete a lap in well under a minute, so only
 	// spawn them during the last 3 minutes of prespawn (and always after).
 	if !s.prespawn || s.prespawnPatternEligible {

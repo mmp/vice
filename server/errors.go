@@ -86,7 +86,6 @@ var errorStringToError = map[string]error{
 	sim.ErrNoMatchingFlightPlan.Error():            sim.ErrNoMatchingFlightPlan,
 	sim.ErrNoScratchpad.Error():                    sim.ErrNoScratchpad,
 	sim.ErrNoVFRAircraftForFlightFollowing.Error(): sim.ErrNoVFRAircraftForFlightFollowing,
-	sim.ErrNotLaunchController.Error():             sim.ErrNotLaunchController,
 	sim.ErrTCPAlreadyConsolidated.Error():          sim.ErrTCPAlreadyConsolidated,
 	sim.ErrTCPNotConsolidated.Error():              sim.ErrTCPNotConsolidated,
 	sim.ErrTCWIsConsolidated.Error():               sim.ErrTCWIsConsolidated,

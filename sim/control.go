@@ -152,12 +152,7 @@ func (s *Sim) DeleteAircraft(tcw TCW, callsign av.ADSBCallsign) error {
 	defer s.mu.Unlock(s.lg)
 
 	_, err := s.dispatchAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) error {
-			if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != tcw {
-				return av.ErrOtherControllerHasTrack
-			}
-			return nil
-		},
+		func(tcw TCW, ac *Aircraft) error { return nil },
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			s.eventStream.Post(Event{
 				Type:        StatusMessageEvent,
@@ -225,25 +220,9 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 	s.lg.Info("deleted aircraft", slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 }
 
-func (s *Sim) DeleteAircraftSlice(tcw TCW, aircraft []Aircraft) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	for _, ac := range aircraft {
-		s.deleteAircraft(&ac)
-	}
-
-	s.publish()
-	return nil
-}
-
 func (s *Sim) DeleteAllAircraft(tcw TCW) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-
-	if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != tcw {
-		return av.ErrOtherControllerHasTrack
-	}
 
 	for _, ac := range s.Aircraft {
 		// Only delete airborne aircraft; leave all of the ones at the

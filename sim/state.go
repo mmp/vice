@@ -117,6 +117,11 @@ type DerivedState struct {
 	Tracks                  map[av.ADSBCallsign]*Track
 	UnassociatedFlightPlans []*NASFlightPlan // Unassociated ones, including unsupported DBs
 	ReleaseDepartures       []ReleaseDeparture
+
+	// The launch control window's manual launch slots; empty for kinds whose
+	// launches are automatic.
+	DepartureLaunchSlots []DepartureLaunchSlot
+	InboundLaunchSlots   []InboundLaunchSlot
 }
 
 type ReleaseDeparture struct {
@@ -152,6 +157,7 @@ func makeDerivedState(s *Sim) DerivedState {
 	ds := DerivedState{
 		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
 	}
+	ds.DepartureLaunchSlots, ds.InboundLaunchSlots = s.currentLaunchSlots()
 
 	// Build ReleaseDepartures from STARSComputer.HoldForRelease
 	for _, ac := range s.STARSComputer.HoldForRelease {

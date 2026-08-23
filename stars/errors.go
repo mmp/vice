@@ -126,7 +126,6 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrNoMatchingFlightPlan:            ErrSTARSNoFlight,
 	sim.ErrNoScratchpad:                    ErrSTARSNoScratchpad,
 	sim.ErrNoVFRAircraftForFlightFollowing: ErrSTARSNoFlight,
-	sim.ErrNotLaunchController:             ErrSTARSIllegalTrack,
 	sim.ErrTCPAlreadyConsolidated:          ErrSTARSIllegalTCPDeconsolFirst,
 	sim.ErrTCPNotConsolidated:              ErrSTARSIllegalTCPNotConsolidated,
 	sim.ErrTCWIsConsolidated:               ErrSTARSIllegalPosition,

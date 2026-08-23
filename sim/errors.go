@@ -38,7 +38,6 @@ var (
 	ErrNoScratchpad                    = errors.New("No scratchpad")
 	ErrNoRecentCommand                 = errors.New("No recent command to roll back")
 	ErrNoVFRAircraftForFlightFollowing = errors.New("No VFR aircraft available for flight following")
-	ErrNotLaunchController             = errors.New("Not signed in as the launch controller")
 	ErrTCPAlreadyConsolidated          = errors.New("TCP already consolidated - deconsolidate first")
 	ErrTCPNotConsolidated              = errors.New("TCP is not consolidated")
 	ErrTCWIsConsolidated               = errors.New("receiving TCW is a consolidated position")

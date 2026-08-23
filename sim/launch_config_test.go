@@ -82,6 +82,14 @@ func TestMakeLaunchConfigEnabledDefaults(t *testing.T) {
 	}
 }
 
+// departureEnabledEqual reports whether two airport -> runway -> category ->
+// enabled maps hold the same values.
+func departureEnabledEqual(a, b map[string]map[av.RunwayID]map[string]bool) bool {
+	return maps.EqualFunc(a, b, func(a, b map[av.RunwayID]map[string]bool) bool {
+		return maps.EqualFunc(a, b, maps.Equal)
+	})
+}
+
 func TestDepartureEnabledEqual(t *testing.T) {
 	a := map[string]map[av.RunwayID]map[string]bool{
 		"KJFK": {"13R": {"North": true, "Water": false}},
