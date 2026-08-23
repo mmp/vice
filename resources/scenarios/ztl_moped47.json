@@ -1,0 +1,377 @@
+{
+  "artcc": "ZTL",
+  "area": "ZTL Area 1",
+  "name": "ZTL Moped 47",
+  "default_scenario": "ZTL 47 Moped Low - CLT South",
+  "magnetic_adjustment": -7.0,
+  "airports": {
+    "KCLT": {
+      "departure_controller": "C1W",
+      "departure_routes": {
+        "18L": {
+          "KRITR": {
+            "cleared_altitude": 16000,
+            "sid": "KRITR8",
+            "waypoints": "N035.15.09.214,W081.16.06.577/ho JDEAN",
+            "handoff_controller": "47"
+          },
+          "CLAWD": {
+            "cleared_altitude": 16000,
+            "sid": "WEAZL7",
+            "waypoints": "N035.15.09.214,W081.16.06.577/ho WHFRD WEAZL",
+            "handoff_controller": "47"
+          }
+        },
+        "1R": {
+          "KRITR": {
+            "cleared_altitude": 16000,
+            "sid": "KRITR8",
+            "waypoints": "N035.22.41.000,W080.59.25.200/ho JDEAN",
+            "handoff_controller": "47"
+          },
+          "CLAWD": {
+            "cleared_altitude": 16000,
+            "sid": "WEAZL7",
+            "waypoints": "N035.22.41.000,W080.59.25.200/ho WHFRD WEAZL",
+            "handoff_controller": "47"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": [
+            29000,
+            31000,
+            33000,
+            35000,
+            37000
+          ],
+          "destination": "KBWI",
+          "exit": "KRITR",
+          "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            29000,
+            31000,
+            33000
+          ],
+          "destination": "KPIT",
+          "exit": "KRITR",
+          "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "altitude": [
+            29000,
+            31000,
+            33000
+          ],
+          "destination": "KABE",
+          "exit": "KRITR",
+          "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DLH"
+            }
+          ],
+          "altitude": [
+            35000,
+            37000,
+            39000
+          ],
+          "destination": "EDDM",
+          "exit": "KRITR",
+          "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": [
+            32000,
+            34000
+          ],
+          "destination": "KSLC",
+          "exit": "CLAWD",
+          "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000,
+            37000
+          ],
+          "destination": "KJFK",
+          "exit": "CLAWD",
+          "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            34000,
+            36000
+          ],
+          "destination": "KMSY",
+          "exit": "CLAWD",
+          "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
+        }
+      ],
+      "approaches": {
+        "I8L": {
+          "cifp_id": "I18L"
+        },
+        "I1L": {
+          "cifp_id": "I1L"
+        }
+      }
+    },
+    "KGSO": {
+      "approaches": {
+        "I5L": {
+          "cifp_id": "I5L"
+        }
+      }
+    },
+    "KGSP": {
+      "approaches": {
+        "I22": {
+          "cifp_id": "I22"
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "PARQR6": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KPHL"
+              }
+            ]
+          },
+          "initial_controller": "43",
+          "initial_altitude": 24000,
+          "initial_speed": 270,
+          "cruise_altitude": 33000,
+          "star": "PARQR6",
+          "route": "/. PARQR6",
+          "is_rnav": true,
+          "cleared_altitude": 11000,
+          "waypoints": "WILUM/a24000+/ho SUZNN/a17000+ PARQR/a20000-/s250 NCOMA/a11000 BOATN CAMPR/delete"
+        }
+      ]
+    },
+    "PARQR6-N": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KPHL"
+              }
+            ]
+          },
+          "initial_controller": "43",
+          "initial_altitude": 24000,
+          "initial_speed": 270,
+          "cruise_altitude": 33000,
+          "star": "PARQR6",
+          "route": "/. PARQR6",
+          "is_rnav": true,
+          "cleared_altitude": 12000,
+          "waypoints": "WILUM/a24000+/ho SUZNN/a17000+ PARQR/a20000-/s250 PAYKN/a12000-15000 THACK/a12000 BBQEE CEDOX VALLL/delete"
+        }
+      ]
+    },
+    "GSP-JUNNR-MOPED": {
+      "arrivals": [
+        {
+          "airports": [
+            "KGSP"
+          ],
+          "airlines": {
+            "KGSP": [
+              {
+                "icao": "UAL",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KPHL"
+              }
+            ]
+          },
+          "initial_controller": "29",
+          "initial_altitude": 23000,
+          "assigned_altitude": 17000,
+          "initial_speed": 290,
+          "cruise_altitude": 23000,
+          "route": "GMONY WAMUR JUNNR OPENS YELKS KWOOD TANCE BURGG",
+          "waypoints": "GMONY WAMUR/ho JUNNR OPENS/a17000 YELKS KWOOD TANCE BURGG/delete"
+        }
+      ]
+    },
+    "GSO-TRAKS": {
+      "arrivals": [
+        {
+          "airports": [
+            "KGSO"
+          ],
+          "airlines": {
+            "KGSO": [
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              }
+            ]
+          },
+          "initial_controller": "45",
+          "initial_altitude": 21000,
+          "initial_speed": 290,
+          "cruise_altitude": 21000,
+          "route": "BURGG MURKY KHAOS TRAKS DEMNZ",
+          "waypoints": "BURGG MURKY/ho KHAOS TRAKS DEMNZ/delete"
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "ZTL 47 Moped Low - CLT South": {
+      "configuration": "L47",
+      "departure_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "18L",
+          "rate": 8
+        }
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "18L"
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22"
+        },
+        {
+          "airport": "KGSO",
+          "runway": "5L"
+        }
+      ],
+      "inbound_rates": {
+        "PARQR6": {
+          "KCLT": 8
+        },
+        "GSP-JUNNR-MOPED": {
+          "KGSP": 3
+        },
+        "GSO-TRAKS": {
+          "KGSO": 4
+        }
+      },
+      "default_map_group": "ZTL"
+    },
+    "ZTL 47 Moped Low - CLT North": {
+      "configuration": "L47",
+      "departure_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "1R",
+          "rate": 8
+        }
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "1L"
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22"
+        },
+        {
+          "airport": "KGSO",
+          "runway": "5L"
+        }
+      ],
+      "inbound_rates": {
+        "PARQR6-N": {
+          "KCLT": 8
+        },
+        "GSP-JUNNR-MOPED": {
+          "KGSP": 3
+        },
+        "GSO-TRAKS": {
+          "KGSO": 4
+        }
+      },
+      "default_map_group": "ZTL"
+    }
+  }
+}

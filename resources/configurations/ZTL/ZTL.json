@@ -745,6 +745,48 @@
           "CHSLY8-RDU-N": "29",
           "GSP-JUNNR": "29"
         }
+      },
+      "L47": {
+        "default_consolidation": {
+          "47": []
+        },
+        "departure_assignments": {
+          "KCLT/KRITR8": "47",
+          "KCLT/WEAZL7": "47"
+        },
+        "inbound_assignments": {
+          "PARQR6": "47",
+          "PARQR6-N": "47",
+          "GSP-JUNNR-MOPED": "47",
+          "GSO-TRAKS": "47"
+        }
+      },
+      "L44": {
+        "default_consolidation": {
+          "44": []
+        },
+        "departure_assignments": {
+          "KCLT/JOJJO7": "44",
+          "KGSP/BWALL2": "44"
+        },
+        "inbound_assignments": {
+          "FILPZ6": "44",
+          "FILPZ6-N": "44",
+          "GSO-TRAKS-SHINE": "44"
+        }
+      },
+      "L45": {
+        "default_consolidation": {
+          "45": []
+        },
+        "departure_assignments": {
+          "KTRI/PUPDG": "45"
+        },
+        "inbound_assignments": {
+          "GSP-RCTOR-BRISTOL": "45",
+          "TRI-ATL-SMKEY": "45",
+          "ROA-MOPED-BRISTOL": "45"
+        }
       }
     },
     "center": "N036.15.25.378,W081.54.35.546",

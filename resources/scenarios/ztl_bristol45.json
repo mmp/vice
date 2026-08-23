@@ -1,0 +1,202 @@
+{
+  "artcc": "ZTL",
+  "area": "ZTL Area 1",
+  "name": "ZTL Bristol 45",
+  "default_scenario": "ZTL 45 Bristol Low",
+  "magnetic_adjustment": -7.0,
+  "airports": {
+    "KTRI": {
+      "approaches": {
+        "I3": {
+          "cifp_id": "I23"
+        }
+      },
+      "departure_controller": "T1W",
+      "departure_routes": {
+        "23": {
+          "PUPDG": {
+            "cleared_altitude": 10000,
+            "waypoints": "N036.18.00.564,W082.34.15.100/ho PUPDG",
+            "handoff_controller": "45"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "altitude": [
+            18000,
+            20000,
+            22000
+          ],
+          "destination": "KATL",
+          "exit": "PUPDG",
+          "route": "PUPDG ONDRE1"
+        }
+      ]
+    },
+    "KGSP": {
+      "approaches": {
+        "I22": {
+          "cifp_id": "I22"
+        }
+      }
+    },
+    "KROA": {
+      "approaches": {
+        "R34": {
+          "cifp_id": "RY34"
+        }
+      }
+    }
+  },
+  "scenarios": {
+    "ZTL 45 Bristol Low": {
+      "configuration": "L45",
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KTRI",
+          "runway": "23",
+          "rate": 5
+        }
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KTRI",
+          "runway": "23"
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22"
+        },
+        {
+          "airport": "KROA",
+          "runway": "34"
+        }
+      ],
+      "inbound_rates": {
+        "GSP-RCTOR-BRISTOL": {
+          "KGSP": 6
+        },
+        "TRI-ATL-SMKEY": {
+          "KTRI": 5
+        },
+        "ROA-MOPED-BRISTOL": {
+          "KROA": 4
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "GSP-RCTOR-BRISTOL": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KGSP": [
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KPHL"
+              }
+            ]
+          },
+          "initial_controller": "42",
+          "initial_altitude": 24000,
+          "assigned_altitude": 24000,
+          "cruise_altitude": 34000,
+          "initial_speed": 290,
+          "route": "VXV DAJPI LUVTT RCTOR UNMAN",
+          "is_rnav": true,
+          "waypoints": "VXV/ho DAJPI LUVTT RCTOR UNMAN/delete",
+          "airports": [
+            "KGSP"
+          ]
+        }
+      ]
+    },
+    "TRI-ATL-SMKEY": {
+      "arrivals": [
+        {
+          "airports": [
+            "KTRI"
+          ],
+          "airlines": {
+            "KTRI": [
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KATL"
+              }
+            ]
+          },
+          "initial_controller": "49",
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "cruise_altitude": 21000,
+          "initial_speed": 250,
+          "route": "SMKEY HUCHH SOT HMV",
+          "waypoints": "N035.35.30.000,W083.38.00.000/ho SOT HMV KTRI/delete"
+        }
+      ]
+    },
+    "ROA-MOPED-BRISTOL": {
+      "arrivals": [
+        {
+          "airports": [
+            "KROA"
+          ],
+          "airlines": {
+            "KROA": [
+              {
+                "icao": "PDT",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KHKY"
+              }
+            ]
+          },
+          "initial_controller": "47",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "cruise_altitude": 17000,
+          "initial_speed": 240,
+          "route": "KRITR FILDS KROA",
+          "waypoints": "KRITR N036.25.30.000,W080.48.30.000/ho FILDS KROA/delete"
+        }
+      ]
+    }
+  }
+}

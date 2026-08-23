@@ -1,0 +1,352 @@
+{
+  "artcc": "ZTL",
+  "area": "ZTL Area 1",
+  "name": "ZTL Shine 44",
+  "default_scenario": "ZTL 44 Shine Low - CLT South",
+  "magnetic_adjustment": -7.0,
+  "airports": {
+    "KCLT": {
+      "approaches": {
+        "I8L": {
+          "cifp_id": "I18L"
+        },
+        "I1L": {
+          "cifp_id": "I1L"
+        }
+      },
+      "departure_controller": "C1W",
+      "departure_routes": {
+        "18L": {
+          "CUBIM": {
+            "cleared_altitude": 16000,
+            "sid": "JOJJO7",
+            "waypoints": "WAYDS/ho LONEE JOJJO WLLGO BENBY TIELR CUBIM/delete",
+            "handoff_controller": "44"
+          },
+          "DOOGE": {
+            "cleared_altitude": 16000,
+            "sid": "JOJJO7",
+            "waypoints": "WAYDS/ho LONEE JOJJO MTCHL DOOGE/delete",
+            "handoff_controller": "44"
+          },
+          "NOONN": {
+            "cleared_altitude": 16000,
+            "sid": "JOJJO7",
+            "waypoints": "WAYDS/ho LONEE JOJJO WLLGO BENBY SLEPP/delete",
+            "handoff_controller": "44"
+          }
+        },
+        "1R": {
+          "CUBIM": {
+            "cleared_altitude": 16000,
+            "sid": "JOJJO7",
+            "waypoints": "WAYDS/ho LONEE JOJJO WLLGO BENBY TIELR CUBIM/delete",
+            "handoff_controller": "44"
+          },
+          "DOOGE": {
+            "cleared_altitude": 16000,
+            "sid": "JOJJO7",
+            "waypoints": "WAYDS/ho LONEE JOJJO MTCHL DOOGE/delete",
+            "handoff_controller": "44"
+          },
+          "NOONN": {
+            "cleared_altitude": 16000,
+            "sid": "JOJJO7",
+            "waypoints": "WAYDS/ho LONEE JOJJO WLLGO BENBY SLEPP/delete",
+            "handoff_controller": "44"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000
+          ],
+          "destination": "KSLC",
+          "exit": "CUBIM",
+          "route": "CUBIM ENGRA EMBRR BAYLI ELYNA LMN WRNCH LNK YANKI HANKI CKW CARTR1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "UAL"
+            }
+          ],
+          "altitude": [
+            32000,
+            34000
+          ],
+          "destination": "KORD",
+          "exit": "DOOGE",
+          "route": "DOOGE"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000
+          ],
+          "destination": "KDTW",
+          "exit": "NOONN",
+          "route": "NOONN"
+        }
+      ]
+    },
+    "KGSP": {
+      "departure_controller": "31",
+      "departure_routes": {
+        "22": {
+          "JLENA": {
+            "assigned_altitude": 17000,
+            "sid": "BWALL2",
+            "is_rnav": true,
+            "waypoints": "HALJO ALYSA/ho BWALL",
+            "handoff_controller": "44"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000
+          ],
+          "destination": "KORD",
+          "exit": "JLENA",
+          "route": "JLENA DOOGE/ho42 HEVAN BONNT/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": [
+            32000,
+            34000
+          ],
+          "destination": "KDTW",
+          "exit": "JLENA",
+          "route": "JLENA HMV/ho42 SUBWY HTROD/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": [
+            32000,
+            34000
+          ],
+          "destination": "KMDW",
+          "exit": "JLENA",
+          "route": "JLENA HVQ/ho42 APE FWA/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [
+            33000,
+            35000
+          ],
+          "destination": "KCMH",
+          "exit": "JLENA",
+          "route": "JLENA MCGNS/ho42 SCRLT/delete"
+        }
+      ]
+    }
+  },
+  "inbound_flows": {
+    "FILPZ6": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KBNA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KBNA"
+              }
+            ]
+          },
+          "initial_controller": "42",
+          "initial_altitude": 29000,
+          "initial_speed": 270,
+          "cruise_altitude": 35000,
+          "star": "FILPZ6",
+          "route": "/. FILPZ6",
+          "is_rnav": true,
+          "cleared_altitude": 7000,
+          "waypoints": "COMDY/a29000 BLAYQ/a24000+/s270 PHAYE/a24000+/s270/ho JJENY/a19000-27000 FILPZ/a16000+/s270 GLAXI/a12000-14000/s250 JOBOT/a11000/s250 ERHRT/a10000- FISHN/a7000/s210/delete"
+        }
+      ]
+    },
+    "FILPZ6-N": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "airport": "KBNA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KBNA"
+              }
+            ]
+          },
+          "initial_controller": "42",
+          "initial_altitude": 33000,
+          "initial_speed": 270,
+          "cruise_altitude": 35000,
+          "star": "FILPZ6",
+          "route": "/. FILPZ6",
+          "is_rnav": true,
+          "cleared_altitude": 10000,
+          "waypoints": "COMDY/a33000 BLAYQ/a24000+/s270 PHAYE/a24000+/s270/ho JJENY/a19000-27000 FILPZ/a16000+/s270 ADOWN/a12000-19000/s250 INWAL/a11000-15000/s250 JELNO/a10000-11000 CEDOX/a10000/s210 VALLL/delete"
+        }
+      ]
+    },
+    "GSO-TRAKS-SHINE": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "icao": "AAL",
+              "departure_airport": "KORD",
+              "arrival_airport": "KGSO"
+            },
+            {
+              "icao": "UAL",
+              "departure_airport": "KEWR",
+              "arrival_airport": "KGSO"
+            },
+            {
+              "icao": "DAL",
+              "departure_airport": "KDTW",
+              "arrival_airport": "KGSO"
+            }
+          ],
+          "initial_controller": "45",
+          "initial_altitude": 21000,
+          "assigned_altitude": 21000,
+          "initial_speed": 290,
+          "waypoints": "BURGG/ho MURKY KHAOS TRAKS DEMNZ/delete"
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "ZTL 44 Shine Low - CLT South": {
+      "configuration": "L44",
+      "arrival_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "18L"
+        }
+      ],
+      "inbound_rates": {
+        "FILPZ6": {
+          "KCLT": 8
+        },
+        "GSO-TRAKS-SHINE": {
+          "overflights": 4
+        }
+      },
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "18L",
+          "rate": 6
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22",
+          "rate": 6
+        }
+      ]
+    },
+    "ZTL 44 Shine Low - CLT North": {
+      "configuration": "L44",
+      "arrival_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "1L"
+        }
+      ],
+      "inbound_rates": {
+        "FILPZ6-N": {
+          "KCLT": 8
+        },
+        "GSO-TRAKS-SHINE": {
+          "overflights": 4
+        }
+      },
+      "default_map_group": "ZTL",
+      "departure_runways": [
+        {
+          "airport": "KCLT",
+          "runway": "1R",
+          "rate": 6
+        },
+        {
+          "airport": "KGSP",
+          "runway": "22",
+          "rate": 6
+        }
+      ]
+    }
+  }
+}
