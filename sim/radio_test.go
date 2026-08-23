@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 )
@@ -90,6 +91,69 @@ func TestPopReadyContactAbbreviatedVFRIsInitial(t *testing.T) {
 		t.Fatal("expected a ready contact")
 	} else if pc.ADSBCallsign != "N509EZ" {
 		t.Fatalf("expected N509EZ (response) before the abbreviated VFR request, got %s", pc.ADSBCallsign)
+	}
+}
+
+// TestPopReadyContactWaitsForAssociation verifies that a departure's check-in
+// stays queued until its track tags up. GenerateContactTransmission has nothing
+// to say for an unassociated track, and a popped contact that comes back empty
+// is discarded, so popping one early would lose the check-in for good.
+func TestPopReadyContactWaitsForAssociation(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+
+	tcp := TCP("125.0")
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.TypeOfFlight = av.FlightTypeDeparture
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	s.PendingContacts[tcp] = []PendingContact{
+		{ADSBCallsign: ac.ADSBCallsign, TCP: tcp, Type: PendingTransmissionDeparture,
+			ReadyTime: s.State.SimTime.Add(-time.Second)},
+	}
+
+	if pc := s.popReadyContact([]TCP{tcp}); pc != nil {
+		t.Fatalf("popped %s before its track associated", pc.ADSBCallsign)
+	}
+
+	ac.AssociateFlightPlan(&NASFlightPlan{ACID: ACID(ac.ADSBCallsign)})
+
+	if pc := s.popReadyContact([]TCP{tcp}); pc == nil {
+		t.Fatal("expected the check-in once the track associated")
+	} else if pc.ADSBCallsign != ac.ADSBCallsign {
+		t.Fatalf("expected %s, got %s", ac.ADSBCallsign, pc.ADSBCallsign)
+	}
+}
+
+// TestPopReadyContactTakesOldestAcrossPositions verifies that a check-in on a
+// later-scanned position isn't starved by a fresher one on an earlier position:
+// with departures split across positions by SID, first-position-first ordering
+// would leave the last position's SID silent whenever the queue is backed up.
+func TestPopReadyContactTakesOldestAcrossPositions(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+
+	first, last := TCP("125.0"), TCP("126.6")
+
+	s.PendingContacts[first] = []PendingContact{
+		{ADSBCallsign: "AAL90", TCP: first, Type: PendingTransmissionDeparture,
+			ReadyTime: s.State.SimTime.Add(-10 * time.Second)},
+	}
+	s.PendingContacts[last] = []PendingContact{
+		{ADSBCallsign: "SWA22", TCP: last, Type: PendingTransmissionDeparture,
+			ReadyTime: s.State.SimTime.Add(-time.Minute)},
+	}
+
+	if pc := s.popReadyContact([]TCP{first, last}); pc == nil {
+		t.Fatal("expected a ready contact")
+	} else if pc.ADSBCallsign != "SWA22" {
+		t.Fatalf("expected the longer-waiting SWA22, got %s", pc.ADSBCallsign)
+	}
+
+	if pc := s.popReadyContact([]TCP{first, last}); pc == nil {
+		t.Fatal("expected the second contact")
+	} else if pc.ADSBCallsign != "AAL90" {
+		t.Fatalf("expected AAL90, got %s", pc.ADSBCallsign)
 	}
 }
 

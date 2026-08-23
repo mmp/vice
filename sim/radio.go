@@ -93,6 +93,18 @@ func (s *Sim) hasPendingCheckIn(callsign av.ADSBCallsign) bool {
 	return false
 }
 
+// waitingForAssociation reports whether a queued check-in can't be spoken yet
+// because the track hasn't tagged up. GenerateContactTransmission has no text
+// for those, and a contact that is popped and comes back empty is discarded for
+// good, so they stay in the queue instead.
+func (s *Sim) waitingForAssociation(pc PendingContact) bool {
+	if pc.Type != PendingTransmissionDeparture && pc.Type != PendingTransmissionArrival {
+		return false
+	}
+	ac, ok := s.Aircraft[pc.ADSBCallsign]
+	return ok && !ac.IsAssociated()
+}
+
 // addPendingContact adds an aircraft to the pending contacts queue for a controller.
 func (s *Sim) addPendingContact(pc PendingContact) {
 	if s.PendingContacts == nil {
@@ -173,20 +185,31 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 	return s.popReadyMatching(positions, func(t PendingTransmissionType) bool { return t.isInitialCheckIn() })
 }
 
-// popReadyMatching removes and returns the first pending contact, in queue
-// order across the given positions, whose type satisfies match and whose
-// ReadyTime has passed. Returns nil if none qualify.
+// popReadyMatching removes and returns the longest-waiting pending contact
+// across the given positions whose type satisfies match and whose ReadyTime has
+// passed. Taking the oldest rather than the first position's first entry keeps a
+// busy position from starving the others. Returns nil if none qualify.
 func (s *Sim) popReadyMatching(positions []TCP, match func(PendingTransmissionType) bool) *PendingContact {
+	var bestTCP TCP
+	best := -1
 	for _, tcp := range positions {
 		for i, pc := range s.PendingContacts[tcp] {
-			if match(pc.Type) && s.State.SimTime.After(pc.ReadyTime) {
-				s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
-				return &pc
+			if !match(pc.Type) || !s.State.SimTime.After(pc.ReadyTime) || s.waitingForAssociation(pc) {
+				continue
+			}
+			if best == -1 || pc.ReadyTime.Before(s.PendingContacts[bestTCP][best].ReadyTime) {
+				bestTCP, best = tcp, i
 			}
 		}
 	}
 
-	return nil
+	if best == -1 {
+		return nil
+	}
+
+	pc := s.PendingContacts[bestTCP][best]
+	s.PendingContacts[bestTCP] = slices.Delete(s.PendingContacts[bestTCP], best, best+1)
+	return &pc
 }
 
 // processVirtualControllerContacts handles pending contacts for virtual
@@ -221,6 +244,11 @@ func (s *Sim) processVirtualControllerContacts() {
 // fromPos is the controller position the aircraft is coming from, used to
 // determine whether this is the first contact in a TRACON facility (for ATIS reporting).
 func (s *Sim) enqueueControllerContact(ac *Aircraft, tcp TCP, fromPos ControlPosition) {
+	if tcp == "" {
+		s.lg.Errorf("%s: no controller to send the pilot to", ac.ADSBCallsign)
+		return
+	}
+
 	// Aircraft will switch frequency (2-4 sec), then listen before transmitting (3-6 sec).
 	switchDelay := s.Rand.DurationRange(2*time.Second, 5*time.Second)
 	listenDelay := s.Rand.DurationRange(3*time.Second, 7*time.Second)
@@ -317,10 +345,16 @@ func (s *Sim) processDeferredContact(ac *Aircraft) {
 // enqueueDepartureContact adds a departure to the pending contacts queue.
 // Departures are ready immediately (they're already on frequency).
 func (s *Sim) enqueueDepartureContact(ac *Aircraft, tcp TCP) {
+	if tcp == "" {
+		s.lg.Errorf("%s: no departure controller to check in with", ac.ADSBCallsign)
+		return
+	}
+
 	ac.ControllerFrequency = ControlPosition(tcp)
 	s.addPendingContact(PendingContact{
 		ADSBCallsign:           ac.ADSBCallsign,
 		TCP:                    tcp,
+		ReadyTime:              s.State.SimTime,
 		Type:                   PendingTransmissionDeparture,
 		ReportDepartureHeading: ac.ReportDepartureHeading,
 		HasQueuedEmergency:     ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1,
@@ -332,6 +366,7 @@ func (s *Sim) enqueuePilotTransmission(callsign av.ADSBCallsign, tcp TCP, txType
 	s.addPendingContact(PendingContact{
 		ADSBCallsign: callsign,
 		TCP:          tcp,
+		ReadyTime:    s.State.SimTime,
 		Type:         txType,
 	})
 }
@@ -342,6 +377,7 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 	s.addPendingContact(PendingContact{
 		ADSBCallsign:         callsign,
 		TCP:                  tcp,
+		ReadyTime:            s.State.SimTime,
 		Type:                 PendingTransmissionEmergency,
 		PrebuiltTransmission: rt,
 	})

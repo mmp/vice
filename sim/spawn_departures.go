@@ -626,12 +626,16 @@ func (rls RunwayLaunchState) Dump(airport string, runway av.RunwayID, now Time) 
 func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 	ap *av.Airport, exitRoute *av.ExitRoute, departureAirport, runway string) {
 
+	// Departures that start with a virtual controller are already on its
+	// frequency, so they never check in with a departure controller; -1 keeps
+	// them from being mistaken for ones waiting on a /tc point.
 	if ap.DepartureController != "" && s.isVirtualController(ap.DepartureController) {
 		// Virtual controller from airport; automatically release since there's no human.
 		nasFp.TrackingController = TCP(ap.DepartureController)
 		nasFp.OwningTCW = s.tcwForPosition(ap.DepartureController)
 		nasFp.InboundHandoffController = TCP(exitRoute.HandoffController)
 		ac.ControllerFrequency = ControlPosition(ap.DepartureController)
+		ac.DepartureContactAltitude = -1
 		ac.HoldForRelease = false
 		return
 	}
@@ -642,6 +646,7 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 		nasFp.OwningTCW = s.tcwForPosition(exitRoute.DepartureController)
 		nasFp.InboundHandoffController = TCP(exitRoute.HandoffController)
 		ac.ControllerFrequency = ControlPosition(exitRoute.DepartureController)
+		ac.DepartureContactAltitude = -1
 		ac.HoldForRelease = false
 		return
 	}
