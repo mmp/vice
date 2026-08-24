@@ -22,6 +22,50 @@
         }
       }
     },
+    "KWRI": {
+      "approaches": {
+        "I6": {
+          "runway": "6",
+          "type": "ILS",
+          "waypoints": [
+            "CISON/a2000/if FENKA/a2000/faf KWRI-6"
+          ]
+        }
+      }
+    },
+    "KLGA": {
+      "approaches": {
+        "I4": {
+          "cifp_id": "I4"
+        },
+        "I22": {
+          "cifp_id": "I22"
+        }
+      }
+    },
+    "KEWR": {
+      "approaches": {
+        "I2L": {
+          "cifp_id": "I22L"
+        },
+        "I4R": {
+          "cifp_id": "I4R"
+        }
+      }
+    },
+    "KTEB": {
+      "approaches": {
+        "IZ6": {
+          "cifp_id": "IZ6"
+        },
+        "I19": {
+          "cifp_id": "I19"
+        },
+        "R24": {
+          "cifp_id": "R24"
+        }
+      }
+    },
     "19N": {
       "vfr": {
         "random_routes": {
@@ -4172,7 +4216,7 @@
     }
   },
   "inbound_flows": {
-    "BOJID4/HAR5": {
+    "BOJID4": {
       "arrivals": [
         {
           "assigned_altitude": 8000,
@@ -4183,30 +4227,16 @@
           "spawn": "LRP",
           "star": "BOJID4"
         }
-      ],
-      "overflights": [
+      ]
+    },
+    "HAR5": {
+      "arrivals": [
         {
-          "airlines": [
-            {
-              "icao": "BAZOO",
-              "departure_airport": "KSPS",
-              "arrival_airport": "KWRI"
-            },
-            {
-              "icao": "SNOOP",
-              "departure_airport": "KSKF",
-              "arrival_airport": "KWRI"
-            },
-            {
-              "icao": "COBRA",
-              "departure_airport": "KCFO",
-              "arrival_airport": "KWRI"
-            }
-          ],
-          "waypoints": "LRP TRAGG/ho BUNTS RELNY NAGGS CYN",
+          "airports": [ "KWRI" ],
+          "waypoints": "LRP TRAGG/ho BUNTS RELNY NAGGS CISON/s180/a2000+/clearapp FENKA/a2000 KWRI-6/a150/s150/delete",
           "initial_altitude": 12000,
-          "assigned_altitude": 9000,
           "initial_speed": 300,
+          "expect_approach": "I6",
           "description": "KWRI HAR5 arrivals",
           "initial_controller": "W32"
         }
@@ -4301,115 +4331,52 @@
       ]
     },
     "PROUD2": {
-      "overflights": [
+      "arrivals": [
         {
-          "airlines": [
-            {
-              "icao": "JBU",
-              "departure_airport": "KFLL",
-              "arrival_airport": "KLGA"
-            },
-            {
-              "icao": "SWA",
-              "departure_airport": "KATL",
-              "arrival_airport": "KLGA"
-            },
-            {
-              "icao": "NKS",
-              "departure_airport": "KCLT",
-              "arrival_airport": "KLGA"
-            },
-            {
-              "icao": "DAL",
-              "departure_airport": "KMIA",
-              "arrival_airport": "KLGA"
-            }
-          ],
-          "waypoints": "ENO/a24000+ SKIPY/a19000-22000 BESSI/a17000+ EDJER/a13000-17000 DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 DEPDY",
+          "star": "PROUD2",
+          "airports": [ "KLGA" ],
           "initial_altitude": 24000,
           "initial_speed": 350,
           "description": "KLGA PROUD2 arrivals",
-          "initial_controller": "W32"
+          "initial_controller": "W32",
+          "waypoints": "ENO/a24000 SKIPY/a19000-22000 BESSI/a17000+ EDJER/a13000-17000 DAVYS/a13000+ HOLEY/ho11D BRAND/a11000+ KORRY/a10000 DEPDY TYKES MINKS JERZY RENUE APPLE/a4000/delete"
         }
       ]
     },
-    "PHLBO4/JAKIE4": {
-      "overflights": [
+    "PHLBO4": {
+      "arrivals": [
         {
-          "airlines": [
-            {
-              "icao": "UAL",
-              "departure_airport": "KMSY",
-              "arrival_airport": "KEWR"
-            },
-            {
-              "icao": "FFT",
-              "departure_airport": "KATL",
-              "arrival_airport": "KEWR"
-            },
-            {
-              "icao": "AAL",
-              "departure_airport": "KBNA",
-              "arrival_airport": "KEWR"
-            },
-            {
-              "icao": "NKS",
-              "departure_airport": "KTPA",
-              "arrival_airport": "KEWR"
-            },
-            {
-              "icao": "DAL",
-              "departure_airport": "KCLT",
-              "arrival_airport": "KEWR"
-            }
-          ],
-          "waypoints": "FUBRR DQO/a20000+ STEFE/a13000-17000 SOMTO/a11000 ARD DYLIN/a8000 MERSR METRO",
+          "airports": [ "KEWR" ],
+          "star": "PHLBO4",
+          "waypoints": "FUBRR DQO/a20000+ STEFE/a13000-17000 SOMTO/a11000 ARD/ho14P DYLIN/a8000 MERSR METRO/a4000/delete",
           "initial_altitude": 24000,
           "initial_speed": 350,
           "description": "KEWR PHLBO4 arrivals",
           "initial_controller": "W32"
-        },
+        }
+      ]
+    },
+    "JAIKE4": {
+      "arrivals": [
         {
-          "airlines": [
-            {
-              "icao": "LXJ",
-              "departure_airport": "KRIC",
-              "arrival_airport": "KTEB"
-            },
-            {
-              "icao": "WUP",
-              "departure_airport": "KTPA",
-              "arrival_airport": "KTEB"
-            },
-            {
-              "icao": "EJA",
-              "departure_airport": "KBCT",
-              "arrival_airport": "KTEB"
-            }
-          ],
-          "waypoints": "JNJEN BUZIE SPNCR/ho JAIKE/a13000 ILENE/a13000 WACKI/s250/a11000 MAZIE REGLE/a7000 SBJ",
+          "airports": [ "KTEB" ],
+          "star": "JAIKE4",
+          "waypoints": "JNJEN BUZIE SPNCR JAIKE/a13000 ILENE/a13000 WACKI/s250/a11000 MAZIE/ho14P REGLE/a7000 SBJ/a4000/delete",
           "initial_altitude": 22000,
-          "assigned_altitude": 13000,
           "initial_speed": 300,
-          "description": "KTEB JAKIE4 arrivals",
+          "description": "KTEB JAIKE4 arrivals",
           "initial_controller": "W32"
         }
       ]
     },
     "BRAND1": {
-      "overflights": [
+      "arrivals": [
         {
-          "airlines": [
-            {
-              "icao": "FDX",
-              "fleet": "short",
-              "departure_airport": "KCLT",
-              "arrival_airport": "KEWR"
-            }
-          ],
-          "waypoints": "BACKY ODESA DQO/ho RUUTH WNDYL BRAND/a7000 KORRY WATJA",
+          "airports": [ "KEWR" ],
+          "star": "BRAND1",
+          "waypoints": "BACKY ODESA DQO/ho RUUTH WNDYL/ho14P BRAND/a7000 KORRY WATJA/a4000/delete",
           "initial_altitude": 18000,
-          "initial_speed": 250,
+          "initial_speed": 300,
           "description": "KEWR BRAND1 arrivals",
           "initial_controller": "W32"
         }
@@ -4582,6 +4549,22 @@
           }
         },
         {
+          "airport": "KLGA",
+          "runway": "22"
+        },
+        {
+          "airport": "KWRI",
+          "runway": "6"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "22L"
+        },
+        {
+          "airport": "KTEB",
+          "runway": "19"
+        },
+        {
           "airport": "KPHL",
           "runway": "35",
           "go_around": {
@@ -4591,9 +4574,11 @@
         }
       ],
       "inbound_rates": {
-        "BOJID4/HAR5": {
-          "KPHL": 12,
-          "overflights": 5
+        "BOJID4": {
+          "KPHL": 12
+        },
+        "HAR5": {
+          "KWRI": 5
         },
         "JIIMS4": {
           "KPHL": 12
@@ -4605,13 +4590,16 @@
           "KPHL": 10
         },
         "PROUD2": {
-          "overflights": 5
+          "KLGA": 5
         },
-        "PHLBO4/JAKIE4": {
-          "overflights": 5
+        "PHLBO4": {
+          "KEWR": 5
+        },
+        "JAIKE4": {
+          "KTEB": 5
         },
         "BRAND1": {
-          "overflights": 5
+          "KEWR": 5
         },
         "V29.Low": {
           "overflights": 5
@@ -4656,6 +4644,22 @@
           }
         },
         {
+          "airport": "KLGA",
+          "runway": "4"
+        },
+        {
+          "airport": "KWRI",
+          "runway": "6"
+        },
+        {
+          "airport": "KEWR",
+          "runway": "4R"
+        },
+        {
+          "airport": "KTEB",
+          "runway": "6"
+        },
+        {
           "airport": "KPHL",
           "runway": "17",
           "go_around": {
@@ -4665,9 +4669,11 @@
         }
       ],
       "inbound_rates": {
-        "BOJID4/HAR5": {
-          "KPHL": 12,
-          "overflights": 5
+        "BOJID4": {
+          "KPHL": 12
+        },
+        "HAR5": {
+          "KWRI": 5
         },
         "JIIMS4": {
           "KPHL": 12
@@ -4679,13 +4685,16 @@
           "KPHL": 10
         },
         "PROUD2": {
-          "overflights": 5
+          "KLGA": 5
         },
-        "PHLBO4/JAKIE4": {
-          "overflights": 5
+        "PHLBO4": {
+          "KEWR": 5
+        },
+        "JAIKE4": {
+          "KTEB": 5
         },
         "BRAND1": {
-          "overflights": 5
+          "KEWR": 5
         },
         "V29.Low": {
           "overflights": 5

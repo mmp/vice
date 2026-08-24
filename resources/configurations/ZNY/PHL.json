@@ -82,7 +82,8 @@
       "27L": {
         "inbound_assignments": {
           "ABE-ACY": "1N",
-          "BOJID4/HAR5": "1N",
+          "BOJID4": "1N",
+          "HAR5": "1N",
           "BRAND1": "1E",
           "JIIMS4": "1S",
           "PAATS4": "1S",
