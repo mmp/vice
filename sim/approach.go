@@ -398,15 +398,7 @@ func (s *Sim) trafficStillVisible(ac *Aircraft, seen *SeenAircraft) bool {
 		return false
 	}
 
-	nearestMETAR, nearestElev := s.nearestMETAR(ac.Position())
-	if nearestMETAR.ICAO != "" && !nearestMETAR.IsVMC() {
-		return false
-	}
-
-	altAGL := max(ac.Altitude()-nearestElev, 0)
-	trafficAltAGL := max(traffic.Altitude()-nearestElev, 0)
-	dist := math.NMDistance2LLFast(ac.Position(), traffic.Position(), ac.NmPerLongitude())
-	return pilotSeeProb(nearestMETAR.EffectiveVisualRange(altAGL, trafficAltAGL), dist) > 0
+	return true
 }
 
 // canRequestVisualApproach reports whether an aircraft is eligible to
