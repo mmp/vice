@@ -41,6 +41,7 @@ type SeenAircraft struct {
 	SightedTime                 Time
 	OfferedToMaintainSeparation bool
 	MaintainingVisualSeparation bool
+	FollowingOnVisualApproach   bool
 }
 
 type Aircraft struct {
@@ -197,10 +198,9 @@ func (ac *Aircraft) RecordSighting(traffic av.ADSBCallsign, now Time) *SeenAircr
 }
 
 func (ac *Aircraft) RecentSighting(now Time, maxAge time.Duration) *SeenAircraft {
-	for i := len(ac.SeenTraffic) - 1; i >= 0; i-- {
-		if now.Sub(ac.SeenTraffic[i].SightedTime) <= maxAge {
-			return &ac.SeenTraffic[i]
-		}
+	// Just check last one since it's the most recent.
+	if n := len(ac.SeenTraffic); n > 0 && now.Sub(ac.SeenTraffic[n-1].SightedTime) <= maxAge {
+		return &ac.SeenTraffic[n-1]
 	}
 	return nil
 }

@@ -9,6 +9,7 @@
 - Fixed bug where VFR aircraft could end up swarming an airport
 - Fixed bug where overflights would check in with the ATIS
 - Fixed bug with some departures not checking in
+- Fixed bug where aircraft would report the field in sight and then be unable to accept a visual approach
 - Fixed a number of STT bugs
 - Updated to AIRAC 260806
 - STT: fixed few bugs with fixes in an aircraft's route not being recognized

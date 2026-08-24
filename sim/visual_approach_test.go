@@ -1270,8 +1270,9 @@ func wpNames(wps []av.Waypoint) []string {
 	return names
 }
 
+//go:fix inline
 func ptr[T any](v T) *T {
-	return &v
+	return new(v)
 }
 
 func TestVisualApproachFollowingTrafficTurnsBase(t *testing.T) {
@@ -1332,6 +1333,57 @@ func TestVisualApproachFollowingTrafficTurnsBase(t *testing.T) {
 	bearingToJoin := math.Heading2LL(acPos, wps[0].Location, nmPerLong)
 	if math.HeadingDifference(bearingToJoin, math.TrueHeading(315)) > 1 {
 		t.Errorf("follow-traffic route should turn base toward traffic; bearing %.1f", bearingToJoin)
+	}
+}
+
+// A visual approach accepted on the strength of having the preceding traffic
+// in sight must survive the controller restating the clearance: the pilot
+// keeps that traffic in sight all the way in, so the sighting behind the
+// clearance doesn't age out the way a routine traffic call does.
+func TestScenarioCVARestatedWhileFollowingTraffic(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "36", Heading: 360, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "36", math.Point2LL{3.0 / 52, -8.0 / 60}, 360)
+
+	traffic := makeVisualTestAircraft(math.NM2LL([2]float32{-4, -4.2}, 52), 360)
+	traffic.ADSBCallsign = "AAL5207"
+	traffic.Nav.FlightState.ArrivalAirport = av.Waypoint{Fix: "KJFK"}
+	traffic.Nav.Approach.Cleared = true
+	rw36 := av.Waypoint{Fix: "RW36", Location: airportLoc}
+	traffic.Nav.Approach.Assigned = &av.Approach{
+		Type:      av.RNAVApproach,
+		Runway:    "36",
+		Waypoints: []av.WaypointArray{{rw36}},
+	}
+	rw36.SetLand(true)
+	traffic.Nav.Waypoints = av.WaypointArray{rw36, traffic.Nav.FlightState.ArrivalAirport}
+	vs.Sim.Aircraft[traffic.ADSBCallsign] = traffic
+
+	vs.AC.RecordSighting(traffic.ADSBCallsign, vs.Sim.State.SimTime)
+
+	intent, err := vs.ClearedVisual("36")
+	if err != nil {
+		t.Fatalf("ClearedVisual error: %v", err)
+	}
+	if _, ok := intent.(av.ClearedApproachIntent); !ok {
+		t.Fatalf("expected ClearedApproachIntent, got %T", intent)
+	}
+	if !requireSeenTraffic(t, vs.AC, traffic.ADSBCallsign).FollowingOnVisualApproach {
+		t.Fatal("expected the sighting behind the clearance to be marked")
+	}
+
+	// Long past the point where a routine sighting would have expired.
+	vs.AdvanceTime(5 * time.Minute)
+	vs.Sim.refreshSeenTraffic(vs.AC)
+	requireSeenTraffic(t, vs.AC, traffic.ADSBCallsign)
+
+	intent, err = vs.ClearedVisual("36")
+	if err != nil {
+		t.Fatalf("restated ClearedVisual error: %v", err)
+	}
+	if u, unable := intent.(av.UnableIntent); unable {
+		t.Fatalf("restated CVA refused: %s", u.Message)
 	}
 }
 
@@ -1751,12 +1803,15 @@ func TestRecentApproachTrafficInSightForRunwaySkipsNewerWrongRunway(t *testing.T
 		{Callsign: wrongRunway.ADSBCallsign, SightedTime: vs.Sim.State.SimTime.Add(-5 * time.Second)},
 	}
 
-	traffic := vs.Sim.recentApproachTrafficInSightForRunway(vs.AC, "13L")
+	traffic, seen := vs.Sim.recentApproachTrafficInSightForRunway(vs.AC, "13L")
 	if traffic == nil {
 		t.Fatal("expected to find older matching-runway traffic")
 	}
 	if traffic.ADSBCallsign != matching.ADSBCallsign {
 		t.Fatalf("got %s, want %s", traffic.ADSBCallsign, matching.ADSBCallsign)
+	}
+	if seen == nil || seen.Callsign != matching.ADSBCallsign {
+		t.Fatalf("got sighting %v, want one of %s", seen, matching.ADSBCallsign)
 	}
 }
 
@@ -1853,6 +1908,126 @@ func TestScenarioAPThenClearedVisual(t *testing.T) {
 				t.Fatal("expected non-nil intent from CVA after delayed field")
 			}
 		}
+	}
+}
+
+// An aircraft that is already cleared for an approach still has to look for
+// the field like anyone else: answering "field in sight" without recording it
+// left the following CVA refused with "we don't have the field in sight".
+func TestScenarioAPWhileClearedForApproach(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "36", Heading: 360, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "36", math.Point2LL{0, -5.0 / 60}, 360)
+	vs.AC.Nav.Approach.Cleared = true
+
+	fi, ok := vs.AirportAdvisory(12, 5).(av.LookForFieldIntent)
+	if !ok {
+		t.Fatal("expected a LookForFieldIntent")
+	}
+	if fi != av.LookForFieldFound {
+		return // the pilot didn't pick it up this time; nothing more to check
+	}
+	if !vs.AC.FieldInSight {
+		t.Fatal(`pilot answered "field in sight" without FieldInSight being set`)
+	}
+
+	intent, err := vs.ClearedVisual("36")
+	if err != nil {
+		t.Fatalf("ClearedVisual error: %v", err)
+	}
+	if u, unable := intent.(av.UnableIntent); unable {
+		t.Fatalf("CVA refused after the pilot reported the field: %s", u.Message)
+	}
+}
+
+// Being cleared for the ILS doesn't let a pilot see through an overcast.
+func TestScenarioAPWhileClearedForApproachInIMC(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "36", Heading: 360, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "36", math.Point2LL{0, -5.0 / 60}, 360)
+	vs.AC.Nav.Approach.Cleared = true
+	vs.SetMETAR("KJFK 1/4SM OVC002")
+
+	if fi, ok := vs.AirportAdvisory(12, 5).(av.LookForFieldIntent); !ok || fi != av.LookForFieldLookingIMC {
+		t.Fatalf("expected LookForFieldLookingIMC, got %#v", fi)
+	}
+	if vs.AC.FieldInSight {
+		t.Error("FieldInSight should not be set in IMC")
+	}
+}
+
+// requireLookingFieldCheck issues AP commands until the pilot commits to
+// looking for the field and returns the queued check. Pilots sometimes decide
+// not to report back at all (pilotNoReportProb), hence the retries.
+func requireLookingFieldCheck(t *testing.T, vs *VisualScenario) *FutureFieldCheck {
+	t.Helper()
+	for range 100 {
+		if fi, ok := vs.AirportAdvisory(12, 5).(av.LookForFieldIntent); !ok || fi == av.LookForFieldFound {
+			t.Fatalf("expected the pilot to be looking, got %#v", fi)
+		}
+		if check, ok := vs.Sim.FutureFieldChecks[vs.callsign]; ok {
+			return check
+		}
+	}
+	t.Fatal("no delayed field check was queued")
+	return nil
+}
+
+// A pilot who was asked to report the field and answered "looking" follows up
+// once they find it, even though they were already cleared for an approach
+// when the controller asked.
+func TestScenarioPromptedFieldReportSurvivesExistingClearance(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "36", Heading: 360, Threshold: airportLoc, Elevation: 13})
+
+	// Heading away from the airport, so the field is behind the pilot.
+	vs := NewVisualScenario(t, airportLoc, "36", math.Point2LL{0, -5.0 / 60}, 180)
+	vs.AC.Nav.Approach.Cleared = true
+
+	if check := requireLookingFieldCheck(t, vs); !check.ClearedWhenAsked {
+		t.Error("expected ClearedWhenAsked for an aircraft cleared before the request")
+	}
+
+	// Turn back toward the field and let the delayed check fire.
+	vs.AC.Nav.FlightState.Heading = 360
+	vs.AdvanceTime(pilotLookDurationMax + time.Second)
+	vs.CheckDelayedFieldInSight()
+
+	if !vs.AC.FieldInSight {
+		t.Fatal("expected the pilot to report the field once it came into view")
+	}
+	if !vs.HasPendingTransmission(PendingTransmissionFieldInSight) {
+		t.Error("expected the field-in-sight report to be transmitted")
+	}
+}
+
+// If the clearance instead arrives while the pilot is still looking, the
+// report is moot and is dropped.
+func TestScenarioPromptedFieldReportDroppedByLaterClearance(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "36", Heading: 360, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "36", math.Point2LL{0, -5.0 / 60}, 180)
+
+	if check := requireLookingFieldCheck(t, vs); check.ClearedWhenAsked {
+		t.Error("aircraft was not cleared when asked")
+	}
+
+	vs.AC.Nav.Approach.Cleared = true
+	vs.AC.Nav.FlightState.Heading = 360
+	vs.AdvanceTime(pilotLookDurationMax + time.Second)
+	vs.CheckDelayedFieldInSight()
+
+	if vs.AC.FieldInSight {
+		t.Error("expected the now-redundant field report to be dropped")
+	}
+	if vs.HasPendingTransmission(PendingTransmissionFieldInSight) {
+		t.Error("expected no field-in-sight transmission")
+	}
+	if len(vs.Sim.FutureFieldChecks) != 0 {
+		t.Error("expected the delayed field check to be discarded")
 	}
 }
 
@@ -2039,8 +2214,8 @@ func TestScenarioSpontaneousFieldInSight(t *testing.T) {
 	if !vs.AC.FieldInSight {
 		t.Error("expected FieldInSight once eligibility holds")
 	}
-	if !vs.HasPendingTransmission(PendingTransmissionFieldInSight) {
-		t.Error("expected PendingTransmissionFieldInSight to be enqueued")
+	if !vs.HasPendingTransmission(PendingTransmissionSpontaneousFieldInSight) {
+		t.Error("expected PendingTransmissionSpontaneousFieldInSight to be enqueued")
 	}
 }
 
@@ -2061,8 +2236,8 @@ func TestScenarioSpontaneousFieldInSightSuppressedByAtFixClearance(t *testing.T)
 	if vs.AC.FieldInSight {
 		t.Error("FieldInSight should not be set after at-fix approach clearance")
 	}
-	if vs.HasPendingTransmission(PendingTransmissionFieldInSight) {
-		t.Error("PendingTransmissionFieldInSight should not be enqueued after at-fix approach clearance")
+	if vs.HasPendingTransmission(PendingTransmissionSpontaneousFieldInSight) {
+		t.Error("PendingTransmissionSpontaneousFieldInSight should not be enqueued after at-fix approach clearance")
 	}
 }
 

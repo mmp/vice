@@ -51,6 +51,7 @@ const (
 	PendingTransmissionEmergency                                               // Emergency stage transmission
 	PendingTransmissionRequestApproachClearance                                // Pilot requesting approach clearance
 	PendingTransmissionFieldInSight                                            // Delayed "field in sight" after "looking"
+	PendingTransmissionSpontaneousFieldInSight                                 // Unprompted "field in sight"
 	PendingTransmissionFieldNegativeContact                                    // "Negative contact" after looking timer expires
 	PendingTransmissionRequestVisual                                           // Spontaneous "field in sight, requesting visual"
 	PendingTransmissionRequestVectors                                          // Pilot requesting vectors (overshot localizer)
@@ -475,11 +476,11 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	case PendingTransmissionTrafficInSight:
 		rt = av.MakeContactTransmission("[we've got the traffic|we have the traffic in sight|traffic in sight now]")
 
-	case PendingTransmissionFieldInSight:
-		// If the aircraft was cleared for an approach between enqueue and
-		// dispatch, drop the now-redundant "field in sight" call. Covers
-		// both immediate and "at fix" clearances.
-		if ac.Nav.Approach.EffectivelyCleared() {
+	case PendingTransmissionFieldInSight, PendingTransmissionSpontaneousFieldInSight:
+		// An unprompted call is moot if the aircraft was cleared for an
+		// approach between enqueue and dispatch (immediate or "at fix"); a
+		// report the controller asked for is still worth making.
+		if pc.Type == PendingTransmissionSpontaneousFieldInSight && ac.Nav.Approach.EffectivelyCleared() {
 			return "", ""
 		}
 		rt = av.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
