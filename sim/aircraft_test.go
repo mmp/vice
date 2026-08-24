@@ -42,21 +42,41 @@ func sidWp(fix string, latDeg float32) av.Waypoint {
 	return w
 }
 
-func TestGetSTTFixes_STARS_DepartureSIDAndExit(t *testing.T) {
+func TestGetSTTFixes_STARS_Departure(t *testing.T) {
 	wps := []av.Waypoint{
 		sidWp("SIDAA", 0.5), // ~30 NM
-		sidWp("SIDBB", 1.6), // ~96 NM — far away, but included regardless
-		wp("EXITF", 2.5),    // the exit fix, not part of the SID
-		wp("ENRTE", 3.0),    // enroute fix — not included
+		sidWp("SIDBB", 1.6), // ~96 NM
+		wp("EXITF", 2.0),    // ~120 NM — the exit fix, not part of the SID
+		wp("NEARE", 2.4),    // ~144 NM — enroute, near enough to go direct
+		wp("FAREN", 3.0),    // ~180 NM — enroute, too far away
 	}
 	ac := makeAircraftForSTTFixes(wps)
 	ac.TypeOfFlight = av.FlightTypeDeparture
 	ac.FlightPlan.Exit = "EXITF"
 
 	got := ac.GetSTTFixes(false)
-	want := []string{"SIDAA", "SIDBB", "EXITF"}
+	want := []string{"SIDAA", "SIDBB", "EXITF", "NEARE"}
 	if !equalStrings(got, want) {
 		t.Errorf("STARS departure: got %v, want %v", got, want)
+	}
+}
+
+func TestGetSTTFixes_STARS_DepartureFarSIDAndExit(t *testing.T) {
+	// The SID's waypoints and the exit fix are included however far away
+	// they are; only the enroute fixes past the exit are distance-limited.
+	wps := []av.Waypoint{
+		sidWp("SIDAA", 3.0), // ~180 NM
+		wp("EXITF", 4.0),    // ~240 NM
+		wp("ENRTE", 5.0),    // ~300 NM — not included
+	}
+	ac := makeAircraftForSTTFixes(wps)
+	ac.TypeOfFlight = av.FlightTypeDeparture
+	ac.FlightPlan.Exit = "EXITF"
+
+	got := ac.GetSTTFixes(false)
+	want := []string{"SIDAA", "EXITF"}
+	if !equalStrings(got, want) {
+		t.Errorf("STARS departure, distant SID: got %v, want %v", got, want)
 	}
 }
 

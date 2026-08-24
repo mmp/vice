@@ -275,10 +275,10 @@ func (ac *Aircraft) refreshSeenTraffic(now Time, aircraft map[av.ADSBCallsign]*A
 // GetSTTFixes returns the raw fix names relevant for STT context.
 // For ERAM (enroute) sessions, up to 5 assigned waypoints within 300nm are included. For
 // STARS (terminal) sessions, the fixes depend on the type of flight: for departures, the
-// SID's waypoints plus the exit fix; for arrivals, all remaining route waypoints; for
-// overflights, remaining route waypoints within 120nm. For aircraft that have been told
-// to expect an approach but haven't joined it yet, all of the approach's waypoints are
-// included as well.
+// SID's waypoints and the exit fix plus the route fixes within 150nm; for arrivals, all
+// remaining route waypoints; for overflights, remaining route waypoints within 120nm.
+// For aircraft that have been told to expect an approach but haven't joined it yet, all
+// of the approach's waypoints are included as well.
 func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 	var fixes []string
 	p := ac.Nav.FlightState.Position
@@ -316,10 +316,17 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 		// far away they are. The exit fix isn't necessarily among the SID's
 		// waypoints (e.g., when the SID ends with a vector to it), though it
 		// may also appear both there and in the enroute part of the route,
-		// so skip fixes we've already taken.
+		// so skip fixes we've already taken. Enroute fixes past the exit
+		// come along when they're near enough that a controller might send
+		// the aircraft direct to one; Nav.directFixWaypoints applies the
+		// same cutoff to fixes that aren't in the route at all.
+		const maxDepartureFixDistance = 150
 		exit := ac.FlightPlan.Exit.Base()
 		for _, wp := range ac.Nav.AssignedWaypoints() {
-			if av.IsNamedFix(wp.Fix) && (wp.OnSID() || wp.Fix == exit) && !slices.Contains(fixes, wp.Fix) {
+			if !av.IsNamedFix(wp.Fix) || slices.Contains(fixes, wp.Fix) {
+				continue
+			}
+			if wp.OnSID() || wp.Fix == exit || math.NMDistance2LL(p, wp.Location) <= maxDepartureFixDistance {
 				fixes = append(fixes, wp.Fix)
 			}
 		}

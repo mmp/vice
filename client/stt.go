@@ -1195,8 +1195,6 @@ func makeWhisperPrompt(state SimState) string {
 		"caution wake turbulence", "maintain visual separation", "landing the parallel",
 	)
 
-	fmt.Println(promptParts)
-
 	slices.Reverse(promptParts)
 	return strings.Join(promptParts, ", ")
 }
