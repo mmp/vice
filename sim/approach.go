@@ -389,50 +389,6 @@ func (s *Sim) processFutureTrafficChecks() {
 	}
 }
 
-func (s *Sim) refreshSeenTraffic(ac *Aircraft) {
-	now := s.State.SimTime
-	ac.SeenTraffic = util.FilterSliceInPlace(ac.SeenTraffic,
-		func(seen SeenAircraft) bool {
-			if seen.MaintainingVisualSeparation || seen.FollowingOnVisualApproach {
-				return s.trafficStillVisible(ac, &seen)
-			} else {
-				// Age out ones the aircraft hasn't been instructed to follow or maintain separation from.
-				return now.Sub(seen.SightedTime) <= trafficSightingMaxAge
-			}
-		})
-}
-
-func (s *Sim) trafficStillVisible(ac *Aircraft, seen *SeenAircraft) bool {
-	traffic, ok := s.Aircraft[seen.Callsign]
-	if !ok {
-		return false
-	}
-
-	bearingToTraffic := math.TrueToMagnetic(
-		math.Heading2LL(ac.Position(), traffic.Position(), ac.NmPerLongitude()),
-		ac.MagneticVariation())
-	if math.HeadingDifference(ac.Heading(), bearingToTraffic) > visualMaxBearingOff {
-		return false
-	}
-
-	return true
-}
-
-// canRequestVisualApproach reports whether an aircraft is eligible to
-// spontaneously request the visual approach. The aircraft must be an
-// arrival on frequency, assigned a non-visual approach that hasn't been
-// cleared yet, and must not have already made the request.
-func (ac *Aircraft) canRequestVisualApproach() bool {
-	if ac.IsDeparture() || ac.FieldInSight || ac.RequestedVisualApproach || ac.ControllerFrequency == "" {
-		return false
-	}
-	if ac.Nav.Approach.AssignedId == "" || ac.Nav.Approach.EffectivelyCleared() {
-		return false
-	}
-	appr := ac.Nav.Approach.Assigned
-	return appr != nil && appr.Type != av.ChartedVisualApproach && appr.Type != av.VisualApproach
-}
-
 type visualEligibilityReason int
 
 const (

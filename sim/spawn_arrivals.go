@@ -80,9 +80,9 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	// overriding the inbound-flow default above.
 	s.deriveERAMFixPair(&nasFp, ac)
 	s.applyFixPairAssignment(&nasFp, ac)
-	s.applyAutoScratchpadAssignment(&nasFp)
+	nasFp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 
-	s.maybeSetGoAround(ac, s.State.LaunchConfig.GoAroundRate)
+	ac.maybeSetGoAround(s.State.LaunchConfig.GoAroundRate, s.Rand)
 
 	// Decide at creation whether this pilot will spontaneously report field in sight and, among
 	// those, whether they will also request the visual approach. VisualRequestDistance, when set,
@@ -92,7 +92,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 		ac.VisualApproachRequestDistance = s.Rand.Float32Range(9, 16)
 	}
 
-	if err := s.assignSquawk(ac, &nasFp); err != nil {
+	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp); err != nil {
 		return nil, err
 	}
 	// Create a flight strip at the inbound handoff controller if it's a human position
@@ -447,18 +447,6 @@ func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAi
 	}, actype
 }
 
-// assignSquawk allocates an enroute squawk code and assigns it to both the
-// aircraft and NAS flight plan.
-func (s *Sim) assignSquawk(ac *Aircraft, nasFp *NASFlightPlan) error {
-	sq, err := s.ERAMComputer.CreateSquawk()
-	if err != nil {
-		return err
-	}
-	ac.Squawk = sq
-	nasFp.AssignedSquawk = sq
-	return nil
-}
-
 // initNASFlightPlan creates a NASFlightPlan with common fields pre-populated.
 // Callers must set type-specific fields (EntryFix, ExitFix, controller
 // assignments, scratchpads, altitudes, etc.) after calling this function.
@@ -493,25 +481,6 @@ func findLowestWaypointAltitude(wps av.WaypointArray, initialAlt float32) (int, 
 		return 0, false
 	}
 	return lowestAlt, true
-}
-
-// maybeSetGoAround determines if an arrival should attempt a go-around and
-// sets the GoAroundDistance if so. Go-arounds only occur for IFR aircraft
-// that will be handed off to a human controller (checked via HumanHandoff
-// waypoint), subject to the configured GoAroundRate probability.
-func (s *Sim) maybeSetGoAround(ac *Aircraft, goAroundRate float32) {
-	if ac.FlightPlan.Rules != av.FlightRulesIFR {
-		return // VFRs don't go around since they aren't talking to us
-	}
-	if s.Rand.Float32() >= goAroundRate {
-		return // Random chance didn't trigger
-	}
-	// Only allow go-around if there's human controller involvement
-	if !slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff() }) {
-		return
-	}
-	d := s.Rand.Float32Range(0.1, 0.7)
-	ac.GoAroundDistance = &d
 }
 
 // createScheduledOverflight creates the overflight a schedule entry describes;
@@ -568,9 +537,9 @@ func (s *Sim) finalizeOverflightNoLock(ac *Aircraft, of *av.Overflight, group st
 	// inbound-flow default above when adapted.
 	s.deriveERAMFixPair(&nasFp, ac)
 	s.applyFixPairAssignment(&nasFp, ac)
-	s.applyAutoScratchpadAssignment(&nasFp)
+	nasFp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 
-	if err := s.assignSquawk(ac, &nasFp); err != nil {
+	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp); err != nil {
 		return err
 	}
 

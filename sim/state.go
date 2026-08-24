@@ -489,13 +489,6 @@ func (ss *CommonState) GetPositionsForTCW(tcw TCW) []ControlPosition {
 	return nil
 }
 
-// TCWControlsTrack returns true if the given TCW owns the track.
-// Track ownership is determined by the OwningTCW field, which is set when
-// the track is accepted/spawned and updated during full consolidation.
-func (ss *CommonState) TCWControlsTrack(tcw TCW, track *Track) bool {
-	return track != nil && track.IsAssociated() && track.FlightPlan.OwningTCW == tcw
-}
-
 // TCWControlsPosition returns true if the given TCW controls the specified position
 // (either as primary or as a secondary position).
 func (ss *CommonState) TCWControlsPosition(tcw TCW, pos ControlPosition) bool {
@@ -631,4 +624,35 @@ type Track struct {
 	CWTCategory               string // True CWT from aircraft performance DB, not from NAS flight plan
 	RequestedFlightFollowing  bool   // VFR aircraft that has requested flight following
 	VirtuallyControlled       bool   // tracked by a virtual controller rather than a human one
+}
+
+func (t *Track) IsAssociated() bool {
+	return t.FlightPlan != nil
+}
+
+func (t *Track) IsUnassociated() bool {
+	return t.FlightPlan == nil
+}
+
+func (t *Track) IsUnsupportedDB() bool {
+	return t.FlightPlan != nil && !t.FlightPlan.Location.IsZero()
+}
+
+func (t *Track) IsDeparture() bool {
+	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeDeparture
+}
+
+func (t *Track) IsArrival() bool {
+	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeArrival
+}
+
+func (t *Track) IsOverflight() bool {
+	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeOverflight
+}
+
+// ControlledBy returns true if the given TCW owns the track. Track ownership is
+// determined by the OwningTCW field, which is set when the track is
+// accepted/spawned and updated during full consolidation.
+func (t *Track) ControlledBy(tcw TCW) bool {
+	return t != nil && t.IsAssociated() && t.FlightPlan.OwningTCW == tcw
 }

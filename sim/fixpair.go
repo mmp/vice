@@ -775,32 +775,6 @@ func sortAutoScratchpad(rows []AutoScratchpadRow) {
 	})
 }
 
-// applyAutoScratchpadAssignment fills a spawning flight's scratchpad(s) from the
-// first matching adapted row, skipping any scratchpad already set (an explicitly
-// entered scratchpad is never overridden). A no-op without adapted rows. Fix
-// criteria consider the derived fix pair first and then the actual one, so it
-// must run after fix-pair reassignment.
-func (s *Sim) applyAutoScratchpadAssignment(nasFp *NASFlightPlan) {
-	rows := s.State.FacilityAdaptation.AutoScratchpadAssignment
-	if len(rows) == 0 || (nasFp.Scratchpad != "" && nasFp.SecondaryScratchpad != "") {
-		return
-	}
-	plan := s.State.ConfigurationId
-	for i := range rows {
-		r := &rows[i]
-		if !r.matches(plan, nasFp) {
-			continue
-		}
-		if nasFp.Scratchpad == "" && r.Scratchpad1 != "" {
-			nasFp.Scratchpad = asaScratchpadText(r.Scratchpad1)
-		}
-		if nasFp.SecondaryScratchpad == "" && r.Scratchpad2 != "" {
-			nasFp.SecondaryScratchpad = asaScratchpadText(r.Scratchpad2)
-		}
-		return
-	}
-}
-
 // asaScratchpadText renders an adapted scratchpad value, converting a caret to
 // the delta character.
 func asaScratchpadText(s string) string {

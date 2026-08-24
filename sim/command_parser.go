@@ -842,7 +842,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		} else if command == "SA" {
 			return s.SayAltitude(tcw, callsign)
 		} else if what, ok := strings.CutPrefix(command, "SAYAGAIN/"); ok {
-			return s.SayAgainCommand(tcw, callsign, what)
+			return sayAgainIntent(what)
 		} else if speedStr, untilStr, ok := strings.Cut(command[1:], "/U"); ok {
 			// Check for compound format: S250/UFIX1/210/UFIX2/180
 			// After the first Cut on "/U", if untilStr contains another "/",

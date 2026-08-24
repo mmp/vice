@@ -199,6 +199,30 @@ func (fp *NASFlightPlan) DataBlockAltitude() int {
 	return fp.PerceivedAssigned
 }
 
+// applyAutoScratchpad fills a spawning flight's scratchpad(s) from the first
+// matching adapted row, skipping any scratchpad already set (an explicitly
+// entered scratchpad is never overridden). A no-op without adapted rows. Fix
+// criteria consider the derived fix pair first and then the actual one, so it
+// must run after fix-pair reassignment.
+func (fp *NASFlightPlan) applyAutoScratchpad(rows []AutoScratchpadRow, plan string) {
+	if len(rows) == 0 || (fp.Scratchpad != "" && fp.SecondaryScratchpad != "") {
+		return
+	}
+	for i := range rows {
+		r := &rows[i]
+		if !r.matches(plan, fp) {
+			continue
+		}
+		if fp.Scratchpad == "" && r.Scratchpad1 != "" {
+			fp.Scratchpad = asaScratchpadText(r.Scratchpad1)
+		}
+		if fp.SecondaryScratchpad == "" && r.Scratchpad2 != "" {
+			fp.SecondaryScratchpad = asaScratchpadText(r.Scratchpad2)
+		}
+		return
+	}
+}
+
 type NASFlightPlanType int
 
 // Flight plan types (STARS)
@@ -602,7 +626,7 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 	s.publish()
 
 	if err == nil {
-		err = s.postCheckFlightPlanSpecifier(spec)
+		err = spec.postCheck()
 	}
 
 	return err
@@ -695,7 +719,7 @@ func (s *Sim) preCheckFlightPlanSpecifier(spec *FlightPlanSpecifier) error {
 
 // General checks both for create and modify; this returns informational
 // messages that don't prevent the fp from being created.
-func (s *Sim) postCheckFlightPlanSpecifier(spec FlightPlanSpecifier) error {
+func (spec FlightPlanSpecifier) postCheck() error {
 	if spec.AircraftType.IsSet {
 		if _, ok := av.DB.AircraftPerformance[spec.AircraftType.Get()]; !ok {
 			return ErrIllegalACType
@@ -756,7 +780,7 @@ func (s *Sim) ModifyFlightPlan(tcw TCW, acid ACID, spec FlightPlanSpecifier) err
 
 	s.publish()
 
-	return s.postCheckFlightPlanSpecifier(spec)
+	return spec.postCheck()
 }
 
 // Associate the specified flight plan with the track. Flight plan for ACID
@@ -829,7 +853,7 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 	if err == nil {
 		s.publish()
 
-		err = s.postCheckFlightPlanSpecifier(spec)
+		err = spec.postCheck()
 	}
 	return err
 }

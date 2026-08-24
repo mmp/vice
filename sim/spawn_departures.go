@@ -1223,9 +1223,9 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	if nasFp.LocalArrival {
 		nasFp.TypeOfFlight = av.FlightTypeArrival
 	}
-	s.applyAutoScratchpadAssignment(&nasFp)
+	nasFp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 
-	if err := s.assignSquawk(ac, &nasFp); err != nil {
+	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp); err != nil {
 		return nil, err
 	}
 

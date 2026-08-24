@@ -1187,7 +1187,7 @@ func (s *Sim) updateState() {
 			arrivalMETAR := s.State.METAR[ac.FlightPlan.ArrivalAirport]
 			updateResult := ac.Update(s.wxModel, s.State.SimTime, &arrivalMETAR, s.bravoAirspace, nil /* s.lg*/)
 			passedWaypoint := updateResult.PassedWaypoint
-			s.refreshSeenTraffic(ac)
+			ac.refreshSeenTraffic(now, s.Aircraft)
 
 			if ac.Nav.Approach.RequestApproachClearance && ac.IsAssociated() {
 				ac.Nav.Approach.RequestApproachClearance = false
@@ -1416,7 +1416,6 @@ func (s *Sim) updateState() {
 		s.admitHoldingArrivals()
 		s.spawnAircraft()
 
-		s.ERAMComputer.Update(s)
 		s.STARSComputer.Update(s)
 
 		s.processInterfacilityVFR(s.State.SimTime)
@@ -1662,30 +1661,6 @@ func IsValidACID(acid string) bool {
 		}
 	}
 	return true
-}
-
-func (t *Track) IsAssociated() bool {
-	return t.FlightPlan != nil
-}
-
-func (t *Track) IsUnassociated() bool {
-	return t.FlightPlan == nil
-}
-
-func (t *Track) IsUnsupportedDB() bool {
-	return t.FlightPlan != nil && !t.FlightPlan.Location.IsZero()
-}
-
-func (t *Track) IsDeparture() bool {
-	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeDeparture
-}
-
-func (t *Track) IsArrival() bool {
-	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeArrival
-}
-
-func (t *Track) IsOverflight() bool {
-	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeOverflight
 }
 
 ///////////////////////////////////////////////////////////////////////////

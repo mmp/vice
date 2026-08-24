@@ -133,7 +133,7 @@ func TestApplyAutoScratchpadAssignment(t *testing.T) {
 	// Matches the specific rule: scratchpad1 = AAA, scratchpad2 = delta.
 	fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "LEENA",
 		RequestedAltitude: 15000}
-	s.applyAutoScratchpadAssignment(fp)
+	fp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 	if fp.Scratchpad != "AAA" {
 		t.Errorf("scratchpad1 = %q, want AAA", fp.Scratchpad)
 	}
@@ -143,7 +143,7 @@ func TestApplyAutoScratchpadAssignment(t *testing.T) {
 	// An explicitly-set scratchpad is not overridden; the other still fills.
 	fp2 := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "LEENA",
 		RequestedAltitude: 15000, Scratchpad: "USR"}
-	s.applyAutoScratchpadAssignment(fp2)
+	fp2.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 	if fp2.Scratchpad != "USR" {
 		t.Errorf("explicit scratchpad overridden: %q", fp2.Scratchpad)
 	}
@@ -153,7 +153,7 @@ func TestApplyAutoScratchpadAssignment(t *testing.T) {
 	// No specific match -> falls through to the wildcard rule.
 	fp3 := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "OTHER",
 		RequestedAltitude: 9000}
-	s.applyAutoScratchpadAssignment(fp3)
+	fp3.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 	if fp3.Scratchpad != "ZZZ" {
 		t.Errorf("wildcard scratchpad = %q, want ZZZ", fp3.Scratchpad)
 	}

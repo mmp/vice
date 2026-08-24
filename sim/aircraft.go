@@ -215,6 +215,63 @@ func (ac *Aircraft) RecentSightingOf(traffic av.ADSBCallsign, now Time, maxAge t
 	return nil
 }
 
+// maybeSetGoAround determines if an arrival should attempt a go-around and
+// sets the GoAroundDistance if so. Go-arounds only occur for IFR aircraft
+// that will be handed off to a human controller (checked via HumanHandoff
+// waypoint), subject to the configured GoAroundRate probability.
+func (ac *Aircraft) maybeSetGoAround(goAroundRate float32, r *rand.Rand) {
+	if ac.FlightPlan.Rules != av.FlightRulesIFR {
+		return // VFRs don't go around since they aren't talking to us
+	}
+	if r.Float32() >= goAroundRate {
+		return // Random chance didn't trigger
+	}
+	// Only allow go-around if there's human controller involvement
+	if !slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff() }) {
+		return
+	}
+	d := r.Float32Range(0.1, 0.7)
+	ac.GoAroundDistance = &d
+}
+
+// canRequestVisualApproach reports whether an aircraft is eligible to
+// spontaneously request the visual approach. The aircraft must be an
+// arrival on frequency, assigned a non-visual approach that hasn't been
+// cleared yet, and must not have already made the request.
+func (ac *Aircraft) canRequestVisualApproach() bool {
+	if ac.IsDeparture() || ac.FieldInSight || ac.RequestedVisualApproach || ac.ControllerFrequency == "" {
+		return false
+	}
+	if ac.Nav.Approach.AssignedId == "" || ac.Nav.Approach.EffectivelyCleared() {
+		return false
+	}
+	appr := ac.Nav.Approach.Assigned
+	return appr != nil && appr.Type != av.ChartedVisualApproach && appr.Type != av.VisualApproach
+}
+
+// canSeeTraffic reports whether traffic is within the pilot's forward
+// visibility arc.
+func (ac *Aircraft) canSeeTraffic(traffic *Aircraft) bool {
+	bearingToTraffic := math.TrueToMagnetic(
+		math.Heading2LL(ac.Position(), traffic.Position(), ac.NmPerLongitude()),
+		ac.MagneticVariation())
+	return math.HeadingDifference(ac.Heading(), bearingToTraffic) <= visualMaxBearingOff
+}
+
+// refreshSeenTraffic drops sightings the pilot can no longer act on: those the
+// aircraft was told to follow or keep visual separation from are held only
+// while the traffic remains visible, and the rest age out.
+func (ac *Aircraft) refreshSeenTraffic(now Time, aircraft map[av.ADSBCallsign]*Aircraft) {
+	ac.SeenTraffic = util.FilterSliceInPlace(ac.SeenTraffic,
+		func(seen SeenAircraft) bool {
+			if !seen.MaintainingVisualSeparation && !seen.FollowingOnVisualApproach {
+				return now.Sub(seen.SightedTime) <= trafficSightingMaxAge
+			}
+			traffic, ok := aircraft[seen.Callsign]
+			return ok && ac.canSeeTraffic(traffic)
+		})
+}
+
 // GetSTTFixes returns the raw fix names relevant for STT context.
 // For ERAM (enroute) sessions, up to 5 assigned waypoints within 300nm are included. For
 // STARS (terminal) sessions, the fixes depend on the type of flight: for departures, the

@@ -164,7 +164,7 @@ func (ss *SimState) GetUserConsolidation() *sim.TCPConsolidation {
 
 // UserControlsTrack returns true if the current user controls the given track.
 func (ss *SimState) UserControlsTrack(track *sim.Track) bool {
-	return ss.TCWControlsTrack(ss.UserTCW, track)
+	return track.ControlledBy(ss.UserTCW)
 }
 
 // UserControlsPosition returns true if the current user controls the given position.

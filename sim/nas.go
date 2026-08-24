@@ -46,7 +46,16 @@ func (ec *ERAMComputer) ReturnSquawk(code av.Squawk) error {
 	return ec.SquawkCodePool.Return(code)
 }
 
-func (ec *ERAMComputer) Update(s *Sim) {
+// AssignSquawk allocates an enroute squawk code and assigns it to both the
+// aircraft and NAS flight plan.
+func (ec *ERAMComputer) AssignSquawk(ac *Aircraft, fp *NASFlightPlan) error {
+	sq, err := ec.CreateSquawk()
+	if err != nil {
+		return err
+	}
+	ac.Squawk = sq
+	fp.AssignedSquawk = sq
+	return nil
 }
 
 func makeSTARSComputer(id string) *STARSComputer {

@@ -731,10 +731,10 @@ func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign,
 	return callsign, tr.Spoken(s.Rand), nil
 }
 
-// SayAgainCommand returns an intent for when STT partially parsed a command but
+// sayAgainIntent returns an intent for when STT partially parsed a command but
 // couldn't extract the argument. The pilot will ask the controller to repeat the
 // specific part of the clearance.
-func (s *Sim) SayAgainCommand(tcw TCW, callsign av.ADSBCallsign, commandType string) (av.CommandIntent, error) {
+func sayAgainIntent(commandType string) (av.CommandIntent, error) {
 	var cmdType av.SayAgainCommandType
 	switch commandType {
 	case "HEADING":

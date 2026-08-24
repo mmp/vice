@@ -1375,7 +1375,7 @@ func TestScenarioCVARestatedWhileFollowingTraffic(t *testing.T) {
 
 	// Long past the point where a routine sighting would have expired.
 	vs.AdvanceTime(5 * time.Minute)
-	vs.Sim.refreshSeenTraffic(vs.AC)
+	vs.AC.refreshSeenTraffic(vs.Sim.State.SimTime, vs.Sim.Aircraft)
 	requireSeenTraffic(t, vs.AC, traffic.ADSBCallsign)
 
 	intent, err = vs.ClearedVisual("36")
@@ -1828,13 +1828,13 @@ func TestMaintainingVisualSeparationPersistsUntilTrafficNoLongerVisible(t *testi
 		MaintainingVisualSeparation: true,
 	}}
 
-	vs.Sim.refreshSeenTraffic(vs.AC)
+	vs.AC.refreshSeenTraffic(vs.Sim.State.SimTime, vs.Sim.Aircraft)
 	if len(vs.AC.SeenTraffic) != 1 {
 		t.Fatal("maintaining visual separation should persist while the traffic remains visible")
 	}
 
 	traffic.Nav.FlightState.Position = math.Point2LL{0, 6.0 / 60}
-	vs.Sim.refreshSeenTraffic(vs.AC)
+	vs.AC.refreshSeenTraffic(vs.Sim.State.SimTime, vs.Sim.Aircraft)
 	if len(vs.AC.SeenTraffic) != 0 {
 		t.Fatal("maintaining visual separation should clear once the traffic is no longer visible")
 	}
