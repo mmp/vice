@@ -567,12 +567,10 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 		eta := sumDist / nav.FlightState.GS * 3600 // seconds
 
 		// Maximum change in altitude possible before reaching this
-		// waypoint. Subtract the ramp-up deficit: the first ~13s to reach
-		// full rate achieve roughly half the altitude change vs full rate.
+		// waypoint. The aircraft flies these legs consecutively, so it's
+		// already at rate by the time it reaches them; the spool-up at the
+		// start of the descent is handled by TargetAltitude's safety factor.
 		dalt := altRate * eta / 60
-		rampUpSec := float32(1) / rateMaxDeltaPercent
-		rampUpDeficit := altRate * min(rampUpSec, eta) / (2 * 60)
-		dalt = max(0, dalt-rampUpDeficit)
 
 		// possibleRange is altitude range the aircraft could have at this
 		// waypoint, given its performance characteristics and assuming it
@@ -592,14 +590,11 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 		}
 
 		// Limit the possible range according to the restriction at the
-		// current waypoint.
-		var feasible bool
-		altRange, feasible = restr.ClampRange(possibleRange)
-		if !feasible {
-			// Can't satisfy all constraints; target the earliest
-			// unsatisfiable one (altRange and fix were already updated).
-			break
-		}
+		// current waypoint. A leg that's too steep to fly doesn't excuse
+		// the restrictions before it; ClampRange anchors altRange on this
+		// restriction in that case, so keep walking back to find the
+		// earliest restriction that binds.
+		altRange, _ = restr.ClampRange(possibleRange)
 
 		// Reset this so we compute the right eta next time we have a
 		// waypoint with an altitude restriction.

@@ -4,6 +4,7 @@
 - Added support for fix pairs for controller assignment (radarcontacto)
 - Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection
 - Fixed bug with departures climbing past restrictions in their SID
+- Fixed bug where aircraft cleared for an approach would descend through the earlier altitude restrictions on it
 - Fixed bug where departures would climb to cruise altitude even if they had /cALT in their upcoming route
 - Fixed bug where virtual controllers wouldn't accept redirected handoffs
 - Fixed bug where VFR aircraft could end up swarming an airport

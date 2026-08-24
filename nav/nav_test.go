@@ -645,6 +645,11 @@ func (f *FlightTest) ClearedApproach(id string) {
 	f.nav.ClearedApproach(id, nil, f.simTime, false)
 }
 
+func (f *FlightTest) ClearedStraightInApproach(id string) {
+	f.t.Helper()
+	f.nav.ClearedApproach(id, nil, f.simTime, true)
+}
+
 func (f *FlightTest) AssignHeading(hdg int, turn av.TurnDirection) {
 	f.t.Helper()
 	f.nav.AssignHeading(math.MagneticHeading(hdg), turn, f.simTime, 0)

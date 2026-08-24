@@ -267,6 +267,73 @@ func TestApproachAtOrAboveDescentTarget(t *testing.T) {
 	f.Run()
 }
 
+// TestApproachHonorsCrossingRestrictionBeforeSteepLeg verifies that an
+// aircraft cleared for an approach honors the restrictions at the start of
+// the approach rather than diving for a downstream one.
+//
+// Scenario: a C310 (1200 fpm descent) is cleared straight-in for the KHWD
+// RNAV 28L with "cross JOBUS at 5,700". The BOGRE-HUZBY leg on final is
+// only 1.1 nm for 360 ft; when the reverse walk charged a descent-rate
+// ramp-up on every leg it judged that leg unflyable, gave up, and made
+// BOGRE/1360 the target, so the aircraft started down through 5,700 some
+// 20 nm before JOBUS.
+func TestApproachHonorsCrossingRestrictionBeforeSteepLeg(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SUNOL JOBUS",
+		DepartureAirport: "KLVK",
+		ArrivalAirport:   "KHWD",
+		AircraftType:     "C310",
+		InitialAltitude:  6500,
+		InitialSpeed:     170,
+	})
+
+	f.ExpectApproach("R28L")
+	ar := av.MakeAtAltitudeRestriction(5700)
+	f.nav.CrossFixAt("JOBUS", &ar, nil)
+	f.ClearedStraightInApproach("R28L")
+
+	f.BeforeFix("JOBUS", func(f *FlightTest) {
+		f.AssertAltitudeAbove(5650)
+	})
+	f.AtFix("JOBUS", func(f *FlightTest) {
+		f.AssertAltitudeNear(5700, 100)
+	})
+
+	f.Run()
+}
+
+// TestUnflyableLegKeepsEarlierRestrictions verifies that a leg the aircraft
+// can't fly doesn't excuse the restrictions before it: the reverse walk must
+// keep looking upstream for the restriction that binds first.
+//
+// SAJUL and DETGY are 21.75 nm apart, DETGY and HAUPT only 5.57 nm; an A320
+// at 250 kts can't lose 5,000 ft in that second leg. The aircraft must still
+// descend to 11,000 for SAJUL rather than targeting the unreachable DETGY.
+func TestUnflyableLegKeepsEarlierRestrictions(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "CAMRN/star SAJUL/a11000/star DETGY/a9000/star HAUPT/a4000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  13000,
+		InitialSpeed:     250,
+	})
+
+	target, ok := f.nav.findAltitudeTarget()
+	if !ok {
+		t.Fatal("no altitude target")
+	}
+	if target.fix != "SAJUL" || target.altitude != 11000 {
+		t.Errorf("expected SAJUL/11000 altitude target, got %s/%.0f", target.fix, target.altitude)
+	}
+
+	f.AtFix("SAJUL", func(f *FlightTest) {
+		f.AssertAltitudeNear(11000, 150)
+	})
+
+	f.Run()
+}
+
 // TestAssignedAltitudeOverridesSTAR verifies that a controller-assigned
 // altitude takes priority over STAR restrictions.
 func TestAssignedAltitudeOverridesSTAR(t *testing.T) {
