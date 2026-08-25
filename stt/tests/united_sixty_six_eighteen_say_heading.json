@@ -25,7 +25,7 @@
         "Gullo": "GULLO",
         "Leonard M Thompson": "MYAM",
         "Merlin": "MRLIN",
-        "Palm Beach": "KPBI",
+        "Palm Beach": "KDJT",
         "Sans": "SANZZ",
         "Sheedy": "SHDEE",
         "Wilba": "WILBA",
@@ -79,7 +79,7 @@
         "J F K": "KJFK",
         "Kennedy": "KJFK",
         "Mazel": "MAZEL",
-        "Palm Beach": "KPBI"
+        "Palm Beach": "KDJT"
       },
       "CandidateApproaches": {
         "ILS Runway 10L": "I0L",
@@ -129,7 +129,7 @@
         "Gullo": "GULLO",
         "Juno": "JUUNO",
         "LaGuardia": "KLGA",
-        "Palm Beach": "KPBI",
+        "Palm Beach": "KDJT",
         "Sans": "SANZZ",
         "Wilba": "WILBA",
         "Zisur": "ZISUR"
@@ -181,7 +181,7 @@
       "Fixes": {
         "Hilbert": "HLIBT",
         "Nashville": "KBNA",
-        "Palm Beach": "KPBI",
+        "Palm Beach": "KDJT",
         "Tarty": "TARTY"
       },
       "CandidateApproaches": {
@@ -230,7 +230,7 @@
       "Fixes": {
         "George Bush Intercontinental Houston": "KIAH",
         "Gullo": "GULLO",
-        "Palm Beach": "KPBI",
+        "Palm Beach": "KDJT",
         "Wilba": "WILBA",
         "Zisur": "ZISUR"
       },
@@ -281,7 +281,7 @@
       "Fixes": {
         "Fixas": "FIXAS",
         "Newark": "KEWR",
-        "Palm Beach": "KPBI",
+        "Palm Beach": "KDJT",
         "Quizer": "QUIZR",
         "Slides": "SLIDZ"
       },
@@ -388,7 +388,7 @@
     "[local-stt]   pattern \"exact_phrase\" matched: \"UAL6618\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"United 66 18\")",
     "[local-stt] callsign match: Callsign=\"UAL6618\" SpokenKey=\"United 66 18\" Conf=1.00 Consumed=3",
     "[local-stt] aircraft context: State=\"arrival\" Altitude=4040 Fixes=5 Approaches=3 VisualApproaches=3 AssignedApproach=\"ILS Runway 10L\" LAHSORunways=[14 32]",
-    "[local-stt]   fix: \"Palm Beach\" -\u003e \"KPBI\"",
+    "[local-stt]   fix: \"Palm Beach\" -\u003e \"KDJT\"",
     "[local-stt]   fix: \"George Bush Intercontinental Houston\" -\u003e \"KIAH\"",
     "[local-stt]   fix: \"Gullo\" -\u003e \"GULLO\"",
     "[local-stt]   fix: \"Wilba\" -\u003e \"WILBA\"",

@@ -628,6 +628,11 @@ func (cm CompressedMETAR) HasAirport(icao string) bool {
 	return ok
 }
 
+// RemoveAirport discards the collection's METAR for the given airport.
+func (cm CompressedMETAR) RemoveAirport(icao string) {
+	delete(cm.m, icao)
+}
+
 // CompressAirportMETAR converts metar to SOA form, verifies that the
 // conversion round trips, and returns the msgpack+flate encoding used for a
 // single airport's entry in a CompressedMETAR. It is a standalone function so

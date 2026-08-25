@@ -466,8 +466,8 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			norm := strings.ToUpper(strings.TrimSpace(other))
 			if norm == icao {
 				e.ErrorString("%s: routes to or from the airport itself", other)
-			} else if _, ok := DB.Airports[norm]; !ok {
-				e.ErrorString("%s: airport unknown", other)
+			} else if err := CheckAirport("traffic route", norm); err != nil {
+				e.Error(err)
 			} else if _, ok := checked[norm]; ok {
 				e.ErrorString("%s: airport repeatedly specified", other)
 			} else {
@@ -529,8 +529,8 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		if _, ok := DB.Airports[dep.Destination]; !ok {
-			e.ErrorString("destination airport %q unknown", dep.Destination)
+		if err := CheckAirport("destination", dep.Destination); err != nil {
+			e.Error(err)
 		}
 
 		// Make sure that all runways have a route to the exit
@@ -625,8 +625,8 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			// wasn't specified in the route.
 			spec.Waypoints[len(spec.Waypoints)-1].SetSequenceVFRLanding(true)
 		}
-		if _, ok := DB.Airports[spec.Destination]; !ok {
-			e.ErrorString("Destination airport %q unknown", spec.Destination)
+		if err := CheckAirport("destination", spec.Destination); err != nil {
+			e.Error(err)
 		}
 		e.Pop()
 	}

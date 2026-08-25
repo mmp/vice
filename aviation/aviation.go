@@ -1319,8 +1319,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		for ap, rwywp := range ar.RunwayWaypoints {
 			e.Push("Airport " + ap)
 
-			if _, ok := DB.Airports[ap]; !ok {
-				e.ErrorString("airport is unknown")
+			if err := CheckAirport("runway waypoints", ap); err != nil {
+				e.Error(err)
 				e.Pop()
 				continue
 			}
@@ -1388,8 +1388,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		e.Push("Arrival airport " + arrivalAirport)
 		for i := range ar.Airlines[arrivalAirport] {
 			ar.Airlines[arrivalAirport][i].Check(e)
-			if _, ok := DB.Airports[ar.Airlines[arrivalAirport][i].Airport]; !ok {
-				e.ErrorString(`departure airport "airport" %q unknown`, ar.Airlines[arrivalAirport][i].Airport)
+			if err := CheckAirport("departure", ar.Airlines[arrivalAirport][i].Airport); err != nil {
+				e.Error(err)
 			}
 		}
 		e.Pop()

@@ -26,7 +26,7 @@
         "Fonvi": "FONVI",
         "Greys": "GREYZ",
         "Jubol": "JUBOL",
-        "Palm Beach": "KPBI",
+        "Palm Beach": "KDJT",
         "Ronald Reagan Washington National": "KDCA",
         "Sunny": "SUNEY",
         "Wirso": "WIRSO"
@@ -545,7 +545,7 @@
     "[local-stt]   fix: \"Jubol\" -\u003e \"JUBOL\"",
     "[local-stt]   fix: \"Wirso\" -\u003e \"WIRSO\"",
     "[local-stt]   fix: \"Firop\" -\u003e \"FIROP\"",
-    "[local-stt]   fix: \"Palm Beach\" -\u003e \"KPBI\"",
+    "[local-stt]   fix: \"Palm Beach\" -\u003e \"KDJT\"",
     "[local-stt]   fix: \"Sunny\" -\u003e \"SUNEY\"",
     "[local-stt]   fix: \"Greys\" -\u003e \"GREYZ\"",
     "[local-stt]   fix: \"Ronald Reagan Washington National\" -\u003e \"KDCA\"",

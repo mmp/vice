@@ -3152,7 +3152,7 @@
             }
           ],
           "altitude": 34000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "ELVAE NECCK WHITE Q409 CRPLR EARZZ Q131 WAALT Y289 DULEE CLMNT2"
         },
@@ -5943,7 +5943,7 @@
             }
           ],
           "altitude": 43000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "ELVAE NECCK WHITE J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 WOPNR CPTAN2"
         },
@@ -6732,7 +6732,7 @@
             }
           ],
           "altitude": 43000,
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "WHITE",
           "route": "ELVAE NECCK WHITE J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 WOPNR CPTAN2"
         },
@@ -7999,7 +7999,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -8065,7 +8065,7 @@
               },
               {
                 "icao": "VJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "SBE",
@@ -8131,7 +8131,7 @@
               },
               {
                 "icao": "FFL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJM",
@@ -9527,7 +9527,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -9593,7 +9593,7 @@
               },
               {
                 "icao": "VJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "SBE",
@@ -9659,7 +9659,7 @@
               },
               {
                 "icao": "FFL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJM",
@@ -9766,7 +9766,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -9832,7 +9832,7 @@
               },
               {
                 "icao": "VJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "SBE",
@@ -9898,7 +9898,7 @@
               },
               {
                 "icao": "FFL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJM",
@@ -10472,62 +10472,62 @@
                 "callsign": "RPA3644"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1187"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "JBU2144"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B737"],
                 "callsign": "UAL2247"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A319"],
                 "callsign": "UAL353"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B737"],
                 "callsign": "UAL1558"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "NKS3006"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1153"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "JBU144"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1391"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1598"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B38M"],
                 "callsign": "UAL2158"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL2094"
               },
@@ -12101,7 +12101,7 @@
                 "icao": "EJA"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "EJA"
               },
               {
@@ -12182,7 +12182,7 @@
                 "icao": "EJA"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "EJA"
               },
               {
@@ -12268,7 +12268,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -12334,7 +12334,7 @@
               },
               {
                 "icao": "VJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "SBE",
@@ -12400,7 +12400,7 @@
               },
               {
                 "icao": "FFL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJM",
@@ -12485,7 +12485,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -12551,7 +12551,7 @@
               },
               {
                 "icao": "VJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "SBE",
@@ -12617,7 +12617,7 @@
               },
               {
                 "icao": "FFL",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJM",
@@ -12699,7 +12699,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -12775,7 +12775,7 @@
                 "icao": "EJA"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "icao": "EJA"
               },
               {
@@ -12856,7 +12856,7 @@
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
@@ -14328,7 +14328,7 @@
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "GJS",
@@ -14409,7 +14409,7 @@
               },
               {
                 "icao": "JBU",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "GJS",
@@ -14904,62 +14904,62 @@
                 "callsign": "RPA3644"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1187"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "JBU2144"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B737"],
                 "callsign": "UAL2247"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A319"],
                 "callsign": "UAL353"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B737"],
                 "callsign": "UAL1558"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "NKS3006"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1153"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "JBU144"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1391"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1598"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B38M"],
                 "callsign": "UAL2158"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL2094"
               },
@@ -16852,62 +16852,62 @@
                 "callsign": "RPA3644"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1187"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "JBU2144"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B737"],
                 "callsign": "UAL2247"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A319"],
                 "callsign": "UAL353"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B737"],
                 "callsign": "UAL1558"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "NKS3006"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1153"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["A320"],
                 "callsign": "JBU144"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1391"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL1598"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B38M"],
                 "callsign": "UAL2158"
               },
               {
-                "airport": "KPBI",
+                "airport": "KDJT",
                 "types": ["B739"],
                 "callsign": "UAL2094"
               },

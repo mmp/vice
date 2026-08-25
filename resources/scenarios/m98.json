@@ -7475,7 +7475,7 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KPBI",
+          "destination": "KDJT",
           "exit": "FOBUG",
           "route": "FOBUG DOKTR CORDY RST ALO IRK J45 STL J45 DENNI Q19 HITMN ACORI VUUDU1"
         },
@@ -23762,11 +23762,11 @@
               {
                 "icao": "N",
                 "fleet": "GAjet",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "EJA",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "N",
@@ -24107,7 +24107,7 @@
               {
                 "icao": "N",
                 "fleet": "GAturbine",
-                "airport": "KPBI"
+                "airport": "KDJT"
               },
               {
                 "icao": "N",

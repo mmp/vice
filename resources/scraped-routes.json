@@ -3130,9 +3130,6 @@
       }
     ]
   },
-  "KAPF-KPBI": {
-    "updated": "2026-08-08"
-  },
   "KAPF-KSUA": {
     "updated": "2026-08-08",
     "routes": [
@@ -3417,9 +3414,6 @@
   },
   "KATL-KMGE": {
     "updated": "2026-08-07"
-  },
-  "KATL-KPBI": {
-    "updated": "2026-08-06"
   },
   "KATL-KPDK": {
     "updated": "2026-08-06"
@@ -4051,9 +4045,6 @@
         "hours": "14"
       }
     ]
-  },
-  "KBCT-KPBI": {
-    "updated": "2026-08-08"
   },
   "KBED-KBOS": {
     "updated": "2026-08-06",
@@ -6085,9 +6076,6 @@
   "KBOS-KFMH": {
     "updated": "2026-08-06"
   },
-  "KBOS-KPBI": {
-    "updated": "2026-08-06"
-  },
   "KBOS-KRKD": {
     "updated": "2026-08-07",
     "routes": [
@@ -6440,9 +6428,6 @@
         "count": 1
       }
     ]
-  },
-  "KBWI-KPBI": {
-    "updated": "2026-08-07"
   },
   "KBXA-KMSY": {
     "updated": "2026-08-08"
@@ -7372,9 +7357,6 @@
         "hours": "23"
       }
     ]
-  },
-  "KCLT-KPBI": {
-    "updated": "2026-08-06"
   },
   "KCLT-KSBN": {
     "updated": "2026-08-07",
@@ -8709,9 +8691,6 @@
   "KDBN-KMQW": {
     "updated": "2026-08-08"
   },
-  "KDCA-KPBI": {
-    "updated": "2026-08-07"
-  },
   "KDEN-CYVR": {
     "updated": "2026-08-06",
     "routes": [
@@ -9352,9 +9331,6 @@
         "hours": "0,3,16,21-22"
       }
     ]
-  },
-  "KDFW-KPBI": {
-    "updated": "2026-08-07"
   },
   "KDFW-KSAF": {
     "updated": "2026-08-07",
@@ -10571,9 +10547,6 @@
   "KEWR-KOXB": {
     "updated": "2026-08-07"
   },
-  "KEWR-KPBI": {
-    "updated": "2026-08-06"
-  },
   "KEWR-KSNA": {
     "updated": "2026-08-07",
     "routes": [
@@ -11684,9 +11657,6 @@
         "hours": "4"
       }
     ]
-  },
-  "KFLL-KPBI": {
-    "updated": "2026-08-07"
   },
   "KFLL-MYBS": {
     "updated": "2026-08-06"
@@ -13225,6 +13195,18 @@
       }
     ]
   },
+  "KHPN-KDJT": {
+    "routes": [
+      {
+        "route": "JFK SHIPP Y488 STERN Y493 BAHAA HIBAC ALYNA4",
+        "count": 1,
+        "aircraft": "nonheavy",
+        "min_altitude": 36000,
+        "max_altitude": 36000,
+        "hours": "14"
+      }
+    ]
+  },
   "KHPN-KFOK": {
     "updated": "2026-08-06",
     "routes": [
@@ -13335,19 +13317,6 @@
         "min_altitude": 15000,
         "max_altitude": 15000,
         "hours": "18"
-      }
-    ]
-  },
-  "KHPN-KPBI": {
-    "updated": "2026-08-06",
-    "routes": [
-      {
-        "route": "JFK SHIPP Y488 STERN Y493 BAHAA HIBAC ALYNA4",
-        "count": 1,
-        "aircraft": "nonheavy",
-        "min_altitude": 36000,
-        "max_altitude": 36000,
-        "hours": "14"
       }
     ]
   },
@@ -13975,9 +13944,6 @@
         "hours": "1,8,10,12-13,17-19,22-23"
       }
     ]
-  },
-  "KIAD-KPBI": {
-    "updated": "2026-08-07"
   },
   "KIAD-KRIC": {
     "updated": "2026-08-06",
@@ -15326,9 +15292,6 @@
       }
     ]
   },
-  "KISP-KPBI": {
-    "updated": "2026-08-06"
-  },
   "KIWA-KAVQ": {
     "updated": "2026-08-07",
     "routes": [
@@ -15988,9 +15951,6 @@
     "updated": "2026-08-06"
   },
   "KJFK-KOXB": {
-    "updated": "2026-08-06"
-  },
-  "KJFK-KPBI": {
     "updated": "2026-08-06"
   },
   "KJFK-LEBL": {
@@ -22253,9 +22213,6 @@
       }
     ]
   },
-  "KLGA-KPBI": {
-    "updated": "2026-08-06"
-  },
   "KLGB-KAVX": {
     "updated": "2026-08-07"
   },
@@ -22521,9 +22478,6 @@
         "hours": "14-15"
       }
     ]
-  },
-  "KLNA-KPBI": {
-    "updated": "2026-08-08"
   },
   "KLNK-KDEN": {
     "updated": "2026-08-06",
@@ -23508,9 +23462,6 @@
         "hours": "0,2,6-8,11,13-14,16-18"
       }
     ]
-  },
-  "KMCO-KPBI": {
-    "updated": "2026-08-07"
   },
   "KMCO-KSRQ": {
     "updated": "2026-08-06",
@@ -27360,9 +27311,6 @@
       }
     ]
   },
-  "KOPF-KPBI": {
-    "updated": "2026-08-07"
-  },
   "KOPF-KTMB": {
     "updated": "2026-08-07"
   },
@@ -27701,9 +27649,6 @@
         "hours": "0-1,5-15,17-23"
       }
     ]
-  },
-  "KORD-KPBI": {
-    "updated": "2026-08-06"
   },
   "KORD-KSBN": {
     "updated": "2026-08-06",
@@ -28299,78 +28244,6 @@
     "updated": "2026-08-08"
   },
   "KPBG-KBTV": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KAPF": {
-    "updated": "2026-08-08"
-  },
-  "KPBI-KATL": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KBCT": {
-    "updated": "2026-08-08"
-  },
-  "KPBI-KBOS": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KBWI": {
-    "updated": "2026-08-07"
-  },
-  "KPBI-KCLT": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KDCA": {
-    "updated": "2026-08-07"
-  },
-  "KPBI-KDFW": {
-    "updated": "2026-08-07"
-  },
-  "KPBI-KEWR": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KFLL": {
-    "updated": "2026-08-08"
-  },
-  "KPBI-KHPN": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KIAD": {
-    "updated": "2026-08-07"
-  },
-  "KPBI-KISP": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KJFK": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KLGA": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KLNA": {
-    "updated": "2026-08-08"
-  },
-  "KPBI-KMCO": {
-    "updated": "2026-08-07"
-  },
-  "KPBI-KOBE": {
-    "updated": "2026-08-08"
-  },
-  "KPBI-KOPF": {
-    "updated": "2026-08-07"
-  },
-  "KPBI-KORD": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KPHK": {
-    "updated": "2026-08-08"
-  },
-  "KPBI-KPHL": {
-    "updated": "2026-08-06"
-  },
-  "KPBI-KSUA": {
-    "updated": "2026-08-07"
-  },
-  "KPBI-KTEB": {
     "updated": "2026-08-06"
   },
   "KPDK-KATL": {
@@ -29160,9 +29033,6 @@
         "hours": "0,4,7-13,15,17-23"
       }
     ]
-  },
-  "KPHL-KPBI": {
-    "updated": "2026-08-06"
   },
   "KPHL-KSBY": {
     "updated": "2026-08-08",
@@ -40312,9 +40182,6 @@
   "KSUA-KOBE": {
     "updated": "2026-08-07"
   },
-  "KSUA-KPBI": {
-    "updated": "2026-08-07"
-  },
   "KSUN-KSLC": {
     "updated": "2026-08-07",
     "routes": [
@@ -40482,9 +40349,6 @@
         "count": 1
       }
     ]
-  },
-  "KTEB-KPBI": {
-    "updated": "2026-08-06"
   },
   "KTIW-KPAE": {
     "updated": "2026-08-08",

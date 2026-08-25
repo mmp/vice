@@ -550,8 +550,8 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 			airport, runway, ok := strings.Cut(spec, "/")
 			if !ok {
 				e.ErrorString(`"active_runway" %q must be given as "AIRPORT/RUNWAY"`, spec)
-			} else if _, ok := av.DB.Airports[airport]; !ok {
-				e.ErrorString(`"active_runway": airport %q unknown`, airport)
+			} else if err := av.CheckAirport(`"active_runway"`, airport); err != nil {
+				e.Error(err)
 			} else if !av.AirportHasRunway(airport, av.RunwayID(runway)) {
 				e.ErrorString(`"active_runway": runway %q is not a valid runway at %q`, runway, airport)
 			}

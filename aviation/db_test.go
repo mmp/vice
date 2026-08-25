@@ -7,6 +7,8 @@ package aviation
 import (
 	"encoding/json"
 	"testing"
+
+	"github.com/mmp/vice/util"
 )
 
 func seedTestPerformance(t *testing.T) {
@@ -161,5 +163,37 @@ func TestAirportTimeZone(t *testing.T) {
 
 	if _, ok := DB.AirportTimeZone("XXXX"); ok {
 		t.Errorf("unknown airport returned a time zone")
+	}
+}
+
+// TestCIFPAirportsAreInAirportsDatabase catches the signature of an airport the
+// FAA has re-identified: the CIFP picks the new identifier up on the next AIRAC
+// cycle, while airports.csv.zst goes on listing the old one, and the merge in
+// doInitDB leaves the new one with no name and no country. That in turn makes
+// FAAControlled false, drops the airport's flights on import, and has the
+// airport spelled out rather than said on the radio -- all silently. Refresh
+// airports.csv.zst from https://ourairports.com/data/, and add the change to
+// RenamedAirports so the historical data still finds the airport.
+func TestCIFPAirportsAreInAirportsDatabase(t *testing.T) {
+	InitDB()
+
+	_, custom := parseAirports()
+
+	for _, id := range util.SortedMapKeys(DB.Airports) {
+		ap := DB.Airports[id]
+		// Runways only come from the CIFP or from custom_airports.json, whose
+		// made-up airports have no name or country by design. Only the
+		// contiguous US uses four-character K identifiers; elsewhere in the
+		// FAA's regions the CIFP mixes ICAO ids with local ones like TX15
+		// that ourairports reasonably has no gps_code for.
+		if len(ap.Runways) == 0 || len(id) != 4 || id[0] != 'K' {
+			continue
+		}
+		if _, ok := custom[id]; ok {
+			continue
+		}
+		if ap.Name == "" || ap.Country == "" {
+			t.Errorf("%s: in the CIFP but not the airports database (name %q, country %q)", id, ap.Name, ap.Country)
+		}
 	}
 }

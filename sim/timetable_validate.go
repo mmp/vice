@@ -75,22 +75,12 @@ func validateTimetable(timetable Timetable) error {
 				flight.AircraftType,
 			)
 		}
-		if _, ok := av.DB.Airports[flight.Origin]; !ok {
-			return fmt.Errorf(
-				"row %d callsign %s uses unknown origin airport %s",
-				row,
-				flight.Callsign,
-				flight.Origin,
-			)
+		if err := av.CheckAirport("origin", flight.Origin); err != nil {
+			return fmt.Errorf("row %d callsign %s: %w", row, flight.Callsign, err)
 		}
 
-		if _, ok := av.DB.Airports[flight.Destination]; !ok {
-			return fmt.Errorf(
-				"row %d callsign %s uses unknown destination airport %s",
-				row,
-				flight.Callsign,
-				flight.Destination,
-			)
+		if err := av.CheckAirport("destination", flight.Destination); err != nil {
+			return fmt.Errorf("row %d callsign %s: %w", row, flight.Callsign, err)
 		}
 
 		if previousRow, ok := seenRows[flight]; ok {

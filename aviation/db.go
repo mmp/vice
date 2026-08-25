@@ -91,6 +91,38 @@ var faaCountries = map[string]bool{
 // end of somebody else's flight.
 func (ap FAAAirport) FAAControlled() bool { return faaCountries[ap.Country] }
 
+// RenamedAirports maps airport identifiers the FAA has retired to the ones that
+// replaced them. The historical data vice imports goes on using the old
+// identifier long after the change, so the import tools canonicalize through
+// this; scenarios and timetables must use the current one.
+var RenamedAirports = map[string]string{
+	"KPBI": "KDJT", // renamed 2026-08-18
+}
+
+// CurrentAirportId returns the identifier now in use for an airport that has
+// been re-identified; any other id is returned unchanged.
+func CurrentAirportId(id string) string {
+	if current, ok := RenamedAirports[id]; ok {
+		return current
+	}
+	return id
+}
+
+// CheckAirport returns an error unless id names an airport in the database.
+// role describes the airport's part in whatever is being validated, as in
+// "destination" or "arrival". A retired identifier names its replacement:
+// historical data keeps using the old one, so it turns up in scenario edits
+// made from a stale copy.
+func CheckAirport(role, id string) error {
+	if _, ok := DB.Airports[id]; ok {
+		return nil
+	}
+	if current, ok := RenamedAirports[id]; ok {
+		return fmt.Errorf("%s airport %q was re-identified as %q; use the current identifier", role, id, current)
+	}
+	return fmt.Errorf("%s airport %q unknown", role, id)
+}
+
 // Facility represents a geographic facility with a center point and radius.
 // Both TRACONs and ARTCCs use this structure for weather data handling.
 type Facility struct {

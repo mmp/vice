@@ -2755,16 +2755,16 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		if of.Airlines[i].DepartureAirport == "" {
 			e.ErrorString(`must specify "departure_airport"`)
 		} else if _, ok := airports[of.Airlines[i].DepartureAirport]; !ok {
-			if _, ok := DB.Airports[of.Airlines[i].DepartureAirport]; !ok {
-				e.ErrorString("departure airport %q is unknown", of.Airlines[i].DepartureAirport)
+			if err := CheckAirport("departure", of.Airlines[i].DepartureAirport); err != nil {
+				e.Error(err)
 			}
 		}
 
 		if of.Airlines[i].ArrivalAirport == "" {
 			e.ErrorString(`must specify "arrival_airport"`)
 		} else if _, ok := airports[of.Airlines[i].ArrivalAirport]; !ok {
-			if _, ok := DB.Airports[of.Airlines[i].ArrivalAirport]; !ok {
-				e.ErrorString("arrival airport %q is unknown", of.Airlines[i].ArrivalAirport)
+			if err := CheckAirport("arrival", of.Airlines[i].ArrivalAirport); err != nil {
+				e.Error(err)
 			}
 		}
 	}

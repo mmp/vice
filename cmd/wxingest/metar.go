@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 	"golang.org/x/sync/errgroup"
@@ -254,6 +255,10 @@ type metarUpdate struct {
 func mergeMETAR(cm wx.CompressedMETAR, scraped map[string][]wx.METAR) (map[string][]time.Time, error) {
 	LogInfo("Merging METAR for %d airports", len(scraped))
 
+	if err := foldRenamedStations(cm, scraped); err != nil {
+		return nil, err
+	}
+
 	// Concurrently decode each airport's existing records, merge in the new
 	// ones, and re-compress. cm is only read during this phase; the updates
 	// are applied serially below.
@@ -307,6 +312,33 @@ func mergeMETAR(cm wx.CompressedMETAR, scraped map[string][]wx.METAR) (map[strin
 	}
 
 	return times, nil
+}
+
+// foldRenamedStations hands the records of a station whose airport the FAA has
+// re-identified to the current identifier, rewriting the ICAO on each so the
+// station reads as one continuous series across the change. They go in with the
+// scraped records so that the merge below sorts, dedups, and re-compresses them
+// along with everything else.
+func foldRenamedStations(cm wx.CompressedMETAR, scraped map[string][]wx.METAR) error {
+	for previous, current := range av.RenamedAirports {
+		if !cm.HasAirport(previous) {
+			continue
+		}
+
+		recs, err := cm.GetAirportMETAR(previous)
+		if err != nil {
+			return fmt.Errorf("%s: decoding METAR to fold into %s: %w", previous, current, err)
+		}
+		for i := range recs {
+			recs[i].ICAO = current
+			recs[i].Raw = strings.ReplaceAll(recs[i].Raw, previous, current)
+		}
+
+		scraped[current] = append(scraped[current], recs...)
+		cm.RemoveAirport(previous)
+		LogInfo("%s: folded %d METAR records into %s", previous, len(recs), current)
+	}
+	return nil
 }
 
 // mergeAirportMETAR merges recs into the airport's existing records in cm

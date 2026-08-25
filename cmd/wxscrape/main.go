@@ -143,7 +143,9 @@ func fetchMETAR(ctx context.Context, bucket *storage.BucketHandle) {
 		perm := rand.Perm(len(airports))
 		for _, i := range perm {
 			ap := airports[i]
-			if t, ok := lastReport[ap]; ok && time.Since(t) < 20*time.Hour {
+			if t, ok := lastReport[ap]; !ok {
+				LogInfo("%s: fetching METAR: no previous fetch", ap)
+			} else if time.Since(t) < 20*time.Hour {
 				LogInfo("%s: skipping METAR fetch, last fetch %s ago", ap, time.Since(t))
 				continue
 			} else {
@@ -167,14 +169,19 @@ type Status int
 
 const (
 	StatusSuccess Status = iota
+	StatusNoData
 	StatusTransientFailure
 )
 
+// doWithBackoff retries f until it stops reporting a transient failure,
+// returning whether it got that far. A source with nothing to give is not
+// retried: a station that has stopped publishing--because its airport was
+// re-identified, say--would otherwise burn the entire backoff every cycle.
 func doWithBackoff(f func() Status) bool {
 	backoff := 5 * time.Second
 	for range 7 {
 		switch f() {
-		case StatusSuccess:
+		case StatusSuccess, StatusNoData:
 			return true
 
 		case StatusTransientFailure:
@@ -196,6 +203,9 @@ func downloadToGCS(ctx context.Context, bucket *storage.BucketHandle, url, objpa
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusNoContent {
+		return StatusNoData
+	}
 	if resp.StatusCode != http.StatusOK {
 		LogError("%s: HTTP status code %d", url, resp.StatusCode)
 		return StatusTransientFailure
@@ -223,8 +233,11 @@ func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap str
 
 	path := filepath.Join("scrape", "metar", ap, time.Now().Format(time.RFC3339)+".txt")
 	status := downloadToGCS(ctx, bucket, requestUrl, path)
-	if status == StatusSuccess {
+	switch status {
+	case StatusSuccess:
 		LogInfo("%s: downloaded METAR data", ap)
+	case StatusNoData:
+		LogError("%s: publishes no METAR", ap)
 	}
 	return status
 }

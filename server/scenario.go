@@ -1774,8 +1774,8 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		s.WeatherStation = s.Lists.SSA.SystemAltimeter
 	}
 	if s.WeatherStation != "" {
-		if _, ok := av.DB.Airports[s.WeatherStation]; !ok {
-			e.ErrorString(`"weather_station" %q unknown`, s.WeatherStation)
+		if err := av.CheckAirport("weather station", s.WeatherStation); err != nil {
+			e.Error(err)
 		}
 	} else if sg.ARTCC == "" {
 		e.ErrorString(`neither "weather_station" nor "system_altimeter" specified`)

@@ -26,7 +26,7 @@
         "Fonvi": "FONVI",
         "Greys": "GREYZ",
         "Jubol": "JUBOL",
-        "Palm Beach": "KPBI",
+        "Palm Beach": "KDJT",
         "Ronald Reagan Washington National": "KDCA",
         "Sunny": "SUNEY",
         "Wirso": "WIRSO"
@@ -98,7 +98,7 @@
         "Fonvi": "FONVI",
         "Greys": "GREYZ",
         "Jubol": "JUBOL",
-        "Palm Beach": "KPBI",
+        "Palm Beach": "KDJT",
         "Ronald Reagan Washington National": "KDCA",
         "Sunny": "SUNEY",
         "Wirso": "WIRSO"
@@ -547,7 +547,7 @@
     "[local-stt]   pattern \"exact_phrase\" matched: \"AAL50\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"American 50\")",
     "[local-stt] callsign match: Callsign=\"AAL50\" SpokenKey=\"American 50\" Conf=1.00 Consumed=2",
     "[local-stt] aircraft context: State=\"cleared approach\" Altitude=1330 Fixes=9 Approaches=4 VisualApproaches=6 AssignedApproach=\"RNAV Z Runway 19\" LAHSORunways=[1 19 4 22 4 22 15 33]",
-    "[local-stt]   fix: \"Palm Beach\" -\u003e \"KPBI\"",
+    "[local-stt]   fix: \"Palm Beach\" -\u003e \"KDJT\"",
     "[local-stt]   fix: \"Daric\" -\u003e \"DARIC\"",
     "[local-stt]   fix: \"Sunny\" -\u003e \"SUNEY\"",
     "[local-stt]   fix: \"Greys\" -\u003e \"GREYZ\"",

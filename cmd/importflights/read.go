@@ -434,14 +434,16 @@ func printCounts(counts map[string]int64) {
 
 // parseAirportList parses the airport lists in the source data, which are
 // formatted as Python lists: "['KMSP']" or "['KACT', 'KAUS']". A track that
-// started or ended too far from any airport has "-" instead.
+// started or ended too far from any airport has "-" instead. The source data
+// predates any airport the FAA has since re-identified, so the identifiers are
+// canonicalized here rather than at every place they are used.
 func parseAirportList(value string) []string {
 	var airports []string
 	var current strings.Builder
 
 	flush := func() {
 		if current.Len() == 4 {
-			airports = append(airports, current.String())
+			airports = append(airports, av.CurrentAirportId(current.String()))
 		}
 		current.Reset()
 	}
@@ -465,7 +467,7 @@ func parseRoute(value string) []string {
 	var route []string
 	for airport := range strings.SplitSeq(value, "-") {
 		if len(airport) == 4 {
-			route = append(route, airport)
+			route = append(route, av.CurrentAirportId(airport))
 		}
 	}
 	return route
