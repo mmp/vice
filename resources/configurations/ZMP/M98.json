@@ -122,6 +122,36 @@
           "KMIC": "1K",
           "KANE": "1K"
         },
+        "scratchpad_leader_line_directions": {
+          "ZL1": "NE",
+          "YL1": "NE",
+          "12L": "NE",
+          "VL1": "NE",
+
+          "ZR1": "SW",
+          "YR1": "SW",
+          "12R": "SW",
+          "VR1": "SW",
+
+          "ZL3": "SW",
+          "YL3": "SW",
+          "30L": "SW",
+          "VL3": "SW",
+
+          "ZR3": "NE",
+          "YR3": "NE",
+          "30R": "NE",
+          "VR3": "NE",
+
+          "L17": "E",
+          "V17": "E",
+          "VV7": "E",
+
+          "Z35": "W",
+          "Y35": "W",
+          "I35": "W",
+          "VV5": "W"
+        },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
           "1R": ["1D", "1E", "1L"],
@@ -156,6 +186,36 @@
           "KSTP": "1G",
           "KMIC": "1K",
           "KANE": "1K"
+        },
+        "scratchpad_leader_line_directions": {
+          "ZL1": "NE",
+          "YL1": "NE",
+          "12L": "NE",
+          "VL1": "NE",
+
+          "ZR1": "SW",
+          "YR1": "SW",
+          "12R": "SW",
+          "VR1": "SW",
+
+          "ZL3": "SW",
+          "YL3": "SW",
+          "30L": "SW",
+          "VL3": "SW",
+
+          "ZR3": "NE",
+          "YR3": "NE",
+          "30R": "NE",
+          "VR3": "NE",
+
+          "L17": "E",
+          "V17": "E",
+          "VV7": "E",
+
+          "Z35": "W",
+          "Y35": "W",
+          "I35": "W",
+          "VV5": "W"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -193,6 +253,36 @@
           "KMIC": "1K",
           "KANE": "1K"
         },
+        "scratchpad_leader_line_directions": {
+          "ZL1": "NE",
+          "YL1": "NE",
+          "12L": "NE",
+          "VL1": "NE",
+
+          "ZR1": "SW",
+          "YR1": "SW",
+          "12R": "SW",
+          "VR1": "SW",
+
+          "ZL3": "SW",
+          "YL3": "SW",
+          "30L": "SW",
+          "VL3": "SW",
+
+          "ZR3": "NE",
+          "YR3": "NE",
+          "30R": "NE",
+          "VR3": "NE",
+
+          "L17": "E",
+          "V17": "E",
+          "VV7": "E",
+
+          "Z35": "W",
+          "Y35": "W",
+          "I35": "W",
+          "VV5": "W"
+        },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
           "1R": ["1D", "1E", "1L"],
@@ -227,6 +317,36 @@
           "KSTP": "1G",
           "KMIC": "1K",
           "KANE": "1K"
+        },
+        "scratchpad_leader_line_directions": {
+          "ZL1": "NE",
+          "YL1": "NE",
+          "12L": "NE",
+          "VL1": "NE",
+
+          "ZR1": "SW",
+          "YR1": "SW",
+          "12R": "SW",
+          "VR1": "SW",
+
+          "ZL3": "SW",
+          "YL3": "SW",
+          "30L": "SW",
+          "VL3": "SW",
+
+          "ZR3": "NE",
+          "YR3": "NE",
+          "30R": "NE",
+          "VR3": "NE",
+
+          "L17": "E",
+          "V17": "E",
+          "VV7": "E",
+
+          "Z35": "W",
+          "Y35": "W",
+          "I35": "W",
+          "VV5": "W"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -263,6 +383,36 @@
           "KMIC": "1K",
           "KANE": "1K"
         },
+        "scratchpad_leader_line_directions": {
+          "ZL1": "NE",
+          "YL1": "NE",
+          "12L": "NE",
+          "VL1": "NE",
+
+          "ZR1": "SW",
+          "YR1": "SW",
+          "12R": "SW",
+          "VR1": "SW",
+
+          "ZL3": "SW",
+          "YL3": "SW",
+          "30L": "SW",
+          "VL3": "SW",
+
+          "ZR3": "NE",
+          "YR3": "NE",
+          "30R": "NE",
+          "VR3": "NE",
+
+          "L17": "E",
+          "V17": "E",
+          "VV7": "E",
+
+          "Z35": "W",
+          "Y35": "W",
+          "I35": "W",
+          "VV5": "W"
+        },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
           "1R": ["1D", "1E", "1L"],
@@ -297,6 +447,36 @@
           "KSTP": "1G",
           "KMIC": "1K",
           "KANE": "1K"
+        },
+        "scratchpad_leader_line_directions": {
+          "ZL1": "NE",
+          "YL1": "NE",
+          "12L": "NE",
+          "VL1": "NE",
+
+          "ZR1": "SW",
+          "YR1": "SW",
+          "12R": "SW",
+          "VR1": "SW",
+
+          "ZL3": "SW",
+          "YL3": "SW",
+          "30L": "SW",
+          "VL3": "SW",
+
+          "ZR3": "NE",
+          "YR3": "NE",
+          "30R": "NE",
+          "VR3": "NE",
+
+          "L17": "E",
+          "V17": "E",
+          "VV7": "E",
+
+          "Z35": "W",
+          "Y35": "W",
+          "I35": "W",
+          "VV5": "W"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -347,7 +527,7 @@
           "scratchpad": "12L, VL1, YL1, ZL1",
           "new_owner_leader_direction": "NE",
           "floor": 0,
-          "ceiling": 17000,
+          "ceiling": 24000,
           "vertices": [
             "N045.27.54.316,W092.46.13.361",
             "N045.02.19.059,W092.19.02.495",
@@ -368,7 +548,7 @@
           "scratchpad": "12R, VR1, YR1, ZR1",
           "new_owner_leader_direction": "SW",
           "floor": 0,
-          "ceiling": 17000,
+          "ceiling": 24000,
           "vertices": [
             "N045.27.54.316,W092.46.13.361",
             "N045.02.19.059,W092.19.02.495",
@@ -389,7 +569,7 @@
           "scratchpad": "30L, VL3, YL3, ZL3",
           "new_owner_leader_direction": "SW",
           "floor": 0,
-          "ceiling": 17000,
+          "ceiling": 24000,
           "vertices": [
             "N045.27.54.316,W092.46.13.361",
             "N045.02.19.059,W092.19.02.495",
@@ -410,7 +590,7 @@
           "scratchpad": "30R, VR3, YR3, ZR3",
           "new_owner_leader_direction": "NE",
           "floor": 0,
-          "ceiling": 17000,
+          "ceiling": 24000,
           "vertices": [
             "N045.27.54.316,W092.46.13.361",
             "N045.02.19.059,W092.19.02.495",

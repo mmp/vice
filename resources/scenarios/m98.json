@@ -280,173 +280,207 @@
           "BRNRD.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "DLH.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "HRBEK.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "ZOGAP.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "SNINE.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "JEDET.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["heavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h140/tc"
           },
           "FOBUG.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["heavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h160/tc"
           },
           "HUGIR.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["heavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "LSE.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h140/tc"
           },
           "LSE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h140/tc"
           },
           "LSE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h140/tc"
           },
           "FGT.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "FGT.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "FGT.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "HUGIR.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "HUGIR.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "HUGIR.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "JURNY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "JURNY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "JURNY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h170/tc"
           },
           "FOBUG.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h160/tc"
           },
           "FOBUG.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h160/tc"
           },
           "FOBUG.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h160/tc"
           },
           "JEDET.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h140/tc"
           },
           "JEDET.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h140/tc"
           },
           "JEDET.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30L N044.50.50.093,W093.08.28.941/h140/tc"
           }
         },
         "12R_17": {
           "BRNRD.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "DLH.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "HRBEK.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "ZOGAP.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "SNINE.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "JEDET.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "FOBUG.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           },
           "HUGIR.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
           }
         },
@@ -454,268 +488,321 @@
           "GEP.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "GEP.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "GEP.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "BRNRD.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "BRNRD.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "BRNRD.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "DLH.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "DLH.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "DLH.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "STILS.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "STILS.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "STILS.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "HRBEK.JET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "HRBEK.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "KBREW2",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "HRBEK.PISTON": {
             "assigned_altitude": 4000,
             "sid": "KBREW2",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "ZOGAP.JET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "ZOGAP.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SMERF7",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "ZOGAP.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SMERF7",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "TONCA.JET": {
             "assigned_altitude": 7000,
             "sid": "LEINY6",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "TONCA.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "LEINY6",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "TONCA.PISTON": {
             "assigned_altitude": 4000,
             "sid": "LEINY6",
-            "waypoints": "KMSP-30R N044.52.54.197,W093.10.42.562/h090/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
           "TAXEE.JET": {
             "assigned_altitude": 7000,
             "sid": "COULT7",
-            "waypoints": "KMSP-30R N044.52.43.197,W093.10.44.183/h105/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.06.145,W093.07.30.961/h110/tc"
           },
           "TAXEE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "COULT7",
-            "waypoints": "KMSP-30R N044.52.43.197,W093.10.44.183/h105/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.06.145,W093.07.30.961/h110/tc"
           },
           "TAXEE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "COULT7",
-            "waypoints": "KMSP-30R N044.52.43.197,W093.10.44.183/h105/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.06.145,W093.07.30.961/h110/tc"
           },
           "SNINE.JET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-30R N044.52.43.197,W093.10.44.183/h105/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-30R N044.52.06.145,W093.07.30.961/h040/tc"
           },
           "SNINE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-30R N044.52.43.197,W093.10.44.183/h105/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-30R N044.52.06.145,W093.07.30.961/h040/tc"
           },
           "SNINE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-30R N044.52.43.197,W093.10.44.183/h105/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-30R N044.52.06.145,W093.07.30.961/h040/tc"
           }
         },
         "30L": {
           "BRNRD.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "DLH.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "HRBEK.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "ZOGAP.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "SNINE.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "JEDET.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h260/tc"
           },
           "FOBUG.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h260/tc"
           },
           "HUGIR.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
+            "aircraft": ["heavy"],
+            "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h280/tc"
           },
           "LSE.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "LSE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "LSE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "FGT.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "FGT.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "FGT.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "HUGIR.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12R N044.53.25.206,W093.15.14.117/h280/tc"
           },
           "HUGIR.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12R N044.53.25.206,W093.15.14.117/h280/tc"
           },
           "HUGIR.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12R N044.53.25.206,W093.15.14.117/h280/tc"
           },
           "JURNY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "JURNY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "JURNY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "FOBUG.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "FOBUG.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "FOBUG.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "JEDET.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "JEDET.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
           "JEDET.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           }
         },
@@ -723,41 +810,49 @@
           "BRNRD.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "DLH.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "HRBEK.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "ZOGAP.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "SNINE.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
           },
           "JEDET.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h230/tc"
           },
           "FOBUG.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h230/tc"
           },
           "HUGIR.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
+            "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h230/tc"
           }
         },
@@ -765,136 +860,163 @@
           "GEP.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "GEP.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "GEP.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "BRNRD.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "BRNRD.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "BRNRD.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "DLH.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "DLH.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "DLH.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "STILS.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "STILS.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "STILS.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "HRBEK.JET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.54.08.107,W093.13.54.933/h320/tc"
           },
           "HRBEK.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "KBREW2",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.54.08.107,W093.13.54.933/h320/tc"
           },
           "HRBEK.PISTON": {
             "assigned_altitude": 4000,
             "sid": "KBREW2",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.54.08.107,W093.13.54.933/h320/tc"
           },
           "ZOGAP.JET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.53.49.582,W093.13.50.841/h301/tc"
           },
           "ZOGAP.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SMERF7",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.53.49.582,W093.13.50.841/h301/tc"
           },
           "ZOGAP.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SMERF7",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.53.49.582,W093.13.50.841/h301/tc"
           },
           "TONCA.JET": {
             "assigned_altitude": 7000,
             "sid": "LEINY6",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.53.49.582,W093.13.50.841/h301/tc"
           },
           "TONCA.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "LEINY6",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.53.49.582,W093.13.50.841/h301/tc"
           },
           "TONCA.PISTON": {
             "assigned_altitude": 4000,
             "sid": "LEINY6",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.53.49.582,W093.13.50.841/h301/tc"
           },
           "TAXEE.JET": {
             "assigned_altitude": 7000,
             "sid": "COULT7",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.54.07.558,W093.13.14.915/h360/tc"
           },
           "TAXEE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "COULT7",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.54.07.558,W093.13.14.915/h360/tc"
           },
           "TAXEE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "COULT7",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.54.07.558,W093.13.14.915/h360/tc"
           },
           "SNINE.JET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "SNINE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "WLSTN7",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
           "SNINE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "WLSTN7",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           }
         },
@@ -902,91 +1024,109 @@
           "LSE.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
           },
           "LSE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
           },
           "LSE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
           },
           "FGT.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "FGT.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "FGT.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "HUGIR.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h215/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-35 N044.49.00.449,W093.13.27.247/h215/tc"
           },
           "HUGIR.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h215/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-35 N044.49.00.449,W093.13.27.247/h215/tc"
           },
           "HUGIR.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h215/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-35 N044.49.00.449,W093.13.27.247/h215/tc"
           },
           "JURNY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h215/tc"
+            "aircraft": ["nonheavy"],
+            "waypoints": "KMSP-35 N044.49.00.449,W093.13.27.247/h215/tc"
           },
           "JURNY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h215/tc"
+            "aircraft": ["turboprop"],
+            "waypoints": "KMSP-35 N044.49.00.449,W093.13.27.247/h215/tc"
           },
           "JURNY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h215/tc"
+            "aircraft": ["prop"],
+            "waypoints": "KMSP-35 N044.49.00.449,W093.13.27.247/h215/tc"
           },
           "FOBUG.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
           },
           "FOBUG.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
           },
           "FOBUG.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
           },
           "JEDET.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.36.057,W093.13.15.602/h140/tc"
           },
           "JEDET.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.36.057,W093.13.15.602/h140/tc"
           },
           "JEDET.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.51.36.057,W093.13.15.602/h140/tc"
           }
         },
@@ -994,91 +1134,109 @@
           "LSE.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "LSE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "LSE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "FGT.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "FGT.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "FGT.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "HUGIR.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h230/tc"
           },
           "HUGIR.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h230/tc"
           },
           "HUGIR.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h230/tc"
           },
           "JURNY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h210/tc"
           },
           "JURNY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h210/tc"
           },
           "JURNY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.50.12.107,W093.13.44.853/h210/tc"
           },
           "FOBUG.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "FOBUG.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "FOBUG.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "JEDET.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
+            "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "JEDET.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
+            "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
           "JEDET.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
+            "aircraft": ["prop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           }
         }
@@ -1128,7 +1286,7 @@
               "types": ["CRJ7"]
             },
             {
-              "callsign": "JZA8850",
+              "callsign": "JZA850",
               "types": ["CRJ9"]
             }
           ],
@@ -1215,11 +1373,11 @@
         {
           "airlines": [
             {
-              "callsign": "JZA8716",
+              "callsign": "JZA716",
               "types": ["CRJ9"]
             },
             {
-              "callsign": "JZA8720",
+              "callsign": "JZA720",
               "types": ["CRJ9"]
             },
             {
@@ -1340,11 +1498,11 @@
           "airlines": [
             {
               "callsign": "SKW4262",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4264",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KABR",
@@ -1531,11 +1689,11 @@
           "airlines": [
             {
               "callsign": "SKW4283",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4291",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KBJI",
@@ -1550,11 +1708,11 @@
             },
             {
               "callsign": "SKW4283",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4291",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KBJI",
@@ -1654,11 +1812,11 @@
           "airlines": [
             {
               "callsign": "SKW4273",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4301",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KBRD",
@@ -1669,11 +1827,11 @@
           "airlines": [
             {
               "callsign": "SKW4273",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4301",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KBRD",
@@ -1790,7 +1948,7 @@
           "airlines": [
             {
               "callsign": "SKW4242",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KCIU",
@@ -1861,7 +2019,7 @@
           ],
           "destination": "KCLT",
           "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT LCOLN VHP J24 FLM TAFTT PARQR6"
+          "route": "JEDET ZMBRO ODI J30 JOT LCOLN VHP J24 FLM TAFTT PARQR4"
         },
         {
           "airlines": [
@@ -1984,7 +2142,7 @@
           ],
           "destination": "KDCA",
           "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 BUCKO FRDMM7"
+          "route": "TAXEE COULT LMFRY DLL J34 BUCKO FRDMM6"
         },
         {
           "airlines": [
@@ -2236,7 +2394,7 @@
           "airlines": [
             {
               "callsign": "SKW4239",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KESC",
@@ -2381,19 +2539,19 @@
           "airlines": [
             {
               "callsign": "SKW4329",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4330",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4331",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4332",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KGFK",
@@ -2476,11 +2634,11 @@
           "airlines": [
             {
               "callsign": "SKW4229",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4236",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KHIB",
@@ -2495,11 +2653,11 @@
             },
             {
               "callsign": "SKW4229",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4236",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KHIB",
@@ -2557,7 +2715,7 @@
           ],
           "destination": "KIAD",
           "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ6"
+          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ5"
         },
         {
           "airlines": [
@@ -2628,7 +2786,7 @@
           "airlines": [
             {
               "callsign": "SKW4270",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KIMT",
@@ -2693,11 +2851,11 @@
           "airlines": [
             {
               "callsign": "SKW4245",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4266",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KINL",
@@ -3147,7 +3305,7 @@
           ],
           "destination": "KMSY",
           "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO KK60I ARG MCB TRSSH2"
+          "route": "FOBUG DOKTR CORDY RST ALO KK60I ARG MCB TRSSH1"
         },
         {
           "airlines": [
@@ -3550,11 +3708,11 @@
           "airlines": [
             {
               "callsign": "SKW4233",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4305",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KRHI",
@@ -3709,7 +3867,7 @@
           "airlines": [
             {
               "callsign": "SKW4314",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KSAW",
@@ -4029,7 +4187,7 @@
           ],
           "destination": "KTPA",
           "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO STL DITZL VLKNN ACORI MAATY6"
+          "route": "FOBUG DOKTR CORDY RST ALO STL DITZL VLKNN ACORI MAATY5"
         },
         {
           "airlines": [
@@ -4133,15 +4291,15 @@
           "airlines": [
             {
               "callsign": "SKW4261",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4284",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             },
             {
               "callsign": "SKW4289",
-              "types": ["CRJ5"]
+              "types": ["CRJ7"]
             }
           ],
           "destination": "KXWA",
@@ -5105,7 +5263,8 @@
               "icao": "LXJ"
             },
             {
-              "icao": "WUP"
+              "icao": "WUP",
+              "fleet": "jet"
             }
           ],
           "destination": "KSDL",
@@ -5740,7 +5899,7 @@
           ],
           "destination": "KIAD",
           "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ6"
+          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ5"
         },
         {
           "airlines": [
@@ -5751,7 +5910,7 @@
           ],
           "destination": "KIAD",
           "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ6"
+          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ5"
         },
         {
           "airlines": [
@@ -6176,7 +6335,8 @@
               "fleet": "GAjet"
             },
             {
-              "icao": "WUP"
+              "icao": "WUP",
+              "fleet": "jet"
             }
           ],
           "destination": "KDAL",
@@ -7315,9 +7475,9 @@
               "icao": "EJA"
             }
           ],
-          "destination": "KDJT",
+          "destination": "KPBI",
           "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO IRK J45 STL J45 DENNI Q19 HITMN ACORI VUUDU2"
+          "route": "FOBUG DOKTR CORDY RST ALO IRK J45 STL J45 DENNI Q19 HITMN ACORI VUUDU1"
         },
         {
           "airlines": [
@@ -8220,7 +8380,7 @@
           ],
           "destination": "KIAD",
           "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ6"
+          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ5"
         },
         {
           "airlines": [
@@ -12742,11 +12902,11 @@
           "waypoints": "BAINY/a15000+/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
-              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
-              "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/h121",
-              "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210/h121",
-              "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/h176"
+              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
+              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
+              "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
+              "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210/t121",
+              "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
             }
           },
           "star": "BAINY4",
@@ -12884,22 +13044,22 @@
               },
               {
                 "callsign": "SKW4283",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4303",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4273",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
                 "callsign": "SKW4336",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
@@ -12954,42 +13114,42 @@
               },
               {
                 "callsign": "SKW4328",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4329",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4330",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4331",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4229",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KHIB"
               },
               {
                 "callsign": "SKW4236",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KHIB"
               },
               {
                 "callsign": "SKW4245",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
                 "callsign": "SKW4266",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
@@ -13024,17 +13184,17 @@
               },
               {
                 "callsign": "SKW4261",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
                 "callsign": "SKW4284",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
                 "callsign": "SKW4296",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
@@ -13083,11 +13243,11 @@
           "waypoints": "BAINY/a15000+/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
-              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
-              "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/h121",
-              "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210/h121",
-              "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/h176"
+              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
+              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
+              "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
+              "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210/t121",
+              "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
             }
           },
           "star": "BAINY4",
@@ -13225,22 +13385,22 @@
               },
               {
                 "callsign": "SKW4283",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4303",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4273",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
                 "callsign": "SKW4336",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
@@ -13295,42 +13455,42 @@
               },
               {
                 "callsign": "SKW4328",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4329",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4330",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4331",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4229",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KHIB"
               },
               {
                 "callsign": "SKW4236",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KHIB"
               },
               {
                 "callsign": "SKW4245",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
                 "callsign": "SKW4266",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
@@ -13365,17 +13525,17 @@
               },
               {
                 "callsign": "SKW4261",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
                 "callsign": "SKW4284",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
                 "callsign": "SKW4296",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
@@ -13424,11 +13584,11 @@
           "waypoints": "BAINY/a15000+/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
-              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
-              "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/h121",
-              "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210/h121",
-              "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/h176"
+              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
+              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
+              "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
+              "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210/t121",
+              "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
             }
           },
           "star": "BAINY4",
@@ -13566,22 +13726,22 @@
               },
               {
                 "callsign": "SKW4283",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4303",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4273",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
                 "callsign": "SKW4336",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
@@ -13636,42 +13796,42 @@
               },
               {
                 "callsign": "SKW4328",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4329",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4330",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4331",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KGFK"
               },
               {
                 "callsign": "SKW4229",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KHIB"
               },
               {
                 "callsign": "SKW4236",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KHIB"
               },
               {
                 "callsign": "SKW4245",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
                 "callsign": "SKW4266",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
@@ -13706,17 +13866,17 @@
               },
               {
                 "callsign": "SKW4261",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
                 "callsign": "SKW4284",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
                 "callsign": "SKW4296",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KXWA"
               },
               {
@@ -13765,11 +13925,11 @@
           "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a10000+/s280 HHAMR/a10000+ FARBO",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "30R": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/s210/h013"
+              "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "30R": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/s210/t013"
             }
           },
           "star": "BLUEM5",
@@ -14157,11 +14317,11 @@
           "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a11000+/s280 WRSAW/a11000+ DAHRL",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "30R": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "35": "DAHRL SHILD/a9000+ GDNEE NNEWW/a7000/s210/h023"
+              "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "30R": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "35": "DAHRL SHILD/a9000+ GDNEE NNEWW/a7000/s210/t023"
             }
           },
           "star": "NITZR4",
@@ -14433,11 +14593,11 @@
           "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a10000+/s280 HHAMR/a10000+ FARBO",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "30R": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/s210/h013"
+              "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "30R": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/s210/t013"
             }
           },
           "star": "BLUEM5",
@@ -14825,11 +14985,11 @@
           "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a11000+/s280 WRSAW/a11000+ DAHRL",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "30R": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "35": "DAHRL SHILD/a9000+ GDNEE NNEWW/a7000/s210/h023"
+              "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "30R": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "35": "DAHRL SHILD/a9000+ GDNEE NNEWW/a7000/s210/t023"
             }
           },
           "star": "NITZR4",
@@ -15101,11 +15261,11 @@
           "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a10000+/s280 HHAMR/a10000+ FARBO",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "30R": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/s210/h013"
+              "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "30R": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/s210/t013"
             }
           },
           "star": "BLUEM5",
@@ -15493,11 +15653,11 @@
           "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a11000+/s280 WRSAW/a11000+ DAHRL",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "30R": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-              "35": "DAHRL SHILD/a9000+ GDNEE NNEWW/a7000/s210/h023"
+              "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "30R": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
+              "35": "DAHRL SHILD/a9000+ GDNEE NNEWW/a7000/s210/t023"
             }
           },
           "star": "NITZR4",
@@ -15769,11 +15929,11 @@
           "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a10000+/s280 HHAMR/a10000 FARBO",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "FARBO ELLKO/s250 SAVVG CMMOE/s230 FSCOT/s230/h301",
-              "12R": "FARBO ELLKO/s250 SAVVG GREAK/s230 TIETN/s230/h301",
-              "30L": "FARBO NOFLD/s250 CANDD/s230 HAPTN/s210/h036",
-              "30R": "FARBO NOFLD/s250 CANDD/s230 HAPTN/s210/h036",
-              "35": "FARBO DNDIS/s230 JAMEZ/s210/h013"
+              "12L": "FARBO ELLKO/s250 SAVVG CMMOE/s230 FSCOT/s230/t301",
+              "12R": "FARBO ELLKO/s250 SAVVG GREAK/s230 TIETN/s230/t301",
+              "30L": "FARBO NOFLD/s250 CANDD/s230 HAPTN/s210/t036",
+              "30R": "FARBO NOFLD/s250 CANDD/s230 HAPTN/s210/t036",
+              "35": "FARBO DNDIS/s230 JAMEZ/s210/t013"
             }
           },
           "star": "BLUEM5",
@@ -16161,11 +16321,11 @@
           "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a11000+/s280 WRSAW/a11000 DAHRL",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "DAHRL GDNEE ELLKO/s250 SAVVG CMMOE/s230 FSCOT/s230/h301",
-              "12R": "DAHRL GDNEE ELLKO/s250 SAVVG GREAK/s230 TIETN/s230/h301",
-              "30L": "DAHRL AANAH WBSTR/s250 CANDD/s230 HAPTN/s210/h036",
-              "30R": "DAHRL AANAH WBSTR/s250 CANDD/s230 HAPTN/s210/h036",
-              "35": "DAHRL SHILD GDNEE NNEWW/s210/h023"
+              "12L": "DAHRL GDNEE ELLKO/s250 SAVVG CMMOE/s230 FSCOT/s230/t301",
+              "12R": "DAHRL GDNEE ELLKO/s250 SAVVG GREAK/s230 TIETN/s230/t301",
+              "30L": "DAHRL AANAH WBSTR/s250 CANDD/s230 HAPTN/s210/t036",
+              "30R": "DAHRL AANAH WBSTR/s250 CANDD/s230 HAPTN/s210/t036",
+              "35": "DAHRL SHILD GDNEE NNEWW/s210/t023"
             }
           },
           "star": "NITZR4",
@@ -16437,11 +16597,11 @@
           "waypoints": "CMAAC/a14000+/s280 N044.48.19.649,W092.00.34.112/ho KKILR/a12000+/s280 HUGGI/a10000+/s280 KRISP",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "KRISP AFTYN/a10000+/s250 COOBA/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "KRISP STUWE/a7000 GEEQU/a7000/s210/h243",
-              "30R": "KRISP STUWE/a7000 GEEQU/a7000/s210/h243",
-              "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301"
+              "12L": "KRISP AFTYN/a10000+/s250 COOBA/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "KRISP STUWE/a7000 GEEQU/a7000/s210/t243",
+              "30R": "KRISP STUWE/a7000 GEEQU/a7000/s210/t243",
+              "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301"
             }
           },
           "star": "KKILR4",
@@ -17023,11 +17183,11 @@
           "waypoints": "CMAAC/a14000+/s280 N044.48.19.649,W092.00.34.112/ho KKILR/a12000+/s280 HUGGI/a10000+/s280 KRISP",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "KRISP AFTYN/a10000+/s250 COOBA/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "KRISP STUWE/a7000 GEEQU/a7000/s210/h243",
-              "30R": "KRISP STUWE/a7000 GEEQU/a7000/s210/h243",
-              "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301"
+              "12L": "KRISP AFTYN/a10000+/s250 COOBA/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "KRISP STUWE/a7000 GEEQU/a7000/s210/t243",
+              "30R": "KRISP STUWE/a7000 GEEQU/a7000/s210/t243",
+              "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301"
             }
           },
           "star": "KKILR4",
@@ -17609,11 +17769,11 @@
           "waypoints": "CMAAC/a14000+/s280 N044.48.19.649,W092.00.34.112/ho KKILR/a12000+/s280 HUGGI/a10000+/s280 KRISP",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "KRISP AFTYN/a10000+/s250 COOBA/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "KRISP STUWE/a7000 GEEQU/a7000/s210/h243",
-              "30R": "KRISP STUWE/a7000 GEEQU/a7000/s210/h243",
-              "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301"
+              "12L": "KRISP AFTYN/a10000+/s250 COOBA/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "KRISP STUWE/a7000 GEEQU/a7000/s210/t243",
+              "30R": "KRISP STUWE/a7000 GEEQU/a7000/s210/t243",
+              "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301"
             }
           },
           "star": "KKILR4",
@@ -18195,11 +18355,11 @@
           "waypoints": "MUSCL/a17000+/s280 N045.02.22.973,W091.55.31.082/ho BAYKS/a12000+/s280 WOLVS",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-              "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301"
+              "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
+              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
+              "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301"
             }
           },
           "star": "MUSCL4",
@@ -18216,17 +18376,17 @@
                 "airport": "CYUL"
               },
               {
-                "callsign": "JZA8851",
+                "callsign": "JZA851",
                 "types": ["CRJ9"],
                 "airport": "CYUL"
               },
               {
-                "callsign": "JZA8719",
+                "callsign": "JZA719",
                 "types": ["CRJ9"],
                 "airport": "CYYZ"
               },
               {
-                "callsign": "JZA8721",
+                "callsign": "JZA721",
                 "types": ["CRJ9"],
                 "airport": "CYYZ"
               },
@@ -18337,7 +18497,7 @@
               },
               {
                 "callsign": "SKW4251",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KCIU"
               },
               {
@@ -18387,7 +18547,7 @@
               },
               {
                 "callsign": "SKW4239",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KESC"
               },
               {
@@ -18477,7 +18637,7 @@
               },
               {
                 "callsign": "SKW4288",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KIMT"
               },
               {
@@ -18552,17 +18712,17 @@
               },
               {
                 "callsign": "SKW4292",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KRHI"
               },
               {
                 "callsign": "SKW4305",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KRHI"
               },
               {
                 "callsign": "SKW4295",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KSAW"
               },
               {
@@ -18616,11 +18776,11 @@
           "waypoints": "MUSCL/a17000+/s280 N045.02.22.973,W091.55.31.082/ho BAYKS/a12000+/s280 WOLVS",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-              "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301"
+              "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
+              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
+              "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301"
             }
           },
           "star": "MUSCL4",
@@ -18637,17 +18797,17 @@
                 "airport": "CYUL"
               },
               {
-                "callsign": "JZA8851",
+                "callsign": "JZA851",
                 "types": ["CRJ9"],
                 "airport": "CYUL"
               },
               {
-                "callsign": "JZA8719",
+                "callsign": "JZA719",
                 "types": ["CRJ9"],
                 "airport": "CYYZ"
               },
               {
-                "callsign": "JZA8721",
+                "callsign": "JZA721",
                 "types": ["CRJ9"],
                 "airport": "CYYZ"
               },
@@ -18758,7 +18918,7 @@
               },
               {
                 "callsign": "SKW4251",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KCIU"
               },
               {
@@ -18808,7 +18968,7 @@
               },
               {
                 "callsign": "SKW4239",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KESC"
               },
               {
@@ -18898,7 +19058,7 @@
               },
               {
                 "callsign": "SKW4288",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KIMT"
               },
               {
@@ -18973,17 +19133,17 @@
               },
               {
                 "callsign": "SKW4292",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KRHI"
               },
               {
                 "callsign": "SKW4305",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KRHI"
               },
               {
                 "callsign": "SKW4295",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KSAW"
               },
               {
@@ -19037,11 +19197,11 @@
           "waypoints": "MUSCL/a17000+/s280 N045.02.22.973,W091.55.31.082/ho BAYKS/a12000+/s280 WOLVS",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/h301",
-              "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301",
-              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-              "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/h301"
+              "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
+              "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301",
+              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
+              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
+              "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301"
             }
           },
           "star": "MUSCL4",
@@ -19058,17 +19218,17 @@
                 "airport": "CYUL"
               },
               {
-                "callsign": "JZA8851",
+                "callsign": "JZA851",
                 "types": ["CRJ9"],
                 "airport": "CYUL"
               },
               {
-                "callsign": "JZA8719",
+                "callsign": "JZA719",
                 "types": ["CRJ9"],
                 "airport": "CYYZ"
               },
               {
-                "callsign": "JZA8721",
+                "callsign": "JZA721",
                 "types": ["CRJ9"],
                 "airport": "CYYZ"
               },
@@ -19179,7 +19339,7 @@
               },
               {
                 "callsign": "SKW4251",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KCIU"
               },
               {
@@ -19229,7 +19389,7 @@
               },
               {
                 "callsign": "SKW4239",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KESC"
               },
               {
@@ -19319,7 +19479,7 @@
               },
               {
                 "callsign": "SKW4288",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KIMT"
               },
               {
@@ -19394,17 +19554,17 @@
               },
               {
                 "callsign": "SKW4292",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KRHI"
               },
               {
                 "callsign": "SKW4305",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KRHI"
               },
               {
                 "callsign": "SKW4295",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KSAW"
               },
               {
@@ -19458,11 +19618,11 @@
           "waypoints": "N044.36.14.510,W094.32.48.832 TORGY/a13000+/s280/ho OFSON/a11000+/s280 HMBRG/a10000+/s280 CONIA",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
-              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
-              "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/h121",
-              "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ WILKN/a8000/s210 OSMOH/a8000/s210/h122",
-              "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/h176"
+              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
+              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
+              "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
+              "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ WILKN/a8000/s210 OSMOH/a8000/s210/t122",
+              "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
             }
           },
           "star": "TORGY4",
@@ -19495,12 +19655,12 @@
               },
               {
                 "callsign": "SKW4238",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KABR"
               },
               {
                 "callsign": "SKW4262",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KABR"
               },
               {
@@ -20108,11 +20268,11 @@
           "waypoints": "N044.36.14.510,W094.32.48.832 TORGY/a13000+/s280/ho OFSON/a11000+/s280 HMBRG/a10000+/s280 CONIA",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
-              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
-              "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/h121",
-              "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ WILKN/a8000/s210 OSMOH/a8000/s210/h122",
-              "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/h176"
+              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
+              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
+              "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
+              "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ WILKN/a8000/s210 OSMOH/a8000/s210/t122",
+              "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
             }
           },
           "star": "TORGY4",
@@ -20145,12 +20305,12 @@
               },
               {
                 "callsign": "SKW4238",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KABR"
               },
               {
                 "callsign": "SKW4262",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KABR"
               },
               {
@@ -20758,11 +20918,11 @@
           "waypoints": "N044.36.14.510,W094.32.48.832 TORGY/a13000+/s280/ho OFSON/a11000+/s280 HMBRG/a10000+/s280 CONIA",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
-              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
-              "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/h121",
-              "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ WILKN/a8000/s210 OSMOH/a8000/s210/h122",
-              "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/h176"
+              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
+              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
+              "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
+              "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ WILKN/a8000/s210 OSMOH/a8000/s210/t122",
+              "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
             }
           },
           "star": "TORGY4",
@@ -20795,12 +20955,12 @@
               },
               {
                 "callsign": "SKW4238",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KABR"
               },
               {
                 "callsign": "SKW4262",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KABR"
               },
               {
@@ -21435,12 +21595,12 @@
               },
               {
                 "callsign": "SKW4283",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4303",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
@@ -21450,12 +21610,12 @@
               },
               {
                 "callsign": "SKW4273",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
                 "callsign": "SKW4336",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
@@ -21495,12 +21655,12 @@
               },
               {
                 "callsign": "SKW4245",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
                 "callsign": "SKW4266",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
@@ -21556,12 +21716,12 @@
               },
               {
                 "callsign": "SKW4283",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4303",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
@@ -21571,12 +21731,12 @@
               },
               {
                 "callsign": "SKW4273",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
                 "callsign": "SKW4336",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
@@ -21616,12 +21776,12 @@
               },
               {
                 "callsign": "SKW4245",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
                 "callsign": "SKW4266",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
@@ -21677,12 +21837,12 @@
               },
               {
                 "callsign": "SKW4283",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
                 "callsign": "SKW4303",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBJI"
               },
               {
@@ -21692,12 +21852,12 @@
               },
               {
                 "callsign": "SKW4273",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
                 "callsign": "SKW4336",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KBRD"
               },
               {
@@ -21737,12 +21897,12 @@
               },
               {
                 "callsign": "SKW4245",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
                 "callsign": "SKW4266",
-                "types": ["CRJ5"],
+                "types": ["CRJ7"],
                 "airport": "KINL"
               },
               {
@@ -22182,6 +22342,7 @@
           "initial_altitude": 5000,
           "initial_speed": 250,
           "airports": ["KMSP"],
+          "aircraft": ["prop"],
           "airlines": {
             "KMSP": [
               {
@@ -22203,6 +22364,7 @@
           "initial_altitude": 4000,
           "initial_speed": 250,
           "airports": ["KMSP"],
+          "aircraft": ["prop"],
           "airlines": {
             "KMSP": [
               {
@@ -22223,6 +22385,7 @@
           "initial_controller": "C05",
           "initial_altitude": 4000,
           "initial_speed": 195,
+          "aircraft": ["prop"],
           "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
@@ -22306,6 +22469,7 @@
               },
               {
                 "icao": "WUP",
+                "fleet": "jet",
                 "airport": "KSDL"
               },
               {
@@ -22512,6 +22676,7 @@
               },
               {
                 "icao": "WUP",
+                "fleet": "jet",
                 "airport": "KAPA"
               },
               {
@@ -22534,6 +22699,7 @@
               },
               {
                 "icao": "WUP",
+                "fleet": "jet",
                 "airport": "KSDL"
               }
             ]
@@ -22774,6 +22940,7 @@
               },
               {
                 "icao": "WUP",
+                "fleet": "turbine",
                 "airport": "KAPA"
               },
               {
@@ -22788,6 +22955,7 @@
               },
               {
                 "icao": "WUP",
+                "fleet": "turbine",
                 "airport": "KSDL"
               }
             ]
@@ -22915,7 +23083,7 @@
     "TWOLF4": {
       "arrivals": [
         {
-          "waypoints": "N043.56.27.469,W093.29.19.378 N044.00.05.850,W093.28.59.520/ho LYNKS TRGET/a7000-8000 KEWTY/a5000/flyover/h358",
+          "waypoints": "N043.56.27.469,W093.29.19.378 N044.00.05.850,W093.28.59.520/ho LYNKS TRGET/a7000-8000 KEWTY/a5000/flyover/t358",
           "star": "TWOLF4",
           "initial_controller": "11W",
           "initial_speed": 250,
@@ -23159,6 +23327,7 @@
               },
               {
                 "icao": "USC",
+                "fleet": "jet",
                 "airport": "KSUS"
               },
               {
@@ -23245,7 +23414,7 @@
     "AGUDE6": {
       "arrivals": [
         {
-          "waypoints": "N045.00.04.518,W091.53.06.117 N045.01.59.078,W092.00.43.176/ho AGUDE/a8000 STILS WHISK GEP/flyover/h265",
+          "waypoints": "N045.00.04.518,W091.53.06.117 N045.01.59.078,W092.00.43.176/ho AGUDE/a8000 STILS WHISK GEP/flyover/t265",
           "star": "AGUDE6",
           "initial_controller": "C06",
           "initial_speed": 250,
@@ -23593,11 +23762,11 @@
               {
                 "icao": "N",
                 "fleet": "GAjet",
-                "airport": "KDJT"
+                "airport": "KPBI"
               },
               {
                 "icao": "EJA",
-                "airport": "KDJT"
+                "airport": "KPBI"
               },
               {
                 "icao": "N",
@@ -23938,7 +24107,7 @@
               {
                 "icao": "N",
                 "fleet": "GAturbine",
-                "airport": "KDJT"
+                "airport": "KPBI"
               },
               {
                 "icao": "N",
