@@ -664,6 +664,13 @@
     "Longitude": -92.2243,
     "Radius": 128
   },
+  "LTS": {
+    "Name": "Altus",
+    "ARTCC": "ZFW",
+    "Latitude": 34.668,
+    "Longitude": -99.2678,
+    "Radius": 128
+  },
   "M03": {
     "Name": "Memphis TRACON",
     "ARTCC": "ZME",

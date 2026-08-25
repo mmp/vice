@@ -1128,18 +1128,18 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	fa.Filters.InhibitMSAW = addAirportFilters(fa.Filters.InhibitMSAW, inhibitMSAW)
 	fa.Filters.SurfaceTracking = addAirportFilters(fa.Filters.SurfaceTracking, surfaceTracking)
 
-	if sg.ARTCC == "" {
-		if sg.TRACON == "" {
-			e.ErrorString(`"tracon" or "artcc" must be specified`)
-		} else if !av.DB.IsFacility(sg.TRACON) {
-			e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
-				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
-				sg.TRACON)
+	if sg.TRACON == "" && sg.ARTCC == "" {
+		e.ErrorString(`"tracon" or "artcc" must be specified`)
+	} else if sg.TRACON != "" && sg.ARTCC != "" {
+		e.ErrorString(`only one of "tracon" and "artcc" may be specified`)
+	} else if sg.ARTCC == "" {
+		// Note: this also rejects known ATCT-only identifiers; the TRACON
+		// database provides the center/radius that e.g. weather handling
+		// requires.
+		if !av.DB.IsTRACON(sg.TRACON) {
+			e.ErrorString("TRACON %q is unknown; it must have an entry in resources/tracons.json", sg.TRACON)
 		}
-	} else if sg.TRACON == "" {
-		if sg.ARTCC == "" {
-			e.ErrorString(`"artcc" must be specified`)
-		}
+	} else {
 		if _, ok := av.DB.ARTCCs[sg.ARTCC]; !ok {
 			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at "+
 				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/artcc", sg.ARTCC)

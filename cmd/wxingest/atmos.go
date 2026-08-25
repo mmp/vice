@@ -157,7 +157,7 @@ func ingestHRRR(sb StorageBackend) error {
 				facilities := existing[t] // may be empty
 				slices.Sort(facilities)
 				var missing []string
-				for _, tracon := range wx.AtmosTRACONs {
+				for _, tracon := range wx.AtmosTRACONs() {
 					if !slices.Contains(facilities, tracon) {
 						missing = append(missing, tracon)
 					}
@@ -166,7 +166,7 @@ func ingestHRRR(sb StorageBackend) error {
 				// skip ARTCC atmos ingest before then.
 				artccAtmosStart := time.Date(2026, time.February, 1, 0, 0, 0, 0, time.UTC)
 				if !t.Before(artccAtmosStart) {
-					for _, artcc := range wx.AtmosARTCCs {
+					for _, artcc := range wx.AtmosARTCCs() {
 						if !slices.Contains(facilities, artcc) {
 							missing = append(missing, artcc)
 						}
@@ -794,11 +794,11 @@ func ingestHRRRSingleTime(sb StorageBackend, hrrrsb *TrackingBackend) error {
 
 	// Collect all facilities by region
 	byRegion := make(map[string][]string)
-	for _, tracon := range wx.AtmosTRACONs {
+	for _, tracon := range wx.AtmosTRACONs() {
 		region := facilityRegion(tracon)
 		byRegion[region] = append(byRegion[region], tracon)
 	}
-	for _, artcc := range wx.AtmosARTCCs {
+	for _, artcc := range wx.AtmosARTCCs() {
 		region := facilityRegion(artcc)
 		byRegion[region] = append(byRegion[region], artcc)
 	}

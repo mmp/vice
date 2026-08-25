@@ -99,10 +99,10 @@ func main() {
 
 	// Also add all facilities from the atmos lists (some may not have
 	// scenarios yet but we still want their data bundled).
-	for _, tracon := range wx.AtmosTRACONs {
+	for _, tracon := range wx.AtmosTRACONs() {
 		facilities[tracon] = true
 	}
-	for _, artcc := range wx.AtmosARTCCs {
+	for _, artcc := range wx.AtmosARTCCs() {
 		facilities[artcc] = true
 	}
 
