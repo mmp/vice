@@ -18,6 +18,45 @@ type fixCandidate struct {
 	consumed int
 }
 
+// spellDigits spells out each digit character in s: "s 9" → "s nine",
+// "020" → "zero two zero". Normalization turns every spoken number into
+// digits, so this recovers the words a fix's spoken name is written with
+// ("S Four" for SFOUR, "snine" for SNINE). It says "nine" rather than
+// "niner" because that is how sayfix.json spells it; spokenDigits and
+// spokenRunway, which are compared against transcripts, keep "niner".
+func spellDigits(s string) string {
+	words := []string{"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
+
+	var parts []string
+	var text strings.Builder
+	flush := func() {
+		if text.Len() > 0 {
+			parts = append(parts, text.String())
+			text.Reset()
+		}
+	}
+	for _, ch := range s {
+		switch {
+		case ch >= '0' && ch <= '9':
+			flush()
+			parts = append(parts, words[ch-'0'])
+		case ch == ' ':
+			flush()
+		default:
+			text.WriteRune(ch)
+		}
+	}
+	flush()
+
+	return strings.Join(parts, " ")
+}
+
+// comparableLength reports whether phrase is close enough in length to
+// spokenName that letter-by-letter agreement means anything.
+func comparableLength(phrase, spokenName string) bool {
+	return float64(len(phrase))/float64(len(spokenName)) <= 1.5
+}
+
 // fixMatchScore scores reading phrase as a rendering of a fix's spoken
 // name or identifier. Exact = 1.0; the tiers below mirror the relative
 // trust in each kind of evidence.
@@ -44,7 +83,7 @@ func fixMatchScore(phrase, spokenName, fixID string) float64 {
 
 	// Letter-similarity strategies require comparable lengths (prevents
 	// "pucky heading 180" matching "Pucky").
-	if float64(len(phrase))/float64(len(spokenName)) <= 1.5 {
+	if comparableLength(phrase, spokenName) {
 		if jw := JaroWinkler(phrase, spokenName); jw >= 0.78 {
 			score = max(score, jw)
 		}
@@ -115,6 +154,7 @@ func fixCandidates(tokens []Token, fixes map[string]string) []fixCandidate {
 			parts = append(parts, tokens[i].Text)
 		}
 		phrase := strings.Join(parts, " ")
+		spelled := spellDigits(phrase)
 
 		// A name that isn't an exact match and runs into a position word is
 		// the controller's own facility ("New York Approach", which scores
@@ -128,6 +168,13 @@ func fixCandidates(tokens []Token, fixes map[string]string) []fixCandidate {
 
 		for spokenName, fixID := range fixes {
 			score := fixMatchScore(phrase, spokenName, fixID)
+			// Spelling the digits out multiplies the phrase's length, so
+			// only trust it for a name of comparable length: "s nine" is
+			// evidence for SNINE, but "buggy heading one eight zero" is not
+			// evidence for anything.
+			if spelled != phrase && comparableLength(spelled, spokenName) {
+				score = max(score, fixMatchScore(spelled, spokenName, fixID))
+			}
 			if score == 0 || (facilityName && score < 1) {
 				continue
 			}

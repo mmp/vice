@@ -3263,12 +3263,28 @@ func TestCautionWakeTurbulenceSTTPatterns(t *testing.T) {
 	}
 }
 
+func TestSpellDigits(t *testing.T) {
+	for _, tt := range []struct{ in, expected string }{
+		{"s 9", "s nine"},
+		{"s9", "s nine"},
+		{"020", "zero two zero"},
+		{"9s", "nine s"},
+		{"deer park", "deer park"},
+	} {
+		if got := spellDigits(tt.in); got != tt.expected {
+			t.Errorf("spellDigits(%q) = %q, want %q", tt.in, got, tt.expected)
+		}
+	}
+}
+
 func TestExtractFix(t *testing.T) {
 	fixes := map[string]string{
 		"jenny":     "JENNY",
 		"deer park": "DPK",
 		"pucky":     "PUCKY",
 		"gayel":     "GAYEL",
+		"snine":     "SNINE",
+		"S Four":    "SFOUR",
 	}
 
 	tests := []struct {
@@ -3309,6 +3325,32 @@ func TestExtractFix(t *testing.T) {
 			},
 			expectedFix:  "GAYEL",
 			expectedCons: 1,
+		},
+		{
+			// Normalization digitizes the spoken number, so the fix's
+			// number word is only recoverable by spelling it back out.
+			name: "digitized number word (s 9 -> snine)",
+			tokens: []Token{
+				{Text: "s", Type: TokenWord},
+				{Text: "9", Type: TokenNumber, Value: 9},
+			},
+			expectedFix:  "SNINE",
+			expectedCons: 2,
+		},
+		{
+			name: "digitized number word matching a spelled-out name (s 4 -> S Four)",
+			tokens: []Token{
+				{Text: "s", Type: TokenWord},
+				{Text: "4", Type: TokenNumber, Value: 4},
+			},
+			expectedFix:  "SFOUR",
+			expectedCons: 2,
+		},
+		{
+			name:         "number that isn't a fix",
+			tokens:       []Token{{Text: "180", Type: TokenNumber, Value: 180}},
+			expectedFix:  "",
+			expectedCons: 0,
 		},
 		{
 			name:         "no match",
