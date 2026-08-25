@@ -125,6 +125,85 @@ func TestPopReadyContactWaitsForAssociation(t *testing.T) {
 	}
 }
 
+// TestTransferCommsBeforeAssociation verifies that a departure reaching a /tc
+// waypoint before its track tags up is still sent to the departure controller.
+// Transfer of comms points can sit a half mile past the departure end, which a
+// departure reaches well within the flight plan acquisition delay; dropping the
+// action there left the aircraft on nobody's frequency, unable to check in and
+// unable to be commanded, with nothing to retry it.
+func TestTransferCommsBeforeAssociation(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	s.STARSComputer = makeSTARSComputer("TEST")
+
+	dep := TCP("125.0")
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.TypeOfFlight = av.FlightTypeDeparture
+	ac.ControllerFrequency = "" // hasn't been sent to anyone yet
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	if _, err := s.STARSComputer.CreateFlightPlan(NASFlightPlan{
+		ACID:                     ACID(ac.ADSBCallsign),
+		InboundHandoffController: dep,
+	}); err != nil {
+		t.Fatalf("CreateFlightPlan: %v", err)
+	}
+
+	s.applyWaypointActionEvent(ac, av.WaypointActions{TransferComms: true})
+
+	if ac.ControllerFrequency != dep {
+		t.Errorf("expected the pilot on %s, got %q", dep, ac.ControllerFrequency)
+	}
+	if ac.DepartureContactAltitude != -1 {
+		t.Errorf("expected DepartureContactAltitude -1 (contacted), got %v", ac.DepartureContactAltitude)
+	}
+
+	// The check-in itself waits until the track tags up.
+	s.State.SimTime = s.State.SimTime.Add(time.Second)
+	if pc := s.popReadyContact([]TCP{dep}); pc != nil {
+		t.Fatalf("popped %s's check-in before its track associated", pc.ADSBCallsign)
+	}
+
+	ac.AssociateFlightPlan(s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign)))
+	if pc := s.popReadyContact([]TCP{dep}); pc == nil {
+		t.Error("expected the check-in once the track associated")
+	}
+}
+
+// TestWaypointScratchpadBeforeAssociation verifies that a waypoint's scratchpad
+// command reaches the flight plan before the track tags up--the scratchpad
+// lives on the flight plan, which is reachable by ACID either way--and that it
+// still leaves alone the scratchpad of an aircraft a human is working.
+func TestWaypointScratchpadBeforeAssociation(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	s.STARSComputer = makeSTARSComputer("TEST")
+	s.ScenarioDefaultConsolidation = PositionConsolidation{TCP("2A"): nil}
+
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.TypeOfFlight = av.FlightTypeDeparture
+	ac.ControllerFrequency = ""
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	if _, err := s.STARSComputer.CreateFlightPlan(NASFlightPlan{ACID: ACID(ac.ADSBCallsign)}); err != nil {
+		t.Fatalf("CreateFlightPlan: %v", err)
+	}
+
+	s.applyWaypointActionEvent(ac, av.WaypointActions{PrimaryScratchpad: "GRB"})
+
+	sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+	if sfp.Scratchpad != "GRB" {
+		t.Errorf("expected scratchpad GRB on the unassociated flight plan, got %q", sfp.Scratchpad)
+	}
+
+	// Once a human is working the aircraft, the route leaves the scratchpad be.
+	ac.ControllerFrequency = "2A"
+	s.applyWaypointActionEvent(ac, av.WaypointActions{PrimaryScratchpad: "MSP"})
+	if sfp.Scratchpad != "GRB" {
+		t.Errorf("route overwrote the scratchpad of an aircraft a human is working: %q", sfp.Scratchpad)
+	}
+}
+
 // TestPopReadyContactTakesOldestAcrossPositions verifies that a check-in on a
 // later-scanned position isn't starved by a fresher one on an earlier position:
 // with departures split across positions by SID, first-position-first ordering

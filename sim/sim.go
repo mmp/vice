@@ -888,8 +888,15 @@ func (s *Sim) Update() {
 }
 
 func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions) bool {
-	// Handoffs still happen for "unassociated" (to us) tracks
-	// when they're currently tracked by an external facility.
+	// The flight plan the waypoint's actions operate on. A departure reaches
+	// its transfer of comms point a few seconds before its track tags up, and
+	// handoffs still happen for tracks an external facility is working, so
+	// resolve it whether or not it has associated with the aircraft yet.
+	sfp := ac.NASFlightPlan
+	if sfp == nil {
+		sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+	}
+
 	if actions.HumanHandoff {
 		// Handoff from virtual controller to a human controller.
 		// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans
@@ -897,10 +904,6 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 		if s.prespawnUncontrolledOnly {
 			s.deleteAircraft(ac)
 			return true
-		}
-		sfp := ac.NASFlightPlan
-		if sfp == nil {
-			sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 		}
 		if sfp != nil {
 			s.handoffTrack(sfp, sfp.InboundHandoffController)
@@ -910,10 +913,6 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 		if s.prespawnUncontrolledOnly && !s.isVirtualController(TCP(actions.HandoffController)) {
 			s.deleteAircraft(ac)
 			return true
-		}
-		sfp := ac.NASFlightPlan
-		if sfp == nil {
-			sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 		}
 		// Only initiate the handoff if a virtual controller has the track; if
 		// a human owns it, it's their call when to hand it off.
@@ -939,17 +938,15 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 		s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(tcp), PendingTransmissionGoAround)
 
 		// Reassociate flight plan if controller dropped it
-		sfp := ac.NASFlightPlan
-		if sfp == nil {
-			if sfp = s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign)); sfp != nil {
-				sfp.DeleteTime = Time{}
-				sfp.OwningTCW = s.tcwForPosition(sfp.TrackingController)
-				ac.AssociateFlightPlan(sfp)
-				s.eventStream.Post(Event{
-					Type: FlightPlanAssociatedEvent,
-					ACID: sfp.ACID,
-				})
-			}
+		if sfp != nil && ac.IsUnassociated() {
+			s.STARSComputer.takeFlightPlanByACID(sfp.ACID)
+			sfp.DeleteTime = Time{}
+			sfp.OwningTCW = s.tcwForPosition(sfp.TrackingController)
+			ac.AssociateFlightPlan(sfp)
+			s.eventStream.Post(Event{
+				Type: FlightPlanAssociatedEvent,
+				ACID: sfp.ACID,
+			})
 		}
 		// Set up handoff from current tracker to go-around controller
 		if sfp != nil && sfp.TrackingController != "" && sfp.TrackingController != TCP(tcp) {
@@ -957,61 +954,61 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 		}
 	}
 
-	if ac.IsAssociated() {
-		// Things that only apply to associated aircraft
-		sfp := ac.NASFlightPlan
-
-		if actions.TransferComms {
+	if actions.TransferComms {
+		if sfp == nil {
+			s.lg.Errorf("%s: no flight plan at the transfer of comms point", ac.ADSBCallsign)
+		} else if ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
 			// This is a departure that hasn't contacted the departure controller yet, do it here
-			if ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
-				s.contactDeparture(ac, sfp)
-			} else {
-				// We didn't enqueue this before since we knew an
-				// explicit comms handoff was coming so go ahead and
-				// send them to the controller's frequency. Note that
-				// we use InboundHandoffController and not
-				// ac.TrackingController, since the human controller
-				// may have already flashed the track to a virtual
-				// controller.
-				ctrl := s.State.ResolveController(sfp.InboundHandoffController)
-				// Make sure they've bought the handoff.
-				if ctrl != sfp.HandoffController {
-					s.enqueueControllerContact(ac, TCP(ctrl), ac.ControllerFrequency)
-				}
+			s.contactDeparture(ac, sfp)
+		} else {
+			// We didn't enqueue this before since we knew an
+			// explicit comms handoff was coming so go ahead and
+			// send them to the controller's frequency. Note that
+			// we use InboundHandoffController and not
+			// ac.TrackingController, since the human controller
+			// may have already flashed the track to a virtual
+			// controller.
+			ctrl := s.State.ResolveController(sfp.InboundHandoffController)
+			// Make sure they've bought the handoff.
+			if ctrl != sfp.HandoffController {
+				s.enqueueControllerContact(ac, TCP(ctrl), ac.ControllerFrequency)
 			}
 		}
+	}
 
-		// Update scratchpads if the waypoint has scratchpad commands.
-		// Only update if aircraft is controlled by a virtual controller.
-		if s.isVirtualController(ac.ControllerFrequency) {
-			if actions.PrimaryScratchpad != "" {
-				sfp.Scratchpad = actions.PrimaryScratchpad
-			}
-			if actions.ClearPrimaryScratchpad {
-				sfp.Scratchpad = ""
-			}
-			if actions.SecondaryScratchpad != "" {
-				sfp.SecondaryScratchpad = actions.SecondaryScratchpad
-			}
-			if actions.ClearSecondaryScratchpad {
-				sfp.SecondaryScratchpad = ""
-			}
+	// Update scratchpads if the waypoint has scratchpad commands. Don't
+	// overwrite the scratchpad of an aircraft a human is working; before the
+	// pilot is on anyone's frequency, there is nothing to overwrite.
+	if sfp != nil && !s.ScenarioDefaultConsolidation.IsHumanPosition(ac.ControllerFrequency) {
+		if actions.PrimaryScratchpad != "" {
+			sfp.Scratchpad = actions.PrimaryScratchpad
+		}
+		if actions.ClearPrimaryScratchpad {
+			sfp.Scratchpad = ""
+		}
+		if actions.SecondaryScratchpad != "" {
+			sfp.SecondaryScratchpad = actions.SecondaryScratchpad
+		}
+		if actions.ClearSecondaryScratchpad {
+			sfp.SecondaryScratchpad = ""
+		}
+	}
+
+	// A point out needs a controller to make it, so it waits for the track to
+	// associate and the pilot to be on a frequency.
+	if ac.IsAssociated() && actions.PointOut != "" {
+		// During prespawn uncontrolled-only phase, cull if point-out target is a human controller
+		// rather than initiating the point out.
+		if s.prespawnUncontrolledOnly && !s.isVirtualController(actions.PointOut) {
+			s.deleteAircraft(ac)
+			return true
 		}
 
-		if actions.PointOut != "" {
-			// During prespawn uncontrolled-only phase, cull if point-out target is a human controller
-			// rather than initiating the point out.
-			if s.prespawnUncontrolledOnly && !s.isVirtualController(actions.PointOut) {
-				s.deleteAircraft(ac)
-				return true
-			}
-
-			if ctrl, ok := s.State.Controllers[TCP(actions.PointOut)]; ok {
-				// Only do automatic point outs for virtual controllers
-				if s.isVirtualController(ac.ControllerFrequency) {
-					fromCtrl := s.State.Controllers[TCP(ac.ControllerFrequency)]
-					s.pointOut(sfp.ACID, fromCtrl, ctrl)
-				}
+		if ctrl, ok := s.State.Controllers[TCP(actions.PointOut)]; ok {
+			// Only do automatic point outs for virtual controllers
+			if s.isVirtualController(ac.ControllerFrequency) {
+				fromCtrl := s.State.Controllers[TCP(ac.ControllerFrequency)]
+				s.pointOut(sfp.ACID, fromCtrl, ctrl)
 			}
 		}
 	}
