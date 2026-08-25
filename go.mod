@@ -20,7 +20,6 @@ require (
 	github.com/iancoleman/orderedmap v0.3.0
 	github.com/klauspost/compress v1.17.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
-	github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1
 	github.com/mmp/squall v0.0.0-20260310141042-e3ce8bc98323
 	github.com/ncruces/zenity v0.10.14
 	github.com/parquet-go/parquet-go v0.30.1
@@ -37,6 +36,8 @@ require (
 	google.golang.org/api v0.235.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
+
+require github.com/mmp/earcut v0.0.0-20260825135629-4f5709f5dc2f
 
 require (
 	cel.dev/expr v0.25.1 // indirect

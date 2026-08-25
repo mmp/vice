@@ -161,8 +161,8 @@ github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455 h1:/AxzYVHa
 github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455/go.mod h1:MkS9NR03VwHgqjtFN3J7r/aprTsePJeH8u2gk6wKBOs=
 github.com/mmp/cimgui-go v0.0.0-20260603153430-77cbc0c31fec h1:adD1E8U3A2ptQc6SZUw1nlG/hZR4cqc3KMDsTvqPpXE=
 github.com/mmp/cimgui-go v0.0.0-20260603153430-77cbc0c31fec/go.mod h1:gz4dVFwmfoyUkBgVzBhiCJj1JXXWISQa8SQ190MlouY=
-github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1 h1:66v6hpjwL8B4BlXqjKYP5Jq6cEREybX6WEWNhVZJ7QU=
-github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1/go.mod h1:XfYVUZbso7LBMWg+gjzI2hDDWclB13A9z/+KIPO4GBQ=
+github.com/mmp/earcut v0.0.0-20260825135629-4f5709f5dc2f h1:P/hH9TTvkYLTH3ZhEgOh9gm0DM+kFR4SB5BIlfDh6XQ=
+github.com/mmp/earcut v0.0.0-20260825135629-4f5709f5dc2f/go.mod h1:q6q7tYvNOIIlYzrkBWA4ZKdeot/GsBfK5MeJhXT9SAA=
 github.com/mmp/squall v0.0.0-20260310141042-e3ce8bc98323 h1:umANwIF39T/eAiVPWF2qNVVFxIcCirhD5DMexF5pMNM=
 github.com/mmp/squall v0.0.0-20260310141042-e3ce8bc98323/go.mod h1:5LrdlELOcESfNbncCQcU0AH1NcRS3rt6SPPAaO0WhG8=
 github.com/ncruces/zenity v0.10.14 h1:OBFl7qfXcvsdo1NUEGxTlZvAakgWMqz9nG38TuiaGLI=

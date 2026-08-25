@@ -15,7 +15,7 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/brunoga/deep"
-	"github.com/mmp/earcut-go"
+	"github.com/mmp/earcut"
 )
 
 type AirspaceVolume struct {
