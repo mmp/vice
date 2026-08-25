@@ -622,28 +622,53 @@ func (cm CompressedMETAR) Len() int {
 	return len(cm.m)
 }
 
-func (cm CompressedMETAR) SetAirportMETAR(icao string, metar []METAR) error {
+// HasAirport reports whether the collection has METAR for the given airport.
+func (cm CompressedMETAR) HasAirport(icao string) bool {
+	_, ok := cm.m[icao]
+	return ok
+}
+
+// CompressAirportMETAR converts metar to SOA form, verifies that the
+// conversion round trips, and returns the msgpack+flate encoding used for a
+// single airport's entry in a CompressedMETAR. It is a standalone function so
+// that callers can compress multiple airports concurrently and then store the
+// results via SetCompressedAirportMETAR.
+func CompressAirportMETAR(icao string, metar []METAR) ([]byte, error) {
 	soa, err := MakeMETARSOA(metar)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if err := soa.Check(icao, metar); err != nil {
-		return err
+		return nil, err
 	}
 
 	var buf bytes.Buffer
 	fw, err := flate.NewWriter(&buf, flate.BestCompression)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if err := msgpack.NewEncoder(fw).Encode(soa); err != nil {
-		return err
+		return nil, err
 	}
 	if err := fw.Close(); err != nil {
-		return err
+		return nil, err
 	}
 
-	cm.m[icao] = buf.Bytes()
+	return buf.Bytes(), nil
+}
+
+// SetCompressedAirportMETAR stores an encoding previously returned by
+// CompressAirportMETAR.
+func (cm CompressedMETAR) SetCompressedAirportMETAR(icao string, b []byte) {
+	cm.m[icao] = b
+}
+
+func (cm CompressedMETAR) SetAirportMETAR(icao string, metar []METAR) error {
+	b, err := CompressAirportMETAR(icao, metar)
+	if err != nil {
+		return err
+	}
+	cm.m[icao] = b
 	return nil
 }
 

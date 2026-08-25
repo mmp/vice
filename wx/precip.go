@@ -269,15 +269,22 @@ func RadarImageToDBZ(img image.Image, src PrecipSource) []byte {
 		haveData = func(px color.RGBA) bool { return px.R != 255 || px.G != 255 || px.B != 255 }
 	}
 
-	// Determine the dBZ for each pixel.
+	// Determine the dBZ for each pixel. Images have at most a few thousand
+	// distinct colors, so memoize the kd-tree lookups.
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
 	dbzImage := make([]byte, nx*ny)
+	cache := make(map[[3]byte]float32)
 	for y := range ny {
 		for x := range nx {
 			px := rgba.RGBAAt(x, y)
 			dbz := float32(-100)
 			if haveData(px) {
-				dbz = estimateDBZ(root, [3]byte{px.R, px.G, px.B})
+				rgb := [3]byte{px.R, px.G, px.B}
+				var ok bool
+				if dbz, ok = cache[rgb]; !ok {
+					dbz = estimateDBZ(root, rgb)
+					cache[rgb] = dbz
+				}
 			}
 
 			dbzImage[x+y*nx] = byte(max(0, min(255, dbz)))

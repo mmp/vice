@@ -215,30 +215,39 @@ func convertStacksToSOALevels[K comparable](stacks map[K]*AtmosSampleStack, keys
 	return levels, nil
 }
 
+// deltaDecodeLevels returns a delta-decoded copy of the given SOA levels.
+func deltaDecodeLevels(levels [NumSampleLevels]AtmosLevelsSOA) [NumSampleLevels]AtmosLevelsSOA {
+	var decoded [NumSampleLevels]AtmosLevelsSOA
+	for i := range levels {
+		decoded[i].Heading = util.DeltaDecode(levels[i].Heading)
+		decoded[i].Speed = util.DeltaDecode(levels[i].Speed)
+		decoded[i].Temperature = util.DeltaDecode(levels[i].Temperature)
+		decoded[i].Dewpoint = util.DeltaDecode(levels[i].Dewpoint)
+		decoded[i].Height = util.DeltaDecode(levels[i].Height)
+	}
+	return decoded
+}
+
+// sampleAt reconstructs the i'th sample from delta-decoded level arrays.
+func (l AtmosLevelsSOA) sampleAt(i int) AtmosSample {
+	s := AtmosSample{
+		Temperature: av.MakeTemperatureFromCelsius(float32(l.Temperature[i])),
+		Dewpoint:    av.MakeTemperatureFromCelsius(float32(l.Dewpoint[i])),
+		Height:      float32(l.Height[i])*100 - windHeightOffset,
+	}
+	s.UComponent, s.VComponent = dirSpeedToUV(float32(l.Heading[i])*2, float32(l.Speed[i]))
+	return s
+}
+
 // Generic function to convert SOA levels back to sample stacks
 func convertSOALevelsToStacks[K comparable](levels [NumSampleLevels]AtmosLevelsSOA, keys []K) (map[K]*AtmosSampleStack, error) {
-	// Delta decode all levels first
-	var decodedLevels [NumSampleLevels]AtmosLevelsSOA
-	for i := range levels {
-		decodedLevels[i].Heading = util.DeltaDecode(levels[i].Heading)
-		decodedLevels[i].Speed = util.DeltaDecode(levels[i].Speed)
-		decodedLevels[i].Temperature = util.DeltaDecode(levels[i].Temperature)
-		decodedLevels[i].Dewpoint = util.DeltaDecode(levels[i].Dewpoint)
-		decodedLevels[i].Height = util.DeltaDecode(levels[i].Height)
-	}
+	decodedLevels := deltaDecodeLevels(levels)
 
 	stacks := make(map[K]*AtmosSampleStack)
 	for i, key := range keys {
 		var stack AtmosSampleStack
 		for j, level := range decodedLevels {
-			s := AtmosSample{
-				Temperature: av.MakeTemperatureFromCelsius(float32(level.Temperature[i])),
-				Dewpoint:    av.MakeTemperatureFromCelsius(float32(level.Dewpoint[i])),
-				Height:      float32(level.Height[i])*100 - windHeightOffset,
-			}
-			s.UComponent, s.VComponent = dirSpeedToUV(float32(level.Heading[i])*2, float32(level.Speed[i]))
-
-			stack.Levels[j] = s
+			stack.Levels[j] = level.sampleAt(i)
 		}
 
 		stacks[key] = &stack
@@ -397,17 +406,20 @@ const (
 // counts samples whose Height was outside the encoder's representable range
 // (and thus lost precision); callers may want to log a warning if non-zero.
 func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) (clampedHeights int, err error) {
-	ckat := soa.ToAOS()
-	if len(ckat.SampleStacks) != len(at.SampleStacks) {
-		return 0, fmt.Errorf("mismatch in number of entries %d - %d", len(at.SampleStacks), len(ckat.SampleStacks))
+	// Decode the SOA levels directly rather than materializing a second
+	// complete AtmosByPoint via ToAOS.
+	if len(soa.Lat) != len(at.SampleStacks) {
+		return 0, fmt.Errorf("mismatch in number of entries %d - %d", len(at.SampleStacks), len(soa.Lat))
 	}
-	for p, stack := range at.SampleStacks {
-		ckstack, ok := ckat.SampleStacks[p]
+	decoded := deltaDecodeLevels(soa.Levels)
+	for pi := range soa.Lat {
+		p := math.Point2LL{soa.Long[pi], soa.Lat[pi]}
+		stack, ok := at.SampleStacks[p]
 		if !ok {
 			return clampedHeights, fmt.Errorf("missing point in SampleStacks map %v", p)
 		}
 		for i := range stack.Levels {
-			sl, ckl := stack.Levels[i], ckstack.Levels[i]
+			sl, ckl := stack.Levels[i], decoded[i].sampleAt(pi)
 
 			d, s := uvToDirSpeed(sl.UComponent, sl.VComponent)
 			cd, cs := uvToDirSpeed(ckl.UComponent, ckl.VComponent)

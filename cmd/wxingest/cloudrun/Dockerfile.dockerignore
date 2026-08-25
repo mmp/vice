@@ -1,0 +1,12 @@
+# Keep the build context and image small: wxingest only needs the Go sources
+# and the aviation data under resources/, not the models, videomaps, or
+# bundled weather that the vice client uses.
+.git
+whisper.cpp
+sherpa-onnx
+resources/models
+resources/videomaps
+resources/wx
+vice
+*.prof
+*.pprof

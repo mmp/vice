@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"sync"
@@ -17,6 +18,13 @@ import (
 )
 
 func ingestTFRs(sb StorageBackend) error {
+	if *manifestsOnly {
+		return nil // TFRs have no manifest
+	}
+	if taskCount > 1 {
+		return errors.New("TFR ingest must run as a single task")
+	}
+
 	lg := log.New(false, "warn", "")
 
 	// Load both archived TFRs and the newly-scraped XMLs into memory.

@@ -19,6 +19,7 @@ import (
 	"github.com/mmp/vice/wx"
 
 	"github.com/mmp/squall"
+	"github.com/mmp/squall/product"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -47,25 +48,16 @@ func facilityRegion(facilityID string) string {
 }
 
 func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
-	r, err := sb.OpenRead(wx.METARFilename)
-	if err != nil {
-		return nil, err
-	}
-	defer r.Close()
-
-	compressedMETAR, err := wx.LoadCompressedMETAR(r)
-	if err != nil {
-		return nil, err
+	var raw wx.RawManifest
+	if err := sb.ReadObject(wx.ManifestPath("metar"), &raw); err != nil {
+		return nil, fmt.Errorf("reading METAR manifest (create it with \"wxingest -manifests-only metar\" if missing): %w", err)
 	}
 
-	metar, err := compressedMETAR.GetAirportMETAR("KPHL")
-	if err != nil {
-		return nil, err
+	// KPHL is used as the reference for when METAR data is available.
+	times, ok := wx.MakeManifest(raw).GetTimestamps("KPHL")
+	if !ok {
+		return nil, errors.New("KPHL missing from METAR manifest")
 	}
-
-	times := util.MapSlice(metar, func(m wx.METAR) time.Time { return m.Time.UTC() })
-
-	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
 
 	return times, nil
 }
@@ -88,6 +80,10 @@ func getAvailablePrecipTimes(sb StorageBackend) ([]time.Time, error) {
 
 // NOAA high-resolution rapid refresh: https://rapidrefresh.noaa.gov/hrrr/
 func ingestHRRR(sb StorageBackend) error {
+	if *manifestsOnly {
+		return generateAtmosManifest(sb)
+	}
+
 	if err := os.Chdir(os.TempDir()); err != nil {
 		return err
 	}
@@ -150,6 +146,11 @@ func ingestHRRR(sb StorageBackend) error {
 				// Stop once we get close to the current time
 				if time.Since(t) <= 3*time.Hour {
 					break
+				}
+
+				// Hours are partitioned across Cloud Run job tasks.
+				if !shardOwns(t.Format(time.RFC3339)) {
+					continue
 				}
 
 				// Check if we already have data for all facilities at this time
@@ -253,8 +254,13 @@ func ingestHRRR(sb StorageBackend) error {
 		mainTB.MergeStats(hrrrsb)
 	}
 
-	return generateAtmosManifest(sb)
+	if inCloudRunJob() {
+		// Manifest generation is deferred to a single -manifests-only
+		// execution after all of the job's tasks complete.
+		return nil
+	}
 
+	return generateAtmosManifest(sb)
 }
 
 func generateAtmosManifest(sb StorageBackend) error {
@@ -270,27 +276,7 @@ func generateAtmosManifest(sb StorageBackend) error {
 		return err
 	}
 
-	manifestPath := wx.ManifestPath("atmos")
-	raw := manifest.RawManifest()
-	var n int64
-	err = retry(3, 10*time.Second, func() error {
-		var err error
-		n, err = sb.StoreObject(manifestPath, raw)
-		return err
-	})
-	if err != nil {
-		localFile := "atmos-manifest.msgpack.zst"
-		if localErr := storeObjectLocal(localFile, raw); localErr != nil {
-			LogError("MANIFEST WRITE FAILED for atmos and local save also failed: upload: %v, local: %v", err, localErr)
-		} else {
-			LogError("MANIFEST WRITE FAILED for atmos: %v -- saved to %s; upload to gs://vice-wx/%s", err, localFile, manifestPath)
-		}
-		return err
-	}
-
-	LogInfo("Stored %d items in consolidated %s (%s)", manifest.TotalEntries(), manifestPath, util.ByteCount(n))
-
-	return nil
+	return storeManifest(sb, manifest, wx.ManifestPath("atmos"), "atmos-manifest.msgpack.zst")
 }
 
 func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
@@ -445,6 +431,42 @@ func ingestHRRRForFacility(grid *Grid, records []*squall.GRIB2, facilityID strin
 	return uploadWeatherAtmos(sf, facilityID, t, sb)
 }
 
+// keepHRRRMessage is a squall read filter that selects the parameters and
+// isobaric levels vice uses: UGRD, VGRD, TMP, DPT, and HGT at the levels
+// that wx.LevelIndexFromId recognizes. Filtering at this stage means the
+// other records--the majority of the file--are never decoded.
+func keepHRRRMessage(msg *squall.Message) bool {
+	if msg.Section0 == nil || msg.Section4 == nil || msg.Section4.Product == nil {
+		return false
+	}
+
+	p := squall.ParameterID{
+		Discipline: msg.Section0.Discipline,
+		Category:   msg.Section4.Product.GetParameterCategory(),
+		Number:     msg.Section4.Product.GetParameterNumber(),
+	}
+	switch p.ShortName() {
+	case "UGRD", "VGRD", "TMP", "DPT", "HGT":
+	default:
+		return false
+	}
+
+	t, ok := msg.Section4.Product.(*product.Template40)
+	if !ok || t.FirstSurfaceType != 100 { // 100: isobaric surface, value in Pa
+		return false
+	}
+	if t.SecondSurfaceType == 100 && t.SecondSurfaceValueScaled() > 0 {
+		return false // layer between two isobaric surfaces
+	}
+
+	mb := t.FirstSurfaceValueScaled() / 100
+	if mb == 1013.2 {
+		return true
+	}
+	imb := int(mb)
+	return float64(imb) == mb && imb >= 50 && imb <= 1000 && (imb-50)%25 == 0
+}
+
 func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 	f, err := os.Open(gribPath)
 	if err != nil {
@@ -452,53 +474,14 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 	}
 	defer f.Close()
 
-	records, err := squall.Read(f)
+	records, err := squall.ReadWithOptions(f, squall.WithFilter(keepHRRRMessage))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse GRIB2 file: %w", err)
 	}
 
-	LogInfo("%s: parsed %d total records", gribPath, len(records))
-	if false && len(records) > 0 {
-		for i := 0; i < min(5, len(records)); i++ {
-			r := records[i]
-			LogInfo("  Sample record %d: param=%s, level=%q, levelValue=%.1f, numPoints=%d",
-				i, r.Parameter.ShortName(), r.Level, r.LevelValue, r.NumPoints)
-		}
-	}
+	LogInfo("%s: parsed %d records", gribPath, len(records))
 
-	// Filter to only keep records we care about:
-	// - Parameters: UGRD, VGRD, TMP, DPT, HGT
-	// - Levels: isobaric levels that vice recognizes
-	filtered := util.FilterSlice(records, func(record *squall.GRIB2) bool {
-		// Check parameter
-		shortName := record.Parameter.ShortName()
-		if shortName != "UGRD" && shortName != "VGRD" && shortName != "TMP" && shortName != "DPT" && shortName != "HGT" {
-			return false
-		}
-
-		// Check if vice recognizes this level (squall provides levels already formatted as "50 mb", etc.)
-		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
-		if false && levelIndex == -1 {
-			LogInfo("  Rejected record: param=%s, level=%q, levelIndex=%d",
-				shortName, record.Level, levelIndex)
-		}
-		return levelIndex != -1
-	})
-
-	LogInfo("%s: filtered %d records to %d records", gribPath, len(records), len(filtered))
-
-	if false && len(filtered) > 0 {
-		LogInfo("  Filtered records by parameter:")
-		counts := make(map[string]int)
-		for _, r := range filtered {
-			counts[r.Parameter.ShortName()]++
-		}
-		for param, count := range counts {
-			LogInfo("    %s: %d records", param, count)
-		}
-	}
-
-	return filtered, nil
+	return records, nil
 }
 
 func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string) (*wx.AtmosByPoint, error) {
@@ -514,23 +497,25 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string
 	matchingRefs := slices.Collect(grid.QueryCircle(center, radius))
 
 	if isARTCC {
-		// Downsample for ARTCCs.
-		locations := make([]math.Point2LL, len(matchingRefs))
-		for i, ref := range matchingRefs {
-			locations[i] = ref.Location
-		}
-
+		// Downsample for ARTCCs: stratify over square cells of the regular
+		// HRRR grid, keeping the first point seen in each. A cell holds
+		// ~rate grid points, so ~len/rate spatially uniform points remain.
 		rate := artccAtmosDownsampleRate(radius)
-		targetCount := max(1, len(locations)/rate)
-		selectedLocations := math.SelectDistributedPoints(locations, targetCount)
-
-		LogInfo("%s: KD-tree selected %d of %d locations (rate=%d)",
-			facilityID, len(selectedLocations), len(locations), rate)
-
+		cellSize := math.Sqrt(float32(rate))
+		seen := make(map[[2]int]bool)
+		total := len(matchingRefs)
 		matchingRefs = util.FilterSlice(matchingRefs, func(ref PointRef) bool {
-			_, ok := selectedLocations[ref.Location]
-			return ok
+			i, j := int(ref.PointIdx)%grid.Ni, int(ref.PointIdx)/grid.Ni
+			cell := [2]int{int(float32(i) / cellSize), int(float32(j) / cellSize)}
+			if seen[cell] {
+				return false
+			}
+			seen[cell] = true
+			return true
 		})
+
+		LogInfo("%s: downsampling kept %d of %d locations (rate=%d)",
+			facilityID, len(matchingRefs), total, rate)
 	}
 
 	var arena []wx.AtmosSampleStack
@@ -545,9 +530,13 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string
 
 	at := wx.MakeAtmosByPoint()
 
-	// Pre-allocate stacks for all matching locations.
-	for _, ref := range matchingRefs {
-		at.SampleStacks[ref.Location] = allocStack()
+	// Pre-allocate stacks for all matching locations, also keeping them in a
+	// slice parallel to matchingRefs to avoid a map lookup per (record, point)
+	// in the loop below.
+	stacks := make([]*wx.AtmosSampleStack, len(matchingRefs))
+	for i, ref := range matchingRefs {
+		stacks[i] = allocStack()
+		at.SampleStacks[ref.Location] = stacks[i]
 	}
 
 	// Record-major iteration: for each record, fill in matching points.
@@ -557,29 +546,25 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string
 			return nil, fmt.Errorf("GRIB2: param=%s, level=%q -> invalid levelIndex", record.Parameter.ShortName(), record.Level)
 		}
 
-		paramName := record.Parameter.ShortName()
+		var set func(s *wx.AtmosSample, v float32)
+		switch record.Parameter.ShortName() {
+		case "UGRD":
+			set = func(s *wx.AtmosSample, v float32) { s.UComponent = v }
+		case "VGRD":
+			set = func(s *wx.AtmosSample, v float32) { s.VComponent = v }
+		case "TMP":
+			set = func(s *wx.AtmosSample, v float32) { s.Temperature = av.MakeTemperatureFromKelvin(v) }
+		case "DPT":
+			set = func(s *wx.AtmosSample, v float32) { s.Dewpoint = av.MakeTemperatureFromKelvin(v) }
+		case "HGT":
+			set = func(s *wx.AtmosSample, v float32) { s.Height = v }
+		default:
+			return nil, errors.New("unexpected parameter: " + record.Parameter.ShortName())
+		}
 
-		for _, ref := range matchingRefs {
-			value := record.Data[ref.PointIdx]
-			if squall.IsMissing(value) {
-				continue
-			}
-
-			stack := at.SampleStacks[ref.Location]
-
-			switch paramName {
-			case "UGRD":
-				stack.Levels[levelIndex].UComponent = value
-			case "VGRD":
-				stack.Levels[levelIndex].VComponent = value
-			case "TMP":
-				stack.Levels[levelIndex].Temperature = av.MakeTemperatureFromKelvin(value)
-			case "DPT":
-				stack.Levels[levelIndex].Dewpoint = av.MakeTemperatureFromKelvin(value)
-			case "HGT":
-				stack.Levels[levelIndex].Height = value
-			default:
-				return nil, errors.New("unexpected parameter: " + paramName)
+		for i, ref := range matchingRefs {
+			if v := record.Data[ref.PointIdx]; !squall.IsMissing(v) {
+				set(&stacks[i].Levels[levelIndex], v)
 			}
 		}
 	}
@@ -638,6 +623,7 @@ type PointRef struct {
 type Grid struct {
 	CellSize float32                 // cell size in degrees
 	Cells    map[GridCell][]PointRef // points in each cell
+	Ni       int                     // width of the underlying GRIB2 grid, for recovering (i, j) from PointIdx
 }
 
 // NewGrid creates a new  grid with the specified cell size in degrees.
@@ -751,18 +737,24 @@ func (sg *Grid) PointCount() int {
 // buildGridFromGRIB2 constructs a grid index from a single GRIB2 record.
 // All HRRR records share the same lat/lon grid, so we only need to index
 // one. After building the grid, Latitudes and Longitudes are nilled out on
-// all records to free ~3 GB of memory.
+// all records to free the coordinate arrays.
 func buildGridFromGRIB2(records []*squall.GRIB2) (*Grid, error) {
 	// Verify all records share the same grid. HRRR files always do, but
 	// check so we don't silently produce wrong results if that changes.
+	// squall shares one backing array across same-grid records, so check
+	// slice identity before falling back to an element-wise comparison.
+	sameGrid := func(a, b []float32) bool {
+		return len(a) == len(b) && (len(a) == 0 || &a[0] == &b[0] || slices.Equal(a, b))
+	}
 	ref := records[0]
 	for i, r := range records[1:] {
-		if !slices.Equal(r.Latitudes, ref.Latitudes) || !slices.Equal(r.Longitudes, ref.Longitudes) {
+		if !sameGrid(r.Latitudes, ref.Latitudes) || !sameGrid(r.Longitudes, ref.Longitudes) {
 			return nil, fmt.Errorf("GRIB2 grid mismatch: record %d has different lat/lon grid than record 0", i+1)
 		}
 	}
 
 	grid := NewGrid(0.5) // 0.5 degrees ~ 30-35nm at mid-latitudes
+	grid.Ni = ref.GridNi
 
 	for ptIdx := range ref.NumPoints {
 		lon := ref.Longitudes[ptIdx]

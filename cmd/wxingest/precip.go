@@ -23,6 +23,17 @@ import (
 )
 
 func ingestPrecip(sb StorageBackend) error {
+	if *manifestsOnly {
+		months, err := precipManifestMonths()
+		if err != nil {
+			return err
+		}
+		if err := generateMonthlyManifests(sb, months); err != nil {
+			return err
+		}
+		return generateConsolidatedManifest(sb)
+	}
+
 	// Track months encountered during processing
 	months := make(map[string]bool)
 	var mu sync.Mutex
@@ -44,6 +55,10 @@ func ingestPrecip(sb StorageBackend) error {
 				case <-ctx.Done():
 					return ctx.Err()
 				default:
+				}
+
+				if !shardOwns(path) {
+					continue
 				}
 
 				n, month, err := processPrecip(sb, path)
@@ -76,11 +91,40 @@ func ingestPrecip(sb StorageBackend) error {
 		return err
 	}
 
+	if inCloudRunJob() {
+		// Manifest generation is deferred to a single -manifests-only
+		// execution after all of the job's tasks complete.
+		return nil
+	}
+
 	if err := generateMonthlyManifests(sb, months); err != nil {
 		return err
 	}
 
 	return generateConsolidatedManifest(sb)
+}
+
+// precipManifestMonths returns the months to regenerate precip manifests for
+// in -manifests-only mode: the -months flag if given, otherwise the current
+// and previous month, which cover everything drained from scrape/ since any
+// reasonably recent run.
+func precipManifestMonths() (map[string]bool, error) {
+	months := make(map[string]bool)
+	if *monthsFlag != "" {
+		for m := range strings.SplitSeq(*monthsFlag, ",") {
+			if _, err := time.Parse("2006-01", m); err != nil {
+				return nil, fmt.Errorf("-months %q: %w", m, err)
+			}
+			months[m] = true
+		}
+		return months, nil
+	}
+
+	now := time.Now().UTC()
+	first := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
+	months[now.Format("2006-01")] = true
+	months[first.AddDate(0, 0, -1).Format("2006-01")] = true
+	return months, nil
 }
 
 func processPrecip(sb StorageBackend, path string) (int64, string, error) {
@@ -143,9 +187,10 @@ func processPrecip(sb StorageBackend, path string) (int64, string, error) {
 		return 0, "", err
 	}
 
-	// Archive only if everything's worked out.
+	// Archive only if everything's worked out; a server-side copy avoids
+	// re-uploading the original bytes.
 	apath := filepath.Join("archive", strings.TrimPrefix(path, "scrape/"))
-	if _, err := sb.Store(apath, bytes.NewReader(scraped)); err != nil {
+	if err := sb.Copy(apath, path); err != nil {
 		return n, "", err
 	}
 
@@ -221,25 +266,8 @@ func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
 			continue
 		}
 
-		manifestPath := wx.MonthlyManifestPath("precip", month)
-		raw := manifest.RawManifest()
-		var n int64
-		err := retry(3, 10*time.Second, func() error {
-			var err error
-			n, err = sb.StoreObject(manifestPath, raw)
-			return err
-		})
-		if err != nil {
-			localFile := fmt.Sprintf("precip-manifest-%s.msgpack.zst", month)
-			if localErr := storeObjectLocal(localFile, raw); localErr != nil {
-				LogError("MANIFEST WRITE FAILED for %s and local save also failed: upload: %v, local: %v", month, err, localErr)
-			} else {
-				LogError("MANIFEST WRITE FAILED for %s: %v -- saved to %s; upload to gs://vice-wx/%s", month, err, localFile, manifestPath)
-			}
-			continue
-		}
-
-		LogInfo("Stored %d items in %s (%s)", totalEntries, manifestPath, util.ByteCount(n))
+		localFile := fmt.Sprintf("precip-manifest-%s.msgpack.zst", month)
+		_ = storeManifest(sb, manifest, wx.MonthlyManifestPath("precip", month), localFile)
 	}
 
 	return nil
@@ -301,25 +329,5 @@ func generateConsolidatedManifest(sb StorageBackend) error {
 		LogError("MakeManifestFromMap: %v", err)
 	}
 
-	// Store consolidated manifest
-	manifestPath := wx.ManifestPath("precip")
-	raw := consolidated.RawManifest()
-	var n int64
-	err = retry(3, 10*time.Second, func() error {
-		var err error
-		n, err = sb.StoreObject(manifestPath, raw)
-		return err
-	})
-	if err != nil {
-		localFile := "precip-manifest-consolidated.msgpack.zst"
-		if localErr := storeObjectLocal(localFile, raw); localErr != nil {
-			LogError("MANIFEST WRITE FAILED for consolidated precip and local save also failed: upload: %v, local: %v", err, localErr)
-		} else {
-			LogError("MANIFEST WRITE FAILED for consolidated precip: %v -- saved to %s; upload to gs://vice-wx/%s", err, localFile, manifestPath)
-		}
-		return err
-	}
-
-	LogInfo("Stored %d items in %s (%s) from monthly manifests", consolidated.TotalEntries(), manifestPath, util.ByteCount(n))
-	return nil
+	return storeManifest(sb, consolidated, wx.ManifestPath("precip"), "precip-manifest-consolidated.msgpack.zst")
 }

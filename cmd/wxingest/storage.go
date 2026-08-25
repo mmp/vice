@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
 	"os"
 	fpath "path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 	"sync"
@@ -27,6 +29,7 @@ type StorageBackend interface {
 	ReadObject(path string, result any) error
 	Store(path string, r io.Reader) (int64, error)
 	StoreObject(path string, object any) (int64, error)
+	Copy(dst, src string) error
 	Delete(path string) error
 	Close()
 }
@@ -35,7 +38,7 @@ type StorageBackend interface {
 var zstdEncoders chan *zstd.Encoder
 
 func initZstdEncoders() {
-	const nenc = 16
+	nenc := runtime.GOMAXPROCS(0)
 	zstdEncoders = make(chan *zstd.Encoder, nenc)
 	for range nenc {
 		ze, err := zstd.NewWriter(nil, zstd.WithEncoderLevel(zstd.SpeedBestCompression), zstd.WithEncoderConcurrency(1))
@@ -44,6 +47,24 @@ func initZstdEncoders() {
 		}
 		zstdEncoders <- ze
 	}
+}
+
+// encodeObject msgpack encodes and zstd compresses object into memory; a
+// pooled encoder is held only for the duration of compression so that slow
+// uploads don't limit concurrency.
+func encodeObject(object any) ([]byte, error) {
+	zw := <-zstdEncoders
+	defer func() { zstdEncoders <- zw }()
+
+	var buf bytes.Buffer
+	zw.Reset(&buf)
+	if err := msgpack.NewEncoder(zw).Encode(object); err != nil {
+		return nil, err
+	}
+	if err := zw.Close(); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
 
 type SinkWriter struct{}
@@ -77,20 +98,14 @@ func (d DryRunBackend) Store(path string, r io.Reader) (int64, error) {
 }
 
 func (d DryRunBackend) StoreObject(path string, object any) (int64, error) {
-	cw := &CountingWriter{Writer: &SinkWriter{}}
-
-	zw := <-zstdEncoders
-	defer func() { zstdEncoders <- zw }()
-	zw.Reset(cw)
-
-	if err := msgpack.NewEncoder(zw).Encode(object); err != nil {
-		return 0, err
-	} else if err := zw.Close(); err != nil {
+	b, err := encodeObject(object)
+	if err != nil {
 		return 0, err
 	}
-
-	return cw.N, nil
+	return int64(len(b)), nil
 }
+
+func (d DryRunBackend) Copy(dst, src string) error { return nil }
 
 func (d DryRunBackend) Delete(path string) error { return nil }
 
@@ -106,12 +121,14 @@ type GCSBackend struct {
 }
 
 func MakeGCSBackend(bucketName string) (StorageBackend, error) {
-	credsJSON := os.Getenv("VICE_GCS_CREDENTIALS")
-	if credsJSON == "" {
-		return nil, fmt.Errorf("VICE_GCS_CREDENTIALS environment variable not set")
+	// Use VICE_GCS_CREDENTIALS when set; otherwise fall back to Application
+	// Default Credentials (e.g. the attached service account on Cloud Run).
+	var opts []option.ClientOption
+	if credsJSON := os.Getenv("VICE_GCS_CREDENTIALS"); credsJSON != "" {
+		opts = append(opts, option.WithCredentialsJSON([]byte(credsJSON)))
 	}
 
-	client, err := storage.NewClient(context.Background(), option.WithCredentialsJSON([]byte(credsJSON)))
+	client, err := storage.NewClient(context.Background(), opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -224,24 +241,17 @@ func (g *GCSBackend) Store(path string, r io.Reader) (int64, error) {
 }
 
 func (g *GCSBackend) StoreObject(path string, object any) (int64, error) {
-	g.insertOps.Add(1)
-
-	objw := g.bucket.Object(path).NewWriter(g.ctx)
-	cw := &CountingWriter{Writer: objw}
-
-	zw := <-zstdEncoders
-	defer func() { zstdEncoders <- zw }()
-	zw.Reset(cw)
-
-	if err := msgpack.NewEncoder(zw).Encode(object); err != nil {
-		return 0, err
-	} else if err := zw.Close(); err != nil {
-		return 0, err
-	} else if err := objw.Close(); err != nil {
+	b, err := encodeObject(object)
+	if err != nil {
 		return 0, err
 	}
+	return g.Store(path, bytes.NewReader(b))
+}
 
-	return cw.N, nil
+func (g *GCSBackend) Copy(dst, src string) error {
+	g.insertOps.Add(1)
+	_, err := g.bucket.Object(dst).CopierFrom(g.bucket.Object(src)).Run(g.ctx)
+	return err
 }
 
 func (g *GCSBackend) Delete(path string) error {
@@ -317,6 +327,11 @@ func (t *TrackingBackend) StoreObject(path string, object any) (int64, error) {
 		t.up.Add(n)
 	}
 	return n, err
+}
+
+func (t *TrackingBackend) Copy(dst, src string) error {
+	// Server-side copy; no bytes are transferred through this process.
+	return t.sb.Copy(dst, src)
 }
 
 func (t *TrackingBackend) Delete(path string) error {
@@ -425,35 +440,21 @@ func (l *LocalBackend) Store(path string, r io.Reader) (int64, error) {
 }
 
 func (l *LocalBackend) StoreObject(path string, object any) (int64, error) {
-	fullPath := fpath.Join(l.dir, path)
-	if err := os.MkdirAll(fpath.Dir(fullPath), 0755); err != nil {
-		return 0, err
-	}
-
-	f, err := os.Create(fullPath)
+	b, err := encodeObject(object)
 	if err != nil {
 		return 0, err
 	}
 
-	cw := &CountingWriter{Writer: f}
-
-	zw := <-zstdEncoders
-	defer func() { zstdEncoders <- zw }()
-	zw.Reset(cw)
-
-	if err := msgpack.NewEncoder(zw).Encode(object); err != nil {
-		f.Close()
+	fullPath := fpath.Join(l.dir, path)
+	if err := os.MkdirAll(fpath.Dir(fullPath), 0755); err != nil {
 		return 0, err
 	}
-	if err := zw.Close(); err != nil {
-		f.Close()
-		return 0, err
-	}
-	if err := f.Close(); err != nil {
+	if err := os.WriteFile(fullPath, b, 0644); err != nil {
 		return 0, err
 	}
 
-	l.totalBytes.Add(cw.N)
+	n := int64(len(b))
+	l.totalBytes.Add(n)
 	l.totalFiles.Add(1)
 
 	// Track per-facility bytes from path like "atmos/ZDC/2026-01-28T00:00:00Z.msgpack.zst"
@@ -461,10 +462,14 @@ func (l *LocalBackend) StoreObject(path string, object any) (int64, error) {
 	if len(parts) >= 2 {
 		facilityID := parts[1]
 		counter, _ := l.bytesPerFac.LoadOrStore(facilityID, &atomic.Int64{})
-		counter.(*atomic.Int64).Add(cw.N)
+		counter.(*atomic.Int64).Add(n)
 	}
 
-	return cw.N, nil
+	return n, nil
+}
+
+func (l *LocalBackend) Copy(dst, src string) error {
+	return nil // no-op for local backend, like Delete
 }
 
 func (l *LocalBackend) Delete(path string) error {

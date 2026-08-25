@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"hash/fnv"
 	"io"
 	"log"
 	"net"
@@ -10,6 +11,7 @@ import (
 	"net/http/pprof"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -17,16 +19,47 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
-	"github.com/vmihailenco/msgpack/v5"
+	"github.com/mmp/vice/wx"
 	"golang.org/x/sync/errgroup"
 )
 
 var dryRun = flag.Bool("dryrun", false, "Don't upload to GCS or archive local files")
-var nWorkers = flag.Int("nworkers", 16, "Number of worker goroutines for concurrent uploads")
+var nWorkers = flag.Int("nworkers", 32, "Number of worker goroutines for concurrent uploads")
 var profile = flag.Bool("profile", false, "Profile CPU/heap usage")
 var hrrrQuick = flag.Bool("hrrrquick", false, "Fast-path HRRR run, no upload")
 var localOutput = flag.String("local-output", "", "Write output to local directory instead of GCS (for testing)")
 var singleTime = flag.String("single-time", "", "Process only a single timestamp (format: 2006-01-02T15:04:05Z)")
+var manifestsOnly = flag.Bool("manifests-only", false, "Regenerate manifests without processing scraped data")
+var monthsFlag = flag.String("months", "", "Comma-separated YYYY-MM months for -manifests-only precip (default: current and previous month)")
+
+// taskIndex and taskCount identify this process's shard when running as a
+// multi-task Cloud Run job; they are 0 and 1 otherwise.
+var taskIndex, taskCount = cloudRunTask()
+
+func cloudRunTask() (int, int) {
+	idx, err1 := strconv.Atoi(os.Getenv("CLOUD_RUN_TASK_INDEX"))
+	count, err2 := strconv.Atoi(os.Getenv("CLOUD_RUN_TASK_COUNT"))
+	if err1 != nil || err2 != nil || count < 1 {
+		return 0, 1
+	}
+	return idx, count
+}
+
+// inCloudRunJob reports whether we are running as a Cloud Run job; if so,
+// manifest generation is deferred to a separate -manifests-only execution
+// after all of the job's tasks have completed.
+func inCloudRunJob() bool { return os.Getenv("CLOUD_RUN_JOB") != "" }
+
+// shardOwns reports whether this process is responsible for the given work
+// item; work is partitioned by hash across Cloud Run job tasks.
+func shardOwns(key string) bool {
+	if taskCount == 1 {
+		return true
+	}
+	h := fnv.New32a()
+	io.WriteString(h, key)
+	return int(h.Sum32())%taskCount == taskIndex
+}
 
 // Cleanup coordination for signal handlers
 var (
@@ -114,7 +147,9 @@ func main() {
 	}
 	defer sb.Close()
 
-	launchHTTPServer()
+	if !inCloudRunJob() {
+		launchHTTPServer()
+	}
 
 	var eg errgroup.Group
 	if len(flag.Args()) == 0 {
@@ -154,17 +189,6 @@ func main() {
 	if gcb, ok := gcsBackend.(*GCSBackend); ok {
 		gcb.ReportClassAOperations()
 	}
-}
-
-type CountingWriter struct {
-	io.Writer
-	N int64
-}
-
-func (w *CountingWriter) Write(b []byte) (int, error) {
-	n, err := w.Writer.Write(b)
-	w.N += int64(n)
-	return n, err
 }
 
 func LogInfo(msg string, args ...any) {
@@ -211,24 +235,34 @@ func readWithRetry(sb StorageBackend, path string) ([]byte, error) {
 // storeObjectLocal writes a msgpack+zstd encoded object to a local file.
 // Used as a fallback when GCS uploads fail.
 func storeObjectLocal(localPath string, object any) error {
-	f, err := os.Create(localPath)
+	b, err := encodeObject(object)
 	if err != nil {
 		return err
 	}
+	return os.WriteFile(localPath, b, 0644)
+}
 
-	zw := <-zstdEncoders
-	defer func() { zstdEncoders <- zw }()
-	zw.Reset(f)
-
-	if err := msgpack.NewEncoder(zw).Encode(object); err != nil {
-		f.Close()
+// storeManifest uploads a manifest, retrying on failure and finally falling
+// back to saving it in a local file that can be uploaded manually.
+func storeManifest(sb StorageBackend, manifest *wx.Manifest, objPath, localFile string) error {
+	raw := manifest.RawManifest()
+	var n int64
+	err := retry(3, 10*time.Second, func() error {
+		var err error
+		n, err = sb.StoreObject(objPath, raw)
+		return err
+	})
+	if err != nil {
+		if localErr := storeObjectLocal(localFile, raw); localErr != nil {
+			LogError("MANIFEST WRITE FAILED for %s and local save also failed: upload: %v, local: %v", objPath, err, localErr)
+		} else {
+			LogError("MANIFEST WRITE FAILED for %s: %v -- saved to %s; upload to gs://vice-wx/%s", objPath, err, localFile, objPath)
+		}
 		return err
 	}
-	if err := zw.Close(); err != nil {
-		f.Close()
-		return err
-	}
-	return f.Close()
+
+	LogInfo("Stored %d items in %s (%s)", manifest.TotalEntries(), objPath, util.ByteCount(n))
+	return nil
 }
 
 func launchHTTPServer() {
