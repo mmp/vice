@@ -75,7 +75,7 @@ func ingestMETAR(sb StorageBackend) error {
 	}
 	LogInfo("Stored %s for %d airports' METAR", util.ByteCount(nb), cm.Len())
 
-	if err := updateMETARManifest(sb, times); err != nil {
+	if err := updateMETARManifest(sb, cm, times); err != nil {
 		return err
 	}
 
@@ -344,14 +344,17 @@ func mergeAirportMETAR(cm wx.CompressedMETAR, ap string, recs []wx.METAR) metarU
 }
 
 // updateMETARManifest folds the given airports' observation times into the
-// METAR manifest, creating the manifest if it doesn't yet exist.
-func updateMETARManifest(sb StorageBackend, times map[string][]time.Time) error {
-	manifest := wx.NewManifest()
+// METAR manifest. If there is no existing manifest to update, only rebuilding
+// from the full consolidated METAR gives a complete one: times alone covers
+// just the airports the scraper has gotten to since the last ingest.
+func updateMETARManifest(sb StorageBackend, cm wx.CompressedMETAR, times map[string][]time.Time) error {
 	var raw wx.RawManifest
-	if err := sb.ReadObject(wx.ManifestPath("metar"), &raw); err == nil {
-		manifest = wx.MakeManifest(raw)
+	if err := sb.ReadObject(wx.ManifestPath("metar"), &raw); err != nil {
+		LogInfo("%s: %v; rebuilding manifest from consolidated METAR", wx.ManifestPath("metar"), err)
+		return rebuildMETARManifest(sb, cm)
 	}
 
+	manifest := wx.MakeManifest(raw)
 	for ap, ts := range times {
 		if err := manifest.SetFacilityTimestamps(ap, ts); err != nil {
 			return err
