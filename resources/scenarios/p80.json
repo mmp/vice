@@ -2638,7 +2638,7 @@
         }
       ]
     },
-    "HHOOD5East": {
+    "HHOODEast": {
       "arrivals": [
         {
           "waypoints": "SODDA/a17000+/s280 RABBI/a13000+/s270/ho HHOOD/a9000-15000/s250 BEEVS BLRUN SSDEE/a9000-11000 THEID/a8000-10000/s240 EMZEY/a7000-8000/s230 CIZZL/a6000+/s210/h281",
@@ -2728,7 +2728,7 @@
         }
       ]
     },
-    "HHOOD5East_Final": {
+    "HHOODEast_Final": {
       "arrivals": [
         {
           "waypoints": "EMZEY/a7000+/s230 CIZZL/a6000+/s210/h281/ho",
@@ -3044,10 +3044,10 @@
         }
       ]
     },
-    "HHOOD5West": {
+    "HHOODWest": {
       "arrivals": [
         {
-          "waypoints": "SODDA/a17000+/s280 RABBI/a13000+/s270/ho HHOOD/a9000-15000/s250 BEEVS/a7100+ BLRUN SHAFR/a6700/s210/flyover KPDX",
+          "waypoints": "SODDA/a17000+/s280 RABBI/a13000+/s270/ho HHOOD/a9000-15000/s250 BEEVS/a7100+/s230 BLRUN SHAFR/a6700/s210/flyover KPDX",
           "cruise_altitude": 34000,
           "route": "/. HHOOD",
           "star": "HHOOD6",
@@ -3114,7 +3114,7 @@
         }
       ]
     },
-    "HHOOD5West_Final": {
+    "HHOODWest_Final": {
       "arrivals": [
         {
           "waypoints": "HHOOD/a9000-15000/s250 N045.32.15.516,W121.54.26.180/ho SHAFR/a6700/s210/h259",
@@ -3430,10 +3430,11 @@
         }
       ]
     },
-    "KRATR2East": {
+    "KRATREast": {
       "arrivals": [
         {
-          "waypoints": "BUWZO HELNS/a11000+/ho KRATR/a10000-13000 HYKER/a7000-9000 VOODU/a5000/s210 DOUHH NNUTT/h278",
+          "waypoints": "BUWZO HELNS/a11000+/ho KRATR/a10000-13000 HYKER/a7000-9000 VEEGN/a5000/s210 DOUHH NNUTT/a5000/flyover/h278",
+          "star": "KRATR3",
           "cruise_altitude": 34000,
           "route": "/. BUWZO",
           "initial_controller": "C32",
@@ -3479,10 +3480,10 @@
         }
       ]
     },
-    "KRATR2East_Final": {
+    "KRATREast_Final": {
       "arrivals": [
         {
-          "waypoints": "VOODU/a5000/s210/ho DOUHH NNUTT/h278",
+          "waypoints": "VEEGN/a5000/s210/ho DOUHH NNUTT/a5000/flyover/h278",
           "cruise_altitude": 34000,
           "star": "KRATR3",
           "initial_controller": "1N",
@@ -3570,10 +3571,11 @@
         }
       ]
     },
-    "KRATR2West": {
+    "KRATRWest": {
       "arrivals": [
         {
-          "waypoints": "BUWZO HELNS/a11000+/ho KRATR/a10000-13000 HYKER/a7000-9000 LIQWD/a6000 SSSUN/s210 SHYNE/h108",
+          "waypoints": "BUWZO HELNS/a11000+/ho KRATR/a10000-13000 HYKER/a7000-9000 BOOSR/a6000/s210 RALEE/a6000/flyover/h100",
+          "star": "KRATR3",
           "cruise_altitude": 34000,
           "route": "/. BUWZO",
           "scratchpad": "RKR",
@@ -3619,10 +3621,10 @@
         }
       ]
     },
-    "KRATR2West_Final": {
+    "KRATRWest_Final": {
       "arrivals": [
         {
-          "waypoints": "LIQWD/a6000 N045.43.30.282,W122.25.23.831/ho SSSUN/s210 SHYNE/h108",
+          "waypoints": "BOOSR/a6000/s210/ho RALEE/a6000/flyover/h100",
           "cruise_altitude": 34000,
           "star": "KRATR3",
           "initial_controller": "1N",
@@ -3631,7 +3633,7 @@
           "initial_speed": 250,
           "speed_restriction": 210,
           "scratchpad": "I8R",
-          "expect_approach": "I8L",
+          "expect_approach": "I8R",
           "airports": ["KPDX"],
           "airlines": {
             "KPDX": [
@@ -3710,10 +3712,11 @@
         }
       ]
     },
-    "OCITY3East": {
+    "OCITYEast": {
       "arrivals": [
         {
           "waypoints": "MOXEE PORTL N044.48.40.289,W122.41.15.494/ho VANTZ/a12000/s250 OCITY/a7000+/h280",
+          "star": "OCITY3",
           "cruise_altitude": 34000,
           "route": "/. MOXEE",
           "initial_controller": "C06",
@@ -4008,10 +4011,11 @@
         }
       ]
     },
-    "OCITY3West": {
+    "OCITYWest": {
       "arrivals": [
         {
           "waypoints": "MOXEE PORTL N044.48.40.289,W122.41.15.494/ho VANTZ/a12000/s250 OCITY/a7000+/h100",
+          "star": "OCITY3",
           "cruise_altitude": 34000,
           "route": "/. MOXEE",
           "initial_controller": "C06",
@@ -4306,10 +4310,11 @@
         }
       ]
     },
-    "TMBERS3East": {
+    "TMBRSEast": {
       "arrivals": [
         {
-          "waypoints": "TMBRS/a12000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 FFULL/a7000-9000 SSAIL/a6000-8000 BBREW PUBBB/a5000/s210/h281",
+          "waypoints": "TMBRS/a12000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 FFULL/a7000-9000 SSAIL/a6000-8000 HAZEE/a5000/s210 BBREW PUBBB/a5000/flyover/h281",
+          "star": "TMBRS4",
           "cruise_altitude": 34000,
           "route": "/. TMBRS",
           "initial_controller": "C06",
@@ -4694,10 +4699,10 @@
         }
       ]
     },
-    "TMBERS3East_Final": {
+    "TMBRSEast_Final": {
       "arrivals": [
         {
-          "waypoints": "SSAIL/a6000-8000 N045.28.18.266,W122.45.55.178/ho MYCRO/a5000/s210 BBREW PUBBB/h305",
+          "waypoints": "SSAIL/a6000-8000 N045.28.18.266,W122.45.55.178/ho HAZEE/a5000/s210 BBREW PUBBB/a5000/flyover/h281",
           "cruise_altitude": 34000,
           "star": "TMBRS4",
           "initial_controller": "1D",
@@ -5010,10 +5015,11 @@
         }
       ]
     },
-    "TMBERS3West": {
+    "TMBRSWest": {
       "arrivals": [
         {
-          "waypoints": "TMBRS/a12000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 ROAGE/a4000+/s210/h103",
+          "waypoints": "TMBRS/a12000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 WIDMR/a5000-6000/s230 WHEAT KOLCH/a5000/s210/flyover/h103",
+          "star": "TMBRS4",
           "cruise_altitude": 34000,
           "route": "/. TMBRS",
           "initial_controller": "C06",
@@ -5329,10 +5335,10 @@
         }
       ]
     },
-    "TMBERS3West_Final": {
+    "TMBRSWest_Final": {
       "arrivals": [
         {
-          "waypoints": "FLOWR/a7000-9000 N045.20.24.165,W122.33.37.227/ho ROAGE/a4000+/s210/h103",
+          "waypoints": "FLOWR/a7000-9000 N045.20.24.165,W122.33.37.227/ho WIDMR/a5000-6000/s230 WHEAT KOLCH/a5000/s210/flyover/h103",
           "cruise_altitude": 34000,
           "star": "TMBRS4",
           "initial_controller": "1D",
@@ -5674,10 +5680,10 @@
         "1F": ["Final (West)"]
       },
       "inbound_rates": {
-        "HHOOD5West": {
+        "HHOODWest": {
           "KPDX": 6
         },
-        "KRATR2West": {
+        "KRATRWest": {
           "KPDX": 4
         },
         "Hawaii": {
@@ -5693,10 +5699,10 @@
         "TOU": {
           "KPDX": 2
         },
-        "TMBERS3West": {
+        "TMBRSWest": {
           "KPDX": 7
         },
-        "OCITY3West": {
+        "OCITYWest": {
           "KPDX": 0
         },
         "V165.S": {
@@ -5754,10 +5760,10 @@
         }
       ],
       "inbound_rates": {
-        "HHOOD5East": {
+        "HHOODEast": {
           "KPDX": 6
         },
-        "KRATR2East": {
+        "KRATREast": {
           "KPDX": 4
         },
         "Hawaii": {
@@ -5773,10 +5779,10 @@
         "TOU": {
           "KPDX": 2
         },
-        "TMBERS3East": {
+        "TMBRSEast": {
           "KPDX": 7
         },
-        "OCITY3East": {
+        "OCITYEast": {
           "KPDX": 0
         },
         "V165.S": {
@@ -5827,13 +5833,13 @@
         }
       ],
       "inbound_rates": {
-        "HHOOD5West_Final": {
+        "HHOODWest_Final": {
           "KPDX": 5
         },
-        "KRATR2West_Final": {
+        "KRATRWest_Final": {
           "KPDX": 5
         },
-        "TMBERS3West_Final": {
+        "TMBRSWest_Final": {
           "KPDX": 5
         }
       },
@@ -5858,13 +5864,13 @@
         }
       ],
       "inbound_rates": {
-        "HHOOD5East_Final": {
+        "HHOODEast_Final": {
           "KPDX": 5
         },
-        "KRATR2East_Final": {
+        "KRATREast_Final": {
           "KPDX": 5
         },
-        "TMBERS3East_Final": {
+        "TMBRSEast_Final": {
           "KPDX": 5
         }
       },
