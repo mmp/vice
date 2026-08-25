@@ -78,12 +78,7 @@
               "icao": "FDX"
             }
           ],
-          "altitude": [
-            24000,
-            26000,
-            28000,
-            30000
-          ],
+          "altitude": [24000, 26000, 28000, 30000],
           "destination": "KATL",
           "exit": "CARWN",
           "route": "CARWN LEAVI OZZZI2"
@@ -97,11 +92,7 @@
               "icao": "ENY"
             }
           ],
-          "altitude": [
-            29000,
-            31000,
-            33000
-          ],
+          "altitude": [29000, 31000, 33000],
           "destination": "KORD",
           "exit": "BAWDS",
           "route": "BAWDS VXV FOUNT CVG VHP WWODD HANBL3"
@@ -115,11 +106,7 @@
               "icao": "RPA"
             }
           ],
-          "altitude": [
-            29000,
-            31000,
-            33000
-          ],
+          "altitude": [29000, 31000, 33000],
           "destination": "KDTW",
           "exit": "BAWDS",
           "route": "BAWDS VXV FOUNT CVG VHP WWODD HANBL3"
@@ -133,11 +120,7 @@
               "icao": "JIA"
             }
           ],
-          "altitude": [
-            25000,
-            27000,
-            29000
-          ],
+          "altitude": [25000, 27000, 29000],
           "destination": "KPHL",
           "exit": "SBV",
           "route": "SBV BBDOL PAATS4"
@@ -151,11 +134,7 @@
               "icao": "JIA"
             }
           ],
-          "altitude": [
-            25000,
-            27000,
-            29000
-          ],
+          "altitude": [25000, 27000, 29000],
           "destination": "KLGA",
           "exit": "SBV",
           "route": "SBV"
@@ -313,9 +292,7 @@
           "cruise_altitude": 23000,
           "route": "GMONY WAMUR JUNNR YELKS SPA",
           "waypoints": "GMONY/ho WAMUR JUNNR YELKS SPA/delete",
-          "airports": [
-            "KGSP"
-          ]
+          "airports": ["KGSP"]
         }
       ]
     }

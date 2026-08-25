@@ -110,10 +110,7 @@
         {
           "id": "F13",
           "name": "F13",
-          "airports": [
-            "KMCF",
-            "KSPG"
-          ]
+          "airports": ["KMCF", "KSPG"]
         }
       ]
     },
@@ -169,23 +166,10 @@
           "KMCF/23": "1M"
         },
         "default_consolidation": {
-          "1D": [
-            "1G"
-          ],
-          "1E": [
-            "1D",
-            "1F",
-            "1P",
-            "1W",
-            "1R",
-            "1L"
-          ],
-          "1P": [
-            "1S"
-          ],
-          "1S": [
-            "1M"
-          ]
+          "1D": ["1G"],
+          "1E": ["1D", "1F", "1P", "1W", "1R", "1L"],
+          "1P": ["1S"],
+          "1S": ["1M"]
         },
         "go_around_assignments": {
           "KBKV": "1R",
@@ -239,23 +223,10 @@
           "KMCF/23": "1M"
         },
         "default_consolidation": {
-          "1D": [
-            "1G"
-          ],
-          "1E": [
-            "1D",
-            "1F",
-            "1P",
-            "1W",
-            "1R",
-            "1L"
-          ],
-          "1P": [
-            "1S"
-          ],
-          "1S": [
-            "1M"
-          ]
+          "1D": ["1G"],
+          "1E": ["1D", "1F", "1P", "1W", "1R", "1L"],
+          "1P": ["1S"],
+          "1S": ["1M"]
         },
         "go_around_assignments": {
           "KBKV": "1R",

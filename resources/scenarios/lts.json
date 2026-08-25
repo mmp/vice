@@ -338,7 +338,7 @@
           "initial_altitude": 8000,
           "assigned_altitude": 8000,
           "initial_speed": 250,
-          "airports": [ "KLTS" ],
+          "airports": ["KLTS"],
           "airlines": {
             "KLTS": [
               {
@@ -385,7 +385,7 @@
           "initial_altitude": 8000,
           "assigned_altitude": 8000,
           "initial_speed": 250,
-          "airports": [ "KLTS" ],
+          "airports": ["KLTS"],
           "airlines": {
             "KLTS": [
               {
@@ -422,7 +422,7 @@
           "initial_altitude": 8000,
           "assigned_altitude": 8000,
           "initial_speed": 250,
-          "airports": [ "KLTS" ],
+          "airports": ["KLTS"],
           "airlines": {
             "KLTS": [
               {
@@ -449,7 +449,7 @@
           "initial_altitude": 9000,
           "assigned_altitude": 9000,
           "initial_speed": 250,
-          "airports": [ "KLTS" ],
+          "airports": ["KLTS"],
           "airlines": {
             "KLTS": [
               {

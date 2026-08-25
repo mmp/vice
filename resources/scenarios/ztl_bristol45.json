@@ -31,11 +31,7 @@
               "icao": "EDV"
             }
           ],
-          "altitude": [
-            18000,
-            20000,
-            22000
-          ],
+          "altitude": [18000, 20000, 22000],
           "destination": "KATL",
           "exit": "PUPDG",
           "route": "PUPDG ONDRE1"
@@ -127,18 +123,14 @@
           "route": "VXV DAJPI LUVTT RCTOR UNMAN",
           "is_rnav": true,
           "waypoints": "VXV/ho DAJPI LUVTT RCTOR UNMAN/delete",
-          "airports": [
-            "KGSP"
-          ]
+          "airports": ["KGSP"]
         }
       ]
     },
     "TRI-ATL-SMKEY": {
       "arrivals": [
         {
-          "airports": [
-            "KTRI"
-          ],
+          "airports": ["KTRI"],
           "airlines": {
             "KTRI": [
               {
@@ -168,9 +160,7 @@
     "ROA-MOPED-BRISTOL": {
       "arrivals": [
         {
-          "airports": [
-            "KROA"
-          ],
+          "airports": ["KROA"],
           "airlines": {
             "KROA": [
               {

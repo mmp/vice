@@ -840,7 +840,7 @@
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
           "initial_speed": 250,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {
@@ -902,7 +902,7 @@
           "initial_altitude": 5000,
           "assigned_altitude": 5000,
           "initial_speed": 120,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {
@@ -924,7 +924,7 @@
           "initial_altitude": 6000,
           "assigned_altitude": 6000,
           "initial_speed": 120,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {
@@ -966,7 +966,7 @@
           "initial_altitude": 12000,
           "assigned_altitude": 12000,
           "initial_speed": 250,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {
@@ -998,7 +998,7 @@
           "initial_altitude": 6000,
           "assigned_altitude": 6000,
           "initial_speed": 120,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {
@@ -1035,7 +1035,7 @@
           "initial_altitude": 10000,
           "assigned_altitude": 10000,
           "initial_speed": 250,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {
@@ -1117,7 +1117,7 @@
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
           "initial_speed": 250,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {
@@ -1189,7 +1189,7 @@
           "initial_altitude": 7000,
           "assigned_altitude": 7000,
           "initial_speed": 120,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {
@@ -1236,7 +1236,7 @@
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
           "initial_speed": 250,
-          "airports": [ "KFAR" ],
+          "airports": ["KFAR"],
           "airlines": {
             "KFAR": [
               {

@@ -65,10 +65,7 @@
               "icao": "UAL"
             }
           ],
-          "altitude": [
-            33000,
-            35000
-          ],
+          "altitude": [33000, 35000],
           "destination": "KIAH",
           "exit": "ESTRR",
           "route": "ESTRR IPTAY CHOPZ THRSR SARKK AEX DOOBI3"
@@ -82,10 +79,7 @@
               "icao": "SWA"
             }
           ],
-          "altitude": [
-            33000,
-            35000
-          ],
+          "altitude": [33000, 35000],
           "destination": "KHOU",
           "exit": "ESTRR",
           "route": "ESTRR IPTAY CHOPZ TWOUP Q22 CATLN Q56 SJI"
@@ -96,10 +90,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            32000,
-            34000
-          ],
+          "altitude": [32000, 34000],
           "destination": "KDFW",
           "exit": "ESTRR",
           "route": "ESTRR IPTAY CHOPZ"
@@ -113,10 +104,7 @@
               "icao": "DAL"
             }
           ],
-          "altitude": [
-            22000,
-            24000
-          ],
+          "altitude": [22000, 24000],
           "destination": "KATL",
           "exit": "BOBZY",
           "route": "BOBZY TNSLY LEAVI OZZZI2"
@@ -130,10 +118,7 @@
               "icao": "DAL"
             }
           ],
-          "altitude": [
-            32000,
-            34000
-          ],
+          "altitude": [32000, 34000],
           "destination": "KSLC",
           "exit": "BOBZY",
           "route": "BOBZY TNSLY"
@@ -178,10 +163,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            33000,
-            35000
-          ],
+          "altitude": [33000, 35000],
           "destination": "KDCA",
           "exit": "DRIVN",
           "route": "DRIVN JOOLI Q56 KIWII WAVES"
@@ -195,10 +177,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            33000,
-            35000
-          ],
+          "altitude": [33000, 35000],
           "destination": "KLGA",
           "exit": "DRIVN",
           "route": "DRIVN EVING Q60 HURTS HUBBS"
@@ -212,10 +191,7 @@
               "icao": "DAL"
             }
           ],
-          "altitude": [
-            32000,
-            34000
-          ],
+          "altitude": [32000, 34000],
           "destination": "KSDF",
           "exit": "JLENA",
           "route": "JLENA LAFOX"
@@ -346,11 +322,7 @@
       "arrivals": [
         {
           "waypoints": "PROVN/ho MCHLN/a11000 TYRES/d40 KGSP/delete",
-          "cruise_altitude": [
-            17000,
-            19000,
-            21000
-          ],
+          "cruise_altitude": [17000, 19000, 21000],
           "star": "MCHLN2",
           "route": "/. MCHLN2",
           "initial_controller": "24",

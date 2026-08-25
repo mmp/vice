@@ -67,10 +67,7 @@
               "icao": "DAL"
             }
           ],
-          "altitude": [
-            33000,
-            35000
-          ],
+          "altitude": [33000, 35000],
           "destination": "KSLC",
           "exit": "CUBIM",
           "route": "CUBIM ENGRA EMBRR BAYLI ELYNA LMN WRNCH LNK YANKI HANKI CKW CARTR1"
@@ -84,10 +81,7 @@
               "icao": "UAL"
             }
           ],
-          "altitude": [
-            32000,
-            34000
-          ],
+          "altitude": [32000, 34000],
           "destination": "KORD",
           "exit": "DOOGE",
           "route": "DOOGE"
@@ -101,10 +95,7 @@
               "icao": "DAL"
             }
           ],
-          "altitude": [
-            33000,
-            35000
-          ],
+          "altitude": [33000, 35000],
           "destination": "KDTW",
           "exit": "NOONN",
           "route": "NOONN"
@@ -134,10 +125,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            33000,
-            35000
-          ],
+          "altitude": [33000, 35000],
           "destination": "KORD",
           "exit": "JLENA",
           "route": "JLENA DOOGE/ho42 HEVAN BONNT/delete"
@@ -148,10 +136,7 @@
               "icao": "DAL"
             }
           ],
-          "altitude": [
-            32000,
-            34000
-          ],
+          "altitude": [32000, 34000],
           "destination": "KDTW",
           "exit": "JLENA",
           "route": "JLENA HMV/ho42 SUBWY HTROD/delete"
@@ -162,10 +147,7 @@
               "icao": "SWA"
             }
           ],
-          "altitude": [
-            32000,
-            34000
-          ],
+          "altitude": [32000, 34000],
           "destination": "KMDW",
           "exit": "JLENA",
           "route": "JLENA HVQ/ho42 APE FWA/delete"
@@ -176,10 +158,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            33000,
-            35000
-          ],
+          "altitude": [33000, 35000],
           "destination": "KCMH",
           "exit": "JLENA",
           "route": "JLENA MCGNS/ho42 SCRLT/delete"

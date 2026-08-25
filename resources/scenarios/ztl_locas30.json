@@ -92,9 +92,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            36000
-          ],
+          "altitude": [36000],
           "destination": "KMIA",
           "exit": "ICONS",
           "route": "ICONS NOOKS WURFL/c360 Q83 JEVED Q97 DEBRL/delete CSTAL3"
@@ -108,9 +106,7 @@
               "icao": "FFT"
             }
           ],
-          "altitude": [
-            38000
-          ],
+          "altitude": [38000],
           "destination": "KMIA",
           "exit": "ICONS",
           "route": "ICONS NOOKS WURFL/c380 Q83 JEVED Q97 DEBRL/delete CSTAL3"
@@ -121,9 +117,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            23000
-          ],
+          "altitude": [23000],
           "destination": "KMYR",
           "exit": "KWEEN",
           "route": "KWEEN UNJAM/c230 KMYR/delete"
@@ -137,9 +131,7 @@
               "icao": "FFT"
             }
           ],
-          "altitude": [
-            37000
-          ],
+          "altitude": [37000],
           "destination": "KMIA",
           "exit": "KWEEN",
           "route": "KWEEN PITRW/c370 Y436 OGGRE DUUNK Y313 HOAGG/delete BNFSH3"
@@ -150,9 +142,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            36000
-          ],
+          "altitude": [36000],
           "destination": "KMSY",
           "exit": "BEAVY",
           "route": "BEAVY JENDO/c360 MAVRC ALLMA CEW J2 SJI/delete MNSTR2"
@@ -166,9 +156,7 @@
               "icao": "EDV"
             }
           ],
-          "altitude": [
-            35000
-          ],
+          "altitude": [35000],
           "destination": "KJFK",
           "exit": "BARMY",
           "route": "BARMY TYI/c350 Q64 SAWED Q108 SIE/delete CAMRN5"
@@ -185,9 +173,7 @@
               "icao": "FFT"
             }
           ],
-          "altitude": [
-            33000
-          ],
+          "altitude": [33000],
           "destination": "KBWI",
           "exit": "BARMY",
           "route": "BARMY RDU/c330 THHMP/delete RAVNN9"
@@ -201,9 +187,7 @@
               "icao": "JIA"
             }
           ],
-          "altitude": [
-            31000
-          ],
+          "altitude": [31000],
           "destination": "KDCA",
           "exit": "KILNS",
           "route": "KILNS AUDII/c310 WAVES/delete CAPSS4"
@@ -214,9 +198,7 @@
               "icao": "PDT"
             }
           ],
-          "altitude": [
-            13000
-          ],
+          "altitude": [13000],
           "destination": "KFAY",
           "exit": "LILLS",
           "route": "LILLS V296 FAY/delete"

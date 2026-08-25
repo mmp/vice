@@ -27,9 +27,7 @@
         "I6": {
           "runway": "6",
           "type": "ILS",
-          "waypoints": [
-            "CISON/a2000/if FENKA/a2000/faf KWRI-6"
-          ]
+          "waypoints": ["CISON/a2000/if FENKA/a2000/faf KWRI-6"]
         }
       }
     },
@@ -4232,7 +4230,7 @@
     "HAR5": {
       "arrivals": [
         {
-          "airports": [ "KWRI" ],
+          "airports": ["KWRI"],
           "waypoints": "LRP TRAGG/ho BUNTS RELNY NAGGS CISON/s180/a2000+/clearapp FENKA/a2000 KWRI-6/a150/s150/delete",
           "initial_altitude": 12000,
           "initial_speed": 300,
@@ -4334,7 +4332,7 @@
       "arrivals": [
         {
           "star": "PROUD2",
-          "airports": [ "KLGA" ],
+          "airports": ["KLGA"],
           "initial_altitude": 24000,
           "initial_speed": 350,
           "description": "KLGA PROUD2 arrivals",
@@ -4346,7 +4344,7 @@
     "PHLBO4": {
       "arrivals": [
         {
-          "airports": [ "KEWR" ],
+          "airports": ["KEWR"],
           "star": "PHLBO4",
           "waypoints": "FUBRR DQO/a20000+ STEFE/a13000-17000 SOMTO/a11000 ARD/ho14P DYLIN/a8000 MERSR METRO/a4000/delete",
           "initial_altitude": 24000,
@@ -4359,7 +4357,7 @@
     "JAIKE4": {
       "arrivals": [
         {
-          "airports": [ "KTEB" ],
+          "airports": ["KTEB"],
           "star": "JAIKE4",
           "waypoints": "JNJEN BUZIE SPNCR JAIKE/a13000 ILENE/a13000 WACKI/s250/a11000 MAZIE/ho14P REGLE/a7000 SBJ/a4000/delete",
           "initial_altitude": 22000,
@@ -4372,7 +4370,7 @@
     "BRAND1": {
       "arrivals": [
         {
-          "airports": [ "KEWR" ],
+          "airports": ["KEWR"],
           "star": "BRAND1",
           "waypoints": "BACKY ODESA DQO/ho RUUTH WNDYL/ho14P BRAND/a7000 KORRY WATJA/a4000/delete",
           "initial_altitude": 18000,

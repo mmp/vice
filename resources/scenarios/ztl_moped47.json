@@ -47,13 +47,7 @@
               "icao": "SWA"
             }
           ],
-          "altitude": [
-            29000,
-            31000,
-            33000,
-            35000,
-            37000
-          ],
+          "altitude": [29000, 31000, 33000, 35000, 37000],
           "destination": "KBWI",
           "exit": "KRITR",
           "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
@@ -64,11 +58,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            29000,
-            31000,
-            33000
-          ],
+          "altitude": [29000, 31000, 33000],
           "destination": "KPIT",
           "exit": "KRITR",
           "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
@@ -79,11 +69,7 @@
               "icao": "JIA"
             }
           ],
-          "altitude": [
-            29000,
-            31000,
-            33000
-          ],
+          "altitude": [29000, 31000, 33000],
           "destination": "KABE",
           "exit": "KRITR",
           "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
@@ -94,11 +80,7 @@
               "icao": "DLH"
             }
           ],
-          "altitude": [
-            35000,
-            37000,
-            39000
-          ],
+          "altitude": [35000, 37000, 39000],
           "destination": "EDDM",
           "exit": "KRITR",
           "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
@@ -112,10 +94,7 @@
               "icao": "DAL"
             }
           ],
-          "altitude": [
-            32000,
-            34000
-          ],
+          "altitude": [32000, 34000],
           "destination": "KSLC",
           "exit": "CLAWD",
           "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
@@ -129,11 +108,7 @@
               "icao": "EDV"
             }
           ],
-          "altitude": [
-            33000,
-            35000,
-            37000
-          ],
+          "altitude": [33000, 35000, 37000],
           "destination": "KJFK",
           "exit": "CLAWD",
           "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
@@ -144,10 +119,7 @@
               "icao": "AAL"
             }
           ],
-          "altitude": [
-            34000,
-            36000
-          ],
+          "altitude": [34000, 36000],
           "destination": "KMSY",
           "exit": "CLAWD",
           "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
@@ -243,9 +215,7 @@
     "GSP-JUNNR-MOPED": {
       "arrivals": [
         {
-          "airports": [
-            "KGSP"
-          ],
+          "airports": ["KGSP"],
           "airlines": {
             "KGSP": [
               {
@@ -271,9 +241,7 @@
     "GSO-TRAKS": {
       "arrivals": [
         {
-          "airports": [
-            "KGSO"
-          ],
+          "airports": ["KGSO"],
           "airlines": {
             "KGSO": [
               {
