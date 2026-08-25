@@ -15,13 +15,6 @@
         }
       }
     },
-    "KRAL": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
     "KTOA": {
       "vfr": {
         "random_routes": {
@@ -85,13 +78,6 @@
         }
       }
     },
-    "KEMT": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
-    },
     "KAJO": {
       "vfr": {
         "random_routes": {
@@ -132,13 +118,6 @@
         }
       },
       "hold_for_release": true
-    },
-    "KCNO": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
     },
     "KONT": {
       "departure_runways_as_one": ["26L,26R", "8L,8R"],
@@ -612,6 +591,86 @@
         }
       }
     },
+    "KPOC": {
+      "vfr": { "random_routes": { "rate": 10, "fleet": "GAsinglepiston" } },
+      "approaches": {
+        "I6L": {
+          "cifp_id": "I26L"
+        },
+        "L6L": {
+          "cifp_id": "L26L"
+        },
+        "R6L": {
+          "cifp_id": "R26L"
+        },
+        "VA6L": {
+          "cifp_id": "VAOR",
+          "runway": "26L"
+        },
+        "VA8R": {
+          "cifp_id": "VAOR",
+          "runway": "8R"
+        }
+      }
+    },
+    "KRAL": {
+      "vfr": { "random_routes": { "rate": 10, "fleet": "GAsinglepiston" } },
+      "approaches": {
+        "I9": {
+          "cifp_id": "I9"
+        },
+        "R9": {
+          "cifp_id": "R9"
+        },
+        "R27": {
+          "cifp_id": "R27"
+        },
+        "VR9": {
+          "cifp_id": "S9"
+        }
+      }
+    },
+    "KCNO": {
+      "vfr": { "random_routes": { "rate": 10, "fleet": "GAsinglepiston" } },
+      "approaches": {
+        "I6R": {
+          "cifp_id": "I26R"
+        },
+        "R6R": {
+          "cifp_id": "R26R"
+        },
+        "RA6R": {
+          "full_name": "VOR A Runway 26R",
+          "runway": "26R",
+          "type": "VOR",
+          "waypoints": [
+            "PDZ RAL/iaf/pta4600/lpt4510nm RAL/a3900+/faf HINTN/a2140+",
+            "EDITS/iaf/if/a3900+ RAL/faf/a3900+ HINTN/a2140+"
+          ]
+        }
+      }
+    },
+    "KEMT": {
+      "vfr": { "random_routes": { "rate": 10, "fleet": "GAsinglepiston" } },
+      "approaches": {
+        "RB9": {
+          "cifp_id": "RBNV",
+          "runway": "19"
+        },
+        "RA9": {
+          "cifp_id": "VAOR",
+          "runway": "19"
+        },
+        "RB1": {
+          "cifp_id": "RBNV",
+          "runway": "1"
+        },
+        "RA1": {
+          "cifp_id": "VAOR",
+          "runway": "1"
+        }
+      }
+    },
     "KSBD": {
       "approaches": {
         "IZ6": {
@@ -641,12 +700,14 @@
             "cleared_altitude": 7000,
             "sid": "JADKO1",
             "is_rnav": true,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KSBD-6/h057@a2100/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA JADKO ARRDY/a13000+ PEELR MTBAL"
           },
           "SXC": {
             "cleared_altitude": 7000,
             "sid": "JADKO1",
             "is_rnav": true,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KSBD-6/h057@a2100/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC"
           },
           "POM": {
@@ -660,12 +721,14 @@
             "assigned_altitude": 4300,
             "sid": "JADKO1",
             "is_rnav": true,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "N034.04.23.644,W117.18.38.215 PESLE ROLIE ELICA JADKO ARRDY/a13000+ PEELR MTBAL"
           },
           "SXC": {
             "assigned_altitude": 4300,
             "sid": "JADKO1",
             "is_rnav": true,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "N034.04.23.644,W117.18.38.215 PESLE ROLIE ELICA JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC"
           },
           "POM": {
@@ -1123,6 +1186,7 @@
           "initial_controller": "C19",
           "initial_altitude": 20000,
           "initial_speed": 280,
+          "secondary_scratchpad": "DSY",
           "expect_approach": null,
           "airports": ["KSNA"],
           "airlines": {
@@ -1185,6 +1249,7 @@
           "initial_controller": "C12",
           "initial_altitude": 24000,
           "initial_speed": 280,
+          "secondary_scratchpad": "DSY",
           "expect_approach": "I30",
           "airports": ["KLGB"],
           "airlines": {
@@ -1220,6 +1285,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "DSY",
           "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
@@ -1282,6 +1348,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I30",
+          "secondary_scratchpad": "DSY",
           "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
@@ -1316,6 +1383,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "Z2L",
+          "secondary_scratchpad": "RBY",
           "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
@@ -1378,6 +1446,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I30",
+          "secondary_scratchpad": "RBY",
           "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
@@ -1428,6 +1497,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "Z2L",
+          "secondary_scratchpad": "RBY",
           "airports": ["KSNA"],
           "airlines": {
             "KSNA": [
@@ -1490,6 +1560,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": "I30",
+          "secondary_scratchpad": "RBY",
           "airports": ["KLGB"],
           "airlines": {
             "KLGB": [
@@ -1540,6 +1611,7 @@
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
+          "secondary_scratchpad": "JKI",
           "airports": ["KONT"],
           "airlines": {
             "KONT": [
@@ -1595,6 +1667,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "ZIG",
           "airports": ["KSBD"],
           "airlines": {
             "KSBD": [
@@ -1633,6 +1706,7 @@
           "initial_altitude": 18000,
           "initial_speed": 270,
           "expect_approach": null,
+          "secondary_scratchpad": "JKI",
           "airports": ["KONT"],
           "airlines": {
             "KONT": [
@@ -1688,6 +1762,7 @@
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "ZIG",
           "airports": ["KSBD"],
           "airlines": {
             "KSBD": [
@@ -1732,6 +1807,7 @@
           "initial_controller": "C10",
           "initial_altitude": 19000,
           "initial_speed": 280,
+          "secondary_scratchpad": "RDB",
           "expect_approach": null,
           "airports": ["KPSP"],
           "airlines": {
@@ -1776,6 +1852,7 @@
           "initial_controller": "C10",
           "initial_altitude": 20000,
           "initial_speed": 250,
+          "secondary_scratchpad": "RDB",
           "expect_approach": null,
           "airports": ["KPSP"],
           "airlines": {
@@ -1825,6 +1902,7 @@
           "initial_controller": "C12",
           "initial_altitude": 21000,
           "initial_speed": 280,
+          "secondary_scratchpad": "SCB",
           "expect_approach": null,
           "airports": ["KONT"],
           "airlines": {
@@ -1870,6 +1948,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "SCB",
           "airports": ["KONT"],
           "airlines": {
             "KONT": [
@@ -1899,6 +1978,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "THR",
           "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
@@ -1943,6 +2023,7 @@
           "initial_altitude": 20000,
           "initial_speed": 270,
           "expect_approach": null,
+          "secondary_scratchpad": "SCB",
           "airports": ["KONT"],
           "airlines": {
             "KONT": [
@@ -1987,6 +2068,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "SCB",
           "airports": ["KONT"],
           "airlines": {
             "KONT": [
@@ -2027,6 +2109,7 @@
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "THR",
           "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
@@ -2070,6 +2153,7 @@
           "initial_altitude": 29000,
           "initial_speed": 270,
           "expect_approach": null,
+          "secondary_scratchpad": "THR",
           "airports": ["KBUR"],
           "airlines": {
             "KBUR": [
@@ -2110,6 +2194,7 @@
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "SIZ",
           "airports": ["KPSP"],
           "airlines": {
             "KPSP": [
@@ -2173,6 +2258,7 @@
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "SIZ",
           "airports": ["KPSP"],
           "airlines": {
             "KPSP": [
@@ -2235,6 +2321,7 @@
           "initial_altitude": 9000,
           "initial_speed": 250,
           "expect_approach": null,
+          "secondary_scratchpad": "KRB",
           "airports": ["KONT"],
           "airlines": {
             "KONT": [
@@ -2306,6 +2393,7 @@
           "initial_altitude": 24000,
           "initial_speed": 250,
           "expect_approach": null,
+          "secondary_scratchpad": "ZIG",
           "airports": ["KONT", "KSBD"],
           "airlines": {
             "KONT": [
@@ -3673,6 +3761,22 @@
           "runway": "31L"
         },
         {
+          "airport": "KEMT",
+          "runway": "19"
+        },
+        {
+          "airport": "KCNO",
+          "runway": "26R"
+        },
+        {
+          "airport": "KRAL",
+          "runway": "27"
+        },
+        {
+          "airport": "KPOC",
+          "runway": "26L"
+        },
+        {
           "airport": "KBUR",
           "runway": "8"
         },
@@ -3789,6 +3893,22 @@
         {
           "airport": "KPSP",
           "runway": "31L"
+        },
+        {
+          "airport": "KEMT",
+          "runway": "19"
+        },
+        {
+          "airport": "KCNO",
+          "runway": "26R"
+        },
+        {
+          "airport": "KRAL",
+          "runway": "27"
+        },
+        {
+          "airport": "KPOC",
+          "runway": "26L"
         },
         {
           "airport": "KBUR",
@@ -3966,6 +4086,22 @@
           "runway": "13R"
         },
         {
+          "airport": "KEMT",
+          "runway": "1"
+        },
+        {
+          "airport": "KCNO",
+          "runway": "26R"
+        },
+        {
+          "airport": "KRAL",
+          "runway": "9"
+        },
+        {
+          "airport": "KPOC",
+          "runway": "8R"
+        },
+        {
           "airport": "KBUR",
           "runway": "8"
         },
@@ -4080,6 +4216,22 @@
           "runway": "8"
         },
         {
+          "airport": "KEMT",
+          "runway": "19"
+        },
+        {
+          "airport": "KCNO",
+          "runway": "26R"
+        },
+        {
+          "airport": "KRAL",
+          "runway": "9"
+        },
+        {
+          "airport": "KPOC",
+          "runway": "8R"
+        },
+        {
           "airport": "KSNA",
           "runway": "20R"
         },
@@ -4184,6 +4336,22 @@
         {
           "airport": "KSBD",
           "runway": "6"
+        },
+        {
+          "airport": "KEMT",
+          "runway": "1"
+        },
+        {
+          "airport": "KCNO",
+          "runway": "26R"
+        },
+        {
+          "airport": "KRAL",
+          "runway": "27"
+        },
+        {
+          "airport": "KPOC",
+          "runway": "26L"
         }
       ],
       "inbound_rates": {

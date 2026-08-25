@@ -418,6 +418,7 @@
           "KLGB/ZOOMM3": "4R",
           "KLGB/RV SXC": "4R",
           "KLGB/TOPMM5": "6L",
+          "KLGB/HAWWC3": "6L",
           "KLGB/RV VTU": "6L",
           "KSNA": "4Y",
           "KSMO": "6N"
@@ -453,6 +454,7 @@
           "KLGB/ZOOMM3": "4R",
           "KLGB/RV SXC": "4R",
           "KLGB/TOPMM5": "6L",
+          "KLGB/HAWWC3": "6L",
           "KLGB/RV VTU": "6L",
           "KSNA": "4Y",
           "KSMO": "6N"
@@ -776,8 +778,8 @@
           "WEST SAT ARR (E OR 9/27))": "5M",
           "SOUTHEAST MYF ARR": "5E",
           "PLYYA2": "5W",
-          "TOPGN2/CHASR2.IPL": "5E",
-          "TOPGN2.MOMAR": "5E",
+          "TOPGN2/CHASR2.IPL.O": "5E",
+          "TOPGN2.MOMAR.O": "5E",
           "W291 NZY ARR": "5Z",
           "W291 NKX ARR": "5M"
         },
@@ -1175,16 +1177,50 @@
           "V5R": "SE"
         }
       },
-      "NEE": {
+      "SWW": {
         "inbound_assignments": {
-          "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "4R",
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3.SW": "4R",
+          "V459 ARR": "4R",
+          "DSNEE6": "4A",
           "GOATZ2/KALRB3": "4Y",
+          "LAXX1.MZB": "4Y",
           "LEGOZ4": "4Y",
           "LGB OCEANIC ARR": "4B",
-          "OCEAN3": "4Y",
+          "OLAAA2": "4Y",
+          "V23 NORTH": "4S",
+          "CWARD2/SANQ4R": "4Y",
+          "V208 ARR": "4R",
+          "KAYOH8": "4A",
+          "V363 ENRT": "4S",
+          "V363/V388/V394 ARR": "4T"
+        },
+        "departure_assignments": {
+          "KLGB": "4R",
+          "KSNA": "4Y",
+          "KSNA/ANAHM2": "4B"
+        },
+        "default_consolidation": {
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
+        }
+      },
+      "NWW": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3.NW": "4R",
+          "V459 ARR": "4R",
+          "GOATZ2/KALRB3": "4Y",
+          "LAXX1.MZB": "4Y",
+          "LEGOZ4": "4Y",
+          "LGB OCEANIC ARR": "4B",
+          "OLAAA2": "4Y",
           "ROOBY3": "4S",
-          "V23 NORTH.E": "4S",
-          "CWARD2/SANQ4R.E": "4Y"
+          "V23 NORTH": "4S",
+          "V208 ARR.N": "4R",
+          "CWARD2/SANQ4R": "4Y",
+          "KAYOH8": "4A",
+          "V363 ENRT": "4S",
+          "V363/V388/V394 ARR": "4A"
         },
         "departure_assignments": {
           "KLGB": "4R",
@@ -1198,7 +1234,8 @@
       },
       "NEW": {
         "inbound_assignments": {
-          "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "4R",
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3.NE": "4R",
+          "V459 ARR": "4R",
           "GOATZ2/KALRB3": "4Y",
           "LAXX1.MZB": "4Y",
           "LEGOZ4": "4Y",
@@ -1206,11 +1243,141 @@
           "OLAAA2": "4Y",
           "ROOBY3": "4S",
           "V23 NORTH": "4S",
-          "CWARD2/SANQ4R": "4Y"
+          "V208 ARR.N": "4R",
+          "CWARD2/SANQ4R": "4Y",
+          "KAYOH8": "4A",
+          "V363 ENRT": "4S",
+          "V363/V388/V394 ARR": "4A"
+        },
+        "departure_assignments": {
+          "KLGB": "4B",
+          "KSNA": "4A",
+          "KSNA/ANAHM2": "4B"
+        },
+        "default_consolidation": {
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
+        }
+      },
+      "SEW": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3.SE": "4R",
+          "V459 ARR": "4R",
+          "GOATZ2/KALRB3": "4Y",
+          "LAXX1.MZB": "4Y",
+          "LEGOZ4": "4Y",
+          "LGB OCEANIC ARR": "4B",
+          "OLAAA2": "4Y",
+          "DSNEE6": "4A",
+          "V23 NORTH": "4S",
+          "CWARD2/SANQ4R": "4Y",
+          "V208 ARR": "4R",
+          "KAYOH8": "4A",
+          "V363 ENRT": "4S",
+          "V363/V388/V394 ARR": "4T"
+        },
+        "departure_assignments": {
+          "KLGB": "4B",
+          "KSNA": "4Y",
+          "KSNA/ANAHM2": "4B"
+        },
+        "default_consolidation": {
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
+        }
+      },
+      "SWE": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3.SW": "4R",
+          "DSNEE6": "4A",
+          "GOATZ2/KALRB3": "4Y",
+          "LEGOZ4": "4Y",
+          "LGB OCEANIC ARR": "4B",
+          "OCEAN3": "4Y",
+          "V208 ARR": "4R",
+          "V23 NORTH.E": "4S",
+          "V363 ENRT": "4S",
+          "CWARD2/SANQ4R.E": "4S",
+          "V363/V388/V394 ARR": "4T"
         },
         "departure_assignments": {
           "KLGB": "4R",
-          "KSNA": "4A",
+          "KSNA": "4Y",
+          "KSNA/ANAHM2": "4B"
+        },
+        "default_consolidation": {
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
+        }
+      },
+      "NWE": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3.NW": "4R",
+          "GOATZ2/KALRB3": "4Y",
+          "LEGOZ4": "4Y",
+          "LGB OCEANIC ARR": "4B",
+          "OCEAN3": "4Y",
+          "ROOBY3": "4S",
+          "V23 NORTH.E": "4S",
+          "V363 ENRT": "4S",
+          "V208 ARR.N": "4R",
+          "CWARD2/SANQ4R.E": "4Y",
+          "V363/V388/V394 ARR": "4A"
+        },
+        "departure_assignments": {
+          "KLGB": "4R",
+          "KSNA": "4A"
+        },
+        "default_consolidation": {
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
+        }
+      },
+      "NEE": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3.NE": "4R",
+          "GOATZ2/KALRB3": "4Y",
+          "LEGOZ4": "4Y",
+          "LGB OCEANIC ARR": "4B",
+          "OCEAN3": "4Y",
+          "ROOBY3": "4S",
+          "V23 NORTH.E": "4S",
+          "V208 ARR.N": "4R",
+          "V363 ENRT": "4S",
+          "CWARD2/SANQ4R.E": "4Y",
+          "V363/V388/V394 ARR": "4A"
+        },
+        "departure_assignments": {
+          "KLGB": "4R",
+          "KSNA": "4A"
+        },
+        "default_consolidation": {
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
+        }
+      },
+      "SEE": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3.SE": "4R",
+          "DSNEE6": "4A",
+          "GOATZ2/KALRB3": "4Y",
+          "LEGOZ4": "4Y",
+          "LGB OCEANIC ARR": "4B",
+          "OCEAN3": "4Y",
+          "V208 ARR": "4R",
+          "V23 NORTH.E": "4S",
+          "V363 ENRT": "4S",
+          "CWARD2/SANQ4R.E": "4S",
+          "V363/V388/V394 ARR": "4T"
+        },
+        "departure_assignments": {
+          "KLGB": "4B",
+          "KSNA": "4Y",
           "KSNA/ANAHM2": "4B"
         },
         "default_consolidation": {
@@ -1221,56 +1388,14 @@
       },
       "FIN": {
         "inbound_assignments": {
-          "DSNEE6": "4T",
-          "OHSEA3.FINAL": "4T"
+          "DSNEE6/KAYOH8.FIN": "4T",
+          "OHSEA3/RUKKI1.FINAL": "4T",
+          "V363/V388/V394 ARR.FIN": "4T",
+          "V459 ARR.FIN": "4T",
+          "V363 ENRT.FIN": "4T"
         },
         "default_consolidation": {
           "4T": []
-        }
-      },
-      "SWE": {
-        "inbound_assignments": {
-          "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "4R",
-          "DSNEE6": "4A",
-          "GOATZ2/KALRB3": "4Y",
-          "LEGOZ4": "4Y",
-          "LGB OCEANIC ARR": "4B",
-          "OCEAN3": "4Y",
-          "V23 NORTH.E": "4S",
-          "CWARD2/SANQ4R.E": "4S"
-        },
-        "departure_assignments": {
-          "KLGB": "4R",
-          "KSNA": "4Y",
-          "KSNA/ANAHM2": "4B"
-        },
-        "default_consolidation": {
-          "4R": ["4B", "4T"],
-          "4S": ["4A"],
-          "4Y": ["4R", "4S"]
-        }
-      },
-      "SWW": {
-        "inbound_assignments": {
-          "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "4R",
-          "DSNEE6": "4A",
-          "GOATZ2/KALRB3": "4Y",
-          "LAXX1.MZB": "4Y",
-          "LEGOZ4": "4Y",
-          "LGB OCEANIC ARR": "4B",
-          "OLAAA2": "4Y",
-          "V23 NORTH": "4S",
-          "CWARD2/SANQ4R": "4Y"
-        },
-        "departure_assignments": {
-          "KLGB": "4R",
-          "KSNA": "4Y",
-          "KSNA/ANAHM2": "4B"
-        },
-        "default_consolidation": {
-          "4R": ["4B", "4T"],
-          "4S": ["4A"],
-          "4Y": ["4R", "4S"]
         }
       },
       "SC2": {
@@ -1899,42 +2024,42 @@
     "airspace_awareness": [
       {
         "fixes": ["CNERY", "CLEEE", "DOTSS", "CAHIL", "BEALE"],
-        "altitude_range": [13000, 999999],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C21"
       },
       {
         "fixes": ["SCTRR", "STOKD", "MCKEY", "HHERO", "RIZIN", "DARRK", "IKAYE", "DINTY", "FICKY"],
-        "altitude_range": [13000, 999999],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C14"
       },
       {
         "fixes": ["OROSZ", "EHF", "COREZ", "CSTRO"],
-        "altitude_range": [13000, 999999],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C15"
       },
       {
         "fixes": ["LAS", "MISEN"],
-        "altitude_range": [13000, 999999],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C18"
       },
       {
         "fixes": ["TNP", "BLH"],
-        "altitude_range": [13000, 999999],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C10"
       },
       {
         "fixes": ["AVRRY", "MTBAL", "OTAYY", "DINTY", "MALIT", "SXC"],
-        "altitude_range": [13000, 999999],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C12"
       },
       {
         "fixes": ["EHF", "COREZ", "LAS", "MISEN", "GMN", "POM"],
-        "altitude_range": [13000, 999999],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C18"
       },
       {
         "fixes": ["PMD"],
-        "altitude_range": [13000, 999999],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C19"
       }
     ],
@@ -2259,22 +2384,22 @@
         "airspace_awareness": [
           {
             "fixes": ["TNP", "BLH"],
-            "altitude_range": [15000, 999999],
+            "altitude_range": [15000, 23000],
             "receiving_controller": "C10"
           },
           {
             "fixes": ["AVRRY", "MTBAL", "OTAYY", "DINTY", "MALIT", "SXC"],
-            "altitude_range": [14000, 999999],
+            "altitude_range": [14000, 23000],
             "receiving_controller": "C12"
           },
           {
             "fixes": ["EHF", "COREZ", "LAS", "MISEN", "GMN", "POM"],
-            "altitude_range": [14000, 999999],
+            "altitude_range": [14000, 23000],
             "receiving_controller": "C18"
           },
           {
             "fixes": ["PMD"],
-            "altitude_range": [15000, 999999],
+            "altitude_range": [15000, 23000],
             "receiving_controller": "C19"
           }
         ],
@@ -2610,6 +2735,9 @@
       ]
     },
     "datablocks": {
+      "fdb": {
+        "display_requested_altitude": true
+      },
       "clock_phase": {
         "sequence": [1, 2, 1, 3],
         "intervals": [1, 1, 1, 1]
