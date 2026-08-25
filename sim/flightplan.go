@@ -719,9 +719,9 @@ func (s *Sim) preCheckFlightPlanSpecifier(spec *FlightPlanSpecifier) error {
 
 // General checks both for create and modify; this returns informational
 // messages that don't prevent the fp from being created.
-func (spec FlightPlanSpecifier) postCheck() error {
-	if spec.AircraftType.IsSet {
-		if _, ok := av.DB.AircraftPerformance[spec.AircraftType.Get()]; !ok {
+func (s FlightPlanSpecifier) postCheck() error {
+	if s.AircraftType.IsSet {
+		if _, ok := av.DB.AircraftPerformance[s.AircraftType.Get()]; !ok {
 			return ErrIllegalACType
 		}
 	}
