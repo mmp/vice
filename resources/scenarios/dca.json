@@ -2595,7 +2595,7 @@
     "FINAL_SNW": {
       "arrivals": [
         {
-          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
+          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
           "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -2656,7 +2656,7 @@
           }
         },
         {
-          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
+          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
           "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,
@@ -3494,7 +3494,7 @@
     "FINAL_SNW.IMC": {
       "arrivals": [
         {
-          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
+          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
           "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -3513,7 +3513,7 @@
           }
         },
         {
-          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
+          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
           "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -3570,7 +3570,7 @@
           }
         },
         {
-          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
+          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
           "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,
@@ -3605,7 +3605,7 @@
           }
         },
         {
-          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR FERGI/h148",
+          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
           "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,
@@ -3773,9 +3773,9 @@
             "KDCA": {
               "1": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
               "4": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-              "15": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-              "19": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-              "22": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+              "15": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
+              "19": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
+              "22": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
               "33": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
             }
           },
@@ -3941,7 +3941,7 @@
     "FRDMM7.LS": {
       "arrivals": [
         {
-          "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/a3000/clearapp",
+          "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/a3000/clearapp",
           "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
@@ -4069,7 +4069,7 @@
     "FRDMM7.LS.F": {
       "arrivals": [
         {
-          "waypoints": "PLDGE/a15000-17000/s280/ho1L WEWIL/a14000+/spspRIV NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250/ho1J FRDMM/a8000/s240/ho1J N038.57.57.104,W077.26.55.429/ho1V STAND TGTHR FERGI/a3000/clearapp",
+          "waypoints": "PLDGE/a15000-17000/s280/ho1L WEWIL/a14000+/spspRIV NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250/ho1J FRDMM/a8000/s240/ho1J N038.57.57.104,W077.26.55.429/ho1V STAND TGTHR DARIC/a3000/clearapp",
           "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
@@ -4204,7 +4204,7 @@
     "TRUPS6.LS": {
       "arrivals": [
         {
-          "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000 SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/a3000/clearapp",
+          "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000 SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/a3000/clearapp",
           "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
@@ -4346,7 +4346,7 @@
     "TRUPS6.LS.F": {
       "arrivals": [
         {
-          "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho1L SUPRT/a14000-17000/s280/spspRIV OOURR/a13000-/s250 TRUPS/a11000/s250 FRDMM/a8000/s240/ho1J N038.57.57.104,W077.26.55.429/ho1V STAND TGTHR FERGI/a3000/clearapp",
+          "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho1L SUPRT/a14000-17000/s280/spspRIV OOURR/a13000-/s250 TRUPS/a11000/s250 FRDMM/a8000/s240/ho1J N038.57.57.104,W077.26.55.429/ho1V STAND TGTHR DARIC/a3000/clearapp",
           "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,
@@ -6989,9 +6989,9 @@
             "KDCA": {
               "1": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
               "4": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-              "15": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-              "19": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-              "22": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+              "15": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
+              "19": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
+              "22": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
               "33": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
             }
           },

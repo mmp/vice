@@ -1189,11 +1189,10 @@
         {
           "id": "DCAMSAW",
           "description": "DCA MSAW SUPRESS",
-          "type": "circle",
-          "center": "KDCA",
-          "radius": 10,
+          "type": "polygon",
           "floor": 0,
-          "ceiling": 2500
+          "ceiling": 3000,
+          "vertices": "N038.49.38.530,W077.05.15.197 N038.53.56.160,W077.09.48.262 N038.56.35.077,W077.06.42.868 N038.52.14.495,W077.02.29.798 N038.52.10.114,W077.00.52.212 N038.48.44.972,W076.57.58.134 N038.39.52.753,W076.58.02.940 N038.39.32.813,W077.03.01.466"
         },
         {
           "id": "IADMSAW",
@@ -1711,27 +1710,27 @@
     "airspace_awareness": [
       {
         "fixes": ["RAMAY", "OTTTO"],
-        "altitude_range": [0, 999999],
+        "altitude_range": [0, 17000],
         "receiving_controller": "W05"
       },
       {
         "fixes": ["SCOOB", "COLIN"],
-        "altitude_range": [0, 999999],
+        "altitude_range": [0, 19000],
         "receiving_controller": "W11"
       },
       {
         "fixes": ["MAULS", "FLASK", "MELTN", "RRSIN", "GLANC"],
-        "altitude_range": [0, 999999],
+        "altitude_range": [0, 21000],
         "receiving_controller": "W60"
       },
       {
         "fixes": ["JERES", "MCRAY"],
-        "altitude_range": [0, 999999],
+        "altitude_range": [0, 17000],
         "receiving_controller": "W06"
       },
       {
         "fixes": ["SWANN", "AGARD", "DQO"],
-        "altitude_range": [10000, 999999],
+        "altitude_range": [10000, 19000],
         "receiving_controller": "W17"
       }
     ],
@@ -2155,6 +2154,16 @@
           "name": "ANDREWS",
           "id": "ADW",
           "airports": ["KADW"]
+        },
+        {
+          "name": "MARTIN STATE",
+          "id": "MTN",
+          "airports": ["KMTN"]
+        },
+        {
+          "name": "EASTON",
+          "id": "ESN",
+          "airports": ["KESN"]
         },
         {
           "name": "MANASSAS",
