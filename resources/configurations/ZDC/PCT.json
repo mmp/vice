@@ -182,8 +182,8 @@
       "radio_name": "Potomac Approach",
       "area": "25"
     },
-    "3Z": {
-      "callsign": "IAD_Z_APP",
+    "3E": {
+      "callsign": "IAD_E_APP",
       "frequency": 126825,
       "radio_name": "Potomac Approach"
     },
@@ -483,6 +483,7 @@
       "SH1": {
         "inbound_assignments": {
           "CAVLR7.N": "3B",
+          "COATT5": "3B",
           "GIBBZ6.BURTT": "3N",
           "GIBBZ6.MGW": "3N",
           "HYPER1": "3V",
@@ -494,15 +495,25 @@
         "departure_assignments": {
           "KHEF": "3O",
           "KJYO": "3A",
-          "KIAD": "3T"
+          "KIAD/JERES2": "3A",
+          "KIAD/JCOBY4": "3A",
+          "KIAD/MCRAY2": "3A",
+          "KIAD/WOOLY2": "3A",
+          "KIAD/RNLDI4": "3T",
+          "KIAD/BUNZZ3": "3T",
+          "KIAD/CLTCH3": "3T",
+          "KIAD/SCRAM6": "3T",
+          "KIAD/JDUBB4": "3T",
+          "KIAD/CPTAL1": "3T"
         },
         "default_consolidation": {
+          "3B": ["3O", "3N", "3A", "3M"],
+          "3M": ["3E", "3V"],
           "3A": ["3T"],
-          "3B": ["3O"],
-          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
+          "3O": ["3G"],
           "3N": ["3X"],
-          "3U": ["3S"],
-          "3X": ["3U"]
+          "3X": ["3U"],
+          "3U": ["3S"]
         }
       },
       "SH2": {
@@ -530,6 +541,7 @@
       "30X": {
         "inbound_assignments": {
           "CAVLR7.N": "3B",
+          "COATT5": "3B",
           "CAVLR7.30": "3B",
           "GIBBZ6.BURTT": "3N",
           "GIBBZ6.MGW": "3N",
@@ -542,20 +554,31 @@
         "departure_assignments": {
           "KHEF": "3O",
           "KJYO": "3A",
-          "KIAD": "3A"
+          "KIAD/JERES2": "3A",
+          "KIAD/JCOBY4": "3A",
+          "KIAD/MCRAY2": "3A",
+          "KIAD/WOOLY2": "3A",
+          "KIAD/RNLDI4": "3T",
+          "KIAD/BUNZZ3": "3T",
+          "KIAD/CLTCH3": "3T",
+          "KIAD/SCRAM6": "3T",
+          "KIAD/JDUBB4": "3T",
+          "KIAD/CPTAL1": "3T"
         },
         "default_consolidation": {
+          "3B": ["3O", "3N", "3A", "3M"],
+          "3M": ["3E", "3V"],
           "3A": ["3T"],
-          "3B": ["3O"],
-          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
+          "3O": ["3G"],
           "3N": ["3X"],
-          "3U": ["3S"],
-          "3X": ["3U"]
+          "3X": ["3U"],
+          "3U": ["3S"]
         }
       },
       "SH4": {
         "inbound_assignments": {
           "CAVLR7.S": "3B",
+          "COATT5": "3B",
           "GIBBZ6.BURTT": "3N",
           "GIBBZ6.MGW": "3N",
           "HYPER1": "3V",
@@ -567,20 +590,31 @@
         "departure_assignments": {
           "KHEF": "3O",
           "KJYO": "3A",
-          "KIAD": "3A"
+          "KIAD/JERES2": "3A",
+          "KIAD/JCOBY4": "3A",
+          "KIAD/MCRAY2": "3A",
+          "KIAD/WOOLY2": "3A",
+          "KIAD/RNLDI4": "3T",
+          "KIAD/BUNZZ3": "3T",
+          "KIAD/CLTCH3": "3T",
+          "KIAD/SCRAM6": "3T",
+          "KIAD/JDUBB4": "3T",
+          "KIAD/CPTAL1": "3T"
         },
         "default_consolidation": {
+          "3B": ["3O", "3N", "3A", "3M"],
+          "3M": ["3E", "3V"],
           "3A": ["3T"],
-          "3B": ["3O"],
-          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
+          "3O": ["3G"],
           "3N": ["3X"],
-          "3U": ["3S"],
-          "3X": ["3U"]
+          "3X": ["3U"],
+          "3U": ["3S"]
         }
       },
       "12X": {
         "inbound_assignments": {
           "CAVLR7.S": "3B",
+          "COATT5": "3B",
           "GIBBZ6.BURTT": "3N",
           "GIBBZ6.MGW": "3N",
           "HYPER1": "3V",
@@ -592,15 +626,25 @@
         "departure_assignments": {
           "KHEF": "3O",
           "KJYO": "3A",
-          "KIAD": "3A"
+          "KIAD/JERES2": "3A",
+          "KIAD/JCOBY4": "3A",
+          "KIAD/MCRAY2": "3A",
+          "KIAD/WOOLY2": "3A",
+          "KIAD/RNLDI4": "3T",
+          "KIAD/BUNZZ3": "3T",
+          "KIAD/CLTCH3": "3T",
+          "KIAD/SCRAM6": "3T",
+          "KIAD/JDUBB4": "3T",
+          "KIAD/CPTAL1": "3T"
         },
         "default_consolidation": {
+          "3B": ["3O", "3N", "3A", "3M"],
+          "3M": ["3E", "3V"],
           "3A": ["3T"],
-          "3B": ["3O"],
-          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
+          "3O": ["3G"],
           "3N": ["3X"],
-          "3U": ["3S"],
-          "3X": ["3U"]
+          "3X": ["3U"],
+          "3U": ["3S"]
         }
       },
       "JRN": {
@@ -755,7 +799,7 @@
           "1Y": ["1L"],
           "3A": ["3T"],
           "3B": ["3O"],
-          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
+          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
           "3N": ["3X"],
           "3U": ["3S"],
           "3X": ["3U"],
