@@ -34,7 +34,7 @@ func ingestPrecip(sb StorageBackend) error {
 	ch := make(chan string)
 	eg.Go(func() error {
 		defer close(ch)
-		return sb.ChanList(ctx, "scrape/WX", ch)
+		return sb.ChanList(ctx, "scrape/WX/", ch)
 	})
 
 	var totalBytes, totalObjects int64
@@ -185,16 +185,12 @@ func generatePrecipManifest(sb StorageBackend) error {
 
 			var times []time.Time
 			for path := range paths {
-				fac, ts, err := wx.ParseWeatherObjectPath(strings.TrimPrefix(path, "precip/"))
+				_, ts, err := wx.ParseWeatherObjectPath(strings.TrimPrefix(path, "precip/"))
 				if err != nil {
 					LogError("%s: %v", path, err)
 					continue
 				}
-				// List() drops the trailing slash from the prefix, so a
-				// longer facility id starting with this one would match too.
-				if fac == facilityID {
-					times = append(times, time.Unix(ts, 0).UTC())
-				}
+				times = append(times, time.Unix(ts, 0).UTC())
 			}
 
 			if len(times) == 0 {

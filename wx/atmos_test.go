@@ -6,6 +6,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	vmath "github.com/mmp/vice/math"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 func TestSampleQuantization(t *testing.T) {
@@ -380,5 +381,37 @@ func TestMakeSampleClamping(t *testing.T) {
 				t.Errorf("Pressure: got %f, expected %f", pressure, tc.expectPressure)
 			}
 		})
+	}
+}
+
+// The atmos-avg objects that wxingest stores and wxpackage reads back are
+// msgpack-encoded AtmosSampleStacks, so this round trip has to be exact:
+// anything lost here would change the bundled resources/wx data relative to
+// averaging the grids directly.
+func TestAtmosSampleStackMsgpackRoundTrip(t *testing.T) {
+	var stack AtmosSampleStack
+	for i := range NumSampleLevels {
+		f := float32(i)
+		stack.Levels[i] = AtmosSample{
+			UComponent:  1.5 + f/7,
+			VComponent:  -3.25 + f/11,
+			Temperature: av.MakeTemperatureFromCelsius(15.125 - f),
+			Dewpoint:    av.MakeTemperatureFromCelsius(4.0625 - f/2),
+			Height:      100.5 + 300*f,
+		}
+	}
+
+	b, err := msgpack.Marshal(&stack)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+
+	var decoded AtmosSampleStack
+	if err := msgpack.Unmarshal(b, &decoded); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	if decoded != stack {
+		t.Errorf("round trip changed the stack:\ngot  %+v\nwant %+v", decoded, stack)
 	}
 }

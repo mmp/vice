@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -309,15 +310,18 @@ func processTFRs(ctx context.Context, bucket *storage.BucketHandle, artccs map[s
 
 func processAtmos(ctx context.Context, bucket *storage.BucketHandle, facilities map[string]bool, startDate, endDate time.Time, outputDir string) error {
 	// Download the manifest once and share it across all workers.
-	r, err := gcsNewReader(ctx, bucket, wx.ManifestPath("atmos"))
+	r, err := gcsNewReader(ctx, bucket, wx.ManifestPath("atmos-avg"))
 	if err != nil {
 		return err
 	}
 	manifest, err := wx.LoadManifest(r)
 	r.Close()
 	if err != nil {
-		return fmt.Errorf("failed to load atmos manifest: %w", err)
+		return fmt.Errorf("failed to load atmos-avg manifest: %w", err)
 	}
+
+	packaged := make(map[string][]time.Time)
+	var mu sync.Mutex
 
 	eg, ctx := errgroup.WithContext(ctx)
 
@@ -337,8 +341,14 @@ func processAtmos(ctx context.Context, bucket *storage.BucketHandle, facilities 
 	for range 16 { // workers
 		eg.Go(func() error {
 			for facilityID := range ch {
-				if err := processFacilityAtmos(ctx, bucket, manifest, facilityID, startDate, endDate, outputDir); err != nil {
+				times, err := processFacilityAtmos(ctx, bucket, manifest, facilityID, startDate, endDate, outputDir)
+				if err != nil {
 					return err
+				}
+				if len(times) > 0 {
+					mu.Lock()
+					packaged[facilityID] = times
+					mu.Unlock()
 				}
 			}
 			return nil
@@ -348,148 +358,103 @@ func processAtmos(ctx context.Context, bucket *storage.BucketHandle, facilities 
 	if err := eg.Wait(); err != nil {
 		return err
 	}
-	return writePackagedAtmosManifest(outputDir)
+	return writePackagedAtmosManifest(packaged, outputDir)
 }
 
-func processFacilityAtmos(ctx context.Context, bucket *storage.BucketHandle, manifest *wx.Manifest, facilityID string, startDate, endDate time.Time, outputDir string) error {
-	// Load existing atmospheric data if it exists
-	facilityAtmos := wx.AtmosByTime{
-		SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
-	}
-
-	outputPath := filepath.Join(outputDir, facilityID+".msgpack.zst")
-	facilityAtmos, err := loadExistingAtmosData(outputPath)
-	if err == nil {
-		fmt.Printf("Loaded existing atmospheric data for %s with %d time entries\n", facilityID, len(facilityAtmos.SampleStacks))
-	} else {
-		if !os.IsNotExist(err) {
-			// Corrupt file from a previous interrupted run; warn and start fresh.
-			fmt.Printf("%s: failed to load existing data (%v), starting fresh\n", facilityID, err)
-		}
-		facilityAtmos = wx.AtmosByTime{
-			SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
-		}
-	}
-
-	// Get timestamps for this facility from the manifest
+// processFacilityAtmos writes the facility's bundled atmospheric data from
+// the averaged profiles that wxingest stored alongside each hourly grid, and
+// returns the timestamps it packaged.
+func processFacilityAtmos(ctx context.Context, bucket *storage.BucketHandle, manifest *wx.Manifest, facilityID string, startDate, endDate time.Time, outputDir string) ([]time.Time, error) {
 	allTimestamps, ok := manifest.GetTimestamps(facilityID)
 	if !ok {
 		fmt.Printf("%s: no data in manifest, skipping\n", facilityID)
-		return nil
+		return nil, nil
 	}
 
-	// Filter timestamps by date range and check if we already have them
-	var timestampsToDownload []time.Time
-	for _, ts := range allTimestamps {
-		// Skip if outside date range
-		if ts.Before(startDate) || ts.After(endDate) {
-			continue
-		}
-		// Skip if we already have data for this time
-		if _, ok := facilityAtmos.SampleStacks[ts]; ok {
-			continue
-		}
-		timestampsToDownload = append(timestampsToDownload, ts)
+	timestamps := util.FilterSlice(allTimestamps, func(ts time.Time) bool {
+		return !ts.Before(startDate) && !ts.After(endDate)
+	})
+	if len(timestamps) == 0 {
+		fmt.Printf("%s: no data in the requested date range, skipping\n", facilityID)
+		return nil, nil
 	}
 
-	if len(timestampsToDownload) == 0 {
-		fmt.Printf("%s: no new data to download (have %d entries already)\n", facilityID, len(facilityAtmos.SampleStacks))
-		return nil
+	fmt.Printf("%s: downloading %d profiles (manifest has %d total)\n", facilityID, len(timestamps), len(allTimestamps))
+
+	stacks := make([]*wx.AtmosSampleStack, len(timestamps))
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.SetLimit(8)
+	for i, timestamp := range timestamps {
+		eg.Go(func() error {
+			stack, err := downloadAtmosAvg(ctx, bucket, facilityID, timestamp)
+			if err != nil {
+				return err
+			}
+			stacks[i] = stack
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		return nil, err
 	}
 
-	fmt.Printf("%s: downloading %d atmos objects (have %d already, manifest has %d total)\n",
-		facilityID, len(timestampsToDownload), len(facilityAtmos.SampleStacks), len(allTimestamps))
-
-	// Download and process atmos data at each timestamp
-	for _, timestamp := range timestampsToDownload {
-		objectPath := wx.BuildObjectPath("atmos", facilityID, timestamp)
-
-		// Download and process this atmos file
-		r, err := gcsNewReader(ctx, bucket, objectPath)
-		if err != nil {
-			return err
-		}
-
-		// Decompress and deserialize
-		zr, err := zstd.NewReader(r)
-		if err != nil {
-			r.Close()
-			return fmt.Errorf("%s: zstd decompress %s: %w", facilityID, objectPath, err)
-		}
-
-		var atmosSOA wx.AtmosByPointSOA
-		if err := msgpack.NewDecoder(zr).Decode(&atmosSOA); err != nil {
-			zr.Close()
-			r.Close()
-			return fmt.Errorf("%s: msgpack decode %s: %w", facilityID, objectPath, err)
-		}
-		zr.Close()
-		r.Close()
-
-		// Convert SOA to regular Atmos object and store the averaged stack
-		atmos := atmosSOA.ToAOS()
-		_, avgStack := atmos.Average()
-		facilityAtmos.SampleStacks[timestamp] = avgStack
+	facilityAtmos := wx.AtmosByTime{SampleStacks: make(map[time.Time]*wx.AtmosSampleStack, len(timestamps))}
+	for i, timestamp := range timestamps {
+		facilityAtmos.SampleStacks[timestamp] = stacks[i]
 	}
 
-	fmt.Printf("%s: processed %d entries\n", facilityID, len(facilityAtmos.SampleStacks))
-
-	// Convert AtmosByTime to SOA format for storage
 	facilityAtmosSOA, err := facilityAtmos.ToSOA()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// Write atmospheric data file
+	outputPath := filepath.Join(outputDir, facilityID+".msgpack.zst")
 	f, err := os.Create(outputPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	zw, err := zstd.NewWriter(f)
 	if err != nil {
-		return err
+		return nil, err
 	} else if err := msgpack.NewEncoder(zw).Encode(facilityAtmosSOA); err != nil {
-		return err
+		return nil, err
 	} else if err := zw.Close(); err != nil {
-		return err
+		return nil, err
 	} else if err := f.Close(); err != nil {
-		return err
+		return nil, err
 	}
 
-	fmt.Printf("Wrote atmospheric data for %s\n", facilityID)
+	fmt.Printf("Wrote atmospheric data for %s: %d entries\n", facilityID, len(timestamps))
 
-	return nil
+	return timestamps, nil
 }
 
-type atmosTimesOnly struct {
-	Times []int64
-}
+func downloadAtmosAvg(ctx context.Context, bucket *storage.BucketHandle, facilityID string, t time.Time) (*wx.AtmosSampleStack, error) {
+	objectPath := wx.BuildObjectPath("atmos-avg", facilityID, t)
 
-func writePackagedAtmosManifest(outputDir string) error {
-	manifest := wx.NewManifest()
-
-	entries, err := os.ReadDir(outputDir)
+	r, err := gcsNewReader(ctx, bucket, objectPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	for _, entry := range entries {
-		if entry.IsDir() {
-			continue
-		}
+	defer r.Close()
 
-		filename := entry.Name()
-		if filename == wx.ManifestFilename || !strings.HasSuffix(filename, ".msgpack.zst") {
-			continue
-		}
+	zr, err := zstd.NewReader(r)
+	if err != nil {
+		return nil, fmt.Errorf("zstd decompress %s: %w", objectPath, err)
+	}
+	defer zr.Close()
 
-		facility := strings.TrimSuffix(filename, ".msgpack.zst")
-		times, err := loadPackagedAtmosTimes(filepath.Join(outputDir, filename))
-		if err != nil {
-			return fmt.Errorf("%s: load atmosphere times: %w", facility, err)
-		}
-		if len(times) == 0 {
-			continue
-		}
+	var stack wx.AtmosSampleStack
+	if err := msgpack.NewDecoder(zr).Decode(&stack); err != nil {
+		return nil, fmt.Errorf("msgpack decode %s: %w", objectPath, err)
+	}
+
+	return &stack, nil
+}
+
+func writePackagedAtmosManifest(packaged map[string][]time.Time, outputDir string) error {
+	manifest := wx.NewManifest()
+	for facility, times := range packaged {
 		if err := manifest.SetFacilityTimestamps(facility, times); err != nil {
 			return fmt.Errorf("%s: set manifest timestamps: %w", facility, err)
 		}
@@ -510,51 +475,6 @@ func writePackagedAtmosManifest(outputDir string) error {
 
 	fmt.Printf("Wrote atmosphere manifest: %s\n", path)
 	return nil
-}
-
-func loadPackagedAtmosTimes(path string) ([]time.Time, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	zr, err := zstd.NewReader(f)
-	if err != nil {
-		return nil, err
-	}
-	defer zr.Close()
-
-	var timesOnly atmosTimesOnly
-	if err := msgpack.NewDecoder(zr).Decode(&timesOnly); err != nil {
-		return nil, err
-	}
-
-	return util.DeltaDecodeTimes(timesOnly.Times), nil
-}
-
-// loadExistingAtmosData loads existing atmospheric data from a file
-func loadExistingAtmosData(path string) (wx.AtmosByTime, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return wx.AtmosByTime{}, err
-	}
-	defer f.Close()
-
-	// Decompress and deserialize
-	zr, err := zstd.NewReader(f)
-	if err != nil {
-		return wx.AtmosByTime{}, err
-	}
-	defer zr.Close()
-
-	var atmosSOA wx.AtmosByTimeSOA
-	if err := msgpack.NewDecoder(zr).Decode(&atmosSOA); err != nil {
-		return wx.AtmosByTime{}, err
-	}
-
-	// Convert SOA back to AtmosByTime
-	return atmosSOA.ToAOS(), nil
 }
 
 // retry calls fn up to attempts times with exponential backoff starting at sleep.

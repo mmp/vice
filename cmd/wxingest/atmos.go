@@ -264,19 +264,99 @@ func ingestHRRR(sb StorageBackend) error {
 }
 
 func generateAtmosManifest(sb StorageBackend) error {
-	LogInfo("Updating consolidated atmos manifest")
+	for _, prefix := range []string{"atmos", "atmos-avg"} {
+		LogInfo("Updating consolidated %s manifest", prefix)
 
-	paths, err := sb.List("atmos/")
+		paths, err := sb.List(prefix + "/")
+		if err != nil {
+			return err
+		}
+
+		manifest, err := wx.GenerateManifestWithPrefix(paths, prefix)
+		if err != nil {
+			return err
+		}
+
+		if err := storeManifest(sb, manifest, wx.ManifestPath(prefix), prefix+"-manifest.msgpack.zst"); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// backfillAtmosAvg writes the averaged profile for any grid that is missing
+// one. Ingest writes both together, so in steady state this finds nothing;
+// it exists to repair partial uploads and to populate the averages for the
+// grids that predate them.
+func backfillAtmosAvg(sb StorageBackend) error {
+	grids, err := sb.List("atmos/")
+	if err != nil {
+		return fmt.Errorf("listing atmos/: %w", err)
+	}
+	avgs, err := sb.List("atmos-avg/")
+	if err != nil {
+		return fmt.Errorf("listing atmos-avg/: %w", err)
+	}
+
+	var total int
+	var missing []string
+	for path := range grids {
+		if strings.Contains(path, "manifest") {
+			continue
+		}
+		total++
+		if _, ok := avgs["atmos-avg/"+strings.TrimPrefix(path, "atmos/")]; ok {
+			continue
+		}
+		// Grids are partitioned across Cloud Run job tasks.
+		if shardOwns(path) {
+			missing = append(missing, path)
+		}
+	}
+	slices.Sort(missing)
+
+	LogInfo("%d of %d atmos grids need averaging", len(missing), total)
+	if len(missing) == 0 {
+		return nil
+	}
+
+	var done, failed atomic.Int64
+	var eg errgroup.Group
+	eg.SetLimit(*nWorkers)
+	for _, path := range missing {
+		eg.Go(func() error {
+			if err := storeAtmosAvgForGrid(path, sb); err != nil {
+				LogError("%s: %v", path, err)
+				failed.Add(1)
+			}
+			if n := done.Add(1); n%1000 == 0 {
+				LogInfo("Averaged %d of %d atmos grids", n, len(missing))
+			}
+			return nil
+		})
+	}
+	eg.Wait()
+
+	if n := failed.Load(); n > 0 {
+		return fmt.Errorf("failed to average %d of %d atmos grids", n, len(missing))
+	}
+	LogInfo("Averaged %d atmos grids", len(missing))
+	return nil
+}
+
+func storeAtmosAvgForGrid(path string, sb StorageBackend) error {
+	facilityID, ts, err := wx.ParseWeatherObjectPath(strings.TrimPrefix(path, "atmos/"))
 	if err != nil {
 		return err
 	}
 
-	manifest, err := wx.GenerateManifestWithPrefix(paths, "atmos")
-	if err != nil {
+	var soa wx.AtmosByPointSOA
+	if err := sb.ReadObject(path, &soa); err != nil {
 		return err
 	}
 
-	return storeManifest(sb, manifest, wx.ManifestPath("atmos"), "atmos-manifest.msgpack.zst")
+	_, err = storeAtmosAvg(soa, facilityID, time.Unix(ts, 0).UTC(), sb)
+	return err
 }
 
 func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
@@ -592,15 +672,33 @@ func uploadWeatherAtmos(at *wx.AtmosByPoint, facilityID string, t time.Time, st 
 			facilityID, t.Format(time.RFC3339), clamped)
 	}
 
-	path := fmt.Sprintf("atmos/%s/%s.msgpack.zst", facilityID, t.Format(time.RFC3339))
-
 	if *hrrrQuick {
 		// skip upload
 		var drb DryRunBackend
-		return drb.StoreObject(path, soa)
+		return drb.StoreObject(wx.BuildObjectPath("atmos", facilityID, t), soa)
 	}
 
-	return st.StoreObject(path, soa)
+	n, err := st.StoreObject(wx.BuildObjectPath("atmos", facilityID, t), soa)
+	if err != nil {
+		return n, err
+	}
+
+	// The average goes after the grid: "wxingest atmosavg" recreates an
+	// average that's missing for a grid, but an average with no grid behind
+	// it would be packaged for an hour that the server can't serve.
+	na, err := storeAtmosAvg(soa, facilityID, t, st)
+	return n + na, err
+}
+
+// storeAtmosAvg writes the facility-averaged vertical profile for a grid.
+// That average is all the bundled resources/wx data needs, so storing it
+// here spares wxpackage from re-reading every grid to average it again.
+func storeAtmosAvg(soa wx.AtmosByPointSOA, facilityID string, t time.Time, st StorageBackend) (int64, error) {
+	avg := soa.Average()
+	if avg == nil {
+		return 0, nil
+	}
+	return st.StoreObject(wx.BuildObjectPath("atmos-avg", facilityID, t), avg)
 }
 
 ///////////////////////////////////////////////////////////////////////////

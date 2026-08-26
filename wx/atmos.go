@@ -974,31 +974,24 @@ func (g *AtmosGrid) SamplesAtLevel(level, step int) iter.Seq2[math.Point2LL, Sam
 	}
 }
 
-// Average returns the averaged location and atmospheric data across all sample stacks
-func (ap *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
-	if len(ap.SampleStacks) == 0 {
-		return math.Point2LL{}, nil
+// Average returns the vertical profile averaged over all of the grid's
+// sample points, or nil if the grid is empty. Averaging the stored samples
+// rather than the ones the grid was built from means the result depends only
+// on the stored object, so recreating it later gives the same answer.
+func (atsoa AtmosByPointSOA) Average() *AtmosSampleStack {
+	n := len(atsoa.Lat)
+	if n == 0 {
+		return nil
 	}
 
-	// Calculate average location
-	var avgLat, avgLong float32
-	for location := range ap.SampleStacks {
-		avgLong += float32(location[0])
-		avgLat += float32(location[1])
-	}
-	avgLat /= float32(len(ap.SampleStacks))
-	avgLong /= float32(len(ap.SampleStacks))
-	avgLoc := math.Point2LL{avgLong, avgLat}
+	decoded := deltaDecodeLevels(atsoa.Levels)
 
-	// Initialize averaged sample stack
 	avgStack := &AtmosSampleStack{}
-
-	// Average each level across all sample stacks
 	for level := range NumSampleLevels {
 		var avgUComponent, avgVComponent, avgTemperature, avgDewpoint, avgHeight float32
 
-		for _, stack := range ap.SampleStacks {
-			sample := stack.Levels[level]
+		for i := range n {
+			sample := decoded[level].sampleAt(i)
 			avgUComponent += sample.UComponent
 			avgVComponent += sample.VComponent
 			avgTemperature += sample.Temperature.Kelvin()
@@ -1006,17 +999,17 @@ func (ap *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
 			avgHeight += sample.Height
 		}
 
-		n := float32(len(ap.SampleStacks))
+		nf := float32(n)
 		avgStack.Levels[level] = AtmosSample{
-			UComponent:  avgUComponent / n,
-			VComponent:  avgVComponent / n,
-			Temperature: av.MakeTemperatureFromKelvin(avgTemperature / n),
-			Dewpoint:    av.MakeTemperatureFromKelvin(avgDewpoint / n),
-			Height:      avgHeight / n,
+			UComponent:  avgUComponent / nf,
+			VComponent:  avgVComponent / nf,
+			Temperature: av.MakeTemperatureFromKelvin(avgTemperature / nf),
+			Dewpoint:    av.MakeTemperatureFromKelvin(avgDewpoint / nf),
+			Height:      avgHeight / nf,
 		}
 	}
 
-	return avgLoc, avgStack
+	return avgStack
 }
 
 // MakeFallbackAtmosFromMETAR creates a simple AtmosByPointSOA from METAR wind data.

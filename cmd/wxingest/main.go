@@ -95,6 +95,16 @@ func setupSignalHandler() {
 }
 
 func main() {
+	// run's error is reported by exit status as well as in the log: the
+	// Cloud Run pipeline in cloudrun/run.sh runs the stages in dependency
+	// order and must stop rather than build on incomplete data.
+	if err := run(); err != nil {
+		LogError("%v", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 	initZstdEncoders()
 
 	const bucketName = "vice-wx"
@@ -102,7 +112,7 @@ func main() {
 	flag.Parse()
 
 	usage := func() {
-		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|precip|atmos|tfr]...\nwhere [flags] may be:\n")
+		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|precip|atmos|atmosavg|tfr]...\nwhere [flags] may be:\n")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -165,6 +175,8 @@ func main() {
 				eg.Go(func() error { return ingestPrecip(sb) })
 			case "atmos":
 				eg.Go(func() error { return ingestHRRR(sb) })
+			case "atmosavg":
+				eg.Go(func() error { return backfillAtmosAvg(sb) })
 			case "tfr", "tfrs":
 				eg.Go(func() error { return ingestTFRs(sb) })
 			default:
@@ -173,9 +185,7 @@ func main() {
 		}
 	}
 
-	if err := eg.Wait(); err != nil {
-		LogError("%v", err)
-	}
+	ingestErr := eg.Wait()
 
 	// Report the total bytes transferred
 	if localBackend != nil {
@@ -188,6 +198,8 @@ func main() {
 	if gcb, ok := gcsBackend.(*GCSBackend); ok {
 		gcb.ReportClassAOperations()
 	}
+
+	return ingestErr
 }
 
 func LogInfo(msg string, args ...any) {

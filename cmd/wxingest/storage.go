@@ -22,6 +22,10 @@ import (
 	"google.golang.org/api/option"
 )
 
+// StorageBackend abstracts the object store. List and ChanList match their
+// path against object names as a literal prefix, so callers should include a
+// trailing slash to enumerate a single "directory": "atmos/" then does not
+// also match "atmos-avg/...".
 type StorageBackend interface {
 	List(path string) (map[string]int64, error)
 	ChanList(ctx context.Context, path string, ch chan<- string) error
@@ -141,7 +145,6 @@ func MakeGCSBackend(bucketName string) (StorageBackend, error) {
 }
 
 func (g *GCSBackend) List(path string) (map[string]int64, error) {
-	path = fpath.Clean(path)
 	query := storage.Query{
 		Projection: storage.ProjectionNoACL,
 		Prefix:     path,
@@ -161,7 +164,7 @@ func (g *GCSBackend) List(path string) (map[string]int64, error) {
 		g.listOps.Add(1)
 
 		for _, obj := range objects {
-			if fpath.Clean(obj.Name) != path { // don't return the root ~folder
+			if obj.Name != path { // don't return the root ~folder
 				m[obj.Name] = obj.Size
 			}
 		}
@@ -175,7 +178,6 @@ func (g *GCSBackend) List(path string) (map[string]int64, error) {
 }
 
 func (g *GCSBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
-	path = fpath.Clean(path)
 	query := storage.Query{
 		Projection: storage.ProjectionNoACL,
 		Prefix:     path,
@@ -194,7 +196,7 @@ func (g *GCSBackend) ChanList(ctx context.Context, path string, ch chan<- string
 		g.listOps.Add(1)
 
 		for _, obj := range objects {
-			if fpath.Clean(obj.Name) != path { // don't return the root ~folder
+			if obj.Name != path { // don't return the root ~folder
 				select {
 				case <-ctx.Done():
 					return ctx.Err()

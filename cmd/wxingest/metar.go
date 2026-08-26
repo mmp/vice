@@ -141,7 +141,7 @@ func loadScrapedMETAR(sb StorageBackend) (map[string][]wx.METAR, []toArchive, er
 
 	eg.Go(func() error {
 		defer close(scrapedCh)
-		return sb.ChanList(ctx, "scrape/metar", scrapedCh)
+		return sb.ChanList(ctx, "scrape/metar/", scrapedCh)
 	})
 
 	err := eg.Wait()
@@ -188,7 +188,7 @@ func loadArchivedMETAR(sb StorageBackend) (map[string][]wx.METAR, error) {
 
 	eg.Go(func() error {
 		defer close(archivedPathCh)
-		return sb.ChanList(ctx, "archive/metar", archivedPathCh)
+		return sb.ChanList(ctx, "archive/metar/", archivedPathCh)
 	})
 
 	if err := eg.Wait(); err != nil {

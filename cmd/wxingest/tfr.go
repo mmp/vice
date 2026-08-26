@@ -78,7 +78,7 @@ func loadAllTFRs(sb StorageBackend, lg *log.Logger) ([]av.TFR, []toArchive, erro
 
 	eg.Go(func() error {
 		defer close(scrapedCh)
-		return sb.ChanList(ctx, "scrape/tfrs", scrapedCh)
+		return sb.ChanList(ctx, "scrape/tfrs/", scrapedCh)
 	})
 
 	// Load archived zips
@@ -108,7 +108,7 @@ func loadAllTFRs(sb StorageBackend, lg *log.Logger) ([]av.TFR, []toArchive, erro
 
 	eg.Go(func() error {
 		defer close(archivedPathCh)
-		return sb.ChanList(ctx, "archive/tfrs", archivedPathCh)
+		return sb.ChanList(ctx, "archive/tfrs/", archivedPathCh)
 	})
 
 	err := eg.Wait()
