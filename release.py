@@ -187,6 +187,9 @@ def update_metainfo_xml(tag, items):
     </release>'''
 
     # Insert after <releases>
+    if '<releases>\n' not in content:
+        print(f"Error: could not find <releases> in {path}")
+        sys.exit(1)
     content = content.replace('<releases>\n', f'<releases>\n{new_release}\n', 1)
 
     with open(path, 'w') as f:
@@ -206,42 +209,30 @@ def escape_xml(text):
 
 
 def update_website(tag, old_tag, items):
-    """Update website/index.html: download links, submenu, release history."""
+    """Update website/index.html: download links and release history."""
     path = "website/index.html"
     with open(path) as f:
         content = f.read()
 
     version = tag[1:]  # e.g., "0.14.2"
-    old_version = old_tag[1:]  # e.g., "0.14.1"
+
+    def replace(old, new):
+        nonlocal content
+        if old not in content:
+            print(f"Error: could not find {old!r} in {path}")
+            sys.exit(1)
+        content = content.replace(old, new)
 
     # 1. Update download links (Windows and Mac)
-    content = content.replace(
-        f'releases/download/{old_tag}/Vice-{old_tag}-installer.msi',
-        f'releases/download/{tag}/Vice-{tag}-installer.msi'
-    )
-    content = content.replace(
-        f'Download Vice {old_tag} for Windows',
-        f'Download Vice {tag} for Windows'
-    )
-    content = content.replace(
-        f'releases/download/{old_tag}/Vice-{old_tag}-osx.zip',
-        f'releases/download/{tag}/Vice-{tag}-osx.zip'
-    )
-    content = content.replace(
-        f'Download Vice {old_tag} for Mac',
-        f'Download Vice {tag} for Mac'
-    )
+    for suffix in ('installer.msi', 'osx.zip'):
+        replace(f'releases/download/{old_tag}/Vice-{old_tag}-{suffix}',
+                f'releases/download/{tag}/Vice-{tag}-{suffix}')
+    for platform in ('Windows', 'Mac'):
+        replace(f'Download Vice {old_tag} for {platform}',
+                f'Download Vice {tag} for {platform}')
 
-    # 2. Add submenu entry at the top of the release history submenu
-    new_submenu = f'      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-{version}">{version}</a></li>'
-    pattern = re.compile(r'(href="#releases">Release History</a>\s*\n\s*<ul class="submenu">\n)')
-    new_content, n = pattern.subn(lambda m: m.group(1) + new_submenu + '\n', content, count=1)
-    if n != 1:
-        print("Error: could not find Release History submenu in website/index.html")
-        sys.exit(1)
-    content = new_content
-
-    # 3. Add release history entry
+    # 2. Add release history entry. The sidebar submenu is generated at load
+    # time by assets/js/sidebar.js from the data-nav-title attributes.
     today_str = date.today().strftime("%-d %b %Y")
 
     li_lines = []
@@ -259,7 +250,7 @@ def update_website(tag, old_tag, items):
     li_items = '\n'.join(li_lines)
 
     new_section = f'''
-            <h3 id="release-{version}">{version} ({today_str})</h3>
+            <h3 id="release-{version}" data-nav-title="{version}">{version} ({today_str})</h3>
             <ul>
 {li_items}
             </ul>
@@ -267,7 +258,7 @@ def update_website(tag, old_tag, items):
 
     # Insert after the Release History heading
     marker = '<h2 class="section-heading">Release History</h2>'
-    content = content.replace(marker, marker + '\n' + new_section, 1)
+    replace(marker, marker + '\n' + new_section)
 
     with open(path, 'w') as f:
         f.write(content)
