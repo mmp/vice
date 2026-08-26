@@ -8,7 +8,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 
@@ -31,7 +33,29 @@ var (
 	navLogCategories      = flag.String("navlog-categories", "all", "navigation log `categories`")
 	navLogCallsign        = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign`")
 	loadOnly              = flag.Bool("loadonly", false, "exit as soon as scenarios have loaded; useful for CI smoketests under -race")
+	wxFacilities          = flag.String("wxfacilities", "", "write the weather pipeline's airport and facility list as JSON to `file` and exit")
 )
+
+// writeWXFacilities writes the list that wxingest and wxpackage use to decide
+// what to ingest and package. wxingest runs from a container image that can't
+// load the scenarios itself, since doing so validates their video maps against
+// the .mappack files.
+func writeWXFacilities(path string, lg *log.Logger) error {
+	fac, err := server.WXFacilities(lg)
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	if err := fac.Write(f); err != nil {
+		f.Close()
+		return fmt.Errorf("%s: %w", path, err)
+	}
+	return f.Close()
+}
 
 func main() {
 	flag.Parse()
@@ -45,6 +69,14 @@ func main() {
 
 	av.InitDB()
 	wx.Init()
+
+	if *wxFacilities != "" {
+		if err := writeWXFacilities(*wxFacilities, lg); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
 
 	nav.InitNavLog(*navLogEnabled, *navLogCategories, *navLogCallsign)
 

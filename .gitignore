@@ -23,6 +23,7 @@ SDL2.dll
 Vice.App/
 __debug_*
 cmd/vice/manifest.json
+cmd/wxingest/cloudrun/facilities.json
 dump*.txt
 ext/
 icon.icns

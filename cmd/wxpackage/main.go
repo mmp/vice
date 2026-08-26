@@ -19,8 +19,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 	"golang.org/x/sync/errgroup"
@@ -32,8 +30,9 @@ import (
 )
 
 var (
-	dateRange = flag.String("dates", "", "Date range to package (format: 2025-08-01/2025-09-01). If not specified, all available data is used.")
-	outputDir = flag.String("output", "resources/wx", "Output directory for packaged weather data")
+	dateRange      = flag.String("dates", "", "Date range to package (format: 2025-08-01/2025-09-01). If not specified, all available data is used.")
+	outputDir      = flag.String("output", "resources/wx", "Output directory for packaged weather data")
+	facilitiesFile = flag.String("facilities", "facilities.json", "`file` with the airport and facility list written by \"viceserver -wxfacilities\"")
 )
 
 // gcsReadTimeout is the per-operation timeout for individual GCS reads.
@@ -68,49 +67,14 @@ func main() {
 		endDate = endDate.UTC()
 	}
 
-	av.InitDB()
-
-	// Load scenarios to find active airports and facilities (TRACONs + ARTCCs)
-	var e util.ErrorLogger
-	lg := log.New(false, "warn", "")
-	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups("", "", "", &e, lg)
-	if e.HaveErrors() {
-		e.PrintErrors(lg)
+	fac, err := wx.ReadFacilities(*facilitiesFile)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
+	facilities := slices.Concat(fac.TRACONs, fac.ARTCCs)
 
-	airports := make(map[string]bool)
-	facilities := make(map[string]bool)
-	artccs := make(map[string]bool)
-
-	for facility, scenarios := range scenarioGroups {
-		facilities[facility] = true
-		for _, sg := range scenarios {
-			for icao := range sg.Airports {
-				airports[icao] = true
-			}
-			if sg.ARTCC != "" {
-				artccs[sg.ARTCC] = true
-			} else if sg.TRACON != "" {
-				// TRACON scenarios don't set ARTCC explicitly;
-				// look up the parent ARTCC from the database.
-				if artcc := av.DB.ARTCCForFacility(sg.TRACON); artcc != "" {
-					artccs[artcc] = true
-				}
-			}
-		}
-	}
-
-	// Also add all facilities from the atmos lists (some may not have
-	// scenarios yet but we still want their data bundled).
-	for _, tracon := range wx.AtmosTRACONs() {
-		facilities[tracon] = true
-	}
-	for _, artcc := range wx.AtmosARTCCs() {
-		facilities[artcc] = true
-	}
-
-	fmt.Printf("Found %d active airports across %d facilities (TRACONs + ARTCCs)\n", len(airports), len(facilities))
+	fmt.Printf("Found %d active airports across %d facilities (TRACONs + ARTCCs)\n", len(fac.Airports), len(facilities))
 
 	// Initialize GCS client. Use VICE_GCS_CREDENTIALS when set; otherwise
 	// fall back to Application Default Credentials (e.g. the attached
@@ -146,15 +110,15 @@ func main() {
 	}
 
 	// Process METAR data
-	fmt.Printf("Processing METAR data for %d airports\n", len(airports))
-	if err := processMETAR(ctx, bucket, airports, startDate, endDate, *outputDir); err != nil {
+	fmt.Printf("Processing METAR data for %d airports\n", len(fac.Airports))
+	if err := processMETAR(ctx, bucket, fac.Airports, startDate, endDate, *outputDir); err != nil {
 		fmt.Printf("Failed to process METAR: %v\n", err)
 		os.Exit(1)
 	}
 
 	// Process TFR data
-	fmt.Printf("Processing TFR data for %d ARTCCs\n", len(artccs))
-	if err := processTFRs(ctx, bucket, artccs, startDate, endDate, *outputDir); err != nil {
+	fmt.Printf("Processing TFR data for %d ARTCCs\n", len(fac.ARTCCs))
+	if err := processTFRs(ctx, bucket, fac.ARTCCs, startDate, endDate, *outputDir); err != nil {
 		fmt.Printf("Failed to process TFRs: %v\n", err)
 		os.Exit(1)
 	}
@@ -206,7 +170,7 @@ func (r *readerWithCancel) Close() error {
 	return err
 }
 
-func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports map[string]bool, start, end time.Time, outputDir string) error {
+func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports []string, start, end time.Time, outputDir string) error {
 	// Download the full METAR file
 	r, err := gcsNewReader(ctx, bucket, wx.METARFilename)
 	if err != nil {
@@ -223,7 +187,7 @@ func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports ma
 	filteredMETAR := wx.NewCompressedMETAR()
 
 	for icao := range allMETAR.Airports() {
-		if !airports[icao] {
+		if !slices.Contains(airports, icao) {
 			continue
 		}
 
@@ -265,7 +229,7 @@ func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports ma
 	return nil
 }
 
-func processTFRs(ctx context.Context, bucket *storage.BucketHandle, artccs map[string]bool, start, end time.Time, outputDir string) error {
+func processTFRs(ctx context.Context, bucket *storage.BucketHandle, artccs []string, start, end time.Time, outputDir string) error {
 	// Download the full TFR file
 	r, err := gcsNewReader(ctx, bucket, wx.TFRFilename)
 	if err != nil {
@@ -279,10 +243,10 @@ func processTFRs(ctx context.Context, bucket *storage.BucketHandle, artccs map[s
 	}
 
 	// Filter: keep TFRs whose [Effective, Expire] overlaps the date range
-	// AND whose ARTCC matches a scenario-relevant ARTCC.
+	// AND whose ARTCC is one we package weather for.
 	var filtered []av.TFR
 	for _, tfr := range allTFRs {
-		if !artccs[tfr.ARTCC] {
+		if !slices.Contains(artccs, tfr.ARTCC) {
 			continue
 		}
 		// Check time overlap: TFR is relevant if Effective < end AND Expire > start
@@ -311,13 +275,13 @@ func processTFRs(ctx context.Context, bucket *storage.BucketHandle, artccs map[s
 	return nil
 }
 
-func processAtmos(ctx context.Context, bucket *storage.BucketHandle, facilities map[string]bool, startDate, endDate time.Time, outputDir string) error {
+func processAtmos(ctx context.Context, bucket *storage.BucketHandle, facilities []string, startDate, endDate time.Time, outputDir string) error {
 	packaged := make(map[string][]time.Time)
 	var mu sync.Mutex
 
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.SetLimit(16)
-	for facilityID := range facilities {
+	for _, facilityID := range facilities {
 		eg.Go(func() error {
 			times, err := processFacilityAtmos(ctx, bucket, facilityID, startDate, endDate, outputDir)
 			if err != nil {

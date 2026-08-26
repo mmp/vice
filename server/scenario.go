@@ -2966,6 +2966,33 @@ func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger)
 	return scenarios, nil
 }
 
+// WXFacilities loads the scenarios and returns the airports and facilities
+// that vice's weather pipeline should cover. (Center scenario groups specify
+// an ARTCC rather than a TRACON; the ARTCCs to cover don't depend on which
+// have scenarios, so only their airports are of interest here.)
+func WXFacilities(lg *log.Logger) (wx.Facilities, error) {
+	var e util.ErrorLogger
+	scenarioGroups, _, _, _, _ := LoadScenarioGroups("", "", "", &e, lg)
+	if e.HaveErrors() {
+		e.PrintErrors(lg)
+		return wx.Facilities{}, fmt.Errorf("failed to load scenarios")
+	}
+
+	var airports, tracons []string
+	for _, groups := range scenarioGroups {
+		for _, sg := range groups {
+			airports = append(airports, slices.Collect(maps.Keys(sg.Airports))...)
+			// Center scenario groups take their facility from "artcc" and
+			// have TRACON copied from it by PostDeserialize.
+			if sg.ARTCC == "" {
+				tracons = append(tracons, sg.TRACON)
+			}
+		}
+	}
+
+	return wx.MakeFacilities(airports, tracons), nil
+}
+
 // LookupScenario finds a scenario configuration by TRACON/scenario name
 func LookupScenario(tracon, scenarioName string, scenarioGroups map[string]map[string]*scenarioGroup, catalogs map[string]map[string]*ScenarioCatalog) (*ScenarioCatalog, *scenarioGroup, error) {
 	if groups, ok := scenarioGroups[tracon]; ok {

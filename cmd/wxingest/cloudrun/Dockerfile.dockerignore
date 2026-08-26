@@ -1,10 +1,14 @@
 # Keep the build context and image small: wxingest only needs the Go sources
-# and the aviation data under resources/, not the models, videomaps, or
-# bundled weather that the vice client uses.
+# and the aviation data that av.InitDB reads from resources/. It takes the
+# facilities to ingest from facilities.json rather than the scenarios, and
+# needs none of the models, videomaps, traffic, or bundled weather that the
+# vice client uses.
 .git
 whisper.cpp
 sherpa-onnx
 resources/models
+resources/scenarios
+resources/traffic
 resources/videomaps
 resources/wx
 vice

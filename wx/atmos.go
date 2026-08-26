@@ -6,90 +6,17 @@ package wx
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/fs"
 	"iter"
 	"maps"
-	"path"
 	"slices"
 	"strconv"
-	"strings"
-	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
-
-// atmosExcludedTRACONs are TRACONs with vice scenarios that are nonetheless
-// skipped for atmos ingest.
-var atmosExcludedTRACONs = []string{
-	// NOAA uses a currently unsupported grib2 grid format for Hawaii.
-	"HNL", "OGG",
-}
-
-// AtmosTRACONs returns the TRACONs to ingest atmos data for: the ones with
-// vice scenarios, minus exclusions.
-var AtmosTRACONs = sync.OnceValue(func() []string {
-	tracons := util.FilterSlice(scenarioTRACONs(), func(id string) bool {
-		return !slices.Contains(atmosExcludedTRACONs, id)
-	})
-	// Not currently needed but let's save ourselves the trouble of
-	// downloading all the Alaska gribs again if an FAI scenario is added.
-	tracons = append(tracons, "FAI")
-	slices.Sort(tracons)
-	return slices.Compact(tracons)
-})
-
-// scenarioTRACONs scans the scenario definitions for the TRACONs that have
-// vice scenarios. (Center scenario files specify "artcc" rather than
-// "tracon" and so are skipped.)
-func scenarioTRACONs() []string {
-	fsys := util.GetResourcesFS()
-	entries, err := fs.ReadDir(fsys, "scenarios")
-	if err != nil {
-		panic(err)
-	}
-
-	var tracons []string
-	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".json") {
-			continue
-		}
-		b, err := fs.ReadFile(fsys, path.Join("scenarios", e.Name()))
-		if err != nil {
-			panic(err)
-		}
-		var s struct {
-			TRACON string `json:"tracon"`
-		}
-		if err := json.Unmarshal(b, &s); err != nil {
-			panic(fmt.Sprintf("%s: %v", e.Name(), err))
-		}
-		if s.TRACON != "" && !slices.Contains(tracons, s.TRACON) {
-			tracons = append(tracons, s.TRACON)
-		}
-	}
-	return tracons
-}
-
-// atmosExcludedARTCCs are ARTCCs skipped for atmos ingest.
-var atmosExcludedARTCCs = []string{
-	"ZHN", // NOAA uses a currently unsupported grib2 grid format for Hawaii
-	"ZAE", // Anchorage Oceanic: outside HRRR coverage
-}
-
-// AtmosARTCCs returns the ARTCCs to ingest atmos data for: all of them,
-// minus exclusions. (Unlike TRACONs, this doesn't consider which have
-// scenarios: center scenarios are under active development and pre-ingesting
-// spares us historical backfills as they arrive.)
-var AtmosARTCCs = sync.OnceValue(func() []string {
-	return util.FilterSlice(util.SortedMapKeys(av.DB.ARTCCs), func(id string) bool {
-		return !slices.Contains(atmosExcludedARTCCs, id)
-	})
-})
 
 // This is fairly specialized to our needs we ingest from: at each
 // lat-long, we store a vertical stack of 40 levels with samples from the

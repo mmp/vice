@@ -25,6 +25,15 @@ AVG_TASKS=${AVG_TASKS:-8}
 
 cd "$(git rev-parse --show-toplevel)"
 
+# What to ingest and package is decided by the airports and facilities that
+# have scenarios, but the image can't load the scenarios itself: doing so
+# validates each one's video map against the .mappack files, which are far too
+# big to ship. Generate the list here, bake it into the image below, and hand
+# the same file to wxpackage at the end so that the two agree even if the
+# scenarios change while the ingest is running.
+FACILITIES=cmd/wxingest/cloudrun/facilities.json
+go run ./cmd/viceserver -wxfacilities=$FACILITIES
+
 docker buildx build --platform linux/amd64 -f cmd/wxingest/cloudrun/Dockerfile -t $IMAGE --push .
 
 # 4Gi covers METAR's rebuild-from-archive fallback; precip tasks need less.
@@ -64,4 +73,4 @@ gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wai
 # Packaging runs locally: one object per facility, ~40MB in total, rather
 # than the ~700GiB of grids they were distilled from. It writes straight
 # into the checkout.
-go run ./cmd/wxpackage -output=resources/wx
+go run ./cmd/wxpackage -output=resources/wx -facilities=$FACILITIES

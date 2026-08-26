@@ -17,4 +17,6 @@ COPY resources/ ./resources/
 # util.findResourcesBasePath probes for a resources/videomaps directory; its
 # contents (excluded via Dockerfile.dockerignore) are not needed by wxingest.
 COPY --from=build /out/empty ./resources/videomaps/
+# Which facilities to ingest atmos data for; see run.sh.
+COPY cmd/wxingest/cloudrun/facilities.json ./facilities.json
 ENTRYPOINT ["/app/wxingest"]

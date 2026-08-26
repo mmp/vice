@@ -85,6 +85,13 @@ func ingestHRRR(sb StorageBackend) error {
 		return generateAtmosManifest(sb)
 	}
 
+	// Read this before the chdir below, which would leave a relative path
+	// resolving against the temporary directory.
+	fac, err := wx.ReadFacilities(*facilitiesFile)
+	if err != nil {
+		return err
+	}
+
 	if err := os.Chdir(os.TempDir()); err != nil {
 		return err
 	}
@@ -98,7 +105,7 @@ func ingestHRRR(sb StorageBackend) error {
 	// If --single-time is specified, skip all the time interval calculations
 	// and just process that one time for all facilities
 	if *singleTime != "" {
-		return ingestHRRRSingleTime(sb, hrrrsb)
+		return ingestHRRRSingleTime(sb, hrrrsb, fac)
 	}
 
 	// Get available METAR and precip data times to determine valid intervals
@@ -158,7 +165,7 @@ func ingestHRRR(sb StorageBackend) error {
 				facilities := existing[t] // may be empty
 				slices.Sort(facilities)
 				var missing []string
-				for _, tracon := range wx.AtmosTRACONs() {
+				for _, tracon := range fac.TRACONs {
 					if !slices.Contains(facilities, tracon) {
 						missing = append(missing, tracon)
 					}
@@ -167,7 +174,7 @@ func ingestHRRR(sb StorageBackend) error {
 				// skip ARTCC atmos ingest before then.
 				artccAtmosStart := time.Date(2026, time.February, 1, 0, 0, 0, 0, time.UTC)
 				if !t.Before(artccAtmosStart) {
-					for _, artcc := range wx.AtmosARTCCs() {
+					for _, artcc := range fac.ARTCCs {
 						if !slices.Contains(facilities, artcc) {
 							missing = append(missing, artcc)
 						}
@@ -948,7 +955,7 @@ func buildGridFromGRIB2(records []*squall.GRIB2) (*Grid, error) {
 
 // ingestHRRRSingleTime processes HRRR data for a single specified time.
 // This is useful for testing and evaluating runtime/file sizes.
-func ingestHRRRSingleTime(sb StorageBackend, hrrrsb *TrackingBackend) error {
+func ingestHRRRSingleTime(sb StorageBackend, hrrrsb *TrackingBackend, fac wx.Facilities) error {
 	t, err := time.Parse(time.RFC3339, *singleTime)
 	if err != nil {
 		return fmt.Errorf("failed to parse --single-time %q: %w", *singleTime, err)
@@ -964,13 +971,9 @@ func ingestHRRRSingleTime(sb StorageBackend, hrrrsb *TrackingBackend) error {
 
 	// Collect all facilities by region
 	byRegion := make(map[string][]string)
-	for _, tracon := range wx.AtmosTRACONs() {
-		region := facilityRegion(tracon)
-		byRegion[region] = append(byRegion[region], tracon)
-	}
-	for _, artcc := range wx.AtmosARTCCs() {
-		region := facilityRegion(artcc)
-		byRegion[region] = append(byRegion[region], artcc)
+	for _, facility := range slices.Concat(fac.TRACONs, fac.ARTCCs) {
+		region := facilityRegion(facility)
+		byRegion[region] = append(byRegion[region], facility)
 	}
 
 	// Filter out Alaska/Hawaii facilities if time doesn't align with their 3-hour schedule

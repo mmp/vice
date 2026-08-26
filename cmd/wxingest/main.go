@@ -30,6 +30,7 @@ var hrrrQuick = flag.Bool("hrrrquick", false, "Fast-path HRRR run, no upload")
 var localOutput = flag.String("local-output", "", "Write output to local directory instead of GCS (for testing)")
 var singleTime = flag.String("single-time", "", "Process only a single timestamp (format: 2006-01-02T15:04:05Z)")
 var manifestsOnly = flag.Bool("manifests-only", false, "Regenerate manifests without processing scraped data")
+var facilitiesFile = flag.String("facilities", "facilities.json", "`file` with the facility list written by \"viceserver -wxfacilities\"; used by atmos ingest")
 
 // taskIndex and taskCount identify this process's shard when running as a
 // multi-task Cloud Run job; they are 0 and 1 otherwise.
