@@ -608,6 +608,13 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		}
 
 	case 'D':
+		if command == "DTN" {
+			// Direct the (runway) numbers.
+			return s.DirectRunwayNumbers(tcw, callsign, av.TurnClosest, delayReduction)
+		} else if command == "DTF" {
+			// Direct the field/airport.
+			return s.DirectAirport(tcw, callsign, av.TurnClosest, delayReduction)
+		}
 		if command == "DVS" {
 			return s.DescendViaSTAR(tcw, callsign)
 		} else if components := strings.Split(command, "/"); len(components) > 1 && len(components[1]) > 1 {
@@ -736,7 +743,11 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		}
 
 	case 'L':
-		if len(command) >= 5 && command[1] == 'D' {
+		if command == "LDTN" {
+			return s.DirectRunwayNumbers(tcw, callsign, av.TurnLeft, delayReduction)
+		} else if command == "LDTF" {
+			return s.DirectAirport(tcw, callsign, av.TurnLeft, delayReduction)
+		} else if len(command) >= 5 && command[1] == 'D' {
 			return s.DirectFix(tcw, callsign, command[2:], av.TurnLeft, delayReduction)
 		} else if l := len(command); l > 2 && command[l-1] == 'D' {
 			deg, err := strconv.Atoi(command[1 : l-1])
@@ -779,7 +790,11 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		return s.AssignMach(tcw, callsign, float32(mach), false)
 
 	case 'R':
-		if command == "RON" {
+		if command == "RDTN" {
+			return s.DirectRunwayNumbers(tcw, callsign, av.TurnRight, delayReduction)
+		} else if command == "RDTF" {
+			return s.DirectAirport(tcw, callsign, av.TurnRight, delayReduction)
+		} else if command == "RON" {
 			return s.ResumeOwnNavigation(tcw, callsign)
 		} else if command == "RST" {
 			return s.RadarServicesTerminated(tcw, callsign)

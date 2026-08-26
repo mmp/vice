@@ -1310,6 +1310,33 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 	return distance, nil
 }
 
+// DirectRunwayNumbers has the pilot proceed visually direct to the
+// assigned approach runway's threshold ("direct the numbers").
+func (nav *Nav) DirectRunwayNumbers(turn av.TurnDirection, simTime Time, delayReduction time.Duration) av.CommandIntent {
+	ap := nav.Approach.Assigned
+	if ap == nil {
+		return av.MakeUnableIntent("unable. you haven't given us a runway")
+	}
+	wps := []av.Waypoint{
+		{Fix: "_NUMBERS", Location: ap.Threshold},
+		nav.FlightState.ArrivalAirport,
+	}
+	nav.EnqueueDirectFix(wps, turn, simTime, delayReduction)
+	nav.Approach.NoPT = false
+	nav.Approach.InterceptState = NotIntercepting
+	return av.DirectNumbersIntent{Turn: turn}
+}
+
+// DirectAirport has the pilot proceed direct to the arrival airport
+// ("proceed direct the field").
+func (nav *Nav) DirectAirport(turn av.TurnDirection, simTime Time, delayReduction time.Duration) av.CommandIntent {
+	wps := []av.Waypoint{nav.FlightState.ArrivalAirport}
+	nav.EnqueueDirectFix(wps, turn, simTime, delayReduction)
+	nav.Approach.NoPT = false
+	nav.Approach.InterceptState = NotIntercepting
+	return av.DirectAirportIntent{Turn: turn}
+}
+
 func (nav *Nav) ResumeOwnNavigation() av.CommandIntent {
 	if nav.Heading.Assigned == nil {
 		// This is a weird response but keeping the original behavior

@@ -877,6 +877,38 @@ func (c ContactTowerIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	}
 }
 
+// DirectNumbersIntent is the readback for "direct the numbers".
+type DirectNumbersIntent struct {
+	Turn TurnDirection
+}
+
+func (d DirectNumbersIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	switch d.Turn {
+	case TurnLeft:
+		rt.Add("left [turn|] direct the numbers")
+	case TurnRight:
+		rt.Add("right [turn|] direct the numbers")
+	default:
+		rt.Add("[direct the numbers|straight to the numbers]")
+	}
+}
+
+// DirectAirportIntent is the readback for "proceed direct the field".
+type DirectAirportIntent struct {
+	Turn TurnDirection
+}
+
+func (d DirectAirportIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	switch d.Turn {
+	case TurnLeft:
+		rt.Add("left [turn|] direct the [field|airport]")
+	case TurnRight:
+		rt.Add("right [turn|] direct the [field|airport]")
+	default:
+		rt.Add("direct the [field|airport]")
+	}
+}
+
 // ATISIntent represents the pilot's acknowledgment of the ATIS letter.
 type ATISIntent struct {
 	Letter string
