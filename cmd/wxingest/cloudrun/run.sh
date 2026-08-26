@@ -1,25 +1,31 @@
 #!/bin/bash
-# Build and push the wxingest image, then run a full ingest as Cloud Run
-# jobs, in dependency order:
+# Build and push the wxingest and wxpackage images, then run a full ingest as
+# Cloud Run jobs, in dependency order:
 #   1. metar and tfr, as a single task (atmos needs the METAR manifest)
 #   2. precip, fanned out across tasks that shard scrape/WX by object hash
-#   3. precip manifests (atmos needs the consolidated precip manifest)
+#   3. precip manifest (atmos needs it to know which hours have precip)
 #   4. atmos, fanned out across tasks that shard the missing hours
 #   5. atmos manifest
+#   6. wxpackage (needs the atmos manifest), then download its output
 # Requires a gcloud recent enough to support --tasks/--args overrides on
 # "gcloud run jobs execute". Run only one of these at a time.
 set -ex
 
-PROJECT=${PROJECT:-$(gcloud config get-value project)}
-REGION=${REGION:-us-central1} # must match the vice-wx bucket's location
+PROJECT=${PROJECT:-vice-464116} # not necessarily the gcloud default project
+REGION=${REGION:-us-west1} # must match the vice-wx bucket's location
 IMAGE=$REGION-docker.pkg.dev/$PROJECT/vice/wxingest:latest
-SA=wxingest@$PROJECT.iam.gserviceaccount.com
+PACKAGE_IMAGE=$REGION-docker.pkg.dev/$PROJECT/vice/wxpackage:latest
+SA=ingest-wx@$PROJECT.iam.gserviceaccount.com
 PRECIP_TASKS=${PRECIP_TASKS:-20}
 ATMOS_TASKS=${ATMOS_TASKS:-16} # consider more for deep backfills
+# Where in gs://vice-wx wxpackage writes; downloaded to resources/wx below.
+PACKAGE_PREFIX=${PACKAGE_PREFIX:-package}
 
 cd "$(git rev-parse --show-toplevel)"
 
 docker buildx build --platform linux/amd64 -f cmd/wxingest/cloudrun/Dockerfile -t $IMAGE --push .
+docker buildx build --platform linux/amd64 -f cmd/wxingest/cloudrun/Dockerfile.wxpackage \
+    -t $PACKAGE_IMAGE --push .
 
 # 4Gi covers METAR's rebuild-from-archive fallback; precip tasks need less.
 gcloud run jobs deploy wxingest-precip --image=$IMAGE --region=$REGION --project=$PROJECT \
@@ -30,6 +36,18 @@ gcloud run jobs deploy wxingest-precip --image=$IMAGE --region=$REGION --project
 gcloud run jobs deploy wxingest-atmos --image=$IMAGE --region=$REGION --project=$PROJECT \
     --service-account=$SA --memory=8Gi --cpu=4 --task-timeout=6h --max-retries=1 \
     --set-env-vars=GOMEMLIMIT=6GiB
+
+# wxpackage runs in the cloud so that it reads the per-facility atmos objects
+# in-region rather than pulling gigabytes down over the local connection. The
+# bucket is mounted so its output survives between runs: it re-reads what it
+# wrote last time and only downloads newly-ingested hours. Seed the prefix
+# from an existing checkout to avoid a from-scratch first run:
+#   gcloud storage rsync --recursive resources/wx gs://vice-wx/$PACKAGE_PREFIX
+gcloud run jobs deploy wxpackage --image=$PACKAGE_IMAGE --region=$REGION --project=$PROJECT \
+    --service-account=$SA --memory=8Gi --cpu=4 --task-timeout=6h --max-retries=1 \
+    --set-env-vars=GOMEMLIMIT=6GiB \
+    --add-volume=name=wx,type=cloud-storage,bucket=vice-wx \
+    --add-volume-mount=volume=wx,mount-path=/mnt/wx
 
 gcloud run jobs execute wxingest-precip --region=$REGION --project=$PROJECT --wait \
     --tasks=1 --args=metar,tfr
@@ -45,3 +63,8 @@ gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wai
 
 gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wait \
     --tasks=1 --args=-manifests-only,atmos
+
+gcloud run jobs execute wxpackage --region=$REGION --project=$PROJECT --wait \
+    --tasks=1 --args=-output=/mnt/wx/$PACKAGE_PREFIX
+
+gcloud storage rsync --recursive gs://vice-wx/$PACKAGE_PREFIX resources/wx

@@ -1,0 +1,11 @@
+# Keep the build context and image small: wxpackage needs the Go sources, the
+# aviation data under resources/, and the videomaps that loading the scenarios
+# validates against--but not the models, nor the bundled weather it produces.
+.git
+whisper.cpp
+sherpa-onnx
+resources/models
+resources/wx
+vice
+*.prof
+*.pprof

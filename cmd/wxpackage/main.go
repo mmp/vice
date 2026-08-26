@@ -108,14 +108,15 @@ func main() {
 
 	fmt.Printf("Found %d active airports across %d facilities (TRACONs + ARTCCs)\n", len(airports), len(facilities))
 
-	// Initialize GCS client
+	// Initialize GCS client. Use VICE_GCS_CREDENTIALS when set; otherwise
+	// fall back to Application Default Credentials (e.g. the attached
+	// service account on Cloud Run).
 	ctx := context.Background()
-	credsJSON := os.Getenv("VICE_GCS_CREDENTIALS")
-	if credsJSON == "" {
-		fmt.Fprintf(os.Stderr, "VICE_GCS_CREDENTIALS environment variable not set")
-		os.Exit(1)
+	var opts []option.ClientOption
+	if credsJSON := os.Getenv("VICE_GCS_CREDENTIALS"); credsJSON != "" {
+		opts = append(opts, option.WithCredentialsJSON([]byte(credsJSON)))
 	}
-	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
+	client, err := storage.NewClient(ctx, opts...)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create GCS client: %v", err)
 		os.Exit(1)

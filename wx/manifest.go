@@ -275,19 +275,6 @@ func ManifestPath(prefix string) string {
 	return path.Join(prefix, ManifestFilename)
 }
 
-// MonthlyManifestPath returns the full path to a monthly manifest file.
-// The month parameter should be in "YYYY-MM" format (e.g., "2025-08").
-// Returns a path like "prefix/manifest-int64time-YYYY-MM.msgpack.zst"
-func MonthlyManifestPath(prefix, month string) string {
-	return path.Join(prefix, fmt.Sprintf("manifest-int64time-%s.msgpack.zst", month))
-}
-
-// MonthlyManifestPrefix returns the prefix used for listing monthly manifest files.
-// Returns a prefix like "prefix/manifest-int64time-"
-func MonthlyManifestPrefix(prefix string) string {
-	return path.Join(prefix, "manifest-int64time-")
-}
-
 // compressTimestamps delta-encodes and flate-compresses a slice of int64 timestamps.
 // Returns the compressed bytes suitable for storage.
 func compressTimestamps(timestamps []int64) ([]byte, error) {

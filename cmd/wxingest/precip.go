@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"image/png"
 	"io"
+	"maps"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -24,19 +26,8 @@ import (
 
 func ingestPrecip(sb StorageBackend) error {
 	if *manifestsOnly {
-		months, err := precipManifestMonths()
-		if err != nil {
-			return err
-		}
-		if err := generateMonthlyManifests(sb, months); err != nil {
-			return err
-		}
-		return generateConsolidatedManifest(sb)
+		return generatePrecipManifest(sb)
 	}
-
-	// Track months encountered during processing
-	months := make(map[string]bool)
-	var mu sync.Mutex
 
 	eg, ctx := errgroup.WithContext(context.Background())
 
@@ -61,16 +52,12 @@ func ingestPrecip(sb StorageBackend) error {
 					continue
 				}
 
-				n, month, err := processPrecip(sb, path)
+				n, err := processPrecip(sb, path)
 				if err != nil {
 					LogError("%s: %v", path, err)
 					nErrors.Add(1)
 					continue
 				}
-
-				mu.Lock()
-				months[month] = true
-				mu.Unlock()
 
 				nb := atomic.AddInt64(&totalBytes, n)
 				nobj := atomic.AddInt64(&totalObjects, 1)
@@ -97,53 +84,26 @@ func ingestPrecip(sb StorageBackend) error {
 		return nil
 	}
 
-	if err := generateMonthlyManifests(sb, months); err != nil {
-		return err
-	}
-
-	return generateConsolidatedManifest(sb)
+	return generatePrecipManifest(sb)
 }
 
-// precipManifestMonths returns the months to regenerate precip manifests for
-// in -manifests-only mode: the -months flag if given, otherwise the current
-// and previous month, which cover everything drained from scrape/ since any
-// reasonably recent run.
-func precipManifestMonths() (map[string]bool, error) {
-	months := make(map[string]bool)
-	if *monthsFlag != "" {
-		for m := range strings.SplitSeq(*monthsFlag, ",") {
-			if _, err := time.Parse("2006-01", m); err != nil {
-				return nil, fmt.Errorf("-months %q: %w", m, err)
-			}
-			months[m] = true
-		}
-		return months, nil
-	}
-
-	now := time.Now().UTC()
-	first := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
-	months[now.Format("2006-01")] = true
-	months[first.AddDate(0, 0, -1).Format("2006-01")] = true
-	return months, nil
-}
-
-func processPrecip(sb StorageBackend, path string) (int64, string, error) {
+func processPrecip(sb StorageBackend, path string) (int64, error) {
 	// Parse time
 	t, err := time.Parse(time.RFC3339, strings.TrimSuffix(filepath.Base(path), ".gob"))
 	if err != nil {
-		return 0, "", err
+		return 0, err
 	}
 	t = t.UTC()
 
 	r, err := sb.OpenRead(path)
 	if err != nil {
-		return 0, "", err
+		return 0, err
 	}
 	defer r.Close()
 
 	scraped, err := io.ReadAll(r)
 	if err != nil {
-		return 0, "", err
+		return 0, err
 	}
 
 	type WXScraped struct {
@@ -157,12 +117,12 @@ func processPrecip(sb StorageBackend, path string) (int64, string, error) {
 	}
 	var wxs WXScraped
 	if err := gob.NewDecoder(bytes.NewReader(scraped)).Decode(&wxs); err != nil {
-		return 0, "", err
+		return 0, err
 	}
 
 	img, err := png.Decode(bytes.NewReader(wxs.PNG))
 	if err != nil {
-		return 0, "", err
+		return 0, err
 	}
 
 	wxp := wx.Precip{
@@ -177,144 +137,73 @@ func processPrecip(sb StorageBackend, path string) (int64, string, error) {
 
 	facilityID, _, ok := strings.Cut(strings.TrimPrefix(path, "scrape/WX/"), "/")
 	if !ok {
-		return 0, "", fmt.Errorf("%s: unexpected format; can't find facility ID", path)
+		return 0, fmt.Errorf("%s: unexpected format; can't find facility ID", path)
 	}
 
 	objpath := fmt.Sprintf("precip/%s/%s.msgpack.zst", facilityID, t.Format(time.RFC3339))
 
 	n, err := sb.StoreObject(objpath, wxp)
 	if err != nil {
-		return 0, "", err
+		return 0, err
 	}
 
 	// Archive only if everything's worked out; a server-side copy avoids
 	// re-uploading the original bytes.
 	apath := filepath.Join("archive", strings.TrimPrefix(path, "scrape/"))
 	if err := sb.Copy(apath, path); err != nil {
-		return n, "", err
+		return n, err
 	}
 
-	month := t.Format("2006-01")
-	return n, month, sb.Delete(path)
+	return n, sb.Delete(path)
 }
 
-func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
-	for month := range months {
-		LogInfo("Generating manifest for %s", month)
+// generatePrecipManifest rebuilds the precip manifest from a full listing of
+// the precip objects. The manifest is what makes the data reachable--it
+// bounds the hours atmos ingests and the client looks up radar images through
+// it--so an incremental update that missed a facility or a month would
+// silently strand objects that are sitting in the bucket. A full listing is a
+// few cents of Class A operations, which is cheap enough to not have to
+// reason about what changed. Listing per facility rather than under precip/
+// alone both fans out and keeps any one path map small.
+func generatePrecipManifest(sb StorageBackend) error {
+	LogInfo("Generating precip manifest")
 
-		manifest := wx.NewManifest()
-		var mu sync.Mutex
-		sem := make(chan struct{}, 16)
-		eg := errgroup.Group{}
+	facilities := slices.Concat(slices.Sorted(maps.Keys(av.DB.TRACONs)), slices.Sorted(maps.Keys(av.DB.ARTCCs)))
 
-		// Process both TRACONs and ARTCCs
-		var facilities []string
-		for tracon := range av.DB.TRACONs {
-			facilities = append(facilities, tracon)
-		}
-		for artcc := range av.DB.ARTCCs {
-			facilities = append(facilities, artcc)
-		}
-
-		for _, facilityID := range facilities {
-			eg.Go(func() error {
-				sem <- struct{}{}
-				defer func() { <-sem }()
-
-				prefix := fmt.Sprintf("precip/%s/%s-", facilityID, month)
-				files, err := sb.List(prefix)
-				if err != nil {
-					return fmt.Errorf("failed to list files for %s: %w", prefix, err)
-				}
-
-				var timestamps []time.Time
-				for path := range files {
-					relativePath := strings.TrimPrefix(path, "precip/")
-					if !strings.Contains(relativePath, "manifest") {
-						_, ts, err := wx.ParseWeatherObjectPath(relativePath)
-						if err != nil {
-							LogError("%s: %v", relativePath, err)
-							continue
-						}
-						timestamps = append(timestamps, time.Unix(ts, 0).UTC())
-					}
-				}
-
-				if len(timestamps) == 0 {
-					return nil
-				}
-
-				mu.Lock()
-				defer mu.Unlock()
-
-				if err := manifest.SetFacilityTimestamps(facilityID, timestamps); err != nil {
-					return err
-				}
-
-				return nil
-			})
-		}
-
-		if err := eg.Wait(); err != nil {
-			return err
-		}
-
-		totalEntries := manifest.TotalEntries()
-		LogInfo("Found %d precip objects for %s", totalEntries, month)
-		if totalEntries == 0 {
-			LogInfo("No files found for %s, skipping manifest", month)
-			continue
-		}
-
-		localFile := fmt.Sprintf("precip-manifest-%s.msgpack.zst", month)
-		_ = storeManifest(sb, manifest, wx.MonthlyManifestPath("precip", month), localFile)
-	}
-
-	return nil
-}
-
-func generateConsolidatedManifest(sb StorageBackend) error {
-	LogInfo("Generating consolidated precip manifest from monthly manifests")
-
-	// List all monthly manifest files
-	manifestCh := make(chan string)
-	go func() {
-		defer close(manifestCh)
-		if err := sb.ChanList(context.Background(), wx.MonthlyManifestPrefix("precip"), manifestCh); err != nil {
-			LogError("Failed to list monthly manifests: %v", err)
-		}
-	}()
-
-	// Merge timestamps from all monthly manifests
 	timestamps := make(map[string][]time.Time)
 	var mu sync.Mutex
-	eg := errgroup.Group{}
-	sem := make(chan struct{}, 16)
 
-	for path := range manifestCh {
+	var eg errgroup.Group
+	eg.SetLimit(16)
+	for _, facilityID := range facilities {
 		eg.Go(func() error {
-			sem <- struct{}{}
-			defer func() { <-sem }()
-
-			var rawManifest wx.RawManifest
-			if err := sb.ReadObject(path, &rawManifest); err != nil {
-				return fmt.Errorf("failed to read %s: %w", path, err)
+			prefix := "precip/" + facilityID + "/"
+			paths, err := sb.List(prefix)
+			if err != nil {
+				return fmt.Errorf("failed to list %s: %w", prefix, err)
 			}
 
-			monthlyManifest := wx.MakeManifest(rawManifest)
-
-			// Collect timestamps for each facility
-			for _, facility := range monthlyManifest.Facilities() {
-				times, ok := monthlyManifest.GetTimestamps(facility)
-				if !ok {
+			var times []time.Time
+			for path := range paths {
+				fac, ts, err := wx.ParseWeatherObjectPath(strings.TrimPrefix(path, "precip/"))
+				if err != nil {
+					LogError("%s: %v", path, err)
 					continue
 				}
-
-				mu.Lock()
-				timestamps[facility] = append(timestamps[facility], times...)
-				mu.Unlock()
+				// List() drops the trailing slash from the prefix, so a
+				// longer facility id starting with this one would match too.
+				if fac == facilityID {
+					times = append(times, time.Unix(ts, 0).UTC())
+				}
 			}
 
+			if len(times) == 0 {
+				return nil
+			}
+
+			mu.Lock()
+			defer mu.Unlock()
+			timestamps[facilityID] = times
 			return nil
 		})
 	}
@@ -323,11 +212,12 @@ func generateConsolidatedManifest(sb StorageBackend) error {
 		return err
 	}
 
-	// Sort and set timestamps for each TRACON
-	consolidated, err := wx.MakeManifestFromMap(timestamps)
+	manifest, err := wx.MakeManifestFromMap(timestamps)
 	if err != nil {
-		LogError("MakeManifestFromMap: %v", err)
+		return err
 	}
 
-	return storeManifest(sb, consolidated, wx.ManifestPath("precip"), "precip-manifest-consolidated.msgpack.zst")
+	LogInfo("Found %d precip objects across %d facilities", manifest.TotalEntries(), len(timestamps))
+
+	return storeManifest(sb, manifest, wx.ManifestPath("precip"), "precip-manifest.msgpack.zst")
 }
