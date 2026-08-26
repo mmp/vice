@@ -1,0 +1,25 @@
+name: check-json-format
+
+on:
+  push:
+    paths:
+      - 'resources/**.json'
+      - '.github/workflows/ci-prettier.yml'
+  pull_request:
+    paths:
+      - 'resources/**.json'
+      - '.github/workflows/ci-prettier.yml'
+
+jobs:
+  build:
+    name: Check JSON formatting
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v6
+
+    - name: Check prettier formatting
+      run: |
+         npx --yes prettier@3.9.4 --check --parser json --print-width 120 'resources/**/*.json'
