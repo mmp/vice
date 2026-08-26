@@ -44,13 +44,19 @@
   "facility_adaptations": {
     "configurations": {
       "KPD": {
+        "go_around_assignments": {
+          "KPDX/28R": "1N",
+          "KPDX/10L": "1N",
+          "KPDX/28L": "1D",
+          "KPDX/10R": "1D"
+        },
         "inbound_assignments": {
           "HELNS": "1N",
-          "HHOOD5East": "1N",
+          "HHOODEast": "1N",
           "Hawaii": "1D",
-          "KRATR2East": "1N",
-          "OCITY3East": "1D",
-          "TMBERS3East": "1D",
+          "KRATREast": "1N",
+          "OCITYEast": "1D",
+          "TMBRSEast": "1D",
           "TOU": "1N",
           "V112.W": "1N",
           "V165.S": "1N"
@@ -66,33 +72,45 @@
         }
       },
       "KP1": {
+        "go_around_assignments": {
+          "KPDX": "1F"
+        },
         "inbound_assignments": {
-          "HHOOD5East_Final": "1F",
-          "KRATR2East_Final": "1F",
-          "TMBERS3East_Final": "1F"
+          "HHOODEast_Final": "1F",
+          "KRATREast_Final": "1F",
+          "TMBRSEast_Final": "1F"
         },
         "default_consolidation": {
           "1F": []
         }
       },
       "KP2": {
+        "go_around_assignments": {
+          "KPDX": "1F"
+        },
         "inbound_assignments": {
-          "HHOOD5West_Final": "1F",
-          "KRATR2West_Final": "1F",
-          "TMBERS3West_Final": "1F"
+          "HHOODWest_Final": "1F",
+          "KRATRWest_Final": "1F",
+          "TMBRSWest_Final": "1F"
         },
         "default_consolidation": {
           "1F": []
         }
       },
       "KP3": {
+        "go_around_assignments": {
+          "KPDX/28R": "1N",
+          "KPDX/10L": "1N",
+          "KPDX/28L": "1D",
+          "KPDX/10R": "1D"
+        },
         "inbound_assignments": {
           "HELNS": "1N",
-          "HHOOD5West": "1N",
+          "HHOODWest": "1N",
           "Hawaii": "1D",
-          "KRATR2West": "1N",
-          "OCITY3West": "1D",
-          "TMBERS3West": "1D",
+          "KRATRWest": "1N",
+          "OCITYWest": "1D",
+          "TMBRSWest": "1D",
           "TOU": "1N",
           "V112.W": "1N",
           "V165.S": "1N"
