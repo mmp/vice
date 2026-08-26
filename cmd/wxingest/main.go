@@ -112,7 +112,7 @@ func run() error {
 	flag.Parse()
 
 	usage := func() {
-		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|precip|atmos|atmosavg|tfr]...\nwhere [flags] may be:\n")
+		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|precip|atmos|atmosavg|atmosseries|tfr]...\nwhere [flags] may be:\n")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -177,6 +177,8 @@ func run() error {
 				eg.Go(func() error { return ingestHRRR(sb) })
 			case "atmosavg":
 				eg.Go(func() error { return backfillAtmosAvg(sb) })
+			case "atmosseries":
+				eg.Go(func() error { return rollupAtmosSeries(sb) })
 			case "tfr", "tfrs":
 				eg.Go(func() error { return ingestTFRs(sb) })
 			default:

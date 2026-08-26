@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"maps"
 	"os"
 	"slices"
 	"strings"
@@ -264,23 +265,94 @@ func ingestHRRR(sb StorageBackend) error {
 }
 
 func generateAtmosManifest(sb StorageBackend) error {
-	for _, prefix := range []string{"atmos", "atmos-avg"} {
-		LogInfo("Updating consolidated %s manifest", prefix)
+	LogInfo("Updating consolidated atmos manifest")
 
-		paths, err := sb.List(prefix + "/")
-		if err != nil {
-			return err
-		}
-
-		manifest, err := wx.GenerateManifestWithPrefix(paths, prefix)
-		if err != nil {
-			return err
-		}
-
-		if err := storeManifest(sb, manifest, wx.ManifestPath(prefix), prefix+"-manifest.msgpack.zst"); err != nil {
-			return err
-		}
+	paths, err := sb.List("atmos/")
+	if err != nil {
+		return err
 	}
+
+	manifest, err := wx.GenerateManifestWithPrefix(paths, "atmos")
+	if err != nil {
+		return err
+	}
+
+	return storeManifest(sb, manifest, wx.ManifestPath("atmos"), "atmos-manifest.msgpack.zst")
+}
+
+// rollupAtmosSeries gathers each facility's hourly averaged profiles into a
+// single object holding all of them. The per-hour objects exist because atmos
+// ingest is sharded by hour and a task can only write the hours it owns, but
+// nothing downstream wants them one at a time: fetching a few hundred
+// thousand ~850 byte objects from outside GCP costs about 120ms of latency
+// each, while in here it is a short in-region pass.
+func rollupAtmosSeries(sb StorageBackend) error {
+	facilities := slices.Concat(slices.Sorted(maps.Keys(av.DB.TRACONs)), slices.Sorted(maps.Keys(av.DB.ARTCCs)))
+
+	var eg errgroup.Group
+	eg.SetLimit(4) // each facility fans out to *nWorkers reads of its own
+	for _, facilityID := range facilities {
+		// Facilities are partitioned across Cloud Run job tasks.
+		if !shardOwns(facilityID) {
+			continue
+		}
+		eg.Go(func() error { return storeAtmosSeries(facilityID, sb) })
+	}
+	return eg.Wait()
+}
+
+func storeAtmosSeries(facilityID string, sb StorageBackend) error {
+	prefix := "atmos-avg/" + facilityID + "/"
+	objects, err := sb.List(prefix)
+	if err != nil {
+		return fmt.Errorf("listing %s: %w", prefix, err)
+	}
+	if len(objects) == 0 {
+		return nil
+	}
+
+	paths := slices.Sorted(maps.Keys(objects))
+	times := make([]time.Time, len(paths))
+	stacks := make([]*wx.AtmosSampleStack, len(paths))
+
+	var eg errgroup.Group
+	eg.SetLimit(*nWorkers)
+	for i, path := range paths {
+		eg.Go(func() error {
+			_, ts, err := wx.ParseWeatherObjectPath(strings.TrimPrefix(path, "atmos-avg/"))
+			if err != nil {
+				return fmt.Errorf("%s: %w", path, err)
+			}
+
+			var stack wx.AtmosSampleStack
+			if err := sb.ReadObject(path, &stack); err != nil {
+				return fmt.Errorf("%s: %w", path, err)
+			}
+
+			times[i], stacks[i] = time.Unix(ts, 0).UTC(), &stack
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+
+	at := wx.AtmosByTime{SampleStacks: make(map[time.Time]*wx.AtmosSampleStack, len(paths))}
+	for i, t := range times {
+		at.SampleStacks[t] = stacks[i]
+	}
+
+	soa, err := at.ToSOA()
+	if err != nil {
+		return err
+	}
+
+	n, err := sb.StoreObject(wx.AtmosSeriesPath(facilityID), soa)
+	if err != nil {
+		return err
+	}
+
+	LogInfo("%s: rolled up %d profiles into %s", facilityID, len(at.SampleStacks), util.ByteCount(n))
 	return nil
 }
 
@@ -691,8 +763,8 @@ func uploadWeatherAtmos(at *wx.AtmosByPoint, facilityID string, t time.Time, st 
 }
 
 // storeAtmosAvg writes the facility-averaged vertical profile for a grid.
-// That average is all the bundled resources/wx data needs, so storing it
-// here spares wxpackage from re-reading every grid to average it again.
+// That average is all the bundled resources/wx data needs, so storing it here
+// means nothing downstream has to read the grids back to average them again.
 func storeAtmosAvg(soa wx.AtmosByPointSOA, facilityID string, t time.Time, st StorageBackend) (int64, error) {
 	avg := soa.Average()
 	if avg == nil {

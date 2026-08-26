@@ -2,7 +2,10 @@ package wx
 
 import (
 	"math"
+	"reflect"
+	"slices"
 	"testing"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	vmath "github.com/mmp/vice/math"
@@ -384,8 +387,8 @@ func TestMakeSampleClamping(t *testing.T) {
 	}
 }
 
-// The atmos-avg objects that wxingest stores and wxpackage reads back are
-// msgpack-encoded AtmosSampleStacks, so this round trip has to be exact:
+// The atmos-avg objects that wxingest writes and rolls back up per facility
+// are msgpack-encoded AtmosSampleStacks, so this round trip has to be exact:
 // anything lost here would change the bundled resources/wx data relative to
 // averaging the grids directly.
 func TestAtmosSampleStackMsgpackRoundTrip(t *testing.T) {
@@ -413,5 +416,52 @@ func TestAtmosSampleStackMsgpackRoundTrip(t *testing.T) {
 
 	if decoded != stack {
 		t.Errorf("round trip changed the stack:\ngot  %+v\nwant %+v", decoded, stack)
+	}
+}
+
+// wxpackage decodes the rolled-up per-facility series, drops the times
+// outside its date range, and re-encodes; that round trip has to preserve
+// the samples exactly or the bundled data would drift a quantization step
+// every time the package is rebuilt.
+func TestAtmosByTimeSOARoundTrip(t *testing.T) {
+	at := AtmosByTime{SampleStacks: make(map[time.Time]*AtmosSampleStack)}
+	base := time.Date(2026, time.July, 1, 0, 0, 0, 0, time.UTC)
+	for h := range 50 {
+		var stack AtmosSampleStack
+		for i := range NumSampleLevels {
+			f := float32(i) + float32(h)/3
+			stack.Levels[i] = AtmosSample{
+				UComponent:  1.5 + f/7,
+				VComponent:  -3.25 + f/11,
+				Temperature: av.MakeTemperatureFromCelsius(15 - f),
+				Dewpoint:    av.MakeTemperatureFromCelsius(4 - f/2),
+				Height:      100 + 300*f,
+			}
+		}
+		at.SampleStacks[base.Add(time.Duration(h)*time.Hour)] = &stack
+	}
+
+	soa, err := at.ToSOA()
+	if err != nil {
+		t.Fatalf("ToSOA: %v", err)
+	}
+
+	// The quantization in the first ToSOA is lossy; everything after it
+	// must not be.
+	quantized := soa.ToAOS()
+	again, err := quantized.ToSOA()
+	if err != nil {
+		t.Fatalf("second ToSOA: %v", err)
+	}
+
+	if !reflect.DeepEqual(soa, again) {
+		for i := range NumSampleLevels {
+			if !reflect.DeepEqual(soa.Levels[i], again.Levels[i]) {
+				t.Errorf("level %d differs:\n got %+v\nwant %+v", i, again.Levels[i], soa.Levels[i])
+			}
+		}
+		if !slices.Equal(soa.Times, again.Times) {
+			t.Errorf("times differ:\n got %v\nwant %v", again.Times, soa.Times)
+		}
 	}
 }

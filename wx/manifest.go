@@ -275,6 +275,13 @@ func ManifestPath(prefix string) string {
 	return path.Join(prefix, ManifestFilename)
 }
 
+// AtmosSeriesPath returns the path to the object holding all of a facility's
+// averaged vertical profiles as an AtmosByTimeSOA--the same thing, in the
+// same format, as the facility's bundled resources/wx/atmos file.
+func AtmosSeriesPath(facility string) string {
+	return path.Join("atmos-series", facility+".msgpack.zst")
+}
+
 // compressTimestamps delta-encodes and flate-compresses a slice of int64 timestamps.
 // Returns the compressed bytes suitable for storage.
 func compressTimestamps(timestamps []int64) ([]byte, error) {

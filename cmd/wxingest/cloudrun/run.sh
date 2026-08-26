@@ -6,7 +6,8 @@
 #   3. precip manifest (atmos needs it to know which hours have precip)
 #   4. atmos, fanned out across tasks that shard the missing hours
 #   5. atmos-avg repair, for any grid whose average didn't get written
-#   6. atmos and atmos-avg manifests
+#   6. atmos manifest
+#   7. atmos-series rollup, which is what packaging reads
 # and then package resources/wx locally from the results.
 # Requires a gcloud recent enough to support --tasks/--args overrides on
 # "gcloud run jobs execute". Run only one of these at a time.
@@ -54,7 +55,13 @@ gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wai
 gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wait \
     --tasks=1 --args=-manifests-only,atmos
 
-# Packaging runs locally: it reads the averaged profiles rather than the
-# hourly grids they came from, which is a few hundred MB rather than a few
-# hundred GB, and it writes straight into the checkout.
+# Gather each facility's hourly averages into one object. Reading the hourly
+# objects individually is fine in-region and hopeless from outside it: there
+# are a few hundred thousand of them and each costs a round trip.
+gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wait \
+    --tasks=1 --args=-nworkers=64,atmosseries
+
+# Packaging runs locally: one object per facility, ~40MB in total, rather
+# than the ~700GiB of grids they were distilled from. It writes straight
+# into the checkout.
 go run ./cmd/wxpackage -output=resources/wx
