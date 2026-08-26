@@ -45,6 +45,50 @@
   </branding>
 
   <releases>
+    <release version="0.15.0" date="2026-08-26">
+      <url type="details">https://pharr.org/vice/#release-0.15.0</url>
+      <description>
+        <ul>
+          <li>New scenarios: ZJX Central-Geneva (manaphy), ZTL (AsianEvxn), ZME (Noah Hunt), ZDC (Ryan H), ZAU (Zach Styka), ZFW (obmna), ZTL (Gus Agostinho), FAR, LTS (Peyton)</li>
+          <li>Scenario updates: ZNY, ZAU, C90, Y90 (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA, SCT, ZLA, PCT (Ketan K), F11 (Michael Knight), C90 (Shane, Zach Styka), I90 (Ethan Hawes), EWR (aq86_), OKC (obmna), TPA (Jake), N90, PHL (Matt P), P80 (boganbruce)</li>
+          <li>Added support for using real-world flight data in scenarios) (Shane, Logan S)</li>
+          <li>Added support for fix pairs for controller assignment (radarcontacto)</li>
+          <li>Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection</li>
+          <li>Fixed bug with departures climbing past restrictions in their SID</li>
+          <li>Fixed bug where aircraft cleared for an approach would descend through the earlier altitude restrictions on it</li>
+          <li>Fixed bug where departures would climb to cruise altitude even if they had /cALT in their upcoming route</li>
+          <li>Fixed bug where virtual controllers wouldn't accept redirected handoffs</li>
+          <li>Fixed bug where VFR aircraft could end up swarming an airport</li>
+          <li>Fixed bug where overflights would check in with the ATIS</li>
+          <li>Fixed bug with some departures not checking in</li>
+          <li>Fixed bug where aircraft would report the field in sight and then be unable to accept a visual approach</li>
+          <li>Fixed a number of STT bugs</li>
+          <li>Updated to AIRAC 260806</li>
+          <li>STT: fixed few bugs with fixes in an aircraft's route not being recognized</li>
+          <li>STARS: Fixed bugs with redirected handoff datablocks and recalling redirected handoffs</li>
+          <li>STARS: &quot;Outside owned airspace&quot; alerts are no longer shown in datablocks by default. (Can be reenabled in settings.)</li>
+          <li>ERAM: Added confict alert detection (Michael Trokel)</li>
+          <li>ERAM: Fix leader line alignment with datablocks (Jud Lopez)</li>
+          <li>ERAM: Added support for middle-click of callsign in datablock running QF command</li>
+          <li>ERAM: Added support for always-displayed maps (must re-run crc2vice on source maps)</li>
+          <li>Facility engineering: For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)</li>
+          <li>Facility engineering: Scenarios may now specify &quot;default_consolidation&quot;, overriding the config's consolidation (radarcontacto)</li>
+          <li>Facility engineering: Coordination lists may specify &quot;owner_tcp&quot; to split one airport's release entries by assigned departure TCP (radarcontacto)</li>
+          <li>Facility engineering: Added &quot;handoff&quot; filters to adapt automatic handoff volumes and conditions (radarcontacto)</li>
+          <li>Facility engineering: Added pseudo-ERAM coordination: a center's &quot;arts_coordination&quot; and &quot;restrictions&quot; derive each flight's entry/exit fixes at spawn, as the enroute host would (radarcontacto)</li>
+          <li>Facility engineering: Added &quot;fix_pair_configuration&quot; to assign a flight's initial owning position from its entry/exit fix pair, per configuration plan, with reassignment rules (altitude, aircraft class, callsign, active runway) and RNAV route designation (radarcontacto)</li>
+          <li>Facility engineering: Added &quot;tcp_assignment_classes&quot; and &quot;automatic_handoff_classes&quot; to name aircraft classes for fix-pair and handoff-filter matching (radarcontacto)</li>
+          <li>Facility engineering: Added &quot;automatic_scratchpad_assignment&quot; to default a flight's scratchpads from its fixes, altitude, and flight type (radarcontacto)</li>
+          <li>Facility engineering: Added &quot;traffic_routes&quot; to airports, giving the routes traffic between them and specific other airports flies when a scenario is flown from a timetable or historical data</li>
+          <li>Facility engineering: Added &quot;aircraft&quot; to arrivals, restricting which classes of aircraft an arrival carries</li>
+          <li>Facility engineering: &quot;departure_routes&quot; may specify an array of routes with individual ones using &quot;aircraft&quot; to limit valid aircraft types </li>
+          <li>Facility engineering: Removed &quot;primary_airport&quot;; replaced with facility &quot;weather_station&quot;, &quot;lists&quot;.&quot;ssa&quot;.&quot;system_altimeter&quot; (overridable per area)</li>
+          <li>Facility engineering: Arrivals must now give the airports they serve in &quot;airports&quot; unless they name a &quot;star&quot; the FAA CIFP charts</li>
+          <li>Facility engineering: An arrival's &quot;star&quot; must be charted for at least one of the airports it serves, whether or not it supplies the waypoints</li>
+          <li>Facility engineering: Per-area adaptations of scratchpads and airspace awareness now override facility-level, don't augment.</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.14.6" date="2026-07-05">
       <url type="details">https://pharr.org/vice/#release-0.14.6</url>
       <description>

@@ -1563,7 +1563,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.14.6/Vice-v0.14.6-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.6 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.15.0/Vice-v0.15.0-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.0 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1572,7 +1572,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Ventura or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.14.6/Vice-v0.14.6-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.6 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.15.0/Vice-v0.15.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.0 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1600,6 +1600,60 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.15.0" data-nav-title="0.15.0">0.15.0 (26 Aug 2026)</h3>
+            <ul>
+              <li>New scenarios: ZJX Central-Geneva (manaphy), ZTL (AsianEvxn), ZME (Noah Hunt), ZDC (Ryan H), ZAU (Zach Styka), ZFW (obmna), ZTL (Gus Agostinho), FAR, LTS (Peyton)</li>
+              <li>Scenario updates: ZNY, ZAU, C90, Y90 (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA, SCT, ZLA, PCT (Ketan K), F11 (Michael Knight), C90 (Shane, Zach Styka), I90 (Ethan Hawes), EWR (aq86_), OKC (obmna), TPA (Jake), N90, PHL (Matt P), P80 (boganbruce)</li>
+              <li>Added support for using real-world flight data in scenarios) (Shane, Logan S)</li>
+              <li>Added support for fix pairs for controller assignment (radarcontacto)</li>
+              <li>Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection</li>
+              <li>Fixed bug with departures climbing past restrictions in their SID</li>
+              <li>Fixed bug where aircraft cleared for an approach would descend through the earlier altitude restrictions on it</li>
+              <li>Fixed bug where departures would climb to cruise altitude even if they had /cALT in their upcoming route</li>
+              <li>Fixed bug where virtual controllers wouldn't accept redirected handoffs</li>
+              <li>Fixed bug where VFR aircraft could end up swarming an airport</li>
+              <li>Fixed bug where overflights would check in with the ATIS</li>
+              <li>Fixed bug with some departures not checking in</li>
+              <li>Fixed bug where aircraft would report the field in sight and then be unable to accept a visual approach</li>
+              <li>Fixed a number of STT bugs</li>
+              <li>Updated to AIRAC 260806</li>
+              <li>STT: fixed few bugs with fixes in an aircraft's route not being recognized</li>
+              <li>STARS
+                <ul>
+                  <li>Fixed bugs with redirected handoff datablocks and recalling redirected handoffs</li>
+                  <li>&quot;Outside owned airspace&quot; alerts are no longer shown in datablocks by default. (Can be reenabled in settings.)</li>
+                </ul>
+              </li>
+              <li>ERAM
+                <ul>
+                  <li>Added confict alert detection (Michael Trokel)</li>
+                  <li>Fix leader line alignment with datablocks (Jud Lopez)</li>
+                  <li>Added support for middle-click of callsign in datablock running QF command</li>
+                  <li>Added support for always-displayed maps (must re-run <code>crc2vice</code> on source maps)</li>
+                </ul>
+              </li>
+              <li>Facility engineering
+                <ul>
+                  <li>For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)</li>
+                  <li>Scenarios may now specify &quot;default_consolidation&quot;, overriding the config's consolidation (radarcontacto)</li>
+                  <li>Coordination lists may specify &quot;owner_tcp&quot; to split one airport's release entries by assigned departure TCP (radarcontacto)</li>
+                  <li>Added &quot;handoff&quot; filters to adapt automatic handoff volumes and conditions (radarcontacto)</li>
+                  <li>Added pseudo-ERAM coordination: a center's &quot;arts_coordination&quot; and &quot;restrictions&quot; derive each flight's entry/exit fixes at spawn, as the enroute host would (radarcontacto)</li>
+                  <li>Added &quot;fix_pair_configuration&quot; to assign a flight's initial owning position from its entry/exit fix pair, per configuration plan, with reassignment rules (altitude, aircraft class, callsign, active runway) and RNAV route designation (radarcontacto)</li>
+                  <li>Added &quot;tcp_assignment_classes&quot; and &quot;automatic_handoff_classes&quot; to name aircraft classes for fix-pair and handoff-filter matching (radarcontacto)</li>
+                  <li>Added &quot;automatic_scratchpad_assignment&quot; to default a flight's scratchpads from its fixes, altitude, and flight type (radarcontacto)</li>
+                  <li>Added &quot;traffic_routes&quot; to airports, giving the routes traffic between them and specific other airports flies when a scenario is flown from a timetable or historical data</li>
+                  <li>Added &quot;aircraft&quot; to arrivals, restricting which classes of aircraft an arrival carries</li>
+                  <li>&quot;departure_routes&quot; may specify an array of routes with individual ones using &quot;aircraft&quot; to limit valid aircraft types </li>
+                  <li>Removed &quot;primary_airport&quot;; replaced with facility &quot;weather_station&quot;, &quot;lists&quot;.&quot;ssa&quot;.&quot;system_altimeter&quot; (overridable per area)</li>
+                  <li>Arrivals must now give the airports they serve in &quot;airports&quot; unless they name a &quot;star&quot; the FAA CIFP charts</li>
+                  <li>An arrival's &quot;star&quot; must be charted for at least one of the airports it serves, whether or not it supplies the waypoints</li>
+                  <li>Per-area adaptations of scratchpads and airspace awareness now override facility-level, don't augment.</li>
+                </ul>
+              </li>
+            </ul>
+
 
             <h3 id="release-0.14.6" data-nav-title="0.14.6">0.14.6 (5 Jul 2026)</h3>
             <ul>
