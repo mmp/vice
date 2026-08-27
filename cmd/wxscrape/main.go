@@ -18,7 +18,9 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -59,8 +61,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	launchHTTPServer()
-
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
 	if err != nil {
@@ -69,15 +69,30 @@ func main() {
 	}
 	bucket := client.Bucket(bucketName)
 
+	h := &health{start: time.Now()}
+
 	if metar {
-		go fetchMETAR(ctx, bucket)
+		// A pass over the airports that are due starts every hour, so a
+		// healthy scraper uploads something well inside of two.
+		go fetchMETAR(ctx, bucket, h.add("METAR", 2*time.Hour))
 	}
 	if precip {
-		go fetchPRECIP(ctx, bucket)
+		// Each facility refetches every 5 minutes, backing off to 30 when
+		// it has no returns. Facilities stagger themselves over only a few
+		// minutes at startup and then hold that phase, so on a day when
+		// nothing anywhere has returns they all sleep in step: a half hour
+		// of quiet is legitimate.
+		go fetchPRECIP(ctx, bucket, h.add("precip", 40*time.Minute))
 	}
 	if tfrs {
-		go fetchTFRs(ctx, bucket)
+		// Only newly-issued TFRs are uploaded, so there is no cadence to
+		// hold the scraper to here.
+		go fetchTFRs(ctx, bucket, h.add("TFR", 0))
 	}
+
+	// Only once every category has been registered, so that the handler
+	// never races with h.add.
+	launchHTTPServer(h)
 
 	select {} // wait forever
 }
@@ -127,7 +142,7 @@ func listExisting(ctx context.Context, bucket *storage.BucketHandle, base string
 //go:embed metar-airports.txt
 var metarAirports string
 
-func fetchMETAR(ctx context.Context, bucket *storage.BucketHandle) {
+func fetchMETAR(ctx context.Context, bucket *storage.BucketHandle, c *category) {
 	var airports []string
 	for ap := range strings.Lines(metarAirports) {
 		airports = append(airports, strings.TrimSpace(ap))
@@ -152,10 +167,10 @@ func fetchMETAR(ctx context.Context, bucket *storage.BucketHandle) {
 				LogInfo("%s: fetching METAR: last fetch %s ago", ap, time.Since(t))
 			}
 
-			if doWithBackoff(func() Status { return fetchAirportMETAR(ctx, bucket, ap) }) {
+			if doWithBackoff(func() Status { return fetchAirportMETAR(ctx, bucket, ap, c) }) {
 				lastReport[ap] = time.Now()
 			} else {
-				LogError("%s: unable to fetch METAR; giving up for this cycle", ap)
+				c.recordFailure("%s: unable to fetch METAR; giving up for this cycle", ap)
 			}
 
 			<-tick
@@ -227,7 +242,7 @@ func downloadToGCS(ctx context.Context, bucket *storage.BucketHandle, url, objpa
 	return StatusSuccess
 }
 
-func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap string) Status {
+func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap string, c *category) Status {
 	const aviationWeatherCenterDataApi = `https://aviationweather.gov/api/data/metar?ids=%s&format=json&hours=%d`
 	requestUrl := fmt.Sprintf(aviationWeatherCenterDataApi, ap, 36 /* hours */)
 
@@ -235,6 +250,7 @@ func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap str
 	status := downloadToGCS(ctx, bucket, requestUrl, path)
 	switch status {
 	case StatusSuccess:
+		c.recordUpload(path)
 		LogInfo("%s: downloaded METAR data", ap)
 	case StatusNoData:
 		LogError("%s: publishes no METAR", ap)
@@ -242,14 +258,14 @@ func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap str
 	return status
 }
 
-func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle) {
+func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle, c *category) {
 	av.InitDB()
 
 	for tracon := range av.DB.TRACONs {
-		go fetchFacilityPrecip(ctx, bucket, tracon)
+		go fetchFacilityPrecip(ctx, bucket, tracon, c)
 	}
 	for artcc := range av.DB.ARTCCs {
-		go fetchFacilityPrecip(ctx, bucket, artcc)
+		go fetchFacilityPrecip(ctx, bucket, artcc, c)
 	}
 }
 
@@ -312,7 +328,7 @@ func fetchGeometry(facilityID string, fac av.Facility) (wpx, hpx int, bbox math.
 
 // fetchFacilityPrecip runs asynchronously in a goroutine and fetches radar
 // images for a single facility (TRACON or ARTCC) and writes them to disk.
-func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, facilityID string) {
+func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, facilityID string, c *category) {
 	// Spread out the requests temporally
 	time.Sleep(time.Duration(rand.IntN(200)) * time.Second)
 
@@ -459,6 +475,8 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 				return StatusTransientFailure
 			}
 
+			c.recordUpload(path)
+
 			return StatusSuccess
 		}
 
@@ -474,13 +492,13 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 				}
 			}
 		} else {
-			LogError("%s: unable to fetch precip", facilityID)
+			c.recordFailure("%s: unable to fetch precip", facilityID)
 			<-tick
 		}
 	}
 }
 
-func fetchTFRs(ctx context.Context, bucket *storage.BucketHandle) {
+func fetchTFRs(ctx context.Context, bucket *storage.BucketHandle, c *category) {
 	existing := listExisting(ctx, bucket, "scrape/tfrs")
 
 	tick := time.Tick(time.Hour)
@@ -529,9 +547,10 @@ func fetchTFRs(ctx context.Context, bucket *storage.BucketHandle) {
 				// Download the TFR
 				url := fmt.Sprintf("https://tfr.faa.gov/download/detail_%s.xml", safeID)
 				if downloadToGCS(ctx, bucket, url, path) != StatusSuccess {
-					LogError("Failed to download TFR %s", tfr.NotamID)
+					c.recordFailure("Failed to download TFR %s", tfr.NotamID)
 				} else {
 					LogInfo("Downloaded TFR %s", tfr.NotamID)
+					c.recordUpload(path)
 					existing[path] = 0
 				}
 
@@ -546,7 +565,129 @@ func fetchTFRs(ctx context.Context, bucket *storage.BucketHandle) {
 	}
 }
 
-func launchHTTPServer() {
+// Ports for the two HTTP servers. Only healthPort is reachable from outside
+// GCE, via the "wxscrape-health" firewall rule; profiling stays on the
+// private port and is reached through an ssh tunnel.
+const (
+	pprofPort  = 8002
+	healthPort = 8003
+)
+
+const nRecentUploads = 8
+
+type uploadRecord struct {
+	when time.Time
+	path string
+}
+
+// category records upload activity for one class of scraped object.
+type category struct {
+	name string
+	// staleAfter is the longest the scraper is expected to go between
+	// successful uploads given its fetch cadence; zero if there is no
+	// cadence to hold it to.
+	staleAfter time.Duration
+
+	mu              sync.Mutex
+	uploads         int
+	recent          []uploadRecord // most recent first
+	failures        int
+	lastFailure     time.Time
+	lastFailureText string
+}
+
+func (c *category) recordUpload(path string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.uploads++
+	c.recent = slices.Insert(c.recent, 0, uploadRecord{when: time.Now(), path: path})
+	if len(c.recent) > nRecentUploads {
+		c.recent = c.recent[:nRecentUploads]
+	}
+}
+
+// recordFailure notes that the scraper gave up on a fetch after exhausting
+// its retries, logging it as well.
+func (c *category) recordFailure(format string, args ...any) {
+	msg := fmt.Sprintf(format, args...)
+	LogError("%s", msg)
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.failures++
+	c.lastFailure = time.Now()
+	c.lastFailureText = msg
+}
+
+// writeStatus reports the category's activity and returns whether it is
+// keeping up with its expected cadence. Uploads are measured from start
+// until the first one lands so that a freshly-started scraper is not
+// immediately reported as stale.
+func (c *category) writeStatus(w io.Writer, start time.Time) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	since, what := start, "start"
+	if len(c.recent) > 0 {
+		since, what = c.recent[0].when, "last upload"
+	}
+	age := time.Since(since).Round(time.Second)
+	ok := c.staleAfter == 0 || age <= c.staleAfter
+
+	state := "ok"
+	if !ok {
+		state = "STALE"
+	}
+	fmt.Fprintf(w, "%s: %s, %s %s ago", c.name, state, what, age)
+	if !ok {
+		fmt.Fprintf(w, ", expected within %s", c.staleAfter)
+	}
+	fmt.Fprintf(w, " (%d uploads, %d failures)\n", c.uploads, c.failures)
+
+	for _, u := range c.recent {
+		fmt.Fprintf(w, "  %s %s\n", u.when.UTC().Format(time.RFC3339), u.path)
+	}
+	if c.failures > 0 {
+		fmt.Fprintf(w, "  last failure %s ago: %s\n", time.Since(c.lastFailure).Round(time.Second),
+			c.lastFailureText)
+	}
+
+	return ok
+}
+
+// health serves a plain-text summary of what the scraper has uploaded
+// recently, for monitoring from outside.
+type health struct {
+	start time.Time
+	cats  []*category
+}
+
+func (h *health) add(name string, staleAfter time.Duration) *category {
+	c := &category{name: name, staleAfter: staleAfter}
+	h.cats = append(h.cats, c)
+	return c
+}
+
+func (h *health) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var body strings.Builder
+	ok := true
+	for _, c := range h.cats {
+		ok = c.writeStatus(&body, h.start) && ok
+	}
+
+	status := "ok"
+	if !ok {
+		status = "stale"
+	}
+
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	fmt.Fprintf(w, "status: %s\nuptime: %s\n", status, time.Since(h.start).Round(time.Second))
+	io.WriteString(w, body.String())
+}
+
+func launchHTTPServer(h *health) {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
@@ -554,12 +695,20 @@ func launchHTTPServer() {
 	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	serve(pprofPort, mux)
 
-	if listener, err := net.Listen("tcp", ":8002"); err == nil {
-		LogInfo("Launching HTTP server on port 8002")
-		go http.Serve(listener, mux)
-	} else {
-		fmt.Fprintf(os.Stderr, "Unable to start HTTP server: %v", err)
+	healthMux := http.NewServeMux()
+	healthMux.Handle("/health", h)
+	serve(healthPort, healthMux)
+}
+
+func serve(port int, mux *http.ServeMux) {
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to start HTTP server on port %d: %v", port, err)
 		os.Exit(1)
 	}
+
+	LogInfo("Launching HTTP server on port %d", port)
+	go http.Serve(listener, mux)
 }
