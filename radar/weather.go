@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/bits"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/mmp/vice/log"
@@ -152,8 +153,8 @@ type WxScheme struct {
 func (s WxScheme) NumLevels() int { return len(s.Thresholds) }
 
 func (s WxScheme) LevelForDBZ(dbz byte) int {
-	for i := len(s.Thresholds) - 1; i >= 0; i-- {
-		if dbz > s.Thresholds[i] {
+	for i, v := range slices.Backward(s.Thresholds) {
+		if dbz > v {
 			return i + 1
 		}
 	}

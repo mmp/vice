@@ -221,8 +221,8 @@ func (l dbLine) Len() int {
 // dbChopTrailing takes a datablock field and returns a shortened slice
 // with trailing unset characters removed.
 func dbChopTrailing(f []dbChar) []dbChar {
-	for i := len(f) - 1; i >= 0; i-- {
-		if f[i].ch != 0 {
+	for i, v := range slices.Backward(f) {
+		if v.ch != 0 {
 			return f[:i+1]
 		}
 	}

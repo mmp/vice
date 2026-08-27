@@ -1120,8 +1120,8 @@ restart:
 
 			if replacement, ok := callMerger(merger, matchedIntents); ok {
 				// Remove matched intents in reverse order (to preserve indices)
-				for i := len(matchIndices) - 1; i >= 0; i-- {
-					intents = slices.Delete(intents, matchIndices[i], matchIndices[i]+1)
+				for _, matchIndice := range slices.Backward(matchIndices) {
+					intents = slices.Delete(intents, matchIndice, matchIndice+1)
 				}
 				// Insert replacement at position of first match
 				intents = slices.Insert(intents, matchIndices[0], replacement...)

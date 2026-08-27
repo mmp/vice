@@ -854,8 +854,8 @@ func detectNegativePrefix(tokens []Token) ([]Token, bool) {
 // discard everything before. If it's just numbers (frequency correction), only discard
 // the preceding numbers to preserve command keywords like "contact".
 func applyDisregard(tokens []Token) []Token {
-	for i := len(tokens) - 1; i >= 0; i-- {
-		text := strings.ToLower(tokens[i].Text)
+	for i, token := range slices.Backward(tokens) {
+		text := strings.ToLower(token.Text)
 		if text == "disregard" {
 			// "disregard" retracts the clause being spoken, which starts at
 			// the most recent run of command keywords ("turn left heading
@@ -1010,8 +1010,8 @@ var correctionTypeKeywords = []struct{ word, keyword string }{
 // the command type of the corrected portion.
 func findCommandTypeKeyword(tokens []Token) string {
 	maintain := ""
-	for i := len(tokens) - 1; i >= 0; i-- {
-		w := strings.ToLower(tokens[i].Text)
+	for i, token := range slices.Backward(tokens) {
+		w := strings.ToLower(token.Text)
 		for _, k := range correctionTypeKeywords {
 			if WordScore(w, k.word) >= 0.85 {
 				return k.keyword

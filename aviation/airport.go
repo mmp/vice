@@ -906,9 +906,9 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 // FinalHeading returns the final heading from the exit route's waypoints.
 // Returns 0 if no heading waypoint is found.
 func (er ExitRoute) FinalHeading() int {
-	for i := len(er.Waypoints) - 1; i >= 0; i-- {
-		if er.Waypoints[i].Heading != 0 {
-			return int(er.Waypoints[i].Heading)
+	for _, v := range slices.Backward(er.Waypoints) {
+		if v.Heading != 0 {
+			return int(v.Heading)
 		}
 	}
 	return 0
