@@ -85,8 +85,8 @@ func (l dbLine) Len() int {
 
 // dbChopTrailing removes trailing unset characters from the provided field.
 func dbChopTrailing(f []dbChar) []dbChar {
-	for i := len(f) - 1; i >= 0; i-- {
-		if f[i].ch != 0 {
+	for i, v := range slices.Backward(f) {
+		if v.ch != 0 {
 			return f[:i+1]
 		}
 	}

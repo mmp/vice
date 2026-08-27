@@ -382,8 +382,8 @@ func (ar *CRDARegion) QualificationPolygon(nmPerLongitude float32) []math.Point2
 	for _, p := range left {
 		poly = append(poly, math.NM2LL(p, nmPerLongitude))
 	}
-	for i := len(right) - 1; i >= 0; i-- {
-		poly = append(poly, math.NM2LL(right[i], nmPerLongitude))
+	for _, r := range slices.Backward(right) {
+		poly = append(poly, math.NM2LL(r, nmPerLongitude))
 	}
 	return poly
 }

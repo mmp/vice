@@ -865,9 +865,9 @@ func departureRoute(route, departureAirport string, exit av.ExitID, exitRoute *a
 // flies: the route resumes after the last fix they share, so an exit route
 // that ends at the exit fix doesn't send the aircraft back to a fix behind it.
 func dropFlownPrefix(routeWps, exitWps av.WaypointArray) av.WaypointArray {
-	for i := len(exitWps) - 1; i >= 0; i-- {
-		for j := len(routeWps) - 1; j >= 0; j-- {
-			if routeWps[j].Fix == exitWps[i].Fix {
+	for _, exitWp := range slices.Backward(exitWps) {
+		for j, routeWp := range slices.Backward(routeWps) {
+			if routeWp.Fix == exitWp.Fix {
 				return routeWps[j+1:]
 			}
 		}

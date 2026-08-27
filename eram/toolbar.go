@@ -1937,8 +1937,8 @@ func (ep *ERAMPane) drawTearoffMenus(ctx *panes.Context, transforms radar.ScopeT
 	}
 	if activeMenuForInput == "" {
 		if mouse := ctx.Mouse; mouse != nil {
-			for i := len(menuOrder) - 1; i >= 0; i-- {
-				name := menuOrder[i]
+			for _, name := range slices.Backward(menuOrder) {
+
 				if _, ok := ep.tearoffMenus[name]; !ok {
 					continue
 				}

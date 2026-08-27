@@ -22,8 +22,8 @@ import (
 // processing, the VFR plan auto-associates with the track, replacing the
 // old local plan and transferring the NAS beacon code.
 func (s *Sim) processInterfacilityVFR(now Time) {
-	for i := len(s.STARSComputer.FlightPlans) - 1; i >= 0; i-- {
-		vfrFP := s.STARSComputer.FlightPlans[i]
+	for i, vfrFP := range slices.Backward(s.STARSComputer.FlightPlans) {
+
 		if vfrFP.PlanType != LocalEnroute || vfrFP.Rules != av.FlightRulesVFR {
 			continue
 		}

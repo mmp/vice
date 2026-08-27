@@ -5,6 +5,8 @@
 package nav
 
 import (
+	"slices"
+
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -509,7 +511,7 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 	// Find the *last* waypoint that has an altitude restriction that
 	// applies to the aircraft.
 	lastWp := -1
-	for i := len(wps) - 1; i >= 0; i-- {
+	for i := range slices.Backward(wps) {
 		// Skip restrictions that don't apply (e.g. "at or above" if we're
 		// already above.) I think(?) we would actually bail out and return
 		// nil if we find one that doesn't apply, under the principle that
