@@ -256,6 +256,88 @@ func TestParseARINC424CourseVersusHeadingLegs(t *testing.T) {
 	}
 }
 
+// A VI leg is a heading flown until the course of the following CF leg to its
+// fix is intercepted, at which point the aircraft goes direct to that fix.
+// KSAN SHAMU1 leaves SHAMU on a 135 heading and joins the 075 course to SARGS
+// rather than turning direct to it.
+func TestParseARINC424CourseIntercept(t *testing.T) {
+	lines := []string{
+		"SUSAP KSANK2ESHAMU13RW09  010SHAMUK2PC0E       IF                                             18000                        081981310",
+		"SUSAP KSANK2ESHAMU13RW09  020         0        VI                     1350                                                 081990804",
+		"SUSAP KSANK2ESHAMU13RW09  030SARGSK2EA0EE      CF MZB K2      2550008007500055D                                            082002103",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	wps := result.Airports["KSAN"].STARs["SHAMU1"].RunwayWaypoints["9"]
+	if got := WaypointArray(wps).Encode(); got != "SHAMU/h135@t75 SARGS" {
+		t.Fatalf("expected %q, got %q", "SHAMU/h135@t75 SARGS", got)
+	}
+
+	groups := wps[0].ActionGroups()
+	if len(groups) != 1 {
+		t.Fatalf("expected one action group at SHAMU, got %d", len(groups))
+	}
+	if hdg := groups[0].Actions.Heading; hdg == nil {
+		t.Error("expected a heading action at SHAMU")
+	} else if hdg.Heading != 135 || hdg.Track {
+		t.Errorf("expected heading 135, got %+v", *hdg)
+	}
+	if until := groups[0].Until; until.Type != WaypointActionCourse || until.Course != 75 {
+		t.Errorf("expected a 075 course termination, got %+v", until)
+	}
+}
+
+// The HUSKR transition of the KLNK ILS 18-Y flies a 199 heading off HUSKR to
+// intercept the 177 localizer course to ESACO. Its LNK transition instead
+// reverses course with an FC/CI pair, which remains a procedure turn.
+func TestParseARINC424ApproachCourseIntercept(t *testing.T) {
+	lines := []string{
+		"SUSAP KLNKK3FI18-Y AHUSKR 010HUSKRK3EA0E  A    IF                                             18000                 0 NS   439802110",
+		"SUSAP KLNKK3FI18-Y AHUSKR 020         0        VI                     1990        + 03200                           0 NS   439812110",
+		"SUSAP KLNKK3FI18-Y AHUSKR 030ESACOK3PC0EE B    CF IOCZK3      3573011017730055PI  + 03200                           0 NS   439822110",
+		"SUSAP KLNKK3FI18-Y ALNK   010LNK  K3D 0V  A    IF                                 + 03200     18000                 0 NS   439832110",
+		"SUSAP KLNKK3FI18-Y ALNK   020JUSAMK3PC0E       TF                                 + 03200                           0 NS   439842110",
+		"SUSAP KLNKK3FI18-Y ALNK   030JUSAMK3PC0E       FC LNK K3      3208012035700053D   + 03200                           0 NS   439852301",
+		"SUSAP KLNKK3FI18-Y ALNK   040         0    R   CIY                    1470                                          0 NS   439862301",
+		"SUSAP KLNKK3FI18-Y ALNK   050ESACOK3PC0EE B    CF IOCZK3      3573011017730072PI  + 03200                           0 NS   439872110",
+		"SUSAP KLNKK3FI18-Y I      010ESACOK3PC0E  I    IF IOCZK3      35730110        PI  J 032000290018000                 0 NS   439882110",
+		"SUSAP KLNKK3FI18-Y I      020CLONEK3PC0E  F    CF IOCZK3      3573007217700038PI  H 0290002837        -300LNK   K3D 0 NS   439892110",
+		"SUSAP KLNKK3FI18-Y I      030RW18 K3PG0GY M    CF IOCZK3      3573002317700049PI    01250             -300          0 NS   439902110",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	appr, ok := result.Airports["KLNK"].Approaches["IY18"]
+	if !ok {
+		t.Fatalf("expected KLNK IY18 approach, got %v", result.Airports["KLNK"].Approaches)
+	}
+
+	transition := func(fix string) WaypointArray {
+		idx := slices.IndexFunc(appr.Waypoints, func(wps WaypointArray) bool { return wps[0].Fix == fix })
+		if idx == -1 {
+			t.Fatalf("no %s transition in %v", fix, appr.Waypoints)
+		}
+		return appr.Waypoints[idx]
+	}
+
+	if got := transition("HUSKR").Encode(); !strings.Contains(got, "HUSKR/iaf/h199@t177 ") {
+		t.Errorf("expected HUSKR to intercept the 177 course, got %q", got)
+	}
+
+	lnk := transition("LNK")
+	idx := slices.IndexFunc(lnk, func(wp Waypoint) bool { return wp.Fix == "JUSAM" })
+	if idx == -1 {
+		t.Fatalf("no JUSAM in the LNK transition %q", lnk.Encode())
+	}
+	if pt := lnk[idx].ProcedureTurn(); pt == nil {
+		t.Errorf("expected a procedure turn at JUSAM, got %q", lnk.Encode())
+	} else if pt.Type != PTStandard45 || !pt.RightTurns {
+		t.Errorf("expected a right-turn 45 procedure turn at JUSAM, got %+v", *pt)
+	}
+	if len(lnk[idx].ActionGroups()) != 0 {
+		t.Errorf("expected no action groups at JUSAM, got %q", lnk.Encode())
+	}
+}
+
 // RF legs give the arc's center fix and its radius in thousandths of a
 // nautical mile; both are used rather than searching for a circle that
 // matches the leg's length.

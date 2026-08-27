@@ -38,6 +38,16 @@ func parseAltitude(s []byte) int {
 	return parseInt(s)
 }
 
+// parseMagneticCourse converts a course given in tenths of a degree to whole
+// degrees. Waypoint.Heading uses 0 to mean "unset", so a course that rounds
+// down to zero is recorded as 360.
+func parseMagneticCourse(s []byte) int16 {
+	if hdg := int16((parseInt(s) + 5) / 10); hdg != 0 {
+		return hdg
+	}
+	return 360
+}
+
 func printColumnHeader() {
 	for range ARINC424LineLength / 10 {
 		fmt.Printf("         |")
@@ -590,7 +600,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	case "IF", "TF": // initial fix, direct to fix
 		break
 
-	case "CF": // heading to fix; treat as direct to fix?
+	case "CF": // course to fix; direct unless a preceding VI intercepts the course
 		break
 
 	case "DF": // direct to fix from unspecified point
@@ -601,10 +611,6 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 		return
 
 	case "CI": // course to intercept; no fix, handled in parseTransitions
-		ok = false
-		return
-
-	case "VI": // heading to intercept or next leg. ignore for now?
 		ok = false
 		return
 
@@ -727,7 +733,21 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 	terminate func(r ssaRecord, transitions map[string]WaypointArray) bool) map[string]WaypointArray {
 	transitions := make(map[string]WaypointArray)
 
-	for _, rec := range recs {
+	// nextLeg returns the record following recs[i] in the same transition.
+	nextLeg := func(i int) (ssaRecord, bool) {
+		for j := i + 1; j < len(recs); j++ {
+			if skip(recs[j]) {
+				continue
+			}
+			if recs[j].transition != recs[i].transition {
+				break
+			}
+			return recs[j], true
+		}
+		return ssaRecord{}, false
+	}
+
+	for i, rec := range recs {
 		if log(rec) {
 			rec.Print()
 		}
@@ -739,12 +759,7 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 		}
 
 		if rec.pathAndTermination == "FM" || rec.pathAndTermination == "VM" {
-			// Waypoint.Heading uses 0 to mean "unset", so a course that rounds
-			// down to zero is recorded as 360.
-			hdg := int16((parseInt(rec.outboundMagneticCourse) + 5) / 10)
-			if hdg == 0 {
-				hdg = 360
-			}
+			hdg := parseMagneticCourse(rec.outboundMagneticCourse)
 			if n := len(transitions[rec.transition]); n == 0 {
 				panic("FM as first waypoint in transition?")
 			} else {
@@ -755,6 +770,27 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 				// the wind is free to blow off course.
 				wp.SetHeadingIsTrack(rec.pathAndTermination == "FM")
 			}
+		} else if rec.pathAndTermination == "VI" {
+			// A heading flown until the following leg's course to its fix is
+			// intercepted, after which the aircraft goes direct to that fix.
+			next, ok := nextLeg(i)
+			n := len(transitions[rec.transition])
+			if !ok || n == 0 || next.pathAndTermination != "CF" ||
+				empty(rec.outboundMagneticCourse) || empty(next.outboundMagneticCourse) {
+				continue
+			}
+			hdg, crs := parseMagneticCourse(rec.outboundMagneticCourse),
+				parseMagneticCourse(next.outboundMagneticCourse)
+			if hdg == crs {
+				// Parallel to the course, so it would never be intercepted.
+				continue
+			}
+
+			wp := &transitions[rec.transition][n-1]
+			wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
+				Actions: WaypointActions{Heading: &WaypointHeadingAction{Heading: hdg}},
+				Until:   WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
+			})
 		} else if rec.pathAndTermination == "CI" {
 			// CI (course to intercept) paired with a preceding FC defines a procedure turn.
 			// Attach the procedure turn to the previous waypoint in this transition.
