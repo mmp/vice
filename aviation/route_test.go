@@ -127,6 +127,54 @@ func TestParseWaypointActionGroups(t *testing.T) {
 	}
 }
 
+func TestParseCourseTermination(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	wps, err := parseWaypoints("RNGRR/h200@t220 WAVEY")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	groups := wps[0].ActionGroups()
+	if len(groups) != 1 {
+		t.Fatalf("expected 1 action group, got %d", len(groups))
+	}
+	if groups[0].Actions.Heading.Heading != 200 || groups[0].Actions.Heading.Track {
+		t.Errorf("expected heading 200, got %+v", groups[0].Actions.Heading)
+	}
+	if groups[0].Until.Type != WaypointActionCourse || groups[0].Until.Course != 220 {
+		t.Fatalf("unexpected course action group: %+v", groups[0])
+	}
+
+	encoded := WaypointArray(wps).Encode()
+	if !strings.Contains(encoded, "RNGRR/h200@t220") {
+		t.Fatalf("expected encoded route to round-trip @t, got %q", encoded)
+	}
+}
+
+func TestParseCourseTerminationErrors(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, tc := range []struct{ route, want string }{
+		{"RNGRR/h200@t220/l290 WAVEY", "@t must terminate the last action group"},
+		{"RNGRR/h200@t220", "has no following fix"},
+		{"RNGRR/h200@t0 WAVEY", "heading must be between 1-360"},
+		{"RNGRR/h200@tabc WAVEY", "expected a course after @t"},
+		{"RNGRR/h0 WAVEY", "heading must be between 1-360"},
+	} {
+		_, err := parseWaypoints(tc.route)
+		if err == nil {
+			t.Errorf("%s: expected an error", tc.route)
+		} else if !strings.Contains(err.Error(), tc.want) {
+			t.Errorf("%s: expected error %q to include %q", tc.route, err, tc.want)
+		}
+	}
+}
+
 func TestInitializeActionGroupDMEFix(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}

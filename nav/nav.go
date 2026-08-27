@@ -792,6 +792,13 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 		lines = append(lines, fmt.Sprintf("Flying hold at %s, %s entry, step: %s",
 			hold.Hold.DisplayName(), hold.Entry.String(), hold.currentStep()))
 	}
+	if maneuvers := nav.Heading.Maneuvers; len(maneuvers) > 0 {
+		inPT := len(nav.Waypoints) > 0 && nav.Waypoints[0].ProcedureTurn() != nil
+		lines = append(lines, util.Select(inPT, "Procedure turn", "Maneuver")+": "+maneuvers[0].String())
+		for _, m := range maneuvers[1:] {
+			lines = append(lines, "  then "+m.String())
+		}
+	}
 	if dh := nav.DeferredNavHeading; dh != nil {
 		if len(dh.Waypoints) > 0 {
 			lines = append(lines, fmt.Sprintf("Will shortly go direct %s", dh.Waypoints[0].Fix))
@@ -893,11 +900,6 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 			line += ", established on the approach"
 		}
 		lines = append(lines, line)
-
-		if len(nav.Heading.Maneuvers) > 0 {
-			lines = append(lines, fmt.Sprintf("Flying procedure turn (step %d/%d: %s)",
-				1, len(nav.Heading.Maneuvers), nav.Heading.Maneuvers[0].String()))
-		}
 	}
 
 	lines = append(lines, "Route flying: "+av.WaypointArray(nav.Waypoints).Encode())

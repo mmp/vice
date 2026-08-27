@@ -467,6 +467,20 @@
                   below the departure airport's field elevation is an error, since the action group would end immediately.</li>
                 <li> <code>@d</code><i>distance</i><i>fix</i>: after an action group, fly its heading until reaching the given DME distance from the named fix or navaid.
                   For example, <code>_EWR4_4La/h039@a500/r055@d4.0IEZA/l290/ho5W</code> flies heading 039 until 500 feet, turns right to heading 055 until D4.0 from IEZA, then turns left to heading 290 and hands off to 5W.</li>
+                <li> <code>@t</code><i>course</i>: fly the action group's heading until it is time to turn onto the given magnetic
+                  course to the next fix on the route, then proceed direct to that fix. This is how to express procedures that
+                  read like "fly heading 200, then track 220 to WAVEY": <code>RNGRR/h200@t220 WAVEY</code>. The aircraft holds
+                  heading 200 after RNGRR and turns toward WAVEY at the point where doing so rolls it out tracking 220, so it
+                  joins the charted course rather than cutting the corner. Because the aircraft flies direct to the fix once
+                  established, wind correction and sequencing on to the fix after it are handled as they are for any other fix.
+                  <ul>
+                    <li>The course is the inbound course <i>to</i> the fix—the ground track the aircraft will be flying.</li>
+                    <li>The aircraft must converge on the course. If the action group's own heading is the same as the course,
+                      the two are parallel and the aircraft will never join it; it stays on the heading until vectored.</li>
+                    <li><code>@t</code> must be the last action group at a fix, and the fix must be followed by another fix
+                      on the route for the course to lead to.</li>
+                  </ul>
+                </li>
                 <li> <code>/ld</code>: left direct to the next fix (force a left turn to reach the next waypoint)</li>
                 <li> <code>/rd</code>: right direct to the next fix (force a right turn to reach the next waypoint)</li>
                 <li> <code>/iaf</code>: indicates that the fix is an IAF (initial approach fix)</li>

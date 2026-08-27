@@ -60,6 +60,7 @@ const (
 	WaypointActionNoTermination WaypointActionTerminationType = iota
 	WaypointActionAltitude
 	WaypointActionDME
+	WaypointActionCourse
 )
 
 // WaypointActionTermination describes a non-fix condition for advancing to the
@@ -71,6 +72,7 @@ type WaypointActionTermination struct {
 	DMEDistance     float32
 	DMEFixLocation  math.Point2LL
 	DMEFixElevation int
+	Course          int16 // magnetic course to the next fix on the route
 }
 
 type WaypointHeadingAction struct {
@@ -164,6 +166,8 @@ func (wag WaypointActionGroup) Encoded() string {
 		s += fmt.Sprintf("@a%d", wag.Until.Altitude)
 	case WaypointActionDME:
 		s += fmt.Sprintf("@d%.1f%s", wag.Until.DMEDistance, wag.Until.DMEFix)
+	case WaypointActionCourse:
+		s += fmt.Sprintf("@t%d", wag.Until.Course)
 	}
 	return s
 }
@@ -1212,18 +1216,20 @@ func allDigits(s string) bool {
 	return true
 }
 
-func parseWaypointHeadingAction(f string) (*WaypointHeadingAction, bool, error) {
-	parseHeading := func(s string) (int16, error) {
-		hdg, err := strconv.Atoi(s)
-		if err != nil {
-			return 0, fmt.Errorf("%s: invalid waypoint outbound heading: %v", s, err)
-		}
-		if hdg < 0 || hdg > 360 {
-			return 0, fmt.Errorf("%s: waypoint outbound heading must be between 0-360", s)
-		}
-		return int16(hdg), nil
+// parseCourse parses a magnetic heading or course. North is 360 rather than
+// 0, since Waypoint.Heading uses 0 to mean "unset".
+func parseCourse(s string) (int16, error) {
+	hdg, err := strconv.Atoi(s)
+	if err != nil {
+		return 0, fmt.Errorf("%s: invalid heading: %v", s, err)
 	}
+	if hdg < 1 || hdg > 360 {
+		return 0, fmt.Errorf("%s: heading must be between 1-360 (use 360 for north)", s)
+	}
+	return int16(hdg), nil
+}
 
+func parseWaypointHeadingAction(f string) (*WaypointHeadingAction, bool, error) {
 	if f == "ph" {
 		return &WaypointHeadingAction{PresentHeading: true}, true, nil
 	}
@@ -1257,7 +1263,7 @@ func parseWaypointHeadingAction(f string) (*WaypointHeadingAction, bool, error) 
 		return nil, false, nil
 	}
 
-	heading, err := parseHeading(hdg)
+	heading, err := parseCourse(hdg)
 	if err != nil {
 		return nil, true, err
 	}
@@ -1408,6 +1414,16 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 			DMEDistance: float32(d),
 			DMEFix:      spec[rend:],
 		}, nil
+
+	case 't':
+		if !allDigits(f[1:]) {
+			return WaypointActionTermination{}, fmt.Errorf("%s: expected a course after @t", f)
+		}
+		course, err := parseCourse(f[1:])
+		if err != nil {
+			return WaypointActionTermination{}, fmt.Errorf("%s: invalid course after @t: %w", f, err)
+		}
+		return WaypointActionTermination{Type: WaypointActionCourse, Course: course}, nil
 
 	default:
 		return WaypointActionTermination{}, fmt.Errorf("%s: unknown waypoint action termination", f)
@@ -1733,11 +1749,28 @@ func parseWaypoints(str string) (WaypointArray, error) {
 			return nil, fmt.Errorf("%s: cannot specify both /c and /d at the same waypoint", wp.Fix)
 		}
 
+		// @t ends with the aircraft going direct to the next fix, so a
+		// following action group would immediately preempt it.
+		if groups := wp.ActionGroups(); len(groups) > 1 &&
+			slices.ContainsFunc(groups[:len(groups)-1], func(g WaypointActionGroup) bool {
+				return g.Until.Type == WaypointActionCourse
+			}) {
+			return nil, fmt.Errorf("%s: @t must terminate the last action group at a fix", wp.Fix)
+		}
+
 		waypoints = append(waypoints, wp)
 	}
 
 	if nextWaypointTurn != TurnClosest {
 		return nil, fmt.Errorf("/ld or /rd on the last waypoint has no next waypoint to apply to")
+	}
+
+	if n := len(waypoints); n > 0 {
+		if groups := waypoints[n-1].ActionGroups(); len(groups) > 0 &&
+			groups[len(groups)-1].Until.Type == WaypointActionCourse {
+			return nil, fmt.Errorf("%s: @t on the last waypoint has no following fix to give a course to",
+				waypoints[n-1].Fix)
+		}
 	}
 
 	return waypoints, nil

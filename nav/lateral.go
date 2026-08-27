@@ -378,6 +378,13 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		// depart fix direct
 		hdg = math.TrueToMagnetic(math.Heading2LL(wp.Location, nfa.Depart.Fix.Location,
 			nav.FlightState.NmPerLongitude), nav.FlightState.MagneticVariation)
+	} else if groups := wp.ActionGroups(); len(groups) > 0 && groups[0].Actions.Heading != nil {
+		// Leaving the next fix on the heading of its first action group.
+		if h := groups[0].Actions.Heading; h.PresentHeading {
+			hdg = nav.FlightState.Heading
+		} else {
+			hdg = math.MagneticHeading(h.Heading)
+		}
 	} else if wp.Heading != 0 {
 		// Leaving the next fix on a specified heading.
 		hdg = wp.MagneticHeading()
@@ -528,7 +535,11 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 				nav.Heading.Turn = nfa.Depart.Turn // may be nil (TurnClosest)
 			}
 		} else if len(wp.ActionGroups()) > 0 && !skipWaypointNavigation {
-			nav.Heading = NavHeading{Maneuvers: nav.makeActionGroupManeuvers(wp.Fix, wp.ActionGroups())}
+			var nextFix math.Point2LL
+			if len(nav.Waypoints) > 1 {
+				nextFix = nav.Waypoints[1].Location
+			}
+			nav.Heading = NavHeading{Maneuvers: nav.makeActionGroupManeuvers(wp.Fix, wp.ActionGroups(), nextFix)}
 			if event := nav.activateWaypointActions(wp.Fix, wp.ActionGroups()[0].Actions); event != nil {
 				nav.PendingWaypointActionEvents = append(nav.PendingWaypointActionEvents, *event)
 			}
@@ -598,7 +609,11 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	return UpdateResult{}
 }
 
-func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionGroup) []LateralManeuver {
+// makeActionGroupManeuvers translates a waypoint's action groups into the
+// maneuvers that fly them. nextFix is the location of the following fix on
+// the route, which an @t course termination joins.
+func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionGroup,
+	nextFix math.Point2LL) []LateralManeuver {
 	maneuvers := make([]LateralManeuver, 0, len(groups))
 	for _, group := range groups {
 		m := LateralManeuver{
@@ -630,6 +645,23 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 				DMEDistance:     group.Until.DMEDistance,
 				DMEFix:          group.Until.DMEFixLocation,
 				DMEFixElevation: group.Until.DMEFixElevation,
+			}
+		case av.WaypointActionCourse:
+			if nextFix.IsZero() {
+				// parseWaypoints rejects @t on the last waypoint, but the
+				// route may since have been truncated; hold the heading
+				// rather than intercepting a course through 0°N 0°E.
+				m.Until = ManeuverComplete{Type: UntilControllerIntervention}
+			} else {
+				// The turn onto the course is always the short way around,
+				// regardless of which way the aircraft turned to take up
+				// the group's heading.
+				m.Until = ManeuverComplete{
+					Type:            UntilIntercept,
+					Fix:             nextFix,
+					InterceptCourse: math.MagneticHeading(group.Until.Course),
+					InterceptTurn:   av.TurnClosest,
+				}
 			}
 		default:
 			panic("unhandled WaypointActionTerminationType")
@@ -809,8 +841,12 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 	v = math.Scale2f(v, nav.FlightState.GS)
 	crabAngle := math.Abs(wxs.Deflection(v))
 
+	// The radial is a ground course, so the simulated aircraft flies the
+	// heading that holds it as a track; otherwise in a crosswind it rolls
+	// out and immediately drifts back off the radial.
+	ghostHdg := nav.headingForTrack(hdg, wxs)
 	nav2 := *nav
-	nav2.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
+	nav2.Heading = NavHeading{Assigned: &ghostHdg, Turn: &turn}
 	nav2.DeferredNavHeading = nil
 	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
 
