@@ -11,6 +11,7 @@ import (
 	"image/png"
 	"io"
 	"log"
+	"maps"
 	"math/rand/v2"
 	"net"
 	"net/http"
@@ -72,22 +73,19 @@ func main() {
 	h := &health{start: time.Now()}
 
 	if metar {
-		// A pass over the airports that are due starts every hour, so a
-		// healthy scraper uploads something well inside of two.
-		go fetchMETAR(ctx, bucket, h.add("METAR", 2*time.Hour))
+		airports := metarAirports()
+		LogInfo("%d METAR airports", len(airports))
+		go fetchMETAR(ctx, bucket, airports, h.add("METAR", metarOverdue, airports))
 	}
 	if precip {
-		// Each facility refetches every 5 minutes, backing off to 30 when
-		// it has no returns. Facilities stagger themselves over only a few
-		// minutes at startup and then hold that phase, so on a day when
-		// nothing anywhere has returns they all sleep in step: a half hour
-		// of quiet is legitimate.
-		go fetchPRECIP(ctx, bucket, h.add("precip", 40*time.Minute))
+		// Registers a source per facility and starts a goroutine for each,
+		// then returns.
+		fetchPRECIP(ctx, bucket, h)
 	}
 	if tfrs {
 		// Only newly-issued TFRs are uploaded, so there is no cadence to
 		// hold the scraper to here.
-		go fetchTFRs(ctx, bucket, h.add("TFR", 0))
+		go fetchTFRs(ctx, bucket, h.add("TFR", 0, nil))
 	}
 
 	// Only once every category has been registered, so that the handler
@@ -140,35 +138,47 @@ func listExisting(ctx context.Context, bucket *storage.BucketHandle, base string
 // ->
 //
 //go:embed metar-airports.txt
-var metarAirports string
+var metarAirportsFile string
 
-func fetchMETAR(ctx context.Context, bucket *storage.BucketHandle, c *category) {
+const (
+	// metarRefetch is how often each airport is refetched: well inside the
+	// 36 hours of history that a fetch returns, so that consecutive fetches
+	// overlap and leave no holes.
+	metarRefetch = 20 * time.Hour
+	// The airports that come due are worked through back-to-back at one per
+	// 21 seconds, and a full pass over all of them takes about four hours,
+	// so an airport can legitimately run several hours past due before the
+	// scraper reaches it.
+	metarOverdue = 26 * time.Hour
+)
+
+// metarAirports returns the airports to fetch METARs for.
+func metarAirports() []string {
 	var airports []string
-	for ap := range strings.Lines(metarAirports) {
+	for ap := range strings.Lines(metarAirportsFile) {
 		airports = append(airports, strings.TrimSpace(ap))
 	}
-	LogInfo("%d METAR airports", len(airports))
+	return airports
+}
 
-	lastReport := make(map[string]time.Time)
-
-	// ~650 airports -> fetches for all are spread over ~4 hours
+func fetchMETAR(ctx context.Context, bucket *storage.BucketHandle, airports []string, c *category) {
 	tick := time.Tick(21 * time.Second)
 	tock := time.Tick(time.Hour)
 	for {
 		perm := rand.Perm(len(airports))
 		for _, i := range perm {
 			ap := airports[i]
-			if t, ok := lastReport[ap]; !ok {
+			if age, ok := c.sinceFetch(ap); !ok {
 				LogInfo("%s: fetching METAR: no previous fetch", ap)
-			} else if time.Since(t) < 20*time.Hour {
-				LogInfo("%s: skipping METAR fetch, last fetch %s ago", ap, time.Since(t))
+			} else if age < metarRefetch {
+				LogInfo("%s: skipping METAR fetch, last fetch %s ago", ap, age)
 				continue
 			} else {
-				LogInfo("%s: fetching METAR: last fetch %s ago", ap, time.Since(t))
+				LogInfo("%s: fetching METAR: last fetch %s ago", ap, age)
 			}
 
 			if doWithBackoff(func() Status { return fetchAirportMETAR(ctx, bucket, ap, c) }) {
-				lastReport[ap] = time.Now()
+				c.markFetched(ap)
 			} else {
 				c.recordFailure("%s: unable to fetch METAR; giving up for this cycle", ap)
 			}
@@ -207,11 +217,12 @@ func doWithBackoff(f func() Status) bool {
 	return false // unsuccessful after multiple retries
 }
 
+// The largest ARTCC radar images take the longest to come back; METAR
+// responses are small.
+var httpClient = &http.Client{Timeout: 60 * time.Second}
+
 func downloadToGCS(ctx context.Context, bucket *storage.BucketHandle, url, objpath string) Status {
-	client := &http.Client{
-		Timeout: 30 * time.Second,
-	}
-	resp, err := client.Get(url)
+	resp, err := httpClient.Get(url)
 	if err != nil {
 		LogError("%s: %v", url, err)
 		return StatusTransientFailure
@@ -258,14 +269,38 @@ func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap str
 	return status
 }
 
-func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle, c *category) {
+const (
+	// precipRefetch is how often each facility's radar image is refetched;
+	// a facility with no returns waits six of those instead of one.
+	precipRefetch = 5 * time.Minute
+	// precipOverdue covers that quiet cycle plus a full retry budget.
+	precipOverdue = 50 * time.Minute
+)
+
+func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle, h *health) {
 	av.InitDB()
 
+	// A facility that doesn't resolve is left out entirely rather than
+	// registered and never fetched, which would pin the category to STALE.
+	facs := make(map[string]av.Facility)
+	addFacility := func(id string) {
+		if fac, ok := av.DB.LookupFacility(id); !ok {
+			LogError("%s: unable to find facility info", id)
+		} else {
+			facs[id] = fac
+		}
+	}
 	for tracon := range av.DB.TRACONs {
-		go fetchFacilityPrecip(ctx, bucket, tracon, c)
+		addFacility(tracon)
 	}
 	for artcc := range av.DB.ARTCCs {
-		go fetchFacilityPrecip(ctx, bucket, artcc, c)
+		addFacility(artcc)
+	}
+
+	ids := slices.Sorted(maps.Keys(facs))
+	c := h.add("precip", precipOverdue, ids)
+	for _, id := range ids {
+		go fetchFacilityPrecip(ctx, bucket, id, facs[id], c)
 	}
 }
 
@@ -328,17 +363,13 @@ func fetchGeometry(facilityID string, fac av.Facility) (wpx, hpx int, bbox math.
 
 // fetchFacilityPrecip runs asynchronously in a goroutine and fetches radar
 // images for a single facility (TRACON or ARTCC) and writes them to disk.
-func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, facilityID string, c *category) {
+func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, facilityID string,
+	fac av.Facility, c *category) {
 	// Spread out the requests temporally
 	time.Sleep(time.Duration(rand.IntN(200)) * time.Second)
 
-	tick := time.Tick(5 * time.Minute)
+	tick := time.Tick(precipRefetch)
 
-	fac, ok := av.DB.LookupFacility(facilityID)
-	if !ok {
-		LogError("%s: unable to find facility info", facilityID)
-		return
-	}
 	wpx, hpx, bbox := fetchGeometry(facilityID, fac)
 	center := bbox.Center()
 
@@ -382,7 +413,7 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 		var havePrecip bool
 
 		tryFetch := func() Status {
-			resp, err := http.Get(url)
+			resp, err := httpClient.Get(url)
 			if err != nil {
 				LogError("%s: %s: %v", facilityID, url, err)
 				return StatusTransientFailure
@@ -482,6 +513,7 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 
 		if doWithBackoff(tryFetch) {
 			LogInfo("Got precip for %s have precip %v", facilityID, havePrecip)
+			c.markFetched(facilityID)
 
 			<-tick
 
@@ -580,17 +612,25 @@ type uploadRecord struct {
 	path string
 }
 
-// category records upload activity for one class of scraped object.
+// category records the scraper's progress for one class of scraped object.
+// Freshness is measured per source--an airport, a facility--rather than from
+// the last upload of any kind: METAR in particular refetches each airport
+// only every 20 hours and works through the ones that come due back-to-back,
+// so it is silent for most of the day by design.
 type category struct {
 	name string
-	// staleAfter is the longest the scraper is expected to go between
-	// successful uploads given its fetch cadence; zero if there is no
-	// cadence to hold it to.
-	staleAfter time.Duration
+	// overdueAfter is the longest a source may go between successful
+	// fetches; zero for a category whose fetches are event-driven and have
+	// no schedule to hold them to.
+	overdueAfter time.Duration
+	// sources in the order they were registered, so that the status text
+	// names the same laggard from one request to the next.
+	sources []string
 
 	mu              sync.Mutex
 	uploads         int
-	recent          []uploadRecord // most recent first
+	recent          []uploadRecord       // most recent first
+	fetched         map[string]time.Time // last successful fetch; zero if not yet fetched
 	failures        int
 	lastFailure     time.Time
 	lastFailureText string
@@ -607,6 +647,28 @@ func (c *category) recordUpload(path string) {
 	}
 }
 
+// markFetched notes that source was fetched successfully, whether or not
+// that fetch had anything to upload.
+func (c *category) markFetched(source string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.fetched[source] = time.Now()
+}
+
+// sinceFetch returns how long it has been since source was last fetched
+// successfully, and whether it has ever been fetched at all.
+func (c *category) sinceFetch(source string) (time.Duration, bool) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	t, ok := c.fetched[source]
+	if !ok {
+		return 0, false
+	}
+	return time.Since(t), true
+}
+
 // recordFailure notes that the scraper gave up on a fetch after exhausting
 // its retries, logging it as well.
 func (c *category) recordFailure(format string, args ...any) {
@@ -621,28 +683,53 @@ func (c *category) recordFailure(format string, args ...any) {
 	c.lastFailureText = msg
 }
 
-// writeStatus reports the category's activity and returns whether it is
-// keeping up with its expected cadence. Uploads are measured from start
-// until the first one lands so that a freshly-started scraper is not
-// immediately reported as stale.
+// oldestFetch returns the source that has gone longest without a successful
+// fetch and how long that has been, measuring a source not yet fetched from
+// start so that a freshly-started scraper is not immediately reported as
+// stale. The source is "" for a category that tracks no sources. The caller
+// must hold c.mu.
+func (c *category) oldestFetch(start time.Time) (string, time.Duration) {
+	var oldest string
+	var since time.Time
+	for _, src := range c.sources {
+		t := c.fetched[src]
+		if t.IsZero() {
+			t = start
+		}
+		if oldest == "" || t.Before(since) {
+			oldest, since = src, t
+		}
+	}
+	if oldest == "" {
+		return "", 0
+	}
+	return oldest, time.Since(since)
+}
+
+// writeStatus reports the category's activity and returns whether its
+// sources are still being fetched on schedule.
 func (c *category) writeStatus(w io.Writer, start time.Time) bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	since, what := start, "start"
-	if len(c.recent) > 0 {
-		since, what = c.recent[0].when, "last upload"
-	}
-	age := time.Since(since).Round(time.Second)
-	ok := c.staleAfter == 0 || age <= c.staleAfter
+	src, age := c.oldestFetch(start)
+	ok := c.overdueAfter == 0 || age <= c.overdueAfter
 
 	state := "ok"
 	if !ok {
 		state = "STALE"
 	}
-	fmt.Fprintf(w, "%s: %s, %s %s ago", c.name, state, what, age)
-	if !ok {
-		fmt.Fprintf(w, ", expected within %s", c.staleAfter)
+	fmt.Fprintf(w, "%s: %s", c.name, state)
+	if len(c.recent) > 0 {
+		fmt.Fprintf(w, ", last upload %s ago", time.Since(c.recent[0].when).Round(time.Second))
+	} else {
+		fmt.Fprintf(w, ", no uploads yet")
+	}
+	if src != "" {
+		fmt.Fprintf(w, ", oldest fetch %s %s ago", src, age.Round(time.Second))
+		if !ok {
+			fmt.Fprintf(w, ", expected within %s", c.overdueAfter)
+		}
 	}
 	fmt.Fprintf(w, " (%d uploads, %d failures)\n", c.uploads, c.failures)
 
@@ -664,8 +751,17 @@ type health struct {
 	cats  []*category
 }
 
-func (h *health) add(name string, staleAfter time.Duration) *category {
-	c := &category{name: name, staleAfter: staleAfter}
+// add registers a category of scraped object. sources names the individual
+// things the scraper refetches--airports, facilities--each of which is
+// expected to be fetched again within overdueAfter; pass none for a category
+// whose fetches are event-driven.
+func (h *health) add(name string, overdueAfter time.Duration, sources []string) *category {
+	c := &category{
+		name:         name,
+		overdueAfter: overdueAfter,
+		sources:      sources,
+		fetched:      make(map[string]time.Time),
+	}
 	h.cats = append(h.cats, c)
 	return c
 }
