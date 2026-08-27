@@ -6,6 +6,7 @@ package aviation
 
 import (
 	"math"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -210,5 +211,85 @@ func TestParseARINC424LocalizerDoesNotOverwriteDME(t *testing.T) {
 	}
 	if !nav.HasDMEElevation || nav.DMEElevation != 33 {
 		t.Fatalf("expected preserved DME elevation 33, got %d", nav.DMEElevation)
+	}
+}
+
+// An FM leg is a course from the fix, which the aircraft flies as a ground
+// track; a VM leg is a magnetic heading. Both are the last leg of a runway
+// transition here: KIAH NNCEE2 ends with a 267 course off HOWLN and KIAH
+// OHIIO4 with a 265 heading off PNUUT.
+func TestParseARINC424CourseVersusHeadingLegs(t *testing.T) {
+	lines := []string{
+		"SUSAP KIAHK4ENNCEE26RW09  010BEDLMK4PC0E       IF                                 + 10000     18000250                     218872312",
+		"SUSAP KIAHK4ENNCEE26RW09  060HOWLNK4PC0EY      TF                                   06000          210                     218922312",
+		"SUSAP KIAHK4ENNCEE26RW09  070HOWLNK4PC0EE      FM AEX K4      239717392672    D                                            218932312",
+		"SUSAP KIAHK4EOHIIO43RW09  010PNUUTK4EA0E       IF                                             18000                        219071707",
+		"SUSAP KIAHK4EOHIIO43RW09  020KIAH K4PA0AE      VM                     2650                                                 219081707",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	for _, tc := range []struct {
+		star    string
+		fix     string
+		heading int16
+		isTrack bool
+	}{
+		{star: "NNCEE2", fix: "HOWLN", heading: 267, isTrack: true},
+		{star: "OHIIO4", fix: "PNUUT", heading: 265, isTrack: false},
+	} {
+		wps := result.Airports["KIAH"].STARs[tc.star].RunwayWaypoints["9"]
+		if len(wps) == 0 {
+			t.Errorf("%s: no runway 9 waypoints", tc.star)
+			continue
+		}
+		wp := wps[len(wps)-1]
+		if wp.Fix != tc.fix {
+			t.Errorf("%s: expected last fix %q, got %q", tc.star, tc.fix, wp.Fix)
+		}
+		if wp.Heading != tc.heading {
+			t.Errorf("%s/%s: expected heading %d, got %d", tc.star, wp.Fix, tc.heading, wp.Heading)
+		}
+		if wp.HeadingIsTrack() != tc.isTrack {
+			t.Errorf("%s/%s: expected HeadingIsTrack %v, got %v", tc.star, wp.Fix, tc.isTrack,
+				wp.HeadingIsTrack())
+		}
+	}
+}
+
+// RF legs give the arc's center fix and its radius in thousandths of a
+// nautical mile; both are used rather than searching for a circle that
+// matches the leg's length.
+func TestParseARINC424ConstantRadiusArc(t *testing.T) {
+	lines := []string{
+		"SUSAP KIAHK4FH09-Y AHOWLN 010HOWLNK4PC0E  B    IF                                   06000     18000210              A-FS   222171406",
+		"SUSAP KIAHK4FH09-Y AHOWLN 020TEXXNK4PC0E    010TF                                 + 06000                           A FS   222181406",
+		"SUSAP KIAHK4FH09-Y AHOWLN 030HHOOGK4PC0E   R010RF       0025402672    34520035    + 04900                 CFBSR K4PCA FS   222191406",
+		"SUSAP KIAHK4FH09-Y AHOWLN 040SAYNOK4PC0EE  R010RF       0025403452    08690045    + 03000                 CFBSR K4PCA FS   222201406",
+		"SUSAP KIAHK4FH09-Y H      010SAYNOK4PC0E  I    IF                                 + 03000     18000                 A FS   222261406",
+		"SUSAP KIAHK4FH09-Y H      020HYWAYK4PC1E  F 010TF                                 + 02000                 RW09  K4PGA FS   222271406",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	appr, ok := result.Airports["KIAH"].Approaches["RY9"]
+	if !ok {
+		t.Fatalf("expected KIAH RY9 approach, got %v", result.Airports["KIAH"].Approaches)
+	}
+	var arc *DMEArc
+	for _, wps := range appr.Waypoints {
+		if idx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.Fix == "TEXXN" }); idx != -1 {
+			arc = wps[idx].Arc()
+		}
+	}
+	if arc == nil {
+		t.Fatalf("expected an arc at TEXXN in %v", appr.Waypoints)
+	}
+	if arc.Fix != "CFBSR" {
+		t.Errorf("expected arc center fix CFBSR, got %q", arc.Fix)
+	}
+	if arc.Radius != 2.54 {
+		t.Errorf("expected arc radius 2.54, got %f", arc.Radius)
+	}
+	if arc.Direction != DMEArcDirectionClockwise {
+		t.Errorf("expected clockwise arc, got %v", arc.Direction)
 	}
 }

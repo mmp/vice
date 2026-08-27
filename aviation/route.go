@@ -347,6 +347,7 @@ func (wp *Waypoint) SetClearSecondaryScratchpad(v bool) {
 }
 func (wp *Waypoint) SetTransferComms(v bool)      { wp.setFlag(WaypointFlagTransferComms, v) }
 func (wp *Waypoint) SetSequenceVFRLanding(v bool) { wp.setFlag(WaypointFlagSequenceVFRLanding, v) }
+func (wp *Waypoint) SetHeadingIsTrack(v bool)     { wp.setFlag(WaypointFlagHeadingIsTrack, v) }
 
 func (wp *Waypoint) SetTurn(t TurnDirection) {
 	wp.Flags &^= WaypointFlagTurnLeft | WaypointFlagTurnRight
@@ -1317,9 +1318,7 @@ func applyWaypointHeadingAction(wp *Waypoint, heading *WaypointHeadingAction) {
 		return
 	}
 	wp.Heading = heading.Heading
-	if heading.Track {
-		wp.Flags |= WaypointFlagHeadingIsTrack
-	}
+	wp.SetHeadingIsTrack(heading.Track)
 	wp.SetTurn(heading.Turn)
 }
 

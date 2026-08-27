@@ -179,6 +179,10 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					break
 				}
 				id := strings.TrimSpace(string(line[13:17]))
+				// Two-letter NDB identifiers are not unique nationally --
+				// "AA" is both KENIE in Minnesota and CEDAR in Georgia -- so
+				// they can't go in a map keyed by identifier alone. The
+				// procedures that use them are all outside the CONUS.
 				if len(id) < 3 {
 					break
 				}
@@ -592,7 +596,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	case "DF": // direct to fix from unspecified point
 		break
 
-	case "FC": // track from fix for distance; fix already added by preceding TF/IF, data used via parseTransitions
+	case "FC": // track from fix for distance; the fix was already added by the preceding TF/IF
 		ok = false
 		return
 
@@ -684,8 +688,11 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 		}
 
 	case "RF": // constant radius arc
+		// The CIFP gives the arc's center fix and radius directly; radius is
+		// in nautical miles with three decimal places, decimal point removed.
 		arc = &DMEArc{
-			Length:    float32(parseInt(r.routeDistance)) / 10,
+			Fix:       strings.TrimSpace(string(r.centerFix)),
+			Radius:    float32(parseInt(r.arcRadius)) / 1000,
 			Direction: turnDirectionToArcDirection(r.turnDirection),
 		}
 
@@ -719,7 +726,6 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r ssaRecord) bool,
 	terminate func(r ssaRecord, transitions map[string]WaypointArray) bool) map[string]WaypointArray {
 	transitions := make(map[string]WaypointArray)
-	lastFCDistance := make(map[string][]byte) // routeDistance from the last FC record, keyed by transition
 
 	for _, rec := range recs {
 		if log(rec) {
@@ -732,16 +738,22 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 			break
 		}
 
-		if rec.pathAndTermination == "FC" {
-			lastFCDistance[rec.transition] = rec.routeDistance
-		}
-
-		if string(rec.pathAndTermination) == "FM" || string(rec.pathAndTermination) == "VM" {
-			hdg := parseInt(rec.outboundMagneticCourse)
+		if rec.pathAndTermination == "FM" || rec.pathAndTermination == "VM" {
+			// Waypoint.Heading uses 0 to mean "unset", so a course that rounds
+			// down to zero is recorded as 360.
+			hdg := int16((parseInt(rec.outboundMagneticCourse) + 5) / 10)
+			if hdg == 0 {
+				hdg = 360
+			}
 			if n := len(transitions[rec.transition]); n == 0 {
 				panic("FM as first waypoint in transition?")
 			} else {
-				transitions[rec.transition][n-1].Heading = int16((hdg + 5) / 10)
+				wp := &transitions[rec.transition][n-1]
+				wp.Heading = hdg
+				// FM is a course from the fix: the aircraft flies the ground
+				// track, correcting for wind. VM is a magnetic heading, which
+				// the wind is free to blow off course.
+				wp.SetHeadingIsTrack(rec.pathAndTermination == "FM")
 			}
 		} else if rec.pathAndTermination == "CI" {
 			// CI (course to intercept) paired with a preceding FC defines a procedure turn.
