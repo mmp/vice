@@ -970,7 +970,7 @@ func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []string, dep []si
 // from adjacent centers. Returns nil for facilities whose host adapts no
 // coordination for them.
 func resolveERAMCoordination(sg *scenarioGroup, configs map[string]*sim.FacilityConfig) *enroute.Coordination {
-	if sg.TRACON == "" || sg.TRACON == sg.ARTCC {
+	if sg.TRACON == "" {
 		// ARTCC-primary: the center's coordination is adapted in its own
 		// config under its own facility id.
 		afc := configs[configurationsPath(sg.ARTCC, sg.ARTCC)]
@@ -1144,7 +1144,6 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at "+
 				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/artcc", sg.ARTCC)
 		}
-		sg.TRACON = sg.ARTCC // TODO: find a better way to do this
 	}
 
 	sg.Fixes = make(map[string]math.Point2LL)
@@ -1947,10 +1946,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 }
 
 func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[string]*ScenarioCatalog, e *util.ErrorLogger) {
-	facility := sg.TRACON
-	if facility == "" {
-		facility = sg.ARTCC
-	}
+	facility := sg.facility()
 	artcc := sg.ARTCC
 	if artcc == "" {
 		artcc = av.DB.ARTCCForFacility(facility)
@@ -2443,9 +2439,9 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			continue
 		}
 		s := r.s
-		facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
+		facility := s.facility()
 		if _, ok := scenarioGroups[facility][s.Name]; ok {
-			e.ErrorString("%s / %s: scenario redefined", s.TRACON, s.Name)
+			e.ErrorString("%s / %s: scenario redefined", facility, s.Name)
 		} else {
 			if scenarioGroups[facility] == nil {
 				scenarioGroups[facility] = make(map[string]*scenarioGroup)
@@ -2477,7 +2473,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}()
 		s := loadScenarioGroup(fs, extraScenarioFilename, &extraE)
 		if s != nil {
-			facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
+			facility := s.facility()
 
 			// Load and validate facility config for the extra scenario.
 			extraResourcesFS := util.GetResourcesFS()
@@ -2982,9 +2978,7 @@ func WXFacilities(lg *log.Logger) (wx.Facilities, error) {
 	for _, groups := range scenarioGroups {
 		for _, sg := range groups {
 			airports = append(airports, slices.Collect(maps.Keys(sg.Airports))...)
-			// Center scenario groups take their facility from "artcc" and
-			// have TRACON copied from it by PostDeserialize.
-			if sg.ARTCC == "" {
+			if sg.TRACON != "" {
 				tracons = append(tracons, sg.TRACON)
 			}
 		}
@@ -3024,7 +3018,7 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 	}
 
 	newSimConfig := &sim.NewSimConfiguration{
-		Facility:                scenarioGroup.TRACON,
+		Facility:                scenarioGroup.facility(),
 		Description:             scenarioName,
 		LaunchConfig:            simConfig.LaunchConfig,
 		DepartureRunways:        simConfig.DepartureRunways,
