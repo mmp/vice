@@ -22,10 +22,6 @@ import (
 
 func TestMain(m *testing.M) {
 	av.InitDB()
-	// Interim hook for the analytic turn-predicate switchover: run the full
-	// suite with the analytic predicates deciding via
-	// VICE_ANALYTIC_TURNS=1 go test ./nav
-	useAnalyticTurnPredicates = os.Getenv("VICE_ANALYTIC_TURNS") == "1"
 	os.Exit(m.Run())
 }
 

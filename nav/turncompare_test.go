@@ -2,11 +2,10 @@
 // Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-// A/B comparison sweeps between the simulation-based and analytic turn
-// predicates, plus a conformance test that pins the turnPath model to the
-// tick-by-tick flight model. The sweeps fly each scenario twice, once with
-// each predicate deciding, with the probes recording what the other one
-// would have done, and then compare trigger timing and the quality of the
+// Quality tests for the turn-anticipation predicates: a conformance test
+// that pins the turnPath model to the tick-by-tick flight model, and sweeps
+// that fly outbound fly-by turns, localizer intercepts, and @t course joins
+// across aircraft, geometries, and winds, asserting the quality of the
 // flown ground track.
 
 package nav
@@ -132,7 +131,7 @@ func (f *FlightTest) tickOnce() UpdateResult {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// outbound sweep
+// outbound turn sweep
 
 type outboundCase struct {
 	acType   string
@@ -160,8 +159,7 @@ func (c outboundCase) name() string {
 }
 
 type outboundMetrics struct {
-	fireTick   int     // tick the deciding predicate sequenced the turn fix
-	otherFire  int     // first tick the non-deciding predicate returned true (0 = never before fireTick)
+	fireTick   int     // tick the turn fix was sequenced
 	distAtFire float32 // distance from the fix when the turn started, nm
 	gsAtFire   float32 // ground speed when the turn started, kts
 	overshoot  float32 // max distance past the outbound course on the far side, nm
@@ -170,13 +168,9 @@ type outboundMetrics struct {
 }
 
 // runOutboundCase flies inbound leg A->B with course change c.turnDeg at B
-// and measures how the selected predicate starts and completes the turn.
-func runOutboundCase(t *testing.T, c outboundCase, analyticDecides bool) outboundMetrics {
+// and measures how the aircraft starts and completes the turn.
+func runOutboundCase(t *testing.T, c outboundCase) outboundMetrics {
 	t.Helper()
-
-	saved := useAnalyticTurnPredicates
-	useAnalyticTurnPredicates = analyticDecides
-	defer func() { useAnalyticTurnPredicates = saved }()
 
 	// Geometry around KJFK for realistic magnetic variation: A is legNM
 	// inbound to B on true course 20, C is legNM past B on the turned
@@ -215,20 +209,6 @@ func runOutboundCase(t *testing.T, c outboundCase, analyticDecides bool) outboun
 	bFix := pB.DMSString()
 	var m outboundMetrics
 
-	outboundPredicateProbe = func(sim, analytic bool) {
-		if len(f.nav.Waypoints) == 0 || f.nav.Waypoints[0].Fix != bFix {
-			return
-		}
-		other := analytic
-		if analyticDecides {
-			other = sim
-		}
-		if other && m.otherFire == 0 {
-			m.otherFire = f.tick
-		}
-	}
-	defer func() { outboundPredicateProbe = nil }()
-
 	// Signed distance from the outbound course line through B.
 	pBnm := math.LL2NM(pB, nmPerLong)
 	pB2 := math.Add2f(pBnm, math.SinCos(math.Radians(outTrue)))
@@ -254,10 +234,8 @@ func runOutboundCase(t *testing.T, c outboundCase, analyticDecides bool) outboun
 	}
 
 	// Measure the turn onto the outbound course, stopping at a fixed
-	// distance from C so both the sim- and analytic-decided runs measure
-	// over the same stretch of the leg: past that the aircraft
-	// legitimately leaves the course as it anticipates the turn at C, and
-	// the two runs sequence C at different times.
+	// distance from C: past that the aircraft legitimately leaves the
+	// course as it anticipates the turn at C.
 	settled := 0
 	for f.tick < m.fireTick+400 {
 		result := f.tickOnce()
@@ -324,73 +302,41 @@ func outboundSweepCases(short bool) []outboundCase {
 	return cases
 }
 
-func TestOutboundTurnComparisonSweep(t *testing.T) {
-	var worstLate, worstEarly int
-	var worstOvershootDelta float32
-
+func TestOutboundTurnSweep(t *testing.T) {
 	for _, c := range outboundSweepCases(testing.Short()) {
 		t.Run(c.name(), func(t *testing.T) {
-			sim := runOutboundCase(t, c, false)
-			an := runOutboundCase(t, c, true)
-
-			// The analytic predicate may correctly fire earlier than the
-			// sim one (which turns late for bank-limited aircraft), but
-			// firing later means it missed the turn point.
-			if an.fireTick > sim.fireTick+2 {
-				t.Errorf("analytic fired at tick %d, sim at %d", an.fireTick, sim.fireTick)
-			}
-			worstLate = max(worstLate, an.fireTick-sim.fireTick)
-			worstEarly = max(worstEarly, sim.fireTick-an.fireTick)
+			m := runOutboundCase(t, c)
 
 			// Sequencing must come from anticipating the turn, not from the
 			// almost-at-the-fix fallback that fires within 2 seconds of the
-			// fix; skipping over the turn point entirely and catching it
-			// there would be a missed trigger. Some geometries (large turn
-			// angles in strong wind) legitimately defeat anticipation, so
-			// only fail if the sim managed to anticipate.
-			atFix := func(m outboundMetrics) bool { return m.distAtFire < 2.5*m.gsAtFire/3600 }
-			if math.Abs(c.turnDeg) >= 30 && atFix(an) && !atFix(sim) {
-				t.Errorf("analytic sequenced only %.2fnm from the fix at %.0fkt; sim anticipated %.2fnm out",
-					an.distAtFire, an.gsAtFire, sim.distAtFire)
+			// fix. Course changes past 100 degrees are exempt: their fly-by
+			// anticipation is capped (see shouldTurnForOutbound), and in
+			// strong winds the crossing may only be found near the fix.
+			if a := math.Abs(c.turnDeg); a >= 30 && a <= 100 && m.distAtFire < 2.5*m.gsAtFire/3600 {
+				t.Errorf("sequenced only %.2fnm from the fix at %.0fkt", m.distAtFire, m.gsAtFire)
 			}
 
-			// The turn the analytic starts must be at least as clean as the
-			// sim's. After rolling out, waypoint navigation flies direct to
-			// the next fix rather than re-tracking the course line, so the
-			// quality comparisons are relative to the sim's track with only
-			// loose absolute floors. Turns beyond 120 degrees necessarily
-			// loop past the outbound course (ideal fly-by anticipation
-			// would be tens of miles, which the entry gates rightly
-			// forbid), so for those only compare the loops.
-			if math.Abs(c.turnDeg) <= 120 {
-				if an.overshoot > max(sim.overshoot+0.05, 0.15) {
-					t.Errorf("analytic overshoot %.3fnm vs sim %.3fnm", an.overshoot, sim.overshoot)
+			// Up to the 100 degree anticipation cap a fly-by should roll
+			// out on the outbound course and stay there; larger course
+			// changes necessarily loop past it. Speed and altitude changes
+			// during the turn get extra slack since the turn radius is
+			// predicted from the state at its start.
+			if math.Abs(c.turnDeg) <= 100 {
+				limit := float32(0.2)
+				if c.slowTo != 0 || c.climbTo != 0 {
+					limit = 0.6
 				}
-			} else if an.overshoot > sim.overshoot+0.5 {
-				t.Errorf("analytic overshoot %.3fnm vs sim %.3fnm", an.overshoot, sim.overshoot)
-			}
-			worstOvershootDelta = max(worstOvershootDelta, an.overshoot-sim.overshoot)
-
-			if sim.settleTime != 0 && an.settleTime != 0 && an.settleTime > sim.settleTime+15 {
-				t.Errorf("analytic settled in %ds vs sim %ds", an.settleTime, sim.settleTime)
-			} else if sim.settleTime != 0 && an.settleTime == 0 {
-				t.Errorf("sim settled in %ds but analytic never settled", sim.settleTime)
-			}
-			if an.endOffset > max(sim.endOffset+0.05, 0.12) {
-				t.Errorf("analytic ended %.3fnm off course vs sim %.3fnm", an.endOffset, sim.endOffset)
-			}
-
-			if t.Failed() {
-				t.Logf("sim: %+v", sim)
-				t.Logf("analytic: %+v", an)
-			} else {
-				t.Logf("stats: fireDelta=%+d overshootSim=%.2f overshootAn=%.2f settleSim=%d settleAn=%d",
-					an.fireTick-sim.fireTick, sim.overshoot, an.overshoot, sim.settleTime, an.settleTime)
+				if m.overshoot > limit {
+					t.Errorf("overshot the outbound course by %.3fnm", m.overshoot)
+				}
+				if m.settleTime == 0 {
+					t.Errorf("never settled on the outbound course")
+				} else if m.endOffset > 0.12 {
+					t.Errorf("ended %.3fnm off course", m.endOffset)
+				}
 			}
 		})
 	}
-	t.Logf("outbound sweep: analytic fired at most %d ticks after sim, at most %d before; worst overshoot delta %+.3fnm",
-		worstLate, worstEarly, worstOvershootDelta)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -415,23 +361,16 @@ func (c interceptCase) name() string {
 }
 
 type interceptMetrics struct {
-	firstTurnSim int // first tick the sim predicate returned Turn
-	firstTurnAn  int // same for the analytic predicate, on the same trajectory
-	mismatch     int // ticks where the two classified differently
-	longestRun   int // longest consecutive span of such ticks
-	nonAdjacent  int // ticks where the classes differed by more than one step
-	established  int // tick InterceptState reached OnApproachCourse; 0 = never
-	vectors      bool
-	crossings    int
-	maxOff       float32 // max |centerline distance| from established+30 on
+	established int // tick InterceptState reached OnApproachCourse; 0 = never
+	vectors     bool
+	nearRunway  bool    // measurement ended within 1.5nm of the threshold
+	endSD       float32 // signed centerline distance at that point
+	crossings   int
+	maxOff      float32 // max |centerline distance| from established+30 on
 }
 
-func runInterceptCase(t *testing.T, c interceptCase, analyticDecides bool) interceptMetrics {
+func runInterceptCase(t *testing.T, c interceptCase) interceptMetrics {
 	t.Helper()
-
-	saved := useAnalyticTurnPredicates
-	useAnalyticTurnPredicates = analyticDecides
-	defer func() { useAnalyticTurnPredicates = saved }()
 
 	apg := LookupApproachGeometry(t, "KJFK", "I22L")
 	courseMag := math.TrueToMagnetic(apg.RunwayHeading, apg.MagneticVariation)
@@ -453,36 +392,12 @@ func runInterceptCase(t *testing.T, c interceptCase, analyticDecides bool) inter
 	f.ClearedApproach("I22L")
 
 	var m interceptMetrics
-	run := 0
-	interceptPredicateProbe = func(sim, analytic turnToInterceptResult) {
-		if f.nav.Approach.InterceptState != InitialHeading {
-			return
-		}
-		if sim == turnToInterceptTurn && m.firstTurnSim == 0 {
-			m.firstTurnSim = f.tick
-		}
-		if analytic == turnToInterceptTurn && m.firstTurnAn == 0 {
-			m.firstTurnAn = f.tick
-		}
-		if sim != analytic {
-			m.mismatch++
-			if run++; run > m.longestRun {
-				m.longestRun = run
-			}
-			if d := int(sim) - int(analytic); d < -1 || d > 1 {
-				m.nonAdjacent++
-			}
-		} else {
-			run = 0
-		}
-	}
-	defer func() { interceptPredicateProbe = nil }()
-
 	var prevSD float32
 	for f.tick < 900 {
 		f.tickOnce()
 		if math.NMDistance2LLFast(f.nav.FlightState.Position, apg.Threshold, apg.NmPerLongitude) < 1.5 {
 			// Nearly at the runway; landing behavior takes over from here.
+			m.nearRunway, m.endSD = true, f.SignedCenterlineDistance()
 			break
 		}
 		sd := f.SignedCenterlineDistance()
@@ -509,70 +424,56 @@ func runInterceptCase(t *testing.T, c interceptCase, analyticDecides bool) inter
 	return m
 }
 
-func compareInterceptRuns(t *testing.T, c interceptCase) {
+// checkInterceptCase verifies that the intercept reaches a definite outcome
+// and, when the aircraft establishes on the approach course, that the
+// capture is clean.
+func checkInterceptCase(t *testing.T, c interceptCase, maxOff float32) interceptMetrics {
 	t.Helper()
 
-	sim := runInterceptCase(t, c, false)
-	an := runInterceptCase(t, c, true)
-
-	// The two runs must reach the same disposition: either both establish
-	// on the approach course or both give up and request vectors.
-	if (sim.established != 0) != (an.established != 0) || sim.vectors != an.vectors {
-		t.Errorf("dispositions differ: sim established=%d vectors=%v, analytic established=%d vectors=%v",
-			sim.established, sim.vectors, an.established, an.vectors)
-	}
-	if sim.established != 0 && an.established != 0 {
-		if d := an.established - sim.established; d < -15 || d > 15 {
-			t.Errorf("established at tick %d vs sim %d", an.established, sim.established)
-		}
-		if an.crossings > 2 {
-			t.Errorf("analytic run crossed the centerline %d times", an.crossings)
-		}
-		if an.maxOff > max(sim.maxOff+0.05, 0.15) {
-			t.Errorf("analytic run strayed %.3fnm off the centerline when established, sim %.3fnm",
-				an.maxOff, sim.maxOff)
+	m := runInterceptCase(t, c)
+	if m.established != 0 && m.vectors {
+		t.Errorf("both established (tick %d) and requested vectors", m.established)
+	} else if m.established == 0 && !m.vectors {
+		// A tailwind can push the aircraft to the runway before the
+		// on-course state is flagged; that's fine as long as it got there
+		// converged on the centerline.
+		if !m.nearRunway || math.Abs(m.endSD) > 0.3 {
+			t.Errorf("no definite outcome: nearRunway=%v endSD=%.3f", m.nearRunway, m.endSD)
 		}
 	}
-
-	// Per-tick classification parity, measured on the sim-decided
-	// trajectory where both predicates saw identical state.
-	if sim.firstTurnSim != 0 && sim.firstTurnAn != 0 {
-		if d := sim.firstTurnAn - sim.firstTurnSim; d < -3 || d > 3 {
-			t.Errorf("first Turn classification at tick %d (analytic) vs %d (sim)", sim.firstTurnAn, sim.firstTurnSim)
+	if m.established != 0 {
+		if m.crossings > 2 {
+			t.Errorf("crossed the centerline %d times", m.crossings)
+		}
+		if m.maxOff > maxOff {
+			t.Errorf("strayed %.3fnm off the centerline when established", m.maxOff)
 		}
 	}
-	if sim.nonAdjacent > 0 {
-		t.Errorf("%d ticks with non-adjacent classifications", sim.nonAdjacent)
-	}
-	if sim.longestRun > 2 {
-		t.Errorf("classifications disagreed for %d consecutive ticks", sim.longestRun)
-	}
-
-	if t.Failed() {
-		t.Logf("sim: %+v", sim)
-		t.Logf("analytic: %+v", an)
-	} else {
-		t.Logf("stats: estDelta=%d firstTurnDelta=%d mismatch=%d longestRun=%d vectors=%v",
-			an.established-sim.established, sim.firstTurnAn-sim.firstTurnSim,
-			sim.mismatch, sim.longestRun, sim.vectors)
-	}
+	return m
 }
 
-func TestInterceptComparisonSweep(t *testing.T) {
+func TestInterceptSweep(t *testing.T) {
 	aircraft := []struct {
 		typ string
 		ias float32
 	}{{"A320", 180}, {"C172", 100}, {"E75L", 210}, {"B744", 170}}
 	laterals := map[float32]float32{10: 1, 20: 2, 30: 2.5, 43: 3}
 
+	vectored := 0
+	check := func(t *testing.T, c interceptCase) {
+		if m := checkInterceptCase(t, c, 0.15); m.vectors {
+			vectored++
+		}
+	}
+
 	for _, ac := range aircraft {
 		for angle, lateral := range laterals {
 			base := interceptCase{acType: ac.typ, ias: ac.ias, angle: angle, distNM: 11, lateral: -lateral, windDir: -1}
-			t.Run(base.name(), func(t *testing.T) { compareInterceptRuns(t, base) })
+			t.Run(base.name(), func(t *testing.T) { check(t, base) })
 
 			wind := base
 			wind.windDir, wind.windKts = 270, 30
-			t.Run(wind.name(), func(t *testing.T) { compareInterceptRuns(t, wind) })
+			t.Run(wind.name(), func(t *testing.T) { check(t, wind) })
 		}
 	}
 
@@ -581,21 +482,29 @@ func TestInterceptComparisonSweep(t *testing.T) {
 		for dir := float32(0); dir < 360; dir += 45 {
 			c := interceptCase{acType: "A320", ias: 180, angle: angle, distNM: 11,
 				lateral: -laterals[angle], windDir: dir, windKts: 30}
-			t.Run(c.name(), func(t *testing.T) { compareInterceptRuns(t, c) })
+			t.Run(c.name(), func(t *testing.T) { check(t, c) })
 		}
+	}
+
+	// The near-limit 43 degree intercepts routinely blow through and end
+	// with a request for vectors (the simulation-based predicates behaved
+	// the same way); the shallower ones essentially never do. Guard against
+	// wholesale regressions in either direction.
+	if vectored > 22 {
+		t.Errorf("%d intercepts ended requesting vectors", vectored)
 	}
 }
 
-// TestInterceptOvershootClassificationSweep starts aircraft close to the
-// centerline at converging angles so that the intercept blows through,
-// exercising the Correctable/MajorOvershoot classifications and recovery.
-func TestInterceptOvershootClassificationSweep(t *testing.T) {
+// TestInterceptOvershootSweep starts aircraft close to the centerline at
+// converging angles so that the intercept blows through, exercising the
+// Correctable/MajorOvershoot classifications and recovery.
+func TestInterceptOvershootSweep(t *testing.T) {
 	for _, angle := range []float32{20, 30, 40} {
 		for _, lateral := range []float32{0.2, 0.3, 0.5, 0.8} {
 			for _, wind := range []struct{ dir, kts float32 }{{-1, 0}, {270, 30}, {90, 30}} {
 				c := interceptCase{acType: "A320", ias: 180, angle: angle, distNM: 10,
 					lateral: -lateral, windDir: wind.dir, windKts: wind.kts}
-				t.Run(c.name(), func(t *testing.T) { compareInterceptRuns(t, c) })
+				t.Run(c.name(), func(t *testing.T) { checkInterceptCase(t, c, 0.25) })
 			}
 		}
 	}
@@ -604,17 +513,12 @@ func TestInterceptOvershootClassificationSweep(t *testing.T) {
 ///////////////////////////////////////////////////////////////////////////
 // @t course intercept sweep
 
-// runCourseInterceptCase is the A/B version of checkCourseIntercept in
+// runCourseInterceptCase is a parameterized version of the flights in
 // course_test.go: the aircraft leaves SKORR on a heading hOff degrees off
 // the direct course to WAVEY with an @t termination onto a course cOff
 // degrees off it, and must join that course and then track it.
-func runCourseInterceptCase(t *testing.T, hOff, cOff, windRel float32, windKts float32,
-	analyticDecides bool) (joinTick int, maxOff float32) {
+func runCourseInterceptCase(t *testing.T, hOff, cOff, windRel float32, windKts float32) (joinTick int, maxOff float32) {
 	t.Helper()
-
-	saved := useAnalyticTurnPredicates
-	useAnalyticTurnPredicates = analyticDecides
-	defer func() { useAnalyticTurnPredicates = saved }()
 
 	skorr, _ := av.DB.LookupWaypoint("SKORR")
 	wavey, _ := av.DB.LookupWaypoint("WAVEY")
@@ -667,7 +571,7 @@ func runCourseInterceptCase(t *testing.T, hOff, cOff, windRel float32, windKts f
 	return
 }
 
-func TestCourseInterceptComparisonSweep(t *testing.T) {
+func TestCourseInterceptSweep(t *testing.T) {
 	type courseCase struct {
 		hOff, cOff       float32
 		windRel, windKts float32
@@ -689,17 +593,13 @@ func TestCourseInterceptComparisonSweep(t *testing.T) {
 			name += fmt.Sprintf("/wind%.0f@rel%.0f", c.windKts, c.windRel)
 		}
 		t.Run(name, func(t *testing.T) {
-			simJoin, simOff := runCourseInterceptCase(t, c.hOff, c.cOff, c.windRel, c.windKts, false)
-			anJoin, anOff := runCourseInterceptCase(t, c.hOff, c.cOff, c.windRel, c.windKts, true)
+			joinTick, maxOff := runCourseInterceptCase(t, c.hOff, c.cOff, c.windRel, c.windKts)
 
-			if d := anJoin - simJoin; d < -3 || d > 3 {
-				t.Errorf("analytic joined the course at tick %d vs sim %d", anJoin, simJoin)
+			if joinTick < 60 {
+				t.Errorf("joined the course at tick %d; expected to fly the heading first", joinTick)
 			}
-			if anOff > 0.5 {
-				t.Errorf("analytic strayed %.2fnm from the course after joining", anOff)
-			}
-			if anOff > simOff+0.1 {
-				t.Errorf("analytic tracked the course %.2fnm off vs sim %.2fnm", anOff, simOff)
+			if maxOff > 0.5 {
+				t.Errorf("strayed %.2fnm from the course after joining", maxOff)
 			}
 		})
 	}
@@ -710,7 +610,7 @@ func TestCourseInterceptComparisonSweep(t *testing.T) {
 
 // benchOutboundState flies the standard outbound geometry until the
 // aircraft is inside the decision window for a 90 degree turn, where the
-// predicates run their full evaluation every tick.
+// predicate runs its full evaluation every tick.
 func benchOutboundState(b *testing.B) (*FlightTest, math.Point2LL, math.MagneticHeading) {
 	base := av.DB.Airports["KJFK"].Location
 	nmPerLong := math.NMPerLongitudeAt(base)
@@ -734,26 +634,17 @@ func benchOutboundState(b *testing.B) (*FlightTest, math.Point2LL, math.Magnetic
 	return f, pB, hdg
 }
 
-func BenchmarkShouldTurnForOutboundSim(b *testing.B) {
+func BenchmarkShouldTurnForOutbound(b *testing.B) {
 	f, pB, hdg := benchOutboundState(b)
 	wxs := f.weather(f.nav.FlightState.Altitude)
 	b.ResetTimer()
 	for range b.N {
-		f.nav.shouldTurnForOutboundSim(pB, hdg, av.TurnClosest, wxs)
-	}
-}
-
-func BenchmarkShouldTurnForOutboundAnalytic(b *testing.B) {
-	f, pB, hdg := benchOutboundState(b)
-	wxs := f.weather(f.nav.FlightState.Altitude)
-	b.ResetTimer()
-	for range b.N {
-		f.nav.shouldTurnForOutboundAnalytic(pB, hdg, av.TurnClosest, wxs)
+		f.nav.shouldTurnForOutbound(pB, hdg, av.TurnClosest, wxs)
 	}
 }
 
 // benchInterceptState flies a 30 degree localizer intercept until the
-// aircraft is close enough that the predicates evaluate the full turn.
+// aircraft is close enough that the predicate evaluates the full turn.
 func benchInterceptState(b *testing.B) (*FlightTest, math.Point2LL, math.MagneticHeading) {
 	apg := LookupApproachGeometry(b, "KJFK", "I22L")
 	courseMag := math.TrueToMagnetic(apg.RunwayHeading, apg.MagneticVariation)
@@ -776,20 +667,11 @@ func benchInterceptState(b *testing.B) (*FlightTest, math.Point2LL, math.Magneti
 	return f, apg.Threshold, courseMag
 }
 
-func BenchmarkShouldTurnToInterceptSim(b *testing.B) {
+func BenchmarkShouldTurnToIntercept(b *testing.B) {
 	f, p0, hdg := benchInterceptState(b)
 	wxs := f.weather(f.nav.FlightState.Altitude)
 	b.ResetTimer()
 	for range b.N {
-		f.nav.shouldTurnToInterceptSim(p0, hdg, av.TurnClosest, wxs)
-	}
-}
-
-func BenchmarkShouldTurnToInterceptAnalytic(b *testing.B) {
-	f, p0, hdg := benchInterceptState(b)
-	wxs := f.weather(f.nav.FlightState.Altitude)
-	b.ResetTimer()
-	for range b.N {
-		f.nav.shouldTurnToInterceptAnalytic(p0, hdg, av.TurnClosest, wxs)
+		f.nav.shouldTurnToIntercept(p0, hdg, av.TurnClosest, wxs)
 	}
 }

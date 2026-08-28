@@ -408,8 +408,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 	passedWaypoint := false
 	if wp.FlyOver() || nav.Prespawn {
-		// We treat all wps as flyover during the prespawn phase to avoid the expense of
-		// shouldTurnForOutbound.
+		// We treat all wps as flyover during the prespawn phase; precise
+		// fly-by turns don't matter before the sim starts.
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
 		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, wp.Turn(), wxs)
@@ -869,98 +869,6 @@ func isTurnRight(currentHdg, targetHdg float32, turn av.TurnDirection) bool {
 	}
 }
 
-// Interim scaffolding for the switchover from the simulation-based turn
-// predicates to the analytic ones: tests can install probes to compare the
-// two on identical aircraft state, and useAnalyticTurnPredicates selects
-// which one's answer is used.
-var useAnalyticTurnPredicates = false
-
-var (
-	outboundPredicateProbe  func(sim, analytic bool)
-	interceptPredicateProbe func(sim, analytic turnToInterceptResult)
-)
-
-// Given a fix location and an outbound heading, returns true when the
-// aircraft should start the turn to outbound to intercept the outbound
-// radial.
-func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) bool {
-	if outboundPredicateProbe != nil {
-		sim := nav.shouldTurnForOutboundSim(p, hdg, turn, wxs)
-		analytic := nav.shouldTurnForOutboundAnalytic(p, hdg, turn, wxs)
-		outboundPredicateProbe(sim, analytic)
-		return util.Select(useAnalyticTurnPredicates, analytic, sim)
-	}
-	if useAnalyticTurnPredicates {
-		return nav.shouldTurnForOutboundAnalytic(p, hdg, turn, wxs)
-	}
-	return nav.shouldTurnForOutboundSim(p, hdg, turn, wxs)
-}
-
-// Given a point and a radial, indicates when the aircraft should start
-// turning to intercept the radial.
-func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) turnToInterceptResult {
-	if interceptPredicateProbe != nil {
-		sim := nav.shouldTurnToInterceptSim(p0, hdg, turn, wxs)
-		analytic := nav.shouldTurnToInterceptAnalytic(p0, hdg, turn, wxs)
-		interceptPredicateProbe(sim, analytic)
-		return util.Select(useAnalyticTurnPredicates, analytic, sim)
-	}
-	if useAnalyticTurnPredicates {
-		return nav.shouldTurnToInterceptAnalytic(p0, hdg, turn, wxs)
-	}
-	return nav.shouldTurnToInterceptSim(p0, hdg, turn, wxs)
-}
-
-// Simulation-based implementation of shouldTurnForOutbound: fly a ghost
-// copy of the aircraft through the turn tick by tick and see whether it
-// crosses the outbound radial.
-func (nav *Nav) shouldTurnForOutboundSim(p math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) bool {
-	eta := nav.ETA(p)
-
-	// Always start the turn if we've almost passed the fix.
-	if eta < 2 {
-		return true
-	}
-
-	// Alternatively, if we're far away w.r.t. the needed turn, don't even
-	// consider it. This is both for performance but also so that we don't
-	// make tiny turns miles away from fixes in some cases.
-	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
-	if turnAngle/2 < eta {
-		return false
-	}
-
-	// Get two points that give the line of the outbound course.
-	p0 := math.LL2NM(p, nav.FlightState.NmPerLongitude)
-	hdgTrue := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
-	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdgTrue)))
-
-	// Make a ghost aircraft to use to simulate the turn.
-	nav2 := *nav
-	nav2.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
-	nav2.DeferredNavHeading = nil
-	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
-
-	initialDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
-		nav2.FlightState.NmPerLongitude),
-		p0, p1)
-
-	// Don't simulate the turn longer than it will take to do it.
-	n := int(1 + turnAngle/3)
-	for range n {
-		nav2.UpdateWithWeather("", wxs, nil, nil, Time{}, nil)
-		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
-			nav2.FlightState.NmPerLongitude),
-			p0, p1)
-
-		if math.Sign(initialDist) != math.Sign(curDist) {
-			// Aircraft is on the other side of the line than it started on.
-			return true
-		}
-	}
-	return false
-}
-
 const (
 	turnToInterceptWait = iota
 	turnToInterceptTurn
@@ -970,87 +878,10 @@ const (
 
 type turnToInterceptResult int
 
-// Simulation-based implementation of shouldTurnToIntercept: fly a ghost
-// copy of the aircraft through the turn tick by tick and classify how it
-// meets the radial.
-func (nav *Nav) shouldTurnToInterceptSim(p0 math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) turnToInterceptResult {
-	p0nm := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
-	hdgTrue := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
-	p1 := math.Add2f(p0nm, math.SinCos(math.Radians(hdgTrue)))
-
-	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude), p0nm, p1)
-	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600 // in seconds
-	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
-	if eta < 2 && turnAngle < 4 {
-		// Just in case, start the turn; for larger turn angles, fall through to simulation to see if this is correctable.
-		return turnToInterceptTurn
-	}
-
-	// As above, don't consider starting the turn if we're far away.
-	if turnAngle < eta {
-		return turnToInterceptWait
-	}
-
-	// Calculate the expected crab angle needed for wind correction.
-	// The aircraft's heading will differ from the track by this amount.
-	v := math.SinCos(math.Radians(hdgTrue))
-	v = math.Scale2f(v, nav.FlightState.GS)
-	crabAngle := math.Abs(wxs.Deflection(v))
-
-	// The radial is a ground course, so the simulated aircraft flies the
-	// heading that holds it as a track; otherwise in a crosswind it rolls
-	// out and immediately drifts back off the radial.
-	ghostHdg := nav.headingForTrack(hdg, wxs)
-	nav2 := *nav
-	nav2.Heading = NavHeading{Assigned: &ghostHdg, Turn: &turn}
-	nav2.DeferredNavHeading = nil
-	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
-
-	n := int(1 + turnAngle)
-	lastDist := initialDist
-	for range n {
-		nav2.UpdateWithWeather("", wxs, nil, nil, Time{}, nil)
-		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0nm, p1)
-
-		intercepted := math.Abs(curDist) < 0.02
-		crossed := math.Sign(initialDist) != math.Sign(curDist)
-		if !intercepted && !crossed {
-			lastDist = curDist
-			continue
-		}
-
-		// Allow heading tolerance to account for the crab angle needed in crosswind.
-		// Base tolerance of 10 degrees plus the calculated crab angle.
-		headingTolerance := 10 + crabAngle
-		delta := math.HeadingDifference(hdg, nav2.FlightState.Heading)
-		if delta < headingTolerance {
-			return turnToInterceptTurn
-		} else if delta < headingTolerance+30 {
-			return turnToInterceptCorrectableOvershoot
-		} else {
-			return turnToInterceptMajorOvershoot
-		}
-	}
-
-	// If the simulated aircraft ended up farther from the line than it
-	// started, it has overshot and is diverging.
-	if math.Abs(lastDist) > math.Abs(initialDist) {
-		delta := math.HeadingDifference(hdg, nav.FlightState.Heading)
-		if math.Abs(lastDist) < 0.25 && delta < 30 {
-			return turnToInterceptTurn
-		}
-		headingTolerance := 10 + crabAngle
-		if delta < headingTolerance+30 {
-			return turnToInterceptCorrectableOvershoot
-		}
-		return turnToInterceptMajorOvershoot
-	}
-	return turnToInterceptWait
-}
-
-// Analytic implementation of shouldTurnForOutbound: predict the turn's path
-// in closed form and see whether it would cross the outbound radial.
-func (nav *Nav) shouldTurnForOutboundAnalytic(p math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) bool {
+// Given a fix location and an outbound heading, returns true when the
+// aircraft should start the turn to outbound to intercept the outbound
+// radial: when the turn's path, predicted in closed form, would cross it.
+func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) bool {
 	eta := nav.ETA(p)
 
 	// Always start the turn if we've almost passed the fix.
@@ -1110,9 +941,10 @@ func (nav *Nav) shouldTurnForOutboundAnalytic(p math.Point2LL, hdg math.Magnetic
 	}
 }
 
-// Analytic implementation of shouldTurnToIntercept: predict the turn's path
-// in closed form and classify how it would meet the radial.
-func (nav *Nav) shouldTurnToInterceptAnalytic(p0 math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) turnToInterceptResult {
+// Given a point and a radial, indicates when the aircraft should start
+// turning to intercept the radial, classifying how the turn's path,
+// predicted in closed form, would meet it.
+func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) turnToInterceptResult {
 	p0nm := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
 	hdgTrue := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
 	p1 := math.Add2f(p0nm, math.SinCos(math.Radians(hdgTrue)))
