@@ -27,7 +27,7 @@ func TestMain(m *testing.M) {
 
 // FlightTest orchestrates a simulated flight with events and assertions.
 type FlightTest struct {
-	t        *testing.T
+	t        testing.TB
 	nav      *Nav
 	fp       av.FlightPlan
 	callsign string
@@ -71,7 +71,7 @@ type ArrivalConfig struct {
 }
 
 // NewArrivalFlight creates a FlightTest from an ArrivalConfig.
-func NewArrivalFlight(t *testing.T, cfg ArrivalConfig) *FlightTest {
+func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 	t.Helper()
 
 	wps := parseRoute(t, cfg.Waypoints)
@@ -758,7 +758,7 @@ func (dbLocator) Similar(fix string) []string { return nil }
 
 // parseRoute parses a waypoint string using the scenario JSON format
 // and resolves fix locations from av.DB. Requires av.DB to be initialized.
-func parseRoute(t *testing.T, s string) av.WaypointArray {
+func parseRoute(t testing.TB, s string) av.WaypointArray {
 	t.Helper()
 	var wps av.WaypointArray
 	// WaypointArray.UnmarshalJSON expects a JSON-encoded string
@@ -793,7 +793,7 @@ type ApproachGeometry struct {
 
 // LookupApproachGeometry resolves the named approach from the aviation
 // database, initializes its waypoint locations, and returns the geometry.
-func LookupApproachGeometry(t *testing.T, airport, approachID string) ApproachGeometry {
+func LookupApproachGeometry(t testing.TB, airport, approachID string) ApproachGeometry {
 	t.Helper()
 
 	faa, ok := av.DB.Airports[airport]

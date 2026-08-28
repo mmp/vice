@@ -76,10 +76,9 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 		return nav.ETA(mc.Fix) < 2
 	case UntilIntercept:
 		// Turn as soon as the aircraft will reach the course, even if it is
-		// predicted to overshoot: a steep intercept is only ever predicted to
-		// overshoot, since the aircraft covers more cross-track distance in
-		// the turn than it has left, and rolling out past the course beats
-		// flying through it and never turning at all.
+		// predicted to overshoot: the tick at which the predicted rollout is
+		// clean is easily skipped for a tight intercept, and rolling out past
+		// the course beats flying through it and never turning at all.
 		r, reaches := nav.shouldTurnToIntercept(mc.Fix, mc.InterceptCourse, mc.InterceptTurn, wxs)
 		return reaches && r != turnToInterceptWait
 	case UntilControllerIntervention:

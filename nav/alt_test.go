@@ -175,14 +175,18 @@ func TestSTARDescentMeetsRestrictions(t *testing.T) {
 	f.AtFix("DETGY", func(f *FlightTest) {
 		f.AssertAltitudeNear(7000, 100)
 	})
+	// HAUPT and LEFER have large course changes, so they are sequenced well
+	// before the fix (~2.4nm at HAUPT) when the fly-by turn begins, while
+	// the descent profile reaches the restriction at the fix itself; the
+	// tolerances allow for the descent still to come at sequencing. Also,
+	// HAUPT is only 5.6nm from DETGY, and the descent algorithm's ramp-up
+	// period (~13s) consumes nearly 1nm of that distance, limiting
+	// achievable precision at closely-spaced fixes.
 	f.AtFix("HAUPT", func(f *FlightTest) {
-		// HAUPT is only 5.6nm from DETGY. The descent algorithm's
-		// ramp-up period (~13s) consumes nearly 1nm of that distance,
-		// limiting achievable precision at closely-spaced fixes.
-		f.AssertAltitudeNear(6000, 200)
+		f.AssertAltitudeNear(6000, 350)
 	})
 	f.AtFix("LEFER", func(f *FlightTest) {
-		f.AssertAltitudeNear(4000, 100)
+		f.AssertAltitudeNear(4000, 250)
 	})
 	f.AtFix("ROSLY", func(f *FlightTest) {
 		f.AssertAltitudeNear(3000, 100)

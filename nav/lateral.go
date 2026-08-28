@@ -213,6 +213,10 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 		nav.Approach.InterceptState == TurningToJoin) && nav.Heading.Assigned != nil {
 		heading, turn = nav.ApproachHeading(callsign, wxs, simTime)
 	} else if len(nav.Heading.Maneuvers) > 0 {
+		// Maneuvers turn at a flat rate without banking, as holds do; a
+		// stale bank from before would otherwise have to be unwound when
+		// the maneuvers end, which predictTurnPath doesn't model.
+		nav.FlightState.BankAngle = 0
 		result := nav.flyManeuvers(&nav.Heading.Maneuvers, wxs, simTime)
 		if result.completed {
 			// A heading assigned along with the maneuvers was for their
@@ -314,7 +318,10 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 		}
 		bankRad := math.Radians(bankAngle)
 		rate := math.Degrees(9.81 * math.Tan(bankRad) / tasMS)
-		return min(rate, 3)
+		// The rate is signed, so clamp rather than min: min() would leave
+		// left turns uncapped, letting slow aircraft turn left at 4+ deg/s
+		// but right at the standard rate.
+		return math.Clamp(rate, -3, 3)
 	}
 
 	// If we started leveling out now, how many more degrees would we turn through?
@@ -411,8 +418,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 	passedWaypoint := false
 	if wp.FlyOver() || nav.Prespawn {
-		// We treat all wps as flyover during the prespawn phase to avoid the expense of
-		// shouldTurnForOutbound.
+		// We treat all wps as flyover during the prespawn phase; precise
+		// fly-by turns don't matter before the sim starts.
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
 		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, wp.Turn(), wxs)
@@ -690,25 +697,161 @@ func (nav *Nav) activateWaypointActions(fix string, actions av.WaypointActions) 
 	return nil
 }
 
-// turnRateAndRadius calculates the steady-state turn rate and radius
-// based on aircraft performance and current state.
-// Returns turnRate in deg/s and radius in nm.
-func (nav *Nav) turnRateAndRadius(temp av.Temperature) (turnRate, radius float32) {
-	TAS_ms := nav.TAS(temp) * 0.514444
-	bankRad := math.Radians(nav.Perf.Turn.MaxBankAngle)
-	turnRate = min(math.Degrees(9.81*math.Tan(bankRad)/TAS_ms), 3.0)
-	// R = V / ω where V is in nm/s and ω is in rad/s
-	turnRateRad := math.Radians(turnRate)
-	if turnRateRad > 0 {
-		radius = (nav.FlightState.GS / 3600) / turnRateRad
-	}
-	return
+// turnPath is a closed-form model of an upcoming turn: an optional straight
+// lead, a constant-rate circular arc through the full turn angle, and a
+// straight tail, all displaced linearly by the wind. The leads stand in for
+// the time spent rolling into and out of the bank, sized so that the model's
+// duration and endpoint match the tick-by-tick roll that TargetHeading flies.
+type turnPath struct {
+	start   [2]float32 // position at the start of the turn, nm coordinates
+	center  [2]float32 // center of the arc, nm coordinates
+	h0      float32    // initial true heading, degrees
+	s       float32    // +1 for a right turn, -1 for left
+	omega   float32    // turn rate on the arc, deg/s
+	radius  float32    // arc radius, nm
+	arcDeg  float32    // total heading change, degrees
+	t1, t2  float32    // start and end times of the arc, seconds
+	dur     float32    // total duration including the roll-out lead, seconds
+	tasNMps float32    // true airspeed, nm/s
+	wind    [2]float32 // wind velocity, nm/s
 }
 
-// rollLeadDistance returns distance in nm the aircraft travels during roll-in
-func (nav *Nav) rollLeadDistance() float32 {
-	rollTime := nav.Perf.Turn.MaxBankAngle / nav.Perf.Turn.MaxBankRate
-	return (nav.FlightState.GS / 3600) * rollTime
+// resolveTurnDirection pins down which way the turn from the aircraft's
+// current heading to hdg goes. The predicates resolve this from the raw
+// course before crabbing the target into the wind: the crab angle can push
+// a target near 180 degrees away past it, which would flip a "closest"
+// turn to the wrong side.
+func (nav *Nav) resolveTurnDirection(hdg math.MagneticHeading, turn av.TurnDirection) av.TurnDirection {
+	if isTurnRight(float32(nav.FlightState.Heading), float32(hdg), turn) {
+		return av.TurnRight
+	}
+	return av.TurnLeft
+}
+
+// predictTurnPath models the turn from the aircraft's current state to the
+// given magnetic heading. The turn is flown in still air at the current TAS
+// with the wind's displacement added on afterward, which matches how
+// updatePositionAndGS integrates position.
+func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) turnPath {
+	fs := &nav.FlightState
+	tasKts := nav.TAS(wxs.Temperature())
+	tasMS := tasKts * 0.514444
+
+	// Steady-state turn rate in deg/s at the given bank angle, signed with
+	// the bank, where positive bank is into the turn; the same 3 deg/s cap
+	// as TargetHeading.
+	rate := func(bank float32) float32 {
+		r := min(math.Degrees(9.81*math.Tan(math.Radians(math.Abs(bank)))/tasMS), 3)
+		return util.Select(bank < 0, -r, r)
+	}
+
+	arcDeg := TurnAngle(fs.Heading, hdg, turn)
+	s := float32(util.Select(isTurnRight(float32(fs.Heading), float32(hdg), turn), 1, -1))
+	maxBank := nav.Perf.Turn.MaxBankAngle
+	rollRate := nav.Perf.Turn.MaxBankRate
+
+	entryBank := s * fs.BankAngle
+	if len(nav.Heading.Maneuvers) > 0 || nav.Heading.Hold != nil {
+		// Maneuvers turn at a flat StandardTurnRate without maintaining
+		// FlightState.BankAngle, so don't trust its stale value.
+		entryBank = 0
+	}
+
+	// Step the bank from its entry value up to max bank and from max bank
+	// back to level the same way TargetHeading does each tick, totalling
+	// the heading turned through and the ticks each phase takes.
+	var hIn, hOut float32
+	var kIn, kOut int
+	for b := entryBank; b < maxBank; kIn++ {
+		b = min(b+rollRate, maxBank)
+		hIn += rate(b)
+	}
+	for b := maxBank; b > 0; b -= rollRate {
+		hOut += rate(b)
+		kOut++
+	}
+
+	tp := turnPath{
+		start:   math.LL2NM(fs.Position, fs.NmPerLongitude),
+		h0:      float32(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
+		s:       s,
+		arcDeg:  arcDeg,
+		tasNMps: tasKts / 3600,
+	}
+	if nav.IsAirborne() {
+		tp.wind = wxs.WindVec()
+	}
+
+	if hIn+hOut <= arcDeg {
+		// The full bank is reached: the arc turns at the max-bank rate, and
+		// the straight leads make up the difference between the ticks the
+		// roll phases take and the heading they turn through.
+		tp.omega = rate(maxBank)
+		tp.t1 = float32(kIn) - hIn/tp.omega
+		tp.t2 = tp.t1 + arcDeg/tp.omega
+		tp.dur = tp.t2 + float32(kOut) - hOut/tp.omega
+	} else {
+		// A short turn that never reaches max bank: walk the bank up until
+		// rolling back to level would complete the turn, then model the
+		// whole turn as a single uniform arc over those ticks.
+		hTurn, k := float32(0), 0
+		for b := entryBank; ; {
+			var hDown float32
+			kDown := 0
+			for bb := b; bb > 0; bb -= rollRate {
+				hDown += rate(bb)
+				kDown++
+			}
+			if hTurn+hDown >= arcDeg || b >= maxBank {
+				k += kDown
+				break
+			}
+			b = min(b+rollRate, maxBank)
+			hTurn += rate(b)
+			k++
+		}
+		tp.omega = arcDeg / float32(max(k, 1))
+		tp.t1 = 0
+		tp.t2 = float32(max(k, 1))
+		tp.dur = tp.t2
+	}
+
+	// updateHeading turns first and updatePositionAndGS then moves a full
+	// second along the new heading, so over a tick the aircraft flies the
+	// heading it will have at the tick's end—a half-tick ahead of the
+	// continuous arc. Start the arc half a second early to match.
+	tp.t1 -= 0.5
+	tp.t2 -= 0.5
+
+	tp.radius = tp.tasNMps / math.Radians(tp.omega)
+	tp.center = math.Add2f(tp.start,
+		math.Add2f(math.Scale2f(math.SinCos(math.Radians(tp.h0)), tp.tasNMps*tp.t1),
+			math.Scale2f(perpRight(tp.h0), tp.s*tp.radius)))
+	return tp
+}
+
+// position returns the predicted position t seconds into the turn, in nm
+// coordinates.
+func (tp *turnPath) position(t float32) [2]float32 {
+	var p [2]float32
+	switch {
+	case t <= tp.t1:
+		p = math.Add2f(tp.start, math.Scale2f(math.SinCos(math.Radians(tp.h0)), tp.tasNMps*t))
+	case t <= tp.t2:
+		p = math.Sub2f(tp.center, math.Scale2f(perpRight(tp.heading(t)), tp.s*tp.radius))
+	default:
+		h1 := tp.h0 + tp.s*tp.arcDeg
+		rollout := math.Sub2f(tp.center, math.Scale2f(perpRight(h1), tp.s*tp.radius))
+		p = math.Add2f(rollout, math.Scale2f(math.SinCos(math.Radians(h1)), tp.tasNMps*(t-tp.t2)))
+	}
+	return math.Add2f(p, math.Scale2f(tp.wind, t))
+}
+
+// heading returns the predicted true heading t seconds into the turn, in
+// degrees; it may be outside [0,360).
+func (tp *turnPath) heading(t float32) float32 {
+	turned := math.Clamp((t-tp.t1)*tp.omega, 0, tp.arcDeg)
+	return tp.h0 + tp.s*turned
 }
 
 // perpRight returns unit vector perpendicular right (clockwise 90°) to heading.
@@ -716,32 +859,6 @@ func (nav *Nav) rollLeadDistance() float32 {
 func perpRight(hdg float32) [2]float32 {
 	rad := math.Radians(hdg)
 	return [2]float32{math.Cos(rad), -math.Sin(rad)}
-}
-
-// perpLeft returns unit vector perpendicular left (counter-clockwise 90°)
-func perpLeft(hdg float32) [2]float32 {
-	rad := math.Radians(hdg)
-	return [2]float32{-math.Cos(rad), math.Sin(rad)}
-}
-
-// rolloutPosition calculates where aircraft would end up after completing
-// a turn from currentHdg to targetHdg, starting at currentPos.
-// All headings are true (not magnetic). Returns position in nm coordinates.
-func rolloutPosition(currentPos [2]float32, currentHdg, targetHdg float32,
-	radius float32, turnRight bool) [2]float32 {
-	var center, rollout [2]float32
-	if turnRight {
-		perp := perpRight(currentHdg)
-		center = math.Add2f(currentPos, math.Scale2f(perp, radius))
-		perp = perpLeft(targetHdg)
-		rollout = math.Add2f(center, math.Scale2f(perp, radius))
-	} else {
-		perp := perpLeft(currentHdg)
-		center = math.Add2f(currentPos, math.Scale2f(perp, radius))
-		perp = perpRight(targetHdg)
-		rollout = math.Add2f(center, math.Scale2f(perp, radius))
-	}
-	return rollout
 }
 
 // isTurnRight determines if the turn from currentHdg to targetHdg should
@@ -763,9 +880,18 @@ func isTurnRight(currentHdg, targetHdg float32, turn av.TurnDirection) bool {
 	}
 }
 
+const (
+	turnToInterceptWait turnToInterceptResult = iota
+	turnToInterceptTurn
+	turnToInterceptCorrectableOvershoot
+	turnToInterceptMajorOvershoot
+)
+
+type turnToInterceptResult int
+
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
-// radial.
+// radial: when the turn's path, predicted in closed form, would cross it.
 func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) bool {
 	eta := nav.ETA(p)
 
@@ -777,8 +903,19 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 	// Alternatively, if we're far away w.r.t. the needed turn, don't even
 	// consider it. This is both for performance but also so that we don't
 	// make tiny turns miles away from fixes in some cases.
+	// The bound is turnAngle/2 seconds of travel, widened where the
+	// aircraft's actual turn radius needs more anticipation than that: the
+	// radius grows with the square of TAS, and a fast jet's 90 degree
+	// fly-by begins more than 6nm out. The widening caps the course change
+	// at 100 degrees since beyond that the fly-by anticipation distance
+	// grows without bound and the turn would cut miles inside the fix.
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
-	if turnAngle/2 < eta {
+	tas := nav.TAS(wxs.Temperature())
+	omega := min(3, math.Degrees(9.81*math.Tan(math.Radians(nav.Perf.Turn.MaxBankAngle))/(tas*0.514444)))
+	radius := tas / 3600 / math.Radians(omega)
+	lead := max(radius*math.Tan(math.Radians(min(turnAngle, 100)/2))+10*nav.FlightState.GS/3600,
+		turnAngle/2*nav.FlightState.GS/3600)
+	if math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude) > lead {
 		return false
 	}
 
@@ -787,46 +924,40 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 	hdgTrue := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
 	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdgTrue)))
 
-	// Make a ghost aircraft to use to simulate the turn.
-	nav2 := *nav
-	nav2.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
-	nav2.DeferredNavHeading = nil
-	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
+	// The radial is a ground course, so predict a turn to the heading that
+	// holds it as a track; the aircraft's post-turn steering to the next
+	// fix is wind-corrected the same way. The airborne check matters since
+	// departures follow waypoints from the start of the takeoff roll, and
+	// on the ground the aircraft neither crabs nor drifts with the wind.
+	target := hdg
+	if nav.IsAirborne() {
+		target = nav.headingForTrack(hdg, wxs)
+	}
+	tp := nav.predictTurnPath(target, nav.resolveTurnDirection(hdg, turn), wxs)
 
-	initialDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
-		nav2.FlightState.NmPerLongitude),
-		p0, p1)
+	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position,
+		nav.FlightState.NmPerLongitude), p0, p1)
 
-	// Don't simulate the turn longer than it will take to do it.
-	n := int(1 + turnAngle/3)
-	for range n {
-		nav2.UpdateWithWeather("", wxs, nil, nil, Time{}, nil)
-		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
-			nav2.FlightState.NmPerLongitude),
-			p0, p1)
-
-		if math.Sign(initialDist) != math.Sign(curDist) {
-			// Aircraft is on the other side of the line than it started on.
+	// Start the turn once the predicted path would reach the far side of
+	// the outbound course.
+	for t := float32(1); ; t++ {
+		t = min(t, tp.dur)
+		d := math.SignedPointLineDistance(tp.position(t), p0, p1)
+		if math.Sign(d) != math.Sign(initialDist) {
 			return true
 		}
+		if t == tp.dur {
+			return false
+		}
 	}
-	return false
 }
 
-const (
-	turnToInterceptWait turnToInterceptResult = iota
-	turnToInterceptTurn
-	turnToInterceptCorrectableOvershoot
-	turnToInterceptMajorOvershoot
-)
-
-type turnToInterceptResult int
-
 // Given a point and a course through it, indicates when the aircraft should start the turn to join
-// that course. The returned bool is false if the aircraft is diverging from the course; the result
-// then describes how far off the course the aircraft is pointed rather than how it would roll out
-// on it. Callers that have already committed to joining use that to recover; ones still waiting for
-// the intercept keep flying their heading.
+// that course, classifying how the turn's path, predicted in closed form, would meet it. The
+// returned bool is false if the aircraft is diverging from the course; the result then describes
+// how far off the course the aircraft is pointed rather than how it would roll out on it. Callers
+// that have already committed to joining use that to recover; ones still waiting for the intercept
+// keep flying their heading.
 func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection,
 	wxs wx.Sample) (result turnToInterceptResult, reaches bool) {
 	p0nm := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
@@ -837,7 +968,8 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600 // in seconds
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
 	if eta < 2 && turnAngle < 4 {
-		// Just in case, start the turn; for larger turn angles, fall through to simulation to see if this is correctable.
+		// Just in case, start the turn; for larger turn angles, fall
+		// through to see if this is correctable.
 		return turnToInterceptTurn, true
 	}
 
@@ -846,151 +978,67 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 		return turnToInterceptWait, true
 	}
 
-	// Calculate the expected crab angle needed for wind correction.
-	// The aircraft's heading will differ from the track by this amount.
-	v := math.SinCos(math.Radians(hdgTrue))
-	v = math.Scale2f(v, nav.FlightState.GS)
-	crabAngle := math.Abs(wxs.Deflection(v))
+	// Allow heading tolerance to account for the crab angle needed in crosswind.
+	// Base tolerance of 10 degrees plus the calculated crab angle.
+	v := math.Scale2f(math.SinCos(math.Radians(hdgTrue)), nav.FlightState.GS)
+	headingTolerance := 10 + math.Abs(wxs.Deflection(v))
 
-	// The radial is a ground course, so the simulated aircraft flies the
-	// heading that holds it as a track; otherwise in a crosswind it rolls
-	// out and immediately drifts back off the radial.
-	ghostHdg := nav.headingForTrack(hdg, wxs)
-	nav2 := *nav
-	nav2.Heading = NavHeading{Assigned: &ghostHdg, Turn: &turn}
-	nav2.DeferredNavHeading = nil
-	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
+	// The radial is a ground course, so predict a turn to the heading that
+	// holds it as a track; otherwise in a crosswind the predicted path
+	// rolls out and immediately drifts back off the radial.
+	tp := nav.predictTurnPath(nav.headingForTrack(hdg, wxs), nav.resolveTurnDirection(hdg, turn), wxs)
 
-	n := int(1 + turnAngle)
-	lastDist := initialDist
-	for range n {
-		nav2.UpdateWithWeather("", wxs, nil, nil, Time{}, nil)
-		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0nm, p1)
+	// Since the predicted path holds the radial's course as a track after
+	// rolling out, its final distance from the radial is where the aircraft
+	// would settle if it turned now.
+	endDist := math.SignedPointLineDistance(tp.position(tp.dur), p0nm, p1)
 
-		intercepted := math.Abs(curDist) < 0.02
-		crossed := math.Sign(initialDist) != math.Sign(curDist)
-		if !intercepted && !crossed {
-			lastDist = curDist
-			continue
+	for t := float32(1); ; t++ {
+		t = min(t, tp.dur)
+		d := math.SignedPointLineDistance(tp.position(t), p0nm, p1)
+		if math.Abs(d) < 0.02 || math.Sign(d) != math.Sign(initialDist) {
+			// Just past the ideal turn point, the heading still to be
+			// turned at the crossing rises steeply—about 15 degrees in the
+			// tick after an exact tangency—so classifying by that heading
+			// alone can skip right over "start the turn". A path that ends
+			// up settled on the radial is a clean intercept no matter the
+			// angle it first crossed at.
+			if math.Abs(endDist) < 0.1 {
+				return turnToInterceptTurn, true
+			}
+			predicted := math.TrueToMagnetic(math.TrueHeading(math.NormalizeHeading(tp.heading(t))),
+				nav.FlightState.MagneticVariation)
+			delta := math.HeadingDifference(hdg, predicted)
+			if delta < headingTolerance {
+				return turnToInterceptTurn, true
+			} else if delta < headingTolerance+30 {
+				return turnToInterceptCorrectableOvershoot, true
+			} else {
+				return turnToInterceptMajorOvershoot, true
+			}
 		}
-
-		// Allow heading tolerance to account for the crab angle needed in crosswind.
-		// Base tolerance of 10 degrees plus the calculated crab angle.
-		headingTolerance := 10 + crabAngle
-		delta := math.HeadingDifference(hdg, nav2.FlightState.Heading)
-		if delta < headingTolerance {
-			return turnToInterceptTurn, true
-		} else if delta < headingTolerance+30 {
-			return turnToInterceptCorrectableOvershoot, true
-		} else {
-			return turnToInterceptMajorOvershoot, true
+		if t == tp.dur {
+			break
 		}
 	}
 
-	// The simulated aircraft never reached the line. If it ended up farther away
-	// than it started it is diverging from the course, either having overshot it
-	// or not yet having turned toward it.
-	if math.Abs(lastDist) > math.Abs(initialDist) {
+	// The predicted path rolls out without reaching the radial; it then
+	// holds the radial's course as a track, so its distance from it no
+	// longer changes. If it ends up farther from the radial than the
+	// aircraft is now, the aircraft has overshot and is diverging.
+	if math.Abs(endDist) > math.Abs(initialDist) {
 		delta := math.HeadingDifference(hdg, nav.FlightState.Heading)
-		if math.Abs(lastDist) < 0.25 && delta < 30 {
+		if math.Abs(endDist) < 0.25 && delta < 30 {
 			// Near enough the course and its heading to just take it up.
 			return turnToInterceptTurn, true
 		}
-		if delta < 10+crabAngle+30 {
+		if delta < headingTolerance+30 {
 			return turnToInterceptCorrectableOvershoot, false
 		}
 		return turnToInterceptMajorOvershoot, false
 	}
 	return turnToInterceptWait, true
 }
-
-// Analytical version of shouldTurnForOutbound using geometry rather than
-// simulation. Currently unused - kept for future integration.
-func (nav *Nav) shouldTurnForOutboundAnalytical(p math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection) bool {
-	eta := nav.ETA(p)
-	if eta < 2 {
-		return true
-	}
-
-	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
-	if turnAngle/2 < eta {
-		return false
-	}
-
-	_, radius := nav.turnRateAndRadius(av.MakeTemperatureFromKelvin(240)) // standard atmosphere approximation
-	if radius == 0 {
-		return false
-	}
-
-	currentPos := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
-	currentHdg := float32(math.MagneticToTrue(nav.FlightState.Heading, nav.FlightState.MagneticVariation))
-	targetHdg := float32(math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation))
-
-	turnRight := isTurnRight(currentHdg, targetHdg, turn)
-	rollout := rolloutPosition(currentPos, currentHdg, targetHdg, radius, turnRight)
-
-	fixPos := math.LL2NM(p, nav.FlightState.NmPerLongitude)
-	lineDir := math.SinCos(math.Radians(targetHdg))
-	lineEnd := math.Add2f(fixPos, lineDir)
-
-	dist := math.SignedPointLineDistance(rollout, fixPos, lineEnd)
-	threshold := max(nav.rollLeadDistance()*0.5, 0.1)
-
-	return math.Abs(dist) < threshold
-}
-
-// Analytical version of shouldTurnToIntercept using geometry rather than
-// simulation. Currently unused - kept for future integration.
-func (nav *Nav) shouldTurnToInterceptAnalytical(p0 math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection) bool {
-	lineOrigin := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
-	targetHdgTrue := float32(math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation))
-	lineDir := math.SinCos(math.Radians(targetHdgTrue))
-	lineEnd := math.Add2f(lineOrigin, lineDir)
-
-	currentPos := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
-	initialDist := math.SignedPointLineDistance(currentPos, lineOrigin, lineEnd)
-
-	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600
-	if eta < 2 {
-		return true
-	}
-
-	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
-	if turnAngle < eta {
-		return false
-	}
-
-	_, radius := nav.turnRateAndRadius(av.MakeTemperatureFromKelvin(240)) // standard atmosphere approximation
-	if radius == 0 {
-		return false
-	}
-
-	currentHdg := float32(math.MagneticToTrue(nav.FlightState.Heading, nav.FlightState.MagneticVariation))
-	turnRight := isTurnRight(currentHdg, targetHdgTrue, turn)
-	rollout := rolloutPosition(currentPos, currentHdg, targetHdgTrue, radius, turnRight)
-	rolloutDist := math.SignedPointLineDistance(rollout, lineOrigin, lineEnd)
-
-	if math.Abs(rolloutDist) > 0.25 {
-		return false
-	}
-
-	threshold := max(nav.rollLeadDistance()*0.5, 0.02)
-	return math.Abs(rolloutDist) < threshold ||
-		(math.Sign(initialDist) != math.Sign(rolloutDist))
-}
-
-// Suppress staticcheck warnings for intentionally unused analytical functions.
-// These are kept for future integration testing.
-var (
-	_ = (*Nav).turnRateAndRadius
-	_ = (*Nav).rollLeadDistance
-	_ = perpRight
-	_ = perpLeft
-	_ = rolloutPosition
-	_ = isTurnRight
-	_ = (*Nav).shouldTurnForOutboundAnalytical
-	_ = (*Nav).shouldTurnToInterceptAnalytical
-)
 
 ///////////////////////////////////////////////////////////////////////////
 
