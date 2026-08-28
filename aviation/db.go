@@ -66,6 +66,7 @@ type FAAAirport struct {
 	Location   math.Point2LL
 	Runways    []Runway
 	Approaches map[string]Approach
+	SIDs       map[string]SID
 	STARs      map[string]STAR
 	ARTCC      string
 }
@@ -1299,7 +1300,11 @@ func PrintCIFPRoutes(airport string) error {
 		return fmt.Errorf("%s: airport not present in database\n", airport)
 	}
 
-	fmt.Printf("STARs:\n")
+	fmt.Printf("SIDs:\n")
+	for name, sid := range util.SortedMap(ap.SIDs) {
+		sid.Print(name)
+	}
+	fmt.Printf("\nSTARs:\n")
 	for name, star := range util.SortedMap(ap.STARs) {
 		star.Print(name)
 	}

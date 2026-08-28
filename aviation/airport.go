@@ -383,6 +383,20 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				e.ErrorString("no departure routes given")
 			}
 
+			var exits []ExitID
+			for exit := range strings.SplitSeq(string(exitList), ",") {
+				exit = strings.TrimSpace(exit)
+				if exit == "" {
+					// A trailing comma in the list; not an exit.
+					continue
+				}
+				if _, ok := seenExits[exit]; ok {
+					e.ErrorString("%s: exit repeatedly specified in routes", exit)
+				}
+				seenExits[exit] = nil
+				exits = append(exits, ExitID(exit))
+			}
+
 			var taken AircraftClass // the classes the routes so far leave to no one else
 			for i, route := range routes {
 				if len(routes) > 1 {
@@ -394,61 +408,43 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				}
 				taken |= route.Aircraft.expand()
 
-				route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
-
-				route.Waypoints = append([]Waypoint{
-					{
-						Fix:      rwy.Base(),
-						Location: r.Threshold,
-					},
-					{
-						Fix:      rwy.Base() + "-mid",
-						Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
-					}}, route.Waypoints...)
-
-				for i := range route.Waypoints {
-					route.Waypoints[i].SetOnSID(true)
-
-					if route.Waypoints[i].TransferComms() {
-						route.WaitToContactDeparture = true
+				if len(route.Waypoints) > 0 || route.SID == "" {
+					route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+					route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
+					route.initialize(rwy, r, rend, controlPositions, e)
+					for _, exit := range exits {
+						splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], route)
 					}
-				}
-
-				route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
-
-				if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff() }) {
-					if route.HandoffController == "" {
-						e.ErrorString(`no "handoff_controller" specified even though route has "/ho"`)
-					} else if _, ok := controlPositions[route.HandoffController]; !ok {
-						e.ErrorString("control position %q unknown in scenario", route.HandoffController)
+				} else {
+					// The waypoints come from the CIFP's SID and depend on
+					// the exit, so each exit gets its own copy of the route.
+					// The checks made of scenario-authored waypoints don't
+					// apply: a SID may legitimately have a 200+ nm oceanic
+					// leg or a lower minimum altitude at a later fix.
+					for _, exit := range exits {
+						if len(exits) > 1 {
+							e.Push("Exit " + string(exit))
+						}
+						exitRoute := *route
+						if wps, ok := sidWaypoints(icao, route.SID, rwy, exit, e); ok {
+							exitRoute.Waypoints = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, true, e)
+							for _, wp := range exitRoute.Waypoints {
+								if wp.Location.IsZero() {
+									e.ErrorString("%s: unable to locate SID waypoint", wp.Fix)
+								}
+							}
+							exitRoute.initialize(rwy, r, rend, controlPositions, e)
+							splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], &exitRoute)
+						}
+						if len(exits) > 1 {
+							e.Pop()
+						}
 					}
-				} else if route.HandoffController != "" {
-					e.ErrorString(`"handoff_controller" specified but won't be used since route has no "/ho"`)
-				}
-
-				if route.AssignedAltitude == 0 && route.ClearedAltitude == 0 {
-					e.ErrorString(`must specify either "assigned_altitude" or "cleared_altitude"`)
-				} else if route.AssignedAltitude != 0 && route.ClearedAltitude != 0 {
-					e.ErrorString(`cannot specify both "assigned_altitude" and "cleared_altitude"`)
 				}
 
 				if len(routes) > 1 {
 					e.Pop()
 				}
-			}
-
-			for exit := range strings.SplitSeq(string(exitList), ",") {
-				exit = strings.TrimSpace(exit)
-				if exit == "" {
-					// A trailing comma in the list; not an exit.
-					continue
-				}
-				if _, ok := seenExits[exit]; ok {
-					e.ErrorString("%s: exit repeatedly specified in routes", exit)
-				}
-				seenExits[exit] = nil
-
-				splitDepartureRoutes[rwy][ExitID(exit)] = routes
 			}
 			e.Pop()
 		}
@@ -903,10 +899,74 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 	return m
 }
 
-// FinalHeading returns the final heading from the exit route's waypoints.
-// Returns 0 if no heading waypoint is found.
+// sidWaypoints returns the waypoints of the CIFP's SID off the runway to the
+// exit for an exit route that gives none of its own.
+func sidWaypoints(icao, sid string, rwy RunwayID, exit ExitID, e *util.ErrorLogger) (WaypointArray, bool) {
+	s, ok := DB.Airports[icao].SIDs[sid]
+	if !ok {
+		e.ErrorString(`must specify "waypoints": SID %q isn't in the FAA CIFP for %s. Options: %s`,
+			sid, icao, strings.Join(util.SortedMapKeys(DB.Airports[icao].SIDs), ", "))
+		return nil, false
+	}
+	wps, err := s.Waypoints(rwy.Base(), exit.Base())
+	if err != nil {
+		e.ErrorString(`must specify "waypoints": SID %s: %v`, sid, err)
+		return nil, false
+	}
+	return wps.Clone(), true
+}
+
+// initialize puts the runway in front of the route's located waypoints--its
+// threshold and then a point 3/4 of the way down it, so that the aircraft
+// rolls to the end before flying the route--and checks the route's other
+// members against them.
+func (er *ExitRoute) initialize(rwy RunwayID, r, rend Runway, controlPositions map[ControlPosition]*Controller,
+	e *util.ErrorLogger) {
+	er.Waypoints = append([]Waypoint{
+		{
+			Fix:      rwy.Base(),
+			Location: r.Threshold,
+		},
+		{
+			Fix:      rwy.Base() + "-mid",
+			Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
+		}}, er.Waypoints...)
+
+	for i := range er.Waypoints {
+		er.Waypoints[i].SetOnSID(true)
+
+		if er.Waypoints[i].TransferComms() {
+			er.WaitToContactDeparture = true
+		}
+	}
+
+	if slices.ContainsFunc(er.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff() }) {
+		if er.HandoffController == "" {
+			e.ErrorString(`no "handoff_controller" specified even though route has "/ho"`)
+		} else if _, ok := controlPositions[er.HandoffController]; !ok {
+			e.ErrorString("control position %q unknown in scenario", er.HandoffController)
+		}
+	} else if er.HandoffController != "" {
+		e.ErrorString(`"handoff_controller" specified but won't be used since route has no "/ho"`)
+	}
+
+	if er.AssignedAltitude == 0 && er.ClearedAltitude == 0 {
+		e.ErrorString(`must specify either "assigned_altitude" or "cleared_altitude"`)
+	} else if er.AssignedAltitude != 0 && er.ClearedAltitude != 0 {
+		e.ErrorString(`cannot specify both "assigned_altitude" and "cleared_altitude"`)
+	}
+}
+
+// FinalHeading returns the heading the route leaves the aircraft on, or 0
+// if it ends at a fix rather than on vectors.
 func (er ExitRoute) FinalHeading() int {
 	for _, v := range slices.Backward(er.Waypoints) {
+		if groups := v.ActionGroups(); len(groups) > 0 {
+			last := groups[len(groups)-1]
+			if h := last.Actions.Heading; h != nil && !h.PresentHeading && last.Until.Type == WaypointActionNoTermination {
+				return int(h.Heading)
+			}
+		}
 		if v.Heading != 0 {
 			return int(v.Heading)
 		}

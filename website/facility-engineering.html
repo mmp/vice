@@ -455,7 +455,11 @@
                 <li> <code>/delete</code>: the aircraft will be deleted when it reaches the fix</li>
                 <li> <code>/h</code><i>heading</i>: depart the fix at specified heading</li>
                 <li> <code>/t</code><i>heading</i>: depart the fix on the specified track heading. Unlike <code>/h</code>,
-                  a track heading corrects for wind so the aircraft maintains the desired ground track.</li>
+                  a track heading corrects for wind so the aircraft maintains the desired ground track.
+                  A navaid after the heading, as in <code>/t336PXR</code>, makes the track that navaid's radial: the
+                  aircraft joins the PXR 336 radial from wherever it is, converging at up to 45 degrees, and then
+                  follows it away from PXR. This is how a procedure that says "intercept the PXR R-336" is expressed;
+                  it may also be given with <code>/lt</code> and <code>/rt</code>.</li>
                 <li> <code>/l</code><i>heading</i>: turn left to the specified heading at the fix</li>
                 <li> <code>/r</code><i>heading</i>: turn right to the specified heading at the fix</li>
                 <li> <code>/lt</code><i>heading</i>: turn left to the specified track heading at the fix (wind-corrected, like <code>/t</code>)</li>
@@ -481,6 +485,13 @@
                       on the route for the course to lead to.</li>
                   </ul>
                 </li>
+                <li> <code>@r</code><i>radial</i><i>navaid</i>: fly the action group's heading until crossing the given
+                  radial of the navaid, then start the next action group. For example,
+                  <code>KDLS-25/t069@a647/h120@r165LTJ/t165LTJ@a4000/ld LTJ</code> tracks 069 to 647 feet, turns to
+                  heading 120 until crossing the LTJ 165 radial, tracks that radial to 4000 feet, and then turns left
+                  direct LTJ. A radial extends from its navaid in one direction only; crossing its reciprocal doesn't
+                  count. The next action group begins at the crossing, so a procedure that continues along the radial
+                  names it as the radial to track, <code>/t165LTJ</code>, and the aircraft settles onto it after the turn.</li>
                 <li> <code>/ld</code>: left direct to the next fix (force a left turn to reach the next waypoint)</li>
                 <li> <code>/rd</code>: right direct to the next fix (force a right turn to reach the next waypoint)</li>
                 <li> <code>/iaf</code>: indicates that the fix is an IAF (initial approach fix)</li>
@@ -4299,7 +4310,8 @@
                   <tr>
                     <td>"sid"</td>
                     <td>String</td>
-                    <td><i>(Optional)</i> A string naming the SID that the aircraft is flying.</td>
+                    <td><i>(Optional)</i> A string naming the SID that the aircraft is flying. If the SID is in the
+                      FAA CIFP for the airport, "waypoints" may be omitted and the route is taken from the CIFP; see below.</td>
                   </tr>
                   <tr>
                     <td>"waypoints"</td>
@@ -4308,11 +4320,30 @@
                       sets the route's first waypoints to be the specified runway's threshold and then a point 3/4 of the
                       way down the runway. The waypoints in "waypoints" are then appended to those.  Therefore, for the
                       example above, the aircraft continues to the end of the runway and then flies the heading 185.
+                      "waypoints" may be omitted if "sid" names a SID that the FAA CIFP charts for the airport.
                     </td>
                   </tr>
                 </tbody>
               </table>
               <p>Either "assigned_altitude" or "cleared_altitude" must be specified.</p>
+              <p>
+                When "waypoints" isn't given, the route comes from the CIFP's coding of the SID: the SID's transition for
+                the departure runway, followed by the enroute transition that leads to the exit fix, ending at the exit.
+                If no enroute transition includes the exit, the route follows the SID's common route to its end
+                and the aircraft then proceeds along the departure's "route" from there. It is an error to omit
+                "waypoints" if the SID isn't in the CIFP for the airport or if the CIFP gives no runway transition for the departure runway.
+                Here is a KLGA runway 13 route that takes the TNNIS6 from the CIFP; it is
+                flown as <code>KLGA-31/h134@t50 JUTES/a3000+/s220- TNNIS/a5000+/flyover/t045</code>:
+              </p>
+              <pre>
+"departure_routes": {
+  "13": {
+    "GREKI,MERIT,BAYYS,BDR,CMK": {
+      "cleared_altitude": 5000,
+      "sid": "TNNIS6"
+    },
+    ...
+              </pre>
               <p>The other part of specifying departures is the array of objects stored in "departures". Each one describes a departure
                 to a particular destination. Here is a JFK departure to Paris Charles de Gaulle:
               </p>

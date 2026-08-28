@@ -5,6 +5,7 @@
 package aviation
 
 import (
+	"maps"
 	"math"
 	"slices"
 	"strings"
@@ -373,5 +374,93 @@ func TestParseARINC424ConstantRadiusArc(t *testing.T) {
 	}
 	if arc.Direction != DMEArcDirectionClockwise {
 		t.Errorf("expected clockwise arc, got %v", arc.Direction)
+	}
+}
+
+// The KJFK DEEZZ6 leaves 31L/R on a heading to 520' and then via SKORR to
+// YNKEE, where it ends in vectors; 4L/R climb to 520' before vectors. The
+// common route and enroute transitions pick up at DEEZZ.
+func TestParseARINC424SID(t *testing.T) {
+	lines := []string{
+		"SUSAP KJFKK6AJFK     0     145YHN40382374W073464329W013000013         1800018000C    MNAR    JOHN F KENNEDY INTL           300791912",
+		"SUSAP KJFKK6DDEEZZ64RW04L 010         0        VA                     0438        + 00520     18000       KJFK  K6PA       301432603",
+		"SUSAP KJFKK6DDEEZZ64RW04L 020PONAEK6PC0EY      DF                                                                          301442603",
+		"SUSAP KJFKK6DDEEZZ64RW04L 030         0 E      VM                     0990                                                 301452603",
+		"SUSAP KJFKK6DDEEZZ64RW04R 010         0        VA                     0438        + 00520     18000                        301462603",
+		"SUSAP KJFKK6DDEEZZ64RW04R 020         0 E      VM                     0990                                                 301472603",
+		"SUSAP KJFKK6DDEEZZ64RW31B 010         0        VA                     3138        + 00520     18000                        301482603",
+		"SUSAP KJFKK6DDEEZZ64RW31B 020SKORRK6PC0E   L   DF                                 + 02500          210               -     301492603",
+		"SUSAP KJFKK6DDEEZZ64RW31B 030CESIDK6PC0E       TF                                 + 02500          250               -     301502603",
+		"SUSAP KJFKK6DDEEZZ64RW31B 040YNKEEK6PC0E       TF                                                                          301512603",
+		"SUSAP KJFKK6DDEEZZ64RW31B 050YNKEEK6PC0EE      FM CCC K6      254205491870    D                                            301522603",
+		"SUSAP KJFKK6DDEEZZ65      010DEEZZK6EA0E       IF                                             18000                        301532603",
+		"SUSAP KJFKK6DDEEZZ65      020HEEROK6EA0EE      TF                                                                          301542603",
+		"SUSAP KJFKK6DDEEZZ66CANDR 010HEEROK6EA0E       IF                                             18000                        301552603",
+		"SUSAP KJFKK6DDEEZZ66CANDR 020KURNLK6EA0E       TF                                                                          301562603",
+		"SUSAP KJFKK6DDEEZZ66CANDR 030CANDRK6EA0EE      TF                                                                          301572603",
+		"SUSAP KJFKK6DDEEZZ66TOWIN 010HEEROK6EA0E       IF                                             18000                        301582603",
+		"SUSAP KJFKK6DDEEZZ66TOWIN 020KURNLK6EA0E       TF                                                                          301592603",
+		"SUSAP KJFKK6DDEEZZ66TOWIN 030CANDRK6EA0E       TF                                                                          301602603",
+		"SUSAP KJFKK6DDEEZZ66TOWIN 040TOWINK6EA0EE      TF                                                                          301612603",
+		"SUSAP KJFKK6GRW04L   0120790440 N40372318W073470505         -0028300012046057200IIHIQ1                                     305401709",
+		"SUSAP KJFKK6GRW04R   0084000440 N40373154W073461324         -0028400012000053200IIJFK3                                     305412308",
+		"SUSAP KJFKK6GRW13L   0100001340 N40392337W073471475         -0027900013090758200IITLK2                                     305422504",
+		"SUSAP KJFKK6GRW13R   0145111340 N40384378W073483739         -0028100013204455200R                                          305432506",
+		"SUSAP KJFKK6GRW22L   0084002240 N40384285W073451750         -0028300012000053200IIIWY3                                     305442308",
+		"SUSAP KJFKK6GRW22R   0120792240 N40383276W073461069         -0028100013342459200IIJOC1                                     305452308",
+		"SUSAP KJFKK6GRW31L   0145113140 N40375728W073465479         -0028100013326458200IIMOH1                                     305462308",
+		"SUSAP KJFKK6GRW31R   0100003140 N40384260W073454483         -0028100013102742200IIRTH1                                     305472504",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	sid, ok := result.Airports["KJFK"].SIDs["DEEZZ6"]
+	if !ok {
+		t.Fatalf("expected KJFK DEEZZ6 SID, got %v", result.Airports["KJFK"].SIDs)
+	}
+
+	runways := map[string]string{
+		"4L":  "KJFK-22R/h044@a520 PONAE/flyover/h099",
+		"4R":  "KJFK-22L/h044@a520/h099",
+		"31L": "KJFK-13R/h314@a520 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
+		"31R": "KJFK-13L/h314@a520 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
+	}
+	if len(sid.RunwayTransitions) != len(runways) {
+		t.Errorf("expected runway transitions for %v, got %v", slices.Sorted(maps.Keys(runways)),
+			slices.Sorted(maps.Keys(sid.RunwayTransitions)))
+	}
+	for rwy, want := range runways {
+		if got := sid.RunwayTransitions[rwy].Encode(); got != want {
+			t.Errorf("runway %s: expected %q, got %q", rwy, want, got)
+		}
+	}
+	if skorr := sid.RunwayTransitions["31L"][1]; skorr.Turn() != TurnLeft {
+		t.Errorf("expected a left turn to SKORR, got %v", skorr.Turn())
+	}
+
+	if got := sid.Common.Encode(); got != "DEEZZ HEERO" {
+		t.Errorf("expected common route DEEZZ HEERO, got %q", got)
+	}
+	if got := sid.EnrouteTransitions["TOWIN"].Encode(); got != "DEEZZ HEERO KURNL CANDR TOWIN" {
+		t.Errorf("expected the TOWIN transition to start with the common route, got %q", got)
+	}
+
+	for _, tc := range []struct {
+		runway, exit, want string
+	}{
+		{"31L", "CANDR", "KJFK-13R/h314@a520 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR"},
+		{"31L", "TOWIN", "KJFK-13R/h314@a520 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR TOWIN"},
+		{"4R", "HEERO", "KJFK-22L/h044@a520/h099 DEEZZ HEERO"},
+		{"4L", "SKORR", "KJFK-22R/h044@a520 PONAE/flyover/h099 DEEZZ HEERO"},
+		{"31R", "SKORR", "KJFK-13L/h314@a520 SKORR/a2500+/s210-"},
+	} {
+		wps, err := sid.Waypoints(tc.runway, tc.exit)
+		if err != nil {
+			t.Errorf("%s/%s: %v", tc.runway, tc.exit, err)
+		} else if got := wps.Encode(); got != tc.want {
+			t.Errorf("%s/%s: expected %q, got %q", tc.runway, tc.exit, tc.want, got)
+		}
+	}
+	if _, err := sid.Waypoints("13L", "CANDR"); err == nil {
+		t.Errorf("expected an error for a runway the SID doesn't serve")
 	}
 }

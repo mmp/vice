@@ -184,7 +184,7 @@ func (wha WaypointHeadingAction) Encoded() string {
 	case TurnRight:
 		prefix = util.Select(wha.Track, "rt", "r")
 	}
-	return fmt.Sprintf("/%s%d", prefix, wha.Heading)
+	return fmt.Sprintf("/%s%03d", prefix, wha.Heading)
 }
 
 type WaypointActionEvent struct {
@@ -827,6 +827,29 @@ func (wa *WaypointArray) UnmarshalJSON(b []byte) error {
 		}
 		return err
 	}
+}
+
+// Clone returns a copy of the waypoints that shares nothing with the
+// original, so that initializing the copy leaves the original untouched.
+func (wa WaypointArray) Clone() WaypointArray {
+	wps := util.DuplicateSlice(wa)
+	for i := range wps {
+		if wps[i].Extra == nil {
+			continue
+		}
+		extra := *wps[i].Extra
+		extra.ActionGroups = util.DuplicateSlice(extra.ActionGroups)
+		if extra.Arc != nil {
+			arc := *extra.Arc
+			extra.Arc = &arc
+		}
+		if extra.ProcedureTurn != nil {
+			pt := *extra.ProcedureTurn
+			extra.ProcedureTurn = &pt
+		}
+		wps[i].Extra = &extra
+	}
+	return wps
 }
 
 func (wa WaypointArray) RouteString() string {
@@ -2118,6 +2141,108 @@ func (s STAR) Print(name string) {
 
 	for rwy, wps := range util.SortedMap(s.RunwayWaypoints) {
 		fmt.Printf(routePrintFormat, name+".RWY"+rwy, wps.Encode())
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// SID
+
+// SID is a standard instrument departure as coded in the FAA CIFP.
+type SID struct {
+	// RunwayTransitions is keyed by runway. A transition that starts with
+	// a leg flown from the runway--a heading to an altitude, say--begins at
+	// the runway's departure end, named as the opposite runway's threshold:
+	// KJFK-13R for a departure off 31L.
+	RunwayTransitions map[string]WaypointArray
+	// Common is the route every runway and enroute transition shares.
+	Common WaypointArray
+	// EnrouteTransitions is keyed by transition name, each with the common
+	// route spliced onto its front.
+	EnrouteTransitions map[string]WaypointArray
+}
+
+// MakeSID returns an empty SID with its maps allocated.
+func MakeSID() *SID {
+	return &SID{
+		RunwayTransitions:  make(map[string]WaypointArray),
+		EnrouteTransitions: make(map[string]WaypointArray),
+	}
+}
+
+// Waypoints returns the SID as flown off the given runway by a departure
+// leaving over the given exit fix. The route follows the runway transition
+// and then the enroute transition the exit lies on, ending at the exit; if
+// no transition leads to the exit it follows the common route to its end.
+func (s SID) Waypoints(runway, exit string) (WaypointArray, error) {
+	wps, ok := s.RunwayTransitions[runway]
+	if !ok {
+		if len(s.RunwayTransitions) == 0 {
+			return nil, fmt.Errorf("no runway transitions in the CIFP")
+		}
+		return nil, fmt.Errorf("no runway transition for runway %s. Options: %s", runway,
+			strings.Join(util.SortedMapKeys(s.RunwayTransitions), ", "))
+	}
+
+	hasExit := func(wps WaypointArray) bool {
+		return slices.ContainsFunc(wps, func(wp Waypoint) bool { return wp.Fix == exit })
+	}
+	body := s.Common
+	if !hasExit(wps) && !hasExit(s.Common) {
+		for _, name := range util.SortedMapKeys(s.EnrouteTransitions) {
+			if hasExit(s.EnrouteTransitions[name]) {
+				body = s.EnrouteTransitions[name]
+				break
+			}
+		}
+	}
+
+	route := spliceSIDTransition(wps, body)
+	if i := slices.IndexFunc(route, func(wp Waypoint) bool { return wp.Fix == exit }); i != -1 {
+		route = route[:i+1]
+	}
+	return route, nil
+}
+
+// spliceSIDTransition appends tr to a copy of base. A transition starts at
+// the last fix of what precedes it (ARINC 424 attachment 5, 4.10), so if its
+// first fix is found in base the route continues from there, keeping the
+// transition's restrictions at the junction where base has none.
+func spliceSIDTransition(base, tr WaypointArray) WaypointArray {
+	route := util.DuplicateSlice(base)
+	if len(tr) == 0 {
+		return route
+	}
+
+	idx := slices.IndexFunc(route, func(wp Waypoint) bool { return wp.Fix == tr[0].Fix })
+	if idx == -1 {
+		return append(route, tr...)
+	}
+
+	junction := &route[idx]
+	if junction.AltitudeRestriction() == nil {
+		if ar := tr[0].AltitudeRestriction(); ar != nil {
+			junction.SetAltitudeRestriction(*ar)
+		}
+	}
+	if junction.SpeedRestriction() == nil {
+		if sr := tr[0].SpeedRestriction(); sr != nil {
+			junction.SetSpeedRestriction(*sr)
+		}
+	}
+	return append(route[:idx+1], tr[1:]...)
+}
+
+// Print writes the SID's runway transitions, common route, and enroute
+// transitions in the scenario waypoint syntax.
+func (s SID) Print(name string) {
+	for rwy, wps := range util.SortedMap(s.RunwayTransitions) {
+		fmt.Printf(routePrintFormat, name+".RWY"+rwy, wps.Encode())
+	}
+	if len(s.Common) > 0 {
+		fmt.Printf(routePrintFormat, name, s.Common.Encode())
+	}
+	for tr, wps := range util.SortedMap(s.EnrouteTransitions) {
+		fmt.Printf(routePrintFormat, name+"."+tr, wps.Encode())
 	}
 }
 
