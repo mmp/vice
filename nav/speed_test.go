@@ -320,9 +320,11 @@ func TestAfterFixDescendAltitude(t *testing.T) {
 	})
 
 	// At HAUPT: aircraft should have descended past the charted 6000
-	// toward the assigned 5000
+	// toward the assigned 5000. (HAUPT has a large course change, so it is
+	// sequenced ~2.4nm before the fix when the fly-by turn begins, with
+	// some of the descent still to come.)
 	f.AtFix("HAUPT", func(f *FlightTest) {
-		f.AssertAltitudeNear(5000, 200)
+		f.AssertAltitudeNear(5000, 350)
 	})
 
 	f.Run()
