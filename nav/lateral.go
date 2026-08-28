@@ -705,6 +705,18 @@ type turnPath struct {
 	wind    [2]float32 // wind velocity, nm/s
 }
 
+// resolveTurnDirection pins down which way the turn from the aircraft's
+// current heading to hdg goes. The predicates resolve this from the raw
+// course before crabbing the target into the wind: the crab angle can push
+// a target near 180 degrees away past it, which would flip a "closest"
+// turn to the wrong side.
+func (nav *Nav) resolveTurnDirection(hdg math.MagneticHeading, turn av.TurnDirection) av.TurnDirection {
+	if isTurnRight(float32(nav.FlightState.Heading), float32(hdg), turn) {
+		return av.TurnRight
+	}
+	return av.TurnLeft
+}
+
 // predictTurnPath models the turn from the aircraft's current state to the
 // given magnetic heading. The turn is flown in still air at the current TAS
 // with the wind's displacement added on afterward, which matches how
@@ -792,6 +804,13 @@ func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection,
 		tp.t2 = float32(max(k, 1))
 		tp.dur = tp.t2
 	}
+
+	// updateHeading turns first and updatePositionAndGS then moves a full
+	// second along the new heading, so over a tick the aircraft flies the
+	// heading it will have at the tick's end—a half-tick ahead of the
+	// continuous arc. Start the arc half a second early to match.
+	tp.t1 -= 0.5
+	tp.t2 -= 0.5
 
 	tp.radius = tp.tasNMps / math.Radians(tp.omega)
 	tp.center = math.Add2f(tp.start,
@@ -1042,8 +1061,19 @@ func (nav *Nav) shouldTurnForOutboundAnalytic(p math.Point2LL, hdg math.Magnetic
 	// Alternatively, if we're far away w.r.t. the needed turn, don't even
 	// consider it. This is both for performance but also so that we don't
 	// make tiny turns miles away from fixes in some cases.
+	// The bound is turnAngle/2 seconds of travel, widened where the
+	// aircraft's actual turn radius needs more anticipation than that: the
+	// radius grows with the square of TAS, and a fast jet's 90 degree
+	// fly-by begins more than 6nm out. The widening caps the course change
+	// at 100 degrees since beyond that the fly-by anticipation distance
+	// grows without bound and the turn would cut miles inside the fix.
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
-	if turnAngle/2 < eta {
+	tas := nav.TAS(wxs.Temperature())
+	omega := min(3, math.Degrees(9.81*math.Tan(math.Radians(nav.Perf.Turn.MaxBankAngle))/(tas*0.514444)))
+	radius := tas / 3600 / math.Radians(omega)
+	lead := max(radius*math.Tan(math.Radians(min(turnAngle, 100)/2))+10*nav.FlightState.GS/3600,
+		turnAngle/2*nav.FlightState.GS/3600)
+	if math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude) > lead {
 		return false
 	}
 
@@ -1061,7 +1091,7 @@ func (nav *Nav) shouldTurnForOutboundAnalytic(p math.Point2LL, hdg math.Magnetic
 	if nav.IsAirborne() {
 		target = nav.headingForTrack(hdg, wxs)
 	}
-	tp := nav.predictTurnPath(target, turn, wxs)
+	tp := nav.predictTurnPath(target, nav.resolveTurnDirection(hdg, turn), wxs)
 
 	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position,
 		nav.FlightState.NmPerLongitude), p0, p1)
@@ -1109,7 +1139,7 @@ func (nav *Nav) shouldTurnToInterceptAnalytic(p0 math.Point2LL, hdg math.Magneti
 	// The radial is a ground course, so predict a turn to the heading that
 	// holds it as a track; otherwise in a crosswind the predicted path
 	// rolls out and immediately drifts back off the radial.
-	tp := nav.predictTurnPath(nav.headingForTrack(hdg, wxs), turn, wxs)
+	tp := nav.predictTurnPath(nav.headingForTrack(hdg, wxs), nav.resolveTurnDirection(hdg, turn), wxs)
 
 	// Since the predicted path holds the radial's course as a track after
 	// rolling out, its final distance from the radial is where the aircraft
