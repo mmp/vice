@@ -10,6 +10,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/rand"
 )
 
 func TestParseHold(t *testing.T) {
@@ -283,6 +284,117 @@ func TestParseHold(t *testing.T) {
 
 			if tt.checkRadial && gotHold.InboundCourse != tt.wantRadial {
 				t.Errorf("parseHold() hold.InboundCourse = %v, want %v", gotHold.InboundCourse, tt.wantRadial)
+			}
+		})
+	}
+}
+
+func TestParseInterceptRadial(t *testing.T) {
+	tests := []struct {
+		command      string
+		wantFix      string
+		wantRadial   int
+		wantOutbound bool
+		wantOk       bool
+	}{
+		{command: "WAVEY/050", wantFix: "WAVEY", wantRadial: 50, wantOk: true},
+		{command: "WAVEY/50", wantFix: "WAVEY", wantRadial: 50, wantOk: true},
+		{command: "WAVEY/050I", wantFix: "WAVEY", wantRadial: 50, wantOk: true},
+		{command: "WAVEY/050O", wantFix: "WAVEY", wantRadial: 50, wantOutbound: true, wantOk: true},
+		{command: "wavey/360o", wantFix: "WAVEY", wantRadial: 360, wantOutbound: true, wantOk: true},
+		{command: "WAVEY/000"},
+		{command: "WAVEY/361"},
+		{command: "WAVEY/"},
+		{command: "WAVEY"},
+		{command: "/050"},
+		{command: "WAVEY/05X"},
+		{command: "WAVEY/050IO"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.command, func(t *testing.T) {
+			fix, radial, outbound, ok := parseInterceptRadial(tt.command)
+			if ok != tt.wantOk {
+				t.Fatalf("parseInterceptRadial() ok = %v, want %v", ok, tt.wantOk)
+			}
+			if !ok {
+				return
+			}
+			if fix != tt.wantFix || radial != tt.wantRadial || outbound != tt.wantOutbound {
+				t.Errorf("parseInterceptRadial() = (%q, %d, %v), want (%q, %d, %v)",
+					fix, radial, outbound, tt.wantFix, tt.wantRadial, tt.wantOutbound)
+			}
+		})
+	}
+}
+
+func TestRunOneControlCommandInterceptRadial(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+
+	wavey, ok := av.DB.LookupWaypoint("WAVEY")
+	if !ok {
+		t.Fatal("WAVEY not found")
+	}
+
+	newSim := func() (*Sim, av.ADSBCallsign) {
+		callsign := av.ADSBCallsign("TEST123")
+		return &Sim{
+			State: &CommonState{
+				DynamicState: DynamicState{
+					CurrentConsolidation: map[TCW]*TCPConsolidation{
+						"TCW1": {PrimaryTCP: "1A"},
+					},
+				},
+			},
+			Aircraft: map[av.ADSBCallsign]*Aircraft{
+				callsign: {
+					ADSBCallsign:        callsign,
+					ControllerFrequency: "1A",
+					Nav: nav.Nav{
+						// Ten miles north of WAVEY heading east, so the
+						// 050 radial lies ahead of the aircraft and
+						// northeast of the fix.
+						FlightState: nav.FlightState{
+							Position:          math.Point2LL{wavey[0], wavey[1] + 10.0/60},
+							Heading:           90,
+							NmPerLongitude:    math.NMPerLongitudeAt(wavey),
+							MagneticVariation: 13,
+						},
+						Waypoints: []av.Waypoint{{Fix: "WAVEY", Location: wavey}},
+						Rand:      rand.Make(),
+					},
+				},
+			},
+			PendingContacts: map[TCP][]PendingContact{},
+			lg:              lg,
+		}, callsign
+	}
+
+	for _, tc := range []struct {
+		command      string
+		wantRadial   math.MagneticHeading
+		wantOutbound bool
+	}{
+		{command: "IWAVEY/050", wantRadial: 50},
+		{command: "IWAVEY/050O", wantRadial: 50, wantOutbound: true},
+	} {
+		t.Run(tc.command, func(t *testing.T) {
+			s, callsign := newSim()
+			intent, err := s.runOneControlCommand("TCW1", callsign, tc.command, 0)
+			if err != nil {
+				t.Fatalf("runOneControlCommand() returned error: %v", err)
+			}
+			navIntent, ok := intent.(av.NavigationIntent)
+			if !ok {
+				t.Fatalf("runOneControlCommand() returned %T, want av.NavigationIntent", intent)
+			}
+			if navIntent.Type != av.NavInterceptRadial || navIntent.Fix != "WAVEY" ||
+				navIntent.Radial != tc.wantRadial || navIntent.Outbound != tc.wantOutbound {
+				t.Errorf("got %+v, want intercept of the WAVEY %v radial, outbound %v",
+					navIntent, tc.wantRadial, tc.wantOutbound)
+			}
+			if dh := s.Aircraft[callsign].Nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 {
+				t.Error("no maneuvers were queued for the intercept")
 			}
 		})
 	}

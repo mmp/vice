@@ -93,10 +93,11 @@ type contactCrossingRestriction struct {
 // seconds after the controller issues it in order to model the delay
 // before pilots start to follow assignments.
 type DeferredNavHeading struct {
-	Time    Time
-	Heading *math.MagneticHeading
-	Turn    *av.TurnDirection
-	Hold    *FlyHold
+	Time      Time
+	Heading   *math.MagneticHeading
+	Turn      *av.TurnDirection
+	Hold      *FlyHold
+	Maneuvers []LateralManeuver
 	// For direct fix, this will be the updated set of waypoints.
 	Waypoints []av.Waypoint
 	// SnapshotAltitudeOnEffect, when true, causes the current altitude to be
@@ -800,7 +801,9 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 		}
 	}
 	if dh := nav.DeferredNavHeading; dh != nil {
-		if len(dh.Waypoints) > 0 {
+		if len(dh.Maneuvers) > 0 {
+			lines = append(lines, "Will shortly "+dh.Maneuvers[0].String())
+		} else if len(dh.Waypoints) > 0 {
 			lines = append(lines, fmt.Sprintf("Will shortly go direct %s", dh.Waypoints[0].Fix))
 		} else if dh.Heading != nil {
 			lines = append(lines, fmt.Sprintf("Will shortly start flying heading %03d", int(*dh.Heading)))

@@ -711,6 +711,11 @@ func (f *FlightTest) AtFixIntercept(fix string) av.CommandIntent {
 	return f.nav.AtFixIntercept(fix, f.simTime, 0)
 }
 
+func (f *FlightTest) InterceptRadial(fix string, radial int, outbound bool) av.CommandIntent {
+	f.t.Helper()
+	return f.nav.InterceptRadial(fix, math.MagneticHeading(radial), outbound, f.simTime, 0)
+}
+
 func (f *FlightTest) InterceptApproach() av.CommandIntent {
 	f.t.Helper()
 	return f.nav.InterceptApproach(f.fp.ArrivalAirport, nil)

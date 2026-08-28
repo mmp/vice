@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 )
 
 // CommandMatch represents a matched command.
@@ -85,6 +86,9 @@ var categoryRules = []categoryRule{
 	}, category: "crossing"},
 	// C + letter without / → cleared_approach (CI9L)
 	{match: func(cmd string) bool { return cmd[0] == 'C' }, category: "cleared_approach"},
+	// I + fix → navigation (intercept a radial: IWAVEY/050). Bare I
+	// (intercept the localizer) and ID stay uncategorized.
+	{match: func(cmd string) bool { return cmd[0] == 'I' && strings.Contains(cmd, "/") }, category: "navigation"},
 	// SAYAGAIN → no category
 	{match: func(cmd string) bool { return strings.HasPrefix(cmd, "SAYAGAIN") }, category: ""},
 	// S → speed
@@ -383,6 +387,15 @@ func extractDegrees(tokens []Token) (int, string, int) {
 	}
 
 	return 0, "", 0
+}
+
+// reciprocalCourse returns the opposite of a magnetic course. Like the
+// commands it feeds, it uses 360 rather than 0 for north.
+func reciprocalCourse(course int) int {
+	if r := int(math.OppositeHeading(course)); r != 0 {
+		return r
+	}
+	return 360
 }
 
 func extractHoldParams(tokens []Token, fix string) (string, int) {

@@ -584,6 +584,7 @@ const (
 	NavCrossFixAt
 	NavCrossDistanceFromFixAt
 	NavCrossDME
+	NavInterceptRadial
 	NavResumeOwnNav
 	NavAltitudeDiscretion
 )
@@ -594,6 +595,8 @@ type NavigationIntent struct {
 	Fix              string
 	SecondFix        string                        // for DepartFixDirect
 	Heading          math.MagneticHeading          // for DepartFixHeading
+	Radial           math.MagneticHeading          // for NavInterceptRadial
+	Outbound         bool                          // for NavInterceptRadial
 	Turn             TurnDirection                 // for NavDirectFix / NavDirectFixFromHold
 	HoldDirection    string                        // "left" or "right" for holds
 	HoldLegLength    string                        // e.g., "2 mile" or "1 minute"
@@ -669,6 +672,9 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 				rt.Add("at {spd}", speed)
 			}
 		}
+	case NavInterceptRadial:
+		rt.Add("[intercept|join] the {fix} {hdg} radial "+util.Select(n.Outbound, "outbound", "inbound"),
+			n.Fix, n.Radial)
 	case NavResumeOwnNav:
 		rt.Add("[own navigation|resuming own navigation]")
 	case NavAltitudeDiscretion:

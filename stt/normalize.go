@@ -255,7 +255,8 @@ var commandVocabulary = map[string]bool{
 	// Approach
 	"cleared": true, "expect": true, "expected": true, "vectors": true,
 	"approach": true, "cancel": true, "localizer": true, "localize": true,
-	"intercept": true, "intercepted": true, "clearance": true,
+	"intercept": true, "intercepted": true, "clearance": true, "join": true,
+	"course": true, "outbound": true,
 	"visual": true, "ils": true, "rnav": true, "vor": true, "runway": true,
 	// Transponder
 	"squawk": true, "transponder": true, "ident": true, "standby": true, "mode": true,

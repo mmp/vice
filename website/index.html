@@ -480,6 +480,19 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>DLENDY/DWAVEY</code></td>
                   </tr>
                   <tr>
+                    <td><code>I</code><i>fix</i><code>/</code><i>radial</i><code>[O]</code></td>
+                    <td><p>Directs the aircraft to intercept the given radial of the specified fix. It flies its
+                    assigned heading (or its present heading, if it hasn't been given one) until the intercept, so
+                    the heading is normally given first: <code>H200 IWAVEY/050</code>.</p>
+                    <p>A radial extends outward from the fix, so the <code>050</code> radial flown inbound is a
+                    ground course of <code>230</code>. Inbound is the default; append <code>O</code> to fly the
+                    radial outbound. Having intercepted it inbound, the aircraft proceeds direct to the fix and
+                    continues along its route from there; outbound, it tracks the radial away from the fix until
+                    it is given another instruction.</p>
+                    </td>
+                    <td><code>IWAVEY/050</code><br><code>IWAVEY/050O</code></td>
+                  </tr>
+                  <tr>
                     <td><code>H</code><i>fix</i></td>
                     <td><p>Directs the aircraft to hold at the specified fix using a published holding pattern.
                         (The specified fix must be in the aircraft's flight plan; for one that is not, first give them <code>D</code><i>fix</i>
@@ -1139,6 +1152,13 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <tr><td>Turn Degrees</td>
                   <td>
                     <i>Turn (number) degrees left</i> /  <i>Turn (number) degrees right</i>
+                  </td>
+                </tr>
+                <tr><td>Intercept Radial</td>
+                  <td>
+                    <i>Intercept the (fix) (radial) radial inbound</i> / <i>Join the (fix) (radial) radial outbound</i> /
+                    <i>Intercept the (radial) radial from (fix)</i> / <i>Join the (course) course to (fix)</i>.
+                    Inbound is assumed if neither is said.
                   </td>
                 </tr>
                 <tr><td>Say Heading</td>

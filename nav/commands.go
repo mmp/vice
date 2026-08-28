@@ -699,6 +699,96 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 	}
 }
 
+// reachesRadial reports whether an aircraft flying the given heading from its
+// current position will reach the named radial of a fix. Both are rays: the
+// aircraft only flies forward, and a radial extends outward from its fix in
+// one direction only, so crossing the reciprocal radial doesn't count.
+func (nav *Nav) reachesRadial(hdg, radial math.MagneticHeading, fix math.Point2LL) bool {
+	nmPerLongitude, magVar := nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation
+	p := math.LL2NM(nav.FlightState.Position, nmPerLongitude)
+	dir := math.HeadingVector(math.MagneticToTrue(hdg, magVar))
+	f := math.LL2NM(fix, nmPerLongitude)
+	radialDir := math.HeadingVector(math.MagneticToTrue(radial, magVar))
+	// directFixWaypoints rejects fixes more than 150nm away, so the radial
+	// only has to extend far enough to cover intercepts out at that range.
+	_, _, _, ok := math.RaySegmentIntersect(p, dir, f, math.Add2f(f, math.Scale2f(radialDir, 500)))
+	return ok
+}
+
+// InterceptRadial has the aircraft fly its assigned heading, or its present
+// heading if none has been assigned, until it intercepts the given radial of
+// fix. Flown inbound it then proceeds direct to the fix and continues along
+// the route from there; flown outbound it tracks the radial away from the fix
+// until the controller says otherwise.
+func (nav *Nav) InterceptRadial(fix string, radial math.MagneticHeading, outbound bool, simTime Time,
+	delayReduction time.Duration) av.CommandIntent {
+	if radial <= 0 || radial > 360 {
+		return av.MakeUnableIntent("unable. {hdg} isn't a valid radial", radial)
+	}
+
+	wps, _, err := nav.directFixWaypoints(fix)
+	if err == ErrFixIsTooFarAway {
+		return av.MakeUnableIntent("unable. {fix} is too far away", fix)
+	} else if err != nil {
+		return av.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
+	}
+
+	// A radial extends outward from the fix, so flying it inbound means
+	// flying its reciprocal.
+	course := radial
+	if !outbound {
+		course = math.OppositeHeading(radial)
+	}
+
+	hdg, turn := nav.FlightState.Heading, av.TurnClosest
+	if dh := nav.DeferredNavHeading; dh != nil && dh.Heading != nil {
+		hdg = *dh.Heading
+		if dh.Turn != nil {
+			turn = *dh.Turn
+		}
+	} else if nav.Heading.Assigned != nil {
+		hdg = *nav.Heading.Assigned
+		if nav.Heading.Turn != nil {
+			turn = *nav.Heading.Turn
+		}
+	}
+	if !nav.reachesRadial(hdg, radial, wps[0].Location) {
+		return av.MakeUnableIntent("unable to intercept the {fix} {hdg} radial", fix, radial)
+	}
+
+	// The turn onto the course is always the short way around, regardless of
+	// which way the aircraft turned to take up the assigned heading.
+	intercept := flyHeadingUntilIntercept(hdg, turn, wps[0].Location, course)
+	intercept.Until.InterceptTurn = av.TurnClosest
+	intercept.Until.InterceptFix, intercept.Until.InterceptOutbound = fix, outbound
+	maneuvers := []LateralManeuver{intercept}
+	if outbound {
+		// There is nothing to go direct to once established, so hold the
+		// radial as a ground track.
+		maneuvers = append(maneuvers, LateralManeuver{
+			Track: course,
+			Until: ManeuverComplete{Type: UntilControllerIntervention},
+		})
+	}
+
+	// Assign the heading for its approach and altitude side effects and its
+	// pilot reaction delay; the maneuvers take effect along with it.
+	nav.assignHeading(hdg, turn, simTime, delayReduction)
+	nav.Approach.InterceptState = NotIntercepting
+	dh := nav.DeferredNavHeading
+	dh.Maneuvers = maneuvers
+	if !outbound {
+		dh.Waypoints = wps
+	}
+
+	return av.NavigationIntent{
+		Type:     av.NavInterceptRadial,
+		Fix:      fix,
+		Radial:   radial,
+		Outbound: outbound,
+	}
+}
+
 func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) av.CommandIntent {
 	if _, ok := av.DB.LookupWaypoint(fix); !ok {
 		return av.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)

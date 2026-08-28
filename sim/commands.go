@@ -266,6 +266,17 @@ func (s *Sim) DirectFix(tcw TCW, callsign av.ADSBCallsign, fix string, turn av.T
 		})
 }
 
+func (s *Sim) InterceptRadial(tcw TCW, callsign av.ADSBCallsign, fix string, radial int, outbound bool,
+	delayReduction time.Duration) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.InterceptRadial(fix, radial, outbound, s.State.SimTime, delayReduction)
+		})
+}
+
 func (s *Sim) HoldAtFix(tcw TCW, callsign av.ADSBCallsign, fix string, hold *av.Hold) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

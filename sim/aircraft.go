@@ -545,6 +545,12 @@ func (ac *Aircraft) DirectFix(fix string, turn av.TurnDirection, simTime Time, d
 	return ac.Nav.DirectFix(strings.ToUpper(fix), turn, simTime.NavTime(), delayReduction)
 }
 
+func (ac *Aircraft) InterceptRadial(fix string, radial int, outbound bool, simTime Time,
+	delayReduction time.Duration) av.CommandIntent {
+	return ac.Nav.InterceptRadial(strings.ToUpper(fix), math.MagneticHeading(radial), outbound,
+		simTime.NavTime(), delayReduction)
+}
+
 func (ac *Aircraft) HoldAtFix(fix string, hold *av.Hold) av.CommandIntent {
 	return ac.Nav.HoldAtFix(string(ac.ADSBCallsign), strings.ToUpper(fix), hold)
 }

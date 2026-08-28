@@ -1592,6 +1592,101 @@ func TestNavigationCommands(t *testing.T) {
 	}
 }
 
+func TestInterceptRadialCommands(t *testing.T) {
+	ac := func() map[string]Aircraft {
+		return map[string]Aircraft{
+			"American 870": {
+				Callsign: "AAL870",
+				Altitude: 11000,
+				State:    "arrival",
+				Fixes:    map[string]string{"wavey": "WAVEY", "camrn": "CAMRN"},
+			},
+		}
+	}
+
+	tests := []struct {
+		name       string
+		transcript string
+		expected   string
+	}{
+		{
+			name:       "fix first, inbound",
+			transcript: "American 870 intercept the WAVEY zero five zero radial inbound",
+			expected:   "AAL870 IWAVEY/050",
+		},
+		{
+			name:       "fix first, outbound",
+			transcript: "American 870 join the WAVEY zero five zero radial outbound",
+			expected:   "AAL870 IWAVEY/050O",
+		},
+		{
+			name:       "fix first, no direction given",
+			transcript: "American 870 intercept the WAVEY two three zero radial",
+			expected:   "AAL870 IWAVEY/230",
+		},
+		{
+			name:       "track inbound",
+			transcript: "American 870 intercept the WAVEY three five zero radial and track inbound",
+			expected:   "AAL870 IWAVEY/350",
+		},
+		{
+			name:       "with heading",
+			transcript: "American 870 fly heading two zero zero to intercept the WAVEY zero five zero radial inbound",
+			expected:   "AAL870 H200 IWAVEY/050",
+		},
+		{
+			name:       "turn left heading, outbound",
+			transcript: "American 870 turn left heading three one zero, vector to intercept the CAMRN three three zero radial outbound",
+			expected:   "AAL870 L310 ICAMRN/330O",
+		},
+		{
+			name:       "radial first",
+			transcript: "American 870 intercept the zero five zero radial from WAVEY",
+			expected:   "AAL870 IWAVEY/050",
+		},
+		{
+			name:       "radial first, outbound",
+			transcript: "American 870 join the zero five zero radial from WAVEY outbound",
+			expected:   "AAL870 IWAVEY/050O",
+		},
+		{
+			name:       "course to the fix takes the reciprocal",
+			transcript: "American 870 join the two three zero course to WAVEY",
+			expected:   "AAL870 IWAVEY/050",
+		},
+		{
+			name:       "course to the fix, north reciprocal",
+			transcript: "American 870 join the one eight zero course to WAVEY",
+			expected:   "AAL870 IWAVEY/360",
+		},
+		{
+			name:       "intercept the localizer is unaffected",
+			transcript: "American 870 intercept the localizer",
+			expected:   "AAL870 I",
+		},
+		{
+			name:       "garbled fix asks again",
+			transcript: "American 870 intercept the frobozz zero five zero radial inbound",
+			expected:   "AAL870 SAYAGAIN/FIX",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(ac(), tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
 func TestCallsignMatchingPriority(t *testing.T) {
 	tests := []struct {
 		name       string

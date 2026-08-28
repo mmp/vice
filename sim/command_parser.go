@@ -315,6 +315,30 @@ func parseCompoundSpeed(s string) ([]av.CompoundSpeedSegment, error) {
 	return segments, nil
 }
 
+// parseInterceptRadial parses the argument of an intercept-radial command,
+// "FIX/radial" or "FIX/radialO", and returns the fix, the radial, and whether
+// it is to be flown outbound. Inbound is the default.
+func parseInterceptRadial(command string) (string, int, bool, bool) {
+	fix, spec, ok := strings.Cut(strings.ToUpper(command), "/")
+	if !ok || fix == "" {
+		return "", 0, false, false
+	}
+
+	outbound := false
+	if rest, ok := strings.CutSuffix(spec, "O"); ok {
+		spec, outbound = rest, true
+	} else if rest, ok := strings.CutSuffix(spec, "I"); ok {
+		spec = rest
+	}
+
+	radial, err := strconv.Atoi(spec)
+	if err != nil || radial < 1 || radial > 360 {
+		return "", 0, false, false
+	}
+
+	return fix, radial, outbound, true
+}
+
 // parseHold parses a hold command string in the format "FIX/[option]/[option]"
 // and returns the fix name and a controller-specified hold if options are present.
 // Returns (fixName, nil, true) if no options are specified (use published hold).
@@ -731,6 +755,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.InterceptApproach(tcw, callsign)
 		} else if command == "ID" {
 			return s.Ident(tcw, callsign)
+		} else if fix, radial, outbound, ok := parseInterceptRadial(command[1:]); ok {
+			return s.InterceptRadial(tcw, callsign, fix, radial, outbound, delayReduction)
 		} else {
 			return nil, ErrInvalidCommandSyntax
 		}

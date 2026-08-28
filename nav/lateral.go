@@ -187,7 +187,8 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 
 	// Is it time to start following a heading or direct to a fix recently issued by the controller?
 	if dh := nav.DeferredNavHeading; dh != nil && simTime.After(dh.Time) {
-		nav.Heading = NavHeading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold} // these may be nil
+		// These may all be nil; whichever the instruction set takes effect now.
+		nav.Heading = NavHeading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold, Maneuvers: dh.Maneuvers}
 		if len(dh.Waypoints) > 0 {
 			nav.Waypoints = dh.Waypoints
 		}
@@ -213,6 +214,11 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 		heading, turn = nav.ApproachHeading(callsign, wxs, simTime)
 	} else if len(nav.Heading.Maneuvers) > 0 {
 		result := nav.flyManeuvers(&nav.Heading.Maneuvers, wxs, simTime)
+		if result.completed {
+			// A heading assigned along with the maneuvers was for their
+			// first leg; the aircraft now resumes its route.
+			nav.Heading = NavHeading{}
+		}
 		return result.heading, result.turn, result.rate
 	} else if nav.Heading.Hold != nil {
 		nav.FlightState.BankAngle = 0
@@ -535,11 +541,11 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 				nav.Heading.Turn = nfa.Depart.Turn // may be nil (TurnClosest)
 			}
 		} else if len(wp.ActionGroups()) > 0 && !skipWaypointNavigation {
-			var nextFix math.Point2LL
+			var next *av.Waypoint
 			if len(nav.Waypoints) > 1 {
-				nextFix = nav.Waypoints[1].Location
+				next = &nav.Waypoints[1]
 			}
-			nav.Heading = NavHeading{Maneuvers: nav.makeActionGroupManeuvers(wp.Fix, wp.ActionGroups(), nextFix)}
+			nav.Heading = NavHeading{Maneuvers: nav.makeActionGroupManeuvers(wp.Fix, wp.ActionGroups(), next)}
 			if event := nav.activateWaypointActions(wp.Fix, wp.ActionGroups()[0].Actions); event != nil {
 				nav.PendingWaypointActionEvents = append(nav.PendingWaypointActionEvents, *event)
 			}
@@ -610,10 +616,10 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 }
 
 // makeActionGroupManeuvers translates a waypoint's action groups into the
-// maneuvers that fly them. nextFix is the location of the following fix on
-// the route, which an @t course termination joins.
+// maneuvers that fly them. next is the following fix on the route, which an
+// @t course termination joins; it is nil if there is none.
 func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionGroup,
-	nextFix math.Point2LL) []LateralManeuver {
+	next *av.Waypoint) []LateralManeuver {
 	maneuvers := make([]LateralManeuver, 0, len(groups))
 	for _, group := range groups {
 		m := LateralManeuver{
@@ -647,7 +653,7 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 				DMEFixElevation: group.Until.DMEFixElevation,
 			}
 		case av.WaypointActionCourse:
-			if nextFix.IsZero() {
+			if next == nil {
 				// parseWaypoints rejects @t on the last waypoint, but the
 				// route may since have been truncated; hold the heading
 				// rather than intercepting a course through 0°N 0°E.
@@ -658,9 +664,10 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 				// the group's heading.
 				m.Until = ManeuverComplete{
 					Type:            UntilIntercept,
-					Fix:             nextFix,
+					Fix:             next.Location,
 					InterceptCourse: math.MagneticHeading(group.Until.Course),
 					InterceptTurn:   av.TurnClosest,
+					InterceptFix:    next.Fix,
 				}
 			}
 		default:
@@ -807,7 +814,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 }
 
 const (
-	turnToInterceptWait = iota
+	turnToInterceptWait turnToInterceptResult = iota
 	turnToInterceptTurn
 	turnToInterceptCorrectableOvershoot
 	turnToInterceptMajorOvershoot
@@ -815,9 +822,13 @@ const (
 
 type turnToInterceptResult int
 
-// Given a point and a radial, indicates when the aircraft should start turning to intercept the
-// radial.
-func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) turnToInterceptResult {
+// Given a point and a course through it, indicates when the aircraft should start the turn to join
+// that course. The returned bool is false if the aircraft is diverging from the course; the result
+// then describes how far off the course the aircraft is pointed rather than how it would roll out
+// on it. Callers that have already committed to joining use that to recover; ones still waiting for
+// the intercept keep flying their heading.
+func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection,
+	wxs wx.Sample) (result turnToInterceptResult, reaches bool) {
 	p0nm := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
 	hdgTrue := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
 	p1 := math.Add2f(p0nm, math.SinCos(math.Radians(hdgTrue)))
@@ -827,12 +838,12 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
 	if eta < 2 && turnAngle < 4 {
 		// Just in case, start the turn; for larger turn angles, fall through to simulation to see if this is correctable.
-		return turnToInterceptTurn
+		return turnToInterceptTurn, true
 	}
 
 	// As above, don't consider starting the turn if we're far away.
 	if turnAngle < eta {
-		return turnToInterceptWait
+		return turnToInterceptWait, true
 	}
 
 	// Calculate the expected crab angle needed for wind correction.
@@ -868,28 +879,29 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 		headingTolerance := 10 + crabAngle
 		delta := math.HeadingDifference(hdg, nav2.FlightState.Heading)
 		if delta < headingTolerance {
-			return turnToInterceptTurn
+			return turnToInterceptTurn, true
 		} else if delta < headingTolerance+30 {
-			return turnToInterceptCorrectableOvershoot
+			return turnToInterceptCorrectableOvershoot, true
 		} else {
-			return turnToInterceptMajorOvershoot
+			return turnToInterceptMajorOvershoot, true
 		}
 	}
 
-	// If the simulated aircraft ended up farther from the line than it
-	// started, it has overshot and is diverging.
+	// The simulated aircraft never reached the line. If it ended up farther away
+	// than it started it is diverging from the course, either having overshot it
+	// or not yet having turned toward it.
 	if math.Abs(lastDist) > math.Abs(initialDist) {
 		delta := math.HeadingDifference(hdg, nav.FlightState.Heading)
 		if math.Abs(lastDist) < 0.25 && delta < 30 {
-			return turnToInterceptTurn
+			// Near enough the course and its heading to just take it up.
+			return turnToInterceptTurn, true
 		}
-		headingTolerance := 10 + crabAngle
-		if delta < headingTolerance+30 {
-			return turnToInterceptCorrectableOvershoot
+		if delta < 10+crabAngle+30 {
+			return turnToInterceptCorrectableOvershoot, false
 		}
-		return turnToInterceptMajorOvershoot
+		return turnToInterceptMajorOvershoot, false
 	}
-	return turnToInterceptWait
+	return turnToInterceptWait, true
 }
 
 // Analytical version of shouldTurnForOutbound using geometry rather than

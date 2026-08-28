@@ -71,7 +71,10 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 				return
 			}
 		}
-		switch nav.shouldTurnToIntercept(courseLine[0], hdgMag, av.TurnClosest, wxs) {
+		// Whether the aircraft reaches the course doesn't matter here; having
+		// committed to the approach it recovers onto it either way.
+		turnResult, _ := nav.shouldTurnToIntercept(courseLine[0], hdgMag, av.TurnClosest, wxs)
+		switch turnResult {
 		case turnToInterceptWait:
 			// Still too far; keep flying the assigned heading.
 

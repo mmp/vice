@@ -12,11 +12,9 @@ import (
 	"github.com/mmp/vice/math"
 )
 
-// courseInterceptFlight sets up an aircraft leaving SKORR on a heading 20
-// degrees to the left of the direct course to WAVEY, with an @t termination
-// giving a course to WAVEY 20 degrees to the right of it. The aircraft
-// therefore starts well off the course and converges on it at 40 degrees.
-func courseInterceptFlight(t *testing.T) (f *FlightTest, heading, course math.MagneticHeading) {
+// skorrWaveyCourse returns the magnetic course from SKORR to WAVEY, using the
+// flight state that NewArrivalFlight sets up for a KJFK arrival.
+func skorrWaveyCourse(t *testing.T) math.MagneticHeading {
 	t.Helper()
 
 	skorr, ok := av.DB.LookupWaypoint("SKORR")
@@ -28,58 +26,69 @@ func courseInterceptFlight(t *testing.T) (f *FlightTest, heading, course math.Ma
 		t.Fatal("WAVEY not found")
 	}
 
-	// Match what NewArrivalFlight uses for the aircraft's flight state.
 	kjfk := av.DB.Airports["KJFK"]
 	nmPerLongitude := math.NMPerLongitudeAt(kjfk.Location)
 	magneticVariation, err := av.DB.MagneticGrid.Lookup(kjfk.Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup failed: %v", err)
 	}
+	return math.TrueToMagnetic(math.Heading2LL(skorr, wavey, nmPerLongitude), magneticVariation)
+}
 
-	direct := math.TrueToMagnetic(math.Heading2LL(skorr, wavey, nmPerLongitude), magneticVariation)
-	heading = math.NormalizeHeading(direct - 20)
-	course = math.NormalizeHeading(direct + 20)
-
-	f = NewArrivalFlight(t, ArrivalConfig{
-		Waypoints:        fmt.Sprintf("SKORR/h%d@t%d WAVEY", int(heading), int(course)),
+// newSkorrWaveyFlight sets up a KJFK arrival at 10,000 feet starting at
+// SKORR and flying the given route.
+func newSkorrWaveyFlight(t *testing.T, waypoints string) *FlightTest {
+	t.Helper()
+	return NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        waypoints,
 		DepartureAirport: "KJFK",
 		ArrivalAirport:   "KJFK",
 		AircraftType:     "A320",
 		InitialAltitude:  10000,
 		InitialSpeed:     250,
 	})
+}
+
+// courseInterceptFlight sets up an aircraft leaving SKORR on a heading 20
+// degrees to the left of the direct course to WAVEY, with an @t termination
+// giving a course to WAVEY 20 degrees to the right of it. The aircraft
+// therefore starts well off the course and converges on it at 40 degrees.
+func courseInterceptFlight(t *testing.T) (f *FlightTest, heading, course math.MagneticHeading) {
+	t.Helper()
+
+	direct := skorrWaveyCourse(t)
+	heading = math.NormalizeHeading(direct - 20)
+	course = math.NormalizeHeading(direct + 20)
+	f = newSkorrWaveyFlight(t, fmt.Sprintf("SKORR/h%d@t%d WAVEY", int(heading), int(course)))
 	return
 }
 
 // courseOffset returns the aircraft's perpendicular distance in nm from the
-// line through WAVEY along the given course.
-func courseOffset(f *FlightTest, course math.MagneticHeading) float32 {
-	wavey, _ := av.DB.LookupWaypoint("WAVEY")
+// line through fix along the given magnetic course.
+func courseOffset(f *FlightTest, fix string, course math.MagneticHeading) float32 {
+	p, _ := av.DB.LookupWaypoint(fix)
 	nmPerLongitude := f.nav.FlightState.NmPerLongitude
-	p0 := math.LL2NM(wavey, nmPerLongitude)
+	p0 := math.LL2NM(p, nmPerLongitude)
 	trueCourse := math.MagneticToTrue(course, f.nav.FlightState.MagneticVariation)
 	p1 := math.Add2f(p0, math.SinCos(math.Radians(trueCourse)))
-	p := math.LL2NM(f.nav.FlightState.Position, nmPerLongitude)
-	return math.SignedPointLineDistance(p, p0, p1)
+	return math.SignedPointLineDistance(math.LL2NM(f.nav.FlightState.Position, nmPerLongitude), p0, p1)
 }
 
-// checkCourseIntercept runs the flight and verifies that the aircraft holds
-// its heading, joins the course rather than turning direct to the fix
+// checkJoinsCourse runs the flight and verifies that the aircraft holds its
+// heading, joins the given course to fix rather than turning direct to it
 // immediately, and then tracks the course in to it.
-func checkCourseIntercept(t *testing.T, f *FlightTest, heading, course math.MagneticHeading) {
+func checkJoinsCourse(t *testing.T, f *FlightTest, fix string, heading, course math.MagneticHeading) {
 	t.Helper()
 
-	initialOffset := courseOffset(f, course)
-	if math.Abs(initialOffset) < 5 {
-		t.Fatalf("aircraft starts only %.1fnm off the %03d course; nothing to intercept",
-			math.Abs(initialOffset), int(course))
+	if offset := math.Abs(courseOffset(f, fix, course)); offset < 5 {
+		t.Fatalf("aircraft starts only %.1fnm off the %03d course; nothing to intercept", offset, int(course))
 	}
 
-	// The @t termination is met when the maneuver flying the heading
-	// completes and the aircraft goes direct to the fix.
+	// The maneuver flying the heading completes when it is time to turn onto
+	// the course, and the aircraft then goes direct to the fix.
 	flyingHeading, joinTick := false, -1
 	var maxOffsetOnCourse float32
-	f.BeforeFix("WAVEY", func(f *FlightTest) {
+	f.BeforeFix(fix, func(f *FlightTest) {
 		if !flyingHeading {
 			flyingHeading = len(f.nav.Heading.Maneuvers) > 0
 		} else if joinTick == -1 {
@@ -87,7 +96,7 @@ func checkCourseIntercept(t *testing.T, f *FlightTest, heading, course math.Magn
 				joinTick = f.tick
 			}
 		} else if f.tick > joinTick+60 { // once the turn onto the course is done
-			maxOffsetOnCourse = max(maxOffsetOnCourse, math.Abs(courseOffset(f, course)))
+			maxOffsetOnCourse = max(maxOffsetOnCourse, math.Abs(courseOffset(f, fix, course)))
 		}
 	})
 
@@ -97,7 +106,7 @@ func checkCourseIntercept(t *testing.T, f *FlightTest, heading, course math.Magn
 		f.AssertHeadingNear(float32(heading), 2)
 
 		// What Nav.Summary reports for the aircraft while it waits.
-		want := fmt.Sprintf("fly heading %03d until intercept %03d", int(heading), int(course))
+		want := fmt.Sprintf("fly heading %03d until intercept %03d course to %s", int(heading), int(course), fix)
 		if got := f.nav.Heading.Maneuvers[0].String(); got != want {
 			t.Errorf("maneuver summary is %q, want %q", got, want)
 		}
@@ -106,13 +115,13 @@ func checkCourseIntercept(t *testing.T, f *FlightTest, heading, course math.Magn
 	f.Run()
 
 	if joinTick == -1 {
-		t.Fatalf("aircraft never joined the %03d course to WAVEY", int(course))
+		t.Fatalf("aircraft never joined the %03d course to %s", int(course), fix)
 	}
 	if joinTick < 60 {
 		t.Errorf("joined the course at tick %d; expected it to fly the heading first", joinTick)
 	}
 	if maxOffsetOnCourse == 0 {
-		t.Fatal("joined the course too close to WAVEY to check that it tracked it")
+		t.Fatalf("joined the course too close to %s to check that it tracked it", fix)
 	}
 	if maxOffsetOnCourse > 0.5 {
 		t.Errorf("aircraft strayed %.2fnm from the %03d course after joining it",
@@ -122,7 +131,7 @@ func checkCourseIntercept(t *testing.T, f *FlightTest, heading, course math.Magn
 
 func TestCourseToFixIntercept(t *testing.T) {
 	f, heading, course := courseInterceptFlight(t)
-	checkCourseIntercept(t, f, heading, course)
+	checkJoinsCourse(t, f, "WAVEY", heading, course)
 }
 
 // With a crosswind, flying direct to the fix after the intercept must still
@@ -130,5 +139,5 @@ func TestCourseToFixIntercept(t *testing.T) {
 func TestCourseToFixInterceptWithWind(t *testing.T) {
 	f, heading, course := courseInterceptFlight(t)
 	f.SetWind(float32(math.NormalizeHeading(course-90)), 40)
-	checkCourseIntercept(t, f, heading, course)
+	checkJoinsCourse(t, f, "WAVEY", heading, course)
 }

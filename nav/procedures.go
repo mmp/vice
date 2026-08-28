@@ -43,8 +43,10 @@ type ManeuverComplete struct {
 	Altitude int                  // target altitude (UntilAltitude)
 
 	// UntilIntercept: inbound course to intercept and turn direction for the intercept turn.
-	InterceptCourse math.MagneticHeading
-	InterceptTurn   av.TurnDirection
+	InterceptCourse   math.MagneticHeading
+	InterceptTurn     av.TurnDirection
+	InterceptFix      string // name of Fix, for Summary
+	InterceptOutbound bool   // the course leads away from Fix rather than to it
 
 	// UntilDME: DME distance from a fix.
 	DMEDistance     float32
@@ -73,7 +75,13 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 	case UntilFix:
 		return nav.ETA(mc.Fix) < 2
 	case UntilIntercept:
-		return nav.shouldTurnToIntercept(mc.Fix, mc.InterceptCourse, mc.InterceptTurn, wxs) == turnToInterceptTurn
+		// Turn as soon as the aircraft will reach the course, even if it is
+		// predicted to overshoot: a steep intercept is only ever predicted to
+		// overshoot, since the aircraft covers more cross-track distance in
+		// the turn than it has left, and rolling out past the course beats
+		// flying through it and never turning at all.
+		r, reaches := nav.shouldTurnToIntercept(mc.Fix, mc.InterceptCourse, mc.InterceptTurn, wxs)
+		return reaches && r != turnToInterceptWait
 	case UntilControllerIntervention:
 		return false
 	case UntilAltitude:
@@ -125,6 +133,9 @@ func (m *LateralManeuver) String() string {
 		until = "until fix"
 	case UntilIntercept:
 		until = fmt.Sprintf("until intercept %03d", int(m.Until.InterceptCourse))
+		if m.Until.InterceptFix != "" {
+			until += util.Select(m.Until.InterceptOutbound, " course from ", " course to ") + m.Until.InterceptFix
+		}
 	case UntilControllerIntervention:
 		until = "until controller intervention"
 	case UntilAltitude:

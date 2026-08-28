@@ -1390,6 +1390,78 @@ func registerAllCommands() {
 		WithPriority(15),
 	)
 
+	// === RADIAL INTERCEPT COMMANDS ===
+	// Following 7110.65 2-5-2, "radial" and "bearing" are measured from the
+	// fix while "course" is measured to it, and the fix is named before the
+	// digits. Inbound is the default when the controller doesn't say which
+	// way, so the unqualified templates share a handler with the inbound
+	// ones; a separate registration per direction is needed since a matched
+	// optional literal isn't visible to the handler.
+	//
+	// These all need WithSayAgainMinTokens(2): "speed" scores 0.85 against
+	// "intercept", so the leading keyword alone anchors on unrelated speed
+	// instructions and would ask the pilot to repeat a fix that was never
+	// spoken. Requiring the article too keeps the anchor honest.
+	interceptRadial := func(fix string, radial int) string { return fmt.Sprintf("I%s/%03d", fix, radial) }
+	interceptRadialOutbound := func(fix string, radial int) string {
+		return fmt.Sprintf("I%s/%03dO", fix, radial)
+	}
+
+	registerSTTCommand(
+		"[vector|vectors] [to] intercept|join [the] {fix} {heading} radial|bearing [and] [then] [track] [proceed] inbound",
+		interceptRadial,
+		WithName("intercept_fix_radial_inbound"),
+		WithPriority(17),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(2),
+	)
+	registerSTTCommand(
+		"[vector|vectors] [to] intercept|join [the] {fix} {heading} radial|bearing [and] [then] [track] [proceed] outbound",
+		interceptRadialOutbound,
+		WithName("intercept_fix_radial_outbound"),
+		WithPriority(17),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(2),
+	)
+	registerSTTCommand(
+		"[vector|vectors] [to] intercept|join [the] {fix} {heading} radial|bearing",
+		interceptRadial,
+		WithName("intercept_fix_radial"),
+		WithPriority(15),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(2),
+	)
+
+	// Radial first, with the fix named after it: "intercept the zero five zero
+	// radial from WAVEY".
+	registerSTTCommand(
+		"[vector|vectors] [to] intercept|join [the] {heading} radial|bearing [from|off|of] {fix} [and] [then] [track] [proceed] [inbound]",
+		func(radial int, fix string) string { return interceptRadial(fix, radial) },
+		WithName("intercept_radial_from_fix"),
+		WithPriority(16),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(2),
+	)
+	registerSTTCommand(
+		"[vector|vectors] [to] intercept|join [the] {heading} radial|bearing [from|off|of] {fix} [and] [then] [track] [proceed] outbound",
+		func(radial int, fix string) string { return interceptRadialOutbound(fix, radial) },
+		WithName("intercept_radial_from_fix_outbound"),
+		WithPriority(17),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(2),
+	)
+
+	// "join the zero five six course to WAVEY". A course to the fix is the
+	// reciprocal of the radial the command is expressed in terms of.
+	registerSTTCommand(
+		"[vector|vectors] [to] intercept|join [the] {heading} course [to|inbound] [to] {fix}",
+		func(course int, fix string) string { return interceptRadial(fix, reciprocalCourse(course)) },
+		WithName("intercept_course_to_fix"),
+		WithPriority(16),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(2),
+	)
+
 	// === AFTER FIX SPEED COMMANDS ===
 	registerSTTCommand(
 		"after|at {fix} [,] maintain [speed] {speed} [knots]",
