@@ -308,7 +308,10 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 		}
 		bankRad := math.Radians(bankAngle)
 		rate := math.Degrees(9.81 * math.Tan(bankRad) / tasMS)
-		return min(rate, 3)
+		// The rate is signed, so clamp rather than min: min() would leave
+		// left turns uncapped, letting slow aircraft turn left at 4+ deg/s
+		// but right at the standard rate.
+		return math.Clamp(rate, -3, 3)
 	}
 
 	// If we started leveling out now, how many more degrees would we turn through?
