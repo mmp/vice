@@ -5,11 +5,16 @@
 package aviation
 
 import (
+	"fmt"
 	"maps"
-	"math"
+	gomath "math"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 )
 
 // TestParseHoldingPattern tests the parsing of holding pattern records from actual CIFP data.
@@ -95,10 +100,10 @@ func TestParseHoldingPattern(t *testing.T) {
 func holdsEqual(a, b Hold) bool {
 	const epsilon = 0.01
 	return a.Fix == b.Fix &&
-		math.Abs(float64(a.InboundCourse-b.InboundCourse)) < epsilon &&
+		gomath.Abs(float64(a.InboundCourse-b.InboundCourse)) < epsilon &&
 		a.TurnDirection == b.TurnDirection &&
-		math.Abs(float64(a.LegLengthNM-b.LegLengthNM)) < epsilon &&
-		math.Abs(float64(a.LegMinutes-b.LegMinutes)) < epsilon &&
+		gomath.Abs(float64(a.LegLengthNM-b.LegLengthNM)) < epsilon &&
+		gomath.Abs(float64(a.LegMinutes-b.LegMinutes)) < epsilon &&
 		a.MinimumAltitude == b.MinimumAltitude &&
 		a.MaximumAltitude == b.MaximumAltitude &&
 		a.HoldingSpeed == b.HoldingSpeed &&
@@ -421,8 +426,8 @@ func TestParseARINC424SID(t *testing.T) {
 	runways := map[string]string{
 		"4L":  "KJFK-22R/h044@a520 PONAE/flyover/h099",
 		"4R":  "KJFK-22L/h044@a520/h099",
-		"31L": "KJFK-13R/h314@a520 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
-		"31R": "KJFK-13L/h314@a520 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
+		"31L": "KJFK-13R/h314@a520/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
+		"31R": "KJFK-13L/h314@a520/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
 	}
 	if len(sid.RunwayTransitions) != len(runways) {
 		t.Errorf("expected runway transitions for %v, got %v", slices.Sorted(maps.Keys(runways)),
@@ -447,11 +452,11 @@ func TestParseARINC424SID(t *testing.T) {
 	for _, tc := range []struct {
 		runway, exit, want string
 	}{
-		{"31L", "CANDR", "KJFK-13R/h314@a520 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR"},
-		{"31L", "TOWIN", "KJFK-13R/h314@a520 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR TOWIN"},
+		{"31L", "CANDR", "KJFK-13R/h314@a520/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR"},
+		{"31L", "TOWIN", "KJFK-13R/h314@a520/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR TOWIN"},
 		{"4R", "HEERO", "KJFK-22L/h044@a520/h099 DEEZZ HEERO"},
 		{"4L", "SKORR", "KJFK-22R/h044@a520 PONAE/flyover/h099 DEEZZ HEERO"},
-		{"31R", "SKORR", "KJFK-13L/h314@a520 SKORR/a2500+/s210-"},
+		{"31R", "SKORR", "KJFK-13L/h314@a520/ld SKORR/a2500+/s210-"},
 	} {
 		wps, err := sid.Waypoints(tc.runway, tc.exit)
 		if err != nil {
@@ -462,5 +467,146 @@ func TestParseARINC424SID(t *testing.T) {
 	}
 	if _, err := sid.Waypoints("13L", "CANDR"); err == nil {
 		t.Errorf("expected an error for a runway the SID doesn't serve")
+	}
+}
+
+// SID legs to and along radials: DALLS1's headings to the LTJ 165 radial
+// (VR) then a course to an altitude along it, DVT3's climb on the PXR 336
+// radial from wherever the runway heading ends (FA after VA) and after a
+// heading to intercept it (VI/FA), and FLOUT5's enroute transition that
+// starts with a track from the fix it begins at (FC).
+func TestParseARINC424SIDRadials(t *testing.T) {
+	lines := []string{
+		"SUSAP KDLSK1ADLS     0     050YHN45370968W121100579E015000247         1800018000C    MNAR    COLUMBIA GORGE RGNL/THE DALLES731961303",
+		"SUSAP KDLSK1DDALLS11RW07  010         0        CA                     0690        + 00647     18000                        732021313",
+		"SUSAP KDLSK1DDALLS11RW07  020         0        VR LTJ K1      1650    1200    D                                            732031313",
+		"SUSAP KDLSK1DDALLS11RW07  030         0        CA                     1650        + 04000                                  732041313",
+		"SUSAP KDLSK1DDALLS11RW07  040LTJ  K1D 0VE  L   DF                                                                          732052007",
+		"SUSAP KDLSK1DDALLS11RW13  010         0        VR LTJ K1      1650    1296    D               18000                        732061313",
+		"SUSAP KDLSK1DDALLS11RW13  020         0        CA                     1650        + 04000                                  732071313",
+		"SUSAP KDLSK1DDALLS11RW13  030LTJ  K1D 0VE  L   DF                                                                          732082007",
+		"SUSAP KDLSK1DDALLS11RW31  010         0        CA                     3060        + 00647     18000                        732091313",
+		"SUSAP KDLSK1DDALLS11RW31  020         0    L   VRYLTJ K1      1650    1200    D                                            732101313",
+		"SUSAP KDLSK1DDALLS11RW31  030         0        CA                     1650        + 04000                                  732111313",
+		"SUSAP KDLSK1DDALLS11RW31  040LTJ  K1D 0VE  L   DF                                                                          732122007",
+		"SUSAP KDLSK1GRW07    0046470730 N45371505W121103468               00212044050100D                                          732261303",
+		"SUSAP KDLSK1GRW13    0050971300 N45372309W121102275               00211020050100D                                          732271313",
+		"SUSAP KDLSK1GRW25    0046472530 N45371642W121093828               00243019643100I                                          732281702",
+		"SUSAP KDLSK1GRW31    0050973100 N45364368W121094284               00239000050100D                                          732291313",
+		"SUSAP KDVTK2ADVT     0     081YHN33411790W112045720E012001478         1800018000C    MNAR    PHOENIX DEER VALLEY           784940810",
+		"SUSAP KDVTK2DDVT3  1RW07B 010         0        VA                     0740        + 02200     18000       PXR   K2D        785142308",
+		"SUSAP KDVTK2DDVT3  1RW07B 020PXR  K2D 0V   L   FAYPXR K2      000000003360    D   + 04000                                  785152308",
+		"SUSAP KDVTK2DDVT3  1RW07B 030PXR  K2D 0VE  L   DF                                                                          785162308",
+		"SUSAP KDVTK2DDVT3  1RW25B 010         0        VA                     2540        + 01878     18000                        785172308",
+		"SUSAP KDVTK2DDVT3  1RW25B 020         0    R   VIY                    0600                                                 785182308",
+		"SUSAP KDVTK2DDVT3  1RW25B 030PXR  K2D 0V       FA PXR K2      000000003360    D   + 04000                                  785192308",
+		"SUSAP KDVTK2DDVT3  1RW25B 040PXR  K2D 0VE  L   DF                                                                          785202308",
+		"SUSAP KDVTK2GRW07L   0045000740 N33412098W112052203         +0414001455000051075V                                          786901705",
+		"SUSAP KDVTK2GRW07R   0081960740 N33411322W112053597         +0411001445089842100R                                          786911705",
+		"SUSAP KDVTK2GRW25L   0081962540 N33411761W112042062         +0420201475091640100R                                          786922302",
+		"SUSAP KDVTK2GRW25R   0045002540 N33412407W112042890         +0420601477000048075V                                          786931612",
+		"SUSAP KSBAK2ASBA     0     060YHN34253429W119502937E014000014         1800018000C    MNAR    SANTA BARBARA MUNI            093472309",
+		"SUSAP KSBAK2DFLOUT53GVO   010FLOUTK2PC0E       FC GVO K2      1413017832100150D   + 06000     18000                        093881310",
+		"SUSAP KSBAK2DFLOUT53GVO   020GVO  K2D 0VE      CF GVO K2      0000000032100030D                                            093890804",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	for _, tc := range []struct {
+		airport, sid, runway, want string
+	}{
+		{"KDLS", "DALLS1", "7", "KDLS-25/t069@a647/h120@r165LTJ/t165LTJ@a4000/ld LTJ"},
+		{"KDLS", "DALLS1", "13", "KDLS-31/h130@r165LTJ/t165LTJ@a4000/ld LTJ"},
+		{"KDLS", "DALLS1", "31", "KDLS-13/t306@a647/l120@r165LTJ/t165LTJ@a4000/ld LTJ"},
+		{"KDVT", "DVT3", "7L", "KDVT-25R/h074@a2200/lt336PXR@a4000/ld PXR"},
+		{"KDVT", "DVT3", "7R", "KDVT-25L/h074@a2200/lt336PXR@a4000/ld PXR"},
+		{"KDVT", "DVT3", "25L", "KDVT-7R/h254@a1878/r060@r336PXR/t336PXR@a4000/ld PXR"},
+		{"KDVT", "DVT3", "25R", "KDVT-7L/h254@a1878/r060@r336PXR/t336PXR@a4000/ld PXR"},
+	} {
+		sid, ok := result.Airports[tc.airport].SIDs[tc.sid]
+		if !ok {
+			t.Fatalf("expected %s %s SID, got %v", tc.airport, tc.sid, result.Airports[tc.airport].SIDs)
+		}
+		wps, ok := sid.RunwayTransitions[tc.runway]
+		if !ok {
+			t.Errorf("%s %s: no runway %s transition; have %v", tc.airport, tc.sid, tc.runway,
+				slices.Sorted(maps.Keys(sid.RunwayTransitions)))
+		} else if got := wps.Encode(); got != tc.want {
+			t.Errorf("%s %s runway %s: expected %q, got %q", tc.airport, tc.sid, tc.runway, tc.want, got)
+		}
+	}
+
+	flout5 := result.Airports["KSBA"].SIDs["FLOUT5"]
+	if got, want := flout5.EnrouteTransitions["GVO"].Encode(), "FLOUT/t321@d15.0FLOUT GVO"; got != want {
+		t.Errorf("FLOUT5 GVO transition: expected %q, got %q", want, got)
+	}
+}
+
+// Every route in the CIFP has to survive being encoded in the scenario
+// waypoint syntax and parsed back, since that is how "vice -routes" shows
+// them and how scenarios reproduce them.
+func TestCIFPRoutesRoundTrip(t *testing.T) {
+	InitDB()
+
+	// Emptied of everything it held, a waypoint's Extra is no different
+	// from no Extra at all.
+	normalize := func(wps WaypointArray) WaypointArray {
+		wps = wps.Clone()
+		for i := range wps {
+			wps[i].Location = math.Point2LL{}
+			if e := wps[i].Extra; e != nil {
+				if len(e.ActionGroups) == 0 {
+					e.ActionGroups = nil
+				}
+				if reflect.DeepEqual(*e, WaypointExtra{}) {
+					wps[i].Extra = nil
+				}
+			}
+		}
+		return wps
+	}
+
+	failures := 0
+	check := func(label string, wps WaypointArray) {
+		if len(wps) == 0 || failures >= 20 {
+			return
+		}
+		encoded := wps.Encode()
+		parsed, err := parseWaypoints(encoded)
+		if err != nil {
+			t.Errorf("%s: %q: %v", label, encoded, err)
+			failures++
+		} else if reencoded := parsed.Encode(); reencoded != encoded {
+			t.Errorf("%s: %q re-encodes as %q", label, encoded, reencoded)
+			failures++
+		} else if a, b := normalize(wps), normalize(parsed); !reflect.DeepEqual(a, b) {
+			t.Errorf("%s: %q parses back to different waypoints:\n%+v\n%+v", label, encoded, a, b)
+			failures++
+		}
+	}
+
+	for _, icao := range util.SortedMapKeys(DB.Airports) {
+		ap := DB.Airports[icao]
+		for name, sid := range ap.SIDs {
+			for rwy, wps := range sid.RunwayTransitions {
+				check(icao+" "+name+" runway "+rwy, wps)
+			}
+			check(icao+" "+name, sid.Common)
+			for tr, wps := range sid.EnrouteTransitions {
+				check(icao+" "+name+" "+tr, wps)
+			}
+		}
+		for name, star := range ap.STARs {
+			for tr, wps := range star.Transitions {
+				check(icao+" "+name+" "+tr, wps)
+			}
+			for rwy, wps := range star.RunwayWaypoints {
+				check(icao+" "+name+" runway "+rwy, wps)
+			}
+		}
+		for name, appr := range ap.Approaches {
+			for i, wps := range appr.Waypoints {
+				check(fmt.Sprintf("%s %s #%d", icao, name, i), wps)
+			}
+		}
 	}
 }

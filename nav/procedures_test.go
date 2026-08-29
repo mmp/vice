@@ -145,3 +145,39 @@ func TestRacetrackEntryManeuvers(t *testing.T) {
 		})
 	}
 }
+
+func TestManeuverCompleteUntilRadial(t *testing.T) {
+	const nmPerLongitude = 45
+	fix := math.Point2LL{-74, 40}
+	nav := &Nav{FlightState: FlightState{NmPerLongitude: nmPerLongitude}}
+
+	// With no magnetic variation the 090 radial runs due east from the fix.
+	at := func(bearing math.TrueHeading) {
+		nav.FlightState.Position = math.Offset2LL(fix, bearing, 3, nmPerLongitude)
+	}
+	mc := ManeuverComplete{Type: UntilRadial, Fix: fix, Radial: 90}
+
+	at(45) // north of the radial
+	if mc.Done(nav, Time{}, wx.Sample{}, 0) {
+		t.Fatal("expected radial completion to wait before crossing")
+	}
+	at(135) // south of it, east of the fix
+	if !mc.Done(nav, Time{}, wx.Sample{}, 0) {
+		t.Fatal("expected radial completion after crossing the radial")
+	}
+
+	// The reciprocal is the same line, but it isn't the radial.
+	mc = ManeuverComplete{Type: UntilRadial, Fix: fix, Radial: 90}
+	at(315)
+	if mc.Done(nav, Time{}, wx.Sample{}, 0) {
+		t.Fatal("expected radial completion to wait before crossing")
+	}
+	at(225)
+	if mc.Done(nav, Time{}, wx.Sample{}, 0) {
+		t.Fatal("crossing the reciprocal of the radial shouldn't count")
+	}
+	at(135)
+	if !mc.Done(nav, Time{}, wx.Sample{}, 0) {
+		t.Fatal("expected radial completion after crossing the radial")
+	}
+}

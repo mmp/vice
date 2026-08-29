@@ -28,6 +28,7 @@ const (
 	UntilControllerIntervention                             // never completes; lasts until controller issues a new instruction
 	UntilAltitude                                           // done when reaching Until.Altitude
 	UntilDME                                                // done when crossing Until.DMEDistance from Until.DMEFix
+	UntilRadial                                             // done when crossing the Until.Radial radial of Fix
 )
 
 // ManeuverComplete encapsulates the completion condition for a lateral
@@ -39,8 +40,12 @@ type ManeuverComplete struct {
 	Heading  math.MagneticHeading // target heading (UntilHeading)
 	Seconds  float32              // duration in seconds (UntilTime)
 	Dist     float32              // distance in nm (UntilDist)
-	Fix      math.Point2LL        // target fix (UntilFix, UntilIntercept)
+	Fix      math.Point2LL        // target fix (UntilFix, UntilIntercept, UntilRadial)
 	Altitude int                  // target altitude (UntilAltitude)
+
+	// UntilRadial: the radial of Fix to cross and the fix's name, for Summary.
+	Radial    math.MagneticHeading
+	RadialFix string
 
 	// UntilIntercept: inbound course to intercept and turn direction for the intercept turn.
 	InterceptCourse   math.MagneticHeading
@@ -53,9 +58,9 @@ type ManeuverComplete struct {
 	DMEFix          math.Point2LL
 	DMEFixElevation int
 
-	// Lazy-init start state for time/distance conditions.
+	// Lazy-init start state for time/distance/radial conditions.
 	Start    Time          // captured on first Done() call (UntilTime)
-	StartPos math.Point2LL // captured on first Done() call (UntilDist)
+	StartPos math.Point2LL // captured on first Done() call (UntilDist, UntilRadial)
 }
 
 func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHdg math.MagneticHeading) bool {
@@ -89,6 +94,22 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 		dist := math.DMEDistance(nav.FlightState.Position, nav.FlightState.Altitude,
 			mc.DMEFix, float32(mc.DMEFixElevation))
 		return dist >= mc.DMEDistance
+	case UntilRadial:
+		if mc.StartPos.IsZero() {
+			mc.StartPos = nav.FlightState.Position
+		}
+		// The aircraft has crossed the radial when it is on the other side
+		// of the radial's line from where it started, provided it is out
+		// along the radial from the fix: the radial extends from the fix in
+		// one direction only, so crossing the reciprocal doesn't count.
+		nmPerLongitude := nav.FlightState.NmPerLongitude
+		f := math.LL2NM(mc.Fix, nmPerLongitude)
+		dir := math.HeadingVector(math.MagneticToTrue(mc.Radial, nav.FlightState.MagneticVariation))
+		f1 := math.Add2f(f, dir)
+		p := math.LL2NM(nav.FlightState.Position, nmPerLongitude)
+		crossed := math.Sign(math.SignedPointLineDistance(p, f, f1)) !=
+			math.Sign(math.SignedPointLineDistance(math.LL2NM(mc.StartPos, nmPerLongitude), f, f1))
+		return crossed && math.Dot(math.Sub2f(p, f), dir) > 0
 	default:
 		panic(fmt.Sprintf("unhandled ManeuverCompleteType: %d", mc.Type))
 	}
@@ -101,6 +122,8 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 type LateralManeuver struct {
 	Heading              math.MagneticHeading // heading to fly
 	Track                math.MagneticHeading // if non-zero, wind-corrected heading via headingForTrack
+	TrackFrom            math.Point2LL        // if non-zero, Track is this point's radial; the aircraft joins and follows it
+	TrackFromFix         string               // name of TrackFrom, for Summary
 	FlyToward            math.Point2LL        // if non-zero, heading = bearing to this point each tick
 	Turn                 av.TurnDirection
 	Until                ManeuverComplete
@@ -114,6 +137,8 @@ func (m *LateralManeuver) String() string {
 	var action string
 	if !m.FlyToward.IsZero() {
 		action = "fly toward fix"
+	} else if !m.TrackFrom.IsZero() {
+		action = fmt.Sprintf("track the %s %03d radial", m.TrackFromFix, int(m.Track))
 	} else if m.Track != 0 {
 		action = fmt.Sprintf("fly track %03d", int(m.Track))
 	} else {
@@ -141,6 +166,8 @@ func (m *LateralManeuver) String() string {
 		until = fmt.Sprintf("until altitude %d", m.Until.Altitude)
 	case UntilDME:
 		until = fmt.Sprintf("until DME %.1f", m.Until.DMEDistance)
+	case UntilRadial:
+		until = fmt.Sprintf("until crossing the %s %03d radial", m.Until.RadialFix, int(m.Until.Radial))
 	}
 
 	if until != "" {
@@ -150,17 +177,40 @@ func (m *LateralManeuver) String() string {
 }
 
 // targetHeading computes this maneuver's current target heading, considering
-// FlyToward, Track, and fixed Heading in priority order.
+// FlyToward, TrackFrom, Track, and fixed Heading in priority order.
 func (m *LateralManeuver) targetHeading(nav *Nav, wxs wx.Sample) math.MagneticHeading {
-	if !m.FlyToward.IsZero() {
+	target := m.FlyToward
+	if !m.TrackFrom.IsZero() {
+		target = nav.radialSteeringPoint(m.TrackFrom, m.Track)
+	}
+	if !target.IsZero() {
 		hdg := math.TrueToMagnetic(
-			math.Heading2LL(nav.FlightState.Position, m.FlyToward, nav.FlightState.NmPerLongitude),
+			math.Heading2LL(nav.FlightState.Position, target, nav.FlightState.NmPerLongitude),
 			nav.FlightState.MagneticVariation)
 		return nav.headingForTrack(hdg, wxs)
 	} else if m.Track != 0 {
 		return nav.headingForTrack(m.Track, wxs)
 	}
 	return m.Heading
+}
+
+// radialSteeringPoint returns the point to steer toward to join the given
+// radial of fix and follow it outbound: a point on the radial ahead of the
+// aircraft's projection onto it, at least 2nm ahead and farther when the
+// aircraft is farther off the radial so that it converges at 45 degrees or
+// less and then settles onto it. From behind the fix, the aircraft goes to
+// the fix first.
+func (nav *Nav) radialSteeringPoint(fix math.Point2LL, radial math.MagneticHeading) math.Point2LL {
+	nmPerLongitude := nav.FlightState.NmPerLongitude
+	f := math.LL2NM(fix, nmPerLongitude)
+	dir := math.HeadingVector(math.MagneticToTrue(radial, nav.FlightState.MagneticVariation))
+	v := math.Sub2f(math.LL2NM(nav.FlightState.Position, nmPerLongitude), f)
+	along := math.Dot(v, dir)
+	if along < 0 {
+		return fix
+	}
+	across := math.Abs(math.Dot(v, [2]float32{-dir[1], dir[0]}))
+	return math.NM2LL(math.Add2f(f, math.Scale2f(dir, along+max(2, across))), nmPerLongitude)
 }
 
 func turnToTrack(track math.MagneticHeading, turn av.TurnDirection) LateralManeuver {

@@ -61,25 +61,34 @@ const (
 	WaypointActionAltitude
 	WaypointActionDME
 	WaypointActionCourse
+	WaypointActionRadial
 )
 
 // WaypointActionTermination describes a non-fix condition for advancing to the
 // next waypoint action group.
 type WaypointActionTermination struct {
-	Type            WaypointActionTerminationType
-	Altitude        int
-	DMEFix          string
-	DMEDistance     float32
-	DMEFixLocation  math.Point2LL
-	DMEFixElevation int
-	Course          int16 // magnetic course to the next fix on the route
+	Type              WaypointActionTerminationType
+	Altitude          int
+	DMEFix            string
+	DMEDistance       float32
+	DMEFixLocation    math.Point2LL
+	DMEFixElevation   int
+	Course            int16 // magnetic course to the next fix on the route
+	Radial            int16 // magnetic radial of RadialFix to cross
+	RadialFix         string
+	RadialFixLocation math.Point2LL
 }
 
+// WaypointHeadingAction is a heading or ground track to fly. A track with a
+// Fix is that fix's radial: the aircraft joins the radial and follows it
+// away from the fix.
 type WaypointHeadingAction struct {
 	Heading        int16
 	Turn           TurnDirection
 	Track          bool
 	PresentHeading bool
+	Fix            string
+	FixLocation    math.Point2LL
 }
 
 // WaypointActions describes actions that take effect together after passing a
@@ -168,6 +177,8 @@ func (wag WaypointActionGroup) Encoded() string {
 		s += fmt.Sprintf("@d%.1f%s", wag.Until.DMEDistance, wag.Until.DMEFix)
 	case WaypointActionCourse:
 		s += fmt.Sprintf("@t%d", wag.Until.Course)
+	case WaypointActionRadial:
+		s += fmt.Sprintf("@r%03d%s", wag.Until.Radial, wag.Until.RadialFix)
 	}
 	return s
 }
@@ -184,7 +195,7 @@ func (wha WaypointHeadingAction) Encoded() string {
 	case TurnRight:
 		prefix = util.Select(wha.Track, "rt", "r")
 	}
-	return fmt.Sprintf("/%s%03d", prefix, wha.Heading)
+	return fmt.Sprintf("/%s%03d%s", prefix, wha.Heading, wha.Fix)
 }
 
 type WaypointActionEvent struct {
@@ -677,7 +688,7 @@ func (wa WaypointArray) HandoffControllers() []ControlPosition {
 
 func (wa WaypointArray) Encode() string {
 	var entries []string
-	for _, w := range wa {
+	for i, w := range wa {
 		var s strings.Builder
 		s.WriteString(w.Fix)
 		if ar := w.AltitudeRestriction(); ar != nil {
@@ -752,10 +763,18 @@ func (wa WaypointArray) Encode() string {
 			s.WriteString(heading.Encoded())
 		}
 		if arc := w.Arc(); arc != nil {
+			switch arc.Direction {
+			case DMEArcDirectionClockwise:
+				s.WriteString("/rarc")
+			case DMEArcDirectionCounterClockwise:
+				s.WriteString("/larc")
+			default:
+				s.WriteString("/arc")
+			}
 			if arc.Fix != "" {
-				s.WriteString(fmt.Sprintf("/arc%.1f%s", arc.Radius, arc.Fix))
+				s.WriteString(strconv.FormatFloat(float64(arc.Radius), 'f', -1, 32) + arc.Fix)
 			} else {
-				s.WriteString(fmt.Sprintf("/arc%.1f", arc.Length))
+				s.WriteString(strconv.FormatFloat(float64(arc.Length), 'f', -1, 32))
 			}
 		}
 		for _, group := range w.ActionGroups() {
@@ -802,6 +821,18 @@ func (wa WaypointArray) Encode() string {
 		}
 		if da := w.DescendAltitude(); da != 0 {
 			s.WriteString(fmt.Sprintf("/d%d", da/100))
+		}
+
+		// The turn direction to the next fix is given on the fix before it.
+		// A fix with a heading has already had its turn encoded with the
+		// heading, which shares the flag.
+		if i+1 < len(wa) && wa[i+1].Heading == 0 {
+			switch wa[i+1].Turn() {
+			case TurnLeft:
+				s.WriteString("/ld")
+			case TurnRight:
+				s.WriteString("/rd")
+			}
 		}
 
 		entries = append(entries, s.String())
@@ -1282,9 +1313,16 @@ func parseWaypointHeadingAction(f string) (*WaypointHeadingAction, bool, error) 
 	default:
 		return nil, false, nil
 	}
-	if !allDigits(hdg) {
+
+	// A fix after the heading names the radial to track: /t336PXR.
+	hdg, fix := splitLeadingDigits(hdg)
+	if hdg == "" {
 		return nil, false, nil
 	}
+	if fix != "" && !headingAction.Track {
+		return nil, true, fmt.Errorf("%s: a radial can only be tracked (/t, /lt, /rt), not flown as a heading", f)
+	}
+	headingAction.Fix = fix
 
 	heading, err := parseCourse(hdg)
 	if err != nil {
@@ -1292,6 +1330,15 @@ func parseWaypointHeadingAction(f string) (*WaypointHeadingAction, bool, error) 
 	}
 	headingAction.Heading = heading
 	return &headingAction, true, nil
+}
+
+// splitLeadingDigits splits s into its leading run of digits and the rest.
+func splitLeadingDigits(s string) (digits, rest string) {
+	n := 0
+	for n < len(s) && s[n] >= '0' && s[n] <= '9' {
+		n++
+	}
+	return s[:n], s[n:]
 }
 
 func parseWaypointActionModifier(f string) (WaypointActions, bool, error) {
@@ -1447,6 +1494,20 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 			return WaypointActionTermination{}, fmt.Errorf("%s: invalid course after @t: %w", f, err)
 		}
 		return WaypointActionTermination{Type: WaypointActionCourse, Course: course}, nil
+
+	case 'r':
+		digits, fix := splitLeadingDigits(f[1:])
+		if digits == "" {
+			return WaypointActionTermination{}, fmt.Errorf("%s: expected a radial after @r", f)
+		}
+		if fix == "" {
+			return WaypointActionTermination{}, fmt.Errorf("%s: expected a navaid after the @r radial", f)
+		}
+		radial, err := parseCourse(digits)
+		if err != nil {
+			return WaypointActionTermination{}, fmt.Errorf("%s: invalid radial after @r: %w", f, err)
+		}
+		return WaypointActionTermination{Type: WaypointActionRadial, Radial: radial, RadialFix: fix}, nil
 
 	default:
 		return WaypointActionTermination{}, fmt.Errorf("%s: unknown waypoint action termination", f)
@@ -1684,8 +1745,17 @@ func parseWaypoints(str string) (WaypointArray, error) {
 							pt.ProcedureTurn = &ProcedureTurn{}
 						}
 						pt.ProcedureTurn.Entry180NoPT = true
-					} else if len(f) >= 4 && f[:3] == "arc" {
+					} else if len(f) >= 4 && (f[:3] == "arc" || f[:4] == "larc" || f[:4] == "rarc") {
+						// The direction is inferred from the surrounding fixes
+						// unless given: /larc turns left (counterclockwise),
+						// /rarc right.
+						direction := DMEArcDirectionUnset
 						spec := f[3:]
+						if f[0] == 'l' {
+							direction, spec = DMEArcDirectionCounterClockwise, f[4:]
+						} else if f[0] == 'r' {
+							direction, spec = DMEArcDirectionClockwise, f[4:]
+						}
 						rend := 0
 						for rend < len(spec) &&
 							((spec[rend] >= '0' && spec[rend] <= '9') || spec[rend] == '.') {
@@ -1703,12 +1773,14 @@ func parseWaypoints(str string) (WaypointArray, error) {
 						if rend == len(spec) {
 							// no fix given, so interpret it as an arc length
 							wp.InitExtra().Arc = &DMEArc{
-								Length: float32(v),
+								Length:    float32(v),
+								Direction: direction,
 							}
 						} else {
 							wp.InitExtra().Arc = &DMEArc{
-								Fix:    spec[rend:],
-								Radius: float32(v),
+								Fix:       spec[rend:],
+								Radius:    float32(v),
+								Direction: direction,
 							}
 						}
 					} else if len(f) >= 7 && f[:6] == "airway" {
@@ -1758,7 +1830,13 @@ func parseWaypoints(str string) (WaypointArray, error) {
 						if !ok {
 							return nil, fmt.Errorf("%s: unknown fix modifier: %s", field, f)
 						}
-						applyWaypointHeadingAction(&wp, heading)
+						if heading.Fix != "" {
+							// Waypoint.Heading can't name a radial; make it an action group.
+							wp.InitExtra().ActionGroups = append(wp.InitExtra().ActionGroups,
+								WaypointActionGroup{Actions: WaypointActions{Heading: heading}})
+						} else {
+							applyWaypointHeadingAction(&wp, heading)
+						}
 					}
 				}
 			}
@@ -1893,6 +1971,22 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 				} else if e != nil && !allowSlop {
 					e.ErrorString("%s: unable to locate DME station %q with elevation for waypoint action group %q",
 						wp.Fix, group.Until.DMEFix, group.Encoded())
+				}
+			}
+			if group.Until.Type == WaypointActionRadial {
+				if pos, ok := loc.Locate(group.Until.RadialFix); ok {
+					wa[i].InitExtra().ActionGroups[j].Until.RadialFixLocation = pos
+				} else if e != nil && !allowSlop {
+					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
+						wp.Fix, group.Until.RadialFix, group.Encoded())
+				}
+			}
+			if heading := group.Actions.Heading; heading != nil && heading.Fix != "" {
+				if pos, ok := loc.Locate(heading.Fix); ok {
+					heading.FixLocation = pos
+				} else if e != nil && !allowSlop {
+					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
+						wp.Fix, heading.Fix, group.Encoded())
 				}
 			}
 		}

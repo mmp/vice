@@ -453,3 +453,171 @@ func TestHourRanges(t *testing.T) {
 		t.Errorf("hour 25 did not error")
 	}
 }
+
+func TestParseRadialTermination(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	const route = "KDLS-25/t069@a647/h120@r165LTJ/t165LTJ@a4000 LTJ"
+	wps, err := parseWaypoints(route)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := wps.Encode(); got != route {
+		t.Errorf("expected the route to round-trip, got %q", got)
+	}
+
+	groups := wps[0].ActionGroups()
+	if len(groups) != 3 {
+		t.Fatalf("expected 3 action groups, got %d", len(groups))
+	}
+	if groups[1].Actions.Heading.Heading != 120 || groups[1].Actions.Heading.Track {
+		t.Errorf("expected heading 120, got %+v", groups[1].Actions.Heading)
+	}
+	if groups[1].Until.Type != WaypointActionRadial || groups[1].Until.Radial != 165 || groups[1].Until.RadialFix != "LTJ" {
+		t.Fatalf("unexpected radial action group: %+v", groups[1])
+	}
+	if h := groups[2].Actions.Heading; h.Heading != 165 || !h.Track || h.Fix != "LTJ" {
+		t.Errorf("expected the LTJ 165 radial to be tracked, got %+v", h)
+	}
+	if groups[2].Until.Type != WaypointActionAltitude || groups[2].Until.Altitude != 4000 {
+		t.Fatalf("unexpected altitude action group: %+v", groups[2])
+	}
+
+	loc := testLocator{
+		"KDLS-25": {-121.16, 45.62},
+		"LTJ":     {-121.10, 45.71},
+	}
+	wps = wps.InitializeLocations(loc, 45, 0, false, nil)
+	groups = wps[0].ActionGroups()
+	if groups[1].Until.RadialFixLocation.IsZero() {
+		t.Error("expected initialized radial fix location")
+	}
+	if groups[2].Actions.Heading.FixLocation.IsZero() {
+		t.Error("expected initialized tracked radial fix location")
+	}
+
+	e := &util.ErrorLogger{}
+	wps.InitializeLocations(testLocator{"KDLS-25": {-121.16, 45.62}}, 45, 0, false, e)
+	if !e.HaveErrors() {
+		t.Error("expected an error for an unknown radial navaid")
+	}
+}
+
+func TestParseRadialTrack(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	// A radial to track is an action group even without a termination or
+	// other action groups, since Waypoint.Heading can't name the navaid.
+	for _, tc := range []struct {
+		route string
+		turn  TurnDirection
+	}{
+		{"KSNS-8/t255SNS", TurnClosest},
+		{"KSNS-8/lt255SNS", TurnLeft},
+		{"KSNS-8/rt255SNS", TurnRight},
+	} {
+		wps, err := parseWaypoints(tc.route)
+		if err != nil {
+			t.Fatalf("%s: %v", tc.route, err)
+		}
+		if got := wps.Encode(); got != tc.route {
+			t.Errorf("expected %q to round-trip, got %q", tc.route, got)
+		}
+		if wps[0].Heading != 0 {
+			t.Errorf("%s: expected no waypoint heading, got %d", tc.route, wps[0].Heading)
+		}
+		groups := wps[0].ActionGroups()
+		if len(groups) != 1 {
+			t.Fatalf("%s: expected 1 action group, got %d", tc.route, len(groups))
+		}
+		if h := groups[0].Actions.Heading; h == nil || h.Heading != 255 || !h.Track || h.Fix != "SNS" || h.Turn != tc.turn {
+			t.Errorf("%s: unexpected heading action %+v", tc.route, h)
+		}
+		if groups[0].Until.Type != WaypointActionNoTermination {
+			t.Errorf("%s: unexpected termination %+v", tc.route, groups[0].Until)
+		}
+	}
+}
+
+func TestParseRadialErrors(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, tc := range []struct{ route, want string }{
+		{"KSNS-8/h255SNS", "can only be tracked"},
+		{"KSNS-8/l255SNS", "can only be tracked"},
+		{"KSNS-8/h084@a484/r255SNS", "can only be tracked"},
+		{"KDLS-25/h120@rLTJ", "expected a radial after @r"},
+		{"KDLS-25/h120@r165", "expected a navaid after the @r radial"},
+		{"KDLS-25/h120@r0LTJ", "heading must be between 1-360"},
+	} {
+		_, err := parseWaypoints(tc.route)
+		if err == nil {
+			t.Errorf("%s: expected an error", tc.route)
+		} else if !strings.Contains(err.Error(), tc.want) {
+			t.Errorf("%s: expected error %q to include %q", tc.route, err, tc.want)
+		}
+	}
+}
+
+func TestEncodeTurnDirection(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, route := range []string{
+		"KDLS-25/h120@r165LTJ/t165LTJ@a4000/ld LTJ",
+		"SKORR/rd WAVEY/a3000+ SHIPP",
+		// A heading's turn is encoded with the heading, not as /ld.
+		"SKORR WAVEY/l090",
+		"SKORR/rd WAVEY/ph",
+	} {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatalf("%s: %v", route, err)
+		}
+		if wps[1].Turn() == TurnClosest {
+			t.Errorf("%s: expected a turn direction on %s", route, wps[1].Fix)
+		}
+		if got := wps.Encode(); got != route {
+			t.Errorf("expected %q to round-trip, got %q", route, got)
+		}
+	}
+}
+
+func TestParseArcDirection(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, tc := range []struct {
+		route     string
+		direction DMEArcDirection
+		radius    float32
+	}{
+		{"TOMDY/arc7SSI SAUSE", DMEArcDirectionUnset, 7},
+		{"TOMDY/larc7SSI SAUSE", DMEArcDirectionCounterClockwise, 7},
+		{"TOMDY/rarc2.54SSI SAUSE", DMEArcDirectionClockwise, 2.54},
+		{"WUPMA/rarc7.5 ALABE", DMEArcDirectionClockwise, 0},
+	} {
+		wps, err := parseWaypoints(tc.route)
+		if err != nil {
+			t.Fatalf("%s: %v", tc.route, err)
+		}
+		arc := wps[0].Arc()
+		if arc == nil {
+			t.Fatalf("%s: expected an arc", tc.route)
+		}
+		if arc.Direction != tc.direction || arc.Radius != tc.radius {
+			t.Errorf("%s: got arc %+v", tc.route, *arc)
+		}
+		if got := wps.Encode(); got != tc.route {
+			t.Errorf("expected %q to round-trip, got %q", tc.route, got)
+		}
+	}
+}

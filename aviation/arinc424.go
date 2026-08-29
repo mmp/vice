@@ -559,6 +559,7 @@ type ssaRecord struct {
 	turnDirection          byte
 	recommendedNavaid      []byte
 	arcRadius              []byte
+	theta                  []byte
 	rho                    []byte
 	outboundMagneticCourse []byte
 	routeDistance          []byte
@@ -592,6 +593,7 @@ func parseSSA(line []byte) ssaRecord {
 		turnDirection:          line[43],
 		recommendedNavaid:      line[50:54],
 		arcRadius:              line[56:62],
+		theta:                  line[62:66], // 5.24: the radial of the recommended navaid
 		rho:                    line[66:70],
 		outboundMagneticCourse: line[70:74],
 		routeDistance:          line[74:78],
@@ -968,17 +970,18 @@ func parseSID(recs []ssaRecord, icao string, runways []Runway) *SID {
 
 	bothParallels := make(map[string]WaypointArray)
 	for _, key := range keys {
-		wps, fromRunway, ok := parseSIDLegs(byTransition[key])
+		routeType, transition := key[0], key[1:]
+		runwayTransition := strings.HasPrefix(transition, "RW")
+		wps, ok := parseSIDLegs(byTransition[key], runwayTransition)
 		if !ok || len(wps) == 0 {
 			continue
 		}
 
-		routeType, transition := key[0], key[1:]
 		switch {
-		case strings.HasPrefix(transition, "RW"):
+		case runwayTransition:
 			for _, rwy := range sidTransitionRunways(transition, runways) {
 				r := util.DuplicateSlice(wps)
-				if fromRunway {
+				if r[0].Fix == "" {
 					r[0].Fix = icao + "-" + OppositeRunwayId(rwy)
 				}
 				if strings.HasSuffix(transition, "B") {
@@ -1024,26 +1027,16 @@ func sidTransitionRunways(transition string, runways []Runway) []string {
 
 // parseSIDLegs converts the legs of one SID transition to waypoints. Legs
 // that end somewhere other than a fix--a heading to an altitude, a course
-// to a DME distance, a heading to intercept a course, vectors--become action
-// groups on the waypoint they are flown from. For the first leg of a runway
-// transition that is the runway's departure end, returned with an empty Fix
-// and fromRunway set for the caller to name. Transitions with legs vice
-// can't fly, a heading to a radial for one, are reported as not ok.
-func parseSIDLegs(recs []ssaRecord) (wps WaypointArray, fromRunway bool, ok bool) {
+// to a DME distance, a heading to intercept a course or cross a radial,
+// vectors--become action groups on the waypoint they are flown from. A
+// runway transition's first leg is flown from the runway's departure end,
+// returned as a waypoint with an empty Fix for the caller to name.
+// Transitions with legs vice can't fly are reported as not ok.
+func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, ok bool) {
 	// from returns the waypoint the next leg is flown from.
 	from := func() *Waypoint {
 		if len(wps) == 0 {
 			wps = append(wps, Waypoint{})
-			fromRunway = true
-		}
-		return &wps[len(wps)-1]
-	}
-	// fromFix returns the waypoint for a leg flown from the record's fix,
-	// which is the previous leg's termination unless the transition begins
-	// there.
-	fromFix := func(rec ssaRecord) *Waypoint {
-		if n := len(wps); n == 0 || wps[n-1].Fix != rec.fix {
-			wps = append(wps, Waypoint{Fix: rec.fix})
 		}
 		return &wps[len(wps)-1]
 	}
@@ -1052,6 +1045,52 @@ func parseSIDLegs(recs []ssaRecord) (wps WaypointArray, fromRunway bool, ok bool
 			Heading: parseMagneticCourse(rec.outboundMagneticCourse),
 			Track:   track,
 			Turn:    turnDirection(rec.turnDirection),
+		}
+	}
+	// fromFix returns the waypoint a leg from the record's fix is flown from
+	// and the track that flies it. The aircraft is at the fix if the
+	// previous leg terminates there or if the transition starts there.
+	// Otherwise--on the runway, or wherever a heading to an altitude
+	// ended--the leg's course is the fix's radial, which it joins from
+	// where it is.
+	fromFix := func(rec ssaRecord) (*Waypoint, *WaypointHeadingAction) {
+		h := heading(rec, true)
+		if n := len(wps); n > 0 && wps[n-1].Fix == rec.fix {
+			return &wps[n-1], h
+		} else if n == 0 && !runwayTransition {
+			wps = append(wps, Waypoint{Fix: rec.fix})
+			return &wps[0], h
+		}
+		h.Fix = rec.fix
+		return from(), h
+	}
+	// radialNavaid returns the navaid whose radial a preceding VR/CR leg
+	// ended on if the given course continues along it.
+	radialNavaid := func(i int, course int16) string {
+		if i == 0 {
+			return ""
+		}
+		prev := recs[i-1]
+		if (prev.pathAndTermination == "VR" || prev.pathAndTermination == "CR") &&
+			!empty(prev.theta) && parseMagneticCourse(prev.theta) == course {
+			return strings.TrimSpace(string(prev.recommendedNavaid))
+		}
+		return ""
+	}
+	// legStart returns the waypoint the i'th record's leg is flown from and
+	// the heading action that flies it, for legs that are a heading (V),
+	// a course (C), or a track from a fix (F).
+	legStart := func(i int) (*Waypoint, *WaypointHeadingAction) {
+		rec := recs[i]
+		switch rec.pathAndTermination[0] {
+		case 'F':
+			return fromFix(rec)
+		case 'C':
+			h := heading(rec, true)
+			h.Fix = radialNavaid(i, h.Heading)
+			return from(), h
+		default:
+			return from(), heading(rec, false)
 		}
 	}
 	addGroup := func(wp *Waypoint, group WaypointActionGroup) {
@@ -1105,14 +1144,11 @@ func parseSIDLegs(recs []ssaRecord) (wps WaypointArray, fromRunway bool, ok bool
 
 		case "VA", "CA", "FA": // to an altitude
 			if empty(rec.alt0) || empty(rec.outboundMagneticCourse) {
-				return nil, false, false
+				return nil, false
 			}
-			wp := from()
-			if pt == "FA" {
-				wp = fromFix(rec)
-			}
+			wp, h := legStart(i)
 			addGroup(wp, WaypointActionGroup{
-				Actions: WaypointActions{Heading: heading(rec, pt != "VA")},
+				Actions: WaypointActions{Heading: h},
 				Until:   WaypointActionTermination{Type: WaypointActionAltitude, Altitude: parseAltitude(rec.alt0)},
 			})
 			noteLegSpeed(rec)
@@ -1123,14 +1159,11 @@ func parseSIDLegs(recs []ssaRecord) (wps WaypointArray, fromRunway bool, ok bool
 				dmeFix = rec.fix
 			}
 			if dmeFix == "" || empty(rec.routeDistance) || empty(rec.outboundMagneticCourse) {
-				return nil, false, false
+				return nil, false
 			}
-			wp := from()
-			if pt == "FD" || pt == "FC" {
-				wp = fromFix(rec)
-			}
+			wp, h := legStart(i)
 			addGroup(wp, WaypointActionGroup{
-				Actions: WaypointActions{Heading: heading(rec, pt != "VD")},
+				Actions: WaypointActions{Heading: h},
 				Until: WaypointActionTermination{
 					Type:        WaypointActionDME,
 					DMEFix:      dmeFix,
@@ -1139,50 +1172,85 @@ func parseSIDLegs(recs []ssaRecord) (wps WaypointArray, fromRunway bool, ok bool
 			})
 			noteLegSpeed(rec)
 
-		case "VI", "CI": // to intercept the following leg's course to its fix
-			if i+1 == len(recs) || recs[i+1].pathAndTermination != "CF" ||
-				empty(rec.outboundMagneticCourse) || empty(recs[i+1].outboundMagneticCourse) {
-				return nil, false, false
+		case "VI", "CI": // to intercept the following leg
+			if i+1 == len(recs) || empty(rec.outboundMagneticCourse) || empty(recs[i+1].outboundMagneticCourse) {
+				return nil, false
 			}
+			next := recs[i+1]
 			hdg := heading(rec, pt == "CI")
-			crs := parseMagneticCourse(recs[i+1].outboundMagneticCourse)
-			if hdg.Heading != crs {
-				// If it's parallel to the course, it's the course; direct to
-				// the fix is the same thing.
-				addGroup(from(), WaypointActionGroup{
-					Actions: WaypointActions{Heading: hdg},
-					Until:   WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
-				})
+			crs := parseMagneticCourse(next.outboundMagneticCourse)
+			switch next.pathAndTermination {
+			case "CF": // a course to a fix
+				if hdg.Heading != crs {
+					// If it's parallel to the course, it's the course; direct to
+					// the fix is the same thing.
+					addGroup(from(), WaypointActionGroup{
+						Actions: WaypointActions{Heading: hdg},
+						Until:   WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
+					})
+				}
+			case "FA", "FC", "FD", "FM": // a course from a fix: its radial
+				// Nearly parallel to the radial, the heading might cross it
+				// far away or not at all; the following leg joins the radial
+				// from wherever the aircraft is anyway.
+				if math.HeadingDifference(float32(hdg.Heading), float32(crs)) > 5 {
+					addGroup(from(), WaypointActionGroup{
+						Actions: WaypointActions{Heading: hdg},
+						Until:   WaypointActionTermination{Type: WaypointActionRadial, Radial: crs, RadialFix: next.fix},
+					})
+				}
+			default:
+				return nil, false
 			}
+			noteLegSpeed(rec)
+
+		case "VR", "CR": // to a radial of a navaid
+			navaid := strings.TrimSpace(string(rec.recommendedNavaid))
+			if navaid == "" || empty(rec.theta) || empty(rec.outboundMagneticCourse) {
+				return nil, false
+			}
+			addGroup(from(), WaypointActionGroup{
+				Actions: WaypointActions{Heading: heading(rec, pt == "CR")},
+				Until: WaypointActionTermination{
+					Type:      WaypointActionRadial,
+					Radial:    parseMagneticCourse(rec.theta),
+					RadialFix: navaid,
+				},
+			})
 			noteLegSpeed(rec)
 
 		case "VM", "FM": // vectors
 			if empty(rec.outboundMagneticCourse) {
-				return nil, false, false
+				return nil, false
 			}
-			wp := from()
-			if pt == "FM" {
-				wp = fromFix(rec)
-			}
-			addGroup(wp, WaypointActionGroup{Actions: WaypointActions{Heading: heading(rec, pt == "FM")}})
+			wp, h := legStart(i)
+			addGroup(wp, WaypointActionGroup{Actions: WaypointActions{Heading: h}})
 
 		default:
-			return nil, false, false
+			return nil, false
 		}
 	}
 
+	if len(wps) > 0 && wps[0].Fix == "" && !runwayTransition {
+		// Only a runway transition can start somewhere other than a fix.
+		return nil, false
+	}
+
 	// A lone open-ended heading is a waypoint's heading rather than an
-	// action group, as parseWaypoints has it.
+	// action group, as parseWaypoints has it. A radial to track stays an
+	// action group since Waypoint.Heading can't name one.
 	for i := range wps {
 		groups := wps[i].ActionGroups()
 		if len(groups) == 1 && groups[0].Until.Type == WaypointActionNoTermination &&
-			groups[0].Actions.Heading != nil && !groups[0].Actions.HasSimActions() && !groups[0].Actions.HasNavActions() {
+			groups[0].Actions.Heading != nil && groups[0].Actions.Heading.Fix == "" &&
+			!groups[0].Actions.HasSimActions() &&
+			groups[0].Actions.ClimbAltitude == 0 && groups[0].Actions.DescendAltitude == 0 {
 			applyWaypointHeadingAction(&wps[i], groups[0].Actions.Heading)
 			wps[i].Extra.ActionGroups = nil
 		}
 	}
 
-	return wps, fromRunway, true
+	return wps, true
 }
 
 func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
