@@ -561,98 +561,82 @@
           "JIPOD,ZALEN,BORRD,VALKA": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140"
+            "is_rnav": true
           },
           "DDANY": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140"
+            "is_rnav": true
           },
           "FATHE": {
             "cleared_altitude": 7000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140 BUFFI FATHE/a14000+"
+            "is_rnav": true
           },
           "VIYAP": {
             "cleared_altitude": 7000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140 BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "is_rnav": true
           },
           "JEEMY": {
             "cleared_altitude": 7000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140 MDUSA JEEMY/a16000+"
+            "is_rnav": true
           },
           "PAINN": {
             "cleared_altitude": 7000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140 MDUSA JEEMY/a16000+ ACCHE"
+            "is_rnav": true
           },
           "FSHUN": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R BAAIT/a1500+/h185"
+            "is_rnav": true
           },
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R BAAIT/a1500+/h185 FSHUN PLUMR"
+            "is_rnav": true
           },
           "MZULO": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140 GERCK MZULO"
+            "is_rnav": true
           },
           "FAROV": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140 GERCK MZULO"
+            "is_rnav": true
           },
           "LENDS": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140 GERCK MZULO HESTA"
+            "is_rnav": true
           },
           "ETECK": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R KAAPE/a1500+/h140 GERCK MZULO HESTA LENDS"
+            "is_rnav": true
           },
           "OSPRY": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R VILNS/a1500+/h237 OSPRY"
+            "is_rnav": true
           },
           "REMIS,CIGAR": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R VILNS/a1500+/h237 OSPRY GDUNN KNOST"
+            "is_rnav": true
           },
           "RDSOX": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R VILNS/a1500+/h237 RDSOX"
+            "is_rnav": true
           },
           "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-35R VILNS/a1500+/h237 RDSOX JFRYS"
+            "is_rnav": true
           }
         },
         "17R": {
@@ -699,98 +683,82 @@
           "JIPOD,ZALEN,BORRD,VALKA": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140"
+            "is_rnav": true
           },
           "DDANY": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140"
+            "is_rnav": true
           },
           "FATHE": {
             "cleared_altitude": 7000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140 BUFFI FATHE/a14000+"
+            "is_rnav": true
           },
           "VIYAP": {
             "cleared_altitude": 7000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140 BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "is_rnav": true
           },
           "JEEMY": {
             "cleared_altitude": 7000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140 MDUSA JEEMY/a16000+"
+            "is_rnav": true
           },
           "PAINN": {
             "cleared_altitude": 7000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140 MDUSA JEEMY/a16000+ ACCHE"
+            "is_rnav": true
           },
           "FSHUN": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L BAAIT/a1500+/h185"
+            "is_rnav": true
           },
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L BAAIT/a1500+/h185 FSHUN PLUMR"
+            "is_rnav": true
           },
           "MZULO": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140 GERCK MZULO"
+            "is_rnav": true
           },
           "FAROV": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140 GERCK MZULO"
+            "is_rnav": true
           },
           "LENDS": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140 GERCK MZULO HESTA"
+            "is_rnav": true
           },
           "ETECK": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L KAAPE/a1500+/h140 GERCK MZULO HESTA LENDS"
+            "is_rnav": true
           },
           "OSPRY": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L VILNS/a1500+/h237 OSPRY"
+            "is_rnav": true
           },
           "REMIS,CIGAR": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L VILNS/a1500+/h237 OSPRY GDUNN KNOST"
+            "is_rnav": true
           },
           "RDSOX": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L VILNS/a1500+/h237 RDSOX"
+            "is_rnav": true
           },
           "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-35L VILNS/a1500+/h237 RDSOX JFRYS"
+            "is_rnav": true
           }
         },
         "18L": {
@@ -837,98 +805,82 @@
           "JIPOD,ZALEN,BORRD,VALKA": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R KAAPE/a1500+/h140"
+            "is_rnav": true
           },
           "DDANY": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R KAAPE/a1500+/h140"
+            "is_rnav": true
           },
           "FATHE": {
             "cleared_altitude": 7000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R VILNS/a1500+ BUFFI FATHE/a14000+"
+            "is_rnav": true
           },
           "VIYAP": {
             "cleared_altitude": 7000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R VILNS/a1500+ BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "is_rnav": true
           },
           "JEEMY": {
             "cleared_altitude": 7000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R VILNS/a1500+/h237 MDUSA JEEMY/a16000+"
+            "is_rnav": true
           },
           "PAINN": {
             "cleared_altitude": 7000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R VILNS/a1500+/h237 MDUSA JEEMY/a16000+ ACCHE"
+            "is_rnav": true
           },
           "FSHUN": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R BAAIT/a1500+/h185"
+            "is_rnav": true
           },
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R BAAIT/a1500+/h185 FSHUN PLUMR"
+            "is_rnav": true
           },
           "MZULO": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R KAAPE/a1500+/h140 GERCK MZULO"
+            "is_rnav": true
           },
           "FAROV": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R KAAPE/a1500+/h140 GERCK MZULO"
+            "is_rnav": true
           },
           "LENDS": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R KAAPE/a1500+/h140 GERCK MZULO HESTA"
+            "is_rnav": true
           },
           "ETECK": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R KAAPE/a1500+/h140 GERCK MZULO HESTA LENDS"
+            "is_rnav": true
           },
           "OSPRY": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R VILNS/a1500+/h237 OSPRY"
+            "is_rnav": true
           },
           "REMIS,CIGAR": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R VILNS/a1500+/h237 OSPRY GDUNN KNOST"
+            "is_rnav": true
           },
           "RDSOX": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R VILNS/a1500+/h237 RDSOX"
+            "is_rnav": true
           },
           "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-36R VILNS/a1500+/h237 RDSOX JFRYS"
+            "is_rnav": true
           }
         },
         "18R": {
@@ -975,98 +927,82 @@
           "JIPOD,ZALEN,BORRD,VALKA": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L KAAPE/a1500+/h140"
+            "is_rnav": true
           },
           "DDANY": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L KAAPE/a1500+/h140"
+            "is_rnav": true
           },
           "FATHE": {
             "cleared_altitude": 7000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L VILNS/a1500+ BUFFI FATHE/a14000+"
+            "is_rnav": true
           },
           "VIYAP": {
             "cleared_altitude": 7000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L VILNS/a1500+ BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "is_rnav": true
           },
           "JEEMY": {
             "cleared_altitude": 7000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L VILNS/a1500+/h237 MDUSA JEEMY/a16000+"
+            "is_rnav": true
           },
           "PAINN": {
             "cleared_altitude": 7000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L VILNS/a1500+/h237 MDUSA JEEMY/a16000+ ACCHE"
+            "is_rnav": true
           },
           "FSHUN": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L BAAIT/a1500+/h185"
+            "is_rnav": true
           },
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L BAAIT/a1500+/h185 FSHUN PLUMR"
+            "is_rnav": true
           },
           "MZULO": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L KAAPE/a1500+/h140 GERCK MZULO"
+            "is_rnav": true
           },
           "FAROV": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L KAAPE/a1500+/h140 GERCK MZULO"
+            "is_rnav": true
           },
           "LENDS": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L KAAPE/a1500+/h140 GERCK MZULO HESTA"
+            "is_rnav": true
           },
           "ETECK": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L KAAPE/a1500+/h140 GERCK MZULO HESTA LENDS"
+            "is_rnav": true
           },
           "OSPRY": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L VILNS/a1500+/h237 OSPRY"
+            "is_rnav": true
           },
           "REMIS,CIGAR": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L VILNS/a1500+/h237 OSPRY GDUNN KNOST"
+            "is_rnav": true
           },
           "RDSOX": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L VILNS/a1500+/h237 RDSOX"
+            "is_rnav": true
           },
           "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-36L VILNS/a1500+/h237 RDSOX JFRYS"
+            "is_rnav": true
           }
         },
         "36L": {
@@ -1113,97 +1049,81 @@
           "JIPOD,ZALEN,BORRD,VALKA": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R GOHOM/a2600+/s250- MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
+            "is_rnav": true
           },
           "DDANY": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R GOHOM/a2600+/s250- MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
+            "is_rnav": true
           },
           "FATHE": {
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+/s230- TRYNA/a7000- BUFFI FATHE/a14000+"
+            "is_rnav": true
           },
           "VIYAP": {
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+/s230- TRYNA/a7000- BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "is_rnav": true
           },
           "JEEMY": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+/s230- CHUKG/a7000- SNOBE MDUSA JEEMY/a16000+"
+            "is_rnav": true
           },
           "PAINN": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+/s230- CHUKG/a7000- SNOBE MDUSA JEEMY/a16000+ ACCHE"
+            "is_rnav": true
           },
           "FSHUN": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230- BLOSM/a7000- FSHUN"
+            "is_rnav": true
           },
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230- BLOSM/a7000- FSHUN"
+            "is_rnav": true
           },
           "MZULO": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO"
+            "is_rnav": true
           },
           "FAROV": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO"
+            "is_rnav": true
           },
           "LENDS": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO HESTA"
+            "is_rnav": true
           },
           "ETECK": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO HESTA LENDS"
+            "is_rnav": true
           },
           "OSPRY": {
             "cleared_altitude": 7000,
-            "sid": "OSPRY1",
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+ LEFTI/a4000+/s230- BLOSM/a7000- OSPRY"
+            "sid": "OSPRY1"
           },
           "REMIS,CIGAR": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+ LEFTI/a4000+/s230- BLOSM/a7000- OSPRY GDUNN KNOST"
+            "is_rnav": true
           },
           "RDSOX": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+ LEFTI/a4000+/s230- BLOSM/a7000- RDSOX"
+            "is_rnav": true
           },
           "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-18R KYOTE/a2300+ EARRS/a3000+ LEFTI/a4000+/s230- BLOSM/a7000- RDSOX"
+            "is_rnav": true
           }
         },
         "36R": {
@@ -1250,98 +1170,82 @@
           "JIPOD,ZALEN,BORRD,VALKA": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L GOHOM/a2600+/s250- MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
+            "is_rnav": true
           },
           "DDANY": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L GOHOM/a2600+/s250- MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
+            "is_rnav": true
           },
           "FATHE": {
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+/s230- TRYNA/a7000- BUFFI FATHE/a14000+"
+            "is_rnav": true
           },
           "VIYAP": {
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+/s230- TRYNA/a7000- BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "is_rnav": true
           },
           "JEEMY": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+/s230- CHUKG/a7000- SNOBE MDUSA JEEMY/a16000+"
+            "is_rnav": true
           },
           "PAINN": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+/s230- CHUKG/a7000- SNOBE MDUSA JEEMY/a16000+ ACCHE"
+            "is_rnav": true
           },
           "FSHUN": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+/s230-  LEFTI/a4000+/s230- BLOSM/a7000- FSHUN"
+            "is_rnav": true
           },
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- FSHUN"
+            "is_rnav": true
           },
           "MZULO": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO"
+            "is_rnav": true
           },
           "FAROV": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO"
+            "is_rnav": true
           },
           "LENDS": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO HESTA"
+            "is_rnav": true
           },
           "ETECK": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO HESTA LENDS"
+            "is_rnav": true
           },
           "OSPRY": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230- BLOSM/a7000- OSPRY"
+            "is_rnav": true
           },
           "REMIS,CIGAR": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230- BLOSM/a7000- OSPRY GDUNN KNOST"
+            "is_rnav": true
           },
           "RDSOX": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230- BLOSM/a7000- RDSOX"
+            "is_rnav": true
           },
           "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230- BLOSM/a7000- RDSOX JFRYS"
+            "is_rnav": true
           }
         },
         "35L": {
@@ -1388,98 +1292,82 @@
           "JIPOD,ZALEN,BORRD,VALKA": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L GOHOM/a2600+/s250- MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
+            "is_rnav": true
           },
           "DDANY": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L GOHOM/a2600+/s250- MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
+            "is_rnav": true
           },
           "FATHE": {
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L JWOLF/a2600+ JIRAN/a3000+ BIGSE GOTHA/a7000- BUFFI FATHE/a14000+"
+            "is_rnav": true
           },
           "VIYAP": {
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L JWOLF/a2600+ JIRAN/a3000+ BIGSE GOTHA/a7000- BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "is_rnav": true
           },
           "JEEMY": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L JWOLF/a2600+ JIRAN/a3000+ BIGSE ALOHH/a7000- SNOBE MDUSA JEEMY/a16000+"
+            "is_rnav": true
           },
           "PAINN": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L JWOLF/a2600+ JIRAN/a3000+ BIGSE ALOHH/a7000- SNOBE MDUSA JEEMY/a16000+ ACCHE"
+            "is_rnav": true
           },
           "FSHUN": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- FSHUN"
+            "is_rnav": true
           },
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- FSHUN"
+            "is_rnav": true
           },
           "MZULO": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO"
+            "is_rnav": true
           },
           "FAROV": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO"
+            "is_rnav": true
           },
           "LENDS": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO HESTA"
+            "is_rnav": true
           },
           "ETECK": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO HESTA LENDS"
+            "is_rnav": true
           },
           "OSPRY": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- OSPRY"
+            "is_rnav": true
           },
           "REMIS,CIGAR": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- OSPRY GDUNN KNOST"
+            "is_rnav": true
           },
           "RDSOX": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- RDSOX"
+            "is_rnav": true
           },
           "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-17L SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- RDSOX JFRYS"
+            "is_rnav": true
           }
         },
         "35R": {
@@ -1526,98 +1414,82 @@
           "JIPOD,ZALEN,BORRD,VALKA": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R GOHOM/a2600+/s250- MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
+            "is_rnav": true
           },
           "DDANY": {
             "cleared_altitude": 7000,
             "sid": "DDANY3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R GOHOM/a2600+/s250- MIEGS/a5000- LAPUU/a7000+ UKAYY DDANY"
+            "is_rnav": true
           },
           "FATHE": {
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE GOTHA/a7000- BUFFI FATHE/a14000+"
+            "is_rnav": true
           },
           "VIYAP": {
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE GOTHA/a7000- BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "is_rnav": true
           },
           "JEEMY": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE ALOHH/a7000- SNOBE MDUSA JEEMY/a16000+"
+            "is_rnav": true
           },
           "PAINN": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE ALOHH/a7000- SNOBE MDUSA JEEMY/a16000+ ACCHE"
+            "is_rnav": true
           },
           "FSHUN": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- FSHUN"
+            "is_rnav": true
           },
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN4",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- FSHUN"
+            "is_rnav": true
           },
           "MZULO": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO"
+            "is_rnav": true
           },
           "FAROV": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO"
+            "is_rnav": true
           },
           "LENDS": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO HESTA"
+            "is_rnav": true
           },
           "ETECK": {
             "cleared_altitude": 7000,
             "sid": "MZULO3",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R GOHOM/a2600+/s250- MIEGS/a5000- ASKUE/a7000+ GERCK MZULO HESTA LENDS"
+            "is_rnav": true
           },
           "OSPRY": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- OSPRY"
+            "is_rnav": true
           },
           "REMIS,CIGAR": {
             "cleared_altitude": 7000,
             "sid": "OSPRY1",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- OSPRY GDUNN KNOST"
+            "is_rnav": true
           },
           "RDSOX": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- RDSOX"
+            "is_rnav": true
           },
           "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
-            "is_rnav": true,
-            "waypoints": "KMCO-17R SAWZZ/a2300+ HANDD/a3000+/s230- LEFTI/a4000+/s230- BLOSM/a7000- RDSOX JFRYS"
+            "is_rnav": true
           }
         }
       },
@@ -6140,16 +6012,14 @@
           "KSFB,WORMS,GUANO,KIZER,MMKAY,CRG,LAL,MLB,KNEED,VIZTA,TPA,OCF,DEARY,FSHUN,ROGAN,OSPRY,REMIS,CIGAR,RDSOX,JFRYS": {
             "cleared_altitude": 1500,
             "sid": "NYTES2",
-            "is_rnav": true,
-            "waypoints": "KORL-25 NYTES/a1500-/h070"
+            "is_rnav": true
           }
         },
         "25": {
           "KSFB,WORMS,GUANO,KIZER,MMKAY,CRG,LAL,MLB,KNEED,VIZTA,TPA,OCF,DEARY,FSHUN,ROGAN,OSPRY,REMIS,CIGAR,RDSOX,JFRYS": {
             "cleared_altitude": 2000,
             "sid": "TOLLZ2",
-            "is_rnav": true,
-            "waypoints": "KORL-7 BELZR/a1500- TOLLZ/a2000/h270"
+            "is_rnav": true
           }
         }
       },
@@ -7792,15 +7662,13 @@
         "9L": {
           "WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN": {
             "cleared_altitude": 2000,
-            "sid": "SFB1",
-            "waypoints": "KSFB-27R/h080"
+            "sid": "SFB1"
           }
         },
         "27R": {
           "WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN": {
             "cleared_altitude": 2000,
-            "sid": "SFB1",
-            "waypoints": "KSFB-27R/h280"
+            "sid": "SFB1"
           }
         }
       },

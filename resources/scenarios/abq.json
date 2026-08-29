@@ -38,189 +38,153 @@
         "3": {
           "POPRR": {
             "cleared_altitude": 20000,
-            "sid": "GRZZZ4",
-            "waypoints": "N035.03.23.137,W106.35.20.443/flyover ROWHO GRZZZ/a13000+ DNIDE JLPNO POPRR"
+            "sid": "GRZZZ4"
           },
           "FLAVA": {
             "cleared_altitude": 20000,
-            "sid": "GRZZZ4",
-            "waypoints": "N035.03.23.137,W106.35.20.443/flyover ROWHO GRZZZ/a13000+ DNIDE FLAVA"
+            "sid": "GRZZZ4"
           },
           "JEMEZ": {
             "cleared_altitude": 20000,
-            "sid": "JEMEZ3",
-            "waypoints": "N035.03.23.137,W106.35.20.443/flyover GRREN/a12000+/s250 FIREY JEMEZ"
+            "sid": "JEMEZ3"
           },
           "TXO": {
             "cleared_altitude": 20000,
-            "sid": "MNZNO3",
-            "waypoints": "N035.03.07.879,W106.35.41.894/a6000+/s200/flyover DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 FATTT MOLVE TXO"
+            "sid": "MNZNO3"
           },
           "CME": {
             "cleared_altitude": 20000,
-            "sid": "MNZNO3",
-            "waypoints": "N035.03.07.879,W106.35.41.894/a6000+/s200/flyover DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 DADDY LARLE TACOZ CME"
+            "sid": "MNZNO3"
           },
           "ONM": {
             "cleared_altitude": 20000,
-            "sid": "MNZNO3",
-            "waypoints": "N035.03.07.879,W106.35.41.894/a6000+/s200/flyover DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 HRDRK/a16000+ DUMMM ONM"
+            "sid": "MNZNO3"
           },
           "SJN": {
             "cleared_altitude": 20000,
-            "sid": "MNZNO3",
-            "waypoints": "N035.03.07.879,W106.35.41.894/a6000+/s200/flyover DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 PEPTE/a15000+ WUTUP/a16000+ LAMSE SJN"
+            "sid": "MNZNO3"
           },
           "GUP": {
             "cleared_altitude": 20000,
-            "sid": "RDRNR3",
-            "waypoints": "N035.03.23.137,W106.35.20.443/a6000+/flyover RDRNR/a10000+ SPEDY/a12000+ BABYY BUSLE GUP"
+            "sid": "RDRNR3"
           },
           "ZUN": {
             "cleared_altitude": 20000,
-            "sid": "RDRNR3",
-            "waypoints": "N035.03.23.137,W106.35.20.443/a6000+/flyover RDRNR/a10000+ SPEDY/a12000+ PNYON ZUN"
+            "sid": "RDRNR3"
           }
         },
         "8": {
           "POPRR": {
             "cleared_altitude": 20000,
-            "sid": "GRZZZ4",
-            "waypoints": "TYILR/a5900+/s210/flyover ROWHO GRZZZ/a13000+ DNIDE JLPNO POPRR"
+            "sid": "GRZZZ4"
           },
           "FLAVA": {
             "cleared_altitude": 20000,
-            "sid": "GRZZZ4",
-            "waypoints": "TYILR/a5900+/s210/flyover ROWHO GRZZZ/a13000+ DNIDE FLAVA"
+            "sid": "GRZZZ4"
           },
           "JEMEZ": {
             "cleared_altitude": 20000,
-            "sid": "JEMEZ3",
-            "waypoints": "TYILR/a5900+/s210/flyover GRREN/a12000+/s250 FIREY JEMEZ"
+            "sid": "JEMEZ3"
           },
           "TXO": {
             "cleared_altitude": 20000,
-            "sid": "MNZNO3",
-            "waypoints": "N035.02.39.521,W106.33.52.525/a5860+/s200 DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 FATTT MOLVE TXO"
+            "sid": "MNZNO3"
           },
           "CME": {
             "cleared_altitude": 20000,
-            "sid": "MNZNO3",
-            "waypoints": "N035.02.39.521,W106.33.52.525/a5860+/s200 DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 DADDY LARLE TACOZ CME"
+            "sid": "MNZNO3"
           },
           "ONM": {
             "cleared_altitude": 20000,
-            "sid": "MNZNO3",
-            "waypoints": "N035.02.39.521,W106.33.52.525/a5860+/s200 DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 HRDRK/a16000+ DUMMM ONM"
+            "sid": "MNZNO3"
           },
           "SJN": {
             "cleared_altitude": 20000,
-            "sid": "MNZNO3",
-            "waypoints": "N035.02.39.521,W106.33.52.525/a5860+/s200 DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 PEPTE/a15000+ WUTUP/a16000+ LAMSE SJN"
+            "sid": "MNZNO3"
           },
           "GUP": {
             "cleared_altitude": 20000,
-            "sid": "RDRNR3",
-            "waypoints": "TYILR/a5900+/s210/flyover RDRNR/a10000+ SPEDY/a12000+ BABYY BUSLE GUP"
+            "sid": "RDRNR3"
           },
           "ZUN": {
             "cleared_altitude": 20000,
-            "sid": "RDRNR3",
-            "waypoints": "TYILR/a5900+/s210/flyover RDRNR/a10000+ SPEDY/a12000+ PNYON ZUN"
+            "sid": "RDRNR3"
           }
         },
         "21": {
           "JLPNO": {
             "cleared_altitude": 20000,
-            "sid": "FYSTA3",
-            "waypoints": "N034.59.44.866,W106.39.40.984/a6000+/flyover BLUUN/a11000+ BURQI/a12000+/s250 FYSTA/a14000+ POYOH JLPNO"
+            "sid": "FYSTA3"
           },
           "FTI": {
             "cleared_altitude": 20000,
-            "sid": "FYSTA3",
-            "waypoints": "N034.59.44.866,W106.39.40.984/a6000+/flyover BLUUN/a11000+ BURQI/a12000+/s250 FYSTA/a14000+ MACHO FTI"
+            "sid": "FYSTA3"
           },
           "ATOMK": {
             "cleared_altitude": 20000,
-            "sid": "ATOMK3",
-            "waypoints": "N035.00.32.286,W106.38.46.574/a5860+/flyover FOXRR/a8000+ TYWEB/a10000+ TKILA/a11500/s250 FIREY ATOMK"
+            "sid": "ATOMK3"
           },
           "TXO": {
             "cleared_altitude": 20000,
-            "sid": "DOOKK3",
-            "waypoints": "KABQ-3 JETOK/a9000-/s230 BIYEN/a11000+ DOOKK/a11500+ FATTT MOLVE TXO"
+            "sid": "DOOKK3"
           },
           "CME": {
             "cleared_altitude": 20000,
-            "sid": "DOOKK3",
-            "waypoints": "KABQ-3 JETOK/a9000-/s230 BIYEN/a11000+ DOOKK/a11500+ DADDY LARLE TACOZ CME"
+            "sid": "DOOKK3"
           },
           "ONM": {
             "cleared_altitude": 20000,
-            "sid": "BOSQE3",
-            "waypoints": "KABQ-3 JETOK/a9000- BOSQE/a10000 DUMMM ONM"
+            "sid": "BOSQE3"
           },
           "SJN": {
             "cleared_altitude": 20000,
-            "sid": "BOSQE3",
-            "waypoints": "KABQ-3 JETOK/a9000- BOSQE/a10000 WUTUP/a16000+ LAMSE SJN"
+            "sid": "BOSQE3"
           },
           "GUP": {
             "cleared_altitude": 20000,
-            "sid": "ADYOS3",
-            "waypoints": "KABQ-3 ASTAH/a9000- ADYOS BABYY BUSLE GUP"
+            "sid": "ADYOS3"
           },
           "ZUN": {
             "cleared_altitude": 20000,
-            "sid": "ADYOS3",
-            "waypoints": "KABQ-3 ASTAH/a9000- ADYOS PNYON ZUN"
+            "sid": "ADYOS3"
           }
         },
         "26": {
           "JLPNO": {
             "cleared_altitude": 20000,
-            "sid": "FYSTA3",
-            "waypoints": "N035.02.41.691,W106.42.06.745/a7000+ BLUUN/a11000+ BURQI/a12000+/s250 FYSTA/a14000+ POYOH JLPNO"
+            "sid": "FYSTA3"
           },
           "FTI": {
             "cleared_altitude": 20000,
-            "sid": "FYSTA3",
-            "waypoints": "N035.02.41.691,W106.42.06.745/a7000+ BLUUN/a11000+ BURQI/a12000+/s250 FYSTA/a14000+ MACHO FTI"
+            "sid": "FYSTA3"
           },
           "ATOMK": {
             "cleared_altitude": 20000,
-            "sid": "ATOMK3",
-            "waypoints": "N035.02.42.789,W106.38.55.473/a5860+ FOXRR/a8000+ TYWEB/a10000+ TKILA/a11500/s250 FIREY ATOMK"
+            "sid": "ATOMK3"
           },
           "TXO": {
             "cleared_altitude": 20000,
-            "sid": "DOOKK3",
-            "waypoints": "N035.02.39.095,W106.39.36.727 JETOK/a9000-/s230 BIYEN/a11000+ DOOKK/a11500+ FATTT MOLVE TXO"
+            "sid": "DOOKK3"
           },
           "CME": {
             "cleared_altitude": 20000,
-            "sid": "DOOKK3",
-            "waypoints": "N035.02.39.095,W106.39.36.727 JETOK/a9000-/s230 BIYEN/a11000+ DOOKK/a11500+ DADDY LARLE TACOZ CME"
+            "sid": "DOOKK3"
           },
           "ONM": {
             "cleared_altitude": 20000,
-            "sid": "BOSQE3",
-            "waypoints": "N035.02.39.095,W106.39.36.727 JETOK/a9000- BOSQE/a10000+ DUMMM ONM"
+            "sid": "BOSQE3"
           },
           "SJN": {
             "cleared_altitude": 20000,
-            "sid": "BOSQE3",
-            "waypoints": "N035.02.39.095,W106.39.36.727 JETOK/a9000- BOSQE/a10000+ WUTUP/a16000+ LAMSE SJN"
+            "sid": "BOSQE3"
           },
           "GUP": {
             "cleared_altitude": 20000,
-            "sid": "ADYOS3",
-            "waypoints": "KABQ-8 ABQ ADYOS BABYY BUSLE GUP"
+            "sid": "ADYOS3"
           },
           "ZUN": {
             "cleared_altitude": 20000,
-            "sid": "ADYOS3",
-            "waypoints": "KABQ-8 ABQ ADYOS PNYON ZUN"
+            "sid": "ADYOS3"
           }
         }
       },

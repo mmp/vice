@@ -52,15 +52,13 @@
           },
           "NELIE, CCC, BAF": {
             "assigned_altitude": 3000,
-            "sid": "RBELA1",
-            "waypoints": "GORHM NUBLE RBELA"
+            "sid": "RBELA1"
           }
         },
         "11": {
           "NELIE, BAF, CCC": {
             "assigned_altitude": 3000,
-            "sid": "RBELA1",
-            "waypoints": "PMMKN HLFWY WHYOO ORCHD/a10000 FOSCO NUBLE RBELA"
+            "sid": "RBELA1"
           },
           "SYR, HANAA, CAM": {
             "assigned_altitude": 3000,

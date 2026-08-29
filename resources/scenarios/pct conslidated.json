@@ -256,189 +256,153 @@
         "1": {
           "COLIN": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000+ COLIN"
+            "sid": "AMEEE1"
           },
           "SCOOB": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000+ COLIN SCOOB"
+            "sid": "AMEEE1"
           },
           "MAULS": {
             "cleared_altitude": 5000,
-            "sid": "CLTCH3",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK MAULS"
+            "sid": "CLTCH3"
           },
           "FLASK": {
             "cleared_altitude": 5000,
-            "sid": "CLTCH3",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
+            "sid": "CLTCH3"
           },
           "DQO": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 RIISE DOCTR/a5000+ DQO"
+            "sid": "DOCTR5"
           },
           "AGARD": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 RIISE DOCTR/a5000+ AGARD"
+            "sid": "DOCTR5"
           },
           "JERES": {
             "cleared_altitude": 5000,
-            "sid": "HORTO4",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII MELOE HORTO/a5000+ JERES"
+            "sid": "HORTO4"
           },
           "BUFFR": {
             "cleared_altitude": 5000,
-            "sid": "HORTO4",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII MELOE HORTO/a5000+ BUFFR"
+            "sid": "HORTO4"
           },
           "RRSIN": {
             "cleared_altitude": 5000,
-            "sid": "JDUBB4",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "sid": "JDUBB4"
           },
           "MELTN": {
             "cleared_altitude": 5000,
-            "sid": "JDUBB4",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB CASLY MELTN"
+            "sid": "JDUBB4"
           },
           "OTTTO": {
             "cleared_altitude": 5000,
-            "sid": "REBLL5",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI DUDDD REBLL/a5000+ OTTTO"
+            "sid": "REBLL5"
           },
           "GLANC": {
             "cleared_altitude": 5000,
-            "sid": "SCRAM6",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "sid": "SCRAM6"
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI6",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 PHERB SOOKI/a5000+ SWANN"
+            "sid": "SOOKI6"
           },
           "RAMAY": {
             "cleared_altitude": 5000,
-            "sid": "WYNGS5",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII MELOE WYNGS/a5000+ RAMAY"
+            "sid": "WYNGS5"
           }
         },
         "4": {
           "COLIN": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.52.08.260,W077.01.28.467 ERECA EDDGY AMEEE/a5000+ COLIN"
+            "sid": "AMEEE1"
           },
           "SCOOB": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.52.08.260,W077.01.28.467 ERECA EDDGY AMEEE/a5000+ COLIN SCOOB"
+            "sid": "AMEEE1"
           },
           "DQO": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "N038.52.08.260,W077.01.28.467 ERECA DOCTR/a5000+ DQO"
+            "sid": "DOCTR5"
           },
           "AGARD": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "N038.52.08.260,W077.01.28.467 ERECA DOCTR/a5000+ AGARD"
+            "sid": "DOCTR5"
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI6",
-            "waypoints": "N038.52.08.260,W077.01.28.467 ERECA SOOKI/a5000+ SWANN"
+            "sid": "SOOKI6"
           }
         },
         "15": {
           "SCOOB": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.50.11.613,W077.01.09.653 LEAVY FIMBI/a1500+/s230 MCNAB AMEEE/a5000+ COLIN SCOOB"
+            "sid": "AMEEE1"
           },
           "COLIN": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.50.11.613,W077.01.09.653 LEAVY FIMBI/a1500+/s230 MCNAB AMEEE/a5000+ COLIN"
+            "sid": "AMEEE1"
           },
           "MAULS": {
             "cleared_altitude": 5000,
-            "sid": "CLTCH3",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE DMKRT BUTRZ/a3000+ CLTCH KERRK MAULS"
+            "sid": "CLTCH3"
           },
           "FLASK": {
             "cleared_altitude": 5000,
-            "sid": "CLTCH3",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE DMKRT BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
+            "sid": "CLTCH3"
           },
           "DQO": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "N038.50.11.613,W077.01.09.653 LEAVY FIMBI/a1500+/s230 MOTBE GDYUP HMBGR DOCTR/a5000+ DQO"
+            "sid": "DOCTR5"
           },
           "AGARD": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "N038.50.11.613,W077.01.09.653 LEAVY FIMBI/a1500+/s230 MOTBE GDYUP HMBGR DOCTR/a5000+ AGARD"
+            "sid": "DOCTR5"
           },
           "JERES": {
             "cleared_altitude": 5000,
-            "sid": "HORTO4",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE LBOLT RLLLL HORTO/a5000+ JERES"
+            "sid": "HORTO4"
           },
           "BUFFR": {
             "cleared_altitude": 5000,
-            "sid": "HORTO4",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE LBOLT RLLLL HORTO/a5000+ BUFFR"
+            "sid": "HORTO4"
           },
           "RRSIN": {
             "cleared_altitude": 5000,
-            "sid": "JDUBB4",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE DMKRT HAFNR/a3000+ JDUBB TYPNZ SCORN"
+            "sid": "JDUBB4"
           },
           "MELTN": {
             "cleared_altitude": 5000,
-            "sid": "JDUBB4",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE DMKRT HAFNR/a3000+ JDUBB CASLY MELTN"
+            "sid": "JDUBB4"
           },
           "OTTTO": {
             "cleared_altitude": 5000,
-            "sid": "REBLL5",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE LBOLT TEZER REBLL/a5000+ OTTTO"
+            "sid": "REBLL5"
           },
           "GLANC": {
             "cleared_altitude": 5000,
-            "sid": "SCRAM6",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE DMKRT POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "sid": "SCRAM6"
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI6",
-            "waypoints": "N038.50.11.613,W077.01.09.653 LEAVY FIMBI/a1500+/s230 MOTBE GDYUP RIISE SOOKI/a5000+ SWANN"
+            "sid": "SOOKI6"
           },
           "RAMAY": {
             "cleared_altitude": 5000,
-            "sid": "WYNGS5",
-            "waypoints": "N038.50.34.877,W077.01.32.065/a515+ CAPVC GAITE LBOLT GINYA WYNGS/a5000+ RAMAY"
+            "sid": "WYNGS5"
           }
         },
         "19": {
           "SCOOB": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.50.05.859,W077.02.10.270/a515+ FIMBI/a1500+/s230 MCNAB AMEEE/a5000+ COLIN"
+            "sid": "AMEEE1"
           },
           "MAULS": {
             "cleared_altitude": 5000,
-            "sid": "CLTCH3",
-            "waypoints": "CAPVC GAITE DMKRT BUTRZ/a3000+ CLTCH KERRK"
+            "sid": "CLTCH3"
           },
           "FLASK": {
             "cleared_altitude": 5000,
-            "sid": "CLTCH3",
-            "waypoints": "CAPVC GAITE DMKRT BUTRZ/a3000+ CLTCH KERRK TEEMS"
+            "sid": "CLTCH3"
           },
           "DQO": {
             "cleared_altitude": 5000,
@@ -452,33 +416,27 @@
           },
           "JERES": {
             "cleared_altitude": 5000,
-            "sid": "HORTO4",
-            "waypoints": "CAPVC GAITE LBOLT RLLLL HORTO/a5000+ JERES"
+            "sid": "HORTO4"
           },
           "BUFFR": {
             "cleared_altitude": 5000,
-            "sid": "HORTO4",
-            "waypoints": "CAPVC GAITE LBOLT RLLLL HORTO/a5000+ BUFFR"
+            "sid": "HORTO4"
           },
           "RRSIN": {
             "cleared_altitude": 5000,
-            "sid": "JDUBB4",
-            "waypoints": "CAPVC GAITE DMKRT HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "sid": "JDUBB4"
           },
           "MELTN": {
             "cleared_altitude": 5000,
-            "sid": "JDUBB4",
-            "waypoints": "CAPVC GAITE DMKRT HAFNR/a3000+ JDUBB CASLY MELTN"
+            "sid": "JDUBB4"
           },
           "OTTTO": {
             "cleared_altitude": 5000,
-            "sid": "REBLL5",
-            "waypoints": "CAPVC GAITE LBOLT TEZER REBLL/a5000+ OTTTO"
+            "sid": "REBLL5"
           },
           "GLANC": {
             "cleared_altitude": 5000,
-            "sid": "SCRAM6",
-            "waypoints": "CAPVC GAITE DMKRT POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "sid": "SCRAM6"
           },
           "SWANN": {
             "cleared_altitude": 5000,
@@ -487,80 +445,65 @@
           },
           "RAMAY": {
             "cleared_altitude": 5000,
-            "sid": "WYNGS5",
-            "waypoints": "CAPVC GAITE LBOLT GINYA WYNGS/a5000+ RAMAY"
+            "sid": "WYNGS5"
           }
         },
         "33": {
           "COLIN": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000+ COLIN"
+            "sid": "AMEEE1"
           },
           "SCOOB": {
             "cleared_altitude": 5000,
-            "sid": "AMEEE1",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 GUCER AMEEE/a5000+ COLIN SCOOB"
+            "sid": "AMEEE1"
           },
           "MAULS": {
             "cleared_altitude": 5000,
-            "sid": "CLTCH3",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK MAULS"
+            "sid": "CLTCH3"
           },
           "FLASK": {
             "cleared_altitude": 5000,
-            "sid": "CLTCH3",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII CUKLI BRUTL BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
+            "sid": "CLTCH3"
           },
           "DQO": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 RIISE DOCTR/a5000+ DQO"
+            "sid": "DOCTR5"
           },
           "AGARD": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 RIISE DOCTR/a5000+ AGARD"
+            "sid": "DOCTR5"
           },
           "JERES": {
             "cleared_altitude": 5000,
-            "sid": "HORTO4",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII MELOE HORTO/a5000+ JERES"
+            "sid": "HORTO4"
           },
           "BUFFR": {
             "cleared_altitude": 5000,
-            "sid": "HORTO4",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII MELOE HORTO/a5000+ BUFFR"
+            "sid": "HORTO4"
           },
           "RRSIN": {
             "cleared_altitude": 5000,
-            "sid": "JDUBB4",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "sid": "JDUBB4"
           },
           "MELTN": {
             "cleared_altitude": 5000,
-            "sid": "JDUBB4",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII CUKLI HAFNR/a3000+ JDUBB CASLY MELTN"
+            "sid": "JDUBB4"
           },
           "OTTTO": {
             "cleared_altitude": 5000,
-            "sid": "REBLL5",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII CUKLI DUDDD REBLL/a5000+ OTTTO"
+            "sid": "REBLL5"
           },
           "GLANC": {
             "cleared_altitude": 5000,
-            "sid": "SCRAM6",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII CUKLI POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "sid": "SCRAM6"
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI6",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 PHERB SOOKI/a5000+ SWANN"
+            "sid": "SOOKI6"
           },
           "RAMAY": {
             "cleared_altitude": 5000,
-            "sid": "WYNGS5",
-            "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE RGIII MELOE WYNGS/a5000+ RAMAY"
+            "sid": "WYNGS5"
           }
         }
       },
@@ -1109,48 +1052,39 @@
         "34R": {
           "RAMAY": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.44.26.326,W077.31.39.426 HIICH BUNZZ RAMAY"
+            "sid": "HIICH2"
           },
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.44.04.587,W077.31.26.215/a710+ GABBE BUTRZ CLTCH KERRK"
+            "sid": "GABBE3"
           },
           "WOOLY": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.44.26.326,W077.31.39.426 HIICH PUGLE HEFLN STRMN WOOLY"
+            "sid": "HIICH2"
           },
           "RRSIN": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.44.04.587,W077.31.26.215/a710+ GABBE JDUBB TYPNZ SCORN RRSIN"
+            "sid": "GABBE3"
           },
           "MELTN": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.44.04.587,W077.31.26.215/a710+ GABBE JDUBB CASLY MELTN"
+            "sid": "GABBE3"
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.44.26.326,W077.31.39.426 HIICH PUGLE HEFLN STRKY JERES"
+            "sid": "HIICH2"
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.44.26.326,W077.31.39.426 HIICH PUGLE HEFLN STRKY MCRAY"
+            "sid": "HIICH2"
           },
           "OTTTO": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.44.26.326,W077.31.39.426 HIICH RNLDI OTTTO"
+            "sid": "HIICH2"
           },
           "GLANC": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.44.04.587,W077.31.26.215/a710+ GABBE SCRAM DANOO WALCE GLANC"
+            "sid": "GABBE3"
           }
         },
         "16L": {
@@ -1161,43 +1095,35 @@
           },
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE CLTCH KERRK"
+            "sid": "GABBE3"
           },
           "WOOLY": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE HIICH PUGLE HEFLN STRMN WOOLY"
+            "sid": "HIICH2"
           },
           "RRSIN": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE JDUBB TYPNZ SCORN RRSIN"
+            "sid": "GABBE3"
           },
           "MELTN": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE JDUBB CASLY MELTN"
+            "sid": "GABBE3"
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE HIICH PUGLE HEFLN STRKY JERES"
+            "sid": "HIICH2"
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE HIICH PUGLE HEFLN STRKY MCRAY"
+            "sid": "HIICH2"
           },
           "OTTTO": {
             "assigned_altitude": 3000,
-            "sid": "HIICH2",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE HIICH RNLDI OTTTO"
+            "sid": "HIICH2"
           },
           "GLANC": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE SCRAM DANOO WALCE GLANC"
+            "sid": "GABBE3"
           }
         }
       },
@@ -1455,8 +1381,7 @@
         "30.N": {
           "RAMAY": {
             "assigned_altitude": 3000,
-            "sid": "BUNZZ3",
-            "waypoints": "N038.56.50.691,W077.30.10.162/a820+ LOULU BUNZZ RAMAY"
+            "sid": "BUNZZ3"
           },
           "MAULS": {
             "assigned_altitude": 3000,
@@ -1470,18 +1395,15 @@
           },
           "SWANN": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h320 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "sid": "JCOBY4"
           },
           "AGARD": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h320 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "sid": "JCOBY4"
           },
           "COLIN,SCOOB": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h320 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "sid": "JCOBY4"
           },
           "RRSIN": {
             "assigned_altitude": 3000,
@@ -1495,18 +1417,15 @@
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "JERES2",
-            "waypoints": "KIAD-12/a820+/h320 IDORE JERES"
+            "sid": "JERES2"
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2",
-            "waypoints": "KIAD-12/a820+/h320 HAYGR MCRAY"
+            "sid": "MCRAY2"
           },
           "OTTTO": {
             "assigned_altitude": 3000,
-            "sid": "RNLDI4",
-            "waypoints": "N038.56.50.691,W077.30.10.162/a820+ LOULU RNLDI OTTTO"
+            "sid": "RNLDI4"
           },
           "GLANC": {
             "assigned_altitude": 3000,
@@ -1515,25 +1434,21 @@
           },
           "SWANN.W": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h320 RAZZA WOOLY SWANN"
+            "sid": "WOOLY2"
           },
           "AGARD.W": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h320 RAZZA WOOLY AGARD"
+            "sid": "WOOLY2"
           },
           "BAL": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h320 RAZZA WOOLY BAL"
+            "sid": "WOOLY2"
           }
         },
         "30.S": {
           "RAMAY": {
             "assigned_altitude": 3000,
-            "sid": "BUNZZ3",
-            "waypoints": "N038.56.50.691,W077.30.10.162/a820+ LOULU BUNZZ RAMAY"
+            "sid": "BUNZZ3"
           },
           "FLASK": {
             "assigned_altitude": 3000,
@@ -1547,18 +1462,15 @@
           },
           "SWANN": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h300 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "sid": "JCOBY4"
           },
           "AGARD": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h300 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "sid": "JCOBY4"
           },
           "COLIN,SCOOB": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h300 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "sid": "JCOBY4"
           },
           "RRSIN": {
             "assigned_altitude": 3000,
@@ -1572,18 +1484,15 @@
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "JERES2",
-            "waypoints": "KIAD-12/a820+/h300 IDORE JERES"
+            "sid": "JERES2"
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2",
-            "waypoints": "KIAD-12/a820+/h300 HAYGR MCRAY"
+            "sid": "MCRAY2"
           },
           "OTTTO": {
             "assigned_altitude": 3000,
-            "sid": "RNLDI4",
-            "waypoints": "N038.56.50.691,W077.30.10.162/a820+ LOULU RNLDI OTTTO"
+            "sid": "RNLDI4"
           },
           "GLANC": {
             "assigned_altitude": 3000,
@@ -1592,18 +1501,15 @@
           },
           "SWANN.W": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h300 RAZZA WOOLY SWANN"
+            "sid": "WOOLY2"
           },
           "AGARD.W": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h300 RAZZA WOOLY AGARD"
+            "sid": "WOOLY2"
           },
           "BAL": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h300 RAZZA WOOLY BAL"
+            "sid": "WOOLY2"
           }
         },
         "1C": {
@@ -1654,8 +1560,7 @@
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2",
-            "waypoints": "KIAD-19C/a820+/h345 HAYGR MCRAY"
+            "sid": "MCRAY2"
           },
           "OTTTO": {
             "assigned_altitude": 3000,
@@ -1686,8 +1591,7 @@
         "1R": {
           "RAMAY": {
             "assigned_altitude": 3000,
-            "sid": "BUNZZ3",
-            "waypoints": "KIAD-19L/h360 LOULU BUNZZ RAMAY"
+            "sid": "BUNZZ3"
           },
           "FLASK": {
             "assigned_altitude": 3000,
@@ -1701,18 +1605,15 @@
           },
           "SWANN": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-19L/h360 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "sid": "JCOBY4"
           },
           "AGARD": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-19L/h360 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "sid": "JCOBY4"
           },
           "COLIN,SCOOB": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-19L/h360 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "sid": "JCOBY4"
           },
           "RRSIN": {
             "assigned_altitude": 3000,
@@ -1726,18 +1627,15 @@
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "JERES2",
-            "waypoints": "KIAD-19L/h360 IDORE JERES"
+            "sid": "JERES2"
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2",
-            "waypoints": "KIAD-19L/h360 HAYGR MCRAY"
+            "sid": "MCRAY2"
           },
           "OTTTO": {
             "assigned_altitude": 3000,
-            "sid": "RNLDI4",
-            "waypoints": "KIAD-19L/h360 LOULU RNLDI OTTTO"
+            "sid": "RNLDI4"
           },
           "GLANC": {
             "assigned_altitude": 3000,
@@ -1746,25 +1644,21 @@
           },
           "SWANN.W": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-19L/h360 RAZZA WOOLY SWANN"
+            "sid": "WOOLY2"
           },
           "AGARD.W": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-19L/h360 RAZZA WOOLY AGARD"
+            "sid": "WOOLY2"
           },
           "BAL": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-19L/h360 RAZZA WOOLY BAL"
+            "sid": "WOOLY2"
           }
         },
         "19C.S": {
           "RAMAY": {
             "assigned_altitude": 3000,
-            "sid": "BUNZZ3",
-            "waypoints": "N038.55.59.797,W077.27.34.760/a820+ TIICE WHYUU BUNZZ RAMAY"
+            "sid": "BUNZZ3"
           },
           "FLASK": {
             "assigned_altitude": 3000,
@@ -1813,8 +1707,7 @@
           },
           "OTTTO": {
             "assigned_altitude": 3000,
-            "sid": "RNLDI4",
-            "waypoints": "N038.55.59.797,W077.27.34.760/a820+ TIICE WHYUU RNLDI OTTTO"
+            "sid": "RNLDI4"
           },
           "GLANC": {
             "assigned_altitude": 3000,
@@ -1917,8 +1810,7 @@
         "19L": {
           "RAMAY": {
             "assigned_altitude": 3000,
-            "sid": "BUNZZ3",
-            "waypoints": "KIAD-1R/h190 TIICE WHYUU BUNZZ RAMAY"
+            "sid": "BUNZZ3"
           },
           "MAULS": {
             "assigned_altitude": 3000,
@@ -1932,18 +1824,15 @@
           },
           "SWANN": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-1R/h190 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "sid": "JCOBY4"
           },
           "AGARD": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-1R/h190 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "sid": "JCOBY4"
           },
           "COLIN,SCOOB": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-1R/h190 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "sid": "JCOBY4"
           },
           "RRSIN": {
             "assigned_altitude": 3000,
@@ -1957,18 +1846,15 @@
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "JERES2",
-            "waypoints": "KIAD-1R/h190 IDORE JERES"
+            "sid": "JERES2"
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2",
-            "waypoints": "KIAD-1R/h190 HAYGR MCRAY"
+            "sid": "MCRAY2"
           },
           "OTTTO": {
             "assigned_altitude": 3000,
-            "sid": "RNLDI4",
-            "waypoints": "KIAD-1R/h190 TIICE WHYUU RNLDI OTTTO"
+            "sid": "RNLDI4"
           },
           "GLANC": {
             "assigned_altitude": 3000,
@@ -1977,18 +1863,15 @@
           },
           "SWANN.W": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-1R/h190 RAZZA WOOLY SWANN"
+            "sid": "WOOLY2"
           },
           "AGARD.W": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-1R/h190 RAZZA WOOLY AGARD"
+            "sid": "WOOLY2"
           },
           "BAL": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-1R/h190 RAZZA WOOLY BAL"
+            "sid": "WOOLY2"
           }
         }
       },
@@ -3082,8 +2965,7 @@
         "2": {
           "READE,DRAIK,SANNY": {
             "assigned_altitude": 5000,
-            "sid": "KALLI7",
-            "waypoints": "KRIC-20 N037.31.06.357,W077.19.24.770/a687+ SUGGR/a5000+ KALLI READE"
+            "sid": "KALLI7"
           },
           "BNTLY": {
             "assigned_altitude": 3000,
@@ -3097,13 +2979,11 @@
           },
           "COLIN": {
             "assigned_altitude": 3000,
-            "sid": "COLIN8",
-            "waypoints": "N037.31.33.301,W077.19.18.920/a687+ N037.34.35.193,W077.14.28.881 COLIN"
+            "sid": "COLIN8"
           },
           "LUCYL": {
             "assigned_altitude": 5000,
-            "sid": "LUCYL6",
-            "waypoints": "KRIC-20 N037.31.06.357,W077.19.24.770/a687+ SJAYY/a5000+ KAMMI LUCYL"
+            "sid": "LUCYL6"
           }
         },
         "16": {
@@ -3124,13 +3004,11 @@
           },
           "COLIN": {
             "assigned_altitude": 3000,
-            "sid": "COLIN8",
-            "waypoints": "N037.29.30.721,W077.18.12.453/a687+ N037.27.21.384,W077.11.13.599/a4000+ N037.35.27.818,W077.04.53.637 MODEL COLIN"
+            "sid": "COLIN8"
           },
           "LUCYL": {
             "assigned_altitude": 5000,
-            "sid": "LUCYL6",
-            "waypoints": "KRIC-34 N037.29.34.951,W077.18.15.639/a687+ KEGME/a4000+ BUNKK/a5000+ HAYYU LUCYL"
+            "sid": "LUCYL6"
           }
         },
         "20": {
@@ -3151,20 +3029,17 @@
           },
           "COLIN": {
             "assigned_altitude": 3000,
-            "sid": "COLIN8",
-            "waypoints": "N037.29.35.967,W077.19.54.406/a687+ N037.29.35.967,W077.19.54.406/a4000+ N037.35.27.818,W077.04.53.637 MODEL COLIN"
+            "sid": "COLIN8"
           },
           "LUCYL": {
             "assigned_altitude": 5000,
-            "sid": "LUCYL6",
-            "waypoints": "KRIC-2 N037.29.43.122,W077.19.49.736/a687+ KEGME/a4000+ BUNKK/a5000+ HAYYU LUCYL"
+            "sid": "LUCYL6"
           }
         },
         "34": {
           "READE,DRAIK,SANNY": {
             "assigned_altitude": 5000,
-            "sid": "KALLI7",
-            "waypoints": "KRIC-16 N037.31.07.263,W077.19.29.961/a687+ SUGGR/a5000+ KALLI READE"
+            "sid": "KALLI7"
           },
           "BNTLY": {
             "assigned_altitude": 3000,
@@ -3178,13 +3053,11 @@
           },
           "COLIN": {
             "assigned_altitude": 3000,
-            "sid": "COLIN8",
-            "waypoints": "N037.31.22.218,W077.19.43.090/a687+ N037.35.12.725,W077.13.47.545 COLIN"
+            "sid": "COLIN8"
           },
           "LUCYL": {
             "assigned_altitude": 5000,
-            "sid": "LUCYL6",
-            "waypoints": "KRIC-16 N037.31.07.263,W077.19.29.961/a687+ SJAYY/a5000+ KAMMI LUCYL"
+            "sid": "LUCYL6"
           }
         }
       },
@@ -3761,33 +3634,27 @@
         "10": {
           "RAMAY": {
             "cleared_altitude": 17000,
-            "sid": "FOXHL1",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- WONCE TERPZ/a11000+ FOXHL/a17000+ RAMAY"
+            "sid": "FOXHL1"
           },
           "OTTTO": {
             "cleared_altitude": 17000,
-            "sid": "FOXHL1",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- WONCE TERPZ/a11000+ FOXHL/a17000+ OTTTO"
+            "sid": "FOXHL1"
           },
           "BYEDN": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-28 JWALL/flyover DUKPN/a5000+ SWANN KERNO ODESA BYEDN"
+            "sid": "DUKPN1"
           },
           "BROSS": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-28 JWALL/flyover DUKPN/a5000+ SWANN HIFLY/a13000+ BROSS"
+            "sid": "DUKPN1"
           },
           "SWANN": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-28 JWALL/flyover DUKPN/a5000+ SWANN"
+            "sid": "DUKPN1"
           },
           "AJGON": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-28 JWALL/flyover DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD DONIL"
+            "sid": "DUKPN1"
           },
           "DONIL,RADAM": {
             "cleared_altitude": 14000,
@@ -3796,48 +3663,39 @@
           },
           "SPEAK": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-28 JWALL/flyover DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD SPEAK"
+            "sid": "DUKPN1"
           },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
-            "sid": "CONLE5",
-            "waypoints": "KBWI-28 JWALL/flyover BEWEE OHSSS/a11000+ CONLE/a14000- AMEEE COLIN"
+            "sid": "CONLE5"
           },
           "MELTN": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK JDUBB CASLY MELTN"
+            "sid": "TERPZ8"
           },
           "RRSIN": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK JDUBB TYPNZ SCORN RRSIN"
+            "sid": "TERPZ8"
           },
           "GLANC": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK SCRAM DANOO WALCE GLANC"
+            "sid": "TERPZ8"
           },
           "FLASK": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK BUTRZ CLTCH KERRK TEEMS FLASK"
+            "sid": "TERPZ8"
           },
           "MAULS": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK BUTRZ CLTCH KERRK MAULS"
+            "sid": "TERPZ8"
           },
           "JERES": {
             "cleared_altitude": 16000,
-            "sid": "LINSE2",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- AADDY TERPZ/a11000+ LINSE/a14000+ JERES"
+            "sid": "LINSE2"
           },
           "MCRAY": {
             "cleared_altitude": 16000,
-            "sid": "LINSE2",
-            "waypoints": "KBWI-28 JWALL/flyover N039.09.37.578,W076.36.08.948 UNSLD/a9000- AADDY TERPZ/a11000+ LINSE/a14000+ BUFFR MCRAY"
+            "sid": "LINSE2"
           }
         },
         "28": {
@@ -3853,23 +3711,19 @@
           },
           "BYEDN": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-10 BOSLY/a700+/s220/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ SWANN KERNO ODESA BYEDN"
+            "sid": "DUKPN1"
           },
           "BROSS": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-10 BOSLY/a700+/s220/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ SWANN HIFLY/a13000+ BROSS"
+            "sid": "DUKPN1"
           },
           "SWANN": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-10 BOSLY/a700+/s220/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ SWANN"
+            "sid": "DUKPN1"
           },
           "AJGON": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-10 BOSLY/a700+/s220/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD DONIL"
+            "sid": "DUKPN1"
           },
           "DONIL,RADAM": {
             "cleared_altitude": 14000,
@@ -3878,80 +3732,65 @@
           },
           "SPEAK": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-10 BOSLY/a700+/s220/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD SPEAK"
+            "sid": "DUKPN1"
           },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
-            "sid": "CONLE5",
-            "waypoints": "KBWI-10 BOSLY/a700+/s220/flyover SUGGS/a7000- STABL/a13000- OHSSS/a11000+ CONLE/a14000- AMEEE COLIN"
+            "sid": "CONLE5"
           },
           "MELTN": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-10 JLENN WONCE TERPZ/a11000+ LITME/a14000+ HIRCK JDUBB CASLY MELTN"
+            "sid": "TERPZ8"
           },
           "RRSIN": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-10 JLENN WONCE TERPZ/a11000+ LITME/a14000+ HIRCK JDUBB TYPNZ SCORN RRSIN"
+            "sid": "TERPZ8"
           },
           "GLANC": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-10 JLENN WONCE TERPZ/a11000+ LITME/a14000+ HIRCK SCRAM DANOO WALCE GLANC"
+            "sid": "TERPZ8"
           },
           "FLASK": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-10 JLENN WONCE TERPZ/a11000+ LITME/a14000+ HIRCK BUTRZ CLTCH KERRK TEEMS FLASK"
+            "sid": "TERPZ8"
           },
           "MAULS": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-10 JLENN WONCE TERPZ/a11000+ LITME/a14000+ HIRCK BUTRZ CLTCH KERRK MAULS"
+            "sid": "TERPZ8"
           },
           "JERES": {
             "cleared_altitude": 16000,
-            "sid": "LINSE2",
-            "waypoints": "KBWI-10 JLENN AADDY TERPZ/a11000+ LINSE/a14000+ JERES"
+            "sid": "LINSE2"
           },
           "MCRAY": {
             "cleared_altitude": 16000,
-            "sid": "LINSE2",
-            "waypoints": "KBWI-10 JLENN AADDY TERPZ/a11000+ LINSE/a14000+ BUFFR MCRAY"
+            "sid": "LINSE2"
           }
         },
         "15R": {
           "RAMAY": {
             "cleared_altitude": 17000,
-            "sid": "FOXHL1",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- WONCE TERPZ/a11000+ FOXHL/a17000+ RAMAY"
+            "sid": "FOXHL1"
           },
           "OTTTO": {
             "cleared_altitude": 17000,
-            "sid": "FOXHL1",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- WONCE TERPZ/a11000+ FOXHL/a17000+ OTTTO"
+            "sid": "FOXHL1"
           },
           "BYEDN": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ DUKPN/a5000+ SWANN KERNO ODESA BYEDN"
+            "sid": "DUKPN1"
           },
           "BROSS": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ DUKPN/a5000+ SWANN HIFLY/a13000+ BROSS"
+            "sid": "DUKPN1"
           },
           "SWANN": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ DUKPN/a5000+ SWANN"
+            "sid": "DUKPN1"
           },
           "AJGON": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD DONIL"
+            "sid": "DUKPN1"
           },
           "DONIL,RADAM": {
             "cleared_altitude": 14000,
@@ -3960,80 +3799,65 @@
           },
           "SPEAK": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD SPEAK"
+            "sid": "DUKPN1"
           },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
-            "sid": "CONLE5",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ KEMMP BEWEE OHSSS/a11000+ CONLE/a14000- AMEEE COLIN"
+            "sid": "CONLE5"
           },
           "MELTN": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK JDUBB CASLY MELTN"
+            "sid": "TERPZ8"
           },
           "RRSIN": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK JDUBB TYPNZ SCORN RRSIN"
+            "sid": "TERPZ8"
           },
           "GLANC": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK SCRAM DANOO WALCE GLANC"
+            "sid": "TERPZ8"
           },
           "FLASK": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK BUTRZ CLTCH KERRK TEEMS FLASK"
+            "sid": "TERPZ8"
           },
           "MAULS": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK BUTRZ CLTCH KERRK MAULS"
+            "sid": "TERPZ8"
           },
           "JERES": {
             "cleared_altitude": 16000,
-            "sid": "LINSE2",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- AADDY TERPZ/a11000+ LINSE/a14000+ JERES"
+            "sid": "LINSE2"
           },
           "MCRAY": {
             "cleared_altitude": 16000,
-            "sid": "LINSE2",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ WARYN/flyover BOBYJ/a4000+/s230 FLACO/a9000- AADDY TERPZ/a11000+ LINSE/a14000+ BUFFR MCRAY"
+            "sid": "LINSE2"
           }
         },
         "33L": {
           "RAMAY": {
             "cleared_altitude": 17000,
-            "sid": "FOXHL1",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- WONCE TERPZ/a11000+ FOXHL/a17000+ RAMAY"
+            "sid": "FOXHL1"
           },
           "OTTTO": {
             "cleared_altitude": 17000,
-            "sid": "FOXHL1",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- WONCE TERPZ/a11000+ FOXHL/a17000+ OTTTO"
+            "sid": "FOXHL1"
           },
           "BYEDN": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ SWANN KERNO ODESA BYEDN"
+            "sid": "DUKPN1"
           },
           "BROSS": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ SWANN HIFLY/a13000+ BROSS"
+            "sid": "DUKPN1"
           },
           "SWANN": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ SWANN"
+            "sid": "DUKPN1"
           },
           "AJGON": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD DONIL"
+            "sid": "DUKPN1"
           },
           "DONIL,RADAM": {
             "cleared_altitude": 14000,
@@ -4042,48 +3866,39 @@
           },
           "SPEAK": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover ARWEN/a4000-7000/s230 DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD SPEAK"
+            "sid": "DUKPN1"
           },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
-            "sid": "CONLE5",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover SUGGS/a7000- STABL/a13000- OHSSS/a11000+ CONLE/a14000- AMEEE COLIN"
+            "sid": "CONLE5"
           },
           "MELTN": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK JDUBB CASLY MELTN"
+            "sid": "TERPZ8"
           },
           "RRSIN": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK JDUBB TYPNZ SCORN RRSIN"
+            "sid": "TERPZ8"
           },
           "GLANC": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK SCRAM DANOO WALCE GLANC"
+            "sid": "TERPZ8"
           },
           "FLASK": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK BUTRZ CLTCH KERRK TEEMS FLASK"
+            "sid": "TERPZ8"
           },
           "MAULS": {
             "cleared_altitude": 17000,
-            "sid": "TERPZ8",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- WONCE TERPZ/a11000+ LITME/a14000+ HIRCK BUTRZ CLTCH KERRK MAULS"
+            "sid": "TERPZ8"
           },
           "JERES": {
             "cleared_altitude": 16000,
-            "sid": "LINSE2",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- AADDY TERPZ/a11000+ LINSE/a14000+ JERES"
+            "sid": "LINSE2"
           },
           "MCRAY": {
             "cleared_altitude": 16000,
-            "sid": "LINSE2",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover PCHEN/a5000- AADDY TERPZ/a11000+ LINSE/a14000+ BUFFR MCRAY"
+            "sid": "LINSE2"
           }
         }
       },

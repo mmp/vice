@@ -745,220 +745,177 @@
         "28R.RT": {
           "CINNY.28": {
             "cleared_altitude": 3000,
-            "sid": "GNNRR3",
-            "waypoints": "GNNRR/a2500+ CINNY"
+            "sid": "GNNRR3"
           },
           "ALCOA.28": {
             "cleared_altitude": 3000,
-            "sid": "GNNRR3",
-            "waypoints": "GNNRR/a2500+ ALCOA"
+            "sid": "GNNRR3"
           },
           "BEBOP.28": {
             "cleared_altitude": 3000,
-            "sid": "GNNRR3",
-            "waypoints": "GNNRR/a2500+ BEBOP"
+            "sid": "GNNRR3"
           },
           "AMAKR.28": {
             "cleared_altitude": 3000,
-            "sid": "GNNRR3",
-            "waypoints": "GNNRR/a2500+ STINS AMAKR"
+            "sid": "GNNRR3"
           },
           "TRUKN.28RT": {
             "cleared_altitude": 10000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.40.711,W122.23.30.781/a500+ TRUKN"
+            "sid": "TRUKN2"
           },
           "GRTFL.28RT": {
             "cleared_altitude": 19000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.40.711,W122.23.30.781/a500+ TRUKN GRTFL"
+            "sid": "TRUKN2"
           },
           "DEDHD.28RT": {
             "cleared_altitude": 19000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.40.711,W122.23.30.781/a500+ TRUKN DEDHD"
+            "sid": "TRUKN2"
           },
           "ORRCA.28RT": {
             "cleared_altitude": 19000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.40.711,W122.23.30.781/a500+ TRUKN HYPEE ORRCA"
+            "sid": "TRUKN2"
           },
           "MOGEE.28RT": {
             "cleared_altitude": 19000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.40.711,W122.23.30.781/a500+ TRUKN HYPEE MOGEE"
+            "sid": "TRUKN2"
           },
           "TIPRE.28RT": {
             "cleared_altitude": 19000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.40.711,W122.23.30.781/a500+ TRUKN COSMC TIPRE"
+            "sid": "TRUKN2"
           },
           "SYRAH.28RT": {
             "cleared_altitude": 19000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.40.711,W122.23.30.781/a500+ TRUKN COSMC SYRAH"
+            "sid": "TRUKN2"
           },
           "GRTFL.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA GRTFL"
+            "sid": "SNTNA2"
           },
           "DEDHD.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA DEDHD"
+            "sid": "SNTNA2"
           },
           "ORRCA.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA ORRCA"
+            "sid": "SNTNA2"
           },
           "MOGEE.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA MOGEE"
+            "sid": "SNTNA2"
           },
           "TIPRE.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA TIPRE"
+            "sid": "SNTNA2"
           },
           "SYRAH.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA SYRAH"
+            "sid": "SNTNA2"
           },
           "NTELL.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE UTOOB NTELL"
+            "sid": "WESLA5"
           },
           "KAYEX.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE KAYEX"
+            "sid": "WESLA5"
           },
           "KTINA.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE KTINA"
+            "sid": "WESLA5"
           },
           "SUSEY.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE SUSEY"
+            "sid": "WESLA5"
           },
           "YYUNG.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE FFOIL LIBBO YYUNG"
+            "sid": "WESLA5"
           }
         },
         "28L.RT": {
           "CINNY.28": {
             "cleared_altitude": 3000,
-            "sid": "GNNRR3",
-            "waypoints": "GNNRR/a2500+ CINNY"
+            "sid": "GNNRR3"
           },
           "ALCOA.28": {
             "cleared_altitude": 3000,
-            "sid": "GNNRR3",
-            "waypoints": "GNNRR/a2500+ ALCOA"
+            "sid": "GNNRR3"
           },
           "BEBOP.28": {
             "cleared_altitude": 3000,
-            "sid": "GNNRR3",
-            "waypoints": "GNNRR/a2500+ BEBOP"
+            "sid": "GNNRR3"
           },
           "AMAKR.28": {
             "cleared_altitude": 3000,
-            "sid": "GNNRR3",
-            "waypoints": "GNNRR/a2500+ STINS AMAKR"
+            "sid": "GNNRR3"
           },
           "GRTFL.28RT": {
             "cleared_altitude": 10000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.44.996,W122.23.57.094/a500+ TRUKN GRTFL"
+            "sid": "TRUKN2"
           },
           "DEDHD.28RT": {
             "cleared_altitude": 10000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.44.996,W122.23.57.094/a500+ TRUKN DEDHD"
+            "sid": "TRUKN2"
           },
           "ORRCA.28RT": {
             "cleared_altitude": 10000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.44.996,W122.23.57.094/a500+ TRUKN HYPEE ORRCA"
+            "sid": "TRUKN2"
           },
           "MOGEE.28RT": {
             "cleared_altitude": 10000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.44.996,W122.23.57.094/a500+ TRUKN HYPEE MOGEE"
+            "sid": "TRUKN2"
           },
           "TIPRE.28RT": {
             "cleared_altitude": 10000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.44.996,W122.23.57.094/a500+ TRUKN COSMC TIPRE"
+            "sid": "TRUKN2"
           },
           "SYRAH.28RT": {
             "cleared_altitude": 10000,
-            "sid": "TRUKN2",
-            "waypoints": "N037.37.44.996,W122.23.57.094/a500+ TRUKN COSMC SYRAH"
+            "sid": "TRUKN2"
           },
           "GRTFL.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA GRTFL"
+            "sid": "SNTNA2"
           },
           "DEDHD.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA DEDHD"
+            "sid": "SNTNA2"
           },
           "ORRCA.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA ORRCA"
+            "sid": "SNTNA2"
           },
           "MOGEE.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA MOGEE"
+            "sid": "SNTNA2"
           },
           "TIPRE.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA TIPRE"
+            "sid": "SNTNA2"
           },
           "SYRAH.28": {
             "cleared_altitude": 3000,
-            "sid": "SNTNA2",
-            "waypoints": "KYNNG KRLOS SNTNA SYRAH"
+            "sid": "SNTNA2"
           },
           "NTELL.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE UTOOB NTELL"
+            "sid": "WESLA5"
           },
           "KAYEX.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE KAYEX"
+            "sid": "WESLA5"
           },
           "KTINA.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE KTINA"
+            "sid": "WESLA5"
           },
           "SUSEY.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE SUSEY"
+            "sid": "WESLA5"
           },
           "YYUNG.28": {
             "cleared_altitude": 3000,
-            "sid": "WESLA5",
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE FFOIL LIBBO YYUNG"
+            "sid": "WESLA5"
           }
         },
         "10R": {

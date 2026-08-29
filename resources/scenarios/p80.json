@@ -136,18 +136,15 @@
         "10L": {
           "EASON,FAMUK,HISKU": {
             "cleared_altitude": 7000,
-            "sid": "MINNE5",
-            "waypoints": "RIVRR COSUG BISLE MINNE"
+            "sid": "MINNE5"
           },
           "HRMNS": {
             "cleared_altitude": 7000,
-            "sid": "HRMNS6",
-            "waypoints": "RIVRR COSUG LEZLI HRMNS"
+            "sid": "HRMNS6"
           },
           "SUNED,PDT,LAVAA": {
             "cleared_altitude": 7000,
-            "sid": "LAVAA7",
-            "waypoints": "RIVRR COSUG OKKOR LAVAA"
+            "sid": "LAVAA7"
           },
           "YKM,TOU,OLM,SEA,AST,LTJ,ARRIE,COUGA,PDT.P": {
             "cleared_altitude": 6000,
@@ -176,30 +173,25 @@
           },
           "KOATA,RIELY,IMB": {
             "cleared_altitude": 7000,
-            "sid": "WHAMY5",
-            "waypoints": "RIVRR COSUG HADIS WHAMY/a10000+"
+            "sid": "WHAMY5"
           },
           "JUDAH,SYNKR,PUHTS,DSD": {
             "cleared_altitude": 7000,
-            "sid": "CASCD4",
-            "waypoints": "RIVRR COSUG HADIS CHISM/a10100+"
+            "sid": "CASCD4"
           }
         },
         "10R": {
           "EASON,FAMUK,HISKU": {
             "cleared_altitude": 7000,
-            "sid": "MINNE5",
-            "waypoints": "RIVRR COSUG BISLE MINNE"
+            "sid": "MINNE5"
           },
           "HRMNS": {
             "cleared_altitude": 7000,
-            "sid": "HRMNS6",
-            "waypoints": "RIVRR COSUG LEZLI HRMNS"
+            "sid": "HRMNS6"
           },
           "SUNED,PDT,LAVAA": {
             "cleared_altitude": 7000,
-            "sid": "LAVAA7",
-            "waypoints": "RIVRR COSUG OKKOR LAVAA"
+            "sid": "LAVAA7"
           },
           "YKM,TOU,OLM,SEA,AST,LTJ,ARRIE,COUGA,": {
             "cleared_altitude": 6000,
@@ -218,8 +210,7 @@
           },
           "KOATA,RIELY,IMB": {
             "cleared_altitude": 7000,
-            "sid": "WHAMY5",
-            "waypoints": "RIVRR COSUG HADIS WHAMY/a10000+"
+            "sid": "WHAMY5"
           },
           "BTG.PN,OLM.P": {
             "cleared_altitude": 3000,
@@ -233,25 +224,21 @@
           },
           "JUDAH,SYNKR,PUHTS,DSD": {
             "cleared_altitude": 7000,
-            "sid": "CASCD4",
-            "waypoints": "RIVRR COSUG HADIS CHISM/a10100+"
+            "sid": "CASCD4"
           }
         },
         "28R": {
           "EASON,FAMUK,HISKU": {
             "cleared_altitude": 7000,
-            "sid": "MINNE5",
-            "waypoints": "PEGTY KELYY DUDRE MINNE"
+            "sid": "MINNE5"
           },
           "HRMNS": {
             "cleared_altitude": 7000,
-            "sid": "HRMNS6",
-            "waypoints": "PEGTY KELYY RUTGE/a5000+/s250 TOSEH HRMNS"
+            "sid": "HRMNS6"
           },
           "SUNED,PDT,LAVAA": {
             "cleared_altitude": 7000,
-            "sid": "LAVAA7",
-            "waypoints": "PEGTY KELYY ARUPT/a5000+/s250 LAVAA"
+            "sid": "LAVAA7"
           },
           "TOU,OLM,SEA,BTG,AST,LTJ,ARRIE,COUGA": {
             "cleared_altitude": 6000,
@@ -280,30 +267,25 @@
           },
           "IMB,KOATA,RIELY": {
             "cleared_altitude": 7000,
-            "sid": "WHAMY5",
-            "waypoints": "PEGTY KELYY RUTGE/a5000+/s250 TOSEH WHAMY/a10000+"
+            "sid": "WHAMY5"
           },
           "JUDAH,SYNKR,PUHTS,DSD": {
             "cleared_altitude": 7000,
-            "sid": "CASCD4",
-            "waypoints": "PEGTY KELYY RUTGE/a5000+/s250 TOSEH CHISM/a10100+"
+            "sid": "CASCD4"
           }
         },
         "28L": {
           "EASON,FAMUK,HISKU": {
             "cleared_altitude": 7000,
-            "sid": "MINNE5",
-            "waypoints": "PEGTY KELYY DUDRE MINNE"
+            "sid": "MINNE5"
           },
           "HRMNS": {
             "cleared_altitude": 7000,
-            "sid": "HRMNS6",
-            "waypoints": "PEGTY KELYY RUTGE/a5000+/s250 TOSEH HRMNS"
+            "sid": "HRMNS6"
           },
           "SUNED,PDT,LAVAA": {
             "cleared_altitude": 7000,
-            "sid": "LAVAA7",
-            "waypoints": "PEGTY KELYY ARUPT/a5000+/s250 LAVAA"
+            "sid": "LAVAA7"
           },
           "TOU,OLM,SEA,BTG,AST,LTJ,ARRIE,COUGA": {
             "cleared_altitude": 6000,
@@ -332,13 +314,11 @@
           },
           "IMB,KOATA,RIELY": {
             "cleared_altitude": 7000,
-            "sid": "WHAMY5",
-            "waypoints": "PEGTY KELYY RUTGE/a5000+/s250 TOSEH WHAMY/a10000+"
+            "sid": "WHAMY5"
           },
           "JUDAH,SYNKR,PUHTS,DSD": {
             "cleared_altitude": 7000,
-            "sid": "CASCD4",
-            "waypoints": "PEGTY KELYY RUTGE/a5000+/s250 TOSEH CHISM/a10100+"
+            "sid": "CASCD4"
           }
         }
       },
@@ -2055,15 +2035,13 @@
         "31L": {
           "EASON.H,FAMUK.H,EUG.H,HARPR": {
             "cleared_altitude": 4000,
-            "sid": "BERNI3",
-            "waypoints": "KHIO-13R HETAT SANKR BERNI"
+            "sid": "BERNI3"
           }
         },
         "13R": {
           "EASON,FAMUK,EUG,HARPR": {
             "cleared_altitude": 4000,
-            "sid": "BERNI3",
-            "waypoints": "KHIO-31L JERUX BERNI"
+            "sid": "BERNI3"
           }
         }
       },

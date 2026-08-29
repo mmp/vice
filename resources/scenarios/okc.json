@@ -50,549 +50,441 @@
         "17L": {
           "PHARA": {
             "cleared_altitude": 5000,
-            "sid": "FUNNL3",
-            "waypoints": "KOKC-35R/h175 VOWED FUNNL"
+            "sid": "FUNNL3"
           },
           "FUNNL": {
             "cleared_altitude": 5000,
-            "sid": "FUNNL3",
-            "waypoints": "KOKC-35R/h175 VOWED"
+            "sid": "FUNNL3"
           },
           "WICKS": {
             "cleared_altitude": 5000,
-            "sid": "KRMSN4",
-            "waypoints": "KOKC-35R/h175 SWTZR/a4200+ KRMSN"
+            "sid": "KRMSN4"
           },
           "KRMSN": {
             "cleared_altitude": 5000,
-            "sid": "KRMSN4",
-            "waypoints": "KOKC-35R/h175 SWTZR/a4200+"
+            "sid": "KRMSN4"
           },
           "OLFRD,MOOSE": {
             "cleared_altitude": 5000,
-            "sid": "MUDDE3",
-            "waypoints": "KOKC-35R/h175 GLOPS MUDDE"
+            "sid": "MUDDE3"
           },
           "MUDDE": {
             "cleared_altitude": 5000,
-            "sid": "MUDDE3",
-            "waypoints": "KOKC-35R/h175 GLOPS"
+            "sid": "MUDDE3"
           },
           "YOUSE": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-35R/h200 BEEDI OLGUY GRUVN"
+            "sid": "OLGUY3"
           },
           "GRUVN": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-35R/h200 BEEDI OLGUY"
+            "sid": "OLGUY3"
           },
           "OLGUY": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-35R/h200 BEEDI OLGUY"
+            "sid": "OLGUY3"
           },
           "HOLLE": {
             "cleared_altitude": 5000,
-            "sid": "RDHWK3",
-            "waypoints": "KOKC-35R/h175 OHYOU RDHWK"
+            "sid": "RDHWK3"
           },
           "RDHWK": {
             "cleared_altitude": 5000,
-            "sid": "RDHWK3",
-            "waypoints": "KOKC-35R/h175 OHYOU"
+            "sid": "RDHWK3"
           },
           "KAYOS": {
             "cleared_altitude": 5000,
-            "sid": "SSYKO3",
-            "waypoints": "KOKC-35R/h200 CASTN SSYKO"
+            "sid": "SSYKO3"
           },
           "SSYKO": {
             "cleared_altitude": 5000,
-            "sid": "SSYKO3",
-            "waypoints": "KOKC-35R/h200 CASTN"
+            "sid": "SSYKO3"
           },
           "ZEEWE": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-35R/h200 SQRRL STPHN BFFFY"
+            "sid": "STPHN3"
           },
           "BFFFY": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-35R/h200 SQRRL STPHN"
+            "sid": "STPHN3"
           },
           "STPHN": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-35R/h200 SQRRL STPHN"
+            "sid": "STPHN3"
           },
           "ATOKA": {
             "cleared_altitude": 5000,
-            "sid": "TEBRD3",
-            "waypoints": "KOKC-35R/h175 BASSR TEBRD"
+            "sid": "TEBRD3"
           },
           "TEBRD": {
             "cleared_altitude": 5000,
-            "sid": "TEBRD3",
-            "waypoints": "KOKC-35R/h175 BASSR"
+            "sid": "TEBRD3"
           },
           "FLECH": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-35R/h200 OLMPC THRPE GGOLD"
+            "sid": "THRPE3"
           },
           "GGOLD": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-35R/h200 OLMPC THRPE"
+            "sid": "THRPE3"
           },
           "THRPE": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-35R/h200 OLMPC THRPE"
+            "sid": "THRPE3"
           },
           "COORT,DRLER,GTYER": {
             "cleared_altitude": 5000,
-            "sid": "TRUPR3",
-            "waypoints": "KOKC-35R/h175 MOOON TRUPR"
+            "sid": "TRUPR3"
           },
           "TRUPR": {
             "cleared_altitude": 5000,
-            "sid": "TRUPR3",
-            "waypoints": "KOKC-35R/h175 MOOON"
+            "sid": "TRUPR3"
           },
           "BELMN": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-35R/h200 POKSS WENDY"
+            "sid": "WENDY3"
           },
           "HNGER": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-35R/h200 POKSS WENDY LARKO"
+            "sid": "WENDY3"
           },
           "LARKO": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-35R/h200 POKSS WENDY"
+            "sid": "WENDY3"
           },
           "WENDY": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-35R/h200 POKSS"
+            "sid": "WENDY3"
           }
         },
         "17R": {
           "PHARA": {
             "cleared_altitude": 5000,
-            "sid": "FUNNL3",
-            "waypoints": "KOKC-35L/h175 VOWED FUNNL"
+            "sid": "FUNNL3"
           },
           "FUNNL": {
             "cleared_altitude": 5000,
-            "sid": "FUNNL3",
-            "waypoints": "KOKC-35L/h175 VOWED"
+            "sid": "FUNNL3"
           },
           "WICKS": {
             "cleared_altitude": 5000,
-            "sid": "KRMSN4",
-            "waypoints": "KOKC-35L/h175 SWTZR/a4200+ KRMSN"
+            "sid": "KRMSN4"
           },
           "KRMSN": {
             "cleared_altitude": 5000,
-            "sid": "KRMSN4",
-            "waypoints": "KOKC-35L/h175 SWTZR/a4200+"
+            "sid": "KRMSN4"
           },
           "OLFRD,MOOSE": {
             "cleared_altitude": 5000,
-            "sid": "MUDDE3",
-            "waypoints": "KOKC-35L/h175 GLOPS MUDDE"
+            "sid": "MUDDE3"
           },
           "MUDDE": {
             "cleared_altitude": 5000,
-            "sid": "MUDDE3",
-            "waypoints": "KOKC-35L/h175 GLOPS"
+            "sid": "MUDDE3"
           },
           "YOUSE": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-35L/h200 BEEDI OLGUY GRUVN"
+            "sid": "OLGUY3"
           },
           "GRUVN": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-35L/h200 BEEDI OLGUY"
+            "sid": "OLGUY3"
           },
           "OLGUY": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-35L/h200 BEEDI OLGUY"
+            "sid": "OLGUY3"
           },
           "HOLLE": {
             "cleared_altitude": 5000,
-            "sid": "RDHWK3",
-            "waypoints": "KOKC-35L/h175 OHYOU RDHWK"
+            "sid": "RDHWK3"
           },
           "RDHWK": {
             "cleared_altitude": 5000,
-            "sid": "RDHWK3",
-            "waypoints": "KOKC-35L/h175 OHYOU"
+            "sid": "RDHWK3"
           },
           "KAYOS": {
             "cleared_altitude": 5000,
-            "sid": "SSYKO3",
-            "waypoints": "KOKC-35L/h200 CASTN SSYKO"
+            "sid": "SSYKO3"
           },
           "SSYKO": {
             "cleared_altitude": 5000,
-            "sid": "SSYKO3",
-            "waypoints": "KOKC-35L/h200 CASTN"
+            "sid": "SSYKO3"
           },
           "ZEEWE": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-35L/h200 SQRRL STPHN BFFFY"
+            "sid": "STPHN3"
           },
           "BFFFY": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-35L/h200 SQRRL STPHN"
+            "sid": "STPHN3"
           },
           "STPHN": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-35L/h200 SQRRL STPHN"
+            "sid": "STPHN3"
           },
           "ATOKA": {
             "cleared_altitude": 5000,
-            "sid": "TEBRD3",
-            "waypoints": "KOKC-35L/h175 BASSR TEBRD"
+            "sid": "TEBRD3"
           },
           "TEBRD": {
             "cleared_altitude": 5000,
-            "sid": "TEBRD3",
-            "waypoints": "KOKC-35L/h175 BASSR"
+            "sid": "TEBRD3"
           },
           "FLECH": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-35L/h200 OLMPC THRPE GGOLD"
+            "sid": "THRPE3"
           },
           "GGOLD": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-35L/h200 OLMPC THRPE"
+            "sid": "THRPE3"
           },
           "THRPE": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-35L/h200 OLMPC THRPE"
+            "sid": "THRPE3"
           },
           "COORT,DRLER,GTYER": {
             "cleared_altitude": 5000,
-            "sid": "TRUPR3",
-            "waypoints": "KOKC-35L/h175 MOOON TRUPR"
+            "sid": "TRUPR3"
           },
           "TRUPR": {
             "cleared_altitude": 5000,
-            "sid": "TRUPR3",
-            "waypoints": "KOKC-35L/h175 MOOON"
+            "sid": "TRUPR3"
           },
           "BELMN": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-35L/h200 POKSS WENDY"
+            "sid": "WENDY3"
           },
           "HNGER": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-35L/h200 POKSS WENDY LARKO"
+            "sid": "WENDY3"
           },
           "LARKO": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-35L/h200 POKSS WENDY"
+            "sid": "WENDY3"
           },
           "WENDY": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-35L/h200 POKSS"
+            "sid": "WENDY3"
           }
         },
         "35L": {
           "PHARA": {
             "cleared_altitude": 5000,
-            "sid": "FUNNL3",
-            "waypoints": "KOKC-17R/h010 VOWED FUNNL"
+            "sid": "FUNNL3"
           },
           "FUNNL": {
             "cleared_altitude": 5000,
-            "sid": "FUNNL3",
-            "waypoints": "KOKC-17R/h010 VOWED"
+            "sid": "FUNNL3"
           },
           "WICKS": {
             "cleared_altitude": 5000,
-            "sid": "KRMSN4",
-            "waypoints": "KOKC-17R/h010 SWTZR/a4200+ KRMSN"
+            "sid": "KRMSN4"
           },
           "KRMSN": {
             "cleared_altitude": 5000,
-            "sid": "KRMSN4",
-            "waypoints": "KOKC-17R/h010 SWTZR/a4200+"
+            "sid": "KRMSN4"
           },
           "OLFRD,MOOSE": {
             "cleared_altitude": 5000,
-            "sid": "MUDDE3",
-            "waypoints": "KOKC-17R/h310 GLOPS MUDDE"
+            "sid": "MUDDE3"
           },
           "MUDDE": {
             "cleared_altitude": 5000,
-            "sid": "MUDDE3",
-            "waypoints": "KOKC-17R/h310 GLOPS"
+            "sid": "MUDDE3"
           },
           "YOUSE": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-17R/h310 BEEDI OLGUY GRUVN"
+            "sid": "OLGUY3"
           },
           "GRUVN": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-17R/h310 BEEDI OLGUY"
+            "sid": "OLGUY3"
           },
           "OLGUY": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-17R/h310 BEEDI OLGUY"
+            "sid": "OLGUY3"
           },
           "HOLLE": {
             "cleared_altitude": 5000,
-            "sid": "RDHWK3",
-            "waypoints": "KOKC-17R/h010 OHYOU RDHWK"
+            "sid": "RDHWK3"
           },
           "RDHWK": {
             "cleared_altitude": 5000,
-            "sid": "RDHWK3",
-            "waypoints": "KOKC-17R/h010 OHYOU"
+            "sid": "RDHWK3"
           },
           "KAYOS": {
             "cleared_altitude": 5000,
-            "sid": "SSYKO3",
-            "waypoints": "KOKC-17R/h010 CASTN SSYKO"
+            "sid": "SSYKO3"
           },
           "SSYKO": {
             "cleared_altitude": 5000,
-            "sid": "SSYKO3",
-            "waypoints": "KOKC-17R/h010 CASTN"
+            "sid": "SSYKO3"
           },
           "ZEEWE": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-17R/h310 SQRRL STPHN BFFFY"
+            "sid": "STPHN3"
           },
           "BFFFY": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-17R/h310 SQRRL STPHN"
+            "sid": "STPHN3"
           },
           "STPHN": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-17R/h310 SQRRL STPHN"
+            "sid": "STPHN3"
           },
           "ATOKA": {
             "cleared_altitude": 5000,
-            "sid": "TEBRD3",
-            "waypoints": "KOKC-17R/h010 BASSR TEBRD"
+            "sid": "TEBRD3"
           },
           "TEBRD": {
             "cleared_altitude": 5000,
-            "sid": "TEBRD3",
-            "waypoints": "KOKC-17R/h010 BASSR"
+            "sid": "TEBRD3"
           },
           "FLECH": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-17R/h310 OLMPC THRPE GGOLD"
+            "sid": "THRPE3"
           },
           "GGOLD": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-17R/h310 OLMPC THRPE"
+            "sid": "THRPE3"
           },
           "THRPE": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-17R/h310 OLMPC THRPE"
+            "sid": "THRPE3"
           },
           "COORT,DRLER,GTYER": {
             "cleared_altitude": 5000,
-            "sid": "TRUPR3",
-            "waypoints": "KOKC-17R/h010 MOOON TRUPR"
+            "sid": "TRUPR3"
           },
           "TRUPR": {
             "cleared_altitude": 5000,
-            "sid": "TRUPR3",
-            "waypoints": "KOKC-17R/h010 MOOON"
+            "sid": "TRUPR3"
           },
           "BELMN": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-17R/h010 POKSS WENDY"
+            "sid": "WENDY3"
           },
           "HNGER": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-17R/h010 POKSS WENDY LARKO"
+            "sid": "WENDY3"
           },
           "LARKO": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-17R/h010 POKSS WENDY"
+            "sid": "WENDY3"
           },
           "WENDY": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-17R/h010 POKSS"
+            "sid": "WENDY3"
           }
         },
         "35R": {
           "PHARA": {
             "cleared_altitude": 5000,
-            "sid": "FUNNL3",
-            "waypoints": "KOKC-17L/h010 VOWED FUNNL"
+            "sid": "FUNNL3"
           },
           "FUNNL": {
             "cleared_altitude": 5000,
-            "sid": "FUNNL3",
-            "waypoints": "KOKC-17L/h010 VOWED"
+            "sid": "FUNNL3"
           },
           "WICKS": {
             "cleared_altitude": 5000,
-            "sid": "KRMSN4",
-            "waypoints": "KOKC-17L/h010 SWTZR/a4200+ KRMSN"
+            "sid": "KRMSN4"
           },
           "KRMSN": {
             "cleared_altitude": 5000,
-            "sid": "KRMSN4",
-            "waypoints": "KOKC-17L/h010 SWTZR/a4200+"
+            "sid": "KRMSN4"
           },
           "OLFRD,MOOSE": {
             "cleared_altitude": 5000,
-            "sid": "MUDDE3",
-            "waypoints": "KOKC-17L/h310 GLOPS MUDDE"
+            "sid": "MUDDE3"
           },
           "MUDDE": {
             "cleared_altitude": 5000,
-            "sid": "MUDDE3",
-            "waypoints": "KOKC-17L/h310 GLOPS"
+            "sid": "MUDDE3"
           },
           "YOUSE": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-17L/h310 BEEDI OLGUY GRUVN"
+            "sid": "OLGUY3"
           },
           "GRUVN": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-17L/h310 BEEDI OLGUY"
+            "sid": "OLGUY3"
           },
           "OLGUY": {
             "cleared_altitude": 5000,
-            "sid": "OLGUY3",
-            "waypoints": "KOKC-17L/h310 BEEDI OLGUY"
+            "sid": "OLGUY3"
           },
           "HOLLE": {
             "cleared_altitude": 5000,
-            "sid": "RDHWK3",
-            "waypoints": "KOKC-17L/h010 OHYOU RDHWK"
+            "sid": "RDHWK3"
           },
           "RDHWK": {
             "cleared_altitude": 5000,
-            "sid": "RDHWK3",
-            "waypoints": "KOKC-17L/h010 OHYOU"
+            "sid": "RDHWK3"
           },
           "KAYOS": {
             "cleared_altitude": 5000,
-            "sid": "SSYKO3",
-            "waypoints": "KOKC-17L/h010 CASTN SSYKO"
+            "sid": "SSYKO3"
           },
           "SSYKO": {
             "cleared_altitude": 5000,
-            "sid": "SSYKO3",
-            "waypoints": "KOKC-17L/h010 CASTN"
+            "sid": "SSYKO3"
           },
           "ZEEWE": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-17L/h310 SQRRL STPHN BFFFY"
+            "sid": "STPHN3"
           },
           "BFFFY": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-17L/h310 SQRRL STPHN"
+            "sid": "STPHN3"
           },
           "STPHN": {
             "cleared_altitude": 5000,
-            "sid": "STPHN3",
-            "waypoints": "KOKC-17L/h310 SQRRL STPHN"
+            "sid": "STPHN3"
           },
           "ATOKA": {
             "cleared_altitude": 5000,
-            "sid": "TEBRD3",
-            "waypoints": "KOKC-17L/h010 BASSR TEBRD"
+            "sid": "TEBRD3"
           },
           "TEBRD": {
             "cleared_altitude": 5000,
-            "sid": "TEBRD3",
-            "waypoints": "KOKC-17L/h010 BASSR"
+            "sid": "TEBRD3"
           },
           "FLECH": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-17L/h310 OLMPC THRPE GGOLD"
+            "sid": "THRPE3"
           },
           "GGOLD": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-17L/h310 OLMPC THRPE"
+            "sid": "THRPE3"
           },
           "THRPE": {
             "cleared_altitude": 5000,
-            "sid": "THRPE3",
-            "waypoints": "KOKC-17L/h310 OLMPC THRPE"
+            "sid": "THRPE3"
           },
           "COORT,DRLER,GTYER": {
             "cleared_altitude": 5000,
-            "sid": "TRUPR3",
-            "waypoints": "KOKC-17L/h010 MOOON TRUPR"
+            "sid": "TRUPR3"
           },
           "TRUPR": {
             "cleared_altitude": 5000,
-            "sid": "TRUPR3",
-            "waypoints": "KOKC-17L/h010 MOOON"
+            "sid": "TRUPR3"
           },
           "BELMN": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-17L/h010 POKSS WENDY"
+            "sid": "WENDY3"
           },
           "HNGER": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-17L/h010 POKSS WENDY LARKO"
+            "sid": "WENDY3"
           },
           "LARKO": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-17L/h010 POKSS WENDY"
+            "sid": "WENDY3"
           },
           "WENDY": {
             "cleared_altitude": 5000,
-            "sid": "WENDY3",
-            "waypoints": "KOKC-17L/h010 POKSS"
+            "sid": "WENDY3"
           }
         }
       },

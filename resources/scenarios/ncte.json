@@ -354,23 +354,19 @@
         "35R": {
           "YERIN": {
             "cleared_altitude": 19000,
-            "sid": "ALPYN1",
-            "waypoints": "NSTAR ALPYN/a9000/s230 RYANN/a15000+ YERIN/a16000+"
+            "sid": "ALPYN1"
           },
           "CRDDZ": {
             "cleared_altitude": 19000,
-            "sid": "PVINE5",
-            "waypoints": "PVINE/a8500 CRDDZ/a10000+"
+            "sid": "PVINE5"
           },
           "HALLE": {
             "cleared_altitude": 19000,
-            "sid": "PVINE5",
-            "waypoints": "PVINE/a8500 HALLE/a14000+"
+            "sid": "PVINE5"
           },
           "PYGOW": {
             "cleared_altitude": 19000,
-            "sid": "PVINE5",
-            "waypoints": "PVINE/a8500 RBBRY/a9600-11000 PYGOW/a17000+"
+            "sid": "PVINE5"
           },
           "SWR": {
             "cleared_altitude": 19000,
@@ -379,30 +375,25 @@
           },
           "FMG": {
             "cleared_altitude": 19000,
-            "sid": "SPRKS1",
-            "waypoints": "KRNO-17L N039.36.19.824,W119.45.45.812/a6800+ N039.34.36.731,W119.40.54.483 FMG"
+            "sid": "SPRKS1"
           }
         },
         "35L": {
           "YERIN": {
             "cleared_altitude": 19000,
-            "sid": "ALPYN1",
-            "waypoints": "NSTAR ALPYN/a9000/s230 RYANN/a15000+ YERIN/a16000+"
+            "sid": "ALPYN1"
           },
           "CRDDZ": {
             "cleared_altitude": 19000,
-            "sid": "PVINE5",
-            "waypoints": "PVINE/a8500 CRDDZ/a10000+"
+            "sid": "PVINE5"
           },
           "HALLE": {
             "cleared_altitude": 19000,
-            "sid": "PVINE5",
-            "waypoints": "PVINE/a8500 HALLE/a14000+"
+            "sid": "PVINE5"
           },
           "PYGOW": {
             "cleared_altitude": 19000,
-            "sid": "PVINE5",
-            "waypoints": "PVINE/a8500 RBBRY/a9600-11000 PYGOW/a17000+"
+            "sid": "PVINE5"
           },
           "SWR": {
             "cleared_altitude": 19000,
@@ -411,8 +402,7 @@
           },
           "FMG": {
             "cleared_altitude": 19000,
-            "sid": "SPRKS1",
-            "waypoints": "KRNO-17R N039.36.19.824,W119.45.45.812/a6800+ N039.34.36.731,W119.40.54.483 FMG"
+            "sid": "SPRKS1"
           }
         },
         "17R": {
@@ -423,33 +413,27 @@
           },
           "FMG": {
             "cleared_altitude": 10000,
-            "sid": "SPRKS1",
-            "waypoints": "KRNO-35L N039.23.13.643,W119.46.21.106/a6600+/flyover N039.25.25.012,W119.41.30.435 FMG"
+            "sid": "SPRKS1"
           },
           "LLC": {
             "cleared_altitude": 19000,
-            "sid": "WAGGE8",
-            "waypoints": "KRNO-35L WAGGE JERGA LLC"
+            "sid": "WAGGE8"
           },
           "MRLET": {
             "cleared_altitude": 19000,
-            "sid": "ZEFFR9",
-            "waypoints": "ZEFFR EPOSE/a9200+ JCKPT/a10700+ MRLET/a13000+"
+            "sid": "ZEFFR9"
           },
           "DARBI": {
             "cleared_altitude": 19000,
-            "sid": "ZEFFR9",
-            "waypoints": "ZEFFR EPOSE/a9200+ KSINO/a11400+ DARBI"
+            "sid": "ZEFFR9"
           },
           "PESKE": {
             "cleared_altitude": 19000,
-            "sid": "ZEFFR9",
-            "waypoints": "ZEFFR EPOSE/a9200+ FOLDD/a9600+ ODLEE/a10800+ PESKE"
+            "sid": "ZEFFR9"
           },
           "BLKJK": {
             "cleared_altitude": 19000,
-            "sid": "ZEFFR9",
-            "waypoints": "ZEFFR EPOSE/a9200+ HITME/a10000+ WITTT/a11000+/s250 DATTT/a14000+ BLKJK"
+            "sid": "ZEFFR9"
           }
         },
         "17L": {
@@ -460,33 +444,27 @@
           },
           "FMG": {
             "cleared_altitude": 19000,
-            "sid": "SPRKS1",
-            "waypoints": "KRNO-35R N039.23.13.643,W119.46.21.106/a6600+/flyover N039.25.25.012,W119.41.30.435 FMG"
+            "sid": "SPRKS1"
           },
           "LLC": {
             "cleared_altitude": 19000,
-            "sid": "WAGGE8",
-            "waypoints": "KRNO-35R N039.27.22.222,W119.46.12.427 WAGGE JERGA LLC"
+            "sid": "WAGGE8"
           },
           "MRLET": {
             "cleared_altitude": 19000,
-            "sid": "ZEFFR9",
-            "waypoints": "ZEFFR EPOSE/a9200+ JCKPT/a10700+ MRLET/a13000+"
+            "sid": "ZEFFR9"
           },
           "DARBI": {
             "cleared_altitude": 19000,
-            "sid": "ZEFFR9",
-            "waypoints": "ZEFFR EPOSE/a9200+ KSINO/a11400+ DARBI"
+            "sid": "ZEFFR9"
           },
           "PESKE": {
             "cleared_altitude": 19000,
-            "sid": "ZEFFR9",
-            "waypoints": "ZEFFR EPOSE/a9200+ FOLDD/a9600+ ODLEE/a10800+ PESKE"
+            "sid": "ZEFFR9"
           },
           "BLKJK": {
             "cleared_altitude": 19000,
-            "sid": "ZEFFR9",
-            "waypoints": "ZEFFR EPOSE/a9200+ HITME/a10000+ WITTT/a11000+/s250 DATTT/a14000+ BLKJK"
+            "sid": "ZEFFR9"
           }
         }
       },
@@ -828,18 +806,15 @@
           },
           "MACUS": {
             "cleared_altitude": 9000,
-            "sid": "RVRCT4",
-            "waypoints": "KSMF-17L RVRCT DNGER/a9000+ MACUS"
+            "sid": "RVRCT4"
           },
           "RALEY": {
             "cleared_altitude": 9000,
-            "sid": "RVRCT4",
-            "waypoints": "KSMF-17L RVRCT DNGER/a9000+ RALEY"
+            "sid": "RVRCT4"
           },
           "SHUFL": {
             "cleared_altitude": 9000,
-            "sid": "RVRCT4",
-            "waypoints": "KSMF-17L RVRCT DOSCO/a14000+ DUNGN DRAGN SHUFL"
+            "sid": "RVRCT4"
           }
         },
         "35L": {
@@ -854,8 +829,7 @@
           },
           "FRA": {
             "cleared_altitude": 19000,
-            "sid": "FTHIL3",
-            "waypoints": "KSMF-17R FTHIL GRDOE FRA"
+            "sid": "FTHIL3"
           },
           "PYE,CCR,SUU,RAGGS": {
             "cleared_altitude": 4000,
@@ -863,18 +837,15 @@
           },
           "MACUS": {
             "cleared_altitude": 9000,
-            "sid": "RVRCT4",
-            "waypoints": "KSMF-17R RVRCT DNGER/a9000+ MACUS"
+            "sid": "RVRCT4"
           },
           "RALEY": {
             "cleared_altitude": 9000,
-            "sid": "RVRCT4",
-            "waypoints": "KSMF-17R RVRCT DNGER/a9000+ RALEY"
+            "sid": "RVRCT4"
           },
           "SHUFL": {
             "cleared_altitude": 9000,
-            "sid": "RVRCT4",
-            "waypoints": "KSMF-17R RVRCT DOSCO/a14000+ DUNGN DRAGN SHUFL"
+            "sid": "RVRCT4"
           }
         },
         "17R": {
@@ -889,8 +860,7 @@
           },
           "FRA": {
             "cleared_altitude": 9000,
-            "sid": "FTHIL3",
-            "waypoints": "KSMF-35L FTHIL GRDOE FRA"
+            "sid": "FTHIL3"
           },
           "PYE,CCR,SUU,RAGGS": {
             "cleared_altitude": 4000,
@@ -898,18 +868,15 @@
           },
           "MACUS": {
             "cleared_altitude": 9000,
-            "sid": "SCTWN4",
-            "waypoints": "KSMF-35L SCTWN/a2300+ DNGER/a9000+ MACUS"
+            "sid": "SCTWN4"
           },
           "RALEY": {
             "cleared_altitude": 9000,
-            "sid": "SCTWN4",
-            "waypoints": "KSMF-35L SCTWN/a2300+ DNGER/a9000+ RALEY"
+            "sid": "SCTWN4"
           },
           "SHUFL": {
             "cleared_altitude": 9000,
-            "sid": "SCTWN4",
-            "waypoints": "KSMF-35L SCTWN/a2300+ DOSCO/a14000+ DUNGN DRAGN SHUFL"
+            "sid": "SCTWN4"
           }
         },
         "17L": {
@@ -924,8 +891,7 @@
           },
           "FRA": {
             "cleared_altitude": 9000,
-            "sid": "FTHIL3",
-            "waypoints": "KSMF-35R FTHIL GRDOE FRA"
+            "sid": "FTHIL3"
           },
           "PYE,CCR,SUU,RAGGS": {
             "cleared_altitude": 4000,
@@ -933,18 +899,15 @@
           },
           "MACUS": {
             "cleared_altitude": 9000,
-            "sid": "SCTWN4",
-            "waypoints": "KSMF-35R SCTWN/a2300+ DNGER/a9000+ MACUS"
+            "sid": "SCTWN4"
           },
           "RALEY": {
             "cleared_altitude": 9000,
-            "sid": "SCTWN4",
-            "waypoints": "KSMF-35R SCTWN/a2300+ DNGER/a9000+ RALEY"
+            "sid": "SCTWN4"
           },
           "SHUFL": {
             "cleared_altitude": 9000,
-            "sid": "SCTWN4",
-            "waypoints": "KSMF-35R SCTWN/a2300+ DOSCO/a14000+ DUNGN DRAGN SHUFL"
+            "sid": "SCTWN4"
           }
         }
       },

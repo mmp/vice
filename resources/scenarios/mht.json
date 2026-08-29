@@ -369,15 +369,13 @@
         "16": {
           "CON,WEEZE,STEVO,PEASE": {
             "cleared_altitude": 3000,
-            "sid": "PSM4",
-            "waypoints": "KPSM-34/h220"
+            "sid": "PSM4"
           }
         },
         "34": {
           "CON,WEEZE,STEVO,PEASE": {
             "cleared_altitude": 3000,
-            "sid": "PSM4",
-            "waypoints": "KPSM-16/h345"
+            "sid": "PSM4"
           }
         }
       },

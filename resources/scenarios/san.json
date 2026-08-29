@@ -1351,62 +1351,53 @@
             "cleared_altitude": 10000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
+            "aircraft": ["jet", "turboprop"]
           },
           "SLI": {
             "cleared_altitude": 10000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
+            "aircraft": ["jet", "turboprop"]
           },
           "DINTY,MALIT,SXC": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD KERNL GYWNN/a8000+ PADRZ SXC"
+            "aircraft": ["jet"]
           },
           "IKAYE": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD KERNL GYWNN/a8000+ PADRZ IKAYE"
+            "aircraft": ["jet", "turboprop"]
           },
           "CHKNN,EHF,OROSZ": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN"
+            "aircraft": ["jet", "turboprop"]
           },
           "MTBAL": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230- ANRMN JORRJ/a11000+ GRIDR PIEZZ NSHEE MTBAL"
+            "aircraft": ["jet", "turboprop"]
           },
           "HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230- ANRMN JORRJ/a11000+ GRIDR GUUSE BLUZE IPL BZA HOGGZ"
+            "aircraft": ["jet", "turboprop"]
           },
           "CENZA": {
             "cleared_altitude": 13000,
             "sid": "ZZOOO4",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230- CENZA"
+            "aircraft": ["jet", "turboprop"]
           },
           "JLI": {
             "cleared_altitude": 8000,
-            "sid": "BRDR7",
-            "waypoints": "KSAN-9 N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY BROWS JLI"
+            "sid": "BRDR7"
           },
           "IPL": {
             "cleared_altitude": 8000,
@@ -1502,51 +1493,44 @@
             "sid": "ZZOOO4",
             "is_rnav": true,
             "hold_for_release": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230- ANRMN JORRJ/a11000+ GRIDR PIEZZ NSHEE MTBAL"
+            "aircraft": ["jet", "turboprop"]
           },
           "HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "is_rnav": true,
             "hold_for_release": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230- ANRMN JORRJ/a11000+ GRIDR GUUSE BLUZE IPL BZA HOGGZ"
+            "aircraft": ["jet", "turboprop"]
           },
           "CENZA": {
             "cleared_altitude": 13000,
             "sid": "ZZOOO4",
             "is_rnav": true,
             "hold_for_release": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230- CENZA"
+            "aircraft": ["jet", "turboprop"]
           },
           "JLI": {
             "cleared_altitude": 8000,
             "sid": "BRDR7",
-            "hold_for_release": true,
-            "waypoints": "KSAN-9 N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY BROWS JLI"
+            "hold_for_release": true
           },
           "SLI.O": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2",
             "is_rnav": true,
-            "hold_for_release": true,
-            "waypoints": "KSAN-9/h275@a500/rd LANDN ECHHO GOFUR/a15000+ MMOTO SLI"
+            "hold_for_release": true
           },
           "MALIT.O,SXC.O": {
             "cleared_altitude": 8000,
             "sid": "MMOTO2",
             "is_rnav": true,
-            "hold_for_release": true,
-            "waypoints": "KSAN-9/h275@a500/rd LANDN ECHHO GOFUR/a15000+ MMOTO/a19000- SXC"
+            "hold_for_release": true
           },
           "IKAYE.O": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2",
             "is_rnav": true,
-            "hold_for_release": true,
-            "waypoints": "KSAN-9/h275@a500/rd LANDN ECHHO GOFUR/a15000+ MMOTO TEDEY GEEGN IKAYE"
+            "hold_for_release": true
           },
           "OCN.O": {
             "cleared_altitude": 6000,
@@ -1563,37 +1547,31 @@
           "SLI.E": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2",
-            "is_rnav": true,
-            "waypoints": "KSAN-27/h095@a4000/ld N032.51.30.248,W117.15.28.674 BAUCA ECHHO GOFUR/a15000+ MMOTO SLI"
+            "is_rnav": true
           },
           "IKAYE.E": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2",
-            "is_rnav": true,
-            "waypoints": "KSAN-27/h095@a4000/ld N032.51.30.248,W117.15.28.674 BAUCA ECHHO GOFUR/a15000+ MMOTO TEDEY GEEGN IKAYE"
+            "is_rnav": true
           },
           "MALIT.E,SXC.E": {
             "cleared_altitude": 8000,
             "sid": "MMOTO2",
-            "is_rnav": true,
-            "waypoints": "KSAN-27/h095@a4000/ld N032.51.30.248,W117.15.28.674 BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000- SXC"
+            "is_rnav": true
           },
           "MTBAL.E": {
             "cleared_altitude": 19000,
             "sid": "SAYOW2",
-            "is_rnav": true,
-            "waypoints": "SAYOW/a4900+ LEGUE/a10000+ JLI NSHEE MTBAL"
+            "is_rnav": true
           },
           "IPL.E": {
             "cleared_altitude": 19000,
             "sid": "SAYOW2",
-            "is_rnav": true,
-            "waypoints": "SAYOW/a4900+ CHRJR/a7200+ JUNOR/a15000+ IPL"
+            "is_rnav": true
           },
           "JLI": {
             "cleared_altitude": 8000,
-            "sid": "BRDR7",
-            "waypoints": "BROWS JLI"
+            "sid": "BRDR7"
           },
           "OCN.E": {
             "cleared_altitude": 5000,

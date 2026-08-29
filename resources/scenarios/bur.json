@@ -452,8 +452,7 @@
           },
           "ELMOO": {
             "cleared_altitude": 5000,
-            "sid": "ELMOO9",
-            "waypoints": "N034.11.50.664,W118.20.13.494 N034.09.54.429,W118.18.01.768 ELMOO/a4000+"
+            "sid": "ELMOO9"
           },
           "VNY,TWINE": {
             "cleared_altitude": 4000,
@@ -462,18 +461,15 @@
           },
           "FIM": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-26/h213 VNY IPIHO SUANA FIM"
+            "sid": "VNY4"
           },
           "GMN,AVE": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-26/h213 VNY IPIHO TWINE CASTA/a8300+ GMN"
+            "sid": "VNY4"
           },
           "PMD,DAG": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-26/h213 VNY IPIHO TWINE LANGE SLAPP BOGET PMD"
+            "sid": "VNY4"
           }
         },
         "26": {
@@ -521,8 +517,7 @@
           },
           "ELMOO": {
             "cleared_altitude": 5000,
-            "sid": "ELMOO9",
-            "waypoints": "N034.11.53.589,W118.22.58.482 N034.10.59.179,W118.21.37.567 ELMOO/a4000+"
+            "sid": "ELMOO9"
           },
           "VNY,TWINE": {
             "cleared_altitude": 4000,
@@ -531,18 +526,15 @@
           },
           "FIM": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-8/h293 VNY IPIHO SUANA FIM"
+            "sid": "VNY4"
           },
           "GMN,AVE": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-8/h293 VNY IPIHO TWINE CASTA/a8300+ GMN"
+            "sid": "VNY4"
           },
           "PMD,DAG": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-8/h293 VNY IPIHO TWINE LANGE SLAPP BOGET PMD"
+            "sid": "VNY4"
           }
         },
         "15": {
@@ -590,8 +582,7 @@
           },
           "ELMOO": {
             "cleared_altitude": 5000,
-            "sid": "ELMOO9",
-            "waypoints": "N034.11.15.810,W118.21.12.546 N034.10.27.937,W118.19.52.153 ELMOO/a4000+"
+            "sid": "ELMOO9"
           },
           "VNY,TWINE": {
             "cleared_altitude": 4000,
@@ -600,18 +591,15 @@
           },
           "FIM": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-33/h213 VNY IPIHO SUANA FIM"
+            "sid": "VNY4"
           },
           "GMN,AVE": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-33/h213 VNY IPIHO TWINE CASTA/a8300+ GMN"
+            "sid": "VNY4"
           },
           "PMD,DAG": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-33/h213 VNY IPIHO TWINE LANGE SLAPP BOGET PMD"
+            "sid": "VNY4"
           }
         },
         "33": {
@@ -669,18 +657,15 @@
           },
           "FIM": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-15/h273 VNY IPIHO SUANA FIM"
+            "sid": "VNY4"
           },
           "GMN,AVE": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-15/h273 VNY IPIHO TWINE CASTA/a8300+ GMN"
+            "sid": "VNY4"
           },
           "PMD,DAG": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-15/h273 VNY IPIHO TWINE LANGE SLAPP BOGET PMD"
+            "sid": "VNY4"
           }
         }
       },
@@ -1322,32 +1307,27 @@
           "COREZ": {
             "cleared_altitude": 3000,
             "sid": "CHOII3",
-            "is_rnav": true,
-            "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ YUMMI SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "CSTRO": {
             "cleared_altitude": 3000,
             "sid": "CHOII3",
-            "is_rnav": true,
-            "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ YUMMI HEYJO CSTRO"
+            "is_rnav": true
           },
           "FIM": {
             "cleared_altitude": 3000,
             "sid": "CHOII3",
-            "is_rnav": true,
-            "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ FIM"
+            "is_rnav": true
           },
           "BLH": {
             "cleared_altitude": 3000,
             "sid": "CHOII3",
-            "is_rnav": true,
-            "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ SLAPP YAAPY/a15000+ JETHK/a19000- AERRO DECAS"
+            "is_rnav": true
           },
           "MISEN,LAS": {
             "cleared_altitude": 3000,
             "sid": "CHOII3",
-            "is_rnav": true,
-            "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ SLAPP YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY"
+            "is_rnav": true
           }
         },
         "21": {
@@ -1538,32 +1518,27 @@
           "LAS,MISEN,HEC": {
             "cleared_altitude": 4000,
             "sid": "HARYS5",
-            "is_rnav": true,
-            "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP"
+            "is_rnav": true
           },
           "BLH": {
             "cleared_altitude": 4000,
             "sid": "HARYS5",
-            "is_rnav": true,
-            "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a6000+ HARYS SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
+            "is_rnav": true
           },
           "DAG.R,HEC.R": {
             "cleared_altitude": 4000,
             "sid": "RSCO4",
-            "is_rnav": true,
-            "waypoints": "KVNY-34L/a1750- N034.10.53.384,W118.29.14.132 DSSRT/a3000+/h109 BSHOW/a5300+ CCHUM/a6800+ KIMMO/a7100+ SLAPP JARZO VVERA SSETH"
+            "is_rnav": true
           },
           "CSTRO": {
             "cleared_altitude": 4000,
             "sid": "WLKKR5",
-            "is_rnav": true,
-            "waypoints": "KVNY-34L/a1750- N034.10.43.565,W118.29.14.324 BOOGY/a3300+/flyover/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ HEYJO CSTRO"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 4000,
             "sid": "WLKKR5",
-            "is_rnav": true,
-            "waypoints": "KVNY-34L/a1750- N034.10.43.565,W118.29.14.324 BOOGY/a3300+/flyover/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ BRRKK SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "GMN.C,AVE.C": {
             "cleared_altitude": 4000,
@@ -1595,32 +1570,27 @@
           "HAILO": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
-            "is_rnav": true,
-            "waypoints": "KVNY-16R/h344@a1300/ld CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 WUXAK/a8500+ SLAPP/a13000+ YAAPY/a15000 JETHK/a19000- BBITE/a20000+ ANTLP GUNNR ARRMY HAILO"
+            "is_rnav": true
           },
           "LAS": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
-            "is_rnav": true,
-            "waypoints": "KVNY-16R/h344@a1300/ld CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 WUXAK/a8500+ SLAPP/a13000+ YAAPY/a15000 JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
+            "is_rnav": true
           },
           "MISEN": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
-            "is_rnav": true,
-            "waypoints": "KVNY-16R/h344@a1300/ld CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 WUXAK/a8500+ SLAPP/a13000+ YAAPY/a15000 JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
+            "is_rnav": true
           },
           "HEC": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
-            "is_rnav": true,
-            "waypoints": "KVNY-16R/h344@a1300/ld CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 WUXAK/a8500+ SLAPP/a13000+ YAAPY/a15000 JETHK/a19000- BBITE/a20000+ ANTLP HEC"
+            "is_rnav": true
           },
           "BLH": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
-            "is_rnav": true,
-            "waypoints": "KVNY-16R/h344@a1300/ld CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 WUXAK/a8500+ SLAPP/a13000+ YAAPY/a15000 JETHK/a19000- AERRO DECAS BLH"
+            "is_rnav": true
           },
           "DAG.T,HEC.T": {
             "cleared_altitude": 4000,
@@ -1631,20 +1601,17 @@
           "CSTRO": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
-            "is_rnav": true,
-            "waypoints": "KVNY-16R/h344@a1300/ld CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 DYSPO/a7000+ OROSZ/a9000+ HEYJO CSTRO"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
-            "is_rnav": true,
-            "waypoints": "KVNY-16R/h344@a1300/ld CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 DYSPO/a7000+ OROSZ/a9000+ BRRKK SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "FIM": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
-            "is_rnav": true,
-            "waypoints": "KVNY-16R/h344@a1300/ld CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 DYSPO/a7000+ FIM"
+            "is_rnav": true
           },
           "GMN.C,AVE.C": {
             "cleared_altitude": 4000,

@@ -294,8 +294,7 @@
         "7": {
           "SHEDS": {
             "cleared_altitude": 3000,
-            "sid": "SNDLR3",
-            "waypoints": "BRDEE/flyover OLADY SNDLR SHEDS"
+            "sid": "SNDLR3"
           },
           "SWOMP,SPNER": {
             "cleared_altitude": 3000,
@@ -305,8 +304,7 @@
         "12": {
           "SHEDS": {
             "cleared_altitude": 3000,
-            "sid": "SNDLR3",
-            "waypoints": "PINGL/flyover/h115 SNDLR SHEDS"
+            "sid": "SNDLR3"
           },
           "SWOMP,SPNER": {
             "cleared_altitude": 3000,
@@ -316,8 +314,7 @@
         "25": {
           "SHEDS": {
             "cleared_altitude": 3000,
-            "sid": "SNDLR3",
-            "waypoints": "MKLEE SNDLR SHEDS"
+            "sid": "SNDLR3"
           },
           "SWOMP,SPNER": {
             "cleared_altitude": 3000,
@@ -327,8 +324,7 @@
         "30": {
           "SHEDS": {
             "cleared_altitude": 3000,
-            "sid": "SNDLR3",
-            "waypoints": "SNDLR SHEDS"
+            "sid": "SNDLR3"
           },
           "SWOMP,SPNER": {
             "cleared_altitude": 3000,
@@ -567,45 +563,37 @@
         "5": {
           "LENDS": {
             "cleared_altitude": 2000,
-            "sid": "TURPS2",
-            "waypoints": "KBCT-23/h49 ROTHH/a2000+ TURPS HAAVI PERMT"
+            "sid": "TURPS2"
           },
           "HALBI": {
             "cleared_altitude": 2000,
-            "sid": "TURPS2",
-            "waypoints": "KBCT-23/h49 ROTHH/a2000+ TURPS MIXAE HALBI"
+            "sid": "TURPS2"
           },
           "WELLY": {
             "cleared_altitude": 2000,
-            "sid": "MYZNR3",
-            "waypoints": "KBCT-23/h49 CAWFE/a6000+ JAVAA/a8000+ CONAS/a10000- MYZNR/a10000+ SLAAM WELLY"
+            "sid": "MYZNR3"
           },
           "MATLK,CHEFS": {
             "cleared_altitude": 2000,
-            "sid": "MYZNR3",
-            "waypoints": "KBCT-23/h49 CAWFE/a6000+ JAVAA/a8000+ CONAS/a10000- MYZNR/a10000+ FERAC/a12000+ CHEFS"
+            "sid": "MYZNR3"
           }
         },
         "23": {
           "LENDS": {
             "cleared_altitude": 2000,
-            "sid": "TURPS2",
-            "waypoints": "N026.22.11.549,W080.07.01.600/a500+/h320 ROTHH/a2000+ TURPS HAAVI PERMT"
+            "sid": "TURPS2"
           },
           "HALBI": {
             "cleared_altitude": 2000,
-            "sid": "TURPS2",
-            "waypoints": "N026.22.11.549,W080.07.01.600/a500+/h320 ROTHH/a2000+ TURPS MIXAE HALBI"
+            "sid": "TURPS2"
           },
           "WELLY": {
             "cleared_altitude": 2000,
-            "sid": "MYZNR3",
-            "waypoints": "N026.22.11.549,W080.07.01.600/a500+/h320 CAWFE/a6000+ JAVAA/a8000+ CONAS/a10000- MYZNR/a10000+ SLAAM WELLY"
+            "sid": "MYZNR3"
           },
           "MATLK,CHEFS": {
             "cleared_altitude": 2000,
-            "sid": "MYZNR3",
-            "waypoints": "N026.22.11.549,W080.07.01.600/a500+/h320 CAWFE/a6000+ JAVAA/a8000+ CONAS/a10000- MYZNR/a10000+ FERAC/a12000+ CHEFS"
+            "sid": "MYZNR3"
           }
         }
       },
@@ -768,65 +756,53 @@
         "10L": {
           "JAYMC": {
             "cleared_altitude": 11000,
-            "sid": "OLAKE4",
-            "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR SONNC AHABB/a6000+ BAGGR/a10000+ OLAKE/a11000+ JAYMC"
+            "sid": "OLAKE4"
           },
           "MATLK,KPASA,SHRKS,SMELZ,VIYAP": {
             "cleared_altitude": 11000,
-            "sid": "TBIRD8",
-            "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR SONNC AHABB/a6000+ BAGGR/a10000+ TBIRD SIGME PANNT MATLK"
+            "sid": "TBIRD8"
           },
           "CHEFS": {
             "cleared_altitude": 11000,
-            "sid": "TBIRD8",
-            "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR SONNC AHABB/a6000+ BAGGR/a10000+ TBIRD CHEFS"
+            "sid": "TBIRD8"
           },
           "LENDS": {
             "cleared_altitude": 12000,
-            "sid": "SLIDZ4",
-            "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR SLIDZ/a10000+ FIXAS/a12000+ QUIZR"
+            "sid": "SLIDZ4"
           },
           "HALBI": {
             "cleared_altitude": 7000,
-            "sid": "MIXAE5",
-            "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR HEFFE/a7000 MIXAE/a7000+ HALBI"
+            "sid": "MIXAE5"
           },
           "WELLY": {
             "cleared_altitude": 4000,
-            "sid": "WELLY5",
-            "waypoints": "N026.40.52.120,W080.03.36.622 SMGLR/h110 SLAAM WELLY"
+            "sid": "WELLY5"
           }
         },
         "28R": {
           "JAYMC": {
             "cleared_altitude": 11000,
-            "sid": "OLAKE4",
-            "waypoints": "CRYER/a2500+ UTLEY/a4000+ BAGGR/a10000+ OLAKE/a11000+ JAYMC"
+            "sid": "OLAKE4"
           },
           "MATLK,KPASA,SHRKS,SMELZ,VIYAP": {
             "cleared_altitude": 11000,
-            "sid": "TBIRD8",
-            "waypoints": "CRYER/a2500+ UTLEY/a4000+ BAGGR/a10000+ TBIRD SIGME PANNT MATLK"
+            "sid": "TBIRD8"
           },
           "CHEFS": {
             "cleared_altitude": 11000,
-            "sid": "TBIRD8",
-            "waypoints": "CRYER/a2500+ UTLEY/a4000+ BAGGR/a10000+ TBIRD CHEFS"
+            "sid": "TBIRD8"
           },
           "LENDS": {
             "cleared_altitude": 12000,
-            "sid": "SLIDZ4",
-            "waypoints": "CRYER/a2500+ UTLEY/a4000+ FINNS PYRUT/a7000+ SLIDZ/a10000+ FIXAS/a12000+ QUIZR"
+            "sid": "SLIDZ4"
           },
           "HALBI": {
             "cleared_altitude": 7000,
-            "sid": "MIXAE5",
-            "waypoints": "CRYER/a2500+ UTLEY/a4000+ FINNS PYRUT/a7000 HEFFE/a7000 MIXAE/a7000+ HALBI"
+            "sid": "MIXAE5"
           },
           "WELLY": {
             "cleared_altitude": 4000,
-            "sid": "WELLY5",
-            "waypoints": "CRYER MYZNR SLAAM WELLY"
+            "sid": "WELLY5"
           }
         }
       },

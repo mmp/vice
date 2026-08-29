@@ -260,113 +260,91 @@
           },
           "LITTR": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DAFUS GEJAY BERYY/a5000+ TWRAY LITTR"
+            "sid": "BERYY6"
           },
           "VIH": {
             "cleared_altitude": 5000,
-            "sid": "BGOOD5",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DAFUS TRAVS BGOOD VIH"
+            "sid": "BGOOD5"
           },
           "HLV": {
             "cleared_altitude": 5000,
-            "sid": "BRAKK5",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DAFUS TRAVS SEKAY LIISA BRAKK RMMOS HLV"
+            "sid": "BRAKK5"
           },
           "ARG": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DAFUS GEJAY CHUUC MYERZ ARG"
+            "sid": "CHUUC6"
           },
           "MYERZ": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DAFUS GEJAY CHUUC MYERZ"
+            "sid": "CHUUC6"
           },
           "DENNI": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DRUSE PLESS DENNI"
+            "sid": "DRUSE5"
           },
           "BNA": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DRUSE PLESS DENNI TINGS LAJUG BNA"
+            "sid": "DRUSE5"
           },
           "NEENS": {
             "cleared_altitude": 5000,
-            "sid": "EEMOS5",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ BEART GMSKI EEMOS NEENS"
+            "sid": "EEMOS5"
           },
           "MAP": {
             "cleared_altitude": 5000,
-            "sid": "JAHNY6",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DAFUS TRAVS JAHNY WESCO MAP"
+            "sid": "JAHNY6"
           },
           "BIB": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR BIB"
+            "sid": "JHART7"
           },
           "VHP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY VHP"
+            "sid": "JHART7"
           },
           "CREEP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY SHB CREEP"
+            "sid": "JHART7"
           },
           "DOBLR": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR"
+            "sid": "JHART7"
           },
           "KELLY": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY"
+            "sid": "JHART7"
           },
           "RINTE": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY SHB RINTE"
+            "sid": "JHART7"
           },
           "LEBOY": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ BEART GMSKI KSHEE LEBOY"
+            "sid": "KSHEE5"
           },
           "SEXTN": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ BEART GMSKI KSHEE LEBOY SEXTN"
+            "sid": "KSHEE5"
           },
           "SPI": {
             "cleared_altitude": 5000,
-            "sid": "NATCA5",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ BEART NATCA SPI"
+            "sid": "NATCA5"
           },
           "SKUTR": {
             "cleared_altitude": 5000,
-            "sid": "ROTRY6",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+/s240- BEART/a3000+/s240- GMSKI ROTRY/a5000+ SKUTR"
+            "sid": "ROTRY6"
           },
           "HILTS": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ RAMKR TEDDD ENL ZOLLI HILTS"
+            "sid": "TEDDD5"
           },
           "IIU": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-29/h123@a1120/ld FUNKE/a2500+ RAMKR TEDDD ENL ZOLLI HILTS IIU"
+            "sid": "TEDDD5"
           },
           "MCM": {
             "cleared_altitude": 5000,
-            "sid": "WHRLI7",
-            "waypoints": "KSTL-29 LUUBE/a2500+ DAFUS TRAVS SEKAY LIISA WHRLI MRCOS MCM"
+            "sid": "WHRLI7"
           },
           "ROD": {
             "cleared_altitude": 5000,
@@ -387,118 +365,95 @@
         "29": {
           "BERYY": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WAARN BERYY/a5000+"
+            "sid": "BERYY6"
           },
           "LITTR": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WAARN BERYY/a5000+ TWRAY LITTR"
+            "sid": "BERYY6"
           },
           "VIH": {
             "cleared_altitude": 5000,
-            "sid": "BGOOD5",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WAARN FLPPS BGOOD VIH"
+            "sid": "BGOOD5"
           },
           "HLV": {
             "cleared_altitude": 5000,
-            "sid": "BRAKK5",
-            "waypoints": "KSTL-11 HAGEE/a2500+ BRAKK RMMOS HLV"
+            "sid": "BRAKK5"
           },
           "ARG": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WAARN ELDBB CHUUC MYERZ ARG"
+            "sid": "CHUUC6"
           },
           "MYERZ": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WAARN ELDBB CHUUC MYERZ"
+            "sid": "CHUUC6"
           },
           "DENNI": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WAARN ELDBB BERAA DRUSE PLESS DENNI"
+            "sid": "DRUSE5"
           },
           "BNA": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WAARN ELDBB BERAA DRUSE PLESS DENNI TINGS LAJUG BNA"
+            "sid": "DRUSE5"
           },
           "NEENS": {
             "cleared_altitude": 5000,
-            "sid": "EEMOS5",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ CONRR EEMOS NEENS"
+            "sid": "EEMOS5"
           },
           "MAP": {
             "cleared_altitude": 5000,
-            "sid": "JAHNY6",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WAARN FLPPS JAHNY WESCO MAP"
+            "sid": "JAHNY6"
           },
           "BIB": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB"
+            "sid": "JHART7"
           },
           "VHP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY VHP"
+            "sid": "JHART7"
           },
           "CREEP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR WORKE KELLY SHB CREEP"
+            "sid": "JHART7"
           },
           "DOBLR": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR"
+            "sid": "JHART7"
           },
           "KELLY": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY"
+            "sid": "JHART7"
           },
           "RINTE": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY SHB RINTE"
+            "sid": "JHART7"
           },
           "LEBOY": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ CONRR KSHEE LEBOY"
+            "sid": "KSHEE5"
           },
           "SEXTN": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ CONRR KSHEE LEBOY SEXTN"
+            "sid": "KSHEE5"
           },
           "SPI": {
             "cleared_altitude": 5000,
-            "sid": "NATCA5",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ NATCA SPI"
+            "sid": "NATCA5"
           },
           "SKUTR": {
             "cleared_altitude": 5000,
-            "sid": "ROTRY6",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+/s240- ROTRY/a5000+ SKUTR"
+            "sid": "ROTRY6"
           },
           "HILTS": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ ANNII LENXX KAEYE TEDDD ENL ZOLLI HILTS"
+            "sid": "TEDDD5"
           },
           "IIU": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-11/h303@a1120/rd DSAPP/a2500+ ANNII LENXX KAEYE TEDDD ENL ZOLLI HILTS IIU"
+            "sid": "TEDDD5"
           },
           "MCM": {
             "cleared_altitude": 5000,
-            "sid": "WHRLI7",
-            "waypoints": "KSTL-11 HAGEE/a2500+ WHRLI MRCOS MCM"
+            "sid": "WHRLI7"
           },
           "ROD": {
             "cleared_altitude": 5000,
@@ -519,118 +474,95 @@
         "30L": {
           "BERYY": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-12R PYUNG/a2500+ ALLNT ELDBB BERYY/a5000+"
+            "sid": "BERYY6"
           },
           "LITTR": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-12R PYUNG/a2500+ ALLNT ELDBB BERYY/a5000+ TWRAY LITTR"
+            "sid": "BERYY6"
           },
           "VIH": {
             "cleared_altitude": 5000,
-            "sid": "BGOOD5",
-            "waypoints": "KSTL-12R PYUNG/a2500+ ALLNT FLPPS BGOOD VIH"
+            "sid": "BGOOD5"
           },
           "HLV": {
             "cleared_altitude": 5000,
-            "sid": "BRAKK5",
-            "waypoints": "KSTL-12R PYUNG/a2500+ BRAKK RMMOS HLV"
+            "sid": "BRAKK5"
           },
           "ARG": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-12R PYUNG/a2500+ ALLNT ELDBB CHUUC MYERZ ARG"
+            "sid": "CHUUC6"
           },
           "MYERZ": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-12R PYUNG/a2500+ ALLNT ELDBB CHUUC MYERZ"
+            "sid": "CHUUC6"
           },
           "DENNI": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-12R PYUNG/a2500+ ALLNT ELDBB BERAA DRUSE PLESS DENNI"
+            "sid": "DRUSE5"
           },
           "BNA": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-12R PYUNG/a2500+ ALLNT ELDBB BERAA DRUSE PLESS DENNI TINGS LAJUG BNA"
+            "sid": "DRUSE5"
           },
           "NEENS": {
             "cleared_altitude": 5000,
-            "sid": "EEMOS5",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ CONRR EEMOS NEENS"
+            "sid": "EEMOS5"
           },
           "MAP": {
             "cleared_altitude": 5000,
-            "sid": "JAHNY6",
-            "waypoints": "KSTL-12R PYUNG/a2500+ ALLNT FLPPS JAHNY WESCO MAP"
+            "sid": "JAHNY6"
           },
           "BIB": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB"
+            "sid": "JHART7"
           },
           "VHP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY VHP"
+            "sid": "JHART7"
           },
           "CREEP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR WORKE KELLY SHB CREEP"
+            "sid": "JHART7"
           },
           "DOBLR": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR"
+            "sid": "JHART7"
           },
           "KELLY": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY"
+            "sid": "JHART7"
           },
           "RINTE": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY SHB RINTE"
+            "sid": "JHART7"
           },
           "LEBOY": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ CONRR KSHEE LEBOY"
+            "sid": "KSHEE5"
           },
           "SEXTN": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ CONRR KSHEE LEBOY SEXTN"
+            "sid": "KSHEE5"
           },
           "SPI": {
             "cleared_altitude": 5000,
-            "sid": "NATCA5",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ NATCA SPI"
+            "sid": "NATCA5"
           },
           "SKUTR": {
             "cleared_altitude": 5000,
-            "sid": "ROTRY6",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+/s240- ROTRY/a5000+ SKUTR"
+            "sid": "ROTRY6"
           },
           "HILTS": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE TEDDD ENL ZOLLI HILTS"
+            "sid": "TEDDD5"
           },
           "IIU": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-12R/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE TEDDD ENL ZOLLI HILTS IIU"
+            "sid": "TEDDD5"
           },
           "MCM": {
             "cleared_altitude": 5000,
-            "sid": "WHRLI7",
-            "waypoints": "KSTL-12R PYUNG/a2500+ WHRLI MRCOS MCM"
+            "sid": "WHRLI7"
           },
           "ROD": {
             "cleared_altitude": 5000,
@@ -651,118 +583,95 @@
         "30R": {
           "BERYY": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-12L PYUNG/a2500+ ALLNT ELDBB BERYY/a5000+"
+            "sid": "BERYY6"
           },
           "LITTR": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-12L PYUNG/a2500+ ALLNT ELDBB BERYY/a5000+ TWRAY LITTR"
+            "sid": "BERYY6"
           },
           "VIH": {
             "cleared_altitude": 5000,
-            "sid": "BGOOD5",
-            "waypoints": "KSTL-12L PYUNG/a2500+ ALLNT FLPPS BGOOD VIH"
+            "sid": "BGOOD5"
           },
           "HLV": {
             "cleared_altitude": 5000,
-            "sid": "BRAKK5",
-            "waypoints": "KSTL-12L PYUNG/a2500+ BRAKK RMMOS HLV"
+            "sid": "BRAKK5"
           },
           "ARG": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-12L PYUNG/a2500+ ALLNT ELDBB CHUUC MYERZ ARG"
+            "sid": "CHUUC6"
           },
           "MYERZ": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-12L PYUNG/a2500+ ALLNT ELDBB CHUUC MYERZ"
+            "sid": "CHUUC6"
           },
           "DENNI": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-12L PYUNG/a2500+ ALLNT ELDBB BERAA DRUSE PLESS DENNI"
+            "sid": "DRUSE5"
           },
           "BNA": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-12L PYUNG/a2500+ ALLNT ELDBB BERAA DRUSE PLESS DENNI TINGS LAJUG BNA"
+            "sid": "DRUSE5"
           },
           "NEENS": {
             "cleared_altitude": 5000,
-            "sid": "EEMOS5",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ CONRR EEMOS NEENS"
+            "sid": "EEMOS5"
           },
           "MAP": {
             "cleared_altitude": 5000,
-            "sid": "JAHNY6",
-            "waypoints": "KSTL-12L PYUNG/a2500+ ALLNT FLPPS JAHNY WESCO MAP"
+            "sid": "JAHNY6"
           },
           "BIB": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB"
+            "sid": "JHART7"
           },
           "VHP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY VHP"
+            "sid": "JHART7"
           },
           "CREEP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR WORKE KELLY SHB CREEP"
+            "sid": "JHART7"
           },
           "DOBLR": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR"
+            "sid": "JHART7"
           },
           "KELLY": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY"
+            "sid": "JHART7"
           },
           "RINTE": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE JHART/a5000+ DOBLR BIB WORKE KELLY SHB RINTE"
+            "sid": "JHART7"
           },
           "LEBOY": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ CONRR KSHEE LEBOY"
+            "sid": "KSHEE5"
           },
           "SEXTN": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ CONRR KSHEE LEBOY SEXTN"
+            "sid": "KSHEE5"
           },
           "SPI": {
             "cleared_altitude": 5000,
-            "sid": "NATCA5",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ NATCA SPI"
+            "sid": "NATCA5"
           },
           "SKUTR": {
             "cleared_altitude": 5000,
-            "sid": "ROTRY6",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+/s240- ROTRY/a5000+ SKUTR"
+            "sid": "ROTRY6"
           },
           "HILTS": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE TEDDD ENL ZOLLI HILTS"
+            "sid": "TEDDD5"
           },
           "IIU": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-12L/h303@a1120/rd WOLTR/a2500+ ANNII LENXX KAEYE TEDDD ENL ZOLLI HILTS IIU"
+            "sid": "TEDDD5"
           },
           "MCM": {
             "cleared_altitude": 5000,
-            "sid": "WHRLI7",
-            "waypoints": "KSTL-12L PYUNG/a2500+ WHRLI MRCOS MCM"
+            "sid": "WHRLI7"
           },
           "ROD": {
             "cleared_altitude": 5000,
@@ -788,113 +697,91 @@
           },
           "LITTR": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DAFUS GEJAY BERYY/a5000+ TWRAY LITTR"
+            "sid": "BERYY6"
           },
           "VIH": {
             "cleared_altitude": 5000,
-            "sid": "BGOOD5",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DAFUS TRAVS BGOOD VIH"
+            "sid": "BGOOD5"
           },
           "HLV": {
             "cleared_altitude": 5000,
-            "sid": "BRAKK5",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DAFUS TRAVS SEKAY LIISA BRAKK RMMOS HLV"
+            "sid": "BRAKK5"
           },
           "ARG": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DAFUS GEJAY CHUUC MYERZ ARG"
+            "sid": "CHUUC6"
           },
           "MYERZ": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DAFUS GEJAY CHUUC MYERZ"
+            "sid": "CHUUC6"
           },
           "DENNI": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DRUSE PLESS DENNI"
+            "sid": "DRUSE5"
           },
           "BNA": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DRUSE PLESS DENNI TINGS LAJUG BNA"
+            "sid": "DRUSE5"
           },
           "NEENS": {
             "cleared_altitude": 5000,
-            "sid": "EEMOS5",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ BEART GMSKI EEMOS NEENS"
+            "sid": "EEMOS5"
           },
           "MAP": {
             "cleared_altitude": 5000,
-            "sid": "JAHNY6",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DAFUS TRAVS JAHNY WESCO MAP"
+            "sid": "JAHNY6"
           },
           "BIB": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR BIB"
+            "sid": "JHART7"
           },
           "VHP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY VHP"
+            "sid": "JHART7"
           },
           "CREEP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY SHB CREEP"
+            "sid": "JHART7"
           },
           "DOBLR": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR"
+            "sid": "JHART7"
           },
           "KELLY": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY"
+            "sid": "JHART7"
           },
           "RINTE": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY SHB RINTE"
+            "sid": "JHART7"
           },
           "LEBOY": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ BEART GMSKI KSHEE LEBOY"
+            "sid": "KSHEE5"
           },
           "SEXTN": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ BEART GMSKI KSHEE LEBOY SEXTN"
+            "sid": "KSHEE5"
           },
           "SPI": {
             "cleared_altitude": 5000,
-            "sid": "NATCA5",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ BEART NATCA SPI"
+            "sid": "NATCA5"
           },
           "SKUTR": {
             "cleared_altitude": 5000,
-            "sid": "ROTRY6",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+/s240- BEART/a3000+/s240- GMSKI ROTRY/a5000+ SKUTR"
+            "sid": "ROTRY6"
           },
           "HILTS": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ RAMKR TEDDD ENL ZOLLI HILTS"
+            "sid": "TEDDD5"
           },
           "IIU": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-30R/h123@a1120/ld FUNKE/a2500+ RAMKR TEDDD ENL ZOLLI HILTS IIU"
+            "sid": "TEDDD5"
           },
           "MCM": {
             "cleared_altitude": 5000,
-            "sid": "WHRLI7",
-            "waypoints": "KSTL-30R HEFNR/a2500+ DAFUS TRAVS SEKAY LIISA WHRLI MRCOS MCM"
+            "sid": "WHRLI7"
           },
           "ROD": {
             "cleared_altitude": 5000,
@@ -920,113 +807,91 @@
           },
           "LITTR": {
             "cleared_altitude": 5000,
-            "sid": "BERYY6",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DAFUS GEJAY BERYY/a5000+ TWRAY LITTR"
+            "sid": "BERYY6"
           },
           "VIH": {
             "cleared_altitude": 5000,
-            "sid": "BGOOD5",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DAFUS TRAVS BGOOD VIH"
+            "sid": "BGOOD5"
           },
           "HLV": {
             "cleared_altitude": 5000,
-            "sid": "BRAKK5",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DAFUS TRAVS SEKAY LIISA BRAKK RMMOS HLV"
+            "sid": "BRAKK5"
           },
           "ARG": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DAFUS GEJAY CHUUC MYERZ ARG"
+            "sid": "CHUUC6"
           },
           "MYERZ": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DAFUS GEJAY CHUUC MYERZ"
+            "sid": "CHUUC6"
           },
           "DENNI": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DRUSE PLESS DENNI"
+            "sid": "DRUSE5"
           },
           "BNA": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DRUSE PLESS DENNI TINGS LAJUG BNA"
+            "sid": "DRUSE5"
           },
           "NEENS": {
             "cleared_altitude": 5000,
-            "sid": "EEMOS5",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ BEART GMSKI EEMOS NEENS"
+            "sid": "EEMOS5"
           },
           "MAP": {
             "cleared_altitude": 5000,
-            "sid": "JAHNY6",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DAFUS TRAVS JAHNY WESCO MAP"
+            "sid": "JAHNY6"
           },
           "BIB": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR BIB"
+            "sid": "JHART7"
           },
           "VHP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY VHP"
+            "sid": "JHART7"
           },
           "CREEP": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY SHB CREEP"
+            "sid": "JHART7"
           },
           "DOBLR": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR"
+            "sid": "JHART7"
           },
           "KELLY": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY"
+            "sid": "JHART7"
           },
           "RINTE": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ RAMKR JHART/a5000+ DOBLR WORKE KELLY SHB RINTE"
+            "sid": "JHART7"
           },
           "LEBOY": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ BEART GMSKI KSHEE LEBOY"
+            "sid": "KSHEE5"
           },
           "SEXTN": {
             "cleared_altitude": 5000,
-            "sid": "KSHEE5",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ BEART GMSKI KSHEE LEBOY SEXTN"
+            "sid": "KSHEE5"
           },
           "SPI": {
             "cleared_altitude": 5000,
-            "sid": "NATCA5",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ BEART NATCA SPI"
+            "sid": "NATCA5"
           },
           "SKUTR": {
             "cleared_altitude": 5000,
-            "sid": "ROTRY6",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+/s240- BEART/a3000+/s240- GMSKI ROTRY/a5000+ SKUTR"
+            "sid": "ROTRY6"
           },
           "HILTS": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ RAMKR TEDDD ENL ZOLLI HILTS"
+            "sid": "TEDDD5"
           },
           "IIU": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-30L/h123@a1120/ld FUNKE/a2500+ RAMKR TEDDD ENL ZOLLI HILTS IIU"
+            "sid": "TEDDD5"
           },
           "MCM": {
             "cleared_altitude": 5000,
-            "sid": "WHRLI7",
-            "waypoints": "KSTL-30L HEFNR/a2500+ DAFUS TRAVS SEKAY LIISA WHRLI MRCOS MCM"
+            "sid": "WHRLI7"
           },
           "ROD": {
             "cleared_altitude": 5000,
@@ -1047,38 +912,31 @@
         "24": {
           "VIH": {
             "cleared_altitude": 5000,
-            "sid": "BGOOD5",
-            "waypoints": "KSTL-6/h244"
+            "sid": "BGOOD5"
           },
           "HLV": {
             "cleared_altitude": 5000,
-            "sid": "BRAKK5",
-            "waypoints": "KSTL-6/h244"
+            "sid": "BRAKK5"
           },
           "ARG, MYERZ": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-6/h244"
+            "sid": "CHUUC6"
           },
           "DENNI, BNA": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-6/h244"
+            "sid": "DRUSE5"
           },
           "NEENS": {
             "cleared_altitude": 5000,
-            "sid": "EEMOS5",
-            "waypoints": "KSTL-6/h244"
+            "sid": "EEMOS5"
           },
           "MAP": {
             "cleared_altitude": 5000,
-            "sid": "JAHNY6",
-            "waypoints": "KSTL-6/h244"
+            "sid": "JAHNY6"
           },
           "BIB, VHP, CREEP, DOBLR, KELLY, RINTE": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-6/h244"
+            "sid": "JHART7"
           },
           "LEBOY": {
             "cleared_altitude": 5000,
@@ -1087,8 +945,7 @@
           },
           "SPI": {
             "cleared_altitude": 5000,
-            "sid": "NATCA5",
-            "waypoints": "KSTL-6/h244"
+            "sid": "NATCA5"
           },
           "HILTS": {
             "cleared_altitude": 5000,
@@ -1097,13 +954,11 @@
           },
           "IIU": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-6/h244"
+            "sid": "TEDDD5"
           },
           "MCM": {
             "cleared_altitude": 5000,
-            "sid": "WHRLI7",
-            "waypoints": "KSTL-6/h244"
+            "sid": "WHRLI7"
           },
           "ROD": {
             "cleared_altitude": 5000,
@@ -1124,38 +979,31 @@
         "6": {
           "VIH": {
             "cleared_altitude": 5000,
-            "sid": "BGOOD5",
-            "waypoints": "KSTL-24/h064"
+            "sid": "BGOOD5"
           },
           "HLV": {
             "cleared_altitude": 5000,
-            "sid": "BRAKK5",
-            "waypoints": "KSTL-24/h064"
+            "sid": "BRAKK5"
           },
           "ARG, MYERZ": {
             "cleared_altitude": 5000,
-            "sid": "CHUUC6",
-            "waypoints": "KSTL-24/h064"
+            "sid": "CHUUC6"
           },
           "DENNI, BNA": {
             "cleared_altitude": 5000,
-            "sid": "DRUSE5",
-            "waypoints": "KSTL-24/h064"
+            "sid": "DRUSE5"
           },
           "NEENS": {
             "cleared_altitude": 5000,
-            "sid": "EEMOS5",
-            "waypoints": "KSTL-24/h064"
+            "sid": "EEMOS5"
           },
           "MAP": {
             "cleared_altitude": 5000,
-            "sid": "JAHNY6",
-            "waypoints": "KSTL-24/h064"
+            "sid": "JAHNY6"
           },
           "BIB, VHP, CREEP, DOBLR, KELLY, RINTE": {
             "cleared_altitude": 5000,
-            "sid": "JHART7",
-            "waypoints": "KSTL-24/h064"
+            "sid": "JHART7"
           },
           "LEBOY": {
             "cleared_altitude": 5000,
@@ -1164,8 +1012,7 @@
           },
           "SPI": {
             "cleared_altitude": 5000,
-            "sid": "NATCA5",
-            "waypoints": "KSTL-24/h064"
+            "sid": "NATCA5"
           },
           "HILTS": {
             "cleared_altitude": 5000,
@@ -1174,13 +1021,11 @@
           },
           "IIU": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-24/h064"
+            "sid": "TEDDD5"
           },
           "MCM": {
             "cleared_altitude": 5000,
-            "sid": "WHRLI7",
-            "waypoints": "KSTL-24/h064"
+            "sid": "WHRLI7"
           },
           "ROD": {
             "cleared_altitude": 5000,

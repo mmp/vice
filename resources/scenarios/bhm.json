@@ -35,75 +35,61 @@
         "24": {
           "DAYVS": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_6/h238"
+            "sid": "BHM8"
           },
           "JOEYE": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_6/h238"
+            "sid": "BHM8"
           },
           "KELCC": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_6/h238"
+            "sid": "BHM8"
           },
           "RHETT": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_6/h238"
+            "sid": "BHM8"
           },
           "MRICA": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_6/h238"
+            "sid": "BHM8"
           },
           "CHEHA": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_6/h238"
+            "sid": "BHM8"
           },
           "GUMMP": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_6/h238"
+            "sid": "BHM8"
           }
         },
         "6": {
           "DAYVS": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_24/h058"
+            "sid": "BHM8"
           },
           "JOEYE": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_24/h058"
+            "sid": "BHM8"
           },
           "KELCC": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_24/h058"
+            "sid": "BHM8"
           },
           "RHETT": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_24/h058"
+            "sid": "BHM8"
           },
           "MRICA": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_24/h058"
+            "sid": "BHM8"
           },
           "CHEHA": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_24/h058"
+            "sid": "BHM8"
           },
           "GUMMP": {
             "cleared_altitude": 4000,
-            "sid": "BHM8",
-            "waypoints": "_BHM_24/h058"
+            "sid": "BHM8"
           }
         }
       },

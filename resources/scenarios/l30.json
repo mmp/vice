@@ -185,167 +185,135 @@
         "26R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- MGNTO KRUGR/a11000-/s250 JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "LEELN/a800- PENSK LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR TOPAC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ DOYYL ZELMA JOTNU"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK"
+            "sid": "RASLR3"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3",
-            "waypoints": "LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN FRNCK"
+            "sid": "RATPK3"
           }
         },
         "26L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- MGNTO KRUGR/a11000-/s250 JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "LEELN/a800- PENSK LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR TOPAC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ DOYYL ZELMA JOTNU"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": "SILTT/flyover RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK"
+            "sid": "RASLR3"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3",
-            "waypoints": "LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN FRNCK"
+            "sid": "RATPK3"
           }
         },
         "8R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN/flyover LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
@@ -354,216 +322,175 @@
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": " N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 ROODE/a8000+ RASLR/a13000+ ROHCK"
+            "sid": "RASLR3"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN/flyover JENFR RATPK DARDN FRNCK"
+            "sid": "RATPK3"
           }
         },
         "8L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN/flyover LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ DOYYL ZELMA JOTNU"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": " N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 ROODE/a8000+ RASLR/a13000+ ROHCK"
+            "sid": "RASLR3"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN/flyover JENFR RATPK DARDN FRNCK"
+            "sid": "RATPK3"
           }
         },
         "8L.CFG2": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN/flyover LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ DOYYL ZELMA JOTNU"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": " N036.04.34.671,W115.06.08.014 FLAAR/a6000+/s230 ROODE/a8000+ RASLR/a13000+ ROHCK"
+            "sid": "RASLR3"
           },
           "FRNCK.8": {
             "cleared_altitude": 19000,
-            "sid": "FRNCK1",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ RATPK/a13000+ DARDN FRNCK"
+            "sid": "FRNCK1"
           }
         },
         "1R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY KWYYN RAWKK/a13000+ JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ PENSK LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ DOYYL ZELMA JOTNU LVELL"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
+            "sid": "RASLR3"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD/a6000+ JENFR RATPK DARDN FRNCK"
+            "sid": "RATPK3"
           }
         },
         "1L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -572,80 +499,65 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ PENSK LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ DOYYL ZELMA JOTNU LVELL"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
+            "sid": "RASLR3"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3",
-            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD/a6000+ JENFR RATPK DARDN FRNCK"
+            "sid": "RATPK3"
           }
         },
         "19R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG COMIC MGNTO KRUGR/a11000-/s250 JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- PENSK LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000 NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
@@ -669,45 +581,37 @@
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK ZAYNE"
+            "sid": "RASLR3"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN FRNCK"
+            "sid": "RATPK3"
           }
         },
         "19L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT4"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT4"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG COMIC MGNTO KRUGR/a11000-/s250 JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- PENSK LOHLA/a13400+ JAYSN"
+            "sid": "LOHLA3"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ HOCEE"
+            "sid": "NIITZ4"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000 NIITZ IWANS SSKEE"
+            "sid": "NIITZ4"
           },
           "HEC": {
             "cleared_altitude": 19000,
@@ -731,13 +635,11 @@
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000+ VIVVS/a10000+ RASLR/a13000+ ROHCK ZAYNE"
+            "sid": "RASLR3"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN FRNCK"
+            "sid": "RATPK3"
           }
         }
       },
@@ -1556,135 +1458,109 @@
         "35L": {
           "KENNO": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 ZIGLR OYODA/a7300+ JFFAR JOHKR/a19000- GRYMZ DEDPL BIKKR CAGEE/a14000+ KENNO"
+            "sid": "OYODA2"
           },
           "HEC": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 ZIGLR OYODA/a7300+ JFFAR RADYR/a9500+ SLVRR TOPAC HEC"
+            "sid": "OYODA2"
           },
           "BOJAC": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 ZIGLR OYODA/a7300+ JFFAR RADYR/a9500+ DOYYL BOJAC"
+            "sid": "OYODA2"
           },
           "BLAQQ": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 ZIGLR OYODA/a7300+ JFFAR RADYR/a9500+ BLAQQ"
+            "sid": "OYODA2"
           },
           "BLH": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 ZIGLR OYODA/a7300+ JFFAR RADYR/a9500+ DOYYL ZELMA BLH"
+            "sid": "OYODA2"
           },
           "LVELL": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 ZIGLR OYODA/a7300+ JFFAR RADYR/a9500+ DOYYL ZELMA JOTNU LVELL"
+            "sid": "OYODA2"
           },
           "FRNCK": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR RATPK DARDN FRNCK"
+            "sid": "SCAMR4"
           },
           "VERKN": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA GIDGT/a10000+ GEEOO BETHL VERKN"
+            "sid": "SCAMR4"
           },
           "TUKRR": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA GIDGT/a10000+ NICLE TUKRR"
+            "sid": "SCAMR4"
           },
           "PGA": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA NIITZ PGA"
+            "sid": "SCAMR4"
           },
           "HOCEE": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA NIITZ HOCEE"
+            "sid": "SCAMR4"
           },
           "SSKEE": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA NIITZ IWANS SSKEE"
+            "sid": "SCAMR4"
           },
           "ZAYNE": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA RASLR/a10000+ ROHCK ZAYNE"
+            "sid": "SCAMR4"
           }
         },
         "17R": {
           "KENNO": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- OYODA/a7300+ JFFAR JOHKR/a19000- GRYMZ DEDPL BIKKR CAGEE/a14000+ KENNO"
+            "sid": "OYODA2"
           },
           "HEC": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- OYODA/a7300+ JFFAR RADYR/a9500+ SLVRR TOPAC HEC"
+            "sid": "OYODA2"
           },
           "BOJAC": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- OYODA/a7300+ JFFAR RADYR/a9500+ DOYYL BOJAC"
+            "sid": "OYODA2"
           },
           "BLAQQ": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- OYODA/a7300+ JFFAR RADYR/a9500+ BLAQQ"
+            "sid": "OYODA2"
           },
           "BLH": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- OYODA/a7300+ JFFAR RADYR/a9500+ DOYYL ZELMA BLH"
+            "sid": "OYODA2"
           },
           "LVELL": {
             "cleared_altitude": 7000,
-            "sid": "OYODA2",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- OYODA/a7300+ JFFAR RADYR/a9500+ DOYYL ZELMA JOTNU LVELL"
+            "sid": "OYODA2"
           },
           "FRNCK": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR RATPK DARDN FRNCK"
+            "sid": "SCAMR4"
           },
           "VERKN": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA GIDGT/a10000+ GEEOO BETHL VERKN"
+            "sid": "SCAMR4"
           },
           "TUKRR": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA GIDGT/a10000+ NICLE TUKRR"
+            "sid": "SCAMR4"
           },
           "PGA": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA NIITZ PGA"
+            "sid": "SCAMR4"
           },
           "HOCEE": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA NIITZ HOCEE"
+            "sid": "SCAMR4"
           },
           "SSKEE": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA NIITZ IWANS SSKEE"
+            "sid": "SCAMR4"
           },
           "ZAYNE": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA RASLR/a10000+ ROHCK ZAYNE"
+            "sid": "SCAMR4"
           }
         }
       },
@@ -1780,8 +1656,7 @@
           },
           "BLD": {
             "cleared_altitude": 7000,
-            "sid": "BLD1",
-            "waypoints": "N036.12.49.152,W115.10.51.269 N036.09.48.922,W115.15.48.065 LAS/a4000+ BLD"
+            "sid": "BLD1"
           }
         },
         "25": {
@@ -1792,8 +1667,7 @@
           },
           "BLD": {
             "cleared_altitude": 7000,
-            "sid": "BLD1",
-            "waypoints": "N036.12.47.903,W115.12.21.082 N036.10.18.557,W115.16.24.704 LAS/a4000+ BLD"
+            "sid": "BLD1"
           }
         },
         "12L": {
@@ -1804,8 +1678,7 @@
           },
           "BLD": {
             "cleared_altitude": 7000,
-            "sid": "BLD1",
-            "waypoints": "N036.12.09.917,W115.11.02.448 N036.09.28.487,W115.15.22.961 LAS/a4000+ BLD"
+            "sid": "BLD1"
           }
         },
         "12R": {
@@ -1816,8 +1689,7 @@
           },
           "BLD": {
             "cleared_altitude": 7000,
-            "sid": "BLD1",
-            "waypoints": "N036.12.12.087,W115.11.19.971 N036.09.37.056,W115.15.33.975 LAS/a4000+ BLD"
+            "sid": "BLD1"
           }
         },
         "30L": {
@@ -1828,8 +1700,7 @@
           },
           "BLD": {
             "cleared_altitude": 7000,
-            "sid": "BLD1",
-            "waypoints": "N036.12.58.106,W115.12.17.512 N036.10.24.874,W115.16.32.340 LAS/a4000+ BLD"
+            "sid": "BLD1"
           }
         },
         "30R": {
@@ -1840,8 +1711,7 @@
           },
           "BLD": {
             "cleared_altitude": 7000,
-            "sid": "BLD1",
-            "waypoints": "N036.12.59.232,W115.12.03.065 N036.10.18.557,W115.16.24.704 LAS/a4000+ BLD"
+            "sid": "BLD1"
           }
         }
       },

@@ -128,38 +128,31 @@
           },
           "NOOKS": {
             "cleared_altitude": 8000,
-            "sid": "ICONS7",
-            "waypoints": "_CLT_36R/h183 GILFN ICONS"
+            "sid": "ICONS7"
           },
           "PITRW": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN7",
-            "waypoints": "_CLT_36R/h183 HMMPY KWEEN UNJAM TASTY"
+            "sid": "KWEEN7"
           },
           "UNJAM": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN7",
-            "waypoints": "_CLT_36R/h183 HMMPY KWEEN"
+            "sid": "KWEEN7"
           },
           "JENDO,GANDT": {
             "cleared_altitude": 8000,
-            "sid": "BEAVY8",
-            "waypoints": "_CLT_36R/h183 UGANG BEAVY ANDYS"
+            "sid": "BEAVY8"
           },
           "TNSLY": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_36R/h183 LACHN YNGUN BOBZY"
+            "sid": "BOBZY7"
           },
           "BOBZY": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_36R/h183 LACHN YNGUN"
+            "sid": "BOBZY7"
           },
           "BNA": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_36R/h183 LACHN YNGUN BOBZY BRAYN REWET N35.30.21.805,W83.40.13.558 N35.34.23.264,W83.58.12.992 HALLS BAZOO"
+            "sid": "BOBZY7"
           },
           "PITTY, HARAY, BUCKL, RUNIE, GANTS": {
             "cleared_altitude": 8000,
@@ -168,33 +161,27 @@
           },
           "IPTAY": {
             "cleared_altitude": 8000,
-            "sid": "ESTRR7",
-            "waypoints": "_CLT_36R/h183 GINNN ESTRR DEBIE"
+            "sid": "ESTRR7"
           },
           "CUBIM": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_36R/h183 WAYDS LONEE JOJJO WLLGO BENBY N35.59.16.749,W82.09.07.761 N36.18.34.759,W82.08.06.608 TIELR"
+            "sid": "JOJJO7"
           },
           "DOOGE": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_36R/h183 WAYDS LONEE JOJJO MTCHL"
+            "sid": "JOJJO7"
           },
           "NOONN": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_36R/h183 WAYDS LONEE JOJJO WLLGO BENBY SLEPP"
+            "sid": "JOJJO7"
           },
           "FILDS,SMIAM": {
             "cleared_altitude": 8000,
-            "sid": "KRITR8",
-            "waypoints": "_CLT_36R/h183 JDEAN KRITR"
+            "sid": "KRITR8"
           },
           "CLAWD": {
             "cleared_altitude": 8000,
-            "sid": "WEAZL7",
-            "waypoints": "_CLT_36R/h183 WHFRD WEAZL"
+            "sid": "WEAZL7"
           }
         },
         "18L.Background": {
@@ -237,53 +224,43 @@
         "36R": {
           "RDU,TYI,NUTZE": {
             "cleared_altitude": 8000,
-            "sid": "BARMY7",
-            "waypoints": "_CLT_18L/h025 MESHY GULFY BARMY BATTA"
+            "sid": "BARMY7"
           },
           "AUDII": {
             "cleared_altitude": 8000,
-            "sid": "KILNS7",
-            "waypoints": "_CLT_18L/h025 MUNBE LILIC KILNS DURST"
+            "sid": "KILNS7"
           },
           "LILLS": {
             "cleared_altitude": 8000,
-            "sid": "LILLS5",
-            "waypoints": "_CLT_18L/h025 LAMDE LILLS"
+            "sid": "LILLS5"
           },
           "NOOKS": {
             "cleared_altitude": 8000,
-            "sid": "ICONS7",
-            "waypoints": "_CLT_18L/h025 GILFN ICONS NOOKS"
+            "sid": "ICONS7"
           },
           "PITRW": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN7",
-            "waypoints": "_CLT_18L/h025 HMMPY KWEEN UNJAM TASTY"
+            "sid": "KWEEN7"
           },
           "UNJAM": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN7",
-            "waypoints": "_CLT_18L/h025 HMMPY KWEEN"
+            "sid": "KWEEN7"
           },
           "JENDO,GANDT": {
             "cleared_altitude": 8000,
-            "sid": "BEAVY8",
-            "waypoints": "_CLT_18L/h025 UGANG BEAVY ANDYS"
+            "sid": "BEAVY8"
           },
           "TNSLY": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_18L/h025 LACHN YNGUN BOBZY"
+            "sid": "BOBZY7"
           },
           "BOBZY": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_18L/h025 LACHN YNGUN"
+            "sid": "BOBZY7"
           },
           "BNA": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_18L/h025 LACHN YNGUN BOBZY BRAYN REWET N35.30.21.805,W83.40.13.558 N35.34.23.264,W83.58.12.992 HALLS BAZOO"
+            "sid": "BOBZY7"
           },
           "PITTY, HARAY, BUCKL, RUNIE, GANTS": {
             "cleared_altitude": 8000,
@@ -292,33 +269,27 @@
           },
           "IPTAY": {
             "cleared_altitude": 8000,
-            "sid": "ESTRR7",
-            "waypoints": "_CLT_18L/h025 GINNN ESTRR DEBIE IPTAY"
+            "sid": "ESTRR7"
           },
           "CUBIM": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_18L/h025 WAYDS LONEE JOJJO WLLGO BENBY N35.59.16.749,W82.09.07.761 N36.18.34.759,W82.08.06.608 TIELR"
+            "sid": "JOJJO7"
           },
           "DOOGE": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_18L/h025 WAYDS LONEE JOJJO MTCHL"
+            "sid": "JOJJO7"
           },
           "NOONN": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_18L/h025 WAYDS LONEE JOJJO WLLGO BENBY SLEPP"
+            "sid": "JOJJO7"
           },
           "FILDS,SMIAM": {
             "cleared_altitude": 8000,
-            "sid": "KRITR8",
-            "waypoints": "_CLT_18L/h025 JDEAN KRITR"
+            "sid": "KRITR8"
           },
           "CLAWD": {
             "cleared_altitude": 8000,
-            "sid": "WEAZL7",
-            "waypoints": "_CLT_18L/h025 WHFRD WEAZL"
+            "sid": "WEAZL7"
           }
         },
         "36R.Background": {
@@ -351,8 +322,7 @@
         "19L": {
           "JENDO,GANDT": {
             "cleared_altitude": 8000,
-            "sid": "BEAVY8",
-            "waypoints": "_CLT_1R/h183 UGANG BEAVY ANDYS"
+            "sid": "BEAVY8"
           },
           "TNSLY": {
             "cleared_altitude": 8000,
@@ -406,33 +376,27 @@
           },
           "RDU,TYI,NUTZE": {
             "cleared_altitude": 8000,
-            "sid": "BARMY7",
-            "waypoints": "_CLT_1R/h183 MESHY GULFY BARMY BATTA"
+            "sid": "BARMY7"
           },
           "AUDII": {
             "cleared_altitude": 8000,
-            "sid": "KILNS7",
-            "waypoints": "_CLT_1R/h183 MUNBE LILIC KILNS DURST"
+            "sid": "KILNS7"
           },
           "LILLS": {
             "cleared_altitude": 8000,
-            "sid": "LILLS5",
-            "waypoints": "_CLT_1R/h183 LAMDE"
+            "sid": "LILLS5"
           },
           "NOOKS": {
             "cleared_altitude": 8000,
-            "sid": "ICONS7",
-            "waypoints": "_CLT_1R/h183 GILFN ICONS"
+            "sid": "ICONS7"
           },
           "PITRW": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN7",
-            "waypoints": "_CLT_1R/h183 HMMPY KWEEN UNJAM TASTY"
+            "sid": "KWEEN7"
           },
           "UNJAM": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN7",
-            "waypoints": "_CLT_1R/h183 HMMPY KWEEN"
+            "sid": "KWEEN7"
           }
         },
         "19L.Background": {
@@ -505,23 +469,19 @@
         "1R": {
           "JENDO,GANDT": {
             "cleared_altitude": 8000,
-            "sid": "BEAVY8",
-            "waypoints": "_CLT_19L/h330 UGANG BEAVY ANDYS"
+            "sid": "BEAVY8"
           },
           "TNSLY": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_19L/h330 LACHN YNGUN BOBZY"
+            "sid": "BOBZY7"
           },
           "BOBZY": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_19L/h330 LACHN YNGUN"
+            "sid": "BOBZY7"
           },
           "BNA": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY7",
-            "waypoints": "_CLT_19L/h330 LACHN YNGUN BOBZY BRAYN REWET N35.30.21.805,W83.40.13.558 N35.34.23.264,W83.58.12.992 HALLS BAZOO"
+            "sid": "BOBZY7"
           },
           "PITTY, HARAY, BUCKL, RUNIE, GANTS": {
             "cleared_altitude": 8000,
@@ -530,63 +490,51 @@
           },
           "IPTAY": {
             "cleared_altitude": 8000,
-            "sid": "ESTRR7",
-            "waypoints": "_CLT_19L/h330 GINNN ESTRR DEBIE IPTAY"
+            "sid": "ESTRR7"
           },
           "CUBIM": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_19L/h330 WAYDS LONEE JOJJO WLLGO BENBY N35.59.16.749,W82.09.07.761 N36.18.34.759,W82.08.06.608 TIELR"
+            "sid": "JOJJO7"
           },
           "DOOGE": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_19L/h330 WAYDS LONEE JOJJO MTCHL"
+            "sid": "JOJJO7"
           },
           "NOONN": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO7",
-            "waypoints": "_CLT_19L/h330 WAYDS LONEE JOJJO WLLGO BENBY SLEPP"
+            "sid": "JOJJO7"
           },
           "FILDS,SMIAM": {
             "cleared_altitude": 8000,
-            "sid": "KRITR8",
-            "waypoints": "_CLT_1R_330_2/h360 JDEAN KRITR"
+            "sid": "KRITR8"
           },
           "CLAWD": {
             "cleared_altitude": 8000,
-            "sid": "WEAZL7",
-            "waypoints": "_CLT_1R_330_2/h360 WHFRD WEAZL"
+            "sid": "WEAZL7"
           },
           "RDU,TYI,NUTZE": {
             "cleared_altitude": 8000,
-            "sid": "BARMY7",
-            "waypoints": "_CLT_19L/h330 MESHY GULFY BARMY BATTA"
+            "sid": "BARMY7"
           },
           "AUDII": {
             "cleared_altitude": 8000,
-            "sid": "KILNS7",
-            "waypoints": "_CLT_19L/h330 MUNBE LILIC KILNS DURST"
+            "sid": "KILNS7"
           },
           "LILLS": {
             "cleared_altitude": 8000,
-            "sid": "LILLS5",
-            "waypoints": "_CLT_19L/h330 LAMDE LILLS"
+            "sid": "LILLS5"
           },
           "NOOKS": {
             "cleared_altitude": 8000,
-            "sid": "ICONS7",
-            "waypoints": "_CLT_19L/h330 GILFN ICONS NOOKS"
+            "sid": "ICONS7"
           },
           "PITRW": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN7",
-            "waypoints": "_CLT_19L/h330 HMMPY KWEEN UNJAM TASTY"
+            "sid": "KWEEN7"
           },
           "UNJAM": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN7",
-            "waypoints": "_CLT_19L/h330 HMMPY KWEEN"
+            "sid": "KWEEN7"
           }
         },
         "1R.Background": {

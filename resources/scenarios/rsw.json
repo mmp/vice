@@ -66,26 +66,22 @@
           "SCUBY": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
-            "description": "SCUBY8",
-            "waypoints": "KRSW/h100/a3000"
+            "description": "SCUBY8"
           },
           "AABER": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
-            "description": "SCUBY8",
-            "waypoints": "KRSW/h100/a3000"
+            "description": "SCUBY8"
           },
           "GOODY": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
-            "description": "SCUBY8",
-            "waypoints": "KRSW/h100/a3000"
+            "description": "SCUBY8"
           },
           "FEMID": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
-            "description": "SCUBY8",
-            "waypoints": "KRSW/h100/a3000"
+            "description": "SCUBY8"
           }
         },
         "24": {
@@ -140,26 +136,22 @@
           "SCUBY": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
-            "description": "SCUBY8",
-            "waypoints": "KRSW/h220/a3000"
+            "description": "SCUBY8"
           },
           "AABER": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
-            "description": "SCUBY8",
-            "waypoints": "KRSW/h220/a3000"
+            "description": "SCUBY8"
           },
           "GOODY": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
-            "description": "SCUBY8",
-            "waypoints": "KRSW/h220/a3000"
+            "description": "SCUBY8"
           },
           "FEMID": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
-            "description": "SCUBY8",
-            "waypoints": "KRSW/h220/a3000"
+            "description": "SCUBY8"
           }
         }
       },

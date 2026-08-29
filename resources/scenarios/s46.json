@@ -44,13 +44,11 @@
         "16L": {
           "ARRIE,PANGL": {
             "cleared_altitude": 10000,
-            "sid": "BANGR9",
-            "waypoints": "CAVOB RENBE/a3000+ RICHR TOMRE BANGR/a10000+"
+            "sid": "BANGR9"
           },
           "ERAVE,FEPOT,HISKU": {
             "cleared_altitude": 10000,
-            "sid": "HAROB6",
-            "waypoints": "CAVOB RENBE/a3000+ RICHR EMRLD HAROB/a10000+"
+            "sid": "HAROB6"
           },
           "YYJ,HQM,CVO": {
             "cleared_altitude": 7000,
@@ -59,8 +57,7 @@
           },
           "GEG,MLP,MWH,SEA,ZELAK,ZADON,NORMY,VAMPS,MODDA,BANDR,STEVS": {
             "cleared_altitude": 7000,
-            "sid": "MONTN2",
-            "waypoints": "PEAKK/a3000+/h071"
+            "sid": "MONTN2"
           },
           "PAE,EPH,YDC,HUH,YVR,TOU,AST,UBG,BTG,YKM,EUG,ELN": {
             "cleared_altitude": 7000,
@@ -69,40 +66,33 @@
           },
           "SUMMA": {
             "cleared_altitude": 7000,
-            "sid": "SUMMA2",
-            "waypoints": "NEVJO SUMMA"
+            "sid": "SUMMA2"
           }
         },
         "34R": {
           "ARRIE,PANGL": {
             "cleared_altitude": 10000,
-            "sid": "BANGR9",
-            "waypoints": "DODVE WUREL/a3100+ ATOME BREMM BANGR/a10000+"
+            "sid": "BANGR9"
           },
           "ERAVE,FEPOT,HISKU": {
             "cleared_altitude": 10000,
-            "sid": "HAROB6",
-            "waypoints": "DODVE WUREL/a3100+ ATOME BREMM HAROB/a10000+"
+            "sid": "HAROB6"
           },
           "ISBRG": {
             "cleared_altitude": 9000,
-            "sid": "ISBRG1",
-            "waypoints": "DODVE WUREL/a3100+ ATOME BREMM ISBRG/h259"
+            "sid": "ISBRG1"
           },
           "JEFPO": {
             "cleared_altitude": 9000,
-            "sid": "JEFPO1",
-            "waypoints": "DODVE WUREL ATOME CENEX JEFPO/h343"
+            "sid": "JEFPO1"
           },
           "OZWLD": {
             "cleared_altitude": 9000,
-            "sid": "OZWLD1",
-            "waypoints": "DODVE WUREL/a3100+ ATOME BREMM OZWLD/h210"
+            "sid": "OZWLD1"
           },
           "MLP,MWH,SEA,ZELAK,ZADON,NORMY,VAMPS,MODDA,BANDR,STEVS": {
             "cleared_altitude": 7000,
-            "sid": "MONTN2",
-            "waypoints": "NEZUG/a4000+/h071"
+            "sid": "MONTN2"
           },
           "SEA8": {
             "cleared_altitude": 7000,
@@ -111,8 +101,7 @@
           },
           "SUMMA": {
             "cleared_altitude": 7000,
-            "sid": "SUMMA2",
-            "waypoints": "NEZUG/a4000+/h090"
+            "sid": "SUMMA2"
           }
         }
       },

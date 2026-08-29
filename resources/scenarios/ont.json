@@ -149,186 +149,156 @@
           "AVRRY,MTBAL": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL"
+            "is_rnav": true
           },
           "OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA RORBE OTAYY"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "GMN": {
             "cleared_altitude": 10000,
-            "sid": "POM1",
-            "waypoints": "N034.03.14.732,W117.44.47.393 POM/a7000- BUCCK/a14000+ TOOBD GMN"
+            "sid": "POM1"
           },
           "EHF": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN NLAND/a14000+ TUNAY EHF"
+            "is_rnav": true
           },
           "LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY"
+            "is_rnav": true
           }
         },
         "26R": {
           "AVRRY,MTBAL": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL"
+            "is_rnav": true
           },
           "OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA RORBE OTAYY"
+            "is_rnav": true
           },
           "GMN": {
             "cleared_altitude": 10000,
-            "sid": "POM1",
-            "waypoints": "N034.03.25.224,W117.45.04.943 POM/a7000- BUCCK/a14000+ TOOBD GMN"
+            "sid": "POM1"
           },
           "COREZ": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "EHF": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN NLAND/a14000+ TUNAY EHF"
+            "is_rnav": true
           },
           "LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY"
+            "is_rnav": true
           }
         },
         "8L": {
           "AVRRY,MTBAL": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "KONT-26R/h078@a1460/rd SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL"
+            "is_rnav": true
           },
           "OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "KONT-26R/h078@a1460/rd/s210- SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA RORBE OTAYY"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26R/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "GMN": {
             "cleared_altitude": 10000,
-            "sid": "POM1",
-            "waypoints": "N034.03.26.268,W117.33.18.248 N034.02.33.135,W117.33.15.281 N034.02.35.552,W117.44.07.622 POM/a7000- BUCCK/a14000+ TOOBD GMN"
+            "sid": "POM1"
           },
           "EHF": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26R/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN NLAND/a14000+ TUNAY EHF"
+            "is_rnav": true
           },
           "LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26R/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY"
+            "is_rnav": true
           }
         },
         "8R": {
           "AVRRY,MTBAL": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL"
+            "is_rnav": true
           },
           "OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA RORBE OTAYY"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "GMN": {
             "cleared_altitude": 10000,
-            "sid": "POM1",
-            "waypoints": "N034.03.16.600,W117.33.16.325 N034.02.33.135,W117.33.15.281 N034.02.35.552,W117.44.07.622 POM/a7000- BUCCK/a14000+ TOOBD GMN"
+            "sid": "POM1"
           },
           "EHF": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN NLAND/a14000+ TUNAY EHF"
+            "is_rnav": true
           },
           "LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY"
+            "is_rnav": true
           }
         },
         "8R.OO": {
           "AVRRY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- ARRDY/a13000+ PEELR MTBAL"
+            "is_rnav": true
           },
           "OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA RORBE OTAYY"
+            "is_rnav": true
           },
           "DINTY,MALIT": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd SOEHL/a4000+ RAJEE/a7000- NIKKL SHAYL ARIII LANAA/a13000+ TUDOO/a15000 SXC"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "EHF": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN NLAND/a14000+ TUNAY EHF"
+            "is_rnav": true
           },
           "LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
-            "is_rnav": true,
-            "waypoints": "KONT-26L/h078@a1460/rd/s210- LEESI/a5000+ POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY"
+            "is_rnav": true
           }
         }
       },
@@ -927,32 +897,27 @@
           "ZELMA": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "is_rnav": true,
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+ MYKUL FUSBL/a16000+ PELLU JOTNU ZELMA"
+            "is_rnav": true
           },
           "FUSBL": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "is_rnav": true,
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+ MYKUL FUSBL/a16000+"
+            "is_rnav": true
           },
           "EED": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "is_rnav": true,
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+ MYKUL FUSBL/a16000+ DWGHT EMPRR/a23000+ EED"
+            "is_rnav": true
           },
           "BLH": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "is_rnav": true,
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+ EMRUD/a15000- TEEGE/a19000- BLH"
+            "is_rnav": true
           },
           "TRM": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "is_rnav": true,
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+ EMRUD/a15000- TRM"
+            "is_rnav": true
           },
           "PMD": {
             "cleared_altitude": 8000,
@@ -980,38 +945,32 @@
           "ZELMA": {
             "cleared_altitude": 8000,
             "sid": "IKONE1",
-            "is_rnav": true,
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+/h110 MYKUL/a9000+ IKONE FUSBL/a16000+ PELLU JOTNU ZELMA"
+            "is_rnav": true
           },
           "FUSBL": {
             "cleared_altitude": 8000,
             "sid": "IKONE1",
-            "is_rnav": true,
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+/h110 MYKUL/a9000+ IKONE FUSBL/a16000+"
+            "is_rnav": true
           },
           "EED": {
             "cleared_altitude": 8000,
             "sid": "IKONE1",
-            "is_rnav": true,
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+/h110 MYKUL/a9000+ IKONE FUSBL/a16000+ DWGHT EMPRR/a23000+ EED"
+            "is_rnav": true
           },
           "BLH": {
             "cleared_altitude": 8000,
             "sid": "JEEON1",
-            "is_rnav": true,
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+ KAIMI/a6000- JEEON/a4200+ TEEGE/a11000+ BLH"
+            "is_rnav": true
           },
           "TRM": {
             "cleared_altitude": 8000,
             "sid": "JEEON1",
-            "is_rnav": true,
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+ KAIMI/a6000- JEEON/a4200+ TRM"
+            "is_rnav": true
           },
           "PMD": {
             "cleared_altitude": 8000,
             "sid": "LGANN1",
-            "is_rnav": true,
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+/h110 YUCCA/a8000+ LGANN SOGGI APLES PMD"
+            "is_rnav": true
           }
         }
       },

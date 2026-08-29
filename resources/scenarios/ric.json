@@ -226,8 +226,7 @@
         "2": {
           "READE,DRAIK,SANNY": {
             "assigned_altitude": 5000,
-            "sid": "KALLI7",
-            "waypoints": "KRIC-20 N037.31.06.357,W077.19.24.770/a687+ SUGGR/a5000+ KALLI READE"
+            "sid": "KALLI7"
           },
           "BNTLY": {
             "assigned_altitude": 3000,
@@ -241,13 +240,11 @@
           },
           "COLIN": {
             "assigned_altitude": 3000,
-            "sid": "COLIN8",
-            "waypoints": "N037.31.33.301,W077.19.18.920/a687+ N037.34.35.193,W077.14.28.881 COLIN"
+            "sid": "COLIN8"
           },
           "LUCYL": {
             "assigned_altitude": 5000,
-            "sid": "LUCYL6",
-            "waypoints": "KRIC-20 N037.31.06.357,W077.19.24.770/a687+ SJAYY/a5000+ KAMMI LUCYL"
+            "sid": "LUCYL6"
           }
         },
         "16": {
@@ -268,13 +265,11 @@
           },
           "COLIN": {
             "assigned_altitude": 3000,
-            "sid": "COLIN8",
-            "waypoints": "N037.29.30.721,W077.18.12.453/a687+ N037.27.21.384,W077.11.13.599/a4000+ N037.35.27.818,W077.04.53.637 MODEL COLIN"
+            "sid": "COLIN8"
           },
           "LUCYL": {
             "assigned_altitude": 5000,
-            "sid": "LUCYL6",
-            "waypoints": "KRIC-34 N037.29.34.951,W077.18.15.639/a687+ KEGME/a4000+ BUNKK/a5000+ HAYYU LUCYL"
+            "sid": "LUCYL6"
           }
         },
         "20": {
@@ -295,20 +290,17 @@
           },
           "COLIN": {
             "assigned_altitude": 3000,
-            "sid": "COLIN8",
-            "waypoints": "N037.29.35.967,W077.19.54.406/a687+ N037.29.35.967,W077.19.54.406/a4000+ N037.35.27.818,W077.04.53.637 MODEL COLIN"
+            "sid": "COLIN8"
           },
           "LUCYL": {
             "assigned_altitude": 5000,
-            "sid": "LUCYL6",
-            "waypoints": "KRIC-2 N037.29.43.122,W077.19.49.736/a687+ KEGME/a4000+ BUNKK/a5000+ HAYYU LUCYL"
+            "sid": "LUCYL6"
           }
         },
         "34": {
           "READE,DRAIK,SANNY": {
             "assigned_altitude": 5000,
-            "sid": "KALLI7",
-            "waypoints": "KRIC-16 N037.31.07.263,W077.19.29.961/a687+ SUGGR/a5000+ KALLI READE"
+            "sid": "KALLI7"
           },
           "BNTLY": {
             "assigned_altitude": 3000,
@@ -322,13 +314,11 @@
           },
           "COLIN": {
             "assigned_altitude": 3000,
-            "sid": "COLIN8",
-            "waypoints": "N037.31.22.218,W077.19.43.090/a687+ N037.35.12.725,W077.13.47.545 COLIN"
+            "sid": "COLIN8"
           },
           "LUCYL": {
             "assigned_altitude": 5000,
-            "sid": "LUCYL6",
-            "waypoints": "KRIC-16 N037.31.07.263,W077.19.29.961/a687+ SJAYY/a5000+ KAMMI LUCYL"
+            "sid": "LUCYL6"
           }
         }
       },

@@ -59,43 +59,35 @@
         "26L": {
           "LUCKK": {
             "cleared_altitude": 10000,
-            "sid": "BANNG3",
-            "waypoints": "N033.38.47.947,W084.27.44.620 SNUFY SLAWW RIGGZ RIVTT/s250 BANNG"
+            "sid": "BANNG3"
           },
           "HANKO": {
             "cleared_altitude": 10000,
-            "sid": "CUTTN2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 SNUFY BDODD CUTTN"
+            "sid": "CUTTN2"
           },
           "IRQ": {
             "cleared_altitude": 10000,
-            "sid": "GAIRY2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 MPASS ZELAN SMOGG GAIRY"
+            "sid": "GAIRY2"
           },
           "SARGE": {
             "cleared_altitude": 10000,
-            "sid": "HAALO3",
-            "waypoints": "N033.38.47.947,W084.27.44.620 SNUFY SLAWW RIGGZ RIVTT HAALO"
+            "sid": "HAALO3"
           },
           "KELLN": {
             "cleared_altitude": 10000,
-            "sid": "JACCC2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 MPASS ZELAN SMOGG JACCC SHUTT BFOUT"
+            "sid": "JACCC2"
           },
           "STNGA": {
             "cleared_altitude": 10000,
-            "sid": "KAJIN2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 SNUFY BDODD KAJIN"
+            "sid": "KAJIN2"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
-            "sid": "NASSA2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 SNUFY BDODD NASSA ENGNR"
+            "sid": "NASSA2"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
-            "sid": "PADGT2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 MPASS ZELAN/s250 PADGT"
+            "sid": "PADGT2"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
@@ -104,8 +96,7 @@
           },
           "HRTWL": {
             "cleared_altitude": 10000,
-            "sid": "PHIIL3",
-            "waypoints": "N033.38.47.947,W084.27.44.620 MPASS ZELAN/s250 SMOGG PHIIL LAGGR MULSN"
+            "sid": "PHIIL3"
           },
           "BURGG": {
             "cleared_altitude": 10000,
@@ -114,50 +105,41 @@
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
-            "sid": "POUNC2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 SNUFY BDODD POUNC PNTHA GRGIA"
+            "sid": "POUNC2"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
-            "sid": "SMKEY2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 MPASS ZELAN/s250 SMKEY HUCHH"
+            "sid": "SMKEY2"
           },
           "WALET": {
             "cleared_altitude": 10000,
-            "sid": "SMLTZ3",
-            "waypoints": "N033.38.47.947,W084.27.44.620 SNUFY SLAWW RIGGZ RIVTT SMLTZ WALET"
+            "sid": "SMLTZ3"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000,
-            "sid": "VARNM2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 MPASS ZELAN WURLD VARNM "
+            "sid": "VARNM2"
           },
           "NOKIE": {
             "cleared_altitude": 10000,
-            "sid": "VRSTY3",
-            "waypoints": "N033.38.47.947,W084.27.44.620 SNUFY SLAWW RIGGZ RIVTT VRSTY"
+            "sid": "VRSTY3"
           }
         },
         "27R": {
           "LUCKK": {
             "cleared_altitude": 10000,
-            "sid": "BANNG3",
-            "waypoints": "N033.38.04.703,W084.28.11.702 SLAWW RIGGZ RIVTT/s250 BANNG"
+            "sid": "BANNG3"
           },
           "HANKO": {
             "cleared_altitude": 10000,
-            "sid": "CUTTN2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 SLAWW WESEK CUTTN"
+            "sid": "CUTTN2"
           },
           "IRQ": {
             "cleared_altitude": 10000,
-            "sid": "GAIRY2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 FUTBL ZALLE GGOLF GAIRY"
+            "sid": "GAIRY2"
           },
           "SARGE": {
             "cleared_altitude": 10000,
-            "sid": "HAALO3",
-            "waypoints": "N033.38.04.703,W084.28.11.702 SLAWW RIGGZ RIVTT HAALO"
+            "sid": "HAALO3"
           },
           "KELLN": {
             "cleared_altitude": 10000,
@@ -166,18 +148,15 @@
           },
           "STNGA": {
             "cleared_altitude": 10000,
-            "sid": "KAJIN2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 SLAWW WESEK KAJIN"
+            "sid": "KAJIN2"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
-            "sid": "NASSA2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 SLAWW WESEK NASSA ENGNR"
+            "sid": "NASSA2"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
-            "sid": "PADGT2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 CPARK MPASS ZELAN PADGT"
+            "sid": "PADGT2"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
@@ -186,8 +165,7 @@
           },
           "HRTWL": {
             "cleared_altitude": 10000,
-            "sid": "PHIIL3",
-            "waypoints": "N033.38.04.703,W084.28.11.702 FUTBL ZALLE GGOLF PHIIL LAGGR MULSN"
+            "sid": "PHIIL3"
           },
           "BURGG": {
             "cleared_altitude": 10000,
@@ -196,70 +174,57 @@
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
-            "sid": "POUNC2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 SLAWW WESEK POUNC PNTHA GRGIA"
+            "sid": "POUNC2"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
-            "sid": "SMKEY2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 CPARK MPASS ZELAN/s250 SMKEY HUCHH"
+            "sid": "SMKEY2"
           },
           "WALET": {
             "cleared_altitude": 10000,
-            "sid": "SMLTZ3",
-            "waypoints": "N033.38.04.703,W084.28.11.702 SLAWW RIGGZ RIVTT SMLTZ WALET"
+            "sid": "SMLTZ3"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000,
-            "sid": "VARNM2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 CPARK MPASS ZELAN WURLD VARNM "
+            "sid": "VARNM2"
           },
           "NOKIE": {
             "cleared_altitude": 10000,
-            "sid": "VRSTY3",
-            "waypoints": "N033.38.04.703,W084.28.11.702 SLAWW RIGGZ RIVTT VRSTY"
+            "sid": "VRSTY3"
           }
         },
         "8R": {
           "LUCKK": {
             "cleared_altitude": 10000,
-            "sid": "BANNG3",
-            "waypoints": "N033.38.48.469,W084.22.58.454 SKNNR GRITZ HYZMN BANNG"
+            "sid": "BANNG3"
           },
           "HANKO": {
             "cleared_altitude": 10000,
-            "sid": "CUTTN2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 HRSHL KLEGG COBBB CUTTN"
+            "sid": "CUTTN2"
           },
           "IRQ": {
             "cleared_altitude": 10000,
-            "sid": "GAIRY2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 RONII IGEBE GAIRY"
+            "sid": "GAIRY2"
           },
           "SARGE": {
             "cleared_altitude": 10000,
-            "sid": "HAALO3",
-            "waypoints": "N033.38.48.469,W084.22.58.454 SKNNR GRITZ HYZMN HAALO"
+            "sid": "HAALO3"
           },
           "KELLN": {
             "cleared_altitude": 10000,
-            "sid": "JACCC2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 RONII IGEBE JACCC SHUTT BFOUT"
+            "sid": "JACCC2"
           },
           "STNGA": {
             "cleared_altitude": 10000,
-            "sid": "KAJIN2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 HRSHL KLEGG COBBB KAJIN"
+            "sid": "KAJIN2"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
-            "sid": "NASSA2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 HRSHL KLEGG COBBB NASSA ENGNR"
+            "sid": "NASSA2"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
-            "sid": "PADGT2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 RONII HOYYT GRABA PADGT"
+            "sid": "PADGT2"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
@@ -268,8 +233,7 @@
           },
           "HRTWL": {
             "cleared_altitude": 10000,
-            "sid": "PHIIL3",
-            "waypoints": "N033.38.48.469,W084.22.58.454 RONII IGEBE PHIIL LAGGR MULSN"
+            "sid": "PHIIL3"
           },
           "BURGG": {
             "cleared_altitude": 10000,
@@ -278,40 +242,33 @@
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
-            "sid": "POUNC2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 HRSHL KLEGG COBBB POUNC PNTHA GRGIA"
+            "sid": "POUNC2"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
-            "sid": "SMKEY2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 RONII HOYYT CUMON SMKEY HUCHH"
+            "sid": "SMKEY2"
           },
           "WALET": {
             "cleared_altitude": 10000,
-            "sid": "SMLTZ3",
-            "waypoints": "N033.38.48.469,W084.22.58.454 SKNNR GRITZ HYZMN TROFY SMLTZ WALET"
+            "sid": "SMLTZ3"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000,
-            "sid": "VARNM2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 RONII HOYYT VARNM "
+            "sid": "VARNM2"
           },
           "NOKIE": {
             "cleared_altitude": 10000,
-            "sid": "VRSTY3",
-            "waypoints": "N033.38.48.469,W084.22.58.454 SKNNR GRITZ HYZMN TROFY VRSTY"
+            "sid": "VRSTY3"
           }
         },
         "9L": {
           "LUCKK": {
             "cleared_altitude": 10000,
-            "sid": "BANNG3",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ HYZMN BANNG"
+            "sid": "BANNG3"
           },
           "HANKO": {
             "cleared_altitude": 10000,
-            "sid": "CUTTN2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ HYZMN TYRNN CUTTN"
+            "sid": "CUTTN2"
           },
           "IRQ": {
             "cleared_altitude": 10000,
@@ -320,8 +277,7 @@
           },
           "SARGE": {
             "cleared_altitude": 10000,
-            "sid": "HAALO3",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ HYZMN HAALO"
+            "sid": "HAALO3"
           },
           "KELLN": {
             "cleared_altitude": 10000,
@@ -330,18 +286,15 @@
           },
           "STNGA": {
             "cleared_altitude": 10000,
-            "sid": "KAJIN2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ HYZMN TYRNN"
+            "sid": "KAJIN2"
           },
           "VUZ,YAALL,CHOOK": {
             "cleared_altitude": 10000,
-            "sid": "NASSA2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ HYZMN TYRNN NASSA ENGNR"
+            "sid": "NASSA2"
           },
           "RAFTN,SMTTH": {
             "cleared_altitude": 10000,
-            "sid": "PADGT2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 PICKT RONII HOYYT GRABA PADGT"
+            "sid": "PADGT2"
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
@@ -350,8 +303,7 @@
           },
           "HRTWL": {
             "cleared_altitude": 10000,
-            "sid": "PHIIL3",
-            "waypoints": "N033.38.04.249,W084.23.08.973 LIDAS ERWIN PHIIL LAGGR MULSN"
+            "sid": "PHIIL3"
           },
           "BURGG": {
             "cleared_altitude": 10000,
@@ -360,28 +312,23 @@
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
-            "sid": "POUNC2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ HYZMN TYRNN POUNC PNTHA GRGIA"
+            "sid": "POUNC2"
           },
           "BOBBD": {
             "cleared_altitude": 10000,
-            "sid": "SMKEY2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 PICKT RONII HOYYT CUMON SMKEY HUCHH"
+            "sid": "SMKEY2"
           },
           "WALET": {
             "cleared_altitude": 10000,
-            "sid": "SMLTZ3",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ HYZMN TROFY SMLTZ WALET"
+            "sid": "SMLTZ3"
           },
           "RESPE,GLAZR": {
             "cleared_altitude": 10000,
-            "sid": "VARNM2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 PICKT RONII HOYYT VARNM "
+            "sid": "VARNM2"
           },
           "NOKIE": {
             "cleared_altitude": 10000,
-            "sid": "VRSTY3",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ HYZMN TROFY VRSTY"
+            "sid": "VRSTY3"
           }
         }
       },

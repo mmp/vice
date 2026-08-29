@@ -51,38 +51,31 @@
           },
           "EWC": {
             "cleared_altitude": 14000,
-            "sid": "KKIDS1",
-            "waypoints": "JJOSH CAILA/a6000 AHMET/a7000 KKIDS/a9000"
+            "sid": "KKIDS1"
           },
           "NUSMM": {
             "cleared_altitude": 14000,
-            "sid": "KKIDS1",
-            "waypoints": "JJOSH CAILA/a6000 AHMET/a7000 KKIDS/a9000"
+            "sid": "KKIDS1"
           },
           "PATRC": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "NNUMB/a6000 PFLYD LNDYN"
+            "sid": "PFLYD1"
           },
           "JASEE": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "NNUMB/a6000 PFLYD CURTY"
+            "sid": "PFLYD1"
           },
           "MAAJR": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "NNUMB/a6000 PFLYD CURTY"
+            "sid": "PFLYD1"
           },
           "DORET": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "NNUMB/a6000 PFLYD CURTY"
+            "sid": "PFLYD1"
           },
           "DUUKR": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "NNUMB/a6000 PFLYD"
+            "sid": "PFLYD1"
           },
           "PUUDL": {
             "cleared_altitude": 14000,
@@ -128,38 +121,31 @@
           },
           "EWC": {
             "cleared_altitude": 14000,
-            "sid": "KKIDS1",
-            "waypoints": "KAYDN LYYAM/a6000 GIIAA/a7000 KKIDS/a9000"
+            "sid": "KKIDS1"
           },
           "NUSMM": {
             "cleared_altitude": 14000,
-            "sid": "KKIDS1",
-            "waypoints": "KAYDN LYYAM/a6000 GIIAA/a7000 KKIDS/a9000"
+            "sid": "KKIDS1"
           },
           "PATRC": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "WIISH YUWER/a6000 HEEAR/a8000 SYYDD/a10000 PFLYD LNDYN"
+            "sid": "PFLYD1"
           },
           "JASEE": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "WIISH YUWER/a6000 HEEAR/a8000 SYYDD/a10000 PFLYD CURTY"
+            "sid": "PFLYD1"
           },
           "DORET": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "WIISH YUWER/a6000 HEEAR/a8000 SYYDD/a10000 PFLYD CURTY"
+            "sid": "PFLYD1"
           },
           "MAAJR": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "WIISH YUWER/a6000 HEEAR/a8000 SYYDD/a10000 PFLYD CURTY"
+            "sid": "PFLYD1"
           },
           "DUUKR": {
             "cleared_altitude": 14000,
-            "sid": "PFLYD1",
-            "waypoints": "WIISH YUWER/a6000 HEEAR/a8000 SYYDD/a10000 PFLYD"
+            "sid": "PFLYD1"
           },
           "PUUDL": {
             "cleared_altitude": 14000,

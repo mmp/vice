@@ -36,35 +36,29 @@
         "14": {
           "EUG.JKSNP": {
             "cleared_altitude": 10000,
-            "sid": "JKSN1",
-            "waypoints": "KMFR-32 JKSNP322 JKSNPINT OED"
+            "sid": "JKSN1"
           },
           "OTH.JKSNP": {
             "cleared_altitude": 8000,
-            "sid": "JKSN1",
-            "waypoints": "KMFR-32 JKSNP322 JKSNPINT OED"
+            "sid": "JKSN1"
           },
           "LMT.JKSNP": {
             "cleared_altitude": 9000,
-            "sid": "JKSN1",
-            "waypoints": "KMFR-32 JKSNP322 JKSNPINT OED"
+            "sid": "JKSN1"
           },
           "RBL.JKSN,LMT.JKSN,CUTTR.JKSN,MOXEE.JKSN,EUG.JKSN,OTH.JKSN,FMG.JKSN,LOKEY.JKSN": {
             "cleared_altitude": 11000,
-            "sid": "JKSN1",
-            "waypoints": "KMFR-32 JKSNJINT OED"
+            "sid": "JKSN1"
           },
           "LMT.MFR": {
             "cleared_altitude": 11000,
-            "sid": "MFR1",
-            "waypoints": "BDONA/flyover JOWEL KRETS LMT"
+            "sid": "MFR1"
           }
         },
         "32": {
           "RBL.JKSN,LMT.JKSN,CUTTR.JKSN,MOXEE.JKSN,EUG.JKSN,OTH.JKSN,FMG.JKSN,LOKEY.JKSN,MLBEC.JKSN": {
             "cleared_altitude": 11000,
-            "sid": "JKSN1",
-            "waypoints": "N042.25.16.429,W122.53.48.964 OED"
+            "sid": "JKSN1"
           }
         }
       },

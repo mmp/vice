@@ -99,13 +99,11 @@
         "7": {
           "MQO": {
             "cleared_altitude": 8000,
-            "sid": "GAUCH3",
-            "waypoints": "N034.25.43.016,W119.48.44.093 RROJO KELLP CORRK KNNZI GAUCH/a6000+ MQO"
+            "sid": "GAUCH3"
           },
           "SPLNT": {
             "cleared_altitude": 8000,
-            "sid": "GAUCH3",
-            "waypoints": "N034.25.43.016,W119.48.44.093 RROJO KELLP CORRK KNNZI GAUCH/a6000+ SPLNT"
+            "sid": "GAUCH3"
           },
           "KPTIN": {
             "cleared_altitude": 8000,
@@ -128,13 +126,11 @@
         "25": {
           "MQO": {
             "cleared_altitude": 8000,
-            "sid": "GAUCH3",
-            "waypoints": "GRPES GRRRR GAUCH/a6000+ MQO"
+            "sid": "GAUCH3"
           },
           "SPLNT": {
             "cleared_altitude": 8000,
-            "sid": "GAUCH3",
-            "waypoints": "GRPES GRRRR GAUCH/a6000+ SPLNT"
+            "sid": "GAUCH3"
           },
           "KPTIN": {
             "cleared_altitude": 8000,
@@ -271,33 +267,27 @@
         "11": {
           "GVO": {
             "cleared_altitude": 5000,
-            "sid": "AVILA4",
-            "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.08.40.504,W120.37.06.928 AVILA ORCUT/a6000+ GVO"
+            "sid": "AVILA4"
           },
           "MQO": {
             "cleared_altitude": 5000,
-            "sid": "AVILA4",
-            "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.08.40.504,W120.37.06.928 AVILA MQO"
+            "sid": "AVILA4"
           },
           "WINCH": {
             "cleared_altitude": 5000,
-            "sid": "AVILA4",
-            "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.08.40.504,W120.37.06.928 AVILA SAKWE WINCH"
+            "sid": "AVILA4"
           },
           "PRB": {
             "cleared_altitude": 5000,
-            "sid": "WYNNR4",
-            "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.10.20.439,W120.33.37.803 MISHI WYNNR/a6000+ PRB"
+            "sid": "WYNNR4"
           },
           "RZS": {
             "cleared_altitude": 5000,
-            "sid": "WYNNR4",
-            "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.10.20.439,W120.33.37.803 MISHI WYNNR/a6000+ RZS"
+            "sid": "WYNNR4"
           },
           "FLW": {
             "cleared_altitude": 5000,
-            "sid": "WYNNR4",
-            "waypoints": "KSBP-29 N035.12.50.443,W120.35.55.984 N035.10.20.439,W120.33.37.803 MISHI WYNNR/a6000+ FLW"
+            "sid": "WYNNR4"
           }
         },
         "29": {

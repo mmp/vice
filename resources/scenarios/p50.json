@@ -145,8 +145,7 @@
           },
           "IZZZO": {
             "cleared_altitude": 8000,
-            "sid": "KEENS3",
-            "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI KEENS IZZZO"
+            "sid": "KEENS3"
           },
           "MRBIL": {
             "cleared_altitude": 8000,
@@ -192,8 +191,7 @@
           },
           "IZZZO": {
             "cleared_altitude": 8000,
-            "sid": "KEENS3",
-            "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI KEENS IZZZO"
+            "sid": "KEENS3"
           },
           "MRBIL": {
             "cleared_altitude": 8000,
@@ -239,8 +237,7 @@
           },
           "IZZZO": {
             "cleared_altitude": 8000,
-            "sid": "KEENS3",
-            "waypoints": "N033.25.52.587,W112.03.19.566 WULKO KEENS IZZZO"
+            "sid": "KEENS3"
           },
           "MRBIL": {
             "cleared_altitude": 8000,
@@ -286,8 +283,7 @@
           },
           "IZZZO": {
             "cleared_altitude": 8000,
-            "sid": "KEENS3",
-            "waypoints": "N033.26.26.672,W112.02.46.525/a1635+ WULKO KEENS IZZZO"
+            "sid": "KEENS3"
           },
           "MRBIL": {
             "cleared_altitude": 8000,
@@ -1445,15 +1441,13 @@
         "3": {
           "OATES": {
             "cleared_altitude": 12000,
-            "sid": "FLG1",
-            "waypoints": "KFLG-21 N035.09.29.668,W111.39.01.763 N035.08.44.089,W111.37.59.937 N035.05.56.767,W111.40.49.127 OATES/a10500+"
+            "sid": "FLG1"
           }
         },
         "21": {
           "OATES": {
             "cleared_altitude": 12000,
-            "sid": "FLG1",
-            "waypoints": "KFLG-3 N035.07.37.017,W111.40.59.976 N035.05.16.639,W111.40.53.274 OATES/a10500+"
+            "sid": "FLG1"
           }
         }
       },
@@ -1781,8 +1775,7 @@
         "21": {
           "BYTER": {
             "cleared_altitude": 13000,
-            "sid": "BYTER1",
-            "waypoints": "KSEZ-3 JEXXI GATTS PIPOE SIDTY BYTER"
+            "sid": "BYTER1"
           },
           "DRK": {
             "cleared_altitude": 13000,

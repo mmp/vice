@@ -34,15 +34,13 @@
           },
           "HAQHY": {
             "assigned_altitude": 14000,
-            "sid": "NOKXI2",
-            "waypoints": "NOKXI/a7400+ MIRXE/a9600+ BATTZ/a11400+"
+            "sid": "NOKXI2"
           }
         },
         "29": {
           "TESSY": {
             "assigned_altitude": 14000,
-            "sid": "RHONE3",
-            "waypoints": "_GJT11/h290 RHONE/a7500+ LOMMA/a8600+"
+            "sid": "RHONE3"
           },
           "SQUAT,PACES,DIRDY,BRICK,DBL": {
             "assigned_altitude": 14000,

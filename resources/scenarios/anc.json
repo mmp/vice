@@ -122,63 +122,53 @@
         "15": {
           "TED": {
             "cleared_altitude": 4000,
-            "sid": "ANCH1",
-            "waypoints": "N061.09.51.751,W149.59.41.103/a600+/h201"
+            "sid": "ANCH1"
           }
         },
         "33": {
           "FFITZ": {
             "cleared_altitude": 4000,
-            "sid": "FFITZ4",
-            "waypoints": "ISACC RRROB EVRTS/a5000+ DCSIX FRIDA/a9000+ FFITZ"
+            "sid": "FFITZ4"
           },
           "NOEND": {
             "cleared_altitude": 4000,
-            "sid": "NOEND4",
-            "waypoints": "N061.12.23.843,W150.01.02.841 EGKAJ/a3000+ LIFFE/s230 OUTER/a6000+ CRAFT/a8000+ RAMMA/a10000+ NOEND/a12800+"
+            "sid": "NOEND4"
           },
           "TED": {
             "cleared_altitude": 4000,
-            "sid": "ANCH1",
-            "waypoints": "N061.12.23.843,W150.01.02.841/a600+/h301"
+            "sid": "ANCH1"
           }
         },
         "7L": {
           "TED": {
             "cleared_altitude": 4000,
-            "sid": "POTTR3",
-            "waypoints": "N061.10.04.838,W149.57.33.881/a600+/h199"
+            "sid": "POTTR3"
           }
         },
         "7R": {
           "TED": {
             "cleared_altitude": 4000,
-            "sid": "POTTR3",
-            "waypoints": "N061.10.04.838,W149.57.33.881/a600+/h199"
+            "sid": "POTTR3"
           }
         },
         "25L": {
           "FFITZ": {
             "cleared_altitude": 4000,
-            "sid": "FFITZ4",
-            "waypoints": "VUYWO OGOLY EVRTS/a5000+ DCSIX FRIDA/a9000+ FFITZ"
+            "sid": "FFITZ4"
           },
           "TED": {
             "cleared_altitude": 4000,
-            "sid": "ANCH1",
-            "waypoints": "N061.10.03.877,W150.03.14.128/a600+/h254"
+            "sid": "ANCH1"
           }
         },
         "25R": {
           "FFITZ": {
             "cleared_altitude": 4000,
-            "sid": "FFITZ4",
-            "waypoints": "VUYWO OGOLY EVRTS/a5000+ DCSIX FRIDA/a9000+ FFITZ"
+            "sid": "FFITZ4"
           },
           "TED": {
             "cleared_altitude": 4000,
-            "sid": "ANCH1",
-            "waypoints": "N061.10.03.877,W150.03.14.128/a600+/h254"
+            "sid": "ANCH1"
           }
         }
       },

@@ -586,8 +586,7 @@
           },
           "BLZZR.J.4R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "BLZZR6",
-            "waypoints": "NHANT HURBE ORRRR CHWDH STEEM DEDHM"
+            "sid": "BLZZR6"
           },
           "BRUWN.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -596,8 +595,7 @@
           },
           "BRUWN.J.4R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "BRUWN7",
-            "waypoints": "NHANT HURBE ORRRR BUCYK"
+            "sid": "BRUWN7"
           },
           "CELTK.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -606,8 +604,7 @@
           },
           "CELTK.J.4R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "CELTK7",
-            "waypoints": "NHANT HURBE ORRRR TONNI"
+            "sid": "CELTK7"
           },
           "HYLND.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -616,8 +613,7 @@
           },
           "HYLND.J.4R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "HYLND7",
-            "waypoints": "NHANT HURBE STAYC SOFEA SHAAN"
+            "sid": "HYLND7"
           },
           "LBSTA.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -636,18 +632,15 @@
           },
           "PATSS.J.4R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "PATSS7",
-            "waypoints": "NHANT HURBE ORRRR CHWDH STEEM DEDHM"
+            "sid": "PATSS7"
           },
           "REVSS.J.4R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "REVSS6",
-            "waypoints": "NHANT HURBE ORRRR CHWDH STEEM DEDHM"
+            "sid": "REVSS6"
           },
           "SSOXS.J.4R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "SSOXS7",
-            "waypoints": "NHANT HURBE ORRRR BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "BLZZR.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
@@ -656,8 +649,7 @@
           },
           "BLZZR.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
-            "sid": "BLZZR6",
-            "waypoints": "NHANT HURBE ORRRR CHWDH STEEM DEDHM"
+            "sid": "BLZZR6"
           },
           "BRUWN.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
@@ -666,8 +658,7 @@
           },
           "BRUWN.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
-            "sid": "BRUWN7",
-            "waypoints": "NHANT HURBE ORRRR BUCYK"
+            "sid": "BRUWN7"
           },
           "CELTK.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
@@ -676,8 +667,7 @@
           },
           "CELTK.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
-            "sid": "CELTK7",
-            "waypoints": "NHANT HURBE ORRRR TONNI"
+            "sid": "CELTK7"
           },
           "HYLND.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
@@ -686,8 +676,7 @@
           },
           "HYLND.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
-            "sid": "HYLND7",
-            "waypoints": "NHANT HURBE STAYC SOFEA SHAAN"
+            "sid": "HYLND7"
           },
           "LBSTA.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
@@ -706,18 +695,15 @@
           },
           "PATSS.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
-            "sid": "PATSS7",
-            "waypoints": "NHANT HURBE ORRRR CHWDH STEEM DEDHM"
+            "sid": "PATSS7"
           },
           "REVSS.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
-            "sid": "REVSS6",
-            "waypoints": "NHANT HURBE ORRRR CHWDH STEEM DEDHM"
+            "sid": "REVSS6"
           },
           "SSOXS.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
-            "sid": "SSOXS7",
-            "waypoints": "NHANT HURBE ORRRR BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "LFV.ACK.P.4R.33+32/27": {
             "cleared_altitude": 3000,
@@ -748,8 +734,7 @@
           },
           "BLZZR.J.9.4/9": {
             "cleared_altitude": 5000,
-            "sid": "BLZZR6",
-            "waypoints": "CLAWW/s250 FENWY GLLET WYMTH DEDHM"
+            "sid": "BLZZR6"
           },
           "BOSOX.J.9.4/9": {
             "cleared_altitude": 5000,
@@ -758,8 +743,7 @@
           },
           "BRUWN.J.9.4/9": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "CLAWW/s250 FENWY BUCYK"
+            "sid": "BRUWN7"
           },
           "BURDY.J.9.4/9": {
             "cleared_altitude": 5000,
@@ -768,8 +752,7 @@
           },
           "CELTK.J.9.4/9": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "CLAWW/s250 FENWY SCOAR"
+            "sid": "CELTK7"
           },
           "GLYDE.J.9.4/9": {
             "cleared_altitude": 5000,
@@ -783,8 +766,7 @@
           },
           "HYLND.J.9.4/9": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "CLAWW/s250 CORRT STAYC TRAFT"
+            "sid": "HYLND7"
           },
           "LBSTA.J.9.4/9": {
             "cleared_altitude": 5000,
@@ -803,8 +785,7 @@
           },
           "PATSS.J.9.4/9": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "CLAWW/s250 FENWY GLLET WYMTH DEDHM"
+            "sid": "PATSS7"
           },
           "PEASE.J.9.4/9": {
             "cleared_altitude": 5000,
@@ -823,13 +804,11 @@
           },
           "REVSS.J.9.4/9": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "CLAWW/s250 FENWY GLLET WYMTH DEDHM"
+            "sid": "REVSS6"
           },
           "SSOXS.J.9.4/9": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "CLAWW/a4000+/s250 FENWY BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "LFV.ACK.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
@@ -843,8 +822,7 @@
           },
           "BLZZR.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
-            "sid": "BLZZR6",
-            "waypoints": "CLAWW/s250 FENWY GLLET WYMTH DEDHM"
+            "sid": "BLZZR6"
           },
           "BOSOX.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
@@ -853,8 +831,7 @@
           },
           "BRUWN.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "CLAWW/s250 FENWY BUCYK"
+            "sid": "BRUWN7"
           },
           "BURDY.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
@@ -863,8 +840,7 @@
           },
           "CELTK.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "CLAWW/s250 FENWY SCOAR"
+            "sid": "CELTK7"
           },
           "GLYDE.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
@@ -878,8 +854,7 @@
           },
           "HYLND.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "CLAWW/s250 CORRT STAYC TRAFT"
+            "sid": "HYLND7"
           },
           "LBSTA.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
@@ -898,8 +873,7 @@
           },
           "PATSS.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "CLAWW/s250 FENWY GLLET WYMTH DEDHM"
+            "sid": "PATSS7"
           },
           "PEASE.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
@@ -918,13 +892,11 @@
           },
           "REVSS.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "CLAWW/s250 FENWY GLLET WYMTH DEDHM"
+            "sid": "REVSS6"
           },
           "SSOXS.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "CLAWW/a4000+/s250 FENWY BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "LFV.ACK.P.9.4/9": {
             "cleared_altitude": 3000,
@@ -1040,8 +1012,7 @@
           },
           "BLZZR.J.15R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "BLZZR6",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "BLZZR6"
           },
           "BRUWN.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -1050,8 +1021,7 @@
           },
           "BRUWN.J.15R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "BRUWN7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 BUCYK"
+            "sid": "BRUWN7"
           },
           "CELTK.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -1060,8 +1030,7 @@
           },
           "CELTK.J.15R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "CELTK7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 SCOAR"
+            "sid": "CELTK7"
           },
           "HYLND.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -1070,8 +1039,7 @@
           },
           "HYLND.J.15R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "HYLND7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BOATT/s250 HEARR MARBB"
+            "sid": "HYLND7"
           },
           "LBSTA.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -1080,8 +1048,7 @@
           },
           "LBSTA.J.15R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "LBSTA8",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BOATT/s250 HEARR SHAUN"
+            "sid": "LBSTA8"
           },
           "PATSS.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
@@ -1090,140 +1057,113 @@
           },
           "PATSS.J.15R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "PATSS7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "PATSS7"
           },
           "REVSS.J.15R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "REVSS6",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "REVSS6"
           },
           "SSOXS.J.15R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "SSOXS7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "BLZZR.J.15R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "BLZZR6",
-            "waypoints": "KBOS-33L/h150 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "BLZZR6"
           },
           "BRUWN.J.15R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "KBOS-33L/h150 TASKT BRRRO/s250 BUCYK"
+            "sid": "BRUWN7"
           },
           "CELTK.J.15R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "KBOS-33L/h150 TASKT BRRRO/s250 SCOAR"
+            "sid": "CELTK7"
           },
           "HYLND.J.15R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "KBOS-33L/h150 TASKT BOATT/s250 HEARR MARBB"
+            "sid": "HYLND7"
           },
           "LBSTA.J.15R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "LBSTA8",
-            "waypoints": "KBOS-33L/h150 TASKT BOATT/s250 HEARR SHAUN"
+            "sid": "LBSTA8"
           },
           "PATSS.J.15R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "KBOS-33L/h150 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "PATSS7"
           },
           "REVSS.J.15R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "KBOS-33L/h150 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "REVSS6"
           },
           "SSOXS.J.15R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "KBOS-33L/h150 TASKT BRRRO/s250 BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "BLZZR.J.15R.15/9": {
             "cleared_altitude": 3000,
-            "sid": "BLZZR6",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "BLZZR6"
           },
           "BRUWN.J.15R.15/9": {
             "cleared_altitude": 3000,
-            "sid": "BRUWN7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 BUCYK"
+            "sid": "BRUWN7"
           },
           "CELTK.J.15R.15/9": {
             "cleared_altitude": 3000,
-            "sid": "CELTK7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 SCOAR"
+            "sid": "CELTK7"
           },
           "HYLND.J.15R.15/9": {
             "cleared_altitude": 3000,
-            "sid": "HYLND7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BOATT/s250 HEARR MARBB"
+            "sid": "HYLND7"
           },
           "LBSTA.J.15R.15/9": {
             "cleared_altitude": 3000,
-            "sid": "LBSTA8",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BOATT/s250 HEARR SHAUN"
+            "sid": "LBSTA8"
           },
           "PATSS.J.15R.15/9": {
             "cleared_altitude": 3000,
-            "sid": "PATSS7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "PATSS7"
           },
           "REVSS.J.15R.15/9": {
             "cleared_altitude": 3000,
-            "sid": "REVSS6",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "REVSS6"
           },
           "SSOXS.J.15R.15/9": {
             "cleared_altitude": 3000,
-            "sid": "SSOXS7",
-            "waypoints": "KBOS-33L N042.20.28.614,W070.58.27.083 TASKT BRRRO/s250 BUCYK JSTER"
+            "sid": "SSOXS7"
           }
         },
         "22R": {
           "BLZZR": {
             "cleared_altitude": 5000,
-            "sid": "BLZZR6",
-            "waypoints": "N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "BLZZR6"
           },
           "BRUWN": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 BUCYK"
+            "sid": "BRUWN7"
           },
           "CELTK": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 SCOAR"
+            "sid": "CELTK7"
           },
           "HYLND": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "N042.20.21.858,W071.01.26.352 TJAYY BOATT/s250 HEARR MARBB"
+            "sid": "HYLND7"
           },
           "LBSTA": {
             "cleared_altitude": 5000,
-            "sid": "LBSTA8",
-            "waypoints": "N042.20.21.858,W071.01.26.352 TJAYY BOATT/s250 HEARR SHAUN"
+            "sid": "LBSTA8"
           },
           "PATSS": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "PATSS7"
           },
           "REVSS": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "REVSS6"
           },
           "SSOXS": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "PEASE,ENE": {
             "cleared_altitude": 2000,
@@ -1257,43 +1197,35 @@
           },
           "BLZZR.J.22R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "BLZZR6",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "BLZZR6"
           },
           "BRUWN.J.22R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 BUCYK"
+            "sid": "BRUWN7"
           },
           "CELTK.J.22R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 SCOAR"
+            "sid": "CELTK7"
           },
           "HYLND.J.22R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BOATT/s250 HEARR MARBB"
+            "sid": "HYLND7"
           },
           "LBSTA.J.22R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "LBSTA8",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BOATT/s250 HEARR SHAUN"
+            "sid": "LBSTA8"
           },
           "PATSS.J.22R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "PATSS7"
           },
           "REVSS.J.22R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "REVSS6"
           },
           "SSOXS.J.22R.27/22": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "BOSOX.BDL.P.22R.27/22": {
             "cleared_altitude": 3000,
@@ -1362,38 +1294,31 @@
           },
           "BRUWN.J.22R.22/22": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 BUCYK"
+            "sid": "BRUWN7"
           },
           "CELTK.J.22R.22/22": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 SCOAR"
+            "sid": "CELTK7"
           },
           "HYLND.J.22R.22/22": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BOATT/s250 HEARR MARBB"
+            "sid": "HYLND7"
           },
           "LBSTA.J.22R.22/22": {
             "cleared_altitude": 5000,
-            "sid": "LBSTA8",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BOATT/s250 HEARR SHAUN"
+            "sid": "LBSTA8"
           },
           "PATSS.J.22R.22/22": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "PATSS7"
           },
           "REVSS.J.22R.22/22": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 JAITE HEWMO/s260 KENWI"
+            "sid": "REVSS6"
           },
           "SSOXS.J.22R.22/22": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "_BOS_4L N042.20.21.858,W071.01.26.352 TJAYY BRRRO/s250 BUCYK JSTER"
+            "sid": "SSOXS7"
           },
           "BOSOX.BDL.P.22R.22/22": {
             "cleared_altitude": 3000,
@@ -1519,8 +1444,7 @@
           },
           "BLZZR.J.33L.33/27": {
             "cleared_altitude": 4000,
-            "sid": "BLZZR6",
-            "waypoints": "TEKKK EXXXX"
+            "sid": "BLZZR6"
           },
           "BURDY.PVD.J.33L.33/27": {
             "cleared_altitude": 4000,
@@ -1529,38 +1453,31 @@
           },
           "BRUWN.J.33L.33/27": {
             "cleared_altitude": 4000,
-            "sid": "BRUWN7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN BEREI"
+            "sid": "BRUWN7"
           },
           "CELTK.J.33L.33/27": {
             "cleared_altitude": 4000,
-            "sid": "CELTK7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN"
+            "sid": "CELTK7"
           },
           "HYLND.J.33L.33/27": {
             "cleared_altitude": 4000,
-            "sid": "HYLND7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK CAMWI"
+            "sid": "HYLND7"
           },
           "LBSTA.J.33L.33/27": {
             "cleared_altitude": 4000,
-            "sid": "LBSTA8",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK CAMWI"
+            "sid": "LBSTA8"
           },
           "PATSS.J.33L.33/27": {
             "cleared_altitude": 4000,
-            "sid": "PATSS7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY"
+            "sid": "PATSS7"
           },
           "REVSS.J.33L.33/27": {
             "cleared_altitude": 4000,
-            "sid": "REVSS6",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK DUBYU"
+            "sid": "REVSS6"
           },
           "SSOXS.J.33L.33/27": {
             "cleared_altitude": 4000,
-            "sid": "SSOXS7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN"
+            "sid": "SSOXS7"
           },
           "BOSOX.BDL.P.33L.27+32/33": {
             "cleared_altitude": 3000,
@@ -1614,8 +1531,7 @@
           },
           "BLZZR.J.33L.27+32/33": {
             "cleared_altitude": 5000,
-            "sid": "BLZZR6",
-            "waypoints": "TEKKK EXXXX"
+            "sid": "BLZZR6"
           },
           "BURDY.PVD.J.33L.27+32/33": {
             "cleared_altitude": 5000,
@@ -1624,38 +1540,31 @@
           },
           "BRUWN.J.33L.27+32/33": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN BEREI"
+            "sid": "BRUWN7"
           },
           "CELTK.J.33L.27+32/33": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN"
+            "sid": "CELTK7"
           },
           "HYLND.J.33L.27+32/33": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK CAMWI"
+            "sid": "HYLND7"
           },
           "LBSTA.J.33L.27+32/33": {
             "cleared_altitude": 5000,
-            "sid": "LBSTA8",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK CAMWI"
+            "sid": "LBSTA8"
           },
           "PATSS.J.33L.27+32/33": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY"
+            "sid": "PATSS7"
           },
           "REVSS.J.33L.27+32/33": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK DUBYU"
+            "sid": "REVSS6"
           },
           "SSOXS.J.33L.27+32/33": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN"
+            "sid": "SSOXS7"
           },
           "BOSOX.BDL.P.33L.27/33": {
             "cleared_altitude": 3000,
@@ -1709,8 +1618,7 @@
           },
           "BLZZR.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "BLZZR6",
-            "waypoints": "TEKKK EXXXX"
+            "sid": "BLZZR6"
           },
           "BURDY.PVD.J.33L.27/33": {
             "cleared_altitude": 5000,
@@ -1719,73 +1627,59 @@
           },
           "BRUWN.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN BEREI"
+            "sid": "BRUWN7"
           },
           "CELTK.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN"
+            "sid": "CELTK7"
           },
           "HYLND.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK CAMWI"
+            "sid": "HYLND7"
           },
           "LBSTA.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "LBSTA8",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK CAMWI"
+            "sid": "LBSTA8"
           },
           "PATSS.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY"
+            "sid": "PATSS7"
           },
           "REVSS.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK DUBYU"
+            "sid": "REVSS6"
           },
           "SSOXS.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN"
+            "sid": "SSOXS7"
           },
           "BRUWN.J.33L.33+32/27": {
             "cleared_altitude": 4000,
-            "sid": "BRUWN7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN BEREI"
+            "sid": "BRUWN7"
           },
           "CELTK.J.33L.33+32/27": {
             "cleared_altitude": 4000,
-            "sid": "CELTK7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN"
+            "sid": "CELTK7"
           },
           "HYLND.J.33L.33+32/27": {
             "cleared_altitude": 4000,
-            "sid": "HYLND7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK CAMWI"
+            "sid": "HYLND7"
           },
           "LBSTA.J.33L.33+32/27": {
             "cleared_altitude": 4000,
-            "sid": "LBSTA8",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK CAMWI"
+            "sid": "LBSTA8"
           },
           "PATSS.J.33L.33+32/27": {
             "cleared_altitude": 4000,
-            "sid": "PATSS7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY"
+            "sid": "PATSS7"
           },
           "REVSS.J.33L.33+32/27": {
             "cleared_altitude": 4000,
-            "sid": "REVSS6",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK DUBYU"
+            "sid": "REVSS6"
           },
           "SSOXS.J.33L.33+32/27": {
             "cleared_altitude": 4000,
-            "sid": "SSOXS7",
-            "waypoints": "N042.23.00.253,W071.01.44.891 TEKKK COUSY CBEAR COLYN"
+            "sid": "SSOXS7"
           }
         },
         "27": {
@@ -1826,53 +1720,43 @@
           },
           "LFV.ACK.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "BOSOX.BDL.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "BLZZR.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "BLZZR6",
-            "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA"
+            "sid": "BLZZR6"
           },
           "BOSOX.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "BRUWN.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "BRUWN7",
-            "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA COLYN BEREI"
+            "sid": "BRUWN7"
           },
           "BURDY.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "CELTK.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "CELTK7",
-            "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA COLYN"
+            "sid": "CELTK7"
           },
           "GLYDE.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "DUNKK.HYA.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "HYLND.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA GLOWB/a3000+ HRALD"
+            "sid": "HYLND7"
           },
           "LBSTA.J.27.33/27": {
             "cleared_altitude": 5000,
@@ -1881,43 +1765,35 @@
           },
           "MANCH.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "DUNKK.MVY.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "PATSS.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "PATSS7",
-            "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA"
+            "sid": "PATSS7"
           },
           "PEASE.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "PVC.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "BURDY.PVD.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "_BOS_9 N042.21.00.722,W071.02.50.315 WYLYY CYOTI"
+            "sid": "WYLYY5"
           },
           "REVSS.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "REVSS6",
-            "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA GLOWB/a3000"
+            "sid": "REVSS6"
           },
           "SSOXS.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7",
-            "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA COLYN"
+            "sid": "SSOXS7"
           },
           "BURDY.P.27.33+32/27": {
             "cleared_altitude": 3000,

@@ -38,38 +38,32 @@
           "DBL": {
             "cleared_altitude": 16000,
             "sid": "LINDZ1",
-            "description": "LINDZ1.DBL",
-            "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ DBL"
+            "description": "LINDZ1.DBL"
           },
           "LINDZ": {
             "cleared_altitude": 16000,
             "sid": "LINDZ1",
-            "description": "LINDZ1.LINDZ",
-            "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ"
+            "description": "LINDZ1.LINDZ"
           },
           "RLG": {
             "cleared_altitude": 16000,
             "sid": "LINDZ1",
-            "description": "LINDZ1.RLG",
-            "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ SXW JESIE RLG"
+            "description": "LINDZ1.RLG"
           },
           "EKR": {
             "cleared_altitude": 16000,
             "sid": "LINDZ1",
-            "description": "LINDZ1.EKR",
-            "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ SLOLM RIL EKR"
+            "description": "LINDZ1.EKR"
           },
           "RIL": {
             "cleared_altitude": 16000,
             "sid": "LINDZ1",
-            "description": "LINDZ1.RIL",
-            "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ SLOLM RIL"
+            "description": "LINDZ1.RIL"
           },
           "JNC": {
             "cleared_altitude": 16000,
             "sid": "LINDZ1",
-            "description": "LINDZ1.JNC",
-            "waypoints": "KASE-15 N039.16.46.814,W106.52.56.394/a9100+ N039.18.21.846,W107.02.26.420 LINDZ SLOLM PACES JNC"
+            "description": "LINDZ1.JNC"
           }
         }
       },

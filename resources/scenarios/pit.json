@@ -93,119 +93,97 @@
         "14": {
           "AIR": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_32/h145"
+            "sid": "PIT5"
           },
           "MGW": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_32/h145"
+            "sid": "PIT5"
           },
           "JST": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_32/h145"
+            "sid": "PIT5"
           },
           "CKB": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_32/h145"
+            "sid": "PIT5"
           },
           "DILNE": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_32/h145"
+            "sid": "PIT5"
           },
           "AHTIY": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_32/h145"
+            "sid": "PIT5"
           }
         },
         "28C": {
           "AIR": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "MGW": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "JST": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "CKB": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "DILNE": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "AHTIY": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           }
         },
         "28R": {
           "BSV": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "EWC": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "TYROO": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "PARKE": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           },
           "HAR": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_10C/h281"
+            "sid": "PIT5"
           }
         },
         "10C": {
           "BSV": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_28C/h101"
+            "sid": "PIT5"
           },
           "EWC": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_28C/h101"
+            "sid": "PIT5"
           },
           "TYROO": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_28C/h101"
+            "sid": "PIT5"
           },
           "PARKE": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_28C/h101"
+            "sid": "PIT5"
           },
           "HAR": {
             "cleared_altitude": 5000,
-            "sid": "PIT5",
-            "waypoints": "_PIT_28C/h101"
+            "sid": "PIT5"
           }
         }
       },
@@ -536,95 +514,77 @@
         "10": {
           "AIR": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "EWC": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "BSV": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "CKB": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "PSB": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "JST": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "MGW": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "EKN": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "TYROO": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "AHTIY": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           },
           "DILNE": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "sid": "AGC9"
           }
         },
         "28": {
           "AIR": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_10/h279"
+            "sid": "AGC9"
           },
           "EWC": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_10/h279"
+            "sid": "AGC9"
           },
           "BSV": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_10/h279"
+            "sid": "AGC9"
           },
           "CKB": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_10/h279"
+            "sid": "AGC9"
           },
           "PSB": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_10/h279"
+            "sid": "AGC9"
           },
           "JST": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_10/h279"
+            "sid": "AGC9"
           },
           "MGW": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_10/h279"
+            "sid": "AGC9"
           },
           "EKN": {
             "cleared_altitude": 3000,
@@ -633,8 +593,7 @@
           },
           "TYROO": {
             "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_10/h279"
+            "sid": "AGC9"
           },
           "AHTIY": {
             "cleared_altitude": 3000,

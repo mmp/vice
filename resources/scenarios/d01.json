@@ -112,8 +112,7 @@
           },
           "CHUWY": {
             "cleared_altitude": 23000,
-            "sid": "CHUWY1",
-            "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ VELAA/a16000+ YOKES/a17000+ LNGWD"
+            "sid": "CHUWY1"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 10000,
@@ -137,58 +136,47 @@
           },
           "DDRTH": {
             "cleared_altitude": 23000,
-            "sid": "DDRTH1",
-            "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ YAMMI/a17000+"
+            "sid": "DDRTH1"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
-            "sid": "EEONS8",
-            "waypoints": "ROYYL/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE EEONS"
+            "sid": "EEONS8"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
-            "sid": "EMMYS8",
-            "waypoints": "TIGHT/a10000- HAAHN/a12000- GASSS/a14000+ SNIPR EMMYS"
+            "sid": "EMMYS8"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
-            "sid": "EPKEE7",
-            "waypoints": "KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "sid": "EPKEE7"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
-            "sid": "EXTAN7",
-            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+ FALUJ EXTAN"
+            "sid": "EXTAN7"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
-            "sid": "HHOTH2",
-            "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ KKIMM/a16000+ BRYCC/a17000+ HHOTH"
+            "sid": "HHOTH2"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
-            "sid": "SABTH2",
-            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ PACMN/a16000+ SHOJO/a18000+ SABTH"
+            "sid": "SABTH2"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
-            "sid": "SLEEK2",
-            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ SEGAH/a16000+ STAKR/a18000+ AZARO"
+            "sid": "SLEEK2"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
-            "sid": "SMMUR2",
-            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ WEPON/a16000+ SOLAR/a17000+ SMMUR"
+            "sid": "SMMUR2"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
-            "sid": "SUDDZ1",
-            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+ HANGR/a16000+ SCAGS/a18000+ FRNKE/a23000+"
+            "sid": "SUDDZ1"
           },
           "XXWNG": {
             "cleared_altitude": 23000,
-            "sid": "XXWNG1",
-            "waypoints": "ROYYL/a10000- TURBN CHICN/a14000+ FAARM/a16000+ RIKKK/a17000+"
+            "sid": "XXWNG1"
           },
           "CHNGY, ZIMMR": {
             "cleared_altitude": 10000,
@@ -199,13 +187,11 @@
         "25": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
-            "sid": "BAYLR6",
-            "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "sid": "BAYLR6"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
-            "sid": "CHUWY1",
-            "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ ELCEE/a16000+ YOKES/a17000+ LNGWD"
+            "sid": "CHUWY1"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
@@ -229,8 +215,7 @@
           },
           "DDRTH": {
             "cleared_altitude": 23000,
-            "sid": "DDRTH1",
-            "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ HERDR/a16000+ TROTO YAMMI/a17000+"
+            "sid": "DDRTH1"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 10000,
@@ -254,33 +239,27 @@
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
-            "sid": "HHOTH2",
-            "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ TAGKO/a16000+ BRYCC/a17000+ HHOTH"
+            "sid": "HHOTH2"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
-            "sid": "SABTH2",
-            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ ICECI/a16000+ SHOJO/a18000+ SABTH"
+            "sid": "SABTH2"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
-            "sid": "SLEEK2",
-            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ WEPON/a16000 STAKR/a18000+ AZARO"
+            "sid": "SLEEK2"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
-            "sid": "SMMUR2",
-            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ RKYMT/a16000+ SOLAR/a17000+ SMMUR "
+            "sid": "SMMUR2"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
-            "sid": "SUDDZ1",
-            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+ RKYMT/a16000+ SCAGS/a18000+ FRNKE/a23000+"
+            "sid": "SUDDZ1"
           },
           "XXWNG": {
             "cleared_altitude": 23000,
-            "sid": "XXWNG1",
-            "waypoints": "MUGBE/a10000- WAZEE LODOE/a12000+ RINKR/a14000+ HERDR/a16000+ RIKKK/a17000+"
+            "sid": "XXWNG1"
           },
           "CHNGY, ZIMMR": {
             "cleared_altitude": 23000,
@@ -291,8 +270,7 @@
         "17L": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
-            "sid": "BAYLR6",
-            "waypoints": "GOROC BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "sid": "BAYLR6"
           },
           "CHUWY": {
             "cleared_altitude": 10000,
@@ -326,23 +304,19 @@
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
-            "sid": "EEONS8",
-            "waypoints": "GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+ MRENE EEONS"
+            "sid": "EEONS8"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
-            "sid": "EMMYS8",
-            "waypoints": "GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR EMMYS"
+            "sid": "EMMYS8"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
-            "sid": "EPKEE7",
-            "waypoints": "GISTT/a7000+ MLHOS/a10000- SMTHR/a11000 SMPSN APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "sid": "EPKEE7"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
-            "sid": "EXTAN7",
-            "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ EXTAN"
+            "sid": "EXTAN7"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 10000,
@@ -351,23 +325,19 @@
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
-            "sid": "SABTH2",
-            "waypoints": "RAYDR/a10000- JSMNN/a17000+ SHOJO/a18000+ SABTH"
+            "sid": "SABTH2"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
-            "sid": "SLEEK2",
-            "waypoints": "RAYDR/a10000- BCORP/a17000+ STAKR/a18000+ AZARO"
+            "sid": "SLEEK2"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
-            "sid": "SMMUR2",
-            "waypoints": "RAYDR/a10000- SIGHT/a10000+ SCRCY/a12000+ SOLAR/a17000+ SMMUR"
+            "sid": "SMMUR2"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
-            "sid": "SUDDZ1",
-            "waypoints": "RAYDR/a10000- CHOZN/a10000+ FLYYR/a12000+ CONRD/a17000+ SCAGS/a18000+ FRNKE/a23000+"
+            "sid": "SUDDZ1"
           },
           "XXWNG": {
             "cleared_altitude": 10000,
@@ -383,13 +353,11 @@
         "34L": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
-            "sid": "BAYLR6",
-            "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "sid": "BAYLR6"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
-            "sid": "CHUWY1",
-            "waypoints": "NKATA/a10000- YOKES/a17000+ LNGWD"
+            "sid": "CHUWY1"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
@@ -413,33 +381,27 @@
           },
           "DDRTH": {
             "cleared_altitude": 23000,
-            "sid": "DDRTH1",
-            "waypoints": "NKATA/a10000- KAYOO/a11000- SHICK/a13000+ YAMMI/a17000+"
+            "sid": "DDRTH1"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
-            "sid": "EEONS8",
-            "waypoints": "NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE EEONS"
+            "sid": "EEONS8"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
-            "sid": "EMMYS8",
-            "waypoints": "NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR EMMYS"
+            "sid": "EMMYS8"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
-            "sid": "EPKEE7",
-            "waypoints": "KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "sid": "EPKEE7"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
-            "sid": "EXTAN7",
-            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+ FALUJ EXTAN"
+            "sid": "EXTAN7"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
-            "sid": "HHOTH2",
-            "waypoints": "NKATA/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
+            "sid": "HHOTH2"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 10000,
@@ -463,8 +425,7 @@
           },
           "XXWNG": {
             "cleared_altitude": 23000,
-            "sid": "XXWNG1",
-            "waypoints": "NKATA/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
+            "sid": "XXWNG1"
           },
           "CHNGY, ZIMMR": {
             "cleared_altitude": 23000,
@@ -475,13 +436,11 @@
         "34R": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
-            "sid": "BAYLR6",
-            "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "sid": "BAYLR6"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
-            "sid": "CHUWY1",
-            "waypoints": "CAAZZ/a10000- YOKES/a17000+ LNGWD"
+            "sid": "CHUWY1"
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
@@ -505,33 +464,27 @@
           },
           "DDRTH": {
             "cleared_altitude": 23000,
-            "sid": "DDRTH1",
-            "waypoints": "CAAZZ/a10000- KAYOO/a11000- SHICK/a13000+ YAMMI/a17000+"
+            "sid": "DDRTH1"
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
-            "sid": "EEONS8",
-            "waypoints": "NUGGS HIDEF/a10000- SHOBO/a12000- LUPTN/a14000+ MRENE EEONS"
+            "sid": "EEONS8"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
-            "sid": "EMMYS8",
-            "waypoints": "NUGGS HIDEF/a10000- BRSTO/a12000- GASSS/a14000+ SNIPR EMMYS"
+            "sid": "EMMYS8"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
-            "sid": "EPKEE7",
-            "waypoints": "KIDNG/a10000- PIDLE APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "sid": "EPKEE7"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
-            "sid": "EXTAN7",
-            "waypoints": "KIDNG/a10000- KMBEL BHIGH MMESA/a14000+ FALUJ EXTAN"
+            "sid": "EXTAN7"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
-            "sid": "HHOTH2",
-            "waypoints": "CAAZZ/a10000- HAWKR CCLYD/a13000+ BRYCC/a17000+ HHOTH"
+            "sid": "HHOTH2"
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 10000,
@@ -555,8 +508,7 @@
           },
           "XXWNG": {
             "cleared_altitude": 23000,
-            "sid": "XXWNG1",
-            "waypoints": "CAAZZ/a10000- HAWKR BNITA/a13000+ RIKKK/a17000+"
+            "sid": "XXWNG1"
           },
           "CHNGY, ZIMMR": {
             "cleared_altitude": 23000,
@@ -567,8 +519,7 @@
         "16L": {
           "TEHRU,HBU": {
             "cleared_altitude": 23000,
-            "sid": "BAYLR6",
-            "waypoints": "BRKEM/a10000- WAKIR/a11000+ TUULO/a14000+ HLTON MTSUI/a16000+ BAYLR/a17000+ BOBBA"
+            "sid": "BAYLR6"
           },
           "CHUWY": {
             "cleared_altitude": 23000,
@@ -602,23 +553,19 @@
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
-            "sid": "EEONS8",
-            "waypoints": "GISTT/a7000+ KIDNG/a10000- KAYGG LUPTN/a14000+ MRENE EEONS"
+            "sid": "EEONS8"
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 23000,
-            "sid": "EMMYS8",
-            "waypoints": "GISTT/a7000+ KIDNG/a10000- TWEDT GASSS/a14000+ SNIPR EMMYS"
+            "sid": "EMMYS8"
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 23000,
-            "sid": "EPKEE7",
-            "waypoints": "GISTT/a7000+ MLHOS/a10000- SMTHR/a12000- SMPSN APUUU/a14000+ EPKEE/a15000+ POIZN"
+            "sid": "EPKEE7"
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 23000,
-            "sid": "EXTAN7",
-            "waypoints": "GISTT/a7000+ BGONE/a10000- OLDDD MMESA/a14000+ FALUJ EXTAN"
+            "sid": "EXTAN7"
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 10000,
@@ -627,23 +574,19 @@
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
-            "sid": "SABTH2",
-            "waypoints": "BOGEI/a10000- JSMNN/a17000+ SHOJO/a18000+ SABTH"
+            "sid": "SABTH2"
           },
           "SLEEK": {
             "cleared_altitude": 23000,
-            "sid": "SLEEK2",
-            "waypoints": "BOGEI/a10000- BCORP/a17000+ STAKR/a18000+ AZARO"
+            "sid": "SLEEK2"
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
-            "sid": "SMMUR2",
-            "waypoints": "BOGEI/a10000- SIGHT/a10000+ SCRCY/a12000+ SOLAR/a17000+ SMMUR"
+            "sid": "SMMUR2"
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
-            "sid": "SUDDZ1",
-            "waypoints": "BOGEI/a10000- CHOZN/a10000+ FLYYR/a12000+ CONRD/a17000+ SCAGS/a18000+ FRNKE/a23000+"
+            "sid": "SUDDZ1"
           },
           "XXWNG": {
             "cleared_altitude": 1000,

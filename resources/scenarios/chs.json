@@ -48,95 +48,77 @@
           },
           "VANNC,JYMSE": {
             "cleared_altitude": 4000,
-            "sid": "MLTRE3",
-            "waypoints": "KCHS-33 ANGRE/a2000+/s230 MLTRE/a4000+"
+            "sid": "MLTRE3"
           },
           "MLTRE": {
             "cleared_altitude": 4000,
-            "sid": "MLTRE3",
-            "waypoints": "KCHS-33 ANGRE/a2000+/s230"
+            "sid": "MLTRE3"
           },
           "CRE": {
             "cleared_altitude": 4000,
-            "sid": "PLMTO3",
-            "waypoints": "KCHS-33 JAYLN LOIRN PLMTO"
+            "sid": "PLMTO3"
           },
           "PLMTO": {
             "cleared_altitude": 4000,
-            "sid": "PLMTO3",
-            "waypoints": "KCHS-33 JAYLN LOIRN"
+            "sid": "PLMTO3"
           },
           "DBN,IRQ,ALD": {
             "cleared_altitude": 4000,
-            "sid": "STUNO1",
-            "waypoints": "KCHS-33 TYLOR GULLA STUNO"
+            "sid": "STUNO1"
           },
           "STUNO": {
             "cleared_altitude": 4000,
-            "sid": "STUNO1",
-            "waypoints": "KCHS-33 TYLOR GULLA"
+            "sid": "STUNO1"
           },
           "FILLI": {
             "cleared_altitude": 4000,
-            "sid": "SWPFX3",
-            "waypoints": "KCHS-33 ANGRE/a2000+/s230 PALLI SWPFX/a4000+"
+            "sid": "SWPFX3"
           },
           "SWPFX": {
             "cleared_altitude": 4000,
-            "sid": "SWPFX3",
-            "waypoints": "KCHS-33 ANGRE/a2000+/s230 PALLI"
+            "sid": "SWPFX3"
           }
         },
         "33": {
           "GIPPL": {
             "cleared_altitude": 4000,
-            "sid": "LGRHD3",
-            "waypoints": "KCHS-15 HALEE LGRHD"
+            "sid": "LGRHD3"
           },
           "LGRHD": {
             "cleared_altitude": 4000,
-            "sid": "LGRHD3",
-            "waypoints": "KCHS-15 HALEE"
+            "sid": "LGRHD3"
           },
           "VANNC,JYMSE": {
             "cleared_altitude": 4000,
-            "sid": "MLTRE3",
-            "waypoints": "KCHS-15 MLTRE/a4000+"
+            "sid": "MLTRE3"
           },
           "MLTRE": {
             "cleared_altitude": 4000,
-            "sid": "MLTRE3",
-            "waypoints": "KCHS-15"
+            "sid": "MLTRE3"
           },
           "CRE": {
             "cleared_altitude": 4000,
-            "sid": "PLMTO3",
-            "waypoints": "KCHS-15 LOIRN PLMTO"
+            "sid": "PLMTO3"
           },
           "PLMTO": {
             "cleared_altitude": 4000,
-            "sid": "PLMTO3",
-            "waypoints": "KCHS-15 LOIRN"
+            "sid": "PLMTO3"
           },
           "DBN,IRQ,ALD": {
             "cleared_altitude": 4000,
-            "sid": "STUNO1",
-            "waypoints": "KCHS-15 GULLA STUNO"
+            "sid": "STUNO1"
           },
           "STUNO": {
             "cleared_altitude": 4000,
-            "sid": "STUNO1",
-            "waypoints": "KCHS-15 GULLA"
+            "sid": "STUNO1"
           },
           "FILLI": {
             "cleared_altitude": 4000,
-            "sid": "SWPFX3",
-            "waypoints": "KCHS-15 PALLI SWPFX/a4000+"
+            "sid": "SWPFX3"
           },
           "SWPFX": {
             "cleared_altitude": 4000,
-            "sid": "SWPFX3",
-            "waypoints": "KCHS-15 PALLI"
+            "sid": "SWPFX3"
           }
         }
       },
@@ -1178,13 +1160,11 @@
         "9": {
           "IRQ,ALD,DBN": {
             "cleared_altitude": 2000,
-            "sid": "EXTVE1",
-            "waypoints": "RNDAH/a2000+ GECHE GULLA PLFMD"
+            "sid": "EXTVE1"
           },
           "GIPPL": {
             "cleared_altitude": 2000,
-            "sid": "KIAWA2",
-            "waypoints": "LGRHD"
+            "sid": "KIAWA2"
           },
           "CRE,FLO,ASHEL": {
             "cleared_altitude": 2000,
@@ -1195,13 +1175,11 @@
         "27": {
           "IRQ,ALD,DBN": {
             "cleared_altitude": 2000,
-            "sid": "EXTVE1",
-            "waypoints": "RNDAH/a2000+ GECHE GULLA PLFMD"
+            "sid": "EXTVE1"
           },
           "GIPPL": {
             "cleared_altitude": 2000,
-            "sid": "KIAWA2",
-            "waypoints": "LGRHD"
+            "sid": "KIAWA2"
           },
           "CRE,FLO,ASHEL": {
             "cleared_altitude": 2000,

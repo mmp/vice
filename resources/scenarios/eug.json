@@ -781,29 +781,25 @@
         "10": {
           "SHEDD": {
             "cleared_altitude": 3000,
-            "sid": "SHEDD4",
-            "waypoints": "SHEDD"
+            "sid": "SHEDD4"
           }
         },
         "17": {
           "SHEDD": {
             "cleared_altitude": 3000,
-            "sid": "SHEDD4",
-            "waypoints": "SHEDD"
+            "sid": "SHEDD4"
           }
         },
         "28": {
           "SHEDD": {
             "cleared_altitude": 3000,
-            "sid": "SHEDD4",
-            "waypoints": "SHEDD"
+            "sid": "SHEDD4"
           }
         },
         "35": {
           "SHEDD": {
             "cleared_altitude": 3000,
-            "sid": "SHEDD4",
-            "waypoints": "SHEDD"
+            "sid": "SHEDD4"
           }
         }
       },

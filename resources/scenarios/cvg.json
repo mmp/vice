@@ -50,268 +50,217 @@
         "9": {
           "WWSHR,RIKLE": {
             "cleared_altitude": 5000,
-            "sid": "BNGLE5",
-            "waypoints": "KINNG LUBYI BNGLE"
+            "sid": "BNGLE5"
           },
           "RAMRD,SKAMR,BUSYY,CHCLL": {
             "cleared_altitude": 5000,
-            "sid": "CHCLL6",
-            "waypoints": "KINNG ORRON CHCLL"
+            "sid": "CHCLL6"
           },
           "HVQ,SITTR,JODUB": {
             "cleared_altitude": 5000,
-            "sid": "GIPLE7",
-            "waypoints": "KINNG GIPLE"
+            "sid": "GIPLE7"
           },
           "PLASH,RINTE": {
             "cleared_altitude": 5000,
-            "sid": "HAGOL5",
-            "waypoints": "KINNG HYANS HAGOL"
+            "sid": "HAGOL5"
           },
           "BARKS,SNKPT": {
             "cleared_altitude": 5000,
-            "sid": "JBNCH6",
-            "waypoints": "KINNG HYANS JBNCH"
+            "sid": "JBNCH6"
           },
           "SHIPR": {
             "cleared_altitude": 5000,
-            "sid": "KENLN6",
-            "waypoints": "KINNG KADDI KENLN"
+            "sid": "KENLN6"
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
-            "sid": "LOVEY8",
-            "waypoints": "KINNG LWREY MATUP RESAY SUNFR MUMIE LOVEY"
+            "sid": "LOVEY8"
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
-            "sid": "ROCKT4",
-            "waypoints": "KINNG CERPO WADAL FARUM CIVLO ROCKT"
+            "sid": "ROCKT4"
           },
           "TRFWA": {
             "cleared_altitude": 5000,
-            "sid": "SILKS6",
-            "waypoints": "KINNG ORRON SILKS"
+            "sid": "SILKS6"
           }
         },
         "18L": {
           "WWSHR,RIKLE": {
             "cleared_altitude": 5000,
-            "sid": "BNGLE5",
-            "waypoints": "LASNG CODKO JBETH FOPAS LUBYI BNGLE"
+            "sid": "BNGLE5"
           },
           "RAMRD,SKAMR,BUSYY,CHCLL": {
             "cleared_altitude": 5000,
-            "sid": "CHCLL6",
-            "waypoints": "LASNG ZEGUL CHCLL"
+            "sid": "CHCLL6"
           },
           "HVQ,SITTR,JODUB": {
             "cleared_altitude": 5000,
-            "sid": "GIPLE7",
-            "waypoints": "LASNG CODKO GIPLE"
+            "sid": "GIPLE7"
           },
           "PLASH,RINTE": {
             "cleared_altitude": 5000,
-            "sid": "HAGOL5",
-            "waypoints": "LASNG CODKO JBETH FOPAS HYANS HAGOL"
+            "sid": "HAGOL5"
           },
           "BARKS,SNKPT": {
             "cleared_altitude": 5000,
-            "sid": "JBNCH6",
-            "waypoints": "LASNG FEBLU GUMRE HERMM JBNCH"
+            "sid": "JBNCH6"
           },
           "SHIPR": {
             "cleared_altitude": 5000,
-            "sid": "KENLN6",
-            "waypoints": "LASNG ZEGUL HUNRU KENLN"
+            "sid": "KENLN6"
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
-            "sid": "LOVEY8",
-            "waypoints": "LASNG FEBLU GUMRE MUMIE LOVEY"
+            "sid": "LOVEY8"
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
-            "sid": "ROCKT4",
-            "waypoints": "LASNG CODKO SLUBY MOIER WADAL FARUM CIVLO ROCKT"
+            "sid": "ROCKT4"
           },
           "TRFWA": {
             "cleared_altitude": 5000,
-            "sid": "SILKS6",
-            "waypoints": "LASNG ZEGUL SILKS"
+            "sid": "SILKS6"
           }
         },
         "18C": {
           "WWSHR,RIKLE": {
             "cleared_altitude": 5000,
-            "sid": "BNGLE5",
-            "waypoints": "FLOEE MIPIE HERMM AMMOT BNGLE"
+            "sid": "BNGLE5"
           },
           "RAMRD,SKAMR,BUSYY,CHCLL": {
             "cleared_altitude": 5000,
-            "sid": "CHCLL6",
-            "waypoints": "FLOEE FEBLU CHCLL"
+            "sid": "CHCLL6"
           },
           "HVQ,SITTR,JODUB": {
             "cleared_altitude": 5000,
-            "sid": "GIPLE7",
-            "waypoints": "FLOEE CODKO GIPLE"
+            "sid": "GIPLE7"
           },
           "PLASH,RINTE": {
             "cleared_altitude": 5000,
-            "sid": "HAGOL5",
-            "waypoints": "FLOEE MIPIE HERMM AMMOT HAGOL"
+            "sid": "HAGOL5"
           },
           "BARKS,SNKPT": {
             "cleared_altitude": 5000,
-            "sid": "JBNCH6",
-            "waypoints": "FLOEE MIPIE HERMM JBNCH"
+            "sid": "JBNCH6"
           },
           "SHIPR": {
             "cleared_altitude": 5000,
-            "sid": "KENLN6",
-            "waypoints": "FLOEE FEBLU KENLN"
+            "sid": "KENLN6"
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
-            "sid": "LOVEY8",
-            "waypoints": "FLOEE MIPIE MUMIE LOVEY"
+            "sid": "LOVEY8"
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
-            "sid": "ROCKT4",
-            "waypoints": "FLOEE CODKO SLUBY MOIER WADAL FARUM CIVLO ROCKT"
+            "sid": "ROCKT4"
           },
           "TRFWA": {
             "cleared_altitude": 5000,
-            "sid": "SILKS6",
-            "waypoints": "FLOEE FEBLU SILKS"
+            "sid": "SILKS6"
           }
         },
         "18R": {
           "WWSHR,RIKLE": {
             "cleared_altitude": 5000,
-            "sid": "BNGLE5",
-            "waypoints": "FANSA MIPIE HERMM AMMOT BNGLE"
+            "sid": "BNGLE5"
           },
           "RAMRD,SKAMR,BUSYY,CHCLL": {
             "cleared_altitude": 5000,
-            "sid": "CHCLL6",
-            "waypoints": "FANSA CHCLL"
+            "sid": "CHCLL6"
           },
           "HVQ,SITTR,JODUB": {
             "cleared_altitude": 5000,
-            "sid": "GIPLE7",
-            "waypoints": "FANSA HIPAS GIPLE"
+            "sid": "GIPLE7"
           },
           "PLASH,RINTE": {
             "cleared_altitude": 5000,
-            "sid": "HAGOL5",
-            "waypoints": "FANSA MIPIE HERMM AMMOT HAGOL"
+            "sid": "HAGOL5"
           },
           "BARKS,SNKPT": {
             "cleared_altitude": 5000,
-            "sid": "JBNCH6",
-            "waypoints": "FANSA MIPIE HERMM JBNCH"
+            "sid": "JBNCH6"
           },
           "SHIPR": {
             "cleared_altitude": 5000,
-            "sid": "KENLN6",
-            "waypoints": "FANSA KENLN"
+            "sid": "KENLN6"
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
-            "sid": "LOVEY8",
-            "waypoints": "FANSA MIPIE MUMIE LOVEY"
+            "sid": "LOVEY8"
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
-            "sid": "ROCKT4",
-            "waypoints": "FANSA HIPAS JABDU SLUBY MOIER WADAL FARUM CIVLO ROCKT"
+            "sid": "ROCKT4"
           },
           "TRFWA": {
             "cleared_altitude": 5000,
-            "sid": "SILKS6",
-            "waypoints": "FANSA SILKS"
+            "sid": "SILKS6"
           }
         },
         "27": {
           "WWSHR,RIKLE": {
             "cleared_altitude": 5000,
-            "sid": "BNGLE5",
-            "waypoints": "BONLE MACOD BNGLE"
+            "sid": "BNGLE5"
           },
           "RAMRD,SKAMR,BUSYY,CHCLL": {
             "cleared_altitude": 5000,
-            "sid": "CHCLL6",
-            "waypoints": "BONLE REKUE CHCLL"
+            "sid": "CHCLL6"
           },
           "HVQ,SITTR,JODUB": {
             "cleared_altitude": 5000,
-            "sid": "GIPLE7",
-            "waypoints": "BONLE REKUE WIMDI GIPLE"
+            "sid": "GIPLE7"
           },
           "PLASH,RINTE": {
             "cleared_altitude": 5000,
-            "sid": "HAGOL5",
-            "waypoints": "BONLE MACOD HAGOL"
+            "sid": "HAGOL5"
           },
           "BARKS,SNKPT": {
             "cleared_altitude": 5000,
-            "sid": "JBNCH6",
-            "waypoints": "BONLE JBNCH"
+            "sid": "JBNCH6"
           },
           "SHIPR": {
             "cleared_altitude": 5000,
-            "sid": "KENLN6",
-            "waypoints": "BONLE REKUE KENLN"
+            "sid": "KENLN6"
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
-            "sid": "LOVEY8",
-            "waypoints": "BONLE NUZUM MUMIE LOVEY"
+            "sid": "LOVEY8"
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
-            "sid": "ROCKT4",
-            "waypoints": "BONLE DBEAR JLINC WADAL FARUM CIVLO ROCKT"
+            "sid": "ROCKT4"
           },
           "TRFWA": {
             "cleared_altitude": 5000,
-            "sid": "SILKS6",
-            "waypoints": "BONLE REKUE SILKS"
+            "sid": "SILKS6"
           }
         },
         "36L": {
           "WWSHR,RIKLE": {
             "cleared_altitude": 5000,
-            "sid": "BNGLE5",
-            "waypoints": "CIGMA DJOHN BNGLE"
+            "sid": "BNGLE5"
           },
           "RAMRD,SKAMR,BUSYY,CHCLL": {
             "cleared_altitude": 5000,
-            "sid": "CHCLL6",
-            "waypoints": "HOBAL BOUMR CULED CHCLL"
+            "sid": "CHCLL6"
           },
           "HVQ,SITTR,JODUB": {
             "cleared_altitude": 5000,
-            "sid": "GIPLE7",
-            "waypoints": "RORFE SUVBE HOMIX GIPLE"
+            "sid": "GIPLE7"
           },
           "PLASH,RINTE": {
             "cleared_altitude": 5000,
-            "sid": "HAGOL5",
-            "waypoints": "CIGMA DJOHN HAGOL"
+            "sid": "HAGOL5"
           },
           "BARKS,SNKPT": {
             "cleared_altitude": 5000,
-            "sid": "JBNCH6",
-            "waypoints": "CIGMA JBNCH"
+            "sid": "JBNCH6"
           },
           "SHIPR": {
             "cleared_altitude": 5000,
-            "sid": "KENLN6",
-            "waypoints": "HOBAL BOUMR CULED KENLN"
+            "sid": "KENLN6"
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
@@ -320,40 +269,33 @@
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
-            "sid": "ROCKT4",
-            "waypoints": "RORFE SUVBE HOMIX CERPO WADAL FARUM CIVLO ROCKT"
+            "sid": "ROCKT4"
           },
           "TRFWA": {
             "cleared_altitude": 5000,
-            "sid": "SILKS6",
-            "waypoints": "HOBAL BOUMR CULED SILKS"
+            "sid": "SILKS6"
           }
         },
         "36C": {
           "WWSHR,RIKLE": {
             "cleared_altitude": 5000,
-            "sid": "BNGLE5",
-            "waypoints": "CIGMA DJOHN BNGLE"
+            "sid": "BNGLE5"
           },
           "RAMRD,SKAMR,BUSYY,CHCLL": {
             "cleared_altitude": 5000,
-            "sid": "CHCLL6",
-            "waypoints": "HOBAL BOUMR CULED CHCLL"
+            "sid": "CHCLL6"
           },
           "HVQ,SITTR,JODUB": {
             "cleared_altitude": 5000,
-            "sid": "GIPLE7",
-            "waypoints": "RORFE SUVBE HOMIX GIPLE"
+            "sid": "GIPLE7"
           },
           "PLASH,RINTE": {
             "cleared_altitude": 5000,
-            "sid": "HAGOL5",
-            "waypoints": "CIGMA DJOHN HAGOL"
+            "sid": "HAGOL5"
           },
           "BARKS,SNKPT": {
             "cleared_altitude": 5000,
-            "sid": "JBNCH6",
-            "waypoints": "CIGMA JBNCH"
+            "sid": "JBNCH6"
           },
           "SHIPR": {
             "cleared_altitude": 5000,
@@ -362,65 +304,53 @@
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
-            "sid": "LOVEY8",
-            "waypoints": "HOBAL SUNFR MUMIE LOVEY"
+            "sid": "LOVEY8"
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
-            "sid": "ROCKT4",
-            "waypoints": "RORFE SUVBE HOMIX CERPO WADAL FARUM CIVLO ROCKT"
+            "sid": "ROCKT4"
           },
           "TRFWA": {
             "cleared_altitude": 5000,
-            "sid": "SILKS6",
-            "waypoints": "HOBAL BOUMR CULED SILKS"
+            "sid": "SILKS6"
           }
         },
         "36R": {
           "WWSHR,RIKLE": {
             "cleared_altitude": 5000,
-            "sid": "BNGLE5",
-            "waypoints": "HAGSS BNGLE"
+            "sid": "BNGLE5"
           },
           "RAMRD,SKAMR,BUSYY,CHCLL": {
             "cleared_altitude": 5000,
-            "sid": "CHCLL6",
-            "waypoints": "HAGSS EVAME CEMLA FRTZY CULED CHCLL"
+            "sid": "CHCLL6"
           },
           "HVQ,SITTR,JODUB": {
             "cleared_altitude": 5000,
-            "sid": "GIPLE7",
-            "waypoints": "HAGSS HOMIX GIPLE"
+            "sid": "GIPLE7"
           },
           "PLASH,RINTE": {
             "cleared_altitude": 5000,
-            "sid": "HAGOL5",
-            "waypoints": "HAGSS HAGOL"
+            "sid": "HAGOL5"
           },
           "BARKS,SNKPT": {
             "cleared_altitude": 5000,
-            "sid": "JBNCH6",
-            "waypoints": "HAGSS JBNCH"
+            "sid": "JBNCH6"
           },
           "SHIPR": {
             "cleared_altitude": 5000,
-            "sid": "KENLN6",
-            "waypoints": "HAGSS HOMIX FOPAS KADDI KENLN"
+            "sid": "KENLN6"
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
-            "sid": "LOVEY8",
-            "waypoints": "HAGSS EVAME CEMLA SUNFR MUMIE LOVEY"
+            "sid": "LOVEY8"
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
-            "sid": "ROCKT4",
-            "waypoints": "HAGSS HOMIX CERPO WADAL FARUM CIVLO ROCKT"
+            "sid": "ROCKT4"
           },
           "TRFWA": {
             "cleared_altitude": 5000,
-            "sid": "SILKS6",
-            "waypoints": "HAGSS EVAME CEMLA FRTZY CULED SILKS"
+            "sid": "SILKS6"
           }
         }
       },

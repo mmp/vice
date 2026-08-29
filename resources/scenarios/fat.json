@@ -78,8 +78,7 @@
           },
           "SWR,NIKOL,SHIMR": {
             "cleared_altitude": 10000,
-            "sid": "YOSE3",
-            "waypoints": "KFAT-11L/h292"
+            "sid": "YOSE3"
           },
           "NTELL.FRAME": {
             "cleared_altitude": 10000,
@@ -100,8 +99,7 @@
           },
           "SWR,NIKOL,SHIMR": {
             "cleared_altitude": 10000,
-            "sid": "YOSE3",
-            "waypoints": "KFAT-29R/h112"
+            "sid": "YOSE3"
           },
           "NTELL.FRAME": {
             "cleared_altitude": 10000,

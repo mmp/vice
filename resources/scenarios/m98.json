@@ -7956,13 +7956,11 @@
           },
           "JEDET": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
-            "waypoints": "KANE-27/flyover/h090"
+            "sid": "ZMBRO7"
           },
           "TAXEE": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
-            "waypoints": "KANE-27/flyover/h090"
+            "sid": "COULT7"
           },
           "FOBUG": {
             "assigned_altitude": 3000,

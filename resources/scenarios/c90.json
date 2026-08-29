@@ -4739,28 +4739,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-27/h090 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-27/h090 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-27/h090 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-27/h090 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-27/h090 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -4800,28 +4795,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-9/h270 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-9/h270 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-9/h270 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-9/h270 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KARR-9/h270 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -4956,28 +4946,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2R/h195 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2R/h195 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2R/h195 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2R/h195 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2R/h195 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -5017,28 +5002,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2L/h195 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2L/h195 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2L/h195 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2L/h195 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-2L/h195 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -5078,28 +5058,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20L/h015 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20L/h015 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20L/h015 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20L/h015 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20L/h015 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -5139,28 +5114,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20R/h015 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20R/h015 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20R/h015 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20R/h015 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KDPA-20R/h015 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -5301,28 +5271,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-20/h016 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-20/h016 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-20/h016 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-20/h016 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-20/h016 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -5362,28 +5327,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-27/h090 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-27/h090 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-27/h090 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-27/h090 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-27/h090 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -5423,28 +5383,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-2/h196 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-2/h196 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-2/h196 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-2/h196 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-2/h196 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,
@@ -5484,28 +5439,23 @@
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-9/h270 OREOS OBENE"
+            "sid": "OBENE3"
           },
           "SMIDD,MNOSO,JORDY": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-9/h270 OREOS OBENE MONNY"
+            "sid": "OBENE3"
           },
           "IANNA": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-9/h270 OREOS OBENE MONNY MNOSO"
+            "sid": "OBENE3"
           },
           "NITWT": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-9/h270 OREOS OBENE NIGHT"
+            "sid": "OBENE3"
           },
           "ROEZZ": {
             "cleared_altitude": 3000,
-            "sid": "OBENE3",
-            "waypoints": "KLOT-9/h270 OREOS OBENE CARET"
+            "sid": "OBENE3"
           },
           "SIMMN": {
             "cleared_altitude": 3000,

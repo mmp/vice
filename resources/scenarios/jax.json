@@ -284,8 +284,7 @@
           },
           "WISPR": {
             "cleared_altitude": 3000,
-            "sid": "CROSB2",
-            "waypoints": "KJAX-26/h080 GIGLZ CROSB"
+            "sid": "CROSB2"
           },
           "EXBOX,OMN": {
             "cleared_altitude": 3000,
@@ -294,13 +293,11 @@
           },
           "CAPPS": {
             "cleared_altitude": 3000,
-            "sid": "JETIN2",
-            "waypoints": "KJAX-26/h80 DURTE JETIN ELAGE ZOOSS"
+            "sid": "JETIN2"
           },
           "JAYJA": {
             "cleared_altitude": 3000,
-            "sid": "JETIN2",
-            "waypoints": "KJAX-26/h80 DURTE JETIN FELTZ"
+            "sid": "JETIN2"
           },
           "SAWGY": {
             "cleared_altitude": 3000,
@@ -326,13 +323,11 @@
           },
           "CAPPS": {
             "cleared_altitude": 3000,
-            "sid": "JETIN2",
-            "waypoints": "KJAX-8/h260 DURTE JETIN ELAGE ZOOSS"
+            "sid": "JETIN2"
           },
           "JAYJA": {
             "cleared_altitude": 3000,
-            "sid": "JETIN2",
-            "waypoints": "KJAX-8/h260 DURTE JETIN FELTZ"
+            "sid": "JETIN2"
           },
           "SAWGY": {
             "cleared_altitude": 3000,

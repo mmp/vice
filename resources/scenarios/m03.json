@@ -71,209 +71,169 @@
         "18C": {
           "AZONE,PITEW": {
             "cleared_altitude": 5000,
-            "sid": "AZONE7",
-            "waypoints": "KMEM-36C RIBZZ HENIR WRRTZ TOWND AZONE"
+            "sid": "AZONE7"
           },
           "BBKNG,KERMI": {
             "cleared_altitude": 5000,
-            "sid": "BBKNG7",
-            "waypoints": "KMEM-36C RIBZZ HENIR WALIS LEOOO BBKNG"
+            "sid": "BBKNG7"
           },
           "CHLDR,ANSWA": {
             "cleared_altitude": 5000,
-            "sid": "CHLDR5",
-            "waypoints": "KMEM-36C CHETO MUDHO NIXOE PEPOC CHLDR"
+            "sid": "CHLDR5"
           },
           "CRSON,HUMMS": {
             "cleared_altitude": 5000,
-            "sid": "CRSON7",
-            "waypoints": "KMEM-36C RIBZZ HENIR WRRTZ WADEE DALGE LYZZI CRSON"
+            "sid": "CRSON7"
           },
           "DUCKZ,HELAR": {
             "cleared_altitude": 5000,
-            "sid": "DUCKZ5",
-            "waypoints": "KMEM-36C CHETO MUDHO KOSLE WSTIN DUCKZ"
+            "sid": "DUCKZ5"
           },
           "GOETZ,DIYAB": {
             "cleared_altitude": 5000,
-            "sid": "GOETZ7",
-            "waypoints": "KMEM-36C RIBZZ HENIR WRRTZ DOUUG GOETZ"
+            "sid": "GOETZ7"
           },
           "JTEEE,ODATE": {
             "cleared_altitude": 5000,
-            "sid": "JTEEE5",
-            "waypoints": "KMEM-36C CHETO MUDHO GACET EMAXE HSTON JTEEE"
+            "sid": "JTEEE5"
           },
           "PIEPE,IBUFY": {
             "cleared_altitude": 5000,
-            "sid": "PIEPE6",
-            "waypoints": "KMEM-36C GADEC XANDR EMIIT BEBIE PIEPE"
+            "sid": "PIEPE6"
           },
           "SELPH,OHULO": {
             "cleared_altitude": 5000,
-            "sid": "SELPH7",
-            "waypoints": "KMEM-36C RIBZZ HENIR WRRTZ WADEE DALGE BETYY SELPH"
+            "sid": "SELPH7"
           },
           "ZUMIT,FOXOM": {
             "cleared_altitude": 5000,
-            "sid": "ZUMIT5",
-            "waypoints": "KMEM-36C CHETO MUDHO GACET FARVU STVVV ZUMIT"
+            "sid": "ZUMIT5"
           }
         },
         "18R": {
           "AZONE,PITEW": {
             "cleared_altitude": 5000,
-            "sid": "AZONE7",
-            "waypoints": "KMEM-36L RIBZZ HENIR WRRTZ TOWND AZONE"
+            "sid": "AZONE7"
           },
           "BBKNG,KERMI": {
             "cleared_altitude": 5000,
-            "sid": "BBKNG7",
-            "waypoints": "KMEM-36L RIBZZ HENIR WALIS LEOOO BBKNG"
+            "sid": "BBKNG7"
           },
           "CHLDR,ANSWA": {
             "cleared_altitude": 5000,
-            "sid": "CHLDR5",
-            "waypoints": "KMEM-36L CHETO MUDHO NIXOE PEPOC CHLDR"
+            "sid": "CHLDR5"
           },
           "CRSON,HUMMS": {
             "cleared_altitude": 5000,
-            "sid": "CRSON7",
-            "waypoints": "KMEM-36L RIBZZ HENIR WRRTZ WADEE DALGE LYZZI CRSON"
+            "sid": "CRSON7"
           },
           "DUCKZ,HELAR": {
             "cleared_altitude": 5000,
-            "sid": "DUCKZ5",
-            "waypoints": "KMEM-36L CHETO MUDHO KOSLE WSTIN DUCKZ"
+            "sid": "DUCKZ5"
           },
           "GOETZ,DIYAB": {
             "cleared_altitude": 5000,
-            "sid": "GOETZ7",
-            "waypoints": "KMEM-36L RIBZZ HENIR WRRTZ DOUUG GOETZ"
+            "sid": "GOETZ7"
           },
           "JTEEE,ODATE": {
             "cleared_altitude": 5000,
-            "sid": "JTEEE5",
-            "waypoints": "KMEM-36L CHETO MUDHO GACET EMAXE HSTON JTEEE"
+            "sid": "JTEEE5"
           },
           "PIEPE,IBUFY": {
             "cleared_altitude": 5000,
-            "sid": "PIEPE6",
-            "waypoints": "KMEM-36L EMIIT BEBIE PIEPE"
+            "sid": "PIEPE6"
           },
           "SELPH,OHULO": {
             "cleared_altitude": 5000,
-            "sid": "SELPH7",
-            "waypoints": "KMEM-36L RIBZZ HENIR WRRTZ WADEE DALGE BETYY SELPH"
+            "sid": "SELPH7"
           },
           "ZUMIT,FOXOM": {
             "cleared_altitude": 5000,
-            "sid": "ZUMIT5",
-            "waypoints": "KMEM-36L CHETO MUDHO GACET FARVU STVVV ZUMIT"
+            "sid": "ZUMIT5"
           }
         },
         "36L": {
           "AZONE,PITEW": {
             "cleared_altitude": 5000,
-            "sid": "AZONE7",
-            "waypoints": "KMEM-18R JAAXX AYERR STJUD SWIND TOWND AZONE"
+            "sid": "AZONE7"
           },
           "BBKNG,KERMI": {
             "cleared_altitude": 5000,
-            "sid": "BBKNG7",
-            "waypoints": "KMEM-18R JAAXX AYERR STJUD LEOOO BBKNG"
+            "sid": "BBKNG7"
           },
           "CHLDR,ANSWA": {
             "cleared_altitude": 5000,
-            "sid": "CHLDR5",
-            "waypoints": "KMEM-18R BEEAL PRYMD RICKX PEPOC CHLDR"
+            "sid": "CHLDR5"
           },
           "CRSON,HUMMS": {
             "cleared_altitude": 5000,
-            "sid": "CRSON7",
-            "waypoints": "KMEM-18R SLONN LYZZI CRSON"
+            "sid": "CRSON7"
           },
           "DUCKZ,HELAR": {
             "cleared_altitude": 5000,
-            "sid": "DUCKZ5",
-            "waypoints": "KMEM-18R BEEAL PRYMD HIVUS WSTIN DUCKZ"
+            "sid": "DUCKZ5"
           },
           "GOETZ,DIYAB": {
             "cleared_altitude": 5000,
-            "sid": "GOETZ7",
-            "waypoints": "KMEM-18R JAAXX AYERR UNCLE THMUS DOUUG GOETZ"
+            "sid": "GOETZ7"
           },
           "JTEEE,ODATE": {
             "cleared_altitude": 5000,
-            "sid": "JTEEE5",
-            "waypoints": "KMEM-18R DLONG GMBLR HSTON JTEEE"
+            "sid": "JTEEE5"
           },
           "PIEPE,IBUFY": {
             "cleared_altitude": 5000,
-            "sid": "PIEPE6",
-            "waypoints": "KMEM-18R BEEAL PRYMD EMAXE HOOSE BEBIE PIEPE"
+            "sid": "PIEPE6"
           },
           "SELPH,OHULO": {
             "cleared_altitude": 5000,
-            "sid": "SELPH7",
-            "waypoints": "KMEM-18R SLONN BETYY SELPH"
+            "sid": "SELPH7"
           },
           "ZUMIT,FOXOM": {
             "cleared_altitude": 5000,
-            "sid": "ZUMIT5",
-            "waypoints": "KMEM-18R BEEAL PRYMD HIVUS STVVV ZUMIT"
+            "sid": "ZUMIT5"
           }
         },
         "36C": {
           "AZONE,PITEW": {
             "cleared_altitude": 5000,
-            "sid": "AZONE7",
-            "waypoints": "KMEM-18C JAAXX AYERR STJUD SWIND TOWND AZONE"
+            "sid": "AZONE7"
           },
           "BBKNG,KERMI": {
             "cleared_altitude": 5000,
-            "sid": "BBKNG7",
-            "waypoints": "KMEM-18C JAAXX AYERR STJUD LEOOO BBKNG"
+            "sid": "BBKNG7"
           },
           "CHLDR,ANSWA": {
             "cleared_altitude": 5000,
-            "sid": "CHLDR5",
-            "waypoints": "KMEM-18C BEEAL PRYMD RICKX PEPOC CHLDR"
+            "sid": "CHLDR5"
           },
           "CRSON,HUMMS": {
             "cleared_altitude": 5000,
-            "sid": "CRSON7",
-            "waypoints": "KMEM-18C SLONN LYZZI CRSON"
+            "sid": "CRSON7"
           },
           "DUCKZ,HELAR": {
             "cleared_altitude": 5000,
-            "sid": "DUCKZ5",
-            "waypoints": "KMEM-18C BEEAL PRYMD HIVUS WSTIN DUCKZ"
+            "sid": "DUCKZ5"
           },
           "GOETZ,DIYAB": {
             "cleared_altitude": 5000,
-            "sid": "GOETZ7",
-            "waypoints": "KMEM-18C JAAXX AYERR UNCLE THMUS DOUUG GOETZ"
+            "sid": "GOETZ7"
           },
           "JTEEE,ODATE": {
             "cleared_altitude": 5000,
-            "sid": "JTEEE5",
-            "waypoints": "KMEM-18C DLONG GMBLR HSTON JTEEE"
+            "sid": "JTEEE5"
           },
           "PIEPE,IBUFY": {
             "cleared_altitude": 5000,
-            "sid": "PIEPE6",
-            "waypoints": "KMEM-18C BEEAL PRYMD EMAXE HOOSE BEBIE PIEPE"
+            "sid": "PIEPE6"
           },
           "SELPH,OHULO": {
             "cleared_altitude": 5000,
-            "sid": "SELPH7",
-            "waypoints": "KMEM-18C SLONN BETYY SELPH"
+            "sid": "SELPH7"
           },
           "ZUMIT,FOXOM": {
             "cleared_altitude": 5000,
-            "sid": "ZUMIT5",
-            "waypoints": "KMEM-18C BEEAL PRYMD HIVUS STVVV ZUMIT"
+            "sid": "ZUMIT5"
           }
         }
       },

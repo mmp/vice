@@ -74,13 +74,11 @@
           "MISEN.E, BEALE.E": {
             "cleared_altitude": 3000,
             "sid": "GARDY4",
-            "is_rnav": true,
-            "waypoints": "KLAX-25R/h071 TRAAP/a8000 JIIVE/a10000+ CLUTZ/a13000+ GARDY/a16000+"
+            "is_rnav": true
           },
           "AVE,EHF": {
             "cleared_altitude": 3000,
-            "sid": "GMN7",
-            "waypoints": "KLAX-25R/h071 VNY GMN"
+            "sid": "GMN7"
           },
           "TRM": {
             "cleared_altitude": 3000,
@@ -114,13 +112,11 @@
           "MISEN.E,BEALE.E": {
             "cleared_altitude": 3000,
             "sid": "GARDY4",
-            "is_rnav": true,
-            "waypoints": "KLAX-25L/h071 TRAAP/a8000 JIIVE/a10000+ CLUTZ/a13000+ GARDY/a16000+"
+            "is_rnav": true
           },
           "AVE,EHF": {
             "cleared_altitude": 3000,
-            "sid": "GMN7",
-            "waypoints": "KLAX-25L/h071 VNY GMN"
+            "sid": "GMN7"
           },
           "TRM": {
             "cleared_altitude": 3000,
@@ -154,18 +150,15 @@
           "MISEN.E,BEALE.E": {
             "cleared_altitude": 3000,
             "sid": "GARDY4",
-            "is_rnav": true,
-            "waypoints": "N033.57.10.027,W118.22.30.192 KOFAX TRAAP/a8000 JIIVE/a10000+ CLUTZ/a13000+ GARDY/a16000+"
+            "is_rnav": true
           },
           "AVE,EHF": {
             "cleared_altitude": 3000,
-            "sid": "GMN7",
-            "waypoints": "KLAX-24L/h056 VNY GMN"
+            "sid": "GMN7"
           },
           "TRM": {
             "cleared_altitude": 3000,
-            "sid": "LAXX1",
-            "waypoints": "KLAX-24L/h071 SLI TUSTI/a8000+ HEMET/a11000+ TRM"
+            "sid": "LAXX1"
           },
           "OTAYY.E,TCATE.E": {
             "cleared_altitude": 3000,
@@ -181,63 +174,53 @@
           "FICKY.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3",
-            "is_rnav": true,
-            "waypoints": "KLAX-24L/h071 TRTON/a8000+ DARRK/a12000- BNANO DONKS"
+            "is_rnav": true
           },
           "RZS.E": {
             "cleared_altitude": 3000,
-            "sid": "VTU8",
-            "waypoints": "KLAX-24L/h071 VTU RZS"
+            "sid": "VTU8"
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3",
-            "is_rnav": true,
-            "waypoints": "KLAX-24L/h071 TRTON/a8000+ DARRK/a12000- FIXIT IKAYE"
+            "is_rnav": true
           }
         },
         "25R": {
           "LAS": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+            "is_rnav": true
           },
           "MISEN": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+            "is_rnav": true
           },
           "SCTRR,STOKD,MCKEY,RIZIN": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN"
+            "is_rnav": true
           },
           "DINTY": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN OINGO"
+            "is_rnav": true
           },
           "FICKY": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR BNANO"
+            "is_rnav": true
           },
           "CLEEE": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+ EYEDL HOMER CLEEE"
+            "is_rnav": true
           },
           "CNERY": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+ WIILD CSTWY CNERY/flyover"
+            "is_rnav": true
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
@@ -252,126 +235,106 @@
           "CSTRO": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000+ LADYJ/a8000 RUGBY OROSZ HEYJO CSTRO"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000+ LADYJ/a8000 RUGBY OROSZ BRRKK SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "IKAYE": {
             "cleared_altitude": 5000,
             "sid": "MOOOS2",
-            "is_rnav": true,
-            "waypoints": "KLAX-7L/h251 DTAIL/a3100+ MOOOS/a4900-8000 IKAYE"
+            "is_rnav": true
           },
           "RZS,KWANG": {
             "cleared_altitude": 5000,
             "sid": "MUELR4",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- EVOSE/a1300-5000 MKGEE MUELR FIXIT/a10000/s280 IKAYE WGGNR"
+            "is_rnav": true
           },
           "BEALE": {
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE"
+            "is_rnav": true
           },
           "MISEN.H": {
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH MISEN"
+            "is_rnav": true
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 5000,
             "sid": "PNDAH2",
-            "is_rnav": true,
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE TANNN/a15000+ NNICE PNDAH/a20000+"
+            "is_rnav": true
           }
         },
         "25R.OO": {
           "MISEN.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1",
-            "is_rnav": true,
-            "waypoints": "N033.55.53.192,W118.27.41.160 EWOKK/a3000- KYLOW HSOLO STHBY HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS"
+            "is_rnav": true
           },
           "SCTRR.O,STOKD.O,MCKEY.O,DINTY.O": {
             "cleared_altitude": 5000,
             "sid": "KYLOW1",
-            "is_rnav": true,
-            "waypoints": "N033.55.53.192,W118.27.41.160 EWOKK/a3000- KYLOW BOBAA/a8000+ FIXIT/a12000- RIZIN"
+            "is_rnav": true
           },
           "FICKY.O": {
             "cleared_altitude": 5000,
             "sid": "KYLOW1",
-            "is_rnav": true,
-            "waypoints": "N033.55.53.192,W118.27.41.160 EWOKK/a3000- KYLOW ZILLI LAUER/a9000+ PLLUT"
+            "is_rnav": true
           },
           "CLEEE.O,CNERY.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1",
-            "is_rnav": true,
-            "waypoints": "N033.55.53.192,W118.27.41.160 EWOKK/a3000- KYLOW HSOLO STHBY HOLTZ DOTSS/a15000+"
+            "is_rnav": true
           },
           "BEALE.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1",
-            "is_rnav": true,
-            "waypoints": "N033.55.53.192,W118.27.41.160 EWOKK/a3000- KYLOW HSOLO STHBY HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS"
+            "is_rnav": true
           },
           "OTAYY.O,TCATE.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1",
-            "is_rnav": true,
-            "waypoints": "N033.55.53.192,W118.27.41.160 EWOKK/a3000- KYLOW HSOLO STHBY TANNN/a15000+ NNICE PNDAH/a20000+"
+            "is_rnav": true
           }
         },
         "25L": {
           "LAS": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+            "is_rnav": true
           },
           "MISEN": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+            "is_rnav": true
           },
           "SCTRR,STOKD,MCKEY,RIZIN": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN"
+            "is_rnav": true
           },
           "DINTY": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN OINGO"
+            "is_rnav": true
           },
           "FICKY": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR BNANO"
+            "is_rnav": true
           },
           "CLEEE": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+ EYEDL HOMER CLEEE"
+            "is_rnav": true
           },
           "CNERY": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+ WIILD BLCKD CSTWY CNERY/flyover"
+            "is_rnav": true
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
@@ -386,126 +349,106 @@
           "CSTRO": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ HEYJO CSTRO"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ BRRKK SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "IKAYE": {
             "cleared_altitude": 5000,
             "sid": "MOOOS2",
-            "is_rnav": true,
-            "waypoints": "KLAX-7R/h251"
+            "is_rnav": true
           },
           "RZS,KWANG": {
             "cleared_altitude": 5000,
             "sid": "MUELR4",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE MUELR FIXIT/a10000/s280 IKAYE WGGNR"
+            "is_rnav": true
           },
           "BEALE": {
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE"
+            "is_rnav": true
           },
           "MISEN.H": {
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH MISEN"
+            "is_rnav": true
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 5000,
             "sid": "PNDAH2",
-            "is_rnav": true,
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE TANNN/a15000+ NNICE PNDAH/a20000+"
+            "is_rnav": true
           }
         },
         "25L.OO": {
           "MISEN.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1",
-            "is_rnav": true,
-            "waypoints": "N033.55.45.281,W118.27.46.241 EWOKK/a3000- KYLOW HSOLO STHBY HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS"
+            "is_rnav": true
           },
           "SCTRR.O,STOKD.O,MCKEY.O,DINTY.O": {
             "cleared_altitude": 5000,
             "sid": "KYLOW1",
-            "is_rnav": true,
-            "waypoints": "N033.55.45.281,W118.27.46.241 EWOKK/a3000- KYLOW BOBAA/a8000+ FIXIT/a12000- RIZIN"
+            "is_rnav": true
           },
           "FICKY.O": {
             "cleared_altitude": 5000,
             "sid": "KYLOW1",
-            "is_rnav": true,
-            "waypoints": "N033.55.45.281,W118.27.46.241 EWOKK/a3000- KYLOW ZILLI LAUER/a9000+ PLLUT"
+            "is_rnav": true
           },
           "CLEEE.O,CNERY.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1",
-            "is_rnav": true,
-            "waypoints": "N033.55.45.281,W118.27.46.241 EWOKK/a3000- KYLOW HSOLO STHBY HOLTZ DOTSS/a15000+"
+            "is_rnav": true
           },
           "BEALE.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1",
-            "is_rnav": true,
-            "waypoints": "N033.55.45.281,W118.27.46.241 EWOKK/a3000- KYLOW HSOLO STHBY HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS"
+            "is_rnav": true
           },
           "OTAYY.O,TCATE.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1",
-            "is_rnav": true,
-            "waypoints": "N033.55.45.281,W118.27.46.241 EWOKK/a3000- KYLOW HSOLO STHBY TANNN/a15000+ NNICE PNDAH/a20000+"
+            "is_rnav": true
           }
         },
         "24L": {
           "LAS": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000-/h251 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+            "is_rnav": true
           },
           "MISEN": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000-/h251 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
+            "is_rnav": true
           },
           "SCTRR,STOKD,MCKEY,RIZIN": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC DARRK/a12000- SUMMR OLOFF RIZIN"
+            "is_rnav": true
           },
           "DINTY": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC DARRK/a12000- SUMMR OLOFF RIZIN OINGO"
+            "is_rnav": true
           },
           "FICKY": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC DARRK/a12000- SUMMR BNANO"
+            "is_rnav": true
           },
           "CLEEE": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ DOTSS/a15000+ EYEDL HOMER CLEEE"
+            "is_rnav": true
           },
           "CNERY": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ DOTSS/a15000+ WIILD BLCKD CSTWY CNERY/flyover"
+            "is_rnav": true
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
@@ -520,44 +463,37 @@
           "CSTRO": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ HEYJO CSTRO"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ BRRKK SHORS MDWAY COREZ"
+            "is_rnav": true
           },
           "IKAYE": {
             "cleared_altitude": 5000,
             "sid": "MOOOS2",
-            "is_rnav": true,
-            "waypoints": "KLAX-6R/h251"
+            "is_rnav": true
           },
           "RZS,KWANG": {
             "cleared_altitude": 5000,
             "is_rnav": true,
-            "sid": "MUELR4",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC MUELR FIXIT/a10000/s280 IKAYE WGGNR"
+            "sid": "MUELR4"
           },
           "BEALE": {
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE"
+            "is_rnav": true
           },
           "MISEN.H": {
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH MISEN"
+            "is_rnav": true
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 5000,
             "sid": "PNDAH2",
-            "is_rnav": true,
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE TANNN/a15000+ NNICE PNDAH/a20000+"
+            "is_rnav": true
           }
         }
       },
@@ -2730,16 +2666,14 @@
           "SPACX": {
             "assigned_altitude": 2000,
             "sid": "SPACX2",
-            "is_rnav": true,
-            "waypoints": "N033.55.17.390,W118.21.54.019 SPACX/a3000/h200"
+            "is_rnav": true
           }
         },
         "7": {
           "SPACX": {
             "assigned_altitude": 2000,
             "sid": "SPACX2",
-            "is_rnav": true,
-            "waypoints": "N033.55.24.943,W118.19.21.337/a580+ SPACX/a3000/h200"
+            "is_rnav": true
           }
         }
       },
@@ -2810,14 +2744,12 @@
           "CSTRO": {
             "cleared_altitude": 3000,
             "sid": "TOPMM5",
-            "is_rnav": true,
-            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "is_rnav": true
           },
           "COREZ": {
             "cleared_altitude": 3000,
             "sid": "TOPMM5",
-            "is_rnav": true,
-            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "is_rnav": true
           },
           "VTU": {
             "assigned_altitude": 3000,
@@ -3613,26 +3545,22 @@
           "CSTRO,COREZ": {
             "cleared_altitude": 3000,
             "sid": "CTRUS4",
-            "is_rnav": true,
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DZINE/s250 OROSZ"
+            "is_rnav": true
           },
           "MISEN,LAS,HEC": {
             "cleared_altitude": 3000,
             "sid": "CTRUS4",
-            "is_rnav": true,
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DZINE/s250 SEAEM SLAPP/a13000+ YAAPY/a15000+"
+            "is_rnav": true
           },
           "CLEEE,CNERY": {
             "cleared_altitude": 3000,
             "sid": "PEVEE6",
-            "is_rnav": true,
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH PEEER SPRRW PEVEE HOLTZ DOTSS/a15000+"
+            "is_rnav": true
           },
           "TCATE,OTAYY": {
             "cleared_altitude": 3000,
             "sid": "PEVEE6",
-            "is_rnav": true,
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH PEEER SPRRW PEVEE TANNN/a15000+ NNICE PNDAH/a20000+"
+            "is_rnav": true
           }
         }
       },

@@ -156,8 +156,7 @@
         "7L": {
           "CRG": {
             "cleared_altitude": 4000,
-            "sid": "ROYES7",
-            "waypoints": "_DAB_25R/h070 BARBS ROYES CRG"
+            "sid": "ROYES7"
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
@@ -215,8 +214,7 @@
         "7R": {
           "CRG": {
             "cleared_altitude": 4000,
-            "sid": "ROYES7",
-            "waypoints": "_DAB_25L/h070 BARBS ROYES CRG"
+            "sid": "ROYES7"
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
@@ -274,8 +272,7 @@
         "16": {
           "CRG": {
             "cleared_altitude": 4000,
-            "sid": "ROYES7",
-            "waypoints": "_DAB_34/h160 BARBS ROYES CRG"
+            "sid": "ROYES7"
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
@@ -333,8 +330,7 @@
         "25L": {
           "CRG": {
             "cleared_altitude": 4000,
-            "sid": "ROYES7",
-            "waypoints": "_DAB_7R/h250 BARBS ROYES CRG"
+            "sid": "ROYES7"
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
@@ -392,8 +388,7 @@
         "25R": {
           "CRG": {
             "cleared_altitude": 4000,
-            "sid": "ROYES7",
-            "waypoints": "_DAB_7L/h252 BARBS ROYES CRG"
+            "sid": "ROYES7"
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
@@ -451,8 +446,7 @@
         "34": {
           "CRG": {
             "cleared_altitude": 4000,
-            "sid": "ROYES7",
-            "waypoints": "_DAB_16/h342 BARBS ROYES CRG"
+            "sid": "ROYES7"
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,

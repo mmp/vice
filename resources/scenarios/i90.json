@@ -2968,13 +2968,11 @@
           },
           "CRP": {
             "assigned_altitude": 5000,
-            "sid": "PTRON9",
-            "waypoints": "KHOU-4/h221 SAALT PTRON SKUBA PSX YOMOM"
+            "sid": "PTRON9"
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
-            "sid": "PTRON9",
-            "waypoints": "KHOU-4/h221 SAALT PTRON RIIGG"
+            "sid": "PTRON9"
           },
           "JCT": {
             "assigned_altitude": 5000,
@@ -4441,33 +4439,27 @@
         "15L.IAHWEST": {
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
-            "sid": "FLYZA5",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000- BOTLL/a5000- FLYZA/a7000+ PPALE/a11000+ VUH"
+            "sid": "FLYZA5"
           },
           "LCH": {
             "cleared_altitude": 4000,
-            "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000- BOTLL/a5000- MMUGS MMALT/a10000+ HOURN BLING"
+            "sid": "MMUGS4"
           },
           "GUSTI": {
             "cleared_altitude": 4000,
-            "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000- BOTLL/a5000- MMUGS HHOPS/a11000+ JAAYE SPINY"
+            "sid": "MMUGS4"
           },
           "LLA": {
             "cleared_altitude": 4000,
-            "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000- BOTLL/a5000- MMUGS GRAYN/a11000+ YOKEM SBI"
+            "sid": "MMUGS4"
           },
           "CRP": {
             "cleared_altitude": 4000,
-            "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000- BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ SKUBA PSX YOMOM"
+            "sid": "RITAA7"
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
-            "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000- BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ RIIGG"
+            "sid": "RITAA7"
           }
         },
         "15R.IAHWEST": {
@@ -4478,23 +4470,19 @@
           },
           "CRGER": {
             "cleared_altitude": 4000,
-            "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover SCAMM/a5000- SHAAK BNDTO CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "sid": "BNDTO6"
           },
           "SAT": {
             "cleared_altitude": 4000,
-            "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover SCAMM/a5000- SHAAK BNDTO FFOAM/a13000+ BOCCK MNURE MARCS"
+            "sid": "BNDTO6"
           },
           "MNURE": {
             "cleared_altitude": 4000,
-            "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover SCAMM/a5000- SHAAK BNDTO FFOAM/a13000+ BOCCK"
+            "sid": "BNDTO6"
           },
           "WAILN": {
             "cleared_altitude": 4000,
-            "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover SCAMM/a5000- SHAAK BNDTO BAAKE/a13000+ WEEED WAILN"
+            "sid": "BNDTO6"
           },
           "TPAKK": {
             "cleared_altitude": 4000,
@@ -4535,18 +4523,15 @@
           },
           "LCH": {
             "cleared_altitude": 4000,
-            "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000- GUMBY/a5000- HOURN BLING"
+            "sid": "GUMBY3"
           },
           "GUSTI": {
             "cleared_altitude": 4000,
-            "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000- GUMBY/a5000- JAAYE SPINY"
+            "sid": "GUMBY3"
           },
           "LLA": {
             "cleared_altitude": 4000,
-            "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000- GUMBY/a5000- YOKEM SBI"
+            "sid": "GUMBY3"
           },
           "TPAKK": {
             "cleared_altitude": 4000,
@@ -4560,13 +4545,11 @@
           },
           "CRP": {
             "cleared_altitude": 4000,
-            "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000- BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ SKUBA PSX YOMOM"
+            "sid": "RITAA7"
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
-            "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000- BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ RIIGG"
+            "sid": "RITAA7"
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
@@ -4592,28 +4575,23 @@
         "15R.IAHEAST": {
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
-            "sid": "FLYZA5",
-            "waypoints": "KIAH-33L/flyover TTAPS/a4000- BOTLL/a5000- FLYZA/a7000+ PPALE/a11000+ VUH"
+            "sid": "FLYZA5"
           },
           "CRGER": {
             "cleared_altitude": 4000,
-            "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000- RODKL PITZZ/a7000+ CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "sid": "PITZZ5"
           },
           "SAT": {
             "cleared_altitude": 4000,
-            "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000- RODKL PITZZ/a7000+ GRZIA/a10000+ CHATI/a13000+ BOCCK MNURE MARCS"
+            "sid": "PITZZ5"
           },
           "MNURE": {
             "cleared_altitude": 4000,
-            "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000- RODKL PITZZ/a7000+ GRZIA/a10000+ CHATI/a13000+ BOCCK"
+            "sid": "PITZZ5"
           },
           "WAILN": {
             "cleared_altitude": 4000,
-            "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000- RODKL PITZZ/a7000+ MNNKE/a13000+ WEEED"
+            "sid": "PITZZ5"
           }
         },
         "15L.IAHWEST.AUTO": {

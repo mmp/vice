@@ -36,108 +36,91 @@
           "WILON,CAMJO": {
             "cleared_altitude": 6000,
             "sid": "BAYPO2",
-            "description": "BAYPO2",
-            "waypoints": "KTPA-19R/h003 FINKI BAYPO ECAKE WILON"
+            "description": "BAYPO2"
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "description": "CROWD8",
-            "waypoints": "KTPA-19R/h003 MILEJ CROWD HALLR"
+            "description": "CROWD8"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "description": "DORMR3",
-            "waypoints": "KTPA-19R/h003 SYKES DORMR PSTOL"
+            "description": "DORMR3"
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED2",
-            "description": "ENDED2",
-            "waypoints": "KTPA-19R/h003 ENDED LACEN"
+            "description": "ENDED2"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "description": "GANDY8",
-            "waypoints": "KTPA-19R/h003 GANDY PAIRS MURDO SABEE"
+            "description": "GANDY8"
           },
           "REMIS": {
             "cleared_altitude": 6000,
             "sid": "KNOST2",
-            "description": "KNOST2",
-            "waypoints": "KTPA-19R/h003 WOBAD/a6000 LOREC KNOST"
+            "description": "KNOST2"
           }
         },
         "1R": {
           "CAMJO,WILON": {
             "cleared_altitude": 6000,
             "sid": "BAYPO2",
-            "description": "BAYPO2",
-            "waypoints": "KTPA-19L/h003 FINKI BAYPO ECAKE "
+            "description": "BAYPO2"
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "description": "CROWD8",
-            "waypoints": "KTPA-19L/h003 MILEJ CROWD HALLR"
+            "description": "CROWD8"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "description": "DORMR3",
-            "waypoints": "KTPA-19L/h003 SYKES DORMR PSTOL "
+            "description": "DORMR3"
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED2",
-            "description": "ENDED2",
-            "waypoints": "KTPA-19L/h003 ENDED LACEN"
+            "description": "ENDED2"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "description": "GANDY8",
-            "waypoints": "KTPA-19L/h003 GANDY PAIRS MURDO SABEE"
+            "description": "GANDY8"
           },
           "REMIS": {
             "cleared_altitude": 6000,
             "sid": "KNOST2",
-            "description": "KNOST2",
-            "waypoints": "KTPA-19L/h003 WOBAD/a6000 LOREC KNOST "
+            "description": "KNOST2"
           }
         },
         "19R": {
           "CAMJO,WILON": {
             "cleared_altitude": 6000,
             "sid": "BAYPO2",
-            "description": "BAYPO2",
-            "waypoints": "KTPA-1L/h203 FINKI BAYPO ECAKE "
+            "description": "BAYPO2"
           },
           "HALLR": {
             "cleared_altitude": 6000,
             "sid": "CROWD8",
-            "description": "CROWD8",
-            "waypoints": "KTPA-1L/h203 MILEJ CROWD HALLR"
+            "description": "CROWD8"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 6000,
             "sid": "DORMR3",
-            "description": "DORMR3",
-            "waypoints": "KTPA-1L/h203 SYKES DORMR PSTOL "
+            "description": "DORMR3"
           },
           "LACEN": {
             "cleared_altitude": 6000,
             "sid": "ENDED2",
-            "description": "ENDED2",
-            "waypoints": "KTPA-1L/h203 ENDED LACEN"
+            "description": "ENDED2"
           },
           "SABEE": {
             "cleared_altitude": 6000,
             "sid": "GANDY8",
-            "description": "GANDY8",
-            "waypoints": "KTPA-1L/h203 GANDY PAIRS MURDO SABEE"
+            "description": "GANDY8"
           }
         }
       },
@@ -596,14 +579,12 @@
           "MOMIE,CAMJO": {
             "cleared_altitude": 5000,
             "sid": "TIDES1",
-            "description": "TIDES1.N",
-            "waypoints": "N027.24.33.582,W082.34.22.600 AQUAE/a2600/s220 PHINS/a4000+ TIDES/a5000+/s250 HYRON BRUNG ENDED"
+            "description": "TIDES1.N"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 5000,
             "sid": "TIDES1",
-            "description": "TIDES1.W",
-            "waypoints": "N027.24.33.582,W082.34.22.600 AQUAE/a2600/s220 PHINS/a4000+ TIDES/a5000+/s250 GOLTY PSTOL"
+            "description": "TIDES1.W"
           }
         },
         "14": {
@@ -918,14 +899,12 @@
           "WILON,CAMJO": {
             "cleared_altitude": 1600,
             "sid": "BAYPO2",
-            "description": "BAYPO2",
-            "waypoints": "N027.56.40.632,W082.41.40.653 FOXAR/a1600- PPOLE/h360 FINKI BAYPO ECAKE"
+            "description": "BAYPO2"
           },
           "LACEN": {
             "cleared_altitude": 1600,
             "sid": "ENDED2",
-            "description": "ENDED2",
-            "waypoints": "N027.56.40.632,W082.41.40.653 FOXAR/a1600- PPOLE/h360 ENDED LACEN"
+            "description": "ENDED2"
           },
           "LACEN.LLRGO1": {
             "cleared_altitude": 1600,
@@ -944,14 +923,12 @@
           "WILON,CAMJO": {
             "cleared_altitude": 1600,
             "sid": "BAYPO2",
-            "description": "BAYPO2",
-            "waypoints": "YOTLR/flyover/h203 FINKI BAYPO ECAKE"
+            "description": "BAYPO2"
           },
           "LACEN": {
             "cleared_altitude": 1600,
             "sid": "ENDED2",
-            "description": "ENDED2",
-            "waypoints": "YOTLR/flyover/h203 ENDED LACEN"
+            "description": "ENDED2"
           },
           "LACEN.LLRGO1": {
             "cleared_altitude": 1600,

@@ -118,35 +118,29 @@
           },
           "BARBY": {
             "cleared_altitude": 6000,
-            "sid": "ONOHI2",
-            "waypoints": "N020.57.57.282,W156.22.43.842/a2100+/flyover N020.53.26.716,W156.16.07.950 ONOHI BARBY"
+            "sid": "ONOHI2"
           },
           "ONOHI": {
             "cleared_altitude": 6000,
-            "sid": "ONOHI2",
-            "waypoints": "N020.57.57.282,W156.22.43.842/a2100+/flyover N020.53.26.716,W156.16.07.950 ONOHI"
+            "sid": "ONOHI2"
           }
         },
         "20": {
           "LNY": {
             "cleared_altitude": 6000,
-            "sid": "BEACH4",
-            "waypoints": "N020.53.19.802,W156.26.11.539/a400+ N020.52.07.306,W156.26.25.327 BEACH LNY"
+            "sid": "BEACH4"
           },
           "HARPO": {
             "cleared_altitude": 6000,
-            "sid": "BEACH4",
-            "waypoints": "N020.53.19.802,W156.26.11.539/a400+ N020.52.07.306,W156.26.25.327 BEACH HARPO"
+            "sid": "BEACH4"
           },
           "BARBY": {
             "cleared_altitude": 6000,
-            "sid": "ONOHI2",
-            "waypoints": "N020.51.47.627,W156.27.19.929/a2100+/flyover OGG ONOHI BARBY"
+            "sid": "ONOHI2"
           },
           "ONOHI": {
             "cleared_altitude": 6000,
-            "sid": "ONOHI2",
-            "waypoints": "N020.51.47.627,W156.27.19.929/a2100+/flyover OGG ONOHI"
+            "sid": "ONOHI2"
           }
         }
       },
