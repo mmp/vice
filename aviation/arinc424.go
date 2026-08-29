@@ -812,6 +812,7 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 			} else {
 				wp := &transitions[rec.transition][n-1]
 				wp.Heading = hdg
+				wp.SetHeadingTurn(turnDirection(rec.turnDirection))
 				// FM is a course from the fix: the aircraft flies the ground
 				// track, correcting for wind. VM is a magnetic heading, which
 				// the wind is free to blow off course.

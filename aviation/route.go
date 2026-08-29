@@ -51,6 +51,8 @@ const (
 	WaypointFlagSequenceVFRLanding
 	WaypointFlagHeadingIsTrack
 	WaypointFlagInterceptApproach
+	WaypointFlagHeadingTurnLeft
+	WaypointFlagHeadingTurnRight
 )
 
 // WaypointActionTerminationType indicates when a waypoint action group is complete.
@@ -320,11 +322,24 @@ func (wp Waypoint) HasTransferCommsAction() bool {
 	return wp.TransferComms() || slices.ContainsFunc(wp.ActionGroups(),
 		func(group WaypointActionGroup) bool { return group.Actions.TransferComms })
 }
+
+// Turn returns the direction of the turn toward the waypoint from the one
+// before it.
 func (wp Waypoint) Turn() TurnDirection {
-	if wp.Flags&WaypointFlagTurnLeft != 0 {
+	return turnFromFlags(wp.Flags, WaypointFlagTurnLeft, WaypointFlagTurnRight)
+}
+
+// HeadingTurn returns the direction of the turn onto the waypoint's Heading
+// after passing it.
+func (wp Waypoint) HeadingTurn() TurnDirection {
+	return turnFromFlags(wp.Flags, WaypointFlagHeadingTurnLeft, WaypointFlagHeadingTurnRight)
+}
+
+func turnFromFlags(flags, left, right WaypointFlags) TurnDirection {
+	if flags&left != 0 {
 		return TurnLeft
 	}
-	if wp.Flags&WaypointFlagTurnRight != 0 {
+	if flags&right != 0 {
 		return TurnRight
 	}
 	return TurnClosest
@@ -365,12 +380,20 @@ func (wp *Waypoint) SetSequenceVFRLanding(v bool) { wp.setFlag(WaypointFlagSeque
 func (wp *Waypoint) SetHeadingIsTrack(v bool)     { wp.setFlag(WaypointFlagHeadingIsTrack, v) }
 
 func (wp *Waypoint) SetTurn(t TurnDirection) {
-	wp.Flags &^= WaypointFlagTurnLeft | WaypointFlagTurnRight
+	wp.setTurnFlags(t, WaypointFlagTurnLeft, WaypointFlagTurnRight)
+}
+
+func (wp *Waypoint) SetHeadingTurn(t TurnDirection) {
+	wp.setTurnFlags(t, WaypointFlagHeadingTurnLeft, WaypointFlagHeadingTurnRight)
+}
+
+func (wp *Waypoint) setTurnFlags(t TurnDirection, left, right WaypointFlags) {
+	wp.Flags &^= left | right
 	switch t {
 	case TurnLeft:
-		wp.Flags |= WaypointFlagTurnLeft
+		wp.Flags |= left
 	case TurnRight:
-		wp.Flags |= WaypointFlagTurnRight
+		wp.Flags |= right
 	}
 }
 
@@ -538,7 +561,7 @@ func (wp Waypoint) WaypointActions() WaypointActions {
 	if wp.Heading != 0 || wp.PresentHeading() {
 		actions.Heading = &WaypointHeadingAction{
 			Heading:        wp.Heading,
-			Turn:           wp.Turn(),
+			Turn:           wp.HeadingTurn(),
 			Track:          wp.HeadingIsTrack(),
 			PresentHeading: wp.PresentHeading(),
 		}
@@ -824,9 +847,7 @@ func (wa WaypointArray) Encode() string {
 		}
 
 		// The turn direction to the next fix is given on the fix before it.
-		// A fix with a heading has already had its turn encoded with the
-		// heading, which shares the flag.
-		if i+1 < len(wa) && wa[i+1].Heading == 0 {
+		if i+1 < len(wa) {
 			switch wa[i+1].Turn() {
 			case TurnLeft:
 				s.WriteString("/ld")
@@ -1395,7 +1416,7 @@ func applyWaypointHeadingAction(wp *Waypoint, heading *WaypointHeadingAction) {
 	}
 	wp.Heading = heading.Heading
 	wp.SetHeadingIsTrack(heading.Track)
-	wp.SetTurn(heading.Turn)
+	wp.SetHeadingTurn(heading.Turn)
 }
 
 func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {

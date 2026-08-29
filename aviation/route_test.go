@@ -570,22 +570,27 @@ func TestEncodeTurnDirection(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	for _, route := range []string{
-		"KDLS-25/h120@r165LTJ/t165LTJ@a4000/ld LTJ",
-		"SKORR/rd WAVEY/a3000+ SHIPP",
-		// A heading's turn is encoded with the heading, not as /ld.
-		"SKORR WAVEY/l090",
-		"SKORR/rd WAVEY/ph",
+	for _, tc := range []struct {
+		route             string
+		turn, headingTurn TurnDirection
+	}{
+		{"KDLS-25/h120@r165LTJ/t165LTJ@a4000/ld LTJ", TurnLeft, TurnClosest},
+		{"SKORR/rd WAVEY/a3000+ SHIPP", TurnRight, TurnClosest},
+		{"SKORR/rd WAVEY/ph", TurnRight, TurnClosest},
+		// The turn toward a fix and the turn onto its heading are separate.
+		{"SKORR WAVEY/l090", TurnClosest, TurnLeft},
+		{"SKORR/rd WAVEY/l090", TurnRight, TurnLeft},
 	} {
-		wps, err := parseWaypoints(route)
+		wps, err := parseWaypoints(tc.route)
 		if err != nil {
-			t.Fatalf("%s: %v", route, err)
+			t.Fatalf("%s: %v", tc.route, err)
 		}
-		if wps[1].Turn() == TurnClosest {
-			t.Errorf("%s: expected a turn direction on %s", route, wps[1].Fix)
+		if wps[1].Turn() != tc.turn || wps[1].HeadingTurn() != tc.headingTurn {
+			t.Errorf("%s: got turn %v and heading turn %v, want %v and %v", tc.route,
+				wps[1].Turn(), wps[1].HeadingTurn(), tc.turn, tc.headingTurn)
 		}
-		if got := wps.Encode(); got != route {
-			t.Errorf("expected %q to round-trip, got %q", route, got)
+		if got := wps.Encode(); got != tc.route {
+			t.Errorf("expected %q to round-trip, got %q", tc.route, got)
 		}
 	}
 }

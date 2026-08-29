@@ -378,8 +378,9 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	NavLog(callsign, simTime, NavLogWaypoint, "next=%s dist=%.2fnm alt=%.0f", wp.Fix, dist, nav.FlightState.Altitude)
 
 	// Are we nearly at the fix and is it time to turn for the outbound heading?
-	// First, figure out the outbound heading.
+	// First, figure out the outbound heading and which way to turn onto it.
 	var hdg math.MagneticHeading
+	turn := av.TurnClosest
 	if len(nav.Approach.AtFixClearedRoute) > 1 &&
 		nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
 		hdg = math.TrueToMagnetic(math.Heading2LL(wp.Location, nav.Approach.AtFixClearedRoute[1].Location,
@@ -387,20 +388,29 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 		// controller assigned heading at the fix.
 		hdg = *nfa.Depart.Heading
+		if nfa.Depart.Turn != nil {
+			turn = *nfa.Depart.Turn
+		}
 	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
 		// depart fix direct
 		hdg = math.TrueToMagnetic(math.Heading2LL(wp.Location, nfa.Depart.Fix.Location,
 			nav.FlightState.NmPerLongitude), nav.FlightState.MagneticVariation)
+		if nfa.Depart.Turn != nil {
+			turn = *nfa.Depart.Turn
+		}
 	} else if groups := wp.ActionGroups(); len(groups) > 0 && groups[0].Actions.Heading != nil {
 		// Leaving the next fix on the heading of its first action group.
-		if h := groups[0].Actions.Heading; h.PresentHeading {
+		h := groups[0].Actions.Heading
+		if h.PresentHeading {
 			hdg = nav.FlightState.Heading
 		} else {
 			hdg = math.MagneticHeading(h.Heading)
 		}
+		turn = h.Turn
 	} else if wp.Heading != 0 {
 		// Leaving the next fix on a specified heading.
 		hdg = wp.MagneticHeading()
+		turn = wp.HeadingTurn()
 	} else if wp.PresentHeading() {
 		hdg = nav.FlightState.Heading
 	} else if wp.Arc() != nil {
@@ -410,6 +420,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		// Otherwise, find the heading to the following fix.
 		hdg = math.TrueToMagnetic(math.Heading2LL(wp.Location, nav.Waypoints[1].Location,
 			nav.FlightState.NmPerLongitude), nav.FlightState.MagneticVariation)
+		turn = nav.Waypoints[1].Turn()
 	} else {
 		// No more waypoints (likely about to land), so just
 		// plan to stay on the current heading.
@@ -422,7 +433,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		// fly-by turns don't matter before the sim starts.
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
-		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, wp.Turn(), wxs)
+		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, turn, wxs)
 	}
 
 	if passedWaypoint {
@@ -558,7 +569,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			}
 		} else if wp.Heading != 0 && !skipWaypointNavigation {
 			hdg := wp.MagneticHeading()
-			turn := wp.Turn()
+			turn := wp.HeadingTurn()
 			if wp.HeadingIsTrack() {
 				nav.Heading = NavHeading{
 					Maneuvers: []LateralManeuver{{
