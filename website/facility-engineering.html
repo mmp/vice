@@ -856,6 +856,9 @@
                 departing <code>MERIT</code> until it reaches an altitude of 5,000'. Then, it turns right to heading 055.
                 A trigger must follow an action after a fix;
                 to fly the present heading until a trigger is met, give <code>/ph</code> explicitly.</p>
+              <p>Note that triggers <em>do not apply to properties, only to actions</em>: in other words,
+                given <code>MERIT/h039/@a5000+/s210/nopt</code>, both <code>/s210</code> and <code>/nopt</code>
+                apply to the fix immediately, not just after the aircraft passes 5,000'.</p>
               <p>The available triggers are:</p>
 
               <table class="table syntax">
