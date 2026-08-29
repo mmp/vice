@@ -852,7 +852,7 @@
                 
               <p>Finally, actions may be sequenced with <i>triggers</i>.
                 A trigger specifies requirements that must be satisfied before subsequent actions are taken at a fix.
-                For example, given <code>MERIT/h039/@a5000/r055</code>, the aircraft flies heading 039
+                For example, given <code>MERIT/h039/@a5000+/r055</code>, the aircraft flies heading 039
                 departing <code>MERIT</code> until it reaches an altitude of 5,000'. Then, it turns right to heading 055.
                 A trigger must follow an action after a fix;
                 to fly the present heading until a trigger is met, give <code>/ph</code> explicitly.</p>
@@ -867,13 +867,14 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>@a<var>altitude</var></code></td>
-                    <td>Triggers upon reaching the given altitude (specified in feet), either from above or below.</td>
+                    <td><code>@a<var>altitude</var>+</code> / <code>@a<var>altitude</var>-</code></td>
+                    <td>Triggers when the aircraft is at or above (<code>+</code>) or at or below (<code>-</code>) the given altitude, specified in feet.
+                      A departure that has climbed through the altitude before reaching the fix meets a <code>+</code> trigger as soon as it passes the fix.</td>
                   </tr>
                   <tr>
-                    <td><code>@<var>navaid</var>-D<var>distance</var></code></td>
-                    <td>Triggers upon reaching the given DME distance from the
-                      navaid or fix. For example, <code>KARRS/h039/@CAMRN-D4.0/l010</code> flies heading 039
+                    <td><code>@<var>navaid</var>-D<var>distance</var>+</code> / <code>@<var>navaid</var>-D<var>distance</var>-</code></td>
+                    <td>Triggers when the aircraft is at or beyond (<code>+</code>) or within (<code>-</code>) the given DME distance from the
+                      navaid or fix. For example, <code>KARRS/h039/@CAMRN-D4.0+/l010</code> flies heading 039
                       until the aircraft is 4DME from <code>CAMRN</code> and then turns left to heading 010.</td>
                   </tr>
                   <tr>
@@ -896,7 +897,7 @@
                 </tbody>
               </table>
 
-              <p>A sequence of triggers may be provided. For example, given <code>SKORR/ph/@a2500/l180/@a5000/l050</code>
+              <p>A sequence of triggers may be provided. For example, given <code>SKORR/ph/@a2500+/l180/@a5000+/l050</code>
                 an aircraft will depart <code>SKORR</code> at its present heading inbound to <code>SKORR</code>.
                 Upon reaching 2,500', it will turn left to a 180 heading. Then, upon reaching 5,000', it will turn
                 left to a 050 heading.</p>

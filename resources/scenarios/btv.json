@@ -172,24 +172,24 @@
           "ENSON": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KFSO-18/h003/@a1000/ld ENSON"
+            "waypoints": "KFSO-18/h003/@a1000+/ld ENSON"
           },
           "MPV": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KFSO-18/h003/@a1000/rd MPV"
+            "waypoints": "KFSO-18/h003/@a1000+/rd MPV"
           }
         },
         "18": {
           "ENSON": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KFSO-36/h238/@a2100/ld ENSON"
+            "waypoints": "KFSO-36/h238/@a2100+/ld ENSON"
           },
           "MPV": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KFSO-36/h238/@a2100/ld MPV"
+            "waypoints": "KFSO-36/h238/@a2100+/ld MPV"
           }
         }
       },
@@ -311,34 +311,34 @@
           "DENYU": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KPBG-17/h352/@a2800/ld DENYU"
+            "waypoints": "KPBG-17/h352/@a2800+/ld DENYU"
           },
           "ENSON": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KPBG-17/h352/@a2800/ld ENSON"
+            "waypoints": "KPBG-17/h352/@a2800+/ld ENSON"
           },
           "MPV": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KPBG-17/h352/@a2800/rd MPV"
+            "waypoints": "KPBG-17/h352/@a2800+/rd MPV"
           }
         },
         "17": {
           "DENYU": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KPBG-35/h172/@a2500/rd DENYU"
+            "waypoints": "KPBG-35/h172/@a2500+/rd DENYU"
           },
           "ENSON": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KPBG-35/h172/@a2500/rd ENSON"
+            "waypoints": "KPBG-35/h172/@a2500+/rd ENSON"
           },
           "MPV": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KPBG-35/h172/@a2500/ld MPV"
+            "waypoints": "KPBG-35/h172/@a2500+/ld MPV"
           }
         }
       },
@@ -528,7 +528,7 @@
           "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
-            "waypoints": "KBTV-33/h146/@a1000/h190"
+            "waypoints": "KBTV-33/h146/@a1000+/h190"
           }
         },
         "33": {

@@ -1058,25 +1058,25 @@
           "SLI": {
             "cleared_altitude": 2000,
             "aircraft": ["prop"],
-            "waypoints": "KLGB-8R/h256/@a800/l180 SLI"
+            "waypoints": "KLGB-8R/h256/@a800+/l180 SLI"
           },
           "VTU": {
             "cleared_altitude": 2000,
             "sid": "ANAHM2",
             "aircraft": ["prop"],
-            "waypoints": "KLGB-8R/h256/@a800/l180 SLI WILMA LAX SADDE VTU"
+            "waypoints": "KLGB-8R/h256/@a800+/l180 SLI WILMA LAX SADDE VTU"
           },
           "LHS": {
             "cleared_altitude": 2000,
             "sid": "ANAHM2",
             "aircraft": ["prop"],
-            "waypoints": "KLGB-8R/h256/@a800/l180 SLI POXKU BAYJY DARTS LHS"
+            "waypoints": "KLGB-8R/h256/@a800+/l180 SLI POXKU BAYJY DARTS LHS"
           },
           "HEC": {
             "cleared_altitude": 2000,
             "sid": "ANAHM2",
             "aircraft": ["prop"],
-            "waypoints": "KLGB-8R/h256/@a800/l180 SLI POXKU PDZ APLES/a10000+ HEC"
+            "waypoints": "KLGB-8R/h256/@a800+/l180 SLI POXKU PDZ APLES/a10000+ HEC"
           }
         },
         "30": {
@@ -1106,12 +1106,12 @@
             "assigned_altitude": 3000,
             "aircraft": ["turboprop", "jet"],
             "departure_controller": "6L",
-            "waypoints": "KLGB-12/h301/@a400/l270 VTU"
+            "waypoints": "KLGB-12/h301/@a400+/l270 VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "aircraft": ["turboprop", "jet"],
-            "waypoints": "KLGB-12/h301/@a1500/l180 SXC"
+            "waypoints": "KLGB-12/h301/@a1500+/l180 SXC"
           },
           "AVRRY": {
             "assigned_altitude": 3000,
@@ -1148,18 +1148,18 @@
           "GMN": {
             "cleared_altitude": 3000,
             "aircraft": ["turboprop", "jet"],
-            "waypoints": "KLGB-12/h301/@a1500/l180 SXC LAX GMN"
+            "waypoints": "KLGB-12/h301/@a1500+/l180 SXC LAX GMN"
           },
           "VTU": {
             "assigned_altitude": 3000,
             "aircraft": ["turboprop", "jet"],
             "departure_controller": "6L",
-            "waypoints": "KLGB-12/h301/@a1500/l180 SXC VTU"
+            "waypoints": "KLGB-12/h301/@a1500+/l180 SXC VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "aircraft": ["turboprop", "jet"],
-            "waypoints": "KLGB-12/h301/@a1500/l180 SXC"
+            "waypoints": "KLGB-12/h301/@a1500+/l180 SXC"
           },
           "AVRRY": {
             "assigned_altitude": 3000,

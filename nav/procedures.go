@@ -26,8 +26,8 @@ const (
 	UntilFix                                                // done when ETA to Until.Fix < 2s
 	UntilIntercept                                          // done when shouldTurnToIntercept fires for course through Fix
 	UntilControllerIntervention                             // never completes; lasts until controller issues a new instruction
-	UntilAltitude                                           // done when reaching Until.Altitude
-	UntilDME                                                // done when crossing Until.DMEDistance from Until.DMEFix
+	UntilAltitude                                           // done at or above (AtOrAbove) or at or below Until.Altitude
+	UntilDME                                                // done at or beyond (AtOrAbove) or within Until.DMEDistance from Until.DMEFix
 	UntilRadial                                             // done when crossing the Until.Radial radial of Fix
 )
 
@@ -42,6 +42,10 @@ type ManeuverComplete struct {
 	Dist     float32              // distance in nm (UntilDist)
 	Fix      math.Point2LL        // target fix (UntilFix, UntilIntercept, UntilRadial)
 	Altitude int                  // target altitude (UntilAltitude)
+
+	// UntilAltitude, UntilDME: done at or above the altitude / at or beyond
+	// the distance if set, else at or below / within.
+	AtOrAbove bool
 
 	// UntilRadial: the radial of Fix to cross and the fix's name, for Summary.
 	Radial    math.MagneticHeading
@@ -89,11 +93,11 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 	case UntilControllerIntervention:
 		return false
 	case UntilAltitude:
-		return nav.FlightState.Altitude >= float32(mc.Altitude)
+		return mc.reached(nav.FlightState.Altitude, float32(mc.Altitude))
 	case UntilDME:
 		dist := math.DMEDistance(nav.FlightState.Position, nav.FlightState.Altitude,
 			mc.DMEFix, float32(mc.DMEFixElevation))
-		return dist >= mc.DMEDistance
+		return mc.reached(dist, mc.DMEDistance)
 	case UntilRadial:
 		if mc.StartPos.IsZero() {
 			mc.StartPos = nav.FlightState.Position
@@ -113,6 +117,15 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 	default:
 		panic(fmt.Sprintf("unhandled ManeuverCompleteType: %d", mc.Type))
 	}
+}
+
+// reached reports whether current is at or above target, or at or below it
+// for a condition that isn't AtOrAbove.
+func (mc *ManeuverComplete) reached(current, target float32) bool {
+	if mc.AtOrAbove {
+		return current >= target
+	}
+	return current <= target
 }
 
 // LateralManeuver describes a single phase of flight: fly a heading,
@@ -163,9 +176,9 @@ func (m *LateralManeuver) String() string {
 	case UntilControllerIntervention:
 		until = "until controller intervention"
 	case UntilAltitude:
-		until = fmt.Sprintf("until altitude %d", m.Until.Altitude)
+		until = fmt.Sprintf("until altitude %d%s", m.Until.Altitude, util.Select(m.Until.AtOrAbove, "+", "-"))
 	case UntilDME:
-		until = fmt.Sprintf("until DME %.1f", m.Until.DMEDistance)
+		until = fmt.Sprintf("until DME %.1f%s", m.Until.DMEDistance, util.Select(m.Until.AtOrAbove, "+", "-"))
 	case UntilRadial:
 		until = fmt.Sprintf("until crossing the %s %03d radial", m.Until.RadialFix, int(m.Until.Radial))
 	}
@@ -354,7 +367,7 @@ func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTim
 		if m.AssignAltitude != nil {
 			nav.setAssignedAltitude(*m.AssignAltitude)
 		}
-		if event := nav.activateWaypointActions(m.Fix, m.Actions); event != nil {
+		if event := waypointActionEvent(m.Fix, m.Actions); event != nil {
 			nav.PendingWaypointActionEvents = append(nav.PendingWaypointActionEvents, *event)
 		}
 		heading = m.targetHeading(nav, wxs)

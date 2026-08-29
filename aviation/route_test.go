@@ -88,7 +88,7 @@ func TestParseWaypointActionGroups(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	wps, err := parseWaypoints("_EWR4_4La/h039/@a500/r055/@IEZA-D4.0/l290/ho5W")
+	wps, err := parseWaypoints("_EWR4_4La/h039/@a500+/r055/@IEZA-D4.0+/l290/ho5W")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -180,7 +180,7 @@ func TestInitializeActionGroupDMEFix(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	wps, err := parseWaypoints("_EWR4_4La/r055/@IEZA-D4.0/l290")
+	wps, err := parseWaypoints("_EWR4_4La/r055/@IEZA-D4.0+/l290")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -208,7 +208,7 @@ func TestParseLegacyModifierAfterActionGroup(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	wps, err := parseWaypoints("_EWR4_4La/h039/@a500/r055/radius2.0/land")
+	wps, err := parseWaypoints("_EWR4_4La/h039/@a500+/r055/radius2.0/land")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -228,7 +228,7 @@ func TestParseActionGroupClearApproachAndDuplicateAltitudes(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	wps, err := parseWaypoints("_EWR4_4La/h039/@a500/r055/clearapp")
+	wps, err := parseWaypoints("_EWR4_4La/h039/@a500+/r055/clearapp")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -240,10 +240,10 @@ func TestParseActionGroupClearApproachAndDuplicateAltitudes(t *testing.T) {
 		t.Fatal("expected clearapp in final action group")
 	}
 
-	if _, err := parseWaypoints("_EWR4_4La/h039/@a500/c50/c100"); err == nil {
+	if _, err := parseWaypoints("_EWR4_4La/h039/@a500+/c50/c100"); err == nil {
 		t.Fatal("expected duplicate climb altitude action to fail")
 	}
-	if _, err := parseWaypoints("_EWR4_4La/h039/@a500/d50/d100"); err == nil {
+	if _, err := parseWaypoints("_EWR4_4La/h039/@a500+/d50/d100"); err == nil {
 		t.Fatal("expected duplicate descend altitude action to fail")
 	}
 }
@@ -459,7 +459,7 @@ func TestParseRadialTermination(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	const route = "KDLS-25/t069/@a647/h120/@LTJ-R165/tLTJ-R165/@a4000 LTJ"
+	const route = "KDLS-25/t069/@a647+/h120/@LTJ-R165/tLTJ-R165/@a4000+ LTJ"
 	wps, err := parseWaypoints(route)
 	if err != nil {
 		t.Fatal(err)
@@ -547,7 +547,7 @@ func TestParseRadialErrors(t *testing.T) {
 	for _, tc := range []struct{ route, want string }{
 		{"KSNS-8/hSNS-R255", "can only be tracked"},
 		{"KSNS-8/lSNS-R255", "can only be tracked"},
-		{"KSNS-8/h084/@a484/rSNS-R255", "can only be tracked"},
+		{"KSNS-8/h084/@a484+/rSNS-R255", "can only be tracked"},
 		{"KDLS-25/h120/@LTJ-R", "expected a radial after LTJ-R"},
 		{"KDLS-25/h120/@-R165", "expected a radial as NAVAID-R"},
 		{"KDLS-25/h120/@LTJ-R0", "heading must be between 1-360"},
@@ -570,7 +570,7 @@ func TestEncodeTurnDirection(t *testing.T) {
 		route             string
 		turn, headingTurn TurnDirection
 	}{
-		{"KDLS-25/h120/@LTJ-R165/tLTJ-R165/@a4000/ld LTJ", TurnLeft, TurnClosest},
+		{"KDLS-25/h120/@LTJ-R165/tLTJ-R165/@a4000+/ld LTJ", TurnLeft, TurnClosest},
 		{"SKORR/rd WAVEY/a3000+ SHIPP", TurnRight, TurnClosest},
 		{"SKORR/rd WAVEY/ph", TurnRight, TurnClosest},
 		// The turn toward a fix and the turn onto its heading are separate.
@@ -630,7 +630,7 @@ func TestParseActionsIntoGroups(t *testing.T) {
 	t.Cleanup(func() { DB = oldDB })
 
 	// Actions at a fix form a single open action group and round-trip.
-	for _, route := range []string{"RNGRR/h223", "RNGRR/h223/ho5W/c50", "KJFK-4L/ho5S/@a2500"} {
+	for _, route := range []string{"RNGRR/h223", "RNGRR/h223/ho5W/c50", "KJFK-4L/ho5S/@a2500+"} {
 		wps, err := parseWaypoints(route)
 		if err != nil {
 			t.Fatalf("%s: %v", route, err)
@@ -654,7 +654,7 @@ func TestParseActionsIntoGroups(t *testing.T) {
 
 	// Actions after a termination start the next group; a termination
 	// ends the group the actions before it were merged into.
-	wps, err = parseWaypoints("KLGB-12/h301/@a400/ho4R/h200/@a3000/ho6K")
+	wps, err = parseWaypoints("KLGB-12/h301/@a400+/ho4R/h200/@a3000+/ho6K")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -677,13 +677,15 @@ func TestParseTriggerErrors(t *testing.T) {
 	t.Cleanup(func() { DB = oldDB })
 
 	for _, tc := range []struct{ route, want string }{
-		{"KJFK-4L/@a2000/l110", "trigger /@a2000 must follow an action; use /ph"},
-		{"KJFK-4L/h044/@a2000/@a3000", "trigger /@a3000 must follow an action"},
-		{"KJFK-4L/h044/@a70000", "between 0 and 60000"},
-		{"KJFK-4L/h044/@IEZA-D0", "must be positive"},
-		{"KJFK-4L/h044/@IEZA-Dx", "invalid DME distance"},
-		{"KJFK-4L/h044/@-D2.0", "expected a navaid before -D"},
+		{"KJFK-4L/@a2000+/l110", "trigger /@a2000+ must follow an action; use /ph"},
+		{"KJFK-4L/h044/@a2000+/@a3000+", "trigger /@a3000+ must follow an action"},
+		{"KJFK-4L/h044/@a70000+", "between 0 and 60000"},
+		{"KJFK-4L/h044/@IEZA-D0+", "must be positive"},
+		{"KJFK-4L/h044/@IEZA-Dx+", "invalid DME distance"},
+		{"KJFK-4L/h044/@-D2.0+", "expected a navaid before -D"},
 		{"KJFK-4L/h044/@4000", "unknown trigger"},
+		{"KJFK-4L/h044/@a2000", "followed by + (at or above) or - (at or below)"},
+		{"KJFK-4L/h044/@IEZA-D2.0", "followed by + (at or beyond) or - (within)"},
 	} {
 		_, err := parseWaypoints(tc.route)
 		if err == nil {
@@ -699,7 +701,7 @@ func TestParseTriggerFixWithHyphen(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	const route = "KJFK-4L/h044/@6A1-1-D2.0/l110/@6A1-1-R090/ph"
+	const route = "KJFK-4L/h044/@6A1-1-D2.0+/l110/@6A1-1-R090/ph"
 	wps, err := parseWaypoints(route)
 	if err != nil {
 		t.Fatal(err)
@@ -725,11 +727,11 @@ func TestEncodeTriggerRoundTrip(t *testing.T) {
 	t.Cleanup(func() { DB = oldDB })
 
 	for _, route := range []string{
-		"KHLN-23/h054/@a4277/l274/@HLN-R322/tHLN-R322/@a8100/rd PXR",
-		"KEWR-4L/h219/@a500/l190/@ILSQ-D2.3/r220/c100",
-		"KDVT-7R/h254/@a1878/r060/@PXR-R336/tPXR-R336/@a4000/ld PXR",
+		"KHLN-23/h054/@a4277+/l274/@HLN-R322/tHLN-R322/@a8100+/rd PXR",
+		"KEWR-4L/h219/@a500+/l190/@ILSQ-D2.3+/r220/c100",
+		"KDVT-7R/h254/@a1878+/r060/@PXR-R336/tPXR-R336/@a4000+/ld PXR",
 		"RNGRR/h200/@crs220 WAVEY",
-		"KJFK-4L/ho5E/@a2500 PONAE",
+		"KJFK-4L/ho5E/@a2500+ PONAE",
 	} {
 		wps, err := parseWaypoints(route)
 		if err != nil {

@@ -816,6 +816,12 @@ func (s *Sim) snapshot(tcw TCW) StateUpdate {
 // Virtual controllers auto-accept handoffs and pointouts.
 // Human-allocatable positions (from ControllerConfig) do NOT auto-accept,
 // regardless of whether a human is currently signed in.
+// humanControlled reports whether a human controller is working the
+// aircraft.
+func (s *Sim) humanControlled(ac *Aircraft) bool {
+	return s.ScenarioDefaultConsolidation.IsHumanPosition(ac.ControllerFrequency)
+}
+
 func (s *Sim) isVirtualController(pos ControlPosition) bool {
 	// A controller is virtual if it's a valid control position but NOT
 	// a human-allocatable position (i.e., not in the consolidation hierarchy).
@@ -897,30 +903,6 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 		sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 	}
 
-	if actions.HumanHandoff {
-		// Handoff from virtual controller to a human controller.
-		// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans
-		// rather than initiating the handoff.
-		if s.prespawnUncontrolledOnly {
-			s.deleteAircraft(ac)
-			return true
-		}
-		if sfp != nil {
-			s.handoffTrack(sfp, sfp.InboundHandoffController)
-		}
-	} else if actions.HandoffController != "" {
-		// During prespawn uncontrolled-only phase, cull if handoff target is a human controller
-		if s.prespawnUncontrolledOnly && !s.isVirtualController(TCP(actions.HandoffController)) {
-			s.deleteAircraft(ac)
-			return true
-		}
-		// Only initiate the handoff if a virtual controller has the track; if
-		// a human owns it, it's their call when to hand it off.
-		if sfp != nil && s.isVirtualController(sfp.TrackingController) {
-			s.handoffTrack(sfp, TCP(actions.HandoffController))
-		}
-	}
-
 	if actions.GoAroundContactController != "" {
 		tcp := actions.GoAroundContactController
 		ac.ControllerFrequency = ControlPosition(tcp)
@@ -954,6 +936,53 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 		}
 	}
 
+	// The go-around contact above applies to any aircraft; the rest are
+	// instructions a virtual controller issues, and an aircraft on a human's
+	// frequency is theirs to instruct.
+	if !s.humanControlled(ac) {
+		return s.applyVirtualControllerActions(ac, sfp, actions)
+	}
+	return false
+}
+
+// applyVirtualControllerActions carries out the route actions a virtual
+// controller working the aircraft issues at a waypoint. It returns true if
+// the aircraft was deleted.
+func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, actions av.WaypointActions) bool {
+	if actions.HumanHandoff {
+		// Handoff from virtual controller to a human controller.
+		// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans
+		// rather than initiating the handoff.
+		if s.prespawnUncontrolledOnly {
+			s.deleteAircraft(ac)
+			return true
+		}
+		if sfp != nil {
+			s.handoffTrack(sfp, sfp.InboundHandoffController)
+		}
+	} else if actions.HandoffController != "" {
+		// During prespawn uncontrolled-only phase, cull if handoff target is a human controller
+		if s.prespawnUncontrolledOnly && !s.isVirtualController(TCP(actions.HandoffController)) {
+			s.deleteAircraft(ac)
+			return true
+		}
+		// Only initiate the handoff if a virtual controller has the track; if
+		// a human owns it, it's their call when to hand it off.
+		if sfp != nil && s.isVirtualController(sfp.TrackingController) {
+			s.handoffTrack(sfp, TCP(actions.HandoffController))
+		}
+	}
+
+	if actions.ClimbAltitude != 0 {
+		ac.Nav.AssignAltitudeNow(float32(actions.ClimbAltitude)*100, false)
+	} else if actions.DescendAltitude != 0 {
+		ac.Nav.AssignAltitudeNow(float32(actions.DescendAltitude)*100, false)
+	}
+
+	if actions.ClearApproach {
+		ac.ClearedApproach(ac.Nav.Approach.AssignedId, s.State.SimTime, nil)
+	}
+
 	if actions.TransferComms {
 		if sfp == nil {
 			s.lg.Errorf("%s: no flight plan at the transfer of comms point", ac.ADSBCallsign)
@@ -976,10 +1005,7 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 		}
 	}
 
-	// Update scratchpads if the waypoint has scratchpad commands. Don't
-	// overwrite the scratchpad of an aircraft a human is working; before the
-	// pilot is on anyone's frequency, there is nothing to overwrite.
-	if sfp != nil && !s.ScenarioDefaultConsolidation.IsHumanPosition(ac.ControllerFrequency) {
+	if sfp != nil {
 		if actions.PrimaryScratchpad != "" {
 			sfp.Scratchpad = actions.PrimaryScratchpad
 		}
@@ -1330,6 +1356,10 @@ func (s *Sim) updateState() {
 
 				if passedWaypoint.SequenceVFRLanding() {
 					s.sequenceVFRLanding(ac)
+				}
+
+				if passedWaypoint.InterceptApproach() && !s.humanControlled(ac) {
+					ac.InterceptApproach(s.lg)
 				}
 			}
 

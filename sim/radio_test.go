@@ -325,3 +325,36 @@ func TestTowerSwitchTransmissionGoesStale(t *testing.T) {
 		})
 	}
 }
+
+// TestWaypointClimbActionUnderHumanControl verifies that a route's /c is
+// issued while a virtual controller is working the aircraft and left to the
+// human once the aircraft is on their frequency.
+func TestWaypointClimbActionUnderHumanControl(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	s.STARSComputer = makeSTARSComputer("TEST")
+	s.ScenarioDefaultConsolidation = PositionConsolidation{TCP("2A"): nil}
+
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.Nav.Perf.Ceiling = 41000
+	ac.ControllerFrequency = ""
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	assigned := func() float32 {
+		if alt := ac.Nav.Altitude.Assigned; alt != nil {
+			return *alt
+		}
+		return 0
+	}
+
+	s.applyWaypointActionEvent(ac, av.WaypointActions{ClimbAltitude: 50})
+	if assigned() != 5000 {
+		t.Fatalf("expected the route's climb to 5000 to be assigned, got %.0f", assigned())
+	}
+
+	ac.ControllerFrequency = "2A"
+	s.applyWaypointActionEvent(ac, av.WaypointActions{ClimbAltitude: 70})
+	if assigned() != 5000 {
+		t.Errorf("route changed the altitude of an aircraft a human is working: %.0f", assigned())
+	}
+}

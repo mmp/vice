@@ -14,43 +14,64 @@ import (
 )
 
 func TestManeuverCompleteUntilAltitude(t *testing.T) {
-	nav := &Nav{FlightState: FlightState{Altitude: 499}}
-	mc := ManeuverComplete{Type: UntilAltitude, Altitude: 500}
+	for _, tc := range []struct {
+		name         string
+		atOrAbove    bool
+		notYet, done float32
+	}{
+		{"at or above", true, 499, 500},
+		{"at or below", false, 2501, 2500},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			nav := &Nav{}
+			mc := ManeuverComplete{Type: UntilAltitude, Altitude: int(tc.done), AtOrAbove: tc.atOrAbove}
 
-	if mc.Done(nav, Time{}, wx.Sample{}, 0) {
-		t.Fatal("expected altitude completion to wait below target altitude")
-	}
-
-	nav.FlightState.Altitude = 500
-	if !mc.Done(nav, Time{}, wx.Sample{}, 0) {
-		t.Fatal("expected altitude completion at target altitude")
+			nav.FlightState.Altitude = tc.notYet
+			if mc.Done(nav, Time{}, wx.Sample{}, 0) {
+				t.Fatalf("expected altitude completion to wait at %.0f", tc.notYet)
+			}
+			nav.FlightState.Altitude = tc.done
+			if !mc.Done(nav, Time{}, wx.Sample{}, 0) {
+				t.Fatalf("expected altitude completion at %.0f", tc.done)
+			}
+		})
 	}
 }
 
 func TestManeuverCompleteUntilDME(t *testing.T) {
 	const nmPerLongitude = 45
 	dmeFix := math.Point2LL{-74, 40}
-	start := math.Offset2LL(dmeFix, 90, 3, nmPerLongitude)
-	crossed := math.Offset2LL(dmeFix, 90, 4.1, nmPerLongitude)
+	at := func(nm float32) math.Point2LL { return math.Offset2LL(dmeFix, 90, nm, nmPerLongitude) }
 
-	nav := &Nav{FlightState: FlightState{
-		Position: start,
-		Altitude: 3000,
-	}}
-	mc := ManeuverComplete{
-		Type:            UntilDME,
-		DMEDistance:     4,
-		DMEFix:          dmeFix,
-		DMEFixElevation: 33,
-	}
+	// The test's offsets are a little short of DMEDistance's slant range at
+	// the true nm per degree of longitude, so the cases keep clear of 4nm.
+	for _, tc := range []struct {
+		name         string
+		atOrAbove    bool
+		notYet, done float32
+	}{
+		{"at or beyond", true, 3.5, 4.3},
+		{"within", false, 4.5, 3.5},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			nav := &Nav{FlightState: FlightState{Altitude: 3000}}
+			mc := ManeuverComplete{
+				Type:            UntilDME,
+				DMEDistance:     4,
+				DMEFix:          dmeFix,
+				DMEFixElevation: 33,
+				AtOrAbove:       tc.atOrAbove,
+			}
 
-	if mc.Done(nav, Time{}, wx.Sample{}, 0) {
-		t.Fatal("expected DME completion to wait below target distance")
-	}
-
-	nav.FlightState.Position = crossed
-	if !mc.Done(nav, Time{}, wx.Sample{}, 0) {
-		t.Fatal("expected DME completion at target slant distance")
+			nav.FlightState.Position = at(tc.notYet)
+			if mc.Done(nav, Time{}, wx.Sample{}, 0) {
+				t.Fatalf("expected DME completion to wait at %.1fnm", tc.notYet)
+			}
+			nav.FlightState.Position = at(tc.done)
+			if !mc.Done(nav, Time{}, wx.Sample{}, 0) {
+				t.Fatalf("expected DME completion at %.1fnm", tc.done)
+			}
+		})
 	}
 }
 

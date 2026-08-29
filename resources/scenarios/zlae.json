@@ -1231,7 +1231,7 @@
           "IPL": {
             "cleared_altitude": 8000,
             "sid": "BRDR7",
-            "waypoints": "N032.44.07.581,W117.11.52.161/h275/@a400/l180/@a4000/ld/c070 N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY/ho09 BROWS IPL"
+            "waypoints": "N032.44.07.581,W117.11.52.161/h275/@a400+/l180/@a4000+/ld/c070 N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY/ho09 BROWS IPL"
           }
         },
         "27.O": {
@@ -1320,7 +1320,7 @@
           "OCN.E": {
             "cleared_altitude": 5000,
             "sid": "Obstacle",
-            "waypoints": "KSAN-27/h095/@a900/ld MZB/h290 OCN"
+            "waypoints": "KSAN-27/h095/@a900+/ld MZB/h290 OCN"
           }
         }
       },
@@ -2811,7 +2811,7 @@
             "assigned_altitude": 2000,
             "sid": "ANAHM2",
             "aircraft": ["prop"],
-            "waypoints": "N033.39.25.383,W117.52.47.276/h222/@a2000/h300/c060/@a6000/ld LAX/hoT6L/c080 SADDE/ho14 VTU"
+            "waypoints": "N033.39.25.383,W117.52.47.276/h222/@a2000+/h300/c060/@a6000+/ld LAX/hoT6L/c080 SADDE/ho14 VTU"
           },
           "SLI": {
             "assigned_altitude": 5000,
@@ -3248,25 +3248,25 @@
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/c070/h180/@a5000/ld/c170 FRITR/a5000+/ho12/c130 DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoints": "KLGB-12/c070/h180/@a5000+/ld/c170 FRITR/a5000+/ho12/c130 DOTSS AREAE PEELR MTBAL AVRRY"
           },
           "CNERY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/c070/h180/@a5000/ld/c170 FRITR/a5000+/ho12/c130 DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoints": "KLGB-12/c070/h180/@a5000+/ld/c170 FRITR/a5000+/ho12/c130 DOTSS WIILD BLCKD CSTWY CNERY"
           },
           "TCATE": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/c070/h180/@a5000/ld/c170 FRITR/a5000+/ho12/c130 DOTSS WIILD TCATE"
+            "waypoints": "KLGB-12/c070/h180/@a5000+/ld/c170 FRITR/a5000+/ho12/c130 DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "assigned_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/c070/h180/@a5000/ld/c170/ho21 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-12/c070/h180/@a5000+/ld/c170/ho21 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         },
         "12": {
@@ -3530,61 +3530,61 @@
         "24": {
           "OCN": {
             "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/c060/h247/@a2000/rd N033.07.48.264,W117.10.25.506/hoT4S OCN"
+            "waypoints": "KCRQ-6/c060/h247/@a2000+/rd N033.07.48.264,W117.10.25.506/hoT4S OCN"
           },
           "MZB": {
             "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/c110/h247/@a2000/ld MZB"
+            "waypoints": "KCRQ-6/c110/h247/@a2000+/ld MZB"
           },
           "JLI": {
             "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/c110/h247/@a2000/ld N033.07.48.264,W117.10.25.506/ho12 JLI"
+            "waypoints": "KCRQ-6/c110/h247/@a2000+/ld N033.07.48.264,W117.10.25.506/ho12 JLI"
           },
           "TRM": {
             "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/c110/h247/@a2000/ld N033.07.48.264,W117.10.25.506/ho12 TRM"
+            "waypoints": "KCRQ-6/c110/h247/@a2000+/ld N033.07.48.264,W117.10.25.506/ho12 TRM"
           },
           "LAX": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000/rd GYWNN/a6000+/hoT4Y PADRZ CWARD/a12000- LAX"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/hoT4Y PADRZ CWARD/a12000- LAX"
           },
           "SLI": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000/rd GYWNN/a6000+/hoT4Y PADRZ CWARD/a12000- MADOW SLI"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/hoT4Y PADRZ CWARD/a12000- MADOW SLI"
           },
           "EHF": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN RIDDL LANDO EHF"
           },
           "OROSZ": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
           },
           "CHKNN": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN"
           },
           "IKAYE": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000/rd GYWNN/a6000+/ho21 PADRZ IKAYE"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ IKAYE"
           },
           "SXC,MALIT": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000/rd GYWNN/a6000+/ho21 PADRZ SXC"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ SXC"
           }
         }
       },

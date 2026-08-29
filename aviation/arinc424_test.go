@@ -422,10 +422,10 @@ func TestParseARINC424SID(t *testing.T) {
 	}
 
 	runways := map[string]string{
-		"4L":  "KJFK-22R/h044/@a520 PONAE/flyover/h099",
-		"4R":  "KJFK-22L/h044/@a520/h099",
-		"31L": "KJFK-13R/h314/@a520/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
-		"31R": "KJFK-13L/h314/@a520/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
+		"4L":  "KJFK-22R/h044/@a520+ PONAE/flyover/h099",
+		"4R":  "KJFK-22L/h044/@a520+/h099",
+		"31L": "KJFK-13R/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
+		"31R": "KJFK-13L/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187",
 	}
 	if len(sid.RunwayTransitions) != len(runways) {
 		t.Errorf("expected runway transitions for %v, got %v", slices.Sorted(maps.Keys(runways)),
@@ -450,11 +450,11 @@ func TestParseARINC424SID(t *testing.T) {
 	for _, tc := range []struct {
 		runway, exit, want string
 	}{
-		{"31L", "CANDR", "KJFK-13R/h314/@a520/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR"},
-		{"31L", "TOWIN", "KJFK-13R/h314/@a520/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR TOWIN"},
-		{"4R", "HEERO", "KJFK-22L/h044/@a520/h099 DEEZZ HEERO"},
-		{"4L", "SKORR", "KJFK-22R/h044/@a520 PONAE/flyover/h099 DEEZZ HEERO"},
-		{"31R", "SKORR", "KJFK-13L/h314/@a520/ld SKORR/a2500+/s210-"},
+		{"31L", "CANDR", "KJFK-13R/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR"},
+		{"31L", "TOWIN", "KJFK-13R/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR TOWIN"},
+		{"4R", "HEERO", "KJFK-22L/h044/@a520+/h099 DEEZZ HEERO"},
+		{"4L", "SKORR", "KJFK-22R/h044/@a520+ PONAE/flyover/h099 DEEZZ HEERO"},
+		{"31R", "SKORR", "KJFK-13L/h314/@a520+/ld SKORR/a2500+/s210-"},
 	} {
 		wps, err := sid.Waypoints(tc.runway, tc.exit)
 		if err != nil {
@@ -512,13 +512,13 @@ func TestParseARINC424SIDRadials(t *testing.T) {
 	for _, tc := range []struct {
 		airport, sid, runway, want string
 	}{
-		{"KDLS", "DALLS1", "7", "KDLS-25/t069/@a647/h120/@LTJ-R165/tLTJ-R165/@a4000/ld LTJ"},
-		{"KDLS", "DALLS1", "13", "KDLS-31/h130/@LTJ-R165/tLTJ-R165/@a4000/ld LTJ"},
-		{"KDLS", "DALLS1", "31", "KDLS-13/t306/@a647/l120/@LTJ-R165/tLTJ-R165/@a4000/ld LTJ"},
-		{"KDVT", "DVT3", "7L", "KDVT-25R/h074/@a2200/ltPXR-R336/@a4000/ld PXR"},
-		{"KDVT", "DVT3", "7R", "KDVT-25L/h074/@a2200/ltPXR-R336/@a4000/ld PXR"},
-		{"KDVT", "DVT3", "25L", "KDVT-7R/h254/@a1878/r060/@PXR-R336/tPXR-R336/@a4000/ld PXR"},
-		{"KDVT", "DVT3", "25R", "KDVT-7L/h254/@a1878/r060/@PXR-R336/tPXR-R336/@a4000/ld PXR"},
+		{"KDLS", "DALLS1", "7", "KDLS-25/t069/@a647+/h120/@LTJ-R165/tLTJ-R165/@a4000+/ld LTJ"},
+		{"KDLS", "DALLS1", "13", "KDLS-31/h130/@LTJ-R165/tLTJ-R165/@a4000+/ld LTJ"},
+		{"KDLS", "DALLS1", "31", "KDLS-13/t306/@a647+/l120/@LTJ-R165/tLTJ-R165/@a4000+/ld LTJ"},
+		{"KDVT", "DVT3", "7L", "KDVT-25R/h074/@a2200+/ltPXR-R336/@a4000+/ld PXR"},
+		{"KDVT", "DVT3", "7R", "KDVT-25L/h074/@a2200+/ltPXR-R336/@a4000+/ld PXR"},
+		{"KDVT", "DVT3", "25L", "KDVT-7R/h254/@a1878+/r060/@PXR-R336/tPXR-R336/@a4000+/ld PXR"},
+		{"KDVT", "DVT3", "25R", "KDVT-7L/h254/@a1878+/r060/@PXR-R336/tPXR-R336/@a4000+/ld PXR"},
 	} {
 		sid, ok := result.Airports[tc.airport].SIDs[tc.sid]
 		if !ok {
@@ -534,7 +534,7 @@ func TestParseARINC424SIDRadials(t *testing.T) {
 	}
 
 	flout5 := result.Airports["KSBA"].SIDs["FLOUT5"]
-	if got, want := flout5.EnrouteTransitions["GVO"].Encode(), "FLOUT/t321/@FLOUT-D15.0 GVO"; got != want {
+	if got, want := flout5.EnrouteTransitions["GVO"].Encode(), "FLOUT/t321/@FLOUT-D15.0+ GVO"; got != want {
 		t.Errorf("FLOUT5 GVO transition: expected %q, got %q", want, got)
 	}
 }

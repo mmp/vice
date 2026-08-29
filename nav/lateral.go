@@ -465,18 +465,6 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Heading = NavHeading{}
 		}
 
-		if groups := wp.ActionGroups(); len(groups) > 0 && groups[0].Actions.ClearApproach {
-			if fp != nil {
-				_ = nav.ClearedApproach(nav.Approach.AssignedId, nil, simTime, false)
-			}
-		}
-
-		if wp.InterceptApproach() {
-			if fp != nil {
-				_ = nav.InterceptApproach(fp.ArrivalAirport, nil)
-			}
-		}
-
 		if nav.Approach.Cleared {
 			// The aircraft has made it to the approach fix they
 			// were cleared to, so they can start to descend.
@@ -520,7 +508,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 		var actionEvent *av.WaypointActionEvent
 		if groups := wp.ActionGroups(); len(groups) > 0 {
-			actionEvent = nav.activateWaypointActions(wp.Fix, groups[0].Actions)
+			actionEvent = waypointActionEvent(wp.Fix, groups[0].Actions)
 		}
 
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok {
@@ -533,7 +521,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		}
 
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Altitude != nil {
-			nav.assignAltitudeNow(*nfa.Depart.Altitude, false)
+			nav.AssignAltitudeNow(*nfa.Depart.Altitude, false)
 		}
 
 		skipWaypointNavigation := clearedAtFix || interceptedAtFix
@@ -658,13 +646,18 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 		case av.WaypointActionNoTermination:
 			m.Until = ManeuverComplete{Type: UntilControllerIntervention}
 		case av.WaypointActionAltitude:
-			m.Until = ManeuverComplete{Type: UntilAltitude, Altitude: group.Until.Altitude}
+			m.Until = ManeuverComplete{
+				Type:      UntilAltitude,
+				Altitude:  group.Until.Altitude,
+				AtOrAbove: group.Until.AtOrAbove,
+			}
 		case av.WaypointActionDME:
 			m.Until = ManeuverComplete{
 				Type:            UntilDME,
 				DMEDistance:     group.Until.DMEDistance,
 				DMEFix:          group.Until.DMEFixLocation,
 				DMEFixElevation: group.Until.DMEFixElevation,
+				AtOrAbove:       group.Until.AtOrAbove,
 			}
 		case av.WaypointActionCourse:
 			if next == nil {
@@ -699,12 +692,9 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 	return maneuvers
 }
 
-func (nav *Nav) activateWaypointActions(fix string, actions av.WaypointActions) *av.WaypointActionEvent {
-	if actions.ClimbAltitude != 0 {
-		nav.assignAltitudeNow(float32(actions.ClimbAltitude*100), false)
-	} else if actions.DescendAltitude != 0 {
-		nav.assignAltitudeNow(float32(actions.DescendAltitude*100), false)
-	}
+// waypointActionEvent returns the event the sim acts on for a group's
+// actions, if it has any beyond its heading.
+func waypointActionEvent(fix string, actions av.WaypointActions) *av.WaypointActionEvent {
 	if actions.HasSimActions() {
 		return &av.WaypointActionEvent{Fix: fix, Actions: actions}
 	}

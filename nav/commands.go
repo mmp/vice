@@ -83,7 +83,9 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (av.Comm
 	return intent, true
 }
 
-func (nav *Nav) assignAltitudeNow(alt float32, afterSpeed bool) av.CommandIntent {
+// AssignAltitudeNow assigns an altitude that takes effect immediately, with
+// none of the pilot's delay in following a controller's instruction.
+func (nav *Nav) AssignAltitudeNow(alt float32, afterSpeed bool) av.CommandIntent {
 	intent, ok := nav.prepareAltitudeAssignment(alt, afterSpeed)
 	if ok {
 		nav.setAssignedAltitude(alt)

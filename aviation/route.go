@@ -62,6 +62,7 @@ const (
 type WaypointActionTermination struct {
 	Type              WaypointActionTerminationType
 	Altitude          int
+	AtOrAbove         bool // altitude: at or above (+) rather than at or below (-); DME: at or beyond rather than within
 	DMEFix            string
 	DMEDistance       float32
 	DMEFixLocation    math.Point2LL
@@ -109,15 +110,14 @@ type WaypointActions struct {
 	DescendAltitude int16 // hundreds of feet; 0 = unset
 }
 
+// HasSimActions reports whether the actions include any the sim carries
+// out, which is to say any but the heading.
 func (wa WaypointActions) HasSimActions() bool {
 	return wa.HumanHandoff || wa.HandoffController != "" || wa.PointOut != "" ||
 		wa.ClearApproach || wa.GoAroundContactController != "" ||
 		wa.PrimaryScratchpad != "" || wa.ClearPrimaryScratchpad ||
-		wa.SecondaryScratchpad != "" || wa.ClearSecondaryScratchpad || wa.TransferComms
-}
-
-func (wa WaypointActions) HasNavActions() bool {
-	return wa.Heading.IsSet() || wa.ClimbAltitude != 0 || wa.DescendAltitude != 0
+		wa.SecondaryScratchpad != "" || wa.ClearSecondaryScratchpad || wa.TransferComms ||
+		wa.ClimbAltitude != 0 || wa.DescendAltitude != 0
 }
 
 func (wa WaypointActions) Encoded() string {
@@ -170,9 +170,10 @@ func (wag WaypointActionGroup) Encoded() string {
 	s := wag.Actions.Encoded()
 	switch wag.Until.Type {
 	case WaypointActionAltitude:
-		s += fmt.Sprintf("/@a%d", wag.Until.Altitude)
+		s += fmt.Sprintf("/@a%d%s", wag.Until.Altitude, util.Select(wag.Until.AtOrAbove, "+", "-"))
 	case WaypointActionDME:
-		s += fmt.Sprintf("/@%s-D%.1f", wag.Until.DMEFix, wag.Until.DMEDistance)
+		s += fmt.Sprintf("/@%s-D%.1f%s", wag.Until.DMEFix, wag.Until.DMEDistance,
+			util.Select(wag.Until.AtOrAbove, "+", "-"))
 	case WaypointActionCourse:
 		s += fmt.Sprintf("/@crs%03d", wag.Until.Course)
 	case WaypointActionRadial:
@@ -752,12 +753,13 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, elevation int, contr
 			e.ErrorString("Unexpected IAF/IF/FAF specification in departure")
 		}
 		for _, group := range wp.ActionGroups() {
-			// @a altitudes are MSL, so one at or below the field elevation
-			// is met the moment the aircraft starts rolling and the action
-			// group ends immediately. Almost always a missing factor of 100.
+			// @a altitudes are MSL, so one at or below the field elevation is
+			// met the moment the aircraft starts rolling. Almost always a
+			// missing factor of 100.
 			if group.Until.Type == WaypointActionAltitude && group.Until.Altitude <= elevation {
-				e.ErrorString("/@a%d is at or below the %d' field elevation, so it takes effect immediately. Is it supposed to be /@a%d?",
-					group.Until.Altitude, elevation, group.Until.Altitude*100)
+				sign := util.Select(group.Until.AtOrAbove, "+", "-")
+				e.ErrorString("/@a%d%s is at or below the %d' field elevation, so it takes effect immediately. Is it supposed to be /@a%d%s?",
+					group.Until.Altitude, sign, elevation, group.Until.Altitude*100, sign)
 			}
 		}
 		if war := wp.AltitudeRestriction(); war != nil {
@@ -1236,19 +1238,34 @@ func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
 }
 
 // parseWaypointActionTermination parses the condition of a trigger, after
-// its @: an altitude (a4277), a course to the next fix (crs220), a navaid's
-// radial (HLN-R322), or a DME distance from a navaid (ILSQ-D2.3).
+// its @: an altitude (a4277+ at or above, a4277- at or below), a course to
+// the next fix (crs220), a navaid's radial (HLN-R322), or a DME distance
+// from a navaid (ILSQ-D2.3+ at or beyond, ILSQ-D2.3- within).
 func parseWaypointActionTermination(f string) (WaypointActionTermination, error) {
+	// cutSign splits off the trailing + or - that says which side of the
+	// value the trigger is met on.
+	cutSign := func(s string) (value string, atOrAbove, ok bool) {
+		if value, ok = strings.CutSuffix(s, "+"); ok {
+			return value, true, true
+		}
+		value, ok = strings.CutSuffix(s, "-")
+		return value, false, ok
+	}
+
 	switch {
-	case len(f) > 1 && f[0] == 'a' && allDigits(f[1:]):
-		alt, err := strconv.Atoi(f[1:])
+	case len(f) > 1 && f[0] == 'a':
+		alt, atOrAbove, ok := cutSign(f[1:])
+		if !ok || !allDigits(alt) {
+			return WaypointActionTermination{}, fmt.Errorf("%s: expected an altitude followed by + (at or above) or - (at or below)", f)
+		}
+		a, err := strconv.Atoi(alt)
 		if err != nil {
 			return WaypointActionTermination{}, fmt.Errorf("%s: invalid altitude: %w", f, err)
 		}
-		if alt > 60000 {
+		if a > 60000 {
 			return WaypointActionTermination{}, fmt.Errorf("%s: trigger altitude must be between 0 and 60000 feet", f)
 		}
-		return WaypointActionTermination{Type: WaypointActionAltitude, Altitude: alt}, nil
+		return WaypointActionTermination{Type: WaypointActionAltitude, Altitude: a, AtOrAbove: atOrAbove}, nil
 
 	case strings.HasPrefix(f, "crs"):
 		if !allDigits(f[3:]) || len(f) == 3 {
@@ -1269,9 +1286,13 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 
 	case strings.Contains(f, "-D"):
 		i := strings.LastIndex(f, "-D")
-		fix, dist := f[:i], f[i+2:]
+		fix, spec := f[:i], f[i+2:]
 		if fix == "" {
 			return WaypointActionTermination{}, fmt.Errorf("%s: expected a navaid before -D", f)
+		}
+		dist, atOrAbove, ok := cutSign(spec)
+		if !ok {
+			return WaypointActionTermination{}, fmt.Errorf("%s: expected a DME distance followed by + (at or beyond) or - (within)", f)
 		}
 		d, err := strconv.ParseFloat(dist, 32)
 		if err != nil {
@@ -1280,11 +1301,11 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 		if d <= 0 {
 			return WaypointActionTermination{}, fmt.Errorf("%s: DME distance must be positive", f)
 		}
-		return WaypointActionTermination{Type: WaypointActionDME, DMEDistance: float32(d), DMEFix: fix}, nil
+		return WaypointActionTermination{Type: WaypointActionDME, DMEDistance: float32(d), DMEFix: fix, AtOrAbove: atOrAbove}, nil
 
 	default:
-		return WaypointActionTermination{}, fmt.Errorf("%s: unknown trigger; expected an altitude (a4277), "+
-			"a course (crs220), a radial (HLN-R322), or a DME distance (ILSQ-D2.3)", f)
+		return WaypointActionTermination{}, fmt.Errorf("%s: unknown trigger; expected an altitude (a4277+), "+
+			"a course (crs220), a radial (HLN-R322), or a DME distance (ILSQ-D2.3+)", f)
 	}
 }
 

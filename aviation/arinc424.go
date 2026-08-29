@@ -1154,7 +1154,7 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 			wp, h := legStart(i)
 			addGroup(wp, WaypointActionGroup{
 				Actions: WaypointActions{Heading: h},
-				Until:   WaypointActionTermination{Type: WaypointActionAltitude, Altitude: parseAltitude(rec.alt0)},
+				Until:   WaypointActionTermination{Type: WaypointActionAltitude, Altitude: parseAltitude(rec.alt0), AtOrAbove: true},
 			})
 			noteLegSpeed(rec)
 
@@ -1173,6 +1173,7 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 					Type:        WaypointActionDME,
 					DMEFix:      dmeFix,
 					DMEDistance: float32(parseInt(rec.routeDistance)) / 10,
+					AtOrAbove:   true,
 				},
 			})
 			noteLegSpeed(rec)
