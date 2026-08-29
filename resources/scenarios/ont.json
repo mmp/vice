@@ -671,19 +671,19 @@
             "sid": "JADKO1",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSBD-6/h057@a2100/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA JADKO ARRDY/a13000+ PEELR MTBAL"
+            "waypoints": "KSBD-6/h057/@a2100/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA JADKO ARRDY/a13000+ PEELR MTBAL"
           },
           "SXC": {
             "cleared_altitude": 7000,
             "sid": "JADKO1",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSBD-6/h057@a2100/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC"
+            "waypoints": "KSBD-6/h057/@a2100/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC"
           },
           "POM": {
             "assigned_altitude": 6000,
             "sid": "Obstacle",
-            "waypoints": "KSBD-24/h057@a1500/rd PDZ POM"
+            "waypoints": "KSBD-24/h057/@a1500/rd PDZ POM"
           }
         },
         "24": {
@@ -704,7 +704,7 @@
           "POM": {
             "assigned_altitude": 4300,
             "sid": "Obstacle",
-            "waypoints": "KSBD-6/h237@a1500/ld PDZ POM"
+            "waypoints": "KSBD-6/h237/@a1500/ld PDZ POM"
           }
         }
       },

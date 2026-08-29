@@ -199,17 +199,17 @@
           "COATE": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 COATE/ho35"
+            "waypoints": "KEWR-4L/h219/@a500/l190/@ILSQ-D2.3/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 COATE/ho35"
           },
           "NEION": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 NEION/ho35"
+            "waypoints": "KEWR-4L/h219/@a500/l190/@ILSQ-D2.3/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 NEION/ho35"
           },
           "GAYEL": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 GAYEL/ho35"
+            "waypoints": "KEWR-4L/h219/@a500/l190/@ILSQ-D2.3/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 GAYEL/ho35"
           }
         }
       },

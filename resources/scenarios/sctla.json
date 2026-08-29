@@ -223,19 +223,19 @@
           "RZS.V": {
             "assigned_altitude": 13000,
             "sid": "VTU8",
-            "waypoints": "KLAX-7L N033.54.54.195,W118.38.06.000/h251@d25.0IOSS/rd RZS",
+            "waypoints": "KLAX-7L N033.54.54.195,W118.38.06.000/h251/@IOSS-D25.0/rd RZS",
             "departure_controller": "6N"
           },
           "LAS": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
-            "waypoints": "DOCKR/a3000-/h236@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY BLAZN",
+            "waypoints": "DOCKR/a3000-/h236/@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY BLAZN",
             "departure_controller": "6S"
           },
           "MISEN": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
-            "waypoints": "DOCKR/a3000-/h236@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
+            "waypoints": "DOCKR/a3000-/h236/@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
             "departure_controller": "6S"
           },
           "CLEEE,CNERY": {
@@ -267,13 +267,13 @@
           "LAS": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
-            "waypoints": "HIIPR/a3000-/h236@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY BLAZN",
+            "waypoints": "HIIPR/a3000-/h236/@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY BLAZN",
             "departure_controller": "6S"
           },
           "MISEN": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
-            "waypoints": "HIIPR/a3000-/h236@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
+            "waypoints": "HIIPR/a3000-/h236/@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
             "departure_controller": "6S"
           },
           "SCTRR": {
@@ -347,13 +347,13 @@
           "LAS": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
-            "waypoints": "DLREY/a3000-/h251@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
+            "waypoints": "DLREY/a3000-/h251/@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
             "departure_controller": "6S"
           },
           "MISEN": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
-            "waypoints": "DLREY/a3000-/h251@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
+            "waypoints": "DLREY/a3000-/h251/@a5000/ld KLIPR/a10000+/hoC18 KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
             "departure_controller": "6S"
           },
           "SCTRR": {

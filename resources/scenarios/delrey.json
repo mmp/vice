@@ -2754,41 +2754,41 @@
           "VTU": {
             "assigned_altitude": 3000,
             "sid": "RV VTU",
-            "waypoints": "KLGB-12/h301@a400/l270 VTU"
+            "waypoints": "KLGB-12/h301/@a400/l270 VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "sid": "RV SXC",
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/l180/ho6X SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "KLGB-12/h301/@a1500/l180/ho6X SXC GOATZ MALIT ROSIN FICKY"
           },
           "AVRRY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/l180/c070/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoints": "KLGB-12/h301/@a1500/l180/c070/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
           },
           "CNERY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/l180/c070/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoints": "KLGB-12/h301/@a1500/l180/c070/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
           },
           "TCATE": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/l180/c070/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoints": "KLGB-12/h301/@a1500/l180/c070/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/l180/c070/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-12/h301/@a1500/l180/c070/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         },
         "12": {
@@ -2809,40 +2809,40 @@
           "VTU": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-12/h301@a400/ho4R/h200@a3000/ld/ho6K SXC VTU"
+            "waypoints": "KLGB-12/h301/@a400/ho4R/h200/@a3000/ld/ho6K SXC VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-12/h301@a400/ho4R/h200@a3000/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "KLGB-12/h301/@a400/ho4R/h200/@a3000/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
           },
           "AVRRY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121@a600/r190/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoints": "KLGB-30/h121/@a600/r190/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
           },
           "CNERY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121@a600/r190/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoints": "KLGB-30/h121/@a600/r190/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
           },
           "TCATE": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/l180/c070/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoints": "KLGB-12/h301/@a1500/l180/c070/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/l180/c070/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-12/h301/@a1500/l180/c070/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         },
         "12.E": {
@@ -2863,40 +2863,40 @@
           "VTU": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-12/h301@a400/ho4R/h200@a3000/ld/ho6K SXC VTU"
+            "waypoints": "KLGB-12/h301/@a400/ho4R/h200/@a3000/ld/ho6K SXC VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-12/h301@a400/ho4R/h200@a3000/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "KLGB-12/h301/@a400/ho4R/h200/@a3000/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
           },
           "AVRRY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121@a600/r200/c080/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoints": "KLGB-30/h121/@a600/r200/c080/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
           },
           "CNERY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121@a600/r200/c080/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoints": "KLGB-30/h121/@a600/r200/c080/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
           },
           "TCATE": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/r200/c080/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoints": "KLGB-12/h301/@a1500/r200/c080/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301@a1500/r200/c080/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-12/h301/@a1500/r200/c080/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         }
       },

@@ -1402,7 +1402,7 @@
           "IPL": {
             "cleared_altitude": 8000,
             "sid": "BRDR7",
-            "waypoints": "N032.44.07.581,W117.11.52.161/h275@a400/l180 N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY BROWS IPL"
+            "waypoints": "N032.44.07.581,W117.11.52.161/h275/@a400/l180 N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY BROWS IPL"
           },
           "OCN": {
             "assigned_altitude": 5000,
@@ -1576,7 +1576,7 @@
           "OCN.E": {
             "cleared_altitude": 5000,
             "sid": "Obstacle",
-            "waypoints": "KSAN-27/h095@a900/ld MZB/h290 OCN"
+            "waypoints": "KSAN-27/h095/@a900/ld MZB/h290 OCN"
           }
         }
       },

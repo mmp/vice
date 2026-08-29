@@ -170,13 +170,13 @@ func (wag WaypointActionGroup) Encoded() string {
 	s := wag.Actions.Encoded()
 	switch wag.Until.Type {
 	case WaypointActionAltitude:
-		s += fmt.Sprintf("@a%d", wag.Until.Altitude)
+		s += fmt.Sprintf("/@a%d", wag.Until.Altitude)
 	case WaypointActionDME:
-		s += fmt.Sprintf("@d%.1f%s", wag.Until.DMEDistance, wag.Until.DMEFix)
+		s += fmt.Sprintf("/@%s-D%.1f", wag.Until.DMEFix, wag.Until.DMEDistance)
 	case WaypointActionCourse:
-		s += fmt.Sprintf("@t%d", wag.Until.Course)
+		s += fmt.Sprintf("/@crs%03d", wag.Until.Course)
 	case WaypointActionRadial:
-		s += fmt.Sprintf("@r%03d%s", wag.Until.Radial, wag.Until.RadialFix)
+		s += fmt.Sprintf("/@%s-R%03d", wag.Until.RadialFix, wag.Until.Radial)
 	}
 	return s
 }
@@ -193,7 +193,10 @@ func (wha WaypointHeadingAction) Encoded() string {
 	case TurnRight:
 		prefix = util.Select(wha.Track, "rt", "r")
 	}
-	return fmt.Sprintf("/%s%03d%s", prefix, wha.Heading, wha.Fix)
+	if wha.Fix != "" {
+		return fmt.Sprintf("/%s%s-R%03d", prefix, wha.Fix, wha.Heading)
+	}
+	return fmt.Sprintf("/%s%03d", prefix, wha.Heading)
 }
 
 type WaypointActionEvent struct {
@@ -753,7 +756,7 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, elevation int, contr
 			// is met the moment the aircraft starts rolling and the action
 			// group ends immediately. Almost always a missing factor of 100.
 			if group.Until.Type == WaypointActionAltitude && group.Until.Altitude <= elevation {
-				e.ErrorString("@a%d is at or below the %d' field elevation, so it takes effect immediately. Is it supposed to be @a%d?",
+				e.ErrorString("/@a%d is at or below the %d' field elevation, so it takes effect immediately. Is it supposed to be /@a%d?",
 					group.Until.Altitude, elevation, group.Until.Altitude*100)
 			}
 		}
@@ -1115,15 +1118,22 @@ func parseWaypointHeadingAction(f string) (WaypointHeadingAction, bool, error) {
 		return WaypointHeadingAction{}, false, nil
 	}
 
-	// A fix after the heading names the radial to track: /t336PXR.
-	hdg, fix := splitLeadingDigits(hdg)
-	if hdg == "" {
-		return WaypointHeadingAction{}, false, nil
+	// A navaid's radial in place of the heading, /tPXR-R336, is tracked
+	// away from the navaid.
+	if !allDigits(hdg) {
+		if !strings.Contains(hdg, "-R") {
+			return WaypointHeadingAction{}, false, nil
+		}
+		if !headingAction.Track {
+			return WaypointHeadingAction{}, true, fmt.Errorf("%s: a radial can only be tracked (/t, /lt, /rt), not flown as a heading", f)
+		}
+		fix, radial, err := parseRadial(hdg)
+		if err != nil {
+			return WaypointHeadingAction{}, true, err
+		}
+		headingAction.Fix, headingAction.Heading = fix, radial
+		return headingAction, true, nil
 	}
-	if fix != "" && !headingAction.Track {
-		return WaypointHeadingAction{}, true, fmt.Errorf("%s: a radial can only be tracked (/t, /lt, /rt), not flown as a heading", f)
-	}
-	headingAction.Fix = fix
 
 	heading, err := parseCourse(hdg)
 	if err != nil {
@@ -1131,15 +1141,6 @@ func parseWaypointHeadingAction(f string) (WaypointHeadingAction, bool, error) {
 	}
 	headingAction.Heading = heading
 	return headingAction, true, nil
-}
-
-// splitLeadingDigits splits s into its leading run of digits and the rest.
-func splitLeadingDigits(s string) (digits, rest string) {
-	n := 0
-	for n < len(s) && s[n] >= '0' && s[n] <= '9' {
-		n++
-	}
-	return s[:n], s[n:]
 }
 
 func parseWaypointActionModifier(f string) (WaypointActions, bool, error) {
@@ -1234,75 +1235,74 @@ func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
 	return nil
 }
 
+// parseWaypointActionTermination parses the condition of a trigger, after
+// its @: an altitude (a4277), a course to the next fix (crs220), a navaid's
+// radial (HLN-R322), or a DME distance from a navaid (ILSQ-D2.3).
 func parseWaypointActionTermination(f string) (WaypointActionTermination, error) {
-	if len(f) < 2 {
-		return WaypointActionTermination{}, fmt.Errorf("%s: invalid waypoint action termination", f)
-	}
-
-	switch f[0] {
-	case 'a':
+	switch {
+	case len(f) > 1 && f[0] == 'a' && allDigits(f[1:]):
 		alt, err := strconv.Atoi(f[1:])
 		if err != nil {
-			return WaypointActionTermination{}, fmt.Errorf("%s: error parsing altitude after @a: %v", f[1:], err)
+			return WaypointActionTermination{}, fmt.Errorf("%s: invalid altitude: %w", f, err)
 		}
-		if alt < 0 || alt > 60000 {
-			return WaypointActionTermination{}, fmt.Errorf("%s: waypoint action altitude must be between 0 and 60000 feet", f)
+		if alt > 60000 {
+			return WaypointActionTermination{}, fmt.Errorf("%s: trigger altitude must be between 0 and 60000 feet", f)
 		}
 		return WaypointActionTermination{Type: WaypointActionAltitude, Altitude: alt}, nil
 
-	case 'd':
-		spec := f[1:]
-		rend := 0
-		for rend < len(spec) &&
-			((spec[rend] >= '0' && spec[rend] <= '9') || spec[rend] == '.') {
-			rend++
+	case strings.HasPrefix(f, "crs"):
+		if !allDigits(f[3:]) || len(f) == 3 {
+			return WaypointActionTermination{}, fmt.Errorf("%s: expected a course after crs", f)
 		}
-		if rend == 0 {
-			return WaypointActionTermination{}, fmt.Errorf("%s: DME distance not found after @d", f)
-		}
-		if rend == len(spec) {
-			return WaypointActionTermination{}, fmt.Errorf("%s: DME fix not found after @d distance", f)
-		}
-		d, err := strconv.ParseFloat(spec[:rend], 32)
+		course, err := parseCourse(f[3:])
 		if err != nil {
-			return WaypointActionTermination{}, fmt.Errorf("%s: invalid @d distance: %w", f, err)
-		}
-		if d <= 0 {
-			return WaypointActionTermination{}, fmt.Errorf("%s: @d distance must be positive", f)
-		}
-		return WaypointActionTermination{
-			Type:        WaypointActionDME,
-			DMEDistance: float32(d),
-			DMEFix:      spec[rend:],
-		}, nil
-
-	case 't':
-		if !allDigits(f[1:]) {
-			return WaypointActionTermination{}, fmt.Errorf("%s: expected a course after @t", f)
-		}
-		course, err := parseCourse(f[1:])
-		if err != nil {
-			return WaypointActionTermination{}, fmt.Errorf("%s: invalid course after @t: %w", f, err)
+			return WaypointActionTermination{}, fmt.Errorf("%s: %w", f, err)
 		}
 		return WaypointActionTermination{Type: WaypointActionCourse, Course: course}, nil
 
-	case 'r':
-		digits, fix := splitLeadingDigits(f[1:])
-		if digits == "" {
-			return WaypointActionTermination{}, fmt.Errorf("%s: expected a radial after @r", f)
-		}
-		if fix == "" {
-			return WaypointActionTermination{}, fmt.Errorf("%s: expected a navaid after the @r radial", f)
-		}
-		radial, err := parseCourse(digits)
+	case strings.Contains(f, "-R"):
+		fix, radial, err := parseRadial(f)
 		if err != nil {
-			return WaypointActionTermination{}, fmt.Errorf("%s: invalid radial after @r: %w", f, err)
+			return WaypointActionTermination{}, err
 		}
 		return WaypointActionTermination{Type: WaypointActionRadial, Radial: radial, RadialFix: fix}, nil
 
+	case strings.Contains(f, "-D"):
+		i := strings.LastIndex(f, "-D")
+		fix, dist := f[:i], f[i+2:]
+		if fix == "" {
+			return WaypointActionTermination{}, fmt.Errorf("%s: expected a navaid before -D", f)
+		}
+		d, err := strconv.ParseFloat(dist, 32)
+		if err != nil {
+			return WaypointActionTermination{}, fmt.Errorf("%s: invalid DME distance %q", f, dist)
+		}
+		if d <= 0 {
+			return WaypointActionTermination{}, fmt.Errorf("%s: DME distance must be positive", f)
+		}
+		return WaypointActionTermination{Type: WaypointActionDME, DMEDistance: float32(d), DMEFix: fix}, nil
+
 	default:
-		return WaypointActionTermination{}, fmt.Errorf("%s: unknown waypoint action termination", f)
+		return WaypointActionTermination{}, fmt.Errorf("%s: unknown trigger; expected an altitude (a4277), "+
+			"a course (crs220), a radial (HLN-R322), or a DME distance (ILSQ-D2.3)", f)
 	}
+}
+
+// parseRadial parses a navaid's radial written as a chart does, HLN-R322.
+func parseRadial(s string) (fix string, radial int16, err error) {
+	i := strings.LastIndex(s, "-R")
+	if i <= 0 {
+		return "", 0, fmt.Errorf("%s: expected a radial as NAVAID-R<radial>", s)
+	}
+	fix, digits := s[:i], s[i+2:]
+	if digits == "" || !allDigits(digits) {
+		return "", 0, fmt.Errorf("%s: expected a radial after %s-R", s, fix)
+	}
+	radial, err = parseCourse(digits)
+	if err != nil {
+		return "", 0, err
+	}
+	return fix, radial, nil
 }
 
 func parseWaypoints(str string) (WaypointArray, error) {
@@ -1371,8 +1371,23 @@ func parseWaypoints(str string) (WaypointArray, error) {
 				return nil, fmt.Errorf("no command found after / in %q", field)
 			}
 
-			modifier, termination, hasTermination := strings.Cut(f, "@")
-			actions, ok, err := parseWaypointActionModifier(modifier)
+			// A trigger ends the group of the actions before it; the
+			// actions after it start when it is met.
+			if cond, isTrigger := strings.CutPrefix(f, "@"); isTrigger {
+				groups := wp.ActionGroups()
+				if n := len(groups); n == 0 || groups[n-1].Until.Type != WaypointActionNoTermination {
+					return nil, fmt.Errorf("%s: trigger /%s must follow an action; use /ph to fly present heading",
+						field, f)
+				}
+				until, err := parseWaypointActionTermination(cond)
+				if err != nil {
+					return nil, fmt.Errorf("%s: invalid trigger /%s: %w", field, f, err)
+				}
+				groups[len(groups)-1].Until = until
+				continue
+			}
+
+			actions, ok, err := parseWaypointActionModifier(f)
 			if err != nil {
 				return nil, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
 			}
@@ -1380,18 +1395,7 @@ func parseWaypoints(str string) (WaypointArray, error) {
 				if err := wp.MergeActions(actions); err != nil {
 					return nil, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
 				}
-				if hasTermination {
-					until, err := parseWaypointActionTermination(termination)
-					if err != nil {
-						return nil, fmt.Errorf("%s: invalid waypoint action group /%s: %w", field, f, err)
-					}
-					groups := wp.Extra.ActionGroups
-					groups[len(groups)-1].Until = until
-				}
 				continue
-			}
-			if hasTermination {
-				return nil, fmt.Errorf("%s: invalid waypoint action group /%s: @ condition can only be applied to a waypoint action", field, f)
 			}
 
 			if f == "intercept" {
@@ -1573,13 +1577,13 @@ func parseWaypoints(str string) (WaypointArray, error) {
 			return nil, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
 		}
 
-		// @t ends with the aircraft going direct to the next fix, so a
+		// /@crs ends with the aircraft going direct to the next fix, so a
 		// following action group would immediately preempt it.
 		if groups := wp.ActionGroups(); len(groups) > 1 &&
 			slices.ContainsFunc(groups[:len(groups)-1], func(g WaypointActionGroup) bool {
 				return g.Until.Type == WaypointActionCourse
 			}) {
-			return nil, fmt.Errorf("%s: @t must terminate the last action group at a fix", wp.Fix)
+			return nil, fmt.Errorf("%s: /@crs must be the last trigger at a fix", wp.Fix)
 		}
 
 		waypoints = append(waypoints, wp)
@@ -1592,7 +1596,7 @@ func parseWaypoints(str string) (WaypointArray, error) {
 	if n := len(waypoints); n > 0 {
 		if groups := waypoints[n-1].ActionGroups(); len(groups) > 0 &&
 			groups[len(groups)-1].Until.Type == WaypointActionCourse {
-			return nil, fmt.Errorf("%s: @t on the last waypoint has no following fix to give a course to",
+			return nil, fmt.Errorf("%s: /@crs on the last waypoint has no following fix to give a course to",
 				waypoints[n-1].Fix)
 		}
 	}

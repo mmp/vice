@@ -1265,12 +1265,12 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220"
+            "waypoints": "KEWR-4L/h219/@a500/l190/@ILSQ-D2.3/r220"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 2500,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L/h219@a500/l190@d2.3ILSQ/r220 ELVAE NECCK/hoC68"
+            "waypoints": "KEWR-4L/h219/@a500/l190/@ILSQ-D2.3/r220 ELVAE NECCK/hoC68"
           }
         },
         "22R.Background": {
@@ -1327,12 +1327,12 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
-            "waypoints": "KEWR-22R/h039@a500/r055@d4.0IEZA/l290"
+            "waypoints": "KEWR-22R/h039/@a500/r055/@IEZA-D4.0/l290"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
-            "waypoints": "KEWR-22R/h039@a500/r055@d4.0IEZA/l290 ELVAE NECCK/hoC68"
+            "waypoints": "KEWR-22R/h039/@a500/r055/@IEZA-D4.0/l290 ELVAE NECCK/hoC68"
           }
         },
         "4L.Background": {
@@ -4313,12 +4313,12 @@
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 5000,
             "sid": "SKORR6.RNGRR",
-            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- METSS/a2500+/s250- RNGRR/h225"
+            "waypoints": "KJFK-13R/h314/@a500 SKORR/a2500+/s210- METSS/a2500+/s250- RNGRR/h225"
           },
           "BAYYS,BDR,BETTE,COATE,GAYEL,GREKI,HAAYS,HAPIE,MERIT,NEION,SHIPP,WAVEY": {
             "cleared_altitude": 5000,
             "sid": "SKORR6.YNKEE",
-            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/h187"
+            "waypoints": "KJFK-13R/h314/@a500 SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/h187"
           },
           "DEEZZ": {
             "cleared_altitude": 5000,
@@ -4415,37 +4415,37 @@
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/ho5S@a2500"
+            "waypoints": "KJFK-4L/ho5S/@a2500"
           },
           "SHIPP,WAVEY": {
             "departure_controller": "2J",
             "cleared_altitude": 12000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/hoC56@a2000/l110"
+            "waypoints": "KJFK-4L/hoC56/@a2000/l110"
           },
           "BAYYS,GREKI,MERIT,BDR": {
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/ho5E@a2500 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
+            "waypoints": "KJFK-4L/ho5E/@a2500 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "departure_controller": "2J",
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/ho5E@a2500 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
+            "waypoints": "KJFK-4L/ho5E/@a2500 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           },
           "BETTE,HAPIE": {
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L/hoB17@a3000/l110"
+            "waypoints": "KJFK-4L/hoB17/@a3000/l110"
           },
           "DEEZZ": {
             "departure_controller": "2J",
             "cleared_altitude": 17000,
             "sid": "DEEZZ6",
-            "waypoints": "KJFK-4L/ho5E@a2500  N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
+            "waypoints": "KJFK-4L/ho5E/@a2500  N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           }
         },
         "22R.AutoEast": {
@@ -4593,49 +4593,49 @@
           "ARD": {
             "cleared_altitude": 9000,
             "sid": "JFK5",
-            "waypoints": "KJFK-22R/ho5S/h099@a3000",
+            "waypoints": "KJFK-22R/ho5S/h099/@a3000",
             "departure_controller": "2J"
           },
           "SHIPP,WAVEY": {
             "departure_controller": "2J",
             "cleared_altitude": 12000,
             "sid": "JFK5",
-            "waypoints": "KJFK-22R/hoC56/h099@a3000"
+            "waypoints": "KJFK-22R/hoC56/h099/@a3000"
           },
           "BETTE,HAPIE": {
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-31L/hoB17/h155@a3000"
+            "waypoints": "KJFK-31L/hoB17/h155/@a3000"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-22R/ho5E/h099@a3000 N040.51.06.009,W073.21.43.088/tc/h040",
+            "waypoints": "KJFK-22R/ho5E/h099/@a3000 N040.51.06.009,W073.21.43.088/tc/h040",
             "departure_controller": "2J"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-22R/ho5E/h099@a3000 N040.49.21.282,W073.27.56.486/tc/h360",
+            "waypoints": "KJFK-22R/ho5E/h099/@a3000 N040.49.21.282,W073.27.56.486/tc/h360",
             "departure_controller": "2J"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
-            "waypoints": "KJFK-22R/ho5E/h099@a3000 N040.49.21.282,W073.27.56.486/tc/h360",
+            "waypoints": "KJFK-22R/ho5E/h099/@a3000 N040.49.21.282,W073.27.56.486/tc/h360",
             "departure_controller": "2J"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
-            "waypoints": "KJFK-22R/ho5S/h099@a3000",
+            "waypoints": "KJFK-22R/ho5S/h099/@a3000",
             "departure_controller": "2J"
           },
           "RBV": {
             "cleared_altitude": 9000,
             "sid": "JFK5",
-            "waypoints": "KJFK-22R/ho5S/h099@a3000",
+            "waypoints": "KJFK-22R/ho5S/h099/@a3000",
             "departure_controller": "2J"
           }
         },
@@ -4644,66 +4644,66 @@
             "departure_controller": "2J",
             "cleared_altitude": 9000,
             "sid": "JFK5",
-            "waypoints": "KJFK-31L/ho5S/h185@a3000"
+            "waypoints": "KJFK-31L/ho5S/h185/@a3000"
           },
           "SHIPP,WAVEY": {
             "departure_controller": "2J",
             "cleared_altitude": 12000,
             "sid": "JFK5",
-            "waypoints": "KJFK-31L/hoC56/h170@a3000"
+            "waypoints": "KJFK-31L/hoC56/h170/@a3000"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "departure_controller": "2J",
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-31L/ho5E/h110@a3000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
+            "waypoints": "KJFK-31L/ho5E/h110/@a3000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           },
           "BAYYS,BDR,GREKI,MERIT": {
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-31L/ho5E/h110@a3000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
+            "waypoints": "KJFK-31L/ho5E/h110/@a3000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           },
           "BETTE,HAPIE": {
             "departure_controller": "2J",
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-31L/hoB17/h155@a3000"
+            "waypoints": "KJFK-31L/hoB17/h155/@a3000"
           },
           "DEEZZ": {
             "departure_controller": "2J",
             "cleared_altitude": 17000,
             "sid": "DEEZZ6",
-            "waypoints": "KJFK-31L/ho5E@a2000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
+            "waypoints": "KJFK-31L/ho5E/@a2000 N040.46.52.280,W073.26.51.199/radius2 N040.55.55.622,W073.23.42.949/radius2"
           }
         },
         "31L.Background": {
           "BAYYS,GREKI,MERIT": {
-            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.53.02.958,W073.20.29.617/tc",
+            "waypoints": "KJFK-13R/h314/@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.53.02.958,W073.20.29.617/tc",
             "cleared_altitude": 11000,
             "sid": "JFK5",
             "departure_controller": "2J"
           },
           "COATE,GAYEL,HAAYS,NEION": {
-            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.42.13.502,W073.29.27.288 N040.49.23.822,W073.28.30.049/h010/tc",
+            "waypoints": "KJFK-13R/h314/@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.42.13.502,W073.29.27.288 N040.49.23.822,W073.28.30.049/h010/tc",
             "cleared_altitude": 17000,
             "sid": "JFK5",
             "departure_controller": "2J"
           },
           "DEEZZ": {
-            "waypoints": "KJFK-13R/h314@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.42.13.502,W073.29.27.288 N040.49.23.822,W073.28.30.049/h010/tc",
+            "waypoints": "KJFK-13R/h314/@a500 SKORR/a2500+/s210- CESID/a2500+/s250- N040.31.39.934,W073.38.45.668/a11000/ho5E N040.42.13.502,W073.29.27.288 N040.49.23.822,W073.28.30.049/h010/tc",
             "cleared_altitude": 17000,
             "sid": "DEEZZ6",
             "departure_controller": "2J"
           },
           "DIXIE,WHITE": {
-            "waypoints": "KJFK-13R/h314@a500 SKORR/ho5S/a2500+/s210- METSS/a2500+/s250-/tc RNGRR",
+            "waypoints": "KJFK-13R/h314/@a500 SKORR/ho5S/a2500+/s210- METSS/a2500+/s250-/tc RNGRR",
             "cleared_altitude": 7000,
             "sid": "JFK5",
             "departure_controller": "2J"
           },
           "RBV": {
-            "waypoints": "KJFK-13R/h314@a500 SKORR/ho5S/a2500+/s210- METSS/a2500+/s250-/tc RNGRR",
+            "waypoints": "KJFK-13R/h314/@a500 SKORR/ho5S/a2500+/s210- METSS/a2500+/s250-/tc RNGRR",
             "cleared_altitude": 11000,
             "sid": "JFK5",
             "departure_controller": "2J"
@@ -5211,12 +5211,12 @@
           "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD,T43": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
-            "waypoints": "KTEB-1/h195@a900/r280"
+            "waypoints": "KTEB-1/h195/@a900/r280"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
-            "waypoints": "KTEB-1/h195@a900/r280 ELVAE NECCK"
+            "waypoints": "KTEB-1/h195/@a900/r280 ELVAE NECCK"
           }
         },
         "24": {
@@ -5227,19 +5227,19 @@
           "DIXIE,WHITE": {
             "cleared_altitude": 2000,
             "sid": "WENTZ1",
-            "waypoints": "KTEB-6/h240@a520 DAVIM WENTZ/a1500 RUUDY/h280 ELVAE NECCK"
+            "waypoints": "KTEB-6/h240/@a520 DAVIM WENTZ/a1500 RUUDY/h280 ELVAE NECCK"
           }
         },
         "1": {
           "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD,T43": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
-            "waypoints": "KTEB-19/h040@d2.3TEB/l280"
+            "waypoints": "KTEB-19/h040/@TEB-D2.3/l280"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 2000,
             "sid": "TEB4",
-            "waypoints": "KTEB-19/h040@d2.3TEB/l280 ELVAE NECCK"
+            "waypoints": "KTEB-19/h040/@TEB-D2.3/l280 ELVAE NECCK"
           }
         },
         "1.Background": {

@@ -630,7 +630,7 @@ func (nav *Nav) actionGroupHeading(fix string, groups []av.WaypointActionGroup, 
 
 // makeActionGroupManeuvers translates a waypoint's action groups into the
 // maneuvers that fly them. next is the following fix on the route, which an
-// @t course termination joins; it is nil if there is none.
+// /@crs course termination joins; it is nil if there is none.
 func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionGroup,
 	next *av.Waypoint) []LateralManeuver {
 	maneuvers := make([]LateralManeuver, 0, len(groups))
@@ -668,7 +668,7 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 			}
 		case av.WaypointActionCourse:
 			if next == nil {
-				// parseWaypoints rejects @t on the last waypoint, but the
+				// parseWaypoints rejects /@crs on the last waypoint, but the
 				// route may since have been truncated; hold the heading
 				// rather than intercepting a course through 0°N 0°E.
 				m.Until = ManeuverComplete{Type: UntilControllerIntervention}

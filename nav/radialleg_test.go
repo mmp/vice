@@ -12,7 +12,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// Tests for the SID legs that end at a radial (@r) or track one
+// Tests for the SID legs that end at a radial (/@NAVAID-R) or track one
 // (/t<course><navaid>).
 
 // radialLegFlight sets up an arrival leaving SKORR on the route that the
@@ -92,7 +92,7 @@ func TestRadialTermination(t *testing.T) {
 	f := radialLegFlight(t, func(bearing math.MagneticHeading) string {
 		radial = math.NormalizeHeading(bearing + 20)
 		heading = math.NormalizeHeading(bearing + 65) // converges on the radial at 45 degrees
-		return fmt.Sprintf("SKORR/h%d@r%dWAVEY/t%dWAVEY", int(heading), int(radial), int(radial))
+		return fmt.Sprintf("SKORR/h%d/@WAVEY-R%d/tWAVEY-R%d", int(heading), int(radial), int(radial))
 	})
 
 	crossTick := -1
@@ -131,7 +131,7 @@ func TestRadialTerminationIgnoresReciprocal(t *testing.T) {
 		// named is that line's other half.
 		radial := math.NormalizeHeading(bearing + 200)
 		heading := math.NormalizeHeading(bearing + 65)
-		return fmt.Sprintf("SKORR/h%d@r%dWAVEY/t%dWAVEY", int(heading), int(radial), int(radial))
+		return fmt.Sprintf("SKORR/h%d/@WAVEY-R%d/tWAVEY-R%d", int(heading), int(radial), int(radial))
 	})
 	f.AfterTicks(1200, func(f *FlightTest) {
 		if len(f.nav.Heading.Maneuvers) != 2 {
@@ -149,7 +149,7 @@ func radialTrackFlight(t *testing.T) (f *FlightTest, radial math.MagneticHeading
 	t.Helper()
 	f = radialLegFlight(t, func(bearing math.MagneticHeading) string {
 		radial = math.NormalizeHeading(bearing + 20)
-		return fmt.Sprintf("SKORR/t%dWAVEY", int(radial))
+		return fmt.Sprintf("SKORR/tWAVEY-R%d", int(radial))
 	})
 	offset = math.Abs(courseOffset(f, "WAVEY", radial))
 	if offset < 3 {
@@ -196,7 +196,7 @@ func TestRadialTrackFromBehindNavaid(t *testing.T) {
 	var radial math.MagneticHeading
 	f := radialLegFlight(t, func(bearing math.MagneticHeading) string {
 		radial = math.NormalizeHeading(bearing + 210)
-		return fmt.Sprintf("SKORR/t%dWAVEY", int(radial))
+		return fmt.Sprintf("SKORR/tWAVEY-R%d", int(radial))
 	})
 
 	closest := distanceToFix(f, "WAVEY")

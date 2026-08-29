@@ -50,7 +50,7 @@ func newSkorrWaveyFlight(t *testing.T, waypoints string) *FlightTest {
 }
 
 // courseInterceptFlight sets up an aircraft leaving SKORR on a heading 20
-// degrees to the left of the direct course to WAVEY, with an @t termination
+// degrees to the left of the direct course to WAVEY, with a /@crs trigger
 // giving a course to WAVEY 20 degrees to the right of it. The aircraft
 // therefore starts well off the course and converges on it at 40 degrees.
 func courseInterceptFlight(t *testing.T) (f *FlightTest, heading, course math.MagneticHeading) {
@@ -59,7 +59,7 @@ func courseInterceptFlight(t *testing.T) (f *FlightTest, heading, course math.Ma
 	direct := skorrWaveyCourse(t)
 	heading = math.NormalizeHeading(direct - 20)
 	course = math.NormalizeHeading(direct + 20)
-	f = newSkorrWaveyFlight(t, fmt.Sprintf("SKORR/h%d@t%d WAVEY", int(heading), int(course)))
+	f = newSkorrWaveyFlight(t, fmt.Sprintf("SKORR/h%d/@crs%d WAVEY", int(heading), int(course)))
 	return
 }
 

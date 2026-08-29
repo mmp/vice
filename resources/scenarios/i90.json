@@ -3223,22 +3223,22 @@
           "JCT": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221@a6000/rd RETYR/hoC80 BOCCK MNURE HAYYY FOWLR"
+            "waypoints": "KHOU-4/h221/@a6000/rd RETYR/hoC80 BOCCK MNURE HAYYY FOWLR"
           },
           "SAT": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221@a6000/rd RETYR/hoC80 BOCCK MNURE MARCS"
+            "waypoints": "KHOU-4/h221/@a6000/rd RETYR/hoC80 BOCCK MNURE MARCS"
           },
           "MNURE": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221@a6000/rd RETYR/hoC80 BOCCK"
+            "waypoints": "KHOU-4/h221/@a6000/rd RETYR/hoC80 BOCCK"
           },
           "WAILN": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221@a6000/rd RETYR/hoC80 WEEED WAILN"
+            "waypoints": "KHOU-4/h221/@a6000/rd RETYR/hoC80 WEEED WAILN"
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 5000,

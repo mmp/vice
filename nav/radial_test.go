@@ -35,7 +35,7 @@ func assertNotUnable(t *testing.T, intent av.CommandIntent) {
 
 // checkInbound vectors the aircraft 20 degrees left of the direct course to
 // WAVEY and has it intercept the radial whose reciprocal is 20 degrees right
-// of that course, so that it joins the same course to WAVEY that the @t
+// of that course, so that it joins the same course to WAVEY that the /@crs
 // tests do.
 func checkInbound(t *testing.T, f *FlightTest, direct math.MagneticHeading) {
 	t.Helper()

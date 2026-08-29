@@ -4,7 +4,7 @@
 
 // Quality tests for the turn-anticipation predicates: a conformance test
 // that pins the turnPath model to the tick-by-tick flight model, and sweeps
-// that fly outbound fly-by turns, localizer intercepts, and @t course joins
+// that fly outbound fly-by turns, localizer intercepts, and /@crs course joins
 // across aircraft, geometries, and winds, asserting the quality of the
 // flown ground track.
 
@@ -511,11 +511,11 @@ func TestInterceptOvershootSweep(t *testing.T) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// @t course intercept sweep
+// /@crs course intercept sweep
 
 // runCourseInterceptCase is a parameterized version of the flights in
 // course_test.go: the aircraft leaves SKORR on a heading hOff degrees off
-// the direct course to WAVEY with an @t termination onto a course cOff
+// the direct course to WAVEY with a /@crs trigger onto a course cOff
 // degrees off it, and must join that course and then track it.
 func runCourseInterceptCase(t *testing.T, hOff, cOff, windRel float32, windKts float32) (joinTick int, maxOff float32) {
 	t.Helper()
@@ -534,7 +534,7 @@ func runCourseInterceptCase(t *testing.T, hOff, cOff, windRel float32, windKts f
 	course := math.NormalizeHeading(direct + math.MagneticHeading(cOff))
 
 	f := NewArrivalFlight(t, ArrivalConfig{
-		Waypoints:        fmt.Sprintf("SKORR/h%d@t%d WAVEY", int(heading), int(course)),
+		Waypoints:        fmt.Sprintf("SKORR/h%d/@crs%d WAVEY", int(heading), int(course)),
 		DepartureAirport: "KJFK",
 		ArrivalAirport:   "KJFK",
 		AircraftType:     "A320",
