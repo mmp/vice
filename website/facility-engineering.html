@@ -11,6 +11,14 @@
       }
     </style>
     <style>
+      /* Syntax tables: literal text is upright, values to be substituted are
+         italic, via the var element. The first column sizes to its content; alternatives
+         may wrap between entries but never inside one. */
+      .syntax td:first-child { width: 1%; }
+      .syntax td:first-child code { white-space: nowrap; }
+      var { font-style: italic; font-weight: normal; color: #8a4f9e; }
+    </style>
+    <style>
       .submenu {
           display: block;
           list-style: none;
@@ -429,7 +437,9 @@
               <p>Each fix in a route may have one or more <em>actions</em>, <em>properties</em>, and <em>triggers</em>
                 that affect the aircraft's course of flight&mdash;for example, that the aircraft should depart a fix
                 at a given heading or that the fix should be strictly overflown (versus aircraft "cutting the corner" and turning to
-                the next fix early so that it cleanly rolls out on course.) Each of these is detailed in the following sections.</p>
+                the next fix early so that it cleanly rolls out on course.) Each of these is detailed in the following sections. In the tables below, the parts of
+                each entry to be typed literally are upright and the values to be supplied are in
+                <var>italics</var>.</p>
 
               <h3 class="section-heading" id="fe-route-actions">Actions</h3>
 
@@ -441,24 +451,24 @@
 
                 fix in its route.)</p>
               <p>These actions affect the lateral course that an aircraft flies after leaving a fix:</p>
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>/h</code><i>heading</i></td>
+                    <td><code>/h<var>heading</var></code></td>
                     <td>Depart the fix at specified heading, choosing a left or right turn based on which is shorter.</td>
                   </tr>
                   <tr>
-                    <td><code>/l</code><i>heading</i></td>
+                    <td><code>/l<var>heading</var></code></td>
                     <td>Depart the fix at specified heading, turning left.</td>
                   </tr>
                   <tr>
-                    <td><code>/r</code><i>heading</i></td>
+                    <td><code>/r<var>heading</var></code></td>
                     <td>Depart the fix at specified heading, turning right.</td>
                   </tr>
                   <tr>
@@ -474,29 +484,29 @@
                     <td>Continue direct to the next fix, but turn right to do so.</td>
                   </tr>
                   <tr>
-                    <td><code>/t</code><i>heading</i></td>
+                    <td><code>/t<var>heading</var></code></td>
                     <td>Depart the fix on the specified track heading; this corrects for wind so the aircraft maintains the desired ground track.</td>
                   </tr>
                   <tr>
-                    <td><code>/t</code><i>fix</i><code>-R</code><i>radial</i></td>
+                    <td><code>/t<var>fix</var>-R<var>radial</var></code></td>
                     <td>Depart the fix to join the specified radial from the given fix.
                       For example, given <code>/tPXR-R336</code>, the aircraft will join the <code>PXR</code> 336 radial,
                       converging at up to 45 degrees, and then follow it away from <code>PXR</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>/lt</code><i>heading</i></td>
+                    <td><code>/lt<var>heading</var></code></td>
                     <td>Depart the fix on the specified track heading, turning left.</td>
                   </tr>
                   <tr>
-                    <td><code>/rt</code><i>heading</i></td>
+                    <td><code>/rt<var>heading</var></code></td>
                     <td>Depart the fix on the specified track heading, turning right.</td>
                   </tr>
                   <tr>
-                    <td><code>/lt</code><i>fix</i><code>-R</code><i>radial</i></td>
+                    <td><code>/lt<var>fix</var>-R<var>radial</var></code></td>
                     <td>Depart the fix, turning left to join the specified radial from the given fix.</td>
                   </tr>
                   <tr>
-                    <td><code>/rt</code><i>fix</i><code>-R</code><i>radial</i></td>
+                    <td><code>/rt<var>fix</var>-R<var>radial</var></code></td>
                     <td>Depart the fix, turning right to join the specified radial from the given fix.</td>
                   </tr>
                 </tbody>
@@ -505,37 +515,37 @@
               
               <p>For approach fixes involved with procedure turns, a number of actions can be specified:</p>
                 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>/hilpt</code> / <code>/hilpt</code><i>dist</i><code>nm</code> / <code>/hilpt</code><i>dist</i><code>min</code></td>
+                    <td><code>/hilpt</code> / <code>/hilpt<var>dist</var>nm</code> / <code>/hilpt<var>dist</var>min</code></td>
                     <td>There is a hold in lieu of procedure turn (i.e., a racetrack procedure turn) associated with the fix.
                       The default is right turns and a 1 minute limit for ILS/VOR/LOC approaches and a 4 nm limit for RNAV approaches.
                       Different limits can be specified: for example <code>/hilpt6nm</code> gives a procedure turn with a 6 nm limit and
                       <code>/hilpt2min</code> specifies a 2 minute limit.</td>
                   </tr>
                   <tr>
-                    <td><code>/lhilpt</code> / <code>/lhilpt</code><i>dist</i><code>nm</code> / <code>/lhilpt</code><i>dist</i><code>min</code></td>
+                    <td><code>/lhilpt</code> / <code>/lhilpt<var>dist</var>nm</code> / <code>/lhilpt<var>dist</var>min</code></td>
                     <td>There is a hold in lieu of procedure turn associated with the fix, but with left turns.
                       Distance and time defaults are as above and can be overridden in the same way.</td>
                   </tr>
                   <tr>
-                    <td><code>/pt45</code> / <code>/pt45</code><i>dist</i><code>nm</code> / <code>/pt45</code><i>dist</i><code>min</code></td>
+                    <td><code>/pt45</code> / <code>/pt45<var>dist</var>nm</code> / <code>/pt45<var>dist</var>min</code></td>
                     <td>Specifies a standard 45 degree procedure turn with the same options as <code>/hilpt</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>/lpt45</code> / <code>/lpt45</code><i>dist</i><code>nm</code> / <code>/lpt45</code><i>dist</i><code>min</code></td>
+                    <td><code>/lpt45</code> / <code>/lpt45<var>dist</var>nm</code> / <code>/lpt45<var>dist</var>min</code></td>
                     <td>Specifies a standard 45 degree procedure turn with left turns, also using the
                       same options as <code>/hilpt</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>/pta</code><i>altitude</i></td>
+                    <td><code>/pta<var>altitude</var></code></td>
                     <td>If the aircraft should descend during the procedure turn, this can be used to specify
                       the final altitude it should have at the end of the turn. (The altitude should be given in feet.)</td>
                   </tr>
@@ -546,32 +556,32 @@
               <p>If the aircraft should follow an arc leaving a fix rather than flying direct to the following
                 fix, <code>/arc</code> can be given.  It can be used in two ways.
               </p>
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>/arc</code><i>miles</i></td>
+                    <td><code>/arc<var>miles</var></code></td>
                     <td>The aircraft flies an arc of the given length.
                       For example, <code>WUPMA/arc7.5 ALABE</code> has aircraft fly along the 7.5nm long arc between WUPMA and ALABE.</td>
                   </tr>
                   <tr>
-                    <td><code>/arc</code><i>miles</i><i>fix</i></td>
+                    <td><code>/arc<var>miles</var><var>fix</var></code></td>
                     <td>Both a radius in nautical miles as well as the fix at the
                       center of the arc's circle can be specified.  For
                       example, <code>HANAV/arc16OMN</code> specifies a 16nm radius
                       arc centered at <code>OMN</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>/larc</code><i>miles</i> / <code>/rarc</code><i>miles</i></td>
+                    <td><code>/larc<var>miles</var></code> / <code>/rarc<var>miles</var></code></td>
                     <td>The aircraft flies an arc of the given length, turning left or right, respectively, leaving the fix.</td>
                   </tr>
                   <tr>
-                    <td><code>/arc</code><i>miles</i><i>fix</i></td>
+                    <td><code>/arc<var>miles</var><var>fix</var></code></td>
                     <td>The aircraft flies an arc of the given length centered at the given fix,
                       turning left or right, respectively, leaving the fix.</td>
                     </tr>
@@ -582,10 +592,10 @@
               <p>For VFR aircraft flying routes specified in scenarios, an action is available to have them perform
                 airwork upon reaching a fix.</p>
 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
@@ -597,8 +607,8 @@
                       below to give an altitude range for the airwork. By default, they will do so
                       for 15 minutes and remain within 7nm of the fix; alternatively, the time or
                       distance may be specified
-                      via <code>/airwork</code><i>radius</i><code>nm</code>
-                      and/or <code>/airwork</code><i>minutes</i><code>m</code>. For
+                      via <code>/airwork<var>radius</var>nm</code>
+                      and/or <code>/airwork<var>minutes</var>m</code>. For
                       example: <code>/airwork30m10nm</code> specifies 30 minutes of airwork within a
                       10nm radius of the fix.</td>
                   </tr>
@@ -611,20 +621,20 @@
                 behave. If an aircraft under the control of a human reaches a fix with any of the following
                 actions, the action is ignored.</p>
 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>/c</code><i>altitude</i></td>
+                    <td><code>/c<var>altitude</var></code></td>
                     <td>The aircraft is issued an instruction to climb to the specified altitude (in 100s of feet, between 0 and 600).</td>
                   </tr>
                   <tr>
-                    <td><code>/d</code><i>altitude</i></td>
+                    <td><code>/d<var>altitude</var></code></td>
                     <td>The aircraft is issued an instruction to descend to the specified altitude (in 100s of feet, between 0 and 600).</td>
                   </tr>
                   <tr>
@@ -632,7 +642,7 @@
                     <td>The aircraft is handed off to the human controller assigned to their route.</td>
                   </tr>
                   <tr>
-                    <td><code>/ho</code><i>position</i></td>
+                    <td><code>/ho<var>position</var></code></td>
                     <td>The aircraft is handed off to the given control position; the position must be a virtual
                       controller. The handoff will be automatically accepted a little while after it has been initiated.</td>
                   </tr>
@@ -646,15 +656,15 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><code>/po</code><i>position</i></td>
+                    <td><code>/po<var>position</var></code></td>
                     <td>The aircraft is pointed out to the given position (may be virtually- or human-controlled).</td>
                   </tr>
                   <tr>
-                    <td><code>/spsp</code><i>scratchpad</i></td>
+                    <td><code>/spsp<var>scratchpad</var></code></td>
                     <td>Sets the aircraft's primary scratchpad to the given value.</td>
                   </tr>
                   <tr>
-                    <td><code>/sssp</code><i>scratchpad</i></td>
+                    <td><code>/sssp<var>scratchpad</var></code></td>
                     <td>Sets the aircraft's secondary scratchpad to the given value.</td>
                   </tr>
                   <tr>
@@ -684,10 +694,10 @@
                 a few hundred miles outside of the facility.
               </p>
 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
@@ -712,30 +722,30 @@
               </p>
               <p>The following <em>restrictions</em> determine how an aircraft approaches a fix:</p>
 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>/a</code><i>restriction</i></td>
+                    <td><code>/a<var>restriction</var></code></td>
                     <td>For IFR aircraft, cross the fix with the specified altitude restriction
                       (with altitudes specified in feet).
                       For VFR, aircraft will be at a random altitude within the given altitude range.
                       The following options are available for specifying altitude restrictions:
                       <ul>
-                        <li><i>low</i><code>-</code><i>high</i>: cross at an altitude between <i>low</i> and <i>high</i>.</li>
-                        <li><i>alt</i><code>-</code>: cross at or below <i>alt</i>.</li>
-                        <li><i>alt</i><code>+</code>: cross at or above <i>alt</i>.</li>
-                        <li><i>alt</i>: cross at <i>alt</i>.</li>
+                        <li><code><var>low</var>-<var>high</var></code>: cross at an altitude between <i>low</i> and <i>high</i>.</li>
+                        <li><code><var>alt</var>-</code>: cross at or below <i>alt</i>.</li>
+                        <li><code><var>alt</var>+</code>: cross at or above <i>alt</i>.</li>
+                        <li><code><var>alt</var></code>: cross at <i>alt</i>.</li>
                       </ul>
                     </td>
                   </tr>
                   <tr>
-                    <td><code>/s</code><i>speed</i></td>
+                    <td><code>/s<var>speed</var></code></td>
                     <td>Cross the fix at the given speed. The speed may include a
                       <code>+</code> suffix for "at or above" (e.g. <code>/s210+</code>) or a <code>-</code> suffix
                       for "at or below" (e.g. <code>/s250-</code>). A range may also be specified (e.g. <code>/s180-210</code>).
@@ -755,10 +765,10 @@
               
               <p>Two fix properties affect how aircraft passing the fix fly (or don't fly) subsequent procedure turns:</p>
 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
@@ -783,10 +793,10 @@
                 If a fix has multiple roles (e.g., is an IAF and an IF), then both may be specified.
               </p>
 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
@@ -815,21 +825,21 @@
                 don't always turn at exactly the same points.</p>
 
                 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>/radius</code><i>miles</i></td>
+                    <td><code>/radius<var>miles</var></code></td>
                     <td>Each time an aircraft flies the route, the fix they fly to is randomly shifted to a point
                       in a circle centered at the fix within the given number of miles.</td>
                   </tr>
                   <tr>
-                    <td><code>/shift</code><i>miles</i></td>
+                    <td><code>/shift<var>miles</var></code></td>
                     <td>Rather than flying precisely to the fix, the aircraft will fly along
                       the route to the fix but will turn for the next fix at a random distance before or after the fix,
                       up to half the number of specified nautical miles in each direction.</td>
@@ -848,26 +858,26 @@
                 to fly the present heading until a trigger is met, give <code>/ph</code> explicitly.</p>
               <p>The available triggers are:</p>
 
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Syntax</th>
+                    <th>Syntax</th>
                     <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>@a</code><i>altitude</i></td>
+                    <td><code>@a<var>altitude</var></code></td>
                     <td>Triggers upon reaching the given altitude (specified in feet), either from above or below.</td>
                   </tr>
                   <tr>
-                    <td><code>@</code><i>navaid</i><code>-D</code><i>distance</i></td>
+                    <td><code>@<var>navaid</var>-D<var>distance</var></code></td>
                     <td>Triggers upon reaching the given DME distance from the
                       navaid or fix. For example, <code>KARRS/h039/@CAMRN-D4.0/l010</code> flies heading 039
                       until the aircraft is 4DME from <code>CAMRN</code> and then turns left to heading 010.</td>
                   </tr>
                   <tr>
-                    <td><code>@</code><i>navaid</i><code>-R</code><i>radial</i></td>
+                    <td><code>@<var>navaid</var>-R<var>radial</var></code></td>
                     <td>Triggers when the aircraft crosses the specified radial. For example,
                       <code>KDLS-25/h120/@LTJ-R165/c40</code> flies heading 120 until crossing the <code>LTJ</code> 165 radial,
                       after which the aircraft is instructed to climb to 4,000' feet.
@@ -875,7 +885,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><code>@crs</code><i>course</i></td>
+                    <td><code>@crs<var>course</var></code></td>
                     <td>Triggers when the aircraft should turn in order to fly the given magnetic course to the next fix on
                       the route. This is how to express procedures that
                       read like "fly heading 200, then track 220 to WAVEY": <code>RNGRR/h200/@crs220 WAVEY</code>.

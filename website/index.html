@@ -10,6 +10,14 @@
     }
   </style>
   <style>
+    /* Syntax tables: literal text is upright, values to be substituted are
+       italic, via the var element. The first column sizes to its content; alternatives
+       may wrap between entries but never inside one. */
+    .syntax td:first-child { width: 1%; }
+    .syntax td:first-child code { white-space: nowrap; }
+    var { font-style: italic; font-weight: normal; color: #8a4f9e; }
+  </style>
+  <style>
     .submenu {
       display: block;
       list-style: none;
@@ -414,9 +422,11 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               To open a window that shows the available ATC commands when using <i>vice</i>,
               click the <i class="fas fa-keyboard"></i> button in the top menubar.
             </p>
+            <p>In the tables below, the parts of each command to be typed literally are upright and the
+              values to be supplied are in <var>italics</var>.</p>
             <p>The following commands relate to the aircraft's lateral route:</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -426,61 +436,61 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>H</code><i>heading</i></td>
+                    <td><code>H<var>heading</var></code></td>
                     <td>Directs the aircraft to fly the specified heading. It will turn in whichever direction gets it to that heading most quickly.
                       If no heading is given, the aircraft is instructed to fly present heading.</td>
                     <td><code>H050</code>, <code>H</code></td>
                   </tr>
                   <tr>
-                    <td><code>L</code><i>heading</i></td>
+                    <td><code>L<var>heading</var></code></td>
                     <td>Directs the aircraft to turn left to the specified heading.</td>
                     <td><code>L130</code></td>
                   </tr>
                   <tr>
-                    <td><code>R</code><i>heading</i></td>
+                    <td><code>R<var>heading</var></code></td>
                     <td>Directs the aircraft to turn right to the specified heading.</td>
                     <td><code>R210</code></td>
                   </tr>
                   <tr>
-                    <td><code>T</code><i>degrees</i><code>L</code></td>
+                    <td><code>T<var>degrees</var>L</code></td>
                     <td>Directs the aircraft to turn the specified number of degrees to the left.</td>
                     <td><code>T10L</code></td>
                   </tr>
                   <tr>
-                    <td><code>T</code><i>degrees</i><code>R</code></td>
+                    <td><code>T<var>degrees</var>R</code></td>
                     <td>Directs the aircraft to turn the specified number of degrees to the right.</td>
                     <td><code>T20R</code></td>
                   </tr>
                   <tr>
-                    <td><code>D</code><i>fix</i></td>
+                    <td><code>D<var>fix</var></code></td>
                     <td>Directs the aircraft to proceed direct to the given
                     fix. (The specified fix must be in the aircraft's
                     flight plan, including on the approach assigned to it.)</td>
                     <td><code>DWAVEY</code></td>
                   </tr>
                   <tr>
-                    <td><code>LD</code><i>fix</i></td>
+                    <td><code>LD<var>fix</var></code></td>
                     <td>Proceed left direct to the given fix (forces a left turn).</td>
                     <td><code>LDHAYES</code></td>
                   </tr>
                   <tr>
-                    <td><code>RD</code><i>fix</i></td>
+                    <td><code>RD<var>fix</var></code></td>
                     <td>Proceed right direct to the given fix (forces a right turn).</td>
                     <td><code>RDHAYES</code></td>
                   </tr>
                   <tr>
-                    <td><code>D</code><i>fix</i><code>/H</code><i>heading</i></td>
+                    <td><code>D<var>fix</var>/H<var>heading</var></code></td>
                     <td>Directs the aircraft to depart the specified fix at the given heading.
                     (The specified fix must be in the aircraft's flight plan.)</td>
                     <td><code>DLENDY/H180</code></td>
                   </tr>
                   <tr>
-                    <td><code>D</code><i>fix</i><code>/D</code><i>fix2</i></td>
+                    <td><code>D<var>fix</var>/D<var>fix2</var></code></td>
                     <td>Directs the aircraft to depart the specified fix and proceed direct to the second fix.</td>
                     <td><code>DLENDY/DWAVEY</code></td>
                   </tr>
                   <tr>
-                    <td><code>I</code><i>fix</i><code>/</code><i>radial</i><code>[O]</code></td>
+                    <td><code>I<var>fix</var>/<var>radial</var>[O]</code></td>
                     <td><p>Directs the aircraft to intercept the given radial of the specified fix. It flies its
                     assigned heading (or its present heading, if it hasn't been given one) until the intercept, so
                     the heading is normally given first: <code>H200 IWAVEY/050</code>.</p>
@@ -493,9 +503,9 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>IWAVEY/050</code><br><code>IWAVEY/050O</code></td>
                   </tr>
                   <tr>
-                    <td><code>H</code><i>fix</i></td>
+                    <td><code>H<var>fix</var></code></td>
                     <td><p>Directs the aircraft to hold at the specified fix using a published holding pattern.
-                        (The specified fix must be in the aircraft's flight plan; for one that is not, first give them <code>D</code><i>fix</i>
+                        (The specified fix must be in the aircraft's flight plan; for one that is not, first give them <code>D<var>fix</var></code>
                         to add it and send them direct to it.)</p>
                       <p>There are three ways to cause an aircraft to exit a hold:
                         1. Clearing them for the approach, if the hold is part of an approach assigned to the aircraft.
@@ -508,18 +518,18 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>HJIMEE</code></td>
                   </tr>
                   <tr>
-                    <td><code>H</code><i>fix</i><code>/</code><i>option</i><code>/</code><i>option</i></td>
+                    <td><code>H<var>fix</var>/<var>option</var>/<var>option</var></code></td>
                     <td><p>Directs the aircraft to hold at the specified fix using controller-specified holding parameters.
                     (The specified fix must be in the aircraft's flight plan.)</p>
                     <p>Options may be:</p>
                     <ul>
                       <li><code>L</code>: left turns</li>
                       <li><code>R</code>: right turns (default)</li>
-                      <li><i>xx</i><code>NM</code>: <i>xx</i> nautical mile legs</li>
-                      <li><i>xx</i><code>M</code>: <i>xx</i> minute legs (default: 1 minute)</li>
-                      <li><code>R</code><i>xxx</i>: inbound course on the <i>xxx</i> radial to the fix (required)</li>
+                      <li><code><var>xx</var>NM</code>: <i>xx</i> nautical mile legs</li>
+                      <li><code><var>xx</var>M</code>: <i>xx</i> minute legs (default: 1 minute)</li>
+                      <li><code>R<var>xxx</var></code>: inbound course on the <i>xxx</i> radial to the fix (required)</li>
                     </ul>
-                    <p>The radial option (<code>R</code><i>xxx</i>) is required for controller-specified holds.
+                    <p>The radial option (<code>R<var>xxx</var></code>) is required for controller-specified holds.
                     Multiple options of the same type (e.g., both L and R, or both distance and time legs) are not allowed.</p>
                     </td>
                     <td><code>HJIMEE/L/5NM/R090</code><br><code>HJIMEE/R270/2M</code></td>
@@ -534,7 +544,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
 
             <p>And these commands are related to altitude:</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -544,7 +554,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>C</code><i>alt</i></td>
+                    <td><code>C<var>alt</var></code></td>
                     <td>Directs the aircraft to climb to the specified
                       altitude, which is given in hundreds of feet.
                       If the aircraft is changing speed, both the speed
@@ -553,7 +563,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>C170</code></td>
                   </tr>
                   <tr>
-                    <td><code>TC</code><i>alt</i></td>
+                    <td><code>TC<var>alt</var></code></td>
                     <td>Directs the aircraft to climb to the specified
                       altitude, given in hundreds of feet, after it
                       finishes speeding up or slowing down to meet a
@@ -562,13 +572,13 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>TC170</code></td>
                   </tr>
                   <tr>
-                    <td><code>D</code><i>alt</i></td>
+                    <td><code>D<var>alt</var></code></td>
                     <td>Directs the aircraft to descend to the specified
                     altitude, given in hundreds of feet.</td>
                     <td><code>D20</code></td>
                   </tr>
                   <tr>
-                    <td><code>TD</code><i>alt</i></td>
+                    <td><code>TD<var>alt</var></code></td>
                     <td>Directs the aircraft to descend to the specified
                       altitude, given in hundreds of feet, after it
                       finishes speeding up or slowing down to meet a
@@ -577,7 +587,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>TD20</code></td>
                   </tr>
                   <tr>
-                    <td><code>A</code><i>alt</i></td>
+                    <td><code>A<var>alt</var></code></td>
                     <td>Directs the aircraft to maintain the given altitude given in hundreds of feet,
                       climbing or descending if necessary.
                       If the aircraft is changing speed, both the speed
@@ -586,14 +596,14 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>A120</code></td>
                   </tr>
                   <tr>
-                    <td><code>ED</code>[<i>alt</i>]</td>
+                    <td><code>ED</code>[<var>alt</var>]</td>
                     <td>Directs the aircraft to expedite the descent to its
                     assigned altitude. Optionally specify an altitude to expedite through
                     (e.g., <code>ED50</code> to expedite through 5,000).</td>
                     <td><code>ED</code>, <code>ED50</code></td>
                   </tr>
                   <tr>
-                    <td><code>EC</code>[<i>alt</i>]</td>
+                    <td><code>EC</code>[<var>alt</var>]</td>
                     <td>Directs the aircraft to expedite the climb to its
                     assigned altitude. Optionally specify an altitude to expedite through
                     (e.g., <code>EC100</code> to expedite through 10,000).</td>
@@ -606,12 +616,12 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>GRD</code></td>
                   </tr>
                   <tr>
-                    <td><code>GR</code><i>alt</i></td>
+                    <td><code>GR<var>alt</var></code></td>
                     <td>"Good rate" through an altitude. Direction is inferred from current state.</td>
                     <td><code>GR50</code></td>
                   </tr>
                   <tr>
-                    <td><code>C</code><i>fix</i><code>/A</code><i>altitude</i><code>/S</code><i>speed</i><code>/M</code><i>mach</i></td>
+                    <td><code>C<var>fix</var>/A<var>altitude</var>/S<var>speed</var>/M<var>mach</var></code></td>
                     <td><p>Directs the aircraft to cross the specified fix at the given altitude, speed, and/or mach.
                       Any combination of <code>A</code>,
                         <code>S</code>, and <code>M</code> may be specified.</p>
@@ -622,7 +632,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>CCAMRN/A110+</code></td>
                   </tr>
                   <tr>
-                    <td><code>C</code><i>fix</i><code>/</code><i>dist</i><i>dir</i><code>/A</code><i>altitude</i><code>/S</code><i>speed</i><code>/M</code><i>mach</i></td>
+                    <td><code>C<var>fix</var>/<var>dist</var><var>dir</var>/A<var>altitude</var>/S<var>speed</var>/M<var>mach</var></code></td>
                     <td><p>Directs the aircraft to cross a point a given distance and direction from the fix at the
                       given altitude, speed, and/or mach. The direction is specified as
                       <code>N</code>, <code>S</code>, <code>E</code>, <code>W</code>,
@@ -652,7 +662,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
 
             <p>These commands are for aircraft speed:</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -662,7 +672,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>S</code><i>knots</i></td>
+                    <td><code>S<var>knots</var></code></td>
                     <td>Gives the aircraft a speed restriction.
                       If the restriction is given after an aircraft is cleared for an approach,
                       the speed restriction is in effect until 5 mile
@@ -672,7 +682,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>S210</code>, <code>S</code></td>
                   </tr>
                   <tr>
-                    <td><code>TS</code><i>knots</i></td>
+                    <td><code>TS<var>knots</var></code></td>
                     <td>Gives the aircraft a speed restriction to be
                       applied after the aircraft climbs or descends to the
                       most recent controller-specified altitude.
@@ -681,12 +691,12 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>TS210</code></td>
                   </tr>
                   <tr>
-                    <td><code>M</code><i>mach</i></td>
+                    <td><code>M<var>mach</var></code></td>
                     <td>Gives the aircraft a mach speed restriction.</td>
                     <td><code>M78</code></td>
                   </tr>
                   <tr>
-                    <td><code>TM</code><i>mach</i></td>
+                    <td><code>TM<var>mach</var></code></td>
                     <td>Gives the aircraft a mach speed restriction to be
                       applied after the aircraft climbs or descends to the
                       most recent controller-specified altitude.</td>
@@ -708,23 +718,23 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>SPRES</code></td>
                   </tr>
                   <tr>
-                    <td><code>S</code><i>kts</i><code>+</code></td>
+                    <td><code>S<var>kts</var>+</code></td>
                     <td>Assigns a speed floor: aircraft should fly at or above the specified speed.</td>
                     <td><code>S180+</code></td>
                   </tr>
                   <tr>
-                    <td><code>S</code><i>kts</i><code>-</code></td>
+                    <td><code>S<var>kts</var>-</code></td>
                     <td>Assigns a speed ceiling: aircraft should not exceed the specified speed.</td>
                     <td><code>S180-</code></td>
                   </tr>
                   <tr>
-                    <td><code>S</code><i>kts</i><code>/U</code><i>spec</i></td>
+                    <td><code>S<var>kts</var>/U<var>spec</var></code></td>
                     <td>Assigns a speed restriction for an aircraft cleared for an approach until a specified point.
                       The specification may be a fix name, a number (for mile final), or a number followed by <code>DME</code>.</td>
                     <td><code>S210/U5</code>, <code>S210/U5DME</code>, <code>S210/UROSLY</code></td>
                   </tr>
                   <tr>
-                    <td><code>S</code><i>kts</i><code>/U</code><i>fix</i><code>/</code><i>kts</i>[<code>/U</code><i>fix</i><code>/</code><i>kts</i>]...</td>
+                    <td><code>S<var>kts</var>/U<var>fix</var>/<var>kts</var></code>[<code>/U<var>fix</var>/<var>kts</var></code>]...</td>
                     <td>Compound speed assignment: multiple speed segments separated by fixes.
                       The aircraft flies the first speed until the first fix, then the next speed until the next fix, and so on.
                       Each speed may have a <code>+</code> or <code>-</code> suffix for "or greater" or "or less".</td>
@@ -752,7 +762,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
 
               <p>The transponder is managed using these commands:</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -762,7 +772,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>SQ</code><i>code</i></td>
+                    <td><code>SQ<var>code</var></code></td>
                     <td>Instructs the aircraft to squawk the given beacon code.</td>
                     <td><code>SQ1200</code></td>
                   </tr>
@@ -791,7 +801,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
 
               <p>And these commands are instructions related to changing radio frequencies and contacting different controllers:</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -801,7 +811,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>ATIS/</code><i>letter</i></td>
+                    <td><code>ATIS/<var>letter</var></code></td>
                     <td>Tells the pilot the current ATIS information letter. (This is mostly useful if
                       the pilot reports having an out-of-date ATIS in their initial contact.)</td>
                     <td><code>ATIS/B</code></td>
@@ -813,7 +823,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>FC</code></td>
                   </tr>
                   <tr>
-                    <td><code>CT</code><i>TCP</i></td>
+                    <td><code>CT<var>TCP</var></code></td>
                     <td>Contact the controller with the specified TCP. This is generally used for VFR aircraft that contact
                       the wrong controller asking for flight following.</td>
                     <td><code>CT2J</code></td>
@@ -828,7 +838,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
 
               <p>A variety of commands are available related to approaches&mdash;specifying them and clearing aircraft for them.</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -838,7 +848,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>E</code><i>approach</i></td>
+                    <td><code>E<var>approach</var></code></td>
                     <td>Tells the aircraft to expect the specified
                     approach. This command must be used before an aircraft
                     is cleared for an approach and it also adds the approach
@@ -852,7 +862,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>E</code></td>
                   </tr>
                   <tr>
-                    <td><code>C</code><i>approach</i></td>
+                    <td><code>C<var>approach</var></code></td>
                     <td>Clears the aircraft for the specified
                     approach. The aircraft must have been told to expect the approach before it is cleared for it.</td>
                     <td><code>CI2L</code></td>
@@ -863,32 +873,32 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>C</code></td>
                   </tr>
                   <tr>
-                    <td><code>A</code><i>fix</i><code>/C</code>[<i>approach</i>]</td>
+                    <td><code>A<var>fix</var>/C</code>[<var>approach</var>]</td>
                     <td>Clears the aircraft for the approach when
                     it passes the given fix. The approach identifier is optional;
                     if not specified, uses the previously-assigned approach.</td>
                     <td><code>AROSLY/C</code></td>
                   </tr>
                   <tr>
-                    <td><code>A</code><i>fix</i><code>/I</code></td>
+                    <td><code>A<var>fix</var>/I</code></td>
                     <td>Directs the aircraft to intercept the localizer when
                     it passes the given fix. The aircraft must have been told
                     to expect an approach before this command is given.</td>
                     <td><code>AROSLY/I</code></td>
                   </tr>
                   <tr>
-                    <td><code>A</code><i>fix</i><code>/S</code><i>speed</i>[<code>+</code>|<code>-</code>]</td>
+                    <td><code>A<var>fix</var>/S<var>speed</var></code>[<code>+</code>|<code>-</code>]</td>
                     <td>After passing the fix, maintain the given speed.
                     Append <code>+</code> for "or greater" or <code>-</code> for "or less".</td>
                     <td><code>AROSLY/S230</code></td>
                   </tr>
                   <tr>
-                    <td><code>A</code><i>fix</i><code>/C</code><i>alt</i></td>
+                    <td><code>A<var>fix</var>/C<var>alt</var></code></td>
                     <td>After passing the fix, climb and maintain the given altitude.</td>
                     <td><code>AROSLY/C50</code></td>
                   </tr>
                   <tr>
-                    <td><code>A</code><i>fix</i><code>/D</code><i>alt</i></td>
+                    <td><code>A<var>fix</var>/D<var>alt</var></code></td>
                     <td>After passing the fix, descend and maintain the given altitude.</td>
                     <td><code>AROSLY/D30</code></td>
                   </tr>
@@ -898,7 +908,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>CAC</code></td>
                   </tr>
                   <tr>
-                    <td><code>CSI</code><i>approach</i></td>
+                    <td><code>CSI<var>approach</var></code></td>
                     <td>Clears the aircraft "straight in" for the specified approach.
                       (This command is only useful for approaches that include procedure turns.)
                       The aircraft must have been told to expect the approach before it is cleared for it.</td>
@@ -912,7 +922,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>I</code></td>
                   </tr>
                   <tr>
-                    <td><code>AP/</code><i>oclock</i><code>/</code><i>miles</i></td>
+                    <td><code>AP/<var>oclock</var>/<var>miles</var></code></td>
                     <td>Tells the pilot where to look for the airport
                     (e.g., "airport, 2 o'clock, 8 miles"). The pilot
                     responds "field in sight" or "looking" depending
@@ -921,7 +931,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>AP/2/8</code></td>
                   </tr>
                   <tr>
-                    <td><code>CVA</code><i>runway</i></td>
+                    <td><code>CVA<var>runway</var></code></td>
                     <td>Clears the aircraft for a visual approach to the
                     specified runway. Requires the pilot to have the
                     field in sight (via AP command or spontaneous
@@ -932,13 +942,13 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>CVA13L</code></td>
                   </tr>
                   <tr>
-                    <td><code>CDME</code><i>nm</i><code>/A</code><i>alt</i></td>
+                    <td><code>CDME<var>nm</var>/A<var>alt</var></code></td>
                     <td>Adds a "cross <i>nm</i> DME at <i>alt</i>" crossing
                     restriction to a cleared visual approach, with the
                     runway threshold as the DME reference. Append
                     <code>+</code> for "at or above" or <code>-</code>
-                    for "at or below". Combine with <code>/S</code><i>spd</i>
-                    (or <code>/M</code><i>mach</i>) for a speed restriction.</td>
+                    for "at or below". Combine with <code>/S<var>spd</var></code>
+                    (or <code>/M<var>mach</var></code>) for a speed restriction.</td>
                     <td><code>CDME10/A30+</code></td>
                   </tr>
                 </tbody>
@@ -946,7 +956,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
 
               <p>For VFR aircraft that have been given vectors or altitude constraints, a few special instructions are available.</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -980,7 +990,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
 
               <p>Finally, a few miscellaneous commands are available.</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -1015,7 +1025,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>Left Shift</code> + <code>Tab</code></td>
                   </tr>
                   <tr>
-                    <td><code>/</code><i>message</i></td>
+                    <td><code>/<var>message</var></code></td>
                     <td>Displays the given message in the message log of all controllers</td>
                     <td><code>/2A IS CLOSING DINNER TIME</code></td>
                   </tr>
@@ -2973,10 +2983,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   approach previously given with "expect approach").</li>
                 <li><code>SMIN</code>: maintain slowest practical speed</li>
                 <li><code>SMAX</code>: maintain maximum forward speed</li>
-                <li><code>A</code><i>fix</i><code>/C</code><i>approach</i>:
+                <li><code>A<var>fix</var>/C<var>approach</var></code>:
                 at the specified fix, cleared for the given approach.</li>
                 <li>More flexible altitude crossing
-                restrictions<code>C</code><i>fix</i><code>/A100-</code> is cross <code>FIX</code> at or
+                restrictions<code>C<var>fix</var>/A100-</code> is cross <code>FIX</code> at or
                 below 10,000, <code>CFIX/A120-150</code> is
                   cross <code>FIX</code> between 12,000 and 15,000, etc.</li>
               </ul>
@@ -3277,39 +3287,39 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               callsign, a beacon code number, or a controller identifier. The following
               notation is used for these entries in the documentation below:
             </p>
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:15%">Identifier</th>
+                    <th>Identifier</th>
                     <th>Format and Use</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(##)</code></td>
+                    <td><code><var>(##)</var></code></td>
                     <td><i>Numeric digits</i>: the number of hash marks "#" indicates the number of
                       expected digits. When used for beacon code values, only the digits 0-7 are valid.</td>
                   </tr>
                   <tr>
-                    <td><code>(ABC)</code></td>
+                    <td><code><var>(ABC)</var></code></td>
                     <td><i>Arbitrary letters</i>: any three letters.</td>
                   </tr>
                   <tr>
-                    <td><code>(CID)</code></td>
+                    <td><code><var>(CID)</var></code></td>
                     <td><i>Control position identifier</i>: letters and digits identifying a control position,
                       either inside the local facility or external.
                       There are a number of rules that define how these are specified; they are
                       <a href="#stars-specifying-controllers">discussed in more detail below</a>.</td>
                   </tr>
                   <tr>
-                    <td><code>(FLT ID)</code></td>
+                    <td><code><var>(FLT ID)</var></code></td>
                     <td><i>Flight identifier</i>: either a full aircraft callsign, the beacon code
                       that an aircraft is squawking, or the tab list index for the aircraft. (Tab list
                       indices can be found as two digits in the first column of some STARS system lists
                       such as the VFR and FLIGHT PLAN lists as well as <a href="#coordination-lists">coordination lists</a>.</td>
                   </tr>
                   <tr>
-                    <td><code>(TCP)</code></td>
+                    <td><code><var>(TCP)</var></code></td>
                     <td><i>TCP identifier</i>: a numeric digit followed by a letter identifying a local terminal
                       control position.</td>
                   </tr>
@@ -3530,10 +3540,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <a href="#stars-dcb">auxiliary DCB menu</a> can be used to toggle this behavior.
               If not specified using one of the following commands, the default home position is at the upper-left
               of the <a href="#stars-ssa-list">SSA list</a>.</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -3564,10 +3574,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>For basic controlling, a small number of STARS commands are used frequently.
               The following table lists them and gives a short description of their operation.
             </p>
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
-                    <th style="width:25%">Command</th>
+                    <th>Command</th>
                     <th>Description</th>
                   </tr>
                 </thead>
@@ -3595,13 +3605,13 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                         <li>For an unassociated track, temporarily displays the full <a href="#stars-datablock-types">limited datablock</a>.</li>
                       </ul>
                   </td></tr>
-                  <tr><td><code>(CID)[SLEW]</code></td><td>Offers to handoff the
+                  <tr><td><code><var>(CID)</var>[SLEW]</code></td><td>Offers to handoff the
                       track of the aircraft to the controller identified by (CID).</td></tr>
-                  <tr><td><code>(scratchpad)[SLEW]</code></td><td>Sets
-                  the scratchpad of the aircraft to <code>(scratchpad)</code>.</td></tr>
+                  <tr><td><code><var>(scratchpad)</var>[SLEW]</code></td><td>Sets
+                  the scratchpad of the aircraft to <code><var>(scratchpad)</var></code>.</td></tr>
                   <tr><td><code>.[SLEW]</code></td><td>Clears the
                   aircraft's scratchpad.</td></tr>
-                  <tr><td><code>+(###)[SLEW]</code></td><td>Sets the
+                  <tr><td><code>+<var>(###)</var>[SLEW]</code></td><td>Sets the
                       aircraft's assigned assigned altitude (which is shown in its datablock).</td></tr>
                 </tbody>
               </table>
@@ -3748,10 +3758,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>The datablock will continue flashing until you accept the handoff by slewing the aircraft's
               radar track using one of the following commands:
             </p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -3762,7 +3772,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[HND OFF](FLT ID)</code></td>
+                    <td><code>[HND OFF]<var>(FLT ID)</var></code></td>
                     <td>Accepts the handoff of the aircraft with the specified flight ID.
                     </td>
                   </tr>
@@ -3782,21 +3792,21 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <p>When you are ready to hand off an aircraft's track to
               another controller, a number of commands are available to do so:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(CID)[SLEW]</code> / <br><code>[HND OFF](CID)[SLEW]</code> /<br> <code>[HND OFF](CID) (FLT ID)</code></td>
+                    <td><code><var>(CID)</var>[SLEW]</code> / <br><code>[HND OFF]<var>(CID)</var>[SLEW]</code> /<br> <code>[HND OFF]<var>(CID)</var> <var>(FLT ID)</var></code></td>
                     <td>Initiates a handoff of the slewed aircraft to the specified controller.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[SLEW]</code>/<br><code>[HND OFF][SLEW]</code> /<br><code>[HND OFF](FLT ID)</code></td>
+                    <td><code>[SLEW]</code>/<br><code>[HND OFF][SLEW]</code> /<br><code>[HND OFF]<var>(FLT ID)</var></code></td>
                     <td>Cancels an initiated handoff to another controller.
                     </td>
                   </tr>
@@ -3867,16 +3877,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               datablock&mdash;the same place an outbound handoff's receiving position id appears. You can turn
               automatic handoffs off (or back on) for a single track that you own with the following
               commands. (Note that <i>vice</i> maps the delta key to the backtick.)</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>∆[SLEW]</code> /<br><code>[HND OFF]∆[SLEW]</code> /<br><code>[HND OFF]∆ (FLT ID)</code></td>
+                    <td><code>∆[SLEW]</code> /<br><code>[HND OFF]∆[SLEW]</code> /<br><code>[HND OFF]∆ <var>(FLT ID)</var></code></td>
                     <td>Toggles automatic handoffs for the specified track.
                     </td>
                   </tr>
@@ -3889,10 +3899,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <p>Automatic handoff processing can also be turned off wholesale, either for your own position or
               for the entire facility:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -3937,16 +3947,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>In addition to handing off tracks to other controllers; a controller may terminate control, otherwise known as
               "radar services terminated, frequency change approved".
               The following commands are available:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[TERM CNTL][SLEW]</code> /<br><code>[TERM CNTL](FLT ID)</code></td>
+                    <td><code>[TERM CNTL][SLEW]</code> /<br><code>[TERM CNTL]<var>(FLT ID)</var></code></td>
                     <td>Drops the track of the specified aircraft.
                     </td>
                   </tr>
@@ -3963,16 +3973,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>Point outs let controllers direct another controller's attention to an aircraft; some facilities may have prearranged
               coordination procedures where an aircraft may pass through another controller's aircraft after a point out, or a point out
               may be performed before verbally coordinating with another controller.  The following commands are available for point outs:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(CID)*[SLEW]</code></td>
+                    <td><code><var>(CID)</var>*[SLEW]</code></td>
                     <td>Points out the slewed aircraft to the specified controller.
                     </td>
                   </tr>
@@ -3992,11 +4002,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       track.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]O[SLEW]</code> /<br><code>[MULTIFUNC]O (FLT ID)</code></td>
+                    <td><code>[MULTIFUNC]O[SLEW]</code> /<br><code>[MULTIFUNC]O <var>(FLT ID)</var></code></td>
                     <td>Prints the point out history&mdash;up to the last 20 TCPs to which the aircraft has been pointed out.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]O*[SLEW]</code> /<br><code>[MULTIFUNC]O* (FLT ID)</code></td>
+                    <td><code>[MULTIFUNC]O*[SLEW]</code> /<br><code>[MULTIFUNC]O* <var>(FLT ID)</var></code></td>
                     <td>Clears the point out history for the specified track.</td>
                   </tr>
                 </tbody>
@@ -4056,29 +4066,29 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               can be entered to specify the current controller's TCW as the receiver. TCPs and TCWs are specified as 1 or 2 characters;
               if only 1 character (the sector) is given, the current controller's facility (controller subset) is assumed
               (e.g., a controller at 2G may specify 2K as either "K" or "2K", but must specify 3H as "3H".)</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[MULTIFUNC]C∆(TCP)</code></td>
+                    <td><code>[MULTIFUNC]C∆<var>(TCP)</var></code></td>
                     <td>Basic consolidation: consolidates inactive and future flights from the specified sender TCP to the current controller's TCW.
                       Active flights remain at the sender's keyboard until handed off or coasted out.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]C(TCW)(TCP)</code></td>
+                    <td><code>[MULTIFUNC]C<var>(TCW)</var><var>(TCP)</var></code></td>
                     <td>Basic consolidation: consolidates inactive and future flights from the specified sender TCP to the specified receiver TCW.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]C∆(TCP)+</code></td>
+                    <td><code>[MULTIFUNC]C∆<var>(TCP)</var>+</code></td>
                     <td>Full consolidation: consolidates all flights (active, inactive, and future) from the specified sender TCP to the controller's TCW.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]C(TCW)(TCP)+</code></td>
+                    <td><code>[MULTIFUNC]C<var>(TCW)</var><var>(TCP)</var>+</code></td>
                     <td>Full consolidation: consolidates all flights from the specified sender TCP to the specified receiver TCW.</td>
                   </tr>
                   <tr>
@@ -4086,7 +4096,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Deconsolidates the current controller's primary TCP, returning it to its default keyboard.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]C(TCP)</code></td>
+                    <td><code>[MULTIFUNC]C<var>(TCP)</var></code></td>
                     <td>Deconsolidates the specified secondary TCP, returning it to its default keyboard.</td>
                   </tr>
                   <tr>
@@ -4181,10 +4191,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <p>For unassociated primary tracks that are not squawking altitude, the triangle that is
               normally drawn for their position symbol can be disabled.</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -4212,16 +4222,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div><br>
             <br>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[MULTIFUNC]B(##)</code> / <br><code>[MULTIFUNC]B(####)</code></td>
+                    <td><code>[MULTIFUNC]B<var>(##)</var></code> / <br><code>[MULTIFUNC]B<var>(####)</var></code></td>
                     <td>Toggle the display of either a single beacon code (if four digits are entered)
                       or a beacon code bank (if two digits are entered). Beacon code banks are identified
                       by the first two digits; for example <code>B12</code> toggles the 12xx beacon code block.
@@ -4251,11 +4261,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="slewed-ldb.gif" srcset="slewed-ldb-2x.gif 2x" width="137" height="95">
             </div><br>
             <p>A few commands are also available to control the display of squawk (beacon) codes in LDBs:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -4264,15 +4274,15 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Toggle the display of beacon codes in LDBs.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]B(SLEW)</code></td>
+                    <td><code>[MULTIFUNC]B<var>(SLEW)</var></code></td>
                     <td>Toggle the display of the beacon code for an unassociated aircraft.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]BE(SLEW)</code></td>
+                    <td><code>[MULTIFUNC]BE<var>(SLEW)</var></code></td>
                     <td>Enable the display of the beacon code for an unassociated aircraft.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]BI(SLEW)</code></td>
+                    <td><code>[MULTIFUNC]BI<var>(SLEW)</var></code></td>
                     <td>Disable the display of the beacon code for an unassociated aircraft.</td>
                   </tr>
                 </tbody>
@@ -4295,10 +4305,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="beacon-code-display.gif" srcset="beacon-code-display-2x.gif 2x" width="115" height="101" class="img-fluid">
             </div><br>
             
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -4368,10 +4378,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </ul>
             <p>Other than the commands related to modifying <a href="#flight-plans">Flight Plans</a> that can lead to changes
                in what entries are shown in the FDB, there is just one command to manage the FDB's contents:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:30%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
@@ -4385,11 +4395,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <p>A few commands are also available to control whether the FDB is displayed for overflights that are not under the
               user's control:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -4421,10 +4431,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <h4>Datablock Control Commands</h4>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -4547,10 +4557,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div><br>
             <p>The controller may also associate an SPC with an aircraft regardless of what it is squawking by entering a
               SPC and slewing the aircraft. An alert sound is not played in this case. The following codes may be used:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:30%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
@@ -4616,34 +4626,34 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <tr><td>1</td><td>2</td><td>3</td></tr>
                 </tbody>
               </table><br>
-            <p>A number of commands are available to configure leader lines, where all uses of <code>(#)</code>
+            <p>A number of commands are available to configure leader lines, where all uses of <code><var>(#)</var></code>
               below correspond to a number following the above convention for specifying directions:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(#)[SLEW]</code>/<br> <code>[MULTIFUNC]L(#)[SLEW]</code>/<br> <code>[MULTIFUNC]L(#) (FLT ID)</code></td>
-                    <td>Sets the leader line direction for the aircraft, where <code>(#)</code> is a valid leader line direction specifier. 5 may be given to clear a previously-assigned direction.</td>
+                    <td><code><var>(#)</var>[SLEW]</code>/<br> <code>[MULTIFUNC]L<var>(#)</var>[SLEW]</code>/<br> <code>[MULTIFUNC]L<var>(#)</var> <var>(FLT ID)</var></code></td>
+                    <td>Sets the leader line direction for the aircraft, where <code><var>(#)</var></code> is a valid leader line direction specifier. 5 may be given to clear a previously-assigned direction.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]L(#)U</code></td>
+                    <td><code>[MULTIFUNC]L<var>(#)</var>U</code></td>
                     <td>Sets the default leader line direction for aircraft with unassociated tracks.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]L(#)*</code></td>
+                    <td><code>[MULTIFUNC]L<var>(#)</var>*</code></td>
                     <td>Sets the default leader line direction for aircraft tracked by other controllers. 5 may be given to clear a previously-assigned direction.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]L(TCP)(#)</code></td>
+                    <td><code>[MULTIFUNC]L<var>(TCP)</var><var>(#)</var></code></td>
                     <td>Sets the leader line for aircraft controlled by the specified TCP. If a one-letter TCP is entered for a controller in the same area, a space should be entered after it. 5 may be entered to clear a previously-assigned direction</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]L(##)[SLEW]</code>/<br> <code>[MULTIFUNC]L(##) (FLT ID)</code></td>
+                    <td><code>[MULTIFUNC]L<var>(##)</var>[SLEW]</code>/<br> <code>[MULTIFUNC]L<var>(##)</var> <var>(FLT ID)</var></code></td>
                     <td>Sets the default leader line for a single track system-wide, across all controllers' displays. 55 may be entered to clear a previously-specified direction.</td>
                   </tr>
                   <tr>
@@ -4663,16 +4673,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               automatically applies.
             </p>
             <p>A number of commands are available to control quicklook:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(TCP)</code>/<br> <code>[MULTIFUNC]Q(TCP)</code></td>
+                    <td><code><var>(TCP)</var></code>/<br> <code>[MULTIFUNC]Q<var>(TCP)</var></code></td>
                     <td><p>Toggles quicklook for the specified control position. Multiple positions may be specified, separated by spaces.
                       If a "+" is included after the control position, quicklook plus is toggled.</p>
                       <p>If the user's current TCP is entered, the currently-quicklooked positions and enabled/disabled regions
@@ -4693,15 +4703,15 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Disables all active control position quicklooks.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]Q(region) E</code></td>
+                    <td><code>[MULTIFUNC]Q<var>(region)</var> E</code></td>
                     <td>Enable the named quicklook region.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]Q(region) I</code></td>
+                    <td><code>[MULTIFUNC]Q<var>(region)</var> I</code></td>
                     <td>Disable (inhibit) the named quicklook region.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]Q(region)</code></td>
+                    <td><code>[MULTIFUNC]Q<var>(region)</var></code></td>
                     <td>Toggle whether the named quicklook region is enabled.</td>
                   </tr>
                   <tr>
@@ -4725,16 +4735,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               shown on another controller's display. Force quicklooked aircraft also have yellow datablocks for the recipient,
               until they clear the forced quicklook by slewing the track.</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>**(TCP)[SLEW]</code></td>
+                    <td><code>**<var>(TCP)</var>[SLEW]</code></td>
                     <td>Force quicklook the slewed track to the identified controller. Multiple controller IDs may be specified,
                       separated by spaces. "ALL" forces quicklook to all controllers.
                     </td>
@@ -4764,10 +4774,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
           <img src="dwell-dcb.png" srcset="dwell-dcb-2x.png 2x" width="75" height="74">
         </div><br>
         <p>Dwell mode can also be configured using the keyboard:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -4804,10 +4814,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>STARS supports two filters, one for unassociated tracks and one for associated tracks.
               Each of these filters is a range of altitudes, specified in hundreds of feet.
               The following commands are available to manage altitude filters:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -4819,14 +4829,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]FC(###)(###)</code></td>
+                    <td><code>[MULTIFUNC]FC<var>(###)</var><var>(###)</var></code></td>
                     <td>Specifies the altitude filter range for associated tracks.
                       The first three digits give the bottom altitude of the filter range and the second three digits
                       give the top of the filter range. Both altitudes are given in hundreds of feet.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]F(###)(###)&nbsp;(###)(###)</code></td>
+                    <td><code>[MULTIFUNC]F<var>(###)</var><var>(###)</var>&nbsp;<var>(###)</var><var>(###)</var></code></td>
                     <td>Specifies the altitude filter range for both unassociated and associated tracks.
                       The first three digits give the bottom of the filter range for unassociated tracks and the next
                       three give the top of the range for unassociated tracks, both in hundreds of feet.
@@ -4883,18 +4893,18 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(ACID)</code></td>
+                    <td><code><var>(ACID)</var></code></td>
                     <td><i>Aircraft identifier</i>: an aircraft callsign starting with a letter and then
                     followed by letters or digits, no more than 7 characters long.  Example: <code>UAL650</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>(AC&nbsp;TYPE/EQ)</code></td>
+                    <td><code><var>(AC&nbsp;TYPE/EQ)</var></code></td>
                     <td><i>Aircraft type</i>: aircraft type optionally followed by a slash and a single character equipment suffix.
                       Example: <code>C172/G</code>.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>(#/AC&nbsp;TYPE/EQ)</code></td>
+                    <td><code><var>(#/AC&nbsp;TYPE/EQ)</var></code></td>
                     <td><i>Aircraft type</i>: aircraft type optionally preceded by a number and a slash and
                       optionally followed by a slash and a single character equipment suffix; if specified,
                       the number gives the number of aircraft flying in formation.
@@ -4902,58 +4912,58 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </td>
                   </tr>
                   <tr>
-                    <td><code>(ASSIGNED&nbsp;ALT)</code></td>
+                    <td><code><var>(ASSIGNED&nbsp;ALT)</var></code></td>
                     <td><i>Assigned altitude</i>: three digits giving the aircraft's assigned altitude. An entry of <code>000</code>
                       clears the assigned altitude.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>(BEACON)</code></td>
-                    <td><i>Beacon code assignment</i>: either four digits specifying a specific beacon code <code>(####)</code>,
+                    <td><code><var>(BEACON)</var></code></td>
+                    <td><i>Beacon code assignment</i>: either four digits specifying a specific beacon code <code><var>(####)</var></code>,
                       <code>+</code> to specify a system-generated IFR code, <code>/</code> for a system generated VFR code,
                       or <code>/1</code>, <code>/2</code>, <code>/3</code>, or <code>/4</code> to signify a code from the
                       associated beacon code bank.
                   </tr>
                   <tr>
-                    <td><code>(COORD&nbsp;TIME)</code></td>
+                    <td><code><var>(COORD&nbsp;TIME)</var></code></td>
                     <td><i>Coordination time</i>: 4 digits giving a time in Zulu for the flight's expected coordination time,
                       optionally followed by an "E".</td>
                   </tr>
                   <tr>
-                    <td><code>(FIX&nbsp;PAIR)</code></td>
+                    <td><code><var>(FIX&nbsp;PAIR)</var></code></td>
                     <td><i>VFR Fix Pair</i>: three character entry fix followed by <code>*</code> and then a three character exit fix.
                       Optionally, a second <code>*</code> and the type of flight may follow.
                       Example: <code>ISP*MVY</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>(FLIGHT&nbsp;TYPE)</code></td>
+                    <td><code><var>(FLIGHT&nbsp;TYPE)</var></code></td>
                     <td><i>Type of flight</i>: <code>A</code> for arrival, <code>P</code> for departure, or <code>E</code> for an overflight</td>
                   </tr>
                   <tr>
-                    <td><code>(PILOT&nbsp;ALT)</code></td>
+                    <td><code><var>(PILOT&nbsp;ALT)</var></code></td>
                     <td><i>Pilot-reported altitude</i>: three digits giving a pilot-reported altitude in hundreds of feet.
                     <code>000</code> clears the pilot-reported altitude.</td>
                   </tr>
                   <tr>
-                    <td><code>(REQ&nbsp;ALT)</code></td>
+                    <td><code><var>(REQ&nbsp;ALT)</var></code></td>
                     <td><i>Requested altitude</i>: three digits giving the requested (final) altitude for the flight.</td>
                   </tr>
                   <tr>
-                    <td><code>(RULES)</code></td>
+                    <td><code><var>(RULES)</var></code></td>
                     <td><i>Flight rules</i>: a period followed by zero or one additional characters: <code>V</code> for VFR, <code>P</code> for VFR on top,
                       <code>E</code> for enroute (IFR), and no entry for none (IFR). Example: <code>.V</code></td>
                   </tr>
                   <tr>
-                    <td><code>(SP1)</code></td>
+                    <td><code><var>(SP1)</var></code></td>
                     <td><i>Scratchpad 1</i>: three (or up to four, at some facilities) characters for the aircraft's primary scratchpad entry.</td>
                   </tr>
                   <tr>
-                    <td><code>(SP2)</code></td>
+                    <td><code><var>(SP2)</var></code></td>
                     <td><i>Scratchpad 2</i>: three (or up to four, at some facilities) characters for the aircraft's secondary scratchpad entry.</td>
                   </tr>
                   <tr>
-                    <td><code>(TCP&nbsp;OR&nbsp;FIX&nbsp;PAIR)</code></td>
-                    <td><i>TCP/Fix pair</i>: either a number and a letter corresponding to <code>(TCP)</code> or a <code>(FIX PAIR)</code>.</td>
+                    <td><code><var>(TCP&nbsp;OR&nbsp;FIX&nbsp;PAIR)</var></code></td>
+                    <td><i>TCP/Fix pair</i>: either a number and a letter corresponding to <code><var>(TCP)</var></code> or a <code><var>(FIX PAIR)</var></code>.</td>
                   </tr>
                 </tbody>
               </table>
@@ -4967,49 +4977,49 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>The following create new flight plans that are not yet associated with an aircraft;
               these flight plans are shown in the FLIGHT PLAN system list and/or the VFR LIST,
               depending on their type.</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:35%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(ACID)&nbsp;(FIX PAIR)&nbsp;(AC TYPE/EQ)</code></td>
+                    <td><code><var>(ACID)</var>&nbsp;<var>(FIX PAIR)</var>&nbsp;<var>(AC TYPE/EQ)</var></code></td>
                     <td>Create a NAS VFR flight plan with
-                      an automatically-assigned squawk code. Optional additional fields: <code>(REQ ALT)</code> and
-                      <code>(TCP)</code>. The flight plan is assigned
-                      to the controller who created it if no other controller is specified via <code>(TCP)</code>.
+                      an automatically-assigned squawk code. Optional additional fields: <code><var>(REQ ALT)</var></code> and
+                      <code><var>(TCP)</var></code>. The flight plan is assigned
+                      to the controller who created it if no other controller is specified via <code><var>(TCP)</var></code>.
                       Example: <code>N123AB FRG*HPN C172/G 045</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>(ACID)</code></td>
+                    <td><code><var>(ACID)</var></code></td>
                     <td>Create a local flight plan.
-                      Optional additional fields: <code>(BEACON)</code>, <code>(FLIGHT TYPE)</code>,
-                      <code>∆(SP1)</code>, <code>+(SP2)</code>, <code>(#/AC TYPE/EQ)</code>, <code>(REQ ALT)</code>,
-                      and <code>(RULES)</code>.
+                      Optional additional fields: <code><var>(BEACON)</var></code>, <code><var>(FLIGHT TYPE)</var></code>,
+                      <code>∆<var>(SP1)</var></code>, <code>+<var>(SP2)</var></code>, <code><var>(#/AC TYPE/EQ)</var></code>, <code><var>(REQ ALT)</var></code>,
+                      and <code><var>(RULES)</var></code>.
                       Example: <code>N123AB 6502 ∆ARR +R22 280</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>[INIT CTNL](ACID)&nbsp;(BEACON)</code></td>
+                    <td><code>[INIT CTNL]<var>(ACID)</var>&nbsp;<var>(BEACON)</var></code></td>
                     <td>Create a flight plan with a specified beacon code.
-                      Optional additional fields: <code>∆(SP1)</code> <code>+(SP2)</code> <code>(#/AC TYPE/EQ)</code>.</td>
+                      Optional additional fields: <code>∆<var>(SP1)</var></code> <code>+<var>(SP2)</var></code> <code><var>(#/AC TYPE/EQ)</var></code>.</td>
                   </tr>
                   <tr>
-                    <td><code>[VP](ACID)&nbsp;(VFR&nbsp;FIX&nbsp;PAIR)&nbsp;(AC&nbsp;TYPE/EQ)</code></td>
+                    <td><code>[VP]<var>(ACID)</var>&nbsp;<var>(VFR&nbsp;FIX&nbsp;PAIR)</var>&nbsp;<var>(AC&nbsp;TYPE/EQ)</var></code></td>
                     <td>Create a VFR flight plan.
-                      Optional additional fields: <code>(REQ ALT)</code> and <code>(TCP)</code>.</td>
+                      Optional additional fields: <code><var>(REQ ALT)</var></code> and <code><var>(TCP)</var></code>.</td>
                   </tr>
                   <tr>
-                    <td><code>[FLT DATA](ACID)[ENTER]</code></td>
+                    <td><code>[FLT DATA]<var>(ACID)</var>[ENTER]</code></td>
                     <td>Create a new flight plan.
-                      Optional additional fields: <code>(BEACON)</code>, <code>(TCP OR FIX PAIR)</code>,
-                      <code>(COORD TIME)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>,
-                      <code>(#/AC TYPE/EQ)</code>, <code>(REQ ALT)</code>, and <code>(RULES)</code>.</td>
+                      Optional additional fields: <code><var>(BEACON)</var></code>, <code><var>(TCP OR FIX PAIR)</var></code>,
+                      <code><var>(COORD TIME)</var></code>, <code>∆<var>(SP1)</var></code>, <code>+<var>(SP2)</var></code>,
+                      <code><var>(#/AC TYPE/EQ)</var></code>, <code><var>(REQ ALT)</var></code>, and <code><var>(RULES)</var></code>.</td>
                   </tr>
                   <tr>
-                    <td><code>*(####)</code></td>
+                    <td><code>*<var>(####)</var></code></td>
                     <td>Create a "quick flight plan" with the specified beacon code.
                       The flight plan's ACID is automatically set with a predefined prefix that is followed
                       by the given beacon code. A flight rules suffix may optionally be given immediately after
@@ -5030,12 +5040,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       than a destination.</td>
                   </tr>
                   <tr>
-                    <td><code>[VP](REQ ALT)[SLEW]</code></td>
+                    <td><code>[VP]<var>(REQ ALT)</var>[SLEW]</code></td>
                     <td>Same as <code>[VP][SLEW]</code>, with a requested altitude (three digits,
                       giving hundreds of feet).</td>
                   </tr>
                   <tr>
-                    <td><code>[VP]*(REQ ALT)[SLEW]</code></td>
+                    <td><code>[VP]*<var>(REQ ALT)</var>[SLEW]</code></td>
                     <td>Same as <code>[VP]*[SLEW]</code>, with a requested altitude.</td>
                   </tr>
                 </tbody>
@@ -5044,25 +5054,25 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>It is also possible to create a new flight plan and immediately associate it with a track.
               For both of the following commands, if the beacon code isn't specified, the code that the track
                 is currently squawking is used as the assigned code.</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:35%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>(ACID)[SLEW]</code></td>
+                  <td><code><var>(ACID)</var>[SLEW]</code></td>
                   <td>Create a new flight plan and associate it with the slewed track. Optional additional parameters:
-                    <code>(BEACON)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>,
-                    <code>(ASSIGNED ALT)</code>, and <code>(#/AC TYPE/EQ)</code>.</td>
+                    <code><var>(BEACON)</var></code>, <code>∆<var>(SP1)</var></code>, <code>+<var>(SP2)</var></code>,
+                    <code><var>(ASSIGNED ALT)</var></code>, and <code><var>(#/AC TYPE/EQ)</var></code>.</td>
                 </tr>
                 <tr>
-                  <td><code>[INIT CTNL](ACID)[SLEW]</code></td>
+                  <td><code>[INIT CTNL]<var>(ACID)</var>[SLEW]</code></td>
                   <td>Create a new flight plan and associate it with the track.
-                    Optional additional parameters:<code>(BEACON)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>,
-                    <code>(ASSIGNED ALT)</code>, and <code>(#/AC TYPE/EQ)</code>.</td>
+                    Optional additional parameters:<code><var>(BEACON)</var></code>, <code>∆<var>(SP1)</var></code>, <code>+<var>(SP2)</var></code>,
+                    <code><var>(ASSIGNED ALT)</var></code>, and <code><var>(#/AC TYPE/EQ)</var></code>.</td>
                 </tr>
                   <tr>
                     <td><code>Y[SLEW]</code></td>
@@ -5080,20 +5090,20 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               of the predefined regions in a TRACON where flight plans automatically associate, but it is generally
               the case.) Alternatively, a command is available to associate an existing flight plan with a radar track.</p>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[INIT CTNL](FLT ID)[SLEW]</code></td>
+                    <td><code>[INIT CTNL]<var>(FLT ID)</var>[SLEW]</code></td>
                     <td>Activate the identified flight plan and associate it with the slewed track.
                     Takes the following optional parameters to modify the flight plan before it
-                    is associated: <code>(SP1)</code>,  <code>∆(SP1)</code>, <code>(+SP2)</code>,
-                      and <code>(ASSIGNED ALT)</code>.</td>
+                    is associated: <code><var>(SP1)</var></code>,  <code>∆<var>(SP1)</var></code>, <code><var>(+SP2)</var></code>,
+                      and <code><var>(ASSIGNED ALT)</var></code>.</td>
                     </tr>
                 </tbody>
               </table>
@@ -5103,20 +5113,20 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>Two commands are available for deleting flight plans. If a flight plan is associated with a
               track, the track becomes unassociated if it is deleted.</p>
 
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:35%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[TERM CNTL](FLT ID)</code></td>
+                  <td><code>[TERM CNTL]<var>(FLT ID)</var></code></td>
                   <td>Deletes the flight plan identified by the flight identifier.</td>
                 </tr>
                 <tr>
-                  <td><code>[VP](FLT ID)</code></td>
+                  <td><code>[VP]<var>(FLT ID)</var></code></td>
                   <td>Deletes the VFR flight plan identified by the flight identifier.</td>
                 </tr>
                 <tr>
@@ -5140,16 +5150,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               It is departing JFK airport and its exit fix is GAYEL, shortened here to "GAY".
               Its expected departure time is 2230 zulu, and its requested altitude is 37,000'.</p>
             <p>There are also commands to cause a selected flight plan to be displayed:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[MULTIFUNC]D[SLEW]</code> /<br><code>[MULTIFUNC]D(FLT ID)</code></td>
+                    <td><code>[MULTIFUNC]D[SLEW]</code> /<br><code>[MULTIFUNC]D<var>(FLT ID)</var></code></td>
                     <td>Display flight plan
                     </td>
                   </tr>
@@ -5167,76 +5177,76 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
               <h3 id="modifying-flight-plans">Modifying Flight Plans</h3>
 
-            <p>For the following commands, if <code>(FLT ID)</code> is used to specify the flight plan,
+            <p>For the following commands, if <code><var>(FLT ID)</var></code> is used to specify the flight plan,
               the command can be used both for associated and unassociated flight plans. The variants
               based on slewing a track can only be used on associated tracks, and apply to their associated
               flight plans.</p>
 
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:35%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>*(ACID)[SLEW]</code></td>
+                  <td><code>*<var>(ACID)</var>[SLEW]</code></td>
                   <td>Sets the ACID for the slewed track.</td>
                 </tr>
                 <tr>
-                  <td><code>*(#/AC&nbsp;TYPE/EQ)[SLEW]</code></td>
+                  <td><code>*<var>(#/AC&nbsp;TYPE/EQ)</var>[SLEW]</code></td>
                   <td>Sets the aircraft type and optionally the number of formation aircraft and the equipment
                     suffix for the slewed track. If the aircraft type is less than four characters,
                   it must be extended to 4 characters with asterisks: e.g,. "B2**".</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;(#/AC&nbsp;TYPE/EQ)</code>/<br><code>[MULTIFUNC]H(#/AC&nbsp;TYPE/EQ)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]H<var>(FLT ID)</var>&nbsp;<var>(#/AC&nbsp;TYPE/EQ)</var></code>/<br><code>[MULTIFUNC]H<var>(#/AC&nbsp;TYPE/EQ)</var>[SLEW]</code></td>
                   <td>Specifies aircraft type (and optionally the number of formation aircraft and equipment suffix, if
                     given) for the track.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;R</code>/<br><code>[MULTIFUNC]HR[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]H<var>(FLT ID)</var>&nbsp;R</code>/<br><code>[MULTIFUNC]HR[SLEW]</code></td>
                   <td>Toggles the RNAV specifier for the aircraft (shown as a caret, "^", in the full datablock.)</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;(RULES)</code>/<br><code>[MULTIFUNC]H(RULES)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]H<var>(FLT ID)</var>&nbsp;<var>(RULES)</var></code>/<br><code>[MULTIFUNC]H<var>(RULES)</var>[SLEW]</code></td>
                   <td>Specifies the flight rules for the track.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(ACID)</code>/<br><code>[MULTIFUNC]M(ACID)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;<var>(ACID)</var></code>/<br><code>[MULTIFUNC]M<var>(ACID)</var>[SLEW]</code></td>
                   <td>Changes the track's ACID to the specified callsign.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;∆(SP1)</code>/<br><code>[MULTIFUNC]M∆(ASSIGNED ALT)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;∆<var>(SP1)</var></code>/<br><code>[MULTIFUNC]M∆<var>(ASSIGNED ALT)</var>[SLEW]</code></td>
                   <td>Changes the track's assigned altitude to the given altitude.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(BEACON)</code>/<br><code>[MULTIFUNC]M(BEACON)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;<var>(BEACON)</var></code>/<br><code>[MULTIFUNC]M<var>(BEACON)</var>[SLEW]</code></td>
                   <td>Changes the track's assigned beacon code to the one specified.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(COORD&nbsp;TIME)</code>/<br><code>[MULTIFUNC]M(COORD&nbsp;TIME)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;<var>(COORD&nbsp;TIME)</var></code>/<br><code>[MULTIFUNC]M<var>(COORD&nbsp;TIME)</var>[SLEW]</code></td>
                   <td>Changes the track's coordination time to the specified time.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(FIX&nbsp;PAIR)</code>/<br><code>[MULTIFUNC]M(FIX&nbsp;PAIR)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;<var>(FIX&nbsp;PAIR)</var></code>/<br><code>[MULTIFUNC]M<var>(FIX&nbsp;PAIR)</var>[SLEW]</code></td>
                   <td>Changes the track's entry/exit fix pair to the fixes specified.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(REQ ALT)</code>/<br><code>[MULTIFUNC]M(REQ ALT)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;<var>(REQ ALT)</var></code>/<br><code>[MULTIFUNC]M<var>(REQ ALT)</var>[SLEW]</code></td>
                   <td>Changes the track's requested altitude to the altitude specified.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;∆(SP1)</code>/<br><code>[MULTIFUNC]M∆(SP1)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;∆<var>(SP1)</var></code>/<br><code>[MULTIFUNC]M∆<var>(SP1)</var>[SLEW]</code></td>
                   <td>Changes the track's primary scratchpad to the text specified.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;+(SP2)</code>/<br><code>[MULTIFUNC]M+(SP2)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;+<var>(SP2)</var></code>/<br><code>[MULTIFUNC]M+<var>(SP2)</var>[SLEW]</code></td>
                   <td>Changes the track's secondary scratchpad to the text specifie.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(TCP)</code>/<br><code>[MULTIFUNC]M(TCP)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]M<var>(FLT ID)</var>&nbsp;<var>(TCP)</var></code>/<br><code>[MULTIFUNC]M<var>(TCP)</var>[SLEW]</code></td>
                   <td>Changes the track's controller to the specified TCP.</td>
                 </tr>
               </tbody>
@@ -5250,36 +5260,36 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               They may contain letters, numbers, plus signs, periods, delta symbols, forward slashes, and asterisks, though
               they may not contain three numbers.
               The following commands can be used to manage scratchpads:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:25%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y(FLT ID) (SCR)</code></td>
-                  <td>Sets the primary scratchpad to <code>(SCR)</code> for the selected aircraft.
-                    If <code>(SCR)</code> matches the current scratchpad, the scratchpad reverts to its previous setting.
-                    When the first form of this command is used, <code>(SCR)</code> must not be a controller ID; if it is,
+                  <td><code><var>(SCR)</var>[SLEW]</code> /<br> <code>[MULTIFUNC]Y<var>(SCR)</var>[SLEW]</code> /<br> <code>[MULTIFUNC]Y<var>(FLT ID)</var> <var>(SCR)</var></code></td>
+                  <td>Sets the primary scratchpad to <code><var>(SCR)</var></code> for the selected aircraft.
+                    If <code><var>(SCR)</var></code> matches the current scratchpad, the scratchpad reverts to its previous setting.
+                    When the first form of this command is used, <code><var>(SCR)</var></code> must not be a controller ID; if it is,
                     a handoff to the controller will be initiated instead.
                   </td>
                 </tr>
                 <tr>
-                  <td><code>+(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(FLT ID) (SCR)</code></td>
-                  <td>Sets the secondary scratchpad to <code>(SCR)</code> for the selected aircraft.
-                    If <code>(SCR)</code> matches the current scratchpad, the scratchpad reverts to its previous setting.
-                    When the first form of this command is used, <code>(SCR)</code> must not be three digits; if it is, the
+                  <td><code>+<var>(SCR)</var>[SLEW]</code> /<br> <code>[MULTIFUNC]Y+<var>(SCR)</var>[SLEW]</code> /<br> <code>[MULTIFUNC]Y+<var>(FLT ID)</var> <var>(SCR)</var></code></td>
+                  <td>Sets the secondary scratchpad to <code><var>(SCR)</var></code> for the selected aircraft.
+                    If <code><var>(SCR)</var></code> matches the current scratchpad, the scratchpad reverts to its previous setting.
+                    When the first form of this command is used, <code><var>(SCR)</var></code> must not be three digits; if it is, the
                     aircraft's <a href="#assigned-altitude">assigned altitude</a> will be set instead.
                   </td>
                 </tr>
                 <tr>
-                  <td><code>.[SLEW]</code> /<br> <code>[MULTIFUNC]Y[SLEW]</code> /<br> <code>[MULTIFUNC]Y(FLT ID)</code></td>
+                  <td><code>.[SLEW]</code> /<br> <code>[MULTIFUNC]Y[SLEW]</code> /<br> <code>[MULTIFUNC]Y<var>(FLT ID)</var></code></td>
                   <td>Clears the selected aircraft's primary scratchpad.</td>
                 </tr>
                 <tr>
-                  <td><code>+[SLEW]</code> /<br> <code>[MULTIFUNC]Y+[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(FLT ID)</code></td>
+                  <td><code>+[SLEW]</code> /<br> <code>[MULTIFUNC]Y+[SLEW]</code> /<br> <code>[MULTIFUNC]Y+<var>(FLT ID)</var></code></td>
                   <td>Clears the selected aircraft's secondary scratchpad.</td>
                 </tr>
               </tbody>
@@ -5307,16 +5317,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="temporary-altitude.png" srcset="temporary-altitude-2x.png 2x" width="192" height="82">
             </div><br>
             <p>Two commands are available to manage the temporary altitudes associated with aircraft.</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:30%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>+(###)[SLEW]</code></td>
+                  <td><code>+<var>(###)</var>[SLEW]</code></td>
                   <td>Specifies an assigned altitude for the selected aircraft.</td>
                 </tr>
                 <tr>
@@ -5332,16 +5342,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>The requested final cruising altitudes of departing aircraft may 
               optionally be displayed in FDBs, multiplexed with the airspeed and aircraft type.
               The following commands are available to control this:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:30%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>++(###)[SLEW]</code></td>
+                  <td><code>++<var>(###)</var>[SLEW]</code></td>
                   <td>Sets the requested altitude (given in hundreds of feet) for the slewed aircraft.</td>
                 </tr>
                 <tr>
@@ -5390,20 +5400,20 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="pilot-reported-altitude.png" srcset="pilot-reported-altitude-2x.png 2x" width="183" height="98">
             </div><br>
 
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:30%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[MULTIFUNC]Y(FLT ID) ###</code> / <br><code>[MULTIFUNC]###[SLEW]</code> / <br> <code>###[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]Y<var>(FLT ID)</var> ###</code> / <br><code>[MULTIFUNC]###[SLEW]</code> / <br> <code>###[SLEW]</code></td>
                   <td>Sets the pilot-reported altitude for the aircraft.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]Y(FLT ID)</code> / <br><code>[MULTIFUNC]Y[SLEW]</code> </td>
+                  <td><code>[MULTIFUNC]Y<var>(FLT ID)</var></code> / <br><code>[MULTIFUNC]Y[SLEW]</code> </td>
                   <td>Clears the pilot-reported altitude (and the scratchpad, if set) for the aircraft.</td>
                 </tr>
                 <tr>
@@ -5418,23 +5428,23 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>It can be useful to <i>suspend</i> flight plans to reduce clutter on the radar scope,
               for example when a number of aircraft are in the same holding pattern. These functions
               are available:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:35%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[TRK SUSP][SLEW]</code> /<br> <code>[TRK SUSP](FLT ID)</code></td>
+                  <td><code>[TRK SUSP][SLEW]</code> /<br> <code>[TRK SUSP]<var>(FLT ID)</var></code></td>
                   <td>Suspend the selected flight plan.</td>
                 </tr>
                 <tr>
-                  <td><code>[INIT CTNL][SLEW]</code> /<br><code>[INIT CTNL](FLT ID)</code></td>
+                  <td><code>[INIT CTNL][SLEW]</code> /<br><code>[INIT CTNL]<var>(FLT ID)</var></code></td>
                   <td>Activates the selected suspended flight plan. The following optional parameters
                     may also be specified to modify the flight plan as it is unsuspended:
-                    <code>(SP1)</code>, <code>∆(SP1)</code>, or <code>+(SP2)</code>.
+                    <code><var>(SP1)</var></code>, <code>∆<var>(SP1)</var></code>, or <code>+<var>(SP2)</var></code>.
                   </td>
                 </tr>
                 <tr>
@@ -5462,21 +5472,21 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>STARS has commands that allow transferring an associated flight plan from one track to another one
               or converting it to an <i>unsupported datablock</i>, which is effectively a flight plan temporarily
               places at a position on the radar scope.</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:35%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[TRK RPOS][SLEW][SLEW]</code>/<br><code>[TRK RPOS](FLT ID)[SLEW]</code></td>
+                  <td><code>[TRK RPOS][SLEW][SLEW]</code>/<br><code>[TRK RPOS]<var>(FLT ID)</var>[SLEW]</code></td>
                   <td>Take the flight plan from the first selected track, leaving it unassociated,
                   and associate it with the second track (which must initially be unassociated.)</td>
                 </tr>
                 <tr>
-                  <td><code>[TRK RPOS][SLEW][SCOPE]</code>/<br><code>[TRK RPOS](FLT ID)[SCOPE]</code></td>
+                  <td><code>[TRK RPOS][SLEW][SCOPE]</code>/<br><code>[TRK RPOS]<var>(FLT ID)</var>[SCOPE]</code></td>
                   <td>Take the flight plan from the first selected track, leaving it unassociated,
                     and create an unsupported datablock at the clicked position on the radar
                     scope, <code>[SCOPE]</code>.</td>
@@ -5494,21 +5504,21 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               using <code>[TERM CNTL]</code> and slewing or entering its associated ACID.</p>
 
             <p>An unsupported datablock can also be created from a preexisting flight plan:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:35%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[INIT CTNL](FLT ID)[SCOPE]</code></td>
+                  <td><code>[INIT CTNL]<var>(FLT ID)</var>[SCOPE]</code></td>
                   <td>Create an unsupported datablock at the clicked position on the scope, <code>[SCOPE]</code>
                     from an existing flight plan. The following additional arguments to modify the
                     unsupported datablock's flight plan may also be specified,
-                    separated by spaces: <code>(SP1)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>, or
-                    <code>(ASSIGNED ALT)</code>.</td>
+                    separated by spaces: <code><var>(SP1)</var></code>, <code>∆<var>(SP1)</var></code>, <code>+<var>(SP2)</var></code>, or
+                    <code><var>(ASSIGNED ALT)</var></code>.</td>
                 </tr>
               </tbody>
             </table>
@@ -5518,16 +5528,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
 <p><i>vice</i> currently has incomplete support for held flight plans. (These will be useful for IFR
   aircraft to controlled fields in the future.) That said, the following command is available.</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width:35%">Command</th>
+                  <th>Command</th>
                   <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[MULTIFUNC]ZZ[SLEW]</code> /<br><code>[MULTIFUNC]ZZ (FLT ID)</code></td>
+                  <td><code>[MULTIFUNC]ZZ[SLEW]</code> /<br><code>[MULTIFUNC]ZZ <var>(FLT ID)</var></code></td>
                   <td>Toggles the hold state for the specified flight plan.</td>
                 </tr>
               </tbody>
@@ -5544,10 +5554,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <h3 id="position-reporting">Position Reporting</h3>
 
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
@@ -5576,20 +5586,20 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </p>
 
             <p>A few commands are available to enable and disable collision alerts and MCI alerts:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[CA]K[SLEW]</code>/<br> <code>[CA]K (FLT ID)</code></td>
+                    <td><code>[CA]K[SLEW]</code>/<br> <code>[CA]K <var>(FLT ID)</var></code></td>
                     <td>Toggles whether CA warnings are enabled for the aircraft.</td>
                   </tr>
                   <tr>
-                    <td><code>[CA][SLEW]</code>/<br> <code>[CA]P (FLT ID)</code></td>
+                    <td><code>[CA][SLEW]</code>/<br> <code>[CA]P <var>(FLT ID)</var></code></td>
                     <td>Toggles whether CA warnings are enabled for a pair of aircraft. The slewed aircraft must be in conflict with exactly one other aircraft or must have previously had collision alerts inhibited as part of a pair of aircraft.</td>
                   </tr>
                   <tr>
@@ -5601,7 +5611,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Enable CA warnings, except for aircraft that have had them individually disabled.</td>
                   </tr>
                   <tr>
-                    <td><code>[CA]M(FLT ID) ####</code> /<br> <code>[CA]M####[SLEW]</code> </td>
+                    <td><code>[CA]M<var>(FLT ID)</var> ####</code> /<br> <code>[CA]M####[SLEW]</code> </td>
                     <td>Suppress MCI alerts between the specified aircraft and the given beacon code.</td>
                   </tr>
                   <tr>
@@ -5628,7 +5638,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div>
             <br>
             <p>MSAWs can be configured with these commands:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -5678,7 +5688,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               and PTL ALL sets whether PTLs are shown all associated tracks in the current
               <a href="#stars-altitude-filter">altitude filters</a>.  It is also possible to
               display or hide the PTL of individual aircraft using a keyboard command.</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -5710,7 +5720,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               When aircraft are involved, the corresponding RBL endpoint moves along with the aircraft.
               </p>
             <p>The following commands are available to create and delete RBLs:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -5723,11 +5733,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Create an RBL between the two slewed aircraft.</td>
                   </tr>
                   <tr>
-                    <td><code>*T[SLEW](FIX)</code> or <code>*T(FIX)[SLEW]</code></td>
+                    <td><code>*T[SLEW]<var>(FIX)</var></code> or <code>*T<var>(FIX)</var>[SLEW]</code></td>
                     <td>Create an RBL between the slewed aircraft and the fix <code>FIX</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>*T[SLEW](#)</code></td>
+                    <td><code>*T[SLEW]<var>(#)</var></code></td>
                     <td>Delete the RBL with given number.</td>
                   </tr>
                   <tr>
@@ -5748,7 +5758,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div>
             <br>
             <p>The following commands are available for minimum separation display.</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -5781,7 +5791,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div>
             <br>
             <p>The following keyboard commands are also available to configure TPA cones and J-rings:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -5790,7 +5800,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>*J(###)[SLEW]</code></td>
+                    <td><code>*J<var>(###)</var>[SLEW]</code></td>
                     <td>Adds a TPA J-ring with radius given by ### to the selected track.</td>
                   </tr>
                   <tr>
@@ -5802,7 +5812,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Removes TPA J-rings from all tracks.</td>
                   </tr>
                   <tr>
-                    <td><code>*P(###)[SLEW]</code></td>
+                    <td><code>*P<var>(###)</var>[SLEW]</code></td>
                     <td>Adds a TPA cone with length given by ### to the selected track.</td>
                   </tr>
                   <tr>
@@ -5925,7 +5935,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </ul>
 
             <p>The following keyboard commands are also available to configure ATPA:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -5985,7 +5995,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </table>
 
               <p>The following supervisor commands are available for system-wide ATPA configuration:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -6002,19 +6012,19 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Disables ATPA system-wide.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]2ATPA(id)E</code></td>
+                    <td><code>[MULTIFUNC]2ATPA<var>(id)</var>E</code></td>
                     <td>Enables the specified ATPA approach volume (e.g., <code>2ATPA22RE</code> to enable the "22R" volume).</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]2ATPA(id)I</code></td>
+                    <td><code>[MULTIFUNC]2ATPA<var>(id)</var>I</code></td>
                     <td>Disables the specified ATPA approach volume.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]2.5(id)E</code></td>
+                    <td><code>[MULTIFUNC]2.5<var>(id)</var>E</code></td>
                     <td>Enables 2.5nm reduced separation for the specified ATPA approach volume (if adapted).</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]2.5(id)I</code></td>
+                    <td><code>[MULTIFUNC]2.5<var>(id)</var>I</code></td>
                     <td>Disables 2.5nm reduced separation for the specified ATPA approach volume.</td>
                   </tr>
                 </tbody>
@@ -6023,7 +6033,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <p>For facility engineers, the ATPA approach volumes are
                 listed in the "PROCESSING AREAS" map list, which can be selected
                 via "SYS PROC" from the DCB "MAPS" menu.  Individual maps can be displayed and then
-                hidden by entering <code>[MAPS](###)</code> where ### is the map number associated with the volume.
+                hidden by entering <code>[MAPS]<var>(###)</var></code> where ### is the map number associated with the volume.
                 </p>
 
               <h3 id="compass">Compass</h3>
@@ -6096,7 +6106,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               However, a number of commands below allow <i>forcing</i> a ghost track even if these criteria
               are not met.</p>
             <p>A variety of commands are available to configure CRDA. The following parameters are used with them:</p>
-              <table class="table">
+              <table class="table syntax">
                 <thead>
                   <tr>
                     <th>Identifier</th>
@@ -6105,12 +6115,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(AIRPORT)</code></td>
+                    <td><code><var>(AIRPORT)</var></code></td>
                     <td><i>Airport identifier</i>: three characters identifying an airport. Note that the
                     leading "K" from ICAO airport identifiers should not be included: "BOS", not "KBOS".</td>
                   </tr>
                   <tr>
-                    <td><code>(REGION)</code></td>
+                    <td><code><var>(REGION)</var></code></td>
                     <td><i>CRDA region identifier</i>: the name of a CRDA region from an enabled pair.
                     This may be a runway name (e.g., "22L") or any other identifier used in the
                     scenario's CRDA region definitions. The name must uniquely
@@ -6120,11 +6130,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tbody>
               </table>
               <p>And these are the CRDA-related commands:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 30%;">Command</th>
-                    <th style="width: 70%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6133,31 +6143,31 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Toggles whether CRDA is enabled.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)</code>/<br> <code>[MULTIFUNC]NP(#)</code></td>
+                    <td><code>[MULTIFUNC]NP<var>(AIRPORT)</var>&nbsp;<var>(#)</var></code>/<br> <code>[MULTIFUNC]NP<var>(#)</var></code></td>
                     <td>Toggles whether ghost tracks are enabled for the CRDA runway pair at the specified airport.
                       The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)S</code>/<br> <code>[MULTIFUNC]NP(#)S</code></td>
+                    <td><code>[MULTIFUNC]NP<var>(AIRPORT)</var>&nbsp;<var>(#)</var>S</code>/<br> <code>[MULTIFUNC]NP<var>(#)</var>S</code></td>
                     <td>Toggles stagger mode for the CRDA runway pair at the specified airport.
                       The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)T</code>/<br> <code>[MULTIFUNC]NP(#)T</code></td>
+                    <td><code>[MULTIFUNC]NP<var>(AIRPORT)</var>&nbsp;<var>(#)</var>T</code>/<br> <code>[MULTIFUNC]NP<var>(#)</var>T</code></td>
                     <td>Toggles tie mode for the given CRDA runway pair at the specified airport.
                       The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)D</code>/<br> <code>[MULTIFUNC]NP(#)D</code></td>
+                    <td><code>[MULTIFUNC]NP<var>(AIRPORT)</var>&nbsp;<var>(#)</var>D</code>/<br> <code>[MULTIFUNC]NP<var>(#)</var>D</code></td>
                     <td>Disables CRDA for the given runway pair at the specified airport.
                       The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(REGION)(#)</code>/<br> <code>[MULTIFUNC]NL(REGION)(#)</code></td>
+                    <td><code>[MULTIFUNC]NL<var>(AIRPORT)</var>&nbsp;<var>(REGION)</var><var>(#)</var></code>/<br> <code>[MULTIFUNC]NL<var>(REGION)</var><var>(#)</var></code></td>
                     <td>Set the leader line direction for ghost aircraft at the specified airport and given region
                       according to the given number. Clears the assigned leader line direction if '5' is given.
                       The airport may be omitted if the region uniquely identifies the corresponding airport.
@@ -6181,32 +6191,32 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       boundary of its CRDA region.)</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)</code> / <code>[MULTIFUNC]N(REGION)</code></td>
+                    <td><code>[MULTIFUNC]N<var>(AIRPORT)</var>&nbsp;<var>(REGION)</var></code> / <code>[MULTIFUNC]N<var>(REGION)</var></code></td>
                     <td>Toggles whether ghosts are generated for the specified region.
                       The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)E</code> / <code>[MULTIFUNC]N(REGION)E</code></td>
+                    <td><code>[MULTIFUNC]N<var>(AIRPORT)</var>&nbsp;<var>(REGION)</var>E</code> / <code>[MULTIFUNC]N<var>(REGION)</var>E</code></td>
                     <td>Enable ghosts for the specified region.
                       The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)I</code> / <code>[MULTIFUNC]N(REGION)I</code></td>
+                    <td><code>[MULTIFUNC]N<var>(AIRPORT)</var>&nbsp;<var>(REGION)</var>I</code> / <code>[MULTIFUNC]N<var>(REGION)</var>I</code></td>
                     <td>Inhibit ghosts for the specified region.
                       The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;B</code> / <code>[MULTIFUNC]N(REGION)&nbsp;B</code></td>
+                    <td><code>[MULTIFUNC]N<var>(AIRPORT)</var>&nbsp;<var>(REGION)</var>&nbsp;B</code> / <code>[MULTIFUNC]N<var>(REGION)</var>&nbsp;B</code></td>
                     <td>Toggle whether the <i>qualification region</i> for the CRDA region is drawn;
                       this is the lateral region of space aircraft must be inside for a ghost to be generated.
                       The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;L</code> / <code>[MULTIFUNC]N(REGION)&nbsp;L</code></td>
+                    <td><code>[MULTIFUNC]N<var>(AIRPORT)</var>&nbsp;<var>(REGION)</var>&nbsp;L</code> / <code>[MULTIFUNC]N<var>(REGION)</var>&nbsp;L</code></td>
                     <td>Toggle whether the <i>course lines</i> for the CRDA region are drawn;
                       these show the approach course that CRDA is defined with respect to.
                       The airport may be omitted if the region uniquely identifies the corresponding airport.
@@ -6221,7 +6231,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Specifies the position of the CRDA system list in the STARS window.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]TN(##)</code></td>
+                    <td><code>[MULTIFUNC]TN<var>(##)</var></code></td>
                     <td>Specifies the number of lines of text in the CRDA list</td>
                   </tr>
                 </tbody>
@@ -6236,7 +6246,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               to a significant point.
               </p>
               
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -6250,9 +6260,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     point closest to the second slewed point.</td>
                   </tr>
                   <tr>
-                    <td><code>*F[SLEW](FIX)</code></td>
+                    <td><code>*F[SLEW]<var>(FIX)</var></code></td>
                     <td>Shows the distance and heading from the slewed point to the significant point identified
-                    by <code>(FIX)</code>.</td>
+                    by <code><var>(FIX)</var></code>.</td>
                   </tr>
                 </tbody>
               </table>
@@ -6276,7 +6286,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               and automatically generates restriction areas for them.</p>
             <p>The currently-available restriction areas can be seen via the restriction area list, which can be displayed and
               positioned using these commands:
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
                     <th>Command</th>
@@ -6302,63 +6312,63 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               and 101&mdash;200 for system-defined restriction areas.</p>
             <p>The following commands can be used to create and delete restriction areas.
               (Note that system restriction areas cannot be deleted.) The syntax of the
-              <code>(RATEXT)</code> and <code>(RALOC)</code> specifiers used for restriction areas is
+              <code><var>(RATEXT)</var></code> and <code><var>(RALOC)</var></code> specifiers used for restriction areas is
               discussed below.
               </p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:30%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[F12]G(RATEXT)(RALOC)</code></td>
+                    <td><code>[F12]G<var>(RATEXT)</var><var>(RALOC)</var></code></td>
                     <td>Creates a text-only restriction area at the specified location.
                       It is optional to enter a space between the <code>G</code> and the text.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F12]C(###)(RATEXT) (RALOC)[ENTER]</code></td>
+                    <td><code>[F12]C<var>(###)</var><var>(RATEXT)</var> <var>(RALOC)</var>[ENTER]</code></td>
                     <td>Creates a circular restriction area with given radius in nautical miles at the given location.
                       The text is centered in the circle. A space may be entered between the radius and the text.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F12]C(###)(RATEXT) (RALOC)[SLEW]</code></td>
+                    <td><code>[F12]C<var>(###)</var><var>(RATEXT)</var> <var>(RALOC)</var>[SLEW]</code></td>
                     <td>Creates a circular restriction area with given radius in nautical miles at the given location.
                       The text is centered at the slewed location.  A space may be entered between the radius and the text.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F12]A(RALOC)(RALOC)...(RATEXT)[SLEW]</code></td>
+                    <td><code>[F12]A<var>(RALOC)</var><var>(RALOC)</var>...<var>(RATEXT)</var>[SLEW]</code></td>
                     <td>Creates an open polygonal restriction area with the given text with the specified vertices.
                       At least two vertices but no more than ten must be provided.
                       The text is centered at the final slewed point.
-                      Here, the ellipsis <code>...</code> indicates that additional <code>(RALOC)</code> locations may
+                      Here, the ellipsis <code>...</code> indicates that additional <code><var>(RALOC)</var></code> locations may
                       be given, seperated by spaces.
                       A space may be entered between the <code>A</code> and the first location.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F12]P(RALOC)(RALOC)...(RATEXT)[SLEW]</code></td>
+                    <td><code>[F12]P<var>(RALOC)</var><var>(RALOC)</var>...<var>(RATEXT)</var>[SLEW]</code></td>
                     <td>Creates a closed polygonal restriction area (i.e., the last vertex connects with the first)
                       with the given text with the specified vertices.
                       At least three vertices but no more than ten must be provided.
                       The text is centered at the final slewed point.
-                      Here, the ellipsis <code>...</code> indicates that multiple successive <code>(RALOC)</code> locations may
+                      Here, the ellipsis <code>...</code> indicates that multiple successive <code><var>(RALOC)</var></code> locations may
                       be given.
                       A space may optionally be entered between the <code>P</code> and the first location.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F12](###)DEL</code></td>
+                    <td><code>[F12]<var>(###)</var>DEL</code></td>
                     <td>Deletes the restriction area with the given number.</td>
                   </tr>
                 </tbody>
               </table>
-            <p>In the restriction area commands, <code>(RATEXT)</code> is used to indicate specification of the text
+            <p>In the restriction area commands, <code><var>(RATEXT)</var></code> is used to indicate specification of the text
               associated with the restriction area. One or two lines of text may be specified; if a second line is
               given, it should be separated from the first by a space. Because space is used to separate lines, periods
               must be entered for spaces within a line of text. These periods are converted to spaces by <i>vice</i>.</p>
@@ -6388,7 +6398,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td style="text-align:center;">8</td>
               </tr>
             </table><br>
-            <p><code>(RALOC)</code> corresponds to specifying a location.
+            <p><code><var>(RALOC)</var></code> corresponds to specifying a location.
               One way to do so is by clicking a point in the STARS window;
               alternatively, the names of a fix, a fix offset by a given distance in a given direction, or a latitude-longitude
               coordinate may be provided. If keyboard entry is used, <code>[ENTER]</code> must be pressed after each location.
@@ -6411,47 +6421,47 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 <img src="restriction-area-shaded-flashing.gif" srcset="restriction-area-shaded-flashing-2x.gif 2x" width="346" height="327" class="img-fluid">
 </div><br>   
             <p>A number of commands are available to modify existing restriction areas and manage which ones are displayed:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width:20%">Command</th>
+                    <th>Command</th>
                     <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[F12](###)E</code></td>
+                    <td><code>[F12]<var>(###)</var>E</code></td>
                     <td>Displays the restriction area with the given number.</td>
                   </tr>
                   <tr>
-                    <td><code>[F12](###)I</code></td>
+                    <td><code>[F12]<var>(###)</var>I</code></td>
                     <td>Hides the restriction area with the given number.</td>
                   </tr>
                   <tr>
-                    <td><code>[F12](###)</code></td>
+                    <td><code>[F12]<var>(###)</var></code></td>
                     <td>If the text in the restriction area with the given number is blinking, stops its blinking.
                     Otherwise, toggles the restriction area's visibility.</td>
                   </tr>
                   <tr>
-                    <td><code>[F12](###)T</code></td>
+                    <td><code>[F12]<var>(###)</var>T</code></td>
                     <td>Toggles whether the text associated with the restriction area is visible.</td>
                   </tr>
                   <tr>
-                    <td><code>[F12](###)T∆</code> / br <code>[F12](###)T ∆</code></td>
+                    <td><code>[F12]<var>(###)</var>T∆</code> / br <code>[F12]<var>(###)</var>T ∆</code></td>
                     <td>Toggles whether the text associated with the restriction area is visible.
                     If it is visible, start the text blinking.</td>
                   </tr>
                   <tr>
-                    <td><code>[F12](###)T(RATEXT)</code></td>
+                    <td><code>[F12]<var>(###)</var>T<var>(RATEXT)</var></code></td>
                     <td>Changes the text for the associated restriction area to the specified text.</td>
                   </tr>
                   <tr>
-                    <td><code>[F12](###)*(RALOC)</code> /<br><code>[F12](###)*[SLEW]</code></td>
+                    <td><code>[F12]<var>(###)</var>*<var>(RALOC)</var></code> /<br><code>[F12]<var>(###)</var>*[SLEW]</code></td>
                     <td>Moves the center of the restriction area to the specified location. Note that only user-defined
                     restriction areas may be moved.</td>
                   </tr>
                   <tr>
-                    <td><code>[F12](###)*∆(RALOC)</code> /<br><code>[F12](###)*∆[SLEW]</code></td>
+                    <td><code>[F12]<var>(###)</var>*∆<var>(RALOC)</var></code> /<br><code>[F12]<var>(###)</var>*∆[SLEW]</code></td>
                     <td>Moves the center of the restriction area to the specified location and display the text blinking.
                       Note that only user-defined
                     restriction areas may be moved.</td>
@@ -6581,11 +6591,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               Furthermore, in SINGLE and MULTI modes, radar tracks are only updated once every 5 seconds. In FUSION mode, they are
               updated once per second.</p>
             <p>Keyboard commands can also be used to select the RADAR mode:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6598,11 +6608,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Set multi-radar mode.</td>
                   </tr>
                   <tr>
-                    <td><code>[SITE](#)</code></td>
+                    <td><code>[SITE]<var>(#)</var></code></td>
                     <td>Select primary radar site by number.</td>
                   </tr>
                   <tr>
-                    <td><code>[SITE](X)</code></td>
+                    <td><code>[SITE]<var>(X)</var></code></td>
                     <td>Select primary radar site by single-character identifier.</td>
                   </tr>
                 </tbody>
@@ -6616,11 +6626,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               two aircraft.  The "VOL" control in the main DCB can be used to control the volume of these alerts.
             </p>
             <p>A few keyboard commands can be used to control audio:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6669,11 +6679,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               Preference set names may be up to 7 alphanumeric characters and may not be a number between 1
               and 32.</p>
             <p>These keyboard commands are available for preference sets:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6682,7 +6692,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Resets the current preferences to the system defaults.</td>
                   </tr>
                   <tr>
-                    <td><code>[PREF SET](##)</code> /<br><code>[PREF SET](ABC)</code></td>
+                    <td><code>[PREF SET]<var>(##)</var></code> /<br><code>[PREF SET]<var>(ABC)</var></code></td>
                     <td>Selects a preference set by number (1&ndash;32) or name.</td>
                   </tr>
                 </tbody>
@@ -6705,11 +6715,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               via "SYS PROC" from the DCB "MAPS" menu.</p>
 
             <p>The following supervisor commands control FDAM processing.</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6726,15 +6736,15 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Inhibits FDAM processing system-wide.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]2X(REGION)</code></td>
+                    <td><code>[MULTIFUNC]2X<var>(REGION)</var></code></td>
                     <td>Toggles FDAM processing for a single region.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]2X(REGION) E</code></td>
+                    <td><code>[MULTIFUNC]2X<var>(REGION)</var> E</code></td>
                     <td>Enables FDAM processing for a single region.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]2X(REGION) I</code></td>
+                    <td><code>[MULTIFUNC]2X<var>(REGION)</var> I</code></td>
                     <td>Inhibits FDAM processing for a single region.</td>
                   </tr>
                   <tr>
@@ -6777,11 +6787,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 6S" indicates that TCP 6S has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  Finally, we can see that <a href="#crda">CRDA</a> has been enabled for the runway pair 27R/17, with the "S" indicating "stagger" mode.</p>
             <p>The SSA list is always visible; a keyboard command is
             available to position it:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6792,11 +6802,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tbody>
               </table>
               <p>The SSA list also includes the ATIS letter and GI (General Information) text. These values are shared across all controllers in the sim. They can be set with the following commands:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6806,12 +6816,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(A)</code></td>
+                    <td><code>[MULTIFUNC]S<var>(A)</var></code></td>
                     <td>Set current ATIS where (A) is a letter from A to Z.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(A)(TEXT)</code></td>
+                    <td><code>[MULTIFUNC]S<var>(A)</var><var>(TEXT)</var></code></td>
                     <td>Set the ATIS in the first line to (A) and the GI text to (TEXT)
                     </td>
                   </tr>
@@ -6821,42 +6831,42 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(A)*</code></td>
+                    <td><code>[MULTIFUNC]S<var>(A)</var>*</code></td>
                     <td>Set current ATIS where (A) is a letter from A to Z and clear the first line of GI text
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(#) (A)</code></td>
+                    <td><code>[MULTIFUNC]S<var>(#)</var> <var>(A)</var></code></td>
                     <td>Set the ATIS in the given line
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(#) (A)*</code></td>
+                    <td><code>[MULTIFUNC]S<var>(#)</var> <var>(A)</var>*</code></td>
                     <td>Set the ATIS in the given line and clear the line's GI text
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(#) (A) (TEXT)</code></td>
+                    <td><code>[MULTIFUNC]S<var>(#)</var> <var>(A)</var> <var>(TEXT)</var></code></td>
                     <td>Set the ATIS in the given line and the line's GI text to (TEXT)
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(#) (TEXT)</code></td>
+                    <td><code>[MULTIFUNC]S<var>(#)</var> <var>(TEXT)</var></code></td>
                     <td>Set the given line of GI text to (TEXT)
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(#)</code></td>
+                    <td><code>[MULTIFUNC]S<var>(#)</var></code></td>
                     <td>Clear ATIS and GI text given line
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(#) *</code></td>
+                    <td><code>[MULTIFUNC]S<var>(#)</var> *</code></td>
                     <td>Clear ATIS in given line
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(#) * (TEXT)</code></td>
+                    <td><code>[MULTIFUNC]S<var>(#)</var> * <var>(TEXT)</var></code></td>
                     <td>Clear ATIS in given line and set GI text
                     </td>
                   </tr>
@@ -6930,11 +6940,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               and one letter indicating the arrival/departure fixes.
             </p>
             <p>The flight plan list can be managed with these commands:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6947,7 +6957,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Places the upper left corner of the flight plan list at the slewed point.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]T(##)</code></td>
+                    <td><code>[MULTIFUNC]T<var>(##)</var></code></td>
                     <td>Sets how the maximum number of lines of text displayed in the flight plan list.
                       If not currently visible, the flight plan list is made visible if the number of visible lines is set.</td>
                   </tr>
@@ -6963,11 +6973,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="vfr-list.png" srcset="vfr-list-2x.png 2x" width="199" height="43">
             </div><br>
             <p>The VFR list is managed with these commands:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -6980,7 +6990,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Places the upper left corner of the VFR list at the slewed point.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]TV(##)</code></td>
+                    <td><code>[MULTIFUNC]TV<var>(##)</var></code></td>
                     <td>Sets how the maximum number of lines of text displayed in the VFR list.
                       The VFR list is made visible if the number of visible lines is set when it is invisible.</td>
                   </tr>
@@ -6995,24 +7005,24 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div>
             <br>
             <p>The following commands can be used to configure the tower lists. For all of them the first number gives the tower list index and must be 1, 2, or 3.</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
               <thead>
                 <tr>
-                  <th style="width: 25%;">Command</th>
-                  <th style="width: 75%;">Function</th>
+                  <th>Command</th>
+                  <th>Function</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[MULTIFUNC]P(#)</code></td>
+                  <td><code>[MULTIFUNC]P<var>(#)</var></code></td>
                   <td>Toggles whether the corresponding tower list is shown.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]P(#)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]P<var>(#)</var>[SLEW]</code></td>
                   <td>Places the upper left corner of the given tower list at the slewed point.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]P(#)(##)</code></td>
+                  <td><code>[MULTIFUNC]P<var>(#)</var><var>(##)</var></code></td>
                   <td>Sets how the maximum number of lines of text displayed in the specified tower list. The first number corresponds to the tower list index.</td>
                 </tr>
               </tbody>
@@ -7027,11 +7037,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <br>
             <p>The maximum number of lines in the alert list is hard-coded to 50 and it is not possible to hide the alert list.
               However, its position in the STARS window can be set using the following command:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7051,11 +7061,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <div class="text-center">
               <img src="mci-suppression-list.png" srcset="mci-suppression-list-2x.png 2x" width="214" height="90">
             </div><br>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7079,11 +7089,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="vfr-list.png" srcset="vfr-list-2x.png 2x" width="199" height="43">
             </div><br>
             <p>This list is always visible, but its position and length can be set:</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7092,7 +7102,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Places the upper left corner of the Coast/Suspend list at the slewed point.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]TC(##)</code></td>
+                    <td><code>[MULTIFUNC]TC<var>(##)</var></code></td>
                     <td>Sets how the maximum number of lines of text displayed in the Coast/Suspend list.
                       The list is made visible if the number of visible lines is set when it is invisible.</td>
                   </tr>
@@ -7114,11 +7124,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               The coordination list also includes the aircraft type, the aircraft's assigned squawk code, its exit, and
               its requested final altitude.</p>
             <p>These keyboard commands are used to manage coordination lists and releases:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7127,27 +7137,27 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>If there is a single unreleased aircraft in the controller's coordination lists, release that aircraft.</td>
                   </tr>
                   <tr>
-                    <td><code>[F13](FLT ID)</code></td>
+                    <td><code>[F13]<var>(FLT ID)</var></code></td>
                     <td>For an unreleased aircraft, release the specified aircraft; if the aircraft has been released, then
                       remove it from the coordination list. Aircraft may be specified by their callsign, beacon code, or their list number (the first column).</td>
                   </tr>
                   <tr>
-                    <td><code>[F13]P(ID) A*</code></td>
+                    <td><code>[F13]P<var>(ID)</var> A*</code></td>
                     <td>Enable automatic releases for the specified coordination list. Note that automatic releases only apply to
                       new aircraft; aircraft already in the list waiting to be released still must be released manually.
                       "AUTO" will appear in the header line of the coordination list when automatic releases are enabled.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[F13]P(ID) M*</code></td>
+                    <td><code>[F13]P<var>(ID)</var> M*</code></td>
                     <td>Disable automatic releases for the specified coordination list.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]P(ID)[SLEW]</code></td>
+                    <td><code>[MULTIFUNC]P<var>(ID)</var>[SLEW]</code></td>
                     <td>Specifies the position of the given coordination list in the STARS window.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]P(ID) (##)</code></td>
+                    <td><code>[MULTIFUNC]P<var>(ID)</var> <var>(##)</var></code></td>
                     <td>Specifies the number of lines to display in the given coordination list.</td>
                   </tr>
                   <tr>
@@ -7165,7 +7175,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tbody>
               </table>
 
-            <p>Coordination list identifiers (<code>(ID)</code> in the above commands) are one to three alphanumeric
+            <p>Coordination list identifiers (<code><var>(ID)</var></code> in the above commands) are one to three alphanumeric
               characters. They can be found in the scenario information
               window, accessed by clicking the <i class="fas fa-question-circle"></i> button in the menubar.
               Here we can see that the "REPUBLIC" coordination list has id "A".</p>
@@ -7181,11 +7191,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="sign-on-list.png" srcset="sign-on-list-2x.png 2x" width="104" height="39">
             </div><br>
             <p>It can be configured using these commands:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7257,11 +7267,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div><br>
 
             <p>The following keyboard commands can be used to manage video maps.</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7270,7 +7280,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Toggles whether the maps list is shown.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]TX(###)</code></td>
+                    <td><code>[MULTIFUNC]TX<var>(###)</var></code></td>
                     <td>Sets the number of lines of text in the video maps list.</td>
                   </tr>
                   <tr>
@@ -7278,15 +7288,15 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Sets the position of the maps list on the STARS scope.</td>
                   </tr>
                   <tr>
-                    <td><code>[MAPS](###)</code></td>
+                    <td><code>[MAPS]<var>(###)</var></code></td>
                     <td>Toggles display of the video map with the given map number.</td>
                   </tr>
                   <tr>
-                    <td><code>[MAPS](###)E</code></td>
+                    <td><code>[MAPS]<var>(###)</var>E</code></td>
                     <td>Displays the video map with the given map number.</td>
                   </tr>
                   <tr>
-                    <td><code>[MAPS](###)I</code></td>
+                    <td><code>[MAPS]<var>(###)</var>I</code></td>
                     <td>Stops displaying the video map with the given map number.</td>
                   </tr>
                   <tr>
@@ -7302,11 +7312,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               such as flight plan details, coordinates, or quicklook status.</p>
 
             <p>The following command allows you to position the preview area:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7351,11 +7361,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="wx-levels-in-ssa.png" srcset="wx-levels-in-ssa-2x.png 2x" width="198" height="101">
             </div><br>
             <p>A few keyboard commands related to weather are available:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7376,15 +7386,15 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Clear weather display: don't show any levels of weather radar in the STARS window.</td>
                   </tr>
                   <tr>
-                    <td><code>[WX](#)</code></td>
+                    <td><code>[WX]<var>(#)</var></code></td>
                     <td>If # is between 1 and 6, toggle display of the associated weather radar level.</td>
                   </tr>
                   <tr>
-                    <td><code>[WX](#)E</code></td>
+                    <td><code>[WX]<var>(#)</var>E</code></td>
                     <td>If # is between 1 and 6, enable display of the associated weather radar level.</td>
                   </tr>
                   <tr>
-                    <td><code>[WX](#)I</code></td>
+                    <td><code>[WX]<var>(#)</var>I</code></td>
                     <td>If # is between 1 and 6, disable (inhibit) display of the associated weather radar level.</td>
                   </tr>
                 </tbody>
@@ -7393,11 +7403,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <h3 id="stars-vice-display" data-nav-title="Vice-Specific">Vice-Specific Display Commands</h3>
 
             <p><i>vice</i> provides a few additional display commands not found in the standard STARS system:</p>
-              <table class="table table-bordered">
+              <table class="table table-bordered syntax">
                 <thead>
                   <tr>
-                    <th style="width: 25%;">Command</th>
-                    <th style="width: 75%;">Function</th>
+                    <th>Command</th>
+                    <th>Function</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7444,7 +7454,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <p>Point outs in ERAM are initiated and acknowledged with the <code>QP</code> command. They are restricted to other
                 ERAM sectors within the same ARTCC; point outs to a different ARTCC or to a STARS controller are rejected with
                 an <code>ILLEGAL POSITION</code> error.</p>
-              <table class="table table-striped">
+              <table class="table table-striped syntax">
                 <thead>
                   <tr><th>Command</th><th>Description</th></tr>
                 </thead>
