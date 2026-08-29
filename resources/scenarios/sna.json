@@ -1086,7 +1086,7 @@
             "is_rnav": true,
             "aircraft": ["jet"],
             "departure_controller": "6L",
-            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200/c130/hoC04 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200/c13000/hoC04 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
           },
           "COREZ": {
             "cleared_altitude": 3000,
@@ -1094,7 +1094,7 @@
             "is_rnav": true,
             "aircraft": ["jet"],
             "departure_controller": "6L",
-            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200/c130/hoC04 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200/c13000/hoC04 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
           },
           "IKAYE": {
             "assigned_altitude": 3000,
@@ -1193,7 +1193,7 @@
             "is_rnav": true,
             "departure_controller": "4B",
             "aircraft": ["jet"],
-            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c060/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c6000/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
           },
           "COREZ": {
             "cleared_altitude": 3000,
@@ -1201,7 +1201,7 @@
             "is_rnav": true,
             "departure_controller": "4B",
             "aircraft": ["jet"],
-            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c060/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c6000/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
           },
           "VTU": {
             "assigned_altitude": 3000,
@@ -1788,7 +1788,7 @@
     "DSNEE6/KAYOH8.FIN": {
       "arrivals": [
         {
-          "waypoints": "LUQAS/a11000-/ho4S N033.52.18.354,W117.22.14.893/ho DSNEE/a8000/s220 JWARD/a8000/s190/h270/d063/tc",
+          "waypoints": "LUQAS/a11000-/ho4S N033.52.18.354,W117.22.14.893/ho DSNEE/a8000/s220 JWARD/a8000/s190/h270/d6300/tc",
           "description": "VISUAL",
           "star": "DSNEE6",
           "is_rnav": true,
@@ -1865,7 +1865,7 @@
           }
         },
         {
-          "waypoints": "TOETO/a10000-/ho4S N033.49.48.967,W117.20.17.175/ho DSNEE/a8000/s220 JWARD/a8000/s190/h270/d063/tc",
+          "waypoints": "TOETO/a10000-/ho4S N033.49.48.967,W117.20.17.175/ho DSNEE/a8000/s220 JWARD/a8000/s190/h270/d6300/tc",
           "description": "VISUAL",
           "star": "DSNEE6",
           "is_rnav": true,
@@ -2159,7 +2159,7 @@
           }
         },
         {
-          "waypoints": "N033.51.59.416,W117.06.26.169 N033.48.13.276,W117.23.16.801/ho FRETS/a8000/s190/d063/h260/tc",
+          "waypoints": "N033.51.59.416,W117.06.26.169 N033.48.13.276,W117.23.16.801/ho FRETS/a8000/s190/d6300/h260/tc",
           "description": "VISUAL",
           "star": "KAYOH8",
           "initial_controller": "3V",
@@ -2592,7 +2592,7 @@
     "V363 ENRT.FIN": {
       "overflights": [
         {
-          "waypoints": "OCN/ho4S V23 DANAH ELB/d050/ho V363 POM",
+          "waypoints": "OCN/ho4S V23 DANAH ELB/d5000/ho V363 POM",
           "description": "POC",
           "flight_type": "arrival",
           "scratchpad": "POC",
@@ -2627,7 +2627,7 @@
           ]
         },
         {
-          "waypoints": "OCN/ho4S V23 DANAH ELB/d050/ho V363 POM",
+          "waypoints": "OCN/ho4S V23 DANAH ELB/d5000/ho V363 POM",
           "description": "EMT",
           "flight_type": "arrival",
           "scratchpad": "EMT",
@@ -2662,7 +2662,7 @@
           ]
         },
         {
-          "waypoints": "OCN/ho4S V23 DANAH ELB/d050/ho V363 POM",
+          "waypoints": "OCN/ho4S V23 DANAH ELB/d5000/ho V363 POM",
           "description": "CCB",
           "flight_type": "arrival",
           "scratchpad": "CCB",
@@ -2697,7 +2697,7 @@
           ]
         },
         {
-          "waypoints": "OCN V23 DANAH ELB/d050/ho V363 POXKU V8 PDZ/delete",
+          "waypoints": "OCN V23 DANAH ELB/d5000/ho V363 POXKU V8 PDZ/delete",
           "initial_controller": "4S",
           "flight_type": "arrival",
           "initial_altitude": 6000,
@@ -2731,7 +2731,7 @@
           ]
         },
         {
-          "waypoints": "OCN V23 DANAH ELB/d050/ho V363 POXKU V8 PDZ/delete",
+          "waypoints": "OCN V23 DANAH ELB/d5000/ho V363 POXKU V8 PDZ/delete",
           "initial_controller": "4S",
           "flight_type": "arrival",
           "initial_altitude": 6000,
@@ -2789,7 +2789,7 @@
           ]
         },
         {
-          "waypoints": "OCN V23 DANAH ELB/d050/ho V363 POXKU V8 PDZ/delete",
+          "waypoints": "OCN V23 DANAH ELB/d5000/ho V363 POXKU V8 PDZ/delete",
           "initial_controller": "4S",
           "flight_type": "arrival",
           "initial_altitude": 6000,
@@ -4320,7 +4320,7 @@
     "LGB OCEANIC ARR": {
       "arrivals": [
         {
-          "waypoints": "GOATZ/ho6K N033.12.22.826,W118.38.24.904/a15000/d100 SXC/d040/h40/ho",
+          "waypoints": "GOATZ/ho6K N033.12.22.826,W118.38.24.904/a15000/d10000 SXC/d4000/h40/ho",
           "route": "SXC SLI",
           "initial_controller": "C28",
           "initial_altitude": 15000,
@@ -7269,7 +7269,7 @@
           }
         },
         {
-          "waypoints": "ITSME/d040 V186 PIRRO/ho V186 BAYJY V363 POXKU V8 SLI",
+          "waypoints": "ITSME/d4000 V186 PIRRO/ho V186 BAYJY V363 POXKU V8 SLI",
           "route": "VNY V186 BAYJY V363 POXKU V8 SLI",
           "description": "V363",
           "initial_controller": "3P",
@@ -7308,7 +7308,7 @@
     "V363/V388/V394 ARR.FIN": {
       "arrivals": [
         {
-          "waypoints": "N033.50.20.594,W117.07.11.460 N033.46.38.423,W117.19.57.152/ho4S N033.35.23.684,W117.28.07.197/d060 N033.33.26.748,W117.32.05.985/ho N033.36.16.982,W117.37.26.017/h320/tc",
+          "waypoints": "N033.50.20.594,W117.07.11.460 N033.46.38.423,W117.19.57.152/ho4S N033.35.23.684,W117.28.07.197/d6000 N033.33.26.748,W117.32.05.985/ho N033.36.16.982,W117.37.26.017/h320/tc",
           "route": "PSP V388 RNDAL V363 POXKU V8 SLI",
           "description": "PQ",
           "initial_controller": "3V",
@@ -7595,7 +7595,7 @@
     "V459 ARR": {
       "arrivals": [
         {
-          "waypoints": "DARTS N033.59.04.340,W118.10.15.591/po2D/d070 N033.57.10.879,W118.09.11.623/ho/h180",
+          "waypoints": "DARTS N033.59.04.340,W118.10.15.591/po2D/d7000 N033.57.10.879,W118.09.11.623/ho/h180",
           "route": "TWINE V518 KIMMO V459 SLI",
           "initial_controller": "6L",
           "initial_altitude": 9000,
@@ -7699,7 +7699,7 @@
     "V459 ARR.FIN": {
       "arrivals": [
         {
-          "waypoints": "DARTS N033.59.04.340,W118.10.15.591/po2D/d070 N033.57.10.879,W118.09.11.623/ho4R N033.50.14.936,W118.10.51.406/d060 N033.43.13.295,W118.12.31.135/d050 N033.40.24.188,W118.05.52.221/d040/ho/h040",
+          "waypoints": "DARTS N033.59.04.340,W118.10.15.591/po2D/d7000 N033.57.10.879,W118.09.11.623/ho4R N033.50.14.936,W118.10.51.406/d6000 N033.43.13.295,W118.12.31.135/d5000 N033.40.24.188,W118.05.52.221/d4000/ho/h040",
           "route": "TWINE V518 KIMMO V459 SLI",
           "initial_controller": "6L",
           "initial_altitude": 9000,
@@ -7759,7 +7759,7 @@
     "V208 ARR": {
       "arrivals": [
         {
-          "waypoints": "N033.35.13.769,W118.43.25.023/d080 N033.33.17.602,W118.40.43.112/d070 SXC/h80/d050/ho",
+          "waypoints": "N033.35.13.769,W118.43.25.023/d8000 N033.33.17.602,W118.40.43.112/d7000 SXC/h80/d5000/ho",
           "route": "VTU V208 SXC",
           "initial_controller": "6K",
           "initial_altitude": 11000,
@@ -7815,7 +7815,7 @@
           }
         },
         {
-          "waypoints": "N033.35.13.769,W118.43.25.023/d080 N033.33.17.602,W118.40.43.112/d070 SXC/h80/d050/ho",
+          "waypoints": "N033.35.13.769,W118.43.25.023/d8000 N033.33.17.602,W118.40.43.112/d7000 SXC/h80/d5000/ho",
           "route": "VTU V208 SXC",
           "initial_controller": "6K",
           "initial_altitude": 9000,
@@ -7871,7 +7871,7 @@
           }
         },
         {
-          "waypoints": "N033.35.18.548,W118.43.34.691/d080 N033.35.06.518,W118.32.22.520/d040/h80/ho4B",
+          "waypoints": "N033.35.18.548,W118.43.34.691/d8000 N033.35.06.518,W118.32.22.520/d4000/h80/ho4B",
           "route": "VTU V208 SXC",
           "initial_controller": "6K",
           "initial_altitude": 11000,
@@ -7927,7 +7927,7 @@
           }
         },
         {
-          "waypoints": "N033.35.18.548,W118.43.34.691/d080 N033.35.06.518,W118.32.22.520/d040/h80/ho4B",
+          "waypoints": "N033.35.18.548,W118.43.34.691/d8000 N033.35.06.518,W118.32.22.520/d4000/h80/ho4B",
           "route": "VTU V208 SXC",
           "initial_controller": "6K",
           "initial_altitude": 9000,
@@ -7987,7 +7987,7 @@
     "V208 ARR.N": {
       "arrivals": [
         {
-          "waypoints": "N033.35.13.769,W118.43.25.023/d080 N033.33.17.602,W118.40.43.112/d070 SXC/h80/d050/ho4T",
+          "waypoints": "N033.35.13.769,W118.43.25.023/d8000 N033.33.17.602,W118.40.43.112/d7000 SXC/h80/d5000/ho4T",
           "route": "VTU V208 SXC",
           "initial_controller": "6K",
           "initial_altitude": 11000,
@@ -8021,7 +8021,7 @@
           }
         },
         {
-          "waypoints": "N033.35.13.769,W118.43.25.023/d080 N033.33.17.602,W118.40.43.112/d070 SXC/h80/d050/ho4T",
+          "waypoints": "N033.35.13.769,W118.43.25.023/d8000 N033.33.17.602,W118.40.43.112/d7000 SXC/h80/d5000/ho4T",
           "route": "VTU V208 SXC",
           "initial_controller": "6K",
           "initial_altitude": 9000,
@@ -8055,7 +8055,7 @@
           }
         },
         {
-          "waypoints": "N033.35.18.548,W118.43.34.691/d080 N033.35.06.518,W118.32.22.520/d050/h80/ho",
+          "waypoints": "N033.35.18.548,W118.43.34.691/d8000 N033.35.06.518,W118.32.22.520/d5000/h80/ho",
           "route": "VTU V208 SXC",
           "initial_controller": "6K",
           "initial_altitude": 11000,
@@ -8133,7 +8133,7 @@
           }
         },
         {
-          "waypoints": "N033.35.18.548,W118.43.34.691/d080 N033.35.06.518,W118.32.22.520/d050/h80/ho",
+          "waypoints": "N033.35.18.548,W118.43.34.691/d8000 N033.35.06.518,W118.32.22.520/d5000/h80/ho",
           "route": "VTU V208 SXC",
           "initial_controller": "6K",
           "initial_altitude": 9000,

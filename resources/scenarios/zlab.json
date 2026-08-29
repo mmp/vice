@@ -2124,7 +2124,7 @@
     "ZIGGY8": {
       "arrivals": [
         {
-          "waypoints": "ZARTI LANDO BLUUH/a24000/ho17 PMD/ho FLAVR/a14000/s250 MAJEK/s250/d080 HESPE HITOP/d060 NITIY/d045 ZIGGY PETIS/clearapp",
+          "waypoints": "ZARTI LANDO BLUUH/a24000/ho17 PMD/ho FLAVR/a14000/s250 MAJEK/s250/d8000 HESPE HITOP/d6000 NITIY/d4500 ZIGGY PETIS/clearapp",
           "star": "ZIGGY8",
           "route": "/. ZIGGY8",
           "initial_controller": "27",

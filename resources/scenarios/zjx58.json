@@ -527,7 +527,7 @@
     "SNFLD3": {
       "arrivals": [
         {
-          "waypoints": "GIPPL/ho LPERD/a30000-34000 NOOMN/a23000+ FORYU/a13000+ NICCK/a12000+ SNFLD GTOUT/a12000-16000 TUGLE HIGGZ/a10000-12000/s250 VOSSS/a230/a8000+ SUNDE/a6000+ CUBAL/a5000/s210 N028.18.51.042,W081.12.31.794/a3000 HEWES KMCO-35R/a50/delete",
+          "waypoints": "GIPPL/ho LPERD/a30000-34000 NOOMN/a23000+ FORYU/a13000+ NICCK/a12000+ SNFLD GTOUT/a12000-16000 TUGLE HIGGZ/a10000-12000/s250 VOSSS/s230/a8000+ SUNDE/a6000+ CUBAL/a5000/s210 N028.18.51.042,W081.12.31.794/a3000 HEWES KMCO-35R/a50/delete",
           "star": "SNFLD3",
           "route": "/. SNFLD3",
           "initial_controller": "68",
@@ -598,7 +598,7 @@
     "QUBEN2": {
       "arrivals": [
         {
-          "waypoints": "STYMY/ho75 HAINY/a24000+ MISCL MEAAT/hoJ1S BASSS POGIE/a13000 QUBEN/d20 N030.25.54.936,W082.00.39.523/d0 KJAX-8/delete",
+          "waypoints": "STYMY/ho75 HAINY/a24000+ MISCL MEAAT/hoJ1S BASSS POGIE/a13000 QUBEN/d2000 N030.25.54.936,W082.00.39.523 KJAX-8/delete",
           "star": "QUBEN2",
           "route": "/. QUBEN2",
           "initial_controller": "R02",

@@ -5640,7 +5640,7 @@
     "SAT.SOUTH": {
       "arrivals": [
         {
-          "waypoints": "N035.58.00.812,W120.57.54.865/d100 N035.59.42.682,W120.59.23.140/ho WIGGL",
+          "waypoints": "N035.58.00.812,W120.57.54.865/d10000 N035.59.42.682,W120.59.23.140/ho WIGGL",
           "route": "SCTRR WIGGL",
           "initial_controller": "C10",
           "initial_altitude": 18000,
@@ -5679,7 +5679,7 @@
           }
         },
         {
-          "waypoints": "N036.02.50.576,W120.50.46.508/d100 N036.04.15.143,W120.52.43.101/ho WIGGL",
+          "waypoints": "N036.02.50.576,W120.50.46.508/d10000 N036.04.15.143,W120.52.43.101/ho WIGGL",
           "route": "MAKRS WIGGL",
           "initial_controller": "C10",
           "initial_altitude": 18000,
@@ -6027,7 +6027,7 @@
     "WWAVS2.BCKGND": {
       "overflights": [
         {
-          "waypoints": "SERFR N036.26.57.475,W121.39.48.290/ho2G/ssspTTL NRRLI/a20000+/s280 WWAVS/a15000-19000/s280 WPOUT/a11000/s250/ho2B THEEZ/a8000+/s230 WESLA/a6000/s210 MVRKK/a6000 N037.51.41.124,W122.18.20.335/a4000/ho2F/ssspLFT N037.50.18.328,W122.15.49.740 N037.47.34.934,W122.15.30.432/a3000 SHAKE/a2800 ROGGE/a1800/a180 KSFO-19L/a200/delete",
+          "waypoints": "SERFR N036.26.57.475,W121.39.48.290/ho2G/ssspTTL NRRLI/a20000+/s280 WWAVS/a15000-19000/s280 WPOUT/a11000/s250/ho2B THEEZ/a8000+/s230 WESLA/a6000/s210 MVRKK/a6000 N037.51.41.124,W122.18.20.335/a4000/ho2F/ssspLFT N037.50.18.328,W122.15.49.740 N037.47.34.934,W122.15.30.432/a3000 SHAKE/a2800 ROGGE/a1800/s180 KSFO-19L/a200/delete",
           "initial_controller": "C14",
           "initial_altitude": 27000,
           "initial_speed": 280,

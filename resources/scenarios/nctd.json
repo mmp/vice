@@ -5693,7 +5693,7 @@
           "initial_speed": 150,
           "scratchpad": "HRN",
           "cruise_altitude": 36000,
-          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c120/ho N037.17.31.336,W121.44.56.594/flyover/c150/tc SJC BMRNG HRNER"
+          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c12000/ho N037.17.31.336,W121.44.56.594/flyover/c15000/tc SJC BMRNG HRNER"
         },
         {
           "airlines": [
@@ -5713,7 +5713,7 @@
           "initial_speed": 150,
           "scratchpad": "ORR",
           "cruise_altitude": 35000,
-          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c120/ho N037.17.31.336,W121.44.56.594/flyover/c150/tc SJC BMRNG DEEII ORRCA"
+          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c12000/ho N037.17.31.336,W121.44.56.594/flyover/c15000/tc SJC BMRNG DEEII ORRCA"
         },
         {
           "airlines": [
@@ -5756,7 +5756,7 @@
           "initial_speed": 150,
           "scratchpad": "MOG",
           "cruise_altitude": 35000,
-          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c120/ho N037.17.31.336,W121.44.56.594/flyover/c150/tc SJC BMRNG AXXXX MOGEE"
+          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c12000/ho N037.17.31.336,W121.44.56.594/flyover/c15000/tc SJC BMRNG AXXXX MOGEE"
         },
         {
           "airlines": [
@@ -5794,7 +5794,7 @@
           "initial_speed": 150,
           "scratchpad": "TPR",
           "cruise_altitude": 35000,
-          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c120/ho N037.17.31.336,W121.44.56.594/flyover/c150/tc SJC BMRNG KAESS TIPRE"
+          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c12000/ho N037.17.31.336,W121.44.56.594/flyover/c15000/tc SJC BMRNG KAESS TIPRE"
         },
         {
           "airlines": [
@@ -5832,7 +5832,7 @@
           "initial_speed": 150,
           "scratchpad": "SRH",
           "cruise_altitude": 35000,
-          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c120/ho N037.17.31.336,W121.44.56.594/flyover/c150/tc SJC BMRNG HNNLE SYRAH"
+          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c12000/ho N037.17.31.336,W121.44.56.594/flyover/c15000/tc SJC BMRNG HNNLE SYRAH"
         },
         {
           "airlines": [
@@ -5867,7 +5867,7 @@
           "initial_speed": 150,
           "scratchpad": "BEB",
           "cruise_altitude": 34000,
-          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c120/ho N037.17.31.336,W121.44.56.594/flyover/h260/tc BRINY BEBOP"
+          "waypoints": "KSJC-12L MLPTS/a900+/flyover/po2N LOUPE/a5000/s230/c12000/ho N037.17.31.336,W121.44.56.594/flyover/h260/tc BRINY BEBOP"
         }
       ]
     },
@@ -6375,7 +6375,7 @@
     "WWAVS2.BCKGND": {
       "overflights": [
         {
-          "waypoints": "SERFR N036.26.57.475,W121.39.48.290/ho2G/ssspTTL NRRLI/a20000+/s280 WWAVS/a15000-19000/s280 WPOUT/a11000/s250/ho2B THEEZ/a8000+/s230 WESLA/a6000/s210 MVRKK/a6000 N037.51.41.124,W122.18.20.335/a4000/ho2F/ssspLFT N037.50.18.328,W122.15.49.740 N037.47.34.934,W122.15.30.432/a3000 SHAKE/a2800 ROGGE/a1800/a180 KSFO-19L/a200/delete",
+          "waypoints": "SERFR N036.26.57.475,W121.39.48.290/ho2G/ssspTTL NRRLI/a20000+/s280 WWAVS/a15000-19000/s280 WPOUT/a11000/s250/ho2B THEEZ/a8000+/s230 WESLA/a6000/s210 MVRKK/a6000 N037.51.41.124,W122.18.20.335/a4000/ho2F/ssspLFT N037.50.18.328,W122.15.49.740 N037.47.34.934,W122.15.30.432/a3000 SHAKE/a2800 ROGGE/a1800/s180 KSFO-19L/a200/delete",
           "initial_controller": "C14",
           "initial_altitude": 27000,
           "initial_speed": 280,
@@ -6581,7 +6581,7 @@
           "initial_controller": "C34",
           "initial_speed": 280,
           "scratchpad": "STS",
-          "waypoints": "SNORA ZOMER/a27000+/ho2Z KIMZY/a19000 N037.26.21.921,W121.27.19.215/ho/d160 STEEV OAK VNYRD BURDE/delete"
+          "waypoints": "SNORA ZOMER/a27000+/ho2Z KIMZY/a19000 N037.26.21.921,W121.27.19.215/ho/d16000 STEEV OAK VNYRD BURDE/delete"
         },
         {
           "airlines": [
@@ -6609,7 +6609,7 @@
           "initial_speed": 280,
           "scratchpad": "APC",
           "flight_type": "arrival",
-          "waypoints": "SNORA ZOMER/a27000+/ho2Z KIMZY/a19000 N037.26.21.921,W121.27.19.215/ho/d160 STEEV OAK VNYRD BURDE/delete"
+          "waypoints": "SNORA ZOMER/a27000+/ho2Z KIMZY/a19000 N037.26.21.921,W121.27.19.215/ho/d16000 STEEV OAK VNYRD BURDE/delete"
         }
       ]
     },

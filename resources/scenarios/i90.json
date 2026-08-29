@@ -2693,82 +2693,82 @@
           "CRIED": {
             "assigned_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c160 DREMR/hoC49/c230  LITLD BLTWY"
+            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c16000 DREMR/hoC49/c23000  LITLD BLTWY"
           },
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c160 ELOCO/hoC36/c230 GRIPY YOKEM SBI"
+            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c16000 ELOCO/hoC36/c23000 GRIPY YOKEM SBI"
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c160 N029.23.34.476,W095.08.24.766/hoC43/c230 VUH HOODO SBIRD CFOOD BOWFN"
+            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c16000 N029.23.34.476,W095.08.24.766/hoC43/c23000 VUH HOODO SBIRD CFOOD BOWFN"
           },
           "TPAKK": {
             "assigned_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c160 N029.56.07.769,W095.17.05.244 RENNK/hoC49/c230 COLET SUSHI WWELL INDIE"
+            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 RENNK/hoC49/c23000 COLET SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c160 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "MUSYL,ANKRR,KELPP": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c160 N029.23.34.476,W095.08.24.766/hoC43/c230 VUH"
+            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c16000 N029.23.34.476,W095.08.24.766/hoC43/c23000 VUH"
           },
           "CRP": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c160 N029.22.15.216,W095.35.07.727/hoC87/c230 SKUBA PSX YOMOM"
+            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c16000 N029.22.15.216,W095.35.07.727/hoC87/c23000 SKUBA PSX YOMOM"
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c160 N029.16.02.340,W095.29.03.969/hoC87/c230 RIIGG"
+            "waypoints": "KHOU-22/ld N029.32.54.916,W095.22.49.912/flyover/c16000 N029.16.02.340,W095.29.03.969/hoC87/c23000 RIIGG"
           },
           "JCT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-22 N029.42.35.763,W095.25.04.742/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE HAYYY FOWLR"
+            "waypoints": "KHOU-22 N029.42.35.763,W095.25.04.742/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE HAYYY FOWLR"
           },
           "SAT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-22 N029.42.35.763,W095.25.04.742/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE MARCS"
+            "waypoints": "KHOU-22 N029.42.35.763,W095.25.04.742/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE MARCS"
           },
           "MNURE": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-22 N029.42.35.763,W095.25.04.742/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE"
+            "waypoints": "KHOU-22 N029.42.35.763,W095.25.04.742/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE"
           },
           "WAILN": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-22 N029.42.35.763,W095.25.04.742/c160 RETYR/hoC80/c230 MNNKE WEEED WAILN"
+            "waypoints": "KHOU-22 N029.42.35.763,W095.25.04.742/c16000 RETYR/hoC80/c23000 MNNKE WEEED WAILN"
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c160 N029.57.29.597,W095.19.24.605 BBYSE/hoC49/c230 SPICR WLLIS STYCK"
+            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c16000 N029.57.29.597,W095.19.24.605 BBYSE/hoC49/c23000 SPICR WLLIS STYCK"
           },
           "DPATY,JBULL": {
             "assigned_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c160 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c230  PEETY DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c23000  PEETY DARTR MUSIQ CLAVN STRYA"
           },
           "MAJKK": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c160 N030.05.16.179,W095.18.11.436/hoC49/c230 WYLSN MONNT KLJOY MAJKK"
+            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c16000 N030.05.16.179,W095.18.11.436/hoC49/c23000 WYLSN MONNT KLJOY MAJKK"
           },
           "GIFFA": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c160 N030.05.16.179,W095.18.11.436/hoC49/c230 WYLSN MONNT BUMCO GIFFA"
+            "waypoints": "KHOU-22 N029.47.37.749,W095.16.38.355/c16000 N030.05.16.179,W095.18.11.436/hoC49/c23000 WYLSN MONNT BUMCO GIFFA"
           }
         },
         "13R.LAND4": {
@@ -2857,82 +2857,82 @@
           "CRIED": {
             "assigned_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.45.849,W095.21.46.137/hoC49/c230 DREMR LITLD BLTWY"
+            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.45.849,W095.21.46.137/hoC49/c23000 DREMR LITLD BLTWY"
           },
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256 ELOCO/hoC36/c230 CHPEE GRIPY YOKEM SBI"
+            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256 ELOCO/hoC36/c23000 CHPEE GRIPY YOKEM SBI"
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256/c160 N029.22.36.571,W094.59.42.476/hoC43/c230 VUH HOODO SBIRD CFOOD BOWFN"
+            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256/c16000 N029.22.36.571,W094.59.42.476/hoC43/c23000 VUH HOODO SBIRD CFOOD BOWFN"
           },
           "TPAKK": {
             "assigned_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.08.770,W095.16.37.201/hoC49/c230 RENNK COLET SUSHI WWELL INDIE"
+            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.08.770,W095.16.37.201/hoC49/c23000 RENNK COLET SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c160 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "MUSYL,ANKRR,KELPP": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256/c160 N029.22.36.571,W094.59.42.476/hoC43/c230 VUH"
+            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256/c16000 N029.22.36.571,W094.59.42.476/hoC43/c23000 VUH"
           },
           "CRP": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256/c160 SAALT PTRON/hoC49/c230 SKUBA PSX YOMOM"
+            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256/c16000 SAALT PTRON/hoC49/c23000 SKUBA PSX YOMOM"
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256/c160 SAALT PTRON/hoC49/c230 RIIGG"
+            "waypoints": "KHOU-31L N029.33.06.019,W095.12.30.256/c16000 SAALT PTRON/hoC49/c23000 RIIGG"
           },
           "JCT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-31L/ld N029.42.35.763,W095.25.04.742/flyover/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE HAYYY FOWLR"
+            "waypoints": "KHOU-31L/ld N029.42.35.763,W095.25.04.742/flyover/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE HAYYY FOWLR"
           },
           "SAT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-31L/ld N029.42.35.763,W095.25.04.742/flyover/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE MARCS"
+            "waypoints": "KHOU-31L/ld N029.42.35.763,W095.25.04.742/flyover/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE MARCS"
           },
           "MNURE": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-31L/ld N029.42.35.763,W095.25.04.742/flyover/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE"
+            "waypoints": "KHOU-31L/ld N029.42.35.763,W095.25.04.742/flyover/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE"
           },
           "WAILN": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-31L/ld N029.42.35.763,W095.25.04.742/flyover/c160 RETYR/hoC80/c230 MNNKE WEEED WAILN"
+            "waypoints": "KHOU-31L/ld N029.42.35.763,W095.25.04.742/flyover/c16000 RETYR/hoC80/c23000 MNNKE WEEED WAILN"
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c160 BBYSE/hoC49/c230 SPICR WLLIS STYCK"
+            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 BBYSE/hoC49/c23000 SPICR WLLIS STYCK"
           },
           "DPATY,JBULL": {
             "assigned_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c160 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN STRYA"
           },
           "MAJKK": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.10.453,W095.18.03.197/hoC49/c230 WYLSN MONNT KLJOY MAJKK"
+            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.10.453,W095.18.03.197/hoC49/c23000 WYLSN MONNT KLJOY MAJKK"
           },
           "GIFFA": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.10.453,W095.18.03.197/hoC49/c230 WYLSN MONNT BUMCO GIFFA"
+            "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.10.453,W095.18.03.197/hoC49/c23000 WYLSN MONNT BUMCO GIFFA"
           }
         },
         "22.LAND22": {
@@ -3019,82 +3019,82 @@
           "CRIED": {
             "assigned_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.45.849,W095.21.46.137/hoC49/c230 DREMR LITLD BLTWY"
+            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.45.849,W095.21.46.137/hoC49/c23000 DREMR LITLD BLTWY"
           },
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c160 ELOCO/hoC36/c230 CHPEE GRIPY YOKEM SBI"
+            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c16000 ELOCO/hoC36/c23000 CHPEE GRIPY YOKEM SBI"
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c160 N029.22.36.571,W094.59.42.476/hoC43/c230 VUH HOODO SBIRD CFOOD BOWFN"
+            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c16000 N029.22.36.571,W094.59.42.476/hoC43/c23000 VUH HOODO SBIRD CFOOD BOWFN"
           },
           "TPAKK": {
             "assigned_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.08.770,W095.16.37.201/hoC49/c230 RENNK COLET SUSHI WWELL INDIE"
+            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.08.770,W095.16.37.201/hoC49/c23000 RENNK COLET SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c160 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "MUSYL,ANKRR,KELPP": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c160 N029.22.36.571,W094.59.42.476/hoC43/c230 VUH"
+            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c16000 N029.22.36.571,W094.59.42.476/hoC43/c23000 VUH"
           },
           "CRP": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c160 SAALT PTRON/hoC49/c230 SKUBA PSX YOMOM"
+            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c16000 SAALT PTRON/hoC49/c23000 SKUBA PSX YOMOM"
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c160 SAALT PTRON/hoC49/c230 RIIGG"
+            "waypoints": "KHOU-4/ld N029.33.06.019,W095.12.30.256/flyover/c16000 SAALT PTRON/hoC49/c23000 RIIGG"
           },
           "JCT": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4 N029.39.54.429,W095.25.52.148/c160 RETYR/hoC80/c230 BOCCK MNURE HAYYY FOWLR"
+            "waypoints": "KHOU-4 N029.39.54.429,W095.25.52.148/c16000 RETYR/hoC80/c23000 BOCCK MNURE HAYYY FOWLR"
           },
           "SAT": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4 N029.39.54.429,W095.25.52.148/c160 RETYR/hoC80/c230 BOCCK MNURE MARCS"
+            "waypoints": "KHOU-4 N029.39.54.429,W095.25.52.148/c16000 RETYR/hoC80/c23000 BOCCK MNURE MARCS"
           },
           "MNURE": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4 N029.39.54.429,W095.25.52.148/c160 RETYR/hoC80/c230 BOCCK"
+            "waypoints": "KHOU-4 N029.39.54.429,W095.25.52.148/c16000 RETYR/hoC80/c23000 BOCCK"
           },
           "WAILN": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4 N029.39.54.429,W095.25.52.148/c160 RETYR/hoC80/c230 WEEED WAILN"
+            "waypoints": "KHOU-4 N029.39.54.429,W095.25.52.148/c16000 RETYR/hoC80/c23000 WEEED WAILN"
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c160 BBYSE/hoC49/c230 SPICR WLLIS STYCK"
+            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 BBYSE/hoC49/c23000 SPICR WLLIS STYCK"
           },
           "DPATY,JBULL": {
             "assigned_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c160 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN STRYA"
           },
           "MAJKK": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.10.453,W095.18.03.197/hoC49/c230 WYLSN MONNT KLJOY MAJKK"
+            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.10.453,W095.18.03.197/hoC49/c23000 WYLSN MONNT KLJOY MAJKK"
           },
           "GIFFA": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.10.453,W095.18.03.197/hoC49/c230 WYLSN MONNT BUMCO GIFFA"
+            "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.10.453,W095.18.03.197/hoC49/c23000 WYLSN MONNT BUMCO GIFFA"
           }
         },
         "22.LAND13": {
@@ -3183,42 +3183,42 @@
           "CRIED": {
             "cleared_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c160 DREMR/hoC49/c230 LITLD BLTWY"
+            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 DREMR/hoC49/c23000 LITLD BLTWY"
           },
           "LLA": {
             "cleared_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331 N029.35.26.342,W095.01.01.386/c160 N029.35.26.342,W095.01.01.386/hoC36/c230 YOKEM SBI"
+            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331 N029.35.26.342,W095.01.01.386/c16000 N029.35.26.342,W095.01.01.386/hoC36/c23000 YOKEM SBI"
           },
           "HRV,LEV": {
             "cleared_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331/c160 N029.24.24.662,W095.01.46.430/hoC43/c230 VUH HOODO SBIRD CFOOD BOWFN"
+            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331/c16000 N029.24.24.662,W095.01.46.430/hoC43/c23000 VUH HOODO SBIRD CFOOD BOWFN"
           },
           "TPAKK": {
             "cleared_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c160 RENNK/hoC49/c230 COLET SUSHI WWELL INDIE"
+            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 RENNK/hoC49/c23000 COLET SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c160 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "MUSYL": {
             "cleared_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331/c160 PEECE N029.24.24.662,W095.01.46.430/hoC43/c230 VUH"
+            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331/c16000 PEECE N029.24.24.662,W095.01.46.430/hoC43/c23000 VUH"
           },
           "CRP": {
             "cleared_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331/c160 SAALT PTRON/hoC87/c230 SKUBA PSX YOMOM"
+            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331/c16000 SAALT PTRON/hoC87/c23000 SKUBA PSX YOMOM"
           },
           "NGP,WWREN": {
             "cleared_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331/c160 SAALT PTRON/hoC87/c230 RIIGG"
+            "waypoints": "KHOU-4/ld N029.33.21.393,W095.11.54.331/c16000 SAALT PTRON/hoC87/c23000 RIIGG"
           },
           "JCT": {
             "cleared_altitude": 5000,
@@ -3243,22 +3243,22 @@
           "DOLEY,WTSON": {
             "cleared_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c160 N029.57.47.230,W095.19.38.283 BBYSE/hoC49/c230 SPICR WLLIS STYCK"
+            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 N029.57.47.230,W095.19.38.283 BBYSE/hoC49/c23000 SPICR WLLIS STYCK"
           },
           "DPATY,JBULL": {
             "cleared_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c160 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN STRYA"
           },
           "MAJKK": {
             "cleared_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c160 WYLSN/hoC49/c230 MONNT KLJOY MAJKK"
+            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 WYLSN/hoC49/c23000 MONNT KLJOY MAJKK"
           },
           "GIFFA": {
             "cleared_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c160 WYLSN/hoC49/c230 MONNT BUMCO GIFFA"
+            "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 WYLSN/hoC49/c23000 MONNT BUMCO GIFFA"
           }
         },
         "31L.LAND4": {
@@ -3347,82 +3347,82 @@
           "CRIED": {
             "assigned_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.45.849,W095.21.46.137/hoC49/c230 DREMR LITLD BLTWY"
+            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.45.849,W095.21.46.137/hoC49/c23000 DREMR LITLD BLTWY"
           },
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256 ELOCO/hoC36/c230 CHPEE GRIPY YOKEM SBI"
+            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256 ELOCO/hoC36/c23000 CHPEE GRIPY YOKEM SBI"
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256/c160 N029.22.36.571,W094.59.42.476/hoC43/c230 VUH HOODO SBIRD CFOOD BOWFN"
+            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256/c16000 N029.22.36.571,W094.59.42.476/hoC43/c23000 VUH HOODO SBIRD CFOOD BOWFN"
           },
           "TPAKK": {
             "assigned_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.08.770,W095.16.37.201/hoC49/c230 RENNK COLET SUSHI WWELL INDIE"
+            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.08.770,W095.16.37.201/hoC49/c23000 RENNK COLET SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c160 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "MUSYL,ANKRR,KELPP": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256/c160 N029.22.36.571,W094.59.42.476/hoC43/c230 VUH"
+            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256/c16000 N029.22.36.571,W094.59.42.476/hoC43/c23000 VUH"
           },
           "CRP": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256/c160 SAALT PTRON/hoC49/c230 SKUBA PSX YOMOM"
+            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256/c16000 SAALT PTRON/hoC49/c23000 SKUBA PSX YOMOM"
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256/c160 SAALT PTRON/hoC49/c230 RIIGG"
+            "waypoints": "KHOU-13R N029.33.06.019,W095.12.30.256/c16000 SAALT PTRON/hoC49/c23000 RIIGG"
           },
           "JCT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/ld N029.42.35.763,W095.25.04.742/flyover/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE HAYYY FOWLR"
+            "waypoints": "KHOU-13R/ld N029.42.35.763,W095.25.04.742/flyover/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE HAYYY FOWLR"
           },
           "SAT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/ld N029.42.35.763,W095.25.04.742/flyover/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE MARCS"
+            "waypoints": "KHOU-13R/ld N029.42.35.763,W095.25.04.742/flyover/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE MARCS"
           },
           "MNURE": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/ld N029.42.35.763,W095.25.04.742/flyover/c160 RETYR/hoC80/c230 MNNKE BOCCK MNURE"
+            "waypoints": "KHOU-13R/ld N029.42.35.763,W095.25.04.742/flyover/c16000 RETYR/hoC80/c23000 MNNKE BOCCK MNURE"
           },
           "WAILN": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/ld N029.42.35.763,W095.25.04.742/flyover/c160 RETYR/hoC80/c230 MNNKE WEEED WAILN"
+            "waypoints": "KHOU-13R/ld N029.42.35.763,W095.25.04.742/flyover/c16000 RETYR/hoC80/c23000 MNNKE WEEED WAILN"
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c160 BBYSE/hoC49/c230 SPICR WLLIS STYCK"
+            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 BBYSE/hoC49/c23000 SPICR WLLIS STYCK"
           },
           "DPATY,JBULL": {
             "assigned_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c160 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN STRYA"
           },
           "MAJKK": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.10.453,W095.18.03.197/hoC49/c230 WYLSN MONNT KLJOY MAJKK"
+            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.10.453,W095.18.03.197/hoC49/c23000 WYLSN MONNT KLJOY MAJKK"
           },
           "GIFFA": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c160 N030.05.10.453,W095.18.03.197/hoC49/c230 WYLSN MONNT BUMCO GIFFA"
+            "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.10.453,W095.18.03.197/hoC49/c23000 WYLSN MONNT BUMCO GIFFA"
           }
         },
         "31L.LAND31": {
@@ -3511,82 +3511,82 @@
           "CRIED": {
             "assigned_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c160 DREMR/hoC49/c230  LITLD BLTWY"
+            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c16000 DREMR/hoC49/c23000  LITLD BLTWY"
           },
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c160 ELOCO/hoC36/c230 GRIPY YOKEM SBI"
+            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c16000 ELOCO/hoC36/c23000 GRIPY YOKEM SBI"
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c160 N029.23.34.476,W095.08.24.766/hoC43/c230 VUH HOODO SBIRD CFOOD BOWFN"
+            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c16000 N029.23.34.476,W095.08.24.766/hoC43/c23000 VUH HOODO SBIRD CFOOD BOWFN"
           },
           "TPAKK": {
             "assigned_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c160 N029.56.07.769,W095.17.05.244 RENNK/hoC49/c230 COLET SUSHI WWELL INDIE"
+            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 RENNK/hoC49/c23000 COLET SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c160 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c230 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "MUSYL,ANKRR,KELPP": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c160 N029.23.34.476,W095.08.24.766/hoC43/c230 VUH"
+            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c16000 N029.23.34.476,W095.08.24.766/hoC43/c23000 VUH"
           },
           "CRP": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c160 N029.22.15.216,W095.35.07.727/hoC87/c230 SKUBA PSX YOMOM"
+            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c16000 N029.22.15.216,W095.35.07.727/hoC87/c23000 SKUBA PSX YOMOM"
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c160 N029.16.02.340,W095.29.03.969/hoC87/c230 RIIGG"
+            "waypoints": "KHOU-13R/ld N029.32.54.916,W095.22.49.912/flyover/c16000 N029.16.02.340,W095.29.03.969/hoC87/c23000 RIIGG"
           },
           "JCT": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R N029.41.53.994,W095.25.18.640/c160 RETYR/hoC80/c230 BOCCK MNURE HAYYY FOWLR"
+            "waypoints": "KHOU-13R N029.41.53.994,W095.25.18.640/c16000 RETYR/hoC80/c23000 BOCCK MNURE HAYYY FOWLR"
           },
           "SAT": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R N029.41.53.994,W095.25.18.640/c160 RETYR/hoC80/c230 BOCCK MNURE MARCS"
+            "waypoints": "KHOU-13R N029.41.53.994,W095.25.18.640/c16000 RETYR/hoC80/c23000 BOCCK MNURE MARCS"
           },
           "MNURE": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R N029.41.53.994,W095.25.18.640/c160 RETYR/hoC80/c230 BOCCK"
+            "waypoints": "KHOU-13R N029.41.53.994,W095.25.18.640/c16000 RETYR/hoC80/c23000 BOCCK"
           },
           "WAILN": {
             "cleared_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R N029.41.53.994,W095.25.18.640/c160 RETYR/hoC80/c230 WEEED WAILN"
+            "waypoints": "KHOU-13R N029.41.53.994,W095.25.18.640/c16000 RETYR/hoC80/c23000 WEEED WAILN"
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c160 N029.57.29.597,W095.19.24.605 BBYSE/hoC49/c230 SPICR WLLIS STYCK"
+            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c16000 N029.57.29.597,W095.19.24.605 BBYSE/hoC49/c23000 SPICR WLLIS STYCK"
           },
           "DPATY,JBULL": {
             "assigned_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c160 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c230  PEETY DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c23000  PEETY DARTR MUSIQ CLAVN STRYA"
           },
           "MAJKK": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c160 N030.05.16.179,W095.18.11.436/hoC49/c230 WYLSN MONNT KLJOY MAJKK"
+            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c16000 N030.05.16.179,W095.18.11.436/hoC49/c23000 WYLSN MONNT KLJOY MAJKK"
           },
           "GIFFA": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c160 N030.05.16.179,W095.18.11.436/hoC49/c230 WYLSN MONNT BUMCO GIFFA"
+            "waypoints": "KHOU-13R N029.47.37.749,W095.16.38.355/c16000 N030.05.16.179,W095.18.11.436/hoC49/c23000 WYLSN MONNT BUMCO GIFFA"
           }
         }
       },
@@ -4598,178 +4598,178 @@
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c050 BOTLL/a5000-/c160 FLYZA/a7000+ PPALE/a11000+/c230/hoC43 VUH"
+            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c5000 BOTLL/a5000-/c16000 FLYZA/a7000+ PPALE/a11000+/c23000/hoC43 VUH"
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c040 BOTLL/a5000-/c160 MMUGS MMALT/a10000+/c230/hoC36 HOURN BLING"
+            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 MMUGS MMALT/a10000+/c23000/hoC36 HOURN BLING"
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c040 BOTLL/a5000-/c160 MMUGS HHOPS/a11000+/c230/hoC36 JAAYE SPINY"
+            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 MMUGS HHOPS/a11000+/c23000/hoC36 JAAYE SPINY"
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c040 BOTLL/a5000-/c160 MMUGS GRAYN/a11000+/c230/hoC36 YOKEM SBI"
+            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 MMUGS GRAYN/a11000+/c23000/hoC36 YOKEM SBI"
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c040 BOTLL/a5000-/c160 FLYZA/a7000+ WINEO/a9000+/c230/hoC87 RITAA/a10000+ SKUBA PSX YOMOM"
+            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 FLYZA/a7000+ WINEO/a9000+/c23000/hoC87 RITAA/a10000+ SKUBA PSX YOMOM"
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c040 BOTLL/a5000-/c160 FLYZA/a7000+ WINEO/a9000+/c230/hoC87 RITAA/a10000+ RIIGG"
+            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 FLYZA/a7000+ WINEO/a9000+/c23000/hoC87 RITAA/a10000+ RIIGG"
           }
         },
         "15R.IAHWEST.AUTO": {
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c160 DREMR N030.24.02.484,W095.26.33.676/hoC49/c230 LITLD BLTWY"
+            "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c16000 DREMR N030.24.02.484,W095.26.33.676/hoC49/c23000 LITLD BLTWY"
           },
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover/c040 SCAMM/a5000-/c160 SHAAK BNDTO/c230/hoC80 CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "waypoints": "KIAH-33L/flyover/c4000 SCAMM/a5000-/c16000 SHAAK BNDTO/c23000/hoC80 CUZZZ/a13000+ ZUUUU PUFER PSTUR"
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover/c040 SCAMM/a5000-/c160 SHAAK BNDTO/c230/hoC80 FFOAM/a13000+ BOCCK MNURE MARCS"
+            "waypoints": "KIAH-33L/flyover/c4000 SCAMM/a5000-/c16000 SHAAK BNDTO/c23000/hoC80 FFOAM/a13000+ BOCCK MNURE MARCS"
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover/c040 SCAMM/a5000-/c160 SHAAK BNDTO/c230/hoC80 FFOAM/a13000+ BOCCK"
+            "waypoints": "KIAH-33L/flyover/c4000 SCAMM/a5000-/c16000 SHAAK BNDTO/c23000/hoC80 FFOAM/a13000+ BOCCK"
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover/c040 SCAMM/a5000-/c160 SHAAK BNDTO/c230/hoC80 BAAKE/a13000+ WEEED WAILN"
+            "waypoints": "KIAH-33L/flyover/c4000 SCAMM/a5000-/c16000 SHAAK BNDTO/c23000/hoC80 BAAKE/a13000+ WEEED WAILN"
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-33L/rd N030.08.15.462,W095.16.30.472/flyover/c160 RENNK/flyover COLET/hoC49/c230 SUSHI WWELL INDIE"
+            "waypoints": "KIAH-33L/rd N030.08.15.462,W095.16.30.472/flyover/c16000 RENNK/flyover COLET/hoC49/c23000 SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-33L/rd N030.08.15.462,W095.16.30.472/flyover/c160 PEETY/flyover/hoC49/c230 DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KIAH-33L/rd N030.08.15.462,W095.16.30.472/flyover/c16000 PEETY/flyover/hoC49/c23000 DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-33L/rd N030.08.15.462,W095.16.30.472/flyover/c160 PEETY/hoC49/c230 DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KIAH-33L/rd N030.08.15.462,W095.16.30.472/flyover/c16000 PEETY/hoC49/c23000 DARTR MUSIQ CLAVN STRYA"
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c160 SPICR/flyover/hoC49/c230 WLLIS STYCK"
+            "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c16000 SPICR/flyover/hoC49/c23000 WLLIS STYCK"
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c160 N030.18.18.742,W095.20.54.913/hoC49/c230 MONNT KLJOY"
+            "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c16000 N030.18.18.742,W095.20.54.913/hoC49/c23000 MONNT KLJOY"
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c160 N030.18.18.742,W095.20.54.913/hoC49/c230 MONNT BUMCO"
+            "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c16000 N030.18.18.742,W095.20.54.913/hoC49/c23000 MONNT BUMCO"
           }
         },
         "15L.IAHEAST.AUTO": {
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c160 DREMR LITLD/hoC49/c230 BLTWY"
+            "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c16000 DREMR LITLD/hoC49/c23000 BLTWY"
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c050 GUMBY/a5000-/hoC36/c230 HOURN BLING"
+            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c5000 GUMBY/a5000-/hoC36/c23000 HOURN BLING"
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c050 GUMBY/a5000-/hoC36/c230 JAAYE SPINY"
+            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c5000 GUMBY/a5000-/hoC36/c23000 JAAYE SPINY"
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c050 GUMBY/a5000-/hoC36/c230 YOKEM SBI"
+            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c5000 GUMBY/a5000-/hoC36/c23000 YOKEM SBI"
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-33R/ld N030.08.16.980,W095.14.25.585/c160 RENNK COLET/hoC49/c230 SUSHI WWELL INDIE"
+            "waypoints": "KIAH-33R/ld N030.08.16.980,W095.14.25.585/c16000 RENNK COLET/hoC49/c23000 SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-33R/ld N030.08.16.980,W095.14.25.585/flyover/c160 PEETY/hoC49/c230 DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KIAH-33R/ld N030.08.16.980,W095.14.25.585/flyover/c16000 PEETY/hoC49/c23000 DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/c050 BOTLL/a5000-/c160 FLYZA/a7000+ WINEO/a9000+/hoC87/c230 RITAA/a10000+ SKUBA PSX YOMOM"
+            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/c5000 BOTLL/a5000-/c16000 FLYZA/a7000+ WINEO/a9000+/hoC87/c23000 RITAA/a10000+ SKUBA PSX YOMOM"
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/c050 BOTLL/a5000-/c160 FLYZA/a7000+ WINEO/a9000+/hoC87/c230 RITAA/a10000+ RIIGG"
+            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/c5000 BOTLL/a5000-/c16000 FLYZA/a7000+ WINEO/a9000+/hoC87/c23000 RITAA/a10000+ RIIGG"
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-33R/ld N030.08.16.980,W095.14.25.585/flyover/c160 PEETY/hoC49/c230 DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KIAH-33R/ld N030.08.16.980,W095.14.25.585/flyover/c16000 PEETY/hoC49/c23000 DARTR MUSIQ CLAVN STRYA"
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c160 SPICR/hoC49/c230 WLLIS STYCK"
+            "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c16000 SPICR/hoC49/c23000 WLLIS STYCK"
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c160 WYLSN/hoC49/c230 MONNT KLJOY"
+            "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c16000 WYLSN/hoC49/c23000 MONNT KLJOY"
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c160 WYLSN/hoC49/c230 MONNT BUMCO"
+            "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c16000 WYLSN/hoC49/c23000 MONNT BUMCO"
           }
         },
         "15R.IAHEAST.AUTO": {
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-33L/flyover TTAPS/a4000-/c050 BOTLL/a5000-/c160 FLYZA/a7000+/hoC43/c230 PPALE/a11000+ VUH"
+            "waypoints": "KIAH-33L/flyover TTAPS/a4000-/c5000 BOTLL/a5000-/c16000 FLYZA/a7000+/hoC43/c23000 PPALE/a11000+ VUH"
           },
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c160 RODKL PITZZ/a7000+/hoC80/c230 CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c16000 RODKL PITZZ/a7000+/hoC80/c23000 CUZZZ/a13000+ ZUUUU PUFER PSTUR"
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c160 RODKL PITZZ/a7000+/hoC80/c230 GRZIA/a10000+ CHATI/a13000+ BOCCK MNURE MARCS"
+            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c16000 RODKL PITZZ/a7000+/hoC80/c23000 GRZIA/a10000+ CHATI/a13000+ BOCCK MNURE MARCS"
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c160 RODKL PITZZ/a7000+/hoC80/c230 GRZIA/a10000+ CHATI/a13000+ BOCCK"
+            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c16000 RODKL PITZZ/a7000+/hoC80/c23000 GRZIA/a10000+ CHATI/a13000+ BOCCK"
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c160 RODKL PITZZ/a7000+/hoC80/c230 MNNKE/a13000+ WEEED"
+            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c16000 RODKL PITZZ/a7000+/hoC80/c23000 MNNKE/a13000+ WEEED"
           }
         },
         "8L": {
@@ -5421,37 +5421,37 @@
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-15L N030.08.15.558,W095.22.47.742/a4000-/c160 DREMR/hoC49/c230 LITLD BLTWY"
+            "waypoints": "KIAH-15L N030.08.15.558,W095.22.47.742/a4000-/c16000 DREMR/hoC49/c23000 LITLD BLTWY"
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-15L N030.00.25.000,W095.22.14.536 N030.08.17.982,W095.17.31.721/a4000-/c160 RENNK/hoC49/c230 COLET SUSHI WWELL INDIE"
+            "waypoints": "KIAH-15L N030.00.25.000,W095.22.14.536 N030.08.17.982,W095.17.31.721/a4000-/c16000 RENNK/hoC49/c23000 COLET SUSHI WWELL INDIE"
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-15L N030.00.25.000,W095.22.14.536 N030.08.17.982,W095.17.31.721/a4000-/c160 PEETY/hoC49/c230 DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "waypoints": "KIAH-15L N030.00.25.000,W095.22.14.536 N030.08.17.982,W095.17.31.721/a4000-/c16000 PEETY/hoC49/c23000 DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-15L N030.00.25.000,W095.22.14.536 N030.08.17.982,W095.17.31.721/a4000-/c160 PEETY/hoC49/c230 DARTR MUSIQ CLAVN STRYA"
+            "waypoints": "KIAH-15L N030.00.25.000,W095.22.14.536 N030.08.17.982,W095.17.31.721/a4000-/c16000 PEETY/hoC49/c23000 DARTR MUSIQ CLAVN STRYA"
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-15L N030.08.15.558,W095.22.47.742/a4000-/c160 BBYSE SPICR/hoC49/c230 WLLIS STYCK"
+            "waypoints": "KIAH-15L N030.08.15.558,W095.22.47.742/a4000-/c16000 BBYSE SPICR/hoC49/c23000 WLLIS STYCK"
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-15L N030.08.15.558,W095.22.47.742/a4000-/c160 WYLSN/hoC49/c230 MONNT KLJOY"
+            "waypoints": "KIAH-15L N030.08.15.558,W095.22.47.742/a4000-/c16000 WYLSN/hoC49/c23000 MONNT KLJOY"
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-15L N030.08.15.558,W095.22.47.742/a4000-/c160 WYLSN/hoC49/c230 MONNT BUMCO"
+            "waypoints": "KIAH-15L N030.08.15.558,W095.22.47.742/a4000-/c16000 WYLSN/hoC49/c23000 MONNT BUMCO"
           }
         },
         "33L.NWFLOW.AUTO": {
@@ -6459,14 +6459,14 @@
             "destination": "KBPT",
             "rate": 0.5,
             "fleet": "lightGA",
-            "waypoints": "N029.46.56.935,W095.30.06.509/a1500 N029.47.40.647,W095.24.20.192 N029.47.41.341,W095.19.18.810 N029.47.51.215,W095.13.08.159 N029.47.52.389,W095.05.41.235 N029.48.47.073,W094.59.51.897 N029.49.58.271,W094.53.18.614 N029.50.56.609,W094.46.55.740/c055/land",
+            "waypoints": "N029.46.56.935,W095.30.06.509/a1500 N029.47.40.647,W095.24.20.192 N029.47.41.341,W095.19.18.810 N029.47.51.215,W095.13.08.159 N029.47.52.389,W095.05.41.235 N029.48.47.073,W094.59.51.897 N029.49.58.271,W094.53.18.614 N029.50.56.609,W094.46.55.740/c5500/land",
             "name": "SGR-BPT I-10 Cooridor"
           },
           {
             "destination": "KLCH",
             "rate": 0.3,
             "fleet": "lightGA",
-            "waypoints": "N029.46.56.935,W095.30.06.509/a1500 N029.47.40.647,W095.24.20.192 N029.47.41.341,W095.19.18.810 N029.47.51.215,W095.13.08.159 N029.47.52.389,W095.05.41.235 N029.48.47.073,W094.59.51.897 N029.49.58.271,W094.53.18.614 N029.50.56.609,W094.46.55.740/c055/land",
+            "waypoints": "N029.46.56.935,W095.30.06.509/a1500 N029.47.40.647,W095.24.20.192 N029.47.41.341,W095.19.18.810 N029.47.51.215,W095.13.08.159 N029.47.52.389,W095.05.41.235 N029.48.47.073,W094.59.51.897 N029.49.58.271,W094.53.18.614 N029.50.56.609,W094.46.55.740/c5500/land",
             "name": "SGR-LCH I-10 Cooridor"
           }
         ]
@@ -9033,7 +9033,7 @@
     "DRLLR5.AUTO": {
       "arrivals": [
         {
-          "waypoints": "DPLAN/a22000+ SSTAX/a20000-24000/ho1N MPORT/a16000-19000/s280 DRLLR/a13000-16000/s250/spspI6R PTROL/a11000-13000 DOMNO/a8000-10000/s240/ho1A SKLER/a6000/s210/flyover/d030 N030.05.25.133,W095.05.04.513 N030.02.31.940,W095.04.55.175/flyover CHUBS/a3000/clearapp",
+          "waypoints": "DPLAN/a22000+ SSTAX/a20000-24000/ho1N MPORT/a16000-19000/s280 DRLLR/a13000-16000/s250/spspI6R PTROL/a11000-13000 DOMNO/a8000-10000/s240/ho1A SKLER/a6000/s210/flyover/d3000 N030.05.25.133,W095.05.04.513 N030.02.31.940,W095.04.55.175/flyover CHUBS/a3000/clearapp",
           "star": "DRLLR5",
           "initial_controller": "C83",
           "initial_altitude": 27000,
@@ -9568,7 +9568,7 @@
     "GESNR2.AUTO": {
       "arrivals": [
         {
-          "waypoints": "DOOTL/a22000-27000/s280/ho1D ZEEKK/a17000-20000/s280 GESNR/a13000-16000/s280 KENNN/a10000-11000/s250/spspI8L KNGWD/a8000-10000/s240/ho1A ZOEEE/a7000/s240 CASST/a6000/s210/flyover/d030 N030.05.43.309,W095.39.07.750 N030.01.57.691,W095.39.08.574 FLIBZ/clearapp",
+          "waypoints": "DOOTL/a22000-27000/s280/ho1D ZEEKK/a17000-20000/s280 GESNR/a13000-16000/s280 KENNN/a10000-11000/s250/spspI8L KNGWD/a8000-10000/s240/ho1A ZOEEE/a7000/s240 CASST/a6000/s210/flyover/d3000 N030.05.43.309,W095.39.07.750 N030.01.57.691,W095.39.08.574 FLIBZ/clearapp",
           "star": "GESNR2",
           "initial_controller": "C38",
           "initial_altitude": 24500,
@@ -12089,7 +12089,7 @@
     "NNCEE2.AUTO": {
       "arrivals": [
         {
-          "waypoints": "BBQUE/a29000-/s280 LINKK/a17000-20000/ho1G NNCEE/a15000- KONZZ/a12000/spspI8R BEDLM/a10000+/s250 CHKEN/a7000- PRAYY/a6000 SMOCR/ho1O SHIVV/s240 HOWLN/a6000/s210/flyover/d040 N029.53.45.256,W095.39.02.175 N029.57.18.418,W095.38.58.055 REIGN/clearapp",
+          "waypoints": "BBQUE/a29000-/s280 LINKK/a17000-20000/ho1G NNCEE/a15000- KONZZ/a12000/spspI8R BEDLM/a10000+/s250 CHKEN/a7000- PRAYY/a6000 SMOCR/ho1O SHIVV/s240 HOWLN/a6000/s210/flyover/d4000 N029.53.45.256,W095.39.02.175 N029.57.18.418,W095.38.58.055 REIGN/clearapp",
           "star": "NNCEE2",
           "initial_controller": "C43",
           "initial_altitude": 29000,
@@ -13566,7 +13566,7 @@
     "TEJAS5.AUTO": {
       "arrivals": [
         {
-          "waypoints": "CATTT/a19000+/ho1X GMANN/a16000-19000/s280 CITTE/a16000- TEJAS/a12000-14000/s250 RIDLR/a10000-/spspI87 BEEEP/a8000- HOWLN/a6000/s240 SHIVV SMOCR/ho1O PRAYY/a6000/s210/flyover/d020 N029.53.11.679,W095.04.41.359 N029.56.29.536,W095.04.23.314/flyover FESTA/clearapp ",
+          "waypoints": "CATTT/a19000+/ho1X GMANN/a16000-19000/s280 CITTE/a16000- TEJAS/a12000-14000/s250 RIDLR/a10000-/spspI87 BEEEP/a8000- HOWLN/a6000/s240 SHIVV SMOCR/ho1O PRAYY/a6000/s210/flyover/d2000 N029.53.11.679,W095.04.41.359 N029.56.29.536,W095.04.23.314/flyover FESTA/clearapp ",
           "star": "TEJAS5",
           "initial_controller": "C87",
           "initial_altitude": 23000,
@@ -13622,7 +13622,7 @@
     "TKNIQ3": {
       "arrivals": [
         {
-          "waypoints": "BBURT/d110 N029.13.12.910,W094.09.09.536/ho TKNIQ/a11000",
+          "waypoints": "BBURT/d11000 N029.13.12.910,W094.09.09.536/ho TKNIQ/a11000",
           "star": "TKNIQ3",
           "initial_controller": "C43",
           "initial_altitude": 14000,
@@ -13665,7 +13665,7 @@
           }
         },
         {
-          "waypoints": "BBURT/d120 N029.13.12.910,W094.09.09.536/ho TKNIQ/a12000/s280",
+          "waypoints": "BBURT/d12000 N029.13.12.910,W094.09.09.536/ho TKNIQ/a12000/s280",
           "star": "TKNIQ3",
           "initial_controller": "C43",
           "initial_altitude": 18000,
@@ -18583,7 +18583,7 @@
       "arrivals": [
         {
           "description": "BAYYY5 STAR path feeding HOU final",
-          "waypoints": "SHLLL BAYYY/a17000-20000/s280 BAYYY PUCKS/a10000-14000/ho1H FRDDY/a8000-10000/s240 FIGGG/a6000-7000 IVEEE/a6000/s210/d020 VILLI ALLLY/flyover N029.43.23.066,W095.29.26.409 N029.44.44.241,W095.27.23.692 N029.44.19.103,W095.23.26.195 ROYCE/clearapp",
+          "waypoints": "SHLLL BAYYY/a17000-20000/s280 BAYYY PUCKS/a10000-14000/ho1H FRDDY/a8000-10000/s240 FIGGG/a6000-7000 IVEEE/a6000/s210/d2000 VILLI ALLLY/flyover N029.43.23.066,W095.29.26.409 N029.44.44.241,W095.27.23.692 N029.44.19.103,W095.23.26.195 ROYCE/clearapp",
           "star_feeds": ["BAYYY5", "WAPPL7", "PUCKS4", "TKNIQ3"],
           "star": "BAYYY5",
           "initial_controller": "1G",
@@ -18729,7 +18729,7 @@
         },
         {
           "description": "WAPPL7 STAR path feeding HOU final",
-          "waypoints": "N030.17.55.060,W094.09.45.900 WAPPL/a22000-27000/s280 WLMOR/a15000-21000/ho1D HUDZY CLWSN/a12000-14000 SWWAA/a10000-12000/s250 PUSHN/a8000+/ho1H BUGZY/a10000- PRTCH/a7000- MOLLR/a6000/s210/d020 VILLI ALLLY/a6000/flyover N029.43.23.066,W095.29.26.409 N029.44.44.241,W095.27.23.692 N029.44.19.103,W095.23.26.195 ROYCE/clearapp",
+          "waypoints": "N030.17.55.060,W094.09.45.900 WAPPL/a22000-27000/s280 WLMOR/a15000-21000/ho1D HUDZY CLWSN/a12000-14000 SWWAA/a10000-12000/s250 PUSHN/a8000+/ho1H BUGZY/a10000- PRTCH/a7000- MOLLR/a6000/s210/d2000 VILLI ALLLY/a6000/flyover N029.43.23.066,W095.29.26.409 N029.44.44.241,W095.27.23.692 N029.44.19.103,W095.23.26.195 ROYCE/clearapp",
           "star": "WAPPL7",
           "initial_controller": "C38",
           "initial_altitude": 24000,
@@ -19117,7 +19117,7 @@
     "FINAL.13BELLR6&KIDDZ5.AUTO": {
       "arrivals": [
         {
-          "waypoints": "BELLR/a11000-13000/s250 HNTRR/a9000-10000/ho1H HACKT/a7000- CRSTY/a6000/s210 SEUSS/a6000/flyover/d040 N029.43.23.066,W095.29.26.409/d030 N029.44.44.241,W095.27.23.692/d020 N029.44.19.103,W095.23.26.195 ROYCE/clearapp",
+          "waypoints": "BELLR/a11000-13000/s250 HNTRR/a9000-10000/ho1H HACKT/a7000- CRSTY/a6000/s210 SEUSS/a6000/flyover/d4000 N029.43.23.066,W095.29.26.409/d3000 N029.44.44.241,W095.27.23.692/d2000 N029.44.19.103,W095.23.26.195 ROYCE/clearapp",
           "star_feeds": ["BELLR6", "KIDDZ5", "SNDAY1", "TSHRT2"],
           "star": "BELLR6",
           "initial_controller": "1X",
@@ -19231,7 +19231,7 @@
           }
         },
         {
-          "waypoints": "KIDDZ/a12000-14000/s280 SNIFY/a12000 QTRBK RVEEE/a11000 AAHZZ/a10000/ho1H GLUVR/a9000+/s240 CRSTY/a6000/s210 SEUSS/a6000/flyover/d040 N029.43.23.066,W095.29.26.409/d030 N029.44.44.241,W095.27.23.692/d020 N029.44.19.103,W095.23.26.195 ROYCE/clearapp",
+          "waypoints": "KIDDZ/a12000-14000/s280 SNIFY/a12000 QTRBK RVEEE/a11000 AAHZZ/a10000/ho1H GLUVR/a9000+/s240 CRSTY/a6000/s210 SEUSS/a6000/flyover/d4000 N029.43.23.066,W095.29.26.409/d3000 N029.44.44.241,W095.27.23.692/d2000 N029.44.19.103,W095.23.26.195 ROYCE/clearapp",
           "star": "KIDDZ5",
           "initial_controller": "1X",
           "initial_altitude": 13000,
@@ -20186,7 +20186,7 @@
       "arrivals": [
         {
           "description": "BAYYY5 STAR feeding HOU final",
-          "waypoints": "SHLLL BAYYY/a17000-20000/s280 PUCKS/a10000-14000/ho1H FRDDY/a8000-10000/s240/ho1H FIGGG/a6000-7000 SHUUG/a6000/s210 EMARR/flyover/d030 N029.27.05.736,W095.21.59.897 N029.28.49.625,W095.24.16.072/d020 ELREN/clearapp",
+          "waypoints": "SHLLL BAYYY/a17000-20000/s280 PUCKS/a10000-14000/ho1H FRDDY/a8000-10000/s240/ho1H FIGGG/a6000-7000 SHUUG/a6000/s210 EMARR/flyover/d3000 N029.27.05.736,W095.21.59.897 N029.28.49.625,W095.24.16.072/d2000 ELREN/clearapp",
           "star_feeds": ["BAYYY5", "WAPPL7", "PUCKS4", "TKNIQ3"],
           "star": "BAYYY5",
           "initial_controller": "1G",
@@ -20332,7 +20332,7 @@
         },
         {
           "description": "WAPPL7 STAR feeding HOU final",
-          "waypoints": "N030.17.55.060,W094.09.45.900 WAPPL/a22000-27000/s280 WLMOR/a15000-21000/ho1D HUDZY CLWSN/a12000-14000 SWWAA/a10000-12000/s250 PUSHN/a8000+/ho1H BUGZY/a10000- PRTCH/a7000- SHUUG/a6000/s210 EMARR/a6000/flyover/d030 N029.27.05.736,W095.21.59.897 N029.28.49.625,W095.24.16.072/d020 ELREN/clearapp",
+          "waypoints": "N030.17.55.060,W094.09.45.900 WAPPL/a22000-27000/s280 WLMOR/a15000-21000/ho1D HUDZY CLWSN/a12000-14000 SWWAA/a10000-12000/s250 PUSHN/a8000+/ho1H BUGZY/a10000- PRTCH/a7000- SHUUG/a6000/s210 EMARR/a6000/flyover/d3000 N029.27.05.736,W095.21.59.897 N029.28.49.625,W095.24.16.072/d2000 ELREN/clearapp",
           "star": "WAPPL7",
           "initial_controller": "C38",
           "initial_altitude": 24000,

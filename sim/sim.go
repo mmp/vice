@@ -974,9 +974,9 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, ac
 	}
 
 	if actions.ClimbAltitude != 0 {
-		ac.Nav.AssignAltitudeNow(float32(actions.ClimbAltitude)*100, false)
+		ac.Nav.AssignAltitudeNow(float32(actions.ClimbAltitude), false)
 	} else if actions.DescendAltitude != 0 {
-		ac.Nav.AssignAltitudeNow(float32(actions.DescendAltitude)*100, false)
+		ac.Nav.AssignAltitudeNow(float32(actions.DescendAltitude), false)
 	}
 
 	if actions.ClearApproach {

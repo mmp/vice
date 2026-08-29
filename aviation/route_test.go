@@ -240,10 +240,10 @@ func TestParseActionGroupClearApproachAndDuplicateAltitudes(t *testing.T) {
 		t.Fatal("expected clearapp in final action group")
 	}
 
-	if _, err := parseWaypoints("_EWR4_4La/h039/@a500+/c50/c100"); err == nil {
+	if _, err := parseWaypoints("_EWR4_4La/h039/@a500+/c5000/c10000"); err == nil {
 		t.Fatal("expected duplicate climb altitude action to fail")
 	}
-	if _, err := parseWaypoints("_EWR4_4La/h039/@a500+/d50/d100"); err == nil {
+	if _, err := parseWaypoints("_EWR4_4La/h039/@a500+/d5000/d10000"); err == nil {
 		t.Fatal("expected duplicate descend altitude action to fail")
 	}
 }
@@ -630,7 +630,7 @@ func TestParseActionsIntoGroups(t *testing.T) {
 	t.Cleanup(func() { DB = oldDB })
 
 	// Actions at a fix form a single open action group and round-trip.
-	for _, route := range []string{"RNGRR/h223", "RNGRR/h223/ho5W/c50", "KJFK-4L/ho5S/@a2500+"} {
+	for _, route := range []string{"RNGRR/h223", "RNGRR/h223/ho5W/c5000", "KJFK-4L/ho5S/@a2500+"} {
 		wps, err := parseWaypoints(route)
 		if err != nil {
 			t.Fatalf("%s: %v", route, err)
@@ -643,12 +643,12 @@ func TestParseActionsIntoGroups(t *testing.T) {
 		}
 	}
 
-	wps, err := parseWaypoints("RNGRR/h223/ho5W/c50")
+	wps, err := parseWaypoints("RNGRR/h223/ho5W/c5000")
 	if err != nil {
 		t.Fatal(err)
 	}
 	actions := wps[0].ActionGroups()[0].Actions
-	if actions.Heading.Heading != 223 || actions.HandoffController != "5W" || actions.ClimbAltitude != 50 {
+	if actions.Heading.Heading != 223 || actions.HandoffController != "5W" || actions.ClimbAltitude != 5000 {
 		t.Errorf("unexpected actions %+v", actions)
 	}
 
@@ -728,7 +728,7 @@ func TestEncodeTriggerRoundTrip(t *testing.T) {
 
 	for _, route := range []string{
 		"KHLN-23/h054/@a4277+/l274/@HLN-R322/tHLN-R322/@a8100+/rd PXR",
-		"KEWR-4L/h219/@a500+/l190/@ILSQ-D2.3+/r220/c100",
+		"KEWR-4L/h219/@a500+/l190/@ILSQ-D2.3+/r220/c10000",
 		"KDVT-7R/h254/@a1878+/r060/@PXR-R336/tPXR-R336/@a4000+/ld PXR",
 		"RNGRR/h200/@crs220 WAVEY",
 		"KJFK-4L/ho5E/@a2500+ PONAE",
@@ -740,5 +740,96 @@ func TestEncodeTriggerRoundTrip(t *testing.T) {
 		if got := wps.Encode(); got != route {
 			t.Errorf("expected %q to round-trip, got %q", route, got)
 		}
+	}
+}
+
+func TestParseClimbDescendAltitudes(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, route := range []string{"MERIT/c50", "MERIT/c0", "MERIT/d45", "MERIT/c60100", "MERIT/d1250"} {
+		if _, err := parseWaypoints(route); err == nil {
+			t.Errorf("%s: expected an error", route)
+		} else if !strings.Contains(err.Error(), "multiple of 100 between 100 and 60000 feet") {
+			t.Errorf("%s: unexpected error %q", route, err)
+		}
+	}
+
+	wps, err := parseWaypoints("MERIT/c5000 ROBER/d3000")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if a := wps[0].ActionGroups()[0].Actions; a.ClimbAltitude != 5000 || a.DescendAltitude != 0 {
+		t.Errorf("unexpected actions %+v", a)
+	}
+	if a := wps[1].ActionGroups()[0].Actions; a.DescendAltitude != 3000 || a.ClimbAltitude != 0 {
+		t.Errorf("unexpected actions %+v", a)
+	}
+
+	if _, err := parseWaypoints("GLRIA/a3000+/lhilpt1.0min/pta70000"); err == nil ||
+		!strings.Contains(err.Error(), "between 0 and 60000 feet") {
+		t.Errorf("expected a range error for /pta70000, got %v", err)
+	}
+}
+
+func TestCheckBasicsCatchesHundredsOfFeetAltitudes(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	errors := func(route string) string {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var e util.ErrorLogger
+		WaypointArray(wps).CheckOverflight(&e, nil, func(string) bool { return true })
+		return e.String()
+	}
+
+	if errs := errors("CAMRN/d200 ZULAB/d1800 KJFK-31L/d100"); !strings.Contains(errs, "/d200 is below") ||
+		!strings.Contains(errs, "/d20000") || strings.Contains(errs, "/d100 ") {
+		t.Errorf("expected only /d200 to be flagged, got %q", errs)
+	}
+	if errs := errors("MERIT/c300 KLGA-4/c1500"); !strings.Contains(errs, "/c300 is below") ||
+		!strings.Contains(errs, "/c30000") {
+		t.Errorf("expected /c300 to be flagged, got %q", errs)
+	}
+	if errs := errors("CAMRN/d2000 ZULAB/d1800 KJFK-31L/d100"); errs != "" {
+		t.Errorf("unexpected errors for altitudes in feet: %q", errs)
+	}
+	if errs := errors("DHP GLRIA/a3000+/lhilpt1.0min/pta45/iaf PIANA/a3000+/faf VEPCO/a2000+"); !strings.Contains(errs, "/pta45 is below") ||
+		!strings.Contains(errs, "/pta4500") {
+		t.Errorf("expected /pta45 to be flagged, got %q", errs)
+	}
+	if errs := errors("DHP GLRIA/a3000+/lhilpt1.0min/pta3000/iaf PIANA/a3000+/faf VEPCO/a2000+"); errs != "" {
+		t.Errorf("unexpected errors for procedure turn altitude in feet: %q", errs)
+	}
+}
+
+func TestCheckDepartureAltitudesBelowFieldElevation(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	errors := func(route string, elevation int) string {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var e util.ErrorLogger
+		WaypointArray(wps).CheckDeparture(&e, elevation, nil, func(string) bool { return true })
+		return e.String()
+	}
+
+	if errs := errors("KDEN-16R/h170/c3000 ROCKI", 5434); !strings.Contains(errs, "/c3000 is at or below the 5434' field elevation") {
+		t.Errorf("expected /c3000 to be flagged at Denver, got %q", errs)
+	}
+	if errs := errors("KDEN-16R/h170/c7000 ROCKI/d5000", 5434); !strings.Contains(errs, "/d5000 is at or below") {
+		t.Errorf("expected /d5000 to be flagged at Denver, got %q", errs)
+	}
+	if errs := errors("KDEN-16R/h170/c7000 ROCKI/d10000", 5434); errs != "" {
+		t.Errorf("unexpected errors: %q", errs)
 	}
 }

@@ -347,13 +347,13 @@ func TestWaypointClimbActionUnderHumanControl(t *testing.T) {
 		return 0
 	}
 
-	s.applyWaypointActionEvent(ac, av.WaypointActions{ClimbAltitude: 50})
+	s.applyWaypointActionEvent(ac, av.WaypointActions{ClimbAltitude: 5000})
 	if assigned() != 5000 {
 		t.Fatalf("expected the route's climb to 5000 to be assigned, got %.0f", assigned())
 	}
 
 	ac.ControllerFrequency = "2A"
-	s.applyWaypointActionEvent(ac, av.WaypointActions{ClimbAltitude: 70})
+	s.applyWaypointActionEvent(ac, av.WaypointActions{ClimbAltitude: 7000})
 	if assigned() != 5000 {
 		t.Errorf("route changed the altitude of an aircraft a human is working: %.0f", assigned())
 	}

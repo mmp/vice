@@ -2990,7 +2990,7 @@
           "destination": "KSNS",
           "exit": "MOUSE",
           "altitude": 14000,
-          "route": "MOUSE N032.58.37.080,W118.09.49.114/airwork30m15nm/a500-20000 SHOTS/c380 SXC TANDY WIGGL"
+          "route": "MOUSE N032.58.37.080,W118.09.49.114/airwork30m15nm/a500-20000 SHOTS/c38000 SXC TANDY WIGGL"
         },
         {
           "airlines": [
@@ -3593,7 +3593,7 @@
           }
         },
         {
-          "waypoints": "MOMAR N033.13.21.274,W116.14.01.525/d090/ho BARET",
+          "waypoints": "MOMAR N033.13.21.274,W116.14.01.525/d9000/ho BARET",
           "route": "MOMAR BARET",
           "initial_controller": "C09",
           "initial_altitude": 19000,
@@ -5107,7 +5107,7 @@
     "WEST SAN ARR (E OR 9/27)": {
       "arrivals": [
         {
-          "waypoints": "SLI ALBAS/d110 V25 JARRD N033.16.34.990,W117.49.51.055/ho SARGS",
+          "waypoints": "SLI ALBAS/d11000 V25 JARRD N033.16.34.990,W117.49.51.055/ho SARGS",
           "route": "LAXX1 SLI ALBAS V25 REDIN V165 SARGS",
           "initial_controller": "4Y",
           "initial_altitude": 13000,
@@ -5516,7 +5516,7 @@
     "EAST CRQ ARR": {
       "arrivals": [
         {
-          "waypoints": "TRM N033.33.23.988,W116.18.03.389/d090 N033.26.38.579,W116.31.24.045/ho ESCON",
+          "waypoints": "TRM N033.33.23.988,W116.18.03.389/d9000 N033.26.38.579,W116.31.24.045/ho ESCON",
           "route": "DECAS TRM ESCON",
           "initial_controller": "C12",
           "initial_altitude": 16000,
@@ -5608,7 +5608,7 @@
     "PLYYA2": {
       "arrivals": [
         {
-          "waypoints": "TASCO/a19000-21000 SWAMI/a16500-/ho4Y OHBEA/a15000+/d110/ho PLYYA/a11000+ MNLYT/a4000+ SARGS/a2100",
+          "waypoints": "TASCO/a19000-21000 SWAMI/a16500-/ho4Y OHBEA/a15000+/d11000/ho PLYYA/a11000+ MNLYT/a4000+ SARGS/a2100",
           "star": "PLYYA2",
           "is_rnav": true,
           "initial_controller": "C22",
@@ -5717,7 +5717,7 @@
           }
         },
         {
-          "waypoints": "DIRBY/a19000 PITTD/a16500-/ho4Y OHBEA/a15000+/d110/ho PLYYA/a11000+ MNLYT/a4000+ SARGS/a2100",
+          "waypoints": "DIRBY/a19000 PITTD/a16500-/ho4Y OHBEA/a15000+/d11000/ho PLYYA/a11000+ MNLYT/a4000+ SARGS/a2100",
           "star": "PLYYA2",
           "is_rnav": true,
           "initial_controller": "C22",
@@ -5800,7 +5800,7 @@
     "SOUTHEAST MYF ARR": {
       "arrivals": [
         {
-          "waypoints": "KUMBA N032.51.11.365,W116.18.26.707/d090/ho GILYY STAXS BLLYJ HAILE MZB",
+          "waypoints": "KUMBA N032.51.11.365,W116.18.26.707/d9000/ho GILYY STAXS BLLYJ HAILE MZB",
           "route": "KUMBA T326 MZB",
           "initial_controller": "C09",
           "initial_altitude": 10000,
@@ -6466,7 +6466,7 @@
     "FIN_W NORTH SECTOR FEED": {
       "arrivals": [
         {
-          "waypoints": "CARIF/d060 N032.55.20.315,W117.17.02.827/ho N032.48.43.585,W117.14.17.208/h095/d050/tc",
+          "waypoints": "CARIF/d6000 N032.55.20.315,W117.17.02.827/ho N032.48.43.585,W117.14.17.208/h095/d5000/tc",
           "route": "LAXX1",
           "initial_controller": "5N",
           "initial_altitude": 9000,
@@ -6830,7 +6830,7 @@
     "FIN_W MIRAMAR SECTOR FEED": {
       "arrivals": [
         {
-          "waypoints": "OCN/ho5M/d070 N033.11.22.209,W117.23.46.354/d050 N032.56.34.528,W117.03.05.449/ho/h120",
+          "waypoints": "OCN/ho5M/d7000 N033.11.22.209,W117.23.46.354/d5000 N032.56.34.528,W117.03.05.449/ho/h120",
           "route": "OCN V23 MZB",
           "initial_controller": "5N",
           "initial_altitude": [7000, 9000, 11000, 13000, 15000],
@@ -6876,7 +6876,7 @@
           }
         },
         {
-          "waypoints": "OCN/ho5M/d070 N033.11.22.209,W117.23.46.354/d040/s210 N032.57.58.807,W117.05.03.744/ho/h150/intercept",
+          "waypoints": "OCN/ho5M/d7000 N033.11.22.209,W117.23.46.354/d4000/s210 N032.57.58.807,W117.05.03.744/ho/h150/intercept",
           "route": "OCN V23 MZB",
           "initial_controller": "5N",
           "initial_altitude": [7000, 9000, 11000, 13000, 15000],
@@ -6929,7 +6929,7 @@
           }
         },
         {
-          "waypoints": "OCN/ho5M/d070 N033.08.13.986,W117.22.28.269 N032.57.47.092,W117.01.31.873/d040/ho/h110",
+          "waypoints": "OCN/ho5M/d7000 N033.08.13.986,W117.22.28.269 N032.57.47.092,W117.01.31.873/d4000/ho/h110",
           "route": "OCN V23 MZB",
           "initial_controller": "5N",
           "initial_altitude": [7000, 9000, 11000, 13000, 15000],
@@ -6975,7 +6975,7 @@
           }
         },
         {
-          "waypoints": "OCN/ho5M/d070 N033.11.27.153,W117.23.54.265 N033.00.42.915,W117.02.26.777/d040/ho/h110",
+          "waypoints": "OCN/ho5M/d7000 N033.11.27.153,W117.23.54.265 N033.00.42.915,W117.02.26.777/d4000/ho/h110",
           "route": "OCN V23 MZB",
           "initial_controller": "5N",
           "initial_altitude": [7000, 9000, 11000, 13000, 15000],

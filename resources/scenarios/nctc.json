@@ -4365,7 +4365,7 @@
     "PIRAT3": {
       "arrivals": [
         {
-          "waypoints": "PIRAT/a10000/d060 N037.31.52.994,W122.20.04.678/ho N037.34.17.162,W122.15.26.477/h045",
+          "waypoints": "PIRAT/a10000/d6000 N037.31.52.994,W122.20.04.678/ho N037.34.17.162,W122.15.26.477/h045",
           "star": "PIRAT3",
           "initial_controller": "2B",
           "initial_altitude": 10000,
@@ -4437,7 +4437,7 @@
     "PXN6": {
       "arrivals": [
         {
-          "waypoints": "PXN/d160 N036.47.35.635,W120.52.05.610/d080/ho KARNN BORED/a8000 BUSHY SUNOL",
+          "waypoints": "PXN/d16000 N036.47.35.635,W120.52.05.610/d8000/ho KARNN BORED/a8000 BUSHY SUNOL",
           "star": "PXN6",
           "initial_controller": "1M",
           "initial_altitude": 18000,
@@ -4464,7 +4464,7 @@
     "SAT.EAST": {
       "arrivals": [
         {
-          "waypoints": "N037.32.46.593,W120.07.06.461/ho/d100 DLRAY",
+          "waypoints": "N037.32.46.593,W120.07.06.461/ho/d10000 DLRAY",
           "route": "BIH MOD",
           "initial_controller": "C22",
           "initial_altitude": 12000,
@@ -4499,7 +4499,7 @@
           }
         },
         {
-          "waypoints": "N037.32.46.593,W120.07.06.461/ho/d100 MOD",
+          "waypoints": "N037.32.46.593,W120.07.06.461/ho/d10000 MOD",
           "route": "BIH MOD",
           "initial_controller": "C22",
           "initial_altitude": 14000,
@@ -4538,7 +4538,7 @@
           }
         },
         {
-          "waypoints": "N037.43.07.376,W120.10.51.571/ho/d100 MOD",
+          "waypoints": "N037.43.07.376,W120.10.51.571/ho/d10000 MOD",
           "route": "OAL MOD",
           "initial_controller": "C22",
           "initial_altitude": 14000,
@@ -4573,7 +4573,7 @@
           }
         },
         {
-          "waypoints": "N037.38.20.770,W120.12.54.893/ho/d200 MOD UHHUT",
+          "waypoints": "N037.38.20.770,W120.12.54.893/ho/d20000 MOD UHHUT",
           "route": "SNORA MOD UHHUT",
           "initial_controller": "C22",
           "initial_altitude": 22000,
@@ -4605,7 +4605,7 @@
     "SAT.SOUTH": {
       "arrivals": [
         {
-          "waypoints": "TURLO/ho/d200 LIN/delete",
+          "waypoints": "TURLO/ho/d20000 LIN/delete",
           "route": "TURLO LIN",
           "initial_controller": "C15",
           "initial_altitude": 24000,
@@ -4662,7 +4662,7 @@
           }
         },
         {
-          "waypoints": "N036.57.37.026,W120.08.43.251/ho1Q/d120 N037.13.46.432,W120.28.23.759/ho MOD",
+          "waypoints": "N036.57.37.026,W120.08.43.251/ho1Q/d12000 N037.13.46.432,W120.28.23.759/ho MOD",
           "route": "NURAY MOD",
           "initial_controller": "C22",
           "initial_altitude": 19000,
@@ -4698,7 +4698,7 @@
           }
         },
         {
-          "waypoints": "N036.57.37.026,W120.08.43.251/ho1Q/d120 N037.13.46.432,W120.28.23.759/d100/ho MOD",
+          "waypoints": "N036.57.37.026,W120.08.43.251/ho1Q/d12000 N037.13.46.432,W120.28.23.759/d10000/ho MOD",
           "route": "NURAY MOD",
           "initial_controller": "C22",
           "initial_altitude": 19000,
@@ -5000,7 +5000,7 @@
     "WWAVS2.BCKGND": {
       "overflights": [
         {
-          "waypoints": "SERFR N036.26.57.475,W121.39.48.290/ho2G/ssspTTL NRRLI/a20000+/s280 WWAVS/a15000-19000/s280 WPOUT/a11000/s250/ho2B THEEZ/a8000+/s230 WESLA/a6000/s210 MVRKK/a6000 N037.51.41.124,W122.18.20.335/a4000/ho2F/ssspLFT N037.50.18.328,W122.15.49.740 N037.47.34.934,W122.15.30.432/a3000 SHAKE/a2800 ROGGE/a1800/a180 KSFO-19L/a200/delete",
+          "waypoints": "SERFR N036.26.57.475,W121.39.48.290/ho2G/ssspTTL NRRLI/a20000+/s280 WWAVS/a15000-19000/s280 WPOUT/a11000/s250/ho2B THEEZ/a8000+/s230 WESLA/a6000/s210 MVRKK/a6000 N037.51.41.124,W122.18.20.335/a4000/ho2F/ssspLFT N037.50.18.328,W122.15.49.740 N037.47.34.934,W122.15.30.432/a3000 SHAKE/a2800 ROGGE/a1800/s180 KSFO-19L/a200/delete",
           "initial_controller": "C14",
           "initial_altitude": 27000,
           "initial_speed": 280,

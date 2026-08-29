@@ -106,8 +106,8 @@ type WaypointActions struct {
 	ClearSecondaryScratchpad  bool
 	TransferComms             bool
 
-	ClimbAltitude   int16 // hundreds of feet; 0 = unset
-	DescendAltitude int16 // hundreds of feet; 0 = unset
+	ClimbAltitude   int // feet; 0 = unset
+	DescendAltitude int // feet; 0 = unset
 }
 
 // HasSimActions reports whether the actions include any the sim carries
@@ -761,6 +761,12 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, elevation int, contr
 				e.ErrorString("/@a%d%s is at or below the %d' field elevation, so it takes effect immediately. Is it supposed to be /@a%d%s?",
 					group.Until.Altitude, sign, elevation, group.Until.Altitude*100, sign)
 			}
+			if alt := group.Actions.ClimbAltitude; alt != 0 && alt <= elevation {
+				e.ErrorString("/c%d is at or below the %d' field elevation", alt, elevation)
+			}
+			if alt := group.Actions.DescendAltitude; alt != 0 && alt <= elevation {
+				e.ErrorString("/d%d is at or below the %d' field elevation", alt, elevation)
+			}
 		}
 		if war := wp.AltitudeRestriction(); war != nil {
 			// Make sure it's generally reasonable
@@ -787,12 +793,22 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, elevation int, contr
 func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[ControlPosition]*Controller, checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
+	checkFeet := func(qualifier string, alt int) {
+		if alt > 0 && float32(alt) < minCrossingAltitude {
+			hundredsOfFeetError(e, fmt.Sprintf("/%s%d", qualifier, alt), fmt.Sprintf("/%s%d", qualifier, alt*100))
+		}
+	}
+
 	for i, wp := range wa {
 		e.Push(wp.Fix)
 		if sr := wp.SpeedRestriction(); sr != nil {
 			if sr.Range[0] < 0 || (sr.Range[1] > 300 && sr.Range[1] != MaxRestrictionSpeed) {
 				e.ErrorString("invalid speed restriction %s", sr.Encoded())
 			}
+		}
+
+		if pt := wp.ProcedureTurn(); pt != nil {
+			checkFeet("pta", pt.ExitAltitude)
 		}
 
 		if wp.AirworkMinutes() > 0 {
@@ -806,6 +822,10 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 		}
 
 		for _, group := range wp.ActionGroups() {
+			if !wa.atEnd(i) {
+				checkFeet("c", group.Actions.ClimbAltitude)
+				checkFeet("d", group.Actions.DescendAltitude)
+			}
 			if po := group.Actions.PointOut; po != "" {
 				if !util.MapContains(controllers,
 					func(_ ControlPosition, ctrl *Controller) bool {
@@ -865,9 +885,21 @@ func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, 
 	}
 }
 
-// minCrossingAltitude is the lowest altitude restriction we accept at an
-// arrival's intermediate waypoints.
+// minCrossingAltitude is the lowest altitude we accept in a route qualifier
+// away from the runway. Route altitudes are in feet, so a lower one is
+// almost always a missing factor of 100.
 const minCrossingAltitude float32 = 500
+
+// atEnd reports whether the i'th waypoint is where the route effectively
+// ends: the aircraft is at the runway there, so low altitudes are expected.
+func (wa WaypointArray) atEnd(i int) bool {
+	return i+1 == len(wa) || wa[i].Delete() || wa[i+1].Delete()
+}
+
+func hundredsOfFeetError(e *util.ErrorLogger, given, scaled string) {
+	e.ErrorString("%s is below %s, which is almost certainly not intended. Is it supposed to be %s?",
+		given, FormatAltitude(minCrossingAltitude), scaled)
+}
 
 func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPosition]*Controller, approachAssigned bool,
 	checkScratchpad func(string) bool) {
@@ -882,12 +914,7 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 		if wp.IAF() || wp.IF() || wp.FAF() {
 			e.ErrorString("Unexpected IAF/IF/FAF specification in arrival")
 		}
-		// Unlike the /c and /d modifiers, /a altitudes are in feet; a very
-		// low one is almost always a missing factor of 100. Waypoints at
-		// the end of the route are exempt, since the aircraft is at the
-		// runway there and low altitudes are expected.
-		atEnd := i+1 == len(wa) || wp.Delete() || wa[i+1].Delete()
-		if ar := wp.AltitudeRestriction(); ar != nil && !atEnd {
+		if ar := wp.AltitudeRestriction(); ar != nil && !wa.atEnd(i) {
 			alt := ar.Range[0]
 			if ar.Range[1] != MaxAltitude {
 				alt = max(alt, ar.Range[1])
@@ -898,8 +925,7 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 				if scaled.Range[1] != MaxAltitude {
 					scaled.Range[1] *= 100
 				}
-				e.ErrorString("/a%s is below %s, which is almost certainly not intended. Is it supposed to be /a%s?",
-					ar.Encoded(), FormatAltitude(minCrossingAltitude), scaled.Encoded())
+				hundredsOfFeetError(e, "/a"+ar.Encoded(), "/a"+scaled.Encoded())
 			}
 		}
 		if wp.InterceptApproach() && !approachAssigned {
@@ -1165,24 +1191,15 @@ func parseWaypointActionModifier(f string) (WaypointActions, bool, error) {
 		return WaypointActions{ClearSecondaryScratchpad: true}, true, nil
 	case f == "tc":
 		return WaypointActions{TransferComms: true}, true, nil
-	case len(f) > 1 && f[0] == 'c' && allDigits(f[1:]):
+	case len(f) > 1 && (f[0] == 'c' || f[0] == 'd') && allDigits(f[1:]):
 		alt, err := strconv.Atoi(f[1:])
-		if err != nil {
-			return WaypointActions{}, true, fmt.Errorf("%s: error parsing altitude after /c: %v", f[1:], err)
+		if err != nil || alt < 100 || alt > 60000 || alt%100 != 0 {
+			return WaypointActions{}, true, fmt.Errorf("%s: altitude must be a multiple of 100 between 100 and 60000 feet", f)
 		}
-		if alt < 0 || alt > 600 {
-			return WaypointActions{}, true, fmt.Errorf("%s: climb altitude must be between 0 and 600 (in 100s of feet)", f)
+		if f[0] == 'c' {
+			return WaypointActions{ClimbAltitude: alt}, true, nil
 		}
-		return WaypointActions{ClimbAltitude: int16(alt)}, true, nil
-	case len(f) > 1 && f[0] == 'd' && allDigits(f[1:]):
-		alt, err := strconv.Atoi(f[1:])
-		if err != nil {
-			return WaypointActions{}, true, fmt.Errorf("%s: error parsing altitude after /d: %v", f[1:], err)
-		}
-		if alt < 0 || alt > 600 {
-			return WaypointActions{}, true, fmt.Errorf("%s: descend altitude must be between 0 and 600 (in 100s of feet)", f)
-		}
-		return WaypointActions{DescendAltitude: int16(alt)}, true, nil
+		return WaypointActions{DescendAltitude: alt}, true, nil
 	}
 
 	if heading, ok, err := parseWaypointHeadingAction(f); ok || err != nil {
@@ -1518,11 +1535,14 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					pt.ProcedureTurn = &ProcedureTurn{}
 				}
 
-				if alt, err := strconv.Atoi(f[3:]); err == nil {
-					pt.ProcedureTurn.ExitAltitude = alt
-				} else {
+				alt, err := strconv.Atoi(f[3:])
+				if err != nil {
 					return nil, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
 				}
+				if alt < 0 || alt > 60000 {
+					return nil, fmt.Errorf("%s: procedure turn exit altitude must be between 0 and 60000 feet", f)
+				}
+				pt.ProcedureTurn.ExitAltitude = alt
 			} else if f == "nopt" {
 				wp.SetNoPT(true)
 			} else if f == "nopt180" {

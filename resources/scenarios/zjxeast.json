@@ -189,7 +189,7 @@
     "50_OHDEA2": {
       "arrivals": [
         {
-          "waypoints": "N032.19.07.563,W083.17.36.088/ho DUCHY/a24000/d120 ILTAC/a23000- FORMB OHDEA/a12000/d2 N030.26.23.198,W082.03.30.800 KJAX-8/d0/delete",
+          "waypoints": "N032.19.07.563,W083.17.36.088/ho DUCHY/a24000/d12000 ILTAC/a23000- FORMB OHDEA/a12000/d2000 N030.26.23.198,W082.03.30.800 KJAX-8/delete",
           "star": "OHDEA2",
           "route": "/. OHDEA2",
           "initial_controller": "T22",
@@ -581,7 +581,7 @@
     "50_DADES2": {
       "arrivals": [
         {
-          "waypoints": "FISHO/ho Q75 TEUFL BAAMF CORYY/d270 CAPOH/delete",
+          "waypoints": "FISHO/ho Q75 TEUFL BAAMF CORYY/d27000 CAPOH/delete",
           "star": "DADES2",
           "route": "/. DADES2",
           "initial_controller": "66",
@@ -625,7 +625,7 @@
           }
         },
         {
-          "waypoints": "N033.06.49.693,W082.25.03.094/ho BAAMF CORYY/d270 CAPOH/delete",
+          "waypoints": "N033.06.49.693,W082.25.03.094/ho BAAMF CORYY/d27000 CAPOH/delete",
           "star": "DADES2",
           "route": "/. DADES2",
           "initial_controller": "66",
@@ -975,7 +975,7 @@
     "50_LUBBR3": {
       "arrivals": [
         {
-          "waypoints": "FISHO/ho Q75 TEUFL KYYUU WNWUD/d270 SSPAZ/delete",
+          "waypoints": "FISHO/ho Q75 TEUFL KYYUU WNWUD/d27000 SSPAZ/delete",
           "star": "LUBBR4",
           "route": "/. LUBBR3",
           "initial_controller": "66",
@@ -1022,7 +1022,7 @@
     "50_BAGGY3": {
       "arrivals": [
         {
-          "waypoints": "N031.03.56.940,W083.24.46.697/ho SAV DREWE/a11000 BAGGY/a7000+ DDENA/d0 KCHS-3/delete",
+          "waypoints": "N031.03.56.940,W083.24.46.697/ho SAV DREWE/a11000 BAGGY/a7000+ DDENA KCHS-3/delete",
           "star": "BAGGY3",
           "route": "/. BAGGY3",
           "initial_controller": "33",

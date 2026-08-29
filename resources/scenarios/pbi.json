@@ -1704,7 +1704,7 @@
     "BR64V.MRLIN": {
       "arrivals": [
         {
-          "waypoints": "MUNRO/d050 N026.31.19.753,W079.21.01.120/ho MRLIN",
+          "waypoints": "MUNRO/d5000 N026.31.19.753,W079.21.01.120/ho MRLIN",
           "route": "ZFP BR64V MRLIN",
           "initial_controller": "C47",
           "initial_altitude": 15000,
@@ -2043,7 +2043,7 @@
           }
         },
         {
-          "waypoints": "N028.16.51.559,W080.33.52.553 N028.04.44.099,W080.21.30.893/d060 N028.02.45.337,W080.19.28.368/ho N027.57.07.500,W080.13.52.791/tc",
+          "waypoints": "N028.16.51.559,W080.33.52.553 N028.04.44.099,W080.21.30.893/d6000 N028.02.45.337,W080.19.28.368/ho N027.57.07.500,W080.13.52.791/tc",
           "route": "DEBRL Q97 EBAYY",
           "initial_controller": "C04",
           "initial_altitude": 18000,
@@ -2089,7 +2089,7 @@
           }
         },
         {
-          "waypoints": "N028.09.12.989,W080.39.54.964 N028.03.02.338,W080.39.09.755/d060/h180/ho",
+          "waypoints": "N028.09.12.989,W080.39.54.964 N028.03.02.338,W080.39.09.755/d6000/h180/ho",
           "route": "OMN MLB",
           "initial_controller": "C04",
           "initial_altitude": 12000,
@@ -2161,7 +2161,7 @@
           }
         },
         {
-          "waypoints": "N028.15.22.082,W080.09.37.056 N028.00.43.959,W080.09.09.096/d060 N027.40.01.110,W080.08.38.609/ho TUXXI",
+          "waypoints": "N028.15.22.082,W080.09.37.056 N028.00.43.959,W080.09.09.096/d6000 N027.40.01.110,W080.08.38.609/ho TUXXI",
           "route": "Q97 KENLL TUXXI",
           "initial_controller": "C04",
           "initial_altitude": 20000,
@@ -2210,7 +2210,7 @@
     "SUA ARR.W.E": {
       "arrivals": [
         {
-          "waypoints": "VUUDU OWLLL/a9000/s250/d050 N026.55.00.251,W080.41.53.919/ho MSQTO/flyover/h050",
+          "waypoints": "VUUDU OWLLL/a9000/s250/d5000 N026.55.00.251,W080.41.53.919/ho MSQTO/flyover/h050",
           "route": "VUUDU2",
           "initial_controller": "1P",
           "initial_altitude": 10000,
@@ -2255,7 +2255,7 @@
     "SUA ARR.W.W": {
       "arrivals": [
         {
-          "waypoints": "VUUDU OWLLL/a9000/s250/d050 N026.58.55.832,W080.39.46.917/h080/ho",
+          "waypoints": "VUUDU OWLLL/a9000/s250/d5000 N026.58.55.832,W080.39.46.917/h080/ho",
           "route": "VUUDU2",
           "initial_controller": "1P",
           "initial_altitude": 10000,
@@ -2397,7 +2397,7 @@
     "FVAP ARR.S.E": {
       "arrivals": [
         {
-          "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d040/ho CLEFF SHEDS",
+          "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d4000/ho CLEFF SHEDS",
           "route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
@@ -2434,7 +2434,7 @@
           }
         },
         {
-          "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d040/ho CLEFF WIXED",
+          "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d4000/ho CLEFF WIXED",
           "route": "LIFRR2 WIXED",
           "initial_controller": "1B",
           "initial_altitude": 6000,
@@ -2456,7 +2456,7 @@
           }
         },
         {
-          "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d030/ho IVETY",
+          "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d3000/ho IVETY",
           "route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
@@ -2507,7 +2507,7 @@
           }
         },
         {
-          "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d030/ho IVETY",
+          "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d3000/ho IVETY",
           "route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
@@ -2537,7 +2537,7 @@
     "FVAP ARR.S.W": {
       "arrivals": [
         {
-          "waypoints": "DURRY N026.58.43.631,W080.31.53.928/h030/d040/ho",
+          "waypoints": "DURRY N026.58.43.631,W080.31.53.928/h030/d4000/ho",
           "route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
@@ -2575,7 +2575,7 @@
           }
         },
         {
-          "waypoints": "DURRY N026.58.43.631,W080.31.53.928/h030/d040/ho",
+          "waypoints": "DURRY N026.58.43.631,W080.31.53.928/h030/d4000/ho",
           "route": "LIFRR2 WIXED",
           "initial_controller": "1B",
           "initial_altitude": 6000,
@@ -2597,7 +2597,7 @@
           }
         },
         {
-          "waypoints": "N026.41.49.984,W080.24.00.225/d030/ho MONAD",
+          "waypoints": "N026.41.49.984,W080.24.00.225/d3000/ho MONAD",
           "route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
@@ -2648,7 +2648,7 @@
           }
         },
         {
-          "waypoints": "N026.41.49.984,W080.24.00.225/d030/ho MONAD",
+          "waypoints": "N026.41.49.984,W080.24.00.225/d3000/ho MONAD",
           "route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,

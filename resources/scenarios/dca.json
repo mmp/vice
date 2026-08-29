@@ -1980,7 +1980,7 @@
           }
         },
         {
-          "waypoints": "N039.01.29.263,W076.50.02.645 EYESS/d060 BRUNC N038.54.09.838,W076.56.26.343/ho FELTY HITEK CAVDI/h187",
+          "waypoints": "N039.01.29.263,W076.50.02.645 EYESS/d6000 BRUNC N038.54.09.838,W076.56.26.343/ho FELTY HITEK CAVDI/h187",
           "star": "CLIPR3",
           "initial_controller": "1E",
           "initial_altitude": 10000,
@@ -2051,7 +2051,7 @@
           }
         },
         {
-          "waypoints": "N039.01.29.263,W076.50.02.645 EYESS/d060 BRUNC N038.54.09.838,W076.56.26.343/ho FELTY HITEK CAVDI/h187",
+          "waypoints": "N039.01.29.263,W076.50.02.645 EYESS/d6000 BRUNC N038.54.09.838,W076.56.26.343/ho FELTY HITEK CAVDI/h187",
           "star": "SKILS5",
           "initial_controller": "1E",
           "initial_altitude": 10000,
@@ -2271,7 +2271,7 @@
     "FINAL_NS": {
       "arrivals": [
         {
-          "waypoints": "CAPSS/a10000 HOYAS/a7000/d060/ho HALLL KATRN/h8",
+          "waypoints": "CAPSS/a10000 HOYAS/a7000/d6000/ho HALLL KATRN/h8",
           "star": "CAPSS4",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -2341,7 +2341,7 @@
     "FINAL_SE": {
       "arrivals": [
         {
-          "waypoints": "N038.48.13.469,W076.43.26.396 EDDGY THANE N038.54.07.723,W076.55.40.228/d060/ho MEGGS/h327",
+          "waypoints": "N038.48.13.469,W076.43.26.396 EDDGY THANE N038.54.07.723,W076.55.40.228/d6000/ho MEGGS/h327",
           "star": "DEALE3",
           "initial_controller": "1E",
           "initial_altitude": 9000,
@@ -2425,7 +2425,7 @@
           }
         },
         {
-          "waypoints": "N039.02.25.733,W076.48.52.855/d060 EYESS/ho EDDWD MEGGS NAYES/h327",
+          "waypoints": "N039.02.25.733,W076.48.52.855/d6000 EYESS/ho EDDWD MEGGS NAYES/h327",
           "star": "CLIPR3",
           "initial_controller": "1E",
           "initial_altitude": 9000,
@@ -2496,7 +2496,7 @@
           }
         },
         {
-          "waypoints": "N039.02.25.733,W076.48.52.855/d060 EYESS/ho EDDWD MEGGS NAYES/h327",
+          "waypoints": "N039.02.25.733,W076.48.52.855/d6000 EYESS/ho EDDWD MEGGS NAYES/h327",
           "star": "SKILS5",
           "initial_controller": "1E",
           "initial_altitude": 9000,
@@ -2550,7 +2550,7 @@
     "FINAL_SNW": {
       "arrivals": [
         {
-          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
+          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d6000/ho STAND TGTHR DARIC/h147",
           "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -2611,7 +2611,7 @@
           }
         },
         {
-          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
+          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d6000/ho STAND TGTHR DARIC/h147",
           "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,
@@ -2852,7 +2852,7 @@
           }
         },
         {
-          "waypoints": "N039.01.29.263,W076.50.02.645 EYESS/d060 BRUNC N038.54.09.838,W076.56.26.343/ho FELTY HITEK CAVDI/h187",
+          "waypoints": "N039.01.29.263,W076.50.02.645 EYESS/d6000 BRUNC N038.54.09.838,W076.56.26.343/ho FELTY HITEK CAVDI/h187",
           "star": "CLIPR3",
           "initial_controller": "1E",
           "initial_altitude": 10000,
@@ -2923,7 +2923,7 @@
           }
         },
         {
-          "waypoints": "N039.01.29.263,W076.50.02.645 EYESS/d060 BRUNC N038.54.09.838,W076.56.26.343/ho FELTY HITEK CAVDI/h187",
+          "waypoints": "N039.01.29.263,W076.50.02.645 EYESS/d6000 BRUNC N038.54.09.838,W076.56.26.343/ho FELTY HITEK CAVDI/h187",
           "star": "SKILS5",
           "initial_controller": "1E",
           "initial_altitude": 10000,
@@ -3143,7 +3143,7 @@
     "FINAL_NS.IMC": {
       "arrivals": [
         {
-          "waypoints": "CAPSS/a10000 HOYAS/a7000/d060/ho HALLL KATRN/h8",
+          "waypoints": "CAPSS/a10000 HOYAS/a7000/d6000/ho HALLL KATRN/h8",
           "star": "CAPSS4",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -3213,7 +3213,7 @@
     "FINAL_SE.IMC": {
       "arrivals": [
         {
-          "waypoints": "N038.48.13.469,W076.43.26.396 EDDGY THANE N038.54.07.723,W076.55.40.228/d060/ho MEGGS/h327",
+          "waypoints": "N038.48.13.469,W076.43.26.396 EDDGY THANE N038.54.07.723,W076.55.40.228/d6000/ho MEGGS/h327",
           "star": "DEALE3",
           "initial_controller": "1E",
           "initial_altitude": 10000,
@@ -3257,7 +3257,7 @@
           }
         },
         {
-          "waypoints": "N038.48.13.469,W076.43.26.396 EDDGY THANE N038.54.07.723,W076.55.40.228/d060/ho MEGGS/h327",
+          "waypoints": "N038.48.13.469,W076.43.26.396 EDDGY THANE N038.54.07.723,W076.55.40.228/d6000/ho MEGGS/h327",
           "star": "DEALE3",
           "initial_controller": "1E",
           "initial_altitude": 10000,
@@ -3308,7 +3308,7 @@
           }
         },
         {
-          "waypoints": "N039.02.25.733,W076.48.52.855/d060 EYESS/ho EDDWD MEGGS NAYES/h327",
+          "waypoints": "N039.02.25.733,W076.48.52.855/d6000 EYESS/ho EDDWD MEGGS NAYES/h327",
           "star": "CLIPR3",
           "initial_controller": "1E",
           "initial_altitude": 9000,
@@ -3364,7 +3364,7 @@
           }
         },
         {
-          "waypoints": "N039.02.25.733,W076.48.52.855/d060 EYESS/ho EDDWD MEGGS NAYES/h327",
+          "waypoints": "N039.02.25.733,W076.48.52.855/d6000 EYESS/ho EDDWD MEGGS NAYES/h327",
           "star": "CLIPR3",
           "initial_controller": "1E",
           "initial_altitude": 9000,
@@ -3395,7 +3395,7 @@
           }
         },
         {
-          "waypoints": "N039.02.25.733,W076.48.52.855/d060 EYESS/ho EDDWD MEGGS NAYES/h327",
+          "waypoints": "N039.02.25.733,W076.48.52.855/d6000 EYESS/ho EDDWD MEGGS NAYES/h327",
           "star": "SKILS5",
           "initial_controller": "1E",
           "initial_altitude": 9000,
@@ -3449,7 +3449,7 @@
     "FINAL_SNW.IMC": {
       "arrivals": [
         {
-          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
+          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d6000/ho STAND TGTHR DARIC/h147",
           "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -3468,7 +3468,7 @@
           }
         },
         {
-          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
+          "waypoints": "ALWYZ/a10000-/s250 FRDMM/a8000/s240/d6000/ho STAND TGTHR DARIC/h147",
           "star": "FRDMM7",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -3525,7 +3525,7 @@
           }
         },
         {
-          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
+          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d6000/ho STAND TGTHR DARIC/h147",
           "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,
@@ -3560,7 +3560,7 @@
           }
         },
         {
-          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d060/ho STAND TGTHR DARIC/h147",
+          "waypoints": "TRUPS/a11000/s250 FRDMM/a8000/s240/d6000/ho STAND TGTHR DARIC/h147",
           "star": "TRUPS6",
           "initial_controller": "1J",
           "initial_altitude": 11000,

@@ -57432,7 +57432,7 @@
           "initial_controller": "1M",
           "initial_speed": 200,
           "route": "FREDO KBOS",
-          "waypoints": "N041.48.06.836,W070.29.27.260 FREDO/d30 N041.58.10.260,W070.45.08.871/h310/ho"
+          "waypoints": "N041.48.06.836,W070.29.27.260 FREDO/d3000 N041.58.10.260,W070.45.08.871/h310/ho"
         }
       ]
     },
@@ -61250,7 +61250,7 @@
           "initial_controller": "1R",
           "initial_speed": 290,
           "star": "OOSHN5",
-          "waypoints": "EURRO/a10000+ OOSHN/a9000-14000/h290/d60/s250/ho1F",
+          "waypoints": "EURRO/a10000+ OOSHN/a9000-14000/h290/d6000/s250/ho1F",
           "expect_approach": "I2L",
           "scratchpad": "F/L",
           "secondary_scratchpad": "∆",
@@ -63376,7 +63376,7 @@
           "initial_controller": "1R",
           "initial_speed": 190,
           "route": "PSM LWRNC KBOS",
-          "waypoints": "N042.54.37.413,W071.16.15.750 N042.52.58.454,W071.13.53.175/ho1I/h150/d40",
+          "waypoints": "N042.54.37.413,W071.16.15.750 N042.52.58.454,W071.13.53.175/ho1I/h150/d4000",
           "expect_approach": "I2L"
         }
       ]
@@ -63398,7 +63398,7 @@
           "initial_controller": "1M",
           "initial_speed": 190,
           "route": "FREDO KBOS",
-          "waypoints": "N041.48.06.836,W070.29.27.260 FREDO/d40/h10/ho"
+          "waypoints": "N041.48.06.836,W070.29.27.260 FREDO/d4000/h10/ho"
         }
       ]
     },
@@ -64193,7 +64193,7 @@
           "initial_speed": 250,
           "star": "ROBUC3",
           "speed_restriction": 260,
-          "waypoints": "CRADL/a8000-10000 KLEBB/a8000/s210/d50/h01/ho1F",
+          "waypoints": "CRADL/a8000-10000 KLEBB/a8000/s210/d5000/h01/ho1F",
           "expect_approach": "Y2L",
           "airports": ["KBOS"],
           "airlines": {
@@ -64303,7 +64303,7 @@
           "initial_altitude": 11000,
           "initial_controller": "1R",
           "initial_speed": 270,
-          "waypoints": "AUTUM/a11000-12000/s270/ho1F WINTA/a8000-10000/s250/d60 N042.28.13.460,W071.15.12.304/ho1F/s210/h90",
+          "waypoints": "AUTUM/a11000-12000/s270/ho1F WINTA/a8000-10000/s250/d6000 N042.28.13.460,W071.15.12.304/ho1F/s210/h90",
           "expect_approach": "Y2L",
           "airports": ["KBOS"],
           "airlines": {
@@ -66885,7 +66885,7 @@
           "initial_controller": "1R",
           "initial_speed": 290,
           "star": "OOSHN5",
-          "waypoints": "OOSHN/a9000-14000/s250 N042.35.39.820,W070.15.03.350/d60/s210/ho1F EGGRL",
+          "waypoints": "OOSHN/a9000-14000/s250 N042.35.39.820,W070.15.03.350/d6000/s210/ho1F EGGRL",
           "expect_approach": "Y2L",
           "airports": ["KBOS"],
           "airlines": {
@@ -67043,7 +67043,7 @@
           "initial_controller": "1D",
           "initial_speed": 210,
           "route": "FOSTY WOONS KBOS",
-          "waypoints": "N042.11.29.378,W071.17.59.626/d50 N042.24.39.899,W071.07.05.115/ho1F N042.29.23.305,W071.03.10.832/h90"
+          "waypoints": "N042.11.29.378,W071.17.59.626/d5000 N042.24.39.899,W071.07.05.115/ho1F N042.29.23.305,W071.03.10.832/h90"
         }
       ]
     },
@@ -69693,7 +69693,7 @@
           "initial_speed": 290,
           "star": "OOSHN5",
           "secondary_scratchpad": "I",
-          "waypoints": "OOSHN/a9000-14000/s250 N042.35.39.820,W070.15.03.350/d60/s210/h290/ho1F",
+          "waypoints": "OOSHN/a9000-14000/s250 N042.35.39.820,W070.15.03.350/d6000/s210/h290/ho1F",
           "expect_approach": "I2L",
           "airports": ["KBOS"],
           "airlines": {
@@ -72617,7 +72617,7 @@
           "initial_controller": "1R",
           "initial_speed": 20,
           "route": "GDM T608 REVER",
-          "waypoints": "WINTA N042.26.46.352,W071.02.52.018/d60/h090/s210/ho1F"
+          "waypoints": "WINTA N042.26.46.352,W071.02.52.018/d6000/h090/s210/ho1F"
         }
       ]
     },
@@ -72797,7 +72797,7 @@
           "initial_controller": "1R",
           "initial_speed": 250,
           "star": "OOSHN5",
-          "waypoints": "OOSHN/ho1F/d50 N042.38.02.574,W070.34.36.251 N042.34.02.729,W070.59.10.122/s210 N042.28.06.016,W070.59.27.892/h150",
+          "waypoints": "OOSHN/ho1F/d5000 N042.38.02.574,W070.34.36.251 N042.34.02.729,W070.59.10.122/s210 N042.28.06.016,W070.59.27.892/h150",
           "expect_approach": "I3L",
           "scratchpad": "33L",
           "secondary_scratchpad": "Δ",
@@ -75705,7 +75705,7 @@
           "initial_controller": "1R",
           "initial_speed": 170,
           "route": "PSM LWRNC KBOS",
-          "waypoints": "LWRNC N042.42.19.448,W071.02.33.973/d30/h165/ho1F",
+          "waypoints": "LWRNC N042.42.19.448,W071.02.33.973/d3000/h165/ho1F",
           "expect_approach": "I3L"
         }
       ]
@@ -75751,7 +75751,7 @@
           "initial_controller": "1M",
           "initial_speed": 210,
           "route": "FOSTY WOONS KBOS",
-          "waypoints": "N041.59.40.911,W071.19.24.797/d40 N042.02.09.405,W071.10.29.324/h085/ho1F"
+          "waypoints": "N041.59.40.911,W071.19.24.797/d4000 N042.02.09.405,W071.10.29.324/h085/ho1F"
         }
       ]
     },
@@ -75772,7 +75772,7 @@
           "initial_controller": "1R",
           "initial_speed": 170,
           "route": "PSM LWRNC KBOS",
-          "waypoints": "LWRNC N042.40.43.757,W071.02.45.261/d30/h165/ho1I",
+          "waypoints": "LWRNC N042.40.43.757,W071.02.45.261/d3000/h165/ho1I",
           "expect_approach": "VA3R",
           "scratchpad": "33R"
         }
@@ -75797,7 +75797,7 @@
           "initial_controller": "1R",
           "initial_speed": 170,
           "route": "FREDO KBOS",
-          "waypoints": "N041.49.02.234,W070.34.29.631 N041.50.25.360,W070.34.35.180/h010/d30/ho1I"
+          "waypoints": "N041.49.02.234,W070.34.29.631 N041.50.25.360,W070.34.35.180/h010/d3000/ho1I"
         }
       ]
     }

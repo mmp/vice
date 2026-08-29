@@ -2586,7 +2586,7 @@
     "JULLE5": {
       "arrivals": [
         {
-          "waypoints": "GRAMY SOBOW SERAH N020.52.36.735,W157.19.02.138/d060/ho SAKKI JULLE ALANA",
+          "waypoints": "GRAMY SOBOW SERAH N020.52.36.735,W157.19.02.138/d6000/ho SAKKI JULLE ALANA",
           "star": "JULLE5",
           "initial_controller": "C04",
           "initial_altitude": 8000,

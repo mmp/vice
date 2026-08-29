@@ -70,8 +70,8 @@
           "type": "VOR",
           "full_name": "VOR Runway 25",
           "waypoints": [
-            "GVO ZACKS/iaf/a6500+/pt4514nm/pta45 ZACKS/faf/a1700 WURGU/a1080",
-            "RZS ZACKS/iaf/a6500+/pt4514nm/pta45 ZACKS/faf/a1700 WURGU/a1080"
+            "GVO ZACKS/iaf/a6500+/pt4514nm/pta4500 ZACKS/faf/a1700 WURGU/a1080",
+            "RZS ZACKS/iaf/a6500+/pt4514nm/pta4500 ZACKS/faf/a1700 WURGU/a1080"
           ]
         },
         "V25T": {

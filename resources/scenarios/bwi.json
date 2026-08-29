@@ -1627,7 +1627,7 @@
           "initial_speed": 280,
           "scratchpad": "DOV",
           "flight_type": "arrival",
-          "waypoints": "COLIN/ho2P GOFER/a13000/d070 N038.26.26.302,W076.15.31.530/ho PRNCZ HEDGE ENO ARLFT/delete"
+          "waypoints": "COLIN/ho2P GOFER/a13000/d7000 N038.26.26.302,W076.15.31.530/ho PRNCZ HEDGE ENO ARLFT/delete"
         }
       ]
     },

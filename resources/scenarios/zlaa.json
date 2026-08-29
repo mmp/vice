@@ -2646,7 +2646,7 @@
     "SBP FIM.CNDOR ARR": {
       "arrivals": [
         {
-          "waypoints": "N033.58.13.666,W116.24.05.333 FIM/d240/ho CNDOR CADAB",
+          "waypoints": "N033.58.13.666,W116.24.05.333 FIM/d24000/ho CNDOR CADAB",
           "route": "/. DECAS FIM CNDOR CADAB",
           "initial_controller": "40",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000],
@@ -2697,7 +2697,7 @@
           }
         },
         {
-          "waypoints": "HEC PMD FIM/d240/ho CNDOR CADAB",
+          "waypoints": "HEC PMD FIM/d24000/ho CNDOR CADAB",
           "route": "/. PMD FIM CNDOR CADAB",
           "initial_controller": "40",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000],

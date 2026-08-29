@@ -1409,7 +1409,7 @@
             "departure_controller": "4N",
             "sid": "EWR5",
             "cleared_altitude": 6000,
-            "waypoints": "_EWR4_22Ra/ho5S ELVAE NECCK/c170/hoC68"
+            "waypoints": "_EWR4_22Ra/ho5S ELVAE NECCK/c17000/hoC68"
           }
         },
         "4L.LGA": {
@@ -1442,7 +1442,7 @@
             "departure_controller": "4N",
             "sid": "EWR5",
             "cleared_altitude": 6000,
-            "waypoints": "KEWR-22R/ho5S N040.44.56.415,W074.05.59.472 N040.45.47.955,W074.18.50.383 ELVAE NECCK/c170/hoC68"
+            "waypoints": "KEWR-22R/ho5S N040.44.56.415,W074.05.59.472 N040.45.47.955,W074.18.50.383 ELVAE NECCK/c17000/hoC68"
           }
         },
         "22R.LIB": {
@@ -5175,7 +5175,7 @@
           "runway": "6",
           "type": "ILS",
           "waypoints": [
-            "N040.38.58.508,W074.21.22.022/d20 VINGS/if/a2000/s180/d20 LEESY/a1700/s170 DANDY/a1500/s170/clearapp TORBY/faf/a1300"
+            "N040.38.58.508,W074.21.22.022/d2000 VINGS/if/a2000/s180/d2000 LEESY/a1700/s170 DANDY/a1500/s170/clearapp TORBY/faf/a1300"
           ]
         },
         "IZ6": {
@@ -11311,7 +11311,7 @@
       "arrivals": [
         {
           "cruise_altitude": 22000,
-          "waypoints": "PARCH CCC/ho2K/a12000 ROBER/a5000/ho2A N040.40.19.697,W073.16.49.039 N040.46.57.265,W073.20.21.624/d20 N040.49.49.956,W073.29.08.199/s210 N040.49.43.694,W073.35.40.988/s180/clearapp CORVT/a2000 MATTR/a1900 KJFK-22R/a100/delete",
+          "waypoints": "PARCH CCC/ho2K/a12000 ROBER/a5000/ho2A N040.40.19.697,W073.16.49.039 N040.46.57.265,W073.20.21.624/d2000 N040.49.49.956,W073.29.08.199/s210 N040.49.43.694,W073.35.40.988/s180/clearapp CORVT/a2000 MATTR/a1900 KJFK-22R/a100/delete",
           "route": "/. PARCH4",
           "star": "PARCH4",
           "initial_controller": "B32",
@@ -11327,7 +11327,7 @@
     "SARDI1": {
       "arrivals": [
         {
-          "waypoints": "PLUME SHERL DUNEE/ho3H/d70 KOPPY SARDI UPTWN/ho DPK",
+          "waypoints": "PLUME SHERL DUNEE/ho3H/d7000 KOPPY SARDI UPTWN/ho DPK",
           "cruise_altitude": 31000,
           "star": "SARDI1",
           "initial_controller": "B17",
@@ -11468,7 +11468,7 @@
           "initial_speed": 250,
           "route": "/. PAWLN1",
           "star": "PAWLN1",
-          "waypoints": "LOVES/ho3O EEGOR/d40 BELTT/ho DPK"
+          "waypoints": "LOVES/ho3O EEGOR/d4000 BELTT/ho DPK"
         }
       ]
     },
@@ -11573,7 +11573,7 @@
     "SARDI1.ISP.Background24": {
       "arrivals": [
         {
-          "waypoints": "PLUME SHERL/ho3H DUNEE KOPPY SARDI/d40 CCC/d20/clearapp UKEGE/a1400 JUMUM/a940 KISP-24/a100/delete",
+          "waypoints": "PLUME SHERL/ho3H DUNEE KOPPY SARDI/d4000 CCC/d2000/clearapp UKEGE/a1400 JUMUM/a940 KISP-24/a100/delete",
           "expect_approach": "I24",
           "star": "SARDI1",
           "star_feeds": ["SARDI1", "NELIE4"],
@@ -11589,7 +11589,7 @@
       "arrivals": [
         {
           "cruise_altitude": 31000,
-          "waypoints": "KARRS/ho2G CAMRN/a12000/s250/d40/clearapp/ho2A ZACHS/a2000/s210 MEALS/a1800/s150- KJFK-31L/a100/delete",
+          "waypoints": "KARRS/ho2G CAMRN/a12000/s250/d4000/clearapp/ho2A ZACHS/a2000/s210 MEALS/a1800/s150- KJFK-31L/a100/delete",
           "route": "/. CAMRN5",
           "star": "CAMRN5",
           "initial_controller": "C68",
@@ -11605,7 +11605,7 @@
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "waypoints": "CAMRN/d50 N040.06.19.934,W073.49.44.875/d40 N040.15.31.324,W073.41.31.809 N040.25.32.221,W073.33.00.422 N040.33.32.654,W073.27.11.826 N040.37.27.637,W073.26.33.237 N040.41.01.280,W073.27.18.198 N040.46.08.376,W073.29.23.223 N040.48.23.494,W073.32.35.126 N040.48.13.002,W073.34.39.794/d30 ROSLY/d019 ZALPO/d001 N040.38.47.151,W073.45.17.523/delete",
+          "waypoints": "CAMRN/d5000 N040.06.19.934,W073.49.44.875/d4000 N040.15.31.324,W073.41.31.809 N040.25.32.221,W073.33.00.422 N040.33.32.654,W073.27.11.826 N040.37.27.637,W073.26.33.237 N040.41.01.280,W073.27.18.198 N040.46.08.376,W073.29.23.223 N040.48.23.494,W073.32.35.126 N040.48.13.002,W073.34.39.794/d3000 ROSLY/d1900 ZALPO/d100 N040.38.47.151,W073.45.17.523/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -11621,7 +11621,7 @@
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "waypoints": "CAMRN/d50 N040.07.10.979,W073.47.02.167 N040.17.06.164,W073.56.53.946/d20/s210 N040.22.55.515,W073.57.56.019/s180/clearapp ZETAL/a2000 EBBEE/a1500 KJFK-4R/a100/delete",
+          "waypoints": "CAMRN/d5000 N040.07.10.979,W073.47.02.167 N040.17.06.164,W073.56.53.946/d2000/s210 N040.22.55.515,W073.57.56.019/s180/clearapp ZETAL/a2000 EBBEE/a1500 KJFK-4R/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -11637,7 +11637,7 @@
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "waypoints": "CAMRN/d50 N040.07.31.840,W073.49.08.345/d40 N040.14.55.014,W073.52.55.598/d30 N040.19.16.530,W073.54.13.848/s210 ASALT/a2000/s180/clearapp CNRSE/a1500 LEISA/a1000 SILJY/a500 KJFK-13L/a100/delete",
+          "waypoints": "CAMRN/d5000 N040.07.31.840,W073.49.08.345/d4000 N040.14.55.014,W073.52.55.598/d3000 N040.19.16.530,W073.54.13.848/s210 ASALT/a2000/s180/clearapp CNRSE/a1500 LEISA/a1000 SILJY/a500 KJFK-13L/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -11653,7 +11653,7 @@
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "waypoints": "PUCKY/d160 N040.43.49.673,W074.03.54.942/d130 N040.26.58.876,W074.00.12.414 N040.23.43.924,W073.54.06.405/d40 N040.23.08.575,W073.36.18.973 N040.38.09.701,W073.26.05.579/s210 N040.45.56.758,W073.28.45.375/d30 N040.48.13.524,W073.35.07.424/s180/clearapp ROSLY/a3000 ZALPO/a1800 KJFK-22L/a100/delete",
+          "waypoints": "PUCKY/d16000 N040.43.49.673,W074.03.54.942/d13000 N040.26.58.876,W074.00.12.414 N040.23.43.924,W073.54.06.405/d4000 N040.23.08.575,W073.36.18.973 N040.38.09.701,W073.26.05.579/s210 N040.45.56.758,W073.28.45.375/d3000 N040.48.13.524,W073.35.07.424/s180/clearapp ROSLY/a3000 ZALPO/a1800 KJFK-22L/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -11669,7 +11669,7 @@
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "waypoints": "PUCKY/d160 N040.45.53.077,W074.01.50.879/d130 N040.33.04.213,W073.59.11.879/d80 N040.21.37.979,W073.52.28.709/d40 N040.19.32.351,W073.47.57.264 N040.18.30.827,W073.43.21.013 N040.18.36.567,W073.36.34.985 N040.24.21.470,W073.29.48.491 N040.26.43.688,W073.28.43.095/d30 CATOD MALDE/d019 ZULAB/d001 N040.38.36.082,W073.45.24.966/delete",
+          "waypoints": "PUCKY/d16000 N040.45.53.077,W074.01.50.879/d13000 N040.33.04.213,W073.59.11.879/d8000 N040.21.37.979,W073.52.28.709/d4000 N040.19.32.351,W073.47.57.264 N040.18.30.827,W073.43.21.013 N040.18.36.567,W073.36.34.985 N040.24.21.470,W073.29.48.491 N040.26.43.688,W073.28.43.095/d3000 CATOD MALDE/d1900 ZULAB/d100 N040.38.36.082,W073.45.24.966/delete",
           "initial_controller": "4A",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -11685,7 +11685,7 @@
       "arrivals": [
         {
           "cruise_altitude": 39000,
-          "waypoints": "PUCKY/d160/po2J VADDR/d130 N040.43.27.041,W073.41.13.901/d80/radius1 N040.25.45.103,W073.38.54.210/d40/radius0.5 N040.19.15.088,W073.52.25.193/d30/radius0.5 ASALT/a2000/clearapp CNRSE/a1500 LEISA/a1000 KJFK-13L/a100/delete",
+          "waypoints": "PUCKY/d16000/po2J VADDR/d13000 N040.43.27.041,W073.41.13.901/d8000/radius1 N040.25.45.103,W073.38.54.210/d4000/radius0.5 N040.19.15.088,W073.52.25.193/d3000/radius0.5 ASALT/a2000/clearapp CNRSE/a1500 LEISA/a1000 KJFK-13L/a100/delete",
           "initial_controller": "4A",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -11716,7 +11716,7 @@
     "VADDR1-Background Land 22": {
       "arrivals": [
         {
-          "waypoints": "PAWLN IGN/ho1V VALRE BASYE HAARP/d030 CRALY YOMAN/d019 GREKO/d001 LGA/delete",
+          "waypoints": "PAWLN IGN/ho1V VALRE BASYE HAARP/d3000 CRALY YOMAN/d1900 GREKO/d100 LGA/delete",
           "cruise_altitude": 34000,
           "route": "/. VADDR1",
           "initial_controller": "B46",
@@ -11926,7 +11926,7 @@
     "EWR 22L": {
       "arrivals": [
         {
-          "waypoints": "HELON FLOSI CRANK/a7000 N041.03.47.169,W074.21.00.653/d50 N041.03.51.221,W074.15.52.432/s210 N041.02.11.808,W074.12.13.996/d40 N040.56.59.810,W074.06.50.504/d30 N040.53.06.872,W074.04.17.794/s180 IZEKO GIMEE/a2500 BUZZD/a1500/s140 KEWR-22L/a100/delete",
+          "waypoints": "HELON FLOSI CRANK/a7000 N041.03.47.169,W074.21.00.653/d5000 N041.03.51.221,W074.15.52.432/s210 N041.02.11.808,W074.12.13.996/d4000 N040.56.59.810,W074.06.50.504/d3000 N040.53.06.872,W074.04.17.794/s180 IZEKO GIMEE/a2500 BUZZD/a1500/s140 KEWR-22L/a100/delete",
           "star_feeds": ["BRAND1", "FLOSI4", "FQM3", "PENNS2", "PHLBO4", "SHAFF7"],
           "expect_approach": "I2L",
           "scratchpad": "I2L",
@@ -11941,7 +11941,7 @@
     "EWR 4R": {
       "arrivals": [
         {
-          "waypoints": "HELON FLOSI CRANK/a7000 N040.57.19.324,W074.32.33.643/d50 N040.31.09.639,W074.32.01.591/d30/s210 N040.28.27.893,W074.20.47.662/s180/clearapp GRITY/a2800 DOOIN/a1700 KEWR-4R/a100/delete",
+          "waypoints": "HELON FLOSI CRANK/a7000 N040.57.19.324,W074.32.33.643/d5000 N040.31.09.639,W074.32.01.591/d3000/s210 N040.28.27.893,W074.20.47.662/s180/clearapp GRITY/a2800 DOOIN/a1700 KEWR-4R/a100/delete",
           "star_feeds": ["BRAND1", "FLOSI4", "FQM3", "PENNS2", "PHLBO4", "SHAFF7"],
           "route": "/.",
           "expect_approach": "I4R",
@@ -12032,7 +12032,7 @@
     "COATE TEB NE": {
       "arrivals": [
         {
-          "waypoints": "HUO LEMOR/a6000 COATE/a6000/d40 N040.59.56.086,W074.33.54.613/a4000/d30 N040.59.56.086,W074.33.54.613/a3000 N040.45.34.222,W074.16.26.874/a3000/s200/d20 N040.44.16.645,W074.14.02.129/a2000/s180 VINGS/a2000/s170/d17 LEESY/a1700/s180/d15 DANDY/a1500/s170 TORBY/a1300/clearapp KTEB/delete",
+          "waypoints": "HUO LEMOR/a6000 COATE/a6000/d4000 N040.59.56.086,W074.33.54.613/a4000/d3000 N040.59.56.086,W074.33.54.613/a3000 N040.45.34.222,W074.16.26.874/a3000/s200/d2000 N040.44.16.645,W074.14.02.129/a2000/s180 VINGS/a2000/s170/d1700 LEESY/a1700/s180/d1500 DANDY/a1500/s170 TORBY/a1300/clearapp KTEB/delete",
           "route": "/. ALB V489 COATE",
           "initial_controller": "4U",
           "initial_altitude": 6000,
@@ -12113,7 +12113,7 @@
     "COATE TEB SW": {
       "arrivals": [
         {
-          "waypoints": "HUO LEMOR/a6000 COATE/a6000/d40 N041.03.54.915,W074.40.59.564/a4000/d30 N041.05.28.202,W074.25.23.748/a3000 N041.06.10.788,W074.10.16.360/a3000 NIPIE/a3000/s210/d20 UNVIL/a2000/s180  TUGGZ/a1500/clearapp KTEB/delete",
+          "waypoints": "HUO LEMOR/a6000 COATE/a6000/d4000 N041.03.54.915,W074.40.59.564/a4000/d3000 N041.05.28.202,W074.25.23.748/a3000 N041.06.10.788,W074.10.16.360/a3000 NIPIE/a3000/s210/d2000 UNVIL/a2000/s180  TUGGZ/a1500/clearapp KTEB/delete",
           "route": "/. ALB V489 COATE",
           "initial_controller": "4U",
           "initial_altitude": 6000,
@@ -12628,7 +12628,7 @@
     "TEB 22 background": {
       "arrivals": [
         {
-          "waypoints": "WACKI/a11000/s250 MAZIE REGLE/a7000 GNNZO/a4000 SBJ/d40/ho4U N040.54.15.372,W074.31.23.963/a4000 N041.00.13.046,W074.27.16.111/d30/s210 N041.06.10.788,W074.10.16.360/a3000/s200 NIPIE/a3000/s180/d20 UNVIL/a2000/s180/d15 TUGGZ/a1500/s170/clearapp KTEB/delete",
+          "waypoints": "WACKI/a11000/s250 MAZIE REGLE/a7000 GNNZO/a4000 SBJ/d4000/ho4U N040.54.15.372,W074.31.23.963/a4000 N041.00.13.046,W074.27.16.111/d3000/s210 N041.06.10.788,W074.10.16.360/a3000/s200 NIPIE/a3000/s180/d2000 UNVIL/a2000/s180/d1500 TUGGZ/a1500/s170/clearapp KTEB/delete",
           "star": "JAIKE4",
           "initial_controller": "4H",
           "initial_altitude": 11000,
@@ -12705,7 +12705,7 @@
           }
         },
         {
-          "waypoints": "N041.47.44.547,W074.29.57.4730 WEARD/ho4U CAMMO HUO LEMOR/a6000 COATE/a6000/d40 N041.03.54.915,W074.40.59.564/a4000/d30 N041.03.22.711,W074.24.16.594/a3000/s210 N041.06.10.788,W074.10.16.360/a3000/s200 NIPIE/a3000/s180/d20 UNVIL/a2000/s180/d15 TUGGZ/a1500/clearapp KTEB/delete",
+          "waypoints": "N041.47.44.547,W074.29.57.4730 WEARD/ho4U CAMMO HUO LEMOR/a6000 COATE/a6000/d4000 N041.03.54.915,W074.40.59.564/a4000/d3000 N041.03.22.711,W074.24.16.594/a3000/s210 N041.06.10.788,W074.10.16.360/a3000/s200 NIPIE/a3000/s180/d2000 UNVIL/a2000/s180/d1500 TUGGZ/a1500/clearapp KTEB/delete",
           "route": "/. ALB V489 COATE",
           "initial_controller": "B19",
           "initial_altitude": 6000,
@@ -12786,7 +12786,7 @@
     "TEB 4 background": {
       "arrivals": [
         {
-          "waypoints": "WACKI/a11000/s250 MAZIE REGLE/a7000 N040.29.10.794,W074.50.35.824/a4000 N040.32.39.054,W074.41.00.662/d30/ho4U N040.41.08.916,W074.19.43.529/a3000/s210/d20 VINGS/a2000/s170/d17 LEESY/a1700/s180/d15 DANDY/a1500/s170 TORBY/a1300/clearapp KTEB/delete",
+          "waypoints": "WACKI/a11000/s250 MAZIE REGLE/a7000 N040.29.10.794,W074.50.35.824/a4000 N040.32.39.054,W074.41.00.662/d3000/ho4U N040.41.08.916,W074.19.43.529/a3000/s210/d2000 VINGS/a2000/s170/d1700 LEESY/a1700/s180/d1500 DANDY/a1500/s170 TORBY/a1300/clearapp KTEB/delete",
           "star": "JAIKE4",
           "initial_controller": "4H",
           "initial_altitude": 11000,
@@ -12867,7 +12867,7 @@
     "MIP4 LGA background 22/13": {
       "arrivals": [
         {
-          "waypoints": "BILEY VIBES/ho1D LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000/d70 N040.31.03.514,W074.12.18.885/a7000 N040.32.02.937,W074.08.54.814/a7000/ho1F/d40 APPLE/a4000 PROUD N040.44.46.198,W073.59.15.807/a4000 N040.57.58.422,W073.49.24.743/a4000/s210 N040.58.20.505,W073.46.27.451/a3000 N040.57.43.687,W073.44.47.805/a2000 N040.55.25.012,W073.45.27.246/a2000/s180/clearapp GREKO/a1900 N040.47.11.355,W073.52.10.526/a001 LGA/delete",
+          "waypoints": "BILEY VIBES/ho1D LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000/d7000 N040.31.03.514,W074.12.18.885/a7000 N040.32.02.937,W074.08.54.814/a7000/ho1F/d4000 APPLE/a4000 PROUD N040.44.46.198,W073.59.15.807/a4000 N040.57.58.422,W073.49.24.743/a4000/s210 N040.58.20.505,W073.46.27.451/a3000 N040.57.43.687,W073.44.47.805/a2000 N040.55.25.012,W073.45.27.246/a2000/s180/clearapp GREKO/a1900 N040.47.11.355,W073.52.10.526/a001 LGA/delete",
           "star": "MIP4",
           "star_feeds": ["PROUD2", "APPLE3"],
           "initial_controller": "C55",
@@ -13235,7 +13235,7 @@
     "MIP4 LGA background 4": {
       "arrivals": [
         {
-          "waypoints": "BILEY VIBES/ho1D LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000/ho1F N040.32.02.937,W074.08.54.814/d40 APPLE/a4000/s210/d30 BENNG/a3000/d18 RAHEL/s180/a1800/d17 DNNIS/a1700/clearapp KLGA/delete",
+          "waypoints": "BILEY VIBES/ho1D LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000/ho1F N040.32.02.937,W074.08.54.814/d4000 APPLE/a4000/s210/d3000 BENNG/a3000/d1800 RAHEL/s180/a1800/d1700 DNNIS/a1700/clearapp KLGA/delete",
           "star": "MIP4",
           "star_feeds": ["PROUD2", "APPLE3"],
           "initial_controller": "C55",
@@ -13325,7 +13325,7 @@
           }
         },
         {
-          "waypoints": "BESSI/a12000 EDJER/ho1D/a12000 DAVYS/a11000 HOLEY BRAND/a11000 KORRY/a10000 RBV/a10000 TYKES/d80 MINKS/a8000/d70 RENUE/a7000/ho1F/d40 APPLE/a4000/d30 BENNG/a3000/d18 RAHEL/s180/a1800 DNNIS/a1700/clearapp KLGA/delete",
+          "waypoints": "BESSI/a12000 EDJER/ho1D/a12000 DAVYS/a11000 HOLEY BRAND/a11000 KORRY/a10000 RBV/a10000 TYKES/d8000 MINKS/a8000/d7000 RENUE/a7000/ho1F/d4000 APPLE/a4000/d3000 BENNG/a3000/d1800 RAHEL/s180/a1800 DNNIS/a1700/clearapp KLGA/delete",
           "star": "PROUD2",
           "initial_controller": "W32",
           "initial_altitude": 12000,
@@ -13419,7 +13419,7 @@
     "HAARP LGA background 4/31": {
       "arrivals": [
         {
-          "waypoints": "IGN/ho1V VALRE BASYE/a8000 HAARP/a5000 CRALY GGREG/d40/s210 ZARID VADDR/ho1F N040.46.26.943,W073.58.50.126 N040.32.19.965,W074.08.34.270/a4000/d30/s180 VARAZ/a3000 BENNG/a3000 RAHEL/s180/a1800 DNNIS/a1700/clearapp KLGA/delete",
+          "waypoints": "IGN/ho1V VALRE BASYE/a8000 HAARP/a5000 CRALY GGREG/d4000/s210 ZARID VADDR/ho1F N040.46.26.943,W073.58.50.126 N040.32.19.965,W074.08.34.270/a4000/d3000/s180 VARAZ/a3000 BENNG/a3000 RAHEL/s180/a1800 DNNIS/a1700/clearapp KLGA/delete",
           "star_feeds": ["NOBBI1", "VADDR1"],
           "route": "/.",
           "star": "VADDR1",
@@ -13515,7 +13515,7 @@
     "HAARP LGA background 4/13": {
       "arrivals": [
         {
-          "waypoints": "IGN/ho1V VALRE BASYE/a8000 HAARP/a5000 CRALY/a4000/s210 N040.46.26.943,W073.58.50.126/ho1F N040.32.19.965,W074.08.34.270/a4000/d30/s180 VARAZ/a3000 BENNG/a3000 RAHEL/s180/a1800 DNNIS/a1700/clearapp KLGA/delete",
+          "waypoints": "IGN/ho1V VALRE BASYE/a8000 HAARP/a5000 CRALY/a4000/s210 N040.46.26.943,W073.58.50.126/ho1F N040.32.19.965,W074.08.34.270/a4000/d3000/s180 VARAZ/a3000 BENNG/a3000 RAHEL/s180/a1800 DNNIS/a1700/clearapp KLGA/delete",
           "route": "/.",
           "initial_controller": "1V",
           "initial_altitude": 9000,
@@ -14339,7 +14339,7 @@
     "South 22 background": {
       "arrivals": [
         {
-          "waypoints": "SOMTO/ho4P ARD DYLIN MERSR/a8000 METRO/d60 MARRT/ho4A N040.44.25.104,W074.35.01.602/d50 N040.48.05.449,W074.29.54.699/a5000 N040.53.59.291,W074.21.37.402/a5000 N040.55.59.962,W074.15.23.043/d40 N040.54.22.719,W074.07.47.687/d30/s210 N040.53.13.533,W074.05.15.582/a3000/s180/d25 GIMEE/a2500/d15 BUZZD/a1800/s180/d15/clearapp N040.45.47.804,W074.07.09.098/a1500 KEWR/delete",
+          "waypoints": "SOMTO/ho4P ARD DYLIN MERSR/a8000 METRO/d6000 MARRT/ho4A N040.44.25.104,W074.35.01.602/d5000 N040.48.05.449,W074.29.54.699/a5000 N040.53.59.291,W074.21.37.402/a5000 N040.55.59.962,W074.15.23.043/d4000 N040.54.22.719,W074.07.47.687/d3000/s210 N040.53.13.533,W074.05.15.582/a3000/s180/d2500 GIMEE/a2500/d1500 BUZZD/a1800/s180/d1500/clearapp N040.45.47.804,W074.07.09.098/a1500 KEWR/delete",
           "star": "FLOSI4",
           "initial_controller": "4P",
           "initial_altitude": 8000,

@@ -321,7 +321,7 @@
     "MCHLN2_UNARM31": {
       "arrivals": [
         {
-          "waypoints": "PROVN/ho MCHLN/a11000 TYRES/d40 KGSP/delete",
+          "waypoints": "PROVN/ho MCHLN/a11000 TYRES/d4000 KGSP/delete",
           "cruise_altitude": [17000, 19000, 21000],
           "star": "MCHLN2",
           "route": "/. MCHLN2",
@@ -386,7 +386,7 @@
           "assigned_altitude": 17000,
           "initial_controller": "32",
           "initial_speed": 280,
-          "waypoints": "SPA/ho UNARM CAE/d50 _CAE_OUT/delete"
+          "waypoints": "SPA/ho UNARM CAE/d5000 _CAE_OUT/delete"
         }
       ]
     },
@@ -422,7 +422,7 @@
           "assigned_altitude": 23000,
           "initial_controller": "32",
           "initial_speed": 270,
-          "waypoints": "SPA/ho IRQ/a11000/d50 KAGS _AGS_OUT/delete"
+          "waypoints": "SPA/ho IRQ/a11000/d5000 KAGS _AGS_OUT/delete"
         }
       ]
     },
@@ -459,7 +459,7 @@
           "assigned_altitude": 23000,
           "initial_controller": "32",
           "initial_speed": 240,
-          "waypoints": "SPA/ho UNARM CLT/a17000/d60 KHKY _HKY_OUT/delete"
+          "waypoints": "SPA/ho UNARM CLT/a17000/d6000 KHKY _HKY_OUT/delete"
         },
         {
           "airlines": [
@@ -480,7 +480,7 @@
           "assigned_altitude": 23000,
           "initial_controller": "32",
           "initial_speed": 230,
-          "waypoints": "SPA/ho UNARM CLT/a17000/d50 KSVH _SVH_OUT/delete"
+          "waypoints": "SPA/ho UNARM CLT/a17000/d5000 KSVH _SVH_OUT/delete"
         }
       ]
     },
@@ -505,7 +505,7 @@
           "assigned_altitude": 23000,
           "initial_controller": "32",
           "initial_speed": 230,
-          "waypoints": "SPA/ho GENOD/a11000/d60 KHKY _HKY_OUT/delete"
+          "waypoints": "SPA/ho GENOD/a11000/d6000 KHKY _HKY_OUT/delete"
         }
       ]
     },
@@ -547,12 +547,12 @@
           "waypoints": "CRDET/ho BANKR/a13000-22000 DEBBT/a12000-21000/s250",
           "runway_waypoints": {
             "KCLT": {
-              "18L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d50 _CLT_OUT/delete",
-              "19L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d50 _CLT_OUT/delete",
-              "19R": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d50 _CLT_OUT/delete",
-              "1L": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d50 _CLT_BANKR_N_OUT/delete",
-              "1R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d50 _CLT_BANKR_N_OUT/delete",
-              "36R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d50 _CLT_BANKR_N_OUT/delete"
+              "18L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d5000 _CLT_OUT/delete",
+              "19L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d5000 _CLT_OUT/delete",
+              "19R": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d5000 _CLT_OUT/delete",
+              "1L": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d5000 _CLT_BANKR_N_OUT/delete",
+              "1R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d5000 _CLT_BANKR_N_OUT/delete",
+              "36R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d5000 _CLT_BANKR_N_OUT/delete"
             }
           }
         }
@@ -596,12 +596,12 @@
           "waypoints": "CAAKE/ho JONZE/a11000-21000/s250",
           "runway_waypoints": {
             "KCLT": {
-              "18L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d50 _CLT_OUT/delete",
-              "19L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d50 _CLT_OUT/delete",
-              "19R": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d50 _CLT_OUT/delete",
-              "1L": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d40 _CLT_JONZE_N_OUT/delete",
-              "1R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d40 _CLT_JONZE_N_OUT/delete",
-              "36R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d40 _CLT_JONZE_N_OUT/delete"
+              "18L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d5000 _CLT_OUT/delete",
+              "19L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d5000 _CLT_OUT/delete",
+              "19R": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d5000 _CLT_OUT/delete",
+              "1L": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d4000 _CLT_JONZE_N_OUT/delete",
+              "1R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d4000 _CLT_JONZE_N_OUT/delete",
+              "36R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d4000 _CLT_JONZE_N_OUT/delete"
             }
           }
         }

@@ -546,7 +546,7 @@
     "EAST ARRS N": {
       "arrivals": [
         {
-          "waypoints": "CABAB N037.06.41.028,W118.56.05.359/d120 N037.01.34.866,W119.02.40.702/d110/ho SANGO",
+          "waypoints": "CABAB N037.06.41.028,W118.56.05.359/d12000 N037.01.34.866,W119.02.40.702/d11000/ho SANGO",
           "route": "CABAB SANGO",
           "initial_controller": "C16",
           "initial_altitude": 19000,
@@ -583,7 +583,7 @@
     "EAST ARRS S": {
       "arrivals": [
         {
-          "waypoints": "CABAB N037.11.26.247,W118.59.10.231/d120 N037.07.40.986,W119.10.50.500/d110/ho NTELL",
+          "waypoints": "CABAB N037.11.26.247,W118.59.10.231/d12000 N037.07.40.986,W119.10.50.500/d11000/ho NTELL",
           "route": "CABAB NTELL",
           "initial_controller": "C16",
           "initial_altitude": 19000,

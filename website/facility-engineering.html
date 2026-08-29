@@ -631,11 +631,11 @@
                 <tbody>
                   <tr>
                     <td><code>/c<var>altitude</var></code></td>
-                    <td>The aircraft is issued an instruction to climb to the specified altitude (in 100s of feet, between 0 and 600).</td>
+                    <td>The aircraft is issued an instruction to climb to the specified altitude, given in feet (a multiple of 100, between 100 and 60,000).</td>
                   </tr>
                   <tr>
                     <td><code>/d<var>altitude</var></code></td>
-                    <td>The aircraft is issued an instruction to descend to the specified altitude (in 100s of feet, between 0 and 600).</td>
+                    <td>The aircraft is issued an instruction to descend to the specified altitude, given in feet (a multiple of 100, between 100 and 60,000).</td>
                   </tr>
                   <tr>
                     <td><code>/ho</code></td>
@@ -880,7 +880,7 @@
                   <tr>
                     <td><code>@<var>navaid</var>-R<var>radial</var></code></td>
                     <td>Triggers when the aircraft crosses the specified radial. For example,
-                      <code>KDLS-25/h120/@LTJ-R165/c40</code> flies heading 120 until crossing the <code>LTJ</code> 165 radial,
+                      <code>KDLS-25/h120/@LTJ-R165/c4000</code> flies heading 120 until crossing the <code>LTJ</code> 165 radial,
                       after which the aircraft is instructed to climb to 4,000' feet.
                       Note that radials extend in only one direction from a fix.
                     </td>

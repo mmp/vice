@@ -1336,28 +1336,28 @@
             "sid": "CTRUS4",
             "is_rnav": true,
             "departure_controller": "6N",
-            "waypoints": "N033.59.50.084,W118.28.21.892/c080 WRASH N034.00.08.734,W118.37.04.923/ho1M CTRUS/a5000+ DZINE/s250- OROSZ SHORS MDWAY COREZ"
+            "waypoints": "N033.59.50.084,W118.28.21.892/c8000 WRASH N034.00.08.734,W118.37.04.923/ho1M CTRUS/a5000+ DZINE/s250- OROSZ SHORS MDWAY COREZ"
           },
           "CSTRO": {
             "cleared_altitude": 3000,
             "sid": "CTRUS4",
             "is_rnav": true,
             "departure_controller": "6N",
-            "waypoints": "N033.59.50.084,W118.28.21.892/c080 WRASH N034.00.08.734,W118.37.04.923/ho1M CTRUS/a5000+ DZINE/s250- OROSZ HEYJO CSTRO"
+            "waypoints": "N033.59.50.084,W118.28.21.892/c8000 WRASH N034.00.08.734,W118.37.04.923/ho1M CTRUS/a5000+ DZINE/s250- OROSZ HEYJO CSTRO"
           },
           "HEC,MISEN,LAS": {
             "cleared_altitude": 3000,
             "sid": "CTRUS4",
             "is_rnav": true,
             "departure_controller": "6N",
-            "waypoints": "N033.59.50.084,W118.28.21.892/c070 N033.59.58.228,W118.33.03.554/ho1V N034.04.05.379,W118.35.40.795/tc SEAEM SLAPP YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP"
+            "waypoints": "N033.59.50.084,W118.28.21.892/c7000 N033.59.58.228,W118.33.03.554/ho1V N034.04.05.379,W118.35.40.795/tc SEAEM SLAPP YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP"
           },
           "DAG.T,HEC.T": {
             "cleared_altitude": 3000,
             "sid": "CTRUS4",
             "is_rnav": true,
             "departure_controller": "6N",
-            "waypoints": "N033.59.50.084,W118.28.21.892/c070 N033.59.58.228,W118.33.03.554/ho1V N034.04.05.379,W118.35.40.795/tc SEAEM CHOII/a7100+ SLAPP/a9000+ JARZO/a10300/s250- VVERA SSETH"
+            "waypoints": "N033.59.50.084,W118.28.21.892/c7000 N033.59.58.228,W118.33.03.554/ho1V N034.04.05.379,W118.35.40.795/tc SEAEM CHOII/a7100+ SLAPP/a9000+ JARZO/a10300/s250- VVERA SSETH"
           }
         }
       },
@@ -2677,7 +2677,7 @@
     "SBAQ2": {
       "arrivals": [
         {
-          "waypoints": "CMA/d050 N034.12.55.469,W119.01.23.193/ho GINNA",
+          "waypoints": "CMA/d5000 N034.12.55.469,W119.01.23.193/ho GINNA",
           "route": "KWANG CMA GINNA",
           "initial_controller": "61H",
           "initial_altitude": 7000,
@@ -2695,7 +2695,7 @@
           }
         },
         {
-          "waypoints": "CMA/d050 N034.12.55.469,W119.01.23.193/h050/ho",
+          "waypoints": "CMA/d5000 N034.12.55.469,W119.01.23.193/h050/ho",
           "route": "KWANG CMA GINNA",
           "initial_controller": "61H",
           "initial_altitude": 7000,
@@ -2717,7 +2717,7 @@
     "SANQ16R/SANQ14R": {
       "arrivals": [
         {
-          "waypoints": "N033.51.15.018,W118.21.26.141 LAX/h310/d050/ho",
+          "waypoints": "N033.51.15.018,W118.21.26.141 LAX/h310/d5000/ho",
           "route": "CWARD2 LAX CANOG",
           "initial_controller": "6L",
           "initial_altitude": 6000,
@@ -2776,7 +2776,7 @@
           }
         },
         {
-          "waypoints": "N033.51.15.018,W118.21.26.141 LAX/h310/d040/ho",
+          "waypoints": "N033.51.15.018,W118.21.26.141 LAX/h310/d4000/ho",
           "route": "CWARD2 LAX SILEX",
           "initial_controller": "6L",
           "initial_altitude": 6000,
@@ -2839,7 +2839,7 @@
     "SANQ16R/SANQ14R.34": {
       "arrivals": [
         {
-          "waypoints": "N033.51.15.018,W118.21.26.141 LAX/h310/d040/ho",
+          "waypoints": "N033.51.15.018,W118.21.26.141 LAX/h310/d4000/ho",
           "route": "CWARD2 LAX SILEX",
           "initial_controller": "6L",
           "initial_altitude": 6000,
@@ -2950,7 +2950,7 @@
     "SANQ18R": {
       "arrivals": [
         {
-          "waypoints": "SLI/d050/ho6S N033.55.31.329,W118.04.00.270/ho6N N034.02.06.329,W118.04.35.289/h275/s180-/ho",
+          "waypoints": "SLI/d5000/ho6S N033.55.31.329,W118.04.00.270/ho6N N034.02.06.329,W118.04.35.289/h275/s180-/ho",
           "route": "CWARD2 SLI ELMOO V186 VNY",
           "initial_controller": "4R",
           "initial_altitude": 7000,
@@ -3469,7 +3469,7 @@
     "IRNMN2": {
       "arrivals": [
         {
-          "waypoints": "MUPTT/a23000-27000/s280 MDOTS/a20000-24000 GRIPR/a19000-23000 BIKNG/a16000-20000 RUNNN/a14000-17000/ho2Z IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210/ho2U/d026 DAHJR/a6000/s210 GADDO/a6000 N034.02.44.039,W118.10.50.857 N033.59.57.267,W118.10.19.876 N033.58.16.275,W118.12.48.933 KOBEE/a2200/clearapp",
+          "waypoints": "MUPTT/a23000-27000/s280 MDOTS/a20000-24000 GRIPR/a19000-23000 BIKNG/a16000-20000 RUNNN/a14000-17000/ho2Z IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210/ho2U/d2600 DAHJR/a6000/s210 GADDO/a6000 N034.02.44.039,W118.10.50.857 N033.59.57.267,W118.10.19.876 N033.58.16.275,W118.12.48.933 KOBEE/a2200/clearapp",
           "route": "IRNMN2",
           "initial_controller": "C13",
           "initial_altitude": 26000,

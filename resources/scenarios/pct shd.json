@@ -3688,7 +3688,7 @@
     "TRSTN4": {
       "arrivals": [
         {
-          "waypoints": "CABRL/ho2L N037.57.39.443,W077.45.17.330/d060/ho TRSTN MOTIE/h11",
+          "waypoints": "CABRL/ho2L N037.57.39.443,W077.45.17.330/d6000/ho TRSTN MOTIE/h11",
           "star": "TRSTN4",
           "initial_controller": "W14",
           "initial_altitude": 16000,

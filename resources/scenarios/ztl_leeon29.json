@@ -31,19 +31,19 @@
           "CARWN": {
             "cleared_altitude": 12000,
             "sid": "TRI9",
-            "waypoints": "GSO/ho BOLTT CARWN/c270 LEAVI/delete",
+            "waypoints": "GSO/ho BOLTT CARWN/c27000 LEAVI/delete",
             "handoff_controller": "29"
           },
           "BAWDS": {
             "cleared_altitude": 12000,
             "sid": "TRSHA1",
-            "waypoints": "GSO/ho WHAYN TRSHA BAWDS/c270 VXV/delete",
+            "waypoints": "GSO/ho WHAYN TRSHA BAWDS/c27000 VXV/delete",
             "handoff_controller": "29"
           },
           "SBV": {
             "cleared_altitude": 12000,
             "sid": "QUAK8",
-            "waypoints": "GSO/ho JEANY SBV/c270/delete",
+            "waypoints": "GSO/ho JEANY SBV/c27000/delete",
             "handoff_controller": "29"
           }
         },
@@ -51,19 +51,19 @@
           "CARWN": {
             "cleared_altitude": 12000,
             "sid": "TRI9",
-            "waypoints": "GSO/ho BOLTT CARWN/c270 LEAVI/delete",
+            "waypoints": "GSO/ho BOLTT CARWN/c27000 LEAVI/delete",
             "handoff_controller": "29"
           },
           "BAWDS": {
             "cleared_altitude": 12000,
             "sid": "TRSHA1",
-            "waypoints": "GSO/ho WHAYN TRSHA BAWDS/c270 VXV/delete",
+            "waypoints": "GSO/ho WHAYN TRSHA BAWDS/c27000 VXV/delete",
             "handoff_controller": "29"
           },
           "SBV": {
             "cleared_altitude": 12000,
             "sid": "QUAK8",
-            "waypoints": "GSO/ho JEANY SBV/c270/delete",
+            "waypoints": "GSO/ho JEANY SBV/c27000/delete",
             "handoff_controller": "29"
           }
         }
@@ -181,7 +181,7 @@
           "star": "CHSLY8",
           "route": "/. CHSLY8",
           "is_rnav": true,
-          "waypoints": "BLUEJ/ho BURRZ/a24000-27000/s280 SKLES/a22000+ DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/d40 _CLT_CHSLY_S_OUT/delete"
+          "waypoints": "BLUEJ/ho BURRZ/a24000-27000/s280 SKLES/a22000+ DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/d4000 _CLT_CHSLY_S_OUT/delete"
         }
       ]
     },
@@ -204,7 +204,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "assigned_altitude": 23000,
-          "waypoints": "CATAR/ho SDAIL/a17000-23000/s280 WLLSH/a16000+/s270 CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/d40 _CLT_CHSLY_S_OUT/delete",
+          "waypoints": "CATAR/ho SDAIL/a17000-23000/s280 WLLSH/a16000+/s270 CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/d4000 _CLT_CHSLY_S_OUT/delete",
           "cruise_altitude": 24000,
           "star": "CHSLY8",
           "route": "/. CHSLY8",
@@ -239,7 +239,7 @@
           "star": "CHSLY8",
           "route": "/. CHSLY8",
           "is_rnav": true,
-          "waypoints": "BLUEJ/ho BURRZ/a24000-27000/s280 SKLES/a22000+ DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/d50 _CLT_CHSLY_N_OUT/delete"
+          "waypoints": "BLUEJ/ho BURRZ/a24000-27000/s280 SKLES/a22000+ DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/d5000 _CLT_CHSLY_N_OUT/delete"
         }
       ]
     },
@@ -262,7 +262,7 @@
           "initial_altitude": 24000,
           "initial_speed": 280,
           "assigned_altitude": 23000,
-          "waypoints": "CATAR/ho SDAIL/a17000-23000/s280 WLLSH/a16000+/s270 CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/d50 _CLT_CHSLY_N_OUT/delete",
+          "waypoints": "CATAR/ho SDAIL/a17000-23000/s280 WLLSH/a16000+/s270 CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/d5000 _CLT_CHSLY_N_OUT/delete",
           "cruise_altitude": 24000,
           "star": "CHSLY8",
           "route": "/. CHSLY8",

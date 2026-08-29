@@ -1824,7 +1824,7 @@
     "FEVTA1": {
       "arrivals": [
         {
-          "waypoints": "N038.02.19.581,W122.01.53.790 FEVTA N038.11.25.382,W121.55.26.412/d070 N038.14.06.235,W121.52.35.026/ho ISYOH ELKOE/h340",
+          "waypoints": "N038.02.19.581,W122.01.53.790 FEVTA N038.11.25.382,W121.55.26.412/d7000 N038.14.06.235,W121.52.35.026/ho ISYOH ELKOE/h340",
           "cruise_altitude": 10000,
           "route": "TRUKN FEVTA FEVTA1",
           "scratchpad": "SM2",
