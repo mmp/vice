@@ -158,7 +158,7 @@
     "FYTTE7": {
       "arrivals": [
         {
-          "waypoints": "RST/ho ZZIPR WELCM TEEOO MITEE BHAWK/a26000-/a21000+ STNLE/a21000-/a17000+/s280 CUUPP CHMPN CLSBY/a15000-/a13000+/s270 FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
+          "waypoints": "RST/ho ZZIPR WELCM TEEOO MITEE BHAWK/a21000-26000 STNLE/a17000-21000/s280 CUUPP CHMPN CLSBY/a13000-15000/s270 FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
           "star": "FYTTE7",
           "route": "/. FYTTE7",
           "initial_controller": "P11",
@@ -183,7 +183,7 @@
           }
         },
         {
-          "waypoints": "FOD/ho MYRRS SAAYY BENNR JBAGS BHAWK/a26000-/a21000+ STNLE/a21000-/a17000+/s280 CUUPP CHMPN CLSBY/a15000-/a13000+/s270 FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
+          "waypoints": "FOD/ho MYRRS SAAYY BENNR JBAGS BHAWK/a21000-26000 STNLE/a17000-21000/s280 CUUPP CHMPN CLSBY/a13000-15000/s270 FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
           "star": "FYTTE7",
           "route": "/. FYTTE7",
           "initial_controller": "P11",
@@ -212,7 +212,7 @@
     "FYTTE7.N": {
       "arrivals": [
         {
-          "waypoints": "N044.58.43.576,W088.20.17.175 SHIKY BOWNN/a24000+ HYYDE/a22000-/a17000+/ho JAKSA/a15000/s280 MOOPS/a14000+ FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
+          "waypoints": "N044.58.43.576,W088.20.17.175 SHIKY BOWNN/a24000+ HYYDE/a17000-22000/ho JAKSA/a15000/s280 MOOPS/a14000+ FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
           "star": "FYTTE7",
           "route": "/. FYTTE7.N",
           "initial_controller": "64",

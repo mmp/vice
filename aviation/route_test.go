@@ -338,6 +338,34 @@ func TestParseActionGroupErrorIncludesWaypointContext(t *testing.T) {
 	}
 }
 
+func TestParseMultipleRestrictionsIsError(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	_, err := parseWaypoints("BACAS/a10000-/a8000+/s210 FRING")
+	if err == nil {
+		t.Fatal("expected error for multiple altitude restrictions on one fix")
+	}
+	for _, want := range []string{"BACAS/a10000-/a8000+/s210", "multiple altitude restrictions"} {
+		if !strings.Contains(err.Error(), want) {
+			t.Fatalf("expected error %q to include %q", err, want)
+		}
+	}
+
+	if _, err := parseWaypoints("BACAS/a8000-10000/s210 FRING"); err != nil {
+		t.Fatalf("unexpected error for altitude range: %v", err)
+	}
+
+	_, err = parseWaypoints("BACAS/a8000-10000/s250/s250 FRING")
+	if err == nil {
+		t.Fatal("expected error for multiple speed restrictions on one fix")
+	}
+	if !strings.Contains(err.Error(), "multiple speed restrictions") {
+		t.Fatalf("unexpected error %q", err)
+	}
+}
+
 // A real-world route from the city-pair database is space-separated fix and
 // airway identifiers, with none of the "/" modifiers the scenario route parser
 // understands. Every waypoint that survives has a location to fly to.

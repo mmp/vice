@@ -2420,7 +2420,7 @@
           "HLV": {
             "cleared_altitude": 2500,
             "sid": "OZARK8",
-            "waypoints": "KCPS-30L/h122/@a1000+/l080/a2500/a2500 STL CABIT HLV"
+            "waypoints": "KCPS-30L/h122/@a1000+/l080/a2500 STL CABIT HLV"
           },
           "DENNI": {
             "cleared_altitude": 2500,
@@ -2482,7 +2482,7 @@
           "HLV": {
             "cleared_altitude": 2500,
             "sid": "OZARK8",
-            "waypoints": "KCPS-30R/h122/@a1000+/l080/a2500/a2500 STL CABIT HLV"
+            "waypoints": "KCPS-30R/h122/@a1000+/l080/a2500 STL CABIT HLV"
           },
           "DENNI": {
             "cleared_altitude": 2500,

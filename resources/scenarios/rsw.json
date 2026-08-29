@@ -89,7 +89,7 @@
             "cleared_altitude": 4000,
             "sid": "CSHEL8",
             "description": "CSHEL8",
-            "waypoints": "KRSW MAPUL SNOKE/a4000/a1800+ WITAR LOSBY YALOO CSHEL/h347"
+            "waypoints": "KRSW MAPUL SNOKE/a1800+ WITAR LOSBY YALOO CSHEL/h347"
           },
           "CHARO": {
             "cleared_altitude": 4000,

@@ -1334,7 +1334,7 @@
           "initial_altitude": 37000,
           "initial_controller": "H72",
           "initial_speed": 450,
-          "waypoints": "REDFN/ho Y280 CHRGE DAAWG CHIVE/a26000-/a24000+ DECKS/a21000+ BULKS/a20000-/a19000+/s280 PRICY/a16000-/a13000+/s250/delete",
+          "waypoints": "REDFN/ho Y280 CHRGE DAAWG CHIVE/a24000-26000 DECKS/a21000+ BULKS/a19000-20000/s280 PRICY/a13000-16000/s250/delete",
           "flight_type": "arrival"
         }
       ]
@@ -1413,7 +1413,7 @@
           "initial_altitude": 37000,
           "initial_controller": "H72",
           "initial_speed": 450,
-          "waypoints": "N028.39.22.307,W088.44.59.972/ho BLVNS Y290 DOWRY CIGAR OCHHO VNECK BBALE/a33000- FIGNA/a31000- JASBO/a26000-/s280 DANNA/a26000-/a23000+ PCOCK TEEKY/a12000+/delete",
+          "waypoints": "N028.39.22.307,W088.44.59.972/ho BLVNS Y290 DOWRY CIGAR OCHHO VNECK BBALE/a33000- FIGNA/a31000- JASBO/a26000-/s280 DANNA/a23000-26000 PCOCK TEEKY/a12000+/delete",
           "flight_type": "arrival"
         }
       ]
@@ -1478,7 +1478,7 @@
           "initial_altitude": 37000,
           "initial_controller": "H72",
           "initial_speed": 450,
-          "waypoints": "N028.39.22.307,W088.44.59.972/ho BLVNS Y290 DOWRY CIGAR GAWKS BAGGS PLOWS/a34000+ MATNY KLEET/a28000-/a21000+/s280 BARBN/a15000+ JAMAS/a11000+/s280 FROGZ/delete",
+          "waypoints": "N028.39.22.307,W088.44.59.972/ho BLVNS Y290 DOWRY CIGAR GAWKS BAGGS PLOWS/a34000+ MATNY KLEET/a21000-28000/s280 BARBN/a15000+ JAMAS/a11000+/s280 FROGZ/delete",
           "flight_type": "arrival"
         }
       ]
@@ -1497,7 +1497,7 @@
           "initial_altitude": 33000,
           "initial_controller": "R25",
           "initial_speed": 450,
-          "waypoints": "CIGAR DAAWG CHIVE/a26000-/a24000+ DECKS/a21000+ BULKS/a20000-/a19000+/s280 PRICY/a16000-/a13000+/s250/delete",
+          "waypoints": "CIGAR DAAWG CHIVE/a24000-26000 DECKS/a21000+ BULKS/a19000-20000/s280 PRICY/a13000-16000/s250/delete",
           "flight_type": "arrival"
         }
       ]

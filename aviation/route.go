@@ -1594,12 +1594,20 @@ func parseWaypoints(str string) (WaypointArray, error) {
 
 				// Do these last since they only match the first character...
 			} else if f[0] == 'a' {
+				if wp.HasAltitudeRestriction() {
+					return nil, fmt.Errorf("%s: multiple altitude restrictions given; use a range (e.g. /a8000-10000) instead",
+						field)
+				}
 				ar, err := ParseAltitudeRestriction(f[1:])
 				if err != nil {
 					return nil, err
 				}
 				wp.SetAltitudeRestriction(*ar)
 			} else if f[0] == 's' {
+				if wp.HasSpeedRestriction() {
+					return nil, fmt.Errorf("%s: multiple speed restrictions given; use a range (e.g. /s180-210) instead",
+						field)
+				}
 				sr, err := ParseSpeedRestriction(f[1:])
 				if err != nil {
 					return nil, fmt.Errorf("%s: error parsing speed restriction: %v", f[1:], err)

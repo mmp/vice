@@ -4226,17 +4226,17 @@
     "CEGRM7": {
       "arrivals": [
         {
-          "waypoints": "ARIVR/a14000+/ho CEGRM/a19000-/a11000+ BCATT EGONE",
+          "waypoints": "ARIVR/a14000+/ho CEGRM/a11000-19000 BCATT EGONE",
           "runway_waypoints": {
             "KCVG": {
               "9": "EGONE ACHOO/a8000/h150",
               "18L": "EGONE BYRAN/a8000/h112",
               "18C": "EGONE BYRAN/a8000 SERBE/a4700+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
               "18R": "EGONE BYRAN/a8000 BOTHS/a4700+ OPHUS/a4000+ KRTHY/a2500+",
-              "27": "EGONE FRING/a10000-/a8000+/s210 BAMGE COGDU ZALED/a6000/s210/h096",
-              "36L": "EGONE FRING/a10000-/a8000+/s210 BAMGE BBURG BRCAT/a6000/s210 EXAMS/a4500+/s210 BEPEE/a4000+ ROPRR/a2500+ JIMUR/a1440+",
-              "36C": "EGONE FRING/a10000-/a8000+/s210 BAMGE BBURG BRCAT/a6000/s210/h186 LEKLE/s210/a4500+ CIMRU/a3000+/s210 JITEV/a2500+ TABBO/a1360+",
-              "36R": "EGONE FRING/a10000-/a8000+/s210 BAMGE BBURG BRCAT/a6000/s210/h188"
+              "27": "EGONE FRING/a8000-10000/s210 BAMGE COGDU ZALED/a6000/s210/h096",
+              "36L": "EGONE FRING/a8000-10000/s210 BAMGE BBURG BRCAT/a6000/s210 EXAMS/a4500+/s210 BEPEE/a4000+ ROPRR/a2500+ JIMUR/a1440+",
+              "36C": "EGONE FRING/a8000-10000/s210 BAMGE BBURG BRCAT/a6000/s210/h186 LEKLE/s210/a4500+ CIMRU/a3000+/s210 JITEV/a2500+ TABBO/a1360+",
+              "36R": "EGONE FRING/a8000-10000/s210 BAMGE BBURG BRCAT/a6000/s210/h188"
             }
           },
           "route": "/. ARIVR.CEGRM7",
@@ -4356,7 +4356,7 @@
     "CEGRM7.NFINAL": {
       "arrivals": [
         {
-          "waypoints": "FRING/a10000-/a8000+/s210/ho BAMGE BBURG BRCAT/a6000/s210 EXAMS/s210/a4500+ BEPEE/a4000+/s210 ROPRR/a2500+ JIMUR/a1440+",
+          "waypoints": "FRING/a8000-10000/s210/ho BAMGE BBURG BRCAT/a6000/s210 EXAMS/s210/a4500+ BEPEE/a4000+/s210 ROPRR/a2500+ JIMUR/a1440+",
           "route": "/. ARIVR.CEGRM7",
           "initial_controller": "1N",
           "initial_altitude": 8000,
@@ -4595,10 +4595,10 @@
           "waypoints": "ICKEY/ho GAVNN/a17000- KNEDY UDEYS/a9000+",
           "runway_waypoints": {
             "KCVG": {
-              "9": "UDEYS/a9000+ JOTAR/a12000-/a9000+/s250 KEYTO/a8000+/s210 AAJAY MAPUC FLOTT/a6000/s210",
-              "18L": "UDEYS/a9000+ JOTAR/a12000-/a9000+/s250 KEYTO/a8000+/s210 AAJAY IGOCO NXHAL/a6000/s210/h006",
-              "18C": "UDEYS/a9000+ JOTAR/a12000-/a9000+/s250 KEYTO/a8000+/s210 AAJAY IGOCO NXHAL/a6000/s210 DOSKE/a4500+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
-              "18R": "UDEYS/a9000+ JOTAR/a12000-/a9000+/s250 KEYTO/a8000+/s210 AAJAY IGOCO NXHAL/a6000/s210 FIBMO/a4500+/s210 OPHUS/s210/a4000+ KRTHY/a2500+",
+              "9": "UDEYS/a9000+ JOTAR/a9000-12000/s250 KEYTO/a8000+/s210 AAJAY MAPUC FLOTT/a6000/s210",
+              "18L": "UDEYS/a9000+ JOTAR/a9000-12000/s250 KEYTO/a8000+/s210 AAJAY IGOCO NXHAL/a6000/s210/h006",
+              "18C": "UDEYS/a9000+ JOTAR/a9000-12000/s250 KEYTO/a8000+/s210 AAJAY IGOCO NXHAL/a6000/s210 DOSKE/a4500+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
+              "18R": "UDEYS/a9000+ JOTAR/a9000-12000/s250 KEYTO/a8000+/s210 AAJAY IGOCO NXHAL/a6000/s210 FIBMO/a4500+/s210 OPHUS/s210/a4000+ KRTHY/a2500+",
               "27": "UDEYS/a9000+ BREWZ/a8000/h326",
               "36L": "UDEYS/a9000+ DAWGY/a8000 STADM/a4600+ BEPEE/a4000+ ROPRR/a2500+ JIMUR/a1440+",
               "36C": "UDEYS/a9000+ DAWGY/a8000 SWINK/a3600+ CIMRU/s210/a3000+ JITEV/a2500+ TABBO/a1360+",
@@ -4750,16 +4750,16 @@
     "JAKIE6": {
       "arrivals": [
         {
-          "waypoints": "HRMBE/a21000-/a16000+/ho JAKIE/a14000+ NAVPE/a10000+ OPAVE/a12000-/a8000+",
+          "waypoints": "HRMBE/a16000-21000/ho JAKIE/a14000+ NAVPE/a10000+ OPAVE/a8000-12000",
           "runway_waypoints": {
             "KCVG": {
-              "9": "OPAVE/a12000-/a8000+ REENY/a8000+/s210 AAJAY MAPUC FLOTT/a6000/s210/h276",
-              "18L": "OPAVE/a12000-/a8000+ REENY/a8000+/s210 AAJAY IGOCO NXHAL/a6000/s210/h006",
-              "18C": "OPAVE/a12000-/a8000+ FIDEK/a8000+/s210 UBEDE LEWIN/a6000/s210/h006 USUVE/a4500+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
-              "18R": "OPAVE/a12000-/a8000+ FIDEK/a8000+/s210 UBEDE LEWIN/a6000/s210/h006 GOSEC/s210/a4500+ OPHUS/s210/a4000+ KRTHY/a2500+",
-              "36L": "OPAVE/a12000-/a8000+ SPOOD/a8000 SHULN/a4600+ BEPEE/s210/a4000+ ROPRR/a2500+ JIMUR/a1440+",
-              "36C": "OPAVE/a12000-/a8000+ SPOOD/a8000 KURGE/a3600+ CIMRU/a3000+ JITEV/a2500+ TABBO/a1360+",
-              "36R": "OPAVE/a12000-/a8000+ SPOOD/a8000/h280"
+              "9": "OPAVE/a8000-12000 REENY/a8000+/s210 AAJAY MAPUC FLOTT/a6000/s210/h276",
+              "18L": "OPAVE/a8000-12000 REENY/a8000+/s210 AAJAY IGOCO NXHAL/a6000/s210/h006",
+              "18C": "OPAVE/a8000-12000 FIDEK/a8000+/s210 UBEDE LEWIN/a6000/s210/h006 USUVE/a4500+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
+              "18R": "OPAVE/a8000-12000 FIDEK/a8000+/s210 UBEDE LEWIN/a6000/s210/h006 GOSEC/s210/a4500+ OPHUS/s210/a4000+ KRTHY/a2500+",
+              "36L": "OPAVE/a8000-12000 SPOOD/a8000 SHULN/a4600+ BEPEE/s210/a4000+ ROPRR/a2500+ JIMUR/a1440+",
+              "36C": "OPAVE/a8000-12000 SPOOD/a8000 KURGE/a3600+ CIMRU/a3000+ JITEV/a2500+ TABBO/a1360+",
+              "36R": "OPAVE/a8000-12000 SPOOD/a8000/h280"
             }
           },
           "route": "/. HRMBE.JAKIE6",
@@ -4958,7 +4958,7 @@
     "JAKIE6.NFINAL": {
       "arrivals": [
         {
-          "waypoints": "OPAVE/a12000-/a8000+/ho SPOOD/a8000 KURGE/a3600+ CIMRU/a3000+ JITEV/a2500+ TABBO/a1360+",
+          "waypoints": "OPAVE/a8000-12000/ho SPOOD/a8000 KURGE/a3600+ CIMRU/a3000+ JITEV/a2500+ TABBO/a1360+",
           "route": "/. HRMBE.JAKIE6",
           "initial_controller": "1S",
           "initial_altitude": 8000,
@@ -5155,7 +5155,7 @@
     "JAKIE6.SFINAL": {
       "arrivals": [
         {
-          "waypoints": "OPAVE/a12000-/a8000+/ho FIDEK/a8000+/s210 UBEDE LEWIN/a6000/s210 GOSEC/a4500+/s210 OPHUS/a4000+/s210 KRTHY/a2500+/s210",
+          "waypoints": "OPAVE/a8000-12000/ho FIDEK/a8000+/s210 UBEDE LEWIN/a6000/s210 GOSEC/a4500+/s210 OPHUS/a4000+/s210 KRTHY/a2500+/s210",
           "route": "/. HRMBE.JAKIE6",
           "initial_controller": "1S",
           "initial_altitude": 8000,
@@ -5352,7 +5352,7 @@
     "SARGO4": {
       "arrivals": [
         {
-          "waypoints": "FREZE/a19000+/a15000-/ho SARGO/a14000+ VANGE",
+          "waypoints": "FREZE/a15000-19000/ho SARGO/a14000+ VANGE",
           "runway_waypoints": {
             "KCVG": {
               "9": "VANGE CALFS/a8000/h051",
@@ -5367,7 +5367,7 @@
           },
           "route": "/. FREZE.SARGO4",
           "initial_controller": "C18",
-          "initial_altitude": 14000,
+          "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
           "scratchpad": "CVG",
@@ -5937,17 +5937,17 @@
     "TIGRR4": {
       "arrivals": [
         {
-          "waypoints": "JARSO/ho TIGRR/a14000+ CHARZ ETROY/a11000-/a9000+",
+          "waypoints": "JARSO/ho TIGRR/a14000+ CHARZ ETROY/a9000-11000",
           "runway_waypoints": {
             "KCVG": {
-              "9": "ETROY/a11000-/a9000+ BACAS/a10000-/a8000+/s210 GUUTH IDULE/a6000/s210/h276",
-              "18L": "ETROY/a11000-/a9000+ CRSLY/a8000/h266",
-              "18C": "ETROY/a11000-/a9000+ CRSLY/a8000/h266",
-              "18R": "ETROY/a11000-/a9000+ CRSLY/a8000/h266",
-              "27": "ETROY/a11000-/a9000+ YEYUP/a8000/h199",
-              "36L": "ETROY/a11000-/a9000+ BACAS/a10000-/a8000+/s210 JANEG RUPPP/a6000/s210/h186",
-              "36C": "ETROY/a11000-/a9000+ BACAS/a10000-/a8000+/s210 JANEG RUPPP/a6000/s210/h186",
-              "36R": "ETROY/a11000-/a9000+ BACAS/a10000-/a8000+/s210 JANEG RUPPP/a6000/s210/h186"
+              "9": "ETROY/a9000-11000 BACAS/a8000-10000/s210 GUUTH IDULE/a6000/s210/h276",
+              "18L": "ETROY/a9000-11000 CRSLY/a8000/h266",
+              "18C": "ETROY/a9000-11000 CRSLY/a8000/h266",
+              "18R": "ETROY/a9000-11000 CRSLY/a8000/h266",
+              "27": "ETROY/a9000-11000 YEYUP/a8000/h199",
+              "36L": "ETROY/a9000-11000 BACAS/a8000-10000/s210 JANEG RUPPP/a6000/s210/h186",
+              "36C": "ETROY/a9000-11000 BACAS/a8000-10000/s210 JANEG RUPPP/a6000/s210/h186",
+              "36R": "ETROY/a9000-11000 BACAS/a8000-10000/s210 JANEG RUPPP/a6000/s210/h186"
             }
           },
           "route": "/. JARSO.TIGRR4",
@@ -6054,7 +6054,7 @@
     "TIGRR4.NFINAL": {
       "arrivals": [
         {
-          "waypoints": "ETROY/a11000-/a9000+/ho BACAS/a10000-/a8000+/s210 JANEG RUPPP/a6000/s210 GRAPT/s210/a4500+ CIMRU/a3000+/s210 JITEV/a2500+ TABBO/a1360+",
+          "waypoints": "ETROY/a9000-11000/ho BACAS/a8000-10000/s210 JANEG RUPPP/a6000/s210 GRAPT/s210/a4500+ CIMRU/a3000+/s210 JITEV/a2500+ TABBO/a1360+",
           "route": "/. JARSO.TIGRR4",
           "initial_controller": "1N",
           "initial_altitude": 9000,
