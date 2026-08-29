@@ -252,12 +252,12 @@ func TestParseARINC424CourseVersusHeadingLegs(t *testing.T) {
 		if wp.Fix != tc.fix {
 			t.Errorf("%s: expected last fix %q, got %q", tc.star, tc.fix, wp.Fix)
 		}
-		if wp.Heading != tc.heading {
-			t.Errorf("%s/%s: expected heading %d, got %d", tc.star, wp.Fix, tc.heading, wp.Heading)
+		h, ok := wp.HeadingAction()
+		if !ok || h.Heading != tc.heading {
+			t.Errorf("%s/%s: expected heading %d, got %+v", tc.star, wp.Fix, tc.heading, h)
 		}
-		if wp.HeadingIsTrack() != tc.isTrack {
-			t.Errorf("%s/%s: expected HeadingIsTrack %v, got %v", tc.star, wp.Fix, tc.isTrack,
-				wp.HeadingIsTrack())
+		if h.Track != tc.isTrack {
+			t.Errorf("%s/%s: expected track %v, got %v", tc.star, wp.Fix, tc.isTrack, h.Track)
 		}
 	}
 }
@@ -283,10 +283,8 @@ func TestParseARINC424CourseIntercept(t *testing.T) {
 	if len(groups) != 1 {
 		t.Fatalf("expected one action group at SHAMU, got %d", len(groups))
 	}
-	if hdg := groups[0].Actions.Heading; hdg == nil {
-		t.Error("expected a heading action at SHAMU")
-	} else if hdg.Heading != 135 || hdg.Track {
-		t.Errorf("expected heading 135, got %+v", *hdg)
+	if hdg := groups[0].Actions.Heading; hdg.Heading != 135 || hdg.Track {
+		t.Errorf("expected heading 135, got %+v", hdg)
 	}
 	if until := groups[0].Until; until.Type != WaypointActionCourse || until.Course != 75 {
 		t.Errorf("expected a 075 course termination, got %+v", until)

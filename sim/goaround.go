@@ -59,10 +59,12 @@ func (s *Sim) goAround(ac *Aircraft) {
 	wp := av.Waypoint{
 		Location:       approach.OppositeThreshold,
 		Flags:          av.WaypointFlagFlyOver | av.WaypointFlagHasAltRestriction,
-		Heading:        int16(proc.Heading),
 		AltRestriction: av.MakeAtAltitudeRestriction(altitude),
 		Extra: &av.WaypointExtra{
-			GoAroundContactController: proc.HandoffController,
+			ActionGroups: []av.WaypointActionGroup{{Actions: av.WaypointActions{
+				Heading:                   av.WaypointHeadingAction{Heading: int16(proc.Heading)},
+				GoAroundContactController: proc.HandoffController,
+			}}},
 		},
 	}
 

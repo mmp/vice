@@ -810,13 +810,17 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 			if n := len(transitions[rec.transition]); n == 0 {
 				panic("FM as first waypoint in transition?")
 			} else {
-				wp := &transitions[rec.transition][n-1]
-				wp.Heading = hdg
-				wp.SetHeadingTurn(turnDirection(rec.turnDirection))
 				// FM is a course from the fix: the aircraft flies the ground
 				// track, correcting for wind. VM is a magnetic heading, which
 				// the wind is free to blow off course.
-				wp.SetHeadingIsTrack(rec.pathAndTermination == "FM")
+				wp := &transitions[rec.transition][n-1]
+				wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
+					Actions: WaypointActions{Heading: WaypointHeadingAction{
+						Heading: hdg,
+						Turn:    turnDirection(rec.turnDirection),
+						Track:   rec.pathAndTermination == "FM",
+					}},
+				})
 			}
 		} else if rec.pathAndTermination == "VI" {
 			// A heading flown until the following leg's course to its fix is
@@ -836,7 +840,7 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 
 			wp := &transitions[rec.transition][n-1]
 			wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
-				Actions: WaypointActions{Heading: &WaypointHeadingAction{Heading: hdg}},
+				Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: hdg}},
 				Until:   WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
 			})
 		} else if rec.pathAndTermination == "CI" {
@@ -1041,8 +1045,8 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 		}
 		return &wps[len(wps)-1]
 	}
-	heading := func(rec ssaRecord, track bool) *WaypointHeadingAction {
-		return &WaypointHeadingAction{
+	heading := func(rec ssaRecord, track bool) WaypointHeadingAction {
+		return WaypointHeadingAction{
 			Heading: parseMagneticCourse(rec.outboundMagneticCourse),
 			Track:   track,
 			Turn:    turnDirection(rec.turnDirection),
@@ -1054,7 +1058,7 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 	// Otherwise--on the runway, or wherever a heading to an altitude
 	// ended--the leg's course is the fix's radial, which it joins from
 	// where it is.
-	fromFix := func(rec ssaRecord) (*Waypoint, *WaypointHeadingAction) {
+	fromFix := func(rec ssaRecord) (*Waypoint, WaypointHeadingAction) {
 		h := heading(rec, true)
 		if n := len(wps); n > 0 && wps[n-1].Fix == rec.fix {
 			return &wps[n-1], h
@@ -1081,7 +1085,7 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 	// legStart returns the waypoint the i'th record's leg is flown from and
 	// the heading action that flies it, for legs that are a heading (V),
 	// a course (C), or a track from a fix (F).
-	legStart := func(i int) (*Waypoint, *WaypointHeadingAction) {
+	legStart := func(i int) (*Waypoint, WaypointHeadingAction) {
 		rec := recs[i]
 		switch rec.pathAndTermination[0] {
 		case 'F':
@@ -1235,20 +1239,6 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 	if len(wps) > 0 && wps[0].Fix == "" && !runwayTransition {
 		// Only a runway transition can start somewhere other than a fix.
 		return nil, false
-	}
-
-	// A lone open-ended heading is a waypoint's heading rather than an
-	// action group, as parseWaypoints has it. A radial to track stays an
-	// action group since Waypoint.Heading can't name one.
-	for i := range wps {
-		groups := wps[i].ActionGroups()
-		if len(groups) == 1 && groups[0].Until.Type == WaypointActionNoTermination &&
-			groups[0].Actions.Heading != nil && groups[0].Actions.Heading.Fix == "" &&
-			!groups[0].Actions.HasSimActions() &&
-			groups[0].Actions.ClimbAltitude == 0 && groups[0].Actions.DescendAltitude == 0 {
-			applyWaypointHeadingAction(&wps[i], groups[0].Actions.Heading)
-			wps[i].Extra.ActionGroups = nil
-		}
 	}
 
 	return wps, true

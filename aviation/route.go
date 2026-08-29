@@ -27,10 +27,7 @@ import (
 type WaypointFlags uint32
 
 const (
-	WaypointFlagPresentHeading WaypointFlags = 1 << iota
-	WaypointFlagNoPT
-	WaypointFlagHumanHandoff
-	WaypointFlagClearApproach
+	WaypointFlagNoPT WaypointFlags = 1 << iota
 	WaypointFlagFlyOver
 	WaypointFlagDelete
 	WaypointFlagLand
@@ -40,19 +37,13 @@ const (
 	WaypointFlagOnSID
 	WaypointFlagOnSTAR
 	WaypointFlagOnApproach
-	WaypointFlagClearPrimaryScratchpad
-	WaypointFlagClearSecondaryScratchpad
-	WaypointFlagTransferComms
 	WaypointFlagTurnLeft
 	WaypointFlagTurnRight
 	WaypointFlagSyntheticCrossing
 	WaypointFlagHasAltRestriction
 	WaypointFlagHasSpeedRestriction
 	WaypointFlagSequenceVFRLanding
-	WaypointFlagHeadingIsTrack
 	WaypointFlagInterceptApproach
-	WaypointFlagHeadingTurnLeft
-	WaypointFlagHeadingTurnRight
 )
 
 // WaypointActionTerminationType indicates when a waypoint action group is complete.
@@ -93,10 +84,15 @@ type WaypointHeadingAction struct {
 	FixLocation    math.Point2LL
 }
 
+// IsSet reports whether the action gives a heading to fly.
+func (wha WaypointHeadingAction) IsSet() bool {
+	return wha.Heading != 0 || wha.PresentHeading
+}
+
 // WaypointActions describes actions that take effect together after passing a
 // waypoint or after an ordered action group's termination condition is met.
 type WaypointActions struct {
-	Heading *WaypointHeadingAction
+	Heading WaypointHeadingAction
 
 	HumanHandoff              bool
 	HandoffController         ControlPosition
@@ -121,13 +117,13 @@ func (wa WaypointActions) HasSimActions() bool {
 }
 
 func (wa WaypointActions) HasNavActions() bool {
-	return wa.Heading != nil || wa.ClimbAltitude != 0 || wa.DescendAltitude != 0
+	return wa.Heading.IsSet() || wa.ClimbAltitude != 0 || wa.DescendAltitude != 0
 }
 
 func (wa WaypointActions) Encoded() string {
 	var s string
-	if heading := wa.Heading; heading != nil {
-		s += heading.Encoded()
+	if wa.Heading.IsSet() {
+		s += wa.Heading.Encoded()
 	}
 	if wa.HumanHandoff {
 		s += "/ho"
@@ -207,8 +203,8 @@ type WaypointActionEvent struct {
 
 // Waypoint is the core waypoint struct. Most waypoints only use Fix,
 // Location, and a few flags; Extra fields are heap-allocated only when
-// needed. AltRestriction, Heading, and SpdRestriction are inline because
-// they are used by ~48% of waypoints, avoiding a heap allocation for those.
+// needed. AltRestriction and SpdRestriction are inline because they are
+// used by roughly half of all waypoints, avoiding a heap allocation for those.
 type Waypoint struct {
 	Fix            string              `json:"fix"`
 	Location       math.Point2LL       `json:"location,omitempty"`
@@ -216,7 +212,6 @@ type Waypoint struct {
 	SpdRestriction SpeedRestriction    // valid iff WaypointFlagHasSpeedRestriction set
 	Extra          *WaypointExtra
 	Flags          WaypointFlags
-	Heading        int16 // 0 = unset
 	VFRPhase       uint8 // VFRPhaseNone for non-VFR-pattern waypoints
 }
 
@@ -235,21 +230,14 @@ const (
 
 // WaypointExtra holds the rarely-used fields, heap-allocated only when needed.
 type WaypointExtra struct {
-	ProcedureTurn             *ProcedureTurn
-	Arc                       *DMEArc
-	ActionGroups              []WaypointActionGroup
-	HandoffController         ControlPosition
-	PointOut                  ControlPosition
-	GoAroundContactController ControlPosition
-	Airway                    string
-	PrimaryScratchpad         string
-	SecondaryScratchpad       string
-	Radius                    float32
-	Shift                     float32
-	ClimbAltitude             int16 // hundreds of feet; 0 = unset
-	DescendAltitude           int16 // hundreds of feet; 0 = unset
-	AirworkRadius             int8
-	AirworkMinutes            int8
+	ProcedureTurn  *ProcedureTurn
+	Arc            *DMEArc
+	ActionGroups   []WaypointActionGroup
+	Airway         string
+	Radius         float32
+	Shift          float32
+	AirworkRadius  int8
+	AirworkMinutes int8
 }
 
 // InitExtra allocates Extra if nil and returns it.
@@ -260,16 +248,8 @@ func (wp *Waypoint) InitExtra() *WaypointExtra {
 	return wp.Extra
 }
 
-// MagneticHeading returns the waypoint's heading as MagneticHeading.
-func (wp Waypoint) MagneticHeading() math.MagneticHeading {
-	return math.MagneticHeading(wp.Heading)
-}
-
 // Flag readers (value receiver)
-func (wp Waypoint) PresentHeading() bool    { return wp.Flags&WaypointFlagPresentHeading != 0 }
 func (wp Waypoint) NoPT() bool              { return wp.Flags&WaypointFlagNoPT != 0 }
-func (wp Waypoint) HumanHandoff() bool      { return wp.Flags&WaypointFlagHumanHandoff != 0 }
-func (wp Waypoint) ClearApproach() bool     { return wp.Flags&WaypointFlagClearApproach != 0 }
 func (wp Waypoint) InterceptApproach() bool { return wp.Flags&WaypointFlagInterceptApproach != 0 }
 func (wp Waypoint) FlyOver() bool           { return wp.Flags&WaypointFlagFlyOver != 0 }
 func (wp Waypoint) Delete() bool            { return wp.Flags&WaypointFlagDelete != 0 }
@@ -307,39 +287,25 @@ func (wp Waypoint) HasAltitudeRestriction() bool {
 func (wp Waypoint) HasSpeedRestriction() bool {
 	return wp.Flags&WaypointFlagHasSpeedRestriction != 0
 }
-func (wp Waypoint) ClearPrimaryScratchpad() bool {
-	return wp.Flags&WaypointFlagClearPrimaryScratchpad != 0
-}
-func (wp Waypoint) ClearSecondaryScratchpad() bool {
-	return wp.Flags&WaypointFlagClearSecondaryScratchpad != 0
-}
-func (wp Waypoint) TransferComms() bool  { return wp.Flags&WaypointFlagTransferComms != 0 }
-func (wp Waypoint) HeadingIsTrack() bool { return wp.Flags&WaypointFlagHeadingIsTrack != 0 }
 func (wp Waypoint) SequenceVFRLanding() bool {
 	return wp.Flags&WaypointFlagSequenceVFRLanding != 0
 }
 func (wp Waypoint) HasTransferCommsAction() bool {
-	return wp.TransferComms() || slices.ContainsFunc(wp.ActionGroups(),
+	return slices.ContainsFunc(wp.ActionGroups(),
 		func(group WaypointActionGroup) bool { return group.Actions.TransferComms })
+}
+func (wp Waypoint) HasHumanHandoff() bool {
+	return slices.ContainsFunc(wp.ActionGroups(),
+		func(group WaypointActionGroup) bool { return group.Actions.HumanHandoff })
 }
 
 // Turn returns the direction of the turn toward the waypoint from the one
 // before it.
 func (wp Waypoint) Turn() TurnDirection {
-	return turnFromFlags(wp.Flags, WaypointFlagTurnLeft, WaypointFlagTurnRight)
-}
-
-// HeadingTurn returns the direction of the turn onto the waypoint's Heading
-// after passing it.
-func (wp Waypoint) HeadingTurn() TurnDirection {
-	return turnFromFlags(wp.Flags, WaypointFlagHeadingTurnLeft, WaypointFlagHeadingTurnRight)
-}
-
-func turnFromFlags(flags, left, right WaypointFlags) TurnDirection {
-	if flags&left != 0 {
+	if wp.Flags&WaypointFlagTurnLeft != 0 {
 		return TurnLeft
 	}
-	if flags&right != 0 {
+	if wp.Flags&WaypointFlagTurnRight != 0 {
 		return TurnRight
 	}
 	return TurnClosest
@@ -354,46 +320,27 @@ func (wp *Waypoint) setFlag(f WaypointFlags, v bool) {
 	}
 }
 
-func (wp *Waypoint) SetPresentHeading(v bool)    { wp.setFlag(WaypointFlagPresentHeading, v) }
-func (wp *Waypoint) SetNoPT(v bool)              { wp.setFlag(WaypointFlagNoPT, v) }
-func (wp *Waypoint) SetHumanHandoff(v bool)      { wp.setFlag(WaypointFlagHumanHandoff, v) }
-func (wp *Waypoint) SetClearApproach(v bool)     { wp.setFlag(WaypointFlagClearApproach, v) }
-func (wp *Waypoint) SetInterceptApproach(v bool) { wp.setFlag(WaypointFlagInterceptApproach, v) }
-func (wp *Waypoint) SetFlyOver(v bool)           { wp.setFlag(WaypointFlagFlyOver, v) }
-func (wp *Waypoint) SetDelete(v bool)            { wp.setFlag(WaypointFlagDelete, v) }
-func (wp *Waypoint) SetLand(v bool)              { wp.setFlag(WaypointFlagLand, v) }
-func (wp *Waypoint) SetIAF(v bool)               { wp.setFlag(WaypointFlagIAF, v) }
-func (wp *Waypoint) SetIF(v bool)                { wp.setFlag(WaypointFlagIF, v) }
-func (wp *Waypoint) SetFAF(v bool)               { wp.setFlag(WaypointFlagFAF, v) }
-func (wp *Waypoint) SetOnSID(v bool)             { wp.setFlag(WaypointFlagOnSID, v) }
-func (wp *Waypoint) SetOnSTAR(v bool)            { wp.setFlag(WaypointFlagOnSTAR, v) }
-func (wp *Waypoint) SetOnApproach(v bool)        { wp.setFlag(WaypointFlagOnApproach, v) }
-func (wp *Waypoint) SetSyntheticCrossing(v bool) { wp.setFlag(WaypointFlagSyntheticCrossing, v) }
-func (wp *Waypoint) SetClearPrimaryScratchpad(v bool) {
-	wp.setFlag(WaypointFlagClearPrimaryScratchpad, v)
-}
-func (wp *Waypoint) SetClearSecondaryScratchpad(v bool) {
-	wp.setFlag(WaypointFlagClearSecondaryScratchpad, v)
-}
-func (wp *Waypoint) SetTransferComms(v bool)      { wp.setFlag(WaypointFlagTransferComms, v) }
+func (wp *Waypoint) SetNoPT(v bool)               { wp.setFlag(WaypointFlagNoPT, v) }
+func (wp *Waypoint) SetInterceptApproach(v bool)  { wp.setFlag(WaypointFlagInterceptApproach, v) }
+func (wp *Waypoint) SetFlyOver(v bool)            { wp.setFlag(WaypointFlagFlyOver, v) }
+func (wp *Waypoint) SetDelete(v bool)             { wp.setFlag(WaypointFlagDelete, v) }
+func (wp *Waypoint) SetLand(v bool)               { wp.setFlag(WaypointFlagLand, v) }
+func (wp *Waypoint) SetIAF(v bool)                { wp.setFlag(WaypointFlagIAF, v) }
+func (wp *Waypoint) SetIF(v bool)                 { wp.setFlag(WaypointFlagIF, v) }
+func (wp *Waypoint) SetFAF(v bool)                { wp.setFlag(WaypointFlagFAF, v) }
+func (wp *Waypoint) SetOnSID(v bool)              { wp.setFlag(WaypointFlagOnSID, v) }
+func (wp *Waypoint) SetOnSTAR(v bool)             { wp.setFlag(WaypointFlagOnSTAR, v) }
+func (wp *Waypoint) SetOnApproach(v bool)         { wp.setFlag(WaypointFlagOnApproach, v) }
+func (wp *Waypoint) SetSyntheticCrossing(v bool)  { wp.setFlag(WaypointFlagSyntheticCrossing, v) }
 func (wp *Waypoint) SetSequenceVFRLanding(v bool) { wp.setFlag(WaypointFlagSequenceVFRLanding, v) }
-func (wp *Waypoint) SetHeadingIsTrack(v bool)     { wp.setFlag(WaypointFlagHeadingIsTrack, v) }
 
 func (wp *Waypoint) SetTurn(t TurnDirection) {
-	wp.setTurnFlags(t, WaypointFlagTurnLeft, WaypointFlagTurnRight)
-}
-
-func (wp *Waypoint) SetHeadingTurn(t TurnDirection) {
-	wp.setTurnFlags(t, WaypointFlagHeadingTurnLeft, WaypointFlagHeadingTurnRight)
-}
-
-func (wp *Waypoint) setTurnFlags(t TurnDirection, left, right WaypointFlags) {
-	wp.Flags &^= left | right
+	wp.Flags &^= WaypointFlagTurnLeft | WaypointFlagTurnRight
 	switch t {
 	case TurnLeft:
-		wp.Flags |= left
+		wp.Flags |= WaypointFlagTurnLeft
 	case TurnRight:
-		wp.Flags |= right
+		wp.Flags |= WaypointFlagTurnRight
 	}
 }
 
@@ -456,39 +403,9 @@ func (wp Waypoint) ActionGroups() []WaypointActionGroup {
 	}
 	return nil
 }
-func (wp Waypoint) HandoffController() ControlPosition {
-	if wp.Extra != nil {
-		return wp.Extra.HandoffController
-	}
-	return ""
-}
-func (wp Waypoint) PointOut() ControlPosition {
-	if wp.Extra != nil {
-		return wp.Extra.PointOut
-	}
-	return ""
-}
-func (wp Waypoint) GoAroundContactController() ControlPosition {
-	if wp.Extra != nil {
-		return wp.Extra.GoAroundContactController
-	}
-	return ""
-}
 func (wp Waypoint) Airway() string {
 	if wp.Extra != nil {
 		return wp.Extra.Airway
-	}
-	return ""
-}
-func (wp Waypoint) PrimaryScratchpad() string {
-	if wp.Extra != nil {
-		return wp.Extra.PrimaryScratchpad
-	}
-	return ""
-}
-func (wp Waypoint) SecondaryScratchpad() string {
-	if wp.Extra != nil {
-		return wp.Extra.SecondaryScratchpad
 	}
 	return ""
 }
@@ -516,65 +433,33 @@ func (wp Waypoint) AirworkMinutes() int {
 	}
 	return 0
 }
-func (wp Waypoint) ClimbAltitude() int {
-	if wp.Extra != nil {
-		return int(wp.Extra.ClimbAltitude) * 100
-	}
-	return 0
-}
-func (wp Waypoint) DescendAltitude() int {
-	if wp.Extra != nil {
-		return int(wp.Extra.DescendAltitude) * 100
-	}
-	return 0
-}
 
-// HasAltitudeActions reports whether the waypoint has a /c or /d altitude
-// action, either directly or in one of its action groups.
+// HasAltitudeActions reports whether any of the waypoint's action groups
+// has a /c or /d altitude action.
 func (wp Waypoint) HasAltitudeActions() bool {
-	if wp.ClimbAltitude() != 0 || wp.DescendAltitude() != 0 {
-		return true
-	}
-	for _, group := range wp.ActionGroups() {
-		if group.Actions.ClimbAltitude != 0 || group.Actions.DescendAltitude != 0 {
-			return true
-		}
-	}
-	return false
+	return slices.ContainsFunc(wp.ActionGroups(), func(group WaypointActionGroup) bool {
+		return group.Actions.ClimbAltitude != 0 || group.Actions.DescendAltitude != 0
+	})
 }
 
-func (wp Waypoint) WaypointActions() WaypointActions {
-	actions := WaypointActions{
-		HumanHandoff:              wp.HumanHandoff(),
-		HandoffController:         wp.HandoffController(),
-		PointOut:                  wp.PointOut(),
-		ClearApproach:             wp.ClearApproach(),
-		GoAroundContactController: wp.GoAroundContactController(),
-		PrimaryScratchpad:         wp.PrimaryScratchpad(),
-		ClearPrimaryScratchpad:    wp.ClearPrimaryScratchpad(),
-		SecondaryScratchpad:       wp.SecondaryScratchpad(),
-		ClearSecondaryScratchpad:  wp.ClearSecondaryScratchpad(),
-		TransferComms:             wp.TransferComms(),
-		ClimbAltitude:             int16(wp.ClimbAltitude() / 100),
-		DescendAltitude:           int16(wp.DescendAltitude() / 100),
+// HeadingAction returns the heading the aircraft leaves the waypoint on, if
+// its first action group gives one.
+func (wp Waypoint) HeadingAction() (WaypointHeadingAction, bool) {
+	if groups := wp.ActionGroups(); len(groups) > 0 && groups[0].Actions.Heading.IsSet() {
+		return groups[0].Actions.Heading, true
 	}
-	if wp.Heading != 0 || wp.PresentHeading() {
-		actions.Heading = &WaypointHeadingAction{
-			Heading:        wp.Heading,
-			Turn:           wp.HeadingTurn(),
-			Track:          wp.HeadingIsTrack(),
-			PresentHeading: wp.PresentHeading(),
-		}
-	}
-	return actions
+	return WaypointHeadingAction{}, false
 }
 
-func (wp Waypoint) ActionEvent() *WaypointActionEvent {
-	actions := wp.WaypointActions()
-	if !actions.HasSimActions() {
-		return nil
+// MergeActions adds actions to the waypoint's last action group if it is
+// still open, or starts a new group if the last one has a termination.
+func (wp *Waypoint) MergeActions(actions WaypointActions) error {
+	groups := wp.ActionGroups()
+	if n := len(groups); n > 0 && groups[n-1].Until.Type == WaypointActionNoTermination {
+		return mergeWaypointActions(&groups[n-1].Actions, actions)
 	}
-	return &WaypointActionEvent{Fix: wp.Fix, Actions: actions}
+	wp.InitExtra().ActionGroups = append(groups, WaypointActionGroup{Actions: actions})
+	return nil
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -584,12 +469,6 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if sr := wp.SpeedRestriction(); sr != nil {
 		attrs = append(attrs, slog.String("speed_restriction", sr.Encoded()))
-	}
-	if wp.Heading != 0 {
-		attrs = append(attrs, slog.Int("heading", int(wp.Heading)))
-	}
-	if wp.PresentHeading() {
-		attrs = append(attrs, slog.Bool("present_heading", true))
 	}
 	if pt := wp.ProcedureTurn(); pt != nil {
 		attrs = append(attrs, slog.Any("procedure_turn", pt))
@@ -605,18 +484,6 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.NoPT() {
 		attrs = append(attrs, slog.Bool("no_pt", true))
-	}
-	if wp.HumanHandoff() {
-		attrs = append(attrs, slog.Bool("human_handoff", true))
-	}
-	if hc := wp.HandoffController(); hc != "" {
-		attrs = append(attrs, slog.String("tcp_handoff", string(hc)))
-	}
-	if po := wp.PointOut(); po != "" {
-		attrs = append(attrs, slog.String("pointout", string(po)))
-	}
-	if wp.ClearApproach() {
-		attrs = append(attrs, slog.Bool("clear_approach", true))
 	}
 	if wp.InterceptApproach() {
 		attrs = append(attrs, slog.Bool("intercept_approach", true))
@@ -645,26 +512,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	if wp.OnApproach() {
 		attrs = append(attrs, slog.Bool("on_approach", true))
 	}
-	if ps := wp.PrimaryScratchpad(); ps != "" {
-		attrs = append(attrs, slog.String("primary_scratchpad", ps))
-	}
-	if wp.ClearPrimaryScratchpad() {
-		attrs = append(attrs, slog.Bool("clear_primary_scratchpad", true))
-	}
-	if ss := wp.SecondaryScratchpad(); ss != "" {
-		attrs = append(attrs, slog.String("secondary_scratchpad", ss))
-	}
-	if wp.ClearSecondaryScratchpad() {
-		attrs = append(attrs, slog.Bool("clear_secondary_scratchpad", true))
-	}
-	if wp.TransferComms() {
-		attrs = append(attrs, slog.Bool("transfer_comms", true))
-	}
-	if ca := wp.ClimbAltitude(); ca != 0 {
-		attrs = append(attrs, slog.Int("climb_altitude", ca))
-	}
-	if da := wp.DescendAltitude(); da != 0 {
-		attrs = append(attrs, slog.Int("descend_altitude", da))
+	if groups := wp.ActionGroups(); len(groups) > 0 {
+		attrs = append(attrs, slog.String("actions", strings.Join(util.MapSlice(groups,
+			func(group WaypointActionGroup) string { return group.Encoded() }), "")))
 	}
 
 	return slog.GroupValue(attrs...)
@@ -683,16 +533,13 @@ type WaypointArray []Waypoint
 
 // HasHumanHandoff returns true if any waypoint has HumanHandoff set.
 func (wa WaypointArray) HasHumanHandoff() bool {
-	return slices.ContainsFunc(wa, func(wp Waypoint) bool {
-		return wp.HumanHandoff() || slices.ContainsFunc(wp.ActionGroups(),
-			func(group WaypointActionGroup) bool { return group.Actions.HumanHandoff })
-	})
+	return slices.ContainsFunc(wa, Waypoint.HasHumanHandoff)
 }
 
-// HandoffControllers returns the positions the route names as handoff targets,
-// whether at a waypoint itself or in one of its conditional action groups.
-// These are the /hoXX handoffs, which name where the track goes; the bare /ho
-// of HasHumanHandoff leaves that to whoever is working the flow.
+// HandoffControllers returns the positions the route names as handoff targets
+// in any of its waypoints' action groups. These are the /hoXX handoffs, which
+// name where the track goes; the bare /ho of HasHumanHandoff leaves that to
+// whoever is working the flow.
 func (wa WaypointArray) HandoffControllers() []ControlPosition {
 	var controllers []ControlPosition
 	add := func(pos ControlPosition) {
@@ -701,7 +548,6 @@ func (wa WaypointArray) HandoffControllers() []ControlPosition {
 		}
 	}
 	for _, wp := range wa {
-		add(wp.HandoffController())
 		for _, group := range wp.ActionGroups() {
 			add(group.Actions.HandoffController)
 		}
@@ -758,18 +604,6 @@ func (wa WaypointArray) Encode() string {
 		if w.NoPT() {
 			s.WriteString("/nopt")
 		}
-		if w.HumanHandoff() {
-			s.WriteString("/ho")
-		}
-		if hc := w.HandoffController(); hc != "" {
-			s.WriteString("/ho" + string(hc))
-		}
-		if po := w.PointOut(); po != "" {
-			s.WriteString("/po" + string(po))
-		}
-		if w.ClearApproach() {
-			s.WriteString("/clearapp")
-		}
 		if w.InterceptApproach() {
 			s.WriteString("/intercept")
 		}
@@ -781,9 +615,6 @@ func (wa WaypointArray) Encode() string {
 		}
 		if w.Land() {
 			s.WriteString("/land")
-		}
-		if heading := w.WaypointActions().Heading; heading != nil {
-			s.WriteString(heading.Encoded())
 		}
 		if arc := w.Arc(); arc != nil {
 			switch arc.Direction {
@@ -823,27 +654,6 @@ func (wa WaypointArray) Encode() string {
 		}
 		if w.Shift() != 0 {
 			s.WriteString(fmt.Sprintf("/shift%.1f", w.Shift()))
-		}
-		if ps := w.PrimaryScratchpad(); ps != "" {
-			s.WriteString("/spsp" + ps)
-		}
-		if w.ClearPrimaryScratchpad() {
-			s.WriteString("/cpsp")
-		}
-		if ss := w.SecondaryScratchpad(); ss != "" {
-			s.WriteString("/sssp" + ss)
-		}
-		if w.ClearSecondaryScratchpad() {
-			s.WriteString("/cssp")
-		}
-		if w.TransferComms() {
-			s.WriteString("/tc")
-		}
-		if ca := w.ClimbAltitude(); ca != 0 {
-			s.WriteString(fmt.Sprintf("/c%d", ca/100))
-		}
-		if da := w.DescendAltitude(); da != 0 {
-			s.WriteString(fmt.Sprintf("/d%d", da/100))
 		}
 
 		// The turn direction to the next fix is given on the fix before it.
@@ -990,23 +800,6 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 			}
 		}
 
-		if po := wp.PointOut(); po != "" {
-			if !util.MapContains(controllers,
-				func(_ ControlPosition, ctrl *Controller) bool {
-					return ctrl.PositionId() == po
-				}) {
-				e.ErrorString("No controller found with id %q for point out", po)
-			}
-		}
-
-		if hc := wp.HandoffController(); hc != "" {
-			if !util.MapContains(controllers,
-				func(_ ControlPosition, ctrl *Controller) bool {
-					return ctrl.PositionId() == ControlPosition(hc)
-				}) {
-				e.ErrorString("No controller found with id %q for handoff", hc)
-			}
-		}
 		for _, group := range wp.ActionGroups() {
 			if po := group.Actions.PointOut; po != "" {
 				if !util.MapContains(controllers,
@@ -1037,13 +830,6 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 		}
 		if wp.Radius() > 0 && wp.Shift() > 0 {
 			e.ErrorString("Can't specify both /radius and /shift at the same fix")
-		}
-
-		if !checkScratchpad(wp.PrimaryScratchpad()) {
-			e.ErrorString("%s: invalid primary_scratchpad", wp.PrimaryScratchpad())
-		}
-		if !checkScratchpad(wp.SecondaryScratchpad()) {
-			e.ErrorString("%s: invalid secondary scratchpad", wp.SecondaryScratchpad())
 		}
 
 		e.Pop()
@@ -1111,19 +897,13 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 					ar.Encoded(), FormatAltitude(minCrossingAltitude), scaled.Encoded())
 			}
 		}
-		if wp.ClearApproach() && !approachAssigned {
-			e.ErrorString("/clearapp specified but no approach has been assigned")
-		}
 		if wp.InterceptApproach() && !approachAssigned {
 			e.ErrorString("/intercept specified but no approach has been assigned")
 		}
-		if wp.HumanHandoff() {
-			haveHO = true
-		}
-		if wp.TransferComms() && !haveHO {
-			e.ErrorString("Must have /ho to handoff to a human controller at a waypoint prior to /tc")
-		}
 		for _, group := range wp.ActionGroups() {
+			if group.Actions.ClearApproach && !approachAssigned {
+				e.ErrorString("/clearapp specified but no approach has been assigned")
+			}
 			if group.Actions.HumanHandoff {
 				haveHO = true
 			}
@@ -1304,9 +1084,9 @@ func parseCourse(s string) (int16, error) {
 	return int16(hdg), nil
 }
 
-func parseWaypointHeadingAction(f string) (*WaypointHeadingAction, bool, error) {
+func parseWaypointHeadingAction(f string) (WaypointHeadingAction, bool, error) {
 	if f == "ph" {
-		return &WaypointHeadingAction{PresentHeading: true}, true, nil
+		return WaypointHeadingAction{PresentHeading: true}, true, nil
 	}
 
 	var headingAction WaypointHeadingAction
@@ -1332,25 +1112,25 @@ func parseWaypointHeadingAction(f string) (*WaypointHeadingAction, bool, error) 
 		headingAction.Turn = TurnRight
 		hdg = f[1:]
 	default:
-		return nil, false, nil
+		return WaypointHeadingAction{}, false, nil
 	}
 
 	// A fix after the heading names the radial to track: /t336PXR.
 	hdg, fix := splitLeadingDigits(hdg)
 	if hdg == "" {
-		return nil, false, nil
+		return WaypointHeadingAction{}, false, nil
 	}
 	if fix != "" && !headingAction.Track {
-		return nil, true, fmt.Errorf("%s: a radial can only be tracked (/t, /lt, /rt), not flown as a heading", f)
+		return WaypointHeadingAction{}, true, fmt.Errorf("%s: a radial can only be tracked (/t, /lt, /rt), not flown as a heading", f)
 	}
 	headingAction.Fix = fix
 
 	heading, err := parseCourse(hdg)
 	if err != nil {
-		return nil, true, err
+		return WaypointHeadingAction{}, true, err
 	}
 	headingAction.Heading = heading
-	return &headingAction, true, nil
+	return headingAction, true, nil
 }
 
 // splitLeadingDigits splits s into its leading run of digits and the rest.
@@ -1409,19 +1189,9 @@ func parseWaypointActionModifier(f string) (WaypointActions, bool, error) {
 	return WaypointActions{}, false, nil
 }
 
-func applyWaypointHeadingAction(wp *Waypoint, heading *WaypointHeadingAction) {
-	if heading.PresentHeading {
-		wp.SetPresentHeading(true)
-		return
-	}
-	wp.Heading = heading.Heading
-	wp.SetHeadingIsTrack(heading.Track)
-	wp.SetHeadingTurn(heading.Turn)
-}
-
 func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
-	if src.Heading != nil {
-		if dst.Heading != nil {
+	if src.Heading.IsSet() {
+		if dst.Heading.IsSet() {
 			return fmt.Errorf("multiple heading actions in the same waypoint action group")
 		}
 		dst.Heading = src.Heading
@@ -1595,280 +1365,212 @@ func parseWaypoints(str string) (WaypointArray, error) {
 		for i, f := range components {
 			if i == 0 {
 				wp.Fix = f
-			} else if len(f) == 0 {
+				continue
+			}
+			if len(f) == 0 {
 				return nil, fmt.Errorf("no command found after / in %q", field)
-			} else {
-				actionHandled := false
-				if modifier, termination, hasTermination := strings.Cut(f, "@"); hasTermination {
-					actions, ok, err := parseWaypointActionModifier(modifier)
-					if err != nil {
-						return nil, fmt.Errorf("%s: invalid waypoint action group /%s: %w", field, f, err)
-					}
-					if !ok {
-						return nil, fmt.Errorf("%s: invalid waypoint action group /%s: @ condition can only be applied to a waypoint action", field, f)
-					}
+			}
+
+			modifier, termination, hasTermination := strings.Cut(f, "@")
+			actions, ok, err := parseWaypointActionModifier(modifier)
+			if err != nil {
+				return nil, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
+			}
+			if ok {
+				if err := wp.MergeActions(actions); err != nil {
+					return nil, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
+				}
+				if hasTermination {
 					until, err := parseWaypointActionTermination(termination)
 					if err != nil {
 						return nil, fmt.Errorf("%s: invalid waypoint action group /%s: %w", field, f, err)
 					}
-					wp.InitExtra().ActionGroups = append(wp.InitExtra().ActionGroups, WaypointActionGroup{
-						Actions: actions,
-						Until:   until,
-					})
-					actionHandled = true
-				} else if len(wp.ActionGroups()) > 0 {
-					actions, ok, err := parseWaypointActionModifier(f)
-					if err != nil {
-						return nil, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
-					}
-					if ok {
-						actionGroups := wp.ActionGroups()
-						if actionGroups[len(actionGroups)-1].Until.Type != WaypointActionNoTermination {
-							wp.InitExtra().ActionGroups = append(wp.InitExtra().ActionGroups, WaypointActionGroup{
-								Actions: actions,
-							})
-						} else if err := mergeWaypointActions(&wp.InitExtra().ActionGroups[len(actionGroups)-1].Actions, actions); err != nil {
-							return nil, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
-						}
-						actionHandled = true
-					}
+					groups := wp.Extra.ActionGroups
+					groups[len(groups)-1].Until = until
 				}
-				if !actionHandled {
-					if f == "ho" {
-						wp.SetHumanHandoff(true)
-					} else if strings.HasPrefix(f, "ho") {
-						wp.InitExtra().HandoffController = ControlPosition(f[2:])
-					} else if f == "clearapp" {
-						wp.SetClearApproach(true)
-					} else if f == "intercept" {
-						wp.SetInterceptApproach(true)
-					} else if f == "flyover" {
-						wp.SetFlyOver(true)
-					} else if f == "delete" {
-						wp.SetDelete(true)
-					} else if f == "land" {
-						wp.SetLand(true)
-					} else if f == "iaf" {
-						wp.SetIAF(true)
-					} else if f == "if" {
-						wp.SetIF(true)
-					} else if f == "faf" {
-						wp.SetFAF(true)
-					} else if f == "sid" {
-						wp.SetOnSID(true)
-					} else if f == "star" {
-						wp.SetOnSTAR(true)
-					} else if f == "appr" {
-						wp.SetOnApproach(true)
-					} else if f == "ph" {
-						wp.SetPresentHeading(true)
-					} else if strings.HasPrefix(f, "airwork") {
-						a := f[7:]
-						radius, minutes := 7, 15
-						i := 0
-						for len(a) > 0 {
-							if a[i] >= '0' && a[i] <= '9' {
-								i++
-							} else if n, err := strconv.Atoi(a[:i]); err != nil {
-								return nil, fmt.Errorf("%v: parsing %q", f, a[:i])
-							} else if a[i] == 'm' {
-								minutes = n
-								a = a[i+1:]
-								i = 0
-							} else if a[i] == 'n' && len(a) > i+1 && a[i+1] == 'm' {
-								radius = n
-								a = a[i+2:]
-								i = 0
-							} else {
-								return nil, fmt.Errorf("unexpected suffix %q after %q in %q", a[i:], a[:i], f)
-							}
-						}
-						if i > 0 {
-							return nil, fmt.Errorf("unexpected numbers %q after %q", a, f)
-						}
-						e := wp.InitExtra()
-						e.AirworkRadius = int8(radius)
-						e.AirworkMinutes = int8(minutes)
-					} else if strings.HasPrefix(f, "radius") {
-						rstr := f[6:]
-						if rad, err := strconv.ParseFloat(rstr, 32); err != nil {
-							return nil, err
-						} else {
-							wp.InitExtra().Radius = float32(rad)
-						}
-					} else if strings.HasPrefix(f, "shift") {
-						sstr := f[5:]
-						if shift, err := strconv.ParseFloat(sstr, 32); err != nil {
-							return nil, err
-						} else {
-							wp.InitExtra().Shift = float32(shift)
-						}
-					} else if len(f) > 2 && f[:2] == "po" {
-						wp.InitExtra().PointOut = ControlPosition(f[2:])
-					} else if strings.HasPrefix(f, "spsp") {
-						wp.InitExtra().PrimaryScratchpad = f[4:]
-					} else if f == "cpsp" {
-						wp.SetClearPrimaryScratchpad(true)
-					} else if strings.HasPrefix(f, "sssp") {
-						wp.InitExtra().SecondaryScratchpad = f[4:]
-					} else if f == "cssp" {
-						wp.SetClearSecondaryScratchpad(true)
-					} else if f == "tc" {
-						wp.SetTransferComms(true)
-					} else if (len(f) >= 4 && f[:4] == "pt45") || (len(f) >= 5 && f[:5] == "lpt45") {
-						pt := wp.InitExtra()
-						if pt.ProcedureTurn == nil {
-							pt.ProcedureTurn = &ProcedureTurn{}
-						}
-						pt.ProcedureTurn.Type = PTStandard45
-						pt.ProcedureTurn.RightTurns = f[0] == 'p'
-						wp.SetFlyOver(true)
+				continue
+			}
+			if hasTermination {
+				return nil, fmt.Errorf("%s: invalid waypoint action group /%s: @ condition can only be applied to a waypoint action", field, f)
+			}
 
-						extent := f[4:]
-						if !pt.ProcedureTurn.RightTurns {
-							extent = extent[1:]
-						}
-						if err := parsePTExtent(pt.ProcedureTurn, extent); err != nil {
-							return nil, err
-						}
-					} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
-						pt := wp.InitExtra()
-						if pt.ProcedureTurn == nil {
-							pt.ProcedureTurn = &ProcedureTurn{}
-						}
-						pt.ProcedureTurn.Type = PTRacetrack
-						pt.ProcedureTurn.RightTurns = f[0] == 'h'
-						wp.SetFlyOver(true)
-
-						extent := f[5:]
-						if !pt.ProcedureTurn.RightTurns {
-							extent = extent[1:]
-						}
-						if err := parsePTExtent(pt.ProcedureTurn, extent); err != nil {
-							return nil, err
-						}
-					} else if len(f) >= 4 && f[:3] == "pta" {
-						pt := wp.InitExtra()
-						if pt.ProcedureTurn == nil {
-							pt.ProcedureTurn = &ProcedureTurn{}
-						}
-
-						if alt, err := strconv.Atoi(f[3:]); err == nil {
-							pt.ProcedureTurn.ExitAltitude = alt
-						} else {
-							return nil, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
-						}
-					} else if f == "nopt" {
-						wp.SetNoPT(true)
-					} else if f == "nopt180" {
-						pt := wp.InitExtra()
-						if pt.ProcedureTurn == nil {
-							pt.ProcedureTurn = &ProcedureTurn{}
-						}
-						pt.ProcedureTurn.Entry180NoPT = true
-					} else if len(f) >= 4 && (f[:3] == "arc" || f[:4] == "larc" || f[:4] == "rarc") {
-						// The direction is inferred from the surrounding fixes
-						// unless given: /larc turns left (counterclockwise),
-						// /rarc right.
-						direction := DMEArcDirectionUnset
-						spec := f[3:]
-						if f[0] == 'l' {
-							direction, spec = DMEArcDirectionCounterClockwise, f[4:]
-						} else if f[0] == 'r' {
-							direction, spec = DMEArcDirectionClockwise, f[4:]
-						}
-						rend := 0
-						for rend < len(spec) &&
-							((spec[rend] >= '0' && spec[rend] <= '9') || spec[rend] == '.') {
-							rend++
-						}
-						if rend == 0 {
-							return nil, fmt.Errorf("%s: radius not found after /arc", f)
-						}
-
-						v, err := strconv.ParseFloat(spec[:rend], 32)
-						if err != nil {
-							return nil, fmt.Errorf("%s: invalid arc radius/length: %w", f, err)
-						}
-
-						if rend == len(spec) {
-							// no fix given, so interpret it as an arc length
-							wp.InitExtra().Arc = &DMEArc{
-								Length:    float32(v),
-								Direction: direction,
-							}
-						} else {
-							wp.InitExtra().Arc = &DMEArc{
-								Fix:       spec[rend:],
-								Radius:    float32(v),
-								Direction: direction,
-							}
-						}
-					} else if len(f) >= 7 && f[:6] == "airway" {
-						wp.InitExtra().Airway = f[6:]
-
-						// Do these last since they only match the first character...
-					} else if f[0] == 'a' {
-						ar, err := ParseAltitudeRestriction(f[1:])
-						if err != nil {
-							return nil, err
-						}
-						wp.SetAltitudeRestriction(*ar)
-					} else if f[0] == 's' {
-						sr, err := ParseSpeedRestriction(f[1:])
-						if err != nil {
-							return nil, fmt.Errorf("%s: error parsing speed restriction: %v", f[1:], err)
-						}
-						wp.SetSpeedRestriction(*sr)
-					} else if f == "ld" {
-						nextWaypointTurn = TurnLeft
-					} else if f == "rd" {
-						nextWaypointTurn = TurnRight
-					} else if f[0] == 'c' {
-						alt, err := strconv.Atoi(f[1:])
-						if err != nil {
-							return nil, fmt.Errorf("%s: error parsing altitude after /c: %v", f[1:], err)
-						}
-						if alt < 0 || alt > 600 {
-							return nil, fmt.Errorf("%s: climb altitude must be between 0 and 600 (in 100s of feet)", f)
-						}
-						wp.InitExtra().ClimbAltitude = int16(alt)
-					} else if f[0] == 'd' {
-						alt, err := strconv.Atoi(f[1:])
-						if err != nil {
-							return nil, fmt.Errorf("%s: error parsing altitude after /d: %v", f[1:], err)
-						}
-						if alt < 0 || alt > 600 {
-							return nil, fmt.Errorf("%s: descend altitude must be between 0 and 600 (in 100s of feet)", f)
-						}
-						wp.InitExtra().DescendAltitude = int16(alt)
-
+			if f == "intercept" {
+				wp.SetInterceptApproach(true)
+			} else if f == "flyover" {
+				wp.SetFlyOver(true)
+			} else if f == "delete" {
+				wp.SetDelete(true)
+			} else if f == "land" {
+				wp.SetLand(true)
+			} else if f == "iaf" {
+				wp.SetIAF(true)
+			} else if f == "if" {
+				wp.SetIF(true)
+			} else if f == "faf" {
+				wp.SetFAF(true)
+			} else if f == "sid" {
+				wp.SetOnSID(true)
+			} else if f == "star" {
+				wp.SetOnSTAR(true)
+			} else if f == "appr" {
+				wp.SetOnApproach(true)
+			} else if strings.HasPrefix(f, "airwork") {
+				a := f[7:]
+				radius, minutes := 7, 15
+				i := 0
+				for len(a) > 0 {
+					if a[i] >= '0' && a[i] <= '9' {
+						i++
+					} else if n, err := strconv.Atoi(a[:i]); err != nil {
+						return nil, fmt.Errorf("%v: parsing %q", f, a[:i])
+					} else if a[i] == 'm' {
+						minutes = n
+						a = a[i+1:]
+						i = 0
+					} else if a[i] == 'n' && len(a) > i+1 && a[i+1] == 'm' {
+						radius = n
+						a = a[i+2:]
+						i = 0
 					} else {
-						heading, ok, err := parseWaypointHeadingAction(f)
-						if err != nil {
-							return nil, err
-						}
-						if !ok {
-							return nil, fmt.Errorf("%s: unknown fix modifier: %s", field, f)
-						}
-						if heading.Fix != "" {
-							// Waypoint.Heading can't name a radial; make it an action group.
-							wp.InitExtra().ActionGroups = append(wp.InitExtra().ActionGroups,
-								WaypointActionGroup{Actions: WaypointActions{Heading: heading}})
-						} else {
-							applyWaypointHeadingAction(&wp, heading)
-						}
+						return nil, fmt.Errorf("unexpected suffix %q after %q in %q", a[i:], a[:i], f)
 					}
 				}
+				if i > 0 {
+					return nil, fmt.Errorf("unexpected numbers %q after %q", a, f)
+				}
+				e := wp.InitExtra()
+				e.AirworkRadius = int8(radius)
+				e.AirworkMinutes = int8(minutes)
+			} else if strings.HasPrefix(f, "radius") {
+				rstr := f[6:]
+				if rad, err := strconv.ParseFloat(rstr, 32); err != nil {
+					return nil, err
+				} else {
+					wp.InitExtra().Radius = float32(rad)
+				}
+			} else if strings.HasPrefix(f, "shift") {
+				sstr := f[5:]
+				if shift, err := strconv.ParseFloat(sstr, 32); err != nil {
+					return nil, err
+				} else {
+					wp.InitExtra().Shift = float32(shift)
+				}
+			} else if (len(f) >= 4 && f[:4] == "pt45") || (len(f) >= 5 && f[:5] == "lpt45") {
+				pt := wp.InitExtra()
+				if pt.ProcedureTurn == nil {
+					pt.ProcedureTurn = &ProcedureTurn{}
+				}
+				pt.ProcedureTurn.Type = PTStandard45
+				pt.ProcedureTurn.RightTurns = f[0] == 'p'
+				wp.SetFlyOver(true)
+
+				extent := f[4:]
+				if !pt.ProcedureTurn.RightTurns {
+					extent = extent[1:]
+				}
+				if err := parsePTExtent(pt.ProcedureTurn, extent); err != nil {
+					return nil, err
+				}
+			} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
+				pt := wp.InitExtra()
+				if pt.ProcedureTurn == nil {
+					pt.ProcedureTurn = &ProcedureTurn{}
+				}
+				pt.ProcedureTurn.Type = PTRacetrack
+				pt.ProcedureTurn.RightTurns = f[0] == 'h'
+				wp.SetFlyOver(true)
+
+				extent := f[5:]
+				if !pt.ProcedureTurn.RightTurns {
+					extent = extent[1:]
+				}
+				if err := parsePTExtent(pt.ProcedureTurn, extent); err != nil {
+					return nil, err
+				}
+			} else if len(f) >= 4 && f[:3] == "pta" {
+				pt := wp.InitExtra()
+				if pt.ProcedureTurn == nil {
+					pt.ProcedureTurn = &ProcedureTurn{}
+				}
+
+				if alt, err := strconv.Atoi(f[3:]); err == nil {
+					pt.ProcedureTurn.ExitAltitude = alt
+				} else {
+					return nil, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
+				}
+			} else if f == "nopt" {
+				wp.SetNoPT(true)
+			} else if f == "nopt180" {
+				pt := wp.InitExtra()
+				if pt.ProcedureTurn == nil {
+					pt.ProcedureTurn = &ProcedureTurn{}
+				}
+				pt.ProcedureTurn.Entry180NoPT = true
+			} else if len(f) >= 4 && (f[:3] == "arc" || f[:4] == "larc" || f[:4] == "rarc") {
+				// The direction is inferred from the surrounding fixes
+				// unless given: /larc turns left (counterclockwise),
+				// /rarc right.
+				direction := DMEArcDirectionUnset
+				spec := f[3:]
+				if f[0] == 'l' {
+					direction, spec = DMEArcDirectionCounterClockwise, f[4:]
+				} else if f[0] == 'r' {
+					direction, spec = DMEArcDirectionClockwise, f[4:]
+				}
+				rend := 0
+				for rend < len(spec) &&
+					((spec[rend] >= '0' && spec[rend] <= '9') || spec[rend] == '.') {
+					rend++
+				}
+				if rend == 0 {
+					return nil, fmt.Errorf("%s: radius not found after /arc", f)
+				}
+
+				v, err := strconv.ParseFloat(spec[:rend], 32)
+				if err != nil {
+					return nil, fmt.Errorf("%s: invalid arc radius/length: %w", f, err)
+				}
+
+				if rend == len(spec) {
+					// no fix given, so interpret it as an arc length
+					wp.InitExtra().Arc = &DMEArc{
+						Length:    float32(v),
+						Direction: direction,
+					}
+				} else {
+					wp.InitExtra().Arc = &DMEArc{
+						Fix:       spec[rend:],
+						Radius:    float32(v),
+						Direction: direction,
+					}
+				}
+			} else if len(f) >= 7 && f[:6] == "airway" {
+				wp.InitExtra().Airway = f[6:]
+
+				// Do these last since they only match the first character...
+			} else if f[0] == 'a' {
+				ar, err := ParseAltitudeRestriction(f[1:])
+				if err != nil {
+					return nil, err
+				}
+				wp.SetAltitudeRestriction(*ar)
+			} else if f[0] == 's' {
+				sr, err := ParseSpeedRestriction(f[1:])
+				if err != nil {
+					return nil, fmt.Errorf("%s: error parsing speed restriction: %v", f[1:], err)
+				}
+				wp.SetSpeedRestriction(*sr)
+			} else if f == "ld" {
+				nextWaypointTurn = TurnLeft
+			} else if f == "rd" {
+				nextWaypointTurn = TurnRight
+			} else {
+				return nil, fmt.Errorf("%s: unknown fix modifier: %s", field, f)
 			}
 		}
 
 		if pt := wp.ProcedureTurn(); pt != nil && pt.Type == PTUndefined {
 			return nil, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
-		}
-
-		if wp.ClimbAltitude() != 0 && wp.DescendAltitude() != 0 {
-			return nil, fmt.Errorf("%s: cannot specify both /c and /d at the same waypoint", wp.Fix)
 		}
 
 		// @t ends with the aircraft going direct to the next fix, so a
@@ -2002,12 +1704,12 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 						wp.Fix, group.Until.RadialFix, group.Encoded())
 				}
 			}
-			if heading := group.Actions.Heading; heading != nil && heading.Fix != "" {
-				if pos, ok := loc.Locate(heading.Fix); ok {
-					heading.FixLocation = pos
+			if fix := group.Actions.Heading.Fix; fix != "" {
+				if pos, ok := loc.Locate(fix); ok {
+					wa[i].Extra.ActionGroups[j].Actions.Heading.FixLocation = pos
 				} else if e != nil && !allowSlop {
 					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
-						wp.Fix, heading.Fix, group.Encoded())
+						wp.Fix, fix, group.Encoded())
 				}
 			}
 		}

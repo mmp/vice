@@ -398,21 +398,14 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		if nfa.Depart.Turn != nil {
 			turn = *nfa.Depart.Turn
 		}
-	} else if groups := wp.ActionGroups(); len(groups) > 0 && groups[0].Actions.Heading != nil {
+	} else if h, ok := wp.HeadingAction(); ok {
 		// Leaving the next fix on the heading of its first action group.
-		h := groups[0].Actions.Heading
 		if h.PresentHeading {
 			hdg = nav.FlightState.Heading
 		} else {
 			hdg = math.MagneticHeading(h.Heading)
 		}
 		turn = h.Turn
-	} else if wp.Heading != 0 {
-		// Leaving the next fix on a specified heading.
-		hdg = wp.MagneticHeading()
-		turn = wp.HeadingTurn()
-	} else if wp.PresentHeading() {
-		hdg = nav.FlightState.Heading
 	} else if wp.Arc() != nil {
 		// Joining a DME arc after the heading
 		hdg = wp.Arc().InitialHeading
@@ -472,7 +465,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Heading = NavHeading{}
 		}
 
-		if wp.ClearApproach() {
+		if groups := wp.ActionGroups(); len(groups) > 0 && groups[0].Actions.ClearApproach {
 			if fp != nil {
 				_ = nav.ClearedApproach(nav.Approach.AssignedId, nil, simTime, false)
 			}
@@ -525,12 +518,9 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Speed.Restriction = &srCopy
 		}
 
-		if wp.ClimbAltitude() != 0 {
-			alt := float32(wp.ClimbAltitude())
-			nav.assignAltitudeNow(alt, false)
-		} else if wp.DescendAltitude() != 0 {
-			alt := float32(wp.DescendAltitude())
-			nav.assignAltitudeNow(alt, false)
+		var actionEvent *av.WaypointActionEvent
+		if groups := wp.ActionGroups(); len(groups) > 0 {
+			actionEvent = nav.activateWaypointActions(wp.Fix, groups[0].Actions)
 		}
 
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok {
@@ -547,6 +537,10 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		}
 
 		skipWaypointNavigation := clearedAtFix || interceptedAtFix
+		var next *av.Waypoint
+		if len(nav.Waypoints) > 1 {
+			next = &nav.Waypoints[1]
+		}
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 			// Controller-assigned heading
 			hdg := *nfa.Depart.Heading
@@ -558,34 +552,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)
 				nav.Heading.Turn = nfa.Depart.Turn // may be nil (TurnClosest)
 			}
-		} else if len(wp.ActionGroups()) > 0 && !skipWaypointNavigation {
-			var next *av.Waypoint
-			if len(nav.Waypoints) > 1 {
-				next = &nav.Waypoints[1]
-			}
-			nav.Heading = NavHeading{Maneuvers: nav.makeActionGroupManeuvers(wp.Fix, wp.ActionGroups(), next)}
-			if event := nav.activateWaypointActions(wp.Fix, wp.ActionGroups()[0].Actions); event != nil {
-				nav.PendingWaypointActionEvents = append(nav.PendingWaypointActionEvents, *event)
-			}
-		} else if wp.Heading != 0 && !skipWaypointNavigation {
-			hdg := wp.MagneticHeading()
-			turn := wp.HeadingTurn()
-			if wp.HeadingIsTrack() {
-				nav.Heading = NavHeading{
-					Maneuvers: []LateralManeuver{{
-						Track: hdg,
-						Turn:  turn,
-						Until: ManeuverComplete{Type: UntilControllerIntervention},
-					}},
-				}
-			} else {
-				nav.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
-			}
-		} else if wp.PresentHeading() && !skipWaypointNavigation {
-			// Round to nearest 5 degrees
-			hdg := math.MagneticHeading(5 * int((float32(nav.FlightState.Heading)+2.5)/5))
-			hdg = math.NormalizeHeading(hdg)
-			nav.Heading = NavHeading{Assigned: &hdg}
+		} else if h := nav.actionGroupHeading(wp.Fix, wp.ActionGroups(), next); h != nil && !skipWaypointNavigation {
+			nav.Heading = *h
 		} else if wp.Arc() != nil && !interceptedAtFix {
 			// Fly the DME arc
 			nav.Heading = NavHeading{Arc: wp.Arc(), JoiningArc: true}
@@ -625,12 +593,39 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		LogRoute(callsign, simTime, nav.Waypoints)
 
 		result := UpdateResult{PassedWaypoint: wp}
-		if event := wp.ActionEvent(); event != nil {
-			result.ActionEvents = append(result.ActionEvents, *event)
+		if actionEvent != nil {
+			result.ActionEvents = append(result.ActionEvents, *actionEvent)
 		}
 		return result
 	}
 	return UpdateResult{}
+}
+
+// actionGroupHeading returns how to fly a waypoint's action groups after
+// passing it, or nil if they give no heading to fly. A lone open-ended
+// heading is flown as an assigned heading, as a controller's would be, so
+// that the rest of nav treats it as one; anything more is a maneuver
+// sequence.
+func (nav *Nav) actionGroupHeading(fix string, groups []av.WaypointActionGroup, next *av.Waypoint) *NavHeading {
+	if len(groups) == 0 {
+		return nil
+	}
+	if len(groups) == 1 && groups[0].Until.Type == av.WaypointActionNoTermination {
+		h := groups[0].Actions.Heading
+		switch {
+		case !h.IsSet():
+			return nil
+		case h.PresentHeading:
+			// Round to nearest 5 degrees
+			hdg := math.MagneticHeading(5 * int((float32(nav.FlightState.Heading)+2.5)/5))
+			hdg = math.NormalizeHeading(hdg)
+			return &NavHeading{Assigned: &hdg}
+		case !h.Track:
+			hdg, turn := math.MagneticHeading(h.Heading), h.Turn
+			return &NavHeading{Assigned: &hdg, Turn: &turn}
+		}
+	}
+	return &NavHeading{Maneuvers: nav.makeActionGroupManeuvers(fix, groups, next)}
 }
 
 // makeActionGroupManeuvers translates a waypoint's action groups into the
@@ -645,7 +640,7 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 			Actions: group.Actions,
 		}
 		heading := group.Actions.Heading
-		if heading == nil {
+		if !heading.IsSet() {
 			m.Heading = nav.FlightState.Heading
 		} else {
 			m.Turn = heading.Turn

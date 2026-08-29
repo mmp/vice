@@ -361,9 +361,14 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 					// set though in general the waypoint from the approach
 					// takes priority for things like altitude, speed, etc.
 					nopt := navwp[idx].NoPT()
-					humanHandoff := navwp[idx].HumanHandoff()
-					tcpHandoff := navwp[idx].HandoffController()
-					clearapp := navwp[idx].ClearApproach()
+					var carried av.WaypointActions
+					if groups := navwp[idx].ActionGroups(); len(groups) > 0 {
+						carried = av.WaypointActions{
+							HumanHandoff:      groups[0].Actions.HumanHandoff,
+							HandoffController: groups[0].Actions.HandoffController,
+							ClearApproach:     groups[0].Actions.ClearApproach,
+						}
+					}
 
 					// Keep the waypoints up to but not including the match.
 					navwp = navwp[:idx]
@@ -373,9 +378,9 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 					navwp = append(navwp, nav.FlightState.ArrivalAirport)
 
 					navwp[idx].SetNoPT(nopt)
-					navwp[idx].SetHumanHandoff(humanHandoff)
-					navwp[idx].InitExtra().HandoffController = tcpHandoff
-					navwp[idx].SetClearApproach(clearapp)
+					if carried.HasSimActions() {
+						navwp[idx].MergeActions(carried)
+					}
 
 					// Update the deferred waypoints if present (as they're
 					// what we got from AssignedWaypoints() above) and

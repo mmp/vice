@@ -451,7 +451,9 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 		MagneticVariation: magneticVariation,
 		NmPerLongitude:    nmPerLongitude,
 		Position:          nav.Waypoints[0].Location,
-		Heading:           nav.Waypoints[0].MagneticHeading(),
+	}
+	if h, ok := nav.Waypoints[0].HeadingAction(); ok {
+		nav.FlightState.Heading = math.MagneticHeading(h.Heading)
 	}
 
 	if nav.FlightState.Position.IsZero() {
@@ -565,8 +567,10 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 		return int(*nav.Heading.Assigned), OnHeading
 	}
 	// If the first waypoint has a heading, we're about to turn to it
-	if len(nav.Waypoints) > 0 && nav.Waypoints[0].Heading != 0 {
-		return int(nav.Waypoints[0].Heading), TurningToHeading
+	if len(nav.Waypoints) > 0 {
+		if h, ok := nav.Waypoints[0].HeadingAction(); ok && h.Heading != 0 {
+			return int(h.Heading), TurningToHeading
+		}
 	}
 	return 0, NoHeading
 }

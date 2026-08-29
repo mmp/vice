@@ -1289,7 +1289,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			return
 
 		case 1:
-			ar.Waypoints[0].SetHumanHandoff(true) // empty string -> to human
+			// empty string -> to human
+			ar.Waypoints[0].MergeActions(WaypointActions{HumanHandoff: true})
 
 		default:
 			// add a handoff point randomly halfway between the first two waypoints.
@@ -1298,7 +1299,9 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				// FIXME: it's a little sketchy to lerp Point2ll coordinates
 				// but probably ok over short distances here...
 				Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
-				Flags:    WaypointFlagHumanHandoff,
+				Extra: &WaypointExtra{
+					ActionGroups: []WaypointActionGroup{{Actions: WaypointActions{HumanHandoff: true}}},
+				},
 			}
 			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
 		}

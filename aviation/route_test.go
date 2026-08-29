@@ -510,8 +510,7 @@ func TestParseRadialTrack(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	// A radial to track is an action group even without a termination or
-	// other action groups, since Waypoint.Heading can't name the navaid.
+	// A radial to track is a heading action with the navaid as its fix.
 	for _, tc := range []struct {
 		route string
 		turn  TurnDirection
@@ -527,14 +526,11 @@ func TestParseRadialTrack(t *testing.T) {
 		if got := wps.Encode(); got != tc.route {
 			t.Errorf("expected %q to round-trip, got %q", tc.route, got)
 		}
-		if wps[0].Heading != 0 {
-			t.Errorf("%s: expected no waypoint heading, got %d", tc.route, wps[0].Heading)
-		}
 		groups := wps[0].ActionGroups()
 		if len(groups) != 1 {
 			t.Fatalf("%s: expected 1 action group, got %d", tc.route, len(groups))
 		}
-		if h := groups[0].Actions.Heading; h == nil || h.Heading != 255 || !h.Track || h.Fix != "SNS" || h.Turn != tc.turn {
+		if h := groups[0].Actions.Heading; h.Heading != 255 || !h.Track || h.Fix != "SNS" || h.Turn != tc.turn {
 			t.Errorf("%s: unexpected heading action %+v", tc.route, h)
 		}
 		if groups[0].Until.Type != WaypointActionNoTermination {
@@ -585,9 +581,10 @@ func TestEncodeTurnDirection(t *testing.T) {
 		if err != nil {
 			t.Fatalf("%s: %v", tc.route, err)
 		}
-		if wps[1].Turn() != tc.turn || wps[1].HeadingTurn() != tc.headingTurn {
+		h, _ := wps[1].HeadingAction()
+		if wps[1].Turn() != tc.turn || h.Turn != tc.headingTurn {
 			t.Errorf("%s: got turn %v and heading turn %v, want %v and %v", tc.route,
-				wps[1].Turn(), wps[1].HeadingTurn(), tc.turn, tc.headingTurn)
+				wps[1].Turn(), h.Turn, tc.turn, tc.headingTurn)
 		}
 		if got := wps.Encode(); got != tc.route {
 			t.Errorf("expected %q to round-trip, got %q", tc.route, got)
@@ -624,5 +621,52 @@ func TestParseArcDirection(t *testing.T) {
 		if got := wps.Encode(); got != tc.route {
 			t.Errorf("expected %q to round-trip, got %q", tc.route, got)
 		}
+	}
+}
+
+func TestParseActionsIntoGroups(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	// Actions at a fix form a single open action group and round-trip.
+	for _, route := range []string{"RNGRR/h223", "RNGRR/h223/ho5W/c50", "KJFK-4L/ho5S@a2500"} {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatalf("%s: %v", route, err)
+		}
+		if groups := wps[0].ActionGroups(); len(groups) != 1 {
+			t.Errorf("%s: expected 1 action group, got %+v", route, groups)
+		}
+		if got := wps.Encode(); got != route {
+			t.Errorf("expected %q to round-trip, got %q", route, got)
+		}
+	}
+
+	wps, err := parseWaypoints("RNGRR/h223/ho5W/c50")
+	if err != nil {
+		t.Fatal(err)
+	}
+	actions := wps[0].ActionGroups()[0].Actions
+	if actions.Heading.Heading != 223 || actions.HandoffController != "5W" || actions.ClimbAltitude != 50 {
+		t.Errorf("unexpected actions %+v", actions)
+	}
+
+	// Actions after a termination start the next group; a termination
+	// ends the group the actions before it were merged into.
+	wps, err = parseWaypoints("KLGB-12/h301@a400/ho4R/h200@a3000/ho6K")
+	if err != nil {
+		t.Fatal(err)
+	}
+	groups := wps[0].ActionGroups()
+	if len(groups) != 3 {
+		t.Fatalf("expected 3 action groups, got %+v", groups)
+	}
+	if g := groups[1]; g.Actions.HandoffController != "4R" || g.Actions.Heading.Heading != 200 ||
+		g.Until.Type != WaypointActionAltitude || g.Until.Altitude != 3000 {
+		t.Errorf("unexpected second group %+v", g)
+	}
+	if g := groups[2]; g.Actions.HandoffController != "6K" || g.Until.Type != WaypointActionNoTermination {
+		t.Errorf("unexpected third group %+v", g)
 	}
 }

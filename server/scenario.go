@@ -736,12 +736,6 @@ func (sg *scenarioGroup) resolveControllerRefs() {
 	}
 	resolveWaypoints := func(wps av.WaypointArray) {
 		for i := range wps {
-			if wps[i].HandoffController() != "" {
-				wps[i].InitExtra().HandoffController = resolve(wps[i].HandoffController())
-			}
-			if wps[i].PointOut() != "" {
-				wps[i].InitExtra().PointOut = resolve(wps[i].PointOut())
-			}
 			for j := range wps[i].ActionGroups() {
 				if wps[i].Extra.ActionGroups[j].Actions.HandoffController != "" {
 					wps[i].Extra.ActionGroups[j].Actions.HandoffController =
@@ -1383,11 +1377,6 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	}
 	rewriteWaypoints := func(wp av.WaypointArray) {
 		for _, w := range wp {
-			if w.HandoffController() != "" {
-				hc := w.HandoffController()
-				rewriteControlPosition(&hc)
-				w.InitExtra().HandoffController = hc
-			}
 			for j := range w.ActionGroups() {
 				if w.Extra.ActionGroups[j].Actions.HandoffController != "" {
 					hc := w.Extra.ActionGroups[j].Actions.HandoffController

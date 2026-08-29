@@ -935,12 +935,12 @@ func (er *ExitRoute) initialize(rwy RunwayID, r, rend Runway, controlPositions m
 	for i := range er.Waypoints {
 		er.Waypoints[i].SetOnSID(true)
 
-		if er.Waypoints[i].TransferComms() {
+		if er.Waypoints[i].HasTransferCommsAction() {
 			er.WaitToContactDeparture = true
 		}
 	}
 
-	if slices.ContainsFunc(er.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff() }) {
+	if er.Waypoints.HasHumanHandoff() {
 		if er.HandoffController == "" {
 			e.ErrorString(`no "handoff_controller" specified even though route has "/ho"`)
 		} else if _, ok := controlPositions[er.HandoffController]; !ok {
@@ -963,12 +963,9 @@ func (er ExitRoute) FinalHeading() int {
 	for _, v := range slices.Backward(er.Waypoints) {
 		if groups := v.ActionGroups(); len(groups) > 0 {
 			last := groups[len(groups)-1]
-			if h := last.Actions.Heading; h != nil && !h.PresentHeading && last.Until.Type == WaypointActionNoTermination {
+			if h := last.Actions.Heading; h.Heading != 0 && last.Until.Type == WaypointActionNoTermination {
 				return int(h.Heading)
 			}
-		}
-		if v.Heading != 0 {
-			return int(v.Heading)
 		}
 	}
 	return 0

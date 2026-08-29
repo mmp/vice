@@ -17,7 +17,8 @@ import (
 
 // GoAroundWithProcedure initiates a go-around with a defined procedure.
 // The runwayEndWP waypoint should have Location (opposite threshold), FlyOver,
-// Heading (outbound), AltitudeRestriction, and GoAroundContactController set.
+// and AltitudeRestriction set, and an action group with the outbound heading
+// and the GoAroundContactController.
 func (nav *Nav) GoAroundWithProcedure(altitude float32, runwayEndWP av.Waypoint) {
 	nav.DeferredNavHeading = nil
 	nav.Speed = NavSpeed{}

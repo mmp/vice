@@ -227,7 +227,7 @@ func (ac *Aircraft) maybeSetGoAround(goAroundRate float32, r *rand.Rand) {
 		return // Random chance didn't trigger
 	}
 	// Only allow go-around if there's human controller involvement
-	if !slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff() }) {
+	if !slices.ContainsFunc(ac.Nav.Waypoints, av.Waypoint.HasHumanHandoff) {
 		return
 	}
 	d := r.Float32Range(0.1, 0.7)

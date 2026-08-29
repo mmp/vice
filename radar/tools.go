@@ -184,10 +184,10 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 	}
 
 	for i, wp := range waypoints {
-		if wp.Heading != 0 {
+		if h, ok := wp.HeadingAction(); ok && h.Heading != 0 {
 			// Don't draw a segment to the next waypoint (if there is one)
 			// but instead draw an arrow showing the heading.
-			a := math.Radians(math.MagneticToTrue(wp.MagneticHeading(), ctx.MagneticVariation))
+			a := math.Radians(math.MagneticToTrue(math.MagneticHeading(h.Heading), ctx.MagneticVariation))
 			v := math.SinCos(a)
 			v = math.Scale2f(v, 2)
 			pend := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)

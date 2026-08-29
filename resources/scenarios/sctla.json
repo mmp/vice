@@ -1673,7 +1673,7 @@
           "runway_waypoints": {
             "KLAX": {
               "6L": "BIGBR/a13000-14000 DRYSS/a10000-12000 TOMYS/a9000+ CLIFY/a7000/s220 HNCHE SASSI/a7000/s210/h251",
-              "7R": "BIGBR/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000+/s220 WNDFL/a6000/h210/h251"
+              "7R": "BIGBR/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000+/s220 WNDFL/a6000/h251"
             }
           },
           "star": "BIGBR3",
