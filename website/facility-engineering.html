@@ -875,6 +875,14 @@
                       A departure that has climbed through the altitude before reaching the fix meets a <code>+</code> trigger as soon as it passes the fix.</td>
                   </tr>
                   <tr>
+                    <td><code>@d<var>distance</var></code></td>
+                    <td>Triggers when the aircraft is the given distance, in nautical miles, from the point where the
+                      preceding action took effect. This is how to express legs charted as a track from a fix for a
+                      distance; for example, the KPBF ILS 18's course reversal at <code>NETAA</code> is
+                      <code>NETAA/t338/@d7.9/lt208/@crs178 REYLO</code>: track 338 from <code>NETAA</code> for 7.9 nm,
+                      then turn left to track 208 until intercepting the 178 course to <code>REYLO</code>.</td>
+                  </tr>
+                  <tr>
                     <td><code>@<var>navaid</var>-D<var>distance</var>+</code> / <code>@<var>navaid</var>-D<var>distance</var>-</code></td>
                     <td>Triggers when the aircraft is at or beyond (<code>+</code>) or within (<code>-</code>) the given DME distance from the
                       navaid or fix. For example, <code>KARRS/h039/@CAMRN-D4.0+/l010</code> flies heading 039
@@ -4430,7 +4438,7 @@
                 as used in <i>vice</i>'s <a href="#atc-commands">ATC commands</a>.</p>
               <p>Approaches may be specified using data automatically loaded from the
                 <a href="https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/">FAA CIFP</a> or manually.
-                To use CIFP data, run <i>vice</i> from the command-line and give it the argument <code>-route KXYZ</code>, where
+                To use CIFP data, run <i>vice</i> from the command-line and give it the argument <code>-routes KXYZ</code>, where
                 <code>KXYZ</code> is the ICAO code for the airport. <i>vice</i> will print identifiers for the available approaches
                 and their associated fixs. For example:</p>
               <pre>

@@ -665,9 +665,8 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	case "DF": // direct to fix from unspecified point
 		break
 
-	case "FC": // track from fix for distance; the fix was already added by the preceding TF/IF
-		ok = false
-		return
+	case "FC": // track from the fix for a distance
+		break
 
 	case "CI": // course to intercept; no fix, handled in parseTransitions
 		ok = false
@@ -843,21 +842,75 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 				Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: hdg}},
 				Until:   WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
 			})
+		} else if rec.pathAndTermination == "FC" {
+			// A track from the fix for a distance. The fix is usually already
+			// the transition's last waypoint, from a preceding IF or TF for
+			// it; a transition that begins with the FC starts at its fix.
+			// The leg is only flown when a CI follows it to reverse course.
+			// Otherwise a CF collinear with it follows, and direct to the
+			// CF's fix is the same path.
+			wp, _, _ := rec.GetWaypoint()
+			if n := len(transitions[rec.transition]); n == 0 || transitions[rec.transition][n-1].Fix != rec.fix {
+				transitions[rec.transition] = append(transitions[rec.transition], wp)
+			}
+			next, ok := nextLeg(i)
+			if !ok || next.pathAndTermination != "CI" || empty(rec.outboundMagneticCourse) || empty(rec.routeDistance) {
+				continue
+			}
+			n := len(transitions[rec.transition])
+			last := &transitions[rec.transition][n-1]
+			last.InitExtra().ActionGroups = append(last.ActionGroups(), WaypointActionGroup{
+				Actions: WaypointActions{Heading: WaypointHeadingAction{
+					Heading: parseMagneticCourse(rec.outboundMagneticCourse),
+					Track:   true,
+				}},
+				Until: WaypointActionTermination{
+					Type:     WaypointActionDistance,
+					Distance: float32(parseInt(rec.routeDistance)) / 10,
+				},
+			})
 		} else if rec.pathAndTermination == "CI" {
-			// CI (course to intercept) paired with a preceding FC defines a procedure turn.
-			// Attach the procedure turn to the previous waypoint in this transition.
-			if n := len(transitions[rec.transition]); n > 0 {
-				pt := &ProcedureTurn{
-					Type:       PTStandard45,
-					RightTurns: rec.turnDirection != 'L',
+			// A course flown until the following leg's course to its fix is
+			// intercepted, after which the aircraft goes direct to that fix.
+			// A CI that ends its transition intercepts the common route's
+			// first course to a fix; that fix is added to the transition so
+			// that it splices onto the common route there.
+			n := len(transitions[rec.transition])
+			if n == 0 || empty(rec.outboundMagneticCourse) {
+				continue
+			}
+			next, ok := nextLeg(i)
+			endsTransition := !ok
+			if endsTransition {
+				idx := slices.IndexFunc(recs, func(r ssaRecord) bool {
+					return r.transition == "" && r.pathAndTermination == "CF" && !skip(r)
+				})
+				if idx == -1 {
+					continue
 				}
-				// FC distance is the "remain within" distance, not the
-				// outbound leg length; use defaults for standard 45 PTs.
-				if !empty(rec.alt0) {
-					pt.ExitAltitude = parseAltitude(rec.alt0)
-				}
-				transitions[rec.transition][n-1].InitExtra().ProcedureTurn = pt
-				transitions[rec.transition][n-1].SetFlyOver(true)
+				next = recs[idx]
+			}
+			if next.pathAndTermination != "CF" || empty(next.outboundMagneticCourse) {
+				continue
+			}
+			hdg, crs := parseMagneticCourse(rec.outboundMagneticCourse),
+				parseMagneticCourse(next.outboundMagneticCourse)
+			if hdg != crs {
+				// Parallel to the course, it would never be intercepted;
+				// direct to the fix is the same thing.
+				wp := &transitions[rec.transition][n-1]
+				wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
+					Actions: WaypointActions{Heading: WaypointHeadingAction{
+						Heading: hdg,
+						Track:   true,
+						Turn:    turnDirection(rec.turnDirection),
+					}},
+					Until: WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
+				})
+			}
+			if endsTransition {
+				wp, _, _ := next.GetWaypoint()
+				transitions[rec.transition] = append(transitions[rec.transition], wp)
 			}
 		} else {
 			wp, arc, ok := rec.GetWaypoint()
@@ -1032,8 +1085,9 @@ func sidTransitionRunways(transition string, runways []Runway) []string {
 
 // parseSIDLegs converts the legs of one SID transition to waypoints. Legs
 // that end somewhere other than a fix--a heading to an altitude, a course
-// to a DME distance, a heading to intercept a course or cross a radial,
-// vectors--become action groups on the waypoint they are flown from. A
+// to a DME distance, a track from a fix for a distance, a heading to
+// intercept a course or cross a radial, vectors--become action groups on
+// the waypoint they are flown from. A
 // runway transition's first leg is flown from the runway's departure end,
 // returned as a waypoint with an empty Fix for the caller to name.
 // Transitions with legs vice can't fly are reported as not ok.
@@ -1158,11 +1212,8 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 			})
 			noteLegSpeed(rec)
 
-		case "VD", "CD", "FD", "FC": // to a DME distance from a navaid, or a distance from the fix
+		case "VD", "CD", "FD": // to a DME distance from a navaid
 			dmeFix := strings.TrimSpace(string(rec.recommendedNavaid))
-			if pt == "FC" {
-				dmeFix = rec.fix
-			}
 			if dmeFix == "" || empty(rec.routeDistance) || empty(rec.outboundMagneticCourse) {
 				return nil, false
 			}
@@ -1174,6 +1225,20 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 					DMEFix:      dmeFix,
 					DMEDistance: float32(parseInt(rec.routeDistance)) / 10,
 					AtOrAbove:   true,
+				},
+			})
+			noteLegSpeed(rec)
+
+		case "FC": // a track from the fix for a distance
+			if empty(rec.routeDistance) || empty(rec.outboundMagneticCourse) {
+				return nil, false
+			}
+			wp, h := legStart(i)
+			addGroup(wp, WaypointActionGroup{
+				Actions: WaypointActions{Heading: h},
+				Until: WaypointActionTermination{
+					Type:     WaypointActionDistance,
+					Distance: float32(parseInt(rec.routeDistance)) / 10,
 				},
 			})
 			noteLegSpeed(rec)

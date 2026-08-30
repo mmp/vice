@@ -338,6 +338,44 @@ func TestParseActionGroupErrorIncludesWaypointContext(t *testing.T) {
 	}
 }
 
+// A /@d trigger is a distance flown in nautical miles; it round-trips and
+// takes no + or - since distance flown only increases.
+func TestParseDistanceTrigger(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	route := "NETAA/t338/@d7.9/lt208/@crs178 REYLO"
+	wps, err := parseWaypoints(route)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := wps.Encode(); got != route {
+		t.Errorf("expected %q to round-trip, got %q", route, got)
+	}
+	groups := wps[0].ActionGroups()
+	if len(groups) != 2 {
+		t.Fatalf("expected 2 action groups, got %d", len(groups))
+	}
+	if until := groups[0].Until; until.Type != WaypointActionDistance || until.Distance != 7.9 {
+		t.Errorf("expected a 7.9nm distance termination, got %+v", until)
+	}
+
+	for _, tc := range []struct{ route, want string }{
+		{"NETAA/t338/@d REYLO", "unknown trigger"},
+		{"NETAA/t338/@d0 REYLO", "must be positive"},
+		{"NETAA/t338/@d7.9+ REYLO", "invalid distance"},
+		{"NETAA/t338/@dx REYLO", "invalid distance"},
+	} {
+		_, err := parseWaypoints(tc.route)
+		if err == nil {
+			t.Errorf("%s: expected an error", tc.route)
+		} else if !strings.Contains(err.Error(), tc.want) {
+			t.Errorf("%s: expected error %q to include %q", tc.route, err, tc.want)
+		}
+	}
+}
+
 func TestParseMultipleRestrictionsIsError(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}

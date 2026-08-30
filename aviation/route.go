@@ -55,6 +55,7 @@ const (
 	WaypointActionDME
 	WaypointActionCourse
 	WaypointActionRadial
+	WaypointActionDistance
 )
 
 // WaypointActionTermination describes a non-fix condition for advancing to the
@@ -67,8 +68,9 @@ type WaypointActionTermination struct {
 	DMEDistance       float32
 	DMEFixLocation    math.Point2LL
 	DMEFixElevation   int
-	Course            int16 // magnetic course to the next fix on the route
-	Radial            int16 // magnetic radial of RadialFix to cross
+	Distance          float32 // nm from where the group took effect
+	Course            int16   // magnetic course to the next fix on the route
+	Radial            int16   // magnetic radial of RadialFix to cross
 	RadialFix         string
 	RadialFixLocation math.Point2LL
 }
@@ -178,6 +180,8 @@ func (wag WaypointActionGroup) Encoded() string {
 		s += fmt.Sprintf("/@crs%03d", wag.Until.Course)
 	case WaypointActionRadial:
 		s += fmt.Sprintf("/@%s-R%03d", wag.Until.RadialFix, wag.Until.Radial)
+	case WaypointActionDistance:
+		s += fmt.Sprintf("/@d%.1f", wag.Until.Distance)
 	}
 	return s
 }
@@ -1255,9 +1259,10 @@ func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
 }
 
 // parseWaypointActionTermination parses the condition of a trigger, after
-// its @: an altitude (a4277+ at or above, a4277- at or below), a course to
-// the next fix (crs220), a navaid's radial (HLN-R322), or a DME distance
-// from a navaid (ILSQ-D2.3+ at or beyond, ILSQ-D2.3- within).
+// its @: an altitude (a4277+ at or above, a4277- at or below), a distance
+// flown (d7.9), a course to the next fix (crs220), a navaid's radial
+// (HLN-R322), or a DME distance from a navaid (ILSQ-D2.3+ at or beyond,
+// ILSQ-D2.3- within).
 func parseWaypointActionTermination(f string) (WaypointActionTermination, error) {
 	// cutSign splits off the trailing + or - that says which side of the
 	// value the trigger is met on.
@@ -1283,6 +1288,16 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 			return WaypointActionTermination{}, fmt.Errorf("%s: trigger altitude must be between 0 and 60000 feet", f)
 		}
 		return WaypointActionTermination{Type: WaypointActionAltitude, Altitude: a, AtOrAbove: atOrAbove}, nil
+
+	case len(f) > 1 && f[0] == 'd':
+		d, err := strconv.ParseFloat(f[1:], 32)
+		if err != nil {
+			return WaypointActionTermination{}, fmt.Errorf("%s: invalid distance %q", f, f[1:])
+		}
+		if d <= 0 {
+			return WaypointActionTermination{}, fmt.Errorf("%s: distance must be positive", f)
+		}
+		return WaypointActionTermination{Type: WaypointActionDistance, Distance: float32(d)}, nil
 
 	case strings.HasPrefix(f, "crs"):
 		if !allDigits(f[3:]) || len(f) == 3 {
@@ -1322,7 +1337,7 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 
 	default:
 		return WaypointActionTermination{}, fmt.Errorf("%s: unknown trigger; expected an altitude (a4277+), "+
-			"a course (crs220), a radial (HLN-R322), or a DME distance (ILSQ-D2.3+)", f)
+			"a distance flown (d7.9), a course (crs220), a radial (HLN-R322), or a DME distance (ILSQ-D2.3+)", f)
 	}
 }
 

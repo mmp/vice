@@ -684,6 +684,8 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 				Radial:    math.MagneticHeading(group.Until.Radial),
 				RadialFix: group.Until.RadialFix,
 			}
+		case av.WaypointActionDistance:
+			m.Until = ManeuverComplete{Type: UntilDist, Dist: group.Until.Distance}
 		default:
 			panic("unhandled WaypointActionTerminationType")
 		}

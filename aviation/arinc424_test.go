@@ -293,7 +293,8 @@ func TestParseARINC424CourseIntercept(t *testing.T) {
 
 // The HUSKR transition of the KLNK ILS 18-Y flies a 199 heading off HUSKR to
 // intercept the 177 localizer course to ESACO. Its LNK transition instead
-// reverses course with an FC/CI pair, which remains a procedure turn.
+// reverses course with an FC/CI pair: a 357 track from JUSAM for 5.3nm, then
+// a right turn to 147 to intercept the localizer.
 func TestParseARINC424ApproachCourseIntercept(t *testing.T) {
 	lines := []string{
 		"SUSAP KLNKK3FI18-Y AHUSKR 010HUSKRK3EA0E  A    IF                                             18000                 0 NS   439802110",
@@ -327,18 +328,63 @@ func TestParseARINC424ApproachCourseIntercept(t *testing.T) {
 		t.Errorf("expected HUSKR to intercept the 177 course, got %q", got)
 	}
 
-	lnk := transition("LNK")
-	idx := slices.IndexFunc(lnk, func(wp Waypoint) bool { return wp.Fix == "JUSAM" })
-	if idx == -1 {
-		t.Fatalf("no JUSAM in the LNK transition %q", lnk.Encode())
+	want := "LNK/a3200+/iaf JUSAM/a3200+/t357/@d5.3/rt147/@crs177 ESACO/a3200+/if CLONE/a2900+/faf"
+	if got := transition("LNK").Encode(); got != want {
+		t.Errorf("LNK transition: expected %q, got %q", want, got)
 	}
-	if pt := lnk[idx].ProcedureTurn(); pt == nil {
-		t.Errorf("expected a procedure turn at JUSAM, got %q", lnk.Encode())
-	} else if pt.Type != PTStandard45 || !pt.RightTurns {
-		t.Errorf("expected a right-turn 45 procedure turn at JUSAM, got %+v", *pt)
+}
+
+// FC/CI course reversals in the other two shapes the CIFP uses, and the
+// feeder transitions that begin with an FC leg. KDDC ILS 14's FLACK
+// transition ends at its CI, which intercepts the common route's course to
+// RAVEN; the transition splices onto the common route there, skipping WEROM.
+// KPMD VOR 25's PMD transition begins with the FC, so PMD is its first fix.
+// PANC ILS 7L's ENA transition is the common case: an FC from the navaid
+// collinear with the CF that follows it, flown as direct to the CF's fix.
+func TestParseARINC424CourseReversal(t *testing.T) {
+	lines := []string{
+		"SUSAP KDDCK3FI14   AEARPP 010EARPPK3EA0E  A    IF                                             18000                 0 DS   655832207",
+		"SUSAP KDDCK3FI14   AEARPP 020WEROMK3PC0EE BL   AF DDC K3      323301400763    D   + 04600                           0 DS   655842207",
+		"SUSAP KDDCK3FI14   AFLACK 010FLACKK3EA0E       IF                                             18000                 0 NS   655852207",
+		"SUSAP KDDCK3FI14   AFLACK 020DDC  K3D 0V  A    TF                                 + 04400                           0 NS   655862207",
+		"SUSAP KDDCK3FI14   AFLACK 030OWENJK3PC0E       TF                                 + 04400                           0 NS   655872207",
+		"SUSAP KDDCK3FI14   AFLACK 040OWENJK3PC0E       FC DDC K3      3560010030600063D   + 04400                           0 NS   655882301",
+		"SUSAP KDDCK3FI14   AFLACK 050         0 E  L   CIY                    1760        + 04400                           0 NS   655892301",
+		"SUSAP KDDCK3FI14   I      010WEROMK3PC0E  I    IF IDDCK3      32580201        PI  J 046000440018000                 0 NS   655922207",
+		"SUSAP KDDCK3FI14   I      020RAVENK3PC0E  F    CF IDDCK3      3258006714600134PI  H 0440004400            DDC   K3D 0 NS   655932207",
+		"SUSAP KDDCK3FI14   I      030RW14 K3PG0GY M    CF IDDCK3      3258001214600055PI    02623             -300          0 NS   655942207",
+		"SUSAP KPMDK2FS25   APMD   010PMD  K2D 0V  A    FC PMD K2      0000000007000135D   + 05200     18000                 0 DS   905902204",
+		"SUSAP KPMDK2FS25   APMD   020         0    R   CIY                    1751                                          0 DS   905912506",
+		"SUSAP KPMDK2FS25   APMD   030CIVOKK2PC0EE BR   CFYPMD K2      0851012026510014D   + 05200                           0 DS   905922204",
+		"SUSAP KPMDK2FS25   S      010CIVOKK2PC0E  I    IF PMD K2      08510120        D   + 05200     18000                 0 DS   905932204",
+		"SUSAP KPMDK2FS25   S      011WUGITK2PC0E       CF PMD K2      0851007026510050D   + 04300                           0 DS   905942204",
+		"SUSAP KPMDK2FS25   S      020THEROK2PC0E  F    CF PMD K2      0851004026510030D   + 04000                 PMD   K2D 0 DS   905952204",
+		"SUSAP KPMDK2FS25   S      030EKOTYK2PC0EY M    CF PMD K2      0851000326510022D     02807             -304          0 DS   905972204",
+		"SCANP PANCPAFI07L  AENA   010ENA  PAD 0V  A    FC ENA PA      0000000001140367D   + 02000     18000                 0 DS   105491202",
+		"SCANP PANCPAFI07L  AENA   020AINKKPAPC0EE B    CF ITGNPA      2539016801140020PI  + 02000                           0 DS   105501802",
+		"SCANP PANCPAFI07L  I      010AINKKPAPC0E  I    IF ITGNPA      25390168        PI  J 020000160018000                 0 DS   105511802",
+		"SCANP PANCPAFI07L  I      011WUGSIPAPC0E       CF ITGNPA      2539012007400049PI  B 0330001600                      0 DS   105522310",
+		"SCANP PANCPAFI07L  I      020WEBBIPAPC0E  F    CF ITGNPA      2539006407400056PI  H 0160001600            TED   PAD 0 DS   105531911",
 	}
-	if len(lnk[idx].ActionGroups()) != 0 {
-		t.Errorf("expected no action groups at JUSAM, got %q", lnk.Encode())
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	for _, tc := range []struct{ airport, approach, want string }{
+		{"KDDC", "I14", "FLACK DDC/a4400+/iaf OWENJ/a4400+/t306/@d6.3/lt176/@crs146 RAVEN/a4400+/faf"},
+		{"KPMD", "S25", "PMD/a5200+/iaf/t070/@d13.5/rt175/@crs265 CIVOK/a5200+/if WUGIT/a4300+ THERO/a4000+/faf"},
+		{"PANC", "I7L", "ENA/a2000+/iaf AINKK/a2000+/if WUGSI/a1600-3300 WEBBI/a1600+/faf"},
+	} {
+		appr, ok := result.Airports[tc.airport].Approaches[tc.approach]
+		if !ok {
+			t.Fatalf("expected %s %s approach, got %v", tc.airport, tc.approach, result.Airports[tc.airport].Approaches)
+		}
+		first, _, _ := strings.Cut(tc.want, " ")
+		first, _, _ = strings.Cut(first, "/")
+		idx := slices.IndexFunc(appr.Waypoints, func(wps WaypointArray) bool { return wps[0].Fix == first })
+		if idx == -1 {
+			t.Errorf("%s %s: no transition starting at %s in %v", tc.airport, tc.approach, first, appr.Waypoints)
+		} else if got := appr.Waypoints[idx].Encode(); got != tc.want {
+			t.Errorf("%s %s: expected %q, got %q", tc.airport, tc.approach, tc.want, got)
+		}
 	}
 }
 
@@ -534,7 +580,7 @@ func TestParseARINC424SIDRadials(t *testing.T) {
 	}
 
 	flout5 := result.Airports["KSBA"].SIDs["FLOUT5"]
-	if got, want := flout5.EnrouteTransitions["GVO"].Encode(), "FLOUT/t321/@FLOUT-D15.0+ GVO"; got != want {
+	if got, want := flout5.EnrouteTransitions["GVO"].Encode(), "FLOUT/t321/@d15.0 GVO"; got != want {
 		t.Errorf("FLOUT5 GVO transition: expected %q, got %q", want, got)
 	}
 }
