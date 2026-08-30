@@ -2061,9 +2061,10 @@ func MakeSID() *SID {
 
 // Waypoints returns the SID as flown off the given runway by a departure
 // leaving over the given exit fix. The route follows the runway transition
-// and then the enroute transition the exit lies on, ending at the exit; if
-// no transition leads to the exit it follows the common route to its end.
-func (s SID) Waypoints(runway, exit string) (WaypointArray, error) {
+// and then the named enroute transition if one is given, or the one the
+// exit lies on otherwise, ending at the exit; with no transition named and
+// none leading to the exit it follows the common route to its end.
+func (s SID) Waypoints(runway, transition, exit string) (WaypointArray, error) {
 	wps, ok := s.RunwayTransitions[runway]
 	if !ok {
 		if len(s.RunwayTransitions) == 0 {
@@ -2073,15 +2074,22 @@ func (s SID) Waypoints(runway, exit string) (WaypointArray, error) {
 			strings.Join(util.SortedMapKeys(s.RunwayTransitions), ", "))
 	}
 
-	hasExit := func(wps WaypointArray) bool {
-		return slices.ContainsFunc(wps, func(wp Waypoint) bool { return wp.Fix == exit })
-	}
 	body := s.Common
-	if !hasExit(wps) && !hasExit(s.Common) {
-		for _, name := range util.SortedMapKeys(s.EnrouteTransitions) {
-			if hasExit(s.EnrouteTransitions[name]) {
-				body = s.EnrouteTransitions[name]
-				break
+	if transition != "" {
+		if body, ok = s.EnrouteTransitions[transition]; !ok {
+			return nil, fmt.Errorf("no enroute transition %s. Options: %s", transition,
+				strings.Join(util.SortedMapKeys(s.EnrouteTransitions), ", "))
+		}
+	} else {
+		hasExit := func(wps WaypointArray) bool {
+			return slices.ContainsFunc(wps, func(wp Waypoint) bool { return wp.Fix == exit })
+		}
+		if !hasExit(wps) && !hasExit(s.Common) {
+			for _, name := range util.SortedMapKeys(s.EnrouteTransitions) {
+				if hasExit(s.EnrouteTransitions[name]) {
+					body = s.EnrouteTransitions[name]
+					break
+				}
 			}
 		}
 	}

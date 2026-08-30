@@ -4647,7 +4647,10 @@
                     <td>"sid"</td>
                     <td>String</td>
                     <td><i>(Optional)</i> A string naming the SID that the aircraft is flying. If the SID is in the
-                      FAA CIFP for the airport, "waypoints" may be omitted and the route is taken from the CIFP; see below.</td>
+                      FAA CIFP for the airport, "waypoints" may be omitted and the route is taken from the CIFP; see below.
+                      In that case, one of the SID's enroute transitions may be selected by appending its name to the
+                      SID's after a period (e.g., "LAXX1.OCN"); otherwise the transition that contains the exit fix, if
+                      there is one, is flown.</td>
                   </tr>
                   <tr>
                     <td>"waypoints"</td>

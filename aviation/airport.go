@@ -421,12 +421,17 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					// The checks made of scenario-authored waypoints don't
 					// apply: a SID may legitimately have a 200+ nm oceanic
 					// leg or a lower minimum altitude at a later fix.
+					// A suffix on the SID name selects one of its enroute
+					// transitions (e.g. "LAXX1.OCN"); the plain SID name is
+					// what goes on the flight plan.
+					var transition string
+					route.SID, transition, _ = strings.Cut(route.SID, ".")
 					for _, exit := range exits {
 						if len(exits) > 1 {
 							e.Push("Exit " + string(exit))
 						}
 						exitRoute := *route
-						if wps, ok := sidWaypoints(icao, route.SID, rwy, exit, e); ok {
+						if wps, ok := sidWaypoints(icao, route.SID, transition, rwy, exit, e); ok {
 							exitRoute.Waypoints = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, true, e)
 							for _, wp := range exitRoute.Waypoints {
 								if wp.Location.IsZero() {
@@ -900,15 +905,16 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 }
 
 // sidWaypoints returns the waypoints of the CIFP's SID off the runway to the
-// exit for an exit route that gives none of its own.
-func sidWaypoints(icao, sid string, rwy RunwayID, exit ExitID, e *util.ErrorLogger) (WaypointArray, bool) {
+// exit for an exit route that gives none of its own; transition, if
+// non-empty, names the SID's enroute transition to fly.
+func sidWaypoints(icao, sid, transition string, rwy RunwayID, exit ExitID, e *util.ErrorLogger) (WaypointArray, bool) {
 	s, ok := DB.Airports[icao].SIDs[sid]
 	if !ok {
 		e.ErrorString(`must specify "waypoints": SID %q isn't in the FAA CIFP for %s. Options: %s`,
 			sid, icao, strings.Join(util.SortedMapKeys(DB.Airports[icao].SIDs), ", "))
 		return nil, false
 	}
-	wps, err := s.Waypoints(rwy.Base(), exit.Base())
+	wps, err := s.Waypoints(rwy.Base(), transition, exit.Base())
 	if err != nil {
 		e.ErrorString(`must specify "waypoints": SID %s: %v`, sid, err)
 		return nil, false

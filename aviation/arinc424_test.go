@@ -494,23 +494,30 @@ func TestParseARINC424SID(t *testing.T) {
 	}
 
 	for _, tc := range []struct {
-		runway, exit, want string
+		runway, transition, exit, want string
 	}{
-		{"31L", "CANDR", "KJFK-13R/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR"},
-		{"31L", "TOWIN", "KJFK-13R/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR TOWIN"},
-		{"4R", "HEERO", "KJFK-22L/h044/@a520+/h099 DEEZZ HEERO"},
-		{"4L", "SKORR", "KJFK-22R/h044/@a520+ PONAE/flyover/h099 DEEZZ HEERO"},
-		{"31R", "SKORR", "KJFK-13L/h314/@a520+/ld SKORR/a2500+/s210-"},
+		{"31L", "", "CANDR", "KJFK-13R/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR"},
+		{"31L", "", "TOWIN", "KJFK-13R/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL CANDR TOWIN"},
+		{"4R", "", "HEERO", "KJFK-22L/h044/@a520+/h099 DEEZZ HEERO"},
+		{"4L", "", "SKORR", "KJFK-22R/h044/@a520+ PONAE/flyover/h099 DEEZZ HEERO"},
+		{"31R", "", "SKORR", "KJFK-13L/h314/@a520+/ld SKORR/a2500+/s210-"},
+		// An explicit transition is flown even though no fix of the route is the exit.
+		{"4R", "TOWIN", "WHATE", "KJFK-22L/h044/@a520+/h099 DEEZZ HEERO KURNL CANDR TOWIN"},
+		// An explicit transition still ends at the exit when the exit is on it.
+		{"31L", "TOWIN", "KURNL", "KJFK-13R/h314/@a520+/ld SKORR/a2500+/s210- CESID/a2500+/s250- YNKEE/t187 DEEZZ HEERO KURNL"},
 	} {
-		wps, err := sid.Waypoints(tc.runway, tc.exit)
+		wps, err := sid.Waypoints(tc.runway, tc.transition, tc.exit)
 		if err != nil {
 			t.Errorf("%s/%s: %v", tc.runway, tc.exit, err)
 		} else if got := wps.Encode(); got != tc.want {
 			t.Errorf("%s/%s: expected %q, got %q", tc.runway, tc.exit, tc.want, got)
 		}
 	}
-	if _, err := sid.Waypoints("13L", "CANDR"); err == nil {
+	if _, err := sid.Waypoints("13L", "", "CANDR"); err == nil {
 		t.Errorf("expected an error for a runway the SID doesn't serve")
+	}
+	if _, err := sid.Waypoints("31L", "CANDER", "CANDR"); err == nil {
+		t.Errorf("expected an error for an unknown enroute transition")
 	}
 }
 
