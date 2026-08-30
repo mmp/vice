@@ -169,21 +169,26 @@ type WaypointActionGroup struct {
 }
 
 func (wag WaypointActionGroup) Encoded() string {
-	s := wag.Actions.Encoded()
-	switch wag.Until.Type {
+	return wag.Actions.Encoded() + wag.Until.Encoded()
+}
+
+// Encoded returns the trigger in route syntax, e.g. "/@a500+", or "" for no
+// termination.
+func (wat WaypointActionTermination) Encoded() string {
+	switch wat.Type {
 	case WaypointActionAltitude:
-		s += fmt.Sprintf("/@a%d%s", wag.Until.Altitude, util.Select(wag.Until.AtOrAbove, "+", "-"))
+		return fmt.Sprintf("/@a%d%s", wat.Altitude, util.Select(wat.AtOrAbove, "+", "-"))
 	case WaypointActionDME:
-		s += fmt.Sprintf("/@%s-D%.1f%s", wag.Until.DMEFix, wag.Until.DMEDistance,
-			util.Select(wag.Until.AtOrAbove, "+", "-"))
+		return fmt.Sprintf("/@%s-D%.1f%s", wat.DMEFix, wat.DMEDistance, util.Select(wat.AtOrAbove, "+", "-"))
 	case WaypointActionCourse:
-		s += fmt.Sprintf("/@crs%03d", wag.Until.Course)
+		return fmt.Sprintf("/@crs%03d", wat.Course)
 	case WaypointActionRadial:
-		s += fmt.Sprintf("/@%s-R%03d", wag.Until.RadialFix, wag.Until.Radial)
+		return fmt.Sprintf("/@%s-R%03d", wat.RadialFix, wat.Radial)
 	case WaypointActionDistance:
-		s += fmt.Sprintf("/@d%.1f", wag.Until.Distance)
+		return fmt.Sprintf("/@d%.1f", wat.Distance)
+	default:
+		return ""
 	}
-	return s
 }
 
 func (wha WaypointHeadingAction) Encoded() string {
@@ -2153,6 +2158,27 @@ type ProcedureTurn struct {
 	MinuteLimit  float32 `json:",omitempty"`
 	NmLimit      float32 `json:",omitempty"`
 	Entry180NoPT bool    `json:",omitempty"`
+}
+
+// LegLimit returns the extent of the procedure turn's outbound legs as a
+// distance or a time, whichever the turn gives. Without one, the legs of
+// an ILS, localizer, or VOR approach's turn are a minute long and an RNAV
+// approach's are 4nm; both are zero for other approach types.
+func (pt *ProcedureTurn) LegLimit(appr ApproachType) (nm, minutes float32) {
+	switch {
+	case pt.NmLimit > 0:
+		return pt.NmLimit, 0
+	case pt.MinuteLimit > 0:
+		return 0, pt.MinuteLimit
+	}
+	switch appr {
+	case ILSApproach, LocalizerApproach, VORApproach:
+		return 0, 1
+	case RNAVApproach:
+		return 4, 0
+	default:
+		return 0, 0
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

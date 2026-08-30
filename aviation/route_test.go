@@ -899,3 +899,47 @@ func TestCheckDepartureAltitudesBelowFieldElevation(t *testing.T) {
 		t.Errorf("unexpected errors: %q", errs)
 	}
 }
+
+func TestWaypointActionTerminationEncoded(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, s := range []string{"/@a500+", "/@a3000-", "/@IEZA-D4.0+", "/@ILSQ-D2.3-", "/@crs220", "/@HLN-R322", "/@d7.9"} {
+		wps, err := parseWaypoints("FIX/h039" + s + " NEXT/h100")
+		if err != nil {
+			t.Fatalf("%s: %v", s, err)
+		}
+		groups := wps[0].ActionGroups()
+		if got := groups[0].Until.Encoded(); got != s {
+			t.Errorf("%s: encoded as %q", s, got)
+		}
+		if got := groups[0].Encoded(); got != "/h039"+s {
+			t.Errorf("%s: group encoded as %q", s, got)
+		}
+		if got := wps[1].ActionGroups()[0].Until.Encoded(); got != "" {
+			t.Errorf("%s: open-ended group encoded as %q", s, got)
+		}
+	}
+}
+
+func TestProcedureTurnLegLimit(t *testing.T) {
+	for _, tc := range []struct {
+		pt          ProcedureTurn
+		appr        ApproachType
+		nm, minutes float32
+	}{
+		{ProcedureTurn{NmLimit: 6}, ILSApproach, 6, 0},
+		{ProcedureTurn{MinuteLimit: 2}, RNAVApproach, 0, 2},
+		{ProcedureTurn{}, ILSApproach, 0, 1},
+		{ProcedureTurn{}, LocalizerApproach, 0, 1},
+		{ProcedureTurn{}, VORApproach, 0, 1},
+		{ProcedureTurn{}, RNAVApproach, 4, 0},
+		{ProcedureTurn{}, VisualApproach, 0, 0},
+	} {
+		nm, minutes := tc.pt.LegLimit(tc.appr)
+		if nm != tc.nm || minutes != tc.minutes {
+			t.Errorf("%+v %v: got %v nm, %v minutes; want %v, %v", tc.pt, tc.appr, nm, minutes, tc.nm, tc.minutes)
+		}
+	}
+}

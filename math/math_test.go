@@ -502,3 +502,28 @@ func TestExtent2DIntersect(t *testing.T) {
 		t.Errorf("contained: got %+v, want %+v", r, inner)
 	}
 }
+
+func TestRayCircleIntersect(t *testing.T) {
+	// Origin inside the circle: one root behind, one ahead.
+	t0, t1, ok := RayCircleIntersect([2]float32{-1, 0}, [2]float32{1, 0}, [2]float32{0, 0}, 3)
+	if !ok || Abs(t0+2) > 1e-4 || Abs(t1-4) > 1e-4 {
+		t.Errorf("inside: got %v %v %v", t0, t1, ok)
+	}
+
+	// Origin outside, ray through the circle: both roots ahead.
+	t0, t1, ok = RayCircleIntersect([2]float32{0, -10}, [2]float32{0, 1}, [2]float32{0, 0}, 3)
+	if !ok || Abs(t0-7) > 1e-4 || Abs(t1-13) > 1e-4 {
+		t.Errorf("outside: got %v %v %v", t0, t1, ok)
+	}
+
+	// Origin outside, circle behind: both roots negative.
+	t0, t1, ok = RayCircleIntersect([2]float32{0, 10}, [2]float32{0, 1}, [2]float32{0, 0}, 3)
+	if !ok || t0 >= 0 || t1 >= 0 {
+		t.Errorf("behind: got %v %v %v", t0, t1, ok)
+	}
+
+	// Line misses the circle.
+	if _, _, ok = RayCircleIntersect([2]float32{0, -10}, [2]float32{1, 0}, [2]float32{0, 0}, 3); ok {
+		t.Errorf("miss: expected no intersection")
+	}
+}

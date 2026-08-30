@@ -242,6 +242,23 @@ func RaySegmentIntersect(org, dir, p0, p1 [2]float32) ([2]float32, float32, floa
 	}, rayT, segT, true
 }
 
+// RayCircleIntersect returns the parameters t0 <= t1 where the ray
+// org+dir*t crosses the circle; ok is false if the ray's line misses it. A
+// negative parameter is behind the origin.
+func RayCircleIntersect(org, dir, center [2]float32, radius float32) (t0, t1 float32, ok bool) {
+	// Solve |org + dir*t - center|^2 = radius^2 for t.
+	d := Sub2f(org, center)
+	a := Dot(dir, dir)
+	b := 2 * Dot(d, dir)
+	c := Dot(d, d) - radius*radius
+	disc := b*b - 4*a*c
+	if a == 0 || disc < 0 {
+		return 0, 0, false
+	}
+	sq := Sqrt(disc)
+	return (-b - sq) / (2 * a), (-b + sq) / (2 * a), true
+}
+
 // RayRouteIntersection describes a single point where a ray crosses a
 // polyline segment. Index is the segment index in the polyline (the segment
 // runs from route[Index] to route[Index+1]); SegT is the 0..1 parameter along

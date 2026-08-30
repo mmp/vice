@@ -443,21 +443,22 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.Sco
 	defer renderer.ReturnColoredLinesDrawBuilder(ldr)
 
 	// Track which waypoints have been drawn so that we don't repeatedly
-	// draw the same one.  (This is especially important since the
-	// placement of the labels depends on the inbound/outbound segments,
-	// which may be different for different uses of the waypoint...)
-	drawnWaypoints := make(map[string]any)
+	// draw the same one, and what has been labeled so that routes sharing
+	// legs stack their labels rather than drawing them over each other.
+	drawn := radar.NewDrawnRoutes()
+	// Likewise, a fix may have several charted holds; draw only the first.
+	drawnHolds := make(map[string]any)
 
-	sp.drawScenarioArrivalRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	sp.drawScenarioApproachRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	sp.drawScenarioDepartureRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	sp.drawScenarioOverflightRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	sp.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	sp.drawScenarioHolds(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	sp.drawScenarioArrivalRoutes(ctx, transforms, font, cb, drawn, drawnHolds, td, ld, pd, ldr)
+	sp.drawScenarioApproachRoutes(ctx, transforms, font, cb, drawn, drawnHolds, td, ld, pd, ldr)
+	sp.drawScenarioDepartureRoutes(ctx, transforms, font, cb, drawn, drawnHolds, td, ld, pd, ldr)
+	sp.drawScenarioOverflightRoutes(ctx, transforms, font, cb, drawn, drawnHolds, td, ld, pd, ldr)
+	sp.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawn, drawnHolds, td, ld, pd, ldr)
+	sp.drawScenarioHolds(ctx, transforms, font, cb, drawn, drawnHolds, td, ld, pd, ldr)
 }
 
 func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ArrivalsColor)
@@ -479,7 +480,8 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 					continue
 				}
 
-				radar.DrawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+				radar.DrawWaypoints(ctx, arr.Waypoints, radar.ArrivalRouteContext(arr), drawn, transforms, td, style, ld, pd, ldr, color)
+				skipProcedureTurnHolds(arr.Waypoints, drawnHolds)
 
 				// Draw holds associated with this STAR
 				if arr.STAR != "" {
@@ -488,20 +490,20 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 						for _, holds := range av.DB.TerminalHolds[airport] {
 							for _, h := range holds {
 								if h.Procedure == arr.STAR {
-									sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style)
+									sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style, drawn, drawnHolds)
 								}
 							}
 						}
 					}
 
 					// Also check enroute holds at waypoints
-					sp.drawEnrouteHolds(ctx, transforms, arr.Waypoints, arr.STAR, color, ld, td, style)
+					sp.drawEnrouteHolds(ctx, transforms, arr.Waypoints, arr.STAR, color, ld, td, style, drawn, drawnHolds)
 				}
 
 				// Draw runway-specific waypoints
 				for _, rwys := range util.SortedMap(arr.RunwayWaypoints) {
 					for rwy, wp := range util.SortedMap(rwys) {
-						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+						radar.DrawWaypoints(ctx, wp, radar.ArrivalRouteContext(arr), drawn, transforms, td, style, ld, pd, ldr, color)
 
 						if len(wp) > 1 {
 							// Draw the runway number in the middle of the line
@@ -510,7 +512,7 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 							td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
 						} else if h, ok := wp[0].HeadingAction(); ok {
 							// This should be the only other case... The heading arrow is drawn
-							// up to 2nm out, so put the runway 1nm along its axis.
+							// up to 3nm out, so put the runway 1nm along its axis.
 							a := math.Radians(math.MagneticToTrue(math.MagneticHeading(h.Heading), ctx.MagneticVariation))
 							v := math.SinCos(a)
 							pend := math.LL2NM(wp[0].Location, ctx.NmPerLongitude)
@@ -526,14 +528,26 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
+// skipProcedureTurnHolds keeps charted holds from being drawn at fixes
+// whose procedure turn the route has just drawn: a hold in lieu of a
+// procedure turn is in the database as both.
+func skipProcedureTurnHolds(wps av.WaypointArray, drawnHolds map[string]any) {
+	for _, wp := range wps {
+		if wp.ProcedureTurn() != nil {
+			drawnHolds[wp.Fix] = nil
+		}
+	}
+}
+
 func (sp *STARSPane) drawEnrouteHolds(ctx *panes.Context, transforms radar.ScopeTransformations, wps av.WaypointArray, procedure string,
-	color renderer.RGB, ld *renderer.ColoredLinesDrawBuilder, td *renderer.TextDrawBuilder, style renderer.TextStyle) {
+	color renderer.RGB, ld *renderer.ColoredLinesDrawBuilder, td *renderer.TextDrawBuilder, style renderer.TextStyle,
+	drawn *radar.DrawnRoutes, drawnHolds map[string]any) {
 	for _, wp := range wps {
 		if holds, ok := av.DB.EnrouteHolds[wp.Fix]; ok {
 			for _, h := range holds {
 				// Draw if: procedure matches OR procedure is empty (HPF hold at this waypoint)
 				if h.Procedure == procedure || h.Procedure == "" {
-					sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style)
+					sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style, drawn, drawnHolds)
 				}
 			}
 		}
@@ -541,7 +555,7 @@ func (sp *STARSPane) drawEnrouteHolds(ctx *panes.Context, transforms radar.Scope
 }
 
 func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ApproachesColor)
 
@@ -559,7 +573,8 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms r
 			for name, appr := range util.SortedMap(ap.Approaches) {
 				if appr.Runway == rwy.Runway.Base() && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
-						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+						radar.DrawWaypoints(ctx, wp, radar.ApproachRouteContext(appr), drawn, transforms, td, style, ld, pd, ldr, color)
+						skipProcedureTurnHolds(wp, drawnHolds)
 					}
 
 					// Draw holds associated with this approach
@@ -567,7 +582,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms r
 						for _, h := range holds {
 							if h.Procedure == name {
 								// Missed approach point
-								sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style)
+								sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style, drawn, drawnHolds)
 
 								// Dashed line from airport to the missed approach point
 								pMissed, _ := av.DB.LookupWaypoint(h.Fix)
@@ -579,7 +594,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms r
 
 					// Also check enroute holds at approach waypoints
 					for _, wpArr := range appr.Waypoints {
-						sp.drawEnrouteHolds(ctx, transforms, wpArr, name, color, ld, td, style)
+						sp.drawEnrouteHolds(ctx, transforms, wpArr, name, color, ld, td, style, drawn, drawnHolds)
 					}
 				}
 			}
@@ -590,7 +605,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms r
 }
 
 func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.DeparturesColor)
@@ -616,7 +631,7 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 						continue
 					}
 					for _, exitRoute := range routes {
-						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
+						radar.DrawWaypoints(ctx, exitRoute.Waypoints, radar.DepartureRouteContext(name, exitRoute), drawn, transforms,
 							td, style, ld, pd, ldr, color)
 					}
 				}
@@ -627,7 +642,7 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 }
 
 func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.OverflightsColor)
@@ -649,7 +664,7 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 					continue
 				}
 
-				radar.DrawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+				radar.DrawWaypoints(ctx, of.Waypoints, radar.OverflightRouteContext(of), drawn, transforms, td, style, ld, pd, ldr, color)
 			}
 		}
 	}
@@ -657,7 +672,7 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 }
 
 func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.AirspaceColor)
@@ -1072,7 +1087,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 }
 
 func (sp *STARSPane) drawScenarioHolds(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	if len(sp.scopeDraw.holds) == 0 {
 		return
@@ -1088,15 +1103,23 @@ func (sp *STARSPane) drawScenarioHolds(ctx *panes.Context, transforms radar.Scop
 
 	// Draw enabled holds
 	for _, hold := range util.SortedMap(sp.scopeDraw.holds) {
-		sp.drawHoldPattern(ctx, transforms, hold, color, td, ld, style)
+		sp.drawHoldPattern(ctx, transforms, hold, color, td, ld, style, drawn, drawnHolds)
 	}
 
 	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
+// drawHoldPattern draws a charted hold, unless one at its fix has been
+// drawn already: the database often has several records for one fix that
+// differ only in their altitudes.
 func (sp *STARSPane) drawHoldPattern(ctx *panes.Context, transforms radar.ScopeTransformations,
 	hold av.Hold, color renderer.RGB, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
-	style renderer.TextStyle) {
+	style renderer.TextStyle, drawn *radar.DrawnRoutes, drawnHolds map[string]any) {
+	if _, ok := drawnHolds[hold.Fix]; ok {
+		return
+	}
+	drawnHolds[hold.Fix] = nil
+
 	fixLoc, _ := av.DB.LookupWaypoint(hold.Fix)
 
 	// Default leg length/time if not specified
@@ -1195,9 +1218,10 @@ func (sp *STARSPane) drawHoldPattern(ctx *panes.Context, transforms radar.ScopeT
 	}
 	sp.drawHoldTurn(transforms, ctx, turnCenter2, turnRadius, turn2StartAngle, hold.TurnDirection, color, ld)
 
-	// Draw fix label (needs window coordinates)
-	fixWin := transforms.WindowFromLatLongP(fixLoc)
-	td.AddText(hold.Fix, fixWin, style)
+	// Label the fix unless a route already has.
+	if drawn.ClaimFix(hold.Fix) {
+		td.AddText(hold.Fix, transforms.WindowFromLatLongP(fixLoc), style)
+	}
 }
 
 func (sp *STARSPane) drawHoldTurn(transforms radar.ScopeTransformations, ctx *panes.Context, centerNM [2]float32, radius float32,

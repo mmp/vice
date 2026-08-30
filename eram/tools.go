@@ -20,7 +20,7 @@ func (ep *ERAMPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB {
 }
 
 func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.ArrivalsColor)
@@ -41,12 +41,12 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms rad
 					continue
 				}
 
-				radar.DrawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+				radar.DrawWaypoints(ctx, arr.Waypoints, radar.ArrivalRouteContext(arr), drawn, transforms, td, style, ld, pd, ldr, color)
 
 				// Draw runway-specific waypoints
 				for rwyWps := range util.SortedMapValues(arr.RunwayWaypoints) {
 					for rwy, wp := range util.SortedMap(rwyWps) {
-						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+						radar.DrawWaypoints(ctx, wp, radar.ArrivalRouteContext(arr), drawn, transforms, td, style, ld, pd, ldr, color)
 
 						if len(wp) > 1 {
 							// Draw the runway number in the middle of the line
@@ -55,7 +55,7 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms rad
 							td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
 						} else if h, ok := wp[0].HeadingAction(); ok {
 							// This should be the only other case... The heading arrow is drawn
-							// up to 2nm out, so put the runway 1nm along its axis.
+							// up to 3nm out, so put the runway 1nm along its axis.
 							a := math.Radians(math.MagneticToTrue(math.MagneticHeading(h.Heading), ctx.MagneticVariation))
 							v := math.SinCos(a)
 							pend := math.LL2NM(wp[0].Location, ctx.NmPerLongitude)
@@ -72,7 +72,7 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms rad
 }
 
 func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.ApproachesColor)
@@ -91,7 +91,7 @@ func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ra
 			for name, appr := range util.SortedMap(ap.Approaches) {
 				if appr.Runway == rwy.Runway.Base() && ep.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
-						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+						radar.DrawWaypoints(ctx, wp, radar.ApproachRouteContext(appr), drawn, transforms, td, style, ld, pd, ldr, color)
 					}
 				}
 			}
@@ -102,7 +102,7 @@ func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ra
 }
 
 func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.DeparturesColor)
@@ -128,7 +128,7 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms r
 						continue
 					}
 					for _, exitRoute := range routes {
-						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
+						radar.DrawWaypoints(ctx, exitRoute.Waypoints, radar.DepartureRouteContext(name, exitRoute), drawn, transforms,
 							td, style, ld, pd, ldr, color)
 					}
 				}
@@ -139,7 +139,7 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms r
 }
 
 func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.OverflightsColor)
@@ -160,7 +160,7 @@ func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms 
 					continue
 				}
 
-				radar.DrawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+				radar.DrawWaypoints(ctx, of.Waypoints, radar.OverflightRouteContext(of), drawn, transforms, td, style, ld, pd, ldr, color)
 			}
 		}
 	}
@@ -168,7 +168,7 @@ func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms 
 }
 
 func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]any, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.AirspaceColor)
@@ -219,16 +219,15 @@ func (ep *ERAMPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.Scop
 	defer renderer.ReturnColoredLinesDrawBuilder(ldr)
 
 	// Track which waypoints have been drawn so that we don't repeatedly
-	// draw the same one.  (This is especially important since the
-	// placement of the labels depends on the inbound/outbound segments,
-	// which may be different for different uses of the waypoint...)
-	drawnWaypoints := make(map[string]any)
+	// draw the same one, and what has been labeled so that routes sharing
+	// legs stack their labels rather than drawing them over each other.
+	drawn := radar.NewDrawnRoutes()
 
-	ep.drawScenarioArrivalRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	ep.drawScenarioApproachRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	ep.drawScenarioDepartureRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	ep.drawScenarioOverflightRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-	ep.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	ep.drawScenarioArrivalRoutes(ctx, transforms, font, cb, drawn, td, ld, pd, ldr)
+	ep.drawScenarioApproachRoutes(ctx, transforms, font, cb, drawn, td, ld, pd, ldr)
+	ep.drawScenarioDepartureRoutes(ctx, transforms, font, cb, drawn, td, ld, pd, ldr)
+	ep.drawScenarioOverflightRoutes(ctx, transforms, font, cb, drawn, td, ld, pd, ldr)
+	ep.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawn, td, ld, pd, ldr)
 }
 
 func (ep *ERAMPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {

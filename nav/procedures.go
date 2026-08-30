@@ -497,17 +497,12 @@ func outboundTrackLeg(nav *Nav, pt *av.ProcedureTurn, track math.MagneticHeading
 }
 
 func procedureTurnLegCompletion(nav *Nav, pt *av.ProcedureTurn, scale float32) ManeuverComplete {
-	if pt.NmLimit > 0 {
-		return ManeuverComplete{Type: UntilDist, Dist: pt.NmLimit * scale}
-	} else if pt.MinuteLimit > 0 {
-		return ManeuverComplete{Type: UntilTime, Seconds: pt.MinuteLimit * 60 * scale}
-	}
-
-	switch nav.Approach.Assigned.Type {
-	case av.ILSApproach, av.LocalizerApproach, av.VORApproach:
-		return ManeuverComplete{Type: UntilTime, Seconds: 60 * scale}
-	case av.RNAVApproach:
-		return ManeuverComplete{Type: UntilDist, Dist: 4 * scale}
+	nm, minutes := pt.LegLimit(nav.Approach.Assigned.Type)
+	switch {
+	case nm > 0:
+		return ManeuverComplete{Type: UntilDist, Dist: nm * scale}
+	case minutes > 0:
+		return ManeuverComplete{Type: UntilTime, Seconds: minutes * 60 * scale}
 	default:
 		panic(fmt.Sprintf("unhandled approach type: %s", nav.Approach.Assigned.Type))
 	}
