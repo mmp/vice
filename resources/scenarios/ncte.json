@@ -797,8 +797,7 @@
           },
           "FTHIL": {
             "cleared_altitude": 19000,
-            "sid": "FTHIL3",
-            "waypoints": "KSMF-17L FTHIL GRDOE"
+            "sid": "FTHIL3"
           },
           "PYE,CCR,SUU,RAGGS": {
             "cleared_altitude": 4000,

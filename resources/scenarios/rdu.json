@@ -119,18 +119,15 @@
           },
           "DBRAH": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-23R/h035 FOCAL/a2500+ EPOCH LWOOD"
+            "sid": "LWOOD5"
           },
           "DANCO": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-23R/h035 FOCAL/a2500+ EPOCH LWOOD OPUSS"
+            "sid": "LWOOD5"
           },
           "LWOOD": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-23R/h035 FOCAL/a2500+ EPOCH"
+            "sid": "LWOOD5"
           },
           "CARML": {
             "cleared_altitude": 6000,
@@ -149,8 +146,7 @@
           },
           "SHPRD": {
             "cleared_altitude": 6000,
-            "sid": "SHPRD4",
-            "waypoints": "KRDU-23R/h054 CATAR/a2500+ WLFFF"
+            "sid": "SHPRD4"
           }
         },
         "5R": {
@@ -186,18 +182,15 @@
           },
           "DBRAH": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-23L/h035 FOCAL/a2500+ EPOCH LWOOD"
+            "sid": "LWOOD5"
           },
           "DANCO": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-23L/h035 FOCAL/a2500+ EPOCH LWOOD OPUSS"
+            "sid": "LWOOD5"
           },
           "LWOOD": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-23L/h035 FOCAL/a2500+ EPOCH"
+            "sid": "LWOOD5"
           },
           "CARML": {
             "cleared_altitude": 6000,
@@ -216,8 +209,7 @@
           },
           "SHPRD": {
             "cleared_altitude": 6000,
-            "sid": "SHPRD4",
-            "waypoints": "KRDU-23L/h054 CATAR/a2500+ WLFFF"
+            "sid": "SHPRD4"
           }
         },
         "23L": {
@@ -253,18 +245,15 @@
           },
           "DBRAH": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-5L/h234 FOCAL/a2500+ EPOCH LWOOD"
+            "sid": "LWOOD5"
           },
           "DANCO": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-5L/h234 FOCAL/a2500+ EPOCH LWOOD OPUSS"
+            "sid": "LWOOD5"
           },
           "LWOOD": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-5L/h234 FOCAL/a2500+ EPOCH"
+            "sid": "LWOOD5"
           },
           "CARML": {
             "cleared_altitude": 6000,
@@ -283,8 +272,7 @@
           },
           "SHPRD": {
             "cleared_altitude": 6000,
-            "sid": "SHPRD4",
-            "waypoints": "KRDU-5L/h234 CATAR/a2500+ WLFFF"
+            "sid": "SHPRD4"
           }
         },
         "23R": {
@@ -320,18 +308,15 @@
           },
           "DBRAH": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-5R/h234 FOCAL/a2500+ EPOCH LWOOD"
+            "sid": "LWOOD5"
           },
           "DANCO": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-5R/h234 FOCAL/a2500+ EPOCH LWOOD OPUSS"
+            "sid": "LWOOD5"
           },
           "LWOOD": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5",
-            "waypoints": "KRDU-5R/h234 FOCAL/a2500+ EPOCH"
+            "sid": "LWOOD5"
           },
           "CARML": {
             "cleared_altitude": 6000,
@@ -350,8 +335,7 @@
           },
           "SHPRD": {
             "cleared_altitude": 6000,
-            "sid": "SHPRD4",
-            "waypoints": "KRDU-5R/h234 CATAR/a2500+ WLFFF"
+            "sid": "SHPRD4"
           }
         }
       },

@@ -146,7 +146,7 @@
           "exit": "VOAXA",
           "destination": "KSFO",
           "altitude": 38000,
-          "route": "COORZ6 VOAXA Q136 CRLES Q136 RUMPS INYOE DYAMD5",
+          "route": "COORZ7 VOAXA Q136 CRLES Q136 RUMPS INYOE DYAMD5",
           "airlines": [
             {
               "icao": "SWA",

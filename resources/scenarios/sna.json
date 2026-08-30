@@ -113,29 +113,25 @@
             "assigned_altitude": 5000,
             "sid": "STAYY4",
             "is_rnav": true,
-            "aircraft": ["jet"],
-            "waypoints": "BIKKL/a556+/arc2.1CFCJQ HEFAY PAPAU/a5000-/s220-/arc4.0CFFBZ LRREN/a5000-/arc4.1CFGBM HTCHR TANGL SHIRR/a7000+ DANAH STAYY/a9000+ FNCHH TBERD PEELR MTBAL AVRRY"
+            "aircraft": ["jet"]
           },
           "CNERY.S": {
             "assigned_altitude": 5000,
             "sid": "STAYY4",
             "is_rnav": true,
-            "aircraft": ["jet"],
-            "waypoints": "BIKKL/a556+/arc2.1CFCJQ HEFAY PAPAU/a5000-/s220-/arc4.0CFFBZ LRREN/a5000-/arc4.1CFGBM HTCHR TANGL SHIRR/a7000+ DANAH STAYY/a9000+ WIILD FLWRZ BLCKD CSTWY CNERY"
+            "aircraft": ["jet"]
           },
           "TCATE.S": {
             "assigned_altitude": 5000,
             "sid": "STAYY4",
             "is_rnav": true,
-            "aircraft": ["jet"],
-            "waypoints": "BIKKL/a556+/arc2.1CFCJQ HEFAY PAPAU/a5000-/s220-/arc4.0CFFBZ LRREN/a5000-/arc4.1CFGBM HTCHR TANGL SHIRR/a7000+ DANAH STAYY/a9000+ WIILD TCATE"
+            "aircraft": ["jet"]
           },
           "OTAYY.S": {
             "assigned_altitude": 5000,
             "sid": "STAYY4",
             "is_rnav": true,
-            "aircraft": ["jet"],
-            "waypoints": "BIKKL/a556+/arc2.1CFCJQ HEFAY PAPAU/a5000-/s220-/arc4.0CFFBZ LRREN/a5000-/arc4.1CFGBM HTCHR TANGL SHIRR/a7000+ DANAH STAYY/a9000+ WIILD WAGAV OTAYY"
+            "aircraft": ["jet"]
           },
           "AVRRY": {
             "assigned_altitude": 5000,

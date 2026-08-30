@@ -180,8 +180,7 @@
           },
           "HANUH": {
             "cleared_altitude": 10000,
-            "sid": "FORCK3",
-            "waypoints": "N32.50.24.000,W097.01.51.004 TREXX/a5000+ JOLEN PAXTN HANUH LYING"
+            "sid": "FORCK3"
           },
           "EAKER": {
             "cleared_altitude": 10000,
@@ -275,8 +274,7 @@
           },
           "HANUH": {
             "cleared_altitude": 10000,
-            "sid": "FORCK3",
-            "waypoints": "N32.50.57.003,W097.03.01.002 TREXX/a5000+ JOLEN PAXTN HANUH LYING"
+            "sid": "FORCK3"
           },
           "EAKER": {
             "cleared_altitude": 10000,
@@ -464,8 +462,7 @@
           },
           "HANUH": {
             "cleared_altitude": 10000,
-            "sid": "FORCK3",
-            "waypoints": "N32.55.30.008,W097.03.01.003 MECHL/a4000+ BORDD/a6000+ JYMME/a7000+ HANUH LYING"
+            "sid": "FORCK3"
           },
           "EAKER": {
             "cleared_altitude": 10000,
@@ -551,8 +548,7 @@
           },
           "TORNN": {
             "cleared_altitude": 10000,
-            "sid": "DARTZ9",
-            "waypoints": "N32.55.28.000,W097.01.47.000 GVINE KMART/a5500+/s240 MARSN KELLR MYGAL DARTZ BRDEN"
+            "sid": "DARTZ9"
           },
           "TNV": {
             "cleared_altitude": 10000,
@@ -560,8 +556,7 @@
           },
           "HANUH": {
             "cleared_altitude": 10000,
-            "sid": "FORCK3",
-            "waypoints": "N32.55.46.000,W097.01.50.000 MECHL/a4000+/s240 JYMME/a7000+ HANUH LYING"
+            "sid": "FORCK3"
           },
           "EAKER": {
             "cleared_altitude": 10000,
@@ -1314,7 +1309,7 @@
           "exit": "SAT",
           "destination": "MMMX",
           "altitude": 38000,
-          "route": "JPOOL7 SAT REX UJ53 TAM UT100 ENAGA ENAGA3A",
+          "route": "JPOOL8 SAT REX UJ53 TAM UT100 ENAGA ENAGA3A",
           "airlines": [
             {
               "icao": "AAL",
@@ -1851,73 +1846,59 @@
         "13R": {
           "NELYN": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 CHMPZ/a8000+ NELYN ACT"
+            "sid": "CURLO6"
           },
           "JASPA": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 MOLES/a8000 JASPA WINDU"
+            "sid": "CURLO6"
           },
           "ARDIA": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": " DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 BGTEX/a8000 ARDIA ELLVR"
+            "sid": "CURLO6"
           },
           "DARTZ": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ BRDEN"
+            "sid": "CURLO6"
           },
           "ACT": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 CHMPZ/a8000+ NELYN ACT"
+            "sid": "CURLO6"
           },
           "HOARY": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 CHMPZ/a8000+ NELYN ACT"
+            "sid": "CURLO6"
           },
           "SAT": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 CHMPZ/a8000+ NELYN ACT"
+            "sid": "CURLO6"
           },
           "WINDU": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 MOLES/a8000 JASPA WINDU"
+            "sid": "CURLO6"
           },
           "ELLVR": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": " DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 BGTEX/a8000 ARDIA ELLVR"
+            "sid": "CURLO6"
           },
           "CLL": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": " DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 BGTEX/a8000 ARDIA ELLVR"
+            "sid": "CURLO6"
           },
           "BRDEN": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ BRDEN"
+            "sid": "CURLO6"
           },
           "TORNN": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ BRDEN"
+            "sid": "CURLO6"
           },
           "BILEE": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ BRDEN"
+            "sid": "CURLO6"
           },
           "TNV": {
             "cleared_altitude": 8000,
-            "sid": "CURLO5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ BRDEN"
+            "sid": "CURLO6"
           },
           "WSTEX": {
             "cleared_altitude": 8000,
@@ -1955,8 +1936,7 @@
           },
           "HANUH": {
             "cleared_altitude": 8000,
-            "sid": "LNDRE5",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 HANUH LYING"
+            "sid": "LNDRE5"
           },
           "MRSSH": {
             "cleared_altitude": 8000,
@@ -1968,162 +1948,131 @@
           },
           "ADM": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR LOWGN ADM/h360"
+            "sid": "SWTSR7"
           },
           "ROLLS": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR LOWGN ADM MRMAC"
+            "sid": "SWTSR7"
           },
           "BLECO": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR BLECO/h360"
+            "sid": "SWTSR7"
           },
           "ZEMMA": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR BLECO ZEMMA"
+            "sid": "SWTSR7"
           },
           "TUL,IRW": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR BLECO ZEMMA"
+            "sid": "SWTSR7"
           },
           "GRABE": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR GRABE/h360"
+            "sid": "SWTSR7"
           },
           "EAKER": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR GRABE EAKER"
+            "sid": "SWTSR7"
           },
           "OKM": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR GRABE EAKER"
+            "sid": "SWTSR7"
           },
           "AKUNA": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR AKUNA/h360"
+            "sid": "SWTSR7"
           },
           "TIKYS": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR AKUNA TIKYS"
+            "sid": "SWTSR7"
           },
           "MLC": {
             "cleared_altitude": 8000,
-            "sid": "SWTSR6",
-            "waypoints": "DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-8000 SWTSR AKUNA TIKYS"
+            "sid": "SWTSR7"
           }
         },
         "31R": {
           "BSKAT": {
             "cleared_altitude": 6000,
-            "sid": "EMMTT4",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ ZERLU SWDIA ZACHH"
+            "sid": "EMMTT4"
           },
           "LOOSE": {
             "cleared_altitude": 6000,
-            "sid": "EMMTT4",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ TRRCH JAYXX TRYTN"
+            "sid": "EMMTT4"
           },
           "HANUH": {
             "cleared_altitude": 6000,
-            "sid": "EMMTT4",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ HANUH LYING"
+            "sid": "EMMTT4"
           },
           "MRSSH": {
             "cleared_altitude": 6000,
-            "sid": "EMMTT4",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ THHOR JJANE"
+            "sid": "EMMTT4"
           },
           "ZALEA,BDDAY": {
             "cleared_altitude": 6000,
-            "sid": "EMMTT4",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ THHOR JJANE MRSSH"
+            "sid": "EMMTT4"
           },
           "ADM": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE LOWGN ADM"
+            "sid": "ESNYE7"
           },
           "ROLLS": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE LOWGN ADM MRMAC "
+            "sid": "ESNYE7"
           },
           "BLECO": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE BLECO ZEMMA"
+            "sid": "ESNYE7"
           },
           "ZEMMA": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE BLECO ZEMMA"
+            "sid": "ESNYE7"
           },
           "TUL,IRW": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE LANEE BLECO ZEMMA"
+            "sid": "ESNYE7"
           },
           "GRABE": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE GRABE EAKER"
+            "sid": "ESNYE7"
           },
           "EAKER": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE GRABE EAKER"
+            "sid": "ESNYE7"
           },
           "OKM": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE GRABE EAKER"
+            "sid": "ESNYE7"
           },
           "AKUNA": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE AKUNA TIKYS"
+            "sid": "ESNYE7"
           },
           "TIKYS": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE AKUNA TIKYS"
+            "sid": "ESNYE7"
           },
           "MLC": {
             "cleared_altitude": 6000,
-            "sid": "ESNYE7",
-            "waypoints": "FLOWT/a3000+/s230 WIGIS/a4000+/s240 JYMME/a5000 BAETZ/a6000 ESNYE AKUNA TIKYS"
+            "sid": "ESNYE7"
           }
         },
         "31L": {
           "NELYN": {
             "cleared_altitude": 10000,
-            "sid": "RAMBL6",
-            "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ NELYN ACT"
+            "sid": "RAMBL6"
           },
           "JASPA": {
             "cleared_altitude": 10000,
-            "sid": "RAMBL6",
-            "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ JASPA WINDU"
+            "sid": "RAMBL6"
           },
           "ARDIA": {
             "cleared_altitude": 10000,
-            "sid": "RAMBL6",
-            "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ ARDIA ELLVR"
+            "sid": "RAMBL6"
           },
           "DARTZ": {
             "cleared_altitude": 10000,
-            "sid": "RAMBL6",
-            "waypoints": "NNOLN/a4000-7000/s230 ARILE/a5000+/s240 XPRES/a9000- RAMBL/a10000+ DARTZ BRDEN"
+            "sid": "RAMBL6"
           },
           "ACT": {
             "cleared_altitude": 10000,
@@ -2193,72 +2142,72 @@
         "13R_AUTO": {
           "NELYN": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 CHMPZ/a8000+ NELYN/a17000-23000 ACT"
           },
           "JASPA": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 MOLES/a8000 JASPA/a17000-23000 WINDU"
           },
           "ARDIA": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 BGTEX/a8000 ARDIA/a17000-23000 ELLVR"
           },
           "DARTZ": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ/a17000-23000 BRDEN"
           },
           "ACT": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 CHMPZ/a8000+ NELYN/a17000-23000 ACT"
           },
           "HOARY": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 CHMPZ/a8000+ NELYN/a17000-23000 ACT"
           },
           "SAT": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 CHMPZ/a8000+ NELYN/a17000-23000 ACT"
           },
           "WINDU": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 MOLES/a8000 JASPA/a17000-23000 WINDU"
           },
           "ELLVR": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 BGTEX/a8000 ARDIA/a17000-23000 ELLVR"
           },
           "CLL": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 BGTEX/a8000 ARDIA/a17000-23000 ELLVR"
           },
           "BRDEN": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ/a17000-23000 BRDEN"
           },
           "TORNN": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ/a17000-23000 BRDEN"
           },
           "BILEE": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ/a17000-23000 BRDEN"
           },
           "TNV": {
             "cleared_altitude": 23000,
-            "sid": "CURLO5",
+            "sid": "CURLO6",
             "waypoints": "32.8417,-96.8524/a100-/ho1L 32.8353,-96.8450/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 CURLO/a6000-8000 FIKTI/a8000 DARTZ/a17000-23000 BRDEN"
           },
           "WSTEX": {
@@ -2320,57 +2269,57 @@
           },
           "ADM": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 LOWGN/a17000-23000 ADM/h360"
           },
           "ROLLS": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 LOWGN/a17000-23000 ADM MRMAC"
           },
           "BLECO": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 BLECO/a17000-23000/h360"
           },
           "ZEMMA": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 BLECO/a17000-23000 ZEMMA"
           },
           "TUL,IRW": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 BLECO/a17000-23000 ZEMMA"
           },
           "GRABE": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 GRABE/a17000-23000/h360"
           },
           "EAKER": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 GRABE/a17000-23000 EAKER"
           },
           "OKM": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 GRABE/a17000-23000 EAKER"
           },
           "AKUNA": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 AKUNA/a17000-23000/h360"
           },
           "TIKYS": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 AKUNA/a17000-23000 TIKYS"
           },
           "MLC": {
             "cleared_altitude": 23000,
-            "sid": "SWTSR6",
+            "sid": "SWTSR7",
             "waypoints": "32.8494,-96.8478/a100-/ho1L 32.8436,-96.8409/a100- DRSET/a4000-6000 HAYZZ/a6000-8000 SHRAM/a7000-8000 LNDRE/a7000-11000 SWTSR/a9000-17000 AKUNA/a17000-23000 TIKYS"
           }
         },
@@ -2887,7 +2836,7 @@
         "16L": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_AFW_16L/h169"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
@@ -2917,19 +2866,19 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_AFW_16L/h166"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_AFW_16L/h166"
           }
         },
         "34R": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_AFW_34R/h345"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
@@ -2959,12 +2908,12 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_AFW_34R/h345"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_AFW_34R/h345"
           }
         }
@@ -3417,32 +3366,32 @@
         "16": {
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 2000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_ADS_16/h050"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 2000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_ADS_16/h050"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 2000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_ADS_16/h050"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 2000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_ADS_16/h050"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 2000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_ADS_16/h050"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 2000,
-            "sid": "NANDR2",
+            "sid": "NANDR4",
             "waypoints": "_ADS_16/h050"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -3457,44 +3406,44 @@
           },
           "FERRA,PODDE,SLOTT,CEOLA": {
             "cleared_altitude": 2000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_ADS_16/h050"
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 2000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_ADS_16/h050"
           }
         },
         "34": {
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_ADS_34/h337"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_ADS_34/h337"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_ADS_34/h337"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_ADS_34/h337"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_ADS_34/h337"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR2",
+            "sid": "NANDR4",
             "waypoints": "_ADS_34/h337"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -3509,12 +3458,12 @@
           },
           "FERRA,PODDE": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_ADS_34/h337"
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_ADS_34/h337"
           }
         }
@@ -4010,32 +3959,32 @@
         "18": {
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_TKI_18/h180"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_TKI_18/h180"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_TKI_18/h180"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_TKI_18/h180"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_TKI_18/h180"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR2",
+            "sid": "NANDR4",
             "waypoints": "_TKI_18/h180"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -4050,44 +3999,44 @@
           },
           "FERRA,PODDE": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_TKI_18/h180"
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_TKI_18/h180"
           }
         },
         "36": {
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_TKI_36/h360"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_TKI_36/h360"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_TKI_36/h360"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_TKI_36/h360"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_TKI_36/h360"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR2",
+            "sid": "NANDR4",
             "waypoints": "_TKI_36/h360"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -4102,12 +4051,12 @@
           },
           "FERRA,PODDE": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_TKI_36/h360"
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_TKI_36/h360"
           }
         }
@@ -5039,32 +4988,32 @@
         "13": {
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_RBD_13/h129"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_RBD_13/h129"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_RBD_13/h129"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_RBD_13/h129"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_RBD_13/h132"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR2",
+            "sid": "NANDR4",
             "waypoints": "_RBD_13/h129"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -5079,39 +5028,39 @@
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_RBD_13/h129"
           }
         },
         "31": {
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_RBD_31/h120"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_RBD_31/h120"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_RBD_31/h120"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_RBD_31/h120"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_RBD_31/h120"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR2",
+            "sid": "NANDR4",
             "waypoints": "_RBD_31/h120"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -5131,7 +5080,7 @@
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_RBD_31/h120"
           }
         }
@@ -5160,7 +5109,7 @@
         "16": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_FTW_16/h167"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
@@ -5190,19 +5139,19 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_FTW_16/h164"
           }
         },
         "34": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_FTW_34/h345"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_FTW_34/h345"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
@@ -5227,12 +5176,12 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_FTW_34/h344"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_FTW_34/h344"
           }
         }
@@ -5667,7 +5616,7 @@
         "36R": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_DTO_36R/h5"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
@@ -5697,24 +5646,23 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_DTO_36R/h357"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_DTO_36R/h357"
           }
         },
         "18L": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
-            "waypoints": "_DTO_18L/h177"
+            "sid": "KUSSO3"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_DTO_18L/h177"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
@@ -5739,12 +5687,12 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_DTO_18L/h177"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_DTO_18L/h177"
           }
         }
@@ -6570,32 +6518,32 @@
         "13": {
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_LNC_13/h134"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_LNC_13/h134"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_LNC_13/h134"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_LNC_13/h134"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_LNC_13/h134"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR2",
+            "sid": "NANDR4",
             "waypoints": "_LNC_13/h134"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -6615,39 +6563,39 @@
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_LNC_13/h134"
           }
         },
         "31": {
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_LNC_31/h030"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "DALL3",
+            "sid": "DALL4",
             "waypoints": "_LNC_31/h040"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_LNC_31/h120"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_LNC_31/h120"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_LNC_31/h030"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR2",
+            "sid": "NANDR4",
             "waypoints": "_LNC_31/h030"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
@@ -6667,7 +6615,7 @@
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KING4",
+            "sid": "KING5",
             "waypoints": "_LNC_31/h180"
           }
         }
@@ -6768,7 +6716,7 @@
         "16": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_GKY_16/h165"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
@@ -6798,24 +6746,24 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_GKY_16/h162"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_GKY_16/h162"
           }
         },
         "34": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 2000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_GKY_34/h345"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 2000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_GKY_34/h345"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
@@ -6840,12 +6788,12 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 2000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_GKY_34/h342"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 2000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_GKY_34/h342"
           }
         }
@@ -7252,13 +7200,11 @@
         "18": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
-            "waypoints": "_GPM_18/h192"
+            "sid": "KUSSO3"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "GARL6",
-            "waypoints": "_GPM_18/h192"
+            "sid": "GARL6"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
@@ -7277,29 +7223,26 @@
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
             "cleared_altitude": 3000,
-            "sid": "TEX5",
-            "waypoints": "_GPM_18/h192"
+            "sid": "TEX5"
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
-            "waypoints": "_GPM_18/h192"
+            "sid": "JPOOL8"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
-            "waypoints": "_GPM_18/h192"
+            "sid": "JPOOL8"
           }
         },
         "36": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 2000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_GPM_36/h300"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 2000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_GPM_36/h300"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
@@ -7324,12 +7267,12 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 2000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_GPM_36/h300"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 2000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_GPM_36/h300"
           }
         }
@@ -8092,18 +8035,16 @@
         "36L": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
-            "waypoints": "_FWS_36L/h360"
+            "sid": "KUSSO3"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_FWS_36L/h360"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH2",
-            "waypoints": "_FWS_36L/h013"
+            "sid": "BOTCH2"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
@@ -8112,8 +8053,7 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR4",
-            "waypoints": "_FWS_36L/h357"
+            "sid": "NANDR4"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
@@ -8122,30 +8062,25 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
-            "waypoints": "_FWS_36L/h357"
+            "sid": "JPOOL8"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
-            "waypoints": "_FWS_36L/h357"
+            "sid": "JPOOL8"
           }
         },
         "18R": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
-            "waypoints": "_FWS_18R/h177"
+            "sid": "KUSSO3"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
-            "sid": "GARL6",
-            "waypoints": "_FWS_18R/h177"
+            "sid": "GARL6"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "BOTCH2",
-            "waypoints": "_FWS_18R/h177"
+            "sid": "BOTCH2"
           },
           "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
@@ -8154,23 +8089,19 @@
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
-            "sid": "NANDR4",
-            "waypoints": "_FWS_18R/h177"
+            "sid": "NANDR4"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
             "cleared_altitude": 3000,
-            "sid": "TEX5",
-            "waypoints": "_FWS_18R/h177"
+            "sid": "TEX5"
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
-            "waypoints": "_FWS_18R/h177"
+            "sid": "JPOOL8"
           },
           "NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
-            "waypoints": "_FWS_18R/h177"
+            "sid": "JPOOL8"
           }
         }
       },
@@ -8413,7 +8344,7 @@
         "18": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_NFW_18/h180"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
@@ -8428,14 +8359,14 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_NFW_18/h180"
           }
         },
         "36": {
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
-            "sid": "KUSSO1",
+            "sid": "KUSSO3",
             "waypoints": "_NFW_36/h360"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
@@ -8450,7 +8381,7 @@
           },
           "NELYN,JASPA,ARDIA,BRDEN": {
             "cleared_altitude": 3000,
-            "sid": "JPOOL7",
+            "sid": "JPOOL8",
             "waypoints": "_NFW_36/h360"
           }
         }

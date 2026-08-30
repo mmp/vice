@@ -23,37 +23,31 @@
         "3": {
           "CUSGA": {
             "cleared_altitude": 10000,
-            "sid": "CPR3",
-            "waypoints": "_CPR21/h025 DDY CUSGA"
+            "sid": "CPR3"
           }
         },
         "8": {
           "HIPEE": {
             "cleared_altitude": 10000,
-            "sid": "CPR3",
-            "waypoints": "_CPR26/h090 MBW HIPEE"
+            "sid": "CPR3"
           },
           "KURSE": {
             "cleared_altitude": 10000,
-            "sid": "CPR3",
-            "waypoints": "_CPR26/h090 KURSE SNY"
+            "sid": "CPR3"
           },
           "LHO": {
             "cleared_altitude": 10000,
-            "sid": "CPR3",
-            "waypoints": "_CPR26/h090 LHO"
+            "sid": "CPR3"
           }
         },
         "21": {
           "HIPEE": {
             "cleared_altitude": 10000,
-            "sid": "CPR3",
-            "waypoints": "_CPR3/h200 MBW HIPEE"
+            "sid": "CPR3"
           },
           "KURSE": {
             "cleared_altitude": 10000,
-            "sid": "CPR3",
-            "waypoints": "_CPR3/h200 KURSE SNY"
+            "sid": "CPR3"
           },
           "LHO": {
             "cleared_altitude": 10000,
@@ -64,8 +58,7 @@
         "26": {
           "CUSGA": {
             "cleared_altitude": 10000,
-            "sid": "CPR3",
-            "waypoints": "_CPR8/h275 DDY CUSGA"
+            "sid": "CPR3"
           }
         }
       },

@@ -125,23 +125,19 @@
         "7L": {
           "BROAK": {
             "cleared_altitude": 8000,
-            "sid": "BROAK1",
-            "waypoints": "SPRKY/flyover BROAK FTHLS JNIPR"
+            "sid": "BROAK1"
           },
           "ECLPS": {
             "cleared_altitude": 4000,
-            "sid": "ECLPS1",
-            "waypoints": "SPRKY/flyover ECLPS KATMN BOXXR"
+            "sid": "ECLPS1"
           },
           "FORPE": {
             "cleared_altitude": 8000,
-            "sid": "FORPE1",
-            "waypoints": "SPRKY/flyover FORPE LALUZ SJN"
+            "sid": "FORPE1"
           },
           "FYRBD": {
             "cleared_altitude": 8000,
-            "sid": "FYRBD1",
-            "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI FYRBD JUDTH"
+            "sid": "FYRBD1"
           },
           "IZZZO": {
             "cleared_altitude": 8000,
@@ -149,45 +145,37 @@
           },
           "MRBIL": {
             "cleared_altitude": 8000,
-            "sid": "MRBIL1",
-            "waypoints": "SPRKY/flyover GOALY/a9000- POCCK MRBIL YOTES"
+            "sid": "MRBIL1"
           },
           "QUAKY": {
             "cleared_altitude": 8000,
-            "sid": "QUAKY1",
-            "waypoints": "SPRKY/flyover GOALY/a9000- QUAKY SNOBL CARTL"
+            "sid": "QUAKY1"
           },
           "BNYRD": {
             "cleared_altitude": 8000,
-            "sid": "STRRM1",
-            "waypoints": "SPRKY/a2600+/s220/flyover ANZEL DDUKE BNYRD STRRM"
+            "sid": "STRRM1"
           },
           "ZEPER": {
             "cleared_altitude": 8000,
-            "sid": "ZEPER2",
-            "waypoints": "SPRKY/flyover GOALY/a9000- JOLAR ZEPER MAYSA RRSTA"
+            "sid": "ZEPER2"
           }
         },
         "8": {
           "BROAK": {
             "cleared_altitude": 8000,
-            "sid": "BROAK1",
-            "waypoints": "SPRKY/flyover BROAK FTHLS JNIPR JSSUA"
+            "sid": "BROAK1"
           },
           "ECLPS": {
             "cleared_altitude": 4000,
-            "sid": "ECLPS1",
-            "waypoints": "SPRKY/flyover ECLPS KATMN BOXXR"
+            "sid": "ECLPS1"
           },
           "FORPE": {
             "cleared_altitude": 8000,
-            "sid": "FORPE1",
-            "waypoints": "SPRKY/flyover FORPE LALUZ"
+            "sid": "FORPE1"
           },
           "FYRBD": {
             "cleared_altitude": 8000,
-            "sid": "FYRBD1",
-            "waypoints": "FUTEP AZCRD USEYE MASVE/a7000+/s220 OAKLI FYRBD JUDTH MOHAK"
+            "sid": "FYRBD1"
           },
           "IZZZO": {
             "cleared_altitude": 8000,
@@ -195,45 +183,37 @@
           },
           "MRBIL": {
             "cleared_altitude": 8000,
-            "sid": "MRBIL1",
-            "waypoints": "SPRKY/flyover GOALY/a9000- POCCK MRBIL YOTES"
+            "sid": "MRBIL1"
           },
           "QUAKY": {
             "cleared_altitude": 8000,
-            "sid": "QUAKY1",
-            "waypoints": "SPRKY/flyover GOALY/a9000- QUAKY SNOBL CARTL"
+            "sid": "QUAKY1"
           },
           "BNYRD": {
             "cleared_altitude": 8000,
-            "sid": "STRRM1",
-            "waypoints": "SPRKY/a2600+/s220/flyover ANZEL DDUKE BNYRD STRRM"
+            "sid": "STRRM1"
           },
           "ZEPER": {
             "cleared_altitude": 8000,
-            "sid": "ZEPER2",
-            "waypoints": "SPRKY/flyover GOALY/a9000- JOLAR ZEPER MAYSA RRSTA"
+            "sid": "ZEPER2"
           }
         },
         "25R": {
           "BROAK": {
             "cleared_altitude": 8000,
-            "sid": "BROAK1",
-            "waypoints": "N033.25.52.587,W112.03.19.566 JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS JNIPR"
+            "sid": "BROAK1"
           },
           "ECLPS": {
             "cleared_altitude": 8000,
-            "sid": "ECLPS1",
-            "waypoints": "N033.25.52.587,W112.03.19.566 JUTAK WETAL RIICH ECLPS KATMN BOXXR"
+            "sid": "ECLPS1"
           },
           "FORPE": {
             "cleared_altitude": 8000,
-            "sid": "FORPE1",
-            "waypoints": "JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB FORPE LALUZ"
+            "sid": "FORPE1"
           },
           "FYRBD": {
             "cleared_altitude": 8000,
-            "sid": "FYRBD1",
-            "waypoints": "N033.25.52.587,W112.03.19.566 JUTAK WETAL/flyover FYRBD JUDTH"
+            "sid": "FYRBD1"
           },
           "IZZZO": {
             "cleared_altitude": 8000,
@@ -241,45 +221,37 @@
           },
           "MRBIL": {
             "cleared_altitude": 8000,
-            "sid": "MRBIL1",
-            "waypoints": "JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB MRBIL YOTES"
+            "sid": "MRBIL1"
           },
           "QUAKY": {
             "cleared_altitude": 8000,
-            "sid": "QUAKY1",
-            "waypoints": "JINOL OSGUE ZIDOG/a5000+/s230 OXYGN ZILUB QUAKY SNOBL CARTL"
+            "sid": "QUAKY1"
           },
           "BNYRD": {
             "cleared_altitude": 8000,
-            "sid": "STRRM1",
-            "waypoints": "N033.25.52.587,W112.03.19.566 JUTAK WETAL BNYRD STRRM"
+            "sid": "STRRM1"
           },
           "ZEPER": {
             "cleared_altitude": 8000,
-            "sid": "ZEPER2",
-            "waypoints": "JINOL OSGUE ZIDOG/a5000+/s230 FANON ZEPER MAYSA RRSTA"
+            "sid": "ZEPER2"
           }
         },
         "26": {
           "BROAK": {
             "cleared_altitude": 8000,
-            "sid": "BROAK1",
-            "waypoints": "N033.26.26.672,W112.02.46.525/a1635+ JUTAK WETAL RIICH PYPPE BARLL BROAK FTHLS JNIPR JSSUA"
+            "sid": "BROAK1"
           },
           "ECLPS": {
             "cleared_altitude": 4000,
-            "sid": "ECLPS1",
-            "waypoints": "N033.26.26.672,W112.02.46.525/a1635+ JUTAK WETAL RIICH ECLPS KATMN BOXXR"
+            "sid": "ECLPS1"
           },
           "FORPE": {
             "cleared_altitude": 8000,
-            "sid": "FORPE1",
-            "waypoints": "WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB FORPE LALUZ"
+            "sid": "FORPE1"
           },
           "FYRBD": {
             "cleared_altitude": 8000,
-            "sid": "FYRBD1",
-            "waypoints": "N033.26.26.672,W112.02.46.525/a1635+ JUTAK WETAL/flyover FYRBD JUDTH"
+            "sid": "FYRBD1"
           },
           "IZZZO": {
             "cleared_altitude": 8000,
@@ -287,23 +259,19 @@
           },
           "MRBIL": {
             "cleared_altitude": 8000,
-            "sid": "MRBIL1",
-            "waypoints": "WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB MRBIL YOTES"
+            "sid": "MRBIL1"
           },
           "QUAKY": {
             "cleared_altitude": 8000,
-            "sid": "QUAKY1",
-            "waypoints": "WIVLA HIRVU ZIDOG/a5000+/s230 OXYGN ZILUB QUAKY SNOBL CARTL"
+            "sid": "QUAKY1"
           },
           "BNYRD": {
             "cleared_altitude": 8000,
-            "sid": "STRRM1",
-            "waypoints": "N033.26.26.672,W112.02.46.525/a1635+ JUTAK WETAL BNYRD STRRM"
+            "sid": "STRRM1"
           },
           "ZEPER": {
             "cleared_altitude": 8000,
-            "sid": "ZEPER2",
-            "waypoints": "WIVLA HIRVU ZIDOG/a5000+/s230 FANON ZEPER MAYSA RRSTA"
+            "sid": "ZEPER2"
           }
         }
       },
@@ -782,7 +750,7 @@
           },
           "QUAKY": {
             "cleared_altitude": 5000,
-            "sid": "SNOBL",
+            "sid": "SNOBL6",
             "waypoints": "KSDL-21/h335 QUAKY SNOBL CARTL"
           }
         },
@@ -829,7 +797,7 @@
           },
           "QUAKY": {
             "cleared_altitude": 5000,
-            "sid": "SNOBL",
+            "sid": "SNOBL6",
             "waypoints": "KSDL-3/h335 QUAKY SNOBL CARTL"
           }
         }
@@ -1162,7 +1130,7 @@
           },
           "QUAKY": {
             "cleared_altitude": 5000,
-            "sid": "SNOBL",
+            "sid": "SNOBL6",
             "waypoints": "KIWA-12R/h120 QUAKY SNOBL CARTL"
           }
         },
@@ -1209,7 +1177,7 @@
           },
           "QUAKY": {
             "cleared_altitude": 5000,
-            "sid": "SNOBL",
+            "sid": "SNOBL6",
             "waypoints": "KIWA-12C/h120 QUAKY SNOBL CARTL"
           }
         },
@@ -1256,7 +1224,7 @@
           },
           "QUAKY": {
             "cleared_altitude": 5000,
-            "sid": "SNOBL",
+            "sid": "SNOBL6",
             "waypoints": "KIWA-30C/h124 QUAKY SNOBL CARTL"
           }
         }
@@ -1600,8 +1568,7 @@
           },
           "FERER": {
             "cleared_altitude": 10000,
-            "sid": "WNSKI2",
-            "waypoints": "KPRC-21L N034.40.32.441,W112.23.51.079/a5800+/arc1.4 N034.39.54.209,W112.22.59.965 N034.38.48.854,W112.24.09.206 WNSKI FERER"
+            "sid": "WNSKI2"
           },
           "JUWSO": {
             "cleared_altitude": 10000,
@@ -1631,8 +1598,7 @@
           },
           "FERER": {
             "cleared_altitude": 10000,
-            "sid": "WNSKI2",
-            "waypoints": "KPRC-3R N034.37.35.122,W112.26.52.738/a5800+/arc1.4 N034.36.54.843,W112.25.56.460 N034.38.13.244,W112.23.22.267 WNSKI FERER"
+            "sid": "WNSKI2"
           },
           "JUWSO": {
             "cleared_altitude": 10000,
@@ -1641,8 +1607,7 @@
           },
           "DRK": {
             "cleared_altitude": 12000,
-            "sid": "WNSKI2",
-            "waypoints": "KPRC-3R/h208 DRK"
+            "sid": "WNSKI2"
           }
         }
       },

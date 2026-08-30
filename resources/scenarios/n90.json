@@ -95,8 +95,7 @@
           },
           "SHIPP,WAVEY,DIXIE,DPK,WHITE": {
             "cleared_altitude": 5000,
-            "sid": "NTHNS5",
-            "waypoints": "KIWIE/s220/a2500+ NTHNS/s220/a3000+ CNRSE/s230/a5000+ ASALT/h224"
+            "sid": "NTHNS6"
           },
           "SAX,COATE,NEION,HAAYS,GAYEL,SBJ,BIGGY,LANNA,PARKE,ELIOT,NEWEL,ZIMMZ": {
             "cleared_altitude": 5000,
@@ -106,8 +105,7 @@
         "13.LGA-Coney.LGA-Belmont": {
           "SHIPP,WAVEY,DIXIE,DPK,WHITE": {
             "cleared_altitude": 5000,
-            "sid": "NTHNS5",
-            "waypoints": "KIWIE/s220/a2500+ NTHNS/s220/a3000+ CNRSE/s230/a5000+ ASALT/h224"
+            "sid": "NTHNS6"
           },
           "SAX,COATE,NEION,HAAYS,GAYEL,SBJ,BIGGY,LANNA,PARKE,ELIOT,NEWEL,ZIMMZ,GREKI,MERIT,BAYYS,BDR,CMK": {
             "cleared_altitude": 5000,
@@ -595,35 +593,35 @@
         "22.Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5E",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/radius1 N040.57.33.936,W073.35.22.146/radius3/tc/h060",
             "departure_controller": "1L"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5W",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 _LGA7_22c/radius1.5/h270/tc",
             "departure_controller": "1L"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc",
             "departure_controller": "1L"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc",
             "departure_controller": "1L"
           },
           "COATE.P,GAYEL.P": {
             "cleared_altitude": 15000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc",
             "departure_controller": "1L"
@@ -639,42 +637,42 @@
         "22.No Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5E",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/radius1 N040.57.33.936,W073.35.22.146/radius3/tc/h060",
             "departure_controller": "1L"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5W",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 _LGA7_22c/radius1.5/h270/tc",
             "departure_controller": "1L"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc",
             "departure_controller": "1L"
           },
           "COATE.P,GAYEL.P": {
             "cleared_altitude": 15000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc",
             "departure_controller": "1L"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc",
             "departure_controller": "1L"
           },
           "WHITE": {
             "cleared_altitude": 12000,
-            "sid": "JUTES3",
+            "sid": "JUTES4",
             "handoff_controller": "5S",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c _LGA7_22d/h220/tc",
             "departure_controller": "1L"
@@ -4360,7 +4358,7 @@
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "sid": "DEEZZ5",
+            "sid": "DEEZZ6",
             "handoff_controller": "5E",
             "waypoints": "KJFK-31L/ho _JFK5_13Ra/radius1 N040.43.58.476,W073.28.56.032/radius1.5 N040.48.31.816,W073.29.25.283/radius1.5/ph/tc",
             "departure_controller": "2J"
@@ -4404,7 +4402,7 @@
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "sid": "DEEZZ5",
+            "sid": "DEEZZ6",
             "handoff_controller": "5E",
             "waypoints": "_JFK_4L/ho _JFK5_22Ra/radius1 _JFK5_22Rb/radius1 _JFK5_22Rc/radius2/tc/h010",
             "departure_controller": "2J"
@@ -4458,7 +4456,7 @@
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "sid": "DEEZZ5",
+            "sid": "DEEZZ6",
             "handoff_controller": "5T",
             "waypoints": "_JFK_4L/ho5E _JFK5_22Ra/radius1 _JFK5_22Rb/radius1/ho _JFK5_22Rc/radius2 N040.59.53.669,W073.32.56.879/radius2 N041.01.26.434,W073.40.26.000/radius2/tc/ph",
             "departure_controller": "2J"
@@ -4488,7 +4486,7 @@
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "sid": "DEEZZ5",
+            "sid": "DEEZZ6",
             "handoff_controller": "5E",
             "waypoints": "_JFK_13R/ho SKORR CESID/radius1/a2500+ N040.41.41.065,W073.32.39.631/radius2 N040.47.36.101,W073.33.12.837/radius2/tc/ph",
             "departure_controller": "2J"
@@ -4525,7 +4523,7 @@
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "sid": "DEEZZ5",
+            "sid": "DEEZZ6",
             "handoff_controller": "5E",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010",
             "departure_controller": "2J"
@@ -4569,7 +4567,7 @@
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "sid": "DEEZZ5",
+            "sid": "DEEZZ6",
             "handoff_controller": "5E",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010",
             "departure_controller": "2J"
@@ -4622,7 +4620,7 @@
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
-            "sid": "DEEZZ5",
+            "sid": "DEEZZ6",
             "waypoints": "KJFK-22R/ho5E/h099/@a3000+ N040.49.21.282,W073.27.56.486/tc/h360",
             "departure_controller": "2J"
           },
@@ -5226,8 +5224,7 @@
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 2000,
-            "sid": "WENTZ1",
-            "waypoints": "KTEB-6/h240/@a520+ DAVIM WENTZ/a1500 RUUDY/h280 ELVAE NECCK"
+            "sid": "WENTZ1"
           }
         },
         "1": {
@@ -7110,15 +7107,13 @@
         "9": {
           "IGN,PWL,STUBY,HIDAL,HFD,LOVES,BRISS,MOONI,COL,VALRE,WHITE,SBJ,LANNA,BIGGY,COATE,HUO,HNK,WEARD": {
             "cleared_altitude": 2000,
-            "sid": "SWF7",
-            "waypoints": "KSWF-27/h090"
+            "sid": "SWF9"
           }
         },
         "34": {
           "IGN,PWL,STUBY,HIDAL,HFD,LOVES,BRISS,MOONI,COL,VALRE,WHITE,SBJ,LANNA,BIGGY,COATE,HUO,HNK,WEARD": {
             "cleared_altitude": 2000,
-            "sid": "SWF7",
-            "waypoints": "KSWF-16/h340"
+            "sid": "SWF9"
           }
         }
       },
@@ -7166,7 +7161,7 @@
         "24": {
           "IGN,PWL,STUBY,HIDAL,HFD,LOVES,BRISS,MOONI,COL,VALRE,WHITE,SBJ,LANNA,BIGGY,COATE,HUO,HNK,WEARD": {
             "cleared_altitude": 2000,
-            "sid": "SWF7",
+            "sid": "SWF9",
             "waypoints": "KPOU-6/h240"
           }
         }
@@ -7406,7 +7401,7 @@
         "10": {
           "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
             "cleared_altitude": 2000,
-            "sid": "SWF7",
+            "sid": "SWF9",
             "waypoints": "KJPX-28/h240"
           }
         },

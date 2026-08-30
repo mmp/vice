@@ -81,8 +81,7 @@
           },
           "CSTRO.E,COREZ.E": {
             "cleared_altitude": 3000,
-            "sid": "WNNDY4",
-            "waypoints": "KLAX-25R/h071 JRGSN/a6300+ WNNDY"
+            "sid": "WNNDY3"
           },
           "RZS.E": {
             "cleared_altitude": 3000,
@@ -111,13 +110,11 @@
           },
           "OTAYY.E,TCATE.E": {
             "cleared_altitude": 3000,
-            "sid": "LAXX1",
-            "waypoints": "KLAX-25L/h071 SLI DANAH OCN"
+            "sid": "LAXX1.OCN"
           },
           "CSTRO.E,COREZ.E": {
             "cleared_altitude": 3000,
-            "sid": "WNNDY4",
-            "waypoints": "KLAX-25L/h071 JRGSN/a6300+ WNNDY"
+            "sid": "WNNDY3"
           },
           "RZS.E": {
             "cleared_altitude": 3000,
@@ -145,13 +142,11 @@
           },
           "OTAYY.E,TCATE.E": {
             "cleared_altitude": 3000,
-            "sid": "LAXX1",
-            "waypoints": "KLAX-24L/h071 SLI DANAH OCN"
+            "sid": "LAXX1.OCN"
           },
           "CSTRO.E,COREZ.E": {
             "cleared_altitude": 3000,
-            "sid": "WNNDY4",
-            "waypoints": "N033.57.10.027,W118.22.30.192 KOFAX JRGSN/a6300+ WNNDY"
+            "sid": "WNNDY3"
           },
           "FICKY.E": {
             "cleared_altitude": 3000,
@@ -177,8 +172,7 @@
           },
           "SCTRR,STOKD,MCKEY,DINTY,FICKY": {
             "cleared_altitude": 5000,
-            "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN"
+            "sid": "SUMMR2.RIZIN"
           },
           "CLEEE,CNERY": {
             "cleared_altitude": 5000,
@@ -186,13 +180,11 @@
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
-            "sid": "GMN7",
-            "waypoints": "KLAX-7L/h251 GMN"
+            "sid": "GMN7"
           },
           "MZB": {
             "cleared_altitude": 5000,
-            "sid": "LAXX1",
-            "waypoints": "N033.55.57.627,W118.26.59.302/a3000-/h221 SLI DANAH OCN CARIF MZB"
+            "sid": "LAXX1"
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 5000,
@@ -252,8 +244,7 @@
           },
           "SCTRR,STOKD,MCKEY,DINTY,FICKY": {
             "cleared_altitude": 5000,
-            "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN"
+            "sid": "SUMMR2.RIZIN"
           },
           "CLEEE,CNERY": {
             "cleared_altitude": 5000,
@@ -261,13 +252,11 @@
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
-            "sid": "GMN7",
-            "waypoints": "KLAX-7R/h251 VNY GMN"
+            "sid": "GMN7"
           },
           "MZB": {
             "cleared_altitude": 5000,
-            "sid": "LAXX1",
-            "waypoints": "N033.55.49.813,W118.26.58.176/a3000-/h221 SLI DANAH OCN CARIF MZB"
+            "sid": "LAXX1"
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 5000,
@@ -327,8 +316,7 @@
           },
           "SCTRR,STOKD,MCKEY,DINTY,FICKY": {
             "cleared_altitude": 5000,
-            "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC DARRK/a12000- SUMMR OLOFF RIZIN"
+            "sid": "SUMMR2.RIZIN"
           },
           "CLEEE,CNERY": {
             "cleared_altitude": 5000,
@@ -336,13 +324,11 @@
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
-            "sid": "GMN7",
-            "waypoints": "KLAX-6R/h251 VNY GMN"
+            "sid": "GMN7"
           },
           "MZB": {
             "cleared_altitude": 5000,
-            "sid": "LAXX1",
-            "waypoints": "N033.56.42.053,W118.27.02.900/a3000-/h251 SLI DANAH OCN CARIF MZB"
+            "sid": "LAXX1"
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 5000,
@@ -1134,7 +1120,7 @@
           "destination": "KSMF",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO NURAY SUUTR4"
+          "route": "WNNDY3 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -1145,7 +1131,7 @@
           "destination": "KSMF",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO NURAY SUUTR4"
+          "route": "WNNDY3 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -1156,7 +1142,7 @@
           "destination": "KSMF",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO NURAY SUUTR4"
+          "route": "WNNDY3 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -1167,7 +1153,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO SHIMR LKV HAWKZ8"
+          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1178,7 +1164,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO SHIMR LKV HAWKZ8"
+          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1189,7 +1175,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO SHIMR LKV HAWKZ8"
+          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1200,7 +1186,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO SHIMR LKV HAWKZ8"
+          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1212,7 +1198,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO SHIMR LKV HAWKZ8"
+          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1223,7 +1209,7 @@
           "destination": "KOAK",
           "exit": "COREZ.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 COREZ RGOOD EMZOH3"
+          "route": "WNNDY3 COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -1235,7 +1221,7 @@
           "destination": "KOAK",
           "exit": "COREZ.E",
           "scratchpad": "WDY",
-          "route": "WNNDY4 COREZ RGOOD EMZOH3"
+          "route": "WNNDY3 COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -3142,8 +3128,7 @@
           },
           "ELMOO": {
             "cleared_altitude": 4000,
-            "sid": "ELMOO9",
-            "waypoints": "N034.11.50.664,W118.20.13.494 N034.09.16.883,W118.17.16.889 ELMOO/a4000+ ITSME"
+            "sid": "ELMOO9"
           },
           "TWINE": {
             "cleared_altitude": 4000,
@@ -3194,8 +3179,7 @@
           },
           "ELMOO": {
             "cleared_altitude": 4000,
-            "sid": "ELMOO9",
-            "waypoints": "N034.11.53.589,W118.22.58.482 N034.09.58.356,W118.19.47.869 ELMOO/a4000+ ITSME"
+            "sid": "ELMOO9"
           },
           "TWINE": {
             "cleared_altitude": 4000,
@@ -3246,8 +3230,7 @@
           },
           "ELMOO": {
             "cleared_altitude": 4000,
-            "sid": "ELMOO9",
-            "waypoints": "N034.11.15.810,W118.21.12.546 N034.09.35.450,W118.18.26.103 ELMOO/a4000+ ITSME"
+            "sid": "ELMOO9"
           },
           "TWINE": {
             "cleared_altitude": 4000,
@@ -3298,8 +3281,7 @@
           },
           "ELMOO": {
             "cleared_altitude": 4000,
-            "sid": "ELMOO9",
-            "waypoints": "N034.13.17.978,W118.21.44.489/arc1.8 N034.13.07.664,W118.22.54.554 N034.09.46.477,W118.19.03.566 ELMOO/a4000+ ITSME"
+            "sid": "ELMOO9"
           },
           "TWINE": {
             "cleared_altitude": 4000,
@@ -3930,18 +3912,15 @@
         "9": {
           "SLI.E": {
             "cleared_altitude": 15000,
-            "sid": "ECHHO2",
-            "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000+ MMOTO SLI"
+            "sid": "ECHHO2"
           },
           "IKAYE.E": {
             "cleared_altitude": 15000,
-            "sid": "ECHHO2",
-            "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000+ MMOTO TEDEY GEEGN IKAYE"
+            "sid": "ECHHO2"
           },
           "MALIT.E,SXC.E": {
             "cleared_altitude": 8000,
-            "sid": "MMOTO2",
-            "waypoints": "N032.42.26.960,W117.04.56.163/a4000+/flyover/arc1.2 N032.43.09.216,W117.04.18.480 BAUCA ECHHO GOFUR/a15000+ MMOTO/a19000- SXC"
+            "sid": "MMOTO2"
           },
           "MTBAL.E": {
             "cleared_altitude": 19000,
@@ -5424,18 +5403,15 @@
         "31L": {
           "TNP.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.53.18.051,W116.33.38.078 PSP EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP TNP"
+            "sid": "CATH1"
           },
           "BLH.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.53.18.051,W116.33.38.078 PSP EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP BLH"
+            "sid": "CATH1"
           },
           "PMD.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.53.18.051,W116.33.38.078 PSP EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP YUCCA V386 PMD"
+            "sid": "CATH1"
           },
           "ZELMA": {
             "cleared_altitude": 8000,
@@ -5459,25 +5435,21 @@
           },
           "PMD": {
             "cleared_altitude": 8000,
-            "sid": "HWRRD1",
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- YUCCA/a8500+ LGANN SOGGI APLES PMD"
+            "sid": "HWRRD1"
           }
         },
         "13R": {
           "TNP.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.48.48.570,W116.29.35.582 N033.47.47.115,W116.26.32.550 N033.50.38.406,W116.22.07.175 EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP TNP"
+            "sid": "CATH1"
           },
           "BLH.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.48.48.570,W116.29.35.582 N033.47.47.115,W116.26.32.550 N033.50.38.406,W116.22.07.175 EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP BLH"
+            "sid": "CATH1"
           },
           "PMD.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.48.48.570,W116.29.35.582 N033.47.47.115,W116.26.32.550 N033.50.38.406,W116.22.07.175 EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP YUCCA V386 PMD"
+            "sid": "CATH1"
           },
           "ZELMA": {
             "cleared_altitude": 8000,
@@ -5693,43 +5665,35 @@
           },
           "SLI": {
             "cleared_altitude": 4000,
-            "sid": "CWARD2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
+            "sid": "CWARD2"
           },
           "LAX": {
             "cleared_altitude": 4000,
-            "sid": "CWARD2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
+            "sid": "CWARD2"
           },
           "PADRZ.C": {
             "cleared_altitude": 4000,
-            "sid": "CWARD2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ"
+            "sid": "CWARD2"
           },
           "PADRZ.P": {
             "cleared_altitude": 4000,
-            "sid": "CWARD2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ"
+            "sid": "CWARD2"
           },
           "EHF": {
             "cleared_altitude": 4000,
-            "sid": "PADRZ2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+            "sid": "PADRZ2"
           },
           "OROSZ": {
             "cleared_altitude": 4000,
-            "sid": "PADRZ2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+            "sid": "PADRZ2"
           },
           "IKAYE": {
             "cleared_altitude": 4000,
-            "sid": "PADRZ2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ IKAYE"
+            "sid": "PADRZ2"
           },
           "CHKNN": {
             "cleared_altitude": 4000,
-            "sid": "PADRZ2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN"
+            "sid": "PADRZ2"
           }
         }
       },
@@ -6407,43 +6371,35 @@
         "27": {
           "LAX": {
             "cleared_altitude": 10000,
-            "sid": "CWARD2",
-            "waypoints": "KRNM-9/h268 WNFLD GYWNN/a6000 PADRZ CWARD/a12000 LAX"
+            "sid": "CWARD2"
           },
           "SLI": {
             "cleared_altitude": 10000,
-            "sid": "CWARD2",
-            "waypoints": "KRNM-9/h268 WNFLD GYWNN/a6000 PADRZ CWARD/a12000 MADOW SLI"
+            "sid": "CWARD2"
           },
           "MALIT": {
             "cleared_altitude": 30000,
-            "sid": "PADRZ2",
-            "waypoints": "KRNM-9/h268 WNFLD KERNL GYWNN/a8000+ PADRZ SXC MALIT"
+            "sid": "PADRZ2"
           },
           "DINTY": {
             "cleared_altitude": 32000,
-            "sid": "PADRZ2",
-            "waypoints": "KRNM-9/h268 WNFLD KERNL GYWNN/a8000+ PADRZ SXC "
+            "sid": "PADRZ2"
           },
           "IKAYE": {
             "cleared_altitude": 28000,
-            "sid": "PADRZ2",
-            "waypoints": "KRNM-9/h268 WNFLD KERNL GYWNN/a8000+ PADRZ IKAYE"
+            "sid": "PADRZ2"
           },
           "OROSZ": {
             "cleared_altitude": 28000,
-            "sid": "PADRZ2",
-            "waypoints": "KRNM-9/h268 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+            "sid": "PADRZ2"
           },
           "EHF": {
             "cleared_altitude": 36000,
-            "sid": "PADRZ2",
-            "waypoints": "KRNM-9/h268 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+            "sid": "PADRZ2"
           },
           "CHKNN": {
             "cleared_altitude": 29000,
-            "sid": "PADRZ2",
-            "waypoints": "KRNM-9/h268 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN"
+            "sid": "PADRZ2"
           }
         }
       },
@@ -6757,43 +6713,35 @@
         "8L": {
           "LAX": {
             "cleared_altitude": 10000,
-            "sid": "CWARD2",
-            "waypoints": "KSDM-26R/h080/a3000 WNFLD GYWNN/a6000 PADRZ CWARD/a12000 LAX"
+            "sid": "CWARD2"
           },
           "SLI": {
             "cleared_altitude": 10000,
-            "sid": "CWARD2",
-            "waypoints": "KSDM-26R/h080/a3000 WNFLD GYWNN/a6000 PADRZ CWARD/a12000 MADOW SLI"
+            "sid": "CWARD2"
           },
           "MALIT": {
             "cleared_altitude": 30000,
-            "sid": "PADRZ2",
-            "waypoints": "KSDM-26R/h080/a3000 WNFLD KERNL GYWNN/a8000+ PADRZ SXC MALIT"
+            "sid": "PADRZ2"
           },
           "DINTY": {
             "cleared_altitude": 32000,
-            "sid": "PADRZ2",
-            "waypoints": "KSDM-26R/h080/a3000 WNFLD KERNL GYWNN/a8000+ PADRZ SXC "
+            "sid": "PADRZ2"
           },
           "IKAYE": {
             "cleared_altitude": 28000,
-            "sid": "PADRZ2",
-            "waypoints": "KSDM-26R/h080/a3000 WNFLD KERNL GYWNN/a8000+ PADRZ IKAYE"
+            "sid": "PADRZ2"
           },
           "OROSZ": {
             "cleared_altitude": 28000,
-            "sid": "PADRZ2",
-            "waypoints": "KSDM-26R/h080/a3000 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+            "sid": "PADRZ2"
           },
           "EHF": {
             "cleared_altitude": 36000,
-            "sid": "PADRZ2",
-            "waypoints": "KSDM-26R/h080/a3000 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+            "sid": "PADRZ2"
           },
           "CHKNN": {
             "cleared_altitude": 29000,
-            "sid": "PADRZ2",
-            "waypoints": "KSDM-26R/h080/a3000 WNFLD KERNL GYWNN/a8000+ PADRZ HFMNN CHKNN"
+            "sid": "PADRZ2"
           },
           "MTBAL": {
             "cleared_altitude": 29000,
@@ -8501,8 +8449,7 @@
         "3": {
           "CSTRO": {
             "cleared_altitude": 6000,
-            "sid": "CHOII3",
-            "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ YUMMI SHORS MDWAY COREZ"
+            "sid": "CHOII3.COREZ"
           },
           "FIM": {
             "cleared_altitude": 6000,
@@ -8520,8 +8467,7 @@
         "21": {
           "STOKD,SCTRR": {
             "cleared_altitude": 3000,
-            "sid": "CTRUS4",
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DARRK/a12000- FIXIT/a12000+ IKAYE RIZIN"
+            "sid": "CTRUS4"
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 3000,

@@ -39,28 +39,23 @@
         "4R": {
           "SINKR": {
             "cleared_altitude": 17000,
-            "sid": "BARII2",
-            "waypoints": "NITRN/a2500+/s230 FERRM/a6000- AVERL/a7000- OGEEZ HUUTZ/a4000+ BARII SINKR"
+            "sid": "BARII3"
           },
           "ZEGBI": {
             "cleared_altitude": 17000,
-            "sid": "CCOBB2",
-            "waypoints": "NITRN/a2500+/s230 FERRM/a6000- AVERL/a7000- BROZZ/a4000+ CCOBB ZEGBI"
+            "sid": "CCOBB3"
           },
           "STAZE": {
             "cleared_altitude": 17000,
-            "sid": "CLVIN2",
-            "waypoints": "NITRN/a2500+/s230 FERRM/a6000- AVERL/a7000- OGEEZ PHAUL/a4000+ CLVIN TFTUN RINTE PUUDL STAZE"
+            "sid": "CLVIN3"
           },
           "BROKK": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "WNNGZ PLYOF/a7000- MCART/a9000- MALTB/a4000+ HHOWE BROKK"
+            "sid": "HHOWE4"
           },
           "LNCON": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "WNNGZ PLYOF/a7000- MCART/a9000- MALTB/a4000+ HHOWE LNCON"
+            "sid": "HHOWE4"
           },
           "SMUUV": {
             "cleared_altitude": 17000,
@@ -68,75 +63,61 @@
           },
           "WINNZ": {
             "cleared_altitude": 17000,
-            "sid": "KZLOV1",
-            "waypoints": "BESST/a2500+/s230 SWNDL/a7000- KZLOV/a4000-10000 WINNZ"
+            "sid": "KZLOV2"
           },
           "GRIVY": {
             "cleared_altitude": 17000,
-            "sid": "LIDDS2",
-            "waypoints": "BESST/a2500+/s230 SWNDL/a7000- KZLOV/a4000-15000 LIDDS NOONR ZEYOU GRIVY"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 17000,
-            "sid": "MIGGY2",
-            "waypoints": "LLOUU/a7000- THEJO/a11000- JAXII/a4000+ MIGGY MONEE"
+            "sid": "MIGGY3"
           },
           "MRDOC": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "WNNGZ DATSK/a7000- SLVVA PAVYL MRDOC"
+            "sid": "PAVYL3"
           },
           "ESSBE": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "WNNGZ DATSK/a7000- SLVVA PAVYL ESSBE"
+            "sid": "PAVYL3"
           },
           "TORRR": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "NITRN/a2500+/s230 FERRM/a6000- AVERL/a7000- OGEEZ JWELS/a4000+ SNDRS TORRR"
+            "sid": "SNDRS3"
           },
           "BGHRT": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "NITRN/a2500+/s230 FERRM/a6000- AVERL/a7000- OGEEZ JWELS/a4000+ SNDRS REEDA SEABS KNRKO BGHRT"
+            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 17000,
-            "sid": "TRMML3",
-            "waypoints": "KKELL/a7000- EERNY/a11000- LOALA/a4000+ TRMML DDEEZ GNZOE"
+            "sid": "TRMML4"
           },
           "ZETTR": {
             "cleared_altitude": 17000,
-            "sid": "ZETTR3",
-            "waypoints": "KKELL/a7000- NILSN/a11000- FLOKA/a4000+ ZETTR/a17000-"
+            "sid": "ZETTR4"
           }
         },
         "3L": {
           "SINKR": {
             "cleared_altitude": 17000,
-            "sid": "BARII2",
-            "waypoints": "BESST/a2500+/s230 SWNDL/a7000- WERKN HUUTZ/a4000+ BARII SINKR"
+            "sid": "BARII3"
           },
           "ZEGBI": {
             "cleared_altitude": 17000,
-            "sid": "CCOBB2",
-            "waypoints": "NITRN/a2500+/s230 FERRM/a6000- AVERL/a7000- BROZZ/a4000+ CCOBB ZEGBI"
+            "sid": "CCOBB3"
           },
           "STAZE": {
             "cleared_altitude": 17000,
-            "sid": "CLVIN2",
-            "waypoints": "BESST/a2500+/s230 SWNDL/a7000- WERKN PHAUL/a4000+ CLVIN TFTUN RINTE PUUDL STAZE"
+            "sid": "CLVIN3"
           },
           "BROKK": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "WNNGZ PLYOF/a7000- MCART/a9000- MALTB/a4000+ HHOWE BROKK"
+            "sid": "HHOWE4"
           },
           "LNCON": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "WNNGZ PLYOF/a7000- MCART/a9000- MALTB/a4000+ HHOWE LNCON"
+            "sid": "HHOWE4"
           },
           "SMUUV": {
             "cleared_altitude": 17000,
@@ -144,75 +125,61 @@
           },
           "WINNZ": {
             "cleared_altitude": 17000,
-            "sid": "KZLOV1",
-            "waypoints": "BESST/a2500+/s230 SWNDL/a7000- KZLOV/a4000-10000 WINNZ"
+            "sid": "KZLOV2"
           },
           "GRIVY": {
             "cleared_altitude": 17000,
-            "sid": "LIDDS2",
-            "waypoints": "BESST/a2500+/s230 SWNDL/a7000- KZLOV/a4000-15000 LIDDS NOONR ZEYOU GRIVY"
+            "sid": "LIDDS4"
           },
           "LLOUU": {
             "cleared_altitude": 17000,
-            "sid": "MIGGY2",
-            "waypoints": "LLOUU/a7000- THEJO/a11000- JAXII/a4000+ MIGGY"
+            "sid": "MIGGY3"
           },
           "MRDOC": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "WNNGZ DATSK/a7000- SLVVA/a4000+ PAVYL MRDOC"
+            "sid": "PAVYL3"
           },
           "ESSBE": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "WNNGZ DATSK/a7000- SLVVA/a4000+ PAVYL ESSBE"
+            "sid": "PAVYL3"
           },
           "TORRR": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "BESST/a2500+/s230 SWNDL/a7000- WERKN JWELS/a4000+ SNDRS TORRR"
+            "sid": "SNDRS3"
           },
           "BGHRT": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "BESST/a2500+/s230 SWNDL/a7000- WERKN JWELS/a4000+ SNDRS REEDA SEABS KNRKO BGHRT"
+            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 17000,
-            "sid": "TRMML3",
-            "waypoints": "DCATS/a7000- EERNY/a11000- LOALA/a4000+ TRMML DDEEZ GNZOE"
+            "sid": "TRMML4"
           },
           "ZETTR": {
             "cleared_altitude": 17000,
-            "sid": "ZETTR3",
-            "waypoints": "DCATS/a7000- NILSN/a11000- FLOKA/a4000+ ZETTR/a17000-"
+            "sid": "ZETTR4"
           }
         },
         "22L": {
           "SINKR": {
             "cleared_altitude": 17000,
-            "sid": "BARII2",
-            "waypoints": "BOOSE RATIO/a7000- HUUTZ/a4000+ BARII SINKR"
+            "sid": "BARII3"
           },
           "ZEGBI": {
             "cleared_altitude": 17000,
-            "sid": "CCOBB2",
-            "waypoints": "SAAMS/a7000- BSLNE/a9000- FDRCH BROZZ/a4000+ CCOBB ZEGBI"
+            "sid": "CCOBB3"
           },
           "STAZE": {
             "cleared_altitude": 17000,
-            "sid": "CLVIN2",
-            "waypoints": "BOOSE RATIO/a7000- PHAUL/a4000+ CLVIN TFTUN RINTE PUUDL STAZE"
+            "sid": "CLVIN3"
           },
           "BROKK": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "WINRS/a2500+/s230 USSIE/a4000+ SUURF/a7000- MALTB/a4000+ HHOWE BROKK"
+            "sid": "HHOWE4"
           },
           "LNCON": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "WINRS/a2500+/s230 USSIE/a4000+ SUURF/a7000- MALTB/a4000+ HHOWE LNCON"
+            "sid": "HHOWE4"
           },
           "SMUUV": {
             "cleared_altitude": 17000,
@@ -220,75 +187,61 @@
           },
           "WINNZ": {
             "cleared_altitude": 17000,
-            "sid": "KZLOV1",
-            "waypoints": "JOELU YIMMY/a7000- HWARD/a9000- KZLOV/a4000-10000 WINNZ"
+            "sid": "KZLOV2"
           },
           "GRIVY": {
             "cleared_altitude": 17000,
-            "sid": "LIDDS2",
-            "waypoints": "JOELU YIMMY/a7000- HWARD/a9000- KZLOV/a4000-15000 LIDDS NOONR ZEYOU GRIVY"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 17000,
-            "sid": "MIGGY2",
-            "waypoints": "FORDZ/a4000+ CORVE/a7000- VESSA/a15000+ JAXII MIGGY MONEE"
+            "sid": "MIGGY3"
           },
           "MRDOC": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "JOELU YIMMY/a7000- HWARD/a9000- SLVVA/a4000+ PAVYL MRDOC"
+            "sid": "PAVYL3"
           },
           "ESSBE": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "JOELU YIMMY/a7000- HWARD/a9000- SLVVA/a4000+ PAVYL ESSBE"
+            "sid": "PAVYL3"
           },
           "TORRR": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "BOOSE RATIO/a7000- JWELS/a4000+ SNDRS TORRR"
+            "sid": "SNDRS3"
           },
           "BGHRT": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "BOOSE RATIO/a7000- JWELS/a4000+ SNDRS REEDA SEABS KNRKO BGHRT"
+            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 17000,
-            "sid": "TRMML3",
-            "waypoints": "FORDZ/a4000+ CORVE/a7000- LOALA/a4000+ TRMML DDEEZ GNZOE"
+            "sid": "TRMML4"
           },
           "ZETTR": {
             "cleared_altitude": 17000,
-            "sid": "ZETTR3",
-            "waypoints": "FORDZ/a4000+ CORVE/a7000- FRBRD DINGL FLOKA/a4000+ ZETTR/a17000-"
+            "sid": "ZETTR4"
           }
         },
         "21R": {
           "SINKR": {
             "cleared_altitude": 17000,
-            "sid": "BARII2",
-            "waypoints": "SERGY FDROV/a7000- HUUTZ/a4000+ BARII SINKR"
+            "sid": "BARII3"
           },
           "ZEGBI": {
             "cleared_altitude": 17000,
-            "sid": "CCOBB2",
-            "waypoints": "SAAMS/a7000- BSLNE/a9000- FDRCH BROZZ/a4000+ CCOBB ZEGBI"
+            "sid": "CCOBB3"
           },
           "STAZE": {
             "cleared_altitude": 17000,
-            "sid": "CLVIN2",
-            "waypoints": "SERGY FDROV/a7000- PHAUL/a4000+ CLVIN TFTUN RINTE PUUDL STAZE"
+            "sid": "CLVIN3"
           },
           "BROKK": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "WINRS/a2500+/s230 USSIE/a4000+ SUURF/a7000- MALTB/a4000+ HHOWE BROKK"
+            "sid": "HHOWE4"
           },
           "LNCON": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "WINRS/a2500+/s230 USSIE/a4000+ SUURF/a7000- MALTB/a4000+ HHOWE LNCON"
+            "sid": "HHOWE4"
           },
           "SMUUV": {
             "cleared_altitude": 17000,
@@ -296,75 +249,61 @@
           },
           "WINNZ": {
             "cleared_altitude": 17000,
-            "sid": "KZLOV1",
-            "waypoints": "JOELU YIMMY/a7000- HWARD/a9000- KZLOV/a4000-10000 WINNZ"
+            "sid": "KZLOV2"
           },
           "GRIVY": {
             "cleared_altitude": 17000,
-            "sid": "LIDDS2",
-            "waypoints": "JOELU YIMMY/a7000- HWARD/a9000- KZLOV/a4000-15000 LIDDS NOONR ZEYOU GRIVY"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 17000,
-            "sid": "MIGGY2",
-            "waypoints": "FORDZ/a4000+ CORVE/a7000- VESSA/a15000+ JAXII MIGGY MONEE"
+            "sid": "MIGGY3"
           },
           "MRDOC": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "JOELU YIMMY/a7000- HWARD/a9000- SLVVA/a4000+ PAVYL MRDOC"
+            "sid": "PAVYL3"
           },
           "ESSBE": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "JOELU YIMMY/a7000- HWARD/a9000- SLVVA/a4000+ PAVYL ESSBE"
+            "sid": "PAVYL3"
           },
           "TORRR": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "SERGY HOPPZ/a7000- JWELS/a4000+ SNDRS TORRR"
+            "sid": "SNDRS3"
           },
           "BGHRT": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "SERGY HOPPZ/a7000- JWELS/a4000+ SNDRS REEDA SEABS KNRKO BGHRT"
+            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 17000,
-            "sid": "TRMML3",
-            "waypoints": "WINRS/a2500+/s230 USSIE/a4000+ SUURF/a7000- TUURF LOALA/a4000+ TRMML DDEEZ GNZOE"
+            "sid": "TRMML4"
           },
           "ZETTR": {
             "cleared_altitude": 17000,
-            "sid": "ZETTR3",
-            "waypoints": "WINRS/a2500+/s230 USSIE/a4000+ SUURF/a7000- TUURF FLOKA/a4000+ ZETTR/a17000-"
+            "sid": "ZETTR4"
           }
         },
         "27R": {
           "SINKR": {
             "cleared_altitude": 17000,
-            "sid": "BARII2",
-            "waypoints": "KDTW-27R/h276 HUUTZ/a4000+ BARII SINKR"
+            "sid": "BARII3"
           },
           "ZEGBI": {
             "cleared_altitude": 17000,
-            "sid": "CCOBB2",
-            "waypoints": "KDTW-27R/h276 BROZZ/a4000+ CCOBB ZEGBI"
+            "sid": "CCOBB3"
           },
           "STAZE": {
             "cleared_altitude": 17000,
-            "sid": "CLVIN2",
-            "waypoints": "KDTW-27R/h276 PHAUL/a4000+ CLVIN TFTUN RINTE PUUDL STAZE"
+            "sid": "CLVIN3"
           },
           "BROKK": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "KDTW-27R/h276 MALTB/a4000+ HHOWE BROKK"
+            "sid": "HHOWE4"
           },
           "LNCON": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "KDTW-27R/h276 MALTB/a4000+ HHOWE LNCON"
+            "sid": "HHOWE4"
           },
           "SMUUV": {
             "cleared_altitude": 17000,
@@ -372,75 +311,61 @@
           },
           "WINNZ": {
             "cleared_altitude": 17000,
-            "sid": "KZLOV1",
-            "waypoints": "KDTW-27R/h276 KZLOV/a4000-10000 WINNZ"
+            "sid": "KZLOV2"
           },
           "GRIVY": {
             "cleared_altitude": 17000,
-            "sid": "LIDDS2",
-            "waypoints": "KDTW-27R/h276 KZLOV/a4000-15000 LIDDS NOONR ZEYOU GRIVY"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 17000,
-            "sid": "MIGGY2",
-            "waypoints": "KDTW-27R/h276 JAXII/a4000+ MIGGY MONEE"
+            "sid": "MIGGY3"
           },
           "MRDOC": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "KDTW-27R/h276 SLVVA/a4000+ PAVYL MRDOC"
+            "sid": "PAVYL3"
           },
           "ESSBE": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "KDTW-27R/h276 SLVVA/a4000+ PAVYL ESSBE"
+            "sid": "PAVYL3"
           },
           "TORRR": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "KDTW-27R/h276 OGEEZ JWELS/a4000+ SNDRS TORRR"
+            "sid": "SNDRS3"
           },
           "BGHRT": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "KDTW-27R/h276 JWELS/a4000+ SNDRS REEDA SEABS KNRKO BGHRT"
+            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 17000,
-            "sid": "TRMML3",
-            "waypoints": "KDTW-27R/h276 LOALA/a4000+ TRMML DDEEZ GNZOE"
+            "sid": "TRMML4"
           },
           "ZETTR": {
             "cleared_altitude": 17000,
-            "sid": "ZETTR3",
-            "waypoints": "KDTW-27R/h276 FLOKA/a4000+ ZETTR/a17000-"
+            "sid": "ZETTR4"
           }
         },
         "27L": {
           "SINKR": {
             "cleared_altitude": 17000,
-            "sid": "BARII2",
-            "waypoints": "KDTW-27L/h276 HUUTZ/a4000+ BARII SINKR"
+            "sid": "BARII3"
           },
           "ZEGBI": {
             "cleared_altitude": 17000,
-            "sid": "CCOBB2",
-            "waypoints": "KDTW-27L/h276 BROZZ/a4000+ CCOBB ZEGBI"
+            "sid": "CCOBB3"
           },
           "STAZE": {
             "cleared_altitude": 17000,
-            "sid": "CLVIN2",
-            "waypoints": "KDTW-27L/h276 PHAUL/a4000+ CLVIN TFTUN RINTE PUUDL STAZE"
+            "sid": "CLVIN3"
           },
           "BROKK": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "KDTW-27L/h276 MALTB/a4000+ HHOWE BROKK"
+            "sid": "HHOWE4"
           },
           "LNCON": {
             "cleared_altitude": 17000,
-            "sid": "HHOWE3",
-            "waypoints": "KDTW-27L/h276 MALTB/a4000+ HHOWE LNCON"
+            "sid": "HHOWE4"
           },
           "SMUUV": {
             "cleared_altitude": 17000,
@@ -448,48 +373,39 @@
           },
           "WINNZ": {
             "cleared_altitude": 17000,
-            "sid": "KZLOV1",
-            "waypoints": "KDTW-27L/h276 KZLOV/a4000-10000 WINNZ"
+            "sid": "KZLOV2"
           },
           "GRIVY": {
             "cleared_altitude": 17000,
-            "sid": "LIDDS2",
-            "waypoints": "KDTW-27L/h276 KZLOV/a4000-15000 LIDDS NOONR ZEYOU GRIVY"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 17000,
-            "sid": "MIGGY2",
-            "waypoints": "KDTW-27L/h276 JAXII/a4000+ MIGGY MONEE"
+            "sid": "MIGGY3"
           },
           "MRDOC": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "KDTW-27L/h276 SLVVA/a4000+ PAVYL MRDOC"
+            "sid": "PAVYL3"
           },
           "ESSBE": {
             "cleared_altitude": 17000,
-            "sid": "PAVYL2",
-            "waypoints": "KDTW-27L/h276 SLVVA/a4000+ PAVYL ESSBE"
+            "sid": "PAVYL3"
           },
           "TORRR": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "KDTW-27L/h276 OGEEZ JWELS/a4000+ SNDRS TORRR"
+            "sid": "SNDRS3"
           },
           "BGHRT": {
             "cleared_altitude": 17000,
-            "sid": "SNDRS2",
-            "waypoints": "KDTW-27L/h276 JWELS/a4000+ SNDRS REEDA SEABS KNRKO BGHRT"
+            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 17000,
-            "sid": "TRMML3",
-            "waypoints": "KDTW-27L/h276 LOALA/a4000+ TRMML DDEEZ GNZOE"
+            "sid": "TRMML4"
           },
           "ZETTR": {
             "cleared_altitude": 17000,
-            "sid": "ZETTR3",
-            "waypoints": "KDTW-27L/h276 FLOKA/a4000+ ZETTR/a17000-"
+            "sid": "ZETTR4"
           }
         }
       },
@@ -725,8 +641,7 @@
           },
           "GRIVY": {
             "cleared_altitude": 3000,
-            "sid": "LIDDS3",
-            "waypoints": "KYIP-23/h300 KZLOV LIDDS NOONR ZEYOU"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 3000,
@@ -758,7 +673,7 @@
           },
           "DUNKS": {
             "cleared_altitude": 3000,
-            "sid": "METRO3",
+            "sid": "METRO4",
             "waypoints": "KYIP-23/h300"
           },
           "SNDRS": {
@@ -797,8 +712,7 @@
           },
           "GRIVY": {
             "cleared_altitude": 3000,
-            "sid": "LIDDS3",
-            "waypoints": "KYIP-5/h233 KZLOV LIDDS NOONR ZEYOU"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 3000,
@@ -830,7 +744,7 @@
           },
           "DUNKS": {
             "cleared_altitude": 3000,
-            "sid": "METRO3",
+            "sid": "METRO4",
             "waypoints": "KYIP-5/h233"
           },
           "SNDRS": {
@@ -963,7 +877,7 @@
           },
           "GRIVY": {
             "cleared_altitude": 3000,
-            "sid": "LIDDS3",
+            "sid": "LIDDS4",
             "waypoints": "KDET-33/h148 KZLOV LIDDS NOONR ZEYOU GRIVY"
           },
           "MONEE": {
@@ -1035,7 +949,7 @@
           },
           "GRIVY": {
             "cleared_altitude": 3000,
-            "sid": "LIDDS3",
+            "sid": "LIDDS4",
             "waypoints": "KDET-15/h328 KZLOV LIDDS NOONR ZEYOU GRIVY"
           },
           "MONEE": {
@@ -1152,165 +1066,133 @@
         "9R": {
           "SINKR": {
             "cleared_altitude": 3000,
-            "sid": "BARII3",
-            "waypoints": "KPTK-27L/h095 HUUTZ BARII"
+            "sid": "BARII3"
           },
           "KAYLN": {
             "cleared_altitude": 3000,
-            "sid": "KAYLN3",
-            "waypoints": "KPTK-27L/h095 MTRCT"
+            "sid": "KAYLN3"
           },
           "ZEGBI": {
             "cleared_altitude": 3000,
-            "sid": "CCOBB3",
-            "waypoints": "KPTK-27L/h095 BROZZ CCOBB"
+            "sid": "CCOBB3"
           },
           "CLVIN": {
             "cleared_altitude": 3000,
-            "sid": "CLVIN3",
-            "waypoints": "KPTK-27L/h095 PHAUL/a3100+"
+            "sid": "CLVIN3"
           },
           "STAZE": {
             "cleared_altitude": 3000,
-            "sid": "CLVIN3",
-            "waypoints": "KPTK-27L/h095 PHAUL/a3100+ CLVIN TFTUN RINTE PUUDL"
+            "sid": "CLVIN3"
           },
           "BROKK,LNCON": {
             "cleared_altitude": 3000,
-            "sid": "HHOWE4",
-            "waypoints": "KPTK-27L/h095 MALTB/a2200+ HHOWE"
+            "sid": "HHOWE4"
           },
           "SMUUV": {
             "cleared_altitude": 3000,
-            "sid": "KAYLN3",
-            "waypoints": "KPTK-27L/h095 MTRCT KAYLN IIICE"
+            "sid": "KAYLN3"
           },
           "WINNZ": {
             "cleared_altitude": 3000,
-            "sid": "KZLOV2",
-            "waypoints": "KPTK-27L/h095 KZLOV"
+            "sid": "KZLOV2"
           },
           "GRIVY": {
             "cleared_altitude": 3000,
-            "sid": "LIDDS3",
-            "waypoints": "KPTK-27L/h095 KZLOV LIDDS NOONR ZEYOU GRIVY"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 3000,
-            "sid": "MIGGY3",
-            "waypoints": "KPTK-27L/h095 JAXII MIGGY MONEE"
+            "sid": "MIGGY3"
           },
           "MRDOC,ESSBE": {
             "cleared_altitude": 3000,
-            "sid": "PAVYL3",
-            "waypoints": "KPTK-27L/h095 SLVVA PAVYL MRDOC"
+            "sid": "PAVYL3.MRDOC"
           },
           "TORRR": {
             "cleared_altitude": 3000,
-            "sid": "SNDRS3",
-            "waypoints": "KPTK-27L/h095 JWELS SNDRS TORRR"
+            "sid": "SNDRS3"
           },
           "SNDRS": {
             "cleared_altitude": 3000,
-            "sid": "SNDRS3",
-            "waypoints": "KPTK-27L/h095 JWELS"
+            "sid": "SNDRS3"
           },
           "BGHRT": {
             "cleared_altitude": 3000,
-            "sid": "SNDRS3",
-            "waypoints": "KPTK-27L/h095 SNDRS REEDA SEABS KNRKO BGHRT"
+            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 3000,
-            "sid": "TRMML4",
-            "waypoints": "KPTK-27L/h095 LOALA TRMML DDEEZ GNZOE"
+            "sid": "TRMML4"
           },
           "ZETTR": {
             "cleared_altitude": 3000,
-            "sid": "ZETTR4",
-            "waypoints": "KPTK-27L/h095 ZETTR"
+            "sid": "ZETTR4"
           }
         },
         "27L": {
           "SINKR": {
             "cleared_altitude": 3000,
-            "sid": "BARII3",
-            "waypoints": "KPTK-9R/h275 HUUTZ BARII"
+            "sid": "BARII3"
           },
           "KAYLN": {
             "cleared_altitude": 3000,
-            "sid": "KAYLN3",
-            "waypoints": "KPTK-9R/h275 MTRCT"
+            "sid": "KAYLN3"
           },
           "CLVIN": {
             "cleared_altitude": 3000,
-            "sid": "CLVIN3",
-            "waypoints": "KPTK-9R/h275 PHAUL/a3100+"
+            "sid": "CLVIN3"
           },
           "ZEGBI": {
             "cleared_altitude": 3000,
-            "sid": "CCOBB3",
-            "waypoints": "KPTK-9R/h275 BROZZ CCOBB"
+            "sid": "CCOBB3"
           },
           "STAZE": {
             "cleared_altitude": 3000,
-            "sid": "CLVIN3",
-            "waypoints": "KPTK-9R/h275 PHAUL/a3100+ CLVIN TFTUN RINTE PUUDL"
+            "sid": "CLVIN3"
           },
           "BROKK,LNCON": {
             "cleared_altitude": 3000,
-            "sid": "HHOWE4",
-            "waypoints": "KPTK-9R/h275 MALTB/a2200+ HHOWE"
+            "sid": "HHOWE4"
           },
           "SMUUV": {
             "cleared_altitude": 3000,
-            "sid": "KAYLN3",
-            "waypoints": "KPTK-9R/h275 MTRCT KAYLN IIICE"
+            "sid": "KAYLN3"
           },
           "SNDRS": {
             "cleared_altitude": 3000,
-            "sid": "SNDRS3",
-            "waypoints": "KPTK-9R/h275 JWELS"
+            "sid": "SNDRS3"
           },
           "WINNZ": {
             "cleared_altitude": 3000,
-            "sid": "KZLOV2",
-            "waypoints": "KPTK-9R/h275 KZLOV"
+            "sid": "KZLOV2"
           },
           "GRIVY": {
             "cleared_altitude": 3000,
-            "sid": "LIDDS3",
-            "waypoints": "KPTK-9R/h275 KZLOV LIDDS NOONR ZEYOU GRIVY"
+            "sid": "LIDDS4"
           },
           "MONEE": {
             "cleared_altitude": 3000,
-            "sid": "MIGGY3",
-            "waypoints": "KPTK-9R/h275 JAXII MIGGY MONEE"
+            "sid": "MIGGY3"
           },
           "MRDOC,ESSBE": {
             "cleared_altitude": 3000,
-            "sid": "PAVYL3",
-            "waypoints": "KPTK-9R/h275 SLVVA PAVYL MRDOC"
+            "sid": "PAVYL3.MRDOC"
           },
           "TORRR": {
             "cleared_altitude": 3000,
-            "sid": "SNDRS3",
-            "waypoints": "KPTK-9R/h275 SNDRS TORRR"
+            "sid": "SNDRS3"
           },
           "BGHRT": {
             "cleared_altitude": 3000,
-            "sid": "SNDRS3",
-            "waypoints": "KPTK-9R/h275 SNDRS REEDA SEABS KNRKO BGHRT"
+            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 3000,
-            "sid": "TRMML4",
-            "waypoints": "KPTK-9R/h275 LOALA TRMML DDEEZ GNZOE"
+            "sid": "TRMML4"
           },
           "ZETTR": {
             "cleared_altitude": 3000,
-            "sid": "ZETTR4",
-            "waypoints": "KPTK-9R/h275 ZETTR"
+            "sid": "ZETTR4"
           }
         }
       },

@@ -91,8 +91,7 @@
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
-            "sid": "PENCL2",
-            "waypoints": "N033.38.47.947,W084.27.44.620 MPASS ZELAN/s250 WURLD PENCL LEDRR"
+            "sid": "PENCL2.LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
@@ -100,8 +99,7 @@
           },
           "BURGG": {
             "cleared_altitude": 10000,
-            "sid": "PLMMR3",
-            "waypoints": "N033.38.47.947,W084.27.44.620 MPASS ZELAN/s250 SMOGG DLLNN PLMMR PLMMR TENSE NWANT"
+            "sid": "PLMMR3"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
@@ -143,8 +141,7 @@
           },
           "KELLN": {
             "cleared_altitude": 10000,
-            "sid": "JACCC2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 FUTBL ZALLE GGOLF DDUBB JACCC SHUTT BFOUT"
+            "sid": "JACCC2"
           },
           "STNGA": {
             "cleared_altitude": 10000,
@@ -160,8 +157,7 @@
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
-            "sid": "PENCL2",
-            "waypoints": "N033.38.04.703,W084.28.11.702 CPARK MPASS ZELAN/s250 WURLD PENCL LEDRR"
+            "sid": "PENCL2.LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
@@ -169,8 +165,7 @@
           },
           "BURGG": {
             "cleared_altitude": 10000,
-            "sid": "PLMMR3",
-            "waypoints": "N033.38.04.703,W084.28.11.702 FUTBL ZALLE GGOLF PLMMR PLMMR TENSE NWANT"
+            "sid": "PLMMR3"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
@@ -228,8 +223,7 @@
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
-            "sid": "PENCL2",
-            "waypoints": "N033.38.48.469,W084.22.58.454 RONII HOYYT PENCL LEDRR"
+            "sid": "PENCL2.LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
@@ -237,8 +231,7 @@
           },
           "BURGG": {
             "cleared_altitude": 10000,
-            "sid": "PLMMR3",
-            "waypoints": "N033.38.48.469,W084.22.58.454 RONII IGEBE PLMMR PLMMR TENSE NWANT"
+            "sid": "PLMMR3"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,
@@ -272,8 +265,7 @@
           },
           "IRQ": {
             "cleared_altitude": 10000,
-            "sid": "GAIRY2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ DDUBB GAIRY"
+            "sid": "GAIRY2"
           },
           "SARGE": {
             "cleared_altitude": 10000,
@@ -281,8 +273,7 @@
           },
           "KELLN": {
             "cleared_altitude": 10000,
-            "sid": "JACCC2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 GRITZ DDUBB JACCC SHUTT BFOUT"
+            "sid": "JACCC2"
           },
           "STNGA": {
             "cleared_altitude": 10000,
@@ -298,8 +289,7 @@
           },
           "JAACE,BNA,CEASE,EMAHH": {
             "cleared_altitude": 10000,
-            "sid": "PENCL2",
-            "waypoints": "N033.38.04.249,W084.23.08.973 PICKT RONII HOYYT PENCL LEDRR"
+            "sid": "PENCL2.LEDRR"
           },
           "HRTWL": {
             "cleared_altitude": 10000,
@@ -307,8 +297,7 @@
           },
           "BURGG": {
             "cleared_altitude": 10000,
-            "sid": "PLMMR3",
-            "waypoints": "N033.38.04.249,W084.23.08.973 LIDAS ERWIN PLMMR PLMMR TENSE NWANT"
+            "sid": "PLMMR3"
           },
           "STEIT,GRGIA": {
             "cleared_altitude": 10000,

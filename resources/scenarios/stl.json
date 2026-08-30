@@ -949,8 +949,7 @@
           },
           "HILTS": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-6/h123/@a1120+/ld FUNKE/a2500+ RAMKR TEDDD ENL ZOLLI HILTS"
+            "sid": "TEDDD5"
           },
           "IIU": {
             "cleared_altitude": 5000,
@@ -1016,8 +1015,7 @@
           },
           "HILTS": {
             "cleared_altitude": 5000,
-            "sid": "TEDDD5",
-            "waypoints": "KSTL-24/h123/@a1120+/ld FUNKE/a2500+ RAMKR TEDDD ENL ZOLLI HILTS"
+            "sid": "TEDDD5"
           },
           "IIU": {
             "cleared_altitude": 5000,

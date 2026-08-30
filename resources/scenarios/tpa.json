@@ -591,14 +591,12 @@
           "MOMIE,CAMJO": {
             "cleared_altitude": 5000,
             "sid": "TIDES1",
-            "description": "TIDES1.N",
-            "waypoints": "URCHN/a4000+ SNAGS/a4000+/s220 THONG PHINS/a4000+ TIDES/a5000/s250 GOLTY PSTOL"
+            "description": "TIDES1.N"
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 5000,
             "sid": "TIDES1",
-            "description": "TIDES1.W",
-            "waypoints": "URCHN/a4000+ SNAGS/a4000+/s220 THONG PHINS/a4000+ TIDES/a5000/s250 HYRON BRUNG ENDED"
+            "description": "TIDES1.W"
           }
         }
       },

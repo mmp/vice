@@ -317,8 +317,7 @@
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ ZELMA JOTNU"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
@@ -494,8 +493,7 @@
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5",
-            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "sid": "JOHKR5"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
@@ -561,23 +559,19 @@
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC HEC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ DOYYL ZELMA JOTNU LVELL"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
@@ -615,23 +609,19 @@
           },
           "HEC": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC HEC"
+            "sid": "RADYR2"
           },
           "SLVRR": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR"
+            "sid": "RADYR2"
           },
           "LVELL": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ DOYYL ZELMA JOTNU LVELL"
+            "sid": "RADYR2"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ BLAQQ"
+            "sid": "RADYR2"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
@@ -1662,8 +1652,7 @@
         "25": {
           "LAS": {
             "cleared_altitude": 7000,
-            "sid": "NOTWN5",
-            "waypoints": "N036.12.49.084,W115.12.26.438 N036.13.31.903,W115.16.19.760/a3700+ RUZCO/a5000+/flyover/arc4.5 N036.15.19.555,W115.15.35.870 LAS"
+            "sid": "NOTWN5"
           },
           "BLD": {
             "cleared_altitude": 7000,
@@ -1673,8 +1662,7 @@
         "12L": {
           "LAS": {
             "cleared_altitude": 7000,
-            "sid": "NOTWN5",
-            "waypoints": "N036.12.03.257,W115.10.54.840 N036.11.37.535,W115.14.50.881/a3700+ RUZCO/a5000+/flyover/arc4.5 N036.15.19.555,W115.15.35.870 LAS"
+            "sid": "NOTWN5"
           },
           "BLD": {
             "cleared_altitude": 7000,
@@ -1684,8 +1672,7 @@
         "12R": {
           "LAS": {
             "cleared_altitude": 7000,
-            "sid": "NOTWN5",
-            "waypoints": "N036.12.05.537,W115.11.10.028 N036.11.42.040,W115.14.54.644/a3700+ RUZCO/a5000+/flyover/arc4.5 N036.15.19.555,W115.15.35.870 LAS"
+            "sid": "NOTWN5"
           },
           "BLD": {
             "cleared_altitude": 7000,
@@ -1695,8 +1682,7 @@
         "30L": {
           "LAS": {
             "cleared_altitude": 7000,
-            "sid": "NOTWN5",
-            "waypoints": "N036.13.03.819,W115.12.20.890 N036.13.32.425,W115.16.19.623/a3700+ RUZCO/a5000+/flyover/arc4.5 N036.15.19.555,W115.15.35.870 LAS"
+            "sid": "NOTWN5"
           },
           "BLD": {
             "cleared_altitude": 7000,
@@ -1706,8 +1692,7 @@
         "30R": {
           "LAS": {
             "cleared_altitude": 7000,
-            "sid": "NOTWN5",
-            "waypoints": "N036.12.59.273,W115.11.59.302 N036.13.50.950,W115.16.34.537/a3700+ RUZCO/a5000+/flyover/arc4.5 N036.15.19.555,W115.15.35.870 LAS"
+            "sid": "NOTWN5"
           },
           "BLD": {
             "cleared_altitude": 7000,

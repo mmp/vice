@@ -1070,8 +1070,7 @@
           },
           "CRGER": {
             "assigned_altitude": 2000,
-            "sid": "BORRN6",
-            "waypoints": "KDWH-35L/h30 BORRN DILRE ZUUUU PUFER"
+            "sid": "BORRN6"
           },
           "SAT": {
             "assigned_altitude": 2000,
@@ -1162,8 +1161,7 @@
         "35L": {
           "CRIED": {
             "assigned_altitude": 2000,
-            "sid": "BLTWY7",
-            "waypoints": "KDWH-17R/h350 DREMR LITLD BLTWY"
+            "sid": "BLTWY7"
           },
           "CRGER": {
             "assigned_altitude": 2000,
@@ -1192,13 +1190,11 @@
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
-            "sid": "HOODO7",
-            "waypoints": "KDWH-17R/h350 VUH HOODO SBIRD CFOOD BOWFN"
+            "sid": "HOODO7"
           },
           "TPAKK": {
             "assigned_altitude": 2000,
-            "sid": "INDIE8",
-            "waypoints": "KDWH-17R/h350 RENNK COLET SUSHI WWELL INDIE"
+            "sid": "INDIE8"
           },
           "CRP": {
             "assigned_altitude": 2000,
@@ -1212,33 +1208,27 @@
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
-            "sid": "LURIC8",
-            "waypoints": "KDWH-17R/h350 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "sid": "LURIC8"
           },
           "LCH": {
             "assigned_altitude": 2000,
-            "sid": "MMALT7",
-            "waypoints": "KDWH-17R/h350 MMALT MOOKI HOURN BLING"
+            "sid": "MMALT7"
           },
           "GUSTI": {
             "assigned_altitude": 2000,
-            "sid": "MMALT7",
-            "waypoints": "KDWH-17R/h350 MMALT MOOKI JAAYE SPINY"
+            "sid": "MMALT7"
           },
           "LLA": {
             "assigned_altitude": 2000,
-            "sid": "MMALT7",
-            "waypoints": "KDWH-17R/h350 MMALT MOOKI YOKEM SBI"
+            "sid": "MMALT7"
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
-            "sid": "STRYA8",
-            "waypoints": "KDWH-17R/h350 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "sid": "STRYA8"
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
-            "sid": "STYCK8",
-            "waypoints": "KDWH-17R/h350 BBYSE SPICR WLLIS STYCK"
+            "sid": "STYCK8"
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
@@ -1247,13 +1237,11 @@
           },
           "MAJKK": {
             "assigned_altitude": 2000,
-            "sid": "WYLSN8",
-            "waypoints": "KDWH-17R/h350 WYLSN MONNT KLJOY"
+            "sid": "WYLSN8"
           },
           "GIFFA": {
             "assigned_altitude": 2000,
-            "sid": "WYLSN8",
-            "waypoints": "KDWH-17R/h350 WYLSN MONNT BUMCO"
+            "sid": "WYLSN8"
           }
         }
       },

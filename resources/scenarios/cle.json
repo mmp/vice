@@ -26,28 +26,23 @@
         "6R": {
           "APE": {
             "cleared_altitude": 14000,
-            "sid": "CAVVS4",
-            "waypoints": "NANTZ CAHRR/a6000 BIIGZ/a10000 LBRON/a10000 CAVVS APE"
+            "sid": "CAVVS5"
           },
           "ALPHE": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE4",
-            "waypoints": "EDMNN/a2000/s240 FTTZZ GRALD/a8000 XMASS AYYLE/a9000 BRNIN/a14000 GTLKE DORRT"
+            "sid": "GTLKE5"
           },
           "DAIFE": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE4",
-            "waypoints": "EDMNN/a2000/s240 FTTZZ GRALD/a8000 XMASS AYYLE/a9000 BRNIN/a14000 GTLKE ELEOT NOLNN"
+            "sid": "GTLKE5"
           },
           "BAGEL": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE4",
-            "waypoints": "EDMNN/a2000/s240 FTTZZ GRALD/a8000 XMASS AYYLE/a9000 BRNIN/a14000 GTLKE ELEOT MUNDR"
+            "sid": "GTLKE5"
           },
           "YABRO": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE4",
-            "waypoints": "EDMNN/a2000/s240 FTTZZ GRALD/a8000 XMASS AYYLE/a9000 BRNIN/a14000 GTLKE ELEOT NESSS"
+            "sid": "GTLKE5"
           },
           "EWC": {
             "cleared_altitude": 14000,
@@ -79,45 +74,37 @@
           },
           "PUUDL": {
             "cleared_altitude": 14000,
-            "sid": "ZAAPA5",
-            "waypoints": "EDMNN/a2000/s240 FTTZZ DINAA/a8000 MOHUM/a9000 ZAAPA/a14000"
+            "sid": "ZAAPA6"
           },
           "SNNOH": {
             "cleared_altitude": 14000,
-            "sid": "ZAAPA5",
-            "waypoints": "EDMNN/a2000/s240 FTTZZ DINAA/a8000 MOHUM/a9000 ZAAPA/a14000 YELOE"
+            "sid": "ZAAPA6"
           },
           "SINKR": {
             "cleared_altitude": 14000,
-            "sid": "ZAAPA5",
-            "waypoints": "EDMNN/a2000/s240 FTTZZ DINAA/a8000 MOHUM/a9000 ZAAPA/a14000 YELOE"
+            "sid": "ZAAPA6"
           }
         },
         "24L": {
           "APE": {
             "cleared_altitude": 14000,
-            "sid": "CAVVS4",
-            "waypoints": "KYRIE/a6000 LBRON/a10000 CAVVS APE"
+            "sid": "CAVVS5"
           },
           "ALPHE": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE4",
-            "waypoints": "CNWAY/a6000 AYYLE/a9000 BRNIN/a14000 GTLKE DORRT"
+            "sid": "GTLKE5"
           },
           "DAIFE": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE4",
-            "waypoints": "CNWAY/a6000 AYYLE/a9000 BRNIN/a14000 GTLKE ELEOT NOLNN"
+            "sid": "GTLKE5"
           },
           "BAGEL": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE4",
-            "waypoints": "CNWAY/a6000 AYYLE/a9000 BRNIN/a14000 GTLKE ELEOT MUNDR"
+            "sid": "GTLKE5"
           },
           "YABRO": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE4",
-            "waypoints": "CNWAY/a6000 AYYLE/a9000 BRNIN/a14000 GTLKE ELEOT NESSS"
+            "sid": "GTLKE5"
           },
           "EWC": {
             "cleared_altitude": 14000,
@@ -149,18 +136,15 @@
           },
           "PUUDL": {
             "cleared_altitude": 14000,
-            "sid": "ZAAPA5",
-            "waypoints": "DWEZL/a6000 MOHUM/a9000 ZAAPA/a14000"
+            "sid": "ZAAPA6"
           },
           "SNNOH": {
             "cleared_altitude": 14000,
-            "sid": "ZAAPA5",
-            "waypoints": "DWEZL/a6000 MOHUM/a9000 ZAAPA/a14000 YELOE"
+            "sid": "ZAAPA6"
           },
           "SINKR": {
             "cleared_altitude": 14000,
-            "sid": "ZAAPA5",
-            "waypoints": "DWEZL/a6000 MOHUM/a9000 ZAAPA/a14000 YELOE"
+            "sid": "ZAAPA6"
           }
         }
       },
@@ -614,115 +598,101 @@
         "6": {
           "NUSMM": {
             "cleared_altitude": 3000,
-            "sid": "AHMET4",
-            "waypoints": "_CGF_24/h180 AHMET KKIDS"
+            "sid": "AHMET5"
           },
           "EWC": {
             "cleared_altitude": 3000,
-            "sid": "AHMET4",
-            "waypoints": "_CGF_24/h180 AHMET KKIDS ZAVEE"
+            "sid": "AHMET5"
           },
           "APE": {
             "cleared_altitude": 3000,
-            "sid": "CAVVS4",
-            "waypoints": "_CGF_24/h180 LBRON CAVVS"
+            "sid": "CAVVS5"
           },
           "DAIFE": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE4",
+            "sid": "GTLKE5",
             "waypoints": "_CGF_24/h180 AYYLE BRNIN GTLKE ELEOT NOLNN"
           },
           "YABRO": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE4",
+            "sid": "GTLKE5",
             "waypoints": "_CGF_24/h180 AYYLE BRNIN GTLKE ELEOT NESSS"
           },
           "ALPHE": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE4",
+            "sid": "GTLKE5",
             "waypoints": "_CGF_24/h180 AYYLE BRNIN GTLKE DORRT"
           },
           "BAGEL": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE4",
+            "sid": "GTLKE5",
             "waypoints": "_CGF_24/h180 AYYLE BRNIN GTLKE ELEOT MUNDR"
           },
           "MYCAR": {
             "cleared_altitude": 3000,
-            "sid": "MYCAR4",
-            "waypoints": "_CGF_24/h330 OCIFR WHARS MYCAR"
+            "sid": "MYCAR5"
           },
           "PUUDL": {
             "cleared_altitude": 3000,
-            "sid": "ZAAPA5",
-            "waypoints": "_CGF_24/h330 MOHUM ZAAPA "
+            "sid": "ZAAPA6"
           },
           "SINKR": {
             "cleared_altitude": 3000,
-            "sid": "ZAAPA5",
-            "waypoints": "_CGF_24/h330 MOHUM ZAAPA YELOE"
+            "sid": "ZAAPA6"
           },
           "SNNOH": {
             "cleared_altitude": 3000,
-            "sid": "ZAAPA5",
-            "waypoints": "_CGF_24/h330 MOHUM ZAAPA YELOE"
+            "sid": "ZAAPA6"
           }
         },
         "24": {
           "NUSMM": {
             "cleared_altitude": 3000,
-            "sid": "AHMET4",
-            "waypoints": "_CGF_6/h180 AHMET KKIDS"
+            "sid": "AHMET5"
           },
           "EWC": {
             "cleared_altitude": 3000,
-            "sid": "AHMET4",
-            "waypoints": "_CGF_6/h180 AHMET KKIDS ZAVEE"
+            "sid": "AHMET5"
           },
           "APE": {
             "cleared_altitude": 3000,
-            "sid": "CAVVS4",
-            "waypoints": "_CGF_6/h180 LBRON CAVVS"
+            "sid": "CAVVS5"
           },
           "DAIFE": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE4",
+            "sid": "GTLKE5",
             "waypoints": "_CGF_6/h180 AYYLE BRNIN GTLKE ELEOT NOLNN"
           },
           "YABRO": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE4",
+            "sid": "GTLKE5",
             "waypoints": "_CGF_6/h180 AYYLE BRNIN GTLKE ELEOT NESSS"
           },
           "ALPHE": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE4",
+            "sid": "GTLKE5",
             "waypoints": "_CGF_6/h180 AYYLE BRNIN GTLKE DORRT"
           },
           "BAGEL": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE4",
+            "sid": "GTLKE5",
             "waypoints": "_CGF_6/h180 AYYLE BRNIN GTLKE ELEOT MUNDR"
           },
           "MYCAR": {
             "cleared_altitude": 3000,
-            "sid": "MYCAR4",
-            "waypoints": "_CGF_6/h330 OCIFR WHARS MYCAR"
+            "sid": "MYCAR5"
           },
           "PUUDL": {
             "cleared_altitude": 3000,
-            "sid": "ZAAPA5",
-            "waypoints": "_CGF_6/h330 MOHUM ZAAPA "
+            "sid": "ZAAPA6"
           },
           "SINKR": {
             "cleared_altitude": 3000,
-            "sid": "ZAAPA5",
-            "waypoints": "_CGF_6/h330 MOHUM ZAAPA YELOE"
+            "sid": "ZAAPA6"
           },
           "SNNOH": {
             "cleared_altitude": 3000,
-            "sid": "ZAAPA5",
-            "waypoints": "_CGF_6/h330 MOHUM ZAAPA YELOE"
+            "sid": "ZAAPA6"
           }
         }
       },
@@ -807,115 +777,93 @@
         "6L": {
           "NUSMM": {
             "cleared_altitude": 2000,
-            "sid": "AHMET4",
-            "waypoints": "KBKL-24R/h350 AHMET KKIDS"
+            "sid": "AHMET5"
           },
           "EWC": {
             "cleared_altitude": 2000,
-            "sid": "AHMET4",
-            "waypoints": "KBKL-24R/h350 AHMET KKIDS ZAVEE"
+            "sid": "AHMET5"
           },
           "APE": {
             "cleared_altitude": 2000,
-            "sid": "CAVVS4",
-            "waypoints": "KBKL-24R/h350 LBRON CAVVS"
+            "sid": "CAVVS5"
           },
           "DAIFE": {
             "cleared_altitude": 2000,
-            "sid": "GTLKE4",
-            "waypoints": "KBKL-24R/h350 AYYLE BRNIN GTLKE ELEOT NOLNN"
+            "sid": "GTLKE5"
           },
           "YABRO": {
             "cleared_altitude": 2000,
-            "sid": "GTLKE4",
-            "waypoints": "KBKL-24R/h350 AYYLE BRNIN GTLKE ELEOT NESSS"
+            "sid": "GTLKE5"
           },
           "ALPHE": {
             "cleared_altitude": 2000,
-            "sid": "GTLKE4",
-            "waypoints": "KBKL-24R/h350 AYYLE BRNIN GTLKE DORRT"
+            "sid": "GTLKE5"
           },
           "BAGEL": {
             "cleared_altitude": 2000,
-            "sid": "GTLKE4",
-            "waypoints": "KBKL-24R/h350 AYYLE BRNIN GTLKE ELEOT MUNDR"
+            "sid": "GTLKE5"
           },
           "MYCAR": {
             "cleared_altitude": 2000,
-            "sid": "MYCAR4",
-            "waypoints": "KBKL-24R/h350 OCIFR WHARS MYCAR"
+            "sid": "MYCAR5"
           },
           "PUUDL": {
             "cleared_altitude": 2000,
-            "sid": "ZAAPA5",
-            "waypoints": "KBKL-24R/h350 MOHUM ZAAPA "
+            "sid": "ZAAPA6"
           },
           "SINKR": {
             "cleared_altitude": 2000,
-            "sid": "ZAAPA5",
-            "waypoints": "KBKL-24R/h350 MOHUM ZAAPA YELOE"
+            "sid": "ZAAPA6"
           },
           "SNNOH": {
             "cleared_altitude": 2000,
-            "sid": "ZAAPA5",
-            "waypoints": "KBKL-24R/h350 MOHUM ZAAPA YELOE"
+            "sid": "ZAAPA6"
           }
         },
         "24R": {
           "NUSMM": {
             "cleared_altitude": 2000,
-            "sid": "AHMET4",
-            "waypoints": "KBKL-6L/h350 AHMET KKIDS"
+            "sid": "AHMET5"
           },
           "EWC": {
             "cleared_altitude": 2000,
-            "sid": "AHMET4",
-            "waypoints": "KBKL-6L/h350 AHMET KKIDS ZAVEE"
+            "sid": "AHMET5"
           },
           "APE": {
             "cleared_altitude": 2000,
-            "sid": "CAVVS4",
-            "waypoints": "KBKL-6L/h350 LBRON CAVVS"
+            "sid": "CAVVS5"
           },
           "DAIFE": {
             "cleared_altitude": 2000,
-            "sid": "GTLKE4",
-            "waypoints": "KBKL-6L/h350 AYYLE BRNIN GTLKE ELEOT NOLNN"
+            "sid": "GTLKE5"
           },
           "YABRO": {
             "cleared_altitude": 2000,
-            "sid": "GTLKE4",
-            "waypoints": "KBKL-6L/h350 AYYLE BRNIN GTLKE ELEOT NESSS"
+            "sid": "GTLKE5"
           },
           "ALPHE": {
             "cleared_altitude": 2000,
-            "sid": "GTLKE4",
-            "waypoints": "KBKL-6L/h350 AYYLE BRNIN GTLKE DORRT"
+            "sid": "GTLKE5"
           },
           "BAGEL": {
             "cleared_altitude": 2000,
-            "sid": "GTLKE4",
-            "waypoints": "KBKL-6L/h350 AYYLE BRNIN GTLKE ELEOT MUNDR"
+            "sid": "GTLKE5"
           },
           "MYCAR": {
             "cleared_altitude": 2000,
-            "sid": "MYCAR4",
-            "waypoints": "KBKL-6L/h350 OCIFR WHARS MYCAR"
+            "sid": "MYCAR5"
           },
           "PUUDL": {
             "cleared_altitude": 2000,
-            "sid": "ZAAPA5",
-            "waypoints": "KBKL-6L/h350 MOHUM ZAAPA "
+            "sid": "ZAAPA6"
           },
           "SINKR": {
             "cleared_altitude": 2000,
-            "sid": "ZAAPA5",
-            "waypoints": "KBKL-6L/h350 MOHUM ZAAPA YELOE"
+            "sid": "ZAAPA6"
           },
           "SNNOH": {
             "cleared_altitude": 2000,
-            "sid": "ZAAPA5",
-            "waypoints": "KBKL-6L/h350 MOHUM ZAAPA YELOE"
+            "sid": "ZAAPA6"
           }
         }
       },

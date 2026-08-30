@@ -383,8 +383,7 @@
           },
           "DONIL,RADAM": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-33L N039.09.32.071,W076.39.25.960/a644+ DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD SPEAK DONIL"
+            "sid": "DUKPN1.DONIL"
           },
           "SPEAK": {
             "cleared_altitude": 14000,
@@ -442,8 +441,7 @@
           },
           "DONIL,RADAM": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-15R N039.11.28.348,W076.41.14.972/a644+/flyover ARWEN/a4000-7000/s230- DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD SPEAK DONIL"
+            "sid": "DUKPN1.DONIL"
           },
           "SPEAK": {
             "cleared_altitude": 14000,
@@ -501,8 +499,7 @@
           },
           "DONIL,RADAM": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-28 JWALL/flyover DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD SPEAK DONIL"
+            "sid": "DUKPN1.DONIL"
           },
           "SPEAK": {
             "cleared_altitude": 14000,
@@ -560,8 +557,7 @@
           },
           "DONIL,RADAM": {
             "cleared_altitude": 14000,
-            "sid": "DUKPN1",
-            "waypoints": "KBWI-10 BOSLY/a700+/s230-/flyover ARWEN/a4000-7000/s230- DUKPN/a5000+ WINNY PLOOP/a13000+ AGARD SPEAK DONIL"
+            "sid": "DUKPN1.DONIL"
           },
           "SPEAK": {
             "cleared_altitude": 14000,

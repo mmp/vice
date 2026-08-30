@@ -296,28 +296,23 @@
         "12L.ALMDN": {
           "AHRNER": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- HRNER"
+            "sid": "ALMDN4.HRNER"
           },
           "AORRCA": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- DEEII ORRCA"
+            "sid": "ALMDN4"
           },
           "AMOGEE": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- AXXXX MOGEE"
+            "sid": "ALMDN4"
           },
           "ATIPRE": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- KAESS TIPRE"
+            "sid": "ALMDN4"
           },
           "ASYRAH": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- HNNLE SYRAH"
+            "sid": "ALMDN4"
           },
           "VLREE": {
             "cleared_altitude": 19000,
@@ -335,28 +330,23 @@
         "12L.BMRNG": {
           "BHRNER": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30R/h126 GRRIF BMRNG HRNER"
+            "sid": "BMRNG4.HRNER"
           },
           "BORRCA": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30R/h126 GRRIF BMRNG DEEII ORRCA"
+            "sid": "BMRNG4.ORRCA"
           },
           "BMOGEE": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30R/h126 GRRIF BMRNG AXXXX MOGEE"
+            "sid": "BMRNG4.MOGEE"
           },
           "BTIPRE": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30R/h126 GRRIF BMRNG KAESS TIPRE"
+            "sid": "BMRNG4.TIPRE"
           },
           "BSYRAH": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30R/h126 GRRIF BMRNG HNNLE SYRAH"
+            "sid": "BMRNG4.SYRAH"
           },
           "VLREE": {
             "cleared_altitude": 19000,
@@ -374,28 +364,23 @@
         "12R.ALMDN": {
           "AHRNER": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- HRNER"
+            "sid": "ALMDN4.HRNER"
           },
           "AORRCA": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- DEEII ORRCA"
+            "sid": "ALMDN4"
           },
           "AMOGEE": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- AXXXX MOGEE"
+            "sid": "ALMDN4"
           },
           "ATIPRE": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- KAESS TIPRE"
+            "sid": "ALMDN4"
           },
           "ASYRAH": {
             "cleared_altitude": 5000,
-            "sid": "ALMDN4",
-            "waypoints": "NEVSE KIELY ALMDN/a12000- HNNLE SYRAH"
+            "sid": "ALMDN4"
           },
           "VLREE": {
             "cleared_altitude": 19000,
@@ -413,28 +398,23 @@
         "12R.BMRNG": {
           "BHRNER": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30L/h126 GRRIF BMRNG HRNER"
+            "sid": "BMRNG4.HRNER"
           },
           "BORRCA": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30L/h126 GRRIF BMRNG DEEII ORRCA"
+            "sid": "BMRNG4.ORRCA"
           },
           "BMOGEE": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30L/h126 GRRIF BMRNG AXXXX MOGEE"
+            "sid": "BMRNG4.MOGEE"
           },
           "BTIPRE": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30L/h126 GRRIF BMRNG KAESS TIPRE"
+            "sid": "BMRNG4.TIPRE"
           },
           "BSYRAH": {
             "cleared_altitude": 15000,
-            "sid": "BMRNG4",
-            "waypoints": "KSJC-30L/h126 GRRIF BMRNG HNNLE SYRAH"
+            "sid": "BMRNG4.SYRAH"
           },
           "VLREE": {
             "cleared_altitude": 19000,
@@ -3632,15 +3612,13 @@
         "28R": {
           "SNS,SERFR,PRB,SHOEY,OSI,SJC": {
             "cleared_altitude": 7000,
-            "sid": "MRY5",
-            "waypoints": "N036.36.00.365,W121.53.02.217 N036.42.49.413,W121.55.35.476 SHOEY"
+            "sid": "MRY5"
           }
         },
         "28L": {
           "SNS,SERFR,PRB,SHOEY,OSI,SJC": {
             "cleared_altitude": 7000,
-            "sid": "MRY5",
-            "waypoints": "N036.36.00.365,W121.53.02.217 N036.42.49.413,W121.55.35.476 SHOEY"
+            "sid": "MRY5"
           },
           "SANTY": {
             "cleared_altitude": 7000,
@@ -3650,15 +3628,13 @@
         "10R": {
           "SNS,SERFR,PRB,SHOEY,OSI,SJC,SANTY": {
             "cleared_altitude": 7000,
-            "sid": "TORO7",
-            "waypoints": "N036.34.37.610,W121.48.56.810/h060"
+            "sid": "TORO7"
           }
         },
         "10L": {
           "SNS,SERFR,PRB,SHOEY,OSI,SJC,SANTY": {
             "cleared_altitude": 7000,
-            "sid": "TORO7",
-            "waypoints": "N036.34.37.610,W121.48.56.810/h060"
+            "sid": "TORO7"
           }
         }
       },

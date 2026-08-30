@@ -627,28 +627,23 @@
         "2": {
           "HCM": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-20/h022 HCM"
+            "sid": "HENRY4"
           },
           "JAMIE": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-20/h022 JAMIE"
+            "sid": "HENRY4"
           },
           "ORF": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-20/h022 ORF"
+            "sid": "HENRY4"
           },
           "FAK": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-20/h022 FAK"
+            "sid": "HENRY4"
           },
           "WAIKS": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-20/h022 WAIKS"
+            "sid": "HENRY4"
           },
           "COUPN": {
             "cleared_altitude": 2000,
@@ -666,28 +661,23 @@
         "20": {
           "HCM": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-2/h250 HCM"
+            "sid": "HENRY4"
           },
           "JAMIE": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-2/h250 JAMIE"
+            "sid": "HENRY4"
           },
           "ORF": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-2/h250 ORF"
+            "sid": "HENRY4"
           },
           "FAK": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-2/h250 FAK"
+            "sid": "HENRY4"
           },
           "WAIKS": {
             "cleared_altitude": 2000,
-            "sid": "HENRY4",
-            "waypoints": "KPHF-2/h250 WAIKS"
+            "sid": "HENRY4"
           },
           "COUPN": {
             "cleared_altitude": 2000,

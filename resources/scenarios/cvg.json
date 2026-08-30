@@ -264,8 +264,7 @@
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,
-            "sid": "LOVEY8",
-            "waypoints": "HOBAL SUNFR MIPIE MUMIE LOVEY"
+            "sid": "LOVEY8"
           },
           "AHTIY,ARRAY": {
             "cleared_altitude": 5000,
@@ -299,8 +298,7 @@
           },
           "SHIPR": {
             "cleared_altitude": 5000,
-            "sid": "KENLN6",
-            "waypoints": "HOBAL BOUMR CULED CHCLL"
+            "sid": "KENLN6"
           },
           "CADIZ,HELIS,MACES": {
             "cleared_altitude": 5000,

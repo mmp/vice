@@ -107,8 +107,7 @@
           },
           "KPTIN": {
             "cleared_altitude": 8000,
-            "sid": "MISHN4",
-            "waypoints": "N034.25.42.315,W119.49.02.440 EFFRM MISHN KPTIN"
+            "sid": "MISHN5"
           },
           "BOILE": {
             "cleared_altitude": 8000,
@@ -134,8 +133,7 @@
           },
           "KPTIN": {
             "cleared_altitude": 8000,
-            "sid": "MISHN4",
-            "waypoints": "N034.25.33.952,W119.55.02.215 WNFRY DNKYY MISHN KPTIN"
+            "sid": "MISHN5"
           },
           "BOILE": {
             "cleared_altitude": 8000,
@@ -164,7 +162,7 @@
           ],
           "altitude": 33000,
           "destination": "KDEN",
-          "route": "MISHN4 NNAVY",
+          "route": "MISHN5 NNAVY",
           "exit": "NNAVY"
         },
         {
@@ -179,7 +177,7 @@
           ],
           "altitude": 11000,
           "destination": "KDEN",
-          "route": "MISHN4 NNAVY",
+          "route": "MISHN5 NNAVY",
           "exit": "NNAVY"
         },
         {

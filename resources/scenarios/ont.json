@@ -668,17 +668,15 @@
         "6": {
           "AVRRY,MTBAL": {
             "cleared_altitude": 7000,
-            "sid": "JADKO1",
+            "sid": "JADKO2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSBD-6/h057/@a2100+/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA JADKO ARRDY/a13000+ PEELR MTBAL"
+            "aircraft": ["jet", "turboprop"]
           },
           "SXC": {
             "cleared_altitude": 7000,
-            "sid": "JADKO1",
+            "sid": "JADKO2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSBD-6/h057/@a2100+/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC"
+            "aircraft": ["jet", "turboprop"]
           },
           "POM": {
             "assigned_altitude": 6000,
@@ -689,17 +687,15 @@
         "24": {
           "AVRRY,MTBAL": {
             "assigned_altitude": 4300,
-            "sid": "JADKO1",
+            "sid": "JADKO2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "N034.04.23.644,W117.18.38.215 PESLE ROLIE ELICA JADKO ARRDY/a13000+ PEELR MTBAL"
+            "aircraft": ["jet", "turboprop"]
           },
           "SXC": {
             "assigned_altitude": 4300,
-            "sid": "JADKO1",
+            "sid": "JADKO2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "N034.04.23.644,W117.18.38.215 PESLE ROLIE ELICA JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC"
+            "aircraft": ["jet", "turboprop"]
           },
           "POM": {
             "assigned_altitude": 4300,
@@ -881,18 +877,15 @@
         "31L": {
           "TNP.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.53.18.051,W116.33.38.078 PSP EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP TNP"
+            "sid": "CATH1"
           },
           "BLH.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.53.18.051,W116.33.38.078 PSP EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP BLH"
+            "sid": "CATH1"
           },
           "PMD.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.53.18.051,W116.33.38.078 PSP EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP YUCCA V386 PMD"
+            "sid": "CATH1"
           },
           "ZELMA": {
             "cleared_altitude": 8000,
@@ -922,25 +915,21 @@
           "PMD": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "is_rnav": true,
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- YUCCA/a8500+ LGANN SOGGI APLES PMD"
+            "is_rnav": true
           }
         },
         "13R": {
           "TNP.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.48.48.570,W116.29.35.582 N033.47.47.115,W116.26.32.550 N033.50.38.406,W116.22.07.175 EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP TNP"
+            "sid": "CATH1"
           },
           "BLH.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.48.48.570,W116.29.35.582 N033.47.47.115,W116.26.32.550 N033.50.38.406,W116.22.07.175 EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP BLH"
+            "sid": "CATH1"
           },
           "PMD.C": {
             "cleared_altitude": 8000,
-            "sid": "CATH1",
-            "waypoints": "N033.48.48.570,W116.29.35.582 N033.47.47.115,W116.26.32.550 N033.50.38.406,W116.22.07.175 EMRUD/arc3.1 N033.45.51.402,W116.16.11.658 PSP YUCCA V386 PMD"
+            "sid": "CATH1"
           },
           "ZELMA": {
             "cleared_altitude": 8000,

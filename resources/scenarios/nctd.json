@@ -421,33 +421,27 @@
         "30": {
           "GRTFL": {
             "cleared_altitude": 19000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-12 N037.45.10.368,W122.18.02.427/a1400-2000/h290 GRTFL"
+            "sid": "OAK6"
           },
           "DEDHD": {
             "cleared_altitude": 19000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-12 N037.45.10.368,W122.18.02.427/a1400-2000/h290 DEDHD"
+            "sid": "OAK6"
           },
           "ORRCA": {
             "cleared_altitude": 19000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-12 N037.45.10.368,W122.18.02.427/a1400-2000/h290 ORRCA"
+            "sid": "OAK6"
           },
           "MOGEE": {
             "cleared_altitude": 19000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-12 N037.45.10.368,W122.18.02.427/a1400-2000/h290 MOGEE"
+            "sid": "OAK6"
           },
           "TIPRE": {
             "cleared_altitude": 19000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-12 N037.45.10.368,W122.18.02.427/a1400-2000/h290 TIPRE"
+            "sid": "OAK6"
           },
           "SYRAH": {
             "cleared_altitude": 19000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-12 N037.45.10.368,W122.18.02.427/a1400-2000/h290 SYRAH"
+            "sid": "OAK6"
           },
           "NTELL": {
             "cleared_altitude": 19000,
@@ -637,23 +631,19 @@
         "10R": {
           "NTELL": {
             "cleared_altitude": 3000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-28R/h098 NTELL"
+            "sid": "OAK6"
           },
           "KAYEX": {
             "cleared_altitude": 3000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-28R/h098 KAYEX"
+            "sid": "OAK6"
           },
           "KTINA": {
             "cleared_altitude": 3000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-28R/h098 KTINA"
+            "sid": "OAK6"
           },
           "SUSEY": {
             "cleared_altitude": 3000,
-            "sid": "OAK6",
-            "waypoints": "KOAK-28R/h098 SUSEY"
+            "sid": "OAK6"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 6000,
@@ -667,53 +657,43 @@
         "12": {
           "NTELL": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 NTELL"
+            "sid": "QUAKE2"
           },
           "KAYEX": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 KAYEX"
+            "sid": "QUAKE2"
           },
           "KTINA": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 KTINA"
+            "sid": "QUAKE2"
           },
           "SUSEY": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 SUSEY"
+            "sid": "QUAKE2"
           },
           "GRTFL": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 GRTFL"
+            "sid": "QUAKE2"
           },
           "DEDHD": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 DEDHD"
+            "sid": "QUAKE2"
           },
           "ORRCA": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 ORRCA"
+            "sid": "QUAKE2"
           },
           "MOGEE": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 MOGEE"
+            "sid": "QUAKE2"
           },
           "TIPRE": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 TIPRE"
+            "sid": "QUAKE2"
           },
           "SYRAH": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
-            "waypoints": "KOAK-30 N037.41.44.278,W122.12.13.886/flyover/h270 SYRAH"
+            "sid": "QUAKE2"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 5000,

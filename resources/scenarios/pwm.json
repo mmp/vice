@@ -47,8 +47,7 @@
         "29": {
           "SYR, HANAA, CAM": {
             "assigned_altitude": 3000,
-            "sid": "HSKEL4",
-            "waypoints": "ALIEH HSKEL BAUER"
+            "sid": "HSKEL4.BAUER"
           },
           "NELIE, CCC, BAF": {
             "assigned_altitude": 3000,
@@ -62,8 +61,7 @@
           },
           "SYR, HANAA, CAM": {
             "assigned_altitude": 3000,
-            "sid": "HSKEL4",
-            "waypoints": "AHRON LIZLU MRKEE ALIEH HSKEL BAUER"
+            "sid": "HSKEL4.BAUER"
           }
         }
       },

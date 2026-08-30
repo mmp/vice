@@ -446,8 +446,7 @@
         "16L": {
           "RAMAY": {
             "assigned_altitude": 3000,
-            "sid": "GABBE3",
-            "waypoints": "N038.42.20.533,W077.30.10.437/a710+ GABBE HIICH BUNZZ RAMAY"
+            "sid": "GABBE3"
           },
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
@@ -1028,8 +1027,7 @@
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-19L/h360 BUTRZ/a3000+ CLTCH KERRK"
+            "aircraft": ["jet"]
           },
           "SWANN": {
             "assigned_altitude": 3000,
@@ -1049,20 +1047,17 @@
           "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-19L/h360 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "aircraft": ["jet"]
           },
           "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-19L/h360 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "aircraft": ["jet"]
           },
           "JDUBB": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-19L/h360 HAFNR/a3000+ JDUBB"
+            "aircraft": ["jet"]
           },
           "JERES": {
             "assigned_altitude": 3000,
@@ -1082,8 +1077,7 @@
           "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-19L/h360 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "aircraft": ["jet"]
           },
           "SWANN.W": {
             "assigned_altitude": 3000,
@@ -1292,8 +1286,7 @@
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-1R/h190 BUTRZ/a3000+ CLTCH KERRK"
+            "aircraft": ["jet"]
           },
           "SWANN": {
             "assigned_altitude": 3000,
@@ -1313,20 +1306,17 @@
           "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-1R/h190 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "aircraft": ["jet"]
           },
           "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-1R/h190 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "aircraft": ["jet"]
           },
           "JDUBB": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-1R/h190 HAFNR/a3000+ JDUBB"
+            "aircraft": ["jet"]
           },
           "JERES": {
             "assigned_altitude": 3000,
@@ -1346,8 +1336,7 @@
           "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "aircraft": ["jet"],
-            "waypoints": "KIAD-1R/h190 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "aircraft": ["jet"]
           },
           "SWANN.W": {
             "assigned_altitude": 3000,

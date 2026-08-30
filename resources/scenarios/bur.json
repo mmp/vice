@@ -40,14 +40,14 @@
           "CSTRO": {
             "cleared_altitude": 13000,
             "handoff_controller": "1J",
-            "sid": "WNNDY4",
+            "sid": "WNNDY3",
             "is_rnav": true,
             "waypoints": "N033.57.10.027,W118.22.30.192 KOFAX/ho JRGSN/a6300+ WNNDY HEYJO CSTRO"
           },
           "COREZ": {
             "cleared_altitude": 13000,
             "handoff_controller": "1J",
-            "sid": "WNNDY4",
+            "sid": "WNNDY3",
             "is_rnav": true,
             "waypoints": "N033.57.10.027,W118.22.30.192 KOFAX/ho JRGSN/a6300+ WNNDY SHORS MDWAY COREZ"
           }
@@ -119,7 +119,7 @@
           "destination": "KSMF",
           "exit": "CSTRO",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO NURAY SUUTR4"
+          "route": "WNNDY3 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -145,7 +145,7 @@
           "destination": "KSEA",
           "exit": "CSTRO",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO SHIMR LKV HAWKZ8"
+          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -174,7 +174,7 @@
           "destination": "KPDX",
           "exit": "CSTRO",
           "scratchpad": "WDY",
-          "route": "WNNDY4 CSTRO SHIMR LMT MOXEE TMBRS4"
+          "route": "WNNDY3 CSTRO SHIMR LMT MOXEE TMBRS4"
         },
         {
           "airlines": [
@@ -189,7 +189,7 @@
           "destination": "KOAK",
           "exit": "COREZ",
           "scratchpad": "WDY",
-          "route": "WNNDY4 COREZ RGOOD EMZOH3"
+          "route": "WNNDY3 COREZ RGOOD EMZOH3"
         }
       ],
       "tower_list": 1
@@ -456,8 +456,7 @@
           },
           "VNY,TWINE": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-26/h213 VNY IPIHO TWINE"
+            "sid": "VNY4"
           },
           "FIM": {
             "cleared_altitude": 4000,
@@ -521,8 +520,7 @@
           },
           "VNY,TWINE": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-8/h293 VNY IPIHO TWINE"
+            "sid": "VNY4"
           },
           "FIM": {
             "cleared_altitude": 4000,
@@ -586,8 +584,7 @@
           },
           "VNY,TWINE": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-33/h213 VNY IPIHO TWINE"
+            "sid": "VNY4"
           },
           "FIM": {
             "cleared_altitude": 4000,
@@ -647,13 +644,11 @@
           },
           "ELMOO": {
             "cleared_altitude": 5000,
-            "sid": "ELMOO9",
-            "waypoints": "N034.13.17.978,W118.21.44.489/arc1.8 N034.13.07.664,W118.22.54.554 N034.10.29.818,W118.19.57.564 ELMOO/a4000+"
+            "sid": "ELMOO9"
           },
           "VNY,TWINE": {
             "cleared_altitude": 4000,
-            "sid": "VNY4",
-            "waypoints": "KBUR-15/h273 VNY IPIHO TWINE"
+            "sid": "VNY4"
           },
           "FIM": {
             "cleared_altitude": 4000,

@@ -89,17 +89,17 @@
           },
           "ARENZ": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ"
           },
           "TONCE": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-19R/h360 MCI JDOGG TONCE"
           },
           "BODYN": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-19R/h360 MCI CAYKO JTHRO ARENZ BODYN"
           },
           "TIFTO": {
@@ -141,7 +141,7 @@
           },
           "TONCE": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-19L/h020 MCI JDOGG TONCE"
           },
           "BUM": {
@@ -173,7 +173,7 @@
           },
           "TONCE": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-1R/h180 MCI JDOGG TONCE"
           },
           "BUM": {
@@ -200,17 +200,17 @@
           },
           "ARENZ": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ"
           },
           "TONCE": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-1L/h200 MCI JDOGG TONCE"
           },
           "BODYN": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ BODYN"
           },
           "TIFTO": {
@@ -267,17 +267,17 @@
           },
           "ARENZ": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ"
           },
           "TONCE": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-1L/h200 MCI JDOGG TONCE"
           },
           "BODYN": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ BODYN"
           },
           "TIFTO": {
@@ -314,17 +314,17 @@
           },
           "ARENZ": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-27/h270 MCI CAYKO JTHRO ARENZ"
           },
           "TONCE": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-27/h270 MCI JDOGG TONCE"
           },
           "BODYN": {
             "cleared_altitude": 10000,
-            "sid": "ROYAL1",
+            "sid": "ROYAL2",
             "waypoints": "KMCI-27/h270 MCI CAYKO JTHRO ARENZ BODYN"
           },
           "TIFTO": {
@@ -349,7 +349,7 @@
           "exit": "BODYN",
           "destination": "KDTW",
           "altitude": 33000,
-          "route": "ROYAL1 BODYN BDF J26 JOT SAMPL VCTRZ2",
+          "route": "ROYAL2 BODYN BDF J26 JOT SAMPL VCTRZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -361,7 +361,7 @@
           "exit": "TONCE",
           "destination": "KMKE",
           "altitude": 37000,
-          "route": "ROYAL1 TONCE CID DBQ DLL BAE",
+          "route": "ROYAL2 TONCE CID DBQ DLL BAE",
           "airlines": [
             {
               "icao": "SWA",
@@ -385,7 +385,7 @@
           "exit": "ARENZ",
           "destination": "KORD",
           "altitude": 35000,
-          "route": "ROYAL1 ARENZ IRK BENKY6",
+          "route": "ROYAL2 ARENZ IRK BENKY6",
           "airlines": [
             {
               "icao": "ENY",
@@ -409,7 +409,7 @@
           "exit": "BODYN",
           "destination": "KSTL",
           "altitude": 33000,
-          "route": "ROYAL1 BODYN SKOVE LORLE3",
+          "route": "ROYAL2 BODYN SKOVE LORLE3",
           "airlines": [
             {
               "icao": "SWA",
@@ -421,7 +421,7 @@
           "exit": "TONCE",
           "destination": "KMSP",
           "altitude": 35000,
-          "route": "ROYAL1 TONCE ROKKK NITZR3",
+          "route": "ROYAL2 TONCE ROKKK NITZR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -673,7 +673,7 @@
           "exit": "BODYN",
           "destination": "KBOS",
           "altitude": 37000,
-          "route": "ROYAL1 BODYN BDF JOT SAMPL KG78O ZOHAN NOSIK YYZ TULEG PONCT JFUND2",
+          "route": "ROYAL2 BODYN BDF JOT SAMPL KG78O ZOHAN NOSIK YYZ TULEG PONCT JFUND2",
           "airlines": [
             {
               "icao": "DAL",
@@ -709,7 +709,7 @@
           "exit": "BODYN",
           "destination": "KORD",
           "altitude": 31000,
-          "route": "ROYAL1 BODYN LOAMY BENKY6",
+          "route": "ROYAL2 BODYN LOAMY BENKY6",
           "airlines": [
             {
               "icao": "ENY",
@@ -733,7 +733,7 @@
           "exit": "TONCE",
           "destination": "KMSP",
           "altitude": 33000,
-          "route": "ROYAL1 TONCE ROKKK NITZR3",
+          "route": "ROYAL2 TONCE ROKKK NITZR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -745,7 +745,7 @@
           "exit": "BODYN",
           "destination": "KDTW",
           "altitude": 33000,
-          "route": "ROYAL1 BODYN BDF J26 JOT SAMPL VCTRZ2",
+          "route": "ROYAL2 BODYN BDF J26 JOT SAMPL VCTRZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -889,7 +889,7 @@
           "exit": "BODYN",
           "destination": "KORD",
           "altitude": 27000,
-          "route": "ROYAL1 BODYN LOAMY BENKY6",
+          "route": "ROYAL2 BODYN LOAMY BENKY6",
           "airlines": [
             {
               "icao": "AAL",
@@ -901,7 +901,7 @@
           "exit": "ARENZ",
           "destination": "KMDW",
           "altitude": 31000,
-          "route": "ROYAL1 ARENZ IRK ENDEE6",
+          "route": "ROYAL2 ARENZ IRK ENDEE6",
           "airlines": [
             {
               "icao": "SWA",
@@ -973,7 +973,7 @@
           "exit": "TONCE",
           "destination": "KMSP",
           "altitude": 33000,
-          "route": "ROYAL1 TONCE ROKKK NITZR3",
+          "route": "ROYAL2 TONCE ROKKK NITZR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -1141,7 +1141,7 @@
           "exit": "ARENZ",
           "destination": "KMDW",
           "altitude": 31000,
-          "route": "ROYAL1 ARENZ IRK ENDEE6",
+          "route": "ROYAL2 ARENZ IRK ENDEE6",
           "airlines": [
             {
               "icao": "SWA",

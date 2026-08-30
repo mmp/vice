@@ -223,7 +223,6 @@
           "RZS.V": {
             "assigned_altitude": 13000,
             "sid": "VTU8",
-            "waypoints": "KLAX-7L N033.54.54.195,W118.38.06.000/h251/@IOSS-D25.0+/rd RZS",
             "departure_controller": "6N"
           },
           "LAS": {

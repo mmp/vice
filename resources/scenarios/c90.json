@@ -4709,33 +4709,27 @@
         "9": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KARR-27/h090 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KARR-27/h090 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KARR-27/h090 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KARR-27/h090 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KARR-27/h090 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KARR-27/h090 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -4765,33 +4759,27 @@
         "27": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KARR-9/h270 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KARR-9/h270 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KARR-9/h270 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KARR-9/h270 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KARR-9/h270 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KARR-9/h270 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -4916,33 +4904,27 @@
         "20L": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KDPA-2R/h195 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KDPA-2R/h195 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KDPA-2R/h195 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KDPA-2R/h195 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KDPA-2R/h195 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KDPA-2R/h195 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -4972,33 +4954,27 @@
         "20R": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KDPA-2L/h195 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KDPA-2L/h195 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KDPA-2L/h195 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KDPA-2L/h195 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KDPA-2L/h195 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KDPA-2L/h195 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5028,33 +5004,27 @@
         "2R": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KDPA-20L/h015 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KDPA-20L/h015 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KDPA-20L/h015 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KDPA-20L/h015 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KDPA-20L/h015 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KDPA-20L/h015 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5084,33 +5054,27 @@
         "2L": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KDPA-20R/h015 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KDPA-20R/h015 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KDPA-20R/h015 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KDPA-20R/h015 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KDPA-20R/h015 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KDPA-20R/h015 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5241,33 +5205,27 @@
         "2": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KLOT-20/h016 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KLOT-20/h016 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KLOT-20/h016 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KLOT-20/h016 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KLOT-20/h016 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KLOT-20/h016 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5297,33 +5255,27 @@
         "9": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KLOT-27/h090 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KLOT-27/h090 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KLOT-27/h090 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KLOT-27/h090 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KLOT-27/h090 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KLOT-27/h090 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5353,33 +5305,27 @@
         "20": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KLOT-2/h196 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KLOT-2/h196 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KLOT-2/h196 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KLOT-2/h196 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KLOT-2/h196 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KLOT-2/h196 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5409,33 +5355,27 @@
         "27": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KLOT-9/h270 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KLOT-9/h270 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KLOT-9/h270 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KLOT-9/h270 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KLOT-9/h270 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KLOT-9/h270 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5566,33 +5506,27 @@
         "12": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KGYY-30/h120 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KGYY-30/h120 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KGYY-30/h120 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KGYY-30/h120 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KGYY-30/h120 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KGYY-30/h120 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5627,33 +5561,27 @@
         "30": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL6",
-            "waypoints": "KGYY-12/h300 ACITO ADELL AKMIE ARLYN"
+            "sid": "ADELL8"
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR6",
-            "waypoints": "KGYY-12/h300 BACEN BLOKR"
+            "sid": "BLOKR8"
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN6",
-            "waypoints": "KGYY-12/h300 CMSKY CARYN"
+            "sid": "CARYN8"
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY6",
-            "waypoints": "KGYY-12/h300 DENNT DARCY DREGS"
+            "sid": "DARCY8"
           },
           "ELANR": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KGYY-12/h300 EARND"
+            "sid": "ELANR9"
           },
           "ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR6",
-            "waypoints": "KGYY-12/h300 EARND ELANR EMMLY"
+            "sid": "ELANR9"
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,

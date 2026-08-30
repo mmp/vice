@@ -63,53 +63,43 @@
         "34L": {
           "ZEMAM": {
             "cleared_altitude": 3000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 ZEMAM"
+            "sid": "EUG1"
           },
           "SNOKY": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 SNOKY"
+            "sid": "EUG1"
           },
           "LMT.J": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 LMT"
+            "sid": "EUG1"
           },
           "LMT.T": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 LMT"
+            "sid": "EUG1"
           },
           "CHEEZ": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 CHEEZ"
+            "sid": "EUG1"
           },
           "HOCUM": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 HOCUM"
+            "sid": "EUG1"
           },
           "CITYY": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 CITYY"
+            "sid": "EUG1"
           },
           "BALDY": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 BALDY"
+            "sid": "EUG1"
           },
           "RBG": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 RBG"
+            "sid": "EUG1"
           },
           "YERIN": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 YERIN"
+            "sid": "EUG1"
           },
           "UBG.8": {
             "cleared_altitude": 8000,
@@ -118,23 +108,19 @@
           },
           "OTH.7": {
             "cleared_altitude": 7000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 OTH"
+            "sid": "EUG1"
           },
           "CVO.4": {
             "cleared_altitude": 4000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 CVO"
+            "sid": "EUG1"
           },
           "ONP.6": {
             "cleared_altitude": 6000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 ONP"
+            "sid": "EUG1"
           },
           "DSD.J": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-16R/h344 DSD"
+            "sid": "EUG1"
           },
           "UBG.4": {
             "cleared_altitude": 4000,
@@ -150,53 +136,43 @@
         "16R": {
           "ZEMAM": {
             "cleared_altitude": 3000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 ZEMAM"
+            "sid": "EUG1"
           },
           "SNOKY": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 SNOKY"
+            "sid": "EUG1"
           },
           "LMT.T": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 LMT"
+            "sid": "EUG1"
           },
           "LMT.J": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 LMT"
+            "sid": "EUG1"
           },
           "CHEEZ": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 CHEEZ"
+            "sid": "EUG1"
           },
           "HOCUM": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 HOCUM"
+            "sid": "EUG1"
           },
           "CITYY": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 CITYY"
+            "sid": "EUG1"
           },
           "BALDY": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 BALDY"
+            "sid": "EUG1"
           },
           "RBG": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 RBG"
+            "sid": "EUG1"
           },
           "YERIN": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 YERIN"
+            "sid": "EUG1"
           },
           "UBG.8": {
             "cleared_altitude": 8000,
@@ -205,23 +181,19 @@
           },
           "OTH.7": {
             "cleared_altitude": 7000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 OTH"
+            "sid": "EUG1"
           },
           "CVO.4": {
             "cleared_altitude": 4000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 CVO"
+            "sid": "EUG1"
           },
           "ONP.6": {
             "cleared_altitude": 6000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 ONP"
+            "sid": "EUG1"
           },
           "DSD.J": {
             "cleared_altitude": 9000,
-            "sid": "EUG1",
-            "waypoints": "KEUG-34L/h164 DSD"
+            "sid": "EUG1"
           },
           "UBG.4": {
             "cleared_altitude": 4000,

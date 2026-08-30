@@ -38,13 +38,11 @@
         "15": {
           "GIPPL": {
             "cleared_altitude": 4000,
-            "sid": "LGRHD3",
-            "waypoints": "KCHS-33 HALEE LGRHD"
+            "sid": "LGRHD3"
           },
           "LGRHD": {
             "cleared_altitude": 4000,
-            "sid": "LGRHD3",
-            "waypoints": "KCHS-33 HALEE"
+            "sid": "LGRHD3"
           },
           "VANNC,JYMSE": {
             "cleared_altitude": 4000,

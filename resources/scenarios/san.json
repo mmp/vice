@@ -431,57 +431,49 @@
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
+            "aircraft": ["jet", "turboprop"]
           },
           "LAX": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
+            "aircraft": ["jet", "turboprop"]
           },
           "PADRZ.C": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ"
+            "aircraft": ["jet", "turboprop"]
           },
           "PADRZ.P": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ"
+            "aircraft": ["jet", "turboprop"]
           },
           "EHF": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+            "aircraft": ["jet", "turboprop"]
           },
           "OROSZ": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+            "aircraft": ["jet", "turboprop"]
           },
           "IKAYE": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ IKAYE"
+            "aircraft": ["jet", "turboprop"]
           },
           "CHKNN": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"],
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN"
+            "aircraft": ["jet", "turboprop"]
           }
         },
         "10L": {

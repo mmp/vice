@@ -250,8 +250,7 @@
         "16": {
           "READE,DRAIK,SANNY": {
             "assigned_altitude": 5000,
-            "sid": "KALLI7",
-            "waypoints": "KRIC-34 N037.29.34.951,W077.18.15.639/a687+ SUGGR/a5000+ KALLI READE"
+            "sid": "KALLI7"
           },
           "BNTLY": {
             "assigned_altitude": 3000,
@@ -275,8 +274,7 @@
         "20": {
           "READE,DRAIK,SANNY": {
             "assigned_altitude": 5000,
-            "sid": "KALLI7",
-            "waypoints": "KRIC-2 N037.29.43.122,W077.19.49.736/a687+ SUGGR/a5000+ KALLI READE"
+            "sid": "KALLI7"
           },
           "BNTLY": {
             "assigned_altitude": 3000,

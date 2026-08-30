@@ -479,7 +479,7 @@
         "departure_assignments": {
           "KHHR": "6S",
           "KLAX/GARDY4": "6N",
-          "KLAX/WNNDY4": "6N",
+          "KLAX/WNNDY3": "6N",
           "KLAX/GMN7": "6N",
           "KLAX/LAXX1": "6S",
           "KLAX/TRTON3": "6S",
@@ -507,7 +507,7 @@
         "departure_assignments": {
           "KHHR": "6S",
           "KLAX/GARDY4": "6N",
-          "KLAX/WNNDY4": "6N",
+          "KLAX/WNNDY3": "6N",
           "KLAX/GMN7": "6N",
           "KLAX/LAXX1": "6S",
           "KLAX/TRTON3": "6S",

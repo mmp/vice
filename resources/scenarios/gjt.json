@@ -24,7 +24,7 @@
         "11": {
           "SQUAT,PACES,DIRDY,BRICK,DBL": {
             "assigned_altitude": 14000,
-            "sid": "JNC8",
+            "sid": "JNC1",
             "waypoints": "_GJT29/h150"
           },
           "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
@@ -44,7 +44,7 @@
           },
           "SQUAT,PACES,DIRDY,BRICK,DBL": {
             "assigned_altitude": 14000,
-            "sid": "JNC8",
+            "sid": "JNC1",
             "waypoints": "_GJT11/h290"
           },
           "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
@@ -54,7 +54,7 @@
           },
           "HAQHY": {
             "assigned_altitude": 14000,
-            "sid": "NOKXI1",
+            "sid": "NOKXI2",
             "waypoints": "_GJT11/h290"
           }
         }

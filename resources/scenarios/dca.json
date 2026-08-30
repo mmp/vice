@@ -647,8 +647,7 @@
           },
           "DQO,AGARD": {
             "cleared_altitude": 5000,
-            "sid": "DOCTR5",
-            "waypoints": "LEAVY FIMBI/a1500+/s230- MOTBE GDYUP HMBGR DOCTR/a5000+"
+            "sid": "DOCTR5"
           },
           "JERES,BUFFR": {
             "cleared_altitude": 5000,
@@ -672,8 +671,7 @@
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI6",
-            "waypoints": "LEAVY FIMBI/a1500+/s230- MOTBE GDYUP RIISE SOOKI/a5000+ SWANN"
+            "sid": "SOOKI6"
           },
           "RAMAY": {
             "cleared_altitude": 5000,
