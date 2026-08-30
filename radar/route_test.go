@@ -353,3 +353,25 @@ func TestLongArc(t *testing.T) {
 		t.Errorf("arc doesn't go around: extends only to x=%v", x1)
 	}
 }
+
+func TestCourseTriggerFromDivergingHeading(t *testing.T) {
+	w := testWalker(RouteDrawContext{})
+	w.walk([]av.Waypoint{
+		fixAt("A", 0, -5, av.WaypointActionGroup{
+			Actions: heading(135),
+			Until:   av.WaypointActionTermination{Type: av.WaypointActionCourse, Course: 90},
+		}),
+		fixAt("B", 10, 0),
+	})
+	// Heading 135 from south of the course diverges, so the walker turns to
+	// the 045 intercept and joins the course short of B, rolling out east.
+	p := labelAt(t, w, "@crs090")
+	if math.Abs(p[1]) > 0.5 {
+		t.Errorf("trigger not on the course: %v", p)
+	}
+	if p[0] <= 0 || p[0] >= 10 {
+		t.Errorf("trigger not between A and B: %v", p)
+	}
+	expectNear(t, "inbound to B", w.fixes[1].inbound, [2]float32{1, 0}, 0.02)
+	expectNear(t, "pen", w.pen.p, [2]float32{10, 0}, 0.05)
+}

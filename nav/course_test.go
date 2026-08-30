@@ -141,3 +141,89 @@ func TestCourseToFixInterceptWithWind(t *testing.T) {
 	f.SetWind(float32(math.NormalizeHeading(course-90)), 40)
 	checkJoinsCourse(t, f, "WAVEY", heading, course)
 }
+
+// A heading 40 degrees to the right of a course the aircraft is already
+// right of diverges from it; after taking up the heading the aircraft must
+// turn back to meet the course at 45 degrees.
+func TestCourseInterceptFromDivergingHeading(t *testing.T) {
+	direct := skorrWaveyCourse(t)
+	heading := math.NormalizeHeading(direct + 40)
+	course := math.NormalizeHeading(direct + 20)
+	f := newSkorrWaveyFlight(t, fmt.Sprintf("SKORR/h%d/@crs%d WAVEY", int(heading), int(course)))
+	checkJoinsCourse(t, f, "WAVEY", math.NormalizeHeading(course-45), course)
+}
+
+// A heading that converges on the course at only a few degrees from miles
+// away would cross it far beyond WAVEY; the aircraft turns to a 45 degree
+// intercept rather than dragging in at a glancing angle.
+func TestCourseInterceptFromShallowHeading(t *testing.T) {
+	direct := skorrWaveyCourse(t)
+	heading := math.NormalizeHeading(direct + 15)
+	course := math.NormalizeHeading(direct + 20)
+	f := newSkorrWaveyFlight(t, fmt.Sprintf("SKORR/h%d/@crs%d WAVEY", int(heading), int(course)))
+	checkJoinsCourse(t, f, "WAVEY", math.NormalizeHeading(course-45), course)
+}
+
+// The ELMOO9 departure's runway 26 transition from the CIFP,
+// KBUR-8/t259/@a1178+/l113/@crs095 ELMOO: the left turn to 113 rolls out
+// south of the 095 course to ELMOO pointing away from it. The aircraft must
+// continue the turn around to the 45 degree intercept rather than settling
+// on 113, then roll out on the course and cross ELMOO.
+func TestCourseInterceptElmooRunway26(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		// The KBUR-8 runway fix as a lat-long, since the test locator only
+		// resolves database fixes.
+		Waypoints:        "N034.11.52.480,W118.22.08.910/t259/@a1178+/l113/@crs095 ELMOO/a4000+",
+		DepartureAirport: "KBUR",
+		ArrivalAirport:   "KLAX",
+		AircraftType:     "A320",
+		InitialAltitude:  800,
+		InitialSpeed:     160,
+		ClearedAltitude:  5000,
+	})
+	f.nav.FlightState.Heading = 259
+	f.nav.FlightState.InitialDepartureClimb = true
+	f.nav.FinalAltitude = 5000
+
+	const course = 95
+	held113, sawIntercept, flying := 0, false, false
+	joinTick := -1
+	var maxOffsetOnCourse float32
+	f.BeforeFix("ELMOO", func(f *FlightTest) {
+		if math.HeadingDifference(f.nav.FlightState.Heading, 113) < 1 {
+			held113++
+		}
+		if len(f.nav.Heading.Maneuvers) > 0 &&
+			f.nav.Heading.Maneuvers[0].String() == "fly heading 050 until intercept 095 course to ELMOO" {
+			sawIntercept = true
+		}
+		if !flying {
+			flying = len(f.nav.Heading.Maneuvers) > 0
+		} else if joinTick == -1 {
+			if len(f.nav.Heading.Maneuvers) == 0 {
+				joinTick = f.tick
+			}
+		} else if f.tick > joinTick+60 {
+			maxOffsetOnCourse = max(maxOffsetOnCourse, math.Abs(courseOffset(f, "ELMOO", course)))
+		}
+	})
+	passed := false
+	f.AtFix("ELMOO", func(f *FlightTest) { passed = true })
+	f.Run()
+
+	if held113 > 5 {
+		t.Errorf("aircraft settled on heading 113 for %d ticks instead of continuing to the intercept", held113)
+	}
+	if !sawIntercept {
+		t.Errorf("aircraft never turned to the 45 degree intercept of the 095 course")
+	}
+	if joinTick == -1 {
+		t.Fatal("aircraft never joined the 095 course to ELMOO")
+	}
+	if maxOffsetOnCourse > 0.5 {
+		t.Errorf("aircraft strayed %.2fnm from the course after joining it", maxOffsetOnCourse)
+	}
+	if !passed {
+		t.Errorf("aircraft never crossed ELMOO")
+	}
+}

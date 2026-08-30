@@ -28,6 +28,7 @@ func TestWalkCIFPRoutes(t *testing.T) {
 	notable := map[string]bool{
 		"KPHX BALDY3 RWY25L": true, "KPHX BROAK1 RWY25L": true, "KSAN PEBLE6 RWY27": true,
 		"KSFO GAPP7 RWY1L": true, "KLAX GMN7 RWY24L": true, "KBUR ELMOO9 RWY33": true,
+		"KBUR ELMOO9 RWY26": true,
 	}
 	// Approximate magnetic variation, west positive as vice takes it.
 	magneticVariation := map[string]float32{"KPHX": -10, "KSAN": -11, "KSFO": -13, "KLAX": -12, "KBUR": -12, "KEWR": 13, "KJFK": 13, "KPBF": 1, "KJAX": 6}
@@ -52,6 +53,9 @@ func TestWalkCIFPRoutes(t *testing.T) {
 				if strings.HasSuffix(l.text, "?") {
 					indeterminate++
 					t.Logf("indeterminate: %s: %s", name, l.text)
+					if notable[name] {
+						t.Errorf("%s: indeterminate trigger %s", name, l.text)
+					}
 				}
 				if notable[name] {
 					t.Logf("%s: %s at %.1fnm from the start", name, l.text, math.Distance2f(start, l.p))

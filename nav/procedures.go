@@ -86,9 +86,17 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 	case UntilIntercept:
 		// Turn as soon as the aircraft will reach the course, even if it is
 		// predicted to overshoot: the tick at which the predicted rollout is
-		// clean is easily skipped for a tight intercept, and rolling out past
-		// the course beats flying through it and never turning at all.
+		// clean is easily skipped for a tight intercept. While the aircraft
+		// is still turning onto the leg's heading, though, a crossing that
+		// would be a major overshoot isn't the intercept--a turn through the
+		// course, as when a departure's turn crosses it nearly
+		// perpendicular--so the turn continues and
+		// turnToInterceptIfHeadingMisses joins the course from the far side.
 		r, reaches := nav.shouldTurnToIntercept(mc.Fix, mc.InterceptCourse, mc.InterceptTurn, wxs)
+		if r == turnToInterceptMajorOvershoot &&
+			math.HeadingDifference(nav.FlightState.Heading, targetHdg) >= 1 {
+			return false
+		}
 		return reaches && r != turnToInterceptWait
 	case UntilControllerIntervention:
 		return false
@@ -340,6 +348,72 @@ func oppositeTurnDirection(turn av.TurnDirection) av.TurnDirection {
 	return util.Select(turn == av.TurnRight, av.TurnLeft, av.TurnRight)
 }
 
+// An established heading that would meet its course at less than
+// minInterceptAngle degrees while more than shallowInterceptOffset nm away
+// from it joins too far out to be useful; the aircraft turns to a 45 degree
+// intercept instead.
+const (
+	minInterceptAngle      = 10 // degrees
+	shallowInterceptOffset = 2  // nm
+)
+
+// turnToInterceptIfHeadingMisses checks an UntilIntercept maneuver flying a
+// plain heading or track once the aircraft is established on it: if it would
+// miss the course--diverging from or paralleling it, crossing it only beyond
+// the fix, or converging at a glancing angle from well off it--the maneuver
+// is retargeted to meet the course at 45 degrees, as a pilot would when a
+// charted heading doesn't work out. It reports whether it retargeted the
+// maneuver; mid-turn geometry is transient, so nothing is considered until
+// the aircraft is on the heading.
+func (nav *Nav) turnToInterceptIfHeadingMisses(m *LateralManeuver, targetHdg math.MagneticHeading, wxs wx.Sample) bool {
+	if m.Until.Type != UntilIntercept || !m.FlyToward.IsZero() || !m.TrackFrom.IsZero() {
+		return false
+	}
+	fs := &nav.FlightState
+	if math.HeadingDifference(fs.Heading, targetHdg) >= 1 {
+		return false
+	}
+
+	p := math.LL2NM(fs.Position, fs.NmPerLongitude)
+	f := math.LL2NM(m.Until.Fix, fs.NmPerLongitude)
+	cdir := math.HeadingVector(math.MagneticToTrue(m.Until.InterceptCourse, fs.MagneticVariation))
+
+	// The aircraft's ground velocity, as updatePositionAndGS integrates it:
+	// the heading flown at TAS, displaced by the wind once airborne.
+	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
+		nav.TAS(wxs.Temperature())/3600)
+	if nav.IsAirborne() {
+		v = math.Add2f(v, wxs.WindVec())
+	}
+
+	// The course leads to the fix, so the track must cross it short of the
+	// fix; an outbound course extends beyond the fix instead. 500nm covers
+	// anything in range, as in reachesRadial.
+	seg0, seg1 := math.Sub2f(f, math.Scale2f(cdir, 500)), f
+	if m.Until.InterceptOutbound {
+		seg0, seg1 = f, math.Add2f(f, math.Scale2f(cdir, 500))
+	}
+	_, _, _, crosses := math.RaySegmentIntersect(p, v, seg0, seg1)
+
+	track := math.TrueToMagnetic(math.VectorHeading(v), fs.MagneticVariation)
+	d := math.SignedPointLineDistance(p, f, math.Add2f(f, cdir))
+	shallow := math.HeadingDifference(track, m.Until.InterceptCourse) < minInterceptAngle &&
+		math.Abs(d) > shallowInterceptOffset
+	if crosses && !shallow {
+		return false
+	}
+
+	// Turn to meet the course at 45 degrees from this side of it.
+	intercept := math.OffsetHeading(m.Until.InterceptCourse, util.Select(d > 0, -45, 45))
+	if m.Track != 0 {
+		m.Track = intercept
+	} else {
+		m.Heading = intercept
+	}
+	m.Turn = av.TurnClosest
+	return true
+}
+
 type maneuverResult struct {
 	heading   math.MagneticHeading
 	turn      av.TurnDirection
@@ -353,6 +427,9 @@ type maneuverResult struct {
 func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTime Time) maneuverResult {
 	m := &(*maneuvers)[0]
 	heading := m.targetHeading(nav, wxs)
+	if nav.turnToInterceptIfHeadingMisses(m, heading, wxs) {
+		heading = m.targetHeading(nav, wxs)
+	}
 
 	if m.Until.Done(nav, simTime, wxs, heading) {
 		*maneuvers = (*maneuvers)[1:]

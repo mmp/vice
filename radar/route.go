@@ -142,6 +142,13 @@ const (
 	tickHalfLength         = 0.3 // nm each side of a trigger point
 	arrowLength            = 0.5 // nm
 	labelOffset            = 8   // pixels from the line to its label
+
+	// A leg whose heading would meet its course at less than
+	// minInterceptAngle degrees while more than shallowInterceptOffset nm
+	// from it misses it and turns to a 45 degree intercept, as nav's
+	// turnToInterceptIfHeadingMisses does.
+	minInterceptAngle      = 10 // degrees
+	shallowInterceptOffset = 2  // nm
 )
 
 // routePen is the walker's state along the route, in nm coordinates.
@@ -382,6 +389,19 @@ func (w *routeWalker) flyGroup(g av.WaypointActionGroup, next *av.WaypointAction
 		w.turnTo(dir, g.Actions.Heading.Turn)
 		t, mark, ok = w.triggerDistance(until, dir)
 	}
+	if mark.kind == markCourse && w.missesCourse(ok, dir, mark.dir) {
+		// The heading would miss the course: as nav does, turn to meet it
+		// at 45 degrees from this side of it.
+		right := math.Dot(math.Sub2f(w.pen.p, w.nextFix), rightNormal(mark.dir)) > 0
+		dir = rotate(mark.dir, util.Select(right, float32(-45), 45))
+		w.turnTo(dir, av.TurnClosest)
+		t, mark, ok = w.triggerDistance(until, dir)
+		if !ok {
+			// The intercept turn itself crossed the course, so the
+			// aircraft rolls out on it about here.
+			t, ok = 0, true
+		}
+	}
 	text := until.Encoded()
 	if !ok {
 		t, text = indeterminateLegLength, text+"?"
@@ -503,8 +523,11 @@ func (w *routeWalker) triggerDistance(until av.WaypointActionTermination, dir [2
 		return t, triggerMark{kind: markRadial, center: f, dir: rdir}, ok
 
 	case av.WaypointActionCourse:
+		// The course leads to the next fix, so crossing its line beyond
+		// the fix doesn't count, as in nav.
 		cdir := w.headingVector(until.Course)
-		_, t, ok := w.lineIntersection(dir, w.nextFix, cdir)
+		_, t, _, ok := math.RaySegmentIntersect(w.pen.p, dir,
+			math.Sub2f(w.nextFix, math.Scale2f(cdir, 500)), w.nextFix)
 		return t, triggerMark{kind: markCourse, dir: cdir}, ok
 
 	default:
@@ -531,6 +554,17 @@ func (w *routeWalker) dmeTriggerDistance(until av.WaypointActionTermination, dir
 		return 0, mark, false
 	}
 	return max(t0, 0), mark, true
+}
+
+// missesCourse reports whether a course trigger's leg along dir misses its
+// course: it never crosses it short of the next fix (ok is false), or it
+// converges at a glancing angle from well off it.
+func (w *routeWalker) missesCourse(ok bool, dir, cdir [2]float32) bool {
+	if !ok {
+		return true
+	}
+	off := math.Abs(math.SignedPointLineDistance(w.pen.p, w.nextFix, math.Add2f(w.nextFix, cdir)))
+	return math.Abs(signedTurn(dir, cdir)) < minInterceptAngle && off > shallowInterceptOffset
 }
 
 // lineIntersection returns where the ray from the pen along dir meets the

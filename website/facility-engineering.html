@@ -901,6 +901,9 @@
                     <td>Triggers when the aircraft should turn in order to fly the given magnetic course to the next fix on
                       the route. This is how to express procedures that
                       read like "fly heading 200, then track 220 to WAVEY": <code>RNGRR/h200/@crs220 WAVEY</code>.
+                      If the heading being flown would miss the course&mdash;it diverges from or parallels it, would
+                      cross it only beyond the fix, or converges at a glancing angle from well off it&mdash;the
+                      aircraft turns to intercept the course at a 45 degree angle instead.
                       <code>@crs</code> must be the last trigger at a fix, and the fix must be followed by another fix
                       on the route for the course to lead to.
                     </td>
