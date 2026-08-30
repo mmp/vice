@@ -34,90 +34,80 @@
       "callsign": "OQU_TWR",
       "frequency": 125650,
       "radio_name": "Quonset Tower"
+    },
+    "1E": {
+      "callsign": "EWB_TWR",
+      "frequency": 118100,
+      "radio_name": "New Bedford Tower"
+    },
+    "1G": {
+      "callsign": "GON_TWR",
+      "frequency": 125600,
+      "radio_name": "Groton Tower"
     }
   },
   "facility_adaptations": {
+    "weather_station": "KPVD",
     "configurations": {
-      "05X": {
+      "23X": {
         "inbound_assignments": {
           "GON": "1A",
           "JORDN": "1A",
-          "WIPOR": "1A"
-        },
-        "departure_assignments": {
-          "KPVD": "1A"
-        },
-        "default_consolidation": {
-          "1A": []
-        }
-      },
-      "23X": {
-        "inbound_assignments": {
-          "GON": "1D",
-          "JORDN": "1D",
-          "JUMPR": "1D",
-          "PEAKE": "1D",
-          "WIPOR": "1D"
+          "JUMPR": "1A",
+          "PEAKE": "1A",
+          "WIPOR": "1A",
+          "SARDI1": "1A",
+          "BID28": "1A",
+          "SAT_SFZ": "1D",
+          "SAT_LZD": "1D",
+          "SAT_WST": "1H",
+          "SAT_UUU": "1N",
+          "SAT_TAN": "1N",
+          "BID_LOCAL": "1A"
         },
         "departure_assignments": {
           "KEWB": "1A",
           "KOQU": "1A",
-          "KPVD": "1A"
+          "KPVD": "1A",
+          "KGON": "1A",
+          "KBID": "1A",
+          "KSFZ": "1D",
+          "KLZD": "1D",
+          "KWST": "1H",
+          "KUUU": "1N",
+          "KTAN": "1N"
         },
         "default_consolidation": {
-          "1D": ["1A"]
+          "1A": ["1D", "1H", "1N"]
         }
       },
-      "21X": {
+      "05X": {
         "inbound_assignments": {
-          "PQ_OQU_2316_COMBINED": "1D",
-          "PQ_PVD_2316_COMBINED": "1D"
+          "GON": "1A",
+          "JORDN": "1A",
+          "WIPOR": "1A",
+          "SARDI1": "1A",
+          "BID10": "1A",
+          "SAT_SFZ": "1D",
+          "SAT_LZD": "1D",
+          "SAT_WST": "1H",
+          "SAT_UUU": "1N",
+          "SAT_TAN": "1N",
+          "BID_LOCAL": "1A"
         },
         "departure_assignments": {
-          "KOQU": "1D",
-          "KPVD": "1D"
+          "KPVD": "1A",
+          "KEWB": "1A",
+          "KGON": "1A",
+          "KBID": "1A",
+          "KSFZ": "1D",
+          "KLZD": "1D",
+          "KWST": "1H",
+          "KUUU": "1N",
+          "KTAN": "1N"
         },
         "default_consolidation": {
-          "1D": []
-        }
-      },
-      "PVD": {
-        "inbound_assignments": {
-          "PQ_OQU_2316": "1D",
-          "PQ_PVD_2316": "1A"
-        },
-        "departure_assignments": {
-          "KOQU": "1D",
-          "KPVD": "1D"
-        },
-        "default_consolidation": {
-          "1D": ["1A"]
-        }
-      },
-      "51X": {
-        "inbound_assignments": {
-          "PQ_OQU_0516": "1D",
-          "PQ_PVD_0516": "1D"
-        },
-        "departure_assignments": {
-          "KOQU": "1A",
-          "KPVD": "1D"
-        },
-        "default_consolidation": {
-          "1A": ["1D"]
-        }
-      },
-      "53X": {
-        "inbound_assignments": {
-          "PQ_OQU_0534": "1A",
-          "PQ_PVD_0534": "1A"
-        },
-        "departure_assignments": {
-          "KOQU": "1A",
-          "KPVD": "1D"
-        },
-        "default_consolidation": {
-          "1A": ["1D"]
+          "1A": ["1D", "1H", "1N"]
         }
       }
     },
@@ -160,7 +150,8 @@
       "PUT": "PUT",
       "PVD": "PUT",
       "PVD_PUT": "PUT",
-      "JUMPR": "7TN"
+      "JUMPR": "7TN",
+      "KGON": "GON"
     },
     "significant_points": {
       "PUT": {},
@@ -169,7 +160,8 @@
       },
       "PEAKE": {
         "short_name": "DNE"
-      }
+      },
+      "GON": {}
     },
     "video_map_file": "videomaps/ZBW-PVD.mappack",
     "areas": {
@@ -232,22 +224,20 @@
     "lists": {
       "coordination": [
         {
-          "name": ".     PVD D DEP",
-          "id": "D",
-          "airports": ["KPVD"]
-        },
-        {
-          "name": ".     EWB DEP",
-          "id": "N",
-          "airports": ["KEWB"]
-        },
-        {
           "name": ".     OQU DEP",
           "id": "Q",
           "airports": ["KOQU"]
+        },
+        {
+          "name": ".     SAT DEP",
+          "id": "S",
+          "airports": ["KSFZ", "KLZD", "KWST", "KUUU", "KTAN", "KBID"]
         }
       ],
-      "ssa": { "system_altimeter": "KPVD", "altimeters": ["KPVD"] }
+      "ssa": {
+        "system_altimeter": "KPVD",
+        "altimeters": ["KPVD", "KEWB", "KGON", "KOQU"]
+      }
     },
     "stars_macros": [
       {
