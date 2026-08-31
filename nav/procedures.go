@@ -47,9 +47,12 @@ type ManeuverComplete struct {
 	// the distance if set, else at or below / within.
 	AtOrAbove bool
 
-	// UntilRadial: the radial of Fix to cross and the fix's name, for Summary.
-	Radial    math.MagneticHeading
-	RadialFix string
+	// UntilRadial: the radial of Fix to cross, the variation it is
+	// referenced to (the navaid's station declination), and the fix's name,
+	// for Summary.
+	Radial          math.MagneticHeading
+	RadialVariation float32
+	RadialFix       string
 
 	// UntilIntercept: inbound course to intercept and turn direction for the intercept turn.
 	InterceptCourse   math.MagneticHeading
@@ -116,7 +119,7 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 		// one direction only, so crossing the reciprocal doesn't count.
 		nmPerLongitude := nav.FlightState.NmPerLongitude
 		f := math.LL2NM(mc.Fix, nmPerLongitude)
-		dir := math.HeadingVector(math.MagneticToTrue(mc.Radial, nav.FlightState.MagneticVariation))
+		dir := math.HeadingVector(math.MagneticToTrue(mc.Radial, mc.RadialVariation))
 		f1 := math.Add2f(f, dir)
 		p := math.LL2NM(nav.FlightState.Position, nmPerLongitude)
 		crossed := math.Sign(math.SignedPointLineDistance(p, f, f1)) !=
@@ -144,6 +147,7 @@ type LateralManeuver struct {
 	Heading              math.MagneticHeading // heading to fly
 	Track                math.MagneticHeading // if non-zero, wind-corrected heading via headingForTrack
 	TrackFrom            math.Point2LL        // if non-zero, Track is this point's radial; the aircraft joins and follows it
+	TrackVariation       float32              // the variation TrackFrom's radial is referenced to
 	TrackFromFix         string               // name of TrackFrom, for Summary
 	FlyToward            math.Point2LL        // if non-zero, heading = bearing to this point each tick
 	Turn                 av.TurnDirection
@@ -177,7 +181,8 @@ func (m *LateralManeuver) String() string {
 	case UntilFix:
 		until = "until fix"
 	case UntilIntercept:
-		until = fmt.Sprintf("until intercept %03d", int(m.Until.InterceptCourse))
+		// A VOR radial's course in the sim's magnetic frame is rarely whole.
+		until = fmt.Sprintf("until intercept %03d", int(math.Round(float32(m.Until.InterceptCourse))))
 		if m.Until.InterceptFix != "" {
 			until += util.Select(m.Until.InterceptOutbound, " course from ", " course to ") + m.Until.InterceptFix
 		}
@@ -202,7 +207,7 @@ func (m *LateralManeuver) String() string {
 func (m *LateralManeuver) targetHeading(nav *Nav, wxs wx.Sample) math.MagneticHeading {
 	target := m.FlyToward
 	if !m.TrackFrom.IsZero() {
-		target = nav.radialSteeringPoint(m.TrackFrom, m.Track)
+		target = nav.radialSteeringPoint(m.TrackFrom, m.Track, m.TrackVariation)
 	}
 	if !target.IsZero() {
 		hdg := math.TrueToMagnetic(
@@ -220,11 +225,11 @@ func (m *LateralManeuver) targetHeading(nav *Nav, wxs wx.Sample) math.MagneticHe
 // aircraft's projection onto it, at least 2nm ahead and farther when the
 // aircraft is farther off the radial so that it converges at 45 degrees or
 // less and then settles onto it. From behind the fix, the aircraft goes to
-// the fix first.
-func (nav *Nav) radialSteeringPoint(fix math.Point2LL, radial math.MagneticHeading) math.Point2LL {
+// the fix first. The radial is referenced to the given variation.
+func (nav *Nav) radialSteeringPoint(fix math.Point2LL, radial math.MagneticHeading, variation float32) math.Point2LL {
 	nmPerLongitude := nav.FlightState.NmPerLongitude
 	f := math.LL2NM(fix, nmPerLongitude)
-	dir := math.HeadingVector(math.MagneticToTrue(radial, nav.FlightState.MagneticVariation))
+	dir := math.HeadingVector(math.MagneticToTrue(radial, variation))
 	v := math.Sub2f(math.LL2NM(nav.FlightState.Position, nmPerLongitude), f)
 	along := math.Dot(v, dir)
 	if along < 0 {

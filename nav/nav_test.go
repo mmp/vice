@@ -74,7 +74,22 @@ type ArrivalConfig struct {
 func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 	t.Helper()
 
-	wps := parseRoute(t, cfg.Waypoints)
+	arrAirport, ok := av.DB.Airports[cfg.ArrivalAirport]
+	if !ok {
+		t.Fatalf("unknown arrival airport %q", cfg.ArrivalAirport)
+	}
+	depAirport, ok := av.DB.Airports[cfg.DepartureAirport]
+	if !ok {
+		t.Fatalf("unknown departure airport %q", cfg.DepartureAirport)
+	}
+
+	nmPerLongitude := math.NMPerLongitudeAt(arrAirport.Location)
+	magneticVariation, err := av.DB.MagneticGrid.Lookup(arrAirport.Location)
+	if err != nil {
+		t.Fatalf("magnetic grid lookup failed: %v", err)
+	}
+
+	wps := parseRoute(t, cfg.Waypoints, magneticVariation)
 	if cfg.OnSTAR {
 		for i := range wps {
 			wps[i].SetOnSTAR(true)
@@ -89,21 +104,6 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 		if !ok {
 			t.Fatalf("unknown aircraft type %q", cfg.AircraftType)
 		}
-	}
-
-	arrAirport, ok := av.DB.Airports[cfg.ArrivalAirport]
-	if !ok {
-		t.Fatalf("unknown arrival airport %q", cfg.ArrivalAirport)
-	}
-	depAirport, ok := av.DB.Airports[cfg.DepartureAirport]
-	if !ok {
-		t.Fatalf("unknown departure airport %q", cfg.DepartureAirport)
-	}
-
-	nmPerLongitude := math.NMPerLongitudeAt(arrAirport.Location)
-	magneticVariation, err := av.DB.MagneticGrid.Lookup(arrAirport.Location)
-	if err != nil {
-		t.Fatalf("magnetic grid lookup failed: %v", err)
 	}
 
 	// Deterministic randomness
@@ -756,9 +756,12 @@ func (dbLocator) Locate(fix string) (math.Point2LL, bool) {
 
 func (dbLocator) Similar(fix string) []string { return nil }
 
-// parseRoute parses a waypoint string using the scenario JSON format
-// and resolves fix locations from av.DB. Requires av.DB to be initialized.
-func parseRoute(t testing.TB, s string) av.WaypointArray {
+func (dbLocator) Declination(fix string) (float32, bool) { return av.DB.Declination(fix) }
+
+// parseRoute parses a waypoint string using the scenario JSON format and
+// resolves fix locations from av.DB; radials of fixes without a station are
+// referenced to magneticVariation. Requires av.DB to be initialized.
+func parseRoute(t testing.TB, s string, magneticVariation float32) av.WaypointArray {
 	t.Helper()
 	var wps av.WaypointArray
 	// WaypointArray.UnmarshalJSON expects a JSON-encoded string
@@ -774,7 +777,7 @@ func parseRoute(t testing.TB, s string) av.WaypointArray {
 	}
 	// Resolve fix names to coordinates
 	e := &util.ErrorLogger{}
-	wps = wps.InitializeLocations(dbLocator{}, 0, 0, false, e)
+	wps = wps.InitializeLocations(dbLocator{}, 0, magneticVariation, false, e)
 	if e.HaveErrors() {
 		t.Fatalf("failed to resolve waypoint locations: %s", e.String())
 	}

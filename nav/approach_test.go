@@ -73,8 +73,8 @@ func TestSelectVisualApproachRouteJFK13L(t *testing.T) {
 		t.Fatalf("magnetic grid lookup: %v", err)
 	}
 
-	northern := parseRoute(t, "BUZON/a2900/iaf TELEX/a2100+/if CAXUN/a1500+/faf")
-	southern := parseRoute(t, "ASALT/if/a3000/s210 CNRSE/a2000+/faf LEISA/a1246+ SILJY/a835+ ROBJE/a450+")
+	northern := parseRoute(t, "BUZON/a2900/iaf TELEX/a2100+/if CAXUN/a1500+/faf", magVar)
+	southern := parseRoute(t, "ASALT/if/a3000/s210 CNRSE/a2000+/faf LEISA/a1246+ SILJY/a835+ ROBJE/a450+", magVar)
 	rwy, ok := av.LookupRunway("KJFK", "13L")
 	if !ok {
 		t.Fatal("KJFK 13L not found")

@@ -117,6 +117,10 @@ func (DBLocator) Similar(fix string) []string {
 	return util.Select(len(d1) > 0, d1, d2)
 }
 
+func (DBLocator) Declination(s string) (float32, bool) {
+	return av.DB.Declination(s)
+}
+
 func (DBLocator) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	if n, ok := av.DB.Navaids[s]; ok {

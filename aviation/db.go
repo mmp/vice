@@ -151,6 +151,14 @@ type Navaid struct {
 	Name     string
 	Location math.Point2LL
 
+	// Declination is a VHF navaid's station declination: the angle its
+	// radials are referenced to, fixed when the station was last aligned
+	// rather than following the local variation as it has drifted since.
+	// It is in the sim's magnetic variation convention (positive west), so
+	// math.MagneticToTrue(radial, Declination) is a radial's true bearing.
+	Declination    float32
+	HasDeclination bool
+
 	HasDME          bool
 	DMELocation     math.Point2LL
 	DMEElevation    int
@@ -221,6 +229,13 @@ func (d StaticDatabase) LookupDME(f string) (math.Point2LL, int, bool) {
 		return n.DMELocation, n.DMEElevation, true
 	}
 	return math.Point2LL{}, 0, false
+}
+
+// Declination returns the station declination of the named VHF navaid, if
+// it has one.
+func (d StaticDatabase) Declination(id string) (float32, bool) {
+	n, ok := d.Navaids[strings.ToUpper(id)]
+	return n.Declination, ok && n.HasDeclination
 }
 
 // LookupAirport returns the airport with the given id, which may be either an

@@ -23,22 +23,6 @@ import (
 func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest {
 	t.Helper()
 
-	wps := parseRoute(t, routeStr)
-	for i := range wps {
-		wps[i].SetOnApproach(true)
-	}
-
-	// Build a minimal RNAV approach from the waypoints.
-	ap := &av.Approach{
-		Id:       "TEST",
-		FullName: "RNAV TEST",
-		Type:     av.RNAVApproach,
-		Runway:   "15R",
-		Waypoints: []av.WaypointArray{
-			util.DuplicateSlice(wps),
-		},
-	}
-
 	// Use KISP (Islip) for airport metadata; the RNAV 15R has a real
 	// procedure turn at FORMU.
 	arrAirport, ok := av.DB.Airports["KISP"]
@@ -54,6 +38,22 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 	magVar, err := av.DB.MagneticGrid.Lookup(arrAirport.Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup failed: %v", err)
+	}
+
+	wps := parseRoute(t, routeStr, magVar)
+	for i := range wps {
+		wps[i].SetOnApproach(true)
+	}
+
+	// Build a minimal RNAV approach from the waypoints.
+	ap := &av.Approach{
+		Id:       "TEST",
+		FullName: "RNAV TEST",
+		Type:     av.RNAVApproach,
+		Runway:   "15R",
+		Waypoints: []av.WaypointArray{
+			util.DuplicateSlice(wps),
+		},
 	}
 
 	if rwy, ok := av.LookupRunway("KISP", "15R"); ok {
@@ -205,7 +205,11 @@ func TestRacetrackPTCreatesManeuvers(t *testing.T) {
 // treated as flyover points — the PT only triggers when ETA < 2s, not
 // before (regression test for cf822df4).
 func TestPTWaypointFlyover(t *testing.T) {
-	wps := parseRoute(t, "FORMU/pt45/flyover ZIVUX")
+	magVar, err := av.DB.MagneticGrid.Lookup(av.DB.Airports["KISP"].Location)
+	if err != nil {
+		t.Fatalf("magnetic grid lookup failed: %v", err)
+	}
+	wps := parseRoute(t, "FORMU/pt45/flyover ZIVUX", magVar)
 	for i := range wps {
 		wps[i].SetOnApproach(true)
 	}

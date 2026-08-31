@@ -636,7 +636,7 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 				m.Heading = nav.FlightState.Heading
 			} else if heading.Track {
 				m.Track = math.MagneticHeading(heading.Heading)
-				m.TrackFrom, m.TrackFromFix = heading.FixLocation, heading.Fix
+				m.TrackFrom, m.TrackFromFix, m.TrackVariation = heading.FixLocation, heading.Fix, heading.FixVariation
 			} else {
 				m.Heading = math.MagneticHeading(heading.Heading)
 			}
@@ -679,10 +679,11 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 			}
 		case av.WaypointActionRadial:
 			m.Until = ManeuverComplete{
-				Type:      UntilRadial,
-				Fix:       group.Until.RadialFixLocation,
-				Radial:    math.MagneticHeading(group.Until.Radial),
-				RadialFix: group.Until.RadialFix,
+				Type:            UntilRadial,
+				Fix:             group.Until.RadialFixLocation,
+				Radial:          math.MagneticHeading(group.Until.Radial),
+				RadialVariation: group.Until.RadialFixVariation,
+				RadialFix:       group.Until.RadialFix,
 			}
 		case av.WaypointActionDistance:
 			m.Until = ManeuverComplete{Type: UntilDist, Dist: group.Until.Distance}

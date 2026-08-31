@@ -19,6 +19,15 @@ func radialFlight(t *testing.T) (*FlightTest, math.MagneticHeading) {
 	return newSkorrWaveyFlight(t, "SKORR WAVEY SHIPP"), direct
 }
 
+// inboundRadialCourse returns the course, in the area's magnetic frame, of
+// flying the given radial of a fix inbound. A VOR's radials are referenced to
+// its station declination, so the course differs from the radial's reciprocal
+// by the declination's offset from the area's variation.
+func inboundRadialCourse(f *FlightTest, fix string, radial math.MagneticHeading) math.MagneticHeading {
+	trueBearing := math.MagneticToTrue(radial, f.nav.radialVariation(fix))
+	return math.OppositeHeading(math.TrueToMagnetic(trueBearing, f.nav.FlightState.MagneticVariation))
+}
+
 func distanceToFix(f *FlightTest, fix string) float32 {
 	p, _ := av.DB.LookupWaypoint(fix)
 	return math.NMDistance2LL(f.nav.FlightState.Position, p)
@@ -60,6 +69,26 @@ func TestInterceptRadialInboundWithWind(t *testing.T) {
 	f, direct := radialFlight(t)
 	f.SetWind(float32(math.NormalizeHeading(direct+20-90)), 40)
 	checkInbound(t, f, direct)
+}
+
+// The radial a controller gives is the navaid's, referenced to its station
+// declination: a station declinated 5 degrees west of the area's variation
+// has its radials read 5 degrees higher than the area's bearings of the
+// same lines, so intercepting its reciprocal-of-(course+5) radial joins the
+// same course inbound as checkInbound does.
+func TestInterceptRadialStationDeclination(t *testing.T) {
+	vor := declinatedVOR(t, 5)
+	f, direct := radialFlight(t)
+
+	heading := math.NormalizeHeading(direct - 20)
+	course := math.NormalizeHeading(direct + 20)
+	radial := math.NormalizeHeading(math.OppositeHeading(course) + 5)
+
+	f.AfterTicks(1, func(f *FlightTest) {
+		f.AssignHeading(int(heading), av.TurnClosest)
+		assertNotUnable(t, f.InterceptRadial(vor, int(radial), false))
+	})
+	checkJoinsCourse(t, f, vor, heading, course)
 }
 
 // After intercepting a radial inbound the aircraft resumes the route from the
@@ -242,7 +271,7 @@ func TestInterceptRadialSteepAngle(t *testing.T) {
 	f.nav.Heading = NavHeading{Assigned: &hdg}
 
 	const radial = 100
-	course := math.OppositeHeading(math.MagneticHeading(radial))
+	course := inboundRadialCourse(f, "RBV", radial)
 	assertNotUnable(t, f.InterceptRadial("RBV", radial, false))
 
 	joinTick, maxOvershoot, maxOffsetOnCourse := -1, float32(0), float32(0)
@@ -293,7 +322,7 @@ func TestInterceptRadialDuringTurn(t *testing.T) {
 	f.nav.AssignHeading(180, av.TurnLeft, f.simTime, 0)
 	assertNotUnable(t, f.InterceptRadial("RBV", 65, false))
 
-	course := math.OppositeHeading(math.MagneticHeading(65))
+	course := inboundRadialCourse(f, "RBV", 65)
 	f.AfterTicks(10, func(f *FlightTest) {
 		if len(f.nav.Heading.Maneuvers) == 0 {
 			t.Fatal("intercept finished while the aircraft was still turning onto the heading")

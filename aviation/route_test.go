@@ -25,6 +25,21 @@ func (tl testLocator) Similar(fix string) []string {
 	return nil
 }
 
+func (tl testLocator) Declination(fix string) (float32, bool) {
+	return 0, false
+}
+
+// declinationLocator is a testLocator whose navaids have station declinations.
+type declinationLocator struct {
+	testLocator
+	declinations map[string]float32
+}
+
+func (dl declinationLocator) Declination(fix string) (float32, bool) {
+	d, ok := dl.declinations[fix]
+	return d, ok
+}
+
 func (tl testLocator) LocateDME(fix string) (math.Point2LL, int, bool) {
 	p, ok := tl[fix]
 	return p, 33, ok
@@ -555,13 +570,31 @@ func TestParseRadialTermination(t *testing.T) {
 		"KDLS-25": {-121.16, 45.62},
 		"LTJ":     {-121.10, 45.71},
 	}
-	wps = wps.InitializeLocations(loc, 45, 0, false, nil)
+	wps = wps.InitializeLocations(loc, 45, -15, false, nil)
 	groups = wps[0].ActionGroups()
 	if groups[1].Until.RadialFixLocation.IsZero() {
 		t.Error("expected initialized radial fix location")
 	}
 	if groups[2].Actions.Heading.FixLocation.IsZero() {
 		t.Error("expected initialized tracked radial fix location")
+	}
+	// Without a station declination, the radial is referenced to the area's
+	// variation.
+	if v := groups[1].Until.RadialFixVariation; v != -15 {
+		t.Errorf("expected the radial to be referenced to the area's variation -15, got %g", v)
+	}
+	if v := groups[2].Actions.Heading.FixVariation; v != -15 {
+		t.Errorf("expected the tracked radial to be referenced to the area's variation -15, got %g", v)
+	}
+
+	// A VOR's radials are referenced to its station declination instead.
+	wps = wps.InitializeLocations(declinationLocator{loc, map[string]float32{"LTJ": -21}}, 45, -15, false, nil)
+	groups = wps[0].ActionGroups()
+	if v := groups[1].Until.RadialFixVariation; v != -21 {
+		t.Errorf("expected the radial to be referenced to LTJ's declination -21, got %g", v)
+	}
+	if v := groups[2].Actions.Heading.FixVariation; v != -21 {
+		t.Errorf("expected the tracked radial to be referenced to LTJ's declination -21, got %g", v)
 	}
 
 	e := &util.ErrorLogger{}

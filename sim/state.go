@@ -454,6 +454,10 @@ func (ss *CommonState) LocateDME(s string) (math.Point2LL, int, bool) {
 	return av.DB.LookupDME(s)
 }
 
+func (ss *CommonState) Declination(s string) (float32, bool) {
+	return av.DB.Declination(s)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // CommonState methods for controller/consolidation management
 

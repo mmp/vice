@@ -38,6 +38,24 @@ func parseAltitude(s []byte) int {
 	return parseInt(s)
 }
 
+// parseStationDeclination parses a VHF navaid's station declination (5.66):
+// the angle between true north and its zero degree radial when it was last
+// site checked. The result is in the sim's magnetic variation convention,
+// positive west. A station oriented to grid north ('G') has no usable
+// declination.
+func parseStationDeclination(s []byte) (float32, bool) {
+	switch s[0] {
+	case 'E':
+		return -float32(parseInt(s[1:])) / 10, true
+	case 'W':
+		return float32(parseInt(s[1:])) / 10, true
+	case 'T': // oriented to true north
+		return 0, true
+	default:
+		return 0, false
+	}
+}
+
 // parseMagneticCourse converts a course given in tenths of a degree to whole
 // degrees. Waypoint.Heading uses 0 to mean "unset", so a course that rounds
 // down to zero is recorded as 360.
@@ -233,7 +251,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				}
 
 				if !empty(line[32:51]) {
-					result.Navaids[id] = Navaid{
+					n := Navaid{
 						Id:              id,
 						Type:            util.Select(subsectionCode == ' ', "VOR", "NDB"),
 						Name:            name,
@@ -243,6 +261,11 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 						DMEElevation:    dmeElevation,
 						HasDMEElevation: hasDMEElevation,
 					}
+					if subsectionCode == ' ' {
+						// An NDB's record has its local variation here instead.
+						n.Declination, n.HasDeclination = parseStationDeclination(line[74:79])
+					}
+					result.Navaids[id] = n
 				} else if hasDME {
 					result.Navaids[id] = Navaid{
 						Id:              id,

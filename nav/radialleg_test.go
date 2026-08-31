@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -94,6 +95,50 @@ func TestRadialTermination(t *testing.T) {
 		heading = math.NormalizeHeading(bearing + 65) // converges on the radial at 45 degrees
 		return fmt.Sprintf("SKORR/h%d/@WAVEY-R%d/tWAVEY-R%d", int(heading), int(radial), int(radial))
 	})
+	checkRadialTermination(t, f, heading, radial)
+}
+
+// declinatedVOR adds a VOR at WAVEY's location to the database for the
+// test's duration, with a station declination the given number of degrees
+// west of the area's variation, and returns its id.
+func declinatedVOR(t *testing.T, degrees float32) string {
+	t.Helper()
+	const id = "QQQ"
+	if _, ok := av.DB.Navaids[id]; ok {
+		t.Fatalf("%s is already in the database", id)
+	}
+	wavey, _ := av.DB.LookupWaypoint("WAVEY")
+	variation, err := av.DB.MagneticGrid.Lookup(av.DB.Airports["KJFK"].Location)
+	if err != nil {
+		t.Fatalf("magnetic grid lookup failed: %v", err)
+	}
+	av.DB.Navaids[id] = av.Navaid{Id: id, Type: "VOR", Location: wavey,
+		Declination: variation + degrees, HasDeclination: true}
+	t.Cleanup(func() { delete(av.DB.Navaids, id) })
+	return id
+}
+
+// A VOR's radials are referenced to its station declination rather than to
+// the area's variation. Declinated 5 degrees west of the area, the station's
+// radials read 5 degrees higher than the area's bearings of the same lines,
+// so the route here is flown along the same lines as TestRadialTermination's.
+func TestRadialTerminationStationDeclination(t *testing.T) {
+	vor := declinatedVOR(t, 5)
+	var heading, radial math.MagneticHeading
+	f := radialLegFlight(t, func(bearing math.MagneticHeading) string {
+		radial = math.NormalizeHeading(bearing + 20)
+		heading = math.NormalizeHeading(bearing + 65)
+		r := int(math.NormalizeHeading(radial + 5))
+		return fmt.Sprintf("SKORR/h%d/@%s-R%d/t%s-R%d", int(heading), vor, r, vor, r)
+	})
+	checkRadialTermination(t, f, heading, radial)
+}
+
+// checkRadialTermination verifies that the heading leg ends where the
+// aircraft crosses the WAVEY radial, given as the area's bearing, and that
+// the aircraft then tracks the radial outbound.
+func checkRadialTermination(t *testing.T, f *FlightTest, heading, radial math.MagneticHeading) {
+	t.Helper()
 
 	crossTick := -1
 	var crossOffset float32

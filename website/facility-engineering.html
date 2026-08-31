@@ -491,7 +491,10 @@
                     <td><code>/t<var>fix</var>-R<var>radial</var></code></td>
                     <td>Depart the fix to join the specified radial from the given fix.
                       For example, given <code>/tPXR-R336</code>, the aircraft will join the <code>PXR</code> 336 radial,
-                      converging at up to 45 degrees, and then follow it away from <code>PXR</code>.</td>
+                      converging at up to 45 degrees, and then follow it away from <code>PXR</code>.
+                      A VOR's radials are referenced to its station declination, as charted, so they lie where
+                      the chart depicts them even where the local magnetic variation has drifted since the
+                      station was aligned; radials of a fix that isn't a VOR use the area's variation.</td>
                   </tr>
                   <tr>
                     <td><code>/lt<var>heading</var></code></td>
@@ -893,7 +896,8 @@
                     <td>Triggers when the aircraft crosses the specified radial. For example,
                       <code>KDLS-25/h120/@LTJ-R165/c4000</code> flies heading 120 until crossing the <code>LTJ</code> 165 radial,
                       after which the aircraft is instructed to climb to 4,000' feet.
-                      Note that radials extend in only one direction from a fix.
+                      Note that radials extend in only one direction from a fix. As with <code>/t</code>,
+                      a VOR's radials are referenced to its station declination.
                     </td>
                   </tr>
                   <tr>

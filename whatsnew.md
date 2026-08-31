@@ -1,5 +1,6 @@
 - Scenario updates: PCT SHD (Ketan K), PVD, MYR (Jake)
 - Added: IFIX/RADIAL: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
+- VOR radials are now referenced to the station's declination from the CIFP rather than the area's magnetic variation, so SID legs that cross or track a radial follow it as charted
 - Facility engineering
   - Added @t to route specifiers to allow specifying a track to fly inbound to the next fix
   - Added @crs to route specifiers to join a course inbound a fix

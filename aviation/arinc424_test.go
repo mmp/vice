@@ -135,6 +135,42 @@ func TestParseARINC424LocalizerNavaid(t *testing.T) {
 	}
 }
 
+func TestParseARINC424StationDeclination(t *testing.T) {
+	for _, tc := range []struct {
+		subsection  byte
+		field       string
+		declination float32
+		ok          bool
+	}{
+		{' ', "E0150", -15, true},
+		{' ', "W0120", 12, true},
+		{' ', "T0000", 0, true},  // oriented to true north
+		{' ', "G0000", 0, false}, // oriented to grid north: no usable declination
+		{'B', "W0120", 0, false}, // an NDB's record has its local variation here
+	} {
+		line := []byte(strings.Repeat(" ", 132))
+		copy(line[0:], "SUSA")
+		line[4] = 'D'
+		line[5] = tc.subsection
+		copy(line[13:], "SMO")
+		line[21] = '1'
+		copy(line[32:], "N34003700")
+		copy(line[41:], "W118272400")
+		copy(line[74:], tc.field)
+		copy(line[93:], "SANTA MONICA")
+
+		result := ParseARINC424(strings.NewReader(string(line) + "\r\n"))
+		nav, ok := result.Navaids["SMO"]
+		if !ok {
+			t.Fatalf("%q: expected SMO navaid", tc.field)
+		}
+		if nav.HasDeclination != tc.ok || nav.Declination != tc.declination {
+			t.Errorf("%q: expected declination %g, %v; got %g, %v", tc.field, tc.declination, tc.ok,
+				nav.Declination, nav.HasDeclination)
+		}
+	}
+}
+
 func TestParseARINC424DMENavaidElevation(t *testing.T) {
 	line := []byte(strings.Repeat(" ", 132))
 	copy(line[0:], "SUSA")

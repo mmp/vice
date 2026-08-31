@@ -244,6 +244,12 @@ func (w *routeWalker) headingVector(h int16) [2]float32 {
 	return math.HeadingVector(math.MagneticToTrue(math.MagneticHeading(h), w.magneticVariation))
 }
 
+// radialVector returns the direction of a radial referenced to the given
+// variation: its navaid's station declination rather than the area's.
+func (w *routeWalker) radialVector(radial int16, variation float32) [2]float32 {
+	return math.HeadingVector(math.MagneticToTrue(math.MagneticHeading(radial), variation))
+}
+
 func rightNormal(d [2]float32) [2]float32 { return [2]float32{d[1], -d[0]} }
 func leftNormal(d [2]float32) [2]float32  { return [2]float32{-d[1], d[0]} }
 
@@ -477,7 +483,7 @@ func (w *routeWalker) groupDirection(h av.WaypointHeadingAction) [2]float32 {
 // the radial's direction with the pen on it.
 func (w *routeWalker) joinRadial(h av.WaypointHeadingAction) [2]float32 {
 	f := w.nm(h.FixLocation)
-	dir := w.headingVector(h.Heading)
+	dir := w.radialVector(h.Heading, h.FixVariation)
 	v := math.Sub2f(w.pen.p, f)
 	join := f
 	if along := math.Dot(v, dir); along >= 0 {
@@ -518,7 +524,7 @@ func (w *routeWalker) triggerDistance(until av.WaypointActionTermination, dir [2
 		// The radial extends from the fix in one direction only; crossing
 		// its reciprocal doesn't count, as in nav's reachesRadial.
 		f := w.nm(until.RadialFixLocation)
-		rdir := w.headingVector(until.Radial)
+		rdir := w.radialVector(until.Radial, until.RadialFixVariation)
 		_, t, _, ok := math.RaySegmentIntersect(w.pen.p, dir, f, math.Add2f(f, math.Scale2f(rdir, 500)))
 		return t, triggerMark{kind: markRadial, center: f, dir: rdir}, ok
 

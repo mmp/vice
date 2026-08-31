@@ -73,6 +73,10 @@ type WaypointActionTermination struct {
 	Radial            int16   // magnetic radial of RadialFix to cross
 	RadialFix         string
 	RadialFixLocation math.Point2LL
+	// RadialFixVariation is the variation Radial is referenced to: the
+	// navaid's station declination, or the area's variation for a fix
+	// without one.
+	RadialFixVariation float32
 }
 
 // WaypointHeadingAction is a heading or ground track to fly. A track with a
@@ -85,6 +89,10 @@ type WaypointHeadingAction struct {
 	PresentHeading bool
 	Fix            string
 	FixLocation    math.Point2LL
+	// FixVariation is the variation the radial is referenced to: the
+	// navaid's station declination, or the area's variation for a fix
+	// without one.
+	FixVariation float32
 }
 
 // IsSet reports whether the action gives a heading to fly.
@@ -1730,6 +1738,10 @@ type Locator interface {
 	// are available; the bool indicates whether the point was known.
 	Locate(fix string) (math.Point2LL, bool)
 
+	// Declination returns the station declination of the named VHF navaid,
+	// if it has one: the variation its radials are referenced to.
+	Declination(fix string) (float32, bool)
+
 	// If Locate fails, Similar can be called to get alternatives that are
 	// similarly-spelled to be offered in error messages.
 	Similar(fix string) []string
@@ -1746,6 +1758,17 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 	}
 
 	defer e.CheckDepth(e.CurrentDepth())
+
+	// radialVariation returns the variation a radial of fix is referenced
+	// to. A VHF navaid's radials are fixed to its station declination,
+	// which the local variation has usually drifted from since the station
+	// was aligned; a fix without a station uses the area's variation.
+	radialVariation := func(fix string) float32 {
+		if d, ok := loc.Declination(fix); ok {
+			return d
+		}
+		return magneticVariation
+	}
 
 	// Get the locations of all waypoints and cull the route after 250nm if cullFar is true.
 	var prev math.Point2LL
@@ -1771,7 +1794,8 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 			}
 			if group.Until.Type == WaypointActionRadial {
 				if pos, ok := loc.Locate(group.Until.RadialFix); ok {
-					wa[i].InitExtra().ActionGroups[j].Until.RadialFixLocation = pos
+					until := &wa[i].InitExtra().ActionGroups[j].Until
+					until.RadialFixLocation, until.RadialFixVariation = pos, radialVariation(group.Until.RadialFix)
 				} else if e != nil && !allowSlop {
 					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
 						wp.Fix, group.Until.RadialFix, group.Encoded())
@@ -1779,7 +1803,8 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 			}
 			if fix := group.Actions.Heading.Fix; fix != "" {
 				if pos, ok := loc.Locate(fix); ok {
-					wa[i].Extra.ActionGroups[j].Actions.Heading.FixLocation = pos
+					heading := &wa[i].Extra.ActionGroups[j].Actions.Heading
+					heading.FixLocation, heading.FixVariation = pos, radialVariation(fix)
 				} else if e != nil && !allowSlop {
 					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
 						wp.Fix, fix, group.Encoded())

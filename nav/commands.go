@@ -702,16 +702,27 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 	}
 }
 
+// radialVariation returns the variation a radial of the named fix is
+// referenced to: a VHF navaid's station declination, or the area's
+// variation for a fix without one.
+func (nav *Nav) radialVariation(fix string) float32 {
+	if d, ok := av.DB.Declination(fix); ok {
+		return d
+	}
+	return nav.FlightState.MagneticVariation
+}
+
 // reachesRadial reports whether an aircraft flying the given heading from its
-// current position will reach the named radial of a fix. Both are rays: the
-// aircraft only flies forward, and a radial extends outward from its fix in
-// one direction only, so crossing the reciprocal radial doesn't count.
-func (nav *Nav) reachesRadial(hdg, radial math.MagneticHeading, fix math.Point2LL) bool {
-	nmPerLongitude, magVar := nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation
+// current position will reach the given radial, referenced to variation, of
+// a fix. Both are rays: the aircraft only flies forward, and a radial extends
+// outward from its fix in one direction only, so crossing the reciprocal
+// radial doesn't count.
+func (nav *Nav) reachesRadial(hdg, radial math.MagneticHeading, fix math.Point2LL, variation float32) bool {
+	nmPerLongitude := nav.FlightState.NmPerLongitude
 	p := math.LL2NM(nav.FlightState.Position, nmPerLongitude)
-	dir := math.HeadingVector(math.MagneticToTrue(hdg, magVar))
+	dir := math.HeadingVector(math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation))
 	f := math.LL2NM(fix, nmPerLongitude)
-	radialDir := math.HeadingVector(math.MagneticToTrue(radial, magVar))
+	radialDir := math.HeadingVector(math.MagneticToTrue(radial, variation))
 	// directFixWaypoints rejects fixes more than 150nm away, so the radial
 	// only has to extend far enough to cover intercepts out at that range.
 	_, _, _, ok := math.RaySegmentIntersect(p, dir, f, math.Add2f(f, math.Scale2f(radialDir, 500)))
@@ -737,10 +748,13 @@ func (nav *Nav) InterceptRadial(fix string, radial math.MagneticHeading, outboun
 	}
 
 	// A radial extends outward from the fix, so flying it inbound means
-	// flying its reciprocal.
-	course := radial
+	// flying its reciprocal. The radial is referenced to its navaid's
+	// station declination; the intercept and the track along it are flown
+	// in the sim's magnetic frame.
+	variation := nav.radialVariation(fix)
+	course := math.TrueToMagnetic(math.MagneticToTrue(radial, variation), nav.FlightState.MagneticVariation)
 	if !outbound {
-		course = math.OppositeHeading(radial)
+		course = math.OppositeHeading(course)
 	}
 
 	hdg, turn := nav.FlightState.Heading, av.TurnClosest
@@ -755,7 +769,7 @@ func (nav *Nav) InterceptRadial(fix string, radial math.MagneticHeading, outboun
 			turn = *nav.Heading.Turn
 		}
 	}
-	if !nav.reachesRadial(hdg, radial, wps[0].Location) {
+	if !nav.reachesRadial(hdg, radial, wps[0].Location, variation) {
 		return av.MakeUnableIntent("unable to intercept the {fix} {hdg} radial", fix, radial)
 	}
 

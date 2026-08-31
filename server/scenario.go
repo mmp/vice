@@ -693,6 +693,10 @@ func (sg *scenarioGroup) LocateDME(s string) (math.Point2LL, int, bool) {
 	return av.DB.LookupDME(s)
 }
 
+func (sg *scenarioGroup) Declination(s string) (float32, bool) {
+	return av.DB.Declination(s)
+}
+
 // resolveController normalizes a TCP that may use a short prefix (e.g.
 // "N2K") to the canonical long-prefix form (e.g. "NNN2K") stored in
 // ControlPositions.  If tcp is already present or no expansion matches,
