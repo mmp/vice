@@ -134,6 +134,59 @@ func TestCourseToFixIntercept(t *testing.T) {
 	checkJoinsCourse(t, f, "WAVEY", heading, course)
 }
 
+// A course that is a VOR's radial is referenced to the station's declination
+// rather than to the area's variation. Declinated 5 degrees west of the area,
+// the station's radials read 5 degrees higher than the area's bearings of the
+// same lines, so this flies the same course as TestCourseToFixIntercept.
+func TestCourseToFixInterceptStationDeclination(t *testing.T) {
+	vor := declinatedVOR(t, 5)
+	direct := skorrWaveyCourse(t)
+	heading := math.NormalizeHeading(direct - 20)
+	course := math.MagneticHeading(int(math.NormalizeHeading(direct + 20)))
+	f := newSkorrWaveyFlight(t, fmt.Sprintf("SKORR/h%d/@crs%s-R%d WAVEY", int(heading), vor,
+		int(math.NormalizeHeading(course+5))))
+	checkJoinsCourse(t, f, "WAVEY", heading, course)
+}
+
+// The SUMMA2 departure's runway 16L transition from the CIFP,
+// KSEA-34R/h164/@crsSEA-R161 NEVJO: the charted heading is the runway's and
+// the course to NEVJO is the SEA 161 radial, which the extended centerline
+// lies along--the departure end is 400 feet east of it. The aircraft joins
+// the course from where it is rather than turning to a 45 degree intercept
+// to close those few hundred feet.
+func TestCourseInterceptSummaRunway16L(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		// The KSEA-34R runway fix as a lat-long, since the test locator only
+		// resolves database fixes.
+		Waypoints:        "N047.25.52.220,W122.18.28.940/h164/@crsSEA-R161 NEVJO",
+		DepartureAirport: "KSEA",
+		ArrivalAirport:   "KSEA",
+		AircraftType:     "A320",
+		InitialAltitude:  500,
+		InitialSpeed:     170,
+		ClearedAltitude:  10000,
+	})
+	f.nav.FlightState.Heading = 164
+	f.nav.FlightState.InitialDepartureClimb = true
+	f.nav.FinalAltitude = 10000
+
+	var maxTurn float32
+	f.BeforeFix("NEVJO", func(f *FlightTest) {
+		maxTurn = max(maxTurn, math.HeadingDifference(f.nav.FlightState.Heading, 164))
+	})
+	passed := false
+	f.AtFix("NEVJO", func(f *FlightTest) { passed = true })
+	f.Run()
+
+	if maxTurn > 5 {
+		t.Errorf("aircraft turned %.0f degrees off the runway heading before NEVJO; "+
+			"expected it to stay on the course", maxTurn)
+	}
+	if !passed {
+		t.Error("aircraft never crossed NEVJO")
+	}
+}
+
 // With a crosswind, flying direct to the fix after the intercept must still
 // hold the charted ground track.
 func TestCourseToFixInterceptWithWind(t *testing.T) {

@@ -169,6 +169,54 @@ func TestParseCourseTermination(t *testing.T) {
 	}
 }
 
+func TestParseRadialCourseTermination(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	wps, err := parseWaypoints("KSEA-34R/h164/@crsSEA-R161 NEVJO")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	groups := wps[0].ActionGroups()
+	if len(groups) != 1 {
+		t.Fatalf("expected 1 action group, got %d", len(groups))
+	}
+	until := groups[0].Until
+	if until.Type != WaypointActionCourse || until.Course != 161 || until.CourseFix != "SEA" {
+		t.Fatalf("unexpected course action group: %+v", groups[0])
+	}
+
+	if encoded := WaypointArray(wps).Encode(); !strings.Contains(encoded, "KSEA-34R/h164/@crsSEA-R161") {
+		t.Fatalf("expected encoded route to round-trip /@crs<navaid>-R, got %q", encoded)
+	}
+
+	loc := testLocator{
+		"KSEA-34R": {-122.308, 47.431},
+		"NEVJO":    {-122.310, 47.252},
+		"SEA":      {-122.310, 47.435},
+	}
+	// Without a station declination, the course is referenced to the area's
+	// variation.
+	wps = wps.InitializeLocations(loc, 40.7, -15, false, nil)
+	if v := wps[0].ActionGroups()[0].Until.CourseFixVariation; v != -15 {
+		t.Errorf("expected the course to be referenced to the area's variation -15, got %g", v)
+	}
+
+	// A VOR's radials are referenced to its station declination instead.
+	wps = wps.InitializeLocations(declinationLocator{loc, map[string]float32{"SEA": -19}}, 40.7, -15, false, nil)
+	if v := wps[0].ActionGroups()[0].Until.CourseFixVariation; v != -19 {
+		t.Errorf("expected the course to be referenced to SEA's declination -19, got %g", v)
+	}
+
+	e := &util.ErrorLogger{}
+	wps.InitializeLocations(testLocator{"KSEA-34R": {-122.308, 47.431}, "NEVJO": {-122.310, 47.252}}, 40.7, 0, false, e)
+	if !e.HaveErrors() {
+		t.Error("expected an error for an unknown course navaid")
+	}
+}
+
 func TestParseCourseTerminationErrors(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
@@ -179,6 +227,8 @@ func TestParseCourseTerminationErrors(t *testing.T) {
 		{"RNGRR/h200/@crs220", "has no following fix"},
 		{"RNGRR/h200/@crs0 WAVEY", "heading must be between 1-360"},
 		{"RNGRR/h200/@crsabc WAVEY", "expected a course after crs"},
+		{"RNGRR/h200/@crsHLN-R WAVEY", "expected a radial after HLN-R"},
+		{"RNGRR/h200/@crsHLN-R400 WAVEY", "heading must be between 1-360"},
 		{"RNGRR/h0 WAVEY", "heading must be between 1-360"},
 	} {
 		_, err := parseWaypoints(tc.route)

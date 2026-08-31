@@ -901,13 +901,18 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><code>@crs<var>course</var></code></td>
+                    <td><code>@crs<var>course</var></code> / <code>@crs<var>navaid</var>-R<var>radial</var></code></td>
                     <td>Triggers when the aircraft should turn in order to fly the given magnetic course to the next fix on
                       the route. This is how to express procedures that
                       read like "fly heading 200, then track 220 to WAVEY": <code>RNGRR/h200/@crs220 WAVEY</code>.
+                      When the course is a navaid's radial, as in "climb heading 164 to intercept the SEA R-161",
+                      give it as that radial&mdash;<code>KSEA-34R/h164/@crsSEA-R161 NEVJO</code>&mdash;so that it is
+                      referenced to the station's declination as charted, as with <code>/t</code> and
+                      <code>@<var>navaid</var>-R<var>radial</var></code>.
                       If the heading being flown would miss the course&mdash;it diverges from or parallels it, would
                       cross it only beyond the fix, or converges at a glancing angle from well off it&mdash;the
-                      aircraft turns to intercept the course at a 45 degree angle instead.
+                      aircraft turns to intercept the course at a 45 degree angle instead. An aircraft that is
+                      already on the course turns onto it where it is.
                       <code>@crs</code> must be the last trigger at a fix, and the fix must be followed by another fix
                       on the route for the course to lead to.
                     </td>

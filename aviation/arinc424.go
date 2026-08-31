@@ -645,6 +645,19 @@ func (r ssaRecord) speedRestriction() (SpeedRestriction, bool) {
 	}
 }
 
+// courseNavaid returns the navaid whose radial the record's outbound magnetic
+// course is: a leg whose bearing from its recommended navaid (theta) equals
+// its course lies along that navaid's radial, which is referenced to the
+// station's declination rather than the local variation.
+func (r ssaRecord) courseNavaid() string {
+	navaid := strings.TrimSpace(string(r.recommendedNavaid))
+	if navaid == "" || empty(r.theta) || empty(r.outboundMagneticCourse) ||
+		parseMagneticCourse(r.theta) != parseMagneticCourse(r.outboundMagneticCourse) {
+		return ""
+	}
+	return navaid
+}
+
 func turnDirection(td byte) TurnDirection {
 	switch td {
 	case 'L':
@@ -863,7 +876,8 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 			wp := &transitions[rec.transition][n-1]
 			wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
 				Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: hdg}},
-				Until:   WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
+				Until: WaypointActionTermination{Type: WaypointActionCourse, Course: crs,
+					CourseFix: next.courseNavaid()},
 			})
 		} else if rec.pathAndTermination == "FC" {
 			// A track from the fix for a distance. The fix is usually already
@@ -928,7 +942,8 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 						Track:   true,
 						Turn:    turnDirection(rec.turnDirection),
 					}},
-					Until: WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
+					Until: WaypointActionTermination{Type: WaypointActionCourse, Course: crs,
+						CourseFix: next.courseNavaid()},
 				})
 			}
 			if endsTransition {
@@ -1280,7 +1295,8 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 					// the fix is the same thing.
 					addGroup(from(), WaypointActionGroup{
 						Actions: WaypointActions{Heading: hdg},
-						Until:   WaypointActionTermination{Type: WaypointActionCourse, Course: crs},
+						Until: WaypointActionTermination{Type: WaypointActionCourse, Course: crs,
+							CourseFix: next.courseNavaid()},
 					})
 				}
 			case "FA", "FC", "FD", "FM": // a course from a fix: its radial

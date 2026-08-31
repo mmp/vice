@@ -28,10 +28,11 @@ func TestWalkCIFPRoutes(t *testing.T) {
 	notable := map[string]bool{
 		"KPHX BALDY3 RWY25L": true, "KPHX BROAK1 RWY25L": true, "KSAN PEBLE6 RWY27": true,
 		"KSFO GAPP7 RWY1L": true, "KLAX GMN7 RWY24L": true, "KBUR ELMOO9 RWY33": true,
-		"KBUR ELMOO9 RWY26": true,
+		"KBUR ELMOO9 RWY26": true, "KSEA SUMMA2 RWY16L": true, "KSEA SUMMA2 RWY34L": true,
 	}
 	// Approximate magnetic variation, west positive as vice takes it.
-	magneticVariation := map[string]float32{"KPHX": -10, "KSAN": -11, "KSFO": -13, "KLAX": -12, "KBUR": -12, "KEWR": 13, "KJFK": 13, "KPBF": 1, "KJAX": 6}
+	magneticVariation := map[string]float32{"KPHX": -10, "KSAN": -11, "KSFO": -13, "KLAX": -12, "KBUR": -12,
+		"KSEA": -15, "KEWR": 13, "KJFK": 13, "KPBF": 1, "KJAX": 6}
 
 	var routes, triggers, indeterminate int
 	walk := func(name string, wps av.WaypointArray, rc RouteDrawContext) {
@@ -64,7 +65,7 @@ func TestWalkCIFPRoutes(t *testing.T) {
 		}
 	}
 
-	for _, icao := range []string{"KPHX", "KSAN", "KSFO", "KLAX", "KBUR", "KEWR", "KJFK", "KPBF", "KJAX"} {
+	for _, icao := range []string{"KPHX", "KSAN", "KSFO", "KLAX", "KBUR", "KSEA", "KEWR", "KJFK", "KPBF", "KJAX"} {
 		ap := av.DB.Airports[icao]
 		for sidName, sid := range util.SortedMap(ap.SIDs) {
 			for rwy, wps := range util.SortedMap(sid.RunwayTransitions) {

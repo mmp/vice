@@ -61,18 +61,23 @@ const (
 // WaypointActionTermination describes a non-fix condition for advancing to the
 // next waypoint action group.
 type WaypointActionTermination struct {
-	Type              WaypointActionTerminationType
-	Altitude          int
-	AtOrAbove         bool // altitude: at or above (+) rather than at or below (-); DME: at or beyond rather than within
-	DMEFix            string
-	DMEDistance       float32
-	DMEFixLocation    math.Point2LL
-	DMEFixElevation   int
-	Distance          float32 // nm from where the group took effect
-	Course            int16   // magnetic course to the next fix on the route
-	Radial            int16   // magnetic radial of RadialFix to cross
-	RadialFix         string
-	RadialFixLocation math.Point2LL
+	Type            WaypointActionTerminationType
+	Altitude        int
+	AtOrAbove       bool // altitude: at or above (+) rather than at or below (-); DME: at or beyond rather than within
+	DMEFix          string
+	DMEDistance     float32
+	DMEFixLocation  math.Point2LL
+	DMEFixElevation int
+	Distance        float32 // nm from where the group took effect
+	Course          int16   // magnetic course to the next fix on the route
+	CourseFix       string  // navaid whose radial Course is, if any
+	// CourseFixVariation is the variation Course is referenced to: the
+	// navaid's station declination, or the area's variation for a course
+	// without one.
+	CourseFixVariation float32
+	Radial             int16 // magnetic radial of RadialFix to cross
+	RadialFix          string
+	RadialFixLocation  math.Point2LL
 	// RadialFixVariation is the variation Radial is referenced to: the
 	// navaid's station declination, or the area's variation for a fix
 	// without one.
@@ -189,6 +194,9 @@ func (wat WaypointActionTermination) Encoded() string {
 	case WaypointActionDME:
 		return fmt.Sprintf("/@%s-D%.1f%s", wat.DMEFix, wat.DMEDistance, util.Select(wat.AtOrAbove, "+", "-"))
 	case WaypointActionCourse:
+		if wat.CourseFix != "" {
+			return fmt.Sprintf("/@crs%s-R%03d", wat.CourseFix, wat.Course)
+		}
 		return fmt.Sprintf("/@crs%03d", wat.Course)
 	case WaypointActionRadial:
 		return fmt.Sprintf("/@%s-R%03d", wat.RadialFix, wat.Radial)
@@ -1273,9 +1281,9 @@ func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
 
 // parseWaypointActionTermination parses the condition of a trigger, after
 // its @: an altitude (a4277+ at or above, a4277- at or below), a distance
-// flown (d7.9), a course to the next fix (crs220), a navaid's radial
-// (HLN-R322), or a DME distance from a navaid (ILSQ-D2.3+ at or beyond,
-// ILSQ-D2.3- within).
+// flown (d7.9), a course to the next fix (crs220, or crsHLN-R322 when the
+// course is a navaid's radial), a navaid's radial (HLN-R322), or a DME
+// distance from a navaid (ILSQ-D2.3+ at or beyond, ILSQ-D2.3- within).
 func parseWaypointActionTermination(f string) (WaypointActionTermination, error) {
 	// cutSign splits off the trailing + or - that says which side of the
 	// value the trigger is met on.
@@ -1313,6 +1321,15 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 		return WaypointActionTermination{Type: WaypointActionDistance, Distance: float32(d)}, nil
 
 	case strings.HasPrefix(f, "crs"):
+		if strings.Contains(f[3:], "-R") {
+			// A course that is a navaid's radial is referenced to the
+			// station's declination rather than the area's variation.
+			fix, radial, err := parseRadial(f[3:])
+			if err != nil {
+				return WaypointActionTermination{}, fmt.Errorf("%s: %w", f, err)
+			}
+			return WaypointActionTermination{Type: WaypointActionCourse, Course: radial, CourseFix: fix}, nil
+		}
 		if !allDigits(f[3:]) || len(f) == 3 {
 			return WaypointActionTermination{}, fmt.Errorf("%s: expected a course after crs", f)
 		}
@@ -1350,7 +1367,8 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 
 	default:
 		return WaypointActionTermination{}, fmt.Errorf("%s: unknown trigger; expected an altitude (a4277+), "+
-			"a distance flown (d7.9), a course (crs220), a radial (HLN-R322), or a DME distance (ILSQ-D2.3+)", f)
+			"a distance flown (d7.9), a course (crs220 or crsHLN-R322), a radial (HLN-R322), "+
+			"or a DME distance (ILSQ-D2.3+)", f)
 	}
 }
 
@@ -1799,6 +1817,16 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 				} else if e != nil && !allowSlop {
 					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
 						wp.Fix, group.Until.RadialFix, group.Encoded())
+				}
+			}
+			// The course's line runs through the next fix, so the navaid it
+			// is a radial of supplies only the variation, not a location.
+			if fix := group.Until.CourseFix; fix != "" {
+				if _, ok := loc.Locate(fix); ok {
+					wa[i].InitExtra().ActionGroups[j].Until.CourseFixVariation = radialVariation(fix)
+				} else if e != nil && !allowSlop {
+					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
+						wp.Fix, fix, group.Encoded())
 				}
 			}
 			if fix := group.Actions.Heading.Fix; fix != "" {

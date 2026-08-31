@@ -666,13 +666,21 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 				// rather than intercepting a course through 0°N 0°E.
 				m.Until = ManeuverComplete{Type: UntilControllerIntervention}
 			} else {
+				// A course that is a VOR's radial is referenced to the
+				// station's declination; the intercept is flown in the
+				// sim's magnetic frame.
+				course := math.MagneticHeading(group.Until.Course)
+				if group.Until.CourseFix != "" {
+					course = math.TrueToMagnetic(math.MagneticToTrue(course, group.Until.CourseFixVariation),
+						nav.FlightState.MagneticVariation)
+				}
 				// The turn onto the course is always the short way around,
 				// regardless of which way the aircraft turned to take up
 				// the group's heading.
 				m.Until = ManeuverComplete{
 					Type:            UntilIntercept,
 					Fix:             next.Location,
-					InterceptCourse: math.MagneticHeading(group.Until.Course),
+					InterceptCourse: course,
 					InterceptTurn:   av.TurnClosest,
 					InterceptFix:    next.Fix,
 				}

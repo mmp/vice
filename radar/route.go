@@ -146,9 +146,13 @@ const (
 	// A leg whose heading would meet its course at less than
 	// minInterceptAngle degrees while more than shallowInterceptOffset nm
 	// from it misses it and turns to a 45 degree intercept, as nav's
-	// turnToInterceptIfHeadingMisses does.
-	minInterceptAngle      = 10 // degrees
-	shallowInterceptOffset = 2  // nm
+	// turnToInterceptIfHeadingMisses does. Within onCourseOffset nm of the
+	// course, the aircraft is on it: nav turns onto a course it is that
+	// close to right away, while the crossing of the line the walker
+	// measures can be far off or never for a nearly parallel leg.
+	minInterceptAngle      = 10   // degrees
+	shallowInterceptOffset = 2    // nm
+	onCourseOffset         = 0.08 // nm
 )
 
 // routePen is the walker's state along the route, in nm coordinates.
@@ -532,9 +536,19 @@ func (w *routeWalker) triggerDistance(until av.WaypointActionTermination, dir [2
 		// The course leads to the next fix, so crossing its line beyond
 		// the fix doesn't count, as in nav.
 		cdir := w.headingVector(until.Course)
+		if until.CourseFix != "" {
+			cdir = w.radialVector(until.Course, until.CourseFixVariation)
+		}
+		mark := triggerMark{kind: markCourse, dir: cdir}
+		// Already on the course--a SID whose charted heading is its runway's
+		// and whose course is the radial the runway lies along, say--so the
+		// aircraft turns onto it here rather than intercepting it.
+		if math.Abs(math.SignedPointLineDistance(w.pen.p, w.nextFix, math.Add2f(w.nextFix, cdir))) < onCourseOffset {
+			return 0, mark, true
+		}
 		_, t, _, ok := math.RaySegmentIntersect(w.pen.p, dir,
 			math.Sub2f(w.nextFix, math.Scale2f(cdir, 500)), w.nextFix)
-		return t, triggerMark{kind: markCourse, dir: cdir}, ok
+		return t, mark, ok
 
 	default:
 		return 0, triggerMark{}, false

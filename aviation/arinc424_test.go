@@ -560,8 +560,10 @@ func TestParseARINC424SID(t *testing.T) {
 // SID legs to and along radials: DALLS1's headings to the LTJ 165 radial
 // (VR) then a course to an altitude along it, DVT3's climb on the PXR 336
 // radial from wherever the runway heading ends (FA after VA) and after a
-// heading to intercept it (VI/FA), and FLOUT5's enroute transition that
-// starts with a track from the fix it begins at (FC).
+// heading to intercept it (VI/FA), SUMMA2's headings to intercept courses
+// that are the SEA VOR's radials (VI/CF with theta equal to the course),
+// and FLOUT5's enroute transition that starts with a track from the fix it
+// begins at (FC).
 func TestParseARINC424SIDRadials(t *testing.T) {
 	lines := []string{
 		"SUSAP KDLSK1ADLS     0     050YHN45370968W121100579E015000247         1800018000C    MNAR    COLUMBIA GORGE RGNL/THE DALLES731961303",
@@ -592,6 +594,13 @@ func TestParseARINC424SIDRadials(t *testing.T) {
 		"SUSAP KDVTK2GRW07R   0081960740 N33411322W112053597         +0411001445089842100R                                          786911705",
 		"SUSAP KDVTK2GRW25L   0081962540 N33411761W112042062         +0420201475091640100R                                          786922302",
 		"SUSAP KDVTK2GRW25R   0045002540 N33412407W112042890         +0420601477000048075V                                          786931612",
+		"SUSAP KSEAK1ASEA     0     119YHN47265960W122184240E016000432         1800018000C    MNAR    SEATTLE-TACOMA INTL           120411807",
+		"SUSAP KSEAK1DSUMMA21RW16L 010         0        VI                     1640                    18000                        123352002",
+		"SUSAP KSEAK1DSUMMA21RW16L 020NEVJOK1PC0E       CF SEA K1      1610011016100130D                                            123362002",
+		"SUSAP KSEAK1DSUMMA21RW16L 030         0        VI                     1310                                                 123372002",
+		"SUSAP KSEAK1DSUMMA21RW16L 040SUMMAK1EA0EE      CF SEA K1      1458050814580320D                                            123382002",
+		"SUSAP KSEAK1GRW16L   0119011640 N47274966W122182790         +0108800432000056150IISNQ3                                     128822004",
+		"SUSAP KSEAK1GRW34R   0119013440 N47255222W122182894         +0082800347000060150IISEA2                                     128862501",
 		"SUSAP KSBAK2ASBA     0     060YHN34253429W119502937E014000014         1800018000C    MNAR    SANTA BARBARA MUNI            093472309",
 		"SUSAP KSBAK2DFLOUT53GVO   010FLOUTK2PC0E       FC GVO K2      1413017832100150D   + 06000     18000                        093881310",
 		"SUSAP KSBAK2DFLOUT53GVO   020GVO  K2D 0VE      CF GVO K2      0000000032100030D                                            093890804",
@@ -608,6 +617,7 @@ func TestParseARINC424SIDRadials(t *testing.T) {
 		{"KDVT", "DVT3", "7R", "KDVT-25L/h074/@a2200+/ltPXR-R336/@a4000+/ld PXR"},
 		{"KDVT", "DVT3", "25L", "KDVT-7R/h254/@a1878+/r060/@PXR-R336/tPXR-R336/@a4000+/ld PXR"},
 		{"KDVT", "DVT3", "25R", "KDVT-7L/h254/@a1878+/r060/@PXR-R336/tPXR-R336/@a4000+/ld PXR"},
+		{"KSEA", "SUMMA2", "16L", "KSEA-34R/h164/@crsSEA-R161 NEVJO/h131/@crsSEA-R146 SUMMA"},
 	} {
 		sid, ok := result.Airports[tc.airport].SIDs[tc.sid]
 		if !ok {

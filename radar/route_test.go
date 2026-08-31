@@ -151,6 +151,26 @@ func TestCourseTrigger(t *testing.T) {
 	expectNear(t, "pen", w.pen.p, [2]float32{10, 0}, 0.05)
 }
 
+// A leg that starts out on its course--a SID whose charted heading is the
+// runway's and whose course is the radial the runway lies along--turns onto
+// the course where it is rather than at a 45 degree intercept, even though
+// the heading diverges and never crosses the course's line short of the fix.
+func TestCourseTriggerAlreadyOnCourse(t *testing.T) {
+	w := testWalker(RouteDrawContext{})
+	w.walk([]av.Waypoint{
+		fixAt("A", 0, 0.05, av.WaypointActionGroup{
+			Actions: heading(89),
+			Until:   av.WaypointActionTermination{Type: av.WaypointActionCourse, Course: 90},
+		}),
+		fixAt("B", 10, 0),
+	})
+	if got, want := w.fixes[0].actions, "h089/@crs090"; got != want {
+		t.Errorf("expected the trigger to go with A's label as %q, got %q", want, got)
+	}
+	expectNear(t, "inbound to B", w.fixes[1].inbound, [2]float32{1, 0}, 0.02)
+	expectNear(t, "pen", w.pen.p, [2]float32{10, 0}, 0.05)
+}
+
 func TestAltitudeTrigger(t *testing.T) {
 	rc := RouteDrawContext{Departure: true, FieldElevation: 0, ClearedAltitude: 5000}
 	altitude := func(alt int, atOrAbove bool) av.WaypointActionGroup {
