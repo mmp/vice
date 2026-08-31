@@ -776,7 +776,6 @@
     }
   },
   "default_scenario": "ABQ - East Flow",
-  "magnetic_adjustment": -8,
   "name": "KABQ",
   "scenarios": {
     "ABQ - East Flow": {
