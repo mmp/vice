@@ -616,6 +616,17 @@ func (nav *Nav) actionGroupHeading(fix string, groups []av.WaypointActionGroup, 
 	return &NavHeading{Maneuvers: nav.makeActionGroupManeuvers(fix, groups, next)}
 }
 
+// courseTowardFix returns the course along the line through the aircraft in
+// the given direction that leads to the fix: its reciprocal if the fix is
+// behind, and the course itself otherwise.
+func (fs *FlightState) courseTowardFix(course math.MagneticHeading, fix math.Point2LL) math.MagneticHeading {
+	toFix := math.Sub2f(math.LL2NM(fix, fs.NmPerLongitude), math.LL2NM(fs.Position, fs.NmPerLongitude))
+	if math.Dot(toFix, math.HeadingVector(math.MagneticToTrue(course, fs.MagneticVariation))) < 0 {
+		return math.OppositeHeading(course)
+	}
+	return course
+}
+
 // makeActionGroupManeuvers translates a waypoint's action groups into the
 // maneuvers that fly them. next is the following fix on the route, which an
 // /@crs course termination joins; it is nil if there is none.
@@ -666,13 +677,16 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 				// rather than intercepting a course through 0°N 0°E.
 				m.Until = ManeuverComplete{Type: UntilControllerIntervention}
 			} else {
-				// A course that is a VOR's radial is referenced to the
-				// station's declination; the intercept is flown in the
-				// sim's magnetic frame.
+				// A course given as a VOR's radial is referenced to the
+				// station's declination and names only the line, since a
+				// leg may fly a radial either inbound or outbound; the
+				// intercept is flown in the sim's magnetic frame, in
+				// whichever direction along the line leads to the fix.
 				course := math.MagneticHeading(group.Until.Course)
 				if group.Until.CourseFix != "" {
 					course = math.TrueToMagnetic(math.MagneticToTrue(course, group.Until.CourseFixVariation),
 						nav.FlightState.MagneticVariation)
+					course = nav.FlightState.courseTowardFix(course, next.Location)
 				}
 				// The turn onto the course is always the short way around,
 				// regardless of which way the aircraft turned to take up

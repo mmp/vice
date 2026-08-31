@@ -148,6 +148,19 @@ func TestCourseToFixInterceptStationDeclination(t *testing.T) {
 	checkJoinsCourse(t, f, "WAVEY", heading, course)
 }
 
+// A leg may fly a radial inbound, toward the station: the radial names the
+// line and the fix the direction along it, so giving the reciprocal of the
+// course flies the same intercept as TestCourseToFixInterceptStationDeclination.
+func TestCourseToFixInterceptInboundRadial(t *testing.T) {
+	vor := declinatedVOR(t, 5)
+	direct := skorrWaveyCourse(t)
+	heading := math.NormalizeHeading(direct - 20)
+	course := math.MagneticHeading(int(math.NormalizeHeading(direct + 20)))
+	radial := math.OppositeHeading(math.NormalizeHeading(course + 5))
+	f := newSkorrWaveyFlight(t, fmt.Sprintf("SKORR/h%d/@crs%s-R%d WAVEY", int(heading), vor, int(radial)))
+	checkJoinsCourse(t, f, "WAVEY", heading, course)
+}
+
 // The SUMMA2 departure's runway 16L transition from the CIFP,
 // KSEA-34R/h164/@crsSEA-R161 NEVJO: the charted heading is the runway's and
 // the course to NEVJO is the SEA 161 radial, which the extended centerline

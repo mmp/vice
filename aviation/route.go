@@ -70,7 +70,10 @@ type WaypointActionTermination struct {
 	DMEFixElevation int
 	Distance        float32 // nm from where the group took effect
 	Course          int16   // magnetic course to the next fix on the route
-	CourseFix       string  // navaid whose radial Course is, if any
+	// CourseFix is the navaid Course is a radial of, if any. A radial names
+	// the line only, since a leg may fly it either inbound or outbound, so
+	// the next fix gives the direction along it.
+	CourseFix string
 	// CourseFixVariation is the variation Course is referenced to: the
 	// navaid's station declination, or the area's variation for a course
 	// without one.
@@ -1282,7 +1285,7 @@ func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
 // parseWaypointActionTermination parses the condition of a trigger, after
 // its @: an altitude (a4277+ at or above, a4277- at or below), a distance
 // flown (d7.9), a course to the next fix (crs220, or crsHLN-R322 when the
-// course is a navaid's radial), a navaid's radial (HLN-R322), or a DME
+// leg runs along a navaid's radial), a navaid's radial (HLN-R322), or a DME
 // distance from a navaid (ILSQ-D2.3+ at or beyond, ILSQ-D2.3- within).
 func parseWaypointActionTermination(f string) (WaypointActionTermination, error) {
 	// cutSign splits off the trailing + or - that says which side of the
@@ -1322,8 +1325,9 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 
 	case strings.HasPrefix(f, "crs"):
 		if strings.Contains(f[3:], "-R") {
-			// A course that is a navaid's radial is referenced to the
-			// station's declination rather than the area's variation.
+			// A leg along a navaid's radial gives that radial, which is
+			// referenced to the station's declination rather than the
+			// area's variation, in place of the course.
 			fix, radial, err := parseRadial(f[3:])
 			if err != nil {
 				return WaypointActionTermination{}, fmt.Errorf("%s: %w", f, err)

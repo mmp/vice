@@ -905,10 +905,13 @@
                     <td>Triggers when the aircraft should turn in order to fly the given magnetic course to the next fix on
                       the route. This is how to express procedures that
                       read like "fly heading 200, then track 220 to WAVEY": <code>RNGRR/h200/@crs220 WAVEY</code>.
-                      When the course is a navaid's radial, as in "climb heading 164 to intercept the SEA R-161",
-                      give it as that radial&mdash;<code>KSEA-34R/h164/@crsSEA-R161 NEVJO</code>&mdash;so that it is
-                      referenced to the station's declination as charted, as with <code>/t</code> and
-                      <code>@<var>navaid</var>-R<var>radial</var></code>.
+                      When the leg runs along a navaid's radial, as in "climb heading 164 to intercept the SEA
+                      R-161", give that radial in place of the course&mdash;<code>KSEA-34R/h164/@crsSEA-R161
+                      NEVJO</code>&mdash;so that it is referenced to the station's declination as charted, as with
+                      <code>/t</code> and <code>@<var>navaid</var>-R<var>radial</var></code>. The radial names the
+                      line only, since a leg may fly it either inbound or outbound; the fix that follows gives the
+                      direction along it, so the KSAN SHAMU1's leg inbound to <code>SARGS</code> on the
+                      <code>MZB</code> 255 radial is <code>SHAMU/h135/@crsMZB-R255 SARGS</code>.
                       If the heading being flown would miss the course&mdash;it diverges from or parallels it, would
                       cross it only beyond the fix, or converges at a glancing angle from well off it&mdash;the
                       aircraft turns to intercept the course at a 45 degree angle instead. An aircraft that is

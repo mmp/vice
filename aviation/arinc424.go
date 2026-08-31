@@ -200,7 +200,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				if _, ok := ap.SIDs[id]; ok {
 					panic("already seen SID id " + id)
 				}
-				ap.SIDs[id] = *parseSID(recs, sidAirport, ap.Runways)
+				ap.SIDs[id] = *parseSID(recs, sidAirport, ap.Runways, result.Navaids)
 			}
 			result.Airports[sidAirport] = ap
 		}
@@ -450,7 +450,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					}
 				}
 
-				if star := parseSTAR(recs); star != nil {
+				if star := parseSTAR(recs, result.Navaids); star != nil {
 					if result.Airports[icao].STARs == nil {
 						ap := result.Airports[icao]
 						ap.STARs = make(map[string]STAR)
@@ -645,17 +645,25 @@ func (r ssaRecord) speedRestriction() (SpeedRestriction, bool) {
 	}
 }
 
-// courseNavaid returns the navaid whose radial the record's outbound magnetic
-// course is: a leg whose bearing from its recommended navaid (theta) equals
-// its course lies along that navaid's radial, which is referenced to the
-// station's declination rather than the local variation.
-func (r ssaRecord) courseNavaid() string {
+// courseTermination returns the trigger for a heading flown until the
+// record's course to its fix is intercepted. A leg whose bearing from its
+// recommended VHF navaid (theta) is its course, or the reciprocal of it,
+// lies along that navaid's radial: the radial names the line, which is
+// referenced to the station's declination rather than the local variation,
+// and the fix the leg leads to gives the direction along it.
+func (r ssaRecord) courseTermination(navaids map[string]Navaid) WaypointActionTermination {
+	crs := parseMagneticCourse(r.outboundMagneticCourse)
 	navaid := strings.TrimSpace(string(r.recommendedNavaid))
-	if navaid == "" || empty(r.theta) || empty(r.outboundMagneticCourse) ||
-		parseMagneticCourse(r.theta) != parseMagneticCourse(r.outboundMagneticCourse) {
-		return ""
+	if n, ok := navaids[navaid]; ok && n.HasDeclination && !empty(r.theta) {
+		opposite := crs + 180
+		if opposite > 360 {
+			opposite -= 360
+		}
+		if theta := parseMagneticCourse(r.theta); theta == crs || theta == opposite {
+			return WaypointActionTermination{Type: WaypointActionCourse, Course: theta, CourseFix: navaid}
+		}
 	}
-	return navaid
+	return WaypointActionTermination{Type: WaypointActionCourse, Course: crs}
 }
 
 func turnDirection(td byte) TurnDirection {
@@ -811,7 +819,8 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	return
 }
 
-func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r ssaRecord) bool,
+func parseTransitions(recs []ssaRecord, navaids map[string]Navaid, log func(r ssaRecord) bool,
+	skip func(r ssaRecord) bool,
 	terminate func(r ssaRecord, transitions map[string]WaypointArray) bool) map[string]WaypointArray {
 	transitions := make(map[string]WaypointArray)
 
@@ -876,8 +885,7 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 			wp := &transitions[rec.transition][n-1]
 			wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
 				Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: hdg}},
-				Until: WaypointActionTermination{Type: WaypointActionCourse, Course: crs,
-					CourseFix: next.courseNavaid()},
+				Until:   next.courseTermination(navaids),
 			})
 		} else if rec.pathAndTermination == "FC" {
 			// A track from the fix for a distance. The fix is usually already
@@ -942,8 +950,7 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 						Track:   true,
 						Turn:    turnDirection(rec.turnDirection),
 					}},
-					Until: WaypointActionTermination{Type: WaypointActionCourse, Course: crs,
-						CourseFix: next.courseNavaid()},
+					Until: next.courseTermination(navaids),
 				})
 			}
 			if endsTransition {
@@ -996,8 +1003,8 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 	return transitions
 }
 
-func parseSTAR(recs []ssaRecord) *STAR {
-	transitions := parseTransitions(recs,
+func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *STAR {
+	transitions := parseTransitions(recs, navaids,
 		func(r ssaRecord) bool { return false },                                          // log
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
 		func(r ssaRecord, transitions map[string]WaypointArray) bool { return false })    // terminate
@@ -1042,7 +1049,7 @@ func parseSTAR(recs []ssaRecord) *STAR {
 // parseSID assembles a SID from its records. Runway transitions are keyed by
 // the airport's runways; a transition coded for both parallels (RW04B)
 // applies to each that has none of its own.
-func parseSID(recs []ssaRecord, icao string, runways []Runway) *SID {
+func parseSID(recs []ssaRecord, icao string, runways []Runway, navaids map[string]Navaid) *SID {
 	sid := MakeSID()
 
 	// Group the records by transition, in file order. The key includes the
@@ -1068,7 +1075,7 @@ func parseSID(recs []ssaRecord, icao string, runways []Runway) *SID {
 	for _, key := range keys {
 		routeType, transition := key[0], key[1:]
 		runwayTransition := strings.HasPrefix(transition, "RW")
-		wps, ok := parseSIDLegs(byTransition[key], runwayTransition)
+		wps, ok := parseSIDLegs(byTransition[key], navaids, runwayTransition)
 		if !ok || len(wps) == 0 {
 			continue
 		}
@@ -1129,7 +1136,7 @@ func sidTransitionRunways(transition string, runways []Runway) []string {
 // runway transition's first leg is flown from the runway's departure end,
 // returned as a waypoint with an empty Fix for the caller to name.
 // Transitions with legs vice can't fly are reported as not ok.
-func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, ok bool) {
+func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition bool) (wps WaypointArray, ok bool) {
 	// from returns the waypoint the next leg is flown from.
 	from := func() *Waypoint {
 		if len(wps) == 0 {
@@ -1295,8 +1302,7 @@ func parseSIDLegs(recs []ssaRecord, runwayTransition bool) (wps WaypointArray, o
 					// the fix is the same thing.
 					addGroup(from(), WaypointActionGroup{
 						Actions: WaypointActions{Heading: hdg},
-						Until: WaypointActionTermination{Type: WaypointActionCourse, Course: crs,
-							CourseFix: next.courseNavaid()},
+						Until:   next.courseTermination(navaids),
 					})
 				}
 			case "FA", "FC", "FD", "FM": // a course from a fix: its radial
@@ -1468,7 +1474,7 @@ func markTBarNoPT(transitions map[string]WaypointArray, recs []ssaRecord, fixes 
 }
 
 func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Navaid) *Approach {
-	transitions := parseTransitions(recs,
+	transitions := parseTransitions(recs, navaids,
 		func(r ssaRecord) bool { return false },                                          // log
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
 		func(r ssaRecord, transitions map[string]WaypointArray) bool {

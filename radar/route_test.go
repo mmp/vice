@@ -151,6 +151,24 @@ func TestCourseTrigger(t *testing.T) {
 	expectNear(t, "pen", w.pen.p, [2]float32{10, 0}, 0.05)
 }
 
+// A course given as a radial names the line only, so giving the reciprocal
+// of the course draws the same leg as TestCourseTrigger: the next fix says
+// which way along the line the aircraft flies.
+func TestCourseTriggerInboundRadial(t *testing.T) {
+	w := testWalker(RouteDrawContext{})
+	w.walk([]av.Waypoint{
+		fixAt("A", 0, -5, av.WaypointActionGroup{
+			Actions: heading(45),
+			Until: av.WaypointActionTermination{Type: av.WaypointActionCourse, Course: 270,
+				CourseFix: "FIX"},
+		}),
+		fixAt("B", 10, 0),
+	})
+	expectNear(t, "@crsFIX-R270", labelAt(t, w, "@crsFIX-R270"), [2]float32{5, 0}, 0.5)
+	expectNear(t, "inbound to B", w.fixes[1].inbound, [2]float32{1, 0}, 0.02)
+	expectNear(t, "pen", w.pen.p, [2]float32{10, 0}, 0.05)
+}
+
 // A leg that starts out on its course--a SID whose charted heading is the
 // runway's and whose course is the radial the runway lies along--turns onto
 // the course where it is rather than at a 45 degree intercept, even though

@@ -301,9 +301,12 @@ func TestParseARINC424CourseVersusHeadingLegs(t *testing.T) {
 // A VI leg is a heading flown until the course of the following CF leg to its
 // fix is intercepted, at which point the aircraft goes direct to that fix.
 // KSAN SHAMU1 leaves SHAMU on a 135 heading and joins the 075 course to SARGS
-// rather than turning direct to it.
+// rather than turning direct to it. SARGS is 8nm out on the MZB 255 radial and
+// the leg flies it inbound, so the trigger gives that radial: it names the
+// line, and SARGS the direction along it.
 func TestParseARINC424CourseIntercept(t *testing.T) {
 	lines := []string{
+		"SUSAD        MZB   K2011780VTHW N32465595W117133152    N32465595W117133152E0150000102     NARMISSION BAY                   256332208",
 		"SUSAP KSANK2ESHAMU13RW09  010SHAMUK2PC0E       IF                                             18000                        081981310",
 		"SUSAP KSANK2ESHAMU13RW09  020         0        VI                     1350                                                 081990804",
 		"SUSAP KSANK2ESHAMU13RW09  030SARGSK2EA0EE      CF MZB K2      2550008007500055D                                            082002103",
@@ -311,8 +314,8 @@ func TestParseARINC424CourseIntercept(t *testing.T) {
 	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
 
 	wps := result.Airports["KSAN"].STARs["SHAMU1"].RunwayWaypoints["9"]
-	if got := WaypointArray(wps).Encode(); got != "SHAMU/h135/@crs075 SARGS" {
-		t.Fatalf("expected %q, got %q", "SHAMU/h135/@crs075 SARGS", got)
+	if got, want := WaypointArray(wps).Encode(), "SHAMU/h135/@crsMZB-R255 SARGS"; got != want {
+		t.Fatalf("expected %q, got %q", want, got)
 	}
 
 	groups := wps[0].ActionGroups()
@@ -322,8 +325,9 @@ func TestParseARINC424CourseIntercept(t *testing.T) {
 	if hdg := groups[0].Actions.Heading; hdg.Heading != 135 || hdg.Track {
 		t.Errorf("expected heading 135, got %+v", hdg)
 	}
-	if until := groups[0].Until; until.Type != WaypointActionCourse || until.Course != 75 {
-		t.Errorf("expected a 075 course termination, got %+v", until)
+	if until := groups[0].Until; until.Type != WaypointActionCourse || until.Course != 255 ||
+		until.CourseFix != "MZB" {
+		t.Errorf("expected a course termination on the MZB 255 radial, got %+v", until)
 	}
 }
 
@@ -594,6 +598,7 @@ func TestParseARINC424SIDRadials(t *testing.T) {
 		"SUSAP KDVTK2GRW07R   0081960740 N33411322W112053597         +0411001445089842100R                                          786911705",
 		"SUSAP KDVTK2GRW25L   0081962540 N33411761W112042062         +0420201475091640100R                                          786922302",
 		"SUSAP KDVTK2GRW25R   0045002540 N33412407W112042890         +0420601477000048075V                                          786931612",
+		"SUSAD        SEA   K1011680VTHW N47260734W122183462    N47260734W122183462E0190003482     NARSEATTLE                       258351702",
 		"SUSAP KSEAK1ASEA     0     119YHN47265960W122184240E016000432         1800018000C    MNAR    SEATTLE-TACOMA INTL           120411807",
 		"SUSAP KSEAK1DSUMMA21RW16L 010         0        VI                     1640                    18000                        123352002",
 		"SUSAP KSEAK1DSUMMA21RW16L 020NEVJOK1PC0E       CF SEA K1      1610011016100130D                                            123362002",

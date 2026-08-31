@@ -537,7 +537,12 @@ func (w *routeWalker) triggerDistance(until av.WaypointActionTermination, dir [2
 		// the fix doesn't count, as in nav.
 		cdir := w.headingVector(until.Course)
 		if until.CourseFix != "" {
+			// The radial names the line only, since a leg may fly it either
+			// inbound or outbound; the fix gives the direction along it.
 			cdir = w.radialVector(until.Course, until.CourseFixVariation)
+			if math.Dot(math.Sub2f(w.nextFix, w.pen.p), cdir) < 0 {
+				cdir = math.Scale2f(cdir, -1)
+			}
 		}
 		mark := triggerMark{kind: markCourse, dir: cdir}
 		// Already on the course--a SID whose charted heading is its runway's
