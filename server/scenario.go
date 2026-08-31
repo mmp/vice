@@ -50,9 +50,6 @@ type scenarioGroup struct {
 
 	AllowFixRedefinitions bool `json:"allow_fix_redefinitions"`
 
-	ReportingPointStrings []string            `json:"reporting_points"`
-	ReportingPoints       []av.ReportingPoint // not in JSON
-
 	NmPerLatitude      float32 // Always 60
 	NmPerLongitude     float32 // Derived from Center
 	MagneticVariation  float32
@@ -1309,14 +1306,6 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		}
 
 		e.Pop()
-	}
-
-	for _, rp := range sg.ReportingPointStrings {
-		if loc, ok := sg.Locate(rp); !ok {
-			e.ErrorString(`unknown "reporting_point" %q`, rp)
-		} else {
-			sg.ReportingPoints = append(sg.ReportingPoints, av.ReportingPoint{Fix: rp, Location: loc})
-		}
 	}
 
 	for i := range sg.VFRReportingPoints {
@@ -3024,7 +3013,6 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		ConfigurationId:         scenario.ConfigurationString,
 		InboundFlows:            scenarioGroup.InboundFlows,
 		FacilityAdaptation:      deep.MustCopy(scenarioGroup.FacilityConfig.FacilityAdaptation),
-		ReportingPoints:         scenarioGroup.ReportingPoints,
 		MagneticVariation:       scenarioGroup.MagneticVariation,
 		NmPerLongitude:          scenarioGroup.NmPerLongitude,
 		WindSpecifier:           scenario.WindSpecifier,

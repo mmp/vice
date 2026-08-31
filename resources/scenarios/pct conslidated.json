@@ -6979,7 +6979,6 @@
   },
   "default_scenario": "PCT - North Flow",
   "name": "Consolidated",
-  "reporting_points": ["CAPSS", "HOYAS", "BAL", "EYESS", "DEALE", "SEPII", "FORGT", "TRUPS", "OOURR", "DFORT"],
   "scenarios": {
     "PCT - North Flow": {
       "arrival_runways": [

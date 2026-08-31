@@ -442,7 +442,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if !ac.IsAssociated() {
 			return "", ""
 		}
-		rt = ac.ContactMessage(s.ReportingPoints)
+		rt = ac.ContactMessage()
 		rt.Type = av.RadioTransmissionContact
 
 		// Pilots only give the ATIS when they first contact a TRACON controller in a facility.

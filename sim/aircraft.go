@@ -810,7 +810,7 @@ func (ac *Aircraft) NavSummary(model *wx.Model, simTime Time, lg *log.Logger) st
 	return ac.Nav.Summary(ac.FlightPlan, model, simTime.NavTime(), lg)
 }
 
-func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.RadioTransmission {
+func (ac *Aircraft) ContactMessage() *av.RadioTransmission {
 	// For departures, only report heading if the runway has varied exit headings.
 	// For arrivals (and others), always report heading if assigned.
 	reportHeading := !ac.IsDeparture() || ac.ReportDepartureHeading
@@ -818,7 +818,7 @@ func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.Radi
 	if ac.Nav.Approach.Assigned != nil {
 		runway = ac.Nav.Approach.Assigned.Runway
 	}
-	return ac.Nav.ContactMessage(reportingPoints, ac.STAR, runway, reportHeading, ac.IsDeparture())
+	return ac.Nav.ContactMessage(ac.STAR, runway, reportHeading, ac.IsDeparture())
 }
 
 func (ac *Aircraft) DepartOnCourse(simTime Time, lg *log.Logger) {

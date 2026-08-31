@@ -554,7 +554,6 @@
     "_GJT29": "N039.07.06.722,W108.30.51.141"
   },
   "name": "KGJT",
-  "reporting_points": ["KGJT"],
   "scenarios": {
     "GJT East Flow": {
       "arrival_runways": [

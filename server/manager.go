@@ -320,7 +320,6 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 		DepartureRunways:            sc.DepartureRunways,
 		ArrivalRunways:              sc.ArrivalRunways,
 		VFRReportingPoints:          sg.VFRReportingPoints,
-		ReportingPoints:             sg.ReportingPoints,
 		Description:                 description,
 		Brief:                       briefMarkdown,
 		MagneticVariation:           sg.MagneticVariation,

@@ -1843,7 +1843,6 @@
   },
   "default_scenario": "Milwaukee North Flow",
   "name": "KMKE",
-  "reporting_points": ["SUDDS", "ZOWRO", "BRAVE", "BAE", "RAYNR"],
   "scenarios": {
     "Milwaukee North Flow": {
       "arrival_runways": [

@@ -72,8 +72,6 @@ type Sim struct {
 
 	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
 
-	ReportingPoints []av.ReportingPoint
-
 	FDAMSystemInhibited         bool
 	DisabledFDAMRegions         map[string]struct{} // keyed by region ID
 	EnforceUniqueCallsignSuffix bool
@@ -217,7 +215,6 @@ type NewSimConfiguration struct {
 
 	EnforceUniqueCallsignSuffix bool
 
-	ReportingPoints   []av.ReportingPoint
 	MagneticVariation float32
 	NmPerLongitude    float32
 	StartTime         time.Time
@@ -270,8 +267,6 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		eventStream: NewEventStream(lg),
 		lg:          lg,
-
-		ReportingPoints: config.ReportingPoints,
 
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
 

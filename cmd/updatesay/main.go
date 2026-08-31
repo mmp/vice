@@ -51,7 +51,6 @@ func main() {
 		for _, sg := range scenarios {
 			ExtractFromAirports(sg.Airports, fixes, sids)
 			ExtractFromInboundFlows(sg.InboundFlows, fixes, stars)
-			ExtractFromReportingPoints(sg.ReportingPoints, fixes)
 			AddFixesFromMap(sg.Fixes, fixes)
 		}
 	}

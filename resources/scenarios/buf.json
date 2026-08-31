@@ -742,7 +742,6 @@
     "AIRCO_HO": "AIRCO@109/25"
   },
   "name": "KBUF",
-  "reporting_points": ["EHMAN", "DKK", "BENEE", "WOZEE", "AIRCO", "ROC", "GEE", "JHW", "ERI", "BUF"],
   "scenarios": {
     "BUF West": {
       "airspace": {

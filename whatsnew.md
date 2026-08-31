@@ -10,3 +10,4 @@
   - Route specifier altitudes @a require "-"/"+" for below/above the altitude
   - Added support for extracting SIDs from the CIFP: if available, "sid" is sufficient in "departure_routes" without any "waypoints"
   - All altitudes in scenarios are now specified in feet. (Before, some like `/c` were 100s of feet and others like `/a` were just feet. This was confusing.)
+  - Removed the unused "reporting_points" scenario field. ("vfr_reporting_points" is unaffected.)

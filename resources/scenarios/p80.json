@@ -5633,7 +5633,6 @@
   "default_scenario": "KPDX West",
   "magnetic_adjustment": -1.1,
   "fixes": {},
-  "reporting_points": ["HHOOD", "KRATR", "VANTZ"],
   "name": "P80",
   "scenarios": {
     "KPDX West": {

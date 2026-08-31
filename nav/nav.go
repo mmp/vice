@@ -997,8 +997,8 @@ func (nav *Nav) DepartureMessage(sid string, reportHeading bool) *av.RadioTransm
 	return rt
 }
 
-func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string, runway string,
-	reportHeading bool, isDeparture bool) *av.RadioTransmission {
+func (nav *Nav) ContactMessage(star string, runway string, reportHeading bool,
+	isDeparture bool) *av.RadioTransmission {
 	var resp av.RadioTransmission
 
 	// Find the first applicable fix assignment for reporting

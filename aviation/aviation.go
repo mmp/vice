@@ -87,11 +87,6 @@ func (f Frequency) String() string {
 	return s
 }
 
-type ReportingPoint struct {
-	Fix      string
-	Location math.Point2LL
-}
-
 type InboundFlow struct {
 	Arrivals    []Arrival    `json:"arrivals"`
 	Overflights []Overflight `json:"overflights"`

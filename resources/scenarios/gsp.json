@@ -424,7 +424,6 @@
     "_GSP_22": "N34.54.30.210,W82.12.32.492"
   },
   "name": "KGSP",
-  "reporting_points": ["TDAAY", "TYRES", "SPA"],
   "scenarios": {
     "KGSP Runway 22": {
       "airspace": {

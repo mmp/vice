@@ -598,7 +598,6 @@
     "CRRGO": "N037.54.22.046,W086.13.52.708"
   },
   "name": "KSDF",
-  "reporting_points": ["CHERI", "NERVE", "FRIZN", "MAUDD", "MBELL"],
   "scenarios": {
     "KSDF South": {
       "airspace": {

@@ -102,15 +102,6 @@ func ExtractFromInboundFlows(flows map[string]*av.InboundFlow, fixes map[string]
 	}
 }
 
-// ExtractFromReportingPoints extracts fixes from reporting points.
-func ExtractFromReportingPoints(rps []av.ReportingPoint, fixes map[string]struct{}) {
-	for _, rp := range rps {
-		if isValidFix(rp.Fix) {
-			fixes[rp.Fix] = struct{}{}
-		}
-	}
-}
-
 // AddFixesFromMap adds valid fixes from a map of fix names to locations.
 func AddFixesFromMap(fixMap map[string]math.Point2LL, fixes map[string]struct{}) {
 	for name := range fixMap {

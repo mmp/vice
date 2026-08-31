@@ -6514,7 +6514,6 @@
   },
   "magnetic_adjustment": 2,
   "name": "KAAC",
-  "reporting_points": ["ATOKA", "AVANT", "BARTS", "COLIN", "KILLR", "MAYES", "NOBLE", "PRYOR", "REELI", "SHAWN"],
   "scenarios": {
     "West": {
       "center": "N036.10.18.750,W095.39.37.496",

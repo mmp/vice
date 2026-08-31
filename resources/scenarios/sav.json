@@ -1423,7 +1423,6 @@
   },
   "magnetic_adjustment": -0.5,
   "name": "KSAV",
-  "reporting_points": ["LOTTS", "PLZZZ", "SOOOP", "VIYAP"],
   "scenarios": {
     "SAV Dep 10 Ldg 10/1 Sats North": {
       "airspace": {
