@@ -824,7 +824,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 		wps = nav.visualApproachRouteFromReferences(runway, joinPos, nav.Approach.VisualReferences)
 	}
 	if wps == nil {
-		return av.MakeUnableIntent("unable, we don't know runway " + runway)
+		return av.MakeUnableIntent("unable, we're not in position for the visual to runway " + runway)
 	}
 
 	// The synthesized route is built from raw reference / leader waypoints,
@@ -1164,6 +1164,16 @@ func (nav *Nav) selectVisualApproachRoute(followTraffic *math.Point2LL, referenc
 	}
 	bearingToProj := math.Heading2LL(pos, proj.location, nmPerLong)
 	if math.HeadingDifference(bearingToProj, tHdg) > 90 {
+		// The aircraft is on a downwind: pointed away from the field with
+		// the abeam projection behind it. Rather than refusing, join the
+		// route at a point downwind of the aircraft -- it continues ahead,
+		// turns in to that fix, and flies the route inbound from there.
+		joinDist := max(proj.distanceToThreshold+2, 4)
+		if jp, ok := visualRoutePointAtDistance(proj.route, joinDist, nmPerLong); ok {
+			jp.lateralDistance = proj.lateralDistance
+			jp.finalPoint = jp.distanceToThreshold <= 3.25
+			return &jp
+		}
 		return nil
 	}
 	return &proj
