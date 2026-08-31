@@ -616,7 +616,7 @@
           "BLZZR.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "BLZZR.J.4R.4/9": {
             "cleared_altitude": 3000,
@@ -625,7 +625,7 @@
           "BRUWN.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "BRUWN.J.4R.4/9": {
             "cleared_altitude": 3000,
@@ -634,7 +634,7 @@
           "CELTK.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "CELTK.J.4R.4/9": {
             "cleared_altitude": 3000,
@@ -643,7 +643,7 @@
           "HYLND.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "HYLND.J.4R.4/9": {
             "cleared_altitude": 3000,
@@ -652,17 +652,16 @@
           "LBSTA.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "LBSTA.J.4R.4/9": {
             "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "NHANT HURBE JENAA SHAUN"
+            "sid": "SSOXS7"
           },
           "PATSS.J.4R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "PATSS.J.4R.4/9": {
             "cleared_altitude": 3000,
@@ -679,7 +678,7 @@
           "BLZZR.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "BLZZR.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
@@ -688,7 +687,7 @@
           "BRUWN.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "BRUWN.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
@@ -697,7 +696,7 @@
           "CELTK.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "CELTK.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
@@ -706,7 +705,7 @@
           "HYLND.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "HYLND.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
@@ -715,17 +714,16 @@
           "LBSTA.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "LBSTA.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "NHANT HURBE JENAA SHAUN"
+            "sid": "SSOXS7"
           },
           "PATSS.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-22L N042.25.31.452,W070.58.30.488/h090"
+            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
           "PATSS.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
@@ -804,8 +802,7 @@
           },
           "LBSTA.J.9.4/9": {
             "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "CLAWW/a4000+/s250 CLMPP SHAUN"
+            "sid": "LBSTA8"
           },
           "MANCH.J.9.4/9": {
             "cleared_altitude": 5000,
@@ -892,8 +889,7 @@
           },
           "LBSTA.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "CLAWW/a4000+/s250 CLMPP SHAUN"
+            "sid": "LBSTA8"
           },
           "MANCH.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
@@ -1042,7 +1038,7 @@
           "BLZZR.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-33L N042.20.36.112,W070.58.34.883/h150"
+            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
           },
           "BLZZR.J.15R.4/9": {
             "cleared_altitude": 3000,
@@ -1051,7 +1047,7 @@
           "BRUWN.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-33L N042.20.36.112,W070.58.34.883/h150"
+            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
           },
           "BRUWN.J.15R.4/9": {
             "cleared_altitude": 3000,
@@ -1060,7 +1056,7 @@
           "CELTK.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-33L N042.20.36.112,W070.58.34.883/h150"
+            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
           },
           "CELTK.J.15R.4/9": {
             "cleared_altitude": 3000,
@@ -1069,7 +1065,7 @@
           "HYLND.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-33L N042.20.36.112,W070.58.34.883/h150"
+            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
           },
           "HYLND.J.15R.4/9": {
             "cleared_altitude": 3000,
@@ -1078,7 +1074,7 @@
           "LBSTA.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-33L N042.20.36.112,W070.58.34.883/h150"
+            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
           },
           "LBSTA.J.15R.4/9": {
             "cleared_altitude": 3000,
@@ -1087,7 +1083,7 @@
           "PATSS.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-33L N042.20.36.112,W070.58.34.883/h150"
+            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
           },
           "PATSS.J.15R.4/9": {
             "cleared_altitude": 3000,
@@ -1483,7 +1479,7 @@
           "BURDY.PVD.J.33L.33/27": {
             "cleared_altitude": 4000,
             "sid": "LOGAN4",
-            "waypoints": "N042.23.00.253,W071.01.44.891/h316"
+            "waypoints": "KBOS-15R/h330/@BOS-D2.0+/l316"
           },
           "BRUWN.J.33L.33/27": {
             "cleared_altitude": 4000,
@@ -1570,7 +1566,7 @@
           "BURDY.PVD.J.33L.27+32/33": {
             "cleared_altitude": 5000,
             "sid": "LOGAN4",
-            "waypoints": "N042.23.00.253,W071.01.44.891/h316"
+            "waypoints": "KBOS-15R/h330/@BOS-D2.0+/l316"
           },
           "BRUWN.J.33L.27+32/33": {
             "cleared_altitude": 5000,
@@ -1657,7 +1653,7 @@
           "BURDY.PVD.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "LOGAN4",
-            "waypoints": "N042.23.00.253,W071.01.44.891/h316"
+            "waypoints": "KBOS-15R/h330/@BOS-D2.0+/l316"
           },
           "BRUWN.J.33L.27/33": {
             "cleared_altitude": 5000,
@@ -1794,8 +1790,7 @@
           },
           "LBSTA.J.27.33/27": {
             "cleared_altitude": 5000,
-            "sid": "WYLYY5",
-            "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA GLOWB/a3000+ HRALD CAMWI/a4000+"
+            "sid": "WYLYY5"
           },
           "MANCH.J.27.33/27": {
             "cleared_altitude": 5000,
