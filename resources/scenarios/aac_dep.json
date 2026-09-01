@@ -25,12 +25,12 @@
           "NOBLE.RNAV": {
             "cleared_altitude": 17000,
             "sid": "NOBLE2",
-            "waypoints": "KAAC-10R 28L_MM LINDA/a+4000/s210 PATTI/a+6000 WHITT/a6000-9000 WARDD/a+10000"
+            "waypoints": "KAAC-10R 28L_MM LINDA/a4000+/s210 PATTI/a6000+ WHITT/a6000-9000 WARDD/a10000+"
           },
           "SHAWN.RNAV": {
             "cleared_altitude": 17000,
             "sid": "SHAWN1",
-            "waypoints": "KAAC-10R 28L_MM LINDA/s210 POOLE/a5000-9000 LAURN/a+10000"
+            "waypoints": "KAAC-10R 28L_MM LINDA/s210 POOLE/a5000-9000 LAURN/a10000+"
           },
           "COLIN.P,MAYES.P": {
             "sid": "28L.NE.P",
@@ -61,12 +61,12 @@
           "COLIN.RNAV": {
             "cleared_altitude": 17000,
             "sid": "COLIN1",
-            "waypoints": "KAAC-10L 28R_MM ROBIN/s210 KURDZ/a+6000 STONE/a7000-9000 ALETH/a+10000"
+            "waypoints": "KAAC-10L 28R_MM ROBIN/s210 KURDZ/a6000+ STONE/a7000-9000 ALETH/a10000+"
           },
           "MAYES.RNAV": {
             "cleared_altitude": 17000,
             "sid": "MAYES3",
-            "waypoints": "KAAC-10L 28R_MM ROBIN/s210 KURDZ/a+6000 STONE/a7000-9000 BRITT/a+9000 WINDM/a+11000"
+            "waypoints": "KAAC-10L 28R_MM ROBIN/s210 KURDZ/a6000+ STONE/a7000-9000 BRITT/a9000+ WINDM/a11000+"
           },
           "COLIN.P,MAYES.P,SGF.P": {
             "sid": "28R.NE.P",
