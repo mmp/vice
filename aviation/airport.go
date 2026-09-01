@@ -411,7 +411,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				if len(route.Waypoints) > 0 || route.SID == "" {
 					route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 					route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
-					route.initialize(rwy, r, rend, controlPositions, e)
+					route.initialize(rwy, r, rend, nil, controlPositions, e)
 					for _, exit := range exits {
 						splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], route)
 					}
@@ -426,6 +426,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					// what goes on the flight plan.
 					var transition string
 					route.SID, transition, _ = strings.Cut(route.SID, ".")
+					departureEnd := icao + "-" + OppositeRunwayId(rwy.Base())
 					for _, exit := range exits {
 						if len(exits) > 1 {
 							e.Push("Exit " + string(exit))
@@ -438,7 +439,17 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 									e.ErrorString("%s: unable to locate SID waypoint", wp.Fix)
 								}
 							}
-							exitRoute.initialize(rwy, r, rend, controlPositions, e)
+							// The parser anchors a transition's initial legs at
+							// the departure end for want of a fix (the CIFP
+							// names none); fly them from the rollout point
+							// rather than carrying the aircraft to the runway
+							// end first.
+							var midGroups []WaypointActionGroup
+							if wps := exitRoute.Waypoints; len(wps) > 0 && wps[0].Fix == departureEnd && len(wps[0].ActionGroups()) > 0 {
+								midGroups = wps[0].ActionGroups()
+								exitRoute.Waypoints = wps[1:]
+							}
+							exitRoute.initialize(rwy, r, rend, midGroups, controlPositions, e)
 							splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], &exitRoute)
 						}
 						if len(exits) > 1 {
@@ -925,18 +936,20 @@ func sidWaypoints(icao, sid, transition string, rwy RunwayID, exit ExitID, e *ut
 // initialize puts the runway in front of the route's located waypoints--its
 // threshold and then a point 3/4 of the way down it, so that the aircraft
 // rolls to the end before flying the route--and checks the route's other
-// members against them.
-func (er *ExitRoute) initialize(rwy RunwayID, r, rend Runway, controlPositions map[ControlPosition]*Controller,
-	e *util.ErrorLogger) {
+// members against them. midGroups, if non-nil, holds the action groups of a
+// CIFP transition's initial legs, to be flown from the mid-runway waypoint.
+func (er *ExitRoute) initialize(rwy RunwayID, r, rend Runway, midGroups []WaypointActionGroup,
+	controlPositions map[ControlPosition]*Controller, e *util.ErrorLogger) {
+	midWp := Waypoint{Fix: rwy.Base() + "-mid", Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold)}
+	if len(midGroups) > 0 {
+		midWp.InitExtra().ActionGroups = midGroups
+	}
 	er.Waypoints = append([]Waypoint{
 		{
 			Fix:      rwy.Base(),
 			Location: r.Threshold,
 		},
-		{
-			Fix:      rwy.Base() + "-mid",
-			Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
-		}}, er.Waypoints...)
+		midWp}, er.Waypoints...)
 
 	for i := range er.Waypoints {
 		er.Waypoints[i].SetOnSID(true)
