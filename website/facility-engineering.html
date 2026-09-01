@@ -4647,6 +4647,14 @@
                     </td>
                   </tr>
                   <tr>
+                    <td>"initial_heading"</td>
+                    <td>Number</td>
+                    <td><i>(Optional)</i> With a route taken from the CIFP, the heading that the tower assigns
+                      in the takeoff clearance. Aircraft climb on runway heading, turn to it passing 400' above
+                      the field&mdash;in place of whatever the SID charts from the departure end&mdash;and fly it
+                      until the departure controller sends them direct to a fix on the SID; see below.</td>
+                  </tr>
+                  <tr>
                     <td>"is_rnav"</td>
                     <td>Boolean</td>
                     <td><i>(Optional)</i> If true, aircraft departing on this route will have the RNAV flag set in their flight plan.</td>
@@ -4659,6 +4667,14 @@
                       In that case, one of the SID's enroute transitions may be selected by appending its name to the
                       SID's after a period (e.g., "LAXX1.OCN"); otherwise the transition that contains the exit fix, if
                       there is one, is flown.</td>
+                  </tr>
+                  <tr>
+                    <td>"waypoint_actions"</td>
+                    <td>Object</td>
+                    <td><i>(Optional)</i> With a route taken from the CIFP, actions to take at its fixes, such as
+                      handoffs and point outs for virtually-controlled aircraft.
+                      Each member's name is a fix on the route and its value is a comma-separated list of actions;
+                      see below.</td>
                   </tr>
                   <tr>
                     <td>"waypoints"</td>
@@ -4678,9 +4694,12 @@
                 the departure runway, followed by the enroute transition that leads to the exit fix, ending at the exit.
                 If no enroute transition includes the exit, the route follows the SID's common route to its end
                 and the aircraft then proceeds along the departure's "route" from there. It is an error to omit
-                "waypoints" if the SID isn't in the CIFP for the airport or if the CIFP gives no runway transition for the departure runway.
-                Here is a KLGA runway 13 route that takes the TNNIS6 from the CIFP; it is
-                flown as <code>KLGA-31/h134/@crs050 JUTES/a3000+/s220- TNNIS/a5000+/flyover/t045</code>:
+                "waypoints" if the SID isn't in the CIFP for the airport or if the CIFP gives no runway transition
+                for the departure runway (unless "initial_heading" is given; see below).
+                Here is a KLGA runway 13 route that takes the TNNIS6 from the CIFP. Its charted
+                initial legs&mdash;heading 134 until intercepting the course to JUTES&mdash;are flown from the
+                rollout point on the runway, and it continues
+                <code>JUTES/a3000+/s220- TNNIS/a5000+/flyover/t045</code>:
               </p>
               <pre>
 "departure_routes": {
@@ -4691,6 +4710,46 @@
     },
     ...
               </pre>
+              <p>
+                <code>vice -routes KLGA</code> prints an airport's SIDs available in the CIFP. A SID's
+                runway transition may start with legs flown from the departure end of the runway, which is
+                named as the opposite runway's threshold: <code>KLGA-31</code> for a runway 13 departure.
+                <i>vice</i> flies those legs from the rollout point on the runway rather than carrying the
+                aircraft to the far end first.
+              </p>
+              <p>
+                A route from the CIFP can be amended in two ways: first,
+                if the tower assigns an initial heading in the takeoff clearance, "initial_heading"
+                can be specified: aircraft climb on runway heading, turn
+                to the heading passing 400' above the field, and stay on it until the departure controller
+                sends them direct to a fix on the SID.</p>
+              <p>Second, "waypoint_actions" adds <a href="#fe-route-actions">actions</a> to the SID's fixes: 
+                  handoffs, point outs, scratchpad settings, and altitudes for virtually-controlled aircraft
+                  described above. It is an object where member's name is a fix on the route and its value
+                  is a string that lists the actions to take on passing the fix, separated by commas and without the slashes they
+                would have in "waypoints". For example given the route
+                <code>KSFO-10L/h284/@a513+ GNNRR/a2500+ BEBOP</code>, if we want to initiate a handoff to C35
+                at GNNRR, we could specify:
+              </p>
+              <pre>
+"departure_routes": {
+  "28R": {
+    "BEBOP": {
+      "cleared_altitude": 19000,
+      "sid": "GNNRR3",
+      "waypoint_actions": { "GNNRR": "hoC35" }
+    },
+    ...
+              </pre>
+              <p>
+                If a fix has <a href="#fe-route-triggers">triggers</a>, the actions may instead be taken when
+                one of them is met: the "waypoint_actions" member name is then the fix followed by its triggers, up to and
+                including the one to wait for. In the GNNRR3 above, <code>"KSFO-10L": "hoC35"</code> hands off
+                as the aircraft passes the departure end of the runway
+                (<code>KSFO-10L/h284/hoC35/@a513+</code>), while <code>"KSFO-10L/@a513+": "hoC35"</code> hands
+                off once it has climbed through 513' (<code>KSFO-10L/h284/@a513+/hoC35</code>).</p>
+              <p>Neither "initial_heading" nor "waypoint_actions" may be given together with "waypoints".
+              </p>
               <p>The other part of specifying departures is the array of objects stored in "departures". Each one describes a departure
                 to a particular destination. Here is a JFK departure to Paris Charles de Gaulle:
               </p>
