@@ -541,21 +541,21 @@
           }
         },
         "7": {
-          "HCM, JAMIE, ORF, FAK, WAIKS": {
+          "HCM,JAMIE,ORF,FAK,WAIKS": {
             "cleared_altitude": 2000,
             "sid": "HENRY4"
           },
-          "COUPN, HOUKY, SUNNS": {
+          "COUPN,HOUKY,SUNNS": {
             "cleared_altitude": 2000,
             "waypoints": "KPHF-25/h067"
           }
         },
         "25": {
-          "HCM, JAMIE, ORF, FAK, WAIKS": {
+          "HCM,JAMIE,ORF,FAK,WAIKS": {
             "cleared_altitude": 2000,
             "sid": "HENRY4"
           },
-          "COUPN, HOUKY, SUNNS": {
+          "COUPN,HOUKY,SUNNS": {
             "cleared_altitude": 2000,
             "waypoints": "KPHF-7/h247"
           }

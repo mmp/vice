@@ -1101,7 +1101,6 @@
           "SYRAH": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2",
-
             "is_rnav": true,
             "waypoints": "KSFO-19L N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 COSMC SYRAH"
           }

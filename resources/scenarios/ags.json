@@ -27,7 +27,7 @@
       },
       "departure_routes": {
         "8": {
-          "HOGAP, GSO": {
+          "HOGAP,GSO": {
             "cleared_altitude": 10000,
             "description": "CHATT6",
             "sid": "CHATT6",
@@ -39,7 +39,7 @@
             "sid": "DOVER5",
             "waypoints": "_AGS_26/h085 BEANS SARDY"
           },
-          "GREAN, NOKIE": {
+          "GREAN,NOKIE": {
             "cleared_altitude": 10000,
             "description": "JUNPR6",
             "sid": "JUNPR6",
@@ -69,7 +69,7 @@
           }
         },
         "26": {
-          "HOGAP, GSO": {
+          "HOGAP,GSO": {
             "cleared_altitude": 10000,
             "description": "CHATT6",
             "sid": "CHATT6",
@@ -81,7 +81,7 @@
             "sid": "DOVER5",
             "waypoints": "_AGS_8/h265 BEANS SARDY"
           },
-          "GREAN, NOKIE": {
+          "GREAN,NOKIE": {
             "cleared_altitude": 10000,
             "description": "JUNPR6",
             "sid": "JUNPR6",

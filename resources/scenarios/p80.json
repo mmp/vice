@@ -188,7 +188,7 @@
             "cleared_altitude": 7000,
             "sid": "LAVAA7"
           },
-          "YKM,TOU,OLM,SEA,AST,LTJ,ARRIE,COUGA,": {
+          "YKM,TOU,OLM,SEA,AST,LTJ,ARRIE,COUGA": {
             "cleared_altitude": 6000,
             "sid": "PTLD2.N",
             "waypoints": "KPDX-28L/h085"

@@ -525,28 +525,28 @@
       },
       "departure_routes": {
         "15": {
-          "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
+          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
             "waypoints": "KBTV-33/h146/@a1000+/h190"
           }
         },
         "33": {
-          "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
+          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
             "waypoints": "KBTV-15/h326"
           }
         },
         "1": {
-          "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
+          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
             "waypoints": "KBTV-19/h006"
           }
         },
         "19": {
-          "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
+          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
             "waypoints": "KBTV-1/h186"

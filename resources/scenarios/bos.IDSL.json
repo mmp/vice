@@ -34266,17 +34266,17 @@
       },
       "departure_routes": {
         "35": {
-          "MANCH,HYLND,PEASE,LBSTA,CELTK,FRILL,": {
+          "MANCH,HYLND,PEASE,LBSTA,CELTK,FRILL": {
             "cleared_altitude": 2000,
             "sid": "OWD5",
             "waypoints": "KOWD-17/h330"
           },
-          "BLZZR, PATSS, PUT, PVD, BOSOX, BURDY,SSOXS, DUNKK, LFV": {
+          "BLZZR,PATSS,PUT,PVD,BOSOX,BURDY,SSOXS,DUNKK,LFV": {
             "cleared_altitude": 2000,
             "sid": "OWD5",
             "waypoints": "KOWD-17/h280"
           },
-          "GLYDE, REVSS": {
+          "GLYDE,REVSS": {
             "cleared_altitude": 2000,
             "sid": "OWD5",
             "waypoints": "KOWD-17/h300"

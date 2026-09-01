@@ -142,7 +142,7 @@
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
-          "PITTY, HARAY, BUCKL, RUNIE, GANTS": {
+          "PITTY,HARAY,BUCKL,RUNIE,GANTS": {
             "cleared_altitude": 8000,
             "sid": "CLT5",
             "waypoints": "_CLT_36R/h183"
@@ -230,7 +230,7 @@
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
-          "PITTY, HARAY, BUCKL, RUNIE, GANTS": {
+          "PITTY,HARAY,BUCKL,RUNIE,GANTS": {
             "cleared_altitude": 8000,
             "sid": "CLT5",
             "waypoints": "_CLT_18L/h025"
@@ -299,7 +299,7 @@
             "sid": "BOBZY7",
             "waypoints": "_CLT_19L_183_2/h240 LACHN YNGUN BOBZY BRAYN REWET N35.30.21.805,W83.40.13.558 N35.34.23.264,W83.58.12.992 HALLS BAZOO"
           },
-          "PITTY, HARAY, BUCKL, RUNIE, GANTS": {
+          "PITTY,HARAY,BUCKL,RUNIE,GANTS": {
             "cleared_altitude": 8000,
             "sid": "CLT5",
             "waypoints": "_CLT_19L_183_2/h200"
@@ -431,7 +431,7 @@
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
-          "PITTY, HARAY, BUCKL, RUNIE, GANTS": {
+          "PITTY,HARAY,BUCKL,RUNIE,GANTS": {
             "cleared_altitude": 8000,
             "sid": "CLT5",
             "waypoints": "_CLT_1R_330_2/h330"

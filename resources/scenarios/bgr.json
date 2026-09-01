@@ -30,14 +30,14 @@
       "hold_for_release": true,
       "departure_routes": {
         "22": {
-          "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA, TOPPS, CEDAP": {
+          "SYR,BTV,CAM,ALB,BOS,LFV,ENE,BGR,PQI,MLT,HANAA,TOPPS,CEDAP": {
             "assigned_altitude": 10000,
             "sid": null,
             "waypoints": "KBHB/h220"
           }
         },
         "4": {
-          "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA, TOPPS, CEDAP": {
+          "SYR,BTV,CAM,ALB,BOS,LFV,ENE,BGR,PQI,MLT,HANAA,TOPPS,CEDAP": {
             "assigned_altitude": 10000,
             "sid": null,
             "waypoints": "KBHB/h040"
@@ -103,14 +103,14 @@
       },
       "departure_routes": {
         "15": {
-          "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA, TOPPS": {
+          "SYR,BTV,CAM,ALB,BOS,LFV,ENE,BGR,PQI,MLT,HANAA,TOPPS": {
             "assigned_altitude": 10000,
             "sid": "BGR5",
             "waypoints": "KBGR/h150"
           }
         },
         "33": {
-          "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA, TOPPS": {
+          "SYR,BTV,CAM,ALB,BOS,LFV,ENE,BGR,PQI,MLT,HANAA,TOPPS": {
             "assigned_altitude": 10000,
             "sid": "BGR5",
             "waypoints": "BGR/ph"

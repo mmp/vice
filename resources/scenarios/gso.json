@@ -45,18 +45,18 @@
       },
       "departure_routes": {
         "23L": {
-          "BAWDS, TAARZ": {
+          "BAWDS,TAARZ": {
             "cleared_altitude": 5000,
             "description": "TRSHA1",
             "sid": "TRSHA1"
           },
-          "ROA, LYH, SBV, CREWE, RDU": {
+          "ROA,LYH,SBV,CREWE,RDU": {
             "cleared_altitude": 5000,
             "description": "QUAK8",
             "sid": "QUAK8",
             "waypoints": "_GSO_5R/h235 JEANY"
           },
-          "CLINE, CARWN, YADKI, BOTTM": {
+          "CLINE,CARWN,YADKI,BOTTM": {
             "cleared_altitude": 5000,
             "description": "TRI9",
             "sid": "TRI9",
@@ -68,18 +68,18 @@
           }
         },
         "5R": {
-          "BAWDS, TAARZ": {
+          "BAWDS,TAARZ": {
             "cleared_altitude": 5000,
             "description": "TRSHA1",
             "sid": "TRSHA1"
           },
-          "ROA, LYH, SBV, CREWE, RDU": {
+          "ROA,LYH,SBV,CREWE,RDU": {
             "cleared_altitude": 5000,
             "description": "QUAK8",
             "sid": "QUAK8",
             "waypoints": "_GSO_23L/h055 JEANY"
           },
-          "CLINE, CARWN, YADKI, BOTTM": {
+          "CLINE,CARWN,YADKI,BOTTM": {
             "cleared_altitude": 5000,
             "description": "TRI9",
             "sid": "TRI9",
@@ -292,18 +292,18 @@
       },
       "departure_routes": {
         "33": {
-          "BAWDS, TAARZ": {
+          "BAWDS,TAARZ": {
             "cleared_altitude": 4000,
             "description": "TRSHA1",
             "sid": "TRSHA1"
           },
-          "ROA, LYH, SBV, CREWE, RDU": {
+          "ROA,LYH,SBV,CREWE,RDU": {
             "cleared_altitude": 4000,
             "description": "QUAK8",
             "sid": "QUAK8",
             "waypoints": "_INT_15/h333 JEANY"
           },
-          "CLINE, CARWN, YADKI, BOTTM": {
+          "CLINE,CARWN,YADKI,BOTTM": {
             "cleared_altitude": 4000,
             "description": "TRI9",
             "sid": "TRI9",
@@ -315,19 +315,19 @@
           }
         },
         "15": {
-          "BAWDS, TAARZ": {
+          "BAWDS,TAARZ": {
             "cleared_altitude": 4000,
             "description": "TRSHA1",
             "sid": "TRSHA1",
             "waypoints": "_INT_33/h240 WHAYN TRSHA"
           },
-          "ROA, LYH, SBV, CREWE, RDU": {
+          "ROA,LYH,SBV,CREWE,RDU": {
             "cleared_altitude": 4000,
             "description": "QUAK8",
             "sid": "QUAK8",
             "waypoints": "_INT_33/h240 JEANY"
           },
-          "CLINE, CARWN, YADKI, BOTTM": {
+          "CLINE,CARWN,YADKI,BOTTM": {
             "cleared_altitude": 4000,
             "description": "TRI9",
             "sid": "TRI9",

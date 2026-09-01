@@ -2358,7 +2358,7 @@
             "description": "props",
             "waypoints": "N035.58.53.161,W095.23.16.279/h100"
           },
-          "COLIN.P,NOBLE.P, SHAWN.P ": {
+          "COLIN.P,NOBLE.P,SHAWN.P": {
             "cleared_altitude": 3000,
             "description": "jets/turboprops",
             "waypoints": "N035.58.53.161,W095.23.16.279/h100"

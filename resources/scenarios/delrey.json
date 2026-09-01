@@ -71,7 +71,7 @@
       },
       "departure_routes": {
         "7L": {
-          "MISEN.E, BEALE.E": {
+          "MISEN.E,BEALE.E": {
             "cleared_altitude": 3000,
             "sid": "GARDY4",
             "is_rnav": true

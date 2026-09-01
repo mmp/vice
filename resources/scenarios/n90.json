@@ -302,13 +302,13 @@
             "waypoints": "KLGA-31 N040.44.04.395,W073.50.59.774/s210/ho5W N040.48.25.403,W073.46.52.417 N040.51.26.196,W073.57.58.079/hoC39",
             "departure_controller": "1L"
           },
-          "COATE, HAAYS, NEION, GAYEL": {
+          "COATE,HAAYS,NEION,GAYEL": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
             "waypoints": "KLGA-31 N040.44.04.395,W073.50.59.774/s210/ho5T N040.48.25.403,W073.46.52.417 N040.51.26.196,W073.57.58.079/hoC56",
             "departure_controller": "1L"
           },
-          "GREKI, MERIT": {
+          "GREKI,MERIT": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
             "waypoints": "KLGA-31 N040.44.04.395,W073.50.59.774/s210/ho5T N040.48.25.403,W073.46.52.417/hoB19",
@@ -6022,7 +6022,7 @@
             "sid": "MMU7",
             "waypoints": "_MMU5_049/a1700+/h050"
           },
-          "DIXIE, WHITE": {
+          "DIXIE,WHITE": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
             "waypoints": "_MMU5_049/a1700+/h050 ELVAE/hoC68 NECCK"
@@ -6034,7 +6034,7 @@
             "sid": "MMU7",
             "waypoints": "_MMU23_229/a600 _MMU23_210/a2000+/h160"
           },
-          "DIXIE, WHITE": {
+          "DIXIE,WHITE": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
             "waypoints": "_MMU23_229/a600 _MMU23_210/a2000+/h160 "

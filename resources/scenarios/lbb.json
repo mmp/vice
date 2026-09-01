@@ -84,7 +84,7 @@
             "cleared_altitude": 6000,
             "waypoints": "KLBB-35L/h174 ABI"
           },
-          "HNKER.JOVEM, HNKER.VKTRY, HNKER.HERBZ, HNKER.JFRYE": {
+          "HNKER.JOVEM,HNKER.VKTRY,HNKER.HERBZ,HNKER.JFRYE": {
             "cleared_altitude": 6000,
             "waypoints": "KLBB-35L/h174 HNKER"
           },
@@ -130,7 +130,7 @@
             "cleared_altitude": 6000,
             "waypoints": "KLBB-8/h264 ABI"
           },
-          "HNKER.JOVEM, HNKER.VKTRY, HNKER.HERBZ, HNKER.JFRYE": {
+          "HNKER.JOVEM,HNKER.VKTRY,HNKER.HERBZ,HNKER.JFRYE": {
             "cleared_altitude": 6000,
             "waypoints": "KLBB-8/h264 HNKER"
           },
@@ -168,7 +168,7 @@
             "cleared_altitude": 6000,
             "waypoints": "KLBB-17R/h354 ABI"
           },
-          "HNKER.JOVEM, HNKER.VKTRY, HNKER.HERBZ, HNKER.JFRYE": {
+          "HNKER.JOVEM,HNKER.VKTRY,HNKER.HERBZ,HNKER.JFRYE": {
             "cleared_altitude": 6000,
             "waypoints": "KLBB-17R/h354 HNKER"
           },
@@ -214,7 +214,7 @@
             "cleared_altitude": 6000,
             "waypoints": "KLBB-26/h084 ABI"
           },
-          "HNKER.JOVEM, HNKER.VKTRY, HNKER.HERBZ, HNKER.JFRYE": {
+          "HNKER.JOVEM,HNKER.VKTRY,HNKER.HERBZ,HNKER.JFRYE": {
             "cleared_altitude": 6000,
             "waypoints": "KLBB-26/h084 HNKER"
           },

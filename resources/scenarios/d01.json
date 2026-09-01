@@ -177,7 +177,7 @@
             "cleared_altitude": 23000,
             "sid": "XXWNG1"
           },
-          "CHNGY, ZIMMR": {
+          "CHNGY,ZIMMR": {
             "cleared_altitude": 10000,
             "sid": "ZIMMR4",
             "waypoints": "_DEN_26/h335"
@@ -258,7 +258,7 @@
             "cleared_altitude": 23000,
             "sid": "XXWNG1"
           },
-          "CHNGY, ZIMMR": {
+          "CHNGY,ZIMMR": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR4"
           }
@@ -338,7 +338,7 @@
             "sid": "XXWNG1",
             "waypoints": "_DEN_35R/h065"
           },
-          "CHNGY, ZIMMR": {
+          "CHNGY,ZIMMR": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR4"
           }
@@ -418,7 +418,7 @@
             "cleared_altitude": 23000,
             "sid": "XXWNG1"
           },
-          "CHNGY, ZIMMR": {
+          "CHNGY,ZIMMR": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR4"
           }
@@ -498,7 +498,7 @@
             "cleared_altitude": 23000,
             "sid": "XXWNG1"
           },
-          "CHNGY, ZIMMR": {
+          "CHNGY,ZIMMR": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR4"
           }
@@ -578,7 +578,7 @@
             "sid": "XXWNG1",
             "waypoints": "_DEN_34R/h290"
           },
-          "CHNGY, ZIMMR": {
+          "CHNGY,ZIMMR": {
             "cleared_altitude": 23000,
             "sid": "ZIMMR4"
           }

@@ -45,21 +45,21 @@
       },
       "departure_routes": {
         "29": {
-          "SYR, HANAA, CAM": {
+          "SYR,HANAA,CAM": {
             "assigned_altitude": 3000,
             "sid": "HSKEL4.BAUER"
           },
-          "NELIE, CCC, BAF": {
+          "NELIE,CCC,BAF": {
             "assigned_altitude": 3000,
             "sid": "RBELA1"
           }
         },
         "11": {
-          "NELIE, BAF, CCC": {
+          "NELIE,BAF,CCC": {
             "assigned_altitude": 3000,
             "sid": "RBELA1"
           },
-          "SYR, HANAA, CAM": {
+          "SYR,HANAA,CAM": {
             "assigned_altitude": 3000,
             "sid": "HSKEL4.BAUER"
           }

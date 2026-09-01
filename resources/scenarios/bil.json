@@ -18,13 +18,13 @@
       },
       "departure_routes": {
         "10L": {
-          "GTF, LWT, GGW, MLS, DPR, RAP, CZI, SHR, BOY, DNW, COD, LVM, BZN, DBS, HIA, HLN, LAYLY, ANJLA, NELKS, ARMTY, GAITZ": {
+          "GTF,LWT,GGW,MLS,DPR,RAP,CZI,SHR,BOY,DNW,COD,LVM,BZN,DBS,HIA,HLN,LAYLY,ANJLA,NELKS,ARMTY,GAITZ": {
             "assigned_altitude": 15000,
             "waypoints": "KBIL-28R/h100"
           }
         },
         "28R": {
-          "GTF, LWT, GGW, MLS, DPR, RAP, CZI, SHR, BOY, DNW, COD, LVM, BZN, DBS, HIA, HLN, LAYLY, ANJLA, NELKS, ARMTY, GAITZ": {
+          "GTF,LWT,GGW,MLS,DPR,RAP,CZI,SHR,BOY,DNW,COD,LVM,BZN,DBS,HIA,HLN,LAYLY,ANJLA,NELKS,ARMTY,GAITZ": {
             "assigned_altitude": 15000,
             "waypoints": "KBIL-10L/h280"
           }

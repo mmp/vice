@@ -52,25 +52,25 @@
       },
       "departure_routes": {
         "1": {
-          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN": {
+          "PWL,SYR,GDM,PAYGE,ACOVE,CEDOR,IGN": {
             "cleared_altitude": 4000,
             "sid": "ALB7"
           }
         },
         "19": {
-          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN": {
+          "PWL,SYR,GDM,PAYGE,ACOVE,CEDOR,IGN": {
             "cleared_altitude": 4000,
             "sid": "ALB7"
           }
         },
         "28": {
-          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN": {
+          "PWL,SYR,GDM,PAYGE,ACOVE,CEDOR,IGN": {
             "cleared_altitude": 4000,
             "sid": "ALB7"
           }
         },
         "10": {
-          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN": {
+          "PWL,SYR,GDM,PAYGE,ACOVE,CEDOR,IGN": {
             "cleared_altitude": 4000,
             "sid": "ALB7"
           }
@@ -228,13 +228,13 @@
       },
       "departure_routes": {
         "4": {
-          "PAYGE, MARIA, CAM": {
+          "PAYGE,MARIA,CAM": {
             "cleared_altitude": 3000,
             "waypoints": "KSCH-22/h010"
           }
         },
         "22": {
-          "PAYGE, MARIA, CAM": {
+          "PAYGE,MARIA,CAM": {
             "cleared_altitude": 3000,
             "waypoints": "KSCH-4/h235"
           }
