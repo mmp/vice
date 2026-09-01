@@ -16,13 +16,13 @@
             "handoff_controller": "75",
             "cleared_altitude": 35000,
             "sid": "FATHE4",
-            "waypoints": "KMCO-17R JWOLF/a2600- JIRAN/a3000+ BIGSE/ho GOTHA/a7000- BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "waypoint_actions": { "BIGSE": "ho" }
           },
           "PAINN": {
             "handoff_controller": "75",
             "cleared_altitude": 35000,
             "sid": "JEEMY4",
-            "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE/ho ALOHH/a7000- SNOBE MDUSA JEEMY/a16000+ ACCHE"
+            "waypoint_actions": { "BIGSE": "ho" }
           }
         },
         "36R": {
@@ -30,13 +30,13 @@
             "handoff_controller": "75",
             "cleared_altitude": 35000,
             "sid": "FATHE4",
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+  TRYNA/a7000-/ho BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+            "waypoint_actions": { "TRYNA": "ho" }
           },
           "PAINN": {
             "handoff_controller": "75",
             "cleared_altitude": 35000,
             "sid": "JEEMY4",
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+ CHUKG/a7000-/ho SNOBE MDUSA JEEMY/a16000+ ACCHE"
+            "waypoint_actions": { "CHUKG": "ho" }
           }
         }
       },

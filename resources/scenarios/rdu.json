@@ -90,41 +90,42 @@
           "BOUSY": {
             "cleared_altitude": 6000,
             "sid": "BEXGO5",
-            "waypoints": "KRDU-23R/h035 AIMHI/a2500+ BEXGO"
+            "initial_heading": 35
           },
           "BEXGO": {
             "cleared_altitude": 6000,
             "sid": "BEXGO5",
-            "waypoints": "KRDU-23R/h035 AIMHI/a2500+"
+            "initial_heading": 35
           },
           "DAWTS": {
             "cleared_altitude": 6000,
             "sid": "HOOKZ5",
-            "waypoints": "KRDU-23R/h054 FITON/a2500+ HOOKZ"
+            "initial_heading": 54
           },
           "HOOKZ": {
             "cleared_altitude": 6000,
             "sid": "HOOKZ5",
-            "waypoints": "KRDU-23R/h054 FITON/a2500+"
+            "initial_heading": 54
           },
           "FEBEL": {
             "cleared_altitude": 6000,
             "sid": "HURIC4",
-            "waypoints": "KRDU-23R/h054 STRMY/a2500+ HURIC"
+            "initial_heading": 54
           },
           "HURIC": {
             "cleared_altitude": 6000,
             "sid": "HURIC4",
-            "waypoints": "KRDU-23R/h054 STRMY/a2500+"
+            "initial_heading": 54
           },
           "DBRAH,DANCO,LWOOD": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5"
+            "sid": "LWOOD5",
+            "initial_heading": 35
           },
           "CARML": {
             "cleared_altitude": 6000,
             "sid": "OXFRD5",
-            "waypoints": "KRDU-23R/h035 PEAVY/a2500+ OXFRD HARVY"
+            "initial_heading": 35
           },
           "OXFRD": {
             "cleared_altitude": 6000,
@@ -134,52 +135,54 @@
           "ROZBO": {
             "cleared_altitude": 6000,
             "sid": "ROZBO5",
-            "waypoints": "KRDU-23R/h054 EAGER/a2500+"
+            "initial_heading": 54
           },
           "SHPRD": {
             "cleared_altitude": 6000,
-            "sid": "SHPRD4"
+            "sid": "SHPRD4",
+            "initial_heading": 54
           }
         },
         "5R": {
           "BOUSY": {
             "cleared_altitude": 6000,
             "sid": "BEXGO5",
-            "waypoints": "KRDU-23L/h035 AIMHI/a2500+ BEXGO"
+            "initial_heading": 35
           },
           "BEXGO": {
             "cleared_altitude": 6000,
             "sid": "BEXGO5",
-            "waypoints": "KRDU-23L/h035 AIMHI/a2500+"
+            "initial_heading": 35
           },
           "DAWTS": {
             "cleared_altitude": 6000,
             "sid": "HOOKZ5",
-            "waypoints": "KRDU-23L/h054 FITON/a2500+ HOOKZ"
+            "initial_heading": 54
           },
           "HOOKZ": {
             "cleared_altitude": 6000,
             "sid": "HOOKZ5",
-            "waypoints": "KRDU-23L/h054 FITON/a2500+"
+            "initial_heading": 54
           },
           "FEBEL": {
             "cleared_altitude": 6000,
             "sid": "HURIC4",
-            "waypoints": "KRDU-23L/h054 STRMY/a2500+ HURIC"
+            "initial_heading": 54
           },
           "HURIC": {
             "cleared_altitude": 6000,
             "sid": "HURIC4",
-            "waypoints": "KRDU-23L/h054 STRMY/a2500+"
+            "initial_heading": 54
           },
           "DBRAH,DANCO,LWOOD": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5"
+            "sid": "LWOOD5",
+            "initial_heading": 35
           },
           "CARML": {
             "cleared_altitude": 6000,
             "sid": "OXFRD5",
-            "waypoints": "KRDU-23L/h035 PEAVY/a2500+ OXFRD HARVY"
+            "initial_heading": 35
           },
           "OXFRD": {
             "cleared_altitude": 6000,
@@ -189,52 +192,54 @@
           "ROZBO": {
             "cleared_altitude": 6000,
             "sid": "ROZBO5",
-            "waypoints": "KRDU-23L/h054 EAGER/a2500+"
+            "initial_heading": 54
           },
           "SHPRD": {
             "cleared_altitude": 6000,
-            "sid": "SHPRD4"
+            "sid": "SHPRD4",
+            "initial_heading": 54
           }
         },
         "23L": {
           "BOUSY": {
             "cleared_altitude": 6000,
             "sid": "BEXGO5",
-            "waypoints": "KRDU-5L/h234 AIMHI/a2500+ BEXGO"
+            "initial_heading": 234
           },
           "BEXGO": {
             "cleared_altitude": 6000,
             "sid": "BEXGO5",
-            "waypoints": "KRDU-5L/h234 AIMHI/a2500+"
+            "initial_heading": 234
           },
           "DAWTS": {
             "cleared_altitude": 6000,
             "sid": "HOOKZ5",
-            "waypoints": "KRDU-5L/h234 FITON/a2500+ HOOKZ"
+            "initial_heading": 234
           },
           "HOOKZ": {
             "cleared_altitude": 6000,
             "sid": "HOOKZ5",
-            "waypoints": "KRDU-5L/h234 FITON/a2500+"
+            "initial_heading": 234
           },
           "FEBEL": {
             "cleared_altitude": 6000,
             "sid": "HURIC4",
-            "waypoints": "KRDU-5L/h234 STRMY/a2500+ HURIC"
+            "initial_heading": 234
           },
           "HURIC": {
             "cleared_altitude": 6000,
             "sid": "HURIC4",
-            "waypoints": "KRDU-5L/h234 STRMY/a2500+"
+            "initial_heading": 234
           },
           "DBRAH,DANCO,LWOOD": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5"
+            "sid": "LWOOD5",
+            "initial_heading": 234
           },
           "CARML": {
             "cleared_altitude": 6000,
             "sid": "OXFRD5",
-            "waypoints": "KRDU-5L/h234 PEAVY/a2500+ OXFRD HARVY"
+            "initial_heading": 234
           },
           "OXFRD": {
             "cleared_altitude": 6000,
@@ -244,52 +249,54 @@
           "ROZBO": {
             "cleared_altitude": 6000,
             "sid": "ROZBO5",
-            "waypoints": "KRDU-5L/h234 EAGER/a2500+"
+            "initial_heading": 234
           },
           "SHPRD": {
             "cleared_altitude": 6000,
-            "sid": "SHPRD4"
+            "sid": "SHPRD4",
+            "initial_heading": 234
           }
         },
         "23R": {
           "BOUSY": {
             "cleared_altitude": 6000,
             "sid": "BEXGO5",
-            "waypoints": "KRDU-5R/h234 AIMHI/a2500+ BEXGO"
+            "initial_heading": 234
           },
           "BEXGO": {
             "cleared_altitude": 6000,
             "sid": "BEXGO5",
-            "waypoints": "KRDU-5R/h234 AIMHI/a2500+"
+            "initial_heading": 234
           },
           "DAWTS": {
             "cleared_altitude": 6000,
             "sid": "HOOKZ5",
-            "waypoints": "KRDU-5R/h234 FITON/a2500+ HOOKZ"
+            "initial_heading": 234
           },
           "HOOKZ": {
             "cleared_altitude": 6000,
             "sid": "HOOKZ5",
-            "waypoints": "KRDU-5R/h234 FITON/a2500+"
+            "initial_heading": 234
           },
           "FEBEL": {
             "cleared_altitude": 6000,
             "sid": "HURIC4",
-            "waypoints": "KRDU-5R/h234 STRMY/a2500+ HURIC"
+            "initial_heading": 234
           },
           "HURIC": {
             "cleared_altitude": 6000,
             "sid": "HURIC4",
-            "waypoints": "KRDU-5R/h234 STRMY/a2500+"
+            "initial_heading": 234
           },
           "DBRAH,DANCO,LWOOD": {
             "cleared_altitude": 6000,
-            "sid": "LWOOD5"
+            "sid": "LWOOD5",
+            "initial_heading": 234
           },
           "CARML": {
             "cleared_altitude": 6000,
             "sid": "OXFRD5",
-            "waypoints": "KRDU-5R/h234 PEAVY/a2500+ OXFRD HARVY"
+            "initial_heading": 234
           },
           "OXFRD": {
             "cleared_altitude": 6000,
@@ -299,11 +306,12 @@
           "ROZBO": {
             "cleared_altitude": 6000,
             "sid": "ROZBO5",
-            "waypoints": "KRDU-5R/h234 EAGER/a2500+"
+            "initial_heading": 234
           },
           "SHPRD": {
             "cleared_altitude": 6000,
-            "sid": "SHPRD4"
+            "sid": "SHPRD4",
+            "initial_heading": 234
           }
         }
       },

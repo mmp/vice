@@ -33,8 +33,8 @@
           "HYLND": {
             "cleared_altitude": 5000,
             "sid": "HYLND7",
-            "waypoints": "TJAYY/a1200+ BOATT/a4000+ HEARR/ho MARBB/flyover HYLND/flyover",
-            "handoff_controller": "36"
+            "handoff_controller": "36",
+            "waypoint_actions": { "HEARR": "ho" }
           }
         }
       },
@@ -114,7 +114,7 @@
           "HYLND": {
             "cleared_altitude": 5000,
             "sid": "HNSCM5",
-            "waypoints": "KBED HYLND/ho",
+            "waypoints": "KBED-11 HYLND/ho",
             "handoff_controller": "36"
           }
         }

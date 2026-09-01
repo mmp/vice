@@ -4666,27 +4666,27 @@
           "HUGIR.PROP": {
             "assigned_altitude": 2500,
             "sid": "SCHEP1",
-            "waypoints": "KFCM-28R/flyover/h230"
+            "initial_heading": 230
           },
           "JEDET.PROP": {
             "assigned_altitude": 2500,
             "sid": "ZMBRO7",
-            "waypoints": "KFCM-28R/flyover/h180"
+            "initial_heading": 180
           },
           "TAXEE.PROP": {
             "assigned_altitude": 2500,
             "sid": "COULT7",
-            "waypoints": "KFCM-28R/flyover/h180"
+            "initial_heading": 180
           },
           "FOBUG.PROP": {
             "assigned_altitude": 2500,
             "sid": "RST1",
-            "waypoints": "KFCM-28R/flyover/h180"
+            "initial_heading": 180
           },
           "JURNY.PROP": {
             "assigned_altitude": 2500,
             "sid": "ORSKY3",
-            "waypoints": "KFCM-28R/flyover/h200"
+            "initial_heading": 200
           },
           "SNINE.PROP": {
             "assigned_altitude": 2500,
@@ -4723,27 +4723,27 @@
           "HUGIR.PROP,HUGIR.JET": {
             "assigned_altitude": 2500,
             "sid": "SCHEP1",
-            "waypoints": "KFCM-28L/flyover/h230"
+            "initial_heading": 230
           },
           "JEDET.PROP,JEDET.JET": {
             "assigned_altitude": 2500,
             "sid": "ZMBRO7",
-            "waypoints": "KFCM-28L/flyover/h180"
+            "initial_heading": 180
           },
           "TAXEE.PROP,TAXEE.JET": {
             "assigned_altitude": 2500,
             "sid": "COULT7",
-            "waypoints": "KFCM-28L/flyover/h180"
+            "initial_heading": 180
           },
           "FOBUG.PROP,FOBUG.JET": {
             "assigned_altitude": 2500,
             "sid": "RST1",
-            "waypoints": "KFCM-28L/flyover/h180"
+            "initial_heading": 180
           },
           "JURNY.PROP,JURNY.JET": {
             "assigned_altitude": 2500,
             "sid": "ORSKY3",
-            "waypoints": "KFCM-28L/flyover/h200"
+            "initial_heading": 200
           },
           "SNINE.PROP,SNINE.JET": {
             "assigned_altitude": 2500,
@@ -4780,37 +4780,37 @@
           "HUGIR.PROP,HUGIR.JET": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
-            "waypoints": "KFCM-10R/flyover/h230"
+            "initial_heading": 230
           },
           "JEDET.PROP,JEDET.JET": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
-            "waypoints": "KFCM-10R/flyover/h180"
+            "initial_heading": 180
           },
           "TAXEE.PROP,TAXEE.JET": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
-            "waypoints": "KFCM-10R/flyover/h180"
+            "initial_heading": 180
           },
           "FOBUG.PROP,FOBUG.JET": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "waypoints": "KFCM-10R/flyover/h180"
+            "initial_heading": 180
           },
           "JURNY.PROP,JURNY.JET": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
-            "waypoints": "KFCM-10R/flyover/h200"
+            "initial_heading": 200
           },
           "SNINE.PROP,SNINE.JET": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
-            "waypoints": "KFCM-10R/flyover/r300"
+            "initial_heading": 300
           },
           "HRBEK.PROP,HRBEK.JET": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
-            "waypoints": "KFCM-10R/flyover/r300"
+            "initial_heading": 300
           },
           "INUNE.PROP,INUNE.JET": {
             "assigned_altitude": 3000,
@@ -4837,37 +4837,37 @@
           "HUGIR.PROP": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
-            "waypoints": "KFCM-10L/flyover/h230"
+            "initial_heading": 230
           },
           "JEDET.PROP": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
-            "waypoints": "KFCM-10L/flyover/h180"
+            "initial_heading": 180
           },
           "TAXEE.PROP": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
-            "waypoints": "KFCM-10L/flyover/h180"
+            "initial_heading": 180
           },
           "FOBUG.PROP": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "waypoints": "KFCM-10L/flyover/h180"
+            "initial_heading": 180
           },
           "JURNY.PROP": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
-            "waypoints": "KFCM-10L/flyover/h200"
+            "initial_heading": 200
           },
           "SNINE.PROP": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
-            "waypoints": "KFCM-10L/flyover/h300"
+            "initial_heading": 300
           },
           "HRBEK.PROP": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
-            "waypoints": "KFCM-10L/flyover/h300"
+            "initial_heading": 300
           },
           "INUNE.PROP": {
             "assigned_altitude": 3000,
@@ -6710,32 +6710,32 @@
           "HUGIR": {
             "assigned_altitude": 2500,
             "sid": "SCHEP1",
-            "waypoints": "KSTP-32/flyover/h080"
+            "initial_heading": 80
           },
           "JEDET": {
             "assigned_altitude": 2500,
             "sid": "ZMBRO7",
-            "waypoints": "KSTP-32/flyover/h080"
+            "initial_heading": 80
           },
           "TAXEE": {
             "assigned_altitude": 2500,
             "sid": "COULT7",
-            "waypoints": "KSTP-32/flyover/h080"
+            "initial_heading": 80
           },
           "FOBUG": {
             "assigned_altitude": 2500,
             "sid": "RST1",
-            "waypoints": "KSTP-32/flyover/h080"
+            "initial_heading": 80
           },
           "JURNY": {
             "assigned_altitude": 2500,
             "sid": "ORSKY3",
-            "waypoints": "KSTP-32/flyover/h080"
+            "initial_heading": 80
           },
           "HRBEK": {
             "assigned_altitude": 2500,
             "sid": "KBREW2",
-            "waypoints": "KSTP-32/flyover/l010"
+            "initial_heading": 10
           },
           "INUNE,GEP,ANIML,FCM": {
             "assigned_altitude": 2500,
@@ -6758,32 +6758,32 @@
           "HUGIR": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
-            "waypoints": "KSTP-14/flyover/h030"
+            "initial_heading": 30
           },
           "JEDET": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
-            "waypoints": "KSTP-14/flyover/h045"
+            "initial_heading": 45
           },
           "TAXEE": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
-            "waypoints": "KSTP-14/flyover/h045"
+            "initial_heading": 45
           },
           "FOBUG": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "waypoints": "KSTP-14/flyover/h045"
+            "initial_heading": 45
           },
           "JURNY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
-            "waypoints": "KSTP-14/flyover/h045"
+            "initial_heading": 45
           },
           "HRBEK": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
-            "waypoints": "KSTP-14/flyover/h030"
+            "initial_heading": 30
           },
           "INUNE,GEP,LENCK,ZOSAG,ANIML": {
             "assigned_altitude": 3000,
@@ -7651,7 +7651,7 @@
           "FOBUG": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "waypoints": "KANE-27/flyover/h090"
+            "initial_heading": 90
           },
           "JURNY": {
             "assigned_altitude": 3000,
@@ -7661,12 +7661,12 @@
           "SNINE": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
-            "waypoints": "KANE-27/flyover/h070"
+            "initial_heading": 70
           },
           "HRBEK": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
-            "waypoints": "KANE-27/flyover/h290"
+            "initial_heading": 290
           },
           "INUNE": {
             "assigned_altitude": 3000,
@@ -7693,7 +7693,7 @@
           "HUGIR": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
-            "waypoints": "KANE-36/flyover/h270"
+            "initial_heading": 270
           },
           "JEDET": {
             "assigned_altitude": 3000,
@@ -7713,7 +7713,7 @@
           "JURNY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
-            "waypoints": "KANE-36/flyover/h270"
+            "initial_heading": 270
           },
           "SNINE": {
             "assigned_altitude": 3000,
@@ -7723,7 +7723,7 @@
           "HRBEK": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
-            "waypoints": "KANE-36/flyover/h290"
+            "initial_heading": 290
           },
           "INUNE": {
             "assigned_altitude": 3000,
@@ -7754,7 +7754,7 @@
           "HUGIR": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
-            "waypoints": "KANE-9/flyover/h270"
+            "initial_heading": 270
           },
           "JEDET": {
             "assigned_altitude": 3000,
@@ -7774,7 +7774,7 @@
           "JURNY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
-            "waypoints": "KANE-9/flyover/h270"
+            "initial_heading": 270
           },
           "SNINE": {
             "assigned_altitude": 3000,
@@ -7784,7 +7784,7 @@
           "HRBEK": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
-            "waypoints": "KANE-9/flyover/h290"
+            "initial_heading": 290
           },
           "INUNE,GEP": {
             "assigned_altitude": 3000,
@@ -7811,37 +7811,37 @@
           "HUGIR": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
-            "waypoints": "KANE-18/flyover/h270"
+            "initial_heading": 270
           },
           "JEDET": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
-            "waypoints": "KANE-18/flyover/h090"
+            "initial_heading": 90
           },
           "TAXEE": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
-            "waypoints": "KANE-18/flyover/h090"
+            "initial_heading": 90
           },
           "FOBUG": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "waypoints": "KANE-18/flyover/h090"
+            "initial_heading": 90
           },
           "JURNY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
-            "waypoints": "KANE-18/flyover/h270"
+            "initial_heading": 270
           },
           "SNINE": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
-            "waypoints": "KANE-18/flyover/h080"
+            "initial_heading": 80
           },
           "HRBEK": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
-            "waypoints": "KANE-18/flyover/h290"
+            "initial_heading": 290
           },
           "INUNE": {
             "assigned_altitude": 3000,

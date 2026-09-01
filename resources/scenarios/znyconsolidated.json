@@ -71,47 +71,47 @@
           "GAYEL": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N041.04.13.385,W074.13.36.009/hoN5T/c17000 GAYEL/ho35"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N041.04.13.385,W074.13.36.009/hoN5T/c17000 GAYEL/ho35"
           },
           "COATE": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N041.04.13.385,W074.13.36.009/c17000/hoN5T COATE/ho35"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N041.04.13.385,W074.13.36.009/c17000/hoN5T COATE/ho35"
           },
           "NEION": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N041.04.13.385,W074.13.36.009/c17000/hoN5T NEION/ho35"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N041.04.13.385,W074.13.36.009/c17000/hoN5T NEION/ho35"
           },
           "PARKE": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 PARKE/ho39"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 PARKE/ho39"
           },
           "LANNA": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 LANNA/ho55"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 LANNA/ho55"
           },
           "BIGGY": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 BIGGY/ho55"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 BIGGY/ho55"
           },
           "ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 ZIMMZ/ho39"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 ZIMMZ/ho39"
           },
           "NEWEL": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 NEWEL/ho39"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c15000 N040.50.27.996,W074.17.26.365/hoN5W/c17000 NEWEL/ho39"
           },
           "WHITE": {
             "cleared_altitude": 17000,
             "sid": "NTHNS6",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230- ASALT/c10000 N040.26.03.766,W074.01.24.924/hoN5S/c17000 WHITE/ho68"
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230- ASALT/c10000 N040.26.03.766,W074.01.24.924/hoN5S/c17000 WHITE/ho68"
           },
           "SHIPP": {
             "cleared_altitude": 12000,

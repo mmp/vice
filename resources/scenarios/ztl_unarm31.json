@@ -30,28 +30,28 @@
           "ESTRR": {
             "cleared_altitude": 16000,
             "sid": "ESTRR7",
-            "waypoints": "GINNN/ho ESTRR",
-            "handoff_controller": "31"
+            "handoff_controller": "31",
+            "waypoint_actions": { "GINNN": "ho" }
           },
           "BOBZY": {
             "cleared_altitude": 16000,
             "sid": "BOBZY7",
-            "waypoints": "LACHN/ho YNGUN BOBZY",
-            "handoff_controller": "31"
+            "handoff_controller": "31",
+            "waypoint_actions": { "LACHN": "ho" }
           }
         },
         "1L": {
           "ESTRR": {
             "cleared_altitude": 16000,
             "sid": "ESTRR7",
-            "waypoints": "GINNN/ho ESTRR",
-            "handoff_controller": "31"
+            "handoff_controller": "31",
+            "waypoint_actions": { "GINNN": "ho" }
           },
           "BOBZY": {
             "cleared_altitude": 16000,
             "sid": "BOBZY7",
-            "waypoints": "LACHN/ho YNGUN BOBZY",
-            "handoff_controller": "31"
+            "handoff_controller": "31",
+            "waypoint_actions": { "LACHN": "ho" }
           }
         }
       },

@@ -453,7 +453,7 @@
           "EKN,AHTIY,DILNE": {
             "cleared_altitude": 3000,
             "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
+            "initial_heading": 99
           }
         }
       },

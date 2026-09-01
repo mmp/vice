@@ -256,7 +256,7 @@
           "BERYY": {
             "cleared_altitude": 5000,
             "sid": "BERYY6",
-            "waypoints": "KSTL-29/h303 LUUBE/a2500+ DAFUS GEJAY BERYY/a5000+"
+            "initial_heading": 303
           },
           "LITTR": {
             "cleared_altitude": 5000,
@@ -537,7 +537,7 @@
           "BERYY": {
             "cleared_altitude": 5000,
             "sid": "BERYY6",
-            "waypoints": "KSTL-30R/h303 HEFNR/a2500+ DAFUS GEJAY BERYY/a5000+"
+            "initial_heading": 303
           },
           "LITTR": {
             "cleared_altitude": 5000,
@@ -611,7 +611,7 @@
           "BERYY": {
             "cleared_altitude": 5000,
             "sid": "BERYY6",
-            "waypoints": "KSTL-30L/h303 HEFNR/a2500+ DAFUS GEJAY BERYY/a5000+"
+            "initial_heading": 303
           },
           "LITTR": {
             "cleared_altitude": 5000,
@@ -1513,27 +1513,27 @@
           "LIT": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-8R/h259 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 259
           },
           "MYERZ": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-8R/h259 STL SAJOY MYERZ"
+            "initial_heading": 259
           },
           "ARG": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-8R/h259 STL SAJOY MYERZ ARG"
+            "initial_heading": 259
           },
           "VIH": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-8R/h259 STL KLAIR VIH"
+            "initial_heading": 259
           },
           "HLV": {
             "cleared_altitude": 3000,
             "sid": "OZARK8",
-            "waypoints": "KSUS-8R/h259 STL CABIT HLV"
+            "initial_heading": 259
           },
           "STL": {
             "cleared_altitude": 3000,
@@ -1569,27 +1569,27 @@
           "LIT": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-8L/h259 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 259
           },
           "MYERZ": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-8L/h259 STL SAJOY MYERZ"
+            "initial_heading": 259
           },
           "ARG": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-8L/h259 STL SAJOY MYERZ ARG"
+            "initial_heading": 259
           },
           "VIH": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-8L/h259 STL KLAIR VIH"
+            "initial_heading": 259
           },
           "HLV": {
             "cleared_altitude": 3000,
             "sid": "OZARK8",
-            "waypoints": "KSUS-8L/h259 STL CABIT HLV"
+            "initial_heading": 259
           },
           "STL": {
             "cleared_altitude": 3000,
@@ -1625,27 +1625,27 @@
           "LIT": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-26R/h079 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 79
           },
           "MYERZ": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-26R/h079 STL SAJOY MYERZ"
+            "initial_heading": 79
           },
           "ARG": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-26R/h079 STL SAJOY MYERZ ARG"
+            "initial_heading": 79
           },
           "VIH": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-26R/h079 STL KLAIR VIH"
+            "initial_heading": 79
           },
           "HLV": {
             "cleared_altitude": 3000,
             "sid": "OZARK8",
-            "waypoints": "KSUS-26R/h079 STL CABIT HLV"
+            "initial_heading": 79
           },
           "STL": {
             "cleared_altitude": 3000,
@@ -1681,27 +1681,27 @@
           "LIT": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-26L/h079 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 79
           },
           "MYERZ": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-26L/h079 STL SAJOY MYERZ"
+            "initial_heading": 79
           },
           "ARG": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-26L/h079 STL SAJOY MYERZ ARG"
+            "initial_heading": 79
           },
           "VIH": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KSUS-26L/h079 STL KLAIR VIH"
+            "initial_heading": 79
           },
           "HLV": {
             "cleared_altitude": 3000,
             "sid": "OZARK8",
-            "waypoints": "KSUS-26L/h079 STL CABIT HLV"
+            "initial_heading": 79
           },
           "STL": {
             "cleared_altitude": 3000,
@@ -2328,27 +2328,27 @@
           "LIT": {
             "cleared_altitude": 2000,
             "sid": "LINDY9",
-            "waypoints": "KCPS-5/h227 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 227
           },
           "MYERZ": {
             "cleared_altitude": 2000,
             "sid": "LINDY9",
-            "waypoints": "KCPS-5/h227 STL SAJOY MYERZ"
+            "initial_heading": 227
           },
           "VIH": {
             "cleared_altitude": 2000,
             "sid": "LINDY9",
-            "waypoints": "KCPS-5/h227 STL KLAIR VIH"
+            "initial_heading": 227
           },
           "ARG": {
             "cleared_altitude": 2000,
             "sid": "LINDY9",
-            "waypoints": "KCPS-5/h227 STL SAJOY MYERZ ARG"
+            "initial_heading": 227
           },
           "HLV": {
             "cleared_altitude": 2500,
             "sid": "OZARK8",
-            "waypoints": "KCPS-5/h227 STL CABIT HLV"
+            "initial_heading": 227
           },
           "DENNI,BNA": {
             "cleared_altitude": 2500,
@@ -2557,248 +2557,248 @@
           "BIB": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-35/h174 TWILA JIGSY BIB"
+            "initial_heading": 174
           },
           "VHP": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-35/h174 TWILA JIGSY BIB WORKE KELLY VHP"
+            "initial_heading": 174
           },
           "CREEP": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-35/h174 TWILA JIGSY BIB WORKE KELLY SHB CREEP"
+            "initial_heading": 174
           },
           "JIGSY": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-35/h174 TWILA JIGSY"
+            "initial_heading": 174
           },
           "ROD": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-35/h174 TWILA JIGSY BIB WORKE KELLY SHB ROD"
+            "initial_heading": 174
           },
           "VIH": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-35/h174 STL KLAIR VIH"
+            "initial_heading": 174
           },
           "LIT": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-35/h174 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 174
           },
           "MYERZ": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-35/h174 STL SAJOY MYERZ"
+            "initial_heading": 174
           },
           "ARG": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-35/h174 STL SAJOY MYERZ ARG"
+            "initial_heading": 174
           },
           "HLV": {
             "cleared_altitude": 2500,
             "sid": "OZARK8",
-            "waypoints": "KALN-35/h174 STL CABIT HLV"
+            "initial_heading": 174
           },
           "DENNI": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
-            "waypoints": "KALN-35/h174 STL PLESS DENNI"
+            "initial_heading": 174
           },
           "BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
-            "waypoints": "KALN-35/h174 STL PLESS DENNI BNA"
+            "initial_heading": 174
           }
         },
         "11": {
           "BIB": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-29/h114 TWILA JIGSY BIB"
+            "initial_heading": 114
           },
           "VHP": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-29/h114 TWILA JIGSY BIB WORKE KELLY VHP"
+            "initial_heading": 114
           },
           "CREEP": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-29/h114 TWILA JIGSY BIB WORKE KELLY SHB CREEP"
+            "initial_heading": 114
           },
           "JIGSY": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-29/h114 TWILA JIGSY"
+            "initial_heading": 114
           },
           "ROD": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-29/h114 TWILA JIGSY BIB WORKE KELLY SHB ROD"
+            "initial_heading": 114
           },
           "VIH": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-29/h114 STL KLAIR VIH"
+            "initial_heading": 114
           },
           "LIT": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-29/h114 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 114
           },
           "MYERZ": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-29/h114 STL SAJOY MYERZ"
+            "initial_heading": 114
           },
           "ARG": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-29/h114 STL SAJOY MYERZ ARG"
+            "initial_heading": 114
           },
           "HLV": {
             "cleared_altitude": 2500,
             "sid": "OZARK8",
-            "waypoints": "KALN-29/h114 STL CABIT HLV"
+            "initial_heading": 114
           },
           "DENNI": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
-            "waypoints": "KALN-29/h114 STL PLESS DENNI"
+            "initial_heading": 114
           },
           "BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
-            "waypoints": "KALN-29/h114 STL PLESS DENNI BNA"
+            "initial_heading": 114
           }
         },
         "35": {
           "BIB": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-17/h354 TWILA JIGSY BIB"
+            "initial_heading": 354
           },
           "VHP": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-17/h354 TWILA JIGSY BIB WORKE KELLY VHP"
+            "initial_heading": 354
           },
           "CREEP": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-17/h354 TWILA JIGSY BIB WORKE KELLY SHB CREEP"
+            "initial_heading": 354
           },
           "JIGSY": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-17/h354 TWILA JIGSY"
+            "initial_heading": 354
           },
           "ROD": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-17/h354 TWILA JIGSY BIB WORKE KELLY SHB ROD"
+            "initial_heading": 354
           },
           "VIH": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-17/h354 STL KLAIR VIH"
+            "initial_heading": 354
           },
           "LIT": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-17/h354 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 354
           },
           "MYERZ": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-17/h354 STL SAJOY MYERZ"
+            "initial_heading": 354
           },
           "ARG": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-17/h354 STL SAJOY MYERZ ARG"
+            "initial_heading": 354
           },
           "HLV": {
             "cleared_altitude": 2500,
             "sid": "OZARK8",
-            "waypoints": "KALN-17/h354 STL CABIT HLV"
+            "initial_heading": 354
           },
           "DENNI": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
-            "waypoints": "KALN-17/h354 STL PLESS DENNI"
+            "initial_heading": 354
           },
           "BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
-            "waypoints": "KALN-17/h354 STL PLESS DENNI BNA"
+            "initial_heading": 354
           }
         },
         "29": {
           "BIB": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-11/h294 TWILA JIGSY BIB"
+            "initial_heading": 294
           },
           "VHP": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-11/h294 TWILA JIGSY BIB WORKE KELLY VHP"
+            "initial_heading": 294
           },
           "CREEP": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-11/h294 TWILA JIGSY BIB WORKE KELLY SHB CREEP"
+            "initial_heading": 294
           },
           "JIGSY": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-11/h294 TWILA JIGSY"
+            "initial_heading": 294
           },
           "ROD": {
             "cleared_altitude": 2500,
             "sid": "GATWY1",
-            "waypoints": "KALN-11/h294 TWILA JIGSY BIB WORKE KELLY SHB ROD"
+            "initial_heading": 294
           },
           "VIH": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-11/h294 STL KLAIR VIH"
+            "initial_heading": 294
           },
           "LIT": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-11/h294 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 294
           },
           "MYERZ": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-11/h294 STL SAJOY MYERZ"
+            "initial_heading": 294
           },
           "ARG": {
             "cleared_altitude": 2500,
             "sid": "LINDY9",
-            "waypoints": "KALN-11/h294 STL SAJOY MYERZ ARG"
+            "initial_heading": 294
           },
           "HLV": {
             "cleared_altitude": 2500,
             "sid": "OZARK8",
-            "waypoints": "KALN-11/h294 STL CABIT HLV"
+            "initial_heading": 294
           },
           "DENNI": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
-            "waypoints": "KALN-11/h294 STL PLESS DENNI"
+            "initial_heading": 294
           },
           "BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
-            "waypoints": "KALN-11/h294 STL PLESS DENNI BNA"
+            "initial_heading": 294
           }
         }
       },
@@ -2934,248 +2934,248 @@
           "BIB": {
             "cleared_altitude": 5000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32R/h050 TWILA JIGSY BIB"
+            "initial_heading": 50
           },
           "VHP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32R/h050 TWILA JIGSY BIB WORKE KELLY VHP"
+            "initial_heading": 50
           },
           "CREEP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32R/h050 TWILA JIGSY BIB WORKE KELLY SHB CREEP"
+            "initial_heading": 50
           },
           "JIGSY": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32R/h050 TWILA JIGSY"
+            "initial_heading": 50
           },
           "ROD": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32R/h050 TWILA JIGSY BIB WORKE KELLY SHB ROD"
+            "initial_heading": 50
           },
           "VIH": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-32R/h050 STL KLAIR VIH"
+            "initial_heading": 50
           },
           "LIT": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-32R/h050 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 50
           },
           "MYERZ": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-32R/h050 STL SAJOY MYERZ"
+            "initial_heading": 50
           },
           "ARG": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-32R/h050 STL SAJOY MYERZ ARG"
+            "initial_heading": 50
           },
           "HLV": {
             "cleared_altitude": 3000,
             "sid": "OZARK8",
-            "waypoints": "KBLV-32R/h050 STL CABIT HLV"
+            "initial_heading": 50
           },
           "DENNI": {
             "cleared_altitude": 3000,
             "sid": "PLESS5",
-            "waypoints": "KBLV-32R/h050 STL PLESS DENNI"
+            "initial_heading": 50
           },
           "BNA": {
             "cleared_altitude": 3000,
             "sid": "PLESS5",
-            "waypoints": "KBLV-32R/h050 STL PLESS DENNI BNA"
+            "initial_heading": 50
           }
         },
         "14R": {
           "BIB": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32L/h139 TWILA JIGSY BIB"
+            "initial_heading": 139
           },
           "VHP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32L/h139 TWILA JIGSY BIB WORKE KELLY VHP"
+            "initial_heading": 139
           },
           "CREEP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32L/h139 TWILA JIGSY BIB WORKE KELLY SHB CREEP"
+            "initial_heading": 139
           },
           "JIGSY": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32L/h139 TWILA JIGSY"
+            "initial_heading": 139
           },
           "ROD": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-32L/h139 TWILA JIGSY BIB WORKE KELLY SHB ROD"
+            "initial_heading": 139
           },
           "VIH": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-32L/h139 STL KLAIR VIH"
+            "initial_heading": 139
           },
           "LIT": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-32L/h139 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 139
           },
           "MYERZ": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-32L/h139 STL SAJOY MYERZ"
+            "initial_heading": 139
           },
           "ARG": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-32L/h139 STL SAJOY MYERZ ARG"
+            "initial_heading": 139
           },
           "HLV": {
             "cleared_altitude": 3000,
             "sid": "OZARK8",
-            "waypoints": "KBLV-32L/h139 STL CABIT HLV"
+            "initial_heading": 139
           },
           "DENNI": {
             "cleared_altitude": 3000,
             "sid": "PLESS5",
-            "waypoints": "KBLV-32L/h139 STL PLESS DENNI"
+            "initial_heading": 139
           },
           "BNA": {
             "cleared_altitude": 3000,
             "sid": "PLESS5",
-            "waypoints": "KBLV-32L/h139 STL PLESS DENNI BNA"
+            "initial_heading": 139
           }
         },
         "32L": {
           "BIB": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14R/h319 TWILA JIGSY BIB"
+            "initial_heading": 319
           },
           "VHP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14R/h319 TWILA JIGSY BIB WORKE KELLY VHP"
+            "initial_heading": 319
           },
           "CREEP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14R/h319 TWILA JIGSY BIB WORKE KELLY SHB CREEP"
+            "initial_heading": 319
           },
           "JIGSY": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14R/h319 TWILA JIGSY"
+            "initial_heading": 319
           },
           "ROD": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14R/h319 TWILA JIGSY BIB WORKE KELLY SHB ROD"
+            "initial_heading": 319
           },
           "VIH": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-14R/h319 STL KLAIR VIH"
+            "initial_heading": 319
           },
           "LIT": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-14R/h319 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 319
           },
           "MYERZ": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-14R/h319 STL SAJOY MYERZ"
+            "initial_heading": 319
           },
           "ARG": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-14R/h319 STL SAJOY MYERZ ARG"
+            "initial_heading": 319
           },
           "HLV": {
             "cleared_altitude": 3000,
             "sid": "OZARK8",
-            "waypoints": "KBLV-14R/h319 STL CABIT HLV"
+            "initial_heading": 319
           },
           "DENNI": {
             "cleared_altitude": 3000,
             "sid": "PLESS5",
-            "waypoints": "KBLV-14R/h319 STL PLESS DENNI"
+            "initial_heading": 319
           },
           "BNA": {
             "cleared_altitude": 3000,
             "sid": "PLESS5",
-            "waypoints": "KBLV-14R/h319 STL PLESS DENNI BNA"
+            "initial_heading": 319
           }
         },
         "32R": {
           "BIB": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14L/h050 TWILA JIGSY BIB"
+            "initial_heading": 50
           },
           "VHP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14L/h050 TWILA JIGSY BIB WORKE KELLY VHP"
+            "initial_heading": 50
           },
           "CREEP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14L/h050 TWILA JIGSY BIB WORKE KELLY SHB CREEP"
+            "initial_heading": 50
           },
           "JIGSY": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14L/h050 TWILA JIGSY"
+            "initial_heading": 50
           },
           "ROD": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
-            "waypoints": "KBLV-14L/h050 TWILA JIGSY BIB WORKE KELLY SHB ROD"
+            "initial_heading": 50
           },
           "VIH": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-14L/h050 STL KLAIR VIH"
+            "initial_heading": 50
           },
           "LIT": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-14L/h050 STL SAGZA TWRAY WEZRR LIT"
+            "initial_heading": 50
           },
           "MYERZ": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-14L/h050 STL SAJOY MYERZ"
+            "initial_heading": 50
           },
           "ARG": {
             "cleared_altitude": 3000,
             "sid": "LINDY9",
-            "waypoints": "KBLV-14L/h050 STL SAJOY MYERZ ARG"
+            "initial_heading": 50
           },
           "HLV": {
             "cleared_altitude": 3000,
             "sid": "OZARK8",
-            "waypoints": "KBLV-14L/h050 STL CABIT HLV"
+            "initial_heading": 50
           },
           "DENNI": {
             "cleared_altitude": 3000,
             "sid": "PLESS5",
-            "waypoints": "KBLV-14L/h050 STL PLESS DENNI"
+            "initial_heading": 50
           },
           "BNA": {
             "cleared_altitude": 3000,
             "sid": "PLESS5",
-            "waypoints": "KBLV-14L/h050 STL PLESS DENNI BNA"
+            "initial_heading": 50
           }
         }
       },

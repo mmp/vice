@@ -75,17 +75,17 @@
           "ACCRA": {
             "assigned_altitude": 5000,
             "sid": "ACCRA5",
-            "waypoints": "KMKE-19R/h011 FANZI WENUL/a11000 KAJJY/a13000 LVENS/a16000 HHHUL"
+            "initial_heading": 11
           },
           "DELHI": {
             "assigned_altitude": 5000,
             "sid": "UECKR6",
-            "waypoints": "KMKE-19R/h011 PRFEC OZAUK/a11000 MAULT/a13000 UECKR/a16000 LADDI"
+            "initial_heading": 11
           },
           "SAMPL": {
             "assigned_altitude": 5000,
             "sid": "UECKR6",
-            "waypoints": "KMKE-19R/h011 PRFEC OZAUK/a11000 MAULT/a13000 UECKR/a16000"
+            "initial_heading": 11
           },
           "HAWKN,GREAS,BRAVE,LYNNI": {
             "assigned_altitude": 5000,
@@ -102,17 +102,17 @@
           "ACCRA": {
             "assigned_altitude": 5000,
             "sid": "ACCRA5",
-            "waypoints": "KMKE-1L/h191 FANZI WENUL/a11000 KAJJY/a13000 LVENS/a16000 HHHUL"
+            "initial_heading": 191
           },
           "DELHI": {
             "assigned_altitude": 5000,
             "sid": "UECKR6",
-            "waypoints": "KMKE-1L/h191 PRFEC OZAUK/a11000 MAULT/a13000 UECKR/a16000 LADDI"
+            "initial_heading": 191
           },
           "SAMPL": {
             "assigned_altitude": 5000,
             "sid": "UECKR6",
-            "waypoints": "KMKE-1L/h191 PRFEC OZAUK/a11000 MAULT/a13000 UECKR/a16000"
+            "initial_heading": 191
           },
           "HAWKN,GREAS,BRAVE,LYNNI": {
             "assigned_altitude": 5000,
@@ -129,17 +129,17 @@
           "ACCRA": {
             "assigned_altitude": 5000,
             "sid": "ACCRA5",
-            "waypoints": "KMKE-25L/h076 FANZI WENUL/a11000 KAJJY/a13000 LVENS/a16000 HHHUL"
+            "initial_heading": 76
           },
           "DELHI": {
             "assigned_altitude": 5000,
             "sid": "UECKR6",
-            "waypoints": "KMKE-25L/h076 PRFEC OZAUK/a11000 MAULT/a13000 UECKR/a16000 LADDI"
+            "initial_heading": 76
           },
           "SAMPL": {
             "assigned_altitude": 5000,
             "sid": "UECKR6",
-            "waypoints": "KMKE-25L/h076 PRFEC OZAUK/a11000 MAULT/a13000 UECKR/a16000"
+            "initial_heading": 76
           },
           "HAWKN,GREAS,BRAVE,LYNNI": {
             "assigned_altitude": 5000,
@@ -156,17 +156,17 @@
           "ACCRA": {
             "assigned_altitude": 5000,
             "sid": "ACCRA5",
-            "waypoints": "KMKE-7R/h255 FANZI WENUL/a11000 KAJJY/a13000 LVENS/a16000 HHHUL"
+            "initial_heading": 255
           },
           "DELHI": {
             "assigned_altitude": 5000,
             "sid": "UECKR6",
-            "waypoints": "KMKE-7R/h255 PRFEC OZAUK/a11000 MAULT/a13000 UECKR/a16000 LADDI"
+            "initial_heading": 255
           },
           "SAMPL": {
             "assigned_altitude": 5000,
             "sid": "UECKR6",
-            "waypoints": "KMKE-7R/h255 PRFEC OZAUK/a11000 MAULT/a13000 UECKR/a16000"
+            "initial_heading": 255
           },
           "HAWKN,GREAS,BRAVE,LYNNI": {
             "assigned_altitude": 5000,

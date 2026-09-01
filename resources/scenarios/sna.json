@@ -1078,19 +1078,19 @@
             "is_rnav": true,
             "departure_controller": "4B",
             "aircraft": ["jet"],
-            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c6000/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "waypoint_actions": { "KLGB-30": "ho4R", "PLTAA": "ho6L,c6000" }
           },
           "VTU": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
             "aircraft": ["turboprop", "jet"],
-            "waypoints": "KLGB-12/h301 VTU"
+            "waypoints": "KLGB-30/h301 VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
             "aircraft": ["turboprop", "jet"],
-            "waypoints": "KLGB-12/h301 SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "KLGB-30/h301 SXC GOATZ MALIT ROSIN FICKY"
           },
           "AVRRY,CNERY,TCATE": {
             "assigned_altitude": 3000,

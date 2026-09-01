@@ -876,7 +876,7 @@
           "DORRL,MATLK,ONEWY": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "N026.04.36.058,W080.07.46.726/h060 LIFRR/a4000"
+            "initial_heading": 60
           }
         },
         "10R": {
@@ -925,7 +925,7 @@
           "DORRL,MATLK,ONEWY": {
             "assigned_altitude": 4000,
             "sid": "DORRL2",
-            "waypoints": "N026.04.37.267,W080.10.32.043/h305 LIFRR/a4000"
+            "initial_heading": 305
           }
         },
         "28L": {
@@ -1427,234 +1427,234 @@
           "DUCEN": {
             "assigned_altitude": 2000,
             "sid": "ALTNN2",
-            "waypoints": "KTMB-27R/h093 AGERS/a5000 PERTS ALTNN MMART ENWOD SEAZY"
+            "initial_heading": 93
           },
           "ALTNN": {
             "assigned_altitude": 2000,
             "sid": "ALTNN2",
-            "waypoints": "KTMB-27R/h093 AGERS/a5000 PERTS ALTNN"
+            "initial_heading": 93
           },
           "COREA,MERKS": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KTMB-27R/h093 MRENO/a5000 BNGOS"
+            "initial_heading": 93
           },
           "BNGOS": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KTMB-27R/h093 MRENO/a5000"
+            "initial_heading": 93
           },
           "DOLIE": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KTMB-27R/h093 MRENO/a5000 BNGOS COREA"
+            "initial_heading": 93
           },
           "MATLK,ONEWY": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KTMB-27R/h093 LIFRR/a4000 BOGYY DORRL BENNS FUNNR"
+            "initial_heading": 93
           },
           "DORRL": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KTMB-27R/h093 LIFRR/a4000 BOGYY"
+            "initial_heading": 93
           },
           "STYMY": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KTMB-27R/h093 ALNZO/a5000 FLMGO WAPOM"
+            "initial_heading": 93
           },
           "WAPOM": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KTMB-27R/h093 ALNZO/a5000 FLMGO"
+            "initial_heading": 93
           },
           "FLMGO": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KTMB-27R/h093 ALNZO/a5000"
+            "initial_heading": 93
           },
           "ALYRA,SNAGY,SUMRS": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
-            "waypoints": "KTMB-27R/h093 MARCK/a5000 FOLZZ GOZZR"
+            "initial_heading": 93
           },
           "GOZZR,PADUS,ZFP": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
-            "waypoints": "KTMB-27R/h093 MARCK/a5000 FOLZZ"
+            "initial_heading": 93
           },
           "KPASA": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KTMB-27R/h093 JOENZ/a5000 HURCN BLAAK PYROS"
+            "initial_heading": 93
           },
           "SMELZ": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KTMB-27R/h093 JOENZ/a5000 HURCN THEUU GNARL"
+            "initial_heading": 93
           },
           "HURCN": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KTMB-27R/h093 JOENZ/a5000"
+            "initial_heading": 93
           },
           "BAIRN,WIXED": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KTMB-27R/h093 LIFRR/a4000 BOBOE DURRY CLEFF"
+            "initial_heading": 93
           },
           "LIFRR": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KTMB-27R/h093"
+            "initial_heading": 93
           },
           "CANOA,MAXIM": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KTMB-27R/h093 AUSTI/a5000 MAYNR MCLAW SLIPT JABOX"
+            "initial_heading": 93
           },
           "FUNDI": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KTMB-27R/h093 AUSTI/a5000 MAYNR MCLAW"
+            "initial_heading": 93
           },
           "MAYNR": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KTMB-27R/h093 AUSTI/a5000"
+            "initial_heading": 93
           },
           "URSUS": {
             "assigned_altitude": 2000,
             "sid": "MELLZ2",
-            "waypoints": "KTMB-27R/h093 DAYAK/a5000+ MELLZ GLAMS LRODD"
+            "initial_heading": 93
           },
           "GLAMS": {
             "assigned_altitude": 2000,
             "sid": "MELLZ2",
-            "waypoints": "KTMB-27R/h093 DAYAK/a5000+ MELLZ"
+            "initial_heading": 93
           },
           "MELLZ": {
             "assigned_altitude": 2000,
             "sid": "MELLZ2",
-            "waypoints": "KTMB-27R/h093 DAYAK/a5000+"
+            "initial_heading": 93
           }
         },
         "27R": {
           "DUCEN": {
             "assigned_altitude": 2000,
             "sid": "ALTNN2",
-            "waypoints": "KTMB-9L/h273 AGERS/a5000 PERTS ALTNN MMART ENWOD SEAZY"
+            "initial_heading": 273
           },
           "ALTNN": {
             "assigned_altitude": 2000,
             "sid": "ALTNN2",
-            "waypoints": "KTMB-9L/h273 AGERS/a5000 PERTS ALTNN"
+            "initial_heading": 273
           },
           "COREA,MERKS": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KTMB-9L/h273 MRENO/a5000 BNGOS"
+            "initial_heading": 273
           },
           "BNGOS": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KTMB-9L/h273 MRENO/a5000"
+            "initial_heading": 273
           },
           "DOLIE": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KTMB-9L/h273 MRENO/a5000 BNGOS COREA"
+            "initial_heading": 273
           },
           "MATLK,ONEWY": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KTMB-9L/h273 LIFRR/a4000 BOGYY DORRL BENNS FUNNR"
+            "initial_heading": 273
           },
           "DORRL": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KTMB-9L/h273 LIFRR/a4000 BOGYY"
+            "initial_heading": 273
           },
           "STYMY": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KTMB-9L/h273 ALNZO/a5000 FLMGO WAPOM"
+            "initial_heading": 273
           },
           "WAPOM": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KTMB-9L/h273 ALNZO/a5000 FLMGO"
+            "initial_heading": 273
           },
           "FLMGO": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KTMB-9L/h273 ALNZO/a5000"
+            "initial_heading": 273
           },
           "ALYRA,SNAGY,SUMRS": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
-            "waypoints": "KTMB-9L/h273 MARCK/a5000 FOLZZ GOZZR"
+            "initial_heading": 273
           },
           "GOZZR,PADUS,ZFP": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
-            "waypoints": "KTMB-9L/h273 MARCK/a5000 FOLZZ"
+            "initial_heading": 273
           },
           "KPASA": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KTMB-9L/h273 JOENZ/a5000 HURCN BLAAK PYROS"
+            "initial_heading": 273
           },
           "SMELZ": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KTMB-9L/h273 JOENZ/a5000 HURCN THEUU GNARL"
+            "initial_heading": 273
           },
           "HURCN": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KTMB-9L/h273 JOENZ/a5000"
+            "initial_heading": 273
           },
           "BAIRN,WIXED": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KTMB-9L/h273 LIFRR/a4000 BOBOE DURRY CLEFF"
+            "initial_heading": 273
           },
           "LIFRR": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KTMB-9L/h273"
+            "initial_heading": 273
           },
           "CANOA,MAXIM": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KTMB-9L/h273 AUSTI/a5000 MAYNR MCLAW SLIPT JABOX"
+            "initial_heading": 273
           },
           "FUNDI": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KTMB-9L/h273 AUSTI/a5000 MAYNR MCLAW"
+            "initial_heading": 273
           },
           "MAYNR": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KTMB-9L/h273 AUSTI/a5000"
+            "initial_heading": 273
           },
           "URSUS": {
             "assigned_altitude": 2000,
             "sid": "MELLZ2",
-            "waypoints": "KTMB-9L/h273 DAYAK/a5000+ MELLZ GLAMS LRODD"
+            "initial_heading": 273
           },
           "GLAMS": {
             "assigned_altitude": 2000,
             "sid": "MELLZ2",
-            "waypoints": "KTMB-9L/h273 DAYAK/a5000+ MELLZ"
+            "initial_heading": 273
           },
           "MELLZ": {
             "assigned_altitude": 2000,
             "sid": "MELLZ2",
-            "waypoints": "KTMB-9L/h273 DAYAK/a5000+"
+            "initial_heading": 273
           }
         }
       },
@@ -1797,254 +1797,254 @@
           "DUCEN": {
             "assigned_altitude": 2000,
             "sid": "ALTNN2",
-            "waypoints": "KOPF-27R/h093 AGERS/a5000 PERTS ALTNN MMART ENWOD SEAZY"
+            "initial_heading": 93
           },
           "ALTNN": {
             "assigned_altitude": 2000,
             "sid": "ALTNN2",
-            "waypoints": "KOPF-27R/h093 AGERS/a5000 PERTS ALTNN"
+            "initial_heading": 93
           },
           "COREA,MERKS": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KOPF-27R/h093 MRENO/a5000 BNGOS"
+            "initial_heading": 93
           },
           "BNGOS": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KOPF-27R/h093 MRENO/a5000"
+            "initial_heading": 93
           },
           "DOLIE": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KOPF-27R/h093 MRENO/a5000 BNGOS COREA"
+            "initial_heading": 93
           },
           "MATLK,ONEWY": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KOPF-27R/h093 LIFRR/a4000 BOGYY DORRL BENNS FUNNR"
+            "initial_heading": 93
           },
           "DORRL": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KOPF-27R/h093 LIFRR/a4000 BOGYY"
+            "initial_heading": 93
           },
           "STYMY": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KOPF-27R/h093 ALNZO/a5000 FLMGO WAPOM"
+            "initial_heading": 93
           },
           "WAPOM": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KOPF-27R/h093 ALNZO/a5000 FLMGO"
+            "initial_heading": 93
           },
           "FLMGO": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KOPF-27R/h093 ALNZO/a5000"
+            "initial_heading": 93
           },
           "ALYRA,SNAGY,SUMRS": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
-            "waypoints": "KOPF-27R/h093 MARCK/a5000 FOLZZ GOZZR"
+            "initial_heading": 93
           },
           "GOZZR,PADUS,ZFP": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
-            "waypoints": "KOPF-27R/h093 MARCK/a5000 FOLZZ"
+            "initial_heading": 93
           },
           "BAGGS,SHAQQ": {
             "assigned_altitude": 2000,
             "sid": "GLADZ4",
-            "waypoints": "KOPF-27R/h093 GAYTR/a5000 RUTLG GLADZ MARCI"
+            "initial_heading": 93
           },
           "LULLS": {
             "assigned_altitude": 2000,
             "sid": "GLADZ4",
-            "waypoints": "KOPF-27R/h093 GAYTR/a5000 RUTLG GLADZ WIGNA"
+            "initial_heading": 93
           },
           "GLADZ": {
             "assigned_altitude": 2000,
             "sid": "GLADZ4",
-            "waypoints": "KOPF-27R/h093 GAYTR/a5000 RUTLG"
+            "initial_heading": 93
           },
           "KPASA": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KOPF-27R/h093 JOENZ/a5000 HURCN BLAAK PYROS"
+            "initial_heading": 93
           },
           "SMELZ": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KOPF-27R/h093 JOENZ/a5000 HURCN THEUU GNARL"
+            "initial_heading": 93
           },
           "HURCN": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KOPF-27R/h093 JOENZ/a5000"
+            "initial_heading": 93
           },
           "RAJAY,CAMIX": {
             "assigned_altitude": 2000,
             "sid": "HUSIL3",
-            "waypoints": "KOPF-27R/h093 JAMEX/a5000+ HUSIL ELQUE"
+            "initial_heading": 93
           },
           "HUSIL": {
             "assigned_altitude": 2000,
             "sid": "HUSIL3",
-            "waypoints": "KOPF-27R/h093 JAMEX/a5000+"
+            "initial_heading": 93
           },
           "BAIRN,WIXED": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KOPF-27R/h093 LIFRR/a4000 BOBOE DURRY CLEFF"
+            "initial_heading": 93
           },
           "LIFRR": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KOPF-27R/h093"
+            "initial_heading": 93
           },
           "CANOA,MAXIM": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KOPF-27R/h093 AUSTI/a5000 MAYNR MCLAW SLIPT JABOX"
+            "initial_heading": 93
           },
           "FUNDI": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KOPF-27R/h093 AUSTI/a5000 MAYNR MCLAW"
+            "initial_heading": 93
           },
           "MAYNR": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KOPF-27R/h093 AUSTI/a5000"
+            "initial_heading": 93
           }
         },
         "27R": {
           "DUCEN": {
             "assigned_altitude": 2000,
             "sid": "ALTNN2",
-            "waypoints": "KOPF-9L/h273 AGERS/a5000 PERTS ALTNN MMART ENWOD SEAZY"
+            "initial_heading": 273
           },
           "ALTNN": {
             "assigned_altitude": 2000,
             "sid": "ALTNN2",
-            "waypoints": "KOPF-9L/h273 AGERS/a5000 PERTS ALTNN"
+            "initial_heading": 273
           },
           "COREA,MERKS": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KOPF-9L/h273 MRENO/a5000 BNGOS"
+            "initial_heading": 273
           },
           "BNGOS": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KOPF-9L/h273 MRENO/a5000"
+            "initial_heading": 273
           },
           "DOLIE": {
             "assigned_altitude": 2000,
             "sid": "BNGOS4",
-            "waypoints": "KOPF-9L/h273 MRENO/a5000 BNGOS COREA"
+            "initial_heading": 273
           },
           "MATLK,ONEWY": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KOPF-9L/h273 LIFRR/a4000 BOGYY DORRL BENNS FUNNR"
+            "initial_heading": 273
           },
           "DORRL": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KOPF-9L/h273 LIFRR/a4000 BOGYY"
+            "initial_heading": 273
           },
           "STYMY": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KOPF-9L/h273 ALNZO/a5000 FLMGO WAPOM"
+            "initial_heading": 273
           },
           "WAPOM": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KOPF-9L/h273 ALNZO/a5000 FLMGO"
+            "initial_heading": 273
           },
           "FLMGO": {
             "assigned_altitude": 2000,
             "sid": "FLMGO2",
-            "waypoints": "KOPF-9L/h273 ALNZO/a5000"
+            "initial_heading": 273
           },
           "ALYRA,SNAGY,SUMRS": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
-            "waypoints": "KOPF-9L/h273 MARCK/a5000 FOLZZ GOZZR"
+            "initial_heading": 273
           },
           "GOZZR,PADUS,ZFP": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
-            "waypoints": "KOPF-9L/h273 MARCK/a5000 FOLZZ"
+            "initial_heading": 273
           },
           "BAGGS,SHAQQ": {
             "assigned_altitude": 2000,
             "sid": "GLADZ4",
-            "waypoints": "KOPF-9L/h273 GAYTR/a5000 RUTLG GLADZ MARCI"
+            "initial_heading": 273
           },
           "LULLS": {
             "assigned_altitude": 2000,
             "sid": "GLADZ4",
-            "waypoints": "KOPF-9L/h273 GAYTR/a5000 RUTLG GLADZ WIGNA"
+            "initial_heading": 273
           },
           "GLADZ": {
             "assigned_altitude": 2000,
             "sid": "GLADZ4",
-            "waypoints": "KOPF-9L/h273 GAYTR/a5000 RUTLG"
+            "initial_heading": 273
           },
           "KPASA": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KOPF-9L/h273 JOENZ/a5000 HURCN BLAAK PYROS"
+            "initial_heading": 273
           },
           "SMELZ": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KOPF-9L/h273 JOENZ/a5000 HURCN THEUU GNARL"
+            "initial_heading": 273
           },
           "HURCN": {
             "assigned_altitude": 2000,
             "sid": "HURCN4",
-            "waypoints": "KOPF-9L/h273 JOENZ/a5000"
+            "initial_heading": 273
           },
           "RAJAY,CAMIX": {
             "assigned_altitude": 2000,
             "sid": "HUSIL3",
-            "waypoints": "KOPF-9L/h273 JAMEX/a5000+ HUSIL ELQUE"
+            "initial_heading": 273
           },
           "HUSIL": {
             "assigned_altitude": 2000,
             "sid": "HUSIL3",
-            "waypoints": "KOPF-9L/h273 JAMEX/a5000+"
+            "initial_heading": 273
           },
           "BAIRN,WIXED": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KOPF-9L/h273 LIFRR/a4000 BOBOE DURRY CLEFF"
+            "initial_heading": 273
           },
           "LIFRR": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KOPF-9L/h273"
+            "initial_heading": 273
           },
           "CANOA,MAXIM": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KOPF-9L/h273 AUSTI/a5000 MAYNR MCLAW SLIPT JABOX"
+            "initial_heading": 273
           },
           "FUNDI": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KOPF-9L/h273 AUSTI/a5000 MAYNR MCLAW"
+            "initial_heading": 273
           },
           "MAYNR": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KOPF-9L/h273 AUSTI/a5000"
+            "initial_heading": 273
           }
         }
       },
@@ -2187,7 +2187,7 @@
           "COREA,MERKS,BNGOS": {
             "assigned_altitude": 2000,
             "sid": "BNICE2",
-            "waypoints": "KFXE-27/h091 MRENO/a4000 BNICE"
+            "initial_heading": 91
           },
           "DOLIE": {
             "assigned_altitude": 2000,
@@ -2197,12 +2197,12 @@
           "MATLK,ONEWY": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KFXE-27/h091 LIFRR/a4000 BOGYY DORRL BENNS FUNNR"
+            "initial_heading": 91
           },
           "DORRL": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KFXE-27/h091 LIFRR/a4000 BOGYY"
+            "initial_heading": 91
           },
           "STYMY": {
             "assigned_altitude": 2000,
@@ -2217,7 +2217,7 @@
           "FLMGO": {
             "assigned_altitude": 2000,
             "sid": "FRSBE2",
-            "waypoints": "KFXE-27/h091 ALNZO"
+            "initial_heading": 91
           },
           "ALYRA,SNAGY,SUMRS": {
             "assigned_altitude": 2000,
@@ -2227,74 +2227,74 @@
           "WOLFO": {
             "assigned_altitude": 2000,
             "sid": "FEALX2",
-            "waypoints": "KFXE-27/h091 FEALX/a4000+ BKING"
+            "initial_heading": 91
           },
           "PADUS": {
             "assigned_altitude": 2000,
             "sid": "FEALX2",
-            "waypoints": "KFXE-27/h091 FEALX/a4000+"
+            "initial_heading": 91
           },
           "ZFP": {
             "assigned_altitude": 2000,
             "sid": "FEALX2",
-            "waypoints": "KFXE-27/h091 FEALX/a4000+ PREDA"
+            "initial_heading": 91
           },
           "KPASA": {
             "assigned_altitude": 2000,
             "sid": "HROCK2",
-            "waypoints": "KFXE-27/h091 JOENZ HROCK BLAAK PYROS"
+            "initial_heading": 91
           },
           "SMELZ": {
             "assigned_altitude": 2000,
             "sid": "HROCK2",
-            "waypoints": "KFXE-27/h091 JOENZ HROCK THEUU GNARL"
+            "initial_heading": 91
           },
           "HURCN": {
             "assigned_altitude": 2000,
             "sid": "HROCK2",
-            "waypoints": "KFXE-27/h091 JOENZ"
+            "initial_heading": 91
           },
           "RAJAY,SUMAC": {
             "assigned_altitude": 2000,
             "sid": "GABOW2",
-            "waypoints": "KFXE-27/h091 MNUDO/a4000+ GABOW SANDL KRAFT HEYDR"
+            "initial_heading": 91
           },
           "GABOW": {
             "assigned_altitude": 2000,
             "sid": "GABOW2",
-            "waypoints": "KFXE-27/h091 MNUDO/a4000+"
+            "initial_heading": 91
           },
           "BAIRN,WIXED": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KFXE-27/h091 LIFRR/a4000 BOBOE DURRY CLEFF"
+            "initial_heading": 91
           },
           "LIFRR": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KFXE-27/h091"
+            "initial_heading": 91
           },
           "CANOA,MAXIM": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KFXE-27/h091 AUSTI/a5000 MAYNR MCLAW SLIPT JABOX"
+            "initial_heading": 91
           },
           "FUNDI": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KFXE-27/h091 AUSTI/a5000 MAYNR MCLAW"
+            "initial_heading": 91
           },
           "MAYNR": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KFXE-27/h091 AUSTI/a5000"
+            "initial_heading": 91
           }
         },
         "27": {
           "COREA,MERKS,BNGOS": {
             "assigned_altitude": 2000,
             "sid": "BNICE2",
-            "waypoints": "KFXE-9/h271 MRENO/a4000 BNICE"
+            "initial_heading": 271
           },
           "DOLIE": {
             "assigned_altitude": 2000,
@@ -2304,12 +2304,12 @@
           "MATLK,ONEWY": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KFXE-9/h271 LIFRR/a4000 BOGYY DORRL BENNS FUNNR"
+            "initial_heading": 271
           },
           "DORRL": {
             "assigned_altitude": 2000,
             "sid": "DORRL2",
-            "waypoints": "KFXE-9/h271 LIFRR/a4000 BOGYY"
+            "initial_heading": 271
           },
           "STYMY": {
             "assigned_altitude": 2000,
@@ -2324,7 +2324,7 @@
           "FLMGO": {
             "assigned_altitude": 2000,
             "sid": "FRSBE2",
-            "waypoints": "KFXE-9/h271 ALNZO"
+            "initial_heading": 271
           },
           "ALYRA,SNAGY,SUMRS": {
             "assigned_altitude": 2000,
@@ -2334,67 +2334,67 @@
           "WOLFO": {
             "assigned_altitude": 2000,
             "sid": "FEALX2",
-            "waypoints": "KFXE-9/h271 FEALX/a4000+ BKING"
+            "initial_heading": 271
           },
           "PADUS": {
             "assigned_altitude": 2000,
             "sid": "FEALX2",
-            "waypoints": "KFXE-9/h271 FEALX/a4000+"
+            "initial_heading": 271
           },
           "ZFP": {
             "assigned_altitude": 2000,
             "sid": "FEALX2",
-            "waypoints": "KFXE-9/h271 FEALX/a4000+ PREDA"
+            "initial_heading": 271
           },
           "KPASA": {
             "assigned_altitude": 2000,
             "sid": "HROCK2",
-            "waypoints": "KFXE-9/h271 JOENZ HROCK BLAAK PYROS"
+            "initial_heading": 271
           },
           "SMELZ": {
             "assigned_altitude": 2000,
             "sid": "HROCK2",
-            "waypoints": "KFXE-9/h271 JOENZ HROCK THEUU GNARL"
+            "initial_heading": 271
           },
           "HURCN": {
             "assigned_altitude": 2000,
             "sid": "HROCK2",
-            "waypoints": "KFXE-9/h271 JOENZ"
+            "initial_heading": 271
           },
           "RAJAY,SUMAC": {
             "assigned_altitude": 2000,
             "sid": "GABOW2",
-            "waypoints": "KFXE-9/h271 MNUDO/a4000+ GABOW SANDL KRAFT HEYDR"
+            "initial_heading": 271
           },
           "GABOW": {
             "assigned_altitude": 2000,
             "sid": "GABOW2",
-            "waypoints": "KFXE-9/h271 MNUDO/a4000+"
+            "initial_heading": 271
           },
           "BAIRN,WIXED": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KFXE-9/h271 LIFRR/a4000 BOBOE DURRY CLEFF"
+            "initial_heading": 271
           },
           "LIFRR": {
             "assigned_altitude": 2000,
             "sid": "LIFRR2",
-            "waypoints": "KFXE-9/h271"
+            "initial_heading": 271
           },
           "CANOA,MAXIM": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KFXE-9/h271 AUSTI/a5000 MAYNR MCLAW SLIPT JABOX"
+            "initial_heading": 271
           },
           "FUNDI": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KFXE-9/h271 AUSTI/a5000 MAYNR MCLAW"
+            "initial_heading": 271
           },
           "MAYNR": {
             "assigned_altitude": 2000,
             "sid": "MAYNR3",
-            "waypoints": "KFXE-9/h271 AUSTI/a5000"
+            "initial_heading": 271
           }
         }
       },

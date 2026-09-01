@@ -36,17 +36,17 @@
           "CCC": {
             "cleared_altitude": 3000,
             "sid": "PPORT4",
-            "waypoints": "KMHT-35/h219 TYLIR/a3000+ PPORT SHOEL RBELA JJIMY YANTC"
+            "initial_heading": 219
           },
           "NELIE": {
             "cleared_altitude": 3000,
             "sid": "PPORT4",
-            "waypoints": "KMHT-35/h219 TYLIR/a3000+ PPORT SHOEL RBELA JJIMY"
+            "initial_heading": 219
           },
           "BAF": {
             "cleared_altitude": 3000,
             "sid": "PPORT4",
-            "waypoints": "KMHT-35/h219 TYLIR/a3000+ PPORT SHOEL RBELA COTEE"
+            "initial_heading": 219
           },
           "HANNA,ENE,MANCH,PEASE,CLOWW,CAM,CON": {
             "cleared_altitude": 3000,
@@ -58,17 +58,17 @@
           "CCC": {
             "cleared_altitude": 3000,
             "sid": "PPORT4",
-            "waypoints": "KMHT-17/h352 TYLIR/a3000+ PPORT SHOEL RBELA JJIMY YANTC"
+            "initial_heading": 352
           },
           "NELIE": {
             "cleared_altitude": 3000,
             "sid": "PPORT4",
-            "waypoints": "KMHT-17/h352 TYLIR/a3000+ PPORT SHOEL RBELA JJIMY"
+            "initial_heading": 352
           },
           "BAF": {
             "cleared_altitude": 3000,
             "sid": "PPORT4",
-            "waypoints": "KMHT-17/h352 TYLIR/a3000+ PPORT SHOEL RBELA COTEE"
+            "initial_heading": 352
           },
           "HANNA,ENE,MANCH,PEASE,CLOWW,CAM,CON": {
             "cleared_altitude": 3000,

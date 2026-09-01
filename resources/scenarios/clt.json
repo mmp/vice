@@ -145,7 +145,7 @@
           "PITTY,HARAY,BUCKL,RUNIE,GANTS": {
             "cleared_altitude": 8000,
             "sid": "CLT5",
-            "waypoints": "_CLT_36R/h183"
+            "initial_heading": 183
           },
           "IPTAY": {
             "cleared_altitude": 8000,
@@ -233,7 +233,7 @@
           "PITTY,HARAY,BUCKL,RUNIE,GANTS": {
             "cleared_altitude": 8000,
             "sid": "CLT5",
-            "waypoints": "_CLT_18L/h025"
+            "initial_heading": 25
           },
           "IPTAY": {
             "cleared_altitude": 8000,

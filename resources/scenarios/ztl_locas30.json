@@ -12,20 +12,20 @@
           "BEAVY": {
             "cleared_altitude": 16000,
             "sid": "BEAVY8",
-            "waypoints": "UGANG/ho",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "UGANG": "ho" }
           },
           "ICONS": {
             "cleared_altitude": 16000,
             "sid": "ICONS7",
-            "waypoints": "GILFN/ho",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "GILFN": "ho" }
           },
           "KWEEN": {
             "cleared_altitude": 16000,
             "sid": "KWEEN7",
-            "waypoints": "HMMPY/ho",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "HMMPY": "ho" }
           },
           "LILLS": {
             "cleared_altitude": 13000,
@@ -36,34 +36,34 @@
           "BARMY": {
             "cleared_altitude": 16000,
             "sid": "BARMY7",
-            "waypoints": "MESHY/ho GULFY",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "MESHY": "ho" }
           },
           "KILNS": {
             "cleared_altitude": 16000,
             "sid": "KILNS7",
-            "waypoints": "MUNBE/ho LILIC",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "MUNBE": "ho" }
           }
         },
         "1R": {
           "BEAVY": {
             "cleared_altitude": 16000,
             "sid": "BEAVY8",
-            "waypoints": "UGANG/ho",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "UGANG": "ho" }
           },
           "ICONS": {
             "cleared_altitude": 16000,
             "sid": "ICONS7",
-            "waypoints": "GILFN/ho",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "GILFN": "ho" }
           },
           "KWEEN": {
             "cleared_altitude": 16000,
             "sid": "KWEEN7",
-            "waypoints": "HMMPY/ho",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "HMMPY": "ho" }
           },
           "LILLS": {
             "cleared_altitude": 13000,
@@ -74,14 +74,14 @@
           "BARMY": {
             "cleared_altitude": 16000,
             "sid": "BARMY7",
-            "waypoints": "MESHY/ho GULFY",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "MESHY": "ho" }
           },
           "KILNS": {
             "cleared_altitude": 16000,
             "sid": "KILNS7",
-            "waypoints": "MUNBE/ho LILIC",
-            "handoff_controller": "30"
+            "handoff_controller": "30",
+            "waypoint_actions": { "MUNBE": "ho" }
           }
         }
       },

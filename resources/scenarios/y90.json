@@ -104,7 +104,7 @@
             "departure_controller": "1Z"
           }
         },
-        "6/33 33": {
+        "33.6/33": {
           "PVD,THUMB": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
@@ -118,7 +118,7 @@
             "departure_controller": "1Z"
           }
         },
-        "24/33 33": {
+        "33.24/33": {
           "PVD,THUMB": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
@@ -416,28 +416,28 @@
           "CCC": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "KCEF/h048 GOETS THUMB NTMEG CCC"
+            "initial_heading": 48
           }
         },
         "23": {
           "CCC": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "KCEF/h228 GOETS THUMB NTMEG CCC"
+            "initial_heading": 228
           }
         },
         "15": {
           "CCC": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "KCEF/h149 GOETS THUMB NTMEG CCC"
+            "initial_heading": 149
           }
         },
         "33": {
           "CCC": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "KCEF/h329 GOETS THUMB NTMEG CCC"
+            "initial_heading": 329
           }
         }
       },
@@ -494,7 +494,7 @@
           "CCC": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "KBAF/h024 GOETS THUMB NTMEG CCC"
+            "initial_heading": 24
           }
         },
         "15": {
@@ -1331,7 +1331,7 @@
         {
           "airport": "KBDL",
           "rate": 20,
-          "runway": "6/33 33"
+          "runway": "33.6/33"
         },
         {
           "airport": "KHFD",
@@ -1421,7 +1421,7 @@
         {
           "airport": "KBDL",
           "rate": 20,
-          "runway": "24/33 33"
+          "runway": "33.24/33"
         },
         {
           "airport": "KHFD",

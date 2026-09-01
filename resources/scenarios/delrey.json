@@ -83,7 +83,7 @@
           "TRM": {
             "cleared_altitude": 3000,
             "sid": "LAXX1",
-            "waypoints": "KLAX-25R/h090 SLI TUSTI/a8000+ HEMET/a11000+ TRM"
+            "initial_heading": 90
           },
           "OTAYY.E,TCATE.E": {
             "cleared_altitude": 3000,
@@ -98,13 +98,13 @@
           "RZS.E": {
             "cleared_altitude": 3000,
             "sid": "VTU8",
-            "waypoints": "KLAX-25R/h090 VTU RZS"
+            "initial_heading": 90
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3",
             "is_rnav": true,
-            "waypoints": "KLAX-25R/h090 TRTON/a8000+ DARRK/a12000- FIXIT IKAYE"
+            "initial_heading": 90
           }
         },
         "7R": {
@@ -120,7 +120,7 @@
           "TRM": {
             "cleared_altitude": 3000,
             "sid": "LAXX1",
-            "waypoints": "KLAX-25L/h090 SLI TUSTI/a8000+ HEMET/a11000+ TRM"
+            "initial_heading": 90
           },
           "OTAYY.E,TCATE.E": {
             "cleared_altitude": 3000,
@@ -134,13 +134,13 @@
           "RZS.E": {
             "cleared_altitude": 3000,
             "sid": "VTU8",
-            "waypoints": "KLAX-25L/h090 VTU RZS"
+            "initial_heading": 90
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3",
             "is_rnav": true,
-            "waypoints": "KLAX-25L/h090 TRTON/a8000+ DARRK/a12000- FIXIT IKAYE"
+            "initial_heading": 90
           }
         },
         "6R": {
@@ -2646,17 +2646,17 @@
             "sid": "TOPMM5",
             "is_rnav": true,
             "departure_controller": "4B",
-            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c6000/ho6L AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "waypoint_actions": { "KLGB-30": "ho4R", "PLTAA": "ho6L,c6000" }
           },
           "VTU": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-12/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC VTU"
+            "waypoints": "KLGB-30/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-12/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "KLGB-30/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
           },
           "AVRRY": {
             "cleared_altitude": 3000,
@@ -2677,14 +2677,14 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301/@a1500+/l180/c7000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoints": "KLGB-30/h301/@a1500+/l180/c7000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301/@a1500+/l180/c7000/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-30/h301/@a1500+/l180/c7000/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         },
         "12.E": {
@@ -2693,17 +2693,17 @@
             "sid": "TOPMM5",
             "is_rnav": true,
             "departure_controller": "4B",
-            "waypoints": "KLGB-30/ho4R OMMAA/a3000 PLTAA/c8000/ho6X AAYJY QMARY/a4000 TOPMM/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "waypoint_actions": { "KLGB-30": "ho4R", "PLTAA": "ho6X,c8000" }
           },
           "VTU": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-12/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC VTU"
+            "waypoints": "KLGB-30/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-12/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "KLGB-30/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
           },
           "AVRRY": {
             "cleared_altitude": 3000,
@@ -2724,14 +2724,14 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301/@a1500+/r200/c8000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoints": "KLGB-30/h301/@a1500+/r200/c8000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301/@a1500+/r200/c8000/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-30/h301/@a1500+/r200/c8000/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         }
       },
@@ -3131,14 +3131,14 @@
             "handoff_controller": "6X",
             "sid": "HOBOW3",
             "is_rnav": true,
-            "waypoints": "LIION CHOAK JAABB KLNCH/s210-/ho TKDWN TRAYN/a10000-12000 JUMPP HOBOW CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY"
+            "waypoint_actions": { "KLNCH": "ho" }
           },
           "HHERO": {
             "cleared_altitude": 20000,
             "departure_controller": "4A",
             "sid": "MIKAA1",
             "is_rnav": true,
-            "waypoints": "LIION CHOAK/ho4Y JAABB KLNCH/s210- DOLLF/hoC14 MIKAA SNYPR HHERO"
+            "waypoint_actions": { "CHOAK": "ho4Y", "DOLLF": "hoC14" }
           }
         }
       },

@@ -280,20 +280,22 @@
           "ALLMA,BAXLY": {
             "cleared_altitude": 3000,
             "sid": "BRSTL1",
-            "waypoints": "KJAX-26/h080 TEREE BRSTL"
+            "initial_heading": 80
           },
           "WISPR": {
             "cleared_altitude": 3000,
-            "sid": "CROSB2"
+            "sid": "CROSB2",
+            "initial_heading": 80
           },
           "EXBOX,OMN": {
             "cleared_altitude": 3000,
             "sid": "EXBOX2",
-            "waypoints": "KJAX-26/h140 SAWGY"
+            "initial_heading": 140
           },
           "CAPPS,JAYJA": {
             "cleared_altitude": 3000,
-            "sid": "JETIN2"
+            "sid": "JETIN2",
+            "initial_heading": 80
           },
           "SAWGY": {
             "cleared_altitude": 3000,
@@ -305,21 +307,22 @@
           "ALLMA,BAXLY": {
             "cleared_altitude": 3000,
             "sid": "BRSTL1",
-            "waypoints": "KJAX-8/h320 TEREE BRSTL"
+            "initial_heading": 320
           },
           "WISPR": {
             "cleared_altitude": 3000,
             "sid": "CROSB2",
-            "waypoints": "KJAX-8/h320 GIGLZ CROSB"
+            "initial_heading": 320
           },
           "EXBOX,OMN": {
             "cleared_altitude": 3000,
             "sid": "EXBOX2",
-            "waypoints": "KJAX-8/h220 SAWGY"
+            "initial_heading": 220
           },
           "CAPPS,JAYJA": {
             "cleared_altitude": 3000,
-            "sid": "JETIN2"
+            "sid": "JETIN2",
+            "initial_heading": 260
           },
           "SAWGY": {
             "cleared_altitude": 3000,

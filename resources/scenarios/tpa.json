@@ -908,13 +908,13 @@
             "cleared_altitude": 1600,
             "sid": "LLRGO1",
             "description": "LLRGO1.NW",
-            "waypoints": "KPIE-18/h356 INLTT/a1600+ LLRGO ENDED LACEN"
+            "initial_heading": 356
           },
           "CAMJO.LLRGO1,WILON.LLRGO1": {
             "cleared_altitude": 1600,
             "sid": "LLRGO1",
             "description": "LLRGO1.N",
-            "waypoints": "KPIE-18/h356 INLTT/a1600+ LLRGO BAYPO ECAKE"
+            "initial_heading": 356
           }
         },
         "18": {
@@ -932,13 +932,13 @@
             "cleared_altitude": 1600,
             "sid": "LLRGO1",
             "description": "LLRGO1.NW",
-            "waypoints": "KPIE-36/h176 INLTT/a1600+ LLRGO ENDED LACEN"
+            "initial_heading": 176
           },
           "CAMJO.LLRGO1,WILON.LLRGO1": {
             "cleared_altitude": 1600,
             "sid": "LLRGO1",
             "description": "LLRGO1.N",
-            "waypoints": "KPIE-36/h176 INLTT/a1600+ LLRGO BAYPO ECAKE"
+            "initial_heading": 176
           }
         }
       },

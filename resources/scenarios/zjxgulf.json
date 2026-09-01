@@ -15,32 +15,32 @@
           "REMIS,CIGAR": {
             "cleared_altitude": 16000,
             "sid": "OSPRY1",
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho OSPRY GDUNN KNOST",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "BLOSM": "ho" }
           },
           "OSPRY": {
             "cleared_altitude": 16000,
             "sid": "OSPRY1",
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho OSPRY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "BLOSM": "ho" }
           },
           "RDSOX,JFRYS": {
             "cleared_altitude": 16000,
             "sid": "RDSOX1",
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho RDSOX",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "BLOSM": "ho" }
           },
           "JEEMY": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+/s230 CHUKG/a7000-/ho SNOBE MDUSA JEEMY/a16000+",
-            "handoff_controller": "57"
+            "handoff_controller": "57",
+            "waypoint_actions": { "CHUKG": "ho" }
           },
           "PAINN": {
             "cleared_altitude": 16000,
             "sid": "JEEMY4",
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+/s230 CHUKG/a7000-/ho SNOBE MDUSA JEEMY/a16000+ ACCHE PAINN",
-            "handoff_controller": "57"
+            "handoff_controller": "57",
+            "waypoint_actions": { "CHUKG": "ho" }
           }
         }
       },
@@ -498,7 +498,7 @@
         "4": {
           "ROGAN": {
             "cleared_altitude": 22000,
-            "waypoints": "KPGD-4 ROGAN/ho",
+            "waypoints": "KPGD-22 ROGAN/ho",
             "handoff_controller": "14"
           }
         }
@@ -916,25 +916,25 @@
           "TIDES": {
             "cleared_altitude": 20000,
             "sid": "TIDES1",
-            "waypoints": "KSRQ-14 AQUAE/a2600/s220/hoR08 PHINS/a4000+/hoR07 TIDES/a5000+/s250/ho",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "AQUAE": "hoR08", "PHINS": "hoR07", "TIDES": "ho" }
           },
           "MOMIE,WILON": {
             "cleared_altitude": 20000,
             "sid": "TIDES1",
-            "waypoints": "KSRQ-14 AQUAE/a2600/s220/hoR08 PHINS/a4000+/hoR07 TIDES/a5000+/s250 HYRON/ho BRUNG ENDED",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "AQUAE": "hoR08", "HYRON": "ho", "PHINS": "hoR07" }
           },
           "CAMJO": {
             "cleared_altitude": 20000,
             "sid": "TIDES1",
-            "waypoints": "KSRQ-14 AQUAE/a2600/s220/hoR08 PHINS/a4000+/hoR07 TIDES/a5000+/s250/hoR08 HYRON/ho BRUNG ENDED WILON SPRNG",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "AQUAE": "hoR08", "HYRON": "ho", "PHINS": "hoR07", "TIDES": "hoR08" }
           },
           "FROOT,CIGAR": {
             "cleared_altitude": 5000,
             "sid": "TIDES1",
-            "waypoints": "KSRQ-14 AQUAE/a2600/s220/hoR08 PHINS/a4000+ TIDES/a5000+/s250 GOLTY PSTOL"
+            "waypoint_actions": { "AQUAE": "hoR08" }
           }
         }
       },
@@ -1516,20 +1516,20 @@
           "BAYPO": {
             "cleared_altitude": 12000,
             "sid": "BAYPO2",
-            "waypoints": "KTPA-19R FINKI/ho",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "FINKI": "ho" }
           },
           "WILON": {
             "cleared_altitude": 12000,
             "sid": "BAYPO2",
-            "waypoints": "KTPA-19R FINKI/ho BAYPO ECAKE",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "FINKI": "ho" }
           },
           "CAMJO": {
             "cleared_altitude": 12000,
             "sid": "BAYPO2",
-            "waypoints": "KTPA-19R FINKI/ho BAYPO ECAKE WILON SPRNG",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "FINKI": "ho" }
           }
         }
       },

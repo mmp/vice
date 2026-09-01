@@ -18,34 +18,34 @@
           "OSPRY": {
             "cleared_altitude": 20000,
             "sid": "OSPRY1",
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho OSPRY",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "BLOSM": "ho" }
           },
           "FATHE": {
             "cleared_altitude": 20000,
             "sid": "FATHE4",
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+/s230 TRYNA/a7000- BUFFI FATHE/a14000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "FATHE": "ho" }
           },
           "JEEMY": {
             "cleared_altitude": 20000,
             "sid": "JEEMY4",
-            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+/s230 CHUKG/a7000- SNOBE MDUSA JEEMY/a16000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "JEEMY": "ho" }
           }
         },
         "35L": {
           "FATHE": {
             "cleared_altitude": 20000,
             "sid": "FATHE4",
-            "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE GOTHA/a7000- BUFFI FATHE/a14000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "FATHE": "ho" }
           },
           "JEEMY": {
             "cleared_altitude": 20000,
             "sid": "JEEMY4",
-            "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE ALOHH/a7000- SNOBE MDUSA JEEMY/a16000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "JEEMY": "ho" }
           }
         }
       },
@@ -136,16 +136,16 @@
           "ROYES": {
             "cleared_altitude": 17000,
             "sid": "ROYES7",
-            "waypoints": "KDAB-7L BARBS ROYES/a5000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "ROYES": "ho" }
           }
         },
         "7L": {
           "ROYES": {
             "cleared_altitude": 17000,
             "sid": "ROYES7",
-            "waypoints": "KDAB-25R BARBS ROYES/a5000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "ROYES": "ho" }
           }
         }
       },
@@ -225,22 +225,22 @@
           "CROSB": {
             "cleared_altitude": 15000,
             "sid": "CROSB2",
-            "waypoints": "KJAX-26 GIGLZ CROSB/a11000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "CROSB": "ho" }
           },
           "JETIN": {
             "cleared_altitude": 15000,
             "sid": "JETIN2",
-            "waypoints": "KJAX-26 DURTE JETIN/a10000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "JETIN": "ho" }
           }
         },
         "14": {
           "EXBOX": {
             "cleared_altitude": 15000,
             "sid": "EXBOX2",
-            "waypoints": "KJAX-32 SAWGY EXBOX/a12000+/ho",
-            "handoff_controller": "15"
+            "handoff_controller": "15",
+            "waypoint_actions": { "EXBOX": "ho" }
           }
         }
       },

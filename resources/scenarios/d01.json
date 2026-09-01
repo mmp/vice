@@ -108,7 +108,7 @@
           "TEHRU,HBU": {
             "cleared_altitude": 10000,
             "sid": "BAYLR6",
-            "waypoints": "_DEN_26/h185"
+            "initial_heading": 185
           },
           "CHUWY": {
             "cleared_altitude": 23000,
@@ -117,7 +117,7 @@
           "WERNR,CONNR": {
             "cleared_altitude": 10000,
             "sid": "CONNR8",
-            "waypoints": "_DEN_26/h185"
+            "initial_heading": 185
           },
           "VOAXA": {
             "cleared_altitude": 10000,
@@ -180,7 +180,7 @@
           "CHNGY,ZIMMR": {
             "cleared_altitude": 10000,
             "sid": "ZIMMR4",
-            "waypoints": "_DEN_26/h335"
+            "initial_heading": 335
           }
         },
         "25": {
@@ -217,22 +217,22 @@
           "EEONS,WYNDM": {
             "cleared_altitude": 10000,
             "sid": "EEONS8",
-            "waypoints": "_DEN_7/h025"
+            "initial_heading": 25
           },
           "EMMYS,ZIRKL": {
             "cleared_altitude": 10000,
             "sid": "EMMYS8",
-            "waypoints": "_DEN_7/h025"
+            "initial_heading": 25
           },
           "GAETR,DUUZE": {
             "cleared_altitude": 10000,
             "sid": "EPKEE7",
-            "waypoints": "_DEN_7/h105"
+            "initial_heading": 105
           },
           "SHAYK,EXTAN": {
             "cleared_altitude": 10000,
             "sid": "EXTAN7",
-            "waypoints": "_DEN_7/h105"
+            "initial_heading": 105
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 23000,
@@ -271,7 +271,7 @@
           "CHUWY": {
             "cleared_altitude": 10000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_35R/h095"
+            "initial_heading": 95
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
@@ -294,7 +294,7 @@
           "DDRTH": {
             "cleared_altitude": 10000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_35R/h065"
+            "initial_heading": 65
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
@@ -315,7 +315,7 @@
           "JOBBA,SAABR": {
             "cleared_altitude": 10000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_35R/h065"
+            "initial_heading": 65
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
@@ -336,7 +336,7 @@
           "XXWNG": {
             "cleared_altitude": 10000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_35R/h065"
+            "initial_heading": 65
           },
           "CHNGY,ZIMMR": {
             "cleared_altitude": 23000,
@@ -397,22 +397,22 @@
           "JOPLN,VRONI": {
             "cleared_altitude": 10000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_16R/h245"
+            "initial_heading": 245
           },
           "SLEEK": {
             "cleared_altitude": 10000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_16R/h245"
+            "initial_heading": 245
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 10000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_16R/h245"
+            "initial_heading": 245
           },
           "SUDDZ": {
             "cleared_altitude": 10000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_16R/h245"
+            "initial_heading": 245
           },
           "XXWNG": {
             "cleared_altitude": 23000,
@@ -477,22 +477,22 @@
           "JOPLN,VRONI": {
             "cleared_altitude": 10000,
             "sid": "SABTH2",
-            "waypoints": "_DEN_16L/h245"
+            "initial_heading": 245
           },
           "SLEEK": {
             "cleared_altitude": 10000,
             "sid": "SLEEK2",
-            "waypoints": "_DEN_16L/h245"
+            "initial_heading": 245
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 10000,
             "sid": "SMMUR2",
-            "waypoints": "_DEN_16L/h245"
+            "initial_heading": 245
           },
           "SUDDZ": {
             "cleared_altitude": 10000,
             "sid": "SUDDZ1",
-            "waypoints": "_DEN_16L/h245"
+            "initial_heading": 245
           },
           "XXWNG": {
             "cleared_altitude": 23000,
@@ -511,7 +511,7 @@
           "CHUWY": {
             "cleared_altitude": 23000,
             "sid": "CHUWY1",
-            "waypoints": "_DEN_34R/h290"
+            "initial_heading": 290
           },
           "WERNR,CONNR": {
             "cleared_altitude": 23000,
@@ -534,7 +534,7 @@
           "DDRTH": {
             "cleared_altitude": 10000,
             "sid": "DDRTH1",
-            "waypoints": "_DEN_34R/h290"
+            "initial_heading": 290
           },
           "EEONS,WYNDM": {
             "cleared_altitude": 23000,
@@ -555,7 +555,7 @@
           "JOBBA,SAABR": {
             "cleared_altitude": 10000,
             "sid": "HHOTH2",
-            "waypoints": "_DEN_34R/h290"
+            "initial_heading": 290
           },
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
@@ -576,7 +576,7 @@
           "XXWNG": {
             "cleared_altitude": 1000,
             "sid": "XXWNG1",
-            "waypoints": "_DEN_34R/h290"
+            "initial_heading": 290
           },
           "CHNGY,ZIMMR": {
             "cleared_altitude": 23000,
@@ -3210,37 +3210,37 @@
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KAPA-17L/h320 DEN YOKES COPLA"
+            "initial_heading": 320
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KAPA-17L/h320 DEN GLL"
+            "initial_heading": 320
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KAPA-17L/h320 DEN YALES"
+            "initial_heading": 320
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KAPA-17L/h320 DEN YAMMI"
+            "initial_heading": 320
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KAPA-17L/h290 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 290
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KAPA-17L/h290 DEN ADANE DRAKE"
+            "initial_heading": 290
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KAPA-17L/h125 DEN EPKEE WEEDS"
+            "initial_heading": 125
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -3250,149 +3250,149 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KAPA-17L/h125 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 125
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KAPA-17L/h125 DEN EEONS AKO ASHBY"
+            "initial_heading": 125
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KAPA-17L/h320 DEN ZIMMR RLG EKR"
+            "initial_heading": 320
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KAPA-17L/h320 DEN CONNR DBL"
+            "initial_heading": 320
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KAPA-17L/h320 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 320
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KAPA-17L/h320 DEN BAYLR BOBBA"
+            "initial_heading": 320
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KAPA-17L/h125 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 125
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KAPA-17L/h125 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 125
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KAPA-17L/h125 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 125
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KAPA-17L/h125 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 125
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KAPA-17L/h320 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 320
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KAPA-17L/h320 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 320
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KAPA-17L/h320 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 320
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KAPA-17L/h320 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 320
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KAPA-17L/h290 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 290
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KAPA-17L/h290 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 290
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KAPA-17L/h290 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 290
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KAPA-17L/h290 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 290
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KAPA-17L/h320 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 320
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KAPA-17L/h320 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 320
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KAPA-17L/h320 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 320
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KAPA-17L/h320 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 320
           }
         },
         "17L": {
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KAPA-35R/h170 DEN YOKES COPLA"
+            "initial_heading": 170
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KAPA-35R/h170 DEN GLL"
+            "initial_heading": 170
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KAPA-35R/h170 DEN YALES"
+            "initial_heading": 170
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KAPA-35R/h170 DEN YAMMI"
+            "initial_heading": 170
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KAPA-35R/h170 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 170
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KAPA-35R/h170 DEN ADANE DRAKE"
+            "initial_heading": 170
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KAPA-35R/h170 DEN EPKEE WEEDS"
+            "initial_heading": 170
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -3402,48 +3402,52 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KAPA-35R/h170 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 170
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KAPA-35R/h170 DEN EEONS AKO ASHBY"
+            "initial_heading": 170
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KAPA-35R/h170 DEN ZIMMR RLG EKR"
+            "initial_heading": 170
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KAPA-35R/h170 DEN CONNR DBL"
+            "initial_heading": 170
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KAPA-35R/h170 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 170
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KAPA-35R/h170 DEN BAYLR BOBBA"
+            "initial_heading": 170
           },
           "WYNDM,ZIRKL,SHAYK,DUUZE": {
             "cleared_altitude": 8000,
-            "sid": "ECHOO1"
+            "sid": "ECHOO1",
+            "initial_heading": 170
           },
           "CHUWY,JOBBA,SAABR,XXWNG,DDRTH": {
             "cleared_altitude": 8000,
-            "sid": "MRSHH2"
+            "sid": "MRSHH2",
+            "initial_heading": 170
           },
           "SLEEK,VRONI,JOPLN,SUDDZ,DAAYE": {
             "cleared_altitude": 8000,
-            "sid": "SKYEE1"
+            "sid": "SKYEE1",
+            "initial_heading": 170
           },
           "TEHRU,WERNR,VOAXA,CHNGY": {
             "cleared_altitude": 8000,
-            "sid": "WNGSS1"
+            "sid": "WNGSS1",
+            "initial_heading": 170
           }
         }
       },
@@ -3623,37 +3627,37 @@
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBJC-12L/h010 DEN YOKES COPLA"
+            "initial_heading": 10
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBJC-12L/h010 DEN GLL"
+            "initial_heading": 10
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBJC-12L/h010 DEN YALES"
+            "initial_heading": 10
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBJC-12L/h010 DEN YAMMI"
+            "initial_heading": 10
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KBJC-12L/h010 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 10
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KBJC-12L/h010 DEN ADANE DRAKE"
+            "initial_heading": 10
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBJC-12L/h010 DEN EPKEE WEEDS"
+            "initial_heading": 10
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -3663,149 +3667,149 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBJC-12L/h010 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 10
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBJC-12L/h010 DEN EEONS AKO ASHBY"
+            "initial_heading": 10
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBJC-12L/h010 DEN ZIMMR RLG EKR"
+            "initial_heading": 10
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBJC-12L/h010 DEN CONNR DBL"
+            "initial_heading": 10
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBJC-12L/h010 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 10
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBJC-12L/h010 DEN BAYLR BOBBA"
+            "initial_heading": 10
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KBJC-12L/h010 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 10
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KBJC-12L/h010 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 10
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KBJC-12L/h010 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 10
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KBJC-12L/h010 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 10
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KBJC-12L/h010 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 10
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KBJC-12L/h010 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 10
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KBJC-12L/h010 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 10
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KBJC-12L/h010 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 10
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KBJC-12L/h010 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 10
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KBJC-12L/h010 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 10
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KBJC-12L/h010 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 10
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KBJC-12L/h010 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 10
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KBJC-12L/h010 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 10
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KBJC-12L/h010 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 10
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KBJC-12L/h010 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 10
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KBJC-12L/h010 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 10
           }
         },
         "12L": {
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBJC-30R/h010 DEN YOKES COPLA"
+            "initial_heading": 10
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBJC-30R/h010 DEN GLL"
+            "initial_heading": 10
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBJC-30R/h010 DEN YALES"
+            "initial_heading": 10
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBJC-30R/h010 DEN YAMMI"
+            "initial_heading": 10
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KBJC-30R/h010 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 10
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KBJC-30R/h010 DEN ADANE DRAKE"
+            "initial_heading": 10
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBJC-30R/h010 DEN EPKEE WEEDS"
+            "initial_heading": 10
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -3815,112 +3819,112 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBJC-30R/h010 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 10
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBJC-30R/h010 DEN EEONS AKO ASHBY"
+            "initial_heading": 10
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBJC-30R/h010 DEN ZIMMR RLG EKR"
+            "initial_heading": 10
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBJC-30R/h010 DEN CONNR DBL"
+            "initial_heading": 10
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBJC-30R/h010 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 10
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBJC-30R/h010 DEN BAYLR BOBBA"
+            "initial_heading": 10
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KBJC-30R/h010 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 10
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KBJC-30R/h010 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 10
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KBJC-30R/h010 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 10
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KBJC-30R/h010 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 10
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KBJC-30R/h010 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 10
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KBJC-30R/h010 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 10
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KBJC-30R/h010 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 10
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KBJC-30R/h010 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 10
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KBJC-30R/h010 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 10
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KBJC-30R/h010 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 10
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KBJC-30R/h010 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 10
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KBJC-30R/h010 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 10
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KBJC-30R/h010 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 10
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KBJC-30R/h010 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 10
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KBJC-30R/h010 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 10
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KBJC-30R/h010 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 10
           }
         }
       },
@@ -4048,37 +4052,37 @@
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBKF-32/h140 DEN YOKES COPLA"
+            "initial_heading": 140
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBKF-32/h140 DEN GLL"
+            "initial_heading": 140
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBKF-32/h140 DEN YALES"
+            "initial_heading": 140
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBKF-32/h140 DEN YAMMI"
+            "initial_heading": 140
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KBKF-32/h140 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 140
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KBKF-32/h140 DEN ADANE DRAKE"
+            "initial_heading": 140
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBKF-32/h140 DEN EPKEE WEEDS"
+            "initial_heading": 140
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -4088,32 +4092,32 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBKF-32/h140 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 140
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBKF-32/h140 DEN EEONS AKO ASHBY"
+            "initial_heading": 140
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBKF-32/h140 DEN ZIMMR RLG EKR"
+            "initial_heading": 140
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBKF-32/h140 DEN CONNR DBL"
+            "initial_heading": 140
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBKF-32/h140 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 140
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBKF-32/h140 DEN BAYLR BOBBA"
+            "initial_heading": 140
           },
           "WYNDM": {
             "cleared_altitude": 8000,
@@ -4200,37 +4204,37 @@
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBKF-14/h320 DEN YOKES COPLA"
+            "initial_heading": 320
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBKF-14/h320 DEN GLL"
+            "initial_heading": 320
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBKF-14/h320 DEN YALES"
+            "initial_heading": 320
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KBKF-14/h320 DEN YAMMI"
+            "initial_heading": 320
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KBKF-14/h320 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 320
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KBKF-14/h320 DEN ADANE DRAKE"
+            "initial_heading": 320
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBKF-14/h320 DEN EPKEE WEEDS"
+            "initial_heading": 320
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -4240,32 +4244,32 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBKF-14/h320 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 320
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KBKF-14/h320 DEN EEONS AKO ASHBY"
+            "initial_heading": 320
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBKF-14/h320 DEN ZIMMR RLG EKR"
+            "initial_heading": 320
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBKF-14/h320 DEN CONNR DBL"
+            "initial_heading": 320
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBKF-14/h320 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 320
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KBKF-14/h320 DEN BAYLR BOBBA"
+            "initial_heading": 320
           },
           "WYNDM": {
             "cleared_altitude": 8000,
@@ -4478,37 +4482,37 @@
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-26/h080 DEN YOKES COPLA"
+            "initial_heading": 80
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-26/h080 DEN GLL"
+            "initial_heading": 80
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-26/h080 DEN YALES"
+            "initial_heading": 80
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-26/h080 DEN YAMMI"
+            "initial_heading": 80
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KCFO-26/h080 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 80
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KCFO-26/h080 DEN ADANE DRAKE"
+            "initial_heading": 80
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-26/h080 DEN EPKEE WEEDS"
+            "initial_heading": 80
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -4518,149 +4522,149 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-26/h080 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 80
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-26/h080 DEN EEONS AKO ASHBY"
+            "initial_heading": 80
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-26/h080 DEN ZIMMR RLG EKR"
+            "initial_heading": 80
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-26/h080 DEN CONNR DBL"
+            "initial_heading": 80
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-26/h080 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 80
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-26/h080 DEN BAYLR BOBBA"
+            "initial_heading": 80
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-26/h080 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 80
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-26/h080 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 80
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-26/h080 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 80
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-26/h080 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 80
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-26/h080 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 80
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-26/h080 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 80
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-26/h080 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 80
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-26/h080 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 80
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-26/h080 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 80
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-26/h080 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 80
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-26/h080 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 80
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-26/h080 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 80
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-26/h080 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 80
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-26/h080 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 80
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-26/h080 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 80
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-26/h080 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 80
           }
         },
         "17": {
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-35/h170 DEN YOKES COPLA"
+            "initial_heading": 170
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-35/h170 DEN GLL"
+            "initial_heading": 170
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-35/h170 DEN YALES"
+            "initial_heading": 170
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-35/h170 DEN YAMMI"
+            "initial_heading": 170
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KCFO-35/h170 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 170
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KCFO-35/h170 DEN ADANE DRAKE"
+            "initial_heading": 170
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-35/h170 DEN EPKEE WEEDS"
+            "initial_heading": 170
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -4670,149 +4674,149 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-35/h170 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 170
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-35/h170 DEN EEONS AKO ASHBY"
+            "initial_heading": 170
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-35/h170 DEN ZIMMR RLG EKR"
+            "initial_heading": 170
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-35/h170 DEN CONNR DBL"
+            "initial_heading": 170
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-35/h170 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 170
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-35/h170 DEN BAYLR BOBBA"
+            "initial_heading": 170
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-35/h170 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 170
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-35/h170 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 170
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-35/h170 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 170
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-35/h170 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 170
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-35/h170 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 170
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-35/h170 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 170
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-35/h170 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 170
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-35/h170 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 170
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-35/h170 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 170
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-35/h170 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 170
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-35/h170 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 170
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-35/h170 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 170
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-35/h170 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 170
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-35/h170 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 170
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-35/h170 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 170
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-35/h170 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 170
           }
         },
         "26": {
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-8/h260 DEN YOKES COPLA"
+            "initial_heading": 260
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-8/h260 DEN GLL"
+            "initial_heading": 260
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-8/h260 DEN YALES"
+            "initial_heading": 260
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-8/h260 DEN YAMMI"
+            "initial_heading": 260
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KCFO-8/h260 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 260
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KCFO-8/h260 DEN ADANE DRAKE"
+            "initial_heading": 260
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-8/h260 DEN EPKEE WEEDS"
+            "initial_heading": 260
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -4822,149 +4826,149 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-8/h260 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 260
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-8/h260 DEN EEONS AKO ASHBY"
+            "initial_heading": 260
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-8/h260 DEN ZIMMR RLG EKR"
+            "initial_heading": 260
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-8/h260 DEN CONNR DBL"
+            "initial_heading": 260
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-8/h260 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 260
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-8/h260 DEN BAYLR BOBBA"
+            "initial_heading": 260
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-8/h260 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 260
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-8/h260 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 260
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-8/h260 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 260
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-8/h260 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 260
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-8/h260 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 260
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-8/h260 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 260
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-8/h260 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 260
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-8/h260 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 260
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-8/h260 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 260
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-8/h260 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 260
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-8/h260 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 260
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-8/h260 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 260
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-8/h260 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 260
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-8/h260 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 260
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-8/h260 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 260
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-8/h260 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 260
           }
         },
         "35": {
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-17/h350 DEN YOKES COPLA"
+            "initial_heading": 350
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-17/h350 DEN GLL"
+            "initial_heading": 350
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-17/h350 DEN YALES"
+            "initial_heading": 350
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KCFO-17/h350 DEN YAMMI"
+            "initial_heading": 350
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KCFO-17/h350 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 350
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KCFO-17/h350 DEN ADANE DRAKE"
+            "initial_heading": 350
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-17/h350 DEN EPKEE WEEDS"
+            "initial_heading": 350
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -4974,112 +4978,112 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-17/h350 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 350
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KCFO-17/h350 DEN EEONS AKO ASHBY"
+            "initial_heading": 350
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-17/h350 DEN ZIMMR RLG EKR"
+            "initial_heading": 350
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-17/h350 DEN CONNR DBL"
+            "initial_heading": 350
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-17/h350 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 350
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KCFO-17/h350 DEN BAYLR BOBBA"
+            "initial_heading": 350
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-17/h350 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 350
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-17/h350 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 350
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-17/h350 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 350
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KCFO-17/h350 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 350
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-17/h350 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 350
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-17/h350 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 350
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-17/h350 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 350
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KCFO-17/h350 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 350
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-17/h350 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 350
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-17/h350 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 350
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-17/h350 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 350
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KCFO-17/h350 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 350
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-17/h350 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 350
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-17/h350 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 350
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-17/h350 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 350
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KCFO-17/h350 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 350
           }
         }
       },
@@ -5197,91 +5201,99 @@
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KFNL-33/h150 DEN YOKES COPLA"
+            "initial_heading": 150
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KFNL-33/h150 DEN GLL"
+            "initial_heading": 150
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KFNL-33/h150 DEN YALES"
+            "initial_heading": 150
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KFNL-33/h150 DEN YAMMI"
+            "initial_heading": 150
           },
           "ALS,PUB": {
             "cleared_altitude": 8000,
-            "sid": "PIKES3"
+            "sid": "PIKES3",
+            "initial_heading": 150
           },
           "GCK,MCK,HCT": {
             "cleared_altitude": 8000,
-            "sid": "PLAIN2"
+            "sid": "PLAIN2",
+            "initial_heading": 150
           },
           "GLD": {
             "cleared_altitude": 8000,
-            "sid": "PLAIN2.CABET"
+            "sid": "PLAIN2.CABET",
+            "initial_heading": 150
           },
           "EKR,DBL,DVC,HBU": {
             "cleared_altitude": 8000,
-            "sid": "ROCKI7"
+            "sid": "ROCKI7",
+            "initial_heading": 150
           },
           "WYNDM,ZIRKL,SHAYK,DUUZE": {
             "cleared_altitude": 8000,
-            "sid": "ECHOO1"
+            "sid": "ECHOO1",
+            "initial_heading": 150
           },
           "CHUWY,JOBBA,SAABR,XXWNG,DDRTH": {
             "cleared_altitude": 8000,
-            "sid": "MRSHH2"
+            "sid": "MRSHH2",
+            "initial_heading": 150
           },
           "SLEEK,VRONI,JOPLN,SUDDZ,DAAYE": {
             "cleared_altitude": 8000,
-            "sid": "SKYEE1"
+            "sid": "SKYEE1",
+            "initial_heading": 150
           },
           "TEHRU,WERNR,VOAXA,CHNGY": {
             "cleared_altitude": 8000,
-            "sid": "WNGSS1"
+            "sid": "WNGSS1",
+            "initial_heading": 150
           }
         },
         "33": {
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KFNL-15/h060 DEN YOKES COPLA"
+            "initial_heading": 60
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KFNL-15/h060 DEN GLL"
+            "initial_heading": 60
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KFNL-15/h060 DEN YALES"
+            "initial_heading": 60
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KFNL-15/h060 DEN YAMMI"
+            "initial_heading": 60
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KFNL-15/h060 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 60
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KFNL-15/h060 DEN ADANE DRAKE"
+            "initial_heading": 60
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KFNL-15/h060 DEN EPKEE WEEDS"
+            "initial_heading": 60
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -5291,112 +5303,112 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KFNL-15/h060 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 60
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KFNL-15/h060 DEN EEONS AKO ASHBY"
+            "initial_heading": 60
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KFNL-15/h060 DEN ZIMMR RLG EKR"
+            "initial_heading": 60
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KFNL-15/h060 DEN CONNR DBL"
+            "initial_heading": 60
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KFNL-15/h060 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 60
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KFNL-15/h060 DEN BAYLR BOBBA"
+            "initial_heading": 60
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KFNL-15/h060 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 60
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KFNL-15/h060 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 60
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KFNL-15/h060 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 60
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KFNL-15/h060 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 60
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KFNL-15/h060 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 60
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KFNL-15/h060 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 60
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KFNL-15/h060 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 60
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KFNL-15/h060 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 60
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KFNL-15/h060 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 60
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KFNL-15/h060 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 60
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KFNL-15/h060 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 60
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KFNL-15/h060 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 60
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KFNL-15/h060 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 60
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KFNL-15/h060 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 60
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KFNL-15/h060 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 60
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KFNL-15/h060 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 60
           }
         }
       },
@@ -5520,37 +5532,37 @@
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KGXY-35/h170 DEN YOKES COPLA"
+            "initial_heading": 170
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KGXY-35/h170 DEN GLL"
+            "initial_heading": 170
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KGXY-35/h170 DEN YALES"
+            "initial_heading": 170
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KGXY-35/h170 DEN YAMMI"
+            "initial_heading": 170
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KGXY-35/h170 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 170
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KGXY-35/h170 DEN ADANE DRAKE"
+            "initial_heading": 170
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KGXY-35/h170 DEN EPKEE WEEDS"
+            "initial_heading": 170
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -5560,149 +5572,149 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KGXY-35/h170 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 170
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KGXY-35/h170 DEN EEONS AKO ASHBY"
+            "initial_heading": 170
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KGXY-35/h170 DEN ZIMMR RLG EKR"
+            "initial_heading": 170
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KGXY-35/h170 DEN CONNR DBL"
+            "initial_heading": 170
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KGXY-35/h170 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 170
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KGXY-35/h170 DEN BAYLR BOBBA"
+            "initial_heading": 170
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KGXY-35/h170 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 170
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KGXY-35/h170 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 170
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KGXY-35/h170 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 170
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KGXY-35/h170 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 170
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KGXY-35/h170 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 170
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KGXY-35/h170 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 170
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KGXY-35/h170 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 170
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KGXY-35/h170 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 170
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KGXY-35/h170 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 170
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KGXY-35/h170 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 170
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KGXY-35/h170 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 170
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KGXY-35/h170 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 170
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KGXY-35/h170 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 170
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KGXY-35/h170 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 170
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KGXY-35/h170 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 170
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KGXY-35/h170 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 170
           }
         },
         "35": {
           "HANKI,BFF": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KGXY-17/h350 DEN YOKES COPLA"
+            "initial_heading": 350
           },
           "RAP": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KGXY-17/h350 DEN GLL"
+            "initial_heading": 350
           },
           "CYS": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KGXY-17/h350 DEN YALES"
+            "initial_heading": 350
           },
           "MBW,LAR": {
             "cleared_altitude": 8000,
             "sid": "YELLO5",
-            "waypoints": "KGXY-17/h350 DEN YAMMI"
+            "initial_heading": 350
           },
           "ALS": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KGXY-17/h350 DEN SOLAR TEHEV BINKE"
+            "initial_heading": 350
           },
           "PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3",
-            "waypoints": "KGXY-17/h350 DEN ADANE DRAKE"
+            "initial_heading": 350
           },
           "GCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KGXY-17/h350 DEN EPKEE WEEDS"
+            "initial_heading": 350
           },
           "GLD": {
             "cleared_altitude": 8000,
@@ -5712,112 +5724,112 @@
           "MCK": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KGXY-17/h350 DEN EMMYS TEKMY BELKE"
+            "initial_heading": 350
           },
           "HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2",
-            "waypoints": "KGXY-17/h350 DEN EEONS AKO ASHBY"
+            "initial_heading": 350
           },
           "EKR": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KGXY-17/h350 DEN ZIMMR RLG EKR"
+            "initial_heading": 350
           },
           "DBL": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KGXY-17/h350 DEN CONNR DBL"
+            "initial_heading": 350
           },
           "DVC": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KGXY-17/h350 DEN BAYLR BOBBA TEHRU MTJ"
+            "initial_heading": 350
           },
           "HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7",
-            "waypoints": "KGXY-17/h350 DEN BAYLR BOBBA"
+            "initial_heading": 350
           },
           "WYNDM": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KGXY-17/h350 BAPME/a8000 ECHOO EEONS"
+            "initial_heading": 350
           },
           "ZIRKL": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KGXY-17/h350 BAPME/a8000 ECHOO EMMYS"
+            "initial_heading": 350
           },
           "SHAYK": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KGXY-17/h350 BAPME/a8000 ECHOO EXTAN"
+            "initial_heading": 350
           },
           "DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1",
-            "waypoints": "KGXY-17/h350 BAPME/a8000 ECHOO EPKEE"
+            "initial_heading": 350
           },
           "CHUWY": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KGXY-17/h350 KRTMN/a8000 MRSHH YOKES LNGWD"
+            "initial_heading": 350
           },
           "JOBBA,SAABR": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KGXY-17/h350 KRTMN/a8000 MRSHH BRYCC HHOTH"
+            "initial_heading": 350
           },
           "XXWNG": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KGXY-17/h350 KRTMN/a8000 MRSHH RIKKK"
+            "initial_heading": 350
           },
           "DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2",
-            "waypoints": "KGXY-17/h350 KRTMN/a8000 MRSHH TIMEH YAMMI"
+            "initial_heading": 350
           },
           "SLEEK": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KGXY-17/h350 SATLE/a8000 SKYEE STAKR AZARO"
+            "initial_heading": 350
           },
           "VRONI,JOPLN": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KGXY-17/h350 SATLE/a8000 SKYEE SHOJO SABTH"
+            "initial_heading": 350
           },
           "SUDDZ": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KGXY-17/h350 SATLE/a8000 SKYEE SCAGS/a14000+ FRNKE/a23000+"
+            "initial_heading": 350
           },
           "DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1",
-            "waypoints": "KGXY-17/h350 SATLE/a8000 SKYEE SOLAR/a14200+ SMMUR/a17000+"
+            "initial_heading": 350
           },
           "TEHRU": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KGXY-17/h350 BUMPZ/a8000 WNGSS/a12000+ BUBLS/a15000+ BRANF/a16000+ BAYLR/a17000+ BOBBA"
+            "initial_heading": 350
           },
           "WERNR": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KGXY-17/h350 BUMPZ/a8000 WNGSS/a12000+ COUSN/a15000+ CONNR/a17000+"
+            "initial_heading": 350
           },
           "VOAXA": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KGXY-17/h350 BUMPZ/a8000 WNGSS/a12000+ KINLE/a15000+ COORZ/a17000+"
+            "initial_heading": 350
           },
           "CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1",
-            "waypoints": "KGXY-17/h350 BUMPZ/a8000 WNGSS/a12000+ ZENLO/a15000+ ZIMMR/a17000+"
+            "initial_heading": 350
           }
         }
       },

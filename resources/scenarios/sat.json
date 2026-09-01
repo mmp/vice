@@ -34,17 +34,17 @@
           "BRENI": {
             "cleared_altitude": 5000,
             "sid": "SLENA2",
-            "waypoints": "_SAT_13R/h128 YENNS/a5000 LILJO SLENA BRENI"
+            "initial_heading": 128
           },
           "ZANNI": {
             "cleared_altitude": 5000,
             "sid": "TJANO2",
-            "waypoints": "_SAT_13R/h128 LVACA/a5000 TJANO TEEPY ZANNI"
+            "initial_heading": 128
           },
           "WHAEL": {
             "cleared_altitude": 5000,
             "sid": "SNIDR2",
-            "waypoints": "_SAT_13R/h128 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+            "initial_heading": 128
           },
           "CRP": {
             "cleared_altitude": 5000,
@@ -54,39 +54,39 @@
           "LRD": {
             "cleared_altitude": 5000,
             "sid": "BOWIE8",
-            "waypoints": "_SAT_13R/h128 SAT MILET LRD"
+            "initial_heading": 128
           },
           "AGJ": {
             "cleared_altitude": 5000,
             "sid": "ALAMO5",
-            "waypoints": "_SAT_13R/h128 SAT GOBBY AGJ"
+            "initial_heading": 128
           },
           "KAHAN": {
             "cleared_altitude": 5000,
             "sid": "TJANO2",
-            "waypoints": "_SAT_13R/h128 LVACA/a5000 TJANO TEEPY KAHAN"
+            "initial_heading": 128
           }
         },
         "4": {
           "WHAEL": {
             "cleared_altitude": 5000,
             "sid": "SNIDR2",
-            "waypoints": "_SAT_04/h037 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+            "initial_heading": 37
           },
           "KLNGR": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_SAT_04/h037 SITHH/a5000 YODUH KLNGR"
+            "initial_heading": 37
           },
           "ALISS": {
             "cleared_altitude": 5000,
             "sid": "ALISS7",
-            "waypoints": "_SAT_04/h037 TREVA/a5000 TATAR ALISS"
+            "initial_heading": 37
           },
           "YODUH": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_SAT_04/h037 SITHH/a5000 YODUH"
+            "initial_heading": 37
           }
         },
         "31L": {

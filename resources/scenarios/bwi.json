@@ -161,7 +161,7 @@
             "handoff_controller": "1G",
             "departure_controller": "1K",
             "sid": "DOCTR5",
-            "waypoints": "FIMBI/a1500+/s230- MOTBE GDYUP/ho HMBGR DOCTR/a5000+ DQO"
+            "waypoint_actions": { "GDYUP": "ho" }
           }
         },
         "1": {
@@ -184,7 +184,7 @@
             "handoff_controller": "1G",
             "departure_controller": "1K",
             "sid": "DOCTR5",
-            "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220- BEBLE COVTO ALEEX DOGUE/a4000+/s250-/ho RIISE DOCTR/a5000+ DQO"
+            "waypoint_actions": { "DOGUE": "ho" }
           }
         }
       },

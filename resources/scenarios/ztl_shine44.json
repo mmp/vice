@@ -20,40 +20,40 @@
           "CUBIM": {
             "cleared_altitude": 16000,
             "sid": "JOJJO7",
-            "waypoints": "WAYDS/ho LONEE JOJJO WLLGO BENBY TIELR CUBIM/delete",
-            "handoff_controller": "44"
+            "handoff_controller": "44",
+            "waypoint_actions": { "WAYDS": "ho" }
           },
           "DOOGE": {
             "cleared_altitude": 16000,
             "sid": "JOJJO7",
-            "waypoints": "WAYDS/ho LONEE JOJJO MTCHL DOOGE/delete",
-            "handoff_controller": "44"
+            "handoff_controller": "44",
+            "waypoint_actions": { "WAYDS": "ho" }
           },
           "NOONN": {
             "cleared_altitude": 16000,
             "sid": "JOJJO7",
-            "waypoints": "WAYDS/ho LONEE JOJJO WLLGO BENBY SLEPP/delete",
-            "handoff_controller": "44"
+            "handoff_controller": "44",
+            "waypoint_actions": { "WAYDS": "ho" }
           }
         },
         "1R": {
           "CUBIM": {
             "cleared_altitude": 16000,
             "sid": "JOJJO7",
-            "waypoints": "WAYDS/ho LONEE JOJJO WLLGO BENBY TIELR CUBIM/delete",
-            "handoff_controller": "44"
+            "handoff_controller": "44",
+            "waypoint_actions": { "WAYDS": "ho" }
           },
           "DOOGE": {
             "cleared_altitude": 16000,
             "sid": "JOJJO7",
-            "waypoints": "WAYDS/ho LONEE JOJJO MTCHL DOOGE/delete",
-            "handoff_controller": "44"
+            "handoff_controller": "44",
+            "waypoint_actions": { "WAYDS": "ho" }
           },
           "NOONN": {
             "cleared_altitude": 16000,
             "sid": "JOJJO7",
-            "waypoints": "WAYDS/ho LONEE JOJJO WLLGO BENBY SLEPP/delete",
-            "handoff_controller": "44"
+            "handoff_controller": "44",
+            "waypoint_actions": { "WAYDS": "ho" }
           }
         }
       },

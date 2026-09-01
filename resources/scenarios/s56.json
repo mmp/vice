@@ -46,78 +46,80 @@
           "TWF": {
             "assigned_altitude": 9000,
             "sid": "CGULL1",
-            "waypoints": "KSLC-16R/h310 CORVR/a13000+ CGULL/a15000+ MOFER SCOVL DRYAD",
-            "description": "CGULL1"
+            "description": "CGULL1",
+            "initial_heading": 310
           },
           "MLF,WINEN,KROST": {
             "assigned_altitude": 9000,
             "sid": "ARCHZ1",
-            "waypoints": "KSLC-16R/h260 SCANT/a10000+ ARCHZ/a13000+ TRILA/a19000+",
-            "description": "ARCHZ1"
+            "description": "ARCHZ1",
+            "initial_heading": 260
           },
           "BAM,MVA": {
             "assigned_altitude": 9000,
             "sid": "DEZRT2",
-            "waypoints": "KSLC-16R/h280 DURCH/a12000+ BONNE/a14000+ DEZRT/a15000+",
-            "description": "DEZRT2"
+            "description": "DEZRT2",
+            "initial_heading": 280
           }
         },
         "34R": {
           "HOLTR,OCS,PERTY,EKR,KIERA": {
             "assigned_altitude": 9000,
             "sid": "RUGGD3",
-            "description": "RUGGD3"
+            "description": "RUGGD3",
+            "initial_heading": 340
           }
         },
         "16L": {
           "KIMMR,EYELO,KROST,BCE,EHK": {
             "assigned_altitude": 9000,
             "sid": "ZIONZ1",
-            "description": "ZIONZ1"
+            "description": "ZIONZ1",
+            "initial_heading": 160
           }
         },
         "16R": {
           "TWF": {
             "assigned_altitude": 9000,
             "sid": "CGULL1",
-            "waypoints": "KSLC-34L/h295 CORVR/a13000+ CGULL/a15000+ MOFER SCOVL DRYAD",
-            "description": "CGULL1"
+            "description": "CGULL1",
+            "initial_heading": 295
           },
           "HOLTR": {
             "assigned_altitude": 9000,
             "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ KLOUD SAWGI",
-            "description": "RUGGD3"
+            "description": "RUGGD3",
+            "initial_heading": 295
           },
           "OCS": {
             "assigned_altitude": 9000,
             "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ SPINE SKIII POPLE",
-            "description": "RUGGD3"
+            "description": "RUGGD3",
+            "initial_heading": 295
           },
           "PERTY": {
             "assigned_altitude": 9000,
             "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ HERTS PERTY",
-            "description": "RUGGD3"
+            "description": "RUGGD3",
+            "initial_heading": 295
           },
           "EKR": {
             "assigned_altitude": 9000,
             "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ UPJAR BORZI",
-            "description": "RUGGD3"
+            "description": "RUGGD3",
+            "initial_heading": 295
           },
           "KIERA": {
             "assigned_altitude": 9000,
             "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ LOFOG LEGBE",
-            "description": "RUGGD3"
+            "description": "RUGGD3",
+            "initial_heading": 295
           },
           "DEZRT": {
             "assigned_altitude": 9000,
             "sid": "DEZRT2",
-            "waypoints": "KSLC-34L/h280 DURCH/a12000+ BONNE/a14000+ DEZRT/a15000+",
-            "description": "DEZRT2"
+            "description": "DEZRT2",
+            "initial_heading": 280
           }
         }
       },

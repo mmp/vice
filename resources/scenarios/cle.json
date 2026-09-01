@@ -527,22 +527,22 @@
           "DAIFE": {
             "cleared_altitude": 3000,
             "sid": "GTLKE5",
-            "waypoints": "_CGF_24/h180 AYYLE BRNIN GTLKE ELEOT NOLNN"
+            "initial_heading": 180
           },
           "YABRO": {
             "cleared_altitude": 3000,
             "sid": "GTLKE5",
-            "waypoints": "_CGF_24/h180 AYYLE BRNIN GTLKE ELEOT NESSS"
+            "initial_heading": 180
           },
           "ALPHE": {
             "cleared_altitude": 3000,
             "sid": "GTLKE5",
-            "waypoints": "_CGF_24/h180 AYYLE BRNIN GTLKE DORRT"
+            "initial_heading": 180
           },
           "BAGEL": {
             "cleared_altitude": 3000,
             "sid": "GTLKE5",
-            "waypoints": "_CGF_24/h180 AYYLE BRNIN GTLKE ELEOT MUNDR"
+            "initial_heading": 180
           },
           "MYCAR": {
             "cleared_altitude": 3000,
@@ -565,22 +565,22 @@
           "DAIFE": {
             "cleared_altitude": 3000,
             "sid": "GTLKE5",
-            "waypoints": "_CGF_6/h180 AYYLE BRNIN GTLKE ELEOT NOLNN"
+            "initial_heading": 180
           },
           "YABRO": {
             "cleared_altitude": 3000,
             "sid": "GTLKE5",
-            "waypoints": "_CGF_6/h180 AYYLE BRNIN GTLKE ELEOT NESSS"
+            "initial_heading": 180
           },
           "ALPHE": {
             "cleared_altitude": 3000,
             "sid": "GTLKE5",
-            "waypoints": "_CGF_6/h180 AYYLE BRNIN GTLKE DORRT"
+            "initial_heading": 180
           },
           "BAGEL": {
             "cleared_altitude": 3000,
             "sid": "GTLKE5",
-            "waypoints": "_CGF_6/h180 AYYLE BRNIN GTLKE ELEOT MUNDR"
+            "initial_heading": 180
           },
           "MYCAR": {
             "cleared_altitude": 3000,

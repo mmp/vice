@@ -2064,14 +2064,14 @@
           "GOINS,RQZ,MUPIE": {
             "cleared_altitude": 2000,
             "sid": null,
-            "waypoints": "KOLV/h360"
+            "waypoints": "KOLV-18/h360"
           }
         },
         "18": {
           "GOINS,RQZ,MUPIE": {
             "cleared_altitude": 2000,
             "sid": null,
-            "waypoints": "KOLV/h180"
+            "waypoints": "KOLV-36/h180"
           }
         }
       },

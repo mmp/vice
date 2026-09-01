@@ -22,92 +22,96 @@
           "RZS.E": {
             "cleared_altitude": 3000,
             "sid": "VTU8",
-            "waypoints": "KLAX-25R/h090 VTU/ho RZS",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "initial_heading": 90,
+            "waypoint_actions": { "VTU": "ho" }
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3",
-            "waypoints": "KLAX-25R/h090 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "initial_heading": 90,
+            "waypoint_actions": { "TRTON": "ho" }
           }
         },
         "7R": {
           "RZS.E": {
             "cleared_altitude": 3000,
             "sid": "VTU8",
-            "waypoints": "KLAX-25L/h090 VTU/ho RZS",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "initial_heading": 90,
+            "waypoint_actions": { "VTU": "ho" }
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3",
-            "waypoints": "KLAX-25L/h090 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "initial_heading": 90,
+            "waypoint_actions": { "TRTON": "ho" }
           }
         },
         "6R": {
           "FICKY.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3",
-            "waypoints": "KLAX-24L/h071 TRTON/a8000+/ho DARRK/a12000- BNANO DONKS",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "TRTON": "ho" }
           },
           "RZS.E": {
             "cleared_altitude": 3000,
             "sid": "VTU8",
-            "waypoints": "KLAX-24L/h071 VTU/ho RZS",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "VTU": "ho" }
           },
           "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3",
-            "waypoints": "KLAX-24L/h071 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "TRTON": "ho" }
           }
         },
         "25R": {
           "SCTRR": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR BNANO DONKS FICKY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "LAS": {
             "cleared_altitude": 15000,
@@ -124,22 +128,22 @@
           "CLEEE,CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE/ho21 HOLTZ DOTSS/a15000+"
+            "waypoint_actions": { "PEVEE": "ho21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
             "sid": "LADYJ4",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000+ LADYJ/a8000 RUGBY/ho04 OROSZ"
+            "waypoint_actions": { "RUGBY": "ho04" }
           },
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/po18 ZOOMM/a16000+/ho38 SEBBY PLAYY ARCUS YELAH WYZEE"
+            "waypoint_actions": { "CAHIL": "po18", "PEVEE": "ho21", "ZOOMM": "ho38" }
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE/ho21 TANNN/a15000+ NNICE PNDAH/a20000+"
+            "waypoint_actions": { "PEVEE": "ho21" }
           }
         },
         "25L": {
@@ -158,64 +162,64 @@
           "SCTRR": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR BNANO DONKS FICKY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "MKGEE": "ho" }
           },
           "CLEEE,CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/ho21 HOLTZ DOTSS/a15000+"
+            "waypoint_actions": { "PEVEE": "ho21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
             "sid": "LADYJ4",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY/ho04 OROSZ"
+            "waypoint_actions": { "RUGBY": "ho04" }
           },
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/po18 ZOOMM/a16000+/ho38 SEBBY PLAYY ARCUS YELAH WYZEE"
+            "waypoint_actions": { "CAHIL": "po18", "PEVEE": "ho21", "ZOOMM": "ho38" }
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/ho21 TANNN/a15000+ NNICE PNDAH/a20000+"
+            "waypoint_actions": { "PEVEE": "ho21" }
           }
         },
         "24L": {
@@ -228,59 +232,59 @@
           "SCTRR": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "NAANC": "ho" }
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "NAANC": "ho" }
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "NAANC": "ho" }
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "NAANC": "ho" }
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "NAANC": "ho" }
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR BNANO DONKS FICKY",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "NAANC": "ho" }
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-            "handoff_controller": "14"
+            "handoff_controller": "14",
+            "waypoint_actions": { "NAANC": "ho" }
           },
           "CLEEE,CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE/ho21 HOLTZ DOTSS/a15000+"
+            "waypoint_actions": { "PEVEE": "ho21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
             "sid": "LADYJ4",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- EYENO MLIBU/a7000 LADYJ/a8000 RUGBY/ho04 OROSZ"
+            "waypoint_actions": { "RUGBY": "ho04" }
           },
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE/ho21 HOLTZ OSHNN CAHIL/a15000+/po18 ZOOMM/a16000+/ho38 SEBBY PLAYY ARCUS YELAH WYZEE"
+            "waypoint_actions": { "CAHIL": "po18", "PEVEE": "ho21", "ZOOMM": "ho38" }
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,
@@ -1440,22 +1444,22 @@
           "AVRRY.S": {
             "assigned_altitude": 5000,
             "sid": "STAYY4",
-            "waypoints": "BIKKL/a556+ HEFAY PAPAU/a5000-/s220 LRREN/a5000- HTCHR TANGL SHIRR/a7000+ DANAH/ho12 STAYY/a9000+ FNCHH TBERD PEELR MTBAL AVRRY"
+            "waypoint_actions": { "DANAH": "ho12" }
           },
           "CNERY.S": {
             "assigned_altitude": 5000,
             "sid": "STAYY4",
-            "waypoints": "BIKKL/a556+ HEFAY PAPAU/a5000-/s220 LRREN/a5000- HTCHR TANGL SHIRR/a7000+ DANAH/ho12 STAYY/a9000+ WIILD FLWRZ BLCKD CSTWY CNERY"
+            "waypoint_actions": { "DANAH": "ho12" }
           },
           "TCATE.S": {
             "assigned_altitude": 5000,
             "sid": "STAYY4",
-            "waypoints": "BIKKL/a556+ HEFAY PAPAU/a5000-/s220 LRREN/a5000- HTCHR TANGL SHIRR/a7000+ DANAH/ho12 STAYY/a9000+ WIILD TCATE"
+            "waypoint_actions": { "DANAH": "ho12" }
           },
           "OTAYY.S": {
             "assigned_altitude": 5000,
             "sid": "STAYY4",
-            "waypoints": "BIKKL/a556+ HEFAY PAPAU/a5000-/s220 LRREN/a5000- HTCHR TANGL SHIRR/a7000+ DANAH/ho12 STAYY/a9000+ WIILD WAGAV OTAYY"
+            "waypoint_actions": { "DANAH": "ho12" }
           },
           "AVRRY": {
             "assigned_altitude": 5000,
@@ -1482,33 +1486,33 @@
           "HHERO": {
             "assigned_altitude": 5000,
             "sid": "MIKAA1",
-            "waypoints": "LIION CHOAK JAABB KLNCH/s210 DOLLF MIKAA/ho22 SNYPR HHERO"
+            "waypoint_actions": { "MIKAA": "ho22" }
           },
           "BEALE.N,MISEN.N": {
             "assigned_altitude": 5000,
             "sid": "HOBOW3",
-            "waypoints": "LIION CHOAK JAABB KLNCH/s210 TKDWN TRAYN/a10000-12000/ho21 JUMPP/ho HOBOW CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS",
-            "handoff_controller": "18"
+            "handoff_controller": "18",
+            "waypoint_actions": { "JUMPP": "ho", "TRAYN": "ho21" }
           },
           "CNERY": {
             "assigned_altitude": 5000,
             "sid": "PIGGN3",
-            "waypoints": "LIION CHOAK JAABB/a4100+/s210 MANBY/a7000+ PIGGN/a9000+/ho12 WIILD FLWRZ BLCKD CSTWY CNERY"
+            "waypoint_actions": { "PIGGN": "ho12" }
           },
           "AVRRY": {
             "assigned_altitude": 5000,
             "sid": "PIGGN3",
-            "waypoints": "LIION CHOAK JAABB/a4100+/s210 MANBY/a7000+ PIGGN/a9000+/ho12 FNCHH TBERD PEELR MTBAL AVRRY"
+            "waypoint_actions": { "PIGGN": "ho12" }
           },
           "TCATE": {
             "assigned_altitude": 5000,
             "sid": "PIGGN3",
-            "waypoints": "LIION CHOAK JAABB/a4100+/s210 MANBY/a7000+ PIGGN/a9000+/ho12 WIILD TCATE"
+            "waypoint_actions": { "PIGGN": "ho12" }
           },
           "OTAYY": {
             "assigned_altitude": 5000,
             "sid": "PIGGN3",
-            "waypoints": "LIION CHOAK JAABB/a4100+/s210 MANBY/a7000+ PIGGN/a9000+/ho12 WIILD WAGAV OTAYY"
+            "waypoint_actions": { "PIGGN": "ho12" }
           }
         }
       },
@@ -1879,27 +1883,27 @@
           "ZELMA": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+/ho10 MYKUL FUSBL/a16000+ PELLU JOTNU ZELMA"
+            "waypoint_actions": { "HWRRD": "ho10" }
           },
           "FUSBL": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+/ho10 MYKUL FUSBL/a16000+"
+            "waypoint_actions": { "HWRRD": "ho10" }
           },
           "EED": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+/ho10 MYKUL FUSBL/a16000+ DWGHT EMPRR/a23000+ EED"
+            "waypoint_actions": { "HWRRD": "ho10" }
           },
           "BLH": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+/ho10 EMRUD/a15000- TEEGE/a19000- BLH"
+            "waypoint_actions": { "HWRRD": "ho10" }
           },
           "TRM": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
-            "waypoints": "FYTNN/a2600+/s210 EYRSH/a9000- HWRRD/a7000+/ho10 EMRUD/a15000- TRM"
+            "waypoint_actions": { "HWRRD": "ho10" }
           },
           "PMD": {
             "cleared_altitude": 8000,
@@ -1926,32 +1930,32 @@
           "ZELMA": {
             "cleared_altitude": 8000,
             "sid": "IKONE1",
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+/h110 MYKUL/a9000+/ho10 IKONE FUSBL/a16000+ PELLU JOTNU ZELMA"
+            "waypoint_actions": { "MYKUL": "ho10" }
           },
           "FUSBL": {
             "cleared_altitude": 8000,
             "sid": "IKONE1",
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+/h110 MYKUL/a9000+/ho10 IKONE FUSBL/a16000+"
+            "waypoint_actions": { "MYKUL": "ho10" }
           },
           "EED": {
             "cleared_altitude": 8000,
             "sid": "IKONE1",
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+/h110 MYKUL/a9000+/ho10 IKONE FUSBL/a16000+ DWGHT EMPRR/a23000+ EED"
+            "waypoint_actions": { "MYKUL": "ho10" }
           },
           "BLH": {
             "cleared_altitude": 8000,
             "sid": "JEEON1",
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+ KAIMI/a6000- JEEON/a4200+/ho10 TEEGE/a11000+ BLH"
+            "waypoint_actions": { "JEEON": "ho10" }
           },
           "TRM": {
             "cleared_altitude": 8000,
             "sid": "JEEON1",
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+ KAIMI/a6000- JEEON/a4200+/ho10 TRM"
+            "waypoint_actions": { "JEEON": "ho10" }
           },
           "PMD": {
             "cleared_altitude": 8000,
             "sid": "LGANN1",
-            "waypoints": "N033.48.44.148,W116.29.32.781/a1000+/h110 YUCCA/a8000+/ho10 LGANN SOGGI/po18 APLES PMD"
+            "waypoint_actions": { "SOGGI": "po18", "YUCCA": "ho10" }
           }
         }
       },

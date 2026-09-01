@@ -29,25 +29,25 @@
         "27L": {
           "OXI,HYK,GSH,HOSSA,STL,IIU,PMM,VHP,PRADY,NEWEL,GIJ,KAMMA,BDF,GOTNE,REVSS,PIA,DVV,OTENS,APE,DAYVS,MLP,GLANC": {
             "cleared_altitude": 3000,
-            "waypoints": "_SBN_27L/h270"
+            "waypoints": "KSBN-9R/h270"
           }
         },
         "9R": {
           "OXI,HYK,GSH,HOSSA,STL,IIU,PMM,VHP,PRADY,NEWEL,GIJ,KAMMA,BDF,GOTNE,REVSS,PIA,DVV,OTENS,APE,DAYVS,MLP,GLANC": {
             "cleared_altitude": 3000,
-            "waypoints": "_SBN_9R/h090"
+            "waypoints": "KSBN-27L/h090"
           }
         },
         "18": {
           "OXI,HYK,GSH,HOSSA,STL,IIU,PMM,VHP,PRADY,NEWEL,GIJ,KAMMA,BDF,GOTNE,REVSS,PIA,DVV,OTENS,APE,DAYVS,MLP,GLANC": {
             "cleared_altitude": 3000,
-            "waypoints": "_SBN_18/h180"
+            "waypoints": "KSBN-36/h180"
           }
         },
         "36": {
           "OXI,HYK,GSH,HOSSA,STL,IIU,PMM,VHP,PRADY,NEWEL,GIJ,KAMMA,BDF,GOTNE,REVSS,PIA,DVV,OTENS,APE,DAYVS,MLP,GLANC": {
             "cleared_altitude": 3000,
-            "waypoints": "_KSBN_36/h004"
+            "waypoints": "KSBN-18/h004"
           }
         }
       },

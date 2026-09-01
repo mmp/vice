@@ -148,194 +148,194 @@
           "CRIED": {
             "assigned_altitude": 3000,
             "sid": "BLTWY7",
-            "waypoints": "KAXH-27/h089 DREMR LITLD BLTWY"
+            "initial_heading": 89
           },
           "CRGER": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-27/h089 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 89
           },
           "SAT": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-27/h089 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 89
           },
           "JCT": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-27/h089 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 89
           },
           "MNURE": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-27/h089 BORRN DILRE BOCCK"
+            "initial_heading": 89
           },
           "WAILN": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-27/h089 BORRN DILRE WEEED WAILN"
+            "initial_heading": 89
           },
           "HRV,LEV": {
             "assigned_altitude": 3000,
             "sid": "HOODO7",
-            "waypoints": "KAXH-27/h089 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 89
           },
           "TPAKK": {
             "assigned_altitude": 3000,
             "sid": "INDIE8",
-            "waypoints": "KAXH-27/h089 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 89
           },
           "CRP": {
             "assigned_altitude": 3000,
             "sid": "KARRR7",
-            "waypoints": "KAXH-27/h089 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 89
           },
           "NGP,WWREN": {
             "assigned_altitude": 3000,
             "sid": "KARRR7",
-            "waypoints": "KAXH-27/h089 KARRR KAVCY RIIGG"
+            "initial_heading": 89
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 3000,
             "sid": "LURIC8",
-            "waypoints": "KAXH-27/h089 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 89
           },
           "LCH": {
             "assigned_altitude": 3000,
             "sid": "MMALT7",
-            "waypoints": "KAXH-27/h089 MMALT MOOKI HOURN BLING"
+            "initial_heading": 89
           },
           "GUSTI": {
             "assigned_altitude": 3000,
             "sid": "MMALT7",
-            "waypoints": "KAXH-27/h089 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 89
           },
           "LLA": {
             "assigned_altitude": 3000,
             "sid": "MMALT7",
-            "waypoints": "KAXH-27/h089 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 89
           },
           "DPATY,JBULL": {
             "assigned_altitude": 3000,
             "sid": "STRYA8",
-            "waypoints": "KAXH-27/h089 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 89
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 3000,
             "sid": "STYCK8",
-            "waypoints": "KAXH-27/h089 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 89
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 3000,
             "sid": "WATFO6",
-            "waypoints": "KAXH-27/h089 WATFO VUH"
+            "initial_heading": 89
           },
           "MAJKK": {
             "assigned_altitude": 3000,
             "sid": "WYLSN8",
-            "waypoints": "KAXH-27/h089 WYLSN MONNT KLJOY"
+            "initial_heading": 89
           },
           "GIFFA": {
             "assigned_altitude": 3000,
             "sid": "WYLSN8",
-            "waypoints": "KAXH-27/h089 WYLSN MONNT BUMCO"
+            "initial_heading": 89
           }
         },
         "27": {
           "CRIED": {
             "assigned_altitude": 3000,
             "sid": "BLTWY7",
-            "waypoints": "KAXH-9/h269 DREMR LITLD BLTWY"
+            "initial_heading": 269
           },
           "CRGER": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-9/h269 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 269
           },
           "SAT": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-9/h269 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 269
           },
           "JCT": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-9/h269 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 269
           },
           "MNURE": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-9/h269 BORRN DILRE BOCCK"
+            "initial_heading": 269
           },
           "WAILN": {
             "assigned_altitude": 3000,
             "sid": "BORRN6",
-            "waypoints": "KAXH-9/h269 BORRN DILRE WEEED WAILN"
+            "initial_heading": 269
           },
           "HRV,LEV": {
             "assigned_altitude": 3000,
             "sid": "HOODO7",
-            "waypoints": "KAXH-9/h269 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 269
           },
           "TPAKK": {
             "assigned_altitude": 3000,
             "sid": "INDIE8",
-            "waypoints": "KAXH-9/h269 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 269
           },
           "CRP": {
             "assigned_altitude": 3000,
             "sid": "KARRR7",
-            "waypoints": "KAXH-9/h269 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 269
           },
           "NGP,WWREN": {
             "assigned_altitude": 3000,
             "sid": "KARRR7",
-            "waypoints": "KAXH-9/h269 KARRR KAVCY RIIGG"
+            "initial_heading": 269
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 3000,
             "sid": "LURIC8",
-            "waypoints": "KAXH-9/h269 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 269
           },
           "LCH": {
             "assigned_altitude": 3000,
             "sid": "MMALT7",
-            "waypoints": "KAXH-9/h269 MMALT MOOKI HOURN BLING"
+            "initial_heading": 269
           },
           "GUSTI": {
             "assigned_altitude": 3000,
             "sid": "MMALT7",
-            "waypoints": "KAXH-9/h269 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 269
           },
           "LLA": {
             "assigned_altitude": 3000,
             "sid": "MMALT7",
-            "waypoints": "KAXH-9/h269 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 269
           },
           "DPATY,JBULL": {
             "assigned_altitude": 3000,
             "sid": "STRYA8",
-            "waypoints": "KAXH-9/h269 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 269
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 3000,
             "sid": "STYCK8",
-            "waypoints": "KAXH-9/h269 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 269
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 3000,
             "sid": "WATFO6",
-            "waypoints": "KAXH-9/h269 WATFO VUH"
+            "initial_heading": 269
           },
           "MAJKK": {
             "assigned_altitude": 3000,
             "sid": "WYLSN8",
-            "waypoints": "KAXH-9/h269 WYLSN MONNT KLJOY"
+            "initial_heading": 269
           },
           "GIFFA": {
             "assigned_altitude": 3000,
             "sid": "WYLSN8",
-            "waypoints": "KAXH-9/h269 WYLSN MONNT BUMCO"
+            "initial_heading": 269
           }
         }
       },
@@ -509,388 +509,388 @@
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KCXO-32/h060 DREMR LITLD BLTWY"
+            "initial_heading": 60
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-32/h250 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 250
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-32/h250 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 250
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-32/h250 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 250
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-32/h250 BORRN DILRE BOCCK"
+            "initial_heading": 250
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-32/h250 BORRN DILRE WEEED WAILN"
+            "initial_heading": 250
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KCXO-32/h060 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 60
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KCXO-32/h060 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 60
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KCXO-32/h250 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 250
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KCXO-32/h250 KARRR KAVCY RIIGG"
+            "initial_heading": 250
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KCXO-32/h060 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 60
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-32/h060 MMALT MOOKI HOURN BLING"
+            "initial_heading": 60
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-32/h060 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 60
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-32/h060 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 60
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KCXO-32/h060 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 60
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KCXO-32/h060 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 60
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KCXO-32/h060 WATFO VUH"
+            "initial_heading": 60
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KCXO-32/h060 WYLSN MONNT KLJOY"
+            "initial_heading": 60
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KCXO-32/h060 WYLSN MONNT BUMCO"
+            "initial_heading": 60
           }
         },
         "19": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KCXO-1/h060 DREMR LITLD BLTWY"
+            "initial_heading": 60
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-1/h250 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 250
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-1/h250 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 250
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-1/h250 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 250
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-1/h250 BORRN DILRE BOCCK"
+            "initial_heading": 250
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-1/h250 BORRN DILRE WEEED WAILN"
+            "initial_heading": 250
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KCXO-1/h060 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 60
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KCXO-1/h060 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 60
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KCXO-1/h250 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 250
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KCXO-1/h250 KARRR KAVCY RIIGG"
+            "initial_heading": 250
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KCXO-1/h060 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 60
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-1/h060 MMALT MOOKI HOURN BLING"
+            "initial_heading": 60
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-1/h060 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 60
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-1/h060 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 60
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KCXO-1/h060 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 60
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KCXO-1/h060 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 60
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KCXO-1/h060 WATFO VUH"
+            "initial_heading": 60
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KCXO-1/h060 WYLSN MONNT KLJOY"
+            "initial_heading": 60
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KCXO-1/h060 WYLSN MONNT BUMCO"
+            "initial_heading": 60
           }
         },
         "1": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KCXO-19/h060 DREMR LITLD BLTWY"
+            "initial_heading": 60
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-19/h250 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 250
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-19/h250 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 250
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-19/h250 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 250
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-19/h250 BORRN DILRE BOCCK"
+            "initial_heading": 250
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-19/h250 BORRN DILRE WEEED WAILN"
+            "initial_heading": 250
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KCXO-19/h060 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 60
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KCXO-19/h060 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 60
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KCXO-19/h250 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 250
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KCXO-19/h250 KARRR KAVCY RIIGG"
+            "initial_heading": 250
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KCXO-19/h060 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 60
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-19/h060 MMALT MOOKI HOURN BLING"
+            "initial_heading": 60
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-19/h060 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 60
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-19/h060 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 60
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KCXO-19/h060 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 60
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KCXO-19/h060 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 60
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KCXO-19/h060 WATFO VUH"
+            "initial_heading": 60
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KCXO-19/h060 WYLSN MONNT KLJOY"
+            "initial_heading": 60
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KCXO-19/h060 WYLSN MONNT BUMCO"
+            "initial_heading": 60
           }
         },
         "32": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KCXO-14/h060 DREMR LITLD BLTWY"
+            "initial_heading": 60
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-14/h250 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 250
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-14/h250 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 250
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-14/h250 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 250
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-14/h250 BORRN DILRE BOCCK"
+            "initial_heading": 250
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KCXO-14/h250 BORRN DILRE WEEED WAILN"
+            "initial_heading": 250
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KCXO-14/h060 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 60
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KCXO-14/h060 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 60
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KCXO-14/h250 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 250
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KCXO-14/h250 KARRR KAVCY RIIGG"
+            "initial_heading": 250
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KCXO-14/h060 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 60
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-14/h060 MMALT MOOKI HOURN BLING"
+            "initial_heading": 60
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-14/h060 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 60
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KCXO-14/h060 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 60
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KCXO-14/h060 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 60
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KCXO-14/h060 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 60
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KCXO-14/h060 WATFO VUH"
+            "initial_heading": 60
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KCXO-14/h060 WYLSN MONNT KLJOY"
+            "initial_heading": 60
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KCXO-14/h060 WYLSN MONNT BUMCO"
+            "initial_heading": 60
           }
         }
       },
@@ -1066,170 +1066,179 @@
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KDWH-35L/h290 DREMR LITLD BLTWY"
+            "initial_heading": 290
           },
           "CRGER": {
             "assigned_altitude": 2000,
-            "sid": "BORRN6"
+            "sid": "BORRN6",
+            "initial_heading": 30
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-35L/h230 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 230
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-35L/h230 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 230
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-35L/h230 BORRN DILRE BOCCK"
+            "initial_heading": 230
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-35L/h230 BORRN DILRE WEEED WAILN"
+            "initial_heading": 230
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KDWH-35L/h230 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 230
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KDWH-35L/h290 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 290
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KDWH-35L/h230 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 230
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KDWH-35L/h230 KARRR KAVCY RIIGG"
+            "initial_heading": 230
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KDWH-35L/h290 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 290
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KDWH-35L/h290 MMALT MOOKI HOURN BLING"
+            "initial_heading": 290
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KDWH-35L/h290 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 290
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KDWH-35L/h290 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 290
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KDWH-35L/h290 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 290
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KDWH-35L/h290 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 290
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KDWH-35L/h230 WATFO VUH"
+            "initial_heading": 230
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KDWH-35L/h290 WYLSN MONNT KLJOY"
+            "initial_heading": 290
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KDWH-35L/h290 WYLSN MONNT BUMCO"
+            "initial_heading": 290
           }
         },
         "35L": {
           "CRIED": {
             "assigned_altitude": 2000,
-            "sid": "BLTWY7"
+            "sid": "BLTWY7",
+            "initial_heading": 350
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-17R/h290 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 290
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-17R/h290 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 290
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-17R/h290 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 290
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-17R/h290 BORRN DILRE BOCCK"
+            "initial_heading": 290
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KDWH-17R/h290 BORRN DILRE WEEED WAILN"
+            "initial_heading": 290
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
-            "sid": "HOODO7"
+            "sid": "HOODO7",
+            "initial_heading": 350
           },
           "TPAKK": {
             "assigned_altitude": 2000,
-            "sid": "INDIE8"
+            "sid": "INDIE8",
+            "initial_heading": 350
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KDWH-17R/h290 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 290
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KDWH-17R/h290 KARRR KAVCY RIIGG"
+            "initial_heading": 290
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
-            "sid": "LURIC8"
+            "sid": "LURIC8",
+            "initial_heading": 350
           },
           "LCH,GUSTI,LLA": {
             "assigned_altitude": 2000,
-            "sid": "MMALT7"
+            "sid": "MMALT7",
+            "initial_heading": 350
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
-            "sid": "STRYA8"
+            "sid": "STRYA8",
+            "initial_heading": 350
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
-            "sid": "STYCK8"
+            "sid": "STYCK8",
+            "initial_heading": 350
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KDWH-17R/h290 WATFO VUH"
+            "initial_heading": 290
           },
           "MAJKK,GIFFA": {
             "assigned_altitude": 2000,
-            "sid": "WYLSN8"
+            "sid": "WYLSN8",
+            "initial_heading": 350
           }
         }
       },
@@ -1425,388 +1434,388 @@
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KEFD-22/h090 DREMR LITLD BLTWY"
+            "initial_heading": 90
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-22/h090 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 90
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-22/h090 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 90
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-22/h090 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 90
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-22/h090 BORRN DILRE BOCCK"
+            "initial_heading": 90
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-22/h090 BORRN DILRE WEEED WAILN"
+            "initial_heading": 90
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KEFD-22/h090 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 90
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KEFD-22/h090 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 90
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KEFD-22/h090 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 90
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KEFD-22/h090 KARRR KAVCY RIIGG"
+            "initial_heading": 90
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KEFD-22/h090 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 90
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-22/h090 MMALT MOOKI HOURN BLING"
+            "initial_heading": 90
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-22/h090 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 90
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-22/h090 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 90
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KEFD-22/h090 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 90
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KEFD-22/h090 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 90
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KEFD-22/h090 WATFO VUH"
+            "initial_heading": 90
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KEFD-22/h090 WYLSN MONNT KLJOY"
+            "initial_heading": 90
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KEFD-22/h090 WYLSN MONNT BUMCO"
+            "initial_heading": 90
           }
         },
         "22": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KEFD-4/h090 DREMR LITLD BLTWY"
+            "initial_heading": 90
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-4/h090 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 90
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-4/h090 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 90
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-4/h090 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 90
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-4/h090 BORRN DILRE BOCCK"
+            "initial_heading": 90
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-4/h090 BORRN DILRE WEEED WAILN"
+            "initial_heading": 90
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KEFD-4/h090 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 90
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KEFD-4/h090 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 90
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KEFD-4/h090 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 90
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KEFD-4/h090 KARRR KAVCY RIIGG"
+            "initial_heading": 90
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KEFD-4/h090 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 90
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-4/h090 MMALT MOOKI HOURN BLING"
+            "initial_heading": 90
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-4/h090 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 90
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-4/h090 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 90
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KEFD-4/h090 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 90
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KEFD-4/h090 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 90
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KEFD-4/h090 WATFO VUH"
+            "initial_heading": 90
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KEFD-4/h090 WYLSN MONNT KLJOY"
+            "initial_heading": 90
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KEFD-4/h090 WYLSN MONNT BUMCO"
+            "initial_heading": 90
           }
         },
         "17R": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KEFD-35L/h090 DREMR LITLD BLTWY"
+            "initial_heading": 90
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-35L/h090 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 90
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-35L/h090 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 90
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-35L/h090 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 90
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-35L/h090 BORRN DILRE BOCCK"
+            "initial_heading": 90
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-35L/h090 BORRN DILRE WEEED WAILN"
+            "initial_heading": 90
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KEFD-35L/h090 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 90
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KEFD-35L/h090 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 90
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KEFD-35L/h090 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 90
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KEFD-35L/h090 KARRR KAVCY RIIGG"
+            "initial_heading": 90
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KEFD-35L/h090 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 90
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-35L/h090 MMALT MOOKI HOURN BLING"
+            "initial_heading": 90
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-35L/h090 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 90
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-35L/h090 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 90
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KEFD-35L/h090 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 90
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KEFD-35L/h090 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 90
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KEFD-35L/h090 WATFO VUH"
+            "initial_heading": 90
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KEFD-35L/h090 WYLSN MONNT KLJOY"
+            "initial_heading": 90
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KEFD-35L/h090 WYLSN MONNT BUMCO"
+            "initial_heading": 90
           }
         },
         "35L": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KEFD-17R/h090 DREMR LITLD BLTWY"
+            "initial_heading": 90
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-17R/h090 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 90
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-17R/h090 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 90
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-17R/h090 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 90
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-17R/h090 BORRN DILRE BOCCK"
+            "initial_heading": 90
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KEFD-17R/h090 BORRN DILRE WEEED WAILN"
+            "initial_heading": 90
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KEFD-17R/h090 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 90
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KEFD-17R/h090 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 90
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KEFD-17R/h090 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 90
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KEFD-17R/h090 KARRR KAVCY RIIGG"
+            "initial_heading": 90
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KEFD-17R/h090 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 90
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-17R/h090 MMALT MOOKI HOURN BLING"
+            "initial_heading": 90
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-17R/h090 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 90
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KEFD-17R/h090 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 90
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KEFD-17R/h090 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 90
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KEFD-17R/h090 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 90
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KEFD-17R/h090 WATFO VUH"
+            "initial_heading": 90
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KEFD-17R/h090 WYLSN MONNT KLJOY"
+            "initial_heading": 90
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KEFD-17R/h090 WYLSN MONNT BUMCO"
+            "initial_heading": 90
           }
         }
       },
@@ -2008,388 +2017,388 @@
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KGLS-32/h250 DREMR LITLD BLTWY"
+            "initial_heading": 250
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-32/h250 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 250
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-32/h250 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 250
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-32/h250 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 250
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-32/h250 BORRN DILRE BOCCK"
+            "initial_heading": 250
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-32/h250 BORRN DILRE WEEED WAILN"
+            "initial_heading": 250
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KGLS-32/h250 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 250
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KGLS-32/h250 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 250
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KGLS-32/h250 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 250
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KGLS-32/h250 KARRR KAVCY RIIGG"
+            "initial_heading": 250
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KGLS-32/h250 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 250
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-32/h250 MMALT MOOKI HOURN BLING"
+            "initial_heading": 250
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-32/h250 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 250
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-32/h250 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 250
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KGLS-32/h250 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 250
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KGLS-32/h250 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 250
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KGLS-32/h250 WATFO VUH"
+            "initial_heading": 250
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KGLS-32/h250 WYLSN MONNT KLJOY"
+            "initial_heading": 250
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KGLS-32/h250 WYLSN MONNT BUMCO"
+            "initial_heading": 250
           }
         },
         "32": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KGLS-14/h250 DREMR LITLD BLTWY"
+            "initial_heading": 250
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-14/h250 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 250
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-14/h250 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 250
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-14/h250 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 250
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-14/h250 BORRN DILRE BOCCK"
+            "initial_heading": 250
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-14/h250 BORRN DILRE WEEED WAILN"
+            "initial_heading": 250
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KGLS-14/h250 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 250
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KGLS-14/h250 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 250
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KGLS-14/h250 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 250
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KGLS-14/h250 KARRR KAVCY RIIGG"
+            "initial_heading": 250
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KGLS-14/h250 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 250
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-14/h250 MMALT MOOKI HOURN BLING"
+            "initial_heading": 250
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-14/h250 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 250
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-14/h250 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 250
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KGLS-14/h250 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 250
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KGLS-14/h250 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 250
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KGLS-14/h250 WATFO VUH"
+            "initial_heading": 250
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KGLS-14/h250 WYLSN MONNT KLJOY"
+            "initial_heading": 250
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KGLS-14/h250 WYLSN MONNT BUMCO"
+            "initial_heading": 250
           }
         },
         "18": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KGLS-36/h250 DREMR LITLD BLTWY"
+            "initial_heading": 250
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-36/h250 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 250
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-36/h250 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 250
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-36/h250 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 250
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-36/h250 BORRN DILRE BOCCK"
+            "initial_heading": 250
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-36/h250 BORRN DILRE WEEED WAILN"
+            "initial_heading": 250
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KGLS-36/h250 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 250
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KGLS-36/h250 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 250
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KGLS-36/h250 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 250
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KGLS-36/h250 KARRR KAVCY RIIGG"
+            "initial_heading": 250
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KGLS-36/h250 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 250
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-36/h250 MMALT MOOKI HOURN BLING"
+            "initial_heading": 250
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-36/h250 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 250
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-36/h250 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 250
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KGLS-36/h250 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 250
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KGLS-36/h250 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 250
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KGLS-36/h250 WATFO VUH"
+            "initial_heading": 250
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KGLS-36/h250 WYLSN MONNT KLJOY"
+            "initial_heading": 250
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KGLS-36/h250 WYLSN MONNT BUMCO"
+            "initial_heading": 250
           }
         },
         "36": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KGLS-18/h250 DREMR LITLD BLTWY"
+            "initial_heading": 250
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-18/h250 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 250
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-18/h250 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 250
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-18/h250 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 250
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-18/h250 BORRN DILRE BOCCK"
+            "initial_heading": 250
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KGLS-18/h250 BORRN DILRE WEEED WAILN"
+            "initial_heading": 250
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KGLS-18/h250 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 250
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KGLS-18/h250 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 250
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KGLS-18/h250 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 250
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KGLS-18/h250 KARRR KAVCY RIIGG"
+            "initial_heading": 250
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KGLS-18/h250 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 250
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-18/h250 MMALT MOOKI HOURN BLING"
+            "initial_heading": 250
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-18/h250 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 250
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KGLS-18/h250 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 250
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KGLS-18/h250 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 250
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KGLS-18/h250 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 250
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KGLS-18/h250 WATFO VUH"
+            "initial_heading": 250
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KGLS-18/h250 WYLSN MONNT KLJOY"
+            "initial_heading": 250
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KGLS-18/h250 WYLSN MONNT BUMCO"
+            "initial_heading": 250
           }
         }
       },
@@ -2627,22 +2636,22 @@
           "JCT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-22/l290 RETYR MNNKE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 290
           },
           "SAT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-22/l290 RETYR MNNKE BOCCK MNURE MARCS"
+            "initial_heading": 290
           },
           "MNURE": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-22/l290 RETYR MNNKE BOCCK MNURE"
+            "initial_heading": 290
           },
           "WAILN": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-22/l290 RETYR MNNKE WEEED WAILN"
+            "initial_heading": 290
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
@@ -2751,42 +2760,42 @@
           "CRIED": {
             "assigned_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-31L/l350 DREMR LITLD BLTWY"
+            "initial_heading": 350
           },
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-31L/r150 ELOCO CHPEE GRIPY YOKEM SBI"
+            "initial_heading": 150
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-31L/r150 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 150
           },
           "TPAKK": {
             "assigned_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-31L/l350 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 350
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-31L/l350 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 350
           },
           "MUSYL,ANKRR,KELPP": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-31L/r150 PEECE VUH"
+            "initial_heading": 150
           },
           "CRP": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-31L/r150 SAALT PTRON SKUBA PSX YOMOM"
+            "initial_heading": 150
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-31L/r150 SAALT PTRON RIIGG"
+            "initial_heading": 150
           },
           "JCT": {
             "assigned_altitude": 5000,
@@ -2811,22 +2820,22 @@
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-31L/l350 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 350
           },
           "DPATY,JBULL": {
             "assigned_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-31L/l350 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 350
           },
           "MAJKK": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-31L/l350 WYLSN MONNT KLJOY MAJKK"
+            "initial_heading": 350
           },
           "GIFFA": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-31L/l350 WYLSN MONNT BUMCO GIFFA"
+            "initial_heading": 350
           }
         },
         "13R.LAND4.AUTO": {
@@ -2915,32 +2924,32 @@
           "CRIED": {
             "assigned_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-4/r010 DREMR LITLD BLTWY"
+            "initial_heading": 10
           },
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-4/l140 ELOCO CHPEE GRIPY YOKEM SBI"
+            "initial_heading": 140
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-22/l140 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 140
           },
           "TPAKK": {
             "assigned_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-4/r010 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 10
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-4/r010 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 10
           },
           "MUSYL": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-4/l140 PEECE VUH"
+            "initial_heading": 140
           },
           "CRP,NGP,WWREN": {
             "assigned_altitude": 5000,
@@ -2949,42 +2958,42 @@
           "JCT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221 RETYR MNNKE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 221
           },
           "SAT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221 RETYR MNNKE BOCCK MNURE MARCS"
+            "initial_heading": 221
           },
           "MNURE": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221 RETYR MNNKE BOCCK"
+            "initial_heading": 221
           },
           "WAILN": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221 RETYR MNNKE WEEED WAILN"
+            "initial_heading": 221
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-4/r010 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 10
           },
           "DPATY,JBULL": {
             "assigned_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-4/r010 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 10
           },
           "MAJKK": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-4/r010 WYLSN MONNT KLJOY MAJKK"
+            "initial_heading": 10
           },
           "GIFFA": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-4/r010 WYLSN MONNT BUMCO GIFFA"
+            "initial_heading": 10
           }
         },
         "22.LAND22.AUTO": {
@@ -3078,12 +3087,12 @@
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-4/l140 ELOCO CHPEE GRIPY YOKEM SBI"
+            "initial_heading": 140
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-4/l140 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 140
           },
           "TPAKK": {
             "assigned_altitude": 5000,
@@ -3098,37 +3107,37 @@
           "MUSYL": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-4/l140 PEECE VUH"
+            "initial_heading": 140
           },
           "CRP": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-4/l140 SAALT PTRON SKUBA PSX YOMOM"
+            "initial_heading": 140
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-4/l140 SAALT PTRON RIIGG"
+            "initial_heading": 140
           },
           "JCT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221 RETYR MNNKE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 221
           },
           "SAT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221 RETYR MNNKE BOCCK MNURE MARCS"
+            "initial_heading": 221
           },
           "MNURE": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221 RETYR MNNKE BOCCK"
+            "initial_heading": 221
           },
           "WAILN": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-4/h221 RETYR MNNKE WEEED WAILN"
+            "initial_heading": 221
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
@@ -3277,22 +3286,22 @@
           "JCT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/l290 RETYR MNNKE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 290
           },
           "SAT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/l290 RETYR MNNKE BOCCK MNURE MARCS"
+            "initial_heading": 290
           },
           "MNURE": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/l290 RETYR MNNKE BOCCK"
+            "initial_heading": 290
           },
           "WAILN": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/l290 RETYR MNNKE WEEED WAILN"
+            "initial_heading": 290
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
@@ -3401,82 +3410,82 @@
           "CRIED": {
             "assigned_altitude": 5000,
             "sid": "BLTWY7",
-            "waypoints": "KHOU-13R/r010 DREMR LITLD BLTWY"
+            "initial_heading": 10
           },
           "LLA": {
             "assigned_altitude": 5000,
             "sid": "ELOCO6",
-            "waypoints": "KHOU-13R/l210 ELOCO CHPEE GRIPY YOKEM SBI"
+            "initial_heading": 210
           },
           "HRV,LEV": {
             "assigned_altitude": 5000,
             "sid": "HOODO7",
-            "waypoints": "KHOU-13R/l210 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 210
           },
           "TPAKK": {
             "assigned_altitude": 5000,
             "sid": "INDIE8",
-            "waypoints": "KHOU-13R/r010 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 10
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
-            "waypoints": "KHOU-13R/r010 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 10
           },
           "MUSYL,ANKRR,KELPP": {
             "assigned_altitude": 5000,
             "sid": "PEECE6",
-            "waypoints": "KHOU-13R/l210 PEECE VUH"
+            "initial_heading": 210
           },
           "CRP": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-13R/l210 SAALT PTRON SKUBA PSX YOMOM"
+            "initial_heading": 210
           },
           "NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9",
-            "waypoints": "KHOU-13R/l210 SAALT PTRON RIIGG"
+            "initial_heading": 210
           },
           "JCT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/l290 RETYR MNNKE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 290
           },
           "SAT": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/l290 RETYR MNNKE BOCCK MNURE MARCS"
+            "initial_heading": 290
           },
           "MNURE": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/l290 RETYR MNNKE BOCCK MNURE"
+            "initial_heading": 290
           },
           "WAILN": {
             "assigned_altitude": 5000,
             "sid": "RETYR8",
-            "waypoints": "KHOU-13R/l290 RETYR MNNKE WEEED WAILN"
+            "initial_heading": 290
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 5000,
             "sid": "STYCK8",
-            "waypoints": "KHOU-13R/r010 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 10
           },
           "DPATY,JBULL": {
             "assigned_altitude": 5000,
             "sid": "STRYA8",
-            "waypoints": "KHOU-13R/r010 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 10
           },
           "MAJKK": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-13R/r010 WYLSN MONNT KLJOY MAJKK"
+            "initial_heading": 10
           },
           "GIFFA": {
             "assigned_altitude": 5000,
             "sid": "WYLSN8",
-            "waypoints": "KHOU-13R/r010 WYLSN MONNT BUMCO GIFFA"
+            "initial_heading": 10
           }
         },
         "31L.LAND31.AUTO": {
@@ -4467,7 +4476,7 @@
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-33R/l350 DREMR LITLD BLTWY"
+            "initial_heading": 350
           },
           "LCH,GUSTI,LLA": {
             "cleared_altitude": 4000,
@@ -4476,12 +4485,12 @@
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-33R/l020 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 20
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-33R/l020 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 20
           },
           "CRP,NGP,WWREN": {
             "cleared_altitude": 4000,
@@ -4490,22 +4499,22 @@
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-33R/l020 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 20
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-33R/l350 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 350
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-33R/l350 WYLSN MONNT KLJOY"
+            "initial_heading": 350
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-33R/l350 WYLSN MONNT BUMCO"
+            "initial_heading": 350
           }
         },
         "15R.IAHEAST": {
@@ -4522,32 +4531,32 @@
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c5000 BOTLL/a5000-/c16000 FLYZA/a7000+ PPALE/a11000+/c23000/hoC43 VUH"
+            "waypoint_actions": { "BOTLL": "c16000", "PPALE": "hoC43,c23000", "TTAPS": "c5000" }
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 MMUGS MMALT/a10000+/c23000/hoC36 HOURN BLING"
+            "waypoint_actions": { "BOTLL": "c16000", "MMALT": "hoC36,c23000", "TTAPS": "c4000" }
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 MMUGS HHOPS/a11000+/c23000/hoC36 JAAYE SPINY"
+            "waypoint_actions": { "BOTLL": "c16000", "HHOPS": "hoC36,c23000", "TTAPS": "c4000" }
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 MMUGS GRAYN/a11000+/c23000/hoC36 YOKEM SBI"
+            "waypoint_actions": { "BOTLL": "c16000", "GRAYN": "hoC36,c23000", "TTAPS": "c4000" }
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 FLYZA/a7000+ WINEO/a9000+/c23000/hoC87 RITAA/a10000+ SKUBA PSX YOMOM"
+            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c4000", "WINEO": "hoC87,c23000" }
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/flyover/c4000 BOTLL/a5000-/c16000 FLYZA/a7000+ WINEO/a9000+/c23000/hoC87 RITAA/a10000+ RIIGG"
+            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c4000", "WINEO": "hoC87,c23000" }
           }
         },
         "15R.IAHWEST.AUTO": {
@@ -4559,22 +4568,22 @@
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover/c4000 SCAMM/a5000-/c16000 SHAAK BNDTO/c23000/hoC80 CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover/c4000 SCAMM/a5000-/c16000 SHAAK BNDTO/c23000/hoC80 FFOAM/a13000+ BOCCK MNURE MARCS"
+            "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover/c4000 SCAMM/a5000-/c16000 SHAAK BNDTO/c23000/hoC80 FFOAM/a13000+ BOCCK"
+            "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-33L/flyover/c4000 SCAMM/a5000-/c16000 SHAAK BNDTO/c23000/hoC80 BAAKE/a13000+ WEEED WAILN"
+            "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
           },
           "TPAKK": {
             "cleared_altitude": 4000,
@@ -4616,17 +4625,17 @@
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c5000 GUMBY/a5000-/hoC36/c23000 HOURN BLING"
+            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c5000 GUMBY/a5000-/hoC36/c23000 JAAYE SPINY"
+            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoints": "KIAH-33R/flyover CRTMN/s230 DWSUN/a4000-/c5000 GUMBY/a5000-/hoC36/c23000 YOKEM SBI"
+            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
           },
           "TPAKK": {
             "cleared_altitude": 4000,
@@ -4641,12 +4650,12 @@
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/c5000 BOTLL/a5000-/c16000 FLYZA/a7000+ WINEO/a9000+/hoC87/c23000 RITAA/a10000+ SKUBA PSX YOMOM"
+            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c5000", "WINEO": "hoC87,c23000" }
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-33R/flyover TTAPS/a4000-/c5000 BOTLL/a5000-/c16000 FLYZA/a7000+ WINEO/a9000+/hoC87/c23000 RITAA/a10000+ RIIGG"
+            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c5000", "WINEO": "hoC87,c23000" }
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
@@ -4673,34 +4682,34 @@
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-33L/flyover TTAPS/a4000-/c5000 BOTLL/a5000-/c16000 FLYZA/a7000+/hoC43/c23000 PPALE/a11000+ VUH"
+            "waypoint_actions": { "BOTLL": "c16000", "FLYZA": "hoC43,c23000", "TTAPS": "c5000" }
           },
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c16000 RODKL PITZZ/a7000+/hoC80/c23000 CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80,c23000" }
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c16000 RODKL PITZZ/a7000+/hoC80/c23000 GRZIA/a10000+ CHATI/a13000+ BOCCK MNURE MARCS"
+            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80,c23000" }
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c16000 RODKL PITZZ/a7000+/hoC80/c23000 GRZIA/a10000+ CHATI/a13000+ BOCCK"
+            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80,c23000" }
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-33L/flyover JAYLO/a5000-/c16000 RODKL PITZZ/a7000+/hoC80/c23000 MNNKE/a13000+ WEEED"
+            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80,c23000" }
           }
         },
         "8L": {
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-26R/l360 DREMR LITLD BLTWY"
+            "initial_heading": 360
           },
           "CRGER": {
             "cleared_altitude": 4000,
@@ -4720,44 +4729,44 @@
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-26R/flyover/r230 RODKL PITZZ/a7000+ MNNKE/a13000+ WEEED WAILN"
+            "initial_heading": 230
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-26R/l360 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 360
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-26R/l360 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 360
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-26R/l360 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 360
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-26R/l360 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 360
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-26R/l360 WYLSN MONNT KLJOY"
+            "initial_heading": 360
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-26R/l360 WYLSN MONNT BUMCO"
+            "initial_heading": 360
           }
         },
         "8R": {
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-26L/l360 DREMR LITLD BLTWY"
+            "initial_heading": 360
           },
           "CRGER": {
             "cleared_altitude": 4000,
@@ -4777,44 +4786,44 @@
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-26L/flyover/r230 RODKL PITZZ/a7000+ MNNKE/a13000+ WEEED WAILN"
+            "initial_heading": 230
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-26L/l360 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 360
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-26L/l360 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 360
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-26L/l360 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 360
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-26L/l360 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 360
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-26L/l360 WYLSN MONNT KLJOY"
+            "initial_heading": 360
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-26L/l360 WYLSN MONNT BUMCO"
+            "initial_heading": 360
           }
         },
         "9": {
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-27/l360 DREMR LITLD BLTWY"
+            "initial_heading": 360
           },
           "CRGER": {
             "cleared_altitude": 4000,
@@ -4834,243 +4843,243 @@
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoints": "KIAH-27/flyover/r230 RODKL PITZZ/a7000+ MNNKE/a13000+ WEEED WAILN"
+            "initial_heading": 230
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-27/l360 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 360
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-27/l360 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 360
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-27/l360 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 360
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-27/l360 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 360
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-27/l360 WYLSN MONNT KLJOY"
+            "initial_heading": 360
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-27/l360 WYLSN MONNT BUMCO"
+            "initial_heading": 360
           }
         },
         "26L": {
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-8R/r360 DREMR LITLD BLTWY"
+            "initial_heading": 360
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-8R/r030 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 30
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-8R/r030 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 30
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-8R/r030 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 30
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-8R/r360 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 360
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-8R/r360 WYLSN MONNT KLJOY"
+            "initial_heading": 360
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-8R/r360 WYLSN MONNT BUMCO"
+            "initial_heading": 360
           },
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- FLYZA/a7000+ PPALE/a11000+ VUH"
+            "initial_heading": 130
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- MMUGS MMALT/a10000+ HOURN BLING"
+            "initial_heading": 130
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- MMUGS HHOPS/a11000+ JAAYE SPINY"
+            "initial_heading": 130
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- MMUGS GRAYN/a11000+ YOKEM SBI"
+            "initial_heading": 130
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ SKUBA PSX YOMOM"
+            "initial_heading": 130
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ RIIGG"
+            "initial_heading": 130
           },
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-8R/l240 SHAAK BNDTO CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "initial_heading": 240
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-8R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK MNURE MARCS"
+            "initial_heading": 240
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-8R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK"
+            "initial_heading": 240
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-8R/l240 SHAAK BNDTO BAAKE/a13000+ WEEED WAILN"
+            "initial_heading": 240
           }
         },
         "26R": {
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-8R/r360 DREMR LITLD BLTWY"
+            "initial_heading": 360
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-8R/r030 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 30
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-8R/r030 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 30
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-8R/r030 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 30
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-8R/r360 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 360
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-8R/r360 WYLSN MONNT KLJOY"
+            "initial_heading": 360
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-8R/r360 WYLSN MONNT BUMCO"
+            "initial_heading": 360
           },
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- FLYZA/a7000+ PPALE/a11000+ VUH"
+            "initial_heading": 130
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- MMUGS MMALT/a10000+ HOURN BLING"
+            "initial_heading": 130
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- MMUGS HHOPS/a11000+ JAAYE SPINY"
+            "initial_heading": 130
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- MMUGS GRAYN/a11000+ YOKEM SBI"
+            "initial_heading": 130
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ SKUBA PSX YOMOM"
+            "initial_heading": 130
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-8R/flyover/l130 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ RIIGG"
+            "initial_heading": 130
           },
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-8R/l240 SHAAK BNDTO CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "initial_heading": 240
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-8R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK MNURE MARCS"
+            "initial_heading": 240
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-8R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK"
+            "initial_heading": 240
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-8R/l240 SHAAK BNDTO BAAKE/a13000+ WEEED WAILN"
+            "initial_heading": 240
           }
         },
         "27": {
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-9/l130 BOTLL/a5000- FLYZA/a7000+ PPALE/a11000+ VUH"
+            "initial_heading": 130
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-9/l130 BOTLL/a5000- MMUGS MMALT/a10000+ HOURN BLING"
+            "initial_heading": 130
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-9/l130 BOTLL/a5000- MMUGS HHOPS/a11000+ JAAYE SPINY"
+            "initial_heading": 130
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-9/l130 BOTLL/a5000- MMUGS GRAYN/a11000+ YOKEM SBI"
+            "initial_heading": 130
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-9/l130 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ SKUBA PSX YOMOM"
+            "initial_heading": 130
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-9/l130 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ RIIGG"
+            "initial_heading": 130
           }
         },
         "15L.15FLOW": {
@@ -5169,124 +5178,124 @@
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-15R/r340 DREMR LITLD BLTWY"
+            "initial_heading": 340
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-15R/r030 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 30
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-15R/r030 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 30
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-15R/r030 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 30
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-15R/r340 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 340
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-15R/r340 WYLSN MONNT KLJOY"
+            "initial_heading": 340
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-15R/r340 WYLSN MONNT BUMCO"
+            "initial_heading": 340
           },
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-15R/flyover/r100 BOTLL/a5000- FLYZA/a7000+ PPALE/a11000+ VUH"
+            "initial_heading": 100
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-15R/flyover/r100 BOTLL/a5000- MMUGS MMALT/a10000+ HOURN BLING"
+            "initial_heading": 100
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-15R/flyover/r100 BOTLL/a5000- MMUGS HHOPS/a11000+ JAAYE SPINY"
+            "initial_heading": 100
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-15R/flyover/r100 BOTLL/a5000- MMUGS GRAYN/a11000+ YOKEM SBI"
+            "initial_heading": 100
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-15R/flyover/r100 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ SKUBA PSX YOMOM"
+            "initial_heading": 100
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-15R/flyover/r100 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ RIIGG"
+            "initial_heading": 100
           },
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-15R/l240 SHAAK BNDTO CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "initial_heading": 240
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-15R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK MNURE MARCS"
+            "initial_heading": 240
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-15R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK MNURE"
+            "initial_heading": 240
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-15R/l240 SHAAK BNDTO BAAKE/a13000+ WEEED WAILN"
+            "initial_heading": 240
           }
         },
         "33R.NWFLOW": {
           "CRIED": {
             "cleared_altitude": 4000,
             "sid": "BLTWY7",
-            "waypoints": "KIAH-15L/r340 DREMR LITLD BLTWY"
+            "initial_heading": 340
           },
           "TPAKK": {
             "cleared_altitude": 4000,
             "sid": "INDIE8",
-            "waypoints": "KIAH-15L/r030 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 30
           },
           "HAWES,ORRTH": {
             "cleared_altitude": 4000,
             "sid": "LURIC8",
-            "waypoints": "KIAH-15L/r030 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 30
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
             "sid": "STRYA8",
-            "waypoints": "KIAH-15L/r030 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 30
           },
           "DOLEY,WTSON": {
             "cleared_altitude": 4000,
             "sid": "STYCK8",
-            "waypoints": "KIAH-15L/r340 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 340
           },
           "MAJKK": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-15L/r340 WYLSN MONNT KLJOY"
+            "initial_heading": 340
           },
           "GIFFA": {
             "cleared_altitude": 4000,
             "sid": "WYLSN8",
-            "waypoints": "KIAH-15L/r340 WYLSN MONNT BUMCO"
+            "initial_heading": 340
           }
         },
         "33L.NWFLOW": {
@@ -5323,22 +5332,22 @@
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-15R/l240 SHAAK BNDTO CUZZZ/a13000+ ZUUUU PUFER PSTUR"
+            "initial_heading": 240
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-15R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK MNURE MARCS"
+            "initial_heading": 240
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-15R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK MNURE"
+            "initial_heading": 240
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoints": "KIAH-15R/l240 SHAAK BNDTO BAAKE/a13000+ WEEED WAILN"
+            "initial_heading": 240
           }
         },
         "33R.NWFLOW.AUTO": {
@@ -5382,32 +5391,32 @@
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoints": "KIAH-15R/ld BOTLL/a5000- FLYZA/a7000+ PPALE/a11000+/hoC43 VUH"
+            "waypoint_actions": { "PPALE": "hoC43" }
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-15R/ld BOTLL/a5000- MMUGS MMALT/a10000+/hoC36 HOURN BLING"
+            "waypoint_actions": { "MMALT": "hoC36" }
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-15R/ld BOTLL/a5000- MMUGS HHOPS/a11000+/hoC36 JAAYE SPINY"
+            "waypoint_actions": { "HHOPS": "hoC36" }
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoints": "KIAH-15R/ld BOTLL/a5000- MMUGS GRAYN/a11000+/hoC36 YOKEM SBI"
+            "waypoint_actions": { "GRAYN": "hoC36" }
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-15R/ld BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+/hoC87 SKUBA PSX YOMOM"
+            "waypoint_actions": { "RITAA": "hoC87" }
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoints": "KIAH-15R/ld BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+/hoC87 RIIGG"
+            "waypoint_actions": { "RITAA": "hoC87" }
           },
           "CRGER": {
             "cleared_altitude": 4000,
@@ -6103,104 +6112,104 @@
           "MAJKK,GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KSGR-35/h170 WYLSN MONNT"
+            "initial_heading": 170
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KSGR-35/h170 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 170
           },
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KSGR-35/h170 DREMR LITLD BLTWY"
+            "initial_heading": 170
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KSGR-35/h170 MMALT MOOKI HOURN BLING"
+            "initial_heading": 170
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KSGR-35/h170 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 170
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KSGR-35/h170 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 170
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KSGR-35/h170 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 170
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KSGR-35/h170 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 170
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KSGR-35/h170 BORRN DILRE BOCCK"
+            "initial_heading": 170
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KSGR-35/h170 BORRN DILRE WEEED WAILN"
+            "initial_heading": 170
           }
         },
         "35": {
           "MAJKK,GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KSGR-17/h350 WYLSN MONNT"
+            "initial_heading": 350
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KSGR-17/h350 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 350
           },
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KSGR-17/h350 DREMR LITLD BLTWY"
+            "initial_heading": 350
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KSGR-17/h350 MMALT MOOKI HOURN BLING"
+            "initial_heading": 350
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KSGR-17/h350 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 350
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KSGR-17/h350 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 350
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KSGR-17/h170 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 170
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KSGR-17/h170 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 170
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KSGR-17/h170 BORRN DILRE BOCCK"
+            "initial_heading": 170
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KSGR-17/h350 BORRN DILRE WEEED WAILN"
+            "initial_heading": 350
           }
         }
       },
@@ -6488,194 +6497,194 @@
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KTME-36/h175 DREMR LITLD BLTWY"
+            "initial_heading": 175
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-36/h175 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 175
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-36/h175 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 175
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-36/h175 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 175
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-36/h175 BORRN DILRE BOCCK"
+            "initial_heading": 175
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-36/h175 BORRN DILRE WEEED WAILN"
+            "initial_heading": 175
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KTME-36/h175 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 175
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KTME-36/h175 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 175
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KTME-36/h175 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 175
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KTME-36/h175 KARRR KAVCY RIIGG"
+            "initial_heading": 175
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KTME-36/h175 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 175
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KTME-36/h175 MMALT MOOKI HOURN BLING"
+            "initial_heading": 175
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KTME-36/h175 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 175
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KTME-36/h175 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 175
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KTME-36/h175 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 175
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KTME-36/h175 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 175
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KTME-36/h175 WATFO VUH"
+            "initial_heading": 175
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KTME-36/h175 WYLSN MONNT KLJOY"
+            "initial_heading": 175
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KTME-36/h175 WYLSN MONNT BUMCO"
+            "initial_heading": 175
           }
         },
         "36": {
           "CRIED": {
             "assigned_altitude": 2000,
             "sid": "BLTWY7",
-            "waypoints": "KTME-18/h355 DREMR LITLD BLTWY"
+            "initial_heading": 355
           },
           "CRGER": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-18/h355 BORRN DILRE ZUUUU PUFER"
+            "initial_heading": 355
           },
           "SAT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-18/h175 BORRN DILRE BOCCK MNURE MARCS"
+            "initial_heading": 175
           },
           "JCT": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-18/h175 BORRN DILRE BOCCK MNURE HAYYY FOWLR"
+            "initial_heading": 175
           },
           "MNURE": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-18/h175 BORRN DILRE BOCCK"
+            "initial_heading": 175
           },
           "WAILN": {
             "assigned_altitude": 2000,
             "sid": "BORRN6",
-            "waypoints": "KTME-18/h355 BORRN DILRE WEEED WAILN"
+            "initial_heading": 355
           },
           "HRV,LEV": {
             "assigned_altitude": 2000,
             "sid": "HOODO7",
-            "waypoints": "KTME-18/h355 VUH HOODO SBIRD CFOOD BOWFN"
+            "initial_heading": 355
           },
           "TPAKK": {
             "assigned_altitude": 2000,
             "sid": "INDIE8",
-            "waypoints": "KTME-18/h355 RENNK COLET SUSHI WWELL INDIE"
+            "initial_heading": 355
           },
           "CRP": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KTME-18/h355 KARRR KAVCY SKUBA PSX YOMOM"
+            "initial_heading": 355
           },
           "NGP,WWREN": {
             "assigned_altitude": 2000,
             "sid": "KARRR7",
-            "waypoints": "KTME-18/h355 KARRR KAVCY RIIGG"
+            "initial_heading": 355
           },
           "HAWES,ORRTH": {
             "assigned_altitude": 2000,
             "sid": "LURIC8",
-            "waypoints": "KTME-18/h355 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
+            "initial_heading": 355
           },
           "LCH": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KTME-18/h355 MMALT MOOKI HOURN BLING"
+            "initial_heading": 355
           },
           "GUSTI": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KTME-18/h355 MMALT MOOKI JAAYE SPINY"
+            "initial_heading": 355
           },
           "LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7",
-            "waypoints": "KTME-18/h355 MMALT MOOKI YOKEM SBI"
+            "initial_heading": 355
           },
           "DPATY,JBULL": {
             "assigned_altitude": 2000,
             "sid": "STRYA8",
-            "waypoints": "KTME-18/h355 KNTKY PEETY DARTR MUSIQ CLAVN STRYA"
+            "initial_heading": 355
           },
           "DOLEY,WTSON": {
             "assigned_altitude": 2000,
             "sid": "STYCK8",
-            "waypoints": "KTME-18/h355 BBYSE SPICR WLLIS STYCK"
+            "initial_heading": 355
           },
           "KELPP,ANKRR,MUSYL": {
             "assigned_altitude": 2000,
             "sid": "WATFO6",
-            "waypoints": "KTME-18/h355 WATFO VUH"
+            "initial_heading": 355
           },
           "MAJKK": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KTME-18/h355 WYLSN MONNT KLJOY"
+            "initial_heading": 355
           },
           "GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8",
-            "waypoints": "KTME-18/h355 WYLSN MONNT BUMCO"
+            "initial_heading": 355
           }
         }
       },

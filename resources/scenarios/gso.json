@@ -48,7 +48,8 @@
           "BAWDS,TAARZ": {
             "cleared_altitude": 5000,
             "description": "TRSHA1",
-            "sid": "TRSHA1"
+            "sid": "TRSHA1",
+            "initial_heading": 235
           },
           "ROA,LYH,SBV,CREWE,RDU": {
             "cleared_altitude": 5000,
@@ -71,7 +72,8 @@
           "BAWDS,TAARZ": {
             "cleared_altitude": 5000,
             "description": "TRSHA1",
-            "sid": "TRSHA1"
+            "sid": "TRSHA1",
+            "initial_heading": 55
           },
           "ROA,LYH,SBV,CREWE,RDU": {
             "cleared_altitude": 5000,
@@ -319,7 +321,7 @@
             "cleared_altitude": 4000,
             "description": "TRSHA1",
             "sid": "TRSHA1",
-            "waypoints": "_INT_33/h240 WHAYN TRSHA"
+            "initial_heading": 240
           },
           "ROA,LYH,SBV,CREWE,RDU": {
             "cleared_altitude": 4000,

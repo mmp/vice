@@ -78,328 +78,328 @@
           "APACK": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 MKK MAGGI SERYU TOADS APACK"
+            "initial_heading": 155
           },
           "CODDY": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 MKK BLUSH CODDY"
+            "initial_heading": 155
           },
           "KOLEA": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 MKK SEPGE KOLEA"
+            "initial_heading": 155
           },
           "PULPS": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 MKK CUGGY PULPS"
+            "initial_heading": 155
           },
           "REXIE": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 MKK MAGGI SERYU REXIE"
+            "initial_heading": 155
           },
           "LIH": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 KEOLA GRAIL NAPUA LIH"
+            "initial_heading": 155
           },
           "SOK": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 KEOLA GRAIL NAPUA SOK"
+            "initial_heading": 155
           },
           "LILIA": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 KEOLA LILIA"
+            "initial_heading": 155
           },
           "PUPPI": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 KEOLA PUPPI"
+            "initial_heading": 155
           },
           "NONNI": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 KEOLA LEANE NONNI"
+            "initial_heading": 155
           },
           "KATHS": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 KEOLA LEANE NONNI KATHS"
+            "initial_heading": 155
           },
           "MKK": {
             "cleared_altitude": 5000,
             "sid": "PALAY3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 PALAY LOKIE MKK"
+            "initial_heading": 155
           },
           "LNY": {
             "cleared_altitude": 5000,
             "sid": "PALAY3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 PALAY ROSHE LNY"
+            "initial_heading": 155
           },
           "CARRP": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 OPIHI SEBYI SECEL SEDDU CARRP"
+            "initial_heading": 155
           },
           "CHOKO": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 OPIHI SEBYI SECJI ZUKEY BINJO CHOKO"
+            "initial_heading": 155
           },
           "DOVRR": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.19.31.053,W157.54.38.814/a400+/h155 OPIHI SELYY DOVRR"
+            "initial_heading": 155
           }
         },
         "8R": {
           "APACK": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 MKK MAGGI SERYU TOADS APACK"
+            "initial_heading": 155
           },
           "CODDY": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 MKK BLUSH CODDY"
+            "initial_heading": 155
           },
           "KOLEA": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 MKK SEPGE KOLEA"
+            "initial_heading": 155
           },
           "PULPS": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 MKK CUGGY PULPS"
+            "initial_heading": 155
           },
           "REXIE": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 MKK MAGGI SERYU REXIE"
+            "initial_heading": 155
           },
           "LIH": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 KEOLA GRAIL NAPUA LIH"
+            "initial_heading": 155
           },
           "SOK": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 KEOLA GRAIL NAPUA SOK"
+            "initial_heading": 155
           },
           "LILIA": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 KEOLA LILIA"
+            "initial_heading": 155
           },
           "PUPPI": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 KEOLA PUPPI"
+            "initial_heading": 155
           },
           "NONNI": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 KEOLA LEANE NONNI"
+            "initial_heading": 155
           },
           "KATHS": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 KEOLA LEANE NONNI KATHS"
+            "initial_heading": 155
           },
           "MKK": {
             "cleared_altitude": 5000,
             "sid": "PALAY3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 PALAY LOKIE MKK"
+            "initial_heading": 155
           },
           "LNY": {
             "cleared_altitude": 5000,
             "sid": "PALAY3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 PALAY ROSHE LNY"
+            "initial_heading": 155
           },
           "CARRP": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 OPIHI SEBYI SECEL SEDDU CARRP"
+            "initial_heading": 155
           },
           "CHOKO": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 OPIHI SEBYI SECJI ZUKEY BINJO CHOKO"
+            "initial_heading": 155
           },
           "DOVRR": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.18.25.231,W157.54.39.748/a400+/h155 OPIHI SELYY DOVRR"
+            "initial_heading": 155
           }
         },
         "26L": {
           "APACK": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 MKK MAGGI SERYU TOADS APACK"
+            "initial_heading": 220
           },
           "CODDY": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 MKK BLUSH CODDY"
+            "initial_heading": 220
           },
           "KOLEA": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 MKK SEPGE KOLEA"
+            "initial_heading": 220
           },
           "PULPS": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 MKK CUGGY PULPS"
+            "initial_heading": 220
           },
           "REXIE": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 MKK MAGGI SERYU REXIE"
+            "initial_heading": 220
           },
           "LIH": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 KEOLA GRAIL NAPUA LIH"
+            "initial_heading": 220
           },
           "SOK": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 KEOLA GRAIL NAPUA SOK"
+            "initial_heading": 220
           },
           "LILIA": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 KEOLA LILIA"
+            "initial_heading": 220
           },
           "PUPPI": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 KEOLA PUPPI"
+            "initial_heading": 220
           },
           "NONNI": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 KEOLA LEANE NONNI"
+            "initial_heading": 220
           },
           "KATHS": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 KEOLA LEANE NONNI KATHS"
+            "initial_heading": 220
           },
           "MKK": {
             "cleared_altitude": 5000,
             "sid": "PALAY3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 PALAY LOKIE MKK"
+            "initial_heading": 220
           },
           "LNY": {
             "cleared_altitude": 5000,
             "sid": "PALAY3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 PALAY ROSHE LNY"
+            "initial_heading": 220
           },
           "CARRP": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 OPIHI SEBYI SECEL SEDDU CARRP"
+            "initial_heading": 220
           },
           "CHOKO": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 OPIHI SEBYI SECJI ZUKEY BINJO CHOKO"
+            "initial_heading": 220
           },
           "DOVRR": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.18.24.551,W157.56.44.058/a400+/h220 OPIHI SELYY DOVRR"
+            "initial_heading": 220
           }
         },
         "26R": {
           "APACK": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 MKK MAGGI SERYU TOADS APACK"
+            "initial_heading": 220
           },
           "CODDY": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 MKK BLUSH CODDY"
+            "initial_heading": 220
           },
           "KOLEA": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 MKK SEPGE KOLEA"
+            "initial_heading": 220
           },
           "PULPS": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 MKK CUGGY PULPS"
+            "initial_heading": 220
           },
           "REXIE": {
             "cleared_altitude": 5000,
             "sid": "MKK5",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 MKK MAGGI SERYU REXIE"
+            "initial_heading": 220
           },
           "LIH": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 KEOLA GRAIL NAPUA LIH"
+            "initial_heading": 220
           },
           "SOK": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 KEOLA GRAIL NAPUA SOK"
+            "initial_heading": 220
           },
           "LILIA": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 KEOLA LILIA"
+            "initial_heading": 220
           },
           "PUPPI": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 KEOLA PUPPI"
+            "initial_heading": 220
           },
           "NONNI": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 KEOLA LEANE NONNI"
+            "initial_heading": 220
           },
           "KATHS": {
             "cleared_altitude": 5000,
             "sid": "KEOLA3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 KEOLA LEANE NONNI KATHS"
+            "initial_heading": 220
           },
           "MKK": {
             "cleared_altitude": 5000,
             "sid": "PALAY3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 PALAY LOKIE MKK"
+            "initial_heading": 220
           },
           "LNY": {
             "cleared_altitude": 5000,
             "sid": "PALAY3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 PALAY ROSHE LNY"
+            "initial_heading": 220
           },
           "CARRP": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 OPIHI SEBYI SECEL SEDDU CARRP"
+            "initial_heading": 220
           },
           "CHOKO": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 OPIHI SEBYI SECJI ZUKEY BINJO CHOKO"
+            "initial_heading": 220
           },
           "DOVRR": {
             "cleared_altitude": 5000,
             "sid": "OPIHI3",
-            "waypoints": "N021.19.30.833,W157.56.35.709/a400+/h220 OPIHI SELYY DOVRR"
+            "initial_heading": 220
           }
         }
       },

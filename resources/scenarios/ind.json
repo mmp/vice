@@ -55,7 +55,7 @@
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_23R/h050"
+            "initial_heading": 50
           },
           "BDOCK": {
             "cleared_altitude": 5000,
@@ -65,22 +65,22 @@
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R/h050"
+            "initial_heading": 50
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R/h050 MEARZ"
+            "initial_heading": 50
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R/h050 MEARZ SACHS"
+            "initial_heading": 50
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23R/h050 MEARZ BRATN"
+            "initial_heading": 50
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
@@ -102,7 +102,7 @@
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_23L/h050"
+            "initial_heading": 50
           },
           "BDOCK": {
             "cleared_altitude": 5000,
@@ -112,22 +112,22 @@
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L/h050"
+            "initial_heading": 50
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L/h050 MEARZ"
+            "initial_heading": 50
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L/h050 MEARZ SACHS"
+            "initial_heading": 50
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_23L/h050 MEARZ BRATN"
+            "initial_heading": 50
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
@@ -149,7 +149,7 @@
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_32/h140"
+            "initial_heading": 140
           },
           "BDOCK": {
             "cleared_altitude": 5000,
@@ -159,22 +159,22 @@
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32/h140"
+            "initial_heading": 140
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32/h140 MEARZ"
+            "initial_heading": 140
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32/h140 MEARZ SACHS"
+            "initial_heading": 140
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_32/h140 MEARZ BRATN"
+            "initial_heading": 140
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
@@ -196,7 +196,7 @@
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_05R/h230"
+            "initial_heading": 230
           },
           "BDOCK": {
             "cleared_altitude": 5000,
@@ -206,22 +206,22 @@
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R/h230"
+            "initial_heading": 230
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R/h230 MEARZ"
+            "initial_heading": 230
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R/h230 MEARZ SACHS"
+            "initial_heading": 230
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05R/h230 MEARZ BRATN"
+            "initial_heading": 230
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
@@ -243,7 +243,7 @@
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_05L/h230"
+            "initial_heading": 230
           },
           "BDOCK": {
             "cleared_altitude": 5000,
@@ -253,22 +253,22 @@
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L/h230"
+            "initial_heading": 230
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L/h230 MEARZ"
+            "initial_heading": 230
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L/h230 MEARZ SACHS"
+            "initial_heading": 230
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_05L/h230 MEARZ BRATN"
+            "initial_heading": 230
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
@@ -290,7 +290,7 @@
           "MAREO": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_14/h320"
+            "initial_heading": 320
           },
           "BDOCK": {
             "cleared_altitude": 5000,
@@ -300,22 +300,22 @@
           "MEARZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14/h320"
+            "initial_heading": 320
           },
           "BRATN": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14/h320 MEARZ"
+            "initial_heading": 320
           },
           "BVT": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14/h320 MEARZ SACHS"
+            "initial_heading": 320
           },
           "MZZ": {
             "cleared_altitude": 5000,
             "sid": "MEARZ7",
-            "waypoints": "_IND_14/h320 MEARZ BRATN"
+            "initial_heading": 320
           },
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,

@@ -45,42 +45,42 @@
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
+            "initial_heading": 320
           },
           "LAX": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
+            "initial_heading": 320
           },
           "PADRZ.C": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a6000+ PADRZ"
+            "initial_heading": 320
           },
           "PADRZ.P": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a8000+ PADRZ"
+            "initial_heading": 320
           },
           "CHKNN,EHF,OROSZ": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a8000+ PADRZ HFMNN CHKNN"
+            "initial_heading": 320
           },
           "IKAYE": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a8000+ PADRZ IKAYE"
+            "initial_heading": 320
           }
         },
         "27R.D": {
@@ -101,42 +101,42 @@
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/l280 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
+            "initial_heading": 280
           },
           "LAX": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
+            "initial_heading": 320
           },
           "PADRZ.C": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a6000+ PADRZ"
+            "initial_heading": 320
           },
           "PADRZ.P": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a8000+ PADRZ"
+            "initial_heading": 320
           },
           "CHKNN,EHF,OROSZ": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a8000+ PADRZ HFMNN CHKNN"
+            "initial_heading": 320
           },
           "IKAYE": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KSEE-9L/h320 GYWNN/a8000+ PADRZ IKAYE"
+            "initial_heading": 320
           }
         }
       },
@@ -431,13 +431,15 @@
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
+            "aircraft": ["jet", "turboprop"],
+            "initial_heading": 270
           },
           "PADRZ.P,EHF,OROSZ,IKAYE,CHKNN": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
+            "aircraft": ["jet", "turboprop"],
+            "initial_heading": 270
           }
         },
         "10L": {
@@ -905,49 +907,49 @@
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
+            "initial_heading": 247
           },
           "SLI": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
+            "initial_heading": 247
           },
           "EHF": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+            "initial_heading": 247
           },
           "OROSZ": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+            "initial_heading": 247
           },
           "CHKNN": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN"
+            "initial_heading": 247
           },
           "IKAYE": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ IKAYE"
+            "initial_heading": 247
           },
           "SXC,MALIT,DINTY": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet"],
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ SXC"
+            "initial_heading": 247
           }
         }
       },
@@ -1359,64 +1361,64 @@
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD GYWNN/a6000+/ho4Y PADRZ CWARD/a12000- LAX",
-            "departure_controller": "5W"
+            "departure_controller": "5W",
+            "waypoint_actions": { "GYWNN": "ho4Y" }
           },
           "SLI": {
             "cleared_altitude": 10000,
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD GYWNN/a6000+/ho4Y PADRZ CWARD/a12000- MADOW SLI",
-            "departure_controller": "5W"
+            "departure_controller": "5W",
+            "waypoint_actions": { "GYWNN": "ho4Y" }
           },
           "DINTY,MALIT,SXC": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD KERNL GYWNN/a8000+/hoC21 PADRZ SXC",
-            "departure_controller": "5W"
+            "departure_controller": "5W",
+            "waypoint_actions": { "GYWNN": "hoC21" }
           },
           "IKAYE": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD KERNL GYWNN/a8000+/hoC21 PADRZ IKAYE",
-            "departure_controller": "5W"
+            "departure_controller": "5W",
+            "waypoint_actions": { "GYWNN": "hoC21" }
           },
           "CHKNN,EHF,OROSZ": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "N032.44.15.285,W117.12.23.884 WNFLD KERNL GYWNN/a8000+/hoC21 PADRZ HFMNN CHKNN",
-            "departure_controller": "5W"
+            "departure_controller": "5W",
+            "waypoint_actions": { "GYWNN": "hoC21" }
           },
           "MTBAL": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230- ANRMN JORRJ/a11000+/hoC09 GRIDR PIEZZ NSHEE MTBAL",
-            "departure_controller": "5W"
+            "departure_controller": "5W",
+            "waypoint_actions": { "JORRJ": "hoC09" }
           },
           "HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230- ANRMN JORRJ/a11000+/hoC09 GRIDR GUUSE BLUZE IPL BZA HOGGZ",
-            "departure_controller": "5W"
+            "departure_controller": "5W",
+            "waypoint_actions": { "JORRJ": "hoC09" }
           },
           "CENZA": {
             "cleared_altitude": 13000,
             "sid": "ZZOOO4",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
-            "waypoints": "JETTI/flyover ZZOOO/a6000-23000/s230-/hoC09 CENZA",
-            "departure_controller": "5W"
+            "departure_controller": "5W",
+            "waypoint_actions": { "ZZOOO": "hoC09" }
           },
           "JLI": {
             "cleared_altitude": 8000,

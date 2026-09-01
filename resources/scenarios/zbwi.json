@@ -33,7 +33,7 @@
           "HYLND": {
             "cleared_altitude": 5000,
             "sid": "HYLND7",
-            "waypoints": "TJAYY/a1200+ BOATT/hoB1R HEARR MARBB/flyover HYLND/flyover"
+            "waypoint_actions": { "BOATT": "hoB1R" }
           }
         }
       },

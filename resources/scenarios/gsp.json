@@ -33,12 +33,12 @@
           "DRIVN,ACERB": {
             "cleared_altitude": 5000,
             "sid": "BIMMR3",
-            "waypoints": "_GSP_22/h038"
+            "initial_heading": 38
           },
           "JLENA": {
             "cleared_altitude": 5000,
             "sid": "BWALL2",
-            "waypoints": "_GSP_22/h038"
+            "initial_heading": 38
           },
           "HRS,DGESS,SPA,SOTHH": {
             "cleared_altitude": 5000,
@@ -49,12 +49,12 @@
           "DRIVN,ACERB": {
             "cleared_altitude": 5000,
             "sid": "BIMMR3",
-            "waypoints": "_GSP_4/h219"
+            "initial_heading": 219
           },
           "JLENA": {
             "cleared_altitude": 5000,
             "sid": "BWALL2",
-            "waypoints": "_GSP_4/h219"
+            "initial_heading": 219
           },
           "HRS,DGESS,SPA,SOTHH": {
             "cleared_altitude": 5000,

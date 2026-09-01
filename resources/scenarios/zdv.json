@@ -111,52 +111,52 @@
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+/ho PACMN/a16000+ SHOJO/a18000+ SABTH",
-            "handoff_controller": "29"
+            "handoff_controller": "29",
+            "waypoint_actions": { "FIGTR": "ho" }
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+/ho SEGAH/a16000+ STAKR/a18000+ AZARO",
-            "handoff_controller": "29"
+            "handoff_controller": "29",
+            "waypoint_actions": { "FIGTR": "ho" }
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+/ho WEPON/a16000+ SOLAR/a17000+ SMMUR",
-            "handoff_controller": "29"
+            "handoff_controller": "29",
+            "waypoint_actions": { "FIGTR": "ho" }
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "KIDNG/a10000- TWWIN FIGTR/a14000+/ho HANGR/a16000+ SCAGS/a18000+ FRNKE/a23000+",
-            "handoff_controller": "29"
+            "handoff_controller": "29",
+            "waypoint_actions": { "FIGTR": "ho" }
           }
         },
         "25": {
           "JOPLN,VRONI": {
             "cleared_altitude": 23000,
             "sid": "SABTH2",
-            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+/ho ICECI/a16000+ SHOJO/a18000+ SABTH",
-            "handoff_controller": "29"
+            "handoff_controller": "29",
+            "waypoint_actions": { "CIROS": "ho" }
           },
           "SLEEK": {
             "cleared_altitude": 23000,
             "sid": "SLEEK2",
-            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+/ho WEPON/a16000 STAKR/a18000+ AZARO",
-            "handoff_controller": "29"
+            "handoff_controller": "29",
+            "waypoint_actions": { "CIROS": "ho" }
           },
           "DAAYE,RAITT": {
             "cleared_altitude": 23000,
             "sid": "SMMUR2",
-            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+/ho RKYMT/a16000+ SOLAR/a17000+ SMMUR ",
-            "handoff_controller": "29"
+            "handoff_controller": "29",
+            "waypoint_actions": { "CIROS": "ho" }
           },
           "SUDDZ": {
             "cleared_altitude": 23000,
             "sid": "SUDDZ1",
-            "waypoints": "BRKEM/a10000- LENNN/a10000+ TIKLR CIROS/a14000+/ho RKYMT/a16000+ SCAGS/a18000+ FRNKE/a23000+",
-            "handoff_controller": "29"
+            "handoff_controller": "29",
+            "waypoint_actions": { "CIROS": "ho" }
           }
         }
       },

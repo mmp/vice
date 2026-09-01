@@ -987,42 +987,42 @@
           "WORMS.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
-            "waypoints": "KMCO-17L/h090 WORMS"
+            "waypoints": "KMCO-17R/h090 WORMS"
           },
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
-            "waypoints": "KMCO-17L/h090 KIZER"
+            "waypoints": "KMCO-17R/h090 KIZER"
           },
           "VIZTA.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
-            "waypoints": "KMCO-17L/h090 VIZTA"
+            "waypoints": "KMCO-17R/h090 VIZTA"
           },
           "KNEED.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
-            "waypoints": "KMCO-17L/h090 KNEED"
+            "waypoints": "KMCO-17R/h090 KNEED"
           },
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
-            "waypoints": "KMCO-17L/h090 RDSOX"
+            "waypoints": "KMCO-17R/h090 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
-            "waypoints": "KMCO-17L/h090 DEARY"
+            "waypoints": "KMCO-17R/h090 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
-            "waypoints": "KMCO-17L/h040 DEARY"
+            "waypoints": "KMCO-17R/h040 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
-            "waypoints": "KMCO-17L/h040 KIZER"
+            "waypoints": "KMCO-17R/h040 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
             "cleared_altitude": 7000,
@@ -1064,42 +1064,42 @@
           "WORMS.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
-            "waypoints": "KMCO-17R/h090 WORMS"
+            "waypoints": "KMCO-17L/h090 WORMS"
           },
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
-            "waypoints": "KMCO-17R/h090 KIZER"
+            "waypoints": "KMCO-17L/h090 KIZER"
           },
           "VIZTA.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
-            "waypoints": "KMCO-17R/h090 VIZTA"
+            "waypoints": "KMCO-17L/h090 VIZTA"
           },
           "KNEED.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
-            "waypoints": "KMCO-17R/h090 KNEED"
+            "waypoints": "KMCO-17L/h090 KNEED"
           },
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
-            "waypoints": "KMCO-17R/h090 RDSOX"
+            "waypoints": "KMCO-17L/h090 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
-            "waypoints": "KMCO-17R/h090 DEARY"
+            "waypoints": "KMCO-17L/h090 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
-            "waypoints": "KMCO-17R/h040 DEARY"
+            "waypoints": "KMCO-17L/h040 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
-            "waypoints": "KMCO-17R/h040 KIZER"
+            "waypoints": "KMCO-17L/h040 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
             "cleared_altitude": 7000,
@@ -7307,13 +7307,15 @@
         "9L": {
           "WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN": {
             "cleared_altitude": 2000,
-            "sid": "SFB1"
+            "sid": "SFB1",
+            "initial_heading": 80
           }
         },
         "27R": {
           "WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN": {
             "cleared_altitude": 2000,
-            "sid": "SFB1"
+            "sid": "SFB1",
+            "initial_heading": 280
           }
         }
       },
@@ -9000,7 +9002,7 @@
         "33": {
           "WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN": {
             "cleared_altitude": 2000,
-            "waypoints": "KISM-33/h150"
+            "waypoints": "KISM-15/h150"
           }
         }
       },

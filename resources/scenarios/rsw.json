@@ -19,19 +19,20 @@
             "cleared_altitude": 4000,
             "sid": "CSHEL8",
             "description": "CSHEL8",
-            "waypoints": "KRSW/h060/a4000 CSHEL/h347"
+            "initial_heading": 60,
+            "waypoint_actions": { "CSHEL": "h347" }
           },
           "CHARO,ROGAN,DYLYN,LUCYS,RACNO,DIDDY": {
             "cleared_altitude": 4000,
             "sid": "ALICO7",
             "description": "ALICO7",
-            "waypoints": "KRSW/h058/a4000"
+            "waypoints": "KRSW-24/h058/a4000"
           },
           "MOOKY": {
             "cleared_altitude": 3000,
             "sid": "MOOKY6",
             "description": "MOOKY6",
-            "waypoints": "KRSW/h100/a3000"
+            "waypoints": "KRSW-24/h100/a3000"
           },
           "SCUBY,AABER,GOODY,FEMID": {
             "cleared_altitude": 3000,
@@ -49,13 +50,13 @@
             "cleared_altitude": 4000,
             "sid": "ALICO7",
             "description": "ALICO7",
-            "waypoints": "KRSW 26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
+            "waypoints": "KRSW-6 26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
           },
           "MOOKY": {
             "cleared_altitude": 3000,
             "sid": "MOOKY6",
             "description": "MOOKY6",
-            "waypoints": "KRSW/h238/a3000"
+            "waypoints": "KRSW-6/h238/a3000"
           },
           "SCUBY,AABER,GOODY,FEMID": {
             "cleared_altitude": 3000,

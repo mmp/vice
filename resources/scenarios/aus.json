@@ -42,27 +42,27 @@
           "SAYBR": {
             "cleared_altitude": 4000,
             "sid": "SAYBR3",
-            "waypoints": "_AUS_36R/h140 MUNCH/a5000 SAYBR"
+            "initial_heading": 140
           },
           "SJT": {
             "cleared_altitude": 4000,
             "sid": "AEROZ2",
-            "waypoints": "_AUS_36R/h220 AMUSE/a5000 AEROZ SJT"
+            "initial_heading": 220
           },
           "BNDIA": {
             "cleared_altitude": 4000,
             "sid": "BNDIA3",
-            "waypoints": "_AUS_36R/h220 GARDS/a5000 BNDIA"
+            "initial_heading": 220
           },
           "ABI,KLNGR": {
             "cleared_altitude": 4000,
             "sid": "ELOEL3",
-            "waypoints": "_AUS_36R/h220 WLMRT/a5000 ELOEL"
+            "initial_heading": 220
           },
           "MUCKY": {
             "cleared_altitude": 4000,
             "sid": "MUCKY3",
-            "waypoints": "_AUS_36R/h220 PAYDA/a5000 MUCKY"
+            "initial_heading": 220
           }
         },
         "36R": {
@@ -74,49 +74,49 @@
           "SAYBR": {
             "cleared_altitude": 4000,
             "sid": "SAYBR3",
-            "waypoints": "_AUS_18L/h040 MUNCH/a5000 SAYBR"
+            "initial_heading": 40
           },
           "SJT": {
             "cleared_altitude": 4000,
             "sid": "AEROZ2",
-            "waypoints": "_AUS_18L/h320 AMUSE/a5000 AEROZ SJT"
+            "initial_heading": 320
           },
           "BNDIA": {
             "cleared_altitude": 4000,
             "sid": "BNDIA3",
-            "waypoints": "_AUS_18L/h320 GARDS/a5000 BNDIA"
+            "initial_heading": 320
           },
           "ABI,KLNGR": {
             "cleared_altitude": 4000,
             "sid": "ELOEL3",
-            "waypoints": "_AUS_18L/h320 WLMRT/a5000 ELOEL"
+            "initial_heading": 320
           },
           "MUCKY": {
             "cleared_altitude": 4000,
             "sid": "MUCKY3",
-            "waypoints": "_AUS_18L/h320 PAYDA/a5000 MUCKY"
+            "initial_heading": 320
           }
         },
         "18R": {
           "SJT": {
             "cleared_altitude": 4000,
             "sid": "AEROZ2",
-            "waypoints": "_AUS_36L/h220 AMUSE/a5000 AEROZ SJT"
+            "initial_heading": 220
           },
           "BNDIA": {
             "cleared_altitude": 4000,
             "sid": "BNDIA3",
-            "waypoints": "_AUS_36L/h220 GARDS/a5000 BNDIA"
+            "initial_heading": 220
           },
           "ABI,KLNGR": {
             "cleared_altitude": 4000,
             "sid": "ELOEL3",
-            "waypoints": "_AUS_36L/h220 WLMRT/a5000 ELOEL"
+            "initial_heading": 220
           },
           "MUCKY": {
             "cleared_altitude": 4000,
             "sid": "MUCKY3",
-            "waypoints": "_AUS_36L/h220 PAYDA/a5000 MUCKY"
+            "initial_heading": 220
           },
           "ZENZI": {
             "cleared_altitude": 4000,
@@ -126,29 +126,29 @@
           "SAYBR": {
             "cleared_altitude": 4000,
             "sid": "SAYBR3",
-            "waypoints": "_AUS_36L/h140 MUNCH/a5000 SAYBR"
+            "initial_heading": 140
           }
         },
         "36L": {
           "SJT": {
             "cleared_altitude": 4000,
             "sid": "AEROZ2",
-            "waypoints": "_AUS_18R/h320 AMUSE/a5000 AEROZ SJT"
+            "initial_heading": 320
           },
           "BNDIA": {
             "cleared_altitude": 4000,
             "sid": "BNDIA3",
-            "waypoints": "_AUS_18R/h320 GARDS/a5000 BNDIA"
+            "initial_heading": 320
           },
           "ABI,KLNGR": {
             "cleared_altitude": 4000,
             "sid": "ELOEL3",
-            "waypoints": "_AUS_18R/h320 WLMRT/a5000 ELOEL"
+            "initial_heading": 320
           },
           "MUCKY": {
             "cleared_altitude": 4000,
             "sid": "MUCKY3",
-            "waypoints": "_AUS_18R/h320 PAYDA/a5000 MUCKY"
+            "initial_heading": 320
           },
           "ZENZI": {
             "cleared_altitude": 4000,
@@ -158,7 +158,7 @@
           "SAYBR": {
             "cleared_altitude": 4000,
             "sid": "SAYBR3",
-            "waypoints": "_AUS_18R/h040 MUNCH/a5000 SAYBR"
+            "initial_heading": 40
           }
         }
       },
@@ -352,27 +352,27 @@
           "SAYBR": {
             "cleared_altitude": 4000,
             "sid": "SAYBR3",
-            "waypoints": "N29.53.11.609,W97.51.25.441/h129 MUNCH/a5000 SAYBR"
+            "initial_heading": 129
           },
           "SJT": {
             "cleared_altitude": 4000,
             "sid": "AEROZ2",
-            "waypoints": "N29.53.11.609,W97.51.25.441/h129 AMUSE/a5000 AEROZ SJT"
+            "initial_heading": 129
           },
           "BNDIA": {
             "cleared_altitude": 4000,
             "sid": "BNDIA3",
-            "waypoints": "N29.53.11.609,W97.51.25.441/h129 GARDS/a5000 BNDIA"
+            "initial_heading": 129
           },
           "ABI,KLNGR": {
             "cleared_altitude": 4000,
             "sid": "ELOEL3",
-            "waypoints": "N29.53.11.609,W97.51.25.441/h129 WLMRT/a5000 ELOEL"
+            "initial_heading": 129
           },
           "MUCKY": {
             "cleared_altitude": 4000,
             "sid": "MUCKY3",
-            "waypoints": "N29.53.11.609,W97.51.25.441/h129 PAYDA/a5000 MUCKY"
+            "initial_heading": 129
           },
           "KHYI": {
             "cleared_altitude": 4000,
@@ -388,27 +388,27 @@
           "SAYBR": {
             "cleared_altitude": 4000,
             "sid": "SAYBR3",
-            "waypoints": "N29.53.49.186,W97.52.11.925/h309 MUNCH/a5000 SAYBR"
+            "initial_heading": 309
           },
           "SJT": {
             "cleared_altitude": 4000,
             "sid": "AEROZ2",
-            "waypoints": "N29.53.49.186,W97.52.11.925/h309 AMUSE/a5000 AEROZ SJT"
+            "initial_heading": 309
           },
           "BNDIA": {
             "cleared_altitude": 4000,
             "sid": "BNDIA3",
-            "waypoints": "N29.53.49.186,W97.52.11.925/h309 GARDS/a5000 BNDIA"
+            "initial_heading": 309
           },
           "ABI,KLNGR": {
             "cleared_altitude": 4000,
             "sid": "ELOEL3",
-            "waypoints": "N29.53.49.186,W97.52.11.925/h309 WLMRT/a5000 ELOEL"
+            "initial_heading": 309
           },
           "MUCKY": {
             "cleared_altitude": 4000,
             "sid": "MUCKY3",
-            "waypoints": "N29.53.49.186,W97.52.11.925/h309 PAYDA/a5000 MUCKY"
+            "initial_heading": 309
           },
           "KHYI": {
             "cleared_altitude": 4000,
@@ -512,7 +512,7 @@
           "AMUSE": {
             "cleared_altitude": 4000,
             "sid": "AEROZ2",
-            "waypoints": "N30.40.52.973,W97.41.10.216/h290 AMUSE"
+            "initial_heading": 290
           },
           "CLL": {
             "cleared_altitude": 5000,
@@ -523,7 +523,7 @@
           "AMUSE": {
             "cleared_altitude": 4000,
             "sid": "AEROZ2",
-            "waypoints": "N30.40.32.374,W97.40.29.883/h110 AMUSE"
+            "initial_heading": 110
           },
           "CLL": {
             "cleared_altitude": 5000,

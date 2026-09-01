@@ -33,14 +33,14 @@
           "SYR,BTV,CAM,ALB,BOS,LFV,ENE,BGR,PQI,MLT,HANAA,TOPPS,CEDAP": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KBHB/h220"
+            "waypoints": "KBHB-4/h220"
           }
         },
         "4": {
           "SYR,BTV,CAM,ALB,BOS,LFV,ENE,BGR,PQI,MLT,HANAA,TOPPS,CEDAP": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KBHB/h040"
+            "waypoints": "KBHB-22/h040"
           }
         }
       },
@@ -106,7 +106,7 @@
           "SYR,BTV,CAM,ALB,BOS,LFV,ENE,BGR,PQI,MLT,HANAA,TOPPS": {
             "assigned_altitude": 10000,
             "sid": "BGR5",
-            "waypoints": "KBGR/h150"
+            "waypoints": "KBGR-33/h150"
           }
         },
         "33": {

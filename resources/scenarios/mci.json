@@ -75,47 +75,47 @@
           "STJ": {
             "cleared_altitude": 10000,
             "sid": "CHIEF9",
-            "waypoints": "KMCI-19R/h360 MCI STJ"
+            "initial_heading": 360
           },
           "CATTS": {
             "cleared_altitude": 10000,
             "sid": "CHIEF9",
-            "waypoints": "KMCI-19R/h360 MCI OZAKI CATTS"
+            "initial_heading": 360
           },
           "DOSOA": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-19R/h360 MCI SPRNT DOSOA"
+            "initial_heading": 360
           },
           "ARENZ": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ"
+            "initial_heading": 200
           },
           "TONCE": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-19R/h360 MCI JDOGG TONCE"
+            "initial_heading": 360
           },
           "BODYN": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-19R/h360 MCI CAYKO JTHRO ARENZ BODYN"
+            "initial_heading": 360
           },
           "TIFTO": {
             "cleared_altitude": 10000,
             "sid": "TIFTO8",
-            "waypoints": "KMCI-19R/h360 MCI DIGGY TIFTO"
+            "initial_heading": 360
           },
           "SLN": {
             "cleared_altitude": 10000,
             "sid": "WLDCT6",
-            "waypoints": "KMCI-19R/h360 MCI TYTUS KENTN SLN"
+            "initial_heading": 360
           },
           "ICT": {
             "cleared_altitude": 10000,
             "sid": "WLDCT6",
-            "waypoints": "KMCI-19R/h360 MCI TYTUS KENTN ICT"
+            "initial_heading": 360
           }
         },
         "1R": {
@@ -127,22 +127,22 @@
           "SGF": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-19L/h020 MCI GRILD BUM SGF"
+            "initial_heading": 20
           },
           "DOSOA": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-19L/h020 MCI SPRNT DOSOA"
+            "initial_heading": 20
           },
           "TONCE": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-19L/h020 MCI JDOGG TONCE"
+            "initial_heading": 20
           },
           "BUM": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-19L/h020 MCI GRILD BUM"
+            "initial_heading": 20
           }
         },
         "19L": {
@@ -154,178 +154,178 @@
           "SGF": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-1R/h180 MCI GRILD BUM SGF"
+            "initial_heading": 180
           },
           "DOSOA": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-1R/h180 MCI SPRNT DOSOA"
+            "initial_heading": 180
           },
           "TONCE": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-1R/h180 MCI JDOGG TONCE"
+            "initial_heading": 180
           },
           "BUM": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-1R/h180 MCI GRILD BUM"
+            "initial_heading": 180
           }
         },
         "19R": {
           "STJ": {
             "cleared_altitude": 10000,
             "sid": "CHIEF9",
-            "waypoints": "KMCI-1L/h200 MCI STJ"
+            "initial_heading": 200
           },
           "CATTS": {
             "cleared_altitude": 10000,
             "sid": "CHIEF9",
-            "waypoints": "KMCI-1L/h200 MCI OZAKI CATTS"
+            "initial_heading": 200
           },
           "DOSOA": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-1L/h200 MCI SPRNT DOSOA"
+            "initial_heading": 200
           },
           "ARENZ": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ"
+            "initial_heading": 200
           },
           "TONCE": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-1L/h200 MCI JDOGG TONCE"
+            "initial_heading": 200
           },
           "BODYN": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ BODYN"
+            "initial_heading": 200
           },
           "TIFTO": {
             "cleared_altitude": 10000,
             "sid": "TIFTO8",
-            "waypoints": "KMCI-1L/h200 MCI DIGGY TIFTO"
+            "initial_heading": 200
           },
           "SLN": {
             "cleared_altitude": 10000,
             "sid": "WLDCT6",
-            "waypoints": "KMCI-1L/h200 MCI TYTUS KENTN SLN"
+            "initial_heading": 200
           },
           "ICT": {
             "cleared_altitude": 10000,
             "sid": "WLDCT6",
-            "waypoints": "KMCI-1L/h200 MCI TYTUS KENTN ICT"
+            "initial_heading": 200
           }
         },
         "27": {
           "SPI,COU": {
             "cleared_altitude": 10000,
             "sid": "LAKES5",
-            "waypoints": "KMCI-19L/h020 MCI BLUZY TWAIN SPI"
+            "waypoints": "KMCI-9/h020 MCI BLUZY TWAIN SPI"
           },
           "SGF": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-19L/h020 MCI GRILD BUM SGF"
+            "initial_heading": 20
           },
           "BUM": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-19L/h020 MCI GRILD BUM"
+            "initial_heading": 20
           },
           "STJ": {
             "cleared_altitude": 10000,
             "sid": "CHIEF9",
-            "waypoints": "KMCI-1L/h200 MCI STJ"
+            "initial_heading": 200
           },
           "CATTS": {
             "cleared_altitude": 10000,
             "sid": "CHIEF9",
-            "waypoints": "KMCI-1L/h200 MCI OZAKI CATTS"
+            "initial_heading": 200
           },
           "DOSOA": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-1L/h200 MCI SPRNT DOSOA"
+            "initial_heading": 200
           },
           "ARENZ": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ"
+            "initial_heading": 200
           },
           "TONCE": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-1L/h200 MCI JDOGG TONCE"
+            "initial_heading": 200
           },
           "BODYN": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-1L/h200 MCI CAYKO JTHRO ARENZ BODYN"
+            "initial_heading": 200
           },
           "TIFTO": {
             "cleared_altitude": 10000,
             "sid": "TIFTO8",
-            "waypoints": "KMCI-1L/h200 MCI DIGGY TIFTO"
+            "initial_heading": 200
           },
           "SLN": {
             "cleared_altitude": 10000,
             "sid": "WLDCT6",
-            "waypoints": "KMCI-1L/h200 MCI TYTUS KENTN SLN"
+            "initial_heading": 200
           },
           "ICT": {
             "cleared_altitude": 10000,
             "sid": "WLDCT6",
-            "waypoints": "KMCI-1L/h200 MCI TYTUS KENTN ICT"
+            "initial_heading": 200
           }
         },
         "9": {
           "STJ": {
             "cleared_altitude": 10000,
             "sid": "CHIEF9",
-            "waypoints": "KMCI-27/h270 MCI STJ"
+            "initial_heading": 270
           },
           "CATTS": {
             "cleared_altitude": 10000,
             "sid": "CHIEF9",
-            "waypoints": "KMCI-27/h270 MCI OZAKI CATTS"
+            "initial_heading": 270
           },
           "DOSOA": {
             "cleared_altitude": 10000,
             "sid": "RACER8",
-            "waypoints": "KMCI-27/h270 MCI SPRNT DOSOA"
+            "initial_heading": 270
           },
           "ARENZ": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-27/h270 MCI CAYKO JTHRO ARENZ"
+            "initial_heading": 270
           },
           "TONCE": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-27/h270 MCI JDOGG TONCE"
+            "initial_heading": 270
           },
           "BODYN": {
             "cleared_altitude": 10000,
             "sid": "ROYAL2",
-            "waypoints": "KMCI-27/h270 MCI CAYKO JTHRO ARENZ BODYN"
+            "initial_heading": 270
           },
           "TIFTO": {
             "cleared_altitude": 10000,
             "sid": "TIFTO8",
-            "waypoints": "KMCI-27/h270 MCI DIGGY TIFTO"
+            "initial_heading": 270
           },
           "SLN": {
             "cleared_altitude": 10000,
             "sid": "WLDCT6",
-            "waypoints": "KMCI-27/h270 MCI TYTUS KENTN SLN"
+            "initial_heading": 270
           },
           "ICT": {
             "cleared_altitude": 10000,
             "sid": "WLDCT6",
-            "waypoints": "KMCI-27/h270 MCI TYTUS KENTN ICT"
+            "initial_heading": 270
           }
         }
       },
@@ -1242,7 +1242,7 @@
           "BUM": {
             "cleared_altitude": 5000,
             "sid": "RACER8",
-            "waypoints": "KSTJ-35/h170 MCI GRILD"
+            "initial_heading": 170
           }
         }
       },
@@ -1339,7 +1339,7 @@
           "BUM": {
             "cleared_altitude": 5000,
             "sid": "RACER8",
-            "waypoints": "KIXD-36/h170 MCI GRILD"
+            "initial_heading": 170
           }
         }
       },
@@ -1427,7 +1427,7 @@
           "BUM": {
             "cleared_altitude": 5000,
             "sid": "RACER8",
-            "waypoints": "KOJC-36/h180 MCI GRILD"
+            "initial_heading": 180
           }
         }
       },
@@ -1525,7 +1525,7 @@
           "BUM": {
             "cleared_altitude": 5000,
             "sid": "RACER8",
-            "waypoints": "KMKC-1/h170 MCI GRILD"
+            "initial_heading": 170
           }
         }
       },

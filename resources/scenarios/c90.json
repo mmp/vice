@@ -4462,47 +4462,47 @@
           "RBS": {
             "cleared_altitude": 3000,
             "sid": "JORJO5",
-            "waypoints": "KPWK-34/h040 JILYN JORJO BRBIE BACEN BLOKR RBS"
+            "initial_heading": 40
           },
           "BEKKI": {
             "cleared_altitude": 3000,
             "sid": "JORJO5",
-            "waypoints": "KPWK-34/h040 JILYN JORJO BRBIE BACEN BLOKR BEKKI"
+            "initial_heading": 40
           },
           "AKMIE": {
             "cleared_altitude": 3000,
             "sid": "JORJO5",
-            "waypoints": "KPWK-34/h040 JILYN JORJO AHLOU ACITO ADELL AKMIE"
+            "initial_heading": 40
           },
           "ARLYN": {
             "cleared_altitude": 3000,
             "sid": "JORJO5",
-            "waypoints": "KPWK-34/h040 JILYN JORJO AHLOU ACITO ADELL AKMIE ARLYN"
+            "initial_heading": 40
           },
           "EMEGE": {
             "cleared_altitude": 3000,
             "sid": "MONKZ5",
-            "waypoints": "KPWK-34/h040 ZYDEK MONKZ EZRAH EARND ELANR EMMLY ETAME EMEGE"
+            "initial_heading": 40
           },
           "ERECO": {
             "cleared_altitude": 3000,
             "sid": "MONKZ5",
-            "waypoints": "KPWK-34/h040 ZYDEK MONKZ EZRAH EARND ELANR EMMLY ERECO"
+            "initial_heading": 40
           },
           "EMMLY": {
             "cleared_altitude": 3000,
             "sid": "MONKZ5",
-            "waypoints": "KPWK-34/h040 ZYDEK MONKZ EZRAH EARND ELANR EMMLY"
+            "initial_heading": 40
           },
           "SCOTO": {
             "cleared_altitude": 3000,
             "sid": "MONKZ5",
-            "waypoints": "KPWK-34/h040 ZYDEK MONKZ DWANE DENNT DARCY DREGS DUMGE SCOTO"
+            "initial_heading": 40
           },
           "DONVE": {
             "cleared_altitude": 3000,
             "sid": "MONKZ5",
-            "waypoints": "KPWK-34/h040 ZYDEK MONKZ DWANE DENNT DARCY DREGS DONVE"
+            "initial_heading": 40
           },
           "CYBIL": {
             "cleared_altitude": 3000,
@@ -5306,23 +5306,28 @@
         "12": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL8"
+            "sid": "ADELL8",
+            "initial_heading": 120
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR8"
+            "sid": "BLOKR8",
+            "initial_heading": 120
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN8"
+            "sid": "CARYN8",
+            "initial_heading": 120
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY8"
+            "sid": "DARCY8",
+            "initial_heading": 120
           },
           "ELANR,ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR9"
+            "sid": "ELANR9",
+            "initial_heading": 120
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,
@@ -5357,23 +5362,28 @@
         "30": {
           "ARLYN": {
             "cleared_altitude": 3000,
-            "sid": "ADELL8"
+            "sid": "ADELL8",
+            "initial_heading": 300
           },
           "BEKKI,RBS": {
             "cleared_altitude": 3000,
-            "sid": "BLOKR8"
+            "sid": "BLOKR8",
+            "initial_heading": 300
           },
           "CYBIL": {
             "cleared_altitude": 3000,
-            "sid": "CARYN8"
+            "sid": "CARYN8",
+            "initial_heading": 300
           },
           "SCOTO,DONVE": {
             "cleared_altitude": 3000,
-            "sid": "DARCY8"
+            "sid": "DARCY8",
+            "initial_heading": 300
           },
           "ELANR,ERECO,EMEGE": {
             "cleared_altitude": 3000,
-            "sid": "ELANR9"
+            "sid": "ELANR9",
+            "initial_heading": 300
           },
           "OGALE,ROTTN": {
             "cleared_altitude": 3000,

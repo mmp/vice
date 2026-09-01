@@ -242,14 +242,14 @@
           "JHW": {
             "cleared_altitude": 3000,
             "sid": "BUF8",
-            "waypoints": "_IAG_28R/h200"
+            "waypoints": "KIAG-10/h200"
           }
         },
         "10": {
           "JHW": {
             "cleared_altitude": 3000,
             "sid": "BUF8",
-            "waypoints": "_IAG_10L/h190"
+            "waypoints": "KIAG-28/h190"
           }
         },
         "6": {

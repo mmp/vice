@@ -716,7 +716,7 @@
           "IZZZO": {
             "cleared_altitude": 5000,
             "sid": "IZZZO8",
-            "waypoints": "KSDL-21/h335 KEENS IZZZO"
+            "initial_heading": 335
           },
           "GBN": {
             "cleared_altitude": 5000,
@@ -763,7 +763,7 @@
           "IZZZO": {
             "cleared_altitude": 5000,
             "sid": "IZZZO8",
-            "waypoints": "KSDL-3/h335 KEENS IZZZO"
+            "initial_heading": 335
           },
           "GBN": {
             "cleared_altitude": 5000,
@@ -1096,7 +1096,7 @@
           "IZZZO": {
             "cleared_altitude": 5000,
             "sid": "IZZZO8",
-            "waypoints": "KIWA-12R/h120 KEENS IZZZO"
+            "initial_heading": 120
           },
           "GBN": {
             "cleared_altitude": 5000,
@@ -1143,7 +1143,7 @@
           "IZZZO": {
             "cleared_altitude": 5000,
             "sid": "IZZZO8",
-            "waypoints": "KIWA-12C/h120 KEENS IZZZO"
+            "initial_heading": 120
           },
           "GBN": {
             "cleared_altitude": 5000,
@@ -1190,7 +1190,7 @@
           "IZZZO": {
             "cleared_altitude": 5000,
             "sid": "IZZZO8",
-            "waypoints": "KIWA-30C/h124 KEENS IZZZO"
+            "initial_heading": 124
           },
           "GBN": {
             "cleared_altitude": 5000,

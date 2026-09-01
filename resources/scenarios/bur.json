@@ -412,43 +412,43 @@
             "cleared_altitude": 5000,
             "sid": "OROSZ2",
             "is_rnav": true,
-            "waypoints": "N034.11.51.541,W118.20.59.855/h210 TILLR/a8000+ OROSZ/a9000+ HEYJO CSTRO"
+            "initial_heading": 210
           },
           "COREZ": {
             "cleared_altitude": 5000,
             "sid": "OROSZ2",
             "is_rnav": true,
-            "waypoints": "N034.11.51.541,W118.20.59.855/h210 TILLR/a8000+ OROSZ/a9000+ BRRKK MDWAY COREZ"
+            "initial_heading": 210
           },
           "LAS": {
             "cleared_altitude": 5000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
+            "initial_heading": 210
           },
           "MISEN": {
             "cleared_altitude": 5000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
+            "initial_heading": 210
           },
           "HEC": {
             "cleared_altitude": 5000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
+            "initial_heading": 210
           },
           "BLH": {
             "cleared_altitude": 5000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.51.541,W118.20.59.855/h210 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
+            "initial_heading": 210
           },
           "DAG.T,HEC.T": {
             "cleared_altitude": 5000,
             "sid": "VVERA2",
             "is_rnav": true,
-            "waypoints": "N034.11.51.541,W118.20.59.855/h210 CCHUM/a6800+ KIMMO/a7000+ SLAPP JARZO VVERA SSETH"
+            "initial_heading": 210
           },
           "ELMOO": {
             "cleared_altitude": 5000,
@@ -464,43 +464,43 @@
             "cleared_altitude": 4000,
             "sid": "OROSZ2",
             "is_rnav": true,
-            "waypoints": "N034.11.52.479,W118.22.08.914/h290 TILLR/a8000+ OROSZ/a9000+ HEYJO CSTRO"
+            "initial_heading": 290
           },
           "COREZ": {
             "cleared_altitude": 4000,
             "sid": "OROSZ2",
             "is_rnav": true,
-            "waypoints": "N034.11.52.479,W118.22.08.914/h290 TILLR/a8000+ OROSZ/a9000+ BRRKK MDWAY COREZ"
+            "initial_heading": 290
           },
           "LAS": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
+            "initial_heading": 290
           },
           "MISEN": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
+            "initial_heading": 290
           },
           "HEC": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
+            "initial_heading": 290
           },
           "BLH": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.52.479,W118.22.08.914/h290 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
+            "initial_heading": 290
           },
           "DAG.T,HEC.T": {
             "cleared_altitude": 4000,
             "sid": "VVERA2",
             "is_rnav": true,
-            "waypoints": "N034.11.52.479,W118.22.08.914/h290 CCHUM/a6800+ KIMMO/a7000+ SLAPP JARZO VVERA SSETH"
+            "initial_heading": 290
           },
           "ELMOO": {
             "cleared_altitude": 5000,
@@ -516,43 +516,43 @@
             "cleared_altitude": 4000,
             "sid": "OROSZ2",
             "is_rnav": true,
-            "waypoints": "N034.11.38.058,W118.21.19.333/h210 TILLR/a8000+ OROSZ/a9000+ HEYJO CSTRO"
+            "initial_heading": 210
           },
           "COREZ": {
             "cleared_altitude": 4000,
             "sid": "OROSZ2",
             "is_rnav": true,
-            "waypoints": "N034.11.38.058,W118.21.19.333/h210 TILLR/a8000+ OROSZ/a9000+ BRRKK MDWAY COREZ"
+            "initial_heading": 210
           },
           "LAS": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
+            "initial_heading": 210
           },
           "MISEN": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
+            "initial_heading": 210
           },
           "HEC": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
+            "initial_heading": 210
           },
           "BLH": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.11.38.058,W118.21.19.333/h210 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
+            "initial_heading": 210
           },
           "DAG.T,HEC.T": {
             "cleared_altitude": 4000,
             "sid": "VVERA2",
             "is_rnav": true,
-            "waypoints": "N034.11.38.058,W118.21.19.333/h210 CCHUM/a6800+ KIMMO/a7000+ SLAPP JARZO VVERA SSETH"
+            "initial_heading": 210
           },
           "ELMOO": {
             "cleared_altitude": 5000,
@@ -568,43 +568,43 @@
             "cleared_altitude": 4000,
             "sid": "OROSZ2",
             "is_rnav": true,
-            "waypoints": "N034.12.44.440,W118.21.37.660/h270 TILLR/a8000+ OROSZ/a9000+ HEYJO CSTRO"
+            "initial_heading": 270
           },
           "COREZ": {
             "cleared_altitude": 4000,
             "sid": "OROSZ2",
             "is_rnav": true,
-            "waypoints": "N034.12.44.440,W118.21.37.660/h270 TILLR/a8000+ OROSZ/a9000+ BRRKK MDWAY COREZ"
+            "initial_heading": 270
           },
           "LAS": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
+            "initial_heading": 270
           },
           "MISEN": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
+            "initial_heading": 270
           },
           "HEC": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
+            "initial_heading": 270
           },
           "BLH": {
             "cleared_altitude": 4000,
             "sid": "SLAPP2",
             "is_rnav": true,
-            "waypoints": "N034.12.44.440,W118.21.37.660/h270 RAYVE/a7000+ SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
+            "initial_heading": 270
           },
           "DAG.T,HEC.T": {
             "cleared_altitude": 4000,
             "sid": "VVERA2",
             "is_rnav": true,
-            "waypoints": "N034.12.44.440,W118.21.37.660/h270 CCHUM/a6800+ KIMMO/a7000+ SLAPP JARZO VVERA SSETH"
+            "initial_heading": 270
           },
           "ELMOO": {
             "cleared_altitude": 5000,
@@ -1493,27 +1493,27 @@
             "cleared_altitude": 4000,
             "sid": "VVERA2",
             "is_rnav": true,
-            "waypoints": "KVNY-16R/h250 CCHUM/a6800+ KIMMO/a7000+ SLAPP JARZO VVERA SSETH"
+            "initial_heading": 250
           },
           "GMN.C,AVE.C": {
             "cleared_altitude": 4000,
             "sid": "CANOG3",
-            "waypoints": "KVNY-34L/a1750- N034.11.12.006,W118.29.17.208/h213 IPIHO CASTA/a8300+ GMN"
+            "waypoints": "KVNY-16R/a1750- N034.11.12.006,W118.29.17.208/h213 IPIHO CASTA/a8300+ GMN"
           },
           "FIM.C": {
             "cleared_altitude": 4000,
             "sid": "CANOG3",
-            "waypoints": "KVNY-16R/h253 IPIHO SUANA FIM"
+            "initial_heading": 253
           },
           "DAG.N,PMD": {
             "cleared_altitude": 4000,
             "sid": "NUAL2",
-            "waypoints": "KVNY-16R/h253 IPIHO TWINE LANGE SLAPP BOGET PMD"
+            "initial_heading": 253
           },
           "TWINE": {
             "cleared_altitude": 4000,
             "sid": "NUAL2",
-            "waypoints": "KVNY-16R/h253 IPIHO TWINE"
+            "initial_heading": 253
           },
           "ADAMM": {
             "cleared_altitude": 4000,

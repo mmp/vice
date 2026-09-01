@@ -1242,12 +1242,12 @@
           "MAULS": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-12/h270 BUTRZ/a3000+ CLTCH KERRK MAULS"
+            "initial_heading": 270
           },
           "FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-12/h270 BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
+            "initial_heading": 270
           },
           "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
@@ -1256,12 +1256,12 @@
           "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "initial_heading": 245
           },
           "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "initial_heading": 245
           },
           "JERES": {
             "assigned_altitude": 3000,
@@ -1278,7 +1278,7 @@
           "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "initial_heading": 250
           },
           "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
@@ -1293,34 +1293,37 @@
           "FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-12/h250 BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
+            "initial_heading": 250
           },
           "MAULS": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-12/h250 BUTRZ/a3000+ CLTCH KERRK MAULS"
+            "initial_heading": 250
           },
           "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4"
+            "sid": "JCOBY4",
+            "initial_heading": 300
           },
           "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "initial_heading": 245
           },
           "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "initial_heading": 245
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "JERES2"
+            "sid": "JERES2",
+            "initial_heading": 300
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2"
+            "sid": "MCRAY2",
+            "initial_heading": 300
           },
           "OTTTO": {
             "assigned_altitude": 3000,
@@ -1329,125 +1332,136 @@
           "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "initial_heading": 250
           },
           "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2"
+            "sid": "WOOLY2",
+            "initial_heading": 300
           }
         },
         "1C": {
           "RAMAY": {
             "assigned_altitude": 3000,
             "sid": "BUNZZ3",
-            "waypoints": "KIAD-19C/h320 LOULU BUNZZ RAMAY"
+            "initial_heading": 320
           },
           "FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-19C/h345 BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
+            "initial_heading": 345
           },
           "MAULS": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-19C/h345 BUTRZ/a3000+ CLTCH KERRK MAULS"
+            "initial_heading": 345
           },
           "SWANN": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19C/a820+/h345 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "initial_heading": 345
           },
           "AGARD": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19C/a820+/h345 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "initial_heading": 345
           },
           "COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19C/a820+/h345 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "initial_heading": 345
           },
           "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-19C/a820+/h320 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "initial_heading": 320
           },
           "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-19C/a820+/h320 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "initial_heading": 320
           },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
-            "waypoints": "KIAD-19C/a820+/h345 IDORE JERES"
+            "initial_heading": 345
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2"
+            "sid": "MCRAY2",
+            "initial_heading": 345
           },
           "OTTTO": {
             "assigned_altitude": 3000,
             "sid": "RNLDI4",
-            "waypoints": "KIAD-19C/a820+/h320 LOULU RNLDI OTTTO"
+            "initial_heading": 320
           },
           "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "waypoints": "KIAD-19C/a820+/h320 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "initial_heading": 320
           },
           "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-19C/h345 RAZZA WOOLY SWANN"
+            "initial_heading": 345
           },
           "AGARD.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-19C/h345 RAZZA WOOLY AGARD"
+            "initial_heading": 345
           },
           "BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-19C/h345 RAZZA WOOLY BAL"
+            "initial_heading": 345
           }
         },
         "1R": {
           "RAMAY": {
             "assigned_altitude": 3000,
-            "sid": "BUNZZ3"
+            "sid": "BUNZZ3",
+            "initial_heading": 360
           },
           "FLASK,MAULS": {
             "assigned_altitude": 3000,
-            "sid": "CLTCH3"
+            "sid": "CLTCH3",
+            "initial_heading": 360
           },
           "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4"
+            "sid": "JCOBY4",
+            "initial_heading": 360
           },
           "RRSIN,MELTN": {
             "assigned_altitude": 3000,
-            "sid": "JDUBB4"
+            "sid": "JDUBB4",
+            "initial_heading": 360
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "JERES2"
+            "sid": "JERES2",
+            "initial_heading": 360
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2"
+            "sid": "MCRAY2",
+            "initial_heading": 360
           },
           "OTTTO": {
             "assigned_altitude": 3000,
-            "sid": "RNLDI4"
+            "sid": "RNLDI4",
+            "initial_heading": 360
           },
           "GLANC": {
             "assigned_altitude": 3000,
-            "sid": "SCRAM6"
+            "sid": "SCRAM6",
+            "initial_heading": 360
           },
           "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2"
+            "sid": "WOOLY2",
+            "initial_heading": 360
           }
         },
         "19C.S": {
@@ -1458,47 +1472,47 @@
           "FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-1C/h240 BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
+            "initial_heading": 240
           },
           "MAULS": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-1C/h240 BUTRZ/a3000+ CLTCH KERRK MAULS"
+            "initial_heading": 240
           },
           "SWANN": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "initial_heading": 300
           },
           "AGARD": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "initial_heading": 300
           },
           "COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "initial_heading": 300
           },
           "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-1C/a820+/h210 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "initial_heading": 210
           },
           "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-1C/a820+/h210 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "initial_heading": 210
           },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 IDORE JERES"
+            "initial_heading": 300
           },
           "MCRAY": {
             "assigned_altitude": 3000,
             "sid": "MCRAY2",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 HAYGR MCRAY"
+            "initial_heading": 300
           },
           "OTTTO": {
             "assigned_altitude": 3000,
@@ -1507,99 +1521,99 @@
           "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "waypoints": "KIAD-1C/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "initial_heading": 250
           },
           "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RAZZA WOOLY SWANN"
+            "initial_heading": 300
           },
           "AGARD.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RAZZA WOOLY AGARD"
+            "initial_heading": 300
           },
           "BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RAZZA WOOLY BAL"
+            "initial_heading": 300
           }
         },
         "19C.30": {
           "RAMAY": {
             "assigned_altitude": 3000,
             "sid": "BUNZZ3",
-            "waypoints": "KIAD-1C/h220 TIICE WHYUU BUNZZ RAMAY"
+            "initial_heading": 220
           },
           "MAULS": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-1C/h240 BUTRZ/a3000+ CLTCH KERRK MAULS"
+            "initial_heading": 240
           },
           "FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-1C/h240 BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
+            "initial_heading": 240
           },
           "SWANN": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-1C/a820+/h280 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "initial_heading": 280
           },
           "AGARD": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-1C/a820+/h280 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "initial_heading": 280
           },
           "COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-1C/a820+/h280 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "initial_heading": 280
           },
           "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-1C/a820+/h210 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "initial_heading": 210
           },
           "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-1C/a820+/h210 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "initial_heading": 210
           },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
-            "waypoints": "KIAD-1C/a820+/h240 IDORE JERES"
+            "initial_heading": 240
           },
           "MCRAY": {
             "assigned_altitude": 3000,
             "sid": "MCRAY2",
-            "waypoints": "KIAD-1C/a820+/h240 HAYGR MCRAY"
+            "initial_heading": 240
           },
           "OTTTO": {
             "assigned_altitude": 3000,
             "sid": "RNLDI4",
-            "waypoints": "KIAD-1C/a820+/h220 TIICE WHYUU RNLDI OTTTO"
+            "initial_heading": 220
           },
           "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "waypoints": "KIAD-1C/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "initial_heading": 250
           },
           "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-1C/h280 RAZZA WOOLY SWANN"
+            "initial_heading": 280
           },
           "AGARD.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-1C/h280 RAZZA WOOLY AGARD"
+            "initial_heading": 280
           },
           "BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-1C/h280 RAZZA WOOLY BAL"
+            "initial_heading": 280
           }
         },
         "19L": {
@@ -1609,23 +1623,28 @@
           },
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
-            "sid": "CLTCH3"
+            "sid": "CLTCH3",
+            "initial_heading": 190
           },
           "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
-            "sid": "JCOBY4"
+            "sid": "JCOBY4",
+            "initial_heading": 190
           },
           "RRSIN,MELTN": {
             "assigned_altitude": 3000,
-            "sid": "JDUBB4"
+            "sid": "JDUBB4",
+            "initial_heading": 190
           },
           "JERES": {
             "assigned_altitude": 3000,
-            "sid": "JERES2"
+            "sid": "JERES2",
+            "initial_heading": 190
           },
           "MCRAY": {
             "assigned_altitude": 3000,
-            "sid": "MCRAY2"
+            "sid": "MCRAY2",
+            "initial_heading": 190
           },
           "OTTTO": {
             "assigned_altitude": 3000,
@@ -1633,11 +1652,13 @@
           },
           "GLANC": {
             "assigned_altitude": 3000,
-            "sid": "SCRAM6"
+            "sid": "SCRAM6",
+            "initial_heading": 190
           },
           "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
-            "sid": "WOOLY2"
+            "sid": "WOOLY2",
+            "initial_heading": 190
           }
         }
       },

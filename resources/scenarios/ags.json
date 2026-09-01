@@ -37,31 +37,31 @@
             "cleared_altitude": 10000,
             "description": "DOVER5",
             "sid": "DOVER5",
-            "waypoints": "_AGS_26/h085 BEANS SARDY"
+            "initial_heading": 85
           },
           "GREAN,NOKIE": {
             "cleared_altitude": 10000,
             "description": "JUNPR6",
             "sid": "JUNPR6",
-            "waypoints": "_AGS_26/h085 PARRR/a3000+ KNINE JUNPR"
+            "initial_heading": 85
           },
           "KAOLN": {
             "cleared_altitude": 10000,
             "description": "KAOLN6",
             "sid": "KAOLN6",
-            "waypoints": "_AGS_26/h085 PARRR FOURR PGAAA"
+            "initial_heading": 85
           },
           "RDBUD": {
             "cleared_altitude": 10000,
             "description": "RDBUD4",
             "sid": "RDBUD4",
-            "waypoints": "_AGS_26/h085 EAGAL SWANG"
+            "initial_heading": 85
           },
           "SAMMI": {
             "cleared_altitude": 10000,
             "description": "SAMMI4",
             "sid": "SAMMI4",
-            "waypoints": "_AGS_26/h085 TRPLE BOGII"
+            "initial_heading": 85
           },
           "LAYUH,PONZE,PRMUS": {
             "cleared_altitude": 10000,
@@ -79,31 +79,31 @@
             "cleared_altitude": 10000,
             "description": "DOVER5",
             "sid": "DOVER5",
-            "waypoints": "_AGS_8/h265 BEANS SARDY"
+            "initial_heading": 265
           },
           "GREAN,NOKIE": {
             "cleared_altitude": 10000,
             "description": "JUNPR6",
             "sid": "JUNPR6",
-            "waypoints": "_AGS_8/h265 PARRR/a3000+ KNINE JUNPR"
+            "initial_heading": 265
           },
           "KAOLN": {
             "cleared_altitude": 10000,
             "description": "KAOLN6",
             "sid": "KAOLN6",
-            "waypoints": "_AGS_8/h265 PARRR FOURR PGAAA"
+            "initial_heading": 265
           },
           "RDBUD": {
             "cleared_altitude": 10000,
             "description": "RDBUD4",
             "sid": "RDBUD4",
-            "waypoints": "_AGS_8/h265 EAGAL SWANG"
+            "initial_heading": 265
           },
           "SAMMI": {
             "cleared_altitude": 10000,
             "description": "SAMMI4",
             "sid": "SAMMI4",
-            "waypoints": "_AGS_8/h265 TRPLE BOGII"
+            "initial_heading": 265
           },
           "LAYUH,PONZE,PRMUS": {
             "cleared_altitude": 10000,

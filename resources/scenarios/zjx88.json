@@ -276,56 +276,56 @@
           "LACEN": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KTPA-19R ENDED/ho LACEN",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "ENDED": "ho" }
           },
           "ENDED": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KTPA-19R ENDED/ho",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "ENDED": "ho" }
           }
         },
         "1R": {
           "LACEN": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KTPA-19L ENDED/ho LACEN",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "ENDED": "ho" }
           },
           "ENDED": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KTPA-19L ENDED/ho",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "ENDED": "ho" }
           }
         },
         "19L": {
           "LACEN": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KTPA-1R ENDED/ho LACEN",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "ENDED": "ho" }
           },
           "ENDED": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KTPA-1R ENDED/ho",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "ENDED": "ho" }
           }
         },
         "19R": {
           "LACEN": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KTPA-1L ENDED/ho LACEN",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "ENDED": "ho" }
           },
           "ENDED": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KTPA-1L ENDED/ho",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "ENDED": "ho" }
           }
         }
       },
@@ -525,28 +525,28 @@
           "CAMJO": {
             "cleared_altitude": 12000,
             "sid": "TIDES1",
-            "waypoints": "KSRQ-32 URCHN/a4000+ SNAGS/a4000+/s220 THONG PHINS/a4000+/hoR07 TIDES/a5000+/s250 HYRON/ho BRUNG ENDED WILON SPRNG CAMJO",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "HYRON": "ho", "PHINS": "hoR07" }
           },
           "MOMIE": {
             "cleared_altitude": 12000,
             "sid": "TIDES1",
-            "waypoints": "KSRQ-32 URCHN/a4000+ SNAGS/a4000+/s220 THONG PHINS/a4000+/hoR07 TIDES/a5000+/s250 HYRON/ho BRUNG ENDED MOMIE",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "HYRON": "ho", "PHINS": "hoR07" }
           }
         },
         "32": {
           "CAMJO": {
             "cleared_altitude": 12000,
             "sid": "TIDES1",
-            "waypoints": "KSRQ-14 AQUAE/a2600/s220 PHINS/a4000+/hoR07 TIDES/a5000+/s250 HYRON/ho BRUNG ENDED WILON SPRNG CAMJO",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "HYRON": "ho", "PHINS": "hoR07" }
           },
           "MOMIE": {
             "cleared_altitude": 12000,
             "sid": "TIDES1",
-            "waypoints": "KSRQ-14 AQUAE/a2600/s220 PHINS/a4000+/hoR07 TIDES/a5000+/s250 HYRON/ho BRUNG ENDED MOMIE",
-            "handoff_controller": "88"
+            "handoff_controller": "88",
+            "waypoint_actions": { "HYRON": "ho", "PHINS": "hoR07" }
           }
         }
       },

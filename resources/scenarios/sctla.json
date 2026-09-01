@@ -181,44 +181,44 @@
           "SCTRR": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR BNANO DONKS FICKY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/hoC14 MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "RZS.V": {
             "assigned_altitude": 13000,
@@ -240,26 +240,26 @@
           "CLEEE,CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE/hoC21 HOLTZ DOTSS/a15000+",
-            "departure_controller": "6S"
+            "departure_controller": "6S",
+            "waypoint_actions": { "PEVEE": "hoC21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
             "sid": "LADYJ4",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000+ LADYJ/a8000 RUGBY/hoC04 OROSZ",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "RUGBY": "hoC04" }
           },
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE/hoC21 HOLTZ OSHNN CAHIL/a15000+/hoC18 ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE",
-            "departure_controller": "6S"
+            "departure_controller": "6S",
+            "waypoint_actions": { "CAHIL": "hoC18", "PEVEE": "hoC21" }
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE/hoC21 TANNN/a15000+ NNICE PNDAH/a20000+",
-            "departure_controller": "6S"
+            "departure_controller": "6S",
+            "waypoint_actions": { "PEVEE": "hoC21" }
           }
         },
         "25L": {
@@ -278,68 +278,68 @@
           "SCTRR": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/hoC14 DARRK/a12000- SUMMR BNANO DONKS FICKY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/hoC14 MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "MKGEE": "hoC14" }
           },
           "CLEEE,CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/hoC21 HOLTZ DOTSS/a15000",
-            "departure_controller": "6S"
+            "departure_controller": "6S",
+            "waypoint_actions": { "PEVEE": "hoC21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
             "sid": "LADYJ4",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY/hoC04 OROSZ",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "RUGBY": "hoC04" }
           },
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/hoC21 HOLTZ OSHNN CAHIL/a15000+/hoC18 ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE",
-            "departure_controller": "6S"
+            "departure_controller": "6S",
+            "waypoint_actions": { "CAHIL": "hoC18", "PEVEE": "hoC21" }
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/hoC21 TANNN/a15000+ NNICE PNDAH/a20000+",
-            "departure_controller": "6S"
+            "departure_controller": "6S",
+            "waypoint_actions": { "PEVEE": "hoC21" }
           }
         },
         "24L": {
@@ -352,62 +352,62 @@
           "SCTRR": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "NAANC": "hoC14" }
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "NAANC": "hoC14" }
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "NAANC": "hoC14" }
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "NAANC": "hoC14" }
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/hoC14 DARRK/a12000- SUMMR OLOFF RIZIN",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "NAANC": "hoC14" }
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/hoC14 DARRK/a12000- SUMMR BNANO DONKS FICKY",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "NAANC": "hoC14" }
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/hoC14 MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "NAANC": "hoC14" }
           },
           "CLEEE,CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE/hoC21 HOLTZ DOTSS/a15000",
-            "departure_controller": "6S"
+            "departure_controller": "6S",
+            "waypoint_actions": { "PEVEE": "hoC21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
             "sid": "LADYJ4",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- EYENO MLIBU/a7000 LADYJ/a8000 RUGBY/hoC04 OROSZ",
-            "departure_controller": "6N"
+            "departure_controller": "6N",
+            "waypoint_actions": { "RUGBY": "hoC04" }
           },
           "BEALE": {
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE/hoC21 HOLTZ OSHNN CAHIL/a15000+/hoC18 ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE",
-            "departure_controller": "6S"
+            "departure_controller": "6S",
+            "waypoint_actions": { "CAHIL": "hoC18", "PEVEE": "hoC21" }
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 20000,
