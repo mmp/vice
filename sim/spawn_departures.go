@@ -670,7 +670,8 @@ func (s *Sim) createScheduledIFRDeparture(e ScheduledDeparture) (*Aircraft, erro
 			dep.Exit, e.AircraftType)
 	}
 
-	return s.initializeIFRDepartureNoLock(ac, ap, e.DepartureAirport, e.Runway, dep, routes)
+	return s.initializeIFRDepartureNoLock(ac, ap, e.DepartureAirport, e.Runway, dep,
+		CruiseLimits{}, routes)
 }
 
 // createPublishedIFRDeparture creates a departure using the published identity
@@ -715,7 +716,7 @@ func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.Runway
 		e.ArrivalAirport, runway, placement.dep.Exit, placement.how)
 
 	return s.initializeIFRDepartureNoLock(ac, placement.ap, e.DepartureAirport, runway, &placement.dep,
-		placement.exitRoutes)
+		placement.cruise, placement.exitRoutes)
 }
 
 func (s *Sim) departureConfiguration(departureAirport string, runway av.RunwayID,
@@ -795,7 +796,7 @@ func (s *Sim) compatibleDepartures(departureAirport string, runway av.RunwayID,
 type departureChoice struct {
 	candidate candidateDeparture
 	route     string
-	altitudes util.SingleOrArray[int]
+	cruise    CruiseLimits
 	how       string
 }
 
@@ -808,6 +809,7 @@ type departurePlacement struct {
 	rwy        *DepartureRunway
 	exitRoutes map[av.ExitID]*av.ExitRoute
 	dep        av.Departure
+	cruise     CruiseLimits
 	how        string
 }
 
@@ -815,11 +817,12 @@ type departurePlacement struct {
 // with no route falls back to flying to its exit fix, since without that its
 // route ends with the scenario's vector off the runway and it would head
 // straight for its destination from wherever that leaves it.
-func (s *Sim) placement(choice departureChoice, departureAirport string) departurePlacement {
+func (s *Sim) placement(choice departureChoice, departureAirport, destination string) departurePlacement {
 	c := choice.candidate
-	p := departurePlacement{ap: c.ap, rwy: c.rwy, exitRoutes: c.exitRoutes, dep: *c.dep, how: choice.how}
-	if len(choice.altitudes) > 0 {
-		p.dep.Altitudes = choice.altitudes
+	p := departurePlacement{ap: c.ap, rwy: c.rwy, exitRoutes: c.exitRoutes, dep: *c.dep,
+		cruise: choice.cruise, how: choice.how}
+	if choice.route != "" {
+		p.cruise.Floor = av.RouteAltitudeFloor(choice.route, departureAirport, destination)
 	}
 
 	exitRoute := c.exitRoutes[c.dep.Exit]
@@ -903,7 +906,7 @@ func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.Runwa
 	if err != nil {
 		return departurePlacement{}, err
 	}
-	return s.placement(choice, departureAirport), nil
+	return s.placement(choice, departureAirport, destination), nil
 }
 
 // findPublishedDeparture finds the scenario exit and route a published
@@ -945,17 +948,11 @@ func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID
 	}
 	for _, r := range realDepartureRoutes(departureAirport, destination, aircraftType, hour, hourKnown) {
 		if c, ok := departureExit(r.route, departureAirport, destination, r.departureFix, candidates); ok {
-			choice := departureChoice{candidate: c, route: r.route,
-				how: r.how + " via " + c.dep.Exit.Base()}
-			if r.minAltitude > 0 {
-				// The scraped filings say what altitudes the route is really
-				// flown at; file within them when the aircraft can.
-				choice.altitudes = util.SingleOrArray[int]{r.minAltitude}
-				if r.maxAltitude > r.minAltitude {
-					choice.altitudes = append(choice.altitudes, r.maxAltitude)
-				}
-			}
-			return choice, nil
+			// The scraped filings say what altitudes the route is really
+			// flown at; file within them when the aircraft can.
+			return departureChoice{candidate: c, route: r.route,
+				cruise: CruiseLimits{Low: r.minAltitude, High: r.maxAltitude},
+				how:    r.how + " via " + c.dep.Exit.Base()}, nil
 		}
 	}
 
@@ -1173,10 +1170,11 @@ func departureExit(route, departureAirport, destination, departureFix string,
 }
 
 func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport string,
-	runway av.RunwayID, dep *av.Departure, exitRoutes map[av.ExitID]*av.ExitRoute) (*Aircraft, error) {
+	runway av.RunwayID, dep *av.Departure, cruise CruiseLimits,
+	exitRoutes map[av.ExitID]*av.ExitRoute) (*Aircraft, error) {
 	exitRoute := exitRoutes[dep.Exit]
-	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, s.State.NmPerLongitude,
-		s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
+	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, cruise,
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
 	}
@@ -1353,8 +1351,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
 
-	ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan, perf, s.State.NmPerLongitude,
-		s.State.MagneticVariation, s.Rand)
+	ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, CruiseLimits{},
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.Rand)
 
 	mid := math.Mid2f(depap.Location, arrap.Location)
 	if arrive == depart {

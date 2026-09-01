@@ -129,6 +129,7 @@ type arrivalPlacement struct {
 	index      int
 	filedRoute string
 	substitute string
+	cruise     CruiseLimits
 	how        string
 }
 
@@ -616,10 +617,12 @@ func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
 		}
 		return nil
 	}
-	scrapedRoutes := func(from string) []string {
-		ordered := orderScrapedRoutes(av.DB.ScrapedRoutesBetween(from, arrivalAirport),
+	scrapedRoutes := func(from string) []av.ScrapedRoute {
+		return orderScrapedRoutes(av.DB.ScrapedRoutesBetween(from, arrivalAirport),
 			aircraftType, hour, hourKnown)
-		return util.MapSlice(ordered, func(r av.ScrapedRoute) string { return r.Route })
+	}
+	scrapedNames := func(routes []av.ScrapedRoute) []string {
+		return util.MapSlice(routes, func(r av.ScrapedRoute) string { return r.Route })
 	}
 	faaRoutes := func(from string) []string {
 		eligible := eligibleAirportPairRoutes(av.DB.RoutesBetween(from, arrivalAirport),
@@ -639,16 +642,19 @@ func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
 		if err != nil {
 			return arrivalPlacement{}, err
 		}
-		return c.placement(route, "", "scenario route"), nil
+		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, nil),
+			"scenario route"), nil
 	}
 	if scraped, faa := scrapedRoutes(origin), faaRoutes(origin); len(scraped)+len(faa) > 0 {
+		names := scrapedNames(scraped)
 		c, route, err := matchArrivalRoutes(candidates, aircraftType,
-			slices.Concat(scraped, faa), arrivalAirport, origin)
+			slices.Concat(names, faa), arrivalAirport, origin)
 		if err != nil {
 			return arrivalPlacement{}, err
 		}
-		how := util.Select(slices.Contains(scraped, route), "scraped route", "faa route")
-		return c.placement(route, "", how), nil
+		how := util.Select(slices.Contains(names, route), "scraped route", "faa route")
+		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, scraped),
+			how), nil
 	}
 
 	// Neither knows this origin, so fly the flight the way the nearest airport
@@ -667,9 +673,10 @@ func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
 	}
 	for _, substitute := range substituteAirports(arrivalAirport, origin, pool,
 		publishedArrivalMaxHeadingDifference) {
-		routes := slices.Concat(scenarioRoutes(substitute), scrapedRoutes(substitute), faaRoutes(substitute))
+		routes := slices.Concat(scenarioRoutes(substitute), scrapedNames(scrapedRoutes(substitute)),
+			faaRoutes(substitute))
 		if c, _, err := matchArrivalRoutes(candidates, aircraftType, routes, arrivalAirport, substitute); err == nil {
-			return c.placement("", substitute, "nearest route, from "+substitute), nil
+			return c.placement("", substitute, CruiseLimits{}, "nearest route, from "+substitute), nil
 		}
 	}
 
@@ -677,14 +684,26 @@ func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
 	// the flight actually flies is all that is left to go on.
 	if c, ok := arrivalNearestArc(suitableArrivals(candidates, aircraftType),
 		arrivalAirport, origin); ok {
-		return c.placement("", "", "great-circle gate"), nil
+		return c.placement("", "", CruiseLimits{}, "great-circle gate"), nil
 	}
 	return arrivalPlacement{}, errNoPlausibleArrival
 }
 
-func (c candidateArrival) placement(filedRoute, substitute, how string) arrivalPlacement {
+func (c candidateArrival) placement(filedRoute, substitute string, cruise CruiseLimits,
+	how string) arrivalPlacement {
 	return arrivalPlacement{group: c.group, index: c.index, filedRoute: filedRoute,
-		substitute: substitute, how: how}
+		substitute: substitute, cruise: cruise, how: how}
+}
+
+// arrivalCruiseLimits is what the route a published arrival files says about
+// the altitude it cruises at: what its procedures require, and what the pair's
+// recent filings of that route were seen at, when it is one of them.
+func arrivalCruiseLimits(route, origin, arrivalAirport string, scraped []av.ScrapedRoute) CruiseLimits {
+	limits := CruiseLimits{Floor: av.RouteAltitudeFloor(route, origin, arrivalAirport)}
+	if i := slices.IndexFunc(scraped, func(r av.ScrapedRoute) bool { return r.Route == route }); i != -1 {
+		limits.Low, limits.High = scraped[i].MinAltitude, scraped[i].MaxAltitude
+	}
+	return limits
 }
 
 // publishedSubstituteFraction is how much of the trip an airport drawn from the

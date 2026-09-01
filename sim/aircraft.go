@@ -662,7 +662,8 @@ func (ac *Aircraft) InterceptApproach(lg *log.Logger) av.CommandIntent {
 	return ac.Nav.InterceptApproach(ac.FlightPlan.ArrivalAirport, lg)
 }
 
-func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLongitude float32, magneticVariation float32,
+func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise CruiseLimits,
+	nmPerLongitude float32, magneticVariation float32,
 	model *wx.Model, simTime Time, lg *log.Logger) error {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
@@ -674,11 +675,11 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 	}
 
 	r := rand.Make()
-	if len(arr.CruiseAltitudes) > 0 {
-		ac.FlightPlan.Altitude = rand.SampleSlice(r, arr.CruiseAltitudes)
+	if idx := rand.SampleFiltered(r, arr.CruiseAltitudes, withinCeiling(perf)); idx != -1 {
+		ac.FlightPlan.Altitude = arr.CruiseAltitudes[idx]
 	} else {
-		ac.FlightPlan.Altitude =
-			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, r)
+		ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, cruise, nmPerLongitude,
+			magneticVariation, r)
 	}
 	if arr.FlightStripDisplayRoute != "" {
 		ac.FlightPlan.Route = arr.FlightStripDisplayRoute
@@ -706,8 +707,8 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 }
 
 func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string, dep *av.Departure,
-	runway string, exitRoute av.ExitRoute, nmPerLongitude float32, magneticVariation float32,
-	model *wx.Model, simTime Time, lg *log.Logger) error {
+	runway string, exitRoute av.ExitRoute, cruise CruiseLimits, nmPerLongitude float32,
+	magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) error {
 	wp := util.DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
@@ -729,12 +730,11 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	ac.FlightPlan.DepartureRunway = runway
 
 	r := rand.Make()
-	idx := rand.SampleFiltered(r, dep.Altitudes, func(alt int) bool { return alt <= int(perf.Ceiling) })
-	if idx == -1 {
-		ac.FlightPlan.Altitude =
-			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, r)
-	} else {
+	if idx := rand.SampleFiltered(r, dep.Altitudes, withinCeiling(perf)); idx != -1 {
 		ac.FlightPlan.Altitude = dep.Altitudes[idx]
+	} else {
+		ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, cruise, nmPerLongitude,
+			magneticVariation, r)
 	}
 
 	ac.TypeOfFlight = av.FlightTypeDeparture
@@ -787,11 +787,12 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 	}
 
 	r := rand.Make()
-	if len(of.CruiseAltitudes) > 0 {
-		ac.FlightPlan.Altitude = rand.SampleSlice(r, of.CruiseAltitudes)
+	if idx := rand.SampleFiltered(r, of.CruiseAltitudes, withinCeiling(perf)); idx != -1 {
+		ac.FlightPlan.Altitude = of.CruiseAltitudes[idx]
 	} else {
-		ac.FlightPlan.Altitude =
-			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, r)
+		cruise := CruiseLimits{Floor: of.Waypoints.AltitudeFloor()}
+		ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, cruise, nmPerLongitude,
+			magneticVariation, r)
 	}
 	ac.FlightPlan.Route = of.Waypoints.RouteString()
 	ac.TypeOfFlight = av.FlightTypeOverflight
@@ -925,77 +926,183 @@ func (ac *Aircraft) CWT() string {
 	return perf.Category.CWT
 }
 
-func PlausibleFinalAltitude(fp av.FlightPlan, perf av.AircraftPerformance, nmPerLongitude float32, magneticVariation float32,
-	r *rand.Rand) int {
-	// try to figure out direction of flight
+// withinCeiling reports whether a filed altitude is one the aircraft can reach.
+func withinCeiling(perf av.AircraftPerformance) func(int) bool {
+	return func(alt int) bool { return alt <= int(perf.Ceiling) }
+}
+
+// altitudeRange is the band of altitudes, in feet, a filed cruise altitude is
+// drawn from. It is narrowed in turn by everything that has a say in it and
+// never goes empty, so that there is always something to sample.
+type altitudeRange struct{ low, high int }
+
+// above raises the range's low end to a floor the flight has to clear. A floor
+// over the top of the range takes it there and no further: an aircraft that
+// can't reach a restriction flies as high as it can, not higher.
+func (a altitudeRange) above(floor int) altitudeRange {
+	return altitudeRange{max(a.low, min(floor, a.high)), a.high}
+}
+
+// narrowedTo intersects the range with b, or leaves it alone if the two don't
+// meet. b is evidence of where the flight goes rather than a bound on it, so a
+// band it cannot be reconciled with--the scraper caught a filing at 2,400 feet
+// on a 570nm jet route--is discarded rather than obeyed.
+func (a altitudeRange) narrowedTo(b altitudeRange) altitudeRange {
+	if n := (altitudeRange{max(a.low, b.low), min(a.high, b.high)}); n.low <= n.high {
+		return n
+	}
+	return a
+}
+
+// biasedTo slides b, keeping its width, until it lies within a, and clips what
+// is left to a. A band the flight would otherwise never reach thereby moves to
+// the nearest part of the range it can have instead of collapsing onto a's
+// endpoint: a route that has to be flown at or above 24,000 by an aircraft
+// usually flown at 16,000-24,000 files somewhere in 24,000-32,000.
+func (a altitudeRange) biasedTo(b altitudeRange) altitudeRange {
+	if d := a.low - b.low; d > 0 {
+		b.low, b.high = b.low+d, b.high+d
+	}
+	if d := b.high - a.high; d > 0 {
+		b.low, b.high = b.low-d, b.high-d
+	}
+	return altitudeRange{math.Clamp(b.low, a.low, a.high), math.Clamp(b.high, a.low, a.high)}
+}
+
+// sample picks a thousand from the range on the correct side of the
+// hemispheric rule: odd thousands on a magnetic course under 180 degrees, even
+// thousands on one at or over it. A range holding none of them--it has
+// narrowed onto a single even thousand on an eastbound flight--gives the
+// nearest thousand of the right parity above it, or the one below when that is
+// over the aircraft's ceiling.
+func (a altitudeRange) sample(r *rand.Rand, course math.MagneticHeading, ceiling int) int {
+	odd := util.Select(course < 180, 1, 0)
+	low, high := (a.low+999)/1000, a.high/1000
+	if low%2 != odd {
+		low++
+	}
+	if high%2 != odd {
+		high--
+	}
+	if low > high {
+		return 1000 * util.Select(low*1000 <= ceiling, low, high)
+	}
+	return 1000 * (low + 2*r.Intn((high-low)/2+1))
+}
+
+// maxCruiseDistance is longer than any flight, so that the last cruise band
+// always matches.
+const maxCruiseDistance = 1e6 // nm
+
+// cruiseBand is the altitudes each class of aircraft is really flown at over
+// trips no longer than maxDistance.
+type cruiseBand struct {
+	maxDistance            float32 // nm, inclusive
+	jet, turboprop, piston altitudeRange
+}
+
+// cruiseBands are the median filed low and median filed high altitude in each
+// distance bin of the scraped route database, taken over the routes only one
+// class of aircraft was seen flying. The bins past 200nm for the classes that
+// rarely fly that far are extrapolated; the aircraft's ceiling covers the ones
+// that can't get there at all.
+var cruiseBands = []cruiseBand{
+	{50, altitudeRange{5000, 7000}, altitudeRange{4000, 5000}, altitudeRange{4000, 5000}},
+	{100, altitudeRange{9000, 13000}, altitudeRange{6000, 8000}, altitudeRange{5000, 7000}},
+	{200, altitudeRange{16000, 24000}, altitudeRange{12000, 14000}, altitudeRange{6000, 9000}},
+	{300, altitudeRange{25000, 31000}, altitudeRange{19000, 22000}, altitudeRange{8000, 11000}},
+	{500, altitudeRange{31000, 37000}, altitudeRange{20000, 25000}, altitudeRange{8000, 11000}},
+	{maxCruiseDistance, altitudeRange{34000, 38000}, altitudeRange{20000, 25000}, altitudeRange{8000, 11000}},
+}
+
+// plausibleCruiseBand returns the altitudes trips like this one are really
+// flown at: how far it is going and what the aircraft is.
+func plausibleCruiseBand(fp av.FlightPlan, perf av.AircraftPerformance) altitudeRange {
+	// Without both airports there is no distance to go on, so take the flight
+	// to be a long one.
+	d := float32(maxCruiseDistance)
+	if dep, ok := av.DB.Airports[fp.DepartureAirport]; ok {
+		if arr, ok := av.DB.Airports[fp.ArrivalAirport]; ok {
+			d = math.NMDistance2LL(dep.Location, arr.Location)
+		}
+	}
+
+	band := cruiseBands[slices.IndexFunc(cruiseBands,
+		func(b cruiseBand) bool { return d <= b.maxDistance })]
+
+	switch perf.Engine.AircraftType {
+	case "J":
+		return band.jet
+	case "T":
+		return band.turboprop
+	default:
+		return band.piston
+	}
+}
+
+// terrainFloor is the lowest altitude a flight between the two airports can
+// cruise at: 2,000 feet above the higher of the two fields. Only 20 of the
+// 4,957 jet routes in the scraped database were ever filed below it.
+func terrainFloor(fp av.FlightPlan) int {
+	elevation := 0
+	if ap, ok := av.DB.Airports[fp.DepartureAirport]; ok {
+		elevation = max(elevation, ap.Elevation)
+	}
+	if ap, ok := av.DB.Airports[fp.ArrivalAirport]; ok {
+		elevation = max(elevation, ap.Elevation)
+	}
+	return elevation + 2000
+}
+
+// cruiseCourse is the magnetic course the flight makes good, which decides
+// which side of the hemispheric rule its altitude falls on.
+func cruiseCourse(fp av.FlightPlan, nmPerLongitude float32, magneticVariation float32) math.MagneticHeading {
 	dep, dok := av.DB.Airports[fp.DepartureAirport]
 	arr, aok := av.DB.Airports[fp.ArrivalAirport]
 	if !dok || !aok {
-		if fp.Rules == av.FlightRulesIFR {
-			return 34000
-		} else {
-			return 12500
-		}
+		return 0
 	}
+	return math.TrueToMagnetic(math.Heading2LL(dep.Location, arr.Location, nmPerLongitude),
+		magneticVariation)
+}
 
-	// Pick a base altitude in thousands and a sampling delta. Odd altitude
-	// for now; we deal with direction of flight later.
-	pDep, pArr := dep.Location, arr.Location
-	alt, delta := 0, 2
-	if math.NMDistance2LL(pDep, pArr) < 50 {
-		alt = 5
-		if dep.Elevation > 3000 || arr.Elevation > 3000 {
-			alt += 2
-		}
-	} else if math.NMDistance2LL(pDep, pArr) < 100 {
-		alt = 9
-		if dep.Elevation > 3000 || arr.Elevation > 3000 {
-			alt += 2
-		}
-	} else if math.NMDistance2LL(pDep, pArr) < 200 {
-		alt = 15
-		delta = 2
-		if dep.Elevation > 3000 || arr.Elevation > 3000 {
-			alt += 2
-		}
-	} else if math.NMDistance2LL(pDep, pArr) < 300 {
-		alt = 21
-		delta = 2
-	} else {
-		alt = 35
-		delta = 3
+// CruiseLimits is what a flight's particular route says about the altitude it
+// files, over and above what the trip and the aircraft allow. The zero value
+// says nothing.
+type CruiseLimits struct {
+	// Floor is the highest crossing restriction the route's procedures publish.
+	Floor int
+	// Low and High are the altitudes the route has really been filed at.
+	Low, High int
+}
 
-	}
-
-	// Randomize the altitude a bit
-	alt = r.IntRange(alt-delta, alt+delta)
-
-	// Round ceiling down to odd 1000s.
-	ceiling := int(perf.Ceiling) / 1000
-	if ceiling%2 == 0 {
-		ceiling--
-	}
-
-	// Enforce ceiling
-	alt = min(alt, ceiling)
-
+// FiledCruiseAltitude returns the altitude a flight files. It narrows the range
+// the flight may cruise in by each thing that has a say: what it can physically
+// do, then what its route requires and is really flown at, and last--as a bias
+// rather than a bound, since a route observed at 30,000 shouldn't be dragged
+// down because trips that long usually are--what trips like it are flown at.
+func FiledCruiseAltitude(fp av.FlightPlan, perf av.AircraftPerformance, limits CruiseLimits,
+	nmPerLongitude float32, magneticVariation float32, r *rand.Rand) int {
+	ceiling := int(perf.Ceiling)
 	if fp.Rules == av.FlightRulesVFR {
-		alt = min(alt, 17) // VFRs stay out of class A airspace
+		ceiling = min(ceiling, 17000) // VFRs stay out of class A airspace
 	}
-
-	if math.TrueToMagnetic(math.Heading2LL(pDep, pArr, nmPerLongitude), magneticVariation) > 180 {
-		// Decrease rather than increasing so that we don't potentially go
-		// above the aircraft's ceiling.
-		alt--
+	// What the aircraft can do bounds everything that follows: nothing below
+	// narrows the range without also staying inside it.
+	a := altitudeRange{min(terrainFloor(fp), ceiling), ceiling}
+	if limits.Floor > 0 {
+		a = a.above(limits.Floor) // the route's own crossing restrictions
 	}
+	if limits.Low > 0 {
+		a = a.narrowedTo(altitudeRange{limits.Low, limits.High}) // where it is really flown
+	}
+	a = a.biasedTo(plausibleCruiseBand(fp, perf)) // what trips like it are flown at
 
-	altitude := alt * 1000
-
+	alt := a.sample(r, cruiseCourse(fp, nmPerLongitude, magneticVariation), ceiling)
 	if fp.Rules == av.FlightRulesVFR {
-		altitude += 500
+		alt += 500
 	}
-
-	return altitude
+	return alt
 }
 
 func (ac *Aircraft) IsDeparture() bool {

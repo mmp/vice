@@ -99,10 +99,11 @@ type ScheduledArrival struct {
 	Group string
 	Index int // into State.InboundFlows[Group].Arrivals
 
-	// FiledRoute, Substitute, and How record how a published flight was
-	// fitted into the scenario; see placeArrival.
+	// FiledRoute, Substitute, Cruise, and How record how a published flight
+	// was fitted into the scenario; see placeArrival.
 	FiledRoute string
 	Substitute string
+	Cruise     CruiseLimits
 	How        string
 
 	// DropReason, when non-empty, marks a published arrival with no
@@ -626,6 +627,7 @@ func (s *Sim) schedulePublishedFlights(flights []av.Flight, departureSpawnLead t
 			Index:           placement.index,
 			FiledRoute:      placement.filedRoute,
 			Substitute:      placement.substitute,
+			Cruise:          placement.cruise,
 			How:             placement.how,
 		}
 		if err != nil {
@@ -1119,6 +1121,7 @@ func (s *Sim) updatePublishedArrivalPlacements() {
 			s.routedPairsIndex())
 		e.Group, e.Index = placement.group, placement.index
 		e.FiledRoute, e.Substitute, e.How = placement.filedRoute, placement.substitute, placement.how
+		e.Cruise = placement.cruise
 		if err != nil {
 			e.DropReason = err.Error()
 		} else {

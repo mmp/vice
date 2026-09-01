@@ -310,6 +310,21 @@ func seedTestRoutes(t *testing.T, routes []av.AirportPairRoute) {
 	av.DB.AirportPairRoutes[pair] = routes
 }
 
+// seedTestScrapedRoutes replaces the scraped route database entries for the
+// city pair for the duration of the test.
+func seedTestScrapedRoutes(t *testing.T, from, to string, routes []av.ScrapedRoute) {
+	pair := av.AirportPair{From: from, To: to}
+	original, hadOriginal := av.DB.ScrapedRoutes[pair]
+	t.Cleanup(func() {
+		if hadOriginal {
+			av.DB.ScrapedRoutes[pair] = original
+		} else {
+			delete(av.DB.ScrapedRoutes, pair)
+		}
+	})
+	av.DB.ScrapedRoutes[pair] = routes
+}
+
 // A route the scenario gives for the city pair beats the route database and
 // the geometry: it says in so many words how the pair is flown.
 func TestResolvePublishedDepartureScenarioRoute(t *testing.T) {
@@ -960,5 +975,41 @@ func TestOrderScrapedRoutes(t *testing.T) {
 		Aircraft: av.AircraftClassHeavyJet})
 	if got := orderScrapedRoutes(observed, "B77W", 0, false)[0].Route; got != "HEVYT J2 FIXES" {
 		t.Errorf("heavy jet got %q, want the heavy-observed route", got)
+	}
+}
+
+// The scraped filings say what altitudes the pair is really flown at and the
+// procedures its route names say what it has to clear; both reach the flight
+// instead of the lowest altitude anyone was ever seen at.
+func TestResolvePublishedDepartureCruiseLimits(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	seedTestScrapedRoutes(t, "KORG", "KTGT", []av.ScrapedRoute{
+		{Route: "EAST MISN TGTR4", Count: 100, MinAltitude: 6000, MaxAltitude: 37000},
+	})
+
+	target := av.DB.Airports["KTGT"]
+	crossing := av.Waypoint{Fix: "MISN"}
+	crossing.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(24000))
+	target.STARs = map[string]av.STAR{
+		"TGTR4": {Transitions: map[string]av.WaypointArray{"MISN": {crossing}}},
+	}
+	av.DB.Airports["KTGT"] = target
+
+	s := publishedDepartureSim()
+	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	want := CruiseLimits{Floor: 24000, Low: 6000, High: 37000}
+	if placement.cruise != want {
+		t.Errorf("cruise = %+v, want %+v", placement.cruise, want)
+	}
+	// The route's floor is the only thing keeping the flight out of the
+	// bottom of the band the scraper recorded.
+	if placement.dep.Altitudes != nil {
+		t.Errorf("altitudes = %v, want the limits to decide rather than a menu",
+			placement.dep.Altitudes)
 	}
 }

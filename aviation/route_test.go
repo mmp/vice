@@ -1026,3 +1026,80 @@ func TestProcedureTurnLegLimit(t *testing.T) {
 		}
 	}
 }
+
+func TestRouteAltitudeFloor(t *testing.T) {
+	atOrAbove := func(fix string, alt float32) Waypoint {
+		wp := Waypoint{Fix: fix}
+		wp.SetAltitudeRestriction(MakeAtOrAboveAltitudeRestriction(alt))
+		return wp
+	}
+	atOrBelow := func(fix string, alt float32) Waypoint {
+		wp := Waypoint{Fix: fix}
+		wp.SetAltitudeRestriction(MakeAtOrBelowAltitudeRestriction(alt))
+		return wp
+	}
+
+	oldDB := DB
+	DB = &StaticDatabase{
+		Airports: map[string]FAAAirport{
+			"KSNA": {Id: "KSNA", SIDs: map[string]SID{
+				"FINZZ3": {EnrouteTransitions: map[string]WaypointArray{
+					"MISEN": {atOrBelow("STREL", 5000), atOrAbove("FINZZ", 10000),
+						atOrAbove("ZOOMM", 16000), {Fix: "MISEN"}},
+					"NNAVY": {atOrAbove("FINZZ", 10000), {Fix: "NNAVY"}},
+				}},
+				"HAWWC3": {EnrouteTransitions: map[string]WaypointArray{
+					"IKAYE": {atOrBelow("PIJIN", 4000), {Fix: "IKAYE"}},
+				}},
+			}},
+			"KLAS": {Id: "KLAS", STARs: map[string]STAR{
+				"RNDRZ4": {
+					Transitions: map[string]WaypointArray{
+						"MISEN": {atOrAbove("MISEN", 24000), atOrAbove("WATEV", 19000)},
+						"EED":   {{Fix: "EED"}, atOrAbove("ZELMA", 19000)},
+					},
+					// Descent restrictions off the STAR's runway transitions
+					// are no constraint on where the flight cruises.
+					RunwayWaypoints: map[string]WaypointArray{
+						"RWY19B": {atOrAbove("BUETY", 30000)},
+					},
+				},
+			}},
+			// The CIFP covers no procedures outside the US.
+			"EGLL": {Id: "EGLL"},
+			// JFK's STARs are open routes with no crossing restrictions.
+			"KJFK": {Id: "KJFK", STARs: map[string]STAR{
+				"PARCH4": {Transitions: map[string]WaypointArray{"ENE": {{Fix: "ENE"}, {Fix: "PARCH"}}}},
+			}},
+		},
+		Airways: map[string][]Airway{"J146": nil},
+	}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, tc := range []struct {
+		route, from, to string
+		floor           int
+	}{
+		// The SID requires 16,000 and the STAR 24,000.
+		{"FINZZ3 MISEN RNDRZ4", "KSNA", "KLAS", 24000},
+		// The route files a stale revision of the SID.
+		{"FINZZ2 MISEN RNDRZ4", "KSNA", "KLAS", 24000},
+		// An airway between the entry fix and the STAR doesn't hide it.
+		{"FINZZ3 MISEN J146 RNDRZ4", "KSNA", "KLAS", 24000},
+		// Naming no transition of the STAR, every way of flying it is at or
+		// above the lowest transition's floor.
+		{"FINZZ3 NNAVY BLAZN RNDRZ4", "KSNA", "KLAS", 19000},
+		// Only the SID has anything to say.
+		{"FINZZ3 NNAVY BLAZN LAS", "KSNA", "KLAS", 10000},
+		// A SID with only at-or-below restrictions is no floor at all.
+		{"HAWWC3 IKAYE", "KSNA", "KSFO", 0},
+		// No CIFP procedures at the origin, and an open-route STAR.
+		{"ALLRY TUSKY ENE PARCH4", "EGLL", "KJFK", 0},
+		// A route naming no procedure at all.
+		{"BIGGY MIDDL TEUFL", "KJFK", "KLAS", 0},
+	} {
+		if floor := RouteAltitudeFloor(tc.route, tc.from, tc.to); floor != tc.floor {
+			t.Errorf("%q %s->%s: floor = %d, want %d", tc.route, tc.from, tc.to, floor, tc.floor)
+		}
+	}
+}

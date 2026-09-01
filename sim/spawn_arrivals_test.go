@@ -369,3 +369,35 @@ func TestZeroRateArrivalsDoNotBlock(t *testing.T) {
 		t.Errorf("%d arrivals left in the queue, expected all processed", n)
 	}
 }
+
+// A published arrival files within the band the pair's recent filings were
+// seen at, and no lower than the STAR it comes in on requires.
+func TestPlaceArrivalCarriesCruiseLimits(t *testing.T) {
+	crossing := av.Waypoint{Fix: "MISN"}
+	crossing.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(21000))
+
+	oldDB := av.DB
+	av.DB = &av.StaticDatabase{
+		Airports: map[string]av.FAAAirport{
+			"KTST": {Id: "KTST", Location: math.Point2LL{-93.2, 44.9}, STARs: map[string]av.STAR{
+				"TSTR4": {Transitions: map[string]av.WaypointArray{"MISN": {crossing}}},
+			}},
+			"KFAR": {Id: "KFAR", Location: math.Point2LL{-103.0, 44.0}},
+		},
+		ScrapedRoutes: map[av.AirportPair][]av.ScrapedRoute{
+			{From: "KFAR", To: "KTST"}: {{Route: "MISN TSTR4", Count: 100,
+				MinAltitude: 8000, MaxAltitude: 34000}},
+		},
+	}
+	t.Cleanup(func() { av.DB = oldDB })
+
+	s := placeArrivalTestSim("KTST", []av.Arrival{{STAR: "TSTR4", Airports: []string{"KTST"}}}, nil)
+	placement, err := s.placeArrival("KTST", "KFAR", "B738", routedPairs{})
+	if err != nil {
+		t.Fatalf("placeArrival found no way to fly KFAR->KTST: %v", err)
+	}
+	want := CruiseLimits{Floor: 21000, Low: 8000, High: 34000}
+	if placement.cruise != want {
+		t.Errorf("cruise = %+v, want %+v", placement.cruise, want)
+	}
+}

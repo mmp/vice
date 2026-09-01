@@ -5,11 +5,13 @@
 package sim
 
 import (
+	"slices"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/rand"
 )
 
 // 1 degree of latitude is ~60 NM, so waypoints are placed along the meridian
@@ -256,4 +258,156 @@ func equalStrings(a, b []string) bool {
 		}
 	}
 	return true
+}
+
+func TestAltitudeRangeAbove(t *testing.T) {
+	for _, tc := range []struct {
+		a     altitudeRange
+		floor int
+		want  altitudeRange
+	}{
+		{altitudeRange{5000, 41000}, 24000, altitudeRange{24000, 41000}},
+		{altitudeRange{30000, 41000}, 24000, altitudeRange{30000, 41000}},
+		// An aircraft that can't reach the restriction goes as high as it can.
+		{altitudeRange{5000, 12500}, 24000, altitudeRange{12500, 12500}},
+	} {
+		if got := tc.a.above(tc.floor); got != tc.want {
+			t.Errorf("%v.above(%d) = %v, want %v", tc.a, tc.floor, got, tc.want)
+		}
+	}
+}
+
+func TestAltitudeRangeNarrowedTo(t *testing.T) {
+	for _, tc := range []struct{ a, b, want altitudeRange }{
+		{altitudeRange{5000, 41000}, altitudeRange{24000, 37000}, altitudeRange{24000, 37000}},
+		{altitudeRange{24000, 41000}, altitudeRange{6000, 37000}, altitudeRange{24000, 37000}},
+		// A band the range can't be reconciled with is evidence gone wrong,
+		// and is left out rather than obeyed.
+		{altitudeRange{2958, 41000}, altitudeRange{2400, 2400}, altitudeRange{2958, 41000}},
+		{altitudeRange{4181, 12500}, altitudeRange{33000, 37000}, altitudeRange{4181, 12500}},
+	} {
+		if got := tc.a.narrowedTo(tc.b); got != tc.want {
+			t.Errorf("%v.narrowedTo(%v) = %v, want %v", tc.a, tc.b, got, tc.want)
+		}
+	}
+}
+
+func TestAltitudeRangeBiasedTo(t *testing.T) {
+	for _, tc := range []struct{ a, b, want altitudeRange }{
+		// Already inside, the band is taken as it is.
+		{altitudeRange{25000, 39000}, altitudeRange{31000, 37000}, altitudeRange{31000, 37000}},
+		// Below the range, it slides up rather than collapsing onto 24,000.
+		{altitudeRange{24000, 37000}, altitudeRange{16000, 24000}, altitudeRange{24000, 32000}},
+		{altitudeRange{26000, 38000}, altitudeRange{25000, 31000}, altitudeRange{26000, 32000}},
+		// Above the range, it slides down.
+		{altitudeRange{8000, 14000}, altitudeRange{34000, 38000}, altitudeRange{10000, 14000}},
+		// Wider than the range, what is left is the range.
+		{altitudeRange{30000, 34000}, altitudeRange{16000, 24000}, altitudeRange{30000, 34000}},
+		// A range already narrowed onto one altitude stays there.
+		{altitudeRange{24000, 24000}, altitudeRange{16000, 24000}, altitudeRange{24000, 24000}},
+	} {
+		if got := tc.a.biasedTo(tc.b); got != tc.want {
+			t.Errorf("%v.biasedTo(%v) = %v, want %v", tc.a, tc.b, got, tc.want)
+		}
+	}
+}
+
+func TestAltitudeRangeSample(t *testing.T) {
+	r := rand.Make()
+	for _, tc := range []struct {
+		a       altitudeRange
+		course  math.MagneticHeading
+		ceiling int
+		want    []int
+	}{
+		{altitudeRange{24000, 32000}, 45, 41000, []int{25000, 27000, 29000, 31000}},
+		{altitudeRange{24000, 32000}, 270, 41000, []int{24000, 26000, 28000, 30000, 32000}},
+		// The rule turns over at 180 degrees, not past it.
+		{altitudeRange{24000, 25000}, 179, 41000, []int{25000}},
+		{altitudeRange{24000, 25000}, 180, 41000, []int{24000}},
+		// The range holds no altitude of the required parity, so the nearest
+		// one above it is filed.
+		{altitudeRange{18000, 18000}, 45, 41000, []int{19000}},
+		// ...unless that is over the aircraft's ceiling, when it goes below.
+		{altitudeRange{18000, 18000}, 45, 18000, []int{17000}},
+	} {
+		seen := make(map[int]bool)
+		for range 200 {
+			alt := tc.a.sample(r, tc.course, tc.ceiling)
+			if !slices.Contains(tc.want, alt) {
+				t.Fatalf("%v course %v: sampled %d, want one of %v", tc.a, tc.course, alt, tc.want)
+			}
+			seen[alt] = true
+		}
+		if len(seen) != len(tc.want) {
+			t.Errorf("%v course %v: sampled %d of the %d altitudes in %v", tc.a, tc.course,
+				len(seen), len(tc.want), tc.want)
+		}
+	}
+}
+
+func TestPlausibleCruiseBand(t *testing.T) {
+	av.InitDB()
+	for _, tc := range []struct {
+		from, to, acType string
+		want             altitudeRange
+	}{
+		// KSNA-KLAS is 197nm, KLAX-KPHX 321nm, KLAX-KSFO 293nm.
+		{"KSNA", "KLAS", "B738", altitudeRange{16000, 24000}},
+		{"KSNA", "KLAS", "DH8D", altitudeRange{12000, 14000}},
+		{"KSNA", "KLAS", "C172", altitudeRange{6000, 9000}},
+		{"KLAX", "KPHX", "B738", altitudeRange{31000, 37000}},
+		{"KLAX", "KSFO", "B738", altitudeRange{25000, 31000}},
+		// Without both airports there is no distance to go on.
+		{"KLAX", "ZZZZ", "B738", altitudeRange{34000, 38000}},
+	} {
+		fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: tc.acType,
+			DepartureAirport: tc.from, ArrivalAirport: tc.to}
+		got := plausibleCruiseBand(fp, av.DB.AircraftPerformance[tc.acType])
+		if got != tc.want {
+			t.Errorf("%s-%s %s: band = %v, want %v", tc.from, tc.to, tc.acType, got, tc.want)
+		}
+	}
+}
+
+func TestFiledCruiseAltitude(t *testing.T) {
+	av.InitDB()
+	r := rand.Make()
+	for _, tc := range []struct {
+		from, to, acType string
+		limits           CruiseLimits
+		want             []int
+	}{
+		// The scraped band reaches down to 6,000, but the FINZZ3 requires
+		// 16,000 and the RNDRZ4 24,000.
+		{"KSNA", "KLAS", "E75L", CruiseLimits{Floor: 24000, Low: 6000, High: 37000},
+			[]int{25000, 27000, 29000, 31000}},
+		// The route's floor is above the lowest altitude ever filed on it.
+		{"KLAX", "KPHX", "E75L", CruiseLimits{Floor: 25000, Low: 23000, High: 39000},
+			[]int{31000, 33000, 35000, 37000}},
+		// Nothing known about the route: the trip alone decides. KDEN sits at
+		// 5,434 feet, which is no reason to file above a jet's ceiling.
+		{"KDEN", "KJFK", "B738", CruiseLimits{}, []int{35000, 37000}},
+		// A short hop out of Denver can't cruise below the terrain.
+		{"KDEN", "KCOS", "C172", CruiseLimits{}, []int{10000}},
+		// A scraped band the aircraft can't reach says nothing about where it
+		// goes, so the trip alone decides.
+		{"KSNA", "KLAS", "C172", CruiseLimits{Low: 33000, High: 37000}, []int{7000, 9000}},
+	} {
+		perf := av.DB.AircraftPerformance[tc.acType]
+		fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: tc.acType,
+			DepartureAirport: tc.from, ArrivalAirport: tc.to}
+		seen := make(map[int]bool)
+		for range 400 {
+			alt := FiledCruiseAltitude(fp, perf, tc.limits, 60, 12, r)
+			if !slices.Contains(tc.want, alt) {
+				t.Fatalf("%s-%s %s: filed %d, want one of %v", tc.from, tc.to, tc.acType, alt, tc.want)
+			}
+			seen[alt] = true
+		}
+		if len(seen) != len(tc.want) {
+			t.Errorf("%s-%s %s: filed %d of the %d altitudes in %v", tc.from, tc.to, tc.acType,
+				len(seen), len(tc.want), tc.want)
+		}
+	}
 }

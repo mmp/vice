@@ -2052,6 +2052,85 @@ func RouteSTAR(route, icao string) (star, entry string) {
 	return name, entry
 }
 
+// AltitudeFloor returns the highest "at or above" crossing restriction along
+// the route. Cruise is the top of a flight's profile, so it can be no lower.
+func (wa WaypointArray) AltitudeFloor() int {
+	var floor float32
+	for _, wp := range wa {
+		if ar := wp.AltitudeRestriction(); ar != nil {
+			floor = max(floor, ar.Range[0])
+		}
+	}
+	return int(floor)
+}
+
+// transitionFloor returns the AltitudeFloor of the transition a route joins a
+// procedure at. The fields are the route's tokens working outward from the
+// procedure's own name; the first of them naming a transition is the one
+// flown, since an airway or a fix off the procedure may sit between. Naming
+// none, every way of flying the procedure is at or above the lowest
+// transition's floor.
+func transitionFloor(transitions map[string]WaypointArray, fields []string) int {
+	for _, f := range fields {
+		if wps, ok := transitions[f]; ok {
+			return wps.AltitudeFloor()
+		}
+	}
+	floor := -1
+	for _, wps := range transitions {
+		if f := wps.AltitudeFloor(); floor == -1 || f < floor {
+			floor = f
+		}
+	}
+	return max(floor, 0)
+}
+
+// routeSID returns the SID a route out of the airport begins with, under the
+// name the current CIFP charts it, along with the index of the field naming
+// it. A route may carry a stale revision--DOTSS2 where the cycle has
+// DOTSS3--so procedures match on their base names.
+func routeSID(fields []string, icao string) (SID, int, bool) {
+	i := 0
+	if len(fields) > 0 && TokenNamesAirport(fields[0], icao) {
+		i = 1
+	}
+	if i >= len(fields) || !TokenNamesProcedure(fields[i]) {
+		return SID{}, 0, false
+	}
+	for name, sid := range util.SortedMap(DB.Airports[icao].SIDs) {
+		if ProcedureBase(name) == ProcedureBase(fields[i]) {
+			return sid, i, true
+		}
+	}
+	return SID{}, 0, false
+}
+
+// RouteAltitudeFloor returns the lowest altitude a flight filing the route can
+// cruise at: the highest "at or above" restriction its SID and its STAR
+// publish. It is 0 when the route names neither, as one out of an airport the
+// CIFP doesn't cover can't, and when the procedures it does name publish no
+// such restriction, as the open-route STARs into JFK don't.
+func RouteAltitudeFloor(route, departureAirport, arrivalAirport string) int {
+	fields := strings.Fields(route)
+	floor := 0
+
+	if sid, i, ok := routeSID(fields, departureAirport); ok {
+		floor = max(floor, transitionFloor(sid.EnrouteTransitions, fields[i+1:]))
+	}
+
+	end := len(fields)
+	if end > 0 && TokenNamesAirport(fields[end-1], arrivalAirport) {
+		end--
+	}
+	if star, _ := RouteSTAR(route, arrivalAirport); star != "" && end > 0 {
+		before := slices.Clone(fields[:end-1])
+		slices.Reverse(before)
+		floor = max(floor, transitionFloor(DB.Airports[arrivalAirport].STARs[star].Transitions, before))
+	}
+
+	return floor
+}
+
 func (s STAR) Check(e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 

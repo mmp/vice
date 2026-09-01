@@ -364,7 +364,7 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 		normalizeAirportCode(e.ArrivalAirport),
 	)
 
-	if err := ac.InitializeArrival(s.State.Airports[e.ArrivalAirport], arr,
+	if err := ac.InitializeArrival(s.State.Airports[e.ArrivalAirport], arr, e.Cruise,
 		s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.wxModel, s.State.SimTime, s.lg); err != nil {
 		return nil, err
