@@ -198,7 +198,7 @@ func TestInitialHeading(t *testing.T) {
 	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
 	var e util.ErrorLogger
 	er := ExitRoute{ClearedAltitude: 5000, InitialHeading: 345}
-	er.initialize("KXXX", "9", r, rend, nil, nil, &e)
+	er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, nil, &e)
 	if e.HaveErrors() {
 		t.Fatal(e.String())
 	}
@@ -214,11 +214,41 @@ func TestInitialHeading(t *testing.T) {
 	}
 	var e2 util.ErrorLogger
 	er = ExitRoute{ClearedAltitude: 5000, Waypoints: wps[1:]}
-	er.initialize("KXXX", "9", r, rend, wps[0].ActionGroups(), nil, &e2)
+	er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, wps[0].ActionGroups(), nil, &e2)
 	if e2.HaveErrors() {
 		t.Fatal(e2.String())
 	}
 	if got, want := er.Waypoints.Encode(), "9/sid 9-mid/h284/@a513+/sid GNNRR/a2500+/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+func TestExitRouteFirstFixBehindRunway(t *testing.T) {
+	const nmPerLongitude = 60
+	// A 2 nm runway running east, away from the origin so that no location
+	// reads as unset.
+	at := func(p [2]float32) math.Point2LL {
+		return math.NM2LL([2]float32{100 + p[0], 100 + p[1]}, nmPerLongitude)
+	}
+	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
+	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
+	for _, tc := range []struct {
+		name string
+		at   [2]float32 // nm east, north of the threshold
+		bad  bool
+	}{
+		{name: "departure end", at: [2]float32{2, 0}},
+		{name: "threshold", at: [2]float32{0, 0}, bad: true},
+		{name: "half a mile behind the threshold", at: [2]float32{-0.5, 0}, bad: true},
+		{name: "well behind the threshold", at: [2]float32{-1, 0}},
+		{name: "just past the rollout point", at: [2]float32{1.6, 0}},
+		{name: "abeam the rollout point", at: [2]float32{1.5, 1}},
+	} {
+		var e util.ErrorLogger
+		er := ExitRoute{ClearedAltitude: 5000, Waypoints: WaypointArray{{Fix: "FIRST", Location: at(tc.at)}}}
+		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, nil, &e)
+		if e.HaveErrors() != tc.bad {
+			t.Errorf("%s: errors %v, want error %v", tc.name, e.String(), tc.bad)
+		}
 	}
 }
