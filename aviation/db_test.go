@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
@@ -194,6 +195,42 @@ func TestCIFPAirportsAreInAirportsDatabase(t *testing.T) {
 		}
 		if ap.Name == "" || ap.Country == "" {
 			t.Errorf("%s: in the CIFP but not the airports database (name %q, country %q)", id, ap.Name, ap.Country)
+		}
+	}
+}
+
+// TestRunwayThresholdsMatchHeadings catches a runway whose Threshold is the end
+// the aircraft rolls toward rather than the end it lands on. Nothing else does:
+// LookupOppositeRunway pairs runways by name, so a reversed pair still resolves,
+// and ExitRoute.initialize's "first fix is behind the aircraft" check turns
+// itself off when the heading and the geometry disagree by more than 45
+// degrees--which is exactly what a reversed pair looks like. Downstream, the
+// takeoff roll direction, the approach's runway heading, and the landing
+// waypoint all come out reciprocal.
+//
+// The comparison is a true bearing against a magnetic heading, so the tolerance
+// has to absorb the magnetic variation. Applying a modern variation instead
+// would be worse rather than tighter: the FAA's declared variation at remote
+// Alaskan fields is decades stale--the CIFP still carries 30 degrees east at
+// PACR and L20, against about 17 today--and their published runway bearings
+// follow the stale value, so the WMM grid manufactures ten degrees of
+// disagreement at a few hundred runway ends there. The worst legitimate case in
+// the database is 30 degrees; a reversed pair is 180.
+func TestRunwayThresholdsMatchHeadings(t *testing.T) {
+	InitDB()
+
+	for _, id := range util.SortedMapKeys(DB.Airports) {
+		for _, rwy := range DB.Airports[id].Runways {
+			opp, ok := LookupOppositeRunway(id, rwy.Id)
+			if !ok {
+				continue
+			}
+			brg := math.Heading2LL(rwy.Threshold, opp.Threshold, math.NMPerLongitudeAt(rwy.Threshold))
+			if d := math.HeadingDifference(float32(brg), float32(rwy.Heading)); d > 45 {
+				t.Errorf("%s: runway %s has heading %.0f but its threshold bears %.0f toward runway %s's; "+
+					"off by %.0f degrees, so the thresholds are probably at the wrong ends",
+					id, rwy.Id, float32(rwy.Heading), float32(brg), opp.Id, d)
+			}
 		}
 	}
 }

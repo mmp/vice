@@ -2734,13 +2734,6 @@
       "tower_list": 3
     },
     "4V4": {
-      "approaches": {
-        "R34": {
-          "runway": "34",
-          "type": "RNAV",
-          "waypoints": ["KELLY/iaf/a3000 RUDDY/faf/a2300"]
-        }
-      },
       "departure_controller": "1J",
       "departure_routes": {
         "34": {

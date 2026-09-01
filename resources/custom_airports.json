@@ -7,13 +7,15 @@
       {
         "id": "16",
         "heading": 160,
-        "threshold": "N35.58.34.000,W095.23.03.000",
+        "threshold": "N35.58.56.000,W095.23.13.000",
+        "thresholdcrossingheight": 50,
         "elevation": 623
       },
       {
         "id": "34",
         "heading": 340,
-        "threshold": "N35.58.43.000,W095.23.07.000",
+        "threshold": "N35.58.21.000,W095.22.57.000",
+        "thresholdcrossingheight": 50,
         "elevation": 623
       }
     ]
@@ -27,12 +29,14 @@
         "id": "30",
         "heading": 300,
         "threshold": "N036.23.20.482,W095.20.46.343",
+        "thresholdcrossingheight": 50,
         "elevation": 624
       },
       {
         "id": "12",
         "heading": 120,
         "threshold": "N036.23.39.117,W095.21.26.911",
+        "thresholdcrossingheight": 50,
         "elevation": 624
       }
     ]
@@ -40,30 +44,34 @@
   "KAAC": {
     "name": "",
     "elevation": 677,
-    "location": "N036.10.01.611,W095.40.40.365",
+    "location": "N036.10.14.930,W095.39.37.329",
     "runways": [
       {
         "id": "28L",
         "heading": 280,
         "threshold": "N036.09.45.000,W095.38.40.000",
+        "thresholdcrossingheight": 50,
         "elevation": 677
       },
       {
         "id": "28R",
         "heading": 280,
         "threshold": "N036.10.28.308,W095.38.35.972",
+        "thresholdcrossingheight": 50,
         "elevation": 677
       },
       {
         "id": "10L",
         "heading": 100,
         "threshold": "N036.10.44.801,W095.40.32.977",
+        "thresholdcrossingheight": 50,
         "elevation": 677
       },
       {
         "id": "10R",
         "heading": 100,
         "threshold": "N036.10.01.611,W095.40.40.365",
+        "thresholdcrossingheight": 50,
         "elevation": 677
       }
     ]
@@ -77,24 +85,28 @@
         "id": "13",
         "heading": 130,
         "threshold": "N36.27.16.000,W095.57.27.000",
+        "thresholdcrossingheight": 50,
         "elevation": 689
       },
       {
         "id": "31",
         "heading": 310,
         "threshold": "N36.26.32.000,W095.56.25.000",
+        "thresholdcrossingheight": 50,
         "elevation": 689
       },
       {
         "id": "4",
         "heading": 40,
-        "threshold": "N36.27.02.000,W095.56.21.000",
+        "threshold": "N36.26.39.000,W095.56.45.000",
+        "thresholdcrossingheight": 50,
         "elevation": 689
       },
       {
         "id": "22",
         "heading": 220,
-        "threshold": "N36.26.39.000,W095.56.45.000",
+        "threshold": "N36.27.02.000,W095.56.21.000",
+        "thresholdcrossingheight": 50,
         "elevation": 689
       }
     ]
@@ -108,24 +120,28 @@
         "id": "4",
         "heading": 39,
         "threshold": "N35.53.50.000,W095.37.24.000",
+        "thresholdcrossingheight": 50,
         "elevation": 608
       },
       {
         "id": "22",
         "heading": 219,
         "threshold": "N35.55.17.000,W095.35.49.000",
+        "thresholdcrossingheight": 50,
         "elevation": 608
       },
       {
         "id": "27",
         "heading": 270,
         "threshold": "N35.55.29.000,W95.35.55.000",
+        "thresholdcrossingheight": 50,
         "elevation": 608
       },
       {
         "id": "9",
         "heading": 90,
         "threshold": "N35.55.29.000,W095.38.00.000",
+        "thresholdcrossingheight": 50,
         "elevation": 608
       }
     ]
@@ -139,24 +155,28 @@
         "id": "34L",
         "heading": 337,
         "threshold": "N35.44.36.49,E140.23.26.27",
+        "thresholdcrossingheight": 50,
         "elevation": 140
       },
       {
         "id": "16R",
         "heading": 157,
         "threshold": "N35.46.27.17,E140.22.06.30",
+        "thresholdcrossingheight": 50,
         "elevation": 130
       },
       {
         "id": "34R",
         "heading": 337,
         "threshold": "N35.47.09.37,E140.23.31.31",
+        "thresholdcrossingheight": 50,
         "elevation": 141
       },
       {
         "id": "16L",
         "heading": 157,
         "threshold": "N35.48.18.11,E140.22.41.62",
+        "thresholdcrossingheight": 50,
         "elevation": 134
       }
     ]
@@ -170,24 +190,28 @@
         "id": "6L",
         "heading": 59,
         "threshold": "N34.25.43.25,E135.12.22.94",
+        "thresholdcrossingheight": 50,
         "elevation": 9
       },
       {
         "id": "24R",
         "heading": 239,
         "threshold": "N34.27.04.12,E135.14.23.43",
+        "thresholdcrossingheight": 50,
         "elevation": 16
       },
       {
         "id": "6R",
         "heading": 59,
         "threshold": "N34.25.02.95,E135.13.45.99",
+        "thresholdcrossingheight": 50,
         "elevation": 5
       },
       {
         "id": "24L",
         "heading": 239,
         "threshold": "N34.26.13.59,E135.15.31.23",
+        "thresholdcrossingheight": 50,
         "elevation": 12
       }
     ]
@@ -201,24 +225,28 @@
         "id": "1L",
         "heading": 2,
         "threshold": "N42.45.42.50,E141.41.34.10",
+        "thresholdcrossingheight": 50,
         "elevation": 62
       },
       {
         "id": "19R",
         "heading": 182,
         "threshold": "N42.47.17.56,E141.41.17.22",
+        "thresholdcrossingheight": 50,
         "elevation": 82
       },
       {
         "id": "1R",
         "heading": 2,
         "threshold": "N42.45.43.78,E141.41.47.15",
+        "thresholdcrossingheight": 50,
         "elevation": 57
       },
       {
         "id": "19L",
         "heading": 182,
         "threshold": "N42.47.18.86,E141.41.30.36",
+        "thresholdcrossingheight": 50,
         "elevation": 77
       }
     ]
@@ -232,24 +260,28 @@
         "id": "18R",
         "heading": 182,
         "threshold": "N42.48.37.17,E141.39.43.38",
+        "thresholdcrossingheight": 50,
         "elevation": 66
       },
       {
         "id": "36L",
         "heading": 2,
         "threshold": "N42.47.12.16,E141.39.58.39",
+        "thresholdcrossingheight": 50,
         "elevation": 87
       },
       {
         "id": "18L",
         "heading": 182,
         "threshold": "N42.48.06.31,E141.40.02.14",
+        "thresholdcrossingheight": 50,
         "elevation": 70
       },
       {
         "id": "36R",
         "heading": 2,
         "threshold": "N42.46.31.65,E141.40.18.87",
+        "thresholdcrossingheight": 50,
         "elevation": 87
       }
     ]
@@ -263,12 +295,14 @@
         "id": "16",
         "heading": 158,
         "threshold": "N33.35.48.24,E130.26.35.90",
+        "thresholdcrossingheight": 50,
         "elevation": 15
       },
       {
         "id": "34",
         "heading": 338,
         "threshold": "N33.34.30.45,E130.27.29.05",
+        "thresholdcrossingheight": 50,
         "elevation": 32
       }
     ]
@@ -282,12 +316,14 @@
         "id": "2",
         "heading": 14,
         "threshold": "N34.08.03.58,E132.14.41.71",
+        "thresholdcrossingheight": 50,
         "elevation": 10
       },
       {
         "id": "20",
         "heading": 194,
         "threshold": "N34.09.19.79,E132.14.56.49",
+        "thresholdcrossingheight": 50,
         "elevation": 10
       }
     ]
@@ -301,48 +337,56 @@
         "id": "4",
         "heading": 42,
         "threshold": "N35.32.56.97,E139.45.41.02",
+        "thresholdcrossingheight": 50,
         "elevation": 19
       },
       {
         "id": "22",
         "heading": 222,
         "threshold": "N35.34.02.26,E139.46.37.08",
+        "thresholdcrossingheight": 50,
         "elevation": 35
       },
       {
         "id": "5",
         "heading": 52,
         "threshold": "N35.31.26.95,E139.48.13.09",
+        "thresholdcrossingheight": 50,
         "elevation": 55
       },
       {
         "id": "23",
         "heading": 232,
         "threshold": "N35.32.25.63,E139.49.19.06",
+        "thresholdcrossingheight": 50,
         "elevation": 55
       },
       {
         "id": "34L",
         "heading": 337,
         "threshold": "N35.32.12.34,E139.47.07.97",
+        "thresholdcrossingheight": 50,
         "elevation": 18
       },
       {
         "id": "16R",
         "heading": 157,
         "threshold": "N35.33.21.88,E139.46.18.62",
+        "thresholdcrossingheight": 50,
         "elevation": 16
       },
       {
         "id": "34R",
         "heading": 337,
         "threshold": "N35.32.33.60,E139.48.10.93",
+        "thresholdcrossingheight": 50,
         "elevation": 20
       },
       {
         "id": "16L",
         "heading": 157,
         "threshold": "N35.33.45.69,E139.47.19.77",
+        "thresholdcrossingheight": 50,
         "elevation": 19
       }
     ]
@@ -356,12 +400,14 @@
         "id": "18",
         "heading": 177,
         "threshold": "N35.45.47.24,E139.20.43.55",
+        "thresholdcrossingheight": 50,
         "elevation": 462
       },
       {
         "id": "36",
         "heading": 357,
         "threshold": "N35.44.01.61,E139.21.05.71",
+        "thresholdcrossingheight": 50,
         "elevation": 416
       }
     ]
