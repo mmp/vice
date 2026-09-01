@@ -1393,6 +1393,101 @@ func parseRadial(s string) (fix string, radial int16, err error) {
 	return fix, radial, nil
 }
 
+// parseWaypointActionKey parses a "waypoint_actions" key: a fix, followed
+// by the fix's triggers up to and including the one after which the actions
+// run, e.g. "KSFO-10L/@a513+".
+func parseWaypointActionKey(key string) (string, []WaypointActionTermination, error) {
+	parts := strings.Split(key, "/")
+	fix := parts[0]
+	if fix == "" {
+		return "", nil, fmt.Errorf("no fix given")
+	}
+	var triggers []WaypointActionTermination
+	for _, f := range parts[1:] {
+		cond, ok := strings.CutPrefix(f, "@")
+		if !ok {
+			return "", nil, fmt.Errorf("/%s: only triggers may follow the fix", f)
+		}
+		until, err := parseWaypointActionTermination(cond)
+		if err != nil {
+			return "", nil, fmt.Errorf("invalid trigger /%s: %w", f, err)
+		}
+		triggers = append(triggers, until)
+	}
+	return fix, triggers, nil
+}
+
+// addActions adds actions given in route syntax, comma separated and without
+// their leading slashes ("hoC35,po5J"), to the fix named by key. The actions
+// run on passing the fix, or, if the key follows the fix with its triggers
+// ("KSFO-10L/@a513+"), once the last of them is met.
+func (wa WaypointArray) addActions(key, actions string) error {
+	fix, triggers, err := parseWaypointActionKey(key)
+	if err != nil {
+		return err
+	}
+	i := slices.IndexFunc(wa, func(wp Waypoint) bool { return wp.Fix == fix })
+	if i == -1 {
+		return fmt.Errorf("%s: not in the route %s", fix, wa.RouteString())
+	}
+	wp := &wa[i]
+	groups := wp.ActionGroups()
+	for k, t := range triggers {
+		if k >= len(groups) || groups[k].Until.Encoded() != t.Encoded() {
+			return fmt.Errorf("%s: no trigger %s at the fix, which is flown as %s", fix, t.Encoded(),
+				WaypointArray{*wp}.Encode())
+		}
+	}
+
+	var acts WaypointActions
+	for a := range strings.SplitSeq(actions, ",") {
+		a = strings.TrimSpace(a)
+		if a == "" {
+			return fmt.Errorf("%q: empty action", actions)
+		}
+		act, ok, err := parseWaypointActionModifier(a)
+		if err != nil {
+			return fmt.Errorf("invalid action /%s: %w", a, err)
+		}
+		if !ok {
+			return fmt.Errorf("/%s: unknown action", a)
+		}
+		if err := mergeWaypointActions(&acts, act); err != nil {
+			return fmt.Errorf("/%s: %w", a, err)
+		}
+	}
+
+	if k := len(triggers); k < len(groups) {
+		if err := mergeWaypointActions(&groups[k].Actions, acts); err != nil {
+			return fmt.Errorf("%s: %w", fix, err)
+		}
+	} else {
+		wp.InitExtra().ActionGroups = append(groups, WaypointActionGroup{Actions: acts})
+	}
+	return nil
+}
+
+// ResolveActionControllers returns a "waypoint_actions" value with the
+// control positions of its handoffs and point outs passed through resolve.
+// Actions that don't parse are left as they are for validation to report.
+func ResolveActionControllers(actions string, resolve func(ControlPosition) ControlPosition) string {
+	parts := strings.Split(actions, ",")
+	for i, a := range parts {
+		acts, ok, err := parseWaypointActionModifier(strings.TrimSpace(a))
+		if !ok || err != nil {
+			continue
+		}
+		if acts.HandoffController != "" {
+			acts.HandoffController = resolve(acts.HandoffController)
+		}
+		if acts.PointOut != "" {
+			acts.PointOut = resolve(acts.PointOut)
+		}
+		parts[i] = strings.TrimPrefix(acts.Encoded(), "/")
+	}
+	return strings.Join(parts, ",")
+}
+
 func parseWaypoints(str string) (WaypointArray, error) {
 	var waypoints WaypointArray
 	var nextWaypointTurn TurnDirection
@@ -2199,19 +2294,25 @@ func MakeSID() *SID {
 // leaving over the given exit fix. The route follows the runway transition
 // and then the named enroute transition if one is given, or the one the
 // exit lies on otherwise, ending at the exit; with no transition named and
-// none leading to the exit it follows the common route to its end.
+// none leading to the exit it follows the common route to its end. An empty
+// runway gives the SID from its common route on, for a departure that is
+// vectored to it.
 func (s SID) Waypoints(runway, transition, exit string) (WaypointArray, error) {
-	wps, ok := s.RunwayTransitions[runway]
-	if !ok {
-		if len(s.RunwayTransitions) == 0 {
-			return nil, fmt.Errorf("no runway transitions in the CIFP")
+	var wps WaypointArray
+	if runway != "" {
+		var ok bool
+		if wps, ok = s.RunwayTransitions[runway]; !ok {
+			if len(s.RunwayTransitions) == 0 {
+				return nil, fmt.Errorf("no runway transitions in the CIFP")
+			}
+			return nil, fmt.Errorf("no runway transition for runway %s. Options: %s", runway,
+				strings.Join(util.SortedMapKeys(s.RunwayTransitions), ", "))
 		}
-		return nil, fmt.Errorf("no runway transition for runway %s. Options: %s", runway,
-			strings.Join(util.SortedMapKeys(s.RunwayTransitions), ", "))
 	}
 
 	body := s.Common
 	if transition != "" {
+		var ok bool
 		if body, ok = s.EnrouteTransitions[transition]; !ok {
 			return nil, fmt.Errorf("no enroute transition %s. Options: %s", transition,
 				strings.Join(util.SortedMapKeys(s.EnrouteTransitions), ", "))

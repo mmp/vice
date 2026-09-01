@@ -764,6 +764,9 @@ func (sg *scenarioGroup) resolveControllerRefs() {
 						route.DepartureController = resolve(route.DepartureController)
 					}
 					resolveWaypoints(route.Waypoints)
+					for key, actions := range route.WaypointActions {
+						route.WaypointActions[key] = av.ResolveActionControllers(actions, resolve)
+					}
 				}
 			}
 		}

@@ -409,9 +409,15 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				taken |= route.Aircraft.expand()
 
 				if len(route.Waypoints) > 0 || route.SID == "" {
+					if route.InitialHeading != 0 {
+						e.ErrorString(`"initial_heading" applies only to a route taken from the CIFP; put the heading in "waypoints"`)
+					}
+					if len(route.WaypointActions) > 0 {
+						e.ErrorString(`"waypoint_actions" applies only to a route taken from the CIFP; put the actions in "waypoints"`)
+					}
 					route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 					route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
-					route.initialize(rwy, r, rend, nil, controlPositions, e)
+					route.initialize(icao, rwy, r, rend, nil, controlPositions, e)
 					for _, exit := range exits {
 						splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], route)
 					}
@@ -432,13 +438,15 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 							e.Push("Exit " + string(exit))
 						}
 						exitRoute := *route
-						if wps, ok := sidWaypoints(icao, route.SID, transition, rwy, exit, e); ok {
+						if wps, ok := sidWaypoints(icao, route.SID, transition, rwy, exit, route.InitialHeading != 0, e); ok {
+							wps = route.amendSIDWaypoints(wps, departureEnd, e)
 							exitRoute.Waypoints = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, true, e)
 							for _, wp := range exitRoute.Waypoints {
 								if wp.Location.IsZero() {
 									e.ErrorString("%s: unable to locate SID waypoint", wp.Fix)
 								}
 							}
+							exitRoute.Waypoints.checkBasics(e, controlPositions, checkScratchpad)
 							// The parser anchors a transition's initial legs at
 							// the departure end for want of a fix (the CIFP
 							// names none); fly them from the rollout point
@@ -449,7 +457,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 								midGroups = wps[0].ActionGroups()
 								exitRoute.Waypoints = wps[1:]
 							}
-							exitRoute.initialize(rwy, r, rend, midGroups, controlPositions, e)
+							exitRoute.initialize(icao, rwy, r, rend, midGroups, controlPositions, e)
 							splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], &exitRoute)
 						}
 						if len(exits) > 1 {
@@ -845,13 +853,15 @@ func (ap Airport) VFRRateSum() float32 {
 }
 
 type ExitRoute struct {
-	SID              string        `json:"sid"`
-	AssignedAltitude int           `json:"assigned_altitude"`
-	ClearedAltitude  int           `json:"cleared_altitude"`
-	Waypoints        WaypointArray `json:"waypoints"`
-	Description      string        `json:"description"`
-	IsRNAV           bool          `json:"is_rnav"`
-	HoldForRelease   bool          `json:"hold_for_release"`
+	SID              string            `json:"sid"`
+	AssignedAltitude int               `json:"assigned_altitude"`
+	ClearedAltitude  int               `json:"cleared_altitude"`
+	Waypoints        WaypointArray     `json:"waypoints"`
+	Description      string            `json:"description"`
+	IsRNAV           bool              `json:"is_rnav"`
+	HoldForRelease   bool              `json:"hold_for_release"`
+	InitialHeading   int               `json:"initial_heading"` // tower-assigned
+	WaypointActions  map[string]string `json:"waypoint_actions"`
 	// optional, control position to handoff to at a /ho
 	HandoffController ControlPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.
@@ -917,15 +927,22 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 
 // sidWaypoints returns the waypoints of the CIFP's SID off the runway to the
 // exit for an exit route that gives none of its own; transition, if
-// non-empty, names the SID's enroute transition to fly.
-func sidWaypoints(icao, sid, transition string, rwy RunwayID, exit ExitID, e *util.ErrorLogger) (WaypointArray, bool) {
+// non-empty, names the SID's enroute transition to fly. A route with an
+// initial heading needs no runway transition from the CIFP: the heading is
+// how the aircraft gets from the runway to the SID.
+func sidWaypoints(icao, sid, transition string, rwy RunwayID, exit ExitID, initialHeading bool,
+	e *util.ErrorLogger) (WaypointArray, bool) {
 	s, ok := DB.Airports[icao].SIDs[sid]
 	if !ok {
 		e.ErrorString(`must specify "waypoints": SID %q isn't in the FAA CIFP for %s. Options: %s`,
 			sid, icao, strings.Join(util.SortedMapKeys(DB.Airports[icao].SIDs), ", "))
 		return nil, false
 	}
-	wps, err := s.Waypoints(rwy.Base(), transition, exit.Base())
+	runway := rwy.Base()
+	if _, ok := s.RunwayTransitions[runway]; !ok && initialHeading {
+		runway = ""
+	}
+	wps, err := s.Waypoints(runway, transition, exit.Base())
 	if err != nil {
 		e.ErrorString(`must specify "waypoints": SID %s: %v`, sid, err)
 		return nil, false
@@ -933,15 +950,50 @@ func sidWaypoints(icao, sid, transition string, rwy RunwayID, exit ExitID, e *ut
 	return wps.Clone(), true
 }
 
+// amendSIDWaypoints applies the route's "initial_heading" and
+// "waypoint_actions" to the SID's waypoints from the CIFP. The tower's
+// heading supersedes any legs the SID charts from the departure end; it is
+// flown from the mid-runway waypoint that initialize places.
+func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, departureEnd string, e *util.ErrorLogger) WaypointArray {
+	if h := er.InitialHeading; h < 0 || h > 360 {
+		e.ErrorString(`"initial_heading" %d: must be between 1 and 360`, h)
+	} else if h != 0 && len(wps) > 0 && wps[0].Fix == departureEnd {
+		wps = wps[1:]
+	}
+	for _, key := range util.SortedMapKeys(er.WaypointActions) {
+		if err := wps.addActions(key, er.WaypointActions[key]); err != nil {
+			e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
+		}
+	}
+	return wps
+}
+
 // initialize puts the runway in front of the route's located waypoints--its
 // threshold and then a point 3/4 of the way down it, so that the aircraft
 // rolls to the end before flying the route--and checks the route's other
-// members against them. midGroups, if non-nil, holds the action groups of a
-// CIFP transition's initial legs, to be flown from the mid-runway waypoint.
-func (er *ExitRoute) initialize(rwy RunwayID, r, rend Runway, midGroups []WaypointActionGroup,
+// members against them.
+// midGroups, if non-nil, holds the action groups of a CIFP transition's
+// initial legs, to be flown from the mid-runway waypoint.
+func (er *ExitRoute) initialize(icao string, rwy RunwayID, r, rend Runway, midGroups []WaypointActionGroup,
 	controlPositions map[ControlPosition]*Controller, e *util.ErrorLogger) {
-	midWp := Waypoint{Fix: rwy.Base() + "-mid", Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold)}
-	if len(midGroups) > 0 {
+	mid := math.Lerp2f(0.75, r.Threshold, rend.Threshold)
+	midWp := Waypoint{Fix: rwy.Base() + "-mid", Location: mid}
+	if h := er.InitialHeading; h >= 1 && h <= 360 {
+		// The tower's assigned heading: climb on runway heading and turn to
+		// it passing 400' above the field, then fly it until the departure
+		// controller sends the aircraft direct to a fix on the SID.
+		midWp.InitExtra().ActionGroups = []WaypointActionGroup{
+			{
+				Actions: WaypointActions{Heading: WaypointHeadingAction{PresentHeading: true}},
+				Until: WaypointActionTermination{
+					Type:      WaypointActionAltitude,
+					Altitude:  DB.Airports[icao].Elevation + 400,
+					AtOrAbove: true,
+				},
+			},
+			{Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: int16(h)}}},
+		}
+	} else if len(midGroups) > 0 {
 		midWp.InitExtra().ActionGroups = midGroups
 	}
 	er.Waypoints = append([]Waypoint{

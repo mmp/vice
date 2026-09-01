@@ -1103,3 +1103,73 @@ func TestRouteAltitudeFloor(t *testing.T) {
 		}
 	}
 }
+
+func TestAddActions(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	const route = "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"
+	for _, tc := range []struct {
+		key, actions string
+		want         string // encoded route, or "" if an error is expected
+		errContains  string
+	}{
+		{key: "GNNRR", actions: "hoC35", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/hoC35 FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "GNNRR", actions: "hoC35, po5J", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/hoC35/po5J FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "KSFO-10L", actions: "hoC35", want: "KSFO-10L/h284/hoC35/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "KSFO-10L/@a513+", actions: "hoC35", want: "KSFO-10L/h284/@a513+/hoC35 GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "FIXXX/@a500+", actions: "tc", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/tc/@a1000+/h012 BEBOP"},
+		{key: "FIXXX/@a500+/@a1000+", actions: "c7000", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012/c7000 BEBOP"},
+		{key: "BEBOP", actions: "h090", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/h090"},
+		{key: "NOPE", actions: "hoC35", errContains: "not in the route"},
+		{key: "GNNRR/@a513+", actions: "hoC35", errContains: "no trigger /@a513+"},
+		{key: "KSFO-10L/@a600+", actions: "hoC35", errContains: "no trigger /@a600+"},
+		{key: "FIXXX/@a500+/@a1000+/@a2000+", actions: "tc", errContains: "no trigger /@a2000+"},
+		{key: "GNNRR/h090", actions: "hoC35", errContains: "only triggers may follow"},
+		{key: "GNNRR/@a", actions: "hoC35", errContains: "invalid trigger"},
+		{key: "", actions: "hoC35", errContains: "no fix"},
+		{key: "GNNRR", actions: "", errContains: "empty action"},
+		{key: "GNNRR", actions: "hoC35,", errContains: "empty action"},
+		{key: "GNNRR", actions: "flyover", errContains: "unknown action"},
+		{key: "GNNRR", actions: "c123", errContains: "invalid action"},
+		{key: "GNNRR", actions: "c7000,d3000", errContains: "cannot specify both"},
+		{key: "KSFO-10L", actions: "h090", errContains: "multiple heading"},
+	} {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = wps.addActions(tc.key, tc.actions)
+		if tc.errContains != "" {
+			if err == nil || !strings.Contains(err.Error(), tc.errContains) {
+				t.Errorf("%q %q: expected error containing %q, got %v", tc.key, tc.actions, tc.errContains, err)
+			}
+			continue
+		}
+		if err != nil {
+			t.Errorf("%q %q: %v", tc.key, tc.actions, err)
+		} else if got := wps.Encode(); got != tc.want {
+			t.Errorf("%q %q: got %q, want %q", tc.key, tc.actions, got, tc.want)
+		}
+	}
+}
+
+func TestResolveActionControllers(t *testing.T) {
+	resolve := func(cp ControlPosition) ControlPosition {
+		if cp == "C35" {
+			return "NCT_C35"
+		}
+		return cp
+	}
+	for _, tc := range []struct{ in, want string }{
+		{"hoC35", "hoNCT_C35"},
+		{"hoC35, po5J", "hoNCT_C35,po5J"},
+		{"tc,poC35,h090", "tc,poNCT_C35,h090"},
+		{"bogus,hoC35", "bogus,hoNCT_C35"},
+	} {
+		if got := ResolveActionControllers(tc.in, resolve); got != tc.want {
+			t.Errorf("%q: got %q, want %q", tc.in, got, tc.want)
+		}
+	}
+}
