@@ -3429,67 +3429,19 @@
             "sid": "ROCKI7",
             "waypoints": "KAPA-35R/h170 DEN BAYLR BOBBA"
           },
-          "WYNDM": {
+          "WYNDM,ZIRKL,SHAYK,DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1"
           },
-          "ZIRKL": {
-            "cleared_altitude": 8000,
-            "sid": "ECHOO1"
-          },
-          "SHAYK": {
-            "cleared_altitude": 8000,
-            "sid": "ECHOO1"
-          },
-          "DUUZE": {
-            "cleared_altitude": 8000,
-            "sid": "ECHOO1"
-          },
-          "CHUWY": {
+          "CHUWY,JOBBA,SAABR,XXWNG,DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2"
           },
-          "JOBBA,SAABR": {
-            "cleared_altitude": 8000,
-            "sid": "MRSHH2"
-          },
-          "XXWNG": {
-            "cleared_altitude": 8000,
-            "sid": "MRSHH2"
-          },
-          "DDRTH": {
-            "cleared_altitude": 8000,
-            "sid": "MRSHH2"
-          },
-          "SLEEK": {
+          "SLEEK,VRONI,JOPLN,SUDDZ,DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1"
           },
-          "VRONI,JOPLN": {
-            "cleared_altitude": 8000,
-            "sid": "SKYEE1"
-          },
-          "SUDDZ": {
-            "cleared_altitude": 8000,
-            "sid": "SKYEE1"
-          },
-          "DAAYE": {
-            "cleared_altitude": 8000,
-            "sid": "SKYEE1"
-          },
-          "TEHRU": {
-            "cleared_altitude": 8000,
-            "sid": "WNGSS1"
-          },
-          "WERNR": {
-            "cleared_altitude": 8000,
-            "sid": "WNGSS1"
-          },
-          "VOAXA": {
-            "cleared_altitude": 8000,
-            "sid": "WNGSS1"
-          },
-          "CHNGY": {
+          "TEHRU,WERNR,VOAXA,CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1"
           }
@@ -5262,15 +5214,11 @@
             "sid": "YELLO5",
             "waypoints": "KFNL-33/h150 DEN YAMMI"
           },
-          "ALS": {
+          "ALS,PUB": {
             "cleared_altitude": 8000,
             "sid": "PIKES3"
           },
-          "PUB": {
-            "cleared_altitude": 8000,
-            "sid": "PIKES3"
-          },
-          "GCK": {
+          "GCK,MCK,HCT": {
             "cleared_altitude": 8000,
             "sid": "PLAIN2"
           },
@@ -5278,91 +5226,23 @@
             "cleared_altitude": 8000,
             "sid": "PLAIN2.CABET"
           },
-          "MCK": {
-            "cleared_altitude": 8000,
-            "sid": "PLAIN2"
-          },
-          "HCT": {
-            "cleared_altitude": 8000,
-            "sid": "PLAIN2"
-          },
-          "EKR": {
+          "EKR,DBL,DVC,HBU": {
             "cleared_altitude": 8000,
             "sid": "ROCKI7"
           },
-          "DBL": {
-            "cleared_altitude": 8000,
-            "sid": "ROCKI7"
-          },
-          "DVC": {
-            "cleared_altitude": 8000,
-            "sid": "ROCKI7"
-          },
-          "HBU": {
-            "cleared_altitude": 8000,
-            "sid": "ROCKI7"
-          },
-          "WYNDM": {
+          "WYNDM,ZIRKL,SHAYK,DUUZE": {
             "cleared_altitude": 8000,
             "sid": "ECHOO1"
           },
-          "ZIRKL": {
-            "cleared_altitude": 8000,
-            "sid": "ECHOO1"
-          },
-          "SHAYK": {
-            "cleared_altitude": 8000,
-            "sid": "ECHOO1"
-          },
-          "DUUZE": {
-            "cleared_altitude": 8000,
-            "sid": "ECHOO1"
-          },
-          "CHUWY": {
+          "CHUWY,JOBBA,SAABR,XXWNG,DDRTH": {
             "cleared_altitude": 8000,
             "sid": "MRSHH2"
           },
-          "JOBBA,SAABR": {
-            "cleared_altitude": 8000,
-            "sid": "MRSHH2"
-          },
-          "XXWNG": {
-            "cleared_altitude": 8000,
-            "sid": "MRSHH2"
-          },
-          "DDRTH": {
-            "cleared_altitude": 8000,
-            "sid": "MRSHH2"
-          },
-          "SLEEK": {
+          "SLEEK,VRONI,JOPLN,SUDDZ,DAAYE": {
             "cleared_altitude": 8000,
             "sid": "SKYEE1"
           },
-          "VRONI,JOPLN": {
-            "cleared_altitude": 8000,
-            "sid": "SKYEE1"
-          },
-          "SUDDZ": {
-            "cleared_altitude": 8000,
-            "sid": "SKYEE1"
-          },
-          "DAAYE": {
-            "cleared_altitude": 8000,
-            "sid": "SKYEE1"
-          },
-          "TEHRU": {
-            "cleared_altitude": 8000,
-            "sid": "WNGSS1"
-          },
-          "WERNR": {
-            "cleared_altitude": 8000,
-            "sid": "WNGSS1"
-          },
-          "VOAXA": {
-            "cleared_altitude": 8000,
-            "sid": "WNGSS1"
-          },
-          "CHNGY": {
+          "TEHRU,WERNR,VOAXA,CHNGY": {
             "cleared_altitude": 8000,
             "sid": "WNGSS1"
           }

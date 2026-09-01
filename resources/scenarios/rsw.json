@@ -21,37 +21,7 @@
             "description": "CSHEL8",
             "waypoints": "KRSW/h060/a4000 CSHEL/h347"
           },
-          "CHARO": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW/h058/a4000"
-          },
-          "ROGAN": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW/h058/a4000"
-          },
-          "DYLYN": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW/h058/a4000"
-          },
-          "LUCYS": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW/h058/a4000"
-          },
-          "RACNO": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW/h058/a4000"
-          },
-          "DIDDY": {
+          "CHARO,ROGAN,DYLYN,LUCYS,RACNO,DIDDY": {
             "cleared_altitude": 4000,
             "sid": "ALICO7",
             "description": "ALICO7",
@@ -63,22 +33,7 @@
             "description": "MOOKY6",
             "waypoints": "KRSW/h100/a3000"
           },
-          "SCUBY": {
-            "cleared_altitude": 3000,
-            "sid": "SCUBY8",
-            "description": "SCUBY8"
-          },
-          "AABER": {
-            "cleared_altitude": 3000,
-            "sid": "SCUBY8",
-            "description": "SCUBY8"
-          },
-          "GOODY": {
-            "cleared_altitude": 3000,
-            "sid": "SCUBY8",
-            "description": "SCUBY8"
-          },
-          "FEMID": {
+          "SCUBY,AABER,GOODY,FEMID": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
             "description": "SCUBY8"
@@ -90,37 +45,7 @@
             "sid": "CSHEL8",
             "description": "CSHEL8"
           },
-          "CHARO": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW 26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
-          },
-          "ROGAN": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW 26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
-          },
-          "DYLYN": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW 26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
-          },
-          "LUCYS": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW 26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
-          },
-          "RACNO": {
-            "cleared_altitude": 4000,
-            "sid": "ALICO7",
-            "description": "ALICO7",
-            "waypoints": "KRSW 26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
-          },
-          "DIDDY": {
+          "CHARO,ROGAN,DYLYN,LUCYS,RACNO,DIDDY": {
             "cleared_altitude": 4000,
             "sid": "ALICO7",
             "description": "ALICO7",
@@ -132,22 +57,7 @@
             "description": "MOOKY6",
             "waypoints": "KRSW/h238/a3000"
           },
-          "SCUBY": {
-            "cleared_altitude": 3000,
-            "sid": "SCUBY8",
-            "description": "SCUBY8"
-          },
-          "AABER": {
-            "cleared_altitude": 3000,
-            "sid": "SCUBY8",
-            "description": "SCUBY8"
-          },
-          "GOODY": {
-            "cleared_altitude": 3000,
-            "sid": "SCUBY8",
-            "description": "SCUBY8"
-          },
-          "FEMID": {
+          "SCUBY,AABER,GOODY,FEMID": {
             "cleared_altitude": 3000,
             "sid": "SCUBY8",
             "description": "SCUBY8"

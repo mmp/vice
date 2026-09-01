@@ -36,85 +36,45 @@
       },
       "departure_routes": {
         "15": {
-          "GIPPL": {
+          "GIPPL,LGRHD": {
             "cleared_altitude": 4000,
             "sid": "LGRHD3"
           },
-          "LGRHD": {
-            "cleared_altitude": 4000,
-            "sid": "LGRHD3"
-          },
-          "VANNC,JYMSE": {
+          "VANNC,JYMSE,MLTRE": {
             "cleared_altitude": 4000,
             "sid": "MLTRE3"
           },
-          "MLTRE": {
-            "cleared_altitude": 4000,
-            "sid": "MLTRE3"
-          },
-          "CRE": {
+          "CRE,PLMTO": {
             "cleared_altitude": 4000,
             "sid": "PLMTO3"
           },
-          "PLMTO": {
-            "cleared_altitude": 4000,
-            "sid": "PLMTO3"
-          },
-          "DBN,IRQ,ALD": {
+          "DBN,IRQ,ALD,STUNO": {
             "cleared_altitude": 4000,
             "sid": "STUNO1"
           },
-          "STUNO": {
-            "cleared_altitude": 4000,
-            "sid": "STUNO1"
-          },
-          "FILLI": {
-            "cleared_altitude": 4000,
-            "sid": "SWPFX3"
-          },
-          "SWPFX": {
+          "FILLI,SWPFX": {
             "cleared_altitude": 4000,
             "sid": "SWPFX3"
           }
         },
         "33": {
-          "GIPPL": {
+          "GIPPL,LGRHD": {
             "cleared_altitude": 4000,
             "sid": "LGRHD3"
           },
-          "LGRHD": {
-            "cleared_altitude": 4000,
-            "sid": "LGRHD3"
-          },
-          "VANNC,JYMSE": {
+          "VANNC,JYMSE,MLTRE": {
             "cleared_altitude": 4000,
             "sid": "MLTRE3"
           },
-          "MLTRE": {
-            "cleared_altitude": 4000,
-            "sid": "MLTRE3"
-          },
-          "CRE": {
+          "CRE,PLMTO": {
             "cleared_altitude": 4000,
             "sid": "PLMTO3"
           },
-          "PLMTO": {
-            "cleared_altitude": 4000,
-            "sid": "PLMTO3"
-          },
-          "DBN,IRQ,ALD": {
+          "DBN,IRQ,ALD,STUNO": {
             "cleared_altitude": 4000,
             "sid": "STUNO1"
           },
-          "STUNO": {
-            "cleared_altitude": 4000,
-            "sid": "STUNO1"
-          },
-          "FILLI": {
-            "cleared_altitude": 4000,
-            "sid": "SWPFX3"
-          },
-          "SWPFX": {
+          "FILLI,SWPFX": {
             "cleared_altitude": 4000,
             "sid": "SWPFX3"
           }

@@ -12,13 +12,7 @@
       },
       "departure_routes": {
         "8": {
-          "BAXLY": {
-            "handoff_controller": "50",
-            "cleared_altitude": 15000,
-            "sid": "BRSTL1",
-            "waypoints": "KJAX-26 TEREE/ho BRSTL"
-          },
-          "ALLMA": {
+          "BAXLY,ALLMA": {
             "handoff_controller": "50",
             "cleared_altitude": 15000,
             "sid": "BRSTL1",

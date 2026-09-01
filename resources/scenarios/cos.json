@@ -36,201 +36,25 @@
       },
       "departure_routes": {
         "35L": {
-          "LUFSE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "BYEBI": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "DRAKE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "JEWLS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "PUB": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "BRK": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "HBU": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "LAA": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "BRESH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "ALS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "DVV": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "FQF": {
+          "LUFSE,BYEBI,DRAKE,JEWLS,PUB,BRK,HBU,LAA,BRESH,ALS,DVV,FQF": {
             "cleared_altitude": 10000,
             "waypoints": "_COS17R/h352"
           }
         },
         "35R": {
-          "LUFSE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "BYEBI": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "DRAKE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "JEWLS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "PUB": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "BRK": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "HBU": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "LAA": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "BRESH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "ALS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "DVV": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "FQF": {
+          "LUFSE,BYEBI,DRAKE,JEWLS,PUB,BRK,HBU,LAA,BRESH,ALS,DVV,FQF": {
             "cleared_altitude": 10000,
             "waypoints": "_COS17L/h010"
           }
         },
         "17L": {
-          "LUFSE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "BYEBI": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "DRAKE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "JEWLS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "PUB": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "BRK": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "HBU": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "LAA": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "BRESH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "ALS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "DVV": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "FQF": {
+          "LUFSE,BYEBI,DRAKE,JEWLS,PUB,BRK,HBU,LAA,BRESH,ALS,DVV,FQF": {
             "cleared_altitude": 10000,
             "waypoints": "_COS35R/h150"
           }
         },
         "17R": {
-          "LUFSE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "BYEBI": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "DRAKE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "JEWLS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "PUB": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "BRK": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "HBU": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "LAA": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "BRESH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "ALS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "DVV": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "FQF": {
+          "LUFSE,BYEBI,DRAKE,JEWLS,PUB,BRK,HBU,LAA,BRESH,ALS,DVV,FQF": {
             "cleared_altitude": 10000,
             "waypoints": "_COS35L/h172"
           }
@@ -400,69 +224,13 @@
       },
       "departure_routes": {
         "15": {
-          "LUFSE": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "BYEBI": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "PUB": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "BRK": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "LAA": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "ALS": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "DVV": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "FQF": {
+          "LUFSE,BYEBI,PUB,BRK,LAA,ALS,DVV,FQF": {
             "cleared_altitude": 9000,
             "waypoints": "KFLY-33/h153 DRAKE"
           }
         },
         "33": {
-          "LUFSE": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "BYEBI": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "PUB": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "BRK": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "LAA": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "ALS": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "DVV": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "FQF": {
+          "LUFSE,BYEBI,PUB,BRK,LAA,ALS,DVV,FQF": {
             "cleared_altitude": 9000,
             "waypoints": "KFLY-15/h333 DRAKE"
           }

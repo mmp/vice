@@ -18,74 +18,14 @@
       },
       "departure_routes": {
         "35": {
-          "SOT": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_17/h346"
-          },
-          "BZM": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_17/h346"
-          },
-          "SPA": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_17/h346"
-          },
-          "IRQ": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_17/h346"
-          },
-          "VXV": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_17/h346"
-          },
-          "MHONY": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_17/h346"
-          },
-          "JJENY": {
+          "SOT,BZM,SPA,IRQ,VXV,MHONY,JJENY": {
             "cleared_altitude": 8000,
             "sid": "AVL7",
             "waypoints": "_AVL_17/h346"
           }
         },
         "17": {
-          "SOT": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_35/h166"
-          },
-          "BZM": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_35/h166"
-          },
-          "SPA": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_35/h166"
-          },
-          "IRQ": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_35/h166"
-          },
-          "VXV": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_35/h166"
-          },
-          "MHONY": {
-            "cleared_altitude": 8000,
-            "sid": "AVL7",
-            "waypoints": "_AVL_35/h166"
-          },
-          "JJENY": {
+          "SOT,BZM,SPA,IRQ,VXV,MHONY,JJENY": {
             "cleared_altitude": 8000,
             "sid": "AVL7",
             "waypoints": "_AVL_35/h166"

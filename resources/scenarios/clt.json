@@ -130,11 +130,7 @@
             "cleared_altitude": 8000,
             "sid": "ICONS7"
           },
-          "PITRW": {
-            "cleared_altitude": 8000,
-            "sid": "KWEEN7"
-          },
-          "UNJAM": {
+          "PITRW,UNJAM": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7"
           },
@@ -142,15 +138,7 @@
             "cleared_altitude": 8000,
             "sid": "BEAVY8"
           },
-          "TNSLY": {
-            "cleared_altitude": 8000,
-            "sid": "BOBZY7"
-          },
-          "BOBZY": {
-            "cleared_altitude": 8000,
-            "sid": "BOBZY7"
-          },
-          "BNA": {
+          "TNSLY,BOBZY,BNA": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
@@ -163,15 +151,7 @@
             "cleared_altitude": 8000,
             "sid": "ESTRR7"
           },
-          "CUBIM": {
-            "cleared_altitude": 8000,
-            "sid": "JOJJO7"
-          },
-          "DOOGE": {
-            "cleared_altitude": 8000,
-            "sid": "JOJJO7"
-          },
-          "NOONN": {
+          "CUBIM,DOOGE,NOONN": {
             "cleared_altitude": 8000,
             "sid": "JOJJO7"
           },
@@ -238,11 +218,7 @@
             "cleared_altitude": 8000,
             "sid": "ICONS7"
           },
-          "PITRW": {
-            "cleared_altitude": 8000,
-            "sid": "KWEEN7"
-          },
-          "UNJAM": {
+          "PITRW,UNJAM": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7"
           },
@@ -250,15 +226,7 @@
             "cleared_altitude": 8000,
             "sid": "BEAVY8"
           },
-          "TNSLY": {
-            "cleared_altitude": 8000,
-            "sid": "BOBZY7"
-          },
-          "BOBZY": {
-            "cleared_altitude": 8000,
-            "sid": "BOBZY7"
-          },
-          "BNA": {
+          "TNSLY,BOBZY,BNA": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
@@ -271,15 +239,7 @@
             "cleared_altitude": 8000,
             "sid": "ESTRR7"
           },
-          "CUBIM": {
-            "cleared_altitude": 8000,
-            "sid": "JOJJO7"
-          },
-          "DOOGE": {
-            "cleared_altitude": 8000,
-            "sid": "JOJJO7"
-          },
-          "NOONN": {
+          "CUBIM,DOOGE,NOONN": {
             "cleared_altitude": 8000,
             "sid": "JOJJO7"
           },
@@ -390,11 +350,7 @@
             "cleared_altitude": 8000,
             "sid": "ICONS7"
           },
-          "PITRW": {
-            "cleared_altitude": 8000,
-            "sid": "KWEEN7"
-          },
-          "UNJAM": {
+          "PITRW,UNJAM": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7"
           }
@@ -471,15 +427,7 @@
             "cleared_altitude": 8000,
             "sid": "BEAVY8"
           },
-          "TNSLY": {
-            "cleared_altitude": 8000,
-            "sid": "BOBZY7"
-          },
-          "BOBZY": {
-            "cleared_altitude": 8000,
-            "sid": "BOBZY7"
-          },
-          "BNA": {
+          "TNSLY,BOBZY,BNA": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
@@ -492,15 +440,7 @@
             "cleared_altitude": 8000,
             "sid": "ESTRR7"
           },
-          "CUBIM": {
-            "cleared_altitude": 8000,
-            "sid": "JOJJO7"
-          },
-          "DOOGE": {
-            "cleared_altitude": 8000,
-            "sid": "JOJJO7"
-          },
-          "NOONN": {
+          "CUBIM,DOOGE,NOONN": {
             "cleared_altitude": 8000,
             "sid": "JOJJO7"
           },
@@ -528,11 +468,7 @@
             "cleared_altitude": 8000,
             "sid": "ICONS7"
           },
-          "PITRW": {
-            "cleared_altitude": 8000,
-            "sid": "KWEEN7"
-          },
-          "UNJAM": {
+          "PITRW,UNJAM": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7"
           }

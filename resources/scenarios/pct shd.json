@@ -382,125 +382,29 @@
       },
       "departure_routes": {
         "34R": {
-          "RAMAY": {
+          "RAMAY,WOOLY,JERES,MCRAY,OTTTO": {
             "assigned_altitude": 3000,
             "sid": "HIICH2"
           },
-          "MAULS,FLASK": {
+          "MAULS,FLASK,RRSIN,MELTN,GLANC": {
             "assigned_altitude": 3000,
             "sid": "GABBE3"
           },
-          "WOOLY": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "MELTN": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "JERES": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "MCRAY": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "OTTTO": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "GLANC": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "FLUKY": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "GVE": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "WITTO": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "MOL": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "LDN": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "MRB": {
+          "FLUKY,GVE,WITTO,MOL,LDN,MRB": {
             "cleared_altitude": 3000,
             "sid": "ARSNL5"
           }
         },
         "16L": {
-          "RAMAY": {
+          "RAMAY,MAULS,FLASK,RRSIN,MELTN,GLANC": {
             "assigned_altitude": 3000,
             "sid": "GABBE3"
           },
-          "MAULS,FLASK": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "WOOLY": {
+          "WOOLY,JERES,MCRAY,OTTTO": {
             "assigned_altitude": 3000,
             "sid": "HIICH2"
           },
-          "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "MELTN": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "JERES": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "MCRAY": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "OTTTO": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "GLANC": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "FLUKY": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "WITTO": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "MOL": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "GVE": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "LDN": {
-            "cleared_altitude": 3000,
-            "sid": "ARSNL5"
-          },
-          "MRB": {
+          "FLUKY,WITTO,MOL,GVE,LDN,MRB": {
             "cleared_altitude": 3000,
             "sid": "ARSNL5"
           }
@@ -775,17 +679,7 @@
             "aircraft": ["jet"],
             "waypoints": "KIAD-12/h270 BUTRZ/a3000+ CLTCH KERRK"
           },
-          "SWANN": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "aircraft": ["jet"]
-          },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "aircraft": ["jet"]
-          },
-          "COLIN,SCOOB": {
+          "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
             "aircraft": ["jet"]
@@ -829,17 +723,7 @@
             "aircraft": ["jet"],
             "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "aircraft": ["jet"]
-          },
-          "AGARD.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "aircraft": ["jet"]
-          },
-          "BAL": {
+          "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
             "aircraft": ["jet"]
@@ -857,17 +741,7 @@
             "aircraft": ["jet"],
             "waypoints": "KIAD-12/h250 BUTRZ/a3000+ CLTCH KERRK"
           },
-          "SWANN": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "aircraft": ["jet"]
-          },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "aircraft": ["jet"]
-          },
-          "COLIN,SCOOB": {
+          "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
             "aircraft": ["jet"]
@@ -911,17 +785,7 @@
             "aircraft": ["jet"],
             "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "aircraft": ["jet"]
-          },
-          "AGARD.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "aircraft": ["jet"]
-          },
-          "BAL": {
+          "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
             "aircraft": ["jet"]
@@ -1029,32 +893,12 @@
             "sid": "CLTCH3",
             "aircraft": ["jet"]
           },
-          "SWANN": {
+          "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
             "aircraft": ["jet"]
           },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "aircraft": ["jet"]
-          },
-          "COLIN,SCOOB": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "aircraft": ["jet"]
-          },
-          "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "JDUBB4",
-            "aircraft": ["jet"]
-          },
-          "MELTN": {
-            "assigned_altitude": 3000,
-            "sid": "JDUBB4",
-            "aircraft": ["jet"]
-          },
-          "JDUBB": {
+          "RRSIN,MELTN,JDUBB": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
             "aircraft": ["jet"]
@@ -1079,17 +923,7 @@
             "sid": "SCRAM6",
             "aircraft": ["jet"]
           },
-          "SWANN.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "aircraft": ["jet"]
-          },
-          "AGARD.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "aircraft": ["jet"]
-          },
-          "BAL": {
+          "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
             "aircraft": ["jet"]
@@ -1288,32 +1122,12 @@
             "sid": "CLTCH3",
             "aircraft": ["jet"]
           },
-          "SWANN": {
+          "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
             "aircraft": ["jet"]
           },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "aircraft": ["jet"]
-          },
-          "COLIN,SCOOB": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "aircraft": ["jet"]
-          },
-          "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "JDUBB4",
-            "aircraft": ["jet"]
-          },
-          "MELTN": {
-            "assigned_altitude": 3000,
-            "sid": "JDUBB4",
-            "aircraft": ["jet"]
-          },
-          "JDUBB": {
+          "RRSIN,MELTN,JDUBB": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
             "aircraft": ["jet"]
@@ -1338,17 +1152,7 @@
             "sid": "SCRAM6",
             "aircraft": ["jet"]
           },
-          "SWANN.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "aircraft": ["jet"]
-          },
-          "AGARD.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "aircraft": ["jet"]
-          },
-          "BAL": {
+          "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
             "aircraft": ["jet"]

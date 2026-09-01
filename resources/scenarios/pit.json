@@ -91,97 +91,25 @@
       ],
       "departure_routes": {
         "14": {
-          "AIR": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "MGW": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "JST": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "CKB": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "DILNE": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "AHTIY": {
+          "AIR,MGW,JST,CKB,DILNE,AHTIY": {
             "cleared_altitude": 5000,
             "sid": "PIT5"
           }
         },
         "28C": {
-          "AIR": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "MGW": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "JST": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "CKB": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "DILNE": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "AHTIY": {
+          "AIR,MGW,JST,CKB,DILNE,AHTIY": {
             "cleared_altitude": 5000,
             "sid": "PIT5"
           }
         },
         "28R": {
-          "BSV": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "EWC": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "TYROO": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "PARKE": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "HAR": {
+          "BSV,EWC,TYROO,PARKE,HAR": {
             "cleared_altitude": 5000,
             "sid": "PIT5"
           }
         },
         "10C": {
-          "BSV": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "EWC": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "TYROO": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "PARKE": {
-            "cleared_altitude": 5000,
-            "sid": "PIT5"
-          },
-          "HAR": {
+          "BSV,EWC,TYROO,PARKE,HAR": {
             "cleared_altitude": 5000,
             "sid": "PIT5"
           }
@@ -512,95 +440,17 @@
       },
       "departure_routes": {
         "10": {
-          "AIR": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "EWC": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "BSV": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "CKB": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "PSB": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "JST": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "MGW": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "EKN": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "TYROO": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "AHTIY": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "DILNE": {
+          "AIR,EWC,BSV,CKB,PSB,JST,MGW,EKN,TYROO,AHTIY,DILNE": {
             "cleared_altitude": 3000,
             "sid": "AGC9"
           }
         },
         "28": {
-          "AIR": {
+          "AIR,EWC,BSV,CKB,PSB,JST,MGW,TYROO": {
             "cleared_altitude": 3000,
             "sid": "AGC9"
           },
-          "EWC": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "BSV": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "CKB": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "PSB": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "JST": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "MGW": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "EKN": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
-          },
-          "TYROO": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9"
-          },
-          "AHTIY": {
-            "cleared_altitude": 3000,
-            "sid": "AGC9",
-            "waypoints": "_AGC_28/h099"
-          },
-          "DILNE": {
+          "EKN,AHTIY,DILNE": {
             "cleared_altitude": 3000,
             "sid": "AGC9",
             "waypoints": "_AGC_28/h099"

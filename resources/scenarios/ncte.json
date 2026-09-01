@@ -356,15 +356,7 @@
             "cleared_altitude": 19000,
             "sid": "ALPYN1"
           },
-          "CRDDZ": {
-            "cleared_altitude": 19000,
-            "sid": "PVINE5"
-          },
-          "HALLE": {
-            "cleared_altitude": 19000,
-            "sid": "PVINE5"
-          },
-          "PYGOW": {
+          "CRDDZ,HALLE,PYGOW": {
             "cleared_altitude": 19000,
             "sid": "PVINE5"
           },
@@ -383,15 +375,7 @@
             "cleared_altitude": 19000,
             "sid": "ALPYN1"
           },
-          "CRDDZ": {
-            "cleared_altitude": 19000,
-            "sid": "PVINE5"
-          },
-          "HALLE": {
-            "cleared_altitude": 19000,
-            "sid": "PVINE5"
-          },
-          "PYGOW": {
+          "CRDDZ,HALLE,PYGOW": {
             "cleared_altitude": 19000,
             "sid": "PVINE5"
           },
@@ -419,19 +403,7 @@
             "cleared_altitude": 19000,
             "sid": "WAGGE8"
           },
-          "MRLET": {
-            "cleared_altitude": 19000,
-            "sid": "ZEFFR9"
-          },
-          "DARBI": {
-            "cleared_altitude": 19000,
-            "sid": "ZEFFR9"
-          },
-          "PESKE": {
-            "cleared_altitude": 19000,
-            "sid": "ZEFFR9"
-          },
-          "BLKJK": {
+          "MRLET,DARBI,PESKE,BLKJK": {
             "cleared_altitude": 19000,
             "sid": "ZEFFR9"
           }
@@ -450,19 +422,7 @@
             "cleared_altitude": 19000,
             "sid": "WAGGE8"
           },
-          "MRLET": {
-            "cleared_altitude": 19000,
-            "sid": "ZEFFR9"
-          },
-          "DARBI": {
-            "cleared_altitude": 19000,
-            "sid": "ZEFFR9"
-          },
-          "PESKE": {
-            "cleared_altitude": 19000,
-            "sid": "ZEFFR9"
-          },
-          "BLKJK": {
+          "MRLET,DARBI,PESKE,BLKJK": {
             "cleared_altitude": 19000,
             "sid": "ZEFFR9"
           }
@@ -791,7 +751,7 @@
             "sid": "FROGO1",
             "waypoints": "N038.44.59.285,W121.34.36.855/h090"
           },
-          "RBL": {
+          "RBL,PYE,CCR,SUU,RAGGS": {
             "cleared_altitude": 4000,
             "waypoints": "KSMF-17L/h347"
           },
@@ -799,19 +759,7 @@
             "cleared_altitude": 19000,
             "sid": "FTHIL3"
           },
-          "PYE,CCR,SUU,RAGGS": {
-            "cleared_altitude": 4000,
-            "waypoints": "KSMF-17L/h347"
-          },
-          "MACUS": {
-            "cleared_altitude": 9000,
-            "sid": "RVRCT4"
-          },
-          "RALEY": {
-            "cleared_altitude": 9000,
-            "sid": "RVRCT4"
-          },
-          "SHUFL": {
+          "MACUS,RALEY,SHUFL": {
             "cleared_altitude": 9000,
             "sid": "RVRCT4"
           }
@@ -822,7 +770,7 @@
             "sid": "FROGO1",
             "waypoints": "N038.45.03.900,W121.36.03.290/h090"
           },
-          "RBL": {
+          "RBL,PYE,CCR,SUU,RAGGS": {
             "cleared_altitude": 4000,
             "waypoints": "KSMF-17R/h347"
           },
@@ -830,19 +778,7 @@
             "cleared_altitude": 19000,
             "sid": "FTHIL3"
           },
-          "PYE,CCR,SUU,RAGGS": {
-            "cleared_altitude": 4000,
-            "waypoints": "KSMF-17R/h347"
-          },
-          "MACUS": {
-            "cleared_altitude": 9000,
-            "sid": "RVRCT4"
-          },
-          "RALEY": {
-            "cleared_altitude": 9000,
-            "sid": "RVRCT4"
-          },
-          "SHUFL": {
+          "MACUS,RALEY,SHUFL": {
             "cleared_altitude": 9000,
             "sid": "RVRCT4"
           }
@@ -865,15 +801,7 @@
             "cleared_altitude": 4000,
             "waypoints": "KSMF-35L/h167"
           },
-          "MACUS": {
-            "cleared_altitude": 9000,
-            "sid": "SCTWN4"
-          },
-          "RALEY": {
-            "cleared_altitude": 9000,
-            "sid": "SCTWN4"
-          },
-          "SHUFL": {
+          "MACUS,RALEY,SHUFL": {
             "cleared_altitude": 9000,
             "sid": "SCTWN4"
           }
@@ -896,15 +824,7 @@
             "cleared_altitude": 4000,
             "waypoints": "KSMF-35R/h167"
           },
-          "MACUS": {
-            "cleared_altitude": 9000,
-            "sid": "SCTWN4"
-          },
-          "RALEY": {
-            "cleared_altitude": 9000,
-            "sid": "SCTWN4"
-          },
-          "SHUFL": {
+          "MACUS,RALEY,SHUFL": {
             "cleared_altitude": 9000,
             "sid": "SCTWN4"
           }
@@ -1258,15 +1178,7 @@
       },
       "departure_routes": {
         "2": {
-          "SAC.L": {
-            "cleared_altitude": 2000,
-            "waypoints": "KSAC-20/h250"
-          },
-          "SAC.H": {
-            "cleared_altitude": 2000,
-            "waypoints": "KSAC-20/h250"
-          },
-          "RBL": {
+          "SAC.L,SAC.H,RBL": {
             "cleared_altitude": 2000,
             "waypoints": "KSAC-20/h250"
           },
@@ -1276,15 +1188,7 @@
           }
         },
         "20": {
-          "SAC.L": {
-            "cleared_altitude": 2000,
-            "waypoints": "KSAC-2/h150"
-          },
-          "SAC.H": {
-            "cleared_altitude": 2000,
-            "waypoints": "KSAC-2/h150"
-          },
-          "RBL": {
+          "SAC.L,SAC.H,RBL": {
             "cleared_altitude": 2000,
             "waypoints": "KSAC-2/h150"
           },
@@ -1424,7 +1328,7 @@
       },
       "departure_routes": {
         "22L": {
-          "FROGO": {
+          "FROGO,SAC": {
             "assigned_altitude": 4000,
             "waypoints": "KMHR-4R/h150"
           },
@@ -1432,25 +1336,17 @@
             "assigned_altitude": 2000,
             "waypoints": "KMHR-4R/h360"
           },
-          "RBL.J": {
-            "assigned_altitude": 4000,
-            "waypoints": "KMHR-4R/h090"
-          },
-          "DUDES": {
+          "RBL.J,DUDES": {
             "assigned_altitude": 4000,
             "waypoints": "KMHR-4R/h090"
           },
           "ORRCA": {
             "assigned_altitude": 4000,
             "waypoints": "KMHR-4R/h090 ORRCA HOBOA/a16000+"
-          },
-          "SAC": {
-            "assigned_altitude": 4000,
-            "waypoints": "KMHR-4R/h150"
           }
         },
         "4R": {
-          "FROGO": {
+          "FROGO,SAC": {
             "assigned_altitude": 4000,
             "waypoints": "KMHR-22L/h150"
           },
@@ -1458,21 +1354,13 @@
             "assigned_altitude": 2000,
             "waypoints": "KMHR-22L/h360"
           },
-          "RBL.J": {
-            "assigned_altitude": 4000,
-            "waypoints": "KMHR-22L/h040"
-          },
-          "DUDES": {
+          "RBL.J,DUDES": {
             "assigned_altitude": 4000,
             "waypoints": "KMHR-22L/h040"
           },
           "ORRCA": {
             "assigned_altitude": 4000,
             "waypoints": "KMHR-22L/h40 ORRCA HOBOA/a16000+"
-          },
-          "SAC": {
-            "assigned_altitude": 4000,
-            "waypoints": "KMHR-22L/h150"
           }
         }
       },

@@ -12,13 +12,7 @@
       "departure_controller": "O1W",
       "departure_routes": {
         "36R": {
-          "REMIS": {
-            "cleared_altitude": 16000,
-            "sid": "OSPRY1",
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho OSPRY GDUNN KNOST",
-            "handoff_controller": "14"
-          },
-          "CIGAR": {
+          "REMIS,CIGAR": {
             "cleared_altitude": 16000,
             "sid": "OSPRY1",
             "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho OSPRY GDUNN KNOST",
@@ -30,13 +24,7 @@
             "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho OSPRY",
             "handoff_controller": "14"
           },
-          "RDSOX": {
-            "cleared_altitude": 16000,
-            "sid": "RDSOX1",
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho RDSOX",
-            "handoff_controller": "14"
-          },
-          "JFRYS": {
+          "RDSOX,JFRYS": {
             "cleared_altitude": 16000,
             "sid": "RDSOX1",
             "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho RDSOX",
@@ -931,13 +919,7 @@
             "waypoints": "KSRQ-14 AQUAE/a2600/s220/hoR08 PHINS/a4000+/hoR07 TIDES/a5000+/s250/ho",
             "handoff_controller": "14"
           },
-          "MOMIE": {
-            "cleared_altitude": 20000,
-            "sid": "TIDES1",
-            "waypoints": "KSRQ-14 AQUAE/a2600/s220/hoR08 PHINS/a4000+/hoR07 TIDES/a5000+/s250 HYRON/ho BRUNG ENDED",
-            "handoff_controller": "14"
-          },
-          "WILON": {
+          "MOMIE,WILON": {
             "cleared_altitude": 20000,
             "sid": "TIDES1",
             "waypoints": "KSRQ-14 AQUAE/a2600/s220/hoR08 PHINS/a4000+/hoR07 TIDES/a5000+/s250 HYRON/ho BRUNG ENDED",

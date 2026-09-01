@@ -1112,7 +1112,7 @@
       "departure_controller": "1S",
       "departure_routes": {
         "27": {
-          "COLIN.P,MAYES.P": {
+          "COLIN.P,MAYES.P,NOBLE.P,SHAWN.P": {
             "cleared_altitude": 4000,
             "description": "props",
             "waypoints": "09_MM/h270"
@@ -1122,11 +1122,6 @@
             "description": "jets/turboprops",
             "waypoints": "09_MM N035.55.34.625,W095.43.00.715/h350/ho",
             "handoff_controller": "1D"
-          },
-          "NOBLE.P,SHAWN.P": {
-            "cleared_altitude": 4000,
-            "description": "props",
-            "waypoints": "09_MM/h270"
           },
           "NOBLE.J,SHAWN.J": {
             "cleared_altitude": 5000,
@@ -2432,7 +2427,7 @@
       "departure_controller": "1B",
       "departure_routes": {
         "30": {
-          "COLIN.J": {
+          "COLIN.J,MAYES.J": {
             "cleared_altitude": 5000,
             "description": "jets/turboprops",
             "waypoints": "12_MM/a5000 N036.24.14.809,W095.22.33.433/h300/ho",
@@ -2448,12 +2443,6 @@
             "cleared_altitude": 5000,
             "description": "jets/turboprops",
             "waypoints": "12_MM/a5000 N036.24.14.809,W095.22.33.433/h300/ho N036.22.34.064,W095.57.05.372/a10000",
-            "handoff_controller": "1D"
-          },
-          "MAYES.J": {
-            "cleared_altitude": 5000,
-            "description": "jets/turboprops",
-            "waypoints": "12_MM/a5000 N036.24.14.809,W095.22.33.433/h300/ho",
             "handoff_controller": "1D"
           }
         }

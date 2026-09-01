@@ -277,21 +277,13 @@
       },
       "departure_routes": {
         "5": {
-          "CRE,FLO,OKNEE,ZORDO,CLARB": {
-            "cleared_altitude": 2000,
-            "waypoints": "KCRE-23/h050"
-          },
-          "CAE,CHS": {
+          "CRE,FLO,OKNEE,ZORDO,CLARB,CAE,CHS": {
             "cleared_altitude": 2000,
             "waypoints": "KCRE-23/h050"
           }
         },
         "23": {
-          "CRE,FLO,OKNEE,ZORDO,CLARB": {
-            "cleared_altitude": 2000,
-            "waypoints": "KCRE-5/h180"
-          },
-          "CAE,CHS": {
+          "CRE,FLO,OKNEE,ZORDO,CLARB,CAE,CHS": {
             "cleared_altitude": 2000,
             "waypoints": "KCRE-5/h180"
           }

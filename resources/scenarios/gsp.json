@@ -40,19 +40,7 @@
             "sid": "BWALL2",
             "waypoints": "_GSP_22/h038"
           },
-          "HRS": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_22/h038"
-          },
-          "DGESS": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_22/h038"
-          },
-          "SPA": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_22/h038"
-          },
-          "SOTHH": {
+          "HRS,DGESS,SPA,SOTHH": {
             "cleared_altitude": 5000,
             "waypoints": "_GSP_22/h038"
           }
@@ -68,19 +56,7 @@
             "sid": "BWALL2",
             "waypoints": "_GSP_4/h219"
           },
-          "HRS": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_4/h219"
-          },
-          "DGESS": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_4/h219"
-          },
-          "SPA": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_4/h219"
-          },
-          "SOTHH": {
+          "HRS,DGESS,SPA,SOTHH": {
             "cleared_altitude": 5000,
             "waypoints": "_GSP_4/h219"
           }

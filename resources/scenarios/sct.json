@@ -148,25 +148,17 @@
             "cleared_altitude": 3000,
             "sid": "WNNDY3"
           },
-          "FICKY.E": {
+          "FICKY.E,SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
             "cleared_altitude": 3000,
             "sid": "TRTON3"
           },
           "RZS.E": {
             "cleared_altitude": 3000,
             "sid": "VTU8"
-          },
-          "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
-            "cleared_altitude": 3000,
-            "sid": "TRTON3"
           }
         },
         "25R": {
-          "LAS": {
-            "cleared_altitude": 5000,
-            "sid": "ORCKA5"
-          },
-          "MISEN": {
+          "LAS,MISEN": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5"
           },
@@ -208,37 +200,17 @@
           }
         },
         "25R.OO": {
-          "MISEN.O": {
+          "MISEN.O,CLEEE.O,CNERY.O,BEALE.O,OTAYY.O,TCATE.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1"
           },
-          "SCTRR.O,STOKD.O,MCKEY.O,DINTY.O": {
+          "SCTRR.O,STOKD.O,MCKEY.O,DINTY.O,FICKY.O": {
             "cleared_altitude": 5000,
             "sid": "KYLOW1"
-          },
-          "FICKY.O": {
-            "cleared_altitude": 5000,
-            "sid": "KYLOW1"
-          },
-          "CLEEE.O,CNERY.O": {
-            "cleared_altitude": 5000,
-            "sid": "STHBY1"
-          },
-          "BEALE.O": {
-            "cleared_altitude": 5000,
-            "sid": "STHBY1"
-          },
-          "OTAYY.O,TCATE.O": {
-            "cleared_altitude": 5000,
-            "sid": "STHBY1"
           }
         },
         "25L": {
-          "LAS": {
-            "cleared_altitude": 5000,
-            "sid": "ORCKA5"
-          },
-          "MISEN": {
+          "LAS,MISEN": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5"
           },
@@ -280,37 +252,17 @@
           }
         },
         "25L.OO": {
-          "MISEN.O": {
+          "MISEN.O,CLEEE.O,CNERY.O,BEALE.O,OTAYY.O,TCATE.O": {
             "cleared_altitude": 5000,
             "sid": "STHBY1"
           },
-          "SCTRR.O,STOKD.O,MCKEY.O,DINTY.O": {
+          "SCTRR.O,STOKD.O,MCKEY.O,DINTY.O,FICKY.O": {
             "cleared_altitude": 5000,
             "sid": "KYLOW1"
-          },
-          "FICKY.O": {
-            "cleared_altitude": 5000,
-            "sid": "KYLOW1"
-          },
-          "CLEEE.O,CNERY.O": {
-            "cleared_altitude": 5000,
-            "sid": "STHBY1"
-          },
-          "BEALE.O": {
-            "cleared_altitude": 5000,
-            "sid": "STHBY1"
-          },
-          "OTAYY.O,TCATE.O": {
-            "cleared_altitude": 5000,
-            "sid": "STHBY1"
           }
         },
         "24L": {
-          "LAS": {
-            "cleared_altitude": 5000,
-            "sid": "ORCKA5"
-          },
-          "MISEN": {
+          "LAS,MISEN": {
             "cleared_altitude": 5000,
             "sid": "ORCKA5"
           },
@@ -2449,15 +2401,7 @@
       },
       "departure_routes": {
         "20R": {
-          "IKAYE": {
-            "assigned_altitude": 5000,
-            "sid": "HHERO3"
-          },
-          "OROSZ": {
-            "assigned_altitude": 5000,
-            "sid": "HHERO3"
-          },
-          "EHF": {
+          "IKAYE,OROSZ,EHF": {
             "assigned_altitude": 5000,
             "sid": "HHERO3"
           },
@@ -2465,35 +2409,11 @@
             "assigned_altitude": 5000,
             "sid": "FINZZ3"
           },
-          "AVRRY.S": {
+          "AVRRY.S,CNERY.S,TCATE.S,OTAYY.S": {
             "assigned_altitude": 5000,
             "sid": "STAYY4"
           },
-          "CNERY.S": {
-            "assigned_altitude": 5000,
-            "sid": "STAYY4"
-          },
-          "TCATE.S": {
-            "assigned_altitude": 5000,
-            "sid": "STAYY4"
-          },
-          "OTAYY.S": {
-            "assigned_altitude": 5000,
-            "sid": "STAYY4"
-          },
-          "AVRRY": {
-            "assigned_altitude": 5000,
-            "sid": "PIGGN3"
-          },
-          "CNERY": {
-            "assigned_altitude": 5000,
-            "sid": "PIGGN3"
-          },
-          "TCATE": {
-            "assigned_altitude": 5000,
-            "sid": "PIGGN3"
-          },
-          "OTAYY": {
+          "AVRRY,CNERY,TCATE,OTAYY": {
             "assigned_altitude": 5000,
             "sid": "PIGGN3"
           }
@@ -2507,19 +2427,7 @@
             "assigned_altitude": 5000,
             "sid": "HOBOW3"
           },
-          "CNERY": {
-            "assigned_altitude": 5000,
-            "sid": "PIGGN3"
-          },
-          "AVRRY": {
-            "assigned_altitude": 5000,
-            "sid": "PIGGN3"
-          },
-          "TCATE": {
-            "assigned_altitude": 5000,
-            "sid": "PIGGN3"
-          },
-          "OTAYY": {
+          "CNERY,AVRRY,TCATE,OTAYY": {
             "assigned_altitude": 5000,
             "sid": "PIGGN3"
           }
@@ -2856,11 +2764,7 @@
       },
       "departure_routes": {
         "30": {
-          "AVRRY": {
-            "assigned_altitude": 3000,
-            "sid": "FRITR3"
-          },
-          "CNERY": {
+          "AVRRY,CNERY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3"
           },
@@ -2868,11 +2772,7 @@
             "assigned_altitude": 3000,
             "waypoints": "KLGB-12/h180 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           },
-          "CSTRO": {
-            "cleared_altitude": 3000,
-            "sid": "TOPMM5"
-          },
-          "COREZ": {
+          "CSTRO,COREZ": {
             "cleared_altitude": 3000,
             "sid": "TOPMM5"
           },
@@ -2898,11 +2798,7 @@
             "assigned_altitude": 3000,
             "waypoints": "KLGB-30/h121 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           },
-          "CSTRO": {
-            "cleared_altitude": 3000,
-            "sid": "TOPMM5"
-          },
-          "COREZ": {
+          "CSTRO,COREZ": {
             "cleared_altitude": 3000,
             "sid": "TOPMM5"
           },
@@ -3466,19 +3362,7 @@
       },
       "departure_routes": {
         "16R": {
-          "LAS": {
-            "cleared_altitude": 4000,
-            "sid": "HARYS5"
-          },
-          "MISEN": {
-            "cleared_altitude": 4000,
-            "sid": "HARYS5"
-          },
-          "HEC": {
-            "cleared_altitude": 4000,
-            "sid": "HARYS5"
-          },
-          "BLH": {
+          "LAS,MISEN,HEC,BLH": {
             "cleared_altitude": 4000,
             "sid": "HARYS5"
           },
@@ -3486,11 +3370,7 @@
             "cleared_altitude": 4000,
             "sid": "RSCO4"
           },
-          "CSTRO": {
-            "cleared_altitude": 4000,
-            "sid": "WLKKR5"
-          },
-          "COREZ": {
+          "CSTRO,COREZ": {
             "cleared_altitude": 4000,
             "sid": "WLKKR5"
           },
@@ -3501,35 +3381,7 @@
           }
         },
         "34L": {
-          "HAILO.N": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9"
-          },
-          "LAS.N": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9"
-          },
-          "MISEN.N": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9"
-          },
-          "HEC.N": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9"
-          },
-          "BLH.N": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9"
-          },
-          "CSTRO.N": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9"
-          },
-          "COREZ.N": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9"
-          },
-          "FIM.N": {
+          "HAILO.N,LAS.N,MISEN.N,HEC.N,BLH.N,CSTRO.N,COREZ.N,FIM.N": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9"
           },
@@ -3822,31 +3674,15 @@
       },
       "departure_routes": {
         "27": {
-          "LAX": {
+          "LAX,SLI": {
             "cleared_altitude": 10000,
             "sid": "CWARD2"
           },
-          "SLI": {
-            "cleared_altitude": 10000,
-            "sid": "CWARD2"
-          },
-          "DINTY,MALIT,SXC": {
+          "DINTY,MALIT,SXC,IKAYE,CHKNN,EHF,OROSZ": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2"
           },
-          "IKAYE": {
-            "cleared_altitude": 15000,
-            "sid": "PADRZ2"
-          },
-          "CHKNN,EHF,OROSZ": {
-            "cleared_altitude": 15000,
-            "sid": "PADRZ2"
-          },
-          "MTBAL": {
-            "cleared_altitude": 23000,
-            "sid": "ZZOOO4"
-          },
-          "HOGGZ,TGOLD,GBN": {
+          "MTBAL,HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4"
           },
@@ -3870,11 +3706,7 @@
           }
         },
         "27.O": {
-          "MTBAL": {
-            "cleared_altitude": 23000,
-            "sid": "ZZOOO4"
-          },
-          "HOGGZ,TGOLD,GBN": {
+          "MTBAL,HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4"
           },
@@ -3886,17 +3718,13 @@
             "cleared_altitude": 8000,
             "sid": "BRDR7"
           },
-          "SLI.O": {
+          "SLI.O,IKAYE.O": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2"
           },
           "MALIT.O,SXC.O": {
             "cleared_altitude": 15000,
             "sid": "MMOTO2"
-          },
-          "IKAYE.O": {
-            "cleared_altitude": 15000,
-            "sid": "ECHHO2"
           },
           "OCN.O": {
             "cleared_altitude": 6000,
@@ -3910,11 +3738,7 @@
           }
         },
         "9": {
-          "SLI.E": {
-            "cleared_altitude": 15000,
-            "sid": "ECHHO2"
-          },
-          "IKAYE.E": {
+          "SLI.E,IKAYE.E": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2"
           },
@@ -3922,11 +3746,7 @@
             "cleared_altitude": 8000,
             "sid": "MMOTO2"
           },
-          "MTBAL.E": {
-            "cleared_altitude": 19000,
-            "sid": "SAYOW2"
-          },
-          "IPL.E": {
+          "MTBAL.E,IPL.E": {
             "cleared_altitude": 19000,
             "sid": "SAYOW2"
           },
@@ -5018,37 +4838,21 @@
       },
       "departure_routes": {
         "26L": {
-          "AVRRY,MTBAL": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4"
           },
-          "OTAYY": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4"
-          },
-          "COREZ": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5"
           },
           "GMN": {
             "cleared_altitude": 10000,
             "sid": "POM1"
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
-          },
-          "LAS,MISEN": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
           }
         },
         "26R": {
-          "AVRRY,MTBAL": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4"
-          },
-          "OTAYY": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4"
           },
@@ -5056,93 +4860,45 @@
             "cleared_altitude": 10000,
             "sid": "POM1"
           },
-          "COREZ": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
-          },
-          "LAS,MISEN": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5"
           }
         },
         "8L": {
-          "AVRRY,MTBAL": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4"
           },
-          "OTAYY": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4"
-          },
-          "COREZ": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5"
           },
           "GMN": {
             "cleared_altitude": 10000,
             "sid": "POM1"
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
-          },
-          "LAS,MISEN": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
           }
         },
         "8R": {
-          "AVRRY,MTBAL": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4"
           },
-          "OTAYY": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4"
-          },
-          "COREZ": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5"
           },
           "GMN": {
             "cleared_altitude": 10000,
             "sid": "POM1"
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
-          },
-          "LAS,MISEN": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
           }
         },
         "8R.OO": {
-          "AVRRY": {
+          "AVRRY,OTAYY,DINTY,MALIT": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4"
           },
-          "OTAYY": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4"
-          },
-          "DINTY,MALIT": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4"
-          },
-          "COREZ": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5"
-          },
-          "LAS,MISEN": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5"
           }
@@ -5401,73 +5157,25 @@
       },
       "departure_routes": {
         "31L": {
-          "TNP.C": {
+          "TNP.C,BLH.C,PMD.C": {
             "cleared_altitude": 8000,
             "sid": "CATH1"
           },
-          "BLH.C": {
-            "cleared_altitude": 8000,
-            "sid": "CATH1"
-          },
-          "PMD.C": {
-            "cleared_altitude": 8000,
-            "sid": "CATH1"
-          },
-          "ZELMA": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1"
-          },
-          "FUSBL": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1"
-          },
-          "EED": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1"
-          },
-          "BLH": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1"
-          },
-          "TRM": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1"
-          },
-          "PMD": {
+          "ZELMA,FUSBL,EED,BLH,TRM,PMD": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1"
           }
         },
         "13R": {
-          "TNP.C": {
+          "TNP.C,BLH.C,PMD.C": {
             "cleared_altitude": 8000,
             "sid": "CATH1"
           },
-          "BLH.C": {
-            "cleared_altitude": 8000,
-            "sid": "CATH1"
-          },
-          "PMD.C": {
-            "cleared_altitude": 8000,
-            "sid": "CATH1"
-          },
-          "ZELMA": {
+          "ZELMA,FUSBL,EED": {
             "cleared_altitude": 8000,
             "sid": "IKONE1"
           },
-          "FUSBL": {
-            "cleared_altitude": 8000,
-            "sid": "IKONE1"
-          },
-          "EED": {
-            "cleared_altitude": 8000,
-            "sid": "IKONE1"
-          },
-          "BLH": {
-            "cleared_altitude": 8000,
-            "sid": "JEEON1"
-          },
-          "TRM": {
+          "BLH,TRM": {
             "cleared_altitude": 8000,
             "sid": "JEEON1"
           },
@@ -5663,35 +5371,11 @@
             "cleared_altitude": 4000,
             "waypoints": "KMYF-10L/h270"
           },
-          "SLI": {
+          "SLI,LAX,PADRZ.C,PADRZ.P": {
             "cleared_altitude": 4000,
             "sid": "CWARD2"
           },
-          "LAX": {
-            "cleared_altitude": 4000,
-            "sid": "CWARD2"
-          },
-          "PADRZ.C": {
-            "cleared_altitude": 4000,
-            "sid": "CWARD2"
-          },
-          "PADRZ.P": {
-            "cleared_altitude": 4000,
-            "sid": "CWARD2"
-          },
-          "EHF": {
-            "cleared_altitude": 4000,
-            "sid": "PADRZ2"
-          },
-          "OROSZ": {
-            "cleared_altitude": 4000,
-            "sid": "PADRZ2"
-          },
-          "IKAYE": {
-            "cleared_altitude": 4000,
-            "sid": "PADRZ2"
-          },
-          "CHKNN": {
+          "EHF,OROSZ,IKAYE,CHKNN": {
             "cleared_altitude": 4000,
             "sid": "PADRZ2"
           }
@@ -6117,15 +5801,7 @@
       },
       "departure_routes": {
         "24": {
-          "OCN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/h245"
-          },
-          "MZB": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/h245"
-          },
-          "TRM": {
+          "OCN,MZB,TRM": {
             "cleared_altitude": 3000,
             "waypoints": "KCRQ-6/h245"
           },
@@ -6369,11 +6045,7 @@
       },
       "departure_routes": {
         "27": {
-          "LAX": {
-            "cleared_altitude": 10000,
-            "sid": "CWARD2"
-          },
-          "SLI": {
+          "LAX,SLI": {
             "cleared_altitude": 10000,
             "sid": "CWARD2"
           },
@@ -6385,11 +6057,7 @@
             "cleared_altitude": 32000,
             "sid": "PADRZ2"
           },
-          "IKAYE": {
-            "cleared_altitude": 28000,
-            "sid": "PADRZ2"
-          },
-          "OROSZ": {
+          "IKAYE,OROSZ": {
             "cleared_altitude": 28000,
             "sid": "PADRZ2"
           },
@@ -6711,11 +6379,7 @@
       },
       "departure_routes": {
         "8L": {
-          "LAX": {
-            "cleared_altitude": 10000,
-            "sid": "CWARD2"
-          },
-          "SLI": {
+          "LAX,SLI": {
             "cleared_altitude": 10000,
             "sid": "CWARD2"
           },
@@ -6727,11 +6391,7 @@
             "cleared_altitude": 32000,
             "sid": "PADRZ2"
           },
-          "IKAYE": {
-            "cleared_altitude": 28000,
-            "sid": "PADRZ2"
-          },
-          "OROSZ": {
+          "IKAYE,OROSZ": {
             "cleared_altitude": 28000,
             "sid": "PADRZ2"
           },
@@ -7165,24 +6825,14 @@
       },
       "departure_routes": {
         "26R": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KCNO-8L/h260"
-          },
-          "PMD,HEC,SLI,IKAYE": {
+          "TNP,PMD,HEC,SLI,IKAYE": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KCNO-8L/h260"
           }
         },
         "8L": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KCNO-26R/h080"
-          },
-          "PMD,HEC,SLI,IKAYE": {
+          "TNP,PMD,HEC,SLI,IKAYE": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KCNO-26R/h080"
@@ -7405,24 +7055,14 @@
       },
       "departure_routes": {
         "1": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KEMT-19/h010"
-          },
-          "PMD,HEC,SLI,IKAYE": {
+          "TNP,PMD,HEC,SLI,IKAYE": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KEMT-19/h010"
           }
         },
         "19": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KEMT-1/h190"
-          },
-          "PMD,HEC,SLI,IKAYE": {
+          "TNP,PMD,HEC,SLI,IKAYE": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KEMT-1/h190"
@@ -7645,24 +7285,14 @@
       },
       "departure_routes": {
         "26L": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KPOC-8R/h260"
-          },
-          "PMD,HEC,SLI,IKAYE": {
+          "TNP,PMD,HEC,SLI,IKAYE": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KPOC-8R/h260"
           }
         },
         "8L": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KPOC-26L/h080"
-          },
-          "PMD,HEC,SLI,IKAYE": {
+          "TNP,PMD,HEC,SLI,IKAYE": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KPOC-26L/h080"
@@ -7910,12 +7540,7 @@
       },
       "departure_routes": {
         "32": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KRIV-14/h320"
-          },
-          "PMD": {
+          "TNP,PMD": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KRIV-14/h320"
@@ -7932,12 +7557,7 @@
           }
         },
         "14": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KRIV-32/h140"
-          },
-          "PMD": {
+          "TNP,PMD": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KRIV-32/h140"
@@ -8179,12 +7799,7 @@
       },
       "departure_routes": {
         "24": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KSBD-6/h240"
-          },
-          "PMD,JLI,OCN,TRM": {
+          "TNP,PMD,JLI,OCN,TRM": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KSBD-6/h240"
@@ -8201,12 +7816,7 @@
           }
         },
         "6": {
-          "TNP": {
-            "cleared_altitude": 3000,
-            "sid": "CATH1",
-            "waypoints": "KSBD-24/h060"
-          },
-          "PMD,JLI,OCN,TRM": {
+          "TNP,PMD,JLI,OCN,TRM": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
             "waypoints": "KSBD-24/h060"
@@ -8451,37 +8061,17 @@
             "cleared_altitude": 6000,
             "sid": "CHOII3.COREZ"
           },
-          "FIM": {
-            "cleared_altitude": 6000,
-            "sid": "CHOII3"
-          },
-          "BLH": {
-            "cleared_altitude": 6000,
-            "sid": "CHOII3"
-          },
-          "MISEN,LAS": {
+          "FIM,BLH,MISEN,LAS": {
             "cleared_altitude": 6000,
             "sid": "CHOII3"
           }
         },
         "21": {
-          "STOKD,SCTRR": {
+          "STOKD,SCTRR,CSTRO,COREZ,MISEN,LAS,HEC": {
             "cleared_altitude": 3000,
             "sid": "CTRUS4"
           },
-          "CSTRO,COREZ": {
-            "cleared_altitude": 3000,
-            "sid": "CTRUS4"
-          },
-          "MISEN,LAS,HEC": {
-            "cleared_altitude": 3000,
-            "sid": "CTRUS4"
-          },
-          "CLEEE,CNERY": {
-            "cleared_altitude": 3000,
-            "sid": "PEVEE6"
-          },
-          "TCATE,OTAYY": {
+          "CLEEE,CNERY,TCATE,OTAYY": {
             "cleared_altitude": 3000,
             "sid": "PEVEE6"
           }

@@ -66,15 +66,7 @@
       },
       "departure_routes": {
         "29R": {
-          "NTELL.CABAB": {
-            "cleared_altitude": 10000,
-            "sid": "YOSE3"
-          },
-          "NTELL": {
-            "cleared_altitude": 10000,
-            "sid": "YOSE3"
-          },
-          "SWR,NIKOL,SHIMR": {
+          "NTELL.CABAB,NTELL,SWR,NIKOL,SHIMR": {
             "cleared_altitude": 10000,
             "sid": "YOSE3"
           },
@@ -84,15 +76,7 @@
           }
         },
         "11L": {
-          "NTELL.CABAB": {
-            "cleared_altitude": 10000,
-            "sid": "YOSE3"
-          },
-          "NTELL": {
-            "cleared_altitude": 10000,
-            "sid": "YOSE3"
-          },
-          "SWR,NIKOL,SHIMR": {
+          "NTELL.CABAB,NTELL,SWR,NIKOL,SHIMR": {
             "cleared_altitude": 10000,
             "sid": "YOSE3"
           },

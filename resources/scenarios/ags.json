@@ -63,15 +63,7 @@
             "sid": "SAMMI4",
             "waypoints": "_AGS_26/h085 TRPLE BOGII"
           },
-          "LAYUH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_26/h085"
-          },
-          "PONZE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_26/h085"
-          },
-          "PRMUS": {
+          "LAYUH,PONZE,PRMUS": {
             "cleared_altitude": 10000,
             "waypoints": "_AGS_26/h085"
           }
@@ -113,15 +105,7 @@
             "sid": "SAMMI4",
             "waypoints": "_AGS_8/h265 TRPLE BOGII"
           },
-          "LAYUH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_8/h265"
-          },
-          "PONZE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_8/h265"
-          },
-          "PRMUS": {
+          "LAYUH,PONZE,PRMUS": {
             "cleared_altitude": 10000,
             "waypoints": "_AGS_8/h265"
           }

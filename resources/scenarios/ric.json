@@ -41,37 +41,13 @@
       },
       "departure_routes": {
         "21": {
-          "GVE": {
-            "cleared_altitude": 4000,
-            "waypoints": "KCHO-3/h210"
-          },
-          "CSN": {
-            "cleared_altitude": 4000,
-            "waypoints": "KCHO-3/h210"
-          },
-          "MOL": {
-            "cleared_altitude": 4000,
-            "waypoints": "KCHO-3/h210"
-          },
-          "AIROW": {
+          "GVE,CSN,MOL,AIROW": {
             "cleared_altitude": 4000,
             "waypoints": "KCHO-3/h210"
           }
         },
         "3": {
-          "GVE": {
-            "cleared_altitude": 4000,
-            "waypoints": "KCHO-21/h30"
-          },
-          "CSN": {
-            "cleared_altitude": 4000,
-            "waypoints": "KCHO-21/h30"
-          },
-          "MOL": {
-            "cleared_altitude": 4000,
-            "waypoints": "KCHO-21/h30"
-          },
-          "AIROW": {
+          "GVE,CSN,MOL,AIROW": {
             "cleared_altitude": 4000,
             "waypoints": "KCHO-21/h30"
           }

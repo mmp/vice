@@ -63,39 +63,14 @@
           }
         },
         "34R": {
-          "HOLTR": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "description": "RUGGD3"
-          },
-          "OCS": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "description": "RUGGD3"
-          },
-          "PERTY": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "description": "RUGGD3"
-          },
-          "EKR": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "description": "RUGGD3"
-          },
-          "KIERA": {
+          "HOLTR,OCS,PERTY,EKR,KIERA": {
             "assigned_altitude": 9000,
             "sid": "RUGGD3",
             "description": "RUGGD3"
           }
         },
         "16L": {
-          "KIMMR, EYELO": {
-            "assigned_altitude": 9000,
-            "sid": "ZIONZ1",
-            "description": "ZIONZ1"
-          },
-          "KROST,BCE,EHK": {
+          "KIMMR,EYELO,KROST,BCE,EHK": {
             "assigned_altitude": 9000,
             "sid": "ZIONZ1",
             "description": "ZIONZ1"

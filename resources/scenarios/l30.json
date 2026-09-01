@@ -183,11 +183,7 @@
       ],
       "departure_routes": {
         "26R": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -199,27 +195,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -233,11 +213,7 @@
           }
         },
         "26L": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -249,27 +225,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -283,11 +243,7 @@
           }
         },
         "8R": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -299,27 +255,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -333,11 +273,7 @@
           }
         },
         "8L": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -349,27 +285,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -383,11 +303,7 @@
           }
         },
         "8L.CFG2": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -399,27 +315,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -433,11 +333,7 @@
           }
         },
         "1R": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -449,27 +345,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -483,11 +363,7 @@
           }
         },
         "1L": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -499,27 +375,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -533,11 +393,7 @@
           }
         },
         "19R": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -549,27 +405,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -583,11 +423,7 @@
           }
         },
         "19L": {
-          "VERKN": {
-            "cleared_altitude": 19000,
-            "sid": "GIDGT4"
-          },
-          "TUKRR": {
+          "VERKN,TUKRR": {
             "cleared_altitude": 19000,
             "sid": "GIDGT4"
           },
@@ -599,27 +435,11 @@
             "cleared_altitude": 14000,
             "sid": "LOHLA3"
           },
-          "HOCEE": {
+          "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4"
           },
-          "SSKEE": {
-            "cleared_altitude": 19000,
-            "sid": "NIITZ4"
-          },
-          "HEC": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "SLVRR": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "LVELL": {
-            "cleared_altitude": 19000,
-            "sid": "RADYR2"
-          },
-          "BLAQQ": {
+          "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2"
           },
@@ -1446,109 +1266,21 @@
       },
       "departure_routes": {
         "35L": {
-          "KENNO": {
+          "KENNO,HEC,BOJAC,BLAQQ,BLH,LVELL": {
             "cleared_altitude": 7000,
             "sid": "OYODA2"
           },
-          "HEC": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "BOJAC": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "BLAQQ": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "BLH": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "LVELL": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "FRNCK": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "VERKN": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "TUKRR": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "PGA": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "HOCEE": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "SSKEE": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "ZAYNE": {
+          "FRNCK,VERKN,TUKRR,PGA,HOCEE,SSKEE,ZAYNE": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4"
           }
         },
         "17R": {
-          "KENNO": {
+          "KENNO,HEC,BOJAC,BLAQQ,BLH,LVELL": {
             "cleared_altitude": 7000,
             "sid": "OYODA2"
           },
-          "HEC": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "BOJAC": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "BLAQQ": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "BLH": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "LVELL": {
-            "cleared_altitude": 7000,
-            "sid": "OYODA2"
-          },
-          "FRNCK": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "VERKN": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "TUKRR": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "PGA": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "HOCEE": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "SSKEE": {
-            "cleared_altitude": 7000,
-            "sid": "SCAMR4"
-          },
-          "ZAYNE": {
+          "FRNCK,VERKN,TUKRR,PGA,HOCEE,SSKEE,ZAYNE": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4"
           }

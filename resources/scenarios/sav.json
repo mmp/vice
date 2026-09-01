@@ -24,29 +24,13 @@
       },
       "departure_routes": {
         "10": {
-          "GIPPL": {
-            "cleared_altitude": 3000,
-            "waypoints": "KSAV-28/h097"
-          },
-          "JROSS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KSAV-28/h097"
-          },
-          "SMALZ": {
+          "GIPPL,JROSS,SMALZ": {
             "cleared_altitude": 3000,
             "waypoints": "KSAV-28/h097"
           }
         },
         "28": {
-          "GIPPL": {
-            "cleared_altitude": 3000,
-            "waypoints": "KSAV-10/h277"
-          },
-          "JROSS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KSAV-10/h277"
-          },
-          "SMALZ": {
+          "GIPPL,JROSS,SMALZ": {
             "cleared_altitude": 3000,
             "waypoints": "KSAV-10/h277"
           }
@@ -401,77 +385,13 @@
       },
       "departure_routes": {
         "3": {
-          "SMALZ": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-21/h034"
-          },
-          "JROSS": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-21/h034"
-          },
-          "LCAPE": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-21/h034"
-          },
-          "CHS": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-21/h034"
-          },
-          "TILLS": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-21/h034"
-          },
-          "TERLY": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-21/h034"
-          },
-          "RIYSA": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-21/h034"
-          },
-          "BAGGY": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-21/h034"
-          },
-          "TYBEE": {
+          "SMALZ,JROSS,LCAPE,CHS,TILLS,TERLY,RIYSA,BAGGY,TYBEE": {
             "cleared_altitude": 2000,
             "waypoints": "KHXD-21/h034"
           }
         },
         "21": {
-          "SMALZ": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-3/h214"
-          },
-          "JROSS": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-3/h214"
-          },
-          "LCAPE": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-3/h214"
-          },
-          "CHS": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-3/h214"
-          },
-          "TILLS": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-3/h214"
-          },
-          "TERLY": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-3/h214"
-          },
-          "RIYSA": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-3/h214"
-          },
-          "BAGGY": {
-            "cleared_altitude": 2000,
-            "waypoints": "KHXD-3/h214"
-          },
-          "TYBEE": {
+          "SMALZ,JROSS,LCAPE,CHS,TILLS,TERLY,RIYSA,BAGGY,TYBEE": {
             "cleared_altitude": 2000,
             "waypoints": "KHXD-3/h214"
           }
@@ -648,45 +568,13 @@
       },
       "departure_routes": {
         "14": {
-          "YUHLY": {
-            "cleared_altitude": 4000,
-            "waypoints": "KTBR-32/h140"
-          },
-          "MILEN": {
-            "cleared_altitude": 4000,
-            "waypoints": "KTBR-32/h140"
-          },
-          "WRGNZ": {
-            "cleared_altitude": 4000,
-            "waypoints": "KTBR-32/h140"
-          },
-          "KLICK": {
-            "cleared_altitude": 4000,
-            "waypoints": "KTBR-32/h140"
-          },
-          "EZETY": {
+          "YUHLY,MILEN,WRGNZ,KLICK,EZETY": {
             "cleared_altitude": 4000,
             "waypoints": "KTBR-32/h140"
           }
         },
         "32": {
-          "YUHLY": {
-            "cleared_altitude": 4000,
-            "waypoints": "KTBR-14/h320"
-          },
-          "MILEN": {
-            "cleared_altitude": 4000,
-            "waypoints": "KTBR-14/h320"
-          },
-          "WRGNZ": {
-            "cleared_altitude": 4000,
-            "waypoints": "KTBR-14/h320"
-          },
-          "KLICK": {
-            "cleared_altitude": 4000,
-            "waypoints": "KTBR-14/h320"
-          },
-          "EZETY": {
+          "YUHLY,MILEN,WRGNZ,KLICK,EZETY": {
             "cleared_altitude": 4000,
             "waypoints": "KTBR-14/h320"
           }

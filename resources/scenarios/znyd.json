@@ -71,12 +71,7 @@
       "departure_controller": "N5W",
       "departure_routes": {
         "19": {
-          "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
-            "cleared_altitude": 2500,
-            "sid": "TEB4",
-            "waypoints": "TEB/delete"
-          },
-          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+          "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
             "cleared_altitude": 2500,
             "sid": "TEB4",
             "waypoints": "TEB/delete"

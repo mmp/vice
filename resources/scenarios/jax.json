@@ -291,11 +291,7 @@
             "sid": "EXBOX2",
             "waypoints": "KJAX-26/h140 SAWGY"
           },
-          "CAPPS": {
-            "cleared_altitude": 3000,
-            "sid": "JETIN2"
-          },
-          "JAYJA": {
+          "CAPPS,JAYJA": {
             "cleared_altitude": 3000,
             "sid": "JETIN2"
           },
@@ -321,11 +317,7 @@
             "sid": "EXBOX2",
             "waypoints": "KJAX-8/h220 SAWGY"
           },
-          "CAPPS": {
-            "cleared_altitude": 3000,
-            "sid": "JETIN2"
-          },
-          "JAYJA": {
+          "CAPPS,JAYJA": {
             "cleared_altitude": 3000,
             "sid": "JETIN2"
           },

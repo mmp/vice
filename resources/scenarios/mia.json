@@ -1479,12 +1479,7 @@
             "sid": "FOLZZ3",
             "waypoints": "KTMB-27R/h093 MARCK/a5000 FOLZZ GOZZR"
           },
-          "GOZZR": {
-            "assigned_altitude": 2000,
-            "sid": "FOLZZ3",
-            "waypoints": "KTMB-27R/h093 MARCK/a5000 FOLZZ"
-          },
-          "PADUS,ZFP": {
+          "GOZZR,PADUS,ZFP": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
             "waypoints": "KTMB-27R/h093 MARCK/a5000 FOLZZ"
@@ -1601,12 +1596,7 @@
             "sid": "FOLZZ3",
             "waypoints": "KTMB-9L/h273 MARCK/a5000 FOLZZ GOZZR"
           },
-          "GOZZR": {
-            "assigned_altitude": 2000,
-            "sid": "FOLZZ3",
-            "waypoints": "KTMB-9L/h273 MARCK/a5000 FOLZZ"
-          },
-          "PADUS,ZFP": {
+          "GOZZR,PADUS,ZFP": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
             "waypoints": "KTMB-9L/h273 MARCK/a5000 FOLZZ"
@@ -1859,12 +1849,7 @@
             "sid": "FOLZZ3",
             "waypoints": "KOPF-27R/h093 MARCK/a5000 FOLZZ GOZZR"
           },
-          "GOZZR": {
-            "assigned_altitude": 2000,
-            "sid": "FOLZZ3",
-            "waypoints": "KOPF-27R/h093 MARCK/a5000 FOLZZ"
-          },
-          "PADUS,ZFP": {
+          "GOZZR,PADUS,ZFP": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
             "waypoints": "KOPF-27R/h093 MARCK/a5000 FOLZZ"
@@ -1991,12 +1976,7 @@
             "sid": "FOLZZ3",
             "waypoints": "KOPF-9L/h273 MARCK/a5000 FOLZZ GOZZR"
           },
-          "GOZZR": {
-            "assigned_altitude": 2000,
-            "sid": "FOLZZ3",
-            "waypoints": "KOPF-9L/h273 MARCK/a5000 FOLZZ"
-          },
-          "PADUS,ZFP": {
+          "GOZZR,PADUS,ZFP": {
             "assigned_altitude": 2000,
             "sid": "FOLZZ3",
             "waypoints": "KOPF-9L/h273 MARCK/a5000 FOLZZ"
@@ -2204,12 +2184,7 @@
       },
       "departure_routes": {
         "9": {
-          "COREA,MERKS": {
-            "assigned_altitude": 2000,
-            "sid": "BNICE2",
-            "waypoints": "KFXE-27/h091 MRENO/a4000 BNICE"
-          },
-          "BNGOS": {
+          "COREA,MERKS,BNGOS": {
             "assigned_altitude": 2000,
             "sid": "BNICE2",
             "waypoints": "KFXE-27/h091 MRENO/a4000 BNICE"
@@ -2316,12 +2291,7 @@
           }
         },
         "27": {
-          "COREA,MERKS": {
-            "assigned_altitude": 2000,
-            "sid": "BNICE2",
-            "waypoints": "KFXE-9/h271 MRENO/a4000 BNICE"
-          },
-          "BNGOS": {
+          "COREA,MERKS,BNGOS": {
             "assigned_altitude": 2000,
             "sid": "BNICE2",
             "waypoints": "KFXE-9/h271 MRENO/a4000 BNICE"

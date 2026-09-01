@@ -97,11 +97,7 @@
       },
       "departure_routes": {
         "7": {
-          "MQO": {
-            "cleared_altitude": 8000,
-            "sid": "GAUCH3"
-          },
-          "SPLNT": {
+          "MQO,SPLNT": {
             "cleared_altitude": 8000,
             "sid": "GAUCH3"
           },
@@ -123,11 +119,7 @@
           }
         },
         "25": {
-          "MQO": {
-            "cleared_altitude": 8000,
-            "sid": "GAUCH3"
-          },
-          "SPLNT": {
+          "MQO,SPLNT": {
             "cleared_altitude": 8000,
             "sid": "GAUCH3"
           },
@@ -263,27 +255,11 @@
       },
       "departure_routes": {
         "11": {
-          "GVO": {
+          "GVO,MQO,WINCH": {
             "cleared_altitude": 5000,
             "sid": "AVILA4"
           },
-          "MQO": {
-            "cleared_altitude": 5000,
-            "sid": "AVILA4"
-          },
-          "WINCH": {
-            "cleared_altitude": 5000,
-            "sid": "AVILA4"
-          },
-          "PRB": {
-            "cleared_altitude": 5000,
-            "sid": "WYNNR4"
-          },
-          "RZS": {
-            "cleared_altitude": 5000,
-            "sid": "WYNNR4"
-          },
-          "FLW": {
+          "PRB,RZS,FLW": {
             "cleared_altitude": 5000,
             "sid": "WYNNR4"
           }

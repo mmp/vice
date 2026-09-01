@@ -1210,15 +1210,7 @@
             "assigned_altitude": 2000,
             "sid": "LURIC8"
           },
-          "LCH": {
-            "assigned_altitude": 2000,
-            "sid": "MMALT7"
-          },
-          "GUSTI": {
-            "assigned_altitude": 2000,
-            "sid": "MMALT7"
-          },
-          "LLA": {
+          "LCH,GUSTI,LLA": {
             "assigned_altitude": 2000,
             "sid": "MMALT7"
           },
@@ -1235,11 +1227,7 @@
             "sid": "WATFO6",
             "waypoints": "KDWH-17R/h290 WATFO VUH"
           },
-          "MAJKK": {
-            "assigned_altitude": 2000,
-            "sid": "WYLSN8"
-          },
-          "GIFFA": {
+          "MAJKK,GIFFA": {
             "assigned_altitude": 2000,
             "sid": "WYLSN8"
           }
@@ -2954,11 +2942,7 @@
             "sid": "PEECE6",
             "waypoints": "KHOU-4/l140 PEECE VUH"
           },
-          "CRP": {
-            "assigned_altitude": 5000,
-            "sid": "PTRON9"
-          },
-          "NGP,WWREN": {
+          "CRP,NGP,WWREN": {
             "assigned_altitude": 5000,
             "sid": "PTRON9"
           },
@@ -4429,23 +4413,11 @@
             "cleared_altitude": 4000,
             "sid": "FLYZA5"
           },
-          "LCH": {
+          "LCH,GUSTI,LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4"
           },
-          "GUSTI": {
-            "cleared_altitude": 4000,
-            "sid": "MMUGS4"
-          },
-          "LLA": {
-            "cleared_altitude": 4000,
-            "sid": "MMUGS4"
-          },
-          "CRP": {
-            "cleared_altitude": 4000,
-            "sid": "RITAA7"
-          },
-          "NGP,WWREN": {
+          "CRP,NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7"
           }
@@ -4456,19 +4428,7 @@
             "sid": "BLTWY7",
             "waypoints": "KIAH-33L/r360 DREMR LITLD BLTWY"
           },
-          "CRGER": {
-            "cleared_altitude": 4000,
-            "sid": "BNDTO6"
-          },
-          "SAT": {
-            "cleared_altitude": 4000,
-            "sid": "BNDTO6"
-          },
-          "MNURE": {
-            "cleared_altitude": 4000,
-            "sid": "BNDTO6"
-          },
-          "WAILN": {
+          "CRGER,SAT,MNURE,WAILN": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6"
           },
@@ -4509,15 +4469,7 @@
             "sid": "BLTWY7",
             "waypoints": "KIAH-33R/l350 DREMR LITLD BLTWY"
           },
-          "LCH": {
-            "cleared_altitude": 4000,
-            "sid": "GUMBY3"
-          },
-          "GUSTI": {
-            "cleared_altitude": 4000,
-            "sid": "GUMBY3"
-          },
-          "LLA": {
+          "LCH,GUSTI,LLA": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3"
           },
@@ -4531,11 +4483,7 @@
             "sid": "LURIC8",
             "waypoints": "KIAH-33R/l020 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
           },
-          "CRP": {
-            "cleared_altitude": 4000,
-            "sid": "RITAA7"
-          },
-          "NGP,WWREN": {
+          "CRP,NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7"
           },
@@ -4565,19 +4513,7 @@
             "cleared_altitude": 4000,
             "sid": "FLYZA5"
           },
-          "CRGER": {
-            "cleared_altitude": 4000,
-            "sid": "PITZZ5"
-          },
-          "SAT": {
-            "cleared_altitude": 4000,
-            "sid": "PITZZ5"
-          },
-          "MNURE": {
-            "cleared_altitude": 4000,
-            "sid": "PITZZ5"
-          },
-          "WAILN": {
+          "CRGER,SAT,MNURE,WAILN": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5"
           }

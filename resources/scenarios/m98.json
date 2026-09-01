@@ -277,13 +277,7 @@
       ],
       "departure_routes": {
         "12R": {
-          "BRNRD.HEAVYJET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["heavy"],
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
-          },
-          "DLH.HEAVYJET": {
+          "BRNRD.HEAVYJET,DLH.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
             "aircraft": ["heavy"],
@@ -435,13 +429,7 @@
           }
         },
         "12R_17": {
-          "BRNRD.HEAVYJET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["heavy"],
-            "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
-          },
-          "DLH.HEAVYJET": {
+          "BRNRD.HEAVYJET,DLH.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
             "aircraft": ["heavy"],
@@ -485,73 +473,19 @@
           }
         },
         "12L": {
-          "GEP.JET": {
+          "GEP.JET,BRNRD.JET,DLH.JET,STILS.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
             "aircraft": ["nonheavy"],
             "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
-          "GEP.TURBOPROP": {
+          "GEP.TURBOPROP,BRNRD.TURBOPROP,DLH.TURBOPROP,STILS.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
             "aircraft": ["turboprop"],
             "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
           },
-          "GEP.PISTON": {
-            "assigned_altitude": 4000,
-            "sid": "MSP9",
-            "aircraft": ["prop"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "BRNRD.JET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["nonheavy"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "BRNRD.TURBOPROP": {
-            "assigned_altitude": 5000,
-            "sid": "MSP9",
-            "aircraft": ["turboprop"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "BRNRD.PISTON": {
-            "assigned_altitude": 4000,
-            "sid": "MSP9",
-            "aircraft": ["prop"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "DLH.JET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["nonheavy"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "DLH.TURBOPROP": {
-            "assigned_altitude": 5000,
-            "sid": "MSP9",
-            "aircraft": ["turboprop"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "DLH.PISTON": {
-            "assigned_altitude": 4000,
-            "sid": "MSP9",
-            "aircraft": ["prop"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "STILS.JET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["nonheavy"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "STILS.TURBOPROP": {
-            "assigned_altitude": 5000,
-            "sid": "MSP9",
-            "aircraft": ["turboprop"],
-            "waypoints": "KMSP-30R N044.52.52.673,W093.07.22.337/h070/tc"
-          },
-          "STILS.PISTON": {
+          "GEP.PISTON,BRNRD.PISTON,DLH.PISTON,STILS.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
             "aircraft": ["prop"],
@@ -649,13 +583,7 @@
           }
         },
         "30L": {
-          "BRNRD.HEAVYJET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["heavy"],
-            "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
-          },
-          "DLH.HEAVYJET": {
+          "BRNRD.HEAVYJET,DLH.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
             "aircraft": ["heavy"],
@@ -697,37 +625,19 @@
             "aircraft": ["heavy"],
             "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h280/tc"
           },
-          "LSE.JET": {
+          "LSE.JET,FGT.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
             "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
-          "LSE.TURBOPROP": {
+          "LSE.TURBOPROP,FGT.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
             "aircraft": ["turboprop"],
             "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
           },
-          "LSE.PISTON": {
-            "assigned_altitude": 4000,
-            "sid": "MSP9",
-            "aircraft": ["prop"],
-            "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
-          },
-          "FGT.JET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["nonheavy"],
-            "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
-          },
-          "FGT.TURBOPROP": {
-            "assigned_altitude": 5000,
-            "sid": "MSP9",
-            "aircraft": ["turboprop"],
-            "waypoints": "KMSP-12R N044.53.09.015,W093.14.56.127/h260/tc"
-          },
-          "FGT.PISTON": {
+          "LSE.PISTON,FGT.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
             "aircraft": ["prop"],
@@ -807,13 +717,7 @@
           }
         },
         "30L_17": {
-          "BRNRD.HEAVYJET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["heavy"],
-            "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
-          },
-          "DLH.HEAVYJET": {
+          "BRNRD.HEAVYJET,DLH.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
             "aircraft": ["heavy"],
@@ -857,73 +761,19 @@
           }
         },
         "30R": {
-          "GEP.JET": {
+          "GEP.JET,BRNRD.JET,DLH.JET,STILS.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
             "aircraft": ["nonheavy"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
-          "GEP.TURBOPROP": {
+          "GEP.TURBOPROP,BRNRD.TURBOPROP,DLH.TURBOPROP,STILS.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
             "aircraft": ["turboprop"],
             "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
           },
-          "GEP.PISTON": {
-            "assigned_altitude": 4000,
-            "sid": "MSP9",
-            "aircraft": ["prop"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "BRNRD.JET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["nonheavy"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "BRNRD.TURBOPROP": {
-            "assigned_altitude": 5000,
-            "sid": "MSP9",
-            "aircraft": ["turboprop"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "BRNRD.PISTON": {
-            "assigned_altitude": 4000,
-            "sid": "MSP9",
-            "aircraft": ["prop"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "DLH.JET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["nonheavy"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "DLH.TURBOPROP": {
-            "assigned_altitude": 5000,
-            "sid": "MSP9",
-            "aircraft": ["turboprop"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "DLH.PISTON": {
-            "assigned_altitude": 4000,
-            "sid": "MSP9",
-            "aircraft": ["prop"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "STILS.JET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["nonheavy"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "STILS.TURBOPROP": {
-            "assigned_altitude": 5000,
-            "sid": "MSP9",
-            "aircraft": ["turboprop"],
-            "waypoints": "KMSP-12L N044.54.04.647,W093.13.30.433/h340/tc"
-          },
-          "STILS.PISTON": {
+          "GEP.PISTON,BRNRD.PISTON,DLH.PISTON,STILS.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
             "aircraft": ["prop"],
@@ -1131,37 +981,19 @@
           }
         },
         "17_30s": {
-          "LSE.JET": {
+          "LSE.JET,FGT.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
             "aircraft": ["nonheavy"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
-          "LSE.TURBOPROP": {
+          "LSE.TURBOPROP,FGT.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
             "aircraft": ["turboprop"],
             "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
           },
-          "LSE.PISTON": {
-            "assigned_altitude": 4000,
-            "sid": "MSP9",
-            "aircraft": ["prop"],
-            "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
-          },
-          "FGT.JET": {
-            "assigned_altitude": 7000,
-            "sid": "MSP9",
-            "aircraft": ["nonheavy"],
-            "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
-          },
-          "FGT.TURBOPROP": {
-            "assigned_altitude": 5000,
-            "sid": "MSP9",
-            "aircraft": ["turboprop"],
-            "waypoints": "KMSP-35 N044.51.27.336,W093.14.03.777/h170/tc"
-          },
-          "FGT.PISTON": {
+          "LSE.PISTON,FGT.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
             "aircraft": ["prop"],
@@ -4888,225 +4720,115 @@
           }
         },
         "10R": {
-          "HUGIR.PROP": {
+          "HUGIR.PROP,HUGIR.JET": {
             "assigned_altitude": 2500,
             "sid": "SCHEP1",
             "waypoints": "KFCM-28L/flyover/h230"
           },
-          "HUGIR.JET": {
-            "assigned_altitude": 2500,
-            "sid": "SCHEP1",
-            "waypoints": "KFCM-28L/flyover/h230"
-          },
-          "JEDET.PROP": {
+          "JEDET.PROP,JEDET.JET": {
             "assigned_altitude": 2500,
             "sid": "ZMBRO7",
             "waypoints": "KFCM-28L/flyover/h180"
           },
-          "JEDET.JET": {
-            "assigned_altitude": 2500,
-            "sid": "ZMBRO7",
-            "waypoints": "KFCM-28L/flyover/h180"
-          },
-          "TAXEE.PROP": {
+          "TAXEE.PROP,TAXEE.JET": {
             "assigned_altitude": 2500,
             "sid": "COULT7",
             "waypoints": "KFCM-28L/flyover/h180"
           },
-          "TAXEE.JET": {
-            "assigned_altitude": 2500,
-            "sid": "COULT7",
-            "waypoints": "KFCM-28L/flyover/h180"
-          },
-          "FOBUG.PROP": {
+          "FOBUG.PROP,FOBUG.JET": {
             "assigned_altitude": 2500,
             "sid": "RST1",
             "waypoints": "KFCM-28L/flyover/h180"
           },
-          "FOBUG.JET": {
-            "assigned_altitude": 2500,
-            "sid": "RST1",
-            "waypoints": "KFCM-28L/flyover/h180"
-          },
-          "JURNY.PROP": {
+          "JURNY.PROP,JURNY.JET": {
             "assigned_altitude": 2500,
             "sid": "ORSKY3",
             "waypoints": "KFCM-28L/flyover/h200"
           },
-          "JURNY.JET": {
-            "assigned_altitude": 2500,
-            "sid": "ORSKY3",
-            "waypoints": "KFCM-28L/flyover/h200"
-          },
-          "SNINE.PROP": {
+          "SNINE.PROP,SNINE.JET": {
             "assigned_altitude": 2500,
             "sid": "WLSTN7",
             "waypoints": "KFCM-28L/flyover/r300"
           },
-          "SNINE.JET": {
-            "assigned_altitude": 2500,
-            "sid": "WLSTN7",
-            "waypoints": "KFCM-28L/flyover/r300"
-          },
-          "HRBEK.PROP": {
+          "HRBEK.PROP,HRBEK.JET": {
             "assigned_altitude": 2500,
             "sid": "KBREW2",
             "waypoints": "KFCM-28L/flyover/r300"
           },
-          "HRBEK.JET": {
-            "assigned_altitude": 2500,
-            "sid": "KBREW2",
-            "waypoints": "KFCM-28L/flyover/r300"
-          },
-          "INUNE.PROP": {
+          "INUNE.PROP,INUNE.JET": {
             "assigned_altitude": 2500,
             "waypoints": "KFCM-28L/flyover/r290"
           },
-          "INUNE.JET": {
-            "assigned_altitude": 2500,
-            "waypoints": "KFCM-28L/flyover/r290"
-          },
-          "MKT.PROP": {
+          "MKT.PROP,MKT.JET": {
             "assigned_altitude": 2500,
             "waypoints": "KFCM-28L/flyover/r210"
           },
-          "MKT.JET": {
-            "assigned_altitude": 2500,
-            "waypoints": "KFCM-28L/flyover/r210"
-          },
-          "GEP.PROP": {
+          "GEP.PROP,GEP.JET": {
             "assigned_altitude": 2500,
             "waypoints": "KFCM-28L/flyover/r300"
           },
-          "GEP.JET": {
-            "assigned_altitude": 2500,
-            "waypoints": "KFCM-28L/flyover/r300"
-          },
-          "FGT.PROP": {
+          "FGT.PROP,FGT.JET": {
             "assigned_altitude": 2500,
             "waypoints": "KFCM-28L/flyover/r180"
           },
-          "FGT.JET": {
-            "assigned_altitude": 2500,
-            "waypoints": "KFCM-28L/flyover/r180"
-          },
-          "RIXIE.PROP": {
-            "assigned_altitude": 2500,
-            "waypoints": "KFCM-28L/flyover/r270"
-          },
-          "RIXIE.JET": {
+          "RIXIE.PROP,RIXIE.JET": {
             "assigned_altitude": 2500,
             "waypoints": "KFCM-28L/flyover/r270"
           }
         },
         "28L": {
-          "HUGIR.PROP": {
+          "HUGIR.PROP,HUGIR.JET": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
             "waypoints": "KFCM-10R/flyover/h230"
           },
-          "HUGIR.JET": {
-            "assigned_altitude": 3000,
-            "sid": "SCHEP1",
-            "waypoints": "KFCM-10R/flyover/h230"
-          },
-          "JEDET.PROP": {
+          "JEDET.PROP,JEDET.JET": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
             "waypoints": "KFCM-10R/flyover/h180"
           },
-          "JEDET.JET": {
-            "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
-            "waypoints": "KFCM-10R/flyover/h180"
-          },
-          "TAXEE.PROP": {
+          "TAXEE.PROP,TAXEE.JET": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
             "waypoints": "KFCM-10R/flyover/h180"
           },
-          "TAXEE.JET": {
-            "assigned_altitude": 3000,
-            "sid": "COULT7",
-            "waypoints": "KFCM-10R/flyover/h180"
-          },
-          "FOBUG.PROP": {
+          "FOBUG.PROP,FOBUG.JET": {
             "assigned_altitude": 3000,
             "sid": "RST1",
             "waypoints": "KFCM-10R/flyover/h180"
           },
-          "FOBUG.JET": {
-            "assigned_altitude": 3000,
-            "sid": "RST1",
-            "waypoints": "KFCM-10R/flyover/h180"
-          },
-          "JURNY.PROP": {
+          "JURNY.PROP,JURNY.JET": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
             "waypoints": "KFCM-10R/flyover/h200"
           },
-          "JURNY.JET": {
-            "assigned_altitude": 3000,
-            "sid": "ORSKY3",
-            "waypoints": "KFCM-10R/flyover/h200"
-          },
-          "SNINE.PROP": {
+          "SNINE.PROP,SNINE.JET": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
             "waypoints": "KFCM-10R/flyover/r300"
           },
-          "SNINE.JET": {
-            "assigned_altitude": 3000,
-            "sid": "WLSTN7",
-            "waypoints": "KFCM-10R/flyover/r300"
-          },
-          "HRBEK.PROP": {
+          "HRBEK.PROP,HRBEK.JET": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
             "waypoints": "KFCM-10R/flyover/r300"
           },
-          "HRBEK.JET": {
-            "assigned_altitude": 3000,
-            "sid": "KBREW2",
-            "waypoints": "KFCM-10R/flyover/r300"
-          },
-          "INUNE.PROP": {
+          "INUNE.PROP,INUNE.JET": {
             "assigned_altitude": 3000,
             "waypoints": "KFCM-10R/flyover/h290"
           },
-          "INUNE.JET": {
-            "assigned_altitude": 3000,
-            "waypoints": "KFCM-10R/flyover/h290"
-          },
-          "MKT.PROP": {
+          "MKT.PROP,MKT.JET": {
             "assigned_altitude": 3000,
             "waypoints": "KFCM-10R/flyover/h210"
           },
-          "MKT.JET": {
-            "assigned_altitude": 3000,
-            "waypoints": "KFCM-10R/flyover/h210"
-          },
-          "GEP.PROP": {
+          "GEP.PROP,GEP.JET": {
             "assigned_altitude": 3000,
             "waypoints": "KFCM-10R/flyover/h300"
           },
-          "GEP.JET": {
-            "assigned_altitude": 3000,
-            "waypoints": "KFCM-10R/flyover/h300"
-          },
-          "FGT.PROP": {
+          "FGT.PROP,FGT.JET": {
             "assigned_altitude": 3000,
             "waypoints": "KFCM-10R/flyover/h180"
           },
-          "FGT.JET": {
-            "assigned_altitude": 3000,
-            "waypoints": "KFCM-10R/flyover/h180"
-          },
-          "RIXIE.PROP": {
-            "assigned_altitude": 3000,
-            "waypoints": "KFCM-10R/flyover/h270"
-          },
-          "RIXIE.JET": {
+          "RIXIE.PROP,RIXIE.JET": {
             "assigned_altitude": 3000,
             "waypoints": "KFCM-10R/flyover/h270"
           }
@@ -7015,11 +6737,7 @@
             "sid": "KBREW2",
             "waypoints": "KSTP-32/flyover/l010"
           },
-          "INUNE": {
-            "assigned_altitude": 2500,
-            "waypoints": "KSTP-32/flyover/l010"
-          },
-          "GEP": {
+          "INUNE,GEP,ANIML,FCM": {
             "assigned_altitude": 2500,
             "waypoints": "KSTP-32/flyover/l010"
           },
@@ -7031,21 +6749,9 @@
             "assigned_altitude": 2500,
             "waypoints": "KSTP-32/flyover/l020"
           },
-          "ZOSAG": {
+          "ZOSAG,FGT": {
             "assigned_altitude": 2500,
             "waypoints": "KSTP-32/flyover/h080"
-          },
-          "ANIML": {
-            "assigned_altitude": 2500,
-            "waypoints": "KSTP-32/flyover/l010"
-          },
-          "FGT": {
-            "assigned_altitude": 2500,
-            "waypoints": "KSTP-32/flyover/h080"
-          },
-          "FCM": {
-            "assigned_altitude": 2500,
-            "waypoints": "KSTP-32/flyover/l010"
           }
         },
         "32": {
@@ -7079,11 +6785,7 @@
             "sid": "KBREW2",
             "waypoints": "KSTP-14/flyover/h030"
           },
-          "INUNE": {
-            "assigned_altitude": 3000,
-            "waypoints": "KSTP-14/flyover/h030"
-          },
-          "GEP": {
+          "INUNE,GEP,LENCK,ZOSAG,ANIML": {
             "assigned_altitude": 3000,
             "waypoints": "KSTP-14/flyover/h030"
           },
@@ -7091,23 +6793,7 @@
             "assigned_altitude": 3000,
             "waypoints": "KSTP-14/flyover/h040"
           },
-          "LENCK": {
-            "assigned_altitude": 3000,
-            "waypoints": "KSTP-14/flyover/h030"
-          },
-          "ZOSAG": {
-            "assigned_altitude": 3000,
-            "waypoints": "KSTP-14/flyover/h030"
-          },
-          "ANIML": {
-            "assigned_altitude": 3000,
-            "waypoints": "KSTP-14/flyover/h030"
-          },
-          "FGT": {
-            "assigned_altitude": 3000,
-            "waypoints": "KSTP-14/flyover/h045"
-          },
-          "FCM": {
+          "FGT,FCM": {
             "assigned_altitude": 3000,
             "waypoints": "KSTP-14/flyover/h045"
           }
@@ -7986,11 +7672,11 @@
             "assigned_altitude": 3000,
             "waypoints": "KANE-27/flyover/l270"
           },
-          "GEP": {
+          "GEP,EAU": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-27/flyover/h090"
           },
-          "JALEP": {
+          "JALEP,DLH": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-27/flyover/h020"
           },
@@ -8001,14 +7687,6 @@
           "DESTE": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-27/flyover/h060"
-          },
-          "EAU": {
-            "assigned_altitude": 3000,
-            "waypoints": "KANE-27/flyover/h090"
-          },
-          "DLH": {
-            "assigned_altitude": 3000,
-            "waypoints": "KANE-27/flyover/h020"
           }
         },
         "18": {
@@ -8055,7 +7733,7 @@
             "assigned_altitude": 3000,
             "waypoints": "KANE-36/flyover/r270"
           },
-          "JALEP": {
+          "JALEP,DLH": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-36/flyover/r020"
           },
@@ -8070,10 +7748,6 @@
           "EAU": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-36/flyover/r090"
-          },
-          "DLH": {
-            "assigned_altitude": 3000,
-            "waypoints": "KANE-36/flyover/r020"
           }
         },
         "27": {
@@ -8112,15 +7786,11 @@
             "sid": "KBREW2",
             "waypoints": "KANE-9/flyover/h290"
           },
-          "INUNE": {
+          "INUNE,GEP": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-9/flyover/h270"
           },
-          "GEP": {
-            "assigned_altitude": 3000,
-            "waypoints": "KANE-9/flyover/h270"
-          },
-          "JALEP": {
+          "JALEP,DLH": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-9/flyover/h020"
           },
@@ -8135,10 +7805,6 @@
           "EAU": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-9/flyover/r090"
-          },
-          "DLH": {
-            "assigned_altitude": 3000,
-            "waypoints": "KANE-9/flyover/h020"
           }
         },
         "36": {
@@ -8185,7 +7851,7 @@
             "assigned_altitude": 3000,
             "waypoints": "KANE-18/flyover/h360"
           },
-          "JALEP": {
+          "JALEP,DLH": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-18/flyover/h020"
           },
@@ -8200,10 +7866,6 @@
           "EAU": {
             "assigned_altitude": 3000,
             "waypoints": "KANE-18/flyover/h090"
-          },
-          "DLH": {
-            "assigned_altitude": 3000,
-            "waypoints": "KANE-18/flyover/h020"
           }
         }
       },

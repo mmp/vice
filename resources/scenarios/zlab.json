@@ -219,13 +219,7 @@
           }
         },
         "24L": {
-          "LAS": {
-            "cleared_altitude": 15000,
-            "sid": "ORCKA5",
-            "waypoints": "DLREY/a3000- N033.55.47.918,W118.35.15.664/a5000+ N033.50.26.101,W118.34.25.237 N033.50.03.579,W118.32.03.046/ho KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
-            "handoff_controller": "18"
-          },
-          "MISEN": {
+          "LAS,MISEN": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
             "waypoints": "DLREY/a3000- N033.55.47.918,W118.35.15.664/a5000+ N033.50.26.101,W118.34.25.237 N033.50.03.579,W118.32.03.046/ho KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",

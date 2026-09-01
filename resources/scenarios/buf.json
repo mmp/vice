@@ -33,114 +33,14 @@
       },
       "departure_routes": {
         "23": {
-          "YXU": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "ROC": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "SYR": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "GEE": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "SFK": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "JHW": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "DJB": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "SLT": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "DONEO": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "VAIRS": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
-          },
-          "DAVVK": {
+          "YXU,ROC,SYR,GEE,SFK,JHW,DJB,SLT,DONEO,VAIRS,DAVVK": {
             "cleared_altitude": 10000,
             "sid": "BUF8",
             "waypoints": "_BUF_5/h235"
           }
         },
         "5": {
-          "YXU": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "ROC": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "SYR": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "GEE": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "SFK": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "JHW": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "DJB": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "SLT": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "DONEO": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "VAIRS": {
-            "cleared_altitude": 10000,
-            "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
-          },
-          "DAVVK": {
+          "YXU,ROC,SYR,GEE,SFK,JHW,DJB,SLT,DONEO,VAIRS,DAVVK": {
             "cleared_altitude": 10000,
             "sid": "BUF8",
             "waypoints": "_BUF_23/h055"

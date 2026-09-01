@@ -119,12 +119,7 @@
           }
         },
         "1R": {
-          "SPI": {
-            "cleared_altitude": 10000,
-            "sid": "LAKES5",
-            "waypoints": "KMCI-19L/h020 MCI BLUZY TWAIN SPI"
-          },
-          "COU": {
+          "SPI,COU": {
             "cleared_altitude": 10000,
             "sid": "LAKES5",
             "waypoints": "KMCI-19L/h020 MCI BLUZY TWAIN SPI"
@@ -151,12 +146,7 @@
           }
         },
         "19L": {
-          "SPI": {
-            "cleared_altitude": 10000,
-            "sid": "LAKES5",
-            "waypoints": "KMCI-1R/h180 MCI BLUZY TWAIN SPI"
-          },
-          "COU": {
+          "SPI,COU": {
             "cleared_altitude": 10000,
             "sid": "LAKES5",
             "waypoints": "KMCI-1R/h180 MCI BLUZY TWAIN SPI"
@@ -230,12 +220,7 @@
           }
         },
         "27": {
-          "SPI": {
-            "cleared_altitude": 10000,
-            "sid": "LAKES5",
-            "waypoints": "KMCI-19L/h020 MCI BLUZY TWAIN SPI"
-          },
-          "COU": {
+          "SPI,COU": {
             "cleared_altitude": 10000,
             "sid": "LAKES5",
             "waypoints": "KMCI-19L/h020 MCI BLUZY TWAIN SPI"

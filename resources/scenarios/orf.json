@@ -95,149 +95,29 @@
       },
       "departure_routes": {
         "23": {
-          "ATLIC": {
+          "ATLIC,KALDA,OUTLA": {
             "cleared_altitude": 4000,
             "sid": "HOLND1"
           },
-          "CHIEZ": {
+          "CHIEZ,ECG,ELLDE,JOHAR,KOOKI,PRONI,SKARP": {
             "cleared_altitude": 4000,
             "sid": "SWOPE1"
           },
-          "ECG": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "ELLDE": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "EYOBI": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "HCM": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "HYTRA": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "JOHAR": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "KALDA": {
-            "cleared_altitude": 4000,
-            "sid": "HOLND1"
-          },
-          "KELLE": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "KOOKI": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "OUTLA": {
-            "cleared_altitude": 4000,
-            "sid": "HOLND1"
-          },
-          "PBCUP": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "PRONI": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "RDU": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "SHLBK": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "SKARP": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "THHMP": {
+          "EYOBI,HCM,HYTRA,KELLE,PBCUP,RDU,SHLBK,THHMP": {
             "cleared_altitude": 4000,
             "sid": "NUTIY1"
           }
         },
         "5": {
-          "ATLIC": {
+          "ATLIC,KALDA,OUTLA": {
             "cleared_altitude": 4000,
             "sid": "HOLND1"
           },
-          "CHIEZ": {
+          "CHIEZ,ECG,ELLDE,JOHAR,KOOKI,PRONI,SKARP": {
             "cleared_altitude": 4000,
             "sid": "SWOPE1"
           },
-          "ECG": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "ELLDE": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "EYOBI": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "HCM": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "HYTRA": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "JOHAR": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "KALDA": {
-            "cleared_altitude": 4000,
-            "sid": "HOLND1"
-          },
-          "KELLE": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "KOOKI": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "OUTLA": {
-            "cleared_altitude": 4000,
-            "sid": "HOLND1"
-          },
-          "PBCUP": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "PRONI": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "RDU": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "SHLBK": {
-            "cleared_altitude": 4000,
-            "sid": "NUTIY1"
-          },
-          "SKARP": {
-            "cleared_altitude": 4000,
-            "sid": "SWOPE1"
-          },
-          "THHMP": {
+          "EYOBI,HCM,HYTRA,KELLE,PBCUP,RDU,SHLBK,THHMP": {
             "cleared_altitude": 4000,
             "sid": "NUTIY1"
           }
@@ -625,23 +505,7 @@
       },
       "departure_routes": {
         "2": {
-          "HCM": {
-            "cleared_altitude": 2000,
-            "sid": "HENRY4"
-          },
-          "JAMIE": {
-            "cleared_altitude": 2000,
-            "sid": "HENRY4"
-          },
-          "ORF": {
-            "cleared_altitude": 2000,
-            "sid": "HENRY4"
-          },
-          "FAK": {
-            "cleared_altitude": 2000,
-            "sid": "HENRY4"
-          },
-          "WAIKS": {
+          "HCM,JAMIE,ORF,FAK,WAIKS": {
             "cleared_altitude": 2000,
             "sid": "HENRY4"
           },
@@ -659,23 +523,7 @@
           }
         },
         "20": {
-          "HCM": {
-            "cleared_altitude": 2000,
-            "sid": "HENRY4"
-          },
-          "JAMIE": {
-            "cleared_altitude": 2000,
-            "sid": "HENRY4"
-          },
-          "ORF": {
-            "cleared_altitude": 2000,
-            "sid": "HENRY4"
-          },
-          "FAK": {
-            "cleared_altitude": 2000,
-            "sid": "HENRY4"
-          },
-          "WAIKS": {
+          "HCM,JAMIE,ORF,FAK,WAIKS": {
             "cleared_altitude": 2000,
             "sid": "HENRY4"
           },

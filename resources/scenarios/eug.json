@@ -65,39 +65,7 @@
             "cleared_altitude": 3000,
             "sid": "EUG1"
           },
-          "SNOKY": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "LMT.J": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "LMT.T": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "CHEEZ": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "HOCUM": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "CITYY": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "BALDY": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "RBG": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "YERIN": {
+          "SNOKY,LMT.J,LMT.T,CHEEZ,HOCUM,CITYY,BALDY,RBG,YERIN,DSD.J": {
             "cleared_altitude": 9000,
             "sid": "EUG1"
           },
@@ -116,10 +84,6 @@
           },
           "ONP.6": {
             "cleared_altitude": 6000,
-            "sid": "EUG1"
-          },
-          "DSD.J": {
-            "cleared_altitude": 9000,
             "sid": "EUG1"
           },
           "UBG.4": {
@@ -138,39 +102,7 @@
             "cleared_altitude": 3000,
             "sid": "EUG1"
           },
-          "SNOKY": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "LMT.T": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "LMT.J": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "CHEEZ": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "HOCUM": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "CITYY": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "BALDY": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "RBG": {
-            "cleared_altitude": 9000,
-            "sid": "EUG1"
-          },
-          "YERIN": {
+          "SNOKY,LMT.T,LMT.J,CHEEZ,HOCUM,CITYY,BALDY,RBG,YERIN,DSD.J": {
             "cleared_altitude": 9000,
             "sid": "EUG1"
           },
@@ -189,10 +121,6 @@
           },
           "ONP.6": {
             "cleared_altitude": 6000,
-            "sid": "EUG1"
-          },
-          "DSD.J": {
-            "cleared_altitude": 9000,
             "sid": "EUG1"
           },
           "UBG.4": {

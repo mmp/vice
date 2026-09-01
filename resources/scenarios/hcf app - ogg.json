@@ -106,39 +106,22 @@
             "sid": "MAUI5",
             "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
           },
-          "ZIGIE, APACK, CLUTS, EBBER, FITES, SCOON, UPP, KOA, TARDE, DOVRR": {
+          "ZIGIE,APACK,CLUTS,EBBER,FITES,SCOON,UPP,KOA,TARDE,DOVRR,SAKKI,JULLE,CARRP,CHOKO,NONNI,PUPPI,SYVAD,LILIA,CANON,DANNO,THOMA": {
             "cleared_altitude": 6000,
             "sid": "RV",
             "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
           },
-          "SAKKI, JULLE, CARRP, CHOKO, NONNI, PUPPI, SYVAD, LILIA, CANON, DANNO, THOMA": {
-            "cleared_altitude": 6000,
-            "sid": "RV",
-            "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
-          },
-          "BARBY": {
-            "cleared_altitude": 6000,
-            "sid": "ONOHI2"
-          },
-          "ONOHI": {
+          "BARBY,ONOHI": {
             "cleared_altitude": 6000,
             "sid": "ONOHI2"
           }
         },
         "20": {
-          "LNY": {
+          "LNY,HARPO": {
             "cleared_altitude": 6000,
             "sid": "BEACH4"
           },
-          "HARPO": {
-            "cleared_altitude": 6000,
-            "sid": "BEACH4"
-          },
-          "BARBY": {
-            "cleared_altitude": 6000,
-            "sid": "ONOHI2"
-          },
-          "ONOHI": {
+          "BARBY,ONOHI": {
             "cleared_altitude": 6000,
             "sid": "ONOHI2"
           }

@@ -531,11 +531,7 @@
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "MAULS": {
-            "cleared_altitude": 5000,
-            "sid": "CLTCH3"
-          },
-          "FLASK": {
+          "MAULS,FLASK": {
             "cleared_altitude": 5000,
             "sid": "CLTCH3"
           },
@@ -547,11 +543,7 @@
             "cleared_altitude": 5000,
             "sid": "HORTO4"
           },
-          "RRSIN": {
-            "cleared_altitude": 5000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "cleared_altitude": 5000,
             "sid": "JDUBB4"
           },
@@ -591,11 +583,7 @@
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "MAULS": {
-            "cleared_altitude": 5000,
-            "sid": "CLTCH3"
-          },
-          "FLASK": {
+          "MAULS,FLASK": {
             "cleared_altitude": 5000,
             "sid": "CLTCH3"
           },
@@ -607,11 +595,7 @@
             "cleared_altitude": 5000,
             "sid": "HORTO4"
           },
-          "RRSIN": {
-            "cleared_altitude": 5000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "cleared_altitude": 5000,
             "sid": "JDUBB4"
           },
@@ -637,11 +621,7 @@
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "MAULS": {
-            "cleared_altitude": 5000,
-            "sid": "CLTCH3"
-          },
-          "FLASK": {
+          "MAULS,FLASK": {
             "cleared_altitude": 5000,
             "sid": "CLTCH3"
           },
@@ -653,11 +633,7 @@
             "cleared_altitude": 5000,
             "sid": "HORTO4"
           },
-          "RRSIN": {
-            "cleared_altitude": 5000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "cleared_altitude": 5000,
             "sid": "JDUBB4"
           },
@@ -683,11 +659,7 @@
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "MAULS": {
-            "cleared_altitude": 5000,
-            "sid": "CLTCH3"
-          },
-          "FLASK": {
+          "MAULS,FLASK": {
             "cleared_altitude": 5000,
             "sid": "CLTCH3"
           },
@@ -699,11 +671,7 @@
             "cleared_altitude": 5000,
             "sid": "HORTO4"
           },
-          "RRSIN": {
-            "cleared_altitude": 5000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "cleared_altitude": 5000,
             "sid": "JDUBB4"
           },

@@ -357,27 +357,11 @@
       },
       "departure_routes": {
         "15R": {
-          "RAMAY": {
+          "RAMAY,OTTTO": {
             "cleared_altitude": 17000,
             "sid": "FOXHL1"
           },
-          "OTTTO": {
-            "cleared_altitude": 17000,
-            "sid": "FOXHL1"
-          },
-          "BYEDN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "BROSS": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "SWANN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "AJGON": {
+          "BYEDN,BROSS,SWANN,AJGON,SPEAK": {
             "cleared_altitude": 14000,
             "sid": "DUKPN1"
           },
@@ -385,57 +369,25 @@
             "cleared_altitude": 14000,
             "sid": "DUKPN1.DONIL"
           },
-          "SPEAK": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
             "sid": "CONLE5"
           },
-          "MELTN,RRSIN": {
+          "MELTN,RRSIN,GLANC,FLASK,MAULS": {
             "cleared_altitude": 17000,
             "sid": "TERPZ8"
           },
-          "GLANC": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "FLASK,MAULS": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "JERES": {
-            "cleared_altitude": 16000,
-            "sid": "LINSE2"
-          },
-          "MCRAY": {
+          "JERES,MCRAY": {
             "cleared_altitude": 16000,
             "sid": "LINSE2"
           }
         },
         "33L": {
-          "RAMAY": {
+          "RAMAY,OTTTO": {
             "cleared_altitude": 17000,
             "sid": "FOXHL1"
           },
-          "OTTTO": {
-            "cleared_altitude": 17000,
-            "sid": "FOXHL1"
-          },
-          "BYEDN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "BROSS": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "SWANN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "AJGON": {
+          "BYEDN,BROSS,SWANN,AJGON,SPEAK": {
             "cleared_altitude": 14000,
             "sid": "DUKPN1"
           },
@@ -443,57 +395,25 @@
             "cleared_altitude": 14000,
             "sid": "DUKPN1.DONIL"
           },
-          "SPEAK": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
             "sid": "CONLE5"
           },
-          "MELTN,RRSIN": {
+          "MELTN,RRSIN,GLANC,FLASK,MAULS": {
             "cleared_altitude": 17000,
             "sid": "TERPZ8"
           },
-          "GLANC": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "FLASK,MAULS": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "JERES": {
-            "cleared_altitude": 16000,
-            "sid": "LINSE2"
-          },
-          "MCRAY": {
+          "JERES,MCRAY": {
             "cleared_altitude": 16000,
             "sid": "LINSE2"
           }
         },
         "10": {
-          "RAMAY": {
+          "RAMAY,OTTTO": {
             "cleared_altitude": 17000,
             "sid": "FOXHL1"
           },
-          "OTTTO": {
-            "cleared_altitude": 17000,
-            "sid": "FOXHL1"
-          },
-          "BYEDN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "BROSS": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "SWANN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "AJGON": {
+          "BYEDN,BROSS,SWANN,AJGON,SPEAK": {
             "cleared_altitude": 14000,
             "sid": "DUKPN1"
           },
@@ -501,57 +421,25 @@
             "cleared_altitude": 14000,
             "sid": "DUKPN1.DONIL"
           },
-          "SPEAK": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
             "sid": "CONLE5"
           },
-          "MELTN,RRSIN": {
+          "MELTN,RRSIN,GLANC,FLASK,MAULS": {
             "cleared_altitude": 17000,
             "sid": "TERPZ8"
           },
-          "GLANC": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "FLASK,MAULS": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "JERES": {
-            "cleared_altitude": 16000,
-            "sid": "LINSE2"
-          },
-          "MCRAY": {
+          "JERES,MCRAY": {
             "cleared_altitude": 16000,
             "sid": "LINSE2"
           }
         },
         "28": {
-          "RAMAY": {
+          "RAMAY,OTTTO": {
             "cleared_altitude": 17000,
             "sid": "FOXHL1"
           },
-          "OTTTO": {
-            "cleared_altitude": 17000,
-            "sid": "FOXHL1"
-          },
-          "BYEDN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "BROSS": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "SWANN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "AJGON": {
+          "BYEDN,BROSS,SWANN,AJGON,SPEAK": {
             "cleared_altitude": 14000,
             "sid": "DUKPN1"
           },
@@ -559,31 +447,15 @@
             "cleared_altitude": 14000,
             "sid": "DUKPN1.DONIL"
           },
-          "SPEAK": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
             "sid": "CONLE5"
           },
-          "MELTN,RRSIN": {
+          "MELTN,RRSIN,GLANC,FLASK,MAULS": {
             "cleared_altitude": 17000,
             "sid": "TERPZ8"
           },
-          "GLANC": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "FLASK,MAULS": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "JERES": {
-            "cleared_altitude": 16000,
-            "sid": "LINSE2"
-          },
-          "MCRAY": {
+          "JERES,MCRAY": {
             "cleared_altitude": 16000,
             "sid": "LINSE2"
           }

@@ -1659,44 +1659,14 @@
       "tower_list": 4,
       "departure_routes": {
         "5": {
-          "PMPNO": {
-            "cleared_altitude": 1600,
-            "description": "MCF RWY 5, MCF SID or heading 080, maintain 1600",
-            "waypoints": "KMCF-23/h080"
-          },
-          "FINKI": {
-            "cleared_altitude": 1600,
-            "description": "MCF RWY 5, MCF SID or heading 080, maintain 1600",
-            "waypoints": "KMCF-23/h080"
-          },
-          "SCURF": {
-            "cleared_altitude": 1600,
-            "description": "MCF RWY 5, MCF SID or heading 080, maintain 1600",
-            "waypoints": "KMCF-23/h080"
-          },
-          "SRQ": {
+          "PMPNO,FINKI,SCURF,SRQ": {
             "cleared_altitude": 1600,
             "description": "MCF RWY 5, MCF SID or heading 080, maintain 1600",
             "waypoints": "KMCF-23/h080"
           }
         },
         "23": {
-          "PMPNO": {
-            "cleared_altitude": 1600,
-            "description": "MCF RWY 23, MCF SID or heading 190, maintain 1600",
-            "waypoints": "KMCF-5/h190"
-          },
-          "FINKI": {
-            "cleared_altitude": 1600,
-            "description": "MCF RWY 23, MCF SID or heading 190, maintain 1600",
-            "waypoints": "KMCF-5/h190"
-          },
-          "SCURF": {
-            "cleared_altitude": 1600,
-            "description": "MCF RWY 23, MCF SID or heading 190, maintain 1600",
-            "waypoints": "KMCF-5/h190"
-          },
-          "SRQ": {
+          "PMPNO,FINKI,SCURF,SRQ": {
             "cleared_altitude": 1600,
             "description": "MCF RWY 23, MCF SID or heading 190, maintain 1600",
             "waypoints": "KMCF-5/h190"

@@ -99,493 +99,229 @@
       },
       "departure_routes": {
         "2L": {
-          "CHADM": {
+          "CHADM,MUNNY": {
             "cleared_altitude": 15000,
             "sid": "CHADM5"
           },
-          "MUNNY": {
-            "cleared_altitude": 15000,
-            "sid": "CHADM5"
-          },
-          "DANLS": {
+          "DANLS,TPEEE": {
             "cleared_altitude": 15000,
             "sid": "DANLS5"
           },
-          "TPEEE": {
-            "cleared_altitude": 15000,
-            "sid": "DANLS5"
-          },
-          "DRURY": {
+          "DRURY,JALAR,HAIGE": {
             "cleared_altitude": 15000,
             "sid": "DRURY5"
           },
-          "JALAR": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "HAIGE": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "FLAME": {
+          "FLAME,GENDE": {
             "cleared_altitude": 15000,
             "sid": "FLAME5"
           },
-          "GENDE": {
-            "cleared_altitude": 15000,
-            "sid": "FLAME5"
-          },
-          "GDOGG": {
+          "GDOGG,FAPER": {
             "cleared_altitude": 15000,
             "sid": "GDOGG4"
           },
-          "FAPER": {
-            "cleared_altitude": 15000,
-            "sid": "GDOGG4"
-          },
-          "KRSTA": {
+          "KRSTA,OLSIE": {
             "cleared_altitude": 15000,
             "sid": "KRSTA4"
           },
-          "OLSIE": {
-            "cleared_altitude": 15000,
-            "sid": "KRSTA4"
-          },
-          "PARDN": {
+          "PARDN,NAKIY,HODJS": {
             "cleared_altitude": 15000,
             "sid": "PARDN5"
           },
-          "NAKIY": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "HODJS": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "TAZMO": {
+          "TAZMO,BURME": {
             "cleared_altitude": 15000,
             "sid": "TAZMO5"
           },
-          "BURME": {
-            "cleared_altitude": 15000,
-            "sid": "TAZMO5"
-          },
-          "TIPPN": {
-            "cleared_altitude": 15000,
-            "sid": "TIPPN5"
-          },
-          "DENST": {
+          "TIPPN,DENST": {
             "cleared_altitude": 15000,
             "sid": "TIPPN5"
           }
         },
         "2C": {
-          "CHADM": {
+          "CHADM,MUNNY": {
             "cleared_altitude": 15000,
             "sid": "CHADM5"
           },
-          "MUNNY": {
-            "cleared_altitude": 15000,
-            "sid": "CHADM5"
-          },
-          "DANLS": {
+          "DANLS,TPEEE": {
             "cleared_altitude": 15000,
             "sid": "DANLS5"
           },
-          "TPEEE": {
-            "cleared_altitude": 15000,
-            "sid": "DANLS5"
-          },
-          "DRURY": {
+          "DRURY,JALAR,HAIGE": {
             "cleared_altitude": 15000,
             "sid": "DRURY5"
           },
-          "JALAR": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "HAIGE": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "FLAME": {
+          "FLAME,GENDE": {
             "cleared_altitude": 15000,
             "sid": "FLAME5"
           },
-          "GENDE": {
-            "cleared_altitude": 15000,
-            "sid": "FLAME5"
-          },
-          "GDOGG": {
+          "GDOGG,FAPER": {
             "cleared_altitude": 15000,
             "sid": "GDOGG4"
           },
-          "FAPER": {
-            "cleared_altitude": 15000,
-            "sid": "GDOGG4"
-          },
-          "KRSTA": {
+          "KRSTA,OLSIE": {
             "cleared_altitude": 15000,
             "sid": "KRSTA4"
           },
-          "OLSIE": {
-            "cleared_altitude": 15000,
-            "sid": "KRSTA4"
-          },
-          "PARDN": {
+          "PARDN,NAKIY,HODJS": {
             "cleared_altitude": 15000,
             "sid": "PARDN5"
           },
-          "NAKIY": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "HODJS": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "TAZMO": {
+          "TAZMO,BURME": {
             "cleared_altitude": 15000,
             "sid": "TAZMO5"
           },
-          "BURME": {
-            "cleared_altitude": 15000,
-            "sid": "TAZMO5"
-          },
-          "TIPPN": {
-            "cleared_altitude": 15000,
-            "sid": "TIPPN5"
-          },
-          "DENST": {
+          "TIPPN,DENST": {
             "cleared_altitude": 15000,
             "sid": "TIPPN5"
           }
         },
         "2R": {
-          "CHADM": {
+          "CHADM,MUNNY": {
             "cleared_altitude": 15000,
             "sid": "CHADM5"
           },
-          "MUNNY": {
-            "cleared_altitude": 15000,
-            "sid": "CHADM5"
-          },
-          "DANLS": {
+          "DANLS,TPEEE": {
             "cleared_altitude": 15000,
             "sid": "DANLS5"
           },
-          "TPEEE": {
-            "cleared_altitude": 15000,
-            "sid": "DANLS5"
-          },
-          "DRURY": {
+          "DRURY,JALAR,HAIGE": {
             "cleared_altitude": 15000,
             "sid": "DRURY5"
           },
-          "JALAR": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "HAIGE": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "FLAME": {
+          "FLAME,GENDE": {
             "cleared_altitude": 15000,
             "sid": "FLAME5"
           },
-          "GENDE": {
-            "cleared_altitude": 15000,
-            "sid": "FLAME5"
-          },
-          "GDOGG": {
+          "GDOGG,FAPER": {
             "cleared_altitude": 15000,
             "sid": "GDOGG4"
           },
-          "FAPER": {
-            "cleared_altitude": 15000,
-            "sid": "GDOGG4"
-          },
-          "KRSTA": {
+          "KRSTA,OLSIE": {
             "cleared_altitude": 15000,
             "sid": "KRSTA4"
           },
-          "OLSIE": {
-            "cleared_altitude": 15000,
-            "sid": "KRSTA4"
-          },
-          "PARDN": {
+          "PARDN,NAKIY,HODJS": {
             "cleared_altitude": 15000,
             "sid": "PARDN5"
           },
-          "NAKIY": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "HODJS": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "TAZMO": {
+          "TAZMO,BURME": {
             "cleared_altitude": 15000,
             "sid": "TAZMO5"
           },
-          "BURME": {
-            "cleared_altitude": 15000,
-            "sid": "TAZMO5"
-          },
-          "TIPPN": {
-            "cleared_altitude": 15000,
-            "sid": "TIPPN5"
-          },
-          "DENST": {
+          "TIPPN,DENST": {
             "cleared_altitude": 15000,
             "sid": "TIPPN5"
           }
         },
         "20L": {
-          "CHADM": {
+          "CHADM,MUNNY": {
             "cleared_altitude": 15000,
             "sid": "CHADM5"
           },
-          "MUNNY": {
-            "cleared_altitude": 15000,
-            "sid": "CHADM5"
-          },
-          "DANLS": {
+          "DANLS,TPEEE": {
             "cleared_altitude": 15000,
             "sid": "DANLS5"
           },
-          "TPEEE": {
-            "cleared_altitude": 15000,
-            "sid": "DANLS5"
-          },
-          "DRURY": {
+          "DRURY,JALAR,HAIGE": {
             "cleared_altitude": 15000,
             "sid": "DRURY5"
           },
-          "JALAR": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "HAIGE": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "FLAME": {
+          "FLAME,GENDE": {
             "cleared_altitude": 15000,
             "sid": "FLAME5"
           },
-          "GENDE": {
-            "cleared_altitude": 15000,
-            "sid": "FLAME5"
-          },
-          "GDOGG": {
+          "GDOGG,FAPER": {
             "cleared_altitude": 15000,
             "sid": "GDOGG4"
           },
-          "FAPER": {
-            "cleared_altitude": 15000,
-            "sid": "GDOGG4"
-          },
-          "KRSTA": {
+          "KRSTA,OLSIE": {
             "cleared_altitude": 15000,
             "sid": "KRSTA4"
           },
-          "OLSIE": {
-            "cleared_altitude": 15000,
-            "sid": "KRSTA4"
-          },
-          "PARDN": {
+          "PARDN,NAKIY,HODJS": {
             "cleared_altitude": 15000,
             "sid": "PARDN5"
           },
-          "NAKIY": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "HODJS": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "TAZMO": {
+          "TAZMO,BURME": {
             "cleared_altitude": 15000,
             "sid": "TAZMO5"
           },
-          "BURME": {
-            "cleared_altitude": 15000,
-            "sid": "TAZMO5"
-          },
-          "TIPPN": {
-            "cleared_altitude": 15000,
-            "sid": "TIPPN5"
-          },
-          "DENST": {
+          "TIPPN,DENST": {
             "cleared_altitude": 15000,
             "sid": "TIPPN5"
           }
         },
         "20C": {
-          "CHADM": {
+          "CHADM,MUNNY": {
             "cleared_altitude": 15000,
             "sid": "CHADM5"
           },
-          "MUNNY": {
-            "cleared_altitude": 15000,
-            "sid": "CHADM5"
-          },
-          "DANLS": {
+          "DANLS,TPEEE": {
             "cleared_altitude": 15000,
             "sid": "DANLS5"
           },
-          "TPEEE": {
-            "cleared_altitude": 15000,
-            "sid": "DANLS5"
-          },
-          "DRURY": {
+          "DRURY,JALAR,HAIGE": {
             "cleared_altitude": 15000,
             "sid": "DRURY5"
           },
-          "JALAR": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "HAIGE": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "FLAME": {
+          "FLAME,GENDE": {
             "cleared_altitude": 15000,
             "sid": "FLAME5"
           },
-          "GENDE": {
-            "cleared_altitude": 15000,
-            "sid": "FLAME5"
-          },
-          "GDOGG": {
+          "GDOGG,FAPER": {
             "cleared_altitude": 15000,
             "sid": "GDOGG4"
           },
-          "FAPER": {
-            "cleared_altitude": 15000,
-            "sid": "GDOGG4"
-          },
-          "KRSTA": {
+          "KRSTA,OLSIE": {
             "cleared_altitude": 15000,
             "sid": "KRSTA4"
           },
-          "OLSIE": {
-            "cleared_altitude": 15000,
-            "sid": "KRSTA4"
-          },
-          "PARDN": {
+          "PARDN,NAKIY,HODJS": {
             "cleared_altitude": 15000,
             "sid": "PARDN5"
           },
-          "NAKIY": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "HODJS": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "TAZMO": {
+          "TAZMO,BURME": {
             "cleared_altitude": 15000,
             "sid": "TAZMO5"
           },
-          "BURME": {
-            "cleared_altitude": 15000,
-            "sid": "TAZMO5"
-          },
-          "TIPPN": {
-            "cleared_altitude": 15000,
-            "sid": "TIPPN5"
-          },
-          "DENST": {
+          "TIPPN,DENST": {
             "cleared_altitude": 15000,
             "sid": "TIPPN5"
           }
         },
         "20R": {
-          "CHADM": {
+          "CHADM,MUNNY": {
             "cleared_altitude": 15000,
             "sid": "CHADM5"
           },
-          "MUNNY": {
-            "cleared_altitude": 15000,
-            "sid": "CHADM5"
-          },
-          "DANLS": {
+          "DANLS,TPEEE": {
             "cleared_altitude": 15000,
             "sid": "DANLS5"
           },
-          "TPEEE": {
-            "cleared_altitude": 15000,
-            "sid": "DANLS5"
-          },
-          "DRURY": {
+          "DRURY,JALAR,HAIGE": {
             "cleared_altitude": 15000,
             "sid": "DRURY5"
           },
-          "JALAR": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "HAIGE": {
-            "cleared_altitude": 15000,
-            "sid": "DRURY5"
-          },
-          "FLAME": {
+          "FLAME,GENDE": {
             "cleared_altitude": 15000,
             "sid": "FLAME5"
           },
-          "GENDE": {
-            "cleared_altitude": 15000,
-            "sid": "FLAME5"
-          },
-          "GDOGG": {
+          "GDOGG,FAPER": {
             "cleared_altitude": 15000,
             "sid": "GDOGG4"
           },
-          "FAPER": {
-            "cleared_altitude": 15000,
-            "sid": "GDOGG4"
-          },
-          "KRSTA": {
+          "KRSTA,OLSIE": {
             "cleared_altitude": 15000,
             "sid": "KRSTA4"
           },
-          "OLSIE": {
-            "cleared_altitude": 15000,
-            "sid": "KRSTA4"
-          },
-          "PARDN": {
+          "PARDN,NAKIY,HODJS": {
             "cleared_altitude": 15000,
             "sid": "PARDN5"
           },
-          "NAKIY": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "HODJS": {
-            "cleared_altitude": 15000,
-            "sid": "PARDN5"
-          },
-          "TAZMO": {
+          "TAZMO,BURME": {
             "cleared_altitude": 15000,
             "sid": "TAZMO5"
           },
-          "BURME": {
-            "cleared_altitude": 15000,
-            "sid": "TAZMO5"
-          },
-          "TIPPN": {
-            "cleared_altitude": 15000,
-            "sid": "TIPPN5"
-          },
-          "DENST": {
+          "TIPPN,DENST": {
             "cleared_altitude": 15000,
             "sid": "TIPPN5"
           }

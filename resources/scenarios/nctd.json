@@ -343,23 +343,7 @@
       },
       "departure_routes": {
         "28R": {
-          "NTELL": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "KAYEX": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "KTINA": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "SUSEY": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "YYUNG": {
+          "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 19000,
             "sid": "CNDEL5"
           },
@@ -385,23 +369,7 @@
           }
         },
         "28L": {
-          "NTELL": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "KAYEX": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "KTINA": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "SUSEY": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "YYUNG": {
+          "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 19000,
             "sid": "CNDEL5"
           },
@@ -419,27 +387,7 @@
           }
         },
         "30": {
-          "GRTFL": {
-            "cleared_altitude": 19000,
-            "sid": "OAK6"
-          },
-          "DEDHD": {
-            "cleared_altitude": 19000,
-            "sid": "OAK6"
-          },
-          "ORRCA": {
-            "cleared_altitude": 19000,
-            "sid": "OAK6"
-          },
-          "MOGEE": {
-            "cleared_altitude": 19000,
-            "sid": "OAK6"
-          },
-          "TIPRE": {
-            "cleared_altitude": 19000,
-            "sid": "OAK6"
-          },
-          "SYRAH": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH,PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
             "cleared_altitude": 19000,
             "sid": "OAK6"
           },
@@ -447,29 +395,13 @@
             "cleared_altitude": 19000,
             "sid": "CNDEL5"
           },
-          "KAYEX": {
-            "cleared_altitude": 10000,
-            "sid": "CNDEL5"
-          },
-          "KTINA": {
-            "cleared_altitude": 10000,
-            "sid": "CNDEL5"
-          },
-          "SUSEY": {
-            "cleared_altitude": 10000,
-            "sid": "CNDEL5"
-          },
-          "YYUNG": {
+          "KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 10000,
             "sid": "CNDEL5"
           },
           "RZS,FLW,SXC,GVO": {
             "cleared_altitude": 10000,
             "sid": "COAST9"
-          },
-          "PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
-            "cleared_altitude": 19000,
-            "sid": "OAK6"
           },
           "SNS,SHOEY": {
             "cleared_altitude": 10000,
@@ -481,51 +413,11 @@
           }
         },
         "30.N": {
-          "GRTFL": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,GOBBS,SYRAH": {
             "cleared_altitude": 19000,
             "sid": "HUSSH2"
           },
-          "DEDHD": {
-            "cleared_altitude": 19000,
-            "sid": "HUSSH2"
-          },
-          "ORRCA": {
-            "cleared_altitude": 19000,
-            "sid": "HUSSH2"
-          },
-          "MOGEE": {
-            "cleared_altitude": 19000,
-            "sid": "HUSSH2"
-          },
-          "TIPRE": {
-            "cleared_altitude": 19000,
-            "sid": "HUSSH2"
-          },
-          "GOBBS": {
-            "cleared_altitude": 19000,
-            "sid": "HUSSH2"
-          },
-          "SYRAH": {
-            "cleared_altitude": 19000,
-            "sid": "HUSSH2"
-          },
-          "NTELL": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "KAYEX": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "KTINA": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "SUSEY": {
-            "cleared_altitude": 19000,
-            "sid": "CNDEL5"
-          },
-          "YYUNG": {
+          "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 19000,
             "sid": "CNDEL5"
           },
@@ -551,19 +443,7 @@
           }
         },
         "10L.E": {
-          "NTELL": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "KAYEX": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "KTINA": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
             "sid": "KATFH3"
           },
@@ -577,19 +457,7 @@
           }
         },
         "10R.E": {
-          "NTELL": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "KAYEX": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "KTINA": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
             "sid": "KATFH3"
           },
@@ -603,121 +471,33 @@
           }
         },
         "10L": {
-          "NTELL": {
-            "cleared_altitude": 3000,
-            "sid": "OAK6"
-          },
-          "KAYEX": {
-            "cleared_altitude": 3000,
-            "sid": "OAK6"
-          },
-          "KTINA": {
-            "cleared_altitude": 3000,
-            "sid": "OAK6"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY,PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
             "sid": "OAK6"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 6000,
-            "sid": "OAK6"
-          },
-          "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
-            "cleared_altitude": 3000,
             "sid": "OAK6"
           }
         },
         "10R": {
-          "NTELL": {
-            "cleared_altitude": 3000,
-            "sid": "OAK6"
-          },
-          "KAYEX": {
-            "cleared_altitude": 3000,
-            "sid": "OAK6"
-          },
-          "KTINA": {
-            "cleared_altitude": 3000,
-            "sid": "OAK6"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY,PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
             "sid": "OAK6"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 6000,
             "sid": "OAK6"
-          },
-          "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
-            "cleared_altitude": 3000,
-            "sid": "OAK6"
           }
         },
         "12": {
-          "NTELL": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "KAYEX": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "KTINA": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "SUSEY": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "GRTFL": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "DEDHD": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "ORRCA": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "MOGEE": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "TIPRE": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "SYRAH": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "ALANN,CINNY,BEBOP,ALCOA": {
-            "cleared_altitude": 5000,
-            "sid": "QUAKE2"
-          },
-          "PYE,SGD,CCR,SAC": {
+          "NTELL,KAYEX,KTINA,SUSEY,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH,ALANN,CINNY,BEBOP,ALCOA,PYE,SGD,CCR,SAC": {
             "cleared_altitude": 5000,
             "sid": "QUAKE2"
           }
         },
         "12.E": {
-          "NTELL": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "KAYEX": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "KTINA": {
-            "cleared_altitude": 3000,
-            "sid": "KATFH3"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
             "sid": "KATFH3"
           },
@@ -726,11 +506,7 @@
             "sid": "OAK6.O",
             "waypoints": "KOAK-30/h116"
           },
-          "PYE,SGD,CCR,SAC": {
-            "cleared_altitude": 3000,
-            "sid": "OAK6"
-          },
-          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
+          "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
             "sid": "OAK6"
           }
@@ -1656,267 +1432,63 @@
       },
       "departure_routes": {
         "28R": {
-          "CINNY": {
+          "CINNY,ALCOA,BEBOP,AMAKR": {
             "cleared_altitude": 3000,
             "sid": "GNNRR3"
           },
-          "ALCOA": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "BEBOP": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "AMAKR": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "GRTFL": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
             "sid": "SNTNA2"
           },
-          "DEDHD": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "ORRCA": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "MOGEE": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "TIPRE": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "SYRAH": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "NTELL": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KAYEX": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KTINA": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "SUSEY": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "YYUNG": {
+          "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 3000,
             "sid": "WESLA5"
           }
         },
         "28L": {
-          "CINNY": {
+          "CINNY,ALCOA,BEBOP,AMAKR": {
             "cleared_altitude": 3000,
             "sid": "GNNRR3"
           },
-          "ALCOA": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "BEBOP": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "AMAKR": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "GRTFL": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
             "sid": "SNTNA2"
           },
-          "DEDHD": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "ORRCA": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "MOGEE": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "TIPRE": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "SYRAH": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "NTELL": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KAYEX": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KTINA": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "SUSEY": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "YYUNG": {
+          "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 3000,
             "sid": "WESLA5"
           }
         },
         "28R.1": {
-          "CINNY.28/1": {
+          "CINNY.28/1,ALCOA.28/1,BEBOP.28/1,AMAKR.28/1": {
             "cleared_altitude": 3000,
             "sid": "GNNRR3"
           },
-          "ALCOA.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "BEBOP.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "AMAKR.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "GRTFL.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "DEDHD.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "ORRCA.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "MOGEE.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "TIPRE.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "SYRAH.28/1": {
+          "GRTFL.28/1,DEDHD.28/1,ORRCA.28/1,MOGEE.28/1,TIPRE.28/1,SYRAH.28/1": {
             "cleared_altitude": 3000,
             "sid": "SNTNA2"
           }
         },
         "28L.1": {
-          "CINNY.28/1": {
+          "CINNY.28/1,ALCOA.28/1,BEBOP.28/1,AMAKR.28/1": {
             "cleared_altitude": 3000,
             "sid": "GNNRR3"
           },
-          "ALCOA.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "BEBOP.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "AMAKR.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "GRTFL.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "DEDHD.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "ORRCA.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "MOGEE.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "TIPRE.28/1": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "SYRAH.28/1": {
+          "GRTFL.28/1,DEDHD.28/1,ORRCA.28/1,MOGEE.28/1,TIPRE.28/1,SYRAH.28/1": {
             "cleared_altitude": 3000,
             "sid": "SNTNA2"
           }
         },
         "28R.SO": {
-          "CINNY.28": {
+          "CINNY.28,ALCOA.28,BEBOP.28,AMAKR.28": {
             "cleared_altitude": 3000,
             "sid": "GNNRR3"
           },
-          "ALCOA.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "BEBOP.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "AMAKR.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "GRTFL.28": {
+          "GRTFL.28,DEDHD.28,ORRCA.28,MOGEE.28,TIPRE.28,SYRAH.28": {
             "cleared_altitude": 3000,
             "sid": "SNTNA2"
           },
-          "DEDHD.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "ORRCA.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "MOGEE.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "TIPRE.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "SYRAH.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "NTELL.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KAYEX.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KTINA.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "SUSEY.28": {
+          "NTELL.28,KAYEX.28,KTINA.28,SUSEY.28": {
             "cleared_altitude": 3000,
             "sid": "WESLA5"
           },
@@ -1926,59 +1498,15 @@
           }
         },
         "28L.SO": {
-          "CINNY.28": {
+          "CINNY.28,ALCOA.28,BEBOP.28,AMAKR.28": {
             "cleared_altitude": 3000,
             "sid": "GNNRR3"
           },
-          "ALCOA.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "BEBOP.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "AMAKR.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "GRTFL.28": {
+          "GRTFL.28,DEDHD.28,ORRCA.28,MOGEE.28,TIPRE.28,SYRAH.28": {
             "cleared_altitude": 3000,
             "sid": "SNTNA2"
           },
-          "DEDHD.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "ORRCA.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "MOGEE.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "TIPRE.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "SYRAH.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "NTELL.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KAYEX.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KTINA.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "SUSEY.28": {
+          "NTELL.28,KAYEX.28,KTINA.28,SUSEY.28": {
             "cleared_altitude": 3000,
             "sid": "WESLA5"
           },
@@ -1988,19 +1516,7 @@
           }
         },
         "28R.RT": {
-          "CINNY.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "ALCOA.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "BEBOP.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "AMAKR.28": {
+          "CINNY.28,ALCOA.28,BEBOP.28,AMAKR.28": {
             "cleared_altitude": 3000,
             "sid": "GNNRR3"
           },
@@ -2008,67 +1524,15 @@
             "cleared_altitude": 10000,
             "sid": "TRUKN2"
           },
-          "GRTFL.28RT": {
+          "GRTFL.28RT,DEDHD.28RT,ORRCA.28RT,MOGEE.28RT,TIPRE.28RT,SYRAH.28RT": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2"
           },
-          "DEDHD.28RT": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "ORRCA.28RT": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "MOGEE.28RT": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "TIPRE.28RT": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "SYRAH.28RT": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "GRTFL.28": {
+          "GRTFL.28,DEDHD.28,ORRCA.28,MOGEE.28,TIPRE.28,SYRAH.28": {
             "cleared_altitude": 3000,
             "sid": "SNTNA2"
           },
-          "DEDHD.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "ORRCA.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "MOGEE.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "TIPRE.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "SYRAH.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "NTELL.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KAYEX.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KTINA.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "SUSEY.28": {
+          "NTELL.28,KAYEX.28,KTINA.28,SUSEY.28": {
             "cleared_altitude": 3000,
             "sid": "WESLA5"
           },
@@ -2078,83 +1542,19 @@
           }
         },
         "28L.RT": {
-          "CINNY.28": {
+          "CINNY.28,ALCOA.28,BEBOP.28,AMAKR.28": {
             "cleared_altitude": 3000,
             "sid": "GNNRR3"
           },
-          "ALCOA.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "BEBOP.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "AMAKR.28": {
-            "cleared_altitude": 3000,
-            "sid": "GNNRR3"
-          },
-          "GRTFL.28RT": {
+          "GRTFL.28RT,DEDHD.28RT,ORRCA.28RT,MOGEE.28RT,TIPRE.28RT,SYRAH.28RT": {
             "cleared_altitude": 10000,
             "sid": "TRUKN2"
           },
-          "DEDHD.28RT": {
-            "cleared_altitude": 10000,
-            "sid": "TRUKN2"
-          },
-          "ORRCA.28RT": {
-            "cleared_altitude": 10000,
-            "sid": "TRUKN2"
-          },
-          "MOGEE.28RT": {
-            "cleared_altitude": 10000,
-            "sid": "TRUKN2"
-          },
-          "TIPRE.28RT": {
-            "cleared_altitude": 10000,
-            "sid": "TRUKN2"
-          },
-          "SYRAH.28RT": {
-            "cleared_altitude": 10000,
-            "sid": "TRUKN2"
-          },
-          "GRTFL.28": {
+          "GRTFL.28,DEDHD.28,ORRCA.28,MOGEE.28,TIPRE.28,SYRAH.28": {
             "cleared_altitude": 3000,
             "sid": "SNTNA2"
           },
-          "DEDHD.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "ORRCA.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "MOGEE.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "TIPRE.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "SYRAH.28": {
-            "cleared_altitude": 3000,
-            "sid": "SNTNA2"
-          },
-          "NTELL.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KAYEX.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "KTINA.28": {
-            "cleared_altitude": 3000,
-            "sid": "WESLA5"
-          },
-          "SUSEY.28": {
+          "NTELL.28,KAYEX.28,KTINA.28,SUSEY.28": {
             "cleared_altitude": 3000,
             "sid": "WESLA5"
           },
@@ -2168,43 +1568,11 @@
             "cleared_altitude": 15000,
             "sid": "MOLEN9"
           },
-          "GRTFL": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 19000,
             "sid": "CIITY3"
           },
-          "DEDHD": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "ORRCA": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "MOGEE": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "TIPRE": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "SYRAH": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "NTELL": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "KAYEX": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "KTINA": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 19000,
             "sid": "SAHEY4"
           }
@@ -2214,61 +1582,17 @@
             "cleared_altitude": 15000,
             "sid": "MOLEN9"
           },
-          "GRTFL": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 19000,
             "sid": "CIITY3"
           },
-          "DEDHD": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "ORRCA": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "MOGEE": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "TIPRE": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "SYRAH": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "NTELL": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "KAYEX": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "KTINA": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 19000,
             "sid": "SAHEY4"
           }
         },
         "1L": {
-          "NTELL": {
-            "cleared_altitude": 19000,
-            "sid": "SSTIK5"
-          },
-          "KAYEX": {
-            "cleared_altitude": 19000,
-            "sid": "SSTIK5"
-          },
-          "KTINA": {
-            "cleared_altitude": 19000,
-            "sid": "SSTIK5"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 19000,
             "sid": "SSTIK5"
           },
@@ -2287,147 +1611,35 @@
             "cleared_altitude": 10000,
             "sid": "TRUKN2"
           },
-          "GRTFL": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "DEDHD": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "ORRCA": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "MOGEE": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "TIPRE": {
-            "cleared_altitude": 19000,
-            "sid": "TRUKN2"
-          },
-          "SYRAH": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2"
           }
         },
         "19R": {
-          "CINNY": {
+          "CINNY,ALCOA,BEBOP,AMAKR": {
             "cleared_altitude": 15000,
             "sid": "MOLEN9"
           },
-          "ALCOA": {
-            "cleared_altitude": 15000,
-            "sid": "MOLEN9"
-          },
-          "BEBOP": {
-            "cleared_altitude": 15000,
-            "sid": "MOLEN9"
-          },
-          "AMAKR": {
-            "cleared_altitude": 15000,
-            "sid": "MOLEN9"
-          },
-          "GRTFL": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 19000,
             "sid": "CIITY3"
           },
-          "DEDHD": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "ORRCA": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "MOGEE": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "TIPRE": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "SYRAH": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "NTELL": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "KAYEX": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "KTINA": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 19000,
             "sid": "SAHEY4"
           }
         },
         "19L": {
-          "CINNY": {
+          "CINNY,ALCOA,BEBOP,AMAKR,ENI": {
             "cleared_altitude": 15000,
             "sid": "MOLEN9"
           },
-          "ALCOA": {
-            "cleared_altitude": 15000,
-            "sid": "MOLEN9"
-          },
-          "BEBOP": {
-            "cleared_altitude": 15000,
-            "sid": "MOLEN9"
-          },
-          "AMAKR": {
-            "cleared_altitude": 15000,
-            "sid": "MOLEN9"
-          },
-          "ENI": {
-            "cleared_altitude": 15000,
-            "sid": "MOLEN9"
-          },
-          "GRTFL": {
+          "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 19000,
             "sid": "CIITY3"
           },
-          "DEDHD": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "ORRCA": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "MOGEE": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "TIPRE": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "SYRAH": {
-            "cleared_altitude": 19000,
-            "sid": "CIITY3"
-          },
-          "NTELL": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "KAYEX": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "KTINA": {
-            "cleared_altitude": 19000,
-            "sid": "SAHEY4"
-          },
-          "SUSEY": {
+          "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 19000,
             "sid": "SAHEY4"
           }

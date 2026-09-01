@@ -270,19 +270,11 @@
             "cleared_altitude": 5000,
             "sid": "BRAKK5"
           },
-          "ARG": {
+          "ARG,MYERZ": {
             "cleared_altitude": 5000,
             "sid": "CHUUC6"
           },
-          "MYERZ": {
-            "cleared_altitude": 5000,
-            "sid": "CHUUC6"
-          },
-          "DENNI": {
-            "cleared_altitude": 5000,
-            "sid": "DRUSE5"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 5000,
             "sid": "DRUSE5"
           },
@@ -294,35 +286,11 @@
             "cleared_altitude": 5000,
             "sid": "JAHNY6"
           },
-          "BIB": {
+          "BIB,VHP,CREEP,DOBLR,KELLY,RINTE": {
             "cleared_altitude": 5000,
             "sid": "JHART7"
           },
-          "VHP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "CREEP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "DOBLR": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "KELLY": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "RINTE": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "LEBOY": {
-            "cleared_altitude": 5000,
-            "sid": "KSHEE5"
-          },
-          "SEXTN": {
+          "LEBOY,SEXTN": {
             "cleared_altitude": 5000,
             "sid": "KSHEE5"
           },
@@ -334,11 +302,7 @@
             "cleared_altitude": 5000,
             "sid": "ROTRY6"
           },
-          "HILTS": {
-            "cleared_altitude": 5000,
-            "sid": "TEDDD5"
-          },
-          "IIU": {
+          "HILTS,IIU": {
             "cleared_altitude": 5000,
             "sid": "TEDDD5"
           },
@@ -363,11 +327,7 @@
           }
         },
         "29": {
-          "BERYY": {
-            "cleared_altitude": 5000,
-            "sid": "BERYY6"
-          },
-          "LITTR": {
+          "BERYY,LITTR": {
             "cleared_altitude": 5000,
             "sid": "BERYY6"
           },
@@ -379,19 +339,11 @@
             "cleared_altitude": 5000,
             "sid": "BRAKK5"
           },
-          "ARG": {
+          "ARG,MYERZ": {
             "cleared_altitude": 5000,
             "sid": "CHUUC6"
           },
-          "MYERZ": {
-            "cleared_altitude": 5000,
-            "sid": "CHUUC6"
-          },
-          "DENNI": {
-            "cleared_altitude": 5000,
-            "sid": "DRUSE5"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 5000,
             "sid": "DRUSE5"
           },
@@ -403,35 +355,11 @@
             "cleared_altitude": 5000,
             "sid": "JAHNY6"
           },
-          "BIB": {
+          "BIB,VHP,CREEP,DOBLR,KELLY,RINTE": {
             "cleared_altitude": 5000,
             "sid": "JHART7"
           },
-          "VHP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "CREEP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "DOBLR": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "KELLY": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "RINTE": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "LEBOY": {
-            "cleared_altitude": 5000,
-            "sid": "KSHEE5"
-          },
-          "SEXTN": {
+          "LEBOY,SEXTN": {
             "cleared_altitude": 5000,
             "sid": "KSHEE5"
           },
@@ -443,11 +371,7 @@
             "cleared_altitude": 5000,
             "sid": "ROTRY6"
           },
-          "HILTS": {
-            "cleared_altitude": 5000,
-            "sid": "TEDDD5"
-          },
-          "IIU": {
+          "HILTS,IIU": {
             "cleared_altitude": 5000,
             "sid": "TEDDD5"
           },
@@ -472,11 +396,7 @@
           }
         },
         "30L": {
-          "BERYY": {
-            "cleared_altitude": 5000,
-            "sid": "BERYY6"
-          },
-          "LITTR": {
+          "BERYY,LITTR": {
             "cleared_altitude": 5000,
             "sid": "BERYY6"
           },
@@ -488,19 +408,11 @@
             "cleared_altitude": 5000,
             "sid": "BRAKK5"
           },
-          "ARG": {
+          "ARG,MYERZ": {
             "cleared_altitude": 5000,
             "sid": "CHUUC6"
           },
-          "MYERZ": {
-            "cleared_altitude": 5000,
-            "sid": "CHUUC6"
-          },
-          "DENNI": {
-            "cleared_altitude": 5000,
-            "sid": "DRUSE5"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 5000,
             "sid": "DRUSE5"
           },
@@ -512,35 +424,11 @@
             "cleared_altitude": 5000,
             "sid": "JAHNY6"
           },
-          "BIB": {
+          "BIB,VHP,CREEP,DOBLR,KELLY,RINTE": {
             "cleared_altitude": 5000,
             "sid": "JHART7"
           },
-          "VHP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "CREEP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "DOBLR": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "KELLY": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "RINTE": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "LEBOY": {
-            "cleared_altitude": 5000,
-            "sid": "KSHEE5"
-          },
-          "SEXTN": {
+          "LEBOY,SEXTN": {
             "cleared_altitude": 5000,
             "sid": "KSHEE5"
           },
@@ -552,11 +440,7 @@
             "cleared_altitude": 5000,
             "sid": "ROTRY6"
           },
-          "HILTS": {
-            "cleared_altitude": 5000,
-            "sid": "TEDDD5"
-          },
-          "IIU": {
+          "HILTS,IIU": {
             "cleared_altitude": 5000,
             "sid": "TEDDD5"
           },
@@ -581,11 +465,7 @@
           }
         },
         "30R": {
-          "BERYY": {
-            "cleared_altitude": 5000,
-            "sid": "BERYY6"
-          },
-          "LITTR": {
+          "BERYY,LITTR": {
             "cleared_altitude": 5000,
             "sid": "BERYY6"
           },
@@ -597,19 +477,11 @@
             "cleared_altitude": 5000,
             "sid": "BRAKK5"
           },
-          "ARG": {
+          "ARG,MYERZ": {
             "cleared_altitude": 5000,
             "sid": "CHUUC6"
           },
-          "MYERZ": {
-            "cleared_altitude": 5000,
-            "sid": "CHUUC6"
-          },
-          "DENNI": {
-            "cleared_altitude": 5000,
-            "sid": "DRUSE5"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 5000,
             "sid": "DRUSE5"
           },
@@ -621,35 +493,11 @@
             "cleared_altitude": 5000,
             "sid": "JAHNY6"
           },
-          "BIB": {
+          "BIB,VHP,CREEP,DOBLR,KELLY,RINTE": {
             "cleared_altitude": 5000,
             "sid": "JHART7"
           },
-          "VHP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "CREEP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "DOBLR": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "KELLY": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "RINTE": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "LEBOY": {
-            "cleared_altitude": 5000,
-            "sid": "KSHEE5"
-          },
-          "SEXTN": {
+          "LEBOY,SEXTN": {
             "cleared_altitude": 5000,
             "sid": "KSHEE5"
           },
@@ -661,11 +509,7 @@
             "cleared_altitude": 5000,
             "sid": "ROTRY6"
           },
-          "HILTS": {
-            "cleared_altitude": 5000,
-            "sid": "TEDDD5"
-          },
-          "IIU": {
+          "HILTS,IIU": {
             "cleared_altitude": 5000,
             "sid": "TEDDD5"
           },
@@ -707,19 +551,11 @@
             "cleared_altitude": 5000,
             "sid": "BRAKK5"
           },
-          "ARG": {
+          "ARG,MYERZ": {
             "cleared_altitude": 5000,
             "sid": "CHUUC6"
           },
-          "MYERZ": {
-            "cleared_altitude": 5000,
-            "sid": "CHUUC6"
-          },
-          "DENNI": {
-            "cleared_altitude": 5000,
-            "sid": "DRUSE5"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 5000,
             "sid": "DRUSE5"
           },
@@ -731,35 +567,11 @@
             "cleared_altitude": 5000,
             "sid": "JAHNY6"
           },
-          "BIB": {
+          "BIB,VHP,CREEP,DOBLR,KELLY,RINTE": {
             "cleared_altitude": 5000,
             "sid": "JHART7"
           },
-          "VHP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "CREEP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "DOBLR": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "KELLY": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "RINTE": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "LEBOY": {
-            "cleared_altitude": 5000,
-            "sid": "KSHEE5"
-          },
-          "SEXTN": {
+          "LEBOY,SEXTN": {
             "cleared_altitude": 5000,
             "sid": "KSHEE5"
           },
@@ -771,11 +583,7 @@
             "cleared_altitude": 5000,
             "sid": "ROTRY6"
           },
-          "HILTS": {
-            "cleared_altitude": 5000,
-            "sid": "TEDDD5"
-          },
-          "IIU": {
+          "HILTS,IIU": {
             "cleared_altitude": 5000,
             "sid": "TEDDD5"
           },
@@ -817,19 +625,11 @@
             "cleared_altitude": 5000,
             "sid": "BRAKK5"
           },
-          "ARG": {
+          "ARG,MYERZ": {
             "cleared_altitude": 5000,
             "sid": "CHUUC6"
           },
-          "MYERZ": {
-            "cleared_altitude": 5000,
-            "sid": "CHUUC6"
-          },
-          "DENNI": {
-            "cleared_altitude": 5000,
-            "sid": "DRUSE5"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 5000,
             "sid": "DRUSE5"
           },
@@ -841,35 +641,11 @@
             "cleared_altitude": 5000,
             "sid": "JAHNY6"
           },
-          "BIB": {
+          "BIB,VHP,CREEP,DOBLR,KELLY,RINTE": {
             "cleared_altitude": 5000,
             "sid": "JHART7"
           },
-          "VHP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "CREEP": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "DOBLR": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "KELLY": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "RINTE": {
-            "cleared_altitude": 5000,
-            "sid": "JHART7"
-          },
-          "LEBOY": {
-            "cleared_altitude": 5000,
-            "sid": "KSHEE5"
-          },
-          "SEXTN": {
+          "LEBOY,SEXTN": {
             "cleared_altitude": 5000,
             "sid": "KSHEE5"
           },
@@ -881,11 +657,7 @@
             "cleared_altitude": 5000,
             "sid": "ROTRY6"
           },
-          "HILTS": {
-            "cleared_altitude": 5000,
-            "sid": "TEDDD5"
-          },
-          "IIU": {
+          "HILTS,IIU": {
             "cleared_altitude": 5000,
             "sid": "TEDDD5"
           },
@@ -947,11 +719,7 @@
             "cleared_altitude": 5000,
             "sid": "NATCA5"
           },
-          "HILTS": {
-            "cleared_altitude": 5000,
-            "sid": "TEDDD5"
-          },
-          "IIU": {
+          "HILTS,IIU": {
             "cleared_altitude": 5000,
             "sid": "TEDDD5"
           },
@@ -1013,11 +781,7 @@
             "cleared_altitude": 5000,
             "sid": "NATCA5"
           },
-          "HILTS": {
-            "cleared_altitude": 5000,
-            "sid": "TEDDD5"
-          },
-          "IIU": {
+          "HILTS,IIU": {
             "cleared_altitude": 5000,
             "sid": "TEDDD5"
           },
@@ -2296,12 +2060,7 @@
             "sid": "OZARK8",
             "waypoints": "KCPS-12R/h302/@a1600+/h302 STL CABIT HLV"
           },
-          "DENNI": {
-            "cleared_altitude": 2500,
-            "sid": "PLESS5",
-            "waypoints": "KCPS-12R/h302/@a1600+/h302 STL PLESS DENNI BNA"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-12R/h302/@a1600+/h302 STL PLESS DENNI BNA"
@@ -2358,12 +2117,7 @@
             "sid": "OZARK8",
             "waypoints": "KCPS-12L/h302/@a1600+/h302 STL CABIT HLV"
           },
-          "DENNI": {
-            "cleared_altitude": 2500,
-            "sid": "PLESS5",
-            "waypoints": "KCPS-12L/h302/@a1600+/h302 STL PLESS DENNI BNA"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-12L/h302/@a1600+/h302 STL PLESS DENNI BNA"
@@ -2420,12 +2174,7 @@
             "sid": "OZARK8",
             "waypoints": "KCPS-30L/h122/@a1000+/l080/a2500 STL CABIT HLV"
           },
-          "DENNI": {
-            "cleared_altitude": 2500,
-            "sid": "PLESS5",
-            "waypoints": "KCPS-30L/h122/@a1000+/l080/a2500 STL PLESS DENNI BNA"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-30L/h122/@a1000+/l080/a2500 STL PLESS DENNI BNA"
@@ -2544,12 +2293,7 @@
             "sid": "OZARK8",
             "waypoints": "KCPS-23/h047/@a0900+/l360/a2500 STL CABIT HLV"
           },
-          "DENNI": {
-            "cleared_altitude": 2500,
-            "sid": "PLESS5",
-            "waypoints": "KCPS-23/h047/@a0900+/l360/a2500 STL PLESS DENNI BNA"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-23/h047/@a0900+/l360/a2500 STL PLESS DENNI BNA"
@@ -2606,12 +2350,7 @@
             "sid": "OZARK8",
             "waypoints": "KCPS-5/h227 STL CABIT HLV"
           },
-          "DENNI": {
-            "cleared_altitude": 2500,
-            "sid": "PLESS5",
-            "waypoints": "KCPS-5/h227 STL PLESS DENNI BNA"
-          },
-          "BNA": {
+          "DENNI,BNA": {
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-5/h227 STL PLESS DENNI BNA"

@@ -3366,125 +3366,13 @@
       },
       "departure_routes": {
         "8": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-26/h080"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KFTY-26/h080"
           }
         },
         "26": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFTY-8/h260"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KFTY-8/h260"
           }
@@ -3801,125 +3689,13 @@
       },
       "departure_routes": {
         "3R": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-21L/h030"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KPDK-21L/h030"
           }
         },
         "21L": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPDK-3R/h210"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KPDK-3R/h210"
           }
@@ -4257,113 +4033,13 @@
       },
       "departure_routes": {
         "11": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-29/h110"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KMGE-29/h110"
           }
         },
         "29": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KMGE-11/h110"
-          },
-          "VFRE": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRW,VFRS,VFRE": {
             "cleared_altitude": 10000,
             "waypoints": "KMGE-11/h110"
           }
@@ -4705,125 +4381,13 @@
       },
       "departure_routes": {
         "27": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-9/h270"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRS,VFRE,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KRYY-9/h270"
           }
         },
         "9": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KRYY-27/h090"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRS,VFRE,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KRYY-27/h090"
           }
@@ -5162,125 +4726,13 @@
       },
       "departure_routes": {
         "7": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-25/h070"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KLZU-25/h070"
           }
         },
         "25": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KLZU-7/h250"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRS,VFRE,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KLZU-7/h250"
           }
@@ -5647,125 +5099,13 @@
       },
       "departure_routes": {
         "13": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-31/h130"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KPUJ-31/h130"
           }
         },
         "31": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KPUJ-13/h310"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KPUJ-13/h310"
           }
@@ -6132,93 +5472,13 @@
       },
       "departure_routes": {
         "1": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-19/h010"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KVPC-19/h010"
           }
         },
         "19": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KVPC-1/h190"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KVPC-1/h190"
           }
@@ -6585,125 +5845,13 @@
       },
       "departure_routes": {
         "10": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-28/h100"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KCVC-28/h100"
           }
         },
         "28": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCVC-10/h280"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KCVC-10/h280"
           }
@@ -6940,125 +6088,13 @@
       },
       "departure_routes": {
         "13": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-31/h130"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KFFC-31/h130"
           }
         },
         "31": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KFFC-13/h310"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KFFC-13/h310"
           }
@@ -7425,125 +6461,13 @@
       },
       "departure_routes": {
         "6": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-24/h060"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KHMP-24/h060"
           }
         },
         "24": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "VFRW": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KHMP-6/h240"
-          },
-          "MCKLS": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KHMP-6/h240"
           }
@@ -7910,101 +6834,13 @@
       },
       "departure_routes": {
         "17": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-35/h170"
-          },
-          "VFRW": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW": {
             "cleared_altitude": 10000,
             "waypoints": "KCTJ-35/h170"
           }
         },
         "35": {
-          "NOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "NOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "SOONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "SOTWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "WEONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "WETWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "EAONE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "EATWO": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "VFRE": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "VFRN": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "VFRS": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCTJ-17/h350"
-          },
-          "VFRW": {
+          "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW": {
             "cleared_altitude": 10000,
             "waypoints": "KCTJ-17/h350"
           }
@@ -8377,69 +7213,13 @@
       },
       "departure_routes": {
         "31": {
-          "UGAAA": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-13/h310"
-          },
-          "TIROE": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-13/h310"
-          },
-          "SPA": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-13/h310"
-          },
-          "VUZ": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-13/h310"
-          },
-          "VFRE": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-13/h310"
-          },
-          "VFRN": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-13/h310"
-          },
-          "VFRS": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-13/h310"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW": {
             "cleared_altitude": 5000,
             "waypoints": "KWDR-13/h310"
           }
         },
         "13": {
-          "UGAAA": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-31/h130"
-          },
-          "TIROE": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-31/h130"
-          },
-          "SPA": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-31/h130"
-          },
-          "VUZ": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-31/h130"
-          },
-          "VFRE": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-31/h130"
-          },
-          "VFRN": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-31/h130"
-          },
-          "VFRS": {
-            "cleared_altitude": 5000,
-            "waypoints": "KWDR-31/h130"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW": {
             "cleared_altitude": 5000,
             "waypoints": "KWDR-31/h130"
           }
@@ -8677,77 +7457,13 @@
       },
       "departure_routes": {
         "9": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-27/h090"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-27/h090"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-27/h090"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-27/h090"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-27/h090"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-27/h090"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-27/h090"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-27/h090"
-          },
-          "AHN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW,AHN": {
             "cleared_altitude": 3000,
             "waypoints": "KAHN-27/h090"
           }
         },
         "27": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-9/h270"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-9/h270"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-9/h270"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-9/h270"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-9/h270"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-9/h270"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-9/h270"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAHN-9/h270"
-          },
-          "AHN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW,AHN": {
             "cleared_altitude": 3000,
             "waypoints": "KAHN-9/h270"
           }
@@ -9100,77 +7816,13 @@
       },
       "departure_routes": {
         "11": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-29/h110"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-29/h110"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-29/h110"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-29/h110"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-29/h110"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-29/h110"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-29/h110"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-29/h110"
-          },
-          "AHN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW,AHN": {
             "cleared_altitude": 3000,
             "waypoints": "KGVL-29/h110"
           }
         },
         "23": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-5/h230"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-5/h230"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-5/h230"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-5/h230"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-5/h230"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-5/h230"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-5/h230"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KGVL-5/h230"
-          },
-          "AHN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW,AHN": {
             "cleared_altitude": 3000,
             "waypoints": "KGVL-5/h230"
           }
@@ -9540,35 +8192,7 @@
       },
       "departure_routes": {
         "33": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-15/h330"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-15/h330"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-15/h330"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-15/h330"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-15/h330"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-15/h330"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-15/h330"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KWRB-15/h330"
           },
@@ -9578,39 +8202,7 @@
           }
         },
         "15": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-33/h150"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-33/h150"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-33/h150"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-33/h150"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-33/h150"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-33/h150"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-33/h150"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KWRB-33/h150"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KWRB-33/h150"
           }
@@ -9939,77 +8531,13 @@
       },
       "departure_routes": {
         "5": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-23/h050"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-23/h050"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-23/h050"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-23/h050"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-23/h050"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-23/h050"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-23/h050"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-23/h050"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KMCN-23/h050"
           }
         },
         "14": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-32/h140"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-32/h140"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-32/h140"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-32/h140"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-32/h140"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-32/h140"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-32/h140"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMCN-32/h140"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRE,VFRN,VFRS,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KMCN-32/h140"
           }
@@ -10335,77 +8863,13 @@
       },
       "departure_routes": {
         "6": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-24/h060"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-24/h060"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-24/h060"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-24/h060"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-24/h060"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-24/h060"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-24/h060"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-24/h060"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "KCSG-24/h060"
           }
         },
         "24": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-6/h240"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-6/h240"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-6/h240"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-6/h240"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-6/h240"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-6/h240"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-6/h240"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCSG-6/h240"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRE,VFRW,VFRS,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "KCSG-6/h240"
           }
@@ -10724,77 +9188,13 @@
       },
       "departure_routes": {
         "33": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-15/h330"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-15/h330"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-15/h330"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-15/h330"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-15/h330"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-15/h330"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-15/h330"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-15/h330"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRW,VFRE,VFRS,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "KLSF-15/h330"
           }
         },
         "15": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-33/h150"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-33/h150"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-33/h150"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-33/h150"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-33/h150"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-33/h150"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-33/h150"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLSF-33/h150"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "KLSF-33/h150"
           }
@@ -11113,77 +9513,13 @@
       },
       "departure_routes": {
         "36": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-18/h360"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-18/h360"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-18/h360"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-18/h360"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-18/h360"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-18/h360"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-18/h360"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-18/h360"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRE,VFRW,VFRS,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "KAUO-18/h360"
           }
         },
         "18": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-36/h180"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-36/h180"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-36/h180"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-36/h180"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-36/h180"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-36/h180"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-36/h180"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KAUO-36/h180"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "KAUO-36/h180"
           }
@@ -11493,69 +9829,13 @@
       },
       "departure_routes": {
         "35": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-17/h350"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-17/h350"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-17/h350"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-17/h350"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-17/h350"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-17/h350"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-17/h350"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRE,VFRS,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KJCA-17/h350"
           }
         },
         "17": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-35/h170"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-35/h170"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-35/h170"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-35/h170"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-35/h170"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-35/h170"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KJCA-35/h170"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KJCA-35/h170"
           }
@@ -11785,69 +10065,13 @@
       },
       "departure_routes": {
         "10": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-28/h100"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-28/h100"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-28/h100"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-28/h100"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-28/h100"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-28/h100"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-28/h100"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KMLJ-28/h100"
           }
         },
         "28": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-10/h280"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-10/h280"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-10/h280"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-10/h280"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-10/h280"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-10/h280"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMLJ-10/h280"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KMLJ-10/h280"
           }
@@ -12167,69 +10391,13 @@
       },
       "departure_routes": {
         "30": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-12/h300"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-12/h300"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-12/h300"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-12/h300"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-12/h300"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-12/h300"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-12/h300"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KOPN-12/h300"
           }
         },
         "12": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-30/h120"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-30/h120"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-30/h120"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-30/h120"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-30/h120"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-30/h120"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KOPN-30/h120"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KOPN-30/h120"
           }
@@ -12459,69 +10627,13 @@
       },
       "departure_routes": {
         "23": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-5/h110"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-5/h110"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-5/h110"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-5/h110"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-5/h110"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-5/h110"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-5/h110"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KACJ-5/h110"
           }
         },
         "5": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-23/h050"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-23/h050"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-23/h050"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-23/h050"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-23/h050"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-23/h050"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KACJ-23/h050"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KACJ-23/h050"
           }
@@ -12744,69 +10856,13 @@
       },
       "departure_routes": {
         "9": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-27/h090"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-27/h090"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-27/h090"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-27/h090"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-27/h090"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-27/h090"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-27/h090"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KPIM-27/h090"
           }
         },
         "27": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-9/h270"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-9/h270"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-9/h270"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-9/h270"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-9/h270"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-9/h270"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPIM-9/h270"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KPIM-9/h270"
           }
@@ -13042,77 +11098,13 @@
       },
       "departure_routes": {
         "31": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-13/h310"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-13/h310"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-13/h310"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-13/h310"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-13/h310"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-13/h310"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-13/h310"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-13/h310"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "KLGC-13/h310"
           }
         },
         "13": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-31/h130"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-31/h130"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-31/h130"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-31/h130"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-31/h130"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-31/h130"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-31/h130"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KLGC-31/h130"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "KLGC-31/h130"
           }
@@ -13422,69 +11414,13 @@
       },
       "departure_routes": {
         "25": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-7/h250"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-7/h250"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-7/h250"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-7/h250"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-7/h250"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-7/h250"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-7/h250"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KCPP-7/h250"
           }
         },
         "7": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-25/h070"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-25/h070"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-25/h070"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-25/h070"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-25/h070"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-25/h070"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCPP-25/h070"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KCPP-25/h070"
           }
@@ -13710,35 +11646,7 @@
       },
       "departure_routes": {
         "1": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-19/h010"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-19/h010"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-19/h010"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-19/h010"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-19/h010"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-19/h010"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-19/h010"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "6A1-19/h010"
           },
@@ -13748,39 +11656,7 @@
           }
         },
         "19": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-1/h190"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-1/h190"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-1/h190"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-1/h190"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-1/h190"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-1/h190"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-1/h190"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A1-1/h190"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "6A1-1/h190"
           }
@@ -14102,69 +11978,13 @@
       },
       "departure_routes": {
         "3": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-21/h030"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-21/h030"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-21/h030"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-21/h030"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-21/h030"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-21/h030"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-21/h030"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "D73-21/h030"
           }
         },
         "21": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-3/h210"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-3/h210"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-3/h210"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-3/h210"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-3/h210"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-3/h210"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "D73-3/h210"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "D73-3/h210"
           }
@@ -14394,77 +12214,13 @@
       },
       "departure_routes": {
         "13": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-31/h130"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-31/h130"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-31/h130"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-31/h130"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-31/h130"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-31/h130"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-31/h130"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-31/h130"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "06A-31/h130"
           }
         },
         "31": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-13/h310"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-13/h310"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-13/h310"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-13/h310"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-13/h310"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-13/h310"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-13/h310"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "06A-13/h310"
-          },
-          "CSG": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,CSG": {
             "cleared_altitude": 3000,
             "waypoints": "06A-13/h310"
           }
@@ -14774,69 +12530,13 @@
       },
       "departure_routes": {
         "36": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-18/h360"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-18/h360"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-18/h360"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-18/h360"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-18/h360"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-18/h360"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-18/h360"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "53A-18/h360"
           }
         },
         "18": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-36/h180"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-36/h180"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-36/h180"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-36/h180"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-36/h180"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-36/h180"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "53A-36/h180"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "53A-36/h180"
           }
@@ -15069,77 +12769,13 @@
       },
       "departure_routes": {
         "36": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-18/h360"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-18/h360"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-18/h360"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-18/h360"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-18/h360"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-18/h360"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-18/h360"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-18/h360"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KPXE-18/h360"
           }
         },
         "18": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-36/h180"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-36/h180"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-36/h180"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-36/h180"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-36/h180"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-36/h180"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-36/h180"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KPXE-36/h180"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KPXE-36/h180"
           }
@@ -15459,77 +13095,13 @@
       },
       "departure_routes": {
         "10": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-28/h100"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-28/h100"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-28/h100"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-28/h100"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-28/h100"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-28/h100"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-28/h100"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-28/h100"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KMAC-28/h100"
           }
         },
         "28": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-10/h280"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-10/h280"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-10/h280"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-10/h280"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-10/h280"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-10/h280"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-10/h280"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KMAC-10/h280"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KMAC-10/h280"
           }
@@ -15852,77 +13424,13 @@
       },
       "departure_routes": {
         "2": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-20/h020"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-20/h020"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-20/h020"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-20/h020"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-20/h020"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-20/h020"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-20/h020"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-20/h020"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KDBN-20/h020"
           }
         },
         "20": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-2/h200"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-2/h200"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-2/h200"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-2/h200"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-2/h200"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-2/h200"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-2/h200"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KDBN-2/h200"
-          },
-          "MCN": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW,MCN": {
             "cleared_altitude": 3000,
             "waypoints": "KDBN-2/h200"
           }
@@ -16242,93 +13750,21 @@
       },
       "departure_routes": {
         "15": {
-          "UGAAA": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KCCO-33/h150"
           },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCCO-33/h150"
-          },
-          "MCKLS": {
+          "HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KCCO-33/h150"
           }
         },
         "33": {
-          "UGAAA": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KCCO-15/h330"
           },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "VFRW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "HESPI": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "BBAIT": {
-            "cleared_altitude": 10000,
-            "waypoints": "KCCO-15/h330"
-          },
-          "MCKLS": {
+          "HESPI,BBAIT,MCKLS": {
             "cleared_altitude": 10000,
             "waypoints": "KCCO-15/h330"
           }
@@ -16678,69 +14114,13 @@
       },
       "departure_routes": {
         "14": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-32/h140"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-32/h140"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-32/h140"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-32/h140"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-32/h140"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-32/h140"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-32/h140"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "6A2-32/h140"
           }
         },
         "32": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-14/h320"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-14/h320"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-14/h320"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-14/h320"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-14/h320"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-14/h320"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "6A2-14/h320"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "6A2-14/h320"
           }
@@ -16970,69 +14350,13 @@
       },
       "departure_routes": {
         "36": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-18/h360"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-18/h360"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-18/h360"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-18/h360"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-18/h360"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-18/h360"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-18/h360"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KEUF-18/h360"
           }
         },
         "18": {
-          "UGAAA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-36/h310"
-          },
-          "TIROE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-36/h310"
-          },
-          "SPA": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-36/h310"
-          },
-          "VUZ": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-36/h310"
-          },
-          "VFRN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-36/h310"
-          },
-          "VFRS": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-36/h310"
-          },
-          "VFRE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KEUF-36/h310"
-          },
-          "VFRW": {
+          "UGAAA,TIROE,SPA,VUZ,VFRN,VFRS,VFRE,VFRW": {
             "cleared_altitude": 3000,
             "waypoints": "KEUF-36/h310"
           }

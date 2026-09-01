@@ -33,61 +33,13 @@
       },
       "departure_routes": {
         "24": {
-          "DAYVS": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "JOEYE": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "KELCC": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "RHETT": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "MRICA": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "CHEHA": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "GUMMP": {
+          "DAYVS,JOEYE,KELCC,RHETT,MRICA,CHEHA,GUMMP": {
             "cleared_altitude": 4000,
             "sid": "BHM8"
           }
         },
         "6": {
-          "DAYVS": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "JOEYE": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "KELCC": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "RHETT": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "MRICA": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "CHEHA": {
-            "cleared_altitude": 4000,
-            "sid": "BHM8"
-          },
-          "GUMMP": {
+          "DAYVS,JOEYE,KELCC,RHETT,MRICA,CHEHA,GUMMP": {
             "cleared_altitude": 4000,
             "sid": "BHM8"
           }

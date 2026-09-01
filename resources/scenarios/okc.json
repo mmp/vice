@@ -48,441 +48,185 @@
       },
       "departure_routes": {
         "17L": {
-          "PHARA": {
+          "PHARA,FUNNL": {
             "cleared_altitude": 5000,
             "sid": "FUNNL3"
           },
-          "FUNNL": {
-            "cleared_altitude": 5000,
-            "sid": "FUNNL3"
-          },
-          "WICKS": {
+          "WICKS,KRMSN": {
             "cleared_altitude": 5000,
             "sid": "KRMSN4"
           },
-          "KRMSN": {
-            "cleared_altitude": 5000,
-            "sid": "KRMSN4"
-          },
-          "OLFRD,MOOSE": {
+          "OLFRD,MOOSE,MUDDE": {
             "cleared_altitude": 5000,
             "sid": "MUDDE3"
           },
-          "MUDDE": {
-            "cleared_altitude": 5000,
-            "sid": "MUDDE3"
-          },
-          "YOUSE": {
+          "YOUSE,GRUVN,OLGUY": {
             "cleared_altitude": 5000,
             "sid": "OLGUY3"
           },
-          "GRUVN": {
-            "cleared_altitude": 5000,
-            "sid": "OLGUY3"
-          },
-          "OLGUY": {
-            "cleared_altitude": 5000,
-            "sid": "OLGUY3"
-          },
-          "HOLLE": {
+          "HOLLE,RDHWK": {
             "cleared_altitude": 5000,
             "sid": "RDHWK3"
           },
-          "RDHWK": {
-            "cleared_altitude": 5000,
-            "sid": "RDHWK3"
-          },
-          "KAYOS": {
+          "KAYOS,SSYKO": {
             "cleared_altitude": 5000,
             "sid": "SSYKO3"
           },
-          "SSYKO": {
-            "cleared_altitude": 5000,
-            "sid": "SSYKO3"
-          },
-          "ZEEWE": {
+          "ZEEWE,BFFFY,STPHN": {
             "cleared_altitude": 5000,
             "sid": "STPHN3"
           },
-          "BFFFY": {
-            "cleared_altitude": 5000,
-            "sid": "STPHN3"
-          },
-          "STPHN": {
-            "cleared_altitude": 5000,
-            "sid": "STPHN3"
-          },
-          "ATOKA": {
+          "ATOKA,TEBRD": {
             "cleared_altitude": 5000,
             "sid": "TEBRD3"
           },
-          "TEBRD": {
-            "cleared_altitude": 5000,
-            "sid": "TEBRD3"
-          },
-          "FLECH": {
+          "FLECH,GGOLD,THRPE": {
             "cleared_altitude": 5000,
             "sid": "THRPE3"
           },
-          "GGOLD": {
-            "cleared_altitude": 5000,
-            "sid": "THRPE3"
-          },
-          "THRPE": {
-            "cleared_altitude": 5000,
-            "sid": "THRPE3"
-          },
-          "COORT,DRLER,GTYER": {
+          "COORT,DRLER,GTYER,TRUPR": {
             "cleared_altitude": 5000,
             "sid": "TRUPR3"
           },
-          "TRUPR": {
-            "cleared_altitude": 5000,
-            "sid": "TRUPR3"
-          },
-          "BELMN": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "HNGER": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "LARKO": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "WENDY": {
+          "BELMN,HNGER,LARKO,WENDY": {
             "cleared_altitude": 5000,
             "sid": "WENDY3"
           }
         },
         "17R": {
-          "PHARA": {
+          "PHARA,FUNNL": {
             "cleared_altitude": 5000,
             "sid": "FUNNL3"
           },
-          "FUNNL": {
-            "cleared_altitude": 5000,
-            "sid": "FUNNL3"
-          },
-          "WICKS": {
+          "WICKS,KRMSN": {
             "cleared_altitude": 5000,
             "sid": "KRMSN4"
           },
-          "KRMSN": {
-            "cleared_altitude": 5000,
-            "sid": "KRMSN4"
-          },
-          "OLFRD,MOOSE": {
+          "OLFRD,MOOSE,MUDDE": {
             "cleared_altitude": 5000,
             "sid": "MUDDE3"
           },
-          "MUDDE": {
-            "cleared_altitude": 5000,
-            "sid": "MUDDE3"
-          },
-          "YOUSE": {
+          "YOUSE,GRUVN,OLGUY": {
             "cleared_altitude": 5000,
             "sid": "OLGUY3"
           },
-          "GRUVN": {
-            "cleared_altitude": 5000,
-            "sid": "OLGUY3"
-          },
-          "OLGUY": {
-            "cleared_altitude": 5000,
-            "sid": "OLGUY3"
-          },
-          "HOLLE": {
+          "HOLLE,RDHWK": {
             "cleared_altitude": 5000,
             "sid": "RDHWK3"
           },
-          "RDHWK": {
-            "cleared_altitude": 5000,
-            "sid": "RDHWK3"
-          },
-          "KAYOS": {
+          "KAYOS,SSYKO": {
             "cleared_altitude": 5000,
             "sid": "SSYKO3"
           },
-          "SSYKO": {
-            "cleared_altitude": 5000,
-            "sid": "SSYKO3"
-          },
-          "ZEEWE": {
+          "ZEEWE,BFFFY,STPHN": {
             "cleared_altitude": 5000,
             "sid": "STPHN3"
           },
-          "BFFFY": {
-            "cleared_altitude": 5000,
-            "sid": "STPHN3"
-          },
-          "STPHN": {
-            "cleared_altitude": 5000,
-            "sid": "STPHN3"
-          },
-          "ATOKA": {
+          "ATOKA,TEBRD": {
             "cleared_altitude": 5000,
             "sid": "TEBRD3"
           },
-          "TEBRD": {
-            "cleared_altitude": 5000,
-            "sid": "TEBRD3"
-          },
-          "FLECH": {
+          "FLECH,GGOLD,THRPE": {
             "cleared_altitude": 5000,
             "sid": "THRPE3"
           },
-          "GGOLD": {
-            "cleared_altitude": 5000,
-            "sid": "THRPE3"
-          },
-          "THRPE": {
-            "cleared_altitude": 5000,
-            "sid": "THRPE3"
-          },
-          "COORT,DRLER,GTYER": {
+          "COORT,DRLER,GTYER,TRUPR": {
             "cleared_altitude": 5000,
             "sid": "TRUPR3"
           },
-          "TRUPR": {
-            "cleared_altitude": 5000,
-            "sid": "TRUPR3"
-          },
-          "BELMN": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "HNGER": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "LARKO": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "WENDY": {
+          "BELMN,HNGER,LARKO,WENDY": {
             "cleared_altitude": 5000,
             "sid": "WENDY3"
           }
         },
         "35L": {
-          "PHARA": {
+          "PHARA,FUNNL": {
             "cleared_altitude": 5000,
             "sid": "FUNNL3"
           },
-          "FUNNL": {
-            "cleared_altitude": 5000,
-            "sid": "FUNNL3"
-          },
-          "WICKS": {
+          "WICKS,KRMSN": {
             "cleared_altitude": 5000,
             "sid": "KRMSN4"
           },
-          "KRMSN": {
-            "cleared_altitude": 5000,
-            "sid": "KRMSN4"
-          },
-          "OLFRD,MOOSE": {
+          "OLFRD,MOOSE,MUDDE": {
             "cleared_altitude": 5000,
             "sid": "MUDDE3"
           },
-          "MUDDE": {
-            "cleared_altitude": 5000,
-            "sid": "MUDDE3"
-          },
-          "YOUSE": {
+          "YOUSE,GRUVN,OLGUY": {
             "cleared_altitude": 5000,
             "sid": "OLGUY3"
           },
-          "GRUVN": {
-            "cleared_altitude": 5000,
-            "sid": "OLGUY3"
-          },
-          "OLGUY": {
-            "cleared_altitude": 5000,
-            "sid": "OLGUY3"
-          },
-          "HOLLE": {
+          "HOLLE,RDHWK": {
             "cleared_altitude": 5000,
             "sid": "RDHWK3"
           },
-          "RDHWK": {
-            "cleared_altitude": 5000,
-            "sid": "RDHWK3"
-          },
-          "KAYOS": {
+          "KAYOS,SSYKO": {
             "cleared_altitude": 5000,
             "sid": "SSYKO3"
           },
-          "SSYKO": {
-            "cleared_altitude": 5000,
-            "sid": "SSYKO3"
-          },
-          "ZEEWE": {
+          "ZEEWE,BFFFY,STPHN": {
             "cleared_altitude": 5000,
             "sid": "STPHN3"
           },
-          "BFFFY": {
-            "cleared_altitude": 5000,
-            "sid": "STPHN3"
-          },
-          "STPHN": {
-            "cleared_altitude": 5000,
-            "sid": "STPHN3"
-          },
-          "ATOKA": {
+          "ATOKA,TEBRD": {
             "cleared_altitude": 5000,
             "sid": "TEBRD3"
           },
-          "TEBRD": {
-            "cleared_altitude": 5000,
-            "sid": "TEBRD3"
-          },
-          "FLECH": {
+          "FLECH,GGOLD,THRPE": {
             "cleared_altitude": 5000,
             "sid": "THRPE3"
           },
-          "GGOLD": {
-            "cleared_altitude": 5000,
-            "sid": "THRPE3"
-          },
-          "THRPE": {
-            "cleared_altitude": 5000,
-            "sid": "THRPE3"
-          },
-          "COORT,DRLER,GTYER": {
+          "COORT,DRLER,GTYER,TRUPR": {
             "cleared_altitude": 5000,
             "sid": "TRUPR3"
           },
-          "TRUPR": {
-            "cleared_altitude": 5000,
-            "sid": "TRUPR3"
-          },
-          "BELMN": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "HNGER": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "LARKO": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "WENDY": {
+          "BELMN,HNGER,LARKO,WENDY": {
             "cleared_altitude": 5000,
             "sid": "WENDY3"
           }
         },
         "35R": {
-          "PHARA": {
+          "PHARA,FUNNL": {
             "cleared_altitude": 5000,
             "sid": "FUNNL3"
           },
-          "FUNNL": {
-            "cleared_altitude": 5000,
-            "sid": "FUNNL3"
-          },
-          "WICKS": {
+          "WICKS,KRMSN": {
             "cleared_altitude": 5000,
             "sid": "KRMSN4"
           },
-          "KRMSN": {
-            "cleared_altitude": 5000,
-            "sid": "KRMSN4"
-          },
-          "OLFRD,MOOSE": {
+          "OLFRD,MOOSE,MUDDE": {
             "cleared_altitude": 5000,
             "sid": "MUDDE3"
           },
-          "MUDDE": {
-            "cleared_altitude": 5000,
-            "sid": "MUDDE3"
-          },
-          "YOUSE": {
+          "YOUSE,GRUVN,OLGUY": {
             "cleared_altitude": 5000,
             "sid": "OLGUY3"
           },
-          "GRUVN": {
-            "cleared_altitude": 5000,
-            "sid": "OLGUY3"
-          },
-          "OLGUY": {
-            "cleared_altitude": 5000,
-            "sid": "OLGUY3"
-          },
-          "HOLLE": {
+          "HOLLE,RDHWK": {
             "cleared_altitude": 5000,
             "sid": "RDHWK3"
           },
-          "RDHWK": {
-            "cleared_altitude": 5000,
-            "sid": "RDHWK3"
-          },
-          "KAYOS": {
+          "KAYOS,SSYKO": {
             "cleared_altitude": 5000,
             "sid": "SSYKO3"
           },
-          "SSYKO": {
-            "cleared_altitude": 5000,
-            "sid": "SSYKO3"
-          },
-          "ZEEWE": {
+          "ZEEWE,BFFFY,STPHN": {
             "cleared_altitude": 5000,
             "sid": "STPHN3"
           },
-          "BFFFY": {
-            "cleared_altitude": 5000,
-            "sid": "STPHN3"
-          },
-          "STPHN": {
-            "cleared_altitude": 5000,
-            "sid": "STPHN3"
-          },
-          "ATOKA": {
+          "ATOKA,TEBRD": {
             "cleared_altitude": 5000,
             "sid": "TEBRD3"
           },
-          "TEBRD": {
-            "cleared_altitude": 5000,
-            "sid": "TEBRD3"
-          },
-          "FLECH": {
+          "FLECH,GGOLD,THRPE": {
             "cleared_altitude": 5000,
             "sid": "THRPE3"
           },
-          "GGOLD": {
-            "cleared_altitude": 5000,
-            "sid": "THRPE3"
-          },
-          "THRPE": {
-            "cleared_altitude": 5000,
-            "sid": "THRPE3"
-          },
-          "COORT,DRLER,GTYER": {
+          "COORT,DRLER,GTYER,TRUPR": {
             "cleared_altitude": 5000,
             "sid": "TRUPR3"
           },
-          "TRUPR": {
-            "cleared_altitude": 5000,
-            "sid": "TRUPR3"
-          },
-          "BELMN": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "HNGER": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "LARKO": {
-            "cleared_altitude": 5000,
-            "sid": "WENDY3"
-          },
-          "WENDY": {
+          "BELMN,HNGER,LARKO,WENDY": {
             "cleared_altitude": 5000,
             "sid": "WENDY3"
           }

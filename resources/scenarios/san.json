@@ -427,49 +427,13 @@
             "cleared_altitude": 3000,
             "waypoints": "KMYF-10L/h280"
           },
-          "SLI": {
+          "SLI,LAX,PADRZ.C": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"]
           },
-          "LAX": {
-            "cleared_altitude": 3000,
-            "sid": "CWARD2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "PADRZ.C": {
-            "cleared_altitude": 3000,
-            "sid": "CWARD2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "PADRZ.P": {
-            "cleared_altitude": 3000,
-            "sid": "PADRZ2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "EHF": {
-            "cleared_altitude": 3000,
-            "sid": "PADRZ2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "OROSZ": {
-            "cleared_altitude": 3000,
-            "sid": "PADRZ2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "IKAYE": {
-            "cleared_altitude": 3000,
-            "sid": "PADRZ2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "CHKNN": {
+          "PADRZ.P,EHF,OROSZ,IKAYE,CHKNN": {
             "cleared_altitude": 3000,
             "sid": "PADRZ2",
             "is_rnav": true,
@@ -1339,13 +1303,7 @@
       },
       "departure_routes": {
         "27": {
-          "LAX": {
-            "cleared_altitude": 10000,
-            "sid": "CWARD2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "SLI": {
+          "LAX,SLI": {
             "cleared_altitude": 10000,
             "sid": "CWARD2",
             "is_rnav": true,
@@ -1357,25 +1315,13 @@
             "is_rnav": true,
             "aircraft": ["jet"]
           },
-          "IKAYE": {
+          "IKAYE,CHKNN,EHF,OROSZ": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"]
           },
-          "CHKNN,EHF,OROSZ": {
-            "cleared_altitude": 15000,
-            "sid": "PADRZ2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "MTBAL": {
-            "cleared_altitude": 23000,
-            "sid": "ZZOOO4",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "HOGGZ,TGOLD,GBN": {
+          "MTBAL,HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "is_rnav": true,
@@ -1480,14 +1426,7 @@
           }
         },
         "27.O": {
-          "MTBAL": {
-            "cleared_altitude": 23000,
-            "sid": "ZZOOO4",
-            "is_rnav": true,
-            "hold_for_release": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "HOGGZ,TGOLD,GBN": {
+          "MTBAL,HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "is_rnav": true,
@@ -1506,7 +1445,7 @@
             "sid": "BRDR7",
             "hold_for_release": true
           },
-          "SLI.O": {
+          "SLI.O,IKAYE.O": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2",
             "is_rnav": true,
@@ -1515,12 +1454,6 @@
           "MALIT.O,SXC.O": {
             "cleared_altitude": 8000,
             "sid": "MMOTO2",
-            "is_rnav": true,
-            "hold_for_release": true
-          },
-          "IKAYE.O": {
-            "cleared_altitude": 15000,
-            "sid": "ECHHO2",
             "is_rnav": true,
             "hold_for_release": true
           },
@@ -1536,12 +1469,7 @@
           }
         },
         "9": {
-          "SLI.E": {
-            "cleared_altitude": 15000,
-            "sid": "ECHHO2",
-            "is_rnav": true
-          },
-          "IKAYE.E": {
+          "SLI.E,IKAYE.E": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2",
             "is_rnav": true
@@ -1551,12 +1479,7 @@
             "sid": "MMOTO2",
             "is_rnav": true
           },
-          "MTBAL.E": {
-            "cleared_altitude": 19000,
-            "sid": "SAYOW2",
-            "is_rnav": true
-          },
-          "IPL.E": {
+          "MTBAL.E,IPL.E": {
             "cleared_altitude": 19000,
             "sid": "SAYOW2",
             "is_rnav": true

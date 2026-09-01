@@ -360,47 +360,22 @@
       },
       "departure_routes": {
         "14": {
-          "BOSOX.BDL.P.14.22/15": {
+          "BOSOX.BDL.P.14.22/15,BOSOX.P.14.22/15": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "N042.20.44.586,W071.00.15.298/h260"
           },
-          "BOSOX.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h260"
-          },
-          "GLYDE.P.14.22/15": {
+          "GLYDE.P.14.22/15,HYLND.P.14.22/15,LBSTA.P.14.22/15,MANCH.P.14.22/15,PEASE.P.14.22/15": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "N042.20.44.586,W071.00.15.298/h270"
           },
-          "HYLND.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h270"
-          },
-          "LBSTA.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h270"
-          },
-          "MANCH.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h270"
-          },
-          "PEASE.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h270"
-          },
-          "LFV.ACK.P.14.22/15": {
+          "LFV.ACK.P.14.22/15,DUNKK.HYA.P.14.22/15,DUNKK.MVY.P.14.22/15,PVC.P.14.22/15": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "N042.20.44.586,W071.00.15.298/h170"
           },
-          "BURDY.P.14.22/15": {
+          "BURDY.P.14.22/15,SSOXS.P.14.22/15": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "N042.20.44.586,W071.00.15.298/h180"
@@ -409,26 +384,6 @@
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h240"
-          },
-          "DUNKK.HYA.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h170"
-          },
-          "DUNKK.MVY.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h170"
-          },
-          "PVC.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h170"
-          },
-          "SSOXS.P.14.22/15": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "N042.20.44.586,W071.00.15.298/h180"
           }
         },
         "4L": {
@@ -447,57 +402,12 @@
             "sid": "LOGAN4",
             "waypoints": "KBOS-22R/h295"
           },
-          "HYLND.P.4L.4/9": {
+          "HYLND.P.4L.4/9,MANCH.P.4L.4/9": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-22R/h350"
           },
-          "LBSTA.P.4L.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h010"
-          },
-          "MANCH.P.4L.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h350"
-          },
-          "PEASE.P.4L.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h010"
-          },
-          "BOSOX.BDL.P.4L.4R+15C": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h010"
-          },
-          "BOSOX.P.4L.4R+15C": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h010"
-          },
-          "GLYDE.P.4L.4R+15C": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h010"
-          },
-          "HYLND.P.4L.4R+15C": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h010"
-          },
-          "LBSTA.P.4L.4R+15C": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h010"
-          },
-          "MANCH.P.4L.4R+15C": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22R/h010"
-          },
-          "PEASE.P.4L.4R+15C": {
+          "LBSTA.P.4L.4/9,PEASE.P.4L.4/9,BOSOX.BDL.P.4L.4R+15C,BOSOX.P.4L.4R+15C,GLYDE.P.4L.4R+15C,HYLND.P.4L.4R+15C,LBSTA.P.4L.4R+15C,MANCH.P.4L.4R+15C,PEASE.P.4L.4R+15C": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-22R/h010"
@@ -519,397 +429,99 @@
             "sid": "LOGAN4",
             "waypoints": "KBOS-22L/h295"
           },
-          "HYLND.P.4R.4L/9+4R": {
+          "HYLND.P.4R.4L/9+4R,MANCH.P.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-22L/h350"
           },
-          "LBSTA.P.4R.4L/9+4R": {
+          "LBSTA.P.4R.4L/9+4R,PEASE.P.4R.4L/9+4R,HYLND.P.4R.27+32/33,LBSTA.P.4R.27+32/33,MANCH.P.4R.27+32/33,PEASE.P.4R.27+32/33,HYLND.P.4R.33+32/27,MANCH.P.4R.33+32/27": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-22L/h010"
           },
-          "MANCH.P.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h350"
-          },
-          "PEASE.P.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h010"
-          },
-          "HYLND.P.4R.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h010"
-          },
-          "LBSTA.P.4R.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h010"
-          },
-          "MANCH.P.4R.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h010"
-          },
-          "PEASE.P.4R.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h010"
-          },
-          "HYLND.P.4R.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h010"
-          },
-          "LBSTA.P.4R.33+32/27": {
+          "LBSTA.P.4R.33+32/27,PEASE.P.4R.33+32/27": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-22L/h040"
           },
-          "MANCH.P.4R.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h010"
-          },
-          "PEASE.P.4R.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h040"
-          },
-          "BLZZR.J.4R.4/9.LOGAN": {
+          "BLZZR.J.4R.4/9.LOGAN,BRUWN.J.4R.4/9.LOGAN,CELTK.J.4R.4/9.LOGAN,HYLND.J.4R.4/9.LOGAN,LBSTA.J.4R.4/9.LOGAN,PATSS.J.4R.4/9.LOGAN,BLZZR.J.4R.4L/9+4R.LOGAN,BRUWN.J.4R.4L/9+4R.LOGAN,CELTK.J.4R.4L/9+4R.LOGAN,HYLND.J.4R.4L/9+4R.LOGAN,LBSTA.J.4R.4L/9+4R.LOGAN,PATSS.J.4R.4L/9+4R.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
           },
-          "BLZZR.J.4R.4/9": {
+          "BLZZR.J.4R.4/9,BLZZR.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "BLZZR6"
           },
-          "BRUWN.J.4R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "BRUWN.J.4R.4/9": {
+          "BRUWN.J.4R.4/9,BRUWN.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "BRUWN7"
           },
-          "CELTK.J.4R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "CELTK.J.4R.4/9": {
+          "CELTK.J.4R.4/9,CELTK.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "CELTK7"
           },
-          "HYLND.J.4R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "HYLND.J.4R.4/9": {
+          "HYLND.J.4R.4/9,HYLND.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "HYLND7"
           },
-          "LBSTA.J.4R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "LBSTA.J.4R.4/9": {
+          "LBSTA.J.4R.4/9,SSOXS.J.4R.4/9,LBSTA.J.4R.4L/9+4R,SSOXS.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "SSOXS7"
           },
-          "PATSS.J.4R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "PATSS.J.4R.4/9": {
+          "PATSS.J.4R.4/9,PATSS.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "PATSS7"
           },
-          "REVSS.J.4R.4/9": {
+          "REVSS.J.4R.4/9,REVSS.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "REVSS6"
           },
-          "SSOXS.J.4R.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "SSOXS7"
-          },
-          "BLZZR.J.4R.4L/9+4R.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "BLZZR.J.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "BLZZR6"
-          },
-          "BRUWN.J.4R.4L/9+4R.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "BRUWN.J.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "BRUWN7"
-          },
-          "CELTK.J.4R.4L/9+4R.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "CELTK.J.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "CELTK7"
-          },
-          "HYLND.J.4R.4L/9+4R.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "HYLND.J.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "HYLND7"
-          },
-          "LBSTA.J.4R.4L/9+4R.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "LBSTA.J.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "SSOXS7"
-          },
-          "PATSS.J.4R.4L/9+4R.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h035/@BOS-D4.0+/r090"
-          },
-          "PATSS.J.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "PATSS7"
-          },
-          "REVSS.J.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "REVSS6"
-          },
-          "SSOXS.J.4R.4L/9+4R": {
-            "cleared_altitude": 3000,
-            "sid": "SSOXS7"
-          },
-          "LFV.ACK.P.4R.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h060"
-          },
-          "DUNKK.HYA.P.4R.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-22L/h060"
-          },
-          "PVC.P.4R.33+32/27": {
+          "LFV.ACK.P.4R.33+32/27,DUNKK.HYA.P.4R.33+32/27,PVC.P.4R.33+32/27": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-22L/h060"
           }
         },
         "9": {
-          "LFV.ACK.J.9.4/9": {
+          "LFV.ACK.J.9.4/9,BOSOX.BDL.J.9.4/9,BOSOX.J.9.4/9,BURDY.J.9.4/9,GLYDE.J.9.4/9,DUNKK.HYA.J.9.4/9,MANCH.J.9.4/9,DUNKK.MVY.J.9.4/9,PEASE.J.9.4/9,PVC.J.9.4/9,BURDY.PVD.J.9.4/9,LFV.ACK.J.9.4L/9+4R,BOSOX.BDL.J.9.4L/9+4R,BOSOX.J.9.4L/9+4R,BURDY.J.9.4L/9+4R,GLYDE.J.9.4L/9+4R,DUNKK.HYA.J.9.4L/9+4R,MANCH.J.9.4L/9+4R,DUNKK.MVY.J.9.4L/9+4R,PEASE.J.9.4L/9+4R,PVC.J.9.4L/9+4R,BURDY.PVD.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-27/h092"
           },
-          "BOSOX.BDL.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "BLZZR.J.9.4/9": {
+          "BLZZR.J.9.4/9,BLZZR.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "BLZZR6"
           },
-          "BOSOX.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "BRUWN.J.9.4/9": {
+          "BRUWN.J.9.4/9,BRUWN.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "BRUWN7"
           },
-          "BURDY.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "CELTK.J.9.4/9": {
+          "CELTK.J.9.4/9,CELTK.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "CELTK7"
           },
-          "GLYDE.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "DUNKK.HYA.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "HYLND.J.9.4/9": {
+          "HYLND.J.9.4/9,HYLND.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "HYLND7"
           },
-          "LBSTA.J.9.4/9": {
+          "LBSTA.J.9.4/9,LBSTA.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "LBSTA8"
           },
-          "MANCH.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "DUNKK.MVY.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "PATSS.J.9.4/9": {
+          "PATSS.J.9.4/9,PATSS.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "PATSS7"
           },
-          "PEASE.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "PVC.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "BURDY.PVD.J.9.4/9": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "REVSS.J.9.4/9": {
+          "REVSS.J.9.4/9,REVSS.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "REVSS6"
           },
-          "SSOXS.J.9.4/9": {
+          "SSOXS.J.9.4/9,SSOXS.J.9.4L/9+4R": {
             "cleared_altitude": 5000,
             "sid": "SSOXS7"
           },
-          "LFV.ACK.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "BOSOX.BDL.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "BLZZR.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "BLZZR6"
-          },
-          "BOSOX.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "BRUWN.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "BRUWN7"
-          },
-          "BURDY.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "CELTK.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "CELTK7"
-          },
-          "GLYDE.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "DUNKK.HYA.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "HYLND.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "HYLND7"
-          },
-          "LBSTA.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LBSTA8"
-          },
-          "MANCH.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "DUNKK.MVY.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "PATSS.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "PATSS7"
-          },
-          "PEASE.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "PVC.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "BURDY.PVD.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h092"
-          },
-          "REVSS.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "REVSS6"
-          },
-          "SSOXS.J.9.4L/9+4R": {
-            "cleared_altitude": 5000,
-            "sid": "SSOXS7"
-          },
-          "LFV.ACK.P.9.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h140"
-          },
-          "BURDY.P.9.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h140"
-          },
-          "DUNKK.HYA.P.9.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h140"
-          },
-          "DUNKK.MVY.P.9.4/9": {
+          "LFV.ACK.P.9.4/9,BURDY.P.9.4/9,DUNKK.HYA.P.9.4/9,DUNKK.MVY.P.9.4/9,BURDY.PVD.P.9.4/9,SSOXS.P.9.4/9": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-27/h140"
@@ -919,147 +531,62 @@
             "sid": "LOGAN4",
             "waypoints": "KBOS-27/h120"
           },
-          "BURDY.PVD.P.9.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h140"
-          },
-          "SSOXS.P.9.4/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h140"
-          },
-          "BOSOX.BDL.P.9.15/9": {
+          "BOSOX.BDL.P.9.15/9,BOSOX.P.9.15/9,GLYDE.P.9.15/9": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-27/h250"
           },
-          "BOSOX.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h250"
-          },
-          "GLYDE.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h250"
-          },
-          "HYLND.P.9.15/9": {
+          "HYLND.P.9.15/9,LBSTA.P.9.15/9,MANCH.P.9.15/9,PEASE.P.9.15/9": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-27/h060"
           },
-          "LBSTA.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h060"
-          },
-          "MANCH.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h060"
-          },
-          "PEASE.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h060"
-          },
-          "LFV.ACK.P.9.15/9": {
+          "LFV.ACK.P.9.15/9,DUNKK.HYA.P.9.15/9,DUNKK.MVY.P.9.15/9,PVC.P.9.15/9,SSOXS.P.9.15/9": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-27/h180"
           },
-          "BURDY.P.9.15/9": {
+          "BURDY.P.9.15/9,BURDY.PVD.P.9.15/9": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-27/h210"
-          },
-          "DUNKK.HYA.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h180"
-          },
-          "DUNKK.MVY.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h180"
-          },
-          "PVC.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h180"
-          },
-          "BURDY.PVD.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h210"
-          },
-          "SSOXS.P.9.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-27/h180"
           }
         },
         "15R": {
-          "BLZZR.J.15R.4/9.LOGAN": {
+          "BLZZR.J.15R.4/9.LOGAN,BRUWN.J.15R.4/9.LOGAN,CELTK.J.15R.4/9.LOGAN,HYLND.J.15R.4/9.LOGAN,LBSTA.J.15R.4/9.LOGAN,PATSS.J.15R.4/9.LOGAN": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
           },
-          "BLZZR.J.15R.4/9": {
+          "BLZZR.J.15R.4/9,BLZZR.J.15R.15/9": {
             "cleared_altitude": 3000,
             "sid": "BLZZR6"
           },
-          "BRUWN.J.15R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
-          },
-          "BRUWN.J.15R.4/9": {
+          "BRUWN.J.15R.4/9,BRUWN.J.15R.15/9": {
             "cleared_altitude": 3000,
             "sid": "BRUWN7"
           },
-          "CELTK.J.15R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
-          },
-          "CELTK.J.15R.4/9": {
+          "CELTK.J.15R.4/9,CELTK.J.15R.15/9": {
             "cleared_altitude": 3000,
             "sid": "CELTK7"
           },
-          "HYLND.J.15R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
-          },
-          "HYLND.J.15R.4/9": {
+          "HYLND.J.15R.4/9,HYLND.J.15R.15/9": {
             "cleared_altitude": 3000,
             "sid": "HYLND7"
           },
-          "LBSTA.J.15R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
-          },
-          "LBSTA.J.15R.4/9": {
+          "LBSTA.J.15R.4/9,LBSTA.J.15R.15/9": {
             "cleared_altitude": 3000,
             "sid": "LBSTA8"
           },
-          "PATSS.J.15R.4/9.LOGAN": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-33L/h150/@BOS-D1.0+/l120"
-          },
-          "PATSS.J.15R.4/9": {
+          "PATSS.J.15R.4/9,PATSS.J.15R.15/9": {
             "cleared_altitude": 3000,
             "sid": "PATSS7"
           },
-          "REVSS.J.15R.4/9": {
+          "REVSS.J.15R.4/9,REVSS.J.15R.15/9": {
             "cleared_altitude": 3000,
             "sid": "REVSS6"
           },
-          "SSOXS.J.15R.4/9": {
+          "SSOXS.J.15R.4/9,SSOXS.J.15R.15/9": {
             "cleared_altitude": 3000,
             "sid": "SSOXS7"
           },
@@ -1094,94 +621,42 @@
           "SSOXS.J.15R.27/22": {
             "cleared_altitude": 5000,
             "sid": "SSOXS7"
-          },
-          "BLZZR.J.15R.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "BLZZR6"
-          },
-          "BRUWN.J.15R.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "BRUWN7"
-          },
-          "CELTK.J.15R.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "CELTK7"
-          },
-          "HYLND.J.15R.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "HYLND7"
-          },
-          "LBSTA.J.15R.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "LBSTA8"
-          },
-          "PATSS.J.15R.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "PATSS7"
-          },
-          "REVSS.J.15R.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "REVSS6"
-          },
-          "SSOXS.J.15R.15/9": {
-            "cleared_altitude": 3000,
-            "sid": "SSOXS7"
           }
         },
         "22R": {
-          "BLZZR": {
+          "BLZZR,BLZZR.J.22R.27/22": {
             "cleared_altitude": 5000,
             "sid": "BLZZR6"
           },
-          "BRUWN": {
+          "BRUWN,BRUWN.J.22R.27/22,BRUWN.J.22R.22/22": {
             "cleared_altitude": 5000,
             "sid": "BRUWN7"
           },
-          "CELTK": {
+          "CELTK,CELTK.J.22R.27/22,CELTK.J.22R.22/22": {
             "cleared_altitude": 5000,
             "sid": "CELTK7"
           },
-          "HYLND": {
+          "HYLND,HYLND.J.22R.27/22,HYLND.J.22R.22/22": {
             "cleared_altitude": 5000,
             "sid": "HYLND7"
           },
-          "LBSTA": {
+          "LBSTA,LBSTA.J.22R.27/22,LBSTA.J.22R.22/22": {
             "cleared_altitude": 5000,
             "sid": "LBSTA8"
           },
-          "PATSS": {
+          "PATSS,PATSS.J.22R.27/22,PATSS.J.22R.22/22": {
             "cleared_altitude": 5000,
             "sid": "PATSS7"
           },
-          "REVSS": {
+          "REVSS,REVSS.J.22R.27/22,REVSS.J.22R.22/22": {
             "cleared_altitude": 5000,
             "sid": "REVSS6"
           },
-          "SSOXS": {
+          "SSOXS,SSOXS.J.22R.27/22,SSOXS.J.22R.22/22": {
             "cleared_altitude": 5000,
             "sid": "SSOXS7"
           },
-          "PEASE,ENE": {
-            "cleared_altitude": 2000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h250"
-          },
-          "MANCH,CON,MHT": {
-            "cleared_altitude": 2000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h250"
-          },
-          "BOSOX,GLYDE": {
-            "cleared_altitude": 2000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h250"
-          },
-          "PVC": {
-            "cleared_altitude": 2000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h250"
-          },
-          "LFV,DUNKK": {
+          "PEASE,ENE,MANCH,CON,MHT,BOSOX,GLYDE,PVC,LFV,DUNKK": {
             "cleared_altitude": 2000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h250"
@@ -1191,249 +666,39 @@
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h105"
           },
-          "BLZZR.J.22R.27/22": {
-            "cleared_altitude": 5000,
-            "sid": "BLZZR6"
-          },
-          "BRUWN.J.22R.27/22": {
-            "cleared_altitude": 5000,
-            "sid": "BRUWN7"
-          },
-          "CELTK.J.22R.27/22": {
-            "cleared_altitude": 5000,
-            "sid": "CELTK7"
-          },
-          "HYLND.J.22R.27/22": {
-            "cleared_altitude": 5000,
-            "sid": "HYLND7"
-          },
-          "LBSTA.J.22R.27/22": {
-            "cleared_altitude": 5000,
-            "sid": "LBSTA8"
-          },
-          "PATSS.J.22R.27/22": {
-            "cleared_altitude": 5000,
-            "sid": "PATSS7"
-          },
-          "REVSS.J.22R.27/22": {
-            "cleared_altitude": 5000,
-            "sid": "REVSS6"
-          },
-          "SSOXS.J.22R.27/22": {
-            "cleared_altitude": 5000,
-            "sid": "SSOXS7"
-          },
-          "BOSOX.BDL.P.22R.27/22": {
+          "BOSOX.BDL.P.22R.27/22,BOSOX.P.22R.27/22,BOSOX.BDL.P.22R.22/22,BOSOX.P.22R.22/22": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h260"
           },
-          "BOSOX.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h260"
-          },
-          "GLYDE.P.22R.27/22": {
+          "GLYDE.P.22R.27/22,GLYDE.P.22R.22/22": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h275"
           },
-          "HYLND.P.22R.27/22": {
+          "HYLND.P.22R.27/22,LBSTA.P.22R.27/22,MANCH.P.22R.27/22,PEASE.P.22R.27/22,HYLND.P.22R.22/22,LBSTA.P.22R.22/22,MANCH.P.22R.22/22,PEASE.P.22R.22/22": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h290"
           },
-          "LBSTA.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h290"
-          },
-          "MANCH.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h290"
-          },
-          "PEASE.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h290"
-          },
-          "LFV.ACK.P.22R.27/22": {
+          "LFV.ACK.P.22R.27/22,LFV.ACK.P.22R.22/22": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h249"
           },
-          "BURDY.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "DUNKK.HYA.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "DUNKK.MVY.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "PVC.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "SSOXS.P.22R.27/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "BRUWN.J.22R.22/22": {
-            "cleared_altitude": 5000,
-            "sid": "BRUWN7"
-          },
-          "CELTK.J.22R.22/22": {
-            "cleared_altitude": 5000,
-            "sid": "CELTK7"
-          },
-          "HYLND.J.22R.22/22": {
-            "cleared_altitude": 5000,
-            "sid": "HYLND7"
-          },
-          "LBSTA.J.22R.22/22": {
-            "cleared_altitude": 5000,
-            "sid": "LBSTA8"
-          },
-          "PATSS.J.22R.22/22": {
-            "cleared_altitude": 5000,
-            "sid": "PATSS7"
-          },
-          "REVSS.J.22R.22/22": {
-            "cleared_altitude": 5000,
-            "sid": "REVSS6"
-          },
-          "SSOXS.J.22R.22/22": {
-            "cleared_altitude": 5000,
-            "sid": "SSOXS7"
-          },
-          "BOSOX.BDL.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h260"
-          },
-          "BOSOX.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h260"
-          },
-          "GLYDE.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h275"
-          },
-          "HYLND.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h290"
-          },
-          "LBSTA.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h290"
-          },
-          "MANCH.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h290"
-          },
-          "PEASE.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h290"
-          },
-          "LFV.ACK.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h249"
-          },
-          "BURDY.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "BURDY.PVD.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "DUNKK.HYA.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "DUNKK.MVY.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "PVC.P.22R.22/22": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-4L/h240"
-          },
-          "SSOXS.P.22R.22/22": {
+          "BURDY.P.22R.27/22,DUNKK.HYA.P.22R.27/22,DUNKK.MVY.P.22R.27/22,PVC.P.22R.27/22,SSOXS.P.22R.27/22,BURDY.P.22R.22/22,BURDY.PVD.P.22R.22/22,DUNKK.HYA.P.22R.22/22,DUNKK.MVY.P.22R.22/22,PVC.P.22R.22/22,SSOXS.P.22R.22/22": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h240"
           }
         },
         "33L": {
-          "BOSOX.BDL.P.33L.33/27": {
+          "BOSOX.BDL.P.33L.33/27,BOSOX.P.33L.33/27,GLYDE.P.33L.33/27,BOSOX.BDL.P.33L.33+32/27,BOSOX.P.33L.33+32/27,GLYDE.P.33L.33+32/27,BOSOX.BDL.P.33L.27+32/33,BOSOX.P.33L.27+32/33,GLYDE.P.33L.27+32/33,BOSOX.BDL.P.33L.27/33,BOSOX.P.33L.27/33,GLYDE.P.33L.27/33": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
           },
-          "BOSOX.P.33L.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "GLYDE.P.33L.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "BOSOX.BDL.P.33L.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "BOSOX.P.33L.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "GLYDE.P.33L.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "HYLND.P.33L.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h010"
-          },
-          "LBSTA.P.33L.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h010"
-          },
-          "MANCH.P.33L.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h010"
-          },
-          "PEASE.P.33L.33/27": {
+          "HYLND.P.33L.33/27,LBSTA.P.33L.33/27,MANCH.P.33L.33/27,PEASE.P.33L.33/27": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-15R/h010"
@@ -1447,278 +712,84 @@
             "sid": "LOGAN4",
             "waypoints": "KBOS-15R/h330/@BOS-D2.0+/l316"
           },
-          "BRUWN.J.33L.33/27": {
+          "BRUWN.J.33L.33/27,BRUWN.J.33L.33+32/27": {
             "cleared_altitude": 4000,
             "sid": "BRUWN7"
           },
-          "CELTK.J.33L.33/27": {
+          "CELTK.J.33L.33/27,CELTK.J.33L.33+32/27": {
             "cleared_altitude": 4000,
             "sid": "CELTK7"
           },
-          "HYLND.J.33L.33/27": {
+          "HYLND.J.33L.33/27,HYLND.J.33L.33+32/27": {
             "cleared_altitude": 4000,
             "sid": "HYLND7"
           },
-          "LBSTA.J.33L.33/27": {
+          "LBSTA.J.33L.33/27,LBSTA.J.33L.33+32/27": {
             "cleared_altitude": 4000,
             "sid": "LBSTA8"
           },
-          "PATSS.J.33L.33/27": {
+          "PATSS.J.33L.33/27,PATSS.J.33L.33+32/27": {
             "cleared_altitude": 4000,
             "sid": "PATSS7"
           },
-          "REVSS.J.33L.33/27": {
+          "REVSS.J.33L.33/27,REVSS.J.33L.33+32/27": {
             "cleared_altitude": 4000,
             "sid": "REVSS6"
           },
-          "SSOXS.J.33L.33/27": {
+          "SSOXS.J.33L.33/27,SSOXS.J.33L.33+32/27": {
             "cleared_altitude": 4000,
             "sid": "SSOXS7"
           },
-          "BOSOX.BDL.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "BOSOX.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "GLYDE.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "LFV.ACK.P.33L.27+32/33": {
+          "LFV.ACK.P.33L.27+32/33,BURDY.P.33L.27+32/33,DUNKK.HYA.P.33L.27+32/33,DUNKK.MVY.P.33L.27+32/33,PVC.P.33L.27+32/33,BURDY.PVD.P.33L.27+32/33,SSOXS.P.33L.27+32/33,LFV.ACK.P.33L.27/33,BURDY.P.33L.27/33,DUNKK.HYA.P.33L.27/33,DUNKK.MVY.P.33L.27/33,PVC.P.33L.27/33,BURDY.PVD.P.33L.27/33,SSOXS.P.33L.27/33": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-15R/h210"
           },
-          "BURDY.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "DUNKK.HYA.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "DUNKK.MVY.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "PVC.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "BURDY.PVD.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "SSOXS.P.33L.27+32/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "BLZZR.J.33L.27+32/33": {
+          "BLZZR.J.33L.27+32/33,BLZZR.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "BLZZR6"
           },
-          "BURDY.PVD.J.33L.27+32/33": {
+          "BURDY.PVD.J.33L.27+32/33,BURDY.PVD.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-15R/h330/@BOS-D2.0+/l316"
           },
-          "BRUWN.J.33L.27+32/33": {
+          "BRUWN.J.33L.27+32/33,BRUWN.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "BRUWN7"
           },
-          "CELTK.J.33L.27+32/33": {
+          "CELTK.J.33L.27+32/33,CELTK.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "CELTK7"
           },
-          "HYLND.J.33L.27+32/33": {
+          "HYLND.J.33L.27+32/33,HYLND.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "HYLND7"
           },
-          "LBSTA.J.33L.27+32/33": {
+          "LBSTA.J.33L.27+32/33,LBSTA.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "LBSTA8"
           },
-          "PATSS.J.33L.27+32/33": {
+          "PATSS.J.33L.27+32/33,PATSS.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "PATSS7"
           },
-          "REVSS.J.33L.27+32/33": {
+          "REVSS.J.33L.27+32/33,REVSS.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "REVSS6"
           },
-          "SSOXS.J.33L.27+32/33": {
+          "SSOXS.J.33L.27+32/33,SSOXS.J.33L.27/33": {
             "cleared_altitude": 5000,
-            "sid": "SSOXS7"
-          },
-          "BOSOX.BDL.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "BOSOX.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "GLYDE.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
-          },
-          "LFV.ACK.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "BURDY.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "DUNKK.HYA.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "DUNKK.MVY.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "PVC.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "BURDY.PVD.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "SSOXS.P.33L.27/33": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h210"
-          },
-          "BLZZR.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "BLZZR6"
-          },
-          "BURDY.PVD.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "LOGAN4",
-            "waypoints": "KBOS-15R/h330/@BOS-D2.0+/l316"
-          },
-          "BRUWN.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "BRUWN7"
-          },
-          "CELTK.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "CELTK7"
-          },
-          "HYLND.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "HYLND7"
-          },
-          "LBSTA.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "LBSTA8"
-          },
-          "PATSS.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "PATSS7"
-          },
-          "REVSS.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "REVSS6"
-          },
-          "SSOXS.J.33L.27/33": {
-            "cleared_altitude": 5000,
-            "sid": "SSOXS7"
-          },
-          "BRUWN.J.33L.33+32/27": {
-            "cleared_altitude": 4000,
-            "sid": "BRUWN7"
-          },
-          "CELTK.J.33L.33+32/27": {
-            "cleared_altitude": 4000,
-            "sid": "CELTK7"
-          },
-          "HYLND.J.33L.33+32/27": {
-            "cleared_altitude": 4000,
-            "sid": "HYLND7"
-          },
-          "LBSTA.J.33L.33+32/27": {
-            "cleared_altitude": 4000,
-            "sid": "LBSTA8"
-          },
-          "PATSS.J.33L.33+32/27": {
-            "cleared_altitude": 4000,
-            "sid": "PATSS7"
-          },
-          "REVSS.J.33L.33+32/27": {
-            "cleared_altitude": 4000,
-            "sid": "REVSS6"
-          },
-          "SSOXS.J.33L.33+32/27": {
-            "cleared_altitude": 4000,
             "sid": "SSOXS7"
           }
         },
         "27": {
-          "LFV.ACK.P.27.33/27": {
+          "LFV.ACK.P.27.33/27,BURDY.P.27.33/27,DUNKK.HYA.P.27.33/27,DUNKK.MVY.P.27.33/27,PVC.P.27.33/27,BURDY.PVD.P.27.33/27,SSOXS.P.27.33/27,BURDY.P.27.33+32/27,DUNKK.MVY.P.27.33+32/27,BURDY.PVD.P.27.33+32/27,SSOXS.P.27.33+32/27": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "_BOS_9/h210"
           },
-          "BURDY.P.27.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "DUNKK.HYA.P.27.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "DUNKK.MVY.P.27.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "PVC.P.27.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "BURDY.PVD.P.27.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "SSOXS.P.27.33/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "LFV.ACK.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
-          },
-          "BOSOX.BDL.J.27.33/27": {
+          "LFV.ACK.J.27.33/27,BOSOX.BDL.J.27.33/27,BOSOX.J.27.33/27,BURDY.J.27.33/27,GLYDE.J.27.33/27,DUNKK.HYA.J.27.33/27,MANCH.J.27.33/27,DUNKK.MVY.J.27.33/27,PEASE.J.27.33/27,PVC.J.27.33/27,BURDY.PVD.J.27.33/27": {
             "cleared_altitude": 5000,
             "sid": "WYLYY5"
           },
@@ -1726,29 +797,13 @@
             "cleared_altitude": 5000,
             "sid": "BLZZR6"
           },
-          "BOSOX.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
-          },
           "BRUWN.J.27.33/27": {
             "cleared_altitude": 5000,
             "sid": "BRUWN7"
           },
-          "BURDY.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
-          },
           "CELTK.J.27.33/27": {
             "cleared_altitude": 5000,
             "sid": "CELTK7"
-          },
-          "GLYDE.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
-          },
-          "DUNKK.HYA.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
           },
           "HYLND.J.27.33/27": {
             "cleared_altitude": 5000,
@@ -1759,29 +814,9 @@
             "sid": "WYLYY5",
             "waypoints": "N042.21.09.964,W071.01.56.207 KIRAA GLOWB/a3000+ HRALD CAMWI/a4000+"
           },
-          "MANCH.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
-          },
-          "DUNKK.MVY.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
-          },
           "PATSS.J.27.33/27": {
             "cleared_altitude": 5000,
             "sid": "PATSS7"
-          },
-          "PEASE.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
-          },
-          "PVC.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
-          },
-          "BURDY.PVD.J.27.33/27": {
-            "cleared_altitude": 5000,
-            "sid": "WYLYY5"
           },
           "REVSS.J.27.33/27": {
             "cleared_altitude": 5000,
@@ -1790,26 +825,6 @@
           "SSOXS.J.27.33/27": {
             "cleared_altitude": 5000,
             "sid": "SSOXS7"
-          },
-          "BURDY.P.27.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "DUNKK.MVY.P.27.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "BURDY.PVD.P.27.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
-          },
-          "SSOXS.P.27.33+32/27": {
-            "cleared_altitude": 3000,
-            "sid": "LOGAN4",
-            "waypoints": "_BOS_9/h210"
           }
         }
       },

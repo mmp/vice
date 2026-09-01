@@ -117,15 +117,7 @@
             "sid": "HURIC4",
             "waypoints": "KRDU-23R/h054 STRMY/a2500+"
           },
-          "DBRAH": {
-            "cleared_altitude": 6000,
-            "sid": "LWOOD5"
-          },
-          "DANCO": {
-            "cleared_altitude": 6000,
-            "sid": "LWOOD5"
-          },
-          "LWOOD": {
+          "DBRAH,DANCO,LWOOD": {
             "cleared_altitude": 6000,
             "sid": "LWOOD5"
           },
@@ -180,15 +172,7 @@
             "sid": "HURIC4",
             "waypoints": "KRDU-23L/h054 STRMY/a2500+"
           },
-          "DBRAH": {
-            "cleared_altitude": 6000,
-            "sid": "LWOOD5"
-          },
-          "DANCO": {
-            "cleared_altitude": 6000,
-            "sid": "LWOOD5"
-          },
-          "LWOOD": {
+          "DBRAH,DANCO,LWOOD": {
             "cleared_altitude": 6000,
             "sid": "LWOOD5"
           },
@@ -243,15 +227,7 @@
             "sid": "HURIC4",
             "waypoints": "KRDU-5L/h234 STRMY/a2500+"
           },
-          "DBRAH": {
-            "cleared_altitude": 6000,
-            "sid": "LWOOD5"
-          },
-          "DANCO": {
-            "cleared_altitude": 6000,
-            "sid": "LWOOD5"
-          },
-          "LWOOD": {
+          "DBRAH,DANCO,LWOOD": {
             "cleared_altitude": 6000,
             "sid": "LWOOD5"
           },
@@ -306,15 +282,7 @@
             "sid": "HURIC4",
             "waypoints": "KRDU-5R/h234 STRMY/a2500+"
           },
-          "DBRAH": {
-            "cleared_altitude": 6000,
-            "sid": "LWOOD5"
-          },
-          "DANCO": {
-            "cleared_altitude": 6000,
-            "sid": "LWOOD5"
-          },
-          "LWOOD": {
+          "DBRAH,DANCO,LWOOD": {
             "cleared_altitude": 6000,
             "sid": "LWOOD5"
           },

@@ -36,11 +36,7 @@
       },
       "departure_routes": {
         "3": {
-          "POPRR": {
-            "cleared_altitude": 20000,
-            "sid": "GRZZZ4"
-          },
-          "FLAVA": {
+          "POPRR,FLAVA": {
             "cleared_altitude": 20000,
             "sid": "GRZZZ4"
           },
@@ -48,37 +44,17 @@
             "cleared_altitude": 20000,
             "sid": "JEMEZ3"
           },
-          "TXO": {
+          "TXO,CME,ONM,SJN": {
             "cleared_altitude": 20000,
             "sid": "MNZNO3"
           },
-          "CME": {
-            "cleared_altitude": 20000,
-            "sid": "MNZNO3"
-          },
-          "ONM": {
-            "cleared_altitude": 20000,
-            "sid": "MNZNO3"
-          },
-          "SJN": {
-            "cleared_altitude": 20000,
-            "sid": "MNZNO3"
-          },
-          "GUP": {
-            "cleared_altitude": 20000,
-            "sid": "RDRNR3"
-          },
-          "ZUN": {
+          "GUP,ZUN": {
             "cleared_altitude": 20000,
             "sid": "RDRNR3"
           }
         },
         "8": {
-          "POPRR": {
-            "cleared_altitude": 20000,
-            "sid": "GRZZZ4"
-          },
-          "FLAVA": {
+          "POPRR,FLAVA": {
             "cleared_altitude": 20000,
             "sid": "GRZZZ4"
           },
@@ -86,37 +62,17 @@
             "cleared_altitude": 20000,
             "sid": "JEMEZ3"
           },
-          "TXO": {
+          "TXO,CME,ONM,SJN": {
             "cleared_altitude": 20000,
             "sid": "MNZNO3"
           },
-          "CME": {
-            "cleared_altitude": 20000,
-            "sid": "MNZNO3"
-          },
-          "ONM": {
-            "cleared_altitude": 20000,
-            "sid": "MNZNO3"
-          },
-          "SJN": {
-            "cleared_altitude": 20000,
-            "sid": "MNZNO3"
-          },
-          "GUP": {
-            "cleared_altitude": 20000,
-            "sid": "RDRNR3"
-          },
-          "ZUN": {
+          "GUP,ZUN": {
             "cleared_altitude": 20000,
             "sid": "RDRNR3"
           }
         },
         "21": {
-          "JLPNO": {
-            "cleared_altitude": 20000,
-            "sid": "FYSTA3"
-          },
-          "FTI": {
+          "JLPNO,FTI": {
             "cleared_altitude": 20000,
             "sid": "FYSTA3"
           },
@@ -124,37 +80,21 @@
             "cleared_altitude": 20000,
             "sid": "ATOMK3"
           },
-          "TXO": {
+          "TXO,CME": {
             "cleared_altitude": 20000,
             "sid": "DOOKK3"
           },
-          "CME": {
-            "cleared_altitude": 20000,
-            "sid": "DOOKK3"
-          },
-          "ONM": {
+          "ONM,SJN": {
             "cleared_altitude": 20000,
             "sid": "BOSQE3"
           },
-          "SJN": {
-            "cleared_altitude": 20000,
-            "sid": "BOSQE3"
-          },
-          "GUP": {
-            "cleared_altitude": 20000,
-            "sid": "ADYOS3"
-          },
-          "ZUN": {
+          "GUP,ZUN": {
             "cleared_altitude": 20000,
             "sid": "ADYOS3"
           }
         },
         "26": {
-          "JLPNO": {
-            "cleared_altitude": 20000,
-            "sid": "FYSTA3"
-          },
-          "FTI": {
+          "JLPNO,FTI": {
             "cleared_altitude": 20000,
             "sid": "FYSTA3"
           },
@@ -162,27 +102,15 @@
             "cleared_altitude": 20000,
             "sid": "ATOMK3"
           },
-          "TXO": {
+          "TXO,CME": {
             "cleared_altitude": 20000,
             "sid": "DOOKK3"
           },
-          "CME": {
-            "cleared_altitude": 20000,
-            "sid": "DOOKK3"
-          },
-          "ONM": {
+          "ONM,SJN": {
             "cleared_altitude": 20000,
             "sid": "BOSQE3"
           },
-          "SJN": {
-            "cleared_altitude": 20000,
-            "sid": "BOSQE3"
-          },
-          "GUP": {
-            "cleared_altitude": 20000,
-            "sid": "ADYOS3"
-          },
-          "ZUN": {
+          "GUP,ZUN": {
             "cleared_altitude": 20000,
             "sid": "ADYOS3"
           }

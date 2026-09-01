@@ -161,12 +161,7 @@
             "sid": "PTLD2.N",
             "waypoints": "KPDX-28R/h010"
           },
-          "BTG.PS": {
-            "cleared_altitude": 3000,
-            "sid": "PTLD2.S",
-            "waypoints": "KPDX-28R/h150"
-          },
-          "UBG,HOGUM": {
+          "BTG.PS,UBG,HOGUM": {
             "cleared_altitude": 3000,
             "sid": "PTLD2.S",
             "waypoints": "KPDX-28R/h150"
@@ -255,12 +250,7 @@
             "sid": "PTLD2.N",
             "waypoints": "KPDX-10L/h330"
           },
-          "UBG,HOGUM": {
-            "cleared_altitude": 3000,
-            "sid": "PTLD2.S",
-            "waypoints": "KPDX-10L/h170"
-          },
-          "BTG.PS": {
+          "UBG,HOGUM,BTG.PS": {
             "cleared_altitude": 3000,
             "sid": "PTLD2.S",
             "waypoints": "KPDX-10L/h170"
@@ -302,12 +292,7 @@
             "sid": "PTLD2.N",
             "waypoints": "KPDX-10R/h330"
           },
-          "UBG,HOGUM": {
-            "cleared_altitude": 3000,
-            "sid": "PTLD2.S",
-            "waypoints": "KPDX-10R/h170"
-          },
-          "BTG.PS": {
+          "UBG,HOGUM,BTG.PS": {
             "cleared_altitude": 3000,
             "sid": "PTLD2.S",
             "waypoints": "KPDX-10R/h170"

@@ -254,43 +254,23 @@
       ],
       "departure_routes": {
         "1": {
-          "COLIN": {
+          "COLIN,SCOOB": {
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "SCOOB": {
-            "cleared_altitude": 5000,
-            "sid": "AMEEE1"
-          },
-          "MAULS": {
+          "MAULS,FLASK": {
             "cleared_altitude": 5000,
             "sid": "CLTCH3"
           },
-          "FLASK": {
-            "cleared_altitude": 5000,
-            "sid": "CLTCH3"
-          },
-          "DQO": {
+          "DQO,AGARD": {
             "cleared_altitude": 5000,
             "sid": "DOCTR5"
           },
-          "AGARD": {
-            "cleared_altitude": 5000,
-            "sid": "DOCTR5"
-          },
-          "JERES": {
+          "JERES,BUFFR": {
             "cleared_altitude": 5000,
             "sid": "HORTO4"
           },
-          "BUFFR": {
-            "cleared_altitude": 5000,
-            "sid": "HORTO4"
-          },
-          "RRSIN": {
-            "cleared_altitude": 5000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "cleared_altitude": 5000,
             "sid": "JDUBB4"
           },
@@ -312,19 +292,11 @@
           }
         },
         "4": {
-          "COLIN": {
+          "COLIN,SCOOB": {
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "SCOOB": {
-            "cleared_altitude": 5000,
-            "sid": "AMEEE1"
-          },
-          "DQO": {
-            "cleared_altitude": 5000,
-            "sid": "DOCTR5"
-          },
-          "AGARD": {
+          "DQO,AGARD": {
             "cleared_altitude": 5000,
             "sid": "DOCTR5"
           },
@@ -334,43 +306,23 @@
           }
         },
         "15": {
-          "SCOOB": {
+          "SCOOB,COLIN": {
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "COLIN": {
-            "cleared_altitude": 5000,
-            "sid": "AMEEE1"
-          },
-          "MAULS": {
+          "MAULS,FLASK": {
             "cleared_altitude": 5000,
             "sid": "CLTCH3"
           },
-          "FLASK": {
-            "cleared_altitude": 5000,
-            "sid": "CLTCH3"
-          },
-          "DQO": {
+          "DQO,AGARD": {
             "cleared_altitude": 5000,
             "sid": "DOCTR5"
           },
-          "AGARD": {
-            "cleared_altitude": 5000,
-            "sid": "DOCTR5"
-          },
-          "JERES": {
+          "JERES,BUFFR": {
             "cleared_altitude": 5000,
             "sid": "HORTO4"
           },
-          "BUFFR": {
-            "cleared_altitude": 5000,
-            "sid": "HORTO4"
-          },
-          "RRSIN": {
-            "cleared_altitude": 5000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "cleared_altitude": 5000,
             "sid": "JDUBB4"
           },
@@ -396,35 +348,19 @@
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "MAULS": {
+          "MAULS,FLASK": {
             "cleared_altitude": 5000,
             "sid": "CLTCH3"
           },
-          "FLASK": {
-            "cleared_altitude": 5000,
-            "sid": "CLTCH3"
-          },
-          "DQO": {
+          "DQO,AGARD": {
             "cleared_altitude": 5000,
             "sid": "DOCTR5"
           },
-          "AGARD": {
-            "cleared_altitude": 5000,
-            "sid": "DOCTR5"
-          },
-          "JERES": {
+          "JERES,BUFFR": {
             "cleared_altitude": 5000,
             "sid": "HORTO4"
           },
-          "BUFFR": {
-            "cleared_altitude": 5000,
-            "sid": "HORTO4"
-          },
-          "RRSIN": {
-            "cleared_altitude": 5000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "cleared_altitude": 5000,
             "sid": "JDUBB4"
           },
@@ -446,43 +382,23 @@
           }
         },
         "33": {
-          "COLIN": {
+          "COLIN,SCOOB": {
             "cleared_altitude": 5000,
             "sid": "AMEEE1"
           },
-          "SCOOB": {
-            "cleared_altitude": 5000,
-            "sid": "AMEEE1"
-          },
-          "MAULS": {
+          "MAULS,FLASK": {
             "cleared_altitude": 5000,
             "sid": "CLTCH3"
           },
-          "FLASK": {
-            "cleared_altitude": 5000,
-            "sid": "CLTCH3"
-          },
-          "DQO": {
+          "DQO,AGARD": {
             "cleared_altitude": 5000,
             "sid": "DOCTR5"
           },
-          "AGARD": {
-            "cleared_altitude": 5000,
-            "sid": "DOCTR5"
-          },
-          "JERES": {
+          "JERES,BUFFR": {
             "cleared_altitude": 5000,
             "sid": "HORTO4"
           },
-          "BUFFR": {
-            "cleared_altitude": 5000,
-            "sid": "HORTO4"
-          },
-          "RRSIN": {
-            "cleared_altitude": 5000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "cleared_altitude": 5000,
             "sid": "JDUBB4"
           },
@@ -1047,79 +963,23 @@
       },
       "departure_routes": {
         "34R": {
-          "RAMAY": {
+          "RAMAY,WOOLY,JERES,MCRAY,OTTTO": {
             "assigned_altitude": 3000,
             "sid": "HIICH2"
           },
-          "MAULS,FLASK": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "WOOLY": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "MELTN": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "JERES": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "MCRAY": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "OTTTO": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "GLANC": {
+          "MAULS,FLASK,RRSIN,MELTN,GLANC": {
             "assigned_altitude": 3000,
             "sid": "GABBE3"
           }
         },
         "16L": {
-          "RAMAY": {
+          "RAMAY,MAULS,FLASK,RRSIN,MELTN,GLANC": {
             "assigned_altitude": 3000,
             "sid": "GABBE3"
           },
-          "MAULS,FLASK": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "WOOLY": {
+          "WOOLY,JERES,MCRAY,OTTTO": {
             "assigned_altitude": 3000,
             "sid": "HIICH2"
-          },
-          "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "MELTN": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
-          },
-          "JERES": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "MCRAY": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "OTTTO": {
-            "assigned_altitude": 3000,
-            "sid": "HIICH2"
-          },
-          "GLANC": {
-            "assigned_altitude": 3000,
-            "sid": "GABBE3"
           }
         }
       },
@@ -1389,15 +1249,7 @@
             "sid": "CLTCH3",
             "waypoints": "KIAD-12/h270 BUTRZ/a3000+ CLTCH KERRK TEEMS FLASK"
           },
-          "SWANN": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4"
-          },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4"
-          },
-          "COLIN,SCOOB": {
+          "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4"
           },
@@ -1428,15 +1280,7 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2"
-          },
-          "AGARD.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2"
-          },
-          "BAL": {
+          "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2"
           }
@@ -1456,15 +1300,7 @@
             "sid": "CLTCH3",
             "waypoints": "KIAD-12/h250 BUTRZ/a3000+ CLTCH KERRK MAULS"
           },
-          "SWANN": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4"
-          },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4"
-          },
-          "COLIN,SCOOB": {
+          "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4"
           },
@@ -1495,15 +1331,7 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2"
-          },
-          "AGARD.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2"
-          },
-          "BAL": {
+          "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2"
           }
@@ -1589,31 +1417,15 @@
             "assigned_altitude": 3000,
             "sid": "BUNZZ3"
           },
-          "FLASK": {
+          "FLASK,MAULS": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3"
           },
-          "MAULS": {
-            "assigned_altitude": 3000,
-            "sid": "CLTCH3"
-          },
-          "SWANN": {
+          "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4"
           },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4"
-          },
-          "COLIN,SCOOB": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4"
-          },
-          "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4"
           },
@@ -1633,15 +1445,7 @@
             "assigned_altitude": 3000,
             "sid": "SCRAM6"
           },
-          "SWANN.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2"
-          },
-          "AGARD.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2"
-          },
-          "BAL": {
+          "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2"
           }
@@ -1803,31 +1607,15 @@
             "assigned_altitude": 3000,
             "sid": "BUNZZ3"
           },
-          "MAULS": {
+          "MAULS,FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3"
           },
-          "FLASK": {
-            "assigned_altitude": 3000,
-            "sid": "CLTCH3"
-          },
-          "SWANN": {
+          "SWANN,AGARD,COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4"
           },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4"
-          },
-          "COLIN,SCOOB": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4"
-          },
-          "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "JDUBB4"
-          },
-          "MELTN": {
+          "RRSIN,MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4"
           },
@@ -1847,15 +1635,7 @@
             "assigned_altitude": 3000,
             "sid": "SCRAM6"
           },
-          "SWANN.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2"
-          },
-          "AGARD.W": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2"
-          },
-          "BAL": {
+          "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2"
           }
@@ -3616,27 +3396,11 @@
       },
       "departure_routes": {
         "10": {
-          "RAMAY": {
+          "RAMAY,OTTTO": {
             "cleared_altitude": 17000,
             "sid": "FOXHL1"
           },
-          "OTTTO": {
-            "cleared_altitude": 17000,
-            "sid": "FOXHL1"
-          },
-          "BYEDN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "BROSS": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "SWANN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "AJGON": {
+          "BYEDN,BROSS,SWANN,AJGON,SPEAK": {
             "cleared_altitude": 14000,
             "sid": "DUKPN1"
           },
@@ -3644,65 +3408,25 @@
             "cleared_altitude": 14000,
             "sid": "DUKPN1.DONIL"
           },
-          "SPEAK": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
             "sid": "CONLE5"
           },
-          "MELTN": {
+          "MELTN,RRSIN,GLANC,FLASK,MAULS": {
             "cleared_altitude": 17000,
             "sid": "TERPZ8"
           },
-          "RRSIN": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "GLANC": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "FLASK": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "MAULS": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "JERES": {
-            "cleared_altitude": 16000,
-            "sid": "LINSE2"
-          },
-          "MCRAY": {
+          "JERES,MCRAY": {
             "cleared_altitude": 16000,
             "sid": "LINSE2"
           }
         },
         "28": {
-          "RAMAY": {
+          "RAMAY,OTTTO": {
             "cleared_altitude": 17000,
             "sid": "FOXHL1"
           },
-          "OTTTO": {
-            "cleared_altitude": 17000,
-            "sid": "FOXHL1"
-          },
-          "BYEDN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "BROSS": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "SWANN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "AJGON": {
+          "BYEDN,BROSS,SWANN,AJGON,SPEAK": {
             "cleared_altitude": 14000,
             "sid": "DUKPN1"
           },
@@ -3710,65 +3434,25 @@
             "cleared_altitude": 14000,
             "sid": "DUKPN1.DONIL"
           },
-          "SPEAK": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
             "sid": "CONLE5"
           },
-          "MELTN": {
+          "MELTN,RRSIN,GLANC,FLASK,MAULS": {
             "cleared_altitude": 17000,
             "sid": "TERPZ8"
           },
-          "RRSIN": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "GLANC": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "FLASK": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "MAULS": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "JERES": {
-            "cleared_altitude": 16000,
-            "sid": "LINSE2"
-          },
-          "MCRAY": {
+          "JERES,MCRAY": {
             "cleared_altitude": 16000,
             "sid": "LINSE2"
           }
         },
         "15R": {
-          "RAMAY": {
+          "RAMAY,OTTTO": {
             "cleared_altitude": 17000,
             "sid": "FOXHL1"
           },
-          "OTTTO": {
-            "cleared_altitude": 17000,
-            "sid": "FOXHL1"
-          },
-          "BYEDN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "BROSS": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "SWANN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "AJGON": {
+          "BYEDN,BROSS,SWANN,AJGON,SPEAK": {
             "cleared_altitude": 14000,
             "sid": "DUKPN1"
           },
@@ -3776,65 +3460,25 @@
             "cleared_altitude": 14000,
             "sid": "DUKPN1.DONIL"
           },
-          "SPEAK": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
             "sid": "CONLE5"
           },
-          "MELTN": {
+          "MELTN,RRSIN,GLANC,FLASK,MAULS": {
             "cleared_altitude": 17000,
             "sid": "TERPZ8"
           },
-          "RRSIN": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "GLANC": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "FLASK": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "MAULS": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "JERES": {
-            "cleared_altitude": 16000,
-            "sid": "LINSE2"
-          },
-          "MCRAY": {
+          "JERES,MCRAY": {
             "cleared_altitude": 16000,
             "sid": "LINSE2"
           }
         },
         "33L": {
-          "RAMAY": {
+          "RAMAY,OTTTO": {
             "cleared_altitude": 17000,
             "sid": "FOXHL1"
           },
-          "OTTTO": {
-            "cleared_altitude": 17000,
-            "sid": "FOXHL1"
-          },
-          "BYEDN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "BROSS": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "SWANN": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
-          "AJGON": {
+          "BYEDN,BROSS,SWANN,AJGON,SPEAK": {
             "cleared_altitude": 14000,
             "sid": "DUKPN1"
           },
@@ -3842,39 +3486,15 @@
             "cleared_altitude": 14000,
             "sid": "DUKPN1.DONIL"
           },
-          "SPEAK": {
-            "cleared_altitude": 14000,
-            "sid": "DUKPN1"
-          },
           "COLIN,SCOOB": {
             "cleared_altitude": 14000,
             "sid": "CONLE5"
           },
-          "MELTN": {
+          "MELTN,RRSIN,GLANC,FLASK,MAULS": {
             "cleared_altitude": 17000,
             "sid": "TERPZ8"
           },
-          "RRSIN": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "GLANC": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "FLASK": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "MAULS": {
-            "cleared_altitude": 17000,
-            "sid": "TERPZ8"
-          },
-          "JERES": {
-            "cleared_altitude": 16000,
-            "sid": "LINSE2"
-          },
-          "MCRAY": {
+          "JERES,MCRAY": {
             "cleared_altitude": 16000,
             "sid": "LINSE2"
           }

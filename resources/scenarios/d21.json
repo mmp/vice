@@ -49,11 +49,7 @@
             "cleared_altitude": 17000,
             "sid": "CLVIN3"
           },
-          "BROKK": {
-            "cleared_altitude": 17000,
-            "sid": "HHOWE4"
-          },
-          "LNCON": {
+          "BROKK,LNCON": {
             "cleared_altitude": 17000,
             "sid": "HHOWE4"
           },
@@ -73,19 +69,11 @@
             "cleared_altitude": 17000,
             "sid": "MIGGY3"
           },
-          "MRDOC": {
+          "MRDOC,ESSBE": {
             "cleared_altitude": 17000,
             "sid": "PAVYL3"
           },
-          "ESSBE": {
-            "cleared_altitude": 17000,
-            "sid": "PAVYL3"
-          },
-          "TORRR": {
-            "cleared_altitude": 17000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,BGHRT": {
             "cleared_altitude": 17000,
             "sid": "SNDRS3"
           },
@@ -111,11 +99,7 @@
             "cleared_altitude": 17000,
             "sid": "CLVIN3"
           },
-          "BROKK": {
-            "cleared_altitude": 17000,
-            "sid": "HHOWE4"
-          },
-          "LNCON": {
+          "BROKK,LNCON": {
             "cleared_altitude": 17000,
             "sid": "HHOWE4"
           },
@@ -135,19 +119,11 @@
             "cleared_altitude": 17000,
             "sid": "MIGGY3"
           },
-          "MRDOC": {
+          "MRDOC,ESSBE": {
             "cleared_altitude": 17000,
             "sid": "PAVYL3"
           },
-          "ESSBE": {
-            "cleared_altitude": 17000,
-            "sid": "PAVYL3"
-          },
-          "TORRR": {
-            "cleared_altitude": 17000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,BGHRT": {
             "cleared_altitude": 17000,
             "sid": "SNDRS3"
           },
@@ -173,11 +149,7 @@
             "cleared_altitude": 17000,
             "sid": "CLVIN3"
           },
-          "BROKK": {
-            "cleared_altitude": 17000,
-            "sid": "HHOWE4"
-          },
-          "LNCON": {
+          "BROKK,LNCON": {
             "cleared_altitude": 17000,
             "sid": "HHOWE4"
           },
@@ -197,19 +169,11 @@
             "cleared_altitude": 17000,
             "sid": "MIGGY3"
           },
-          "MRDOC": {
+          "MRDOC,ESSBE": {
             "cleared_altitude": 17000,
             "sid": "PAVYL3"
           },
-          "ESSBE": {
-            "cleared_altitude": 17000,
-            "sid": "PAVYL3"
-          },
-          "TORRR": {
-            "cleared_altitude": 17000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,BGHRT": {
             "cleared_altitude": 17000,
             "sid": "SNDRS3"
           },
@@ -235,11 +199,7 @@
             "cleared_altitude": 17000,
             "sid": "CLVIN3"
           },
-          "BROKK": {
-            "cleared_altitude": 17000,
-            "sid": "HHOWE4"
-          },
-          "LNCON": {
+          "BROKK,LNCON": {
             "cleared_altitude": 17000,
             "sid": "HHOWE4"
           },
@@ -259,19 +219,11 @@
             "cleared_altitude": 17000,
             "sid": "MIGGY3"
           },
-          "MRDOC": {
+          "MRDOC,ESSBE": {
             "cleared_altitude": 17000,
             "sid": "PAVYL3"
           },
-          "ESSBE": {
-            "cleared_altitude": 17000,
-            "sid": "PAVYL3"
-          },
-          "TORRR": {
-            "cleared_altitude": 17000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,BGHRT": {
             "cleared_altitude": 17000,
             "sid": "SNDRS3"
           },
@@ -297,11 +249,7 @@
             "cleared_altitude": 17000,
             "sid": "CLVIN3"
           },
-          "BROKK": {
-            "cleared_altitude": 17000,
-            "sid": "HHOWE4"
-          },
-          "LNCON": {
+          "BROKK,LNCON": {
             "cleared_altitude": 17000,
             "sid": "HHOWE4"
           },
@@ -321,19 +269,11 @@
             "cleared_altitude": 17000,
             "sid": "MIGGY3"
           },
-          "MRDOC": {
+          "MRDOC,ESSBE": {
             "cleared_altitude": 17000,
             "sid": "PAVYL3"
           },
-          "ESSBE": {
-            "cleared_altitude": 17000,
-            "sid": "PAVYL3"
-          },
-          "TORRR": {
-            "cleared_altitude": 17000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,BGHRT": {
             "cleared_altitude": 17000,
             "sid": "SNDRS3"
           },
@@ -359,11 +299,7 @@
             "cleared_altitude": 17000,
             "sid": "CLVIN3"
           },
-          "BROKK": {
-            "cleared_altitude": 17000,
-            "sid": "HHOWE4"
-          },
-          "LNCON": {
+          "BROKK,LNCON": {
             "cleared_altitude": 17000,
             "sid": "HHOWE4"
           },
@@ -383,19 +319,11 @@
             "cleared_altitude": 17000,
             "sid": "MIGGY3"
           },
-          "MRDOC": {
+          "MRDOC,ESSBE": {
             "cleared_altitude": 17000,
             "sid": "PAVYL3"
           },
-          "ESSBE": {
-            "cleared_altitude": 17000,
-            "sid": "PAVYL3"
-          },
-          "TORRR": {
-            "cleared_altitude": 17000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,BGHRT": {
             "cleared_altitude": 17000,
             "sid": "SNDRS3"
           },
@@ -627,11 +555,7 @@
             "cleared_altitude": 3000,
             "sid": "HHOWE4"
           },
-          "SMUUV": {
-            "cleared_altitude": 3000,
-            "sid": "KAYLN3"
-          },
-          "KAYLN": {
+          "SMUUV,KAYLN": {
             "cleared_altitude": 3000,
             "sid": "KAYLN3"
           },
@@ -643,11 +567,7 @@
             "cleared_altitude": 3000,
             "sid": "LIDDS4"
           },
-          "MONEE": {
-            "cleared_altitude": 3000,
-            "sid": "MIGGY3"
-          },
-          "SLLAP": {
+          "MONEE,SLLAP": {
             "cleared_altitude": 3000,
             "sid": "MIGGY3"
           },
@@ -655,11 +575,7 @@
             "cleared_altitude": 3000,
             "sid": "PAVYL3"
           },
-          "TORRR": {
-            "cleared_altitude": 3000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,BGHRT,SNDRS": {
             "cleared_altitude": 3000,
             "sid": "SNDRS3"
           },
@@ -675,10 +591,6 @@
             "cleared_altitude": 3000,
             "sid": "METRO4",
             "waypoints": "KYIP-23/h300"
-          },
-          "SNDRS": {
-            "cleared_altitude": 3000,
-            "sid": "SNDRS3"
           }
         },
         "23": {
@@ -698,11 +610,7 @@
             "cleared_altitude": 3000,
             "sid": "HHOWE4"
           },
-          "SMUUV": {
-            "cleared_altitude": 3000,
-            "sid": "KAYLN3"
-          },
-          "KAYLN": {
+          "SMUUV,KAYLN": {
             "cleared_altitude": 3000,
             "sid": "KAYLN3"
           },
@@ -714,11 +622,7 @@
             "cleared_altitude": 3000,
             "sid": "LIDDS4"
           },
-          "MONEE": {
-            "cleared_altitude": 3000,
-            "sid": "MIGGY3"
-          },
-          "SLLAP": {
+          "MONEE,SLLAP": {
             "cleared_altitude": 3000,
             "sid": "MIGGY3"
           },
@@ -726,11 +630,7 @@
             "cleared_altitude": 3000,
             "sid": "PAVYL3"
           },
-          "TORRR": {
-            "cleared_altitude": 3000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,BGHRT,SNDRS": {
             "cleared_altitude": 3000,
             "sid": "SNDRS3"
           },
@@ -746,10 +646,6 @@
             "cleared_altitude": 3000,
             "sid": "METRO4",
             "waypoints": "KYIP-5/h233"
-          },
-          "SNDRS": {
-            "cleared_altitude": 3000,
-            "sid": "SNDRS3"
           }
         }
       },
@@ -1068,7 +964,7 @@
             "cleared_altitude": 3000,
             "sid": "BARII3"
           },
-          "KAYLN": {
+          "KAYLN,SMUUV": {
             "cleared_altitude": 3000,
             "sid": "KAYLN3"
           },
@@ -1076,21 +972,13 @@
             "cleared_altitude": 3000,
             "sid": "CCOBB3"
           },
-          "CLVIN": {
-            "cleared_altitude": 3000,
-            "sid": "CLVIN3"
-          },
-          "STAZE": {
+          "CLVIN,STAZE": {
             "cleared_altitude": 3000,
             "sid": "CLVIN3"
           },
           "BROKK,LNCON": {
             "cleared_altitude": 3000,
             "sid": "HHOWE4"
-          },
-          "SMUUV": {
-            "cleared_altitude": 3000,
-            "sid": "KAYLN3"
           },
           "WINNZ": {
             "cleared_altitude": 3000,
@@ -1108,15 +996,7 @@
             "cleared_altitude": 3000,
             "sid": "PAVYL3.MRDOC"
           },
-          "TORRR": {
-            "cleared_altitude": 3000,
-            "sid": "SNDRS3"
-          },
-          "SNDRS": {
-            "cleared_altitude": 3000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
+          "TORRR,SNDRS,BGHRT": {
             "cleared_altitude": 3000,
             "sid": "SNDRS3"
           },
@@ -1134,11 +1014,11 @@
             "cleared_altitude": 3000,
             "sid": "BARII3"
           },
-          "KAYLN": {
+          "KAYLN,SMUUV": {
             "cleared_altitude": 3000,
             "sid": "KAYLN3"
           },
-          "CLVIN": {
+          "CLVIN,STAZE": {
             "cleared_altitude": 3000,
             "sid": "CLVIN3"
           },
@@ -1146,19 +1026,11 @@
             "cleared_altitude": 3000,
             "sid": "CCOBB3"
           },
-          "STAZE": {
-            "cleared_altitude": 3000,
-            "sid": "CLVIN3"
-          },
           "BROKK,LNCON": {
             "cleared_altitude": 3000,
             "sid": "HHOWE4"
           },
-          "SMUUV": {
-            "cleared_altitude": 3000,
-            "sid": "KAYLN3"
-          },
-          "SNDRS": {
+          "SNDRS,TORRR,BGHRT": {
             "cleared_altitude": 3000,
             "sid": "SNDRS3"
           },
@@ -1177,14 +1049,6 @@
           "MRDOC,ESSBE": {
             "cleared_altitude": 3000,
             "sid": "PAVYL3.MRDOC"
-          },
-          "TORRR": {
-            "cleared_altitude": 3000,
-            "sid": "SNDRS3"
-          },
-          "BGHRT": {
-            "cleared_altitude": 3000,
-            "sid": "SNDRS3"
           },
           "GNZOE": {
             "cleared_altitude": 3000,

@@ -454,19 +454,7 @@
             "cleared_altitude": 5000,
             "sid": "ELMOO9"
           },
-          "VNY,TWINE": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "FIM": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "GMN,AVE": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "PMD,DAG": {
+          "VNY,TWINE,FIM,GMN,AVE,PMD,DAG": {
             "cleared_altitude": 4000,
             "sid": "VNY4"
           }
@@ -518,19 +506,7 @@
             "cleared_altitude": 5000,
             "sid": "ELMOO9"
           },
-          "VNY,TWINE": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "FIM": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "GMN,AVE": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "PMD,DAG": {
+          "VNY,TWINE,FIM,GMN,AVE,PMD,DAG": {
             "cleared_altitude": 4000,
             "sid": "VNY4"
           }
@@ -582,19 +558,7 @@
             "cleared_altitude": 5000,
             "sid": "ELMOO9"
           },
-          "VNY,TWINE": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "FIM": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "GMN,AVE": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "PMD,DAG": {
+          "VNY,TWINE,FIM,GMN,AVE,PMD,DAG": {
             "cleared_altitude": 4000,
             "sid": "VNY4"
           }
@@ -646,19 +610,7 @@
             "cleared_altitude": 5000,
             "sid": "ELMOO9"
           },
-          "VNY,TWINE": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "FIM": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "GMN,AVE": {
-            "cleared_altitude": 4000,
-            "sid": "VNY4"
-          },
-          "PMD,DAG": {
+          "VNY,TWINE,FIM,GMN,AVE,PMD,DAG": {
             "cleared_altitude": 4000,
             "sid": "VNY4"
           }
@@ -1299,27 +1251,7 @@
       },
       "departure_routes": {
         "3": {
-          "COREZ": {
-            "cleared_altitude": 3000,
-            "sid": "CHOII3",
-            "is_rnav": true
-          },
-          "CSTRO": {
-            "cleared_altitude": 3000,
-            "sid": "CHOII3",
-            "is_rnav": true
-          },
-          "FIM": {
-            "cleared_altitude": 3000,
-            "sid": "CHOII3",
-            "is_rnav": true
-          },
-          "BLH": {
-            "cleared_altitude": 3000,
-            "sid": "CHOII3",
-            "is_rnav": true
-          },
-          "MISEN,LAS": {
+          "COREZ,CSTRO,FIM,BLH,MISEN,LAS": {
             "cleared_altitude": 3000,
             "sid": "CHOII3",
             "is_rnav": true
@@ -1510,12 +1442,7 @@
       },
       "departure_routes": {
         "16R": {
-          "LAS,MISEN,HEC": {
-            "cleared_altitude": 4000,
-            "sid": "HARYS5",
-            "is_rnav": true
-          },
-          "BLH": {
+          "LAS,MISEN,HEC,BLH": {
             "cleared_altitude": 4000,
             "sid": "HARYS5",
             "is_rnav": true
@@ -1525,12 +1452,7 @@
             "sid": "RSCO4",
             "is_rnav": true
           },
-          "CSTRO": {
-            "cleared_altitude": 4000,
-            "sid": "WLKKR5",
-            "is_rnav": true
-          },
-          "COREZ": {
+          "CSTRO,COREZ": {
             "cleared_altitude": 4000,
             "sid": "WLKKR5",
             "is_rnav": true
@@ -1562,27 +1484,7 @@
           }
         },
         "34L": {
-          "HAILO": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9",
-            "is_rnav": true
-          },
-          "LAS": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9",
-            "is_rnav": true
-          },
-          "MISEN": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9",
-            "is_rnav": true
-          },
-          "HEC": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9",
-            "is_rnav": true
-          },
-          "BLH": {
+          "HAILO,LAS,MISEN,HEC,BLH,CSTRO,COREZ,FIM": {
             "cleared_altitude": 4000,
             "sid": "HAYEZ9",
             "is_rnav": true
@@ -1592,21 +1494,6 @@
             "sid": "VVERA2",
             "is_rnav": true,
             "waypoints": "KVNY-16R/h250 CCHUM/a6800+ KIMMO/a7000+ SLAPP JARZO VVERA SSETH"
-          },
-          "CSTRO": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9",
-            "is_rnav": true
-          },
-          "COREZ": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9",
-            "is_rnav": true
-          },
-          "FIM": {
-            "cleared_altitude": 4000,
-            "sid": "HAYEZ9",
-            "is_rnav": true
           },
           "GMN.C,AVE.C": {
             "cleared_altitude": 4000,

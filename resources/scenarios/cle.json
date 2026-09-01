@@ -28,59 +28,19 @@
             "cleared_altitude": 14000,
             "sid": "CAVVS5"
           },
-          "ALPHE": {
+          "ALPHE,DAIFE,BAGEL,YABRO": {
             "cleared_altitude": 14000,
             "sid": "GTLKE5"
           },
-          "DAIFE": {
-            "cleared_altitude": 14000,
-            "sid": "GTLKE5"
-          },
-          "BAGEL": {
-            "cleared_altitude": 14000,
-            "sid": "GTLKE5"
-          },
-          "YABRO": {
-            "cleared_altitude": 14000,
-            "sid": "GTLKE5"
-          },
-          "EWC": {
+          "EWC,NUSMM": {
             "cleared_altitude": 14000,
             "sid": "KKIDS1"
           },
-          "NUSMM": {
-            "cleared_altitude": 14000,
-            "sid": "KKIDS1"
-          },
-          "PATRC": {
+          "PATRC,JASEE,MAAJR,DORET,DUUKR": {
             "cleared_altitude": 14000,
             "sid": "PFLYD1"
           },
-          "JASEE": {
-            "cleared_altitude": 14000,
-            "sid": "PFLYD1"
-          },
-          "MAAJR": {
-            "cleared_altitude": 14000,
-            "sid": "PFLYD1"
-          },
-          "DORET": {
-            "cleared_altitude": 14000,
-            "sid": "PFLYD1"
-          },
-          "DUUKR": {
-            "cleared_altitude": 14000,
-            "sid": "PFLYD1"
-          },
-          "PUUDL": {
-            "cleared_altitude": 14000,
-            "sid": "ZAAPA6"
-          },
-          "SNNOH": {
-            "cleared_altitude": 14000,
-            "sid": "ZAAPA6"
-          },
-          "SINKR": {
+          "PUUDL,SNNOH,SINKR": {
             "cleared_altitude": 14000,
             "sid": "ZAAPA6"
           }
@@ -90,59 +50,19 @@
             "cleared_altitude": 14000,
             "sid": "CAVVS5"
           },
-          "ALPHE": {
+          "ALPHE,DAIFE,BAGEL,YABRO": {
             "cleared_altitude": 14000,
             "sid": "GTLKE5"
           },
-          "DAIFE": {
-            "cleared_altitude": 14000,
-            "sid": "GTLKE5"
-          },
-          "BAGEL": {
-            "cleared_altitude": 14000,
-            "sid": "GTLKE5"
-          },
-          "YABRO": {
-            "cleared_altitude": 14000,
-            "sid": "GTLKE5"
-          },
-          "EWC": {
+          "EWC,NUSMM": {
             "cleared_altitude": 14000,
             "sid": "KKIDS1"
           },
-          "NUSMM": {
-            "cleared_altitude": 14000,
-            "sid": "KKIDS1"
-          },
-          "PATRC": {
+          "PATRC,JASEE,DORET,MAAJR,DUUKR": {
             "cleared_altitude": 14000,
             "sid": "PFLYD1"
           },
-          "JASEE": {
-            "cleared_altitude": 14000,
-            "sid": "PFLYD1"
-          },
-          "DORET": {
-            "cleared_altitude": 14000,
-            "sid": "PFLYD1"
-          },
-          "MAAJR": {
-            "cleared_altitude": 14000,
-            "sid": "PFLYD1"
-          },
-          "DUUKR": {
-            "cleared_altitude": 14000,
-            "sid": "PFLYD1"
-          },
-          "PUUDL": {
-            "cleared_altitude": 14000,
-            "sid": "ZAAPA6"
-          },
-          "SNNOH": {
-            "cleared_altitude": 14000,
-            "sid": "ZAAPA6"
-          },
-          "SINKR": {
+          "PUUDL,SNNOH,SINKR": {
             "cleared_altitude": 14000,
             "sid": "ZAAPA6"
           }
@@ -596,11 +516,7 @@
       },
       "departure_routes": {
         "6": {
-          "NUSMM": {
-            "cleared_altitude": 3000,
-            "sid": "AHMET5"
-          },
-          "EWC": {
+          "NUSMM,EWC": {
             "cleared_altitude": 3000,
             "sid": "AHMET5"
           },
@@ -632,25 +548,13 @@
             "cleared_altitude": 3000,
             "sid": "MYCAR5"
           },
-          "PUUDL": {
-            "cleared_altitude": 3000,
-            "sid": "ZAAPA6"
-          },
-          "SINKR": {
-            "cleared_altitude": 3000,
-            "sid": "ZAAPA6"
-          },
-          "SNNOH": {
+          "PUUDL,SINKR,SNNOH": {
             "cleared_altitude": 3000,
             "sid": "ZAAPA6"
           }
         },
         "24": {
-          "NUSMM": {
-            "cleared_altitude": 3000,
-            "sid": "AHMET5"
-          },
-          "EWC": {
+          "NUSMM,EWC": {
             "cleared_altitude": 3000,
             "sid": "AHMET5"
           },
@@ -682,15 +586,7 @@
             "cleared_altitude": 3000,
             "sid": "MYCAR5"
           },
-          "PUUDL": {
-            "cleared_altitude": 3000,
-            "sid": "ZAAPA6"
-          },
-          "SINKR": {
-            "cleared_altitude": 3000,
-            "sid": "ZAAPA6"
-          },
-          "SNNOH": {
+          "PUUDL,SINKR,SNNOH": {
             "cleared_altitude": 3000,
             "sid": "ZAAPA6"
           }
@@ -775,11 +671,7 @@
       },
       "departure_routes": {
         "6L": {
-          "NUSMM": {
-            "cleared_altitude": 2000,
-            "sid": "AHMET5"
-          },
-          "EWC": {
+          "NUSMM,EWC": {
             "cleared_altitude": 2000,
             "sid": "AHMET5"
           },
@@ -787,19 +679,7 @@
             "cleared_altitude": 2000,
             "sid": "CAVVS5"
           },
-          "DAIFE": {
-            "cleared_altitude": 2000,
-            "sid": "GTLKE5"
-          },
-          "YABRO": {
-            "cleared_altitude": 2000,
-            "sid": "GTLKE5"
-          },
-          "ALPHE": {
-            "cleared_altitude": 2000,
-            "sid": "GTLKE5"
-          },
-          "BAGEL": {
+          "DAIFE,YABRO,ALPHE,BAGEL": {
             "cleared_altitude": 2000,
             "sid": "GTLKE5"
           },
@@ -807,25 +687,13 @@
             "cleared_altitude": 2000,
             "sid": "MYCAR5"
           },
-          "PUUDL": {
-            "cleared_altitude": 2000,
-            "sid": "ZAAPA6"
-          },
-          "SINKR": {
-            "cleared_altitude": 2000,
-            "sid": "ZAAPA6"
-          },
-          "SNNOH": {
+          "PUUDL,SINKR,SNNOH": {
             "cleared_altitude": 2000,
             "sid": "ZAAPA6"
           }
         },
         "24R": {
-          "NUSMM": {
-            "cleared_altitude": 2000,
-            "sid": "AHMET5"
-          },
-          "EWC": {
+          "NUSMM,EWC": {
             "cleared_altitude": 2000,
             "sid": "AHMET5"
           },
@@ -833,19 +701,7 @@
             "cleared_altitude": 2000,
             "sid": "CAVVS5"
           },
-          "DAIFE": {
-            "cleared_altitude": 2000,
-            "sid": "GTLKE5"
-          },
-          "YABRO": {
-            "cleared_altitude": 2000,
-            "sid": "GTLKE5"
-          },
-          "ALPHE": {
-            "cleared_altitude": 2000,
-            "sid": "GTLKE5"
-          },
-          "BAGEL": {
+          "DAIFE,YABRO,ALPHE,BAGEL": {
             "cleared_altitude": 2000,
             "sid": "GTLKE5"
           },
@@ -853,15 +709,7 @@
             "cleared_altitude": 2000,
             "sid": "MYCAR5"
           },
-          "PUUDL": {
-            "cleared_altitude": 2000,
-            "sid": "ZAAPA6"
-          },
-          "SINKR": {
-            "cleared_altitude": 2000,
-            "sid": "ZAAPA6"
-          },
-          "SNNOH": {
+          "PUUDL,SINKR,SNNOH": {
             "cleared_altitude": 2000,
             "sid": "ZAAPA6"
           }
@@ -925,21 +773,13 @@
       },
       "departure_routes": {
         "32": {
-          "CRAKN": {
-            "cleared_altitude": 4000,
-            "waypoints": "KMFD-14/h325"
-          },
-          "MONEE": {
+          "CRAKN,MONEE": {
             "cleared_altitude": 4000,
             "waypoints": "KMFD-14/h325"
           }
         },
         "14": {
-          "CRAKN": {
-            "cleared_altitude": 4000,
-            "waypoints": "KMFD-32/h145"
-          },
-          "MONEE": {
+          "CRAKN,MONEE": {
             "cleared_altitude": 4000,
             "waypoints": "KMFD-32/h145"
           }
@@ -996,133 +836,13 @@
       },
       "departure_routes": {
         "1": {
-          "NUSMM": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "EWC": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "APE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "DAIFE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "YABRO": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "ALPHE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "BAGEL": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "MYCAR": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "PUUDL": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "SINKR": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "SNNOH": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "CTW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "ZZBEE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "WEEVR": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "DILNE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-19/h011"
-          },
-          "AIR": {
+          "NUSMM,EWC,APE,DAIFE,YABRO,ALPHE,BAGEL,MYCAR,PUUDL,SINKR,SNNOH,CTW,ZZBEE,WEEVR,DILNE,AIR": {
             "cleared_altitude": 3000,
             "waypoints": "KCAK-19/h011"
           }
         },
         "23": {
-          "NUSMM": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "EWC": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "APE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "DAIFE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "YABRO": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "ALPHE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "BAGEL": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "MYCAR": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "PUUDL": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "SINKR": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "SNNOH": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "CTW": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "ZZBEE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "WEEVR": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "DILNE": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCAK-5/h056"
-          },
-          "AIR": {
+          "NUSMM,EWC,APE,DAIFE,YABRO,ALPHE,BAGEL,MYCAR,PUUDL,SINKR,SNNOH,CTW,ZZBEE,WEEVR,DILNE,AIR": {
             "cleared_altitude": 3000,
             "waypoints": "KCAK-5/h056"
           }

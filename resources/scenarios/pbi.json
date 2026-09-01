@@ -561,37 +561,21 @@
       },
       "departure_routes": {
         "5": {
-          "LENDS": {
+          "LENDS,HALBI": {
             "cleared_altitude": 2000,
             "sid": "TURPS2"
           },
-          "HALBI": {
-            "cleared_altitude": 2000,
-            "sid": "TURPS2"
-          },
-          "WELLY": {
-            "cleared_altitude": 2000,
-            "sid": "MYZNR3"
-          },
-          "MATLK,CHEFS": {
+          "WELLY,MATLK,CHEFS": {
             "cleared_altitude": 2000,
             "sid": "MYZNR3"
           }
         },
         "23": {
-          "LENDS": {
+          "LENDS,HALBI": {
             "cleared_altitude": 2000,
             "sid": "TURPS2"
           },
-          "HALBI": {
-            "cleared_altitude": 2000,
-            "sid": "TURPS2"
-          },
-          "WELLY": {
-            "cleared_altitude": 2000,
-            "sid": "MYZNR3"
-          },
-          "MATLK,CHEFS": {
+          "WELLY,MATLK,CHEFS": {
             "cleared_altitude": 2000,
             "sid": "MYZNR3"
           }
@@ -758,11 +742,7 @@
             "cleared_altitude": 11000,
             "sid": "OLAKE4"
           },
-          "MATLK,KPASA,SHRKS,SMELZ,VIYAP": {
-            "cleared_altitude": 11000,
-            "sid": "TBIRD8"
-          },
-          "CHEFS": {
+          "MATLK,KPASA,SHRKS,SMELZ,VIYAP,CHEFS": {
             "cleared_altitude": 11000,
             "sid": "TBIRD8"
           },
@@ -784,11 +764,7 @@
             "cleared_altitude": 11000,
             "sid": "OLAKE4"
           },
-          "MATLK,KPASA,SHRKS,SMELZ,VIYAP": {
-            "cleared_altitude": 11000,
-            "sid": "TBIRD8"
-          },
-          "CHEFS": {
+          "MATLK,KPASA,SHRKS,SMELZ,VIYAP,CHEFS": {
             "cleared_altitude": 11000,
             "sid": "TBIRD8"
           },

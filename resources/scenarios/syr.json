@@ -19,61 +19,13 @@
       },
       "departure_routes": {
         "33": {
-          "SYR": {
-            "cleared_altitude": 4000,
-            "waypoints": "HOTSU/h327"
-          },
-          "GGT": {
-            "cleared_altitude": 4000,
-            "waypoints": "HOTSU/h327"
-          },
-          "NORSE": {
-            "cleared_altitude": 4000,
-            "waypoints": "HOTSU/h327"
-          },
-          "ROOMS": {
-            "cleared_altitude": 4000,
-            "waypoints": "HOTSU/h327"
-          },
-          "BECKS": {
-            "cleared_altitude": 4000,
-            "waypoints": "HOTSU/h327"
-          },
-          "FLOOR": {
-            "cleared_altitude": 4000,
-            "waypoints": "HOTSU/h327"
-          },
-          "LAMMS": {
+          "SYR,GGT,NORSE,ROOMS,BECKS,FLOOR,LAMMS": {
             "cleared_altitude": 4000,
             "waypoints": "HOTSU/h327"
           }
         },
         "15": {
-          "SYR": {
-            "cleared_altitude": 4000,
-            "waypoints": "JERDA/h147"
-          },
-          "GGT": {
-            "cleared_altitude": 4000,
-            "waypoints": "JERDA/h147"
-          },
-          "NORSE": {
-            "cleared_altitude": 4000,
-            "waypoints": "JERDA/h147"
-          },
-          "ROOMS": {
-            "cleared_altitude": 4000,
-            "waypoints": "JERDA/h147"
-          },
-          "BECKS": {
-            "cleared_altitude": 4000,
-            "waypoints": "JERDA/h147"
-          },
-          "FLOOR": {
-            "cleared_altitude": 4000,
-            "waypoints": "JERDA/h147"
-          },
-          "LAMMS": {
+          "SYR,GGT,NORSE,ROOMS,BECKS,FLOOR,LAMMS": {
             "cleared_altitude": 4000,
             "waypoints": "JERDA/h147"
           }
@@ -386,105 +338,25 @@
       },
       "departure_routes": {
         "10": {
-          "PTAKI": {
-            "cleared_altitude": 4000,
-            "waypoints": "ZIMBI/h100"
-          },
-          "DINES": {
-            "cleared_altitude": 4000,
-            "waypoints": "ZIMBI/h100"
-          },
-          "POMPY": {
-            "cleared_altitude": 4000,
-            "waypoints": "ZIMBI/h100"
-          },
-          "NORSE": {
-            "cleared_altitude": 4000,
-            "waypoints": "ZIMBI/h100"
-          },
-          "ROC": {
-            "cleared_altitude": 4000,
-            "waypoints": "ZIMBI/h100"
-          },
-          "ITH": {
+          "PTAKI,DINES,POMPY,NORSE,ROC,ITH": {
             "cleared_altitude": 4000,
             "waypoints": "ZIMBI/h100"
           }
         },
         "15": {
-          "PTAKI": {
-            "cleared_altitude": 4000,
-            "waypoints": "XANTY/h150"
-          },
-          "DINES": {
-            "cleared_altitude": 4000,
-            "waypoints": "XANTY/h150"
-          },
-          "POMPY": {
-            "cleared_altitude": 4000,
-            "waypoints": "XANTY/h150"
-          },
-          "NORSE": {
-            "cleared_altitude": 4000,
-            "waypoints": "XANTY/h150"
-          },
-          "ROC": {
-            "cleared_altitude": 4000,
-            "waypoints": "XANTY/h150"
-          },
-          "ITH": {
+          "PTAKI,DINES,POMPY,NORSE,ROC,ITH": {
             "cleared_altitude": 4000,
             "waypoints": "XANTY/h150"
           }
         },
         "33": {
-          "PTAKI": {
-            "cleared_altitude": 4000,
-            "waypoints": "NADSY/h330"
-          },
-          "DINES": {
-            "cleared_altitude": 4000,
-            "waypoints": "NADSY/h330"
-          },
-          "POMPY": {
-            "cleared_altitude": 4000,
-            "waypoints": "NADSY/h330"
-          },
-          "NORSE": {
-            "cleared_altitude": 4000,
-            "waypoints": "NADSY/h330"
-          },
-          "ROC": {
-            "cleared_altitude": 4000,
-            "waypoints": "NADSY/h330"
-          },
-          "ITH": {
+          "PTAKI,DINES,POMPY,NORSE,ROC,ITH": {
             "cleared_altitude": 4000,
             "waypoints": "NADSY/h330"
           }
         },
         "28": {
-          "PTAKI": {
-            "cleared_altitude": 4000,
-            "waypoints": "TANUE/h280"
-          },
-          "DINES": {
-            "cleared_altitude": 4000,
-            "waypoints": "TANUE/h280"
-          },
-          "POMPY": {
-            "cleared_altitude": 4000,
-            "waypoints": "TANUE/h280"
-          },
-          "NORSE": {
-            "cleared_altitude": 4000,
-            "waypoints": "TANUE/h280"
-          },
-          "ROC": {
-            "cleared_altitude": 4000,
-            "waypoints": "TANUE/h280"
-          },
-          "ITH": {
+          "PTAKI,DINES,POMPY,NORSE,ROC,ITH": {
             "cleared_altitude": 4000,
             "waypoints": "TANUE/h280"
           }

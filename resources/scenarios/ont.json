@@ -146,17 +146,12 @@
       },
       "departure_routes": {
         "26L": {
-          "AVRRY,MTBAL": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
             "is_rnav": true
           },
-          "OTAYY": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4",
-            "is_rnav": true
-          },
-          "COREZ": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
             "is_rnav": true
@@ -164,25 +159,10 @@
           "GMN": {
             "cleared_altitude": 10000,
             "sid": "POM1"
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
-          },
-          "LAS,MISEN": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
           }
         },
         "26R": {
-          "AVRRY,MTBAL": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4",
-            "is_rnav": true
-          },
-          "OTAYY": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
             "is_rnav": true
@@ -191,34 +171,19 @@
             "cleared_altitude": 10000,
             "sid": "POM1"
           },
-          "COREZ": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
-          },
-          "LAS,MISEN": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
             "is_rnav": true
           }
         },
         "8L": {
-          "AVRRY,MTBAL": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
             "is_rnav": true
           },
-          "OTAYY": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4",
-            "is_rnav": true
-          },
-          "COREZ": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
             "is_rnav": true
@@ -226,30 +191,15 @@
           "GMN": {
             "cleared_altitude": 10000,
             "sid": "POM1"
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
-          },
-          "LAS,MISEN": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
           }
         },
         "8R": {
-          "AVRRY,MTBAL": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
             "is_rnav": true
           },
-          "OTAYY": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4",
-            "is_rnav": true
-          },
-          "COREZ": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
             "is_rnav": true
@@ -257,45 +207,15 @@
           "GMN": {
             "cleared_altitude": 10000,
             "sid": "POM1"
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
-          },
-          "LAS,MISEN": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
           }
         },
         "8R.OO": {
-          "AVRRY": {
+          "AVRRY,OTAYY,DINTY,MALIT": {
             "cleared_altitude": 7000,
             "sid": "RAJEE4",
             "is_rnav": true
           },
-          "OTAYY": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4",
-            "is_rnav": true
-          },
-          "DINTY,MALIT": {
-            "cleared_altitude": 7000,
-            "sid": "RAJEE4",
-            "is_rnav": true
-          },
-          "COREZ": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
-          },
-          "EHF": {
-            "cleared_altitude": 10000,
-            "sid": "SNSHN5",
-            "is_rnav": true
-          },
-          "LAS,MISEN": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 10000,
             "sid": "SNSHN5",
             "is_rnav": true
@@ -666,13 +586,7 @@
       },
       "departure_routes": {
         "6": {
-          "AVRRY,MTBAL": {
-            "cleared_altitude": 7000,
-            "sid": "JADKO2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "SXC": {
+          "AVRRY,MTBAL,SXC": {
             "cleared_altitude": 7000,
             "sid": "JADKO2",
             "is_rnav": true,
@@ -685,13 +599,7 @@
           }
         },
         "24": {
-          "AVRRY,MTBAL": {
-            "assigned_altitude": 4300,
-            "sid": "JADKO2",
-            "is_rnav": true,
-            "aircraft": ["jet", "turboprop"]
-          },
-          "SXC": {
+          "AVRRY,MTBAL,SXC": {
             "assigned_altitude": 4300,
             "sid": "JADKO2",
             "is_rnav": true,
@@ -875,83 +783,27 @@
       },
       "departure_routes": {
         "31L": {
-          "TNP.C": {
+          "TNP.C,BLH.C,PMD.C": {
             "cleared_altitude": 8000,
             "sid": "CATH1"
           },
-          "BLH.C": {
-            "cleared_altitude": 8000,
-            "sid": "CATH1"
-          },
-          "PMD.C": {
-            "cleared_altitude": 8000,
-            "sid": "CATH1"
-          },
-          "ZELMA": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1",
-            "is_rnav": true
-          },
-          "FUSBL": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1",
-            "is_rnav": true
-          },
-          "EED": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1",
-            "is_rnav": true
-          },
-          "BLH": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1",
-            "is_rnav": true
-          },
-          "TRM": {
-            "cleared_altitude": 8000,
-            "sid": "HWRRD1",
-            "is_rnav": true
-          },
-          "PMD": {
+          "ZELMA,FUSBL,EED,BLH,TRM,PMD": {
             "cleared_altitude": 8000,
             "sid": "HWRRD1",
             "is_rnav": true
           }
         },
         "13R": {
-          "TNP.C": {
+          "TNP.C,BLH.C,PMD.C": {
             "cleared_altitude": 8000,
             "sid": "CATH1"
           },
-          "BLH.C": {
-            "cleared_altitude": 8000,
-            "sid": "CATH1"
-          },
-          "PMD.C": {
-            "cleared_altitude": 8000,
-            "sid": "CATH1"
-          },
-          "ZELMA": {
+          "ZELMA,FUSBL,EED": {
             "cleared_altitude": 8000,
             "sid": "IKONE1",
             "is_rnav": true
           },
-          "FUSBL": {
-            "cleared_altitude": 8000,
-            "sid": "IKONE1",
-            "is_rnav": true
-          },
-          "EED": {
-            "cleared_altitude": 8000,
-            "sid": "IKONE1",
-            "is_rnav": true
-          },
-          "BLH": {
-            "cleared_altitude": 8000,
-            "sid": "JEEON1",
-            "is_rnav": true
-          },
-          "TRM": {
+          "BLH,TRM": {
             "cleared_altitude": 8000,
             "sid": "JEEON1",
             "is_rnav": true

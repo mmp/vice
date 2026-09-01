@@ -241,13 +241,7 @@
           }
         },
         "24L": {
-          "LAS": {
-            "cleared_altitude": 15000,
-            "sid": "ORCKA5",
-            "waypoints": "DLREY/a3000- N033.55.47.918,W118.35.15.664/a5000+ N033.50.26.101,W118.34.25.237 N033.50.03.579,W118.32.03.046/ho KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
-            "handoff_controller": "18"
-          },
-          "MISEN": {
+          "LAS,MISEN": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
             "waypoints": "DLREY/a3000- N033.55.47.918,W118.35.15.664/a5000+ N033.50.26.101,W118.34.25.237 N033.50.03.579,W118.32.03.046/ho KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY",
@@ -1235,13 +1229,7 @@
           }
         },
         "27.O": {
-          "MTBAL": {
-            "cleared_altitude": 23000,
-            "sid": "ZZOOO4",
-            "is_rnav": true,
-            "hold_for_release": true
-          },
-          "HOGGZ,TGOLD,GBN": {
+          "MTBAL,HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "is_rnav": true,
@@ -1258,7 +1246,7 @@
             "sid": "BRDR7",
             "hold_for_release": true
           },
-          "SLI.O": {
+          "SLI.O,IKAYE.O": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2",
             "is_rnav": true,
@@ -1267,12 +1255,6 @@
           "MALIT.O,SXC.O": {
             "cleared_altitude": 8000,
             "sid": "MMOTO2",
-            "is_rnav": true,
-            "hold_for_release": true
-          },
-          "IKAYE.O": {
-            "cleared_altitude": 15000,
-            "sid": "ECHHO2",
             "is_rnav": true,
             "hold_for_release": true
           },
@@ -1288,12 +1270,7 @@
           }
         },
         "9": {
-          "SLI.E": {
-            "cleared_altitude": 15000,
-            "sid": "ECHHO2",
-            "is_rnav": true
-          },
-          "IKAYE.E": {
+          "SLI.E,IKAYE.E": {
             "cleared_altitude": 15000,
             "sid": "ECHHO2",
             "is_rnav": true
@@ -1303,12 +1280,7 @@
             "sid": "MMOTO2",
             "is_rnav": true
           },
-          "MTBAL.E": {
-            "cleared_altitude": 19000,
-            "sid": "SAYOW2",
-            "is_rnav": true
-          },
-          "IPL.E": {
+          "MTBAL.E,IPL.E": {
             "cleared_altitude": 19000,
             "sid": "SAYOW2",
             "is_rnav": true
@@ -2813,22 +2785,7 @@
             "aircraft": ["prop"],
             "waypoints": "N033.39.25.383,W117.52.47.276/h222/@a2000+/h300/c6000/@a6000+/ld LAX/hoT6L/c8000 SADDE/ho14 VTU"
           },
-          "SLI": {
-            "assigned_altitude": 5000,
-            "sid": "MUSEL8",
-            "aircraft": ["turboprop"]
-          },
-          "OCN": {
-            "assigned_altitude": 5000,
-            "sid": "MUSEL8",
-            "aircraft": ["turboprop"]
-          },
-          "TRM": {
-            "assigned_altitude": 5000,
-            "sid": "MUSEL8",
-            "aircraft": ["turboprop"]
-          },
-          "DAG": {
+          "SLI,OCN,TRM,DAG": {
             "assigned_altitude": 5000,
             "sid": "MUSEL8",
             "aircraft": ["turboprop"]
@@ -3270,12 +3227,7 @@
           }
         },
         "12": {
-          "AVRRY": {
-            "assigned_altitude": 3000,
-            "sid": "FRITR3",
-            "is_rnav": true
-          },
-          "CNERY": {
+          "AVRRY,CNERY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true

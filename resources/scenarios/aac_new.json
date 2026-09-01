@@ -1023,44 +1023,24 @@
       },
       "departure_routes": {
         "27": {
-          "COLIN.P,MAYES.P": {
+          "COLIN.P,MAYES.P,NOBLE.P,SHAWN.P": {
             "cleared_altitude": 4000,
             "description": "props",
             "waypoints": "09_MM/h270"
           },
-          "COLIN.J,MAYES.J": {
-            "cleared_altitude": 4000,
-            "description": "jets/turboprops",
-            "waypoints": "09_MM/h270"
-          },
-          "NOBLE.P,SHAWN.P": {
-            "cleared_altitude": 4000,
-            "description": "props",
-            "waypoints": "09_MM/h270"
-          },
-          "NOBLE.J,SHAWN.J": {
+          "COLIN.J,MAYES.J,NOBLE.J,SHAWN.J": {
             "cleared_altitude": 4000,
             "description": "jets/turboprops",
             "waypoints": "09_MM/h270"
           }
         },
         "22": {
-          "COLIN.P,MAYES.P": {
+          "COLIN.P,MAYES.P,NOBLE.P,SHAWN.P": {
             "cleared_altitude": 3000,
             "description": "props",
             "waypoints": "N035.53.48.140,W095.37.24.149/h220"
           },
-          "COLIN.J,MAYES.J": {
-            "cleared_altitude": 3000,
-            "description": "jets/turboprops",
-            "waypoints": "N035.53.48.140,W095.37.24.149/h220"
-          },
-          "NOBLE.P,SHAWN.P": {
-            "cleared_altitude": 3000,
-            "description": "props",
-            "waypoints": "N035.53.48.140,W095.37.24.149/h220"
-          },
-          "NOBLE.J,SHAWN.J": {
+          "COLIN.J,MAYES.J,NOBLE.J,SHAWN.J": {
             "cleared_altitude": 3000,
             "description": "jets/turboprops",
             "waypoints": "N035.53.48.140,W095.37.24.149/h220"
@@ -2074,12 +2054,7 @@
             "description": "props",
             "waypoints": "12_MM/h040"
           },
-          "COLIN.P,NOBLE.P, SHAWN.P ": {
-            "cleared_altitude": 3000,
-            "description": "jets/turboprops",
-            "waypoints": "12_MM/h300"
-          },
-          "COLIN.J,MAYES.J,NOBLE.J,SHAWN.J": {
+          "COLIN.P,NOBLE.P,SHAWN.P,COLIN.J,MAYES.J,NOBLE.J,SHAWN.J": {
             "cleared_altitude": 3000,
             "description": "jets/turboprops",
             "waypoints": "12_MM/h300"

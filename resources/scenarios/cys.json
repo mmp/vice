@@ -21,105 +21,25 @@
       },
       "departure_routes": {
         "9": {
-          "DEN": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "BENNE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "POGTE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "MILKY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "EGBER": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-27/h090"
-          },
-          "SNY": {
+          "DEN,BENNE,POGTE,MILKY,EGBER,SNY": {
             "cleared_altitude": 8000,
             "waypoints": "KCYS-27/h090"
           }
         },
         "13": {
-          "DEN": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "BENNE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "POGTE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "MILKY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "EGBER": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-31/h130"
-          },
-          "SNY": {
+          "DEN,BENNE,POGTE,MILKY,EGBER,SNY": {
             "cleared_altitude": 8000,
             "waypoints": "KCYS-31/h130"
           }
         },
         "27": {
-          "DEN": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "BENNE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "POGTE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "MILKY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "EGBER": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-9/h270"
-          },
-          "SNY": {
+          "DEN,BENNE,POGTE,MILKY,EGBER,SNY": {
             "cleared_altitude": 8000,
             "waypoints": "KCYS-9/h270"
           }
         },
         "31": {
-          "DEN": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "BENNE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "POGTE": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "MILKY": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "EGBER": {
-            "cleared_altitude": 8000,
-            "waypoints": "KCYS-13/h310"
-          },
-          "SNY": {
+          "DEN,BENNE,POGTE,MILKY,EGBER,SNY": {
             "cleared_altitude": 8000,
             "waypoints": "KCYS-13/h310"
           }
