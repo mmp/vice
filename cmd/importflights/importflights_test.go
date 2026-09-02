@@ -151,6 +151,66 @@ func TestUnknownAircraftTypes(t *testing.T) {
 	}
 }
 
+// The source data resolves a track's aircraft type from the registration and
+// gets it wrong for the occasional airframe, so a flight that a callsign
+// otherwise flies with a jet is sometimes recorded with a piston single or a
+// helicopter. Those records take the type the callsign otherwise flies.
+func TestRepairSuspectTypes(t *testing.T) {
+	imp := makeTestImporter(t)
+	row := flightRow{
+		OriginTime:          "2026-03-30 14:04:59",
+		OriginAirports:      "['KMSP']",
+		DestinationTime:     "2026-03-30 16:00:00",
+		DestinationAirports: "['KORD']",
+		Route:               "-",
+	}
+	fly := func(callsign, aircraftType string, n int) {
+		row.Callsign, row.AircraftType = callsign, aircraftType
+		for range n {
+			imp.processRow(&row)
+		}
+	}
+	fly("DAL88", "B738", 3)
+	fly("DAL88", "C172", 1)
+	fly("DAL88", "B06", 1)
+	// A type the aircraft database doesn't have is as suspect as a piston or a
+	// helicopter: nothing an airline flies is missing from it.
+	fly("DAL88", "ERCO", 1)
+	// The callsign flies the piston single, so it keeps it, and so does the
+	// jet it flew the once.
+	fly("DAL99", "C172", 2)
+	fly("DAL99", "B738", 1)
+	// A callsign whose prefix isn't an airline's is one no sim flies.
+	fly("ZZZ11", "B738", 2)
+	fly("ZZZ11", "C172", 1)
+
+	imp.repairSuspectTypes()
+
+	types := make(map[string]map[string]int)
+	for _, r := range imp.buckets[bucket{cell: cellOf("KMSP"), departure: true}] {
+		callsign := imp.symbols.string(r.callsign)
+		if types[callsign] == nil {
+			types[callsign] = make(map[string]int)
+		}
+		types[callsign][imp.symbols.string(r.acType)]++
+	}
+
+	for callsign, expected := range map[string]map[string]int{
+		"DAL88": {"B738": 6},
+		"DAL99": {"C172": 2, "B738": 1},
+		"ZZZ11": {"B738": 2, "C172": 1},
+	} {
+		if !maps.Equal(types[callsign], expected) {
+			t.Errorf("%s flew %v, expected %v", callsign, types[callsign], expected)
+		}
+	}
+
+	// Twice each: every row files a departure at KMSP and an arrival at KORD.
+	if expected := map[string]int64{"C172": 2, "B06": 2, "ERCO": 2}; !maps.Equal(imp.repairedTypes, expected) {
+		t.Errorf("repaired %v, expected %v", imp.repairedTypes, expected)
+	}
+}
+
 func TestParseTime(t *testing.T) {
 	got, ok := parseTime("2026-03-30 02:04:09")
 	if !ok {
@@ -181,6 +241,20 @@ var testAirports = map[string]av.FAAAirport{
 	"4V4":  {Location: math.Point2LL{-95.39, 35.98}},
 }
 
+// testPerformance is an aircraft database holding just the types the tests fly,
+// each with the engine class that repairSuspectTypes works from.
+var testPerformance = map[string]av.AircraftPerformance{
+	"B738": performanceWithEngine("J"),
+	"C172": performanceWithEngine("P"),
+	"B06":  performanceWithEngine("H"),
+}
+
+func performanceWithEngine(class string) av.AircraftPerformance {
+	var perf av.AircraftPerformance
+	perf.Engine.AircraftType = class
+	return perf
+}
+
 // cellOf is where testAirports puts an airport's flights.
 func cellOf(airport string) string { return av.FlightDataCell(testAirports[airport].Location) }
 
@@ -188,8 +262,7 @@ func cellOf(airport string) string { return av.FlightDataCell(testAirports[airpo
 // loading involved.
 func makeTestImporter(t *testing.T) *importer {
 	t.Helper()
-	imp, err := makeImporter(testAirports, map[string]av.AircraftPerformance{"B738": {}},
-		map[string]av.Airline{"DAL": {}})
+	imp, err := makeImporter(testAirports, testPerformance, map[string]av.Airline{"DAL": {}})
 	if err != nil {
 		t.Fatalf("makeImporter: %v", err)
 	}

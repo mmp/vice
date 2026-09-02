@@ -71,6 +71,7 @@ func main() {
 		}
 	}
 
+	imp.repairSuspectTypes()
 	imp.report()
 
 	if err := writeFlightData(*out, imp, *minCoverage, *dryRun); err != nil {

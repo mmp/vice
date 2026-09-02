@@ -202,6 +202,10 @@ type importer struct {
 	// isn't in the airline database. Those flights are still imported, but a
 	// sim skips them until the airline is added to openscope-airlines.json.
 	unknownAirlines map[string]int64
+
+	// repairedTypes counts the flights repairSuspectTypes took each aircraft
+	// type away from.
+	repairedTypes map[string]int64
 }
 
 func makeImporter(airports map[string]av.FAAAirport, performance map[string]av.AircraftPerformance,
@@ -227,6 +231,7 @@ func makeImporter(airports map[string]av.FAAAirport, performance map[string]av.A
 		daysPresent:     make(map[string]map[string]bool),
 		unknownTypes:    make(map[string]int64),
 		unknownAirlines: make(map[string]int64),
+		repairedTypes:   make(map[string]int64),
 	}, nil
 }
 
@@ -366,6 +371,80 @@ func (imp *importer) file(cell, airport, other, callsign, aircraftType string, u
 	imp.recordsEmitted++
 }
 
+// repairSuspectTypes gives back the type a flight was really flown with when
+// the source data's is one it can't have been. That data resolves a track's
+// type from the aircraft's registration and gets it wrong for the occasional
+// airframe, which is how an Air Canada A220 comes to be recorded as a Cessna
+// 172 for a day: the whole of that day's rotation carries the wrong type.
+//
+// A callsign that flies a jet or a turboprop in the data's own telling doesn't
+// also fly a piston single or a helicopter, so a record of one that is
+// outnumbered by the type the callsign otherwise flies takes that type instead.
+// The flight itself is real and is kept: only what it was flown with was wrong.
+func (imp *importer) repairSuspectTypes() {
+	counts := make(map[uint32]map[uint32]int)
+	for _, records := range imp.buckets {
+		for _, r := range records {
+			byType, ok := counts[r.callsign]
+			if !ok {
+				byType = make(map[uint32]int)
+				counts[r.callsign] = byType
+			}
+			byType[r.acType]++
+		}
+	}
+
+	// Ties go to the type that sorts first so that two runs over the same
+	// source data write the same files.
+	predominant := make(map[uint32]uint32, len(counts))
+	for callsign, byType := range counts {
+		var best uint32
+		bestCount := -1
+		for acType, n := range byType {
+			if n > bestCount || (n == bestCount && imp.symbols.string(acType) < imp.symbols.string(best)) {
+				best, bestCount = acType, n
+			}
+		}
+		if class := imp.engineClass(best); class == "J" || class == "T" {
+			predominant[callsign] = best
+		}
+	}
+
+	for _, records := range imp.buckets {
+		for i := range records {
+			r := &records[i]
+			best, ok := predominant[r.callsign]
+			if !ok || r.acType == best || counts[r.callsign][r.acType] >= counts[r.callsign][best] {
+				continue
+			}
+			// A callsign whose prefix isn't an airline's is one no sim flies,
+			// so there is nothing to gain by second-guessing its type.
+			base, _ := av.SplitCallsign(imp.symbols.string(r.callsign))
+			if _, ok := imp.airlines[base]; !ok {
+				continue
+			}
+			// A type Vice doesn't know is as suspect as a piston or a
+			// helicopter: nothing an airline flies is missing from the aircraft
+			// database.
+			if class := imp.engineClass(r.acType); class != "" && class != "P" && class != "H" {
+				continue
+			}
+			imp.repairedTypes[imp.symbols.string(r.acType)]++
+			r.acType = best
+		}
+	}
+}
+
+// engineClass is how an aircraft type is powered: "P" for piston, "T" for
+// turboprop, "J" for jet, and "H" for rotorcraft. It is empty for a type that
+// isn't in the aircraft database.
+func (imp *importer) engineClass(acType uint32) string {
+	if perf, ok := imp.performance[imp.symbols.string(acType)]; ok {
+		return perf.Engine.AircraftType
+	}
+	return ""
+}
+
 // report summarizes what was read and what had to be thrown away, plus what
 // was imported that Vice doesn't yet know how to fly.
 func (imp *importer) report() {
@@ -398,6 +477,16 @@ func (imp *importer) report() {
 		fmt.Printf("\n%d callsign prefixes not in openscope-airlines.json "+
 			"(their flights are imported but sims skip them):\n", len(imp.unknownAirlines))
 		printCounts(imp.unknownAirlines)
+	}
+
+	if len(imp.repairedTypes) > 0 {
+		var repaired int64
+		for _, n := range imp.repairedTypes {
+			repaired += n
+		}
+		fmt.Printf("\nGave %s flights the type their callsign otherwise flies, "+
+			"taking them away from:\n", commas(repaired))
+		printCounts(imp.repairedTypes)
 	}
 
 	fmt.Printf("\n")
