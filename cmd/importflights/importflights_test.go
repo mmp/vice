@@ -146,6 +146,19 @@ func TestResolveEndpoints(t *testing.T) {
 			origin: onGround(vanNuys, "KZZZ", "KVNY"), destination: noTrack("KMSP"),
 			from: at("KVNY"), to: at("KMSP"),
 		},
+		{
+			// An airport with no neighbors is the one applicable airport for
+			// everything that crosses over it, so a lone candidate still has to
+			// be at a height something operating there could be at.
+			name:   "lone candidate at cruise",
+			origin: aloft(vanNuys, 37000, "KVNY"), destination: noTrack("KMSP"),
+			from: over("KVNY"), to: at("KMSP"),
+		},
+		{
+			name:   "lone candidate climbing out",
+			origin: aloft(vanNuys, 5000, "KVNY"), destination: noTrack("KMSP"),
+			from: at("KVNY"), to: at("KMSP"),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			from, to := resolveEndpoints(tc.origin, tc.destination, tc.route, testAirports)
@@ -601,6 +614,26 @@ func TestSkipCounters(t *testing.T) {
 		t.Errorf("KMSP has %d arrivals, expected none", n)
 	}
 
+	// The aircraft was crossing over the airport at altitude, so nothing
+	// happened there to record; where it landed is unaffected.
+	imp = makeTestImporter(t)
+	row = base
+	blank(&row)
+	row.OriginAirports = "['KMSP']"
+	row.OriginLatitude, row.OriginLongitude, row.OriginAltitude = "44.88", "-93.22", "37000"
+	row.DestinationAirports = "['KORD']"
+	row.DestinationLatitude, row.DestinationLongitude = "41.98", "-87.90"
+	row.DestinationAltitude = "ground"
+	imp.processRow(&row)
+	if imp.overflewItsAirport != 1 {
+		t.Errorf("overflewItsAirport = %d, expected 1", imp.overflewItsAirport)
+	}
+	if n := len(imp.buckets[bucket{cell: cellOf("KMSP"), departure: true}]); n != 0 {
+		t.Errorf("KMSP has %d departures, expected none", n)
+	}
+	if n := len(imp.buckets[bucket{cell: cellOf("KORD")}]); n != 1 {
+		t.Errorf("KORD has %d arrivals, expected 1", n)
+	}
 }
 
 // A made-up airport is filed alongside the real one whose traffic it borrows,

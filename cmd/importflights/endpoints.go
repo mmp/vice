@@ -125,14 +125,34 @@ func (e trackEnd) nearest(airports map[string]av.FAAAirport) (string, av.FAAAirp
 	return icao, nearest, distance, found
 }
 
+// maxOverflightHeight is how far above a field an aircraft can be and still be
+// taken to have departed from or landed at it. Higher than this it is enroute
+// whatever else is true: the track began or ended in the middle of the flight,
+// the airport underneath saw nothing, and the time the record would carry is
+// not the time of anything that happened there. Flight level 180 is where the
+// aviation world itself stops calling the airspace terminal.
+const maxOverflightHeight = 18000 // feet
+
+// overflying reports whether the aircraft was too high above the field for the
+// track to be recording anything that happened at it.
+func (e trackEnd) overflying(ap av.FAAAirport) bool {
+	return e.hasHeight && e.height > float32(ap.Elevation)+maxOverflightHeight
+}
+
 // resolveEndpoint places one end of a track from the track alone: the candidate
 // airport nearest the point the aircraft was seen at, and whether it was
 // plausibly there.
 func resolveEndpoint(e trackEnd, airports map[string]av.FAAAirport) endpoint {
-	// A single candidate is taken at its word: the source data offers nowhere
-	// else the aircraft could have been.
+	// A lone candidate is taken at its word about which airport it is, since
+	// the source data offers nowhere else the aircraft could have been. Whether
+	// the aircraft was there at all is still worth asking: an airport with no
+	// neighbors is the applicable one for everything that passes overhead, and
+	// that is how a flight from St. Croix to Paris comes to be recorded as
+	// departing an island it was crossing at altitude.
 	if len(e.candidates) == 1 {
-		return endpoint{airport: e.candidates[0], atAirport: true}
+		icao := e.candidates[0]
+		ap, ok := airports[icao]
+		return endpoint{airport: icao, atAirport: !ok || !e.overflying(ap)}
 	}
 
 	icao, ap, distance, ok := e.nearest(airports)

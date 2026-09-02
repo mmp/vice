@@ -199,6 +199,7 @@ type importer struct {
 	recordsEmitted      int64
 	noEndpoints         int64
 	notAtItsAirport     int64
+	overflewItsAirport  int64
 	noFarEndpoint       int64
 	sameEndpoints       int64
 	notFAAAirport       int64
@@ -308,10 +309,10 @@ func (imp *importer) processRow(row *flightRow) {
 	departure := atOrigin && from.atAirport && to.known()
 	arrival := atDestination && to.atAirport && from.known()
 	if atOrigin && !departure {
-		imp.countUnfiled(from.atAirport)
+		imp.countUnfiled(from, origin)
 	}
 	if atDestination && !arrival {
-		imp.countUnfiled(to.atAirport)
+		imp.countUnfiled(to, destination)
 	}
 	if !departure && !arrival {
 		return
@@ -363,10 +364,13 @@ func (imp *importer) processRow(row *flightRow) {
 
 // countUnfiled records why a record that would have been filed at one of our
 // airports wasn't.
-func (imp *importer) countUnfiled(atAirport bool) {
-	if atAirport {
+func (imp *importer) countUnfiled(placed endpoint, e trackEnd) {
+	switch {
+	case placed.atAirport:
 		imp.noFarEndpoint++
-	} else {
+	case len(e.candidates) == 1:
+		imp.overflewItsAirport++
+	default:
 		imp.notAtItsAirport++
 	}
 }
@@ -521,6 +525,7 @@ func (imp *importer) report() {
 	})
 	printSkipped("Records not filed", []skipped{
 		{"the track wasn't at the airport it would be filed at", imp.notAtItsAirport},
+		{"the aircraft was enroute over the airport, not at it", imp.overflewItsAirport},
 		{"nothing said where the other end was", imp.noFarEndpoint},
 		{"the airport at the other end isn't in the database", imp.unknownOtherAirport},
 		{"unusable timestamp", imp.badTimestamp},
