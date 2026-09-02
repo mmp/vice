@@ -749,6 +749,13 @@ var errNoScenarioRoute = errors.New("no plausible route in this scenario")
 // not every departure from the airport.
 const publishedDepartureMaxHeadingDifference = 45 // degrees
 
+// publishedSubstituteMaxExitHeadingDifference bounds the gate a borrowed route
+// may go out. It is far wider than the limit on the substitute airport itself,
+// since a gate sits twenty or thirty miles out and the turn onto course comes
+// later: JFK's Florida traffic leaves over WAVEY, 60 degrees off the direct
+// line. What it rules out is setting off in the other direction entirely.
+const publishedSubstituteMaxExitHeadingDifference = 90 // degrees
+
 // candidateDeparture is a scenario departure a published flight could fly,
 // together with the runway category configuration it came from.
 type candidateDeparture struct {
@@ -789,14 +796,28 @@ func (s *Sim) compatibleDepartures(departureAirport string, runway av.RunwayID,
 	return candidates
 }
 
+// departureFit ranks how well a runway's gates suit a published flight, best
+// first: a runway that flies the flight's own route is a better place to launch
+// it from than one that only has a gate pointing the same general way.
+type departureFit int
+
+const (
+	fitScenarioRoute departureFit = iota // the scenario's route for the city pair
+	fitRealRoute                         // a scraped filing or FAA route for the pair
+	fitNeighborRoute                     // the route to the nearest routed destination
+	fitNearestGate                       // nothing routed; the gate heading the right way
+)
+
 // departureChoice is the exit a published flight leaves through, the real-world
-// route that found it if one did, and how the choice was made, for reporting.
-// Finding it costs only database lookups, so a runway can ask whether it works
-// a flight without paying to turn the route into waypoints.
+// route that found it if one did, how well the runway's gates fit the flight,
+// and how the choice was made, for reporting. Finding it costs only database
+// lookups, so a runway can ask whether it works a flight without paying to turn
+// the route into waypoints.
 type departureChoice struct {
 	candidate candidateDeparture
 	route     string
 	cruise    CruiseLimits
+	fit       departureFit
 	how       string
 }
 
@@ -942,7 +963,7 @@ func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID
 
 	for _, route := range scenarioRoutes(destination) {
 		if c, ok := departureExit(route, departureAirport, destination, "", candidates); ok {
-			return departureChoice{candidate: c, route: route,
+			return departureChoice{candidate: c, route: route, fit: fitScenarioRoute,
 				how: "scenario route via " + c.dep.Exit.Base()}, nil
 		}
 	}
@@ -952,6 +973,7 @@ func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID
 			// flown at; file within them when the aircraft can.
 			return departureChoice{candidate: c, route: r.route,
 				cruise: CruiseLimits{Low: r.minAltitude, High: r.maxAltitude},
+				fit:    fitRealRoute,
 				how:    r.how + " via " + c.dep.Exit.Base()}, nil
 		}
 	}
@@ -972,24 +994,7 @@ func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID
 			}
 		}
 	}
-	for _, substitute := range substituteAirports(departureAirport, destination, pool,
-		publishedDepartureMaxHeadingDifference) {
-		for _, route := range scenarioRoutes(substitute) {
-			if c, ok := departureExit(route, departureAirport, substitute, "", candidates); ok {
-				return departureChoice{candidate: c, route: stripSubstituteTail(route, substitute),
-					how: "nearest route, to " + substitute}, nil
-			}
-		}
-		for _, r := range realDepartureRoutes(departureAirport, substitute, aircraftType, hour, hourKnown) {
-			if c, ok := departureExit(r.route, departureAirport, substitute, r.departureFix, candidates); ok {
-				return departureChoice{candidate: c, route: stripSubstituteTail(r.route, substitute),
-					how: "nearest route, to " + substitute}, nil
-			}
-		}
-	}
 
-	// Nothing is routed anywhere near where this flight is going; the exits
-	// themselves say which way each one leaves.
 	origin, originOK := av.DB.Airports[departureAirport]
 	trueAirport, trueOK := av.DB.Airports[destination]
 	if !originOK || !trueOK {
@@ -997,9 +1002,38 @@ func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID
 			destination)
 	}
 	trueHeading := math.GreatCircleHeading(origin.Location, trueAirport.Location)
+
+	// A borrowed route is only as good as the gate it goes out: the neighbor
+	// lies the right way, but nothing so far says its route leaves that way.
+	// Birmingham stands in for Atlanta from Minneapolis, yet one of its routes
+	// sets off up the northeast gate.
+	towardDestination := func(c candidateDeparture) bool {
+		difference, ok := exitHeadingDifference(c, origin.Location, trueHeading, s.State.NmPerLongitude)
+		return !ok || difference <= publishedSubstituteMaxExitHeadingDifference
+	}
+	for _, substitute := range substituteAirports(departureAirport, destination, pool,
+		publishedDepartureMaxHeadingDifference) {
+		for _, route := range scenarioRoutes(substitute) {
+			if c, ok := departureExit(route, departureAirport, substitute, "", candidates); ok &&
+				towardDestination(c) {
+				return departureChoice{candidate: c, route: stripSubstituteTail(route, substitute),
+					fit: fitNeighborRoute, how: "nearest route, to " + substitute}, nil
+			}
+		}
+		for _, r := range realDepartureRoutes(departureAirport, substitute, aircraftType, hour, hourKnown) {
+			if c, ok := departureExit(r.route, departureAirport, substitute, r.departureFix, candidates); ok &&
+				towardDestination(c) {
+				return departureChoice{candidate: c, route: stripSubstituteTail(r.route, substitute),
+					fit: fitNeighborRoute, how: "nearest route, to " + substitute}, nil
+			}
+		}
+	}
+
+	// Nothing is routed anywhere near where this flight is going; the exits
+	// themselves say which way each one leaves.
 	if c, ok := exitTowardDestination(candidates, origin.Location, trueHeading,
 		s.State.NmPerLongitude); ok {
-		return departureChoice{candidate: c, how: "nearest gate"}, nil
+		return departureChoice{candidate: c, fit: fitNearestGate, how: "nearest gate"}, nil
 	}
 	return departureChoice{}, fmt.Errorf("%w: no modeled departure heads toward %s",
 		errNoScenarioRoute, destination)
@@ -1052,6 +1086,18 @@ func realDepartureRoutes(from, to, aircraftType string, hour int, hourKnown bool
 	return routes
 }
 
+// exitHeadingDifference is how far a candidate's exit fix lies from the
+// direction the flight is really going. A fix the database can't place gets no
+// say either way.
+func exitHeadingDifference(c candidateDeparture, airport math.Point2LL,
+	trueHeading math.TrueHeading, nmPerLongitude float32) (float32, bool) {
+	exit, ok := av.DB.LookupWaypoint(c.dep.Exit.Base())
+	if !ok {
+		return 0, false
+	}
+	return math.HeadingDifference(trueHeading, math.Heading2LL(airport, exit, nmPerLongitude)), true
+}
+
 // exitTowardDestination picks the candidate whose exit fix lies closest in
 // direction to where the flight is really going.
 func exitTowardDestination(candidates []candidateDeparture, airport math.Point2LL,
@@ -1059,13 +1105,8 @@ func exitTowardDestination(candidates []candidateDeparture, airport math.Point2L
 	var best candidateDeparture
 	bestDifference := float32(0)
 	for _, c := range candidates {
-		exit, ok := av.DB.LookupWaypoint(c.dep.Exit.Base())
-		if !ok {
-			continue
-		}
-		difference := math.HeadingDifference(trueHeading,
-			math.Heading2LL(airport, exit, nmPerLongitude))
-		if difference > publishedDepartureMaxHeadingDifference {
+		difference, ok := exitHeadingDifference(c, airport, trueHeading, nmPerLongitude)
+		if !ok || difference > publishedDepartureMaxHeadingDifference {
 			continue
 		}
 		if best.dep == nil || difference < bestDifference {

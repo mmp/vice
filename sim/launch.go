@@ -206,9 +206,8 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 						if e.Source == TrafficSourceScenario || e.DepartureAirport != airport {
 							continue
 						}
-						choice, err := s.findPublishedDeparture(airport, runway, categories,
-							e.ArrivalAirport, e.AircraftType, s.routedPairsIndex().destinationsByOrigin)
-						if err != nil {
+						rwy, _, choice, err := s.resolveScheduledDepartureRunway(e)
+						if err != nil || rwy != runway {
 							continue
 						}
 						slot.Callsign = av.ADSBCallsign(e.Callsign)
@@ -452,9 +451,8 @@ func (s *Sim) RecycleLaunchAircraft(tcw TCW, flight LaunchFlight) error {
 					// The runway is no longer launching; treat the airport as one flow.
 					return true
 				}
-				_, ferr := s.findPublishedDeparture(o.DepartureAirport, flight.Runway, categories,
-					o.ArrivalAirport, o.AircraftType, s.routedPairsIndex().destinationsByOrigin)
-				return ferr == nil
+				rwy, _, _, ferr := s.resolveScheduledDepartureRunway(o)
+				return ferr == nil && rwy == flight.Runway
 			}
 			s.Schedule.Departures = removeScheduledAndShift(s.Schedule.Departures, i,
 				func(o *ScheduledDeparture) *ScheduledFlight { return &o.ScheduledFlight }, sameFlow)

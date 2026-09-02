@@ -265,9 +265,9 @@ func publishedDepartureSim() *Sim {
 
 // seedTestAirports adds airports to av.DB for the duration of the test: the
 // origin at the origin, KTGT due east, KEAS nearly so, KFAR due east but far
-// past KTGT, KNOR due north, and KSOU due south.
+// past KTGT, KNOR due north, KSOU due south, and KSOS a near neighbor of KSOU.
 func seedTestAirports(t *testing.T) {
-	codes := []string{"KORG", "KTGT", "KEAS", "KFAR", "KNOR", "KSOU"}
+	codes := []string{"KORG", "KTGT", "KEAS", "KFAR", "KNOR", "KSOU", "KSOS"}
 	original := make(map[string]av.FAAAirport)
 	for _, code := range codes {
 		if airport, ok := av.DB.Airports[code]; ok {
@@ -293,12 +293,13 @@ func seedTestAirports(t *testing.T) {
 	av.DB.Airports["KFAR"] = av.FAAAirport{Id: "KFAR", Location: nm(300, 0)}
 	av.DB.Airports["KNOR"] = av.FAAAirport{Id: "KNOR", Location: nm(0, 80)}
 	av.DB.Airports["KSOU"] = av.FAAAirport{Id: "KSOU", Location: nm(0, -80)}
+	av.DB.Airports["KSOS"] = av.FAAAirport{Id: "KSOS", Location: nm(10, -75)}
 }
 
-// seedTestRoutes replaces the route database entries for KORG->KTGT for the
-// duration of the test.
-func seedTestRoutes(t *testing.T, routes []av.AirportPairRoute) {
-	pair := av.AirportPair{From: "KORG", To: "KTGT"}
+// seedTestRoutes replaces the route database entries from KORG to the given
+// airport for the duration of the test.
+func seedTestRoutes(t *testing.T, to string, routes []av.AirportPairRoute) {
+	pair := av.AirportPair{From: "KORG", To: to}
 	original, hadOriginal := av.DB.AirportPairRoutes[pair]
 	t.Cleanup(func() {
 		if hadOriginal {
@@ -361,7 +362,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	seedTestExits(t)
 	s := publishedDepartureSim()
 
-	seedTestRoutes(t, []av.AirportPairRoute{
+	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
 		{Route: "KORG NORTH J111 KTGT", Type: "H"},
 	})
 	placement, err := s.resolvePublishedDeparture("KORG", "30L",
@@ -379,7 +380,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 
 	// A CDR names its departure fix explicitly even when the route string
 	// doesn't include the exit.
-	seedTestRoutes(t, []av.AirportPairRoute{
+	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
 		{Route: "KORG ZZZZZ J111 KTGT", DepartureFix: "NORTH", Type: "CDR"},
 	})
 	placement, err = s.resolvePublishedDeparture("KORG", "30L",
@@ -396,7 +397,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	// fall back to the exit lying closest to the flight's direction rather
 	// than dropping it: a scenario that works one corner of an airport has no
 	// reason to model the gate a filed route happens to use.
-	seedTestRoutes(t, []av.AirportPairRoute{
+	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
 		{Route: "KORG WSSST J22 KTGT", Type: "H"},
 	})
 	placement, err = s.resolvePublishedDeparture("KORG", "30L",
@@ -419,7 +420,7 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 	seedTestExits(t)
 	s := publishedDepartureSim()
 
-	seedTestRoutes(t, []av.AirportPairRoute{
+	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
 		{Route: "KORG NORTH J111 KTGT", Type: "H", RNAVRequired: true},
 	})
 
@@ -480,17 +481,18 @@ func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
 	}
 }
 
-// seedTestExits adds the NORTH and EAST fixes to av.DB for the duration of the
-// test, north and east of KORG respectively.
+// seedTestExits adds the NORTH, EAST, and EASTN fixes to av.DB for the
+// duration of the test: north and east of KORG, and one between the two.
 func seedTestExits(t *testing.T) {
+	fixes := []string{"NORTH", "EAST", "EASTN"}
 	original := make(map[string]av.Fix)
-	for _, fix := range []string{"NORTH", "EAST"} {
+	for _, fix := range fixes {
 		if f, ok := av.DB.Fixes[fix]; ok {
 			original[fix] = f
 		}
 	}
 	t.Cleanup(func() {
-		for _, fix := range []string{"NORTH", "EAST"} {
+		for _, fix := range fixes {
 			if f, ok := original[fix]; ok {
 				av.DB.Fixes[fix] = f
 			} else {
@@ -504,6 +506,7 @@ func seedTestExits(t *testing.T) {
 	}
 	av.DB.Fixes["NORTH"] = av.Fix{Id: "NORTH", Location: nm(0, 20)}
 	av.DB.Fixes["EAST"] = av.Fix{Id: "EAST", Location: nm(20, 0)}
+	av.DB.Fixes["EASTN"] = av.Fix{Id: "EASTN", Location: nm(20, 10)}
 }
 
 func TestCompatibleDeparturesSynthesizesPerExit(t *testing.T) {
@@ -679,12 +682,30 @@ func TestResolvePublishedDepartureSubstitutesANearbyDestination(t *testing.T) {
 	}
 }
 
+// A neighbor's route is only worth borrowing if it leaves the way the flight
+// is going. Birmingham stands in for Atlanta out of Minneapolis, but one of its
+// routes sets off up the northeast gate, which is no way to reach either.
+func TestResolvePublishedDepartureRefusesABorrowedWrongWayGate(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	// KSOS is a near neighbor of KSOU, but the only way it is left for goes
+	// the other way entirely.
+	seedTestRoutes(t, "KSOS", []av.AirportPairRoute{{Route: "KORG NORTH J1 KSOS", Type: "H"}})
+	s := publishedDepartureSim()
+
+	_, err := s.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, "KSOU", "B738",
+		makeRoutedPairs().destinationsByOrigin)
+	if !errors.Is(err, errNoScenarioRoute) {
+		t.Errorf("resolvePublishedDeparture to KSOU: err = %v, want errNoScenarioRoute", err)
+	}
+}
+
 // The route database wins over direction when it knows the city pair, and the
 // route's waypoints are located so the aircraft actually flies them.
 func TestResolvePublishedDepartureLocatesRouteWaypoints(t *testing.T) {
 	seedTestAirports(t)
 	seedTestExits(t)
-	seedTestRoutes(t, []av.AirportPairRoute{{Route: "KORG NORTH J1 KTGT", Type: "H"}})
+	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{{Route: "KORG NORTH J1 KTGT", Type: "H"}})
 	s := publishedDepartureSim()
 
 	placement, err := s.resolvePublishedDeparture("KORG", "30L",

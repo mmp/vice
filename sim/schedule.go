@@ -731,7 +731,7 @@ func (s *Sim) spawnScheduledDepartures() {
 			continue
 		}
 
-		runway, categories, err := s.resolveScheduledDepartureRunway(&e)
+		runway, categories, _, err := s.resolveScheduledDepartureRunway(&e)
 		if err != nil {
 			if errors.Is(err, errNoDepartureRunwayEnabled) {
 				// Nothing is launching from this airport right now; leave the
@@ -857,13 +857,15 @@ func (s *Sim) spawnScheduledOverflights() {
 // dropped.
 var errNoDepartureRunwayEnabled = errors.New("no departure runway is enabled")
 
-// resolveScheduledDepartureRunway finds the runway a published departure
-// leaves from: the first enabled runway, in sorted order, whose gates fly it.
-// A published flight leaves through the gate its real route uses, so a flight
-// this runway can't fly waits for one that can; the error distinguishes
-// no-runway-launching (wait) from no-runway-can-ever-fly-it (drop when due).
-func (s *Sim) resolveScheduledDepartureRunway(e *ScheduledDeparture) (av.RunwayID, []string, error) {
+// resolveScheduledDepartureRunway finds the runway a published departure leaves from, along with
+// the exit and route it flies there: of the runways the scenario is launching, the one whose gates
+// suit the flight best, ties going to the first in sorted order.
+func (s *Sim) resolveScheduledDepartureRunway(e *ScheduledDeparture) (av.RunwayID, []string,
+	departureChoice, error) {
 	lc := &s.State.LaunchConfig
+	var best av.RunwayID
+	var bestCategories []string
+	var bestChoice departureChoice
 	var fitErr error
 	launching := false
 	for _, runway := range util.SortedMapKeys(lc.DepartureEnabled[e.DepartureAirport]) {
@@ -872,17 +874,23 @@ func (s *Sim) resolveScheduledDepartureRunway(e *ScheduledDeparture) (av.RunwayI
 			continue
 		}
 		launching = true
-		_, err := s.findPublishedDeparture(e.DepartureAirport, runway, categories,
+		choice, err := s.findPublishedDeparture(e.DepartureAirport, runway, categories,
 			e.ArrivalAirport, e.AircraftType, s.routedPairsIndex().destinationsByOrigin)
-		if err == nil {
-			return runway, categories, nil
+		if err != nil {
+			fitErr = err
+			continue
 		}
-		fitErr = err
+		if best == "" || choice.fit < bestChoice.fit {
+			best, bestCategories, bestChoice = runway, categories, choice
+		}
+	}
+	if best != "" {
+		return best, bestCategories, bestChoice, nil
 	}
 	if !launching {
-		return "", nil, errNoDepartureRunwayEnabled
+		return "", nil, departureChoice{}, errNoDepartureRunwayEnabled
 	}
-	return "", nil, fitErr
+	return "", nil, departureChoice{}, fitErr
 }
 
 // noteCallsignClash reports a published flight discarded because its callsign

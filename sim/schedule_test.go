@@ -434,11 +434,62 @@ func TestScheduledDeparturesResolveTheirRunway(t *testing.T) {
 	toKORD := testScheduledDeparture("DAL1", "KMSP", "KORD", start)
 	toKDEN := testScheduledDeparture("DAL2", "KMSP", "KDEN", start.Add(time.Minute))
 
-	if runway, _, err := s.resolveScheduledDepartureRunway(&toKORD); err != nil || runway != "12L" {
+	if runway, _, _, err := s.resolveScheduledDepartureRunway(&toKORD); err != nil || runway != "12L" {
 		t.Errorf("KORD departure resolves to %q (%v), want 12L", runway, err)
 	}
-	if runway, _, err := s.resolveScheduledDepartureRunway(&toKDEN); err != nil || runway != "30R" {
+	if runway, _, _, err := s.resolveScheduledDepartureRunway(&toKDEN); err != nil || runway != "30R" {
 		t.Errorf("KDEN departure resolves to %q (%v), want 30R", runway, err)
+	}
+}
+
+// The runway a published flight leaves from is the one whose gates fly its own
+// route, not merely the first one that can come up with something. KMSP is the
+// case that caught this: 12L sorts first and has no southeast gate, so an
+// Atlanta flight borrowed Birmingham's route out the northeast one while 12R,
+// which flies the real Atlanta route, went untried.
+func TestScheduledDeparturesPreferTheRunwayThatFliesTheirRoute(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{{Route: "KORG EAST J1 KTGT", Type: "H"}})
+	seedTestRoutes(t, "KEAS", []av.AirportPairRoute{{Route: "KORG EASTN J2 KEAS", Type: "H"}})
+
+	s := &Sim{State: &CommonState{
+		NmPerLongitude: testNmPerLongitude,
+		DynamicState: DynamicState{
+			LaunchConfig: LaunchConfig{
+				DepartureEnabled: map[string]map[av.RunwayID]map[string]bool{
+					"KORG": {"12L": {"jet": true}, "30R": {"jet": true}},
+				},
+			},
+		},
+		Airports: map[string]*av.Airport{
+			"KORG": {
+				ExitCategories: map[av.ExitID]string{"EASTN": "jet", "EAST": "jet"},
+				DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+					// 12L sorts first but only reaches KTGT by way of KEAS.
+					"12L": {"EASTN": {{}}},
+					"30R": {"EAST": {{}}},
+				},
+			},
+		},
+		DepartureRunways: []DepartureRunway{
+			{Airport: "KORG", Runway: "12L", Category: "jet"},
+			{Airport: "KORG", Runway: "30R", Category: "jet"},
+		},
+	}}
+
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	e := testScheduledDeparture("DAL1", "KORG", "KTGT", start)
+	e.AircraftType = "B738"
+	runway, _, choice, err := s.resolveScheduledDepartureRunway(&e)
+	if err != nil {
+		t.Fatalf("resolveScheduledDepartureRunway: %v", err)
+	}
+	if runway != "30R" {
+		t.Errorf("resolved to runway %q (%s), want 30R, which flies the KTGT route", runway, choice.how)
+	}
+	if choice.candidate.dep.Exit != "EAST" {
+		t.Errorf("left through %q (%s), want EAST", choice.candidate.dep.Exit, choice.how)
 	}
 }
 
