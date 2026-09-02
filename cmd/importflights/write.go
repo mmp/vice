@@ -9,6 +9,7 @@
 package main
 
 import (
+	"cmp"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -30,6 +31,7 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 	files, flightCount, bytes := 0, 0, 0
 	var intervals []util.TimeInterval
 	written := make(map[string]bool)
+	balances := make(map[string]balance)
 
 	if !dryRun {
 		if err := os.MkdirAll(dir, 0o755); err != nil {
@@ -69,6 +71,7 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 		if len(flights) == 0 {
 			continue
 		}
+		noteBalance(balances, flights)
 		intervals = append(intervals, av.FlightIntervals(flights)...)
 
 		encoded, err := av.EncodeFlights(flights)
@@ -105,6 +108,7 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 			month, len(imp.daysPresent[month]), daysInMonth(year, m), commas(int64(droppedMonths[month])))
 	}
 	reportFlightGaps(intervals)
+	reportImbalance(balances)
 
 	verb := "Wrote"
 	if dryRun {
@@ -153,6 +157,65 @@ func removeStaleFiles(dir string, written map[string]bool) error {
 		fmt.Printf("%s: removed, this import has no flights for it\n", name)
 	}
 	return nil
+}
+
+// balance is how many departures and arrivals an airport ended up with.
+type balance struct{ departures, arrivals int }
+
+func noteBalance(balances map[string]balance, flights []av.Flight) {
+	for _, f := range flights {
+		b := balances[f.Airport]
+		if f.Departure {
+			b.departures++
+		} else {
+			b.arrivals++
+		}
+		balances[f.Airport] = b
+	}
+}
+
+// minBalancedFlights is how much traffic an airport needs before its balance
+// says anything; a field with a handful of flights is lopsided by chance.
+const minBalancedFlights = 1000
+
+// reportImbalance names the airports whose departures and arrivals are furthest
+// from even. Over months of data an airport's are close to even, since an
+// aircraft that lands somewhere leaves again, so a lopsided one is the import
+// having lost half of that airport's traffic: whatever it is that keeps its
+// departures from being recognized doesn't keep its arrivals from being.
+func reportImbalance(balances map[string]balance) {
+	type entry struct {
+		airport string
+		balance
+		ratio float64
+	}
+
+	var airports []entry
+	for airport, b := range balances {
+		if b.departures+b.arrivals < minBalancedFlights {
+			continue
+		}
+		fewer := max(min(b.departures, b.arrivals), 1)
+		airports = append(airports, entry{airport, b, float64(max(b.departures, b.arrivals)) /
+			float64(fewer)})
+	}
+	if len(airports) == 0 {
+		return
+	}
+
+	slices.SortFunc(airports, func(a, b entry) int {
+		if c := cmp.Compare(b.ratio, a.ratio); c != 0 {
+			return c
+		}
+		return cmp.Compare(a.airport, b.airport)
+	})
+
+	fmt.Printf("Airports furthest from an even split of departures and arrivals, which is " +
+		"where traffic goes missing:\n")
+	for _, e := range airports[:min(10, len(airports))] {
+		fmt.Printf("  %-5s %9s departures %9s arrivals  %.1fx\n", e.airport,
+			commas(int64(e.departures)), commas(int64(e.arrivals)), e.ratio)
+	}
 }
 
 // reportFlightGaps names the stretches the data has no flights at all for. They
