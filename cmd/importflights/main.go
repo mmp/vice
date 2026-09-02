@@ -30,7 +30,7 @@
 //
 // Usage:
 //
-//	importflights [-out dir] [-mincoverage f] [-dryrun] <flights.parquet>...
+//	importflights [-out dir] [-mincoverage f] [-dryrun] [-calibrate] <flights.parquet>...
 
 package main
 
@@ -48,6 +48,8 @@ func main() {
 	minCoverage := flag.Float64("mincoverage", 0.9,
 		"`fraction` of a month's days the input must cover for its flights to be written")
 	dryRun := flag.Bool("dryrun", false, "report what would be written without writing it")
+	calibrate := flag.Bool("calibrate", false, "measure how well a track's position picks an "+
+		"airport out of a list of candidates, instead of importing")
 	flag.Parse()
 
 	if flag.NArg() == 0 {
@@ -63,6 +65,9 @@ func main() {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
+	if *calibrate {
+		imp.calibration = makeCalibration()
+	}
 
 	for _, path := range flag.Args() {
 		if err := readFlights(path, imp); err != nil {
@@ -71,7 +76,13 @@ func main() {
 		}
 	}
 
+	if imp.calibration != nil {
+		imp.calibration.report()
+		return
+	}
+
 	imp.repairSuspectTypes()
+
 	imp.report()
 
 	if err := writeFlightData(*out, imp, *minCoverage, *dryRun); err != nil {

@@ -54,61 +54,139 @@ func TestParseRoute(t *testing.T) {
 	}
 }
 
+// at and over are the two ways an end of a track comes out: the aircraft was at
+// the airport, or the airport was merely the nearest of several candidates.
+func at(airport string) endpoint   { return endpoint{airport: airport, atAirport: true} }
+func over(airport string) endpoint { return endpoint{airport: airport} }
+
 func TestResolveEndpoints(t *testing.T) {
 	for _, tc := range []struct {
 		name                string
-		origins             []string
-		destinations        []string
+		origin, destination trackEnd
 		route               []string
-		origin, destination string
-		ok                  bool
+		from, to            endpoint
 	}{
 		{
-			name: "both known", origins: []string{"KMSP"}, destinations: []string{"KSTL"},
-			origin: "KMSP", destination: "KSTL", ok: true,
+			name: "both known", origin: noTrack("KMSP"), destination: noTrack("KSTL"),
+			from: at("KMSP"), to: at("KSTL"),
 		},
 		{
-			name: "both known, route ignored", origins: []string{"KMSP"}, destinations: []string{"KSTL"},
-			route: []string{"KORD", "KATL"}, origin: "KMSP", destination: "KSTL", ok: true,
+			name: "both known, itinerary ignored", origin: noTrack("KMSP"),
+			destination: noTrack("KSTL"), route: []string{"KORD", "KATL"},
+			from: at("KMSP"), to: at("KSTL"),
 		},
 		{
-			name: "origin picked from route", origins: []string{"KACT", "KAUS", "KBBD"},
-			destinations: []string{"KMSP"}, route: []string{"KAUS", "KMSP"},
-			origin: "KAUS", destination: "KMSP", ok: true,
+			name: "origin picked from itinerary", origin: noTrack("KACT", "KAUS", "KBBD"),
+			destination: noTrack("KMSP"), route: []string{"KAUS", "KMSP"},
+			from: at("KAUS"), to: at("KMSP"),
 		},
 		{
-			name: "leg picked from round trip", origins: []string{"KMSP"},
-			destinations: []string{"KBOI", "KTWF"}, route: []string{"KMSP", "KBOI", "KMSP"},
-			origin: "KMSP", destination: "KBOI", ok: true,
+			name: "leg picked from round trip", origin: noTrack("KMSP"),
+			destination: noTrack("KBOI", "KTWF"), route: []string{"KMSP", "KBOI", "KMSP"},
+			from: at("KMSP"), to: at("KBOI"),
 		},
 		{
-			name: "no track, single leg route", route: []string{"KMSP", "KSTL"},
-			origin: "KMSP", destination: "KSTL", ok: true,
+			name: "no track, single leg itinerary", route: []string{"KMSP", "KSTL"},
+			from: at("KMSP"), to: at("KSTL"),
 		},
 		{
 			name: "no track, ambiguous round trip", route: []string{"KMSP", "KAUS", "KMSP"},
 		},
 		{
-			name: "ambiguous both ends, no route", origins: []string{"KACT", "KAUS"},
-			destinations: []string{"KMSP", "KSTL"},
+			name:   "ambiguous both ends, nothing to place them with",
+			origin: noTrack("KACT", "KAUS"), destination: noTrack("KMSP", "KSTL"),
 		},
 		{
-			name: "route disagrees with track", origins: []string{"KMSP"},
-			destinations: []string{"KSTL", "KORD"}, route: []string{"KATL", "KMCO"},
+			// The origin is certain even though the itinerary is about some
+			// other flight, so the departure survives; nothing says which of
+			// the two destinations it flew to.
+			name: "itinerary disagrees with the track", origin: noTrack("KMSP"),
+			destination: noTrack("KSTL", "KORD"), route: []string{"KATL", "KMCO"},
+			from: at("KMSP"),
 		},
 		{
 			name: "nothing at all",
 		},
+		{
+			// The flight this whole change is about: a general aviation
+			// departure from a cluster of airports, with no itinerary to say
+			// which one.
+			name:   "clustered origin, on the ground",
+			origin: onGround(vanNuys, "KBUR", "KVNY", "KWHP"), destination: noTrack("KMSP"),
+			from: at("KVNY"), to: at("KMSP"),
+		},
+		{
+			name:   "clustered origin, low over the field",
+			origin: aloft(vanNuys, 1500, "KBUR", "KVNY", "KWHP"), destination: noTrack("KMSP"),
+			from: at("KVNY"), to: at("KMSP"),
+		},
+		{
+			// High enough that the track could have started anywhere, so Van
+			// Nuys is only good enough to be the far end of someone else's
+			// flight.
+			name:   "clustered origin, at altitude",
+			origin: aloft(vanNuys, 6000, "KBUR", "KVNY", "KWHP"), destination: noTrack("KMSP"),
+			from: over("KVNY"), to: at("KMSP"),
+		},
+		{
+			// Without the itinerary coming first this would resolve to Van
+			// Nuys, fail the guard, and lose a Burbank departure we have today.
+			name:   "itinerary outranks the nearest airport",
+			origin: aloft(vanNuys, 6000, "KBUR", "KVNY", "KWHP"), destination: noTrack("KLAS"),
+			route: []string{"KBUR", "KLAS"}, from: at("KBUR"), to: at("KLAS"),
+		},
+		{
+			name:        "both ends ambiguous, each placed on its own",
+			origin:      onGround(vanNuys, "KBUR", "KVNY", "KWHP"),
+			destination: onGround(minneapolis, "KMSP", "KORD"),
+			from:        at("KVNY"), to: at("KMSP"),
+		},
+		{
+			name:   "a candidate the airport database doesn't have is passed over",
+			origin: onGround(vanNuys, "KZZZ", "KVNY"), destination: noTrack("KMSP"),
+			from: at("KVNY"), to: at("KMSP"),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			origin, destination, ok := resolveEndpoints(tc.origins, tc.destinations, tc.route)
-			if ok != tc.ok {
-				t.Fatalf("ok = %v, expected %v", ok, tc.ok)
-			}
-			if ok && (origin != tc.origin || destination != tc.destination) {
-				t.Errorf("got %s-%s, expected %s-%s", origin, destination, tc.origin, tc.destination)
+			from, to := resolveEndpoints(tc.origin, tc.destination, tc.route, testAirports)
+			if from != tc.from || to != tc.to {
+				t.Errorf("got %+v -> %+v, expected %+v -> %+v", from, to, tc.from, tc.to)
 			}
 		})
+	}
+}
+
+func TestParseTrackEnd(t *testing.T) {
+	// A track end the source data has nothing for blanks every one of its
+	// columns together.
+	if e := parseTrackEnd("-", "-", "-", "-"); e.candidates != nil || e.hasPosition ||
+		e.hasHeight || e.onGround {
+		t.Errorf("an empty track end came out as %+v", e)
+	}
+
+	e := parseTrackEnd("['KVNY']", "34.21", "-118.49", "ground")
+	if !slices.Equal(e.candidates, []string{"KVNY"}) {
+		t.Errorf("candidates = %v", e.candidates)
+	}
+	if !e.hasPosition || e.position != (math.Point2LL{-118.49, 34.21}) {
+		t.Errorf("position = %v, %v", e.position, e.hasPosition)
+	}
+	if !e.onGround || e.hasHeight {
+		t.Errorf("an aircraft on the ground came out as %+v", e)
+	}
+
+	if e := parseTrackEnd("['KVNY']", "34.21", "-118.49", "5675"); !e.hasHeight ||
+		e.height != 5675 || e.onGround {
+		t.Errorf("an airborne aircraft came out as %+v", e)
+	}
+
+	// strconv reads "nan" as a number, and a NaN latitude would poison every
+	// distance it was measured against.
+	if v, ok := parseFloat("nan"); ok {
+		t.Errorf(`parseFloat("nan") = %v, %v; expected it to be refused`, v, ok)
+	}
+	if e := parseTrackEnd("['KVNY']", "nan", "nan", "nan"); e.hasPosition || e.hasHeight {
+		t.Errorf("a track end of NaNs came out as %+v", e)
 	}
 }
 
@@ -229,16 +307,47 @@ func TestParseTime(t *testing.T) {
 // couple of US airports, one abroad, and the made-up ones the Academy flies,
 // which carry no country of their own just as custom_airports.json leaves them.
 var testAirports = map[string]av.FAAAirport{
-	"KMSP": {Country: "US", Location: math.Point2LL{-93.22, 44.88}},
-	"KORD": {Country: "US", Location: math.Point2LL{-87.90, 41.98}},
-	"KEWR": {Country: "US", Location: math.Point2LL{-74.17, 40.69}},
-	"KTEB": {Country: "US", Location: math.Point2LL{-74.06, 40.85}},
-	"CYYZ": {Country: "CA", Location: math.Point2LL{-79.63, 43.68}},
+	"KMSP": {Country: "US", Elevation: 841, Location: math.Point2LL{-93.22, 44.88}},
+	"KORD": {Country: "US", Elevation: 672, Location: math.Point2LL{-87.90, 41.98}},
+	"KEWR": {Country: "US", Elevation: 18, Location: math.Point2LL{-74.17, 40.69}},
+	"KTEB": {Country: "US", Elevation: 9, Location: math.Point2LL{-74.06, 40.85}},
+	"KLAS": {Country: "US", Elevation: 2181, Location: math.Point2LL{-115.15, 36.08}},
+	// Van Nuys, Burbank and Whiteman sit within a few miles of each other, so a
+	// track at any of them lists all three. This is the cluster whose general
+	// aviation departures used to be thrown away for want of an itinerary.
+	"KVNY": {Country: "US", Elevation: 802, Location: math.Point2LL{-118.49, 34.21}},
+	"KBUR": {Country: "US", Elevation: 778, Location: math.Point2LL{-118.36, 34.20}},
+	"KWHP": {Country: "US", Elevation: 1003, Location: math.Point2LL{-118.41, 34.26}},
+	"CYYZ": {Country: "CA", Elevation: 569, Location: math.Point2LL{-79.63, 43.68}},
 	"KAAC": {Location: math.Point2LL{-95.68, 36.17}},
 	"KBRT": {Location: math.Point2LL{-95.94, 36.45}},
 	"KJKE": {Location: math.Point2LL{-95.62, 35.92}},
 	"4Y3":  {Location: math.Point2LL{-95.35, 36.39}},
 	"4V4":  {Location: math.Point2LL{-95.39, 35.98}},
+}
+
+// The Los Angeles cluster's fields, for tracks that begin or end at them.
+var (
+	vanNuys     = testAirports["KVNY"].Location
+	minneapolis = testAirports["KMSP"].Location
+)
+
+// onGround builds a track end for an aircraft the source data saw on the ground
+// at p, near the given candidate airports.
+func onGround(p math.Point2LL, candidates ...string) trackEnd {
+	return trackEnd{candidates: candidates, position: p, hasPosition: true, onGround: true}
+}
+
+// aloft builds a track end for an aircraft seen at p, the given number of feet
+// above sea level.
+func aloft(p math.Point2LL, feet float32, candidates ...string) trackEnd {
+	return trackEnd{candidates: candidates, position: p, hasPosition: true,
+		height: feet, hasHeight: true}
+}
+
+// noTrack builds a track end the source data gives no position for.
+func noTrack(candidates ...string) trackEnd {
+	return trackEnd{candidates: candidates}
 }
 
 // testPerformance is an aircraft database holding just the types the tests fly,
@@ -387,6 +496,111 @@ func TestOnlyFAAAirportsAreImported(t *testing.T) {
 	if imp.notFAAAirport != 1 {
 		t.Errorf("notFAAAirport = %d, expected 1", imp.notFAAAirport)
 	}
+}
+
+// A flight whose origin could be any of a cluster of airports still records the
+// landing at the destination it names outright: losing the takeoff is no reason
+// to lose the landing with it.
+func TestAmbiguousOriginStillArrives(t *testing.T) {
+	imp := makeTestImporter(t)
+	row := flightRow{
+		Callsign: "DAL88", AircraftType: "B738",
+		OriginTime:     "2026-03-30 14:04:59",
+		OriginAirports: "['KBUR', 'KVNY', 'KWHP']",
+		OriginLatitude: "34.21", OriginLongitude: "-118.49", OriginAltitude: "6000",
+		DestinationTime:     "2026-03-30 16:00:00",
+		DestinationAirports: "['KMSP']",
+		DestinationLatitude: "44.88", DestinationLongitude: "-93.22",
+		DestinationAltitude: "ground",
+		Route:               "nan",
+	}
+	imp.processRow(&row)
+
+	if n := len(imp.buckets[bucket{cell: cellOf("KVNY"), departure: true}]); n != 0 {
+		t.Errorf("KVNY has %d departures; the track was too high to say it was there", n)
+	}
+	arrivals := imp.buckets[bucket{cell: cellOf("KMSP")}]
+	if len(arrivals) != 1 {
+		t.Fatalf("KMSP has %d arrivals, expected 1", len(arrivals))
+	}
+	if got := imp.symbols.string(arrivals[0].other); got != "KVNY" {
+		t.Errorf("arrived from %q, expected KVNY", got)
+	}
+	if imp.notAtItsAirport != 1 {
+		t.Errorf("notAtItsAirport = %d, expected 1", imp.notAtItsAirport)
+	}
+}
+
+// The same flight seen on the ground at Van Nuys is recorded as departing it.
+// This is the traffic the import used to throw away for want of an itinerary.
+func TestDepartureFromClusteredAirport(t *testing.T) {
+	imp := makeTestImporter(t)
+	row := flightRow{
+		Callsign: "DAL88", AircraftType: "B738",
+		OriginTime:     "2026-03-30 14:04:59",
+		OriginAirports: "['KBUR', 'KVNY', 'KWHP']",
+		OriginLatitude: "34.21", OriginLongitude: "-118.49", OriginAltitude: "ground",
+		DestinationTime:     "2026-03-30 16:00:00",
+		DestinationAirports: "['KMSP']",
+		DestinationLatitude: "44.88", DestinationLongitude: "-93.22",
+		DestinationAltitude: "ground",
+		Route:               "nan",
+	}
+	imp.processRow(&row)
+
+	departures := imp.buckets[bucket{cell: cellOf("KVNY"), departure: true}]
+	if len(departures) != 1 {
+		t.Fatalf("KVNY has %d departures, expected 1", len(departures))
+	}
+	if got := imp.symbols.string(departures[0].airport); got != "KVNY" {
+		t.Errorf("departed %q, expected KVNY", got)
+	}
+	if imp.notAtItsAirport != 0 {
+		t.Errorf("notAtItsAirport = %d, expected none", imp.notAtItsAirport)
+	}
+}
+
+// Each way an endpoint can come up short has its own counter, so that an import
+// report says which one cost the traffic.
+func TestSkipCounters(t *testing.T) {
+	base := flightRow{
+		Callsign: "DAL88", AircraftType: "B738",
+		OriginTime:      "2026-03-30 14:04:59",
+		DestinationTime: "2026-03-30 16:00:00",
+		Route:           "nan",
+	}
+	blank := func(row *flightRow) {
+		row.OriginAirports, row.OriginLatitude = "-", "-"
+		row.OriginLongitude, row.OriginAltitude = "-", "-"
+		row.DestinationAirports, row.DestinationLatitude = "-", "-"
+		row.DestinationLongitude, row.DestinationAltitude = "-", "-"
+	}
+
+	// Neither end of the track can be placed.
+	imp := makeTestImporter(t)
+	row := base
+	blank(&row)
+	imp.processRow(&row)
+	if imp.noEndpoints != 1 {
+		t.Errorf("noEndpoints = %d, expected 1", imp.noEndpoints)
+	}
+
+	// The destination is ours and certain, but nothing says where the flight
+	// came from, so there is no arrival to record.
+	imp = makeTestImporter(t)
+	row = base
+	blank(&row)
+	row.DestinationAirports = "['KMSP']"
+	row.DestinationLatitude, row.DestinationLongitude = "44.88", "-93.22"
+	row.DestinationAltitude = "ground"
+	imp.processRow(&row)
+	if imp.noFarEndpoint != 1 {
+		t.Errorf("noFarEndpoint = %d, expected 1", imp.noFarEndpoint)
+	}
+	if n := len(imp.buckets[bucket{cell: cellOf("KMSP")}]); n != 0 {
+		t.Errorf("KMSP has %d arrivals, expected none", n)
+	}
+
 }
 
 // A made-up airport is filed alongside the real one whose traffic it borrows,

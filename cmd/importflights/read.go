@@ -22,16 +22,23 @@ import (
 	"github.com/parquet-go/parquet-go"
 )
 
-// flightRow is the subset of the source data's columns that we need. Declaring
-// only these means the reader never decodes the position and altitude columns.
+// flightRow is the subset of the source data's columns that we need. Every
+// column in the file is a string, the positions and altitudes included: the
+// source data has no null values and writes "-" or "nan" for what it lacks.
 type flightRow struct {
-	Callsign            string `parquet:"Callsign"`
-	AircraftType        string `parquet:"AC_Type"`
-	OriginTime          string `parquet:"Track_Origin_DateTime_UTC"`
-	OriginAirports      string `parquet:"Track_Origin_ApplicableAirports"`
-	DestinationTime     string `parquet:"Track_Destination_DateTime_UTC"`
-	DestinationAirports string `parquet:"Track_Destination_ApplicableAirports"`
-	Route               string `parquet:"Route_Validation_Based_on_Callsign"`
+	Callsign             string `parquet:"Callsign"`
+	AircraftType         string `parquet:"AC_Type"`
+	OriginTime           string `parquet:"Track_Origin_DateTime_UTC"`
+	OriginAirports       string `parquet:"Track_Origin_ApplicableAirports"`
+	OriginLatitude       string `parquet:"Track_Origin_Lat"`
+	OriginLongitude      string `parquet:"Track_Origin_Lon"`
+	OriginAltitude       string `parquet:"Track_Origin_FL_Ft"`
+	DestinationTime      string `parquet:"Track_Destination_DateTime_UTC"`
+	DestinationAirports  string `parquet:"Track_Destination_ApplicableAirports"`
+	DestinationLatitude  string `parquet:"Track_Destination_Lat"`
+	DestinationLongitude string `parquet:"Track_Destination_Lon"`
+	DestinationAltitude  string `parquet:"Track_Destination_FL_Ft"`
+	Route                string `parquet:"Route_Validation_Based_on_Callsign"`
 }
 
 // noCallsign is what the source data records for a flight whose callsign was
@@ -183,9 +190,16 @@ type importer struct {
 	// is how partially covered months are recognized.
 	daysPresent map[string]map[string]bool
 
+	// calibration, when the -calibrate flag is given, measures how well a
+	// track point picks an airport out of a list of candidates instead of
+	// importing anything.
+	calibration *calibration
+
 	rowsRead            int64
 	recordsEmitted      int64
-	unresolvedEndpoints int64
+	noEndpoints         int64
+	notAtItsAirport     int64
+	noFarEndpoint       int64
 	sameEndpoints       int64
 	notFAAAirport       int64
 	badCallsign         int64
@@ -258,21 +272,48 @@ func (imp *importer) processRow(row *flightRow) {
 	imp.rowsRead++
 	imp.noteDay(row.OriginTime)
 
-	origin, destination, ok := resolveEndpoints(parseAirportList(row.OriginAirports),
-		parseAirportList(row.DestinationAirports), parseRoute(row.Route))
-	if !ok {
-		imp.unresolvedEndpoints++
+	origin := parseTrackEnd(row.OriginAirports, row.OriginLatitude, row.OriginLongitude,
+		row.OriginAltitude)
+	destination := parseTrackEnd(row.DestinationAirports, row.DestinationLatitude,
+		row.DestinationLongitude, row.DestinationAltitude)
+	route := parseRoute(row.Route)
+
+	if imp.calibration != nil {
+		imp.calibration.observe(origin, destination, route, imp.airports)
 		return
 	}
-	if origin == destination {
+
+	from, to := resolveEndpoints(origin, destination, route, imp.airports)
+	if !from.known() && !to.known() {
+		imp.noEndpoints++
+		return
+	}
+	if from.airport == to.airport {
 		imp.sameEndpoints++
 		return
 	}
 
-	originCell, departure := imp.cellFor(origin)
-	destinationCell, arrival := imp.cellFor(destination)
-	if !departure && !arrival {
+	originCell, atOrigin := imp.cellFor(from.airport)
+	destinationCell, atDestination := imp.cellFor(to.airport)
+	if !atOrigin && !atDestination {
 		imp.notFAAAirport++
+		return
+	}
+
+	// A record is filed at an airport only if the track says the aircraft was
+	// really there. The airport at the other end only has to be in the right
+	// direction, since all a sim does with it is pick a departure gate or the
+	// flow an arrival comes in on, so a flight whose far end is merely the
+	// nearest of several candidates is still worth having.
+	departure := atOrigin && from.atAirport && to.known()
+	arrival := atDestination && to.atAirport && from.known()
+	if atOrigin && !departure {
+		imp.countUnfiled(from.atAirport)
+	}
+	if atDestination && !arrival {
+		imp.countUnfiled(to.atAirport)
+	}
+	if !departure && !arrival {
 		return
 	}
 
@@ -303,19 +344,30 @@ func (imp *importer) processRow(row *flightRow) {
 	}
 
 	if departure {
-		if _, ok := imp.airports[destination]; !ok {
+		if _, ok := imp.airports[to.airport]; !ok {
 			imp.unknownOtherAirport++
 		} else {
-			imp.add(originCell, origin, destination, callsign, aircraftType, row.OriginTime, true)
+			imp.add(originCell, from.airport, to.airport, callsign, aircraftType,
+				row.OriginTime, true)
 		}
 	}
 	if arrival {
-		if _, ok := imp.airports[origin]; !ok {
+		if _, ok := imp.airports[from.airport]; !ok {
 			imp.unknownOtherAirport++
 		} else {
-			imp.add(destinationCell, destination, origin, callsign, aircraftType,
+			imp.add(destinationCell, to.airport, from.airport, callsign, aircraftType,
 				row.DestinationTime, false)
 		}
+	}
+}
+
+// countUnfiled records why a record that would have been filed at one of our
+// airports wasn't.
+func (imp *importer) countUnfiled(atAirport bool) {
+	if atAirport {
+		imp.noFarEndpoint++
+	} else {
+		imp.notAtItsAirport++
 	}
 }
 
@@ -445,27 +497,34 @@ func (imp *importer) engineClass(acType uint32) string {
 	return ""
 }
 
+// skipped is one line of the import report: how many of something were thrown
+// away, and why.
+type skipped struct {
+	what string
+	n    int64
+}
+
 // report summarizes what was read and what had to be thrown away, plus what
-// was imported that Vice doesn't yet know how to fly.
+// was imported that Vice doesn't yet know how to fly. Flights and records are
+// counted apart: a flight between two of our airports is two records, and
+// either of them can be lost while the other is kept.
 func (imp *importer) report() {
-	fmt.Printf("\nRead %s flights, kept %s\n", commas(imp.rowsRead), commas(imp.recordsEmitted))
-	fmt.Printf("Skipped:\n")
-	for _, s := range []struct {
-		what string
-		n    int64
-	}{
+	fmt.Printf("\nRead %s flights, kept %s records\n", commas(imp.rowsRead),
+		commas(imp.recordsEmitted))
+
+	printSkipped("Flights skipped", []skipped{
 		{"neither end an FAA airport", imp.notFAAAirport},
-		{"couldn't tell where it flew between", imp.unresolvedEndpoints},
-		{"no aircraft type", imp.missingAircraftType},
+		{"couldn't place either end of the track", imp.noEndpoints},
 		{"departed and arrived at the same airport", imp.sameEndpoints},
-		{"other airport not in the database", imp.unknownOtherAirport},
+		{"no aircraft type", imp.missingAircraftType},
 		{"unusable callsign", imp.badCallsign},
+	})
+	printSkipped("Records not filed", []skipped{
+		{"the track wasn't at the airport it would be filed at", imp.notAtItsAirport},
+		{"nothing said where the other end was", imp.noFarEndpoint},
+		{"the airport at the other end isn't in the database", imp.unknownOtherAirport},
 		{"unusable timestamp", imp.badTimestamp},
-	} {
-		if s.n > 0 {
-			fmt.Printf("  %12s  %s\n", commas(s.n), s.what)
-		}
-	}
+	})
 
 	if len(imp.unknownTypes) > 0 {
 		fmt.Printf("\n%d aircraft types not in openscope-aircraft.json "+
@@ -490,6 +549,19 @@ func (imp *importer) report() {
 	}
 
 	fmt.Printf("\n")
+}
+
+// printSkipped prints the lines of the report that have anything to say.
+func printSkipped(title string, counts []skipped) {
+	if !slices.ContainsFunc(counts, func(s skipped) bool { return s.n > 0 }) {
+		return
+	}
+	fmt.Printf("%s:\n", title)
+	for _, s := range counts {
+		if s.n > 0 {
+			fmt.Printf("  %12s  %s\n", commas(s.n), s.what)
+		}
+	}
 }
 
 // printCounts lists the keys of counts from most to least common, showing the
@@ -520,77 +592,6 @@ func printCounts(counts map[string]int64) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-// parseAirportList parses the airport lists in the source data, which are
-// formatted as Python lists: "['KMSP']" or "['KACT', 'KAUS']". A track that
-// started or ended too far from any airport has "-" instead. The source data
-// predates any airport the FAA has since re-identified, so the identifiers are
-// canonicalized here rather than at every place they are used.
-func parseAirportList(value string) []string {
-	var airports []string
-	var current strings.Builder
-
-	flush := func() {
-		if current.Len() == 4 {
-			airports = append(airports, av.CurrentAirportId(current.String()))
-		}
-		current.Reset()
-	}
-
-	for _, ch := range value {
-		if ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' {
-			current.WriteRune(ch)
-		} else {
-			flush()
-		}
-	}
-	flush()
-
-	return airports
-}
-
-// parseRoute parses the route the source data derived from the flight's
-// callsign, e.g. "KMSP-KSTL" or the multi-leg "KMSP-KAUS-KMSP". It is "-" when
-// the callsign wasn't found.
-func parseRoute(value string) []string {
-	var route []string
-	for airport := range strings.SplitSeq(value, "-") {
-		if len(airport) == 4 {
-			route = append(route, av.CurrentAirportId(airport))
-		}
-	}
-	return route
-}
-
-// resolveEndpoints determines where a flight departed from and arrived at.
-// Tracks that were first or last seen away from an airport give a list of
-// candidates rather than a single airport; in that case the route derived from
-// the callsign picks out the leg that was flown. Flights that remain ambiguous
-// are not usable.
-func resolveEndpoints(origins, destinations, route []string) (origin, destination string, ok bool) {
-	if len(origins) == 1 && len(destinations) == 1 {
-		return origins[0], destinations[0], true
-	}
-
-	// Consider each leg of the route in turn, keeping those consistent with
-	// the airports the track itself suggests.
-	for i := 0; i+1 < len(route); i++ {
-		from, to := route[i], route[i+1]
-		if len(origins) > 0 && !slices.Contains(origins, from) {
-			continue
-		}
-		if len(destinations) > 0 && !slices.Contains(destinations, to) {
-			continue
-		}
-		if ok && (from != origin || to != destination) {
-			// More than one leg of the route fits.
-			return "", "", false
-		}
-		origin, destination, ok = from, to, true
-	}
-
-	return origin, destination, ok
-}
 
 // timeLayout is the format of the timestamps in the source data. They are UTC.
 const timeLayout = "2006-01-02 15:04:05"
