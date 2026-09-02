@@ -51,77 +51,77 @@
         "9": {
           "SGF": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h110 SGF"
+            "waypoints": "KCID-27/h110 SGF"
           },
           "BENNR": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h070 BENNR"
+            "waypoints": "KCID-27/h070 BENNR"
           },
           "MNOSO": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h070 MNOSO"
+            "waypoints": "KCID-27/h070 MNOSO"
           },
           "OBH": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h110 OBH"
+            "waypoints": "KCID-27/h110 OBH"
           },
           "KOOOP": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h110 KOOOP"
+            "waypoints": "KCID-27/h110 KOOOP"
           },
           "BDF": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h110 BDF"
+            "waypoints": "KCID-27/h110 BDF"
           },
           "GBG": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h110 GBG"
+            "waypoints": "KCID-27/h110 GBG"
           },
           "IOW": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h110 IOW"
+            "waypoints": "KCID-27/h110 IOW"
           },
           "OVR": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID27/h110 OVR"
+            "waypoints": "KCID-27/h110 OVR"
           }
         },
         "27": {
           "SGF": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h250 SGF"
+            "waypoints": "KCID-9/h250 SGF"
           },
           "BENNR": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h290 BENNR"
+            "waypoints": "KCID-9/h290 BENNR"
           },
           "MNOSO": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h290 MNOSO"
+            "waypoints": "KCID-9/h290 MNOSO"
           },
           "OBH": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h250 OBH"
+            "waypoints": "KCID-9/h250 OBH"
           },
           "KOOOP": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h250 KOOOP"
+            "waypoints": "KCID-9/h250 KOOOP"
           },
           "BDF": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h250 BDF"
+            "waypoints": "KCID-9/h250 BDF"
           },
           "GBG": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h250 GBG"
+            "waypoints": "KCID-9/h250 GBG"
           },
           "IOW": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h250 IOW"
+            "waypoints": "KCID-9/h250 IOW"
           },
           "OVR": {
             "cleared_altitude": 5000,
-            "waypoints": "_CID9/h250 OVR"
+            "waypoints": "KCID-9/h250 OVR"
           }
         }
       },
@@ -538,13 +538,6 @@
     }
   },
   "default_scenario": "CID - 27",
-  "fixes": {
-    "_CID": "41.8846944,-91.7108056",
-    "_CID9": "N041.53.04.346,W091.43.41.447",
-    "_CID27": "N041.53.02.931,W091.41.50.238",
-    "_CID31": "N041.45.54.396,W091.33.10.805",
-    "_CID13": "N042.00.20.118,W091.51.55.063"
-  },
   "name": "KCID",
   "scenarios": {
     "CID - 27": {

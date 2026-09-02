@@ -43,7 +43,7 @@
           "LHO": {
             "cleared_altitude": 10000,
             "sid": "CPR3",
-            "waypoints": "_CPR3/h230 LHO"
+            "waypoints": "KCPR-3/h230 LHO"
           }
         },
         "26": {
@@ -267,13 +267,6 @@
     }
   },
   "default_scenario": "Land West",
-  "fixes": {
-    "_CPR": "42.9058611,-106.4636389",
-    "_CPR3": "N042.53.36.600,W106.28.30.000",
-    "_CPR8": "N042.54.30.000,W106.28.54.000",
-    "_CPR21": "N042.54.48.600,W106.26.55.800",
-    "_CPR26": "N042.54.31.800,W106.26.58.800"
-  },
   "name": "KCPR",
   "scenarios": {
     "Land West": {

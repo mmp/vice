@@ -4191,7 +4191,7 @@
       "tower_list": 2,
       "atpa_volumes": {
         "4": {
-          "runway_threshold": "HOU4",
+          "runway_threshold": "KHOU-4",
           "heading": 41,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -4204,7 +4204,7 @@
           "2.5nm_distance": 10
         },
         "22": {
-          "runway_threshold": "HOU22",
+          "runway_threshold": "KHOU-22",
           "heading": 221,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -4231,7 +4231,7 @@
           "2.5nm_distance": 10
         },
         "31L": {
-          "runway_threshold": "HOU31L",
+          "runway_threshold": "KHOU-31L",
           "heading": 311,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -5885,7 +5885,7 @@
       "tower_list": 1,
       "atpa_volumes": {
         "8L": {
-          "runway_threshold": "IAH8L",
+          "runway_threshold": "KIAH-8L",
           "heading": 87,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -5899,7 +5899,7 @@
           "2.5nm_distance": 10
         },
         "8R": {
-          "runway_threshold": "IAH8R",
+          "runway_threshold": "KIAH-8R",
           "heading": 87,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -5913,7 +5913,7 @@
           "2.5nm_distance": 10
         },
         "9": {
-          "runway_threshold": "IAH9",
+          "runway_threshold": "KIAH-9",
           "heading": 87,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -5927,7 +5927,7 @@
           "2.5nm_distance": 10
         },
         "26L": {
-          "runway_threshold": "IAH26L",
+          "runway_threshold": "KIAH-26L",
           "heading": 267,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -5941,7 +5941,7 @@
           "2.5nm_distance": 10
         },
         "26R": {
-          "runway_threshold": "IAH26R",
+          "runway_threshold": "KIAH-26R",
           "heading": 267,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -5955,7 +5955,7 @@
           "2.5nm_distance": 10
         },
         "27": {
-          "runway_threshold": "IAH27",
+          "runway_threshold": "KIAH-27",
           "heading": 267,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -5969,7 +5969,7 @@
           "2.5nm_distance": 10
         },
         "15R": {
-          "runway_threshold": "IAH15R",
+          "runway_threshold": "KIAH-15R",
           "heading": 149,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -5982,7 +5982,7 @@
           "2.5nm_distance": 10
         },
         "33R": {
-          "runway_threshold": "IAH33R",
+          "runway_threshold": "KIAH-33R",
           "heading": 329,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -7566,18 +7566,7 @@
     }
   },
   "fixes": {
-    "IAH8L": "N030.00.25.831,W095.21.31.058",
-    "IAH8R": "N029.59.36.317,W095.21.17.490",
-    "IAH9": "N029.58.39.332,W095.20.02.398",
-    "IAH26L": "N029.59.36.187,W095.19.32.982",
-    "IAH26R": "N030.00.25.735,W095.19.52.346",
-    "IAH27": "N029.58.38.975,W095.18.09.843",
-    "IAH15R": "N029.59.15.965,W095.21.41.852",
-    "IAH33R": "N029.57.30.956,W095.20.24.151",
-    "HOU4": "N029.38.21.491,W095.17.05.711",
-    "HOU22": "N029.39.13.807,W095.16.07.840",
-    "HOU13R": "N029.38.21.491,W095.17.05.711",
-    "HOU31L": "N029.38.11.823,W095.16.06.989"
+    "HOU13R": "N029.38.21.491,W095.17.05.711"
   },
   "inbound_flows": {
     "BAYYY5": {

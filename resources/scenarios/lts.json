@@ -153,7 +153,7 @@
           },
           "LTS": {
             "cleared_altitude": 5000,
-            "waypoints": "_LTS36L/h176"
+            "waypoints": "KLTS-36L/h176"
           },
           "CDS": {
             "cleared_altitude": 9000,
@@ -179,7 +179,7 @@
           },
           "LTS": {
             "cleared_altitude": 5000,
-            "waypoints": "_LTS18R/h356"
+            "waypoints": "KLTS-18R/h356"
           },
           "CDS": {
             "cleared_altitude": 9000,
@@ -480,9 +480,7 @@
   },
   "default_scenario": "LTS - 36",
   "fixes": {
-    "ARIP": "N034.11.48.000,W101.47.56.400",
-    "_LTS18R": "34.68247868479536, -99.27382790483871",
-    "_LTS36L": "34.64555660294955, -99.2738296064445"
+    "ARIP": "N034.11.48.000,W101.47.56.400"
   },
   "name": "KLTS",
   "scenarios": {

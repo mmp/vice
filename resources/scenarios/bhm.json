@@ -681,12 +681,6 @@
     }
   },
   "default_scenario": "KBHM Runway 24",
-  "fixes": {
-    "_BHM_18": "N33.34.23.594,W86.44.49.909",
-    "_BHM_36": "N33.33.13.358,W86.44.49.918",
-    "_BHM_6": "N33.33.17.344,W86.46.17.782",
-    "_BHM_24": "N33.34.24.480,W86.44.20.840"
-  },
   "magnetic_adjustment": -1,
   "name": "KBHM",
   "scenarios": {

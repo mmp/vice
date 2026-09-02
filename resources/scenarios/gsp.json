@@ -42,7 +42,7 @@
           },
           "HRS,DGESS,SPA,SOTHH": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_22/h038"
+            "waypoints": "KGSP-22/h038"
           }
         },
         "22": {
@@ -58,7 +58,7 @@
           },
           "HRS,DGESS,SPA,SOTHH": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSP_4/h219"
+            "waypoints": "KGSP-4/h219"
           }
         }
       },
@@ -395,10 +395,6 @@
     }
   },
   "default_scenario": "KGSP Runway 22",
-  "fixes": {
-    "_GSP_4": "N34.52.58.430,W82.13.42.760",
-    "_GSP_22": "N34.54.30.210,W82.12.32.492"
-  },
   "name": "KGSP",
   "scenarios": {
     "KGSP Runway 22": {

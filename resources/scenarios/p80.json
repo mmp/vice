@@ -5617,7 +5617,6 @@
   },
   "default_scenario": "KPDX West",
   "magnetic_adjustment": -1.1,
-  "fixes": {},
   "name": "P80",
   "scenarios": {
     "KPDX West": {

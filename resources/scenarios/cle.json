@@ -1865,7 +1865,7 @@
     "BRWNZ4_FEEDERN": {
       "arrivals": [
         {
-          "waypoints": "RDZON/a17000+/ho WINNZ/a14000+ GOLIC BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210 CRTEZ/a3000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
+          "waypoints": "RDZON/a17000+/ho WINNZ/a14000+ GOLIC BRWNZ/a11000-14000/s280 MAAAK/a7000+ KLLAY/a6000-7000 JIIMM/a5000-6000 HICKR/a5000/s210 CRTEZ/a3000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 KCLE-6L/a773",
           "cruise_altitude": 33000,
           "star": "BRWNZ4",
           "initial_controller": "C66",
@@ -1919,7 +1919,7 @@
     "BRWNZ4_FEEDERS": {
       "arrivals": [
         {
-          "waypoints": "RDZON/a17000+/ho WINNZ/a14000+ GOLIC BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799",
+          "waypoints": "RDZON/a17000+/ho WINNZ/a14000+ GOLIC BRWNZ/a11000-14000/s280 TRRKY/a7000+ DEEKN/a5000-6000 LLROY/a5000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 KCLE-24R/a799",
           "cruise_altitude": 33000,
           "star": "BRWNZ4",
           "initial_controller": "C66",
@@ -2276,7 +2276,7 @@
     "ROKNN3_FEEDERN": {
       "arrivals": [
         {
-          "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 KWENE/a6000+/s210 DAYZD/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
+          "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280 DEVOH/a8000-14000 KINCS/a7000-9000 KWENE/a6000+/s210 DAYZD/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 KCLE-6L/a773",
           "star": "ROKNN4",
           "initial_controller": "C66",
           "initial_altitude": 21000,
@@ -2343,7 +2343,7 @@
     "ROKNN3_FEEDERS": {
       "arrivals": [
         {
-          "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 CLAPT/a7000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a799",
+          "waypoints": "HEADZ/a17000-23000/ho ROKNN/a10000-17000/s280 DEVOH/a8000-14000 SEPLN/a8000-10000 CLAPT/a7000/s210 _BRWNZ4_24R_FINAL/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 KCLE-24R/a799",
           "star": "ROKNN4",
           "initial_controller": "C66",
           "initial_altitude": 21000,
@@ -2672,7 +2672,7 @@
     "ROLLN2_FEEDERN": {
       "arrivals": [
         {
-          "waypoints": "GEDDY/a17000-23000/s280/ho ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
+          "waypoints": "GEDDY/a17000-23000/s280/ho ROLLN/a11000-17000 STOHN/a9000-14000 LVISS/a8000-9000 NIXXS/a6000 GROHL/a6000/s210/h236 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 KCLE-6L/a773",
           "star": "ROLLN2",
           "initial_controller": "C66",
           "initial_altitude": 21000,
@@ -2752,7 +2752,7 @@
     "ROLLN2_FEEDERS": {
       "arrivals": [
         {
-          "waypoints": "GEDDY/a17000-23000/s280/ho ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h56 _ROLLN2_24R_FINAL SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a780",
+          "waypoints": "GEDDY/a17000-23000/s280/ho ROLLN/a11000-17000 STOHN/a9000-14000 MEEAT CLAPT/a7000/s210/h56 _ROLLN2_24R_FINAL SHERK/a3000 GROZA/a2000 FIDIN/a1600 KCLE-24R/a780",
           "star": "ROLLN2",
           "initial_controller": "C66",
           "initial_altitude": 21000,
@@ -3103,7 +3103,7 @@
     "TRYBE4_FEEDERN": {
       "arrivals": [
         {
-          "waypoints": "LFTON/a21000/ho HFNER/a18000/s280 TRYBE/a17000/s280 NAGGY/a10000 CLVTO/a7000 JAAIN/a7000/s210 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 _CLE_6L/a773",
+          "waypoints": "LFTON/a21000/ho HFNER/a18000/s280 TRYBE/a17000/s280 NAGGY/a10000 CLVTO/a7000 JAAIN/a7000/s210 FUZED/a4000 BETLL/a2900 DEVYL/a2300 BOEEE/a2000 KCLE-6L/a773",
           "star": "TRYBE4",
           "initial_controller": "C66",
           "initial_altitude": 21000,
@@ -3166,7 +3166,7 @@
     "TRYBE4_FEEDERS": {
       "arrivals": [
         {
-          "waypoints": "LFTON/a21000/ho HFNER/a18000/s280 TRYBE/a12000/s280 NAGGY/a9000 BUDRW/a6000/s240 WIINR/a5000 ANJEY/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 _CLE_24R/a780",
+          "waypoints": "LFTON/a21000/ho HFNER/a18000/s280 TRYBE/a12000/s280 NAGGY/a9000 BUDRW/a6000/s240 WIINR/a5000 ANJEY/a4000 SHERK/a3000 GROZA/a2000 FIDIN/a1600 KCLE-24R/a780",
           "star": "TRYBE4",
           "initial_controller": "C66",
           "initial_altitude": 21000,
@@ -3396,14 +3396,6 @@
   },
   "default_scenario": "KCLE North",
   "fixes": {
-    "_CLE_6L": "N41.23.57.100,W81.52.28.342",
-    "_CLE_6R": "N41.23.49.253,W81.52.15.184",
-    "_CLE_24L": "N41.24.55.373,W81.50.30.915",
-    "_CLE_24R": "N41.24.56.841,W81.50.53.974",
-    "_CLE_28": "N41.24.57.684,W81.49.50.255",
-    "_CLE_10": "N41.25.01.576,W81.51.20.707",
-    "_CGF_24": "N41.34.10.850,W81.28.45.406",
-    "_CGF_6": "N41.33.34.827,W81.29.41.485",
     "_BRWNZ4_24R_FINAL": "N41.39.58.387,W81.32.07.173",
     "_ROLLN2_24R_FINAL": "N41.34.00.993,W81.28.26.780"
   },

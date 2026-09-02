@@ -126,12 +126,12 @@
           "LUFSE": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_26/h105 LUFSE V389 ADANE BRK/delete"
+            "waypoints": "KDEN-26/h105 LUFSE V389 ADANE BRK/delete"
           },
           "GLL": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_26/h065 GLL V89 CYS/delete"
+            "waypoints": "KDEN-26/h065 GLL V89 CYS/delete"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
@@ -203,12 +203,12 @@
           "LUFSE": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_7/h245 LUFSE V389 ADANE BRK/delete"
+            "waypoints": "KDEN-7/h245 LUFSE V389 ADANE BRK/delete"
           },
           "GLL": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_7/h290 GLL V89 CYS/delete"
+            "waypoints": "KDEN-7/h290 GLL V89 CYS/delete"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
@@ -284,12 +284,12 @@
           "LUFSE": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_35R/h135 LUFSE V389 ADANE BRK/delete"
+            "waypoints": "KDEN-35R/h135 LUFSE V389 ADANE BRK/delete"
           },
           "GLL": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_35R/h135 GLL V89 CYS/delete"
+            "waypoints": "KDEN-35R/h135 GLL V89 CYS/delete"
           },
           "DDRTH": {
             "cleared_altitude": 10000,
@@ -363,12 +363,12 @@
           "LUFSE": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_16R/h335 LUFSE V389 ADANE BRK/delete"
+            "waypoints": "KDEN-16R/h335 LUFSE V389 ADANE BRK/delete"
           },
           "GLL": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_16R/h025 GLL V89 CYS/delete"
+            "waypoints": "KDEN-16R/h025 GLL V89 CYS/delete"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
@@ -443,12 +443,12 @@
           "LUFSE": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_16L/h335 LUFSE V389 ADANE BRK/delete"
+            "waypoints": "KDEN-16L/h335 LUFSE V389 ADANE BRK/delete"
           },
           "GLL": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_16L/h025 GLL V89 CYS/delete"
+            "waypoints": "KDEN-16L/h025 GLL V89 CYS/delete"
           },
           "DDRTH": {
             "cleared_altitude": 23000,
@@ -524,12 +524,12 @@
           "LUFSE": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_34R/h135 LUFSE V389 ADANE BRK/delete"
+            "waypoints": "KDEN-34R/h135 LUFSE V389 ADANE BRK/delete"
           },
           "GLL": {
             "cleared_altitude": 10000,
             "sid": "DEN3",
-            "waypoints": "_DEN_34R/h190 GLL V89 CYS/delete"
+            "waypoints": "KDEN-34R/h190 GLL V89 CYS/delete"
           },
           "DDRTH": {
             "cleared_altitude": 10000,
@@ -11065,20 +11065,6 @@
     }
   },
   "default_scenario": "North Calm",
-  "fixes": {
-    "_DEN_7": "N39.50.27.450,W104.43.36.001",
-    "_DEN_8": "N39.52.39.283,W104.39.44.066",
-    "_DEN_16L": "N39.53.49.330,W104.41.12.444",
-    "_DEN_16R": "N39.53.44.845,W104.41.45.790",
-    "_DEN_17L": "N39.51.53.779,W104.38.28.488",
-    "_DEN_17R": "N39.51.40.447,W104.39.36.581",
-    "_DEN_25": "N39.50.26.345,W104.41.02.124",
-    "_DEN_26": "N39.52.38.162,W104.37.10.014",
-    "_DEN_34L": "N39.51.06.724,W104.41.47.766",
-    "_DEN_34R": "N39.51.50.786,W104.41.13.802",
-    "_DEN_35L": "N39.49.41.914,W104.39.38.005",
-    "_DEN_35R": "N39.49.55.270,W104.38.30.043"
-  },
   "name": "KDEN",
   "scenarios": {
     "North Calm": {

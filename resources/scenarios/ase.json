@@ -335,9 +335,6 @@
     }
   },
   "default_scenario": "VMC 15",
-  "fixes": {
-    "_ASE": "39.223202,-106.869003"
-  },
   "name": "KASE",
   "scenarios": {
     "VMC 15": {

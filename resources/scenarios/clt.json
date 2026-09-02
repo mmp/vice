@@ -25,7 +25,7 @@
       },
       "atpa_volumes": {
         "1R": {
-          "runway_threshold": "_CLT_1R",
+          "runway_threshold": "KCLT-1R",
           "heading": 3,
           "max_heading_deviation": 40,
           "floor": 0,
@@ -39,7 +39,7 @@
           "2.5nm_distance": 10
         },
         "1L": {
-          "runway_threshold": "_CLT_1L",
+          "runway_threshold": "KCLT-1L",
           "heading": 3,
           "max_heading_deviation": 40,
           "floor": 0,
@@ -53,7 +53,7 @@
           "2.5nm_distance": 10
         },
         "36R": {
-          "runway_threshold": "_CLT_36R",
+          "runway_threshold": "KCLT-36R",
           "heading": 3,
           "max_heading_deviation": 40,
           "floor": 0,
@@ -67,7 +67,7 @@
           "2.5nm_distance": 10
         },
         "19L": {
-          "runway_threshold": "_CLT_19L",
+          "runway_threshold": "KCLT-19L",
           "heading": 183,
           "max_heading_deviation": 40,
           "floor": 0,
@@ -81,7 +81,7 @@
           "2.5nm_distance": 10
         },
         "18L": {
-          "runway_threshold": "_CLT_18L",
+          "runway_threshold": "KCLT-18L",
           "heading": 183,
           "max_heading_deviation": 40,
           "floor": 0,
@@ -95,7 +95,7 @@
           "2.5nm_distance": 10
         },
         "19R": {
-          "runway_threshold": "_CLT_19R",
+          "runway_threshold": "KCLT-19R",
           "heading": 183,
           "max_heading_deviation": 40,
           "floor": 0,
@@ -183,22 +183,22 @@
           "NOOKS": {
             "cleared_altitude": 8000,
             "sid": "ICONS7",
-            "waypoints": "_CLT_36R/ho1W N035.02.48.901,W080.56.14.697/a8000- GILFN/hoJ30 ICONS/a16000+"
+            "waypoints": "KCLT-36R/ho1W N035.02.48.901,W080.56.14.697/a8000- GILFN/hoJ30 ICONS/a16000+"
           },
           "PITRW": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7",
-            "waypoints": "_CLT_36R/ho1W N035.02.48.901,W080.56.14.697/a8000- HMMPY KWEEN UNJAM/a16000+/hoJ30 TASTY"
+            "waypoints": "KCLT-36R/ho1W N035.02.48.901,W080.56.14.697/a8000- HMMPY KWEEN UNJAM/a16000+/hoJ30 TASTY"
           },
           "UNJAM": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7",
-            "waypoints": "_CLT_36R/ho1W N035.02.48.901,W080.56.14.697/a8000- HMMPY KWEEN/a16000+/hoJ30"
+            "waypoints": "KCLT-36R/ho1W N035.02.48.901,W080.56.14.697/a8000- HMMPY KWEEN/a16000+/hoJ30"
           },
           "JENDO,GANDT": {
             "cleared_altitude": 8000,
             "sid": "BEAVY8",
-            "waypoints": "_CLT_36R/ho1W N035.02.48.901,W080.56.14.697/a8000- UGANG/hoJ30 BEAVY/a16000+ ANDYS"
+            "waypoints": "KCLT-36R/ho1W N035.02.48.901,W080.56.14.697/a8000- UGANG/hoJ30 BEAVY/a16000+ ANDYS"
           }
         },
         "36R": {
@@ -256,27 +256,27 @@
           "RDU,TYI,NUTZE": {
             "cleared_altitude": 8000,
             "sid": "BARMY7",
-            "waypoints": "_CLT_18L/ho1E N035.16.16.300,W080.55.00.265 N035.19.49.311,W080.44.14.928 GULFY/a12000+/hoW32 BARMY BATTA"
+            "waypoints": "KCLT-18L/ho1E N035.16.16.300,W080.55.00.265 N035.19.49.311,W080.44.14.928 GULFY/a12000+/hoW32 BARMY BATTA"
           },
           "AUDII": {
             "cleared_altitude": 8000,
             "sid": "KILNS7",
-            "waypoints": "_CLT_18L/ho1E N035.16.16.300,W080.55.00.265 N035.19.49.311,W080.44.14.928 LILIC/a12000+/hoW32 KILNS DURST"
+            "waypoints": "KCLT-18L/ho1E N035.16.16.300,W080.55.00.265 N035.19.49.311,W080.44.14.928 LILIC/a12000+/hoW32 KILNS DURST"
           },
           "LILLS": {
             "cleared_altitude": 8000,
             "sid": "LILLS5",
-            "waypoints": "_CLT_18L/ho1E N035.16.16.300,W080.55.00.265 N035.19.49.311,W080.44.14.928 N035.15.00.027,W080.30.15.820/hoW32 LILLS/a12000+"
+            "waypoints": "KCLT-18L/ho1E N035.16.16.300,W080.55.00.265 N035.19.49.311,W080.44.14.928 N035.15.00.027,W080.30.15.820/hoW32 LILLS/a12000+"
           },
           "PITRW": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7",
-            "waypoints": "_CLT_18L/ho1E N035.17.01.302,W080.54.44.033 N035.18.27.463,W080.42.25.614 N035.12.52.640,W080.37.48.292/a12000+/hoJ30 KWEEN UNJAM TASTY"
+            "waypoints": "KCLT-18L/ho1E N035.17.01.302,W080.54.44.033 N035.18.27.463,W080.42.25.614 N035.12.52.640,W080.37.48.292/a12000+/hoJ30 KWEEN UNJAM TASTY"
           },
           "UNJAM": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7",
-            "waypoints": "_CLT_18L/ho1E N035.17.01.302,W080.54.44.033 N035.18.27.463,W080.42.25.614 N035.12.52.640,W080.37.48.292/a12000+/hoJ30 KWEEN"
+            "waypoints": "KCLT-18L/ho1E N035.17.01.302,W080.54.44.033 N035.18.27.463,W080.42.25.614 N035.12.52.640,W080.37.48.292/a12000+/hoJ30 KWEEN"
           }
         },
         "19L": {
@@ -359,7 +359,7 @@
           "JENDO,GANDT": {
             "cleared_altitude": 8000,
             "sid": "BEAVY8",
-            "waypoints": "_CLT_1R/ho1W N035.02.49.738,W080.56.15.741/a8000- BEAVY/a12000+/hoJ30 ANDYS"
+            "waypoints": "KCLT-1R/ho1W N035.02.49.738,W080.56.15.741/a8000- BEAVY/a12000+/hoJ30 ANDYS"
           },
           "TNSLY": {
             "cleared_altitude": 8000,
@@ -409,17 +409,17 @@
           "NOOKS": {
             "cleared_altitude": 8000,
             "sid": "ICONS7",
-            "waypoints": "_CLT_1R/ho1W N035.02.49.738,W080.56.15.741/a8000- GILFN/a12000+/hoJ30 ICONS"
+            "waypoints": "KCLT-1R/ho1W N035.02.49.738,W080.56.15.741/a8000- GILFN/a12000+/hoJ30 ICONS"
           },
           "PITRW": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7",
-            "waypoints": "_CLT_1R/ho1E N035.02.49.738,W080.56.15.741/a8000- KWEEN/a12000+/hoJ30 UNJAM TASTY"
+            "waypoints": "KCLT-1R/ho1E N035.02.49.738,W080.56.15.741/a8000- KWEEN/a12000+/hoJ30 UNJAM TASTY"
           },
           "UNJAM": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7",
-            "waypoints": "_CLT_1R/ho1E N035.02.49.738,W080.56.15.741/a8000- HMMPY/a12000+ KWEEN/hoJ30"
+            "waypoints": "KCLT-1R/ho1E N035.02.49.738,W080.56.15.741/a8000- HMMPY/a12000+ KWEEN/hoJ30"
           }
         },
         "1R": {
@@ -477,42 +477,42 @@
           "JENDO,GANDT": {
             "cleared_altitude": 8000,
             "sid": "BEAVY8",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- N035.06.08.426,W081.14.21.465/a12000+/hoJ30 UGANG BEAVY ANDYS"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- N035.06.08.426,W081.14.21.465/a12000+/hoJ30 UGANG BEAVY ANDYS"
           },
           "TNSLY": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- BOBZY/a12000+/hoC43"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- BOBZY/a12000+/hoC43"
           },
           "BOBZY": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- YNGUN/a12000+/hoC43"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- YNGUN/a12000+/hoC43"
           },
           "BNA": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- BOBZY/a12000+/hoC43 BRAYN REWET N35.30.21.805,W83.40.13.558 N35.34.23.264,W83.58.12.992 HALLS BAZOO"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- BOBZY/a12000+/hoC43 BRAYN REWET N35.30.21.805,W83.40.13.558 N35.34.23.264,W83.58.12.992 HALLS BAZOO"
           },
           "IPTAY": {
             "cleared_altitude": 8000,
             "sid": "ESTRR7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- GINNN/a12000+/hoC43 ESTRR DEBIE IPTAY"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- GINNN/a12000+/hoC43 ESTRR DEBIE IPTAY"
           },
           "CUBIM": {
             "cleared_altitude": 8000,
             "sid": "JOJJO7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 JOJJO/a12000+/hoC43 WLLGO BENBY N35.59.16.749,W82.09.07.761 N36.18.34.759,W82.08.06.608 TIELR"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 JOJJO/a12000+/hoC43 WLLGO BENBY N35.59.16.749,W82.09.07.761 N36.18.34.759,W82.08.06.608 TIELR"
           },
           "DOOGE": {
             "cleared_altitude": 8000,
             "sid": "JOJJO7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 JOJJO/a12000+/hoC43 MTCHL"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 JOJJO/a12000+/hoC43 MTCHL"
           },
           "NOONN": {
             "cleared_altitude": 8000,
             "sid": "JOJJO7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 JOJJO/a12000+/hoC43 WLLGO BENBY SLEPP"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 JOJJO/a12000+/hoC43 WLLGO BENBY SLEPP"
           },
           "FILDS,SMIAM": {
             "cleared_altitude": 8000,
@@ -527,17 +527,17 @@
           "NOOKS": {
             "cleared_altitude": 8000,
             "sid": "ICONS7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- N035.06.08.426,W081.14.21.465/a12000+/hoJ30 ICONS NOOKS"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- N035.06.08.426,W081.14.21.465/a12000+/hoJ30 ICONS NOOKS"
           },
           "PITRW": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- N035.06.08.426,W081.14.21.465/a12000+/hoJ30 KWEEN UNJAM TASTY"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- N035.06.08.426,W081.14.21.465/a12000+/hoJ30 KWEEN UNJAM TASTY"
           },
           "UNJAM": {
             "cleared_altitude": 8000,
             "sid": "KWEEN7",
-            "waypoints": "_CLT_19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- N035.06.08.426,W081.14.21.465/a12000+/hoJ30 KWEEN"
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- N035.06.08.426,W081.14.21.465/a12000+/hoJ30 KWEEN"
           }
         }
       },
@@ -6773,13 +6773,7 @@
   "fixes": {
     "_CLT_18L_183_2": "N35.10.03.516,W80.55.51.553",
     "_CLT_19L_183_2": "N35.09.58.368,W80.57.02.192",
-    "_CLT_1R_330_2": "N35.15.18.449,W80.58.31.387",
-    "_CLT_19R": "N35.13.31.052,W80.58.02.588",
-    "_CLT_19L": "N35.13.38.658,W80.57.11.371",
-    "_CLT_18L": "N35.13.30.753,W80.56.10.259",
-    "_CLT_36R": "N35.12.03.474,W80.56.02.769",
-    "_CLT_1R": "N35.12.00.006,W80.57.02.868",
-    "_CLT_1L": "N35.12.02.249,W80.57.55.061"
+    "_CLT_1R_330_2": "N35.15.18.449,W80.58.31.387"
   },
   "name": "KCLT",
   "scenarios": {

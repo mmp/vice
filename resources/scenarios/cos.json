@@ -38,25 +38,25 @@
         "35L": {
           "LUFSE,BYEBI,DRAKE,JEWLS,PUB,BRK,HBU,LAA,BRESH,ALS,DVV,FQF": {
             "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
+            "waypoints": "KCOS-17R/h352"
           }
         },
         "35R": {
           "LUFSE,BYEBI,DRAKE,JEWLS,PUB,BRK,HBU,LAA,BRESH,ALS,DVV,FQF": {
             "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
+            "waypoints": "KCOS-17L/h010"
           }
         },
         "17L": {
           "LUFSE,BYEBI,DRAKE,JEWLS,PUB,BRK,HBU,LAA,BRESH,ALS,DVV,FQF": {
             "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
+            "waypoints": "KCOS-35R/h150"
           }
         },
         "17R": {
           "LUFSE,BYEBI,DRAKE,JEWLS,PUB,BRK,HBU,LAA,BRESH,ALS,DVV,FQF": {
             "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
+            "waypoints": "KCOS-35L/h172"
           }
         }
       },
@@ -536,11 +536,6 @@
   },
   "default_scenario": "North VMC",
   "fixes": {
-    "_COS": "38.805801,-104.700996",
-    "_COS35R": "N038.46.41.554,W104.41.09.122",
-    "_COS35L": "N038.47.36.280,W104.42.58.381",
-    "_COS17L": "N038.49.00.367,W104.41.08.408",
-    "_COS17R": "N038.49.27.489,W104.42.59.589",
     "KFLY-33": "N038.56.27.030,W104.34.05.819",
     "KFLY-15": "N038.56.56.912,W104.34.18.728"
   },

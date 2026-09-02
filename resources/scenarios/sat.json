@@ -49,7 +49,7 @@
           "CRP": {
             "cleared_altitude": 5000,
             "sid": "BOWIE8",
-            "waypoints": "_SAT_13R/h128 SAT YENNS THX CRP"
+            "waypoints": "KSAT-31L/h128 SAT YENNS THX CRP"
           },
           "LRD": {
             "cleared_altitude": 5000,
@@ -1038,8 +1038,6 @@
   },
   "default_scenario": "SAT DEP 13R + 04 LAND 13R",
   "fixes": {
-    "_SAT_13R": "29.527223,-98.46555366",
-    "_SAT_04": "29.54094245,-98.452436533",
     "_SAT_31L": "29.542745916666668,98.48554113333333",
     "_SAT_31R": "29.540299,98.47769833333334",
     "_BAZ_31": "29.71511,98.04994053333333",

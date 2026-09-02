@@ -1560,74 +1560,74 @@
           "runway": "5",
           "full_name": "TACAN Y Runway 5",
           "type": "RNAV",
-          "waypoints": ["BENGE/iaf/a3000 ZILPI COPNA/arc8NRB AZELO/a2200 ORVAE/a1200/faf GEUMS/a660 KNRB_5"]
+          "waypoints": ["BENGE/iaf/a3000 ZILPI COPNA/arc8NRB AZELO/a2200 ORVAE/a1200/faf GEUMS/a660 KNRB-5"]
         },
         "Y23": {
           "runway": "23",
           "full_name": "TACAN Y Runway 23",
           "type": "RNAV",
-          "waypoints": ["HELES/iaf/a3000/arc10NRB MUKOE/if/a1700 IKECA/a1700/arc10 JERBI/a1100/faf KNRB_23"]
+          "waypoints": ["HELES/iaf/a3000/arc10NRB MUKOE/if/a1700 IKECA/a1700/arc10 JERBI/a1100/faf KNRB-23"]
         }
       },
       "departure_routes": {
         "5": {
           "MMKAY": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_23/h050 MMKAY"
+            "waypoints": "KNRB-23/h050 MMKAY"
           },
           "FOXAM": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_23/h050 FOXAM"
+            "waypoints": "KNRB-23/h050 FOXAM"
           },
           "VIYAP": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_23/h050 VIYAP"
+            "waypoints": "KNRB-23/h050 VIYAP"
           },
           "SSI": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_23/h050 SSI"
+            "waypoints": "KNRB-23/h050 SSI"
           },
           "HABLE": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_23/h050 HABLE"
+            "waypoints": "KNRB-23/h050 HABLE"
           },
           "KENLL": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_23/h050 KENLL"
+            "waypoints": "KNRB-23/h050 KENLL"
           },
           "OCF": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_23/h050 OCF"
+            "waypoints": "KNRB-23/h050 OCF"
           }
         },
         "23": {
           "MMKAY": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_5/h230 MMKAY"
+            "waypoints": "KNRB-5/h230 MMKAY"
           },
           "FOXAM": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_5/h230 FOXAM"
+            "waypoints": "KNRB-5/h230 FOXAM"
           },
           "VIYAP": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_5/h230 VIYAP"
+            "waypoints": "KNRB-5/h230 VIYAP"
           },
           "SSI": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_5/h230 SSI"
+            "waypoints": "KNRB-5/h230 SSI"
           },
           "HABLE": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_5/h230 HABLE"
+            "waypoints": "KNRB-5/h230 HABLE"
           },
           "KENLL": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_5/h230 KENLL"
+            "waypoints": "KNRB-5/h230 KENLL"
           },
           "OCF": {
             "cleared_altitude": 2000,
-            "waypoints": "KNRB_5/h230 OCF"
+            "waypoints": "KNRB-5/h230 OCF"
           }
         }
       },
@@ -3935,12 +3935,6 @@
         }
       ]
     }
-  },
-  "fixes": {
-    "KNRB_5": "N030.23.01.084,W081.25.58.383",
-    "KNRB_23": "N030.23.57.231,W081.24.57.244",
-    "KNEN_12": "N030.21.11.660,W081.52.44.419",
-    "KNEN_30": "N030.20.44.785,W081.51.16.473"
   },
   "default_scenario": "KJAX East, No Vitts",
   "name": "KJAX",

@@ -36,14 +36,14 @@
           "YXU,ROC,SYR,GEE,SFK,JHW,DJB,SLT,DONEO,VAIRS,DAVVK": {
             "cleared_altitude": 10000,
             "sid": "BUF8",
-            "waypoints": "_BUF_5/h235"
+            "waypoints": "KBUF-5/h235"
           }
         },
         "5": {
           "YXU,ROC,SYR,GEE,SFK,JHW,DJB,SLT,DONEO,VAIRS,DAVVK": {
             "cleared_altitude": 10000,
             "sid": "BUF8",
-            "waypoints": "_BUF_23/h055"
+            "waypoints": "KBUF-23/h055"
           }
         }
       },
@@ -256,14 +256,14 @@
           "JHW": {
             "cleared_altitude": 3000,
             "sid": "BUF8",
-            "waypoints": "_IAG_24/h190"
+            "waypoints": "KIAG-24/h190"
           }
         },
         "24": {
           "JHW": {
             "cleared_altitude": 3000,
             "sid": "BUF8",
-            "waypoints": "_IAG_6/h200"
+            "waypoints": "KIAG-6/h200"
           }
         }
       },
@@ -625,14 +625,6 @@
   },
   "default_scenario": "BUF West",
   "fixes": {
-    "_BUF_14": "42.94705366943839, -78.74185481817857",
-    "_BUF_32": "42.93610189463579, -78.72097695570595",
-    "_BUF_5": "42.93119184600002, -78.74170308974597",
-    "_BUF_23": "42.94885286206679, -78.71860998854442",
-    "_IAG_28R": "43.10949636496483, -78.93292997372983",
-    "_IAG_10L": "43.10955188668602, -78.96500267491788",
-    "_IAG_6": "43.10226103373178, -78.9448959800818",
-    "_IAG_24": "43.11045855887879, -78.9314512641936",
     "BENEE_HO": "BENEE@125/20",
     "BUF_HO": "BUF@160/45",
     "DKK_W_HO": "DKK@277/20",

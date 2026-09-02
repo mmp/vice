@@ -4232,10 +4232,6 @@
     }
   },
   "default_scenario": "LAX - West Flow",
-  "fixes": {
-    "_LAX": "33.942501,-118.407997",
-    "_HHR": "N033.55.22.787,W118.20.05.886"
-  },
   "name": "Los Angeles Area",
   "scenarios": {
     "LAX - East Flow": {

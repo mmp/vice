@@ -45,12 +45,12 @@
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_23R/h050 SNEVA FOYTT"
+            "waypoints": "KIND-23R/h050 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_23R/h050 OOM EYTEJ"
+            "waypoints": "KIND-23R/h050 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
@@ -60,7 +60,7 @@
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_23R/h050 MAREO"
+            "waypoints": "KIND-23R/h050 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
@@ -85,19 +85,19 @@
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_23R/h050 TTH"
+            "waypoints": "KIND-23R/h050 TTH"
           }
         },
         "5R": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_23L/h050 SNEVA FOYTT"
+            "waypoints": "KIND-23L/h050 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_23L/h050 OOM EYTEJ"
+            "waypoints": "KIND-23L/h050 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
@@ -107,7 +107,7 @@
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_23L/h050 MAREO"
+            "waypoints": "KIND-23L/h050 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
@@ -132,19 +132,19 @@
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_23L/h050 TTH"
+            "waypoints": "KIND-23L/h050 TTH"
           }
         },
         "14": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_32/h140 SNEVA FOYTT"
+            "waypoints": "KIND-32/h140 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_32/h140 OOM EYTEJ"
+            "waypoints": "KIND-32/h140 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
@@ -154,7 +154,7 @@
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_32/h140 MAREO"
+            "waypoints": "KIND-32/h140 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
@@ -179,19 +179,19 @@
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_32/h140 TTH"
+            "waypoints": "KIND-32/h140 TTH"
           }
         },
         "23L": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_05R/h230 SNEVA FOYTT DAWNN"
+            "waypoints": "KIND-5R/h230 SNEVA FOYTT DAWNN"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_05R/h230 OOM EYTEJ"
+            "waypoints": "KIND-5R/h230 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
@@ -201,7 +201,7 @@
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_05R/h230 MAREO"
+            "waypoints": "KIND-5R/h230 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
@@ -226,19 +226,19 @@
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_05R/h230 TTH"
+            "waypoints": "KIND-5R/h230 TTH"
           }
         },
         "23R": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_05L/h230 SNEVA FOYTT DAWNN"
+            "waypoints": "KIND-5L/h230 SNEVA FOYTT DAWNN"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_05L/h230 OOM EYTEJ"
+            "waypoints": "KIND-5L/h230 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
@@ -248,7 +248,7 @@
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_05L/h230 MAREO"
+            "waypoints": "KIND-5L/h230 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
@@ -273,19 +273,19 @@
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_05L/h230 TTH"
+            "waypoints": "KIND-5L/h230 TTH"
           }
         },
         "32": {
           "DAWNN,MYS,IIU": {
             "cleared_altitude": 5000,
             "sid": "DAWNN1",
-            "waypoints": "_IND_14/h320 SNEVA FOYTT"
+            "waypoints": "KIND-14/h320 SNEVA FOYTT"
           },
           "WEGEE,PXV": {
             "cleared_altitude": 5000,
             "sid": "OOM5",
-            "waypoints": "_IND_14/h320 OOM EYTEJ"
+            "waypoints": "KIND-14/h320 OOM EYTEJ"
           },
           "MAREO": {
             "cleared_altitude": 5000,
@@ -295,7 +295,7 @@
           "BDOCK": {
             "cleared_altitude": 5000,
             "sid": "MAREO1",
-            "waypoints": "_IND_14/h320 MAREO"
+            "waypoints": "KIND-14/h320 MAREO"
           },
           "MEARZ": {
             "cleared_altitude": 5000,
@@ -320,7 +320,7 @@
           "ROCKY,SPI,STL": {
             "cleared_altitude": 5000,
             "sid": "ROCKY1",
-            "waypoints": "_IND_14/h320 TTH"
+            "waypoints": "KIND-14/h320 TTH"
           }
         }
       },
@@ -756,14 +756,6 @@
     }
   },
   "default_scenario": "KIND Southwest",
-  "fixes": {
-    "_IND_05L": "N39.42.23.034, W86.19.14.904",
-    "_IND_05R": "N39.42.00.876, W86.18.15.906",
-    "_IND_14": "N39.44.03.204, W86.17.19.764",
-    "_IND_23L": "N39.43.11.286, W86.16.46.128",
-    "_IND_23R": "N39.43.41.910, W86.17.34.362",
-    "_IND_32": "N39.43.12.744, W86.16.13.392"
-  },
   "name": "KIND",
   "scenarios": {
     "KIND Southwest": {

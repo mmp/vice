@@ -21,168 +21,168 @@
           "FSM": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF32/h139 FSM"
+            "waypoints": "KSGF-32/h139 FSM"
           },
           "CNU": {
             "cleared_altitude": 5000,
             "sid": "WEST",
-            "waypoints": "_SGF32/h139 CNU"
+            "waypoints": "KSGF-32/h139 CNU"
           },
           "MEMFS": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF32/h139 MEMFS"
+            "waypoints": "KSGF-32/h139 MEMFS"
           },
           "EOS": {
             "cleared_altitude": 5000,
             "sid": "WEST",
-            "waypoints": "_SGF32/h139 TUL"
+            "waypoints": "KSGF-32/h139 TUL"
           },
           "SGF": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF32/h139 SGF"
+            "waypoints": "KSGF-32/h139 SGF"
           },
           "WHOLL": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF32/h139 WHOLL"
+            "waypoints": "KSGF-32/h139 WHOLL"
           },
           "ZAVEL": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF32/h139 ZAVEL"
+            "waypoints": "KSGF-32/h139 ZAVEL"
           },
           "YATGU": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF32/h139 YATGU"
+            "waypoints": "KSGF-32/h139 YATGU"
           }
         },
         "32": {
           "FSM": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF14/h319 FSM"
+            "waypoints": "KSGF-14/h319 FSM"
           },
           "CNU": {
             "cleared_altitude": 5000,
             "sid": "WEST",
-            "waypoints": "_SGF14/h319 CNU"
+            "waypoints": "KSGF-14/h319 CNU"
           },
           "MEMFS": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF14/h319 MEMFS"
+            "waypoints": "KSGF-14/h319 MEMFS"
           },
           "EOS": {
             "cleared_altitude": 5000,
             "sid": "WEST",
-            "waypoints": "_SGF14/h319 TUL"
+            "waypoints": "KSGF-14/h319 TUL"
           },
           "SGF": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF14/h319 SGF"
+            "waypoints": "KSGF-14/h319 SGF"
           },
           "WHOLL": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF14/h319 WHOLL"
+            "waypoints": "KSGF-14/h319 WHOLL"
           },
           "ZAVEL": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF14/h319 ZAVEL"
+            "waypoints": "KSGF-14/h319 ZAVEL"
           },
           "YATGU": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF14/h319 YATGU"
+            "waypoints": "KSGF-14/h319 YATGU"
           }
         },
         "2": {
           "FSM": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF20/h019 FSM"
+            "waypoints": "KSGF-20/h019 FSM"
           },
           "CNU": {
             "cleared_altitude": 5000,
             "sid": "WEST",
-            "waypoints": "_SGF20/h019 CNU"
+            "waypoints": "KSGF-20/h019 CNU"
           },
           "MEMFS": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF20/h019 MEMFS"
+            "waypoints": "KSGF-20/h019 MEMFS"
           },
           "EOS": {
             "cleared_altitude": 5000,
             "sid": "WEST",
-            "waypoints": "_SGF20/h019 TUL"
+            "waypoints": "KSGF-20/h019 TUL"
           },
           "SGF": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF20/h019 SGF"
+            "waypoints": "KSGF-20/h019 SGF"
           },
           "WHOLL": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF20/h019 WHOLL"
+            "waypoints": "KSGF-20/h019 WHOLL"
           },
           "ZAVEL": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF20/h019 ZAVEL"
+            "waypoints": "KSGF-20/h019 ZAVEL"
           },
           "YATGU": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF20/h019 YATGU"
+            "waypoints": "KSGF-20/h019 YATGU"
           }
         },
         "20": {
           "FSM": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF2/h199 FSM"
+            "waypoints": "KSGF-2/h199 FSM"
           },
           "CNU": {
             "cleared_altitude": 5000,
             "sid": "WEST",
-            "waypoints": "_SGF2/h199 CNU"
+            "waypoints": "KSGF-2/h199 CNU"
           },
           "MEMFS": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF2/h199 MEMFS"
+            "waypoints": "KSGF-2/h199 MEMFS"
           },
           "EOS": {
             "cleared_altitude": 5000,
             "sid": "WEST",
-            "waypoints": "_SGF2/h199 TUL"
+            "waypoints": "KSGF-2/h199 TUL"
           },
           "SGF": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF2/h199 SGF"
+            "waypoints": "KSGF-2/h199 SGF"
           },
           "WHOLL": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF2/h199 WHOLL"
+            "waypoints": "KSGF-2/h199 WHOLL"
           },
           "ZAVEL": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF2/h199 ZAVEL"
+            "waypoints": "KSGF-2/h199 ZAVEL"
           },
           "YATGU": {
             "cleared_altitude": 5000,
             "sid": "EAST",
-            "waypoints": "_SGF2/h199 YATGU"
+            "waypoints": "KSGF-2/h199 YATGU"
           }
         }
       },
@@ -353,24 +353,24 @@
           "CATIL": {
             "cleared_altitude": 3000,
             "sid": "EAST",
-            "waypoints": "_LBO36/h179"
+            "waypoints": "KLBO-36/h179"
           },
           "SGF": {
             "cleared_altitude": 3000,
             "sid": "WEST",
-            "waypoints": "_LBO36/h179"
+            "waypoints": "KLBO-36/h179"
           }
         },
         "36": {
           "CATIL": {
             "cleared_altitude": 3000,
             "sid": "EAST",
-            "waypoints": "_LBO18/h359"
+            "waypoints": "KLBO-18/h359"
           },
           "SGF": {
             "cleared_altitude": 3000,
             "sid": "WEST",
-            "waypoints": "_LBO18/h359"
+            "waypoints": "KLBO-18/h359"
           }
         }
       },
@@ -594,14 +594,6 @@
     }
   },
   "default_scenario": "Land South",
-  "fixes": {
-    "_SGF14": "N037.15.18.168,W093.24.01.516",
-    "_SGF2": "N037.14.07.856,W093.23.22.322",
-    "_SGF20": "N037.15.10.711,W093.22.49.638",
-    "_SGF32": "N037.14.16.384,W093.23.00.404",
-    "_LBO18": "N037.39.18.668,W092.39.07.421",
-    "_LBO36": "N037.38.27.170,W092.39.09.426"
-  },
   "name": "KSGF",
   "scenarios": {
     "Land South": {

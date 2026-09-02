@@ -37,7 +37,7 @@
           "ZENZI": {
             "cleared_altitude": 4000,
             "sid": "ILEXI4",
-            "waypoints": "_AUS_36R/h140 HOOKK/a5000 ILEXY JAYJO ASHRR ZENZI"
+            "waypoints": "KAUS-36R/h140 HOOKK/a5000 ILEXY JAYJO ASHRR ZENZI"
           },
           "SAYBR": {
             "cleared_altitude": 4000,
@@ -69,7 +69,7 @@
           "ZENZI": {
             "cleared_altitude": 4000,
             "sid": "ILEXI4",
-            "waypoints": "_AUS_18L/h040 HOOKK/a5000 ILEXY JAYJO ASHRR ZENZI"
+            "waypoints": "KAUS-18L/h040 HOOKK/a5000 ILEXY JAYJO ASHRR ZENZI"
           },
           "SAYBR": {
             "cleared_altitude": 4000,
@@ -121,7 +121,7 @@
           "ZENZI": {
             "cleared_altitude": 4000,
             "sid": "ILEXI4",
-            "waypoints": "_AUS_36L/h140 HOOKK/a5000 ILEXY JAYJO ASHRR ZENZI"
+            "waypoints": "KAUS-36L/h140 HOOKK/a5000 ILEXY JAYJO ASHRR ZENZI"
           },
           "SAYBR": {
             "cleared_altitude": 4000,
@@ -153,7 +153,7 @@
           "ZENZI": {
             "cleared_altitude": 4000,
             "sid": "ILEXI4",
-            "waypoints": "_AUS_18R/h040 HOOKK/a5000 ILEXY JAYJO ASHRR ZENZI"
+            "waypoints": "KAUS-18R/h040 HOOKK/a5000 ILEXY JAYJO ASHRR ZENZI"
           },
           "SAYBR": {
             "cleared_altitude": 4000,
@@ -1360,12 +1360,6 @@
     }
   },
   "default_scenario": "AUS TRACON South",
-  "fixes": {
-    "_AUS_18L": "N30.12.13.651,W97.39.28.356",
-    "_AUS_18R": "N30.12.48.875,W97.40.45.678",
-    "_AUS_36L": "N30.10.47.779,W97.40.42.482",
-    "_AUS_36R": "N30.10.44.748,W97.39.26.092"
-  },
   "name": "KAUS",
   "scenarios": {
     "AUS TRACON South": {

@@ -55,17 +55,17 @@
             "cleared_altitude": 5000,
             "description": "QUAK8",
             "sid": "QUAK8",
-            "waypoints": "_GSO_5R/h235 JEANY"
+            "waypoints": "KGSO-5R/h235 JEANY"
           },
           "CLINE,CARWN,YADKI,BOTTM": {
             "cleared_altitude": 5000,
             "description": "TRI9",
             "sid": "TRI9",
-            "waypoints": "_GSO_5R/h235 BOLTT"
+            "waypoints": "KGSO-5R/h235 BOLTT"
           },
           "CHSLY": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSO_5R/h235 CHSLY"
+            "waypoints": "KGSO-5R/h235 CHSLY"
           }
         },
         "5R": {
@@ -79,17 +79,17 @@
             "cleared_altitude": 5000,
             "description": "QUAK8",
             "sid": "QUAK8",
-            "waypoints": "_GSO_23L/h055 JEANY"
+            "waypoints": "KGSO-23L/h055 JEANY"
           },
           "CLINE,CARWN,YADKI,BOTTM": {
             "cleared_altitude": 5000,
             "description": "TRI9",
             "sid": "TRI9",
-            "waypoints": "_GSO_23L/h055 BOLTT"
+            "waypoints": "KGSO-23L/h055 BOLTT"
           },
           "CHSLY": {
             "cleared_altitude": 5000,
-            "waypoints": "_GSO_23L/h055 CHSLY"
+            "waypoints": "KGSO-23L/h055 CHSLY"
           }
         }
       },
@@ -303,17 +303,17 @@
             "cleared_altitude": 4000,
             "description": "QUAK8",
             "sid": "QUAK8",
-            "waypoints": "_INT_15/h333 JEANY"
+            "waypoints": "KINT-15/h333 JEANY"
           },
           "CLINE,CARWN,YADKI,BOTTM": {
             "cleared_altitude": 4000,
             "description": "TRI9",
             "sid": "TRI9",
-            "waypoints": "_INT_15/h333 BOLTT"
+            "waypoints": "KINT-15/h333 BOLTT"
           },
           "CHSLY": {
             "cleared_altitude": 4000,
-            "waypoints": "_INT_15/h333 CHSLY"
+            "waypoints": "KINT-15/h333 CHSLY"
           }
         },
         "15": {
@@ -327,17 +327,17 @@
             "cleared_altitude": 4000,
             "description": "QUAK8",
             "sid": "QUAK8",
-            "waypoints": "_INT_33/h240 JEANY"
+            "waypoints": "KINT-33/h240 JEANY"
           },
           "CLINE,CARWN,YADKI,BOTTM": {
             "cleared_altitude": 4000,
             "description": "TRI9",
             "sid": "TRI9",
-            "waypoints": "_INT_33/h240 BOLTT"
+            "waypoints": "KINT-33/h240 BOLTT"
           },
           "CHSLY": {
             "cleared_altitude": 4000,
-            "waypoints": "_INT_33/h240 CHSLY"
+            "waypoints": "KINT-33/h240 CHSLY"
           }
         }
       },
@@ -648,16 +648,6 @@
     }
   },
   "default_scenario": "KGSO Runway 5L/5R, KINT Runway 33",
-  "fixes": {
-    "_GSO_5L": "N36.05.57.260,W79.57.32.349",
-    "_GSO_5R": "N36.05.27.676,W79.56.40.635",
-    "_GSO_23L": "N36.06.36.447,W79.55.13.018",
-    "_GSO_23R": "N36.06.59.053,W79.56.13.269",
-    "_GSO_14": "N36.05.58.020,W79.57.08.698",
-    "_GSO_32": "N36.05.13.288,W79.56.13.872",
-    "_INT_33": "N36.07.26.087,W80.12.47.621",
-    "_INT_15": "N36.08.19.656,W80.13.34.718"
-  },
   "magnetic_adjustment": -1,
   "name": "KGSO",
   "scenarios": {

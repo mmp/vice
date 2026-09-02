@@ -21,14 +21,14 @@
           "SOT,BZM,SPA,IRQ,VXV,MHONY,JJENY": {
             "cleared_altitude": 8000,
             "sid": "AVL7",
-            "waypoints": "_AVL_17/h346"
+            "waypoints": "KAVL-17/h346"
           }
         },
         "17": {
           "SOT,BZM,SPA,IRQ,VXV,MHONY,JJENY": {
             "cleared_altitude": 8000,
             "sid": "AVL7",
-            "waypoints": "_AVL_35/h166"
+            "waypoints": "KAVL-35/h166"
           }
         }
       },
@@ -516,10 +516,6 @@
     }
   },
   "default_scenario": "KAVL Land and Depart Runway 17",
-  "fixes": {
-    "_AVL_17": "N35.26.47.434,W82.32.47.094",
-    "_AVL_35": "N35.25.33.129,W82.32.13.731"
-  },
   "magnetic_adjustment": -1,
   "name": "KAVL",
   "scenarios": {

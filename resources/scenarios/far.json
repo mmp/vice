@@ -29,217 +29,217 @@
         "9": {
           "MOT": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 MOT"
+            "waypoints": "KFAR-27/h086 MOT"
           },
           "PAWSS": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 PAWSS"
+            "waypoints": "KFAR-27/h086 PAWSS"
           },
           "TVF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 TVF"
+            "waypoints": "KFAR-27/h086 TVF"
           },
           "BJI": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 BJI"
+            "waypoints": "KFAR-27/h086 BJI"
           },
           "AXN": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 AXN"
+            "waypoints": "KFAR-27/h086 AXN"
           },
           "FSD": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 FSD"
+            "waypoints": "KFAR-27/h086 FSD"
           },
           "ABR": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 ABR"
+            "waypoints": "KFAR-27/h086 ABR"
           },
           "JMS": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 JMS"
+            "waypoints": "KFAR-27/h086 JMS"
           },
           "HSTIN": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 HSTIN"
+            "waypoints": "KFAR-27/h086 HSTIN"
           },
           "WINDD": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 WINDD"
+            "waypoints": "KFAR-27/h086 WINDD"
           },
           "RST": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 RST"
+            "waypoints": "KFAR-27/h086 RST"
           },
           "RWF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 RWF"
+            "waypoints": "KFAR-27/h086 RWF"
           },
           "GOLLF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR27/h086 GOLLF"
+            "waypoints": "KFAR-27/h086 GOLLF"
           }
         },
         "18": {
           "MOT": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 MOT"
+            "waypoints": "KFAR-36/h176 MOT"
           },
           "PAWSS": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 PAWSS"
+            "waypoints": "KFAR-36/h176 PAWSS"
           },
           "TVF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 TVF"
+            "waypoints": "KFAR-36/h176 TVF"
           },
           "BJI": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 BJI"
+            "waypoints": "KFAR-36/h176 BJI"
           },
           "AXN": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 AXN"
+            "waypoints": "KFAR-36/h176 AXN"
           },
           "FSD": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 FSD"
+            "waypoints": "KFAR-36/h176 FSD"
           },
           "ABR": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 ABR"
+            "waypoints": "KFAR-36/h176 ABR"
           },
           "JMS": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 JMS"
+            "waypoints": "KFAR-36/h176 JMS"
           },
           "HSTIN": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 HSTIN"
+            "waypoints": "KFAR-36/h176 HSTIN"
           },
           "WINDD": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 WINDD"
+            "waypoints": "KFAR-36/h176 WINDD"
           },
           "RST": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 RST"
+            "waypoints": "KFAR-36/h176 RST"
           },
           "RWF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 RWF"
+            "waypoints": "KFAR-36/h176 RWF"
           },
           "GOLLF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR36/h176 GOLLF"
+            "waypoints": "KFAR-36/h176 GOLLF"
           }
         },
         "27": {
           "MOT": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 MOT"
+            "waypoints": "KFAR-9/h266 MOT"
           },
           "PAWSS": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 PAWSS"
+            "waypoints": "KFAR-9/h266 PAWSS"
           },
           "TVF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 TVF"
+            "waypoints": "KFAR-9/h266 TVF"
           },
           "BJI": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 BJI"
+            "waypoints": "KFAR-9/h266 BJI"
           },
           "AXN": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 AXN"
+            "waypoints": "KFAR-9/h266 AXN"
           },
           "FSD": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 FSD"
+            "waypoints": "KFAR-9/h266 FSD"
           },
           "ABR": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 ABR"
+            "waypoints": "KFAR-9/h266 ABR"
           },
           "JMS": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 JMS"
+            "waypoints": "KFAR-9/h266 JMS"
           },
           "HSTIN": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 HSTIN"
+            "waypoints": "KFAR-9/h266 HSTIN"
           },
           "WINDD": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 WINDD"
+            "waypoints": "KFAR-9/h266 WINDD"
           },
           "RST": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 RST"
+            "waypoints": "KFAR-9/h266 RST"
           },
           "RWF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 RWF"
+            "waypoints": "KFAR-9/h266 RWF"
           },
           "GOLLF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR9/h266 GOLLF"
+            "waypoints": "KFAR-9/h266 GOLLF"
           }
         },
         "36": {
           "MOT": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 MOT"
+            "waypoints": "KFAR-18/h356 MOT"
           },
           "PAWSS": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 PAWSS"
+            "waypoints": "KFAR-18/h356 PAWSS"
           },
           "TVF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 TVF"
+            "waypoints": "KFAR-18/h356 TVF"
           },
           "BJI": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 BJI"
+            "waypoints": "KFAR-18/h356 BJI"
           },
           "AXN": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 AXN"
+            "waypoints": "KFAR-18/h356 AXN"
           },
           "FSD": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 FSD"
+            "waypoints": "KFAR-18/h356 FSD"
           },
           "ABR": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 ABR"
+            "waypoints": "KFAR-18/h356 ABR"
           },
           "JMS": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 JMS"
+            "waypoints": "KFAR-18/h356 JMS"
           },
           "HSTIN": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 HSTIN"
+            "waypoints": "KFAR-18/h356 HSTIN"
           },
           "WINDD": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 WINDD"
+            "waypoints": "KFAR-18/h356 WINDD"
           },
           "RST": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 RST"
+            "waypoints": "KFAR-18/h356 RST"
           },
           "RWF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 RWF"
+            "waypoints": "KFAR-18/h356 RWF"
           },
           "GOLLF": {
             "cleared_altitude": 5000,
-            "waypoints": "_FAR18/h356 GOLLF"
+            "waypoints": "KFAR-18/h356 GOLLF"
           }
         }
       },
@@ -1287,13 +1287,6 @@
   },
   "default_scenario": "FAR - 36",
   "fixes": {
-    "_FAR": "46.91187781551483,-96.82852503945666",
-    "_FAR9": "46.927143,-96.82733",
-    "_FAR27": "46.92700,-96.80212",
-    "_FAR18": "46.93287,-96.81612",
-    "_FAR36": "46.90821,-96.81641",
-    "_FAR13": "46.91413,-96.82150",
-    "_FAR31": "46.90647,-96.81118",
     "AA": "47.01033,-96.81716"
   },
   "name": "KFAR",
