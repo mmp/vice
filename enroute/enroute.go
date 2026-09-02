@@ -131,9 +131,9 @@ func (DBLocator) Locate(s string) (math.Point2LL, bool) {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
-	} else if len(s) > 5 && s[4] == '-' {
-		if rwy, ok := av.LookupRunway(s[:4], s[5:]); ok {
-			return rwy.Threshold, true
+	} else if ident, rwy, found := strings.Cut(s, "-"); found && len(ident) >= 3 {
+		if r, ok := av.LookupRunway(ident, rwy); ok {
+			return r.Threshold, true
 		}
 	}
 
