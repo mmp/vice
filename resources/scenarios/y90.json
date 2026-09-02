@@ -63,13 +63,13 @@
           "PVD,THUMB": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "_BDL_24/a4000/h095",
+            "waypoints": "KBDL-24/a4000/h095",
             "departure_controller": "1B"
           },
           "CTR,VEERS,MOBBS": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "_BDL_24/a4000/h075",
+            "waypoints": "KBDL-24/a4000/h075",
             "departure_controller": "1Z"
           }
         },
@@ -94,13 +94,13 @@
           "PVD,THUMB": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "_BDL_6/a4000/h240",
+            "waypoints": "KBDL-6/a4000/h240",
             "departure_controller": "1B"
           },
           "CTR,VEERS,MOBBS": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "_BDL_6/a4000/h280",
+            "waypoints": "KBDL-6/a4000/h280",
             "departure_controller": "1Z"
           }
         },
@@ -108,13 +108,13 @@
           "PVD,THUMB": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "_BDL_15/a4000/h100",
+            "waypoints": "KBDL-15/a4000/h100",
             "departure_controller": "1B"
           },
           "CTR,VEERS,MOBBS": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "_BDL_15/a4000/h330",
+            "waypoints": "KBDL-15/a4000/h330",
             "departure_controller": "1Z"
           }
         },
@@ -122,13 +122,13 @@
           "PVD,THUMB": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "_BDL_15/a4000/h220",
+            "waypoints": "KBDL-15/a4000/h220",
             "departure_controller": "1B"
           },
           "CTR,VEERS,MOBBS": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "_BDL_15/a4000/h330",
+            "waypoints": "KBDL-15/a4000/h330",
             "departure_controller": "1Z"
           }
         }
@@ -1214,9 +1214,6 @@
   },
   "default_scenario": "BDL RWY 6/33",
   "fixes": {
-    "_BDL_24": "N041.57.09.904,W072.40.08.697",
-    "_BDL_6": "N041.55.45.762,W072.42.00.263",
-    "_BDL_15": "N041.56.40.982,W072.41.50.925",
     "CRV": "41.811090869590856, -72.63349544383891",
     "BV": "42.24302459476532, -72.7923705542953",
     "_BGE": "42.09170103828053, -72.61499963404388",

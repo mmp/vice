@@ -41904,10 +41904,6 @@
     }
   },
   "default_scenario": "KATL West",
-  "fixes": {
-    "D73-3": "N033.46.45.578,W083.41.45.541",
-    "06A-31": "N032.27.24.433,W085.40.38.031"
-  },
   "name": "KATL",
   "scenarios": {
     "A80 Combined (West)": {

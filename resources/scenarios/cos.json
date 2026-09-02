@@ -535,10 +535,6 @@
     }
   },
   "default_scenario": "North VMC",
-  "fixes": {
-    "KFLY-33": "N038.56.27.030,W104.34.05.819",
-    "KFLY-15": "N038.56.56.912,W104.34.18.728"
-  },
   "name": "KCOS",
   "scenarios": {
     "North VMC": {

@@ -1018,93 +1018,93 @@
         "13": {
           "LMN": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 LMN"
+            "waypoints": "KOFF-31/h130 LMN"
           },
           "DSM": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 DSM"
+            "waypoints": "KOFF-31/h130 DSM"
           },
           "FOD": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 FOD"
+            "waypoints": "KOFF-31/h130 FOD"
           },
           "OFK": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 OFK"
+            "waypoints": "KOFF-31/h130 OFK"
           },
           "OBH": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 OBH"
+            "waypoints": "KOFF-31/h130 OBH"
           },
           "GRI": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 GRI"
+            "waypoints": "KOFF-31/h130 GRI"
           },
           "PWE": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 PWE"
+            "waypoints": "KOFF-31/h130 PWE"
           },
           "ONL": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 ONL"
+            "waypoints": "KOFF-31/h130 ONL"
           },
           "SUX": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 SUX"
+            "waypoints": "KOFF-31/h130 SUX"
           },
           "TKO": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 TKO"
+            "waypoints": "KOFF-31/h130 TKO"
           },
           "HSI": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_31/h130 HSI"
+            "waypoints": "KOFF-31/h130 HSI"
           }
         },
         "31": {
           "LMN": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 LMN"
+            "waypoints": "KOFF-13/h270 LMN"
           },
           "DSM": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 DSM"
+            "waypoints": "KOFF-13/h270 DSM"
           },
           "FOD": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 FOD"
+            "waypoints": "KOFF-13/h270 FOD"
           },
           "OFK": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 OFK"
+            "waypoints": "KOFF-13/h270 OFK"
           },
           "OBH": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 OBH"
+            "waypoints": "KOFF-13/h270 OBH"
           },
           "GRI": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 GRI"
+            "waypoints": "KOFF-13/h270 GRI"
           },
           "PWE": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 PWE"
+            "waypoints": "KOFF-13/h270 PWE"
           },
           "ONL": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 ONL"
+            "waypoints": "KOFF-13/h270 ONL"
           },
           "SUX": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 SUX"
+            "waypoints": "KOFF-13/h270 SUX"
           },
           "TKO": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 TKO"
+            "waypoints": "KOFF-13/h270 TKO"
           },
           "HSI": {
             "cleared_altitude": 3000,
-            "waypoints": "_OFF_13/h270 HSI"
+            "waypoints": "KOFF-13/h270 HSI"
           }
         }
       },
@@ -2561,10 +2561,6 @@
     }
   },
   "default_scenario": "OMA NORTH",
-  "fixes": {
-    "_OFF_13": "41.129462, -95.924995",
-    "_OFF_31": "41.109195, -95.892045"
-  },
   "name": "R90",
   "scenarios": {
     "OMA NORTH": {

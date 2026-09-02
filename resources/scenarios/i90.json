@@ -4217,7 +4217,7 @@
           "2.5nm_distance": 10
         },
         "13R": {
-          "runway_threshold": "HOU13R",
+          "runway_threshold": "KHOU-13R",
           "heading": 131,
           "max_heading_deviation": 90,
           "floor": 100,
@@ -7564,9 +7564,6 @@
         }
       ]
     }
-  },
-  "fixes": {
-    "HOU13R": "N029.38.21.491,W095.17.05.711"
   },
   "inbound_flows": {
     "BAYYY5": {

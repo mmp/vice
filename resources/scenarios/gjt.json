@@ -51,7 +51,7 @@
           "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
             "assigned_altitude": 14000,
             "sid": "GRAND2",
-            "waypoints": "_GJT11/h290"
+            "waypoints": "KGJT-11/h290"
           },
           "HAQHY": {
             "assigned_altitude": 14000,
@@ -549,9 +549,6 @@
     }
   },
   "default_scenario": "GJT East Flow",
-  "fixes": {
-    "_GJT11": "N039.08.06.392,W108.32.39.768"
-  },
   "name": "KGJT",
   "scenarios": {
     "GJT East Flow": {

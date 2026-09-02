@@ -93,59 +93,59 @@
           "BRENI": {
             "cleared_altitude": 5000,
             "sid": "SLENA2",
-            "waypoints": "_SAT_31L/h308 YENNS/a5000 LILJO SLENA BRENI"
+            "waypoints": "KSAT-13R/h308 YENNS/a5000 LILJO SLENA BRENI"
           },
           "ZANNI": {
             "cleared_altitude": 5000,
             "sid": "TJANO2",
-            "waypoints": "_SAT_31L/h308 LVACA/a5000 TJANO TEEPY ZANNI"
+            "waypoints": "KSAT-13R/h308 LVACA/a5000 TJANO TEEPY ZANNI"
           },
           "WHAEL": {
             "cleared_altitude": 5000,
             "sid": "SNIDR2",
-            "waypoints": "_SAT_31L/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+            "waypoints": "KSAT-13R/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
           },
           "CRP": {
             "cleared_altitude": 5000,
             "sid": "BOWIE8",
-            "waypoints": "_SAT_31L/h308 SAT YENNS THX CRP"
+            "waypoints": "KSAT-13R/h308 SAT YENNS THX CRP"
           },
           "LRD": {
             "cleared_altitude": 5000,
             "sid": "BOWIE8",
-            "waypoints": "_SAT_31L/h308 SAT MILET LRD"
+            "waypoints": "KSAT-13R/h308 SAT MILET LRD"
           },
           "AGJ": {
             "cleared_altitude": 5000,
             "sid": "ALAMO5",
-            "waypoints": "_SAT_31L/h308 SAT GOBBY AGJ"
+            "waypoints": "KSAT-13R/h308 SAT GOBBY AGJ"
           },
           "KAHAN": {
             "cleared_altitude": 5000,
             "sid": "TJANO2",
-            "waypoints": "_SAT_31L/h308 LVACA/a5000 TJANO TEEPY KAHAN"
+            "waypoints": "KSAT-13R/h308 LVACA/a5000 TJANO TEEPY KAHAN"
           }
         },
         "31R": {
           "WHAEL": {
             "cleared_altitude": 5000,
             "sid": "SNIDR2",
-            "waypoints": "_SAT_31R/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+            "waypoints": "KSAT-13L/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
           },
           "KLNGR": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_SAT_31R/h308 SITHH/a5000 YODUH KLNGR"
+            "waypoints": "KSAT-13L/h308 SITHH/a5000 YODUH KLNGR"
           },
           "ALISS": {
             "cleared_altitude": 5000,
             "sid": "ALISS7",
-            "waypoints": "_SAT_31R/h308 TREVA/a5000 TATAR ALISS"
+            "waypoints": "KSAT-13L/h308 TREVA/a5000 TATAR ALISS"
           },
           "YODUH": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_SAT_31R/h308 SITHH/a5000 YODUH"
+            "waypoints": "KSAT-13L/h308 SITHH/a5000 YODUH"
           }
         }
       },
@@ -344,112 +344,112 @@
           "ALISS": {
             "cleared_altitude": 5000,
             "sid": "ALISS7",
-            "waypoints": "_BAZ_31/h308 TREVA/a5000 TATAR ALISS"
+            "waypoints": "KBAZ-13/h308 TREVA/a5000 TATAR ALISS"
           },
           "BRENI": {
             "cleared_altitude": 5000,
             "sid": "SLENA2",
-            "waypoints": "_BAZ_31/h308 YENNS/a5000 LILJO SLENA BRENI"
+            "waypoints": "KBAZ-13/h308 YENNS/a5000 LILJO SLENA BRENI"
           },
           "ZANNI": {
             "cleared_altitude": 5000,
             "sid": "TJANO2",
-            "waypoints": "_BAZ_31/h308 LVACA/a5000 TJANO TEEPY ZANNI"
+            "waypoints": "KBAZ-13/h308 LVACA/a5000 TJANO TEEPY ZANNI"
           },
           "KLNGR": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_BAZ_31/h308 SITHH/a5000 YODUH KLNGR"
+            "waypoints": "KBAZ-13/h308 SITHH/a5000 YODUH KLNGR"
           },
           "YENNS": {
             "cleared_altitude": 5000,
-            "waypoints": "_BAZ_31/h308 YENNS"
+            "waypoints": "KBAZ-13/h308 YENNS"
           }
         },
         "13": {
           "ALISS": {
             "cleared_altitude": 5000,
             "sid": "ALISS7",
-            "waypoints": "_BAZ_13/h128 TREVA/a5000 TATAR ALISS"
+            "waypoints": "KBAZ-31/h128 TREVA/a5000 TATAR ALISS"
           },
           "BRENI": {
             "cleared_altitude": 5000,
             "sid": "SLENA2",
-            "waypoints": "_BAZ_13/h128 YENNS/a5000 LILJO SLENA BRENI"
+            "waypoints": "KBAZ-31/h128 YENNS/a5000 LILJO SLENA BRENI"
           },
           "ZANNI": {
             "cleared_altitude": 5000,
             "sid": "TJANO2",
-            "waypoints": "_BAZ_13/h128 LVACA/a5000 TJANO TEEPY ZANNI"
+            "waypoints": "KBAZ-31/h128 LVACA/a5000 TJANO TEEPY ZANNI"
           },
           "KLNGR": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_BAZ_13/h128 SITHH/a5000 YODUH KLNGR"
+            "waypoints": "KBAZ-31/h128 SITHH/a5000 YODUH KLNGR"
           },
           "YENNS": {
             "cleared_altitude": 5000,
-            "waypoints": "_BAZ_13/h128 YENNS"
+            "waypoints": "KBAZ-31/h128 YENNS"
           },
           "CHURN": {
             "cleared_altitude": 5000,
-            "waypoints": "_BAZ_13/h128 CHURN"
+            "waypoints": "KBAZ-31/h128 CHURN"
           }
         },
         "35": {
           "ALISS": {
             "cleared_altitude": 5000,
             "sid": "ALISS7",
-            "waypoints": "_BAZ_35/h353 TREVA/a5000 TATAR ALISS"
+            "waypoints": "KBAZ-17/h353 TREVA/a5000 TATAR ALISS"
           },
           "BRENI": {
             "cleared_altitude": 5000,
             "sid": "SLENA2",
-            "waypoints": "_BAZ_35/h353 YENNS/a5000 LILJO SLENA BRENI"
+            "waypoints": "KBAZ-17/h353 YENNS/a5000 LILJO SLENA BRENI"
           },
           "ZANNI": {
             "cleared_altitude": 5000,
             "sid": "TJANO2",
-            "waypoints": "_BAZ_35/h353 LVACA/a5000 TJANO TEEPY ZANNI"
+            "waypoints": "KBAZ-17/h353 LVACA/a5000 TJANO TEEPY ZANNI"
           },
           "KLNGR": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_BAZ_35/h353 SITHH/a5000 YODUH KLNGR"
+            "waypoints": "KBAZ-17/h353 SITHH/a5000 YODUH KLNGR"
           },
           "YENNS": {
             "cleared_altitude": 5000,
-            "waypoints": "_BAZ_35/h353 YENNS"
+            "waypoints": "KBAZ-17/h353 YENNS"
           }
         },
         "17": {
           "ALISS": {
             "cleared_altitude": 5000,
             "sid": "ALISS7",
-            "waypoints": "_BAZ_17/h173 TREVA/a5000 TATAR ALISS"
+            "waypoints": "KBAZ-35/h173 TREVA/a5000 TATAR ALISS"
           },
           "BRENI": {
             "cleared_altitude": 5000,
             "sid": "SLENA2",
-            "waypoints": "_BAZ_17/h173 YENNS/a5000 LILJO SLENA BRENI"
+            "waypoints": "KBAZ-35/h173 YENNS/a5000 LILJO SLENA BRENI"
           },
           "ZANNI": {
             "cleared_altitude": 5000,
             "sid": "TJANO2",
-            "waypoints": "_BAZ_17/h173 LVACA/a5000 TJANO TEEPY ZANNI"
+            "waypoints": "KBAZ-35/h173 LVACA/a5000 TJANO TEEPY ZANNI"
           },
           "KLNGR": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_BAZ_17/h173 SITHH/a5000 YODUH KLNGR"
+            "waypoints": "KBAZ-35/h173 SITHH/a5000 YODUH KLNGR"
           },
           "YENNS": {
             "cleared_altitude": 5000,
-            "waypoints": "_BAZ_17/h173 YENNS"
+            "waypoints": "KBAZ-35/h173 YENNS"
           },
           "CHURN": {
             "cleared_altitude": 5000,
-            "waypoints": "_BAZ_17/h173 CHURN"
+            "waypoints": "KBAZ-35/h173 CHURN"
           }
         }
       },
@@ -529,34 +529,34 @@
         "16": {
           "KHYI": {
             "cleared_altitude": 5000,
-            "waypoints": "_SKF_16/h158 KHYI"
+            "waypoints": "KSKF-34/h158 KHYI"
           },
           "TATAR": {
             "cleared_altitude": 5000,
-            "waypoints": "_SKF_16/h158 TATAR"
+            "waypoints": "KSKF-34/h158 TATAR"
           },
           "GOBBY": {
             "cleared_altitude": 5000,
-            "waypoints": "_SKF_16/h158 GOBBY"
+            "waypoints": "KSKF-34/h158 GOBBY"
           },
           "KLNGR": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_SKF_16/h158 SITHH/a5000+ YODUH KLNGR"
+            "waypoints": "KSKF-34/h158 SITHH/a5000+ YODUH KLNGR"
           }
         },
         "34": {
           "KHYI": {
             "cleared_altitude": 5000,
-            "waypoints": "_SKF_34/h338 KHYI"
+            "waypoints": "KSKF-16/h338 KHYI"
           },
           "TATAR": {
             "cleared_altitude": 5000,
-            "waypoints": "_SKF_34/h338 TATAR"
+            "waypoints": "KSKF-16/h338 TATAR"
           },
           "GOBBY": {
             "cleared_altitude": 5000,
-            "waypoints": "_SKF_34/h338 GOBBY"
+            "waypoints": "KSKF-16/h338 GOBBY"
           }
         }
       },
@@ -636,17 +636,17 @@
           "YODUH": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "_SSF_32/h317 SITHH/a5000 YODUH"
+            "waypoints": "KSSF-14/h317 SITHH/a5000 YODUH"
           },
           "LEJON": {
             "cleared_altitude": 5000,
             "sid": "LEJON5",
-            "waypoints": "_SSF_32/h317 SAT TATAR LEJON"
+            "waypoints": "KSSF-14/h317 SAT TATAR LEJON"
           },
           "JUMBO": {
             "cleared_altitude": 5000,
             "sid": "ALAMO5",
-            "waypoints": "_SSF_32/h317 SAT HENLY JUMBO"
+            "waypoints": "KSSF-14/h317 SAT HENLY JUMBO"
           }
         }
       },
@@ -1037,17 +1037,6 @@
     }
   },
   "default_scenario": "SAT DEP 13R + 04 LAND 13R",
-  "fixes": {
-    "_SAT_31L": "29.542745916666668,98.48554113333333",
-    "_SAT_31R": "29.540299,98.47769833333334",
-    "_BAZ_31": "29.71511,98.04994053333333",
-    "_BAZ_13": "29.70230555,98.03564445",
-    "_BAZ_35": "29.70951645,98.04363333333333",
-    "_BAZ_17": "29.694768466666666,98.04384191666666",
-    "_SKF_16": "29.369116666666667,98.57555833333333",
-    "_SKF_34": "29.39935,98.586675",
-    "_SSF_32": "29.341560966666666,98.47202061666667"
-  },
   "name": "KSAT",
   "scenarios": {
     "SAT DEP 13R + 04 LAND 13R": {
