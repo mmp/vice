@@ -809,7 +809,61 @@ func (sg *scenarioGroup) Similar(fix string) []string {
 var (
 	// "FIX@HDG/DIST"
 	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
+
+	// A "fixes" entry named for a runway threshold: an airport identifier
+	// followed by a runway, e.g. "_JFK_31L", "_COS35R", "IAH8L", "KFIN-11".
+	reAirportRunwayFix = regexp.MustCompile(`^_?([A-Z0-9]{3,4})[_-](\d{1,2}[LRCW]?)$|^_([A-Z]{3,4})(\d{1,2}[LRC]?)$|^([A-Z]{3})(\d{1,2}[LRC]?)$`)
 )
+
+// duplicateRunwayThreshold reports the built-in runway threshold waypoint that
+// makes a "fixes" entry redundant: either the name is itself that waypoint, or
+// it names an airport and runway and sits close enough to one of that
+// airport's thresholds that the author clearly meant it.
+func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
+	if ident, rwy, found := strings.Cut(fix, "-"); found && len(ident) >= 3 {
+		if _, ok := av.LookupRunway(ident, rwy); ok {
+			return fix, true
+		}
+	}
+
+	m := reAirportRunwayFix.FindStringSubmatch(fix)
+	if m == nil {
+		return "", false
+	}
+	groups := util.FilterSlice(m[1:], func(s string) bool { return s != "" })
+	if len(groups) != 2 {
+		return "", false
+	}
+	ap, ok := av.DB.LookupAirport(groups[0])
+	if !ok {
+		return "", false
+	}
+	named := strings.TrimPrefix(groups[1], "0")
+
+	const tolerance = 1000 * math.FeetToNauticalMiles
+	best, bestDist := "", float32(tolerance)
+	for _, rwy := range ap.Runways {
+		if d := math.NMDistance2LL(p, rwy.Threshold); d < bestDist {
+			best, bestDist = rwy.Id, d
+		}
+	}
+	if best == "" {
+		return "", false
+	}
+
+	// Some scenarios name a departure fix for the runway being departed
+	// rather than the one it sits on, so the nearest threshold is the usual
+	// answer; prefer the runway the fix is named for when it is also in
+	// range, since a few airports have thresholds only a few hundred feet
+	// apart.
+	if i := slices.IndexFunc(ap.Runways, func(rwy av.Runway) bool { return rwy.Id == named }); i != -1 {
+		if math.NMDistance2LL(p, ap.Runways[i].Threshold) < tolerance {
+			best = named
+		}
+	}
+
+	return ap.Id + "-" + best, true
+}
 
 func makeCircleAirportFilters(id string, description string, radius float32,
 	ceiling int, airports []string, e *util.ErrorLogger) sim.FilterRegions {
@@ -1182,13 +1236,17 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			e.ErrorString("invalid location syntax %q for fix %q", location, fix)
 		}
 
-		// Entries in "fixes" should not shadow navaids, fixes, or airports
-		// already in the aviation DB, since Locate will find them anyway.
-		if _, ok := sg.Fixes[fix]; ok && !sg.AllowFixRedefinitions {
+		// Entries in "fixes" should not shadow navaids, fixes, airports, or
+		// runway thresholds already in the aviation DB, since Locate will
+		// find them anyway.
+		if p, ok := sg.Fixes[fix]; ok && !sg.AllowFixRedefinitions {
 			if _, ok := av.DB.LookupWaypoint(fix); ok {
 				e.ErrorString("fix shadows a navaid/fix in the aviation DB; remove it from \"fixes\"")
 			} else if _, ok := av.DB.LookupAirport(fix); ok {
 				e.ErrorString("fix shadows an airport in the aviation DB; remove it from \"fixes\"")
+			} else if rwy, ok := duplicateRunwayThreshold(fix, p); ok {
+				e.ErrorString("fix duplicates the built-in runway threshold waypoint %s; "+
+					"use that in place of it and remove it from \"fixes\"", rwy)
 			}
 		}
 

@@ -326,7 +326,8 @@
               <p>Throughout the <i>vice</i> configuration files, it's often necessary to specify various locations on the Earth.
                 <i>vice</i> has a built-in database of all of the airports, VORs, NDBs, and fixes in the United States (courtesy of the FAA),
                 which allows using these directly for specifying locations. The locations of runway thresholds are available via the syntax
-                <code>KJFK-22L</code> where the airport name and runway specifier are separated by a hyphen.</p>
+                <code>KJFK-22L</code> where the airport identifier and runway specifier are separated by a hyphen. The identifier may be
+                three characters as well as four, so airports without an ICAO identifier are written like <code>6A1-19</code>.</p>
               <p>Locations can also be specified via
                 latitude-longitude positions, given as strings. For convenience, multiple latitude-longitude formats are supported.
               </p>
@@ -3858,10 +3859,11 @@
                   <tr>
                     <td>"allow_fix_redefinitions"</td>
                     <td>Boolean</td>
-                    <td><i>(Optional)</i> When set to <code>true</code>, disables the validation check that
-                      verifies fixes defined in <code>"fixes"</code> are close to their locations in the FAA database.
-                      This is useful for fictional scenarios where fixes are intentionally placed at different
-                      locations than their real-world counterparts. Default is <code>false</code>.</td>
+                    <td><i>(Optional)</i> When set to <code>true</code>, disables the validation checks that
+                      reject a fix in <code>"fixes"</code> that shadows a navaid, fix, or airport in the FAA
+                      database or that duplicates a built-in runway threshold. This is useful for fictional
+                      scenarios where fixes are intentionally placed at different locations than their
+                      real-world counterparts. Default is <code>false</code>.</td>
                   </tr>
                   <tr>
                     <td>"area"</td>
@@ -3884,9 +3886,11 @@
                     <td>Object</td>
                     <td><p>Each member associates a name with a latitude-longitude location. These names can be used when specifying
                         routes for departures and arrivals. (Note that they cannot be used when specifying other locations in the scenario group configuration.)
-                        For example, this associates a useful name with the point
-                        at the end of runway 22R at JFK: <code>"_JFK_22R":
-                          "N040.39.00.362,W073.45.49.053"</code>.</p>
+                        For example, this associates a useful name with a turn point on the LGA runway 22
+                        departure: <code>"_LGA_22a":
+                          "N040.40.57.614,W073.57.57.035"</code>.</p>
+                      <p>Runway thresholds should not be defined here; the built-in
+                        <a href="#fe-locations"><code>KJFK-22L</code></a> syntax already provides them.</p>
                       <p>Fixes may be specified in relation to
                         previously-specified fixes (or standard fixes from the
                         FAA database) using the syntax <i>FIX@HDG/DIST</i>,
