@@ -8358,15 +8358,13 @@
         "27": {
           "PDZ": {
             "cleared_altitude": 5000,
-            "sid": "RIV1",
-            "waypoints": "KRAL-9"
+            "sid": "RAL2"
           }
         },
         "9": {
           "PDZ": {
             "cleared_altitude": 5000,
-            "sid": "RIV1",
-            "waypoints": "KRAL-27 N033.56.12.651,W117.25.10.894 N033.55.55.732,W117.26.34.967"
+            "sid": "RAL2"
           }
         }
       },
