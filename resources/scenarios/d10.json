@@ -4566,8 +4566,8 @@
           },
           "PGLET,TYGGR,ROOO,RBBIT": {
             "cleared_altitude": 3000,
-            "sid": "SWABR1",
-            "waypoints": "_RBD_31/h120"
+            "sid": "BOTCH2",
+            "initial_heading": 120
           },
           "FERRA,PODDE": {
             "cleared_altitude": 3000,

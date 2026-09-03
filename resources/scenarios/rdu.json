@@ -243,8 +243,8 @@
           },
           "OXFRD": {
             "cleared_altitude": 6000,
-            "sid": "OXFRD5",
-            "waypoints": "KRDU-5L/h234 PEAVY/a2500+ HARVY"
+            "sid": "OXFRD5.CARML",
+            "initial_heading": 234
           },
           "ROZBO": {
             "cleared_altitude": 6000,

@@ -1460,27 +1460,27 @@
           "GMN.C,AVE.C": {
             "cleared_altitude": 4000,
             "sid": "CANOG3",
-            "waypoints": "KVNY-34L/a1750- N034.11.12.006,W118.29.17.208/h213 IPIHO CASTA/a8300+ GMN"
+            "waypoints": "KVNY-34L/h163/@VNY-D2.2+/r213 IPIHO CASTA/a8300+ GMN"
           },
           "FIM.C": {
             "cleared_altitude": 4000,
             "sid": "CANOG3",
-            "waypoints": "KVNY-34L/a1750- N034.11.12.006,W118.29.17.208/h213 IPIHO SUANA FIM"
+            "waypoints": "KVNY-34L/h163/@VNY-D2.2+/r213 IPIHO SUANA FIM"
           },
           "DAG.N,PMD.N": {
             "cleared_altitude": 4000,
             "sid": "NUAL2",
-            "waypoints": "KVNY-34L/a1750- N034.11.12.006,W118.29.17.208/h113 IPIHO TWINE LANGE SLAPP BOGET PMD"
+            "waypoints": "KVNY-34L/h163/@VNY-D2.2+/l113 IPIHO TWINE LANGE SLAPP BOGET PMD"
           },
           "TWINE": {
             "cleared_altitude": 4000,
             "sid": "NUAL2",
-            "waypoints": "KVNY-34L/a1750- N034.11.12.006,W118.29.17.208/h113 IPIHO TWINE"
+            "waypoints": "KVNY-34L/h163/@VNY-D2.2+/l113 IPIHO TWINE"
           },
           "ADAMM": {
             "cleared_altitude": 4000,
             "sid": "ADAMM3",
-            "waypoints": "KVNY-34L/a1750- N034.11.12.006,W118.29.17.208/h113 VNY ELMOO ADAMM"
+            "waypoints": "KVNY-34L/h163/@VNY-D2.2+/l113 VNY ELMOO ADAMM"
           }
         },
         "34L": {
@@ -1498,7 +1498,7 @@
           "GMN.C,AVE.C": {
             "cleared_altitude": 4000,
             "sid": "CANOG3",
-            "waypoints": "KVNY-16R/a1750- N034.11.12.006,W118.29.17.208/h213 IPIHO CASTA/a8300+ GMN"
+            "initial_heading": 253
           },
           "FIM.C": {
             "cleared_altitude": 4000,
