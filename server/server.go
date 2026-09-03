@@ -101,12 +101,10 @@ const ViceRPCVersion = ViceSerializeVersion
 const ViceHTTPServerPort = 6502
 
 type ServerLaunchConfig struct {
-	Port               int // if 0, finds an open one
-	ExtraScenario      string
-	ExtraVideoMap      string
-	ExtraScenarioBrief string
-	ServerAddress      string // address to use for remote TTS provider
-	IsLocal            bool
+	Port          int // if 0, finds an open one
+	Overrides     OverrideFiles
+	ServerAddress string // address to use for remote TTS provider
+	IsLocal       bool
 	// ExitAfterLoad causes LaunchServer to return as soon as scenarios
 	// have been loaded and validated, without entering the accept loop.
 	// Used by CI smoketests to exercise scenario loading (which is where
@@ -119,13 +117,13 @@ func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
 	util.MonitorCPUUsage(95, false /* don't panic if wedged */, lg)
 	util.MonitorMemoryUsage(512 /* trigger MB */, 64 /* delta MB */, lg)
 
-	_, server, e, extraScenarioErrors := makeServer(config, lg)
+	_, server, e, overrideErrors := makeServer(config, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)
 	}
-	if extraScenarioErrors != "" {
-		lg.Warnf("Extra scenario file had errors:\n%s", extraScenarioErrors)
+	if overrideErrors != "" {
+		lg.Warnf("Override files had errors:\n%s", overrideErrors)
 	}
 	if config.ExitAfterLoad {
 		return
@@ -134,14 +132,14 @@ func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
 }
 
 func LaunchServerAsync(config ServerLaunchConfig, lg *log.Logger) (int, util.ErrorLogger, string) {
-	rpcPort, server, e, extraScenarioErrors := makeServer(config, lg)
+	rpcPort, server, e, overrideErrors := makeServer(config, lg)
 	if e.HaveErrors() {
 		return 0, e, ""
 	}
 
 	go server()
 
-	return rpcPort, e, extraScenarioErrors
+	return rpcPort, e, overrideErrors
 }
 
 func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger, string) {
@@ -162,8 +160,8 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		return 0, nil, errorLogger, ""
 	}
 
-	scenarioGroups, scenarioCatalogs, mapSpecs, briefs, extraScenarioErrors :=
-		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, config.ExtraScenarioBrief, &errorLogger, lg)
+	scenarioGroups, scenarioCatalogs, mapSpecs, briefs, overrideErrors :=
+		LoadScenarioGroups(config.Overrides, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
 		return 0, nil, errorLogger, ""
 	}
@@ -198,5 +196,5 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		}
 	}
 
-	return rpcPort, serverFunc, errorLogger, extraScenarioErrors
+	return rpcPort, serverFunc, errorLogger, overrideErrors
 }

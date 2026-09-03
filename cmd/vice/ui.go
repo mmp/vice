@@ -1128,7 +1128,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 
 	if imgui.CollapsingHeaderBoolPtr("Facility Engineering", nil) {
 		imgui.BeginGroup()
-		imgui.Text("For testing new scenarios, additional scenario, video map, and/or scenario brief files can be specified.")
+		imgui.Text("For testing new scenarios, additional scenario, video map, scenario brief, and/or facility")
+		imgui.Text("configuration files can be specified.")
 		imgui.Text("Note that vice must be restarted to reload these after they are changed.")
 		imgui.Separator()
 		imgui.Text(fmt.Sprintf("Scenario: %s", util.Select(config.ScenarioFile != "", config.ScenarioFile, "None Selected")))
@@ -1202,6 +1203,32 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		imgui.SameLine()
 		if imgui.Button("Clear##scenarioBrief") {
 			config.ScenarioBriefFile = ""
+		}
+		imgui.EndGroup()
+
+		imgui.BeginGroup()
+		imgui.Text(fmt.Sprintf("Facility Configuration: %s",
+			util.Select(config.FacilityConfigFile != "", config.FacilityConfigFile, "None Selected")))
+		imgui.SameLine()
+		if imgui.Button("Select##facilityConfig") {
+			path, err := zenity.SelectFile(
+				zenity.Title("Select Facility Configuration JSON File"),
+				zenity.FileFilters{
+					{
+						Name:     "JSON Files",
+						Patterns: []string{"*.json"},
+					},
+				},
+			)
+			if err != nil {
+				fmt.Printf("Error selecting facility configuration file: %v\n", err)
+			} else {
+				config.FacilityConfigFile = path
+			}
+		}
+		imgui.SameLine()
+		if imgui.Button("Clear##facilityConfig") {
+			config.FacilityConfigFile = ""
 		}
 		imgui.EndGroup()
 

@@ -35,7 +35,7 @@ func main() {
 
 	var e util.ErrorLogger
 	lg := log.New(false, "warn", "")
-	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups("", "", "", &e, lg)
+	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups(server.OverrideFiles{}, &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)

@@ -69,9 +69,10 @@ type ConfigNoSim struct {
 	UserWorkstation    string
 	ControllerInitials string
 
-	ScenarioFile      string
-	VideoMapFile      string
-	ScenarioBriefFile string
+	ScenarioFile       string
+	VideoMapFile       string
+	ScenarioBriefFile  string
+	FacilityConfigFile string
 
 	// DisplaySimLogs enables logging of basic information about a Sim's execution (notably, things
 	// likely to be useful for facility engineering) in the MessagesPane.

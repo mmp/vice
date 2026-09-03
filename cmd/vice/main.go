@@ -46,30 +46,31 @@ import (
 
 var (
 	// Command-line options are only used for developer features.
-	cpuprofile            = flag.String("cpuprofile", "", "write CPU profile to `file`")
-	memprofile            = flag.String("memprofile", "", "write memory profile to `file`")
-	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
-	logDir                = flag.String("logdir", "", "log file `directory`")
-	lintScenarios         = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	runServer             = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
-	serverAddress         = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
-	scenarioFilename      = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
-	videoMapFilename      = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
-	scenarioBriefFilename = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
-	broadcastMessage      = flag.String("broadcast", "", "`message` to broadcast to all active clients on the server")
-	broadcastPassword     = flag.String("password", "", "`password` to authenticate with server for broadcast message")
-	resetSim              = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
-	showRoutes            = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
-	listMaps              = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
-	listScenarios         = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
-	runSim                = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
-	navLog                = flag.Bool("navlog", false, "enable navigation logging")
-	navLogCategories      = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
-	navLogCallsign        = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
-	replayMode            = flag.Bool("replay", false, "replay scenario from saved config")
-	replayDuration        = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
-	waypointCommands      = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
-	starsRandoms          = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
+	cpuprofile             = flag.String("cpuprofile", "", "write CPU profile to `file`")
+	memprofile             = flag.String("memprofile", "", "write memory profile to `file`")
+	logLevel               = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
+	logDir                 = flag.String("logdir", "", "log file `directory`")
+	lintScenarios          = flag.Bool("lint", false, "check the validity of the built-in scenarios")
+	runServer              = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
+	serverAddress          = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
+	scenarioFilename       = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
+	videoMapFilename       = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
+	scenarioBriefFilename  = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
+	facilityConfigFilename = flag.String("facilityconfig", "", "`filename` of JSON file with a facility configuration")
+	broadcastMessage       = flag.String("broadcast", "", "`message` to broadcast to all active clients on the server")
+	broadcastPassword      = flag.String("password", "", "`password` to authenticate with server for broadcast message")
+	resetSim               = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
+	showRoutes             = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
+	listMaps               = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
+	listScenarios          = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
+	runSim                 = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
+	navLog                 = flag.Bool("navlog", false, "enable navigation logging")
+	navLogCategories       = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
+	navLogCallsign         = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
+	replayMode             = flag.Bool("replay", false, "replay scenario from saved config")
+	replayDuration         = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
+	waypointCommands       = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
+	starsRandoms           = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -146,7 +147,7 @@ func initCommon() (*log.Logger, *util.Profiler) {
 }
 
 // loadConfig initializes the imgui context, loads user configuration,
-// and applies scenario/videomap filename defaults from the config.
+// and applies the override file defaults from the config.
 func loadConfig(lg *log.Logger) (*Config, error) {
 	_ = imguiInit()
 	config, err := LoadOrMakeDefaultConfig(lg)
@@ -159,7 +160,21 @@ func loadConfig(lg *log.Logger) (*Config, error) {
 	if *scenarioBriefFilename == "" && config.ScenarioBriefFile != "" {
 		*scenarioBriefFilename = config.ScenarioBriefFile
 	}
+	if *facilityConfigFilename == "" && config.FacilityConfigFile != "" {
+		*facilityConfigFilename = config.FacilityConfigFile
+	}
 	return config, err
+}
+
+// overrideFiles returns the resource files the user has provided to replace
+// or add to the ones in the resources directory.
+func overrideFiles() server.OverrideFiles {
+	return server.OverrideFiles{
+		Scenario:       *scenarioFilename,
+		VideoMap:       *videoMapFilename,
+		ScenarioBrief:  *scenarioBriefFilename,
+		FacilityConfig: *facilityConfigFilename,
+	}
 }
 
 // cliInit performs initialization for CLI (non-GUI) modes: syncing
@@ -179,15 +194,15 @@ func runLint(lg *log.Logger) error {
 	}
 
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _, extraScenarioErrors := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, &e, lg)
+	scenarioGroups, _, _, _, overrideErrors := server.LoadScenarioGroups(overrideFiles(), &e, lg)
 
 	if e.HaveErrors() {
 		e.PrintErrors(nil)
 		return fmt.Errorf("scenario validation failed")
 	}
-	if extraScenarioErrors != "" {
-		fmt.Fprint(os.Stderr, extraScenarioErrors)
-		return fmt.Errorf("extra scenario validation failed")
+	if overrideErrors != "" {
+		fmt.Fprint(os.Stderr, overrideErrors)
+		return fmt.Errorf("override file validation failed")
 	}
 
 	scenarioAirports := make(map[string]map[string]any)
@@ -214,7 +229,7 @@ func runListScenarios(lg *log.Logger) error {
 		return err
 	}
 
-	scenarios, err := server.ListAllScenarios(*scenarioFilename, *videoMapFilename, lg)
+	scenarios, err := server.ListAllScenarios(overrideFiles(), lg)
 	if err != nil {
 		return fmt.Errorf("failed to list scenarios: %w", err)
 	}
@@ -237,7 +252,7 @@ func runSimulation(lg *log.Logger) error {
 	tracon, scenarioName := parts[0], parts[1]
 
 	var e util.ErrorLogger
-	scenarioGroups, configs, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, &e, lg)
+	scenarioGroups, configs, _, _, _ := server.LoadScenarioGroups(overrideFiles(), &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return fmt.Errorf("scenario loading failed")
@@ -546,7 +561,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	// install.
 	var mgr *client.ConnectionManager
 	var errorLogger util.ErrorLogger
-	var extraScenarioErrors string
+	var overrideErrors string
 	var plat platform.Platform
 	var render renderer.Renderer
 	syncDone := make(chan struct{})
@@ -557,8 +572,8 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		wx.Init()
 		av.InitDB()
 		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
-		mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename,
-			*videoMapFilename, *scenarioBriefFilename, &config.DisableTextToSpeech, lg,
+		mgr, errorLogger, overrideErrors = client.MakeServerManager(*serverAddress, overrideFiles(),
+			&config.DisableTextToSpeech, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
@@ -628,9 +643,10 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		ShowFatalErrorDialog(render, plat, nil, "%s", errorLogger.String())
 	}
 
-	// Show non-fatal dialog for extra scenario errors
-	if extraScenarioErrors != "" {
-		ShowErrorDialog(plat, lg, "Errors in additional scenario file (scenario will not be loaded):\n\n%s", extraScenarioErrors)
+	// Show non-fatal dialog for errors in the facility engineering files
+	if overrideErrors != "" {
+		ShowErrorDialog(plat, lg, "Errors in additional facility engineering files (they will not be loaded):\n\n%s",
+			overrideErrors)
 	}
 
 	// Kick off whisper + TTS preload now that the connection manager

@@ -42,7 +42,7 @@ type ConnectionManager struct {
 	onError     func(error)
 }
 
-func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap, additionalScenarioBrief string, disableTTSPtr *bool, lg *log.Logger,
+func MakeServerManager(serverAddress string, overrides server.OverrideFiles, disableTTSPtr *bool, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
@@ -54,12 +54,10 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap, ad
 	}
 
 	// Launch local server
-	rpcPort, errorLogger, extraScenarioErrors := server.LaunchServerAsync(server.ServerLaunchConfig{
-		ExtraScenario:      additionalScenario,
-		ExtraVideoMap:      additionalVideoMap,
-		ExtraScenarioBrief: additionalScenarioBrief,
-		ServerAddress:      serverAddress,
-		IsLocal:            true,
+	rpcPort, errorLogger, overrideErrors := server.LaunchServerAsync(server.ServerLaunchConfig{
+		Overrides:     overrides,
+		ServerAddress: serverAddress,
+		IsLocal:       true,
 	}, lg)
 
 	if !errorLogger.HaveErrors() {
@@ -82,7 +80,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap, ad
 		}
 	}
 
-	return cm, errorLogger, extraScenarioErrors
+	return cm, errorLogger, overrideErrors
 }
 
 func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.Logger) (*ControlClient, error) {

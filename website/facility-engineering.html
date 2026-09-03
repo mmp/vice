@@ -214,7 +214,7 @@
                 <p>When developing scenarios, you might make a copy of an existing scenario's JSON file and modify it in order to add more configurations,
                   or you or might specify completely new scenario and video map files if you're working on support for a new TRACON.
                   One way to try out your work is to open the "Settings" menu (shown by clicking the <i class="fas fa-cog"></i> icon in the menu bar)
-                  and selecting "Facility Engineering". There, you can specify the locations of additional scenario and/or video map files to load when <i>vice</i> is launched.</p>
+                  and selecting "Facility Engineering". There, you can specify the locations of additional scenario, video map, and/or facility configuration files to load when <i>vice</i> is launched.</p>
                 <div class="text-center">
                   <img src="fe-scenario-videomap-ui.png" srcset="fe-scenario-videomap-ui-2x.png 2x" width="550" height="128">
                 </div>
@@ -1193,6 +1193,13 @@
                 directory. They're organized by ARTCC and facility name (e.g., <code>resources/configurations/ZNY/N90.json</code>).
                 When a scenario is loaded, <i>vice</i> automatically loads the corresponding facility configuration
                 based on the scenario's "tracon" field for a TRACON scenario or its "artcc" field for an enroute (ERAM) scenario.
+              </p>
+              <p>When you're working on a facility's configuration, you can load your own copy of it with the
+                <code>-facilityconfig</code> command-line option or by selecting it from the "Facility Engineering" entry
+                in the settings menu. It replaces the configuration file with the same filename&mdash;a file named
+                <code>N90.json</code> takes the place of <code>resources/configurations/ZNY/N90.json</code>&mdash;so
+                the filename must match one of the built-in configurations. If the file has any errors, they are reported
+                in a dialog box when <i>vice</i> starts and the built-in configuration is used instead.
               </p>
               <p>Each facility configuration file may contain the following top-level elements:</p>
               <table class="table">
