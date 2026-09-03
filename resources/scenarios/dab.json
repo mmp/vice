@@ -164,7 +164,7 @@
           },
           "SMYRA.P,GTOUT": {
             "cleared_altitude": 3000,
-            "waypoints": "KDAB-25R N029.10.56.700,W081.02.30.375/h110 SMYRA"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 SMYRA"
           },
           "ILIND": {
             "cleared_altitude": 4000,
@@ -176,11 +176,11 @@
           },
           "KIZER.P": {
             "cleared_altitude": 3000,
-            "waypoints": "KDAB-25R N029.10.56.700,W081.02.30.375/h110 KIZER"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 KIZER"
           },
           "MMKAY": {
             "cleared_altitude": 3000,
-            "waypoints": "KDAB-25R N029.10.56.700,W081.02.30.375/h030 MMKAY"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h030 MMKAY"
           },
           "ASTOR.J": {
             "cleared_altitude": 4000,
@@ -188,23 +188,23 @@
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
-            "waypoints": "KDAB-25R N029.10.56.700,W081.02.30.375/h030 ASTOR"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h030 ASTOR"
           },
           "KOMN": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAB-25R N029.10.56.700,W081.02.30.375/h030 KOMN"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h030 KOMN"
           },
           "KFIN": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAB-25R N029.10.56.700,W081.02.30.375/h030 KFIN"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h030 KFIN"
           },
           "KEVB": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAB-25R N029.10.56.700,W081.02.30.375/h110 KEVB"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 KEVB"
           },
           "KDED": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAB-25R N029.10.56.700,W081.02.30.375/h110 KDED"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 KDED"
           }
         },
         "7R": {
@@ -218,7 +218,7 @@
           },
           "SMYRA.P,GTOUT": {
             "cleared_altitude": 3000,
-            "waypoints": "KDAB-25L N029.10.56.700,W081.02.30.375/h110 SMYRA"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 SMYRA"
           },
           "ILIND": {
             "cleared_altitude": 4000,
@@ -230,11 +230,11 @@
           },
           "KIZER.P": {
             "cleared_altitude": 3000,
-            "waypoints": "KDAB-25L N029.10.56.700,W081.02.30.375/h110 KIZER"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 KIZER"
           },
           "MMKAY": {
             "cleared_altitude": 3000,
-            "waypoints": "KDAB-25L N029.10.56.700,W081.02.30.375/h110 MMKAY"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 MMKAY"
           },
           "ASTOR.J": {
             "cleared_altitude": 4000,
@@ -242,23 +242,23 @@
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
-            "waypoints": "KDAB-25L N029.10.56.700,W081.02.30.375/h030 ASTOR"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h030 ASTOR"
           },
           "KOMN": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAB-25L N029.10.56.700,W081.02.30.375/h030 KOMN"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h030 KOMN"
           },
           "KFIN": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAB-25L N029.10.56.700,W081.02.30.375/h030 KFIN"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h030 KFIN"
           },
           "KEVB": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAB-25L N029.10.56.700,W081.02.30.375/h110 KEVB"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 KEVB"
           },
           "KDED": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAB-25L N029.10.56.700,W081.02.30.375/h110 KDED"
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 KDED"
           }
         },
         "16": {

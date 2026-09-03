@@ -43,7 +43,7 @@
           "SHIPP": {
             "cleared_altitude": 12000,
             "sid": "NTHNS6",
-            "waypoints": "KLGA-31 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230-/c8000 ASALT/hoN2J/c12000 N040.27.21.027,W073.32.40.427 SHIPP/ho66"
+            "waypoints": "KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230-/c8000 ASALT/hoN2J/c12000 N040.27.21.027,W073.32.40.427 SHIPP/ho66"
           }
         }
       },

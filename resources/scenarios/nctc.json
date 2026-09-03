@@ -1034,31 +1034,31 @@
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
             "is_rnav": true,
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 NTELL"
+            "waypoints": "N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 NTELL"
           },
           "KAYEX": {
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
             "is_rnav": true,
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.08.46.506,W121.56.59.329/hoC11 KAYEX"
+            "waypoints": "N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.08.46.506,W121.56.59.329/hoC11 KAYEX"
           },
           "KTINA": {
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
             "is_rnav": true,
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.07.29.615,W122.02.28.864/hoC11 KTINA"
+            "waypoints": "N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.07.29.615,W122.02.28.864/hoC11 KTINA"
           },
           "SUSEY": {
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
             "is_rnav": true,
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.05.50.134,W121.57.00.181/hoC11 SUSEY"
+            "waypoints": "N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.05.50.134,W121.57.00.181/hoC11 SUSEY"
           },
           "YYUNG": {
             "cleared_altitude": 19000,
             "sid": "SEGUL1",
             "is_rnav": true,
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SEPDY/s210/flyover WAMMY/ho4Q SEGUL/a16000+/hoC14 CYPRS/a22000+ YYUNG"
+            "waypoints": "N037.38.41.342,W122.21.37.265 SEPDY/s210/flyover WAMMY/ho4Q SEGUL/a16000+/hoC14 CYPRS/a22000+ YYUNG"
           }
         },
         "1R": {
@@ -1066,43 +1066,43 @@
             "cleared_altitude": 10000,
             "sid": "TRUKN2",
             "is_rnav": true,
-            "waypoints": "KSFO-19L N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/ho11S"
+            "waypoints": "N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/ho11S"
           },
           "GRTFL": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2",
             "is_rnav": true,
-            "waypoints": "KSFO-19L N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC41 GRTFL"
+            "waypoints": "N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC41 GRTFL"
           },
           "DEDHD": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2",
             "is_rnav": true,
-            "waypoints": "KSFO-19L N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC41 DEDHD"
+            "waypoints": "N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC41 DEDHD"
           },
           "ORRCA": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2",
             "is_rnav": true,
-            "waypoints": "KSFO-19L N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 HYPEE ORRCA"
+            "waypoints": "N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 HYPEE ORRCA"
           },
           "MOGEE": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2",
             "is_rnav": true,
-            "waypoints": "KSFO-19L N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 HYPEE MOGEE"
+            "waypoints": "N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 HYPEE MOGEE"
           },
           "TIPRE": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2",
             "is_rnav": true,
-            "waypoints": "KSFO-19L N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 COSMC TIPRE"
+            "waypoints": "N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 COSMC TIPRE"
           },
           "SYRAH": {
             "cleared_altitude": 19000,
             "sid": "TRUKN2",
             "is_rnav": true,
-            "waypoints": "KSFO-19L N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 COSMC SYRAH"
+            "waypoints": "N037.37.59.704,W122.21.46.906/a520+ TYDYE/a3000+ TRUKN/hoC29 COSMC SYRAH"
           }
         },
         "19R": {
@@ -2591,7 +2591,7 @@
         "13": {
           "SJC": {
             "cleared_altitude": 2000,
-            "waypoints": "KPAO-31 N037.27.20.574,W122.06.35.617 SJC"
+            "waypoints": "N037.27.20.574,W122.06.35.617 SJC"
           }
         }
       },

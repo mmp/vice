@@ -268,17 +268,17 @@
           "MQO": {
             "cleared_altitude": 5000,
             "sid": "CREPE3",
-            "waypoints": "KSBP-11 CREPE SOJSU MQO"
+            "waypoints": "CREPE SOJSU MQO"
           },
           "FRAMS": {
             "cleared_altitude": 5000,
             "sid": "CREPE3",
-            "waypoints": "KSBP-11 CREPE RUGTY FRAMS"
+            "waypoints": "CREPE RUGTY FRAMS"
           },
           "PRB": {
             "cleared_altitude": 5000,
             "sid": "CREPE3",
-            "waypoints": "KSBP-11 CREPE PRB"
+            "waypoints": "CREPE PRB"
           }
         }
       },
@@ -372,22 +372,22 @@
           "GVO": {
             "cleared_altitude": 5000,
             "sid": "BUELT4",
-            "waypoints": "KSMX-30 N034.52.57.891,W120.26.00.882 N034.51.40.328,W120.26.49.579 BUELT GVO"
+            "waypoints": "N034.52.57.891,W120.26.00.882 N034.51.40.328,W120.26.49.579 BUELT GVO"
           },
           "FRAMS": {
             "cleared_altitude": 5000,
             "sid": "BUELT4",
-            "waypoints": "KSMX-30 N034.52.57.891,W120.26.00.882 N034.51.40.328,W120.26.49.579 BUELT/arc2.6 N034.40.04.151,W120.14.50.414 N034.41.38.291,W120.18.38.572 GLJ PISMO FRAMS"
+            "waypoints": "N034.52.57.891,W120.26.00.882 N034.51.40.328,W120.26.49.579 BUELT/arc2.6 N034.40.04.151,W120.14.50.414 N034.41.38.291,W120.18.38.572 GLJ PISMO FRAMS"
           },
           "RZS": {
             "cleared_altitude": 5000,
             "sid": "BUELT4",
-            "waypoints": "KSMX-30 N034.52.57.891,W120.26.00.882 N034.51.40.328,W120.26.49.579 BUELT RZS"
+            "waypoints": "N034.52.57.891,W120.26.00.882 N034.51.40.328,W120.26.49.579 BUELT RZS"
           },
           "FLW": {
             "cleared_altitude": 5000,
             "sid": "BUELT4",
-            "waypoints": "KSMX-30 N034.52.57.891,W120.26.00.882 N034.51.40.328,W120.26.49.579 BUELT/a8500+ FLW"
+            "waypoints": "N034.52.57.891,W120.26.00.882 N034.51.40.328,W120.26.49.579 BUELT/a8500+ FLW"
           }
         },
         "30": {

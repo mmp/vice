@@ -16,7 +16,7 @@
             "handoff_controller": "50",
             "cleared_altitude": 15000,
             "sid": "BRSTL1",
-            "waypoints": "KJAX-26 TEREE/ho BRSTL"
+            "waypoints": "TEREE/ho BRSTL"
           }
         }
       },
@@ -151,7 +151,7 @@
           "BYYOU": {
             "handoff_controller": "50",
             "cleared_altitude": 23000,
-            "waypoints": "KSAV-10 N032.00.52.789,W081.38.28.337/ho"
+            "waypoints": "N032.00.52.789,W081.38.28.337/ho"
           }
         }
       },

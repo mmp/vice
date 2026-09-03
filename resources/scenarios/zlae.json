@@ -1224,7 +1224,7 @@
           "JLI": {
             "cleared_altitude": 8000,
             "sid": "BRDR7",
-            "waypoints": "KSAN-9 N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY/ho09 BROWS JLI"
+            "waypoints": "N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY/ho09 BROWS JLI"
           },
           "IPL": {
             "cleared_altitude": 8000,

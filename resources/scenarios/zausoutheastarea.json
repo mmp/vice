@@ -18,31 +18,31 @@
           "ACITO": {
             "cleared_altitude": 15000,
             "sid": "ORD9",
-            "waypoints": "KORD-4R N041.44.34.058,W087.57.15.507/ho ACITO ADELL ARLYN STL/delete",
+            "waypoints": "N041.44.34.058,W087.57.15.507/ho ACITO ADELL ARLYN STL/delete",
             "handoff_controller": "44"
           },
           "BACEN": {
             "cleared_altitude": 15000,
             "sid": "ORD9",
-            "waypoints": "KORD-4R N041.42.17.072,W087.54.35.354/ho BACEN BLOKR BEKKI ENL/delete",
+            "waypoints": "N041.42.17.072,W087.54.35.354/ho BACEN BLOKR BEKKI ENL/delete",
             "handoff_controller": "44"
           },
           "CMSKY": {
             "cleared_altitude": 15000,
             "sid": "ORD9",
-            "waypoints": "KORD-4R N041.44.05.109,W087.51.49.158/ho CMSKY CARYN CYBIL PXV/delete",
+            "waypoints": "N041.44.05.109,W087.51.49.158/ho CMSKY CARYN CYBIL PXV/delete",
             "handoff_controller": "44"
           },
           "DENNT": {
             "cleared_altitude": 15000,
             "sid": "ORD9",
-            "waypoints": "KORD-4R N041.44.05.109,W087.51.49.158/ho DENNT DARCY DREGS DONVE BWG/delete",
+            "waypoints": "N041.44.05.109,W087.51.49.158/ho DENNT DARCY DREGS DONVE BWG/delete",
             "handoff_controller": "44"
           },
           "DENNT.E": {
             "cleared_altitude": 15000,
             "sid": "ORD9",
-            "waypoints": "KORD-4R N041.44.19.638,W087.51.08.563/ho DENNT DARCY DREGS DUMGE SCOTO/delete",
+            "waypoints": "N041.44.19.638,W087.51.08.563/ho DENNT DARCY DREGS DUMGE SCOTO/delete",
             "handoff_controller": "44"
           },
           "EARND": {
@@ -54,7 +54,7 @@
           "EARND.E": {
             "cleared_altitude": 15000,
             "sid": "ORD9",
-            "waypoints": "KORD-4R N041.43.30.145,W087.48.58.293/ho EARND ELANR EMMLY ETAME EMEGE FLM/delete",
+            "waypoints": "N041.43.30.145,W087.48.58.293/ho EARND ELANR EMMLY ETAME EMEGE FLM/delete",
             "handoff_controller": "44"
           }
         }

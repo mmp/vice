@@ -50,7 +50,7 @@
             "cleared_altitude": 4000,
             "sid": "ALICO7",
             "description": "ALICO7",
-            "waypoints": "KRSW-6 26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
+            "waypoints": "26.5168,-81.7891/a3000+ 26.5175,-81.8250/h310"
           },
           "MOOKY": {
             "cleared_altitude": 3000,

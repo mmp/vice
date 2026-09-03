@@ -283,7 +283,7 @@
             "handoff_controller": "75",
             "cleared_altitude": 11000,
             "sid": "SFB1",
-            "waypoints": "KSFB-27R N028.51.47.606,W081.18.12.453/ho"
+            "waypoints": "N028.51.47.606,W081.18.12.453/ho"
           }
         }
       },
@@ -370,7 +370,7 @@
             "handoff_controller": "75",
             "cleared_altitude": 16000,
             "sid": "FATHE4",
-            "waypoints": "KDAB-25R N029.10.51.523,W080.58.59.163/ho ROYES"
+            "waypoints": "N029.10.51.523,W080.58.59.163/ho ROYES"
           }
         }
       },

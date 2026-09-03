@@ -19,27 +19,27 @@
           "MAULS,FLASK": {
             "cleared_altitude": 3000,
             "sid": "JEFSN2",
-            "waypoints": "KADW-19R N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN POLKK JEFSN/s250- CLTCH KERRK"
+            "waypoints": "N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN POLKK JEFSN/s250- CLTCH KERRK"
           },
           "GLANC": {
             "cleared_altitude": 3000,
             "sid": "JEFSN2",
-            "waypoints": "KADW-19R N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN POLKK JEFSN/s250- SCRAM DANOO WALCE"
+            "waypoints": "N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN POLKK JEFSN/s250- SCRAM DANOO WALCE"
           },
           "RRSIN,MELTN": {
             "cleared_altitude": 3000,
             "sid": "JEFSN2",
-            "waypoints": "KADW-19R N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN POLKK JEFSN/s250- JDUBB"
+            "waypoints": "N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN POLKK JEFSN/s250- JDUBB"
           },
           "OTTTO": {
             "cleared_altitude": 3000,
             "sid": "LINCN2",
-            "waypoints": "KADW-19R N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN REBLL OTTTO"
+            "waypoints": "N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN REBLL OTTTO"
           },
           "RAMAY": {
             "cleared_altitude": 3000,
             "sid": "LINCN2",
-            "waypoints": "KADW-19R N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN WYNGS RAMAY"
+            "waypoints": "N038.50.12.931,W076.52.13.987/a800+/flyover FLMOR/a3000+ LINCN WYNGS RAMAY"
           },
           "PALEO,VAALI,AMEEE": {
             "cleared_altitude": 3000,
@@ -51,27 +51,27 @@
           "MAULS,FLASK": {
             "cleared_altitude": 3000,
             "sid": "JEFSN2",
-            "waypoints": "KADW-1L TYLER NIKLE JEFSN/s250- CLTCH KERRK"
+            "waypoints": "TYLER NIKLE JEFSN/s250- CLTCH KERRK"
           },
           "GLANC": {
             "cleared_altitude": 3000,
             "sid": "JEFSN2",
-            "waypoints": "KADW-1L TYLER NIKLE JEFSN/s250- SCRAM DANOO WALCE"
+            "waypoints": "TYLER NIKLE JEFSN/s250- SCRAM DANOO WALCE"
           },
           "RRSIN,MELTN": {
             "cleared_altitude": 3000,
             "sid": "JEFSN2",
-            "waypoints": "KADW-1L TYLER NIKLE JEFSN/s250- JDUBB"
+            "waypoints": "TYLER NIKLE JEFSN/s250- JDUBB"
           },
           "OTTTO": {
             "cleared_altitude": 3000,
             "sid": "LINCN2",
-            "waypoints": "KADW-1L TYLER NIKLE LINCN REBLL OTTTO"
+            "waypoints": "TYLER NIKLE LINCN REBLL OTTTO"
           },
           "RAMAY": {
             "cleared_altitude": 3000,
             "sid": "LINCN2",
-            "waypoints": "KADW-1L TYLER NIKLE LINCN WYNGS RAMAY"
+            "waypoints": "TYLER NIKLE LINCN WYNGS RAMAY"
           },
           "PALEO,VAALI,AMEEE": {
             "cleared_altitude": 3000,
@@ -297,7 +297,7 @@
         "32": {
           "CSN,OTTTO,AML,JERES": {
             "cleared_altitude": 2000,
-            "waypoints": "KDAA-14 N038.43.30.159,W077.11.37.824/h190"
+            "waypoints": "N038.43.30.159,W077.11.37.824/h190"
           }
         }
       },

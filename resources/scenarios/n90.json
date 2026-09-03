@@ -287,31 +287,31 @@
           "WHITE": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-31 N040.44.04.395,W073.50.59.774/s210/ho5S N040.49.17.739,W073.46.46.759 N040.49.17.656,W073.56.20.108 N040.48.59.227,W073.56.35.681/hoC68 N040.50.45.259,W073.55.04.412 N040.39.54.580,W074.05.01.492/a12000-",
+            "waypoints": "N040.44.04.395,W073.50.59.774/s210/ho5S N040.49.17.739,W073.46.46.759 N040.49.17.656,W073.56.20.108 N040.48.59.227,W073.56.35.681/hoC68 N040.50.45.259,W073.55.04.412 N040.39.54.580,W074.05.01.492/a12000-",
             "departure_controller": "1L"
           },
           "NEWEL,ELIOT,ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-31 N040.44.04.395,W073.50.59.774/s210/ho5W N040.48.25.403,W073.46.52.417 N040.51.26.196,W073.57.58.079/hoC55",
+            "waypoints": "N040.44.04.395,W073.50.59.774/s210/ho5W N040.48.25.403,W073.46.52.417 N040.51.26.196,W073.57.58.079/hoC55",
             "departure_controller": "1L"
           },
           "PARKE,LANNA,BIGGY": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-31 N040.44.04.395,W073.50.59.774/s210/ho5W N040.48.25.403,W073.46.52.417 N040.51.26.196,W073.57.58.079/hoC39",
+            "waypoints": "N040.44.04.395,W073.50.59.774/s210/ho5W N040.48.25.403,W073.46.52.417 N040.51.26.196,W073.57.58.079/hoC39",
             "departure_controller": "1L"
           },
           "COATE,HAAYS,NEION,GAYEL": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-31 N040.44.04.395,W073.50.59.774/s210/ho5T N040.48.25.403,W073.46.52.417 N040.51.26.196,W073.57.58.079/hoC56",
+            "waypoints": "N040.44.04.395,W073.50.59.774/s210/ho5T N040.48.25.403,W073.46.52.417 N040.51.26.196,W073.57.58.079/hoC56",
             "departure_controller": "1L"
           },
           "GREKI,MERIT": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-31 N040.44.04.395,W073.50.59.774/s210/ho5T N040.48.25.403,W073.46.52.417/hoB19",
+            "waypoints": "N040.44.04.395,W073.50.59.774/s210/ho5T N040.48.25.403,W073.46.52.417/hoB19",
             "departure_controller": "1L"
           }
         },
@@ -319,31 +319,31 @@
           "NEWEL,ELIOT,ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-13 N040.48.40.880,W073.54.15.194/a5000/ho5W N040.54.53.756,W074.00.25.872/a9000+ N040.53.28.680,W074.16.01.083/a11000+/hoC55",
+            "waypoints": "N040.48.40.880,W073.54.15.194/a5000/ho5W N040.54.53.756,W074.00.25.872/a9000+ N040.53.28.680,W074.16.01.083/a11000+/hoC55",
             "departure_controller": "1L"
           },
           "PARKE,LANNA,BIGGY,SBJ": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-13 N040.48.40.880,W073.54.15.194/a5000/ho5W N040.54.53.756,W074.00.25.872/a9000+ N040.48.07.756,W074.14.50.167/a11000+/hoC39",
+            "waypoints": "N040.48.40.880,W073.54.15.194/a5000/ho5W N040.54.53.756,W074.00.25.872/a9000+ N040.48.07.756,W074.14.50.167/a11000+/hoC39",
             "departure_controller": "1L"
           },
           "WHITE,DIXIE": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-13 N040.48.41.759,W073.54.10.057/a5000/ho5S N040.53.21.580,W073.58.02.144 N040.40.32.510,W074.07.44.337/a12000 N040.28.46.625,W074.10.12.625/hoC68/a12000",
+            "waypoints": "N040.48.41.759,W073.54.10.057/a5000/ho5S N040.53.21.580,W073.58.02.144 N040.40.32.510,W074.07.44.337/a12000 N040.28.46.625,W074.10.12.625/hoC68/a12000",
             "departure_controller": "1L"
           },
           "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,DPK,SHIPP,WAVEY": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "waypoints": "KLGA-13 N040.48.58.348,W073.53.20.921/a5000/ho5T N040.56.32.578,W073.58.06.648/a9000+/hoC56 N041.01.29.401,W074.09.33.266/a11000+",
+            "waypoints": "N040.48.58.348,W073.53.20.921/a5000/ho5T N040.56.32.578,W073.58.06.648/a9000+/hoC56 N041.01.29.401,W074.09.33.266/a11000+",
             "departure_controller": "1L"
           },
           "GREKI,MERIT,BAYYS,CMK,BDR": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "waypoints": "KLGA-13 N040.48.58.348,W073.53.20.921/a4000+/ho5E N040.50.22.792,W073.53.51.546/a4000+/hoB19",
+            "waypoints": "N040.48.58.348,W073.53.20.921/a4000+/ho5E N040.50.22.792,W073.53.51.546/a4000+/hoB19",
             "departure_controller": "1L"
           }
         },
@@ -565,7 +565,7 @@
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-31 _LGA7_WTSa/ho5W _LGA7_WTSb _LGA7_WTSc N040.51.19.179,W074.09.33.294/radius3/a11000-15000",
+            "waypoints": "_LGA7_WTSa/ho5W _LGA7_WTSb _LGA7_WTSc N040.51.19.179,W074.09.33.294/radius3/a11000-15000",
             "departure_controller": "1L"
           }
         },
@@ -647,7 +647,7 @@
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "waypoints": "KLGA-13 _LGA7_31a/ho5W N040.51.19.179,W074.09.33.294/radius3/a11000-15000",
+            "waypoints": "_LGA7_31a/ho5W N040.51.19.179,W074.09.33.294/radius3/a11000-15000",
             "departure_controller": "1L"
           }
         },
@@ -655,7 +655,7 @@
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "LGA7",
-            "waypoints": "KLGA-22 _LGA7_4a/ho5W _LGA7_BRXa/radius1 _LGA7_BRXb/radius2 N040.51.19.179,W074.09.33.294/radius3/a11000-15000",
+            "waypoints": "_LGA7_4a/ho5W _LGA7_BRXa/radius1 _LGA7_BRXb/radius2 N040.51.19.179,W074.09.33.294/radius3/a11000-15000",
             "departure_controller": "1L"
           }
         }
@@ -6047,7 +6047,7 @@
             "cleared_altitude": 9000,
             "sid": "MMU7",
             "handoff_controller": "5T",
-            "waypoints": "KMMU-5 N040.46.02.718,W074.26.13.736/ho N040.43.16.000,W074.22.54.664/radius0.5 N040.47.07.015,W074.22.09.400/radius0.5 N040.50.18.603,W074.24.41.726/radius1/tc/ph",
+            "waypoints": "N040.46.02.718,W074.26.13.736/ho N040.43.16.000,W074.22.54.664/radius0.5 N040.47.07.015,W074.22.09.400/radius0.5 N040.50.18.603,W074.24.41.726/radius1/tc/ph",
             "departure_controller": "4N"
           }
         }
@@ -7276,7 +7276,7 @@
           "MERIT,BDR,GREKI,SOARS": {
             "cleared_altitude": 10000,
             "handoff_controller": "5E",
-            "waypoints": "KFOK-24 N040.52.40.258,W072.34.40.645/radius1/ho N040.59.24.006,W072.38.32.649/radius1 N041.04.03.319,W072.47.23.536/radius2.5/ph/tc",
+            "waypoints": "N040.52.40.258,W072.34.40.645/radius1/ho N040.59.24.006,W072.38.32.649/radius1 N041.04.03.319,W072.47.23.536/radius2.5/ph/tc",
             "departure_controller": "3N"
           }
         },

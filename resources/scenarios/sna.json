@@ -1003,7 +1003,7 @@
             "is_rnav": true,
             "aircraft": ["jet"],
             "departure_controller": "6L",
-            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200/c13000/hoC04 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+            "waypoints": "N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200/c13000/hoC04 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
           },
           "IKAYE": {
             "assigned_altitude": 3000,

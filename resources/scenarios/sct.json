@@ -2778,11 +2778,11 @@
           },
           "VTU": {
             "assigned_altitude": 3000,
-            "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+/h270 SXC VTU"
+            "waypoints": "N033.50.25.057,W118.10.40.173/a1500+/h270 SXC VTU"
           },
           "FICKY": {
             "assigned_altitude": 3000,
-            "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+/h180 SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "N033.50.25.057,W118.10.40.173/a1500+/h180 SXC GOATZ MALIT ROSIN FICKY"
           }
         },
         "12": {
@@ -3757,7 +3757,7 @@
           "OCN.E": {
             "cleared_altitude": 5000,
             "sid": "RV",
-            "waypoints": "KSAN-27 N032.43.24.803,W117.08.53.578/a900+ MZB/h290 OCN"
+            "waypoints": "N032.43.24.803,W117.08.53.578/a900+ MZB/h290 OCN"
           }
         }
       },
@@ -5986,21 +5986,21 @@
           "NASNI": {
             "cleared_altitude": 2000,
             "sid": "NASNI1",
-            "waypoints": "KNZY-11 N032.42.12.664,W117.13.23.512 NASNI"
+            "waypoints": "N032.42.12.664,W117.13.23.512 NASNI"
           }
         },
         "11": {
           "NASNI": {
             "cleared_altitude": 2000,
             "sid": "NASNI1",
-            "waypoints": "KNZY-29 N032.41.11.264,W117.11.28.925/s210/h177 NASNI"
+            "waypoints": "N032.41.11.264,W117.11.28.925/s210/h177 NASNI"
           }
         },
         "18": {
           "NASNI": {
             "cleared_altitude": 2000,
             "sid": "NASNI1",
-            "waypoints": "KNZY-36 N032.41.16.167,W117.13.07.884 NASNI"
+            "waypoints": "N032.41.16.167,W117.13.07.884 NASNI"
           }
         }
       },
@@ -7562,12 +7562,12 @@
           "TRM,JLI": {
             "cleared_altitude": 3000,
             "sid": "SKYES4",
-            "waypoints": "KRIV-14 HDF DIAMD/a5000 SKYES"
+            "waypoints": "HDF DIAMD/a5000 SKYES"
           },
           "OCN": {
             "cleared_altitude": 3000,
             "sid": "SKYES4",
-            "waypoints": "KRIV-14 HDF DIAMD/a5000 SKYES HIGOP"
+            "waypoints": "HDF DIAMD/a5000 SKYES HIGOP"
           }
         },
         "14": {
@@ -7579,12 +7579,12 @@
           "TRM,JLI": {
             "cleared_altitude": 3000,
             "sid": "SKYES4",
-            "waypoints": "KRIV-32 HDF MURRE/a7000 SKYES/a12000"
+            "waypoints": "HDF MURRE/a7000 SKYES/a12000"
           },
           "OCN": {
             "cleared_altitude": 3000,
             "sid": "SKYES4",
-            "waypoints": "KRIV-32 HDF MURRE/a7000 SKYES/a12000 HIGOP"
+            "waypoints": "HDF MURRE/a7000 SKYES/a12000 HIGOP"
           }
         }
       },
@@ -7821,12 +7821,12 @@
           "AVRRY": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
-            "waypoints": "KSBD-6 PESLE ELICA ARRDY/a13000 PEELR MTBAL"
+            "waypoints": "PESLE ELICA ARRDY/a13000 PEELR MTBAL"
           },
           "SXC": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
-            "waypoints": "KSBD-6 PESLE ROLIE ELICA JADKO ROHRS/a15000 DEGLE COMIX PADRZ"
+            "waypoints": "PESLE ROLIE ELICA JADKO ROHRS/a15000 DEGLE COMIX PADRZ"
           }
         },
         "6": {
@@ -7838,12 +7838,12 @@
           "AVRRY": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
-            "waypoints": "KSBD-24 LOSOM/a5500 STRKS/a6100-6900 ELICA ARRDY/a13000 PEELR MTBAL"
+            "waypoints": "LOSOM/a5500 STRKS/a6100-6900 ELICA ARRDY/a13000 PEELR MTBAL"
           },
           "SXC": {
             "cleared_altitude": 3000,
             "sid": "CATH1",
-            "waypoints": "KSBD-24 LOSOM/a5500 STRKS/a6100-6900 ELICA JADKO ROHRS/a15000 DEGLE COMIX PADRZ"
+            "waypoints": "LOSOM/a5500 STRKS/a6100-6900 ELICA JADKO ROHRS/a15000 DEGLE COMIX PADRZ"
           }
         }
       },

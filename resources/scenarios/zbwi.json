@@ -110,7 +110,7 @@
           "BETTE": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.31.58.130,W073.46.58.624/ho",
+            "waypoints": "N040.31.58.130,W073.46.58.624/ho",
             "handoff_controller": "17"
           }
         }

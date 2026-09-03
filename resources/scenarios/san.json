@@ -94,7 +94,7 @@
           "OCN,JLI,MZB,TRM": {
             "cleared_altitude": 4000,
             "sid": "MZB2",
-            "waypoints": "KSEE-27R N032.49.34.232,W116.57.47.367 N032.49.34.232,W116.57.47.367 MZB"
+            "waypoints": "N032.49.34.232,W116.57.47.367 N032.49.34.232,W116.57.47.367 MZB"
           },
           "SLI": {
             "cleared_altitude": 3000,
@@ -1423,7 +1423,7 @@
           "JLI": {
             "cleared_altitude": 8000,
             "sid": "BRDR7",
-            "waypoints": "KSAN-9 N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY/hoC09 BROWS JLI",
+            "waypoints": "N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY/hoC09 BROWS JLI",
             "departure_controller": "5W"
           }
         },
@@ -2710,7 +2710,7 @@
           "NASNI": {
             "cleared_altitude": 2000,
             "sid": "NASNI1",
-            "waypoints": "KNZY-11 N032.42.12.664,W117.13.23.512 NASNI"
+            "waypoints": "N032.42.12.664,W117.13.23.512 NASNI"
           }
         },
         "11": {
@@ -2724,7 +2724,7 @@
           "NASNI": {
             "cleared_altitude": 2000,
             "sid": "NASNI1",
-            "waypoints": "KNZY-36 N032.41.16.167,W117.13.07.884 NASNI"
+            "waypoints": "N032.41.16.167,W117.13.07.884 NASNI"
           }
         }
       },
@@ -2791,32 +2791,32 @@
           "JLI": {
             "cleared_altitude": 11000,
             "sid": "LAKEE3",
-            "waypoints": "KNKX-6L N032.51.23.834,W117.12.07.102 HELSI/a6000- GERNE/a7000+ LAKEE TOCOR/a7500+ JLI/a11000+"
+            "waypoints": "N032.51.23.834,W117.12.07.102 HELSI/a6000- GERNE/a7000+ LAKEE TOCOR/a7500+ JLI/a11000+"
           },
           "TRM": {
             "cleared_altitude": 11000,
             "sid": "LAKEE3",
-            "waypoints": "KNKX-6L N032.51.23.834,W117.12.07.102 HELSI/a6000- GERNE/a7000+ LAKEE TOCOR/a7500+ JLI/a11000+ TRM"
+            "waypoints": "N032.51.23.834,W117.12.07.102 HELSI/a6000- GERNE/a7000+ LAKEE TOCOR/a7500+ JLI/a11000+ TRM"
           },
           "IPL": {
             "cleared_altitude": 11000,
             "sid": "LAKEE3",
-            "waypoints": "KNKX-6L N032.51.23.834,W117.12.07.102 HELSI/a6000- GERNE/a7000+ LAKEE TOCOR/a7500+ JLI/a11000+ KUMBA"
+            "waypoints": "N032.51.23.834,W117.12.07.102 HELSI/a6000- GERNE/a7000+ LAKEE TOCOR/a7500+ JLI/a11000+ KUMBA"
           },
           "REDIN": {
             "cleared_altitude": 2000,
             "sid": "REDIN4",
-            "waypoints": "KNKX-6L N032.52.54.389,W117.11.09.644/a2000 SWOLF/a2000 REDIN"
+            "waypoints": "N032.52.54.389,W117.11.09.644/a2000 SWOLF/a2000 REDIN"
           },
           "MOUSE": {
             "cleared_altitude": 2000,
             "sid": "SWOLF9",
-            "waypoints": "KNKX-6L N032.52.54.389,W117.11.09.644/a2000 SWOLF/a2000 MOUSE"
+            "waypoints": "N032.52.54.389,W117.11.09.644/a2000 SWOLF/a2000 MOUSE"
           },
           "RODEN": {
             "cleared_altitude": 2000,
             "sid": "SWOLF9",
-            "waypoints": "KNKX-6L N032.52.54.389,W117.11.09.644/a2000 SWOLF/a2000 TRAHP RODEN"
+            "waypoints": "N032.52.54.389,W117.11.09.644/a2000 SWOLF/a2000 TRAHP RODEN"
           }
         }
       },

@@ -20,18 +20,18 @@
           "LACEN": {
             "cleared_altitude": 12000,
             "sid": "ENDED2",
-            "waypoints": "KPIE-36 FOXAR/a1600- PPOLE N028.06.04.801,W082.41.14.121/ho ENDED LACEN",
+            "waypoints": "FOXAR/a1600- PPOLE N028.06.04.801,W082.41.14.121/ho ENDED LACEN",
             "handoff_controller": "88"
           },
           "CAMJO": {
             "cleared_altitude": 12000,
             "sid": "LLRGO1",
-            "waypoints": "KPIE-36 INLTT/a1600+ N028.08.08.438,W082.42.30.311/ho LLRGO BAYPO ECAKE WILON SPRNG CAMJO",
+            "waypoints": "INLTT/a1600+ N028.08.08.438,W082.42.30.311/ho LLRGO BAYPO ECAKE WILON SPRNG CAMJO",
             "handoff_controller": "88"
           },
           "OCF": {
             "cleared_altitude": 12000,
-            "waypoints": "KPIE-36 N028.08.06.371,W082.36.09.470/ho OCF",
+            "waypoints": "N028.08.06.371,W082.36.09.470/ho OCF",
             "handoff_controller": "88"
           }
         }
@@ -1016,14 +1016,14 @@
         "10": {
           "NITTS": {
             "cleared_altitude": 12000,
-            "waypoints": "KLAL-28 N028.12.48.033,W082.05.26.239/ho14 NITTS/ho",
+            "waypoints": "N028.12.48.033,W082.05.26.239/ho14 NITTS/ho",
             "handoff_controller": "88"
           }
         },
         "28": {
           "NITTS": {
             "cleared_altitude": 12000,
-            "waypoints": "KLAL-10 N028.12.48.033,W082.05.26.239/ho14 NITTS/ho",
+            "waypoints": "N028.12.48.033,W082.05.26.239/ho14 NITTS/ho",
             "handoff_controller": "88"
           }
         }

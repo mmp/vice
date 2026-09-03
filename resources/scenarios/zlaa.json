@@ -110,7 +110,7 @@
           "RZS.V": {
             "assigned_altitude": 13000,
             "sid": "VTU8",
-            "waypoints": "KLAX-7L N033.54.54.195,W118.38.06.007/ho/ph",
+            "waypoints": "N033.54.54.195,W118.38.06.007/ho/ph",
             "handoff_controller": "14"
           },
           "LAS": {
@@ -1537,7 +1537,7 @@
         "30": {
           "VTU": {
             "assigned_altitude": 13000,
-            "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+ N033.51.12.134,W118.15.29.690 N033.50.21.377,W118.22.58.921/ho/ph",
+            "waypoints": "N033.50.25.057,W118.10.40.173/a1500+ N033.51.12.134,W118.15.29.690 N033.50.21.377,W118.22.58.921/ho/ph",
             "handoff_controller": "14"
           }
         }

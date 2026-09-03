@@ -498,7 +498,7 @@
         "4": {
           "ROGAN": {
             "cleared_altitude": 22000,
-            "waypoints": "KPGD-22 ROGAN/ho",
+            "waypoints": "ROGAN/ho",
             "handoff_controller": "14"
           }
         }
@@ -575,7 +575,7 @@
         "10": {
           "NITTS": {
             "cleared_altitude": 12000,
-            "waypoints": "KLAL-28 N028.03.02.455,W081.57.54.124/ho NITTS",
+            "waypoints": "N028.03.02.455,W081.57.54.124/ho NITTS",
             "handoff_controller": "14"
           }
         }
@@ -719,19 +719,19 @@
           "BAYPO": {
             "cleared_altitude": 12000,
             "sid": "BAYPO2",
-            "waypoints": "KPIE-18 FOXAR/a1600- PPOLE/ho N028.09.28.192,W082.43.30.845 BAYPO",
+            "waypoints": "FOXAR/a1600- PPOLE/ho N028.09.28.192,W082.43.30.845 BAYPO",
             "handoff_controller": "14"
           },
           "WILON": {
             "cleared_altitude": 12000,
             "sid": "BAYPO2",
-            "waypoints": "KPIE-18 FOXAR/a1600- PPOLE/ho N028.09.28.192,W082.43.30.845 BAYPO ECAKE",
+            "waypoints": "FOXAR/a1600- PPOLE/ho N028.09.28.192,W082.43.30.845 BAYPO ECAKE",
             "handoff_controller": "14"
           },
           "CAMJO": {
             "cleared_altitude": 12000,
             "sid": "BAYPO2",
-            "waypoints": "KPIE-18 FOXAR/a1600- PPOLE/ho N028.09.28.192,W082.43.30.845 BAYPO ECAKE WILON SPRNG",
+            "waypoints": "FOXAR/a1600- PPOLE/ho N028.09.28.192,W082.43.30.845 BAYPO ECAKE WILON SPRNG",
             "handoff_controller": "14"
           }
         }
@@ -1769,7 +1769,7 @@
           "RDSOX,OSPRY": {
             "cleared_altitude": 16000,
             "sid": "SFB1",
-            "waypoints": "KSFB-27R N028.48.56.679,W081.09.06.624/a5000/hoO1W N028.48.56.679,W081.09.06.624/ho",
+            "waypoints": "N028.48.56.679,W081.09.06.624/a5000/hoO1W N028.48.56.679,W081.09.06.624/ho",
             "handoff_controller": "14"
           }
         }

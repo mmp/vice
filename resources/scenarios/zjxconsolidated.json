@@ -219,7 +219,7 @@
           "BRSTL": {
             "cleared_altitude": 15000,
             "sid": "BRSTL1",
-            "waypoints": "KJAX-26 TEREE/a3000+ BRSTL/ho",
+            "waypoints": "TEREE/a3000+ BRSTL/ho",
             "handoff_controller": "15"
           },
           "CROSB": {

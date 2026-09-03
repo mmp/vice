@@ -14581,7 +14581,7 @@
           "CLIOS": {
             "cleared_altitude": 5000,
             "handoff_controller": "1Z",
-            "waypoints": "KOZR-24 CLIOS/ho"
+            "waypoints": "CLIOS/ho"
           }
         }
       },
@@ -14720,7 +14720,7 @@
           "PGAAA": {
             "cleared_altitude": 10000,
             "handoff_controller": "1W",
-            "waypoints": "KAGS-17 N033.24.31.536,W082.42.35.529/ho PGAAA"
+            "waypoints": "N033.24.31.536,W082.42.35.529/ho PGAAA"
           }
         }
       },

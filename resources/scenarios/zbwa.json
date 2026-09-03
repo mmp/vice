@@ -114,7 +114,7 @@
           "HYLND": {
             "cleared_altitude": 5000,
             "sid": "HNSCM5",
-            "waypoints": "KBED-11 HYLND/ho",
+            "waypoints": "HYLND/ho",
             "handoff_controller": "36"
           }
         }

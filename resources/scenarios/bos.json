@@ -730,7 +730,7 @@
           "BOSOX.BDL.P.33L.33/27,BOSOX.P.33L.33/27,GLYDE.P.33L.33/27,BOSOX.BDL.P.33L.33+32/27,BOSOX.P.33L.33+32/27,GLYDE.P.33L.33+32/27,BOSOX.BDL.P.33L.27+32/33,BOSOX.P.33L.27+32/33,GLYDE.P.33L.27+32/33,BOSOX.BDL.P.33L.27/33,BOSOX.P.33L.27/33,GLYDE.P.33L.27/33": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
-            "waypoints": "KBOS-15R N042.22.34.380,W071.02.26.804/h270"
+            "waypoints": "KBOS-15R/h270"
           },
           "HYLND.P.33L.33/27,LBSTA.P.33L.33/27,MANCH.P.33L.33/27,PEASE.P.33L.33/27": {
             "cleared_altitude": 3000,
