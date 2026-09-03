@@ -452,7 +452,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			// both cases: if on a heading, it sets InterceptState = InitialHeading;
 			// if direct to approach fix, it splices the routes.
 			_, assignedHeading := nav.AssignedHeading()
-			if nav.prepareForApproach(false) == nil {
+			if nav.prepareForApproach(false, "") == nil {
 				if !assignedHeading {
 					nav.Approach.InterceptState = OnApproachCourse
 					nav.Approach.NoPT = true

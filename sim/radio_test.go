@@ -149,7 +149,7 @@ func TestTransferCommsBeforeAssociation(t *testing.T) {
 		t.Fatalf("CreateFlightPlan: %v", err)
 	}
 
-	s.applyWaypointActionEvent(ac, av.WaypointActions{TransferComms: true})
+	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{TransferComms: true}})
 
 	if ac.ControllerFrequency != dep {
 		t.Errorf("expected the pilot on %s, got %q", dep, ac.ControllerFrequency)
@@ -189,7 +189,7 @@ func TestWaypointScratchpadBeforeAssociation(t *testing.T) {
 		t.Fatalf("CreateFlightPlan: %v", err)
 	}
 
-	s.applyWaypointActionEvent(ac, av.WaypointActions{PrimaryScratchpad: "GRB"})
+	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{PrimaryScratchpad: "GRB"}})
 
 	sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 	if sfp.Scratchpad != "GRB" {
@@ -198,7 +198,7 @@ func TestWaypointScratchpadBeforeAssociation(t *testing.T) {
 
 	// Once a human is working the aircraft, the route leaves the scratchpad be.
 	ac.ControllerFrequency = "2A"
-	s.applyWaypointActionEvent(ac, av.WaypointActions{PrimaryScratchpad: "MSP"})
+	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{PrimaryScratchpad: "MSP"}})
 	if sfp.Scratchpad != "GRB" {
 		t.Errorf("route overwrote the scratchpad of an aircraft a human is working: %q", sfp.Scratchpad)
 	}
@@ -347,13 +347,13 @@ func TestWaypointClimbActionUnderHumanControl(t *testing.T) {
 		return 0
 	}
 
-	s.applyWaypointActionEvent(ac, av.WaypointActions{ClimbAltitude: 5000})
+	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{ClimbAltitude: 5000}})
 	if assigned() != 5000 {
 		t.Fatalf("expected the route's climb to 5000 to be assigned, got %.0f", assigned())
 	}
 
 	ac.ControllerFrequency = "2A"
-	s.applyWaypointActionEvent(ac, av.WaypointActions{ClimbAltitude: 7000})
+	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{ClimbAltitude: 7000}})
 	if assigned() != 5000 {
 		t.Errorf("route changed the altitude of an aircraft a human is working: %.0f", assigned())
 	}

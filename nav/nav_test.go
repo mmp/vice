@@ -575,7 +575,7 @@ func (f *FlightTest) ExpectVisualApproach(runway string) av.CommandIntent {
 
 func (f *FlightTest) ClearedVisualApproach(runway string) av.CommandIntent {
 	f.t.Helper()
-	return f.nav.ClearedApproach("_VIS"+runway, nil, f.simTime, false)
+	return f.nav.ClearedApproach("_VIS"+runway, nil, f.simTime, false, "")
 }
 
 // makeAirport constructs an *av.Airport from the FAAAirport in av.DB,
@@ -642,12 +642,19 @@ func (f *FlightTest) makeAirport() *av.Airport {
 
 func (f *FlightTest) ClearedApproach(id string) {
 	f.t.Helper()
-	f.nav.ClearedApproach(id, nil, f.simTime, false)
+	f.nav.ClearedApproach(id, nil, f.simTime, false, "")
 }
 
 func (f *FlightTest) ClearedStraightInApproach(id string) {
 	f.t.Helper()
-	f.nav.ClearedApproach(id, nil, f.simTime, true)
+	f.nav.ClearedApproach(id, nil, f.simTime, true, "")
+}
+
+// ClearedApproachAtPassedFix issues the clearance a /clearapp route action at
+// fix calls for, as the sim does after nav has dropped the fix from the route.
+func (f *FlightTest) ClearedApproachAtPassedFix(id, fix string) av.CommandIntent {
+	f.t.Helper()
+	return f.nav.ClearedApproach(id, nil, f.simTime, false, fix)
 }
 
 func (f *FlightTest) AssignHeading(hdg int, turn av.TurnDirection) {
@@ -718,7 +725,7 @@ func (f *FlightTest) InterceptRadial(fix string, radial int, outbound bool) av.C
 
 func (f *FlightTest) InterceptApproach() av.CommandIntent {
 	f.t.Helper()
-	return f.nav.InterceptApproach(f.fp.ArrivalAirport, nil)
+	return f.nav.InterceptApproach("")
 }
 
 // SetWind configures a constant wind from the given direction (degrees true)

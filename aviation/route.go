@@ -280,6 +280,52 @@ func (wp *Waypoint) InitExtra() *WaypointExtra {
 	return wp.Extra
 }
 
+// Clone returns a copy of wp that shares nothing with the original, so that
+// modifying the copy leaves the original untouched.
+func (wp Waypoint) Clone() Waypoint {
+	if wp.Extra == nil {
+		return wp
+	}
+	extra := *wp.Extra
+	extra.ActionGroups = util.DuplicateSlice(extra.ActionGroups)
+	if extra.Arc != nil {
+		arc := *extra.Arc
+		extra.Arc = &arc
+	}
+	if extra.ProcedureTurn != nil {
+		pt := *extra.ProcedureTurn
+		extra.ProcedureTurn = &pt
+	}
+	wp.Extra = &extra
+	return wp
+}
+
+// CarryOverActions copies over actions from the given Waypoint prev; this is used when splicing
+// approaches into an aircraft's route where we have two instances of the same fix. All of prev's
+// action groups are flattened into one, so an action behind a trigger like /@a4000- survives the
+// splice but runs at the fix rather than when the trigger is met.
+func (wp Waypoint) CarryOverActions(prev Waypoint) Waypoint {
+	var carried WaypointActions
+	for _, group := range prev.ActionGroups() {
+		carried.merge(group.Actions)
+	}
+	carried.Heading = WaypointHeadingAction{}
+
+	wp = wp.Clone()
+	wp.SetNoPT(wp.NoPT() || prev.NoPT())
+	wp.SetInterceptApproach(wp.InterceptApproach() || prev.InterceptApproach())
+
+	if carried.HasSimActions() {
+		groups := wp.ActionGroups()
+		if n := len(groups); n > 0 && groups[n-1].Until.Type == WaypointActionNoTermination {
+			groups[n-1].Actions.merge(carried)
+		} else {
+			wp.InitExtra().ActionGroups = append(groups, WaypointActionGroup{Actions: carried})
+		}
+	}
+	return wp
+}
+
 // Flag readers (value receiver)
 func (wp Waypoint) NoPT() bool              { return wp.Flags&WaypointFlagNoPT != 0 }
 func (wp Waypoint) InterceptApproach() bool { return wp.Flags&WaypointFlagInterceptApproach != 0 }
@@ -728,20 +774,7 @@ func (wa *WaypointArray) UnmarshalJSON(b []byte) error {
 func (wa WaypointArray) Clone() WaypointArray {
 	wps := util.DuplicateSlice(wa)
 	for i := range wps {
-		if wps[i].Extra == nil {
-			continue
-		}
-		extra := *wps[i].Extra
-		extra.ActionGroups = util.DuplicateSlice(extra.ActionGroups)
-		if extra.Arc != nil {
-			arc := *extra.Arc
-			extra.Arc = &arc
-		}
-		if extra.ProcedureTurn != nil {
-			pt := *extra.ProcedureTurn
-			extra.ProcedureTurn = &pt
-		}
-		wps[i].Extra = &extra
+		wps[i] = wps[i].Clone()
 	}
 	return wps
 }
@@ -1237,48 +1270,56 @@ func parseWaypointActionModifier(f string) (WaypointActions, bool, error) {
 	return WaypointActions{}, false, nil
 }
 
-func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
+// merge combines src into wa
+func (wa *WaypointActions) merge(src WaypointActions) {
 	if src.Heading.IsSet() {
-		if dst.Heading.IsSet() {
-			return fmt.Errorf("multiple heading actions in the same waypoint action group")
-		}
-		dst.Heading = src.Heading
+		wa.Heading = src.Heading
 	}
 	if src.ClimbAltitude != 0 {
-		if dst.ClimbAltitude != 0 {
-			return fmt.Errorf("multiple climb altitude actions in the same waypoint action group")
-		}
-		if dst.DescendAltitude != 0 {
-			return fmt.Errorf("cannot specify both /c and /d in the same waypoint action group")
-		}
-		dst.ClimbAltitude = src.ClimbAltitude
+		wa.ClimbAltitude, wa.DescendAltitude = src.ClimbAltitude, 0
 	}
 	if src.DescendAltitude != 0 {
-		if dst.DescendAltitude != 0 {
-			return fmt.Errorf("multiple descend altitude actions in the same waypoint action group")
-		}
-		if dst.ClimbAltitude != 0 {
-			return fmt.Errorf("cannot specify both /c and /d in the same waypoint action group")
-		}
-		dst.DescendAltitude = src.DescendAltitude
+		wa.DescendAltitude, wa.ClimbAltitude = src.DescendAltitude, 0
 	}
-	dst.HumanHandoff = dst.HumanHandoff || src.HumanHandoff
+	wa.HumanHandoff = wa.HumanHandoff || src.HumanHandoff
 	if src.HandoffController != "" {
-		dst.HandoffController = src.HandoffController
+		wa.HandoffController = src.HandoffController
 	}
 	if src.PointOut != "" {
-		dst.PointOut = src.PointOut
+		wa.PointOut = src.PointOut
 	}
-	dst.ClearApproach = dst.ClearApproach || src.ClearApproach
+	wa.ClearApproach = wa.ClearApproach || src.ClearApproach
+	if src.GoAroundContactController != "" {
+		wa.GoAroundContactController = src.GoAroundContactController
+	}
 	if src.PrimaryScratchpad != "" {
-		dst.PrimaryScratchpad = src.PrimaryScratchpad
+		wa.PrimaryScratchpad = src.PrimaryScratchpad
 	}
-	dst.ClearPrimaryScratchpad = dst.ClearPrimaryScratchpad || src.ClearPrimaryScratchpad
+	wa.ClearPrimaryScratchpad = wa.ClearPrimaryScratchpad || src.ClearPrimaryScratchpad
 	if src.SecondaryScratchpad != "" {
-		dst.SecondaryScratchpad = src.SecondaryScratchpad
+		wa.SecondaryScratchpad = src.SecondaryScratchpad
 	}
-	dst.ClearSecondaryScratchpad = dst.ClearSecondaryScratchpad || src.ClearSecondaryScratchpad
-	dst.TransferComms = dst.TransferComms || src.TransferComms
+	wa.ClearSecondaryScratchpad = wa.ClearSecondaryScratchpad || src.ClearSecondaryScratchpad
+	wa.TransferComms = wa.TransferComms || src.TransferComms
+}
+
+// mergeWaypointActions combines src into dst, rejecting a second value for
+// anything an action group may only give once.
+func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
+	if src.Heading.IsSet() && dst.Heading.IsSet() {
+		return fmt.Errorf("multiple heading actions in the same waypoint action group")
+	}
+	if src.ClimbAltitude != 0 && dst.ClimbAltitude != 0 {
+		return fmt.Errorf("multiple climb altitude actions in the same waypoint action group")
+	}
+	if src.DescendAltitude != 0 && dst.DescendAltitude != 0 {
+		return fmt.Errorf("multiple descend altitude actions in the same waypoint action group")
+	}
+	if (src.ClimbAltitude != 0 && dst.DescendAltitude != 0) ||
+		(src.DescendAltitude != 0 && dst.ClimbAltitude != 0) {
+		return fmt.Errorf("cannot specify both /c and /d in the same waypoint action group")
+	}
+	dst.merge(src)
 	return nil
 }
 

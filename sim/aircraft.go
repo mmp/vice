@@ -604,11 +604,18 @@ func (ac *Aircraft) AtFixIntercept(fix string, simTime Time, delayReduction time
 }
 
 func (ac *Aircraft) ClearedApproach(id string, simTime Time, follow *nav.FollowTraffic) av.CommandIntent {
-	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), false)
+	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), false, "")
 }
 
 func (ac *Aircraft) ClearedStraightInApproach(id string, simTime Time, follow *nav.FollowTraffic) av.CommandIntent {
-	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), true)
+	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), true, "")
+}
+
+// ClearedApproachAtPassedFix issues the approach clearance a /clearapp route
+// action calls for at fix. The aircraft has already crossed fix and dropped it
+// from its route, so the approach is joined there rather than at a fix ahead.
+func (ac *Aircraft) ClearedApproachAtPassedFix(fix string, simTime Time) av.CommandIntent {
+	return ac.Nav.ClearedApproach(ac.Nav.Approach.AssignedId, nil, simTime.NavTime(), false, fix)
 }
 
 func (ac *Aircraft) CancelApproachClearance() av.CommandIntent {
@@ -658,8 +665,14 @@ func (ac *Aircraft) ContactTower(lg *log.Logger, freq av.Frequency) (av.CommandI
 	}
 }
 
-func (ac *Aircraft) InterceptApproach(lg *log.Logger) av.CommandIntent {
-	return ac.Nav.InterceptApproach(ac.FlightPlan.ArrivalAirport, lg)
+func (ac *Aircraft) InterceptApproach() av.CommandIntent {
+	return ac.Nav.InterceptApproach("")
+}
+
+// InterceptApproachAtPassedFix carries out an /intercept route action at fix,
+// which the aircraft has already crossed.
+func (ac *Aircraft) InterceptApproachAtPassedFix(fix string) av.CommandIntent {
+	return ac.Nav.InterceptApproach(fix)
 }
 
 func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise CruiseLimits,

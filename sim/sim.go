@@ -888,7 +888,9 @@ func (s *Sim) Update() {
 	}
 }
 
-func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions) bool {
+func (s *Sim) applyWaypointActionEvent(ac *Aircraft, event av.WaypointActionEvent) bool {
+	actions := event.Actions
+
 	// The flight plan the waypoint's actions operate on. A departure reaches
 	// its transfer of comms point a few seconds before its track tags up, and
 	// handoffs still happen for tracks an external facility is working, so
@@ -935,15 +937,15 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 	// instructions a virtual controller issues, and an aircraft on a human's
 	// frequency is theirs to instruct.
 	if !s.humanControlled(ac) {
-		return s.applyVirtualControllerActions(ac, sfp, actions)
+		return s.applyVirtualControllerActions(ac, sfp, event.Fix, actions)
 	}
 	return false
 }
 
 // applyVirtualControllerActions carries out the route actions a virtual
-// controller working the aircraft issues at a waypoint. It returns true if
-// the aircraft was deleted.
-func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, actions av.WaypointActions) bool {
+// controller working the aircraft issues at fix, which the aircraft has just
+// crossed. It returns true if the aircraft was deleted.
+func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fix string, actions av.WaypointActions) bool {
 	if actions.HumanHandoff {
 		// Handoff from virtual controller to a human controller.
 		// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans
@@ -975,7 +977,11 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, ac
 	}
 
 	if actions.ClearApproach {
-		ac.ClearedApproach(ac.Nav.Approach.AssignedId, s.State.SimTime, nil)
+		ac.ClearedApproachAtPassedFix(fix, s.State.SimTime)
+		if !ac.Nav.Approach.Cleared {
+			s.lg.Warnf("%s: /clearapp at %s did not clear the aircraft for the %s approach",
+				ac.ADSBCallsign, fix, ac.Nav.Approach.AssignedId)
+		}
 	}
 
 	if actions.TransferComms {
@@ -1277,7 +1283,7 @@ func (s *Sim) updateState() {
 
 			deletedByAction := false
 			for _, event := range updateResult.ActionEvents {
-				if s.applyWaypointActionEvent(ac, event.Actions) {
+				if s.applyWaypointActionEvent(ac, event) {
 					deletedByAction = true
 					break
 				}
@@ -1354,7 +1360,7 @@ func (s *Sim) updateState() {
 				}
 
 				if passedWaypoint.InterceptApproach() && !s.humanControlled(ac) {
-					ac.InterceptApproach(s.lg)
+					ac.InterceptApproachAtPassedFix(passedWaypoint.Fix)
 				}
 			}
 

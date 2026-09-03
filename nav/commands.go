@@ -593,27 +593,9 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 	}
 
 	// Check the approach (if any).
-	if ap := nav.Approach.Assigned; ap != nil {
-		// This is a little hacky, but... Because of the way we currently
-		// interpret ARINC424 files, fixes with procedure turns have no
-		// procedure turn for routes with /nopt from the previous fix.
-		// Therefore, if we are going direct to a fix that has a procedure
-		// turn, we can't take the first matching route but have to keep
-		// looking for it in case another route has it with a PT...
-		var apWps []av.Waypoint
-		for _, route := range ap.Waypoints {
-			for i, wp := range route {
-				if wp.Fix == fix {
-					apWps = append(route[i:], nav.FlightState.ArrivalAirport)
-					if wp.ProcedureTurn() != nil {
-						return apWps, waypointSourceApproach, nil
-					}
-				}
-			}
-		}
-		if apWps != nil {
-			return apWps, waypointSourceApproach, nil
-		}
+	if route, idx := approachRouteThrough(nav.Approach.Assigned, fix); route != nil {
+		return slices.Concat(route[idx:], []av.Waypoint{nav.FlightState.ArrivalAirport}),
+			waypointSourceApproach, nil
 	}
 
 	// See if it's a random fix not in the flight plan.

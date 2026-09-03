@@ -617,20 +617,21 @@ func (nav *Nav) AssignedWaypoints() []av.Waypoint {
 	return nav.Waypoints
 }
 
-// editAssignedWaypoints returns the assigned-route slice (deferred if a
-// controller instruction is pending, otherwise the active flight route) and a
-// commit function that writes a (possibly mutated) slice back to the
-// underlying field. Callers should reassign their local slice variable when
-// using slices.Delete/Insert and pass the current value to commit.
-func (nav *Nav) editAssignedWaypoints() ([]av.Waypoint, func([]av.Waypoint)) {
+// setAssignedWaypoints replaces the route returned by AssignedWaypoints.
+func (nav *Nav) setAssignedWaypoints(wps []av.Waypoint) {
 	if nav.hasDeferredRoute() {
-		return nav.DeferredNavHeading.Waypoints, func(wps []av.Waypoint) {
-			nav.DeferredNavHeading.Waypoints = wps
-		}
-	}
-	return []av.Waypoint(nav.Waypoints), func(wps []av.Waypoint) {
+		nav.DeferredNavHeading.Waypoints = wps
+	} else {
 		nav.Waypoints = wps
 	}
+}
+
+// editAssignedWaypoints returns the assigned-route slice and a commit function
+// that writes a (possibly mutated) slice back to the underlying field. Callers
+// should reassign their local slice variable when using slices.Delete/Insert
+// and pass the current value to commit.
+func (nav *Nav) editAssignedWaypoints() ([]av.Waypoint, func([]av.Waypoint)) {
+	return nav.AssignedWaypoints(), nav.setAssignedWaypoints
 }
 
 func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {

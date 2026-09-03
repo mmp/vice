@@ -285,7 +285,7 @@ func (s *Sim) InterceptApproach(tcw TCW, callsign av.ADSBCallsign) (av.CommandIn
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.InterceptApproach(s.lg)
+			return ac.InterceptApproach()
 		})
 }
 

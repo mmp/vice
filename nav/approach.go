@@ -10,7 +10,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -351,51 +350,20 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 			nav.Waypoints = append(util.DuplicateSlice(waypoints[1:]), nav.FlightState.ArrivalAirport)
 		} else {
 			// Try to splice the runway-specific waypoints in with the
-			// aircraft's current waypoints...
+			// aircraft's current waypoints. This overwrites the deferred
+			// route if a controller instruction is pending; arguably we'd
+			// like to defer the route change itself but don't have a way to
+			// do that that preserves the current assigned heading, etc.
+			navwps := nav.AssignedWaypoints()
 			found := false
 			for i, wp := range waypoints {
-				navwp := nav.AssignedWaypoints()
-				if idx := slices.IndexFunc(navwp, func(w av.Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
-					// This is a little messy: there are a handful of
-					// modifiers we would like to carry over if they are
-					// set though in general the waypoint from the approach
-					// takes priority for things like altitude, speed, etc.
-					nopt := navwp[idx].NoPT()
-					var carried av.WaypointActions
-					if groups := navwp[idx].ActionGroups(); len(groups) > 0 {
-						carried = av.WaypointActions{
-							HumanHandoff:      groups[0].Actions.HumanHandoff,
-							HandoffController: groups[0].Actions.HandoffController,
-							ClearApproach:     groups[0].Actions.ClearApproach,
-						}
-					}
-
-					// Keep the waypoints up to but not including the match.
-					navwp = navwp[:idx]
-					// Add the approach waypoints; take the matching one from there.
-					navwp = append(navwp, waypoints[i:]...)
-					// And add the destination airport again at the end.
-					navwp = append(navwp, nav.FlightState.ArrivalAirport)
-
-					navwp[idx].SetNoPT(nopt)
-					if carried.HasSimActions() {
-						navwp[idx].MergeActions(carried)
-					}
-
-					// Update the deferred waypoints if present (as they're
-					// what we got from AssignedWaypoints() above) and
-					// otherwise the regular ones. Arguably we'd like to
-					// defer the route change but don't have a way to do
-					// that that preserves the current assigned heading, etc.
-					if nav.hasDeferredRoute() {
-						nav.DeferredNavHeading.Waypoints = navwp
-					} else {
-						nav.Waypoints = navwp
-					}
-
-					found = true
-					break
+				idx := slices.IndexFunc(navwps, func(w av.Waypoint) bool { return w.Fix == wp.Fix })
+				if idx == -1 {
+					continue
 				}
+				nav.setAssignedWaypoints(nav.spliceApproachRoute(navwps, idx, waypoints[i:]))
+				found = true
+				break
 			}
 
 			if !found {
@@ -421,19 +389,21 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 	}
 }
 
-func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) av.CommandIntent {
+func (nav *Nav) InterceptApproach(joinFix string) av.CommandIntent {
 	if nav.Approach.AssignedId == "" {
 		return av.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 
 	if _, onHeading := nav.AssignedHeading(); !onHeading {
 		wps := nav.AssignedWaypoints()
-		if len(wps) == 0 || !wps[0].OnApproach() {
+		// Either the fix just crossed or the next one on the route has to be on the approach.
+		route, _ := approachRouteThrough(nav.Approach.Assigned, joinFix)
+		if route == nil && (len(wps) == 0 || !wps[0].OnApproach()) {
 			return av.MakeUnableIntent("unable. we have to be on a heading or direct to an approach fix to intercept")
 		}
 	}
 
-	if intent := nav.prepareForApproach(false); intent != nil {
+	if intent := nav.prepareForApproach(false, joinFix); intent != nil {
 		return intent
 	}
 
@@ -525,18 +495,11 @@ func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.D
 	if !nav.routeDirectIfNeeded(fix, simTime, delayReduction) {
 		return av.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
-	nav.Approach.AtFixClearedRoute = nil
-	for _, route := range ap.Waypoints {
-		for i, wp := range route {
-			if wp.Fix == fix {
-				nav.Approach.AtFixClearedRoute = util.DuplicateSlice(route[i:])
-			}
-		}
-	}
-
-	if nav.Approach.AtFixClearedRoute == nil {
+	route, idx := approachRouteThrough(ap, fix)
+	if route == nil {
 		return av.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
 	}
+	nav.Approach.AtFixClearedRoute = util.DuplicateSlice(route[idx:])
 	if straightIn && len(nav.Approach.AtFixClearedRoute) > 0 {
 		nav.Approach.AtFixClearedRoute[0].SetNoPT(true)
 	}
@@ -574,7 +537,74 @@ func (nav *Nav) AtFixIntercept(fix string, simTime Time, delayReduction time.Dur
 	}
 }
 
-func (nav *Nav) prepareForApproach(straightIn bool) av.CommandIntent {
+// approachRouteThrough returns the approach transition route that includes fix
+// and the fix's index in it; the route is nil if ap is nil, fix is empty, or no
+// transition includes it. A transition where the fix has a procedure turn wins:
+// because of the way we currently interpret ARINC424 files, fixes with
+// procedure turns have no procedure turn for routes with /nopt from the
+// previous fix, so a fix may appear in several transitions both with and
+// without one.
+func approachRouteThrough(ap *av.Approach, fix string) (av.WaypointArray, int) {
+	if ap == nil || fix == "" {
+		return nil, 0
+	}
+	var best av.WaypointArray
+	var bestIdx int
+	for _, route := range ap.Waypoints {
+		idx := slices.IndexFunc(route, func(wp av.Waypoint) bool { return wp.Fix == fix })
+		if idx == -1 {
+			continue
+		}
+		if route[idx].ProcedureTurn() != nil {
+			return route, idx
+		}
+		if best == nil {
+			best, bestIdx = route, idx
+		}
+	}
+	return best, bestIdx
+}
+
+// spliceApproachRoute returns the route that follows navwps up to navwps[idx],
+// where it joins apwps, which starts at that same fix, and then continues to
+// the arrival airport. The approach's waypoint takes over at the shared fix
+// but keeps the route's own actions there. The result shares nothing with
+// either input.
+func (nav *Nav) spliceApproachRoute(navwps []av.Waypoint, idx int, apwps []av.Waypoint) []av.Waypoint {
+	wps := slices.Concat(navwps[:idx], apwps, []av.Waypoint{nav.FlightState.ArrivalAirport})
+	wps[idx] = apwps[0].CarryOverActions(navwps[idx])
+	return wps
+}
+
+// joinApproach splices the assigned approach into the aircraft's route where
+// the two meet and reports whether it found such a fix. joinFix, if non-empty,
+// names a fix the aircraft has just crossed and so dropped from its route; the
+// approach is joined there, picking up after it.
+func (nav *Nav) joinApproach(joinFix string) bool {
+	ap := nav.Approach.Assigned
+
+	if route, idx := approachRouteThrough(ap, joinFix); route != nil {
+		nav.setAssignedWaypoints(slices.Concat(route[idx+1:], []av.Waypoint{nav.FlightState.ArrivalAirport}))
+		// Having crossed the fix counts as passing an approach fix, which
+		// lets a clearance start the descent right away.
+		nav.Approach.PassedApproachFix = true
+		return true
+	}
+
+	navwps := nav.AssignedWaypoints()
+	for i, wp := range navwps {
+		if route, idx := approachRouteThrough(ap, wp.Fix); route != nil {
+			nav.setAssignedWaypoints(nav.spliceApproachRoute(navwps, i, route[idx:]))
+			return true
+		}
+	}
+	return false
+}
+
+// prepareForApproach sets up the aircraft to fly the assigned approach, either
+// by splicing it into the route or by leaving the aircraft on a heading to
+// intercept. joinFix has the same meaning as in joinApproach.
+func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) av.CommandIntent {
 	if nav.Approach.AssignedId == "" {
 		return av.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
@@ -586,47 +616,8 @@ func (nav *Nav) prepareForApproach(straightIn bool) av.CommandIntent {
 		return nav.prepareForChartedVisual()
 	}
 
-	directApproachFix := false
 	_, assignedHeading := nav.AssignedHeading()
-	if !assignedHeading {
-		// See if any of the waypoints in our route connect to the approach. Prefer a route where
-		// the fix has a procedure turn; some approaches have multiple transitions where a fix
-		// appears both with and without a PT.
-		navwps := nav.AssignedWaypoints()
-		bestRoute, bestIdx, navIdx := func() ([]av.Waypoint, int, int) {
-			for i, wp := range navwps {
-				var candidate []av.Waypoint
-				var candidateIdx int
-				for _, route := range ap.Waypoints {
-					idx := slices.IndexFunc(route, func(awp av.Waypoint) bool { return wp.Fix == awp.Fix })
-					if idx == -1 {
-						continue
-					}
-					if route[idx].ProcedureTurn() != nil {
-						return route, idx, i
-					}
-					if candidate == nil {
-						candidate, candidateIdx = route, idx
-					}
-				}
-				if candidate != nil {
-					return candidate, candidateIdx, i
-				}
-			}
-			return nil, 0, 0
-		}()
-
-		if bestRoute != nil {
-			directApproachFix = true
-			navwps = append(navwps[:navIdx], bestRoute[bestIdx:]...)
-			navwps = append(navwps, nav.FlightState.ArrivalAirport)
-			if nav.hasDeferredRoute() {
-				nav.DeferredNavHeading.Waypoints = navwps
-			} else {
-				nav.Waypoints = navwps
-			}
-		}
-	}
+	directApproachFix := !assignedHeading && nav.joinApproach(joinFix)
 
 	if directApproachFix {
 		// The aircraft is going direct to an approach fix; clear any
@@ -690,7 +681,9 @@ type FollowTraffic struct {
 	Route    av.WaypointArray
 }
 
-func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime Time, straightIn bool) av.CommandIntent {
+// ClearedApproach issues an approach clearance. joinFix has the same meaning
+// as in joinApproach and is empty for a controller-issued clearance.
+func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime Time, straightIn bool, joinFix string) av.CommandIntent {
 	ap := nav.Approach.Assigned
 	if ap == nil {
 		return av.MakeUnableIntent("unable. We haven't been told to expect an approach")
@@ -718,7 +711,7 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 		}
 	}
 
-	if intent := nav.prepareForApproach(straightIn); intent != nil {
+	if intent := nav.prepareForApproach(straightIn, joinFix); intent != nil {
 		return intent
 	}
 

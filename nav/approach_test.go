@@ -1478,3 +1478,277 @@ func TestClearedVisualReissuedDoesNotRecomputeRoute(t *testing.T) {
 		}
 	}
 }
+
+// routeFixes returns the fix names remaining in the aircraft's route.
+func routeFixes(f *FlightTest) []string {
+	fixes := make([]string, len(f.nav.Waypoints))
+	for i, wp := range f.nav.Waypoints {
+		fixes[i] = wp.Fix
+	}
+	return fixes
+}
+
+// TestClearedApproachJoinsAtPassedFix verifies that the clearance a /clearapp
+// route action asks for joins the approach at the fix the action fired at. The
+// sim issues it after nav has already dropped that fix from the route, so on
+// an arrival that ends at the fix it is the only thing left tying the route to
+// the approach; without it the aircraft flies to the airport at its arrival
+// altitude.
+func TestClearedApproachJoinsAtPassedFix(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     210,
+	})
+
+	f.ExpectApproach("I22L")
+
+	f.AtFix("ROSLY", func(f *FlightTest) {
+		if fixes := routeFixes(f); len(fixes) != 1 || fixes[0] != "KJFK" {
+			t.Fatalf("expected only the airport left in the route, got %v", fixes)
+		}
+
+		if intent := f.ClearedApproachAtPassedFix("I22L", "ROSLY"); intent == nil {
+			t.Fatal("no intent from the approach clearance")
+		}
+		if !f.nav.Approach.Cleared {
+			t.Error("not cleared for the approach")
+		}
+		if fixes := routeFixes(f); fixes[0] != "ZALPO" {
+			t.Errorf("expected the approach to pick up after ROSLY at ZALPO, got %v", fixes)
+		}
+		if !f.nav.Approach.PassedApproachFix {
+			t.Error("crossing ROSLY should count as passing an approach fix")
+		}
+		if f.nav.Altitude.Restriction != nil {
+			t.Errorf("ROSLY's altitude restriction should not survive the clearance: %+v",
+				f.nav.Altitude.Restriction)
+		}
+	})
+
+	// Reaching ZALPO at all means the approach was joined; it is only on the
+	// route because the clearance put it there.
+	f.AtFix("ZALPO", func(f *FlightTest) {
+		f.AssertAltitudeBelow(2900)
+	})
+
+	f.Run()
+}
+
+// TestClearedApproachFallsBackToRouteFix verifies that a /clearapp fix that
+// isn't on the approach leaves the join to the scan over the rest of the
+// route, as a controller-issued clearance uses.
+func TestClearedApproachFallsBackToRouteFix(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "CAMRN/a13000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  13000,
+		InitialSpeed:     250,
+	})
+
+	f.ExpectApproach("I22L")
+
+	f.AtFix("CAMRN", func(f *FlightTest) {
+		if intent := f.ClearedApproachAtPassedFix("I22L", "CAMRN"); intent == nil {
+			t.Fatal("no intent from the approach clearance")
+		}
+		if !f.nav.Approach.Cleared {
+			t.Error("not cleared for the approach")
+		}
+		if fixes := routeFixes(f); fixes[0] != "DETGY" {
+			t.Errorf("expected the approach joined at DETGY, got %v", fixes)
+		}
+		// CAMRN isn't on the approach, so crossing it doesn't license a
+		// descent the way an approach fix does.
+		if f.nav.Approach.PassedApproachFix {
+			t.Error("CAMRN is not an approach fix")
+		}
+	})
+
+	f.AtFix("ZALPO", func(f *FlightTest) {
+		f.AssertAltitudeBelow(2900)
+	})
+
+	f.Run()
+}
+
+// TestClearApproachAtArrivalEndJoinsILS is the reported case: the KLAX HLYWD1
+// arrival ends at SEAVU with /clearapp, and SEAVU is the IAF of the ILS 25L
+// transition the aircraft has to pick up there.
+func TestClearApproachAtArrivalEndJoinsILS(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "NEILE/a14000+ SEAVU/a12000-14000/s270",
+		DepartureAirport: "KSFO",
+		ArrivalAirport:   "KLAX",
+		AircraftType:     "A320",
+		InitialAltitude:  14000,
+		InitialSpeed:     270,
+		OnSTAR:           true,
+	})
+
+	f.ExpectApproach("I25L")
+
+	f.AtFix("SEAVU", func(f *FlightTest) {
+		if intent := f.ClearedApproachAtPassedFix("I25L", "SEAVU"); intent == nil {
+			t.Fatal("no intent from the approach clearance")
+		}
+		if !f.nav.Approach.Cleared {
+			t.Error("not cleared for the approach")
+		}
+		if fixes := routeFixes(f); fixes[0] != "KRAIN" {
+			t.Errorf("expected the approach to pick up after SEAVU at KRAIN, got %v", fixes)
+		}
+	})
+
+	f.AtFix("FUELR", func(f *FlightTest) {
+		f.AssertAltitudeBelow(12000)
+	})
+
+	f.Run()
+}
+
+// TestExpectApproachCarriesRouteActionsOntoApproach covers the runway-waypoint
+// splice. The approach's waypoint takes over at the shared fix, so the route's
+// own instructions for that fix have to come across with it -- from any of its
+// action groups, not just the first -- while the approach keeps saying how the
+// fix is flown. The runway waypoints belong to the scenario's arrival and are
+// shared by every aircraft flying it, so the merge must not reach into them.
+func TestExpectApproachCarriesRouteActionsOntoApproach(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		// Everything after /@a5000- is a second action group, so a splice
+		// that only looked at the first would drop all of it.
+		Waypoints: "DETGY/a7000 LEFER/a4000/s210/h220/@a5000-/ho/po2B/tc/spspXYZ" +
+			"/cpsp/ssspQR/cssp/d3000/clearapp/intercept/nopt",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     210,
+	})
+
+	// A runway transition whose LEFER carries an action of its own, so it
+	// already has the Extra that the merge would otherwise write through.
+	runwayWaypoints := map[string]av.WaypointArray{
+		"22L": parseRoute(t, "LEFER/a3000/s180/flyover/h200 ROSLY/a3000",
+			f.nav.FlightState.MagneticVariation),
+	}
+	before := runwayWaypoints["22L"][:1].Encode()
+
+	f.nav.ExpectApproach(f.makeAirport(), "I22L", runwayWaypoints)
+
+	if after := runwayWaypoints["22L"][:1].Encode(); after != before {
+		t.Errorf("the scenario's runway waypoint was modified: before %q, after %q", before, after)
+	}
+
+	idx := slices.IndexFunc(f.nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "LEFER" })
+	if idx == -1 {
+		t.Fatalf("LEFER is not in the route: %v", routeFixes(f))
+	}
+	joined := f.nav.Waypoints[idx]
+
+	var got av.WaypointActions
+	for _, group := range joined.ActionGroups() {
+		if group.Actions.ClearApproach {
+			got.ClearApproach = true
+		}
+		if group.Actions.HumanHandoff {
+			got.HumanHandoff = true
+		}
+		if group.Actions.TransferComms {
+			got.TransferComms = true
+		}
+		if group.Actions.ClearPrimaryScratchpad {
+			got.ClearPrimaryScratchpad = true
+		}
+		if group.Actions.ClearSecondaryScratchpad {
+			got.ClearSecondaryScratchpad = true
+		}
+		if group.Actions.HandoffController != "" {
+			got.HandoffController = group.Actions.HandoffController
+		}
+		if group.Actions.PointOut != "" {
+			got.PointOut = group.Actions.PointOut
+		}
+		if group.Actions.PrimaryScratchpad != "" {
+			got.PrimaryScratchpad = group.Actions.PrimaryScratchpad
+		}
+		if group.Actions.SecondaryScratchpad != "" {
+			got.SecondaryScratchpad = group.Actions.SecondaryScratchpad
+		}
+		if group.Actions.DescendAltitude != 0 {
+			got.DescendAltitude = group.Actions.DescendAltitude
+		}
+	}
+
+	want := av.WaypointActions{
+		HumanHandoff: true, PointOut: "2B", TransferComms: true,
+		PrimaryScratchpad: "XYZ", ClearPrimaryScratchpad: true,
+		SecondaryScratchpad: "QR", ClearSecondaryScratchpad: true,
+		DescendAltitude: 3000, ClearApproach: true,
+	}
+	if got != want {
+		t.Errorf("actions carried onto the approach's LEFER:\n got %+v\nwant %+v", got, want)
+	}
+	if !joined.InterceptApproach() {
+		t.Error("/intercept did not carry over")
+	}
+	if !joined.NoPT() {
+		t.Error("/nopt did not carry over")
+	}
+
+	// The approach says how the fix is flown: its restrictions and flyover
+	// stand, and the route's heading does not come along to fight it.
+	if ar := joined.AltitudeRestriction(); ar == nil || ar.Range[0] != 3000 {
+		t.Errorf("expected the approach's 3000 restriction, got %v", ar)
+	}
+	if sr := joined.SpeedRestriction(); sr == nil || sr.Range[0] != 180 {
+		t.Errorf("expected the approach's 180 kt restriction, got %v", sr)
+	}
+	if !joined.FlyOver() {
+		t.Error("the approach's /flyover was lost")
+	}
+	if h, ok := joined.HeadingAction(); !ok || h.Heading != 200 {
+		t.Errorf("expected the approach's heading 200, got %v (set %v)", h.Heading, ok)
+	}
+}
+
+// TestClearedApproachCarriesRouteActionsOntoApproach covers the same
+// carry-over on the other splice: a controller-issued clearance joins the
+// approach at a fix still ahead of the aircraft, replacing the route's
+// waypoint there with the approach's. The handoff the route asked for at that
+// fix has to survive, or the aircraft is never handed off.
+func TestClearedApproachCarriesRouteActionsOntoApproach(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "CAMRN/a13000 DETGY/a7000/ho LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  13000,
+		InitialSpeed:     250,
+	})
+
+	f.ExpectApproach("I22L")
+
+	f.AtFix("CAMRN", func(f *FlightTest) {
+		f.ClearedApproach("I22L")
+
+		if fixes := routeFixes(f); fixes[0] != "DETGY" {
+			t.Fatalf("expected the approach joined at DETGY, got %v", fixes)
+		}
+		if !f.nav.Waypoints[0].HasHumanHandoff() {
+			t.Errorf("DETGY's /ho was dropped by the splice: %q",
+				f.nav.Waypoints[:1].Encode())
+		}
+	})
+
+	f.AtFix("ZALPO", func(f *FlightTest) {
+		f.AssertAltitudeBelow(2900)
+	})
+
+	f.Run()
+}
