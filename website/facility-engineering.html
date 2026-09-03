@@ -4548,6 +4548,11 @@
                 are then represented by an object with one or more members that specify comma-separated lists of exit fixes.
                 (Thus, the specification above applies to departures with
                 exit ARD, DIXIE, RBV, or WHITE, departing runway 13R.)</p>
+              <p>Every departure tracks the runway centerline until it is 400' above the field and only then turns
+                on course, so a route need not carry the aircraft to the end of the runway itself. A first waypoint
+                at the departure end of the runway&mdash;named as the opposite runway's threshold, as
+                <code>KJFK-31L</code> is above, is dropped from the route; its actions and restrictions take effect at 400'
+                instead.</p>
               <p>
                 The exit fix specifiers may include additional text after a
                 period to allow specifying situation-dependent exits.
@@ -4684,9 +4689,11 @@
                     <td>"waypoints"</td>
                     <td>String</td>
                     <td>The initial series of waypoints that the aircraft follows. <i>vice</i> automatically
-                      sets the route's first waypoints to be the specified runway's threshold and then a point 3/4 of the
-                      way down the runway. The waypoints in "waypoints" are then appended to those.  Therefore, for the
-                      example above, the aircraft continues to the end of the runway and then flies the heading 185.
+                      sets the route's first waypoints to be the specified runway's threshold and then its midpoint,
+                      from which the aircraft tracks the runway centerline until it is 400' above the field.
+                      The waypoints in "waypoints" are then appended to those, so the route is flown only once the
+                      aircraft has climbed that high. Therefore, for the example above, the aircraft holds the
+                      centerline and then flies the heading 185.
                       "waypoints" may be omitted if "sid" names a SID that the FAA CIFP charts for the airport.
                     </td>
                   </tr>
@@ -4701,8 +4708,8 @@
                 "waypoints" if the SID isn't in the CIFP for the airport or if the CIFP gives no runway transition
                 for the departure runway (unless "initial_heading" is given; see below).
                 Here is a KLGA runway 13 route that takes the TNNIS6 from the CIFP. Its charted
-                initial legs&mdash;heading 134 until intercepting the course to JUTES&mdash;are flown from the
-                rollout point on the runway, and it continues
+                initial legs&mdash;heading 134 until intercepting the course to JUTES&mdash;are flown once the
+                aircraft is 400' above the field, and it continues
                 <code>JUTES/a3000+/s220- TNNIS/a5000+/flyover/t045</code>:
               </p>
               <pre>
@@ -4718,8 +4725,8 @@
                 <code>vice -routes KLGA</code> prints an airport's SIDs available in the CIFP. A SID's
                 runway transition may start with legs flown from the departure end of the runway, which is
                 named as the opposite runway's threshold: <code>KLGA-31</code> for a runway 13 departure.
-                <i>vice</i> flies those legs from the rollout point on the runway rather than carrying the
-                aircraft to the far end first.
+                <i>vice</i> flies those legs once the aircraft is 400' above the field rather than carrying it
+                to the far end of the runway first.
               </p>
               <p>
                 A route from the CIFP can be amended in two ways: first,
@@ -4749,7 +4756,7 @@
                 If a fix has <a href="#fe-route-triggers">triggers</a>, the actions may instead be taken when
                 one of them is met: the "waypoint_actions" member name is then the fix followed by its triggers, up to and
                 including the one to wait for. In the GNNRR3 above, <code>"KSFO-10L": "hoC35"</code> hands off
-                as the aircraft passes the departure end of the runway
+                as the aircraft climbs through 400' above the field and takes up the leg
                 (<code>KSFO-10L/h284/hoC35/@a513+</code>), while <code>"KSFO-10L/@a513+": "hoC35"</code> hands
                 off once it has climbed through 513' (<code>KSFO-10L/h284/@a513+/hoC35</code>).</p>
               <p>Neither "initial_heading" nor "waypoint_actions" may be given together with "waypoints".

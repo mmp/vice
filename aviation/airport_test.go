@@ -169,61 +169,80 @@ func TestInitialHeading(t *testing.T) {
 	}
 	t.Cleanup(func() { DB = oldDB })
 
-	for _, tc := range []struct {
-		sid, want string
-	}{
-		// The SID starts at a fix, which is kept.
-		{sid: "BUTRZ/a3000+ CLTCH KERRK", want: "BUTRZ/a3000+ CLTCH KERRK"},
-		// The SID's own legs from the departure end are dropped.
-		{sid: "KXXX-27/h011/@a820+/h011 RIGNZ/a3000+ JCOBY", want: "RIGNZ/a3000+ JCOBY"},
-	} {
-		wps, err := parseWaypoints(tc.sid)
-		if err != nil {
-			t.Fatal(err)
-		}
-		var e util.ErrorLogger
-		er := ExitRoute{ClearedAltitude: 5000, InitialHeading: 345}
-		if got := er.amendSIDWaypoints(wps, "KXXX-27", &e).Encode(); got != tc.want || e.HaveErrors() {
-			t.Errorf("%q: got %q (%s), want %q", tc.sid, got, e.String(), tc.want)
-		}
-	}
-
-	// The heading is flown from the mid-runway waypoint: present heading
-	// until 400' above the field, then the turn.
 	const nmPerLongitude = 60
 	at := func(p [2]float32) math.Point2LL {
 		return math.NM2LL([2]float32{100 + p[0], 100 + p[1]}, nmPerLongitude)
 	}
 	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
 	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
-	var e util.ErrorLogger
-	er := ExitRoute{ClearedAltitude: 5000, InitialHeading: 345}
-	er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, nil, &e)
-	if e.HaveErrors() {
-		t.Fatal(e.String())
+
+	initialized := func(t *testing.T, er ExitRoute, route string) string {
+		t.Helper()
+		if route != "" {
+			wps, err := parseWaypoints(route)
+			if err != nil {
+				t.Fatal(err)
+			}
+			// initialize is always given located waypoints; put the ones
+			// that aren't the departure end out ahead of the runway.
+			for i := range wps {
+				if wps[i].Fix == "KXXX-27" {
+					wps[i].Location = rend.Threshold
+				} else {
+					wps[i].Location = at([2]float32{float32(4 + i), 0})
+				}
+			}
+			er.Waypoints = wps
+		}
+		var e util.ErrorLogger
+		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, &e)
+		if e.HaveErrors() {
+			t.Fatal(e.String())
+		}
+		return er.Waypoints.Encode()
 	}
-	if got, want := er.Waypoints.Encode(), "9/sid 9-mid/ph/@a713+/h345/sid"; got != want {
+
+	// The tower's heading is flown from the mid-runway waypoint, after the
+	// centerline track to 400' above the field. It supersedes the SID's own
+	// legs from the departure end.
+	er := ExitRoute{ClearedAltitude: 5000, InitialHeading: 345}
+	if got, want := initialized(t, er, "KXXX-27/h011/@a820+/h011 RIGNZ/a3000+ JCOBY"),
+		"9/sid 9-mid/t090/@a713+/h345/sid RIGNZ/a3000+/sid JCOBY/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// A SID that starts at a fix rather than the departure end keeps it.
+	if got, want := initialized(t, er, "BUTRZ/a3000+ CLTCH KERRK"),
+		"9/sid 9-mid/t090/@a713+/h345/sid BUTRZ/a3000+/sid CLTCH/sid KERRK/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
 
 	// Without an initial heading, a charted transition's initial legs are
-	// flown from the mid-runway waypoint.
-	wps, err := parseWaypoints("KXXX-27/h284/@a513+ GNNRR/a2500+")
-	if err != nil {
-		t.Fatal(err)
+	// flown once the aircraft is 400' up.
+	er = ExitRoute{ClearedAltitude: 5000}
+	if got, want := initialized(t, er, "KXXX-27/h284/@a513+ GNNRR/a2500+"),
+		"9/sid 9-mid/t090/@a713+/h284/@a513+/sid GNNRR/a2500+/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
 	}
-	var e2 util.ErrorLogger
-	er = ExitRoute{ClearedAltitude: 5000, Waypoints: wps[1:]}
-	er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, wps[0].ActionGroups(), nil, &e2)
-	if e2.HaveErrors() {
-		t.Fatal(e2.String())
+
+	// The departure end waypoint's restrictions come along with its actions.
+	if got, want := initialized(t, er, "KXXX-27/a1500-/h284 GNNRR/a2500+"),
+		"9/sid 9-mid/a1500-/t090/@a713+/h284/sid GNNRR/a2500+/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
 	}
-	if got, want := er.Waypoints.Encode(), "9/sid 9-mid/h284/@a513+/sid GNNRR/a2500+/sid"; got != want {
+
+	// A route with no waypoints of its own still tracks the centerline.
+	if got, want := initialized(t, ExitRoute{ClearedAltitude: 5000, InitialHeading: 345}, ""),
+		"9/sid 9-mid/t090/@a713+/h345/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
 
 func TestExitRouteFirstFixBehindRunway(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airports: map[string]FAAAirport{"KXXX": {Elevation: 313}}}
+	t.Cleanup(func() { DB = oldDB })
+
 	const nmPerLongitude = 60
 	// A 2 nm runway running east, away from the origin so that no location
 	// reads as unset.
@@ -237,16 +256,17 @@ func TestExitRouteFirstFixBehindRunway(t *testing.T) {
 		at   [2]float32 // nm east, north of the threshold
 		bad  bool
 	}{
+		// The departure end itself is taken for the runway rather than a fix.
 		{name: "departure end", at: [2]float32{2, 0}},
+		{name: "just past the departure end", at: [2]float32{2.3, 0}},
+		{name: "short of the departure end", at: [2]float32{1.6, 0}, bad: true},
+		{name: "abeam, short of the departure end", at: [2]float32{1.5, 1}, bad: true},
 		{name: "threshold", at: [2]float32{0, 0}, bad: true},
-		{name: "half a mile behind the threshold", at: [2]float32{-0.5, 0}, bad: true},
 		{name: "well behind the threshold", at: [2]float32{-1, 0}},
-		{name: "just past the rollout point", at: [2]float32{1.6, 0}},
-		{name: "abeam the rollout point", at: [2]float32{1.5, 1}},
 	} {
 		var e util.ErrorLogger
 		er := ExitRoute{ClearedAltitude: 5000, Waypoints: WaypointArray{{Fix: "FIRST", Location: at(tc.at)}}}
-		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, nil, &e)
+		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, &e)
 		if e.HaveErrors() != tc.bad {
 			t.Errorf("%s: errors %v, want error %v", tc.name, e.String(), tc.bad)
 		}

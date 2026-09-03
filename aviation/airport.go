@@ -417,7 +417,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					}
 					route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 					route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
-					route.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, nil, controlPositions, e)
+					route.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, e)
 					for _, exit := range exits {
 						splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], route)
 					}
@@ -432,14 +432,13 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					// what goes on the flight plan.
 					var transition string
 					route.SID, transition, _ = strings.Cut(route.SID, ".")
-					departureEnd := icao + "-" + OppositeRunwayId(rwy.Base())
 					for _, exit := range exits {
 						if len(exits) > 1 {
 							e.Push("Exit " + string(exit))
 						}
 						exitRoute := *route
 						if wps, ok := sidWaypoints(icao, route.SID, transition, rwy, exit, route.InitialHeading != 0, e); ok {
-							wps = route.amendSIDWaypoints(wps, departureEnd, e)
+							wps = route.amendSIDWaypoints(wps, e)
 							exitRoute.Waypoints = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, true, e)
 							for _, wp := range exitRoute.Waypoints {
 								if wp.Location.IsZero() {
@@ -447,17 +446,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 								}
 							}
 							exitRoute.Waypoints.checkBasics(e, controlPositions, checkScratchpad)
-							// The parser anchors a transition's initial legs at
-							// the departure end for want of a fix (the CIFP
-							// names none); fly them from the rollout point
-							// rather than carrying the aircraft to the runway
-							// end first.
-							var midGroups []WaypointActionGroup
-							if wps := exitRoute.Waypoints; len(wps) > 0 && wps[0].Fix == departureEnd && len(wps[0].ActionGroups()) > 0 {
-								midGroups = wps[0].ActionGroups()
-								exitRoute.Waypoints = wps[1:]
-							}
-							exitRoute.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, midGroups, controlPositions, e)
+							exitRoute.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, e)
 							splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], &exitRoute)
 						}
 						if len(exits) > 1 {
@@ -951,14 +940,10 @@ func sidWaypoints(icao, sid, transition string, rwy RunwayID, exit ExitID, initi
 }
 
 // amendSIDWaypoints applies the route's "initial_heading" and
-// "waypoint_actions" to the SID's waypoints from the CIFP. The tower's
-// heading supersedes any legs the SID charts from the departure end; it is
-// flown from the mid-runway waypoint that initialize places.
-func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, departureEnd string, e *util.ErrorLogger) WaypointArray {
+// "waypoint_actions" to the SID's waypoints from the CIFP.
+func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, e *util.ErrorLogger) WaypointArray {
 	if h := er.InitialHeading; h < 0 || h > 360 {
 		e.ErrorString(`"initial_heading" %d: must be between 1 and 360`, h)
-	} else if h != 0 && len(wps) > 0 && wps[0].Fix == departureEnd {
-		wps = wps[1:]
 	}
 	for _, key := range util.SortedMapKeys(er.WaypointActions) {
 		if err := wps.addActions(key, er.WaypointActions[key]); err != nil {
@@ -968,47 +953,102 @@ func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, departureEnd string, e
 	return wps
 }
 
+// How close to the departure end of the runway a route's first waypoint has
+// to be to be taken for one, in nm along the runway and off its centerline.
+const (
+	departureEndAlong   = 0.25
+	departureEndLateral = 0.1
+)
+
+// atDepartureEnd reports whether the waypoint sits at the departure end of
+// the runway--named as the opposite runway's threshold, or placed there as a
+// lat-long--rather than being a fix the aircraft flies to after takeoff.
+func atDepartureEnd(wp Waypoint, r, rend Runway, nmPerLongitude float32) bool {
+	end := math.LL2NM(rend.Threshold, nmPerLongitude)
+	along := math.Normalize2f(math.Sub2f(end, math.LL2NM(r.Threshold, nmPerLongitude)))
+	v := math.Sub2f(math.LL2NM(wp.Location, nmPerLongitude), end)
+	return math.Abs(math.Dot(v, along)) <= departureEndAlong &&
+		math.Abs(math.Dot(v, [2]float32{along[1], -along[0]})) <= departureEndLateral
+}
+
 // initialize puts the runway in front of the route's located waypoints--its
-// threshold and then a point 3/4 of the way down it, so that the aircraft
-// rolls to the end before flying the route--and checks the route's other
-// members against them.
-// midGroups, if non-nil, holds the action groups of a CIFP transition's
-// initial legs, to be flown from the mid-runway waypoint.
+// threshold and then its midpoint, from which the aircraft tracks the runway
+// centerline until it is 400' above the field and only then flies the
+// route--and checks the route's other members against them.
 func (er *ExitRoute) initialize(icao string, rwy RunwayID, r, rend Runway, nmPerLongitude float32,
-	magneticVariation float32, midGroups []WaypointActionGroup,
-	controlPositions map[ControlPosition]*Controller, e *util.ErrorLogger) {
-	mid := math.Lerp2f(0.75, r.Threshold, rend.Threshold)
-	// A first fix close behind the rollout point is almost always the runway's own threshold named
-	// in place of its departure end....
+	magneticVariation float32, controlPositions map[ControlPosition]*Controller, e *util.ErrorLogger) {
 	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, rend.Threshold, nmPerLongitude), magneticVariation)
-	if len(er.Waypoints) > 0 && er.InitialHeading == 0 && midGroups == nil && math.HeadingDifference(course, r.Heading) <= 45 {
+
+	// Waypoints at the departure end of the runway are the old way of saying
+	// "fly the runway to the end and then turn on course"; the centerline
+	// track below does that, so they go away and what they did is done once
+	// the aircraft is 400' up.
+	var departureEndGroups []WaypointActionGroup
+	var departureEndAltitude *AltitudeRestriction
+	var departureEndSpeed *SpeedRestriction
+	for len(er.Waypoints) > 0 && atDepartureEnd(er.Waypoints[0], r, rend, nmPerLongitude) {
+		wp := er.Waypoints[0]
+		if er.InitialHeading == 0 {
+			// Otherwise the tower's heading supersedes the charted legs.
+			departureEndGroups = append(departureEndGroups, wp.ActionGroups()...)
+		}
+		if ar := wp.AltitudeRestriction(); ar != nil {
+			departureEndAltitude = ar
+		}
+		if sr := wp.SpeedRestriction(); sr != nil {
+			departureEndSpeed = sr
+		}
+		er.Waypoints = er.Waypoints[1:]
+	}
+
+	// A first fix close behind where the aircraft turns on course is almost always the runway's
+	// own threshold named in place of its departure end....
+	if len(er.Waypoints) > 0 && er.InitialHeading == 0 && departureEndGroups == nil &&
+		math.HeadingDifference(course, r.Heading) <= 45 {
 		first := er.Waypoints[0]
 		along := math.Normalize2f(math.Sub2f(math.LL2NM(rend.Threshold, nmPerLongitude), math.LL2NM(r.Threshold, nmPerLongitude)))
-		toFix := math.Sub2f(math.LL2NM(first.Location, nmPerLongitude), math.LL2NM(mid, nmPerLongitude))
-		if !first.Location.IsZero() && math.Length2f(toFix) <= 2 && math.Dot(toFix, along) < -0.1 {
+		toFix := math.Sub2f(math.LL2NM(first.Location, nmPerLongitude), math.LL2NM(rend.Threshold, nmPerLongitude))
+		if math.Length2f(toFix) <= 2 && math.Dot(toFix, along) < -0.1 {
 			e.ErrorString("%s: first fix is behind the aircraft as it leaves runway %s; the departure end of the runway is %s-%s",
 				first.Fix, rwy.Base(), icao, rend.Id)
 		}
 	}
-	midWp := Waypoint{Fix: rwy.Base() + "-mid", Location: mid}
-	if h := er.InitialHeading; h >= 1 && h <= 360 {
-		// The tower's assigned heading: climb on runway heading and turn to
-		// it passing 400' above the field, then fly it until the departure
-		// controller sends the aircraft direct to a fix on the SID.
-		midWp.InitExtra().ActionGroups = []WaypointActionGroup{
-			{
-				Actions: WaypointActions{Heading: WaypointHeadingAction{PresentHeading: true}},
-				Until: WaypointActionTermination{
-					Type:      WaypointActionAltitude,
-					Altitude:  DB.Airports[icao].Elevation + 400,
-					AtOrAbove: true,
-				},
-			},
-			{Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: int16(h)}}},
-		}
-	} else if len(midGroups) > 0 {
-		midWp.InitExtra().ActionGroups = midGroups
+
+	midWp := Waypoint{Fix: rwy.Base() + "-mid", Location: math.Lerp2f(0.5, r.Threshold, rend.Threshold)}
+	// Every departure holds the runway centerline as a ground track until it
+	// is 400' above the field; only then does it turn on course.
+	track := int16(math.Round(float32(math.NormalizeHeading(course))))
+	if track == 0 { // headings are given as 1-360; 0 means unset
+		track = 360
 	}
+	groups := []WaypointActionGroup{
+		{
+			Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: track, Track: true}},
+			Until: WaypointActionTermination{
+				Type:      WaypointActionAltitude,
+				Altitude:  DB.Airports[icao].Elevation + 400,
+				AtOrAbove: true,
+			},
+		},
+	}
+	if h := er.InitialHeading; h >= 1 && h <= 360 {
+		// The tower's assigned heading: turn to it 400' above the field and
+		// fly it until the departure controller sends the aircraft direct to
+		// a fix on the SID.
+		groups = append(groups, WaypointActionGroup{
+			Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: int16(h)}}})
+	} else {
+		groups = append(groups, departureEndGroups...)
+	}
+	midWp.InitExtra().ActionGroups = groups
+	// The departure end waypoints' restrictions apply from here on out.
+	if departureEndAltitude != nil {
+		midWp.SetAltitudeRestriction(*departureEndAltitude)
+	}
+	if departureEndSpeed != nil {
+		midWp.SetSpeedRestriction(*departureEndSpeed)
+	}
+
 	er.Waypoints = append([]Waypoint{
 		{
 			Fix:      rwy.Base(),

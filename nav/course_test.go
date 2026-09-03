@@ -7,9 +7,11 @@ package nav
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/wx"
 )
 
 // skorrWaveyCourse returns the magnetic course from SKORR to WAVEY, using the
@@ -291,5 +293,106 @@ func TestCourseInterceptElmooRunway26(t *testing.T) {
 	}
 	if !passed {
 		t.Errorf("aircraft never crossed ELMOO")
+	}
+}
+
+// A departure tracks the runway centerline from the runway's midpoint until
+// it is 400' above the field, and only then turns on course. It must hold
+// the centerline in a crosswind without crabbing while it is still rolling.
+func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
+	// A heavy on a long runway is still rolling at the runway's midpoint.
+	const icao, runway, acType = "KBOS", "33L", "B744"
+	r, ok := av.LookupRunway(icao, runway)
+	rend, ok2 := av.LookupOppositeRunway(icao, runway)
+	if !ok || !ok2 {
+		t.Fatalf("no runway %s %s", icao, runway)
+	}
+	ap := av.DB.Airports[icao]
+	nmPerLongitude := math.NMPerLongitudeAt(ap.Location)
+	magneticVariation, err := av.DB.MagneticGrid.Lookup(ap.Location)
+	if err != nil {
+		t.Fatal(err)
+	}
+	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, rend.Threshold, nmPerLongitude), magneticVariation)
+
+	// The waypoints ExitRoute.initialize gives a departure: the threshold,
+	// the runway's midpoint holding the centerline to 400' above the field,
+	// and then a fix well off to the right of the runway.
+	mid := av.Waypoint{Fix: runway + "-mid", Location: math.Lerp2f(0.5, r.Threshold, rend.Threshold)}
+	mid.InitExtra().ActionGroups = []av.WaypointActionGroup{
+		{
+			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{
+				Heading: int16(math.Round(float32(math.NormalizeHeading(course)))), Track: true}},
+			Until: av.WaypointActionTermination{Type: av.WaypointActionAltitude,
+				Altitude: ap.Elevation + 400, AtOrAbove: true},
+		},
+	}
+	exit := math.Offset2LL(r.Threshold, math.NormalizeHeading(math.Heading2LL(r.Threshold, rend.Threshold,
+		nmPerLongitude)+45), 15, nmPerLongitude)
+	wps := []av.Waypoint{{Fix: runway, Location: r.Threshold}, mid, {Fix: "EXITF", Location: exit}}
+
+	fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: acType, DepartureAirport: icao,
+		ArrivalAirport: icao, Altitude: 8000}
+	perf, ok := av.DB.AircraftPerformance[fp.AircraftType]
+	if !ok {
+		t.Fatalf("no performance for %s", fp.AircraftType)
+	}
+	simTime := NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC))
+	n := MakeDepartureNav("TEST001", fp, perf, 0, 5000, wps, false, nmPerLongitude, magneticVariation,
+		nil, simTime, nil)
+	if n == nil {
+		t.Fatal("no nav")
+	}
+
+	// A 25 knot crosswind from the right of the runway.
+	std := wx.MakeStandardSampleForAltitude(float32(ap.Elevation))
+	v := math.SinCos(math.Radians(math.MagneticToTrue(course, magneticVariation) - 90))
+	wxs := wx.MakeSample([2]float32{v[0] * 25 / 3600, v[1] * 25 / 3600}, std.Temperature().Celsius(),
+		std.Dewpoint().Celsius(), std.Pressure())
+
+	t0 := math.LL2NM(r.Threshold, nmPerLongitude)
+	dir := math.Normalize2f(math.Sub2f(math.LL2NM(rend.Threshold, nmPerLongitude), t0))
+	perp := [2]float32{dir[1], -dir[0]}
+	offset := func() float32 {
+		return math.Abs(math.Dot(math.Sub2f(math.LL2NM(n.FlightState.Position, nmPerLongitude), t0), perp))
+	}
+
+	var maxOffsetRolling, maxOffsetLow, aglTurned float32
+	tracking, turned, rolledTracking := false, false, false
+	for range 200 {
+		n.UpdateWithWeather("TEST001", wxs, nil, &fp, simTime, nil)
+		simTime = simTime.Add(time.Second)
+		if !n.IsAirborne() {
+			maxOffsetRolling = max(maxOffsetRolling, offset())
+			rolledTracking = rolledTracking || len(n.Heading.Maneuvers) > 0
+		}
+		agl := n.FlightState.Altitude - float32(ap.Elevation)
+		if agl < 400 {
+			maxOffsetLow = max(maxOffsetLow, offset())
+		}
+		// The track is flown until 400' above the field, at which point the
+		// maneuver ends and the aircraft navigates to the exit fix.
+		if len(n.Heading.Maneuvers) > 0 {
+			tracking = true
+		} else if tracking && !turned {
+			turned, aglTurned = true, agl
+		}
+	}
+
+	if !rolledTracking {
+		t.Error("aircraft was airborne before the runway's midpoint; the takeoff roll isn't being tested")
+	}
+	if maxOffsetRolling > 100*math.FeetToNauticalMiles {
+		t.Errorf("drifted %.0f' off the centerline during the takeoff roll",
+			maxOffsetRolling/math.FeetToNauticalMiles)
+	}
+	if maxOffsetLow > 300*math.FeetToNauticalMiles {
+		t.Errorf("drifted %.0f' off the extended centerline below 400' AGL",
+			maxOffsetLow/math.FeetToNauticalMiles)
+	}
+	if !turned {
+		t.Error("never turned toward the exit fix after reaching 400' AGL")
+	} else if aglTurned < 400 || aglTurned > 500 {
+		t.Errorf("turned on course at %.0f' AGL, expected right at 400'", aglTurned)
 	}
 }

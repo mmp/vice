@@ -16,6 +16,13 @@ import (
 )
 
 func (nav *Nav) headingForTrack(hdg math.MagneticHeading, wxs wx.Sample) math.MagneticHeading {
+	if !nav.IsAirborne() {
+		// On the ground the aircraft neither crabs nor drifts with the wind,
+		// so the track is flown as a heading; departures follow tracks from
+		// the start of the takeoff roll.
+		return hdg
+	}
+
 	// Convert magnetic track to true, then adjust for wind and convert back.
 	trueHdg := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
 	v := math.SinCos(math.Radians(trueHdg))
@@ -955,14 +962,8 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 
 	// The radial is a ground course, so predict a turn to the heading that
 	// holds it as a track; the aircraft's post-turn steering to the next
-	// fix is wind-corrected the same way. The airborne check matters since
-	// departures follow waypoints from the start of the takeoff roll, and
-	// on the ground the aircraft neither crabs nor drifts with the wind.
-	target := hdg
-	if nav.IsAirborne() {
-		target = nav.headingForTrack(hdg, wxs)
-	}
-	tp := nav.predictTurnPath(target, nav.resolveTurnDirection(hdg, turn), wxs)
+	// fix is wind-corrected the same way.
+	tp := nav.predictTurnPath(nav.headingForTrack(hdg, wxs), nav.resolveTurnDirection(hdg, turn), wxs)
 
 	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position,
 		nav.FlightState.NmPerLongitude), p0, p1)

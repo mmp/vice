@@ -74,11 +74,8 @@ func TestWalkCIFPRoutes(t *testing.T) {
 				if !ok || !ok2 {
 					continue
 				}
-				// As ExitRoute.initialize does, put the runway in front.
-				wps = append(av.WaypointArray{
-					{Fix: rwy, Location: r.Threshold},
-					{Fix: rwy + "-mid", Location: math.Lerp2f(0.75, r.Threshold, opp.Threshold)},
-				}, wps...)
+				wps = withRunwayInFront(icao, rwy, r, opp, ap.Elevation,
+					math.NMPerLongitudeAt(ap.Location), magneticVariation[icao], wps)
 				walk(icao+" "+sidName+" RWY"+rwy, wps,
 					RouteDrawContext{Departure: true, FieldElevation: ap.Elevation, ClearedAltitude: 5000})
 			}
@@ -93,6 +90,31 @@ func TestWalkCIFPRoutes(t *testing.T) {
 		}
 	}
 	t.Logf("%d routes, %d triggers, %d indeterminate", routes, triggers, indeterminate)
+}
+
+// withRunwayInFront puts the runway in front of a SID's runway transition as
+// ExitRoute.initialize does: the threshold, then the midpoint, from which the
+// aircraft tracks the centerline until 400' above the field and only then
+// flies the transition's legs from the departure end.
+func withRunwayInFront(icao, rwy string, r, opp av.Runway, elevation int, nmPerLongitude,
+	magneticVariation float32, wps av.WaypointArray) av.WaypointArray {
+	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, opp.Threshold, nmPerLongitude), magneticVariation)
+	groups := []av.WaypointActionGroup{
+		{
+			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{
+				Heading: int16(math.Round(float32(math.NormalizeHeading(course)))), Track: true}},
+			Until: av.WaypointActionTermination{Type: av.WaypointActionAltitude,
+				Altitude: elevation + 400, AtOrAbove: true},
+		},
+	}
+	if departureEnd := icao + "-" + av.OppositeRunwayId(rwy); len(wps) > 0 && wps[0].Fix == departureEnd {
+		groups = append(groups, wps[0].ActionGroups()...)
+		wps = wps[1:]
+	}
+
+	mid := av.Waypoint{Fix: rwy + "-mid", Location: math.Lerp2f(0.5, r.Threshold, opp.Threshold)}
+	mid.InitExtra().ActionGroups = groups
+	return append(av.WaypointArray{{Fix: rwy, Location: r.Threshold}, mid}, wps...)
 }
 
 // dmeLocator locates fixes from the database, DME stations included.

@@ -198,15 +198,15 @@ func TestAltitudeTrigger(t *testing.T) {
 		}
 	}
 
-	// The profile holds field elevation until the runway's mid point, then
-	// climbs 700 ft/nm: 350' at the departure end and 1000' 0.93nm past it.
+	// The profile holds field elevation until the runway's midpoint, then
+	// climbs 700 ft/nm: 700' at the departure end and 1000' 0.43nm past it.
 	w := testWalker(rc)
-	w.walk([]av.Waypoint{fixAt("4L", 0, 0), fixAt("4L-mid", 0, 1.5), fixAt("KXXX-22", 0, 2, altitude(1000, true)), fixAt("B", 0, 20)})
-	expectNear(t, "@a1000+", labelAt(t, w, "@a1000+"), [2]float32{0, 2 + 650.0/700}, 0.05)
+	w.walk([]av.Waypoint{fixAt("4L", 0, 0), fixAt("4L-mid", 0, 1), fixAt("KXXX-22", 0, 2, altitude(1000, true)), fixAt("B", 0, 20)})
+	expectNear(t, "@a1000+", labelAt(t, w, "@a1000+"), [2]float32{0, 2 + 300.0/700}, 0.05)
 
 	// Descending to an altitude while climbing can't be placed.
 	w = testWalker(rc)
-	w.walk([]av.Waypoint{fixAt("4L", 0, 0), fixAt("4L-mid", 0, 1.5), fixAt("KXXX-22", 0, 2, altitude(200, false)), fixAt("B", 0, 20)})
+	w.walk([]av.Waypoint{fixAt("4L", 0, 0), fixAt("4L-mid", 0, 1), fixAt("KXXX-22", 0, 2, altitude(200, false)), fixAt("B", 0, 20)})
 	labelAt(t, w, "@a200-?")
 
 	// Already above the altitude: met at the fix.
