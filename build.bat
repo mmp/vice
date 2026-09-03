@@ -189,6 +189,9 @@ REM MSVC-specific compiler flags (/wd*, /std:c++14) that break MinGW/GCC.
 REM We build sherpa-onnx with MSVC (NMake) which produces DLLs and import
 REM libraries (.lib) that MinGW-compiled Go code can link against.
 REM BUILD_SHARED_LIBS=ON is required so the output is a DLL + import lib.
+REM SHERPA_ONNX_USE_PRE_INSTALLED_ONNXRUNTIME_IF_AVAILABLE=OFF keeps sherpa-onnx
+REM from picking up an onnxruntime installed elsewhere on the machine; tts/tts.go
+REM links the one sherpa-onnx downloads into build_go\_deps.
 
 REM Locate MSVC (vcvarsall.bat) via vswhere
 set VCVARSALL=
@@ -218,6 +221,7 @@ if not exist "sherpa-onnx\build_go\lib\sherpa-onnx-c-api.lib" (
         -G "NMake Makefiles" ^
         -DCMAKE_VS_PLATFORM_NAME=x64 ^
         -DBUILD_SHARED_LIBS=ON ^
+        -DSHERPA_ONNX_USE_PRE_INSTALLED_ONNXRUNTIME_IF_AVAILABLE=OFF ^
         -DSHERPA_ONNX_ENABLE_TTS=ON ^
         -DSHERPA_ONNX_ENABLE_CHECK=OFF ^
         -DSHERPA_ONNX_ENABLE_BINARY=OFF ^

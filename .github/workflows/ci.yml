@@ -110,7 +110,7 @@ jobs:
       uses: actions/cache@v5
       with:
         path: sherpa-onnx/build_go
-        key: sherpa-onnx-linux-${{ steps.sherpa-sha.outputs.sha }}
+        key: sherpa-onnx-linux-${{ steps.sherpa-sha.outputs.sha }}-${{ hashFiles('build.sh') }}
 
     - name: Build vice
       run: ./build.sh
@@ -192,7 +192,7 @@ jobs:
       uses: actions/cache@v5
       with:
         path: sherpa-onnx/build_go
-        key: sherpa-onnx-mac-${{ steps.sherpa-sha.outputs.sha }}
+        key: sherpa-onnx-mac-${{ steps.sherpa-sha.outputs.sha }}-${{ hashFiles('build.sh') }}
 
     - name: Build vice
       run: ./build.sh
@@ -332,7 +332,7 @@ jobs:
       uses: actions/cache@v5
       with:
         path: sherpa-onnx/build_go
-        key: sherpa-onnx-win-msvc-${{ steps.sherpa-sha.outputs.sha }}
+        key: sherpa-onnx-win-msvc-${{ steps.sherpa-sha.outputs.sha }}-${{ hashFiles('build.bat') }}
 
     - name: Get whisper.cpp commit SHA
       id: whisper-sha
@@ -344,7 +344,7 @@ jobs:
       uses: actions/cache@v5
       with:
         path: whisper.cpp/build_go
-        key: whisper-cpp-win-vulkan-posix-${{ steps.whisper-sha.outputs.sha }}-sdk1.3.296.0
+        key: whisper-cpp-win-vulkan-posix-${{ steps.whisper-sha.outputs.sha }}-sdk1.3.296.0-${{ hashFiles('build.bat') }}
 
     - name: Build vice
       run: |

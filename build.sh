@@ -296,95 +296,99 @@ for arg in "$@"; do
     esac
 done
 
-# Build whisper-cpp
-build_whisper() {
-    echo "=== Building whisper-cpp ==="
-
-    if [ "$OS_TYPE" = "macos" ]; then
-        # Disable GGML_NATIVE since we're building a universal binary.
-        # x86 flags (AVX, etc.) only affect x86_64 compilation; ARM uses NEON.
-        cmake -S whisper.cpp -B whisper.cpp/build_go \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DGGML_CPU=ON \
-            -DGGML_METAL=ON \
-            -DGGML_BLAS=ON \
-            -DGGML_METAL_EMBED_LIBRARY=ON \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.4
-    elif [ "$OS_TYPE" = "linux" ]; then
-        # Disable GGML_NATIVE to avoid -march=native. Enable instruction sets
-        # safe for computers from ~2013+ (Haswell era, see build.bat for details).
-        if [ "$DO_VULKAN" = true ]; then
-            cmake -S whisper.cpp -B whisper.cpp/build_go \
-                -DBUILD_SHARED_LIBS=OFF \
-                -DGGML_CPU=ON \
-                -DGGML_OPENMP=ON \
-                -DGGML_NATIVE=OFF \
-                -DGGML_SSE42=ON \
-                -DGGML_AVX=ON \
-                -DGGML_AVX2=ON \
-                -DGGML_FMA=ON \
-                -DGGML_F16C=ON \
-                -DGGML_BMI2=ON \
-                -DGGML_VULKAN=ON \
-                -DCMAKE_BUILD_TYPE=Release
-        else
-            cmake -S whisper.cpp -B whisper.cpp/build_go \
-                -DBUILD_SHARED_LIBS=OFF \
-                -DGGML_CPU=ON \
-                -DGGML_OPENMP=ON \
-                -DGGML_NATIVE=OFF \
-                -DGGML_SSE42=ON \
-                -DGGML_AVX=ON \
-                -DGGML_AVX2=ON \
-                -DGGML_FMA=ON \
-                -DGGML_F16C=ON \
-                -DGGML_BMI2=ON \
-                -DCMAKE_BUILD_TYPE=Release
-        fi
+# Cmake arguments for the C++ dependencies, assembled here rather than inside
+# the build functions so that the build gates below can compare them against
+# what each build directory was last configured with.
+if [ "$OS_TYPE" = "macos" ]; then
+    # Disable GGML_NATIVE since we're building a universal binary.
+    # x86 flags (AVX, etc.) only affect x86_64 compilation; ARM uses NEON.
+    WHISPER_CMAKE_ARGS=(
+        -DBUILD_SHARED_LIBS=OFF
+        -DGGML_CPU=ON
+        -DGGML_METAL=ON
+        -DGGML_BLAS=ON
+        -DGGML_METAL_EMBED_LIBRARY=ON
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+        -DCMAKE_OSX_DEPLOYMENT_TARGET=13.4
+    )
+else
+    # Disable GGML_NATIVE to avoid -march=native. Enable instruction sets
+    # safe for computers from ~2013+ (Haswell era, see build.bat for details).
+    WHISPER_CMAKE_ARGS=(
+        -DBUILD_SHARED_LIBS=OFF
+        -DGGML_CPU=ON
+        -DGGML_OPENMP=ON
+        -DGGML_NATIVE=OFF
+        -DGGML_SSE42=ON
+        -DGGML_AVX=ON
+        -DGGML_AVX2=ON
+        -DGGML_FMA=ON
+        -DGGML_F16C=ON
+        -DGGML_BMI2=ON
+        -DCMAKE_BUILD_TYPE=Release
+    )
+    if [ "$DO_VULKAN" = true ]; then
+        WHISPER_CMAKE_ARGS+=(-DGGML_VULKAN=ON)
     fi
+fi
 
-    cmake --build whisper.cpp/build_go --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
+SHERPA_CMAKE_ARGS=(
+    -DBUILD_SHARED_LIBS=OFF
+    # tts/tts.go links sherpa-onnx's downloaded onnxruntime archive by path.
+    # Left at its default, sherpa-onnx prefers a system-installed onnxruntime
+    # whenever it finds one -- Arch and friends ship it -- nothing is
+    # downloaded, and the vice link fails on the missing archive.
+    -DSHERPA_ONNX_USE_PRE_INSTALLED_ONNXRUNTIME_IF_AVAILABLE=OFF
+    -DSHERPA_ONNX_ENABLE_TTS=ON
+    -DSHERPA_ONNX_ENABLE_CHECK=OFF
+    -DSHERPA_ONNX_ENABLE_BINARY=OFF
+    -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF
+    -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF
+    -DSHERPA_ONNX_ENABLE_TESTS=OFF
+    -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF
+    -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF
+    -DCMAKE_BUILD_TYPE=Release
+)
+if [ "$OS_TYPE" = "macos" ]; then
+    SHERPA_CMAKE_ARGS+=(
+        -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+        -DCMAKE_OSX_DEPLOYMENT_TARGET=13.4
+    )
+fi
 
-    echo "whisper-cpp built successfully."
+SHERPA_ONNXRUNTIME_LIB="sherpa-onnx/build_go/_deps/onnxruntime-src/lib/libonnxruntime.a"
+
+# Name of the file recording the cmake arguments a build directory was
+# configured with. Cmake caches find_* results, CMAKE_OSX_ARCHITECTURES and the
+# rest of its configuration, so reconfiguring an existing directory with
+# different arguments does not reliably take effect.
+CMAKE_ARGS_STAMP="vice-cmake-args"
+
+# Check whether a build directory was configured with different cmake arguments
+# than the ones given.
+dep_args_changed() {
+    local stamp="$1/$CMAKE_ARGS_STAMP"
+    shift
+    [ ! -f "$stamp" ] || [ "$(cat "$stamp")" != "$*" ]
 }
 
-# Build sherpa-onnx
-build_sherpa() {
-    echo "=== Building sherpa-onnx ==="
+# Configure and build a cmake dependency from scratch. This runs only when the
+# build directory is missing artifacts or was configured with other arguments,
+# so discarding whatever is there is free in the common case.
+build_dep() {
+    local name="$1" src="$2" build="$3"
+    shift 3
 
-    if [ "$OS_TYPE" = "macos" ]; then
-        cmake -S sherpa-onnx -B sherpa-onnx/build_go \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DSHERPA_ONNX_ENABLE_TTS=ON \
-            -DSHERPA_ONNX_ENABLE_CHECK=OFF \
-            -DSHERPA_ONNX_ENABLE_BINARY=OFF \
-            -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF \
-            -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF \
-            -DSHERPA_ONNX_ENABLE_TESTS=OFF \
-            -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF \
-            -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.4
-    elif [ "$OS_TYPE" = "linux" ]; then
-        cmake -S sherpa-onnx -B sherpa-onnx/build_go \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DSHERPA_ONNX_ENABLE_TTS=ON \
-            -DSHERPA_ONNX_ENABLE_CHECK=OFF \
-            -DSHERPA_ONNX_ENABLE_BINARY=OFF \
-            -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF \
-            -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF \
-            -DSHERPA_ONNX_ENABLE_TESTS=OFF \
-            -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF \
-            -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF \
-            -DCMAKE_BUILD_TYPE=Release
-    fi
+    echo "=== Building $name ==="
 
-    cmake --build sherpa-onnx/build_go --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
+    rm -rf "$build"
+    cmake -S "$src" -B "$build" "$@"
+    cmake --build "$build" --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
 
-    echo "sherpa-onnx built successfully."
+    echo "$*" > "$build/$CMAKE_ARGS_STAMP"
+
+    echo "$name built successfully."
 }
 
 # Run checks (gofmt, staticcheck)
@@ -495,16 +499,25 @@ needs_sherpa_build() {
     if [ ! -f "sherpa-onnx/build_go/lib/libsherpa-onnx-c-api.a" ]; then
         return 0
     fi
+    if [ ! -f "$SHERPA_ONNXRUNTIME_LIB" ]; then
+        return 0
+    fi
     return 1
 }
 
 # Main execution
-if needs_whisper_build; then
-    build_whisper
+if needs_whisper_build || dep_args_changed whisper.cpp/build_go "${WHISPER_CMAKE_ARGS[@]}"; then
+    build_dep whisper-cpp whisper.cpp whisper.cpp/build_go "${WHISPER_CMAKE_ARGS[@]}"
 fi
 
-if needs_sherpa_build; then
-    build_sherpa
+if needs_sherpa_build || dep_args_changed sherpa-onnx/build_go "${SHERPA_CMAKE_ARGS[@]}"; then
+    build_dep sherpa-onnx sherpa-onnx sherpa-onnx/build_go "${SHERPA_CMAKE_ARGS[@]}"
+
+    if [ ! -f "$SHERPA_ONNXRUNTIME_LIB" ]; then
+        echo "Error: sherpa-onnx did not produce $SHERPA_ONNXRUNTIME_LIB"
+        echo "It linked a system-installed onnxruntime instead; tts/tts.go needs its own."
+        exit 1
+    fi
 fi
 
 if [ "$DO_CHECK" = true ]; then
