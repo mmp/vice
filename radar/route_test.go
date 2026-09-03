@@ -379,6 +379,25 @@ func TestTriggerLabelCarriesNextActions(t *testing.T) {
 	expectNear(t, "@d5.0/r180/c5000", labelAt(t, w, "@d5.0/r180/c5000"), [2]float32{5, 0}, 0.05)
 }
 
+func TestEventOnlyTailGroupContinuesRoute(t *testing.T) {
+	// A final group with only sim actions, as in A/h090/@d5/ho: the actions
+	// fire at the trigger and the route goes on to B rather than showing an
+	// open-ended stub.
+	w := testWalker(RouteDrawContext{})
+	w.walk([]av.Waypoint{
+		fixAt("A", 0, 0,
+			av.WaypointActionGroup{Actions: heading(90), Until: av.WaypointActionTermination{Type: av.WaypointActionDistance, Distance: 5}},
+			av.WaypointActionGroup{Actions: av.WaypointActions{HumanHandoff: true}}),
+		fixAt("B", 20, 10),
+	})
+	expectNear(t, "@d5.0/ho", labelAt(t, w, "@d5.0/ho"), [2]float32{5, 0}, 0.05)
+	if w.disconnected {
+		t.Error("route disconnected; expected it to continue to B")
+	}
+	expectNear(t, "pen", w.pen.p, [2]float32{20, 10}, 0.05)
+	expectNear(t, "inbound to B", w.fixes[1].inbound, direction([2]float32{5, 0}, [2]float32{20, 10}), 0.05)
+}
+
 func TestLongArc(t *testing.T) {
 	// A counterclockwise arc from A to B about a center below them sweeps
 	// 224 degrees around the south; the drawing must go around it rather

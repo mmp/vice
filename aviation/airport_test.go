@@ -236,6 +236,22 @@ func TestInitialHeading(t *testing.T) {
 		"9/sid 9-mid/t090/@a713+/h345/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
+
+	// Sim actions at the departure end survive an initial heading: the
+	// charted legs are superseded but the actions run at 400' with the turn.
+	er = ExitRoute{ClearedAltitude: 5000, InitialHeading: 345}
+	if got, want := initialized(t, er, "KXXX-27/h011/@a820+/hoC35 RIGNZ/a3000+ JCOBY"),
+		"9/sid 9-mid/t090/@a713+/h345/hoC35/sid RIGNZ/a3000+/sid JCOBY/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// A departure-end waypoint that only carries sim actions keeps them as
+	// their own group, flown once the aircraft is 400' up.
+	er = ExitRoute{ClearedAltitude: 5000}
+	if got, want := initialized(t, er, "KXXX-27/hoC35 GNNRR/a2500+"),
+		"9/sid 9-mid/t090/@a713+/hoC35/sid GNNRR/a2500+/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
 }
 
 func TestExitRouteFirstFixBehindRunway(t *testing.T) {

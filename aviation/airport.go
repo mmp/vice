@@ -988,10 +988,7 @@ func (er *ExitRoute) initialize(icao string, rwy RunwayID, r, rend Runway, nmPer
 	var departureEndSpeed *SpeedRestriction
 	for len(er.Waypoints) > 0 && atDepartureEnd(er.Waypoints[0], r, rend, nmPerLongitude) {
 		wp := er.Waypoints[0]
-		if er.InitialHeading == 0 {
-			// Otherwise the tower's heading supersedes the charted legs.
-			departureEndGroups = append(departureEndGroups, wp.ActionGroups()...)
-		}
+		departureEndGroups = append(departureEndGroups, wp.ActionGroups()...)
 		if ar := wp.AltitudeRestriction(); ar != nil {
 			departureEndAltitude = ar
 		}
@@ -1034,9 +1031,14 @@ func (er *ExitRoute) initialize(icao string, rwy RunwayID, r, rend Runway, nmPer
 	if h := er.InitialHeading; h >= 1 && h <= 360 {
 		// The tower's assigned heading: turn to it 400' above the field and
 		// fly it until the departure controller sends the aircraft direct to
-		// a fix on the SID.
-		groups = append(groups, WaypointActionGroup{
-			Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: int16(h)}}})
+		// a fix on the SID. It supersedes the charted legs, but sim actions
+		// given in "waypoint_actions" still run at 400'.
+		actions := WaypointActions{Heading: WaypointHeadingAction{Heading: int16(h)}}
+		for _, g := range departureEndGroups {
+			g.Actions.Heading = WaypointHeadingAction{}
+			actions.merge(g.Actions)
+		}
+		groups = append(groups, WaypointActionGroup{Actions: actions})
 	} else {
 		groups = append(groups, departureEndGroups...)
 	}

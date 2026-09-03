@@ -26,6 +26,7 @@ const (
 	UntilFix                                                // done when ETA to Until.Fix < 2s
 	UntilIntercept                                          // done when shouldTurnToIntercept fires for course through Fix
 	UntilControllerIntervention                             // never completes; lasts until controller issues a new instruction
+	UntilImmediate                                          // completes on the first check; the maneuver exists only to fire its actions
 	UntilAltitude                                           // done at or above (AtOrAbove) or at or below Until.Altitude
 	UntilDME                                                // done at or beyond (AtOrAbove) or within Until.DMEDistance from Until.DMEFix
 	UntilRadial                                             // done when crossing the Until.Radial radial of Fix
@@ -103,6 +104,8 @@ func (mc *ManeuverComplete) Done(nav *Nav, simTime Time, wxs wx.Sample, targetHd
 		return reaches && r != turnToInterceptWait
 	case UntilControllerIntervention:
 		return false
+	case UntilImmediate:
+		return true
 	case UntilAltitude:
 		return mc.reached(nav.FlightState.Altitude, float32(mc.Altitude))
 	case UntilDME:
@@ -188,6 +191,8 @@ func (m *LateralManeuver) String() string {
 		}
 	case UntilControllerIntervention:
 		until = "until controller intervention"
+	case UntilImmediate:
+		until = "then continue on route"
 	case UntilAltitude:
 		until = fmt.Sprintf("until altitude %d%s", m.Until.Altitude, util.Select(m.Until.AtOrAbove, "+", "-"))
 	case UntilDME:

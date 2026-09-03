@@ -662,7 +662,15 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 
 		switch group.Until.Type {
 		case av.WaypointActionNoTermination:
-			m.Until = ManeuverComplete{Type: UntilControllerIntervention}
+			if heading.IsSet() {
+				m.Until = ManeuverComplete{Type: UntilControllerIntervention}
+			} else {
+				// The group only carries actions for the sim; they fire when
+				// the group is reached and the aircraft continues on its
+				// route. Holding the present heading instead takes an
+				// explicit /ph.
+				m.Until = ManeuverComplete{Type: UntilImmediate}
+			}
 		case av.WaypointActionAltitude:
 			m.Until = ManeuverComplete{
 				Type:      UntilAltitude,

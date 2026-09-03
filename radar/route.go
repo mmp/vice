@@ -324,10 +324,6 @@ func (w *routeWalker) walk(wps []av.Waypoint) {
 		if len(groups) > 0 {
 			w.fixes[len(w.fixes)-1].actions = strings.TrimPrefix(groups[0].Actions.Encoded(), "/")
 		}
-		if len(groups) == 1 && groups[0].Until.Type == av.WaypointActionNoTermination && !groups[0].Actions.Heading.IsSet() {
-			// Actions at the fix with nothing to fly: nav goes on along the route.
-			continue
-		}
 		for j, g := range groups {
 			var next *av.WaypointActionGroup
 			if j+1 < len(groups) {
@@ -381,6 +377,11 @@ func (w *routeWalker) arrive(wps []av.Waypoint, i int) {
 func (w *routeWalker) flyGroup(g av.WaypointActionGroup, next *av.WaypointActionGroup) bool {
 	w.pen.groupStart = w.pen.p
 	w.pen.profile.Apply(g.Actions)
+	if g.Until.Type == av.WaypointActionNoTermination && !g.Actions.Heading.IsSet() {
+		// The group only carries actions for the sim with nothing to fly:
+		// nav fires them and goes on along the route.
+		return true
+	}
 	dir := w.groupDirection(g.Actions.Heading)
 	w.setOutbound(dir)
 

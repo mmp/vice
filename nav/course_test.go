@@ -6,6 +6,7 @@ package nav
 
 import (
 	"fmt"
+	"slices"
 	"testing"
 	"time"
 
@@ -394,5 +395,171 @@ func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 		t.Error("never turned toward the exit fix after reaching 400' AGL")
 	} else if aglTurned < 400 || aglTurned > 500 {
 		t.Errorf("turned on course at %.0f' AGL, expected right at 400'", aglTurned)
+	}
+}
+
+// centerlineDeparture is a departure rolling on KBOS 33L whose
+// runway-midpoint waypoint carries the centerline-to-400' group and then a
+// test's own action groups, with the fix EXITF off to the right of the
+// runway, in calm air.
+type centerlineDeparture struct {
+	nav       *Nav
+	fp        av.FlightPlan
+	elevation int
+	simTime   Time
+	wxs       wx.Sample
+}
+
+func makeCenterlineDeparture(t *testing.T, groups []av.WaypointActionGroup) centerlineDeparture {
+	t.Helper()
+	const icao, runway, acType = "KBOS", "33L", "B744"
+	r, ok := av.LookupRunway(icao, runway)
+	rend, ok2 := av.LookupOppositeRunway(icao, runway)
+	if !ok || !ok2 {
+		t.Fatalf("no runway %s %s", icao, runway)
+	}
+	ap := av.DB.Airports[icao]
+	nmPerLongitude := math.NMPerLongitudeAt(ap.Location)
+	magneticVariation, err := av.DB.MagneticGrid.Lookup(ap.Location)
+	if err != nil {
+		t.Fatal(err)
+	}
+	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, rend.Threshold, nmPerLongitude), magneticVariation)
+
+	mid := av.Waypoint{Fix: runway + "-mid", Location: math.Lerp2f(0.5, r.Threshold, rend.Threshold)}
+	mid.InitExtra().ActionGroups = append([]av.WaypointActionGroup{
+		{
+			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{
+				Heading: int16(math.Round(float32(math.NormalizeHeading(course)))), Track: true}},
+			Until: av.WaypointActionTermination{Type: av.WaypointActionAltitude,
+				Altitude: ap.Elevation + 400, AtOrAbove: true},
+		},
+	}, groups...)
+	exit := math.Offset2LL(r.Threshold, math.NormalizeHeading(math.Heading2LL(r.Threshold, rend.Threshold,
+		nmPerLongitude)+45), 15, nmPerLongitude)
+	wps := []av.Waypoint{{Fix: runway, Location: r.Threshold}, mid, {Fix: "EXITF", Location: exit}}
+
+	fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: acType, DepartureAirport: icao,
+		ArrivalAirport: icao, Altitude: 8000}
+	perf, ok := av.DB.AircraftPerformance[fp.AircraftType]
+	if !ok {
+		t.Fatalf("no performance for %s", fp.AircraftType)
+	}
+	simTime := NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC))
+	n := MakeDepartureNav("TEST001", fp, perf, 0, 5000, wps, false, nmPerLongitude, magneticVariation,
+		nil, simTime, nil)
+	if n == nil {
+		t.Fatal("no nav")
+	}
+
+	std := wx.MakeStandardSampleForAltitude(float32(ap.Elevation))
+	wxs := wx.MakeSample([2]float32{0, 0}, std.Temperature().Celsius(), std.Dewpoint().Celsius(), std.Pressure())
+	return centerlineDeparture{nav: n, fp: fp, elevation: ap.Elevation, simTime: simTime, wxs: wxs}
+}
+
+// An absorbed departure-end action group that only carries sim actions (like
+// /ho) fires once the aircraft is 400' above the field and the aircraft then
+// continues on its route rather than holding its heading.
+func TestDepartureEventActionsFireAtFourHundred(t *testing.T) {
+	d := makeCenterlineDeparture(t, []av.WaypointActionGroup{
+		{Actions: av.WaypointActions{HumanHandoff: true}},
+	})
+
+	var aglHandoff, aglResumed float32
+	maneuvering, resumed, handoff := false, false, false
+	for range 200 {
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, &d.fp, d.simTime, nil)
+		d.simTime = d.simTime.Add(time.Second)
+		agl := d.nav.FlightState.Altitude - float32(d.elevation)
+		if slices.ContainsFunc(result.ActionEvents,
+			func(e av.WaypointActionEvent) bool { return e.Actions.HumanHandoff }) {
+			handoff, aglHandoff = true, agl
+		}
+		if len(d.nav.Heading.Maneuvers) > 0 {
+			maneuvering = true
+		} else if maneuvering && !resumed {
+			resumed, aglResumed = true, agl
+		}
+	}
+
+	if !handoff {
+		t.Error("handoff action never fired")
+	} else if aglHandoff < 400 || aglHandoff > 500 {
+		t.Errorf("handoff fired at %.0f' AGL, expected right at 400'", aglHandoff)
+	}
+	if !resumed {
+		t.Error("never resumed the route after the handoff")
+	} else if aglResumed < 400 || aglResumed > 600 {
+		t.Errorf("resumed the route at %.0f' AGL, expected right after 400'", aglResumed)
+	}
+}
+
+// Sim actions behind an explicit heading leg's trigger, as in
+// FIX/h270/@a2000+/ho, fire when the trigger is met and the aircraft then
+// continues on its route.
+func TestDepartureDelayedEventActionResumesRoute(t *testing.T) {
+	elevation := av.DB.Airports["KBOS"].Elevation
+	d := makeCenterlineDeparture(t, []av.WaypointActionGroup{
+		{
+			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: 270}},
+			Until: av.WaypointActionTermination{Type: av.WaypointActionAltitude,
+				Altitude: elevation + 2000, AtOrAbove: true},
+		},
+		{Actions: av.WaypointActions{HumanHandoff: true}},
+	})
+
+	var aglHandoff, aglResumed float32
+	maneuvering, resumed, handoff := false, false, false
+	for range 300 {
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, &d.fp, d.simTime, nil)
+		d.simTime = d.simTime.Add(time.Second)
+		agl := d.nav.FlightState.Altitude - float32(d.elevation)
+		if slices.ContainsFunc(result.ActionEvents,
+			func(e av.WaypointActionEvent) bool { return e.Actions.HumanHandoff }) {
+			handoff, aglHandoff = true, agl
+		}
+		if len(d.nav.Heading.Maneuvers) > 0 {
+			maneuvering = true
+		} else if maneuvering && !resumed {
+			resumed, aglResumed = true, agl
+		}
+	}
+
+	if !handoff {
+		t.Error("handoff action never fired")
+	} else if aglHandoff < 2000 || aglHandoff > 2200 {
+		t.Errorf("handoff fired at %.0f' AGL, expected right at 2000'", aglHandoff)
+	}
+	if !resumed {
+		t.Error("never resumed the route after the handoff")
+	} else if aglResumed < 2000 || aglResumed > 2300 {
+		t.Errorf("resumed the route at %.0f' AGL, expected right after 2000'", aglResumed)
+	}
+}
+
+// A final group that gives a heading, as in FIX/h270/@a2000+/r055, is flown
+// until controller intervention; the aircraft does not resume its route on
+// its own.
+func TestDepartureTrailingHeadingHeldUntilIntervention(t *testing.T) {
+	elevation := av.DB.Airports["KBOS"].Elevation
+	d := makeCenterlineDeparture(t, []av.WaypointActionGroup{
+		{
+			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: 270}},
+			Until: av.WaypointActionTermination{Type: av.WaypointActionAltitude,
+				Altitude: elevation + 2000, AtOrAbove: true},
+		},
+		{Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: 55, Turn: av.TurnRight}}},
+	})
+
+	for range 300 {
+		d.nav.UpdateWithWeather("TEST001", d.wxs, nil, &d.fp, d.simTime, nil)
+		d.simTime = d.simTime.Add(time.Second)
+	}
+
+	if len(d.nav.Heading.Maneuvers) == 0 {
+		t.Error("maneuvers ended; expected the final heading to be held until controller intervention")
+	}
+	if math.HeadingDifference(d.nav.FlightState.Heading, 55) > 1 {
+		t.Errorf("flying heading %.0f, expected to hold 055", d.nav.FlightState.Heading)
 	}
 }
