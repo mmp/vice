@@ -50,19 +50,19 @@
             "cleared_altitude": 10000,
             "sid": "HAROB6"
           },
-          "YYJ,HQM,CVO": {
+          "HQM,CVO": {
             "cleared_altitude": 7000,
             "sid": "ELMAA5",
             "waypoints": "PEAKK/a3000+/h251"
           },
-          "GEG,MLP,MWH,SEA,ZELAK,ZADON,NORMY,VAMPS,MODDA,BANDR,STEVS": {
+          "GEG,MLP,MWH,ZELAK,ZADON,NORMY,VAMPS,MODDA,BANDR,STEVS": {
             "cleared_altitude": 7000,
             "sid": "MONTN2"
           },
-          "PAE,EPH,YDC,HUH,YVR,TOU,AST,UBG,BTG,YKM,EUG,ELN": {
+          "ALPSE,PAE,EPH,YDC,HUH,YVR,TOU,AST,BTG,YKM,EUG,ELN": {
             "cleared_altitude": 7000,
-            "sid": "SEA8",
-            "waypoints": "KSEA-34R/h165"
+            "sid": "SEA1",
+            "waypoints": "KSEA-34R/tSEA-R161"
           },
           "SUMMA": {
             "cleared_altitude": 7000,
@@ -78,7 +78,7 @@
             "cleared_altitude": 10000,
             "sid": "HAROB6"
           },
-          "ISBRG": {
+          "HQM,CVO": {
             "cleared_altitude": 9000,
             "sid": "ISBRG1"
           },
@@ -90,14 +90,14 @@
             "cleared_altitude": 9000,
             "sid": "OZWLD1"
           },
-          "MLP,MWH,SEA,ZELAK,ZADON,NORMY,VAMPS,MODDA,BANDR,STEVS": {
+          "GEG,MLP,MWH,ZELAK,ZADON,NORMY,VAMPS,MODDA,BANDR,STEVS": {
             "cleared_altitude": 7000,
             "sid": "MONTN2"
           },
-          "SEA8": {
+          "ALPSE,PAE,EPH,YDC,HUH,YVR,TOU,AST,BTG,YKM,EUG,ELN": {
             "cleared_altitude": 7000,
-            "sid": "SEA8",
-            "waypoints": "KSEA-16L/h341"
+            "sid": "SEA1",
+            "waypoints": "KSEA-16L/tSEA-R341"
           },
           "SUMMA": {
             "cleared_altitude": 7000,
@@ -118,8 +118,8 @@
             }
           ],
           "destination": "KGEG",
-          "exit": "SEA",
-          "route": "SEA8 SEA ZADON ZELAK ZIRAN ZOOMR ZOOMR2"
+          "exit": "ZADON",
+          "route": "ZADON ZELAK ZIRAN ZOOMR ZOOMR2"
         },
         {
           "airlines": [
@@ -134,7 +134,7 @@
           ],
           "destination": "KSLC",
           "exit": "SUMMA",
-          "route": "SUMMA2 SUMMA WANTA Q154 BYI SKEES5"
+          "route": "SUMMA WANTA Q154 BYI SKEES5"
         },
         {
           "airlines": [
@@ -144,8 +144,8 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "SEA",
-          "route": "SEA8 SEA NORMY MODDA STEVS Q150 LEZLE DBS ALPOE KK42A KF24E AEX LSU AWDAD1"
+          "exit": "NORMY",
+          "route": "NORMY MODDA STEVS Q150 LEZLE DBS ALPOE KK42A KF24E AEX LSU AWDAD1"
         },
         {
           "airlines": [
@@ -163,8 +163,8 @@
             }
           ],
           "destination": "KBOS",
-          "exit": "SEA",
-          "route": "SEA8 SEA ZADON ZELAK ZIRAN ZOOMR MLP J36 GTF COKEE WILTN Q140 TTAIL SNARG RUBKI Q140 AHPAH GONZZ PONCT JFUND2"
+          "exit": "ZADON",
+          "route": "ZADON ZELAK ZIRAN ZOOMR MLP J36 GTF COKEE WILTN Q140 TTAIL SNARG RUBKI Q140 AHPAH GONZZ PONCT JFUND2"
         },
         {
           "airlines": [
@@ -183,7 +183,7 @@
           ],
           "destination": "PANC",
           "exit": "ARRIE",
-          "route": "BANGR9 ARRIE FOCHE PRYCE BKA LAIRE JOH WITTI4"
+          "route": "ARRIE FOCHE PRYCE BKA LAIRE JOH WITTI4"
         },
         {
           "airlines": [
@@ -197,8 +197,8 @@
             }
           ],
           "destination": "PAFA",
-          "exit": "SEA",
-          "route": "SEA8 SEA ALPSE HEIRE YYD DUXAR Q969 YXY J515 ORT RDFLG HRDNG4"
+          "exit": "ALPSE",
+          "route": "ALPSE HEIRE YYD DUXAR Q969 YXY J515 ORT RDFLG HRDNG4"
         },
         {
           "airlines": [
@@ -208,13 +208,12 @@
             }
           ],
           "destination": "PAJN",
-          "exit": "SEA",
-          "route": "SEA8 SEA ALPSE LVD SSR"
+          "exit": "ALPSE",
+          "route": "ALPSE LVD SSR"
         }
       ],
       "exit_categories": {
         "HQM": "ALL",
-        "YYJ": "ALL",
         "CVO": "ALL",
         "YDC": "ALL",
         "PAE": "ALL",
@@ -223,11 +222,10 @@
         "MLP": "ALL",
         "MWH": "ALL",
         "ELN": "ALL",
-        "SEA": "ALL",
+        "YKM": "ALL",
         "OLM": "ALL",
         "EUG": "ALL",
         "BTG": "ALL",
-        "UGB": "ALL",
         "AST": "ALL",
         "TOU": "ALL",
         "YVR": "ALL",
@@ -236,21 +234,22 @@
         "LTJ": "ALL",
         "BKE": "ALL",
         "LKV": "ALL",
-        "ARRIE": "BANGR9",
-        "PANGL": "BANGR9",
-        "ERAVE": "HAROB6",
-        "FEPOT": "HAROB6",
-        "HISKU": "HAROB6",
-        "ZELAK": "MONTN2",
-        "ZADON": "MONTN2",
-        "NORMY": "MONTN2",
-        "VAMPS": "MONTN2",
-        "MODDA": "MONTN2",
-        "BANDR": "MONTN2",
-        "STEVS": "MONTN2",
-        "ISBRG": "ISBRG1",
-        "JEFPO": "JEFPO1",
-        "OZWLD": "OZWLD1"
+        "ARRIE": "ALL",
+        "PANGL": "ALL",
+        "ERAVE": "ALL",
+        "FEPOT": "ALL",
+        "HISKU": "ALL",
+        "ZELAK": "ALL",
+        "ZADON": "ALL",
+        "NORMY": "ALL",
+        "VAMPS": "ALL",
+        "MODDA": "ALL",
+        "BANDR": "ALL",
+        "STEVS": "ALL",
+        "JEFPO": "ALL",
+        "OZWLD": "ALL",
+        "ALPSE": "ALL",
+        "SUMMA": "ALL"
       },
       "tower_list": 1
     }
@@ -2394,7 +2393,7 @@
         {
           "airport": "KSEA",
           "rate": 20,
-          "runway": "16L"
+          "runway": "34R"
         }
       ],
       "wind": {
