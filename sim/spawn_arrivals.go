@@ -96,7 +96,9 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 		return nil, err
 	}
 	// Create a flight strip at the inbound handoff controller if it's a human position
-	if shouldCreateFlightStrip(&nasFp) &&
+	ap, ok := s.State.Airports[arrivalAirport]
+	printStrips := !ok || ap.PrintArrivalStrips == nil || *ap.PrintArrivalStrips
+	if printStrips && shouldCreateFlightStrip(&nasFp) &&
 		!s.isVirtualController(nasFp.InboundHandoffController) {
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 	}

@@ -93,7 +93,8 @@ import (
 // 83: LaunchConfig's published traffic percentages replaced by rate scales
 // 84: TrafficCountsResult gained AirportOperations, the preview's traffic totaled by airport
 // 85: pregenerated FlightSchedule replaced the traffic providers; launch control rework: server-side launch slots, LaunchFlight-keyed launch/recycle RPCs, Create*/DeleteAircraft RPCs and LaunchConfig.Controller removed
-const ViceSerializeVersion = 85
+// 86: airports gained print_departure_strips/print_arrival_strips
+const ViceSerializeVersion = 86
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

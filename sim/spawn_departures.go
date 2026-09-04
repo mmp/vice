@@ -1271,7 +1271,8 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	// Departures aren't immediately associated, but the STARSComputer will
 	// hold on to their flight plans for now.
 	// Create a flight strip for departures
-	if shouldCreateFlightStrip(&nasFp) {
+	printStrips := ap.PrintDepartureStrips == nil || *ap.PrintDepartureStrips
+	if printStrips && shouldCreateFlightStrip(&nasFp) {
 		if s.isVirtualController(nasFp.TrackingController) {
 			// Virtual controller: strip goes to the handoff target
 			if !s.isVirtualController(nasFp.InboundHandoffController) {

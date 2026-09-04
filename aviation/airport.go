@@ -1,4 +1,4 @@
-// pkg/aviation/airport.go
+// aviation/airport.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -51,6 +51,8 @@ type Airport struct {
 	ATPAVolumes           map[string]*ATPAVolume `json:"atpa_volumes"`
 	OmitArrivalScratchpad bool                   `json:"omit_arrival_scratchpad"`
 	DepartureRunwaysAsOne []string               `json:"departure_runways_as_one"`
+	PrintDepartureStrips  *bool                  `json:"print_departure_strips"` // nil -> unspecified -> true
+	PrintArrivalStrips    *bool                  `json:"print_arrival_strips"`
 }
 
 // icaoRegionPrefixes are the leading letters of the ICAO ids in the regions
