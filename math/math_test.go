@@ -390,6 +390,64 @@ func TestIntersectRayWithRoute(t *testing.T) {
 	})
 }
 
+func TestIntersectPolylines(t *testing.T) {
+	// Anchor at the equator so nmPerLongitude is ~60 (same scale as latitude).
+	t.Run("X crossing", func(t *testing.T) {
+		a := []Point2LL{{-0.10, 0}, {0.10, 0}}
+		b := []Point2LL{{0, -0.10}, {0, 0.10}}
+		crossings := IntersectPolylines(a, b)
+		if len(crossings) != 1 {
+			t.Fatalf("expected 1 crossing, got %d", len(crossings))
+		}
+		c := crossings[0]
+		if Abs(c.TA-0.5) > 1e-3 || Abs(c.TB-0.5) > 1e-3 {
+			t.Errorf("expected TA and TB ~0.5, got %f and %f", c.TA, c.TB)
+		}
+		if Abs(c.Location[0]) > 1e-3 || Abs(c.Location[1]) > 1e-3 {
+			t.Errorf("expected crossing at the origin, got %v", c.Location)
+		}
+	})
+
+	t.Run("parallel polylines", func(t *testing.T) {
+		a := []Point2LL{{-0.10, 0}, {0.10, 0}}
+		b := []Point2LL{{-0.10, 0.05}, {0.10, 0.05}}
+		if crossings := IntersectPolylines(a, b); len(crossings) != 0 {
+			t.Errorf("expected no crossings, got %v", crossings)
+		}
+	})
+
+	t.Run("coincident polylines", func(t *testing.T) {
+		a := []Point2LL{{-0.10, 0}, {0.10, 0}}
+		if crossings := IntersectPolylines(a, a); len(crossings) != 0 {
+			t.Errorf("expected no crossings, got %v", crossings)
+		}
+	})
+
+	t.Run("zigzag crossed twice", func(t *testing.T) {
+		a := []Point2LL{{-0.10, 0}, {0.30, 0}}
+		b := []Point2LL{{0, 0.05}, {0.05, -0.05}, {0.10, 0.05}}
+		crossings := IntersectPolylines(a, b)
+		if len(crossings) != 2 {
+			t.Fatalf("expected 2 crossings, got %d", len(crossings))
+		}
+		if crossings[0].TA >= crossings[1].TA {
+			t.Errorf("expected crossings ordered along a, got TA %f then %f",
+				crossings[0].TA, crossings[1].TA)
+		}
+		if crossings[0].TB > 1 || crossings[1].TB < 1 {
+			t.Errorf("expected crossings on b's segments 0 and 1, got TB %f and %f",
+				crossings[0].TB, crossings[1].TB)
+		}
+	})
+
+	t.Run("too-short polyline returns nil", func(t *testing.T) {
+		a := []Point2LL{{-0.10, 0}, {0.10, 0}}
+		if crossings := IntersectPolylines(a, []Point2LL{{0, 0}}); crossings != nil {
+			t.Errorf("expected nil, got %v", crossings)
+		}
+	})
+}
+
 func TestSplitSelfIntersectingPolygon(t *testing.T) {
 	approxEqual := func(a, b [2]float32) bool {
 		const eps = 1e-4

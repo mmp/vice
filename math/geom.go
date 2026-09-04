@@ -5,6 +5,7 @@
 package math
 
 import (
+	"cmp"
 	"iter"
 	gomath "math"
 	"slices"
@@ -297,6 +298,52 @@ func IntersectRayWithRoute(origin Point2LL, heading TrueHeading, route []Point2L
 		})
 	}
 	return hits
+}
+
+// SegmentCrossing describes a point where two polylines cross. TA and TB
+// are the parametric positions along each polyline: segment index plus the
+// 0-1 fraction along that segment.
+type SegmentCrossing struct {
+	TA, TB   float32
+	Location Point2LL
+}
+
+// IntersectPolylines returns all points where the polylines a and b cross,
+// in order along a.
+func IntersectPolylines(a, b []Point2LL) []SegmentCrossing {
+	if len(a) < 2 || len(b) < 2 {
+		return nil
+	}
+	nmPerLong := NMPerLongitudeAt(a[0])
+	aNM := make([][2]float32, len(a))
+	for i, p := range a {
+		aNM[i] = LL2NM(p, nmPerLong)
+	}
+	bNM := make([][2]float32, len(b))
+	for i, p := range b {
+		bNM[i] = LL2NM(p, nmPerLong)
+	}
+
+	var crossings []SegmentCrossing
+	for i := range len(aNM) - 1 {
+		dir := Sub2f(aNM[i+1], aNM[i])
+		for j := range len(bNM) - 1 {
+			p, rayT, segT, ok := RaySegmentIntersect(aNM[i], dir, bNM[j], bNM[j+1])
+			// The ray parameter is in units of the a segment's length, so
+			// also require the crossing to be within the segment.
+			const epsilon = 1e-4
+			if !ok || rayT > 1+epsilon {
+				continue
+			}
+			crossings = append(crossings, SegmentCrossing{
+				TA:       float32(i) + min(rayT, 1),
+				TB:       float32(j) + segT,
+				Location: NM2LL(p, nmPerLong),
+			})
+		}
+	}
+	slices.SortFunc(crossings, func(x, y SegmentCrossing) int { return cmp.Compare(x.TA, y.TA) })
+	return crossings
 }
 
 // RayRayMinimumDistance takes two rays p0+d0*t and p1+d1*t and returns the
