@@ -259,6 +259,29 @@ func TestRadialJoin(t *testing.T) {
 	}
 }
 
+func TestRadialJoinFromBehindFix(t *testing.T) {
+	// A departure that is airborne just short of the navaid its radial
+	// starts at--as the SEA VORTAC sits by the departure end of KSEA's
+	// 16L--steers to the navaid, and the turn toward it carries the
+	// aircraft past. It then takes up the radial from there rather than
+	// turning back to the navaid.
+	w := testWalker(RouteDrawContext{})
+	w.walk([]av.Waypoint{
+		fixAt("A", 0.07, 0.155, av.WaypointActionGroup{
+			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: 180, Track: true, Fix: "FIX", FixLocation: nmPoint(0, 0)}},
+			Until:   av.WaypointActionTermination{Type: av.WaypointActionDistance, Distance: 10},
+		}),
+		fixAt("B", 0, -30),
+	})
+	p := labelAt(t, w, "@d10.0")
+	if math.Abs(p[0]) > 0.25 {
+		t.Errorf("trigger not on the radial: %v", p)
+	}
+	if p[1] > 0 {
+		t.Errorf("trigger not past the navaid on the radial: %v", p)
+	}
+}
+
 func TestProcedureTurn(t *testing.T) {
 	racetrack := func(entry180NoPT bool) av.Waypoint {
 		wp := fixAt("F", 0, 0)

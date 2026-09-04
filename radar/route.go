@@ -532,13 +532,12 @@ func (w *routeWalker) groupDirection(h av.WaypointHeadingAction) [2]float32 {
 func (w *routeWalker) joinRadial(h av.WaypointHeadingAction) [2]float32 {
 	f := w.nm(h.FixLocation)
 	dir := w.radialVector(h.Heading, h.FixVariation)
-	v := math.Sub2f(w.pen.p, f)
-	join := f
-	if along := math.Dot(v, dir); along >= 0 {
-		across := math.Abs(math.Dot(v, rightNormal(dir)))
-		join = math.Add2f(f, math.Scale2f(dir, along+max(2, across)))
-	}
-	w.turnToward(join, h.Turn)
+	w.turnToward(w.radialJoinPoint(f, dir), h.Turn)
+	// nav resteers as it flies, so a turn that carries the aircraft past a
+	// join point close by--the fix itself, when the radial starts near the
+	// departure end of the runway--is followed by the next point along the
+	// radial rather than a turn back to it.
+	join := w.radialJoinPoint(f, dir)
 	// Roll out on the radial: the leg ends a turn's lead short of the join
 	// and the turn onto the radial is tangent to it.
 	toJoin := direction(w.pen.p, join)
@@ -549,6 +548,21 @@ func (w *routeWalker) joinRadial(h av.WaypointHeadingAction) [2]float32 {
 	w.turnTo(dir, av.TurnClosest)
 	w.drawRadial(f, dir, w.pen.p, 0)
 	return dir
+}
+
+// radialJoinPoint returns the point the aircraft steers toward to join the
+// given radial of fix and follow it outbound, as nav's radialSteeringPoint
+// does: a point on the radial ahead of the pen's projection onto it, at
+// least 2nm ahead and farther when the pen is farther off, or the fix
+// itself from behind it.
+func (w *routeWalker) radialJoinPoint(f, dir [2]float32) [2]float32 {
+	v := math.Sub2f(w.pen.p, f)
+	along := math.Dot(v, dir)
+	if along < 0 {
+		return f
+	}
+	across := math.Abs(math.Dot(v, rightNormal(dir)))
+	return math.Add2f(f, math.Scale2f(dir, along+max(2, across)))
 }
 
 // triggerDistance returns how far along dir from the pen a trigger is met
