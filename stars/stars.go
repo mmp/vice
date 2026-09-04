@@ -240,13 +240,9 @@ type STARSPane struct {
 	showVFRAirports    bool
 	showTRACONBoundary bool
 	scopeDraw          struct {
-		arrivals    map[string]map[int]bool               // group->index
-		approaches  map[string]map[string]bool            // airport->approach
-		departures  map[string]map[string]map[string]bool // airport->runway->exit
-		overflights map[string]map[int]bool               // group->index
-		airspace    map[sim.TCP]map[string]bool           // ctrl -> volume name
-		holds       map[string]av.Hold                    // fix name -> Hold
-		allHolds    bool
+		radar.RouteDrawer
+		holds    map[string]av.Hold // fix name -> Hold
+		allHolds bool
 	}
 
 	// Instrument Flight Procedure (SIDs, STARs, IAPs etc) Helpers
@@ -914,11 +910,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 
 	// nil these out rather than clearing them so that they are rebuilt
 	// from scratch.
-	sp.scopeDraw.arrivals = nil
-	sp.scopeDraw.approaches = nil
-	sp.scopeDraw.departures = nil
-	sp.scopeDraw.overflights = nil
-	sp.scopeDraw.airspace = nil
+	sp.scopeDraw.Clear()
 	sp.scopeDraw.holds = nil
 }
 

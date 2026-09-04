@@ -14,30 +14,25 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (ep *ERAMPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB {
-	ps := ep.currentPrefs()
-	return ps.Brightness.Backlight.ScaleRGB(renderer.RGB{R: input[0], G: input[1], B: input[2]})
-}
-
 func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.ArrivalsColor)
+	color := renderer.RGBFromArray(*ep.IFPHelpers.ArrivalsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	if ep.scopeDraw.arrivals != nil {
+	if ep.scopeDraw.Arrivals != nil {
 		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
-			if ep.scopeDraw.arrivals[name] == nil {
+			if ep.scopeDraw.Arrivals[name] == nil {
 				continue
 			}
 
 			for i, arr := range flow.Arrivals {
-				if ep.scopeDraw.arrivals == nil || !ep.scopeDraw.arrivals[name][i] {
+				if ep.scopeDraw.Arrivals == nil || !ep.scopeDraw.Arrivals[name][i] {
 					continue
 				}
 
@@ -75,21 +70,21 @@ func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ra
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.ApproachesColor)
+	color := renderer.RGBFromArray(*ep.IFPHelpers.ApproachesColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	if ep.scopeDraw.approaches != nil {
+	if ep.scopeDraw.Approaches != nil {
 		for _, rwy := range ctx.Client.State.ArrivalRunways {
-			if ep.scopeDraw.approaches[rwy.Airport] == nil {
+			if ep.scopeDraw.Approaches[rwy.Airport] == nil {
 				continue
 			}
 			ap := ctx.Client.State.Airports[rwy.Airport]
 			for name, appr := range util.SortedMap(ap.Approaches) {
-				if appr.Runway == rwy.Runway.Base() && ep.scopeDraw.approaches[rwy.Airport][name] {
+				if appr.Runway == rwy.Runway.Base() && ep.scopeDraw.Approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						radar.DrawWaypoints(ctx, wp, radar.ApproachRouteContext(appr), drawn, transforms, td, style, ld, pd, ldr, color)
 					}
@@ -105,34 +100,23 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms r
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.DeparturesColor)
+	color := renderer.RGBFromArray(*ep.IFPHelpers.DeparturesColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	if ep.scopeDraw.departures != nil {
-		for name, ap := range util.SortedMap(ctx.Client.State.Airports) {
-			if ep.scopeDraw.departures[name] == nil {
+	for icao, rates := range util.SortedMap(ctx.Client.State.LaunchConfig.DepartureRates) {
+		if ep.scopeDraw.Departures[icao] == nil {
+			continue
+		}
+		for dr := range radar.ScenarioDepartureRoutes(ctx.Client.State.Airports[icao], rates) {
+			if !ep.scopeDraw.Departures[icao][dr.Group] {
 				continue
 			}
-
-			for rwy, exitRoutes := range util.SortedMap(ap.DepartureRoutes) {
-				if ep.scopeDraw.departures[name][string(rwy)] == nil {
-					continue
-				}
-
-				for exit, routes := range util.SortedMap(exitRoutes) {
-					if !ep.scopeDraw.departures[name][string(rwy)][string(exit)] {
-						continue
-					}
-					for _, exitRoute := range routes {
-						radar.DrawWaypoints(ctx, exitRoute.Waypoints, radar.DepartureRouteContext(name, exitRoute), drawn, transforms,
-							td, style, ld, pd, ldr, color)
-					}
-				}
-			}
+			radar.DrawWaypoints(ctx, dr.Route.Waypoints, radar.DepartureRouteContext(icao, dr.Route), drawn, transforms,
+				td, style, ld, pd, ldr, color)
 		}
 	}
 	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
@@ -142,21 +126,21 @@ func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms 
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.OverflightsColor)
+	color := renderer.RGBFromArray(*ep.IFPHelpers.OverflightsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	if ep.scopeDraw.overflights != nil {
+	if ep.scopeDraw.Overflights != nil {
 		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
-			if ep.scopeDraw.overflights[name] == nil {
+			if ep.scopeDraw.Overflights[name] == nil {
 				continue
 			}
 
 			for i, of := range flow.Overflights {
-				if ep.scopeDraw.overflights == nil || !ep.scopeDraw.overflights[name][i] {
+				if ep.scopeDraw.Overflights == nil || !ep.scopeDraw.Overflights[name][i] {
 					continue
 				}
 
@@ -171,15 +155,15 @@ func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ra
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.AirspaceColor)
+	color := renderer.RGBFromArray(*ep.IFPHelpers.AirspaceColor)
 	style := renderer.TextStyle{
 		Font:           ep.systemFont[3],
 		Color:          color,
 		DrawBackground: true, // default BackgroundColor is fine
 	}
 
-	if ep.scopeDraw.airspace != nil {
-		for ctrl, vols := range util.SortedMap(ep.scopeDraw.airspace) {
+	if ep.scopeDraw.Airspace != nil {
+		for ctrl, vols := range util.SortedMap(ep.scopeDraw.Airspace) {
 			for volname, enabled := range util.SortedMap(vols) {
 				if !enabled {
 					continue
@@ -204,8 +188,7 @@ func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ra
 }
 
 func (ep *ERAMPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
-	if len(ep.scopeDraw.arrivals) == 0 && len(ep.scopeDraw.approaches) == 0 && len(ep.scopeDraw.departures) == 0 &&
-		len(ep.scopeDraw.overflights) == 0 && len(ep.scopeDraw.airspace) == 0 {
+	if ep.scopeDraw.Empty() {
 		return
 	}
 

@@ -41,3 +41,9 @@ func RGBFromHex(c int) RGB {
 func RGBFromUInt8(r uint8, g uint8, b uint8) RGB {
 	return RGB{R: float32(r) / 255, G: float32(g) / 255, B: float32(b) / 255}
 }
+
+// RGBFromArray converts the red, green, and blue components an imgui color
+// picker gives to an RGB.
+func RGBFromArray(c [3]float32) RGB {
+	return RGB{R: c[0], G: c[1], B: c[2]}
+}

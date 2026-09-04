@@ -2106,7 +2106,9 @@ func (c *AircraftClass) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (c AircraftClass) MarshalJSON() ([]byte, error) {
+// names returns the class names the value admits; empty for the
+// unrestricted zero value.
+func (c AircraftClass) names() []string {
 	var names []string
 	if c&AircraftClassProp != 0 {
 		names = append(names, "prop")
@@ -2122,6 +2124,15 @@ func (c AircraftClass) MarshalJSON() ([]byte, error) {
 	case AircraftClassNonheavyJet:
 		names = append(names, "nonheavy")
 	}
+	return names
+}
+
+func (c AircraftClass) String() string {
+	return strings.Join(c.names(), ", ")
+}
+
+func (c AircraftClass) MarshalJSON() ([]byte, error) {
+	names := c.names()
 	if len(names) == 1 {
 		return json.Marshal(names[0])
 	}

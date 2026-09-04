@@ -289,13 +289,7 @@ type ERAMPane struct {
 
 	prefrencesVisible bool `json:"-"`
 
-	scopeDraw struct {
-		arrivals    map[string]map[int]bool                 // group->index
-		approaches  map[string]map[string]bool              // airport->approach
-		departures  map[string]map[string]map[string]bool   // airport->runway->exit
-		overflights map[string]map[int]bool                 // group->index
-		airspace    map[sim.ControlPosition]map[string]bool // ctrl -> volume name
-	}
+	scopeDraw radar.RouteDrawer
 
 	IFPHelpers struct {
 		ArrivalsColor    *[3]float32
@@ -632,11 +626,7 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, pl platform.Platform,
 	ep.CAPairs = nil
 	ep.lastConflictUpdate = time.Time{}
 
-	ep.scopeDraw.arrivals = nil
-	ep.scopeDraw.approaches = nil
-	ep.scopeDraw.departures = nil
-	ep.scopeDraw.overflights = nil
-	ep.scopeDraw.airspace = nil
+	ep.scopeDraw.Clear()
 
 	ep.commandMode = CommandModeNone
 	ep.drawRoutePoints = nil

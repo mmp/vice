@@ -428,8 +428,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms radar.ScopeTransf
 }
 
 func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
-	if len(sp.scopeDraw.arrivals) == 0 && len(sp.scopeDraw.approaches) == 0 && len(sp.scopeDraw.departures) == 0 &&
-		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 && len(sp.scopeDraw.holds) == 0 {
+	if sp.scopeDraw.Empty() && len(sp.scopeDraw.holds) == 0 {
 		return
 	}
 
@@ -461,22 +460,22 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ArrivalsColor)
+	color := renderer.RGBFromArray(*sp.IFPHelpers.ArrivalsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	if sp.scopeDraw.arrivals != nil {
+	if sp.scopeDraw.Arrivals != nil {
 		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
-			if sp.scopeDraw.arrivals[name] == nil {
+			if sp.scopeDraw.Arrivals[name] == nil {
 				continue
 			}
 
 			arrivals := flow.Arrivals
 			for i, arr := range arrivals {
-				if sp.scopeDraw.arrivals == nil || !sp.scopeDraw.arrivals[name][i] {
+				if sp.scopeDraw.Arrivals == nil || !sp.scopeDraw.Arrivals[name][i] {
 					continue
 				}
 
@@ -557,21 +556,21 @@ func (sp *STARSPane) drawEnrouteHolds(ctx *panes.Context, transforms radar.Scope
 func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
-	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ApproachesColor)
+	color := renderer.RGBFromArray(*sp.IFPHelpers.ApproachesColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	if sp.scopeDraw.approaches != nil {
+	if sp.scopeDraw.Approaches != nil {
 		for _, rwy := range ctx.Client.State.ArrivalRunways {
-			if sp.scopeDraw.approaches[rwy.Airport] == nil {
+			if sp.scopeDraw.Approaches[rwy.Airport] == nil {
 				continue
 			}
 			ap := ctx.Client.State.Airports[rwy.Airport]
 			for name, appr := range util.SortedMap(ap.Approaches) {
-				if appr.Runway == rwy.Runway.Base() && sp.scopeDraw.approaches[rwy.Airport][name] {
+				if appr.Runway == rwy.Runway.Base() && sp.scopeDraw.Approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						radar.DrawWaypoints(ctx, wp, radar.ApproachRouteContext(appr), drawn, transforms, td, style, ld, pd, ldr, color)
 						skipProcedureTurnHolds(wp, drawnHolds)
@@ -608,34 +607,23 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.DeparturesColor)
+	color := renderer.RGBFromArray(*sp.IFPHelpers.DeparturesColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	if sp.scopeDraw.departures != nil {
-		for name, ap := range util.SortedMap(ctx.Client.State.Airports) {
-			if sp.scopeDraw.departures[name] == nil {
+	for icao, rates := range util.SortedMap(ctx.Client.State.LaunchConfig.DepartureRates) {
+		if sp.scopeDraw.Departures[icao] == nil {
+			continue
+		}
+		for dr := range radar.ScenarioDepartureRoutes(ctx.Client.State.Airports[icao], rates) {
+			if !sp.scopeDraw.Departures[icao][dr.Group] {
 				continue
 			}
-
-			for rwy, exitRoutes := range util.SortedMap(ap.DepartureRoutes) {
-				if sp.scopeDraw.departures[name][string(rwy)] == nil {
-					continue
-				}
-
-				for exit, routes := range util.SortedMap(exitRoutes) {
-					if !sp.scopeDraw.departures[name][string(rwy)][string(exit)] {
-						continue
-					}
-					for _, exitRoute := range routes {
-						radar.DrawWaypoints(ctx, exitRoute.Waypoints, radar.DepartureRouteContext(name, exitRoute), drawn, transforms,
-							td, style, ld, pd, ldr, color)
-					}
-				}
-			}
+			radar.DrawWaypoints(ctx, dr.Route.Waypoints, radar.DepartureRouteContext(icao, dr.Route), drawn, transforms,
+				td, style, ld, pd, ldr, color)
 		}
 	}
 	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
@@ -645,22 +633,22 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.OverflightsColor)
+	color := renderer.RGBFromArray(*sp.IFPHelpers.OverflightsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	if sp.scopeDraw.overflights != nil {
+	if sp.scopeDraw.Overflights != nil {
 		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
-			if sp.scopeDraw.overflights[name] == nil {
+			if sp.scopeDraw.Overflights[name] == nil {
 				continue
 			}
 
 			overflights := flow.Overflights
 			for i, of := range overflights {
-				if sp.scopeDraw.overflights == nil || !sp.scopeDraw.overflights[name][i] {
+				if sp.scopeDraw.Overflights == nil || !sp.scopeDraw.Overflights[name][i] {
 					continue
 				}
 
@@ -675,7 +663,7 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms r
 	cb *renderer.CommandBuffer, drawn *radar.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
-	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.AirspaceColor)
+	color := renderer.RGBFromArray(*sp.IFPHelpers.AirspaceColor)
 	ps := sp.currentPrefs()
 	style := renderer.TextStyle{
 		Font:           sp.systemFont(ctx, ps.CharSize.Tools),
@@ -683,8 +671,8 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms r
 		DrawBackground: true, // default BackgroundColor is fine
 	}
 
-	if sp.scopeDraw.airspace != nil {
-		for tcp, vols := range util.SortedMap(sp.scopeDraw.airspace) {
+	if sp.scopeDraw.Airspace != nil {
+		for tcp, vols := range util.SortedMap(sp.scopeDraw.Airspace) {
 			for volname, enabled := range util.SortedMap(vols) {
 				if !enabled {
 					continue
@@ -706,11 +694,6 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms r
 		}
 	}
 	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
-}
-
-func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB {
-	ps := sp.currentPrefs()
-	return ps.Brightness.Lists.ScaleRGB(renderer.RGB{input[0], input[1], input[2]})
 }
 
 func (sp *STARSPane) drawPTLs(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -1093,7 +1076,7 @@ func (sp *STARSPane) drawScenarioHolds(ctx *panes.Context, transforms radar.Scop
 		return
 	}
 
-	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.HoldsColor)
+	color := renderer.RGBFromArray(*sp.IFPHelpers.HoldsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,

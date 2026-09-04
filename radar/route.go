@@ -6,6 +6,7 @@ package radar
 
 import (
 	"fmt"
+	"iter"
 	gomath "math"
 	"slices"
 	"strings"
@@ -60,6 +61,48 @@ func OverflightRouteContext(of av.Overflight) RouteDrawContext {
 
 func ApproachRouteContext(appr *av.Approach) RouteDrawContext {
 	return RouteDrawContext{ApproachType: appr.Type}
+}
+
+// DepartureGroup identifies the departure routes that are selected and drawn
+// together: those flying the same SID--or leaving via the same exit, for
+// routes with no SID--that are open to the same aircraft. Routes open to
+// different aircraft fly different paths, so they are never grouped.
+type DepartureGroup struct {
+	SID      string           // empty for a route with no SID
+	Exit     av.ExitID        // the route's exit, when it has no SID
+	Aircraft av.AircraftClass // zero if the route is open to every aircraft
+}
+
+// DepartureRoute is one of a scenario's departure routes together with the
+// group it belongs to.
+type DepartureRoute struct {
+	Group  DepartureGroup
+	Runway av.RunwayID
+	Exit   av.ExitID
+	Route  *av.ExitRoute
+}
+
+// ScenarioDepartureRoutes returns the routes departures fly from the
+// airport's runways in the current scenario, in runway then exit order.
+func ScenarioDepartureRoutes(ap *av.Airport, rates map[av.RunwayID]map[string]float32) iter.Seq[DepartureRoute] {
+	return func(yield func(DepartureRoute) bool) {
+		if ap == nil {
+			return
+		}
+		for _, rwy := range util.SortedMapKeys(rates) {
+			for exit, routes := range util.SortedMap(ap.DepartureRoutes[rwy]) {
+				for _, route := range routes {
+					group := DepartureGroup{SID: route.SID, Aircraft: route.Aircraft}
+					if route.SID == "" {
+						group.Exit = exit
+					}
+					if !yield(DepartureRoute{Group: group, Runway: rwy, Exit: exit, Route: route}) {
+						return
+					}
+				}
+			}
+		}
+	}
 }
 
 // DrawnRoutes records what a frame's route drawing has drawn so far, so
