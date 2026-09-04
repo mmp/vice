@@ -279,24 +279,23 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 		}
 	}
 
-	// Departures from intersecting runways: the full interval is only
-	// needed if both aircraft are airborne before the intersection point;
-	// otherwise it's enough for the previous departure to have passed it.
+	// Check for conflicts with the last departure from each other runway,
+	// both where the runways themselves intersect and where the two
+	// aircraft's initial flight paths cross.
 	for otherRwy, otherState := range s.DepartureState[airport] {
 		if otherRwy.SameRunway(runway) || otherState.LastDeparture == nil {
 			continue
 		}
 		prev := *otherState.LastDeparture
-		pt, ok := av.RunwayIntersectionPoint(airport, runway, otherRwy, s.State.NmPerLongitude, 1)
-		if !ok {
-			continue // doesn't intersect
-		}
-		if s.State.SimTime.Sub(prev.LaunchTime) >= s.launchInterval(prev, dep, considerExit) {
-			continue // full separation is satisfied regardless
-		}
-		bothAirborne := s.airborneBeforeIntersection(prev, airport, otherRwy, pt) &&
-			s.airborneBeforeIntersection(dep, airport, runway, pt)
-		if bothAirborne || !s.departureHasPassedPoint(prev, airport, otherRwy, pt) {
+		if pt, ok := av.RunwayIntersectionPoint(airport, runway, otherRwy, s.State.NmPerLongitude, 1); ok {
+			if s.holdForRunwayIntersection(prev, dep, considerExit, pt, airport, runway, otherRwy) {
+				return false
+			}
+		} else if (depState.LastDeparture == nil || prev.ADSBCallsign != depState.LastDeparture.ADSBCallsign) &&
+			s.holdForCrossingDeparture(prev, dep) {
+			// Note that if prev is also our own runway's last departure (via
+			// "departure_runways_as_one"), the launch interval check above
+			// has already handled it.
 			return false
 		}
 	}
@@ -335,6 +334,44 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 	}
 
 	return true
+}
+
+// holdForRunwayIntersection reports whether dep must wait because prev, a
+// recent departure from an intersecting runway, is not yet clear of it. The
+// full launch interval is only needed if both aircraft are airborne before
+// the intersection point; otherwise it's enough for the previous departure
+// to have passed it.
+func (s *Sim) holdForRunwayIntersection(prev, dep DepartureAircraft, considerExit bool, pt math.Point2LL,
+	airport string, runway, otherRwy av.RunwayID) bool {
+	if s.State.SimTime.Sub(prev.LaunchTime) >= s.launchInterval(prev, dep, considerExit) {
+		return false // full separation is satisfied regardless
+	}
+	bothAirborne := s.airborneBeforeIntersection(prev, airport, otherRwy, pt) &&
+		s.airborneBeforeIntersection(dep, airport, runway, pt)
+	return bothAirborne || !s.departureHasPassedPoint(prev, airport, otherRwy, pt)
+}
+
+// crossingSeparation is the minimum time by which two departures whose
+// initial flight paths cross must be separated at the crossing point.
+const crossingSeparation = 30 * time.Second
+
+// holdForCrossingDeparture reports whether dep must wait because its
+// initial flight path crosses that of prev, a recent departure from another
+// runway, too close in time at a crossing point.
+func (s *Sim) holdForCrossingDeparture(prev, dep DepartureAircraft) bool {
+	if _, ok := s.Aircraft[prev.ADSBCallsign]; !ok {
+		return false
+	}
+	elapsed := s.State.SimTime.Sub(prev.LaunchTime)
+	return slices.ContainsFunc(math.IntersectPolylines(prev.LaunchPath, dep.LaunchPath),
+		func(c math.SegmentCrossing) bool {
+			// Time from now until each aircraft reaches the crossing point
+			// (negative if prev has already passed it); the paths are
+			// sampled at one-second intervals starting at the takeoff roll.
+			prevCrosses := time.Duration(float32(time.Second)*c.TA) - elapsed
+			depCrosses := time.Duration(float32(time.Second) * c.TB)
+			return (depCrosses - prevCrosses).Abs() < crossingSeparation
+		})
 }
 
 // runwayThresholdAndDirection returns the runway's threshold and its unit
@@ -1336,8 +1373,7 @@ func departureGateDelay(ac *Aircraft, trafficSource TrafficSource, r *rand.Rand)
 	return 5 * time.Minute
 }
 
-func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, trafficSource TrafficSource,
-	r *rand.Rand) DepartureAircraft {
+func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, trafficSource TrafficSource, r *rand.Rand) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign:        ac.ADSBCallsign,
 		SpawnTime:           simTime,
@@ -1345,20 +1381,26 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, trafficS
 	}
 
 	// Simulate out the takeoff roll and initial climb to figure out when
-	// we'll have sufficient separation to launch the next aircraft.
+	// we'll have sufficient separation to launch the next aircraft and to
+	// record the aircraft's initial flight path.
 	simAc := *ac
 	start := ac.Position()
-	d.MinSeparation = 120 * time.Second // just in case
-	d.AirborneDistance = -1             // not airborne within the simulation horizon
-	for i := range 120 {
+	const nsteps = 120
+	d.MinSeparation = nsteps * time.Second // just in case
+	d.AirborneDistance = -1                // not airborne within the simulation horizon
+	d.LaunchPath = make([]math.Point2LL, 0, nsteps+1)
+	d.LaunchPath = append(d.LaunchPath, start)
+	minSepSet := false
+	for i := range nsteps {
 		simAc.Update(model, simTime, nil, nil, nil /* lg */)
+		d.LaunchPath = append(d.LaunchPath, simAc.Position())
 		if d.AirborneDistance < 0 && simAc.IsAirborne() {
 			d.AirborneDistance = math.NMDistance2LL(start, simAc.Position())
 		}
 		// We need 6,000' and airborne, but we'll add a bit of slop
-		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
+		if !minSepSet && simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second
-			break
+			minSepSet = true
 		}
 	}
 

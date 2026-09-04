@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
 
@@ -72,8 +73,9 @@ type DepartureAircraft struct {
 	// point at which the aircraft lifts off; negative if it wasn't airborne
 	// within the horizon of the takeoff-roll simulation.
 	AirborneDistance float32
-	SpawnTime        Time // when it was first spawned
-	LaunchTime       Time // when it was actually launched; used for wake turbulence separation, etc.
+	LaunchPath       []math.Point2LL // position at 1s intervals after the takeoff roll starts
+	SpawnTime        Time            // when it was first spawned
+	LaunchTime       Time            // when it was actually launched; used for wake turbulence separation, etc.
 
 	// When they're ready to leave the gate
 	ReadyDepartGateTime Time

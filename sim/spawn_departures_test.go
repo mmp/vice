@@ -211,6 +211,106 @@ func TestCanLaunchIntersectingRunways(t *testing.T) {
 	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
 		t.Error("canLaunch: departure on a parallel runway shouldn't couple")
 	}
+
+	// Nor are they coupled when both fly straight out, with launch paths
+	// recorded.
+	rwy8.LastDeparture.LaunchPath = makeTestLaunchPath(0, 5, 0.1, 0, 120)
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.1, 0, 120)
+	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
+		t.Error("canLaunch: straight-out departure on a parallel runway shouldn't couple")
+	}
+}
+
+// makeTestLaunchPath returns a fabricated departure path of n one-second
+// samples starting at (x, y) in nm coordinates, moving by (dx, dy) each
+// second.
+func makeTestLaunchPath(x, y, dx, dy float32, n int) []math.Point2LL {
+	path := make([]math.Point2LL, n)
+	for i := range path {
+		path[i] = math.NM2LL([2]float32{x + float32(i)*dx, y + float32(i)*dy}, testNmPerLongitude)
+	}
+	return path
+}
+
+func TestHoldForCrossingDeparture(t *testing.T) {
+	installIntersectingRunwayFixture(t)
+
+	now := NewSimTime(time.Now())
+	prevAc := &Aircraft{ADSBCallsign: "PRV1", FlightPlan: av.FlightPlan{AircraftType: "B738", Rules: av.FlightRulesIFR}}
+	depAc := &Aircraft{ADSBCallsign: "DEP1", FlightPlan: av.FlightPlan{AircraftType: "B738", Rules: av.FlightRulesIFR}}
+
+	rwy8, rwy9 := &RunwayLaunchState{}, &RunwayLaunchState{}
+
+	s := &Sim{
+		lg:       log.New(true, "error", t.TempDir()),
+		State:    &CommonState{},
+		Aircraft: map[av.ADSBCallsign]*Aircraft{"PRV1": prevAc, "DEP1": depAc},
+		DepartureState: map[string]map[av.RunwayID]*RunwayLaunchState{
+			"XTST": {"8": rwy8, "9": rwy9},
+		},
+	}
+	s.State.NmPerLongitude = testNmPerLongitude
+
+	// PRV1 departed the parallel runway 8 and turns so that its path
+	// crosses DEP1's straight-out path from runway 9 at (5, 0), 50 seconds
+	// into each aircraft's departure. The runways don't physically
+	// intersect, so only the crossing-path check applies.
+	prev := DepartureAircraft{ADSBCallsign: "PRV1", LaunchTime: now, MinSeparation: time.Minute,
+		LaunchPath: makeTestLaunchPath(0, 5, 0.1, -0.1, 120)}
+	rwy8.LastDeparture = &prev
+	dep := DepartureAircraft{ADSBCallsign: "DEP1", MinSeparation: time.Minute,
+		LaunchPath: makeTestLaunchPath(0, 0, 0.1, 0, 120)}
+
+	// They would reach the crossing point 10 seconds apart.
+	s.State.SimTime = now.Add(10 * time.Second)
+	if s.canLaunch(rwy9, dep, false, "XTST", "9") {
+		t.Error("canLaunch: crossing departure from the parallel runway is too close in time")
+	}
+
+	// 40 seconds apart is more than crossingSeparation.
+	s.State.SimTime = now.Add(40 * time.Second)
+	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
+		t.Error("canLaunch: crossing departure from the parallel runway is well ahead")
+	}
+
+	// The window is symmetric: if the new departure will be through the
+	// crossing point well before the earlier one arrives, it may go.
+	s.State.SimTime = now.Add(10 * time.Second)
+	prev.LaunchPath = makeTestLaunchPath(0, 5, 0.05, -0.05, 120) // crosses at 100 seconds
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.25, 0, 120)      // crosses at 20 seconds
+	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
+		t.Error("canLaunch: departure crosses well ahead of the earlier one's arrival")
+	}
+
+	// Straight-out paths from parallel runways don't cross.
+	prev.LaunchPath = makeTestLaunchPath(0, 5, 0.1, 0, 120)
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.1, 0, 120)
+	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
+		t.Error("canLaunch: straight-out parallel departures shouldn't couple")
+	}
+
+	// A deleted leader is long gone.
+	prev.LaunchPath = makeTestLaunchPath(0, 5, 0.1, -0.1, 120)
+	delete(s.Aircraft, "PRV1")
+	if s.holdForCrossingDeparture(prev, dep) {
+		t.Error("holdForCrossingDeparture: deleted leader shouldn't hold the departure")
+	}
+	s.Aircraft["PRV1"] = prevAc
+
+	// If the other runway's last departure is also our own runway's (via
+	// "departure_runways_as_one"), the crossing check doesn't apply; the
+	// own-runway launch interval already covers it.
+	prev.LaunchPath = makeTestLaunchPath(0, 5, 0.05, -0.05, 120) // crosses at 100 seconds
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.15, 0, 120)      // crosses at ~33 seconds
+	s.State.SimTime = now.Add(80 * time.Second)                  // past MinSeparation; within crossingSeparation at the crossing
+	rwy9.LastDeparture = &prev
+	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
+		t.Error("canLaunch: shared last departure shouldn't be held for crossing paths")
+	}
+	rwy9.LastDeparture = nil
+	if s.canLaunch(rwy9, dep, false, "XTST", "9") {
+		t.Error("canLaunch: the same geometry should hold when the last departure isn't shared")
+	}
 }
 
 func TestSamePavementRunways(t *testing.T) {

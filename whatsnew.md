@@ -3,6 +3,7 @@
 - Added: IFIX/RADIAL: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
 - VOR radials are now referenced to the station's declination from the CIFP rather than the area's magnetic variation, so SID legs that cross or track a radial follow it as charted
 - A CIFP course leg that runs along the recommended VOR's radial, inbound or outbound, is now referenced to the station's declination as well, so SIDs, STARs, and approaches that intercept a VOR radial join the charted line (KSEA SUMMA2)
+- Departures are now automatically held when a recent departure from another runway is flying an initial route that crosses their departure path
 - Facility engineering
   - Added @t to route specifiers to allow specifying a track to fly inbound to the next fix
   - Added @crs to route specifiers to join a course inbound a fix; @crsNAVAID-Rradial gives a leg that runs along a navaid's radial
