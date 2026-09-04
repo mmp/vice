@@ -1862,11 +1862,12 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	// Published IFR traffic or the scenario's own rate controls; drawDepartureUI
 	// and drawArrivalUI show the appropriate controls for the traffic source.
 	// The rate-derived totals mean nothing when the data decides the traffic, so
-	// leave them out of the headers then. The totals are of the traffic the user
-	// will work: a scenario that flies a neighboring airport's operations for
-	// realism isn't offering them to anybody.
+	// leave them out of the headers then. Only the traffic the user works is
+	// theirs to configure: a scenario that flies a neighboring airport's
+	// operations for realism isn't offering them to anybody, so a section with
+	// nothing but that in it doesn't appear at all.
 	lc := &c.ScenarioSpec.LaunchConfig
-	if lc.HaveDepartures() {
+	if lc.HaveWorkedDepartures() {
 		headerText := "Departures###departures"
 		if lc.TrafficSource == sim.TrafficSourceScenario {
 			headerText = fmt.Sprintf("Departures (Total: %d/hr)###departures",
@@ -1878,7 +1879,7 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 		}
 	}
 
-	if lc.HaveArrivals() {
+	if lc.HaveWorkedArrivals() {
 		headerText := "Arrivals###arrivals"
 		if lc.TrafficSource == sim.TrafficSourceScenario {
 			headerText = fmt.Sprintf("Arrivals (Total: %d/hr)###arrivals",
@@ -1910,7 +1911,7 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	}
 
 	// Overflights (collapsible)
-	if lc.HaveOverflights() {
+	if lc.HaveWorkedOverflights() {
 		ofRate := lc.WorkedOverflightRate()
 		headerText := fmt.Sprintf("Overflights (%d/hr)###overflights", int(ofRate+0.5))
 		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
@@ -1985,12 +1986,7 @@ func drawPublishedDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (change
 	changed = imgui.SliderFloatV(label, &lc.PublishedDepartureRateScale, 0, sim.MaxPublishedRateScale,
 		"%.1f", imgui.SliderFlagsNoInput)
 
-	airportDepartures := make(map[string]int) // key is e.g. KJFK, then count of runways cross categories.
-	for ap, runwayEnabled := range lc.DepartureEnabled {
-		for _, categories := range runwayEnabled {
-			airportDepartures[ap] = airportDepartures[ap] + len(categories)
-		}
-	}
+	airportDepartures := lc.WorkedDepartureCounts() // key is e.g. KJFK, then count of runways cross categories.
 	maxDepartureCategories := 0
 	for _, n := range airportDepartures {
 		maxDepartureCategories = max(n, maxDepartureCategories)
@@ -2011,7 +2007,7 @@ func drawPublishedDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (change
 		}
 		imgui.TableHeadersRow()
 
-		for airport := range util.SortedMap(lc.DepartureEnabled) {
+		for airport := range util.SortedMap(airportDepartures) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text(airport)
@@ -2022,6 +2018,10 @@ func drawPublishedDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (change
 				imgui.PushIDStr(string(runway))
 
 				for category := range util.SortedMap(lc.DepartureEnabled[airport][runway]) {
+					if lc.DepartureIsBackground(airport, runway, category) {
+						continue
+					}
+
 					imgui.TableNextColumn()
 					imgui.Text(runway.Base()) // don't include extras in the UI
 					imgui.TableNextColumn()
@@ -2074,12 +2074,7 @@ func drawPublishedArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed 
 	// show up is what the data says.
 	changed = imgui.SliderFloatV("Go around probability", &lc.GoAroundRate, 0, 1, "%.02f", 0) || changed
 
-	numAirportFlows := make(map[string]int)
-	for _, groupEnabled := range lc.InboundFlowEnabled {
-		for ap := range groupEnabled {
-			numAirportFlows[ap] = numAirportFlows[ap] + 1
-		}
-	}
+	numAirportFlows := lc.WorkedInboundFlowCounts()
 	if len(numAirportFlows) == 0 { // no arrivals
 		return
 	}
@@ -2108,7 +2103,7 @@ func drawPublishedArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed 
 			aarCol := 0
 			for group, apEnabled := range util.SortedMap(lc.InboundFlowEnabled) {
 				imgui.PushIDStr(group)
-				if enabled, ok := apEnabled[ap]; ok {
+				if enabled, ok := apEnabled[ap]; ok && !lc.InboundFlowIsBackground(group, ap) {
 					if aarCol > 0 && aarCol%aarColumns == 0 {
 						// Overflow
 						imgui.TableNextRow()
@@ -2140,15 +2135,10 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	if lc.TrafficSource != sim.TrafficSourceScenario {
 		return drawPublishedDepartureUI(lc, p)
 	}
-	if len(lc.DepartureRates) == 0 {
-		return
-	}
 
-	airportDepartures := make(map[string]int) // key is e.g. KJFK, then count of active runways cross categories.
-	for ap, runwayRates := range lc.DepartureRates {
-		for _, categories := range runwayRates {
-			airportDepartures[ap] = airportDepartures[ap] + len(categories)
-		}
+	airportDepartures := lc.WorkedDepartureCounts() // key is e.g. KJFK, then count of active runways cross categories.
+	if len(airportDepartures) == 0 {
+		return
 	}
 	maxDepartureCategories := 0
 	for _, n := range airportDepartures {
@@ -2175,7 +2165,7 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		}
 		imgui.TableHeadersRow()
 
-		for airport := range util.SortedMap(lc.DepartureRates) {
+		for airport := range util.SortedMap(airportDepartures) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text(airport)
@@ -2186,6 +2176,10 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 				imgui.PushIDStr(string(runway))
 
 				for category := range util.SortedMap(lc.DepartureRates[airport][runway]) {
+					if lc.DepartureIsBackground(airport, runway, category) {
+						continue
+					}
+
 					imgui.TableNextColumn()
 					rshort := runway.Base() // don't include extras in the UI
 					imgui.Text(rshort)
@@ -2254,17 +2248,7 @@ func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool
 }
 
 func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
-	// Figure out the maximum number of inbound flows per airport to figure
-	// out the number of table columns and also sum up the overall arrival
-	// rate.
-	numAirportFlows := make(map[string]int)
-	for _, agr := range lc.InboundFlowRates {
-		for ap := range agr {
-			if ap != "overflights" {
-				numAirportFlows[ap] = numAirportFlows[ap] + 1
-			}
-		}
-	}
+	numAirportFlows := lc.WorkedInboundFlowCounts()
 	if len(numAirportFlows) == 0 { // no arrivals
 		return
 	}
@@ -2317,7 +2301,7 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 			aarCol := 0
 			for group, aprates := range util.SortedMap(lc.InboundFlowRates) {
 				imgui.PushIDStr(group)
-				if rate, ok := aprates[ap]; ok {
+				if rate, ok := aprates[ap]; ok && !lc.InboundFlowIsBackground(group, ap) {
 					if aarCol > 0 && aarCol%aarColumns == 0 {
 						// Overflow
 						imgui.TableNextRow()
@@ -2351,19 +2335,20 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 }
 
 func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
-	// Sum up the overall overflight rate
-	overflightGroups := make(map[string]any)
-	for group, rates := range lc.InboundFlowRates {
-		if _, ok := rates["overflights"]; ok {
-			overflightGroups[group] = nil
-		}
-	}
+	overflightGroups := lc.WorkedOverflightGroups()
 	if len(overflightGroups) == 0 {
 		return
 	}
 
 	if lc.TrafficSource != sim.TrafficSourceScenario {
 		imgui.TextDisabled("Overflights are randomly generated; these rates apply with any traffic source.")
+	}
+
+	// The arrivals section carries the scale that applies to all inbound
+	// traffic, but a scenario with no arrivals to work doesn't have one.
+	if !lc.HaveWorkedArrivals() {
+		changed = imgui.SliderFloatV("Overflight rate scale", &lc.InboundFlowRateScale, 0, 5, "%.1f",
+			imgui.SliderFlagsNoInput) || changed
 	}
 
 	ofColumns := min(3, len(overflightGroups))
@@ -2380,7 +2365,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 		imgui.TableHeadersRow()
 
 		ofCol := 0
-		for group := range util.SortedMap(overflightGroups) {
+		for _, group := range overflightGroups {
 			imgui.PushIDStr(group)
 			if ofCol%ofColumns == 0 {
 				imgui.TableNextRow()

@@ -6,6 +6,7 @@ package sim
 
 import (
 	"maps"
+	"slices"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
@@ -202,5 +203,52 @@ func TestWorkedRatesWithoutClassification(t *testing.T) {
 	}
 	if got, want := lc.WorkedOverflightRate(), lc.TotalOverflightRate(); got != want {
 		t.Errorf("worked overflight rate = %v, want the total %v", got, want)
+	}
+}
+
+// The counts drive both whether the rate UI offers a section at all and how
+// wide its table is, so they have to leave out the same traffic the Worked
+// rates do.
+func TestWorkedFlowCounts(t *testing.T) {
+	lc := backgroundRateConfig()
+
+	if got, want := lc.WorkedDepartureCounts(), map[string]int{"KMSP": 1}; !maps.Equal(got, want) {
+		t.Errorf("WorkedDepartureCounts = %v, want %v", got, want)
+	}
+	if got, want := lc.WorkedInboundFlowCounts(), map[string]int{"KMSP": 1}; !maps.Equal(got, want) {
+		t.Errorf("WorkedInboundFlowCounts = %v, want %v", got, want)
+	}
+	if got, want := lc.WorkedOverflightGroups(), []string{"WORKED"}; !slices.Equal(got, want) {
+		t.Errorf("WorkedOverflightGroups = %v, want %v", got, want)
+	}
+	if !lc.HaveWorkedDepartures() || !lc.HaveWorkedArrivals() || !lc.HaveWorkedOverflights() {
+		t.Errorf("config with worked traffic reported as having none")
+	}
+
+	// A scenario whose airport is all departures for virtual controllers--an
+	// arrival position's, say--offers no departures to configure at all.
+	lc.DepartureBackground["KMSP"] = map[av.RunwayID]map[string]bool{"30L": {"": true}}
+	if got := lc.WorkedDepartureCounts(); len(got) != 0 {
+		t.Errorf("WorkedDepartureCounts = %v, want none", got)
+	}
+	if lc.HaveWorkedDepartures() {
+		t.Errorf("config with only background departures reported as having some")
+	}
+}
+
+// A config nobody classified counts all of its flows, as it did before any of
+// this.
+func TestWorkedFlowCountsWithoutClassification(t *testing.T) {
+	lc := backgroundRateConfig()
+	lc.DepartureBackground, lc.InboundFlowBackground = nil, nil
+
+	if got, want := lc.WorkedDepartureCounts(), map[string]int{"KMSP": 1, "KSTP": 1}; !maps.Equal(got, want) {
+		t.Errorf("WorkedDepartureCounts = %v, want %v", got, want)
+	}
+	if got, want := lc.WorkedInboundFlowCounts(), map[string]int{"KMSP": 2}; !maps.Equal(got, want) {
+		t.Errorf("WorkedInboundFlowCounts = %v, want %v", got, want)
+	}
+	if got, want := lc.WorkedOverflightGroups(), []string{"BACKGROUND", "WORKED"}; !slices.Equal(got, want) {
+		t.Errorf("WorkedOverflightGroups = %v, want %v", got, want)
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"maps"
+	"slices"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -262,10 +263,6 @@ func (lc *LaunchConfig) TotalDepartureRate() float32 {
 	return sum
 }
 
-func (lc *LaunchConfig) HaveDepartures() bool {
-	return len(lc.DepartureRates) > 0
-}
-
 // TotalInboundFlowRate returns the total inbound flow rate (aircraft per hour) for all flows
 func (lc *LaunchConfig) TotalInboundFlowRate() float32 {
 	var sum float32
@@ -290,17 +287,6 @@ func (lc *LaunchConfig) TotalArrivalRate() float32 {
 	return sum
 }
 
-func (lc *LaunchConfig) HaveArrivals() bool {
-	for _, flowRates := range lc.InboundFlowRates {
-		for rate := range flowRates {
-			if rate != "overflights" {
-				return true
-			}
-		}
-	}
-	return false
-}
-
 // TotalOverflightRate returns the total overflight rate (aircraft per hour)
 func (lc *LaunchConfig) TotalOverflightRate() float32 {
 	var sum float32
@@ -310,17 +296,6 @@ func (lc *LaunchConfig) TotalOverflightRate() float32 {
 		}
 	}
 	return sum
-}
-
-func (lc *LaunchConfig) HaveOverflights() bool {
-	for _, flowRates := range lc.InboundFlowRates {
-		for rate := range flowRates {
-			if rate == "overflights" {
-				return true
-			}
-		}
-	}
-	return false
 }
 
 // The Worked rates are the Total ones less the traffic no human ever works, and
@@ -387,6 +362,68 @@ func (lc *LaunchConfig) WorkedAirportRates() map[string]float32 {
 		}
 	}
 	return rates
+}
+
+// The Worked counts say how many flows of each kind of traffic a human works,
+// which is both whether there is anything to show them and how much room it
+// takes: the new sim and launch control rate tables offer the flows they count
+// and leave the background traffic to the scenario.
+
+// WorkedDepartureCounts gives the number of runway and category departure flows
+// a human works at each airport; an airport with none is absent. DepartureRates
+// and DepartureEnabled are keyed alike, so the count holds for either.
+func (lc *LaunchConfig) WorkedDepartureCounts() map[string]int {
+	counts := make(map[string]int)
+	for airport, runwayRates := range lc.DepartureRates {
+		for runway, categoryRates := range runwayRates {
+			for category := range categoryRates {
+				if !lc.DepartureIsBackground(airport, runway, category) {
+					counts[airport]++
+				}
+			}
+		}
+	}
+	return counts
+}
+
+// WorkedInboundFlowCounts gives the number of inbound flows a human works into
+// each airport. Overflights serve no airport and are counted by
+// WorkedOverflightGroups instead.
+func (lc *LaunchConfig) WorkedInboundFlowCounts() map[string]int {
+	counts := make(map[string]int)
+	for flow, flowRates := range lc.InboundFlowRates {
+		for airport := range flowRates {
+			if airport != "overflights" && !lc.InboundFlowIsBackground(flow, airport) {
+				counts[airport]++
+			}
+		}
+	}
+	return counts
+}
+
+// WorkedOverflightGroups returns the inbound flows carrying overflights a human
+// works, in sorted order.
+func (lc *LaunchConfig) WorkedOverflightGroups() []string {
+	var groups []string
+	for flow, flowRates := range lc.InboundFlowRates {
+		if _, ok := flowRates["overflights"]; ok && !lc.InboundFlowIsBackground(flow, "overflights") {
+			groups = append(groups, flow)
+		}
+	}
+	slices.Sort(groups)
+	return groups
+}
+
+func (lc *LaunchConfig) HaveWorkedDepartures() bool {
+	return len(lc.WorkedDepartureCounts()) > 0
+}
+
+func (lc *LaunchConfig) HaveWorkedArrivals() bool {
+	return len(lc.WorkedInboundFlowCounts()) > 0
+}
+
+func (lc *LaunchConfig) HaveWorkedOverflights() bool {
+	return len(lc.WorkedOverflightGroups()) > 0
 }
 
 // DepartureIsBackground and InboundFlowIsBackground report traffic that no human
