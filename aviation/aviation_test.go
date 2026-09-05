@@ -582,3 +582,92 @@ func TestArrivalAirports(t *testing.T) {
 		}
 	})
 }
+
+// TestArrivalApproachRoutes covers the pairing behind the /clearapp and
+// /intercept checks: which approaches an arrival's aircraft may be cleared for,
+// and the route each of them is flying when the clearance comes.
+func TestArrivalApproachRoutes(t *testing.T) {
+	i15r := &Approach{FullName: "ILS Runway 15R", Runway: "15R"}
+	rz15r := &Approach{FullName: "RNAV Z Runway 15R", Runway: "15R"}
+	i33l := &Approach{FullName: "ILS Runway 33L", Runway: "33L"}
+	i10 := &Approach{FullName: "ILS Runway 10", Runway: "10"}
+	ap := &Airport{Approaches: map[string]*Approach{"I5R": i15r, "RZ5R": rz15r, "I3L": i33l, "I10": i10}}
+
+	id := "I5R"
+	arr := Arrival{
+		Airports:       []string{"KBWI"},
+		ExpectApproach: util.OneOf[string, map[string]string]{A: &id},
+		Waypoints:      WaypointArray{{Fix: "RAVNN"}, {Fix: "CAPKO"}},
+		RunwayWaypoints: map[string]map[string]WaypointArray{
+			"KBWI": {
+				"15R": {{Fix: "CAPKO"}, {Fix: "ZARTZ"}},
+				"33L": {{Fix: "CAPKO"}, {Fix: "KOOLZ"}},
+			},
+		},
+	}
+
+	// The expected approach comes first, then the rest of what a controller
+	// could send them to given the runways the arrival has waypoints for.
+	// ILS 10 isn't one of them.
+	want := []*Approach{i15r, rz15r, i33l}
+	if got := arr.joinableApproaches(ap, "KBWI"); !slices.Equal(got, want) {
+		t.Errorf("joinableApproaches = %v, want %v",
+			util.MapSlice(got, func(a *Approach) string { return a.FullName }),
+			util.MapSlice(want, func(a *Approach) string { return a.FullName }))
+	}
+
+	for _, tc := range []struct {
+		appr *Approach
+		want []string
+	}{
+		{appr: i15r, want: []string{"RAVNN", "CAPKO", "ZARTZ"}},
+		{appr: i33l, want: []string{"RAVNN", "CAPKO", "KOOLZ"}},
+		// No waypoints for runway 10, so they stay on the arrival's own route.
+		{appr: i10, want: []string{"RAVNN", "CAPKO"}},
+	} {
+		t.Run(tc.appr.FullName, func(t *testing.T) {
+			got := util.MapSlice(arr.approachRoute("KBWI", tc.appr),
+				func(wp Waypoint) string { return wp.Fix })
+			if !slices.Equal(got, tc.want) {
+				t.Errorf("approachRoute = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
+
+// TestArrivalApproachRouteCarriesSharedFixActions covers the fix where the
+// runway waypoints take over from the arrival's own: the runway waypoint's
+// copy of it carries none of the arrival's instructions, so the splice has to
+// bring them across the way ExpectApproach does at runtime.
+func TestArrivalApproachRouteCarriesSharedFixActions(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	wps, err := parseWaypoints("RAVNN CAPKO/clearapp/intercept/nopt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	arr := Arrival{
+		Waypoints: wps,
+		RunwayWaypoints: map[string]map[string]WaypointArray{
+			"KBWI": {"15R": {{Fix: "CAPKO"}, {Fix: "ZARTZ"}}},
+		},
+	}
+
+	route := arr.approachRoute("KBWI", &Approach{Runway: "15R"})
+	shared := len(arr.Waypoints) - 1
+	if route[shared].Fix != "CAPKO" {
+		t.Fatalf("expected the runway waypoints to take over at CAPKO, got %q", route[shared].Fix)
+	}
+	if !slices.ContainsFunc(route[shared].ActionGroups(),
+		func(g WaypointActionGroup) bool { return g.Actions.ClearApproach }) {
+		t.Error("the shared fix's /clearapp didn't come across")
+	}
+	if !route[shared].InterceptApproach() {
+		t.Error("the shared fix's /intercept didn't come across")
+	}
+	if !route[shared].NoPT() {
+		t.Error("the shared fix's /nopt didn't come across")
+	}
+}

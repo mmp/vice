@@ -1612,6 +1612,76 @@ func TestClearApproachAtArrivalEndJoinsILS(t *testing.T) {
 	f.Run()
 }
 
+// TestClearApproachBeforeArrivalEndJoinsILS covers the KBWI RAVNN9 shape: the
+// arrival's /clearapp is at ZARTZ, an IAF of the ILS 15R, and WEXUM follows it
+// as the continuation for an aircraft that wasn't cleared. The clearance joins
+// the transition at ZARTZ and WEXUM goes away with the rest of the route.
+func TestClearApproachBeforeArrivalEndJoinsILS(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "LURRL HUNNN ZARTZ/a4000/s210 WEXUM/a4000",
+		DepartureAirport: "KATL",
+		ArrivalAirport:   "KBWI",
+		AircraftType:     "A320",
+		InitialAltitude:  4000,
+		InitialSpeed:     210,
+		OnSTAR:           true,
+	})
+
+	f.ExpectApproach("I15R")
+
+	f.AtFix("ZARTZ", func(f *FlightTest) {
+		if intent := f.ClearedApproachAtPassedFix("I15R", "ZARTZ"); intent == nil {
+			t.Fatal("no intent from the approach clearance")
+		}
+		if !f.nav.Approach.Cleared {
+			t.Error("not cleared for the approach")
+		}
+		fixes := routeFixes(f)
+		if fixes[0] != "XPRTO" {
+			t.Errorf("expected the approach to pick up after ZARTZ at XPRTO, got %v", fixes)
+		}
+		if slices.Contains(fixes, "WEXUM") {
+			t.Errorf("WEXUM is the not-cleared continuation and should be gone, got %v", fixes)
+		}
+	})
+
+	// Reaching the FAF means the transition was flown.
+	f.AtFix("KEVVN", func(f *FlightTest) {
+		f.AssertAltitudeBelow(3000)
+	})
+
+	f.Run()
+}
+
+// TestInterceptJoinsApproachFixFurtherAlongRoute verifies that "intercept" uses
+// the same route scan the approach clearance does: the approach fix doesn't
+// have to be the next one on the route, it just has to be on it.
+func TestInterceptJoinsApproachFixFurtherAlongRoute(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "CAMRN/a13000 DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  13000,
+		InitialSpeed:     250,
+	})
+
+	f.ExpectApproach("I22L")
+
+	intent := f.InterceptApproach()
+	if _, unable := intent.(av.UnableIntent); unable {
+		t.Fatalf("intercept refused with CAMRN still ahead of the approach: %+v", intent)
+	}
+
+	fixes := routeFixes(f)
+	if fixes[0] != "CAMRN" || fixes[1] != "DETGY" {
+		t.Errorf("expected the approach spliced in at DETGY, got %v", fixes)
+	}
+	if !slices.Contains(fixes, "ZALPO") {
+		t.Errorf("the approach's own fixes should follow DETGY, got %v", fixes)
+	}
+}
+
 // TestExpectApproachCarriesRouteActionsOntoApproach covers the runway-waypoint
 // splice. The approach's waypoint takes over at the shared fix, so the route's
 // own instructions for that fix have to come across with it -- from any of its

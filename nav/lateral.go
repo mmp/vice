@@ -597,28 +597,24 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 }
 
 // actionGroupHeading returns how to fly a waypoint's action groups after
-// passing it, or nil if they give no heading to fly. A lone open-ended
-// heading is flown as an assigned heading, as a controller's would be, so
-// that the rest of nav treats it as one; anything more is a maneuver
-// sequence.
+// passing it, or nil if they give no heading to fly. av.ActionGroupHeading
+// decides which of the three it is, so that scenario validation can tell an
+// assigned heading from a maneuver sequence the same way; an assigned heading
+// is flown as a controller's would be, so the rest of nav treats it as one.
 func (nav *Nav) actionGroupHeading(fix string, groups []av.WaypointActionGroup, next *av.Waypoint) *NavHeading {
-	if len(groups) == 0 {
+	h, kind := av.ActionGroupHeading(groups)
+	switch kind {
+	case av.ActionGroupHeadingNone:
 		return nil
-	}
-	if len(groups) == 1 && groups[0].Until.Type == av.WaypointActionNoTermination {
-		h := groups[0].Actions.Heading
-		switch {
-		case !h.IsSet():
-			return nil
-		case h.PresentHeading:
+	case av.ActionGroupHeadingAssigned:
+		if h.PresentHeading {
 			// Round to nearest 5 degrees
 			hdg := math.MagneticHeading(5 * int((float32(nav.FlightState.Heading)+2.5)/5))
 			hdg = math.NormalizeHeading(hdg)
 			return &NavHeading{Assigned: &hdg}
-		case !h.Track:
-			hdg, turn := math.MagneticHeading(h.Heading), h.Turn
-			return &NavHeading{Assigned: &hdg, Turn: &turn}
 		}
+		hdg, turn := math.MagneticHeading(h.Heading), h.Turn
+		return &NavHeading{Assigned: &hdg, Turn: &turn}
 	}
 	return &NavHeading{Maneuvers: nav.makeActionGroupManeuvers(fix, groups, next)}
 }

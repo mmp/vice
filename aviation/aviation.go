@@ -1121,6 +1121,45 @@ func sharedFixes(fixes []string, wps WaypointArray) int {
 	return n
 }
 
+// joinableApproaches returns the approaches the arrival's aircraft into icao
+// may be cleared for: the one "expect_approach" gives them, and any that land
+// on a runway the arrival has "runway_waypoints" for, since a controller can
+// send them to one of those instead.
+func (ar *Arrival) joinableApproaches(ap *Airport, icao string) []*Approach {
+	var id string
+	if ar.ExpectApproach.A != nil {
+		id = *ar.ExpectApproach.A
+	} else if ar.ExpectApproach.B != nil {
+		id = (*ar.ExpectApproach.B)[icao]
+	}
+
+	var approaches []*Approach
+	if appr, ok := ap.Approaches[id]; ok {
+		approaches = append(approaches, appr)
+	}
+	for _, rwy := range util.SortedMapKeys(ar.RunwayWaypoints[icao]) {
+		for _, appr := range ap.ApproachesToRunway(rwy) {
+			if !slices.Contains(approaches, appr) {
+				approaches = append(approaches, appr)
+			}
+		}
+	}
+	return approaches
+}
+
+// approachRoute returns the route the arrival's aircraft into icao fly when
+// they're given appr: ExpectApproach splices the runway waypoints for the
+// approach's runway into the arrival's own, where the two meet.
+func (ar *Arrival) approachRoute(icao string, appr *Approach) WaypointArray {
+	rwywp, ok := ar.RunwayWaypoints[icao][appr.Runway]
+	if !ok || len(rwywp) == 0 || len(ar.Waypoints) == 0 {
+		return ar.Waypoints
+	}
+	wps := slices.Concat(ar.Waypoints[:len(ar.Waypoints)-1], rwywp)
+	wps[len(ar.Waypoints)-1] = rwywp[0].CarryOverActions(ar.Waypoints[len(ar.Waypoints)-1])
+	return wps
+}
+
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
 	airports map[string]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
@@ -1388,6 +1427,11 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			ar.Airlines[arrivalAirport][i].Check(e)
 			if err := CheckAirport("departure", ar.Airlines[arrivalAirport][i].Airport); err != nil {
 				e.Error(err)
+			}
+		}
+		if ap, ok := airports[arrivalAirport]; ok {
+			for _, appr := range ar.joinableApproaches(ap, arrivalAirport) {
+				ar.approachRoute(arrivalAirport, appr).checkApproachJoins(appr, e)
 			}
 		}
 		e.Pop()

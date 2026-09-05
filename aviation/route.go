@@ -210,6 +210,44 @@ func (wat WaypointActionTermination) Encoded() string {
 	}
 }
 
+// ActionGroupHeadingKind describes how a waypoint's action groups steer the
+// aircraft once it has passed the fix.
+type ActionGroupHeadingKind int
+
+const (
+	// ActionGroupHeadingNone: the groups give no heading, so the aircraft
+	// carries on along its route.
+	ActionGroupHeadingNone ActionGroupHeadingKind = iota
+	// ActionGroupHeadingAssigned: a heading the aircraft holds until a
+	// controller intervenes, just as it would one the controller assigned.
+	ActionGroupHeadingAssigned
+	// ActionGroupHeadingManeuvers: a sequence of maneuvers the aircraft comes
+	// back to its route from when the last of them ends.
+	ActionGroupHeadingManeuvers
+)
+
+// ActionGroupHeading reports how groups are flown, along with the heading
+// action when they assign one. A lone group with no termination is the only
+// shape that becomes an assigned heading, and then only if it names a heading
+// to hold rather than a course to track.
+func ActionGroupHeading(groups []WaypointActionGroup) (WaypointHeadingAction, ActionGroupHeadingKind) {
+	if len(groups) == 0 {
+		return WaypointHeadingAction{}, ActionGroupHeadingNone
+	}
+	if len(groups) != 1 || groups[0].Until.Type != WaypointActionNoTermination {
+		return WaypointHeadingAction{}, ActionGroupHeadingManeuvers
+	}
+
+	h := groups[0].Actions.Heading
+	switch {
+	case !h.IsSet():
+		return h, ActionGroupHeadingNone
+	case h.PresentHeading, !h.Track:
+		return h, ActionGroupHeadingAssigned
+	}
+	return h, ActionGroupHeadingManeuvers
+}
+
 func (wha WaypointHeadingAction) Encoded() string {
 	if wha.PresentHeading {
 		return "/ph"
@@ -1003,6 +1041,50 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 				e.ErrorString("Must have /ho to handoff to a human controller before /tc")
 			}
 		}
+		e.Pop()
+	}
+}
+
+// checkApproachJoins reports /clearapp and /intercept actions the aircraft
+// won't be able to act on. Both join appr by looking for a fix that the route
+// and the approach share, so something from the action's own fix onward has
+// to be on it. An open-ended heading action is the exception: the aircraft
+// keeps that heading until a controller intervenes and is vectored to the
+// approach course, so it needs no shared fix.
+func (wa WaypointArray) checkApproachJoins(appr *Approach, e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
+	onApproach := func(fix string) bool {
+		return slices.ContainsFunc(appr.Waypoints, func(route WaypointArray) bool {
+			return slices.ContainsFunc(route, func(wp Waypoint) bool { return wp.Fix == fix })
+		})
+	}
+
+	onHeading := false
+	for i, wp := range wa {
+		if _, kind := ActionGroupHeading(wp.ActionGroups()); kind == ActionGroupHeadingAssigned {
+			onHeading = true
+		}
+		if onHeading {
+			continue
+		}
+
+		var action string
+		if slices.ContainsFunc(wp.ActionGroups(), func(g WaypointActionGroup) bool { return g.Actions.ClearApproach }) {
+			action = "/clearapp"
+		} else if wp.InterceptApproach() {
+			action = "/intercept"
+		} else {
+			continue
+		}
+
+		if slices.ContainsFunc(wa[i:], func(wp Waypoint) bool { return onApproach(wp.Fix) }) {
+			continue
+		}
+
+		e.Push(wp.Fix)
+		e.ErrorString("%s can't join the %s: neither this fix nor any after it is on it",
+			action, appr.FullName)
 		e.Pop()
 	}
 }

@@ -390,19 +390,6 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 }
 
 func (nav *Nav) InterceptApproach(joinFix string) av.CommandIntent {
-	if nav.Approach.AssignedId == "" {
-		return av.MakeUnableIntent("unable. you never told us to expect an approach")
-	}
-
-	if _, onHeading := nav.AssignedHeading(); !onHeading {
-		wps := nav.AssignedWaypoints()
-		// Either the fix just crossed or the next one on the route has to be on the approach.
-		route, _ := approachRouteThrough(nav.Approach.Assigned, joinFix)
-		if route == nil && (len(wps) == 0 || !wps[0].OnApproach()) {
-			return av.MakeUnableIntent("unable. we have to be on a heading or direct to an approach fix to intercept")
-		}
-	}
-
 	if intent := nav.prepareForApproach(false, joinFix); intent != nil {
 		return intent
 	}

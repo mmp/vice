@@ -334,8 +334,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 		} else {
 			activeAirports[ap] = nil
 
-			if !util.SeqContainsFunc(maps.Values(ap.Approaches),
-				func(appr *av.Approach) bool { return appr.Runway == rwy.Runway.Base() }) {
+			approaches := ap.ApproachesToRunway(rwy.Runway.Base())
+			if len(approaches) == 0 {
 				e.ErrorString("no approach found that reaches this runway")
 			}
 
@@ -346,11 +346,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 				// Resolve heading: 0 means runway heading, otherwise must be 1-360
 				if rwy.GoAround.Heading == 0 {
 					rwy.GoAround.IsRunwayHeading = true
-					for _, appr := range ap.Approaches {
-						if appr.Runway == rwy.Runway.Base() {
-							rwy.GoAround.Heading = int(math.TrueToMagnetic(appr.RunwayHeading(sg.NmPerLongitude), sg.MagneticVariation) + 0.5)
-							break
-						}
+					if len(approaches) > 0 {
+						rwy.GoAround.Heading = int(math.TrueToMagnetic(approaches[0].RunwayHeading(sg.NmPerLongitude),
+							sg.MagneticVariation) + 0.5)
 					}
 				} else if rwy.GoAround.Heading < 1 || rwy.GoAround.Heading > 360 {
 					e.ErrorString("heading must be between 1 and 360, got %d", rwy.GoAround.Heading)

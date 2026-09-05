@@ -1173,3 +1173,83 @@ func TestResolveActionControllers(t *testing.T) {
 		}
 	}
 }
+
+// TestCheckApproachJoins covers the load-time check that /clearapp and
+// /intercept can reach the approach: something from the action's fix onward
+// has to be on it, unless a heading has the aircraft vectored to it instead.
+func TestCheckApproachJoins(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	ils := &Approach{
+		FullName:  "ILS Runway 15R",
+		Waypoints: []WaypointArray{{{Fix: "ZARTZ"}, {Fix: "XPRTO"}, {Fix: "KEVVN"}}},
+	}
+
+	for _, tc := range []struct {
+		name  string
+		route string
+		err   bool
+	}{
+		{name: "the action's own fix is on the approach", route: "HUNNN ZARTZ/clearapp WEXUM"},
+		{name: "a fix further along is on the approach", route: "HUNNN/clearapp ZARTZ WEXUM"},
+		{name: "nothing from the action onward reaches it", route: "HUNNN ZARTZ WEXUM/clearapp", err: true},
+		{name: "/intercept has the same reach", route: "HUNNN ZARTZ WEXUM/intercept", err: true},
+		{name: "an open-ended heading is vectored to the approach", route: "HUNNN/h330 LURRL WEXUM/clearapp"},
+		{name: "the action's own waypoint gives the heading", route: "HUNNN LURRL WEXUM/h330/clearapp"},
+		{name: "a terminated heading comes back to the route",
+			route: "HUNNN/h330/@a5000- LURRL WEXUM/clearapp", err: true},
+		{name: "an open-ended track is not an assigned heading",
+			route: "HUNNN/tABC-R090 LURRL WEXUM/clearapp", err: true},
+		{name: "a later action group heading is not an assigned heading",
+			route: "HUNNN ZARTZ WEXUM/h330/@d1/h340/clearapp", err: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			wps, err := parseWaypoints(tc.route)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var e util.ErrorLogger
+			wps.checkApproachJoins(ils, &e)
+
+			if e.HaveErrors() != tc.err {
+				t.Errorf("got errors %v, want %v: %s", e.HaveErrors(), tc.err, e.String())
+			}
+		})
+	}
+}
+
+// TestActionGroupHeading covers the three ways a waypoint's action groups can
+// steer the aircraft. nav flies them and scenario validation reads them, so
+// the two agree only as long as both go through here.
+func TestActionGroupHeading(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, tc := range []struct {
+		name string
+		fix  string
+		want ActionGroupHeadingKind
+	}{
+		{name: "no actions at all", fix: "WEXUM", want: ActionGroupHeadingNone},
+		{name: "a lone open group with no heading", fix: "WEXUM/clearapp", want: ActionGroupHeadingNone},
+		{name: "a lone open heading", fix: "WEXUM/h330/clearapp", want: ActionGroupHeadingAssigned},
+		{name: "the present heading", fix: "WEXUM/ph", want: ActionGroupHeadingAssigned},
+		{name: "a heading that ends at a termination", fix: "WEXUM/h330/@a5000-", want: ActionGroupHeadingManeuvers},
+		{name: "a heading in a later group", fix: "WEXUM/h330/@d1/h340", want: ActionGroupHeadingManeuvers},
+		{name: "a tracked course", fix: "WEXUM/t330", want: ActionGroupHeadingManeuvers},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			wps, err := parseWaypoints(tc.fix)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, got := ActionGroupHeading(wps[0].ActionGroups()); got != tc.want {
+				t.Errorf("ActionGroupHeading = %d, want %d", got, tc.want)
+			}
+		})
+	}
+}

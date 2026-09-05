@@ -835,6 +835,18 @@ func (ap Airport) HasIFROperations() bool {
 	return len(ap.Approaches) > 0 || len(ap.DepartureRoutes) > 0
 }
 
+// ApproachesToRunway returns the approaches that land on rwy, in order of
+// their identifiers.
+func (ap *Airport) ApproachesToRunway(rwy string) []*Approach {
+	var approaches []*Approach
+	for appr := range util.SortedMapValues(ap.Approaches) {
+		if appr.Runway == rwy {
+			approaches = append(approaches, appr)
+		}
+	}
+	return approaches
+}
+
 func (ap Airport) VFRRateSum() float32 {
 	sum := ap.VFR.Randoms.Rate
 	for _, spec := range ap.VFR.Routes {
