@@ -244,7 +244,7 @@ func (s *Sim) sampleScenarioDeparture(airport string, runway av.RunwayID, catego
 		func(d av.Departure) bool {
 			_, ok := exitRoutes[d.Exit]
 			return ok && len(d.Airlines) > 0 &&
-				(rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
+				(rwy.Category == "" || rwy.Category == ap.ExitCategory(d.Exit))
 		})
 	if idx == -1 {
 		return ScheduledDeparture{}, false

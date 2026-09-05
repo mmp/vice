@@ -1239,17 +1239,12 @@
         "FLASK": "South/West",
         "SWANN": "North/East",
         "AGARD": "North/East",
-        "COLIN": "North/East",
         "SCOOB": "North/East",
         "RRSIN": "South/West",
         "MELTN": "South/West",
         "JERES": "North/East",
-        "MCRAY": "South/West",
         "OTTTO": "South/West",
-        "GLANC": "South/West",
-        "SWANN.W": "North/East",
-        "AGARD.W": "North/East",
-        "BAL": "North/East"
+        "GLANC": "South/West"
       },
       "tower_list": 1
     },

@@ -1473,21 +1473,8 @@
         "CIKAN": "West",
         "DOSXX": "West",
         "BSKAT": "East",
-        "BRDEN": "ALL",
-        "BRDEN.PROP": "ALL",
-        "CEOLA": "ALL",
-        "CEOLA.PROP": "ALL",
         "ELLVR": "ALL",
-        "FERRA": "ALL",
-        "GRABE.PROP.AKUNA.PROP": "ALL",
-        "JJANE": "ALL",
         "MRSSH": "ALL",
-        "PODDE": "ALL",
-        "ROOO": "ALL",
-        "SLOTT": "ALL",
-        "SLOTT.PROP": "ALL",
-        "SOLDO": "ALL",
-        "SOLDO.PROP": "ALL",
         "ZEMMA": "ALL"
       },
       "atpa_volumes": {
@@ -2341,19 +2328,7 @@
         "ALIAN": "ALL",
         "BRHMA": "ALL",
         "HULZE": "ALL",
-        "HUDAD": "ALL",
-        "BRDEN.PROP": "ALL",
-        "CEOLA": "ALL",
-        "CEOLA.PROP": "ALL",
-        "FERRA": "ALL",
-        "GRABE.PROP.AKUNA.PROP": "ALL",
-        "JJANE": "ALL",
-        "PODDE": "ALL",
-        "ROOO": "ALL",
-        "SLOTT": "ALL",
-        "SLOTT.PROP": "ALL",
-        "SOLDO": "ALL",
-        "SOLDO.PROP": "ALL"
+        "HUDAD": "ALL"
       },
       "tower_list": 1
     },
@@ -2865,11 +2840,8 @@
         }
       },
       "exit_categories": {
-        "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
         "TRISS.PROP": "EAST.PROP",
-        "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
         "ZERLU": "EAST",
         "TRRCH": "EAST",
@@ -2899,20 +2871,9 @@
         "PODDE.PROP": "WEST.PROP",
         "BRDEN": "ALL",
         "BRDEN.PROP": "ALL",
-        "CEOLA": "ALL",
         "CEOLA.PROP": "ALL",
-        "ELLVR": "ALL",
-        "FERRA": "ALL",
-        "GRABE.PROP.AKUNA.PROP": "ALL",
-        "JJANE": "ALL",
-        "MRSSH": "ALL",
-        "PODDE": "ALL",
-        "ROOO": "ALL",
-        "SLOTT": "ALL",
         "SLOTT.PROP": "ALL",
-        "SOLDO": "ALL",
-        "SOLDO.PROP": "ALL",
-        "ZEMMA": "ALL"
+        "SOLDO.PROP": "ALL"
       },
       "tower_list": 1
     },
@@ -3474,22 +3435,14 @@
         "RBBIT": "WEST",
         "FERRA.PROP": "WEST.PROP",
         "PODDE.PROP": "WEST.PROP",
-        "BRDEN": "ALL",
-        "BRDEN.PROP": "ALL",
         "CEOLA": "ALL",
-        "CEOLA.PROP": "ALL",
-        "ELLVR": "ALL",
         "FERRA": "ALL",
-        "GRABE.PROP.AKUNA.PROP": "ALL",
         "JJANE": "ALL",
-        "MRSSH": "ALL",
         "PODDE": "ALL",
         "ROOO": "ALL",
         "SLOTT": "ALL",
-        "SLOTT.PROP": "ALL",
         "SOLDO": "ALL",
-        "SOLDO.PROP": "ALL",
-        "ZEMMA": "ALL"
+        "SOLDO.PROP": "ALL"
       },
       "tower_list": 1,
       "vfr": {
@@ -3996,22 +3949,12 @@
         "RBBIT": "WEST",
         "FERRA.PROP": "WEST.PROP",
         "PODDE.PROP": "WEST.PROP",
-        "BRDEN": "ALL",
-        "BRDEN.PROP": "ALL",
-        "CEOLA": "ALL",
-        "CEOLA.PROP": "ALL",
-        "ELLVR": "ALL",
         "FERRA": "ALL",
-        "GRABE.PROP.AKUNA.PROP": "ALL",
         "JJANE": "ALL",
-        "MRSSH": "ALL",
         "PODDE": "ALL",
         "ROOO": "ALL",
-        "SLOTT": "ALL",
-        "SLOTT.PROP": "ALL",
         "SOLDO": "ALL",
-        "SOLDO.PROP": "ALL",
-        "ZEMMA": "ALL"
+        "SOLDO.PROP": "ALL"
       },
       "approaches": {
         "I18": {
@@ -4483,22 +4426,12 @@
         "RBBIT": "WEST",
         "FERRA.PROP": "WEST.PROP",
         "PODDE.PROP": "WEST.PROP",
-        "BRDEN": "ALL",
-        "BRDEN.PROP": "ALL",
-        "CEOLA": "ALL",
-        "CEOLA.PROP": "ALL",
-        "ELLVR": "ALL",
         "FERRA": "ALL",
-        "GRABE.PROP.AKUNA.PROP": "ALL",
         "JJANE": "ALL",
-        "MRSSH": "ALL",
         "PODDE": "ALL",
         "ROOO": "ALL",
-        "SLOTT": "ALL",
-        "SLOTT.PROP": "ALL",
         "SOLDO": "ALL",
-        "SOLDO.PROP": "ALL",
-        "ZEMMA": "ALL"
+        "SOLDO.PROP": "ALL"
       },
       "departure_routes": {
         "13": {
@@ -5023,11 +4956,8 @@
         }
       ],
       "exit_categories": {
-        "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
         "TRISS.PROP": "EAST.PROP",
-        "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
         "ZERLU": "EAST",
         "TRRCH": "EAST",
@@ -5057,20 +4987,10 @@
         "PODDE.PROP": "WEST.PROP",
         "BRDEN": "ALL",
         "BRDEN.PROP": "ALL",
-        "CEOLA": "ALL",
         "CEOLA.PROP": "ALL",
-        "ELLVR": "ALL",
-        "FERRA": "ALL",
         "GRABE.PROP.AKUNA.PROP": "ALL",
-        "JJANE": "ALL",
-        "MRSSH": "ALL",
-        "PODDE": "ALL",
-        "ROOO": "ALL",
-        "SLOTT": "ALL",
         "SLOTT.PROP": "ALL",
-        "SOLDO": "ALL",
-        "SOLDO.PROP": "ALL",
-        "ZEMMA": "ALL"
+        "SOLDO.PROP": "ALL"
       },
       "vfr": {
         "random_routes": {
@@ -5515,11 +5435,8 @@
         }
       ],
       "exit_categories": {
-        "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
         "TRISS.PROP": "EAST.PROP",
-        "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
         "ZERLU": "EAST",
         "TRRCH": "EAST",
@@ -5540,7 +5457,6 @@
         "GRABE": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
         "AKUNA": "NORTH",
-        "AKUNA.PROP": "NORTH.PROP",
         "PGLET": "WEST",
         "TYGGR": "WEST",
         "ROOOO": "WEST",
@@ -6586,11 +6502,8 @@
         }
       ],
       "exit_categories": {
-        "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
         "TRISS.PROP": "EAST.PROP",
-        "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
         "ZERLU": "EAST",
         "TRRCH": "EAST",
@@ -7055,11 +6968,8 @@
         }
       ],
       "exit_categories": {
-        "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
         "TRISS.PROP": "EAST.PROP",
-        "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
         "ZERLU": "EAST",
         "TRRCH": "EAST",
@@ -7535,11 +7445,8 @@
         }
       },
       "exit_categories": {
-        "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
         "TRISS.PROP": "EAST.PROP",
-        "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
         "ZERLU": "EAST",
         "TRRCH": "EAST",
@@ -7816,9 +7723,6 @@
         }
       },
       "exit_categories": {
-        "NOBLY": "EAST",
-        "TRISS": "EAST",
-        "CLARE": "EAST",
         "ZERLU": "EAST",
         "TRRCH": "EAST",
         "HANUH": "EAST",

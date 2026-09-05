@@ -127,13 +127,8 @@
       ],
       "exit_categories": {
         "DEN": "South",
-        "CYS": "North",
         "BENNE": "South",
-        "BARGR": "Southwest",
-        "SENSE": "Northwest",
         "POGTE": "Northeast",
-        "HAMER": "Southeast",
-        "SHOOP": "Southeast",
         "MILKY": "Northweast",
         "EGBER": "East",
         "SNY": "East"

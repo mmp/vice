@@ -226,13 +226,8 @@
         "SPLNT": "North",
         "KPTIN": "East",
         "BOILE": "Northeast",
-        "IKAYE": "East",
         "NNAVY": "Northeast",
-        "SXC": "Southeast",
-        "KWANG": "East",
-        "GVO": "Northwest",
-        "VTU": "East",
-        "GINNA": "East"
+        "SXC": "Southeast"
       },
       "tower_list": 1
     },

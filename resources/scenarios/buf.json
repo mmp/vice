@@ -303,15 +303,7 @@
         }
       ],
       "exit_categories": {
-        "DAVVK": "ALL",
-        "JHW": "ALL",
-        "VAIRS": "ALL",
-        "GEE": "ALL",
-        "DONEO": "ALL",
-        "YXU": "ALL",
-        "SLT": "ALL",
-        "SFK": "ALL",
-        "DJB": "ALL"
+        "JHW": "ALL"
       },
       "tower_list": 1
     }

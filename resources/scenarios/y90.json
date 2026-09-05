@@ -262,10 +262,7 @@
       "exit_categories": {
         "HFD": "South",
         "CTR": "Northwest",
-        "GDM": "Northeast",
-        "BAF": "North",
         "PVD": "East",
-        "GON": "Southeast",
         "MAD": "South",
         "VEERS": "West"
       },

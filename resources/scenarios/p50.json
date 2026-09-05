@@ -660,7 +660,6 @@
         "IZZZO": "South",
         "MRBIL": "North",
         "QUAKY": "North",
-        "STRRM": "South",
         "ZEPER": "North"
       },
       "tower_list": 1
@@ -1031,11 +1030,9 @@
         "FORPE": "North",
         "BROAK": "South",
         "ECLPS": "South",
-        "FYRBD": "South",
         "IZZZO": "South",
         "MRBIL": "North",
         "QUAKY": "North",
-        "STRRM": "South",
         "ZEPER": "North"
       },
       "tower_list": 3,
@@ -1378,11 +1375,9 @@
         "FORPE": "North",
         "BROAK": "South",
         "ECLPS": "South",
-        "FYRBD": "South",
         "IZZZO": "South",
         "MRBIL": "North",
         "QUAKY": "North",
-        "STRRM": "South",
         "ZEPER": "North"
       },
       "tower_list": 3,

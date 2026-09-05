@@ -1173,14 +1173,11 @@
       "exit_categories": {
         "CSTRO": "Northwest",
         "COREZ": "Northwest",
-        "HAILO": "Northeast",
         "LAS": "Northeast",
         "MISEN": "Northeast",
         "HEC": "East",
         "BLH": "Southeast",
         "DAG": "Northeast",
-        "SLI": "South",
-        "LAX": "Southwest",
         "DAG.T": "Turboprop",
         "HEC.T": "Turboprop"
       },
@@ -2343,11 +2340,6 @@
           "route": "VNY LANGE V165 JEFFY V137 AVE V107 MISON"
         }
       ],
-      "exit_categories": {
-        "CSTRO": "Northwest",
-        "MISEN": "Northeast",
-        "GMN": "Northwest"
-      },
       "tower_list": 1,
       "hold_for_release": true
     }

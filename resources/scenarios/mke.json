@@ -527,9 +527,6 @@
         }
       ],
       "exit_categories": {
-        "ACCRA": "ACCRA5",
-        "DELHI": "UECKR6",
-        "SAMPL": "UECKR6",
         "GREAS": "MKE9",
         "HAWKN": "MKE9",
         "SQUIB": "MKE9EAST",
@@ -616,9 +613,6 @@
         }
       ],
       "exit_categories": {
-        "ACCRA": "ACCRA5",
-        "DELHI": "UECKR6",
-        "SAMPL": "UECKR6",
         "GREAS": "MKE9",
         "HAWKN": "MKE9",
         "SQUIB": "MKE9EAST",
@@ -715,9 +709,6 @@
         }
       ],
       "exit_categories": {
-        "ACCRA": "ACCRA5",
-        "DELHI": "UECKR6",
-        "SAMPL": "UECKR6",
         "GREAS": "MKE9",
         "HAWKN": "MKE9",
         "SQUIB": "MKE9EAST",
@@ -828,9 +819,6 @@
         }
       ],
       "exit_categories": {
-        "ACCRA": "ACCRA5",
-        "DELHI": "UECKR6",
-        "SAMPL": "UECKR6",
         "GREAS": "MKE9",
         "HAWKN": "MKE9",
         "SQUIB": "MKE9EAST",

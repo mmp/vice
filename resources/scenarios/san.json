@@ -1255,8 +1255,6 @@
       ],
       "exit_categories": {
         "SLI": "Northwest",
-        "IPL": "East",
-        "MTBAL": "Northeast",
         "SXC": "Northwest",
         "EHF": "North",
         "CHKNN": "North",

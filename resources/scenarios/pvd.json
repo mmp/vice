@@ -200,7 +200,6 @@
         }
       ],
       "exit_categories": {
-        "PUT": "Northwest",
         "JUMPR": "South"
       }
     }

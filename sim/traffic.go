@@ -447,7 +447,7 @@ func (bc backgroundClassifier) reachesHuman(wps av.WaypointArray, atHandoff av.C
 func (bc backgroundClassifier) departureIsBackground(ap *av.Airport, runway av.RunwayID, category string) bool {
 	judged := 0
 	for exit, routes := range ap.DepartureRoutes[runway] {
-		if category != "" && category != ap.ExitCategories[exit] {
+		if category != "" && category != ap.ExitCategory(exit) {
 			continue
 		}
 

@@ -684,17 +684,8 @@
         "MOGEE": "North",
         "ORRCA": "North",
         "HRNER": "North",
-        "GRTFL": "North",
-        "DEDHD": "North",
-        "AVE": "South",
-        "PXN": "South",
         "VLREE": "South",
         "JFREE": "South",
-        "NTELL": "East",
-        "LOSHN": "South",
-        "EBAYE": "South",
-        "SAC": "North",
-        "LIN": "North",
         "TECKY": "South"
       },
       "tower_list": 1
@@ -3366,9 +3357,7 @@
         }
       ],
       "exit_categories": {
-        "AVE": "East",
         "PRB": "Northeast",
-        "PXN": "Northeast",
         "OSI": "North",
         "SJC": "North",
         "SNS": "North",

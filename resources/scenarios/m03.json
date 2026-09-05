@@ -2009,11 +2009,7 @@
         "SELPH": "SELPH",
         "OHULO": "SELPH",
         "ZUMIT": "ZUMIT",
-        "FOXOM": "ZUMIT",
-        "PROPS.W": "Prop.West.SFlow",
-        "PROPS.E": "Prop.East.SFlow",
-        "PROPN.W": "Prop.West.NFlow",
-        "PROPN.E": "Prop.East.NFlow"
+        "FOXOM": "ZUMIT"
       }
     },
     "KNQA": {

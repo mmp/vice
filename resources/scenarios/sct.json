@@ -2285,8 +2285,6 @@
         "SCTRR": "North/West",
         "TCATE": "South/East",
         "MZB": "South/East",
-        "IPL": "South/East",
-        "OCN": "South/East",
         "TRM": "South/East",
         "BEALE": "South/East",
         "LAS": "South/East",
@@ -2296,7 +2294,6 @@
         "MCKEY": "North/West",
         "DINTY": "North/West",
         "STOKD": "North/West",
-        "SPLNT": "North/West",
         "MISEN": "North/West",
         "FICKY": "North/West",
         "OTAYY": "South/East"
@@ -3333,9 +3330,7 @@
         "MISEN": "Northeast",
         "HEC": "East",
         "BLH": "Southeast",
-        "DAG": "Northeast",
-        "SLI": "South",
-        "LAX": "Southwest"
+        "DAG": "Northeast"
       },
       "tower_list": 1
     },
@@ -3631,11 +3626,6 @@
           "route": "VNY LANGE V165 JEFFY V137 AVE V107 MISON"
         }
       ],
-      "exit_categories": {
-        "CSTRO": "Northwest",
-        "MISEN": "Northeast",
-        "GMN": "Northwest"
-      },
       "tower_list": 1,
       "hold_for_release": true
     },
@@ -5903,14 +5893,9 @@
       ],
       "exit_categories": {
         "SLI": "Northwest",
-        "IPL": "East",
-        "MTBAL": "Northeast",
-        "SXC": "Northwest",
         "EHF": "North",
         "CHKNN": "North",
-        "OROSZ": "North",
         "IKAYE": " Northwest",
-        "DINTY": "West",
         "MALIT": "West",
         "JLI": "Northeast",
         "OCN": "Northwest"
@@ -6361,16 +6346,12 @@
       },
       "exit_categories": {
         "SLI": "Northwest",
-        "IPL": "East",
-        "MTBAL": "Northeast",
-        "SXC": "Northwest",
         "EHF": "North",
         "CHKNN": "North",
         "OROSZ": "North",
         "IKAYE": " Northwest",
         "DINTY": "West",
-        "MALIT": "West",
-        "JLI": "Northeast"
+        "MALIT": "West"
       },
       "tower_list": 1,
       "hold_for_release": true

@@ -7595,18 +7595,11 @@
       ],
       "exit_categories": {
         "HRBEK": "KBREW",
-        "ZOGAP": "SMERF",
-        "TONCA": "LEINY",
         "HUGIR": "SCHEP",
         "JURNY": "ORSKY",
         "FOBUG": "RST",
         "JEDET": "ZMBRO",
         "TAXEE": "COULT",
-        "SNINE": "WLSTN",
-        "STILS": "STILS",
-        "DLH": "DLH",
-        "BRNRD": "BRNRD",
-        "LSE": "LSE",
         "FGT": "FGT",
         "GEP": "GEP"
       },
@@ -8503,23 +8496,6 @@
         "R32": {
           "cifp_id": "R32"
         }
-      },
-      "exit_categories": {
-        "HRBEK": "KBREW",
-        "ZOGAP": "SMERF",
-        "TONCA": "LEINY",
-        "HUGIR": "SCHEP",
-        "JURNY": "ORSKY",
-        "FOBUG": "RST",
-        "JEDET": "ZMBRO",
-        "TAXEE": "COULT",
-        "SNINE": "WLSTN",
-        "STILS": "STILS",
-        "DLH": "DLH",
-        "BRNRD": "BRNRD",
-        "LSE": "LSE",
-        "FGT": "FGT",
-        "GEP": "GEP"
       },
       "hold_for_release": true
     }

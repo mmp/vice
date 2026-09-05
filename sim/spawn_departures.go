@@ -818,7 +818,7 @@ func (s *Sim) compatibleDepartures(departureAirport string, runway av.RunwayID,
 		exitRoutes := av.ExitRoutesForAircraft(allRoutes, aircraftType)
 
 		inCategory := func(exit av.ExitID) bool {
-			return rwy.Category == "" || rwy.Category == ap.ExitCategories[exit]
+			return rwy.Category == "" || rwy.Category == ap.ExitCategory(exit)
 		}
 
 		exits := util.FilterSlice(util.SortedMapKeys(exitRoutes), inCategory)

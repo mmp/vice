@@ -467,6 +467,8 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 	ap.DepartureRoutes = splitDepartureRoutes
 
+	ap.checkExitCategories(e)
+
 	e.Push(`"traffic_routes"`)
 	checkTrafficRouteAirports := func(routes map[string]TrafficRouteSet) map[string]TrafficRouteSet {
 		if len(routes) == 0 {
@@ -560,12 +562,6 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		if !checkScratchpad(dep.SecondaryScratchpad) {
 			e.ErrorString("%s: invalid secondary scratchpad", dep.SecondaryScratchpad)
 		}
-
-		/*
-			if _, ok := ap.ExitCategories[depExit]; !ok {
-				e.ErrorString("exit %q isn't in \"exit_categories\"", depExit)
-			}
-		*/
 
 		wp, err := parseWaypoints(dep.Route)
 		if err != nil {
@@ -1173,6 +1169,43 @@ func (ts TrafficRouteSet) Routes(acType string) []string {
 		}
 	}
 	return routes
+}
+
+// ExitCategory returns the category the airport gives the exit, or "" if it
+// gives it none. A suffix on an exit id selects one of a gate's variants (the
+// runway flow it is flown in, the class of aircraft flying it, an enroute
+// transition), so an exit with no category of its own takes the one given to
+// its base fix: the category describes the gate, which the variants share.
+func (ap *Airport) ExitCategory(exit ExitID) string {
+	if cat, ok := ap.ExitCategories[exit]; ok {
+		return cat
+	}
+	return ap.ExitCategories[ExitID(exit.Base())]
+}
+
+// checkExitCategories reports "exit_categories" entries that name no exit the
+// airport has: neither one of its "departure_routes" exits nor a departure's,
+// nor the base fix of either.
+func (ap *Airport) checkExitCategories(e *util.ErrorLogger) {
+	named := make(map[ExitID]any)
+	addNames := func(exit ExitID) {
+		named[exit] = nil
+		named[ExitID(exit.Base())] = nil
+	}
+	for _, routes := range ap.DepartureRoutes {
+		for exit := range routes {
+			addNames(exit)
+		}
+	}
+	for _, dep := range ap.Departures {
+		addNames(dep.Exit)
+	}
+
+	for _, exit := range util.SortedMapKeys(ap.ExitCategories) {
+		if _, ok := named[exit]; !ok {
+			e.ErrorString(`"exit_categories" exit %q is used by no departure route or departure`, exit)
+		}
+	}
 }
 
 // routeReachesExit reports whether a departure route out of the airport flies

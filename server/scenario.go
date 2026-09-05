@@ -304,11 +304,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 				var found bool
 				if len(ap.Departures) > 0 {
 					found = slices.ContainsFunc(ap.Departures, func(dep av.Departure) bool {
-						return ap.ExitCategories[dep.Exit] == rwy.Category
+						return ap.ExitCategory(dep.Exit) == rwy.Category
 					})
 				} else {
 					found = util.SeqContainsFunc(maps.Keys(ap.DepartureRoutes[rwy.Runway]),
-						func(exit av.ExitID) bool { return ap.ExitCategories[exit] == rwy.Category })
+						func(exit av.ExitID) bool { return ap.ExitCategory(exit) == rwy.Category })
 				}
 				if !found {
 					e.ErrorString("no departures have exit category %q", rwy.Category)
@@ -401,7 +401,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 				// a virtual controller assigned to it.
 				exitRoutes := ap.DepartureRoutes[rwy.Runway]
 				for fix, routes := range exitRoutes {
-					fixCategory := ap.ExitCategories[fix]
+					fixCategory := ap.ExitCategory(fix)
 					if rwy.Category != "" && fixCategory == "" {
 						sids := util.MapSlice(routes, func(r *av.ExitRoute) string { return r.SID })
 						e.ErrorString(`exit fix %q (SID %s) has no entry in "exit_categories" but runway uses category %q`,

@@ -3250,7 +3250,6 @@
         "GRGIA": "West",
         "BOBBD": "North",
         "CEASE": "North",
-        "SMLTZ": "South",
         "WALET": "South",
         "RESPE": "North",
         "GLAZR": "North",
@@ -5818,10 +5817,6 @@
         "WETWO": "West",
         "EAONE": "East",
         "EATWO": "East",
-        "VFRE": "VFR",
-        "VFRN": "VFR",
-        "VFRS": "VFR",
-        "VFRW": "VFR",
         "BBAIT": "West",
         "HESPI": "East",
         "MCKLS": "East"
@@ -14697,16 +14692,6 @@
           "exit": "CLIOS"
         }
       ],
-      "exit_categories": {
-        "UGAAA": "East",
-        "TIROE": "Southeast",
-        "SPA": "North",
-        "VUZ": "West",
-        "VFRN": "VFR",
-        "VFRE": "VFR",
-        "VFRW": "VFR",
-        "VFRS": "VFR"
-      },
       "departure_controller": "31Z",
       "vfr": {
         "random_routes": {
@@ -14870,14 +14855,7 @@
         }
       ],
       "exit_categories": {
-        "PGAAA": "West",
-        "TIROE": "Southeast",
-        "SPA": "North",
-        "VUZ": "West",
-        "VFRN": "VFR",
-        "VFRE": "VFR",
-        "VFRW": "VFR",
-        "VFRS": "VFR"
+        "PGAAA": "West"
       },
       "vfr": {
         "random_routes": {

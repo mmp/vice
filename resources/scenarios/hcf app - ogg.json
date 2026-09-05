@@ -878,11 +878,7 @@
         }
       ],
       "exit_categories": {
-        "APACK": "North",
-        "CODDY": "East",
-        "KOLEA": "North",
-        "PULPS": "East",
-        "REXIE": "North"
+        "APACK": "North"
       },
       "tower_list": 1
     }

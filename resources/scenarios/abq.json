@@ -292,19 +292,6 @@
           "exit": "ZUN"
         }
       ],
-      "exit_categories": {
-        "DEN": "South",
-        "ABQ": "North",
-        "BENNE": "South",
-        "BARGR": "Southwest",
-        "SENSE": "Northwest",
-        "POGTE": "Northeast",
-        "HAMER": "Southeast",
-        "SHOOP": "Southeast",
-        "MILKY": "Northweast",
-        "EGBER": "East",
-        "SNY": "East"
-      },
       "tower_list": 1
     },
     "KAEG": {

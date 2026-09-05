@@ -422,10 +422,9 @@
         "MGW": "ALL",
         "CKB": "ALL",
         "DILNE": "ALL",
-        "AHITY": "ALL",
+        "AHTIY": "ALL",
         "PARKE": "ALL",
-        "HAR": "ALL",
-        "PSB": "ALL"
+        "HAR": "ALL"
       },
       "tower_list": 1
     },
@@ -540,10 +539,7 @@
         "MGW": "ALL",
         "CKB": "ALL",
         "DILNE": "ALL",
-        "AHITY": "ALL",
-        "PARKE": "ALL",
-        "HAR": "ALL",
-        "AGARD": "ALL",
+        "AHTIY": "ALL",
         "PSB": "ALL"
       },
       "tower_list": 1

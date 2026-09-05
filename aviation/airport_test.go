@@ -161,6 +161,55 @@ func TestRouteReachesExit(t *testing.T) {
 	}
 }
 
+func exitTestAirport() *Airport {
+	return &Airport{
+		DepartureRoutes: map[RunwayID]map[ExitID]ExitRoutes{
+			"22R": {"WHITE": {{}}, "HANKO": {{}}, "DEEZZ": {{SID: "DEEZZ6.CANDR"}}},
+			"13L": {"WHITE": {{}}, "OCN.D": {{}}, "OCN.T": {{}}},
+		},
+		Departures: []Departure{{Exit: "WHITE"}, {Exit: "OCN.D"}, {Exit: "CANDR"}},
+		ExitCategories: map[ExitID]string{
+			"WHITE": "North",
+			"CANDR": "DEEZZ", // named by a departure, not by a route
+			"HANKO": "North",
+			"OCN":   "West",           // the base fix of two exits
+			"OCN.T": "West.Turboprop", // one variant overriding it
+			"GLYDE": "South",          // named by no route and no departure
+		},
+	}
+}
+
+func TestCheckExitCategories(t *testing.T) {
+	var e util.ErrorLogger
+	exitTestAirport().checkExitCategories(&e)
+
+	if want := `"exit_categories" exit "GLYDE" is used by no`; !strings.Contains(e.String(), want) {
+		t.Errorf("expected an error containing %q; got %q", want, e.String())
+	}
+	// "OCN" is used: it is the base fix of exits that take its category.
+	for _, unwanted := range []string{"WHITE", "OCN", "CANDR", "HANKO"} {
+		if strings.Contains(e.String(), unwanted) {
+			t.Errorf("unexpected error mentioning %q: %q", unwanted, e.String())
+		}
+	}
+}
+
+func TestExitCategory(t *testing.T) {
+	ap := exitTestAirport()
+	for exit, want := range map[ExitID]string{
+		"WHITE":  "North",          // exact
+		"OCN.D":  "West",           // no category of its own; takes its base fix's
+		"OCN.T":  "West.Turboprop", // its own category wins over its base fix's
+		"HANKO.": "North",          // an empty suffix still resolves to the base fix
+		"DEEZZ":  "",               // categorized under the fix the SID leads to
+		"BUZRD":  "",               // unknown
+	} {
+		if got := ap.ExitCategory(exit); got != want {
+			t.Errorf("ExitCategory(%q) = %q, want %q", exit, got, want)
+		}
+	}
+}
+
 func TestInitialHeading(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{
