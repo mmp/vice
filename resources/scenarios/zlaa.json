@@ -2864,7 +2864,6 @@
     }
   },
   "default_scenario": "ZLA Sector 14 (West Flow)",
-  "magnetic_adjustment": 11,
   "scenarios": {
     "ZLA Sector 14 (West Flow)": {
       "description": "Sector 14 is a low altitude sector involving numerous climbing and descending aircraft in the general vicinty of VTU. Sector 14 is bounded to the west by an assortment of special use airspace areas whose status is subject to constant change depending on the needs of the military. \n \nSector 14 works aircraft departing KLAX and KLGB airports to the west and northwest. Sector 14 also works east and southeast bound departures from KSBA and arrivals to KSBA from these directions. KLAX arrivals from over the ocean, KLGB and KSNA arrivals are also a large part of Sector 14's traffic. Sector 14 must always be aware of the flow restrictions to Bay Area airports and do as much as possible to help sequence these aircraft.",

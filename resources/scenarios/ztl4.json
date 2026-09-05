@@ -139,7 +139,6 @@
     }
   },
   "default_scenario": "ZTL Area 4 Consolidated",
-  "magnetic_adjustment": -5.0,
   "scenarios": {
     "ZTL 21 South Departure Low": {
       "configuration": "T21",

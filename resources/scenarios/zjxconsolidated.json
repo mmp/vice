@@ -740,7 +740,6 @@
     }
   },
   "default_scenario": "ZJX Consolidated 30, 66, 15",
-  "magnetic_adjustment": -6.6,
   "scenarios": {
     "ZJX Consolidated 30, 66, 15": {
       "configuration": "ZJX",

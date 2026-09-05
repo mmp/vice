@@ -5596,7 +5596,6 @@
     }
   },
   "default_scenario": "ZLA Sectors 21/22 (West Flow)",
-  "magnetic_adjustment": 11,
   "scenarios": {
     "ZLA Sector 12 (West Flow)": {
       "description": "Sector 12 works arrivals into the Los Angeles area and departures from KSNA, KONT and KRIV. The size of the sector makes it complex due to the lack of space. Traffic conflicts arise within the sector between KSNA and KONT departures climbing eastbound on converging courses and southbound KSNA and KONT departures climbing out with Los Angeles basin arrivals descending over CYNDE.",

@@ -91,7 +91,6 @@
     }
   },
   "default_scenario": "ZTL Area 2 Consolidated",
-  "magnetic_adjustment": -7.0,
   "scenarios": {
     "ZTL Area 2 Consolidated": {
       "configuration": "C32",

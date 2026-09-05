@@ -2585,7 +2585,6 @@
     }
   },
   "default_scenario": "ZLA Sector 18 (West Flow)",
-  "magnetic_adjustment": 11,
   "scenarios": {
     "ZLA Sector 18 (West Flow)": {
       "description": "Sector 18 is primarily a KLAX and KONT departure sector that sequences aircraft proceeding outbound heading northeast; it handles KPSP, KTRM and KUDD arrivals. \n \nSector 18 is the focal point for several conflicts from other sectors. KPSP departures via V386, or direct PMD that are not yet in high altitude, are pointed out to Sector 18 by Sector 19/20. These aircraft are in conflict with departures from KLAX and KONT towards LAS, which are still in Sector 18's airspace. \n KONT/KPSP arrivals can be in conflict with the departures off KLAX and KONT toward LAS. The most common remedy is to vector the departure, or the arrival, or both to the east.",

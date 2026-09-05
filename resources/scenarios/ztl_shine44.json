@@ -3,7 +3,6 @@
   "area": "ZTL Area 1",
   "name": "ZTL Shine 44",
   "default_scenario": "ZTL 44 Shine Low - CLT South",
-  "magnetic_adjustment": -7.0,
   "airports": {
     "KCLT": {
       "approaches": {

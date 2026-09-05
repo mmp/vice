@@ -764,7 +764,6 @@
     }
   },
   "default_scenario": "ZJX 58 St. Augustine",
-  "magnetic_adjustment": -6.6,
   "scenarios": {
     "ZJX 58 St. Augustine": {
       "configuration": "J58",

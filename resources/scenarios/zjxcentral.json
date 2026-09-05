@@ -499,7 +499,6 @@
     }
   },
   "default_scenario": "ZJX 33 Geneva",
-  "magnetic_adjustment": -7.6,
   "scenarios": {
     "ZJX 33 Geneva": {
       "configuration": "J33",

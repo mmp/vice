@@ -1287,7 +1287,6 @@
     }
   },
   "default_scenario": "ZJX 88 DARBS",
-  "magnetic_adjustment": -6.0,
   "scenarios": {
     "ZJX 88 DARBS": {
       "configuration": "J88",

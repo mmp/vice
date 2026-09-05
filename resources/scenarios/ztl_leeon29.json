@@ -3,7 +3,6 @@
   "area": "ZTL Area 2",
   "name": "ZTL Leeon 29",
   "default_scenario": "ZTL 29 Leeon Low - CLT South",
-  "magnetic_adjustment": -7.0,
   "airports": {
     "KCLT": {
       "approaches": {

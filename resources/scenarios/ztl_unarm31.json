@@ -200,7 +200,6 @@
     }
   },
   "default_scenario": "ZTL 31 Unarm Low - CLT South",
-  "magnetic_adjustment": -7.0,
   "scenarios": {
     "ZTL 31 Unarm Low - CLT South": {
       "configuration": "L31",

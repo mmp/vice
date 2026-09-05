@@ -3,7 +3,6 @@
   "area": "ZTL Area 1",
   "name": "ZTL Bristol 45",
   "default_scenario": "ZTL 45 Bristol Low",
-  "magnetic_adjustment": -7.0,
   "airports": {
     "KTRI": {
       "approaches": {

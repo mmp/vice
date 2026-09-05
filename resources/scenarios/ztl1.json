@@ -33,7 +33,6 @@
     }
   },
   "default_scenario": "ZTL Area 1 Consolidated",
-  "magnetic_adjustment": -7.0,
   "scenarios": {
     "ZTL Area 1 Consolidated": {
       "configuration": "C43",

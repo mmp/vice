@@ -3,7 +3,6 @@
   "area": "ZTL Area 1",
   "name": "ZTL Moped 47",
   "default_scenario": "ZTL 47 Moped Low - CLT South",
-  "magnetic_adjustment": -7.0,
   "airports": {
     "KCLT": {
       "departure_controller": "C1W",

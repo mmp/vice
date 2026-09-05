@@ -34,6 +34,10 @@ import (
 	"github.com/brunoga/deep"
 )
 
+// maxMagneticAdjustment is the largest magnetic_adjustment a scenario group
+// may specify, in degrees.
+const maxMagneticAdjustment float32 = 4
+
 type scenarioGroup struct {
 	ARTCC              string                     `json:"artcc"`
 	Area               string                     `json:"area"`
@@ -1291,6 +1295,16 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			e.Pop()
 		}
 	}
+
+	// The adjustment is only meant to bring the magnetic grid to the epoch
+	// the scenario's charts were drawn for; anything larger is rotating the
+	// magnetic frame, so charted headings no longer fly as charted.
+	if math.Abs(sg.MagneticAdjustment) > maxMagneticAdjustment {
+		e.ErrorString("magnetic_adjustment %g is more than %g degrees; it may only correct "+
+			"for the magnetic grid's epoch, not rotate the magnetic frame",
+			sg.MagneticAdjustment, maxMagneticAdjustment)
+	}
+
 	// One facility, one magnetic variation: it is sampled at the facility's
 	// published center, so groups covering different parts of the same
 	// facility agree on it.

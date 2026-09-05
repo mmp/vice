@@ -119,7 +119,6 @@
     }
   },
   "default_scenario": "ZTL Area 3 Consolidated",
-  "magnetic_adjustment": -5.0,
   "scenarios": {
     "ZTL 15 Baden Ultra-High": {
       "configuration": "B15",

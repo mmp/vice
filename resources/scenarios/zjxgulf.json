@@ -2894,7 +2894,6 @@
     }
   },
   "default_scenario": "ZJX Sector 15 Ocala+14 (North)",
-  "magnetic_adjustment": -6.6,
   "scenarios": {
     "ZJX Sector 15 Ocala+14 (North)": {
       "configuration": "ZJG",
