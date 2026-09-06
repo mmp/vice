@@ -372,7 +372,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		r, ok := LookupRunway(icao, rwy.Base())
 		if !ok {
-			e.ErrorString("unknown runway for airport")
+			e.ErrorString("unknown runway for airport. Options: %s", DB.Airports[icao].ValidRunways())
 		}
 		rend, ok := LookupOppositeRunway(icao, rwy.Base())
 		if !ok {
@@ -467,7 +467,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 	ap.DepartureRoutes = splitDepartureRoutes
 
-	ap.checkExitCategories(e)
+	ap.checkExits(loc, e)
 
 	e.Push(`"traffic_routes"`)
 	checkTrafficRouteAirports := func(routes map[string]TrafficRouteSet) map[string]TrafficRouteSet {
@@ -546,13 +546,6 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			e.Error(err)
 		}
 
-		// Make sure that all runways have a route to the exit
-		for rwy := range ap.DepartureRoutes {
-			if _, ok := LookupRunway(icao, rwy.Base()); !ok {
-				e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
-			}
-		}
-
 		// Use Base() to get the canonical exit name (e.g., "COLIN" from "COLIN.P")
 		depExit := dep.Exit.Base()
 
@@ -576,6 +569,18 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		if !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
 			func(wp Waypoint) bool { return wp.Fix == depExit }) {
 			e.ErrorString("exit %q not found in departure route", depExit)
+		}
+
+		// The slop above lets a route name places the database doesn't have,
+		// which an enroute route legitimately does. The fixes up to the exit
+		// are inside the facility, so those it has to know.
+		for _, w := range wp {
+			if w.Fix == depExit {
+				break
+			}
+			if w.Airway() == "" && w.Location.IsZero() {
+				e.ErrorString("%s: unable to locate waypoint before the exit", w.Fix)
+			}
 		}
 
 		for _, al := range dep.Airlines {
@@ -1183,27 +1188,53 @@ func (ap *Airport) ExitCategory(exit ExitID) string {
 	return ap.ExitCategories[ExitID(exit.Base())]
 }
 
-// checkExitCategories reports "exit_categories" entries that name no exit the
-// airport has: neither one of its "departure_routes" exits nor a departure's,
-// nor the base fix of either.
-func (ap *Airport) checkExitCategories(e *util.ErrorLogger) {
+// checkExits validates the three places exits are named against each other:
+// "departure_routes", "departures", and "exit_categories".
+func (ap *Airport) checkExits(loc Locator, e *util.ErrorLogger) {
+	// Names an "exit_categories" entry may go by: an exit id, or the base fix
+	// of one, which ExitCategory takes as covering all of the gate's variants.
 	named := make(map[ExitID]any)
 	addNames := func(exit ExitID) {
 		named[exit] = nil
 		named[ExitID(exit.Base())] = nil
 	}
+
+	routeExits := make(map[ExitID]any)
 	for _, routes := range ap.DepartureRoutes {
 		for exit := range routes {
+			routeExits[exit] = nil
 			addNames(exit)
 		}
 	}
+	depExits := make(map[ExitID]any)
 	for _, dep := range ap.Departures {
+		depExits[dep.Exit] = nil
 		addNames(dep.Exit)
 	}
 
+	// The sim looks up the routes a departure flies by its full exit id, so a
+	// departure no runway names exactly can never be spawned.
+	for _, exit := range util.SortedMapKeys(depExits) {
+		if _, ok := routeExits[exit]; !ok {
+			e.ErrorString(`departure exit %q: no runway in "departure_routes" has a route to it`, exit)
+		}
+	}
 	for _, exit := range util.SortedMapKeys(ap.ExitCategories) {
 		if _, ok := named[exit]; !ok {
 			e.ErrorString(`"exit_categories" exit %q is used by no departure route or departure`, exit)
+		}
+	}
+
+	// An exit id that names no fix is a misspelling unless the airport means it
+	// as a label--a pseudo-gate for VFR practice traffic, say--and a label it
+	// means is one a departure flies or the airport gives a category.
+	for _, exit := range util.SortedMapKeys(routeExits) {
+		_, flown := depExits[exit]
+		if flown || ap.ExitCategory(exit) != "" {
+			continue
+		}
+		if _, ok := loc.Locate(exit.Base()); !ok {
+			e.ErrorString(`"departure_routes" exit %q names no fix and nothing else uses it`, exit)
 		}
 	}
 }

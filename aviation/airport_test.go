@@ -164,30 +164,47 @@ func TestRouteReachesExit(t *testing.T) {
 func exitTestAirport() *Airport {
 	return &Airport{
 		DepartureRoutes: map[RunwayID]map[ExitID]ExitRoutes{
-			"22R": {"WHITE": {{}}, "HANKO": {{}}, "DEEZZ": {{SID: "DEEZZ6.CANDR"}}},
+			"22R": {"WHITE": {{}}, "HANKO": {{}}, "DEEZZ": {{SID: "DEEZZ6.CANDR"}},
+				"WHTIE": {{}}, "VFRN": {{}}},
 			"13L": {"WHITE": {{}}, "OCN.D": {{}}, "OCN.T": {{}}},
 		},
-		Departures: []Departure{{Exit: "WHITE"}, {Exit: "OCN.D"}, {Exit: "CANDR"}},
+		Departures: []Departure{
+			{Exit: "WHITE"},  // on both runways
+			{Exit: "OCN.D"},  // on one of the two
+			{Exit: "CANDR"},  // on neither: the route is keyed by its SID name
+			{Exit: "HANKO."}, // Base() matches a route but the full id doesn't
+		},
 		ExitCategories: map[ExitID]string{
 			"WHITE": "North",
-			"CANDR": "DEEZZ", // named by a departure, not by a route
+			"CANDR": "DEEZZ", // used by a departure, so not dead
 			"HANKO": "North",
 			"OCN":   "West",           // the base fix of two exits
 			"OCN.T": "West.Turboprop", // one variant overriding it
 			"GLYDE": "South",          // named by no route and no departure
+			"VFRN":  "VFR",            // a pseudo-gate the airport means to have
 		},
 	}
 }
 
-func TestCheckExitCategories(t *testing.T) {
+func TestCheckExits(t *testing.T) {
 	var e util.ErrorLogger
-	exitTestAirport().checkExitCategories(&e)
+	// WHTIE is the misspelling; VFRN is a pseudo-gate that names no fix on purpose.
+	loc := testLocator{"WHITE": {}, "HANKO": {}, "OCN": {}, "CANDR": {}, "GLYDE": {}, "DEEZZ": {}}
+	exitTestAirport().checkExits(loc, &e)
 
-	if want := `"exit_categories" exit "GLYDE" is used by no`; !strings.Contains(e.String(), want) {
-		t.Errorf("expected an error containing %q; got %q", want, e.String())
+	for _, want := range []string{
+		`departure exit "CANDR": no runway`,
+		`departure exit "HANKO.": no runway`,
+		`"exit_categories" exit "GLYDE" is used by no`,
+		`"departure_routes" exit "WHTIE" names no fix`,
+	} {
+		if !strings.Contains(e.String(), want) {
+			t.Errorf("expected an error containing %q; got %q", want, e.String())
+		}
 	}
-	// "OCN" is used: it is the base fix of exits that take its category.
-	for _, unwanted := range []string{"WHITE", "OCN", "CANDR", "HANKO"} {
+	// "OCN" is used: it is the base fix of exits that take its category. VFRN
+	// names no fix but the airport gives it a category, so it stands.
+	for _, unwanted := range []string{"WHITE", "OCN", `"CANDR" is used`, "DEEZZ", "VFRN"} {
 		if strings.Contains(e.String(), unwanted) {
 			t.Errorf("unexpected error mentioning %q: %q", unwanted, e.String())
 		}

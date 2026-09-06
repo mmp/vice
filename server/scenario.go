@@ -272,13 +272,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 		}
 	}
 
-	airportExits := make(map[string]map[string]any) // airport -> exit -> is it covered
 	for _, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + string(rwy.Runway))
-
-		if airportExits[rwy.Airport] == nil {
-			airportExits[rwy.Airport] = make(map[string]any)
-		}
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
 			e.ErrorString(`airport not found in scenario group "airports"`)
@@ -286,11 +281,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
 				e.ErrorString("runway departure routes not found")
 			} else {
-				for exit := range routes {
-					// It's fine if multiple active runways cover the exit.
-					airportExits[rwy.Airport][string(exit)] = nil
-				}
-
 				for _, exitRoutes := range routes {
 					for _, r := range exitRoutes {
 						addControllersFromWaypoints(r.Waypoints)
@@ -394,20 +384,26 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 			activeAirports[ap] = nil
 			activeDepartureAirports[rwy.Airport] = nil
 
+			// A categorized runway launches nothing through an exit with no
+			// category, so the two must be authored together.
+			exitRoutes := ap.DepartureRoutes[rwy.Runway]
+			if rwy.Category != "" {
+				for _, fix := range util.SortedMapKeys(exitRoutes) {
+					if ap.ExitCategory(fix) == "" {
+						sids := util.MapSlice(exitRoutes[fix], func(r *av.ExitRoute) string { return r.SID })
+						e.ErrorString(`exit fix %q (SID %s) has no entry in "exit_categories" but runway uses category %q`,
+							fix, strings.Join(sids, ", "), rwy.Category)
+					}
+				}
+			}
+
 			if ap.DepartureController != "" {
 				addController(sim.TCP(ap.DepartureController))
 			} else {
 				// Only check for a human controller to be covering the track if there isn't
 				// a virtual controller assigned to it.
-				exitRoutes := ap.DepartureRoutes[rwy.Runway]
 				for fix, routes := range exitRoutes {
-					fixCategory := ap.ExitCategory(fix)
-					if rwy.Category != "" && fixCategory == "" {
-						sids := util.MapSlice(routes, func(r *av.ExitRoute) string { return r.SID })
-						e.ErrorString(`exit fix %q (SID %s) has no entry in "exit_categories" but runway uses category %q`,
-							fix, strings.Join(sids, ", "), rwy.Category)
-					}
-					if rwy.Category != "" && fixCategory != rwy.Category {
+					if rwy.Category != "" && ap.ExitCategory(fix) != rwy.Category {
 						continue
 					}
 					for _, route := range routes {
