@@ -14,6 +14,7 @@
 // default).
 //
 //	go run ./cmd/scraperoutes [-cell N40W074] [-limit 25] [-dryrun]
+//	go run ./cmd/scraperoutes -lookup KCPS/KORD
 package main
 
 import (
@@ -45,10 +46,16 @@ func main() {
 	delay := flag.Duration("delay", 10*time.Second, "`wait` between web requests")
 	recheck := flag.Int("recheck", 60, "refetch pairs last fetched more than `days` ago")
 	dryRun := flag.Bool("dryrun", false, "report what would be recorded without updating the database")
+	lookup := flag.String("lookup", "", "look up a single airport `pair`, e.g. KCPS/KORD, and print its routes")
 	dbPath := flag.String("db", "resources/"+av.ScrapedRoutesPath, "scraped route database `file` to update")
 	flag.Parse()
 
 	av.InitDB()
+
+	if *lookup != "" {
+		lookupPair(*lookup)
+		return
+	}
 
 	sets := readRouteSets(*dbPath)
 	if consolidateSets(sets) {
@@ -109,6 +116,37 @@ func main() {
 	}
 	if remaining := len(pairs) - fetched; remaining > 0 {
 		fmt.Printf("%d pairs remain; run again to continue\n", remaining)
+	}
+}
+
+// lookupPair fetches the routes for the airport pair given as "KCPS/KORD"
+// and prints what would be recorded for it.
+func lookupPair(spec string) {
+	from, to, ok := strings.Cut(strings.ToUpper(spec), "/")
+	if !ok {
+		fmt.Printf("%q: expected an airport pair like KCPS/KORD\n", spec)
+		os.Exit(1)
+	}
+	for _, icao := range []string{from, to} {
+		if _, ok := av.DB.Airports[icao]; !ok {
+			fmt.Printf("%s: airport not in the FAA database\n", icao)
+			os.Exit(1)
+		}
+	}
+
+	client := &http.Client{Timeout: 30 * time.Second}
+	routes, err := fetchRoutes(client, from, to, domestic(from), domestic(to))
+	if err != nil {
+		fmt.Printf("%s->%s: %v\n", from, to, err)
+		os.Exit(1)
+	}
+	routes = cullRareRoutes(routes)
+
+	if len(routes) == 0 {
+		fmt.Printf("%s->%s: no routes found\n", from, to)
+	}
+	for _, r := range routes {
+		fmt.Printf("%s->%s: %q %s\n", from, to, r.Route, describe(r))
 	}
 }
 
