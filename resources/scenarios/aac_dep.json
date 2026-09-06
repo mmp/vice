@@ -815,6 +815,12 @@
             "description": "jets/turboprops",
             "waypoints": "N036.25.55.554,W095.55.14.932/h110/ho",
             "handoff_controller": "1D"
+          },
+          "COLIN.P,MAYES.P,NOBLE.P,SHAWN.P": {
+            "cleared_altitude": 4000,
+            "description": "props",
+            "waypoints": "N036.25.55.554,W095.55.14.932/h130/ho",
+            "handoff_controller": "1D"
           }
         }
       },
@@ -1097,7 +1103,11 @@
         "COLIN.J": "NE",
         "MAYES.J": "NE",
         "NOBLE.J": "S",
-        "SHAWN.J": "W"
+        "SHAWN.J": "W",
+        "COLIN.P": "NE",
+        "MAYES.P": "NE",
+        "NOBLE.P": "S",
+        "SHAWN.P": "W"
       },
       "tower_list": 3
     },
@@ -2444,6 +2454,12 @@
             "description": "jets/turboprops",
             "waypoints": "12_MM/a5000 N036.24.14.809,W095.22.33.433/h300/ho N036.22.34.064,W095.57.05.372/a10000",
             "handoff_controller": "1D"
+          },
+          "COLIN.P,MAYES.P,NOBLE.P,SHAWN.P": {
+            "cleared_altitude": 4000,
+            "description": "props",
+            "waypoints": "12_MM/h300/ho",
+            "handoff_controller": "1D"
           }
         }
       },
@@ -2729,7 +2745,11 @@
         "COLIN.J": "NE",
         "MAYES.J": "NE",
         "NOBLE.J": "SW",
-        "SHAWN.J": "SW"
+        "SHAWN.J": "SW",
+        "COLIN.P": "NE",
+        "MAYES.P": "NE",
+        "NOBLE.P": "SW",
+        "SHAWN.P": "SW"
       },
       "tower_list": 3
     },
@@ -2741,6 +2761,11 @@
             "cleared_altitude": 3000,
             "description": "jets/turboprops",
             "waypoints": "N035.58.53.161,W095.23.16.279/h310"
+          },
+          "COLIN.P,MAYES.P,NOBLE.P,SHAWN.P": {
+            "cleared_altitude": 4000,
+            "description": "props",
+            "waypoints": "N035.58.53.161,W095.23.16.279/h340"
           }
         },
         "16": {
@@ -2760,6 +2785,12 @@
             "cleared_altitude": 5000,
             "description": "jets/turboprops",
             "waypoints": "N035.58.04.162,W095.22.48.209/ho/h270",
+            "handoff_controller": "1D"
+          },
+          "COLIN.P,MAYES.P,NOBLE.P,SHAWN.P": {
+            "cleared_altitude": 4000,
+            "description": "props",
+            "waypoints": "N035.58.04.162,W095.22.48.209/h160/ho",
             "handoff_controller": "1D"
           }
         }

@@ -65,7 +65,7 @@
             "cleared_altitude": 3000,
             "sid": "EUG1"
           },
-          "SNOKY,LMT.J,LMT.T,CHEEZ,HOCUM,CITYY,BALDY,RBG,YERIN,DSD.J": {
+          "SNOKY,LMT.J,LMT.T,CHEEZ,HOCUM,CITYY,BALDY,RBG,YERIN,DSD.J,DSD.T": {
             "cleared_altitude": 9000,
             "sid": "EUG1"
           },
@@ -102,7 +102,7 @@
             "cleared_altitude": 3000,
             "sid": "EUG1"
           },
-          "SNOKY,LMT.T,LMT.J,CHEEZ,HOCUM,CITYY,BALDY,RBG,YERIN,DSD.J": {
+          "SNOKY,LMT.T,LMT.J,CHEEZ,HOCUM,CITYY,BALDY,RBG,YERIN,DSD.J,DSD.T": {
             "cleared_altitude": 9000,
             "sid": "EUG1"
           },
@@ -244,17 +244,6 @@
           "destination": "KTRM",
           "exit": "RBG",
           "route": "RBG OYVEY SIZLR4"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "GAturbine",
-              "icao": "N"
-            }
-          ],
-          "destination": "KSUN",
-          "exit": "DSD.T",
-          "route": "DSD BOI PRESN"
         },
         {
           "airlines": [
@@ -438,7 +427,7 @@
             }
           ],
           "destination": "KIWA",
-          "exit": "LMT",
+          "exit": "LMT.J",
           "route": "LMT J92 KADDY J92 PRFUM KIDDR DSERT2"
         },
         {
@@ -453,7 +442,7 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "LMT",
+          "exit": "LMT.J",
           "route": "LMT YERIN TQILA COKTL4"
         },
         {

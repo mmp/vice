@@ -138,7 +138,7 @@
             "cleared_altitude": 7000,
             "sid": "MINNE5"
           },
-          "HRMNS": {
+          "HRMNS,HYJOE": {
             "cleared_altitude": 7000,
             "sid": "HRMNS6"
           },
@@ -151,7 +151,7 @@
             "sid": "PTLD2.N",
             "waypoints": "KPDX-28R/h085"
           },
-          "EUG,ONP,OTH,OED,LMT,LKV,TIMEE": {
+          "EUG,ONP,OTH,OED,LMT,LKV,TIMEE,CUKIS,JJETT,MRTEN": {
             "cleared_altitude": 6000,
             "sid": "PTLD2.S",
             "waypoints": "KPDX-28R/h085"
@@ -180,7 +180,7 @@
             "cleared_altitude": 7000,
             "sid": "MINNE5"
           },
-          "HRMNS": {
+          "HRMNS,HYJOE": {
             "cleared_altitude": 7000,
             "sid": "HRMNS6"
           },
@@ -193,7 +193,7 @@
             "sid": "PTLD2.N",
             "waypoints": "KPDX-28L/h085"
           },
-          "EUG,ONP,OTH,OED,LMT,LKV,TIMEE": {
+          "EUG,ONP,OTH,OED,LMT,LKV,TIMEE,CUKIS,JJETT,MRTEN": {
             "cleared_altitude": 6000,
             "sid": "PTLD2.S",
             "waypoints": "KPDX-28L/h085"
@@ -227,7 +227,7 @@
             "cleared_altitude": 7000,
             "sid": "MINNE5"
           },
-          "HRMNS": {
+          "HRMNS,HYJOE": {
             "cleared_altitude": 7000,
             "sid": "HRMNS6"
           },
@@ -240,7 +240,7 @@
             "sid": "PTLD2.N",
             "waypoints": "KPDX-10L/h280"
           },
-          "EUG,ONP,OTH,OED,LMT,LKV,TIMEE": {
+          "EUG,ONP,OTH,OED,LMT,LKV,TIMEE,CUKIS,JJETT,MRTEN": {
             "cleared_altitude": 6000,
             "sid": "PTLD2.S",
             "waypoints": "KPDX-10L/h280"
@@ -269,7 +269,7 @@
             "cleared_altitude": 7000,
             "sid": "MINNE5"
           },
-          "HRMNS": {
+          "HRMNS,HYJOE": {
             "cleared_altitude": 7000,
             "sid": "HRMNS6"
           },
@@ -282,7 +282,7 @@
             "sid": "PTLD2.N",
             "waypoints": "KPDX-10R/h280"
           },
-          "EUG,ONP,OTH,OED,LMT,LKV,TIMEE": {
+          "EUG,ONP,OTH,OED,LMT,LKV,TIMEE,CUKIS,JJETT,MRTEN": {
             "cleared_altitude": 6000,
             "sid": "PTLD2.S",
             "waypoints": "KPDX-10R/h280"
@@ -784,7 +784,7 @@
             }
           ],
           "destination": "KYKM",
-          "exit": "YKM.P",
+          "exit": "YKM",
           "route": "BTG V448 YKM",
           "altitude": 15000
         },
@@ -920,7 +920,7 @@
             }
           ],
           "destination": "KGEG",
-          "exit": "GEG",
+          "exit": "BTG",
           "route": "BTG V448 GEG",
           "altitude": 13000
         },
@@ -1107,7 +1107,7 @@
             }
           ],
           "destination": "EHAM",
-          "exit": "ALDER",
+          "exit": "BTG",
           "route": "BTG J1 SEA ALPSE HUH YDC"
         },
         {
@@ -1140,7 +1140,7 @@
             }
           ],
           "destination": "CYVR",
-          "exit": "ALDER",
+          "exit": "BTG",
           "route": "BTG J1 SEA PAE GRIZZ7"
         },
         {
@@ -1285,7 +1285,7 @@
             }
           ],
           "destination": "KMFR",
-          "exit": "EUG.J",
+          "exit": "EUG",
           "route": "EUG OED"
         },
         {
@@ -1304,7 +1304,7 @@
             }
           ],
           "destination": "KMFR",
-          "exit": "EUG.P",
+          "exit": "EUG",
           "route": "BTG V23 OED",
           "altitude": [9000, 11000]
         },
@@ -1406,7 +1406,7 @@
             }
           ],
           "destination": "KEUG",
-          "exit": "EUG.P",
+          "exit": "EUG",
           "route": "BTG V23 EUG",
           "altitude": [7000, 9000]
         },
@@ -1426,7 +1426,7 @@
             }
           ],
           "destination": "KEUG",
-          "exit": "EUG.J",
+          "exit": "EUG",
           "route": "BTG V23 EUG",
           "altitude": [15000]
         },
@@ -1611,7 +1611,7 @@
             }
           ],
           "destination": "KLMT",
-          "exit": "EUG.P",
+          "exit": "EUG",
           "route": "BTG V23 EUG V452 LMT",
           "altitude": [11000, 13000]
         },
@@ -1860,7 +1860,6 @@
         "COUGA": "SEATTLE",
         "DSD": "CASCD2",
         "HRMNS": "HRMNS5",
-        "YKM.P": "PROP",
         "PDT": "LAVAA7",
         "HISKU": "MINNE5",
         "FAMUK": "MINNE5",

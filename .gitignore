@@ -45,6 +45,7 @@ resources/models/kokoro-multi-lang-v1_0/
 resources/version.txt
 rsrc_windows_*.syso
 scenario-test-*.txt
+scraperoutes
 slog
 vice-logs/
 vice.exe

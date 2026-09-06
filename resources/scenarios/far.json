@@ -346,7 +346,7 @@
           "altitude": 6000,
           "destination": "KGFK",
           "route": "PAWSS V181 GFK",
-          "exit": "GFK"
+          "exit": "PAWSS"
         },
         {
           "airlines": [
@@ -358,7 +358,7 @@
           "altitude": 10000,
           "destination": "KGFK",
           "route": "PAWSS V181 GFK",
-          "exit": "GFK"
+          "exit": "PAWSS"
         },
         {
           "airlines": [
@@ -815,7 +815,6 @@
       ],
       "exit_categories": {
         "MOT": "WEST",
-        "GFK": "NORTH",
         "TVF": "NORTH",
         "BJI": "EAST",
         "RWF": "SOUTH",

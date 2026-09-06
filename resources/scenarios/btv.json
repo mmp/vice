@@ -171,24 +171,28 @@
         "36": {
           "ENSON": {
             "assigned_altitude": 10000,
-            "sid": null,
             "waypoints": "KFSO-18/h003/@a1000+/ld ENSON"
+          },
+          "DENYU": {
+            "assigned_altitude": 10000,
+            "waypoints": "KFSO-18/h003/@a1000+/ld DENYU"
           },
           "MPV": {
             "assigned_altitude": 10000,
-            "sid": null,
             "waypoints": "KFSO-18/h003/@a1000+/rd MPV"
           }
         },
         "18": {
           "ENSON": {
             "assigned_altitude": 10000,
-            "sid": null,
             "waypoints": "KFSO-36/h238/@a2100+/ld ENSON"
+          },
+          "DENYU": {
+            "assigned_altitude": 10000,
+            "waypoints": "KFSO-36/h238/@a2100+/ld DENYU"
           },
           "MPV": {
             "assigned_altitude": 10000,
-            "sid": null,
             "waypoints": "KFSO-36/h238/@a2100+/ld MPV"
           }
         }
@@ -202,9 +206,9 @@
             }
           ],
           "destination": "KHPN",
-          "exit": "DENYU",
+          "exit": "ENSON",
           "scratchpad": "SYR",
-          "route": "DENYU RIVVR VALRE1"
+          "route": "ENSON RIVVR VALRE1"
         },
         {
           "airlines": [
@@ -525,28 +529,28 @@
       },
       "departure_routes": {
         "15": {
-          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT": {
+          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT,ENSON": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
             "waypoints": "KBTV-33/h146/@a1000+/h190"
           }
         },
         "33": {
-          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT": {
+          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT,ENSON": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
             "waypoints": "KBTV-15/h326"
           }
         },
         "1": {
-          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT": {
+          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT,ENSON": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
             "waypoints": "KBTV-19/h006"
           }
         },
         "19": {
-          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT": {
+          "DENYU,SYR,BTV,CAM,ALB,BGR,MPV,ART,BIZEX,PONCT,ENSON": {
             "assigned_altitude": 10000,
             "sid": "BTV1",
             "waypoints": "KBTV-1/h186"

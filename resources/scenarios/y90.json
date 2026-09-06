@@ -358,13 +358,13 @@
       },
       "departure_routes": {
         "11": {
-          "NELIE,CTR,ORW": {
+          "NELIE,CTR,ORW,THUMB": {
             "cleared_altitude": 3000,
             "hold_for_release": true
           }
         },
         "29": {
-          "NELIE,CTR,ORW": {
+          "NELIE,CTR,ORW,THUMB": {
             "cleared_altitude": 3000,
             "hold_for_release": true
           }
@@ -410,28 +410,28 @@
       },
       "departure_routes": {
         "5": {
-          "CCC": {
+          "CCC,THUMB": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
             "initial_heading": 48
           }
         },
         "23": {
-          "CCC": {
+          "CCC,THUMB": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
             "initial_heading": 228
           }
         },
         "15": {
-          "CCC": {
+          "CCC,THUMB": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
             "initial_heading": 149
           }
         },
         "33": {
-          "CCC": {
+          "CCC,THUMB": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
             "initial_heading": 329
@@ -481,31 +481,31 @@
       },
       "departure_routes": {
         "33": {
-          "CCC": {
+          "CCC,GOETS": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "KCEF/h334 GOETS THUMB NTMEG CCC"
+            "initial_heading": 334
           }
         },
         "2": {
-          "CCC": {
+          "CCC,GOETS": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
             "initial_heading": 24
           }
         },
         "15": {
-          "CCC": {
+          "CCC,GOETS": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "KCEF/h154 GOETS THUMB NTMEG CCC"
+            "initial_heading": 154
           }
         },
         "20": {
-          "CCC": {
+          "CCC,GOETS": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "KCEF/h204 GOETS THUMB NTMEG CCC"
+            "initial_heading": 204
           }
         }
       },
@@ -517,8 +517,8 @@
             }
           ],
           "destination": "KHFD",
-          "exit": "THUMB",
-          "route": "THUMB"
+          "exit": "GOETS",
+          "route": "GOETS"
         }
       ]
     }

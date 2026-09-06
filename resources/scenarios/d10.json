@@ -2425,7 +2425,7 @@
             "sid": "TEX5",
             "initial_heading": 166
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 166
@@ -2462,7 +2462,7 @@
             "sid": "TEX5",
             "initial_heading": 346
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 345
@@ -2911,7 +2911,7 @@
             "sid": "JPOOL8",
             "waypoints": "_ADS_16/h050"
           },
-          "ZERLU,TRRCH,HANUH,JJANE": {
+          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
             "cleared_altitude": 2000,
             "sid": "KUSSO3",
             "waypoints": "_ADS_16/h050"
@@ -2926,7 +2926,7 @@
             "sid": "TEX5",
             "waypoints": "_ADS_16/h050"
           },
-          "PGLET,TYGGR,ROOO,RBBIT": {
+          "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 2000,
             "sid": "SWABR1",
             "waypoints": "_ADS_16/h050"
@@ -2948,7 +2948,7 @@
             "sid": "JPOOL8",
             "initial_heading": 337
           },
-          "ZERLU,TRRCH,HANUH,JJANE": {
+          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 337
@@ -2963,7 +2963,7 @@
             "sid": "TEX5",
             "initial_heading": 337
           },
-          "PGLET,TYGGR,ROOO,RBBIT": {
+          "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "SWABR1",
             "waypoints": "KADS-16/h337"
@@ -3439,7 +3439,6 @@
         "FERRA": "ALL",
         "JJANE": "ALL",
         "PODDE": "ALL",
-        "ROOO": "ALL",
         "SLOTT": "ALL",
         "SOLDO": "ALL",
         "SOLDO.PROP": "ALL"
@@ -3466,7 +3465,7 @@
             "sid": "JPOOL8",
             "waypoints": "_TKI_18/h180"
           },
-          "ZERLU,TRRCH,HANUH,JJANE": {
+          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "waypoints": "_TKI_18/h180"
@@ -3481,7 +3480,7 @@
             "sid": "TEX5",
             "waypoints": "_TKI_18/h180"
           },
-          "PGLET,TYGGR,ROOO,RBBIT": {
+          "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "SWABR1",
             "waypoints": "_TKI_18/h180"
@@ -3503,7 +3502,7 @@
             "sid": "JPOOL8",
             "initial_heading": 360
           },
-          "ZERLU,TRRCH,HANUH,JJANE": {
+          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 360
@@ -3518,7 +3517,7 @@
             "sid": "TEX5",
             "initial_heading": 360
           },
-          "PGLET,TYGGR,ROOO,RBBIT": {
+          "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "SWABR1",
             "waypoints": "KTKI-18/h360"
@@ -3952,7 +3951,6 @@
         "FERRA": "ALL",
         "JJANE": "ALL",
         "PODDE": "ALL",
-        "ROOO": "ALL",
         "SOLDO": "ALL",
         "SOLDO.PROP": "ALL"
       },
@@ -4429,7 +4427,6 @@
         "FERRA": "ALL",
         "JJANE": "ALL",
         "PODDE": "ALL",
-        "ROOO": "ALL",
         "SOLDO": "ALL",
         "SOLDO.PROP": "ALL"
       },
@@ -4445,7 +4442,7 @@
             "sid": "JPOOL8",
             "initial_heading": 129
           },
-          "ZERLU,TRRCH,HANUH,JJANE": {
+          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 132
@@ -4482,7 +4479,7 @@
             "sid": "JPOOL8",
             "initial_heading": 120
           },
-          "ZERLU,TRRCH,HANUH,JJANE": {
+          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 120
@@ -4497,7 +4494,7 @@
             "sid": "TEX5",
             "initial_heading": 120
           },
-          "PGLET,TYGGR,ROOO,RBBIT": {
+          "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 120
@@ -4561,12 +4558,12 @@
             "sid": "NANDR4",
             "initial_heading": 164
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 166
           },
-          "NELYN,JASPA,ARDIA,BRDEN": {
+          "NELYN,JASPA,ARDIA,BRDEN,DARTZ": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 164
@@ -4598,7 +4595,7 @@
             "sid": "TEX5",
             "initial_heading": 344
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 344
@@ -4988,7 +4985,6 @@
         "BRDEN": "ALL",
         "BRDEN.PROP": "ALL",
         "CEOLA.PROP": "ALL",
-        "GRABE.PROP.AKUNA.PROP": "ALL",
         "SLOTT.PROP": "ALL",
         "SOLDO.PROP": "ALL"
       },
@@ -5045,12 +5041,12 @@
             "sid": "NANDR4",
             "initial_heading": 357
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 357
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 357
@@ -5072,12 +5068,12 @@
             "sid": "BOTCH2",
             "initial_heading": 180
           },
-          "LOWGN,BLECO,GRABE,AKUNA,LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
+          "LOWGN,BLECO,GRABE,AKUNA,LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 177
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 177
@@ -5909,7 +5905,7 @@
             "sid": "JPOOL8",
             "initial_heading": 134
           },
-          "ZERLU,TRRCH,HANUH,JJANE": {
+          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 134
@@ -5924,7 +5920,7 @@
             "sid": "TEX5",
             "initial_heading": 134
           },
-          "PGLET,TYGGR,ROOO,RBBIT": {
+          "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "SWABR1",
             "waypoints": "_LNC_13/h134"
@@ -5956,7 +5952,7 @@
             "sid": "JPOOL8",
             "initial_heading": 120
           },
-          "ZERLU,TRRCH,HANUH,JJANE": {
+          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 30
@@ -5971,7 +5967,7 @@
             "sid": "TEX5",
             "initial_heading": 30
           },
-          "PGLET,TYGGR,ROOO,RBBIT": {
+          "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "SWABR1",
             "waypoints": "KLNC-13/h180"
@@ -6107,12 +6103,12 @@
             "sid": "NANDR4",
             "initial_heading": 162
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 162
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 162
@@ -6144,7 +6140,7 @@
             "sid": "TEX5",
             "initial_heading": 342
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 2000,
             "sid": "JPOOL8",
             "initial_heading": 342
@@ -6573,12 +6569,12 @@
             "sid": "NANDR4",
             "initial_heading": 192
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 192
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 192
@@ -6610,7 +6606,7 @@
             "sid": "TEX5",
             "initial_heading": 300
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 2000,
             "sid": "JPOOL8",
             "initial_heading": 300
@@ -7400,7 +7396,7 @@
             "sid": "TEX5",
             "initial_heading": 357
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 357
@@ -7432,12 +7428,12 @@
             "sid": "NANDR4",
             "initial_heading": 177
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP.AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 177
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP": {
+          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 177
@@ -7693,7 +7689,7 @@
             "sid": "NANDR4",
             "initial_heading": 180
           },
-          "NELYN,JASPA,ARDIA,BRDEN": {
+          "NELYN,JASPA,ARDIA,BRDEN,DARTZ": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 180
@@ -7715,7 +7711,7 @@
             "sid": "NANDR4",
             "initial_heading": 360
           },
-          "NELYN,JASPA,ARDIA,BRDEN": {
+          "NELYN,JASPA,ARDIA,BRDEN,DARTZ": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 360

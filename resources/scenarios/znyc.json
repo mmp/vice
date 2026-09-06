@@ -428,7 +428,7 @@
       "departure_controller": "N2J",
       "departure_routes": {
         "22R": {
-          "DEEZZ": {
+          "CANDR": {
             "cleared_altitude": 19000,
             "sid": "DEEZZ6.CANDR",
             "waypoints": "N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238/c17000 N040.54.38.910,W073.29.09.655/hoN5T/c19000 DEEZZ HEERO KURNL CANDR/ho36"

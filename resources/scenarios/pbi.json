@@ -1151,8 +1151,8 @@
             }
           ],
           "destination": "MYAM",
-          "exit": "TURPS",
-          "route": "TURPS BR63V ZFP BR70V MRRSH"
+          "exit": "HALBI",
+          "route": "HALBI BR63V ZFP BR70V MRRSH"
         },
         {
           "airlines": [
@@ -1210,6 +1210,7 @@
         "KPASA": "Northwest",
         "SMELZ": "Northwest",
         "CHEFS": "North",
+        "HALBI": "East",
         "JAYMC": "West"
       },
       "tower_list": 1

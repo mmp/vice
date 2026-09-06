@@ -1266,21 +1266,21 @@
       },
       "departure_routes": {
         "35L": {
-          "KENNO,HEC,BOJAC,BLAQQ,BLH,LVELL": {
+          "JOHKR,SLVRR,JOTNU,BLH,BOJAC": {
             "cleared_altitude": 7000,
             "sid": "OYODA2"
           },
-          "FRNCK,VERKN,TUKRR,PGA,HOCEE,SSKEE,ZAYNE": {
+          "RATPK,GEEOO,NICLE,PGA,HOCEE,IWANS,RASLR": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4"
           }
         },
         "17R": {
-          "KENNO,HEC,BOJAC,BLAQQ,BLH,LVELL": {
+          "JOHKR,SLVRR,JOTNU,BLH,BOJAC": {
             "cleared_altitude": 7000,
             "sid": "OYODA2"
           },
-          "FRNCK,VERKN,TUKRR,PGA,HOCEE,SSKEE,ZAYNE": {
+          "RATPK,GEEOO,NICLE,PGA,HOCEE,IWANS,RASLR": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4"
           }
@@ -1296,7 +1296,7 @@
           ],
           "altitude": 20000,
           "destination": "KVNY",
-          "route": "OYODA2 SLVRR WNCHL JANNY5",
+          "route": "SLVRR TOPAC WNCHL JANNY5",
           "exit": "SLVRR"
         },
         {
@@ -1308,8 +1308,8 @@
           ],
           "altitude": 32000,
           "destination": "KSFO",
-          "route": "OYODA2 KENNO RUSME DYAMD5",
-          "exit": "KENNO"
+          "route": "JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO RUSME DYAMD5",
+          "exit": "JOHKR"
         },
         {
           "airlines": [
@@ -1320,8 +1320,20 @@
           ],
           "altitude": 33000,
           "destination": "KTEB",
-          "route": "SCAMR4 PGA",
-          "exit": "PGA"
+          "route": "NICLE TUKRR",
+          "exit": "NICLE"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KFLL",
+          "route": "IWANS SSKEE",
+          "exit": "IWANS"
         },
         {
           "airlines": [
@@ -1332,16 +1344,16 @@
           ],
           "altitude": 32000,
           "destination": "KSDL",
-          "route": "SCAMR4 ZAYNE WOTRO",
-          "exit": "ZAYNE"
+          "route": "RASLR ROHCK ZAYNE WOTRO",
+          "exit": "RASLR"
         }
       ],
       "exit_categories": {
-        "KENNO": "North",
-        "FRNCK": "Northeast",
-        "ZAYNE": "South",
-        "PGA": "East",
-        "SSKEE": "South"
+        "JOHKR": "North",
+        "NICLE": "Northeast",
+        "RASLR": "South",
+        "IWANS": "East",
+        "SLVRR": "West"
       },
       "tower_list": 1,
       "hold_for_release": true

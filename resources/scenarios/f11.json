@@ -1260,7 +1260,7 @@
           ],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KAVL",
-          "exit": "WORMS",
+          "exit": "WORMS.CITR",
           "route": "WORMS PAINN SHRKS Q77 TEUFL TWINS PLYRR"
         },
         {
@@ -5654,14 +5654,14 @@
       },
       "departure_routes": {
         "7": {
-          "KSFB,WORMS,GUANO,KIZER,MMKAY,CRG,LAL,MLB,KNEED,VIZTA,TPA,OCF,DEARY,FSHUN,ROGAN,OSPRY,REMIS,CIGAR,RDSOX,JFRYS": {
+          "KSFB,WORMS,GUANO,KIZER,MMKAY,CRG,LAL,MLB,KNEED,VIZTA,TPA,OCF,DEARY,FSHUN,ROGAN,OSPRY,REMIS,CIGAR,RDSOX,JFRYS,DDANY,VALKA": {
             "cleared_altitude": 1500,
             "sid": "NYTES2",
             "is_rnav": true
           }
         },
         "25": {
-          "KSFB,WORMS,GUANO,KIZER,MMKAY,CRG,LAL,MLB,KNEED,VIZTA,TPA,OCF,DEARY,FSHUN,ROGAN,OSPRY,REMIS,CIGAR,RDSOX,JFRYS": {
+          "KSFB,WORMS,GUANO,KIZER,MMKAY,CRG,LAL,MLB,KNEED,VIZTA,TPA,OCF,DEARY,FSHUN,ROGAN,OSPRY,REMIS,CIGAR,RDSOX,JFRYS,DDANY,VALKA": {
             "cleared_altitude": 2000,
             "sid": "TOLLZ2",
             "is_rnav": true
@@ -9487,13 +9487,13 @@
       },
       "departure_routes": {
         "13": {
-          "RDSOX,VALKA,OSPRY,WORMS,KSFB,KISM,KMLB,VIZTA,FSHUN,DDANY,DADES": {
+          "RDSOX,VALKA,OSPRY,WORMS,KSFB,KISM,KMLB,VIZTA,FSHUN,DDANY,DADES,KORL": {
             "cleared_altitude": 2000,
             "waypoints": "KLEE-31/h130"
           }
         },
         "31": {
-          "RDSOX,VALKA,OSPRY,WORMS,KSFB,KISM,KMLB,VIZTA,FSHUN,DDANY,DADES": {
+          "RDSOX,VALKA,OSPRY,WORMS,KSFB,KISM,KMLB,VIZTA,FSHUN,DDANY,DADES,KORL": {
             "cleared_altitude": 2000,
             "waypoints": "KLEE-13/h090"
           }
@@ -11160,13 +11160,13 @@
       },
       "departure_routes": {
         "9R": {
-          "KORL,KMCO,VALKA,MALET,ODDEL,SMYRA,APOLO,WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN": {
+          "KORL,KMCO,VALKA,MALET,ODDEL,SMYRA,APOLO,WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN,KISM,KSFB": {
             "cleared_altitude": 2000,
             "waypoints": "KMLB-27L/h90"
           }
         },
         "27L": {
-          "KORL,KMCO,VALKA,MALET,ODDEL,SMYRA,APOLO,WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN": {
+          "KORL,KMCO,VALKA,MALET,ODDEL,SMYRA,APOLO,WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN,KISM,KSFB": {
             "cleared_altitude": 2000,
             "waypoints": "KMLB-9R/h270"
           }
@@ -12036,7 +12036,7 @@
       },
       "departure_routes": {
         "11": {
-          "KORL,KMCO,VALKA,MALET,ODDEL,SMYRA,APOLO,WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN": {
+          "KORL,KMCO,VALKA,MALET,ODDEL,SMYRA,APOLO,WORMS,DEARY,JFRYS,RDSOX,OSPRY,LAL,VIZTA,KNEED,GUURR,KIZER,GUANO,OMN,OCF,GNV,DDANY,GERCK,MZULO,LENDS,FSHUN,ROGAN,KMLB,KSFB": {
             "cleared_altitude": 2000,
             "waypoints": "KCOI-29/h090"
           }

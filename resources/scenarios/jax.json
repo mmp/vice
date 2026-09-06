@@ -1259,7 +1259,8 @@
           "OCF": {
             "cleared_altitude": 2000,
             "waypoints": "KNIP-28/h100 OCF"
-          }
+          },
+          "GNV": { "cleared_altitude": 2000, "waypoints": "KNIP-28/h100 GNV" }
         },
         "28": {
           "MMKAY": {
@@ -1289,7 +1290,8 @@
           "OCF": {
             "cleared_altitude": 2000,
             "waypoints": "KNIP-10/h280 OCF"
-          }
+          },
+          "GNV": { "cleared_altitude": 2000, "waypoints": "KNIP-10/h280 GNV" }
         }
       },
       "departures": [

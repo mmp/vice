@@ -51,7 +51,7 @@
             "sid": "TRSHA1",
             "initial_heading": 235
           },
-          "ROA,LYH,SBV,CREWE,RDU": {
+          "ROA,LYH,SBV,CVE,RDU": {
             "cleared_altitude": 5000,
             "description": "QUAK8",
             "sid": "QUAK8",
@@ -75,7 +75,7 @@
             "sid": "TRSHA1",
             "initial_heading": 55
           },
-          "ROA,LYH,SBV,CREWE,RDU": {
+          "ROA,LYH,SBV,CVE,RDU": {
             "cleared_altitude": 5000,
             "description": "QUAK8",
             "sid": "QUAK8",
@@ -299,7 +299,7 @@
             "description": "TRSHA1",
             "sid": "TRSHA1"
           },
-          "ROA,LYH,SBV,CREWE,RDU": {
+          "ROA,LYH,SBV,CVE,RDU": {
             "cleared_altitude": 4000,
             "description": "QUAK8",
             "sid": "QUAK8",
@@ -323,7 +323,7 @@
             "sid": "TRSHA1",
             "initial_heading": 240
           },
-          "ROA,LYH,SBV,CREWE,RDU": {
+          "ROA,LYH,SBV,CVE,RDU": {
             "cleared_altitude": 4000,
             "description": "QUAK8",
             "sid": "QUAK8",

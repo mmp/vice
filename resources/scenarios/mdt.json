@@ -26,7 +26,7 @@
             "sid": "MDTW.SW.NW",
             "waypoints": "N040.12.07.651,W076.47.06.342/flyover/h310"
           },
-          "KIACK,SEG,GAAPP": {
+          "KIACK,SEG": {
             "cleared_altitude": 3000,
             "sid": "MDTW.N",
             "waypoints": "N040.12.07.651,W076.47.06.342/flyover/h340"
@@ -43,7 +43,7 @@
             "sid": "MDTE.SW",
             "waypoints": "N040.10.58.726,W076.44.00.783/flyover/h200"
           },
-          "PSB,MCMAN,GAAPP,SEG,KIACK,LVZ,ETX,FJC,HWANG": {
+          "PSB,MCMAN,SEG,KIACK,LVZ,ETX,FJC,HWANG": {
             "cleared_altitude": 3000,
             "sid": "MDTE.NW.N.NE",
             "waypoints": "N040.10.58.726,W076.44.00.783/flyover/h050"
@@ -64,7 +64,7 @@
             }
           ],
           "destination": "KJAX",
-          "exit": "VINNY",
+          "exit": "EMI",
           "route": "VINNY EMI GVE Q75 SLOJO Q83 WURFL ESENT LUNNI1"
         },
         {
@@ -75,7 +75,7 @@
             }
           ],
           "destination": "KSFB",
-          "exit": "VINNY",
+          "exit": "EMI",
           "route": "VINNY EMI GVE Q75 SLOJO Q83 LPERD TTHOR3"
         },
         {
@@ -86,7 +86,7 @@
             }
           ],
           "destination": "KPGD",
-          "exit": "VINNY",
+          "exit": "EMI",
           "route": "VINNY EMI EVE Q75 SLOJO Q103 PUPYY KYYUU LUBBR3"
         },
         {
@@ -97,7 +97,7 @@
             }
           ],
           "destination": "KSRQ",
-          "exit": "VINNY",
+          "exit": "EMI",
           "route": "VINNY EMI GVE Q75 SLOJO Q103 PUPPY KYYUU LUBBR3"
         },
         {
@@ -108,7 +108,7 @@
             }
           ],
           "destination": "KPIE",
-          "exit": "VINNY",
+          "exit": "EMI",
           "route": "VINNY EMI GVE Q75 TUEFL BAAMF DADES1"
         },
         {
@@ -119,7 +119,7 @@
             }
           ],
           "destination": "KMYR",
-          "exit": "VINNY",
+          "exit": "EMI",
           "route": "VINNY EMI Q119 SCOOB ILM WYLMS"
         },
         {
@@ -147,7 +147,7 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "VINNY",
+          "exit": "EMI",
           "route": "VINNY EMI GVE AIROW CHSLY8"
         },
         {
@@ -168,7 +168,7 @@
             }
           ],
           "destination": "KBOS",
-          "exit": "GAAPP",
+          "exit": "KIACK",
           "route": "GAAPP KIACK HNK PONCT JFUND2"
         },
         {
@@ -211,8 +211,8 @@
             }
           ],
           "destination": "KATL",
-          "exit": "VINNY",
-          "route": "VINNY EMI J48 MOL FLASK OZZI1"
+          "exit": "EMI",
+          "route": "GRAMO VINNY EMI J48 MOL FLASK OZZI1"
         },
         {
           "airlines": [
@@ -336,8 +336,8 @@
             }
           ],
           "destination": "KBHM",
-          "exit": "VINNY",
-          "route": "VINNY EMI J48 CSN FANPO Q40 NIOLA DIODE"
+          "exit": "EMI",
+          "route": "GRAMO VINNY EMI J48 CSN FANPO Q40 NIOLA DIODE"
         },
         {
           "airlines": [
@@ -381,7 +381,7 @@
           "altitude": 15000,
           "destination": "KHPN",
           "exit": "KIACK",
-          "route": "KIACK LAAYK T216 IGN V157 HAARP"
+          "route": "GAAPP KIACK LAAYK T216 IGN V157 HAARP"
         },
         {
           "airlines": [
@@ -432,12 +432,11 @@
             }
           ],
           "destination": "KMIA",
-          "exit": "VINNY",
-          "route": "VINNY BAL SCOOB EARZZ SKARP Y313 HOAGG BNFSH2"
+          "exit": "GRAMO",
+          "route": "GRAMO BAL SCOOB EARZZ SKARP Y313 HOAGG BNFSH2"
         }
       ],
       "exit_categories": {
-        "GAAPP": "NORTH",
         "SEG": "NORTH",
         "KIACK": "NORTH",
         "ETX": "NORTHEAST",
@@ -587,7 +586,7 @@
             }
           ],
           "destination": "KGNV",
-          "exit": "VINNY",
+          "exit": "EMI",
           "route": "VINNY EMI Q75 SLOJO Q103 CYNTA"
         },
         {
@@ -608,8 +607,8 @@
             }
           ],
           "destination": "KTMB",
-          "exit": "VINNY",
-          "route": "VINNY BAL OTT HUBBS ILM OSTNN HIBAC TARPN3"
+          "exit": "GRAMO",
+          "route": "GRAMO BAL OTT HUBBS ILM OSTNN HIBAC TARPN3"
         },
         {
           "airlines": [

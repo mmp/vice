@@ -385,13 +385,13 @@
       },
       "departure_routes": {
         "3": {
-          "SMALZ,JROSS,LCAPE,CHS,TILLS,TERLY,RIYSA,BAGGY,TYBEE": {
+          "SMALZ,JROSS,LCAPE,CHS,TILLS,TERLY,RIYSA,BAGGY,TYBEE,GIPPL": {
             "cleared_altitude": 2000,
             "waypoints": "KHXD-21/h034"
           }
         },
         "21": {
-          "SMALZ,JROSS,LCAPE,CHS,TILLS,TERLY,RIYSA,BAGGY,TYBEE": {
+          "SMALZ,JROSS,LCAPE,CHS,TILLS,TERLY,RIYSA,BAGGY,TYBEE,GIPPL": {
             "cleared_altitude": 2000,
             "waypoints": "KHXD-3/h214"
           }
@@ -568,13 +568,13 @@
       },
       "departure_routes": {
         "14": {
-          "YUHLY,MILEN,WRGNZ,KLICK,EZETY": {
+          "YUHVY,MILEN,MAYAR,WRGNZ,KLICK,EZETY": {
             "cleared_altitude": 4000,
             "waypoints": "KTBR-32/h140"
           }
         },
         "32": {
-          "YUHLY,MILEN,WRGNZ,KLICK,EZETY": {
+          "YUHVY,MILEN,MAYAR,WRGNZ,KLICK,EZETY": {
             "cleared_altitude": 4000,
             "waypoints": "KTBR-14/h320"
           }
@@ -589,7 +589,7 @@
             }
           ],
           "destination": "KARW",
-          "exit": "YUHVY",
+          "exit": "MAYAR",
           "route": "MAYAR V154 SAV V437 YUHVY"
         },
         {

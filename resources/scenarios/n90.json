@@ -334,7 +334,7 @@
             "waypoints": "N040.48.41.759,W073.54.10.057/a5000/ho5S N040.53.21.580,W073.58.02.144 N040.40.32.510,W074.07.44.337/a12000 N040.28.46.625,W074.10.12.625/hoC68/a12000",
             "departure_controller": "1L"
           },
-          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,DPK,SHIPP,WAVEY": {
+          "COATE,NEION,HAAYS,GAYEL,SAX,NYACK,DPK,SHIPP,WAVEY": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "waypoints": "N040.48.58.348,W073.53.20.921/a5000/ho5T N040.56.32.578,W073.58.06.648/a9000+/hoC56 N041.01.29.401,W074.09.33.266/a11000+",
@@ -354,7 +354,7 @@
             "waypoints": "KLGA-22/h360",
             "departure_controller": "1L"
           },
-          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+          "COATE,NEION,HAAYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
             "cleared_altitude": 5000,
             "sid": "LGA7",
             "waypoints": "KLGA-22/h40",
@@ -1282,7 +1282,7 @@
           }
         },
         "4L": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SBJ,SHIPP,WAVEY,ZIMMZ,ARD": {
             "cleared_altitude": 3000,
             "sid": "EWR5",
             "waypoints": "KEWR-22R/h039/@a500+/r055/@IEZA-D4.0+/l290"
@@ -5085,7 +5085,8 @@
         "HAAYS.P": "North",
         "MERIT": "East",
         "NEION": "North",
-        "NEION.P": "North"
+        "NEION.P": "North",
+        "SAX": "North"
       }
     },
     "KTEB": {
@@ -5158,7 +5159,7 @@
           }
         },
         "1.Background": {
-          "BIGGY,ELIOT,LANNA,NEWEL,None,PARKE,SAX,ZIMMZ": {
+          "BIGGY,ELIOT,LANNA,NEWEL,PARKE,SAX,ZIMMZ": {
             "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "TEB4",
@@ -5342,7 +5343,7 @@
           ],
           "altitude": 4000,
           "destination": "KABE",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY T430 ETX"
         },
         {
@@ -5359,7 +5360,7 @@
           ],
           "altitude": 8000,
           "destination": "KMDT",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY T430 ETX V162 HAR"
         },
         {
@@ -5533,7 +5534,7 @@
           ],
           "altitude": 8000,
           "destination": "KPHL",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY T430 PTW"
         },
         {
@@ -5749,7 +5750,7 @@
           ],
           "altitude": 13000,
           "destination": "KPSM",
-          "exit": "CMK",
+          "exit": "BREZY",
           "route": "BREZY V39 CMK GREKI JUDDS CAM CON"
         },
         {
@@ -5766,7 +5767,7 @@
           ],
           "altitude": 6000,
           "destination": "KFRG",
-          "exit": "FRG",
+          "exit": "BREZY",
           "route": "BREZY CMK V374 DENNA BDR V44 DPK FRG"
         },
         {
@@ -5780,7 +5781,7 @@
           ],
           "altitude": 19000,
           "destination": "KBTV",
-          "exit": "CMK",
+          "exit": "BREZY",
           "route": "BREZY V39 CMK GREKI JUDDS CAM"
         },
         {
@@ -5797,7 +5798,7 @@
           ],
           "altitude": 3000,
           "destination": "KHPN",
-          "exit": "HPN",
+          "exit": "BREZY",
           "route": "BREZY V39 CMK HPN"
         },
         {
@@ -5938,11 +5939,7 @@
         "SHIPP": "South",
         "WAVEY": "South",
         "WHITE": "South",
-        "ZIMMZ": "West",
-        "CMK": "East",
-        "BOPLY": "East",
-        "HPN": "East",
-        "FRG": "East"
+        "ZIMMZ": "West"
       },
       "tower_list": 1,
       "atpa_volumes": {
@@ -5996,7 +5993,7 @@
       },
       "departure_routes": {
         "5": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,ZIMMZ,SBJ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SHIPP,WAVEY,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
             "waypoints": "_MMU5_049/a1700+/h050"
@@ -6008,7 +6005,7 @@
           }
         },
         "23": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,ZIMMZ,SBJ,ARD": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SHIPP,WAVEY,ZIMMZ,SBJ,ARD": {
             "cleared_altitude": 2000,
             "sid": "MMU7",
             "waypoints": "_MMU23_229/a600 _MMU23_210/a2000+/h160"
@@ -6131,7 +6128,7 @@
           ],
           "altitude": 4000,
           "destination": "KABE",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY T430 ETX"
         },
         {
@@ -6148,7 +6145,7 @@
           ],
           "altitude": 8000,
           "destination": "KMDT",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY T430 ETX V162 HAR"
         },
         {
@@ -6322,7 +6319,7 @@
           ],
           "altitude": 8000,
           "destination": "KPHL",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY T430 PTW"
         },
         {
@@ -6538,7 +6535,7 @@
           ],
           "altitude": 13000,
           "destination": "KPSM",
-          "exit": "CMK",
+          "exit": "BREZY",
           "route": "BREZY V39 CMK GREKI JUDDS CAM CON"
         },
         {
@@ -6555,7 +6552,7 @@
           ],
           "altitude": 6000,
           "destination": "KFRG",
-          "exit": "FRG",
+          "exit": "BREZY",
           "route": "BREZY CMK V374 DENNA BDR V44 DPK FRG"
         },
         {
@@ -6569,7 +6566,7 @@
           ],
           "altitude": 19000,
           "destination": "KBTV",
-          "exit": "CMK",
+          "exit": "BREZY",
           "route": "BREZY V39 CMK GREKI JUDDS CAM"
         },
         {
@@ -6586,7 +6583,7 @@
           ],
           "altitude": 3000,
           "destination": "KHPN",
-          "exit": "HPN",
+          "exit": "BREZY",
           "route": "BREZY V39 CMK HPN"
         },
         {
@@ -6726,11 +6723,7 @@
         "SHIPP": "South",
         "WAVEY": "South",
         "WHITE": "South",
-        "ZIMMZ": "West",
-        "CMK": "East",
-        "BOPLY": "East",
-        "HPN": "East",
-        "FRG": "East"
+        "ZIMMZ": "West"
       },
       "vfr": {
         "random_routes": {
@@ -6834,14 +6827,14 @@
       },
       "departure_routes": {
         "4": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD,T430": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD,T430": {
             "cleared_altitude": 2000,
             "sid": "CDW7",
             "waypoints": "KCDW-22/h40"
           }
         },
         "22": {
-          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,None,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD,T430": {
+          "BAYYS,BDR,BIGGY,BREZY,COATE,DIXIE,ELIOT,GAYEL,GREKI,HAAYS,LANNA,MERIT,NEION,NEWEL,PARKE,SAX,SHIPP,WAVEY,WHITE,ZIMMZ,SBJ,ARD,T430": {
             "cleared_altitude": 2000,
             "sid": "CDW7",
             "waypoints": "KCDW-4/h180"
@@ -6853,7 +6846,7 @@
           "airlines": [{ "icao": "N" }],
           "altitude": 6000,
           "destination": "KFRG",
-          "exit": "FRG",
+          "exit": "BREZY",
           "route": "BREZY CMK DENNA T705 BELTT T303 DPK FRG"
         },
         {
@@ -6867,7 +6860,7 @@
           "airlines": [{ "icao": "N" }],
           "altitude": 8000,
           "destination": "KLNS",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY T430 ETX V39 FLOA"
         },
         {
@@ -6881,7 +6874,7 @@
           "airlines": [{ "icao": "N" }],
           "altitude": 19000,
           "destination": "KBOS",
-          "exit": "CMK",
+          "exit": "BREZY",
           "route": "BREZY V39 CMK MERIT ROBUC3"
         },
         {
@@ -6923,7 +6916,7 @@
           "airlines": [{ "icao": "N" }],
           "altitude": 8000,
           "destination": "KPIT",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY T430 ETX V39 FLOA"
         },
         {
@@ -6937,15 +6930,15 @@
           "airlines": [{ "icao": "N" }],
           "altitude": 8000,
           "destination": "KABE",
-          "exit": "BOPLY",
+          "exit": "SBJ",
           "route": "SBJ T430 BOPLY"
         },
         {
           "airlines": [{ "icao": "N" }],
           "altitude": 2000,
           "destination": "KMIV",
-          "exit": "COL",
-          "route": "ELVAE COL SHIPP MIV"
+          "exit": "WHITE",
+          "route": "ELVAE COL WHITE MIV"
         },
         {
           "airlines": [{ "icao": "N" }],
@@ -6991,10 +6984,7 @@
         "SHIPP": "South",
         "WAVEY": "South",
         "WHITE": "South",
-        "ZIMMZ": "West",
-        "CMK": "East",
-        "BOPLY": "East",
-        "FRG": "East"
+        "ZIMMZ": "West"
       }
     },
     "KSWF": {

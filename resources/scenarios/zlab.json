@@ -1121,6 +1121,11 @@
             "sid": "SNSHN5",
             "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY",
             "handoff_controller": "18"
+          },
+          "SHAYL": {
+            "cleared_altitude": 13000,
+            "sid": "RAJEE4",
+            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL"
           }
         },
         "26R": {
@@ -1157,6 +1162,11 @@
             "sid": "SNSHN5",
             "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY",
             "handoff_controller": "18"
+          },
+          "SHAYL": {
+            "cleared_altitude": 14000,
+            "sid": "RAJEE4",
+            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL"
           }
         }
       },
@@ -1348,8 +1358,8 @@
             }
           ],
           "destination": "PHNL",
-          "exit": "DINTY",
-          "route": "DINTY R576 DADIE R576 DENNS MAGGI3"
+          "exit": "SHAYL",
+          "route": "SHAYL ARIII LANAA TUDOO SXC DINTY R576 DADIE R576 DENNS MAGGI3"
         },
         {
           "airlines": [
@@ -1369,8 +1379,8 @@
             }
           ],
           "destination": "PHNL",
-          "exit": "MALIT",
-          "route": "MALIT C1177 FICKY R578 FITES OGG V24 LNY JULLE5"
+          "exit": "SHAYL",
+          "route": "SHAYL ARIII LANAA TUDOO SXC MALIT C1177 FICKY R578 FITES OGG V24 LNY JULLE5"
         },
         {
           "airlines": [

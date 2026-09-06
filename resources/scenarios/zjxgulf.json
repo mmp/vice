@@ -512,7 +512,7 @@
           ],
           "destination": "KGRR",
           "altitude": [32000, 34000, 36000, 38000],
-          "exit": "LAL",
+          "exit": "ROGAN",
           "route": "ROGAN LAL DOFFY CAMJO Q99 HEPAR KERLY VXV JAKIE7"
         },
         {
@@ -1344,7 +1344,7 @@
       "departure_controller": "O1E",
       "departure_routes": {
         "9R": {
-          "RDOSX": {
+          "RDSOX": {
             "cleared_altitude": 16000,
             "waypoints": "KMLB-27L/ho RDSOX",
             "handoff_controller": "14"

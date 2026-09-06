@@ -2613,7 +2613,7 @@
             "sid": "INDIE8",
             "waypoints": "KHOU-22/r010 RENNK COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "KHOU-22/r010 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -2695,7 +2695,7 @@
             "sid": "INDIE8",
             "waypoints": "N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 RENNK/hoC49/c23000 COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -2777,7 +2777,7 @@
             "sid": "INDIE8",
             "initial_heading": 350
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "initial_heading": 350
@@ -2859,7 +2859,7 @@
             "sid": "INDIE8",
             "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.08.770,W095.16.37.201/hoC49/c23000 RENNK COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "KHOU-31L/ld N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -2941,7 +2941,7 @@
             "sid": "INDIE8",
             "initial_heading": 10
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "initial_heading": 10
@@ -3017,7 +3017,7 @@
             "sid": "INDIE8",
             "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.08.770,W095.16.37.201/hoC49/c23000 RENNK COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "KHOU-4/rd N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -3099,7 +3099,7 @@
             "sid": "INDIE8",
             "waypoints": "KHOU-4/l350 RENNK COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "KHOU-4/l350 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -3181,7 +3181,7 @@
             "sid": "INDIE8",
             "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 RENNK/hoC49/c23000 COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "cleared_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "KHOU-4/ld N029.44.36.605,W095.16.03.446/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -3263,7 +3263,7 @@
             "sid": "INDIE8",
             "waypoints": "KHOU-13R/l350 RENNK COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "KHOU-13R/l350 KNTKY PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -3345,7 +3345,7 @@
             "sid": "INDIE8",
             "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 N030.05.08.770,W095.16.37.201/hoC49/c23000 RENNK COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "KHOU-13R/ld N029.45.42.070,W095.16.11.905/flyover/c16000 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -3427,7 +3427,7 @@
             "sid": "INDIE8",
             "initial_heading": 10
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "initial_heading": 10
@@ -3509,7 +3509,7 @@
             "sid": "INDIE8",
             "waypoints": "N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 RENNK/hoC49/c23000 COLET SUSHI WWELL INDIE"
           },
-          "HAWES,ORRTH": {
+          "HAWES,ORRTH,LURIC": {
             "assigned_altitude": 5000,
             "sid": "LURIC8",
             "waypoints": "N029.47.37.749,W095.16.38.355/c16000 N029.56.07.769,W095.17.05.244 KNTKY/hoC49/c23000 PEETY DARTR MUSIQ CLAVN VELCO ENJOY LURIC"
@@ -3789,7 +3789,7 @@
         {
           "exit": "LURIC",
           "destination": "KMEM",
-          "route": "LURIC8 LURIC ELD HOBRK4",
+          "route": "LURIC ELD HOBRK4",
           "airlines": [
             {
               "icao": "SWA"
@@ -4183,7 +4183,8 @@
         "ORRTH": "CLEEP",
         "TPAKK": "CLEEP",
         "DPATY": "CLEEP",
-        "JBULL": "CLEEP"
+        "JBULL": "CLEEP",
+        "LURIC": "CLEEP"
       },
       "tower_list": 2,
       "atpa_volumes": {
@@ -4434,7 +4435,7 @@
             "sid": "BLTWY7",
             "waypoints": "KIAH-33L/r360 DREMR LITLD BLTWY"
           },
-          "CRGER,SAT,MNURE,WAILN": {
+          "CRGER,SAT,MNURE,WAILN,PSTUR,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6"
           },
@@ -4475,7 +4476,7 @@
             "sid": "BLTWY7",
             "initial_heading": 350
           },
-          "LCH,GUSTI,LLA": {
+          "LCH,GUSTI,LLA,BLING,SBI,SPINY": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3"
           },
@@ -4562,7 +4563,7 @@
             "sid": "BLTWY7",
             "waypoints": "KIAH-33L/rd N030.08.16.595,W095.22.48.374/flyover/c16000 DREMR N030.24.02.484,W095.26.33.676/hoC49/c23000 LITLD BLTWY"
           },
-          "CRGER": {
+          "CRGER,PSTUR": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
@@ -4577,7 +4578,7 @@
             "sid": "BNDTO6",
             "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
           },
-          "WAILN": {
+          "WAILN,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
@@ -4619,17 +4620,17 @@
             "sid": "BLTWY7",
             "waypoints": "KIAH-33R/ld N030.08.20.118,W095.20.28.491/c16000 DREMR LITLD/hoC49/c23000 BLTWY"
           },
-          "LCH": {
+          "LCH,BLING": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
             "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
           },
-          "GUSTI": {
+          "GUSTI,SPINY": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
             "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
           },
-          "LLA": {
+          "LLA,SBI": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
             "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
@@ -4939,7 +4940,7 @@
             "sid": "RITAA7",
             "initial_heading": 130
           },
-          "CRGER": {
+          "CRGER,PSTUR": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "initial_heading": 240
@@ -4954,7 +4955,7 @@
             "sid": "BNDTO6",
             "initial_heading": 240
           },
-          "WAILN": {
+          "WAILN,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "initial_heading": 240
@@ -5026,7 +5027,7 @@
             "sid": "RITAA7",
             "initial_heading": 130
           },
-          "CRGER": {
+          "CRGER,PSTUR": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "initial_heading": 240
@@ -5041,7 +5042,7 @@
             "sid": "BNDTO6",
             "initial_heading": 240
           },
-          "WAILN": {
+          "WAILN,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "initial_heading": 240
@@ -5145,7 +5146,7 @@
             "sid": "RITAA7",
             "waypoints": "KIAH-33R/flyover/r100 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ RIIGG"
           },
-          "CRGER": {
+          "CRGER,PSTUR": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "waypoints": "KIAH-33R/l240 SHAAK BNDTO CUZZZ/a13000+ ZUUUU PUFER PSTUR"
@@ -5165,7 +5166,7 @@
             "sid": "BNDTO6",
             "waypoints": "KIAH-33R/l240 SHAAK BNDTO FFOAM/a13000+ BOCCK MNURE"
           },
-          "WAILN": {
+          "WAILN,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "waypoints": "KIAH-33R/l240 SHAAK BNDTO BAAKE/a13000+ WEEED WAILN"
@@ -5237,7 +5238,7 @@
             "sid": "RITAA7",
             "initial_heading": 100
           },
-          "CRGER": {
+          "CRGER,PSTUR": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "initial_heading": 240
@@ -5252,7 +5253,7 @@
             "sid": "BNDTO6",
             "initial_heading": 240
           },
-          "WAILN": {
+          "WAILN,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "initial_heading": 240
@@ -5326,7 +5327,7 @@
             "sid": "RITAA7",
             "waypoints": "KIAH-15R/flyover/l110 BOTLL/a5000- FLYZA/a7000+ WINEO/a9000+ RITAA/a10000+ RIIGG"
           },
-          "CRGER": {
+          "CRGER,PSTUR": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "initial_heading": 240
@@ -5341,7 +5342,7 @@
             "sid": "BNDTO6",
             "initial_heading": 240
           },
-          "WAILN": {
+          "WAILN,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "initial_heading": 240
@@ -5415,7 +5416,7 @@
             "sid": "RITAA7",
             "waypoint_actions": { "RITAA": "hoC87" }
           },
-          "CRGER": {
+          "CRGER,PSTUR": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "waypoints": "KIAH-15R/ld N029.56.45.006,W095.29.55.715 SHAAK BNDTO/hoC80 CUZZZ/a13000+ ZUUUU PUFER PSTUR"
@@ -5430,7 +5431,7 @@
             "sid": "BNDTO6",
             "waypoints": "KIAH-15R/ld N029.56.45.006,W095.29.55.715 SHAAK BNDTO/hoC80 FFOAM/a13000+ BOCCK MNURE"
           },
-          "WAILN": {
+          "WAILN,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
             "waypoints": "KIAH-15R/ld N029.56.45.006,W095.29.55.715 SHAAK BNDTO/hoC80 BAAKE/a13000+ WEEED WAILN"

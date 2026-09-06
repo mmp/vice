@@ -300,13 +300,13 @@
       },
       "departure_routes": {
         "25": {
-          "DSM,MAPPS": {
+          "DSM,DBQ,MAPPS": {
             "cleared_altitude": 5000,
             "waypoints": "KIOW-7/h252"
           }
         },
         "30": {
-          "DSM,MAPPS": {
+          "DSM,DBQ,MAPPS": {
             "cleared_altitude": 5000,
             "waypoints": "KIOW-12/h302"
           }

@@ -2064,7 +2064,8 @@
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-12R/h302/@a1600+/h302 STL PLESS DENNI BNA"
-          }
+          },
+          "STL": { "cleared_altitude": 2500, "waypoints": "KCPS-12R/h302/@a1600+/h302 STL" }
         },
         "30R": {
           "BIB": {
@@ -2121,7 +2122,8 @@
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-12L/h302/@a1600+/h302 STL PLESS DENNI BNA"
-          }
+          },
+          "STL": { "cleared_altitude": 2500, "waypoints": "KCPS-12L/h302/@a1600+/h302 STL" }
         },
         "12R": {
           "BIB": {
@@ -2178,7 +2180,8 @@
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-30L/h122/@a1000+/l080/a2500 STL PLESS DENNI BNA"
-          }
+          },
+          "STL": { "cleared_altitude": 2500, "waypoints": "KCPS-30L/h122/@a1000+/l080/a2500 STL" }
         },
         "12L": {
           "BIB": {
@@ -2240,7 +2243,8 @@
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-30R/h122/@a1000+/l080/a2500 STL PLESS DENNI BNA"
-          }
+          },
+          "STL": { "cleared_altitude": 2500, "waypoints": "KCPS-30R/h122/@a1000+/l080/a2500 STL" }
         },
         "5": {
           "BIB": {
@@ -2297,7 +2301,8 @@
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-23/h047/@a0900+/l360/a2500 STL PLESS DENNI BNA"
-          }
+          },
+          "STL": { "cleared_altitude": 2500, "waypoints": "KCPS-23/h047/@a0900+/l360/a2500 STL" }
         },
         "23": {
           "BIB": {
@@ -2354,7 +2359,8 @@
             "cleared_altitude": 2500,
             "sid": "PLESS5",
             "waypoints": "KCPS-5/h227 STL PLESS DENNI BNA"
-          }
+          },
+          "STL": { "cleared_altitude": 2500, "waypoints": "KCPS-5/h227 STL" }
         }
       },
       "departures": [

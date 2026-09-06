@@ -151,7 +151,7 @@
             "cleared_altitude": 8000,
             "sid": "ESTRR7"
           },
-          "CUBIM,DOOGE,NOONN": {
+          "CUBIM,DOOGE,BENBY,NOONN": {
             "cleared_altitude": 8000,
             "sid": "JOJJO7"
           },
@@ -239,7 +239,7 @@
             "cleared_altitude": 8000,
             "sid": "ESTRR7"
           },
-          "CUBIM,DOOGE,NOONN": {
+          "CUBIM,DOOGE,BENBY,NOONN": {
             "cleared_altitude": 8000,
             "sid": "JOJJO7"
           },
@@ -3194,8 +3194,8 @@
             }
           ],
           "destination": "KTRI",
-          "exit": "JOJJO",
-          "route": "JOJJO BENBY",
+          "exit": "BENBY",
+          "route": "BENBY",
           "altitude": 36000
         },
         {
@@ -3293,7 +3293,7 @@
         "CUBIM": "WEST",
         "DOOGE": "WEST",
         "NOONN": "WEST",
-        "JOJJO": "WEST",
+        "BENBY": "WEST",
         "FILDS": "WEST",
         "SMIAM": "WEST",
         "CLAWD": "WEST",

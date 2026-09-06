@@ -71,7 +71,7 @@
       "departure_controller": "N5W",
       "departure_routes": {
         "19": {
-          "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+          "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE,COATE,NEION,HAAYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE,HYLND": {
             "cleared_altitude": 2500,
             "sid": "TEB4",
             "waypoints": "KTEB-1/delete"

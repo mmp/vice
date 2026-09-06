@@ -246,11 +246,11 @@
           }
         },
         "12L.ALMDN": {
-          "AHRNER": {
+          "HRNER.A": {
             "cleared_altitude": 5000,
             "sid": "ALMDN4.HRNER"
           },
-          "AORRCA,AMOGEE,ATIPRE,ASYRAH": {
+          "ORRCA.A,MOGEE.A,TIPRE.A,SYRAH.A": {
             "cleared_altitude": 5000,
             "sid": "ALMDN4"
           },
@@ -260,23 +260,23 @@
           }
         },
         "12L.BMRNG": {
-          "BHRNER": {
+          "HRNER.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.HRNER"
           },
-          "BORRCA": {
+          "ORRCA.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.ORRCA"
           },
-          "BMOGEE": {
+          "MOGEE.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.MOGEE"
           },
-          "BTIPRE": {
+          "TIPRE.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.TIPRE"
           },
-          "BSYRAH": {
+          "SYRAH.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.SYRAH"
           },
@@ -286,11 +286,11 @@
           }
         },
         "12R.ALMDN": {
-          "AHRNER": {
+          "HRNER.A": {
             "cleared_altitude": 5000,
             "sid": "ALMDN4.HRNER"
           },
-          "AORRCA,AMOGEE,ATIPRE,ASYRAH": {
+          "ORRCA.A,MOGEE.A,TIPRE.A,SYRAH.A": {
             "cleared_altitude": 5000,
             "sid": "ALMDN4"
           },
@@ -300,23 +300,23 @@
           }
         },
         "12R.BMRNG": {
-          "BHRNER": {
+          "HRNER.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.HRNER"
           },
-          "BORRCA": {
+          "ORRCA.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.ORRCA"
           },
-          "BMOGEE": {
+          "MOGEE.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.MOGEE"
           },
-          "BTIPRE": {
+          "TIPRE.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.TIPRE"
           },
-          "BSYRAH": {
+          "SYRAH.B": {
             "cleared_altitude": 15000,
             "sid": "BMRNG4.SYRAH"
           },
@@ -898,7 +898,7 @@
             "cleared_altitude": 3000,
             "sid": "KATFH3"
           },
-          "ALANN,CINNY,BEBOP,ALCOA SUSEY,LIBBO": {
+          "ALANN,CINNY,BEBOP,ALCOA,LIBBO": {
             "cleared_altitude": 6000,
             "sid": "QUAKE2",
             "initial_heading": 98
@@ -913,7 +913,7 @@
             "cleared_altitude": 3000,
             "sid": "KATFH3"
           },
-          "ALANN,CINNY,BEBOP,ALCOA SUSEY,LIBBO": {
+          "ALANN,CINNY,BEBOP,ALCOA,LIBBO": {
             "cleared_altitude": 6000,
             "sid": "QUAKE2",
             "initial_heading": 98
@@ -928,7 +928,7 @@
             "cleared_altitude": 3000,
             "sid": "KATFH3"
           },
-          "ALANN,CINNY,BEBOP,ALCOA SUSEY,LIBBO": {
+          "ALANN,CINNY,BEBOP,ALCOA,LIBBO": {
             "cleared_altitude": 6000,
             "sid": "QUAKE2"
           },

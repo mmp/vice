@@ -624,7 +624,7 @@
           }
         },
         "22R": {
-          "BLZZR,BLZZR.J.22R.27/22": {
+          "BLZZR,BLZZR.J.22R.27/22,BLZZR.J.22R.22/22": {
             "cleared_altitude": 5000,
             "sid": "BLZZR6"
           },
@@ -686,7 +686,7 @@
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h249"
           },
-          "BURDY.P.22R.27/22,DUNKK.HYA.P.22R.27/22,DUNKK.MVY.P.22R.27/22,PVC.P.22R.27/22,SSOXS.P.22R.27/22,BURDY.P.22R.22/22,BURDY.PVD.P.22R.22/22,DUNKK.HYA.P.22R.22/22,DUNKK.MVY.P.22R.22/22,PVC.P.22R.22/22,SSOXS.P.22R.22/22": {
+          "BURDY.P.22R.27/22,DUNKK.HYA.P.22R.27/22,DUNKK.MVY.P.22R.27/22,PVC.P.22R.27/22,SSOXS.P.22R.27/22,BURDY.P.22R.22/22,BURDY.PVD.P.22R.22/22,DUNKK.HYA.P.22R.22/22,DUNKK.MVY.P.22R.22/22,PVC.P.22R.22/22,SSOXS.P.22R.22/22,BURDY.PVD.P.22R.27/22": {
             "cleared_altitude": 3000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h240"
@@ -749,7 +749,7 @@
             "cleared_altitude": 5000,
             "sid": "BLZZR6"
           },
-          "BURDY.PVD.J.33L.27+32/33,BURDY.PVD.J.33L.27/33": {
+          "BURDY.PVD.J.33L.27+32/33,BURDY.PVD.J.33L.27/33,LFV.ACK.J.33L.27+32/33,LFV.ACK.J.33L.27/33,BOSOX.J.33L.27+32/33,BOSOX.J.33L.27/33,BOSOX.BDL.J.33L.27+32/33,BOSOX.BDL.J.33L.27/33,GLYDE.J.33L.27+32/33,GLYDE.J.33L.27/33,DUNKK.HYA.J.33L.27+32/33,DUNKK.HYA.J.33L.27/33,DUNKK.MVY.J.33L.27+32/33,DUNKK.MVY.J.33L.27/33,MANCH.J.33L.27+32/33,MANCH.J.33L.27/33,PEASE.J.33L.27+32/33,PEASE.J.33L.27/33,PVC.J.33L.27+32/33,PVC.J.33L.27/33": {
             "cleared_altitude": 5000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-15R/h330/@BOS-D2.0+/l316"
@@ -4749,7 +4749,7 @@
           ]
         },
         {
-          "exit": "BLZZR.J.9.4/9.9.4/9",
+          "exit": "BLZZR.J.9.4/9",
           "destination": "KARB",
           "altitude": [40000],
           "route": "BLZZR BAF BEEPS GEE COLTS OKLND1 KARB",
@@ -7844,7 +7844,7 @@
           ]
         },
         {
-          "exit": "BLZZR.J.9.4L/9+4R.9.4L/9+4R",
+          "exit": "BLZZR.J.9.4L/9+4R",
           "destination": "KARB",
           "altitude": [40000],
           "route": "BLZZR BAF BEEPS GEE COLTS OKLND1 KARB",
@@ -14203,7 +14203,7 @@
           ]
         },
         {
-          "exit": "BLZZR.J.9.4/9.9.4/9",
+          "exit": "BLZZR.J.9.4/9",
           "destination": "KARB",
           "altitude": [40000],
           "route": "BLZZR BAF BEEPS GEE COLTS OKLND1 KARB",
@@ -17282,7 +17282,7 @@
           ]
         },
         {
-          "exit": "BLZZR.J.9.4/9.9.4/9",
+          "exit": "BLZZR.J.9.4/9",
           "destination": "KARB",
           "altitude": [40000],
           "route": "BLZZR BAF BEEPS GEE COLTS OKLND1 KARB",
@@ -20769,7 +20769,7 @@
           ]
         },
         {
-          "exit": "BLZZR.J.9.4/9.9.4/9",
+          "exit": "BLZZR.J.9.4/9",
           "destination": "KARB",
           "altitude": [40000],
           "route": "BLZZR BAF BEEPS GEE COLTS OKLND1 KARB",
@@ -27107,7 +27107,7 @@
           ]
         },
         {
-          "exit": "BLZZR.J.9.4/9.9.4/9",
+          "exit": "BLZZR.J.9.4/9",
           "destination": "KARB",
           "altitude": [40000],
           "route": "BLZZR BAF BEEPS GEE COLTS OKLND1 KARB",
@@ -34046,7 +34046,8 @@
         "SSOXS": "ALL",
         "SSOXS.J.33L.33+32/27": "ALL",
         "SSOXS.P.22R.27/22": "ALL",
-        "SSOXS.P.33L.27+32/33": "ALL"
+        "SSOXS.P.33L.27+32/33": "ALL",
+        "BURDY.PVD.P.22R.27/22": "ALL"
       },
       "tower_list": 1
     },

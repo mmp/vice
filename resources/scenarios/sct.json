@@ -3748,6 +3748,11 @@
             "cleared_altitude": 5000,
             "sid": "RV",
             "waypoints": "N032.43.24.803,W117.08.53.578/a900+ MZB/h290 OCN"
+          },
+          "ROBNN.E": {
+            "cleared_altitude": 10000,
+            "sid": "RV",
+            "waypoints": "N032.43.24.803,W117.08.53.578/a900+ MZB/h290 ROBNN"
           }
         }
       },
@@ -5411,10 +5416,10 @@
           ]
         },
         {
-          "exit": "PADRZ",
+          "exit": "PADRZ.P",
           "destination": "KSBP",
           "altitude": 18000,
-          "route": "PADRZ2 PADRZ SXC WEEZL RZS CADAB",
+          "route": "PADRZ SXC WEEZL RZS CADAB",
           "airlines": [
             {
               "icao": "N",
@@ -5793,7 +5798,7 @@
       },
       "departure_routes": {
         "24": {
-          "OCN,MZB,TRM": {
+          "OCN,MZB,TRM,JLI": {
             "cleared_altitude": 3000,
             "waypoints": "KCRQ-6/h245"
           },

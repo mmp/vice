@@ -51,7 +51,7 @@
             "sid": "CLTCH3",
             "initial_heading": 300
           },
-          "RRSIN": {
+          "RRSIN,JDUBB": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
             "initial_heading": 300
@@ -77,7 +77,7 @@
             "sid": "CLTCH3",
             "initial_heading": 300
           },
-          "RRSIN": {
+          "RRSIN,JDUBB": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
             "initial_heading": 300

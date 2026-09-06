@@ -683,6 +683,12 @@
             "description": "jets/turboprops",
             "waypoints": "N036.25.55.554,W095.55.14.932/h110/ho",
             "handoff_controller": "1D"
+          },
+          "COLIN.P,MAYES.P,NOBLE.P,SHAWN.P": {
+            "cleared_altitude": 4000,
+            "description": "props",
+            "waypoints": "N036.25.55.554,W095.55.14.932/h130/ho",
+            "handoff_controller": "1D"
           }
         }
       },
@@ -1009,7 +1015,11 @@
         "COLIN.J": "NE",
         "MAYES.J": "NE",
         "NOBLE.J": "S",
-        "SHAWN.J": "W"
+        "SHAWN.J": "W",
+        "COLIN.P": "NE",
+        "MAYES.P": "NE",
+        "NOBLE.P": "S",
+        "SHAWN.P": "W"
       },
       "tower_list": 3
     },

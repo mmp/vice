@@ -103,7 +103,7 @@
             "cleared_altitude": 4000,
             "sid": "SWOPE1"
           },
-          "EYOBI,HCM,HYTRA,KELLE,PBCUP,RDU,SHLBK,THHMP": {
+          "EYOBI,HCM,HYTRA,KELLE,PBCUP,RDU,SHLBK,THHMP,DEEEZ,NUTIY": {
             "cleared_altitude": 4000,
             "sid": "NUTIY1"
           }
@@ -117,7 +117,7 @@
             "cleared_altitude": 4000,
             "sid": "SWOPE1"
           },
-          "EYOBI,HCM,HYTRA,KELLE,PBCUP,RDU,SHLBK,THHMP": {
+          "EYOBI,HCM,HYTRA,KELLE,PBCUP,RDU,SHLBK,THHMP,DEEEZ,NUTIY": {
             "cleared_altitude": 4000,
             "sid": "NUTIY1"
           }
@@ -272,7 +272,7 @@
           "exit": "THHMP",
           "destination": "KBWI",
           "altitude": 18000,
-          "route": "NUTIY1 THHMP RAVNN9",
+          "route": "THHMP RAVNN9",
           "airlines": [
             {
               "icao": "SWA",
@@ -284,7 +284,7 @@
           "exit": "KELLE",
           "destination": "KMDW",
           "altitude": 28000,
-          "route": "NUTIY1 KELLE MOL GEFFS J149 FWA PANGG7",
+          "route": "KELLE MOL GEFFS J149 FWA PANGG7",
           "airlines": [
             {
               "icao": "SWA",
@@ -296,7 +296,7 @@
           "exit": "RDU",
           "destination": "KDAL",
           "altitude": 28000,
-          "route": "NUTIY1 RDU SHPRD AWYAT Q52 CHOPZ THRSR VLKNN Q30 IZAAC PUDJE REDDN4 ",
+          "route": "RDU SHPRD AWYAT Q52 CHOPZ THRSR VLKNN Q30 IZAAC PUDJE REDDN4 ",
           "airlines": [
             {
               "icao": "SWA",
@@ -308,7 +308,7 @@
           "exit": "KELLE",
           "destination": "KDEN",
           "altitude": 26000,
-          "route": "NUTIY1 KELLE MOL J24 FLM GBEES Q176 STL J24 OATHE CLASH5",
+          "route": "KELLE MOL J24 FLM GBEES Q176 STL J24 OATHE CLASH5",
           "airlines": [
             {
               "icao": "SWA",
@@ -320,7 +320,7 @@
           "exit": "PRONI",
           "destination": "KMCO",
           "altitude": 26000,
-          "route": "SWOPE1 PRONI WAALT Y289 BAHAA HIBAC ALYNA4",
+          "route": "PRONI WAALT Y289 BAHAA HIBAC ALYNA4",
           "airlines": [
             {
               "icao": "SWA",
@@ -336,7 +336,7 @@
           "exit": "KELLE",
           "destination": "KORD",
           "altitude": 26000,
-          "route": "NUTIY1 KELLE MOL GEFFS J149 ROD WATSN4",
+          "route": "KELLE MOL GEFFS J149 ROD WATSN4",
           "airlines": [
             {
               "icao": "UAL",
@@ -348,7 +348,7 @@
           "exit": "KELLE",
           "destination": "KDEN",
           "altitude": 28000,
-          "route": "NUTIY1 KELLE MOL J24 FLM GBEES Q176 STL J24 OATHE CLASH5",
+          "route": "KELLE MOL J24 FLM GBEES Q176 STL J24 OATHE CLASH5",
           "airlines": [
             {
               "icao": "UAL",
@@ -364,7 +364,7 @@
           "exit": "HYTRA",
           "destination": "KEWR",
           "altitude": 24000,
-          "route": "NUTIY1 HYTRA PHLBO4",
+          "route": "HYTRA PHLBO4",
           "airlines": [
             {
               "icao": "UAL",
@@ -373,10 +373,10 @@
           ]
         },
         {
-          "exit": "HOUKY",
+          "exit": "THHMP",
           "destination": "KIAD",
           "altitude": 18000,
-          "route": "HOUKY THHMP CAVLR7",
+          "route": "THHMP CAVLR7",
           "airlines": [
             {
               "icao": "UAL",
@@ -388,7 +388,7 @@
           "exit": "ELLDE",
           "destination": "KFLL",
           "altitude": 26000,
-          "route": "SWOPE1 ELLDE Q97 PRMUS CUUDA3",
+          "route": "ELLDE Q97 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "UAL",
@@ -397,10 +397,10 @@
           ]
         },
         {
-          "exit": "NUTIY",
+          "exit": "DEEEZ",
           "destination": "KTPA",
           "altitude": 26000,
-          "route": "NUTIY1 NUTIY JIMAR DEEEZ Q409 PUPYY BAAMF DADES2",
+          "route": "DEEEZ Q409 PUPYY BAAMF DADES2",
           "airlines": [
             {
               "icao": "FFT",
@@ -426,6 +426,7 @@
         "ELLDE": "South",
         "JOHAR": "South",
         "KOOKI": "South",
+        "DEEEZ": "South",
         "PRONI": "South",
         "SKARP": "South"
       },

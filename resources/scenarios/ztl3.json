@@ -51,7 +51,7 @@
       "departure_controller": "A1N",
       "departure_routes": {
         "26L": {
-          "GARIY": {
+          "GAIRY": {
             "cleared_altitude": 14000,
             "waypoints": "LIDAS ERWIN GAIRY/ho",
             "handoff_controller": "16"
