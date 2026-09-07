@@ -1,0 +1,873 @@
+{
+  "tracon": "ILM",
+  "airports": {
+    "KILM": {
+      "approaches": {
+        "IY6": {
+          "cifp_id": "IY6"
+        },
+        "IZ6": {
+          "cifp_id": "IZ6"
+        },
+        "IZ24": {
+          "cifp_id": "IZ24"
+        },
+        "IZ35": {
+          "cifp_id": "IZ35"
+        },
+        "L6": {
+          "cifp_id": "L6"
+        },
+        "R6": {
+          "cifp_id": "R6"
+        },
+        "R17": {
+          "cifp_id": "R17"
+        },
+        "R24": {
+          "cifp_id": "R24"
+        },
+        "R35": {
+          "cifp_id": "R35"
+        }
+      },
+      "tower_list": 1,
+      "exit_categories": {
+        "HELNA": "East",
+        "PRONI": "East",
+        "WALLO": "East",
+        "ELMSZ": "West",
+        "JAYDB": "West",
+        "KAATT": "West",
+        "OKNEE": "West",
+        "WYLMS": "West",
+        "YOAST": "West"
+      },
+      "departure_routes": {
+        "6": {
+          "HELNA,PRONI,WALLO": [
+            {
+              "aircraft": ["jet"],
+              "cleared_altitude": 5000,
+              "departure_controller": "1E",
+              "waypoints": "KILM-24/h060"
+            },
+            {
+              "aircraft": ["prop", "turboprop"],
+              "cleared_altitude": 2000,
+              "departure_controller": "1E",
+              "waypoints": "KILM-24/h060"
+            }
+          ],
+          "ELMSZ,JAYDB,KAATT,OKNEE,WYLMS,YOAST": [
+            {
+              "aircraft": ["jet"],
+              "cleared_altitude": 5000,
+              "departure_controller": "1W",
+              "waypoints": "KILM-24/h060"
+            },
+            {
+              "aircraft": ["prop", "turboprop"],
+              "cleared_altitude": 2000,
+              "departure_controller": "1W",
+              "waypoints": "KILM-24/h060"
+            }
+          ]
+        },
+        "17": {
+          "HELNA,PRONI,WALLO": [
+            {
+              "aircraft": ["jet"],
+              "cleared_altitude": 5000,
+              "departure_controller": "1E",
+              "waypoints": "KILM-35/h170"
+            },
+            {
+              "aircraft": ["prop", "turboprop"],
+              "cleared_altitude": 2000,
+              "departure_controller": "1E",
+              "waypoints": "KILM-35/h170"
+            }
+          ],
+          "ELMSZ,JAYDB,KAATT,OKNEE,WYLMS,YOAST": [
+            {
+              "aircraft": ["jet"],
+              "cleared_altitude": 5000,
+              "departure_controller": "1W",
+              "waypoints": "KILM-35/h170"
+            },
+            {
+              "aircraft": ["prop", "turboprop"],
+              "cleared_altitude": 2000,
+              "departure_controller": "1W",
+              "waypoints": "KILM-35/h170"
+            }
+          ]
+        },
+        "24": {
+          "HELNA,PRONI,WALLO": [
+            {
+              "aircraft": ["jet"],
+              "cleared_altitude": 5000,
+              "departure_controller": "1E",
+              "waypoints": "KILM-6/h240"
+            },
+            {
+              "aircraft": ["prop", "turboprop"],
+              "cleared_altitude": 2000,
+              "departure_controller": "1E",
+              "waypoints": "KILM-6/h240"
+            }
+          ],
+          "ELMSZ,JAYDB,KAATT,OKNEE,WYLMS,YOAST": [
+            {
+              "aircraft": ["jet"],
+              "cleared_altitude": 5000,
+              "departure_controller": "1W",
+              "waypoints": "KILM-6/h240"
+            },
+            {
+              "aircraft": ["prop", "turboprop"],
+              "cleared_altitude": 2000,
+              "departure_controller": "1W",
+              "waypoints": "KILM-6/h240"
+            }
+          ]
+        },
+        "35": {
+          "HELNA,PRONI,WALLO": [
+            {
+              "aircraft": ["jet"],
+              "cleared_altitude": 5000,
+              "departure_controller": "1E",
+              "waypoints": "KILM-17/h350"
+            },
+            {
+              "aircraft": ["prop", "turboprop"],
+              "cleared_altitude": 2000,
+              "departure_controller": "1E",
+              "waypoints": "KILM-17/h350"
+            }
+          ],
+          "ELMSZ,JAYDB,KAATT,OKNEE,WYLMS,YOAST": [
+            {
+              "aircraft": ["jet"],
+              "cleared_altitude": 5000,
+              "departure_controller": "1W",
+              "waypoints": "KILM-17/h350"
+            },
+            {
+              "aircraft": ["prop", "turboprop"],
+              "cleared_altitude": 2000,
+              "departure_controller": "1W",
+              "waypoints": "KILM-17/h350"
+            }
+          ]
+        }
+      },
+      "traffic_routes": {
+        "departures": {
+          "KCLT": "OKNEE MLLET6",
+          "KATL": "KAATT Q172 YUTEE SKWKR JJEDI4",
+          "KDCA": "WALLO TYI WAVES CAPSS4",
+          "KPHL": "WALLO YEASO Q97 ZJAAY JIIMS4",
+          "KLGA": "WALLO JAAMS Q107 HURTS PROUD2",
+          "KEWR": "WALLO ESTER AARNN QUART PHLBO4",
+          "KJFK": "PRONI Q131 KALDA Q108 SIE CAMRN5",
+          "KMCO": "KAATT Q85 LPERD GTOUT1",
+          "KTPA": "KAATT JROSS Q409 PUPYY BAAMF DADES2",
+          "KFLL": "ELMSZ Q97 PRMUS CUUDA3",
+          "KMIA": "ELMSZ Q97 DEBRL CSTAL3",
+          "KSAV": "JAYDB KAATT Q85 PELIE CHS KONEY",
+          "KCHS": "WYLMS CRE CRAAW",
+          "KMYR": "WYLMS CRE MYR",
+          "KJAX": "WYLMS CRE CHS ESENT LUNNI2",
+          "KORD": "YOAST GSO BOTTM FLM HEVAN BONNT VEECK5",
+          "KMSP": "YOAST RDU BKW ROD FWA BAE KAMMA KKILR4",
+          "KDEN": "YOAST CLT HITMN DGD DDC KIISS CLASH5",
+          "KRSW": "KAATT JROSS Q409 PUPYY Q103 CYNTA SHFTY6",
+          "KPVD": "WALLO YEASO Q97 ZJAAY Q167 ORCHA JORDN JORDN2",
+          "KBOS": "WALLO PAACK JAMIE Q133 JFK ROBUC3",
+          "KHVN": "WALLO YEASO Q97 KALDA SARDI1",
+          "KRDU": "HELNA TILTZ BLOGS3",
+          "KGSO": "JAYDB BLOCC BLOCC2",
+          "KIAD": "WALLO TYI MAYKR TRSSK CAVLR7",
+          "KBWI": "WALLO TYI THHMP RAVNN9",
+          "KORF": "WALLO NUTZE KOHLS1",
+          "KPIT": "WALLO ESTER ORACL MOL LEJOY DEMME5",
+          "KBNA": "WALLO ESTER RDU SHPRD EDDDY SWFFT3",
+          "KIAH": "OKNEE FLO KIOSK WINAP Q40 AEX DOOBI3"
+        },
+        "arrivals": {
+          "KCLT": "LILLS6 LILLS V296 FAY",
+          "KATL": "GAIRY2 IRQ YUTEE Q172 RAPZZ",
+          "KDCA": "AMEEE1 SCOOB PAACK CHVIS BEULA",
+          "KPHL": "OOD TEBEE HAYDO TRPOD Q409 CRPLR PAACK CHVIS BEULA ILM",
+          "KLGA": "WHITE Q409 CRPLR PAACK",
+          "KEWR": "ELVAE NECCK WHITE Q409 CRPLR PAACK CHVIS BEULA",
+          "KJFK": "WAVEY EMJAY Q167 ZJAAY Q97 PAACK",
+          "KMCO": "FATHE4 VIYAP Q87 JROSS INLET V1 CRE V70 ILM",
+          "KTPA": "BAYPO2 CAMJO Q99 TEEEM JROSS INLET V1 CRE",
+          "KFLL": "FEALX2 ETECK PELCN Y309 FLRDA GARIC",
+          "KIAH": "STRYA8 DPATY MHZ IRQ JENDO OKNEE Q172 KAATT WYLMS",
+          "KMIA": "ALTNN2 DUCEN Q87 JROSS WYLMS",
+          "KCHS": "PLMTO3 CRE",
+          "KMYR": "CRE V70 BILLL",
+          "KRDU": "ROZBO5 ROZBO",
+          "KIAD": "JDUBB4 MELTN SBV RDU FAY V296 ILM",
+          "KORD": "EARND ELANR EMMLY ETAME EMEGE FLM GZG FAY ILM",
+          "KDFW": "TRYTN4 LOOSE WASKO Q34 MATIE CRAMM DEVAC KNSAW RUSSA DAREE KELLN OKNEE Q172 KAATT WYLMS"
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "OKNEE",
+          "route": "OKNEE MLLET6"
+        }
+      ]
+    },
+    "KOAJ": {
+      "approaches": {
+        "I5": {
+          "cifp_id": "I5"
+        },
+        "L5": {
+          "cifp_id": "L5"
+        },
+        "R5": {
+          "cifp_id": "R5"
+        },
+        "R23": {
+          "cifp_id": "R23"
+        }
+      },
+      "tower_list": 2,
+      "departure_controller": "1E",
+      "exit_categories": {
+        "EYOBI": "East",
+        "ILM": "East",
+        "ISO": "East",
+        "JAYDB": "East",
+        "RREGG": "East",
+        "WALLO": "East",
+        "WYLMS": "East"
+      },
+      "departure_routes": {
+        "5": {
+          "EYOBI,ILM,ISO,JAYDB,RREGG,WALLO,WYLMS": {
+            "cleared_altitude": 3000,
+            "departure_controller": "1E",
+            "waypoints": "KOAJ-23/h050"
+          }
+        },
+        "23": {
+          "EYOBI,ILM,ISO,JAYDB,RREGG,WALLO,WYLMS": {
+            "cleared_altitude": 3000,
+            "departure_controller": "1E",
+            "waypoints": "KOAJ-5/h230"
+          }
+        }
+      },
+      "traffic_routes": {
+        "departures": {
+          "KCLT": "JAYDB OKNEE MLLET6",
+          "KATL": "JAYDB KAATT Q172 YUTEE SKWKR JJEDI4",
+          "KIAH": "EYOBI AHOEY Q54 HRTWL Q64 CATLN Q56 SJI SOULL1",
+          "KDCA": "ISO LARKE Q111 GEARS THHMP CAPSS4",
+          "KORF": "RREGG KOHLS1",
+          "KTPA": "WALLO FLO PUPYY BAAMF DADES2",
+          "KMYR": "ILM V70 WYLMS",
+          "KMCO": "WYLMS V70 CRE PITRW LPERD GTOUT1"
+        },
+        "arrivals": {
+          "KCLT": "LILLS6 LILLS FAY",
+          "KATL": "GAIRY2 IRQ YUTEE Q172 RAPZZ",
+          "KORF": "GUMPP PEARS",
+          "KPHF": "GUMPP PEARS",
+          "KRIC": "HPW COUPN GUILD JAAMS Q107 ZORDO",
+          "KMYR": "CRE V70 ILM",
+          "KCHS": "CRE V70 ILM",
+          "KIAH": "GUMBY3 GUSTI Q22 CATLN Q64 DADDS"
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "JAYDB",
+          "route": "JAYDB OKNEE MLLET6"
+        }
+      ]
+    },
+    "KSUT": {
+      "approaches": {
+        "R5": {
+          "cifp_id": "R5"
+        },
+        "R23": {
+          "cifp_id": "R23"
+        }
+      },
+      "hold_for_release": true,
+      "departure_controller": "1W",
+      "exit_categories": {
+        "CHAMS": "West",
+        "WALLO": "West",
+        "WYLMS": "West"
+      },
+      "departure_routes": {
+        "5": {
+          "CHAMS,WALLO,WYLMS": {
+            "cleared_altitude": 3000,
+            "departure_controller": "1W",
+            "waypoints": "KSUT-23/h050"
+          }
+        },
+        "23": {
+          "CHAMS,WALLO,WYLMS": {
+            "cleared_altitude": 3000,
+            "departure_controller": "1W",
+            "waypoints": "KSUT-5/h230"
+          }
+        }
+      },
+      "traffic_routes": {
+        "departures": {
+          "KMCO": "CHAMS CHS IGARY Q85 LPERD GTOUT1",
+          "KTPA": "CHAMS CAKET GIPPL BAAMF DADES2",
+          "KORF": "WALLO NUTZE KOHLS1",
+          "KCLT": "WYLMS OKNEE MLLET6",
+          "KBOS": "WALLO PAACK JAMIE Q133 JFK ROBUC3",
+          "KIAD": "WALLO TYI MAYKR TRSSK CAVLR7"
+        },
+        "arrivals": {
+          "KCLT": "KWEEN8 UNJAM FLO ASHES",
+          "KMCO": "FATHE4 VIYAP Q87 JROSS CHS CRE CHAMS",
+          "KTPA": "BAYPO2 CAMJO SHRKS CAKET CHS CRE CHAMS",
+          "KORF": "SWOPE1 CHIEZ ORRTN",
+          "KBOS": "SSOXS7 SSOXS Q167 RIFLE HEADI Q97 PAACK",
+          "KIAD": "JDUBB4 MELTN SBV RDU FAY V296 ILM",
+          "KDJT": "SLIDZ4 LENDS PELCN Y309 FLRDA GARIC"
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "WYLMS",
+          "route": "WYLMS OKNEE MLLET6"
+        }
+      ]
+    },
+    "KACZ": {
+      "approaches": {
+        "R9": {
+          "cifp_id": "R9"
+        },
+        "R27": {
+          "cifp_id": "R27"
+        }
+      },
+      "hold_for_release": true,
+      "departure_controller": "1E",
+      "exit_categories": {
+        "RAPZZ": "East",
+        "ZORDO": "East"
+      },
+      "departure_routes": {
+        "9": {
+          "RAPZZ,ZORDO": {
+            "cleared_altitude": 3000,
+            "departure_controller": "1E",
+            "waypoints": "KACZ-27/h090"
+          }
+        },
+        "27": {
+          "RAPZZ,ZORDO": {
+            "cleared_altitude": 3000,
+            "departure_controller": "1E",
+            "waypoints": "KACZ-9/h270"
+          }
+        }
+      },
+      "traffic_routes": {
+        "departures": {
+          "KIAD": "ZORDO Q111 GEARS THHMP CAVLR7",
+          "KTPA": "RAPZZ Q135 ELMSZ Q97 WOPNR Q93 DEBRL NICCK DADES2"
+        },
+        "arrivals": {
+          "KIAD": "JCOBY4 COLIN HURTS Q107 ZORDO",
+          "KTPA": "BAYPO2 CAMJO SAV NBC CHS CRE ASHES"
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KTPA",
+          "exit": "RAPZZ",
+          "route": "RAPZZ Q135 ELMSZ Q97 WOPNR Q93 DEBRL NICCK DADES2"
+        }
+      ]
+    }
+  },
+  "default_scenario": "RWY 6/35",
+  "name": "KILM",
+  "scenarios": {
+    "RWY 6/35": {
+      "arrival_runways": [
+        {
+          "airport": "KILM",
+          "runway": "6"
+        },
+        {
+          "airport": "KILM",
+          "runway": "35"
+        },
+        {
+          "airport": "KOAJ",
+          "runway": "5"
+        },
+        {
+          "airport": "KSUT",
+          "runway": "5"
+        },
+        {
+          "airport": "KACZ",
+          "runway": "9"
+        }
+      ],
+      "departure_runways": [
+        {
+          "airport": "KILM",
+          "runway": "6",
+          "rate": 0.01
+        },
+        {
+          "airport": "KILM",
+          "runway": "35",
+          "rate": 0.01
+        },
+        {
+          "airport": "KOAJ",
+          "runway": "5",
+          "rate": 0.01
+        },
+        {
+          "airport": "KSUT",
+          "runway": "5",
+          "rate": 0.01
+        },
+        {
+          "airport": "KACZ",
+          "runway": "9",
+          "rate": 0.01
+        }
+      ],
+      "configuration": "NE",
+      "default_maps": ["ILM E W RVM", "ZDC Airspace"],
+      "description": "ILM Runway 6/35 operations. KOAJ 5, KSUT 5, KACZ 9. Historical-ready.",
+      "inbound_rates": {
+        "NW": {
+          "KILM": 0,
+          "KOAJ": 0,
+          "KSUT": 0,
+          "KACZ": 0
+        },
+        "NE": {
+          "KILM": 0,
+          "KOAJ": 0,
+          "KSUT": 0,
+          "KACZ": 0
+        },
+        "W": {
+          "KILM": 0,
+          "KOAJ": 0,
+          "KSUT": 0,
+          "KACZ": 0
+        },
+        "S": {
+          "KILM": 0,
+          "KOAJ": 0,
+          "KSUT": 0,
+          "KACZ": 0
+        }
+      }
+    },
+    "RWY 17/24": {
+      "arrival_runways": [
+        {
+          "airport": "KILM",
+          "runway": "17"
+        },
+        {
+          "airport": "KILM",
+          "runway": "24"
+        },
+        {
+          "airport": "KOAJ",
+          "runway": "23"
+        },
+        {
+          "airport": "KSUT",
+          "runway": "23"
+        },
+        {
+          "airport": "KACZ",
+          "runway": "27"
+        }
+      ],
+      "departure_runways": [
+        {
+          "airport": "KILM",
+          "runway": "17",
+          "rate": 0.01
+        },
+        {
+          "airport": "KILM",
+          "runway": "24",
+          "rate": 0.01
+        },
+        {
+          "airport": "KOAJ",
+          "runway": "23",
+          "rate": 0.01
+        },
+        {
+          "airport": "KSUT",
+          "runway": "23",
+          "rate": 0.01
+        },
+        {
+          "airport": "KACZ",
+          "runway": "27",
+          "rate": 0.01
+        }
+      ],
+      "configuration": "SW",
+      "default_maps": ["ILM E W RVM", "ZDC Airspace"],
+      "description": "ILM Runway 17/24 operations. KOAJ 23, KSUT 23, KACZ 27. Historical-ready.",
+      "inbound_rates": {
+        "NW": {
+          "KILM": 0,
+          "KOAJ": 0,
+          "KSUT": 0,
+          "KACZ": 0
+        },
+        "NE": {
+          "KILM": 0,
+          "KOAJ": 0,
+          "KSUT": 0,
+          "KACZ": 0
+        },
+        "W": {
+          "KILM": 0,
+          "KOAJ": 0,
+          "KSUT": 0,
+          "KACZ": 0
+        },
+        "S": {
+          "KILM": 0,
+          "KOAJ": 0,
+          "KSUT": 0,
+          "KACZ": 0
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "NW": {
+      "arrivals": [
+        {
+          "waypoints": "N34.48.34.607,W078.36.25.609/a11000 N34.43.08.042,W078.29.18.774/a11000/ho1E KILM",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KILM"],
+          "airlines": {
+            "KILM": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCLT"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N34.48.34.607,W078.36.25.609/a11000 N34.43.08.042,W078.29.18.774/a11000/ho1E KOAJ",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KOAJ"],
+          "airlines": {
+            "KOAJ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCLT"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N34.48.34.607,W078.36.25.609/a11000 N34.43.08.042,W078.29.18.774/a11000/ho1E KSUT",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KSUT"],
+          "airlines": {
+            "KSUT": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCLT"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N34.48.34.607,W078.36.25.609/a11000 N34.43.08.042,W078.29.18.774/a11000/ho1E KACZ",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KACZ"],
+          "airlines": {
+            "KACZ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KIAD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "NE": {
+      "arrivals": [
+        {
+          "waypoints": "N35.09.12.547,W077.42.18.674/a11000 N35.01.20.468,W077.44.04.231/a11000/ho1E KILM",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KILM"],
+          "airlines": {
+            "KILM": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KDCA"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N35.09.12.547,W077.42.18.674/a11000 N35.01.20.468,W077.44.04.231/a11000/ho1E KOAJ",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KOAJ"],
+          "airlines": {
+            "KOAJ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KORF"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N35.09.12.547,W077.42.18.674/a11000 N35.01.20.468,W077.44.04.231/a11000/ho1E KSUT",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KSUT"],
+          "airlines": {
+            "KSUT": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KORF"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N35.09.12.547,W077.42.18.674/a11000 N35.01.20.468,W077.44.04.231/a11000/ho1E KACZ",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KACZ"],
+          "airlines": {
+            "KACZ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KIAD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "W": {
+      "arrivals": [
+        {
+          "waypoints": "N34.12.11.148,W078.35.31.472/a11000 N34.13.07.603,W078.25.54.840/a11000/ho1W KILM",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KILM"],
+          "airlines": {
+            "KILM": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KATL"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N34.12.11.148,W078.35.31.472/a11000 N34.13.07.603,W078.25.54.840/a11000/ho1W KOAJ",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KOAJ"],
+          "airlines": {
+            "KOAJ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KATL"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N34.12.11.148,W078.35.31.472/a11000 N34.13.07.603,W078.25.54.840/a11000/ho1W KSUT",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KSUT"],
+          "airlines": {
+            "KSUT": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCLT"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N34.12.11.148,W078.35.31.472/a11000 N34.13.07.603,W078.25.54.840/a11000/ho1W KACZ",
+          "initial_controller": "C09",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KACZ"],
+          "airlines": {
+            "KACZ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KATL"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "S": {
+      "arrivals": [
+        {
+          "waypoints": "N33.43.18.396,W078.13.03.639/a11000 N33.50.31.863,W078.08.54.787/a11000/ho1W KILM",
+          "initial_controller": "J17",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KILM"],
+          "airlines": {
+            "KILM": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KMCO"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N33.43.18.396,W078.13.03.639/a11000 N33.50.31.863,W078.08.54.787/a11000/ho1W KOAJ",
+          "initial_controller": "J17",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KOAJ"],
+          "airlines": {
+            "KOAJ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KMCO"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N33.43.18.396,W078.13.03.639/a11000 N33.50.31.863,W078.08.54.787/a11000/ho1W KSUT",
+          "initial_controller": "J17",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KSUT"],
+          "airlines": {
+            "KSUT": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KMCO"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N33.43.18.396,W078.13.03.639/a11000 N33.50.31.863,W078.08.54.787/a11000/ho1W KACZ",
+          "initial_controller": "J17",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "airports": ["KACZ"],
+          "airlines": {
+            "KACZ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KTPA"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

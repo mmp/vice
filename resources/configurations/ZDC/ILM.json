@@ -14,10 +14,69 @@
       "callsign": "ILM_W_APP",
       "frequency": 118250,
       "radio_name": "Wilmington Approach"
+    },
+    "2T": {
+      "callsign": "OAJ_TWR",
+      "frequency": 132650,
+      "radio_name": "Ellis Tower"
     }
   },
   "facility_adaptations": {
-    "configurations": {}
+    "weather_station": "KILM",
+    "lists": {
+      "ssa": {
+        "system_altimeter": "KILM",
+        "altimeters": ["KILM", "KOAJ", "KSUT", "KACZ"]
+      }
+    },
+    "configurations": {
+      "NE": {
+        "inbound_assignments": {},
+        "departure_assignments": {},
+        "default_consolidation": {
+          "1W": ["1E"]
+        }
+      },
+      "SW": {
+        "inbound_assignments": {},
+        "departure_assignments": {},
+        "default_consolidation": {
+          "1E": ["1W"]
+        }
+      }
+    },
+    "center": "KILM",
+    "video_map_file": "videomaps/ZDC-ILM.mappack",
+    "areas": {
+      "1": {
+        "default_airport": "KILM",
+        "video_maps": [
+          "ILM E W RVM",
+          "ILM MVA",
+          "",
+          "ILM N S RVM",
+          "ZDC Airspace",
+          "",
+          "IAP ILM I06Y",
+          "IAP ILM I06Z",
+          "IAP ILM I24Y",
+          "IAP ILM I24Z",
+          "IAP ILM I35Z",
+          "IAP ILM L06",
+          "IAP ILM L24",
+          "IAP ILM R06",
+          "IAP ILM R17",
+          "IAP ILM R24",
+          "IAP ILM R35",
+          "IAP OAJ I05",
+          "IAP OAJ L05",
+          "IAP OAJ R05",
+          "IAP OAJ R23",
+          "IAP ACZ R09",
+          "IAP ACZ R27"
+        ]
+      }
+    }
   },
   "handoff_ids": [
     {
