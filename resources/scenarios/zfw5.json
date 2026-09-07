@@ -314,8 +314,8 @@
         {
           "airlines": [
             {
-              "departure_airport": "KSUS",
-              "arrival_airport": "KHOU",
+              "departure_airport": "KHOU",
+              "arrival_airport": "KSUS",
               "icao": "N",
               "fleet": "fastGA"
             },
@@ -335,18 +335,18 @@
               "icao": "DAL"
             },
             {
-              "departure_airport": "KTVC",
-              "arrival_airport": "KIAH",
+              "departure_airport": "KIAH",
+              "arrival_airport": "KTVC",
               "icao": "SKW"
             },
             {
-              "departure_airport": "KGRR",
-              "arrival_airport": "KIAH",
+              "departure_airport": "KIAH",
+              "arrival_airport": "KGRR",
               "icao": "ASH"
             }
           ],
-          "initial_altitude": 35000,
-          "assigned_altitude": 35000,
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
           "initial_controller": "90",
           "initial_speed": 300,
           "waypoints": "N032.56.31.960,W094.50.09.539/ho FORCK ELD SQS/delete"
@@ -354,39 +354,39 @@
         {
           "airlines": [
             {
-              "departure_airport": "KSUS",
-              "arrival_airport": "KHOU",
+              "departure_airport": "KHOU",
+              "arrival_airport": "KSUS",
               "icao": "N",
               "fleet": "fastGA"
             },
             {
-              "departure_airport": "KDAL",
+              "departure_airport": "KDFW",
               "arrival_airport": "KCLT",
-              "icao": "SWA"
+              "icao": "AAL"
             },
             {
-              "departure_airport": "KDAL",
+              "departure_airport": "KDFW",
               "arrival_airport": "KATL",
-              "icao": "SWA"
+              "icao": "AAL"
             },
             {
-              "departure_airport": "KMDW",
-              "arrival_airport": "KHOU",
-              "icao": "SWA"
+              "departure_airport": "KDFW",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
             },
             {
-              "departure_airport": "KTVC",
-              "arrival_airport": "KIAH",
+              "departure_airport": "KIAH",
+              "arrival_airport": "KTVC",
               "icao": "SKW"
             },
             {
-              "departure_airport": "KGRR",
-              "arrival_airport": "KIAH",
+              "departure_airport": "KIAH",
+              "arrival_airport": "KGRR",
               "icao": "ASH"
             }
           ],
-          "initial_altitude": 37000,
-          "assigned_altitude": 37000,
+          "initial_altitude": 39000,
+          "assigned_altitude": 39000,
           "initial_controller": "90",
           "initial_speed": 300,
           "waypoints": "N032.56.31.960,W094.50.09.539/ho FORCK ELD SQS/delete"
