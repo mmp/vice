@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"maps"
@@ -570,10 +571,12 @@ func (s *Sim) Subscribe() *EventsSubscription {
 	return s.eventStream.Subscribe()
 }
 
-func (s *Sim) GetSerializeSim() Sim {
+// GetSerializeSimJSON returns the sim encoded as JSON, for saving in the
+// user's configuration file.
+func (s *Sim) GetSerializeSimJSON() ([]byte, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-	return *s
+	return json.Marshal(s)
 }
 
 func (s *Sim) LogValue() slog.Value {

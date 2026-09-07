@@ -336,10 +336,10 @@ func (c *ControlClient) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.A
 	return state, err
 }
 
-func (c *ControlClient) GetSerializeSim() (*sim.Sim, error) {
-	var s sim.Sim
-	err := c.client.CallWithTimeout(server.GetSerializeSimRPC, c.controllerToken, &s)
-	return &s, err
+func (c *ControlClient) GetSerializeSimJSON() ([]byte, error) {
+	var b []byte
+	err := c.client.CallWithTimeout(server.GetSerializeSimJSONRPC, c.controllerToken, &b)
+	return b, err
 }
 
 func (c *ControlClient) ToggleSimPause() {

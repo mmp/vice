@@ -813,9 +813,9 @@ func (c *controllerContext) GetStateUpdate() SimStateUpdate {
 	}
 }
 
-const GetSerializeSimRPC = "SimManager.GetSerializeSim"
+const GetSerializeSimJSONRPC = "SimManager.GetSerializeSimJSON"
 
-func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
+func (sm *SimManager) GetSerializeSimJSON(token string, s *[]byte) error {
 	c := sm.LookupController(token)
 	if c == nil {
 		return ErrNoSimForControllerToken
@@ -824,8 +824,9 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
-	*s = c.sim.GetSerializeSim()
-	return nil
+	var err error
+	*s, err = c.sim.GetSerializeSimJSON()
+	return err
 }
 
 ///////////////////////////////////////////////////////////////////////////

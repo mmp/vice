@@ -336,11 +336,15 @@ func runReplay(config *Config, configErr error, lg *log.Logger) error {
 	if configErr != nil {
 		return fmt.Errorf("error loading config: %w", configErr)
 	}
-	if config.Sim == nil {
+	s, err := config.savedSim()
+	if err != nil {
+		return fmt.Errorf("error loading saved simulation: %w", err)
+	}
+	if s == nil {
 		return fmt.Errorf("no saved simulation found in config; please configure a scenario in the UI first")
 	}
 
-	return config.Sim.ReplayScenario(*waypointCommands, *replayDuration, lg)
+	return s.ReplayScenario(*waypointCommands, *replayDuration, lg)
 }
 
 func runBroadcast(lg *log.Logger) error {
@@ -455,11 +459,20 @@ func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log
 func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 	plat platform.Platform, lg *log.Logger) (*client.ControlClient, panes.Pane) {
 
-	if config.Sim == nil || *resetSim || *starsRandoms {
+	if *resetSim || *starsRandoms {
 		return nil, nil
 	}
 
-	c, err := mgr.LoadLocalSim(config.Sim, config.ControllerInitials, lg)
+	s, err := config.savedSim()
+	if err != nil {
+		lg.Errorf("Error decoding saved sim: %v", err)
+		return nil, nil
+	}
+	if s == nil {
+		return nil, nil
+	}
+
+	c, err := mgr.LoadLocalSim(s, config.ControllerInitials, lg)
 	if err != nil {
 		lg.Errorf("Error loading local sim: %v", err)
 		return nil, nil

@@ -102,7 +102,21 @@ type ConfigNoSim struct {
 }
 
 type ConfigSim struct {
-	Sim *sim.Sim
+	Sim json.RawMessage
+}
+
+// savedSim returns the simulation stored in the configuration file, or nil
+// if there is none.
+func (c *Config) savedSim() (*sim.Sim, error) {
+	if len(c.Sim) == 0 {
+		return nil, nil
+	}
+
+	var s *sim.Sim
+	if err := json.Unmarshal(c.Sim, &s); err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 
 func configFilePath(lg *log.Logger) string {
@@ -159,10 +173,10 @@ func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Pla
 	c.Sim = nil
 	c.UserWorkstation = ""
 	if saveSim {
-		if sim, err := client.GetSerializeSim(); err != nil {
+		if simJSON, err := client.GetSerializeSimJSON(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
-			c.Sim = sim
+			c.Sim = simJSON
 			c.UserWorkstation = string(client.State.UserTCW)
 		}
 	}
