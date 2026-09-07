@@ -307,11 +307,10 @@ func (ss *simSession) GetActiveTCWs() []sim.TCW {
 // Returns empty values if no contact is pending.
 func (ss *simSession) RequestContact(tcw sim.TCW) (text string, voiceName string, callsign av.ADSBCallsign, ty av.RadioTransmissionType) {
 	// Get all positions controlled by this TCW (primary + consolidated secondaries)
-	cons := ss.sim.State.CurrentConsolidation[tcw]
-	if cons == nil {
+	positions := ss.sim.GetPositionsForTCW(tcw)
+	if len(positions) == 0 {
 		return "", "", "", 0
 	}
-	positions := cons.OwnedPositions()
 
 	// Try pending contacts from any of the controlled positions
 	for {
@@ -327,7 +326,7 @@ func (ss *simSession) RequestContact(tcw sim.TCW) (text string, voiceName string
 			continue
 		}
 
-		voiceName := ss.sim.VoiceAssigner.GetVoice(pc.ADSBCallsign, ss.sim.Rand)
+		voiceName := ss.sim.GetReadbackVoice(pc.ADSBCallsign)
 
 		return spokenText, voiceName, pc.ADSBCallsign, av.RadioTransmissionContact
 	}

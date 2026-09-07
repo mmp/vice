@@ -770,10 +770,14 @@ func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID, minutes int) (err error) 
 }
 
 // TODO: Migrate to ERAM computer.
-func (s *Sim) FlightPlanDirect(tcp TCP, fix string, acid ACID) error {
+func (s *Sim) FlightPlanDirect(fix string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-	ac := s.Aircraft[av.ADSBCallsign(acid)]
+	ac, ok := s.Aircraft[av.ADSBCallsign(acid)]
+	if !ok {
+		return ErrNoMatchingFlight
+	}
+
 	var success bool
 	for i, wp := range ac.Nav.Waypoints {
 		if wp.Fix == fix {

@@ -617,8 +617,7 @@ func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *SimStat
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	tcp := c.sim.State.PrimaryPositionForTCW(c.tcw)
-	err := c.sim.FlightPlanDirect(tcp, da.Fix, da.ACID)
+	err := c.sim.FlightPlanDirect(da.Fix, da.ACID)
 	*update = c.GetStateUpdate()
 	return err
 }
@@ -673,7 +672,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	setReadback := func(spokenText string) {
 		if cmds.EnableTTS && spokenText != "" {
 			result.ReadbackText = spokenText
-			result.ReadbackVoiceName = c.sim.VoiceAssigner.GetVoice(callsign, c.sim.Rand)
+			result.ReadbackVoiceName = c.sim.GetReadbackVoice(callsign)
 			result.ReadbackCallsign = callsign
 		}
 	}
@@ -703,7 +702,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if cmds.EnableTTS && execResult.ReadbackSpokenText != "" {
 		cs := execResult.ReadbackCallsign
 		result.ReadbackText = execResult.ReadbackSpokenText
-		result.ReadbackVoiceName = c.sim.VoiceAssigner.GetVoice(cs, c.sim.Rand)
+		result.ReadbackVoiceName = c.sim.GetReadbackVoice(cs)
 		result.ReadbackCallsign = cs
 	}
 

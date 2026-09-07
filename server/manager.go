@@ -260,6 +260,8 @@ func (ss *SimState) TCWIsPrivileged(tcw sim.TCW) bool {
 const NewSimRPC = "SimManager.NewSim"
 
 func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
+	defer sm.lg.CatchAndReportCrash()
+
 	lg := sm.lg.With(slog.String("sim_name", req.NewSimName))
 
 	nsc, err := sm.makeSimConfiguration(req, lg)
@@ -383,6 +385,8 @@ type JoinSimRequest struct {
 const ConnectToSimRPC = "SimManager.ConnectToSim"
 
 func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) error {
+	defer sm.lg.CatchAndReportCrash()
+
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
@@ -496,6 +500,8 @@ type AddLocalRequest struct {
 }
 
 func (sm *SimManager) AddLocal(req *AddLocalRequest, result *NewSimResult) error {
+	defer sm.lg.CatchAndReportCrash()
+
 	session := makeLocalSimSession(req.Sim, sm.lg)
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
@@ -677,6 +683,8 @@ type ConnectResult struct {
 const ConnectRPC = "SimManager.Connect"
 
 func (sm *SimManager) Connect(version int, result *ConnectResult) error {
+	defer sm.lg.CatchAndReportCrash()
+
 	if version != ViceRPCVersion {
 		return ErrRPCVersionMismatch
 	}
@@ -716,6 +724,8 @@ type RunningSim struct {
 const GetRunningSimsRPC = "SimManager.GetRunningSims"
 
 func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RunningSim) error {
+	defer sm.lg.CatchAndReportCrash()
+
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
@@ -816,6 +826,8 @@ func (c *controllerContext) GetStateUpdate() SimStateUpdate {
 const GetSerializeSimJSONRPC = "SimManager.GetSerializeSimJSON"
 
 func (sm *SimManager) GetSerializeSimJSON(token string, s *[]byte) error {
+	defer sm.lg.CatchAndReportCrash()
+
 	c := sm.LookupController(token)
 	if c == nil {
 		return ErrNoSimForControllerToken
@@ -1008,6 +1020,8 @@ type BroadcastMessage struct {
 const BroadcastRPC = "SimManager.Broadcast"
 
 func (sm *SimManager) Broadcast(m *BroadcastMessage, _ *struct{}) error {
+	defer sm.lg.CatchAndReportCrash()
+
 	pw, err := os.ReadFile("password")
 	if err != nil {
 		return err
