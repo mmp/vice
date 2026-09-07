@@ -386,6 +386,10 @@
             "20"
           ]
         },
+        "departure_assignments": {
+          "KBNA": "40",
+          "KMEM": "40"
+        },
         "inbound_assignments": {
           "WEST HI": "22",
           "WEST HI 2": "22",
@@ -412,14 +416,31 @@
           "WEST UH 5": "19",
           "WEST overflights UH": "19",
           "WEST overflights HI": "22",
-          "BLUZZ5 UH (RAMRD)": "61",
-          "BLUZZ5 UH (BNA)": "61",
           "SOUTH UH 2": "35",
           "SOUTH HI 2": "27",
           "NORTH HI 2": "22",
           "EAST HI 2": "27",
           "WEST UH 4": "19",
-          "WEST UH 3": "19"
+          "WEST UH 3": "19",
+          "BLUZZ5.BNA": "62",
+          "BLUZZ5.RAMRD": "63",
+          "BLUZZ5.PXV": "62",
+          "BRBBQ3.WHOLL": "27",
+          "BRBBQ3.RZC": "22",
+          "BRBBQ3.FSM": "22",
+          "HOBRK4.LITTR": "21",
+          "HOBRK4.TXK": "44",
+          "HOBRK4.ELD": "44",
+          "HOBRK4.MEVEE": "44",
+          "VANZE3.WASER": "30",
+          "VANZE3.TALLO": "31",
+          "RYYMN3 - NMANN": "41",
+          "RYYMN3 - TONES": "41",
+          "RYYMN3 - LOONE": "41",
+          "PASLY5 - CUTRR": "41",
+          "SWFFT3 - EDDDY": "40",
+          "SWFFT3 - THRSR": "40",
+          "SWFFT3 - RKMRT": "40"
         }
       },
       "H61": {
