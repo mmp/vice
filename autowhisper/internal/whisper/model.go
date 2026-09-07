@@ -32,19 +32,6 @@ func New(path string) (Model, error) {
 	return m, nil
 }
 
-func NewFromBytes(data []byte) (Model, error) {
-	m := new(model)
-	ctx, msg := whisperlow.Whisper_init_from_buffer(data)
-	if ctx == nil {
-		if msg != "" {
-			return nil, fmt.Errorf("%w: %s", ErrUnableToLoadModel, msg)
-		}
-		return nil, ErrUnableToLoadModel
-	}
-	m.ctx = ctx
-	return m, nil
-}
-
 // SetLogCallback routes whisper.cpp library log messages through the
 // supplied callback. Passing nil silences the library. The callback may
 // be invoked from any thread (whisper.cpp logs from worker threads).

@@ -29,21 +29,6 @@ void copy_err(char* err_buf, size_t err_buf_size, const char* msg) {
 
 extern "C" {
 
-struct whisper_context* whisper_safe_init_from_buffer_with_params(
-    void* buffer, size_t buffer_size, struct whisper_context_params params,
-    char* err_buf, size_t err_buf_size) {
-    if (err_buf != nullptr && err_buf_size > 0) err_buf[0] = '\0';
-    try {
-        return whisper_init_from_buffer_with_params(buffer, buffer_size, params);
-    } catch (const std::exception& e) {
-        copy_err(err_buf, err_buf_size, e.what());
-        return nullptr;
-    } catch (...) {
-        copy_err(err_buf, err_buf_size, "unknown C++ exception");
-        return nullptr;
-    }
-}
-
 struct whisper_context* whisper_safe_init_from_file_with_params(
     const char* path, struct whisper_context_params params,
     char* err_buf, size_t err_buf_size) {

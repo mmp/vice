@@ -523,21 +523,19 @@ func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, device
 // 1 second of silence. Returns the minimum latency from multiple passes.
 // Multiple passes are needed because GPU performance can vary significantly
 // due to power states, thermal throttling, and system load.
-func benchmarkModel(lg *log.Logger, modelName string) (int64, *whisper.Model, error) {
+//
+// The model is closed before returning so that benchmarking a series of them
+// never holds two in memory at once; the selected one is loaded again once
+// the series is done.
+func benchmarkModel(lg *log.Logger, modelName string) (int64, error) {
 	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Loading %s...", modelName))
 
-	modelBytes := util.LoadResourceBytes("models/" + modelName)
-	model, err := whisper.LoadModelFromBytes(modelBytes)
+	model, err := whisper.LoadModelFromFile(util.GetResourcePath("models/" + modelName))
 	if err != nil {
 		lg.Warnf("whisper-benchmark: failed to load %s: %v", modelName, err)
-		return 0, nil, err
+		return 0, err
 	}
-	closeOnError := true
-	defer func() {
-		if closeOnError {
-			model.Close()
-		}
-	}()
+	defer model.Close()
 
 	var benchMu sync.Mutex
 	samples := make([]int16, platform.AudioInputSampleRate) // 1 second of silence
@@ -562,7 +560,7 @@ func benchmarkModel(lg *log.Logger, modelName string) (int64, *whisper.Model, er
 	for i := range 2 {
 		if _, err := runPass(); err != nil {
 			lg.Warnf("whisper-benchmark: %s warmup pass %d failed: %v", modelName, i+1, err)
-			return 0, nil, err
+			return 0, err
 		}
 	}
 
@@ -576,7 +574,7 @@ func benchmarkModel(lg *log.Logger, modelName string) (int64, *whisper.Model, er
 		lat, err := runPass()
 		if err != nil {
 			lg.Warnf("whisper-benchmark: %s pass %d failed: %v", modelName, i+1, err)
-			return 0, nil, err
+			return 0, err
 		}
 		lg.Infof("whisper-benchmark: %s pass %d: %dms", modelName, i+1, lat)
 		if minLatency < 0 || lat < minLatency {
@@ -585,8 +583,7 @@ func benchmarkModel(lg *log.Logger, modelName string) (int64, *whisper.Model, er
 	}
 
 	setWhisperBenchmarkStatus(lg, fmt.Sprintf("%s: %dms (best of %d)", modelName, minLatency, numPasses))
-	closeOnError = false
-	return minLatency, model, nil
+	return minLatency, nil
 }
 
 // Model size tiers for progressive benchmarking (smallest to largest)
@@ -718,10 +715,9 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 		lg.Warnf("%v", err)
 		return err
 	}
-	modelBytes := util.LoadResourceBytes(modelPath)
 	whisperModelMu.Lock()
 	var err error
-	whisperModel, err = whisper.LoadModelFromBytes(modelBytes)
+	whisperModel, err = whisper.LoadModelFromFile(util.GetResourcePath(modelPath))
 	if err != nil {
 		lg.Errorf("Failed to load whisper model: %v", err)
 		whisperModelMu.Unlock()
@@ -782,7 +778,6 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 		acceptThresholdMs   = 450 // Must process 1s of speech in <450ms to be usable
 	)
 
-	var selectedModel *whisper.Model
 	var selectedName string
 	var selectedLatency int64
 
@@ -797,7 +792,7 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	// Progressively benchmark models from smallest to largest
 	gpuFailed := false
 	for _, modelName := range whisperModelTiers {
-		latencyMs, model, err := benchmarkModel(lg, modelName)
+		latencyMs, err := benchmarkModel(lg, modelName)
 		if err != nil {
 			// A failed GPU init can leave whisper.cpp's Vulkan backend in a
 			// half-initialized state: the next init then crashes inside C with
@@ -812,15 +807,13 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 
 		if latencyMs > acceptThresholdMs {
 			// Too slow - can't use this model
-			if selectedModel != nil {
+			if selectedName != "" {
 				// We have a faster model from a previous iteration; use it
 				lg.Infof("Whisper: %s too slow (%dms), using previous selection", modelName, latencyMs)
-				model.Close()
 			} else {
 				// Even the smallest model is too slow; use it anyway as a
 				// fallback so that STT is available (albeit with higher latency).
 				lg.Warnf("Whisper: even smallest model is slow (%dms), using as fallback", latencyMs)
-				selectedModel = model
 				selectedName = modelName
 				selectedLatency = latencyMs
 			}
@@ -828,10 +821,6 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 		}
 
 		// This model is acceptable - update selection
-		if selectedModel != nil {
-			selectedModel.Close()
-		}
-		selectedModel = model
 		selectedName = modelName
 		selectedLatency = latencyMs
 
@@ -846,7 +835,7 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	}
 
 	// Check if we found any usable model
-	if selectedModel == nil {
+	if selectedName == "" {
 		if gpuFailed {
 			// GPU init failed; try the smallest model on CPU so STT is at
 			// least available (albeit slow). loadModelDirect uses the
@@ -908,19 +897,11 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	whisperBenchmarkReported = false // Allow reporting this new benchmark
 	whisperBenchmarkReportMu.Unlock()
 
-	whisperModelMu.Lock()
-	whisperModel = selectedModel
-	whisperModelNameAtomic.Store(selectedName)
-	whisperModelErr = nil
-	whisperRealtimeFactor = realtimeFactor
-	whisperModelMu.Unlock()
-
-	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Selected: %s (%dms)", selectedName, selectedLatency))
 	lg.Infof("Whisper model selected: %s (%dms, realtimeFactor=%.3f)", selectedName, selectedLatency, realtimeFactor)
 
-	// Save to config if callback provided
-	if whisperSaveCallback != nil {
-		whisperSaveCallback(selectedName, deviceID, WhisperBenchmarkIndex, realtimeFactor, !whisper.GPUEnabled())
+	if err := loadModelDirect(selectedName, deviceID, realtimeFactor, lg); err != nil {
+		whisperModelErr = err
+		lg.Errorf("Failed to load selected whisper model %s: %v", selectedName, err)
 	}
 }
 
@@ -1233,7 +1214,7 @@ func (c *ControlClient) StartStreamingSTT(lg *log.Logger) error {
 	// Wait for initial model load to complete
 	<-whisperModelDone
 	if whisperModelErr != nil {
-		return fmt.Errorf("whisper LoadModelFromBytes: %w", whisperModelErr)
+		return fmt.Errorf("whisper model load: %w", whisperModelErr)
 	}
 
 	// Snapshot state for prompt construction

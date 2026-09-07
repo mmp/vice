@@ -26,9 +26,6 @@ static void whisper_log_set_silent_bridge() { whisper_log_set(cb_log_disable, NU
 // written into the caller-supplied err_buf on the same cgo call to avoid
 // losing the message when the goroutine is rescheduled to a different OS
 // thread.
-struct whisper_context* whisper_safe_init_from_buffer_with_params(
-    void* buffer, size_t buffer_size, struct whisper_context_params params,
-    char* err_buf, size_t err_buf_size);
 struct whisper_context* whisper_safe_init_from_file_with_params(
     const char* path, struct whisper_context_params params,
     char* err_buf, size_t err_buf_size);
@@ -258,22 +255,6 @@ func Whisper_init(path string) (*Context, string) {
 	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice), C.bool(gpuFlashAttn))
 	var errBuf [whisperInitErrBufSize]C.char
 	ctx := C.whisper_safe_init_from_file_with_params(cPath, params, &errBuf[0], C.size_t(len(errBuf)))
-	if ctx != nil {
-		return (*Context)(ctx), ""
-	}
-	return nil, C.GoString(&errBuf[0])
-}
-
-// Whisper_init_from_buffer loads a model from a byte buffer. On failure
-// (including a C++ exception thrown inside whisper.cpp), returns nil
-// and a non-empty error message.
-func Whisper_init_from_buffer(data []byte) (*Context, string) {
-	if len(data) == 0 {
-		return nil, "empty buffer"
-	}
-	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice), C.bool(gpuFlashAttn))
-	var errBuf [whisperInitErrBufSize]C.char
-	ctx := C.whisper_safe_init_from_buffer_with_params(unsafe.Pointer(&data[0]), C.size_t(len(data)), params, &errBuf[0], C.size_t(len(errBuf)))
 	if ctx != nil {
 		return (*Context)(ctx), ""
 	}

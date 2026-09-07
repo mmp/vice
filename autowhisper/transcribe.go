@@ -23,9 +23,11 @@ type Model struct {
 	model whisper.Model
 }
 
-// LoadModelFromBytes loads a whisper model from bytes for reuse.
-func LoadModelFromBytes(data []byte) (*Model, error) {
-	m, err := whisper.NewFromBytes(data)
+// LoadModelFromFile loads a whisper model from a file for reuse.
+// whisper.cpp reads the file itself, so the model never passes through the
+// Go heap.
+func LoadModelFromFile(path string) (*Model, error) {
+	m, err := whisper.New(path)
 	if err != nil {
 		return nil, err
 	}

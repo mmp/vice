@@ -66,7 +66,21 @@ func LoadResource(path string) ResourceReadCloser {
 	return br
 }
 
+// LoadResourceBytes returns the contents of the specified resource file,
+// decompressing it if it is zstd compressed. It panics if the file is not
+// found.
 func LoadResourceBytes(path string) []byte {
+	if filepath.Ext(path) != ".zst" {
+		// Read it directly rather than going through LoadResource and
+		// io.ReadAll, which would make a second copy of the whole file with
+		// a doubling buffer; that costs over a gigabyte for the models.
+		b, err := fs.ReadFile(GetResourcesFS(), path)
+		if err != nil {
+			panic(err)
+		}
+		return b
+	}
+
 	r := LoadResource(path)
 	defer r.Close()
 

@@ -140,14 +140,18 @@ func checkManifestUpToDate(manifestPath string) bool {
 	return false
 }
 
-// validateAllResourcesExist checks that all files in the manifest exist on disk.
-// This catches cases where a crash during download left some files missing,
-// or where files were deleted after the manifest was written.
-// Note: we only check existence, not content hashes, to preserve user edits.
+// validateAllResourcesExist checks that all files in the manifest are on disk
+// at their expected size. This catches cases where a crash during download
+// left some files missing or truncated, or where files were deleted after the
+// manifest was written. A truncated model in particular is not detectable
+// later: whisper.cpp reads past the end of the file and crashes rather than
+// reporting an error. We check size rather than hash so that user edits are
+// preserved and so that startup doesn't have to read a gigabyte of models.
 func validateAllResourcesExist(resourcesDir string, manifest map[string]manifestEntry) bool {
-	for filename := range manifest {
+	for filename, entry := range manifest {
 		fullPath := filepath.Join(resourcesDir, filename)
-		if _, err := os.Stat(fullPath); err != nil {
+		fi, err := os.Stat(fullPath)
+		if err != nil || fi.Size() != entry.Size {
 			return false
 		}
 	}
@@ -533,7 +537,6 @@ func maybeDownload(filename, fullPath, hash string, progressCh chan<- downloadPr
 	if err != nil {
 		return fmt.Errorf("%s: failed to create: %w", filename, err)
 	}
-	defer f.Close()
 
 	// Wrap reader to report progress during download
 	pr := &progressReader{
@@ -543,7 +546,16 @@ func maybeDownload(filename, fullPath, hash string, progressCh chan<- downloadPr
 	}
 
 	hasher := sha256.New()
-	if _, err = io.Copy(io.MultiWriter(f, hasher), pr); err != nil {
+	_, err = io.Copy(io.MultiWriter(f, hasher), pr)
+	if closeErr := f.Close(); err == nil {
+		err = closeErr
+	}
+
+	// The file is closed before either os.Remove below since Windows won't
+	// delete a file that is still open; leaving a partial one behind means
+	// the next run finds it and takes it for a good download.
+	if err != nil {
+		os.Remove(fullPath)
 		return fmt.Errorf("%s: failed to write: %w", filename, err)
 	}
 
