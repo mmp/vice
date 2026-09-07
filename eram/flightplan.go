@@ -326,8 +326,6 @@ func parseFpBeacon(s string, checkSp func(s string, primary bool) bool, spec *si
 	} else {
 		return false, nil
 	}
-
-	return false, nil
 }
 
 func parseFPCoordinationTime(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {

@@ -613,7 +613,6 @@ func (h *beaconListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Comman
 		}
 		// tok is not a valid beacon code
 		return codes, strings.Join(tokens[i+1:], " "), len(codes) > 0, nil
-		break
 	}
 	return codes, "", len(codes) > 0, nil
 }
