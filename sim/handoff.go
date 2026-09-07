@@ -437,11 +437,13 @@ func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 func (s *Sim) acceptRedirectedHandoff(fp *NASFlightPlan, ac *Aircraft, owningTCW TCW) {
 	rh := &fp.RedirectedHandoff
 
+	// Events are encoded for the RPC reply after the sim lock has been
+	// released, so the slices in them must not alias live sim state.
 	s.eventStream.Post(Event{
 		Type:           AcceptedRedirectedHandoffEvent,
 		FromController: rh.OriginalOwner,
 		ToController:   rh.RedirectedTo,
-		Redirectors:    rh.Redirector,
+		Redirectors:    slices.Clone(rh.Redirector),
 		ACID:           fp.ACID,
 	})
 
@@ -792,11 +794,12 @@ func (s *Sim) FlightPlanDirect(fix string, acid ACID) error {
 		return av.ErrNoMatchingFix
 	}
 
-	// Post event
+	// Cloned because the route is encoded for the RPC reply after the sim
+	// lock has been released, while updateWaypoints keeps reslicing it.
 	s.eventStream.Post(Event{
 		Type:  FlightPlanDirectEvent,
 		ACID:  acid,
-		Route: ac.Nav.Waypoints,
+		Route: slices.Clone(ac.Nav.Waypoints),
 	})
 
 	s.publish()

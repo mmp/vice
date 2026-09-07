@@ -7,17 +7,22 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"net"
+	"net/rpc"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
@@ -33,7 +38,7 @@ var (
 	navLogEnabled          = flag.Bool("navlog", false, "enable navigation logging")
 	navLogCategories       = flag.String("navlog-categories", "all", "navigation log `categories`")
 	navLogCallsign         = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign`")
-	loadOnly               = flag.Bool("loadonly", false, "exit as soon as scenarios have loaded; useful for CI smoketests under -race")
+	smoketest              = flag.Duration("smoketest", 0, "load the scenarios, run a sim with an RPC client attached for this long, and exit; for CI under -race")
 	wxFacilities           = flag.String("wxfacilities", "", "write the weather pipeline's airport and facility list as JSON to `file` and exit")
 )
 
@@ -81,7 +86,7 @@ func main() {
 
 	nav.InitNavLog(*navLogEnabled, *navLogCategories, *navLogCallsign)
 
-	server.LaunchServer(server.ServerLaunchConfig{
+	config := server.ServerLaunchConfig{
 		Port: *serverPort,
 		Overrides: server.OverrideFiles{
 			Scenario:       *scenarioFilename,
@@ -91,6 +96,98 @@ func main() {
 		},
 		ServerAddress: *serverAddress,
 		IsLocal:       false,
-		ExitAfterLoad: *loadOnly,
-	}, lg)
+	}
+
+	if *smoketest > 0 {
+		if err := runSmoketest(config, *smoketest, lg); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
+
+	server.LaunchServer(config, lg)
+}
+
+// runSmoketest loads the scenarios, starts a sim, and polls it for state
+// updates for the given duration. Under the race detector that covers
+// scenario loading, the sim update loop, and the RPC replies net/rpc encodes
+// after the sim lock has been released -- the last of which a load-only run
+// never reaches.
+func runSmoketest(config server.ServerLaunchConfig, d time.Duration, lg *log.Logger) error {
+	rpcPort, e, overrideErrors := server.LaunchServerAsync(config, lg)
+	if e.HaveErrors() {
+		e.PrintErrors(lg)
+		return errors.New("errors loading scenarios")
+	}
+	if overrideErrors != "" {
+		lg.Warnf("Override files had errors:\n%s", overrideErrors)
+	}
+
+	conn, err := net.Dial("tcp", net.JoinHostPort("localhost", strconv.Itoa(rpcPort)))
+	if err != nil {
+		return err
+	}
+	cc, err := util.MakeCompressedConn(conn)
+	if err != nil {
+		return err
+	}
+	client := rpc.NewClientWithCodec(util.MakeMessagepackClientCodec(cc))
+	defer client.Close()
+
+	var connect server.ConnectResult
+	if err := client.Call(server.ConnectRPC, server.ViceRPCVersion, &connect); err != nil {
+		return fmt.Errorf("%s: %w", server.ConnectRPC, err)
+	}
+	if len(connect.ScenarioCatalogs) == 0 {
+		return errors.New("server offered no scenarios")
+	}
+
+	// Prefer a facility with packaged weather so the sim runs with real
+	// atmospherics rather than the fallback, and take it in sorted order so
+	// that a failure is reproducible rather than depending on map iteration.
+	req := server.MakeNewSimRequest()
+	req.Initials = "XX"
+	req.StartTime = time.Now().UTC()
+	for _, facility := range util.SortedMapKeys(connect.ScenarioCatalogs) {
+		if wxAvail := connect.AvailableWXByFacility[facility]; len(wxAvail) > 0 {
+			req.Facility, req.StartTime = facility, wxAvail[0].Start()
+			break
+		}
+	}
+	if req.Facility == "" {
+		req.Facility = util.SortedMapKeys(connect.ScenarioCatalogs)[0]
+	}
+
+	var catalog *server.ScenarioCatalog
+	req.GroupName, catalog = util.FirstSortedMapEntry(connect.ScenarioCatalogs[req.Facility])
+	req.ScenarioName = catalog.DefaultScenario
+	req.ScenarioSpec = catalog.Scenarios[req.ScenarioName]
+	if req.ScenarioSpec == nil {
+		return fmt.Errorf("%s: no spec for default scenario", req.ScenarioName)
+	}
+
+	// The server rejects a traffic source it doesn't offer for this scenario.
+	if src := &req.ScenarioSpec.LaunchConfig.TrafficSource; !slices.Contains(req.ScenarioSpec.TrafficSources, *src) {
+		if len(req.ScenarioSpec.TrafficSources) == 0 {
+			return fmt.Errorf("%s: scenario offers no traffic sources", req.ScenarioName)
+		}
+		*src = req.ScenarioSpec.TrafficSources[0]
+	}
+
+	var result server.NewSimResult
+	if err := client.Call(server.NewSimRPC, &req, &result); err != nil {
+		return fmt.Errorf("%s: %w", server.NewSimRPC, err)
+	}
+	lg.Infof("smoketest: running %s/%s/%s for %v", req.Facility, req.GroupName, req.ScenarioName, d)
+
+	// GetStateUpdate blocks until the sim publishes, so this keeps a reply
+	// being encoded for most of the time the update loop is running.
+	for stop := time.Now().Add(d); time.Now().Before(stop); {
+		var update server.SimStateUpdate
+		if err := client.Call(server.GetStateUpdateRPC, result.ControllerToken, &update); err != nil {
+			return fmt.Errorf("%s: %w", server.GetStateUpdateRPC, err)
+		}
+	}
+	return nil
 }

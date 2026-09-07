@@ -14,6 +14,7 @@ import (
 	"net"
 	"net/rpc"
 	"reflect"
+	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -47,6 +48,23 @@ func (c *mpServerCodec) ReadRequestBody(body any) error {
 }
 
 func (c *mpServerCodec) WriteResponse(r *rpc.Response, body any) (err error) {
+	// net/rpc encodes the reply after the service method has returned and
+	// dropped whatever locks it held, so a reply that still aliases live
+	// state can panic here as msgpack walks it. That happens on a net/rpc
+	// goroutine, past the reach of the method's CatchAndReportCrash, and
+	// would otherwise take the process down without naming the RPC.
+	defer func() {
+		if p := recover(); p != nil {
+			c.lg.Errorf("rpc: panic encoding %s reply of type %T: %v\n%s",
+				r.ServiceMethod, body, p, debug.Stack())
+			// The reply was half written, so the stream's framing is gone;
+			// close the connection rather than serve the client garbage from
+			// here on. net/rpc only logs a WriteResponse error and keeps going.
+			_ = c.Close()
+			err = fmt.Errorf("rpc: panic encoding %s reply: %v", r.ServiceMethod, p)
+		}
+	}()
+
 	if err = c.enc.Encode(r); err != nil {
 		return
 	}

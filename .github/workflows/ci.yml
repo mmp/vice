@@ -145,14 +145,16 @@ jobs:
         git lfs install
         git lfs checkout
 
-    - name: Race-detector smoketest (viceserver -loadonly)
+    - name: Race-detector smoketest (viceserver -smoketest)
       run: |
         go build -race -o viceserver-race ./cmd/viceserver
-        # -loadonly returns as soon as scenarios are loaded; any race
-        # detected during loading prints "Found N data race(s)" and exits
-        # with code 66. -port 0 picks an open port so concurrent CI runs
-        # don't fight over a fixed one.
-        ./viceserver-race -loadonly -port 0
+        # -smoketest loads the scenarios, then runs a sim with an RPC client
+        # attached for the given duration, so the run covers the sim update
+        # loop and the RPC replies net/rpc encodes after the sim lock has
+        # been released, not just scenario loading. Any race prints
+        # "Found N data race(s)" and exits with code 66. -port 0 picks an
+        # open port so concurrent CI runs don't fight over a fixed one.
+        ./viceserver-race -smoketest 30s -port 0
 
   build-mac:
     name: Build macOS
