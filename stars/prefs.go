@@ -55,6 +55,15 @@ func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *ST
 	p.Current.Activate(pl, sp)
 }
 
+// selectedPrefs returns the currently-selected saved preferences, or nil if
+// no preference set is selected.
+func (p *PreferenceSet) selectedPrefs() *Preferences {
+	if p.Selected == nil {
+		return nil
+	}
+	return p.Saved[*p.Selected]
+}
+
 // Reset ends up being called when a new Sim is started. It is responsible
 // for resetting all of the preference values in the PreferenceSet that we
 // don't expect to persist on a restart (e.g. quick look positions.)

@@ -428,8 +428,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		}
 
 		pref := "PREF"
-		if sp.prefSet.Selected != nil && sp.prefSet.Saved[*sp.prefSet.Selected] != nil {
-			pref += "\n" + sp.prefSet.Saved[*sp.prefSet.Selected].Name
+		if sel := sp.prefSet.selectedPrefs(); sel != nil {
+			pref += "\n" + sel.Name
 		}
 		if sp.selectButton(ctx, pref, maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModePref)
@@ -670,9 +670,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			}
 		}
 
-		if sp.prefSet.Selected != nil {
+		if sel := sp.prefSet.selectedPrefs(); sel != nil {
 			if sp.selectButton(ctx, "SAVE", buttonHalfVertical, buttonScale) {
-				sp.prefSet.Saved[*sp.prefSet.Selected] = sp.prefSet.Current.Duplicate()
+				// 4.1.5: only the display characteristics are stored; the
+				// preference set keeps the name given to it by SAVE AS.
+				p := sp.prefSet.Current.Duplicate()
+				p.Name = sel.Name
+				sp.prefSet.Saved[*sp.prefSet.Selected] = p
 			}
 		} else {
 			sp.disabledButton(ctx, "SAVE", buttonHalfVertical, buttonScale)
@@ -691,6 +695,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			if sp.selectButton(ctx, "DELETE", buttonHalfVertical, buttonScale) {
 				sp.prefSet.Saved[*sp.prefSet.Selected] = nil
 				sp.prefSet.Selected = nil
+				sp.prefSet.Current.Name = ""
 			}
 		} else {
 			sp.disabledButton(ctx, "DELETE", buttonHalfVertical, buttonScale)

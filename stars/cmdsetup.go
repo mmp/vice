@@ -613,9 +613,8 @@ func savePreferences(sp *STARSPane, ctx *panes.Context, name string) error {
 		idx = len(sp.prefSet.Saved) - 1
 	}
 
-	p := sp.prefSet.Current.Duplicate()
-	p.Name = name
+	sp.prefSet.Current.Name = name
 	sp.prefSet.Selected = &idx
-	sp.prefSet.Saved[idx] = p
+	sp.prefSet.Saved[idx] = sp.prefSet.Current.Duplicate()
 	return nil
 }
