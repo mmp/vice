@@ -170,6 +170,59 @@ func TestTransferCommsBeforeAssociation(t *testing.T) {
 	}
 }
 
+// TestVirtualHandoffAcceptBeforeAssociation verifies that a departure handed
+// off between virtual controllers before its track tags up is still moved to
+// the accepting controller's frequency. Routes put a named handoff at the
+// departure end, which is flown at 400' AGL, well inside the flight plan
+// acquisition delay; leaving the pilot on the old frequency strands every later
+// transfer of comms, since those are keyed on the frequency the pilot is
+// supposed to be on.
+func TestVirtualHandoffAcceptBeforeAssociation(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	s.STARSComputer = makeSTARSComputer("TEST")
+	s.ScenarioDefaultConsolidation = PositionConsolidation{TCP("2A"): nil}
+
+	dep, next := TCP("D1D"), TCP("14")
+	s.ControlPositions = map[TCP]*av.Controller{"2A": {}, dep: {}, next: {}}
+	s.State.Controllers = map[ControlPosition]*av.Controller{"2A": {}, dep: {}, next: {}}
+
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.TypeOfFlight = av.FlightTypeDeparture
+	ac.ControllerFrequency = dep // released by a virtual departure controller
+	ac.DepartureContactAltitude = -1
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	if _, err := s.STARSComputer.CreateFlightPlan(NASFlightPlan{
+		ACID:               ACID(ac.ADSBCallsign),
+		TypeOfFlight:       av.FlightTypeDeparture,
+		TrackingController: dep,
+	}); err != nil {
+		t.Fatalf("CreateFlightPlan: %v", err)
+	}
+
+	// The route's /ho14 at the departure end, before the track associates.
+	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{
+		Actions: av.WaypointActions{HandoffController: next}})
+
+	fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+	if fp.HandoffController != next {
+		t.Fatalf("expected a handoff to %s, got %q", next, fp.HandoffController)
+	}
+
+	// The other virtual controller accepts while the track is still untagged.
+	s.State.SimTime = s.State.SimTime.Add(time.Minute)
+	s.lastSimUpdate = s.State.SimTime // skip the once-a-second aircraft update
+	s.updateState()
+
+	if fp.TrackingController != next {
+		t.Fatalf("expected %s to own the track, got %q", next, fp.TrackingController)
+	}
+	if ac.ControllerFrequency != ControlPosition(next) {
+		t.Errorf("expected the pilot on %s, got %q", next, ac.ControllerFrequency)
+	}
+}
+
 // TestWaypointScratchpadBeforeAssociation verifies that a waypoint's scratchpad
 // command reaches the flight plan before the track tags up--the scratchpad
 // lives on the flight plan, which is reachable by ACID either way--and that it

@@ -361,7 +361,7 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 			} else if octrl.FacilityIdentifier != ctrl.FacilityIdentifier {
 				// Can't redirect to an interfacility position
 				return av.ErrInvalidFacility
-			} else if ac.IsUnassociated() {
+			} else if ac == nil || ac.IsUnassociated() {
 				return ErrTrackIsNotActive
 			}
 			return nil

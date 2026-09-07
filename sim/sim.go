@@ -954,7 +954,9 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 			s.deleteAircraft(ac)
 			return true
 		}
-		if sfp != nil {
+		if sfp == nil {
+			s.lg.Errorf("%s: no flight plan for the /ho at %s", ac.ADSBCallsign, fix)
+		} else {
 			s.handoffTrack(sfp, sfp.InboundHandoffController)
 		}
 	} else if actions.HandoffController != "" {
@@ -965,7 +967,10 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 		}
 		// Only initiate the handoff if a virtual controller has the track; if
 		// a human owns it, it's their call when to hand it off.
-		if sfp != nil && s.isVirtualController(sfp.TrackingController) {
+		if sfp == nil {
+			s.lg.Errorf("%s: no flight plan for the /ho%s at %s", ac.ADSBCallsign,
+				actions.HandoffController, fix)
+		} else if s.isVirtualController(sfp.TrackingController) {
 			s.handoffTrack(sfp, TCP(actions.HandoffController))
 		}
 	}
@@ -1021,8 +1026,9 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 		}
 	}
 
-	// A point out needs a controller to make it, so it waits for the track to
-	// associate and the pilot to be on a frequency.
+	// A point out needs a controller to make it, so it is skipped for a track
+	// that hasn't associated or a pilot who isn't on a frequency; nothing
+	// retries it.
 	if ac.IsAssociated() && actions.PointOut != "" {
 		// During prespawn uncontrolled-only phase, cull if point-out target is a human controller
 		// rather than initiating the point out.
@@ -1127,47 +1133,57 @@ func (s *Sim) updateState() {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
 			continue
 		}
+		delete(s.Handoffs, acid)
 
-		if fp, ac, _ := s.getFlightPlanForACID(acid); fp != nil {
-			if rh := fp.RedirectedHandoff; rh.RedirectedTo != "" && s.isVirtualController(rh.RedirectedTo) {
-				// Automated accept of a redirected handoff
-				s.lg.Debug("automatic redirected handoff accept", slog.String("acid", string(fp.ACID)),
-					slog.String("from", string(rh.OriginalOwner)),
-					slog.String("to", string(rh.RedirectedTo)))
-				s.acceptRedirectedHandoff(fp, ac, s.tcwForPosition(rh.RedirectedTo))
-			} else if fp.HandoffController != "" && s.isVirtualController(fp.HandoffController) {
-				// Automated accept
-				s.eventStream.Post(Event{
-					Type:           AcceptedHandoffEvent,
-					FromController: fp.TrackingController,
-					ToController:   fp.HandoffController,
-					ACID:           fp.ACID,
-				})
-				s.lg.Debug("automatic handoff accept", slog.String("acid", string(fp.ACID)),
-					slog.String("from", string(fp.TrackingController)),
-					slog.String("to", string(fp.HandoffController)))
+		fp, ac, _ := s.getFlightPlanForACID(acid)
+		if fp == nil {
+			continue
+		}
+		if ac == nil {
+			// A departure's track tags up a few seconds after it leaves the
+			// surface tracking filter, which the auto-accept can beat; until
+			// then the flight plan is reachable only by ACID, which is the
+			// aircraft's callsign.
+			ac = s.Aircraft[av.ADSBCallsign(acid)]
+		}
 
-				previousTrackingController := fp.TrackingController
-				newTrackingController := fp.HandoffController
+		if rh := fp.RedirectedHandoff; rh.RedirectedTo != "" && s.isVirtualController(rh.RedirectedTo) {
+			// Automated accept of a redirected handoff
+			s.lg.Debug("automatic redirected handoff accept", slog.String("acid", string(fp.ACID)),
+				slog.String("from", string(rh.OriginalOwner)),
+				slog.String("to", string(rh.RedirectedTo)))
+			s.acceptRedirectedHandoff(fp, ac, s.tcwForPosition(rh.RedirectedTo))
+		} else if fp.HandoffController != "" && s.isVirtualController(fp.HandoffController) {
+			// Automated accept
+			s.eventStream.Post(Event{
+				Type:           AcceptedHandoffEvent,
+				FromController: fp.TrackingController,
+				ToController:   fp.HandoffController,
+				ACID:           fp.ACID,
+			})
+			s.lg.Debug("automatic handoff accept", slog.String("acid", string(fp.ACID)),
+				slog.String("from", string(fp.TrackingController)),
+				slog.String("to", string(fp.HandoffController)))
 
-				fp.TrackingController = newTrackingController
-				if s.State.IsLocalController(fp.TrackingController) {
-					fp.LastLocalController = fp.TrackingController
-				}
-				fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
-				fp.HandoffController = ""
-				fp.HandoffWasAutomatic = false
+			previousTrackingController := fp.TrackingController
+			newTrackingController := fp.HandoffController
 
-				if ac != nil {
-					haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
-						func(wp av.Waypoint) bool { return wp.HasTransferCommsAction() })
-					if !haveTransferComms && s.isVirtualController(previousTrackingController) {
-						s.virtualControllerTransferComms(ac, TCP(previousTrackingController), TCP(newTrackingController))
-					}
+			fp.TrackingController = newTrackingController
+			if s.State.IsLocalController(fp.TrackingController) {
+				fp.LastLocalController = fp.TrackingController
+			}
+			fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
+			fp.HandoffController = ""
+			fp.HandoffWasAutomatic = false
+
+			if ac != nil {
+				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
+					func(wp av.Waypoint) bool { return wp.HasTransferCommsAction() })
+				if !haveTransferComms && s.isVirtualController(previousTrackingController) {
+					s.virtualControllerTransferComms(ac, TCP(previousTrackingController), TCP(newTrackingController))
 				}
 			}
 		}
-		delete(s.Handoffs, acid)
 	}
 
 	for acid, pos := range s.PointOuts {
