@@ -861,6 +861,29 @@ func registerAllCommands() {
 	)
 
 	// === NAVIGATION COMMANDS ===
+	// Direct the numbers / the field (must outrank the generic {fix}
+	// patterns so "the numbers" isn't fed to the fix matcher).
+	registerSTTCommand(
+		"turn|proceed left direct [to] the numbers",
+		func() string { return "LDTN" },
+		WithName("left_direct_numbers"), WithPriority(14),
+	)
+	registerSTTCommand(
+		"turn|proceed right direct [to] the numbers",
+		func() string { return "RDTN" },
+		WithName("right_direct_numbers"), WithPriority(14),
+	)
+	registerSTTCommand(
+		"turn|proceed [direct] direct [to] the numbers",
+		func() string { return "DTN" },
+		WithName("direct_numbers"), WithPriority(13),
+	)
+	registerSTTCommand(
+		"proceed|turn [direct] direct [to] the field|airport",
+		func() string { return "DTF" },
+		WithName("direct_field"), WithPriority(13),
+	)
+
 	registerSTTCommand(
 		"[proceed] left [turn] direct [to] [at] {fix}",
 		func(fix string) string { return fmt.Sprintf("LD%s", fix) },

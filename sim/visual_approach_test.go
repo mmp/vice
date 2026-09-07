@@ -670,6 +670,12 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			wantFirstFix: "_36_3NM_FINAL",
 		},
 		{
+			name:         "Downwind, abeam projection behind aircraft — join downwind of it",
+			pos:          math.Point2LL{2.0 / nmPerLong, -6.0 / 60},
+			heading:      170,
+			wantFirstFix: "_36_PROJECTION",
+		},
+		{
 			name:    "Behind threshold — go around",
 			pos:     math.Point2LL{0, 1.0 / 60}, // 1nm north of threshold
 			heading: 360,
@@ -2580,5 +2586,96 @@ func TestTrafficInSightInquiryRejectsTooFar(t *testing.T) {
 	}
 	if ti.Response != av.TrafficResponseWhereWasIt {
 		t.Errorf("expected TrafficResponseWhereWasIt for traffic too far, got %v", ti.Response)
+	}
+}
+
+// TestDownwindVisualJoinFlies: clearing an aircraft for the visual from
+// the downwind must produce a route it can actually fly to the runway --
+// not a join it overshoots into a permanent extended downwind.
+func TestDownwindVisualJoinFlies(t *testing.T) {
+	if len(av.DB.AircraftPerformance) == 0 {
+		av.InitDB()
+	}
+	rwy := av.Runway{Id: "36", Heading: 360, Threshold: math.Point2LL{0, 0},
+		Elevation: 100, ThresholdCrossingHeight: 50}
+	setupTestRunway(t, "KTEST", rwy)
+	nmPerLong := float32(60)
+
+	reference := &av.Approach{
+		Type:      av.ILSApproach,
+		Runway:    "36",
+		Threshold: rwy.Threshold,
+		Waypoints: []av.WaypointArray{{
+			{Fix: "FAF36", Location: math.Point2LL{0, -25.0 / 60}},
+			{Fix: "_36_THRESHOLD", Location: rwy.Threshold},
+		}},
+	}
+
+	cases := []struct {
+		name    string
+		pos     math.Point2LL
+		heading math.MagneticHeading
+		ias     float32
+	}{
+		{"typical downwind", math.Point2LL{2.0 / nmPerLong, -6.0 / 60}, 175, 210},
+		{"fast and tight", math.Point2LL{1.0 / nmPerLong, -5.0 / 60}, 180, 250},
+		{"deep downwind", math.Point2LL{3.0 / nmPerLong, -14.0 / 60}, 170, 230},
+		{"quartering away", math.Point2LL{2.5 / nmPerLong, -7.0 / 60}, 150, 210},
+		{"abeam the numbers", math.Point2LL{1.5 / nmPerLong, -1.0 / 60}, 180, 190},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			n := nav.Nav{
+				FlightState: nav.FlightState{
+					Position:       tc.pos,
+					Heading:        tc.heading,
+					Altitude:       3000,
+					IAS:            tc.ias,
+					GS:             tc.ias,
+					NmPerLongitude: nmPerLong,
+					ArrivalAirport: av.Waypoint{Fix: "KTEST"},
+				},
+				Perf: av.DB.AircraftPerformance["B738"],
+				Approach: nav.NavApproach{
+					AssignedId: "_VIS36",
+					Assigned: &av.Approach{
+						Type:     av.VisualApproach,
+						Runway:   "36",
+						FullName: "Visual Approach Runway 36",
+					},
+					VisualReferences: []*av.Approach{reference},
+				},
+			}
+
+			intent := n.ClearedVisualApproach(nil, "")
+			if _, unable := intent.(av.UnableIntent); unable {
+				t.Fatalf("clearance refused: %v", intent)
+			}
+
+			fp := av.FlightPlan{ArrivalAirport: "KTEST"}
+			metar := wx.METAR{Raw: "KTEST 10SM SKC"}
+			simTime := NewSimTime(time.Date(2026, 8, 1, 12, 0, 0, 0, time.UTC))
+
+			minDist := float32(1e9)
+			maxDist := float32(0)
+			for i := 0; i < 900; i++ { // 15 minutes
+				simTime = simTime.Add(time.Second)
+				n.UpdateWithWeather("TEST", wx.Sample{}, &metar, &fp, simTime.NavTime(), nil)
+				d := math.NMDistance2LL(n.FlightState.Position, rwy.Threshold)
+				minDist = min(minDist, d)
+				maxDist = max(maxDist, d)
+				if d < 0.3 {
+					break
+				}
+			}
+
+			if minDist > 1.0 {
+				t.Errorf("aircraft never reached the runway: min distance %.1fnm, max %.1fnm, final pos %v, waypoints %v",
+					minDist, maxDist, n.FlightState.Position, wpNames(n.Waypoints))
+			}
+			if maxDist > 18 {
+				t.Errorf("aircraft wandered %.1fnm from the field (permanent downwind?)", maxDist)
+			}
+		})
 	}
 }

@@ -414,6 +414,28 @@ func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign, freq av.Frequency)
 		})
 }
 
+// DirectRunwayNumbers handles "turn/proceed direct the numbers".
+func (s *Sim) DirectRunwayNumbers(tcw TCW, callsign av.ADSBCallsign, turn av.TurnDirection, delayReduction time.Duration) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.Nav.DirectRunwayNumbers(turn, s.State.SimTime.NavTime(), delayReduction)
+		})
+}
+
+// DirectAirport handles "proceed direct the field/airport".
+func (s *Sim) DirectAirport(tcw TCW, callsign av.ADSBCallsign, turn av.TurnDirection, delayReduction time.Duration) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.Nav.DirectAirport(turn, s.State.SimTime.NavTime(), delayReduction)
+		})
+}
+
 // ATISCommand handles the controller telling a pilot the current ATIS letter.
 // If the aircraft already reported the correct ATIS, no readback is needed.
 // Otherwise the pilot responds with "we'll pick up (letter)".
