@@ -378,6 +378,17 @@
           "J29 UH": "25",
           "ELD-SQS": "25"
         }
+      },
+      "C42": {
+        "default_consolidation": {
+          "42": []
+        },
+        "inbound_assignments": {
+          "CDS-TXK": "42",
+          "SEEVR4-RRNET": "42",
+          "SEEVR4-FEWWW": "42",
+          "FZT-TUL": "42"
+        }
       }
     },
     "center": "N033.06.15.595,W097.23.57.808",

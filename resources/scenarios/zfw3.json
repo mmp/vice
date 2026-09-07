@@ -1,0 +1,252 @@
+{
+  "artcc": "ZFW",
+  "area": "ZFW Bonham",
+  "name": "ZFW Bonham",
+  "airports": {
+    "KDFW": {
+      "approaches": {
+        "I7L": {
+          "cifp_id": "I17L"
+        }
+      }
+    }
+  },
+  "default_scenario": "ZFW 42 Decod-High",
+  "magnetic_adjustment": 3.0,
+  "scenarios": {
+    "ZFW 42 Decod-High": {
+      "configuration": "C42",
+      "default_map_group": "ZFW",
+      "departure_runways": [],
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "17L"
+        }
+      ],
+      "inbound_rates": {
+        "CDS-TXK": {
+          "overflights": 5
+        },
+        "FZT-TUL": {
+          "overflights": 5
+        },
+        "SEEVR4-RRNET": {
+          "KDFW": 20
+        },
+        "SEEVR4-FEWWW": {
+          "KDFW": 20
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "SEEVR4-RRNET": {
+      "arrivals": [
+        {
+          "waypoints": "KOMMA/ho RRNET PLEZE CHMLI JUSST SWTCH/s290/a24000-30000 THEMM/s290/a21000+ SEEVR/s270/a13000-16000 BRDJE/s250/a11000-12000 NUSSS/s250/a8000-10000 YAHBT/s230/a6000/delete",
+          "route": "/. SEEVR4",
+          "initial_controller": "M22",
+          "initial_altitude": 34000,
+          "initial_speed": 300,
+          "assigned_altitude": 34000,
+          "airports": ["KDFW"],
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "AAL",
+                "types": ["B738"],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321"],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738"],
+                "airport": "KDCA"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A320"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A319"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A320"],
+                "airport": "KORD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SEEVR4-FEWWW": {
+      "arrivals": [
+        {
+          "waypoints": "MEEOW/ho FEWWW PROWD LETHR NECKK/s290/a24000-30000 SAYLR/s290/a21000+ SEEVR/s270/a13000-16000 BRDJE/s250/a11000-12000 NUSSS/s250/a8000-10000 YAHBT/s230/a6000/delete",
+          "route": "/. SEEVR4",
+          "initial_controller": "M22",
+          "initial_altitude": 34000,
+          "initial_speed": 300,
+          "assigned_altitude": 34000,
+          "airports": ["KDFW"],
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "AAL",
+                "types": ["B738"],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321"],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738"],
+                "airport": "KDCA"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A320"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A319"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A320"],
+                "airport": "KORD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CDS-TXK": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSAN",
+              "arrival_airport": "KMCO",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KMCO",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KMIA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KPHX",
+              "arrival_airport": "KATL",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "48",
+          "initial_speed": 300,
+          "waypoints": "CDS N033.52.05.500,W096.37.35.300/ho TXK ELD MHZ MERDN/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSAN",
+              "arrival_airport": "KMCO",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KMCO",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KMIA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KPHX",
+              "arrival_airport": "KATL",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_controller": "48",
+          "initial_speed": 300,
+          "waypoints": "CDS N033.52.05.500,W096.37.35.300/ho TXK ELD MHZ MERDN/delete"
+        }
+      ]
+    },
+    "FZT-TUL": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KHOU",
+              "arrival_airport": "KMSP",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KMSP",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KOMA",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KAUS",
+              "arrival_airport": "KDSM",
+              "icao": "AAY"
+            },
+            {
+              "departure_airport": "KSAT",
+              "arrival_airport": "KMSP",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 31000,
+          "assigned_altitude": 31000,
+          "initial_controller": "46",
+          "initial_speed": 300,
+          "waypoints": "FZT SLR/ho TUL/delete"
+        }
+      ]
+    }
+  }
+}
