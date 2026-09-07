@@ -1,4 +1,4 @@
-- New scenario: ILM (Jake)
+- New scenarios: ILM, HSV (Jake)
 - Scenario updates: PCT SHD (Ketan K), PVD, MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt)
 - Fixed bug where aircraft were not automatically cleared for the approach at a /clearapp fix
 - Added: IFIX/RADIAL: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)

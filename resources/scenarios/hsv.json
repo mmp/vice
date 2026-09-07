@@ -1,0 +1,2084 @@
+{
+  "tracon": "HSV",
+  "name": "Huntsville TRACON",
+  "airports": {
+    "KHSV": {
+      "departure_runways_as_one": ["36L,36R", "18L,18R"],
+      "approaches": {
+        "I18L": {
+          "cifp_id": "I18L"
+        },
+        "I18R": {
+          "cifp_id": "I18R"
+        },
+        "I36L": {
+          "cifp_id": "I36L"
+        },
+        "I36R": {
+          "cifp_id": "I36R"
+        },
+        "L18L": {
+          "cifp_id": "L18L"
+        },
+        "L18R": {
+          "cifp_id": "L18R"
+        },
+        "L36L": {
+          "cifp_id": "L36L"
+        },
+        "L36R": {
+          "cifp_id": "L36R"
+        },
+        "R18L": {
+          "cifp_id": "R18L"
+        },
+        "R18R": {
+          "cifp_id": "R18R"
+        },
+        "R36L": {
+          "cifp_id": "R36L"
+        },
+        "R36R": {
+          "cifp_id": "R36R"
+        }
+      },
+      "departure_routes": {
+        "36L": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KHSV-18R/h005"
+          }
+        },
+        "36R": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KHSV-18L/h005"
+          }
+        },
+        "18L": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KHSV-36R/h185"
+          }
+        },
+        "18R": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KHSV-36L/h185"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "altitude": 19000,
+          "destination": "KATL",
+          "exit": "JKSON",
+          "route": "JKSON KATL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "SKW"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KDFW",
+          "exit": "MEM",
+          "route": "MEM KDFW"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "PDT"
+            },
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "altitude": 27000,
+          "destination": "KCLT",
+          "exit": "GQO",
+          "route": "GQO KCLT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            },
+            {
+              "icao": "GJS"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KORD",
+          "exit": "RQZ",
+          "route": "RQZ KORD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UCA"
+            }
+          ],
+          "altitude": 32000,
+          "destination": "KIAH",
+          "exit": "IGB",
+          "route": "IGB KIAH"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KDCA",
+          "exit": "GQO",
+          "route": "GQO KDCA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UCA"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KIAD",
+          "exit": "RMG",
+          "route": "RMG KIAD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "altitude": 36000,
+          "destination": "KDEN",
+          "exit": "IGB",
+          "route": "IGB KDEN"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            },
+            {
+              "icao": "SKW"
+            }
+          ],
+          "altitude": 31000,
+          "destination": "KDTW",
+          "exit": "RQZ",
+          "route": "RQZ KDTW"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KLGA",
+          "exit": "RMG",
+          "route": "RMG KLGA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "altitude": 31000,
+          "destination": "KMCO",
+          "exit": "RMG",
+          "route": "RMG KMCO"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "BVN"
+            }
+          ],
+          "altitude": 16000,
+          "destination": "KMEM",
+          "exit": "MEM",
+          "route": "MEM KMEM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KTPA",
+          "exit": "VUZ",
+          "route": "VUZ KTPA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UPS"
+            }
+          ],
+          "altitude": 23000,
+          "destination": "KSDF",
+          "exit": "RQZ",
+          "route": "RQZ KSDF"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "tower_list": 1
+    },
+    "KHUA": {
+      "departure_routes": {
+        "17": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KHUA-35/h175"
+          }
+        },
+        "35": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KHUA-17/h355"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KBNA",
+          "exit": "RQZ",
+          "route": "RQZ KBNA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KATL",
+          "exit": "GQO",
+          "route": "GQO KATL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KBHM",
+          "exit": "VUZ",
+          "route": "VUZ KBHM"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "tower_list": 2
+    },
+    "KDCU": {
+      "approaches": {
+        "I18": {
+          "cifp_id": "I18"
+        },
+        "L18": {
+          "cifp_id": "L18"
+        },
+        "R18": {
+          "cifp_id": "R18"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        }
+      },
+      "hold_for_release": true,
+      "departure_routes": {
+        "18": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KDCU-36/h185"
+          }
+        },
+        "36": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KDCU-18/h005"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KBHM",
+          "exit": "VUZ",
+          "route": "VUZ KBHM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KBNA",
+          "exit": "RQZ",
+          "route": "RQZ KBNA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KATL",
+          "exit": "GQO",
+          "route": "GQO KATL"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 4.0,
+          "fleet": "lightGA"
+        }
+      }
+    },
+    "KCMD": {
+      "approaches": {
+        "R2": {
+          "cifp_id": "R2"
+        },
+        "R20": {
+          "cifp_id": "R20"
+        }
+      },
+      "hold_for_release": true,
+      "departure_routes": {
+        "2": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KCMD-20/h020"
+          }
+        },
+        "20": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KCMD-2/h200"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KBHM",
+          "exit": "VUZ",
+          "route": "VUZ KBHM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KATL",
+          "exit": "GQO",
+          "route": "GQO KATL"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 1.5,
+          "fleet": "lightGA"
+        }
+      }
+    },
+    "5M0": {
+      "approaches": {
+        "R18": {
+          "cifp_id": "R18"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        }
+      },
+      "hold_for_release": true,
+      "departure_routes": {
+        "18": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "5M0-36/h184"
+          }
+        },
+        "36": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "5M0-18/h004"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KBHM",
+          "exit": "VUZ",
+          "route": "VUZ KBHM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KBNA",
+          "exit": "RQZ",
+          "route": "RQZ KBNA"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 1.5,
+          "fleet": "lightGA"
+        }
+      }
+    },
+    "9A4": {
+      "approaches": {
+        "R13": {
+          "cifp_id": "R13"
+        },
+        "R31": {
+          "cifp_id": "R31"
+        }
+      },
+      "hold_for_release": true,
+      "departure_routes": {
+        "13": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "9A4-31/h130"
+          }
+        },
+        "31": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "9A4-13/h310"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KCLT",
+          "exit": "GQO",
+          "route": "GQO KCLT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KBHM",
+          "exit": "VUZ",
+          "route": "VUZ KBHM"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 2.0,
+          "fleet": "lightGA"
+        }
+      }
+    },
+    "8A1": {
+      "approaches": {
+        "R7": {
+          "cifp_id": "R7"
+        },
+        "R25": {
+          "cifp_id": "R25"
+        }
+      },
+      "hold_for_release": true,
+      "departure_routes": {
+        "7": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "8A1-25/h070"
+          }
+        },
+        "25": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "8A1-7/h250"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KATL",
+          "exit": "GQO",
+          "route": "GQO KATL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KBNA",
+          "exit": "RQZ",
+          "route": "RQZ KBNA"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 2.5,
+          "fleet": "lightGA"
+        }
+      }
+    },
+    "KMDQ": {
+      "approaches": {
+        "I18": {
+          "cifp_id": "I18"
+        },
+        "L18": {
+          "cifp_id": "L18"
+        },
+        "R18": {
+          "cifp_id": "R18"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        }
+      },
+      "hold_for_release": true,
+      "departure_routes": {
+        "18": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KMDQ-36/h180"
+          }
+        },
+        "36": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KMDQ-18/h360"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KATL",
+          "exit": "GQO",
+          "route": "GQO KATL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KBNA",
+          "exit": "RQZ",
+          "route": "RQZ KBNA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KBHM",
+          "exit": "VUZ",
+          "route": "VUZ KBHM"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 2.5,
+          "fleet": "lightGA"
+        }
+      }
+    },
+    "KFYM": {
+      "approaches": {
+        "R2": {
+          "cifp_id": "R2"
+        },
+        "R20": {
+          "cifp_id": "R20"
+        }
+      },
+      "hold_for_release": true,
+      "departure_routes": {
+        "2": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KFYM-20/h020"
+          }
+        },
+        "20": {
+          "IGB,MEM,VUZ,GQO,RMG,JKSON,RQZ": {
+            "assigned_altitude": 5000,
+            "waypoints": "KFYM-2/h200"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KBNA",
+          "exit": "RQZ",
+          "route": "RQZ KBNA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KATL",
+          "exit": "GQO",
+          "route": "GQO KATL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KCHA",
+          "exit": "GQO",
+          "route": "GQO KCHA"
+        }
+      ],
+      "exit_categories": {
+        "IGB": "West",
+        "MEM": "West",
+        "VUZ": "West",
+        "GQO": "East",
+        "RMG": "East",
+        "JKSON": "East",
+        "RQZ": "North"
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 3.0,
+          "fleet": "lightGA"
+        }
+      }
+    }
+  },
+  "airspace": {
+    "boundaries": {},
+    "volumes": {}
+  },
+  "inbound_flows": {
+    "KHSV_WEST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KHSV"],
+          "airlines": {
+            "KHSV": [
+              {
+                "icao": "AAL",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "BVN",
+                "airport": "KMEM"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a11000/ho 34.634521,-87.584764/a11000 KHSV",
+          "route": "KHSV",
+          "initial_controller": "C13",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KHSV west arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KHSV"],
+          "airlines": {
+            "KHSV": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KMSL",
+                "fleet": "fastGA"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a8000/ho 34.634521,-87.584764/a8000 KHSV",
+          "route": "KHSV",
+          "initial_controller": "C13",
+          "initial_altitude": 8000,
+          "assigned_altitude": 8000,
+          "initial_speed": 160,
+          "description": "KHSV west low-altitude GA arrival"
+        }
+      ]
+    },
+    "KHSV_EAST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KHSV"],
+          "airlines": {
+            "KHSV": [
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KATL"
+              },
+              {
+                "icao": "PDT",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KORD"
+              },
+              {
+                "icao": "GJS",
+                "airport": "KORD"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "MXY",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "MXY",
+                "airport": "KTPA"
+              },
+              {
+                "icao": "UPS",
+                "airport": "KSDF"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a11000/ho 34.635692,-86.167766/a11000 KHSV",
+          "route": "KHSV",
+          "initial_controller": "C60",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KHSV east arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KHSV"],
+          "airlines": {
+            "KHSV": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KCHA",
+                "fleet": "fastGA"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a8000/ho 34.635692,-86.167766/a8000 KHSV",
+          "route": "KHSV",
+          "initial_controller": "C60",
+          "initial_altitude": 8000,
+          "assigned_altitude": 8000,
+          "initial_speed": 160,
+          "description": "KHSV east low-altitude GA arrival"
+        }
+      ]
+    },
+    "KDCU_WEST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KDCU"],
+          "airlines": {
+            "KDCU": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a11000/ho 34.634521,-87.584764/a11000 KDCU",
+          "route": "KDCU",
+          "initial_controller": "C13",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KDCU west arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KDCU"],
+          "airlines": {
+            "KDCU": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a7000/ho 34.634521,-87.584764/a7000 KDCU",
+          "route": "KDCU",
+          "initial_controller": "C13",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 160,
+          "description": "KDCU west low-altitude GA arrival"
+        }
+      ]
+    },
+    "KDCU_EAST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KDCU"],
+          "airlines": {
+            "KDCU": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a11000/ho 34.635692,-86.167766/a11000 KDCU",
+          "route": "KDCU",
+          "initial_controller": "C60",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KDCU east arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KDCU"],
+          "airlines": {
+            "KDCU": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a7000/ho 34.635692,-86.167766/a7000 KDCU",
+          "route": "KDCU",
+          "initial_controller": "C60",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 160,
+          "description": "KDCU east low-altitude GA arrival"
+        }
+      ]
+    },
+    "KCMD_WEST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KCMD"],
+          "airlines": {
+            "KCMD": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a11000/ho 34.634521,-87.584764/a11000 KCMD",
+          "route": "KCMD",
+          "initial_controller": "C13",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KCMD west arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KCMD"],
+          "airlines": {
+            "KCMD": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a6000/ho 34.634521,-87.584764/a6000 KCMD",
+          "route": "KCMD",
+          "initial_controller": "C13",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 160,
+          "description": "KCMD west low-altitude GA arrival"
+        }
+      ]
+    },
+    "KCMD_EAST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KCMD"],
+          "airlines": {
+            "KCMD": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a11000/ho 34.635692,-86.167766/a11000 KCMD",
+          "route": "KCMD",
+          "initial_controller": "C60",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KCMD east arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KCMD"],
+          "airlines": {
+            "KCMD": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a6000/ho 34.635692,-86.167766/a6000 KCMD",
+          "route": "KCMD",
+          "initial_controller": "C60",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 160,
+          "description": "KCMD east low-altitude GA arrival"
+        }
+      ]
+    },
+    "5M0_WEST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["5M0"],
+          "airlines": {
+            "5M0": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a11000/ho 34.634521,-87.584764/a11000 5M0",
+          "route": "5M0",
+          "initial_controller": "C13",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "5M0 west arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["5M0"],
+          "airlines": {
+            "5M0": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a6000/ho 34.634521,-87.584764/a6000 5M0",
+          "route": "5M0",
+          "initial_controller": "C13",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 160,
+          "description": "5M0 west low-altitude GA arrival"
+        }
+      ]
+    },
+    "5M0_EAST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["5M0"],
+          "airlines": {
+            "5M0": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a11000/ho 34.635692,-86.167766/a11000 5M0",
+          "route": "5M0",
+          "initial_controller": "C60",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "5M0 east arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["5M0"],
+          "airlines": {
+            "5M0": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a6000/ho 34.635692,-86.167766/a6000 5M0",
+          "route": "5M0",
+          "initial_controller": "C60",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 160,
+          "description": "5M0 east low-altitude GA arrival"
+        }
+      ]
+    },
+    "9A4_WEST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["9A4"],
+          "airlines": {
+            "9A4": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KCLT",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a11000/ho 34.634521,-87.584764/a11000 9A4",
+          "route": "9A4",
+          "initial_controller": "C13",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "9A4 west arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["9A4"],
+          "airlines": {
+            "9A4": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KCLT",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a6000/ho 34.634521,-87.584764/a6000 9A4",
+          "route": "9A4",
+          "initial_controller": "C13",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 160,
+          "description": "9A4 west low-altitude GA arrival"
+        }
+      ]
+    },
+    "9A4_EAST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["9A4"],
+          "airlines": {
+            "9A4": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KCLT",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a11000/ho 34.635692,-86.167766/a11000 9A4",
+          "route": "9A4",
+          "initial_controller": "C60",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "9A4 east arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["9A4"],
+          "airlines": {
+            "9A4": [
+              {
+                "icao": "N",
+                "airport": "KBHM",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KCLT",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a6000/ho 34.635692,-86.167766/a6000 9A4",
+          "route": "9A4",
+          "initial_controller": "C60",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 160,
+          "description": "9A4 east low-altitude GA arrival"
+        }
+      ]
+    },
+    "8A1_WEST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["8A1"],
+          "airlines": {
+            "8A1": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a11000/ho 34.634521,-87.584764/a11000 8A1",
+          "route": "8A1",
+          "initial_controller": "C13",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "8A1 west arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["8A1"],
+          "airlines": {
+            "8A1": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a7000/ho 34.634521,-87.584764/a7000 8A1",
+          "route": "8A1",
+          "initial_controller": "C13",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 160,
+          "description": "8A1 west low-altitude GA arrival"
+        }
+      ]
+    },
+    "8A1_EAST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["8A1"],
+          "airlines": {
+            "8A1": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a11000/ho 34.635692,-86.167766/a11000 8A1",
+          "route": "8A1",
+          "initial_controller": "C60",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "8A1 east arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["8A1"],
+          "airlines": {
+            "8A1": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a7000/ho 34.635692,-86.167766/a7000 8A1",
+          "route": "8A1",
+          "initial_controller": "C60",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 160,
+          "description": "8A1 east low-altitude GA arrival"
+        }
+      ]
+    },
+    "KMDQ_WEST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KMDQ"],
+          "airlines": {
+            "KMDQ": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a11000/ho 34.634521,-87.584764/a11000 KMDQ",
+          "route": "KMDQ",
+          "initial_controller": "C13",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KMDQ west arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KMDQ"],
+          "airlines": {
+            "KMDQ": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a7000/ho 34.634521,-87.584764/a7000 KMDQ",
+          "route": "KMDQ",
+          "initial_controller": "C13",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 160,
+          "description": "KMDQ west low-altitude GA arrival"
+        }
+      ]
+    },
+    "KMDQ_EAST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KMDQ"],
+          "airlines": {
+            "KMDQ": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a11000/ho 34.635692,-86.167766/a11000 KMDQ",
+          "route": "KMDQ",
+          "initial_controller": "C60",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KMDQ east arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KMDQ"],
+          "airlines": {
+            "KMDQ": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a7000/ho 34.635692,-86.167766/a7000 KMDQ",
+          "route": "KMDQ",
+          "initial_controller": "C60",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 160,
+          "description": "KMDQ east low-altitude GA arrival"
+        }
+      ]
+    },
+    "KFYM_WEST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KFYM"],
+          "airlines": {
+            "KFYM": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a11000/ho 34.634521,-87.584764/a11000 KFYM",
+          "route": "KFYM",
+          "initial_controller": "C13",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KFYM west arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KFYM"],
+          "airlines": {
+            "KFYM": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.633016,-87.787179 34.633317,-87.746696/a7000/ho 34.634521,-87.584764/a7000 KFYM",
+          "route": "KFYM",
+          "initial_controller": "C13",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 160,
+          "description": "KFYM west low-altitude GA arrival"
+        }
+      ]
+    },
+    "KFYM_EAST": {
+      "arrivals": [
+        {
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KFYM"],
+          "airlines": {
+            "KFYM": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "fastGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "GAturbine"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a11000/ho 34.635692,-86.167766/a11000 KFYM",
+          "route": "KFYM",
+          "initial_controller": "C60",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "description": "KFYM east arrival, 11,000-foot ZME/HSV interface"
+        },
+        {
+          "aircraft": "prop",
+          "airports": ["KFYM"],
+          "airlines": {
+            "KFYM": [
+              {
+                "icao": "N",
+                "airport": "KBNA",
+                "fleet": "lightGA"
+              },
+              {
+                "icao": "N",
+                "airport": "KATL",
+                "fleet": "lightGA"
+              }
+            ]
+          },
+          "waypoints": "34.634521,-85.965344 34.634755,-86.005828/a7000/ho 34.635692,-86.167766/a7000 KFYM",
+          "route": "KFYM",
+          "initial_controller": "C60",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 160,
+          "description": "KFYM east low-altitude GA arrival"
+        }
+      ]
+    }
+  },
+  "default_scenario": "NORTH",
+  "scenarios": {
+    "NORTH": {
+      "configuration": "NTH",
+      "description": "HSV North operations. KHSV 36L/36R, KHUA 35, KDCU 36, KCMD 2, 5M0 36, 9A4 31, 8A1 7, KMDQ 36, KFYM 2. Historical-ready.",
+      "airspace": {},
+      "arrival_runways": [
+        {
+          "airport": "KHSV",
+          "runway": "36L"
+        },
+        {
+          "airport": "KHSV",
+          "runway": "36R"
+        },
+        {
+          "airport": "KDCU",
+          "runway": "36"
+        },
+        {
+          "airport": "KCMD",
+          "runway": "2"
+        },
+        {
+          "airport": "5M0",
+          "runway": "36"
+        },
+        {
+          "airport": "9A4",
+          "runway": "31"
+        },
+        {
+          "airport": "8A1",
+          "runway": "7"
+        },
+        {
+          "airport": "KMDQ",
+          "runway": "36"
+        },
+        {
+          "airport": "KFYM",
+          "runway": "2"
+        }
+      ],
+      "inbound_rates": {
+        "KHSV_WEST": {
+          "KHSV": 9.0
+        },
+        "KHSV_EAST": {
+          "KHSV": 9.0
+        },
+        "KDCU_WEST": {
+          "KDCU": 1.0
+        },
+        "KDCU_EAST": {
+          "KDCU": 1.0
+        },
+        "KCMD_WEST": {
+          "KCMD": 0.3
+        },
+        "KCMD_EAST": {
+          "KCMD": 0.3
+        },
+        "5M0_WEST": {
+          "5M0": 0.3
+        },
+        "5M0_EAST": {
+          "5M0": 0.3
+        },
+        "9A4_WEST": {
+          "9A4": 0.5
+        },
+        "9A4_EAST": {
+          "9A4": 0.5
+        },
+        "8A1_WEST": {
+          "8A1": 0.75
+        },
+        "8A1_EAST": {
+          "8A1": 0.75
+        },
+        "KMDQ_WEST": {
+          "KMDQ": 0.75
+        },
+        "KMDQ_EAST": {
+          "KMDQ": 0.75
+        },
+        "KFYM_WEST": {
+          "KFYM": 1.0
+        },
+        "KFYM_EAST": {
+          "KFYM": 1.0
+        }
+      },
+      "departure_runways": [
+        {
+          "airport": "KHSV",
+          "rate": 8,
+          "runway": "36L"
+        },
+        {
+          "airport": "KHSV",
+          "rate": 7,
+          "runway": "36R"
+        },
+        {
+          "airport": "KHUA",
+          "rate": 1.0,
+          "runway": "35"
+        },
+        {
+          "airport": "KDCU",
+          "rate": 1.5,
+          "runway": "36"
+        },
+        {
+          "airport": "KCMD",
+          "rate": 0.5,
+          "runway": "2"
+        },
+        {
+          "airport": "5M0",
+          "rate": 0.5,
+          "runway": "36"
+        },
+        {
+          "airport": "9A4",
+          "rate": 0.75,
+          "runway": "31"
+        },
+        {
+          "airport": "8A1",
+          "rate": 0.75,
+          "runway": "7"
+        },
+        {
+          "airport": "KMDQ",
+          "rate": 0.75,
+          "runway": "36"
+        },
+        {
+          "airport": "KFYM",
+          "rate": 1.0,
+          "runway": "2"
+        }
+      ],
+      "default_maps": ["HSV_NORTH", "HSV_HUA OPS"]
+    },
+    "SOUTH": {
+      "configuration": "STH",
+      "description": "HSV South operations. KHSV 18L/18R, KHUA 17, KDCU 18, KCMD 20, 5M0 18, 9A4 13, 8A1 25, KMDQ 18, KFYM 20. Historical-ready.",
+      "airspace": {},
+      "arrival_runways": [
+        {
+          "airport": "KHSV",
+          "runway": "18L"
+        },
+        {
+          "airport": "KHSV",
+          "runway": "18R"
+        },
+        {
+          "airport": "KDCU",
+          "runway": "18"
+        },
+        {
+          "airport": "KCMD",
+          "runway": "20"
+        },
+        {
+          "airport": "5M0",
+          "runway": "18"
+        },
+        {
+          "airport": "9A4",
+          "runway": "13"
+        },
+        {
+          "airport": "8A1",
+          "runway": "25"
+        },
+        {
+          "airport": "KMDQ",
+          "runway": "18"
+        },
+        {
+          "airport": "KFYM",
+          "runway": "20"
+        }
+      ],
+      "inbound_rates": {
+        "KHSV_WEST": {
+          "KHSV": 9.0
+        },
+        "KHSV_EAST": {
+          "KHSV": 9.0
+        },
+        "KDCU_WEST": {
+          "KDCU": 1.0
+        },
+        "KDCU_EAST": {
+          "KDCU": 1.0
+        },
+        "KCMD_WEST": {
+          "KCMD": 0.3
+        },
+        "KCMD_EAST": {
+          "KCMD": 0.3
+        },
+        "5M0_WEST": {
+          "5M0": 0.3
+        },
+        "5M0_EAST": {
+          "5M0": 0.3
+        },
+        "9A4_WEST": {
+          "9A4": 0.5
+        },
+        "9A4_EAST": {
+          "9A4": 0.5
+        },
+        "8A1_WEST": {
+          "8A1": 0.75
+        },
+        "8A1_EAST": {
+          "8A1": 0.75
+        },
+        "KMDQ_WEST": {
+          "KMDQ": 0.75
+        },
+        "KMDQ_EAST": {
+          "KMDQ": 0.75
+        },
+        "KFYM_WEST": {
+          "KFYM": 1.0
+        },
+        "KFYM_EAST": {
+          "KFYM": 1.0
+        }
+      },
+      "departure_runways": [
+        {
+          "airport": "KHSV",
+          "rate": 8,
+          "runway": "18L"
+        },
+        {
+          "airport": "KHSV",
+          "rate": 7,
+          "runway": "18R"
+        },
+        {
+          "airport": "KHUA",
+          "rate": 1.0,
+          "runway": "17"
+        },
+        {
+          "airport": "KDCU",
+          "rate": 1.5,
+          "runway": "18"
+        },
+        {
+          "airport": "KCMD",
+          "rate": 0.5,
+          "runway": "20"
+        },
+        {
+          "airport": "5M0",
+          "rate": 0.5,
+          "runway": "18"
+        },
+        {
+          "airport": "9A4",
+          "rate": 0.75,
+          "runway": "13"
+        },
+        {
+          "airport": "8A1",
+          "rate": 0.75,
+          "runway": "25"
+        },
+        {
+          "airport": "KMDQ",
+          "rate": 0.75,
+          "runway": "18"
+        },
+        {
+          "airport": "KFYM",
+          "rate": 1.0,
+          "runway": "20"
+        }
+      ],
+      "default_maps": ["HSV_SOUTH", "HSV_HUA OPS"]
+    }
+  }
+}

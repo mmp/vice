@@ -10,6 +10,11 @@
       "frequency": 118750,
       "radio_name": "Huntsville Approach"
     },
+    "1R": {
+      "callsign": "HUA_TWR",
+      "frequency": 126950,
+      "radio_name": "Redstone Tower"
+    },
     "1T": {
       "callsign": "HSV_TWR",
       "frequency": 127600,
@@ -40,6 +45,158 @@
     }
   ],
   "facility_adaptations": {
-    "configurations": {}
+    "weather_station": "KHSV",
+    "lists": {
+      "ssa": {
+        "system_altimeter": "KHSV",
+        "altimeters": ["KHSV", "KHUA", "KDCU", "KMDQ", "KFYM", "KCMD"]
+      }
+    },
+    "configurations": {
+      "NTH": {
+        "inbound_assignments": {
+          "KHSV_WEST": "1W",
+          "KHSV_EAST": "1E",
+          "KDCU_WEST": "1W",
+          "KDCU_EAST": "1E",
+          "KCMD_WEST": "1W",
+          "KCMD_EAST": "1E",
+          "5M0_WEST": "1W",
+          "5M0_EAST": "1E",
+          "9A4_WEST": "1W",
+          "9A4_EAST": "1E",
+          "8A1_WEST": "1W",
+          "8A1_EAST": "1E",
+          "KMDQ_WEST": "1W",
+          "KMDQ_EAST": "1E",
+          "KFYM_WEST": "1W",
+          "KFYM_EAST": "1E"
+        },
+        "departure_assignments": {
+          "KHSV/36L": "1W",
+          "KHSV/36R": "1E",
+          "KHSV/18L": "1E",
+          "KHSV/18R": "1W",
+          "KHUA": "1E",
+          "KDCU": "1W",
+          "KCMD": "1W",
+          "5M0": "1W",
+          "9A4": "1W",
+          "8A1": "1E",
+          "KMDQ": "1E",
+          "KFYM": "1E"
+        },
+        "go_around_assignments": {
+          "KHSV/36L": "1W",
+          "KHSV/36R": "1E",
+          "KHSV/18L": "1E",
+          "KHSV/18R": "1W",
+          "KHUA": "1E",
+          "KDCU": "1W",
+          "KCMD": "1W",
+          "5M0": "1W",
+          "9A4": "1W",
+          "8A1": "1E",
+          "KMDQ": "1E",
+          "KFYM": "1E"
+        },
+        "default_consolidation": {
+          "1E": ["1W", "1F"]
+        }
+      },
+      "STH": {
+        "inbound_assignments": {
+          "KHSV_WEST": "1W",
+          "KHSV_EAST": "1E",
+          "KDCU_WEST": "1W",
+          "KDCU_EAST": "1E",
+          "KCMD_WEST": "1W",
+          "KCMD_EAST": "1E",
+          "5M0_WEST": "1W",
+          "5M0_EAST": "1E",
+          "9A4_WEST": "1W",
+          "9A4_EAST": "1E",
+          "8A1_WEST": "1W",
+          "8A1_EAST": "1E",
+          "KMDQ_WEST": "1W",
+          "KMDQ_EAST": "1E",
+          "KFYM_WEST": "1W",
+          "KFYM_EAST": "1E"
+        },
+        "departure_assignments": {
+          "KHSV/36L": "1W",
+          "KHSV/36R": "1E",
+          "KHSV/18L": "1E",
+          "KHSV/18R": "1W",
+          "KHUA": "1E",
+          "KDCU": "1W",
+          "KCMD": "1W",
+          "5M0": "1W",
+          "9A4": "1W",
+          "8A1": "1E",
+          "KMDQ": "1E",
+          "KFYM": "1E"
+        },
+        "go_around_assignments": {
+          "KHSV/36L": "1W",
+          "KHSV/36R": "1E",
+          "KHSV/18L": "1E",
+          "KHSV/18R": "1W",
+          "KHUA": "1E",
+          "KDCU": "1W",
+          "KCMD": "1W",
+          "5M0": "1W",
+          "9A4": "1W",
+          "8A1": "1E",
+          "KMDQ": "1E",
+          "KFYM": "1E"
+        },
+        "default_consolidation": {
+          "1E": ["1W", "1F"]
+        }
+      }
+    },
+    "center": "KHSV",
+    "range": 60,
+    "max_distance": 125,
+    "scratchpads": {
+      "IGB": "IGB",
+      "MEM": "MEM",
+      "VUZ": "VUZ",
+      "GQO": "GQO",
+      "RMG": "RMG",
+      "JKSON": "JKS",
+      "RQZ": "RQZ"
+    },
+    "significant_points": {
+      "IGB": {},
+      "MEM": {},
+      "VUZ": {},
+      "GQO": {},
+      "RMG": {},
+      "JKSON": {
+        "short_name": "JKS"
+      },
+      "RQZ": {},
+      "JALAR": {
+        "short_name": "JAL"
+      }
+    },
+    "video_map_file": "videomaps/ZME-HSV.mappack",
+    "areas": {
+      "1": {
+        "video_maps": [
+          "HSV_NORTH",
+          "HSV_SOUTH",
+          "HSV_MVA",
+          "HSV_SATELLITE_GPS",
+          "HSV_SATELLITE VOR",
+          "HSV_R2104A",
+          "HSV_R2104C",
+          "HSV_EMRG_OBSTRUCTION",
+          "HSV_HUA OPS"
+        ]
+      }
+    }
   }
 }
