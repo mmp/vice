@@ -3,7 +3,11 @@
 
 package log
 
-import "sync"
+import (
+	"runtime/debug"
+	"strings"
+	"sync"
+)
 
 // Shared state for the platform-specific stderr redirect (currently
 // only implemented on Windows; see crash_stderr_windows.go) and for
@@ -13,3 +17,18 @@ var (
 	currentCrashStderrMu sync.Mutex
 	currentCrashStderrFn string
 )
+
+// buildInfoReport returns the "== Build Info ==" block naming the build that
+// is running. Crash reports for a fatal caught via stderr redirection are
+// uploaded by a *later* run, so the stderr file records this itself rather
+// than leaving the reader to infer the build from paths in the traceback.
+func buildInfoReport() string {
+	var b strings.Builder
+	b.WriteString("== Build Info ==\n")
+	if bi, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range bi.Settings {
+			b.WriteString(setting.Key + ": " + setting.Value + "\n")
+		}
+	}
+	return b.String()
+}

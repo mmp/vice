@@ -205,6 +205,13 @@ jobs:
         name: manifest-json
         path: cmd/vice/
 
+    # Go stamps vcs.modified into the binary from `git status --porcelain`,
+    # which is non-empty for any untracked non-ignored file. Release builds
+    # have been shipping with it set, which makes the flag useless for
+    # triaging crash reports; print the offenders so they can be ignored.
+    - name: Check for a dirty tree before the release build
+      run: git status --porcelain
+
     - name: Build universal binary
       run: ./build.sh --release --universal
 
@@ -384,6 +391,11 @@ jobs:
       with:
         name: manifest-json
         path: cmd/vice/
+
+    # See the note on the macOS job's dirty-tree check.
+    - name: Check for a dirty tree before the release build
+      run: git status --porcelain
+      shell: bash
 
     - name: Build for release (download resources)
       run: |

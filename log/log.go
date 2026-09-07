@@ -330,12 +330,7 @@ func (l *Logger) ReportCrash(err any) {
 	report.WriteString(fmt.Sprintf("Go: %s\n", sysInfo.GoVersion))
 	report.WriteString(fmt.Sprintf("OS/Arch: %s/%s\n\n", sysInfo.OS, sysInfo.Arch))
 
-	report.WriteString("== Build Info ==\n")
-	if bi, ok := debug.ReadBuildInfo(); ok {
-		for _, setting := range bi.Settings {
-			report.WriteString(setting.Key + ": " + setting.Value + "\n")
-		}
-	}
+	report.WriteString(buildInfoReport())
 	report.WriteString("\n== Stack Trace ==\n")
 	report.WriteString(string(debug.Stack()))
 

@@ -57,8 +57,9 @@ func RedirectStderrToCrashFile(logDir string) string {
 	}
 
 	// Write a small header so an empty file (no crash) is still
-	// recognizable, and so the report has timestamp context.
-	hdr := fmt.Sprintf("=== vice crash-stderr capture, start %s ===\n", time.Now().Format(time.RFC3339))
+	// recognizable, and so the report has timestamp and build context.
+	hdr := fmt.Sprintf("=== vice crash-stderr capture, start %s ===\n%s\n",
+		time.Now().Format(time.RFC3339), buildInfoReport())
 	_, _ = f.WriteString(hdr)
 
 	// Redirect the Win32 STD_ERROR_HANDLE so the Go runtime's fatal

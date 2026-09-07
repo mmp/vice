@@ -580,8 +580,15 @@ func (s *Sim) GetSerializeSimJSON() ([]byte, error) {
 }
 
 func (s *Sim) LogValue() slog.Value {
+	// Only the parts of State that change as the sim runs: the rest is
+	// scenario configuration, identical on every line, and it dwarfs
+	// everything else here by a factor of thirty.
 	return slog.GroupValue(
-		slog.Any("state", s.State),
+		slog.Time("sim_time", s.State.SimTime.Time()),
+		slog.Float64("sim_rate", float64(s.State.SimRate)),
+		slog.Bool("paused", s.State.Paused),
+		slog.Int("generation_index", s.State.GenerationIndex),
+		slog.Int("aircraft", len(s.Aircraft)),
 		slog.Any("departure_state", s.DepartureState),
 		slog.Int("scheduled_departures", len(s.Schedule.Departures)),
 		slog.Int("scheduled_arrivals", len(s.Schedule.Arrivals)),
