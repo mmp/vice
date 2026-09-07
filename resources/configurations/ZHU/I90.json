@@ -147,7 +147,112 @@
     }
   },
   "facility_adaptations": {
+    "airspace_awareness": [
+      {
+        "fixes": ["BLTWY", "CRIED", "MONNT", "WLLIS", "SUSHI", "MUSIQ"],
+        "altitude_range": [0, 999999],
+        "receiving_controller": "C49"
+      },
+      {
+        "fixes": ["HOURN", "JAAYE", "YOKEM"],
+        "altitude_range": [10000, 999999],
+        "receiving_controller": "C36"
+      },
+      {
+        "fixes": ["VUH"],
+        "altitude_range": [0, 999999],
+        "receiving_controller": "C43"
+      },
+      {
+        "fixes": ["RIIGG", "SKUBA"],
+        "altitude_range": [0, 999999],
+        "receiving_controller": "C87"
+      },
+      {
+        "fixes": ["ZUUUU", "BOCCK", "WEEED"],
+        "altitude_range": [8000, 999999],
+        "receiving_controller": "C80"
+      },
+      {
+        "fixes": ["KACT"],
+        "altitude_range": [0, 12000],
+        "receiving_controller": "21L"
+      },
+      {
+        "fixes": ["KGRK"],
+        "altitude_range": [0, 12000],
+        "receiving_controller": "31E"
+      },
+      {
+        "fixes": ["KLCH"],
+        "altitude_range": [0, 10000],
+        "receiving_controller": "11W"
+      }
+    ],
     "configurations": {
+      "I1M": {
+        "inbound_assignments": {
+          "BAYYY5": "1G",
+          "BAZBL1": "1N",
+          "BELLR6": "1X",
+          "CESAN4": "1D",
+          "DOOBI3": "1D",
+          "ZEEKK3": "1D",
+          "DRLLR5": "1N",
+          "GESNR2": "1D",
+          "GUSHR3": "1N",
+          "HTOWN3": "1X",
+          "KIDDZ5": "1X",
+          "LINKK1": "1G",
+          "MSCOT4": "1N",
+          "NNCEE2": "1G",
+          "PIEGY1": "1Z",
+          "PUCKS4": "1G",
+          "RIICE1.EAST": "1N",
+          "RIICE1.WEST": "1N",
+          "SKNRD5": "1D",
+          "SNDAY1": "1R",
+          "TEJAS5": "1X",
+          "TKNIQ3": "1G",
+          "TSHRT2": "1X",
+          "TTORO3": "1N",
+          "WAPPL7": "1D"
+        },
+        "departure_assignments": {
+          "KCXO": "1R",
+          "KDWH": "1P",
+          "KEFD": "1P",
+          "KGLS": "1B",
+          "KHOU/BLTWY7": "1M",
+          "KHOU/INDIE8": "1M",
+          "KHOU/LURIC8": "1M",
+          "KHOU/WYLSN8": "1M",
+          "KHOU/STRYA8": "1M",
+          "KHOU/STYCK8": "1M",
+          "KHOU/RETYR8": "1W",
+          "KHOU/PTRON9": "1L",
+          "KHOU/PEECE6": "1L",
+          "KHOU/ELOCO6": "1L",
+          "KHOU/HOODO7": "1L",
+          "KIAH/BLTWY7": "1M",
+          "KIAH/INDIE8": "1M",
+          "KIAH/LURIC8": "1M",
+          "KIAH/STRYA8": "1M",
+          "KIAH/STYCK8": "1M",
+          "KIAH/WYLSN8": "1M",
+          "KIAH/BNDTO6": "1W",
+          "KIAH/PITZZ5": "1W",
+          "KIAH/MMUGS4": "1L",
+          "KIAH/GUMBY3": "1L",
+          "KIAH/RITAA7": "1L",
+          "KIAH/FLYZA5": "1L",
+          "KTME": "1P",
+          "KSGR": "1P"
+        },
+        "default_consolidation": {
+          "1M": []
+        }
+      },
       "IDS": {
         "inbound_assignments": {
           "BAYYY5": "1G",
@@ -164,7 +269,7 @@
           "LINKK1": "1G",
           "MSCOT4": "1N",
           "NNCEE2": "1G",
-          "PIEGY1": "1P",
+          "PIEGY1": "1Z",
           "PUCKS4": "1G",
           "RIICE1.EAST": "1N",
           "RIICE1.WEST": "1N",
@@ -233,6 +338,7 @@
           "LINKK1": "1G",
           "MSCOT4": "1N",
           "NNCEE2": "1G",
+          "PIEGY1": "1Z",
           "PUCKS4": "1G",
           "SKNRD5": "1D",
           "SNDAY1": "1X",
@@ -294,10 +400,13 @@
           "FINAL.GUSHR3": "1I",
           "FINAL.HTOWN3": "1O",
           "FINAL.LINKK1": "1O",
+          "FINAL.LINKK1.26L": "1O",
           "FINAL.MSCOT4": "1A",
           "FINAL.NNCEE2": "1O",
+          "FINAL.NNCEE2.8R": "1O",
           "FINAL.SKNRD5": "1I",
           "FINAL.TEJAS5": "1O",
+          "FINAL.TEJAS5.26L": "1O",
           "FINAL.TTORO3": "1I",
           "FINAL.ZEEKK3": "1A"
         },
