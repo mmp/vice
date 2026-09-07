@@ -1698,6 +1698,156 @@ func TestFutureFieldCheckRetriesWhenFieldNotVisible(t *testing.T) {
 	}
 }
 
+// addTrafficAtBearing places traffic rangeNM from the asker along a true bearing,
+// with an altitude offset (negative = below).
+func addTrafficAtBearing(sim *Sim, ac *Aircraft, callsign av.ADSBCallsign, bearing math.TrueHeading,
+	rangeNM, dAlt float32) *Aircraft {
+	traffic := makeVisualTestAircraft(
+		math.Offset2LL(ac.Position(), bearing, rangeNM, ac.NmPerLongitude()), 180)
+	traffic.ADSBCallsign = callsign
+	traffic.Nav.FlightState.Altitude = ac.Altitude() + dAlt
+	sim.Aircraft[callsign] = traffic
+	return traffic
+}
+
+func TestWithinVerticalFieldOfView(t *testing.T) {
+	tests := []struct {
+		name      string
+		altDiffFt float32
+		distNM    float32
+		want      bool
+	}{
+		// Routine traffic-call geometry must never be blocked; the certification
+		// minimum of ~17 degrees down would reject most of these.
+		{"leader on the glideslope", -1100, 3, true},
+		{"2000 low at a mile", -2000, 1, true},
+		{"5000 low at a mile", -5000, 1, true},
+		{"4000 above at 2 miles", 4000, 2, true},
+		{"co-altitude alongside", 0, 0.2, true},
+
+		// Nearly overhead or underneath: the roof and the floor are in the way.
+		{"10000 low at half a mile", -10000, 0.5, false},
+		{"8000 above at half a mile", 8000, 0.5, false},
+		{"directly underneath", -3000, 0, false},
+		{"directly overhead", 3000, 0, false},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := withinVerticalFieldOfView(test.altDiffFt, test.distNM); got != test.want {
+				t.Errorf("got %v, want %v", got, test.want)
+			}
+		})
+	}
+}
+
+func TestTrafficIsVisibleRejectsTrafficOverhead(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	// A quarter mile away and 8000 feet up: no window points there.
+	traffic := addTrafficAtBearing(sim, ac, "DAL456", 180, 0.25, 8000)
+
+	if sim.trafficIsVisible(ac, traffic) {
+		t.Error("expected traffic nearly overhead to be out of the field of view")
+	}
+}
+
+func TestRelativeAltitudeVisibility(t *testing.T) {
+	tests := []struct {
+		name      string
+		altDiffFt float32
+		distNM    float32
+		want      float32
+	}{
+		{"above is against sky", 1000, 3, 1.3},
+		{"co-altitude", 0, 3, 1},
+		{"directly below at zero range", -1000, 0, 0.7},
+		{"leader on the glideslope at 3 miles", -1100, 3, 1},
+		{"leader on the glideslope at 6 miles", -1900, 6, 1},
+		// Equal depression angles must score equally however far out the target is;
+		// that invariance is the whole point of using the angle rather than the
+		// altitude difference.
+		{"14 degrees down at 2 miles", -3000, 2, 0.94985},
+		{"14 degrees down at 4 miles", -6000, 4, 0.94985},
+		{"steeply down into terrain", -4000, 1, 0.7},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := relativeAltitudeVisibility(test.altDiffFt, test.distNM); math.Abs(got-test.want) > 1e-4 {
+				t.Errorf("got %f, want %f", got, test.want)
+			}
+		})
+	}
+}
+
+func TestTrafficAdvisoryMatchesLongRangeCall(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	// The o'clock quantizes bearing to 30-degree steps, so a call as accurate as the
+	// phraseology allows can still be 15 degrees off. At 10 miles that puts the traffic
+	// well outside a fixed 2 NM radius of the called position even though the controller
+	// did nothing wrong.
+	traffic := addTrafficAtBearing(sim, ac, "DAL456", 195, 10, 0)
+
+	callPos := math.Offset2LL(ac.Position(), 180, 10, ac.NmPerLongitude())
+	if off := math.NMDistance2LL(callPos, traffic.Position()); off < 2.5 {
+		t.Fatalf("test no longer exercises a long-range bearing error: %.2f NM off", off)
+	}
+
+	if got := sim.matchTrafficCall(ac, 12, 10, int(ac.Altitude()), false); got != traffic {
+		t.Errorf("got %v, want %s", got, traffic.ADSBCallsign)
+	}
+}
+
+func TestTrafficAdvisoryRejectsOffBearingAtCalledRange(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	addTrafficAtBearing(sim, ac, "DAL456", 225, 8, 0) // 45 degrees off the called 12 o'clock
+
+	if got := sim.matchTrafficCall(ac, 12, 8, int(ac.Altitude()), false); got != nil {
+		t.Errorf("expected no match, got %s", got.ADSBCallsign)
+	}
+}
+
+func TestTrafficAdvisoryRejectsTrafficBehindOnShortCall(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	// The trailing aircraft on a final, 1.5 NM at the 6 o'clock. A close-in "12 o'clock,
+	// one mile" call must not correlate with it: reporting the aircraft behind you in
+	// sight would go on to authorize visual separation from the wrong airplane.
+	addTrafficAtBearing(sim, ac, "DAL456", 0, 1.5, 0)
+
+	if got := sim.matchTrafficCall(ac, 12, 1, int(ac.Altitude()), false); got != nil {
+		t.Errorf("expected no match for traffic behind, got %s", got.ADSBCallsign)
+	}
+}
+
+func TestTrafficAdvisoryRejectsWrongRangeOnBearing(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	// Dead on the called bearing but 3.5 miles short: a range-scaled circle would accept
+	// this at 12 miles and pick the wrong airplane out of an in-trail sequence.
+	addTrafficAtBearing(sim, ac, "DAL456", 180, 8.5, 0)
+
+	if got := sim.matchTrafficCall(ac, 12, 12, int(ac.Altitude()), false); got != nil {
+		t.Errorf("expected no match, got %s", got.ADSBCallsign)
+	}
+}
+
+func TestSeenTrafficSurvivesWhileVisible(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	traffic := addTrafficAtBearing(sim, ac, "DAL456", 180, 2, 0)
+	ac.RecordSighting(traffic.ADSBCallsign, sim.State.SimTime.Add(-3*time.Minute))
+
+	ac.refreshSeenTraffic(sim.State.SimTime, sim.Aircraft)
+	if len(ac.SeenTraffic) != 1 {
+		t.Fatal("expected a sighting of still-visible traffic to be retained past its age")
+	}
+
+	// Now put it behind the aircraft.
+	traffic.Nav.FlightState.Position = math.Offset2LL(ac.Position(), 0, 2, ac.NmPerLongitude())
+	ac.refreshSeenTraffic(sim.State.SimTime, sim.Aircraft)
+	if len(ac.SeenTraffic) != 0 {
+		t.Error("expected a stale sighting to drop once the traffic is behind")
+	}
+}
+
 func TestFutureTrafficInSightFiresAtDeadline(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
 	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
@@ -1706,7 +1856,7 @@ func TestFutureTrafficInSightFiresAtDeadline(t *testing.T) {
 	sim.PendingContacts = make(map[TCP][]PendingContact)
 
 	ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180)
-	traffic := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180)
+	traffic := makeVisualTestAircraft(math.Point2LL{0, 3.0 / 60}, 180) // 2nm ahead
 	traffic.ADSBCallsign = "DAL456"
 	sim.Aircraft = map[av.ADSBCallsign]*Aircraft{
 		ac.ADSBCallsign:      ac,
@@ -1812,6 +1962,60 @@ func TestRecentApproachTrafficInSightForRunwaySkipsNewerWrongRunway(t *testing.T
 	}
 	if seen == nil || seen.Callsign != matching.ADSBCallsign {
 		t.Fatalf("got sighting %v, want one of %s", seen, matching.ADSBCallsign)
+	}
+}
+
+func TestRecentApproachTrafficInSightRejectsOtherAirport(t *testing.T) {
+	vs := NewVisualScenario(t, math.Point2LL{0, 0}, "13L", math.Point2LL{0, 5.0 / 60}, 180)
+
+	traffic := makeVisualTestAircraft(math.Point2LL{0, 4.0 / 60}, 180)
+	traffic.ADSBCallsign = "DAL456"
+	traffic.FlightPlan.ArrivalAirport = "KLGA"
+	traffic.Nav.Approach.Cleared = true
+	traffic.Nav.Approach.Assigned.Runway = "13L"
+	vs.Sim.Aircraft[traffic.ADSBCallsign] = traffic
+
+	vs.AC.RecordSighting(traffic.ADSBCallsign, vs.Sim.State.SimTime)
+
+	if got, _ := vs.Sim.recentApproachTrafficInSightForRunway(vs.AC, "13L"); got != nil {
+		t.Errorf("expected traffic landing another airport to be rejected, got %s", got.ADSBCallsign)
+	}
+}
+
+func TestScenarioCVAAcceptedLongAfterTrafficReport(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "36", Heading: 360, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "36", math.Point2LL{3.0 / 52, -8.0 / 60}, 360)
+
+	traffic := makeVisualTestAircraft(math.NM2LL([2]float32{-4, -4.2}, 52), 360)
+	traffic.ADSBCallsign = "AAL5207"
+	traffic.Nav.FlightState.ArrivalAirport = av.Waypoint{Fix: "KJFK"}
+	traffic.Nav.Approach.Cleared = true
+	rw36 := av.Waypoint{Fix: "RW36", Location: airportLoc}
+	traffic.Nav.Approach.Assigned = &av.Approach{
+		Type:      av.RNAVApproach,
+		Runway:    "36",
+		Waypoints: []av.WaypointArray{{rw36}},
+	}
+	rw36.SetLand(true)
+	traffic.Nav.Waypoints = av.WaypointArray{rw36, traffic.Nav.FlightState.ArrivalAirport}
+	vs.Sim.Aircraft[traffic.ADSBCallsign] = traffic
+
+	// The pilot reported the traffic three minutes ago and has been staring at it since;
+	// working the other final for that long must not cost the controller the clearance.
+	vs.AC.RecordSighting(traffic.ADSBCallsign, vs.Sim.State.SimTime.Add(-3*time.Minute))
+	vs.AC.refreshSeenTraffic(vs.Sim.State.SimTime, vs.Sim.Aircraft)
+
+	intent, err := vs.ClearedVisual("36")
+	if err != nil {
+		t.Fatalf("ClearedVisual error: %v", err)
+	}
+	if u, unable := intent.(av.UnableIntent); unable {
+		t.Fatalf("CVA refused long after the traffic report: %s", u.Message)
+	}
+	if _, ok := intent.(av.ClearedApproachIntent); !ok {
+		t.Fatalf("expected ClearedApproachIntent, got %T", intent)
 	}
 }
 
@@ -2523,11 +2727,29 @@ func TestTrafficInSightInquiryNoNearbyTraffic(t *testing.T) {
 	}
 }
 
-func TestTrafficInSightInquiryAmbiguousMultiple(t *testing.T) {
+func TestTrafficInSightInquiryInTrailCandidatesArentAmbiguous(t *testing.T) {
 	sim, ac := makeTrafficInSightSim(t)
 	addTraffic(sim, ac, "DAL456", -1, 0, 0)   // 1 NM south, in front
 	addTraffic(sim, ac, "UAL789", -2, 0.5, 0) // ~2 NM south-east, in front
 	addTraffic(sim, ac, "SWA111", -1.5, 0, 0) // 1.5 NM south, in front
+
+	// All three are within 30 degrees of each other, which is one target as far as the
+	// pilot is concerned; they report the nearest.
+	intent := sim.handleTrafficInSightInquiry(ac)
+	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	if !ok {
+		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
+	}
+	if ti.Response != av.TrafficResponseTrafficSeen {
+		t.Fatalf("expected TrafficResponseTrafficSeen for in-trail candidates, got %v", ti.Response)
+	}
+	requireSeenTraffic(t, ac, "DAL456")
+}
+
+func TestTrafficInSightInquiryAmbiguousWhenSpreadApart(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	addTraffic(sim, ac, "DAL456", -1, 0, 0)   // 1 NM south, dead ahead
+	addTraffic(sim, ac, "UAL789", -1, 1.5, 0) // 1 NM south, 1.5 NM east: ~56 degrees away
 
 	intent := sim.handleTrafficInSightInquiry(ac)
 	ti, ok := intent.(av.TrafficAdvisoryIntent)
@@ -2535,7 +2757,48 @@ func TestTrafficInSightInquiryAmbiguousMultiple(t *testing.T) {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
 	if ti.Response != av.TrafficResponseWhereWasIt {
-		t.Errorf("expected TrafficResponseWhereWasIt with multiple candidates, got %v", ti.Response)
+		t.Errorf("expected TrafficResponseWhereWasIt for candidates in different directions, got %v",
+			ti.Response)
+	}
+}
+
+func TestTrafficInSightInquiryReaffirmationRespectsIMC(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	traffic := addTrafficAtBearing(sim, ac, "DAL456", 180, 2, 0)
+	ac.RecordSighting(traffic.ADSBCallsign, sim.State.SimTime)
+	sim.State.METAR["KJFK"] = wx.METAR{ICAO: "KJFK", Raw: "KJFK 1/4SM BR OVC003"}
+
+	intent := sim.handleTrafficInSightInquiry(ac)
+	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	if !ok {
+		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
+	}
+	if ti.Response != av.TrafficResponseIMC {
+		t.Errorf("expected TrafficResponseIMC, got %v", ti.Response)
+	}
+}
+
+func TestTrafficInSightInquiryReaffirmsRecentSighting(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	addTraffic(sim, ac, "DAL456", -2, 0, 0)   // the one already reported, 2 NM ahead
+	addTraffic(sim, ac, "UAL789", -0.5, 0, 0) // nearer, but never called
+
+	ac.RecordSighting("DAL456", sim.State.SimTime.Add(-3*time.Minute))
+
+	intent := sim.handleTrafficInSightInquiry(ac)
+	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	if !ok {
+		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
+	}
+	if ti.Response != av.TrafficResponseTrafficSeen {
+		t.Fatalf("expected TrafficResponseTrafficSeen, got %v", ti.Response)
+	}
+	if n := len(ac.SeenTraffic); n != 1 {
+		t.Fatalf("expected the existing sighting to be reaffirmed, got %d entries", n)
+	}
+	seen := requireSeenTraffic(t, ac, "DAL456")
+	if seen.SightedTime != sim.State.SimTime {
+		t.Error("expected the reaffirmed sighting to be refreshed to now")
 	}
 }
 

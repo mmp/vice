@@ -472,49 +472,7 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int
 		return logResult(av.TrafficAdvisoryIntent{Response: av.TrafficResponseIMC})
 	}
 
-	// Convert o'clock to heading offset from aircraft heading
-	// 12 o'clock = 0 degrees, 3 o'clock = 90 degrees, etc.
-	oclockHeading := math.MagneticHeading((oclock % 12) * 30) // 0, 30, 60, 90... 330
-	acHeading := math.NormalizeHeading(ac.Heading() + oclockHeading)
-
-	// Calculate the approximate position of the reported traffic
-	nmPerLong := ac.NmPerLongitude()
-	magVar := ac.MagneticVariation()
-	callPos := math.Offset2LL(ac.Position(), math.MagneticToTrue(acHeading, magVar), float32(miles), nmPerLong)
-
-	// Search for actual traffic near the reported position
-	// Tolerance: +/- 2 miles horizontal, +/- 1000 feet vertical
-	const horizontalToleranceNM = 2.0
-	const verticalToleranceFeet = 1000.0
-
-	traffic := func() *Aircraft {
-		var best *Aircraft
-		for cs, candidate := range s.Aircraft {
-			if cs == ac.ADSBCallsign {
-				continue // Skip self
-			}
-
-			// Use altitude as a strict cutoff selector. Skipped when the
-			// controller said "altitude unknown" — pick by position alone.
-			if !altUnknown {
-				altDiff := math.Abs(candidate.Altitude() - float32(callAlt))
-				if altDiff > verticalToleranceFeet {
-					continue
-				}
-			}
-
-			// Distance must be in range; then we take the closest if there are multiple
-			if dist := math.NMDistance2LL(callPos, candidate.Position()); dist < horizontalToleranceNM {
-				if best == nil {
-					best = candidate
-				} else if dist < math.NMDistance2LL(callPos, best.Position()) {
-					best = candidate
-				}
-			}
-		}
-		return best
-	}()
-
+	traffic := s.matchTrafficCall(ac, oclock, miles, callAlt, altUnknown)
 	if traffic == nil {
 		// Nothing there; the pilot will report that they're looking but we won't re-check in the
 		// future since there's no identified aircraft to check...
@@ -540,6 +498,62 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int
 	}
 }
 
+// The o'clock quantizes the bearing to 30-degree steps and the range to whole miles,
+// so the region a call can plausibly refer to is a box around the called position that
+// is elongated across track and grows with range, not a circle. A range-scaled circle
+// would also accept traffic several miles short on the same radial, which picks the
+// wrong airplane out of an in-trail sequence on final.
+const (
+	trafficCallCrossTrackFraction  = 0.4 // sin(24 degrees): quantization plus heading-vs-track drift
+	trafficCallMinCrossTrackNM     = 2.0
+	trafficCallAlongTrackNM        = 3.0
+	trafficCallVerticalToleranceFt = 1000.0
+)
+
+// matchTrafficCall returns the aircraft the controller's traffic call most likely refers
+// to, or nil if nothing plausibly matches.
+func (s *Sim) matchTrafficCall(ac *Aircraft, oclock, miles, callAlt int, altUnknown bool) *Aircraft {
+	// Convert o'clock to heading offset from aircraft heading
+	// 12 o'clock = 0 degrees, 3 o'clock = 90 degrees, etc.
+	oclockHeading := math.MagneticHeading((oclock % 12) * 30) // 0, 30, 60, 90... 330
+	nmPerLong := ac.NmPerLongitude()
+	callBearing := math.MagneticToTrue(math.NormalizeHeading(ac.Heading()+oclockHeading), ac.MagneticVariation())
+	callPos := math.Offset2LL(ac.Position(), callBearing, float32(miles), nmPerLong)
+	maxCrossTrack := max(trafficCallMinCrossTrackNM, trafficCallCrossTrackFraction*float32(miles))
+
+	var best *Aircraft
+	for cs, candidate := range s.Aircraft {
+		if cs == ac.ADSBCallsign {
+			continue // Skip self
+		}
+
+		// Use altitude as a strict cutoff selector. Skipped when the
+		// controller said "altitude unknown" — pick by position alone.
+		if !altUnknown && math.Abs(candidate.Altitude()-float32(callAlt)) > trafficCallVerticalToleranceFt {
+			continue
+		}
+
+		// The candidate must lie ahead of abeam along the called bearing. Without this,
+		// a close-in call whose range is under the along-track tolerance would reach
+		// back past the aircraft and match traffic at its six o'clock.
+		rng := math.NMDistance2LL(ac.Position(), candidate.Position())
+		off := math.Radians(math.HeadingDifference(callBearing,
+			math.Heading2LL(ac.Position(), candidate.Position(), nmPerLong)))
+		alongTrack := rng * math.Cos(off)
+		if alongTrack <= 0 || rng*math.Sin(off) > maxCrossTrack ||
+			math.Abs(alongTrack-float32(miles)) > trafficCallAlongTrackNM {
+			continue
+		}
+
+		// Take the closest to the called position if there are multiple.
+		if best == nil || math.NMDistance2LL(callPos, candidate.Position()) <
+			math.NMDistance2LL(callPos, best.Position()) {
+			best = candidate
+		}
+	}
+	return best
+}
+
 func (s *Sim) trafficIsVisible(ac, traffic *Aircraft) bool {
 	nearestMETAR, nearestElev := s.nearestMETAR(ac.Position())
 
@@ -548,24 +562,27 @@ func (s *Sim) trafficIsVisible(ac, traffic *Aircraft) bool {
 		return false
 	}
 
+	dist := math.NMDistance2LL(ac.Position(), traffic.Position())
+	altDiff := traffic.Altitude() - ac.Altitude()
+	if !withinVerticalFieldOfView(altDiff, dist) {
+		s.lg.Infof("trafficIsVisible: %s -> %s: outside vertical field of view (%.0f ft over %.2f nm)",
+			ac.ADSBCallsign, traffic.ADSBCallsign, altDiff, dist)
+		return false
+	}
+
 	// Base probability from METAR-derived effective visual range at the pilot's AGL.
 	trafficAltAGL := max(traffic.Altitude()-nearestElev, 0)
 	acAltAGL := max(ac.Altitude()-nearestElev, 0)
-	dist := math.NMDistance2LL(ac.Position(), traffic.Position())
 	effRange := nearestMETAR.EffectiveVisualRange(acAltAGL, trafficAltAGL)
 	baseProb := pilotSeeProb(effRange, dist)
 	p := baseProb
 
 	// Only apply altitude modulation + floor clamp if the target is within
 	// effective visual range; otherwise the pilot simply can't see it.
+	altFactor := float32(1)
 	if p > 0 {
-		// Traffic above is easier to see against sky; below, harder against ground.
-		if traffic.Altitude() > ac.Altitude()+500 {
-			p *= 1.3
-		} else if traffic.Altitude() < ac.Altitude()-500 {
-			p *= 0.7
-		}
-		p = math.Clamp(p, 0.2, 1)
+		altFactor = relativeAltitudeVisibility(altDiff, dist)
+		p = math.Clamp(p*altFactor, 0.2, 1)
 	}
 
 	roll := s.Rand.Float32()
@@ -578,6 +595,7 @@ func (s *Sim) trafficIsVisible(ac, traffic *Aircraft) bool {
 		slog.Float64("traffic_agl_ft", float64(trafficAltAGL)),
 		slog.Float64("effective_range_nm", float64(effRange)),
 		slog.Float64("base_prob", float64(baseProb)),
+		slog.Float64("relative_altitude_factor", float64(altFactor)),
 		slog.Float64("adjusted_prob", float64(p)),
 		slog.Float64("roll", float64(roll)),
 		slog.String("result", util.Select(seen, "seen", "not_seen")))
@@ -615,7 +633,7 @@ func (s *Sim) MaintainVisualSeparation(tcw TCW, callsign av.ADSBCallsign) (av.Co
 	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error { return nil },
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			if sighting := ac.RecentSighting(s.State.SimTime, trafficSightingMaxAge); sighting != nil {
+			if sighting := ac.RecentSighting(); sighting != nil {
 				ac.clearOfferedToMaintainSeparation()
 				sighting.MaintainingVisualSeparation = true
 				return av.VisualSeparationIntent{}
@@ -648,9 +666,6 @@ func (s *Sim) ApproveVisualSeparation(tcw TCW, callsign av.ADSBCallsign) (av.Com
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			for i := len(ac.SeenTraffic) - 1; i >= 0; i-- {
 				sighting := &ac.SeenTraffic[i]
-				if s.State.SimTime.Sub(sighting.SightedTime) > trafficSightingMaxAge {
-					continue
-				}
 				if !sighting.OfferedToMaintainSeparation {
 					continue
 				}

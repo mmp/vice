@@ -31,10 +31,7 @@ const (
 	AddressingFormTypeTrailing3
 )
 
-const (
-	trafficSightingMaxAge         = 60 * time.Second
-	approachTrafficSightingMaxAge = 30 * time.Second
-)
+const trafficSightingMaxAge = 60 * time.Second
 
 type SeenAircraft struct {
 	Callsign                    av.ADSBCallsign
@@ -197,20 +194,12 @@ func (ac *Aircraft) RecordSighting(traffic av.ADSBCallsign, now Time) *SeenAircr
 	return &ac.SeenTraffic[len(ac.SeenTraffic)-1]
 }
 
-func (ac *Aircraft) RecentSighting(now Time, maxAge time.Duration) *SeenAircraft {
-	// Just check last one since it's the most recent.
-	if n := len(ac.SeenTraffic); n > 0 && now.Sub(ac.SeenTraffic[n-1].SightedTime) <= maxAge {
+// RecentSighting returns the pilot's most recent sighting, or nil if they aren't
+// holding any. refreshSeenTraffic has already dropped the ones that have gone
+// stale, so anything still here is live.
+func (ac *Aircraft) RecentSighting() *SeenAircraft {
+	if n := len(ac.SeenTraffic); n > 0 {
 		return &ac.SeenTraffic[n-1]
-	}
-	return nil
-}
-
-func (ac *Aircraft) RecentSightingOf(traffic av.ADSBCallsign, now Time, maxAge time.Duration) *SeenAircraft {
-	for i := len(ac.SeenTraffic) - 1; i >= 0; i-- {
-		seen := &ac.SeenTraffic[i]
-		if seen.Callsign == traffic && now.Sub(seen.SightedTime) <= maxAge {
-			return seen
-		}
 	}
 	return nil
 }
@@ -249,26 +238,32 @@ func (ac *Aircraft) canRequestVisualApproach() bool {
 	return appr != nil && appr.Type != av.ChartedVisualApproach && appr.Type != av.VisualApproach
 }
 
-// canSeeTraffic reports whether traffic is within the pilot's forward
-// visibility arc.
+// canSeeTraffic reports whether traffic is within the pilot's visibility arc,
+// horizontally and vertically.
 func (ac *Aircraft) canSeeTraffic(traffic *Aircraft) bool {
 	bearingToTraffic := math.TrueToMagnetic(
 		math.Heading2LL(ac.Position(), traffic.Position(), ac.NmPerLongitude()),
 		ac.MagneticVariation())
-	return math.HeadingDifference(ac.Heading(), bearingToTraffic) <= visualMaxBearingOff
+	return math.HeadingDifference(ac.Heading(), bearingToTraffic) <= visualMaxBearingOff &&
+		withinVerticalFieldOfView(traffic.Altitude()-ac.Altitude(),
+			math.NMDistance2LL(ac.Position(), traffic.Position()))
 }
 
-// refreshSeenTraffic drops sightings the pilot can no longer act on: those the
-// aircraft was told to follow or keep visual separation from are held only
-// while the traffic remains visible, and the rest age out.
+// refreshSeenTraffic drops sightings the pilot can no longer act on. A sighting is
+// live for as long as the traffic is still out the window; once it isn't, a routine
+// sighting is good for a little longer, while one the pilot was told to follow or
+// keep visual separation from ends the moment sight is lost.
 func (ac *Aircraft) refreshSeenTraffic(now Time, aircraft map[av.ADSBCallsign]*Aircraft) {
 	ac.SeenTraffic = util.FilterSliceInPlace(ac.SeenTraffic,
 		func(seen SeenAircraft) bool {
-			if !seen.MaintainingVisualSeparation && !seen.FollowingOnVisualApproach {
-				return now.Sub(seen.SightedTime) <= trafficSightingMaxAge
-			}
 			traffic, ok := aircraft[seen.Callsign]
-			return ok && ac.canSeeTraffic(traffic)
+			if !ok {
+				return false
+			}
+			if seen.MaintainingVisualSeparation || seen.FollowingOnVisualApproach {
+				return ac.canSeeTraffic(traffic)
+			}
+			return ac.canSeeTraffic(traffic) || now.Sub(seen.SightedTime) <= trafficSightingMaxAge
 		})
 }
 
