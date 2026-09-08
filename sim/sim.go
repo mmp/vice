@@ -166,9 +166,10 @@ type Sim struct {
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
 	waypointCommands map[TCP]map[string]string // tcp -> fix -> commands
 
-	// LastSTTCommand stores state needed to roll back a misheard STT command.
-	// Only the single most recent command is tracked.
-	LastSTTCommand *LastSTTCommand
+	// lastSTTCommands stores the state needed to roll back a misheard STT command,
+	// per TCW: multiple users may share a TCW, and so share its radio and its
+	// rollback history. Only the single most recent command is tracked for each.
+	lastSTTCommands map[TCW]*lastSTTCommand
 
 	AvailableStripCIDs []int
 
@@ -183,9 +184,9 @@ type Sim struct {
 	lastPublishTime time.Time
 }
 
-// LastSTTCommand stores the nav snapshot from before the most recent STT command
+// lastSTTCommand stores the nav snapshot from before the most recent STT command
 // was executed, allowing rollback if the controller says "negative, that was for {other callsign}".
-type LastSTTCommand struct {
+type lastSTTCommand struct {
 	Callsign    av.ADSBCallsign
 	NavSnapshot nav.NavSnapshot
 }
@@ -453,6 +454,7 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 
 func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	s.lg = lg
+	s.lastSTTCommands = make(map[TCW]*lastSTTCommand)
 
 	if s.eventStream == nil {
 		s.eventStream = NewEventStream(lg)

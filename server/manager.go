@@ -613,6 +613,7 @@ func (sm *SimManager) signOff(token string) error {
 
 	// If this was the last user at the TCW, post messages and clear privileges
 	if result.UsersAtTCW == 0 {
+		session.sim.ClearSTTCommands(result.TCW)
 		// Get positions for the uncovered message
 		uncoveredPositions := session.sim.GetPositionsForTCW(result.TCW)
 

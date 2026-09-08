@@ -148,6 +148,7 @@ func (s *Sim) processFutureFrequencyChanges() {
 
 func (s *Sim) setControllerFrequency(ac *Aircraft, pos ControlPosition) {
 	if ac.ControllerFrequency != pos {
+		s.clearAircraftSTTCommands(ac.ADSBCallsign)
 		ac.ControllerFrequency = pos
 	}
 }

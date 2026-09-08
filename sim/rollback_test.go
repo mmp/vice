@@ -95,3 +95,63 @@ func TestRollbackEndToEnd(t *testing.T) {
 		t.Errorf("after correction: assigned heading = %v (ok=%v), want 30", hdg, ok)
 	}
 }
+
+// TestRollbackHistoryIsPerTCW checks that each TCW rolls back only what it
+// commanded, and that history for an aircraft is discarded once it leaves the
+// controller's frequency.
+func TestRollbackHistoryIsPerTCW(t *testing.T) {
+	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
+	s := sim.NewTestSim(lg)
+	s.State.CurrentConsolidation["OTHER"] = &sim.TCPConsolidation{PrimaryTCP: "126.0"}
+
+	for _, cs := range []av.ADSBCallsign{"AAL111", "AAL222"} {
+		s.Aircraft[cs] = sim.MakeTestAircraft(cs, "22L")
+	}
+	s.Aircraft["AAL222"].ControllerFrequency = "126.0"
+
+	run := func(tcw sim.TCW, callsign av.ADSBCallsign, commands string) {
+		t.Helper()
+		if res := s.RunAircraftControlCommands(tcw, callsign, commands, 0); res.Error != nil {
+			t.Fatalf("%s %s %s: %v", tcw, callsign, commands, res.Error)
+		}
+	}
+	heading := func(cs av.ADSBCallsign) float32 {
+		t.Helper()
+		hdg, ok := s.Aircraft[cs].Nav.AssignedHeading()
+		if !ok {
+			t.Fatalf("%s: no assigned heading", cs)
+		}
+		return float32(hdg)
+	}
+
+	run(sim.E2ETCW(), "AAL111", "L010")
+	run("OTHER", "AAL222", "L020")
+	run(sim.E2ETCW(), "AAL111", "L030")
+
+	// Rolling back at OTHER must undo its own transmission, not the newer one
+	// at the other TCW.
+	run("OTHER", "ROLLBACK", "")
+	if hdg := heading("AAL111"); hdg != 30 {
+		t.Errorf("other TCW's rollback changed AAL111: heading = %v, want 30", hdg)
+	}
+	if _, ok := s.Aircraft["AAL222"].Nav.AssignedHeading(); ok {
+		t.Error("rollback did not undo the commanding TCW's own transmission")
+	}
+
+	// Once an aircraft is off the frequency there is nothing left to roll back.
+	if _, err := s.RadarServicesTerminated(sim.E2ETCW(), "AAL111"); err != nil {
+		t.Fatal(err)
+	}
+	run(sim.E2ETCW(), "ROLLBACK", "")
+	if hdg := heading("AAL111"); hdg != 30 {
+		t.Errorf("rollback after leaving the frequency: heading = %v, want 30", hdg)
+	}
+
+	// Signing off the TCW discards its history too.
+	run("OTHER", "AAL222", "L040")
+	s.ClearSTTCommands("OTHER")
+	run("OTHER", "ROLLBACK", "")
+	if hdg := heading("AAL222"); hdg != 40 {
+		t.Errorf("rollback after sign-off: heading = %v, want 40", hdg)
+	}
+}

@@ -176,6 +176,7 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 			fp.CID = ""
 		}
 	}
+	s.clearAircraftSTTCommands(ac.ADSBCallsign)
 	delete(s.Aircraft, ac.ADSBCallsign)
 
 	// Remove any pending transmissions from this aircraft

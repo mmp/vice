@@ -64,12 +64,14 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	// The client splits on first space, so callsign="ROLLBACK" and commands contain the rest.
 	if callsign == "ROLLBACK" {
 		// Save last command's callsign before rollback clears it
+		s.mu.Lock(s.lg)
 		var lastCallsign av.ADSBCallsign
-		if s.LastSTTCommand != nil {
-			lastCallsign = s.LastSTTCommand.Callsign
+		if last := s.lastSTTCommands[tcw]; last != nil {
+			lastCallsign = last.Callsign
 		}
-
-		if err := s.rollbackLastCommand(); err != nil {
+		err := s.rollbackLastCommand(tcw)
+		s.mu.Unlock(s.lg)
+		if err != nil {
 			s.lg.Warnf("ROLLBACK failed: %v", err)
 		}
 		if len(commands) == 0 {
@@ -116,12 +118,17 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 
 	// Take a snapshot before executing commands (for potential future rollback)
+	s.mu.Lock(s.lg)
 	if ac, ok := s.Aircraft[callsign]; ok {
-		s.LastSTTCommand = &LastSTTCommand{
+		if s.lastSTTCommands == nil {
+			s.lastSTTCommands = make(map[TCW]*lastSTTCommand)
+		}
+		s.lastSTTCommands[tcw] = &lastSTTCommand{
 			Callsign:    callsign,
 			NavSnapshot: ac.Nav.TakeSnapshot(),
 		}
 	}
+	s.mu.Unlock(s.lg)
 
 	var intents []av.CommandIntent
 
@@ -150,27 +157,45 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 }
 
-// rollbackLastCommand restores the nav state of the last aircraft that received a command.
-// This is used when the controller says "negative, that was for {other callsign}" to undo
-// commands given to the wrong aircraft due to STT callsign misinterpretation.
-func (s *Sim) rollbackLastCommand() error {
-	if s.LastSTTCommand == nil {
+// rollbackLastCommand restores the nav state of the last aircraft that received a command
+// from the controller at tcw. This is used when the controller says "negative, that was for
+// {other callsign}" to undo commands given to the wrong aircraft due to STT callsign
+// misinterpretation.
+func (s *Sim) rollbackLastCommand(tcw TCW) error {
+	last := s.lastSTTCommands[tcw]
+	if last == nil {
 		return ErrNoRecentCommand
 	}
 
-	ac, ok := s.Aircraft[s.LastSTTCommand.Callsign]
+	ac, ok := s.Aircraft[last.Callsign]
 	if !ok {
-		s.LastSTTCommand = nil
+		delete(s.lastSTTCommands, tcw)
 		return ErrNoRecentCommand
 	}
 
-	// Restore the nav state from the snapshot
-	ac.Nav.RestoreSnapshot(s.LastSTTCommand.NavSnapshot)
+	ac.Nav.RestoreSnapshot(last.NavSnapshot)
 
 	// Clear the snapshot - consecutive rollbacks should fail
-	s.LastSTTCommand = nil
+	delete(s.lastSTTCommands, tcw)
 
 	return nil
+}
+
+// ClearSTTCommands discards the rollback history for a TCW that has become unoccupied.
+func (s *Sim) ClearSTTCommands(tcw TCW) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	delete(s.lastSTTCommands, tcw)
+}
+
+// clearAircraftSTTCommands discards any rollback history naming the given aircraft; it is
+// no longer a valid target once the aircraft leaves the controller's frequency or the sim.
+func (s *Sim) clearAircraftSTTCommands(callsign av.ADSBCallsign) {
+	for tcw, last := range s.lastSTTCommands {
+		if last.Callsign == callsign {
+			delete(s.lastSTTCommands, tcw)
+		}
+	}
 }
 
 // renderAndPostReadback renders a batch of command intents as a pilot readback transmission.
