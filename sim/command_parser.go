@@ -27,14 +27,26 @@ type ControlCommandsResult struct {
 	ReadbackCallsign   av.ADSBCallsign // Aircraft callsign for the readback
 }
 
-// RunAircraftControlCommands executes a space-separated string of control commands for an aircraft.
+// RunAircraftControlCommands executes a space-separated string of control commands that the
+// controller at tcw issued to an aircraft, recording the rollback history for the transmission.
 // Returns the remaining unparsed input and any error that occurred.
+func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string, audioDuration time.Duration) ControlCommandsResult {
+	return s.runControlCommands(tcw, callsign, commandStr, audioDuration, true)
+}
+
+// runScriptedControlCommands executes scenario-scripted commands. They are not controller
+// transmissions, so they leave the rollback history of whoever is at tcw alone.
+func (s *Sim) runScriptedControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
+	return s.runControlCommands(tcw, callsign, commandStr, 0, false)
+}
+
 // This is the core command execution logic shared by the dispatcher and automated test code.
 // All intents from commands are collected and rendered together as a single transmission.
 // audioDuration is the length of the voice transmission (zero for typed or non-voice commands);
 // the pilot-reaction delay applied by deferred-action Nav commands is reduced by
 // (audioDuration - callsignAudioOffset), floored at zero.
-func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string, audioDuration time.Duration) ControlCommandsResult {
+func (s *Sim) runControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string,
+	audioDuration time.Duration, recordHistory bool) ControlCommandsResult {
 	// This function has many early returns and runs without holding s.mu; publish unconditionally
 	// at the end so any state updates make their way out quickly.
 	defer func() {
@@ -120,17 +132,19 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 
 	// Take a snapshot before executing commands (for potential future rollback)
-	s.mu.Lock(s.lg)
-	if ac, ok := s.Aircraft[callsign]; ok {
-		if s.lastSTTCommands == nil {
-			s.lastSTTCommands = make(map[TCW]*lastSTTCommand)
+	if recordHistory {
+		s.mu.Lock(s.lg)
+		if ac, ok := s.Aircraft[callsign]; ok {
+			if s.lastSTTCommands == nil {
+				s.lastSTTCommands = make(map[TCW]*lastSTTCommand)
+			}
+			s.lastSTTCommands[tcw] = &lastSTTCommand{
+				Callsign:    callsign,
+				NavSnapshot: ac.Nav.TakeSnapshot(),
+			}
 		}
-		s.lastSTTCommands[tcw] = &lastSTTCommand{
-			Callsign:    callsign,
-			NavSnapshot: ac.Nav.TakeSnapshot(),
-		}
+		s.mu.Unlock(s.lg)
 	}
-	s.mu.Unlock(s.lg)
 
 	var intents []av.CommandIntent
 

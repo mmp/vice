@@ -1280,7 +1280,7 @@ func (s *Sim) updateState() {
 			if passedWaypoint != nil {
 				for tcp, wpCommands := range s.waypointCommands {
 					if cmds, ok := wpCommands[passedWaypoint.Fix]; ok {
-						// Moderately hacky: the mutex is held when we get here, but then RunAircraftControlCommands
+						// Moderately hacky: the mutex is held when we get here, but then runScriptedControlCommands
 						// will end up calling methods like Sim AssignAltitude that in turn need to acquire the mutex.
 						// So... we'll just unlock it for now and grab the lock again before we continue.
 						s.mu.Unlock(s.lg)
@@ -1288,7 +1288,7 @@ func (s *Sim) updateState() {
 						// Execute waypoint commands using the waypoint commands controller (typically an instructor)
 						nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
 						s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
-						result := s.RunAircraftControlCommands(TCW(tcp), callsign, cmds, 0)
+						result := s.runScriptedControlCommands(TCW(tcp), callsign, cmds)
 						if result.Error != nil {
 							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
 								result.RemainingInput)

@@ -46,3 +46,29 @@ func TestClearApproachActionJoinsAtItsFix(t *testing.T) {
 		t.Errorf("expected the approach to pick up after %s at %s, got %v", iaf.Fix, faf.Fix, fixes)
 	}
 }
+
+// TestScriptedCommandsLeaveRollbackHistoryAlone checks that waypoint commands
+// do not displace what the controller at the TCW last transmitted: a rollback
+// must still undo the controller's own instruction, not the scenario's.
+func TestScriptedCommandsLeaveRollbackHistoryAlone(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	for _, cs := range []av.ADSBCallsign{"AAL111", "AAL222"} {
+		s.Aircraft[cs] = MakeTestAircraft(cs, "22L")
+	}
+
+	if res := s.RunAircraftControlCommands(E2ETCW(), "AAL111", "L010", 0); res.Error != nil {
+		t.Fatal(res.Error)
+	}
+	if res := s.runScriptedControlCommands(E2ETCW(), "AAL222", "L040"); res.Error != nil {
+		t.Fatal(res.Error)
+	}
+	s.RunAircraftControlCommands(E2ETCW(), "ROLLBACK", "", 0)
+
+	if _, ok := s.Aircraft["AAL111"].Nav.AssignedHeading(); ok {
+		t.Error("rollback did not undo the controller's own transmission")
+	}
+	if hdg, ok := s.Aircraft["AAL222"].Nav.AssignedHeading(); !ok || hdg != 40 {
+		t.Errorf("rollback undid the scripted command: heading = %v (ok=%v), want 40", hdg, ok)
+	}
+}
