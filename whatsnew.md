@@ -1,18 +1,29 @@
 - New scenarios: ILM, HSV (Jake), ZFW Decod Hi (rome, Asian Evxn)
-- Scenario updates: PCT SHD (Ketan K), PVD, MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt)
+- Scenario updates: PCT SHD (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt), CLT (Gus Agostinho)
 - Fixed bug where aircraft were not automatically cleared for the approach at a /clearapp fix
 - Added: IFIX/RADIAL: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
-- VOR radials are now referenced to the station's declination from the CIFP rather than the area's magnetic variation, so SID legs that cross or track a radial follow it as charted
-- A CIFP course leg that runs along the recommended VOR's radial, inbound or outbound, is now referenced to the station's declination as well, so SIDs, STARs, and approaches that intercept a VOR radial join the charted line (KSEA SUMMA2)
 - Departures are now automatically held when a recent departure from another runway is flying an initial route that crosses their departure path
+- Fixed bugs in checks for whether called traffic is in sight
+- Improved drawing of complex routes (SIDs/STARs/approaches/...)
+- More accurately model departures' 400' AGL rollout
+- Fixed multiple data bugs in historical flight data
+- ERAM
+  - Fixed bug with cutoff "8" characters in datablocks
+- STARS
+  - Fixed bug where saving prefs handled the pref set name incorrectly 
 - Facility engineering
+  - Updated route trigger syntax to be more readable: `FIX/h050@a4000/l270` -> `FIX/h050/a4000/l270`
   - Added @t to route specifiers to allow specifying a track to fly inbound to the next fix
   - Added @crs to route specifiers to join a course inbound a fix; @crsNAVAID-Rradial gives a leg that runs along a navaid's radial
   - Added @d to route specifiers to fly a given distance from a point
   - @a / @d +/-
-  - @ for crossing radial
   - Route specifier altitudes @a require "-"/"+" for below/above the altitude
   - Added support for extracting SIDs from the CIFP: if available, "sid" is sufficient in "departure_routes" without any "waypoints"
   - All altitudes in scenarios are now specified in feet. (Before, some like `/c` were 100s of feet and others like `/a` were just feet. This was confusing.)
   - Added "print_departure_strips" and "print_arrival_strips" to airports; set either to false and no flight strips are generated for that airport's departures or arrivals
   - Removed the unused "reporting_points" scenario field. ("vfr_reporting_points" is unaffected.)
+  - Added a number of checks that departures' exits are valid/have at least one route to them
+  - Fixed bugs with /clearapp and /intercept in routes
+  - Added "initial_heading" for tower-assigned headings for SIDs that aren't charted to start with headings
+  - Added "waypoint_action" for SIDs so that actions can be added at waypoints without needing to respecify them
+
