@@ -56,9 +56,11 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 
 	// Update aircraft's last addressing form for readback rendering
+	s.mu.Lock(s.lg)
 	if ac, ok := s.Aircraft[callsign]; ok {
 		ac.LastAddressingForm = addressingForm
 	}
+	s.mu.Unlock(s.lg)
 
 	// Handle ROLLBACK as callsign: STT outputs "ROLLBACK {callsign} {commands}" or "ROLLBACK {commands}".
 	// The client splits on first space, so callsign="ROLLBACK" and commands contain the rest.
@@ -136,7 +138,9 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 		intent, err := s.runOneControlCommand(tcw, callsign, command, delayReduction)
 		if err != nil {
 			// Post any collected intents before returning error
+			s.mu.Lock(s.lg)
 			spokenText := s.renderAndPostReadback(callsign, tcw, intents)
+			s.mu.Unlock(s.lg)
 			return ControlCommandsResult{
 				RemainingInput:     strings.Join(commands[i:], " "),
 				Error:              err,
@@ -150,7 +154,9 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 
 	// Render all intents together as a single transmission
+	s.mu.Lock(s.lg)
 	spokenText := s.renderAndPostReadback(callsign, tcw, intents)
+	s.mu.Unlock(s.lg)
 	return ControlCommandsResult{
 		ReadbackSpokenText: spokenText,
 		ReadbackCallsign:   callsign,
