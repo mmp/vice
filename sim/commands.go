@@ -408,7 +408,7 @@ func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign, freq av.Frequency)
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			result, ok := ac.ContactTower(s.lg, freq)
 			if ok {
-				ac.ControllerFrequency = "_TOWER"
+				s.setControllerFrequency(ac, "_TOWER")
 			}
 			return result
 		})
@@ -697,7 +697,7 @@ func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) (av.Com
 
 			// Leave our frequency
 			s.cancelFutureFrequencyChange(ac.ADSBCallsign)
-			ac.ControllerFrequency = ""
+			s.setControllerFrequency(ac, "")
 
 			return av.ContactIntent{
 				Type: av.ContactRadarTerminated,

@@ -134,7 +134,7 @@ func (s *Sim) processFutureFrequencyChanges() {
 		func(ffc FutureFrequencyChange) bool {
 			if now.After(ffc.Time) {
 				if ac, ok := s.Aircraft[ffc.ADSBCallsign]; ok {
-					ac.ControllerFrequency = ffc.TCP
+					s.setControllerFrequency(ac, ffc.TCP)
 					switched = append(switched, ac)
 				}
 				return false
@@ -143,6 +143,12 @@ func (s *Sim) processFutureFrequencyChanges() {
 		})
 	for _, ac := range switched {
 		s.processDeferredContact(ac)
+	}
+}
+
+func (s *Sim) setControllerFrequency(ac *Aircraft, pos ControlPosition) {
+	if ac.ControllerFrequency != pos {
+		ac.ControllerFrequency = pos
 	}
 }
 
@@ -285,7 +291,7 @@ func (s *Sim) virtualControllerTransferComms(ac *Aircraft, virtualTCP TCP, targe
 		if s.isVirtualController(targetTCP) {
 			// Virtual-to-virtual: instant frequency change, then check
 			// for further deferred contacts on the new position.
-			ac.ControllerFrequency = ControlPosition(targetTCP)
+			s.setControllerFrequency(ac, ControlPosition(targetTCP))
 			s.processDeferredContact(ac)
 		} else {
 			// Virtual-to-human: realistic switch/listen delay.
@@ -335,7 +341,7 @@ func (s *Sim) processDeferredContact(ac *Aircraft) {
 
 	if s.isVirtualController(targetTCP) {
 		// Virtual-to-virtual: instant, then recurse.
-		ac.ControllerFrequency = ControlPosition(targetTCP)
+		s.setControllerFrequency(ac, ControlPosition(targetTCP))
 		s.processDeferredContact(ac)
 	} else {
 		// Virtual-to-human: realistic delay.
@@ -351,7 +357,7 @@ func (s *Sim) enqueueDepartureContact(ac *Aircraft, tcp TCP) {
 		return
 	}
 
-	ac.ControllerFrequency = ControlPosition(tcp)
+	s.setControllerFrequency(ac, ControlPosition(tcp))
 	s.addPendingContact(PendingContact{
 		ADSBCallsign:           ac.ADSBCallsign,
 		TCP:                    tcp,

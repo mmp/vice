@@ -912,7 +912,7 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, event av.WaypointActionEven
 
 	if actions.GoAroundContactController != "" {
 		tcp := actions.GoAroundContactController
-		ac.ControllerFrequency = ControlPosition(tcp)
+		s.setControllerFrequency(ac, ControlPosition(tcp))
 
 		// Clear stale pending contacts and frequency changes from before
 		// the go-around so the go-around transmission takes priority.

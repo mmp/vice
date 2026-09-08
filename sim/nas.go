@@ -198,7 +198,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 						// If an aircraft tagged up on a manually created
 						// FP, assume that they called and asked for flight
 						// following and so are already on frequency.
-						ac.ControllerFrequency = ControlPosition(fp.TrackingController)
+						s.setControllerFrequency(ac, ControlPosition(fp.TrackingController))
 					}
 					if s.State.IsLocalController(fp.TrackingController) {
 						fp.LastLocalController = fp.TrackingController

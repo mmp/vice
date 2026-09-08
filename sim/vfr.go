@@ -153,7 +153,7 @@ func (s *Sim) possiblyRequestFlightFollowing() {
 
 func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 	ac.RequestedFlightFollowing = true
-	ac.ControllerFrequency = ControlPosition(tcp)
+	s.setControllerFrequency(ac, ControlPosition(tcp))
 
 	// About 90% of the time, make an abbreviated request and wait for "go ahead"
 	if s.Rand.Float32() < 0.9 {
