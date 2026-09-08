@@ -395,22 +395,8 @@
           "waypoints": "N040.13.18.884,W076.09.35.958 BOYER/ho FLOAT",
           "runway_waypoints": {
             "KABE": {
-              "24": [
-                {
-                  "fix": "FLOAT"
-                },
-                {
-                  "fix": "FJC"
-                }
-              ],
-              "6": [
-                {
-                  "fix": "FLOAT"
-                },
-                {
-                  "fix": "ETX"
-                }
-              ]
+              "24": "FLOAT FJC",
+              "6": "FLOAT ETX"
             }
           },
           "cruise_altitude": 9000,
@@ -493,22 +479,8 @@
           "waypoints": "MARRC N040.53.30.177,W076.08.25.233/ho KRAZE",
           "runway_waypoints": {
             "KABE": {
-              "24": [
-                {
-                  "fix": "KRAZE"
-                },
-                {
-                  "fix": "FJC"
-                }
-              ],
-              "6": [
-                {
-                  "fix": "KRAZE"
-                },
-                {
-                  "fix": "ETX"
-                }
-              ]
+              "24": "KRAZE FJC",
+              "6": "KRAZE ETX"
             }
           },
           "cruise_altitude": 27000,
@@ -541,22 +513,8 @@
           "waypoints": "N040.45.40.100,W076.28.27.028 N040.45.12.359,W076.18.36.760/ho SNOWY SLATT",
           "runway_waypoints": {
             "KABE": {
-              "24": [
-                {
-                  "fix": "SLATT"
-                },
-                {
-                  "fix": "FJC"
-                }
-              ],
-              "6": [
-                {
-                  "fix": "SLATT"
-                },
-                {
-                  "fix": "ETX"
-                }
-              ]
+              "24": "SLATT FJC",
+              "6": "SLATT ETX"
             }
           },
           "cruise_altitude": 33000,
@@ -589,22 +547,8 @@
           "waypoints": "N041.09.29.229,W075.41.57.572 WHITT/ho SLATT",
           "runway_waypoints": {
             "KABE": {
-              "24": [
-                {
-                  "fix": "SLATT"
-                },
-                {
-                  "fix": "FJC"
-                }
-              ],
-              "6": [
-                {
-                  "fix": "SLATT"
-                },
-                {
-                  "fix": "ETX"
-                }
-              ]
+              "24": "SLATT FJC",
+              "6": "SLATT ETX"
             }
           },
           "cruise_altitude": 22000,
@@ -642,22 +586,8 @@
           "waypoints": "N040.20.24.385,W076.33.17.726 HWANG/ho DUMMR",
           "runway_waypoints": {
             "KABE": {
-              "24": [
-                {
-                  "fix": "DUMMR"
-                },
-                {
-                  "fix": "FJC"
-                }
-              ],
-              "6": [
-                {
-                  "fix": "DUMMR"
-                },
-                {
-                  "fix": "ETX"
-                }
-              ]
+              "24": "DUMMR FJC",
+              "6": "DUMMR ETX"
             }
           },
           "cruise_altitude": 35000,
@@ -686,22 +616,8 @@
           "waypoints": "N040.13.06.016,W076.13.47.957 N040.15.40.223,W076.12.25.120/ho DUMMR",
           "runway_waypoints": {
             "KABE": {
-              "24": [
-                {
-                  "fix": "DUMMR"
-                },
-                {
-                  "fix": "FJC"
-                }
-              ],
-              "6": [
-                {
-                  "fix": "DUMMR"
-                },
-                {
-                  "fix": "ETX"
-                }
-              ]
+              "24": "DUMMR FJC",
+              "6": "DUMMR ETX"
             }
           },
           "cruise_altitude": 12000,
