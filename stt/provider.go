@@ -28,6 +28,8 @@ func NewTranscriber(lg *log.Logger) *Transcriber {
 // It returns one of:
 //   - "{CALLSIGN} {CMD1} {CMD2} ..." for successful parsing
 //   - "{CALLSIGN} AGAIN" if callsign identified but commands unclear
+//   - "{CALLSIGN} CORRECTION {commands}" for a transmission that revises the previous one
+//   - "{CALLSIGN} ROLLBACK" for one that retracts it outright
 //   - "" if transcript is empty, only contains position identification, or no callsign could be matched
 //
 // Commands may include SAYAGAIN/TYPE for partial parses where keywords were recognized
@@ -60,6 +62,42 @@ func (p *Transcriber) DecodeCommandsForCallsign(
 	callsign string,
 ) (string, error) {
 	return p.decodeInternal(aircraft, transcript, "", callsign)
+}
+
+// Markers that lead the commands when the controller revised what they had just
+// transmitted. The simulator decides what to undo: CORRECTION retracts the previous
+// transmission only if it went to a different aircraft, ROLLBACK always does.
+const (
+	correctionCommand = "CORRECTION"
+	rollbackCommand   = "ROLLBACK"
+)
+
+// lastAddressed returns the aircraft the controller most recently transmitted to on
+// this frequency. A correction that names no aircraft is for them, and so is a bare
+// retraction: the aircraft that wrongly took the previous instruction is the one
+// that has to give it back.
+func lastAddressed(aircraft map[string]Aircraft) (Aircraft, bool) {
+	for _, ac := range aircraft {
+		if ac.LastAddressed {
+			return ac, true
+		}
+	}
+	return Aircraft{}, false
+}
+
+// isInstruction reports whether a decoded command is something the pilot acts on, as
+// opposed to a request for the controller to say the garbled part of it again.
+func isInstruction(cmd string) bool {
+	return !strings.HasPrefix(cmd, "SAYAGAIN")
+}
+
+// retractionFor renders a bare retraction of the previous transmission, or "" when no
+// aircraft on the frequency can be identified as having received it.
+func retractionFor(aircraft map[string]Aircraft) string {
+	if ac, ok := lastAddressed(aircraft); ok {
+		return ac.Callsign + " " + rollbackCommand
+	}
+	return ""
 }
 
 // decodeInternal is the shared implementation for DecodeTranscript and DecodeCommandsForCallsign.
@@ -125,6 +163,7 @@ func (p *Transcriber) decodeInternal(
 	var ac Aircraft
 	var commandTokens []Token
 	var callsignConfidence = 1.0
+	var correction bool
 
 	if isFallback {
 		// Skip callsign matching - use the provided callsign
@@ -142,7 +181,7 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt("found aircraft context for callsign %q", callsign)
 	} else {
 		var earlyResult string
-		callsign, ac, commandTokens, callsignConfidence, earlyResult =
+		callsign, ac, commandTokens, callsignConfidence, correction, earlyResult =
 			p.resolveCallsign(tokens, aircraft, transcript, start)
 		if earlyResult != "" {
 			return earlyResult, nil
@@ -164,16 +203,15 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt("  visual approach: %q -> %q", spokenName, runway)
 	}
 
-	// A transmission that OPENS with "correction" revises the previous
-	// transmission (nothing precedes it to correct within this one): undo
-	// the previous command and issue what follows.
-	rollback := false
+	// A transmission that OPENS with "correction" revises the previous one
+	// (nothing precedes it to correct within this one); the simulator decides
+	// what that leaves standing.
 	if idx := slices.IndexFunc(commandTokens, func(t Token) bool {
 		return !IsFillerWord(strings.ToLower(t.Text))
 	}); idx >= 0 && strings.ToLower(commandTokens[idx].Text) == "correction" {
-		rollback = true
+		correction = true
 		commandTokens = commandTokens[idx+1:]
-		logLocalStt("leading 'correction': will ROLLBACK previous command")
+		logLocalStt("leading 'correction': revising the previous transmission")
 	}
 
 	// Handle "disregard" or "correction" in remaining tokens
@@ -250,28 +288,32 @@ func (p *Transcriber) decodeInternal(
 	noCommands := len(validation.ValidCommands) == 0 && parse.conf == 0
 	informationalOnly := len(validation.ValidCommands) == 0 && parse.conf > 0 &&
 		parse.kinds != 0 && !parse.sawKind(kindCommand)
-	// ROLLBACK leads the whole response, ahead of the callsign: the client
-	// splits the decoded string at the first space, so sim sees "ROLLBACK"
-	// as the callsign and takes the real one from the first command
-	// (RunAircraftControlCommands).
-	rollbackPrefix := ""
-	if rollback && len(validation.ValidCommands) > 0 {
-		rollbackPrefix = "ROLLBACK "
+	// A correction only revises instructions, so the marker rides ahead of the
+	// commands it revises: a handoff or a go-ahead is as much an instruction as a
+	// heading. A transmission that yielded none — or only requests to hear the
+	// garbled part again — says nothing worth undoing the previous one for.
+	marker := ""
+	if correction {
+		marker = correctionCommand + " "
+	}
+	cmds := strings.Join(validation.ValidCommands, " ")
+	if slices.ContainsFunc(validation.ValidCommands, isInstruction) {
+		cmds = marker + cmds
 	}
 	if isFallback {
 		if noCommands {
 			output = "AGAIN"
 		} else {
-			output = rollbackPrefix + strings.Join(validation.ValidCommands, " ")
+			output = cmds
 		}
 	} else if len(validation.ValidCommands) > 0 {
-		output = rollbackPrefix + callsign + " " + strings.Join(validation.ValidCommands, " ")
+		output = callsign + " " + cmds
 	} else if informationalOnly {
 		switch {
 		case parse.sawKind(kindPositionID) && parse.sawKind(kindSignOff):
 			// The controller named a facility and signed off: a handoff.
 			logLocalStt("position ID with sign-off, treating as handoff")
-			output = callsign + " FC"
+			output = callsign + " " + marker + "FC"
 		case parse.sawKind(kindAcknowledgment):
 			// Acknowledgments and greetings require no response.
 			logLocalStt("acknowledgment-only transmission, returning empty")
@@ -279,7 +321,7 @@ func (p *Transcriber) decodeInternal(
 			// A VFR pilot addressed with just the facility name is being
 			// invited to check in.
 			logLocalStt("VFR aircraft with position ID only, treating as implicit go ahead")
-			output = callsign + " GA"
+			output = callsign + " " + marker + "GA"
 		default:
 			// Radar contact and the like require no response.
 			logLocalStt("informational-only transmission, returning empty")
@@ -320,12 +362,27 @@ func (p *Transcriber) decodeInternal(
 // Returns callsign="" when no callsign could be matched.
 func (p *Transcriber) resolveCallsign(
 	tokens []Token, aircraft map[string]Aircraft, transcript string, start time.Time,
-) (callsign string, ac Aircraft, cmdTokens []Token, confidence float64, earlyResult string) {
+) (callsign string, ac Aircraft, cmdTokens []Token, confidence float64, correction bool, earlyResult string) {
 	confidence = 1.0
+	if idx := slices.IndexFunc(tokens, func(t Token) bool { return !IsFillerWord(strings.ToLower(t.Text)) }); idx >= 0 && strings.EqualFold(tokens[idx].Text, "correction") {
+		correction = true
+		tokens = tokens[idx+1:]
+		if countNonFiller(tokens) == 0 {
+			return
+		}
+	}
+	if remaining, ok := detectNotForYouCorrection(tokens); ok {
+		if countNonFiller(remaining) == 0 {
+			earlyResult = retractionFor(aircraft)
+			return
+		}
+		correction = true
+		tokens = remaining
+	}
 
 	// Check for "negative, that was for {callsign}" correction pattern BEFORE callsign matching.
 	// e.g., "Negative that was for Delta 456. Delta 456, turn left heading 270"
-	// This triggers a ROLLBACK of the last command, then processes the rest for the correct aircraft.
+	// The simulator compares recipients before rolling back the last command.
 	if tokensAfterNegative, found := detectNegativeThatWasFor(tokens); found {
 		logLocalStt("detected 'negative that was for' correction pattern at start")
 		correctMatch, correctRemaining := MatchCallsign(tokensAfterNegative, aircraft)
@@ -343,50 +400,65 @@ func (p *Transcriber) resolveCallsign(
 			validation := ValidateCommands(commands, correctAc)
 			logLocalStt("validated commands: %v", validation.ValidCommands)
 
-			var output string
+			// Naming the aircraft it was meant for says outright that the previous
+			// transmission was misdirected, so it comes back whether or not a
+			// replacement was understood — unlike a bare "correction", where the
+			// misdirection is only inferred from a change of callsign.
+			// The simulator retracts by frequency, so the callsign only says who
+			// the transmission is attributed to; the aircraft it was meant for
+			// stands in when the one that wrongly took it is unknown.
+			output := retractionFor(aircraft)
+			if output == "" {
+				output = correctMatch.Callsign + " " + rollbackCommand
+			}
 			if len(validation.ValidCommands) > 0 {
-				output = "ROLLBACK " + correctMatch.Callsign + " " + strings.Join(validation.ValidCommands, " ")
-			} else {
-				output = "ROLLBACK"
+				output = correctMatch.Callsign + " " + correctionCommand + " " +
+					strings.Join(validation.ValidCommands, " ")
 			}
 
 			elapsed := time.Since(start)
 			logLocalStt("=== DecodeTranscript END: %q (negative correction, time=%s) ===", output, elapsed)
 			p.logInfo("local STT: %q -> %q (negative correction, time=%s)", transcript, output, elapsed)
-			earlyResult = strings.TrimSpace(output)
+			earlyResult = output
 			return
 		}
-		logLocalStt("couldn't match correct callsign after 'negative that was for', returning just ROLLBACK")
+		logLocalStt("couldn't match correct callsign after 'negative that was for', retracting only")
 		elapsed := time.Since(start)
-		p.logInfo("local STT: %q -> ROLLBACK (negative correction, no new callsign, time=%s)", transcript, elapsed)
-		earlyResult = "ROLLBACK"
+		earlyResult = retractionFor(aircraft)
+		p.logInfo("local STT: %q -> %q (negative correction, no new callsign, time=%s)", transcript, earlyResult, elapsed)
 		return
+	}
+
+	remaining, negative := detectNegativePrefix(tokens)
+	if negative {
+		tokens = remaining
 	}
 
 	// Layer 3: Callsign matching. Among near-tied candidates, prefer one
 	// whose following tokens parse as commands.
 	var callsignMatch CallsignMatch
 	remainingTokens := tokens
-	if cands := MatchCallsignCandidates(tokens, aircraft); len(cands) > 0 {
-		callsignMatch = selectCallsignByCommands(tokens, cands, aircraft)
-		remainingTokens = tokens[callsignMatch.Consumed:]
+	commandOnly := false
+	if correction || negative {
+		if idx := slices.IndexFunc(tokens, func(t Token) bool { return !IsFillerWord(strings.ToLower(t.Text)) }); idx >= 0 {
+			w := strings.ToLower(tokens[idx].Text)
+			commandOnly = IsCommandKeyword(w) || len(confusionTable[w]) > 0
+		}
+	}
+	// A heading or altitude in an unaddressed correction is not a flight number.
+	if !commandOnly {
+		if cands := MatchCallsignCandidates(tokens, aircraft); len(cands) > 0 {
+			callsignMatch = selectCallsignByCommands(tokens, cands, aircraft)
+			remainingTokens = tokens[callsignMatch.Consumed:]
+		}
 	}
 	logLocalStt("callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
 		callsignMatch.Callsign, callsignMatch.SpokenKey, callsignMatch.Confidence, callsignMatch.Consumed)
 
 	if callsignMatch.Callsign == "" {
-		// Check for "negative, {commands}" without callsign.
-		// Skip validation since we don't know the target aircraft context.
-		if remaining, found := detectNegativePrefix(tokens); found {
-			commands, _ := ParseCommands(remaining, Aircraft{})
-			if len(commands) > 0 {
-				output := "ROLLBACK " + strings.Join(commands, " ")
-				elapsed := time.Since(start)
-				logLocalStt("=== DecodeTranscript END: %q (negative without callsign, time=%s) ===", output, elapsed)
-				p.logInfo("local STT: %q -> %q (negative without callsign, time=%s)", transcript, output, elapsed)
-				earlyResult = output
-				return
-			}
+		if a, ok := lastAddressed(aircraft); ok && (correction || negative) {
+			logLocalStt("correction without a callsign: addressing %q", a.Callsign)
+			return a.Callsign, a, tokens, confidence, true, ""
 		}
 		logLocalStt("no callsign match for %q, ignoring", transcript)
 		return // callsign is "", earlyResult is ""
@@ -395,14 +467,19 @@ func (p *Transcriber) resolveCallsign(
 	// A "correction" followed by a full restatement of a callsign
 	// re-addresses the transmission: everything before it was a false
 	// start ("...the seven maintains seven thousand, correction, ExecJet
-	// 92 10 maintain eight thousand"). Only a high-confidence match (a
-	// spoken airline + flight, not a stray number) re-anchors.
+	// 92 10 maintain eight thousand").
 	for i, t := range remainingTokens {
 		if !strings.EqualFold(t.Text, "correction") || i+1 >= len(remainingTokens) {
 			continue
 		}
-		if cands := MatchCallsignCandidates(remainingTokens[i+1:], aircraft); len(cands) > 0 &&
-			cands[0].Confidence >= 0.95 && cands[0].SpokenKey != "" {
+		cands := MatchCallsignCandidates(remainingTokens[i+1:], aircraft)
+		if len(cands) == 0 || cands[0].SpokenKey == "" {
+			continue
+		}
+		// A flight-number correction immediately after the callsign can
+		// omit the airline ("Brickyard eleven, correction fourteen eleven").
+		flightCorrection := i == 0 && remainingTokens[i+1].Type == TokenNumber && cands[0].Confidence >= 0.85
+		if cands[0].Confidence >= 0.95 || flightCorrection {
 			logLocalStt("'correction' + restated callsign %q: re-anchoring", cands[0].Callsign)
 			callsignMatch = cands[0]
 			remainingTokens = remainingTokens[i+1+cands[0].Consumed:]
@@ -420,6 +497,12 @@ func (p *Transcriber) resolveCallsign(
 				newMatch.Callsign, newMatch.SpokenKey, newMatch.Confidence, newMatch.Consumed)
 			callsignMatch = newMatch
 			remainingTokens = newRemaining
+			correction = true
+		} else {
+			// The controller told this aircraft to disregard but named no
+			// replacement; retract and say nothing more.
+			earlyResult = callsignMatch.Callsign + " " + rollbackCommand
+			return
 		}
 	}
 
@@ -506,6 +589,7 @@ func (p *Transcriber) BuildAircraftContext(
 	userTCW sim.TCW,
 ) map[string]Aircraft {
 	acCtx := make(map[string]Aircraft)
+	lastAddressedCallsign := string(state.LastSTTCallsigns[userTCW])
 
 	for _, trk := range state.Tracks {
 		// Check if the aircraft is on the user's frequency
@@ -515,6 +599,7 @@ func (p *Transcriber) BuildAircraftContext(
 
 		sttAc := Aircraft{
 			Callsign:            string(trk.ADSBCallsign),
+			LastAddressed:       lastAddressedCallsign == string(trk.ADSBCallsign),
 			Altitude:            int(trk.TrueAltitude),
 			Heading:             int(trk.Heading),
 			Speed:               int(trk.Groundspeed),
@@ -642,6 +727,7 @@ func (p *Transcriber) BuildAircraftContext(
 					typeAc := sttAc
 					typeAc.Callsign += "/T"
 					typeAc.AddressingForm = sim.AddressingFormTypeTrailing3
+					typeAc.LastAddressed = lastAddressedCallsign == typeAc.Callsign
 
 					// Add entry for each pronunciation variant that doesn't contain numbers
 					// (to avoid confusion with other callsigns)
@@ -741,45 +827,6 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 			if t0 == "not" && t1 == "for" && t2 == "you" {
 				// Return tokens after "not for you"
 				return tokens[i+3:], true
-			}
-		}
-
-		// Check for bare "correction" keyword, but only when the next
-		// meaningful token is NOT a command keyword. When a command keyword
-		// follows (e.g., "correction descend and maintain..."), this is a
-		// command self-correction handled by applyDisregard, not a callsign
-		// re-addressing.
-		if strings.ToLower(tokens[i].Text) == "correction" {
-			// A word with a curated confusion reading is a garbled command
-			// keyword ("disseminate" for "descend and maintain") and counts
-			// the same as one here.
-			isCommandish := func(w string) bool {
-				return IsCommandKeyword(w) || len(confusionTable[w]) > 0
-			}
-			followedByCommand := false
-			for j := i + 1; j < len(tokens); j++ {
-				w := strings.ToLower(tokens[j].Text)
-				if IsFillerWord(w) {
-					continue
-				}
-				if isCommandish(w) {
-					followedByCommand = true
-				}
-				break
-			}
-			// Also check whether a command keyword precedes "correction".
-			// If so, this is a value/command self-correction (e.g.,
-			// "speed one eighty correction one sixty"), not a callsign
-			// re-addressing. applyDisregard handles this case.
-			precededByCommand := false
-			for j := i - 1; j >= 0; j-- {
-				if isCommandish(strings.ToLower(tokens[j].Text)) {
-					precededByCommand = true
-					break
-				}
-			}
-			if !followedByCommand && !precededByCommand {
-				return tokens[i+1:], true
 			}
 		}
 	}

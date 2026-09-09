@@ -166,9 +166,9 @@ type Sim struct {
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
 	waypointCommands map[TCP]map[string]string // tcp -> fix -> commands
 
-	// lastSTTCommands stores the state needed to roll back a misheard STT command,
-	// per TCW: multiple users may share a TCW, and so share its radio and its
-	// rollback history. Only the single most recent command is tracked for each.
+	// lastSTTCommands stores the state needed to undo the most recent controller
+	// transmission, per TCW: multiple users may share a TCW, and so share its radio
+	// and its correction history. Only the single most recent one is tracked for each.
 	lastSTTCommands map[TCW]*lastSTTCommand
 
 	AvailableStripCIDs []int
@@ -184,11 +184,12 @@ type Sim struct {
 	lastPublishTime time.Time
 }
 
-// lastSTTCommand stores the nav snapshot from before the most recent STT command
-// was executed, allowing rollback if the controller says "negative, that was for {other callsign}".
+// lastSTTCommand stores the aircraft state from before the most recent controller
+// transmission was executed, so that a following "correction" can undo it.
 type lastSTTCommand struct {
-	Callsign    av.ADSBCallsign
-	NavSnapshot nav.NavSnapshot
+	Callsign     av.ADSBCallsign
+	NavSnapshot  nav.NavSnapshot
+	ReportedATIS string
 }
 
 // NewSimConfiguration collects all of the information required to create a new Sim

@@ -14,8 +14,8 @@
   "audio_duration_ms": 4040,
   "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
-  "callsign": "ROLLBACK",
-  "command": "FFT312 D40",
+  "callsign": "FFT312",
+  "command": "CORRECTION D40",
   "stt_aircraft": {
     "Brickyard 45 11": {
       "Callsign": "RPA4511",

@@ -4674,7 +4674,7 @@ func TestNegativeThatWasForFullParse(t *testing.T) {
 				"Delta 456":  {Callsign: "DAL456", State: "arrival"},
 				"United 123": {Callsign: "UAL123", State: "arrival"},
 			},
-			expected: "ROLLBACK UAL123 L270",
+			expected: "UAL123 CORRECTION L270",
 		},
 		{
 			name:       "no that was for with altitude",
@@ -4683,7 +4683,7 @@ func TestNegativeThatWasForFullParse(t *testing.T) {
 				"American 789":  {Callsign: "AAL789", Altitude: 12000, State: "arrival"},
 				"Southwest 221": {Callsign: "SWA221", Altitude: 12000, State: "arrival"},
 			},
-			expected: "ROLLBACK SWA221 D80",
+			expected: "SWA221 CORRECTION D80",
 		},
 		{
 			name:       "negative was for (shorter form)",
@@ -4692,7 +4692,7 @@ func TestNegativeThatWasForFullParse(t *testing.T) {
 				"JetBlue 100": {Callsign: "JBU100", Altitude: 5000, State: "departure"},
 				"Delta 88":    {Callsign: "DAL88", Altitude: 3000, State: "departure"},
 			},
-			expected: "ROLLBACK DAL88 C90",
+			expected: "DAL88 CORRECTION C90",
 		},
 		{
 			name:       "negative that was for with multiple commands",
@@ -4701,7 +4701,7 @@ func TestNegativeThatWasForFullParse(t *testing.T) {
 				"United 452":   {Callsign: "UAL452", Altitude: 10000, State: "arrival"},
 				"Frontier 900": {Callsign: "FFT900", Altitude: 10000, State: "arrival"},
 			},
-			expected: "ROLLBACK FFT900 R180 D60",
+			expected: "FFT900 CORRECTION R180 D60",
 		},
 	}
 
@@ -4732,25 +4732,25 @@ func TestNegativeWithoutCallsign(t *testing.T) {
 			name:       "negative heading",
 			transcript: "negative heading 320",
 			aircraft: map[string]Aircraft{
-				"United 123": {Callsign: "UAL123", State: "arrival"},
+				"United 123": {Callsign: "UAL123", State: "arrival", LastAddressed: true},
 			},
-			expected: "ROLLBACK H320",
+			expected: "UAL123 CORRECTION H320",
 		},
 		{
 			name:       "negative descend and maintain",
 			transcript: "negative descend and maintain 4000",
 			aircraft: map[string]Aircraft{
-				"Delta 456": {Callsign: "DAL456", Altitude: 10000, State: "arrival"},
+				"Delta 456": {Callsign: "DAL456", Altitude: 10000, State: "arrival", LastAddressed: true},
 			},
-			expected: "ROLLBACK D40",
+			expected: "DAL456 CORRECTION D40",
 		},
 		{
 			name:       "negative multiple commands",
 			transcript: "negative fly heading 320 descend and maintain 4000",
 			aircraft: map[string]Aircraft{
-				"United 123": {Callsign: "UAL123", Altitude: 10000, State: "arrival"},
+				"United 123": {Callsign: "UAL123", Altitude: 10000, State: "arrival", LastAddressed: true},
 			},
-			expected: "ROLLBACK H320 D40",
+			expected: "UAL123 CORRECTION H320 D40",
 		},
 		{
 			name:       "bare negative not actionable",

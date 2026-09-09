@@ -75,6 +75,7 @@ func MatchCallsignCandidates(tokens []Token, aircraft map[string]Aircraft) []Cal
 // test corpus, where zeroes are pure noise.
 type Aircraft struct {
 	Callsign                  string
+	LastAddressed             bool                         `json:",omitempty"` // Most recent recipient on the user's TCW frequency
 	AircraftType              string                       `json:",omitempty"` // Aircraft type code (e.g., "C172", "BE36")
 	Fixes                     map[string]string            `json:",omitempty"` // spoken name -> fix ID
 	CandidateApproaches       map[string]string            `json:",omitempty"` // canonical name ("RNAV Z Runway 28R") -> approach ID

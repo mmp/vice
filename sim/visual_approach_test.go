@@ -113,6 +113,7 @@ func NewVisualScenario(t *testing.T, airportLoc math.Point2LL, runway string, ac
 		FutureFieldChecks:   make(map[av.ADSBCallsign]*FutureFieldCheck),
 		FutureTrafficChecks: make(map[av.ADSBCallsign]*FutureTrafficCheck),
 		PrivilegedTCWs:      map[TCW]bool{tcw: true},
+		lastSTTCommands:     make(map[TCW]*lastSTTCommand),
 		eventStream:         NewEventStream(lg),
 	}
 
@@ -300,6 +301,7 @@ func makeVisualTestSim(airportLoc math.Point2LL, runway string) *Sim {
 		},
 		FutureFieldChecks:   make(map[av.ADSBCallsign]*FutureFieldCheck),
 		FutureTrafficChecks: make(map[av.ADSBCallsign]*FutureTrafficCheck),
+		lastSTTCommands:     make(map[TCW]*lastSTTCommand),
 	}
 }
 

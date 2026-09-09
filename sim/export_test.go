@@ -36,6 +36,7 @@ func NewTestSim(lg *log.Logger) *Sim {
 			Airports: map[string]*av.Airport{},
 		},
 		Aircraft:            map[av.ADSBCallsign]*Aircraft{},
+		lastSTTCommands:     make(map[TCW]*lastSTTCommand),
 		Handoffs:            make(map[ACID]Handoff),
 		PendingContacts:     make(map[TCP][]PendingContact),
 		PrivilegedTCWs:      map[TCW]bool{tcw: true},
@@ -78,3 +79,13 @@ func MakeTestAircraft(callsign av.ADSBCallsign, runway string) *Aircraft {
 
 // E2ETCW returns the TCW used by NewTestSim.
 func E2ETCW() TCW { return TCW("TEST") }
+
+// LastAddressedCallsign returns what clients are told about the aircraft the controller
+// at tcw last transmitted to, so that e2e tests can build the STT aircraft context the
+// way stt.BuildAircraftContext does. (stt imports sim, so those tests cannot be in
+// package sim and reach it directly.)
+func LastAddressedCallsign(s *Sim, tcw TCW) av.ADSBCallsign {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.lastAddressedCallsign(tcw)
+}

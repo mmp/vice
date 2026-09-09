@@ -14,8 +14,8 @@
   "audio_duration_ms": 2760,
   "processor": "GPU: AMD Radeon RX 9060 XT (16304MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
-  "callsign": "ROLLBACK",
-  "command": "UAE42Y D40",
+  "callsign": "UAE42Y",
+  "command": "CORRECTION D40",
   "stt_aircraft": {
     "Air France eight 73 heavy": {
       "Callsign": "AFR873",

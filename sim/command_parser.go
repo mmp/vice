@@ -27,15 +27,16 @@ type ControlCommandsResult struct {
 	ReadbackCallsign   av.ADSBCallsign // Aircraft callsign for the readback
 }
 
-// RunAircraftControlCommands executes a space-separated string of control commands that the
-// controller at tcw issued to an aircraft, recording the rollback history for the transmission.
+// RunAircraftControlCommands executes a space-separated string of control commands for an aircraft
+// on behalf of the controller at tcw, recording the correction history that lets a follow-up
+// "correction" revise or undo the transmission.
 // Returns the remaining unparsed input and any error that occurred.
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string, audioDuration time.Duration) ControlCommandsResult {
 	return s.runControlCommands(tcw, callsign, commandStr, audioDuration, true)
 }
 
 // runScriptedControlCommands executes scenario-scripted commands. They are not controller
-// transmissions, so they leave the rollback history of whoever is at tcw alone.
+// transmissions, so they leave the correction history of whoever is at tcw alone.
 func (s *Sim) runScriptedControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
 	return s.runControlCommands(tcw, callsign, commandStr, 0, false)
 }
@@ -62,52 +63,35 @@ func (s *Sim) runControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 	// Parse addressing form suffix from callsign: /T indicates type+trailing3 addressing
 	// (e.g., "skyhawk 3 alpha bravo" instead of "november 1 2 3 alpha bravo")
 	addressingForm := AddressingFormFull
-	if strings.HasSuffix(string(callsign), "/T") {
+	if cs, ok := strings.CutSuffix(string(callsign), "/T"); ok {
 		addressingForm = AddressingFormTypeTrailing3
-		callsign = av.ADSBCallsign(strings.TrimSuffix(string(callsign), "/T"))
+		callsign = av.ADSBCallsign(cs)
 	}
 
-	// Update aircraft's last addressing form for readback rendering
+	marker := ""
+	if len(commands) > 0 && (commands[0] == correctionCommand || commands[0] == rollbackCommand) {
+		marker, commands = commands[0], commands[1:]
+	}
+
 	s.mu.Lock(s.lg)
+	// Update aircraft's last addressing form for readback rendering
 	if ac, ok := s.Aircraft[callsign]; ok {
 		ac.LastAddressingForm = addressingForm
 	}
+	// "Correction" retracts the previous transmission only when it re-addresses a
+	// different aircraft. Naming the same one amends what the controller said to it,
+	// leaving the instructions the pilot got right in place.
+	last := s.lastSTTCommands[tcw]
+	if marker == rollbackCommand || (marker == correctionCommand && last != nil && last.Callsign != callsign) {
+		// A failed undo must not swallow the instruction that follows it.
+		if err := s.rollbackLastCommand(tcw); err != nil {
+			s.lg.Warnf("%s: could not undo the previous transmission: %v", callsign, err)
+		}
+	}
 	s.mu.Unlock(s.lg)
 
-	// Handle ROLLBACK as callsign: STT outputs "ROLLBACK {callsign} {commands}" or "ROLLBACK {commands}".
-	// The client splits on first space, so callsign="ROLLBACK" and commands contain the rest.
-	if callsign == "ROLLBACK" {
-		// Save last command's callsign before rollback clears it
-		s.mu.Lock(s.lg)
-		var lastCallsign av.ADSBCallsign
-		if last := s.lastSTTCommands[tcw]; last != nil {
-			lastCallsign = last.Callsign
-		}
-		err := s.rollbackLastCommand(tcw)
-		s.mu.Unlock(s.lg)
-		if err != nil {
-			s.lg.Warnf("ROLLBACK failed: %v", err)
-		}
-		if len(commands) == 0 {
-			return ControlCommandsResult{}
-		}
-
-		// Check if first element is a callsign (for "negative that was for {cs}")
-		// or a command (for "negative, {commands}" without callsign)
-		potentialCallsign := av.ADSBCallsign(commands[0])
-		lookupCS := av.ADSBCallsign(strings.TrimSuffix(string(potentialCallsign), "/T"))
-		if _, ok := s.Aircraft[lookupCS]; ok {
-			callsign = potentialCallsign
-			commands = commands[1:]
-		} else if lastCallsign != "" {
-			callsign = lastCallsign
-		} else {
-			s.lg.Warn("ROLLBACK: no target callsign available")
-			return ControlCommandsResult{}
-		}
-		if len(commands) == 0 {
-			return ControlCommandsResult{}
-		}
+	if marker != "" && len(commands) == 0 {
+		return ControlCommandsResult{}
 	}
 
 	// Handle special STT commands that need direct TTS synthesis
@@ -131,16 +115,15 @@ func (s *Sim) runControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 		}
 	}
 
-	// Take a snapshot before executing commands (for potential future rollback)
+	// Take a snapshot before executing commands, so that a following "correction"
+	// can undo them.
 	if recordHistory {
 		s.mu.Lock(s.lg)
-		if ac, ok := s.Aircraft[callsign]; ok {
-			if s.lastSTTCommands == nil {
-				s.lastSTTCommands = make(map[TCW]*lastSTTCommand)
-			}
+		if ac, ok := s.Aircraft[callsign]; ok && s.TCWCanCommandAircraft(tcw, ac) {
 			s.lastSTTCommands[tcw] = &lastSTTCommand{
-				Callsign:    callsign,
-				NavSnapshot: ac.Nav.TakeSnapshot(),
+				Callsign:     callsign,
+				NavSnapshot:  ac.Nav.TakeSnapshot(),
+				ReportedATIS: ac.ReportedATIS,
 			}
 		}
 		s.mu.Unlock(s.lg)
@@ -177,38 +160,67 @@ func (s *Sim) runControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 	}
 }
 
-// rollbackLastCommand restores the nav state of the last aircraft that received a command
-// from the controller at tcw. This is used when the controller says "negative, that was for
-// {other callsign}" to undo commands given to the wrong aircraft due to STT callsign
-// misinterpretation.
+// Markers that the STT decoder puts ahead of the commands when the controller
+// revised what they had just transmitted.
+const (
+	// correctionCommand marks a transmission that opened with "correction".
+	correctionCommand = "CORRECTION"
+	// rollbackCommand marks one that retracts the previous transmission outright,
+	// e.g. "that was not for you".
+	rollbackCommand = "ROLLBACK"
+)
+
+// rollbackLastCommand restores the state of the aircraft that the controller at tcw last
+// transmitted to, undoing that transmission.
 func (s *Sim) rollbackLastCommand(tcw TCW) error {
 	last := s.lastSTTCommands[tcw]
 	if last == nil {
 		return ErrNoRecentCommand
 	}
+	// Consecutive rollbacks should fail: there is only ever one transmission to undo.
+	delete(s.lastSTTCommands, tcw)
 
 	ac, ok := s.Aircraft[last.Callsign]
 	if !ok {
-		delete(s.lastSTTCommands, tcw)
 		return ErrNoRecentCommand
+	}
+	if !s.TCWCanCommandAircraft(tcw, ac) {
+		return av.ErrOtherControllerHasTrack
 	}
 
 	ac.Nav.RestoreSnapshot(last.NavSnapshot)
-
-	// Clear the snapshot - consecutive rollbacks should fail
-	delete(s.lastSTTCommands, tcw)
-
+	ac.ReportedATIS = last.ReportedATIS
 	return nil
 }
 
-// ClearSTTCommands discards the rollback history for a TCW that has become unoccupied.
+// lastAddressedCallsign returns the aircraft that the controller at tcw last transmitted
+// to, or "" if there is none they can still command. Clients need it to attribute a
+// correction that names no aircraft. It carries the /T suffix when the controller
+// addressed the aircraft by type and trailing three, so that the correction goes back
+// to them in the form they have been using.
+func (s *Sim) lastAddressedCallsign(tcw TCW) av.ADSBCallsign {
+	last, ok := s.lastSTTCommands[tcw]
+	if !ok {
+		return ""
+	}
+	ac, ok := s.Aircraft[last.Callsign]
+	if !ok || !s.TCWCanCommandAircraft(tcw, ac) {
+		return ""
+	}
+	if ac.LastAddressingForm == AddressingFormTypeTrailing3 {
+		return last.Callsign + "/T"
+	}
+	return last.Callsign
+}
+
+// ClearSTTCommands discards the correction history for a TCW that has become unoccupied.
 func (s *Sim) ClearSTTCommands(tcw TCW) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	delete(s.lastSTTCommands, tcw)
 }
 
-// clearAircraftSTTCommands discards any rollback history naming the given aircraft; it is
+// clearAircraftSTTCommands discards any correction history naming the given aircraft; it is
 // no longer a valid target once the aircraft leaves the controller's frequency or the sim.
 func (s *Sim) clearAircraftSTTCommands(callsign av.ADSBCallsign) {
 	for tcw, last := range s.lastSTTCommands {

@@ -115,6 +115,7 @@ type CommonState struct {
 // shared with the client.
 type DerivedState struct {
 	Tracks                  map[av.ADSBCallsign]*Track
+	LastSTTCallsigns        map[TCW]av.ADSBCallsign
 	UnassociatedFlightPlans []*NASFlightPlan // Unassociated ones, including unsupported DBs
 	ReleaseDepartures       []ReleaseDeparture
 
@@ -156,6 +157,12 @@ type StateUpdate struct {
 func makeDerivedState(s *Sim) DerivedState {
 	ds := DerivedState{
 		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
+		LastSTTCallsigns:        make(map[TCW]av.ADSBCallsign),
+	}
+	for tcw := range s.lastSTTCommands {
+		if cs := s.lastAddressedCallsign(tcw); cs != "" {
+			ds.LastSTTCallsigns[tcw] = cs
+		}
 	}
 	ds.DepartureLaunchSlots, ds.InboundLaunchSlots = s.currentLaunchSlots()
 
