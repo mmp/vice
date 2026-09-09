@@ -1,6 +1,7 @@
 - New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn)
 - Scenario updates: PCT SHD (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt), CLT (Gus Agostinho)
 - Fixed bug where aircraft were not automatically cleared for the approach at a /clearapp fix
+- "At FIX intercept the localizer" is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing
 - Added: IFIX/RADIAL: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
 - Departures are now automatically held when a recent departure from another runway is flying an initial route that crosses their departure path
 - Fixed bugs in checks for whether called traffic is in sight

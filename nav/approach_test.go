@@ -261,6 +261,32 @@ func TestAtFixClearedApproach(t *testing.T) {
 	f.Run()
 }
 
+// TestAtFixInterceptFixNotOnApproach verifies that "at FIX intercept the
+// localizer" is refused when the fix isn't on the assigned approach: there
+// would be nothing to join when the aircraft got there and the failure at
+// that point goes unreported.
+func TestAtFixInterceptFixNotOnApproach(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "CAMRN/a6000 KRSTL/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectApproach("I22L")
+	if intent := f.AtFixIntercept("CAMRN"); intent == nil {
+		t.Fatal("AtFixIntercept at a fix not on the approach did not return unable")
+	} else if _, ok := intent.(av.UnableIntent); !ok {
+		t.Fatalf("AtFixIntercept returned %+v, want unable", intent)
+	}
+	if f.nav.Approach.AtFixInterceptFix != "" {
+		t.Errorf("AtFixInterceptFix = %q, want \"\"", f.nav.Approach.AtFixInterceptFix)
+	}
+}
+
 // TestAtFixInterceptApproachOnlyFix verifies that "at FIX intercept the
 // localizer" works when the named fix is on the assigned approach but not
 // yet in the aircraft's route (e.g., aircraft is being vectored). The

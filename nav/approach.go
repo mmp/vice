@@ -523,6 +523,12 @@ func (nav *Nav) AtFixIntercept(fix string, simTime Time, delayReduction time.Dur
 		return av.MakeUnableIntent("unable. We were never told to expect an approach")
 	}
 
+	// Check this before routing direct: if the fix isn't on the approach,
+	// there will be nothing to join when we get there.
+	if route, _ := approachRouteThrough(ap, fix); route == nil {
+		return av.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
+	}
+
 	if !nav.routeDirectIfNeeded(fix, simTime, delayReduction) {
 		return av.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
