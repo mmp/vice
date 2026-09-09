@@ -96,13 +96,13 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 				nav.approachOvershootRequestVectors()
 				return
 			}
-			acftTrue := math.MagneticToTrue(nav.FlightState.Heading, nav.FlightState.MagneticVariation)
-			signed := math.HeadingSignedTurn(acftTrue, courseTrue)
-			offset := float32(20)
-			if signed < 0 {
-				offset = -20
-			}
-			recoveryTrue := math.OffsetHeading(courseTrue, offset)
+			// Shallow out to a 20 degree intercept from whichever side of
+			// the course the aircraft is on. Taking the side from the
+			// heading difference instead would be right only once the
+			// aircraft had crossed; before that it aims 20 degrees to the
+			// far side of the course and flies away from it.
+			recoveryTrue := math.OffsetHeading(courseTrue,
+				math.Copysign(20, -nav.signedCourseLineDistance(courseLine)))
 			recoveryHdg := math.TrueToMagnetic(recoveryTrue, nav.FlightState.MagneticVariation)
 			nav.Approach.InterceptState = TurningToJoin
 			if !hasLocalizer {
@@ -123,12 +123,21 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 
 	case TurningToJoin:
 		// we've turned to intercept. have we intercepted?
-		if !nav.onCourseLine(courseLine, .2) {
+		if !nav.onCourseLine(courseLine, courseCaptureTolerance) {
 			// Apply wind correction to track the approach course, not just
 			// fly the course heading. Without this, strong crosswind would
 			// blow the aircraft off the course.
 			heading = nav.headingForTrack(*nav.Heading.Assigned, wxs)
 			NavLog(callsign, simTime, NavLogApproach, "TurningToJoin: not on course, flying wind-corrected hdg %.0f (course hdg %.0f)", heading, *nav.Heading.Assigned)
+			// Once settled on the heading the aircraft either closes on the
+			// course or never will; nothing after this reconsiders the
+			// intercept, so ask for new vectors rather than flying away from
+			// the approach without a word.
+			if math.HeadingDifference(nav.FlightState.Heading, heading) < 1 &&
+				!nav.closingOnCourseLine(courseLine, wxs) {
+				NavLog(callsign, simTime, NavLogApproach, "TurningToJoin: not closing on the course; requesting vectors")
+				nav.approachOvershootRequestVectors()
+			}
 			return
 		}
 		NavLog(callsign, simTime, NavLogApproach, "TurningToJoin->OnApproachCourse: established on approach course")
@@ -138,7 +147,20 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 		if hasLocalizer {
 			apHeading := ap.RunwayHeading(nav.FlightState.NmPerLongitude)
 			wps, idx := ap.FAFSegment(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-			acftTrue := math.MagneticToTrue(nav.FlightState.Heading, nav.FlightState.MagneticVariation)
+
+			// The aircraft joins wherever the intercept brings it, which may
+			// be abeam of or past one of the approach's fixes. Flying to one
+			// of those would turn it straight back off the course it just
+			// captured, so measure along the course: having joined within
+			// the capture tolerance of it, a fix less than that far ahead is
+			// where the aircraft already is.
+			pos := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+			courseVec := math.HeadingVector(apHeading)
+			ahead := func(wp av.Waypoint) bool {
+				d := math.Sub2f(math.LL2NM(wp.Location, nav.FlightState.NmPerLongitude), pos)
+				return math.Dot(d, courseVec) > courseCaptureTolerance
+			}
+
 			for idx > 0 {
 				prev := wps[idx-1]
 				hdg := math.Heading2LL(prev.Location, wps[idx].Location,
@@ -147,21 +169,13 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 				if math.HeadingDifference(hdg, apHeading) > 5 { // not on the final approach course
 					break
 				}
-
-				acToWpHeading := math.Heading2LL(nav.FlightState.Position, wps[idx].Location,
-					nav.FlightState.NmPerLongitude)
-				acToPrevHeading := math.Heading2LL(nav.FlightState.Position, wps[idx-1].Location,
-					nav.FlightState.NmPerLongitude)
-
-				da := math.Mod(float32(acToWpHeading-acftTrue)+360, 360)
-				db := math.Mod(float32(acToPrevHeading-acftTrue)+360, 360)
-				if (da < 180 && db > 180) || (da > 180 && db < 180) {
-					// prev and current are on different sides of the current
-					// heading, so don't take the prev so we don't turn away
-					// from where we should be going.
+				if !ahead(prev) {
 					break
 				}
 				idx--
+			}
+			for idx < len(wps)-1 && !ahead(wps[idx]) {
+				idx++
 			}
 			nav.Waypoints = append(util.DuplicateSlice(wps[idx:]), nav.FlightState.ArrivalAirport)
 		} else {

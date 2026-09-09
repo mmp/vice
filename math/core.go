@@ -82,6 +82,11 @@ func Sign(v float32) float32 {
 	return 0
 }
 
+// Copysign returns f with the sign of sign.
+func Copysign(f, sign float32) float32 {
+	return float32(gomath.Copysign(float64(f), float64(sign)))
+}
+
 func Floor(v float32) float32 {
 	return float32(gomath.Floor(float64(v)))
 }

@@ -697,14 +697,49 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 	return false
 }
 
+// courseCaptureTolerance is how close to a course an aircraft turning to
+// join it has to get to be considered established on it, in nm.
+const courseCaptureTolerance = 0.2
+
+// minInterceptAngle is the shallowest angle at which a track counts as
+// converging on a course; anything less only creeps toward it.
+const minInterceptAngle = 10 // degrees
+
 // onCourseLine checks if the flight position is less than maxNmDeviation
 // from the infinite line defined by the two given points.
 func (nav *Nav) onCourseLine(line [2]math.Point2LL, maxNmDeviation float32) bool {
-	distance := math.PointLineDistance(
+	return math.Abs(nav.signedCourseLineDistance(line)) < maxNmDeviation
+}
+
+// signedCourseLineDistance returns the flight position's distance in nm from
+// the infinite line defined by the two given points; it is positive when the
+// aircraft is to the right of the line's direction.
+func (nav *Nav) signedCourseLineDistance(line [2]math.Point2LL) float32 {
+	return math.SignedPointLineDistance(
 		math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
 		math.LL2NM(line[0], nav.FlightState.NmPerLongitude),
 		math.LL2NM(line[1], nav.FlightState.NmPerLongitude))
-	return distance < maxNmDeviation
+}
+
+// closingOnCourseLine reports whether the aircraft's ground track is
+// converging on the infinite line defined by the two given points at more
+// than a glancing angle.
+func (nav *Nav) closingOnCourseLine(line [2]math.Point2LL, wxs wx.Sample) bool {
+	fs := &nav.FlightState
+
+	// The ground velocity, as updatePositionAndGS integrates it: the heading
+	// flown at TAS, displaced by the wind.
+	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
+		nav.TAS(wxs.Temperature())/3600)
+	if nav.IsAirborne() {
+		v = math.Add2f(v, wxs.WindVec())
+	}
+
+	// The track has to be angled back toward the side of the course the
+	// aircraft is on, and by enough to actually get there.
+	course := math.Heading2LL(line[0], line[1], fs.NmPerLongitude)
+	angle := math.HeadingSignedTurn(course, math.VectorHeading(v))
+	return angle*nav.signedCourseLineDistance(line) < 0 && math.Abs(angle) >= minInterceptAngle
 }
 
 // OnExtendedCenterline checks if the flight position is less than maxNmDeviation

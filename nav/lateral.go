@@ -1036,8 +1036,9 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 			// tick after an exact tangency—so classifying by that heading
 			// alone can skip right over "start the turn". A path that ends
 			// up settled on the radial is a clean intercept no matter the
-			// angle it first crossed at.
-			if math.Abs(endDist) < 0.1 {
+			// angle it first crossed at: settling within the capture
+			// tolerance is a capture.
+			if math.Abs(endDist) < courseCaptureTolerance {
 				return turnToInterceptTurn, true
 			}
 			predicted := math.TrueToMagnetic(math.TrueHeading(math.NormalizeHeading(tp.heading(t))),

@@ -343,19 +343,46 @@ func TestOutboundTurnSweep(t *testing.T) {
 // localizer intercept sweep
 
 type interceptCase struct {
+	airport string // arrival airport, approach id, and a route that meets
+	appr    string // the approach; all empty for KJFK's I22L
+	route   string
 	acType  string
 	ias     float32
-	angle   float32 // degrees between the initial heading and the localizer course
+	angle   float32 // signed degrees from the initial heading to the localizer course; + turns right to join
 	distNM  float32 // initial position along the localizer from the threshold
 	lateral float32 // lateral offset from the centerline; negative = left of outbound
 	windDir float32 // degrees true "from"; -1 = calm
 	windKts float32
+
+	// ptacTurn, when nonzero, makes this a PTAC: the aircraft starts that
+	// many degrees short of the intercept heading and is given the heading
+	// along with the approach clearance rather than being established on it.
+	ptacTurn float32
+	// assignedIAS, when nonzero, is a speed issued with the clearance, so
+	// the aircraft decelerates through the intercept.
+	assignedIAS float32
+}
+
+// arrival returns the case's arrival airport, approach id, and a route into
+// it that meets the approach, defaulting to KJFK's I22L.
+func (c interceptCase) arrival() (string, string, string) {
+	if c.airport == "" {
+		return "KJFK", "I22L", "HAUPT/a6000 LEFER/a4000 ROSLY/a3000"
+	}
+	return c.airport, c.appr, c.route
 }
 
 func (c interceptCase) name() string {
-	s := fmt.Sprintf("%s/%.0fkt/int%.0f/lat%.1f", c.acType, c.ias, c.angle, c.lateral)
+	ap, id, _ := c.arrival()
+	s := fmt.Sprintf("%s%s/%s/%.0fkt/int%+.0f/lat%+.1f", ap, id, c.acType, c.ias, c.angle, c.lateral)
 	if c.windKts > 0 {
 		s += fmt.Sprintf("/wind%.0f@%.0f", c.windKts, c.windDir)
+	}
+	if c.ptacTurn != 0 {
+		s += fmt.Sprintf("/ptac%+.0f", c.ptacTurn)
+	}
+	if c.assignedIAS > 0 {
+		s += fmt.Sprintf("/spd%.0f", c.assignedIAS)
 	}
 	return s
 }
@@ -367,32 +394,46 @@ type interceptMetrics struct {
 	endSD       float32 // signed centerline distance at that point
 	crossings   int
 	maxOff      float32 // max |centerline distance| from established+30 on
+	stalled     bool    // held TurningToJoin without closing on the centerline
 }
 
 func runInterceptCase(t *testing.T, c interceptCase) interceptMetrics {
 	t.Helper()
 
-	apg := LookupApproachGeometry(t, "KJFK", "I22L")
+	airport, id, route := c.arrival()
+	apg := LookupApproachGeometry(t, airport, id)
 	courseMag := math.TrueToMagnetic(apg.RunwayHeading, apg.MagneticVariation)
 	pos := apg.ThresholdOffset(c.distNM, c.lateral)
 
+	// The intercept heading; on a PTAC the aircraft starts short of it and
+	// is turned onto it by the same transmission that clears it.
+	intercept := math.NormalizeHeading(courseMag - math.MagneticHeading(c.angle))
+	initial := math.NormalizeHeading(intercept - math.MagneticHeading(c.ptacTurn))
+
 	f := NewArrivalFlight(t, ArrivalConfig{
-		Waypoints:        pos.DMSString() + " HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		Waypoints:        pos.DMSString() + " " + route,
 		DepartureAirport: "KMCO",
-		ArrivalAirport:   "KJFK",
+		ArrivalAirport:   airport,
 		AircraftType:     c.acType,
 		InitialAltitude:  3000,
 		InitialSpeed:     c.ias,
-		InitialHeading:   float32(math.NormalizeHeading(courseMag - math.MagneticHeading(c.angle))),
+		InitialHeading:   float32(initial),
 	})
 	if c.windKts > 0 {
 		f.SetWind(c.windDir, c.windKts)
 	}
-	f.ExpectApproach("I22L")
-	f.ClearedApproach("I22L")
+	f.ExpectApproach(id)
+	if c.ptacTurn != 0 {
+		f.AssignHeading(int(intercept), av.TurnClosest)
+	}
+	if c.assignedIAS > 0 {
+		f.AssignSpeed(c.assignedIAS)
+	}
+	f.ClearedApproach(id)
 
 	var m interceptMetrics
-	var prevSD float32
+	var prevSD, joinSD float32
+	joinTicks := 0
 	for f.tick < 900 {
 		f.tickOnce()
 		if math.NMDistance2LLFast(f.nav.FlightState.Position, apg.Threshold, apg.NmPerLongitude) < 1.5 {
@@ -406,6 +447,22 @@ func runInterceptCase(t *testing.T, c interceptCase) interceptMetrics {
 			m.crossings++
 		}
 		prevSD = sd
+
+		// An aircraft that has turned to join but is no longer closing on
+		// the centerline will never establish: nothing re-evaluates the
+		// intercept once TurningToJoin has an assigned heading.
+		if f.nav.Approach.InterceptState == TurningToJoin {
+			joinTicks++
+			if joinTicks%30 == 0 {
+				if joinTicks > 30 && math.Abs(sd) >= joinSD-0.02 {
+					m.stalled, m.endSD = true, sd
+					break
+				}
+				joinSD = math.Abs(sd)
+			}
+		} else {
+			joinTicks, joinSD = 0, 0
+		}
 
 		if f.nav.Approach.InterceptState == OnApproachCourse && m.established == 0 {
 			m.established = f.tick
@@ -431,9 +488,12 @@ func checkInterceptCase(t *testing.T, c interceptCase, maxOff float32) intercept
 	t.Helper()
 
 	m := runInterceptCase(t, c)
+	if m.stalled {
+		t.Errorf("turned to join but stopped closing on the centerline %.3fnm off", m.endSD)
+	}
 	if m.established != 0 && m.vectors {
 		t.Errorf("both established (tick %d) and requested vectors", m.established)
-	} else if m.established == 0 && !m.vectors {
+	} else if m.established == 0 && !m.vectors && !m.stalled {
 		// A tailwind can push the aircraft to the runway before the
 		// on-course state is flagged; that's fine as long as it got there
 		// converged on the centerline.
@@ -459,8 +519,9 @@ func TestInterceptSweep(t *testing.T) {
 	}{{"A320", 180}, {"C172", 100}, {"E75L", 210}, {"B744", 170}}
 	laterals := map[float32]float32{10: 1, 20: 2, 30: 2.5, 43: 3}
 
-	vectored := 0
+	vectored, cases := 0, 0
 	check := func(t *testing.T, c interceptCase) {
+		cases++
 		if m := checkInterceptCase(t, c, 0.15); m.vectors {
 			vectored++
 		}
@@ -489,7 +550,9 @@ func TestInterceptSweep(t *testing.T) {
 	// The near-limit 43 degree intercepts routinely blow through and end
 	// with a request for vectors (the simulation-based predicates behaved
 	// the same way); the shallower ones essentially never do. Guard against
-	// wholesale regressions in either direction.
+	// wholesale regressions in either direction, and log the count so that a
+	// change that quietly turns captures into vector requests is visible.
+	t.Logf("%d of %d intercepts ended requesting vectors", vectored, cases)
 	if vectored > 22 {
 		t.Errorf("%d intercepts ended requesting vectors", vectored)
 	}
@@ -505,6 +568,44 @@ func TestInterceptOvershootSweep(t *testing.T) {
 				c := interceptCase{acType: "A320", ias: 180, angle: angle, distNM: 10,
 					lateral: -lateral, windDir: wind.dir, windKts: wind.kts}
 				t.Run(c.name(), func(t *testing.T) { checkInterceptCase(t, c, 0.25) })
+			}
+		}
+	}
+}
+
+// TestInterceptPTACSweep vectors the aircraft onto the intercept heading with
+// the same transmission that clears it for the approach, as a controller does
+// on a PTAC, optionally with a speed reduction alongside. The aircraft spends
+// the turn closing on the localizer without the intercept being evaluated, so
+// its first look at the geometry can come well inside the point where the
+// turn to the course rolls out on it. Both sides of the course and a second
+// airport are swept: nothing about joining a localizer should be handed.
+func TestInterceptPTACSweep(t *testing.T) {
+	airports := []struct{ icao, appr, route string }{
+		{"", "", ""}, // KJFK I22L
+		{"KIAH", "I8L", "KABBY/a4000 KICKM/a3000"},
+	}
+
+	// Where the turn rolls out relative to the course decides whether the
+	// aircraft joins cleanly, so sweep the offset finely enough to land on
+	// either side of that point.
+	for _, ap := range airports {
+		for _, angle := range []float32{20, 30, 43} {
+			for _, side := range []float32{1, -1} {
+				for lateral := float32(0.6); lateral <= 1.55; lateral += 0.05 {
+					for _, wind := range []struct{ dir, kts float32 }{{-1, 0}, {270, 30}} {
+						for _, ias := range []float32{0, 170} {
+							c := interceptCase{
+								airport: ap.icao, appr: ap.appr, route: ap.route,
+								acType: "A320", ias: 210, distNM: 11,
+								angle: side * angle, lateral: -side * lateral,
+								windDir: wind.dir, windKts: wind.kts,
+								ptacTurn: side * 50, assignedIAS: ias,
+							}
+							t.Run(c.name(), func(t *testing.T) { checkInterceptCase(t, c, 0.6) })
+						}
+					}
+				}
 			}
 		}
 	}

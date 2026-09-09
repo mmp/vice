@@ -362,10 +362,7 @@ func oppositeTurnDirection(turn av.TurnDirection) av.TurnDirection {
 // minInterceptAngle degrees while more than shallowInterceptOffset nm away
 // from it joins too far out to be useful; the aircraft turns to a 45 degree
 // intercept instead.
-const (
-	minInterceptAngle      = 10 // degrees
-	shallowInterceptOffset = 2  // nm
-)
+const shallowInterceptOffset = 2 // nm
 
 // turnToInterceptIfHeadingMisses checks an UntilIntercept maneuver flying a
 // plain heading or track once the aircraft is established on it: if it would

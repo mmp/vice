@@ -749,6 +749,106 @@ func TestLocalizerOvershootNearFAF(t *testing.T) {
 // stale physical heading — it would simulate a fake direct turn from
 // the current heading to the localizer and wrongly report a major
 // overshoot.
+// TestLocalizerRecoveryTurnsTowardTheCourse reproduces a reported IAH ILS 8L
+// failure. Vectored onto a shallow intercept from the north of the 088 course
+// and cleared in the same transmission, the aircraft turned to a recovery
+// heading of 068 -- twenty degrees to the far side of the course -- and flew
+// away from the localizer. The recovery side was taken from the heading
+// difference, which is backwards for an ordinary converging intercept: at a
+// 12 degree intercept from the north the aircraft heads right of the course
+// while being left of it.
+func TestLocalizerRecoveryTurnsTowardTheCourse(t *testing.T) {
+	apg := LookupApproachGeometry(t, "KIAH", "I8L")
+	courseMag := math.TrueToMagnetic(apg.RunwayHeading, apg.MagneticVariation)
+	// Eight miles out and a third of a mile south of the centerline, on a
+	// converging intercept: the mirror of the reported geometry, which had
+	// the aircraft north of the course and recovering onto 068.
+	pos := apg.ThresholdOffset(8, -0.35)
+
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " KABBY/a4000 KICKM/a3000",
+		DepartureAirport: "KIND",
+		ArrivalAirport:   "KIAH",
+		AircraftType:     "B739",
+		InitialAltitude:  3000,
+		InitialSpeed:     210,
+		InitialHeading:   float32(math.NormalizeHeading(courseMag - 43)),
+	})
+	f.SetWind(180, 20)
+	f.ExpectApproach("I8L")
+	f.ClearedApproach("I8L")
+
+	established := 0
+	for f.tick < 600 && established == 0 {
+		f.tickOnce()
+
+		// Whatever heading the aircraft is given to join on, it has to be on
+		// the side of the course that closes on it.
+		sd := f.SignedCenterlineDistance()
+		if f.nav.Approach.InterceptState == TurningToJoin && f.nav.Heading.Assigned != nil {
+			if off := math.HeadingSignedTurn(courseMag, *f.nav.Heading.Assigned); sd*off > 0 {
+				t.Fatalf("tick %d: %.2fnm off the centerline, assigned %03d against a %03d course; turning away",
+					f.tick, sd, int(*f.nav.Heading.Assigned), int(courseMag))
+			}
+		}
+		if f.nav.Approach.InterceptState == OnApproachCourse {
+			established = f.tick
+		}
+		if f.nav.Approach.RequestVectors {
+			t.Fatalf("tick %d: requested vectors from an ordinary 12 degree intercept", f.tick)
+		}
+	}
+	if established == 0 {
+		t.Fatalf("never established; %.2fnm off the centerline after %d seconds",
+			f.SignedCenterlineDistance(), f.tick)
+	}
+
+	for range 120 {
+		f.tickOnce()
+		f.AssertOnExtendedCenterline(0.3)
+	}
+}
+
+// TestLocalizerNotClosingRequestsVectors verifies that an aircraft that has
+// turned to join but rolls out parallel to the localizer, too far off to
+// capture, tells the controller rather than flying alongside it forever.
+// Once TurningToJoin has an assigned heading, nothing else reconsiders the
+// intercept: the only way out of the state is reaching the course.
+func TestLocalizerNotClosingRequestsVectors(t *testing.T) {
+	apg := LookupApproachGeometry(t, "KJFK", "I22L")
+	courseMag := math.TrueToMagnetic(apg.RunwayHeading, apg.MagneticVariation)
+	pos := apg.ThresholdOffset(12, -1)
+
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  3000,
+		InitialSpeed:     180,
+		InitialHeading:   float32(courseMag),
+	})
+	f.ExpectApproach("I22L")
+	f.AssignHeading(int(courseMag), av.TurnClosest)
+	f.ClearedApproach("I22L")
+
+	// Stand the aircraft where a turn that rolled out short leaves it:
+	// committed to joining, on the approach course heading, and a mile off
+	// the localizer so that it tracks parallel to it.
+	hdg := courseMag
+	f.nav.Approach.InterceptState = TurningToJoin
+	f.nav.Heading = NavHeading{Assigned: &hdg}
+	f.nav.DeferredNavHeading = nil
+
+	for f.tick < 60 && !f.nav.Approach.RequestVectors {
+		f.tickOnce()
+	}
+	if !f.nav.Approach.RequestVectors {
+		t.Errorf("flew %.2fnm off the localizer for %ds without requesting vectors",
+			math.Abs(f.SignedCenterlineDistance()), f.tick)
+	}
+}
+
 func TestHeadingAndClearanceWhenOffHeading(t *testing.T) {
 	// Aircraft 5nm outbound, 0.3nm NW of centerline, flying outbound
 	// (~044°) — close to the extended centerline but heading the opposite
