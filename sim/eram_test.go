@@ -19,12 +19,9 @@ import (
 // flight) gets the destination airport as its exit fix instead of a
 // route/zone-based boundary partition.
 func TestDeriveERAMFixPairFullyContained(t *testing.T) {
-	s := &Sim{
-		State: &CommonState{
-			ERAMCoordination: &enroute.Coordination{Coord: &enroute.ArtsCoordEntry{}},
-			Airports:         map[string]*av.Airport{"KVPC": {}, "KCPP": {}},
-		},
-	}
+	s := NewTestSim(testLogger())
+	s.State.ERAMCoordination = &enroute.Coordination{Coord: &enroute.ArtsCoordEntry{}}
+	s.State.Airports = map[string]*av.Airport{"KVPC": {}, "KCPP": {}}
 	// Internal departure KVPC -> KCPP (both local): exit fix = destination (K
 	// stripped), route/zone skipped.
 	ac := &Aircraft{TypeOfFlight: av.FlightTypeDeparture,
@@ -54,17 +51,14 @@ func TestDeriveERAMFixPairFullyContained(t *testing.T) {
 // criteria, and airspace awareness rules matching against it can.
 func TestDeriveERAMFixPairNormalizesFix(t *testing.T) {
 	coordSim := func(points map[string]SignificantPoint, fix string) *Sim {
-		return &Sim{
-			State: &CommonState{
-				ERAMCoordination: &enroute.Coordination{
-					Coord: &enroute.ArtsCoordEntry{
-						RouteBased: []enroute.RouteRule{{Type: "string", ID: fix, DefaultFix: fix}},
-					},
-				},
-				Airports:           map[string]*av.Airport{},
-				FacilityAdaptation: FacilityAdaptation{SignificantPoints: points},
+		s := NewTestSim(testLogger())
+		s.State.ERAMCoordination = &enroute.Coordination{
+			Coord: &enroute.ArtsCoordEntry{
+				RouteBased: []enroute.RouteRule{{Type: "string", ID: fix, DefaultFix: fix}},
 			},
 		}
+		s.State.FacilityAdaptation = FacilityAdaptation{SignificantPoints: points}
+		return s
 	}
 
 	for _, tc := range []struct {

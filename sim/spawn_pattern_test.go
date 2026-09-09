@@ -33,10 +33,7 @@ func holdingArrival(callsign, airport string, since Time) *Aircraft {
 }
 
 func makePatternSim(acs ...*Aircraft) *Sim {
-	s := &Sim{
-		Aircraft:     make(map[av.ADSBCallsign]*Aircraft),
-		PatternState: make(map[string]*PatternState),
-	}
+	s := NewTestSim(testLogger())
 	for _, ac := range acs {
 		s.Aircraft[ac.ADSBCallsign] = ac
 	}

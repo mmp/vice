@@ -106,10 +106,7 @@ func TestIntersectingRunways(t *testing.T) {
 func TestDepartureIntersectionHelpers(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 
-	s := &Sim{
-		State:    &CommonState{},
-		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
-	}
+	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = testNmPerLongitude
 
 	pt, ok := av.RunwayIntersectionPoint("XTST", "9", "36", testNmPerLongitude, 0)
@@ -160,13 +157,10 @@ func TestCanLaunchIntersectingRunways(t *testing.T) {
 
 	rwy9, rwy36, rwy8 := &RunwayLaunchState{}, &RunwayLaunchState{}, &RunwayLaunchState{}
 
-	s := &Sim{
-		lg:       log.New(true, "error", t.TempDir()),
-		State:    &CommonState{},
-		Aircraft: map[av.ADSBCallsign]*Aircraft{"PRV1": prevAc, "DEP1": depAc},
-		DepartureState: map[string]map[av.RunwayID]*RunwayLaunchState{
-			"XTST": {"9": rwy9, "36": rwy36, "8": rwy8},
-		},
+	s := NewTestSim(log.New(true, "error", t.TempDir()))
+	s.Aircraft = map[av.ADSBCallsign]*Aircraft{"PRV1": prevAc, "DEP1": depAc}
+	s.DepartureState = map[string]map[av.RunwayID]*RunwayLaunchState{
+		"XTST": {"9": rwy9, "36": rwy36, "8": rwy8},
 	}
 	s.State.NmPerLongitude = testNmPerLongitude
 	s.State.SimTime = now
@@ -241,13 +235,10 @@ func TestHoldForCrossingDeparture(t *testing.T) {
 
 	rwy8, rwy9 := &RunwayLaunchState{}, &RunwayLaunchState{}
 
-	s := &Sim{
-		lg:       log.New(true, "error", t.TempDir()),
-		State:    &CommonState{},
-		Aircraft: map[av.ADSBCallsign]*Aircraft{"PRV1": prevAc, "DEP1": depAc},
-		DepartureState: map[string]map[av.RunwayID]*RunwayLaunchState{
-			"XTST": {"8": rwy8, "9": rwy9},
-		},
+	s := NewTestSim(log.New(true, "error", t.TempDir()))
+	s.Aircraft = map[av.ADSBCallsign]*Aircraft{"PRV1": prevAc, "DEP1": depAc}
+	s.DepartureState = map[string]map[av.RunwayID]*RunwayLaunchState{
+		"XTST": {"8": rwy8, "9": rwy9},
 	}
 	s.State.NmPerLongitude = testNmPerLongitude
 
@@ -316,15 +307,14 @@ func TestHoldForCrossingDeparture(t *testing.T) {
 func TestSamePavementRunways(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 
-	s := &Sim{
-		State: &CommonState{Airports: map[string]*av.Airport{"XTST": {}}},
-		DepartureState: map[string]map[av.RunwayID]*RunwayLaunchState{
-			"XTST": {
-				"9":       &RunwayLaunchState{},
-				"9.North": &RunwayLaunchState{},
-				"36":      &RunwayLaunchState{},
-				"8":       &RunwayLaunchState{},
-			},
+	s := NewTestSim(testLogger())
+	s.State.Airports = map[string]*av.Airport{"XTST": {}}
+	s.DepartureState = map[string]map[av.RunwayID]*RunwayLaunchState{
+		"XTST": {
+			"9":       &RunwayLaunchState{},
+			"9.North": &RunwayLaunchState{},
+			"36":      &RunwayLaunchState{},
+			"8":       &RunwayLaunchState{},
 		},
 	}
 	s.State.NmPerLongitude = testNmPerLongitude
@@ -347,20 +337,20 @@ func TestSamePavementRunways(t *testing.T) {
 // publishedDepartureSim builds a Sim whose test airport KORG has the NORTH and
 // EAST exits off runway 30L in the "jet" category.
 func publishedDepartureSim() *Sim {
-	return &Sim{State: &CommonState{
-		NmPerLongitude: testNmPerLongitude,
-		Airports: map[string]*av.Airport{
-			"KORG": {
-				ExitCategories: map[av.ExitID]string{"NORTH": "jet", "EAST": "jet"},
-				DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
-					"30L": {"NORTH": {{}}, "EAST": {{}}},
-				},
+	s := NewTestSim(testLogger())
+	s.State.NmPerLongitude = testNmPerLongitude
+	s.State.Airports = map[string]*av.Airport{
+		"KORG": {
+			ExitCategories: map[av.ExitID]string{"NORTH": "jet", "EAST": "jet"},
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"30L": {"NORTH": {{}}, "EAST": {{}}},
 			},
 		},
-		DepartureRunways: []DepartureRunway{
-			{Airport: "KORG", Runway: "30L", Category: "jet"},
-		},
-	}}
+	}
+	s.State.DepartureRunways = []DepartureRunway{
+		{Airport: "KORG", Runway: "30L", Category: "jet"},
+	}
+	return s
 }
 
 // seedTestAirports adds airports to av.DB for the duration of the test: the
@@ -553,21 +543,20 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
 	av.InitDB()
 
-	s := &Sim{State: &CommonState{
-		NmPerLongitude: testNmPerLongitude,
-		Airports: map[string]*av.Airport{
-			"KJFK": {
-				ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "RBV": "Southwest"},
-				DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
-					"22R": {"WAVEY": {{}}, "RBV": {{}}},
-				},
+	s := NewTestSim(testLogger())
+	s.State.NmPerLongitude = testNmPerLongitude
+	s.State.Airports = map[string]*av.Airport{
+		"KJFK": {
+			ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "RBV": "Southwest"},
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"22R": {"WAVEY": {{}}, "RBV": {{}}},
 			},
 		},
-		DepartureRunways: []DepartureRunway{
-			{Airport: "KJFK", Runway: "22R", Category: "Water", DefaultRate: 8},
-			{Airport: "KJFK", Runway: "22R", Category: "Southwest", DefaultRate: 5},
-		},
-	}}
+	}
+	s.State.DepartureRunways = []DepartureRunway{
+		{Airport: "KJFK", Runway: "22R", Category: "Water", DefaultRate: 8},
+		{Airport: "KJFK", Runway: "22R", Category: "Southwest", DefaultRate: 5},
+	}
 
 	// Water is listed first and carries the larger rate; neither should matter:
 	// the real KJFK->KATL routes leave over RBV.
@@ -747,21 +736,20 @@ func TestDepartureExitIgnoresTheAirportIdentifiers(t *testing.T) {
 func TestResolvePublishedDepartureSubstitutesANearbyDestination(t *testing.T) {
 	av.InitDB()
 
-	s := &Sim{State: &CommonState{
-		NmPerLongitude: 45,
-		Airports: map[string]*av.Airport{
-			"KJFK": {
-				ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "COATE": "North"},
-				DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
-					"22R": {"WAVEY": {{SID: "JFK5"}}, "COATE": {{SID: "JFK5"}}},
-				},
+	s := NewTestSim(testLogger())
+	s.State.NmPerLongitude = 45
+	s.State.Airports = map[string]*av.Airport{
+		"KJFK": {
+			ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "COATE": "North"},
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"22R": {"WAVEY": {{SID: "JFK5"}}, "COATE": {{SID: "JFK5"}}},
 			},
 		},
-		DepartureRunways: []DepartureRunway{
-			{Airport: "KJFK", Runway: "22R", Category: "Water"},
-			{Airport: "KJFK", Runway: "22R", Category: "North"},
-		},
-	}}
+	}
+	s.State.DepartureRunways = []DepartureRunway{
+		{Airport: "KJFK", Runway: "22R", Category: "Water"},
+		{Airport: "KJFK", Runway: "22R", Category: "North"},
+	}
 
 	placement, err := s.resolvePublishedDeparture("KJFK", "22R", []string{"Water", "North"},
 		"KVRB", "B738", makeRoutedPairs().destinationsByOrigin)

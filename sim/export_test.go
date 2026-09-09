@@ -1,6 +1,8 @@
 package sim
 
 import (
+	"io"
+	"log/slog"
 	"os"
 	"testing"
 	"time"
@@ -17,7 +19,15 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-// NewTestSim creates a minimal Sim suitable for command dispatch tests.
+// testLogger returns a logger that discards everything, for tests that have no use
+// for the output.
+func testLogger() *log.Logger {
+	return &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
+}
+
+// NewTestSim creates a minimal Sim suitable for command dispatch tests. Tests should
+// build their sims with it rather than with a Sim literal, so that the maps and
+// channels a Sim needs are always allocated.
 // Exported only to _test packages via Go's export_test.go convention.
 func NewTestSim(lg *log.Logger) *Sim {
 	tcw := TCW("TEST")
@@ -36,6 +46,8 @@ func NewTestSim(lg *log.Logger) *Sim {
 			Airports: map[string]*av.Airport{},
 		},
 		Aircraft:            map[av.ADSBCallsign]*Aircraft{},
+		DepartureState:      make(map[string]map[av.RunwayID]*RunwayLaunchState),
+		PatternState:        make(map[string]*PatternState),
 		lastSTTCommands:     make(map[TCW]*lastSTTCommand),
 		Handoffs:            make(map[ACID]Handoff),
 		PendingContacts:     make(map[TCP][]PendingContact),

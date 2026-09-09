@@ -2,15 +2,12 @@ package sim
 
 import (
 	"errors"
-	"io"
-	"log/slog"
 	"slices"
 	"strings"
 	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 )
 
@@ -27,12 +24,10 @@ func testCandidates(arrivals []av.Arrival) []candidateArrival {
 // placeArrivalTestSim builds a Sim landing the given arrivals at the airport in
 // one "TEST" inbound flow.
 func placeArrivalTestSim(airport string, arrivals []av.Arrival, ap *av.Airport) *Sim {
-	s := &Sim{State: &CommonState{
-		NmPerLongitude: 45,
-		InboundFlows:   map[string]*av.InboundFlow{"TEST": {Arrivals: arrivals}},
-		DynamicState: DynamicState{LaunchConfig: LaunchConfig{
-			InboundFlowEnabled: map[string]map[string]bool{"TEST": {airport: true}}}},
-	}}
+	s := NewTestSim(testLogger())
+	s.State.NmPerLongitude = 45
+	s.State.InboundFlows = map[string]*av.InboundFlow{"TEST": {Arrivals: arrivals}}
+	s.State.LaunchConfig.InboundFlowEnabled = map[string]map[string]bool{"TEST": {airport: true}}
 	if ap != nil {
 		s.State.Airports = map[string]*av.Airport{airport: ap}
 	}
@@ -333,21 +328,17 @@ func TestZeroRateArrivalsDoNotBlock(t *testing.T) {
 		}
 	}
 
-	s := &Sim{
-		lg:       &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))},
-		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
-		State: &CommonState{DynamicState: DynamicState{
-			SimTime: spawn,
-			LaunchConfig: LaunchConfig{
-				InboundFlowRates: map[string]map[string]float32{
-					"PUCKY1": {"KFRG": 0, "KJFK": 12},
-					"CAMRN5": {"KJFK": 12},
-				},
-				InboundFlowEnabled: map[string]map[string]bool{
-					"PUCKY1": {"KFRG": false, "KJFK": true},
-					"CAMRN5": {"KJFK": true},
-				},
-			}}},
+	s := NewTestSim(testLogger())
+	s.State.SimTime = spawn
+	s.State.LaunchConfig = LaunchConfig{
+		InboundFlowRates: map[string]map[string]float32{
+			"PUCKY1": {"KFRG": 0, "KJFK": 12},
+			"CAMRN5": {"KJFK": 12},
+		},
+		InboundFlowEnabled: map[string]map[string]bool{
+			"PUCKY1": {"KFRG": false, "KJFK": true},
+			"CAMRN5": {"KJFK": true},
+		},
 	}
 	s.Schedule.Arrivals = []ScheduledArrival{
 		arrival("KFRG", "DAL1", "PUCKY1"), // PUCKY1 lands nothing at KFRG

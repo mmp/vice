@@ -338,36 +338,25 @@ func TestRunOneControlCommandInterceptRadial(t *testing.T) {
 
 	newSim := func() (*Sim, av.ADSBCallsign) {
 		callsign := av.ADSBCallsign("TEST123")
-		return &Sim{
-			State: &CommonState{
-				DynamicState: DynamicState{
-					CurrentConsolidation: map[TCW]*TCPConsolidation{
-						"TCW1": {PrimaryTCP: "1A"},
-					},
+		s := NewTestSim(lg)
+		s.State.CurrentConsolidation["TCW1"] = &TCPConsolidation{PrimaryTCP: "1A"}
+		s.Aircraft[callsign] = &Aircraft{
+			ADSBCallsign:        callsign,
+			ControllerFrequency: "1A",
+			Nav: nav.Nav{
+				// Ten miles north of WAVEY heading east, so the 050 radial
+				// lies ahead of the aircraft and northeast of the fix.
+				FlightState: nav.FlightState{
+					Position:          math.Point2LL{wavey[0], wavey[1] + 10.0/60},
+					Heading:           90,
+					NmPerLongitude:    math.NMPerLongitudeAt(wavey),
+					MagneticVariation: 13,
 				},
+				Waypoints: []av.Waypoint{{Fix: "WAVEY", Location: wavey}},
+				Rand:      rand.Make(),
 			},
-			Aircraft: map[av.ADSBCallsign]*Aircraft{
-				callsign: {
-					ADSBCallsign:        callsign,
-					ControllerFrequency: "1A",
-					Nav: nav.Nav{
-						// Ten miles north of WAVEY heading east, so the
-						// 050 radial lies ahead of the aircraft and
-						// northeast of the fix.
-						FlightState: nav.FlightState{
-							Position:          math.Point2LL{wavey[0], wavey[1] + 10.0/60},
-							Heading:           90,
-							NmPerLongitude:    math.NMPerLongitudeAt(wavey),
-							MagneticVariation: 13,
-						},
-						Waypoints: []av.Waypoint{{Fix: "WAVEY", Location: wavey}},
-						Rand:      rand.Make(),
-					},
-				},
-			},
-			PendingContacts: map[TCP][]PendingContact{},
-			lg:              lg,
-		}, callsign
+		}
+		return s, callsign
 	}
 
 	for _, tc := range []struct {
@@ -413,31 +402,20 @@ func TestRunOneControlCommandAtFixClearedStraightInApproach(t *testing.T) {
 	}
 
 	callsign := av.ADSBCallsign("TEST123")
-	s := &Sim{
-		State: &CommonState{
-			DynamicState: DynamicState{
-				CurrentConsolidation: map[TCW]*TCPConsolidation{
-					"TCW1": {PrimaryTCP: "1A"},
-				},
+	s := NewTestSim(lg)
+	s.State.CurrentConsolidation["TCW1"] = &TCPConsolidation{PrimaryTCP: "1A"}
+	s.Aircraft[callsign] = &Aircraft{
+		ADSBCallsign:        callsign,
+		ControllerFrequency: "1A",
+		Nav: nav.Nav{
+			Waypoints: []av.Waypoint{
+				{Fix: "MATTY"},
+			},
+			Approach: nav.NavApproach{
+				Assigned:   appr,
+				AssignedId: "RG24",
 			},
 		},
-		Aircraft: map[av.ADSBCallsign]*Aircraft{
-			callsign: {
-				ADSBCallsign:        callsign,
-				ControllerFrequency: "1A",
-				Nav: nav.Nav{
-					Waypoints: []av.Waypoint{
-						{Fix: "MATTY"},
-					},
-					Approach: nav.NavApproach{
-						Assigned:   appr,
-						AssignedId: "RG24",
-					},
-				},
-			},
-		},
-		PendingContacts: map[TCP][]PendingContact{},
-		lg:              lg,
 	}
 
 	intent, err := s.runOneControlCommand("TCW1", callsign, "AMATTY/CSIRG24", 0)

@@ -12,7 +12,6 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
-	vrand "github.com/mmp/vice/rand"
 	"github.com/mmp/vice/wx"
 )
 
@@ -87,35 +86,16 @@ func NewVisualScenario(t *testing.T, airportLoc math.Point2LL, runway string, ac
 	// Create a discard logger for tests.
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
 
-	sim := &Sim{
-		lg:   lg,
-		Rand: vrand.Make(),
-		State: &CommonState{
-			DynamicState: DynamicState{
-				METAR: map[string]wx.METAR{
-					"KJFK": {Raw: "KJFK 10SM BKN050"},
-				},
-				SimTime:              NewSimTime(time.Now()),
-				CurrentConsolidation: map[TCW]*TCPConsolidation{tcw: {PrimaryTCP: TCP(freq)}},
-			},
-			Airports: map[string]*av.Airport{
-				"KJFK": {
-					Location: airportLoc,
-					Approaches: map[string]*av.Approach{
-						"V" + runway: {Type: av.ChartedVisualApproach, Runway: runway, Waypoints: testApproachWaypoints("KJFK", runway, airportLoc, 52)},
-						"I" + runway: {Type: av.ILSApproach, Runway: runway, Waypoints: testApproachWaypoints("KJFK", runway, airportLoc, 52)},
-					},
-				},
-			},
+	sim := NewTestSim(lg)
+	sim.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 10SM BKN050"}
+	sim.State.Airports["KJFK"] = &av.Airport{
+		Location: airportLoc,
+		Approaches: map[string]*av.Approach{
+			"V" + runway: {Type: av.ChartedVisualApproach, Runway: runway, Waypoints: testApproachWaypoints("KJFK", runway, airportLoc, 52)},
+			"I" + runway: {Type: av.ILSApproach, Runway: runway, Waypoints: testApproachWaypoints("KJFK", runway, airportLoc, 52)},
 		},
-		Aircraft:            map[av.ADSBCallsign]*Aircraft{callsign: ac},
-		PendingContacts:     make(map[TCP][]PendingContact),
-		FutureFieldChecks:   make(map[av.ADSBCallsign]*FutureFieldCheck),
-		FutureTrafficChecks: make(map[av.ADSBCallsign]*FutureTrafficCheck),
-		PrivilegedTCWs:      map[TCW]bool{tcw: true},
-		lastSTTCommands:     make(map[TCW]*lastSTTCommand),
-		eventStream:         NewEventStream(lg),
 	}
+	sim.Aircraft[callsign] = ac
 
 	return &VisualScenario{t: t, Sim: sim, AC: ac, callsign: callsign, tcw: tcw}
 }
@@ -282,27 +262,15 @@ func makeVisualTestAircraftAlt(pos math.Point2LL, heading math.MagneticHeading, 
 // makeVisualTestSim creates a minimal Sim with a KJFK airport at the given
 // location, a VMC METAR, and a charted visual approach for the given runway.
 func makeVisualTestSim(airportLoc math.Point2LL, runway string) *Sim {
-	return &Sim{
-		Rand: vrand.Make(),
-		State: &CommonState{
-			DynamicState: DynamicState{
-				METAR: map[string]wx.METAR{
-					"KJFK": {Raw: "KJFK 10SM BKN050"},
-				},
-			},
-			Airports: map[string]*av.Airport{
-				"KJFK": {
-					Location: airportLoc,
-					Approaches: map[string]*av.Approach{
-						"V13L": {Type: av.ChartedVisualApproach, Runway: runway, Waypoints: testApproachWaypoints("KJFK", runway, airportLoc, 52)},
-					},
-				},
-			},
+	s := NewTestSim(testLogger())
+	s.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 10SM BKN050"}
+	s.State.Airports["KJFK"] = &av.Airport{
+		Location: airportLoc,
+		Approaches: map[string]*av.Approach{
+			"V13L": {Type: av.ChartedVisualApproach, Runway: runway, Waypoints: testApproachWaypoints("KJFK", runway, airportLoc, 52)},
 		},
-		FutureFieldChecks:   make(map[av.ADSBCallsign]*FutureFieldCheck),
-		FutureTrafficChecks: make(map[av.ADSBCallsign]*FutureTrafficCheck),
-		lastSTTCommands:     make(map[TCW]*lastSTTCommand),
 	}
+	return s
 }
 
 func TestCheckVisualEligibility(t *testing.T) {

@@ -42,55 +42,51 @@ func publishedProviderTestSim(t *testing.T, start Time) *Sim {
 	}
 	t.Cleanup(func() { av.DB = oldDB })
 
-	return &Sim{
-		StartTime: start,
-		State: &CommonState{
-			NmPerLongitude: 45,
-			DynamicState: DynamicState{
-				SimTime: NewSimTime(start.Time().Add(-PrespawnDuration)),
-				LaunchConfig: LaunchConfig{
-					// The tests all start at 14:00, which is where their
-					// timetables' days start too.
-					TimetableStartMinute:        14 * 60,
-					PublishedArrivalRateScale:   1,
-					PublishedDepartureRateScale: 1,
-					InboundFlowRates:            map[string]map[string]float32{"TEST": {"KMSP": 0}},
-					InboundFlowEnabled:          map[string]map[string]bool{"TEST": {"KMSP": true}},
-					DepartureEnabled: map[string]map[av.RunwayID]map[string]bool{
-						"KMSP": {"12L": {"": true}, "30R": {"": true}},
-					},
+	s := NewTestSim(testLogger())
+	s.StartTime = start
+	s.State.NmPerLongitude = 45
+	s.State.SimTime = NewSimTime(start.Time().Add(-PrespawnDuration))
+	s.State.LaunchConfig = LaunchConfig{
+		// The tests all start at 14:00, which is where their timetables' days
+		// start too.
+		TimetableStartMinute:        14 * 60,
+		PublishedArrivalRateScale:   1,
+		PublishedDepartureRateScale: 1,
+		InboundFlowRates:            map[string]map[string]float32{"TEST": {"KMSP": 0}},
+		InboundFlowEnabled:          map[string]map[string]bool{"TEST": {"KMSP": true}},
+		DepartureEnabled: map[string]map[av.RunwayID]map[string]bool{
+			"KMSP": {"12L": {"": true}, "30R": {"": true}},
+		},
+	}
+	s.State.Airports = map[string]*av.Airport{
+		"KMSP": {
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"12L": {"DEPSE": {{}}},
+				"30R": {"DEPSW": {{}}},
+			},
+		},
+	}
+	s.State.DepartureRunways = []DepartureRunway{
+		{Airport: "KMSP", Runway: "12L"},
+		{Airport: "KMSP", Runway: "30R"},
+	}
+	// Two gates, so that each of the origins above has one pointing plausibly
+	// its way.
+	s.State.InboundFlows = map[string]*av.InboundFlow{
+		"TEST": {
+			Arrivals: []av.Arrival{
+				{
+					Airports:  []string{"KMSP"},
+					Waypoints: av.WaypointArray{{Fix: "GATSE", Location: math.Point2LL{-92.5, 44.0}}},
 				},
-			},
-			Airports: map[string]*av.Airport{
-				"KMSP": {
-					DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
-						"12L": {"DEPSE": {{}}},
-						"30R": {"DEPSW": {{}}},
-					},
-				},
-			},
-			DepartureRunways: []DepartureRunway{
-				{Airport: "KMSP", Runway: "12L"},
-				{Airport: "KMSP", Runway: "30R"},
-			},
-			InboundFlows: map[string]*av.InboundFlow{
-				// Two gates, so that each of the origins above has one
-				// pointing plausibly its way.
-				"TEST": {
-					Arrivals: []av.Arrival{
-						{
-							Airports:  []string{"KMSP"},
-							Waypoints: av.WaypointArray{{Fix: "GATSE", Location: math.Point2LL{-92.5, 44.0}}},
-						},
-						{
-							Airports:  []string{"KMSP"},
-							Waypoints: av.WaypointArray{{Fix: "GATWE", Location: math.Point2LL{-95.5, 44.7}}},
-						},
-					},
+				{
+					Airports:  []string{"KMSP"},
+					Waypoints: av.WaypointArray{{Fix: "GATWE", Location: math.Point2LL{-95.5, 44.7}}},
 				},
 			},
 		},
 	}
+	return s
 }
 
 // testFlight is one published flight on a fixed day, named the way the flight

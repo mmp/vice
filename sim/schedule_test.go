@@ -5,16 +5,12 @@ package sim
 
 import (
 	"encoding/json"
-	"io"
-	"log/slog"
 	"reflect"
 	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/rand"
 )
 
 // scenarioScheduleTestSim builds the minimal Sim scenario schedule generation
@@ -22,59 +18,52 @@ import (
 // and rates for each. It uses the real aviation database (loaded in TestMain)
 // so that airline and callsign sampling work.
 func scenarioScheduleTestSim(start Time) *Sim {
-	return &Sim{
-		StartTime:     start,
-		Rand:          rand.Make(),
-		lg:            &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))},
-		Aircraft:      make(map[av.ADSBCallsign]*Aircraft),
-		STARSComputer: &STARSComputer{},
-		State: &CommonState{
-			DynamicState: DynamicState{
-				SimTime: NewSimTime(start.Time().Add(-PrespawnDuration)),
-				LaunchConfig: LaunchConfig{
-					TrafficSource:        TrafficSourceScenario,
-					DepartureRateScale:   1,
-					InboundFlowRateScale: 1,
-					DepartureRates: map[string]map[av.RunwayID]map[string]float32{
-						"KMSP": {"12L": {"": 30}},
-					},
-					InboundFlowRates: map[string]map[string]float32{
-						"TEST": {"KMSP": 20, "overflights": 10},
-					},
-				},
-			},
-			Airports: map[string]*av.Airport{
-				"KMSP": {
-					Departures: []av.Departure{{
-						Exit:        "DEPSE",
-						Destination: "KATL",
-						Airlines:    []av.DepartureAirline{{AirlineSpecifier: av.AirlineSpecifier{ICAO: "AAL"}}},
-					}},
-					DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
-						"12L": {"DEPSE": {{}}},
-					},
-				},
-			},
-			DepartureRunways: []DepartureRunway{{Airport: "KMSP", Runway: "12L"}},
-			InboundFlows: map[string]*av.InboundFlow{
-				"TEST": {
-					Arrivals: []av.Arrival{{
-						Airports: []string{"KMSP"},
-						Airlines: map[string][]av.ArrivalAirline{
-							"KMSP": {{AirlineSpecifier: av.AirlineSpecifier{ICAO: "AAL"}, Airport: "KATL"}},
-						},
-					}},
-					Overflights: []av.Overflight{{
-						Airlines: []av.OverflightAirline{{
-							AirlineSpecifier: av.AirlineSpecifier{ICAO: "AAL"},
-							DepartureAirport: "KATL",
-							ArrivalAirport:   "KORD",
-						}},
-					}},
-				},
+	s := NewTestSim(testLogger())
+	s.StartTime = start
+	s.STARSComputer = &STARSComputer{}
+	s.State.SimTime = NewSimTime(start.Time().Add(-PrespawnDuration))
+	s.State.LaunchConfig = LaunchConfig{
+		TrafficSource:        TrafficSourceScenario,
+		DepartureRateScale:   1,
+		InboundFlowRateScale: 1,
+		DepartureRates: map[string]map[av.RunwayID]map[string]float32{
+			"KMSP": {"12L": {"": 30}},
+		},
+		InboundFlowRates: map[string]map[string]float32{
+			"TEST": {"KMSP": 20, "overflights": 10},
+		},
+	}
+	s.State.Airports = map[string]*av.Airport{
+		"KMSP": {
+			Departures: []av.Departure{{
+				Exit:        "DEPSE",
+				Destination: "KATL",
+				Airlines:    []av.DepartureAirline{{AirlineSpecifier: av.AirlineSpecifier{ICAO: "AAL"}}},
+			}},
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"12L": {"DEPSE": {{}}},
 			},
 		},
 	}
+	s.State.DepartureRunways = []DepartureRunway{{Airport: "KMSP", Runway: "12L"}}
+	s.State.InboundFlows = map[string]*av.InboundFlow{
+		"TEST": {
+			Arrivals: []av.Arrival{{
+				Airports: []string{"KMSP"},
+				Airlines: map[string][]av.ArrivalAirline{
+					"KMSP": {{AirlineSpecifier: av.AirlineSpecifier{ICAO: "AAL"}, Airport: "KATL"}},
+				},
+			}},
+			Overflights: []av.Overflight{{
+				Airlines: []av.OverflightAirline{{
+					AirlineSpecifier: av.AirlineSpecifier{ICAO: "AAL"},
+					DepartureAirport: "KATL",
+					ArrivalAirport:   "KORD",
+				}},
+			}},
+		},
+	}
+	return s
 }
 
 func checkSortedSchedule(t *testing.T, fs *FlightSchedule) {
@@ -453,30 +442,25 @@ func TestScheduledDeparturesPreferTheRunwayThatFliesTheirRoute(t *testing.T) {
 	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{{Route: "KORG EAST J1 KTGT", Type: "H"}})
 	seedTestRoutes(t, "KEAS", []av.AirportPairRoute{{Route: "KORG EASTN J2 KEAS", Type: "H"}})
 
-	s := &Sim{State: &CommonState{
-		NmPerLongitude: testNmPerLongitude,
-		DynamicState: DynamicState{
-			LaunchConfig: LaunchConfig{
-				DepartureEnabled: map[string]map[av.RunwayID]map[string]bool{
-					"KORG": {"12L": {"jet": true}, "30R": {"jet": true}},
-				},
+	s := NewTestSim(testLogger())
+	s.State.NmPerLongitude = testNmPerLongitude
+	s.State.LaunchConfig.DepartureEnabled = map[string]map[av.RunwayID]map[string]bool{
+		"KORG": {"12L": {"jet": true}, "30R": {"jet": true}},
+	}
+	s.State.Airports = map[string]*av.Airport{
+		"KORG": {
+			ExitCategories: map[av.ExitID]string{"EASTN": "jet", "EAST": "jet"},
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				// 12L sorts first but only reaches KTGT by way of KEAS.
+				"12L": {"EASTN": {{}}},
+				"30R": {"EAST": {{}}},
 			},
 		},
-		Airports: map[string]*av.Airport{
-			"KORG": {
-				ExitCategories: map[av.ExitID]string{"EASTN": "jet", "EAST": "jet"},
-				DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
-					// 12L sorts first but only reaches KTGT by way of KEAS.
-					"12L": {"EASTN": {{}}},
-					"30R": {"EAST": {{}}},
-				},
-			},
-		},
-		DepartureRunways: []DepartureRunway{
-			{Airport: "KORG", Runway: "12L", Category: "jet"},
-			{Airport: "KORG", Runway: "30R", Category: "jet"},
-		},
-	}}
+	}
+	s.State.DepartureRunways = []DepartureRunway{
+		{Airport: "KORG", Runway: "12L", Category: "jet"},
+		{Airport: "KORG", Runway: "30R", Category: "jet"},
+	}
 
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
 	e := testScheduledDeparture("DAL1", "KORG", "KTGT", start)

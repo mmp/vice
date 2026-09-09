@@ -6,26 +6,19 @@ package sim
 import (
 	"encoding/json"
 	"errors"
-	"io"
-	"log/slog"
 	"reflect"
 	"slices"
 	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
 )
 
 // launchTestSim is the bare Sim the launch and recycle bookkeeping needs; no
 // aircraft are ever created in these tests.
 func launchTestSim() *Sim {
-	return &Sim{
-		lg:       &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))},
-		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
-		State:    &CommonState{},
-	}
+	return NewTestSim(testLogger())
 }
 
 func testScheduledArrival(callsign, group, airport string, spawn Time) ScheduledArrival {
