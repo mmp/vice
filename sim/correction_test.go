@@ -207,3 +207,30 @@ func TestCorrectionConcurrentTCWs(t *testing.T) {
 		assertHeading(t, s, cs, 20)
 	}
 }
+
+// A panic while running control commands must surface as a panic rather than deadlocking
+// on s.mu, and must not leave the mutex held. Nilling the correction history reproduces
+// the nil-map write that originally hung the sim instead of reporting a crash.
+func TestControlCommandPanicSurfaces(t *testing.T) {
+	s := makeCorrectionSim()
+	s.lastSTTCommands = nil
+
+	panicked := make(chan any, 1)
+	go func() {
+		defer func() { panicked <- recover() }()
+		s.RunAircraftControlCommands(E2ETCW(), "UAL123", "H010", 0)
+	}()
+
+	select {
+	case r := <-panicked:
+		if r == nil {
+			t.Fatal("expected a panic from the nil correction history map")
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("RunAircraftControlCommands deadlocked instead of panicking")
+	}
+
+	if !s.mu.TryLock() {
+		t.Error("s.mu still held after the panic unwound")
+	}
+}

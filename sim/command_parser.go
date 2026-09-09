@@ -32,30 +32,28 @@ type ControlCommandsResult struct {
 // "correction" revise or undo the transmission.
 // Returns the remaining unparsed input and any error that occurred.
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string, audioDuration time.Duration) ControlCommandsResult {
-	return s.runControlCommands(tcw, callsign, commandStr, audioDuration, true)
+	res := s.RunControlCommands(tcw, callsign, commandStr, audioDuration, true)
+	s.Publish()
+	return res
 }
 
-// runScriptedControlCommands executes scenario-scripted commands. They are not controller
+// RunScriptedControlCommands executes scenario-scripted commands. They are not controller
 // transmissions, so they leave the correction history of whoever is at tcw alone.
-func (s *Sim) runScriptedControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
-	return s.runControlCommands(tcw, callsign, commandStr, 0, false)
+func (s *Sim) RunScriptedControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
+	res := s.RunControlCommands(tcw, callsign, commandStr, 0, false)
+	s.Publish()
+	return res
 }
 
-// This is the core command execution logic shared by the dispatcher and automated test code.
-// All intents from commands are collected and rendered together as a single transmission.
-// audioDuration is the length of the voice transmission (zero for typed or non-voice commands);
-// the pilot-reaction delay applied by deferred-action Nav commands is reduced by
-// (audioDuration - callsignAudioOffset), floored at zero.
-func (s *Sim) runControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string,
+// RunControlCommands is the core command execution logic shared by the dispatcher and automated
+// test code. All intents from commands are collected and rendered together as a single
+// transmission. audioDuration is the length of the voice transmission (zero for typed or
+// non-voice commands); the pilot-reaction delay applied by deferred-action Nav commands is
+// reduced by (audioDuration - callsignAudioOffset), floored at zero.
+// It takes s.mu where it needs it but does not publish; callers should generally go through
+// RunAircraftControlCommands or RunScriptedControlCommands, which do.
+func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string,
 	audioDuration time.Duration, recordHistory bool) ControlCommandsResult {
-	// This function has many early returns and runs without holding s.mu; publish unconditionally
-	// at the end so any state updates make their way out quickly.
-	defer func() {
-		s.mu.Lock(s.lg)
-		s.publish()
-		s.mu.Unlock(s.lg)
-	}()
-
 	commands := strings.Fields(commandStr)
 
 	delayReduction := max(audioDuration-callsignAudioOffset, 0)
@@ -73,22 +71,25 @@ func (s *Sim) runControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 		marker, commands = commands[0], commands[1:]
 	}
 
-	s.mu.Lock(s.lg)
-	// Update aircraft's last addressing form for readback rendering
-	if ac, ok := s.Aircraft[callsign]; ok {
-		ac.LastAddressingForm = addressingForm
-	}
-	// "Correction" retracts the previous transmission only when it re-addresses a
-	// different aircraft. Naming the same one amends what the controller said to it,
-	// leaving the instructions the pilot got right in place.
-	last := s.lastSTTCommands[tcw]
-	if marker == rollbackCommand || (marker == correctionCommand && last != nil && last.Callsign != callsign) {
-		// A failed undo must not swallow the instruction that follows it.
-		if err := s.rollbackLastCommand(tcw); err != nil {
-			s.lg.Warnf("%s: could not undo the previous transmission: %v", callsign, err)
+	func() {
+		s.mu.Lock(s.lg)
+		defer s.mu.Unlock(s.lg)
+
+		// Update aircraft's last addressing form for readback rendering
+		if ac, ok := s.Aircraft[callsign]; ok {
+			ac.LastAddressingForm = addressingForm
 		}
-	}
-	s.mu.Unlock(s.lg)
+		// "Correction" retracts the previous transmission only when it re-addresses a
+		// different aircraft. Naming the same one amends what the controller said to it,
+		// leaving the instructions the pilot got right in place.
+		last := s.lastSTTCommands[tcw]
+		if marker == rollbackCommand || (marker == correctionCommand && last != nil && last.Callsign != callsign) {
+			// A failed undo must not swallow the instruction that follows it.
+			if err := s.rollbackLastCommand(tcw); err != nil {
+				s.lg.Warnf("%s: could not undo the previous transmission: %v", callsign, err)
+			}
+		}
+	}()
 
 	if marker != "" && len(commands) == 0 {
 		return ControlCommandsResult{}
@@ -118,43 +119,46 @@ func (s *Sim) runControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 	// Take a snapshot before executing commands, so that a following "correction"
 	// can undo them.
 	if recordHistory {
-		s.mu.Lock(s.lg)
-		if ac, ok := s.Aircraft[callsign]; ok && s.TCWCanCommandAircraft(tcw, ac) {
-			s.lastSTTCommands[tcw] = &lastSTTCommand{
-				Callsign:     callsign,
-				NavSnapshot:  ac.Nav.TakeSnapshot(),
-				ReportedATIS: ac.ReportedATIS,
+		func() {
+			s.mu.Lock(s.lg)
+			defer s.mu.Unlock(s.lg)
+
+			if ac, ok := s.Aircraft[callsign]; ok && s.TCWCanCommandAircraft(tcw, ac) {
+				s.lastSTTCommands[tcw] = &lastSTTCommand{
+					Callsign:     callsign,
+					NavSnapshot:  ac.Nav.TakeSnapshot(),
+					ReportedATIS: ac.ReportedATIS,
+				}
 			}
-		}
-		s.mu.Unlock(s.lg)
+		}()
 	}
 
 	var intents []av.CommandIntent
+	var cmdErr error
+	var remaining string
 
 	for i, command := range commands {
 		intent, err := s.runOneControlCommand(tcw, callsign, command, delayReduction)
 		if err != nil {
-			// Post any collected intents before returning error
-			s.mu.Lock(s.lg)
-			spokenText := s.renderAndPostReadback(callsign, tcw, intents)
-			s.mu.Unlock(s.lg)
-			return ControlCommandsResult{
-				RemainingInput:     strings.Join(commands[i:], " "),
-				Error:              err,
-				ReadbackSpokenText: spokenText,
-				ReadbackCallsign:   callsign,
-			}
+			cmdErr, remaining = err, strings.Join(commands[i:], " ")
+			break
 		}
 		if intent != nil {
 			intents = append(intents, intent)
 		}
 	}
 
-	// Render all intents together as a single transmission
-	s.mu.Lock(s.lg)
-	spokenText := s.renderAndPostReadback(callsign, tcw, intents)
-	s.mu.Unlock(s.lg)
+	// Render all intents together as a single transmission, including the ones collected
+	// before a command failed.
+	spokenText := func() string {
+		s.mu.Lock(s.lg)
+		defer s.mu.Unlock(s.lg)
+		return s.renderAndPostReadback(callsign, tcw, intents)
+	}()
+
 	return ControlCommandsResult{
+		RemainingInput:     remaining,
+		Error:              cmdErr,
 		ReadbackSpokenText: spokenText,
 		ReadbackCallsign:   callsign,
 	}
@@ -521,7 +525,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		} else if command == "APPROVED" {
 			return s.ApproveVisualSeparation(tcw, callsign)
 		} else if command == "AGAIN" {
-			// AGAIN is handled specially in RunAircraftControlCommands for TTS synthesis
+			// AGAIN is handled specially in RunControlCommands for TTS synthesis
 			return nil, nil
 		} else if command == "AP" {
 			return s.AirportInSightInquiry(tcw, callsign)

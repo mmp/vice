@@ -545,6 +545,14 @@ func (s *Sim) Destroy() {
 	}
 }
 
+// Publish makes the caller's state updates available to clients.
+func (s *Sim) Publish() {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	s.publish()
+}
+
 // publish bumps the publication generation and wakes any parked
 // GetStateUpdate waiters. Caller must hold s.mu.
 func (s *Sim) publish() {
@@ -1281,30 +1289,32 @@ func (s *Sim) updateState() {
 			if passedWaypoint != nil {
 				for tcp, wpCommands := range s.waypointCommands {
 					if cmds, ok := wpCommands[passedWaypoint.Fix]; ok {
-						// Moderately hacky: the mutex is held when we get here, but then runScriptedControlCommands
-						// will end up calling methods like Sim AssignAltitude that in turn need to acquire the mutex.
-						// So... we'll just unlock it for now and grab the lock again before we continue.
-						s.mu.Unlock(s.lg)
+						func() {
+							// The mutex is held when we get here, but RunScriptedControlCommands and the
+							// command methods it dispatches to acquire it themselves. Release it for the
+							// duration and take it back afterward, including if they panic; otherwise the
+							// deferred unlock in Update would release a mutex it no longer holds.
+							s.mu.Unlock(s.lg)
+							defer s.mu.Lock(s.lg)
 
-						// Execute waypoint commands using the waypoint commands controller (typically an instructor)
-						nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
-						s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
-						result := s.runScriptedControlCommands(TCW(tcp), callsign, cmds)
-						if result.Error != nil {
-							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
-								result.RemainingInput)
-							s.lg.Errorf("Waypoint command execution failed: %v (remaining: %s)", result.Error, result.RemainingInput)
-						} else {
-							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s success", callsign)
-						}
+							// Execute waypoint commands using the waypoint commands controller (typically an instructor)
+							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
+							s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
+							result := s.RunScriptedControlCommands(TCW(tcp), callsign, cmds)
+							if result.Error != nil {
+								nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
+									result.RemainingInput)
+								s.lg.Errorf("Waypoint command execution failed: %v (remaining: %s)", result.Error, result.RemainingInput)
+							} else {
+								nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s success", callsign)
+							}
 
-						// Log updated route and waypoint state after commands
-						nav.LogRoute(string(callsign), s.State.SimTime.NavTime(), ac.Nav.Waypoints)
-						nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand,
-							"aircraft=%s post-cmd nwaypoints=%d approach_cleared=%v approach_id=%s",
-							callsign, len(ac.Nav.Waypoints), ac.Nav.Approach.Cleared, ac.Nav.Approach.AssignedId)
-
-						s.mu.Lock(s.lg)
+							// Log updated route and waypoint state after commands
+							nav.LogRoute(string(callsign), s.State.SimTime.NavTime(), ac.Nav.Waypoints)
+							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand,
+								"aircraft=%s post-cmd nwaypoints=%d approach_cleared=%v approach_id=%s",
+								callsign, len(ac.Nav.Waypoints), ac.Nav.Approach.Cleared, ac.Nav.Approach.AssignedId)
+						}()
 					}
 				}
 
