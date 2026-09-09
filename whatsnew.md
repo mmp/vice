@@ -1,4 +1,4 @@
-- New scenarios: ILM, HSV (Jake), ZFW Decod Hi (rome, Asian Evxn)
+- New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn)
 - Scenario updates: PCT SHD (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt), CLT (Gus Agostinho)
 - Fixed bug where aircraft were not automatically cleared for the approach at a /clearapp fix
 - Added: IFIX/RADIAL: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)

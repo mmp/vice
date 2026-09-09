@@ -389,6 +389,21 @@
           "SEEVR4-FEWWW": "42",
           "FZT-TUL": "42"
         }
+      },
+      "C50": {
+        "default_consolidation": {
+          "50": []
+        },
+        "inbound_assignments": {
+          "RIFFL3-DWINE": "50",
+          "TIKYS-SGF": "50",
+          "BYP-BUM": "50",
+          "LIT-CRUSR": "50",
+          "COODY-FUZ": "50",
+          "BVO-FUZ": "50",
+          "LIT-WADAT": "50",
+          "CRUSR-MEMFS": "50"
+        }
       }
     },
     "center": "N033.06.15.595,W097.23.57.808",
