@@ -465,7 +465,11 @@
             "cleared_altitude": 3000,
             "sid": "HYLND7"
           },
-          "LBSTA.J.4R.4/9,SSOXS.J.4R.4/9,LBSTA.J.4R.4L/9+4R,SSOXS.J.4R.4L/9+4R": {
+          "LBSTA.J.4R.4/9,LBSTA.J.4R.4L/9+4R": {
+            "cleared_altitude": 3000,
+            "sid": "LBSTA8"
+          },
+          "SSOXS.J.4R.4/9,SSOXS.J.4R.4L/9+4R": {
             "cleared_altitude": 3000,
             "sid": "SSOXS7"
           },
@@ -656,7 +660,7 @@
             "cleared_altitude": 5000,
             "sid": "SSOXS7"
           },
-          "PEASE,ENE,MANCH,CON,MHT,BOSOX,GLYDE,PVC,LFV,DUNKK": {
+          "PEASE,MANCH,CON,MHT,BOSOX,GLYDE,PVC,LFV,DUNKK": {
             "cleared_altitude": 2000,
             "sid": "LOGAN4",
             "waypoints": "KBOS-4L/h250"
@@ -34009,7 +34013,6 @@
         "DUNKK.HYA.P.33L.27+32/33": "ALL",
         "DUNKK.MVY.P.22R.27/22": "ALL",
         "DUNKK.MVY.P.33L.27+32/33": "ALL",
-        "ENE": "ALL",
         "GLYDE": "ALL",
         "GLYDE.P.22R.27/22": "ALL",
         "HYLND": "ALL",
