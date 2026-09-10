@@ -253,6 +253,28 @@ func (c *CompressedConn) Close() error {
 	return c.Conn.Close()
 }
 
+// IdleTimeoutConn drops a connection whose peer has stopped sending. Every
+// read arms a fresh deadline, so the connection fails only after the timeout
+// elapses with no bytes arriving. It reclaims RPC connections that were
+// abandoned without being closed -- a client that dropped off the network, or
+// one that discarded its client without calling Close and left the socket open
+// -- which net/rpc's ServeCodec would otherwise wait on forever.
+type IdleTimeoutConn struct {
+	net.Conn
+	timeout time.Duration
+}
+
+func MakeIdleTimeoutConn(c net.Conn, timeout time.Duration) *IdleTimeoutConn {
+	return &IdleTimeoutConn{Conn: c, timeout: timeout}
+}
+
+func (c *IdleTimeoutConn) Read(b []byte) (int, error) {
+	if err := c.Conn.SetReadDeadline(time.Now().Add(c.timeout)); err != nil {
+		return 0, err
+	}
+	return c.Conn.Read(b)
+}
+
 var RXTotal, TXTotal int64
 
 type LoggingConn struct {

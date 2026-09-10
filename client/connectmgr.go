@@ -83,6 +83,17 @@ func MakeServerManager(serverAddress string, overrides server.OverrideFiles, dis
 	return cm, errorLogger, overrideErrors
 }
 
+// dropRemoteServer closes the remote server connection and forgets it, so the
+// main loop reconnects. Closing matters: without it the abandoned client keeps
+// its socket open, and the server holds the connection until an EOF that never
+// arrives.
+func (cm *ConnectionManager) dropRemoteServer() {
+	if cm.RemoteServer != nil {
+		cm.RemoteServer.Close()
+		cm.RemoteServer = nil
+	}
+}
+
 func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.Logger) (*ControlClient, error) {
 	if cm.LocalServer == nil {
 		cm.LocalServer = <-cm.localServerChan
@@ -114,7 +125,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials 
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
 			// loop try to reconnect.
-			cm.RemoteServer = nil
+			cm.dropRemoteServer()
 		}
 		return err
 	} else {
@@ -193,10 +204,10 @@ func (cm *ConnectionManager) UpdateRunningSims() error {
 				} else {
 					cm.updateRunningSimsError = err
 
-					// nil out the server if we've lost the connection; the
+					// Drop the server if we've lost the connection; the
 					// main loop will attempt to reconnect.
 					if util.IsRPCServerError(err) {
-						cm.RemoteServer = nil
+						cm.dropRemoteServer()
 					}
 				}
 			})
@@ -211,7 +222,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
 			// loop try to reconnect.
-			cm.RemoteServer = nil
+			cm.dropRemoteServer()
 		}
 		return err
 	} else {
@@ -264,11 +275,14 @@ func (cm *ConnectionManager) Update(p platform.Platform, lg *log.Logger) {
 					WrittenText: "Error getting update from server: " + err.Error(),
 				})
 				if err == server.ErrRPCTimeout || util.IsRPCServerError(err) {
-					cm.RemoteServer = nil
+					// Disconnect (and its sign-off attempt) first: for a
+					// multi-controller sim cm.client shares this connection with
+					// the remote server, which dropRemoteServer then closes.
 					if cm.client != nil {
 						cm.client.Disconnect()
 						cm.client = nil
 					}
+					cm.dropRemoteServer()
 					if cm.onNewClient != nil {
 						cm.onNewClient(nil)
 					}

@@ -8,9 +8,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/rpc"
 	"os"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -352,17 +354,32 @@ const GetAtmosGridRPC = "SimManager.GetAtmosGrid"
 // scenarios, which in turn is calling out to the public server--so "server" is somewhat
 // overloaded.
 type rpcBackend struct {
+	serverAddress string
+	lg            *log.Logger
+
+	mu     sync.Mutex
 	client *rpc.Client
 }
 
 func makeRPCBackend(serverAddress string, lg *log.Logger) (*rpcBackend, error) {
+	r := &rpcBackend{serverAddress: serverAddress, lg: lg}
+	if _, err := r.dial(); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+// dial opens a fresh connection to the WX server and installs it as the
+// current client, closing any previous one. The public server drops idle
+// connections, so this long-lived backend has to be able to reconnect.
+func (r *rpcBackend) dial() (*rpc.Client, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
 	var d net.Dialer
-	conn, err := d.DialContext(ctx, "tcp", serverAddress)
+	conn, err := d.DialContext(ctx, "tcp", r.serverAddress)
 	if err != nil {
-		return nil, fmt.Errorf("unable to connect to WX server %s: %w", serverAddress, err)
+		return nil, fmt.Errorf("unable to connect to WX server %s: %w", r.serverAddress, err)
 	}
 
 	cc, err := util.MakeCompressedConn(conn)
@@ -372,13 +389,40 @@ func makeRPCBackend(serverAddress string, lg *log.Logger) (*rpcBackend, error) {
 	}
 
 	codec := util.MakeMessagepackClientCodec(cc)
-	codec = util.MakeLoggingClientCodec(serverAddress, codec, lg)
+	codec = util.MakeLoggingClientCodec(r.serverAddress, codec, r.lg)
+	client := rpc.NewClientWithCodec(codec)
 
-	return &rpcBackend{client: rpc.NewClientWithCodec(codec)}, nil
+	r.mu.Lock()
+	old := r.client
+	r.client = client
+	r.mu.Unlock()
+
+	if old != nil {
+		old.Close()
+	}
+	return client, nil
 }
 
 func (r *rpcBackend) call(serviceMethod string, args any, reply any) error {
-	call := r.client.Go(serviceMethod, args, reply, nil)
+	r.mu.Lock()
+	client := r.client
+	r.mu.Unlock()
+
+	err := callWithTimeout(client, serviceMethod, args, reply)
+	if err == nil || !isConnDown(err) {
+		return err
+	}
+
+	// The server closed the connection (e.g. it reaped an idle one).
+	// Reconnect and retry once so weather keeps flowing without a restart.
+	if client, err = r.dial(); err != nil {
+		return err
+	}
+	return callWithTimeout(client, serviceMethod, args, reply)
+}
+
+func callWithTimeout(client *rpc.Client, serviceMethod string, args any, reply any) error {
+	call := client.Go(serviceMethod, args, reply, nil)
 	for {
 		select {
 		case <-call.Done:
@@ -389,6 +433,16 @@ func (r *rpcBackend) call(serviceMethod string, args any, reply any) error {
 			}
 		}
 	}
+}
+
+// isConnDown reports whether err means the RPC connection is gone, so the next
+// call should reconnect rather than fail. net/rpc reports the closure as
+// ErrShutdown on a fresh call and as ErrUnexpectedEOF on the one in flight.
+func isConnDown(err error) bool {
+	return errors.Is(err, rpc.ErrShutdown) ||
+		errors.Is(err, io.EOF) ||
+		errors.Is(err, io.ErrUnexpectedEOF) ||
+		errors.Is(err, net.ErrClosed)
 }
 
 func (r *rpcBackend) getPrecipURL(facility string, t time.Time) (string, time.Time, error) {

@@ -582,6 +582,7 @@ func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
 
 	cc, err := util.MakeCompressedConn(conn)
 	if err != nil {
+		conn.Close()
 		return nil, err
 	}
 
@@ -600,6 +601,9 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 			var cr server.ConnectResult
 			start := time.Now()
 			if err := client.CallWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
+				// Close the dialed client; otherwise its socket stays open and
+				// the server holds the connection until an EOF that never comes.
+				client.Close()
 				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))

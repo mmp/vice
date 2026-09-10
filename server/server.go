@@ -9,6 +9,7 @@ import (
 	"net/rpc"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/util"
@@ -101,6 +102,11 @@ const ViceServerPort = 8000 - 50 + ViceRPCVersion
 const ViceRPCVersion = ViceSerializeVersion
 const ViceHTTPServerPort = 6502
 
+// rpcConnIdleTimeout bounds how long the public server waits for the next
+// request on an accepted connection before dropping it. Clients poll for
+// updates continuously, so a connection quiet this long has been abandoned.
+const rpcConnIdleTimeout = 10 * time.Minute
+
 type ServerLaunchConfig struct {
 	Port          int // if 0, finds an open one
 	Overrides     OverrideFiles
@@ -176,10 +182,24 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 
 		for {
 			conn, err := listener.Accept()
-			lg.Infof("%s: new connection", conn.RemoteAddr())
 			if err != nil {
 				lg.Errorf("Accept error: %v", err)
-			} else if cc, err := util.MakeCompressedConn(util.MakeLoggingConn(conn, lg)); err != nil {
+				continue
+			}
+			lg.Infof("%s: new connection", conn.RemoteAddr())
+
+			// The public server drops connections that go idle: a client
+			// that crashed or dropped off the network leaves its socket open,
+			// and ServeCodec would otherwise hold the connection (and its
+			// decompression buffers) until an EOF that never comes. Local
+			// servers accept only their own client, which may sit idle on the
+			// scenario-selection screen, so they are left untimed.
+			c := net.Conn(conn)
+			if !config.IsLocal {
+				c = util.MakeIdleTimeoutConn(conn, rpcConnIdleTimeout)
+			}
+
+			if cc, err := util.MakeCompressedConn(util.MakeLoggingConn(c, lg)); err != nil {
 				lg.Errorf("MakeCompressedConn: %v", err)
 			} else {
 				codec := util.MakeMessagepackServerCodec(cc, lg)
