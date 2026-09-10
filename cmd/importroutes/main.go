@@ -81,7 +81,7 @@ func main() {
 	}
 
 	airportLocation := func(icao string) (math.Point2LL, bool) {
-		ap, ok := av.DB.Airports[icao]
+		ap, ok := av.DB.Airports[av.ICAOAirportCode(icao)]
 		return ap.Location, ok
 	}
 	routes = append(routes, cullCDRs(cdrs, airportLocation, av.DB.LookupWaypoint)...)
@@ -106,8 +106,17 @@ func main() {
 }
 
 // route is one row of the output database.
+// lookupRouteAirport resolves an airport id from the FAA route data, which
+// writes some airports by their ICAO id and others by their FAA one.
+func lookupRouteAirport(id string) (av.FAAAirport, bool) {
+	if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(id)); ok {
+		return ap, true
+	}
+	return av.DB.LookupFAAAirport(av.FAAAirportCode(id))
+}
+
 type route struct {
-	orig, dest string // ICAO
+	orig, dest av.ICAOAirportCode
 	typ        string // TEC, H, L, NAR, SHD, HSD, SLD, or CDR
 	depFix     string
 	aircraft   string // "jet", "prop", or "" for no restriction
@@ -178,8 +187,8 @@ func parsePrefroutes(b []byte) ([]route, error) {
 	err := parseCSV(b, []string{"Orig", "Route String", "Dest", "Type", "Aircraft", "Seq"},
 		func(s []string) {
 			read++
-			orig, origOK := av.DB.LookupAirport(strings.TrimSpace(s[0]))
-			dest, destOK := av.DB.LookupAirport(strings.TrimSpace(s[2]))
+			orig, origOK := lookupRouteAirport(strings.TrimSpace(s[0]))
+			dest, destOK := lookupRouteAirport(strings.TrimSpace(s[2]))
 			if !origOK || !destOK || orig.Id == dest.Id {
 				unknownAirport++
 				return
@@ -219,8 +228,8 @@ func parseCDRs(b []byte) ([]route, error) {
 				coordinationRequired++
 				return
 			}
-			orig, origOK := av.DB.LookupAirport(strings.TrimSpace(s[0]))
-			dest, destOK := av.DB.LookupAirport(strings.TrimSpace(s[1]))
+			orig, origOK := lookupRouteAirport(strings.TrimSpace(s[0]))
+			dest, destOK := lookupRouteAirport(strings.TrimSpace(s[1]))
 			if !origOK || !destOK || orig.Id == dest.Id {
 				unknownAirport++
 				return
@@ -274,8 +283,8 @@ func cullCDRs(cdrs []route, airportLocation, fixLocation func(string) (math.Poin
 	conventionalRatios := make(map[av.AirportPair]float32)
 
 	for _, r := range cdrs {
-		orig, origOK := airportLocation(r.orig)
-		dest, destOK := airportLocation(r.dest)
+		orig, origOK := airportLocation(string(r.orig))
+		dest, destOK := airportLocation(string(r.dest))
 		if !origOK || !destOK {
 			continue
 		}
@@ -338,7 +347,7 @@ func dedupe(routes []route) []route {
 	seen := make(map[string]bool)
 	var kept []route
 	for _, r := range routes {
-		key := r.orig + " " + r.dest + " " + r.route
+		key := string(r.orig) + " " + string(r.dest) + " " + r.route
 		if !seen[key] {
 			seen[key] = true
 			kept = append(kept, r)
@@ -350,10 +359,10 @@ func dedupe(routes []route) []route {
 // compareRoutes orders the output: by city pair, preferred routes before
 // CDRs, then by type and the FAA's preference order.
 func compareRoutes(a, b route) int {
-	if c := strings.Compare(a.orig, b.orig); c != 0 {
+	if c := strings.Compare(string(a.orig), string(b.orig)); c != 0 {
 		return c
 	}
-	if c := strings.Compare(a.dest, b.dest); c != 0 {
+	if c := strings.Compare(string(a.dest), string(b.dest)); c != 0 {
 		return c
 	}
 	aCDR, bCDR := a.typ == "CDR", b.typ == "CDR"
@@ -391,7 +400,7 @@ func write(routes []route, path string) error {
 		if r.rnav {
 			rnav = "Y"
 		}
-		if err := cw.Write([]string{r.orig, r.dest, r.typ, r.depFix, r.aircraft, rnav, r.route}); err != nil {
+		if err := cw.Write([]string{string(r.orig), string(r.dest), r.typ, r.depFix, r.aircraft, rnav, r.route}); err != nil {
 			return err
 		}
 	}

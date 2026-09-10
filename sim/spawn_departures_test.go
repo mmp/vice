@@ -159,7 +159,7 @@ func TestCanLaunchIntersectingRunways(t *testing.T) {
 
 	s := NewTestSim(log.New(true, "error", t.TempDir()))
 	s.Aircraft = map[av.ADSBCallsign]*Aircraft{"PRV1": prevAc, "DEP1": depAc}
-	s.DepartureState = map[string]map[av.RunwayID]*RunwayLaunchState{
+	s.DepartureState = map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState{
 		"XTST": {"9": rwy9, "36": rwy36, "8": rwy8},
 	}
 	s.State.NmPerLongitude = testNmPerLongitude
@@ -237,7 +237,7 @@ func TestHoldForCrossingDeparture(t *testing.T) {
 
 	s := NewTestSim(log.New(true, "error", t.TempDir()))
 	s.Aircraft = map[av.ADSBCallsign]*Aircraft{"PRV1": prevAc, "DEP1": depAc}
-	s.DepartureState = map[string]map[av.RunwayID]*RunwayLaunchState{
+	s.DepartureState = map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState{
 		"XTST": {"8": rwy8, "9": rwy9},
 	}
 	s.State.NmPerLongitude = testNmPerLongitude
@@ -308,8 +308,8 @@ func TestSamePavementRunways(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 
 	s := NewTestSim(testLogger())
-	s.State.Airports = map[string]*av.Airport{"XTST": {}}
-	s.DepartureState = map[string]map[av.RunwayID]*RunwayLaunchState{
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"XTST": {}}
+	s.DepartureState = map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState{
 		"XTST": {
 			"9":       &RunwayLaunchState{},
 			"9.North": &RunwayLaunchState{},
@@ -339,7 +339,7 @@ func TestSamePavementRunways(t *testing.T) {
 func publishedDepartureSim() *Sim {
 	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = testNmPerLongitude
-	s.State.Airports = map[string]*av.Airport{
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{
 		"KORG": {
 			ExitCategories: map[av.ExitID]string{"NORTH": "jet", "EAST": "jet"},
 			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
@@ -357,8 +357,8 @@ func publishedDepartureSim() *Sim {
 // origin at the origin, KTGT due east, KEAS nearly so, KFAR due east but far
 // past KTGT, KNOR due north, KSOU due south, and KSOS a near neighbor of KSOU.
 func seedTestAirports(t *testing.T) {
-	codes := []string{"KORG", "KTGT", "KEAS", "KFAR", "KNOR", "KSOU", "KSOS"}
-	original := make(map[string]av.FAAAirport)
+	codes := []av.ICAOAirportCode{"KORG", "KTGT", "KEAS", "KFAR", "KNOR", "KSOU", "KSOS"}
+	original := make(map[av.ICAOAirportCode]av.FAAAirport)
 	for _, code := range codes {
 		if airport, ok := av.DB.Airports[code]; ok {
 			original[code] = airport
@@ -388,7 +388,7 @@ func seedTestAirports(t *testing.T) {
 
 // seedTestRoutes replaces the route database entries from KORG to the given
 // airport for the duration of the test.
-func seedTestRoutes(t *testing.T, to string, routes []av.AirportPairRoute) {
+func seedTestRoutes(t *testing.T, to av.ICAOAirportCode, routes []av.AirportPairRoute) {
 	pair := av.AirportPair{From: "KORG", To: to}
 	original, hadOriginal := av.DB.AirportPairRoutes[pair]
 	t.Cleanup(func() {
@@ -403,7 +403,7 @@ func seedTestRoutes(t *testing.T, to string, routes []av.AirportPairRoute) {
 
 // seedTestScrapedRoutes replaces the scraped route database entries for the
 // city pair for the duration of the test.
-func seedTestScrapedRoutes(t *testing.T, from, to string, routes []av.ScrapedRoute) {
+func seedTestScrapedRoutes(t *testing.T, from, to av.ICAOAirportCode, routes []av.ScrapedRoute) {
 	pair := av.AirportPair{From: from, To: to}
 	original, hadOriginal := av.DB.ScrapedRoutes[pair]
 	t.Cleanup(func() {
@@ -423,7 +423,7 @@ func TestResolvePublishedDepartureScenarioRoute(t *testing.T) {
 	seedTestExits(t)
 	s := publishedDepartureSim()
 	s.State.Airports["KORG"].TrafficRoutes = av.TrafficRoutes{
-		Departures: map[string]av.TrafficRouteSet{
+		Departures: map[av.ICAOAirportCode]av.TrafficRouteSet{
 			// Direction alone would pick EAST; the scenario says NORTH.
 			"KTGT": {av.TrafficRoute{Route: "NORTH J111 KTGT"}},
 		},
@@ -545,7 +545,7 @@ func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
 
 	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = testNmPerLongitude
-	s.State.Airports = map[string]*av.Airport{
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{
 		"KJFK": {
 			ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "RBV": "Southwest"},
 			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
@@ -654,7 +654,7 @@ func TestResolvePublishedDepartureByExitDirection(t *testing.T) {
 	s := publishedDepartureSim()
 
 	for _, tc := range []struct {
-		destination string
+		destination av.ICAOAirportCode
 		exit        av.ExitID
 	}{{"KTGT", "EAST"}, {"KNOR", "NORTH"}} {
 		placement, err := s.resolvePublishedDeparture("KORG", "30L",
@@ -738,7 +738,7 @@ func TestResolvePublishedDepartureSubstitutesANearbyDestination(t *testing.T) {
 
 	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = 45
-	s.State.Airports = map[string]*av.Airport{
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{
 		"KJFK": {
 			ExitCategories: map[av.ExitID]string{"WAVEY": "Water", "COATE": "North"},
 			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
@@ -826,7 +826,7 @@ func TestDepartureRoute(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
 		route     string
-		airport   string
+		airport   av.ICAOAirportCode
 		exit      av.ExitID
 		exitRoute av.ExitRoute
 		want      string

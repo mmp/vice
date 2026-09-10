@@ -470,7 +470,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 				}
 			}
 		} else if ps.Line4Type == Line4Destination {
-			dbWriteText(db.line4[:], trk.FlightPlan.ArrivalAirport, line4Color, false)
+			dbWriteText(db.line4[:], string(trk.FlightPlan.ArrivalAirport), line4Color, false)
 		} else if ps.Line4Type == Line4Type {
 			dbWriteText(db.line4[:], trk.FlightPlan.AircraftType, line4Color, false)
 		}

@@ -31,7 +31,7 @@ type VisualScenario struct {
 // given runway: a 25nm extended-final waypoint back along the runway
 // reciprocal, then the threshold. The runway must already be registered via
 // setupTestRunway.
-func testApproachWaypoints(airport, runway string, airportLoc math.Point2LL, nmPerLong float32) []av.WaypointArray {
+func testApproachWaypoints(airport av.ICAOAirportCode, runway string, airportLoc math.Point2LL, nmPerLong float32) []av.WaypointArray {
 	rwy, ok := av.LookupRunway(airport, runway)
 	if !ok {
 		return []av.WaypointArray{{{Fix: "RW" + runway, Location: airportLoc}}}
@@ -548,12 +548,12 @@ func TestVisualRequestBearingFilter(t *testing.T) {
 
 // setupTestRunway installs a minimal runway into the global aviation DB
 // for the duration of the test, then removes it on cleanup.
-func setupTestRunway(t *testing.T, icao string, rwy av.Runway) {
+func setupTestRunway(t *testing.T, icao av.ICAOAirportCode, rwy av.Runway) {
 	t.Helper()
 	setupTestRunways(t, icao, []av.Runway{rwy})
 }
 
-func setupTestRunways(t *testing.T, icao string, runways []av.Runway) {
+func setupTestRunways(t *testing.T, icao av.ICAOAirportCode, runways []av.Runway) {
 	t.Helper()
 	old, hadAirport := av.DB.Airports[icao]
 	ap := av.FAAAirport{Id: icao, Runways: runways}

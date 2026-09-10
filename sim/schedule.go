@@ -63,8 +63,8 @@ type FlightSchedule struct {
 type ScheduledFlight struct {
 	Callsign         string
 	AircraftType     string
-	DepartureAirport string
-	ArrivalAirport   string
+	DepartureAirport av.ICAOAirportCode
+	ArrivalAirport   av.ICAOAirportCode
 	Source           TrafficSource
 	SpawnTime        Time
 
@@ -102,7 +102,7 @@ type ScheduledArrival struct {
 	// FiledRoute, Substitute, Cruise, and How record how a published flight
 	// was fitted into the scenario; see placeArrival.
 	FiledRoute string
-	Substitute string
+	Substitute av.ICAOAirportCode
 	Cruise     CruiseLimits
 	How        string
 
@@ -230,7 +230,7 @@ func (s *Sim) generateScenarioDepartures(from, until Time) {
 	}
 }
 
-func (s *Sim) sampleScenarioDeparture(airport string, runway av.RunwayID, category string,
+func (s *Sim) sampleScenarioDeparture(airport av.ICAOAirportCode, runway av.RunwayID, category string,
 	t Time) (ScheduledDeparture, bool) {
 	ap, rwy, exitRoutes, err := s.departureConfiguration(airport, runway, category)
 	if err != nil {
@@ -253,7 +253,7 @@ func (s *Sim) sampleScenarioDeparture(airport string, runway av.RunwayID, catego
 
 	flight, ok := sampleScheduledAircraft(s, dep.Airlines,
 		func(al av.DepartureAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
-		func(al av.DepartureAirline) (string, string) { return airport, dep.Destination },
+		func(al av.DepartureAirline) (av.ICAOAirportCode, av.ICAOAirportCode) { return airport, dep.Destination },
 		s.scheduledClashCallsigns(t))
 	if !ok {
 		return ScheduledDeparture{}, false
@@ -302,7 +302,7 @@ func (s *Sim) generateScenarioArrivals(from, until Time) {
 		skipped := 0
 		for t := from.Add(randomInitialWait(rateSum, s.Rand)); t.Before(until); t = t.Add(randomWait(rateSum, inPush(t), s.Rand)) {
 			airport, _ := pickWeighted(rates, lc.InboundFlowRateScale, s.Rand)
-			if entry, ok := s.sampleScenarioArrival(group, airport, t); ok {
+			if entry, ok := s.sampleScenarioArrival(group, av.ICAOAirportCode(airport), t); ok {
 				s.Schedule.Arrivals = append(s.Schedule.Arrivals, entry)
 			} else {
 				skipped++
@@ -314,7 +314,7 @@ func (s *Sim) generateScenarioArrivals(from, until Time) {
 	}
 }
 
-func (s *Sim) sampleScenarioArrival(group, airport string, t Time) (ScheduledArrival, bool) {
+func (s *Sim) sampleScenarioArrival(group string, airport av.ICAOAirportCode, t Time) (ScheduledArrival, bool) {
 	flow, ok := s.State.InboundFlows[group]
 	if !ok {
 		return ScheduledArrival{}, false
@@ -333,7 +333,7 @@ func (s *Sim) sampleScenarioArrival(group, airport string, t Time) (ScheduledArr
 
 	flight, ok := sampleScheduledAircraft(s, arr.Airlines[airport],
 		func(al av.ArrivalAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
-		func(al av.ArrivalAirline) (string, string) { return al.Airport, airport },
+		func(al av.ArrivalAirline) (av.ICAOAirportCode, av.ICAOAirportCode) { return al.Airport, airport },
 		s.scheduledClashCallsigns(t))
 	if !ok {
 		return ScheduledArrival{}, false
@@ -379,7 +379,9 @@ func (s *Sim) sampleScenarioOverflight(group string, t Time) (ScheduledOverfligh
 
 	flight, ok := sampleScheduledAircraft(s, of.Airlines,
 		func(al av.OverflightAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
-		func(al av.OverflightAirline) (string, string) { return al.DepartureAirport, al.ArrivalAirport },
+		func(al av.OverflightAirline) (av.ICAOAirportCode, av.ICAOAirportCode) {
+			return al.DepartureAirport, al.ArrivalAirport
+		},
 		s.scheduledClashCallsigns(t))
 	if !ok {
 		return ScheduledOverflight{}, false
@@ -449,7 +451,7 @@ func (s *Sim) scheduledClashCallsigns(t Time) []av.ADSBCallsign {
 // schedule-generation counterpart of filterAndSampleAircraft, returning the
 // flight's identity rather than an Aircraft.
 func sampleScheduledAircraft[T any](s *Sim, airlines []T, specifier func(T) av.AirlineSpecifier,
-	airports func(T) (string, string), clash []av.ADSBCallsign) (ScheduledFlight, bool) {
+	airports func(T) (av.ICAOAirportCode, av.ICAOAirportCode), clash []av.ADSBCallsign) (ScheduledFlight, bool) {
 	available := make([]T, 0, len(airlines))
 	for _, al := range airlines {
 		spec := specifier(al)
@@ -706,7 +708,7 @@ func (s *Sim) spawnScheduledDepartures() {
 		}
 
 		if e.Source == TrafficSourceScenario {
-			key := e.DepartureAirport + "/" + string(e.Runway)
+			key := string(e.DepartureAirport) + "/" + string(e.Runway)
 			depState := s.DepartureState[e.DepartureAirport][e.Runway]
 			if depState == nil {
 				s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
@@ -746,7 +748,7 @@ func (s *Sim) spawnScheduledDepartures() {
 			s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
 			continue
 		}
-		key := e.DepartureAirport + "/" + string(runway)
+		key := string(e.DepartureAirport) + "/" + string(runway)
 		if spawned[key] {
 			i++
 			continue
@@ -789,8 +791,8 @@ func (s *Sim) spawnScheduledArrivals() {
 		}
 
 		if e.Source != TrafficSourceScenario {
-			if _, ok := lc.InboundFlowRates[e.Group][e.ArrivalAirport]; !ok ||
-				!lc.InboundFlowEnabled[e.Group][e.ArrivalAirport] {
+			if _, ok := lc.InboundFlowRates[e.Group][string(e.ArrivalAirport)]; !ok ||
+				!lc.InboundFlowEnabled[e.Group][string(e.ArrivalAirport)] {
 				// This scenario isn't landing traffic at that airport.
 				s.discardPublishedArrival(e.ArrivalAirport, e.Group)
 				s.Schedule.Arrivals = deleteScheduledEntry(s.Schedule.Arrivals, i)
@@ -908,9 +910,9 @@ func (s *Sim) noteCallsignClash(callsign string, err error) {
 // discardPublishedArrival counts an arrival dropped because the scenario
 // lands no traffic at its airport, reporting the first one so the reason is
 // visible without a line per flight.
-func (s *Sim) discardPublishedArrival(airport, group string) {
+func (s *Sim) discardPublishedArrival(airport av.ICAOAirportCode, group string) {
 	if s.discardedArrivals == nil {
-		s.discardedArrivals = make(map[string]int)
+		s.discardedArrivals = make(map[av.ICAOAirportCode]int)
 	}
 	if s.discardedArrivals[airport] == 0 {
 		s.log("Discarding published arrivals at %s: %s lands no traffic there", airport, group)

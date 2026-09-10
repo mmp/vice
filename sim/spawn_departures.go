@@ -204,7 +204,7 @@ func (s *Sim) sequenceReleasedDepartures(depState *RunwayLaunchState, now Time) 
 	}
 }
 
-func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport string, depRunway av.RunwayID, now Time) {
+func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport av.ICAOAirportCode, depRunway av.RunwayID, now Time) {
 	if len(depState.Sequenced) == 0 {
 		return
 	}
@@ -234,7 +234,7 @@ func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport stri
 // Note that the iterator will return the provided runway and may return the
 // same runway multiple times. Merely-intersecting runways are not included;
 // they are handled geometrically in canLaunch.
-func (s *Sim) samePavementRunways(airport string, depRwy av.RunwayID) iter.Seq2[av.RunwayID, *RunwayLaunchState] {
+func (s *Sim) samePavementRunways(airport av.ICAOAirportCode, depRwy av.RunwayID) iter.Seq2[av.RunwayID, *RunwayLaunchState] {
 	depRwyBase := depRwy.Base()
 	runwayState := s.DepartureState[airport]
 	return func(yield func(av.RunwayID, *RunwayLaunchState) bool) {
@@ -265,7 +265,7 @@ func (s *Sim) samePavementRunways(airport string, depRwy av.RunwayID) iter.Seq2[
 }
 
 // canLaunch checks whether we can go ahead and launch dep.
-func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, airport string, runway av.RunwayID) bool {
+func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, airport av.ICAOAirportCode, runway av.RunwayID) bool {
 	// Check if departures are held due to a go-around
 	if s.State.SimTime.Before(depState.GoAroundHoldUntil) {
 		return false
@@ -342,7 +342,7 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 // the intersection point; otherwise it's enough for the previous departure
 // to have passed it.
 func (s *Sim) holdForRunwayIntersection(prev, dep DepartureAircraft, considerExit bool, pt math.Point2LL,
-	airport string, runway, otherRwy av.RunwayID) bool {
+	airport av.ICAOAirportCode, runway, otherRwy av.RunwayID) bool {
 	if s.State.SimTime.Sub(prev.LaunchTime) >= s.launchInterval(prev, dep, considerExit) {
 		return false // full separation is satisfied regardless
 	}
@@ -376,7 +376,7 @@ func (s *Sim) holdForCrossingDeparture(prev, dep DepartureAircraft) bool {
 
 // runwayThresholdAndDirection returns the runway's threshold and its unit
 // departure direction in nm coordinates.
-func runwayThresholdAndDirection(airport string, rwy av.RunwayID, nmPerLongitude float32) ([2]float32, [2]float32, bool) {
+func runwayThresholdAndDirection(airport av.ICAOAirportCode, rwy av.RunwayID, nmPerLongitude float32) ([2]float32, [2]float32, bool) {
 	runway, ok := av.LookupRunway(airport, rwy.Base())
 	if !ok {
 		return [2]float32{}, [2]float32{}, false
@@ -392,7 +392,7 @@ func runwayThresholdAndDirection(airport string, rwy av.RunwayID, nmPerLongitude
 
 // airborneBeforeIntersection reports whether the departure lifts off at or
 // before pt, a point on its departure runway's centerline.
-func (s *Sim) airborneBeforeIntersection(dep DepartureAircraft, airport string, rwy av.RunwayID, pt math.Point2LL) bool {
+func (s *Sim) airborneBeforeIntersection(dep DepartureAircraft, airport av.ICAOAirportCode, rwy av.RunwayID, pt math.Point2LL) bool {
 	if dep.AirborneDistance < 0 {
 		// It didn't get airborne within the horizon of the takeoff-roll simulation.
 		return false
@@ -410,7 +410,7 @@ func (s *Sim) airborneBeforeIntersection(dep DepartureAircraft, airport string, 
 
 // departureHasPassedPoint reports whether the previously-launched departure
 // has progressed past pt along its departure runway's direction.
-func (s *Sim) departureHasPassedPoint(dep DepartureAircraft, airport string, rwy av.RunwayID, pt math.Point2LL) bool {
+func (s *Sim) departureHasPassedPoint(dep DepartureAircraft, airport av.ICAOAirportCode, rwy av.RunwayID, pt math.Point2LL) bool {
 	ac, ok := s.Aircraft[dep.ADSBCallsign]
 	if !ok {
 		return true // it's been deleted, so it's long gone
@@ -466,14 +466,14 @@ var errNoVFRDestination = errors.New("no VFR destination airport is accepting ar
 // destination of a random VFR departure. Airports where arrivals are
 // already backed up waiting to land are excluded so that we don't keep
 // adding to the pile.
-func (s *Sim) vfrDestinationWeight(ap string) float32 {
+func (s *Sim) vfrDestinationWeight(ap av.ICAOAirportCode) float32 {
 	if s.orbitingArrivals(ap) > 0 {
 		return 0
 	}
 	return s.State.Airports[ap].VFRRateSum()
 }
 
-func (s *Sim) makeNewVFRDeparture(depart string, runway av.RunwayID) (ac *Aircraft, err error) {
+func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID) (ac *Aircraft, err error) {
 	depState := s.DepartureState[depart][runway]
 	if len(depState.ReleasedVFR) >= 5 || len(depState.Sequenced) >= 5 {
 		// There's a backup; hold off on more.
@@ -521,7 +521,8 @@ func (s *Sim) makeNewVFRDeparture(depart string, runway av.RunwayID) (ac *Aircra
 		}
 
 		for range 5 {
-			var arrive, fleet string
+			var arrive av.ICAOAirportCode
+			var fleet string
 			var routeWps []av.Waypoint
 			if sampledRandoms != nil {
 				// Sample destination airport: may be where we started from.
@@ -605,7 +606,7 @@ func (rls *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
 	rls.cullDepartures(s)
 }
 
-func (rls RunwayLaunchState) Dump(airport string, runway av.RunwayID, now Time) {
+func (rls RunwayLaunchState) Dump(airport av.ICAOAirportCode, runway av.RunwayID, now Time) {
 	callsign := func(dep DepartureAircraft) string {
 		return string(dep.ADSBCallsign)
 	}
@@ -629,7 +630,7 @@ func (rls RunwayLaunchState) Dump(airport string, runway av.RunwayID, now Time) 
 // 2. Exit route has a virtual departure controller -> auto-release, use exit route controller
 // 3. Human controller -> set contact altitude, use human controller position
 func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
-	ap *av.Airport, exitRoute *av.ExitRoute, departureAirport, runway string) {
+	ap *av.Airport, exitRoute *av.ExitRoute, departureAirport av.ICAOAirportCode, runway string) {
 
 	// Departures that start with a virtual controller are already on its
 	// frequency, so they never check in with a departure controller; -1 keeps
@@ -756,7 +757,7 @@ func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.Runway
 		placement.cruise, placement.exitRoutes)
 }
 
-func (s *Sim) departureConfiguration(departureAirport string, runway av.RunwayID,
+func (s *Sim) departureConfiguration(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	category string) (*av.Airport, *DepartureRunway, map[av.ExitID]av.ExitRoutes, error) {
 	ap := s.State.Airports[departureAirport]
 	if ap == nil {
@@ -807,7 +808,7 @@ type candidateDeparture struct {
 // brings its own destination, and the routes say which exit it really leaves
 // through. The scenario's "departures" have no say here; they belong to its
 // own generator.
-func (s *Sim) compatibleDepartures(departureAirport string, runway av.RunwayID,
+func (s *Sim) compatibleDepartures(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, aircraftType string) []candidateDeparture {
 	var candidates []candidateDeparture
 	for _, category := range categories {
@@ -875,7 +876,7 @@ type departurePlacement struct {
 // with no route falls back to flying to its exit fix, since without that its
 // route ends with the scenario's vector off the runway and it would head
 // straight for its destination from wherever that leaves it.
-func (s *Sim) placement(choice departureChoice, departureAirport, destination string) departurePlacement {
+func (s *Sim) placement(choice departureChoice, departureAirport, destination av.ICAOAirportCode) departurePlacement {
 	c := choice.candidate
 	p := departurePlacement{ap: c.ap, rwy: c.rwy, exitRoutes: c.exitRoutes, dep: *c.dep,
 		cruise: choice.cruise, how: choice.how}
@@ -904,7 +905,7 @@ func (s *Sim) placement(choice departureChoice, departureAirport, destination st
 // it, so that "direct on course" still goes out over the gate--JFK to
 // Cleveland files "KJFK DEEZZ6 CANDR J60...", and with the DEEZZ6 exit route
 // authored as plain vectors, DEEZZ has to lead the route itself.
-func departureRoute(route, departureAirport string, exit av.ExitID, exitRoute *av.ExitRoute) string {
+func departureRoute(route string, departureAirport av.ICAOAirportCode, exit av.ExitID, exitRoute *av.ExitRoute) string {
 	fields := strings.Fields(route)
 	if len(fields) > 0 && av.TokenNamesAirport(fields[0], departureAirport) {
 		fields = fields[1:]
@@ -955,9 +956,9 @@ func (s *Sim) departureRouteWaypoints(route string) av.WaypointArray {
 
 // resolvePublishedDeparture finds the departure a published flight flies off a
 // runway, ready to be handed to the aircraft.
-func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.RunwayID,
-	categories []string, destination string, aircraftType string,
-	routedDestinations map[string][]string) (departurePlacement, error) {
+func (s *Sim) resolvePublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
+	categories []string, destination av.ICAOAirportCode, aircraftType string,
+	routedDestinations map[av.ICAOAirportCode][]av.ICAOAirportCode) (departurePlacement, error) {
 	departureAirport = normalizeAirportCode(departureAirport)
 	choice, err := s.findPublishedDeparture(departureAirport, runway, categories, destination,
 		aircraftType, routedDestinations)
@@ -978,9 +979,9 @@ func (s *Sim) resolvePublishedDeparture(departureAirport string, runway av.Runwa
 // the direction it is going. If nothing is in the right direction at all the
 // runway doesn't work this flight and errNoScenarioRoute says not to launch it
 // from here.
-func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID,
-	categories []string, destination string, aircraftType string,
-	routedDestinations map[string][]string) (departureChoice, error) {
+func (s *Sim) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
+	categories []string, destination av.ICAOAirportCode, aircraftType string,
+	routedDestinations map[av.ICAOAirportCode][]av.ICAOAirportCode) (departureChoice, error) {
 	departureAirport = normalizeAirportCode(departureAirport)
 	destination = normalizeAirportCode(destination)
 
@@ -990,7 +991,7 @@ func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID
 			runway, aircraftType)
 	}
 
-	scenarioRoutes := func(to string) []string {
+	scenarioRoutes := func(to av.ICAOAirportCode) []string {
 		if ap, ok := s.State.Airports[departureAirport]; ok {
 			return ap.TrafficRoutes.Departures[to].Routes(aircraftType)
 		}
@@ -1054,14 +1055,14 @@ func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID
 			if c, ok := departureExit(route, departureAirport, substitute, "", candidates); ok &&
 				towardDestination(c) {
 				return departureChoice{candidate: c, route: stripSubstituteTail(route, substitute),
-					fit: fitNeighborRoute, how: "nearest route, to " + substitute}, nil
+					fit: fitNeighborRoute, how: "nearest route, to " + string(substitute)}, nil
 			}
 		}
 		for _, r := range realDepartureRoutes(departureAirport, substitute, aircraftType, hour, hourKnown) {
 			if c, ok := departureExit(r.route, departureAirport, substitute, r.departureFix, candidates); ok &&
 				towardDestination(c) {
 				return departureChoice{candidate: c, route: stripSubstituteTail(r.route, substitute),
-					fit: fitNeighborRoute, how: "nearest route, to " + substitute}, nil
+					fit: fitNeighborRoute, how: "nearest route, to " + string(substitute)}, nil
 			}
 		}
 	}
@@ -1079,7 +1080,7 @@ func (s *Sim) findPublishedDeparture(departureAirport string, runway av.RunwayID
 // stripSubstituteTail removes the parts of a borrowed route that belong to its
 // own destination rather than the flight's: the trailing airport token and the
 // STAR ahead of it.
-func stripSubstituteTail(route, substitute string) string {
+func stripSubstituteTail(route string, substitute av.ICAOAirportCode) string {
 	fields := strings.Fields(route)
 	if n := len(fields); n > 0 && av.TokenNamesAirport(fields[n-1], substitute) {
 		fields = fields[:n-1]
@@ -1108,7 +1109,7 @@ type realRoute struct {
 // realDepartureRoutes returns the ways the pair is really flown: recently
 // scraped filings first, ordered for the aircraft and the hour of day,
 // followed by the FAA databases' routes.
-func realDepartureRoutes(from, to, aircraftType string, hour int, hourKnown bool) []realRoute {
+func realDepartureRoutes(from, to av.ICAOAirportCode, aircraftType string, hour int, hourKnown bool) []realRoute {
 	var routes []realRoute
 	for _, r := range orderScrapedRoutes(av.DB.ScrapedRoutesBetween(from, to),
 		aircraftType, hour, hourKnown) {
@@ -1186,7 +1187,7 @@ func eligibleAirportPairRoutes(routes []av.AirportPairRoute, engineType string) 
 // that reaches the exit--JFK to Las Vegas files "KJFK DEEZZ6 CANDR J60...",
 // where DEEZZ6 is the SID for the DEEZZ exit--and where it names neither, a
 // coded departure route's own departure fix is the last thing to go on.
-func departureExit(route, departureAirport, destination, departureFix string,
+func departureExit(route string, departureAirport, destination av.ICAOAirportCode, departureFix string,
 	candidates []candidateDeparture) (candidateDeparture, bool) {
 	fields := strings.Fields(route)
 	if len(fields) > 0 && av.TokenNamesAirport(fields[0], departureAirport) {
@@ -1247,7 +1248,7 @@ func departureExit(route, departureAirport, destination, departureFix string,
 	return sidMatches[0], true
 }
 
-func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport string,
+func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport av.ICAOAirportCode,
 	runway av.RunwayID, dep *av.Departure, cruise CruiseLimits,
 	exitRoutes map[av.ExitID]*av.ExitRoute) (*Aircraft, error) {
 	exitRoute := exitRoutes[dep.Exit]
@@ -1265,7 +1266,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	isTRACON := av.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
 	nasFp.Route = ac.FlightPlan.Route
-	nasFp.EntryFix = av.TrimICAOPrefix(ac.FlightPlan.DepartureAirport)
+	nasFp.EntryFix = av.AirportDisplayId(ac.FlightPlan.DepartureAirport)
 	// The flight plan carries the exit's 3-character fix id when one is
 	// adapted; fix-pair endpoints and adapted fix criteria match against it.
 	nasFp.ExitFix = s.State.FacilityAdaptation.FixPairFixID(shortExit)
@@ -1328,7 +1329,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 // sampleVFRDeparture samples a VFR departure from the given airport for a
 // manual launch slot. Note that it may fail without an error if it's having
 // trouble finding a route.
-func (s *Sim) sampleVFRDeparture(departureAirport string) (*Aircraft, error) {
+func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft, error) {
 	// Sample destination airport: may be where we started from.
 	arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
 		s.vfrDestinationWeight)
@@ -1336,7 +1337,7 @@ func (s *Sim) sampleVFRDeparture(departureAirport string) (*Aircraft, error) {
 		// Arrivals are backed up everywhere, but a controller asked for this
 		// aircraft, so send it somewhere anyway.
 		arrive, ok = rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
-			func(ap string) float32 { return s.State.Airports[ap].VFRRateSum() })
+			func(ap av.ICAOAirportCode) float32 { return s.State.Airports[ap].VFRRateSum() })
 		if !ok {
 			return nil, nil
 		}
@@ -1407,7 +1408,7 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, trafficS
 	return d
 }
 
-func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, routeWps []av.Waypoint, simTime Time) (*Aircraft, string, error) {
+func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, fleet string, routeWps []av.Waypoint, simTime Time) (*Aircraft, string, error) {
 	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
 	rwy, _, ok := s.currentVFRRunway(depart)
 	if !ok {

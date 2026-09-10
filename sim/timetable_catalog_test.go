@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 	"testing/fstest"
+
+	av "github.com/mmp/vice/aviation"
 )
 
 const validTimetableCSV = "callsign,origin,destination,aircraft_type,time,cargo\n" +
@@ -77,7 +79,7 @@ func TestLoadTimetableCatalogMultipleAirportsAndSorting(t *testing.T) {
 	}
 
 	want := []struct {
-		airport string
+		airport av.ICAOAirportCode
 		id      string
 		name    string
 	}{

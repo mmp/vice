@@ -26,14 +26,14 @@ func scenarioScheduleTestSim(start Time) *Sim {
 		TrafficSource:        TrafficSourceScenario,
 		DepartureRateScale:   1,
 		InboundFlowRateScale: 1,
-		DepartureRates: map[string]map[av.RunwayID]map[string]float32{
+		DepartureRates: map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{
 			"KMSP": {"12L": {"": 30}},
 		},
 		InboundFlowRates: map[string]map[string]float32{
 			"TEST": {"KMSP": 20, "overflights": 10},
 		},
 	}
-	s.State.Airports = map[string]*av.Airport{
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{
 		"KMSP": {
 			Departures: []av.Departure{{
 				Exit:        "DEPSE",
@@ -49,8 +49,8 @@ func scenarioScheduleTestSim(start Time) *Sim {
 	s.State.InboundFlows = map[string]*av.InboundFlow{
 		"TEST": {
 			Arrivals: []av.Arrival{{
-				Airports: []string{"KMSP"},
-				Airlines: map[string][]av.ArrivalAirline{
+				Airports: []av.ICAOAirportCode{"KMSP"},
+				Airlines: map[av.ICAOAirportCode][]av.ArrivalAirline{
 					"KMSP": {{AirlineSpecifier: av.AirlineSpecifier{ICAO: "AAL"}, Airport: "KATL"}},
 				},
 			}},
@@ -377,7 +377,7 @@ func TestScenarioPushWindows(t *testing.T) {
 	}
 }
 
-func testScheduledDeparture(callsign, airport, other string, spawn Time) ScheduledDeparture {
+func testScheduledDeparture(callsign string, airport, other av.ICAOAirportCode, spawn Time) ScheduledDeparture {
 	return ScheduledDeparture{
 		ScheduledFlight: ScheduledFlight{Callsign: callsign, AircraftType: "C560",
 			DepartureAirport: airport, ArrivalAirport: other,
@@ -444,10 +444,10 @@ func TestScheduledDeparturesPreferTheRunwayThatFliesTheirRoute(t *testing.T) {
 
 	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = testNmPerLongitude
-	s.State.LaunchConfig.DepartureEnabled = map[string]map[av.RunwayID]map[string]bool{
+	s.State.LaunchConfig.DepartureEnabled = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 		"KORG": {"12L": {"jet": true}, "30R": {"jet": true}},
 	}
-	s.State.Airports = map[string]*av.Airport{
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{
 		"KORG": {
 			ExitCategories: map[av.ExitID]string{"EASTN": "jet", "EAST": "jet"},
 			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{

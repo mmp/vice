@@ -31,8 +31,8 @@ type DynamicState struct {
 
 	SimTime Time // this is our fake time--accounting for pauses & simRate..
 
-	METAR      map[string]wx.METAR
-	ATISLetter map[string]string // airport ICAO -> single letter "A"-"Z"
+	METAR      map[av.ICAOAirportCode]wx.METAR
+	ATISLetter map[av.ICAOAirportCode]string // airport ICAO -> single letter "A"-"Z"
 	ATIS       [10]string
 	GIText     [10]string
 
@@ -43,8 +43,8 @@ type DynamicState struct {
 	Paused  bool
 	SimRate float32
 
-	ATPAEnabled     bool                                   // True if ATPA is enabled system-wide
-	ATPAVolumeState map[string]map[string]*ATPAVolumeState // airport -> volumeId -> state
+	ATPAEnabled     bool                                               // True if ATPA is enabled system-wide
+	ATPAVolumeState map[av.ICAOAirportCode]map[string]*ATPAVolumeState // airport -> volumeId -> state
 
 	// Automatic handoff processing (AHOP) inhibits: site-wide (STARS 8.8,
 	// p. 8-13) and per-TCP (STARS 4.3, p. 4-30). TCPs with nothing inhibited
@@ -70,12 +70,12 @@ type AutoHandoffInhibit struct {
 type CommonState struct {
 	DynamicState
 
-	Airports          map[string]*av.Airport
+	Airports          map[av.ICAOAirportCode]*av.Airport
 	Controllers       map[ControlPosition]*av.Controller
-	DepartureAirports map[string]any
-	ArrivalAirports   map[string]any
+	DepartureAirports map[av.ICAOAirportCode]any
+	ArrivalAirports   map[av.ICAOAirportCode]any
 	Fixes             map[string]math.Point2LL
-	VFRRunways        map[string]av.Runway // assume just one runway per airport
+	VFRRunways        map[av.ICAOAirportCode]av.Runway // assume just one runway per airport
 
 	ConfigurationId string // Short identifier for the configuration (from scenario's "configuration" field)
 
@@ -127,7 +127,7 @@ type DerivedState struct {
 
 type ReleaseDeparture struct {
 	ADSBCallsign        av.ADSBCallsign
-	DepartureAirport    string
+	DepartureAirport    av.ICAOAirportCode
 	DepartureController ControlPosition
 	Released            bool
 	Squawk              av.Squawk
@@ -267,7 +267,7 @@ func makeDerivedState(s *Sim) DerivedState {
 }
 
 func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.Model,
-	metar map[string][]wx.METAR, r *rand.Rand, lg *log.Logger) *CommonState {
+	metar map[av.ICAOAirportCode][]wx.METAR, r *rand.Rand, lg *log.Logger) *CommonState {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
@@ -275,8 +275,8 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		DynamicState: DynamicState{
 			CurrentConsolidation: make(map[TCW]*TCPConsolidation),
 
-			METAR:      make(map[string]wx.METAR),
-			ATISLetter: make(map[string]string),
+			METAR:      make(map[av.ICAOAirportCode]wx.METAR),
+			ATISLetter: make(map[av.ICAOAirportCode]string),
 
 			LaunchConfig: config.LaunchConfig,
 
@@ -294,7 +294,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		Airports:    config.Airports,
 		Controllers: maps.Clone(config.ControlPositions),
 		Fixes:       config.Fixes,
-		VFRRunways:  make(map[string]av.Runway),
+		VFRRunways:  make(map[av.ICAOAirportCode]av.Runway),
 
 		ConfigurationId: config.ConfigurationId,
 
@@ -381,7 +381,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		}
 	}
 
-	ss.DepartureAirports = make(map[string]any)
+	ss.DepartureAirports = make(map[av.ICAOAirportCode]any)
 	for name := range ss.LaunchConfig.DepartureRates {
 		ss.DepartureAirports[name] = nil
 	}
@@ -399,11 +399,11 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		}
 	}
 
-	ss.ArrivalAirports = make(map[string]any)
+	ss.ArrivalAirports = make(map[av.ICAOAirportCode]any)
 	for _, airportRates := range ss.LaunchConfig.InboundFlowRates {
 		for name := range airportRates {
 			if name != "overflights" {
-				ss.ArrivalAirports[name] = nil
+				ss.ArrivalAirports[av.ICAOAirportCode(name)] = nil
 			}
 		}
 	}
@@ -411,8 +411,8 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 	return ss
 }
 
-func initATPAVolumeState(airports map[string]*av.Airport) map[string]map[string]*ATPAVolumeState {
-	result := make(map[string]map[string]*ATPAVolumeState)
+func initATPAVolumeState(airports map[av.ICAOAirportCode]*av.Airport) map[av.ICAOAirportCode]map[string]*ATPAVolumeState {
+	result := make(map[av.ICAOAirportCode]map[string]*ATPAVolumeState)
 	for icao, ap := range airports {
 		if len(ap.ATPAVolumes) > 0 {
 			result[icao] = make(map[string]*ATPAVolumeState)
@@ -427,20 +427,20 @@ func initATPAVolumeState(airports map[string]*av.Airport) map[string]map[string]
 func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
-	if ap, ok := ss.Airports[s]; ok {
+	if ap, ok := ss.Airports[av.ICAOAirportCode(s)]; ok {
 		return ap.Location, true
 	} else if p, ok := ss.Fixes[s]; ok {
 		return p, true
 	} else if n, ok := av.DB.Navaids[s]; ok {
 		return n.Location, ok
-	} else if ap, ok := av.DB.Airports[s]; ok {
+	} else if ap, ok := av.DB.Airports[av.ICAOAirportCode(s)]; ok {
 		return ap.Location, ok
 	} else if f, ok := av.DB.Fixes[s]; ok {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
 	} else if ap, rwy, ok := strings.Cut(s, "/"); ok {
-		if ap, ok := av.DB.Airports[ap]; ok {
+		if ap, ok := av.DB.Airports[av.ICAOAirportCode(ap)]; ok {
 			if idx := slices.IndexFunc(ap.Runways, func(r av.Runway) bool { return r.Id == rwy }); idx != -1 {
 				return ap.Runways[idx].Threshold, true
 			}
@@ -537,7 +537,7 @@ func (ss *CommonState) PrimaryPositionForTCW(tcw TCW) ControlPosition {
 // CommonState methods for ATPA configuration
 
 // FindAirportForATPAVolume returns the airport ICAO code that contains the given volume ID
-func (ss *CommonState) FindAirportForATPAVolume(volumeId string) string {
+func (ss *CommonState) FindAirportForATPAVolume(volumeId string) av.ICAOAirportCode {
 	for icao, ap := range ss.Airports {
 		if _, ok := ap.ATPAVolumes[volumeId]; ok {
 			return icao
@@ -606,10 +606,10 @@ type Track struct {
 	ControllerFrequency ControlPosition
 
 	// Sort of hacky to carry these along here but it's convenient...
-	DepartureAirport          string
+	DepartureAirport          av.ICAOAirportCode
 	DepartureAirportElevation float32
 	DepartureAirportLocation  math.Point2LL
-	ArrivalAirport            string
+	ArrivalAirport            av.ICAOAirportCode
 	ArrivalAirportElevation   float32
 	ArrivalAirportLocation    math.Point2LL
 	FiledRoute                string

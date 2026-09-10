@@ -132,7 +132,7 @@ func TestAirportTimeZone(t *testing.T) {
 	// Airports where a guess from longitude alone, or from the state the
 	// airport is in, gets the zone wrong.
 	for _, tc := range []struct {
-		airport string
+		airport ICAOAirportCode
 		want    string
 	}{
 		{"KJFK", "America/New_York"},

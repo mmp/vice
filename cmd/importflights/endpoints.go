@@ -27,7 +27,7 @@ const groundValue = "ground"
 // seen: the airports near that point, the point itself, and how high the
 // aircraft was.
 type trackEnd struct {
-	candidates  []string
+	candidates  []av.ICAOAirportCode
 	position    math.Point2LL
 	hasPosition bool
 	height      float32 // feet MSL
@@ -39,7 +39,7 @@ type trackEnd struct {
 // whether the aircraft was there rather than merely passing over it. An empty
 // airport means there was nothing to place it with at all.
 type endpoint struct {
-	airport   string
+	airport   av.ICAOAirportCode
 	atAirport bool
 }
 
@@ -105,12 +105,12 @@ func (e trackEnd) at(ap av.FAAAirport, distance float32) bool {
 // nearest returns the candidate airport closest to the point the track was seen
 // at and how far away it was. Candidates the airport database doesn't know are
 // passed over, since there is no telling how far away they are.
-func (e trackEnd) nearest(airports map[string]av.FAAAirport) (string, av.FAAAirport, float32, bool) {
+func (e trackEnd) nearest(airports map[av.ICAOAirportCode]av.FAAAirport) (av.ICAOAirportCode, av.FAAAirport, float32, bool) {
 	if !e.hasPosition {
 		return "", av.FAAAirport{}, 0, false
 	}
 
-	var icao string
+	var icao av.ICAOAirportCode
 	var nearest av.FAAAirport
 	distance, found := math.Infinity, false
 	for _, id := range e.candidates {
@@ -142,7 +142,7 @@ func (e trackEnd) overflying(ap av.FAAAirport) bool {
 // resolveEndpoint places one end of a track from the track alone: the candidate
 // airport nearest the point the aircraft was seen at, and whether it was
 // plausibly there.
-func resolveEndpoint(e trackEnd, airports map[string]av.FAAAirport) endpoint {
+func resolveEndpoint(e trackEnd, airports map[av.ICAOAirportCode]av.FAAAirport) endpoint {
 	// A lone candidate is taken at its word about which airport it is, since
 	// the source data offers nowhere else the aircraft could have been. Whether
 	// the aircraft was there at all is still worth asking: an airport with no
@@ -165,7 +165,7 @@ func resolveEndpoint(e trackEnd, airports map[string]av.FAAAirport) endpoint {
 // routeEndpoints places whichever ends the itinerary agrees on, considering the
 // legs that fit the airports the track itself suggests. A round trip leaves the
 // end it returns to undecided while still deciding the other one.
-func routeEndpoints(route, origins, destinations []string) (from, to endpoint) {
+func routeEndpoints(route, origins, destinations []av.ICAOAirportCode) (from, to endpoint) {
 	matched := false
 	for i := 0; i+1 < len(route); i++ {
 		f, t := route[i], route[i+1]
@@ -198,8 +198,8 @@ func routeEndpoints(route, origins, destinations []string) (from, to endpoint) {
 // Each end is settled on its own, so an origin that could be any of a cluster
 // of airports no longer costs us the arrival at the destination it names
 // outright.
-func resolveEndpoints(origin, destination trackEnd, route []string,
-	airports map[string]av.FAAAirport) (from, to endpoint) {
+func resolveEndpoints(origin, destination trackEnd, route []av.ICAOAirportCode,
+	airports map[av.ICAOAirportCode]av.FAAAirport) (from, to endpoint) {
 	from, to = routeEndpoints(route, origin.candidates, destination.candidates)
 	if !from.known() {
 		from = resolveEndpoint(origin, airports)
@@ -215,13 +215,13 @@ func resolveEndpoints(origin, destination trackEnd, route []string,
 // started or ended too far from any airport has "-" instead. The source data
 // predates any airport the FAA has since re-identified, so the identifiers are
 // canonicalized here rather than at every place they are used.
-func parseAirportList(value string) []string {
-	var airports []string
+func parseAirportList(value string) []av.ICAOAirportCode {
+	var airports []av.ICAOAirportCode
 	var current strings.Builder
 
 	flush := func() {
 		if current.Len() == 4 {
-			airports = append(airports, av.CurrentAirportId(current.String()))
+			airports = append(airports, av.CurrentAirportId(av.ICAOAirportCode(current.String())))
 		}
 		current.Reset()
 	}
@@ -242,11 +242,11 @@ func parseAirportList(value string) []string {
 // callsign, e.g. "KMSP-KSTL" or the multi-leg "KMSP-KAUS-KMSP". It is "nan"
 // when the callsign wasn't found, which is most of the general aviation
 // traffic.
-func parseRoute(value string) []string {
-	var route []string
+func parseRoute(value string) []av.ICAOAirportCode {
+	var route []av.ICAOAirportCode
 	for airport := range strings.SplitSeq(value, "-") {
 		if len(airport) == 4 {
-			route = append(route, av.CurrentAirportId(airport))
+			route = append(route, av.CurrentAirportId(av.ICAOAirportCode(airport)))
 		}
 	}
 	return route

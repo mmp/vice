@@ -39,18 +39,18 @@ import (
 const maxMagneticAdjustment float32 = 4
 
 type scenarioGroup struct {
-	ARTCC              string                     `json:"artcc"`
-	Area               string                     `json:"area"`
-	TRACON             string                     `json:"tracon"`
-	Name               string                     `json:"name"`
-	Airports           map[string]*av.Airport     `json:"airports"`
-	Fixes              map[string]math.Point2LL   `json:"-"`
-	FixesStrings       util.OrderedMap            `json:"fixes"`
-	Scenarios          map[string]*scenario       `json:"scenarios"`
-	DefaultScenario    string                     `json:"default_scenario"`
-	Airspace           av.Airspace                `json:"airspace"`
-	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
-	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
+	ARTCC              string                             `json:"artcc"`
+	Area               string                             `json:"area"`
+	TRACON             string                             `json:"tracon"`
+	Name               string                             `json:"name"`
+	Airports           map[av.ICAOAirportCode]*av.Airport `json:"airports"`
+	Fixes              map[string]math.Point2LL           `json:"-"`
+	FixesStrings       util.OrderedMap                    `json:"fixes"`
+	Scenarios          map[string]*scenario               `json:"scenarios"`
+	DefaultScenario    string                             `json:"default_scenario"`
+	Airspace           av.Airspace                        `json:"airspace"`
+	InboundFlows       map[string]*av.InboundFlow         `json:"inbound_flows"`
+	VFRReportingPoints []av.VFRReportingPoint             `json:"vfr_reporting_points"`
 
 	AllowFixRedefinitions bool `json:"allow_fix_redefinitions"`
 
@@ -201,9 +201,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 			}
 			// Validate airport/runway
 			airport, runway, hasRunway := strings.Cut(spec, "/")
-			if _, ok := sg.Airports[airport]; !ok {
+			if _, ok := sg.Airports[av.ICAOAirportCode(airport)]; !ok {
 				e.ErrorString("go_around_assignments: airport %q not in scenario", airport)
-			} else if hasRunway && !av.AirportHasRunway(airport, av.RunwayID(runway)) {
+			} else if hasRunway && !av.AirportHasRunway(av.ICAOAirportCode(airport), av.RunwayID(runway)) {
 				e.ErrorString("go_around_assignments: runway %q not a valid runway at %q", runway, airport)
 			}
 		}
@@ -273,7 +273,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 	}
 
 	for _, rwy := range s.DepartureRunways {
-		e.Push("Departure runway " + rwy.Airport + " " + string(rwy.Runway))
+		e.Push("Departure runway " + string(rwy.Airport) + " " + string(rwy.Runway))
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
 			e.ErrorString(`airport not found in scenario group "airports"`)
@@ -317,7 +317,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 
 	activeAirports := make(map[*av.Airport]any) // all airports with departures or arrivals
 	for _, rwy := range s.ArrivalRunways {
-		e.Push("Arrival runway " + rwy.Airport + " " + string(rwy.Runway))
+		e.Push("Arrival runway " + string(rwy.Airport) + " " + string(rwy.Runway))
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
 			e.ErrorString(`airport not found in scenario group "airports"`)
@@ -371,9 +371,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 	}
 
 	// Figure out which airports/runways and airports/SIDs are used in the scenario.
-	activeAirportSIDs := make(map[string]map[string]any)
-	activeAirportRunways := make(map[string]map[string]any)
-	activeDepartureAirports := make(map[string]any)
+	activeAirportSIDs := make(map[av.ICAOAirportCode]map[string]any)
+	activeAirportRunways := make(map[av.ICAOAirportCode]map[string]any)
+	activeDepartureAirports := make(map[av.ICAOAirportCode]any)
 	for _, rwy := range s.DepartureRunways {
 		e.Push("departure runway " + string(rwy.Runway))
 
@@ -437,12 +437,13 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 	// Note: It is NOT an error if the configuration has excess assignments that the scenario doesn't use.
 	// Track per-airport: assigned SIDs, assigned runways, and whether there's a fallback
 	// Only track assignments that are relevant to THIS scenario's active airports/SIDs/runways
-	assignedSIDs := make(map[string]map[string]any)    // airport -> set of SIDs
-	assignedRunways := make(map[string]map[string]any) // airport -> set of runways
-	hasAirportFallback := make(map[string]bool)        // airport -> has plain airport assignment
+	assignedSIDs := make(map[av.ICAOAirportCode]map[string]any)    // airport -> set of SIDs
+	assignedRunways := make(map[av.ICAOAirportCode]map[string]any) // airport -> set of runways
+	hasAirportFallback := make(map[av.ICAOAirportCode]bool)        // airport -> has plain airport assignment
 
 	for spec := range s.ControllerConfiguration.DepartureAssignments {
-		ap, sidRunway, haveSIDRunway := strings.Cut(spec, "/")
+		apname, sidRunway, haveSIDRunway := strings.Cut(spec, "/")
+		ap := av.ICAOAirportCode(apname)
 
 		// Only process assignments for airports that are active in this scenario
 		// and need human controller assignments (i.e., are in activeAirportSIDs)
@@ -559,8 +560,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 						e.ErrorString(`Rate specified for "overflights" but no overflights specified in %q`, name)
 					}
 				} else {
-					airport := category
-					e.Push("Airport " + airport)
+					airport := av.ICAOAirportCode(category)
+					e.Push("Airport " + category)
 					if _, ok := sg.Airports[airport]; !ok {
 						e.ErrorString("unknown arrival airport")
 					} else {
@@ -613,7 +614,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 	// so only check the ones this scenario's own positions resolve to.
 	if sg.ARTCC == "" {
 		fa := &sg.FacilityConfig.FacilityAdaptation
-		reported := make(map[string]bool)
+		reported := make(map[av.ICAOAirportCode]bool)
 		for _, tcp := range humanPositions {
 			airport, what := fa.Lists.SSA.SystemAltimeter, `"system_altimeter"`
 			if ctrl, ok := sg.FacilityConfig.ControlPositions[tcp]; ok {
@@ -819,7 +820,7 @@ var (
 // airport's thresholds that the author clearly meant it.
 func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
 	if ident, rwy, found := strings.Cut(fix, "-"); found && len(ident) >= 3 {
-		if _, ok := av.LookupRunway(ident, rwy); ok {
+		if _, ok := av.LookupRunway(av.ICAOAirportCode(ident), rwy); ok {
 			return fix, true
 		}
 	}
@@ -832,7 +833,11 @@ func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
 	if len(groups) != 2 {
 		return "", false
 	}
-	ap, ok := av.DB.LookupAirport(groups[0])
+	// The airport part of the fix may be written with either of its ids.
+	ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(groups[0]))
+	if !ok {
+		ap, ok = av.DB.LookupFAAAirport(av.FAAAirportCode(groups[0]))
+	}
 	if !ok {
 		return "", false
 	}
@@ -860,11 +865,22 @@ func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
 		}
 	}
 
-	return ap.Id + "-" + best, true
+	return string(ap.Id) + "-" + best, true
+}
+
+// airportVolumeId names a default airport filter region within the
+// 7-character limit on airspace volume ids; a 4-character airport identifier
+// with a 4-character suffix runs over and is truncated.
+func airportVolumeId(airport, suffix string) string {
+	id := airport + suffix
+	if len(id) > 7 {
+		id = id[:7]
+	}
+	return id
 }
 
 func makeCircleAirportFilters(id string, description string, radius float32,
-	ceiling int, airports []string, e *util.ErrorLogger) sim.FilterRegions {
+	ceiling int, airports []av.ICAOAirportCode, e *util.ErrorLogger) sim.FilterRegions {
 	var regions sim.FilterRegions
 	for _, apname := range airports {
 		ap, ok := av.DB.Airports[apname]
@@ -872,13 +888,11 @@ func makeCircleAirportFilters(id string, description string, radius float32,
 			e.ErrorString("Airport %q not found", apname)
 			continue
 		}
-		if len(apname) == 4 {
-			apname = apname[1:]
-		}
+		name := av.AirportDisplayId(apname)
 		regions = append(regions, sim.FilterRegion{
 			AirspaceVolume: av.AirspaceVolume{
-				Id:          apname + id,
-				Description: apname + " " + description,
+				Id:          airportVolumeId(name, id),
+				Description: name + " " + description,
 				Type:        av.AirspaceVolumeCircle,
 				Floor:       0,
 				Ceiling:     ap.Elevation + ceiling,
@@ -891,7 +905,7 @@ func makeCircleAirportFilters(id string, description string, radius float32,
 }
 
 func makePolygonAirportFilters(id string, description string, delta float32,
-	ceiling int, airports []string, nmPerLongitude float32, e *util.ErrorLogger) sim.FilterRegions {
+	ceiling int, airports []av.ICAOAirportCode, nmPerLongitude float32, e *util.ErrorLogger) sim.FilterRegions {
 	var regions sim.FilterRegions
 	for _, apname := range airports {
 		ap, ok := av.DB.Airports[apname]
@@ -899,9 +913,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 			e.ErrorString("Airport %q not found", apname)
 			continue
 		}
-		if len(apname) == 4 {
-			apname = apname[1:]
-		}
+		name := av.AirportDisplayId(apname)
 
 		p := util.MapSlice(ap.Runways, func(r av.Runway) [2]float32 { return math.LL2NM(r.Threshold, nmPerLongitude) })
 		var hull [][2]float32
@@ -942,8 +954,8 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 
 		regions = append(regions, sim.FilterRegion{
 			AirspaceVolume: av.AirspaceVolume{
-				Id:          apname + id,
-				Description: apname + " " + description,
+				Id:          airportVolumeId(name, id),
+				Description: name + " " + description,
 				Type:        av.AirspaceVolumePolygon,
 				Floor:       0,
 				Ceiling:     ap.Elevation + ceiling,
@@ -968,9 +980,9 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 // taxiing aircraft on the scope. Filters that aren't tied to an airport at
 // all--secondary drop and VFR inhibit, which restrict airspace--are left
 // alone.
-func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []string, dep []sim.DepartureRunway,
-	arr []sim.ArrivalRunway, vfrRates map[string]float32) {
-	ifr := make(map[string]bool)
+func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCode, dep []sim.DepartureRunway,
+	arr []sim.ArrivalRunway, vfrRates map[av.ICAOAirportCode]float32) {
+	ifr := make(map[av.ICAOAirportCode]bool)
 	for _, rwy := range dep {
 		ifr[rwy.Airport] = true
 	}
@@ -984,7 +996,7 @@ func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []string, dep []si
 		}
 	}
 
-	prune := func(regions *sim.FilterRegions, active map[string]bool) {
+	prune := func(regions *sim.FilterRegions, active map[av.ICAOAirportCode]bool) {
 		*regions = util.FilterSlice(*regions, func(r sim.FilterRegion) bool {
 			covered := false
 			for _, name := range airports {
@@ -1138,15 +1150,15 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	// Sorted so that the regions come out in a consistent order; STARS assigns
 	// system map ids to them by walking the slices.
 	allAirports := util.SortedMapKeys(sg.Airports)
-	ifrAirports := util.FilterSlice(allAirports, func(name string) bool {
+	ifrAirports := util.FilterSlice(allAirports, func(name av.ICAOAirportCode) bool {
 		return sg.Airports[name].HasIFROperations()
 	})
 	nmPerLongitude := math.NMPerLongitudeAt(fa.Center)
 
 	// An airport that one of the config's own regions already covers doesn't
 	// get a default one.
-	uncovered := func(regions sim.FilterRegions, airports []string) []string {
-		return util.FilterSlice(airports, func(name string) bool {
+	uncovered := func(regions sim.FilterRegions, airports []av.ICAOAirportCode) []av.ICAOAirportCode {
+		return util.FilterSlice(airports, func(name av.ICAOAirportCode) bool {
 			ap, ok := av.DB.Airports[name]
 			return !ok || !regions.Inside(ap.Location, ap.Elevation)
 		})
@@ -1240,7 +1252,9 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		if p, ok := sg.Fixes[fix]; ok && !sg.AllowFixRedefinitions {
 			if _, ok := av.DB.LookupWaypoint(fix); ok {
 				e.ErrorString("fix shadows a navaid/fix in the aviation DB; remove it from \"fixes\"")
-			} else if _, ok := av.DB.LookupAirport(fix); ok {
+			} else if _, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(fix)); ok {
+				e.ErrorString("fix shadows an airport in the aviation DB; remove it from \"fixes\"")
+			} else if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(fix)); ok {
 				e.ErrorString("fix shadows an airport in the aviation DB; remove it from \"fixes\"")
 			} else if rwy, ok := duplicateRunwayThreshold(fix, p); ok {
 				e.ErrorString("fix duplicates the built-in runway threshold waypoint %s; "+
@@ -1318,7 +1332,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		e.ErrorString(`No "airports" specified in scenario group`)
 	}
 	for name, ap := range sg.Airports {
-		e.Push("Airport " + name)
+		e.Push("Airport " + string(name))
 		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
 			sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.Scratchpads, sg.Airports,
 			sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
@@ -1326,7 +1340,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	}
 
 	// Auto-set default_airport if only one airport has converging runways
-	var crdaAirport string
+	var crdaAirport av.ICAOAirportCode
 	crdaCount := 0
 	for name, ap := range sg.Airports {
 		if len(ap.CRDAPairs) > 0 {
@@ -1768,7 +1782,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	// Single char AIDs (require sg.Airports).
 	for char, airport := range s.SingleCharAIDs {
 		e.Push("Airport ID " + char)
-		if _, ok := sg.Airports[airport]; !ok {
+		if _, ok := sg.Airports[av.ICAOAirportCode(airport)]; !ok {
 			e.ErrorString(`airport %q isn't specified`, airport)
 		}
 		e.Pop()
@@ -1841,7 +1855,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			}
 			e.Push(fmt.Sprintf("fix_pair_reassignment[%d]", i))
 			if airport, _, ok := strings.Cut(r.ActiveRunway, "/"); ok {
-				if _, ok := sg.Airports[airport]; !ok {
+				if _, ok := sg.Airports[av.ICAOAirportCode(airport)]; !ok {
 					e.ErrorString(`"active_runway": airport %q not found in scenario group "airports"`, airport)
 				}
 			}
@@ -2013,7 +2027,7 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 		Airports:         util.SortedMapKeys(sg.Airports),
 	}
 
-	vfrAirports := make(map[string]*av.Airport)
+	vfrAirports := make(map[av.ICAOAirportCode]*av.Airport)
 	for name, ap := range sg.Airports {
 		if ap.VFRRateSum() > 0 {
 			vfrAirports[name] = ap
@@ -2081,7 +2095,7 @@ func canGenerateScenarioTraffic(sg *scenarioGroup, lc *sim.LaunchConfig) bool {
 				continue // overflights always come from the scenario's own airlines
 			}
 			if !slices.ContainsFunc(inboundFlow.Arrivals,
-				func(arr av.Arrival) bool { return len(arr.Airlines[airport]) > 0 }) {
+				func(arr av.Arrival) bool { return len(arr.Airlines[av.ICAOAirportCode(airport)]) > 0 }) {
 				return false
 			}
 		}
@@ -2200,7 +2214,7 @@ func airportsWithoutSTARArrivals(sg *scenarioGroup, lc *sim.LaunchConfig) []stri
 				continue
 			}
 			served[airport] = slices.ContainsFunc(inboundFlow.Arrivals, func(arr av.Arrival) bool {
-				return slices.Contains(arr.Airports, airport) && len(arr.ServedSTARs()) > 0
+				return slices.Contains(arr.Airports, av.ICAOAirportCode(airport)) && len(arr.ServedSTARs()) > 0
 			})
 		}
 	}
@@ -2872,7 +2886,7 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 			// lists from sibling scenario groups. The facility config is
 			// shared across all scenario groups for a TRACON, but sub-area
 			// scenarios only define a subset of airports.
-			addFromSibling := func(airport string) {
+			addFromSibling := func(airport av.ICAOAirportCode) {
 				if _, ok := sg.Airports[airport]; airport == "" || ok {
 					return
 				}
@@ -2882,7 +2896,7 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 					}
 					if _, ok := sibling.Airports[airport]; ok {
 						if sg.Airports == nil {
-							sg.Airports = make(map[string]*av.Airport)
+							sg.Airports = make(map[av.ICAOAirportCode]*av.Airport)
 						}
 						sg.Airports[airport] = &av.Airport{} // This is an uninitialized, empty airport that is soley used for altimiter and coordination lists so that they're consistent across areas of a TRACON.
 						// For example, for the N90 ISP files, the EWR and LGA airports aren't defined, so when their altimeter and coorindation lists were called from the N90 configuration file, there was no defined airport.
@@ -3128,7 +3142,9 @@ func WXFacilities(lg *log.Logger) (wx.Facilities, error) {
 	var airports, tracons []string
 	for _, groups := range scenarioGroups {
 		for _, sg := range groups {
-			airports = append(airports, slices.Collect(maps.Keys(sg.Airports))...)
+			for name := range sg.Airports {
+				airports = append(airports, string(name))
+			}
 			if sg.TRACON != "" {
 				tracons = append(tracons, sg.TRACON)
 			}

@@ -21,7 +21,7 @@ import (
 func TestDeriveERAMFixPairFullyContained(t *testing.T) {
 	s := NewTestSim(testLogger())
 	s.State.ERAMCoordination = &enroute.Coordination{Coord: &enroute.ArtsCoordEntry{}}
-	s.State.Airports = map[string]*av.Airport{"KVPC": {}, "KCPP": {}}
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"KVPC": {}, "KCPP": {}}
 	// Internal departure KVPC -> KCPP (both local): exit fix = destination (K
 	// stripped), route/zone skipped.
 	ac := &Aircraft{TypeOfFlight: av.FlightTypeDeparture,

@@ -598,11 +598,14 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 			waypointSourceApproach, nil
 	}
 
-	// See if it's a random fix not in the flight plan.
+	// See if it's a random fix not in the flight plan. It may name an
+	// airport by either of its ids.
 	p, ok := func() (math.Point2LL, bool) {
 		if p, ok := av.DB.LookupWaypoint(fix); ok {
 			return p, true
-		} else if ap, ok := av.DB.LookupAirport(fix); ok {
+		} else if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(fix)); ok {
+			return ap.Location, true
+		} else if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(fix)); ok {
 			return ap.Location, true
 		}
 		return math.Point2LL{}, false

@@ -65,28 +65,28 @@ func TestFlightTime(t *testing.T) {
 func testFlights() []Flight {
 	var flights []Flight
 	base := FlightDataDayNumber(time.Date(2025, time.July, 1, 0, 0, 0, 0, time.UTC))
-	add := func(airport, callsign, other, acType string, day uint16, minute int, departure bool) {
+	add := func(airport, other ICAOAirportCode, callsign, acType string, day uint16, minute int, departure bool) {
 		flights = append(flights, Flight{Airport: airport, Callsign: callsign, Other: other,
 			AircraftType: acType, Day: base + day, Minute: minute, Departure: departure})
 	}
 	for day := range uint16(300) {
-		add("KMSP", "DAL1062", "KATL", "B753", day, 5*60+31+int(day)%7, true) // daily, wandering
-		add("KMSP", "DAL1062", "KATL", "B753", day, 22*60+int(day)%11, false) // and back again
-		add("KSTP", "DAL1062", "KATL", "B753", day, 9*60, true)               // same callsign, elsewhere
+		add("KMSP", "KATL", "DAL1062", "B753", day, 5*60+31+int(day)%7, true) // daily, wandering
+		add("KMSP", "KATL", "DAL1062", "B753", day, 22*60+int(day)%11, false) // and back again
+		add("KSTP", "KATL", "DAL1062", "B753", day, 9*60, true)               // same callsign, elsewhere
 	}
-	add("KMSP", "N484EM", "KEWR", "G280", 12, 23*60+55, true)
-	add("KMSP", "N484EM", "KTEB", "G280", 200, 0, false)
-	add("KSTP", "SKW775E", "KFWA", "CRJ2", 0, 8, true)
-	add("KMSP", "UAL2041", "KDEN", "B738", 183, 23*60+59, true) // 2025-12-31
-	add("KMSP", "UAL2041", "KDEN", "B739", 184, 0, true)        // 2026-01-01
+	add("KMSP", "KEWR", "N484EM", "G280", 12, 23*60+55, true)
+	add("KMSP", "KTEB", "N484EM", "G280", 200, 0, false)
+	add("KSTP", "KFWA", "SKW775E", "CRJ2", 0, 8, true)
+	add("KMSP", "KDEN", "UAL2041", "B738", 183, 23*60+59, true) // 2025-12-31
+	add("KMSP", "KDEN", "UAL2041", "B739", 184, 0, true)        // 2026-01-01
 
 	// Flight numbers with leading zeros must not be confused with the same
 	// number without them: that would merge two callsigns into one run and
 	// throw off every time that follows.
 	for day := range uint16(5) {
-		add("KMSP", "AAL123", "KDFW", "A321", day, 7*60, true)
-		add("KMSP", "AAL0123", "KDFW", "A321", day, 14*60, true)
-		add("KMSP", "AAL00123", "KDFW", "A321", day, 19*60, true)
+		add("KMSP", "KDFW", "AAL123", "A321", day, 7*60, true)
+		add("KMSP", "KDFW", "AAL0123", "A321", day, 14*60, true)
+		add("KMSP", "KDFW", "AAL00123", "A321", day, 19*60, true)
 	}
 	return flights
 }
@@ -373,7 +373,7 @@ func TestSelectFlights(t *testing.T) {
 	SortFlights(flights)
 
 	start := FlightDataDate(day).Add(8 * time.Hour)
-	msp := map[string]bool{"KMSP": true}
+	msp := map[ICAOAirportCode]bool{"KMSP": true}
 	airlines := map[string]Airline{"DAL": {}}
 	callsignsIn := func(window []Flight) []string {
 		var callsigns []string

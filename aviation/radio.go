@@ -540,7 +540,7 @@ func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	if opts, ok := sayAirportMap[icao]; ok && len(opts) > 0 {
 		ap, _ := rand.SampleSeq(r, slices.Values(opts))
 		return ap
-	} else if ap, ok := DB.Airports[icao]; ok && ap.Name != "" {
+	} else if ap, ok := DB.Airports[ICAOAirportCode(icao)]; ok && ap.Name != "" {
 		name := ap.Name
 
 		// If it's multiple things separated by a slash, pick one at random.
@@ -762,7 +762,7 @@ func (FixSnippetFormatter) Written(arg any) string {
 
 	if aid, ok := DB.Navaids[fix]; ok {
 		return util.StopShouting(aid.Name)
-	} else if ap, ok := DB.Airports[fix]; ok {
+	} else if ap, ok := DB.Airports[ICAOAirportCode(fix)]; ok {
 		return ap.Name
 	}
 	return fix
@@ -965,7 +965,7 @@ func GetFixTelephony(fix string) string {
 	if len(fix) == 3 || len(fix) == 4 {
 		if aid, ok := DB.Navaids[fix]; ok {
 			return util.StopShouting(aid.Name)
-		} else if ap, ok := DB.Airports[fix]; ok {
+		} else if ap, ok := DB.Airports[ICAOAirportCode(fix)]; ok {
 			return ap.Name
 		}
 	}
@@ -992,7 +992,7 @@ func GetAirportTelephonyVariants(icao string) []string {
 	}
 
 	// Fall back to database name
-	if ap, ok := DB.Airports[icao]; ok && ap.Name != "" {
+	if ap, ok := DB.Airports[ICAOAirportCode(icao)]; ok && ap.Name != "" {
 		// Strip common suffixes that wouldn't typically be said
 		name := ap.Name
 		for _, extra := range []string{"Airport", "Air Field", "Field", "Strip", "Airstrip", "International", "Regional"} {

@@ -188,7 +188,7 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 			// the TRACON.
 			if d := math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()); d < dist {
 				hdg := math.Heading2LL(ac.DepartureAirportLocation(), ac.Position(), s.State.NmPerLongitude)
-				return ac.FlightPlan.DepartureAirport, math.Compass(hdg), d, true
+				return string(ac.FlightPlan.DepartureAirport), math.Compass(hdg), d, true
 			} else {
 				hdg := math.Heading2LL(center, ac.Position(), s.State.NmPerLongitude)
 				return closest.Description, math.Compass(hdg), dist, false

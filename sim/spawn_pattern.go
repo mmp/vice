@@ -53,7 +53,7 @@ func (s *Sim) effectivePatternSpawnRate() float32 {
 // bestRunwayForWind returns the runway id best aligned with the current
 // wind at the given airport. It returns "" if the airport is unknown or
 // has no runways.
-func (s *Sim) bestRunwayForWind(airport string) string {
+func (s *Sim) bestRunwayForWind(airport av.ICAOAirportCode) string {
 	if rwy, _, ok := s.currentVFRRunway(airport); ok {
 		return rwy.Id
 	}
@@ -63,7 +63,7 @@ func (s *Sim) bestRunwayForWind(airport string) string {
 // currentVFRRunway returns the best runway for VFR operations at the given
 // airport based on current wind conditions. This ensures pattern aircraft
 // and VFR arrivals always agree on runway selection.
-func (s *Sim) currentVFRRunway(airport string) (rwy, opp av.Runway, ok bool) {
+func (s *Sim) currentVFRRunway(airport av.ICAOAirportCode) (rwy, opp av.Runway, ok bool) {
 	faaAP, found := av.DB.Airports[airport]
 	if !found {
 		return av.Runway{}, av.Runway{}, false
@@ -261,14 +261,14 @@ func (s *Sim) spawnPatternAircraft() {
 
 		s.lg.Info("spawned pattern aircraft",
 			slog.String("callsign", string(ac.ADSBCallsign)),
-			slog.String("airport", name),
+			slog.String("airport", string(name)),
 			slog.Int("touch_and_gos", touchAndGos))
 	}
 }
 
 // canLaunchPattern checks whether it's safe to put a pattern aircraft on the
 // runway at the given airport.
-func (s *Sim) canLaunchPattern(airport string, rwy av.Runway) bool {
+func (s *Sim) canLaunchPattern(airport av.ICAOAirportCode, rwy av.Runway) bool {
 	// Check recent departures on same runway
 	if depState, ok := s.DepartureState[airport]; ok {
 		for rwyID, state := range depState {
@@ -362,7 +362,7 @@ func (s *Sim) relievePatternPressure() {
 				ac.TouchAndGosRemaining = 0
 				s.lg.Info("pattern aircraft wrapping up for waiting arrivals",
 					slog.String("callsign", string(ac.ADSBCallsign)),
-					slog.String("airport", airport))
+					slog.String("airport", string(airport)))
 			}
 		}
 	}
@@ -370,7 +370,7 @@ func (s *Sim) relievePatternPressure() {
 
 // patternConflictsWithLaunch returns true if any pattern aircraft at the
 // given airport is in a phase that should block departures.
-func (s *Sim) patternConflictsWithLaunch(airport string) bool {
+func (s *Sim) patternConflictsWithLaunch(airport av.ICAOAirportCode) bool {
 	ps, ok := s.PatternState[airport]
 	if !ok {
 		return false
@@ -401,14 +401,14 @@ func (s *Sim) resetPatternLap(ac *Aircraft) {
 
 	faaAP, ok := av.DB.Airports[airport]
 	if !ok {
-		s.lg.Warn("no FAA airport for pattern reset", slog.String("airport", airport))
+		s.lg.Warn("no FAA airport for pattern reset", slog.String("airport", string(airport)))
 		return
 	}
 
 	// Use current wind; the runway may have changed since the last lap.
 	rwy, opp, ok := s.currentVFRRunway(airport)
 	if !ok {
-		s.lg.Warn("no runway for pattern reset", slog.String("airport", airport))
+		s.lg.Warn("no runway for pattern reset", slog.String("airport", string(airport)))
 		return
 	}
 
@@ -432,7 +432,7 @@ func (s *Sim) resetPatternLap(ac *Aircraft) {
 }
 
 // recordPatternTouchAndGo records a touch-and-go for departure sequencing.
-func (s *Sim) recordPatternTouchAndGo(ac *Aircraft, airport string, rwyId string) {
+func (s *Sim) recordPatternTouchAndGo(ac *Aircraft, airport av.ICAOAirportCode, rwyId string) {
 	if depState, ok := s.DepartureState[airport]; ok {
 		for rwyID, state := range depState {
 			if rwyID.Base() == rwyId {
@@ -477,16 +477,16 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 	}
 	s.lg.Info("VFR arrival entering orbit",
 		slog.String("callsign", string(ac.ADSBCallsign)),
-		slog.String("airport", airport))
+		slog.String("airport", string(airport)))
 }
 
 // enterPattern sends a VFR arrival to the runway, either straight in or via
 // a 45-degree entry to downwind depending on the angle it's coming from and
 // whether the final is clear.
-func (s *Sim) enterPattern(ac *Aircraft, airport string) {
+func (s *Sim) enterPattern(ac *Aircraft, airport av.ICAOAirportCode) {
 	rwy, opp, ok := s.currentVFRRunway(airport)
 	if !ok {
-		s.lg.Warn("enterPattern: no runway", slog.String("airport", airport))
+		s.lg.Warn("enterPattern: no runway", slog.String("airport", string(airport)))
 		return
 	}
 	faaAP, ok := av.DB.Airports[airport]
@@ -500,13 +500,13 @@ func (s *Sim) enterPattern(ac *Aircraft, airport string) {
 			s.State.NmPerLongitude, s.State.MagneticVariation)
 		s.lg.Info("VFR arrival straight-in",
 			slog.String("callsign", string(ac.ADSBCallsign)),
-			slog.String("airport", airport))
+			slog.String("airport", string(airport)))
 	} else {
 		ac.Nav.Waypoints = generatePatternEntryWaypoints(rwy, opp, faaAP.Elevation,
 			s.State.NmPerLongitude, s.State.MagneticVariation)
 		s.lg.Info("VFR arrival 45-to-downwind",
 			slog.String("callsign", string(ac.ADSBCallsign)),
-			slog.String("airport", airport))
+			slog.String("airport", string(airport)))
 	}
 	ac.Nav.Heading = nav.NavHeading{}
 	ac.HoldingSince = Time{}
@@ -527,7 +527,7 @@ func (s *Sim) admitHoldingArrivals() {
 // longest at each airport where the pattern is currently clear for one to
 // enter, ordered by callsign.
 func (s *Sim) holdingArrivalsToAdmit() []*Aircraft {
-	airports := make(map[string]any)
+	airports := make(map[av.ICAOAirportCode]any)
 	for _, ac := range s.Aircraft {
 		if isHoldingArrival(ac) {
 			airports[ac.FlightPlan.ArrivalAirport] = nil
@@ -551,7 +551,7 @@ func (s *Sim) holdingArrivalsToAdmit() []*Aircraft {
 // isPatternAircraft reports whether the callsign is one of the airport's
 // pattern (touch-and-go) aircraft. Note that TouchAndGosRemaining can't be
 // used for this: it is 0 during a pattern aircraft's last lap.
-func (s *Sim) isPatternAircraft(airport string, callsign av.ADSBCallsign) bool {
+func (s *Sim) isPatternAircraft(airport av.ICAOAirportCode, callsign av.ADSBCallsign) bool {
 	ps, ok := s.PatternState[airport]
 	if !ok {
 		return false
@@ -568,7 +568,7 @@ func isHoldingArrival(ac *Aircraft) bool {
 
 // orbitingArrivals returns the number of VFR arrivals that are holding in
 // an orbit, waiting to enter the pattern at the given airport.
-func (s *Sim) orbitingArrivals(airport string) int {
+func (s *Sim) orbitingArrivals(airport av.ICAOAirportCode) int {
 	n := 0
 	for _, ac := range s.Aircraft {
 		if ac.FlightPlan.ArrivalAirport == airport && isHoldingArrival(ac) {
@@ -583,7 +583,7 @@ func (s *Sim) orbitingArrivals(airport string) int {
 // runway: either there's no room in the pattern or another arrival is
 // already holding, in which case that one goes first (admitHoldingArrivals
 // lets it in when the pattern clears).
-func (s *Sim) arrivalsMustHold(airport string) bool {
+func (s *Sim) arrivalsMustHold(airport av.ICAOAirportCode) bool {
 	return !s.patternClearForEntry(airport) || s.longestHoldingArrival(airport) != nil
 }
 
@@ -591,7 +591,7 @@ func (s *Sim) arrivalsMustHold(airport string) bool {
 // longest for a slot in the pattern at the given airport, or nil if none is
 // holding. Ties are broken by callsign so that the result doesn't depend on
 // map iteration order.
-func (s *Sim) longestHoldingArrival(airport string) *Aircraft {
+func (s *Sim) longestHoldingArrival(airport av.ICAOAirportCode) *Aircraft {
 	var longest *Aircraft
 	for _, ac := range s.Aircraft {
 		if ac.FlightPlan.ArrivalAirport != airport || !isHoldingArrival(ac) {
@@ -612,7 +612,7 @@ func (s *Sim) longestHoldingArrival(airport string) *Aircraft {
 // entry. Traffic on base or final is acceptable — the arrival joins at the
 // start of downwind and those aircraft will have cleared by the time it
 // gets there.
-func (s *Sim) patternClearForEntry(airport string) bool {
+func (s *Sim) patternClearForEntry(airport av.ICAOAirportCode) bool {
 	if ps, ok := s.PatternState[airport]; ok {
 		for _, pa := range ps.Aircraft {
 			if pa.Phase == PatternDownwind {
@@ -637,7 +637,7 @@ func (s *Sim) patternClearForEntry(airport string) bool {
 
 // finalClear returns true if no pattern aircraft or VFR arrival is on
 // base, final, or a straight-in approach to this airport.
-func (s *Sim) finalClear(airport string) bool {
+func (s *Sim) finalClear(airport av.ICAOAirportCode) bool {
 	if ps, ok := s.PatternState[airport]; ok {
 		for _, pa := range ps.Aircraft {
 			if pa.Phase == PatternBase || pa.Phase == PatternFinal {
@@ -664,7 +664,7 @@ func (s *Sim) finalClear(airport string) bool {
 // circle centered ~3nm to the right of the runway (opposite the pattern
 // side) near TPA. The center and altitude are randomized slightly so
 // multiple arrivals don't stack on top of each other.
-func (s *Sim) generateOrbitWaypoints(airport string) []av.Waypoint {
+func (s *Sim) generateOrbitWaypoints(airport av.ICAOAirportCode) []av.Waypoint {
 	rwy, _, ok := s.currentVFRRunway(airport)
 	if !ok {
 		return nil

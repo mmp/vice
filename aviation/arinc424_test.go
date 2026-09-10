@@ -408,7 +408,10 @@ func TestParseARINC424CourseReversal(t *testing.T) {
 	}
 	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
 
-	for _, tc := range []struct{ airport, approach, want string }{
+	for _, tc := range []struct {
+		airport        ICAOAirportCode
+		approach, want string
+	}{
 		{"KDDC", "I14", "FLACK DDC/a4400+/iaf OWENJ/a4400+/t306/@d6.3/lt176/@crs146 RAVEN/a4400+/faf"},
 		{"KPMD", "S25", "PMD/a5200+/iaf/t070/@d13.5/rt175/@crs265 CIVOK/a5200+/if WUGIT/a4300+ THERO/a4000+/faf"},
 		{"PANC", "I7L", "ENA/a2000+/iaf AINKK/a2000+/if WUGSI/a1600-3300 WEBBI/a1600+/faf"},
@@ -564,7 +567,8 @@ func TestParseARINC424SID(t *testing.T) {
 // runwayTransition is a SID runway transition and the waypoints it is
 // expected to encode to.
 type runwayTransition struct {
-	airport, sid, runway, want string
+	airport           ICAOAirportCode
+	sid, runway, want string
 }
 
 func checkRunwayTransitions(t *testing.T, result ARINC424Result, tests []runwayTransition) {
@@ -742,19 +746,19 @@ func TestCIFPRoutesRoundTrip(t *testing.T) {
 		ap := DB.Airports[icao]
 		for name, sid := range ap.SIDs {
 			for rwy, wps := range sid.RunwayTransitions {
-				check(icao+" "+name+" runway "+rwy, wps)
+				check(string(icao)+" "+name+" runway "+rwy, wps)
 			}
-			check(icao+" "+name, sid.Common)
+			check(string(icao)+" "+name, sid.Common)
 			for tr, wps := range sid.EnrouteTransitions {
-				check(icao+" "+name+" "+tr, wps)
+				check(string(icao)+" "+name+" "+tr, wps)
 			}
 		}
 		for name, star := range ap.STARs {
 			for tr, wps := range star.Transitions {
-				check(icao+" "+name+" "+tr, wps)
+				check(string(icao)+" "+name+" "+tr, wps)
 			}
 			for rwy, wps := range star.RunwayWaypoints {
-				check(icao+" "+name+" runway "+rwy, wps)
+				check(string(icao)+" "+name+" runway "+rwy, wps)
 			}
 		}
 		for name, appr := range ap.Approaches {

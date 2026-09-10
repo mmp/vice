@@ -354,7 +354,7 @@ func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, paneExtent math.Extent2
 // systemAltimeter returns the station whose setting the SSA ALTSTG field shows
 // (5-55): the area's adapted one if the user's position is in an area that
 // gives one, otherwise the facility's.
-func systemAltimeter(ctx *panes.Context) string {
+func systemAltimeter(ctx *panes.Context) av.ICAOAirportCode {
 	if area := ctx.UserController().Area; area != "" {
 		if ac, ok := ctx.FacilityAdaptation.Areas[area]; ok && ac.SystemAltimeter != "" {
 			return ac.SystemAltimeter
@@ -366,7 +366,7 @@ func systemAltimeter(ctx *panes.Context) string {
 // altimeterAirports returns the airports the SSA altimeter list covers: the
 // controller's adapted list first, then the area's, then the facility's, and
 // failing all of those the scenario's own IFR airports.
-func (sp *STARSPane) altimeterAirports(ctx *panes.Context) []string {
+func (sp *STARSPane) altimeterAirports(ctx *panes.Context) []av.ICAOAirportCode {
 	if cc, ok := ctx.FacilityAdaptation.Controllers[ctx.UserPrimaryPosition()]; ok && len(cc.Altimeters) > 0 {
 		return cc.Altimeters
 	}
@@ -379,7 +379,7 @@ func (sp *STARSPane) altimeterAirports(ctx *panes.Context) []string {
 		return fa
 	}
 
-	airports := util.FilterSlice(util.SortedMapKeys(ctx.Client.State.Airports), func(icao string) bool {
+	airports := util.FilterSlice(util.SortedMapKeys(ctx.Client.State.Airports), func(icao av.ICAOAirportCode) bool {
 		return ctx.Client.State.Airports[icao].HasIFROperations()
 	})
 
@@ -667,7 +667,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		var altimeters []string
 		for _, ap := range airports {
 			if metar, ok := ctx.Client.State.METAR[ap]; ok {
-				altimeters = append(altimeters, av.TrimICAOPrefix(ap)+" "+fmt.Sprintf("%4.2fA", metar.Altimeter_inHg())) // 2-79: A -> automatic
+				altimeters = append(altimeters, av.AirportDisplayId(ap)+" "+fmt.Sprintf("%4.2fA", metar.Altimeter_inHg())) // 2-79: A -> automatic
 			}
 		}
 		for len(altimeters) >= 3 {
@@ -788,7 +788,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 
 			text := "*"
 			text += util.Select(crda.Mode == CRDAModeStagger, "S ", "T ")
-			text += sp.CRDAPairs[i].Airport + " "
+			text += string(sp.CRDAPairs[i].Airport) + " "
 			text += sp.CRDAPairs[i].getRegionsString()
 
 			pw = td.AddText(text, pw, listStyle)
@@ -1234,7 +1234,7 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, paneExtent math.Exte
 		pair := sp.CRDAPairs[i]
 		line.WriteString(strconv.Itoa(pair.Index))
 		line.WriteByte(' ')
-		line.WriteString(pair.Airport + " ")
+		line.WriteString(string(pair.Airport) + " ")
 		line.WriteString(pair.getRegionsString())
 		if crda.Enabled {
 			for line.Len() < 16 {
@@ -1284,7 +1284,7 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, paneExtent math.
 	})
 }
 
-func (sp *STARSPane) drawTowerList(ctx *panes.Context, paneExtent math.Extent2D, airport string, towerIndex int,
+func (sp *STARSPane) drawTowerList(ctx *panes.Context, paneExtent math.Extent2D, airport av.ICAOAirportCode, towerIndex int,
 	style renderer.TextStyle, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	loc := ctx.Client.State.Airports[airport].Location
@@ -1301,8 +1301,8 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, paneExtent math.Extent2D,
 	k := util.SortedMapKeys(m)
 
 	return sp.drawSystemList(ctx, paneExtent, &ps.TowerLists[towerIndex].Position, style, td, ld, ListFormatter{
-		Title:      av.TrimICAOPrefix(airport) + " TOWER",
-		FrameTitle: av.TrimICAOPrefix(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
+		Title:      av.AirportDisplayId(airport) + " TOWER",
+		FrameTitle: av.AirportDisplayId(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
 		Lines:      ps.TowerLists[towerIndex].Lines,
 		Entries:    len(k),
 		FormatLine: func(idx int, sb *strings.Builder) {
@@ -1353,7 +1353,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 	// A catch-all list (no owner_tcp) shows only the remainder -- departures
 	// whose owner has no dedicated list -- so each departure lands in exactly
 	// one list.
-	dedicatedOwners := make(map[string]map[sim.TCP]bool)
+	dedicatedOwners := make(map[av.ICAOAirportCode]map[sim.TCP]bool)
 	for _, cl := range fa.Lists.Coordination {
 		if cl.OwnerTCP == "" {
 			continue

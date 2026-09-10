@@ -28,9 +28,9 @@ import (
 // UTC, as they are everywhere else in Vice; the local time at an airport is a
 // matter for the UI, which is the only place a controller wants to see it.
 type Flight struct {
-	Airport      string // the facility airport it departs from or arrives at
+	Airport      ICAOAirportCode // the facility airport it departs from or arrives at
 	Callsign     string
-	Other        string // the airport at the other end
+	Other        ICAOAirportCode // the airport at the other end
 	AircraftType string
 	Day          uint16 // UTC date, in days from 1970-01-01
 	Minute       int    // minutes after UTC midnight
@@ -42,7 +42,7 @@ type Flight struct {
 // source data knows nothing about, so each one stands on the flights of a real
 // airport with the traffic rate and character it wants. Donors must be
 // four-character ICAO codes: that is all the source data's airport lists hold.
-var FlightDataSubstitutes = map[string]string{
+var FlightDataSubstitutes = map[ICAOAirportCode]ICAOAirportCode{
 	"KAAC": "KEWR", // Academy: Newark
 	"KBRT": "KBED", // Bartles: Hanscom Field, Boston's business jet reliever
 	"KJKE": "KWRI", // Jeske: McGuire AFB, for the military traffic
@@ -356,8 +356,8 @@ func EncodeFlights(flights []Flight) ([]byte, error) {
 			numberTexts = append(numberTexts, number)
 		}
 
-		ownAirportIndices[i] = ownAirports.index(f.Airport)
-		airportIndices[i] = airports.index(f.Other)
+		ownAirportIndices[i] = ownAirports.index(string(f.Airport))
+		airportIndices[i] = airports.index(string(f.Other))
 		aircraftTypeIndices[i] = aircraftTypes.index(f.AircraftType)
 		days[i] = int64(f.Day - firstDay)
 		minutes[i] = int64(f.Minute)
@@ -587,9 +587,9 @@ func DecodeFlights(data []byte) ([]Flight, error) {
 			return nil, fmt.Errorf("dictionary index out of range")
 		}
 		flights[i] = Flight{
-			Airport:      ownAirports[ownAirportIndices[i]],
+			Airport:      ICAOAirportCode(ownAirports[ownAirportIndices[i]]),
 			Callsign:     callsigns[i],
-			Other:        airports[airportIndices[i]],
+			Other:        ICAOAirportCode(airports[airportIndices[i]]),
 			AircraftType: aircraftTypes[aircraftTypeIndices[i]],
 			Day:          h.firstDay + uint16(days[i]),
 			Minute:       int(minutes[i]),
@@ -630,7 +630,7 @@ func floorDegrees(v float32) int {
 // FlightDataCells returns the cells holding the given airports' flights, with
 // no repeats. Airports the database doesn't know are left out: there can be no
 // flight data for an airport with no position.
-func FlightDataCells(airports ...map[string]bool) []string {
+func FlightDataCells(airports ...map[ICAOAirportCode]bool) []string {
 	var cells []string
 	for _, set := range airports {
 		for icao := range set {
@@ -758,7 +758,7 @@ func MergeFlightIntervals(intervals []util.TimeInterval) []util.TimeInterval {
 // Decoding a cell costs enough that anything asking about several windows of
 // it--the New Sim dialog previews a fresh one each time the start time
 // moves--wants to do it once and select from the result.
-func SelectFlights(flights []Flight, departureAirports, arrivalAirports map[string]bool,
+func SelectFlights(flights []Flight, departureAirports, arrivalAirports map[ICAOAirportCode]bool,
 	airlines map[string]Airline, start, end time.Time) []Flight {
 	// The window can only hold flights on the days it touches.
 	firstDay := FlightDataDayNumber(start)

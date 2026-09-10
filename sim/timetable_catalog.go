@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strings"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 )
 
@@ -20,7 +21,7 @@ import (
 type Timetable struct {
 	ID          string
 	Name        string
-	Airport     string
+	Airport     av.ICAOAirportCode
 	Description string
 	Flights     []TimetableFlight
 }
@@ -32,7 +33,7 @@ type TimetableCatalog struct {
 }
 
 // Find returns a built-in timetable by airport and ID.
-func (c TimetableCatalog) Find(airport, id string) (Timetable, bool) {
+func (c TimetableCatalog) Find(airport av.ICAOAirportCode, id string) (Timetable, bool) {
 	airport = normalizeAirportCode(airport)
 	id = strings.TrimSpace(id)
 	for _, timetable := range c.Timetables {
@@ -49,7 +50,7 @@ func (c TimetableCatalog) Find(airport, id string) (Timetable, bool) {
 type TimetableSummary struct {
 	ID          string
 	Name        string
-	Airport     string
+	Airport     av.ICAOAirportCode
 	Description string
 }
 
@@ -64,7 +65,7 @@ func (s Timetable) Summary() TimetableSummary {
 }
 
 // SummariesForAirport returns client-facing timetable metadata for airport.
-func (c TimetableCatalog) SummariesForAirport(airport string) []TimetableSummary {
+func (c TimetableCatalog) SummariesForAirport(airport av.ICAOAirportCode) []TimetableSummary {
 	timetables := c.ForAirport(airport)
 	summaries := make([]TimetableSummary, len(timetables))
 	for i, timetable := range timetables {
@@ -75,7 +76,7 @@ func (c TimetableCatalog) SummariesForAirport(airport string) []TimetableSummary
 
 // ForAirport returns timetables published for airport. The returned slice is a
 // copy and may be modified by the caller.
-func (c TimetableCatalog) ForAirport(airport string) []Timetable {
+func (c TimetableCatalog) ForAirport(airport av.ICAOAirportCode) []Timetable {
 	airport = normalizeAirportCode(airport)
 	var timetables []Timetable
 	for _, timetable := range c.Timetables {
@@ -97,7 +98,7 @@ func LoadBuiltinTimetables() (TimetableCatalog, error) {
 }
 
 // LoadAirportTimetables reads the timetables Vice ships with for one airport.
-func LoadAirportTimetables(airport string) (TimetableCatalog, error) {
+func LoadAirportTimetables(airport av.ICAOAirportCode) (TimetableCatalog, error) {
 	return LoadTimetableCatalogForAirport(util.GetResourcesFS(), timetableResourceRoot, airport)
 }
 
@@ -106,7 +107,7 @@ func LoadAirportTimetables(airport string) (TimetableCatalog, error) {
 // more each time a timetable is added for some other airport, which is what
 // parsing every airport's CSVs to find it would come to. An airport with no
 // directory of its own has no timetables, which is not an error.
-func LoadTimetableCatalogForAirport(filesystem fs.FS, root, airport string) (TimetableCatalog, error) {
+func LoadTimetableCatalogForAirport(filesystem fs.FS, root string, airport av.ICAOAirportCode) (TimetableCatalog, error) {
 	if normalizeAirportCode(airport) == "" {
 		return TimetableCatalog{}, nil
 	}
@@ -125,7 +126,7 @@ func LoadTimetableCatalog(filesystem fs.FS, root string) (TimetableCatalog, erro
 // named for it, but not necessarily in the same case, so match directories
 // rather than assume a name: reading the root costs nothing next to parsing the
 // CSVs below it.
-func loadTimetables(filesystem fs.FS, root, onlyAirport string) (TimetableCatalog, error) {
+func loadTimetables(filesystem fs.FS, root string, onlyAirport av.ICAOAirportCode) (TimetableCatalog, error) {
 	root = path.Clean(root)
 	directories, err := fs.ReadDir(filesystem, root)
 	if err != nil {
@@ -133,12 +134,12 @@ func loadTimetables(filesystem fs.FS, root, onlyAirport string) (TimetableCatalo
 	}
 
 	var catalog TimetableCatalog
-	seen := make(map[string]string)
+	seen := make(map[av.ICAOAirportCode]string)
 	for _, directory := range directories {
 		if !directory.IsDir() {
 			continue
 		}
-		airport := normalizeAirportCode(directory.Name())
+		airport := normalizeAirportCode(av.ICAOAirportCode(directory.Name()))
 		if onlyAirport != "" && airport != onlyAirport {
 			continue
 		}
@@ -165,7 +166,7 @@ func loadTimetables(filesystem fs.FS, root, onlyAirport string) (TimetableCatalo
 // loadAirportTimetables reads the CSV files directly inside one airport's
 // directory. Nested files are intentionally ignored.
 func loadAirportTimetables(filesystem fs.FS, root, directory string) ([]Timetable, error) {
-	airport := normalizeAirportCode(directory)
+	airport := normalizeAirportCode(av.ICAOAirportCode(directory))
 	if airport == "" {
 		return nil, fmt.Errorf("%s: unable to determine airport from directory", path.Join(root, directory))
 	}
@@ -190,7 +191,7 @@ func loadAirportTimetables(filesystem fs.FS, root, directory string) ([]Timetabl
 
 		key := strings.ToLower(name)
 		if previous, ok := seen[key]; ok {
-			return nil, fmt.Errorf("duplicate built-in timetable %q in %s and %s", airport+"/"+name,
+			return nil, fmt.Errorf("duplicate built-in timetable %q in %s and %s", string(airport)+"/"+name,
 				previous, filename)
 		}
 
@@ -217,7 +218,7 @@ func sortTimetables(timetables []Timetable) {
 func loadDiscoveredTimetable(
 	filesystem fs.FS,
 	filename string,
-	airport string,
+	airport av.ICAOAirportCode,
 	name string,
 ) (Timetable, error) {
 	csvFile, err := filesystem.Open(filename)

@@ -57,7 +57,7 @@ type FacilityAdaptation struct {
 	// gridded weather is available for it: winds aloft are synthesized from its
 	// observations and pattern traffic consults it when its own airport has no
 	// METAR. Defaults to the SSA system altimeter.
-	WeatherStation string `json:"weather_station,omitempty"`
+	WeatherStation av.ICAOAirportCode `json:"weather_station,omitempty"`
 
 	// Airports are fix-pair endpoints that name an airport rather than a
 	// significant point.
@@ -158,12 +158,12 @@ type FacilityAdaptation struct {
 	Lists struct {
 		Coordination []CoordinationList `json:"coordination"`
 		SSA          struct {
-			Altimeters []string `json:"altimeters"`
+			Altimeters []av.ICAOAirportCode `json:"altimeters"`
 			// SystemAltimeter is the station whose setting the SSA ALTSTG field
 			// shows (5-55); it also heads the altimeter list when none is
 			// adapted. A STARSArea may override it for its positions.
-			SystemAltimeter   string `json:"system_altimeter,omitempty"`
-			FlashOnATISUpdate bool   `json:"flash_on_atis_update"`
+			SystemAltimeter   av.ICAOAirportCode `json:"system_altimeter,omitempty"`
+			FlashOnATISUpdate bool               `json:"flash_on_atis_update"`
 		} `json:"ssa"`
 		VFR struct {
 			Format string `json:"format"`
@@ -240,27 +240,27 @@ type STARSController struct {
 	Range                           float32       `json:"range"`
 	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
-	FlightFollowingAirspace         []av.AirspaceVolume `json:"flight_following_airspace"`
-	Altimeters                      []string            `json:"altimeters"`
+	FlightFollowingAirspace         []av.AirspaceVolume  `json:"flight_following_airspace"`
+	Altimeters                      []av.ICAOAirportCode `json:"altimeters"`
 }
 
 // STARSArea provides default configuration for all controllers
 // within a TRACON area. Controller-specific settings in Controllers
 // override or append these defaults.
 type STARSArea struct {
-	DefaultAirport                  string        `json:"default_airport,omitempty"` // CRDA default airport for this area
-	VideoMapFile                    string        `json:"video_map_file,omitempty"`
-	VideoMapNames                   []string      `json:"video_maps,omitempty"`
-	DefaultMaps                     []string      `json:"default_maps,omitempty"`
-	Center                          math.Point2LL `json:"-"`
-	CenterString                    string        `json:"center,omitempty"`
-	Range                           float32       `json:"range,omitempty"`
-	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks,omitempty"`
-	MonitoredBeaconCodeBlocks       []av.Squawk   `json:"-"`
-	Altimeters                      []string      `json:"altimeters,omitempty"`
+	DefaultAirport                  av.ICAOAirportCode   `json:"default_airport,omitempty"` // CRDA default airport for this area
+	VideoMapFile                    string               `json:"video_map_file,omitempty"`
+	VideoMapNames                   []string             `json:"video_maps,omitempty"`
+	DefaultMaps                     []string             `json:"default_maps,omitempty"`
+	Center                          math.Point2LL        `json:"-"`
+	CenterString                    string               `json:"center,omitempty"`
+	Range                           float32              `json:"range,omitempty"`
+	MonitoredBeaconCodeBlocksString *string              `json:"beacon_code_blocks,omitempty"`
+	MonitoredBeaconCodeBlocks       []av.Squawk          `json:"-"`
+	Altimeters                      []av.ICAOAirportCode `json:"altimeters,omitempty"`
 	// SystemAltimeter overrides the facility's SSA system altimeter for
 	// positions in this area.
-	SystemAltimeter   string              `json:"system_altimeter,omitempty"`
+	SystemAltimeter   av.ICAOAirportCode  `json:"system_altimeter,omitempty"`
 	Scratchpads       map[string]string   `json:"scratchpads,omitempty"`
 	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness,omitempty"`
 }
@@ -288,7 +288,7 @@ func (fa *FacilityAdaptation) CurrentDatablockClockPhase(now time.Time) int {
 // DefaultAirportForArea returns the CRDA default airport for a given
 // area identifier. Returns empty string if no area config or default
 // airport is defined.
-func (fa *FacilityAdaptation) DefaultAirportForArea(area string) string {
+func (fa *FacilityAdaptation) DefaultAirportForArea(area string) av.ICAOAirportCode {
 	if area == "" {
 		return ""
 	}
@@ -407,11 +407,11 @@ func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
 }
 
 type CoordinationList struct {
-	Name          string   `json:"name"`
-	Id            string   `json:"id"`
-	Airports      []string `json:"airports"`
-	YellowEntries bool     `json:"yellow_entries"`
-	Format        string   `json:"format"`
+	Name          string               `json:"name"`
+	Id            string               `json:"id"`
+	Airports      []av.ICAOAirportCode `json:"airports"`
+	YellowEntries bool                 `json:"yellow_entries"`
+	Format        string               `json:"format"`
 
 	// OwnerTCP, if set, restricts this list to release requests for departures
 	// assigned to that departure controller TCP. This does not assign the
@@ -486,7 +486,12 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		if abbrev := ap.Abbreviation; len(abbrev) > 1 {
 			e.ErrorString("airports[%s]: abbreviation %q must be a single character", id, abbrev)
 		}
-		faa, inDB := av.DB.LookupAirport(id)
+		// Fix-pair airport entries carry the airport's FAA id, matching the
+		// flight plan fixes they pair with, but accept a database id too.
+		faa, inDB := av.DB.LookupFAAAirport(av.FAAAirportCode(id))
+		if !inDB {
+			faa, inDB = av.DB.LookupICAOAirport(av.ICAOAirportCode(id))
+		}
 		if ap.Name == "" && inDB {
 			ap.Name = faa.Name
 		}

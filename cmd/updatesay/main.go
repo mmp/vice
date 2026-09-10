@@ -262,7 +262,7 @@ func printThreeLetterItems(label string, items map[string]*ProcedureInfo) {
 
 	fmt.Printf("\n%s:\n", label)
 	for name, info := range util.SortedMap(items) {
-		airportList := util.SortedMapKeys(info.Airports)
+		airportList := util.MapSlice(util.SortedMapKeys(info.Airports), func(icao av.ICAOAirportCode) string { return string(icao) })
 		fullNames := util.SortedMapKeys(info.FullNames)
 		fmt.Printf("  %s: airports=%s, variants=%s\n", name, strings.Join(airportList, ","), strings.Join(fullNames, ","))
 	}

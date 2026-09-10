@@ -55,7 +55,7 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 }
 
 func departureSlotKey(slot sim.DepartureLaunchSlot) string {
-	return slot.Airport + "/" + string(slot.Runway) + "/" + slot.Category + "/" + strconv.Itoa(int(slot.Rules))
+	return string(slot.Airport) + "/" + string(slot.Runway) + "/" + slot.Category + "/" + strconv.Itoa(int(slot.Rules))
 }
 
 func inboundSlotKey(slot sim.InboundLaunchSlot) string {
@@ -154,7 +154,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 		if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
 			lc.client.LaunchAircraft(slot.LaunchFlight, lc.logLaunchError(slot.Callsign))
 			lc.launchCounts[slotKey]++
-			lc.lastRunwayDeparture[slot.Airport+"/"+string(slot.Runway)] =
+			lc.lastRunwayDeparture[string(slot.Airport)+"/"+string(slot.Runway)] =
 				launchRecord{Callsign: slot.Callsign, Time: lc.client.InterpolatedSimTime()}
 		}
 		imgui.TableNextColumn()
@@ -193,7 +193,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 			// The slots arrive sorted by airport, runway, and category.
 			// Find the maximum number of slots for any airport.
 			maxCategories, curCategories := 0, 1
-			lastAp := ""
+			lastAp := av.ICAOAirportCode("")
 			for _, slot := range ifrSlots {
 				if slot.Airport != lastAp {
 					maxCategories = max(maxCategories, curCategories)
@@ -221,7 +221,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 				}
 				imgui.TableHeadersRow()
 
-				lastAp := ""
+				lastAp := av.ICAOAirportCode("")
 				curColumn := 0
 				for _, slot := range ifrSlots {
 					if slot.Airport != lastAp {
@@ -230,7 +230,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 						curColumn = 0
 
 						imgui.TableNextColumn()
-						imgui.Text(slot.Airport)
+						imgui.Text(string(slot.Airport))
 					} else if curColumn+1 == nColumns {
 						curColumn = 0
 						imgui.TableNextRow()
@@ -257,7 +257,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 						imgui.TableNextColumn()
 						imgui.Text(slot.Exit)
 
-						mitAndTime(slot.Position, lc.lastRunwayDeparture[slot.Airport+"/"+string(slot.Runway)])
+						mitAndTime(slot.Position, lc.lastRunwayDeparture[string(slot.Airport)+"/"+string(slot.Runway)])
 
 						launchButton(slot, slotKey)
 					} else {
@@ -337,7 +337,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 					slotKey := departureSlotKey(slot)
 					imgui.PushIDStr(slotKey)
 					imgui.TableNextColumn()
-					imgui.Text(slot.Airport)
+					imgui.Text(string(slot.Airport))
 					imgui.TableNextColumn()
 					imgui.Text(string(slot.Runway))
 					imgui.TableNextColumn()
@@ -345,12 +345,12 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 
 					if slot.Callsign != "" {
 						imgui.TableNextColumn()
-						imgui.Text(slot.Destination)
+						imgui.Text(string(slot.Destination))
 
 						imgui.TableNextColumn()
 						imgui.Text(slot.AircraftType)
 
-						mitAndTime(slot.Position, lc.lastRunwayDeparture[slot.Airport+"/"+string(slot.Runway)])
+						mitAndTime(slot.Position, lc.lastRunwayDeparture[string(slot.Airport)+"/"+string(slot.Runway)])
 
 						launchButton(slot, slotKey)
 					} else {
@@ -443,7 +443,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 						lastAirport = slot.Airport
 						curColumn = 0
 						imgui.TableNextColumn()
-						imgui.Text(slot.Airport)
+						imgui.Text(string(slot.Airport))
 					} else if curColumn+1 == numColumns {
 						curColumn = 0
 						imgui.TableNextRow()
@@ -557,7 +557,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 	if len(releaseAircraft) > 0 && imgui.CollapsingHeaderBoolPtr("Hold For Release", nil) {
 		slices.SortFunc(releaseAircraft, func(a, b sim.ReleaseDeparture) int {
 			// Just by airport, otherwise leave in FIFO order
-			return strings.Compare(a.DepartureAirport, b.DepartureAirport)
+			return strings.Compare(string(a.DepartureAirport), string(b.DepartureAirport))
 		})
 
 		if imgui.BeginTableV("Releases", 5, flags, imgui.Vec2{tableScale * 600, 0}, 0) {
@@ -568,12 +568,12 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 			// imgui.TableSetupColumn("#Release")
 			imgui.TableHeadersRow()
 
-			lastAp := ""
+			lastAp := av.ICAOAirportCode("")
 			for _, ac := range releaseAircraft {
 				imgui.PushIDStr(string(ac.ADSBCallsign))
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(ac.DepartureAirport)
+				imgui.Text(string(ac.DepartureAirport))
 				imgui.TableNextColumn()
 				imgui.Text(string(ac.ADSBCallsign))
 				imgui.TableNextColumn()

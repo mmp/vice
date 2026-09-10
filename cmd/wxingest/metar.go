@@ -321,21 +321,21 @@ func mergeMETAR(cm wx.CompressedMETAR, scraped map[string][]wx.METAR) (map[strin
 // along with everything else.
 func foldRenamedStations(cm wx.CompressedMETAR, scraped map[string][]wx.METAR) error {
 	for previous, current := range av.RenamedAirports {
-		if !cm.HasAirport(previous) {
+		if !cm.HasAirport(string(previous)) {
 			continue
 		}
 
-		recs, err := cm.GetAirportMETAR(previous)
+		recs, err := cm.GetAirportMETAR(string(previous))
 		if err != nil {
 			return fmt.Errorf("%s: decoding METAR to fold into %s: %w", previous, current, err)
 		}
 		for i := range recs {
-			recs[i].ICAO = current
-			recs[i].Raw = strings.ReplaceAll(recs[i].Raw, previous, current)
+			recs[i].ICAO = string(current)
+			recs[i].Raw = strings.ReplaceAll(recs[i].Raw, string(previous), string(current))
 		}
 
-		scraped[current] = append(scraped[current], recs...)
-		cm.RemoveAirport(previous)
+		scraped[string(current)] = append(scraped[string(current)], recs...)
+		cm.RemoveAirport(string(previous))
 		LogInfo("%s: folded %d METAR records into %s", previous, len(recs), current)
 	}
 	return nil

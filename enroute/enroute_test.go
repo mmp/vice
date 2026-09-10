@@ -190,7 +190,7 @@ func TestRestrictionApplies(t *testing.T) {
 		FlightType:          "arrival",
 		Procedure:           "ROBUC#",
 		AltitudeRestriction: "14000-",
-		ArrivalAirports:     []string{"KBOS"},
+		ArrivalAirports:     []av.ICAOAirportCode{"KBOS"},
 	}
 	r.Aircraft.Type = []string{"!B738"} // exclude 738s
 	jet := Attrs{Engine: "jet", ACType: "A320"}
@@ -199,7 +199,7 @@ func TestRestrictionApplies(t *testing.T) {
 		name    string
 		ft      av.TypeOfFlight
 		route   string
-		airport string
+		airport av.ICAOAirportCode
 		attrs   Attrs
 		want    bool
 	}{
@@ -231,7 +231,7 @@ func TestRestrictionCapsCoordination(t *testing.T) {
 		t.Fatalf("baseline: coordination fix = %q, want PVA", res.Fix)
 	}
 	// Apply the at/below-14000 restriction; PVA now models at 14000 (=FL140).
-	r := Restriction{FlightType: "arrival", Procedure: "ROBUC#", AltitudeRestriction: "14000-", ArrivalAirports: []string{"KBOS"}}
+	r := Restriction{FlightType: "arrival", Procedure: "ROBUC#", AltitudeRestriction: "14000-", ArrivalAirports: []av.ICAOAirportCode{"KBOS"}}
 	traj.applyRestriction(r, av.FlightTypeArrival, "ROBUC3 BOS", "KBOS", attrs)
 	if alt, _ := traj.AltitudeAtFix("PVA"); alt != 14000 {
 		t.Errorf("after restriction, altitude at PVA = %d ft, want 14000", alt)

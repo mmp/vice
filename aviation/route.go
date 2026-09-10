@@ -1132,7 +1132,7 @@ func (wa WaypointArray) checkDescending(e *util.ErrorLogger) {
 }
 
 func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, perf AircraftPerformance, nmPerLongitude float32,
-	magneticVariation float32, airport string, lg *log.Logger) {
+	magneticVariation float32, airport ICAOAirportCode, lg *log.Logger) {
 	// Random values used for altitude and position randomization
 	rtheta, rrad := r.Float32(), r.Float32()
 	ralt := r.Float32()
@@ -2212,9 +2212,13 @@ func ProcedureBase(name string) string {
 }
 
 // TokenNamesAirport reports whether a route token names the airport, as
-// either its ICAO id or its domestic name.
-func TokenNamesAirport(token, icao string) bool {
-	return token == icao || token == TrimICAOPrefix(icao)
+// either its ICAO id or its FAA local identifier.
+func TokenNamesAirport(token string, icao ICAOAirportCode) bool {
+	if token == string(icao) {
+		return true
+	}
+	faa, ok := ICAOAirportToFAA(icao)
+	return ok && token == string(faa)
 }
 
 // TokenNamesProcedure reports whether a route token names a SID or a STAR:
@@ -2232,7 +2236,7 @@ func TokenNamesProcedure(token string) bool {
 
 // routeProcedureToken returns the last token of a route into or out of the
 // airport if it names a procedure, or "" otherwise.
-func routeProcedureToken(route, icao string) string {
+func routeProcedureToken(route string, icao ICAOAirportCode) string {
 	fields := strings.Fields(route)
 	if n := len(fields); n > 0 && TokenNamesAirport(fields[n-1], icao) {
 		fields = fields[:n-1]
@@ -2248,7 +2252,7 @@ func routeProcedureToken(route, icao string) string {
 // on the route, or empty strings if it names none. A route may carry a stale
 // revision--CUUDA3 where the cycle has CUUDA4--so procedures match on their
 // base names.
-func RouteSTAR(route, icao string) (star, entry string) {
+func RouteSTAR(route string, icao ICAOAirportCode) (star, entry string) {
 	token := routeProcedureToken(route, icao)
 	if token == "" {
 		return "", ""
@@ -2307,7 +2311,7 @@ func transitionFloor(transitions map[string]WaypointArray, fields []string) int 
 // name the current CIFP charts it, along with the index of the field naming
 // it. A route may carry a stale revision--DOTSS2 where the cycle has
 // DOTSS3--so procedures match on their base names.
-func routeSID(fields []string, icao string) (SID, int, bool) {
+func routeSID(fields []string, icao ICAOAirportCode) (SID, int, bool) {
 	i := 0
 	if len(fields) > 0 && TokenNamesAirport(fields[0], icao) {
 		i = 1
@@ -2328,7 +2332,7 @@ func routeSID(fields []string, icao string) (SID, int, bool) {
 // publish. It is 0 when the route names neither, as one out of an airport the
 // CIFP doesn't cover can't, and when the procedures it does name publish no
 // such restriction, as the open-route STARs into JFK don't.
-func RouteAltitudeFloor(route, departureAirport, arrivalAirport string) int {
+func RouteAltitudeFloor(route string, departureAirport, arrivalAirport ICAOAirportCode) int {
 	fields := strings.Fields(route)
 	floor := 0
 
@@ -3163,12 +3167,12 @@ type Overflight struct {
 
 type OverflightAirline struct {
 	AirlineSpecifier
-	DepartureAirport string `json:"departure_airport"`
-	ArrivalAirport   string `json:"arrival_airport"`
+	DepartureAirport ICAOAirportCode `json:"departure_airport"`
+	ArrivalAirport   ICAOAirportCode `json:"arrival_airport"`
 }
 
 func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
+	airports map[ICAOAirportCode]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 	if len(of.Waypoints) < 2 {
@@ -3386,7 +3390,7 @@ func parseScrapedRoutes() map[AirportPair][]ScrapedRoute {
 			fmt.Fprintf(os.Stderr, "%s: %q isn't a FROM-TO city pair\n", ScrapedRoutesPath, key)
 			os.Exit(1)
 		}
-		routes[AirportPair{From: from, To: to}] = set.Routes
+		routes[AirportPair{From: ICAOAirportCode(from), To: ICAOAirportCode(to)}] = set.Routes
 	}
 	return routes
 }

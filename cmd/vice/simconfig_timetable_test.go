@@ -39,7 +39,7 @@ func TestNormalizeTrafficSourceConfig(t *testing.T) {
 	if got, want := spec.LaunchConfig.TimetableID, "development-test"; got != want {
 		t.Fatalf("TimetableID = %q, want %q", got, want)
 	}
-	if got, want := spec.LaunchConfig.TimetableAirport, "KMSP"; got != want {
+	if got, want := spec.LaunchConfig.TimetableAirport, av.ICAOAirportCode("KMSP"); got != want {
 		t.Fatalf("TimetableAirport = %q, want %q", got, want)
 	}
 	if got, want := spec.LaunchConfig.TimetableStartMinute, 1439; got != want {

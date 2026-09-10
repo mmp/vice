@@ -112,7 +112,7 @@ func (sd *dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 
 type AddMETARAirportArgs struct {
 	ControllerToken string
-	Airport         string
+	Airport         av.ICAOAirportCode
 }
 
 const AddMETARAirportRPC = "Sim.AddMETARAirport"

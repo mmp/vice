@@ -213,7 +213,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeT
 			pw := transforms.WindowFromLatLongP(pll)
 			ld.AddCircle(pw, 10, 32)
 
-			td.AddText(name, math.Add2f(pw, [2]float32{12, 0}), style)
+			td.AddText(string(name), math.Add2f(pw, [2]float32{12, 0}), style)
 		}
 	}
 

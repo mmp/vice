@@ -16,7 +16,7 @@ var patternTestTime = NewSimTime(time.Date(2026, time.August, 4, 15, 0, 0, 0, ti
 
 // vfrArrival returns an arrival to the given airport whose next waypoint is
 // in the given phase of a VFR arrival.
-func vfrArrival(callsign, airport string, phase uint8) *Aircraft {
+func vfrArrival(callsign string, airport av.ICAOAirportCode, phase uint8) *Aircraft {
 	return &Aircraft{
 		ADSBCallsign: av.ADSBCallsign(callsign),
 		FlightPlan:   av.FlightPlan{ArrivalAirport: airport},
@@ -26,7 +26,7 @@ func vfrArrival(callsign, airport string, phase uint8) *Aircraft {
 
 // holdingArrival returns an arrival orbiting at the given airport since the
 // given time, waiting for its turn to enter the pattern.
-func holdingArrival(callsign, airport string, since Time) *Aircraft {
+func holdingArrival(callsign string, airport av.ICAOAirportCode, since Time) *Aircraft {
 	ac := vfrArrival(callsign, airport, av.VFRPhaseOrbit)
 	ac.HoldingSince = since
 	return ac

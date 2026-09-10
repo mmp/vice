@@ -455,7 +455,7 @@ func (c *ControlClient) InterpolatedSimTime() sim.Time {
 	return c.lastReturnedTime
 }
 
-func (c *ControlClient) TowerListAirports() []string {
+func (c *ControlClient) TowerListAirports() []av.ICAOAirportCode {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -535,7 +535,7 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 	spec := wx.GetAtmosArgs{
 		Facility:       c.State.Facility,
 		Time:           t,
-		WeatherStation: c.State.FacilityAdaptation.WeatherStation,
+		WeatherStation: string(c.State.FacilityAdaptation.WeatherStation),
 	}
 	var result wx.GetAtmosResult
 	c.addCall(makeRPCCall(c.client.Go(wx.GetAtmosGridRPC, spec, &result, nil),

@@ -29,7 +29,7 @@ import (
 func publishedProviderTestSim(t *testing.T, start Time) *Sim {
 	oldDB := av.DB
 	av.DB = &av.StaticDatabase{
-		Airports: map[string]av.FAAAirport{
+		Airports: map[av.ICAOAirportCode]av.FAAAirport{
 			"KMSP": {Id: "KMSP", Location: math.Point2LL{-93.2, 44.9}},
 			"KATL": {Id: "KATL", Location: math.Point2LL{-84.4, 33.6}},
 			"KORD": {Id: "KORD", Location: math.Point2LL{-87.9, 42.0}},
@@ -54,11 +54,11 @@ func publishedProviderTestSim(t *testing.T, start Time) *Sim {
 		PublishedDepartureRateScale: 1,
 		InboundFlowRates:            map[string]map[string]float32{"TEST": {"KMSP": 0}},
 		InboundFlowEnabled:          map[string]map[string]bool{"TEST": {"KMSP": true}},
-		DepartureEnabled: map[string]map[av.RunwayID]map[string]bool{
+		DepartureEnabled: map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 			"KMSP": {"12L": {"": true}, "30R": {"": true}},
 		},
 	}
-	s.State.Airports = map[string]*av.Airport{
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{
 		"KMSP": {
 			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
 				"12L": {"DEPSE": {{}}},
@@ -76,11 +76,11 @@ func publishedProviderTestSim(t *testing.T, start Time) *Sim {
 		"TEST": {
 			Arrivals: []av.Arrival{
 				{
-					Airports:  []string{"KMSP"},
+					Airports:  []av.ICAOAirportCode{"KMSP"},
 					Waypoints: av.WaypointArray{{Fix: "GATSE", Location: math.Point2LL{-92.5, 44.0}}},
 				},
 				{
-					Airports:  []string{"KMSP"},
+					Airports:  []av.ICAOAirportCode{"KMSP"},
 					Waypoints: av.WaypointArray{{Fix: "GATWE", Location: math.Point2LL{-95.5, 44.7}}},
 				},
 			},
@@ -92,7 +92,7 @@ func publishedProviderTestSim(t *testing.T, start Time) *Sim {
 // testFlight is one published flight on a fixed day, named the way the flight
 // data names them: the facility airport it operates at and the airport at the
 // other end.
-func testFlight(callsign, airport, other string, departure bool, hour, minute int) av.Flight {
+func testFlight(callsign string, airport, other av.ICAOAirportCode, departure bool, hour, minute int) av.Flight {
 	return av.Flight{
 		Airport:      airport,
 		Callsign:     callsign,
@@ -248,8 +248,8 @@ func previewLaunchConfig() *LaunchConfig {
 		TrafficSource:               TrafficSourceHistorical,
 		PublishedArrivalRateScale:   1,
 		PublishedDepartureRateScale: 1,
-		DepartureRates:              map[string]map[av.RunwayID]map[string]float32{"KMSP": {"30L": {"": 0}}},
-		DepartureEnabled:            map[string]map[av.RunwayID]map[string]bool{"KMSP": {"30L": {"": true}}},
+		DepartureRates:              map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{"KMSP": {"30L": {"": 0}}},
+		DepartureEnabled:            map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{"KMSP": {"30L": {"": true}}},
 		InboundFlowRates:            map[string]map[string]float32{"TEST": {"KMSP": 0}},
 		InboundFlowEnabled:          map[string]map[string]bool{"TEST": {"KMSP": true}},
 	}
@@ -440,7 +440,7 @@ func TestTrafficCountsSkipsBackgroundTraffic(t *testing.T) {
 	}
 
 	backgroundDepartures := previewLaunchConfig()
-	backgroundDepartures.DepartureBackground = map[string]map[av.RunwayID]map[string]bool{
+	backgroundDepartures.DepartureBackground = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 		"KMSP": {"30L": {"": true}},
 	}
 	departures, arrivals, _, err := TrafficCounts(backgroundDepartures, previewStart, flights)
@@ -475,7 +475,7 @@ func TestTrafficCountsAirportOperations(t *testing.T) {
 	lc := previewLaunchConfig()
 	lc.DepartureRates["KSTP"] = map[av.RunwayID]map[string]float32{"32": {"": 0}}
 	lc.DepartureEnabled["KSTP"] = map[av.RunwayID]map[string]bool{"32": {"": true}}
-	lc.DepartureBackground = map[string]map[av.RunwayID]map[string]bool{
+	lc.DepartureBackground = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 		"KSTP": {"32": {"": true}},
 	}
 
@@ -490,7 +490,7 @@ func TestTrafficCountsAirportOperations(t *testing.T) {
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
-	if got, want := operations, map[string]int{"KMSP": 3}; !maps.Equal(got, want) {
+	if got, want := operations, map[av.ICAOAirportCode]int{"KMSP": 3}; !maps.Equal(got, want) {
 		t.Errorf("operations = %v, want %v", got, want)
 	}
 	if got, want := totalCount(departures)+totalCount(arrivals), 3; got != want {
@@ -617,7 +617,7 @@ func TestMarkBackgroundDepartures(t *testing.T) {
 		},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			airports := map[string]*av.Airport{
+			airports := map[av.ICAOAirportCode]*av.Airport{
 				"KTST": {
 					DepartureController: test.airportController,
 					DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
@@ -630,7 +630,7 @@ func TestMarkBackgroundDepartures(t *testing.T) {
 				},
 			}
 			lc := &LaunchConfig{
-				DepartureRates: map[string]map[av.RunwayID]map[string]float32{"KTST": {"30L": {"": 10}}},
+				DepartureRates: map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{"KTST": {"30L": {"": 10}}},
 			}
 			MarkBackgroundTraffic(airports, nil, testControllerConfiguration(nil), testControlPositions(), lc)
 
@@ -644,7 +644,7 @@ func TestMarkBackgroundDepartures(t *testing.T) {
 // Only the exits in a category decide whether that category is background; a
 // worked route in another category is somebody else's traffic.
 func TestMarkBackgroundDeparturesByCategory(t *testing.T) {
-	airports := map[string]*av.Airport{
+	airports := map[av.ICAOAirportCode]*av.Airport{
 		"KTST": {
 			DepartureController: virtualPosition,
 			ExitCategories:      map[av.ExitID]string{"NORTH": "North", "SOUTH": "South"},
@@ -657,7 +657,7 @@ func TestMarkBackgroundDeparturesByCategory(t *testing.T) {
 		},
 	}
 	lc := &LaunchConfig{
-		DepartureRates: map[string]map[av.RunwayID]map[string]float32{
+		DepartureRates: map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{
 			"KTST": {"30L": {"North": 10, "South": 10}},
 		},
 	}
@@ -674,9 +674,9 @@ func TestMarkBackgroundDeparturesByCategory(t *testing.T) {
 // A runway with no route to judge is left alone: guessing wrong here hides
 // traffic the user will have to work.
 func TestMarkBackgroundDeparturesLeavesUnjudgedAlone(t *testing.T) {
-	airports := map[string]*av.Airport{"KTST": {DepartureController: virtualPosition}}
+	airports := map[av.ICAOAirportCode]*av.Airport{"KTST": {DepartureController: virtualPosition}}
 	lc := &LaunchConfig{
-		DepartureRates: map[string]map[av.RunwayID]map[string]float32{"KTST": {"30L": {"": 10}}},
+		DepartureRates: map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{"KTST": {"30L": {"": 10}}},
 	}
 	MarkBackgroundTraffic(airports, nil, testControllerConfiguration(nil), testControlPositions(), lc)
 
@@ -736,7 +736,7 @@ func TestMarkBackgroundInboundFlows(t *testing.T) {
 			flows := map[string]*av.InboundFlow{
 				"FLOW": {Arrivals: []av.Arrival{{
 					InitialController: test.initialController,
-					Airports:          []string{"KTST"},
+					Airports:          []av.ICAOAirportCode{"KTST"},
 					Waypoints:         testWaypoints(t, test.route),
 				}}},
 			}
@@ -763,7 +763,7 @@ func TestMarkBackgroundOverflights(t *testing.T) {
 		}}},
 		"NONE": {Arrivals: []av.Arrival{{
 			InitialController: humanPosition,
-			Airports:          []string{"KTST"},
+			Airports:          []av.ICAOAirportCode{"KTST"},
 			Waypoints:         testWaypoints(t, "FIXA FIXB"),
 		}}},
 	}
@@ -788,7 +788,7 @@ func TestMarkBackgroundInboundLeavesUnservedAirportAlone(t *testing.T) {
 	flows := map[string]*av.InboundFlow{
 		"FLOW": {Arrivals: []av.Arrival{{
 			InitialController: virtualPosition,
-			Airports:          []string{"KOTH"},
+			Airports:          []av.ICAOAirportCode{"KOTH"},
 			Waypoints:         testWaypoints(t, "FIXA FIXB"),
 		}}},
 	}

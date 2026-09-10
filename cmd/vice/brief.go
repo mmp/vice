@@ -166,9 +166,9 @@ func renderMarkdown(source string, selectedConfigs map[string]string, closedHead
 			SelectedConfig: func(group string) string { return selectedConfigs[group] },
 			IsActiveAirport: func(icao string) bool {
 				return slices.ContainsFunc(state.DepartureRunways,
-					func(rwy sim.DepartureRunway) bool { return rwy.Airport == icao }) ||
+					func(rwy sim.DepartureRunway) bool { return rwy.Airport == av.ICAOAirportCode(icao) }) ||
 					slices.ContainsFunc(state.ArrivalRunways,
-						func(rwy sim.ArrivalRunway) bool { return rwy.Airport == icao })
+						func(rwy sim.ArrivalRunway) bool { return rwy.Airport == av.ICAOAirportCode(icao) })
 			},
 			MatchesUserTCP: func(pattern string) bool {
 				tcps := state.GetPositionsForTCW(state.UserTCW)

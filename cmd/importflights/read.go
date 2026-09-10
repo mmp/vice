@@ -166,22 +166,22 @@ type airportCell struct {
 // substitute is a made-up airport standing on a real one's traffic, and the
 // cell its flights are filed under.
 type substitute struct {
-	airport string
+	airport av.ICAOAirportCode
 	cell    string
 }
 
 // importer accumulates the flights read from the source files.
 type importer struct {
-	airports    map[string]av.FAAAirport
+	airports    map[av.ICAOAirportCode]av.FAAAirport
 	performance map[string]av.AircraftPerformance
 	airlines    map[string]av.Airline
 
 	// cells records where each airport seen so far files its flights, since
 	// working that out over and over for tens of millions of rows is waste.
-	cells map[string]airportCell
+	cells map[av.ICAOAirportCode]airportCell
 
 	// donors maps each real airport to the made-up one that borrows its traffic.
-	donors map[string]substitute
+	donors map[av.ICAOAirportCode]substitute
 
 	symbols *symbols
 	buckets map[bucket][]record
@@ -223,9 +223,9 @@ type importer struct {
 	repairedTypes map[string]int64
 }
 
-func makeImporter(airports map[string]av.FAAAirport, performance map[string]av.AircraftPerformance,
+func makeImporter(airports map[av.ICAOAirportCode]av.FAAAirport, performance map[string]av.AircraftPerformance,
 	airlines map[string]av.Airline) (*importer, error) {
-	donors := make(map[string]substitute, len(av.FlightDataSubstitutes))
+	donors := make(map[av.ICAOAirportCode]substitute, len(av.FlightDataSubstitutes))
 	for fictional, donor := range av.FlightDataSubstitutes {
 		ap, ok := airports[fictional]
 		if !ok {
@@ -239,7 +239,7 @@ func makeImporter(airports map[string]av.FAAAirport, performance map[string]av.A
 		airports:        airports,
 		performance:     performance,
 		airlines:        airlines,
-		cells:           make(map[string]airportCell),
+		cells:           make(map[av.ICAOAirportCode]airportCell),
 		donors:          donors,
 		symbols:         makeSymbols(),
 		buckets:         make(map[bucket][]record),
@@ -253,7 +253,7 @@ func makeImporter(airports map[string]av.FAAAirport, performance map[string]av.A
 // cellFor returns the cell an airport's flights are filed under, and whether it
 // has flights of its own at all: an airport the FAA doesn't control is only
 // ever the far end of somebody else's flight.
-func (imp *importer) cellFor(icao string) (string, bool) {
+func (imp *importer) cellFor(icao av.ICAOAirportCode) (string, bool) {
 	if c, ok := imp.cells[icao]; ok {
 		return c.cell, c.keep
 	}
@@ -262,7 +262,7 @@ func (imp *importer) cellFor(icao string) (string, bool) {
 	if ap, ok := imp.airports[icao]; ok && ap.FAAControlled() {
 		c = airportCell{cell: av.FlightDataCell(ap.Location), keep: true}
 	}
-	imp.cells[strings.Clone(icao)] = c
+	imp.cells[av.ICAOAirportCode(strings.Clone(string(icao)))] = c
 	return c.cell, c.keep
 }
 
@@ -392,7 +392,7 @@ func (imp *importer) noteDay(timestamp string) {
 
 // add files one flight under the cell whose file it belongs in. Times are
 // recorded in UTC, as the source data gives them; the seconds are dropped.
-func (imp *importer) add(cell, airport, other, callsign, aircraftType, timestamp string,
+func (imp *importer) add(cell string, airport, other av.ICAOAirportCode, callsign, aircraftType, timestamp string,
 	departure bool) {
 	utc, ok := parseTime(timestamp)
 	if !ok {
@@ -413,13 +413,13 @@ func (imp *importer) add(cell, airport, other, callsign, aircraftType, timestamp
 	}
 }
 
-func (imp *importer) file(cell, airport, other, callsign, aircraftType string, utc time.Time,
+func (imp *importer) file(cell string, airport, other av.ICAOAirportCode, callsign, aircraftType string, utc time.Time,
 	departure bool) {
 	key := bucket{cell: cell, departure: departure}
 	imp.buckets[key] = append(imp.buckets[key], record{
-		airport:  imp.symbols.id(airport),
+		airport:  imp.symbols.id(string(airport)),
 		callsign: imp.symbols.id(callsign),
-		other:    imp.symbols.id(other),
+		other:    imp.symbols.id(string(other)),
 		acType:   imp.symbols.id(aircraftType),
 		minute:   uint16(utc.Hour()*60 + utc.Minute()),
 		day:      av.FlightDataDayNumber(utc),

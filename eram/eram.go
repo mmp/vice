@@ -315,14 +315,14 @@ type ERAMPane struct {
 	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D `json:"-"`
 
 	// ALTIM SET state (session)
-	AltimSetAirports []string           `json:"AltimSetAirports,omitempty"`
-	altimSetScroll   ViewScrollState    `json:"-"`
-	altimSetSelect   ViewSelectionState `json:"-"`
+	AltimSetAirports []av.ICAOAirportCode `json:"AltimSetAirports,omitempty"`
+	altimSetScroll   ViewScrollState      `json:"-"`
+	altimSetSelect   ViewSelectionState   `json:"-"`
 
 	// WX window state (session)
-	WXReportStations []string           `json:"WXReportStations,omitempty"`
-	wxScroll         ViewScrollState    `json:"-"`
-	wxSelect         ViewSelectionState `json:"-"`
+	WXReportStations []av.ICAOAirportCode `json:"WXReportStations,omitempty"`
+	wxScroll         ViewScrollState      `json:"-"`
+	wxSelect         ViewSelectionState   `json:"-"`
 
 	// Check list view toggle state (session). Each slice is parallel to
 	// checkListItems[…], with true = row is highlighted ("checked off").

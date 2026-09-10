@@ -609,7 +609,7 @@ func (s *Sim) nearestMETAR(pos math.Point2LL) (wx.METAR, float32) {
 	var elev float32
 	closestDist := float32(999999)
 	for _, metar := range s.State.METAR {
-		ap, ok := s.State.Airports[metar.ICAO]
+		ap, ok := s.State.Airports[av.ICAOAirportCode(metar.ICAO)]
 		if !ok {
 			continue
 		}
@@ -619,7 +619,7 @@ func (s *Sim) nearestMETAR(pos math.Point2LL) (wx.METAR, float32) {
 		}
 		closestDist = dist
 		nearest = metar
-		elev = float32(av.DB.Airports[metar.ICAO].Elevation)
+		elev = float32(av.DB.Airports[av.ICAOAirportCode(metar.ICAO)].Elevation)
 	}
 	return nearest, elev
 }

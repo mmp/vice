@@ -231,7 +231,7 @@ func TestInitialHeading(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{
 		Airways:  make(map[string][]Airway),
-		Airports: map[string]FAAAirport{"KXXX": {Elevation: 313}},
+		Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}},
 	}
 	t.Cleanup(func() { DB = oldDB })
 
@@ -322,7 +322,7 @@ func TestInitialHeading(t *testing.T) {
 
 func TestExitRouteFirstFixBehindRunway(t *testing.T) {
 	oldDB := DB
-	DB = &StaticDatabase{Airports: map[string]FAAAirport{"KXXX": {Elevation: 313}}}
+	DB = &StaticDatabase{Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}}}
 	t.Cleanup(func() { DB = oldDB })
 
 	const nmPerLongitude = 60

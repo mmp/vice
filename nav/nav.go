@@ -486,7 +486,7 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 		nav.FlightState.ArrivalAirportElevation = float32(ap.Elevation)
 
 		nav.FlightState.ArrivalAirport = av.Waypoint{
-			Fix:      fp.ArrivalAirport,
+			Fix:      string(fp.ArrivalAirport),
 			Location: ap.Location,
 		}
 		// VFR routes with SequenceVFRLanding get dynamic landing
@@ -761,7 +761,7 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 // hover on the scope
 func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log.Logger) string {
 	var lines []string
-	lines = append(lines, "Departure from "+fp.DepartureAirport+" to "+fp.ArrivalAirport)
+	lines = append(lines, "Departure from "+string(fp.DepartureAirport)+" to "+string(fp.ArrivalAirport))
 
 	if nav.Altitude.Assigned != nil {
 		if math.Abs(nav.FlightState.Altitude-*nav.Altitude.Assigned) < 100 {
@@ -1226,11 +1226,11 @@ func (nav *Nav) rateSummary() string {
 	return s
 }
 
-func (nav *Nav) DivertToAirport(airport string) {
+func (nav *Nav) DivertToAirport(airport av.ICAOAirportCode) {
 	ap := av.DB.Airports[airport]
 
 	wp := av.Waypoint{
-		Fix:      airport,
+		Fix:      string(airport),
 		Location: ap.Location,
 	}
 	nav.Waypoints = []av.Waypoint{wp}

@@ -85,18 +85,18 @@ func (s *Sim) getGoAroundController(ac *Aircraft) TCP {
 
 	// Check go_around_assignments for specific runway
 	if runway != "" {
-		if tcp, ok := s.GoAroundAssignments[airport+"/"+runway]; ok {
+		if tcp, ok := s.GoAroundAssignments[string(airport)+"/"+runway]; ok {
 			return tcp
 		}
 	}
 
 	// Check go_around_assignments for airport
-	if tcp, ok := s.GoAroundAssignments[airport]; ok {
+	if tcp, ok := s.GoAroundAssignments[string(airport)]; ok {
 		return tcp
 	}
 
 	// Fall back to departure_assignments for airport
-	if tcp, ok := s.DepartureAssignments[airport]; ok {
+	if tcp, ok := s.DepartureAssignments[string(airport)]; ok {
 		return tcp
 	}
 
@@ -106,7 +106,7 @@ func (s *Sim) getGoAroundController(ac *Aircraft) TCP {
 
 // holdDeparturesForGoAround sets GoAroundHoldUntil on the specified runways and
 // posts a status message to the go-around controller.
-func (s *Sim) holdDeparturesForGoAround(airport string, holdRunways []string, goAroundTCP TCP) {
+func (s *Sim) holdDeparturesForGoAround(airport av.ICAOAirportCode, holdRunways []string, goAroundTCP TCP) {
 	if len(holdRunways) == 0 {
 		return
 	}
@@ -125,7 +125,7 @@ func (s *Sim) holdDeparturesForGoAround(airport string, holdRunways []string, go
 			if rwyBase == av.RunwayID(holdRwy).Base() {
 				state.GoAroundHoldUntil = holdUntil
 				s.lg.Info("holding departures on runway due to go-around",
-					slog.String("airport", airport), slog.String("runway", rwyBase))
+					slog.String("airport", string(airport)), slog.String("runway", rwyBase))
 			}
 		}
 	}
@@ -166,7 +166,10 @@ func (s *Sim) checkFinalApproachSpacing() {
 		return
 	}
 
-	type runwayKey struct{ airport, runway string }
+	type runwayKey struct {
+		airport av.ICAOAirportCode
+		runway  string
+	}
 	aircraftByRunway := make(map[runwayKey][]*Aircraft)
 
 	// Group IFR aircraft with assigned approaches by airport+runway

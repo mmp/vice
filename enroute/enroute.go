@@ -80,14 +80,14 @@ type ZoneEntry struct {
 // Restriction caps or floors a matching flight's modeled vertical profile;
 // only altitude restrictions are supported.
 type Restriction struct {
-	Name                string          `json:"name"`
-	FlightType          string          `json:"flight_type"` // arrival | departure
-	Procedure           string          `json:"procedure"`
-	Mode                string          `json:"mode"` // line
-	LineStr             string          `json:"line"`
-	Line                []math.Point2LL `json:"-"`
-	AltitudeRestriction string          `json:"altitude_restriction"`
-	ArrivalAirports     []string        `json:"arrival_airports"`
+	Name                string               `json:"name"`
+	FlightType          string               `json:"flight_type"` // arrival | departure
+	Procedure           string               `json:"procedure"`
+	Mode                string               `json:"mode"` // line
+	LineStr             string               `json:"line"`
+	Line                []math.Point2LL      `json:"-"`
+	AltitudeRestriction string               `json:"altitude_restriction"`
+	ArrivalAirports     []av.ICAOAirportCode `json:"arrival_airports"`
 	Aircraft            struct {
 		Engine []string `json:"engine"`
 		Type   []string `json:"type"`
@@ -125,14 +125,16 @@ func (DBLocator) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	if n, ok := av.DB.Navaids[s]; ok {
 		return n.Location, ok
-	} else if ap, ok := av.DB.LookupAirport(s); ok {
+	} else if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(s)); ok {
+		return ap.Location, ok
+	} else if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(s)); ok {
 		return ap.Location, ok
 	} else if f, ok := av.DB.Fixes[s]; ok {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
 	} else if ident, rwy, found := strings.Cut(s, "-"); found && len(ident) >= 3 {
-		if r, ok := av.LookupRunway(ident, rwy); ok {
+		if r, ok := av.LookupRunway(av.ICAOAirportCode(ident), rwy); ok {
 			return r.Threshold, true
 		}
 	}
@@ -322,7 +324,7 @@ func procedureMatches(routeStr, proc string) bool {
 // restrictionApplies reports whether an altitude restriction applies to a flight
 // matching flight type, procedure, arrival airport, and aircraft
 // include/exclude criteria.
-func restrictionApplies(r Restriction, ft av.TypeOfFlight, routeStr, arrivalAirport string, attrs Attrs) bool {
+func restrictionApplies(r Restriction, ft av.TypeOfFlight, routeStr string, arrivalAirport av.ICAOAirportCode, attrs Attrs) bool {
 	switch r.FlightType {
 	case "arrival":
 		if ft != av.FlightTypeArrival {
@@ -746,7 +748,7 @@ func MakeTrajectory(wps []av.Waypoint, ft av.TypeOfFlight, acType string, cruise
 // ApplyRestrictions caps/floors the trajectory's vertical envelope for every
 // matching altitude restriction. A gate-line crossing (mode "line") is
 // approximated as applying to the whole trajectory; only altitude is honored.
-func (t *Trajectory) ApplyRestrictions(restrictions []Restriction, routeStr, arrivalAirport string, attrs Attrs) {
+func (t *Trajectory) ApplyRestrictions(restrictions []Restriction, routeStr string, arrivalAirport av.ICAOAirportCode, attrs Attrs) {
 	for _, r := range restrictions {
 		t.applyRestriction(r, t.FlightType, routeStr, arrivalAirport, attrs)
 	}
@@ -757,7 +759,7 @@ func (t *Trajectory) ApplyRestrictions(restrictions []Restriction, routeStr, arr
 // notation av.ParseAltitudeRestriction accepts: "14000+" for at-or-above,
 // "14000-" for at-or-below, "14000" for a hard "at", and "10000-14000" for a
 // range.
-func (t *Trajectory) applyRestriction(r Restriction, ft av.TypeOfFlight, routeStr, arrivalAirport string, attrs Attrs) {
+func (t *Trajectory) applyRestriction(r Restriction, ft av.TypeOfFlight, routeStr string, arrivalAirport av.ICAOAirportCode, attrs Attrs) {
 	if !restrictionApplies(r, ft, routeStr, arrivalAirport, attrs) {
 		return
 	}

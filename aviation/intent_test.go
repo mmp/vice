@@ -15,7 +15,7 @@ func renderIntentForTest(intent CommandIntent, seed uint64) string {
 	if DB == nil {
 		DB = &StaticDatabase{
 			Navaids:  map[string]Navaid{},
-			Airports: map[string]FAAAirport{},
+			Airports: map[ICAOAirportCode]FAAAirport{},
 		}
 	}
 

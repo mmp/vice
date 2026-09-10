@@ -507,17 +507,18 @@ func TestRouteWaypoints(t *testing.T) {
 func TestRouteSTAR(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{
-		Airports: map[string]FAAAirport{
-			"KSAN": {Id: "KSAN", STARs: map[string]STAR{"LUCKI1": {}}},
-			"KJFK": {Id: "KJFK", STARs: map[string]STAR{"LENDY6": {}, "PARCH4": {}}},
-			"KFLL": {Id: "KFLL", STARs: map[string]STAR{"CUUDA4": {}}},
+		Airports: map[ICAOAirportCode]FAAAirport{
+			"KSAN": {Id: "KSAN", LocalCode: "SAN", STARs: map[string]STAR{"LUCKI1": {}}},
+			"KJFK": {Id: "KJFK", LocalCode: "JFK", STARs: map[string]STAR{"LENDY6": {}, "PARCH4": {}}},
+			"KFLL": {Id: "KFLL", LocalCode: "FLL", STARs: map[string]STAR{"CUUDA4": {}}},
 		},
 		Airways: map[string][]Airway{"Q86": nil, "J121": nil},
 	}
 	t.Cleanup(func() { DB = oldDB })
 
 	for _, tc := range []struct {
-		route, icao string
+		route       string
+		icao        ICAOAirportCode
 		star, entry string
 	}{
 		{"KORD PIPPN PWE PLNDL Q86 TTRUE LUCKI1 KSAN", "KSAN", "LUCKI1", "TTRUE"},
@@ -1041,7 +1042,7 @@ func TestRouteAltitudeFloor(t *testing.T) {
 
 	oldDB := DB
 	DB = &StaticDatabase{
-		Airports: map[string]FAAAirport{
+		Airports: map[ICAOAirportCode]FAAAirport{
 			"KSNA": {Id: "KSNA", SIDs: map[string]SID{
 				"FINZZ3": {EnrouteTransitions: map[string]WaypointArray{
 					"MISEN": {atOrBelow("STREL", 5000), atOrAbove("FINZZ", 10000),
@@ -1077,8 +1078,9 @@ func TestRouteAltitudeFloor(t *testing.T) {
 	t.Cleanup(func() { DB = oldDB })
 
 	for _, tc := range []struct {
-		route, from, to string
-		floor           int
+		route    string
+		from, to ICAOAirportCode
+		floor    int
 	}{
 		// The SID requires 16,000 and the STAR 24,000.
 		{"FINZZ3 MISEN RNDRZ4", "KSNA", "KLAS", 24000},

@@ -100,7 +100,7 @@ type ScenarioCatalog struct {
 	Facility         string
 	ARTCC            string
 	Area             string
-	Airports         []string // ICAO codes of airports in this scenario group
+	Airports         []av.ICAOAirportCode // airports in this scenario group
 }
 
 type ScenarioSpec struct {
@@ -124,8 +124,8 @@ type ScenarioSpec struct {
 	Center           math.Point2LL
 }
 
-func (s *ScenarioSpec) AllAirports() []string {
-	allAirports := make(map[string]bool)
+func (s *ScenarioSpec) AllAirports() []av.ICAOAirportCode {
+	allAirports := make(map[av.ICAOAirportCode]bool)
 	for _, runway := range s.DepartureRunways {
 		allAirports[runway.Airport] = true
 	}
@@ -885,7 +885,7 @@ type TrafficCountsArgs struct {
 type TrafficCountsResult struct {
 	Departures        []uint16
 	Arrivals          []uint16
-	AirportOperations map[string]int
+	AirportOperations map[av.ICAOAirportCode]int
 }
 
 // GetTrafficCounts reports how much published traffic a scenario would fly starting at a given

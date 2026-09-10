@@ -205,10 +205,10 @@ func runLint(lg *log.Logger) error {
 		return fmt.Errorf("override file validation failed")
 	}
 
-	scenarioAirports := make(map[string]map[string]any)
+	scenarioAirports := make(map[string]map[av.ICAOAirportCode]any)
 	for tracon, scenarios := range scenarioGroups {
 		if scenarioAirports[tracon] == nil {
-			scenarioAirports[tracon] = make(map[string]any)
+			scenarioAirports[tracon] = make(map[av.ICAOAirportCode]any)
 		}
 		for _, sg := range scenarios {
 			for name := range sg.Airports {
@@ -218,7 +218,7 @@ func runLint(lg *log.Logger) error {
 	}
 
 	for tracon, ap := range util.SortedMap(scenarioAirports) {
-		airports := util.SortedMapKeys(ap)
+		airports := util.MapSlice(util.SortedMapKeys(ap), func(icao av.ICAOAirportCode) string { return string(icao) })
 		fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
 	}
 	return nil
@@ -356,7 +356,7 @@ func runShowRoutes() error {
 	if err := cliInit(); err != nil {
 		return err
 	}
-	return av.PrintCIFPRoutes(*showRoutes)
+	return av.PrintCIFPRoutes(av.ICAOAirportCode(*showRoutes))
 }
 
 func runListMaps(lg *log.Logger) error {

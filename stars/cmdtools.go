@@ -78,7 +78,7 @@ func registerToolsCommands() {
 	})
 
 	// 6.5.2 Toggle display of ghost data blocks for specified runway pair
-	toggleCRDAGhostsForRunwayPair := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap string, idx int) error {
+	toggleCRDAGhostsForRunwayPair := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap av.FAAAirportCode, idx int) error {
 		if len(sp.CRDAPairs) == 0 {
 			return ErrSTARSIllegalFunction
 		}
@@ -99,8 +99,8 @@ func registerToolsCommands() {
 			if da == "" {
 				return ErrSTARSIllegalFunction
 			}
-			ap := av.TrimICAOPrefix(da)
-			if _, ok := av.DB.LookupAirport(ap); !ok {
+			ap, ok := av.ICAOAirportToFAA(da)
+			if !ok {
 				panic(da)
 			}
 			return toggleCRDAGhostsForRunwayPair(sp, ctx, ps, ap, idx)
@@ -116,19 +116,19 @@ func registerToolsCommands() {
 				runwayState.DrawCourseLines = false
 			}
 			// TODO: if this results in disabling ghosting on both runways in a pair, remove any CRDA maps from the display
-			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Region + " GHOSTING " + s}
+			return CommandStatus{Output: string(runwayState.Airport) + " " + runwayState.Region + " GHOSTING " + s}
 		})
 	registerCommand(CommandModeMultiFunc, "N[CRDA_REGION_ID]E",
 		func(sp *STARSPane, runwayState *CRDARunwayState) CommandStatus {
 			runwayState.Enabled = true
-			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Region + " GHOSTING ENABLED"}
+			return CommandStatus{Output: string(runwayState.Airport) + " " + runwayState.Region + " GHOSTING ENABLED"}
 		})
 	registerCommand(CommandModeMultiFunc, "N[CRDA_REGION_ID]I",
 		func(sp *STARSPane, runwayState *CRDARunwayState) CommandStatus {
 			runwayState.Enabled = false
 			runwayState.DrawQualificationRegion = false
 			runwayState.DrawCourseLines = false
-			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Region + " GHOSTING INHIBITED"}
+			return CommandStatus{Output: string(runwayState.Airport) + " " + runwayState.Region + " GHOSTING INHIBITED"}
 		})
 
 	// 6.5.4 Toggle display of a single ghost data block at this TCW/TDW

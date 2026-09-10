@@ -57,7 +57,7 @@ func TestMakeLaunchConfigEnabledDefaults(t *testing.T) {
 
 	lc := MakeLaunchConfig(dep, 1, 0, nil, inbound, false)
 
-	depWant := map[string]map[av.RunwayID]map[string]bool{
+	depWant := map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 		"KJFK": {"13R": {"North": true, "Water": false}},
 		"KLGA": {"13": {"": true}},
 	}
@@ -85,17 +85,17 @@ func TestMakeLaunchConfigEnabledDefaults(t *testing.T) {
 
 // departureEnabledEqual reports whether two airport -> runway -> category ->
 // enabled maps hold the same values.
-func departureEnabledEqual(a, b map[string]map[av.RunwayID]map[string]bool) bool {
+func departureEnabledEqual(a, b map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool) bool {
 	return maps.EqualFunc(a, b, func(a, b map[av.RunwayID]map[string]bool) bool {
 		return maps.EqualFunc(a, b, maps.Equal)
 	})
 }
 
 func TestDepartureEnabledEqual(t *testing.T) {
-	a := map[string]map[av.RunwayID]map[string]bool{
+	a := map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 		"KJFK": {"13R": {"North": true, "Water": false}},
 	}
-	b := map[string]map[av.RunwayID]map[string]bool{
+	b := map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 		"KJFK": {"13R": {"North": true, "Water": false}},
 	}
 	if !departureEnabledEqual(a, b) {
@@ -120,11 +120,11 @@ func backgroundRateConfig() *LaunchConfig {
 	return &LaunchConfig{
 		DepartureRateScale:   1,
 		InboundFlowRateScale: 1,
-		DepartureRates: map[string]map[av.RunwayID]map[string]float32{
+		DepartureRates: map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{
 			"KMSP": {"30L": {"": 20}},
 			"KSTP": {"32": {"": 5}},
 		},
-		DepartureBackground: map[string]map[av.RunwayID]map[string]bool{
+		DepartureBackground: map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 			"KSTP": {"32": {"": true}},
 		},
 		InboundFlowRates: map[string]map[string]float32{
@@ -179,12 +179,12 @@ func TestWorkedRatesExcludeBackgroundTraffic(t *testing.T) {
 func TestWorkedAirportRates(t *testing.T) {
 	lc := backgroundRateConfig()
 
-	if got, want := lc.WorkedAirportRates(), map[string]float32{"KMSP": 50}; !maps.Equal(got, want) {
+	if got, want := lc.WorkedAirportRates(), map[av.ICAOAirportCode]float32{"KMSP": 50}; !maps.Equal(got, want) {
 		t.Errorf("WorkedAirportRates = %v, want %v", got, want)
 	}
 
 	lc.DepartureRateScale, lc.InboundFlowRateScale = 2, 2
-	if got, want := lc.WorkedAirportRates(), map[string]float32{"KMSP": 100}; !maps.Equal(got, want) {
+	if got, want := lc.WorkedAirportRates(), map[av.ICAOAirportCode]float32{"KMSP": 100}; !maps.Equal(got, want) {
 		t.Errorf("scaled WorkedAirportRates = %v, want %v", got, want)
 	}
 }
@@ -212,10 +212,10 @@ func TestWorkedRatesWithoutClassification(t *testing.T) {
 func TestWorkedFlowCounts(t *testing.T) {
 	lc := backgroundRateConfig()
 
-	if got, want := lc.WorkedDepartureCounts(), map[string]int{"KMSP": 1}; !maps.Equal(got, want) {
+	if got, want := lc.WorkedDepartureCounts(), map[av.ICAOAirportCode]int{"KMSP": 1}; !maps.Equal(got, want) {
 		t.Errorf("WorkedDepartureCounts = %v, want %v", got, want)
 	}
-	if got, want := lc.WorkedInboundFlowCounts(), map[string]int{"KMSP": 1}; !maps.Equal(got, want) {
+	if got, want := lc.WorkedInboundFlowCounts(), map[av.ICAOAirportCode]int{"KMSP": 1}; !maps.Equal(got, want) {
 		t.Errorf("WorkedInboundFlowCounts = %v, want %v", got, want)
 	}
 	if got, want := lc.WorkedOverflightGroups(), []string{"WORKED"}; !slices.Equal(got, want) {
@@ -242,10 +242,10 @@ func TestWorkedFlowCountsWithoutClassification(t *testing.T) {
 	lc := backgroundRateConfig()
 	lc.DepartureBackground, lc.InboundFlowBackground = nil, nil
 
-	if got, want := lc.WorkedDepartureCounts(), map[string]int{"KMSP": 1, "KSTP": 1}; !maps.Equal(got, want) {
+	if got, want := lc.WorkedDepartureCounts(), map[av.ICAOAirportCode]int{"KMSP": 1, "KSTP": 1}; !maps.Equal(got, want) {
 		t.Errorf("WorkedDepartureCounts = %v, want %v", got, want)
 	}
-	if got, want := lc.WorkedInboundFlowCounts(), map[string]int{"KMSP": 2}; !maps.Equal(got, want) {
+	if got, want := lc.WorkedInboundFlowCounts(), map[av.ICAOAirportCode]int{"KMSP": 2}; !maps.Equal(got, want) {
 		t.Errorf("WorkedInboundFlowCounts = %v, want %v", got, want)
 	}
 	if got, want := lc.WorkedOverflightGroups(), []string{"BACKGROUND", "WORKED"}; !slices.Equal(got, want) {

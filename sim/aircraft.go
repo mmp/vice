@@ -283,12 +283,12 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 	// only the ones the aircraft is near: an airport 100nm behind or ahead
 	// is never named, and carrying it only costs a slot in the fix
 	// vocabulary and in the whisper prompt.
-	for _, id := range []string{ac.FlightPlan.ArrivalAirport, ac.FlightPlan.DepartureAirport} {
+	for _, id := range []av.ICAOAirportCode{ac.FlightPlan.ArrivalAirport, ac.FlightPlan.DepartureAirport} {
 		if id == "" {
 			continue
 		}
-		if ap, ok := av.DB.LookupAirport(id); !ok || math.NMDistance2LL(p, ap.Location) <= 100 {
-			fixes = append(fixes, id)
+		if ap, ok := av.DB.LookupICAOAirport(id); !ok || math.NMDistance2LL(p, ap.Location) <= 100 {
+			fixes = append(fixes, string(id))
 		}
 	}
 
@@ -385,7 +385,7 @@ func (ac *Aircraft) GetRouteFixes() []string {
 	return fixes
 }
 
-func (ac *Aircraft) InitializeFlightPlan(r av.FlightRules, acType, dep, arr string) {
+func (ac *Aircraft) InitializeFlightPlan(r av.FlightRules, acType string, dep, arr av.ICAOAirportCode) {
 	ac.FlightPlan = av.FlightPlan{
 		Rules:            r,
 		AircraftType:     acType,
@@ -714,7 +714,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 	return nil
 }
 
-func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string, dep *av.Departure,
+func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAOAirportCode, dep *av.Departure,
 	runway string, exitRoute av.ExitRoute, cruise CruiseLimits, nmPerLongitude float32,
 	magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) error {
 	wp := util.DuplicateSlice(exitRoute.Waypoints)
@@ -1149,7 +1149,7 @@ func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {
 	return fp
 }
 
-func (ac *Aircraft) DivertToAirport(ap string) {
+func (ac *Aircraft) DivertToAirport(ap av.ICAOAirportCode) {
 	ac.FlightPlan.ArrivalAirport = ap
 	ac.TypeOfFlight = av.FlightTypeArrival
 

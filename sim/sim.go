@@ -55,17 +55,17 @@ type Sim struct {
 
 	wxModel    *wx.Model
 	wxProvider *wx.Provider
-	METAR      map[string][]wx.METAR
+	METAR      map[av.ICAOAirportCode][]wx.METAR
 
-	ATISChangedTime map[string]Time
+	ATISChangedTime map[av.ICAOAirportCode]Time
 
 	eventStream *EventStream
 	lg          *log.Logger
 
 	// Airport -> runway -> state
-	DepartureState map[string]map[av.RunwayID]*RunwayLaunchState
+	DepartureState map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState
 	// Airport -> pattern state
-	PatternState   map[string]*PatternState
+	PatternState   map[av.ICAOAirportCode]*PatternState
 	NextVFFRequest Time
 
 	Handoffs  map[ACID]Handoff
@@ -131,7 +131,7 @@ type Sim struct {
 	// because the scenario lands no traffic there, and discardedClashes the
 	// published flights dropped for each callsign something else was already
 	// flying; each is reported the first time it turns up.
-	discardedArrivals map[string]int
+	discardedArrivals map[av.ICAOAirportCode]int
 	discardedClashes  map[string]int
 
 	// The manual launch slots' pending flights, serialized with the sim so a
@@ -141,11 +141,11 @@ type Sim struct {
 	PendingDepartures  map[string]*ScheduledDeparture
 	PendingArrivals    map[string]*ScheduledArrival
 	PendingOverflights map[string]*ScheduledOverflight
-	PendingVFR         map[string]*Aircraft
+	PendingVFR         map[av.ICAOAirportCode]*Aircraft
 
 	// nextVFRSample throttles retries after failed VFR route sampling; it is
 	// just a retry timer, so a restored sim starting it fresh is fine.
-	nextVFRSample map[string]Time
+	nextVFRSample map[av.ICAOAirportCode]Time
 
 	// The launch control slots most recently built, cached per publication
 	// generation since every client's state update carries them.
@@ -198,7 +198,7 @@ type NewSimConfiguration struct {
 	Description string
 	Brief       string
 
-	Airports           map[string]*av.Airport
+	Airports           map[av.ICAOAirportCode]*av.Airport
 	DepartureRunways   []DepartureRunway
 	ArrivalRunways     []ArrivalRunway
 	InboundFlows       map[string]*av.InboundFlow
@@ -246,8 +246,8 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 	s := &Sim{
 		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
 
-		DepartureState: make(map[string]map[av.RunwayID]*RunwayLaunchState),
-		PatternState:   make(map[string]*PatternState),
+		DepartureState: make(map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState),
+		PatternState:   make(map[av.ICAOAirportCode]*PatternState),
 
 		ControlPositions:     config.ControlPositions,
 		InboundAssignments:   config.ControllerConfiguration.InboundAssignments,
@@ -262,11 +262,11 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		VFRReportingPoints: config.VFRReportingPoints,
 
-		wxModel: wx.MakeModel(config.WXProvider, config.Facility, config.FacilityAdaptation.WeatherStation,
+		wxModel: wx.MakeModel(config.WXProvider, config.Facility, string(config.FacilityAdaptation.WeatherStation),
 			config.StartTime.UTC(), lg),
-		METAR: make(map[string][]wx.METAR),
+		METAR: make(map[av.ICAOAirportCode][]wx.METAR),
 
-		ATISChangedTime: make(map[string]Time),
+		ATISChangedTime: make(map[av.ICAOAirportCode]Time),
 
 		eventStream: NewEventStream(lg),
 		lg:          lg,
@@ -482,7 +482,7 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 
 	s.wxProvider = provider
 	if s.wxModel == nil {
-		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.FacilityAdaptation.WeatherStation,
+		s.wxModel = wx.MakeModel(provider, s.State.Facility, string(s.State.FacilityAdaptation.WeatherStation),
 			s.State.SimTime.Time(), s.lg)
 	}
 
@@ -1495,7 +1495,7 @@ func (s *Sim) updateState() {
 			s.METAR[ap] = metar
 			if len(metar) > 0 {
 				if s.State.METAR == nil {
-					s.State.METAR = make(map[string]wx.METAR)
+					s.State.METAR = make(map[av.ICAOAirportCode]wx.METAR)
 				}
 				old := s.State.METAR[ap]
 				if old.Raw != "" && old.Raw != metar[0].Raw {
@@ -1515,8 +1515,8 @@ func (s *Sim) updateState() {
 // av.ErrUnknownAirport if the ICAO is not in the aviation database;
 // silently no-ops when the airport is known but has no bundled METAR
 // data or when METAR has already been loaded for it.
-func (s *Sim) AddMETARAirport(icao string) error {
-	if _, ok := av.DB.LookupAirport(icao); !ok {
+func (s *Sim) AddMETARAirport(icao av.ICAOAirportCode) error {
+	if _, ok := av.DB.LookupICAOAirport(icao); !ok {
 		return av.ErrUnknownAirport
 	}
 
@@ -1527,7 +1527,7 @@ func (s *Sim) AddMETARAirport(icao string) error {
 		return nil
 	}
 
-	apmetar, err := wx.GetMETAR([]string{icao})
+	apmetar, err := wx.GetMETAR([]av.ICAOAirportCode{icao})
 	if err != nil {
 		return err
 	}
@@ -1552,8 +1552,8 @@ func (s *Sim) AddMETARAirport(icao string) error {
 // s.ATISChangedTime[icao] to the first entry's observation time. Returns
 // the first entry of the window (used to seed s.State.METAR) and whether
 // any entries were loaded. Caller is responsible for synchronization.
-func (s *Sim) loadMETARWindow(icao string, msoa wx.METARSOA, startTime time.Time) (wx.METAR, bool) {
-	metar := msoa.Decode(icao)
+func (s *Sim) loadMETARWindow(icao av.ICAOAirportCode, msoa wx.METARSOA, startTime time.Time) (wx.METAR, bool) {
+	metar := msoa.Decode(string(icao))
 	if len(metar) == 0 {
 		return wx.METAR{}, false
 	}
@@ -2154,18 +2154,18 @@ func (s *Sim) GetUserState() *UserState {
 
 // GetDepartureController returns the TCP responsible for a departure given the
 // airport, runway, and SID. Checks in order: airport/SID, airport/runway, airport only.
-func (s *Sim) GetDepartureController(airport, runway, sid string) TCP {
+func (s *Sim) GetDepartureController(airport av.ICAOAirportCode, runway, sid string) TCP {
 	if sid != "" {
-		if tcp, ok := s.DepartureAssignments[airport+"/"+sid]; ok {
+		if tcp, ok := s.DepartureAssignments[string(airport)+"/"+sid]; ok {
 			return tcp
 		}
 	}
 	if runway != "" {
-		if tcp, ok := s.DepartureAssignments[airport+"/"+runway]; ok {
+		if tcp, ok := s.DepartureAssignments[string(airport)+"/"+runway]; ok {
 			return tcp
 		}
 	}
-	if tcp, ok := s.DepartureAssignments[airport]; ok {
+	if tcp, ok := s.DepartureAssignments[string(airport)]; ok {
 		return tcp
 	}
 	return ""

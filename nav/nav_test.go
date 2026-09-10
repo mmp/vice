@@ -58,9 +58,9 @@ type eventTrigger struct {
 
 // ArrivalConfig configures a test arrival flight.
 type ArrivalConfig struct {
-	Waypoints        string  // waypoint string ("PARCH CAMRN/a13000 ...")
-	DepartureAirport string  // ICAO code
-	ArrivalAirport   string  // ICAO code
+	Waypoints        string // waypoint string ("PARCH CAMRN/a13000 ...")
+	DepartureAirport av.ICAOAirportCode
+	ArrivalAirport   av.ICAOAirportCode
 	AircraftType     string  // e.g. "A320", "B738"
 	InitialAltitude  float32 // starting altitude in feet
 	InitialSpeed     float32 // starting IAS in knots
@@ -122,7 +122,7 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 	navWps := make([]av.Waypoint, len(wps)+1)
 	copy(navWps, wps)
 	navWps[len(wps)] = av.Waypoint{
-		Fix:      cfg.ArrivalAirport,
+		Fix:      string(cfg.ArrivalAirport),
 		Location: arrAirport.Location,
 	}
 
@@ -154,7 +154,7 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 			ArrivalAirportLocation:    arrAirport.Location,
 			ArrivalAirportElevation:   float32(arrAirport.Elevation),
 			ArrivalAirport: av.Waypoint{
-				Fix:      cfg.ArrivalAirport,
+				Fix:      string(cfg.ArrivalAirport),
 				Location: arrAirport.Location,
 			},
 		},
@@ -803,7 +803,7 @@ type ApproachGeometry struct {
 
 // LookupApproachGeometry resolves the named approach from the aviation
 // database, initializes its waypoint locations, and returns the geometry.
-func LookupApproachGeometry(t testing.TB, airport, approachID string) ApproachGeometry {
+func LookupApproachGeometry(t testing.TB, airport av.ICAOAirportCode, approachID string) ApproachGeometry {
 	t.Helper()
 
 	faa, ok := av.DB.Airports[airport]

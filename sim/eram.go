@@ -16,7 +16,7 @@ import (
 // engine tokens come from the aircraft-performance database's engine type
 // (J=jet, T=turboprop, anything else=prop); nav is "conventional" for
 // non-RNAV flights.
-func coordAttrsFor(nasFp *NASFlightPlan, ac *Aircraft, destAirport string) enroute.Attrs {
+func coordAttrsFor(nasFp *NASFlightPlan, ac *Aircraft, destAirport av.ICAOAirportCode) enroute.Attrs {
 	nav := "conventional"
 	if nasFp.RNAV {
 		nav = "rnav"
@@ -25,7 +25,7 @@ func coordAttrsFor(nasFp *NASFlightPlan, ac *Aircraft, destAirport string) enrou
 		Engine:        engineClass(nasFp.AircraftType),
 		Nav:           nav,
 		ACType:        nasFp.AircraftType,
-		DestAirport:   destAirport,
+		DestAirport:   string(destAirport),
 		AssignedLevel: assignedLevelForCoord(nasFp, ac),
 	}
 }
@@ -95,7 +95,7 @@ func (s *Sim) deriveERAMFixPair(nasFp *NASFlightPlan, ac *Aircraft) enroute.Resu
 	// boundary-crossing route/zone partition. Skip route/zone selection
 	// entirely; there is no interfacility handoff.
 	if nasFp.TypeOfFlight == av.FlightTypeDeparture && s.State.Airports[destAirport] != nil {
-		exit := av.TrimICAOPrefix(destAirport) // KCPP -> CPP, matching how EntryFix strips it
+		exit := av.AirportDisplayId(destAirport) // KCPP -> CPP, matching how EntryFix strips it
 		nasFp.ExitFix = exit
 		nasFp.CoordinationFix = exit
 		// The exit fix is a local-arrival airport; the caller reclassifies the

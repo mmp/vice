@@ -383,7 +383,7 @@ func buildOpusPrompt(procedures map[string]*ProcedureInfo, procedureType string)
 		// Get airports
 		airports := make([]string, 0, len(info.Airports))
 		for ap := range info.Airports {
-			airports = append(airports, ap)
+			airports = append(airports, string(ap))
 		}
 		fmt.Fprintf(&sb, "- %s (variants: %s) at %s\n",
 			baseName, strings.Join(fullNames, ", "), strings.Join(airports, ", "))

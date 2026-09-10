@@ -21,15 +21,15 @@ import (
 func TestParseAirportList(t *testing.T) {
 	for _, tc := range []struct {
 		value    string
-		expected []string
+		expected []av.ICAOAirportCode
 	}{
-		{"['KMSP']", []string{"KMSP"}},
-		{"['KACT', 'KAUS', 'KBBD']", []string{"KACT", "KAUS", "KBBD"}},
-		{`["KMSP", "KATL"]`, []string{"KMSP", "KATL"}},
+		{"['KMSP']", []av.ICAOAirportCode{"KMSP"}},
+		{"['KACT', 'KAUS', 'KBBD']", []av.ICAOAirportCode{"KACT", "KAUS", "KBBD"}},
+		{`["KMSP", "KATL"]`, []av.ICAOAirportCode{"KMSP", "KATL"}},
 		{"-", nil},
 		{"", nil},
 		{"[]", nil},
-		{"['KMSP', 'X23']", []string{"KMSP"}}, // three-character ids aren't ICAO codes
+		{"['KMSP', 'X23']", []av.ICAOAirportCode{"KMSP"}}, // three-character ids aren't ICAO codes
 	} {
 		if got := parseAirportList(tc.value); !slices.Equal(got, tc.expected) {
 			t.Errorf("parseAirportList(%q) = %v, expected %v", tc.value, got, tc.expected)
@@ -40,13 +40,13 @@ func TestParseAirportList(t *testing.T) {
 func TestParseRoute(t *testing.T) {
 	for _, tc := range []struct {
 		value    string
-		expected []string
+		expected []av.ICAOAirportCode
 	}{
-		{"KMSP-KSTL", []string{"KMSP", "KSTL"}},
-		{"KMSP-KAUS-KMSP", []string{"KMSP", "KAUS", "KMSP"}},
+		{"KMSP-KSTL", []av.ICAOAirportCode{"KMSP", "KSTL"}},
+		{"KMSP-KAUS-KMSP", []av.ICAOAirportCode{"KMSP", "KAUS", "KMSP"}},
 		{"-", nil},
 		{"", nil},
-		{"KMSP-", []string{"KMSP"}},
+		{"KMSP-", []av.ICAOAirportCode{"KMSP"}},
 	} {
 		if got := parseRoute(tc.value); !slices.Equal(got, tc.expected) {
 			t.Errorf("parseRoute(%q) = %v, expected %v", tc.value, got, tc.expected)
@@ -56,14 +56,14 @@ func TestParseRoute(t *testing.T) {
 
 // at and over are the two ways an end of a track comes out: the aircraft was at
 // the airport, or the airport was merely the nearest of several candidates.
-func at(airport string) endpoint   { return endpoint{airport: airport, atAirport: true} }
-func over(airport string) endpoint { return endpoint{airport: airport} }
+func at(airport av.ICAOAirportCode) endpoint   { return endpoint{airport: airport, atAirport: true} }
+func over(airport av.ICAOAirportCode) endpoint { return endpoint{airport: airport} }
 
 func TestResolveEndpoints(t *testing.T) {
 	for _, tc := range []struct {
 		name                string
 		origin, destination trackEnd
-		route               []string
+		route               []av.ICAOAirportCode
 		from, to            endpoint
 	}{
 		{
@@ -72,25 +72,25 @@ func TestResolveEndpoints(t *testing.T) {
 		},
 		{
 			name: "both known, itinerary ignored", origin: noTrack("KMSP"),
-			destination: noTrack("KSTL"), route: []string{"KORD", "KATL"},
+			destination: noTrack("KSTL"), route: []av.ICAOAirportCode{"KORD", "KATL"},
 			from: at("KMSP"), to: at("KSTL"),
 		},
 		{
 			name: "origin picked from itinerary", origin: noTrack("KACT", "KAUS", "KBBD"),
-			destination: noTrack("KMSP"), route: []string{"KAUS", "KMSP"},
+			destination: noTrack("KMSP"), route: []av.ICAOAirportCode{"KAUS", "KMSP"},
 			from: at("KAUS"), to: at("KMSP"),
 		},
 		{
 			name: "leg picked from round trip", origin: noTrack("KMSP"),
-			destination: noTrack("KBOI", "KTWF"), route: []string{"KMSP", "KBOI", "KMSP"},
+			destination: noTrack("KBOI", "KTWF"), route: []av.ICAOAirportCode{"KMSP", "KBOI", "KMSP"},
 			from: at("KMSP"), to: at("KBOI"),
 		},
 		{
-			name: "no track, single leg itinerary", route: []string{"KMSP", "KSTL"},
+			name: "no track, single leg itinerary", route: []av.ICAOAirportCode{"KMSP", "KSTL"},
 			from: at("KMSP"), to: at("KSTL"),
 		},
 		{
-			name: "no track, ambiguous round trip", route: []string{"KMSP", "KAUS", "KMSP"},
+			name: "no track, ambiguous round trip", route: []av.ICAOAirportCode{"KMSP", "KAUS", "KMSP"},
 		},
 		{
 			name:   "ambiguous both ends, nothing to place them with",
@@ -101,7 +101,7 @@ func TestResolveEndpoints(t *testing.T) {
 			// other flight, so the departure survives; nothing says which of
 			// the two destinations it flew to.
 			name: "itinerary disagrees with the track", origin: noTrack("KMSP"),
-			destination: noTrack("KSTL", "KORD"), route: []string{"KATL", "KMCO"},
+			destination: noTrack("KSTL", "KORD"), route: []av.ICAOAirportCode{"KATL", "KMCO"},
 			from: at("KMSP"),
 		},
 		{
@@ -133,7 +133,7 @@ func TestResolveEndpoints(t *testing.T) {
 			// Nuys, fail the guard, and lose a Burbank departure we have today.
 			name:   "itinerary outranks the nearest airport",
 			origin: aloft(vanNuys, 6000, "KBUR", "KVNY", "KWHP"), destination: noTrack("KLAS"),
-			route: []string{"KBUR", "KLAS"}, from: at("KBUR"), to: at("KLAS"),
+			route: []av.ICAOAirportCode{"KBUR", "KLAS"}, from: at("KBUR"), to: at("KLAS"),
 		},
 		{
 			name:        "both ends ambiguous, each placed on its own",
@@ -178,7 +178,7 @@ func TestParseTrackEnd(t *testing.T) {
 	}
 
 	e := parseTrackEnd("['KVNY']", "34.21", "-118.49", "ground")
-	if !slices.Equal(e.candidates, []string{"KVNY"}) {
+	if !slices.Equal(e.candidates, []av.ICAOAirportCode{"KVNY"}) {
 		t.Errorf("candidates = %v", e.candidates)
 	}
 	if !e.hasPosition || e.position != (math.Point2LL{-118.49, 34.21}) {
@@ -319,7 +319,7 @@ func TestParseTime(t *testing.T) {
 // testAirports is an airport database with just enough in it to import: a
 // couple of US airports, one abroad, and the made-up ones the Academy flies,
 // which carry no country of their own just as custom_airports.json leaves them.
-var testAirports = map[string]av.FAAAirport{
+var testAirports = map[av.ICAOAirportCode]av.FAAAirport{
 	"KMSP": {Country: "US", Elevation: 841, Location: math.Point2LL{-93.22, 44.88}},
 	"KORD": {Country: "US", Elevation: 672, Location: math.Point2LL{-87.90, 41.98}},
 	"KEWR": {Country: "US", Elevation: 18, Location: math.Point2LL{-74.17, 40.69}},
@@ -347,19 +347,19 @@ var (
 
 // onGround builds a track end for an aircraft the source data saw on the ground
 // at p, near the given candidate airports.
-func onGround(p math.Point2LL, candidates ...string) trackEnd {
+func onGround(p math.Point2LL, candidates ...av.ICAOAirportCode) trackEnd {
 	return trackEnd{candidates: candidates, position: p, hasPosition: true, onGround: true}
 }
 
 // aloft builds a track end for an aircraft seen at p, the given number of feet
 // above sea level.
-func aloft(p math.Point2LL, feet float32, candidates ...string) trackEnd {
+func aloft(p math.Point2LL, feet float32, candidates ...av.ICAOAirportCode) trackEnd {
 	return trackEnd{candidates: candidates, position: p, hasPosition: true,
 		height: feet, hasHeight: true}
 }
 
 // noTrack builds a track end the source data gives no position for.
-func noTrack(candidates ...string) trackEnd {
+func noTrack(candidates ...av.ICAOAirportCode) trackEnd {
 	return trackEnd{candidates: candidates}
 }
 
@@ -378,7 +378,9 @@ func performanceWithEngine(class string) av.AircraftPerformance {
 }
 
 // cellOf is where testAirports puts an airport's flights.
-func cellOf(airport string) string { return av.FlightDataCell(testAirports[airport].Location) }
+func cellOf(airport av.ICAOAirportCode) string {
+	return av.FlightDataCell(testAirports[airport].Location)
+}
 
 // makeTestImporter builds an importer over testAirports, with no resource
 // loading involved.

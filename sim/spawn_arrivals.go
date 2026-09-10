@@ -42,11 +42,11 @@ func (s *Sim) publishedArrivalSpawnConflict(candidate *Aircraft) bool {
 }
 
 func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
-	arrivalAirport string) (*Aircraft, error) {
+	arrivalAirport av.ICAOAirportCode) (*Aircraft, error) {
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = ""
-	nasFp.ExitFix = av.TrimICAOPrefix(ac.FlightPlan.ArrivalAirport)
+	nasFp.ExitFix = av.AirportDisplayId(ac.FlightPlan.ArrivalAirport)
 	nasFp.TrackingController = arr.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
 	ac.ControllerFrequency = arr.InitialController
@@ -138,7 +138,7 @@ func arrivalWithinCeiling(arr *av.Arrival, perf av.AircraftPerformance) bool {
 // returning the first one of them can fly. The first route's failure is the
 // one reported: it is the preferred way the pair is flown.
 func matchArrivalRoutes(candidates []candidateArrival, aircraftType string, routes []string,
-	arrivalAirport, origin string) (candidateArrival, string, error) {
+	arrivalAirport, origin av.ICAOAirportCode) (candidateArrival, string, error) {
 	var firstErr error
 	for _, route := range routes {
 		c, err := matchArrivalRoute(candidates, aircraftType, route, arrivalAirport, origin)
@@ -162,8 +162,8 @@ func matchArrivalRoutes(candidates []candidateArrival, aircraftType string, rout
 // terminal-en-route traffic--comes in through the gate nearest its origin.
 // Suitability is judged here rather than up front so that the errors can tell
 // an inactive STAR apart from active arrivals that don't admit the aircraft.
-func matchArrivalRoute(candidates []candidateArrival, aircraftType, route, arrivalAirport,
-	origin string) (candidateArrival, error) {
+func matchArrivalRoute(candidates []candidateArrival, aircraftType, route string, arrivalAirport,
+	origin av.ICAOAirportCode) (candidateArrival, error) {
 	star, entry := av.RouteSTAR(route, normalizeAirportCode(arrivalAirport))
 	if star == "" {
 		suitable := suitableArrivals(candidates, aircraftType)
@@ -263,7 +263,7 @@ func arrivalWaypointFixes(arr *av.Arrival) map[string]bool {
 // origin, gated by heading so the flight doesn't come in through a gate
 // pointing somewhere else entirely.
 func nearestSpawnToOrigin(candidates []candidateArrival, arrivalAirport,
-	origin string) (candidateArrival, bool) {
+	origin av.ICAOAirportCode) (candidateArrival, bool) {
 	ap, apOK := av.DB.Airports[normalizeAirportCode(arrivalAirport)]
 	from, fromOK := av.DB.Airports[normalizeAirportCode(origin)]
 	if !apOK || !fromOK {
@@ -296,7 +296,7 @@ func nearestSpawnToOrigin(candidates []candidateArrival, arrivalAirport,
 // among those pointing plausibly toward its origin at all. With one gate
 // active a bare minimum-distance pick would take any flight from anywhere.
 func arrivalNearestArc(candidates []candidateArrival, arrivalAirport,
-	origin string) (candidateArrival, bool) {
+	origin av.ICAOAirportCode) (candidateArrival, bool) {
 	ap, apOK := av.DB.Airports[normalizeAirportCode(arrivalAirport)]
 	from, fromOK := av.DB.Airports[normalizeAirportCode(origin)]
 	if !apOK || !fromOK {
@@ -433,7 +433,7 @@ func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	return callsigns
 }
 
-func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport string, lg *log.Logger) (*Aircraft, string) {
+func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport av.ICAOAirportCode, lg *log.Logger) (*Aircraft, string) {
 	// Collect all currently in-use or soon-to-be in-use callsigns.
 	callsigns := s.currentCallsigns()
 

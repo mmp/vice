@@ -693,7 +693,7 @@ type airportMatchGenerator struct{}
 func (g *airportMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) GeneratorResult {
 	airports := collectAirports(ctx.SP.visibleTracks)
 	if len(airports) > 0 {
-		return GeneratorResult{Text: airports[r.Intn(len(airports))]}
+		return GeneratorResult{Text: string(airports[r.Intn(len(airports))])}
 	}
 	// Generate random 3-letter code
 	return GeneratorResult{Text: fmt.Sprintf("%c%c%c", 'A'+rune(r.Intn(26)), 'A'+rune(r.Intn(26)), 'A'+rune(r.Intn(26)))}
@@ -1034,8 +1034,8 @@ func (g *unassocFPMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) 
 // Helper functions
 
 // collectAirports extracts unique airports from visible tracks.
-func collectAirports(tracks []sim.Track) []string {
-	airports := make(map[string]bool)
+func collectAirports(tracks []sim.Track) []av.ICAOAirportCode {
+	airports := make(map[av.ICAOAirportCode]bool)
 	for _, trk := range tracks {
 		if trk.IsAssociated() {
 			if ap := trk.FlightPlan.ArrivalAirport; ap != "" {
@@ -1043,7 +1043,7 @@ func collectAirports(tracks []sim.Track) []string {
 			}
 		}
 	}
-	result := make([]string, 0, len(airports))
+	result := make([]av.ICAOAirportCode, 0, len(airports))
 	for ap := range airports {
 		result = append(result, ap)
 	}

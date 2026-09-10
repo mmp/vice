@@ -6,6 +6,7 @@
 package stars
 
 import (
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/sim"
 )
@@ -64,7 +65,7 @@ func registerSupeCommands() {
 	// registerCommand(CommandModeMultiFunc, "NI", ...)
 
 	// 8.7 Enable / inhibit runway pair configuration system-wide
-	enableInhibitRunwayPair := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap string, idx int, mode string) (CommandStatus, error) {
+	enableInhibitRunwayPair := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap av.FAAAirportCode, idx int, mode string) (CommandStatus, error) {
 		if len(sp.CRDAPairs) == 0 {
 			return CommandStatus{}, ErrSTARSIllegalFunction
 		}
@@ -74,7 +75,7 @@ func registerSupeCommands() {
 
 				if mode == "D" {
 					ps.CRDA.RunwayPairState[i].Enabled = false
-					return CommandStatus{Output: ap + " " + pair.getRegionsString() + " INHIBITED"}, nil
+					return CommandStatus{Output: string(ap) + " " + pair.getRegionsString() + " INHIBITED"}, nil
 				} else {
 					// Check that neither region is already enabled in another pair
 					for j, pairState := range ps.CRDA.RunwayPairState {
@@ -96,14 +97,14 @@ func registerSupeCommands() {
 						ps.CRDA.RunwayPairState[i].Mode = CRDAModeStagger
 					}
 					ps.CRDA.RunwayPairState[i].Enabled = true
-					return CommandStatus{Output: ap + " " + pair.getRegionsString() + " ENABLED"}, nil
+					return CommandStatus{Output: string(ap) + " " + pair.getRegionsString() + " ENABLED"}, nil
 				}
 			}
 		}
 		return CommandStatus{}, ErrSTARSCommandFormat
 	}
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]T",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap string, idx int) (CommandStatus, error) {
+		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "T")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]T",
@@ -113,11 +114,14 @@ func registerSupeCommands() {
 			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := da[1:]
+			ap, ok := av.ICAOAirportToFAA(da)
+			if !ok {
+				return CommandStatus{}, ErrSTARSIllegalFunction
+			}
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "T")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]S",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap string, idx int) (CommandStatus, error) {
+		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "S")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]S",
@@ -127,11 +131,14 @@ func registerSupeCommands() {
 			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := da[1:]
+			ap, ok := av.ICAOAirportToFAA(da)
+			if !ok {
+				return CommandStatus{}, ErrSTARSIllegalFunction
+			}
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "S")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]D",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap string, idx int) (CommandStatus, error) {
+		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "D")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]D",
@@ -141,7 +148,10 @@ func registerSupeCommands() {
 			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := da[1:]
+			ap, ok := av.ICAOAirportToFAA(da)
+			if !ok {
+				return CommandStatus{}, ErrSTARSIllegalFunction
+			}
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "D")
 		})
 

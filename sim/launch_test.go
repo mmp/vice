@@ -21,7 +21,7 @@ func launchTestSim() *Sim {
 	return NewTestSim(testLogger())
 }
 
-func testScheduledArrival(callsign, group, airport string, spawn Time) ScheduledArrival {
+func testScheduledArrival(callsign, group string, airport av.ICAOAirportCode, spawn Time) ScheduledArrival {
 	return ScheduledArrival{
 		ScheduledFlight: ScheduledFlight{Callsign: callsign, AircraftType: "B738",
 			DepartureAirport: "KATL", ArrivalAirport: airport,
@@ -149,11 +149,11 @@ func TestVFRRetryTimersAfterReload(t *testing.T) {
 	s := launchTestSim()
 	s.Rand = rand.Make()
 	s.State.LaunchConfig.DepartureMode = LaunchManual
-	s.State.LaunchConfig.VFRAirportRates = map[string]float32{"KFRG": 10}
+	s.State.LaunchConfig.VFRAirportRates = map[av.ICAOAirportCode]float32{"KFRG": 10}
 	// As after a reload: the serialized pending map is present, the
 	// unserialized retry timers are not. Sampling fails in this bare sim, so
 	// the refill records a retry time.
-	s.PendingVFR = make(map[string]*Aircraft)
+	s.PendingVFR = make(map[av.ICAOAirportCode]*Aircraft)
 
 	s.refillPendingLaunches()
 
@@ -170,7 +170,7 @@ func TestPendingCallsignsAreReserved(t *testing.T) {
 	s.PendingArrivals = map[string]*ScheduledArrival{
 		"TEST/KMSP": {ScheduledFlight: ScheduledFlight{Callsign: "COA123"}},
 	}
-	s.PendingVFR = map[string]*Aircraft{
+	s.PendingVFR = map[av.ICAOAirportCode]*Aircraft{
 		"KFRG": {ADSBCallsign: "N123AB"},
 	}
 
@@ -279,7 +279,7 @@ func TestGateBacklogDefersScheduledDepartures(t *testing.T) {
 	for range 10 {
 		depState.Gate = append(depState.Gate, DepartureAircraft{})
 	}
-	s.DepartureState = map[string]map[av.RunwayID]*RunwayLaunchState{
+	s.DepartureState = map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState{
 		"KMSP": {"12L": depState},
 	}
 

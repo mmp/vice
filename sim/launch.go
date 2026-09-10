@@ -37,12 +37,12 @@ type LaunchFlight struct {
 // empty. VFR slots are per airport, marked by Rules.
 type DepartureLaunchSlot struct {
 	LaunchFlight
-	Airport      string
+	Airport      av.ICAOAirportCode
 	Category     string
 	Rules        av.FlightRules
 	AircraftType string
 	Exit         string
-	Destination  string
+	Destination  av.ICAOAirportCode
 	Position     math.Point2LL
 }
 
@@ -73,7 +73,7 @@ func (s *Sim) refillPendingLaunches() {
 			for _, airport := range util.SortedMapKeys(lc.DepartureRates) {
 				for _, runway := range util.SortedMapKeys(lc.DepartureRates[airport]) {
 					for _, category := range util.SortedMapKeys(lc.DepartureRates[airport][runway]) {
-						key := airport + "/" + string(runway) + "/" + category
+						key := string(airport) + "/" + string(runway) + "/" + category
 						if s.PendingDepartures[key] == nil {
 							if e, ok := s.sampleScenarioDeparture(airport, runway, category, now); ok {
 								s.PendingDepartures[key] = &e
@@ -85,12 +85,12 @@ func (s *Sim) refillPendingLaunches() {
 		}
 
 		if s.PendingVFR == nil {
-			s.PendingVFR = make(map[string]*Aircraft)
+			s.PendingVFR = make(map[av.ICAOAirportCode]*Aircraft)
 		}
 		// Initialized separately: PendingVFR is serialized and nextVFRSample,
 		// a retry timer, is not, so a reloaded sim arrives with only the former.
 		if s.nextVFRSample == nil {
-			s.nextVFRSample = make(map[string]Time)
+			s.nextVFRSample = make(map[av.ICAOAirportCode]Time)
 		}
 		for _, airport := range util.SortedMapKeys(lc.VFRAirportRates) {
 			if s.PendingVFR[airport] == nil && !now.Before(s.nextVFRSample[airport]) {
@@ -116,7 +116,7 @@ func (s *Sim) refillPendingLaunches() {
 				}
 				key := group + "/" + airport
 				if s.PendingArrivals[key] == nil {
-					if e, ok := s.sampleScenarioArrival(group, airport, now); ok {
+					if e, ok := s.sampleScenarioArrival(group, av.ICAOAirportCode(airport), now); ok {
 						s.PendingArrivals[key] = &e
 					}
 				}
@@ -173,7 +173,7 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 							Rules:        av.FlightRulesIFR,
 							Position:     runwayThresholdPosition(airport, runway),
 						}
-						if e := s.PendingDepartures[airport+"/"+string(runway)+"/"+category]; e != nil {
+						if e := s.PendingDepartures[string(airport)+"/"+string(runway)+"/"+category]; e != nil {
 							slot.Callsign = av.ADSBCallsign(e.Callsign)
 							slot.AircraftType = e.AircraftType
 							if ap := s.State.Airports[airport]; ap != nil &&
@@ -255,7 +255,7 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 						slot.Position = s.arrivalSpawnPosition(e)
 					}
 				} else if i := slices.IndexFunc(s.Schedule.Arrivals, func(e ScheduledArrival) bool {
-					return e.Group == group && e.ArrivalAirport == airport && e.DropReason == ""
+					return e.Group == group && string(e.ArrivalAirport) == airport && e.DropReason == ""
 				}); i != -1 {
 					e := &s.Schedule.Arrivals[i]
 					slot.Callsign = av.ADSBCallsign(e.Callsign)
@@ -290,7 +290,7 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 	return departures, inbounds
 }
 
-func runwayThresholdPosition(airport string, runway av.RunwayID) math.Point2LL {
+func runwayThresholdPosition(airport av.ICAOAirportCode, runway av.RunwayID) math.Point2LL {
 	if rwy, ok := av.LookupRunway(airport, runway.Base()); ok {
 		return rwy.Threshold
 	}

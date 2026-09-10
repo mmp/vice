@@ -74,24 +74,24 @@ func printColumnHeader() {
 }
 
 type ARINC424Result struct {
-	Airports      map[string]FAAAirport
+	Airports      map[ICAOAirportCode]FAAAirport
 	Navaids       map[string]Navaid
 	Fixes         map[string]Fix
 	Airways       map[string][]Airway
 	EnrouteHolds  map[string][]Hold
-	TerminalHolds map[string]map[string][]Hold
+	TerminalHolds map[ICAOAirportCode]map[string][]Hold
 }
 
 func ParseARINC424(r io.Reader) ARINC424Result {
 	start := time.Now()
 
 	result := ARINC424Result{
-		Airports:      make(map[string]FAAAirport),
+		Airports:      make(map[ICAOAirportCode]FAAAirport),
 		Navaids:       make(map[string]Navaid),
 		Fixes:         make(map[string]Fix),
 		Airways:       make(map[string][]Airway),
 		EnrouteHolds:  make(map[string][]Hold),
-		TerminalHolds: make(map[string]map[string][]Hold),
+		TerminalHolds: make(map[ICAOAirportCode]map[string][]Hold),
 	}
 	airwayWIP := make(map[string]AirwayFix)
 
@@ -190,7 +190,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 	// runway transition's first waypoint is named for the runway's departure
 	// end and the CIFP lists an airport's SIDs before its runways.
 	var sidRecs [][]ssaRecord
-	sidAirport := ""
+	sidAirport := ICAOAirportCode("")
 	flushSIDs := func() {
 		ap, ok := result.Airports[sidAirport]
 		if ok && len(sidRecs) > 0 {
@@ -305,8 +305,8 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 			case 'P': // holding patterns
 				hold, ok := parseHoldingPattern(line)
 				if ok {
-					regionCode := strings.TrimSpace(string(line[6:10]))
-					if regionCode == "ENRT" {
+					regionCode := ICAOAirportCode(strings.TrimSpace(string(line[6:10])))
+					if regionCode == ICAOAirportCode("ENRT") {
 						// Enroute hold
 						result.EnrouteHolds[hold.Fix] = append(result.EnrouteHolds[hold.Fix], hold)
 					} else {
@@ -377,7 +377,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 			}
 
 		case 'P': // Airports
-			icao := strings.TrimSpace(string(line[6:10]))
+			icao := ICAOAirportCode(strings.TrimSpace(string(line[6:10])))
 			if icao != sidAirport {
 				flushSIDs()
 				sidAirport = icao
@@ -392,6 +392,9 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					Id:        icao,
 					Elevation: elevation,
 					Location:  location,
+					// The ATA/IATA designator, which matches the FAA local
+					// code for every airport where both are known.
+					LocalCode: FAAAirportCode(strings.TrimSpace(string(line[13:16]))),
 				}
 
 			case 'C': // waypoint record 4.1.4
@@ -1049,7 +1052,7 @@ func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *STAR {
 // parseSID assembles a SID from its records. Runway transitions are keyed by
 // the airport's runways; a transition coded for both parallels (RW04B)
 // applies to each that has none of its own.
-func parseSID(recs []ssaRecord, icao string, runways []Runway, navaids map[string]Navaid) *SID {
+func parseSID(recs []ssaRecord, icao ICAOAirportCode, runways []Runway, navaids map[string]Navaid) *SID {
 	sid := MakeSID()
 
 	// Group the records by transition, in file order. The key includes the
@@ -1085,7 +1088,7 @@ func parseSID(recs []ssaRecord, icao string, runways []Runway, navaids map[strin
 			for _, rwy := range sidTransitionRunways(transition, runways) {
 				r := util.DuplicateSlice(wps)
 				if r[0].Fix == "" {
-					r[0].Fix = icao + "-" + OppositeRunwayId(rwy)
+					r[0].Fix = string(icao) + "-" + OppositeRunwayId(rwy)
 				}
 				if strings.HasSuffix(transition, "B") {
 					bothParallels[rwy] = r

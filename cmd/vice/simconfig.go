@@ -71,8 +71,8 @@ type NewSimConfiguration struct {
 	// pending key.
 	mu              util.LoggingMutex
 	fetchSeq        uint64
-	airportMETAR    map[string][]wx.METAR
-	metarAirports   []string
+	airportMETAR    map[av.ICAOAirportCode][]wx.METAR
+	metarAirports   []av.ICAOAirportCode
 	metarFacility   string
 	metarWidth      int // characters; see metarText
 	fetchMETARError error
@@ -100,7 +100,7 @@ type NewSimConfiguration struct {
 	// nil means no counts have arrived since the scenario or traffic source
 	// was selected--never that a window was quiet--and it keeps the last
 	// answer while a refetch for a scrubbed start time is in flight.
-	trafficPreviewOperations map[string]int
+	trafficPreviewOperations map[av.ICAOAirportCode]int
 	trafficPreviewError      error
 	trafficPreviewRetryAt    time.Time
 }
@@ -218,7 +218,7 @@ func selectedTimetableSummary(spec *server.ScenarioSpec) (sim.TimetableSummary, 
 func timetableLabel(spec *server.ScenarioSpec, timetable sim.TimetableSummary) string {
 	for _, other := range spec.Timetables {
 		if other.Airport != timetable.Airport {
-			return av.TrimICAOPrefix(timetable.Airport) + " " + timetable.Name
+			return av.AirportDisplayId(timetable.Airport) + " " + timetable.Name
 		}
 	}
 	return timetable.Name
@@ -227,7 +227,7 @@ func timetableLabel(spec *server.ScenarioSpec, timetable sim.TimetableSummary) s
 // timetableStartMinute is the sim start time as a local clock time at the
 // timetable's airport, which is how a timetable's own times are expressed. The
 // start time is chosen once, above; a timetable just needs it in local terms.
-func timetableStartMinute(start time.Time, airport string) (int, error) {
+func timetableStartMinute(start time.Time, airport av.ICAOAirportCode) (int, error) {
 	location, ok := av.DB.AirportTimeZone(airport)
 	if !ok {
 		return 0, fmt.Errorf("no time zone is known for %s", airport)
@@ -622,7 +622,7 @@ func (c *NewSimConfiguration) fetchTrafficPreview(srv *client.Server, key string
 		c.trafficPreviewOperations = result.AirportOperations
 	} else {
 		// gob drops empty maps, and nil is reserved for "no answer yet".
-		c.trafficPreviewOperations = make(map[string]int)
+		c.trafficPreviewOperations = make(map[av.ICAOAirportCode]int)
 	}
 }
 
@@ -681,7 +681,7 @@ func (c *NewSimConfiguration) initDefaultWindDirection() {
 	// airports: they are aligned with the prevailing wind, so their average
 	// points into it.
 	var sumRunwayVecs [2]float32
-	addRunway := func(airport string, id av.RunwayID) {
+	addRunway := func(airport av.ICAOAirportCode, id av.RunwayID) {
 		dbap, ok := av.DB.Airports[airport]
 		if !ok {
 			return
@@ -722,7 +722,7 @@ func (c *NewSimConfiguration) initDefaultWindDirection() {
 // detected via the fetchSeq snapshot. The slow wx.GetMETAR / wx.GetAtmosByTime
 // calls happen without c.mu held so the UI thread (which also takes c.mu in the
 // dialog draw) doesn't stall for several seconds while we read from resources.
-func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports []string, spec *server.ScenarioSpec) {
+func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports []av.ICAOAirportCode, spec *server.ScenarioSpec) {
 	c.mu.Lock(c.lg)
 	if c.fetchSeq != seq {
 		c.mu.Unlock(c.lg)
@@ -738,11 +738,11 @@ func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports [
 	c.mu.Unlock(c.lg)
 
 	metarSOA, metarErr := wx.GetMETAR(airports)
-	var metars map[string][]wx.METAR
+	var metars map[av.ICAOAirportCode][]wx.METAR
 	if metarErr == nil {
-		metars = make(map[string][]wx.METAR)
+		metars = make(map[av.ICAOAirportCode][]wx.METAR)
 		for ap, soa := range metarSOA {
-			metars[ap] = soa.Decode(ap)
+			metars[ap] = soa.Decode(string(ap))
 		}
 	}
 	// TRACON: single altitude at 5,000' (representative of terminal area
@@ -1061,7 +1061,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		// Helper to check if a catalog has matching airports
 		catalogHasMatchingAirport := func(catalog *server.ScenarioCatalog) bool {
 			return filterLower == "" || util.SeqContainsFunc(slices.Values(catalog.Airports),
-				func(ap string) bool { return strings.Contains(strings.ToLower(ap), filterLower) })
+				func(ap av.ICAOAirportCode) bool { return strings.Contains(strings.ToLower(string(ap)), filterLower) })
 		}
 
 		// Helper to check if a catalog has matching scenario names
@@ -1398,7 +1398,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		if len(c.ScenarioSpec.ArrivalRunways) > 0 {
 			var a []string
 			for _, rwy := range c.ScenarioSpec.ArrivalRunways {
-				a = append(a, rwy.Airport+"/"+string(rwy.Runway))
+				a = append(a, string(rwy.Airport)+"/"+string(rwy.Runway))
 			}
 			sort.Strings(a)
 			base := "Landing: "
@@ -2010,9 +2010,9 @@ func drawPublishedDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (change
 		for airport := range util.SortedMap(airportDepartures) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Text(airport)
+			imgui.Text(string(airport))
 
-			imgui.PushIDStr(airport)
+			imgui.PushIDStr(string(airport))
 			adrColumn := 0
 			for runway := range util.SortedMap(lc.DepartureEnabled[airport]) {
 				imgui.PushIDStr(string(runway))
@@ -2095,15 +2095,15 @@ func drawPublishedArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed 
 		imgui.TableHeadersRow()
 
 		for ap := range util.SortedMap(numAirportFlows) {
-			imgui.PushIDStr(ap)
+			imgui.PushIDStr(string(ap))
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Text(ap)
+			imgui.Text(string(ap))
 
 			aarCol := 0
 			for group, apEnabled := range util.SortedMap(lc.InboundFlowEnabled) {
 				imgui.PushIDStr(group)
-				if enabled, ok := apEnabled[ap]; ok && !lc.InboundFlowIsBackground(group, ap) {
+				if enabled, ok := apEnabled[string(ap)]; ok && !lc.InboundFlowIsBackground(group, string(ap)) {
 					if aarCol > 0 && aarCol%aarColumns == 0 {
 						// Overflow
 						imgui.TableNextRow()
@@ -2114,7 +2114,7 @@ func drawPublishedArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed 
 					imgui.Text(group)
 					imgui.TableNextColumn()
 					if imgui.Checkbox("##enabled", &enabled) {
-						lc.InboundFlowEnabled[group][ap] = enabled
+						lc.InboundFlowEnabled[group][string(ap)] = enabled
 						changed = true
 					}
 					aarCol++
@@ -2168,9 +2168,9 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		for airport := range util.SortedMap(airportDepartures) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Text(airport)
+			imgui.Text(string(airport))
 
-			imgui.PushIDStr(airport)
+			imgui.PushIDStr(string(airport))
 			adrColumn := 0
 			for runway := range util.SortedMap(lc.DepartureRates[airport]) {
 				imgui.PushIDStr(string(runway))
@@ -2293,15 +2293,15 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		imgui.TableHeadersRow()
 
 		for ap := range util.SortedMap(numAirportFlows) {
-			imgui.PushIDStr(ap)
+			imgui.PushIDStr(string(ap))
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Text(ap)
+			imgui.Text(string(ap))
 
 			aarCol := 0
 			for group, aprates := range util.SortedMap(lc.InboundFlowRates) {
 				imgui.PushIDStr(group)
-				if rate, ok := aprates[ap]; ok && !lc.InboundFlowIsBackground(group, ap) {
+				if rate, ok := aprates[string(ap)]; ok && !lc.InboundFlowIsBackground(group, string(ap)) {
 					if aarCol > 0 && aarCol%aarColumns == 0 {
 						// Overflow
 						imgui.TableNextRow()
@@ -2312,9 +2312,9 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 					imgui.Text(group)
 					imgui.TableNextColumn()
 					r := rate * lc.InboundFlowRateScale
-					if imgui.InputFloatV("##aar-"+ap, &r, 0, 0, "%g", 0) {
+					if imgui.InputFloatV("##aar-"+string(ap), &r, 0, 0, "%g", 0) {
 						changed = true
-						lc.InboundFlowRates[group][ap] = r / max(.01, lc.InboundFlowRateScale)
+						lc.InboundFlowRates[group][string(ap)] = r / max(.01, lc.InboundFlowRateScale)
 					}
 					aarCol++
 
@@ -2415,7 +2415,7 @@ func controlPositionsForGroup(server *client.Server, groupName string) map[sim.T
 
 ///////////////////////////////////////////////////////////////////////////
 
-var acknowledgedATIS = make(map[string]string)
+var acknowledgedATIS = make(map[av.ICAOAirportCode]string)
 
 func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *client.ControlClient, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
@@ -2522,7 +2522,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 
 	if len(c.State.METAR) > 0 {
 		// Collect IFR airports: those with IFR departures or arrivals
-		ifrAirports := make(map[string]bool)
+		ifrAirports := make(map[av.ICAOAirportCode]bool)
 		for ap := range c.State.LaunchConfig.DepartureRates {
 			ifrAirports[ap] = true
 		}
@@ -2566,7 +2566,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 					if pad > 0 {
 						imgui.SetCursorPosX(imgui.CursorPosX() + pad)
 					}
-					if imgui.SelectableBoolV(letter+"##atis_"+ap, false, 0, imgui.Vec2{}) {
+					if imgui.SelectableBoolV(letter+"##atis_"+string(ap), false, 0, imgui.Vec2{}) {
 						acknowledgedATIS[ap] = letter
 					}
 					if flashing && int64(imgui.Time()*2)%2 == 0 {
@@ -2945,27 +2945,27 @@ func (c *NewSimConfiguration) validStartDays(spec *server.ScenarioSpec) []time.T
 // traffic. Historical counts arrive by RPC, so until the first answer lands
 // the order isn't known: the airports come back alphabetical, as before, and
 // ok is false. Called with c.mu held.
-func (c *NewSimConfiguration) metarAirportsByTraffic(spec *server.ScenarioSpec) (airports []string, ok bool) {
+func (c *NewSimConfiguration) metarAirportsByTraffic(spec *server.ScenarioSpec) (airports []av.ICAOAirportCode, ok bool) {
 	airports = util.SortedMapKeys(c.airportMETAR)
 
-	var score func(ap string) float32
+	var score func(ap av.ICAOAirportCode) float32
 	switch spec.LaunchConfig.TrafficSource {
 	case sim.TrafficSourceTimetable:
-		score = func(ap string) float32 {
+		score = func(ap av.ICAOAirportCode) float32 {
 			return float32(util.Select(ap == spec.LaunchConfig.TimetableAirport, 1, 0))
 		}
 	case sim.TrafficSourceHistorical:
 		if c.trafficPreviewOperations == nil {
 			return airports, false
 		}
-		score = func(ap string) float32 { return float32(c.trafficPreviewOperations[ap]) }
+		score = func(ap av.ICAOAirportCode) float32 { return float32(c.trafficPreviewOperations[ap]) }
 	default:
 		rates := spec.LaunchConfig.WorkedAirportRates()
-		score = func(ap string) float32 { return rates[ap] }
+		score = func(ap av.ICAOAirportCode) float32 { return rates[ap] }
 	}
 
 	// A stable sort over the already-alphabetical keys keeps ties alphabetical.
-	slices.SortStableFunc(airports, func(a, b string) int {
+	slices.SortStableFunc(airports, func(a, b av.ICAOAirportCode) int {
 		return cmp.Compare(score(b), score(a))
 	})
 	return airports, true

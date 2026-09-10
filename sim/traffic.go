@@ -68,16 +68,16 @@ var (
 // IFRAirports returns every airport the scenario generates IFR traffic at, departures and
 // arrivals separately. It reads the rate maps, not the enable maps: which flows are switched on
 // can change while a sim runs, so that is judged flight by flight at spawn.
-func (lc *LaunchConfig) IFRAirports() (departures, arrivals map[string]bool) {
-	departures = make(map[string]bool)
-	arrivals = make(map[string]bool)
+func (lc *LaunchConfig) IFRAirports() (departures, arrivals map[av.ICAOAirportCode]bool) {
+	departures = make(map[av.ICAOAirportCode]bool)
+	arrivals = make(map[av.ICAOAirportCode]bool)
 	for airport := range lc.DepartureRates {
 		departures[airport] = true
 	}
 	for _, rates := range lc.InboundFlowRates {
 		for airport := range rates {
 			if airport != "overflights" {
-				arrivals[airport] = true
+				arrivals[av.ICAOAirportCode(airport)] = true
 			}
 		}
 	}
@@ -95,8 +95,8 @@ func publishedTrafficTime(t, start time.Time, scale float32) time.Time {
 // normalizeAirportCode cleans up the airport identifiers that arrive with a
 // published flight. Both traffic sources need it: a timetable's come from
 // hand-edited CSV and historical ones from an outside dataset.
-func normalizeAirportCode(value string) string {
-	return strings.ToUpper(strings.TrimSpace(value))
+func normalizeAirportCode(value av.ICAOAirportCode) av.ICAOAirportCode {
+	return av.ICAOAirportCode(strings.ToUpper(strings.TrimSpace(string(value))))
 }
 
 // enrouteFixes returns the fixes a real route names between its endpoints. A
@@ -128,7 +128,7 @@ type arrivalPlacement struct {
 	group      string
 	index      int
 	filedRoute string
-	substitute string
+	substitute av.ICAOAirportCode
 	cruise     CruiseLimits
 	how        string
 }
@@ -145,12 +145,12 @@ type candidateArrival struct {
 
 // candidateArrivals gathers them in sorted flow order, so that a choice between
 // equally good ones doesn't vary between runs.
-func (s *Sim) candidateArrivals(arrivalAirport string) []candidateArrival {
+func (s *Sim) candidateArrivals(arrivalAirport av.ICAOAirportCode) []candidateArrival {
 	arrivalAirport = normalizeAirportCode(arrivalAirport)
 
 	var candidates []candidateArrival
 	for _, group := range util.SortedMapKeys(s.State.InboundFlows) {
-		if !s.State.LaunchConfig.InboundFlowEnabled[group][arrivalAirport] {
+		if !s.State.LaunchConfig.InboundFlowEnabled[group][string(arrivalAirport)] {
 			continue
 		}
 		arrivals := s.State.InboundFlows[group].Arrivals
@@ -254,7 +254,7 @@ func trafficCountsSpan(start time.Time) (first, last time.Time) {
 // historical is the facility's flights on and around the day previewed, however much of them the
 // caller has on hand; the window and the scenario's airports are selected from it here.
 func TrafficCounts(lc *LaunchConfig, start time.Time,
-	historical []av.Flight) (departures, arrivals []uint16, operations map[string]int, err error) {
+	historical []av.Flight) (departures, arrivals []uint16, operations map[av.ICAOAirportCode]int, err error) {
 	first, last := trafficCountsSpan(start)
 	start = first.Add(TrafficCountsPad)
 	departureScale := math.Clamp(lc.PublishedDepartureRateScale, 0, MaxPublishedRateScale)
@@ -294,7 +294,7 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 
 	departures = make([]uint16, TrafficCountsMinutes)
 	arrivals = make([]uint16, TrafficCountsMinutes)
-	operations = make(map[string]int)
+	operations = make(map[av.ICAOAirportCode]int)
 	for _, flight := range flights {
 		scale := arrivalScale
 		if flight.Departure {
@@ -326,7 +326,7 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 // on, so an airport with all of them off flies nothing; and traffic the
 // scenario flies purely for realism is nothing the user will see, so a preview
 // of what they are in for leaves it out.
-func (lc *LaunchConfig) departsAirport(airport string) bool {
+func (lc *LaunchConfig) departsAirport(airport av.ICAOAirportCode) bool {
 	for runway, categories := range lc.DepartureEnabled[airport] {
 		for category, enabled := range categories {
 			if enabled && !lc.DepartureIsBackground(airport, runway, category) {
@@ -337,9 +337,9 @@ func (lc *LaunchConfig) departsAirport(airport string) bool {
 	return false
 }
 
-func (lc *LaunchConfig) landsAirport(airport string) bool {
+func (lc *LaunchConfig) landsAirport(airport av.ICAOAirportCode) bool {
 	for flow, airports := range lc.InboundFlowEnabled {
-		if airports[airport] && !lc.InboundFlowIsBackground(flow, airport) {
+		if airports[string(airport)] && !lc.InboundFlowIsBackground(flow, string(airport)) {
 			return true
 		}
 	}
@@ -357,7 +357,7 @@ func (lc *LaunchConfig) landsAirport(airport string) bool {
 // It errs towards saying traffic is worked: leaving it in overstates the
 // workload, whereas wrongly calling it background hides traffic the user will
 // actually have to work.
-func MarkBackgroundTraffic(airports map[string]*av.Airport, flows map[string]*av.InboundFlow,
+func MarkBackgroundTraffic(airports map[av.ICAOAirportCode]*av.Airport, flows map[string]*av.InboundFlow,
 	cc *ControllerConfiguration, controlPositions map[TCP]*av.Controller, lc *LaunchConfig) {
 	bc := backgroundClassifier{cc: cc, controlPositions: controlPositions}
 
@@ -388,9 +388,9 @@ func MarkBackgroundTraffic(airports map[string]*av.Airport, flows map[string]*av
 	}
 }
 
-func markDepartureBackground(lc *LaunchConfig, airport string, runway av.RunwayID, category string) {
+func markDepartureBackground(lc *LaunchConfig, airport av.ICAOAirportCode, runway av.RunwayID, category string) {
 	if lc.DepartureBackground == nil {
-		lc.DepartureBackground = make(map[string]map[av.RunwayID]map[string]bool)
+		lc.DepartureBackground = make(map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool)
 	}
 	if lc.DepartureBackground[airport] == nil {
 		lc.DepartureBackground[airport] = make(map[av.RunwayID]map[string]bool)
@@ -483,7 +483,7 @@ func (bc backgroundClassifier) inboundIsBackground(flow *av.InboundFlow, airport
 
 	judged := 0
 	for _, arr := range flow.Arrivals {
-		if !slices.Contains(arr.Airports, airport) {
+		if !slices.Contains(arr.Airports, av.ICAOAirportCode(airport)) {
 			continue
 		}
 		judged++
@@ -491,7 +491,7 @@ func (bc backgroundClassifier) inboundIsBackground(flow *av.InboundFlow, airport
 		if bc.isHuman(arr.InitialController) || bc.reachesHuman(arr.Waypoints, handoff) {
 			return false
 		}
-		for _, runwayWaypoints := range arr.RunwayWaypoints[airport] {
+		for _, runwayWaypoints := range arr.RunwayWaypoints[av.ICAOAirportCode(airport)] {
 			if bc.reachesHuman(runwayWaypoints, handoff) {
 				return false
 			}
@@ -527,8 +527,9 @@ func dropRepeatedRecords(flights []av.Flight) ([]av.Flight, int) {
 	// operation identifies what a record says the aircraft did, without the time
 	// or the far-end airport: those are what the repeats disagree about.
 	type operation struct {
-		callsign, airport string
-		departure         bool
+		callsign  string
+		airport   av.ICAOAirportCode
+		departure bool
 	}
 
 	last := make(map[operation]time.Time)
@@ -562,7 +563,8 @@ func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
 	// leg identifies a flight by callsign and where it flew between, so that an
 	// arrival can find the departure that recorded the same leg at its far end.
 	type leg struct {
-		callsign, from, to string
+		callsign string
+		from, to av.ICAOAirportCode
 	}
 
 	pending := make(map[leg][]time.Time)
@@ -597,7 +599,7 @@ func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
 // is flown: the inbound flow and arrival that carry it, the route it files, and
 // the airport standing in for its origin when neither the scenario nor the
 // route database covers where it really came from.
-func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
+func (s *Sim) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftType string,
 	routed routedPairs) (arrivalPlacement, error) {
 	arrivalAirport = normalizeAirportCode(arrivalAirport)
 	origin = normalizeAirportCode(origin)
@@ -611,20 +613,20 @@ func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
 	}
 
 	hour, hourKnown := s.localHour(arrivalAirport)
-	scenarioRoutes := func(from string) []string {
+	scenarioRoutes := func(from av.ICAOAirportCode) []string {
 		if ap, ok := s.State.Airports[arrivalAirport]; ok {
 			return ap.TrafficRoutes.Arrivals[from].Routes(aircraftType)
 		}
 		return nil
 	}
-	scrapedRoutes := func(from string) []av.ScrapedRoute {
+	scrapedRoutes := func(from av.ICAOAirportCode) []av.ScrapedRoute {
 		return orderScrapedRoutes(av.DB.ScrapedRoutesBetween(from, arrivalAirport),
 			aircraftType, hour, hourKnown)
 	}
 	scrapedNames := func(routes []av.ScrapedRoute) []string {
 		return util.MapSlice(routes, func(r av.ScrapedRoute) string { return r.Route })
 	}
-	faaRoutes := func(from string) []string {
+	faaRoutes := func(from av.ICAOAirportCode) []string {
 		eligible := eligibleAirportPairRoutes(av.DB.RoutesBetween(from, arrivalAirport),
 			engineTypeFor(aircraftType))
 		return util.MapSlice(eligible, func(r av.AirportPairRoute) string { return r.Route })
@@ -676,7 +678,7 @@ func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
 		routes := slices.Concat(scenarioRoutes(substitute), scrapedNames(scrapedRoutes(substitute)),
 			faaRoutes(substitute))
 		if c, _, err := matchArrivalRoutes(candidates, aircraftType, routes, arrivalAirport, substitute); err == nil {
-			return c.placement("", substitute, CruiseLimits{}, "nearest route, from "+substitute), nil
+			return c.placement("", substitute, CruiseLimits{}, "nearest route, from "+string(substitute)), nil
 		}
 	}
 
@@ -689,7 +691,7 @@ func (s *Sim) placeArrival(arrivalAirport, origin, aircraftType string,
 	return arrivalPlacement{}, errNoPlausibleArrival
 }
 
-func (c candidateArrival) placement(filedRoute, substitute string, cruise CruiseLimits,
+func (c candidateArrival) placement(filedRoute string, substitute av.ICAOAirportCode, cruise CruiseLimits,
 	how string) arrivalPlacement {
 	return arrivalPlacement{group: c.group, index: c.index, filedRoute: filedRoute,
 		substitute: substitute, cruise: cruise, how: how}
@@ -698,7 +700,7 @@ func (c candidateArrival) placement(filedRoute, substitute string, cruise Cruise
 // arrivalCruiseLimits is what the route a published arrival files says about
 // the altitude it cruises at: what its procedures require, and what the pair's
 // recent filings of that route were seen at, when it is one of them.
-func arrivalCruiseLimits(route, origin, arrivalAirport string, scraped []av.ScrapedRoute) CruiseLimits {
+func arrivalCruiseLimits(route string, origin, arrivalAirport av.ICAOAirportCode, scraped []av.ScrapedRoute) CruiseLimits {
 	limits := CruiseLimits{Floor: av.RouteAltitudeFloor(route, origin, arrivalAirport)}
 	if i := slices.IndexFunc(scraped, func(r av.ScrapedRoute) bool { return r.Route == route }); i != -1 {
 		limits.Low, limits.High = scraped[i].MinAltitude, scraped[i].MaxAltitude
@@ -716,7 +718,7 @@ const publishedSubstituteFraction = 0.5
 // be a neighbor of the real airport rather than merely the closest thing along
 // the way: Bangor is the closest airport with a JFK route to Zurich, but
 // traffic from Zurich doesn't arrive the way Bangor's does.
-func substituteAirports(base, real string, pool []string, maxHeadingDifference float32) []string {
+func substituteAirports(base, real av.ICAOAirportCode, pool []av.ICAOAirportCode, maxHeadingDifference float32) []av.ICAOAirportCode {
 	baseAirport, baseOK := av.DB.Airports[base]
 	realAirport, realOK := av.DB.Airports[real]
 	if !baseOK || !realOK {
@@ -726,11 +728,11 @@ func substituteAirports(base, real string, pool []string, maxHeadingDifference f
 	limit := publishedSubstituteFraction * math.NMDistance2LL(baseAirport.Location, realAirport.Location)
 
 	type candidate struct {
-		id       string
+		id       av.ICAOAirportCode
 		distance float32
 	}
 	var candidates []candidate
-	seen := make(map[string]bool)
+	seen := make(map[av.ICAOAirportCode]bool)
 	for _, id := range pool {
 		if seen[id] || id == real || id == base {
 			continue
@@ -754,23 +756,23 @@ func substituteAirports(base, real string, pool []string, maxHeadingDifference f
 		if a.distance != b.distance {
 			return cmp.Compare(a.distance, b.distance)
 		}
-		return strings.Compare(a.id, b.id)
+		return strings.Compare(string(a.id), string(b.id))
 	})
-	return util.MapSlice(candidates, func(c candidate) string { return c.id })
+	return util.MapSlice(candidates, func(c candidate) av.ICAOAirportCode { return c.id })
 }
 
 // routedPairs indexes the route databases both ways, so that finding a
 // stand-in for a city pair they don't cover doesn't walk the whole thing per
 // flight.
 type routedPairs struct {
-	originsByDestination map[string][]string
-	destinationsByOrigin map[string][]string
+	originsByDestination map[av.ICAOAirportCode][]av.ICAOAirportCode
+	destinationsByOrigin map[av.ICAOAirportCode][]av.ICAOAirportCode
 }
 
 func makeRoutedPairs() routedPairs {
 	routed := routedPairs{
-		originsByDestination: make(map[string][]string),
-		destinationsByOrigin: make(map[string][]string),
+		originsByDestination: make(map[av.ICAOAirportCode][]av.ICAOAirportCode),
+		destinationsByOrigin: make(map[av.ICAOAirportCode][]av.ICAOAirportCode),
 	}
 	add := func(pair av.AirportPair) {
 		from, to := normalizeAirportCode(pair.From), normalizeAirportCode(pair.To)
@@ -788,7 +790,7 @@ func makeRoutedPairs() routedPairs {
 
 // localHour returns the hour of day at the airport at the sim's current time,
 // if the airport's time zone is known.
-func (s *Sim) localHour(airport string) (int, bool) {
+func (s *Sim) localHour(airport av.ICAOAirportCode) (int, bool) {
 	loc, ok := av.DB.AirportTimeZone(airport)
 	if !ok {
 		return 0, false
@@ -873,7 +875,7 @@ func hourDistance(h av.HourRanges, hour int) int {
 // enabledDepartureCategories returns the categories the scenario is launching
 // from a runway, and nothing more: how many aircraft go where comes from the
 // published flights themselves.
-func (lc *LaunchConfig) enabledDepartureCategories(airport string, runway av.RunwayID) []string {
+func (lc *LaunchConfig) enabledDepartureCategories(airport av.ICAOAirportCode, runway av.RunwayID) []string {
 	var categories []string
 	for category, enabled := range lc.DepartureEnabled[airport][runway] {
 		if enabled {

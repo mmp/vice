@@ -137,7 +137,7 @@ type LaunchConfig struct {
 	// timetables for more than one of its airports, so the id alone doesn't
 	// name one.
 	TimetableID      string
-	TimetableAirport string
+	TimetableAirport av.ICAOAirportCode
 	// TimetableStartMinute is the selected local start time, expressed as
 	// minutes after midnight at the timetable's airport.
 	TimetableStartMinute int
@@ -155,11 +155,11 @@ type LaunchConfig struct {
 	GoAroundRate         float32
 	EnableTowerGoArounds bool
 	// airport -> runway -> category -> rate
-	DepartureRates     map[string]map[av.RunwayID]map[string]float32
+	DepartureRates     map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32
 	DepartureRateScale float32
 	// airport -> runway -> category -> enabled; which flows timetable and
 	// historical traffic launch from. Scenario traffic uses the rates instead.
-	DepartureEnabled map[string]map[av.RunwayID]map[string]bool
+	DepartureEnabled map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool
 	// airport -> runway -> category -> the traffic there is nobody's to work.
 	// A scenario flies a neighboring airport's operations for realism, start to
 	// finish under virtual controllers; it fills out the scope but it isn't
@@ -167,10 +167,10 @@ type LaunchConfig struct {
 	// will see. Keyed like DepartureEnabled, and only the true entries are
 	// present: an absent one is traffic a human works, which is the common case
 	// and the safe assumption for a config that was never classified.
-	DepartureBackground map[string]map[av.RunwayID]map[string]bool
+	DepartureBackground map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool
 
 	VFRDepartureRateScale   float32
-	VFRAirportRates         map[string]float32 // name -> VFRRateSum()
+	VFRAirportRates         map[av.ICAOAirportCode]float32 // name -> VFRRateSum()
 	VFFRequestRate          int32
 	HaveVFRReportingRegions bool
 
@@ -194,7 +194,7 @@ type LaunchConfig struct {
 }
 
 func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRate int32,
-	vfrAirports map[string]*av.Airport, inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
+	vfrAirports map[av.ICAOAirportCode]*av.Airport, inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
 	lc := LaunchConfig{
 		TrafficSource:               TrafficSourceScenario,
 		PublishedArrivalRateScale:   1,
@@ -202,7 +202,7 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRat
 		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
-		VFRAirportRates:             make(map[string]float32),
+		VFRAirportRates:             make(map[av.ICAOAirportCode]float32),
 		VFFRequestRate:              vffRequestRate,
 		HaveVFRReportingRegions:     haveVFRReportingRegions,
 		InboundFlowRateScale:        1,
@@ -216,8 +216,8 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRat
 	}
 
 	// Walk the departure runways to create the map for departures.
-	lc.DepartureRates = make(map[string]map[av.RunwayID]map[string]float32)
-	lc.DepartureEnabled = make(map[string]map[av.RunwayID]map[string]bool)
+	lc.DepartureRates = make(map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32)
+	lc.DepartureEnabled = make(map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool)
 	for _, rwy := range dep {
 		if _, ok := lc.DepartureRates[rwy.Airport]; !ok {
 			lc.DepartureRates[rwy.Airport] = make(map[av.RunwayID]map[string]float32)
@@ -345,8 +345,8 @@ func (lc *LaunchConfig) workedInboundRate(overflights bool) float32 {
 // airport: how much IFR traffic an hour a human controller works at each of
 // the scenario's airports. Overflights belong to no airport and aren't
 // included.
-func (lc *LaunchConfig) WorkedAirportRates() map[string]float32 {
-	rates := make(map[string]float32)
+func (lc *LaunchConfig) WorkedAirportRates() map[av.ICAOAirportCode]float32 {
+	rates := make(map[av.ICAOAirportCode]float32)
 	for airport, runwayRates := range lc.DepartureRates {
 		for runway, categoryRates := range runwayRates {
 			for category, rate := range categoryRates {
@@ -359,7 +359,7 @@ func (lc *LaunchConfig) WorkedAirportRates() map[string]float32 {
 	for flow, flowRates := range lc.InboundFlowRates {
 		for airport, rate := range flowRates {
 			if airport != "overflights" && !lc.InboundFlowIsBackground(flow, airport) {
-				rates[airport] += scaleRate(rate, lc.InboundFlowRateScale)
+				rates[av.ICAOAirportCode(airport)] += scaleRate(rate, lc.InboundFlowRateScale)
 			}
 		}
 	}
@@ -374,8 +374,8 @@ func (lc *LaunchConfig) WorkedAirportRates() map[string]float32 {
 // WorkedDepartureCounts gives the number of runway and category departure flows
 // a human works at each airport; an airport with none is absent. DepartureRates
 // and DepartureEnabled are keyed alike, so the count holds for either.
-func (lc *LaunchConfig) WorkedDepartureCounts() map[string]int {
-	counts := make(map[string]int)
+func (lc *LaunchConfig) WorkedDepartureCounts() map[av.ICAOAirportCode]int {
+	counts := make(map[av.ICAOAirportCode]int)
 	for airport, runwayRates := range lc.DepartureRates {
 		for runway, categoryRates := range runwayRates {
 			for category := range categoryRates {
@@ -391,12 +391,12 @@ func (lc *LaunchConfig) WorkedDepartureCounts() map[string]int {
 // WorkedInboundFlowCounts gives the number of inbound flows a human works into
 // each airport. Overflights serve no airport and are counted by
 // WorkedOverflightGroups instead.
-func (lc *LaunchConfig) WorkedInboundFlowCounts() map[string]int {
-	counts := make(map[string]int)
+func (lc *LaunchConfig) WorkedInboundFlowCounts() map[av.ICAOAirportCode]int {
+	counts := make(map[av.ICAOAirportCode]int)
 	for flow, flowRates := range lc.InboundFlowRates {
 		for airport := range flowRates {
 			if airport != "overflights" && !lc.InboundFlowIsBackground(flow, airport) {
-				counts[airport]++
+				counts[av.ICAOAirportCode(airport)]++
 			}
 		}
 	}
@@ -432,7 +432,7 @@ func (lc *LaunchConfig) HaveWorkedOverflights() bool {
 // controller works. They read the maps rather than indexing them directly so
 // that a launch config nobody classified--one built without a scenario to walk--
 // reports everything as the user's traffic, as it was before any of this.
-func (lc *LaunchConfig) DepartureIsBackground(airport string, runway av.RunwayID, category string) bool {
+func (lc *LaunchConfig) DepartureIsBackground(airport av.ICAOAirportCode, runway av.RunwayID, category string) bool {
 	return lc.DepartureBackground[airport][runway][category]
 }
 
@@ -756,14 +756,14 @@ func getAircraftTime(now Time, r *rand.Rand) Time {
 }
 
 type DepartureRunway struct {
-	Airport     string      `json:"airport"`
-	Runway      av.RunwayID `json:"runway"`
-	Category    string      `json:"category,omitempty"`
-	DefaultRate float32     `json:"rate"`
+	Airport     av.ICAOAirportCode `json:"airport"`
+	Runway      av.RunwayID        `json:"runway"`
+	Category    string             `json:"category,omitempty"`
+	DefaultRate float32            `json:"rate"`
 }
 
 type ArrivalRunway struct {
-	Airport  string             `json:"airport"`
+	Airport  av.ICAOAirportCode `json:"airport"`
 	Runway   av.RunwayID        `json:"runway"`
 	GoAround *GoAroundProcedure `json:"go_around,omitempty"`
 }

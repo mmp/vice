@@ -29,7 +29,7 @@ type RouteDrawContext struct {
 	ApproachType    av.ApproachType
 }
 
-func DepartureRouteContext(icao string, er *av.ExitRoute) RouteDrawContext {
+func DepartureRouteContext(icao av.ICAOAirportCode, er *av.ExitRoute) RouteDrawContext {
 	rc := RouteDrawContext{
 		Departure:       true,
 		FieldElevation:  av.DB.Airports[icao].Elevation,

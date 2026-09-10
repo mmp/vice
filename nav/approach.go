@@ -273,7 +273,7 @@ func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av
 	}
 
 	if runway, visual := strings.CutPrefix(id, "_VIS"); visual {
-		arrICAO := nav.FlightState.ArrivalAirport.Fix
+		arrICAO := av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix)
 		rwy, ok := av.LookupRunway(arrICAO, runway)
 		if !ok {
 			return nil, nil, ErrInvalidApproach
@@ -325,7 +325,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 	id, lahsoRunway, _ := strings.Cut(approach, "/LAHSO")
 
 	if lahsoRunway != "" {
-		if _, ok := av.LookupRunway(nav.FlightState.ArrivalAirport.Fix, lahsoRunway); !ok {
+		if _, ok := av.LookupRunway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), lahsoRunway); !ok {
 			return av.MakeUnableIntent("unable, we don't know that hold-short runway")
 		}
 	}
@@ -850,7 +850,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 	// finishes cleaning up the descent assignment after that.
 	nav.Heading = NavHeading{}
 	nav.DeferredNavHeading = nil
-	rwy, _ := av.LookupRunway(nav.FlightState.ArrivalAirport.Fix, runway)
+	rwy, _ := av.LookupRunway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
 	profileFloor := float32(rwy.Elevation) + 900
 	preserved := NavAltitude{}
 	if a := nav.Altitude.Assigned; a != nil && *a < nav.FlightState.Altitude && *a >= profileFloor {
@@ -1177,7 +1177,7 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 		return nil
 	}
 
-	rwy, _ := av.LookupRunway(nav.FlightState.ArrivalAirport.Fix, runway)
+	rwy, _ := av.LookupRunway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
 	finalPoint, hasFinalPoint := visualRoutePointAtDistance(joinPoint.route, 3, nmPerLong)
 	thresholdAlt := rwy.Elevation + rwy.ThresholdCrossingHeight
 	final3nmAlt := float32(rwy.Elevation) + 900

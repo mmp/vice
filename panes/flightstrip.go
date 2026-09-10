@@ -311,12 +311,12 @@ func (fsp *FlightStripPane) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPlan
 	cells[1][0] = sfp.CWTCategory + "/" + sfp.AircraftType
 	cells[2][0] = fmt.Sprintf("%03d", sfp.StripCID)
 
-	depAirport, arrAirport := "", sfp.ArrivalAirport
+	depAirport, arrAirport := "", string(sfp.ArrivalAirport)
 	filedRoute := sfp.Route
 	filedAlt := sfp.RequestedAltitude
 	if track != nil {
-		depAirport = track.DepartureAirport
-		arrAirport = track.ArrivalAirport
+		depAirport = string(track.DepartureAirport)
+		arrAirport = string(track.ArrivalAirport)
 		filedRoute = track.FiledRoute
 		filedAlt = track.FiledAltitude
 	}

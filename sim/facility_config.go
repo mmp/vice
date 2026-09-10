@@ -447,7 +447,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	// Coordination lists: name/id required, id uniqueness, owner_tcp validity,
 	// and no overlapping (airport, owner) coverage.
 	seenIds := make(map[string][]string)
-	airportOwners := make(map[string][]TCP) // airport -> each covering list's owner_tcp ("" = catch-all)
+	airportOwners := make(map[av.ICAOAirportCode][]TCP) // airport -> each covering list's owner_tcp ("" = catch-all)
 	for _, list := range fa.Lists.Coordination {
 		e.Push(`"lists.coordination" ` + list.Name)
 

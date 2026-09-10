@@ -36,11 +36,11 @@ func TestWalkCIFPRoutes(t *testing.T) {
 
 	var routes, triggers, indeterminate int
 	walk := func(name string, wps av.WaypointArray, rc RouteDrawContext) {
-		icao := name[:4]
+		icao := av.ICAOAirportCode(name[:4])
 		ap := av.DB.Airports[icao]
 		nmPerLongitude := math.NMPerLongitudeAt(ap.Location)
-		wps = wps.Clone().InitializeLocations(dmeLocator{}, nmPerLongitude, magneticVariation[icao], true, &util.ErrorLogger{})
-		w := newRouteWalker(nmPerLongitude, magneticVariation[icao], rc, renderer.GetColoredLinesDrawBuilder(), renderer.RGB{}, NewDrawnRoutes())
+		wps = wps.Clone().InitializeLocations(dmeLocator{}, nmPerLongitude, magneticVariation[string(icao)], true, &util.ErrorLogger{})
+		w := newRouteWalker(nmPerLongitude, magneticVariation[string(icao)], rc, renderer.GetColoredLinesDrawBuilder(), renderer.RGB{}, NewDrawnRoutes())
 		w.walk(wps)
 		routes++
 
@@ -65,7 +65,7 @@ func TestWalkCIFPRoutes(t *testing.T) {
 		}
 	}
 
-	for _, icao := range []string{"KPHX", "KSAN", "KSFO", "KLAX", "KBUR", "KSEA", "KEWR", "KJFK", "KPBF", "KJAX"} {
+	for _, icao := range []av.ICAOAirportCode{"KPHX", "KSAN", "KSFO", "KLAX", "KBUR", "KSEA", "KEWR", "KJFK", "KPBF", "KJAX"} {
 		ap := av.DB.Airports[icao]
 		for sidName, sid := range util.SortedMap(ap.SIDs) {
 			for rwy, wps := range util.SortedMap(sid.RunwayTransitions) {
@@ -75,17 +75,17 @@ func TestWalkCIFPRoutes(t *testing.T) {
 					continue
 				}
 				wps = withRunwayInFront(icao, rwy, r, opp, ap.Elevation,
-					math.NMPerLongitudeAt(ap.Location), magneticVariation[icao], wps)
-				walk(icao+" "+sidName+" RWY"+rwy, wps,
+					math.NMPerLongitudeAt(ap.Location), magneticVariation[string(icao)], wps)
+				walk(string(icao)+" "+sidName+" RWY"+rwy, wps,
 					RouteDrawContext{Departure: true, FieldElevation: ap.Elevation, ClearedAltitude: 5000})
 			}
 			for tr, wps := range util.SortedMap(sid.EnrouteTransitions) {
-				walk(icao+" "+sidName+" "+tr, wps, RouteDrawContext{})
+				walk(string(icao)+" "+sidName+" "+tr, wps, RouteDrawContext{})
 			}
 		}
 		for apprName, appr := range util.SortedMap(ap.Approaches) {
 			for i, wps := range appr.Waypoints {
-				walk(icao+" "+apprName+" "+string(rune('A'+i)), wps, RouteDrawContext{ApproachType: appr.Type})
+				walk(string(icao)+" "+apprName+" "+string(rune('A'+i)), wps, RouteDrawContext{ApproachType: appr.Type})
 			}
 		}
 	}
@@ -96,7 +96,7 @@ func TestWalkCIFPRoutes(t *testing.T) {
 // ExitRoute.initialize does: the threshold, then the midpoint, from which the
 // aircraft tracks the centerline until 400' above the field and only then
 // flies the transition's legs from the departure end.
-func withRunwayInFront(icao, rwy string, r, opp av.Runway, elevation int, nmPerLongitude,
+func withRunwayInFront(icao av.ICAOAirportCode, rwy string, r, opp av.Runway, elevation int, nmPerLongitude,
 	magneticVariation float32, wps av.WaypointArray) av.WaypointArray {
 	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, opp.Threshold, nmPerLongitude), magneticVariation)
 	groups := []av.WaypointActionGroup{
@@ -107,7 +107,7 @@ func withRunwayInFront(icao, rwy string, r, opp av.Runway, elevation int, nmPerL
 				Altitude: elevation + 400, AtOrAbove: true},
 		},
 	}
-	if departureEnd := icao + "-" + av.OppositeRunwayId(rwy); len(wps) > 0 && wps[0].Fix == departureEnd {
+	if departureEnd := string(icao) + "-" + av.OppositeRunwayId(rwy); len(wps) > 0 && wps[0].Fix == departureEnd {
 		groups = append(groups, wps[0].ActionGroups()...)
 		wps = wps[1:]
 	}

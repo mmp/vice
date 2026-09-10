@@ -70,7 +70,7 @@ type NASFlightPlan struct {
 	// abbreviation, but the displayed entry/exit fixes remain the actual ones.
 	DerivedEntryFix       string
 	DerivedExitFix        string
-	ArrivalAirport        string // Technically not a string, but until the NAS system is fully integrated, we'll need this.
+	ArrivalAirport        av.ICAOAirportCode
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      Time

@@ -10,6 +10,8 @@ import (
 	"io"
 	"strconv"
 	"strings"
+
+	av "github.com/mmp/vice/aviation"
 )
 
 // TimetableFlight is one published flight in a timetable. It stores
@@ -17,8 +19,8 @@ import (
 // resolved later by the simulation.
 type TimetableFlight struct {
 	Callsign     string
-	Origin       string
-	Destination  string
+	Origin       av.ICAOAirportCode
+	Destination  av.ICAOAirportCode
 	AircraftType string
 
 	// PublishedMinute is expressed as minutes after local midnight at the
@@ -43,7 +45,7 @@ const (
 // OperationAt determines whether the flight is an arrival or departure at the
 // supplied airport. A flight whose origin and destination both match (or
 // neither matches) is not usable for that airport.
-func (f TimetableFlight) OperationAt(airport string) TimetableOperation {
+func (f TimetableFlight) OperationAt(airport av.ICAOAirportCode) TimetableOperation {
 	airport = normalizeAirportCode(airport)
 	originMatches := normalizeAirportCode(f.Origin) == airport
 	destinationMatches := normalizeAirportCode(f.Destination) == airport
@@ -162,15 +164,15 @@ func parseTimetableFlight(record []string, columns map[timetableCSVColumn]int) (
 
 	flight := TimetableFlight{
 		Callsign:     strings.ToUpper(value(timetableCSVCallsign)),
-		Origin:       normalizeAirportCode(value(timetableCSVOrigin)),
-		Destination:  normalizeAirportCode(value(timetableCSVDestination)),
+		Origin:       normalizeAirportCode(av.ICAOAirportCode(value(timetableCSVOrigin))),
+		Destination:  normalizeAirportCode(av.ICAOAirportCode(value(timetableCSVDestination))),
 		AircraftType: strings.ToUpper(value(timetableCSVAircraftType)),
 	}
 
 	for name, field := range map[string]string{
 		"callsign":      flight.Callsign,
-		"origin":        flight.Origin,
-		"destination":   flight.Destination,
+		"origin":        string(flight.Origin),
+		"destination":   string(flight.Destination),
 		"aircraft_type": flight.AircraftType,
 	} {
 		if field == "" {

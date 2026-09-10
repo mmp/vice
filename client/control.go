@@ -50,7 +50,7 @@ func (c *ControlClient) RecycleLaunchAircraft(flight sim.LaunchFlight, callback 
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) AddMETARAirport(airport string) {
+func (c *ControlClient) AddMETARAirport(airport av.ICAOAirportCode) {
 	c.addCall(makeRPCCall(c.client.Go(server.AddMETARAirportRPC, &server.AddMETARAirportArgs{
 		ControllerToken: c.controllerToken,
 		Airport:         airport,

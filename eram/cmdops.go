@@ -439,7 +439,7 @@ func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (
 	zTime := ctx.Client.State.SimTime.Format("1504")
 	rte := strings.TrimPrefix(fp.Route, "/. ")
 	rte = strings.ReplaceAll(rte, " ", ".")
-	rte += "." + fp.ArrivalAirport
+	rte += "." + string(fp.ArrivalAirport)
 	return CommandStatus{
 		responseArea: []string{
 			zTime,
@@ -1114,12 +1114,16 @@ func isQSFreeText(s string) bool {
 	return strings.HasPrefix(s, circleClear)
 }
 
-func lookupCommandAirport(airport string) (string, bool) {
+func lookupCommandAirport(airport string) (av.ICAOAirportCode, bool) {
 	airport = strings.ToUpper(strings.TrimSpace(airport))
 	if airport == "" || (len(airport) != 3 && len(airport) != 4) {
 		return "", false
 	}
-	if ap, ok := av.DB.LookupAirport(airport); ok {
+	// Users type an airport's FAA id or, less often, its full ICAO id.
+	if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(airport)); ok {
+		return ap.Id, true
+	}
+	if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(airport)); ok {
 		return ap.Id, true
 	}
 	return "", false
@@ -1209,7 +1213,7 @@ func handleWXReportAdd(ep *ERAMPane, ctx *panes.Context, airport string) (Comman
 // is fire-and-forget: if the server rejects the airport the row keeps
 // showing "-M-", matching the behavior for known airports without
 // bundled data.
-func requestMETARIfMissing(ctx *panes.Context, icao string) {
+func requestMETARIfMissing(ctx *panes.Context, icao av.ICAOAirportCode) {
 	if _, ok := ctx.Client.State.METAR[icao]; !ok {
 		ctx.Client.AddMETARAirport(icao)
 	}

@@ -377,8 +377,8 @@ func fixPairLevel(fp *NASFlightPlan) int {
 // name the same runway, so they are reduced to their base and deduplicated.
 func (s *Sim) activeRunways() []string {
 	var rwys []string
-	add := func(airport string, rwy av.RunwayID) {
-		if id := airport + "/" + rwy.Base(); !slices.Contains(rwys, id) {
+	add := func(airport av.ICAOAirportCode, rwy av.RunwayID) {
+		if id := string(airport) + "/" + rwy.Base(); !slices.Contains(rwys, id) {
 			rwys = append(rwys, id)
 		}
 	}
@@ -550,9 +550,9 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 			airport, runway, ok := strings.Cut(spec, "/")
 			if !ok {
 				e.ErrorString(`"active_runway" %q must be given as "AIRPORT/RUNWAY"`, spec)
-			} else if err := av.CheckAirport(`"active_runway"`, airport); err != nil {
+			} else if err := av.CheckAirport(`"active_runway"`, av.ICAOAirportCode(airport)); err != nil {
 				e.Error(err)
-			} else if !av.AirportHasRunway(airport, av.RunwayID(runway)) {
+			} else if !av.AirportHasRunway(av.ICAOAirportCode(airport), av.RunwayID(runway)) {
 				e.ErrorString(`"active_runway": runway %q is not a valid runway at %q`, runway, airport)
 			}
 		}

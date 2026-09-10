@@ -31,7 +31,7 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 	files, flightCount, bytes := 0, 0, 0
 	var intervals []util.TimeInterval
 	written := make(map[string]bool)
-	balances := make(map[string]balance)
+	balances := make(map[av.ICAOAirportCode]balance)
 
 	if !dryRun {
 		if err := os.MkdirAll(dir, 0o755); err != nil {
@@ -45,9 +45,9 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 			key := bucket{cell: cell, departure: departure}
 			for _, r := range imp.buckets[key] {
 				flights = append(flights, av.Flight{
-					Airport:      imp.symbols.string(r.airport),
+					Airport:      av.ICAOAirportCode(imp.symbols.string(r.airport)),
 					Callsign:     imp.symbols.string(r.callsign),
-					Other:        imp.symbols.string(r.other),
+					Other:        av.ICAOAirportCode(imp.symbols.string(r.other)),
 					AircraftType: imp.symbols.string(r.acType),
 					Day:          r.day,
 					Minute:       int(r.minute),
@@ -162,7 +162,7 @@ func removeStaleFiles(dir string, written map[string]bool) error {
 // balance is how many departures and arrivals an airport ended up with.
 type balance struct{ departures, arrivals int }
 
-func noteBalance(balances map[string]balance, flights []av.Flight) {
+func noteBalance(balances map[av.ICAOAirportCode]balance, flights []av.Flight) {
 	for _, f := range flights {
 		b := balances[f.Airport]
 		if f.Departure {
@@ -183,9 +183,9 @@ const minBalancedFlights = 1000
 // aircraft that lands somewhere leaves again, so a lopsided one is the import
 // having lost half of that airport's traffic: whatever it is that keeps its
 // departures from being recognized doesn't keep its arrivals from being.
-func reportImbalance(balances map[string]balance) {
+func reportImbalance(balances map[av.ICAOAirportCode]balance) {
 	type entry struct {
-		airport string
+		airport av.ICAOAirportCode
 		balance
 		ratio float64
 	}

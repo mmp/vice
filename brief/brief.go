@@ -243,9 +243,11 @@ func parseVideoMapContent(content string) (*VideoMapBlock, error) {
 			return p, nil
 		}
 
-		// Try as airport. LookupAirport handles the 3-letter K/P/T prefix
-		// fallback used for US airports.
-		if ap, ok := av.DB.LookupAirport(locStr); ok {
+		// Try as an airport, by either of its ids.
+		if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(locStr)); ok {
+			return ap.Location, nil
+		}
+		if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(locStr)); ok {
 			return ap.Location, nil
 		}
 
@@ -710,8 +712,12 @@ func isValidConfigConditionName(name string, definedConfigs map[string]bool) boo
 		return true
 	}
 
-	// Airport ICAO codes. These are evaluated dynamically against the scenario.
-	if _, ok := av.DB.LookupAirport(name); ok {
+	// Airport codes, by either id. These are evaluated dynamically against
+	// the scenario.
+	if _, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(name)); ok {
+		return true
+	}
+	if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(name)); ok {
 		return true
 	}
 

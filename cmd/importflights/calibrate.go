@@ -58,14 +58,14 @@ func makeCalibration() *calibration {
 
 // observe scores both ends of one flight. The itinerary is consulted exactly as
 // resolveEndpoints consults it, so that what is measured is what would be used.
-func (c *calibration) observe(origin, destination trackEnd, route []string,
-	airports map[string]av.FAAAirport) {
+func (c *calibration) observe(origin, destination trackEnd, route []av.ICAOAirportCode,
+	airports map[av.ICAOAirportCode]av.FAAAirport) {
 	from, to := routeEndpoints(route, origin.candidates, destination.candidates)
 	c.observeEnd(origin, from, airports)
 	c.observeEnd(destination, to, airports)
 }
 
-func (c *calibration) observeEnd(e trackEnd, itinerary endpoint, airports map[string]av.FAAAirport) {
+func (c *calibration) observeEnd(e trackEnd, itinerary endpoint, airports map[av.ICAOAirportCode]av.FAAAirport) {
 	icao, ap, distance, ok := e.nearest(airports)
 	if !ok {
 		return

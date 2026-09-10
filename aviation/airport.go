@@ -55,19 +55,48 @@ type Airport struct {
 	PrintArrivalStrips    *bool                  `json:"print_arrival_strips"`
 }
 
-// icaoRegionPrefixes are the leading letters of the ICAO ids in the regions
-// the FAA works: the contiguous US (K), Alaska, Hawaii, and the Pacific
-// territories (P), and Puerto Rico and the Virgin Islands (T). Airports in
-// those regions are named domestically by their ICAO id without it.
-const icaoRegionPrefixes = "KPT"
+// ICAOAirportCode identifies an airport by the id the aviation database keys
+// it by: its ICAO id where one exists (KJFK, PHOG, EGLL) and otherwise its FAA
+// local identifier (00N, TX15). Scenarios and the aviation data name airports
+// this way.
+type ICAOAirportCode string
 
-// TrimICAOPrefix returns the domestic name of an airport's ICAO id, dropping
-// the leading region letter. Ids from elsewhere are returned unchanged.
-func TrimICAOPrefix(icao string) string {
-	if len(icao) == 4 && strings.ContainsRune(icaoRegionPrefixes, rune(icao[0])) {
-		return icao[1:]
+// FAAAirportCode is an airport's FAA local identifier (JFK, OGG, 00N): the
+// domestic name displayed on STARS and ERAM scopes and entered by the humans
+// running sims. Airports outside the FAA's regions have no FAAAirportCode.
+type FAAAirportCode string
+
+// ICAOAirportToFAA returns the FAA local identifier of the given airport, or
+// "", false if the airport is unknown or has no FAA local identifier.
+func ICAOAirportToFAA(icao ICAOAirportCode) (FAAAirportCode, bool) {
+	if DB == nil { // tests that run without the database
+		return "", false
 	}
-	return icao
+	ap, ok := DB.Airports[icao]
+	if !ok || ap.LocalCode == "" {
+		return "", false
+	}
+	return ap.LocalCode, true
+}
+
+// FAAAirportToICAO returns the id the aviation database keys the given
+// airport by, or "", false if no airport has the given FAA local identifier.
+func FAAAirportToICAO(faa FAAAirportCode) (ICAOAirportCode, bool) {
+	if DB == nil { // tests that run without the database
+		return "", false
+	}
+	icao, ok := DB.faaToICAO[faa]
+	return icao, ok
+}
+
+// AirportDisplayId returns the name the FAA's systems know the airport by:
+// its FAA local identifier when it has one and otherwise its id unchanged,
+// as for an airport outside the FAA's regions.
+func AirportDisplayId(icao ICAOAirportCode) string {
+	if faa, ok := ICAOAirportToFAA(icao); ok {
+		return string(faa)
+	}
+	return string(icao)
 }
 
 type VFRRandomsSpec struct {
@@ -76,12 +105,12 @@ type VFRRandomsSpec struct {
 }
 
 type VFRRouteSpec struct {
-	Name        string        `json:"name"`
-	Rate        float32       `json:"rate"`
-	Fleet       string        `json:"fleet"`
-	Waypoints   WaypointArray `json:"waypoints"`
-	Destination string        `json:"destination"`
-	Description string        `json:"description"`
+	Name        string          `json:"name"`
+	Rate        float32         `json:"rate"`
+	Fleet       string          `json:"fleet"`
+	Waypoints   WaypointArray   `json:"waypoints"`
+	Destination ICAOAirportCode `json:"destination"`
+	Description string          `json:"description"`
 }
 
 // CRDAPair describes a one-directional ghosting relationship between two
@@ -231,9 +260,9 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 		math.NM2LL(quad[2], nmPerLongitude), math.NM2LL(quad[3], nmPerLongitude)}
 }
 
-func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude float32,
+func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[ControlPosition]*Controller, scratchpads map[string]string,
-	facilityAirports map[string]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {
+	facilityAirports map[ICAOAirportCode]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if info, ok := DB.Airports[icao]; !ok {
@@ -470,13 +499,13 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	ap.checkExits(loc, e)
 
 	e.Push(`"traffic_routes"`)
-	checkTrafficRouteAirports := func(routes map[string]TrafficRouteSet) map[string]TrafficRouteSet {
+	checkTrafficRouteAirports := func(routes map[ICAOAirportCode]TrafficRouteSet) map[ICAOAirportCode]TrafficRouteSet {
 		if len(routes) == 0 {
 			return routes
 		}
-		checked := make(map[string]TrafficRouteSet, len(routes))
+		checked := make(map[ICAOAirportCode]TrafficRouteSet, len(routes))
 		for _, other := range util.SortedMapKeys(routes) {
-			norm := strings.ToUpper(strings.TrimSpace(other))
+			norm := ICAOAirportCode(strings.ToUpper(strings.TrimSpace(string(other))))
 			if norm == icao {
 				e.ErrorString("%s: routes to or from the airport itself", other)
 			} else if err := CheckAirport("traffic route", norm); err != nil {
@@ -506,7 +535,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		return true
 	}
 	for _, other := range util.SortedMapKeys(ap.TrafficRoutes.Departures) {
-		e.Push("Departure " + other)
+		e.Push("Departure " + string(other))
 		for _, r := range ap.TrafficRoutes.Departures[other] {
 			if checkTrafficRoute(r) && !ap.routeReachesExit(r.Route, icao) {
 				e.ErrorString(`%s: route reaches no exit in "departure_routes"`, r.Route)
@@ -515,7 +544,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Pop()
 	}
 	for _, other := range util.SortedMapKeys(ap.TrafficRoutes.Arrivals) {
-		e.Push("Arrival " + other)
+		e.Push("Arrival " + string(other))
 		for _, r := range ap.TrafficRoutes.Arrivals[other] {
 			if !checkTrafficRoute(r) {
 				continue
@@ -534,7 +563,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 	for i, dep := range ap.Departures {
 		e.Push("Departure exit " + string(dep.Exit))
-		e.Push("Destination " + dep.Destination)
+		e.Push("Destination " + string(dep.Destination))
 
 		for _, alt := range dep.Altitudes {
 			if alt < 500 {
@@ -934,7 +963,7 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 // non-empty, names the SID's enroute transition to fly. A route with an
 // initial heading needs no runway transition from the CIFP: the heading is
 // how the aircraft gets from the runway to the SID.
-func sidWaypoints(icao, sid, transition string, rwy RunwayID, exit ExitID, initialHeading bool,
+func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, exit ExitID, initialHeading bool,
 	e *util.ErrorLogger) (WaypointArray, bool) {
 	s, ok := DB.Airports[icao].SIDs[sid]
 	if !ok {
@@ -990,7 +1019,7 @@ func atDepartureEnd(wp Waypoint, r, rend Runway, nmPerLongitude float32) bool {
 // threshold and then its midpoint, from which the aircraft tracks the runway
 // centerline until it is 400' above the field and only then flies the
 // route--and checks the route's other members against them.
-func (er *ExitRoute) initialize(icao string, rwy RunwayID, r, rend Runway, nmPerLongitude float32,
+func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runway, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[ControlPosition]*Controller, e *util.ErrorLogger) {
 	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, rend.Threshold, nmPerLongitude), magneticVariation)
 
@@ -1115,7 +1144,7 @@ func (er ExitRoute) FinalHeading() int {
 type Departure struct {
 	Exit ExitID `json:"exit"`
 
-	Destination    string                  `json:"destination"`
+	Destination    ICAOAirportCode         `json:"destination"`
 	Altitudes      util.SingleOrArray[int] `json:"altitude,omitempty"`
 	Route          string                  `json:"route"`
 	RouteWaypoints WaypointArray           // not specified in user JSON
@@ -1134,8 +1163,8 @@ type DepartureAirline struct {
 // TrafficRoutes says how published traffic between an airport and specific
 // other airports is routed, keyed by the other airport's ICAO code.
 type TrafficRoutes struct {
-	Departures map[string]TrafficRouteSet `json:"departures"`
-	Arrivals   map[string]TrafficRouteSet `json:"arrivals"`
+	Departures map[ICAOAirportCode]TrafficRouteSet `json:"departures"`
+	Arrivals   map[ICAOAirportCode]TrafficRouteSet `json:"arrivals"`
 }
 
 // TrafficRoute is one route and the aircraft classes it applies to.
@@ -1241,7 +1270,7 @@ func (ap *Airport) checkExits(loc Locator, e *util.ErrorLogger) {
 
 // routeReachesExit reports whether a departure route out of the airport flies
 // over one of its exits or files a SID that leads to one.
-func (ap *Airport) routeReachesExit(route, icao string) bool {
+func (ap *Airport) routeReachesExit(route string, icao ICAOAirportCode) bool {
 	fields := strings.Fields(route)
 	if len(fields) > 0 && TokenNamesAirport(fields[0], icao) {
 		fields = fields[1:]
@@ -1350,7 +1379,7 @@ type Approach struct {
 // InitializeWaypoints resolves waypoint locations and adds the runway
 // threshold waypoint to each route. It also sets the OnApproach flag,
 // Threshold, and OppositeThreshold fields.
-func (ap *Approach) InitializeWaypoints(icao string, loc Locator, nmPerLongitude float32,
+func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, loc Locator, nmPerLongitude float32,
 	magneticVariation float32, e *util.ErrorLogger) {
 	rwy, ok := LookupRunway(icao, ap.Runway)
 	if !ok {

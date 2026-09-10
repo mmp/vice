@@ -122,12 +122,13 @@ func main() {
 // lookupPair fetches the routes for the airport pair given as "KCPS/KORD"
 // and prints what would be recorded for it.
 func lookupPair(spec string) {
-	from, to, ok := strings.Cut(strings.ToUpper(spec), "/")
+	fromStr, toStr, ok := strings.Cut(strings.ToUpper(spec), "/")
 	if !ok {
 		fmt.Printf("%q: expected an airport pair like KCPS/KORD\n", spec)
 		os.Exit(1)
 	}
-	for _, icao := range []string{from, to} {
+	from, to := av.ICAOAirportCode(fromStr), av.ICAOAirportCode(toStr)
+	for _, icao := range []av.ICAOAirportCode{from, to} {
 		if _, ok := av.DB.Airports[icao]; !ok {
 			fmt.Printf("%s: airport not in the FAA database\n", icao)
 			os.Exit(1)
@@ -177,11 +178,11 @@ func describe(r av.ScrapedRoute) string {
 // pair is a directed city pair from the flight data and the number of
 // flights recorded for it.
 type pair struct {
-	from, to string
+	from, to av.ICAOAirportCode
 	count    int
 }
 
-func (p pair) key() string { return p.from + "-" + p.to }
+func (p pair) key() string { return string(p.from) + "-" + string(p.to) }
 
 // gatherPairs walks the flight data and returns the directed city pairs that
 // have no FAA route, most flights first. A pair is recorded in the cell of the
@@ -196,7 +197,7 @@ func gatherPairs(onlyCell string) []pair {
 	}
 
 	counts := make(map[string]int)
-	endpoints := make(map[string][2]string)
+	endpoints := make(map[string][2]av.ICAOAirportCode)
 	for _, file := range files {
 		cell := strings.TrimSuffix(path.Base(file), av.FlightDataExtension)
 		if onlyCell != "" && !strings.EqualFold(cell, onlyCell) {
@@ -219,9 +220,9 @@ func gatherPairs(onlyCell string) []pair {
 			if f.Departure {
 				from, to = f.Airport, f.Other
 			}
-			key := from + "-" + to
+			key := string(from) + "-" + string(to)
 			local[key]++
-			endpoints[key] = [2]string{from, to}
+			endpoints[key] = [2]av.ICAOAirportCode{from, to}
 		}
 		for key, n := range local {
 			counts[key] = max(counts[key], n)
@@ -259,14 +260,14 @@ func gatherPairs(onlyCell string) []pair {
 // Academy scenarios fly. They stand on a real airport's traffic, which is why
 // they turn up in the flight data at all, but no real route was ever filed to
 // one and the Academy is not to be flown on real-world routes regardless.
-func madeUpAirport(icao string) bool {
+func madeUpAirport(icao av.ICAOAirportCode) bool {
 	_, ok := av.FlightDataSubstitutes[icao]
 	return ok
 }
 
 // domestic reports whether an airport is one the FAA controls, which is what
 // decides the end of an oceanic route worth keeping.
-func domestic(icao string) bool { return av.DB.Airports[icao].FAAControlled() }
+func domestic(icao av.ICAOAirportCode) bool { return av.DB.Airports[icao].FAAControlled() }
 
 ///////////////////////////////////////////////////////////////////////////
 // FlightAware's IFR route analyzer
@@ -281,10 +282,10 @@ var (
 
 // fetchRoutes asks FlightAware's IFR route analyzer how the pair has
 // recently been flown, most-filed routes first.
-func fetchRoutes(client *http.Client, from, to string,
+func fetchRoutes(client *http.Client, from, to av.ICAOAirportCode,
 	fromScenario, toScenario bool) ([]av.ScrapedRoute, error) {
-	u := "https://www.flightaware.com/analysis/route.rvt?origin=" + url.QueryEscape(from) +
-		"&destination=" + url.QueryEscape(to)
+	u := "https://www.flightaware.com/analysis/route.rvt?origin=" + url.QueryEscape(string(from)) +
+		"&destination=" + url.QueryEscape(string(to))
 	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, err
@@ -311,7 +312,7 @@ func fetchRoutes(client *http.Client, from, to string,
 // lead with the number of times each route was filed and give its altitude
 // range; the itemized rows below them lead with a local time of day and give
 // each flight's aircraft type. Both link the route to SkyVector.
-func parseAnalyzerRoutes(body, from, to string, fromScenario, toScenario bool) []av.ScrapedRoute {
+func parseAnalyzerRoutes(body string, from, to av.ICAOAirportCode, fromScenario, toScenario bool) []av.ScrapedRoute {
 	stats := make(map[string]*av.ScrapedRoute)
 	statsFor := func(route string) *av.ScrapedRoute {
 		if _, ok := stats[route]; !ok {
@@ -408,10 +409,11 @@ func cullRareRoutes(routes []av.ScrapedRoute) []av.ScrapedRoute {
 func consolidateSets(sets map[string]av.ScrapedRouteSet) bool {
 	changed := false
 	for key, set := range sets {
-		from, to, ok := strings.Cut(key, "-")
+		fromStr, toStr, ok := strings.Cut(key, "-")
 		if !ok {
 			continue
 		}
+		from, to := av.ICAOAirportCode(fromStr), av.ICAOAirportCode(toStr)
 
 		var order []string
 		merged := make(map[string]*av.ScrapedRoute)
@@ -478,7 +480,7 @@ func parseAltitude(s string) int {
 // inferred with a leading "+" and fills gaps with "TBD"--the fixes are real,
 // the markers aren't. A route left with nothing--a direct filing--comes back
 // empty.
-func cleanRoute(route, from, to string) string {
+func cleanRoute(route string, from, to av.ICAOAirportCode) string {
 	fields := strings.Fields(html.UnescapeString(route))
 	fields = util.MapSlice(fields, func(f string) string { return strings.TrimLeft(f, "+") })
 	fields = util.FilterSlice(fields, func(f string) bool { return f != "" && f != "TBD" })

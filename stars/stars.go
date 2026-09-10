@@ -350,13 +350,13 @@ type STARSCRDAPair struct {
 	av.CRDAPair
 	Source  *av.CRDARegion
 	Ghost   *av.CRDARegion
-	Airport string
+	Airport av.FAAAirportCode
 	Index   int
 }
 
 type CRDARunwayState struct {
 	Enabled                 bool
-	Airport                 string
+	Airport                 av.FAAAirportCode
 	Region                  string
 	LeaderLineDirection     *math.CardinalOrdinalDirection // nil -> unset
 	DrawCourseLines         bool
@@ -853,7 +853,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 				CRDAPair: pair,
 				Source:   ap.CRDARegions[pair.SourceRegion],
 				Ghost:    ap.CRDARegions[pair.GhostRegion],
-				Airport:  av.TrimICAOPrefix(name),
+				Airport:  av.FAAAirportCode(av.AirportDisplayId(name)),
 				Index:    idx + 1, // 1-based
 			})
 		}
@@ -1226,14 +1226,14 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	for _, name := range util.SortedMapKeys(ss.ArrivalAirports) {
 		ap := ss.Airports[name]
 		for rwy, vol := range util.SortedMap(ap.ATPAVolumes) {
-			label := "A" + name[1:] + rwy
+			label := "A" + av.AirportDisplayId(name) + rwy
 			if len(label) > 7 {
 				label = label[:7]
 			}
 			sm := clientMap{
 				STARSMap: av.STARSMap{
 					Label:    label,
-					Name:     name + rwy + " ATPA APPROACH VOLUME",
+					Name:     string(name) + rwy + " ATPA APPROACH VOLUME",
 					Id:       atpaIndex,
 					Category: VideoMapProcessingAreas,
 				},
@@ -1881,12 +1881,12 @@ func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 	center := ss.GetInitialCenter()
 	for name, ap := range av.DB.Airports {
 		if math.NMDistance2LL(ap.Location, center) < 250 {
-			name = av.TrimICAOPrefix(name)
-			tryAdd(name, name+" AIRPORT", ap.Location)
+			id := av.AirportDisplayId(name)
+			tryAdd(id, id+" AIRPORT", ap.Location)
 
 			for _, rwy := range ap.Runways {
 				// e.g. JFK22LT -> JFK RWY 22L THRESHOLD
-				tryAdd(name+rwy.Id+"T", name+" RWY "+rwy.Id+" THRESHOLD", rwy.Threshold)
+				tryAdd(id+rwy.Id+"T", id+" RWY "+rwy.Id+" THRESHOLD", rwy.Threshold)
 			}
 		}
 	}

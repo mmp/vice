@@ -542,11 +542,11 @@ func createFallbackAtmos(station, facility string, t time.Time) (*AtmosByPointSO
 		return nil, fmt.Errorf("%s: unknown facility", facility)
 	}
 
-	metarMap, err := GetMETAR([]string{station})
+	metarMap, err := GetMETAR([]av.ICAOAirportCode{av.ICAOAirportCode(station)})
 	if err != nil {
 		return nil, err
 	}
-	metarSOA, ok := metarMap[station]
+	metarSOA, ok := metarMap[av.ICAOAirportCode(station)]
 	if !ok {
 		return nil, fmt.Errorf("no METAR data for %s", station)
 	}

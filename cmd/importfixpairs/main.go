@@ -645,13 +645,25 @@ func locate(s string) (math.Point2LL, bool) {
 	if n, ok := av.DB.Navaids[s]; ok {
 		return n.Location, true
 	}
-	if ap, ok := av.DB.LookupAirport(s); ok {
+	if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(s)); ok {
+		return ap.Location, true
+	}
+	if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(s)); ok {
 		return ap.Location, true
 	}
 	if f, ok := av.DB.Fixes[s]; ok {
 		return f.Location, true
 	}
 	return math.Point2LL{}, false
+}
+
+// lookupEitherAirportId resolves an airport id that a facility config or the
+// significant points dump may write in either form.
+func lookupEitherAirportId(db *av.StaticDatabase, id string) (av.FAAAirport, bool) {
+	if ap, ok := db.LookupICAOAirport(av.ICAOAirportCode(id)); ok {
+		return ap, true
+	}
+	return db.LookupFAAAirport(av.FAAAirportCode(id))
 }
 
 // resolveFixes works out "significant_points" and "airports" entries for
@@ -695,7 +707,7 @@ func resolveFixes(refs []string, fa *sim.FacilityAdaptation, dump []dumpPoint,
 			underivable = append(underivable, id)
 		} else if n, ok := db.Navaids[id]; ok && inRange(n.Location) {
 			sigEntries = append(sigEntries, jsonStr(id)+": {}")
-		} else if ap, ok := db.LookupAirport(id); ok && inRange(ap.Location) {
+		} else if ap, ok := lookupEitherAirportId(db, id); ok && inRange(ap.Location) {
 			airportEntries = append(airportEntries, formatAirport(id, ap))
 		} else if f, ok := db.Fixes[id]; ok && inRange(f.Location) {
 			sigEntries = append(sigEntries, jsonStr(id)+": {}")

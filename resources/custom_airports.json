@@ -43,6 +43,7 @@
   },
   "KAAC": {
     "name": "",
+    "local_code": "AAC",
     "elevation": 677,
     "location": "N036.10.14.930,W095.39.37.329",
     "runways": [
@@ -78,6 +79,7 @@
   },
   "KBRT": {
     "name": "",
+    "local_code": "BRT",
     "elevation": 689,
     "location": "N036.26.42.685,W095.56.39.032",
     "runways": [
@@ -113,6 +115,7 @@
   },
   "KJKE": {
     "name": "",
+    "local_code": "JKE",
     "elevation": 608,
     "location": "N035.54.58.809,W095.37.01.600",
     "runways": [

@@ -178,16 +178,16 @@ func FullDataDays(metar, precip, atmos []time.Time) []util.TimeInterval {
 // Resource data access
 
 // GetMETAR returns METAR data from bundled resources for the specified airports.
-func GetMETAR(airports []string) (map[string]METARSOA, error) {
+func GetMETAR(airports []av.ICAOAirportCode) (map[av.ICAOAirportCode]METARSOA, error) {
 	Init()
 	<-metarCache.done
 	if metarCache.err != nil {
 		return nil, metarCache.err
 	}
 
-	m := make(map[string]METARSOA)
+	m := make(map[av.ICAOAirportCode]METARSOA)
 	for _, icao := range airports {
-		if metarSOA, err := metarCache.cm.GetAirportMETARSOA(icao); err == nil {
+		if metarSOA, err := metarCache.cm.GetAirportMETARSOA(string(icao)); err == nil {
 			m[icao] = metarSOA
 		}
 	}

@@ -343,8 +343,8 @@ func TestOutboundTurnSweep(t *testing.T) {
 // localizer intercept sweep
 
 type interceptCase struct {
-	airport string // arrival airport, approach id, and a route that meets
-	appr    string // the approach; all empty for KJFK's I22L
+	airport av.ICAOAirportCode // arrival airport, approach id, and a route that meets
+	appr    string             // the approach; all empty for KJFK's I22L
 	route   string
 	acType  string
 	ias     float32
@@ -365,7 +365,7 @@ type interceptCase struct {
 
 // arrival returns the case's arrival airport, approach id, and a route into
 // it that meets the approach, defaulting to KJFK's I22L.
-func (c interceptCase) arrival() (string, string, string) {
+func (c interceptCase) arrival() (av.ICAOAirportCode, string, string) {
 	if c.airport == "" {
 		return "KJFK", "I22L", "HAUPT/a6000 LEFER/a4000 ROSLY/a3000"
 	}
@@ -581,7 +581,10 @@ func TestInterceptOvershootSweep(t *testing.T) {
 // turn to the course rolls out on it. Both sides of the course and a second
 // airport are swept: nothing about joining a localizer should be handed.
 func TestInterceptPTACSweep(t *testing.T) {
-	airports := []struct{ icao, appr, route string }{
+	airports := []struct {
+		icao        av.ICAOAirportCode
+		appr, route string
+	}{
 		{"", "", ""}, // KJFK I22L
 		{"KIAH", "I8L", "KABBY/a4000 KICKM/a3000"},
 	}

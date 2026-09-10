@@ -37,12 +37,13 @@ var DB *StaticDatabase
 
 type StaticDatabase struct {
 	Navaids             map[string]Navaid
-	Airports            map[string]FAAAirport
+	Airports            map[ICAOAirportCode]FAAAirport
+	faaToICAO           map[FAAAirportCode]ICAOAirportCode
 	Fixes               map[string]Fix
 	Airways             map[string][]Airway
-	EnrouteHolds        map[string][]Hold            // Fix -> Holds
-	TerminalHolds       map[string]map[string][]Hold // Airport ICAO -> Fix -> Holds
-	Callsigns           map[string]string            // 3 letter -> callsign
+	EnrouteHolds        map[string][]Hold                     // Fix -> Holds
+	TerminalHolds       map[ICAOAirportCode]map[string][]Hold // Airport -> Fix -> Holds
+	Callsigns           map[string]string                     // 3 letter -> callsign
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
@@ -59,9 +60,10 @@ type StaticDatabase struct {
 }
 
 type FAAAirport struct {
-	Id         string
+	Id         ICAOAirportCode
 	Name       string
 	Country    string
+	LocalCode  FAAAirportCode `json:"local_code"`
 	Elevation  int
 	Location   math.Point2LL
 	Runways    []Runway
@@ -93,13 +95,13 @@ func (ap FAAAirport) FAAControlled() bool { return faaCountries[ap.Country] }
 // replaced them. The historical data vice imports goes on using the old
 // identifier long after the change, so the import tools canonicalize through
 // this; scenarios and timetables must use the current one.
-var RenamedAirports = map[string]string{
+var RenamedAirports = map[ICAOAirportCode]ICAOAirportCode{
 	"KPBI": "KDJT", // renamed 2026-08-18
 }
 
 // CurrentAirportId returns the identifier now in use for an airport that has
 // been re-identified; any other id is returned unchanged.
-func CurrentAirportId(id string) string {
+func CurrentAirportId(id ICAOAirportCode) ICAOAirportCode {
 	if current, ok := RenamedAirports[id]; ok {
 		return current
 	}
@@ -111,7 +113,7 @@ func CurrentAirportId(id string) string {
 // "destination" or "arrival". A retired identifier names its replacement:
 // historical data keeps using the old one, so it turns up in scenario edits
 // made from a stale copy.
-func CheckAirport(role, id string) error {
+func CheckAirport(role string, id ICAOAirportCode) error {
 	if _, ok := DB.Airports[id]; ok {
 		return nil
 	}
@@ -238,20 +240,95 @@ func (d StaticDatabase) Declination(id string) (float32, bool) {
 	return n.Declination, ok && n.HasDeclination
 }
 
-// LookupAirport returns the airport with the given id, which may be either an
-// ICAO id or the domestic name of an airport in one of the FAA's regions.
-func (d StaticDatabase) LookupAirport(id string) (FAAAirport, bool) {
-	if ap, ok := d.Airports[id]; ok {
-		return ap, true
-	}
-	if len(id) == 3 {
-		for _, prefix := range icaoRegionPrefixes {
-			if ap, ok := d.Airports[string(prefix)+id]; ok {
-				return ap, true
-			}
-		}
+// LookupICAOAirport returns the airport the aviation database keys by the
+// given id.
+func (d StaticDatabase) LookupICAOAirport(icao ICAOAirportCode) (FAAAirport, bool) {
+	ap, ok := d.Airports[icao]
+	return ap, ok
+}
+
+// LookupFAAAirport returns the airport with the given FAA local identifier.
+func (d StaticDatabase) LookupFAAAirport(faa FAAAirportCode) (FAAAirport, bool) {
+	if icao, ok := d.faaToICAO[faa]; ok {
+		return d.Airports[icao], true
 	}
 	return FAAAirport{}, false
+}
+
+// initLocalCodes fills in the FAA local identifiers that the airports
+// database and the CIFP don't carry directly and builds the reverse FAA ->
+// database id map. It exits fatally if an FAA airport ends up without a
+// local code or two airports claim the same one: both must be resolved
+// before a release.
+func (d *StaticDatabase) initLocalCodes() {
+	var fatal []string
+
+	for icao, lc := range airportLocalCodeOverrides {
+		if ap, ok := d.Airports[icao]; ok {
+			ap.LocalCode = lc
+			d.Airports[icao] = ap
+		}
+	}
+
+	for icao, ap := range d.Airports {
+		if ap.LocalCode != "" {
+			continue
+		}
+		if _, ok := airportLocalCodeOverrides[icao]; ok {
+			continue // its claim was deliberately taken away
+		}
+		// An airport in the FAA's regions whose id isn't a four-letter ICAO
+		// id is keyed by its FAA location identifier already. Country is
+		// empty for airports that come only from the CIFP or from
+		// custom_airports.json; the CIFP is FAA data, so those qualify too.
+		inFAARegion := ap.Country == "" || faaCountries[ap.Country]
+		fourLetters := len(icao) == 4 && !strings.ContainsFunc(string(icao),
+			func(r rune) bool { return r < 'A' || r > 'Z' })
+		if inFAARegion && !fourLetters {
+			ap.LocalCode = FAAAirportCode(icao)
+			d.Airports[icao] = ap
+		} else if faaCountries[ap.Country] && !airportsWithoutLocalCode[icao] {
+			fatal = append(fatal, fmt.Sprintf("%s: FAA airport has no local code in airports.csv.zst", icao))
+		}
+	}
+
+	d.faaToICAO = make(map[FAAAirportCode]ICAOAirportCode)
+	for icao, ap := range d.Airports {
+		lc := ap.LocalCode
+		if lc == "" {
+			continue
+		}
+		prev, ok := d.faaToICAO[lc]
+		if !ok {
+			d.faaToICAO[lc] = icao
+			continue
+		}
+		// The same airport can be in the database twice: under the gps code
+		// ourairports invents for airports with no ICAO id (K00N) and under
+		// its FAA identifier from the CIFP (00N). The FAA identifier is the
+		// key to prefer; two separate airports claiming one code is fatal.
+		self, other := icao, prev
+		if string(prev) == string(lc) {
+			self, other = prev, icao
+		} else if string(icao) != string(lc) {
+			fatal = append(fatal, fmt.Sprintf("%s: airports %s and %s both claim the local code", lc, prev, icao))
+			continue
+		}
+		if math.NMDistance2LL(d.Airports[self].Location, d.Airports[other].Location) > 5 {
+			fatal = append(fatal, fmt.Sprintf("%s: airports %s and %s both claim the local code but aren't co-located",
+				lc, prev, icao))
+			continue
+		}
+		d.faaToICAO[lc] = self
+	}
+
+	if len(fatal) > 0 {
+		slices.Sort(fatal)
+		for _, f := range fatal {
+			fmt.Fprintln(os.Stderr, f)
+		}
+		os.Exit(1)
+	}
 }
 
 // LookupFacility returns a Facility for the given id, checking
@@ -431,11 +508,11 @@ func doInitDB() {
 	db := &StaticDatabase{}
 
 	var wg sync.WaitGroup
-	var customAirports map[string]FAAAirport
+	var customAirports map[ICAOAirportCode]FAAAirport
 	wg.Go(func() { db.Airports, customAirports = parseAirports() })
 	wg.Go(func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft() })
 	wg.Go(func() { db.Airlines, db.Callsigns = parseAirlines() })
-	var airports map[string]FAAAirport
+	var airports map[ICAOAirportCode]FAAAirport
 	wg.Go(func() {
 		r := parseCIFP()
 		airports = r.Airports
@@ -467,13 +544,19 @@ func doInitDB() {
 	for icao, ap := range airports {
 		if _, ok := customAirports[icao]; !ok { // ignore ones defined in custom_airports.json
 			// We don't get these from the CIFP but have them from the other airports
-			// database, so port them over.
+			// database, so port them over. The CIFP's ATA/IATA designator only
+			// fills in when the airports database has no local code.
 			ap.Name = db.Airports[icao].Name
 			ap.Country = db.Airports[icao].Country
 			ap.ARTCC = db.Airports[icao].ARTCC
+			if lc := db.Airports[icao].LocalCode; lc != "" {
+				ap.LocalCode = lc
+			}
 			db.Airports[icao] = ap
 		}
 	}
+
+	db.initLocalCodes()
 
 	DB = db
 
@@ -485,7 +568,7 @@ type dbResolver struct{}
 func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 	if n, ok := DB.Navaids[s]; ok {
 		return n.Location, nil
-	} else if n, ok := DB.Airports[s]; ok {
+	} else if n, ok := DB.Airports[ICAOAirportCode(s)]; ok {
 		return n.Location, nil
 	} else if f, ok := DB.Fixes[s]; ok {
 		return f.Location, nil
@@ -538,8 +621,37 @@ func mungeCSV(filename string, r io.Reader, fields []string, callback func([]str
 	}
 }
 
-func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
-	airports := make(map[string]FAAAirport)
+// airportLocalCodeOverrides patches FAA local identifiers the source data
+// has wrong; an empty value takes an airport's claim to a code away.
+var airportLocalCodeOverrides = map[ICAOAirportCode]FAAAirportCode{
+	// The upstream row for LS45 (Entergy Waterford 3 Heliport) carries LS82's
+	// local code, which belongs to a different Louisiana heliport; FAA NASR
+	// lists both as distinct identifiers.
+	"LS45": "LS45",
+	// Northwood Municipal's identifier belongs to the made-up Academy
+	// airport of the same name, defined in custom_airports.json.
+	"K4V4": "",
+	// Taku Lodge Seaplane Base, which the CIFP has as PFTK with the same
+	// TKL designator; the airports database entry keeps the code since it
+	// carries the name and country.
+	"PFTK": "",
+}
+
+// airportsWithoutLocalCode lists the FAA-region airports that have no FAA
+// location identifier at all: none of them appear in the FAA NASR APT data.
+// The fatal missing-local-code check in initLocalCodes skips them.
+var airportsWithoutLocalCode = map[ICAOAirportCode]bool{
+	"KGWN": true, // Winn Army Community Hospital Helipad
+	"KMWN": true, // Mount Washington Observatory
+	"KNLW": true, // Naval Station Newport Helipad
+	"KNPI": true, // Site 8 NOLF
+	"KXTA": true, // Homey (Area 51) Airport
+	"KZ26": true, // Camp Roberts Army Heliport
+	"PAHE": true, // Healy Airport (not the NASR-listed Healy River/HRR, which is PAHV)
+}
+
+func parseAirports() (map[ICAOAirportCode]FAAAirport, map[ICAOAirportCode]FAAAirport) {
+	airports := make(map[ICAOAirportCode]FAAAirport)
 
 	// https://ourairports.com/data/
 	// Only load airports that have ICAO gps_codes so that we don't
@@ -548,9 +660,9 @@ func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 	r := util.LoadResource("airports.csv.zst")
 	defer r.Close()
 	mungeCSV("airports", r,
-		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name", "iso_country", "type"},
+		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name", "iso_country", "type", "local_code"},
 		func(s []string) {
-			id := s[3] // gps_code
+			id := ICAOAirportCode(s[3]) // gps_code
 			if id == "" || s[6] == "closed" {
 				return
 			}
@@ -570,13 +682,18 @@ func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 
 			loc := math.Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
 			ap := FAAAirport{Id: id, Name: s[4], Country: s[5], Location: loc, Elevation: int(elevation)}
+			// Local codes are only unique within the FAA's regions; elsewhere
+			// in the world they freely collide with FAA identifiers.
+			if ap.FAAControlled() {
+				ap.LocalCode = FAAAirportCode(s[7])
+			}
 			airports[id] = ap
 		})
 
 	// Custom airports/runways
 	custom := util.LoadResource("custom_airports.json")
 	defer custom.Close()
-	customAirports := make(map[string]FAAAirport)
+	customAirports := make(map[ICAOAirportCode]FAAAirport)
 	if err := util.UnmarshalJSON(custom, &customAirports); err != nil {
 		fmt.Fprintf(os.Stderr, "custom_airports.json: %v\n", err)
 		os.Exit(1)
@@ -589,7 +706,7 @@ func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 	// ARTCCs
 	ar := util.LoadResource("airport_artccs.json")
 	defer ar.Close()
-	data := make(map[string]string) // Airport -> ARTCC
+	data := make(map[ICAOAirportCode]string) // Airport -> ARTCC
 	if err := util.UnmarshalJSON(ar, &data); err != nil {
 		fmt.Fprintf(os.Stderr, "airport_artccs.json: %v\n", err)
 		os.Exit(1)
@@ -680,14 +797,14 @@ func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 // borderAirportTimeZones covers the airports that sit closer to a time zone
 // boundary than the roughly 3km the boundaries are resolved to, so that looking
 // the zone up from the airport's position puts it on the wrong side.
-var borderAirportTimeZones = map[string]string{
+var borderAirportTimeZones = map[ICAOAirportCode]string{
 	"KLSF": "America/New_York", // Fort Benning, a mile east of the Chattahoochee
 }
 
 // AirportTimeZone returns the local time zone at an airport, from where it is.
 // It fails for an airport that isn't in the database or that isn't in any time
 // zone.
-func (d *StaticDatabase) AirportTimeZone(id string) (*time.Location, bool) {
+func (d *StaticDatabase) AirportTimeZone(id ICAOAirportCode) (*time.Location, bool) {
 	ap, ok := d.Airports[id]
 	if !ok {
 		return nil, false
@@ -1127,7 +1244,7 @@ func parseAirportPairRoutes() map[AirportPair][]AirportPairRoute {
 	defer r.Close()
 	mungeCSV("routes", r, []string{"orig", "dest", "type", "dep_fix", "acft", "rnav", "route"},
 		func(s []string) {
-			pair := AirportPair{From: strings.TrimSpace(s[0]), To: strings.TrimSpace(s[1])}
+			pair := AirportPair{From: ICAOAirportCode(strings.TrimSpace(s[0])), To: ICAOAirportCode(strings.TrimSpace(s[1]))}
 			routes[pair] = append(routes[pair], AirportPairRoute{
 				Route:        strings.TrimSpace(s[6]),
 				DepartureFix: strings.TrimSpace(s[3]),
@@ -1142,7 +1259,7 @@ func parseAirportPairRoutes() map[AirportPair][]AirportPairRoute {
 
 // AirportPair keys the city-pair route database by ICAO airport codes.
 type AirportPair struct {
-	From, To string
+	From, To ICAOAirportCode
 }
 
 // AirportPairRoute is one real-world route between two airports, taken from the
@@ -1163,7 +1280,7 @@ func (r AirportPairRoute) LowAltitude() bool {
 
 // RoutesBetween returns the real-world routes from one airport to another,
 // ordered preferred-routes first, or nil if the pair isn't in the database.
-func (d StaticDatabase) RoutesBetween(from, to string) []AirportPairRoute {
+func (d StaticDatabase) RoutesBetween(from, to ICAOAirportCode) []AirportPairRoute {
 	return d.AirportPairRoutes[AirportPair{From: from, To: to}]
 }
 
@@ -1191,7 +1308,7 @@ func RouteWaypoints(route string) WaypointArray {
 
 // ScrapedRoutesBetween returns the recently filed routes from one airport to
 // another, or nil if the pair hasn't been scraped.
-func (d StaticDatabase) ScrapedRoutesBetween(from, to string) []ScrapedRoute {
+func (d StaticDatabase) ScrapedRoutesBetween(from, to ICAOAirportCode) []ScrapedRoute {
 	return d.ScrapedRoutes[AirportPair{From: from, To: to}]
 }
 
@@ -1309,7 +1426,7 @@ func (ap FAAAirport) ValidRunways() string {
 	return strings.Join(util.MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
 }
 
-func PrintCIFPRoutes(airport string) error {
+func PrintCIFPRoutes(airport ICAOAirportCode) error {
 	ap, ok := DB.Airports[airport]
 	if !ok {
 		return fmt.Errorf("%s: airport not present in database\n", airport)

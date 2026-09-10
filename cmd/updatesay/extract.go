@@ -13,21 +13,21 @@ import (
 
 // ProcedureInfo tracks airports and full names (with numbers) for a SID/STAR base name.
 type ProcedureInfo struct {
-	Airports  map[string]struct{} // ICAO codes
+	Airports  map[av.ICAOAirportCode]struct{}
 	FullNames map[string]struct{} // Full names with numbers (e.g., "GEP1", "GEP2")
 }
 
 // NewProcedureInfo creates an initialized ProcedureInfo.
 func NewProcedureInfo() *ProcedureInfo {
 	return &ProcedureInfo{
-		Airports:  make(map[string]struct{}),
+		Airports:  make(map[av.ICAOAirportCode]struct{}),
 		FullNames: make(map[string]struct{}),
 	}
 }
 
 // ExtractFromAirports extracts fixes and SIDs from airport definitions.
 // SIDs are stored with their associated airport ICAO codes and full names.
-func ExtractFromAirports(airports map[string]*av.Airport, fixes map[string]struct{}, sids map[string]*ProcedureInfo) {
+func ExtractFromAirports(airports map[av.ICAOAirportCode]*av.Airport, fixes map[string]struct{}, sids map[string]*ProcedureInfo) {
 	for icao, airport := range airports {
 		// DepartureRoutes: runway -> (exit -> routes)
 		for _, exitRoutes := range airport.DepartureRoutes {

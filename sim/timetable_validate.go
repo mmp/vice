@@ -25,7 +25,7 @@ type timetableCallsignUse struct {
 
 func timetableFlightActiveWindow(
 	flight TimetableFlight,
-	airport string,
+	airport av.ICAOAirportCode,
 ) (start int, end int) {
 	switch flight.OperationAt(airport) {
 	case TimetableOperationDeparture:

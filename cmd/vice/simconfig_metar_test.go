@@ -16,10 +16,10 @@ import (
 
 // metarConfig is a dialog with METAR on hand for the given airports, in the
 // state metarAirportsByTraffic reads.
-func metarConfig(airports ...string) *NewSimConfiguration {
-	c := &NewSimConfiguration{airportMETAR: make(map[string][]wx.METAR)}
+func metarConfig(airports ...av.ICAOAirportCode) *NewSimConfiguration {
+	c := &NewSimConfiguration{airportMETAR: make(map[av.ICAOAirportCode][]wx.METAR)}
 	for _, ap := range airports {
-		c.airportMETAR[ap] = []wx.METAR{{ICAO: ap}}
+		c.airportMETAR[ap] = []wx.METAR{{ICAO: string(ap)}}
 	}
 	return c
 }
@@ -31,7 +31,7 @@ func TestMetarAirportsByTraffic(t *testing.T) {
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource:      sim.TrafficSourceScenario,
 			DepartureRateScale: 1,
-			DepartureRates: map[string]map[av.RunwayID]map[string]float32{
+			DepartureRates: map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{
 				"KAAA": {"18": {"": 5}},
 				"KZZZ": {"36": {"": 30}},
 			},
@@ -50,17 +50,17 @@ func TestMetarAirportsByTraffic(t *testing.T) {
 	for _, tc := range []struct {
 		name       string
 		spec       *server.ScenarioSpec
-		operations map[string]int
-		want       []string
+		operations map[av.ICAOAirportCode]int
+		want       []av.ICAOAirportCode
 		wantOK     bool
 	}{
-		{"scenario rates", scenarioSpec, nil, []string{"KZZZ", "KAAA", "KBBB"}, true},
-		{"timetable airport", timetableSpec, nil, []string{"KZZZ", "KAAA", "KBBB"}, true},
-		{"historical before counts", historicalSpec, nil, []string{"KAAA", "KBBB", "KZZZ"}, false},
-		{"historical counts", historicalSpec, map[string]int{"KZZZ": 40, "KBBB": 10},
-			[]string{"KZZZ", "KBBB", "KAAA"}, true},
-		{"historical quiet window", historicalSpec, map[string]int{},
-			[]string{"KAAA", "KBBB", "KZZZ"}, true},
+		{"scenario rates", scenarioSpec, nil, []av.ICAOAirportCode{"KZZZ", "KAAA", "KBBB"}, true},
+		{"timetable airport", timetableSpec, nil, []av.ICAOAirportCode{"KZZZ", "KAAA", "KBBB"}, true},
+		{"historical before counts", historicalSpec, nil, []av.ICAOAirportCode{"KAAA", "KBBB", "KZZZ"}, false},
+		{"historical counts", historicalSpec, map[av.ICAOAirportCode]int{"KZZZ": 40, "KBBB": 10},
+			[]av.ICAOAirportCode{"KZZZ", "KBBB", "KAAA"}, true},
+		{"historical quiet window", historicalSpec, map[av.ICAOAirportCode]int{},
+			[]av.ICAOAirportCode{"KAAA", "KBBB", "KZZZ"}, true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			c := metarConfig("KZZZ", "KAAA", "KBBB")

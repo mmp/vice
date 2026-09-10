@@ -384,7 +384,7 @@ func TestDeriveSTAR(t *testing.T) {
 	}
 
 	oldDB := DB
-	DB = &StaticDatabase{Airports: map[string]FAAAirport{
+	DB = &StaticDatabase{Airports: map[ICAOAirportCode]FAAAirport{
 		"KTST": {Id: "KTST", STARs: map[string]STAR{
 			"MIPP4":  mipp4,
 			"PROUD2": star("HOLEY", "BRAND", "KORRY", "APPLE", "PROUD"),
@@ -393,8 +393,8 @@ func TestDeriveSTAR(t *testing.T) {
 	}}
 	t.Cleanup(func() { DB = oldDB })
 
-	arrival := func(airport string, fixes ...string) *Arrival {
-		ar := &Arrival{Airports: []string{airport}}
+	arrival := func(airport ICAOAirportCode, fixes ...string) *Arrival {
+		ar := &Arrival{Airports: []ICAOAirportCode{airport}}
 		for _, f := range fixes {
 			ar.Waypoints = append(ar.Waypoints, Waypoint{Fix: f})
 		}
@@ -474,7 +474,7 @@ func TestArrivalAirports(t *testing.T) {
 	// MIPP4 serves two of the three airports; the CIFP records it once under
 	// each of them.
 	DB = &StaticDatabase{
-		Airports: map[string]FAAAirport{
+		Airports: map[ICAOAirportCode]FAAAirport{
 			"KTST": {Id: "KTST", STARs: map[string]STAR{"MIPP4": mipp4}},
 			"KNOS": {Id: "KNOS", STARs: map[string]STAR{"MIPP4": mipp4}},
 			"KOTH": {Id: "KOTH"},
@@ -483,45 +483,45 @@ func TestArrivalAirports(t *testing.T) {
 	}
 	t.Cleanup(func() { DB = oldDB })
 
-	scenarioAirports := map[string]*Airport{"KTST": {}, "KNOS": {}, "KOTH": {}}
+	scenarioAirports := map[ICAOAirportCode]*Airport{"KTST": {}, "KNOS": {}, "KOTH": {}}
 	controlPositions := map[ControlPosition]*Controller{"1T": {}}
 
 	for _, tc := range []struct {
 		name string
 		arr  Arrival
-		want []string
+		want []ICAOAirportCode
 		err  string
 	}{
 		{
 			name: "takes the airports from the STAR",
 			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP"},
-			want: []string{"KNOS", "KTST"},
+			want: []ICAOAirportCode{"KNOS", "KTST"},
 		},
 		{
 			name: "airports given win over the STAR's",
-			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []string{"KTST"}},
-			want: []string{"KTST"},
+			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []ICAOAirportCode{"KTST"}},
+			want: []ICAOAirportCode{"KTST"},
 		},
 		{
 			name: "airports given are sorted",
-			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []string{"KTST", "KNOS"}},
-			want: []string{"KNOS", "KTST"},
+			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []ICAOAirportCode{"KTST", "KNOS"}},
+			want: []ICAOAirportCode{"KNOS", "KTST"},
 		},
 		{
 			name: "airlines don't imply the airports",
 			arr: Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
-				Airlines: map[string][]ArrivalAirline{"KNOS": nil}},
-			want: []string{"KNOS", "KTST"},
+				Airlines: map[ICAOAirportCode][]ArrivalAirline{"KNOS": nil}},
+			want: []ICAOAirportCode{"KNOS", "KTST"},
 		},
 		{
 			name: "airlines into an airport the arrival doesn't serve",
-			arr: Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []string{"KTST"},
-				Airlines: map[string][]ArrivalAirline{"KNOS": nil}},
+			arr: Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []ICAOAirportCode{"KTST"},
+				Airlines: map[ICAOAirportCode][]ArrivalAirline{"KNOS": nil}},
 			err: `"airlines" gives airlines into "KNOS"`,
 		},
 		{
 			name: "an airport the scenario hasn't got",
-			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []string{"KNIL"}},
+			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", Airports: []ICAOAirportCode{"KNIL"}},
 			err:  `arrival airport "KNIL" unknown`,
 		},
 		{
@@ -536,13 +536,13 @@ func TestArrivalAirports(t *testing.T) {
 		},
 		{
 			name: "spelling out the waypoints doesn't excuse an uncharted STAR",
-			arr:  Arrival{STAR: "MIPP4", Waypoints: wps, Airports: []string{"KOTH"}},
+			arr:  Arrival{STAR: "MIPP4", Waypoints: wps, Airports: []ICAOAirportCode{"KOTH"}},
 			err:  `"star" "MIPP4" isn't charted for any of the airports the arrival serves: KOTH`,
 		},
 		{
 			name: "one of the airports having the STAR is enough",
-			arr:  Arrival{STAR: "MIPP4", Waypoints: wps, Airports: []string{"KOTH", "KTST"}},
-			want: []string{"KOTH", "KTST"},
+			arr:  Arrival{STAR: "MIPP4", Waypoints: wps, Airports: []ICAOAirportCode{"KOTH", "KTST"}},
+			want: []ICAOAirportCode{"KOTH", "KTST"},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -595,10 +595,10 @@ func TestArrivalApproachRoutes(t *testing.T) {
 
 	id := "I5R"
 	arr := Arrival{
-		Airports:       []string{"KBWI"},
-		ExpectApproach: util.OneOf[string, map[string]string]{A: &id},
+		Airports:       []ICAOAirportCode{"KBWI"},
+		ExpectApproach: util.OneOf[string, map[ICAOAirportCode]string]{A: &id},
 		Waypoints:      WaypointArray{{Fix: "RAVNN"}, {Fix: "CAPKO"}},
-		RunwayWaypoints: map[string]map[string]WaypointArray{
+		RunwayWaypoints: map[ICAOAirportCode]map[string]WaypointArray{
 			"KBWI": {
 				"15R": {{Fix: "CAPKO"}, {Fix: "ZARTZ"}},
 				"33L": {{Fix: "CAPKO"}, {Fix: "KOOLZ"}},
@@ -650,7 +650,7 @@ func TestArrivalApproachRouteCarriesSharedFixActions(t *testing.T) {
 	}
 	arr := Arrival{
 		Waypoints: wps,
-		RunwayWaypoints: map[string]map[string]WaypointArray{
+		RunwayWaypoints: map[ICAOAirportCode]map[string]WaypointArray{
 			"KBWI": {"15R": {{Fix: "CAPKO"}, {Fix: "ZARTZ"}}},
 		},
 	}

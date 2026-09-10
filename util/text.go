@@ -232,7 +232,7 @@ func HashString64(s string) uint64 {
 // Given a string iterator and a base string, return two arrays of strings
 // from the iterator that are respectively within one or two edits of the
 // base string. // https://en.wikipedia.org/wiki/Levenshtein_distance
-func SelectInTwoEdits(str string, seq iter.Seq[string], dist1, dist2 []string) ([]string, []string) {
+func SelectInTwoEdits[S ~string](str string, seq iter.Seq[S], dist1, dist2 []string) ([]string, []string) {
 	min := func(a, b int) int {
 		if a < b {
 			return a
@@ -248,7 +248,8 @@ func SelectInTwoEdits(str string, seq iter.Seq[string], dist1, dist2 []string) (
 
 	var cur, prev []int
 	n := len(str)
-	for str2 := range seq {
+	for s2 := range seq {
+		str2 := string(s2)
 		if str == str2 {
 			continue
 		}

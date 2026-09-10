@@ -1001,8 +1001,8 @@ func makeWhisperPrompt(state SimState) string {
 		var fixes []string
 		nRouteFixes := 0
 		for _, fix := range trk.Fixes {
-			if fix == trk.ArrivalAirport || fix == trk.DepartureAirport {
-				if localArrival && fix == trk.ArrivalAirport {
+			if fix == string(trk.ArrivalAirport) || fix == string(trk.DepartureAirport) {
+				if localArrival && fix == string(trk.ArrivalAirport) {
 					fixes = append(fixes, fix)
 				}
 			} else if nRouteFixes < maxRouteFixesPerAircraft {
@@ -1094,7 +1094,7 @@ func makeWhisperPrompt(state SimState) string {
 
 	// Collect active approaches and their entry leg fixes, though only for airports that
 	// on-frequency aircraft are arriving at; the approach vocabulary is useless otherwise.
-	arrivalAirports := make(map[string]struct{})
+	arrivalAirports := make(map[av.ICAOAirportCode]struct{})
 	for _, trk := range onFrequencyTracks {
 		arrivalAirports[trk.ArrivalAirport] = struct{}{}
 	}

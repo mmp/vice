@@ -29,11 +29,11 @@ const TableFlags = imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 // of a scenario's arrivals, approaches, departures, overflights, and
 // airspace volumes the scope draws, and records what the user has chosen.
 type RouteDrawer struct {
-	Arrivals    map[string]map[int]bool                 // inbound flow -> index
-	Approaches  map[string]map[string]bool              // airport -> approach
-	Departures  map[string]map[DepartureGroup]bool      // airport -> group
-	Overflights map[string]map[int]bool                 // inbound flow -> index
-	Airspace    map[sim.ControlPosition]map[string]bool // position -> volume
+	Arrivals    map[string]map[int]bool                        // inbound flow -> index
+	Approaches  map[av.ICAOAirportCode]map[string]bool         // airport -> approach
+	Departures  map[av.ICAOAirportCode]map[DepartureGroup]bool // airport -> group
+	Overflights map[string]map[int]bool                        // inbound flow -> index
+	Airspace    map[sim.ControlPosition]map[string]bool        // position -> volume
 }
 
 // Clear forgets the selections; they are rebuilt from scratch for the next
@@ -67,7 +67,7 @@ const listWrapWidth = 72
 // joinWrapped joins the items with ", ", starting a new line whenever the
 // one being built would grow past width characters. The comma stays at the
 // end of the line it breaks after.
-func joinWrapped(items []string, width int) string {
+func joinWrapped[S ~string](items []S, width int) string {
 	var b strings.Builder
 	line := 0
 	for i, item := range items {
@@ -80,7 +80,7 @@ func joinWrapped(items []string, width int) string {
 			b.WriteString(", ")
 			line += 2
 		}
-		b.WriteString(item)
+		b.WriteString(string(item))
 		line += len(item)
 	}
 	return b.String()
@@ -186,11 +186,11 @@ func (rd *RouteDrawer) DrawApproachesUI(c *client.ControlClient, color *[3]float
 	drawColorPicker("Draw Color##2", color)
 
 	if rd.Approaches == nil {
-		rd.Approaches = make(map[string]map[string]bool)
+		rd.Approaches = make(map[av.ICAOAirportCode]map[string]bool)
 	}
 
 	type row struct {
-		airport string
+		airport av.ICAOAirportCode
 		runway  av.RunwayID
 		name    string
 		appr    *av.Approach
@@ -215,10 +215,10 @@ func (rd *RouteDrawer) DrawApproachesUI(c *client.ControlClient, color *[3]float
 	drawSelectionTable("appr", rows,
 		func(r row) {
 			enabled := rd.Approaches[r.airport][r.name]
-			imgui.Checkbox("##enable-"+r.airport+"-"+string(r.runway)+"-"+r.name, &enabled)
+			imgui.Checkbox("##enable-"+string(r.airport)+"-"+string(r.runway)+"-"+r.name, &enabled)
 			rd.Approaches[r.airport][r.name] = enabled
 		},
-		tableColumn[row]{"Airport", func(r row) string { return r.airport }},
+		tableColumn[row]{"Airport", func(r row) string { return string(r.airport) }},
 		tableColumn[row]{"Runway", func(r row) string { return string(r.runway) }},
 		tableColumn[row]{"Code", func(r row) string { return r.name }},
 		tableColumn[row]{"Description", func(r row) string { return r.appr.FullName }},
@@ -235,7 +235,7 @@ func (rd *RouteDrawer) DrawApproachesUI(c *client.ControlClient, color *[3]float
 
 // departureRow is a group's row in the departures table.
 type departureRow struct {
-	airport      string
+	airport      av.ICAOAirportCode
 	group        DepartureGroup
 	runways      []string
 	exits        []string
@@ -244,7 +244,7 @@ type departureRow struct {
 
 // departureRows collects the airport's departure routes into the rows of the
 // departures table, ordered by SID, then exit, then aircraft class.
-func departureRows(icao string, ap *av.Airport, rates map[av.RunwayID]map[string]float32) []departureRow {
+func departureRows(icao av.ICAOAirportCode, ap *av.Airport, rates map[av.RunwayID]map[string]float32) []departureRow {
 	var rows []departureRow
 	for dr := range ScenarioDepartureRoutes(ap, rates) {
 		i := slices.IndexFunc(rows, func(r departureRow) bool { return r.group == dr.Group })
@@ -279,7 +279,7 @@ func (rd *RouteDrawer) DrawDeparturesUI(c *client.ControlClient, color *[3]float
 	drawColorPicker("Draw Color##3", color)
 
 	if rd.Departures == nil {
-		rd.Departures = make(map[string]map[DepartureGroup]bool)
+		rd.Departures = make(map[av.ICAOAirportCode]map[DepartureGroup]bool)
 	}
 
 	var rows []departureRow
@@ -293,11 +293,11 @@ func (rd *RouteDrawer) DrawDeparturesUI(c *client.ControlClient, color *[3]float
 	drawSelectionTable("departures", rows,
 		func(r departureRow) {
 			enabled := rd.Departures[r.airport][r.group]
-			imgui.Checkbox("##enable-"+r.airport+"-"+r.group.SID+"-"+string(r.group.Exit)+"-"+
+			imgui.Checkbox("##enable-"+string(r.airport)+"-"+r.group.SID+"-"+string(r.group.Exit)+"-"+
 				r.group.Aircraft.String(), &enabled)
 			rd.Departures[r.airport][r.group] = enabled
 		},
-		tableColumn[departureRow]{"Airport", func(r departureRow) string { return r.airport }},
+		tableColumn[departureRow]{"Airport", func(r departureRow) string { return string(r.airport) }},
 		tableColumn[departureRow]{"SID", func(r departureRow) string { return r.group.SID }},
 		tableColumn[departureRow]{"Aircraft", func(r departureRow) string { return r.group.Aircraft.String() }},
 		tableColumn[departureRow]{"Runways", func(r departureRow) string { return strings.Join(r.runways, ", ") }},
@@ -411,7 +411,7 @@ func DrawTowerListsUI(c *client.ControlClient) {
 		imgui.TableNextColumn()
 		imgui.Text("Tower")
 		imgui.TableNextColumn()
-		imgui.Text(ap)
+		imgui.Text(string(ap))
 	}
 
 	cl := util.DuplicateSlice(c.State.FacilityAdaptation.Lists.Coordination)
@@ -424,7 +424,7 @@ func DrawTowerListsUI(c *client.ControlClient) {
 		imgui.TableNextColumn()
 		imgui.Text("Coord. (" + list.Name + ")")
 		imgui.TableNextColumn()
-		imgui.Text(strings.Join(list.Airports, ", "))
+		imgui.Text(joinWrapped(list.Airports, 1000))
 	}
 }
 

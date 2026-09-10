@@ -74,13 +74,13 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 // the standard 29.92 inHg. The badge column and row color are filled in by
 // the View; this function just constructs the row text and the AfterDraw
 // underline (which captures `color` for the line).
-func altimRow(ctx *panes.Context, icao string, color renderer.RGB,
+func altimRow(ctx *panes.Context, icao av.ICAOAirportCode, color renderer.RGB,
 	font *renderer.Font, textWidth func(string) float32) Row {
 
-	displayID := av.TrimICAOPrefix(icao)
+	displayID := av.AirportDisplayId(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
 	if !hasMetar {
-		return Row{ID: icao, Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
+		return Row{ID: string(icao), Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
 	}
 	timeStr, altStr, altRaw := altimMetarForDisplay(metar)
 	prefix := fmt.Sprintf("%-4s  ", displayID)
@@ -89,7 +89,7 @@ func altimRow(ctx *panes.Context, icao string, color renderer.RGB,
 	altField := fmt.Sprintf("%3s", altStr)
 	line := prefix + timeField + mid + altField + "  "
 
-	row := Row{ID: icao, Body: line}
+	row := Row{ID: string(icao), Body: line}
 	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
 		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
 		fieldW := textWidth(altField)
@@ -530,7 +530,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 
 	var rows []Row
 	for _, icao := range ep.WXReportStations {
-		rows = append(rows, Row{ID: icao, Label: av.TrimICAOPrefix(icao), Body: wxMetarBody(ctx, icao)})
+		rows = append(rows, Row{ID: string(icao), Label: av.AirportDisplayId(icao), Body: wxMetarBody(ctx, icao)})
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
@@ -564,7 +564,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 // wxMetarBody returns the row body text for a station: the wrappable METAR
 // text (HHMM + remaining fields) when METAR data is available, or "-M-" as
 // a status placeholder otherwise.
-func wxMetarBody(ctx *panes.Context, icao string) string {
+func wxMetarBody(ctx *panes.Context, icao av.ICAOAirportCode) string {
 	metar, ok := ctx.Client.State.METAR[icao]
 	if !ok || metar.Raw == "" {
 		return "-M-"

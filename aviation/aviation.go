@@ -133,11 +133,11 @@ func (f InboundFlow) InitialControllers() []ControlPosition {
 }
 
 type Arrival struct {
-	Waypoints       WaypointArray                       `json:"waypoints"`
-	RunwayWaypoints map[string]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
-	SpawnWaypoint   string                              `json:"spawn"`            // if "waypoints" aren't specified
-	CruiseAltitudes util.SingleOrArray[int]             `json:"cruise_altitude"`
-	STAR            string                              `json:"star"`
+	Waypoints       WaypointArray                                `json:"waypoints"`
+	RunwayWaypoints map[ICAOAirportCode]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
+	SpawnWaypoint   string                                       `json:"spawn"`            // if "waypoints" aren't specified
+	CruiseAltitudes util.SingleOrArray[int]                      `json:"cruise_altitude"`
+	STAR            string                                       `json:"star"`
 
 	// STARFeeds are the STARs whose traffic the arrival takes; this is useful e.g. for getting
 	// real-world traffic wired up for finals scenarios since we generally get traffic after they've
@@ -169,17 +169,17 @@ type Arrival struct {
 	// used when selecting arrivals with real-world traffic.
 	Aircraft AircraftClass `json:"aircraft,omitempty"`
 
-	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
+	ExpectApproach util.OneOf[string, map[ICAOAirportCode]string] `json:"expect_approach"`
 
 	// Airports the arrival brings traffic to, in sorted order. Required,
 	// except for an arrival that names a STAR the FAA CIFP charts for some of
 	// the scenario's airports: it takes those. Every airport in Airlines must
 	// be named here.
-	Airports []string `json:"airports"`
+	Airports []ICAOAirportCode `json:"airports"`
 
 	// Airport -> arrival airlines. Optional: without it the scenario can't
 	// generate its own arrivals here, but published traffic still can.
-	Airlines map[string][]ArrivalAirline `json:"airlines"`
+	Airlines map[ICAOAirportCode][]ArrivalAirline `json:"airlines"`
 }
 
 // ServedSTARs returns the STARs whose traffic the arrival takes, in the order
@@ -201,8 +201,8 @@ func (ar Arrival) ServedSTARs() []string {
 // the named STAR for, in sorted order. A STAR serving several airports is
 // recorded once under each of them, so the ones whose entry has it are the ones
 // it is charted for.
-func starAirports(star string, airports map[string]*Airport) []string {
-	var icaos []string
+func starAirports(star string, airports map[ICAOAirportCode]*Airport) []ICAOAirportCode {
+	var icaos []ICAOAirportCode
 	for icao := range airports {
 		if _, ok := DB.Airports[icao].STARs[star]; ok {
 			icaos = append(icaos, icao)
@@ -221,7 +221,7 @@ type AirlineSpecifier struct {
 
 type ArrivalAirline struct {
 	AirlineSpecifier
-	Airport string `json:"airport"`
+	Airport ICAOAirportCode `json:"airport"`
 }
 
 type TypeOfFlight int
@@ -366,7 +366,7 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 	}
 }
 
-func (a AirlineSpecifier) sampleAcType(r *rand.Rand, departureAirport, arrivalAirport string, lg *log.Logger) string {
+func (a AirlineSpecifier) sampleAcType(r *rand.Rand, departureAirport, arrivalAirport ICAOAirportCode, lg *log.Logger) string {
 	if a.ICAO == "" {
 		if len(a.AircraftTypes) == 0 {
 			lg.Errorf("No aircraft types available for callsign %q", a.Callsign)
@@ -440,7 +440,7 @@ func (a AirlineSpecifier) sampleAcType(r *rand.Rand, departureAirport, arrivalAi
 	return actype
 }
 
-func (a AirlineSpecifier) SampleAcType(r *rand.Rand, departureAirport, arrivalAirport string, lg *log.Logger) string {
+func (a AirlineSpecifier) SampleAcType(r *rand.Rand, departureAirport, arrivalAirport ICAOAirportCode, lg *log.Logger) string {
 	return a.sampleAcType(r, departureAirport, arrivalAirport, lg)
 }
 
@@ -502,7 +502,7 @@ var cwtMaxRanges = map[string]float32{
 var extraLongRange = []string{"A35K", "A359"}
 
 // currentCallsigns will be empty if we don't care about unique suffixes.
-func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, uniqueSuffix bool, departureAirport, arrivalAirport string, lg *log.Logger) (actype, callsign string) {
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, uniqueSuffix bool, departureAirport, arrivalAirport ICAOAirportCode, lg *log.Logger) (actype, callsign string) {
 	actype = a.sampleAcType(r, departureAirport, arrivalAirport, lg)
 	if actype == "" {
 		return "", ""
@@ -625,7 +625,7 @@ func (e ExitID) Base() string {
 }
 
 // AirportHasRunway returns true if the given runway exists at the airport (from DB).
-func AirportHasRunway(airport string, runway RunwayID) bool {
+func AirportHasRunway(airport ICAOAirportCode, runway RunwayID) bool {
 	ap, ok := DB.Airports[airport]
 	if !ok {
 		return false
@@ -662,11 +662,11 @@ type FlightPlan struct {
 	Rules            FlightRules
 	AircraftType     string
 	CruiseSpeed      int
-	DepartureAirport string
+	DepartureAirport ICAOAirportCode
 	DepartureRunway  string
 	Altitude         int
-	ArrivalAirport   string
-	AlternateAirport string
+	ArrivalAirport   ICAOAirportCode
+	AlternateAirport ICAOAirportCode
 	Exit             ExitID
 	Route            string
 	Remarks          string
@@ -851,7 +851,7 @@ func cleanRunway(rwy string) string {
 	return rwy[:n]
 }
 
-func LookupRunway(icao, rwy string) (Runway, bool) {
+func LookupRunway(icao ICAOAirportCode, rwy string) (Runway, bool) {
 	if ap, ok := DB.Airports[icao]; !ok {
 		return Runway{}, false
 	} else {
@@ -903,7 +903,7 @@ func OppositeRunwayId(rwy string) string {
 	return fmt.Sprintf("%d", (v+18)%36) + ext
 }
 
-func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
+func LookupOppositeRunway(icao ICAOAirportCode, rwy string) (Runway, bool) {
 	ap, ok := DB.Airports[icao]
 	if !ok {
 		return Runway{}, false
@@ -922,7 +922,7 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 }
 
 // runwayEndpoints returns the runway's two thresholds in nm coordinates.
-func runwayEndpoints(airport, rwy string, nmPerLongitude float32) (p1, p2 [2]float32, ok bool) {
+func runwayEndpoints(airport ICAOAirportCode, rwy string, nmPerLongitude float32) (p1, p2 [2]float32, ok bool) {
 	var runway, opp Runway
 	if runway, ok = LookupRunway(airport, rwy); !ok {
 		return
@@ -939,7 +939,7 @@ func runwayEndpoints(airport, rwy string, nmPerLongitude float32) (p1, p2 [2]flo
 // two given runways cross, if that point is within maxDistNM of both runway
 // segments (threshold to threshold). It returns false for same or
 // opposite-direction runway pairs and for parallel runways.
-func RunwayIntersectionPoint(airport string, a, b RunwayID, nmPerLongitude, maxDistNM float32) (math.Point2LL, bool) {
+func RunwayIntersectionPoint(airport ICAOAirportCode, a, b RunwayID, nmPerLongitude, maxDistNM float32) (math.Point2LL, bool) {
 	aBase, bBase := a.Base(), b.Base()
 	if aBase == bBase || aBase == OppositeRunwayId(bBase) {
 		return math.Point2LL{}, false
@@ -974,7 +974,7 @@ func RunwayIntersectionPoint(airport string, a, b RunwayID, nmPerLongitude, maxD
 // Use maxDistNM=0 for strict threshold-to-threshold intersection, or a small
 // value (e.g., 0.5) to account for pavement extending past thresholds.
 // Returns both directions for each intersecting runway (e.g., both "13L" and "31R").
-func IntersectingRunways(airport string, rwy RunwayID, nmPerLongitude, maxDistNM float32) []string {
+func IntersectingRunways(airport ICAOAirportCode, rwy RunwayID, nmPerLongitude, maxDistNM float32) []string {
 	ap, ok := DB.Airports[airport]
 	if !ok {
 		return nil
@@ -1125,7 +1125,7 @@ func sharedFixes(fixes []string, wps WaypointArray) int {
 // may be cleared for: the one "expect_approach" gives them, and any that land
 // on a runway the arrival has "runway_waypoints" for, since a controller can
 // send them to one of those instead.
-func (ar *Arrival) joinableApproaches(ap *Airport, icao string) []*Approach {
+func (ar *Arrival) joinableApproaches(ap *Airport, icao ICAOAirportCode) []*Approach {
 	var id string
 	if ar.ExpectApproach.A != nil {
 		id = *ar.ExpectApproach.A
@@ -1150,7 +1150,7 @@ func (ar *Arrival) joinableApproaches(ap *Airport, icao string) []*Approach {
 // approachRoute returns the route the arrival's aircraft into icao fly when
 // they're given appr: ExpectApproach splices the runway waypoints for the
 // approach's runway into the arrival's own, where the two meet.
-func (ar *Arrival) approachRoute(icao string, appr *Approach) WaypointArray {
+func (ar *Arrival) approachRoute(icao ICAOAirportCode, appr *Approach) WaypointArray {
 	rwywp, ok := ar.RunwayWaypoints[icao][appr.Runway]
 	if !ok || len(rwywp) == 0 || len(ar.Waypoints) == 0 {
 		return ar.Waypoints
@@ -1161,7 +1161,7 @@ func (ar *Arrival) approachRoute(icao string, appr *Approach) WaypointArray {
 }
 
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
+	airports map[ICAOAirportCode]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -1215,12 +1215,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	if ar.STAR != "" && len(ar.Waypoints) > 0 {
-		if !slices.ContainsFunc(ar.Airports, func(icao string) bool {
+		if !slices.ContainsFunc(ar.Airports, func(icao ICAOAirportCode) bool {
 			_, ok := DB.Airports[icao].STARs[ar.STAR]
 			return ok
 		}) {
 			e.ErrorString(`"star" %q isn't charted for any of the airports the arrival serves: %s`,
-				ar.STAR, strings.Join(ar.Airports, ", "))
+				ar.STAR, strings.Join(util.MapSlice(ar.Airports, func(icao ICAOAirportCode) string { return string(icao) }), ", "))
 		}
 	}
 
@@ -1292,7 +1292,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 			if star.RunwayWaypoints != nil {
 				if ar.RunwayWaypoints == nil {
-					ar.RunwayWaypoints = make(map[string]map[string]WaypointArray)
+					ar.RunwayWaypoints = make(map[ICAOAirportCode]map[string]WaypointArray)
 				}
 				if ar.RunwayWaypoints[icao] == nil {
 					ar.RunwayWaypoints[icao] = make(map[string]WaypointArray)
@@ -1354,7 +1354,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 		for ap, rwywp := range ar.RunwayWaypoints {
-			e.Push("Airport " + ap)
+			e.Push("Airport " + string(ap))
 
 			if err := CheckAirport("runway waypoints", ap); err != nil {
 				e.Error(err)
@@ -1405,7 +1405,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	for _, star := range ar.STARFeeds {
-		if !slices.ContainsFunc(ar.Airports, func(icao string) bool {
+		if !slices.ContainsFunc(ar.Airports, func(icao ICAOAirportCode) bool {
 			ap, ok := DB.Airports[icao]
 			if !ok {
 				return false
@@ -1414,7 +1414,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			return ok
 		}) {
 			e.ErrorString(`"star_feeds" %q isn't charted for any of the airports the arrival serves: %s`,
-				star, strings.Join(ar.Airports, ", "))
+				star, strings.Join(util.MapSlice(ar.Airports, func(icao ICAOAirportCode) string { return string(icao) }), ", "))
 		}
 	}
 
@@ -1422,7 +1422,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
 	for _, arrivalAirport := range ar.Airports {
-		e.Push("Arrival airport " + arrivalAirport)
+		e.Push("Arrival airport " + string(arrivalAirport))
 		for i := range ar.Airlines[arrivalAirport] {
 			ar.Airlines[arrivalAirport][i].Check(e)
 			if err := CheckAirport("departure", ar.Airlines[arrivalAirport][i].Airport); err != nil {
@@ -1506,7 +1506,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 }
 
-func (ar Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
+func (ar Arrival) GetRunwayWaypoints(airport ICAOAirportCode, rwy string) WaypointArray {
 	if ap, ok := ar.RunwayWaypoints[airport]; !ok {
 		return nil
 	} else if wp, ok := ap[rwy]; !ok {

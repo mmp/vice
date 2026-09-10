@@ -219,14 +219,14 @@ func TestGetSTTFixes_SkipsInternalAndShortFixes(t *testing.T) {
 // the fix vocabulary and in the whisper prompt. The same rule applies to both
 // airports whatever the type of flight.
 func TestGetSTTFixes_AirportsOnlyWhenNear(t *testing.T) {
-	jfk, ok := av.DB.LookupAirport("KJFK")
+	jfk, ok := av.DB.LookupICAOAirport("KJFK")
 	if !ok {
 		t.Fatal("KJFK not in the database")
 	}
 
 	for _, tc := range []struct {
 		name               string
-		departure, arrival string
+		departure, arrival av.ICAOAirportCode
 		want               []string
 	}{
 		{"both near", "KJFK", "KLGA", []string{"KLGA", "KJFK", "GOOD"}},
@@ -349,8 +349,9 @@ func TestAltitudeRangeSample(t *testing.T) {
 func TestPlausibleCruiseBand(t *testing.T) {
 	av.InitDB()
 	for _, tc := range []struct {
-		from, to, acType string
-		want             altitudeRange
+		from, to av.ICAOAirportCode
+		acType   string
+		want     altitudeRange
 	}{
 		// KSNA-KLAS is 197nm, KLAX-KPHX 321nm, KLAX-KSFO 293nm.
 		{"KSNA", "KLAS", "B738", altitudeRange{16000, 24000}},
@@ -374,9 +375,10 @@ func TestFiledCruiseAltitude(t *testing.T) {
 	av.InitDB()
 	r := rand.Make()
 	for _, tc := range []struct {
-		from, to, acType string
-		limits           CruiseLimits
-		want             []int
+		from, to av.ICAOAirportCode
+		acType   string
+		limits   CruiseLimits
+		want     []int
 	}{
 		// The scraped band reaches down to 6,000, but the FINZZ3 requires
 		// 16,000 and the RNDRZ4 24,000.
