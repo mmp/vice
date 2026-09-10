@@ -23895,7 +23895,7 @@
     "updated": "2026-08-26",
     "routes": [
       {
-        "route": "KLEX 6I2",
+        "route": "6I2",
         "count": 1
       }
     ]
@@ -26562,7 +26562,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MRY5 MRY SERFR BOILE BLH HYDRR1",
+        "route": "MRY5 SERFR BOILE BLH HYDRR1",
         "count": 21,
         "aircraft": "nonheavy",
         "min_altitude": 27000,
@@ -26747,7 +26747,7 @@
         "hours": "6,14-15,18"
       },
       {
-        "route": "GRZLY4 MSO HLN TOFUU FLATI5",
+        "route": "GRZLY4 HLN TOFUU FLATI5",
         "count": 4,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -27500,7 +27500,7 @@
         "hours": "5"
       },
       {
-        "route": "OAK6 OAK SYRAH Q128 JSICA MLF KD42S CIM IRW LITTR HOBRK4",
+        "route": "OAK6 SYRAH Q128 JSICA MLF KD42S CIM IRW LITTR HOBRK4",
         "count": 2,
         "aircraft": "heavy",
         "min_altitude": 35000,
@@ -27524,7 +27524,7 @@
         "hours": "5"
       },
       {
-        "route": "OAK6 OAK SYRAH Q128 JSICA KU51K KD48Q KA42W KK36A IRW LITTR HOBRK4",
+        "route": "OAK6 SYRAH Q128 JSICA KU51K KD48Q KA42W KK36A IRW LITTR HOBRK4",
         "count": 1,
         "aircraft": "heavy",
         "min_altitude": 35000,
@@ -27532,7 +27532,7 @@
         "hours": "20"
       },
       {
-        "route": "OAK6 OAK SYRAH Q128 JSICA MLF KD48Q KD45U KA42W KENTO KA39Y KK36A IRW LITTR HOBRK4",
+        "route": "OAK6 SYRAH Q128 JSICA MLF KD48Q KD45U KA42W KENTO KA39Y KK36A IRW LITTR HOBRK4",
         "count": 1,
         "aircraft": "heavy",
         "min_altitude": 35000,
@@ -27540,7 +27540,7 @@
         "hours": "6"
       },
       {
-        "route": "OAK6 OAK SYRAH Q128 JSICA MLF KD48Q KD45U KA42W KENTO KK36A KF33C IRW LITTR HOBRK4",
+        "route": "OAK6 SYRAH Q128 JSICA MLF KD48Q KD45U KA42W KENTO KK36A KF33C IRW LITTR HOBRK4",
         "count": 1,
         "aircraft": "heavy",
         "min_altitude": 35000,
@@ -27611,7 +27611,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "OAK6 OAK GRTFL MACHU TMBRS4",
+        "route": "OAK6 GRTFL MACHU TMBRS4",
         "count": 43,
         "aircraft": "nonheavy",
         "min_altitude": 32000,
@@ -27669,7 +27669,7 @@
         "hours": "5-6"
       },
       {
-        "route": "OAK6 OAK TIPRE Q126 INSLO KU54K KU57O KD57Q KD57U KD54A BUM IMOUT MBELL5",
+        "route": "OAK6 TIPRE Q126 INSLO KU54K KU57O KD57Q KD57U KD54A BUM IMOUT MBELL5",
         "count": 2,
         "aircraft": "heavy",
         "min_altitude": 35000,
@@ -27677,7 +27677,7 @@
         "hours": "19"
       },
       {
-        "route": "OAK6 OAK TIPRE Q126 INSLO KU54K KU57O KU60Q KD63U KD66A LNK LMN AXC SHARE JMONY2",
+        "route": "OAK6 TIPRE Q126 INSLO KU54K KU57O KU60Q KD63U KD66A LNK LMN AXC SHARE JMONY2",
         "count": 2,
         "aircraft": "heavy",
         "min_altitude": 35000,
@@ -27722,7 +27722,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "OAK6 OAK DEDHD RBL LMT HAWKZ8",
+        "route": "OAK6 DEDHD RBL LMT HAWKZ8",
         "count": 31,
         "aircraft": "nonheavy",
         "min_altitude": 34000,
@@ -27746,7 +27746,7 @@
         "hours": "1"
       },
       {
-        "route": "OAK6 OAK DEDHD RBL J65 LMT HAWKZ8",
+        "route": "OAK6 DEDHD RBL J65 LMT HAWKZ8",
         "count": 4,
         "aircraft": "heavy",
         "min_altitude": 38000,
@@ -27759,7 +27759,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "OAK6 OAK MOGEE Q124 BVL YUTES2",
+        "route": "OAK6 MOGEE Q124 BVL YUTES2",
         "count": 15,
         "aircraft": "nonheavy",
         "min_altitude": 31000,
@@ -27767,7 +27767,7 @@
         "hours": "8,12,16-17"
       },
       {
-        "route": "OAK6 OAK MOGEE Q124 SLOWN FLECC YUTES2",
+        "route": "OAK6 MOGEE Q124 SLOWN FLECC YUTES2",
         "count": 8,
         "aircraft": "nonheavy",
         "min_altitude": 37000,
@@ -27809,7 +27809,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "OAK6 OAK BEBOP R464 BAART R464 BOARD R464 BITTA MAGGI3",
+        "route": "OAK6 BEBOP R464 BAART R464 BOARD R464 BITTA MAGGI3",
         "count": 10,
         "aircraft": "jet",
         "min_altitude": 34000,
@@ -27817,7 +27817,7 @@
         "hours": "8,10-11,23"
       },
       {
-        "route": "OAK6 OAK BEBOP R464 BAART R464 BITTA MAGGI3",
+        "route": "OAK6 BEBOP R464 BAART R464 BITTA MAGGI3",
         "count": 5,
         "aircraft": "heavy",
         "min_altitude": 36000,
@@ -29919,7 +29919,7 @@
         "hours": "9,14"
       },
       {
-        "route": "EARND ELANR EMMLY ETAME EMEGE IIU Q79 THRSR HESPI Q89 MANLE Y185 BEERD Y185 RENAH Y355 PLING RTE7 SAALR SJU",
+        "route": "EARND ELANR EMMLY ETAME EMEGE IIU Q79 THRSR HESPI Q89 MANLE Y185 BEERD Y185 RENAH Y355 PLING RTE7 SAALR",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -32145,7 +32145,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "SHA5 RDD MRRLO BDEGA4",
+        "route": "SHA5 MRRLO BDEGA4",
         "count": 19,
         "aircraft": "nonheavy",
         "min_altitude": 21000,
@@ -32153,7 +32153,7 @@
         "hours": "5,7,13-14,18,20,22-23"
       },
       {
-        "route": "SHA5 RDD PYE PYE3",
+        "route": "SHA5 PYE PYE3",
         "count": 5,
         "aircraft": "turboprop",
         "min_altitude": 11000,
@@ -35253,7 +35253,7 @@
         "hours": "1,5,9-22"
       },
       {
-        "route": "MONTN2 SEA PAE GRIZZ1",
+        "route": "MONTN2 PAE GRIZZ1",
         "count": 30,
         "aircraft": "nonheavy",
         "min_altitude": 14000,
@@ -35282,7 +35282,7 @@
         "hours": "6-11,15-16,20,23"
       },
       {
-        "route": "MONTN2 SEA ALPSE YDC MENBO NORET IGVEP7",
+        "route": "MONTN2 ALPSE YDC MENBO NORET IGVEP7",
         "count": 10,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35311,7 +35311,7 @@
         "hours": "14-16"
       },
       {
-        "route": "MONTN2 SEA ALPSE YDC",
+        "route": "MONTN2 ALPSE YDC",
         "count": 3,
         "aircraft": "heavy",
         "min_altitude": 33000,
@@ -35343,7 +35343,7 @@
         "hours": "19"
       },
       {
-        "route": "MONTN2 SEA ALPSE YDC ROMRA",
+        "route": "MONTN2 ALPSE YDC ROMRA",
         "count": 2,
         "aircraft": "heavy",
         "min_altitude": 33000,
@@ -35364,7 +35364,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY J90 MWH KU06M KU87S KD75Y KK60E FAM BNA NEWBB IHAVE MTHEW CHPPR1",
+        "route": "MONTN2 NORMY J90 MWH KU06M KU87S KD75Y KK60E FAM BNA NEWBB IHAVE MTHEW CHPPR1",
         "count": 3,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35396,7 +35396,7 @@
         "hours": "0"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH LKT BOY SNY SLN EOS MEM HUTCC KNSAW RUSSA GLAVN2",
+        "route": "MONTN2 NORMY J90 MWH LKT BOY SNY SLN EOS MEM HUTCC KNSAW RUSSA GLAVN2",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 31000,
@@ -35404,7 +35404,7 @@
         "hours": "9"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS LWT DPR KP81C KP75E DSM Q19 STL Q19 TINGS HITMN NEWBB IHAVE MTHEW CHPPR1",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS LWT DPR KP81C KP75E DSM Q19 STL Q19 TINGS HITMN NEWBB IHAVE MTHEW CHPPR1",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 31000,
@@ -35441,7 +35441,7 @@
         "hours": "7-9,12,14-17,22-23"
       },
       {
-        "route": "MONTN2 SEA PAE MADEE MADEE7",
+        "route": "MONTN2 PAE MADEE MADEE7",
         "count": 6,
         "aircraft": "nonheavy",
         "min_altitude": 12000,
@@ -35454,7 +35454,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY MODDA STEVS FINUT HIA KD75A KP66E MWA RANTS RYYMN3",
+        "route": "MONTN2 NORMY MODDA STEVS FINUT HIA KD75A KP66E MWA RANTS RYYMN3",
         "count": 9,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -35536,7 +35536,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY MODDA STEVS EATZZ",
+        "route": "MONTN2 NORMY MODDA STEVS EATZZ",
         "count": 41,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -35549,7 +35549,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY MODDA STEVS ZAXUL Q150 LEZLE LKT ORELE LAMON DNW HCT ATIJA TYGER SLITZ SKYWA FILPZ6",
+        "route": "MONTN2 NORMY MODDA STEVS ZAXUL Q150 LEZLE LKT ORELE LAMON DNW HCT ATIJA TYGER SLITZ SKYWA FILPZ6",
         "count": 3,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35605,7 +35605,7 @@
         "hours": "4"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH CPN DPR KP87C KP84E MCW MYRRS BDF ERECO ROYYZ TAFTT PARQR6",
+        "route": "MONTN2 NORMY J90 MWH CPN DPR KP87C KP84E MCW MYRRS BDF ERECO ROYYZ TAFTT PARQR6",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35626,7 +35626,7 @@
         "hours": "23"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS Q144 KEETA Q142 KIXCO ABR J90 RWF DBQ ZABNU CEGRM8",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS Q144 KEETA Q142 KIXCO ABR J90 RWF DBQ ZABNU CEGRM8",
         "count": 3,
         "aircraft": "heavy",
         "min_altitude": 35000,
@@ -35642,7 +35642,7 @@
         "hours": "22"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS Q144 KEETA Q142 KIXCO ABR J90 RWF KP84G DBQ ZABNU CEGRM8",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS Q144 KEETA Q142 KIXCO ABR J90 RWF KP84G DBQ ZABNU CEGRM8",
         "count": 2,
         "aircraft": "heavy",
         "min_altitude": 35000,
@@ -35687,7 +35687,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY J90 MWH HLN DPR MCW JOT J30 BUCKO FRDMM7",
+        "route": "MONTN2 NORMY J90 MWH HLN DPR MCW JOT J30 BUCKO FRDMM7",
         "count": 8,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35695,7 +35695,7 @@
         "hours": "0,7-8,13-14"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH HLN RECAP DPR MCW JOT J30 BUCKO FRDMM7",
+        "route": "MONTN2 NORMY J90 MWH HLN RECAP DPR MCW JOT J30 BUCKO FRDMM7",
         "count": 6,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35703,13 +35703,13 @@
         "hours": "7,21"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH J90 HLN CONUK KP06Y HUFFR GAYLE HASTE J34 BUCKO FRDMM7",
+        "route": "MONTN2 NORMY J90 MWH J90 HLN CONUK KP06Y HUFFR GAYLE HASTE J34 BUCKO FRDMM7",
         "count": 1,
         "min_altitude": 33000,
         "max_altitude": 33000
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH ODESS HLN STORZ JELRO ARJEL WILDD GAYLE HASTE J34 BUCKO FRDMM7",
+        "route": "MONTN2 NORMY J90 MWH ODESS HLN STORZ JELRO ARJEL WILDD GAYLE HASTE J34 BUCKO FRDMM7",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -35717,7 +35717,7 @@
         "hours": "13"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS HILGR J36 DIK J70 ABR J90 RWF J34 BAE J34 BUCKO FRDMM7",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS HILGR J36 DIK J70 ABR J90 RWF J34 BAE J34 BUCKO FRDMM7",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -35725,7 +35725,7 @@
         "hours": "7"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS KU15Q ULLIN HUFFR GAYLE HASTE J34 BUCKO FRDMM7",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS KU15Q ULLIN HUFFR GAYLE HASTE J34 BUCKO FRDMM7",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -35733,7 +35733,7 @@
         "hours": "7"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS KU15S TAPNN CIVOL BIPID KENTS CRL J34 BUCKO FRDMM7",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS KU15S TAPNN CIVOL BIPID KENTS CRL J34 BUCKO FRDMM7",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -35741,7 +35741,7 @@
         "hours": "13"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS KU21Q KP21Y NEBBS ERIYI TVC FNT DJB J34 BUCKO FRDMM7",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS KU21Q KP21Y NEBBS ERIYI TVC FNT DJB J34 BUCKO FRDMM7",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -35754,7 +35754,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY J90 MWH KU87M IDA MJANE FLATI5",
+        "route": "MONTN2 NORMY J90 MWH KU87M IDA MJANE FLATI5",
         "count": 60,
         "aircraft": "nonheavy",
         "min_altitude": 31000,
@@ -35762,7 +35762,7 @@
         "hours": "7-8,11-14,16-22"
       },
       {
-        "route": "MONTN2 SEA NORMY MODDA STEVS Q150 LEZLE KU87M IDA MJANE FLATI5",
+        "route": "MONTN2 NORMY MODDA STEVS Q150 LEZLE KU87M IDA MJANE FLATI5",
         "count": 20,
         "aircraft": "nonheavy",
         "min_altitude": 23000,
@@ -35770,7 +35770,7 @@
         "hours": "8,11-12,14-15,19-20"
       },
       {
-        "route": "MONTN2 SEA NORMY MODDA STEVS FINUT Q148 WEDAK DLN TOFUU FLATI5",
+        "route": "MONTN2 NORMY MODDA STEVS FINUT Q148 WEDAK DLN TOFUU FLATI5",
         "count": 17,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35786,7 +35786,7 @@
         "hours": "8,10-11,13,17-18,22"
       },
       {
-        "route": "MONTN2 SEA NORMY MODDA STEVS Q150 LEZLE LKT TOFUU FLATI5",
+        "route": "MONTN2 NORMY MODDA STEVS Q150 LEZLE LKT TOFUU FLATI5",
         "count": 8,
         "aircraft": "nonheavy",
         "min_altitude": 37000,
@@ -35839,7 +35839,7 @@
         "hours": "22-23"
       },
       {
-        "route": "MONTN2 SEA NORMY MODDA STEVS Q150 LEZLE LKT SWEAT AUTIM LBL SPS UKW8",
+        "route": "MONTN2 NORMY MODDA STEVS Q150 LEZLE LKT SWEAT AUTIM LBL SPS UKW8",
         "count": 4,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35918,7 +35918,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZOOMR ZOOMR2",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZOOMR ZOOMR2",
         "count": 97,
         "aircraft": "nonheavy",
         "min_altitude": 21000,
@@ -35939,7 +35939,7 @@
     "updated": "2026-08-26",
     "routes": [
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY OLIBY",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY OLIBY",
         "count": 27,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35952,7 +35952,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY J90 MWH HLN DPR MCW DBQ JOT J30 APE AIR J162 MGW GIBBZ6",
+        "route": "MONTN2 NORMY J90 MWH HLN DPR MCW DBQ JOT J30 APE AIR J162 MGW GIBBZ6",
         "count": 3,
         "aircraft": "nonheavy",
         "min_altitude": 31000,
@@ -35968,7 +35968,7 @@
         "hours": "22-23"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS HLN KU06U DPR RWF ODI BAE PMM OTENS JECKA NUSMM MGW GIBBZ6",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS HLN KU06U DPR RWF ODI BAE PMM OTENS JECKA NUSMM MGW GIBBZ6",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35976,7 +35976,7 @@
         "hours": "15"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS KU09U ABR ODI DLL J34 DJB MGW GIBBZ6",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS KU09U ABR ODI DLL J34 DJB MGW GIBBZ6",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -35984,7 +35984,7 @@
         "hours": "8,17,23"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS OKVUJ Q142 KIXCO ABR RWF DBQ JOT J30 APE MGW GIBBZ6",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS OKVUJ Q142 KIXCO ABR RWF DBQ JOT J30 APE MGW GIBBZ6",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36050,7 +36050,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY J90 MWH KU06M KU87S KD75Y DPEAK JSONN4",
+        "route": "MONTN2 NORMY J90 MWH KU06M KU87S KD75Y DPEAK JSONN4",
         "count": 16,
         "aircraft": "nonheavy",
         "min_altitude": 31000,
@@ -36063,7 +36063,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY J90 MWH LKT BOY SNY SLN EOS UJM IGB DEEDA GRNCH5",
+        "route": "MONTN2 NORMY J90 MWH LKT BOY SNY SLN EOS UJM IGB DEEDA GRNCH5",
         "count": 3,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36079,7 +36079,7 @@
         "hours": "1,7,9,21"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH DLN BOY CYS GLD PER MATIE IZAAC ARNNY DEEDA GRNCH5",
+        "route": "MONTN2 NORMY J90 MWH DLN BOY CYS GLD PER MATIE IZAAC ARNNY DEEDA GRNCH5",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36145,7 +36145,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY J90 MWH DLN DDY BFF SGF MEM MGM ACORI FROGZ5",
+        "route": "MONTN2 NORMY J90 MWH DLN DDY BFF SGF MEM MGM ACORI FROGZ5",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36153,7 +36153,7 @@
         "hours": "8"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH MQG DLN DDY LBF CATTS BUM MEM IGB ARNNY KJ09O CABLO HEVVN LEGGT PLYER ENDEW BROMO FROGZ5",
+        "route": "MONTN2 NORMY J90 MWH MQG DLN DDY LBF CATTS BUM MEM IGB ARNNY KJ09O CABLO HEVVN LEGGT PLYER ENDEW BROMO FROGZ5",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36169,7 +36169,7 @@
         "hours": "0,8"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH BIL KD90U RAP ANW PWE MCI ARG MEMFS IGB ARNNY OZR LEGGT PLYER ENDEW BROMO FROGZ5",
+        "route": "MONTN2 NORMY J90 MWH BIL KD90U RAP ANW PWE MCI ARG MEMFS IGB ARNNY OZR LEGGT PLYER ENDEW BROMO FROGZ5",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36177,7 +36177,7 @@
         "hours": "9"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH BLUNT TUFFY KD90U RAP WNDED NARLY COBED PWE TYGER KK42I MEM STNGA FRDDO ACORI FROGZ5",
+        "route": "MONTN2 NORMY J90 MWH BLUNT TUFFY KD90U RAP WNDED NARLY COBED PWE TYGER KK42I MEM STNGA FRDDO ACORI FROGZ5",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -36185,7 +36185,7 @@
         "hours": "12"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH DLN DDY LBF CATTS BUM MEM MGM CABLO HEVVN LEGGT PLYER ENDEW BROMO FROGZ5",
+        "route": "MONTN2 NORMY J90 MWH DLN DDY LBF CATTS BUM MEM MGM CABLO HEVVN LEGGT PLYER ENDEW BROMO FROGZ5",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -36193,7 +36193,7 @@
         "hours": "8"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH HIA KD78Y WYYTE AYEGI TYGER KK42I FAXIP VERON MISLE MGM ACORI FROGZ5",
+        "route": "MONTN2 NORMY J90 MWH HIA KD78Y WYYTE AYEGI TYGER KK42I FAXIP VERON MISLE MGM ACORI FROGZ5",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36201,7 +36201,7 @@
         "hours": "20"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH KS09K KU90Q RICCO IIP BFF BENNZ HCT VARNE WESAL EOS JILLS ACORI FROGZ5",
+        "route": "MONTN2 NORMY J90 MWH KS09K KU90Q RICCO IIP BFF BENNZ HCT VARNE WESAL EOS JILLS ACORI FROGZ5",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 29000,
@@ -36214,7 +36214,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS ZERZO MLS JELRO Q156 UFFDA TORGY4",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS ZERZO MLS JELRO Q156 UFFDA TORGY4",
         "count": 22,
         "aircraft": "jet",
         "min_altitude": 33000,
@@ -36222,7 +36222,7 @@
         "hours": "5-8,12,15-16,19,21"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS LEWIT Q140 SAYOR TTAIL BAINY4",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS LEWIT Q140 SAYOR TTAIL BAINY4",
         "count": 20,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36230,7 +36230,7 @@
         "hours": "6,8-9,11-12,14-15,17-19,23"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS GTF J36 DIK TTAIL BAINY4",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS GTF J36 DIK TTAIL BAINY4",
         "count": 16,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36246,7 +36246,7 @@
         "hours": "0,22-23"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS ZERZO STORZ Q156 UFFDA TORGY4",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS ZERZO STORZ Q156 UFFDA TORGY4",
         "count": 3,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36259,7 +36259,7 @@
     "updated": "2026-08-08",
     "routes": [
       {
-        "route": "MONTN2 SEA V23",
+        "route": "MONTN2 V23",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 5000,
@@ -36280,7 +36280,7 @@
         "hours": "21-22"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS KU12Q KP06Y KP90E BAE J34 CRL CXR EWC JST BOJID4",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS KU12Q KP06Y KP90E BAE J34 CRL CXR EWC JST BOJID4",
         "count": 3,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36288,7 +36288,7 @@
         "hours": "12,22"
       },
       {
-        "route": "MONTN2 SEA ZADON ZELAK ZIRAN ZAXBY BLOWS KU15M LEWIT KU12U KP06Y RWF J34 HARPI BAE J34 CRL EWC JST BOJID4",
+        "route": "MONTN2 ZADON ZELAK ZIRAN ZAXBY BLOWS KU15M LEWIT KU12U KP06Y RWF J34 HARPI BAE J34 CRL EWC JST BOJID4",
         "count": 2,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36354,7 +36354,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MONTN2 SEA VAMPS BANDR FEBUS NIALS",
+        "route": "MONTN2 VAMPS BANDR FEBUS NIALS",
         "count": 35,
         "aircraft": "nonheavy",
         "min_altitude": 21000,
@@ -36404,7 +36404,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY J90 MWH",
+        "route": "MONTN2 NORMY J90 MWH",
         "count": 16,
         "aircraft": "nonheavy",
         "min_altitude": 27000,
@@ -36506,7 +36506,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MONTN2 SEA NORMY MODDA STEVS Q150 LEZLE SLATE KD69W FRACA KM33I MGM ACORI MAATY6",
+        "route": "MONTN2 NORMY MODDA STEVS Q150 LEZLE SLATE KD69W FRACA KM33I MGM ACORI MAATY6",
         "count": 5,
         "aircraft": "nonheavy",
         "min_altitude": 31000,
@@ -36546,7 +36546,7 @@
         "hours": "22"
       },
       {
-        "route": "MONTN2 SEA NORMY J90 MWH KS12I KU06M KU90Q RICCO KD75W BFF HYS PER TUL LIT HRISN ARNNY ACORI MAATY6",
+        "route": "MONTN2 NORMY J90 MWH KS12I KU06M KU90Q RICCO KD75W BFF HYS PER TUL LIT HRISN ARNNY ACORI MAATY6",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36554,7 +36554,7 @@
         "hours": "11"
       },
       {
-        "route": "MONTN2 SEA NORMY MODDA CASHS Q146 DIPHU HLN BIL RAP OVR STL BNA J73 LGC HONID MAATY6",
+        "route": "MONTN2 NORMY MODDA CASHS Q146 DIPHU HLN BIL RAP OVR STL BNA J73 LGC HONID MAATY6",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -36562,7 +36562,7 @@
         "hours": "9"
       },
       {
-        "route": "MONTN2 SEA NORMY MODDA CASHS Q146 DIPHU KU06Q KD87U KD84W KD78Y PECKS DRABS BUM SGF Q116 MEMFS MGMRY ACORI MAATY6",
+        "route": "MONTN2 NORMY MODDA CASHS Q146 DIPHU KU06Q KD87U KD84W KD78Y PECKS DRABS BUM SGF Q116 MEMFS MGMRY ACORI MAATY6",
         "count": 1,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -37957,7 +37957,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "GAPP7 SFO EUGEN",
+        "route": "GAPP7 EUGEN",
         "count": 31,
         "aircraft": "nonheavy",
         "min_altitude": 8000,
@@ -38123,7 +38123,7 @@
         "hours": "0,22-23"
       },
       {
-        "route": "GAPP7 SFO DEDHD RBL",
+        "route": "GAPP7 DEDHD RBL",
         "count": 3,
         "aircraft": "turboprop",
         "min_altitude": 16000,
@@ -38242,7 +38242,7 @@
         "hours": "0,17,21-23"
       },
       {
-        "route": "SFO5 SFO OAK V6 SWR TRUCK FMG",
+        "route": "SFO5 OAK V6 SWR TRUCK FMG",
         "count": 3,
         "aircraft": "turboprop",
         "min_altitude": 15000,
@@ -38305,7 +38305,7 @@
         "hours": "10,21"
       },
       {
-        "route": "GAPP7 SFO EUGEN V27 MQO",
+        "route": "GAPP7 EUGEN V27 MQO",
         "count": 1,
         "aircraft": "turboprop",
         "min_altitude": 15000,
@@ -47568,7 +47568,7 @@
     "updated": "2026-08-08",
     "routes": [
       {
-        "route": "PAQ PALMR5 BGQ IYS",
+        "route": "PALMR5 BGQ",
         "count": 1
       }
     ]
@@ -47577,23 +47577,15 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "BET GASTO",
-        "count": 22,
+        "route": "GASTO",
+        "count": 30,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
         "max_altitude": 41000,
-        "hours": "10,12-13,17,20-21,23"
+        "hours": "6-8,10,12-14,17,20-21,23"
       },
       {
-        "route": "BET",
-        "count": 10,
-        "aircraft": ["turboprop", "nonheavy"],
-        "min_altitude": 17000,
-        "max_altitude": 41000,
-        "hours": "0,2-3,11-12,14,16"
-      },
-      {
-        "route": "BET BET J501 SQA AMOTT4",
+        "route": "BET J501 SQA AMOTT4",
         "count": 10,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -47601,15 +47593,7 @@
         "hours": "14-15,19-20,22"
       },
       {
-        "route": "BET BET GASTO",
-        "count": 8,
-        "aircraft": "nonheavy",
-        "min_altitude": 37000,
-        "max_altitude": 37000,
-        "hours": "6-8,14"
-      },
-      {
-        "route": "BET GASTO TED",
+        "route": "GASTO TED",
         "count": 4,
         "aircraft": "nonheavy",
         "min_altitude": 21000,
@@ -47622,7 +47606,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "DLG GASTO TED",
+        "route": "GASTO TED",
         "count": 21,
         "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 20000,
@@ -47630,7 +47614,7 @@
         "hours": "0,8-10,12-15,21"
       },
       {
-        "route": "DLG GASTO",
+        "route": "GASTO",
         "count": 10,
         "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 19000,
@@ -47638,7 +47622,7 @@
         "hours": "9-10,12,14,16-17,20"
       },
       {
-        "route": "DLG DLG J511 NONDA GASTO",
+        "route": "DLG J511 NONDA GASTO",
         "count": 4,
         "aircraft": "nonheavy",
         "min_altitude": 37000,
@@ -47693,17 +47677,7 @@
     "updated": "2026-08-08"
   },
   "PAEN-PANC": {
-    "updated": "2026-08-06",
-    "routes": [
-      {
-        "route": "ENA",
-        "count": 298,
-        "aircraft": "turboprop",
-        "min_altitude": 3000,
-        "max_altitude": 5000,
-        "hours": "0,4-6,8-12,14-20,22-23"
-      }
-    ]
+    "updated": "2026-08-06"
   },
   "PAEN-PASX": {
     "updated": "2026-08-08"
@@ -47715,7 +47689,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "FAI RDFLG5 RDFLG ORT AYZOL SSR ANN VIXOR MARNR8",
+        "route": "RDFLG5 RDFLG ORT AYZOL SSR ANN VIXOR MARNR8",
         "count": 36,
         "aircraft": "nonheavy",
         "min_altitude": 17000,
@@ -47723,7 +47697,7 @@
         "hours": "0,5,7-8,12,15-16,21"
       },
       {
-        "route": "FAI RDFLG5 RDFLG AYZOL HOODS LVD Q902 VIXOR MARNR8",
+        "route": "RDFLG5 RDFLG AYZOL HOODS LVD Q902 VIXOR MARNR8",
         "count": 11,
         "aircraft": "nonheavy",
         "min_altitude": 17000,
@@ -47742,7 +47716,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "FAI PUYVO5 PUYVO KROTO5",
+        "route": "PUYVO5 PUYVO KROTO5",
         "count": 41,
         "aircraft": "nonheavy",
         "min_altitude": 22000,
@@ -47750,7 +47724,7 @@
         "hours": "4,6-9,13-14,16-18,20-21"
       },
       {
-        "route": "FAI TAGER",
+        "route": "TAGER",
         "count": 15,
         "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 12000,
@@ -47758,7 +47732,7 @@
         "hours": "1,11-12,14-15,17"
       },
       {
-        "route": "FAI PUYVO5 PUYVO TAGER TED",
+        "route": "PUYVO5 PUYVO TAGER TED",
         "count": 9,
         "aircraft": "turboprop",
         "min_altitude": 11000,
@@ -47766,15 +47740,7 @@
         "hours": "10,16"
       },
       {
-        "route": "FAI",
-        "count": 7,
-        "aircraft": ["turboprop", "nonheavy"],
-        "min_altitude": 18000,
-        "max_altitude": 35000,
-        "hours": "1,15,17,20"
-      },
-      {
-        "route": "FAI MKNLY4 TKA TAGER",
+        "route": "MKNLY4 TKA TAGER",
         "count": 6,
         "aircraft": "turboprop",
         "min_altitude": 19000,
@@ -47793,7 +47759,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "JNU GLAZZ1 SNETT ANN VIXOR MARNR8",
+        "route": "GLAZZ1 SNETT ANN VIXOR MARNR8",
         "count": 51,
         "aircraft": "nonheavy",
         "min_altitude": 31000,
@@ -47801,7 +47767,7 @@
         "hours": "4-7,12-14,18-21,23"
       },
       {
-        "route": "JNU WAHTO1 LVD Q902 DUGGS VIXOR MARNR8",
+        "route": "WAHTO1 LVD Q902 DUGGS VIXOR MARNR8",
         "count": 7,
         "aircraft": "nonheavy",
         "min_altitude": 35000,
@@ -47814,7 +47780,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "JNU CHLKT2 ALATY JOH WITTI5",
+        "route": "CHLKT2 ALATY JOH WITTI5",
         "count": 26,
         "aircraft": "nonheavy",
         "min_altitude": 34000,
@@ -47822,7 +47788,7 @@
         "hours": "7,11-13,18-19,21"
       },
       {
-        "route": "JNU ASORT3 ASORT YESKA TED",
+        "route": "ASORT3 ASORT YESKA TED",
         "count": 22,
         "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 14000,
@@ -47830,7 +47796,7 @@
         "hours": "8-16,19,21"
       },
       {
-        "route": "JNU CHLKT2 ALATY JOH PTERS3",
+        "route": "CHLKT2 ALATY JOH PTERS3",
         "count": 8,
         "aircraft": "nonheavy",
         "min_altitude": 32200,
@@ -47838,7 +47804,7 @@
         "hours": "7-8,12,19,21,23"
       },
       {
-        "route": "JNU ASORT3 ASORT ELLAM TED",
+        "route": "ASORT3 ASORT ELLAM TED",
         "count": 3,
         "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 10000,
@@ -47880,13 +47846,7 @@
     ]
   },
   "PAML-PAFA": {
-    "updated": "2026-08-08",
-    "routes": [
-      {
-        "route": "MLY FAI",
-        "count": 4
-      }
-    ]
+    "updated": "2026-08-08"
   },
   "PANC-KDFW": {
     "updated": "2026-08-06",
@@ -48481,7 +48441,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "TED SQA VIDDA V319 WEEKE BET BET",
+        "route": "TED SQA VIDDA V319 WEEKE",
         "count": 25,
         "aircraft": "nonheavy",
         "min_altitude": 28000,
@@ -48489,7 +48449,7 @@
         "hours": "7,10-11,14-15,18"
       },
       {
-        "route": "TED J501 BET BET",
+        "route": "TED J501 BET",
         "count": 10,
         "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 22000,
@@ -48497,20 +48457,12 @@
         "hours": "5-6,8-9,12,17"
       },
       {
-        "route": "TED J501 VIDDA V319 WEEKE BET",
+        "route": "TED J501 VIDDA V319 WEEKE",
         "count": 10,
         "aircraft": "nonheavy",
         "min_altitude": 30000,
         "max_altitude": 34000,
         "hours": "13,17-18"
-      },
-      {
-        "route": "BET",
-        "count": 6,
-        "aircraft": "turboprop",
-        "min_altitude": 12000,
-        "max_altitude": 26000,
-        "hours": "0,8,13,22"
       }
     ]
   },
@@ -48518,36 +48470,20 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "ENA DLG DLG",
-        "count": 21,
-        "aircraft": "nonheavy",
-        "min_altitude": 28000,
+        "route": "ENA",
+        "count": 24,
+        "aircraft": ["turboprop", "nonheavy"],
+        "min_altitude": 20000,
         "max_altitude": 40000,
-        "hours": "0,9,11-14,16,21-22"
+        "hours": "0,9,11-16,21-22"
       },
       {
-        "route": "TED ENA DLG DLG",
+        "route": "TED ENA",
         "count": 15,
         "aircraft": "turboprop",
         "min_altitude": 16000,
         "max_altitude": 20000,
         "hours": "5-7,10-11,14-16,21"
-      },
-      {
-        "route": "DLG",
-        "count": 3,
-        "aircraft": "turboprop",
-        "min_altitude": 15000,
-        "max_altitude": 22000,
-        "hours": "10,14"
-      },
-      {
-        "route": "ENA DLG",
-        "count": 3,
-        "aircraft": "turboprop",
-        "min_altitude": 20000,
-        "max_altitude": 22000,
-        "hours": "14-15"
       }
     ]
   },
@@ -48596,23 +48532,13 @@
     ]
   },
   "PANC-PAEN": {
-    "updated": "2026-08-06",
-    "routes": [
-      {
-        "route": "ENA",
-        "count": 281,
-        "aircraft": "turboprop",
-        "min_altitude": 3000,
-        "max_altitude": 4000,
-        "hours": "0,5-9,12-20,22-23"
-      }
-    ]
+    "updated": "2026-08-06"
   },
   "PANC-PAFA": {
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "CAWIN LIBER5 FAI",
+        "route": "CAWIN LIBER5",
         "count": 49,
         "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 22000,
@@ -48620,15 +48546,7 @@
         "hours": "6,10,12,15-16,18-23"
       },
       {
-        "route": "FAI",
-        "count": 18,
-        "aircraft": ["turboprop", "nonheavy"],
-        "min_altitude": 16000,
-        "max_altitude": 40000,
-        "hours": "0,3-4,6,9-10,12,16-19,21-22"
-      },
-      {
-        "route": "GLOWS FAI",
+        "route": "GLOWS",
         "count": 13,
         "aircraft": "turboprop",
         "min_altitude": 12000,
@@ -48694,7 +48612,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "TED J133 GAL BALIN OTZ OTZ",
+        "route": "TED J133 GAL BALIN",
         "count": 17,
         "aircraft": "nonheavy",
         "min_altitude": 36000,
@@ -48702,7 +48620,7 @@
         "hours": "0,8-9,12,14-16"
       },
       {
-        "route": "TED J133 GAL J117 OTZ OTZ",
+        "route": "TED J133 GAL J117 OTZ",
         "count": 5,
         "aircraft": "nonheavy",
         "min_altitude": 30000,
@@ -48710,20 +48628,12 @@
         "hours": "5,7,9,13"
       },
       {
-        "route": "TED Q8 GAL J117 OTZ OTZ",
+        "route": "TED Q8 GAL J117 OTZ",
         "count": 4,
         "aircraft": "nonheavy",
         "min_altitude": 34000,
         "max_altitude": 36000,
         "hours": "0,5"
-      },
-      {
-        "route": "OTZ",
-        "count": 3,
-        "aircraft": "turboprop",
-        "min_altitude": 22000,
-        "max_altitude": 28000,
-        "hours": "5,15,17"
       }
     ]
   },
@@ -49007,7 +48917,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "OTZ BALIN2 BALIN GAL KKYLE KROTO5",
+        "route": "BALIN2 BALIN GAL KKYLE KROTO5",
         "count": 12,
         "aircraft": "nonheavy",
         "min_altitude": 37000,
@@ -49015,7 +48925,7 @@
         "hours": "11-12,14,16"
       },
       {
-        "route": "OTZ OTZ J117 GAL TAGER9",
+        "route": "OTZ J117 GAL TAGER9",
         "count": 10,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -49023,7 +48933,7 @@
         "hours": "7,12,14,18"
       },
       {
-        "route": "OTZ OTZ J117 GAL Q8 KKYLE KROTO5",
+        "route": "OTZ J117 GAL Q8 KKYLE KROTO5",
         "count": 4,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
@@ -49031,20 +48941,12 @@
         "hours": "0,7-8"
       },
       {
-        "route": "OTZ TAGER",
+        "route": "TAGER",
         "count": 4,
         "aircraft": ["turboprop", "nonheavy"],
         "min_altitude": 25000,
         "max_altitude": 41000,
         "hours": "8,13,17"
-      },
-      {
-        "route": "OTZ",
-        "count": 3,
-        "aircraft": ["turboprop", "nonheavy"],
-        "min_altitude": 25000,
-        "max_altitude": 37000,
-        "hours": "2,4,20"
       }
     ]
   },
@@ -49897,7 +49799,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "KEOLA3 LIH",
+        "route": "KEOLA3",
         "count": 225,
         "aircraft": ["prop", "turboprop", "jet"],
         "min_altitude": 10000,
@@ -49905,7 +49807,7 @@
         "hours": "2-23"
       },
       {
-        "route": "KEOLA3 KEOLA HNL258R LIH148R LIH",
+        "route": "KEOLA3 KEOLA HNL258R LIH148R",
         "count": 39,
         "aircraft": ["prop", "turboprop"],
         "min_altitude": 6000,
@@ -49918,7 +49820,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MKK5 MKK",
+        "route": "MKK5",
         "count": 195,
         "aircraft": "turboprop",
         "min_altitude": 5000,
@@ -49934,7 +49836,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "PALAY3 LNY",
+        "route": "PALAY3",
         "count": 200,
         "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 5000,
@@ -50295,11 +50197,11 @@
     "routes": [
       {
         "route": "APACK R463 AUNTI A332 HELOP SEDAR LATAY HAWKZ8",
-        "count": 14,
+        "count": 16,
         "aircraft": "nonheavy",
         "min_altitude": 33000,
         "max_altitude": 36000,
-        "hours": "6-7,15,19,21-22"
+        "hours": "6-7,15,19-22"
       },
       {
         "route": "APACK R463 AUNTI A332 HALLI A332 HELOP SEDAR LATAY HAWKZ8",
@@ -50316,14 +50218,6 @@
         "min_altitude": 39000,
         "max_altitude": 41000,
         "hours": "12-13"
-      },
-      {
-        "route": "OGG APACK R463 AUNTI A332 HELOP SEDAR LATAY HAWKZ8",
-        "count": 2,
-        "aircraft": "nonheavy",
-        "min_altitude": 33000,
-        "max_altitude": 35000,
-        "hours": "20-21"
       }
     ]
   },
@@ -50368,7 +50262,7 @@
     "updated": "2026-08-07",
     "routes": [
       {
-        "route": "MAUI5 OGG LNY V16 NAPUA LIH",
+        "route": "MAUI5 LNY V16 NAPUA",
         "count": 28,
         "aircraft": "nonheavy",
         "min_altitude": 20000,
@@ -50381,7 +50275,7 @@
     "updated": "2026-08-06",
     "routes": [
       {
-        "route": "MAUI5 OGG LNY JULLE5",
+        "route": "MAUI5 LNY JULLE5",
         "count": 253,
         "aircraft": ["turboprop", "jet"],
         "min_altitude": 10000,
@@ -51990,7 +51884,7 @@
     "updated": "2026-08-08",
     "routes": [
       {
-        "route": "PALCO7 PALCO RTE6 CHAKA SNGRA REKUA SJU",
+        "route": "PALCO7 PALCO RTE6 CHAKA SNGRA REKUA",
         "count": 74,
         "aircraft": ["prop", "turboprop", "nonheavy"],
         "min_altitude": 4000,
@@ -52003,7 +51897,7 @@
     "updated": "2026-08-08",
     "routes": [
       {
-        "route": "HMLTN9 CHAKA SNGRA REKUA SJU",
+        "route": "HMLTN9 CHAKA SNGRA REKUA",
         "count": 38,
         "aircraft": ["prop", "turboprop"],
         "min_altitude": 6000,
@@ -52011,7 +51905,7 @@
         "hours": "0,4-10,13-19"
       },
       {
-        "route": "CHAKA SNGRA REKUA SJU",
+        "route": "CHAKA SNGRA REKUA",
         "count": 9,
         "aircraft": "nonheavy",
         "min_altitude": 8000,
@@ -52024,13 +51918,7 @@
     "updated": "2026-08-08"
   },
   "TJIG-TJSJ": {
-    "updated": "2026-08-08",
-    "routes": [
-      {
-        "route": "SJU",
-        "count": 1
-      }
-    ]
+    "updated": "2026-08-08"
   },
   "TJSJ-KBOS": {
     "updated": "2026-08-06",
@@ -52480,7 +52368,7 @@
     "updated": "2026-08-08",
     "routes": [
       {
-        "route": "STT RTE6 CHAKA SNGRA REKUA SJU",
+        "route": "STT RTE6 CHAKA SNGRA REKUA",
         "count": 37,
         "aircraft": ["prop", "turboprop"],
         "min_altitude": 4000,

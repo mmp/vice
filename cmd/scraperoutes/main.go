@@ -476,20 +476,17 @@ func parseAltitude(s string) int {
 
 // cleanRoute strips the endpoint airport tokens some filed routes carry, so
 // that "SFO TRUKN2 GRTFL MACHU TMBRS4 PDX" and "TRUKN2 GRTFL MACHU TMBRS4"
-// merge, along with FlightAware's own annotations: it marks segments it
-// inferred with a leading "+" and fills gaps with "TBD"--the fixes are real,
-// the markers aren't. A route left with nothing--a direct filing--comes back
-// empty.
+// merge--the origin's id may also sit behind the SID token, as in
+// "MAUI5 OGG LNY ..."--along with FlightAware's own annotations: it marks
+// segments it inferred with a leading "+" and fills gaps with "TBD"--the
+// fixes are real, the markers aren't. A route left with nothing--a direct
+// filing--comes back empty.
 func cleanRoute(route string, from, to av.ICAOAirportCode) string {
 	fields := strings.Fields(html.UnescapeString(route))
 	fields = util.MapSlice(fields, func(f string) string { return strings.TrimLeft(f, "+") })
 	fields = util.FilterSlice(fields, func(f string) bool { return f != "" && f != "TBD" })
-	if len(fields) > 0 && av.TokenNamesAirport(fields[0], from) {
-		fields = fields[1:]
-	}
-	if n := len(fields); n > 0 && av.TokenNamesAirport(fields[n-1], to) {
-		fields = fields[:n-1]
-	}
+	fields = av.TrimDepartureAirportTokens(fields, from)
+	fields = av.TrimDestinationAirportTokens(fields, to)
 	return strings.Join(fields, " ")
 }
 

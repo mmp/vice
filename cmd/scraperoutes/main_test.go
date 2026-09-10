@@ -135,6 +135,8 @@ func TestCullRareRoutesCap(t *testing.T) {
 // FlightAware marks inferred segments with "+" and fills gaps with "TBD";
 // both are its annotations, not parts of the route.
 func TestCleanRouteAnnotations(t *testing.T) {
+	av.InitDB()
+
 	for _, tc := range []struct{ route, want string }{
 		{"+JFK SHIPP Y488 STERN", "SHIPP Y488 STERN"},
 		{"+BIGGY Q75 ILBEE +RTE7 SAALR", "BIGGY Q75 ILBEE RTE7 SAALR"},
@@ -142,6 +144,32 @@ func TestCleanRouteAnnotations(t *testing.T) {
 	} {
 		if got := cleanRoute(tc.route, "KJFK", "KBOS"); got != tc.want {
 			t.Errorf("cleanRoute(%q) = %q, want %q", tc.route, got, tc.want)
+		}
+	}
+}
+
+// The endpoint airports' ids may sit behind the SID token or ahead of the
+// STAR, and they stay when they enter or end an airway--then they're the
+// airports' VORs, the airway's entry and exit fixes. A navaid on the field
+// that isn't an id of the airport (TED at PANC) is real routing and is never
+// touched.
+func TestCleanRouteAirportTokens(t *testing.T) {
+	av.InitDB()
+
+	for _, tc := range []struct{ route, from, to, want string }{
+		{"MAUI5 OGG LNY JULLE5", "PHOG", "PHNL", "MAUI5 LNY JULLE5"},
+		{"MTJ2 MTJ V361 ICIES V484 HAQHY SSKII4", "KMTJ", "KDEN", "MTJ2 MTJ V361 ICIES V484 HAQHY SSKII4"},
+		// A trailing airway can never expand, so its entry is no reason to
+		// keep the airport token.
+		{"MONTN2 SEA V23", "KSEA", "KPAE", "MONTN2 V23"},
+		// The doubled trailing BETs both name Bethel and neither ends an
+		// airway; V319 keeps its WEEKE exit and TED is flown.
+		{"TED SQA VIDDA V319 WEEKE BET BET", "PANC", "PABE", "TED SQA VIDDA V319 WEEKE"},
+		// ITO is V2's exit fix.
+		{"PALAY3 LNY V16 UPP V2 ITO", "PHNL", "PHTO", "PALAY3 LNY V16 UPP V2 ITO"},
+	} {
+		if got := cleanRoute(tc.route, av.ICAOAirportCode(tc.from), av.ICAOAirportCode(tc.to)); got != tc.want {
+			t.Errorf("cleanRoute(%q, %s, %s) = %q, want %q", tc.route, tc.from, tc.to, got, tc.want)
 		}
 	}
 }

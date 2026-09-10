@@ -2234,6 +2234,62 @@ func TokenNamesProcedure(token string) bool {
 	return !airway
 }
 
+// TrimDepartureAirportTokens removes from the head of a filed route the
+// tokens that name the departure airport itself--pilots file "OGG LNY ..."
+// out of PHOG, naming the airport rather than a fix to fly--skipping over a
+// leading procedure token, since filings render the SID ahead of them. A
+// token leading onto an airway that reaches a further fix stays: it is the
+// airway's entry, the airport's id doubling as its VOR's.
+func TrimDepartureAirportTokens(fields []string, icao ICAOAirportCode) []string {
+	i, skippedProcedure := 0, false
+	for i < len(fields) {
+		// The airport comes first: plenty of ids end in a digit, and one of
+		// those names the airport rather than a procedure.
+		if TokenNamesAirport(fields[i], icao) {
+			if i+2 < len(fields) {
+				if _, ok := DB.Airways[fields[i+1]]; ok {
+					break
+				}
+			}
+			fields = slices.Delete(fields, i, i+1)
+			continue
+		}
+		if skippedProcedure || !TokenNamesProcedure(fields[i]) {
+			break
+		}
+		skippedProcedure = true
+		i++
+	}
+	return fields
+}
+
+// TrimDestinationAirportTokens is TrimDepartureAirportTokens's mirror for the
+// other end of the route: it removes trailing tokens that name the
+// destination airport, skipping over a trailing procedure token. A token
+// ending an airway that reaches back to an entry fix stays: it is the
+// airway's exit, as the ITO in "... V16 UPP V2 ITO" into PHTO.
+func TrimDestinationAirportTokens(fields []string, icao ICAOAirportCode) []string {
+	last, skippedProcedure := len(fields)-1, false
+	for last >= 0 {
+		if TokenNamesAirport(fields[last], icao) {
+			if last >= 2 {
+				if _, ok := DB.Airways[fields[last-1]]; ok {
+					break
+				}
+			}
+			fields = slices.Delete(fields, last, last+1)
+			last--
+			continue
+		}
+		if skippedProcedure || !TokenNamesProcedure(fields[last]) {
+			break
+		}
+		skippedProcedure = true
+		last--
+	}
+	return fields
+}
+
 // routeProcedureToken returns the last token of a route into or out of the
 // airport if it names a procedure, or "" otherwise.
 func routeProcedureToken(route string, icao ICAOAirportCode) string {

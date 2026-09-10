@@ -543,6 +543,99 @@ func TestRouteSTAR(t *testing.T) {
 	}
 }
 
+func TestTrimDepartureAirportTokens(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{
+		Airports: map[ICAOAirportCode]FAAAirport{
+			"5A8":  {Id: "5A8", LocalCode: "5A8"},
+			"KDRA": {Id: "KDRA", LocalCode: "NV65"},
+			"KJFK": {Id: "KJFK", LocalCode: "JFK"},
+			"KMTJ": {Id: "KMTJ", LocalCode: "MTJ"},
+			"KOAK": {Id: "KOAK", LocalCode: "OAK"},
+			"KSEA": {Id: "KSEA", LocalCode: "SEA"},
+			"PABE": {Id: "PABE", LocalCode: "BET"},
+			"PANC": {Id: "PANC", LocalCode: "ANC"},
+			"PHKO": {Id: "PHKO", LocalCode: "KOA"},
+			"PHOG": {Id: "PHOG", LocalCode: "OGG"},
+		},
+		Airways: map[string][]Airway{"J133": nil, "J501": nil, "V5": nil, "V23": nil, "V361": nil},
+	}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, tc := range []struct {
+		route string
+		icao  ICAOAirportCode
+		want  string
+	}{
+		{"KJFK DEEZZ6 CANDR J60 DJB", "KJFK", "DEEZZ6 CANDR J60 DJB"},
+		// The origin's id sits behind the SID token.
+		{"MAUI5 OGG LNY JULLE5", "PHOG", "MAUI5 LNY JULLE5"},
+		{"OGG LNY JULLE5", "PHOG", "LNY JULLE5"},
+		{"OAK6 OAK DEDHD RBL LMT HAWKZ8", "KOAK", "OAK6 DEDHD RBL LMT HAWKZ8"},
+		{"BET GASTO", "PABE", "GASTO"},
+		// The first BET names the airport; the second is the VOR, J501's entry.
+		{"BET BET J501 SQA AMOTT4", "PABE", "BET J501 SQA AMOTT4"},
+		// The id doubles as the VOR that enters the airway.
+		{"MTJ2 MTJ V361 ICIES V484 HAQHY SSKII4", "KMTJ", "MTJ2 MTJ V361 ICIES V484 HAQHY SSKII4"},
+		{"KOA V5 MYNAH V11 UPP", "PHKO", "KOA V5 MYNAH V11 UPP"},
+		// An airway with nothing after it can never expand, so its entry is
+		// no reason to keep the airport token.
+		{"MONTN2 SEA V23", "KSEA", "MONTN2 V23"},
+		// TED is a navaid on Anchorage's field, not an id of the airport; it
+		// is flown (the TURN8 initial climb goes to it) and stays.
+		{"TED SQA VIDDA V319 WEEKE BET", "PANC", "TED SQA VIDDA V319 WEEKE BET"},
+		{"ANC TED ELLAM OMSUN", "PANC", "TED ELLAM OMSUN"},
+		{"TED", "PANC", "TED"},
+		// Plenty of airport ids end in a digit; one of those names the
+		// airport, not a procedure.
+		{"NV65 BTY MISEN", "KDRA", "BTY MISEN"},
+		{"5A8 AKN", "5A8", "AKN"},
+		{"", "PHOG", ""},
+	} {
+		got := strings.Join(TrimDepartureAirportTokens(strings.Fields(tc.route), tc.icao), " ")
+		if got != tc.want {
+			t.Errorf("TrimDepartureAirportTokens(%q, %s) = %q, want %q", tc.route, tc.icao, got, tc.want)
+		}
+	}
+}
+
+func TestTrimDestinationAirportTokens(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{
+		Airports: map[ICAOAirportCode]FAAAirport{
+			"KDRA": {Id: "KDRA", LocalCode: "NV65"},
+			"KPDX": {Id: "KPDX", LocalCode: "PDX"},
+			"PABE": {Id: "PABE", LocalCode: "BET"},
+			"PADL": {Id: "PADL", LocalCode: "DLG"},
+			"PHTO": {Id: "PHTO", LocalCode: "ITO"},
+		},
+		Airways: map[string][]Airway{"J501": nil, "V2": nil, "V16": nil, "V319": nil},
+	}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, tc := range []struct{ route, icao, want string }{
+		{"TRUKN2 GRTFL MACHU TMBRS4 PDX", "KPDX", "TRUKN2 GRTFL MACHU TMBRS4"},
+		// The token ends an airway: it is V2's exit fix and stays.
+		{"PALAY3 LNY V16 UPP V2 ITO", "PHTO", "PALAY3 LNY V16 UPP V2 ITO"},
+		// The last BET names the airport; with it gone the next one does
+		// too, and neither ends an airway.
+		{"TED SQA VIDDA V319 WEEKE BET BET", "PABE", "TED SQA VIDDA V319 WEEKE"},
+		// The second BET is J501's exit and stays.
+		{"TED J501 BET BET", "PABE", "TED J501 BET"},
+		{"ENA DLG DLG", "PADL", "ENA"},
+		{"DLG", "PADL", ""},
+		// A digit-ending id at the end of the route names the airport, not a
+		// procedure.
+		{"BTY MISEN NV65", "KDRA", "BTY MISEN"},
+		{"", "PHTO", ""},
+	} {
+		got := strings.Join(TrimDestinationAirportTokens(strings.Fields(tc.route), ICAOAirportCode(tc.icao)), " ")
+		if got != tc.want {
+			t.Errorf("TrimDestinationAirportTokens(%q, %s) = %q, want %q", tc.route, tc.icao, got, tc.want)
+		}
+	}
+}
+
 func TestHourRanges(t *testing.T) {
 	for _, tc := range []struct {
 		encoded string

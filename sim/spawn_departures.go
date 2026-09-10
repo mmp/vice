@@ -897,19 +897,17 @@ func (s *Sim) placement(choice departureChoice, departureAirport, destination av
 }
 
 // departureRoute is the part of a filed route a departure flies and files:
-// everything past the origin airport token, in full--the fixes between the
-// airport and the exit are flown, not trimmed away. A leading SID token drops
-// out whichever SID it names, since it's the scenario's exit route that flies
-// the fixes off the runway and its SID that goes on the flight plan; the exit
-// fix is put in front only when neither the route nor the exit route reaches
-// it, so that "direct on course" still goes out over the gate--JFK to
-// Cleveland files "KJFK DEEZZ6 CANDR J60...", and with the DEEZZ6 exit route
-// authored as plain vectors, DEEZZ has to lead the route itself.
+// everything past the tokens naming the origin airport, in full--the fixes
+// between the airport and the exit are flown, not trimmed away. A leading SID
+// token drops out whichever SID it names, since it's the scenario's exit
+// route that flies the fixes off the runway and its SID that goes on the
+// flight plan; the exit fix is put in front only when neither the route nor
+// the exit route reaches it, so that "direct on course" still goes out over
+// the gate--JFK to Cleveland files "KJFK DEEZZ6 CANDR J60...", and with the
+// DEEZZ6 exit route authored as plain vectors, DEEZZ has to lead the route
+// itself.
 func departureRoute(route string, departureAirport av.ICAOAirportCode, exit av.ExitID, exitRoute *av.ExitRoute) string {
-	fields := strings.Fields(route)
-	if len(fields) > 0 && av.TokenNamesAirport(fields[0], departureAirport) {
-		fields = fields[1:]
-	}
+	fields := av.TrimDepartureAirportTokens(strings.Fields(route), departureAirport)
 	if len(fields) > 0 && av.TokenNamesProcedure(fields[0]) {
 		fields = fields[1:]
 	}
@@ -1081,10 +1079,7 @@ func (s *Sim) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway
 // own destination rather than the flight's: the trailing airport token and the
 // STAR ahead of it.
 func stripSubstituteTail(route string, substitute av.ICAOAirportCode) string {
-	fields := strings.Fields(route)
-	if n := len(fields); n > 0 && av.TokenNamesAirport(fields[n-1], substitute) {
-		fields = fields[:n-1]
-	}
+	fields := av.TrimDestinationAirportTokens(strings.Fields(route), substitute)
 	if n := len(fields); n > 0 {
 		last := fields[n-1]
 		if c := last[len(last)-1]; c >= '0' && c <= '9' {
@@ -1189,13 +1184,8 @@ func eligibleAirportPairRoutes(routes []av.AirportPairRoute, engineType string) 
 // coded departure route's own departure fix is the last thing to go on.
 func departureExit(route string, departureAirport, destination av.ICAOAirportCode, departureFix string,
 	candidates []candidateDeparture) (candidateDeparture, bool) {
-	fields := strings.Fields(route)
-	if len(fields) > 0 && av.TokenNamesAirport(fields[0], departureAirport) {
-		fields = fields[1:]
-	}
-	if n := len(fields); n > 0 && av.TokenNamesAirport(fields[n-1], destination) {
-		fields = fields[:n-1]
-	}
+	fields := av.TrimDepartureAirportTokens(strings.Fields(route), departureAirport)
+	fields = av.TrimDestinationAirportTokens(fields, destination)
 	if departureFix != "" {
 		fields = append(fields, departureFix)
 	}

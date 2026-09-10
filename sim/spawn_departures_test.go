@@ -718,13 +718,32 @@ func TestDepartureExitMatchesTheSID(t *testing.T) {
 	}
 }
 
-// The identifiers at a route's ends are airports, not fixes to leave through.
+// The identifiers at a route's ends are airports, not fixes to leave through,
+// and neither is the origin's id behind the SID token--the OGG in PHOG's
+// "MAUI5 OGG LNY ..." filings--unless it leads onto an airway: then it is the
+// airport's VOR, the airway's entry, and the flight goes out over it.
 func TestDepartureExitIgnoresTheAirportIdentifiers(t *testing.T) {
+	av.InitDB()
+
 	departures := []av.Departure{{Exit: "BOS"}, {Exit: "JFK"}}
 	candidates := []candidateDeparture{{dep: &departures[0]}, {dep: &departures[1]}}
 
 	if _, ok := departureExit("JFK MERIT ROBUC3 BOS", "KJFK", "KBOS", "", candidates); ok {
 		t.Error("matched an exit named after one of the route's airports")
+	}
+
+	departures = []av.Departure{{Exit: "OGG"}, {Exit: "LNY"}}
+	candidates = []candidateDeparture{{dep: &departures[0]}, {dep: &departures[1]}}
+
+	if c, ok := departureExit("MAUI5 OGG LNY JULLE5", "PHOG", "PHNL", "", candidates); !ok {
+		t.Error("MAUI5 OGG LNY JULLE5: departureExit found no exit")
+	} else if c.dep.Exit != "LNY" {
+		t.Errorf("MAUI5 OGG LNY JULLE5: left through %q, expected LNY", c.dep.Exit)
+	}
+	if c, ok := departureExit("OGG V16 NAPUA LIH", "PHOG", "PHLI", "", candidates); !ok {
+		t.Error("OGG V16 NAPUA LIH: departureExit found no exit")
+	} else if c.dep.Exit != "OGG" {
+		t.Errorf("OGG V16 NAPUA LIH: left through %q, expected OGG", c.dep.Exit)
 	}
 }
 
@@ -822,6 +841,8 @@ func TestResolvePublishedDepartureLocatesRouteWaypoints(t *testing.T) {
 }
 
 func TestDepartureRoute(t *testing.T) {
+	av.InitDB()
+
 	vectors := av.WaypointArray{{Fix: "KATL-26L"}}
 	for _, tc := range []struct {
 		name      string
@@ -917,6 +938,27 @@ func TestDepartureRoute(t *testing.T) {
 			exit:      "BIGGY.P",
 			exitRoute: av.ExitRoute{SID: "EWR5"},
 			want:      "BIGGY Q75 TPA",
+		},
+		{
+			// The origin's id sits behind the SID token--OGG is PHOG's
+			// identifier as well as its VOR--and isn't flown: the flight
+			// joins the route at LNY rather than turning back to the field.
+			name:      "airport id behind the SID token",
+			route:     "MAUI5 OGG LNY JULLE5",
+			airport:   "PHOG",
+			exit:      "LNY",
+			exitRoute: av.ExitRoute{SID: "MAUI5", Waypoints: vectors},
+			want:      "LNY JULLE5",
+		},
+		{
+			// ...unless it leads onto an airway: then it is the OGG VOR, the
+			// airway's entry fix, and dropping it would lose the airway.
+			name:      "airport id enters an airway",
+			route:     "OGG V16 NAPUA LIH",
+			airport:   "PHOG",
+			exit:      "OGG",
+			exitRoute: av.ExitRoute{SID: "MAUI5", Waypoints: vectors},
+			want:      "OGG V16 NAPUA LIH",
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
