@@ -703,7 +703,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	case "IF", "TF": // initial fix, direct to fix
 		break
 
-	case "CF": // course to fix; direct unless a preceding VI intercepts the course
+	case "CF": // course to fix; direct unless the aircraft has to join the course
 		break
 
 	case "DF": // direct to fix from unspecified point
@@ -1132,9 +1132,10 @@ func sidTransitionRunways(transition string, runways []Runway) []string {
 // that end somewhere other than a fix--a heading to an altitude, a course
 // to a DME distance, a track from a fix for a distance, a heading to
 // intercept a course or cross a radial, vectors--become action groups on
-// the waypoint they are flown from. A
-// runway transition's first leg is flown from the runway's departure end,
-// returned as a waypoint with an empty Fix for the caller to name.
+// the waypoint they are flown from, as does a course to a fix that the
+// aircraft has to join. A runway transition's first leg is flown from the
+// runway's departure end, returned as a waypoint with an empty Fix for the
+// caller to name.
 // Transitions with legs vice can't fly are reported as not ok.
 func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition bool) (wps WaypointArray, ok bool) {
 	// from returns the waypoint the next leg is flown from.
@@ -1180,6 +1181,30 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 			return strings.TrimSpace(string(prev.recommendedNavaid))
 		}
 		return ""
+	}
+	// joinsCourse reports whether the i'th leg's course has to be joined from
+	// wherever the aircraft is rather than being flown as the direct route to
+	// the fix: the leg before it ended at an altitude, a DME distance, a
+	// distance flown, or a radial instead of at a fix, or it is the first leg
+	// of a runway transition and so is flown from the runway. VI and CI legs
+	// bring the aircraft onto the following course themselves, vectors leave
+	// that to the controller, and a leg that continues the course already
+	// being flown is joined already.
+	joinsCourse := func(i int) bool {
+		if empty(recs[i].outboundMagneticCourse) {
+			return false
+		}
+		if i == 0 {
+			return runwayTransition
+		}
+		prev := recs[i-1]
+		switch prev.pathAndTermination {
+		case "VA", "CA", "FA", "VD", "CD", "FD", "FC", "VR", "CR":
+			return parseMagneticCourse(prev.outboundMagneticCourse) !=
+				parseMagneticCourse(recs[i].outboundMagneticCourse)
+		default:
+			return false
+		}
 	}
 	// legStart returns the waypoint the i'th record's leg is flown from and
 	// the heading action that flies it, for legs that are a heading (V),
@@ -1232,11 +1257,24 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 				addFix(wp)
 			}
 
-		case "TF", "DF", "CF", "HA", "HM":
+		case "TF", "DF", "HA", "HM":
 			// Holds to an altitude and manual-termination holds are flown
 			// through as plain fixes.
 			wp, _, _ := rec.GetWaypoint()
 			wp.SetTurn(turnDirection(rec.turnDirection))
+			addFix(wp)
+
+		case "CF": // a course to a fix
+			wp, _, _ := rec.GetWaypoint()
+			if joinsCourse(i) {
+				start, h := legStart(i)
+				addGroup(start, WaypointActionGroup{
+					Actions: WaypointActions{Heading: h},
+					Until:   rec.courseTermination(navaids),
+				})
+			} else {
+				wp.SetTurn(turnDirection(rec.turnDirection))
+			}
 			addFix(wp)
 
 		case "AF", "RF":

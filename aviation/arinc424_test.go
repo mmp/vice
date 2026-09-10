@@ -561,6 +561,29 @@ func TestParseARINC424SID(t *testing.T) {
 	}
 }
 
+// runwayTransition is a SID runway transition and the waypoints it is
+// expected to encode to.
+type runwayTransition struct {
+	airport, sid, runway, want string
+}
+
+func checkRunwayTransitions(t *testing.T, result ARINC424Result, tests []runwayTransition) {
+	t.Helper()
+	for _, tc := range tests {
+		sid, ok := result.Airports[tc.airport].SIDs[tc.sid]
+		if !ok {
+			t.Fatalf("expected %s %s SID, got %v", tc.airport, tc.sid, result.Airports[tc.airport].SIDs)
+		}
+		wps, ok := sid.RunwayTransitions[tc.runway]
+		if !ok {
+			t.Errorf("%s %s: no runway %s transition; have %v", tc.airport, tc.sid, tc.runway,
+				slices.Sorted(maps.Keys(sid.RunwayTransitions)))
+		} else if got := wps.Encode(); got != tc.want {
+			t.Errorf("%s %s runway %s: expected %q, got %q", tc.airport, tc.sid, tc.runway, tc.want, got)
+		}
+	}
+}
+
 // SID legs to and along radials: DALLS1's headings to the LTJ 165 radial
 // (VR) then a course to an altitude along it, DVT3's climb on the PXR 336
 // radial from wherever the runway heading ends (FA after VA) and after a
@@ -612,9 +635,7 @@ func TestParseARINC424SIDRadials(t *testing.T) {
 	}
 	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
 
-	for _, tc := range []struct {
-		airport, sid, runway, want string
-	}{
+	checkRunwayTransitions(t, result, []runwayTransition{
 		{"KDLS", "DALLS1", "7", "KDLS-25/t069/@a647+/h120/@LTJ-R165/tLTJ-R165/@a4000+/ld LTJ"},
 		{"KDLS", "DALLS1", "13", "KDLS-31/h130/@LTJ-R165/tLTJ-R165/@a4000+/ld LTJ"},
 		{"KDLS", "DALLS1", "31", "KDLS-13/t306/@a647+/l120/@LTJ-R165/tLTJ-R165/@a4000+/ld LTJ"},
@@ -623,24 +644,55 @@ func TestParseARINC424SIDRadials(t *testing.T) {
 		{"KDVT", "DVT3", "25L", "KDVT-7R/h254/@a1878+/r060/@PXR-R336/tPXR-R336/@a4000+/ld PXR"},
 		{"KDVT", "DVT3", "25R", "KDVT-7L/h254/@a1878+/r060/@PXR-R336/tPXR-R336/@a4000+/ld PXR"},
 		{"KSEA", "SUMMA2", "16L", "KSEA-34R/h164/@crsSEA-R161 NEVJO/h131/@crsSEA-R146 SUMMA"},
-	} {
-		sid, ok := result.Airports[tc.airport].SIDs[tc.sid]
-		if !ok {
-			t.Fatalf("expected %s %s SID, got %v", tc.airport, tc.sid, result.Airports[tc.airport].SIDs)
-		}
-		wps, ok := sid.RunwayTransitions[tc.runway]
-		if !ok {
-			t.Errorf("%s %s: no runway %s transition; have %v", tc.airport, tc.sid, tc.runway,
-				slices.Sorted(maps.Keys(sid.RunwayTransitions)))
-		} else if got := wps.Encode(); got != tc.want {
-			t.Errorf("%s %s runway %s: expected %q, got %q", tc.airport, tc.sid, tc.runway, tc.want, got)
-		}
-	}
+	})
 
 	flout5 := result.Airports["KSBA"].SIDs["FLOUT5"]
 	if got, want := flout5.EnrouteTransitions["GVO"].Encode(), "FLOUT/t321/@d15.0 GVO"; got != want {
 		t.Errorf("FLOUT5 GVO transition: expected %q, got %q", want, got)
 	}
+}
+
+// A CF leg's course has to be joined when the leg before it leaves the
+// aircraft somewhere other than a fix: BEACH4 climbs on a heading to 1400
+// and then turns right onto the OGG 195 radial, its runway 20 transition
+// flies the same radial from the runway, SKYL1 turns onto the OAK 125
+// radial--and then flies direct to SIWBI, since that leg starts at SIXDY--
+// and HLN5 comes back to HLN on a course that is no navaid's radial.
+func TestParseARINC424SIDCourseToFix(t *testing.T) {
+	lines := []string{
+		"SPACD        OGG   PH011510VTH  N20542330W156251543    N20542330W156251543E0110000242     NARMAUI                          197302012",
+		"SPACP PHOGPHAOGG     0     069YHN20535514W156254965E011000055         1800018000C    MNAR    KAHULUI                       234972011",
+		"SPACP PHOGPHDBEACH41RW02  010         0        VA                     0240        + 01400     18000                        235481509",
+		"SPACP PHOGPHDBEACH41RW02  020BEACHPHEA0EE  R   CFYOGG PH      1950014919500210D                                            235492002",
+		"SPACP PHOGPHDBEACH41RW20  010BEACHPHEA0EE      CF OGG PH      1950014919500150D               18000                        235522002",
+		"SPACP PHOGPHGRW02    0069980240 N20532091W156261075         +0032600055000062150IIOGG1                                     237912201",
+		"SPACP PHOGPHGRW20    0069982040 N20541774W156252844         +0019800014000055150R                                          237932011",
+		"SUSAD        OAK   K2011680VDHW N37433333W122132493    N37433333W122132493E0170000132     NAROAKLAND                       256712213",
+		"SUSAP KOAKK2AOAK     0     105YHN37431654W122131614E014000009         1800018000C    MNAR    OAKLAND SAN FRANCISCO BAY     715532510",
+		"SUSAP KOAKK2DSKYL1 1RW10B 010         0        VA                     0982        + 00409     18000                        717531909",
+		"SUSAP KOAKK2DSKYL1 1RW10B 020SIXDYK2PC0E       CF OAK K2      1250006012500050D   B 0300001900                             717541909",
+		"SUSAP KOAKK2DSKYL1 1RW10B 030SIWBIK2PC0E       CF OAK K2      1350015013500092D   + 05000                                  717551909",
+		"SUSAP KOAKK2DSKYL1 1RW10B 040SIZXOK2PC0E       TF                                 + 09000                                  717561909",
+		"SUSAP KOAKK2DSKYL1 1RW10B 050WAGESK2PC0EE      TF                                 + FL200                                  717571909",
+		"SUSAP KOAKK2GRW10L   0054570980 N37434969W122131985         -0030800006000049150R                                          721782213",
+		"SUSAP KOAKK2GRW10R   0062130980 N37434335W122133325         -0030100008000050150R                                          721792407",
+		"SUSAD        HLN   K1011770VTHW N46362456W111571251    N46362456W111571251E0120038262     NARHELENA                        253922302",
+		"SUSAP KHLNK1AHLN     0     090YHN46362420W111585980E012003877         1800018000C    MNAR    HELENA RGNL                   114772302",
+		"SUSAP KHLNK1DHLN5  1RW05  010         0        VA                     0543        + 04277     18000                        115352302",
+		"SUSAP KHLNK1DHLN5  1RW05  020         0    L   VIY                    3140                                                 115362302",
+		"SUSAP KHLNK1DHLN5  1RW05  030HLN  K1D 0V       FA HLN K1      000000003400    D   + 08100                                  115372302",
+		"SUSAP KHLNK1DHLN5  1RW05  040HLN  K1D 0VE  L   CFYHLN K1      0000000016000150D                                            115382302",
+		"SUSAP KHLNK1GRW05    0046440540 N46362015W111595080         +1168603877000040075V                                          118612302",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	checkRunwayTransitions(t, result, []runwayTransition{
+		{"PHOG", "BEACH4", "2", "PHOG-20/h024/@a1400+/rt195/@crsOGG-R195 BEACH"},
+		{"PHOG", "BEACH4", "20", "PHOG-2/t195/@crsOGG-R195 BEACH"},
+		{"KOAK", "SKYL1", "10L",
+			"KOAK-28R/h098/@a409+/t125/@crsOAK-R125 SIXDY/a1900-3000 SIWBI/a5000+ SIZXO/a9000+ WAGES/a20000+"},
+		{"KHLN", "HLN5", "5", "KHLN-23/h054/@a4277+/l314/@HLN-R340/tHLN-R340/@a8100+/lt160/@crs160 HLN"},
+	})
 }
 
 // Every route in the CIFP has to survive being encoded in the scenario
