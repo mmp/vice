@@ -304,6 +304,13 @@ func (ar *AudioRecorder) SetStreamCallback(cb func([]int16)) {
 // GetAudioInputDevices returns a list of available audio input devices
 func GetAudioInputDevices() []string {
 	count := sdl.GetNumAudioDevices(true) // true for capture devices
+	if count < 0 {
+		// SDL returns -1 when it can't enumerate capture devices, which
+		// includes the case where the audio subsystem failed to initialize;
+		// only the default device is available then.
+		return nil
+	}
+
 	devices := make([]string, 0, count)
 
 	for i := 0; i < count; i++ {
