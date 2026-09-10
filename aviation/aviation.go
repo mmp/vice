@@ -743,23 +743,28 @@ func StringIsSPC(code string) bool {
 	return false
 }
 
+// FormatAltitude returns an altitude in feet rounded down to the next
+// hundred and written the way a controller says it: a flight level at and
+// above 18,000', otherwise thousands and hundreds. Altitudes below sea level
+// are written with a leading minus sign.
 func FormatAltitude(falt float32) string {
-	alt := int(falt)
+	alt := 100 * int(math.Floor(falt/100))
 	if alt >= 18000 {
 		return "FL" + strconv.Itoa(alt/100)
-	} else if alt < 1000 {
-		return strconv.Itoa(100 * (alt / 100))
-	} else {
-		th := alt / 1000
-		hu := (alt % 1000) / 100 * 100
-		if th == 0 {
-			return strconv.Itoa(hu)
-		} else if hu == 0 {
-			return strconv.Itoa(th) + ",000"
-		} else {
-			return fmt.Sprintf("%d,%03d", th, hu)
-		}
 	}
+
+	sign := ""
+	if alt < 0 {
+		sign, alt = "-", -alt
+	}
+	if alt < 1000 {
+		return sign + strconv.Itoa(alt)
+	}
+	th, hu := alt/1000, alt%1000
+	if hu == 0 {
+		return sign + strconv.Itoa(th) + ",000"
+	}
+	return sign + fmt.Sprintf("%d,%03d", th, hu)
 }
 
 type TransponderMode int

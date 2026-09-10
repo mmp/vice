@@ -66,8 +66,11 @@ func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
 	}
 }
 
+// Inside reports whether the given point and altitude are within the volume.
+// The floor is inclusive, so an aircraft on the ground at a field is inside a
+// volume that starts at the field elevation; Below covers everything under it.
 func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
-	if alt <= a.Floor || alt > a.Ceiling {
+	if alt < a.Floor || alt > a.Ceiling {
 		return false
 	}
 

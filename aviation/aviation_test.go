@@ -671,3 +671,26 @@ func TestArrivalApproachRouteCarriesSharedFixActions(t *testing.T) {
 		t.Error("the shared fix's /nopt didn't come across")
 	}
 }
+
+func TestFormatAltitude(t *testing.T) {
+	for _, tc := range []struct {
+		alt  float32
+		want string
+	}{
+		{-1000, "-1,000"},
+		{-145, "-200"}, // KCLR's runway 8 threshold
+		{-85, "-100"},  // KTRM's runway 30 threshold
+		{0, "0"},
+		{500, "500"},
+		{999, "900"},
+		{1600, "1,600"},
+		{3457, "3,400"},
+		{17999, "17,900"},
+		{18000, "FL180"},
+		{35000, "FL350"},
+	} {
+		if got := FormatAltitude(tc.alt); got != tc.want {
+			t.Errorf("FormatAltitude(%g) = %q, want %q", tc.alt, got, tc.want)
+		}
+	}
+}

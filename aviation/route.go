@@ -868,12 +868,7 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, elevation int, contr
 			}
 		}
 		if war := wp.AltitudeRestriction(); war != nil {
-			// Make sure it's generally reasonable
-			if war.Range[0] < 0 || war.Range[0] >= 50000 ||
-				war.Range[1] < 0 || (war.Range[1] != MaxAltitude && war.Range[1] >= 50000) {
-				e.ErrorString("Invalid altitude range: should be between 0 and FL500: %s-%s",
-					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
-			}
+			checkAltitudeRange(e, *war)
 			if war.Range[0] != 0 {
 				if lastMin != 0 && war.Range[0] < lastMin {
 					// our minimum must be >= the previous minimum
@@ -989,6 +984,15 @@ func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, 
 // almost always a missing factor of 100.
 const minCrossingAltitude float32 = 500
 
+// minRouteAltitude and maxRouteAltitude bound the altitudes we accept in a
+// route's crossing restrictions; outside them, the value is a typo rather
+// than a restriction. The floor allows for fields below sea level: the
+// lowest runway threshold in the CIFP is KCLR's, at -145'.
+const (
+	minRouteAltitude float32 = -1000
+	maxRouteAltitude float32 = 50000
+)
+
 // atEnd reports whether the i'th waypoint is where the route effectively
 // ends: the aircraft is at the runway there, so low altitudes are expected.
 func (wa WaypointArray) atEnd(i int) bool {
@@ -998,6 +1002,16 @@ func (wa WaypointArray) atEnd(i int) bool {
 func hundredsOfFeetError(e *util.ErrorLogger, given, scaled string) {
 	e.ErrorString("%s is below %s, which is almost certainly not intended. Is it supposed to be %s?",
 		given, FormatAltitude(minCrossingAltitude), scaled)
+}
+
+func checkAltitudeRange(e *util.ErrorLogger, ar AltitudeRestriction) {
+	unreasonable := func(alt float32) bool {
+		return alt < minRouteAltitude || alt >= maxRouteAltitude
+	}
+	if unreasonable(ar.Range[0]) || (ar.Range[1] != MaxAltitude && unreasonable(ar.Range[1])) {
+		e.ErrorString("Invalid altitude restriction %q: altitudes must be between %s and FL500",
+			ar.Encoded(), FormatAltitude(minRouteAltitude))
+	}
 }
 
 func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPosition]*Controller, approachAssigned bool,
@@ -1109,12 +1123,7 @@ func (wa WaypointArray) checkDescending(e *util.ErrorLogger) {
 					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
 			}
 
-			// Make sure it's generally reasonable
-			if war.Range[0] < 0 || war.Range[0] >= 50000 ||
-				war.Range[1] < 0 || (war.Range[1] != MaxAltitude && war.Range[1] >= 50000) {
-				e.ErrorString("Invalid altitude range: should be between 0 and FL500: %s-%s",
-					FormatAltitude(war.Range[0]), FormatAltitude(war.Range[1]))
-			}
+			checkAltitudeRange(e, *war)
 
 			if war.Range[0] != 0 {
 				if minFix != "" && war.Range[0] > lastMin {

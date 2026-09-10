@@ -1348,3 +1348,26 @@ func TestActionGroupHeading(t *testing.T) {
 		})
 	}
 }
+
+func TestCheckApproachBelowSeaLevelThreshold(t *testing.T) {
+	// KTRM's runway 30 threshold is 130' below sea level, so with a 45'
+	// threshold crossing height the approach's final fix sits at -85'.
+	check := func(thresholdAltitude float32) string {
+		wps := WaypointArray{{Fix: "JULLY"}, {Fix: "TEDSE"}, {Fix: "_30_THRESHOLD"}}
+		wps[0].SetAltitudeRestriction(MakeAtAltitudeRestriction(3000))
+		wps[1].SetFAF(true)
+		wps[1].SetAltitudeRestriction(MakeAtAltitudeRestriction(1600))
+		wps[2].SetAltitudeRestriction(MakeAtAltitudeRestriction(thresholdAltitude))
+
+		var e util.ErrorLogger
+		CheckApproaches(&e, []WaypointArray{wps}, true, nil, func(string) bool { return true })
+		return e.String()
+	}
+
+	if errs := check(-85); errs != "" {
+		t.Errorf("unexpected errors for a below sea level threshold: %q", errs)
+	}
+	if errs := check(-5000); !strings.Contains(errs, "Invalid altitude restriction") {
+		t.Errorf("expected -5000' to be rejected, got %q", errs)
+	}
+}
