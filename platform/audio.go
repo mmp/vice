@@ -10,6 +10,7 @@ package platform
 import "C"
 
 import (
+	"errors"
 	"fmt"
 	"runtime"
 	"sync"
@@ -33,6 +34,7 @@ type audioEngine struct {
 	speechq       []int16
 	speechcb      func()
 	speechGarbled bool
+	deviceOpen    bool
 	mu            sync.Mutex
 	volume        int
 }
@@ -44,7 +46,9 @@ type audioEffect struct {
 	playOffset     int
 }
 
-func (a *audioEngine) Initialize(lg *log.Logger) {
+// Initialize opens the audio output device. An error is returned if it
+// can't be opened; audio playback is then unavailable for the session.
+func (a *audioEngine) Initialize(lg *log.Logger) error {
 	lg.Info("Starting to initialize audio")
 
 	a.volume = 10
@@ -61,17 +65,26 @@ func (a *audioEngine) Initialize(lg *log.Logger) {
 		UserData: user,
 	}
 	if err := sdl.OpenAudio(&spec, nil); err != nil {
-		lg.Errorf("SDL OpenAudio: %v", err)
+		a.pinner.Unpin()
+		lg.SetAudioDriver(fmt.Sprintf("unavailable (%v)", err))
+		return fmt.Errorf("SDL OpenAudio: %w", err)
 	}
+	a.deviceOpen = true
 	sdl.PauseAudio(false)
+	lg.SetAudioDriver(sdl.GetCurrentAudioDriver())
 
 	lg.Info("Finished initializing audio")
+	return nil
 }
 
 func (a *audioEngine) Close() {
+	if !a.deviceOpen {
+		return
+	}
 	sdl.PauseAudio(true)
 	sdl.CloseAudio()
 	a.pinner.Unpin()
+	a.deviceOpen = false
 }
 
 func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
@@ -112,12 +125,11 @@ func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 	if len(a.speechq) > 0 {
 		return ErrCurrentlyPlayingSpeech
 	}
-
+	if !a.deviceOpen {
+		return ErrAudioPlaybackUnavailable
+	}
 	if len(pcm) == 0 {
-		if finished != nil {
-			finished()
-		}
-		return nil
+		return errors.New("no speech samples to play")
 	}
 
 	a.speechq = pcm
@@ -128,6 +140,10 @@ func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 func (a *audioEngine) AppendSpeechPCM(pcm []int16) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
+	if !a.deviceOpen {
+		// Nothing will consume the queue, so don't let it grow without bound.
+		return
+	}
 	a.speechq = append(a.speechq, pcm...)
 }
 

@@ -177,11 +177,13 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 		tm.playing = true
 		tm.lg.Infof("SPEECH playback started: %s (%s, %dms audio, %d queued behind)",
 			qt.Callsign, qt.Type, durationMs, len(tm.queue))
-	} else {
-		// Audio engine refused (already playing). Put it back at the front
-		// so we'll retry on the next Update.
+	} else if errors.Is(err, platform.ErrCurrentlyPlayingSpeech) {
+		// Audio engine is busy. Put it back at the front so we'll retry on
+		// the next Update.
 		tm.queue = append([]queuedTransmission{qt}, tm.queue...)
 		tm.lg.Warnf("SPEECH playback refused for %s: %v (requeued)", qt.Callsign, err)
+	} else {
+		tm.lg.Warnf("SPEECH playback failed for %s: %v (dropped)", qt.Callsign, err)
 	}
 }
 

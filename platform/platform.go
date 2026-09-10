@@ -14,7 +14,10 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-var ErrCurrentlyPlayingSpeech = errors.New("Speech is currently playing")
+var (
+	ErrCurrentlyPlayingSpeech   = errors.New("Speech is currently playing")
+	ErrAudioPlaybackUnavailable = errors.New("Audio playback is unavailable")
+)
 
 // Platform is the interface that abstracts platform-specific features like
 // creating windows, mouse and keyboard handling, etc.
@@ -144,8 +147,11 @@ type Platform interface {
 	AddMP3(mp3 []byte) (int, error)
 
 	// TryEnqueueSpeechPCM queues pre-decoded PCM speech audio for playback.
-	// If speech is currently being played, ErrCurrentlyPlayingSpeech is returned.
-	// If non-nil, the provided callback function is called after the speech has finished.
+	// If speech is currently being played, ErrCurrentlyPlayingSpeech is
+	// returned and the caller should try again later; any other error means
+	// the audio can't be played at all and should be discarded. If non-nil,
+	// the provided callback function is called after the speech has
+	// finished; it is not called if an error is returned.
 	TryEnqueueSpeechPCM(pcm []int16, finished func()) error
 
 	// AppendSpeechPCM appends PCM samples to the speech playback queue.
@@ -197,6 +203,11 @@ type Platform interface {
 	StopAudioRecording() ([]int16, error)
 	IsAudioRecording() bool
 	GetAudioInputDevices() []string
+
+	// AudioPlaybackError returns a non-nil error if the audio output device
+	// couldn't be opened at startup; no audio will be heard in that case.
+	// It doesn't imply that audio capture is unavailable.
+	AudioPlaybackError() error
 
 	// SetAudioStreamCallback sets a callback that receives audio samples
 	// as they are recorded. This enables streaming audio to a transcriber.

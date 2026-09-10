@@ -36,19 +36,19 @@ type ConnectionManager struct {
 
 	client              *ControlClient
 	connectionStartTime time.Time
-	disableTTSPtr       *bool // Pointer to config's DisableTextToSpeech for runtime toggle
+	ttsEnabled          func() bool // Evaluated per command so the user's setting can change at runtime
 
 	onNewClient func(*ControlClient)
 	onError     func(error)
 }
 
-func MakeServerManager(serverAddress string, overrides server.OverrideFiles, disableTTSPtr *bool, lg *log.Logger,
+func MakeServerManager(serverAddress string, overrides server.OverrideFiles, ttsEnabled func() bool, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
 		lastRemoteServerAttempt: time.Now(),
 		remoteSimServerChan:     TryConnectRemoteServer(serverAddress, lg),
-		disableTTSPtr:           disableTTSPtr,
+		ttsEnabled:              ttsEnabled,
 		onNewClient:             onNewClient,
 		onError:                 onError,
 	}
@@ -105,7 +105,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 		return nil, err
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.disableTTSPtr, initials,
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.ttsEnabled, initials,
 		cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
@@ -142,7 +142,7 @@ func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResu
 		cm.client.Disconnect()
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.disableTTSPtr, initials,
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.ttsEnabled, initials,
 		srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()

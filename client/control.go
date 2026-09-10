@@ -421,7 +421,7 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 	handleResult func(message string, remainingInput string)) {
 	// Determine if TTS is enabled for this command
-	enableTTS := !*c.disableTTSPtr && req.Commands != "P" && req.Commands != "X"
+	enableTTS := c.ttsEnabled() && req.Commands != "P" && req.Commands != "X"
 
 	// Hold transmissions BEFORE the async RPC to prevent contact requests
 	// between RPC call and callback. Released when readback arrives, or
@@ -498,7 +498,7 @@ func (c *ControlClient) RequestContactTransmission() {
 				return
 			}
 
-			if *c.disableTTSPtr {
+			if !c.ttsEnabled() {
 				c.transmissions.SetContactRequested(false)
 				// Contact was processed on server (pilot joins frequency, text event posted)
 				// but user doesn't want audio. Set a hold to maintain pacing.

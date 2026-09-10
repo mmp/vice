@@ -31,7 +31,7 @@ type ControlClient struct {
 
 	// Speech/TTS management
 	transmissions         *TransmissionManager
-	disableTTSPtr         *bool
+	ttsEnabled            func() bool
 	sttActive             bool
 	LastTranscription     string
 	LastCommand           string
@@ -226,7 +226,7 @@ func (p *pendingCall) InvokeCallback(c *ControlClient) {
 	}
 }
 
-func NewControlClient(ss server.SimState, controllerToken string, disableTTSPtr *bool, initials string,
+func NewControlClient(ss server.SimState, controllerToken string, ttsEnabled func() bool, initials string,
 	client *RPCClient, lg *log.Logger) *ControlClient {
 	cc := &ControlClient{
 		controllerToken:   controllerToken,
@@ -235,7 +235,7 @@ func NewControlClient(ss server.SimState, controllerToken string, disableTTSPtr 
 		lastUpdateApplied: time.Now(),
 		State:             SimState{ss},
 		transmissions:     NewTransmissionManager(lg),
-		disableTTSPtr:     disableTTSPtr,
+		ttsEnabled:        ttsEnabled,
 		sttTranscriber:    stt.NewTranscriber(lg),
 	}
 

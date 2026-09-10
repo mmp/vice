@@ -76,6 +76,12 @@ var (
 		pttPressTime              time.Time // for latency logging
 		audioCaptureWarningLogged bool      // only log audio capture failure once
 
+		// Cached microphone list; SDL's docs warn against enumerating
+		// devices every frame, but we re-check periodically so that a
+		// device that shows up while the menu is open is offered.
+		micDevices     []string
+		micDevicesTime time.Time
+
 		// Test PTT state
 		testPTTActive   bool
 		testPTTLevelMu  sync.Mutex
@@ -846,6 +852,18 @@ func drawPinButton(windowTitle string, config *Config, p platform.Platform) {
 	panes.DrawPinButton(windowTitle, config.UnpinnedWindows, p)
 }
 
+// uiAudioInputDevices returns the available microphones, re-enumerating them
+// no more than once a second: SDL may redetect the audio hardware for each
+// query, but a device that is turned on while the menu is open should still
+// show up.
+func uiAudioInputDevices(p platform.Platform) []string {
+	if time.Since(ui.micDevicesTime) > time.Second {
+		ui.micDevices = p.GetAudioInputDevices()
+		ui.micDevicesTime = time.Now()
+	}
+	return ui.micDevices
+}
+
 func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) {
 	if !ui.showSettings {
 		return
@@ -934,9 +952,17 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	}
 
 	if imgui.CollapsingHeaderBoolPtr("Text to Speech", nil) {
+		noAudio := p.AudioPlaybackError() != nil
+		if noAudio {
+			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Audio playback is unavailable on this computer.")
+			imgui.BeginDisabled()
+		}
 		imgui.Checkbox("Disable", &config.DisableTextToSpeech)
 		if imgui.SliderFloatV("Playback speed", &config.TTSPlaybackSpeed, 1.0, 2.5, "%.2fx", 0) {
 			tts.SetPlaybackSpeed(config.TTSPlaybackSpeed)
+		}
+		if noAudio {
+			imgui.EndDisabled()
 		}
 	}
 
@@ -989,8 +1015,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			if imgui.SelectableBoolV("Default", config.SelectedMicrophone == "", 0, imgui.Vec2{}) {
 				config.SelectedMicrophone = ""
 			}
-			mics := p.GetAudioInputDevices()
-			for i, mic := range mics {
+			for i, mic := range uiAudioInputDevices(p) {
 				micFormatted := fmt.Sprintf("%s##mic%d", strings.Map(cleanMic, mic), i)
 				if imgui.SelectableBoolV(micFormatted, mic == config.SelectedMicrophone, 0, imgui.Vec2{}) {
 					config.SelectedMicrophone = mic

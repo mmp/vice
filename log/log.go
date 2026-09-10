@@ -31,6 +31,7 @@ type SystemInfo struct {
 	CPUFlags    []string
 	GPUVendor   string
 	GPURenderer string
+	AudioDriver string
 	GoVersion   string
 	OS          string
 	Arch        string
@@ -264,6 +265,14 @@ func (l *Logger) SetGPUInfo(vendor, renderer string) {
 	l.systemInfo.GPURenderer = renderer
 }
 
+// SetAudioDriver records the SDL audio driver in use for crash reports, or
+// why audio is unavailable if the audio device couldn't be opened.
+func (l *Logger) SetAudioDriver(driver string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.systemInfo.AudioDriver = driver
+}
+
 func (l *Logger) CatchAndReportCrash() any {
 	// Skip recovery when race detector is active - let panics propagate
 	// so race conditions are clearly visible with full stack traces.
@@ -326,6 +335,9 @@ func (l *Logger) ReportCrash(err any) {
 	}
 	if sysInfo.GPURenderer != "" {
 		report.WriteString(fmt.Sprintf("GPU: %s (%s)\n", sysInfo.GPURenderer, sysInfo.GPUVendor))
+	}
+	if sysInfo.AudioDriver != "" {
+		report.WriteString(fmt.Sprintf("Audio: %s\n", sysInfo.AudioDriver))
 	}
 	report.WriteString(fmt.Sprintf("Go: %s\n", sysInfo.GoVersion))
 	report.WriteString(fmt.Sprintf("OS/Arch: %s/%s\n\n", sysInfo.OS, sysInfo.Arch))

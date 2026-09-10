@@ -429,8 +429,16 @@ func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log
 		})
 
 	// Start loading the TTS model in the background so it's ready
-	// when pilot readbacks or contacts are needed.
-	tts.PreloadTTSModel(lg, uploadDone, platform.AudioSampleRate)
+	// when pilot readbacks or contacts are needed. With no audio device
+	// there's nothing to play it on, so don't bother.
+	if err := plat.AudioPlaybackError(); err != nil {
+		lg.Warnf("Not loading the TTS model: %v", err)
+		ShowErrorDialog(plat, lg, "Audio playback is unavailable on this computer: %v\n\n"+
+			"You will not hear pilot transmissions or alerts; they are still "+
+			"shown as text.", err)
+	} else {
+		tts.PreloadTTSModel(lg, uploadDone, platform.AudioSampleRate)
+	}
 
 	// Check for whisper model errors asynchronously and show dialog if CPU not supported.
 	go func() {
@@ -586,7 +594,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		av.InitDB()
 		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 		mgr, errorLogger, overrideErrors = client.MakeServerManager(*serverAddress, overrideFiles(),
-			&config.DisableTextToSpeech, lg,
+			func() bool { return !config.DisableTextToSpeech && plat.AudioPlaybackError() == nil }, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario

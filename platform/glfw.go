@@ -56,6 +56,7 @@ type glfwPlatform struct {
 	mouseDelta             [2]float32
 
 	audioRecorder *AudioRecorder
+	audioErr      error
 	appFocused    bool
 }
 
@@ -94,7 +95,10 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 	audioDone := make(chan struct{})
 	go func() {
 		defer close(audioDone)
-		platformDraft.audioEngine.Initialize(lg)
+		if err := platformDraft.audioEngine.Initialize(lg); err != nil {
+			platformDraft.audioErr = err
+			lg.Errorf("Audio playback unavailable: %v", err)
+		}
 	}()
 
 	lg.Info("Starting GLFW initialization")
@@ -1054,6 +1058,10 @@ func (g *glfwPlatform) IsAudioRecording() bool {
 
 func (g *glfwPlatform) GetAudioInputDevices() []string {
 	return GetAudioInputDevices()
+}
+
+func (g *glfwPlatform) AudioPlaybackError() error {
+	return g.audioErr
 }
 
 func (g *glfwPlatform) AppendSpeechPCM(pcm []int16) {
