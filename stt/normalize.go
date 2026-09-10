@@ -816,7 +816,7 @@ var commandBoundaryKeywords = map[string]bool{
 	// Heading-related
 	"heading": true, "turn": true, "left": true, "right": true,
 	// Navigation
-	"direct": true, "proceed": true,
+	"direct": true, "proceed": true, "via": true,
 	// Approach
 	"cleared": true, "expect": true, "vectors": true, "approach": true,
 	"intercept": true,

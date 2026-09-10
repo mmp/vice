@@ -148,11 +148,6 @@ type Arrival struct {
 	// be referenced for an aircraft's route: Waypoints should always be used for that.
 	FlightStripDisplayRoute string `json:"route"`
 
-	// DerivedSTAR is the STAR the arrival's waypoints run along, worked out at
-	// load for an arrival that spells them out instead of naming a STAR to take
-	// them from. Not specified in user JSON.
-	DerivedSTAR string
-
 	InitialController   ControlPosition         `json:"initial_controller"`
 	InitialAltitudes    util.SingleOrArray[int] `json:"initial_altitude"`
 	AssignedAltitude    float32                 `json:"assigned_altitude"`
@@ -190,9 +185,6 @@ func (ar Arrival) ServedSTARs() []string {
 	}
 	if ar.STAR != "" {
 		return []string{ar.STAR}
-	}
-	if ar.DerivedSTAR != "" {
-		return []string{ar.DerivedSTAR}
 	}
 	return nil
 }
@@ -1406,7 +1398,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	if ar.STAR == "" {
-		ar.DerivedSTAR = ar.deriveSTAR()
+		ar.STAR = ar.deriveSTAR()
 	}
 
 	for _, star := range ar.STARFeeds {
