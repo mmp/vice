@@ -6320,7 +6320,7 @@
           "initial_controller": "71S",
           "initial_altitude": [500, 1000, 3000, 7000, 13000, 17000, 19000, 23000, 25000],
           "assigned_altitude": 16000,
-          "initial_speed": 500,
+          "initial_speed": "M78",
           "expect_approach": null,
           "airports": ["KNKX"],
           "airlines": {

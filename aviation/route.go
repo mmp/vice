@@ -896,9 +896,7 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 	for i, wp := range wa {
 		e.Push(wp.Fix)
 		if sr := wp.SpeedRestriction(); sr != nil {
-			if sr.Range[0] < 0 || (sr.Range[1] > 300 && sr.Range[1] != MaxRestrictionSpeed) {
-				e.ErrorString("invalid speed restriction %s", sr.Encoded())
-			}
+			checkSpeedRange(e, *sr)
 		}
 
 		if pt := wp.ProcedureTurn(); pt != nil {
@@ -1002,6 +1000,49 @@ func (wa WaypointArray) atEnd(i int) bool {
 func hundredsOfFeetError(e *util.ErrorLogger, given, scaled string) {
 	e.ErrorString("%s is below %s, which is almost certainly not intended. Is it supposed to be %s?",
 		given, FormatAltitude(minCrossingAltitude), scaled)
+}
+
+// minRouteSpeed and maxRouteSpeed bound the airspeeds we accept in scenarios,
+// both initial speeds and crossing restrictions; outside them the value is a
+// typo rather than an airspeed. The floor leaves room for light GA, which
+// spawns off the runway as slow as 60 knots.
+const (
+	minRouteSpeed = 50
+	maxRouteSpeed = 350
+)
+
+// minMach and maxMach bound Mach numbers, which are otherwise exempt from the
+// knots range; "M8500" parses as Mach 85 and is as much a typo as the rest.
+// The ceiling covers Concorde, the only supersonic type in the performance
+// database, which tops out at Mach 2.04.
+const (
+	minMach = 0.3
+	maxMach = 2.5
+)
+
+func checkSpeed(e *util.ErrorLogger, what string, speed Airspeed) {
+	if speed.IsMach {
+		if speed.Value < minMach || speed.Value > maxMach {
+			e.ErrorString("%s %s: Mach must be between %g and %g", what, speed, minMach, maxMach)
+		}
+	} else if speed.Value < minRouteSpeed || speed.Value > maxRouteSpeed {
+		e.ErrorString("%s %s: speeds must be between %d and %d knots", what, speed, minRouteSpeed, maxRouteSpeed)
+	}
+}
+
+func checkSpeedRange(e *util.ErrorLogger, sr SpeedRestriction) {
+	if sr.IsMach {
+		checkSpeed(e, "speed restriction", MakeMach(sr.Range[0]))
+		return
+	}
+	// A zero lower bound or a MaxRestrictionSpeed upper bound means unbounded
+	// rather than an airspeed to check.
+	unreasonable := func(s float32) bool { return s < minRouteSpeed || s > maxRouteSpeed }
+	if (sr.Range[0] != 0 && unreasonable(sr.Range[0])) ||
+		(sr.Range[1] != MaxRestrictionSpeed && unreasonable(sr.Range[1])) {
+		e.ErrorString("invalid speed restriction %s: speeds must be between %d and %d knots",
+			sr.Encoded(), minRouteSpeed, maxRouteSpeed)
+	}
 }
 
 func checkAltitudeRange(e *util.ErrorLogger, ar AltitudeRestriction) {
@@ -3217,7 +3258,7 @@ type Overflight struct {
 	InitialAltitudes    util.SingleOrArray[int] `json:"initial_altitude"`
 	CruiseAltitudes     util.SingleOrArray[int] `json:"cruise_altitude"`
 	AssignedAltitude    float32                 `json:"assigned_altitude"`
-	InitialSpeed        float32                 `json:"initial_speed"`
+	InitialSpeed        Airspeed                `json:"initial_speed"`
 	AssignedSpeed       float32                 `json:"assigned_speed"`
 	SpeedRestriction    SpeedRestriction        `json:"speed_restriction"`
 	InitialController   ControlPosition         `json:"initial_controller"`
@@ -3278,8 +3319,18 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		e.ErrorString(`must specify at least one "initial_altitude"`)
 	}
 
-	if of.InitialSpeed == 0 {
+	if of.InitialSpeed.IsZero() {
 		e.ErrorString(`must specify "initial_speed"`)
+	} else {
+		checkSpeed(e, `"initial_speed"`, of.InitialSpeed)
+	}
+
+	if of.AssignedSpeed != 0 {
+		checkSpeed(e, `"assigned_speed"`, MakeIAS(of.AssignedSpeed))
+	}
+
+	if !of.SpeedRestriction.IsZero() {
+		checkSpeedRange(e, of.SpeedRestriction)
 	}
 
 	if of.InitialController == "" {

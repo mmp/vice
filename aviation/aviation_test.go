@@ -5,6 +5,7 @@
 package aviation
 
 import (
+	"encoding/json"
 	"slices"
 	"strings"
 	"testing"
@@ -568,7 +569,7 @@ func TestArrivalAirports(t *testing.T) {
 			arr := tc.arr
 			arr.InitialController = "1T"
 			arr.InitialAltitudes = []int{10000}
-			arr.InitialSpeed = 250
+			arr.InitialSpeed = MakeIAS(250)
 			arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
 				func(string) bool { return true }, &e)
 
@@ -588,7 +589,7 @@ func TestArrivalAirports(t *testing.T) {
 	t.Run("no waypoints and an uncharted STAR", func(t *testing.T) {
 		var e util.ErrorLogger
 		arr := Arrival{STAR: "NOPE1", SpawnWaypoint: "MIPP", InitialController: "1T",
-			InitialAltitudes: []int{10000}, InitialSpeed: 250}
+			InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
 		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
 			func(string) bool { return true }, &e)
 
@@ -709,6 +710,75 @@ func TestFormatAltitude(t *testing.T) {
 	} {
 		if got := FormatAltitude(tc.alt); got != tc.want {
 			t.Errorf("FormatAltitude(%g) = %q, want %q", tc.alt, got, tc.want)
+		}
+	}
+}
+
+func TestAirspeedJSON(t *testing.T) {
+	for _, tc := range []struct {
+		json string
+		want Airspeed
+	}{
+		{`250`, MakeIAS(250)},
+		{`"250"`, MakeIAS(250)},
+		{`"M85"`, MakeMach(.85)},
+	} {
+		var a Airspeed
+		if err := json.Unmarshal([]byte(tc.json), &a); err != nil {
+			t.Errorf("%s: %v", tc.json, err)
+		} else if a != tc.want {
+			t.Errorf("%s: got %+v, want %+v", tc.json, a, tc.want)
+		}
+
+		b, err := json.Marshal(tc.want)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var round Airspeed
+		if err := json.Unmarshal(b, &round); err != nil {
+			t.Errorf("%s: round trip: %v", tc.json, err)
+		} else if round != tc.want {
+			t.Errorf("%s: round tripped to %+v", tc.json, round)
+		}
+	}
+
+	for _, s := range []string{`"180-210"`, `"210+"`, `"250-"`} {
+		var a Airspeed
+		if err := json.Unmarshal([]byte(s), &a); err == nil {
+			t.Errorf("%s: expected a range to be rejected; got %+v", s, a)
+		}
+	}
+}
+
+func TestAirspeedIAS(t *testing.T) {
+	temp := MakeTemperatureFromCelsius(-56.5) // ISA in the flight levels
+	if ias := MakeIAS(250).IAS(35000, temp); ias != 250 {
+		t.Errorf("knots don't vary with altitude: got %f", ias)
+	}
+	// Mach 0.85 is around 260 knots indicated at FL350 and slower higher up.
+	if ias := MakeMach(.85).IAS(35000, temp); ias < 250 || ias > 270 {
+		t.Errorf("M85 at FL350: got %f, want ~260", ias)
+	}
+	if MakeMach(.85).IAS(45000, temp) >= MakeMach(.85).IAS(35000, temp) {
+		t.Error("indicated airspeed for a Mach number should fall with altitude")
+	}
+}
+
+func TestCheckSpeed(t *testing.T) {
+	errors := func(a Airspeed) string {
+		var e util.ErrorLogger
+		checkSpeed(&e, `"initial_speed"`, a)
+		return e.String()
+	}
+
+	for _, spd := range []Airspeed{MakeIAS(20), MakeIAS(400), MakeMach(85)} {
+		if errs := errors(spd); errs == "" {
+			t.Errorf("%s: expected an error", spd)
+		}
+	}
+	for _, spd := range []Airspeed{MakeIAS(50), MakeIAS(60), MakeIAS(250), MakeIAS(350), MakeMach(.85)} {
+		if errs := errors(spd); errs != "" {
+			t.Errorf("%s: unexpected error %q", spd, errs)
 		}
 	}
 }

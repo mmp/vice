@@ -582,7 +582,7 @@
           "initial_altitude": 36000,
           "assigned_altitude": 36000,
           "initial_controller": "17",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "JAWJA CABLO N030.47.11.197,W085.13.33.867/ho DEFUN CEW J50 MCB/delete"
         }
       ]
@@ -615,7 +615,7 @@
           "initial_altitude": 38000,
           "assigned_altitude": 38000,
           "initial_controller": "34",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho CEW J2 SJI/delete"
         },
         {
@@ -629,7 +629,7 @@
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
           "initial_controller": "34",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho DEFUN J2 SJI/delete"
         },
         {
@@ -643,7 +643,7 @@
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
           "initial_controller": "34",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "CAPPS SZW N030.38.27.472,W085.05.51.150/ho CEW J2 SJI GPT/delete"
         },
         {
@@ -657,7 +657,7 @@
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
           "initial_controller": "17",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho DEFUN J2 SJI/delete"
         },
         {
@@ -671,7 +671,7 @@
           "initial_altitude": 28000,
           "assigned_altitude": 28000,
           "initial_controller": "17",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "JAWJA CABLO N030.47.11.197,W085.13.33.867/ho DEFUN J2 CEW ERNON/delete"
         }
       ]
@@ -688,7 +688,7 @@
           ],
           "initial_altitude": 36000,
           "initial_controller": "34",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "BULZI/ho CEW IRUBE/delete"
         }
       ]
@@ -760,7 +760,7 @@
           ],
           "initial_altitude": 37000,
           "initial_controller": "H63",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "DEFUN/ho CABLO THRTL HEVVN LEGGT GOJOE AAHOY MAATY ROOKR/delete"
         }
       ]
@@ -783,7 +783,7 @@
           ],
           "initial_altitude": 41000,
           "initial_controller": "H63",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "DEFUN/ho CABLO THRTL HEVVN CLAMP LALAA CORRL BANGZ KIDLE ALROE/delete"
         }
       ]
@@ -825,7 +825,7 @@
           ],
           "initial_altitude": 35000,
           "initial_controller": "H63",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "DEFUN/ho CABLO BULZI SNAPY NICKI BROMO/delete"
         }
       ]
@@ -943,7 +943,7 @@
           ],
           "initial_altitude": 37000,
           "initial_controller": "H63",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "DEFUN/ho LEEVP ISSZZ ELITE/delete"
         }
       ]
@@ -981,7 +981,7 @@
           "initial_altitude": 37000,
           "assigned_altitude": 37000,
           "initial_controller": "H63",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "CATLN/ho CABLO ZOOSS WALOP CAMJO MARQO/delete"
         }
       ]
@@ -1029,7 +1029,7 @@
           "initial_altitude": 37000,
           "assigned_altitude": 37000,
           "initial_controller": "H63",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "SJI/ho J2 DEFUN CABLO ZOOSS WALOP CAMJO MARQO/delete"
         }
       ]
@@ -1042,7 +1042,7 @@
           "route": "DARED CEW PENSI",
           "initial_controller": "T11",
           "initial_altitude": 33000,
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "airports": ["KPNS", "KVPS"],
           "airlines": {
             "KPNS": [
@@ -1064,7 +1064,7 @@
           "route": "PIGON CEW PENSI",
           "initial_altitude": 35000,
           "initial_controller": "T11",
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "airports": ["KPNS"],
           "airlines": {
             "KPNS": [
@@ -1080,7 +1080,7 @@
           "route": "PIGON CEW",
           "initial_controller": "T11",
           "initial_altitude": 31000,
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "airports": ["KVPS"],
           "airlines": {
             "KVPS": [{ "icao": "ENY", "airport": "KORD" }]
@@ -1092,7 +1092,7 @@
           "route": "CANUE CEW MAI",
           "initial_controller": "H63",
           "initial_altitude": 33000,
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "airports": ["KTLH"],
           "airlines": {
             "KTLH": [{ "icao": "JIA", "airport": "KDFW" }]
@@ -1108,7 +1108,7 @@
           "route": "LOXLY V241 PENSI",
           "initial_controller": "H37",
           "initial_altitude": 37000,
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "airports": ["KPNS"],
           "airlines": {
             "KPNS": [
@@ -1135,7 +1135,7 @@
           "route": "CABLO DEFUN PENSI",
           "initial_controller": "17",
           "initial_altitude": 24000,
-          "initial_speed": 400,
+          "initial_speed": 260,
           "airports": ["KPNS"],
           "airlines": {
             "KPNS": [
@@ -1153,7 +1153,7 @@
           "cruise_altitude": 36000,
           "route": "CABLO DEFUN CORKY",
           "initial_altitude": 36000,
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "initial_controller": "17",
           "airports": ["KVPS"],
           "airlines": {
@@ -1170,7 +1170,7 @@
           "route": "SJI J2 DEFUN CUGAR",
           "initial_controller": "H63",
           "initial_altitude": 33000,
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "airports": ["KECP"],
           "airlines": {
             "KECP": [
@@ -1333,7 +1333,7 @@
           ],
           "initial_altitude": 37000,
           "initial_controller": "H72",
-          "initial_speed": 450,
+          "initial_speed": "M85",
           "waypoints": "REDFN/ho Y280 CHRGE DAAWG CHIVE/a24000-26000 DECKS/a21000+ BULKS/a19000-20000/s280 PRICY/a13000-16000/s250/delete",
           "flight_type": "arrival"
         }
@@ -1378,7 +1378,7 @@
           ],
           "initial_altitude": 37000,
           "initial_controller": "H72",
-          "initial_speed": 450,
+          "initial_speed": "M85",
           "waypoints": "REDFN/ho Y280 CHRGE DAAWG/a21000- RAYZZ/a10000/delete",
           "flight_type": "arrival"
         }
@@ -1412,7 +1412,7 @@
           ],
           "initial_altitude": 37000,
           "initial_controller": "H72",
-          "initial_speed": 450,
+          "initial_speed": "M85",
           "waypoints": "N028.39.22.307,W088.44.59.972/ho BLVNS Y290 DOWRY CIGAR OCHHO VNECK BBALE/a33000- FIGNA/a31000- JASBO/a26000-/s280 DANNA/a23000-26000 PCOCK TEEKY/a12000+/delete",
           "flight_type": "arrival"
         }
@@ -1477,7 +1477,7 @@
           ],
           "initial_altitude": 37000,
           "initial_controller": "H72",
-          "initial_speed": 450,
+          "initial_speed": "M85",
           "waypoints": "N028.39.22.307,W088.44.59.972/ho BLVNS Y290 DOWRY CIGAR GAWKS BAGGS PLOWS/a34000+ MATNY KLEET/a21000-28000/s280 BARBN/a15000+ JAMAS/a11000+/s280 FROGZ/delete",
           "flight_type": "arrival"
         }
@@ -1496,7 +1496,7 @@
           ],
           "initial_altitude": 33000,
           "initial_controller": "R25",
-          "initial_speed": 450,
+          "initial_speed": "M85",
           "waypoints": "CIGAR DAAWG CHIVE/a24000-26000 DECKS/a21000+ BULKS/a19000-20000/s280 PRICY/a13000-16000/s250/delete",
           "flight_type": "arrival"
         }
@@ -1509,7 +1509,7 @@
           "initial_altitude": 27000,
           "assigned_altitude": 10000,
           "initial_controller": "R25",
-          "initial_speed": 380,
+          "initial_speed": "M85",
           "waypoints": "CIGAR DAAWG/a21000- RAYZZ/a10000/delete",
           "flight_type": "arrival"
         }

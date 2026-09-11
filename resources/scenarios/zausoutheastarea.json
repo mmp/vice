@@ -430,7 +430,7 @@
           "initial_altitude": 33000,
           "assigned_altitude": 33000,
           "initial_controller": "46",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "EON/ho N041.38.50.996,W083.23.05.705/delete JHW"
         }
       ]

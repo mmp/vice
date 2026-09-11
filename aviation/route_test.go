@@ -1371,3 +1371,36 @@ func TestCheckApproachBelowSeaLevelThreshold(t *testing.T) {
 		t.Errorf("expected -5000' to be rejected, got %q", errs)
 	}
 }
+
+func TestCheckSpeedRange(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	errors := func(route string) string {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var e util.ErrorLogger
+		WaypointArray(wps).CheckOverflight(&e, nil, func(string) bool { return true })
+		return e.String()
+	}
+
+	for _, route := range []string{"CAMRN/s20 ZULAB", "CAMRN/s400 ZULAB", "CAMRN/s180-400 ZULAB"} {
+		if errs := errors(route); !strings.Contains(errs, "speeds must be between 50 and 350 knots") {
+			t.Errorf("%s: expected the speed to be rejected, got %q", route, errs)
+		}
+	}
+
+	for _, route := range []string{"CAMRN/s130 ZULAB", "CAMRN/s350 ZULAB", "CAMRN/s250- ZULAB",
+		"CAMRN/s210+ ZULAB", "CAMRN/s180-210 ZULAB", "CAMRN/sM78 ZULAB"} {
+		if errs := errors(route); errs != "" {
+			t.Errorf("%s: unexpected errors %q", route, errs)
+		}
+	}
+
+	if errs := errors("CAMRN/sM8500 ZULAB"); !strings.Contains(errs, "Mach must be between") {
+		t.Errorf("expected Mach 85 to be rejected, got %q", errs)
+	}
+}

@@ -3870,7 +3870,7 @@
           "route": "OLAAA2",
           "initial_controller": "31",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000, 38000],
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "expect_approach": "I5L",
           "airports": ["KLAX"],
           "airlines": {
@@ -3998,7 +3998,7 @@
           "is_rnav": true,
           "initial_controller": "31",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000, 38000],
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "expect_approach": "I6L",
           "airports": ["KONT"],
           "airlines": {
@@ -4026,7 +4026,7 @@
           "is_rnav": true,
           "initial_controller": "31",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000, 38000],
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "expect_approach": null,
           "airports": ["KBUR"],
           "airlines": {
@@ -4174,7 +4174,7 @@
           "is_rnav": true,
           "initial_controller": "40",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000],
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "expect_approach": "RZ7",
           "airports": ["KSAN"],
           "airlines": {
@@ -4222,7 +4222,7 @@
           "is_rnav": true,
           "initial_controller": "40",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000],
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "expect_approach": "RZ7",
           "airlines": {
             "KSAN": [
@@ -4398,7 +4398,7 @@
           "is_rnav": true,
           "initial_controller": "40",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000],
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "expect_approach": "RZ7",
           "airlines": {
             "KSAN": [
@@ -4579,7 +4579,7 @@
           "initial_controller": "31",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "cleared_altitude": 24000,
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "expect_approach": "RZ7",
           "airports": ["KSAN"],
           "airlines": {
@@ -5536,7 +5536,7 @@
           ],
           "initial_altitude": [28000, 30000, 32000, 34000, 36000, 38000],
           "initial_controller": "31",
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "scratchpad": "LAX",
           "waypoints": "ASUTA AMMOR RNCHO/a26000+ REGGO/a24000+/ho12 CYNDE/a14000-/hoT4S OLAAA/a11000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210/delete"
         }

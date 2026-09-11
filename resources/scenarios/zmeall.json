@@ -751,7 +751,7 @@
           "initial_altitude": 40000,
           "assigned_altitude": 43000,
           "initial_controller": "T43",
-          "initial_speed": 375,
+          "initial_speed": "M85",
           "waypoints": "VXV NOONN/ho BNA J46 TUL/delete"
         }
       ]
@@ -850,7 +850,7 @@
           "initial_altitude": 43000,
           "assigned_altitude": 43000,
           "initial_controller": "I83",
-          "initial_speed": 375,
+          "initial_speed": "M85",
           "waypoints": "CSX FAM/ho MEM JMUCK IGB GUMMP/delete"
         }
       ]
@@ -1868,7 +1868,7 @@
           "initial_altitude": 43000,
           "assigned_altitude": 43000,
           "initial_controller": "I83",
-          "initial_speed": 375,
+          "initial_speed": "M85",
           "waypoints": "PXV/ho J131 RUSLR J131 TXK/delete"
         }
       ]

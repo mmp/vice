@@ -152,7 +152,7 @@ type Arrival struct {
 	InitialAltitudes    util.SingleOrArray[int] `json:"initial_altitude"`
 	AssignedAltitude    float32                 `json:"assigned_altitude"`
 	ClearedAltitude     float32                 `json:"cleared_altitude"`
-	InitialSpeed        float32                 `json:"initial_speed"`
+	InitialSpeed        Airspeed                `json:"initial_speed"`
 	SpeedRestriction    SpeedRestriction        `json:"speed_restriction"`
 	Scratchpad          string                  `json:"scratchpad"`
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
@@ -1035,6 +1035,86 @@ func MachToTAS(mach float32, temp Temperature) float32 {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Airspeed
+
+// Airspeed is a speed an aircraft is flying: either an indicated airspeed in
+// knots or a Mach number, which is what an aircraft holds in the flight levels
+// and what a scenario needs when its aircraft may spawn at a range of
+// altitudes.
+type Airspeed struct {
+	Value  float32
+	IsMach bool
+}
+
+func MakeIAS(ias float32) Airspeed { return Airspeed{Value: ias} }
+
+func MakeMach(mach float32) Airspeed { return Airspeed{Value: mach, IsMach: true} }
+
+func (a Airspeed) IsZero() bool { return a.Value == 0 }
+
+// IAS returns the indicated airspeed to fly at the given altitude.
+func (a Airspeed) IAS(altitude float32, temp Temperature) float32 {
+	if !a.IsMach {
+		return a.Value
+	}
+	return TASToIAS(MachToTAS(a.Value, temp), altitude)
+}
+
+func (a Airspeed) String() string {
+	if a.IsMach {
+		return fmt.Sprintf("M%02d", int(a.Value*100+.5))
+	}
+	return strconv.FormatFloat(float64(a.Value), 'f', -1, 32)
+}
+
+// MarshalJSON writes knots as a number and a Mach number as a string, the
+// forms UnmarshalJSON and the scenario files use.
+func (a Airspeed) MarshalJSON() ([]byte, error) {
+	if a.IsMach {
+		return json.Marshal(a.String())
+	}
+	return json.Marshal(a.Value)
+}
+
+// UnmarshalJSON accepts a plain number, taken as knots, or a string in the
+// same form speed restrictions use, which allows "M85" for Mach 0.85.
+func (a *Airspeed) UnmarshalJSON(b []byte) error {
+	if string(b) == "null" {
+		return nil
+	}
+	var ias float32
+	if err := json.Unmarshal(b, &ias); err == nil {
+		a.Value = ias
+		return nil
+	}
+
+	var str string
+	if err := json.Unmarshal(b, &str); err != nil {
+		return err
+	}
+	sr, err := ParseSpeedRestriction(str)
+	if err != nil {
+		return err
+	}
+	v, exact := sr.ExactValue()
+	if !exact {
+		return fmt.Errorf("%s: must be a single speed, not a range", str)
+	}
+	a.Value, a.IsMach = v, sr.IsMach
+	return nil
+}
+
+// CheckJSON implements util.JSONChecker so the JSON type checker accepts both
+// the plain number and the string form.
+func (a Airspeed) CheckJSON(json any) bool {
+	switch json.(type) {
+	case float64, string, nil:
+		return true
+	}
+	return false
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Arrival
 
 // deriveSTAR returns the STAR the arrival comes in on based on matching
@@ -1491,8 +1571,14 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		}
 	}
 
-	if ar.InitialSpeed == 0 {
+	if ar.InitialSpeed.IsZero() {
 		e.ErrorString(`must specify "initial_speed"`)
+	} else {
+		checkSpeed(e, `"initial_speed"`, ar.InitialSpeed)
+	}
+
+	if !ar.SpeedRestriction.IsZero() {
+		checkSpeedRange(e, ar.SpeedRestriction)
 	}
 
 	if ar.InitialController == "" {

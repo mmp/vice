@@ -214,7 +214,7 @@
           "initial_altitude": 43000,
           "assigned_altitude": 43000,
           "initial_controller": "I83",
-          "initial_speed": 375,
+          "initial_speed": "M85",
           "waypoints": "PXV J131 RUSLR/ho J131 TXK/delete"
         }
       ]

@@ -211,7 +211,7 @@
           "initial_altitude": 40000,
           "assigned_altitude": 43000,
           "initial_controller": "T43",
-          "initial_speed": 375,
+          "initial_speed": "M85",
           "waypoints": "VXV BNA/ho J46 TUL/delete"
         }
       ]

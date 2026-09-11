@@ -753,7 +753,8 @@
                     <td>Cross the fix at the given speed. The speed may include a
                       <code>+</code> suffix for "at or above" (e.g. <code>/s210+</code>) or a <code>-</code> suffix
                       for "at or below" (e.g. <code>/s250-</code>). A range may also be specified (e.g. <code>/s180-210</code>).
-                      Speeds are in knots by default; Mach speeds can be given with <code>M</code>, such as <code>PUCKY/sM78-</code>
+                      Speeds are in knots by default and must be between 50 and 350; Mach speeds can be given with
+                      <code>M</code>, such as <code>PUCKY/sM78-</code>
                       to cross <code>PUCKY</code> at Mach 0.78 or less.
                     </td>
                   </tr>
@@ -5049,8 +5050,11 @@
                   </tr>
                   <tr>
                     <td>"initial_speed"</td>
-                    <td>Number</td>
-                    <td>The aircraft's initial speed when first spawned.</td>
+                    <td>Number or String</td>
+                    <td>The aircraft's indicated airspeed in knots when first spawned, between 50 and 350. A Mach
+                      number may be given instead with <code>M</code>, such as <code>"M85"</code> for Mach 0.85; this
+                      is what aircraft hold in the flight levels and is the right choice when
+                      <code>"initial_altitude"</code> gives a range of altitudes.</td>
                   </tr>
                   <tr>
                     <td>"is_rnav"</td>
@@ -5078,9 +5082,10 @@
                   <tr>
                     <td>"speed_restriction"</td>
                     <td>Number or String</td>
-                    <td>If present, gives a speed restriction in knots. May use <code>"250-"</code> (at or below),
-                      <code>"210+"</code> (at or above), or <code>"180-210"</code> (a range) syntax. Mach speeds may be
-                      given with <code>M</code>, such as <code>"M78"</code> for Mach 0.78.</td>
+                    <td>If present, gives a speed restriction in knots, between 50 and 350. May use
+                      <code>"250-"</code> (at or below), <code>"210+"</code> (at or above), or <code>"180-210"</code>
+                      (a range) syntax. Mach speeds may be given with <code>M</code>, such as <code>"M78"</code> for
+                      Mach 0.78.</td>
                   </tr>
                   <tr>
                     <td>"star"</td>
@@ -5219,7 +5224,8 @@
                   <tr>
                     <td>"assigned_speed"</td>
                     <td>Number</td>
-                    <td>(<i>Optional</i>) If specified, gives a controller-assigned speed for the aircraft.</td>
+                    <td>(<i>Optional</i>) If specified, gives a controller-assigned speed for the aircraft, in knots
+                      between 50 and 350.</td>
                   </tr>
                   <tr>
                     <td>"cruise_altitude"</td>
@@ -5254,8 +5260,11 @@
                   </tr>
                   <tr>
                     <td>"initial_speed"</td>
-                    <td>Number</td>
-                    <td>The speed aircraft will have when they are initially spawned.</td>
+                    <td>Number or String</td>
+                    <td>The indicated airspeed in knots aircraft will have when they are initially spawned, between 50
+                      and 350. A Mach number may be given instead with <code>M</code>, such as <code>"M85"</code> for
+                      Mach 0.85; this is what aircraft hold in the flight levels and is the right choice when
+                      <code>"initial_altitude"</code> gives a range of altitudes.</td>
                   </tr>
                   <tr>
                     <td>"is_rnav"</td>
@@ -5275,10 +5284,10 @@
                   <tr>
                     <td>"speed_restriction"</td>
                     <td>Number or String</td>
-                    <td>(<i>Optional</i>) If specified, gives a speed restriction to the aircraft. May use
-                      <code>"250-"</code> (at or below), <code>"210+"</code> (at or above), or <code>"180-210"</code>
-                      (a range) syntax. Mach speeds may be given with <code>M</code>, such as <code>"M78"</code> for
-                      Mach 0.78.</td>
+                    <td>(<i>Optional</i>) If specified, gives a speed restriction to the aircraft, in knots between
+                      50 and 350. May use <code>"250-"</code> (at or below), <code>"210+"</code> (at or above), or
+                      <code>"180-210"</code> (a range) syntax. Mach speeds may be given with <code>M</code>, such as
+                      <code>"M78"</code> for Mach 0.78.</td>
                   </tr>
                   <tr>
                     <td>"waypoints"</td>

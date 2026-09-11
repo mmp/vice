@@ -361,7 +361,8 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 		alt := float32(rand.SampleSlice(nav.Rand, arr.InitialAltitudes))
 		nav.FinalAltitude = max(nav.FinalAltitude, alt)
 		nav.FlightState.Altitude = alt
-		nav.FlightState.IAS = arr.InitialSpeed
+		wxs := model.Lookup(nav.FlightState.Position, alt, simTime.Time())
+		nav.FlightState.IAS = arr.InitialSpeed.IAS(alt, wxs.Temperature())
 		// This won't be quite right but it's better than leaving GS to be
 		// 0 for the first nav update tick which leads to various Inf and
 		// NaN cases...
@@ -407,8 +408,10 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.Flight
 			nav.Speed.Assigned = &sr
 		}
 
-		nav.FlightState.Altitude = float32(rand.SampleSlice(nav.Rand, of.InitialAltitudes))
-		nav.FlightState.IAS = of.InitialSpeed
+		alt := float32(rand.SampleSlice(nav.Rand, of.InitialAltitudes))
+		nav.FlightState.Altitude = alt
+		wxs := model.Lookup(nav.FlightState.Position, alt, simTime.Time())
+		nav.FlightState.IAS = of.InitialSpeed.IAS(alt, wxs.Temperature())
 		// This won't be quite right but it's better than leaving GS to be
 		// 0 for the first nav update tick which leads to various Inf and
 		// NaN cases...

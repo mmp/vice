@@ -80,7 +80,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_controller": "32",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "ZJAYX/ho ISSZZ ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/a17000+/s290 GRNCH/delete"
         }
       ]
@@ -126,7 +126,7 @@
           "initial_altitude": [35000, 37000, 39000, 45000],
           "assigned_altitude": 35000,
           "initial_controller": "32",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "DEEDA/ho34 N031.19.29.453,W084.12.56.980/ho SEEJY ISSZZ ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/a17000+/s290 GRNCH/delete"
         }
       ]
@@ -152,7 +152,7 @@
           "initial_altitude": [35000, 37000, 39000],
           "assigned_altitude": 35000,
           "initial_controller": "21",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "DEFUN/ho32 N030.50.58.271,W084.53.38.582/ho34 N030.52.15.834,W084.06.08.508/ho LEEVP ISSZZ ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/a17000+/s290 GRNCH/delete"
         }
       ]
@@ -183,7 +183,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_controller": "32",
-          "initial_speed": 430,
+          "initial_speed": "M85",
           "waypoints": "N031.23.18.195,W083.28.10.164/ho BIGDE EATTR WANDD SHREK/delete"
         }
       ]
@@ -240,7 +240,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_controller": "32",
-          "initial_speed": 430,
+          "initial_speed": "M85",
           "waypoints": "N031.15.04.655,W083.38.10.869/ho MJKAL HUNKR DOWNO BRKWL JAFAR/delete"
         }
       ]
@@ -262,7 +262,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_controller": "32",
-          "initial_speed": 430,
+          "initial_speed": "M85",
           "waypoints": "N031.22.21.670,W083.58.10.988/ho OTK OCF ALADN SHIMM/delete"
         }
       ]
@@ -278,7 +278,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
           "initial_controller": "32",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "N031.33.56.363,W083.45.40.869/ho KRVUR CORYY CAPOH EDISN OLENE/delete"
         }
       ]
@@ -380,7 +380,7 @@
           "initial_altitude": 37000,
           "assigned_altitude": 35000,
           "initial_controller": "32",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "ZPLEN/ho IISLY DOFFY CLEOO/delete"
         }
       ]
@@ -410,7 +410,7 @@
           "initial_altitude": 35000,
           "assigned_altitude": 33000,
           "initial_controller": "32",
-          "initial_speed": 400,
+          "initial_speed": "M85",
           "waypoints": "N032.00.56.140,W083.44.52.749/ho ZPLEN IISLY DOFFY MOLIE/delete"
         }
       ]
@@ -492,7 +492,7 @@
           "assigned_altitude": 34000,
           "cruise_altitude": 36000,
           "initial_controller": "17",
-          "initial_speed": 440,
+          "initial_speed": "M85",
           "waypoints": "JAMIZ/ho Q118 JOHNN N032.16.45.194,W084.07.51.780/delete"
         }
       ]
