@@ -11327,7 +11327,7 @@
     "PUCKY1.Finals13": {
       "arrivals": [
         {
-          "waypoints": "LGA N040.42.02.048,W073.41.55.759/ho N040.30.44.604,W073.38.21.855/a8000/h180/tc",
+          "waypoints": "VADDR N040.42.02.048,W073.41.55.759/ho N040.30.44.604,W073.38.21.855/a8000/h180/tc",
           "cruise_altitude": 37000,
           "star_feeds": ["PUCKY1"],
           "initial_controller": "2J",

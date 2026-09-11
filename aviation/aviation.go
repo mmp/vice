@@ -1122,13 +1122,21 @@ func (a Airspeed) CheckJSON(json any) bool {
 ///////////////////////////////////////////////////////////////////////////
 // Arrival
 
-// deriveSTAR returns the STAR the arrival comes in on based on matching
-// waypoints to the CIFP data: two legs of the same fixes in a row matching
-// the STAR's order suffice.
+// starRunMargin is how many more of its legs in a row a STAR must have the
+// arrival flying before the one it names is called wrong. The STARs into an
+// airport converge on the same last fixes, so one leg more than the named one
+// is no evidence; two is.
+const starRunMargin = 2
+
+// followedSTAR returns the STAR whose legs the arrival's waypoints fly the
+// most of in a row, how many that is, and how many of the STAR the arrival
+// names they fly. Two legs of the same fixes in a row matching the STAR's
+// order are enough to count as following it.
 //
-// This is a heuristic, so an arrival that gives "star" is taken at its word
-// and never comes through here.
-func (ar *Arrival) deriveSTAR() string {
+// The name comes back empty if the waypoints follow no STAR, or follow two of
+// them equally: this is a heuristic and the STARs into an airport share their
+// last fixes.
+func (ar *Arrival) followedSTAR() (best string, bestRun, namedRun int) {
 	var fixes []string
 	for _, wp := range ar.Waypoints {
 		// Waypoints synthesized during deserialization are no part of a STAR.
@@ -1137,10 +1145,10 @@ func (ar *Arrival) deriveSTAR() string {
 		}
 	}
 	if len(fixes) == 0 {
-		return ""
+		return "", 0, 0
 	}
 
-	best, bestRun, tied := "", 0, false
+	tied := false
 	for _, icao := range ar.Airports {
 		ap, ok := DB.Airports[icao]
 		if !ok {
@@ -1161,6 +1169,9 @@ func (ar *Arrival) deriveSTAR() string {
 			for _, wps := range star.RunwayWaypoints {
 				score(wps)
 			}
+			if ProcedureBase(name) == ProcedureBase(ar.STAR) {
+				namedRun = max(namedRun, run)
+			}
 			if follows := run >= 3 || (run >= 2 && 2*shared >= len(fixes)); !follows {
 				continue
 			}
@@ -1172,9 +1183,9 @@ func (ar *Arrival) deriveSTAR() string {
 		}
 	}
 	if tied {
-		return ""
+		return "", 0, namedRun
 	}
-	return best
+	return best, bestRun, namedRun
 }
 
 // sharedRun is the longest stretch of the fixes that the waypoints also pass
@@ -1564,12 +1575,21 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		ar.Waypoints[i].SetOnSTAR(true)
 	}
 
-	// An arrival that gives "star_feeds" takes traffic from several STARs and
-	// flies the stretch they share, so there is no one STAR to ask it to name.
-	if ar.STAR == "" && len(ar.STARFeeds) == 0 {
-		if star := ar.deriveSTAR(); star != "" {
+	// Which STAR the waypoints fly: one the arrival doesn't name it should,
+	// and one it does name should be the one they fly.
+	star, run, namedRun := ar.followedSTAR()
+	switch {
+	case ar.STAR == "" && star != "":
+		// An arrival that gives "star_feeds" takes traffic from several STARs
+		// and flies the stretch they share, so there is no one STAR to ask it
+		// to name.
+		if len(ar.STARFeeds) == 0 {
 			e.ErrorString(`the arrival's waypoints follow the %s STAR; give it in "star"`, star)
 		}
+	case ar.STAR != "" && star != "" && ProcedureBase(star) != ProcedureBase(ar.STAR) &&
+		run-namedRun >= starRunMargin:
+		e.ErrorString(`"star" is %s but the waypoints fly %d of the %s STAR's legs in a row and %d of %s's`,
+			ar.STAR, run, star, namedRun, ar.STAR)
 	}
 
 	for _, star := range ar.STARFeeds {

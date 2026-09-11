@@ -367,7 +367,7 @@ func TestLocalSquawkCodePool(t *testing.T) {
 // An arrival that spells out its waypoints rather than naming a STAR to take
 // them from is still recognizably on one, so long as it flies the STAR's own
 // legs and the STARs into the airport haven't converged by the time it starts.
-func TestDeriveSTAR(t *testing.T) {
+func TestFollowedSTAR(t *testing.T) {
 	star := func(fixes ...string) STAR {
 		var wps WaypointArray
 		for _, f := range fixes {
@@ -467,8 +467,39 @@ func TestDeriveSTAR(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			if got := tc.arr.deriveSTAR(); got != tc.want {
-				t.Errorf("deriveSTAR = %q, want %q", got, tc.want)
+			if got, _, _ := tc.arr.followedSTAR(); got != tc.want {
+				t.Errorf("followedSTAR = %q, want %q", got, tc.want)
+			}
+		})
+	}
+
+	// The count of the named STAR's legs is what says whether the arrival is
+	// on the STAR it claims; the fixes the two share at the end are not.
+	for _, tc := range []struct {
+		name              string
+		star              string
+		fixes             []string
+		bestRun, namedRun int
+	}{
+		{
+			name: "names the STAR it flies", star: "MIPP4",
+			fixes: []string{"LIZZI", "BEUTY", "APPLE", "PROUD"}, bestRun: 4, namedRun: 4,
+		},
+		{
+			name: "names the other one", star: "PROUD2",
+			fixes: []string{"LIZZI", "BEUTY", "APPLE", "PROUD"}, bestRun: 4, namedRun: 2,
+		},
+		{
+			name: "names one it never touches", star: "PROUD2",
+			fixes: []string{"MIPP", "LIZZI", "BEUTY"}, bestRun: 3, namedRun: 0,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ar := arrival("KTST", tc.fixes...)
+			ar.STAR = tc.star
+			_, run, named := ar.followedSTAR()
+			if run != tc.bestRun || named != tc.namedRun {
+				t.Errorf("runs = (%d, %d), want (%d, %d)", run, named, tc.bestRun, tc.namedRun)
 			}
 		})
 	}

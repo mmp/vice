@@ -41,3 +41,4 @@
 - Fixed arrivals that named the wrong STAR, or gave a runway the wrong transition or one that no longer matches the CIFP
 - Facility engineering
   - An arrival's "spawn" may now name a fix on one of the STAR's runway transitions, not just the transitions in
+  - An arrival whose "waypoints" fly a different STAR than it names is now an error
