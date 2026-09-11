@@ -29,5 +29,8 @@
   - Added "waypoint_action" for SIDs so that actions can be added at waypoints without needing to respecify them
 
 
+- Fixed aircraft turning away from the localizer instead of joining it
+- Fixed bug with real-world traffic routes including the departure airport
 - Facility engineering
   - Require "star" to be specified if "waypoints" match a published STAR
+  - Fixed bug that prohibited runway thresholds below sea level
