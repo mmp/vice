@@ -87,7 +87,7 @@
           "cifp_id": "RZ2"
         },
         "SSV": {
-          "full_name": "Smoke Stack Visual Runway 1",
+          "full_name": "Smoke Stack Visual Runway 2",
           "runway": "2",
           "type": "ChartedVisual",
           "waypoints": ["N020.35.19.784,W156.28.37.218 N020.43.38.948,W156.29.14.351 N020.50.43.631,W156.28.08.708"]
@@ -101,29 +101,62 @@
       },
       "departure_routes": {
         "2": {
-          "LNY,OGG,MKK": {
-            "cleared_altitude": 7000,
-            "sid": "MAUI5",
-            "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
+          "OGG.V1": {
+            "cleared_altitude": 5000,
+            "waypoints": "PHOG-20/h024/@a400+/h020 OGG V1 HARPO"
           },
-          "ZIGIE,APACK,CLUTS,EBBER,FITES,SCOON,UPP,KOA,TARDE,DOVRR,SAKKI,JULLE,CARRP,CHOKO,NONNI,PUPPI,SYVAD,LILIA,CANON,DANNO,THOMA": {
-            "cleared_altitude": 6000,
-            "sid": "RV",
-            "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
+          "OGG.V6": {
+            "cleared_altitude": 5000,
+            "aircraft": "prop",
+            "waypoints": "PHOG-20/h024/@a400+/h290/@OGG-R330/tOGG-R320/@OGG-D8.0+/rd ULUAA V6 BLUSH"
+          },
+          "LNY,MKK": [
+            {
+              "cleared_altitude": 5000,
+              "aircraft": "turboprop",
+              "waypoints": "PHOG-20/h024/@a400+/h340"
+            },
+            {
+              "cleared_altitude": 5000,
+              "sid": "MAUI5",
+              "aircraft": "jet",
+              "waypoints": "PHOG-20/h024/@a400+/h360"
+            }
+          ],
+          "ZIGIE,APACK,CLUTS": {
+            "cleared_altitude": 5000,
+            "sid": "MAUI5",
+            "waypoints": "PHOG-20/h024/@a400+/h020"
+          },
+          "EBBER,FITES,SCOON": {
+            "cleared_altitude": 5000,
+            "sid": "MAUI5",
+            "waypoints": "PHOG-20/h024/@a400+/h360"
           },
           "BARBY,ONOHI": {
-            "cleared_altitude": 6000,
+            "cleared_altitude": 16000,
+            "hold_for_release": true,
             "sid": "ONOHI2"
           }
         },
         "20": {
+          "OGG.V1": {
+            "cleared_altitude": 16000,
+            "sid": "STACY2",
+            "waypoints": "PHOG-2/h204/@a400+/h160/@OGG-R198/tOGG-R188/@OGG-D5.0+/ld HARPO"
+          },
           "LNY,HARPO": {
-            "cleared_altitude": 6000,
+            "cleared_altitude": 16000,
             "sid": "BEACH4"
           },
-          "BARBY,ONOHI": {
-            "cleared_altitude": 6000,
+          "ONOHI,BARBY": {
+            "cleared_altitude": 16000,
             "sid": "ONOHI2"
+          },
+          "SWEEP,ZIGIE,APACK,CLUTS,EBBER,FITES,SCOON": {
+            "cleared_altitude": 16000,
+            "hold_for_release": true,
+            "sid": "SWEEP2"
           }
         }
       },
@@ -140,7 +173,7 @@
           "destination": "PHMK",
           "scratchpad": "MKK",
           "route": "OGG V6 BLUSH V8 MKK",
-          "exit": "OGG"
+          "exit": "OGG.V6"
         },
         {
           "airlines": [
@@ -165,24 +198,10 @@
               "icao": "FDY"
             }
           ],
-          "destination": "PHMU",
-          "scratchpad": "HNM",
-          "route": "OGG V11 OPANA SEYOL",
-          "exit": "OGG"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "FDY"
-            },
-            {
-              "icao": "FDY"
-            }
-          ],
           "destination": "PHNY",
           "scratchpad": "LNY",
           "route": "OGG V1 HARPO V2 LNY",
-          "exit": "OGG"
+          "exit": "OGG.V1"
         },
         {
           "airlines": [
