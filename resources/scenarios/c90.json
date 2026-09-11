@@ -13981,7 +13981,8 @@
           "initial_altitude": 11000,
           "initial_controller": "21N",
           "initial_speed": 250,
-          "route": "GSH9",
+          "route": "/. PANGG7",
+          "star": "PANGG7",
           "speed_restriction": 250,
           "waypoints": "FWA BAGEL GSH MEGGZ AWSUM IROCK/ho HALIE/a6000 CGT"
         }

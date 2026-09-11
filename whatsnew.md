@@ -28,3 +28,6 @@
   - Added "initial_heading" for tower-assigned headings for SIDs that aren't charted to start with headings
   - Added "waypoint_action" for SIDs so that actions can be added at waypoints without needing to respecify them
 
+
+- Facility engineering
+  - Require "star" to be specified if "waypoints" match a published STAR

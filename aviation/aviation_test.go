@@ -364,8 +364,8 @@ func TestLocalSquawkCodePool(t *testing.T) {
 }
 
 // An arrival that spells out its waypoints rather than naming a STAR to take
-// them from is still recognizably on one, so long as the STARs into the airport
-// haven't converged by the time it starts.
+// them from is still recognizably on one, so long as it flies the STAR's own
+// legs and the STARs into the airport haven't converged by the time it starts.
 func TestDeriveSTAR(t *testing.T) {
 	star := func(fixes ...string) STAR {
 		var wps WaypointArray
@@ -417,13 +417,31 @@ func TestDeriveSTAR(t *testing.T) {
 			want: "PROUD2",
 		},
 		{
+			name: "one leg and hardly anything else",
+			arr:  arrival("KTST", "BEUTY", "APPLE"),
+			want: "MIPP4",
+		},
+		{
+			name: "one leg of a route that is mostly elsewhere",
+			arr:  arrival("KTST", "OWNWY", "BEUTY", "APPLE", "ELSEW", "RWY13"),
+			want: "",
+		},
+		{
 			name: "joins the STAR at one fix and leaves again",
 			arr:  arrival("KTST", "LIZZI", "OWNWY", "RWY13"),
-			want: "MIPP4",
+			want: "",
 		},
 		{
 			name: "crosses one fix of a STAR it doesn't start on",
 			arr:  arrival("KTST", "OWNWY", "KORRY", "RWY13"),
+			want: "",
+		},
+		{
+			// The shape of an arrival down an airway to a STAR's last fix: the
+			// two fixes it has in common are a leg of the STAR, but it flies
+			// its own way between them.
+			name: "crosses two fixes of a STAR without flying the leg",
+			arr:  arrival("KTST", "BEUTY", "OWNWY", "APPLE", "RWY13"),
 			want: "",
 		},
 		{

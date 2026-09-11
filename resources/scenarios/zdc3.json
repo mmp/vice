@@ -80,7 +80,7 @@
           "waypoints": "TONIO Q34 NEALS N037.44.18.815,W081.00.25.350/ho CJAAE JOOEY TBART WYTEA YAEGR/a27000 AKELL/a24000+/s290 ECHOZ/a22000+/s280 DNKEY/a19000 FIMBO/a16000/delete",
           "cruise_altitude": [29000, 31000, 33000, 35000],
           "star": "RAVNN9",
-          "route": "/. NEALS CJAAE RAVNN8",
+          "route": "/. NEALS CJAAE RAVNN9",
           "initial_controller": "I86",
           "initial_altitude": [29000, 31000],
           "initial_speed": 300,

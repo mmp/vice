@@ -1102,7 +1102,8 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "HEVVN/ho LEGGT GOJOE AAHOY MAATY ROOKR SCLOP/delete",
-          "route": "MAATY6"
+          "route": "MAATY6",
+          "star": "MAATY6"
         },
         {
           "airports": ["KLAL"],
@@ -1120,7 +1121,8 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "HEVVN/ho LEGGT GOJOE AAHOY MAATY GOOFS/delete",
-          "route": "MAATY6"
+          "route": "MAATY6",
+          "star": "MAATY6"
         }
       ]
     },
@@ -1170,7 +1172,8 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "HEVVN/ho CLAMP LALAA CORRL BANGZ KIDLE BOLTS/delete",
-          "route": "BANGZ2"
+          "route": "BANGZ2",
+          "star": "BANGZ2"
         },
         {
           "airports": ["KSRQ"],
@@ -1240,7 +1243,8 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "CLAMP/ho LALAA CORRL BANGZ KIDLE ALROE MAHAR PASOE/delete",
-          "route": "BANGZ2"
+          "route": "BANGZ2",
+          "star": "BANGZ2"
         }
       ]
     },
@@ -1281,7 +1285,8 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "PLYER/ho OBESE WHITL RILEE CODGR BAGGS PIKKR GUSEC/delete",
-          "route": "PLYER PIKKR7"
+          "route": "PLYER PIKKR7",
+          "star": "PIKKR7"
         }
       ]
     }

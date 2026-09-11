@@ -535,7 +535,8 @@
               "5R": "BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/s230 KNIGT/a6000/s210 DOCEY/h230"
             }
           },
-          "route": "/. HAGAL.GIIBS3",
+          "route": "/. HAGAL.GIIBS4",
+          "star": "GIIBS4",
           "initial_controller": "C34",
           "initial_altitude": 26000,
           "initial_speed": 280,
@@ -575,6 +576,7 @@
             }
           },
           "route": "/. ELANR.JAKKS2",
+          "star": "JAKKS2",
           "initial_controller": "G35",
           "initial_altitude": 26000,
           "initial_speed": 280,
@@ -609,6 +611,7 @@
             }
           },
           "route": "/. KOLTS.KOLTS2",
+          "star": "KOLTS2",
           "initial_controller": "C34",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -643,7 +646,8 @@
               "5R": "FIIRE WESLE/a6000+ IIUUU/a5000/s210"
             }
           },
-          "route": "/. RACYR.SMUKE2",
+          "route": "/. RACYR.SMUKE3",
+          "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 15500,
           "initial_speed": 280,
@@ -683,6 +687,7 @@
             }
           },
           "route": "/. RINTE.SNKPT2",
+          "star": "SNKPT2",
           "initial_controller": "C34",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -738,6 +743,7 @@
             }
           },
           "route": "/. SJAYY.SNKPT2",
+          "star": "SNKPT2",
           "initial_controller": "C34",
           "initial_altitude": 20000,
           "initial_speed": 280,

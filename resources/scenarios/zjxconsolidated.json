@@ -423,6 +423,7 @@
         {
           "waypoints": "RIPPI/ho ZJAYX ISSZZ ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/a17000+/s290 GRNCH BUGGZ/a13000/s280 BLAYK WHOVL/a10000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210 KMCO-36L/delete",
           "route": "/. GRNCH5",
+          "star": "GRNCH5",
           "initial_controller": "T22",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -455,6 +456,7 @@
         {
           "waypoints": "WRENS/ho LPERD NOOMN/a23000+ FORYU/a13000+ NICCK/a12000+ SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000+/s210 KMCO-35R/delete",
           "route": "/. SNFLD3",
+          "star": "SNFLD3",
           "initial_controller": "T22",
           "initial_altitude": 30000,
           "initial_speed": 300,
@@ -482,6 +484,7 @@
         {
           "waypoints": "DAFIN/ho ZOOSS/a24000 WALOP CAMJO MARQO COROE/a11000- GWIIZ EGAGE/a4000/s210 KJAX-8/delete",
           "route": "/. MARQO3",
+          "star": "MARQO3",
           "initial_controller": "H24",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -514,6 +517,7 @@
         {
           "waypoints": "APELE/ho DUCHY/a24000 ILTAC/a23000- FORMB OHDEA/a12000/h150 KJAX-8/delete",
           "route": "/. OHDEA2",
+          "star": "OHDEA2",
           "initial_controller": "T22",
           "initial_altitude": 24000,
           "initial_speed": 300,
@@ -546,6 +550,7 @@
         {
           "waypoints": "WIBID MANWE/ho IDEBE FILLI MEGEE ESENT BENTZ/a24000 CATSU GOTBE/a10000 LUNNI/h240 KJAX-8/delete",
           "route": "/. LUNNI2",
+          "star": "LUNNI2",
           "initial_controller": "W32",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -578,6 +583,7 @@
         {
           "waypoints": "DENIL/ho LAMKE LPERD JAGGZ/a24000+ WEEEK/a16000+ TTHOR/a12000 BIKEZ/a12000/h165 KDAB-7L/delete",
           "route": "/. TTHOR3",
+          "star": "TTHOR3",
           "initial_controller": "W32",
           "initial_altitude": 31000,
           "initial_speed": 300,

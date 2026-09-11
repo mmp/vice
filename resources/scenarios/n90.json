@@ -7596,6 +7596,7 @@
           "waypoints": "MANTA/airwayQ439 PLUME/airwayQ439 SHERL/ho/airwayQ439 DUNEE/airwayQ439 SARDI CCC",
           "cruise_altitude": 35000,
           "route": "/. Q439 SARDI CCC",
+          "star": "SARDI1",
           "initial_controller": "B46",
           "initial_altitude": 19000,
           "assigned_altitude": 7000,
@@ -7607,6 +7608,7 @@
           "waypoints": "MANTA/airwayQ439 PLUME/airwayQ439 SHERL/ho/airwayQ439 DUNEE/airwayQ439 SARDI HTO",
           "cruise_altitude": 35000,
           "route": "/. Q439 SARDI HTO",
+          "star": "SARDI1",
           "initial_controller": "B46",
           "initial_altitude": 19000,
           "assigned_altitude": 7000,
@@ -7618,6 +7620,7 @@
           "waypoints": "MANTA/airwayQ439 PLUME/airwayQ439 SHERL/ho/airwayQ439 DUNEE/airwayQ439 SARDI CCC DPK",
           "cruise_altitude": 35000,
           "route": "/. Q439 SARDI CCC DPK",
+          "star": "SARDI1",
           "initial_controller": "B46",
           "initial_altitude": 19000,
           "assigned_altitude": 7000,
@@ -7644,6 +7647,7 @@
           "waypoints": "SEY/ho ORCHA CCC/airwayV46 PAZTA/airwayV46 DPK",
           "cruise_altitude": 12000,
           "route": "/. SEY ORCHA CCC V46 DPK",
+          "star_feeds": ["PARCH4"],
           "initial_controller": "11D",
           "initial_altitude": 10000,
           "assigned_altitude": 10000,
@@ -7696,6 +7700,7 @@
           "waypoints": "HFD/airwayV1 WEGOT/ho/airwayV1 YODEL/airwayV1 MAD/airwayV1 BELTT/airwayV1 DPK",
           "cruise_altitude": 10000,
           "route": "/. T303 DPK",
+          "star_feeds": ["PAWLN1"],
           "initial_controller": "11D",
           "initial_altitude": 10000,
           "assigned_altitude": 8000,
@@ -7740,6 +7745,7 @@
           "waypoints": "MANTA T320 SHERL/ho T320 RICED KEYED",
           "cruise_altitude": 21000,
           "route": "/. T320 RICED KEYED",
+          "star": "SARDI1",
           "initial_controller": "B46",
           "initial_altitude": 21000,
           "assigned_altitude": 9000,
@@ -7754,6 +7760,7 @@
           "waypoints": "PANZE/airwayV184 FALON/airwayV184 ZIGGI/ho/h50",
           "cruise_altitude": 9000,
           "route": "/. V184 ZIGGI",
+          "star_feeds": ["CAMRN5"],
           "initial_controller": "51Y",
           "initial_altitude": 9000,
           "assigned_altitude": 5000,
@@ -9229,6 +9236,7 @@
         {
           "waypoints": "IGN/ho VALRE BASYE HAARP CRALY VADDR/h224",
           "route": "/. VADDR1",
+          "star": "VADDR1",
           "initial_controller": "B46",
           "initial_altitude": 12000,
           "assigned_altitude": 8000,
@@ -9257,6 +9265,7 @@
         {
           "waypoints": "LIZZI/ho BEUTY/a10000 HARLM DREMS APPLE PROUD/h045",
           "route": "/. MIP4",
+          "star": "MIP4",
           "initial_controller": "C56",
           "initial_altitude": 13000,
           "assigned_altitude": 10000,
@@ -9271,6 +9280,7 @@
         {
           "waypoints": "CASSH/ho NOBBI/a6000 BIZEX RYMES HAARP CRALY/h224",
           "route": "/. NOBBI1",
+          "star": "NOBBI1",
           "initial_controller": "C56",
           "initial_altitude": 9000,
           "assigned_altitude": 6000,
@@ -9284,6 +9294,7 @@
         {
           "waypoints": "SOUND/ho/a13000 GWENY/a11000 ZAHNN EILEN WESTO/a6000 BDR ALIXX RYMES/a4000/h289",
           "route": "/. BOUNO5",
+          "star": "BOUNO5",
           "initial_controller": "W32",
           "initial_altitude": 13000,
           "assigned_altitude": 11000,
@@ -9297,6 +9308,7 @@
         {
           "waypoints": "IGN/ho VALRE/a6000 BASYE HAARP/h159",
           "route": "/. VALRE1",
+          "star": "VALRE1",
           "initial_controller": "C56",
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
@@ -11471,6 +11483,7 @@
         {
           "cruise_altitude": 39000,
           "waypoints": "CAMRN/d5000 N040.06.19.934,W073.49.44.875/d4000 N040.15.31.324,W073.41.31.809 N040.25.32.221,W073.33.00.422 N040.33.32.654,W073.27.11.826 N040.37.27.637,W073.26.33.237 N040.41.01.280,W073.27.18.198 N040.46.08.376,W073.29.23.223 N040.48.23.494,W073.32.35.126 N040.48.13.002,W073.34.39.794/d3000 ROSLY/d1900 ZALPO/d100 N040.38.47.151,W073.45.17.523/delete",
+          "star_feeds": ["CAMRN5"],
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -11487,6 +11500,7 @@
         {
           "cruise_altitude": 39000,
           "waypoints": "CAMRN/d5000 N040.07.10.979,W073.47.02.167 N040.17.06.164,W073.56.53.946/d2000/s210 N040.22.55.515,W073.57.56.019/s180/clearapp ZETAL/a2000 EBBEE/a1500 KJFK-4R/a100/delete",
+          "star_feeds": ["CAMRN5"],
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -11503,6 +11517,7 @@
         {
           "cruise_altitude": 39000,
           "waypoints": "CAMRN/d5000 N040.07.31.840,W073.49.08.345/d4000 N040.14.55.014,W073.52.55.598/d3000 N040.19.16.530,W073.54.13.848/s210 ASALT/a2000/s180/clearapp CNRSE/a1500 LEISA/a1000 SILJY/a500 KJFK-13L/a100/delete",
+          "star_feeds": ["CAMRN5"],
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -11519,6 +11534,7 @@
         {
           "cruise_altitude": 39000,
           "waypoints": "PUCKY/d16000 N040.43.49.673,W074.03.54.942/d13000 N040.26.58.876,W074.00.12.414 N040.23.43.924,W073.54.06.405/d4000 N040.23.08.575,W073.36.18.973 N040.38.09.701,W073.26.05.579/s210 N040.45.56.758,W073.28.45.375/d3000 N040.48.13.524,W073.35.07.424/s180/clearapp ROSLY/a3000 ZALPO/a1800 KJFK-22L/a100/delete",
+          "star_feeds": ["PUCKY1"],
           "initial_controller": "4A",
           "initial_altitude": 12000,
           "assigned_altitude": 11000,
@@ -11535,6 +11551,7 @@
         {
           "cruise_altitude": 39000,
           "waypoints": "PUCKY/d16000 N040.45.53.077,W074.01.50.879/d13000 N040.33.04.213,W073.59.11.879/d8000 N040.21.37.979,W073.52.28.709/d4000 N040.19.32.351,W073.47.57.264 N040.18.30.827,W073.43.21.013 N040.18.36.567,W073.36.34.985 N040.24.21.470,W073.29.48.491 N040.26.43.688,W073.28.43.095/d3000 CATOD MALDE/d1900 ZULAB/d100 N040.38.36.082,W073.45.24.966/delete",
+          "star_feeds": ["PUCKY1"],
           "initial_controller": "4A",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -11551,6 +11568,7 @@
         {
           "cruise_altitude": 39000,
           "waypoints": "PUCKY/d16000/po2J VADDR/d13000 N040.43.27.041,W073.41.13.901/d8000/radius1 N040.25.45.103,W073.38.54.210/d4000/radius0.5 N040.19.15.088,W073.52.25.193/d3000/radius0.5 ASALT/a2000/clearapp CNRSE/a1500 LEISA/a1000 KJFK-13L/a100/delete",
+          "star_feeds": ["PUCKY1"],
           "initial_controller": "4A",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -11584,6 +11602,7 @@
           "waypoints": "PAWLN IGN/ho1V VALRE BASYE HAARP/d3000 CRALY YOMAN/d1900 GREKO/d100 LGA/delete",
           "cruise_altitude": 34000,
           "route": "/. VADDR1",
+          "star": "VADDR1",
           "initial_controller": "B46",
           "initial_altitude": 12000,
           "assigned_altitude": 8000,
@@ -11780,6 +11799,7 @@
         {
           "waypoints": "SARDI/ho RICED/a9000 KEYED EEGOR ALIXX RYMES/h288",
           "route": "/. EEGOR1",
+          "star": "EEGOR1",
           "initial_controller": "W32",
           "initial_altitude": 10000,
           "assigned_altitude": 9000,
@@ -13382,6 +13402,7 @@
         {
           "waypoints": "IGN/ho1V VALRE BASYE/a8000 HAARP/a5000 CRALY/a4000/s210 N040.46.26.943,W073.58.50.126/ho1F N040.32.19.965,W074.08.34.270/a4000/d3000/s180 VARAZ/a3000 BENNG/a3000 RAHEL/s180/a1800 DNNIS/a1700/clearapp KLGA/delete",
           "route": "/.",
+          "star": "VADDR1",
           "initial_controller": "1V",
           "initial_altitude": 9000,
           "initial_speed": 300,

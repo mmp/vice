@@ -4232,6 +4232,7 @@
         {
           "airports": ["KWRI"],
           "waypoints": "LRP TRAGG/ho BUNTS RELNY NAGGS CISON/s180/a2000+/clearapp FENKA/a2000 KWRI-6/a150/s150/delete",
+          "star": "HAR5",
           "initial_altitude": 12000,
           "initial_speed": 300,
           "expect_approach": "I6",

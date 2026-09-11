@@ -391,6 +391,7 @@
           "initial_controller": "C29",
           "initial_speed": 270,
           "route": "HGO OZZZY5",
+          "star": "OZZZY5",
           "waypoints": "HGO/a17000 N038.51.21.568,W103.55.28.472/ho OZZZY/a14000/s250 ADANE"
         }
       ]
@@ -447,6 +448,7 @@
           "initial_controller": "11P",
           "initial_speed": 210,
           "route": "OPSHN FSHER BRK",
+          "star": "DBRY5",
           "waypoints": "OPSHN/s250 FSHER/s250/ho BRK"
         }
       ]

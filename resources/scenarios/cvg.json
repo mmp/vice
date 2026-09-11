@@ -4237,7 +4237,8 @@
               "36R": "EGONE FRING/a8000-10000/s210 BAMGE BBURG BRCAT/a6000/s210/h188"
             }
           },
-          "route": "/. ARIVR.CEGRM7",
+          "route": "/. ARIVR.CEGRM8",
+          "star": "CEGRM8",
           "initial_controller": "C34",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -4355,7 +4356,8 @@
       "arrivals": [
         {
           "waypoints": "FRING/a8000-10000/s210/ho BAMGE BBURG BRCAT/a6000/s210 EXAMS/s210/a4500+ BEPEE/a4000+/s210 ROPRR/a2500+ JIMUR/a1440+",
-          "route": "/. ARIVR.CEGRM7",
+          "route": "/. ARIVR.CEGRM8",
+          "star": "CEGRM8",
           "initial_controller": "1N",
           "initial_altitude": 8000,
           "initial_speed": 210,
@@ -4473,7 +4475,8 @@
       "arrivals": [
         {
           "waypoints": "BYRAN/a8000/ho SERBE/a4700+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
-          "route": "/. ARIVR.CEGRM7",
+          "route": "/. ARIVR.CEGRM8",
+          "star_feeds": ["CEGRM8"],
           "initial_controller": "1N",
           "initial_altitude": 8000,
           "initial_speed": 210,
@@ -4603,7 +4606,8 @@
               "36R": "UDEYS/a9000+ DAWGY/a8000"
             }
           },
-          "route": "/. ICKEY.GAVNN7",
+          "route": "/. ICKEY.GAVNN8",
+          "star": "GAVNN8",
           "initial_controller": "C26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -4641,7 +4645,8 @@
       "arrivals": [
         {
           "waypoints": "DAWGY/a8000/ho SWINK/a3600+ CIMRU/s210/a3000+ JITEV/a2500+ TABBO/a1360+",
-          "route": "/. ICKEY.GAVNN7",
+          "route": "/. ICKEY.GAVNN8",
+          "star_feeds": ["GAVNN8"],
           "initial_controller": "1S",
           "initial_altitude": 8000,
           "initial_speed": 250,
@@ -4679,7 +4684,8 @@
       "arrivals": [
         {
           "waypoints": "KEYTO/a8000+/s210/ho AAJAY IGOCO NXHAL/s210/a6000 DOSKE/a4500+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
-          "route": "/. ICKEY.GAVNN7",
+          "route": "/. ICKEY.GAVNN8",
+          "star": "GAVNN8",
           "initial_controller": "1S",
           "initial_altitude": 8000,
           "initial_speed": 210,
@@ -4718,6 +4724,7 @@
         {
           "waypoints": "HEDEE/ho KEFKA/a10000/h201",
           "route": "/. SAVVI.HEDEE1",
+          "star": "HEDEE1",
           "initial_controller": "11L",
           "initial_altitude": 11000,
           "initial_speed": 270,
@@ -4760,7 +4767,8 @@
               "36R": "OPAVE/a8000-12000 SPOOD/a8000/h280"
             }
           },
-          "route": "/. HRMBE.JAKIE6",
+          "route": "/. HRMBE.JAKIE7",
+          "star": "JAKIE7",
           "initial_controller": "C26",
           "initial_altitude": 16000,
           "initial_speed": 280,
@@ -4957,7 +4965,8 @@
       "arrivals": [
         {
           "waypoints": "OPAVE/a8000-12000/ho SPOOD/a8000 KURGE/a3600+ CIMRU/a3000+ JITEV/a2500+ TABBO/a1360+",
-          "route": "/. HRMBE.JAKIE6",
+          "route": "/. HRMBE.JAKIE7",
+          "star_feeds": ["JAKIE7"],
           "initial_controller": "1S",
           "initial_altitude": 8000,
           "initial_speed": 250,
@@ -5154,7 +5163,8 @@
       "arrivals": [
         {
           "waypoints": "OPAVE/a8000-12000/ho FIDEK/a8000+/s210 UBEDE LEWIN/a6000/s210 GOSEC/a4500+/s210 OPHUS/a4000+/s210 KRTHY/a2500+/s210",
-          "route": "/. HRMBE.JAKIE6",
+          "route": "/. HRMBE.JAKIE7",
+          "star": "JAKIE7",
           "initial_controller": "1S",
           "initial_altitude": 8000,
           "initial_speed": 250,
@@ -5363,7 +5373,8 @@
               "36R": "VANGE WAXIL/a13000- FECTA/a8000/h094"
             }
           },
-          "route": "/. FREZE.SARGO4",
+          "route": "/. FREZE.SARGO5",
+          "star": "SARGO5",
           "initial_controller": "C18",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -5554,7 +5565,8 @@
       "arrivals": [
         {
           "waypoints": "FECTA/a8000/ho CHEKO/a4600+ BEPEE/a4000+ ROPRR/a2500+ JIMUR/a1440+",
-          "route": "/. FREZE.SARGO4",
+          "route": "/. FREZE.SARGO5",
+          "star_feeds": ["SARGO5"],
           "initial_controller": "1S",
           "initial_altitude": 8000,
           "initial_speed": 250,
@@ -5745,7 +5757,8 @@
       "arrivals": [
         {
           "waypoints": "AZONS/a8000+/s210/ho FIDEK UBEDE LEWIN/a6000/s210 GOSEC/s210/a4500+ OPHUS/a4000+ KRTHY/a2500+",
-          "route": "/. FREZE.SARGO4",
+          "route": "/. FREZE.SARGO5",
+          "star": "SARGO5",
           "initial_controller": "1S",
           "initial_altitude": 8000,
           "initial_speed": 210,
@@ -5949,6 +5962,7 @@
             }
           },
           "route": "/. JARSO.TIGRR4",
+          "star": "TIGRR4",
           "initial_controller": "C22",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -6054,6 +6068,7 @@
         {
           "waypoints": "ETROY/a9000-11000/ho BACAS/a8000-10000/s210 JANEG RUPPP/a6000/s210 GRAPT/s210/a4500+ CIMRU/a3000+/s210 JITEV/a2500+ TABBO/a1360+",
           "route": "/. JARSO.TIGRR4",
+          "star": "TIGRR4",
           "initial_controller": "1N",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -6159,6 +6174,7 @@
         {
           "waypoints": "CRSLY/a8000/ho WIMEV/a4700+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
           "route": "/. JARSO.TIGRR4",
+          "star_feeds": ["TIGRR4"],
           "initial_controller": "1N",
           "initial_altitude": 8000,
           "initial_speed": 250,

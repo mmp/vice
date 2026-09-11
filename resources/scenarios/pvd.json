@@ -550,6 +550,7 @@
           "initial_controller": "1H",
           "initial_speed": 250,
           "route": "PVD",
+          "star": "WIPOR4",
           "expect_approach": "I23",
           "waypoints": "SAUGY/ho WAWIK/a5000 NOSUH/h047"
         },
@@ -591,6 +592,7 @@
           "initial_controller": "1J",
           "initial_speed": 250,
           "route": "PVD",
+          "star_feeds": ["JORDN2"],
           "expect_approach": "I23",
           "waypoints": "MINNK/ho N041.35.49.324,W071.24.10.360/a5000/h047"
         }
@@ -1343,6 +1345,7 @@
           "initial_controller": "1J",
           "initial_speed": 280,
           "route": "PVD",
+          "star": "JORDN2",
           "expect_approach": "I5",
           "waypoints": "JORDN/ho MINNK/a5000/h015 "
         }
@@ -1705,6 +1708,7 @@
           "initial_controller": "1J",
           "initial_speed": 280,
           "route": "PVD",
+          "star": "JORDN2",
           "expect_approach": "I5",
           "waypoints": "JORDN/ho MINNK/a5000/h015 "
         }

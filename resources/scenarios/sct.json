@@ -8622,6 +8622,7 @@
         {
           "waypoints": "GLESN/a24000-30000/s280 ANJLL/a19000-24000/ho CAANN/a17000+ BOYEL/a14000+ CRCUS/a12000-14000/s270",
           "route": "ANJLL4",
+          "star": "ANJLL4",
           "initial_controller": "C37",
           "initial_altitude": 25000,
           "initial_speed": 310,
@@ -8880,6 +8881,7 @@
             }
           },
           "route": "BIGBR3",
+          "star": "BIGBR3",
           "initial_controller": "C37",
           "initial_altitude": 29000,
           "initial_speed": 310,
@@ -9088,6 +9090,7 @@
             }
           },
           "route": "BRUEN2",
+          "star": "BRUEN2",
           "initial_controller": "C39",
           "initial_altitude": 29000,
           "initial_speed": 310,
@@ -10072,6 +10075,7 @@
         {
           "waypoints": "N034.03.39.218,W116.43.12.471 AVATR/a19000-24000/ho DAAAY/a17000+ WADUP/a15000+ NEILE/a14000+ SEAVU/a12000-14000/s270",
           "route": "HLYWD1",
+          "star": "HLYWD1",
           "initial_controller": "C39",
           "initial_altitude": 25000,
           "initial_speed": 280,
@@ -10182,6 +10186,7 @@
         {
           "waypoints": "BIKNG/a16000-20000 RUNNN/a14000-17000/ho IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
           "route": "IRNMN2",
+          "star": "IRNMN2",
           "initial_controller": "C13",
           "initial_altitude": 18000,
           "initial_speed": 280,
@@ -10669,6 +10674,7 @@
           "waypoints": "MOMAR/a24000-26000 DSURT/a19000-23000 TRIXI/a12000-14000/s270/ho HSKER/a8700+ BARET/a8000+ HNAHH/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
           "cruise_altitude": 36000,
           "route": "/. LUCKI LYNDI",
+          "star": "LUCKI1",
           "initial_controller": "C09",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -10759,6 +10765,7 @@
           "waypoints": "CMPOE/a19000-23000 HEELX/a12000-15000/s270/ho JACKK/a10000-11000/s250 AZTEK/a8000+ JEEVS/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
           "cruise_altitude": 36000,
           "route": "/. LUCKI LYNDI",
+          "star": "LUCKI1",
           "initial_controller": "C09",
           "initial_altitude": 20000,
           "initial_speed": 280,
@@ -10848,6 +10855,7 @@
         {
           "waypoints": "ANJLL/a24000-29000/s280 KAOSS/a19000-23000/ho TOLLA/a14000-17000 SLACR/a15000-  BIGBR/a13000-14000 MDNYT/a10000-13000 DOWNE DOYRS/a10000+ CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
           "route": "ANJLL.MDNYT2",
+          "star": "MDNYT2",
           "initial_controller": "C37",
           "initial_altitude": 25000,
           "initial_speed": 280,
@@ -10996,6 +11004,7 @@
         {
           "waypoints": "AVATR/a24000-29000/s280 TRUBL/a19000-23000/ho EMMMY/a14000-17000 WHDDN/a15000- SHRTZ/a13000-14000 MDNYT/a10000-13000 DOWNE DOYRS/a10000+ CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
           "route": "HLYWD.MDNYT2",
+          "star": "MDNYT2",
           "initial_controller": "C39",
           "initial_altitude": 25000,
           "initial_speed": 280,
@@ -11032,6 +11041,7 @@
         {
           "waypoints": "LAHVA/a17000/ho LAAMP/a15000-17000/s280 SNDDR/a15000 SHRTZ/a13000-14000 MDNYT/a10000-13000 DOWNE DOYRS/a10000+ CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
           "route": "AMMOR.MDNYT2",
+          "star": "MDNYT2",
           "initial_controller": "C30",
           "initial_altitude": 17000,
           "initial_speed": 310,
@@ -11602,6 +11612,7 @@
         {
           "waypoints": "GNZZO/a13000-14000 RYDRR/a11000/s250/ho KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
           "route": "RYDRR2",
+          "star": "RYDRR2",
           "initial_controller": "C14",
           "initial_altitude": 13000,
           "initial_speed": 280,
@@ -12358,6 +12369,7 @@
           "waypoints": "MOMAR/a24000+ DSURT/a19000+ TRIXI/a12000+/s270/ho TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
           "cruise_altitude": 36000,
           "route": "/. TOPGN ISEMN ZIPPP TMCAT",
+          "star": "TOPGN2",
           "initial_controller": "C09",
           "initial_altitude": 24000,
           "initial_speed": 270,
@@ -12448,6 +12460,7 @@
           "waypoints": "IPL/a24000+ BLUZE/a17000+/ho GUUSE/a12000+/s270 TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
           "cruise_altitude": 36000,
           "route": "/. TOPGN ISEMN ZIPPP TMCAT",
+          "star": "TOPGN2",
           "initial_controller": "C09",
           "initial_altitude": 24000,
           "initial_speed": 270,
@@ -12694,6 +12707,7 @@
         {
           "waypoints": "DANYY/a14000-17000 N034.26.44.264,W119.06.31.882/ho ZUUMA/a9000-11000/s250 DEEZY/a8000+/s220 WAKER/a6000/s210",
           "route": "ZUUMA4",
+          "star": "ZUUMA4",
           "initial_controller": "C13",
           "initial_altitude": 14000,
           "initial_speed": 310,

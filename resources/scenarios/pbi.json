@@ -2189,6 +2189,7 @@
         {
           "waypoints": "VUUDU OWLLL/a9000/s250/d5000 N026.55.00.251,W080.41.53.919/ho MSQTO/flyover/h050",
           "route": "VUUDU2",
+          "star": "VUUDU2",
           "initial_controller": "1P",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2234,6 +2235,7 @@
         {
           "waypoints": "VUUDU OWLLL/a9000/s250/d5000 N026.58.55.832,W080.39.46.917/h080/ho",
           "route": "VUUDU2",
+          "star": "VUUDU2",
           "initial_controller": "1P",
           "initial_altitude": 10000,
           "initial_speed": 250,

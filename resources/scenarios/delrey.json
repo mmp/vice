@@ -5399,6 +5399,7 @@
         {
           "waypoints": "MUPTT/a23000-27000/s280 MDOTS/a20000-24000 GRIPR/a19000-23000 BIKNG/a16000-20000 RUNNN/a14000-17000/ho2Z IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210/ho2U/d2600 DAHJR/a6000/s210 GADDO/a6000 N034.02.44.039,W118.10.50.857 N033.59.57.267,W118.10.19.876 N033.58.16.275,W118.12.48.933 KOBEE/a2200/clearapp",
           "route": "IRNMN2",
+          "star": "IRNMN2",
           "initial_controller": "C13",
           "initial_altitude": 26000,
           "initial_speed": 280,

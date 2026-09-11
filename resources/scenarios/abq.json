@@ -511,6 +511,7 @@
           "initial_controller": "C16",
           "initial_speed": 270,
           "route": "BRRTO1",
+          "star": "BRRTO1",
           "waypoints": "BRRTO/a21000-28000/s270 ELRRA/a14000-18000/ho XMRKS/a11000+/s250",
           "runway_waypoints": {
             "KABQ": {
@@ -550,6 +551,7 @@
           "initial_controller": "C16",
           "initial_speed": 270,
           "route": "COLTR4",
+          "star": "COLTR4",
           "waypoints": "COLTR/a14000-18000/ho YYLEE/a11000+/s250",
           "runway_waypoints": {
             "KABQ": {
@@ -598,6 +600,7 @@
           "initial_controller": "C16",
           "initial_speed": 270,
           "route": "LOWBO3",
+          "star": "LOWBO3",
           "waypoints": "LOWBO/ho JOKLO/a14000-18000/s250 ITUNE",
           "runway_waypoints": {
             "KABQ": {
@@ -628,6 +631,7 @@
           "initial_controller": "C16",
           "initial_speed": 270,
           "route": "LZZRD4",
+          "star": "LZZRD4",
           "waypoints": "HAKOR LZZRD/a14000-18000/s250/ho MKYON/a13000-15000",
           "runway_waypoints": {
             "KABQ": {
@@ -677,6 +681,7 @@
           "initial_controller": "C16",
           "initial_speed": 270,
           "route": "SNDIA4",
+          "star": "SNDIA4",
           "waypoints": "SNDIA VLCNO/a14000-16000/s250/ho ASIDE/a10000-11000/s250",
           "runway_waypoints": {
             "KABQ": {

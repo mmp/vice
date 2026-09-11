@@ -971,7 +971,7 @@
         {
           "waypoints": "FISHO/ho Q75 TEUFL KYYUU WNWUD/d27000 SSPAZ/delete",
           "star": "LUBBR4",
-          "route": "/. LUBBR3",
+          "route": "/. LUBBR4",
           "initial_controller": "66",
           "initial_altitude": 34000,
           "initial_speed": 300,

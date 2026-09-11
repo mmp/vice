@@ -2260,7 +2260,7 @@
         {
           "waypoints": "KYYUU/a32000 WNWUD/a30000/ho SSPAZ/a27000 BATTN LUBBR ZEBON RUNNE BREKR WUDDY LYFIE MURDO/a3000+ KSRQ-32/a44/delete",
           "star": "LUBBR4",
-          "route": "/. LUBBR3",
+          "route": "/. LUBBR4",
           "initial_controller": "78",
           "initial_altitude": 32000,
           "initial_speed": 300,
@@ -2321,7 +2321,7 @@
         {
           "waypoints": "KYYUU/a32000 WNWUD/a30000/ho SSPAZ/a27000 BATTN LUBBR ZEBON ZEPHR/a3000+ KLAL-10/a44/delete",
           "star": "LUBBR4",
-          "route": "/. LUBBR3",
+          "route": "/. LUBBR4",
           "initial_controller": "78",
           "initial_altitude": 32000,
           "initial_speed": 300,
@@ -2347,7 +2347,7 @@
         {
           "waypoints": "KYYUU/a32000 WNWUD/a30000/ho SSPAZ/a27000 BATTN LUBBR ZEBON RUNNE BREKR WUDDY LYFIE ROSTY/a3000+ KPGD-4/a44/delete",
           "star": "LUBBR4",
-          "route": "/. LUBBR3",
+          "route": "/. LUBBR4",
           "initial_controller": "78",
           "initial_altitude": 32000,
           "initial_speed": 300,
@@ -2538,7 +2538,7 @@
         {
           "waypoints": "HEVVN LEGGT/a27000/ho88 GOJOE AAHOY MAATY/a11000 ROOKR BLOUT CBASS TOOTH/a5000/s210 HICAY PJMAL/s190 ANAZE/a2400 ZELTO/a1300 KTPA-1R/a25/delete",
           "star": "MAATY6",
-          "route": "/. MAATY4",
+          "route": "/. MAATY6",
           "initial_controller": "17",
           "initial_altitude": 30000,
           "initial_speed": 300,

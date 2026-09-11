@@ -290,6 +290,7 @@
           "initial_speed": 290,
           "cruise_altitude": 23000,
           "route": "GMONY WAMUR JUNNR YELKS SPA",
+          "star": "JUNNR4",
           "waypoints": "GMONY/ho WAMUR JUNNR YELKS SPA/delete",
           "airports": ["KGSP"]
         }

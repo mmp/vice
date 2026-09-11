@@ -233,6 +233,7 @@
           "initial_speed": 290,
           "cruise_altitude": 23000,
           "route": "GMONY WAMUR JUNNR OPENS YELKS KWOOD TANCE BURGG",
+          "star": "JUNNR4",
           "waypoints": "GMONY WAMUR/ho JUNNR OPENS/a17000 YELKS KWOOD TANCE BURGG/delete"
         }
       ]
@@ -262,6 +263,7 @@
           "initial_speed": 290,
           "cruise_altitude": 21000,
           "route": "BURGG MURKY KHAOS TRAKS DEMNZ",
+          "star": "TRAKS4",
           "waypoints": "BURGG MURKY/ho KHAOS TRAKS DEMNZ/delete"
         }
       ]

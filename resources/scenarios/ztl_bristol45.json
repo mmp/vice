@@ -120,6 +120,7 @@
           "cruise_altitude": 34000,
           "initial_speed": 290,
           "route": "VXV DAJPI LUVTT RCTOR UNMAN",
+          "star": "RCTOR3",
           "is_rnav": true,
           "waypoints": "VXV/ho DAJPI LUVTT RCTOR UNMAN/delete",
           "airports": ["KGSP"]

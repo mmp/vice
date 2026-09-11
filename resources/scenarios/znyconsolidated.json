@@ -5897,7 +5897,7 @@
         {
           "waypoints": "JENGA/ho66 RAINN BRIGS HARBO DRIFT MANTA PLUME SHERL DUNEE KOPPY SARDI CCC/delete",
           "cruise_altitude": 35000,
-          "star": null,
+          "star": "SARDI1",
           "route": "/. JENGA RAINN BRIGS HARBO DRIFT MANTA PLUME SHERL DUNEE KOPPY SARDI CCC",
           "initial_controller": "W59",
           "initial_altitude": 21000,
@@ -5987,7 +5987,7 @@
         {
           "waypoints": "SIE/ho66 BECKR KKONG ANTMN BOUNO DPK SOUND GWENY ZAHNN EILEN WESTO BDR ALIXX RYMES KHPN/delete",
           "cruise_altitude": 35000,
-          "star": null,
+          "star": "BOUNO5",
           "route": "/. SIE BECKR KKONG ANTMN BOUNO DPK SOUND GWENY ZAHNN EILEN WESTO BDR ALIXX RYMES KHPN",
           "initial_controller": "W59",
           "initial_altitude": 24000,
@@ -6045,7 +6045,7 @@
         {
           "waypoints": "SARDI/ho66 Q439 BRIGS IROKT JIIMS ZMRMN/delete",
           "cruise_altitude": 35000,
-          "star": null,
+          "star": "JIIMS4",
           "route": "/. SARDI Q439 BRIGS IROKT JIIMS ZMRMN",
           "initial_controller": "B31",
           "initial_altitude": 20000,

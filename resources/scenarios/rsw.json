@@ -236,6 +236,7 @@
             }
           },
           "route": "DCT",
+          "star": "SHFTY6",
           "cruise_altitude": 30000,
           "initial_controller": "C47",
           "initial_altitude": 16000,
@@ -266,6 +267,7 @@
             }
           },
           "route": "DCT",
+          "star": "PUMPP2",
           "cruise_altitude": 12000,
           "initial_controller": "C07",
           "initial_altitude": 13000,
@@ -293,6 +295,7 @@
             }
           },
           "route": "DCT",
+          "star": "TYNEE4",
           "cruise_altitude": 22000,
           "initial_controller": "C07",
           "initial_altitude": 12000,

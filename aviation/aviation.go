@@ -1037,24 +1037,12 @@ func MachToTAS(mach float32, temp Temperature) float32 {
 ///////////////////////////////////////////////////////////////////////////
 // Arrival
 
-// deriveSTAR returns the STAR the arrival comes in on. An arrival that takes
-// its waypoints from a STAR by name gives "star" and needs none of this; one
-// that spells them out doesn't have to say where they came from, though a real
-// route into the airport names the STAR rather than the fixes it passes over,
-// so it is worth working out.
+// deriveSTAR returns the STAR the arrival comes in on based on matching
+// waypoints to the CIFP data: two legs of the same fixes in a row matching
+// the STAR's order suffice.
 //
-// A scenario's arrival need not follow the charted STAR: it starts where its
-// traffic reaches the facility, which may be short of the STAR or already on
-// it, and from there it is free to fly its own way in. So the STAR it comes in
-// on is whichever of the airport's it passes over the most of--and only if it
-// passes over more of that one than of any other, since the STARs into an
-// airport converge on the same last few fixes and what they all share says
-// nothing about which this is. A single fix in common is enough only when the
-// arrival starts there, which is an arrival joining a STAR and leaving it
-// again; anywhere else it is a fix two routes happen to share.
-//
-// This is a guess and it can be wrong, so an arrival that gives "star" is
-// taken at its word and never comes through here.
+// This is a heuristic, so an arrival that gives "star" is taken at its word
+// and never comes through here.
 func (ar *Arrival) deriveSTAR() string {
 	var fixes []string
 	for _, wp := range ar.Waypoints {
@@ -1067,18 +1055,17 @@ func (ar *Arrival) deriveSTAR() string {
 		return ""
 	}
 
-	best, bestShared, tied := "", 0, false
+	best, bestRun, tied := "", 0, false
 	for _, icao := range ar.Airports {
 		ap, ok := DB.Airports[icao]
 		if !ok {
 			continue
 		}
 		for _, name := range util.SortedMapKeys(ap.STARs) {
-			shared, starts := 0, false
+			run, shared := 0, 0
 			score := func(wps WaypointArray) {
+				run = max(run, sharedRun(fixes, wps))
 				shared = max(shared, sharedFixes(fixes, wps))
-				starts = starts || slices.ContainsFunc(wps,
-					func(wp Waypoint) bool { return wp.Fix == fixes[0] })
 			}
 			// The runway transitions count as much as the transitions in: an
 			// arrival that starts inside the facility flies only those.
@@ -1089,20 +1076,35 @@ func (ar *Arrival) deriveSTAR() string {
 			for _, wps := range star.RunwayWaypoints {
 				score(wps)
 			}
-			if shared < 2 && !starts {
-				// One fix in common that the arrival doesn't even begin at is a
-				// fix two routes happen to share, not evidence of anything.
+			if follows := run >= 3 || (run >= 2 && 2*shared >= len(fixes)); !follows {
 				continue
 			}
-			if shared > bestShared {
-				best, bestShared, tied = name, shared, false
-			} else if shared == bestShared && name != best {
+			if run > bestRun {
+				best, bestRun, tied = name, run, false
+			} else if run == bestRun && name != best {
 				tied = true
 			}
 		}
 	}
 	if tied {
 		return ""
+	}
+	return best
+}
+
+// sharedRun is the longest stretch of the fixes that the waypoints also pass
+// over in the same order with nothing in between: the arrival flying the
+// STAR's own legs rather than happening to cross it.
+func sharedRun(fixes []string, wps WaypointArray) int {
+	best := 0
+	for i := range fixes {
+		for j := range wps {
+			n := 0
+			for i+n < len(fixes) && j+n < len(wps) && fixes[i+n] == wps[j+n].Fix {
+				n++
+			}
+			best = max(best, n)
+		}
 	}
 	return best
 }
@@ -1397,8 +1399,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		ar.Waypoints[i].SetOnSTAR(true)
 	}
 
-	if ar.STAR == "" {
-		ar.STAR = ar.deriveSTAR()
+	// An arrival that gives "star_feeds" takes traffic from several STARs and
+	// flies the stretch they share, so there is no one STAR to ask it to name.
+	if ar.STAR == "" && len(ar.STARFeeds) == 0 {
+		if star := ar.deriveSTAR(); star != "" {
+			e.ErrorString(`the arrival's waypoints follow the %s STAR; give it in "star"`, star)
+		}
 	}
 
 	for _, star := range ar.STARFeeds {

@@ -1212,6 +1212,7 @@
         {
           "waypoints": "GLESN/a24000-30000/s280 ANJLL/a19000-24000/ho CAANN/a17000+ BOYEL/a14000+ CRCUS/a12000-14000/s270",
           "route": "ANJLL4",
+          "star": "ANJLL4",
           "initial_controller": "C37",
           "initial_altitude": 25000,
           "initial_speed": 310,
@@ -1384,6 +1385,7 @@
         {
           "waypoints": "BOYEL/a14000+ CRCUS/a12000-14000/s270/ho/clearapp",
           "route": "ANJLL4",
+          "star": "ANJLL4",
           "initial_controller": "2F",
           "initial_altitude": 16000,
           "initial_speed": 280,
@@ -1553,6 +1555,7 @@
         {
           "waypoints": "NEILE/a14000+ SEAVU/a12000-14000/s270/ho/clearapp",
           "route": "HLYWD1",
+          "star": "HLYWD1",
           "initial_controller": "2F",
           "initial_altitude": 16000,
           "initial_speed": 280,

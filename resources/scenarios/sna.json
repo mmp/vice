@@ -6669,6 +6669,7 @@
         {
           "waypoints": "PDZ/ho V388 SLI",
           "route": "RNDAL V388 SLI",
+          "star": "EMMLN3",
           "description": "V388",
           "initial_controller": "3P",
           "initial_altitude": 4000,
@@ -6921,6 +6922,7 @@
         {
           "waypoints": "PDZ/ho V388 SLI",
           "route": "RNDAL V388 SLI",
+          "star": "EMMLN3",
           "description": "V388",
           "initial_controller": "3P",
           "initial_altitude": 4000,
@@ -7243,6 +7245,7 @@
         {
           "waypoints": "PDZ/ho V388 SLI",
           "route": "RNDAL V388 SLI",
+          "star": "EMMLN3",
           "description": "V388",
           "initial_controller": "3P",
           "initial_altitude": 4000,

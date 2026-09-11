@@ -71593,6 +71593,7 @@
           "initial_controller": "1R",
           "initial_speed": 20,
           "route": "GDM T608 REVER",
+          "star_feeds": ["JFUND2"],
           "waypoints": "WINTA N042.26.46.352,W071.02.52.018/d6000/h090/s210/ho1F"
         }
       ]

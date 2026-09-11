@@ -90,6 +90,7 @@
         {
           "waypoints": "KOMMA/ho RRNET PLEZE CHMLI JUSST SWTCH/s290/a24000-30000 THEMM/s290/a21000+ SEEVR/s270/a13000-16000 BRDJE/s250/a11000-12000 NUSSS/s250/a8000-10000 YAHBT/s230/a6000/delete",
           "route": "/. SEEVR4",
+          "star": "SEEVR4",
           "initial_controller": "M22",
           "initial_altitude": 34000,
           "initial_speed": 300,
@@ -137,6 +138,7 @@
         {
           "waypoints": "MEEOW/ho FEWWW PROWD LETHR NECKK/s290/a24000-30000 SAYLR/s290/a21000+ SEEVR/s270/a13000-16000 BRDJE/s250/a11000-12000 NUSSS/s250/a8000-10000 YAHBT/s230/a6000/delete",
           "route": "/. SEEVR4",
+          "star": "SEEVR4",
           "initial_controller": "M22",
           "initial_altitude": 34000,
           "initial_speed": 300,
@@ -297,6 +299,7 @@
         {
           "waypoints": "LITTR N034.59.50.428,W094.33.16.325/ho KOMMA KLUBB DWINE/s280/a19000+ DIMPL/s280/a11000-17000 RIFFL/s250/a10000-15000 FAKEY AACES/a6000/delete",
           "route": "/. RIFFL3",
+          "star": "RIFFL3",
           "initial_controller": "M22",
           "initial_altitude": 30000,
           "initial_speed": 300,

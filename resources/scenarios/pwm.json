@@ -120,6 +120,7 @@
         {
           "waypoints": "CCC FOSTY BILJE BUOYY/ho SHAUN CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
           "route": "SCOGS4",
+          "star": "SCOGS4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
           "initial_speed": 270,
@@ -157,6 +158,7 @@
         {
           "waypoints": "CAM CDOGG/ho KAYCC ARARR BUXTO",
           "route": "CDOGG4",
+          "star": "CDOGG4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
           "initial_speed": 270,
@@ -190,6 +192,7 @@
         {
           "waypoints": "BUOYY SHAUN/ho CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
           "route": "SCOGS4",
+          "star": "SCOGS4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
           "initial_speed": 270,
@@ -219,6 +222,7 @@
         {
           "waypoints": "CAM CDOGG/ho KAYCC YOMON YAAKK SAPPE/a3000",
           "route": "CDOGG4",
+          "star": "CDOGG4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
           "initial_speed": 270,
