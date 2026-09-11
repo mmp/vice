@@ -9942,7 +9942,8 @@
     "JFRYE5": {
       "arrivals": [
         {
-          "waypoints": "MASTY/a16000+/ho GREGS/a11000/s250 MNKEE JFRYE/h143",
+          "spawn": "MASTY",
+          "waypoint_actions": { "MASTY": "ho" },
           "star": "JFRYE5",
           "initial_controller": "C75",
           "initial_altitude": 17000,
@@ -10826,7 +10827,8 @@
     "REDDN4": {
       "arrivals": [
         {
-          "waypoints": "HEERE/ho JAKCY ORVLL/a9000/s250 GBEAR REDDN BACHR/h315",
+          "spawn": "HEERE",
+          "waypoint_actions": { "HEERE": "ho" },
           "star": "REDDN4",
           "initial_controller": "C29",
           "initial_altitude": 18000,
@@ -10880,7 +10882,8 @@
     "REDDN4_DN_SF": {
       "arrivals": [
         {
-          "waypoints": "HAPNS/a24000-30000/s280 HEERE JAKCY ORVLL/a9000/s250/ho GBEAR/a6000 REDDN BACHR/h315",
+          "spawn": "HAPNS",
+          "waypoint_actions": { "ORVLL": "ho" },
           "star": "REDDN4",
           "initial_controller": "1S",
           "initial_altitude": 26000,

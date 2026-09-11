@@ -24219,7 +24219,6 @@
       "arrivals": [
         {
           "waypoints": "STRUT OFERS/ho1J KUUPR/a11000- DAS/ho1R KDWH",
-          "star": "PIEGY1",
           "initial_controller": "C87",
           "initial_speed": 130,
           "initial_altitude": 12000,
@@ -24256,7 +24255,6 @@
       "arrivals": [
         {
           "waypoints": "STRUT OFERS/ho1J KUUPR/a11000/ho1D/d4000 KIELL/ho1R DAS/spspG7R N030.13.21.088,W095.00.33.673/d3000 WATSI/clearapp",
-          "star": "PIEGY1",
           "initial_controller": "C87",
           "initial_speed": 130,
           "initial_altitude": 12000,

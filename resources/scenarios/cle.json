@@ -1973,7 +1973,8 @@
     "BRWNZ4_FINALN": {
       "arrivals": [
         {
-          "waypoints": "KLLAY/a6000-7000 JIIMM/a5000-6000/ho HICKR/a5000/s210/h241",
+          "spawn": "KLLAY",
+          "waypoint_actions": { "JIIMM": "ho" },
           "cruise_altitude": 33000,
           "star": "BRWNZ4",
           "initial_controller": "2A",
@@ -2029,7 +2030,8 @@
     "BRWNZ4_FINALS": {
       "arrivals": [
         {
-          "waypoints": "QUUBE/a6000-7000/ho DEEKN/a5000-6000 LLROY/a5000/s210/h56",
+          "spawn": "QUUBE",
+          "waypoint_actions": { "QUUBE": "ho" },
           "cruise_altitude": 33000,
           "star": "BRWNZ4",
           "initial_controller": "2A",
@@ -2832,7 +2834,8 @@
     "ROLLN2_FINALN": {
       "arrivals": [
         {
-          "waypoints": "LVISS/a8000-9000 NIXXS/a6000/ho GROHL/a6000/s210/h236",
+          "spawn": "LVISS",
+          "waypoint_actions": { "NIXXS": "ho" },
           "cruise_altitude": 33000,
           "star": "ROLLN2",
           "initial_controller": "2A",
@@ -3229,7 +3232,8 @@
     "TRYBE4_FINALN": {
       "arrivals": [
         {
-          "waypoints": "CLVTO/a9000/ho JAAIN/a7000/s210",
+          "spawn": "CLVTO",
+          "waypoint_actions": { "CLVTO": "ho" },
           "cruise_altitude": 350000,
           "star": "TRYBE4",
           "initial_controller": "2A",

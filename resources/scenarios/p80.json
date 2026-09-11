@@ -2690,7 +2690,8 @@
     "HHOODEast_Final": {
       "arrivals": [
         {
-          "waypoints": "EMZEY/a7000+/s230 CIZZL/a6000+/s210/h281/ho",
+          "spawn": "EMZEY",
+          "waypoint_actions": { "CIZZL": "ho" },
           "cruise_altitude": 34000,
           "star": "HHOOD6",
           "initial_controller": "1N",
@@ -3442,7 +3443,8 @@
     "KRATREast_Final": {
       "arrivals": [
         {
-          "waypoints": "VEEGN/a5000/s210/ho DOUHH NNUTT/a5000/flyover/h278",
+          "spawn": "VEEGN",
+          "waypoint_actions": { "VEEGN": "ho" },
           "cruise_altitude": 34000,
           "star": "KRATR3",
           "initial_controller": "1N",
@@ -3583,7 +3585,8 @@
     "KRATRWest_Final": {
       "arrivals": [
         {
-          "waypoints": "BOOSR/a6000/s210/ho RALEE/a6000/flyover/h100",
+          "spawn": "BOOSR",
+          "waypoint_actions": { "BOOSR": "ho" },
           "cruise_altitude": 34000,
           "star": "KRATR3",
           "initial_controller": "1N",

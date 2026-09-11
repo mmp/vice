@@ -7828,7 +7828,6 @@
           "initial_controller": "1J",
           "initial_speed": 250,
           "speed_restriction": 250,
-          "star": "ERNNY8",
           "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
           "scratchpad": "27C",
           "waypoints": "PAITN WYNDE/ho FIYER ERNNY PAPPI/h120"
@@ -8041,7 +8040,6 @@
           "initial_controller": "1J",
           "initial_speed": 250,
           "speed_restriction": 250,
-          "star": "ERNNY8",
           "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
           "scratchpad": "28C",
           "waypoints": "WYNDE FIYER/h170/ho"
@@ -8254,7 +8252,6 @@
           "initial_controller": "1J",
           "initial_speed": 250,
           "speed_restriction": 250,
-          "star": "ERNNY8",
           "star_feeds": ["BENKY6", "ERNNY8", "ESSPO5", "FYTTE7", "MADII7", "TRTLL6", "VEECK5", "WYNDE3"],
           "scratchpad": "27R",
           "waypoints": "WYNDE FIYER/a9000/ho ERNNY PAPPI/h160"

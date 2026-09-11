@@ -2125,7 +2125,8 @@
     "BRUSR1_FW": {
       "arrivals": [
         {
-          "waypoints": "ANNTI/a11000-12000 ZILUB/a9000/s250 BRIEZ/a8000-9000/s230/ho KUCOO/a7000/s210 JURAZ/flyover/h79",
+          "spawn": "ANNTI",
+          "waypoint_actions": { "BRIEZ": "ho" },
           "cruise_altitude": 34000,
           "star": "BRUSR1",
           "initial_controller": "1A",
@@ -2917,7 +2918,8 @@
     "HYDRR1_FW": {
       "arrivals": [
         {
-          "waypoints": "AGGLA/a11000-14000/s250 CHAVO/a9000/s210/ho LEMOE/a7000/s210/h79",
+          "spawn": "AGGLA",
+          "waypoint_actions": { "CHAVO": "ho" },
           "cruise_altitude": 35000,
           "star": "HYDRR1",
           "initial_controller": "1Q",
@@ -3319,7 +3321,8 @@
     "PINNG1_FE": {
       "arrivals": [
         {
-          "waypoints": "WIGWM/a12000-14000/s250 DDUKE/a10000-12000 RVANN/a8000-9000/s230/ho LGACY/a7000/s210 VISTL NEELE/a7000/s210/h258",
+          "spawn": "WIGWM",
+          "waypoint_actions": { "RVANN": "ho" },
           "star": "PINNG1",
           "initial_controller": "1Q",
           "initial_altitude": 13000,

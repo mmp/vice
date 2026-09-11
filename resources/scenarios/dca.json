@@ -2066,7 +2066,8 @@
     "FINAL_NNW": {
       "arrivals": [
         {
-          "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
+          "spawn": "LETZZ",
+          "waypoint_actions": { "RLLLL": "ho" },
           "cruise_altitude": 33000,
           "star": "FRDMM7",
           "initial_controller": "1J",
@@ -2158,7 +2159,8 @@
           }
         },
         {
-          "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
+          "spawn": "LETZZ",
+          "waypoint_actions": { "RLLLL": "ho" },
           "cruise_altitude": 33000,
           "star": "TRUPS6",
           "initial_controller": "1J",
@@ -2644,7 +2646,8 @@
     "FINAL_SS": {
       "arrivals": [
         {
-          "waypoints": "MOEJO/a10000/s250 JILES SMOOT/a7000+/ho BAAAM/a6000 PACKE/h327",
+          "spawn": "MOEJO",
+          "waypoint_actions": { "SMOOT": "ho" },
           "star": "CAPSS4",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -2938,7 +2941,8 @@
     "FINAL_NNW.IMC": {
       "arrivals": [
         {
-          "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
+          "spawn": "LETZZ",
+          "waypoint_actions": { "RLLLL": "ho" },
           "cruise_altitude": 33000,
           "star": "FRDMM7",
           "initial_controller": "1J",
@@ -3030,7 +3034,8 @@
           }
         },
         {
-          "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
+          "spawn": "LETZZ",
+          "waypoint_actions": { "RLLLL": "ho" },
           "cruise_altitude": 33000,
           "star": "TRUPS6",
           "initial_controller": "1J",
@@ -3573,7 +3578,8 @@
     "FINAL_SS.IMC": {
       "arrivals": [
         {
-          "waypoints": "MOEJO/a10000/s250 JILES SMOOT/a7000+/ho BAAAM/a6000 PACKE/h327",
+          "spawn": "MOEJO",
+          "waypoint_actions": { "SMOOT": "ho" },
           "star": "CAPSS4",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -3625,7 +3631,8 @@
           }
         },
         {
-          "waypoints": "MOEJO/a10000/s250 JILES SMOOT/a7000+/ho BAAAM/a6000 PACKE/h327",
+          "spawn": "MOEJO",
+          "waypoint_actions": { "SMOOT": "ho" },
           "star": "CAPSS4",
           "initial_controller": "1J",
           "initial_altitude": 10000,
@@ -3684,17 +3691,8 @@
     "FRDMM7": {
       "arrivals": [
         {
-          "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250",
-          "runway_waypoints": {
-            "KDCA": {
-              "1": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-              "4": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-              "15": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR PUNKN/flyover/t148",
-              "19": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
-              "22": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
-              "33": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
-            }
-          },
+          "spawn": "PLDGE",
+          "waypoint_actions": { "PLDGE": "ho" },
           "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 17000,
@@ -6896,17 +6894,8 @@
     "TRUPS6": {
       "arrivals": [
         {
-          "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250",
-          "runway_waypoints": {
-            "KDCA": {
-              "1": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-              "4": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-              "15": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR PUNKN/flyover/t148",
-              "19": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
-              "22": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/h147",
-              "33": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
-            }
-          },
+          "spawn": "USAAY",
+          "waypoint_actions": { "WEEDU": "ho" },
           "star": "TRUPS6",
           "initial_controller": "W05",
           "initial_altitude": 18000,

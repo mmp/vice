@@ -4289,17 +4289,8 @@
     "BOOSH3.PXV": {
       "arrivals": [
         {
-          "waypoints": "PXV FFOXX SAYDI MOPOE/a31000-/s280 BIDWL BOOSH/a14000+/s280/ho QBALL",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "30L": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "30R": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
-              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
-              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302"
-            }
-          },
+          "spawn": "PXV",
+          "waypoint_actions": { "BOOSH": "ho" },
           "star": "BOOSH3",
           "initial_controller": "C54",
           "initial_altitude": 31000,
@@ -4332,17 +4323,8 @@
     "BOOSH3.BNA": {
       "arrivals": [
         {
-          "waypoints": "BNA CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho QBALL",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "30L": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "30R": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
-              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
-              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302"
-            }
-          },
+          "spawn": "BNA",
+          "waypoint_actions": { "BOOSH": "ho" },
           "star": "BOOSH3",
           "initial_controller": "C54",
           "initial_altitude": 31000,
@@ -4418,17 +4400,8 @@
     "BOOSH3.MEM": {
       "arrivals": [
         {
-          "waypoints": "MEM CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho QBALL",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "30L": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "30R": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
-              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
-              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302"
-            }
-          },
+          "spawn": "MEM",
+          "waypoint_actions": { "BOOSH": "ho" },
           "star": "BOOSH3",
           "initial_controller": "C54",
           "initial_altitude": 31000,
@@ -4461,17 +4434,8 @@
     "BOOSH3.ARG": {
       "arrivals": [
         {
-          "waypoints": "ARG CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho QBALL",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "30L": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "30R": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
-              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302"
-            }
-          },
+          "spawn": "ARG",
+          "waypoint_actions": { "BOOSH": "ho" },
           "star": "BOOSH3",
           "initial_controller": "C54",
           "initial_altitude": 31000,

@@ -37,7 +37,7 @@
   - Route triggers now sequence `/delete`, `/land` and `/intercept` like any other action
   - Added "waypoint_actions" to arrivals, so that actions can be added to the fixes of a STAR taken from the CIFP without respecifying it
 - Fixed bug where "descend via" was refused on the runway transition of a STAR taken from the CIFP
-- Scenario updates: 254 arrivals now take their STAR's route from the CIFP rather than respecifying it
+- Scenario updates: 301 arrivals now take their STAR's route from the CIFP rather than respecifying it
 - Fixed arrivals that named the wrong STAR, or gave a runway the wrong transition or one that no longer matches the CIFP
 - Facility engineering
   - An arrival's "spawn" may now name a fix on one of the STAR's runway transitions, not just the transitions in

@@ -3856,19 +3856,8 @@
     "FROGZ5 NOSATS EAST": {
       "arrivals": [
         {
-          "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
-          "runway_waypoints": {
-            "KMIA": {
-              "9": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-              "12": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a9000- PBJAY/a8000+ PIANA/a3000",
-              "27": "FROGZ ENOLE/a11000-16000 HAKUL VEYGA/a11000+/s250 SOFAS HOLEZ COTOL/a11000- MACYS/a8000+ REELN OLDDE/a6000/flyover/t091",
-              "30": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
-              "26L": "FROGZ ENOLE/a11000-16000 HAKUL VEYGA/a11000+/s250 SOFAS HOLEZ JIGGY/a11000- NCLUB/a8000 GRANN/flyover/t092",
-              "26R": "FROGZ ENOLE/a11000-16000 HAKUL VEYGA/a11000+/s250 SOFAS HOLEZ JIGGY/a11000- NCLUB/a8000 GRANN/flyover/t092",
-              "8L": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a9000- PBJAY/a8000+ SCHAR DRILY FROTH/a5000",
-              "8R": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a9000- PBJAY/a8000+ SCHAR HALER BOZZE/a5000"
-            }
-          },
+          "spawn": "KLEET",
+          "waypoint_actions": { "BARBN": "ho", "LLEGG": "h92" },
           "cruise_altitude": 35000,
           "star": "FROGZ5",
           "initial_controller": "C24",
@@ -3944,19 +3933,8 @@
     "FROGZ5 NOSATS WEST": {
       "arrivals": [
         {
-          "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
-          "runway_waypoints": {
-            "KMIA": {
-              "9": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-              "12": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a9000- PBJAY/a8000+ PIANA/a3000",
-              "27": "FROGZ ENOLE/a11000-16000 HAKUL VEYGA/a11000+/s250 SOFAS HOLEZ COTOL/a11000- MACYS/a8000+ REELN OLDDE/a6000/flyover/t091",
-              "30": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
-              "26L": "FROGZ ENOLE/a11000-16000 HAKUL VEYGA/a11000+/s250 SOFAS HOLEZ JIGGY/a11000- NCLUB/a8000 GRANN/flyover/t092",
-              "26R": "FROGZ ENOLE/a11000-16000 HAKUL VEYGA/a11000+/s250 SOFAS HOLEZ JIGGY/a11000- NCLUB/a8000 GRANN/flyover/t092",
-              "8L": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a9000- PBJAY/a8000+ SCHAR DRILY FROTH/a5000",
-              "8R": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a9000- PBJAY/a8000+ SCHAR HALER BOZZE/a5000"
-            }
-          },
+          "spawn": "KLEET",
+          "waypoint_actions": { "BARBN": "ho", "LLEGG": "h92" },
           "cruise_altitude": 35000,
           "star": "FROGZ5",
           "initial_controller": "C24",

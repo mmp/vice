@@ -657,17 +657,8 @@
     "SNKPT2": {
       "arrivals": [
         {
-          "waypoints": "RINTE JEEDR/a24000+ DOTKE/a23000- SNKPT/a14000-19000/ho BABNE/a11500-15000 CCUUK",
-          "runway_waypoints": {
-            "KIND": {
-              "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
-              "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
-              "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
-              "32": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ZESIT/h140",
-              "5L": "CCUUK ALCOV/a10000-11000/s250 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/flyover/t229",
-              "5R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229"
-            }
-          },
+          "spawn": "RINTE",
+          "waypoint_actions": { "SNKPT": "ho" },
           "route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C34",
@@ -713,17 +704,8 @@
           }
         },
         {
-          "waypoints": "SJAAY ARCAB/a20000- SNKPT/a14000-19000/ho BABNE/a11500-15000 CCUUK",
-          "runway_waypoints": {
-            "KIND": {
-              "14": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ORIKE/h320",
-              "23L": "CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
-              "23R": "CCUUK FEMGO/a8000-9000 RACEN/a5000/s210",
-              "32": "CCUUK ARTJR/a10000+ WEIER/a7000+/s230 CRCLE/a6000/s210 ZESIT/h140",
-              "5L": "CCUUK ALCOV/a10000-11000/s250 TRECY/a7000+/s230 PETYN/a6000/s210 WANOB/flyover/t229",
-              "5R": "CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/h229"
-            }
-          },
+          "spawn": "SJAAY",
+          "waypoint_actions": { "SNKPT": "ho" },
           "route": "/. SJAYY.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C34",

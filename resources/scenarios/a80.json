@@ -16243,7 +16243,8 @@
     "HOBTT2_AFINALD": {
       "arrivals": [
         {
-          "waypoints": "SHURT/ho FOGER HITTT YURII/h95",
+          "spawn": "SHURT",
+          "waypoint_actions": { "SHURT": "ho" },
           "star_feeds": ["CHPPR1", "HOBTT3", "SITTH3"],
           "cruise_altitude": 34000,
           "star": "HOBTT3",
@@ -16365,7 +16366,8 @@
     "HOBTT2_AFINALT": {
       "arrivals": [
         {
-          "waypoints": "SHURT/ho FOGER HITTT YURII/h95",
+          "spawn": "SHURT",
+          "waypoint_actions": { "SHURT": "ho" },
           "star_feeds": ["CHPPR1", "HOBTT3", "SITTH3"],
           "cruise_altitude": 34000,
           "star": "HOBTT3",
@@ -16881,7 +16883,8 @@
     "NW_FINALTRIPS": {
       "arrivals": [
         {
-          "waypoints": "KLOWD/ho SWEPT KYMMY KEAVY/h95",
+          "spawn": "KLOWD",
+          "waypoint_actions": { "KLOWD": "ho" },
           "cruise_altitude": 35000,
           "star": "GLAVN2",
           "initial_controller": "1D",
@@ -17056,7 +17059,8 @@
     "NE_FINALTRIPS": {
       "arrivals": [
         {
-          "waypoints": "GAASS KLOWD/ho KUNFU TRAPE SNEVE/h275",
+          "spawn": "GAASS",
+          "waypoint_actions": { "KLOWD": "ho" },
           "star_feeds": ["ONDRE1", "OZZZI2"],
           "star": "OZZZI2",
           "initial_controller": "C43",
@@ -18292,7 +18296,8 @@
     "SITTH2_EFINALD": {
       "arrivals": [
         {
-          "waypoints": "FRYES SHURT/ho REMAC DACTL STUMP/h275",
+          "spawn": "FRYES",
+          "waypoint_actions": { "SHURT": "ho" },
           "star_feeds": ["HOBTT3", "JJEDI4", "SITTH3"],
           "star": "SITTH3",
           "initial_controller": "C43",
@@ -18424,7 +18429,8 @@
     "SITTH2_EFINALT": {
       "arrivals": [
         {
-          "waypoints": "FRYES SHURT/ho REMAC DACTL STUMP/h275",
+          "spawn": "FRYES",
+          "waypoint_actions": { "SHURT": "ho" },
           "star_feeds": ["HOBTT3", "JJEDI4", "SITTH3"],
           "star": "SITTH3",
           "initial_controller": "C43",

@@ -11329,7 +11329,7 @@
         {
           "waypoints": "LGA N040.42.02.048,W073.41.55.759/ho N040.30.44.604,W073.38.21.855/a8000/h180/tc",
           "cruise_altitude": 37000,
-          "star": "PUCKY1",
+          "star_feeds": ["PUCKY1"],
           "initial_controller": "2J",
           "initial_altitude": 13000,
           "initial_speed": 250,
@@ -14230,7 +14230,7 @@
       "arrivals": [
         {
           "waypoints": "SOMTO/ho4P ARD DYLIN MERSR/a8000 METRO/d6000 MARRT/ho4A N040.44.25.104,W074.35.01.602/d5000 N040.48.05.449,W074.29.54.699/a5000 N040.53.59.291,W074.21.37.402/a5000 N040.55.59.962,W074.15.23.043/d4000 N040.54.22.719,W074.07.47.687/d3000/s210 N040.53.13.533,W074.05.15.582/a3000/s180/d2500 GIMEE/a2500/d1500 BUZZD/a1800/s180/d1500/clearapp N040.45.47.804,W074.07.09.098/a1500 KEWR/delete",
-          "star": "FLOSI4",
+          "star": "PHLBO4",
           "initial_controller": "4P",
           "initial_altitude": 8000,
           "initial_speed": 250,

@@ -1383,15 +1383,9 @@
     "CUUGR2_FINALN": {
       "arrivals": [
         {
-          "waypoints": "HHUNT/a12000-15000 CUUGR/a9000-11000/s260/ho",
+          "spawn": "HHUNT",
+          "waypoint_actions": { "CUUGR": "ho" },
           "star_feeds": ["CUUGR2", "TPGUN2"],
-          "runway_waypoints": {
-            "KDTW": {
-              "3R": "CUUGR/a9000-11000/s260 ROOAD ROYYY/a8000/s210/h216",
-              "4L": "CUUGR/a9000-11000/s260 ZUBBY SKRUG/a8000/s210/h218",
-              "4R": "CUUGR/a9000-11000/s260 ROOAD ROYYY/a8000/s210/h216"
-            }
-          },
           "star": "CUUGR2",
           "initial_controller": "1F",
           "initial_altitude": 12000,
@@ -2543,7 +2537,8 @@
     "RRALF3": {
       "arrivals": [
         {
-          "waypoints": "WEBOR/ho NIMNM CLLEM KILTT RRALF PICTR/a4000/h85",
+          "spawn": "WEBOR",
+          "waypoint_actions": { "WEBOR": "ho" },
           "star": "RRALF3",
           "initial_controller": "C48",
           "initial_altitude": 17000,
