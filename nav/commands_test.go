@@ -635,7 +635,7 @@ func setupClearedVisual(t *testing.T, runway string) *FlightTest {
 
 	threshold := av.Waypoint{Fix: "_" + runway + "_THRESHOLD", Location: rwy.Threshold}
 	threshold.SetOnApproach(true)
-	threshold.SetLand(true)
+	threshold.MergeActions(av.WaypointActions{Land: true})
 	threshold.SetFlyOver(true)
 	threshold.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(rwy.Elevation + rwy.ThresholdCrossingHeight)))
 

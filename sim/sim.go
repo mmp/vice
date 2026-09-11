@@ -958,9 +958,82 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, event av.WaypointActionEven
 	// instructions a virtual controller issues, and an aircraft on a human's
 	// frequency is theirs to instruct.
 	if !s.humanControlled(ac) {
-		return s.applyVirtualControllerActions(ac, sfp, event.Fix, actions)
+		if s.applyVirtualControllerActions(ac, sfp, event.Waypoint.Fix, actions) {
+			return true
+		}
+	}
+
+	// Removing the aircraft from the sim is no controller instruction, so it
+	// applies however the aircraft is being worked--and last, so that a fix
+	// with both /ho and /delete still hands off before the aircraft goes.
+	if actions.Delete {
+		s.deleteAtWaypoint(ac, event.Waypoint)
+		return true
+	}
+	if actions.Land {
+		return s.landAtWaypoint(ac, event.Waypoint)
 	}
 	return false
+}
+
+// deleteAtWaypoint carries out a /delete at wp. An aircraft in the pattern
+// with touch-and-gos left goes around again instead.
+func (s *Sim) deleteAtWaypoint(ac *Aircraft, wp av.Waypoint) {
+	if ac.TouchAndGosRemaining > 0 {
+		ac.TouchAndGosRemaining--
+
+		runway := s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport)
+		s.recordPatternTouchAndGo(ac, ac.FlightPlan.ArrivalAirport, runway)
+		s.resetPatternLap(ac)
+		s.lg.Debug("pattern touch-and-go", slog.String("callsign", string(ac.ADSBCallsign)),
+			slog.Int("remaining", ac.TouchAndGosRemaining))
+		return
+	}
+
+	if wp.VFRPhase != av.VFRPhaseNone {
+		s.recordArrivalLanding(ac, s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport))
+	}
+	s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", wp))
+	s.deleteAircraft(ac)
+}
+
+// landAtWaypoint carries out a /land at wp, going around if the aircraft is
+// more than 200' above the fix's altitude restriction. It returns true if the
+// aircraft landed and was deleted.
+func (s *Sim) landAtWaypoint(ac *Aircraft, wp av.Waypoint) bool {
+	// There should be an altitude restriction at the final approach waypoint, but
+	// be careful.
+	alt := wp.AltitudeRestriction()
+	if alt != nil && ac.Altitude() > alt.TargetAltitude(ac.Altitude())+200 {
+		s.goAround(ac)
+		return false
+	}
+
+	var runway string
+	if ac.Nav.Approach.Assigned != nil {
+		runway = ac.Nav.Approach.Assigned.Runway
+	} else {
+		runway = s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport)
+	}
+	s.lg.Debug("landing at waypoint", slog.Any("waypoint", wp))
+	s.recordArrivalLanding(ac, runway)
+	s.deleteAircraft(ac)
+	return true
+}
+
+// recordArrivalLanding notes the landing for the sake of scheduling
+// departures off the runway.
+func (s *Sim) recordArrivalLanding(ac *Aircraft, runway string) {
+	depState, ok := s.DepartureState[ac.FlightPlan.ArrivalAirport]
+	if !ok {
+		return
+	}
+	for rwyID, rwyState := range depState {
+		if rwyID.Base() == runway {
+			rwyState.LastArrivalLandingTime = s.State.SimTime
+			rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
+		}
+	}
 }
 
 // applyVirtualControllerActions carries out the route actions a virtual
@@ -1008,6 +1081,10 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 			s.lg.Warnf("%s: /clearapp at %s did not clear the aircraft for the %s approach",
 				ac.ADSBCallsign, fix, ac.Nav.Approach.AssignedId)
 		}
+	}
+
+	if actions.InterceptApproach {
+		ac.InterceptApproachAtPassedFix(fix)
 	}
 
 	if actions.TransferComms {
@@ -1331,76 +1408,8 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			if passedWaypoint != nil {
-				if passedWaypoint.Delete() {
-					if ac.TouchAndGosRemaining > 0 {
-						// Pattern aircraft: touch-and-go instead of deleting.
-						ac.TouchAndGosRemaining--
-
-						runway := s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport)
-						s.recordPatternTouchAndGo(ac, ac.FlightPlan.ArrivalAirport, runway)
-						s.resetPatternLap(ac)
-						s.lg.Debug("pattern touch-and-go",
-							slog.String("callsign", string(ac.ADSBCallsign)),
-							slog.Int("remaining", ac.TouchAndGosRemaining))
-					} else {
-						if passedWaypoint.VFRPhase != av.VFRPhaseNone {
-							airport := ac.FlightPlan.ArrivalAirport
-							runway := s.bestRunwayForWind(airport)
-							if depState, ok := s.DepartureState[airport]; ok {
-								for rwyID, rwyState := range depState {
-									if rwyID.Base() == runway {
-										rwyState.LastArrivalLandingTime = s.State.SimTime
-										rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
-									}
-								}
-							}
-						}
-						s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
-						s.deleteAircraft(ac)
-					}
-				}
-
-				if passedWaypoint.Land() {
-					// There should be an altitude restriction at the final approach waypoint, but
-					// be careful.
-					alt := passedWaypoint.AltitudeRestriction()
-					// If we're more than 200 feet AGL, go around.
-					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+200
-					if lowEnough {
-						// Determine the runway for sequencing records.
-						var runway string
-						if ac.Nav.Approach.Assigned != nil {
-							runway = ac.Nav.Approach.Assigned.Runway
-						} else {
-							runway = s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport)
-						}
-
-						s.lg.Debug("landing at waypoint", slog.Any("waypoint", passedWaypoint))
-
-						// Record the landing for scheduling departures.
-						if depState, ok := s.DepartureState[ac.FlightPlan.ArrivalAirport]; ok {
-							for rwyID, rwyState := range depState {
-								if rwyID.Base() == runway {
-									rwyState.LastArrivalLandingTime = s.State.SimTime
-									rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
-								}
-							}
-						}
-
-						s.deleteAircraft(ac)
-					} else {
-						s.goAround(ac)
-					}
-				}
-
-				if passedWaypoint.SequenceVFRLanding() {
-					s.sequenceVFRLanding(ac)
-				}
-
-				if passedWaypoint.InterceptApproach() && !s.humanControlled(ac) {
-					ac.InterceptApproachAtPassedFix(passedWaypoint.Fix)
-				}
+			if passedWaypoint != nil && passedWaypoint.SequenceVFRLanding() {
+				s.sequenceVFRLanding(ac)
 			}
 
 			// Possibly go around

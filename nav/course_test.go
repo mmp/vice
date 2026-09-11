@@ -537,6 +537,38 @@ func TestDepartureDelayedEventActionResumesRoute(t *testing.T) {
 	}
 }
 
+// /delete rides in the action group it is written in, so a trigger holds it
+// off the way it does any other action: FIX/h270/@a2000+/delete removes the
+// aircraft on climbing through 2,000', not on passing the fix.
+func TestDelayedDeleteActionFiresAtItsTrigger(t *testing.T) {
+	elevation := av.DB.Airports["KBOS"].Elevation
+	d := makeCenterlineDeparture(t, []av.WaypointActionGroup{
+		{
+			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: 270}},
+			Until: av.WaypointActionTermination{Type: av.WaypointActionAltitude,
+				Altitude: elevation + 2000, AtOrAbove: true},
+		},
+		{Actions: av.WaypointActions{Delete: true}},
+	})
+
+	var aglDelete float32
+	deleted := false
+	for range 300 {
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, &d.fp, d.simTime, nil)
+		d.simTime = d.simTime.Add(time.Second)
+		if !deleted && slices.ContainsFunc(result.ActionEvents,
+			func(e av.WaypointActionEvent) bool { return e.Actions.Delete }) {
+			deleted, aglDelete = true, d.nav.FlightState.Altitude-float32(d.elevation)
+		}
+	}
+
+	if !deleted {
+		t.Error("delete action never fired")
+	} else if aglDelete < 2000 || aglDelete > 2200 {
+		t.Errorf("delete fired at %.0f' AGL, expected right at 2000'", aglDelete)
+	}
+}
+
 // A final group that gives a heading, as in FIX/h270/@a2000+/r055, is flown
 // until controller intervention; the aircraft does not resume its route on
 // its own.

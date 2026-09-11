@@ -157,7 +157,7 @@ type LateralManeuver struct {
 	Until                ManeuverComplete
 	AssignAltitude       *float32 // if non-nil, set nav.Altitude when this maneuver becomes active
 	ClearAltitudeOnFinal bool
-	Fix                  string
+	Waypoint             av.Waypoint
 	Actions              av.WaypointActions
 }
 
@@ -451,7 +451,7 @@ func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTim
 		if m.AssignAltitude != nil {
 			nav.setAssignedAltitude(*m.AssignAltitude)
 		}
-		if event := waypointActionEvent(m.Fix, m.Actions); event != nil {
+		if event := waypointActionEvent(m.Waypoint, m.Actions); event != nil {
 			nav.PendingWaypointActionEvents = append(nav.PendingWaypointActionEvents, *event)
 		}
 		heading = m.targetHeading(nav, wxs)

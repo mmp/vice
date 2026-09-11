@@ -34,3 +34,4 @@
 - Facility engineering
   - Require "star" to be specified if "waypoints" match a published STAR
   - Fixed bug that prohibited runway thresholds below sea level
+  - Route triggers now sequence `/delete`, `/land` and `/intercept` like any other action

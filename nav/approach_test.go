@@ -1890,7 +1890,7 @@ func TestExpectApproachCarriesRouteActionsOntoApproach(t *testing.T) {
 	if got != want {
 		t.Errorf("actions carried onto the approach's LEFER:\n got %+v\nwant %+v", got, want)
 	}
-	if !joined.InterceptApproach() {
+	if !joined.HasInterceptApproachAction() {
 		t.Error("/intercept did not carry over")
 	}
 	if !joined.NoPT() {

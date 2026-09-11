@@ -683,7 +683,7 @@ func TestArrivalApproachRouteCarriesSharedFixActions(t *testing.T) {
 		func(g WaypointActionGroup) bool { return g.Actions.ClearApproach }) {
 		t.Error("the shared fix's /clearapp didn't come across")
 	}
-	if !route[shared].InterceptApproach() {
+	if !route[shared].HasInterceptApproachAction() {
 		t.Error("the shared fix's /intercept didn't come across")
 	}
 	if !route[shared].NoPT() {

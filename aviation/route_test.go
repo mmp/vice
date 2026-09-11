@@ -283,7 +283,7 @@ func TestParseLegacyModifierAfterActionGroup(t *testing.T) {
 	if wps[0].Radius() != 2 {
 		t.Fatalf("expected legacy radius modifier to apply after action group, got %.1f", wps[0].Radius())
 	}
-	if !wps[0].Land() {
+	if !wps[0].HasLandAction() {
 		t.Fatal("expected legacy land modifier to apply after action group")
 	}
 }
@@ -322,16 +322,54 @@ func TestParseInterceptApproachFlag(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !wps[0].InterceptApproach() {
-		t.Fatal("expected /intercept to set the InterceptApproach flag")
+	if !wps[0].HasInterceptApproachAction() {
+		t.Fatal("expected /intercept to set the InterceptApproach action")
 	}
-	if wps[1].InterceptApproach() {
+	if wps[1].HasInterceptApproachAction() {
 		t.Fatal("expected /intercept to apply only to its waypoint")
 	}
 
 	encoded := WaypointArray(wps).Encode()
 	if !strings.Contains(encoded, "AROSLY/intercept") {
 		t.Fatalf("expected encoded route to round-trip /intercept, got %q", encoded)
+	}
+}
+
+// TestSequencedRemovalActions checks that /delete, /land and /intercept join
+// the action group they are written in rather than applying to the whole fix,
+// so that a trigger can hold them off.
+func TestSequencedRemovalActions(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	for _, route := range []string{"AROSLY/delete FORDS", "AROSLY/land FORDS", "AROSLY/intercept FORDS"} {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := wps.Encode(); got != route {
+			t.Errorf("got %q, want %q", got, route)
+		}
+	}
+
+	const held = "AROSLY/ph/@a4000+/delete FORDS"
+	wps, err := parseWaypoints(held)
+	if err != nil {
+		t.Fatal(err)
+	}
+	groups := wps[0].ActionGroups()
+	if len(groups) != 2 {
+		t.Fatalf("expected 2 action groups, got %d", len(groups))
+	}
+	if groups[0].Actions.Delete {
+		t.Error("/delete after the trigger landed in the group before it")
+	}
+	if !groups[1].Actions.Delete {
+		t.Error("/delete didn't land in the group after the trigger")
+	}
+	if got := wps.Encode(); got != held {
+		t.Errorf("got %q, want %q", got, held)
 	}
 }
 
@@ -1217,6 +1255,10 @@ func TestAddActions(t *testing.T) {
 		{key: "FIXXX/@a500+", actions: "tc", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/tc/@a1000+/h012 BEBOP"},
 		{key: "FIXXX/@a500+/@a1000+", actions: "c7000", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012/c7000 BEBOP"},
 		{key: "BEBOP", actions: "h090", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/h090"},
+		{key: "BEBOP", actions: "delete", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/delete"},
+		{key: "BEBOP", actions: "land", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/land"},
+		{key: "GNNRR", actions: "intercept", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/intercept FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "FIXXX/@a500+/@a1000+", actions: "delete", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012/delete BEBOP"},
 		{key: "NOPE", actions: "hoC35", errContains: "not in the route"},
 		{key: "GNNRR/@a513+", actions: "hoC35", errContains: "no trigger /@a513+"},
 		{key: "KSFO-10L/@a600+", actions: "hoC35", errContains: "no trigger /@a600+"},

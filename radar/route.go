@@ -1049,18 +1049,19 @@ func (w *routeWalker) drawFix(wp *av.Waypoint, fa fixAnchor, transforms ScopeTra
 		addLine(wp.Fix)
 	}
 
-	var flags []string
+	// The fix's properties; its actions, /land and /delete among them, are
+	// drawn below.
+	var props []string
 	for _, f := range []struct {
 		set  bool
 		name string
-	}{{wp.IAF(), "IAF"}, {wp.IF(), "IF"}, {wp.FAF(), "FAF"}, {wp.NoPT(), "NoPT"}, {wp.FlyOver(), "FlyOver"},
-		{wp.Land(), "Land"}, {wp.Delete(), "Delete"}} {
+	}{{wp.IAF(), "IAF"}, {wp.IF(), "IF"}, {wp.FAF(), "FAF"}, {wp.NoPT(), "NoPT"}, {wp.FlyOver(), "FlyOver"}} {
 		if f.set {
-			flags = append(flags, f.name)
+			props = append(props, f.name)
 		}
 	}
-	if len(flags) > 0 {
-		addLine(strings.Join(flags, "/"))
+	if len(props) > 0 {
+		addLine(strings.Join(props, "/"))
 	}
 	if fa.actions != "" {
 		addLine(fa.actions)

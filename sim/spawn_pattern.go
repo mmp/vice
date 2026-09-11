@@ -144,7 +144,7 @@ func generatePatternLap(rwy, opp av.Runway, elevation int, nmPerLongitude, magne
 	// Threshold (touchdown). Touch-and-go vs full-stop is handled in
 	// the Delete handler by checking TouchAndGosRemaining.
 	threshold := b.waypoint("_pat_threshold", 0, 0, 0, 60, av.VFRPhaseFinal)
-	threshold.SetDelete(true)
+	threshold.MergeActions(av.WaypointActions{Delete: true})
 	wps = append(wps, threshold)
 
 	return wps
@@ -730,7 +730,7 @@ func generatePatternEntryWaypoints(rwy, opp av.Runway, elevation int,
 	wps = append(wps, b.waypoint("_pat_final", -1, 0, 200, 60, av.VFRPhaseFinal))
 
 	threshold := b.waypoint("_pat_threshold", 0, 0, 0, 60, av.VFRPhaseFinal)
-	threshold.SetDelete(true)
+	threshold.MergeActions(av.WaypointActions{Delete: true})
 	wps = append(wps, threshold)
 
 	return wps
@@ -748,7 +748,7 @@ func generateStraightInWaypoints(rwy av.Runway, elevation int,
 	wps = append(wps, b.waypoint("_pat_threshold", 0, 0, 0, 60, av.VFRPhaseStraightIn))
 
 	end := b.waypoint("_pat_end", 1, 0, 0, 60, av.VFRPhaseStraightIn)
-	end.SetDelete(true)
+	end.MergeActions(av.WaypointActions{Delete: true})
 	wps = append(wps, end)
 
 	return wps

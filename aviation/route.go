@@ -29,8 +29,6 @@ type WaypointFlags uint32
 const (
 	WaypointFlagNoPT WaypointFlags = 1 << iota
 	WaypointFlagFlyOver
-	WaypointFlagDelete
-	WaypointFlagLand
 	WaypointFlagIAF
 	WaypointFlagIF
 	WaypointFlagFAF
@@ -43,7 +41,6 @@ const (
 	WaypointFlagHasAltRestriction
 	WaypointFlagHasSpeedRestriction
 	WaypointFlagSequenceVFRLanding
-	WaypointFlagInterceptApproach
 )
 
 // WaypointActionTerminationType indicates when a waypoint action group is complete.
@@ -117,12 +114,15 @@ type WaypointActions struct {
 	HandoffController         ControlPosition
 	PointOut                  ControlPosition
 	ClearApproach             bool
+	InterceptApproach         bool
 	GoAroundContactController ControlPosition
 	PrimaryScratchpad         string
 	ClearPrimaryScratchpad    bool
 	SecondaryScratchpad       string
 	ClearSecondaryScratchpad  bool
 	TransferComms             bool
+	Delete                    bool
+	Land                      bool
 
 	ClimbAltitude   int // feet; 0 = unset
 	DescendAltitude int // feet; 0 = unset
@@ -132,10 +132,10 @@ type WaypointActions struct {
 // out, which is to say any but the heading.
 func (wa WaypointActions) HasSimActions() bool {
 	return wa.HumanHandoff || wa.HandoffController != "" || wa.PointOut != "" ||
-		wa.ClearApproach || wa.GoAroundContactController != "" ||
+		wa.ClearApproach || wa.InterceptApproach || wa.GoAroundContactController != "" ||
 		wa.PrimaryScratchpad != "" || wa.ClearPrimaryScratchpad ||
 		wa.SecondaryScratchpad != "" || wa.ClearSecondaryScratchpad || wa.TransferComms ||
-		wa.ClimbAltitude != 0 || wa.DescendAltitude != 0
+		wa.Delete || wa.Land || wa.ClimbAltitude != 0 || wa.DescendAltitude != 0
 }
 
 func (wa WaypointActions) Encoded() string {
@@ -154,6 +154,9 @@ func (wa WaypointActions) Encoded() string {
 	}
 	if wa.ClearApproach {
 		s += "/clearapp"
+	}
+	if wa.InterceptApproach {
+		s += "/intercept"
 	}
 	if ps := wa.PrimaryScratchpad; ps != "" {
 		s += "/spsp" + ps
@@ -175,6 +178,12 @@ func (wa WaypointActions) Encoded() string {
 	}
 	if da := wa.DescendAltitude; da != 0 {
 		s += fmt.Sprintf("/d%d", da)
+	}
+	if wa.Delete {
+		s += "/delete"
+	}
+	if wa.Land {
+		s += "/land"
 	}
 	return s
 }
@@ -266,9 +275,13 @@ func (wha WaypointHeadingAction) Encoded() string {
 	return fmt.Sprintf("/%s%03d", prefix, wha.Heading)
 }
 
+// WaypointActionEvent reports a waypoint's actions coming due. The waypoint
+// comes along with them because a group behind a trigger runs when the
+// aircraft may be several fixes past it, and actions like /land still need
+// the fix's restrictions.
 type WaypointActionEvent struct {
-	Fix     string
-	Actions WaypointActions
+	Waypoint Waypoint
+	Actions  WaypointActions
 }
 
 // Waypoint is the core waypoint struct. Most waypoints only use Fix,
@@ -351,7 +364,6 @@ func (wp Waypoint) CarryOverActions(prev Waypoint) Waypoint {
 
 	wp = wp.Clone()
 	wp.SetNoPT(wp.NoPT() || prev.NoPT())
-	wp.SetInterceptApproach(wp.InterceptApproach() || prev.InterceptApproach())
 
 	if carried.HasSimActions() {
 		groups := wp.ActionGroups()
@@ -365,17 +377,14 @@ func (wp Waypoint) CarryOverActions(prev Waypoint) Waypoint {
 }
 
 // Flag readers (value receiver)
-func (wp Waypoint) NoPT() bool              { return wp.Flags&WaypointFlagNoPT != 0 }
-func (wp Waypoint) InterceptApproach() bool { return wp.Flags&WaypointFlagInterceptApproach != 0 }
-func (wp Waypoint) FlyOver() bool           { return wp.Flags&WaypointFlagFlyOver != 0 }
-func (wp Waypoint) Delete() bool            { return wp.Flags&WaypointFlagDelete != 0 }
-func (wp Waypoint) Land() bool              { return wp.Flags&WaypointFlagLand != 0 }
-func (wp Waypoint) IAF() bool               { return wp.Flags&WaypointFlagIAF != 0 }
-func (wp Waypoint) IF() bool                { return wp.Flags&WaypointFlagIF != 0 }
-func (wp Waypoint) FAF() bool               { return wp.Flags&WaypointFlagFAF != 0 }
-func (wp Waypoint) OnSID() bool             { return wp.Flags&WaypointFlagOnSID != 0 }
-func (wp Waypoint) OnSTAR() bool            { return wp.Flags&WaypointFlagOnSTAR != 0 }
-func (wp Waypoint) OnApproach() bool        { return wp.Flags&WaypointFlagOnApproach != 0 }
+func (wp Waypoint) NoPT() bool       { return wp.Flags&WaypointFlagNoPT != 0 }
+func (wp Waypoint) FlyOver() bool    { return wp.Flags&WaypointFlagFlyOver != 0 }
+func (wp Waypoint) IAF() bool        { return wp.Flags&WaypointFlagIAF != 0 }
+func (wp Waypoint) IF() bool         { return wp.Flags&WaypointFlagIF != 0 }
+func (wp Waypoint) FAF() bool        { return wp.Flags&WaypointFlagFAF != 0 }
+func (wp Waypoint) OnSID() bool      { return wp.Flags&WaypointFlagOnSID != 0 }
+func (wp Waypoint) OnSTAR() bool     { return wp.Flags&WaypointFlagOnSTAR != 0 }
+func (wp Waypoint) OnApproach() bool { return wp.Flags&WaypointFlagOnApproach != 0 }
 func (wp Waypoint) SyntheticCrossing() bool {
 	return wp.Flags&WaypointFlagSyntheticCrossing != 0
 }
@@ -414,6 +423,29 @@ func (wp Waypoint) HasHumanHandoff() bool {
 	return slices.ContainsFunc(wp.ActionGroups(),
 		func(group WaypointActionGroup) bool { return group.Actions.HumanHandoff })
 }
+func (wp Waypoint) HasDeleteAction() bool {
+	return slices.ContainsFunc(wp.ActionGroups(),
+		func(group WaypointActionGroup) bool { return group.Actions.Delete })
+}
+func (wp Waypoint) HasLandAction() bool {
+	return slices.ContainsFunc(wp.ActionGroups(),
+		func(group WaypointActionGroup) bool { return group.Actions.Land })
+}
+func (wp Waypoint) HasInterceptApproachAction() bool {
+	return slices.ContainsFunc(wp.ActionGroups(),
+		func(group WaypointActionGroup) bool { return group.Actions.InterceptApproach })
+}
+
+// ClearLandAction removes the /land action wherever it appears in the
+// waypoint's action groups.
+func (wp *Waypoint) ClearLandAction() {
+	if wp.Extra == nil {
+		return
+	}
+	for i := range wp.Extra.ActionGroups {
+		wp.Extra.ActionGroups[i].Actions.Land = false
+	}
+}
 
 // Turn returns the direction of the turn toward the waypoint from the one
 // before it.
@@ -437,10 +469,7 @@ func (wp *Waypoint) setFlag(f WaypointFlags, v bool) {
 }
 
 func (wp *Waypoint) SetNoPT(v bool)               { wp.setFlag(WaypointFlagNoPT, v) }
-func (wp *Waypoint) SetInterceptApproach(v bool)  { wp.setFlag(WaypointFlagInterceptApproach, v) }
 func (wp *Waypoint) SetFlyOver(v bool)            { wp.setFlag(WaypointFlagFlyOver, v) }
-func (wp *Waypoint) SetDelete(v bool)             { wp.setFlag(WaypointFlagDelete, v) }
-func (wp *Waypoint) SetLand(v bool)               { wp.setFlag(WaypointFlagLand, v) }
 func (wp *Waypoint) SetIAF(v bool)                { wp.setFlag(WaypointFlagIAF, v) }
 func (wp *Waypoint) SetIF(v bool)                 { wp.setFlag(WaypointFlagIF, v) }
 func (wp *Waypoint) SetFAF(v bool)                { wp.setFlag(WaypointFlagFAF, v) }
@@ -601,17 +630,8 @@ func (wp Waypoint) LogValue() slog.Value {
 	if wp.NoPT() {
 		attrs = append(attrs, slog.Bool("no_pt", true))
 	}
-	if wp.InterceptApproach() {
-		attrs = append(attrs, slog.Bool("intercept_approach", true))
-	}
 	if wp.FlyOver() {
 		attrs = append(attrs, slog.Bool("fly_over", true))
-	}
-	if wp.Delete() {
-		attrs = append(attrs, slog.Bool("delete", true))
-	}
-	if wp.Land() {
-		attrs = append(attrs, slog.Bool("land", true))
 	}
 	if arc := wp.Arc(); arc != nil {
 		attrs = append(attrs, slog.Any("arc", arc))
@@ -720,17 +740,8 @@ func (wa WaypointArray) Encode() string {
 		if w.NoPT() {
 			s.WriteString("/nopt")
 		}
-		if w.InterceptApproach() {
-			s.WriteString("/intercept")
-		}
 		if w.FlyOver() {
 			s.WriteString("/flyover")
-		}
-		if w.Delete() {
-			s.WriteString("/delete")
-		}
-		if w.Land() {
-			s.WriteString("/land")
 		}
 		if arc := w.Arc(); arc != nil {
 			switch arc.Direction {
@@ -994,7 +1005,7 @@ const (
 // atEnd reports whether the i'th waypoint is where the route effectively
 // ends: the aircraft is at the runway there, so low altitudes are expected.
 func (wa WaypointArray) atEnd(i int) bool {
-	return i+1 == len(wa) || wa[i].Delete() || wa[i+1].Delete()
+	return i+1 == len(wa) || wa[i].HasDeleteAction() || wa[i+1].HasDeleteAction()
 }
 
 func hundredsOfFeetError(e *util.ErrorLogger, given, scaled string) {
@@ -1082,12 +1093,12 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 				hundredsOfFeetError(e, "/a"+ar.Encoded(), "/a"+scaled.Encoded())
 			}
 		}
-		if wp.InterceptApproach() && !approachAssigned {
-			e.ErrorString("/intercept specified but no approach has been assigned")
-		}
 		for _, group := range wp.ActionGroups() {
 			if group.Actions.ClearApproach && !approachAssigned {
 				e.ErrorString("/clearapp specified but no approach has been assigned")
+			}
+			if group.Actions.InterceptApproach && !approachAssigned {
+				e.ErrorString("/intercept specified but no approach has been assigned")
 			}
 			if group.Actions.HumanHandoff {
 				haveHO = true
@@ -1127,7 +1138,7 @@ func (wa WaypointArray) checkApproachJoins(appr *Approach, e *util.ErrorLogger) 
 		var action string
 		if slices.ContainsFunc(wp.ActionGroups(), func(g WaypointActionGroup) bool { return g.Actions.ClearApproach }) {
 			action = "/clearapp"
-		} else if wp.InterceptApproach() {
+		} else if wp.HasInterceptApproachAction() {
 			action = "/intercept"
 		} else {
 			continue
@@ -1374,6 +1385,12 @@ func parseWaypointActionModifier(f string) (WaypointActions, bool, error) {
 		return WaypointActions{PointOut: ControlPosition(f[2:])}, true, nil
 	case f == "clearapp":
 		return WaypointActions{ClearApproach: true}, true, nil
+	case f == "intercept":
+		return WaypointActions{InterceptApproach: true}, true, nil
+	case f == "delete":
+		return WaypointActions{Delete: true}, true, nil
+	case f == "land":
+		return WaypointActions{Land: true}, true, nil
 	case strings.HasPrefix(f, "spsp"):
 		return WaypointActions{PrimaryScratchpad: f[4:]}, true, nil
 	case f == "cpsp":
@@ -1421,6 +1438,9 @@ func (wa *WaypointActions) merge(src WaypointActions) {
 		wa.PointOut = src.PointOut
 	}
 	wa.ClearApproach = wa.ClearApproach || src.ClearApproach
+	wa.InterceptApproach = wa.InterceptApproach || src.InterceptApproach
+	wa.Delete = wa.Delete || src.Delete
+	wa.Land = wa.Land || src.Land
 	if src.GoAroundContactController != "" {
 		wa.GoAroundContactController = src.GoAroundContactController
 	}
@@ -1754,14 +1774,8 @@ func parseWaypoints(str string) (WaypointArray, error) {
 				continue
 			}
 
-			if f == "intercept" {
-				wp.SetInterceptApproach(true)
-			} else if f == "flyover" {
+			if f == "flyover" {
 				wp.SetFlyOver(true)
-			} else if f == "delete" {
-				wp.SetDelete(true)
-			} else if f == "land" {
-				wp.SetLand(true)
 			} else if f == "iaf" {
 				wp.SetIAF(true)
 			} else if f == "if" {
@@ -3287,7 +3301,7 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 
 	of.Waypoints = of.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
-	of.Waypoints[len(of.Waypoints)-1].SetDelete(true)
+	of.Waypoints[len(of.Waypoints)-1].MergeActions(WaypointActions{Delete: true})
 	of.Waypoints[len(of.Waypoints)-1].SetFlyOver(true)
 
 	of.Waypoints.CheckOverflight(e, controlPositions, checkScratchpad)

@@ -721,7 +721,7 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			if threshold.Fix != "_36_THRESHOLD" {
 				t.Errorf("penultimate waypoint = %q, want _36_THRESHOLD", threshold.Fix)
 			}
-			if !threshold.Land() {
+			if !threshold.HasLandAction() {
 				t.Error("threshold waypoint should have Land=true")
 			}
 			if !threshold.FlyOver() {
@@ -1326,7 +1326,7 @@ func TestScenarioCVARestatedWhileFollowingTraffic(t *testing.T) {
 		Runway:    "36",
 		Waypoints: []av.WaypointArray{{rw36}},
 	}
-	rw36.SetLand(true)
+	rw36.MergeActions(av.WaypointActions{Land: true})
 	traffic.Nav.Waypoints = av.WaypointArray{rw36, traffic.Nav.FlightState.ArrivalAirport}
 	vs.Sim.Aircraft[traffic.ADSBCallsign] = traffic
 
@@ -1388,7 +1388,7 @@ func TestScenarioCVAFollowTrafficUsesTrafficRoute(t *testing.T) {
 			rw36,
 		}},
 	}
-	rw36.SetLand(true)
+	rw36.MergeActions(av.WaypointActions{Land: true})
 	traffic.Nav.Waypoints = av.WaypointArray{wirko, rw36, traffic.Nav.FlightState.ArrivalAirport}
 	vs.Sim.Aircraft[traffic.ADSBCallsign] = traffic
 
@@ -1436,7 +1436,7 @@ func TestVisualApproachFollowingTrafficCopiesRemainingTrafficRoute(t *testing.T)
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
 	}
-	threshold.SetLand(true)
+	threshold.MergeActions(av.WaypointActions{Land: true})
 	trafficRoute := av.WaypointArray{final3NM, threshold, n.FlightState.ArrivalAirport}
 	n.Approach.AssignedId = "_VIS36"
 	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
@@ -1968,7 +1968,7 @@ func TestScenarioCVAAcceptedLongAfterTrafficReport(t *testing.T) {
 		Runway:    "36",
 		Waypoints: []av.WaypointArray{{rw36}},
 	}
-	rw36.SetLand(true)
+	rw36.MergeActions(av.WaypointActions{Land: true})
 	traffic.Nav.Waypoints = av.WaypointArray{rw36, traffic.Nav.FlightState.ArrivalAirport}
 	vs.Sim.Aircraft[traffic.ADSBCallsign] = traffic
 

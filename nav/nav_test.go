@@ -621,7 +621,7 @@ func (f *FlightTest) makeAirport() *av.Airport {
 					Fix:      "_" + a.Runway + "_THRESHOLD",
 					Location: threshold,
 				}
-				thresholdWP.SetLand(true)
+				thresholdWP.MergeActions(av.WaypointActions{Land: true})
 				thresholdWP.SetFlyOver(true)
 				thresholdWP.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt)))
 				a.Waypoints[i] = append(a.Waypoints[i], thresholdWP)

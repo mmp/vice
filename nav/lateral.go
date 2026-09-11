@@ -515,7 +515,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 		var actionEvent *av.WaypointActionEvent
 		if groups := wp.ActionGroups(); len(groups) > 0 {
-			actionEvent = waypointActionEvent(wp.Fix, groups[0].Actions)
+			actionEvent = waypointActionEvent(*wp, groups[0].Actions)
 		}
 
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok {
@@ -547,7 +547,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)
 				nav.Heading.Turn = nfa.Depart.Turn // may be nil (TurnClosest)
 			}
-		} else if h := nav.actionGroupHeading(wp.Fix, wp.ActionGroups(), next); h != nil && !skipWaypointNavigation {
+		} else if h := nav.actionGroupHeading(*wp, next); h != nil && !skipWaypointNavigation {
 			nav.Heading = *h
 		} else if wp.Arc() != nil && !interceptedAtFix {
 			// Fly the DME arc
@@ -601,8 +601,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 // decides which of the three it is, so that scenario validation can tell an
 // assigned heading from a maneuver sequence the same way; an assigned heading
 // is flown as a controller's would be, so the rest of nav treats it as one.
-func (nav *Nav) actionGroupHeading(fix string, groups []av.WaypointActionGroup, next *av.Waypoint) *NavHeading {
-	h, kind := av.ActionGroupHeading(groups)
+func (nav *Nav) actionGroupHeading(wp av.Waypoint, next *av.Waypoint) *NavHeading {
+	h, kind := av.ActionGroupHeading(wp.ActionGroups())
 	switch kind {
 	case av.ActionGroupHeadingNone:
 		return nil
@@ -616,7 +616,7 @@ func (nav *Nav) actionGroupHeading(fix string, groups []av.WaypointActionGroup, 
 		hdg, turn := math.MagneticHeading(h.Heading), h.Turn
 		return &NavHeading{Assigned: &hdg, Turn: &turn}
 	}
-	return &NavHeading{Maneuvers: nav.makeActionGroupManeuvers(fix, groups, next)}
+	return &NavHeading{Maneuvers: nav.makeActionGroupManeuvers(wp, next)}
 }
 
 // courseTowardFix returns the course along the line through the aircraft in
@@ -633,13 +633,13 @@ func (fs *FlightState) courseTowardFix(course math.MagneticHeading, fix math.Poi
 // makeActionGroupManeuvers translates a waypoint's action groups into the
 // maneuvers that fly them. next is the following fix on the route, which an
 // /@crs course termination joins; it is nil if there is none.
-func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionGroup,
-	next *av.Waypoint) []LateralManeuver {
+func (nav *Nav) makeActionGroupManeuvers(wp av.Waypoint, next *av.Waypoint) []LateralManeuver {
+	groups := wp.ActionGroups()
 	maneuvers := make([]LateralManeuver, 0, len(groups))
 	for _, group := range groups {
 		m := LateralManeuver{
-			Fix:     fix,
-			Actions: group.Actions,
+			Waypoint: wp,
+			Actions:  group.Actions,
 		}
 		heading := group.Actions.Heading
 		if !heading.IsSet() {
@@ -730,9 +730,9 @@ func (nav *Nav) makeActionGroupManeuvers(fix string, groups []av.WaypointActionG
 
 // waypointActionEvent returns the event the sim acts on for a group's
 // actions, if it has any beyond its heading.
-func waypointActionEvent(fix string, actions av.WaypointActions) *av.WaypointActionEvent {
+func waypointActionEvent(wp av.Waypoint, actions av.WaypointActions) *av.WaypointActionEvent {
 	if actions.HasSimActions() {
-		return &av.WaypointActionEvent{Fix: fix, Actions: actions}
+		return &av.WaypointActionEvent{Waypoint: wp, Actions: actions}
 	}
 	return nil
 }

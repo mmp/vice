@@ -1561,7 +1561,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	for i := range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
 		if wp := simNav.UpdateWithWeather("", prespawnWxs, nil, &simFP,
 			simTime.NavTime(), nil).PassedWaypoint; wp != nil {
-			if wp.Delete() {
+			if wp.HasDeleteAction() {
 				return ac, rwy.Id, nil
 			}
 			if wp.SequenceVFRLanding() {
@@ -1593,7 +1593,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				}
 				endWp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(patternAlt))
 				endWp.SetSpeedRestriction(av.MakeAtSpeedRestriction(70))
-				endWp.SetDelete(true)
+				endWp.MergeActions(av.WaypointActions{Delete: true})
 				descentWps = append(descentWps, endWp)
 
 				simNav.Waypoints = descentWps

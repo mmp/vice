@@ -657,8 +657,8 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 			// Convert any /land from route parsing to SequenceVFRLanding;
 			// we know these are VFR routes so Land is never appropriate.
 			for j := range spec.Waypoints {
-				if spec.Waypoints[j].Land() {
-					spec.Waypoints[j].SetLand(false)
+				if spec.Waypoints[j].HasLandAction() {
+					spec.Waypoints[j].ClearLandAction()
 					spec.Waypoints[j].SetSequenceVFRLanding(true)
 				}
 			}
@@ -1406,8 +1406,9 @@ func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, loc Locator, nmPer
 		thresholdWP := Waypoint{
 			Fix:      "_" + ap.Runway + "_THRESHOLD",
 			Location: threshold,
-			Flags:    WaypointFlagLand | WaypointFlagFlyOver,
+			Flags:    WaypointFlagFlyOver,
 		}
+		thresholdWP.MergeActions(WaypointActions{Land: true})
 		thresholdWP.SetAltitudeRestriction(MakeAtAltitudeRestriction(float32(alt)))
 		ap.Waypoints[i] = append(ap.Waypoints[i], thresholdWP)
 

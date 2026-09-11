@@ -1266,10 +1266,13 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 		return nil
 	}
 
-	// A few things at the last waypoint
+	// A few things at the last waypoint. It is cloned first: the route was
+	// copied from the reference approach a waypoint at a time, so its actions
+	// are still the scenario's until they are.
+	wps[len(wps)-1] = wps[len(wps)-1].Clone()
 	last := &wps[len(wps)-1]
 	last.SetOnApproach(true)
-	last.SetLand(true)
+	last.MergeActions(av.WaypointActions{Land: true})
 	last.SetFlyOver(true)
 	if last.AltitudeRestriction() == nil {
 		last.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(thresholdAlt)))

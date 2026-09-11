@@ -31,8 +31,8 @@ func TestClearApproachActionJoinsAtItsFix(t *testing.T) {
 	ac.Nav.Waypoints = []av.Waypoint{ac.Nav.FlightState.ArrivalAirport}
 
 	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{
-		Fix:     iaf.Fix,
-		Actions: av.WaypointActions{ClearApproach: true},
+		Waypoint: iaf,
+		Actions:  av.WaypointActions{ClearApproach: true},
 	})
 
 	if !ac.Nav.Approach.Cleared {
@@ -44,6 +44,43 @@ func TestClearApproachActionJoinsAtItsFix(t *testing.T) {
 			fixes[i] = wp.Fix
 		}
 		t.Errorf("expected the approach to pick up after %s at %s, got %v", iaf.Fix, faf.Fix, fixes)
+	}
+}
+
+// TestRemovalActionsApplyToHumanControlledAircraft checks that /delete and
+// /land take effect however the aircraft is being worked: unlike the handoffs
+// and scratchpad settings alongside them, they are not instructions a virtual
+// controller issues, so a human's aircraft is removed too.
+func TestRemovalActionsApplyToHumanControlledAircraft(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+
+	for _, tc := range []struct {
+		name     string
+		actions  av.WaypointActions
+		altitude float32
+		want     bool // the aircraft should be gone
+	}{
+		{name: "delete", actions: av.WaypointActions{Delete: true}, altitude: 3000, want: true},
+		{name: "land", actions: av.WaypointActions{Land: true}, altitude: 100, want: true},
+		{name: "land too high", actions: av.WaypointActions{Land: true}, altitude: 3000, want: false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := NewTestSim(lg)
+			s.STARSComputer = makeSTARSComputer("TEST")
+
+			ac := MakeTestAircraft("AAL123", "13L")
+			ac.Nav.FlightState.Altitude = tc.altitude
+			s.Aircraft[ac.ADSBCallsign] = ac
+
+			threshold := av.Waypoint{Fix: "_13L_THRESHOLD"}
+			threshold.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(100))
+
+			s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Waypoint: threshold, Actions: tc.actions})
+
+			if _, ok := s.Aircraft[ac.ADSBCallsign]; ok == tc.want {
+				t.Errorf("aircraft present = %v, want %v", ok, !tc.want)
+			}
+		})
 	}
 }
 
