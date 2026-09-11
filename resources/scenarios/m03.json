@@ -2684,7 +2684,8 @@
     "MONAA4": {
       "arrivals": [
         {
-          "waypoints": "LOHNI/ho MONAA ZAMET/a6000/s210/h272",
+          "spawn": "LOHNI",
+          "waypoint_actions": { "LOHNI": "ho" },
           "cruise_altitude": 35000,
           "route": "/. MONAA4",
           "star": "MONAA4",

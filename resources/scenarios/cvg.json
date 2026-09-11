@@ -4722,7 +4722,8 @@
     "HEDEE1": {
       "arrivals": [
         {
-          "waypoints": "HEDEE/ho KEFKA/a10000/h201",
+          "spawn": "HEDEE",
+          "waypoint_actions": { "HEDEE": "ho" },
           "route": "/. SAVVI.HEDEE1",
           "star": "HEDEE1",
           "initial_controller": "11L",
@@ -5360,19 +5361,8 @@
     "SARGO4": {
       "arrivals": [
         {
-          "waypoints": "FREZE/a15000-19000/ho SARGO/a14000+ VANGE",
-          "runway_waypoints": {
-            "KCVG": {
-              "9": "VANGE CALFS/a8000/h051",
-              "18L": "VANGE YEBUL/a13000- EYURA/a12000- AZONS/a8000+/s210 FIDEK UBEDE LEWIN/a6000/s210/h006",
-              "18C": "VANGE YEBUL/a13000- EYURA/a12000- AZONS/a8000+/s210 FIDEK UBEDE LEWIN/a6000/s210/h006",
-              "18R": "VANGE YEBUL/a13000- EYURA/a12000- AZONS/a8000+/s210 FIDEK UBEDE LEWIN/a6000/s210/h006",
-              "27": "VANGE YEBUL/a13000- EYURA/a12000- AZONS/a8000+/s210 FIDEK CADPO FIBSU/a6000/s210/h096",
-              "36L": "VANGE WAXIL/a13000- FECTA/a8000/h094",
-              "36C": "VANGE WAXIL/a13000- FECTA/a8000/h094",
-              "36R": "VANGE WAXIL/a13000- FECTA/a8000/h094"
-            }
-          },
+          "spawn": "FREZE",
+          "waypoint_actions": { "FREZE": "ho" },
           "route": "/. FREZE.SARGO5",
           "star": "SARGO5",
           "initial_controller": "C18",
@@ -5948,19 +5938,8 @@
     "TIGRR4": {
       "arrivals": [
         {
-          "waypoints": "JARSO/ho TIGRR/a14000+ CHARZ ETROY/a9000-11000",
-          "runway_waypoints": {
-            "KCVG": {
-              "9": "ETROY/a9000-11000 BACAS/a8000-10000/s210 GUUTH IDULE/a6000/s210/h276",
-              "18L": "ETROY/a9000-11000 CRSLY/a8000/h266",
-              "18C": "ETROY/a9000-11000 CRSLY/a8000/h266",
-              "18R": "ETROY/a9000-11000 CRSLY/a8000/h266",
-              "27": "ETROY/a9000-11000 YEYUP/a8000/h199",
-              "36L": "ETROY/a9000-11000 BACAS/a8000-10000/s210 JANEG RUPPP/a6000/s210/h186",
-              "36C": "ETROY/a9000-11000 BACAS/a8000-10000/s210 JANEG RUPPP/a6000/s210/h186",
-              "36R": "ETROY/a9000-11000 BACAS/a8000-10000/s210 JANEG RUPPP/a6000/s210/h186"
-            }
-          },
+          "spawn": "JARSO",
+          "waypoint_actions": { "JARSO": "ho" },
           "route": "/. JARSO.TIGRR4",
           "star": "TIGRR4",
           "initial_controller": "C22",

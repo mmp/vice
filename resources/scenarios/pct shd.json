@@ -3698,7 +3698,8 @@
           }
         },
         {
-          "waypoints": "PRIVO/ho DAFIX/a12000 WAYNZ/a10000/s250 MAPEL/a8000 MOWAT/a5000 HUSEL/a4000 TICON/flyover/h191",
+          "spawn": "PRIVO",
+          "waypoint_actions": { "PRIVO": "ho" },
           "star": "WAYNZ2",
           "secondary_scratchpad": "WNZ",
           "initial_controller": "N26",
@@ -3736,7 +3737,8 @@
           }
         },
         {
-          "waypoints": "PRIVO/ho DAFIX/a12000 OVIEE/a10000/s250/flyover/h230",
+          "spawn": "PRIVO",
+          "waypoint_actions": { "PRIVO": "ho" },
           "star": "WAYNZ2",
           "secondary_scratchpad": "WNZ",
           "initial_controller": "N26",
@@ -3802,14 +3804,8 @@
     "WAYNZ2.S": {
       "arrivals": [
         {
-          "waypoints": "PRIVO/ho DAFIX/a12000 WAYNZ/a10000/s250",
-          "runway_waypoints": {
-            "KIAD": {
-              "19L": "WAYNZ/a10000/s250 SULII/a10000/flyover/h180",
-              "19C": "WAYNZ/a10000/s250 SULII/a10000/flyover/h180",
-              "19R": "WAYNZ/a10000/s250 SULII/a10000/flyover/h180"
-            }
-          },
+          "spawn": "PRIVO",
+          "waypoint_actions": { "PRIVO": "ho" },
           "star": "WAYNZ2",
           "secondary_scratchpad": "WNZ",
           "initial_controller": "N26",
@@ -3894,7 +3890,8 @@
           }
         },
         {
-          "waypoints": "PRIVO/ho DAFIX/a12000 WAYNZ/a10000/s250 MAPEL/a8000 MOWAT/a5000 HUSEL/a4000 TICON/flyover/h191",
+          "spawn": "PRIVO",
+          "waypoint_actions": { "PRIVO": "ho" },
           "star": "WAYNZ2",
           "secondary_scratchpad": "WNZ",
           "initial_controller": "N26",
@@ -3932,7 +3929,8 @@
           }
         },
         {
-          "waypoints": "PRIVO/ho DAFIX/a12000 OVIEE/a10000/s250/flyover/h230",
+          "spawn": "PRIVO",
+          "waypoint_actions": { "PRIVO": "ho" },
           "star": "WAYNZ2",
           "secondary_scratchpad": "WNZ",
           "initial_controller": "N26",

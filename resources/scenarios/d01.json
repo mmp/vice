@@ -6035,24 +6035,9 @@
           "initial_controller": "C15",
           "initial_speed": 280,
           "star": "AALLE4",
-          "runway_waypoints": {
-            "KDEN": {
-              "7": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT HAITR/a11000/s210/h263",
-              "8": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT HAITR/a11000/s210/h263",
-              "25": "HEDDD/a16000-19000/s250 CRUNK/a14000/h217",
-              "26": "HEDDD/a16000-19000/s250 CRUNK/a14000/h217",
-              "16L": "HEDDD/a16000-19000/s250 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-              "16R": "HEDDD/a16000-19000/s250 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-              "17L": "HEDDD/a16000-19000/s250 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-              "17R": "HEDDD/a16000-19000/s250 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-              "34L": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-              "34R": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-              "35L": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 FULLA/a13000-15000/s250 FFFAT DOGGG/a11000/s210/h173",
-              "35R": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 FULLA/a13000-15000/s250 FFFAT DOGGG/a11000/s210/h173"
-            }
-          },
           "speed_restriction": 250,
-          "waypoints": "SDOUT/a30000-32000/s280 MALTE BBOTL/ho AALLE/a19000 HEDDD/a16000-19000/s250"
+          "spawn": "SDOUT",
+          "waypoint_actions": { "BBOTL": "ho", "KIPPR": "h265" }
         },
         {
           "airports": ["KDEN"],
@@ -6186,24 +6171,9 @@
           "initial_controller": "C15",
           "initial_speed": 280,
           "star": "AALLE4",
-          "runway_waypoints": {
-            "KDEN": {
-              "7": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT HAITR/a11000/s210/h263",
-              "8": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT HAITR/a11000/s210/h263",
-              "25": "HEDDD/a16000-19000/s250 CRUNK/a14000/h217",
-              "26": "HEDDD/a16000-19000/s250 CRUNK/a14000/h217",
-              "16L": "HEDDD/a16000-19000/s250 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-              "16R": "HEDDD/a16000-19000/s250 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-              "17L": "HEDDD/a16000-19000/s250 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-              "17R": "HEDDD/a16000-19000/s250 HIGUN/a14000/s210 KIPPR/a12000/s210/h265",
-              "34L": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-              "34R": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 JEPHF/a13000-15000/s250 HAZLT GRILA HIMOM/a11000/s210/h173",
-              "35L": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 FULLA/a13000-15000/s250 FFFAT DOGGG/a11000/s210/h173",
-              "35R": "HEDDD/a16000-19000/s250 DEELO/a15000-17000 FULLA/a13000-15000/s250 FFFAT DOGGG/a11000/s210/h173"
-            }
-          },
           "speed_restriction": 250,
-          "waypoints": "BIDDR/a30000-32000/s280 CAASK FOAMM/ho AALLE/a19000 HEDDD/a16000-19000/s250"
+          "spawn": "BIDDR",
+          "waypoint_actions": { "FOAMM": "ho", "KIPPR": "h265" }
         }
       ]
     },
@@ -6542,24 +6512,9 @@
           "initial_controller": "C27",
           "initial_speed": 280,
           "star": "CLASH5",
-          "runway_waypoints": {
-            "KDEN": {
-              "7": "EVRLY/a15000-19000/s250 JURKY/a15000-17000 ROOTZ/a13000-15000/s250 RPIDS BBOOK/a11000/s210/h263",
-              "8": "EVRLY/a15000-19000/s250 JURKY/a15000-17000 ROOTZ/a13000-15000/s250 RPIDS BBOOK/a11000/s210/h263",
-              "25": "EVRLY/a15000-19000/s250 ERVNN/a14000 FIDLS/a13000/s210/h351",
-              "26": "EVRLY/a15000-19000/s250 ERVNN/a14000 FIDLS/a13000/s210/h351",
-              "16R": "EVRLY/a15000-19000/s250 JURKY/a15000-17000 ROOTZ/a13000-15000/s250 RPIDS RDDVL CLFFF/a11000/s210/h353",
-              "16L": "EVRLY/a15000-19000/s250 JURKY/a15000-17000 JAAAM/a13000-15000/s250 HUDPI QWIKE/a11000/s210/h353",
-              "17L": "EVRLY/a15000-19000/s250 JURKY/a15000-17000 JAAAM/a13000-15000/s250 HUDPI QWIKE/a11000/s210/h353",
-              "17R": "EVRLY/a15000-19000/s250 JURKY/a15000-17000 JAAAM/a13000-15000/s250 HUDPI QWIKE/a11000/s210/h353",
-              "34L": "EVRLY/a15000-19000/s250 RECRD/a13000+ TWNSN/a12000-13000/s210 PNBAL/a11000 ROCCS/a10000+ EBBLR/a9000/s210/h260",
-              "34R": "EVRLY/a15000-19000/s250 RECRD/a13000+ TWNSN/a12000-13000/s210 PNBAL/a11000 ROCCS/a10000+ EBBLR/a9000/s210/h260",
-              "35L": "EVRLY/a15000-19000/s250 RECRD/a13000+ TWNSN/a12000-13000/s210 PNBAL/a11000 ROCCS/a10000+ EBBLR/a9000/s210/h260",
-              "35R": "EVRLY/a15000-19000/s250 RECRD/a13000+ TWNSN/a12000-13000/s210 PNBAL/a11000 ROCCS/a10000+ PURRL/a9000/s210/h298"
-            }
-          },
           "speed_restriction": 250,
-          "waypoints": "LYNKN RRUSL/ho CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250"
+          "spawn": "LYNKN",
+          "waypoint_actions": { "PURRL": "h298", "RRUSL": "ho" }
         }
       ]
     },
@@ -7422,24 +7377,9 @@
           "initial_controller": "C27",
           "initial_speed": 280,
           "star": "NIIXX4",
-          "runway_waypoints": {
-            "KDEN": {
-              "7": "HAGGR/a15000-19000/s250 JPAGE/a15000-17000 ROOTZ/a13000-15000/s250 RPIDS BBOOK/a11000/s210/h263",
-              "8": "HAGGR/a15000-19000/s250 JPAGE/a15000-17000 ROOTZ/a13000-15000/s250 RPIDS BBOOK/a11000/s210/h263",
-              "25": "HAGGR/a15000-19000/s250 GEILS/a14000/h317",
-              "26": "HAGGR/a15000-19000/s250 GEILS/a14000/h317",
-              "16L": "HAGGR/a15000-19000/s250 JPAGE/a15000-17000 JAAAM/a13000-15000/s250 HUDPI QWIKE/a11000/s210/h353",
-              "16R": "HAGGR/a15000-19000/s250 JPAGE/a15000-17000 ROOTZ/a13000-15000/s250 RPIDS RDDVL CLFFF/a11000/s210/h353",
-              "17L": "HAGGR/a15000-19000/s250 JPAGE/a15000-17000 JAAAM/a13000-15000/s250 HUDPI QWIKE/a11000/s210/h353",
-              "17R": "HAGGR/a15000-19000/s250 JPAGE/a15000-17000 JAAAM/a13000-15000/s250 HUDPI QWIKE/a11000/s210/h353",
-              "34L": "HAGGR/a15000-19000/s250 BSTON/a13000-14000/s230 BOSSS/a12000/s210/h273",
-              "34R": "HAGGR/a15000-19000/s250 BSTON/a13000-14000/s230 BOSSS/a12000/s210/h273",
-              "35L": "HAGGR/a15000-19000/s250 BSTON/a13000-14000/s230 BOSSS/a12000/s210/h273",
-              "35R": "HAGGR/a15000-19000/s250 BSTON/a13000-14000/s230 BOSSS/a12000/s210/h273"
-            }
-          },
           "speed_restriction": 250,
-          "waypoints": "IDOLL YOUTU/ho NIIXX/a19000-22000/s280 HAGGR/a15000-19000/s250"
+          "spawn": "IDOLL",
+          "waypoint_actions": { "BOSSS": "h273", "YOUTU": "ho" }
         }
       ]
     },
@@ -7599,24 +7539,9 @@
           "initial_controller": "C26",
           "initial_speed": 280,
           "star": "SSKII4",
-          "runway_waypoints": {
-            "KDEN": {
-              "7": "BGDEE/a17000-19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
-              "8": "BGDEE/a17000-19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
-              "25": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP JIBAT/a11000/s210/h082",
-              "26": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP JIBAT/a11000/s210/h082",
-              "16L": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 EPPIC/a13000-15000/s240 RDDVL CLFFF/a11000/s210/h353",
-              "16R": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 EPPIC/a13000-15000/s240 RDDVL CLFFF/a11000/s210/h353",
-              "17L": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
-              "17R": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
-              "34L": "BGDEE/a17000-19000/s250 CRAGG/a13000/s210 NARLE/a12000+ TELLR/a11000/s210/h075",
-              "34R": "BGDEE/a17000-19000/s250 CRAGG/a13000/s210 NARLE/a12000+ TELLR/a11000/s210/h075",
-              "35L": "BGDEE/a17000-19000/s250 CRAGG/a13000/s210 NARLE/a12000+ TELLR/a11000/s210/h075",
-              "35R": "BGDEE/a17000-19000/s250 CRAGG/a13000/s210 NARLE/a12000+ TELLR/a11000/s210/h075"
-            }
-          },
           "speed_restriction": 250,
-          "waypoints": "KTOOO/a23000-29000 KLOWN/a21000-25000/ho SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250"
+          "spawn": "KTOOO",
+          "waypoint_actions": { "KLOWN": "ho", "TELLR": "h075" }
         },
         {
           "airports": ["KDEN"],
@@ -7637,24 +7562,9 @@
           "initial_controller": "C26",
           "initial_speed": 300,
           "star": "SSKII4",
-          "runway_waypoints": {
-            "KDEN": {
-              "7": "BGDEE/a17000-19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
-              "8": "BGDEE/a17000-19000/s250 POWPW/a14000 BRNNO/a13000/s210/h352",
-              "25": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP JIBAT/a11000/s210/h082",
-              "26": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP JIBAT/a11000/s210/h082",
-              "16L": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 EPPIC/a13000-15000/s240 RDDVL CLFFF/a11000/s210/h353",
-              "16R": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 EPPIC/a13000-15000/s240 RDDVL CLFFF/a11000/s210/h353",
-              "17L": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
-              "17R": "BGDEE/a17000-19000/s250 TLRID/a15000-17000 ZATUT/a13000-15000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
-              "34L": "BGDEE/a17000-19000/s250 CRAGG/a13000/s210 NARLE/a12000+ TELLR/a11000/s210/h075",
-              "34R": "BGDEE/a17000-19000/s250 CRAGG/a13000/s210 NARLE/a12000+ TELLR/a11000/s210/h075",
-              "35L": "BGDEE/a17000-19000/s250 CRAGG/a13000/s210 NARLE/a12000+ TELLR/a11000/s210/h075",
-              "35R": "BGDEE/a17000-19000/s250 CRAGG/a13000/s210 NARLE/a12000+ TELLR/a11000/s210/h075"
-            }
-          },
           "speed_restriction": 250,
-          "waypoints": "JNETT/a29000- HAMIC/a21000-25000/s280/ho SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250"
+          "spawn": "JNETT",
+          "waypoint_actions": { "HAMIC": "ho", "TELLR": "h075" }
         }
       ]
     },
@@ -7825,24 +7735,9 @@
           "initial_controller": "C26",
           "initial_speed": 280,
           "star": "TBARR4",
-          "runway_waypoints": {
-            "KDEN": {
-              "7": "MNARK/a17000-19000/s250 SUMTT/a14000/h033",
-              "8": "MNARK/a17000-19000/s250 SUMTT/a14000/h033",
-              "25": "MNARK/a17000-19000/s250 EOLUS/a15000-17000 ZATUT/a13000-15000/s240 LOOOP JIBAT/a11000/s210/h082",
-              "26": "MNARK/a17000-19000/s250 EOLUS/a15000-17000 ZATUT/a13000-15000/s240 LOOOP JIBAT/a11000/s210/h082",
-              "16L": "MNARK/a17000-19000/s250 EOLUS/a15000-17000 EPPIC/a13000-15000/s240 RDDVL CLFFF/a11000/s210/h353",
-              "16R": "MNARK/a17000-19000/s250 EOLUS/a15000-17000 EPPIC/a13000-15000/s240 RDDVL CLFFF/a11000/s210/h353",
-              "17L": "MNARK/a17000-19000/s250 EOLUS/a15000-17000 ZATUT/a13000-15000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
-              "17R": "MNARK/a17000-19000/s250 EOLUS/a15000-17000 ZATUT/a13000-15000/s240 LOOOP HUDPI QWIKE/a11000/s210/h353",
-              "34L": "MNARK/a17000-19000/s250 BDIVN/a15000- KUSHH/a14000/s210 LDORA/a13000/s210/h064",
-              "34R": "MNARK/a17000-19000/s250 BDIVN/a15000- KUSHH/a14000/s210 LDORA/a13000/s210/h064",
-              "35L": "MNARK/a17000-19000/s250 BDIVN/a15000- KUSHH/a14000/s210 LDORA/a13000/s210/h064",
-              "35R": "MNARK/a17000-19000/s250 BDIVN/a15000- KUSHH/a14000/s210 LDORA/a13000/s210/h064"
-            }
-          },
           "speed_restriction": 250,
-          "waypoints": "LIFTE/a23000-29000/s280 OLSNN/a21000-25000/ho TBARR/a19000-22000/s270 MNARK/a17000-19000/s250"
+          "spawn": "LIFTE",
+          "waypoint_actions": { "LDORA": "h064", "OLSNN": "ho" }
         }
       ]
     },
@@ -8072,7 +7967,8 @@
           "initial_controller": "C15",
           "initial_speed": 130,
           "star": "LANDR3",
-          "waypoints": "LIBIE/ho LANDR YONDR PHLAT DVV"
+          "spawn": "LIBIE",
+          "waypoint_actions": { "LIBIE": "ho" }
         }
       ]
     },
@@ -8535,7 +8431,8 @@
           "initial_speed": 290,
           "star": "PINNR3",
           "speed_restriction": 250,
-          "waypoints": "BANNA CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000"
+          "spawn": "BANNA",
+          "waypoint_actions": { "CHOTS": "ho" }
         }
       ]
     },

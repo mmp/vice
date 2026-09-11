@@ -18445,19 +18445,8 @@
           "initial_speed": 280,
           "initial_controller": "C15",
           "is_rnav": true,
-          "waypoints": "BRKWL/ho JAFAR CRPIT LAMMP",
-          "runway_waypoints": {
-            "KMCO": {
-              "17L": "LAMMP YAGGO/a6000/s210/h106",
-              "17R": "LAMMP YAGGO/a6000/s210/h106",
-              "18L": "LAMMP YAGGO/a6000/s210/h106",
-              "18R": "LAMMP YAGGO/a6000/s210/h106",
-              "35L": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-              "35R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-              "36L": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186",
-              "36R": "LAMMP WISHH/a10000-12000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210/h186"
-            }
-          },
+          "spawn": "BRKWL",
+          "waypoint_actions": { "BRKWL": "ho" },
           "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
@@ -18733,7 +18722,8 @@
           "initial_speed": 280,
           "initial_controller": "C15",
           "is_rnav": true,
-          "waypoints": "BRKWL/ho JAFAR RINGG FLIPY/a11000/s250",
+          "spawn": "BRKWL",
+          "waypoint_actions": { "BRKWL": "ho" },
           "airports": ["KISM", "KORL"],
           "airlines": {
             "KORL": [
@@ -19522,7 +19512,8 @@
           "initial_altitude": 11000,
           "initial_controller": "C15",
           "initial_speed": 250,
-          "waypoints": "OCF/ho ALADN SHIMM LEESE ORL",
+          "spawn": "OCF",
+          "waypoint_actions": { "OCF": "ho" },
           "airports": ["KISM", "KMCO", "KORL"],
           "airlines": {
             "KMCO": [
@@ -19566,7 +19557,8 @@
           "initial_altitude": 9000,
           "initial_controller": "Z23",
           "initial_speed": 250,
-          "waypoints": "DOWNN/ho MOANS MINEE UNITY ORL",
+          "spawn": "DOWNN",
+          "waypoint_actions": { "DOWNN": "ho" },
           "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
@@ -19596,7 +19588,8 @@
           "initial_altitude": 9000,
           "initial_controller": "Z23",
           "initial_speed": 250,
-          "waypoints": "DOWNN/ho MOANS MINEE UNITY ORL",
+          "spawn": "DOWNN",
+          "waypoint_actions": { "DOWNN": "ho" },
           "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
@@ -19626,7 +19619,8 @@
           "initial_altitude": 9000,
           "initial_controller": "11E",
           "initial_speed": 250,
-          "waypoints": "LAL/ho ANDRO MINEE UNITY ORL",
+          "spawn": "LAL",
+          "waypoint_actions": { "LAL": "ho" },
           "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
@@ -19656,7 +19650,8 @@
           "initial_altitude": 9000,
           "initial_controller": "11E",
           "initial_speed": 250,
-          "waypoints": "LAL/ho ANDRO MINEE UNITY ORL",
+          "spawn": "LAL",
+          "waypoint_actions": { "LAL": "ho" },
           "airports": ["KMCO"],
           "airlines": {
             "KMCO": [
@@ -19682,7 +19677,8 @@
           "initial_altitude": 5000,
           "initial_controller": "11E",
           "initial_speed": 110,
-          "waypoints": "LAL/ho ANDRO MINEE UNITY ORL",
+          "spawn": "LAL",
+          "waypoint_actions": { "LAL": "ho" },
           "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
@@ -19982,7 +19978,8 @@
           "initial_altitude": 5000,
           "initial_controller": "Z23",
           "initial_speed": 110,
-          "waypoints": "DOWNN/ho MOANS MINEE UNITY ORL",
+          "spawn": "DOWNN",
+          "waypoint_actions": { "DOWNN": "ho" },
           "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
@@ -20222,7 +20219,8 @@
           "initial_altitude": 10000,
           "initial_controller": "11E",
           "initial_speed": 280,
-          "waypoints": "LAL/ho ANDRO MINEE UNITY ORL",
+          "spawn": "LAL",
+          "waypoint_actions": { "LAL": "ho" },
           "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
@@ -20728,7 +20726,8 @@
           "initial_altitude": 10000,
           "initial_controller": "Z23",
           "initial_speed": 280,
-          "waypoints": "DOWNN/ho MOANS MINEE UNITY ORL",
+          "spawn": "DOWNN",
+          "waypoint_actions": { "DOWNN": "ho" },
           "airports": ["KCOI", "KISM", "KLEE", "KORL", "KSFB", "KTIX"],
           "airlines": {
             "KORL": [
@@ -24225,7 +24224,8 @@
           "initial_altitude": 19000,
           "initial_controller": "Z67",
           "initial_speed": 280,
-          "waypoints": "BULKS/a19000/s280/ho PRICY/a13000-16000/s250 BOCCE OTKEE/a11000/h056",
+          "spawn": "BULKS",
+          "waypoint_actions": { "BULKS": "ho" },
           "airports": ["KISM", "KLEE", "KMLB", "KORL", "KSFB"],
           "airlines": {
             "KORL": [
@@ -25113,7 +25113,8 @@
           "initial_altitude": 11000,
           "initial_controller": "C15",
           "initial_speed": 250,
-          "waypoints": "WANDD/ho SHREK STNKY/h115",
+          "spawn": "WANDD",
+          "waypoint_actions": { "WANDD": "ho" },
           "airports": ["KISM", "KMCO", "KORL", "KSFB"],
           "airlines": {
             "KMCO": [
@@ -25671,7 +25672,8 @@
           "initial_controller": "31H",
           "is_rnav": true,
           "initial_speed": 250,
-          "waypoints": "TTHOR/a12000 OWEDN/a8000-11000/s250/ho THANO/a7000-9000 RAGNR/a7000- LOKII/a5000 MUNKZ/a5000/s210/h201",
+          "spawn": "TTHOR",
+          "waypoint_actions": { "OWEDN": "ho" },
           "airports": ["KLEE", "KORL", "KSFB"],
           "airlines": {
             "KORL": [
@@ -26696,7 +26698,8 @@
           "initial_controller": "C58",
           "is_rnav": true,
           "initial_speed": 290,
-          "waypoints": "FORYU/a13000+/ho NICCK SNFLD/a10000+ JRRYY SECOY/a9000",
+          "spawn": "FORYU",
+          "waypoint_actions": { "FORYU": "ho" },
           "airports": ["KISM"],
           "airlines": {
             "KISM": [

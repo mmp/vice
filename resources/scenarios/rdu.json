@@ -1359,15 +1359,8 @@
     "ALDAN4": {
       "arrivals": [
         {
-          "waypoints": "MCDON/a17000-/ho FAVKO/a12000- ALDAN/a9000-12000/s250",
-          "runway_waypoints": {
-            "KRDU": {
-              "23L": "ALDAN/a9000-12000/s250 GAZER/a9000- HARSH/a8000-9000/s210 BUTTS/a6000/flyover/h143",
-              "23R": "ALDAN/a9000-12000/s250 GAZER/a9000- HARSH/a8000-9000/s210 BUTTS/a6000/flyover/h143",
-              "5L": "ALDAN/a9000-12000/s250 BILLA/a9000+ BLNKR/a8000+/s220 GABLR/a7000+ HEAVE/a6000/s210/flyover/h235",
-              "5R": "ALDAN/a9000-12000/s250 BILLA/a9000+ BLNKR/a8000+/s220 GABLR/a7000+ HEAVE/a6000/s210/flyover/h235"
-            }
-          },
+          "spawn": "MCDON",
+          "waypoint_actions": { "MCDON": "ho" },
           "star": "ALDAN4",
           "initial_controller": "C32",
           "initial_altitude": 15000,
@@ -1422,15 +1415,8 @@
     "BLOGS3": {
       "arrivals": [
         {
-          "waypoints": "VEJAY/ho BLOGS/a11000-12000/s250 CABED/a8000-9000",
-          "runway_waypoints": {
-            "KRDU": {
-              "23L": "CABED/a8000-9000 AGOLE/a8000+ SULIE TIBIA/a6000/s210 UNCUT/flyover/h54",
-              "23R": "CABED/a8000-9000 AGOLE/a8000+ SULIE TIBIA/a6000/s210 UNCUT/flyover/h54",
-              "5L": "CABED/a8000-9000 ORLAC/a8000/s220 OCHRE/a7000+ STINT/a6000/s210/flyover/h234",
-              "5R": "CABED/a8000-9000 ORLAC/a8000/s220 OCHRE/a7000+ STINT/a6000/s210/flyover/h234"
-            }
-          },
+          "spawn": "VEJAY",
+          "waypoint_actions": { "VEJAY": "ho" },
           "star": "BLOGS3",
           "initial_controller": "C09",
           "initial_altitude": 15000,
@@ -1495,15 +1481,8 @@
     "DMSTR2": {
       "arrivals": [
         {
-          "waypoints": "ETBUY/ho DMSTR",
-          "runway_waypoints": {
-            "KRDU": {
-              "23L": "DMSTR WISPY/a11000-12000/s280 CAKEY/a8000 JODUS/a7000+/s220 CHIRM KENCH/a6000/s210/flyover/h54",
-              "23R": "DMSTR WISPY/a11000-12000/s280 CAKEY/a8000 FRETO/a7000+/s220 ORENG GLEYS/a6000/s210/flyover/h54",
-              "5L": "DMSTR MALNR/a11000+/s250 NYGEL/a9000-10000 OTTOS/a6000/s210",
-              "5R": "DMSTR MALNR/a11000+/s250 NYGEL/a9000-10000 OTTOS/a6000/s210"
-            }
-          },
+          "spawn": "ETBUY",
+          "waypoint_actions": { "ETBUY": "ho" },
           "star": "DMSTR2",
           "initial_controller": "C09",
           "initial_altitude": 15000,

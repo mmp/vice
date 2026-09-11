@@ -3177,7 +3177,8 @@
     "BMBER1.NURAY": {
       "arrivals": [
         {
-          "waypoints": "KAELA/a25000+/s280 OTTEE/a24000+ FOOLZ/a20000-21000/ho GLDDD/a19000- BMBER/a15000-/s260 JOSBA/a10000-11000 RAAAF/a6000/s230/delete",
+          "spawn": "KAELA",
+          "waypoint_actions": { "FOOLZ": "ho", "RAAAF": "delete" },
           "star": "BMBER1",
           "initial_controller": "C15",
           "initial_altitude": 26000,
@@ -3210,7 +3211,8 @@
     "BMBER1.OAKES": {
       "arrivals": [
         {
-          "waypoints": "OAKES/a22000+/s280/ho SHIZM/a20000+ ZOKMM/a17000- BMBER/a15000-/s260 JOSBA/a10000-11000 RAAAF/a6000/s230/delete",
+          "spawn": "OAKES",
+          "waypoint_actions": { "OAKES": "ho", "RAAAF": "delete" },
           "star": "BMBER1",
           "initial_controller": "C15",
           "initial_altitude": 22000,
@@ -3555,7 +3557,8 @@
           }
         },
         {
-          "waypoints": "EMZOH/a28000+/s280 MYJAW/a22000+/s280/ho1M SKIZM/a15000-19000/ho MYRIB/a9000-10000/s240 MYHIP MYNEE/a7000/s200 SHRRP/a6200+/h271",
+          "spawn": "EMZOH",
+          "waypoint_actions": { "MYJAW": "ho1M", "SKIZM": "ho" },
           "star": "EMZOH4",
           "initial_controller": "C11",
           "initial_altitude": 28000,
@@ -3637,7 +3640,8 @@
           }
         },
         {
-          "waypoints": "EMZOH/a28000+/s280 MYJAW/a22000+/s280/ho1M SKIZM/a15000-19000/ho MYRIB/a9000-10000/s240 MYHIP MYNEE/a7000/s200 SHRRP/a6200+/h271",
+          "spawn": "EMZOH",
+          "waypoint_actions": { "MYJAW": "ho1M", "SKIZM": "ho" },
           "star": "EMZOH4",
           "initial_controller": "C11",
           "initial_altitude": 28000,
@@ -4382,15 +4386,8 @@
     "SUUTR4": {
       "arrivals": [
         {
-          "waypoints": "KAELA/a28000+ SUUTR/a24000-26000/s280 FOOLZ/a21000/ho GLDDD/a19000- WRAPS/a17000- PNNEN/a12000-16000 SLUIC",
-          "runway_waypoints": {
-            "KSMF": {
-              "17L": "SLUIC AMADR/a9000 NGGET/a7000-9000 CHNEL/a5000+ OVOME/a4000/s210/delete",
-              "17R": "SLUIC AMADR/a9000 NGGET/a7000-9000 CHNEL/a5000+ OVOME/a4000/s210/delete",
-              "35L": "SLUIC MYNRR/a9000/delete",
-              "35R": "SLUIC MYNRR/a9000/delete"
-            }
-          },
+          "spawn": "KAELA",
+          "waypoint_actions": { "FOOLZ": "ho", "MYNRR": "delete", "OVOME": "delete" },
           "star": "SUUTR4",
           "initial_controller": "C15",
           "initial_altitude": 28000,
@@ -4463,14 +4460,8 @@
     "WNDSR2": {
       "arrivals": [
         {
-          "waypoints": "WNDSR/a16000-22000/s280 WEBRR/a9000-13000/ho4R BOYYS/a7000/ho HOPTA/a5000",
-          "runway_waypoints": {
-            "KOAK": {
-              "30": "HOPTA/a5000 ALLXX/a5000/s210 CRSEN/h112",
-              "28L": "HOPTA/a5000 AAAME/a5000/s210/h090",
-              "28R": "HOPTA/a5000 AAAME/a5000/s210/h090"
-            }
-          },
+          "spawn": "WNDSR",
+          "waypoint_actions": { "BOYYS": "ho", "WEBRR": "ho4R" },
           "star": "WNDSR2",
           "initial_controller": "C41",
           "initial_altitude": 19000,

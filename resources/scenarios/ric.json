@@ -1045,15 +1045,8 @@
     "POWTN5": {
       "arrivals": [
         {
-          "waypoints": "GRUTO HONTA/a13000+/ho VETEC/a12000- AHONE/a11000/s280 POWTN",
-          "runway_waypoints": {
-            "KRIC": {
-              "2": "POWTN DUCXS/flyover/h151",
-              "34": "POWTN DUCXS/flyover/h151",
-              "16": "POWTN DEEER/flyover/h81",
-              "20": "POWTN DEEER/flyover/h81"
-            }
-          },
+          "spawn": "GRUTO",
+          "waypoint_actions": { "HONTA": "ho" },
           "star": "POWTN5",
           "initial_controller": "W32",
           "initial_altitude": 21000,
@@ -1100,15 +1093,8 @@
     "SPIDR5": {
       "arrivals": [
         {
-          "waypoints": "MOL/a21000 ZUMAT DXOON REDNG/a13000/s280/ho HEMME/a11000-12000 SPIDR/a8000",
-          "runway_waypoints": {
-            "KRIC": {
-              "2": "SPIDR/a8000 DUCXS/a4000/flyover/h149",
-              "34": "SPIDR/a8000 DUCXS/a4000/flyover/h149",
-              "16": "SPIDR/a8000 RUPRT/flyover/h80",
-              "20": "SPIDR/a8000 RUPRT/flyover/h80"
-            }
-          },
+          "spawn": "MOL",
+          "waypoint_actions": { "REDNG": "ho" },
           "star": "SPIDR5",
           "initial_controller": "W32",
           "initial_altitude": 21000,

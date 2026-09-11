@@ -3754,12 +3754,8 @@
           }
         },
         {
-          "waypoints": "COURG/a20000-23000/s280 PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000 ALWYZ/a10000-/s250",
-          "runway_waypoints": {
-            "KADW": {
-              "1L": "ALWYZ/a10000- LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/t189"
-            }
-          },
+          "spawn": "COURG",
+          "waypoint_actions": { "PLDGE": "ho" },
           "star": "FRDMM7",
           "initial_controller": "W05",
           "initial_altitude": 20000,

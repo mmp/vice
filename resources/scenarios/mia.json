@@ -3529,15 +3529,8 @@
     "CUUDA3 NOSATS EAST": {
       "arrivals": [
         {
-          "waypoints": "WILOX/a15000+/s270 WEHOO/a13000+/ho MACKL/a11000+/s260 CUUDA/a8000 LOKKR",
-          "runway_waypoints": {
-            "KFLL": {
-              "10L": "LOKKR SERIF BEPAC WANAR/h276",
-              "10R": "LOKKR SERIF BEPAC WANAR/h276",
-              "28L": "LOKKR BEKNE QDAWG/h96",
-              "28R": "LOKKR BEKNE QDAWG/h96"
-            }
-          },
+          "spawn": "WILOX",
+          "waypoint_actions": { "WEHOO": "ho" },
           "cruise_altitude": 34000,
           "star": "CUUDA3",
           "initial_controller": "C20",
@@ -3631,15 +3624,8 @@
     "CUUDA3 NOSATS WEST": {
       "arrivals": [
         {
-          "waypoints": "WILOX/a15000+/s270 WEHOO/a13000+/ho MACKL/a11000+/s260 CUUDA/a8000 LOKKR",
-          "runway_waypoints": {
-            "KFLL": {
-              "10L": "LOKKR SERIF BEPAC WANAR/h276",
-              "10R": "LOKKR SERIF BEPAC WANAR/h276",
-              "28L": "LOKKR BEKNE QDAWG/h96",
-              "28R": "LOKKR BEKNE QDAWG/h96"
-            }
-          },
+          "spawn": "WILOX",
+          "waypoint_actions": { "WEHOO": "ho" },
           "cruise_altitude": 34000,
           "star": "CUUDA3",
           "initial_controller": "C20",
@@ -4775,19 +4761,8 @@
     "VIICE2 NOSATS EAST": {
       "arrivals": [
         {
-          "waypoints": "CLYER/a21000+ JJETS/a15000+/s280/ho VIICE/a16000-",
-          "runway_waypoints": {
-            "KMIA": {
-              "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-              "12": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-              "27": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-              "30": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-              "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-              "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-              "8L": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-              "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
-            }
-          },
+          "spawn": "CLYER",
+          "waypoint_actions": { "JJETS": "ho", "SHANN": "h305" },
           "cruise_altitude": 36000,
           "star": "VIICE2",
           "initial_controller": "C41",
@@ -4866,19 +4841,8 @@
     "VIICE2 NOSATS WEST": {
       "arrivals": [
         {
-          "waypoints": "CLYER/a21000+ JJETS/a15000+/s280/ho VIICE/a16000-",
-          "runway_waypoints": {
-            "KMIA": {
-              "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-              "12": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-              "27": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-              "30": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-              "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-              "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-              "8L": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-              "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
-            }
-          },
+          "spawn": "CLYER",
+          "waypoint_actions": { "JJETS": "ho", "SHANN": "h305" },
           "cruise_altitude": 36000,
           "star": "VIICE2",
           "initial_controller": "C41",

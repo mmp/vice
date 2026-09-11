@@ -408,7 +408,8 @@
     "JAZZZ1": {
       "arrivals": [
         {
-          "waypoints": "SPANE/a15000/s250/ho RUSHN/a13000+ JAZZZ/a12000+/s250/h325",
+          "spawn": "SPANE",
+          "waypoint_actions": { "SPANE": "ho" },
           "star": "JAZZZ1",
           "initial_controller": "C32",
           "initial_altitude": 15000,

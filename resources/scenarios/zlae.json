@@ -3865,7 +3865,8 @@
     "OLAAA2/SCBBY2/THRNE4": {
       "arrivals": [
         {
-          "waypoints": "AMMOR RNCHO/a26000+/ho REGGO/a24000+ CYNDE/a14000- OLAAA/a12000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210/clearapp",
+          "spawn": "AMMOR",
+          "waypoint_actions": { "RNCHO": "ho", "TRNDO": "clearapp" },
           "star": "OLAAA2",
           "route": "OLAAA2",
           "initial_controller": "31",
@@ -4021,7 +4022,8 @@
           }
         },
         {
-          "waypoints": "AMMOR RNCHO/a26000-/d24000/ho SNSTT/a20000-23000 SOLAY COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/delete",
+          "spawn": "AMMOR",
+          "waypoint_actions": { "NNEDD": "delete", "RNCHO": "d24000,ho" },
           "star": "THRNE4",
           "is_rnav": true,
           "initial_controller": "31",
@@ -4169,7 +4171,8 @@
     "LUCKI1.MOMAR": {
       "arrivals": [
         {
-          "waypoints": "LVELL CHADT CABIC/d24000/ho MOMAR/a24000-26000 DSURT/a19000-23000 TRIXI/a12000-14000/s270 HSKER/a8700+ BARET/a8000+ HNAHH/a6100+ LUCKI/a6000 LYNDI/a5000+/s210/clearapp",
+          "spawn": "LVELL",
+          "waypoint_actions": { "CABIC": "d24000,ho", "LYNDI": "clearapp" },
           "star": "LUCKI1",
           "is_rnav": true,
           "initial_controller": "40",
@@ -4573,7 +4576,8 @@
     "LUCKI1.HOGGZ": {
       "arrivals": [
         {
-          "waypoints": "CBOLA KRMAA/d24000/ho SOFII/a24000-26000 CMPOE/a19000-23000 HEELX/a12000-15000/s270 JACKK/a10000-11000/s250 AZTEK/a8000+ JEEVS/a6100+ LUCKI/a6000 LYNDI/a5000+/s210/clearapp",
+          "spawn": "CBOLA",
+          "waypoint_actions": { "KRMAA": "d24000,ho", "LYNDI": "clearapp" },
           "star": "LUCKI1",
           "is_rnav": true,
           "initial_controller": "31",

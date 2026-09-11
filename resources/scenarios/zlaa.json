@@ -2478,7 +2478,8 @@
     "HUULL2": {
       "arrivals": [
         {
-          "waypoints": "TOKIO MANZZ RBOTO LLEVI/ho BRUKY/a25000+ HUULL/a23000-/s280 GNZZO/a13000-14000 RYDRR/a11000/s250 KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/delete",
+          "spawn": "TOKIO",
+          "waypoint_actions": { "GADDO": "delete", "LLEVI": "ho" },
           "star": "HUULL2",
           "route": "/. HUULL2",
           "initial_controller": "25",

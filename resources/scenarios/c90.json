@@ -14037,7 +14037,8 @@
           "initial_speed": 250,
           "star": "LUCIT3",
           "speed_restriction": 250,
-          "waypoints": "EDENS HERWK/a10000/ho UJEAN/a10000 LUCIT/a4000 HTDOG/a4000"
+          "spawn": "EDENS",
+          "waypoint_actions": { "HERWK": "ho" }
         },
         {
           "airports": ["KGYY"],
@@ -14086,7 +14087,8 @@
           "initial_speed": 250,
           "star": "LUCIT3",
           "speed_restriction": 250,
-          "waypoints": "SOHOW HAAYQ/a24000 WUNTZ COOKS/a17000 DABOZ/a17000 USTIS/a15000 ROEPR/a11000-13000/ho WYDIK/a8000-11000 LUCIT/a4000 HTDOG/a4000/h034"
+          "spawn": "SOHOW",
+          "waypoint_actions": { "ROEPR": "ho" }
         },
         {
           "airports": ["KGYY"],
@@ -14135,7 +14137,8 @@
           "initial_speed": 250,
           "star": "LUCIT3",
           "speed_restriction": 250,
-          "waypoints": "SOHOW HAAYQ/a24000 WUNTZ COOKS/a17000 DABOZ/a17000 USTIS/a15000 ROEPR/a11000-13000/ho WYDIK/a8000-11000 LUCIT/a4000 HTDOG/a4000/h034"
+          "spawn": "SOHOW",
+          "waypoint_actions": { "ROEPR": "ho" }
         },
         {
           "airports": ["KGYY"],
@@ -14184,7 +14187,8 @@
           "initial_speed": 250,
           "star": "LUCIT3",
           "speed_restriction": 250,
-          "waypoints": "MACES KKOPA/a24000 HLMIT/a12000 POSOC/a11000/ho GRIDZ/a8000-10000 LUCIT/a4000 HTDOG/a4000/h034"
+          "spawn": "MACES",
+          "waypoint_actions": { "POSOC": "ho" }
         }
       ]
     }

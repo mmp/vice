@@ -228,13 +228,8 @@
     "SHFTY6": {
       "arrivals": [
         {
-          "waypoints": "BUNGE/a16000/ho MAZZY MOEMO/a11000/s250 LBELL",
-          "runway_waypoints": {
-            "KRSW": {
-              "6": "LBELL IRNIE WYCOF STERO/h238",
-              "24": "LBELL RODDE/a3000"
-            }
-          },
+          "spawn": "BUNGE",
+          "waypoint_actions": { "BUNGE": "ho" },
           "route": "DCT",
           "star": "SHFTY6",
           "cruise_altitude": 30000,

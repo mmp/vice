@@ -2092,7 +2092,8 @@
     "GOATZ2/KALRB3": {
       "arrivals": [
         {
-          "waypoints": "GOATZ/a16000/s280/ho6K DIRBY/ho PHUNN/a14000 SHHOW/a12000- ZAPPP/a9000+ BUFIE/a8000- SLI/a7000/s210 TRNDO/a5000/s210/clearapp",
+          "spawn": "GOATZ",
+          "waypoint_actions": { "DIRBY": "ho", "GOATZ": "ho6K", "TRNDO": "clearapp" },
           "star": "GOATZ2",
           "is_rnav": true,
           "initial_controller": "C28",
@@ -2186,7 +2187,8 @@
           }
         },
         {
-          "waypoints": "GOATZ/a16000/s280 DIRBY/ho PHUNN/a14000- SHHOW/a12000-  OLLLY/a9000+ KARLB/a8000- POXKU/a7000/s220 PDZ/a7000/delete",
+          "spawn": "GOATZ",
+          "waypoint_actions": { "DIRBY": "ho", "PDZ": "delete" },
           "cruise_altitude": 40000,
           "star": "KARLB3",
           "is_rnav": true,
@@ -4002,7 +4004,8 @@
     "ROOBY3": {
       "arrivals": [
         {
-          "waypoints": "ROOBY/a10000 SLPPR/a8000+/ho WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/h242",
+          "spawn": "ROOBY",
+          "waypoint_actions": { "SLPPR": "ho" },
           "cruise_altitude": 36000,
           "star": "ROOBY3",
           "is_rnav": true,
@@ -4119,7 +4122,8 @@
           }
         },
         {
-          "waypoints": "ROOBY/a10000 SLPPR/a8000+/ho WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/h270",
+          "spawn": "ROOBY",
+          "waypoint_actions": { "SLPPR": "ho" },
           "cruise_altitude": 36000,
           "star": "ROOBY3",
           "is_rnav": true,

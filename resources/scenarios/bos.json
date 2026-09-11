@@ -35374,18 +35374,8 @@
           "initial_altitude": 17000,
           "initial_controller": "C36",
           "initial_speed": 310,
-          "waypoints": "DUBLE/a17000/ho BASEZ JFUND",
-          "runway_waypoints": {
-            "KBOS": {
-              "15R": "JFUND BADCA/a9000+/s250 WACHU/a7000/s210 SSAAM AADMS/h148",
-              "22L": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS ISLAY/a6000/s220 LWLND/a6000/s210/h035",
-              "4R": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s220 GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
-              "4L": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s220 GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
-              "27": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s220 REVER SEHAG/a6000/s210/h093",
-              "33L": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s210 BRODI/a6000 BECHH/a5000/s220 SCITU/a5000/s210/h150",
-              "32": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s210 BRODI/a6000 BECHH/a5000/s220 SCITU/a5000/s210/h150"
-            }
-          },
+          "spawn": "DUBLE",
+          "waypoint_actions": { "DUBLE": "ho" },
           "airports": ["KBOS"],
           "airlines": {
             "KBOS": [
@@ -52814,19 +52804,9 @@
           "initial_controller": "C34",
           "initial_speed": 290,
           "star": "ROBUC3",
-          "runway_waypoints": {
-            "KBOS": {
-              "4R": "JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
-              "4L": "JOODY SOFEE/a9000-10000/s220 ERNEI/a7000-8000 NUNZO/a6000/s210/h035",
-              "27": "JOODY KRANN/a11000-12000/s250 CRADL/a8000-10000 KLEBB HOKDU/a5000/s210/h024",
-              "22L": "JOODY KRANN/a11000-12000/s250 CRADL/a8000-10000 KLEBB/a8000/s250 ETHYN/a5000/s250 PTRIK/a5000/s220 TAALE/a5000/s210/h035",
-              "15R": "JOODY JAYNA/a11000/s250 BOXRS/a8000/s250 CHERS/a6000/s220 RDHOK/a6000/s210 TKMAN/a6000/s210/h329",
-              "33L": "JOODY JAYNA/a11000/s250 ANSLY/a8000/s240 BEREI/a6000-7000/s220 BBOGG/a6000/s210/h060",
-              "32": "JOODY JAYNA/a11000/s250 ANSLY/a8000/s240 BEREI/a6000-7000/s220 BBOGG/a6000/s210/h060"
-            }
-          },
           "speed_restriction": 260,
-          "waypoints": "BANKI/a16000+/ho ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY",
+          "spawn": "BANKI",
+          "waypoint_actions": { "BANKI": "ho" },
           "airports": ["KBOS"],
           "airlines": {
             "KBOS": [

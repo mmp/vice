@@ -4217,17 +4217,8 @@
     "AARCH2.VHP": {
       "arrivals": [
         {
-          "waypoints": "PRUET UKAAY/a31000-/s280 AARCH/a11000+/s280/ho PETTI",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
-              "30L": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
-              "30R": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
-              "11": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301",
-              "12L": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301",
-              "12R": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301"
-            }
-          },
+          "spawn": "PRUET",
+          "waypoint_actions": { "AARCH": "ho" },
           "star": "AARCH2",
           "initial_controller": "C58",
           "initial_altitude": 29000,
@@ -4256,17 +4247,8 @@
     "AARCH2.RBS": {
       "arrivals": [
         {
-          "waypoints": "RBS JARKE BASCO GORDO WLDBL HONKK/a31000-/s280 AARCH/a11000+/s280/ho PETTI",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
-              "30L": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
-              "30R": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
-              "11": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301",
-              "12L": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301",
-              "12R": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301"
-            }
-          },
+          "spawn": "RBS",
+          "waypoint_actions": { "AARCH": "ho" },
           "star": "AARCH2",
           "initial_controller": "C58",
           "initial_altitude": 29000,
@@ -4526,17 +4508,8 @@
     "KAYLA3.BUM": {
       "arrivals": [
         {
-          "waypoints": "BUM FEBAP/a31000-/s280 KOOOP NATEM/a23000-/s280/ho KAYLA BGMAC",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "11": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
-              "12L": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
-              "12R": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061"
-            }
-          },
+          "spawn": "BUM",
+          "waypoint_actions": { "NATEM": "ho" },
           "star": "KAYLA3",
           "initial_controller": "C52",
           "initial_altitude": 31000,
@@ -4565,17 +4538,8 @@
     "KAYLA3.ANX": {
       "arrivals": [
         {
-          "waypoints": "ANX HEBNA/a31000-/s280 KOOOP NATEM/a23000-/s280/ho KAYLA BGMAC",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "11": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
-              "12L": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
-              "12R": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061"
-            }
-          },
+          "spawn": "ANX",
+          "waypoint_actions": { "NATEM": "ho" },
           "star": "KAYLA3",
           "initial_controller": "C52",
           "initial_altitude": 31000,
@@ -4608,17 +4572,8 @@
     "KAYLA3.SGF": {
       "arrivals": [
         {
-          "waypoints": "SGF GNNON JEXAV/a31000-/s280 ZULMO/a23000-/s280/ho KAYLA BGMAC",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
-              "11": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
-              "12L": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
-              "12R": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061"
-            }
-          },
+          "spawn": "SGF",
+          "waypoint_actions": { "ZULMO": "ho" },
           "star": "KAYLA3",
           "initial_controller": "C52",
           "initial_altitude": 31000,
@@ -4651,17 +4606,8 @@
     "LORLE3.GUZIK": {
       "arrivals": [
         {
-          "waypoints": "GUZIK SEIZE SKOVE/a31000-/s280 RIVRS/a12000+/s280/ho LORLE",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210/t124",
-              "30L": "LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210/t124",
-              "30R": "LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210/t124",
-              "11": "LORLE HMFRZ/a9000-10000 VEEGE/a8000-9000/s250/t166",
-              "12L": "LORLE HMFRZ/a9000-10000 VEEGE/a8000-9000/s250/t166",
-              "12R": "LORLE HMFRZ/a9000-10000 VEEGE/a8000-9000/s250/t166"
-            }
-          },
+          "spawn": "GUZIK",
+          "waypoint_actions": { "RIVRS": "ho" },
           "star": "LORLE3",
           "initial_controller": "C50",
           "initial_altitude": 31000,
@@ -4694,17 +4640,8 @@
     "LORLE3.IRK": {
       "arrivals": [
         {
-          "waypoints": "IRK JUDER/a31000-/s280 RIVRS/a12000+/s280/ho LORLE",
-          "runway_waypoints": {
-            "KSTL": {
-              "29": "LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210/t124",
-              "30L": "LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210/t124",
-              "30R": "LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210/t124",
-              "11": "LORLE HMFRZ/a9000-10000 VEEGE/a8000-9000/s250/t166",
-              "12L": "LORLE HMFRZ/a9000-10000 VEEGE/a8000-9000/s250/t166",
-              "12R": "LORLE HMFRZ/a9000-10000 VEEGE/a8000-9000/s250/t166"
-            }
-          },
+          "spawn": "IRK",
+          "waypoint_actions": { "RIVRS": "ho" },
           "star": "LORLE3",
           "initial_controller": "C50",
           "initial_altitude": 31000,

@@ -1441,7 +1441,8 @@
           "initial_controller": "17",
           "initial_speed": 300,
           "star": "OZZZY5",
-          "waypoints": "GLD GLITR/a28000/ho CREWW/a27000 DOHRS/a23000 HGO/a17000 OZZZY/a14000/s250 ADANE"
+          "spawn": "GLD",
+          "waypoint_actions": { "GLITR": "ho" }
         }
       ]
     },

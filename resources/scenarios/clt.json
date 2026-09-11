@@ -4697,17 +4697,8 @@
     "BANKR7": {
       "arrivals": [
         {
-          "waypoints": "BANKR/a13000-22000/ho DEBBT/a12000-21000/s250",
-          "runway_waypoints": {
-            "KCLT": {
-              "19L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP DOSBE AAIRE JRDEN/h3",
-              "18L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP DOSBE AAIRE JRDEN/h3",
-              "19R": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP DOSBE AAIRE JRDEN/h3",
-              "1R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/h90",
-              "1L": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/h90",
-              "36R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/h90"
-            }
-          },
+          "spawn": "BANKR",
+          "waypoint_actions": { "BANKR": "ho" },
           "cruise_altitude": 35000,
           "star": "BANKR7",
           "initial_controller": "C43",
@@ -5550,17 +5541,8 @@
     "FILPZ6": {
       "arrivals": [
         {
-          "waypoints": "JJENY/a19000-27000/ho FILPZ/a16000+/s270",
-          "runway_waypoints": {
-            "KCLT": {
-              "19L": "FILPZ/a16000+/s270 GLAXI/a12000-14000/s250 JOBOT/a11000 ERHRT/a10000- FISHN/a7000/s210/h90",
-              "18L": "FILPZ/a16000+/s270 GLAXI/a12000-14000/s250 JOBOT/a11000 ERHRT/a10000- FISHN/a7000/s210/h90",
-              "19R": "FILPZ/a16000+/s270 GLAXI/a12000-14000/s250 JOBOT/a11000 ERHRT/a10000- FISHN/a7000/s210/h90",
-              "1R": "FILPZ/a16000+/s270 ADOWN/a12000-19000/s250 INWAL/a11000-15000 JELNO/a10000-11000 CEDOX/a10000/s210 VALLL/h183",
-              "1L": "FILPZ/a16000+/s270 ADOWN/a12000-19000/s250 INWAL/a11000-15000 JELNO/a10000-11000 CEDOX/a10000/s210 VALLL/h183",
-              "36R": "FILPZ/a16000+/s270 ADOWN/a12000-19000/s250 INWAL/a11000-15000 JELNO/a10000-11000 CEDOX/a10000/s210 VALLL/h183"
-            }
-          },
+          "spawn": "JJENY",
+          "waypoint_actions": { "JJENY": "ho" },
           "cruise_altitude": 37000,
           "star": "FILPZ6",
           "initial_controller": "C43",
@@ -5849,17 +5831,8 @@
     "JONZE7": {
       "arrivals": [
         {
-          "waypoints": "CAAKE/a17000-26000/s270/ho JONZE/a11000-21000/s250",
-          "runway_waypoints": {
-            "KCLT": {
-              "19L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE AAIRE/a10000/s210 JRDEN/h3",
-              "18L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE AAIRE/a10000/s210 JRDEN/h3",
-              "19R": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE AAIRE/a10000/s210 JRDEN/h3",
-              "1R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/h90",
-              "1L": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/h90",
-              "36R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/h90"
-            }
-          },
+          "spawn": "CAAKE",
+          "waypoint_actions": { "CAAKE": "ho" },
           "cruise_altitude": 37000,
           "star": "JONZE7",
           "initial_controller": "C43",
@@ -6173,17 +6146,8 @@
     "PARQR6": {
       "arrivals": [
         {
-          "waypoints": "SUZNN/a17000+/ho PARQR/a20000-/s250",
-          "runway_waypoints": {
-            "KCLT": {
-              "19L": "PARQR/a20000-/s250 NCOMA/a11000 BOATN CAMPR/h92",
-              "18L": "PARQR/a20000-/s250 NCOMA/a11000 BOATN CAMPR/h92",
-              "19R": "PARQR/a20000-/s250 NCOMA/a11000 BOATN CAMPR/h92",
-              "1R": "PARQR/a20000-/s250 PAYKN/a12000-15000 THACK/a12000 BBQEE CEDOX VALLL/h183",
-              "1L": "PARQR/a20000-/s250 PAYKN/a12000-15000 THACK/a12000 BBQEE CEDOX VALLL/h183",
-              "36R": "PARQR/a20000-/s250 PAYKN/a12000-15000 THACK/a12000 BBQEE CEDOX VALLL/h183"
-            }
-          },
+          "spawn": "SUZNN",
+          "waypoint_actions": { "SUZNN": "ho" },
           "cruise_altitude": 32000,
           "star": "PARQR6",
           "initial_controller": "C43",
@@ -6454,17 +6418,8 @@
     "STOCR6": {
       "arrivals": [
         {
-          "waypoints": "FFNSH/a16000-23000/ho STOCR/a12000-19000/s270",
-          "runway_waypoints": {
-            "KCLT": {
-              "19L": "STOCR/a12000-19000/s270 LLAPP/a12000-16000 ZYMKO/a11000-13000/s250 DOOMY/a10000-11000 POORE LEEKS/a10000/s210 HANDO/h3",
-              "18L": "STOCR/a12000-19000/s270 LLAPP/a12000-16000 ZYMKO/a11000-13000/s250 DOOMY/a10000-11000 POORE LEEKS/a10000/s210 HANDO/h3",
-              "19R": "STOCR/a12000-19000/s270 LLAPP/a12000-16000 ZYMKO/a11000-13000/s250 DOOMY/a10000-11000 POORE LEEKS/a10000/s210 HANDO/h3",
-              "1R": "STOCR/a12000-19000/s270 FIBBR/a11000-14000/s250 TYMER/a8000-11000 TERIE/a6000-8000 GATEE/a6000/s210/h273",
-              "1L": "STOCR/a12000-19000/s270 FIBBR/a11000-14000/s250 TYMER/a8000-11000 TERIE/a6000-8000 GATEE/a6000/s210/h273",
-              "36R": "STOCR/a12000-19000/s270 FIBBR/a11000-14000/s250 TYMER/a8000-11000 TERIE/a6000-8000 GATEE/a6000/s210/h273"
-            }
-          },
+          "spawn": "FFNSH",
+          "waypoint_actions": { "FFNSH": "ho" },
           "cruise_altitude": 32000,
           "star": "STOCR6",
           "initial_controller": "J30",

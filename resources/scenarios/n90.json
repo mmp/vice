@@ -9234,7 +9234,8 @@
     "VADDR1": {
       "arrivals": [
         {
-          "waypoints": "IGN/ho VALRE BASYE HAARP CRALY VADDR/h224",
+          "spawn": "IGN",
+          "waypoint_actions": { "IGN": "ho" },
           "route": "/. VADDR1",
           "star": "VADDR1",
           "initial_controller": "B46",
@@ -9249,7 +9250,8 @@
     "PROUD2": {
       "arrivals": [
         {
-          "waypoints": "HOLEY/ho BRAND/a11000+ KORRY/a10000 DEPDY TYKES MINKS JERZY RENUE APPLE PROUD/h045",
+          "spawn": "HOLEY",
+          "waypoint_actions": { "HOLEY": "ho" },
           "route": "/. PROUD2",
           "star": "PROUD2",
           "initial_controller": "W32",
@@ -9292,7 +9294,8 @@
     "BOUNO5": {
       "arrivals": [
         {
-          "waypoints": "SOUND/ho/a13000 GWENY/a11000 ZAHNN EILEN WESTO/a6000 BDR ALIXX RYMES/a4000/h289",
+          "spawn": "SOUND",
+          "waypoint_actions": { "SOUND": "ho" },
           "route": "/. BOUNO5",
           "star": "BOUNO5",
           "initial_controller": "W32",
@@ -11204,7 +11207,8 @@
     "SARDI1": {
       "arrivals": [
         {
-          "waypoints": "PLUME SHERL DUNEE/ho3H/d7000 KOPPY SARDI UPTWN/ho DPK",
+          "spawn": "PLUME",
+          "waypoint_actions": { "DUNEE": "ho3H,d7000", "UPTWN": "ho" },
           "cruise_altitude": 31000,
           "star": "SARDI1",
           "initial_controller": "B17",

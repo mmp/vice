@@ -1078,7 +1078,8 @@
     "DSNEE6.DRTHI": {
       "arrivals": [
         {
-          "waypoints": "DRTHI/a24000+/s280 CHURO/a22000+ BRCKK/a20000+ ROADE/a17000-19000/ho PHIYA/a14000 TOETO/a10000- DSNEE/a8000/s220 JWARD/a8000/s190/h263",
+          "spawn": "DRTHI",
+          "waypoint_actions": { "ROADE": "ho" },
           "star": "DSNEE6",
           "is_rnav": true,
           "initial_controller": "C12",
@@ -1290,7 +1291,8 @@
     "ROOBY3.DRTHI": {
       "arrivals": [
         {
-          "waypoints": "CHURO/a24000+/s280 BRCKK/a21000+ ROADE/a17000-19000/ho PHIYA/a12000-14000 ROOBY/a10000 SLPPR/a8000+ WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/clearapp",
+          "spawn": "CHURO",
+          "waypoint_actions": { "FYTRR": "clearapp", "ROADE": "ho" },
           "star": "ROOBY3",
           "is_rnav": true,
           "initial_controller": "C12",
@@ -1594,13 +1596,8 @@
     "RDBUL1": {
       "arrivals": [
         {
-          "waypoints": "TUUNE/a17000-23000 BRRAP/a10000-15000/ho RDBUL/a8000-9000",
-          "runway_waypoints": {
-            "KPSP": {
-              "13R": "RDBUL/a8000-9000 YAGUS/a8000/s230/h259",
-              "31L": "RDBUL/a8000-9000 MERCK/a8000/s230/h238"
-            }
-          },
+          "spawn": "TUUNE",
+          "waypoint_actions": { "BRRAP": "ho" },
           "cruise_altitude": 35000,
           "star": "RDBUL1",
           "is_rnav": true,
@@ -1639,13 +1636,8 @@
           }
         },
         {
-          "waypoints": "JOTNU TNP/a10000-15000/ho RDBUL/a8000-9000",
-          "runway_waypoints": {
-            "KPSP": {
-              "13R": "RDBUL/a8000-9000 YAGUS/a8000/s230/h259",
-              "31L": "RDBUL/a8000-9000 MERCK/a8000/s230/h238"
-            }
-          },
+          "spawn": "JOTNU",
+          "waypoint_actions": { "TNP": "ho" },
           "cruise_altitude": 35000,
           "star": "RDBUL1",
           "is_rnav": true,
@@ -1987,7 +1979,8 @@
     "SIZLR4.SPRINGS": {
       "arrivals": [
         {
-          "waypoints": "HITOP/a16000 CURKO/a16000/s280 GEBEE/a15000/ho MORON/a14000 FERNN/a11000/h124",
+          "spawn": "HITOP",
+          "waypoint_actions": { "GEBEE": "ho" },
           "star": "SIZLR4",
           "is_rnav": true,
           "initial_controller": "3V",
@@ -2050,7 +2043,8 @@
     "SIZLR4": {
       "arrivals": [
         {
-          "waypoints": "SIZLR/a20000-23000 MXIMO/a19000- HITOP/a16000/ho CURKO/a16000 GEBEE/a15000 MORON/a14000 FERNN/a11000/h124",
+          "spawn": "SIZLR",
+          "waypoint_actions": { "HITOP": "ho" },
           "cruise_altitude": 32000,
           "star": "SIZLR4",
           "is_rnav": true,

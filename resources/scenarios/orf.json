@@ -1039,7 +1039,8 @@
     "OUTLA1.MAULS": {
       "arrivals": [
         {
-          "waypoints": "MAULS ANDNN/a21000 FAK RUSSL/ho HCM TERKS/a14000 OUTLA MEEKA/flyover/h180",
+          "spawn": "MAULS",
+          "waypoint_actions": { "RUSSL": "ho" },
           "star": "OUTLA1",
           "initial_controller": "C54",
           "initial_altitude": 21000,

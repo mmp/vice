@@ -2664,7 +2664,8 @@
     "HUUTY1": {
       "arrivals": [
         {
-          "waypoints": "CHEKR/a12000-14000/s270 ROSEE/a10000-11000/s250/ho CNYON/a9000 BAYTA/a8000 AEJAY/a7000/s210 TYLIK/a5500/h167",
+          "spawn": "CHEKR",
+          "waypoint_actions": { "ROSEE": "ho" },
           "star": "HUUTY1",
           "initial_controller": "C38",
           "initial_altitude": 14000,

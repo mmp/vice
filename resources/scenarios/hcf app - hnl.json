@@ -1322,7 +1322,8 @@
     "SYMIN1": {
       "arrivals": [
         {
-          "waypoints": "HISPO/a13000+ SYMIN/a9000+/s250/ho CUDEK/a6000/s210/h210",
+          "spawn": "HISPO",
+          "waypoint_actions": { "SYMIN": "ho" },
           "star": "SYMIN1",
           "initial_controller": "C03",
           "initial_altitude": 18000,
@@ -1486,7 +1487,8 @@
           }
         },
         {
-          "waypoints": "JOELE/a17000+ SYMIN/a9000+/s250/ho CUDEK/a6000/s210/h210",
+          "spawn": "JOELE",
+          "waypoint_actions": { "SYMIN": "ho" },
           "star": "SYMIN1",
           "initial_controller": "C03",
           "initial_altitude": 18000,
@@ -1584,7 +1586,8 @@
           }
         },
         {
-          "waypoints": "ZORTA/a17000+ SYMIN/a9000+/s250/ho CUDEK/a6000/s210/h210",
+          "spawn": "ZORTA",
+          "waypoint_actions": { "SYMIN": "ho" },
           "star": "SYMIN1",
           "initial_controller": "C03",
           "initial_altitude": 18000,
@@ -2109,16 +2112,8 @@
     "KLANI4": {
       "arrivals": [
         {
-          "waypoints": "KLANI/a9000+/ho BAFRE/a8000+ SHLLS",
-          "runway_waypoints": {
-            "PHNL": {
-              "4L": "SHLLS HAURY/a4000/s210",
-              "4R": "SHLLS HAURY/a4000/s210",
-              "26L": "SHLLS CENAS POHAI/a6000+/s230 NBODY/a6000/s210/h140",
-              "26R": "SHLLS CENAS POHAI/a6000+/s230 NBODY/a6000/s210/h140",
-              "8L": "SHLLS SELIC/a4000/s220"
-            }
-          },
+          "spawn": "KLANI",
+          "waypoint_actions": { "KLANI": "ho" },
           "star": "KLANI4",
           "initial_controller": "C02",
           "initial_altitude": 12000,

@@ -2331,13 +2331,8 @@
     "CLIPR3": {
       "arrivals": [
         {
-          "waypoints": "NUGGY TROYZ/ho BELAY TRISH CLIPR/a12000 BAL/a10000/s250 EYESS",
-          "runway_waypoints": {
-            "KDCA": {
-              "1": "EYESS BRUNC FELTY/a6000 HITEK CAVDI/delete",
-              "19": "EYESS EDDWD MEGGS/a6000 NAYES/delete"
-            }
-          },
+          "spawn": "NUGGY",
+          "waypoint_actions": { "CAVDI": "delete", "NAYES": "delete", "TROYZ": "ho" },
           "star": "CLIPR3",
           "initial_controller": "N26",
           "initial_altitude": 17000,

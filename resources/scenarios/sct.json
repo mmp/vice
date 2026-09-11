@@ -8620,7 +8620,8 @@
     "ANJLL4": {
       "arrivals": [
         {
-          "waypoints": "GLESN/a24000-30000/s280 ANJLL/a19000-24000/ho CAANN/a17000+ BOYEL/a14000+ CRCUS/a12000-14000/s270",
+          "spawn": "GLESN",
+          "waypoint_actions": { "ANJLL": "ho" },
           "route": "ANJLL4",
           "star": "ANJLL4",
           "initial_controller": "C37",
@@ -9052,7 +9053,8 @@
     "BOGET2": {
       "arrivals": [
         {
-          "waypoints": "JOHHN/a22000 BASAL DYVER/a19000 CHKNZ KOPLE/a14000 ROPEZ/a11000-13000/ho BOGET/a8000 MEETT/a7500+ WATSS/a6900+ UPDOC/a6000/h140",
+          "spawn": "JOHHN",
+          "waypoint_actions": { "ROPEZ": "ho" },
           "star": "BOGET2",
           "initial_controller": "1J",
           "initial_altitude": 22000,
@@ -9082,13 +9084,8 @@
     "BRUEN2": {
       "arrivals": [
         {
-          "waypoints": "AVATR/a24000-29000/s280 TRUBL/a19000-23000/ho EMMMY/a14000-17000 WHDDN/a15000- SHRTZ/a13000-14000",
-          "runway_waypoints": {
-            "KLAX": {
-              "6L": "SHRTZ/a13000-14000 DRYSS/a10000 TOMYS/a9000 CLIFY/a7000/s220 HNCHE SASSI/a7000/s210 SHIPM/h251",
-              "7R": "SHRTZ/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000+/s220 WNDFL/a6000/s210 NIKEY/h251"
-            }
-          },
+          "spawn": "AVATR",
+          "waypoint_actions": { "TRUBL": "ho" },
           "route": "BRUEN2",
           "star": "BRUEN2",
           "initial_controller": "C39",
@@ -9239,7 +9236,8 @@
           }
         },
         {
-          "waypoints": "MOMAR/a24000-26000 DSURT/a19000-23000/ho TRIXI/a12000-14000/s270 RIPPL/a8500 TOPGN/a7300+ CHASR/a6400/h250",
+          "spawn": "MOMAR",
+          "waypoint_actions": { "DSURT": "ho" },
           "cruise_altitude": 32000,
           "star": "CHASR2",
           "initial_controller": "C09",
@@ -9275,7 +9273,8 @@
     "COMIX2": {
       "arrivals": [
         {
-          "waypoints": "LEJEN/a15000-19000/ho COMIX/a12000-15000 FLSHH LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210 NADDO/a6000/h095",
+          "spawn": "LEJEN",
+          "waypoint_actions": { "LEJEN": "ho" },
           "cruise_altitude": 30000,
           "star": "COMIX2",
           "initial_controller": "C22",
@@ -9360,7 +9359,8 @@
     "DSNEE6.DRTHI": {
       "arrivals": [
         {
-          "waypoints": "DRTHI/a24000+/s280 CHURO/a22000+ BRCKK/a20000+ ROADE/a17000-19000/ho PHIYA/a14000 TOETO/a10000- DSNEE/a8000/s220 JWARD/a8000/s190/h263",
+          "spawn": "DRTHI",
+          "waypoint_actions": { "ROADE": "ho" },
           "star": "DSNEE6",
           "initial_controller": "C12",
           "initial_altitude": 24000,
@@ -9672,7 +9672,8 @@
     "ROOBY3.DRTHI": {
       "arrivals": [
         {
-          "waypoints": "CHURO/a24000+/s280 BRCKK/a21000+ ROADE/a17000-19000/ho PHIYA/a12000-14000 ROOBY/a10000 SLPPR/a8000+ WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/h242",
+          "spawn": "CHURO",
+          "waypoint_actions": { "ROADE": "ho" },
           "star": "ROOBY3",
           "initial_controller": "C12",
           "initial_altitude": 24000,
@@ -9733,7 +9734,8 @@
           }
         },
         {
-          "waypoints": "CHURO/a24000+/s280 BRCKK/a21000+ ROADE/a17000-19000/ho PHIYA/a12000-14000 ROOBY/a10000 SLPPR/a8000+ WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/h270",
+          "spawn": "CHURO",
+          "waypoint_actions": { "ROADE": "ho" },
           "star": "ROOBY3",
           "initial_controller": "C12",
           "initial_altitude": 24000,
@@ -9804,7 +9806,8 @@
     "EMMLN1": {
       "arrivals": [
         {
-          "waypoints": "DAG BASAL/a10000 APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 DOWDD/a6000 AHEIM/a6000 SLI/a6000/h210",
+          "spawn": "DAG",
+          "waypoint_actions": { "APLES": "ho", "SLI": "h210" },
           "star": "EMMLN3",
           "initial_controller": "1J",
           "initial_altitude": 15000,
@@ -9835,7 +9838,8 @@
           }
         },
         {
-          "waypoints": "HEC GILLM APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 DOWDD/a6000 AHEIM/a6000 SLI/a6000/h210",
+          "spawn": "HEC",
+          "waypoint_actions": { "APLES": "ho", "SLI": "h210" },
           "star": "EMMLN3",
           "initial_controller": "1J",
           "initial_altitude": 15000,
@@ -9866,7 +9870,8 @@
           }
         },
         {
-          "waypoints": "DAG BASAL/a10000 APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 RNDAL/a6000/h250",
+          "spawn": "DAG",
+          "waypoint_actions": { "APLES": "ho" },
           "star": "EMMLN3",
           "initial_controller": "1J",
           "initial_altitude": 15000,
@@ -9897,7 +9902,8 @@
           }
         },
         {
-          "waypoints": "HEC GILLM APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 RNDAL/a6000/h250",
+          "spawn": "HEC",
+          "waypoint_actions": { "APLES": "ho" },
           "star": "EMMLN3",
           "initial_controller": "1J",
           "initial_altitude": 15000,
@@ -10184,7 +10190,8 @@
     "IRNMN2": {
       "arrivals": [
         {
-          "waypoints": "BIKNG/a16000-20000 RUNNN/a14000-17000/ho IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
+          "spawn": "BIKNG",
+          "waypoint_actions": { "RUNNN": "ho" },
           "route": "IRNMN2",
           "star": "IRNMN2",
           "initial_controller": "C13",
@@ -10671,7 +10678,8 @@
     "LUCKI1.MOMAR": {
       "arrivals": [
         {
-          "waypoints": "MOMAR/a24000-26000 DSURT/a19000-23000 TRIXI/a12000-14000/s270/ho HSKER/a8700+ BARET/a8000+ HNAHH/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
+          "spawn": "MOMAR",
+          "waypoint_actions": { "TRIXI": "ho" },
           "cruise_altitude": 36000,
           "route": "/. LUCKI LYNDI",
           "star": "LUCKI1",
@@ -10762,7 +10770,8 @@
     "LUCKI1.HEELX": {
       "arrivals": [
         {
-          "waypoints": "CMPOE/a19000-23000 HEELX/a12000-15000/s270/ho JACKK/a10000-11000/s250 AZTEK/a8000+ JEEVS/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
+          "spawn": "CMPOE",
+          "waypoint_actions": { "HEELX": "ho" },
           "cruise_altitude": 36000,
           "route": "/. LUCKI LYNDI",
           "star": "LUCKI1",
@@ -11227,14 +11236,8 @@
           }
         },
         {
-          "waypoints": "PCIFC/a20000+ CRAYN/a17000+ SIPPP/a14000+/ho TANDY/a13000-14000 OHSEA STYFF/a7000-9000",
-          "runway_waypoints": {
-            "KLGB": {
-              "30": "STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/s210",
-              "26R": "STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/s210",
-              "12": "STYFF/a7000-9000 KAYNN/a5000-7000 PADDR/a5000-6000/s200 QGATE BREKE/a3000"
-            }
-          },
+          "spawn": "PCIFC",
+          "waypoint_actions": { "SIPPP": "ho" },
           "star": "PCIFC3",
           "initial_controller": "C14",
           "initial_altitude": 21000,
@@ -11271,7 +11274,8 @@
     "OLAAA2": {
       "arrivals": [
         {
-          "waypoints": "RNCHO/a26000+ REGGO/a24000+ CYNDE/a14000-/ho OLAAA/a12000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210",
+          "spawn": "RNCHO",
+          "waypoint_actions": { "CYNDE": "ho" },
           "star": "OLAAA2",
           "initial_controller": "C09",
           "initial_altitude": 27000,
@@ -11402,13 +11406,8 @@
     "RDBUL1": {
       "arrivals": [
         {
-          "waypoints": "TUUNE/a17000-23000 BRRAP/a10000-15000/ho RDBUL/a8000-9000",
-          "runway_waypoints": {
-            "KPSP": {
-              "13R": "RDBUL/a8000-9000 YAGUS/a8000/s230/h259",
-              "31L": "RDBUL/a8000-9000 MERCK/a8000/s230/h238"
-            }
-          },
+          "spawn": "TUUNE",
+          "waypoint_actions": { "BRRAP": "ho" },
           "cruise_altitude": 35000,
           "star": "RDBUL1",
           "initial_controller": "C10",
@@ -11445,13 +11444,8 @@
           }
         },
         {
-          "waypoints": "JOTNU TNP/a10000-15000/ho RDBUL/a8000-9000",
-          "runway_waypoints": {
-            "KPSP": {
-              "13R": "RDBUL/a8000-9000 YAGUS/a8000/s230/h259",
-              "31L": "RDBUL/a8000-9000 MERCK/a8000/s230/h238"
-            }
-          },
+          "spawn": "JOTNU",
+          "waypoint_actions": { "TNP": "ho" },
           "cruise_altitude": 35000,
           "star": "RDBUL1",
           "initial_controller": "C10",
@@ -11500,14 +11494,8 @@
     "ROKKR3/IVINS2/BONJO3": {
       "arrivals": [
         {
-          "waypoints": "YUTOO/a14000-16000/s270 TRAVV ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000/s240 IVINS/a8000+",
-          "runway_waypoints": {
-            "KBUR": {
-              "15": "IVINS/a8000+ MAURK/a6000/h83",
-              "33": "IVINS/a8000+ MIKEI/a7000 EHUNT/a6000/h126",
-              "8": "IVINS/a8000+ MIKEI/a7000/h126"
-            }
-          },
+          "spawn": "YUTOO",
+          "waypoint_actions": { "MIKEI": "h126", "ROKKR": "ho" },
           "cruise_altitude": 35000,
           "star": "ROKKR3",
           "initial_controller": "C13",
@@ -11546,13 +11534,8 @@
           }
         },
         {
-          "waypoints": "YUTOO/a14000-16000/s270 TRAVV ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000/s240 IVINS/a8000+",
-          "runway_waypoints": {
-            "KVNY": {
-              "16R": "IVINS/a8000+ HNTUN/a7000/h58",
-              "34L": "IVINS/a8000+ MIKEI/a7000 EHUNT/a6000/h126"
-            }
-          },
+          "spawn": "YUTOO",
+          "waypoint_actions": { "ROKKR": "ho" },
           "cruise_altitude": 35000,
           "star": "IVINS2",
           "initial_controller": "C13",
@@ -11583,7 +11566,8 @@
           }
         },
         {
-          "waypoints": "YUTOO/a14000-16000/s270 TRAVV ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000 IVINS/a8000+ ROLLI/a6000+ BONJO/a5000/h103",
+          "spawn": "YUTOO",
+          "waypoint_actions": { "ROKKR": "ho" },
           "cruise_altitude": 35000,
           "star": "BONJO3",
           "initial_controller": "C13",
@@ -11610,7 +11594,8 @@
     "RYDRR2": {
       "arrivals": [
         {
-          "waypoints": "GNZZO/a13000-14000 RYDRR/a11000/s250/ho KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
+          "spawn": "GNZZO",
+          "waypoint_actions": { "RYDRR": "ho" },
           "route": "RYDRR2",
           "star": "RYDRR2",
           "initial_controller": "C14",
@@ -11919,7 +11904,8 @@
           }
         },
         {
-          "waypoints": "SNSTT/a20000-23000 SOLAY/ho COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h253",
+          "spawn": "SNSTT",
+          "waypoint_actions": { "SOLAY": "ho" },
           "cruise_altitude": 37000,
           "star": "THRNE4",
           "initial_controller": "C12",
@@ -11958,7 +11944,8 @@
           }
         },
         {
-          "waypoints": "SNSTT/a20000-23000 SOLAY/ho COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h272",
+          "spawn": "SNSTT",
+          "waypoint_actions": { "SOLAY": "ho" },
           "cruise_altitude": 37000,
           "star": "THRNE4",
           "initial_controller": "C12",
@@ -12028,7 +12015,8 @@
           }
         },
         {
-          "waypoints": "SNSTT/a20000-23000 SOLAY/ho COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h253",
+          "spawn": "SNSTT",
+          "waypoint_actions": { "SOLAY": "ho" },
           "cruise_altitude": 37000,
           "star": "THRNE4",
           "initial_controller": "C12",
@@ -12067,7 +12055,8 @@
           }
         },
         {
-          "waypoints": "SNSTT/a20000-23000 SOLAY/ho COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h272",
+          "spawn": "SNSTT",
+          "waypoint_actions": { "SOLAY": "ho" },
           "cruise_altitude": 37000,
           "star": "THRNE4",
           "initial_controller": "C12",
@@ -12137,7 +12126,8 @@
     "SIZLR4": {
       "arrivals": [
         {
-          "waypoints": "GLRNO/a24000+ SIZLR/a20000-23000 MXIMO/a19000- HITOP/a16000/ho CURKO/a16000 GEBEE/a15000 MORON/a14000 FERNN/a11000/h124",
+          "spawn": "GLRNO",
+          "waypoint_actions": { "HITOP": "ho" },
           "cruise_altitude": 32000,
           "star": "SIZLR4",
           "initial_controller": "C19",
@@ -12199,7 +12189,8 @@
     "THRNE4": {
       "arrivals": [
         {
-          "waypoints": "VLLMA DROGO/a24000+ DEWWW/a21000+ DNERY/a18000-20000/ho ARRYA/a16000 YATZE/a14000-15000 IRONN/a13000 BRATH/a11000 THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h253",
+          "spawn": "VLLMA",
+          "waypoint_actions": { "DNERY": "ho" },
           "cruise_altitude": 37000,
           "star": "THRNE4",
           "initial_controller": "C12",
@@ -12235,7 +12226,8 @@
           }
         },
         {
-          "waypoints": "VLLMA DROGO/a24000+ DEWWW/a21000+ DNERY/a18000-20000/ho ARRYA/a16000 YATZE/a14000-15000 IRONN/a13000 BRATH/a11000 THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h272",
+          "spawn": "VLLMA",
+          "waypoint_actions": { "DNERY": "ho" },
           "cruise_altitude": 37000,
           "star": "THRNE4",
           "initial_controller": "C12",
@@ -12322,14 +12314,8 @@
           }
         },
         {
-          "waypoints": "RUKKI/a21000+ SCANN/ho BAUBB/a11000-13000 STYFF/a7000-9000",
-          "runway_waypoints": {
-            "KLGB": {
-              "30": "STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/s210",
-              "26R": "STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/s210",
-              "12": "STYFF/a7000-9000 KAYNN/a5000-7000 PADDR/a5000-6000/s200 QGATE BREKE/a3000"
-            }
-          },
+          "spawn": "RUKKI",
+          "waypoint_actions": { "SCANN": "ho" },
           "star": "BAUBB3",
           "initial_controller": "C14",
           "initial_altitude": 32000,
@@ -12366,7 +12352,8 @@
     "TOPGN2.MOMAR": {
       "arrivals": [
         {
-          "waypoints": "MOMAR/a24000+ DSURT/a19000+ TRIXI/a12000+/s270/ho TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
+          "spawn": "MOMAR",
+          "waypoint_actions": { "TRIXI": "ho" },
           "cruise_altitude": 36000,
           "route": "/. TOPGN ISEMN ZIPPP TMCAT",
           "star": "TOPGN2",
@@ -12457,7 +12444,8 @@
     "TOPGN2.IPL": {
       "arrivals": [
         {
-          "waypoints": "IPL/a24000+ BLUZE/a17000+/ho GUUSE/a12000+/s270 TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
+          "spawn": "IPL",
+          "waypoint_actions": { "BLUZE": "ho" },
           "cruise_altitude": 36000,
           "route": "/. TOPGN ISEMN ZIPPP TMCAT",
           "star": "TOPGN2",
@@ -12548,7 +12536,8 @@
     "WEESL1": {
       "arrivals": [
         {
-          "waypoints": "WEESL GRRIT/ho SWIIM/a9000 LYNXX/a9000/h192",
+          "spawn": "WEESL",
+          "waypoint_actions": { "GRRIT": "ho" },
           "cruise_altitude": 36000,
           "star": "WEESL1",
           "initial_controller": "C04",

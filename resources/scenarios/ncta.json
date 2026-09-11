@@ -4760,7 +4760,8 @@
     "FRLON2": {
       "arrivals": [
         {
-          "waypoints": "GGULF/a28000+ FRLON/a13000+/s280/ho2B STLER/a12000/s250 MNTNA/ho4U MISSS/a7000/ho PPEGS/s210/h110",
+          "spawn": "GGULF",
+          "waypoint_actions": { "FRLON": "ho2B", "MISSS": "ho", "MNTNA": "ho4U" },
           "star": "FRLON2",
           "scratchpad": "SJ1",
           "initial_controller": "C41",
@@ -5164,7 +5165,8 @@
     "RISTI1.ORRCA": {
       "arrivals": [
         {
-          "waypoints": "ORRCA HAIRE BYRON TRACY MOVDD RISTI/ho CEDES/a9000/h220",
+          "spawn": "ORRCA",
+          "waypoint_actions": { "RISTI": "ho" },
           "cruise_altitude": 23000,
           "star": "RISTI1",
           "initial_controller": "3S",
@@ -5191,7 +5193,8 @@
     "RISTI1.TIPRE": {
       "arrivals": [
         {
-          "waypoints": "TIPRE OOWEN MOVDD RISTI/ho CEDES/a9000/h220",
+          "spawn": "TIPRE",
+          "waypoint_actions": { "RISTI": "ho" },
           "cruise_altitude": 15000,
           "star": "RISTI1",
           "initial_controller": "3S",

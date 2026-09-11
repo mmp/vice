@@ -1518,7 +1518,8 @@
     "BOEGY2": {
       "arrivals": [
         {
-          "waypoints": "BOEGY/a15000/s250/ho PUTTT/a7000 KGRDN/a6000/h260",
+          "spawn": "BOEGY",
+          "waypoint_actions": { "BOEGY": "ho" },
           "cruise_altitude": 35000,
           "star": "BOEGY2",
           "initial_controller": "C07",
@@ -1722,19 +1723,8 @@
     "COKTL4": {
       "arrivals": [
         {
-          "waypoints": "ARYEL/a21000+/s280/ho COKTL/a16000-19000/s250 ZLLDA/a14000+",
-          "runway_waypoints": {
-            "KLAS": {
-              "19L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
-              "19R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
-              "1L": "ZLLDA/a14000+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 ROAMN/a8000/s210",
-              "1R": "ZLLDA/a14000+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 ROAMN/a8000/s210",
-              "26L": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
-              "26R": "ZLLDA/a14000+ DEEON/a12000+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
-              "8L": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- SLOTS/a8000 YAGGR/a8000/s210/h5",
-              "8R": "ZLLDA/a14000+ MEZKL/a12000- LOOMI ZINPI/a11000- SLOTS/a8000 YAGGR/a8000/s210/h5"
-            }
-          },
+          "spawn": "ARYEL",
+          "waypoint_actions": { "ARYEL": "ho" },
           "cruise_altitude": 35000,
           "star": "COKTL4",
           "initial_controller": "C16",
@@ -1857,7 +1847,8 @@
     "FLCHR1": {
       "arrivals": [
         {
-          "waypoints": "GEOOF/ho KEEKE/a10500+/s250 ECAKO/a9000/s230/h117",
+          "spawn": "GEOOF",
+          "waypoint_actions": { "GEOOF": "ho" },
           "cruise_altitude": 35000,
           "star": "FLCHR1",
           "initial_controller": "C16",
@@ -1888,7 +1879,8 @@
     "GAMES2": {
       "arrivals": [
         {
-          "waypoints": "SOTOO QWIST/a14000+/ho GAMES TOROO RATHH PIGOW/a8300/h75",
+          "spawn": "SOTOO",
+          "waypoint_actions": { "QWIST": "ho" },
           "cruise_altitude": 35000,
           "star": "GAMES2",
           "initial_controller": "C16",
@@ -1908,7 +1900,8 @@
           }
         },
         {
-          "waypoints": "SOTOO QWIST/a14000+/ho GAMES TOROO RATHH PIGOW/a8300/h75",
+          "spawn": "SOTOO",
+          "waypoint_actions": { "QWIST": "ho" },
           "cruise_altitude": 35000,
           "star": "GAMES2",
           "initial_controller": "C16",
@@ -2397,7 +2390,8 @@
     "WYLND1": {
       "arrivals": [
         {
-          "waypoints": "BOEGY/a15000/s250/ho WYLND LNDIN/a9000/h270",
+          "spawn": "BOEGY",
+          "waypoint_actions": { "BOEGY": "ho" },
           "cruise_altitude": 35000,
           "star": "WYLND1",
           "initial_controller": "C07",

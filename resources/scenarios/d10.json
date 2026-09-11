@@ -7956,7 +7956,8 @@
     "BACHR4": {
       "arrivals": [
         {
-          "waypoints": "ANGST/a24000-27000/s280/ho PUNKY/a15000-18000/s280 KNEAD/a10000-11000/s250 BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000- BGTEX/a5000/s240 QUYNN REDDN BACHR/h315",
+          "spawn": "ANGST",
+          "waypoint_actions": { "ANGST": "ho" },
           "star": "BACHR4",
           "initial_controller": "C62",
           "initial_altitude": 27000,
@@ -8059,7 +8060,8 @@
     "BACHR4_DN_SF": {
       "arrivals": [
         {
-          "waypoints": "KNEAD/a10000-11000/s250/ho1S BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000-8000/ho BGTEX/a5000/s240 QUYNN REDDN/tc BACHR/h315 ",
+          "spawn": "KNEAD",
+          "waypoint_actions": { "KNEAD": "ho1S", "REDDN": "tc", "RVLEY": "ho" },
           "star": "BACHR4",
           "initial_controller": "C62",
           "initial_altitude": 11000,
@@ -8092,7 +8094,8 @@
     "BACHR4_DS_SF": {
       "arrivals": [
         {
-          "waypoints": "ANGST/a24000-27000/s280/ho PUNKY/a15000-18000/s280 KNEAD/a10000-11000/s250 BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000- BGTEX/a5000/s240 QUYNN REDDN BACHR/h315",
+          "spawn": "ANGST",
+          "waypoint_actions": { "ANGST": "ho" },
           "star": "BACHR4",
           "initial_controller": "1M",
           "initial_altitude": 27000,
@@ -8126,7 +8129,8 @@
     "BEREE3": {
       "arrivals": [
         {
-          "waypoints": "MUZZY/a24000-30000/s290 BEREE/a20000-23000/s290/ho BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210 WHOOT HEDMN/h356",
+          "spawn": "MUZZY",
+          "waypoint_actions": { "BEREE": "ho" },
           "star": "BEREE3",
           "initial_controller": "C29",
           "initial_altitude": 27000,
@@ -8251,7 +8255,8 @@
     "BEREE3.SOUTHFINAL_17C": {
       "arrivals": [
         {
-          "waypoints": "BEREE/a20000-23000/s290/ho BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210/tc WHOOT/a8000 HEDMN/h356",
+          "spawn": "BEREE",
+          "waypoint_actions": { "BEREE": "ho", "DIETZ": "tc" },
           "star": "BEREE3",
           "initial_controller": "1E",
           "initial_altitude": 21000,
@@ -8314,7 +8319,8 @@
     "BEREE3.SOUTHFINAL_17L": {
       "arrivals": [
         {
-          "waypoints": "BEREE/a20000-23000/s290/ho BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210/tc WHOOT/a8000 HEDMN/h356",
+          "spawn": "BEREE",
+          "waypoint_actions": { "BEREE": "ho", "DIETZ": "tc" },
           "star": "BEREE3",
           "initial_controller": "1E",
           "initial_altitude": 21000,
@@ -8377,7 +8383,8 @@
     "BOOVE7": {
       "arrivals": [
         {
-          "waypoints": "GIBLT/a24000-30000/s290/ho DARRB/a20000-23000/s290 BOOVE/a17000-19000/s280 SHMPP/a15000-17000/s280 CURLE/a13000-15000/s270 MOWWW/a12000-13000/s240 DELMO/a12000/s210 LREEE BEONE/h357",
+          "spawn": "GIBLT",
+          "waypoint_actions": { "GIBLT": "ho" },
           "star": "BOOVE7",
           "initial_controller": "C62",
           "initial_altitude": 27000,
@@ -8474,7 +8481,8 @@
     "BOOVE7.SOUTHFINALS_18R": {
       "arrivals": [
         {
-          "waypoints": "BOOVE/a17000-19000/s280/ho SHMPP/a15000-17000/s280 CURLE/a13000-15000/s270 MOWWW/a12000-13000/s240 DELMO/a12000/s210/tc LREEE/a6000/s210 BEONE/h357",
+          "spawn": "BOOVE",
+          "waypoint_actions": { "BOOVE": "ho", "DELMO": "tc" },
           "star": "BOOVE7",
           "initial_controller": "1W",
           "initial_altitude": 19000,
@@ -8523,7 +8531,8 @@
     "BRDJE5": {
       "arrivals": [
         {
-          "waypoints": "PROWD LETHR ARMYY/a24000-30000/s290/ho SEEVR/a20000-23000/s290 BRDJE/a17000-19000/s280 COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210 ROCKZ JEKIL/h176",
+          "spawn": "PROWD",
+          "waypoint_actions": { "ARMYY": "ho" },
           "star": "BRDJE5",
           "initial_controller": "C37",
           "initial_altitude": 27000,
@@ -8623,7 +8632,8 @@
     "BRDJE5.NORTHFINALS_35C": {
       "arrivals": [
         {
-          "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210/tc ROCKZ/a8000/s210 JEKIL/h176",
+          "spawn": "BRDJE",
+          "waypoint_actions": { "BRDJE": "ho", "STONZ": "tc" },
           "star_feeds": ["BRDJE5", "CAINE2", "DAWGZ2", "FINGR1", "SEEVR4"],
           "star": "BRDJE5",
           "initial_controller": "1E",
@@ -9007,7 +9017,8 @@
     "BRDJE5.NORTHFINALS_35R": {
       "arrivals": [
         {
-          "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210/tc ROCKZ/a8000/s210 JEKIL/h176",
+          "spawn": "BRDJE",
+          "waypoint_actions": { "BRDJE": "ho", "STONZ": "tc" },
           "star_feeds": ["BRDJE5", "CAINE2", "DAWGZ2", "FINGR1", "SEEVR4"],
           "star": "BRDJE5",
           "initial_controller": "1E",
@@ -9199,7 +9210,8 @@
     "CRIKT1": {
       "arrivals": [
         {
-          "waypoints": "KIDDD/ho CUBAN FINGR/a9000/s250 SLANT CRIKT/h193",
+          "spawn": "KIDDD",
+          "waypoint_actions": { "KIDDD": "ho" },
           "star": "CRIKT1",
           "initial_controller": "C37",
           "initial_altitude": 18000,
@@ -9296,7 +9308,8 @@
     "DRYYE2": {
       "arrivals": [
         {
-          "waypoints": "PUNKY/a15000-18000/s280/ho KNEAD/a12000/s250 DRYYE SCOPS SWVAY/h86",
+          "spawn": "PUNKY",
+          "waypoint_actions": { "PUNKY": "ho" },
           "star": "DRYYE2",
           "initial_controller": "C62",
           "initial_altitude": 17000,
@@ -9330,7 +9343,8 @@
     "DRYYE2_DS_NF": {
       "arrivals": [
         {
-          "waypoints": "PUNKY/a15000-18000/s280/ho1M KNEAD/a12000/s250/ho DRYYE SCOPS/a5000/tc SWVAY/h86",
+          "spawn": "PUNKY",
+          "waypoint_actions": { "KNEAD": "ho", "PUNKY": "ho1M", "SCOPS": "tc" },
           "star": "DRYYE2",
           "initial_controller": "C62",
           "initial_altitude": 17000,
@@ -9424,7 +9438,8 @@
     "EESAT4_DS_NF": {
       "arrivals": [
         {
-          "waypoints": "KOBIE/ho KLLEY YEAGR EESAT KEFDE/h312",
+          "spawn": "KOBIE",
+          "waypoint_actions": { "KOBIE": "ho" },
           "star": "EESAT4",
           "initial_controller": "C62",
           "initial_altitude": 10000,
@@ -9449,7 +9464,8 @@
     "EESAT4": {
       "arrivals": [
         {
-          "waypoints": "KOBIE/ho KLLEY YEAGR EESAT KEFDE/h312",
+          "spawn": "KOBIE",
+          "waypoint_actions": { "KOBIE": "ho" },
           "star": "EESAT4",
           "initial_controller": "C62",
           "initial_altitude": 10000,
@@ -9615,7 +9631,8 @@
     "HERBZ1": {
       "arrivals": [
         {
-          "waypoints": "MASTY/a16000+/ho GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/h113",
+          "spawn": "MASTY",
+          "waypoint_actions": { "MASTY": "ho" },
           "star": "HERBZ2",
           "initial_controller": "C75",
           "initial_altitude": 17000,
@@ -9873,7 +9890,8 @@
     "HIBIL3": {
       "arrivals": [
         {
-          "waypoints": "RRONY/ho KIDDD CUBAN FINGR/a9000/s250 SLANT HIBIL/h232",
+          "spawn": "RRONY",
+          "waypoint_actions": { "RRONY": "ho" },
           "star": "HIBIL3",
           "initial_controller": "C37",
           "initial_altitude": 18000,
@@ -10113,7 +10131,8 @@
     "JOVEM6": {
       "arrivals": [
         {
-          "waypoints": "COWNE/a24000-30000/s290/ho JEYAR/a20000-23000 VKTRY/a15000-18000/s280 JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210 KBOOM FUEWL/h176",
+          "spawn": "COWNE",
+          "waypoint_actions": { "COWNE": "ho" },
           "star": "JOVEM6",
           "initial_controller": "C75",
           "initial_altitude": 27000,
@@ -10231,7 +10250,8 @@
     "JOVEM6.NORTHFINALS_36L": {
       "arrivals": [
         {
-          "waypoints": "VKTRY/a15000-18000/s280/ho JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210/tc KBOOM/a8000/s210 FUEWL/h176",
+          "spawn": "VKTRY",
+          "waypoint_actions": { "SILER": "tc", "VKTRY": "ho" },
           "star_feeds": ["GIBBI2", "JOVEM6", "SHAAM2", "VKTRY2"],
           "star": "JOVEM6",
           "initial_controller": "1W",
@@ -10697,7 +10717,8 @@
     "MNNDO4": {
       "arrivals": [
         {
-          "waypoints": "HEERE JAKCY/ho ORVLL/a9000/s250 MNNDO GAREE/h313",
+          "spawn": "HEERE",
+          "waypoint_actions": { "JAKCY": "ho" },
           "star": "MNNDO4",
           "initial_controller": "C29",
           "initial_altitude": 18000,
@@ -10913,7 +10934,8 @@
     "REEKO3": {
       "arrivals": [
         {
-          "waypoints": "GEEMC/ho PURRS DODJE REEKO SWVAY SCOPS/h265",
+          "spawn": "GEEMC",
+          "waypoint_actions": { "GEEMC": "ho" },
           "star": "REEKO3",
           "initial_controller": "C29",
           "initial_altitude": 12000,
@@ -11263,7 +11285,8 @@
     "SEEVR4": {
       "arrivals": [
         {
-          "waypoints": "THEMM/a21000+/s290/ho SEEVR/a13000-16000/s270 BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a6000/s230/h263",
+          "spawn": "THEMM",
+          "waypoint_actions": { "THEMM": "ho" },
           "star": "SEEVR4",
           "initial_controller": "C37",
           "initial_altitude": 23000,
@@ -11679,7 +11702,8 @@
     "SEEVR4.SOUTHFINALS_17L": {
       "arrivals": [
         {
-          "waypoints": "SEEVR/a13000-16000/s270/ho BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a6000/s230/h263",
+          "spawn": "SEEVR",
+          "waypoint_actions": { "SEEVR": "ho" },
           "star": "SEEVR4",
           "initial_controller": "1E",
           "initial_altitude": 14000,
@@ -11856,7 +11880,8 @@
     "SEEVR4.SOUTHFINALS_17C": {
       "arrivals": [
         {
-          "waypoints": "SEEVR/a13000-16000/s270/ho BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a6000/s230/h263",
+          "spawn": "SEEVR",
+          "waypoint_actions": { "SEEVR": "ho" },
           "star": "SEEVR4",
           "initial_controller": "1E",
           "initial_altitude": 14000,
@@ -12069,7 +12094,8 @@
     "SLANT3.PROP": {
       "arrivals": [
         {
-          "waypoints": "KIDDD/ho CUBAN FINGR SLANT/h230",
+          "spawn": "KIDDD",
+          "waypoint_actions": { "KIDDD": "ho" },
           "star": "SLANT3",
           "initial_controller": "C62",
           "initial_altitude": 6000,
@@ -12333,7 +12359,8 @@
     "SWVAY4_MS_NF_PROP": {
       "arrivals": [
         {
-          "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
+          "spawn": "FRSTI",
+          "waypoint_actions": { "FRSTI": "ho" },
           "star": "SWVAY4",
           "initial_controller": "C62",
           "initial_altitude": 12000,
@@ -12351,7 +12378,8 @@
           }
         },
         {
-          "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
+          "spawn": "FRSTI",
+          "waypoint_actions": { "FRSTI": "ho" },
           "star": "SWVAY4",
           "initial_controller": "C62",
           "initial_altitude": 10000,
@@ -12380,7 +12408,8 @@
     "SWVAY4_MS_SF_PROP": {
       "arrivals": [
         {
-          "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
+          "spawn": "FRSTI",
+          "waypoint_actions": { "FRSTI": "ho" },
           "star": "SWVAY4",
           "initial_controller": "C62",
           "initial_altitude": 10000,
@@ -12398,7 +12427,8 @@
           }
         },
         {
-          "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
+          "spawn": "FRSTI",
+          "waypoint_actions": { "FRSTI": "ho" },
           "star": "SWVAY4",
           "initial_controller": "C62",
           "initial_altitude": 9000,
@@ -13419,7 +13449,8 @@
     "WHINY4": {
       "arrivals": [
         {
-          "waypoints": "POWND/a20000-23000/s290/ho BEREE/a13000-16000/s270 WHINY/a12000+/s260 HOWDY/a11000-12000/s250 BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
+          "spawn": "POWND",
+          "waypoint_actions": { "POWND": "ho" },
           "star": "WHINY4",
           "initial_controller": "C29",
           "initial_altitude": 20000,
@@ -13544,7 +13575,8 @@
     "WHINY4.NORTHFINALS_35R": {
       "arrivals": [
         {
-          "waypoints": "HOWDY/a11000-12000/s250/ho BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
+          "spawn": "HOWDY",
+          "waypoint_actions": { "HOWDY": "ho" },
           "star_feeds": ["BEREE3", "CABBY2", "FORNY3", "WHINY4", "YEAGR4"],
           "star": "WHINY4",
           "initial_controller": "1E",
@@ -13672,7 +13704,8 @@
     "WHINY4.NORTHFINALS_35C": {
       "arrivals": [
         {
-          "waypoints": "HOWDY/a11000-12000/s250/ho BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
+          "spawn": "HOWDY",
+          "waypoint_actions": { "HOWDY": "ho" },
           "star_feeds": ["BEREE3", "CABBY2", "FORNY3", "WHINY4", "YEAGR4"],
           "star": "WHINY4",
           "initial_controller": "1E",
@@ -13736,7 +13769,8 @@
     "YEAGR4_NF_JET": {
       "arrivals": [
         {
-          "waypoints": "SNOWE/ho AWOLF YEAGR/h315",
+          "spawn": "SNOWE",
+          "waypoint_actions": { "SNOWE": "ho", "YEAGR": "h315" },
           "star": "YEAGR4",
           "initial_controller": "C29",
           "initial_altitude": 8000,
@@ -13765,7 +13799,8 @@
     "YEAGR4_NF_PROP": {
       "arrivals": [
         {
-          "waypoints": "CQY/ho YEAGR/h315",
+          "spawn": "CQY",
+          "waypoint_actions": { "CQY": "ho", "YEAGR": "h315" },
           "star": "YEAGR4",
           "initial_controller": "C29",
           "initial_altitude": 6000,

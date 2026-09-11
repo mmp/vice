@@ -15911,7 +15911,8 @@
     "GNDLF2": {
       "arrivals": [
         {
-          "waypoints": "SMAWG/ho GNDLF/a11000/s250 HALRR/a10000/s250 SHULR/a8000 JNGLE QUBIT/h5",
+          "spawn": "SMAWG",
+          "waypoint_actions": { "SMAWG": "ho" },
           "star": "GNDLF3",
           "initial_controller": "C43",
           "initial_altitude": 13000,
@@ -15977,7 +15978,8 @@
     "GNDLF2_EFINALD": {
       "arrivals": [
         {
-          "waypoints": "SHULR/ho JNGLE QUBIT/h5",
+          "spawn": "SHULR",
+          "waypoint_actions": { "SHULR": "ho" },
           "star": "GNDLF3",
           "initial_controller": "C43",
           "scratchpad": "NR9",
@@ -16045,7 +16047,8 @@
     "GNDLF2_EFINALT": {
       "arrivals": [
         {
-          "waypoints": "SHULR/ho JNGLE QUBIT/h5",
+          "spawn": "SHULR",
+          "waypoint_actions": { "SHULR": "ho" },
           "star": "GNDLF3",
           "initial_controller": "C43",
           "scratchpad": "NR0",
@@ -16612,7 +16615,8 @@
     "JJEDI3_FINALD": {
       "arrivals": [
         {
-          "waypoints": "GRHAM/ho POOBA/h4",
+          "spawn": "GRHAM",
+          "waypoint_actions": { "GRHAM": "ho" },
           "cruise_altitude": 35000,
           "star": "JJEDI4",
           "initial_controller": "1H",
@@ -16744,7 +16748,8 @@
     "JJEDI3_FINALT": {
       "arrivals": [
         {
-          "waypoints": "GRHAM/ho POOBA/h4",
+          "spawn": "GRHAM",
+          "waypoint_actions": { "GRHAM": "ho" },
           "cruise_altitude": 35000,
           "star": "JJEDI4",
           "initial_controller": "1H",
@@ -18157,16 +18162,8 @@
     "SITTH2": {
       "arrivals": [
         {
-          "waypoints": "FORCC/ho SITTH/a14000 TIZZY/a12000",
-          "runway_waypoints": {
-            "KATL": {
-              "10": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
-              "8L": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-              "8R": "TIZZY/a12000 GAASS KLOWD KUNFU TRAPE SNEVE/h275",
-              "9L": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275",
-              "9R": "TIZZY/a12000 FRYES SHURT REMAC DACTL STUMP/h275"
-            }
-          },
+          "spawn": "FORCC",
+          "waypoint_actions": { "FORCC": "ho" },
           "star": "SITTH3",
           "initial_controller": "C43",
           "initial_altitude": 15000,

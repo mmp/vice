@@ -273,7 +273,8 @@
     "STWRT3": {
       "arrivals": [
         {
-          "waypoints": "GSO LIARS DOUGH CAE STWRT/ho PAANE/h240",
+          "spawn": "GSO",
+          "waypoint_actions": { "PAANE": "h240", "STWRT": "ho" },
           "star": "STWRT3",
           "initial_controller": "J30",
           "initial_altitude": 11000,

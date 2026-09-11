@@ -512,15 +512,8 @@
           "initial_speed": 270,
           "route": "BRRTO1",
           "star": "BRRTO1",
-          "waypoints": "BRRTO/a21000-28000/s270 ELRRA/a14000-18000/ho XMRKS/a11000+/s250",
-          "runway_waypoints": {
-            "KABQ": {
-              "3": "XMRKS/a11000+ SHWNA/a9000+ BIBQU/a8000+/s210",
-              "8": "XMRKS/a11000+ AMRRA/a10000+ UNCIR/a8000+/s210",
-              "21": "XMRKS/a11000+ AMRRA/a10000+ FOXRR/a1000/s210",
-              "26": "XMRKS/a11000+ STIKI/a10000/s210 BRNDO/a9000+/s210"
-            }
-          }
+          "spawn": "BRRTO",
+          "waypoint_actions": { "ELRRA": "ho" }
         }
       ]
     },
@@ -552,15 +545,8 @@
           "initial_speed": 270,
           "route": "COLTR4",
           "star": "COLTR4",
-          "waypoints": "COLTR/a14000-18000/ho YYLEE/a11000+/s250",
-          "runway_waypoints": {
-            "KABQ": {
-              "3": "YYLEE/a11000+/s250 CYOTE TNTOE/a10000/s210 SHYLE/h213",
-              "8": "YYLEE/a11000+/s250 CYOTE TNTOE/a10000/s210 COLNN/h256",
-              "21": "YYLEE/a11000+/s250 TACOH/a10000/s210",
-              "26": "YYLEE/a11000+/s250 TACOH/a10000/s210"
-            }
-          }
+          "spawn": "COLTR",
+          "waypoint_actions": { "COLTR": "ho" }
         }
       ]
     },
@@ -601,15 +587,8 @@
           "initial_speed": 270,
           "route": "LOWBO3",
           "star": "LOWBO3",
-          "waypoints": "LOWBO/ho JOKLO/a14000-18000/s250 ITUNE",
-          "runway_waypoints": {
-            "KABQ": {
-              "3": "ITUNE MUSCC/a9000-12000 DWNLD/a9000-11000 CMSTR/a9000/s210",
-              "8": "ITUNE MUSCC/a9000-12000 DWNLD/a9000-11000 CMSTR/a9000/s210",
-              "21": "ITUNE SDUNX/a9000-10500 PASEO/a9000-10000 NODME/a9000/s210",
-              "26": "ITUNE SDUNX/a9000-10500 PASEO/a9000-10000 NODME/a9000/s210"
-            }
-          }
+          "spawn": "LOWBO",
+          "waypoint_actions": { "LOWBO": "ho" }
         }
       ]
     },
@@ -632,15 +611,8 @@
           "initial_speed": 270,
           "route": "LZZRD4",
           "star": "LZZRD4",
-          "waypoints": "HAKOR LZZRD/a14000-18000/s250/ho MKYON/a13000-15000",
-          "runway_waypoints": {
-            "KABQ": {
-              "3": "MKYON/a13000-15000 HAPEE/a11000-13000 COMRO/a10000/s210",
-              "8": "MKYON/a13000-15000 HAPEE/a11000-13000 COMRO/a10000/s210",
-              "21": "MKYON/a13000-15000 SOPPA PILLA/a10000/s210",
-              "26": "MKYON/a13000-15000 SOPPA PILLA/a10000/s210"
-            }
-          }
+          "spawn": "HAKOR",
+          "waypoint_actions": { "LZZRD": "ho" }
         }
       ]
     },
@@ -682,15 +654,8 @@
           "initial_speed": 270,
           "route": "SNDIA4",
           "star": "SNDIA4",
-          "waypoints": "SNDIA VLCNO/a14000-16000/s250/ho ASIDE/a10000-11000/s250",
-          "runway_waypoints": {
-            "KABQ": {
-              "3": "ASIDE/a10000-11000/s250 CRSTN/a9000/s210",
-              "8": "ASIDE/a10000-11000/s250 CRSTN/a9000/s210",
-              "21": "ASIDE/a10000-11000/s250 CADAT/a9000/s210",
-              "26": "ASIDE/a10000-11000/s250 CADAT/a9000/s210"
-            }
-          }
+          "spawn": "SNDIA",
+          "waypoint_actions": { "VLCNO": "ho" }
         }
       ]
     }

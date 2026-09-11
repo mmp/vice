@@ -1524,7 +1524,8 @@
     "AMRVR2": {
       "arrivals": [
         {
-          "waypoints": "ELIDE AMRVR/ho GEKNE/a12200+ SAKOC/a9500+ JACII/a8000+ HNW/a7000+",
+          "spawn": "ELIDE",
+          "waypoint_actions": { "AMRVR": "ho" },
           "cruise_altitude": 31000,
           "star": "AMRVR2",
           "initial_controller": "C44",
@@ -1737,7 +1738,8 @@
     "EELZA4": {
       "arrivals": [
         {
-          "waypoints": "JAGOM KLUBS/ho EELZA BEETH/a16000+ HIWAA/a12000+ BACRT/a11000+ FMG/a10000/h167",
+          "spawn": "JAGOM",
+          "waypoint_actions": { "KLUBS": "ho" },
           "star": "EELZA4",
           "initial_controller": "C45",
           "scratchpad": "RN1",
@@ -1853,7 +1855,8 @@
     "KLUBS1": {
       "arrivals": [
         {
-          "waypoints": "JAGOM KLUBS/ho EELZA/a13000+/s250 LIBGE/a12000/s230/h167",
+          "spawn": "JAGOM",
+          "waypoint_actions": { "KLUBS": "ho" },
           "star": "KLUBS1",
           "initial_controller": "C45",
           "scratchpad": "RN1",
@@ -2106,7 +2109,8 @@
     "SCOLA1": {
       "arrivals": [
         {
-          "waypoints": "SCOLA/a24000-28000 TEXSS/a17000+ HLDMM/a16000+/s270/ho CHIME/a12000-13000/s250 KLOCK/a10000/s210/h333",
+          "spawn": "SCOLA",
+          "waypoint_actions": { "HLDMM": "ho" },
           "star": "SCOLA1",
           "initial_controller": "C46",
           "scratchpad": "RN1",
@@ -2306,15 +2310,8 @@
     "SUUTR4": {
       "arrivals": [
         {
-          "waypoints": "SUUTR/a24000-26000/s280 FOOLZ/a21000/ho3S GLDDD/a19000-/ho WRAPS/a17000- PNNEN/a12000-16000/s280 SLUIC",
-          "runway_waypoints": {
-            "KSMF": {
-              "17L": "SLUIC AMADR/a9000 NGGET/a7000-9000 CHNEL/a5000+ OVOME/a4000/s210/h348",
-              "17R": "SLUIC AMADR/a9000 NGGET/a7000-9000 CHNEL/a5000+ OVOME/a4000/s210/h348",
-              "35L": "SLUIC MYNRR/a9000/h299",
-              "35R": "SLUIC MYNRR/a9000/h299"
-            }
-          },
+          "spawn": "SUUTR",
+          "waypoint_actions": { "FOOLZ": "ho3S", "GLDDD": "ho" },
           "cruise_altitude": 32000,
           "star": "SUUTR4",
           "scratchpad": "SM1",

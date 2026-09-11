@@ -756,14 +756,8 @@
     "KROTO5.ROHHN": {
       "arrivals": [
         {
-          "waypoints": "ROHHN/ho KROTO/a9000+/s250",
-          "runway_waypoints": {
-            "PANC": {
-              "15": "KROTO/a9000+/s250 TOMMM/a5000+ CARDD/a3000",
-              "7L": "KROTO/a9000+/s250 NHCOL/a5000 ASLEE/a5000/s230 CULEN/a4000/s210/h254",
-              "7R": "KROTO/a9000+/s250 NHCOL/a5000 ASLEE/a5000/s230 CULEN/a4000/s210/h254"
-            }
-          },
+          "spawn": "ROHHN",
+          "waypoint_actions": { "ROHHN": "ho" },
           "star": "KROTO5",
           "initial_controller": "C06",
           "initial_altitude": 16000,
@@ -797,14 +791,8 @@
     "KROTO5.TKA": {
       "arrivals": [
         {
-          "waypoints": "TKA/a11000+/ho KROTO/a9000+/s250",
-          "runway_waypoints": {
-            "PANC": {
-              "15": "KROTO/a9000+/s250 TOMMM/a5000+ CARDD/a3000",
-              "7L": "KROTO/a9000+/s250 NHCOL/a5000 ASLEE/a5000/s230 CULEN/a4000/s210/h254",
-              "7R": "KROTO/a9000+/s250 NHCOL/a5000 ASLEE/a5000/s230 CULEN/a4000/s210/h254"
-            }
-          },
+          "spawn": "TKA",
+          "waypoint_actions": { "TKA": "ho" },
           "star": "KROTO5",
           "initial_controller": "C06",
           "initial_altitude": 22000,
@@ -834,14 +822,8 @@
     "NEELL7": {
       "arrivals": [
         {
-          "waypoints": "SNAAG/a10000+/ho NEELL/a8000+/s250",
-          "runway_waypoints": {
-            "PANC": {
-              "15": "NEELL/a8000+/s250 WNTER/a8000-12000 DOGLG/a7000+ TURRN/a5000 MITNN/a5000/s210 GLDNN/a5000/h329",
-              "7R": "NEELL/a8000+/s250 SHNKN/a3000+ ELIAS/a2000",
-              "7L": "NEELL/a8000+/s250 SHNKN/a3000+ AINKK/a2000"
-            }
-          },
+          "spawn": "SNAAG",
+          "waypoint_actions": { "SNAAG": "ho" },
           "star": "NEELL7",
           "initial_controller": "C05",
           "initial_altitude": 12000,

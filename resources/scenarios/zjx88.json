@@ -1171,7 +1171,8 @@
           "assigned_altitude": 21000,
           "initial_controller": "17",
           "initial_speed": 350,
-          "waypoints": "HEVVN/ho CLAMP LALAA CORRL BANGZ KIDLE BOLTS/delete",
+          "spawn": "HEVVN",
+          "waypoint_actions": { "BOLTS": "delete", "HEVVN": "ho" },
           "route": "BANGZ2",
           "star": "BANGZ2"
         },
@@ -1284,7 +1285,8 @@
           "assigned_altitude": 23000,
           "initial_controller": "17",
           "initial_speed": 350,
-          "waypoints": "PLYER/ho OBESE WHITL RILEE CODGR BAGGS PIKKR GUSEC/delete",
+          "spawn": "PLYER",
+          "waypoint_actions": { "GUSEC": "delete", "PLYER": "ho" },
           "route": "PLYER PIKKR7",
           "star": "PIKKR7"
         }

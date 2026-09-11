@@ -1283,7 +1283,8 @@
     "CRAKN2_FINALN": {
       "arrivals": [
         {
-          "waypoints": "CLDON/a9000-10000/ho MERCA/a7000/s210/h284",
+          "spawn": "CLDON",
+          "waypoint_actions": { "CLDON": "ho" },
           "star_feeds": ["CRAKN2", "HTROD2"],
           "star": "CRAKN2",
           "initial_controller": "1F",
@@ -1449,7 +1450,8 @@
     "FERRL2_FINALS": {
       "arrivals": [
         {
-          "waypoints": "WNGNT/a11000-14000/s280 FERRL/a8000-10000 GMOTR/a7000/ho CHEWZ/a6000/s210 COBBO/a6000/s210/h306",
+          "spawn": "WNGNT",
+          "waypoint_actions": { "GMOTR": "ho" },
           "star": "FERRL2",
           "initial_controller": "1F",
           "initial_altitude": 11000,
@@ -1505,7 +1507,8 @@
     "FOREY2": {
       "arrivals": [
         {
-          "waypoints": "WWSHR/ho NACCA FOREY VRNRS SWETY/a4000/h300",
+          "spawn": "WWSHR",
+          "waypoint_actions": { "WWSHR": "ho" },
           "star": "FOREY2",
           "initial_controller": "C48",
           "initial_altitude": 24000,
@@ -1627,15 +1630,9 @@
     "GRAYT2_FINALN": {
       "arrivals": [
         {
-          "waypoints": "HYPED/a12000-15000/s250 MERFI/a12000/ho",
+          "spawn": "HYPED",
+          "waypoint_actions": { "MERFI": "ho" },
           "star_feeds": ["GRAYT2", "LAYKS2", "RKCTY2"],
-          "runway_waypoints": {
-            "KDTW": {
-              "3R": "MERFI/a12000 QWYNN SPRTS/a12000/s210/h216",
-              "4L": "MERFI/a12000 ZUBBY CADLC/a12000/s210/h218",
-              "4R": "MERFI/a12000 ZUBBY CADLC/a12000/s210/h218"
-            }
-          },
           "star": "GRAYT2",
           "initial_controller": "1F",
           "initial_altitude": 12000,
@@ -1760,14 +1757,8 @@
     "HANBL3_FINALS": {
       "arrivals": [
         {
-          "waypoints": "PRWLR/a12000-15000 HEMIE/a10000-11000/s250/ho",
-          "runway_waypoints": {
-            "KDTW": {
-              "21L": "HEMIE/a10000-11000/s250 RAAMM TBRRD/a8000/s210/h36",
-              "22L": "HEMIE/a10000-11000/s250 TRPRS/a8000+ DZMND/a8000/s210/h33",
-              "22R": "HEMIE/a10000-11000/s250 TRPRS/a8000+ DZMND/a8000/s210/h33"
-            }
-          },
+          "spawn": "PRWLR",
+          "waypoint_actions": { "HEMIE": "ho" },
           "star": "HANBL3",
           "initial_controller": "1F",
           "initial_altitude": 12000,
@@ -1957,14 +1948,8 @@
     "HTROD2_FINALS": {
       "arrivals": [
         {
-          "waypoints": "BEERR/a12000-15000 HTROD/a12000/s250/ho",
-          "runway_waypoints": {
-            "KDTW": {
-              "21L": "HTROD/a12000/s250 FFORK MODLT/a12000/s210/h36",
-              "22L": "HTROD/a12000/s250 FFORK MODLT/a12000/s210/h36",
-              "22R": "HTROD/a12000/s250 TRPRS SEEGR/a12000/s210/h33"
-            }
-          },
+          "spawn": "BEERR",
+          "waypoint_actions": { "HTROD": "ho" },
           "star": "HTROD2",
           "initial_controller": "1F",
           "initial_altitude": 12000,
@@ -2041,14 +2026,8 @@
     "KKISS2_FINALN": {
       "arrivals": [
         {
-          "waypoints": "STLEY/a10000-11000/s250 ZUBBY/ho",
-          "runway_waypoints": {
-            "KDTW": {
-              "3R": "ZUBBY QWYNN ROYYY/a8000/s210/h216",
-              "4L": "ZUBBY SKRUG/a8000/s210/h218",
-              "4R": "ZUBBY SKRUG/a8000/s210/h218"
-            }
-          },
+          "spawn": "STLEY",
+          "waypoint_actions": { "ZUBBY": "ho" },
           "star": "KKISS2",
           "initial_controller": "1F",
           "initial_altitude": 10000,
@@ -2165,7 +2144,8 @@
     "KLYNK3_FINALN": {
       "arrivals": [
         {
-          "waypoints": "KLYNK/a9000-10000/ho BRDER/a6000/s210/h281",
+          "spawn": "KLYNK",
+          "waypoint_actions": { "KLYNK": "ho" },
           "star_feeds": ["BONZZ2", "KLYNK3"],
           "star": "KLYNK3",
           "initial_controller": "1F",
@@ -2283,7 +2263,8 @@
     "LAYKS2_FINALS": {
       "arrivals": [
         {
-          "waypoints": "STAAT/a9000+/ho MCHGN/a6000 HRRON/a6000/s210/h118",
+          "spawn": "STAAT",
+          "waypoint_actions": { "STAAT": "ho" },
           "star": "LAYKS2",
           "initial_controller": "1F",
           "initial_altitude": 9000,
@@ -2354,7 +2335,8 @@
     "LECTR3_FINALN": {
       "arrivals": [
         {
-          "waypoints": "FAAVA/a6000/ho SIZOR/a6000/s210/h123",
+          "spawn": "FAAVA",
+          "waypoint_actions": { "FAAVA": "ho" },
           "star_feeds": ["HANBL3", "LECTR3"],
           "star": "LECTR3",
           "initial_controller": "1F",
@@ -2389,7 +2371,8 @@
     "OKLND1": {
       "arrivals": [
         {
-          "waypoints": "COLTS/a36000- BOREK LOPVO ITPEG PICUP AXXIS FAEGO RIPPY OKLND/a4000+/h272/ho",
+          "spawn": "COLTS",
+          "waypoint_actions": { "OKLND": "ho" },
           "star": "OKLND1",
           "initial_controller": "C48",
           "initial_altitude": 26000,
@@ -2520,7 +2503,8 @@
     "RKCTY2_FINALS": {
       "arrivals": [
         {
-          "waypoints": "DREME/a8000-10000/s230/ho VALLI/a6000/s210/h113",
+          "spawn": "DREME",
+          "waypoint_actions": { "DREME": "ho" },
           "star": "RKCTY2",
           "initial_controller": "1F",
           "initial_altitude": 8000,
@@ -2731,14 +2715,8 @@
     "VCTRZ2_FINALS": {
       "arrivals": [
         {
-          "waypoints": "HYSMN/a12000-15000 UUOFM/a12000/s250/ho",
-          "runway_waypoints": {
-            "KDTW": {
-              "21L": "UUOFM/a12000/s250 RAAMM MODLT/a12000/s210/h36",
-              "22L": "UUOFM/a12000/s250 TRPRS SEEGR/a12000/s210/h33",
-              "22R": "UUOFM/a12000/s250 TRPRS SEEGR/a12000/s210/h33"
-            }
-          },
+          "spawn": "HYSMN",
+          "waypoint_actions": { "UUOFM": "ho" },
           "star": "VCTRZ2",
           "initial_controller": "1F",
           "initial_altitude": 12000,
@@ -2852,15 +2830,9 @@
     "WNGNT2_FINALN": {
       "arrivals": [
         {
-          "waypoints": "BOUTU/a12000-15000 ROOAD/a12000/s250/ho",
+          "spawn": "BOUTU",
+          "waypoint_actions": { "ROOAD": "ho" },
           "star_feeds": ["FERRL2", "WNGNT2"],
-          "runway_waypoints": {
-            "KDTW": {
-              "3R": "ROOAD/a12000/s250 SPRTS/a12000/s210/h216",
-              "4L": "ROOAD/a12000/s250 CADLC YNDER/a12000/s210/h216",
-              "4R": "ROOAD/a12000/s250 SPRTS/a12000/s210/h216"
-            }
-          },
           "star": "WNGNT2",
           "initial_controller": "1F",
           "initial_altitude": 12000,

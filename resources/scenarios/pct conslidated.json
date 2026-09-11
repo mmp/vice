@@ -4318,17 +4318,8 @@
     "CAPSS4": {
       "arrivals": [
         {
-          "waypoints": "KSETT/a17000+ ELAPP/a14000-20000/s280/ho BULII/a13000-16000 CAPSS/a10000-13000",
-          "runway_waypoints": {
-            "KDCA": {
-              "1": "CAPSS/a10000-13000 HOYAS/a9000 HALLL KATRN/h8",
-              "4": "CAPSS/a10000-13000 HOYAS/a9000 HALLL KATRN/h8",
-              "15": "CAPSS/a10000-13000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
-              "19": "CAPSS/a10000-13000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
-              "22": "CAPSS/a10000-13000 FLIPZ/a11000-/s280 MOEJO/a10000/s250 JILES SMOOT/a7000+ BAAAM/a6000 PACKE/h327",
-              "33": "CAPSS/a10000-13000 HOYAS/a9000 HALLL KATRN/h8"
-            }
-          },
+          "spawn": "KSETT",
+          "waypoint_actions": { "ELAPP": "ho" },
           "cruise_altitude": 33000,
           "star": "CAPSS4",
           "initial_controller": "W20",
@@ -4440,13 +4431,8 @@
     "CLIPR3": {
       "arrivals": [
         {
-          "waypoints": "NUGGY TROYZ/ho BELAY TRISH CLIPR/a12000 BAL/a10000/s250 EYESS",
-          "runway_waypoints": {
-            "KDCA": {
-              "1": "EYESS BRUNC FELTY/a6000 HITEK CAVDI/h187",
-              "19": "EYESS EDDWD MEGGS/a6000 NAYES/h327"
-            }
-          },
+          "spawn": "NUGGY",
+          "waypoint_actions": { "TROYZ": "ho" },
           "star": "CLIPR3",
           "initial_controller": "N26",
           "initial_altitude": 17000,
@@ -5492,18 +5478,8 @@
           }
         },
         {
-          "waypoints": "PERKN/a22000+ KHOOD/a14000-22000/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250",
-          "runway_waypoints": {
-            "KIAD": {
-              "30": "CAVLR/a10000/s250 KASDY/a7000 COINZ/a6000/s210/flyover/h10",
-              "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
-              "19C": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
-              "19R": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING/a4000/s210/flyover/h12",
-              "1L": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
-              "1C": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
-              "1R": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026"
-            }
-          },
+          "spawn": "PERKN",
+          "waypoint_actions": { "KHOOD": "ho" },
           "star": "CAVLR7",
           "initial_controller": "W20",
           "initial_altitude": 23000,
@@ -5856,14 +5832,8 @@
     "WAYNZ2.S": {
       "arrivals": [
         {
-          "waypoints": "PRIVO/ho DAFIX/a12000 WAYNZ/a10000/s250",
-          "runway_waypoints": {
-            "KIAD": {
-              "19L": "WAYNZ/a10000/s250 SULII/a10000/flyover/h180",
-              "19C": "WAYNZ/a10000/s250 SULII/a10000/flyover/h180",
-              "19R": "WAYNZ/a10000/s250 SULII/a10000/flyover/h180"
-            }
-          },
+          "spawn": "PRIVO",
+          "waypoint_actions": { "PRIVO": "ho" },
           "star": "WAYNZ2",
           "initial_controller": "N26",
           "initial_altitude": 15000,
@@ -6354,15 +6324,8 @@
     "POWTN5": {
       "arrivals": [
         {
-          "waypoints": "GRUTO HONTA/a13000+ VETEC/a12000-/ho AHONE/a11000/s280 POWTN",
-          "runway_waypoints": {
-            "KRIC": {
-              "2": "POWTN DUCXS/flyover/h151",
-              "16": "POWTN DEEER/flyover/h81",
-              "20": "POWTN DEEER/flyover/h81",
-              "34": "POWTN DUCXS/flyover/h151"
-            }
-          },
+          "spawn": "GRUTO",
+          "waypoint_actions": { "VETEC": "ho" },
           "star": "POWTN5",
           "initial_controller": "W32",
           "initial_altitude": 21000,
@@ -6393,15 +6356,8 @@
     "SPIDR5": {
       "arrivals": [
         {
-          "waypoints": "MOL/a21000 ZUMAT DXOON REDNG/a13000/s280/ho HEMME/a11000-12000 SPIDR/a8000",
-          "runway_waypoints": {
-            "KRIC": {
-              "2": "SPIDR DUCXS/a4000/flyover/h149",
-              "16": "SPIDR RUPRT/flyover/h80",
-              "20": "SPIDR RUPRT/flyover/h80",
-              "34": "SPIDR DUCXS/a4000/flyover/h149"
-            }
-          },
+          "spawn": "MOL",
+          "waypoint_actions": { "REDNG": "ho" },
           "star": "SPIDR5",
           "initial_controller": "W32",
           "initial_altitude": 21000,

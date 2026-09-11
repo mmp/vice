@@ -564,17 +564,8 @@
     "JAKKS2": {
       "arrivals": [
         {
-          "waypoints": "EMMLY JAKKS/ho OPPIE/a11000-16000 ATILE/a13000-",
-          "runway_waypoints": {
-            "KIND": {
-              "14": "ATILE/a13000- AADIE KEADY/a4000+/s210",
-              "23L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h50",
-              "23R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/h50",
-              "32": "ATILE/a13000- BBACK/a10000+ EBEDE/a7000+/s230 PNFLD/a6000/s210 ZASNI/h140",
-              "5L": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230",
-              "5R": "ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230 PETYN/a6000/s210 WANOB/h230"
-            }
-          },
+          "spawn": "EMMLY",
+          "waypoint_actions": { "JAKKS": "ho" },
           "route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G35",
@@ -635,17 +626,8 @@
     "SMUKE2": {
       "arrivals": [
         {
-          "waypoints": "RACYR/a12000-19000/ho SMUKE FIIRE",
-          "runway_waypoints": {
-            "KIND": {
-              "14": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 WONOK/h320",
-              "23L": "FIIRE CHERZ/a11000+ TTKAY/a10000+ EDODE/a7000+/s230 KNIGT/a6000/s210 RAMEY/h50",
-              "23R": "FIIRE WOTSN/a11000+ DUBBX/a10000+ BLSTR/a7000+/s230 PETYN/a6000/s210 ZOSAR/h50",
-              "32": "FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+ PNFLD/a6000 ZASNI/h139",
-              "5L": "FIIRE WESLE/a6000+ WAAYN/a5000/s210",
-              "5R": "FIIRE WESLE/a6000+ IIUUU/a5000/s210"
-            }
-          },
+          "spawn": "RACYR",
+          "waypoint_actions": { "RACYR": "ho" },
           "route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",

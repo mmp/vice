@@ -1210,7 +1210,8 @@
     "ANJLL4": {
       "arrivals": [
         {
-          "waypoints": "GLESN/a24000-30000/s280 ANJLL/a19000-24000/ho CAANN/a17000+ BOYEL/a14000+ CRCUS/a12000-14000/s270",
+          "spawn": "GLESN",
+          "waypoint_actions": { "ANJLL": "ho" },
           "route": "ANJLL4",
           "star": "ANJLL4",
           "initial_controller": "C37",
@@ -1383,7 +1384,8 @@
     "ANJLL4/HLYWD1.FINAL": {
       "arrivals": [
         {
-          "waypoints": "BOYEL/a14000+ CRCUS/a12000-14000/s270/ho/clearapp",
+          "spawn": "BOYEL",
+          "waypoint_actions": { "CRCUS": "ho,clearapp" },
           "route": "ANJLL4",
           "star": "ANJLL4",
           "initial_controller": "2F",
@@ -1553,7 +1555,8 @@
           }
         },
         {
-          "waypoints": "NEILE/a14000+ SEAVU/a12000-14000/s270/ho/clearapp",
+          "spawn": "NEILE",
+          "waypoint_actions": { "SEAVU": "ho,clearapp" },
           "route": "HLYWD1",
           "star": "HLYWD1",
           "initial_controller": "2F",
@@ -2023,13 +2026,8 @@
     "BRUEN2": {
       "arrivals": [
         {
-          "waypoints": "AVATR/a24000-29000/s280 TRUBL/a19000-23000/ho EMMMY/a14000-17000 WHDDN/a15000- SHRTZ/a13000-14000",
-          "runway_waypoints": {
-            "KLAX": {
-              "6L": "SHRTZ/a13000-14000 DRYSS/a10000 TOMYS/a9000 CLIFY/a7000/s220 HNCHE SASSI/a7000/s210 SHIPM/h251",
-              "7R": "SHRTZ/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000+/s220 WNDFL/a6000/s210 NIKEY/h251"
-            }
-          },
+          "spawn": "AVATR",
+          "waypoint_actions": { "TRUBL": "ho" },
           "star": "BRUEN2",
           "is_rnav": true,
           "initial_controller": "C39",
@@ -2372,7 +2370,8 @@
           }
         },
         {
-          "waypoints": "PESOZ MADOW/ho TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210",
+          "spawn": "PESOZ",
+          "waypoint_actions": { "MADOW": "ho" },
           "star": "OLAAA2",
           "is_rnav": true,
           "initial_controller": "4Y",
@@ -2599,7 +2598,8 @@
           }
         },
         {
-          "waypoints": "PESOZ MADOW/ho TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210",
+          "spawn": "PESOZ",
+          "waypoint_actions": { "MADOW": "ho" },
           "star": "OLAAA2",
           "is_rnav": true,
           "initial_controller": "4Y",
@@ -2843,7 +2843,8 @@
     "RYDRR2": {
       "arrivals": [
         {
-          "waypoints": "GNZZO/a13000-14000 RYDRR/a11000/s250/ho KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
+          "spawn": "GNZZO",
+          "waypoint_actions": { "RYDRR": "ho" },
           "star": "RYDRR2",
           "is_rnav": true,
           "initial_controller": "C14",
@@ -2970,7 +2971,8 @@
     "IRNMN2/RYDRR2_FINAL": {
       "arrivals": [
         {
-          "waypoints": "BAYST/a9000+/s240 JUUSE/a8000-9000/ho CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
+          "spawn": "BAYST",
+          "waypoint_actions": { "JUUSE": "ho" },
           "star": "IRNMN2",
           "is_rnav": true,
           "initial_controller": "2Z",
@@ -3233,7 +3235,8 @@
           }
         },
         {
-          "waypoints": "BAYST/a9000+/s240 JUUSE/a8000-9000/ho CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
+          "spawn": "BAYST",
+          "waypoint_actions": { "JUUSE": "ho" },
           "star": "IRNMN2",
           "is_rnav": true,
           "initial_controller": "2Z",
@@ -3257,7 +3260,8 @@
     "IRNMN2": {
       "arrivals": [
         {
-          "waypoints": "BIKNG/a16000-20000 RUNNN/a14000-17000/ho IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
+          "spawn": "BIKNG",
+          "waypoint_actions": { "RUNNN": "ho" },
           "star": "IRNMN2",
           "is_rnav": true,
           "initial_controller": "C13",

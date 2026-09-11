@@ -2001,7 +2001,8 @@
     "TTHOR3": {
       "arrivals": [
         {
-          "waypoints": "WEEEK/a16000/ho TTHOR/a12000 BIKEZ/a12000/h165",
+          "spawn": "WEEEK",
+          "waypoint_actions": { "WEEEK": "ho" },
           "cruise_altitude": 36000,
           "star": "TTHOR3",
           "initial_controller": "C58",

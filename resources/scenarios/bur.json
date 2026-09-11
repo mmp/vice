@@ -3746,14 +3746,8 @@
     "ROKKR3/IVINS2/BONJO3": {
       "arrivals": [
         {
-          "waypoints": "XXELL/a17000-19000 YUTOO/a14000-16000/s270/ho TRAVV ROKKR/a11000-12000/s250 ZEPPE/a9000-10000/s240 IVINS/a8000+",
-          "runway_waypoints": {
-            "KBUR": {
-              "15": "IVINS/a8000+ MAURK/a6000/h83",
-              "33": "IVINS/a8000+ MIKEI/a7000 EHUNT/a6000/h126",
-              "8": "IVINS/a8000+ MIKEI/a7000/h126"
-            }
-          },
+          "spawn": "XXELL",
+          "waypoint_actions": { "MIKEI": "h126", "YUTOO": "ho" },
           "star": "ROKKR3",
           "is_rnav": true,
           "initial_controller": "C13",
@@ -3828,14 +3822,8 @@
           }
         },
         {
-          "waypoints": "MAIDD/a17000-19000 PEPRZ/a14000-16000/s270/ho HEVVY ROKKR/a11000-12000/s250 ZEPPE/a9000-10000/s240 IVINS/a8000+",
-          "runway_waypoints": {
-            "KBUR": {
-              "15": "IVINS/a8000+ MAURK/a6000/h83",
-              "33": "IVINS/a8000+ MIKEI/a7000 EHUNT/a6000/h126",
-              "8": "IVINS/a8000+ MIKEI/a7000/h126"
-            }
-          },
+          "spawn": "MAIDD",
+          "waypoint_actions": { "MIKEI": "h126", "PEPRZ": "ho" },
           "star": "ROKKR3",
           "is_rnav": true,
           "initial_controller": "C13",
@@ -3887,13 +3875,8 @@
           }
         },
         {
-          "waypoints": "XXELL/a17000-19000 YUTOO/a14000-16000/s270/ho TRAVV ROKKR/a11000-12000/s250 ZEPPE/a9000-10000/s240 IVINS/a8000+",
-          "runway_waypoints": {
-            "KVNY": {
-              "16R": "IVINS/a8000+ HNTUN/a7000/h58",
-              "34L": "IVINS/a8000+ MIKEI/a7000 EHUNT/a6000/h126"
-            }
-          },
+          "spawn": "XXELL",
+          "waypoint_actions": { "YUTOO": "ho" },
           "star": "IVINS2",
           "is_rnav": true,
           "initial_controller": "C13",
@@ -3924,13 +3907,8 @@
           }
         },
         {
-          "waypoints": "MAIDD/a17000-19000 PEPRZ/a14000-16000/s270/ho HEVVY ROKKR/a11000-12000/s250 ZEPPE/a9000-10000/s240 IVINS/a8000+",
-          "runway_waypoints": {
-            "KVNY": {
-              "16R": "IVINS/a8000+ HNTUN/a7000/h58",
-              "34L": "IVINS/a8000+ MIKEI/a7000 EHUNT/a6000/h126"
-            }
-          },
+          "spawn": "MAIDD",
+          "waypoint_actions": { "PEPRZ": "ho" },
           "star": "IVINS2",
           "is_rnav": true,
           "initial_controller": "C13",
@@ -3989,7 +3967,8 @@
           }
         },
         {
-          "waypoints": "XXELL/a17000-19000 YUTOO/a14000-16000/s270/ho TRAVV ROKKR/a11000-12000/s250 ZEPPE/a9000-10000 IVINS/a8000+ ROLLI/a6000+ BONJO/a5000/h103",
+          "spawn": "XXELL",
+          "waypoint_actions": { "YUTOO": "ho" },
           "star": "BONJO3",
           "is_rnav": true,
           "initial_controller": "C13",
@@ -4016,7 +3995,8 @@
     "THRNE4": {
       "arrivals": [
         {
-          "waypoints": "THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250/ho NNEDD/a8000/h253",
+          "spawn": "THRNE",
+          "waypoint_actions": { "EDARD": "ho" },
           "cruise_altitude": 36000,
           "star": "THRNE4",
           "is_rnav": true,
@@ -4078,7 +4058,8 @@
           }
         },
         {
-          "waypoints": "THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250/ho NNEDD/a8000/h272",
+          "spawn": "THRNE",
+          "waypoint_actions": { "EDARD": "ho" },
           "cruise_altitude": 36000,
           "star": "THRNE4",
           "is_rnav": true,
@@ -4120,7 +4101,8 @@
     "WEESL1": {
       "arrivals": [
         {
-          "waypoints": "WEESL GRRIT/ho SWIIM/a9000 LYNXX/a9000/h192",
+          "spawn": "WEESL",
+          "waypoint_actions": { "GRRIT": "ho" },
           "star": "WEESL1",
           "is_rnav": true,
           "initial_controller": "C04",

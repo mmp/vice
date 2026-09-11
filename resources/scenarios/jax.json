@@ -2713,7 +2713,8 @@
     "MARQO3": {
       "arrivals": [
         {
-          "waypoints": "CAMJO MARQO/ho COROE/a11000- GWIIZ EGAGE/a4000/s210/h77",
+          "spawn": "CAMJO",
+          "waypoint_actions": { "MARQO": "ho" },
           "star": "MARQO3",
           "initial_controller": "C77",
           "initial_altitude": 16000,
@@ -3395,7 +3396,8 @@
     "QUBEN2": {
       "arrivals": [
         {
-          "waypoints": "HAINY/a24000+ MISCL MEAAT/ho BASSS POGIE/a13000 QUBEN/h360",
+          "spawn": "HAINY",
+          "waypoint_actions": { "MEAAT": "ho" },
           "star": "QUBEN2",
           "initial_controller": "C57",
           "initial_altitude": 24000,
@@ -3424,7 +3426,8 @@
     "TEBOW2": {
       "arrivals": [
         {
-          "waypoints": "HILIS/ho FABES MCFIE/a12000 TEBOW/h46",
+          "spawn": "HILIS",
+          "waypoint_actions": { "HILIS": "ho" },
           "star": "TEBOW2",
           "initial_controller": "C15",
           "initial_altitude": 22000,

@@ -3027,7 +3027,8 @@
     "COMIX2": {
       "arrivals": [
         {
-          "waypoints": "GAMBT LEJEN/a15000-19000/ho COMIX/a12000-15000 FLSHH LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210 NADDO/a6000/h095",
+          "spawn": "GAMBT",
+          "waypoint_actions": { "LEJEN": "ho" },
           "star": "COMIX2",
           "is_rnav": true,
           "initial_controller": "C22",
@@ -6411,7 +6412,8 @@
           }
         },
         {
-          "waypoints": " FLSHH LNTRN/a9000+/s230/ho XMANS/a7000 KLOMN/a6000/s210 NADDO/a6000/h095",
+          "spawn": "FLSHH",
+          "waypoint_actions": { "LNTRN": "ho" },
           "star": "COMIX2",
           "is_rnav": true,
           "initial_controller": "5N",
@@ -6577,7 +6579,8 @@
           }
         },
         {
-          "waypoints": " FLSHH LNTRN/a9000+/s230/ho XMANS/a7000 KLOMN/a6000/s210 NADDO/a6000/h095",
+          "spawn": "FLSHH",
+          "waypoint_actions": { "LNTRN": "ho" },
           "star": "COMIX2",
           "is_rnav": true,
           "initial_controller": "5N",
