@@ -1559,7 +1559,7 @@
           "waypoints": "LAFLN N038.47.02.277,W075.37.03.056/ho BILIT/a11000 DEALE/a10000/s280",
           "runway_waypoints": {
             "KDCA": {
-              "1": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000- HITEK/a7000/delete",
+              "1": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000- HITEK/a7000/delete MITEY/flyover/h187",
               "19": "DEALE/a10000/s280 EDDGY THANE MEGGS/a7000/delete"
             }
           },

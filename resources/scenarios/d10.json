@@ -9943,7 +9943,7 @@
       "arrivals": [
         {
           "waypoints": "MASTY/a16000+/ho GREGS/a11000/s250 MNKEE JFRYE/h143",
-          "star": "HERBZ2",
+          "star": "JFRYE5",
           "initial_controller": "C75",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -10827,7 +10827,7 @@
       "arrivals": [
         {
           "waypoints": "HEERE/ho JAKCY ORVLL/a9000/s250 GBEAR REDDN BACHR/h315",
-          "star": "MNNDO4",
+          "star": "REDDN4",
           "initial_controller": "C29",
           "initial_altitude": 18000,
           "initial_speed": 290,
@@ -10881,7 +10881,7 @@
       "arrivals": [
         {
           "waypoints": "HAPNS/a24000-30000/s280 HEERE JAKCY ORVLL/a9000/s250/ho GBEAR/a6000 REDDN BACHR/h315",
-          "star": "MNNDO4",
+          "star": "REDDN4",
           "initial_controller": "1S",
           "initial_altitude": 26000,
           "initial_speed": 290,

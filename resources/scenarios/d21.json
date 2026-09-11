@@ -1388,8 +1388,8 @@
           "runway_waypoints": {
             "KDTW": {
               "3R": "CUUGR/a9000-11000/s260 ROOAD ROYYY/a8000/s210/h216",
-              "4L": "CUUGR/a9000-11000/s260 ROOAD ROYYY/a8000/s210/h216",
-              "4R": "CUUGR/a9000-11000/s260 ZUBBY SKRUG/a8000/s210/h218"
+              "4L": "CUUGR/a9000-11000/s260 ZUBBY SKRUG/a8000/s210/h218",
+              "4R": "CUUGR/a9000-11000/s260 ROOAD ROYYY/a8000/s210/h216"
             }
           },
           "star": "CUUGR2",
@@ -2544,7 +2544,7 @@
       "arrivals": [
         {
           "waypoints": "WEBOR/ho NIMNM CLLEM KILTT RRALF PICTR/a4000/h85",
-          "star": "PETTE2",
+          "star": "RRALF3",
           "initial_controller": "C48",
           "initial_altitude": 17000,
           "initial_speed": 280,

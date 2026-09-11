@@ -12884,7 +12884,7 @@
       "arrivals": [
         {
           "waypoints": "LYMBO N030.38.53.564,W094.20.11.325/ho1D ZEEKK/a8000 GESNR OHIIO PNUUT",
-          "star": "PIEGY1",
+          "star": "OHIIO4",
           "initial_controller": "C87",
           "initial_altitude": 10000,
           "initial_speed": 160,
@@ -12921,7 +12921,7 @@
       "arrivals": [
         {
           "waypoints": "LYMBO N030.38.53.564,W094.20.11.325/ho1D ZEEKK/a8000/spspG7R GESNR/d4000/ho1R N030.13.21.088,W095.00.33.673/d3000 CUBIR",
-          "star": "PIEGY1",
+          "star": "OHIIO4",
           "initial_controller": "C87",
           "initial_altitude": 10000,
           "initial_speed": 160,
@@ -12958,7 +12958,7 @@
       "arrivals": [
         {
           "waypoints": "LYMBO N030.38.53.564,W094.20.11.325/ho1D ZEEKK/a8000/spspG5L GESNR/d4000/ho1R N030.12.16.688,W095.10.58.685/d2000 JIDUK/clearapp",
-          "star": "PIEGY1",
+          "star": "OHIIO4",
           "initial_controller": "C87",
           "initial_altitude": 10000,
           "initial_speed": 160,

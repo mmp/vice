@@ -4831,7 +4831,7 @@
           "waypoints": "LAFLN N038.47.02.277,W075.37.03.056/ho BILIT/a11000 DEALE/a10000/s280",
           "runway_waypoints": {
             "KDCA": {
-              "1": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000- HITEK/a7000/h187",
+              "1": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000- HITEK/a7000/h187 MITEY/flyover/h187",
               "19": "DEALE/a10000/s280 EDDGY THANE MEGGS/a7000/h327"
             }
           },
@@ -4891,9 +4891,9 @@
             "KDCA": {
               "1": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
               "4": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-              "15": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-              "19": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-              "22": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+              "15": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR PUNKN/flyover/t148",
+              "19": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/flyover/t147",
+              "22": "ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/flyover/t147",
               "33": "ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
             }
           },
@@ -5104,9 +5104,9 @@
             "KDCA": {
               "1": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
               "4": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189",
-              "15": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-              "19": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
-              "22": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/h148",
+              "15": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR PUNKN/flyover/t148",
+              "19": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/flyover/t147",
+              "22": "TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR DARIC/flyover/t147",
               "33": "TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/h189"
             }
           },
@@ -5164,8 +5164,8 @@
               "19C": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
               "19R": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
               "1L": "HYPER/a10000/s250 CRAIN/a6000 KUKSE ELISN/flyover/h191",
-              "1C": "HYPER/a10000/s250 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191",
-              "1R": "HYPER/a10000/s250 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191"
+              "1C": "HYPER/a10000/s250 BRUHH/a9000 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK/a4000/s210/flyover/t191",
+              "1R": "HYPER/a10000/s250 BRUHH/a9000 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK/a4000/s210/flyover/t191"
             },
             "KHEF": {
               "16L": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
@@ -5388,8 +5388,8 @@
               "19C": "HYPER PHATT/a9000/h230",
               "19R": "HYPER PHATT/a9000/h230",
               "1L": "HYPER CRAIN/a6000 KUKSE/a5000 ELISN MIKEJ/h191",
-              "1C": "HYPER SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/h191",
-              "1R": "HYPER SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/h191"
+              "1C": "HYPER BRUHH/a9000 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK/a4000/s210/flyover/t191",
+              "1R": "HYPER BRUHH/a9000 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK/a4000/s210/flyover/t191"
             }
           },
           "star": "PRTZL2",
@@ -5735,8 +5735,8 @@
           "waypoints": "PRIVO/ho DAFIX/a12000 WAYNZ/a10000/s250 MAPEL/a7000",
           "runway_waypoints": {
             "KIAD": {
-              "30": "MAPEL/a7000 KUKSE/a5000 ELISN MIKEJ/flyover/h191",
-              "1L": "MAPEL/a7000 KUKSE/a5000 ELISN MIKEJ/flyover/h191",
+              "30": "MAPEL/a7000 CRAIN/a6000 KUKSE/a5000 ELISN/flyover/t190",
+              "1L": "MAPEL/a7000 CRAIN/a6000 KUKSE/a5000 ELISN/flyover/t190",
               "1C": "MAPEL/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191",
               "1R": "MAPEL/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191"
             }
