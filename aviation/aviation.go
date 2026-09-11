@@ -1244,18 +1244,22 @@ func (ar *Arrival) approachRoute(icao ICAOAirportCode, appr *Approach) WaypointA
 	return wps
 }
 
-// starWaypointsFrom returns a copy of the first of the STAR's transitions
-// that passes over fix, starting there.
+// starWaypointsFrom returns a copy of the first of the STAR's routes that
+// passes over fix, starting there. The transitions in come first; an arrival
+// may also start on one of the runway transitions off the end, as a scenario's
+// finals do.
 func starWaypointsFrom(star STAR, fix string, e *util.ErrorLogger) WaypointArray {
-	for wps := range util.SortedMapValues(star.Transitions) {
-		idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix })
-		if idx == -1 {
-			continue
+	for _, routes := range []map[string]WaypointArray{star.Transitions, star.RunwayWaypoints} {
+		for wps := range util.SortedMapValues(routes) {
+			idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix })
+			if idx == -1 {
+				continue
+			}
+			if idx == len(wps)-1 {
+				e.ErrorString("Only have one waypoint on STAR: %q. 2 or more are necessary for navigation", fix)
+			}
+			return wps[idx:].Clone()
 		}
-		if idx == len(wps)-1 {
-			e.ErrorString("Only have one waypoint on STAR: %q. 2 or more are necessary for navigation", fix)
-		}
-		return wps[idx:].Clone()
 	}
 	return nil
 }

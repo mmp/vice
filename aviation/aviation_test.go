@@ -729,6 +729,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 	const baseline = "MIPP/star _handoff/ho/star LIZZI/star BEUTY/star APPLE/star PROUD/star"
 	for _, tc := range []struct {
 		name    string
+		spawn   string // "" for MIPP, the start of the transition in
 		actions map[string]string
 		want    string // encoded route; "" to keep the baseline
 		want13  string // encoded runway 13 transition; "" for the STAR's own
@@ -758,6 +759,13 @@ func TestArrivalWaypointActions(t *testing.T) {
 			name:    "an action on a fix past the runway split",
 			actions: map[string]string{"KRANN": "h090"},
 			want13:  "PROUD/star KRANN/h090/star ETHYN/star",
+		},
+		{
+			name:    "spawning on a runway transition",
+			spawn:   "KRANN",
+			actions: map[string]string{"ETHYN": "ho"},
+			want:    "KRANN/star ETHYN/ho/star",
+			want13:  "PROUD/star KRANN/star ETHYN/ho/star",
 		},
 		{
 			name:    "an action where the runway transitions branch off goes on each",
@@ -801,7 +809,8 @@ func TestArrivalWaypointActions(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var e util.ErrorLogger
-			arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", WaypointActions: tc.actions,
+			arr := Arrival{STAR: "MIPP4", SpawnWaypoint: util.Select(tc.spawn == "", "MIPP", tc.spawn),
+				WaypointActions:   tc.actions,
 				InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
 			arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
 				func(string) bool { return true }, &e)
