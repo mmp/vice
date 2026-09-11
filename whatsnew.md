@@ -26,7 +26,7 @@
   - Added a number of checks that departures' exits are valid/have at least one route to them
   - Fixed bugs with `/clearapp` and `/intercept` in routes
   - Added "initial_heading" for tower-assigned headings for SIDs that aren't charted to start with headings
-  - Added "waypoint_action" for SIDs so that actions can be added at waypoints without needing to respecify them
+  - Added "waypoint_actions" for SIDs so that actions can be added at waypoints without needing to respecify them
 
 
 - Fixed aircraft turning away from the localizer instead of joining it
@@ -35,3 +35,5 @@
   - Require "star" to be specified if "waypoints" match a published STAR
   - Fixed bug that prohibited runway thresholds below sea level
   - Route triggers now sequence `/delete`, `/land` and `/intercept` like any other action
+  - Added "waypoint_actions" to arrivals, so that actions can be added to the fixes of a STAR taken from the CIFP without respecifying it
+- Fixed bug where "descend via" was refused on the runway transition of a STAR taken from the CIFP

@@ -5118,7 +5118,8 @@
               </pre>
               <p>If the STAR specified
                 in the "star" parameter is present, <i>vice</i> will automatically use the available routes to define the STAR's
-                transitions and runway-specific waypoints.  In that case, one additional parameter must be specified:</p>
+                transitions and runway-specific waypoints.  In that case, one additional parameter must be specified,
+                and one more is available:</p>
               <table class="table">
                 <thead>
                   <tr>
@@ -5137,11 +5138,41 @@
                       the waypoint and the next. For example, "STW@0.6" specifies that aircraft should
                       spawn 0.6 of the way between STW and the following waypoint.
                       Aircraft will then be handed off from the center controller halfway between the
-                      first two waypoints of the route.
+                      first two waypoints of the route, unless "waypoint_actions" hands them off itself.
                     </td>
+                  </tr>
+                  <tr>
+                    <td>"waypoint_actions"</td>
+                    <td>Object</td>
+                    <td>(<i>Optional</i>) Actions to take at the fixes of the STAR's route, such as handoffs and
+                      point outs for virtually-controlled aircraft. Each member's name is a fix on the route and its
+                      value is a comma-separated list of actions; see below.</td>
                   </tr>
                 </tbody>
               </table>
+              <p>"waypoint_actions" adds <a href="#fe-route-actions">actions</a> to the fixes of the route the CIFP
+                gives, so that a STAR flown as charted doesn't have to be written out by hand just to say where the
+                aircraft is handed off. It is an object where each member's name is a fix on the route and its value
+                lists the actions to take on passing the fix, separated by commas and without the slashes they would
+                have in "waypoints". Given the APPLE3 above, to hand off at BRAND and set the scratchpad at KORRY:</p>
+              <pre>
+"APPLE3": {
+  "arrivals": [
+    {
+      "star": "APPLE3",
+      "spawn": "RUUTH",
+      "waypoint_actions": { "BRAND": "ho", "KORRY": "spspAPP" },
+      ...
+              </pre>
+              <p>A fix may be on the arrival's own route or on one of the STAR's runway transitions; an action at the
+                fix where the two meet is taken on each of them. If a fix has <a href="#fe-route-triggers">triggers</a>,
+                the actions may instead be taken when one of them is met: the member's name is then the fix followed by
+                its triggers, up to and including the one to wait for.</p>
+              <p>A handoff anywhere in "waypoint_actions" replaces the handoff <i>vice</i> would otherwise make halfway
+                between the first two waypoints&mdash;including a <code>/ho</code><i>position</i> to another virtual
+                controller, so that an arrival worked entirely by virtual controllers never reaches a human.</p>
+              <p>"waypoint_actions" may not be given together with "waypoints"; a route written out by hand carries its
+                actions in the route itself.</p>
               <p>The CIFP also says which airports each STAR serves: one that serves several of them is recorded once under
                 each, so <code>-routes</code> lists it for every one of them.  That is where an arrival that leaves out
                 "airports" takes them from, narrowed to the airports the scenario group has.</p>

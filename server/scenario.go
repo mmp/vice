@@ -787,6 +787,9 @@ func (sg *scenarioGroup) resolveControllerRefs() {
 					resolveWaypoints(wps)
 				}
 			}
+			for key, actions := range flow.Arrivals[i].WaypointActions {
+				flow.Arrivals[i].WaypointActions[key] = av.ResolveActionControllers(actions, resolve)
+			}
 		}
 		for i := range flow.Overflights {
 			if flow.Overflights[i].InitialController != "" {

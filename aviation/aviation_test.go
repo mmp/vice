@@ -691,6 +691,206 @@ func TestArrivalApproachRouteCarriesSharedFixActions(t *testing.T) {
 	}
 }
 
+// TestArrivalWaypointActions covers "waypoint_actions" on an arrival that
+// takes its route from the CIFP: where the actions land, what is rejected,
+// and that the STAR in the database is left as it was.
+func TestArrivalWaypointActions(t *testing.T) {
+	fixes := []string{"MIPP", "LIZZI", "BEUTY", "APPLE", "PROUD", "KRANN", "ETHYN", "SNEDE", "XYZ"}
+	loc := declinationLocator{testLocator{}, map[string]float32{"XYZ": 11}}
+	dbFixes := make(map[string]Fix)
+	for i, f := range fixes {
+		p := math.Point2LL{float32(-73 - i), float32(40 + i)}
+		loc.testLocator[f] = p
+		dbFixes[f] = Fix{Id: f, Location: p}
+	}
+	oldDB := DB
+	DB = &StaticDatabase{Fixes: dbFixes, Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	route := func(s string) WaypointArray {
+		wps, err := parseWaypoints(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return wps
+	}
+
+	mipp4 := STAR{
+		Transitions:     map[string]WaypointArray{"ALL": route("MIPP LIZZI BEUTY APPLE PROUD")},
+		RunwayWaypoints: map[string]WaypointArray{"13": route("PROUD KRANN ETHYN"), "31": route("PROUD SNEDE")},
+	}
+	DB.Airports = map[ICAOAirportCode]FAAAirport{
+		"KTST": {Id: "KTST", STARs: map[string]STAR{"MIPP4": mipp4}, Runways: []Runway{{Id: "13"}, {Id: "31"}}},
+	}
+
+	scenarioAirports := map[ICAOAirportCode]*Airport{"KTST": {}}
+	controlPositions := map[ControlPosition]*Controller{"1T": {Position: "1T"}, "C35": {Position: "C35"}}
+
+	const baseline = "MIPP/star _handoff/ho/star LIZZI/star BEUTY/star APPLE/star PROUD/star"
+	for _, tc := range []struct {
+		name    string
+		actions map[string]string
+		want    string // encoded route; "" to keep the baseline
+		want13  string // encoded runway 13 transition; "" for the STAR's own
+		want31  string
+		err     string
+	}{
+		{
+			name: "no actions gets the automatic handoff",
+			want: baseline,
+		},
+		{
+			name:    "a handoff of its own replaces the automatic one",
+			actions: map[string]string{"BEUTY": "ho"},
+			want:    "MIPP/star LIZZI/star BEUTY/ho/star APPLE/star PROUD/star",
+		},
+		{
+			name:    "handing off to a virtual controller also replaces it",
+			actions: map[string]string{"LIZZI": "hoC35"},
+			want:    "MIPP/star LIZZI/hoC35/star BEUTY/star APPLE/star PROUD/star",
+		},
+		{
+			name:    "several actions at a fix",
+			actions: map[string]string{"BEUTY": "ho,spspABC"},
+			want:    "MIPP/star LIZZI/star BEUTY/ho/spspABC/star APPLE/star PROUD/star",
+		},
+		{
+			name:    "an action on a fix past the runway split",
+			actions: map[string]string{"KRANN": "h090"},
+			want13:  "PROUD/star KRANN/h090/star ETHYN/star",
+		},
+		{
+			name:    "an action where the runway transitions branch off goes on each",
+			actions: map[string]string{"PROUD": "ho"},
+			want:    "MIPP/star LIZZI/star BEUTY/star APPLE/star PROUD/ho/star",
+			want13:  "PROUD/ho/star KRANN/star ETHYN/star",
+			want31:  "PROUD/ho/star SNEDE/star",
+		},
+		{
+			name:    "a fix on no route at all",
+			actions: map[string]string{"NOPE": "ho"},
+			err:     "NOPE is not in the route",
+		},
+		{
+			name:    "a property is not an action",
+			actions: map[string]string{"BEUTY": "flyover"},
+			err:     "unknown action",
+		},
+		{
+			name:    "/delete is",
+			actions: map[string]string{"PROUD": "delete"},
+			want:    "MIPP/star _handoff/ho/star LIZZI/star BEUTY/star APPLE/star PROUD/delete/star",
+			want13:  "PROUD/delete/star KRANN/star ETHYN/star",
+			want31:  "PROUD/delete/star SNEDE/star",
+		},
+		{
+			name:    "a trigger the fix hasn't got",
+			actions: map[string]string{"BEUTY/@a5000+": "ho"},
+			err:     "no trigger /@a5000+",
+		},
+		{
+			name:    "an unknown controller on the arrival's own route",
+			actions: map[string]string{"BEUTY": "hoZZZ"},
+			err:     "No controller found with id",
+		},
+		{
+			name:    "an unknown controller past the runway split",
+			actions: map[string]string{"KRANN": "hoZZZ"},
+			err:     "No controller found with id",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var e util.ErrorLogger
+			arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP", WaypointActions: tc.actions,
+				InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
+			arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+				func(string) bool { return true }, &e)
+
+			if tc.err != "" {
+				if !strings.Contains(e.String(), tc.err) {
+					t.Errorf("expected an error matching %q; got: %s", tc.err, e.String())
+				}
+				return
+			}
+			if e.HaveErrors() {
+				t.Fatalf("unexpected errors: %s", e.String())
+			}
+
+			want := util.Select(tc.want == "", baseline, tc.want)
+			if got := arr.Waypoints.Encode(); got != want {
+				t.Errorf("route = %q, want %q", got, want)
+			}
+			for rwy, want := range map[string]string{
+				"13": util.Select(tc.want13 == "", "PROUD/star KRANN/star ETHYN/star", tc.want13),
+				"31": util.Select(tc.want31 == "", "PROUD/star SNEDE/star", tc.want31),
+			} {
+				if got := arr.RunwayWaypoints["KTST"][rwy].Encode(); got != want {
+					t.Errorf("runway %s = %q, want %q", rwy, got, want)
+				}
+			}
+		})
+	}
+
+	// A heading action that tracks a navaid's radial has to be located along
+	// with the rest of the route, so the actions go on before the locations
+	// are resolved.
+	t.Run("an action naming a fix of its own is located", func(t *testing.T) {
+		var e util.ErrorLogger
+		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
+			WaypointActions:   map[string]string{"APPLE": "tXYZ-R090", "KRANN": "tXYZ-R090"},
+			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
+		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			func(string) bool { return true }, &e)
+		if e.HaveErrors() {
+			t.Fatalf("unexpected errors: %s", e.String())
+		}
+
+		for fix, wps := range map[string]WaypointArray{
+			"APPLE": arr.Waypoints,
+			"KRANN": arr.RunwayWaypoints["KTST"]["13"],
+		} {
+			i := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.Fix == fix })
+			if i == -1 {
+				t.Fatalf("%s not in %s", fix, wps.Encode())
+			}
+			h := wps[i].ActionGroups()[0].Actions.Heading
+			if h.FixLocation != loc.testLocator["XYZ"] {
+				t.Errorf("%s: radial fix at %v, want %v", fix, h.FixLocation, loc.testLocator["XYZ"])
+			}
+			if h.FixVariation != 11 {
+				t.Errorf("%s: radial variation %v, want the station's 11", fix, h.FixVariation)
+			}
+		}
+	})
+
+	// Actions are added to a copy of the CIFP's route: writing through to the
+	// database would give every other arrival on the STAR the same ones.
+	t.Run("the STAR in the database is untouched", func(t *testing.T) {
+		star := DB.Airports["KTST"].STARs["MIPP4"]
+		for _, wps := range []WaypointArray{star.Transitions["ALL"], star.RunwayWaypoints["13"],
+			star.RunwayWaypoints["31"]} {
+			for _, wp := range wps {
+				if len(wp.ActionGroups()) > 0 {
+					t.Errorf("%s picked up %s", wp.Fix, WaypointArray{wp}.Encode())
+				}
+			}
+		}
+	})
+
+	t.Run("not allowed with waypoints of its own", func(t *testing.T) {
+		var e util.ErrorLogger
+		arr := Arrival{STAR: "MIPP4", Waypoints: route("MIPP LIZZI BEUTY APPLE PROUD"),
+			Airports: []ICAOAirportCode{"KTST"}, WaypointActions: map[string]string{"BEUTY": "ho"},
+			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
+		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			func(string) bool { return true }, &e)
+
+		if !strings.Contains(e.String(), "applies only to a route taken from the CIFP") {
+			t.Errorf("didn't get the expected error; got: %s", e.String())
+		}
+	})
+}
+
 func TestFormatAltitude(t *testing.T) {
 	for _, tc := range []struct {
 		alt  float32

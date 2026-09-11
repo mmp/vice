@@ -667,6 +667,11 @@ func (wp *Waypoint) ETA(p math.Point2LL, gs float32, nmPerLongitude float32) tim
 
 type WaypointArray []Waypoint
 
+// containsFix reports whether the route passes over the named fix.
+func (wa WaypointArray) containsFix(fix string) bool {
+	return slices.ContainsFunc(wa, func(wp Waypoint) bool { return wp.Fix == fix })
+}
+
 // HasHumanHandoff returns true if any waypoint has HumanHandoff set.
 func (wa WaypointArray) HasHumanHandoff() bool {
 	return slices.ContainsFunc(wa, Waypoint.HasHumanHandoff)

@@ -139,6 +139,11 @@ type Arrival struct {
 	CruiseAltitudes util.SingleOrArray[int]                      `json:"cruise_altitude"`
 	STAR            string                                       `json:"star"`
 
+	// WaypointActions adds actions to the fixes of a route taken from the
+	// CIFP. Each member's name is a fix on the route, optionally followed by
+	// its triggers, and its value lists the actions in route syntax.
+	WaypointActions map[string]string `json:"waypoint_actions"`
+
 	// STARFeeds are the STARs whose traffic the arrival takes; this is useful e.g. for getting
 	// real-world traffic wired up for finals scenarios since we generally get traffic after they've
 	// flown STARs in that case.
@@ -1239,6 +1244,120 @@ func (ar *Arrival) approachRoute(icao ICAOAirportCode, appr *Approach) WaypointA
 	return wps
 }
 
+// starWaypointsFrom returns a copy of the first of the STAR's transitions
+// that passes over fix, starting there.
+func starWaypointsFrom(star STAR, fix string, e *util.ErrorLogger) WaypointArray {
+	for wps := range util.SortedMapValues(star.Transitions) {
+		idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == fix })
+		if idx == -1 {
+			continue
+		}
+		if idx == len(wps)-1 {
+			e.ErrorString("Only have one waypoint on STAR: %q. 2 or more are necessary for navigation", fix)
+		}
+		return wps[idx:].Clone()
+	}
+	return nil
+}
+
+// starRunwayWaypoints returns a copy of the STAR's transition to the runway.
+// One charted for both parallels, "16B", serves each of them.
+func starRunwayWaypoints(star STAR, rwy string) (WaypointArray, bool) {
+	if wps, ok := star.RunwayWaypoints[rwy]; ok {
+		return wps.Clone(), true
+	}
+	if len(rwy) > 1 {
+		if wps, ok := star.RunwayWaypoints[rwy[:len(rwy)-1]+"B"]; ok {
+			return wps.Clone(), true
+		}
+	}
+	return nil, false
+}
+
+// takeSTARWaypoints fills in the arrival's route and the runway transitions
+// off the end of it from the FAA CIFP's record of its STAR at each of the
+// airports it serves. The waypoints come back as the CIFP has them: their
+// locations are resolved once "waypoint_actions" have been added, since an
+// action may name a fix of its own to locate.
+func (ar *Arrival) takeSTARWaypoints(spawnPoint string, e *util.ErrorLogger) {
+	for _, icao := range ar.Airports {
+		airport, ok := DB.Airports[icao]
+		if !ok {
+			e.ErrorString("airport %q not found in database", icao)
+			continue
+		}
+
+		star, ok := airport.STARs[ar.STAR]
+		if !ok {
+			e.ErrorString("STAR %q not available for %s. Options: %s", ar.STAR, icao,
+				strings.Join(util.SortedMapKeys(airport.STARs), ", "))
+			continue
+		}
+
+		star.Check(e)
+
+		if len(ar.Waypoints) == 0 {
+			ar.Waypoints = starWaypointsFrom(star, spawnPoint, e)
+		}
+
+		for _, rwy := range airport.Runways {
+			wps, ok := starRunwayWaypoints(star, rwy.Id)
+			if !ok {
+				continue
+			}
+			if ar.RunwayWaypoints == nil {
+				ar.RunwayWaypoints = make(map[ICAOAirportCode]map[string]WaypointArray)
+			}
+			if ar.RunwayWaypoints[icao] == nil {
+				ar.RunwayWaypoints[icao] = make(map[string]WaypointArray)
+			}
+			ar.RunwayWaypoints[icao][rwy.Id] = wps
+		}
+	}
+}
+
+// routes returns the arrival's own route along with the runway transitions
+// off the end of it, in a deterministic order.
+func (ar *Arrival) routes() []WaypointArray {
+	routes := []WaypointArray{ar.Waypoints}
+	for _, icao := range util.SortedMapKeys(ar.RunwayWaypoints) {
+		for _, rwy := range util.SortedMapKeys(ar.RunwayWaypoints[icao]) {
+			routes = append(routes, ar.RunwayWaypoints[icao][rwy])
+		}
+	}
+	return routes
+}
+
+// addWaypointActions applies "waypoint_actions" to the routes taken from the
+// CIFP. A fix may be on the arrival's own route, on the runway transitions
+// off the end of it, or--where the two meet--on both, so the actions go onto
+// every route that passes over it.
+func (ar *Arrival) addWaypointActions(e *util.ErrorLogger) {
+	for _, key := range util.SortedMapKeys(ar.WaypointActions) {
+		fix, _, err := parseWaypointActionKey(key)
+		if err != nil {
+			e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
+			continue
+		}
+
+		routes := util.FilterSlice(ar.routes(), func(wps WaypointArray) bool { return wps.containsFix(fix) })
+		if len(routes) == 0 {
+			e.ErrorString(`"waypoint_actions" %q: %s is not in the route %s or in any of the STAR's `+
+				`runway transitions`, key, fix, ar.Waypoints.RouteString())
+			continue
+		}
+
+		for _, wps := range routes {
+			if err := wps.addActions(key, ar.WaypointActions[key]); err != nil {
+				// The routes differ only in what follows the fix, so an error
+				// at it is the same for each; report it once.
+				e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
+				break
+			}
+		}
+	}
+}
+
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
 	airports map[ICAOAirportCode]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
@@ -1326,99 +1445,61 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			}
 		}
 
-		for _, icao := range ar.Airports {
-			airport, ok := DB.Airports[icao]
-			if !ok {
-				e.ErrorString("airport %q not found in database", icao)
-				continue
-			}
-
-			star, ok := airport.STARs[ar.STAR]
-			if !ok {
-				e.ErrorString(
-					"STAR %q not available for %s. Options: %s",
-					ar.STAR, icao, strings.Join(util.SortedMapKeys(airport.STARs), ", "),
-				)
-				continue
-			}
-
-			star.Check(e)
-
-			if len(ar.Waypoints) == 0 {
-				for wps := range util.SortedMapValues(star.Transitions) {
-					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
-						if idx == len(wps)-1 {
-							e.ErrorString(
-								"Only have one waypoint on STAR: %q. 2 or more are necessary for navigation",
-								wps[idx].Fix,
-							)
-						}
-
-						ar.Waypoints = util.DuplicateSlice(wps[idx:])
-						ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
-
-						if len(ar.Waypoints) >= 2 && spawnT != 0 {
-							ar.Waypoints[0].Location = math.Lerp2f(
-								spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location,
-							)
-							ar.Waypoints[0].Fix = "_" + ar.Waypoints[0].Fix
-						}
-
-						break
-					}
-				}
-			}
-
-			if star.RunwayWaypoints != nil {
-				if ar.RunwayWaypoints == nil {
-					ar.RunwayWaypoints = make(map[ICAOAirportCode]map[string]WaypointArray)
-				}
-				if ar.RunwayWaypoints[icao] == nil {
-					ar.RunwayWaypoints[icao] = make(map[string]WaypointArray)
-				}
-
-				for _, rwy := range airport.Runways {
-					for starRwy, wp := range star.RunwayWaypoints {
-						// Trim leading 0, if any
-						if starRwy[0] == '0' {
-							starRwy = starRwy[1:]
-						}
-
-						n := len(starRwy)
-						if starRwy == rwy.Id ||
-							(n == len(rwy.Id) && starRwy[n-1] == 'B' /* both */ && starRwy[:n-1] == rwy.Id[:n-1]) {
-							ar.RunwayWaypoints[icao][rwy.Id] = util.DuplicateSlice(wp)
-							ar.RunwayWaypoints[icao][rwy.Id] =
-								ar.RunwayWaypoints[icao][rwy.Id].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
-							break
-						}
-					}
-				}
-			}
-		}
-		switch len(ar.Waypoints) {
-		case 0:
+		ar.takeSTARWaypoints(spawnPoint, e)
+		if len(ar.Waypoints) == 0 {
 			e.ErrorString("Couldn't find waypoint %s in any of the STAR routes", spawnPoint)
 			return
+		}
 
-		case 1:
-			// empty string -> to human
-			ar.Waypoints[0].MergeActions(WaypointActions{HumanHandoff: true})
+		ar.addWaypointActions(e)
 
-		default:
-			// add a handoff point randomly halfway between the first two waypoints.
-			mid := Waypoint{
-				Fix: "_handoff",
-				// FIXME: it's a little sketchy to lerp Point2ll coordinates
-				// but probably ok over short distances here...
-				Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
-				Extra: &WaypointExtra{
-					ActionGroups: []WaypointActionGroup{{Actions: WaypointActions{HumanHandoff: true}}},
-				},
+		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+		for _, icao := range util.SortedMapKeys(ar.RunwayWaypoints) {
+			e.Push("Airport " + string(icao))
+			for _, rwy := range util.SortedMapKeys(ar.RunwayWaypoints[icao]) {
+				e.Push("Runway " + rwy)
+				wps := ar.RunwayWaypoints[icao][rwy].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+				wps.checkBasics(e, controlPositions, checkScratchpad)
+				for i := range wps {
+					wps[i].SetOnSTAR(true)
+				}
+				ar.RunwayWaypoints[icao][rwy] = wps
+				e.Pop()
 			}
-			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
+			e.Pop()
+		}
+
+		if spawnT != 0 && len(ar.Waypoints) >= 2 {
+			ar.Waypoints[0].Location = math.Lerp2f(spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location)
+			ar.Waypoints[0].Fix = "_" + ar.Waypoints[0].Fix
+		}
+
+		// Aircraft are handed off to a human partway along the first leg
+		// unless "waypoint_actions" says where the track goes itself, as a
+		// fully-virtual arrival does when it only hands off between virtual
+		// controllers.
+		if !ar.Waypoints.HasHumanHandoff() && len(ar.Waypoints.HandoffControllers()) == 0 {
+			if len(ar.Waypoints) == 1 {
+				// empty string -> to human
+				ar.Waypoints[0].MergeActions(WaypointActions{HumanHandoff: true})
+			} else {
+				mid := Waypoint{
+					Fix: "_handoff",
+					// FIXME: it's a little sketchy to lerp Point2ll coordinates
+					// but probably ok over short distances here...
+					Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
+					Extra: &WaypointExtra{
+						ActionGroups: []WaypointActionGroup{{Actions: WaypointActions{HumanHandoff: true}}},
+					},
+				}
+				ar.Waypoints = slices.Insert(ar.Waypoints, 1, mid)
+			}
 		}
 	} else {
+		if len(ar.WaypointActions) > 0 {
+			e.ErrorString(`"waypoint_actions" applies only to a route taken from the CIFP; ` +
+				`put the actions in "waypoints"`)
+		}
 		if len(ar.Waypoints) < 2 {
 			e.ErrorString(
 				`must provide at least two "waypoints" for arrival ` +
