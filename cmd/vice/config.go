@@ -69,10 +69,10 @@ type ConfigNoSim struct {
 	UserWorkstation    string
 	ControllerInitials string
 
-	ScenarioFile       string
-	VideoMapFile       string
-	ScenarioBriefFile  string
-	FacilityConfigFile string
+	ScenarioFile        string
+	VideoMapFile        string
+	ScenarioBriefFile   string
+	FacilityConfigFiles []string
 
 	// DisplaySimLogs enables logging of basic information about a Sim's execution (notably, things
 	// likely to be useful for facility engineering) in the MessagesPane.
@@ -206,6 +206,21 @@ func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Pla
 	}
 
 	return true
+}
+
+// hasFacilityEngineeringFiles reports whether any override files are
+// selected in the "Facility Engineering" section of the settings window.
+func (c *Config) hasFacilityEngineeringFiles() bool {
+	return c.ScenarioFile != "" || c.VideoMapFile != "" || c.ScenarioBriefFile != "" ||
+		len(c.FacilityConfigFiles) > 0
+}
+
+// clearFacilityEngineeringFiles removes all of the override file selections.
+func (c *Config) clearFacilityEngineeringFiles() {
+	c.ScenarioFile = ""
+	c.VideoMapFile = ""
+	c.ScenarioBriefFile = ""
+	c.FacilityConfigFiles = nil
 }
 
 // ActiveRadarPane returns the STARS or ERAM pane based on the sim type.

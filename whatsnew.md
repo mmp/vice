@@ -32,6 +32,7 @@
 - Fixed aircraft turning away from the localizer instead of joining it
 - Fixed bug with real-world traffic routes including the departure airport
 - Fixed a few bugs with joining visual approaches
+- Fixed bug where vice would ask to revert local edits to scenarios, configs, etc.
 - Facility engineering
   - Require "star" to be specified if "waypoints" match a published STAR
   - Fixed bug that prohibited runway thresholds below sea level

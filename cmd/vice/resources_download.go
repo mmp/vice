@@ -140,18 +140,17 @@ func checkManifestUpToDate(manifestPath string) bool {
 	return false
 }
 
-// validateAllResourcesExist checks that all files in the manifest are on disk
-// at their expected size. This catches cases where a crash during download
-// left some files missing or truncated, or where files were deleted after the
-// manifest was written. A truncated model in particular is not detectable
-// later: whisper.cpp reads past the end of the file and crashes rather than
-// reporting an error. We check size rather than hash so that user edits are
-// preserved and so that startup doesn't have to read a gigabyte of models.
+// validateAllResourcesExist checks that all files in the manifest exist on disk.
+// This catches cases where a crash during download left some files missing,
+// or where files were deleted after the manifest was written.
+// Note: we only check existence, not sizes or content hashes: facility
+// engineers overwrite files in the resources directory with copies they are
+// working on, and anything stricter than an existence check sends their edits
+// through the sync path, which restores the pristine files.
 func validateAllResourcesExist(resourcesDir string, manifest map[string]manifestEntry) bool {
-	for filename, entry := range manifest {
+	for filename := range manifest {
 		fullPath := filepath.Join(resourcesDir, filename)
-		fi, err := os.Stat(fullPath)
-		if err != nil || fi.Size() != entry.Size {
+		if _, err := os.Stat(fullPath); err != nil {
 			return false
 		}
 	}

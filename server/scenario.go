@@ -2526,10 +2526,12 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 // development. They come from the command line or the "Facility
 // Engineering" section of the settings window.
 type OverrideFiles struct {
-	Scenario       string
-	VideoMap       string
-	ScenarioBrief  string
-	FacilityConfig string
+	Scenario      string
+	VideoMap      string
+	ScenarioBrief string
+	// Multiple facility configurations may be overridden at once (e.g.,
+	// both a TRACON's and its ARTCC's).
+	FacilityConfigs []string
 }
 
 // LoadScenarioGroups loads all of the available scenarios, both from the
@@ -2557,14 +2559,14 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 		overrideErrors += errs
 	}
 
-	// Install the facility config override before anything else so that
-	// every load of the file it replaces picks it up.
-	if overrides.FacilityConfig != "" {
+	// Install the facility config overrides before anything else so that
+	// every load of the files they replace picks them up.
+	for _, fc := range overrides.FacilityConfigs {
 		var oe util.ErrorLogger
-		loadFacilityConfigOverride(overrides.FacilityConfig, &oe)
+		loadFacilityConfigOverride(fc, &oe)
 		if oe.HaveErrors() {
 			addOverrideErrors(oe.String())
-			lg.Warnf("Facility config override has errors and will not be loaded: %s", overrides.FacilityConfig)
+			lg.Warnf("Facility config override has errors and will not be loaded: %s", fc)
 		}
 	}
 

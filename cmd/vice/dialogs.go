@@ -734,6 +734,47 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 	os.Exit(1)
 }
 
+// clearOverridesModalClient is an ErrorModalClient with an additional
+// button that requests that the facility engineering override files be
+// cleared from the configuration.
+type clearOverridesModalClient struct {
+	ErrorModalClient
+	clearRequested bool
+}
+
+func (c *clearOverridesModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{
+		{text: "Clear Facility Engineering Files and Exit", action: func() bool {
+			c.clearRequested = true
+			return true
+		}},
+		{text: "Exit", action: func() bool { return true }},
+	}
+}
+
+// ShowFatalErrorOverridesDialog is the variant of ShowFatalErrorDialog for
+// startup errors hit while facility engineering override files were in use:
+// since the overrides may themselves be the cause and the settings window
+// is unreachable when startup fails, it offers to clear them so that the
+// user isn't stuck editing the config file by hand to recover.
+func ShowFatalErrorOverridesDialog(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Logger, s string, args ...any) {
+	msg := fmt.Sprintf(s, args...) +
+		"\n\nFacility engineering override files are selected in the settings window; " +
+		"they may be the cause of these errors. You can clear them and then relaunch vice."
+
+	mc := &clearOverridesModalClient{ErrorModalClient: ErrorModalClient{message: msg}}
+	d := NewModalDialogBox(mc, p)
+	runModalEventLoop(p, d, func() bool { return d.closed })
+
+	if mc.clearRequested {
+		config.clearFacilityEngineeringFiles()
+		if err := config.Save(lg); err != nil {
+			lg.Errorf("Error saving configuration file: %v", err)
+		}
+	}
+	os.Exit(1)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // WhisperBenchmarkModalClient - shows progress while whisper model benchmark runs
 

@@ -17,6 +17,7 @@ import (
 	"os/signal"
 	"runtime"
 	"runtime/debug"
+	"slices"
 	"strconv"
 	"strings"
 	"syscall"
@@ -46,31 +47,32 @@ import (
 
 var (
 	// Command-line options are only used for developer features.
-	cpuprofile             = flag.String("cpuprofile", "", "write CPU profile to `file`")
-	memprofile             = flag.String("memprofile", "", "write memory profile to `file`")
-	logLevel               = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
-	logDir                 = flag.String("logdir", "", "log file `directory`")
-	lintScenarios          = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	runServer              = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
-	serverAddress          = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
-	scenarioFilename       = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
-	videoMapFilename       = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
-	scenarioBriefFilename  = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
-	facilityConfigFilename = flag.String("facilityconfig", "", "`filename` of JSON file with a facility configuration")
-	broadcastMessage       = flag.String("broadcast", "", "`message` to broadcast to all active clients on the server")
-	broadcastPassword      = flag.String("password", "", "`password` to authenticate with server for broadcast message")
-	resetSim               = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
-	showRoutes             = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
-	listMaps               = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
-	listScenarios          = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
-	runSim                 = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
-	navLog                 = flag.Bool("navlog", false, "enable navigation logging")
-	navLogCategories       = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
-	navLogCallsign         = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
-	replayMode             = flag.Bool("replay", false, "replay scenario from saved config")
-	replayDuration         = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
-	waypointCommands       = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
-	starsRandoms           = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
+	cpuprofile            = flag.String("cpuprofile", "", "write CPU profile to `file`")
+	memprofile            = flag.String("memprofile", "", "write memory profile to `file`")
+	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
+	logDir                = flag.String("logdir", "", "log file `directory`")
+	lintScenarios         = flag.Bool("lint", false, "check the validity of the built-in scenarios")
+	runServer             = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
+	serverAddress         = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
+	scenarioFilename      = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
+	videoMapFilename      = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
+	scenarioBriefFilename = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
+	broadcastMessage      = flag.String("broadcast", "", "`message` to broadcast to all active clients on the server")
+	broadcastPassword     = flag.String("password", "", "`password` to authenticate with server for broadcast message")
+	resetSim              = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
+	showRoutes            = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
+	listMaps              = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
+	listScenarios         = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
+	runSim                = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
+	navLog                = flag.Bool("navlog", false, "enable navigation logging")
+	navLogCategories      = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
+	navLogCallsign        = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
+	replayMode            = flag.Bool("replay", false, "replay scenario from saved config")
+	replayDuration        = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
+	waypointCommands      = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
+	starsRandoms          = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
+
+	facilityConfigFilenames []string
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -92,6 +94,12 @@ func init() {
 	// run on different hardware threads over the course of
 	// execution. Therefore, we must lock the main thread at startup time.
 	runtime.LockOSThread()
+
+	flag.Func("facilityconfig", "`filename` of JSON file with a facility configuration; may be given multiple times",
+		func(s string) error {
+			facilityConfigFilenames = append(facilityConfigFilenames, s)
+			return nil
+		})
 }
 
 // initCommon performs early initialization common to all modes: flag
@@ -160,8 +168,10 @@ func loadConfig(lg *log.Logger) (*Config, error) {
 	if *scenarioBriefFilename == "" && config.ScenarioBriefFile != "" {
 		*scenarioBriefFilename = config.ScenarioBriefFile
 	}
-	if *facilityConfigFilename == "" && config.FacilityConfigFile != "" {
-		*facilityConfigFilename = config.FacilityConfigFile
+	if len(facilityConfigFilenames) == 0 && len(config.FacilityConfigFiles) > 0 {
+		// Copy so that later edits to the config's selections in the
+		// settings window can't affect it.
+		facilityConfigFilenames = slices.Clone(config.FacilityConfigFiles)
 	}
 	return config, err
 }
@@ -170,10 +180,10 @@ func loadConfig(lg *log.Logger) (*Config, error) {
 // or add to the ones in the resources directory.
 func overrideFiles() server.OverrideFiles {
 	return server.OverrideFiles{
-		Scenario:       *scenarioFilename,
-		VideoMap:       *videoMapFilename,
-		ScenarioBrief:  *scenarioBriefFilename,
-		FacilityConfig: *facilityConfigFilename,
+		Scenario:        *scenarioFilename,
+		VideoMap:        *videoMapFilename,
+		ScenarioBrief:   *scenarioBriefFilename,
+		FacilityConfigs: facilityConfigFilenames,
 	}
 }
 
@@ -661,7 +671,15 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	if errorLogger.HaveErrors() {
 		errorLogger.PrintErrors(lg)
-		ShowFatalErrorDialog(render, plat, nil, "%s", errorLogger.String())
+		if config.hasFacilityEngineeringFiles() {
+			// The overrides may be the cause (e.g. a facility config that
+			// the built-in scenarios are inconsistent with), so offer a way
+			// out; the settings window's "Clear" buttons can't be reached
+			// when startup fails.
+			ShowFatalErrorOverridesDialog(render, plat, config, lg, "%s", errorLogger.String())
+		} else {
+			ShowFatalErrorDialog(render, plat, nil, "%s", errorLogger.String())
+		}
 	}
 
 	// Show non-fatal dialog for errors in the facility engineering files

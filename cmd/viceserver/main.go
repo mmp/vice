@@ -27,20 +27,29 @@ import (
 )
 
 var (
-	logLevel               = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
-	logDir                 = flag.String("logdir", "", "log file `directory`")
-	serverPort             = flag.Int("port", server.ViceServerPort, "`port` to listen on")
-	serverAddress          = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
-	scenarioFilename       = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
-	videoMapFilename       = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
-	scenarioBriefFilename  = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
-	facilityConfigFilename = flag.String("facilityconfig", "", "`filename` of JSON file with a facility configuration")
-	navLogEnabled          = flag.Bool("navlog", false, "enable navigation logging")
-	navLogCategories       = flag.String("navlog-categories", "all", "navigation log `categories`")
-	navLogCallsign         = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign`")
-	smoketest              = flag.Duration("smoketest", 0, "load the scenarios, run a sim with an RPC client attached for this long, and exit; for CI under -race")
-	wxFacilities           = flag.String("wxfacilities", "", "write the weather pipeline's airport and facility list as JSON to `file` and exit")
+	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
+	logDir                = flag.String("logdir", "", "log file `directory`")
+	serverPort            = flag.Int("port", server.ViceServerPort, "`port` to listen on")
+	serverAddress         = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
+	scenarioFilename      = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
+	videoMapFilename      = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
+	scenarioBriefFilename = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
+	navLogEnabled         = flag.Bool("navlog", false, "enable navigation logging")
+	navLogCategories      = flag.String("navlog-categories", "all", "navigation log `categories`")
+	navLogCallsign        = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign`")
+	smoketest             = flag.Duration("smoketest", 0, "load the scenarios, run a sim with an RPC client attached for this long, and exit; for CI under -race")
+	wxFacilities          = flag.String("wxfacilities", "", "write the weather pipeline's airport and facility list as JSON to `file` and exit")
+
+	facilityConfigFilenames []string
 )
+
+func init() {
+	flag.Func("facilityconfig", "`filename` of JSON file with a facility configuration; may be given multiple times",
+		func(s string) error {
+			facilityConfigFilenames = append(facilityConfigFilenames, s)
+			return nil
+		})
+}
 
 // writeWXFacilities writes the list that wxingest and wxpackage use to decide
 // what to ingest and package. wxingest runs from a container image that can't
@@ -89,10 +98,10 @@ func main() {
 	config := server.ServerLaunchConfig{
 		Port: *serverPort,
 		Overrides: server.OverrideFiles{
-			Scenario:       *scenarioFilename,
-			VideoMap:       *videoMapFilename,
-			ScenarioBrief:  *scenarioBriefFilename,
-			FacilityConfig: *facilityConfigFilename,
+			Scenario:        *scenarioFilename,
+			VideoMap:        *videoMapFilename,
+			ScenarioBrief:   *scenarioBriefFilename,
+			FacilityConfigs: facilityConfigFilenames,
 		},
 		ServerAddress: *serverAddress,
 		IsLocal:       false,

@@ -11,6 +11,7 @@ import (
 	"image/png"
 	gomath "math"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -1231,31 +1232,44 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		}
 		imgui.EndGroup()
 
-		imgui.BeginGroup()
-		imgui.Text(fmt.Sprintf("Facility Configuration: %s",
-			util.Select(config.FacilityConfigFile != "", config.FacilityConfigFile, "None Selected")))
-		imgui.SameLine()
-		if imgui.Button("Select##facilityConfig") {
-			path, err := zenity.SelectFile(
-				zenity.Title("Select Facility Configuration JSON File"),
-				zenity.FileFilters{
-					{
-						Name:     "JSON Files",
-						Patterns: []string{"*.json"},
-					},
-				},
-			)
-			if err != nil {
-				fmt.Printf("Error selecting facility configuration file: %v\n", err)
-			} else {
-				config.FacilityConfigFile = path
+		// Two facility configurations may be overridden at once (e.g., both
+		// a TRACON's and its ARTCC's).
+		deleteFacilityConfig := -1
+		for i, file := range config.FacilityConfigFiles {
+			imgui.BeginGroup()
+			imgui.Text(fmt.Sprintf("Facility Configuration: %s", file))
+			imgui.SameLine()
+			if imgui.Button(fmt.Sprintf("Clear##facilityConfig%d", i)) {
+				deleteFacilityConfig = i
 			}
+			imgui.EndGroup()
 		}
-		imgui.SameLine()
-		if imgui.Button("Clear##facilityConfig") {
-			config.FacilityConfigFile = ""
+		if deleteFacilityConfig != -1 {
+			config.FacilityConfigFiles = slices.Delete(config.FacilityConfigFiles,
+				deleteFacilityConfig, deleteFacilityConfig+1)
 		}
-		imgui.EndGroup()
+		if len(config.FacilityConfigFiles) < 2 {
+			imgui.BeginGroup()
+			imgui.Text("Facility Configuration: None Selected")
+			imgui.SameLine()
+			if imgui.Button("Select##facilityConfig") {
+				path, err := zenity.SelectFile(
+					zenity.Title("Select Facility Configuration JSON File"),
+					zenity.FileFilters{
+						{
+							Name:     "JSON Files",
+							Patterns: []string{"*.json"},
+						},
+					},
+				)
+				if err != nil {
+					fmt.Printf("Error selecting facility configuration file: %v\n", err)
+				} else {
+					config.FacilityConfigFiles = append(config.FacilityConfigFiles, path)
+				}
+			}
+			imgui.EndGroup()
+		}
 
 		imgui.Separator()
 		imgui.Checkbox("Display simulation logging", &config.DisplaySimLogs)
