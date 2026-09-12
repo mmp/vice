@@ -188,6 +188,12 @@ func (wa WaypointActions) Encoded() string {
 	return s
 }
 
+// EncodedList returns the actions in the form a "waypoint_actions" value
+// takes them: comma separated and without their leading slashes.
+func (wa WaypointActions) EncodedList() string {
+	return strings.ReplaceAll(strings.TrimPrefix(wa.Encoded(), "/"), "/", ",")
+}
+
 type WaypointActionGroup struct {
 	Actions WaypointActions
 	Until   WaypointActionTermination
@@ -605,6 +611,77 @@ func (wp *Waypoint) MergeActions(actions WaypointActions) error {
 	}
 	wp.InitExtra().ActionGroups = append(groups, WaypointActionGroup{Actions: actions})
 	return nil
+}
+
+// courseFlags are the flags that say how a waypoint is flown, as opposed to
+// where it came from or what was synthesized around it.
+const courseFlags = WaypointFlagNoPT | WaypointFlagFlyOver | WaypointFlagTurnLeft |
+	WaypointFlagTurnRight | WaypointFlagHasAltRestriction | WaypointFlagHasSpeedRestriction
+
+// sameCourse reports whether the two waypoints are flown the same way: the
+// same fix with the same restrictions and the same geometry. The actions at
+// them are no part of it, since "waypoint_actions" is how a route taken from
+// the CIFP gets those.
+func (wp Waypoint) sameCourse(o Waypoint) bool {
+	if wp.Fix != o.Fix || wp.Flags&courseFlags != o.Flags&courseFlags ||
+		wp.Airway() != o.Airway() || wp.Radius() != o.Radius() || wp.Shift() != o.Shift() ||
+		wp.AirworkRadius() != o.AirworkRadius() || wp.AirworkMinutes() != o.AirworkMinutes() {
+		return false
+	}
+	if wp.HasAltitudeRestriction() && wp.AltRestriction != o.AltRestriction {
+		return false
+	}
+	if wp.HasSpeedRestriction() && wp.SpdRestriction != o.SpdRestriction {
+		return false
+	}
+	if pt, opt := wp.ProcedureTurn(), o.ProcedureTurn(); (pt == nil) != (opt == nil) ||
+		(pt != nil && *pt != *opt) {
+		return false
+	}
+	arc, oarc := wp.Arc(), o.Arc()
+	return (arc == nil) == (oarc == nil) && (arc == nil || *arc == *oarc)
+}
+
+// sameCourse reports whether the routes are flown the same way; see
+// Waypoint.sameCourse.
+func (wa WaypointArray) sameCourse(o WaypointArray) bool {
+	return slices.EqualFunc(wa, o, Waypoint.sameCourse)
+}
+
+// sameRoute reports whether the routes are flown the same way and carry the
+// same actions along them.
+func (wa WaypointArray) sameRoute(o WaypointArray) bool {
+	return slices.EqualFunc(wa, o, func(x, y Waypoint) bool {
+		return x.sameCourse(y) && slices.Equal(x.ActionGroups(), y.ActionGroups())
+	})
+}
+
+// addedActions puts into actions the "waypoint_actions" entries that add wa's
+// own actions to the charted route, which must fly the same course. It
+// returns false if any of them can't be expressed that way: an action group
+// goes after the ones the CIFP charts at a fix, never in place of one.
+// Several routes accumulate into the same map, as the fixes of an arrival's
+// route and of its runway transitions do.
+func (wa WaypointArray) addedActions(charted WaypointArray, actions map[string]string) bool {
+	for i, wp := range wa {
+		mine, chartedGroups := wp.ActionGroups(), charted[i].ActionGroups()
+		if slices.Equal(mine, chartedGroups) {
+			continue
+		}
+		added := len(chartedGroups)
+		if len(mine) != added+1 || !slices.Equal(mine[:added], chartedGroups) ||
+			mine[added].Until.Type != WaypointActionNoTermination {
+			return false
+		}
+
+		var key strings.Builder
+		key.WriteString(wp.Fix)
+		for _, group := range chartedGroups {
+			key.WriteString(group.Until.Encoded())
+		}
+		actions[key.String()] = mine[added].Actions.EncodedList()
+	}
+	return true
 }
 
 func (wp Waypoint) LogValue() slog.Value {

@@ -722,6 +722,149 @@ func TestArrivalApproachRouteCarriesSharedFixActions(t *testing.T) {
 	}
 }
 
+// TestChartedSTARRoute covers the check that an arrival spelling out the STAR
+// it names as the CIFP charts it should say where it joins the STAR instead.
+func TestChartedSTARRoute(t *testing.T) {
+	fixes := []string{"MIPP", "LIZZI", "BEUTY", "APPLE", "PROUD", "KRANN", "ETHYN", "SNEDE",
+		"WEMAR", "TOOLE", "GARDY"}
+	loc := testLocator{}
+	dbFixes := make(map[string]Fix)
+	for i, f := range fixes {
+		p := math.Point2LL{float32(-73 - i), float32(40 + i)}
+		loc[f] = p
+		dbFixes[f] = Fix{Id: f, Location: p}
+	}
+	oldDB := DB
+	DB = &StaticDatabase{Fixes: dbFixes, Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	route := func(s string) WaypointArray {
+		wps, err := parseWaypoints(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return wps
+	}
+	// MIPP4 is charted with runway transitions; WEMAR1 has none, so an
+	// arrival flying it gives no "runway_waypoints" either.
+	mipp4 := STAR{
+		Transitions:     map[string]WaypointArray{"ALL": route("MIPP LIZZI BEUTY/a9000 APPLE PROUD")},
+		RunwayWaypoints: map[string]WaypointArray{"13": route("PROUD KRANN ETHYN"), "31": route("PROUD SNEDE")},
+	}
+	wemar1 := STAR{Transitions: map[string]WaypointArray{"ALL": route("WEMAR TOOLE GARDY")}}
+	DB.Airports = map[ICAOAirportCode]FAAAirport{
+		"KTST": {Id: "KTST", STARs: map[string]STAR{"MIPP4": mipp4, "WEMAR1": wemar1},
+			Runways: []Runway{{Id: "13"}, {Id: "31"}}},
+	}
+
+	const transitions13, transitions31 = "PROUD KRANN ETHYN", "PROUD SNEDE"
+	for _, tc := range []struct {
+		name      string
+		star      string
+		waypoints string
+		rwy13     string
+		rwy31     string
+		want      string // the error's advice; "" for no error
+	}{
+		{
+			name:      "the STAR as charted, runway transitions and all",
+			star:      "MIPP4",
+			waypoints: "MIPP LIZZI BEUTY/a9000/ho APPLE PROUD",
+			rwy13:     transitions13,
+			rwy31:     transitions31,
+			want: `"waypoints" and "runway_waypoints" fly the MIPP4 STAR as the CIFP charts it; ` +
+				`drop them and give "spawn": "MIPP" and "waypoint_actions": {"BEUTY":"ho"}`,
+		},
+		{
+			name:      "joining the STAR partway along it",
+			star:      "MIPP4",
+			waypoints: "BEUTY/a9000/ho APPLE PROUD",
+			rwy13:     transitions13,
+			rwy31:     transitions31,
+			want:      `drop them and give "spawn": "BEUTY"`,
+		},
+		{
+			name:      "a STAR the CIFP charts no runway transitions for",
+			star:      "WEMAR1",
+			waypoints: "WEMAR TOOLE/ho GARDY",
+			want: `"waypoints" fly the WEMAR1 STAR as the CIFP charts it; ` +
+				`drop them and give "spawn": "WEMAR" and "waypoint_actions": {"TOOLE":"ho"}`,
+		},
+		{
+			name:      "an action where the runway transitions branch off goes on each",
+			star:      "MIPP4",
+			waypoints: "MIPP LIZZI BEUTY/a9000/ho APPLE PROUD/spspAB",
+			rwy13:     "PROUD/spspAB KRANN ETHYN",
+			rwy31:     "PROUD/spspAB SNEDE",
+			want:      `"waypoint_actions": {"BEUTY":"ho","PROUD":"spspAB"}`,
+		},
+		{
+			name:      "an action at a shared fix on only one of the routes",
+			star:      "MIPP4",
+			waypoints: "MIPP LIZZI BEUTY/a9000/ho APPLE PROUD/spspAB",
+			rwy13:     transitions13,
+			rwy31:     transitions31,
+		},
+		{
+			name:      "no handoff, so it would pick up the one vice adds",
+			star:      "MIPP4",
+			waypoints: "MIPP LIZZI BEUTY/a9000 APPLE PROUD",
+			rwy13:     transitions13,
+			rwy31:     transitions31,
+		},
+		{
+			name:      "runway transitions it would newly gain",
+			star:      "MIPP4",
+			waypoints: "MIPP LIZZI BEUTY/a9000/ho APPLE PROUD",
+		},
+		{
+			name:      "a restriction the CIFP leaves open",
+			star:      "MIPP4",
+			waypoints: "MIPP LIZZI BEUTY/a9000/ho APPLE/a7000 PROUD",
+			rwy13:     transitions13,
+			rwy31:     transitions31,
+		},
+		{
+			name:      "a fix the transition hasn't got",
+			star:      "MIPP4",
+			waypoints: "MIPP LIZZI BEUTY/a9000/ho APPLE KRANN PROUD",
+			rwy13:     transitions13,
+			rwy31:     transitions31,
+		},
+		{
+			name:      "an arrival that names no STAR",
+			waypoints: "MIPP LIZZI BEUTY/a9000/ho APPLE PROUD",
+			rwy13:     transitions13,
+			rwy31:     transitions31,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var e util.ErrorLogger
+			locate := func(s string) WaypointArray {
+				return route(s).InitializeLocations(loc, 45, 0, false, &e)
+			}
+			ar := Arrival{STAR: tc.star, Airports: []ICAOAirportCode{"KTST"}, Waypoints: locate(tc.waypoints)}
+			if tc.rwy13 != "" || tc.rwy31 != "" {
+				ar.RunwayWaypoints = map[ICAOAirportCode]map[string]WaypointArray{
+					"KTST": {"13": locate(tc.rwy13), "31": locate(tc.rwy31)},
+				}
+			}
+			if e.HaveErrors() {
+				t.Fatal(e.String())
+			}
+
+			ar.checkChartedSTARRoute(loc, 45, 0, &e)
+			if tc.want == "" {
+				if e.HaveErrors() {
+					t.Errorf("unexpected error: %s", e.String())
+				}
+			} else if !strings.Contains(e.String(), tc.want) {
+				t.Errorf("expected advice %q; got: %s", tc.want, e.String())
+			}
+		})
+	}
+}
+
 // TestArrivalWaypointActions covers "waypoint_actions" on an arrival that
 // takes its route from the CIFP: where the actions land, what is rejected,
 // and that the STAR in the database is left as it was.

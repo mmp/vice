@@ -2968,7 +2968,8 @@
     "HAR5 (26)": {
       "arrivals": [
         {
-          "waypoints": "HAR/ho26 LRP TRAGG BUNTS RELNY NAGGS CYN/delete",
+          "spawn": "HAR",
+          "waypoint_actions": { "CYN": "delete", "HAR": "ho26" },
           "cruise_altitude": 35000,
           "star": "HAR5",
           "route": "/. HAR LRP TRAGG BUNTS RELNY NAGGS CYN",
@@ -4249,7 +4250,8 @@
     "LVZ5": {
       "arrivals": [
         {
-          "waypoints": "HOXIE/ho49 DMACK STENT LVZ HARTY MUGZY STW/delete",
+          "spawn": "HOXIE",
+          "waypoint_actions": { "HOXIE": "ho49", "STW": "delete" },
           "cruise_altitude": 35000,
           "star": "LVZ5",
           "route": "/. HOXIE DMACK STENT LVZ HARTY MUGZY STW",

@@ -113,12 +113,12 @@
           "LRD": {
             "cleared_altitude": 5000,
             "sid": "BOWIE8",
-            "waypoints": "KSAT-13R/h308 SAT MILET LRD"
+            "initial_heading": 308
           },
           "AGJ": {
             "cleared_altitude": 5000,
             "sid": "ALAMO5",
-            "waypoints": "KSAT-13R/h308 SAT GOBBY AGJ"
+            "initial_heading": 308
           },
           "KAHAN": {
             "cleared_altitude": 5000,
@@ -542,7 +542,7 @@
           "KLNGR": {
             "cleared_altitude": 5000,
             "sid": "YODUH2",
-            "waypoints": "KSKF-34/h158 SITHH/a5000+ YODUH KLNGR"
+            "initial_heading": 158
           }
         },
         "34": {
@@ -641,12 +641,12 @@
           "LEJON": {
             "cleared_altitude": 5000,
             "sid": "LEJON5",
-            "waypoints": "KSSF-14/h317 SAT TATAR LEJON"
+            "initial_heading": 317
           },
           "JUMBO": {
             "cleared_altitude": 5000,
             "sid": "ALAMO5",
-            "waypoints": "KSSF-14/h317 SAT HENLY JUMBO"
+            "initial_heading": 317
           }
         }
       },

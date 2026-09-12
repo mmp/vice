@@ -8872,7 +8872,8 @@
     "DOOBI3.AUTO": {
       "arrivals": [
         {
-          "waypoints": "BEATL/a17000-23000/s280/ho1D DOOBI/a15000-17000/s250/spspI6L HHART/a10000-13000/s230+/ho1O BOPPR/a9000+/s210 ODISS/a8000+/s210 BOZZZ/a8000/s210/clearapp",
+          "spawn": "BEATL",
+          "waypoint_actions": { "BEATL": "ho1D", "BOZZZ": "clearapp", "DOOBI": "spspI6L", "HHART": "ho1O" },
           "star": "DOOBI3",
           "initial_controller": "C38",
           "initial_altitude": 22000,
@@ -11289,7 +11290,8 @@
     "HTOWN3.AUTO": {
       "arrivals": [
         {
-          "waypoints": "ALVNN CATTT/a14000+/ho1X GMANN/a13000-16000/s250/spspI8R HTOWN/a9000/s240/ho1O WDLNS/a7000/s210/clearapp",
+          "spawn": "ALVNN",
+          "waypoint_actions": { "CATTT": "ho1X", "GMANN": "spspI8R", "HTOWN": "ho1O", "WDLNS": "clearapp" },
           "star": "HTOWN3",
           "initial_controller": "C87",
           "initial_altitude": 25000,
@@ -14473,7 +14475,8 @@
     "TTORO3.AUTO": {
       "arrivals": [
         {
-          "waypoints": "BEANE JJACK/ho1N SUUNR/a10000-13000/s250/ho1O/spspI8R TTORO/a8000/s210/clearapp",
+          "spawn": "BEANE",
+          "waypoint_actions": { "JJACK": "ho1N", "SUUNR": "ho1O,spspI8R", "TTORO": "clearapp" },
           "star": "TTORO3",
           "initial_controller": "C83",
           "initial_altitude": 21000,

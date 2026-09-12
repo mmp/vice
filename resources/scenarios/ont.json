@@ -2262,7 +2262,8 @@
     "LAX-24R.BCKGND": {
       "arrivals": [
         {
-          "waypoints": "SALYY GLESN/a24000-30000/s280/hoC20 ANJLL/a19000-24000/ho2F CAANN/a17000+/spspI4R BOYEL/a14000+ CRCUS/a12000-14000/s270/clearapp/ho2D",
+          "spawn": "SALYY",
+          "waypoint_actions": { "ANJLL": "ho2F", "CAANN": "spspI4R", "CRCUS": "ho2D,clearapp", "GLESN": "hoC20" },
           "star": "ANJLL4",
           "initial_controller": "C37",
           "initial_altitude": 32000,
@@ -2434,7 +2435,8 @@
     "LAX-25L.BCKGND": {
       "arrivals": [
         {
-          "waypoints": "HLYWD/a32000- BRUEN/a24000-30000/s280/hoC20 AVATR/a19000-24000/ho2F DAAAY/a17000+/spspI5L WADUP/a15000+ NEILE/a14000+ SEAVU/a12000-14000/s270/clearapp/ho2U",
+          "spawn": "HLYWD",
+          "waypoint_actions": { "AVATR": "ho2F", "BRUEN": "hoC20", "DAAAY": "spspI5L", "SEAVU": "ho2U,clearapp" },
           "star": "HLYWD1",
           "initial_controller": "C39",
           "initial_altitude": 32000,

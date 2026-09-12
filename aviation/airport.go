@@ -448,6 +448,7 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 					}
 					route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 					route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
+					route.checkChartedSIDRoute(icao, rwy, exits, r, rend, loc, nmPerLongitude, magneticVariation, e)
 					route.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, e)
 					for _, exit := range exits {
 						splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], route)
@@ -468,7 +469,10 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 							e.Push("Exit " + string(exit))
 						}
 						exitRoute := *route
-						if wps, ok := sidWaypoints(icao, route.SID, transition, rwy, exit, route.InitialHeading != 0, e); ok {
+						if wps, err := sidWaypoints(icao, route.SID, transition, rwy, exit,
+							route.InitialHeading != 0); err != nil {
+							e.ErrorString(`must specify "waypoints": %v`, err)
+						} else {
 							wps = route.amendSIDWaypoints(wps, e)
 							exitRoute.Waypoints = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, true, e)
 							for _, wp := range exitRoute.Waypoints {
@@ -963,13 +967,12 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 // non-empty, names the SID's enroute transition to fly. A route with an
 // initial heading needs no runway transition from the CIFP: the heading is
 // how the aircraft gets from the runway to the SID.
-func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, exit ExitID, initialHeading bool,
-	e *util.ErrorLogger) (WaypointArray, bool) {
+func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, exit ExitID,
+	initialHeading bool) (WaypointArray, error) {
 	s, ok := DB.Airports[icao].SIDs[sid]
 	if !ok {
-		e.ErrorString(`must specify "waypoints": SID %q isn't in the FAA CIFP for %s. Options: %s`,
+		return nil, fmt.Errorf("SID %q isn't in the FAA CIFP for %s. Options: %s",
 			sid, icao, strings.Join(util.SortedMapKeys(DB.Airports[icao].SIDs), ", "))
-		return nil, false
 	}
 	runway := rwy.Base()
 	if _, ok := s.RunwayTransitions[runway]; !ok && initialHeading {
@@ -977,10 +980,9 @@ func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, ex
 	}
 	wps, err := s.Waypoints(runway, transition, exit.Base())
 	if err != nil {
-		e.ErrorString(`must specify "waypoints": SID %s: %v`, sid, err)
-		return nil, false
+		return nil, fmt.Errorf("SID %s: %w", sid, err)
 	}
-	return wps.Clone(), true
+	return wps.Clone(), nil
 }
 
 // amendSIDWaypoints applies the route's "initial_heading" and
@@ -995,6 +997,114 @@ func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, e *util.ErrorLogger) W
 		}
 	}
 	return wps
+}
+
+// chartedSIDRoute reports whether the route's hand-written waypoints fly the
+// CIFP's SID off the runway to the exit, and if so returns what stands in for
+// them: the tower-assigned heading the route leaves the runway on in place of
+// the SID's runway transition, if any, and the "waypoint_actions" that add
+// its own actions to the SID's fixes.
+func (er *ExitRoute) chartedSIDRoute(icao ICAOAirportCode, rwy RunwayID, exit ExitID, r, rend Runway,
+	loc Locator, nmPerLongitude float32, magneticVariation float32) (int, map[string]string, bool) {
+	sid, transition, _ := strings.Cut(er.SID, ".")
+
+	flies := func(wps WaypointArray, initialHeading bool) (map[string]string, bool) {
+		charted, err := sidWaypoints(icao, sid, transition, rwy, exit, initialHeading)
+		if err != nil {
+			return nil, false
+		}
+		var scratch util.ErrorLogger
+		charted = charted.InitializeLocations(loc, nmPerLongitude, magneticVariation, true, &scratch)
+		if scratch.HaveErrors() || !wps.sameCourse(charted) {
+			return nil, false
+		}
+
+		actions := make(map[string]string)
+		if !wps.addedActions(charted, actions) {
+			return nil, false
+		}
+		// Only redundant if the CIFP's SID with those actions is the route
+		// exactly, not just closely.
+		amend := ExitRoute{WaypointActions: actions}
+		if amended := amend.amendSIDWaypoints(charted, &scratch); scratch.HaveErrors() || !wps.sameRoute(amended) {
+			return nil, false
+		}
+		return actions, true
+	}
+
+	if actions, ok := flies(er.Waypoints, false); ok {
+		return 0, actions, true
+	}
+
+	// Failing that, the route may leave the runway on a tower-assigned
+	// heading, which is what "initial_heading" gives. It stands in for the
+	// SID's runway transition, so only take it for one where the CIFP charts
+	// none; a route that overrides a charted transition is its own.
+	// Restrictions or sim actions at the departure end have nowhere to go in
+	// this form either.
+	if _, charted := DB.Airports[icao].SIDs[sid].RunwayTransitions[rwy.Base()]; charted {
+		return 0, nil, false
+	}
+	heading, wps := 0, er.Waypoints
+	for len(wps) > 0 && atDepartureEnd(wps[0], r, rend, nmPerLongitude) {
+		if wps[0].AltitudeRestriction() != nil || wps[0].SpeedRestriction() != nil {
+			return 0, nil, false
+		}
+		for _, group := range wps[0].ActionGroups() {
+			// "initial_heading" gives a plain heading and nothing else, so a
+			// turn direction, a ground track, or a radial has to stay in
+			// "waypoints".
+			h := group.Actions.Heading
+			if group.Until.Type != WaypointActionNoTermination || group.Actions.HasSimActions() ||
+				h != (WaypointHeadingAction{Heading: h.Heading}) || h.Heading < 1 || h.Heading > 360 {
+				return 0, nil, false
+			}
+			heading = int(h.Heading)
+		}
+		wps = wps[1:]
+	}
+	if heading == 0 {
+		return 0, nil, false
+	}
+	if actions, ok := flies(wps, true); ok {
+		return heading, actions, true
+	}
+	return 0, nil, false
+}
+
+// checkChartedSIDRoute reports a hand-written route that spells out the SID it
+// names as the CIFP charts it. One set of waypoints serves every exit in the
+// route's key, so it is only redundant if they are the SID's to each of them.
+func (er *ExitRoute) checkChartedSIDRoute(icao ICAOAirportCode, rwy RunwayID, exits []ExitID, r, rend Runway,
+	loc Locator, nmPerLongitude float32, magneticVariation float32, e *util.ErrorLogger) {
+	if er.SID == "" || len(exits) == 0 {
+		return
+	}
+
+	var heading int
+	var actions map[string]string
+	for _, exit := range exits {
+		h, a, ok := er.chartedSIDRoute(icao, rwy, exit, r, rend, loc, nmPerLongitude, magneticVariation)
+		if !ok {
+			return
+		}
+		heading, actions = h, a
+	}
+
+	var give []string
+	if heading != 0 {
+		give = append(give, fmt.Sprintf(`"initial_heading": %d`, heading))
+	}
+	if len(actions) > 0 {
+		encoded, _ := json.Marshal(actions)
+		give = append(give, fmt.Sprintf(`"waypoint_actions": %s`, encoded))
+	}
+	advice := `drop them and let "sid" give the route`
+	if len(give) > 0 {
+		advice = "drop them and give " + strings.Join(give, " and ")
+	}
+	e.ErrorString(`"waypoints" fly the %s SID off runway %s as the CIFP charts it; %s`,
+		er.SID, rwy.Base(), advice)
 }
 
 // How close to the departure end of the runway a route's first waypoint has

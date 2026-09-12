@@ -4220,7 +4220,8 @@
           }
         },
         {
-          "waypoints": "SRRFR TRRSH SHADI/d24000/ho MOMAR/a24000-26000 DSURT/a19000-23000 TRIXI/a12000-14000/s270 HSKER/a8700+ BARET/a8000+ HNAHH/a6100+ LUCKI/a6000 LYNDI/a5000+/s210/clearapp",
+          "spawn": "SRRFR",
+          "waypoint_actions": { "LYNDI": "clearapp", "SHADI": "ho,d24000" },
           "star": "LUCKI1",
           "is_rnav": true,
           "initial_controller": "40",
@@ -4396,7 +4397,8 @@
           }
         },
         {
-          "waypoints": "LNDON WBERG SHADI/d24000/ho MOMAR/a24000-26000 DSURT/a19000-23000 TRIXI/a12000-14000/s270 HSKER/a8700+ BARET/a8000+ HNAHH/a6100+ LUCKI/a6000 LYNDI/a5000+/s210/clearapp",
+          "spawn": "LNDON",
+          "waypoint_actions": { "LYNDI": "clearapp", "SHADI": "ho,d24000" },
           "star": "LUCKI1",
           "is_rnav": true,
           "initial_controller": "40",
@@ -5196,7 +5198,8 @@
     "LAX-24R.BCKGND": {
       "arrivals": [
         {
-          "waypoints": "SALYY GLESN/a24000-30000/s280/ho20 ANJLL/a19000-24000/hoT2F CAANN/a17000+ BOYEL/a14000+ CRCUS/a12000-14000/s270/clearapp",
+          "spawn": "SALYY",
+          "waypoint_actions": { "ANJLL": "hoTTT2F", "CRCUS": "clearapp", "GLESN": "ho20" },
           "star": "ANJLL4",
           "initial_controller": "37",
           "initial_altitude": 32000,
@@ -5368,7 +5371,8 @@
     "LAX-25L.BCKGND": {
       "arrivals": [
         {
-          "waypoints": "HLYWD/a32000- BRUEN/a24000-30000/s280 AVATR/a19000-24000/hoT2F DAAAY/a17000+ WADUP/a15000+ NEILE/a14000+ SEAVU/a12000-14000/s270/clearapp",
+          "spawn": "HLYWD",
+          "waypoint_actions": { "AVATR": "hoTTT2F", "SEAVU": "clearapp" },
           "star": "HLYWD1",
           "initial_controller": "39",
           "initial_altitude": 32000,

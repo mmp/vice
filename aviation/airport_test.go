@@ -320,6 +320,133 @@ func TestInitialHeading(t *testing.T) {
 	}
 }
 
+// TestChartedSIDRoute covers the check that a departure route spelling out
+// the SID it names as the CIFP charts it should name the SID and give only
+// what it adds to it.
+func TestChartedSIDRoute(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	const nmPerLongitude = 60
+	at := func(p [2]float32) math.Point2LL {
+		return math.NM2LL([2]float32{100 + p[0], 100 + p[1]}, nmPerLongitude)
+	}
+	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
+	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
+
+	route := func(s string) WaypointArray {
+		wps, err := parseWaypoints(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return wps
+	}
+	// BUTRZ4 leaves runway 9 on a charted heading; GNNRR2 has no runway
+	// transition, so a route flying it needs a tower heading of its own.
+	butrz4 := SID{
+		RunwayTransitions: map[string]WaypointArray{"9": route("KXXX-27/h011/@a820+")},
+		Common:            route("BUTRZ/a3000+"),
+		EnrouteTransitions: map[string]WaypointArray{
+			"CLTCH": route("BUTRZ/a3000+ CLTCH"), "KERRK": route("BUTRZ/a3000+ KERRK")},
+	}
+	gnnrr2 := SID{
+		Common:             route("GNNRR/a2500+"),
+		EnrouteTransitions: map[string]WaypointArray{"CLTCH": route("GNNRR/a2500+ CLTCH")},
+	}
+	DB.Airports = map[ICAOAirportCode]FAAAirport{
+		"KXXX": {Elevation: 313, SIDs: map[string]SID{"BUTRZ4": butrz4, "GNNRR2": gnnrr2}},
+	}
+
+	loc := testLocator{"KXXX-27": rend.Threshold, "BUTRZ": at([2]float32{6, 0}),
+		"GNNRR": at([2]float32{6, 2}), "CLTCH": at([2]float32{10, 0}), "KERRK": at([2]float32{10, 4})}
+
+	for _, tc := range []struct {
+		name  string
+		sid   string
+		route string
+		want  string // the error's advice; "" for no error
+	}{
+		{
+			name:  "the SID off the runway as charted",
+			sid:   "BUTRZ4",
+			route: "KXXX-27/h011/@a820+ BUTRZ/a3000+ CLTCH",
+			want:  `drop them and let "sid" give the route`,
+		},
+		{
+			name:  "an enroute transition named in the SID",
+			sid:   "BUTRZ4.KERRK",
+			route: "KXXX-27/h011/@a820+ BUTRZ/a3000+ KERRK",
+			want:  `drop them and let "sid" give the route`,
+		},
+		{
+			name:  "actions of its own along the SID",
+			sid:   "BUTRZ4",
+			route: "KXXX-27/h011/@a820+ BUTRZ/a3000+/hoC35 CLTCH/spspAB",
+			want:  `drop them and give "waypoint_actions": {"BUTRZ":"hoC35","CLTCH":"spspAB"}`,
+		},
+		{
+			name:  "a tower heading where the CIFP charts no runway transition",
+			sid:   "GNNRR2",
+			route: "KXXX-27/h345 GNNRR/a2500+ CLTCH",
+			want:  `drop them and give "initial_heading": 345`,
+		},
+		{
+			name:  "a tower heading and actions",
+			sid:   "GNNRR2",
+			route: "KXXX-27/h345 GNNRR/a2500+/hoC35 CLTCH",
+			want:  `drop them and give "initial_heading": 345 and "waypoint_actions": {"GNNRR":"hoC35"}`,
+		},
+		{
+			name:  "a tower heading over a charted runway transition is the route's own",
+			sid:   "BUTRZ4",
+			route: "KXXX-27/h345 BUTRZ/a3000+ CLTCH",
+		},
+		{
+			name:  "a restriction the CIFP hasn't got",
+			sid:   "GNNRR2",
+			route: "KXXX-27/h345 GNNRR/a4000 CLTCH",
+		},
+		{
+			name:  "a fix the SID hasn't got",
+			sid:   "GNNRR2",
+			route: "KXXX-27/h345 GNNRR/a2500+ KERRK CLTCH",
+		},
+		{
+			name:  "a turn direction, which an initial heading can't give",
+			sid:   "GNNRR2",
+			route: "KXXX-27/r345 GNNRR/a2500+ CLTCH",
+		},
+		{
+			name:  "a restriction at the departure end, which has nowhere to go",
+			sid:   "GNNRR2",
+			route: "KXXX-27/a1500-/h345 GNNRR/a2500+ CLTCH",
+		},
+		{
+			name:  "a route that names no SID",
+			route: "KXXX-27/h011/@a820+ BUTRZ/a3000+ CLTCH",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var e util.ErrorLogger
+			er := ExitRoute{SID: tc.sid, ClearedAltitude: 5000}
+			er.Waypoints = route(tc.route).InitializeLocations(loc, nmPerLongitude, 0, true, &e)
+			if e.HaveErrors() {
+				t.Fatal(e.String())
+			}
+			er.checkChartedSIDRoute("KXXX", "9", []ExitID{"CLTCH"}, r, rend, loc, nmPerLongitude, 0, &e)
+
+			if tc.want == "" {
+				if e.HaveErrors() {
+					t.Errorf("unexpected error: %s", e.String())
+				}
+			} else if !strings.Contains(e.String(), tc.want) {
+				t.Errorf("expected advice %q; got: %s", tc.want, e.String())
+			}
+		})
+	}
+}
+
 func TestExitRouteFirstFixBehindRunway(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}}}

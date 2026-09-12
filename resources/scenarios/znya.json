@@ -2183,7 +2183,8 @@
     "HAR5 (26)": {
       "arrivals": [
         {
-          "waypoints": "HAR/ho26 LRP TRAGG BUNTS RELNY NAGGS CYN/delete",
+          "spawn": "HAR",
+          "waypoint_actions": { "CYN": "delete", "HAR": "ho26" },
           "cruise_altitude": 35000,
           "star": "HAR5",
           "route": "/. HAR LRP TRAGG BUNTS RELNY NAGGS CYN",

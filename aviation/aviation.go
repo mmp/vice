@@ -1373,6 +1373,99 @@ func (ar *Arrival) addWaypointActions(e *util.ErrorLogger) {
 	}
 }
 
+// sameRunwayTransitions reports whether the two sets of runway transitions
+// cover the same airports and runways with routes that match.
+func sameRunwayTransitions(a, b map[ICAOAirportCode]map[string]WaypointArray,
+	match func(WaypointArray, WaypointArray) bool) bool {
+	return maps.EqualFunc(a, b, func(x, y map[string]WaypointArray) bool {
+		return maps.EqualFunc(x, y, match)
+	})
+}
+
+// chartedSTARRoute reports whether the arrival's hand-written route and
+// runway transitions are the CIFP's STAR as charted, so that naming the STAR
+// and where it joins would fly it the same way, and returns the
+// "waypoint_actions" that add its own actions to the STAR's fixes.
+func (ar *Arrival) chartedSTARRoute(loc Locator, nmPerLongitude float32,
+	magneticVariation float32) (map[string]string, bool) {
+	if ar.STAR == "" || len(ar.Waypoints) == 0 {
+		return nil, false
+	}
+	// Without a handoff of its own, the arrival would pick up the one vice
+	// adds partway along the first leg of a route taken from the CIFP.
+	if !ar.Waypoints.HasHumanHandoff() && len(ar.Waypoints.HandoffControllers()) == 0 {
+		return nil, false
+	}
+
+	var scratch util.ErrorLogger
+	charted := Arrival{STAR: ar.STAR, Airports: ar.Airports}
+	charted.takeSTARWaypoints(ar.Waypoints[0].Fix, &scratch)
+	if scratch.HaveErrors() || len(charted.Waypoints) == 0 {
+		return nil, false
+	}
+	locate := func(wps WaypointArray) WaypointArray {
+		return wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, &scratch)
+	}
+	charted.Waypoints = locate(charted.Waypoints)
+	for _, icao := range util.SortedMapKeys(charted.RunwayWaypoints) {
+		for _, rwy := range util.SortedMapKeys(charted.RunwayWaypoints[icao]) {
+			charted.RunwayWaypoints[icao][rwy] = locate(charted.RunwayWaypoints[icao][rwy])
+		}
+	}
+	if scratch.HaveErrors() {
+		return nil, false
+	}
+
+	if !ar.Waypoints.sameCourse(charted.Waypoints) ||
+		!sameRunwayTransitions(ar.RunwayWaypoints, charted.RunwayWaypoints, WaypointArray.sameCourse) {
+		return nil, false
+	}
+
+	actions := make(map[string]string)
+	ok := ar.Waypoints.addedActions(charted.Waypoints, actions)
+	for _, icao := range util.SortedMapKeys(ar.RunwayWaypoints) {
+		for _, rwy := range util.SortedMapKeys(ar.RunwayWaypoints[icao]) {
+			ok = ok && ar.RunwayWaypoints[icao][rwy].addedActions(charted.RunwayWaypoints[icao][rwy], actions)
+		}
+	}
+	if !ok {
+		return nil, false
+	}
+
+	// Only redundant if the STAR with those actions is the arrival's route
+	// exactly, not just closely: one entry adds its actions to every route
+	// the fix is on, which is not always what the waypoints say.
+	charted.WaypointActions = actions
+	charted.addWaypointActions(&scratch)
+	if scratch.HaveErrors() || !ar.Waypoints.sameRoute(charted.Waypoints) ||
+		!sameRunwayTransitions(ar.RunwayWaypoints, charted.RunwayWaypoints, WaypointArray.sameRoute) {
+		return nil, false
+	}
+	return actions, true
+}
+
+// checkChartedSTARRoute reports an arrival that spells out the STAR it names
+// as the CIFP charts it; it should say where it joins the STAR instead.
+func (ar *Arrival) checkChartedSTARRoute(loc Locator, nmPerLongitude float32, magneticVariation float32,
+	e *util.ErrorLogger) {
+	actions, ok := ar.chartedSTARRoute(loc, nmPerLongitude, magneticVariation)
+	if !ok {
+		return
+	}
+
+	give := []string{fmt.Sprintf(`"spawn": %q`, ar.Waypoints[0].Fix)}
+	if len(actions) > 0 {
+		encoded, _ := json.Marshal(actions)
+		give = append(give, fmt.Sprintf(`"waypoint_actions": %s`, encoded))
+	}
+	spelled := `"waypoints"`
+	if len(ar.RunwayWaypoints) > 0 {
+		spelled = `"waypoints" and "runway_waypoints"`
+	}
+	e.ErrorString(`%s fly the %s STAR as the CIFP charts it; drop them and give %s`,
+		spelled, ar.STAR, strings.Join(give, " and "))
+}
+
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
 	airports map[ICAOAirportCode]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
@@ -1569,6 +1662,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			}
 			e.Pop()
 		}
+
+		ar.checkChartedSTARRoute(loc, nmPerLongitude, magneticVariation, e)
 	}
 
 	for i := range ar.Waypoints {
