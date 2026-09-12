@@ -82,7 +82,7 @@ func main() {
 	ctx := context.Background()
 	var opts []option.ClientOption
 	if credsJSON := os.Getenv("VICE_GCS_CREDENTIALS"); credsJSON != "" {
-		opts = append(opts, option.WithCredentialsJSON([]byte(credsJSON)))
+		opts = append(opts, option.WithAuthCredentialsJSON(option.ServiceAccount, []byte(credsJSON)))
 	}
 	client, err := storage.NewClient(ctx, opts...)
 	if err != nil {

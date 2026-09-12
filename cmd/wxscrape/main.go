@@ -63,7 +63,8 @@ func main() {
 	}
 
 	ctx := context.Background()
-	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
+	client, err := storage.NewClient(ctx,
+		option.WithAuthCredentialsJSON(option.ServiceAccount, []byte(credsJSON)))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
