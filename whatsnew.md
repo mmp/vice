@@ -28,13 +28,14 @@
   - Added "initial_heading" for tower-assigned headings for SIDs that aren't charted to start with headings
   - Added "waypoint_actions" for SIDs so that actions can be added at waypoints without needing to respecify them
 
-
+- Scenario updates: HCF (Ketan K), STL (Ryan H)
 - Fixed aircraft turning away from the localizer instead of joining it
 - Fixed bug with real-world traffic routes including the departure airport
+- Fixed a few bugs with joining visual approaches
 - Facility engineering
   - Require "star" to be specified if "waypoints" match a published STAR
   - Fixed bug that prohibited runway thresholds below sea level
   - Route triggers now sequence `/delete`, `/land` and `/intercept` like any other action
   - Added "waypoint_actions" to arrivals
   - An arrival's "spawn" may now name a fix on one of the STAR's runway transitions
-  - An arrival whose "waypoints" fly a different STAR than it names is now an error
+  - An arrival whose "waypoints" fly a different STAR than it names in "star" is now an error
