@@ -378,7 +378,7 @@ func readMapLibraryHeaderOnly(f fs.File) (*wireFileHeader, error) {
 	}
 	if string(prefix[:4]) != mapLibraryMagic {
 		return nil, fmt.Errorf("video map: wrong magic %q (expected %q); "+
-			"re-import with cmd/crc2vice or convert with cmd/upgradevideomap",
+			"re-import with the latest version of cmd/crc2vice",
 			prefix[:4], mapLibraryMagic)
 	}
 	headerLen := binary.LittleEndian.Uint32(prefix[4:8])
