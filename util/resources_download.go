@@ -4,24 +4,34 @@
 
 // This file is included for builds that are expected to fetch resources as needed
 // into a local cache from cloud storage.
-//go:build downloadresources
+//go:build release
 
 package util
 
 import (
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/mmp/vice/log"
 )
 
-func initResourcesFS() *fs.StatFS {
-	configDir, err := os.UserConfigDir()
+// configResourcesDir returns the directory the resource files are
+// downloaded to.
+func configResourcesDir() (string, error) {
+	dir, err := log.ConfigDir()
 	if err != nil {
-		panic(fmt.Sprintf("failed to get user config dir: %v", err))
+		return "", err
 	}
+	return filepath.Join(dir, "resources"), nil
+}
 
-	resourcesBasePath = filepath.Join(configDir, "Vice", "resources")
+func initResourcesFS() *fs.StatFS {
+	dir, err := configResourcesDir()
+	if err != nil {
+		panic(err)
+	}
+	resourcesBasePath = dir
 
 	fsys, ok := os.DirFS(resourcesBasePath).(fs.StatFS)
 	if !ok {

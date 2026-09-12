@@ -22,7 +22,6 @@ CLAUDE.md
 SDL2.dll
 Vice.App/
 __debug_*
-cmd/vice/manifest.json
 cmd/wxingest/cloudrun/facilities.json
 dump*.txt
 ext/
@@ -47,6 +46,7 @@ rsrc_windows_*.syso
 scenario-test-*.txt
 scraperoutes
 slog
+util/manifest.json
 vice-logs/
 vice.exe
 vice.slog

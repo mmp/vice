@@ -66,14 +66,33 @@ func DefaultLogDir(server bool, override string) string {
 		return override
 	}
 	if server {
-		return "vice-logs"
+		return serverLogDir()
 	}
+	return configDir()
+}
+
+// ConfigDir returns vice's directory under the user's configuration
+// directory; the configuration file, the logs, the downloaded resources, and
+// the backups of modified ones all live in it. It is defined here because
+// log is the lowest-level package that needs it.
+func ConfigDir() (string, error) {
 	dir, err := os.UserConfigDir()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to find user config dir: %v", err)
-		dir = "."
+		return "", fmt.Errorf("unable to find user config dir: %w", err)
 	}
-	return filepath.Join(dir, "Vice")
+	return filepath.Join(dir, "Vice"), nil
+}
+
+// configDir is ConfigDir for the places that log to it: a logger that can't
+// find the user's configuration directory still logs, in the working
+// directory.
+func configDir() string {
+	dir, err := ConfigDir()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		return "."
+	}
+	return dir
 }
 
 func New(server bool, level string, dir string) *Logger {

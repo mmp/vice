@@ -82,6 +82,15 @@ func main() {
 		*serverAddress = net.JoinHostPort(*serverAddress, strconv.Itoa(server.ViceServerPort))
 	}
 
+	// Bring the resources directory up to date before anything reads from it.
+	// A canceled sync means the server didn't start, so it exits non-zero like
+	// any other startup failure.
+	if err := util.SyncResources(&util.TextSyncUI{}); err != nil {
+		lg.Errorf("Unable to sync resources: %v", err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
+
 	av.InitDB()
 	wx.Init()
 

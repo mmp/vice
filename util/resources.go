@@ -139,12 +139,3 @@ func findResourcesBasePath() string {
 func GetResourcePath(path string) string {
 	return filepath.Join(findResourcesBasePath(), path)
 }
-
-func localResourcesFS() *fs.StatFS {
-	basePath := findResourcesBasePath()
-	fsys, ok := os.DirFS(basePath).(fs.StatFS)
-	if !ok {
-		panic("FS from DirFS is not a StatFS?")
-	}
-	return &fsys
-}

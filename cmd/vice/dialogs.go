@@ -704,24 +704,29 @@ func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...any)
 // avoid duplicating the imgui frame/render boilerplate.
 func runModalEventLoop(p platform.Platform, d *ModalDialogBox, done func() bool) {
 	for !done() {
-		p.ProcessEvents()
-		p.NewFrame()
-		imgui.NewFrame()
-		ui.font.ImguiPush()
-		d.Draw()
-		imgui.PopFont()
-
-		imgui.Render()
-		implogl3.RenderDrawData(imgui.CurrentDrawData())
-
-		if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
-			imgui.UpdatePlatformWindows()
-			imgui.RenderPlatformWindowsDefault()
-			p.MakeContextCurrent()
-		}
-
-		p.PostRender()
+		drawModalFrame(p, d)
 	}
+}
+
+// drawModalFrame renders a single frame with the given dialog box drawn in it.
+func drawModalFrame(p platform.Platform, d *ModalDialogBox) {
+	p.ProcessEvents()
+	p.NewFrame()
+	imgui.NewFrame()
+	ui.font.ImguiPush()
+	d.Draw()
+	imgui.PopFont()
+
+	imgui.Render()
+	implogl3.RenderDrawData(imgui.CurrentDrawData())
+
+	if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+		imgui.UpdatePlatformWindows()
+		imgui.RenderPlatformWindowsDefault()
+		p.MakeContextCurrent()
+	}
+
+	p.PostRender()
 }
 
 func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...any) {

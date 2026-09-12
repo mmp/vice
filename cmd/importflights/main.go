@@ -41,6 +41,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/util"
 )
 
 func main() {
@@ -55,6 +56,13 @@ func main() {
 	if flag.NArg() == 0 {
 		fmt.Printf("usage: importflights [options] <flights.parquet>...\n")
 		flag.PrintDefaults()
+		os.Exit(1)
+	}
+
+	// Release builds read the resources directory that vice downloads into,
+	// so make sure it is populated and current.
+	if err := util.SyncResources(&util.TextSyncUI{}); err != nil {
+		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
 

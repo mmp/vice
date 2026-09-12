@@ -4,14 +4,19 @@
 
 // This file is included for local builds (e.g. for regular development) where we just want to
 // grab the resources from resources/
-//go:build !downloadresources
+//go:build !release
 
 package util
 
 import (
 	"io/fs"
+	"os"
 )
 
 func initResourcesFS() *fs.StatFS {
-	return localResourcesFS()
+	fsys, ok := os.DirFS(findResourcesBasePath()).(fs.StatFS)
+	if !ok {
+		panic("FS from DirFS is not a StatFS?")
+	}
+	return &fsys
 }

@@ -190,7 +190,7 @@ func overrideFiles() server.OverrideFiles {
 // cliInit performs initialization for CLI (non-GUI) modes: syncing
 // resources and initializing the aviation database.
 func cliInit() error {
-	if err := SyncResources(nil, nil, nil); err != nil {
+	if err := SyncResources(nil); err != nil {
 		return fmt.Errorf("SyncResources: %w", err)
 	}
 	av.InitDB()
@@ -655,7 +655,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	uiInit(render, plat, config, lg)
 
-	if err := SyncResources(plat, render, lg); err != nil {
+	if err := SyncResources(plat); err != nil {
 		ShowFatalErrorDialog(render, plat, lg, "Error syncing resources: %v", err)
 	}
 	close(syncDone)

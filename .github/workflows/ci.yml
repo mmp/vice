@@ -119,7 +119,7 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: manifest-json
-        path: cmd/vice/
+        path: util/
 
     - name: Build for release
       run: ./build.sh --release
@@ -203,7 +203,7 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: manifest-json
-        path: cmd/vice/
+        path: util/
 
     # Go stamps vcs.modified into the binary from `git status --porcelain`,
     # which is non-empty for any untracked non-ignored file. Release builds
@@ -390,7 +390,7 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: manifest-json
-        path: cmd/vice/
+        path: util/
 
     # See the note on the macOS job's dirty-tree check.
     - name: Check for a dirty tree before the release build

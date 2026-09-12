@@ -4,17 +4,15 @@
 
 // This file is included for local builds (e.g. for regular development) where we just want to
 // grab the resources from resources/
-//go:build !downloadresources
+//go:build !release
 
 package main
 
 import (
-	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/renderer"
 )
 
-func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) error {
+func SyncResources(plat platform.Platform) error {
 	// Nothing to do!
 	return nil
 }

@@ -120,13 +120,12 @@ func (c *Config) savedSim() (*sim.Sim, error) {
 }
 
 func configFilePath(lg *log.Logger) string {
-	dir, err := os.UserConfigDir()
+	dir, err := log.ConfigDir()
 	if err != nil {
-		lg.Errorf("Unable to find user config dir: %v", err)
+		lg.Errorf("%v", err)
 		dir = "."
 	}
 
-	dir = filepath.Join(dir, "Vice")
 	err = os.MkdirAll(dir, 0o700)
 	if err != nil {
 		lg.Errorf("%s: unable to make directory for config file: %v", dir, err)

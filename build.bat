@@ -9,7 +9,7 @@ REM Options:
 REM   --check         Run gofmt and staticcheck
 REM   --test          Run tests
 REM   --all           Run all steps (--check --test, then build)
-REM   --release       Build release binary (with downloadresources tag)
+REM   --release       Build release binary (with the release tag)
 REM   --icons         Prepare Windows icon resources (requires go-winres)
 REM   --help          Show this help message
 REM
@@ -395,7 +395,7 @@ for /f "delims=" %%v in (resources\version.txt) do echo Version: %%v
 
 REM Determine build tags
 set BUILD_TAGS=static
-if %DO_RELEASE%==1 set BUILD_TAGS=!BUILD_TAGS!,downloadresources
+if %DO_RELEASE%==1 set BUILD_TAGS=!BUILD_TAGS!,release
 if !VULKAN_AVAILABLE!==1 set BUILD_TAGS=!BUILD_TAGS!,vulkan
 
 go build -tags !BUILD_TAGS! -ldflags="-s -w -H=windowsgui" -o vice.exe .\cmd\vice
@@ -409,14 +409,22 @@ echo Build complete: vice.exe
 REM Build tools. -extldflags=-static bakes the MinGW C/C++ runtime (libgcc,
 REM libstdc++, libwinpthread) into the .exe so users can run the tools from
 REM any working directory without the install folder's DLLs alongside.
+REM
+REM The tools don't link the GUI, but in release builds viceserver and
+REM importflights must use the same downloaded resources directory and log
+REM directory that vice.exe does. (The tag is inert for crc2vice and
+REM dat2vice, which never read the resources filesystem.)
+set TOOL_TAGS=
+if %DO_RELEASE%==1 set TOOL_TAGS=release
+
 echo === Building tools ===
-go build -ldflags="-s -w -extldflags=-static" -o crc2vice.exe .\cmd\crc2vice
+go build -tags "!TOOL_TAGS!" -ldflags="-s -w -extldflags=-static" -o crc2vice.exe .\cmd\crc2vice
 if errorlevel 1 exit /b 1
-go build -ldflags="-s -w -extldflags=-static" -o dat2vice.exe .\cmd\dat2vice
+go build -tags "!TOOL_TAGS!" -ldflags="-s -w -extldflags=-static" -o dat2vice.exe .\cmd\dat2vice
 if errorlevel 1 exit /b 1
-go build -ldflags="-s -w -extldflags=-static" -o importflights.exe .\cmd\importflights
+go build -tags "!TOOL_TAGS!" -ldflags="-s -w -extldflags=-static" -o importflights.exe .\cmd\importflights
 if errorlevel 1 exit /b 1
-go build -ldflags="-s -w -extldflags=-static" -o viceserver.exe .\cmd\viceserver
+go build -tags "!TOOL_TAGS!" -ldflags="-s -w -extldflags=-static" -o viceserver.exe .\cmd\viceserver
 if errorlevel 1 exit /b 1
 echo Tools built: crc2vice.exe, dat2vice.exe, importflights.exe, viceserver.exe
 

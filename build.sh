@@ -9,7 +9,7 @@
 #   --test          Run tests
 #   --all           Run all steps (--check --test, then build)
 #   --vulkan        Build with vulkan support
-#   --release       Build release binary (with downloadresources tag)
+#   --release       Build release binary (with the release tag)
 #   --universal     Build universal binary on macOS (arm64 + amd64)
 #   --help          Show this help message
 #
@@ -431,7 +431,7 @@ build_vice() {
     fi
 
     if [ "$DO_RELEASE" = true ]; then
-        BUILD_TAGS="$BUILD_TAGS,downloadresources"
+        BUILD_TAGS="$BUILD_TAGS,release"
     fi
 
     # Build
@@ -450,17 +450,26 @@ build_vice() {
             CGO_ENABLED=1 GOOS=darwin go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o vice ./cmd/vice
         fi
 
+        # The tools don't link the GUI, but in release builds viceserver and
+        # importflights must use the same downloaded resources directory and
+        # log directory that vice does. (The tag is inert for crc2vice and
+        # dat2vice, which never read the resources filesystem.)
+        TOOL_TAGS=""
+        if [ "$DO_RELEASE" = true ]; then
+            TOOL_TAGS="release"
+        fi
+
         echo "Building tools..."
         if [ "$DO_UNIVERSAL" = true ]; then
             for tool in crc2vice dat2vice importflights viceserver; do
-                CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o ${tool}_amd64 ./cmd/${tool}
-                CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ${tool}_arm64 ./cmd/${tool}
+                CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags "$TOOL_TAGS" -o ${tool}_amd64 ./cmd/${tool}
+                CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags "$TOOL_TAGS" -o ${tool}_arm64 ./cmd/${tool}
                 lipo -create -output ${tool} ${tool}_amd64 ${tool}_arm64
                 rm ${tool}_amd64 ${tool}_arm64
             done
         else
             for tool in crc2vice dat2vice importflights viceserver; do
-                go build -ldflags="-s -w" -o ${tool} ./cmd/${tool}
+                go build -ldflags="-s -w" -tags "$TOOL_TAGS" -o ${tool} ./cmd/${tool}
             done
         fi
     elif [ "$OS_TYPE" = "linux" ]; then
