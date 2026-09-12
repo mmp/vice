@@ -376,8 +376,8 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 		}
 
 		if appr.Type == ChartedVisualApproach && len(appr.Waypoints) != 1 {
-			// Note: this could be relaxed if necessary but the logic in
-			// Nav prepareForChartedVisual() assumes as much.
+			// Note: nothing in Nav requires this any more; it could be
+			// relaxed if a charted visual ever needs multiple routes.
 			e.ErrorString("Only a single set of waypoints are allowed for a charted visual approach route")
 		}
 

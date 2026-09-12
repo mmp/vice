@@ -598,7 +598,8 @@ func TestVisualApproachWaypoints(t *testing.T) {
 		pos          math.Point2LL
 		heading      math.MagneticHeading
 		assigned     *math.MagneticHeading
-		wantNil      bool // expect go-around (nil)
+		deferredFix  *math.Point2LL // "direct {fix}" the pilot hasn't turned for yet
+		wantNil      bool           // expect go-around (nil)
 		wantFirstFix string
 	}{
 		{
@@ -640,6 +641,13 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			wantFirstFix: "_36_3NM_FINAL",
 		},
 		{
+			name:         "Pending direct to a fix on final — join at the fix",
+			pos:          math.Point2LL{3.0 / nmPerLong, -8.0 / 60},
+			heading:      90, // pointed away from the final
+			deferredFix:  &math.Point2LL{0, -6.0 / 60},
+			wantFirstFix: "_36_INTERCEPT",
+		},
+		{
 			name:    "Behind threshold — go around",
 			pos:     math.Point2LL{0, 1.0 / 60}, // 1nm north of threshold
 			heading: 360,
@@ -668,6 +676,11 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			}
 			if tt.assigned != nil {
 				n.Heading.Assigned = tt.assigned
+			}
+			if tt.deferredFix != nil {
+				n.DeferredNavHeading = &nav.DeferredNavHeading{
+					Waypoints: []av.Waypoint{{Fix: "DCTFIX", Location: *tt.deferredFix}},
+				}
 			}
 
 			n.Approach.AssignedId = "_VIS36"
@@ -706,9 +719,16 @@ func TestVisualApproachWaypoints(t *testing.T) {
 				if math.Abs(interceptNM[0]) > 0.05 {
 					t.Errorf("intercept waypoint should be on centerline, x=%.2f", interceptNM[0])
 				}
+				want := math.MagneticToTrue(tt.heading, 0)
+				if tt.assigned != nil {
+					want = math.MagneticToTrue(*tt.assigned, 0)
+				} else if tt.deferredFix != nil {
+					want = math.Heading2LL(tt.pos, *tt.deferredFix, nmPerLong)
+				}
 				bearingToIntercept := math.Heading2LL(tt.pos, wps[0].Location, nmPerLong)
-				if math.HeadingDifference(bearingToIntercept, math.MagneticToTrue(*tt.assigned, 0)) > 1 {
-					t.Errorf("intercept should be on assigned heading, bearing %.1f heading %.1f", bearingToIntercept, *tt.assigned)
+				if math.HeadingDifference(bearingToIntercept, want) > 1 {
+					t.Errorf("intercept should be on the instructed course, bearing %.1f want %.1f",
+						bearingToIntercept, want)
 				}
 			}
 

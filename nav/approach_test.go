@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 )
 
 func TestSelectVisualApproachRouteUsesLaterViableIntercept(t *testing.T) {
@@ -51,6 +52,143 @@ func TestSelectVisualApproachRouteUsesLaterViableIntercept(t *testing.T) {
 	}
 	if join.segment != 0 {
 		t.Fatalf("segment = %d, want 0 for the base segment", join.segment)
+	}
+}
+
+// TestSelectVisualApproachRouteUsesPendingDirectFix covers "direct {fix},
+// cleared visual approach": the pilot has read back the direct but hasn't
+// turned for it yet, so the present heading says nothing about where the
+// aircraft is going and the join has to come from the fix instead.
+func TestSelectVisualApproachRouteUsesPendingDirectFix(t *testing.T) {
+	nmPerLong := float32(60)
+	n := Nav{
+		FlightState: FlightState{
+			Position:          math.NM2LL([2]float32{3, -8}, nmPerLong),
+			Heading:           90, // pointed away from the final
+			NmPerLongitude:    nmPerLong,
+			MagneticVariation: 0,
+		},
+	}
+	n.DeferredNavHeading = &DeferredNavHeading{
+		Waypoints: []av.Waypoint{{Fix: "JOINME", Location: math.NM2LL([2]float32{0, -6}, nmPerLong)}},
+	}
+
+	ref := &av.Approach{
+		Type:      av.ILSApproach,
+		Runway:    "36",
+		Threshold: math.NM2LL([2]float32{0, 0}, nmPerLong),
+		Waypoints: []av.WaypointArray{{
+			{Fix: "FAF36", Location: math.NM2LL([2]float32{0, -25}, nmPerLong)},
+			{Fix: "RW36", Location: math.NM2LL([2]float32{0, 0}, nmPerLong)},
+		}},
+	}
+
+	join := n.selectVisualApproachRoute(nil, []*av.Approach{ref})
+	if join == nil {
+		t.Fatal("expected visual join candidate")
+	}
+
+	got := math.LL2NM(join.location, nmPerLong)
+	want := [2]float32{0, -6}
+	if math.Distance2f(got, want) > 0.05 {
+		t.Errorf("join = %.2f, %.2f; want the fix the aircraft was sent direct to at %.2f, %.2f",
+			got[0], got[1], want[0], want[1])
+	}
+	if join.lateralDistance != 0 {
+		t.Errorf("lateralDistance = %.2f, want 0 for an exact intercept", join.lateralDistance)
+	}
+}
+
+// TestSelectVisualApproachRouteSkipsDeferredFixUnderfoot is the same case with
+// the aircraft on top of the fix it was sent direct to: the bearing to that one
+// says nothing, but the leg after it is still where the aircraft is going.
+func TestSelectVisualApproachRouteSkipsDeferredFixUnderfoot(t *testing.T) {
+	nmPerLong := float32(60)
+	pos := math.NM2LL([2]float32{3, -8}, nmPerLong)
+	n := Nav{
+		FlightState: FlightState{
+			Position:          pos,
+			Heading:           90, // pointed away from the final
+			NmPerLongitude:    nmPerLong,
+			MagneticVariation: 0,
+		},
+	}
+	n.DeferredNavHeading = &DeferredNavHeading{
+		Waypoints: []av.Waypoint{
+			{Fix: "UNDERFOOT", Location: pos},
+			{Fix: "JOINME", Location: math.NM2LL([2]float32{0, -6}, nmPerLong)},
+		},
+	}
+
+	ref := &av.Approach{
+		Type:      av.ILSApproach,
+		Runway:    "36",
+		Threshold: math.NM2LL([2]float32{0, 0}, nmPerLong),
+		Waypoints: []av.WaypointArray{{
+			{Fix: "FAF36", Location: math.NM2LL([2]float32{0, -25}, nmPerLong)},
+			{Fix: "RW36", Location: math.NM2LL([2]float32{0, 0}, nmPerLong)},
+		}},
+	}
+
+	join := n.selectVisualApproachRoute(nil, []*av.Approach{ref})
+	if join == nil {
+		t.Fatal("expected visual join candidate")
+	}
+
+	got := math.LL2NM(join.location, nmPerLong)
+	want := [2]float32{0, -6}
+	if math.Distance2f(got, want) > 0.05 {
+		t.Errorf("join = %.2f, %.2f; want the leg after the fix underfoot at %.2f, %.2f",
+			got[0], got[1], want[0], want[1])
+	}
+}
+
+// TestSelectVisualApproachRouteJoinsAtRouteFix covers "direct {fix}, cleared
+// visual approach" where the fix is a waypoint of a reference route: the join
+// is at the fix itself, continuing along the reference from there. A heading
+// ray can't find this join — the aircraft is pointed away, and the bearing to
+// the fix only grazes the route's vertex.
+func TestSelectVisualApproachRouteJoinsAtRouteFix(t *testing.T) {
+	nmPerLong := float32(60)
+	n := Nav{
+		FlightState: FlightState{
+			Position:          math.NM2LL([2]float32{3, -8}, nmPerLong),
+			Heading:           90, // pointed away from the final
+			NmPerLongitude:    nmPerLong,
+			MagneticVariation: 0,
+		},
+	}
+	n.DeferredNavHeading = &DeferredNavHeading{
+		Waypoints: []av.Waypoint{{Fix: "BASE36", Location: math.NM2LL([2]float32{6, -10}, nmPerLong)}},
+	}
+
+	ref := &av.Approach{
+		Type:      av.RNAVApproach,
+		Runway:    "36",
+		Threshold: math.NM2LL([2]float32{0, 0}, nmPerLong),
+		Waypoints: []av.WaypointArray{{
+			{Fix: "BASE36", Location: math.NM2LL([2]float32{6, -10}, nmPerLong)},
+			{Fix: "FAF36", Location: math.NM2LL([2]float32{0, -6}, nmPerLong)},
+			{Fix: "RW36", Location: math.NM2LL([2]float32{0, 0}, nmPerLong)},
+		}},
+	}
+
+	join := n.selectVisualApproachRoute(nil, []*av.Approach{ref})
+	if join == nil {
+		t.Fatal("expected visual join candidate")
+	}
+
+	got := math.LL2NM(join.location, nmPerLong)
+	want := [2]float32{6, -10}
+	if math.Distance2f(got, want) > 0.05 {
+		t.Errorf("join = %.2f, %.2f; want the route fix the aircraft was sent direct to at %.2f, %.2f",
+			got[0], got[1], want[0], want[1])
+	}
+	if join.segment != 0 {
+		t.Errorf("segment = %d, want 0 so the route continues at FAF36", join.segment)
+	}
+	if join.lateralDistance != 0 {
+		t.Errorf("lateralDistance = %.2f, want 0 for a join at a route fix", join.lateralDistance)
 	}
 }
 
@@ -167,6 +305,49 @@ func TestPrepareForChartedVisualSkipsBehindSegmentIntercept(t *testing.T) {
 	intercept := math.LL2NM(n.Waypoints[0].Location, nmPerLong)
 	if math.Abs(intercept[0]-1) > 0.05 || math.Abs(intercept[1]) > 0.05 {
 		t.Fatalf("intercept = %.2f, %.2f; want near 1.00, 0.00", intercept[0], intercept[1])
+	}
+}
+
+// TestPrepareForChartedVisualUsesAssignedHeading checks that a charted visual
+// cleared to an aircraft that is still turning onto its intercept heading
+// joins where the vector takes it rather than where it currently points.
+func TestPrepareForChartedVisualUsesAssignedHeading(t *testing.T) {
+	nmPerLong := float32(60)
+	hdg := math.MagneticHeading(90)
+	n := Nav{
+		FlightState: FlightState{
+			Position:       math.NM2LL([2]float32{0, 0}, nmPerLong),
+			Heading:        270, // hasn't turned onto the assigned heading yet
+			NmPerLongitude: nmPerLong,
+			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
+		},
+		Heading: NavHeading{Assigned: &hdg},
+		Approach: NavApproach{
+			Assigned: &av.Approach{
+				Type:   av.ChartedVisualApproach,
+				Runway: "09",
+				Waypoints: []av.WaypointArray{{
+					{Fix: "A", Location: math.NM2LL([2]float32{-1, -1}, nmPerLong)},
+					{Fix: "B", Location: math.NM2LL([2]float32{-1, 1}, nmPerLong)},
+					{Fix: "C", Location: math.NM2LL([2]float32{1, 1}, nmPerLong)},
+					{Fix: "D", Location: math.NM2LL([2]float32{1, -1}, nmPerLong)},
+				}},
+			},
+		},
+	}
+
+	intent := n.prepareForChartedVisual()
+	if _, unable := intent.(av.UnableIntent); unable {
+		t.Fatalf("unexpected unable intent: %v", intent)
+	}
+	if len(n.Waypoints) < 2 || n.Waypoints[0].Fix != "intercept" {
+		t.Fatalf("waypoints = %v", n.Waypoints)
+	}
+
+	intercept := math.LL2NM(n.Waypoints[0].Location, nmPerLong)
+	if math.Abs(intercept[0]-1) > 0.05 || math.Abs(intercept[1]) > 0.05 {
+		t.Fatalf("intercept = %.2f, %.2f; want near 1.00, 0.00 on the assigned heading",
+			intercept[0], intercept[1])
 	}
 }
 
@@ -1364,6 +1545,208 @@ func TestClearedVisualAlongILSAfterAtFixInterceptArmsIntercept(t *testing.T) {
 	}
 	if !f.nav.Approach.NoPT {
 		t.Error("NoPT = false, want true")
+	}
+}
+
+// TestDirectFixToVisualReferenceAfterClearance covers re-sequencing an
+// aircraft that is already cleared for a visual. The clearance installs the
+// synthesized route in nav.Waypoints, but a fix on another of the reference
+// approach's transitions is still part of the approach; resolving it through
+// the global fix database instead would drop the threshold and its landing
+// waypoint from the route.
+func TestDirectFixToVisualReferenceAfterClearance(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	if intent, unable := f.ClearedVisualApproach("22L").(av.UnableIntent); unable {
+		t.Fatalf("ClearedVisualApproach returned unable: %v", intent)
+	}
+
+	// ZOSDO is on the RNAV 22L transition the visual was synthesized from but
+	// not on the cleared route.
+	f.DirectFix("ZOSDO")
+
+	wps := av.WaypointArray(f.nav.AssignedWaypoints())
+	if len(wps) == 0 || wps[0].Fix != "ZOSDO" {
+		t.Fatalf("route = %q, want it to start at ZOSDO", wps.Encode())
+	}
+	if len(wps) < 3 {
+		t.Fatalf("route = %q, want the approach route from ZOSDO, not just the fix and the airport",
+			wps.Encode())
+	}
+	if last := wps[len(wps)-2]; !last.HasLandAction() {
+		t.Errorf("route = %q, want a landing waypoint before the arrival airport", wps.Encode())
+	}
+}
+
+// TestClearedVisualWithPendingDirect is the reported-bug regression: "direct
+// {fix}, cleared visual approach" issued back to back, so the clearance
+// arrives while the pilot is still reading back the direct. The flown route
+// must join the approach at the fix, not wherever the aircraft's old heading
+// happened to point.
+func TestClearedVisualWithPendingDirect(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	// CAPIT is on the RNAV X 22L (a reference of the synthesized visual) but
+	// not on the ILS, so the clearance synthesizes a route rather than
+	// installing the localizer's.
+	f.ExpectVisualApproach("22L")
+	f.DirectFix("CAPIT")
+	if !f.nav.hasDeferredRoute() {
+		t.Fatal("expected the direct to still be pending pilot response")
+	}
+	if f.nav.Approach.InterceptedReference != nil {
+		t.Fatal("CAPIT should not commit the aircraft to an ILS/Localizer reference")
+	}
+	if intent, unable := f.ClearedVisualApproach("22L").(av.UnableIntent); unable {
+		t.Fatalf("ClearedVisualApproach returned unable: %v", intent)
+	}
+
+	if len(f.nav.Waypoints) < 3 {
+		t.Fatalf("waypoints = %v", f.nav.Waypoints)
+	}
+	capit, ok := av.DB.LookupWaypoint("CAPIT")
+	if !ok {
+		t.Fatal("CAPIT not in the waypoint database")
+	}
+	if d := math.NMDistance2LL(f.nav.Waypoints[0].Location, capit); d > 0.05 {
+		t.Errorf("route joins %.2f nm from CAPIT; want the join at the fix the aircraft was sent direct to", d)
+	}
+	if f.nav.DeferredNavHeading != nil {
+		t.Error("the clearance consumed the direct, so nothing should be left pending")
+	}
+	wps := av.WaypointArray(f.nav.Waypoints)
+	if last := wps[len(wps)-2]; !last.HasLandAction() {
+		t.Errorf("route = %q, want a landing waypoint before the arrival airport", wps.Encode())
+	}
+}
+
+// TestCrossFixAtVisualReferenceAfterClearance: a crossing restriction at a
+// fix on the reference approach must be accepted after a visual clearance
+// just as "direct" to it is — the clearance doesn't remove the rest of the
+// approach from the route's vocabulary.
+func TestCrossFixAtVisualReferenceAfterClearance(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	if intent, unable := f.ClearedVisualApproach("22L").(av.UnableIntent); unable {
+		t.Fatalf("ClearedVisualApproach returned unable: %v", intent)
+	}
+
+	ar := av.MakeAtAltitudeRestriction(3000)
+	if intent, unable := f.nav.CrossFixAt("ZOSDO", &ar, nil).(av.UnableIntent); unable {
+		t.Fatalf("CrossFixAt(ZOSDO) returned unable: %v", intent)
+	}
+}
+
+// TestClearedVisualApproachDoesNotMutateApproach checks that clearing a
+// visual leaves the assigned av.Approach untouched. For a named visual the
+// assigned approach is the airport's own object (and also serves as the
+// clearance's reference), so writing the flown route into it would corrupt
+// the approach for every later aircraft.
+func TestClearedVisualApproachDoesNotMutateApproach(t *testing.T) {
+	nmPerLong := float32(60)
+	ap := &av.Approach{
+		Id:        "RIV",
+		FullName:  "River Visual Runway 36",
+		Type:      av.VisualApproach,
+		Runway:    "36",
+		Threshold: math.NM2LL([2]float32{0, 0}, nmPerLong),
+		Waypoints: []av.WaypointArray{{
+			{Fix: "FERGI", Location: math.NM2LL([2]float32{0, -20}, nmPerLong)},
+			{Fix: "DARIC", Location: math.NM2LL([2]float32{0, -10}, nmPerLong)},
+			{Fix: "_36_THRESHOLD", Location: math.NM2LL([2]float32{0, 0}, nmPerLong)},
+		}},
+	}
+
+	n := Nav{
+		FlightState: FlightState{
+			Position:       math.NM2LL([2]float32{3, -8}, nmPerLong),
+			Heading:        270, // pointed at the final
+			NmPerLongitude: nmPerLong,
+			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
+		},
+		Approach: NavApproach{
+			Assigned:         ap,
+			AssignedId:       "RIV",
+			VisualReferences: []*av.Approach{ap},
+		},
+	}
+
+	if intent, unable := n.ClearedVisualApproach(nil, "").(av.UnableIntent); unable {
+		t.Fatalf("ClearedVisualApproach returned unable: %v", intent)
+	}
+
+	if len(ap.Waypoints) != 1 {
+		t.Fatalf("approach has %d routes after clearance, want 1", len(ap.Waypoints))
+	}
+	fixes := util.MapSlice(ap.Waypoints[0], func(wp av.Waypoint) string { return wp.Fix })
+	if !slices.Equal(fixes, []string{"FERGI", "DARIC", "_36_THRESHOLD"}) {
+		t.Errorf("approach route = %v after clearance; the clearance must not write into the approach", fixes)
+	}
+
+	// The full approach is still addressable: a later "direct DARIC" must
+	// resolve on the approach, not the global fix database.
+	wps, source, err := n.directFixWaypoints("DARIC")
+	if err != nil || len(wps) < 2 || wps[0].Fix != "DARIC" || source != waypointSourceApproach {
+		t.Errorf("directFixWaypoints(DARIC) = %v, %v, %v; want the approach route from DARIC", wps, source, err)
+	}
+}
+
+// TestExpectApproachKeepsPendingDirect: expect-approach with runway waypoints
+// that share no fix with the aircraft's route used to freeze the present
+// heading and throw away a pending direct; the direct is the controller's
+// newest instruction and must survive so the clearance can join the approach
+// from it.
+func TestExpectApproachKeepsPendingDirect(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.DirectFix("LEFER")
+	if !f.nav.hasDeferredRoute() {
+		t.Fatal("expected the direct to still be pending pilot response")
+	}
+
+	rwWps := map[string]av.WaypointArray{"22L": {{Fix: "ZZTOP"}, {Fix: "ZZBOT"}}}
+	f.nav.ExpectApproach(f.makeAirport(), "_VIS22L", rwWps)
+
+	if !f.nav.hasDeferredRoute() || f.nav.DeferredNavHeading.Waypoints[0].Fix != "LEFER" {
+		t.Error("the pending direct should survive expect-approach")
+	}
+	if f.nav.Heading.Assigned != nil {
+		t.Errorf("heading frozen at %v; the aircraft should keep its pending direct instead",
+			*f.nav.Heading.Assigned)
 	}
 }
 

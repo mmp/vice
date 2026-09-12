@@ -547,6 +547,36 @@ func (nav *Nav) AssignedHeading() (math.MagneticHeading, bool) {
 	return 0, false
 }
 
+// intendedHeading returns the true heading of the direction the aircraft's
+// instructions are taking it: an assigned heading if it has one (including
+// one the pilot hasn't started flying yet), otherwise the bearing to the next
+// waypoint of its assigned route (which may also still be pending pilot
+// response). The present heading answers the same question only once the
+// pilot has finished turning, which is not yet the case in the seconds after
+// a "direct {fix}" or mid-turn thereafter.
+func (nav *Nav) intendedHeading() math.TrueHeading {
+	magVar := nav.FlightState.MagneticVariation
+	if hdg, ok := nav.AssignedHeading(); ok {
+		return math.MagneticToTrue(hdg, magVar)
+	}
+	// In a hold, on a DME arc, or flying maneuvers, the route says nothing
+	// about the current direction of flight.
+	if nav.Heading.Hold == nil && nav.Heading.Arc == nil && len(nav.Heading.Maneuvers) == 0 {
+		// Take the bearing to the first waypoint far enough away to give a
+		// meaningful one: the aircraft sequences straight past any it is
+		// sitting on top of.
+		wps := nav.AssignedWaypoints()
+		far := func(wp av.Waypoint) bool {
+			return math.NMDistance2LLFast(nav.FlightState.Position, wp.Location,
+				nav.FlightState.NmPerLongitude) > 0.5
+		}
+		if i := slices.IndexFunc(wps, far); i != -1 {
+			return math.Heading2LL(nav.FlightState.Position, wps[i].Location, nav.FlightState.NmPerLongitude)
+		}
+	}
+	return math.MagneticToTrue(nav.FlightState.Heading, magVar)
+}
+
 // DepartureHeadingState describes the state of a departure's heading assignment.
 type DepartureHeadingState int
 
