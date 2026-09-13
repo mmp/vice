@@ -27,6 +27,7 @@
   - Fixed bugs with `/clearapp` and `/intercept` in routes
   - Added "initial_heading" for tower-assigned headings for SIDs that aren't charted to start with headings
   - Added "waypoint_actions" for SIDs so that actions can be added at waypoints without needing to respecify them
+  - Added "departure_override" for SIDs taken from the CIFP: actions and triggers (e.g. "h280/tc") that apply where departures turn on course 400' above the field, generalizing "initial_heading"
 
 - Scenario updates: HCF (Ketan K), STL (Ryan H)
 - Fixed aircraft turning away from the localizer instead of joining it

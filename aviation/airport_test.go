@@ -227,13 +227,13 @@ func TestExitCategory(t *testing.T) {
 	}
 }
 
-func TestInitialHeading(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{
-		Airways:  make(map[string][]Airway),
-		Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}},
-	}
-	t.Cleanup(func() { DB = oldDB })
+// initializeTestExitRoute runs er.initialize for a departure off a 2nm
+// east-facing KXXX runway 9. route, if non-empty, gives the route's
+// waypoints, located out ahead of the runway (except the departure end,
+// KXXX-27); the route's DepartureOverride, if any, is parsed and applied.
+// DB must already map KXXX.
+func initializeTestExitRoute(t *testing.T, er ExitRoute, route string) ExitRoute {
+	t.Helper()
 
 	const nmPerLongitude = 60
 	at := func(p [2]float32) math.Point2LL {
@@ -242,30 +242,46 @@ func TestInitialHeading(t *testing.T) {
 	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
 	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
 
+	if route != "" {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for i := range wps {
+			if wps[i].Fix == "KXXX-27" {
+				wps[i].Location = rend.Threshold
+			} else {
+				wps[i].Location = at([2]float32{float32(4 + i), 0})
+			}
+		}
+		er.Waypoints = wps
+	}
+	var override Waypoint
+	if er.DepartureOverride != "" {
+		var err error
+		if override, err = er.parseDepartureOverride(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var e util.ErrorLogger
+	er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, override, &e)
+	if e.HaveErrors() {
+		t.Fatal(e.String())
+	}
+	return er
+}
+
+func TestInitialHeading(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{
+		Airways:  make(map[string][]Airway),
+		Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}},
+	}
+	t.Cleanup(func() { DB = oldDB })
+
 	initialized := func(t *testing.T, er ExitRoute, route string) string {
 		t.Helper()
-		if route != "" {
-			wps, err := parseWaypoints(route)
-			if err != nil {
-				t.Fatal(err)
-			}
-			// initialize is always given located waypoints; put the ones
-			// that aren't the departure end out ahead of the runway.
-			for i := range wps {
-				if wps[i].Fix == "KXXX-27" {
-					wps[i].Location = rend.Threshold
-				} else {
-					wps[i].Location = at([2]float32{float32(4 + i), 0})
-				}
-			}
-			er.Waypoints = wps
-		}
-		var e util.ErrorLogger
-		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, &e)
-		if e.HaveErrors() {
-			t.Fatal(e.String())
-		}
-		return er.Waypoints.Encode()
+		return initializeTestExitRoute(t, er, route).Waypoints.Encode()
 	}
 
 	// The tower's heading is flown from the mid-runway waypoint, after the
@@ -317,6 +333,88 @@ func TestInitialHeading(t *testing.T) {
 	if got, want := initialized(t, er, "KXXX-27/hoC35 GNNRR/a2500+"),
 		"9/sid 9-mid/t090/@a713+/hoC35/sid GNNRR/a2500+/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+func TestDepartureOverride(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{
+		Airways:  make(map[string][]Airway),
+		Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}},
+	}
+	t.Cleanup(func() { DB = oldDB })
+
+	initialized := func(t *testing.T, er ExitRoute, route string) string {
+		t.Helper()
+		return initializeTestExitRoute(t, er, route).Waypoints.Encode()
+	}
+
+	// A bare heading is equivalent to "initial_heading": it supersedes the
+	// SID's own legs from the departure end.
+	er := ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h345"}
+	if got, want := initialized(t, er, "KXXX-27/h011/@a820+/h011 RIGNZ/a3000+ JCOBY"),
+		"9/sid 9-mid/t090/@a713+/h345/sid RIGNZ/a3000+/sid JCOBY/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+	if got, want := initialized(t, er, "BUTRZ/a3000+ CLTCH KERRK"),
+		"9/sid 9-mid/t090/@a713+/h345/sid BUTRZ/a3000+/sid CLTCH/sid KERRK/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+	if got, want := initialized(t, ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h345"}, ""),
+		"9/sid 9-mid/t090/@a713+/h345/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// Further actions come along with the turn, and a /tc marks the route as
+	// waiting to contact departure.
+	ir := initializeTestExitRoute(t, ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h280/tc"}, "")
+	if got, want := ir.Waypoints.Encode(), "9/sid 9-mid/t090/@a713+/h280/tc/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+	if !ir.WaitToContactDeparture {
+		t.Errorf("WaitToContactDeparture not set for override with /tc")
+	}
+
+	// A trigger splits the actions into ordered groups: fly heading 170 and
+	// only contact departure a mile from the turn.
+	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h170/@d1.0/tc"}
+	if got, want := initialized(t, er, ""),
+		"9/sid 9-mid/t090/@a713+/h170/@d1.0/tc/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// Sim actions at the departure end run at 400' with the turn, merged
+	// into the override's first group; the charted legs are superseded.
+	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h345/tc"}
+	if got, want := initialized(t, er, "KXXX-27/h011/@a820+/hoC35 RIGNZ/a3000+ JCOBY"),
+		"9/sid 9-mid/t090/@a713+/h345/hoC35/tc/sid RIGNZ/a3000+/sid JCOBY/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// An override without a heading leaves the charted legs alone and its
+	// actions follow them.
+	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "tc"}
+	if got, want := initialized(t, er, "KXXX-27/h284/@a513+ GNNRR/a2500+"),
+		"9/sid 9-mid/t090/@a713+/h284/@a513+/tc/sid GNNRR/a2500+/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// The override's restrictions apply at the midpoint, superseding any
+	// from departure-end waypoints.
+	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h345/s210"}
+	if got, want := initialized(t, er, "KXXX-27/a1500-/h284 GNNRR/a2500+"),
+		"9/sid 9-mid/a1500-/s210/t090/@a713+/h345/sid GNNRR/a2500+/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// Options must be a single /-separated set.
+	er = ExitRoute{DepartureOverride: "h345 tc"}
+	if _, err := er.parseDepartureOverride(); err == nil {
+		t.Errorf("no error for override with multiple waypoints")
+	}
+	er = ExitRoute{DepartureOverride: "h999"}
+	if _, err := er.parseDepartureOverride(); err == nil {
+		t.Errorf("no error for override with invalid heading")
 	}
 }
 
@@ -475,7 +573,7 @@ func TestExitRouteFirstFixBehindRunway(t *testing.T) {
 	} {
 		var e util.ErrorLogger
 		er := ExitRoute{ClearedAltitude: 5000, Waypoints: WaypointArray{{Fix: "FIRST", Location: at(tc.at)}}}
-		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, &e)
+		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
 		if e.HaveErrors() != tc.bad {
 			t.Errorf("%s: errors %v, want error %v", tc.name, e.String(), tc.bad)
 		}

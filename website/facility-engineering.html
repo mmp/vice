@@ -4677,6 +4677,13 @@
                       a virtual controller.</td>
                   </tr>
                   <tr>
+                    <td>"departure_override"</td>
+                    <td>String</td>
+                    <td>(<i>Optional</i>) With a route taken from the CIFP, actions and triggers that apply once the
+                      aircraft is 400' above the field, where it turns on course, written as waypoint options without
+                      a fix (e.g., <code>"h280/@d1.0/ho2J"</code> gives an initial heading of 280 and then initiates a handoff to 2J after flying one mile). A bare heading given here is equivalent to one given with "initial_heading"; see below.</td>
+                  </tr>
+                  <tr>
                     <td>"description"</td>
                     <td>String</td>
                     <td>(<i>Optional</i>) A description that is shown in the UI for <a href="index.html#draw-routes">choosing routes to draw
@@ -4749,7 +4756,8 @@
                 If no enroute transition includes the exit, the route follows the SID's common route to its end
                 and the aircraft then proceeds along the departure's "route" from there. It is an error to omit
                 "waypoints" if the SID isn't in the CIFP for the airport or if the CIFP gives no runway transition
-                for the departure runway (unless "initial_heading" is given; see below).
+                for the departure runway (unless "initial_heading" or a "departure_override" heading is given;
+                see below).
                 Here is a KLGA runway 13 route that takes the TNNIS6 from the CIFP. Its charted
                 initial legs&mdash;heading 134 until intercepting the course to JUTES&mdash;are flown once the
                 aircraft is 400' above the field, and it continues
@@ -4772,14 +4780,25 @@
                 to the far end of the runway first.
               </p>
               <p>
-                A route from the CIFP can be amended in two ways: first,
+                A route from the CIFP can be amended in three ways: first,
                 if the tower assigns an initial heading in the takeoff clearance, "initial_heading"
                 can be specified: aircraft climb on runway heading, turn
                 to the heading passing 400' above the field, and stay on it until the departure controller
                 sends them direct to a fix on the SID. The heading supersedes the SID's own legs at the
                 departure end of the runway, though any "waypoint_actions" added there still run at 400',
                 along with the turn.</p>
-              <p>Second, "waypoint_actions" adds <a href="#fe-route-actions">actions</a> to the SID's fixes: 
+              <p>
+                Second, "departure_override" generalizes "initial_heading" for takeoffs that
+                have more than a tower-assigned heading: it gives <a href="#fe-route-actions">actions</a> and
+                <a href="#fe-route-triggers">triggers</a>, written like a waypoint's options but with no
+                fix in front, that apply at the point 400' above the field where the aircraft turns on
+                course. <code>"departure_override": "h280"</code> is exactly
+                <code>"initial_heading": 280</code> (and it is an error to give both); adding to that,
+                <code>"h280/@d1.0/tc"</code> has the aircraft contact departure only once it has flown a mile from the turn. A heading given
+                here supersedes the SID's charted legs at the departure end of the runway the same way
+                "initial_heading" does; altitude and speed restrictions (e.g., <code>/s210</code>) apply
+                from the turn as well.</p>
+              <p>Third, "waypoint_actions" adds <a href="#fe-route-actions">actions</a> to the SID's fixes:
                   handoffs, point outs, scratchpad settings, and altitudes for virtually-controlled aircraft
                   described above. It is an object where member's name is a fix on the route and its value
                   is a string that lists the actions to take on passing the fix, separated by commas and without the slashes they
@@ -4804,7 +4823,8 @@
                 as the aircraft climbs through 400' above the field and takes up the leg
                 (<code>KSFO-10L/h284/hoC35/@a513+</code>), while <code>"KSFO-10L/@a513+": "hoC35"</code> hands
                 off once it has climbed through 513' (<code>KSFO-10L/h284/@a513+/hoC35</code>).</p>
-              <p>Neither "initial_heading" nor "waypoint_actions" may be given together with "waypoints".
+              <p>None of "initial_heading", "departure_override", and "waypoint_actions" may be given
+                together with "waypoints". (As everything they do can be specified directly with the waypoint fixes.) 
               </p>
               <p>The other part of specifying departures is the array of objects stored in "departures". Each one describes a departure
                 to a particular destination. Here is a JFK departure to Paris Charles de Gaulle:

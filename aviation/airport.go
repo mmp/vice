@@ -443,13 +443,16 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 					if route.InitialHeading != 0 {
 						e.ErrorString(`"initial_heading" applies only to a route taken from the CIFP; put the heading in "waypoints"`)
 					}
+					if route.DepartureOverride != "" {
+						e.ErrorString(`"departure_override" applies only to a route taken from the CIFP; put the actions in "waypoints"`)
+					}
 					if len(route.WaypointActions) > 0 {
 						e.ErrorString(`"waypoint_actions" applies only to a route taken from the CIFP; put the actions in "waypoints"`)
 					}
 					route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 					route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
 					route.checkChartedSIDRoute(icao, rwy, exits, r, rend, loc, nmPerLongitude, magneticVariation, e)
-					route.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, e)
+					route.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, Waypoint{}, e)
 					for _, exit := range exits {
 						splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], route)
 					}
@@ -464,13 +467,27 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 					// what goes on the flight plan.
 					var transition string
 					route.SID, transition, _ = strings.Cut(route.SID, ".")
+
+					var override Waypoint
+					if route.DepartureOverride != "" {
+						if route.InitialHeading != 0 {
+							e.ErrorString(`cannot give both "initial_heading" and "departure_override"; put the heading in "departure_override"`)
+						}
+						if ovr, err := route.parseDepartureOverride(); err != nil {
+							e.ErrorString(`"departure_override": %v`, err)
+						} else {
+							override = ovr
+							WaypointArray{override}.checkBasics(e, controlPositions, checkScratchpad)
+						}
+					}
+
 					for _, exit := range exits {
 						if len(exits) > 1 {
 							e.Push("Exit " + string(exit))
 						}
 						exitRoute := *route
 						if wps, err := sidWaypoints(icao, route.SID, transition, rwy, exit,
-							route.InitialHeading != 0); err != nil {
+							route.InitialHeading != 0 || override.AssignsHeading()); err != nil {
 							e.ErrorString(`must specify "waypoints": %v`, err)
 						} else {
 							wps = route.amendSIDWaypoints(wps, e)
@@ -481,7 +498,7 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 								}
 							}
 							exitRoute.Waypoints.checkBasics(e, controlPositions, checkScratchpad)
-							exitRoute.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, e)
+							exitRoute.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, override, e)
 							splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], &exitRoute)
 						}
 						if len(exits) > 1 {
@@ -890,15 +907,16 @@ func (ap Airport) VFRRateSum() float32 {
 }
 
 type ExitRoute struct {
-	SID              string            `json:"sid"`
-	AssignedAltitude int               `json:"assigned_altitude"`
-	ClearedAltitude  int               `json:"cleared_altitude"`
-	Waypoints        WaypointArray     `json:"waypoints"`
-	Description      string            `json:"description"`
-	IsRNAV           bool              `json:"is_rnav"`
-	HoldForRelease   bool              `json:"hold_for_release"`
-	InitialHeading   int               `json:"initial_heading"` // tower-assigned
-	WaypointActions  map[string]string `json:"waypoint_actions"`
+	SID               string            `json:"sid"`
+	AssignedAltitude  int               `json:"assigned_altitude"`
+	ClearedAltitude   int               `json:"cleared_altitude"`
+	Waypoints         WaypointArray     `json:"waypoints"`
+	Description       string            `json:"description"`
+	IsRNAV            bool              `json:"is_rnav"`
+	HoldForRelease    bool              `json:"hold_for_release"`
+	InitialHeading    int               `json:"initial_heading"`    // tower-assigned
+	DepartureOverride string            `json:"departure_override"` // generalizes InitialHeading
+	WaypointActions   map[string]string `json:"waypoint_actions"`
 	// optional, control position to handoff to at a /ho
 	HandoffController ControlPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.
@@ -964,18 +982,22 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 
 // sidWaypoints returns the waypoints of the CIFP's SID off the runway to the
 // exit for an exit route that gives none of its own; transition, if
-// non-empty, names the SID's enroute transition to fly. A route with an
-// initial heading needs no runway transition from the CIFP: the heading is
-// how the aircraft gets from the runway to the SID.
+// non-empty, names the SID's enroute transition to fly. A runway transition
+// the CIFP charts is always taken, fixes and all; if it opens with heading
+// legs from the departure end, initialize supersedes those when the route
+// assigns its own heading. Only when the CIFP has no transition for the
+// runway does an assigned heading--"initial_heading" or a
+// "departure_override" heading--stand in for one, with the route starting
+// from the SID's common portion.
 func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, exit ExitID,
-	initialHeading bool) (WaypointArray, error) {
+	assignedHeading bool) (WaypointArray, error) {
 	s, ok := DB.Airports[icao].SIDs[sid]
 	if !ok {
 		return nil, fmt.Errorf("SID %q isn't in the FAA CIFP for %s. Options: %s",
 			sid, icao, strings.Join(util.SortedMapKeys(DB.Airports[icao].SIDs), ", "))
 	}
 	runway := rwy.Base()
-	if _, ok := s.RunwayTransitions[runway]; !ok && initialHeading {
+	if _, ok := s.RunwayTransitions[runway]; !ok && assignedHeading {
 		runway = ""
 	}
 	wps, err := s.Waypoints(runway, transition, exit.Base())
@@ -983,6 +1005,20 @@ func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, ex
 		return nil, fmt.Errorf("SID %s: %w", sid, err)
 	}
 	return wps.Clone(), nil
+}
+
+// parseDepartureOverride parses the route's "departure_override" waypoint
+// options--actions, triggers, and altitude/speed restrictions--into the
+// waypoint that carries them.
+func (er *ExitRoute) parseDepartureOverride() (Waypoint, error) {
+	wps, err := parseWaypoints("departure_override/" + er.DepartureOverride)
+	if err != nil {
+		return Waypoint{}, err
+	}
+	if len(wps) != 1 {
+		return Waypoint{}, fmt.Errorf("%s: must be a single set of /-separated options", er.DepartureOverride)
+	}
+	return wps[0], nil
 }
 
 // amendSIDWaypoints applies the route's "initial_heading" and
@@ -1128,9 +1164,12 @@ func atDepartureEnd(wp Waypoint, r, rend Runway, nmPerLongitude float32) bool {
 // initialize puts the runway in front of the route's located waypoints--its
 // threshold and then its midpoint, from which the aircraft tracks the runway
 // centerline until it is 400' above the field and only then flies the
-// route--and checks the route's other members against them.
+// route--and checks the route's other members against them. override carries
+// the route's parsed "departure_override": actions and restrictions that
+// apply at the midpoint, once the aircraft is 400' up.
 func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runway, nmPerLongitude float32,
-	magneticVariation float32, controlPositions map[ControlPosition]*Controller, e *util.ErrorLogger) {
+	magneticVariation float32, controlPositions map[ControlPosition]*Controller, override Waypoint,
+	e *util.ErrorLogger) {
 	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, rend.Threshold, nmPerLongitude), magneticVariation)
 
 	// Waypoints at the departure end of the runway are the old way of saying
@@ -1152,9 +1191,18 @@ func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runw
 		er.Waypoints = er.Waypoints[1:]
 	}
 
+	// The override's restrictions belong to the same point and supersede the
+	// departure end waypoints'.
+	if ar := override.AltitudeRestriction(); ar != nil {
+		departureEndAltitude = ar
+	}
+	if sr := override.SpeedRestriction(); sr != nil {
+		departureEndSpeed = sr
+	}
+
 	// A first fix close behind where the aircraft turns on course is almost always the runway's
 	// own threshold named in place of its departure end....
-	if len(er.Waypoints) > 0 && er.InitialHeading == 0 && departureEndGroups == nil &&
+	if len(er.Waypoints) > 0 && er.InitialHeading == 0 && !override.AssignsHeading() && departureEndGroups == nil &&
 		math.HeadingDifference(course, r.Heading) <= 45 {
 		first := er.Waypoints[0]
 		along := math.Normalize2f(math.Sub2f(math.LL2NM(rend.Threshold, nmPerLongitude), math.LL2NM(r.Threshold, nmPerLongitude)))
@@ -1182,19 +1230,30 @@ func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runw
 			},
 		},
 	}
+	// The tower-applied actions from the takeoff clearance:
+	// "departure_override" gives them in full, while "initial_heading" is
+	// the common case of a bare assigned heading.
+	overrideGroups := override.ActionGroups()
+	assignsHeading := override.AssignsHeading()
 	if h := er.InitialHeading; h >= 1 && h <= 360 {
+		overrideGroups = []WaypointActionGroup{{Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: int16(h)}}}}
+		assignsHeading = true
+	}
+	if assignsHeading {
 		// The tower's assigned heading: turn to it 400' above the field and
 		// fly it until the departure controller sends the aircraft direct to
 		// a fix on the SID. It supersedes the charted legs, but sim actions
-		// given in "waypoint_actions" still run at 400'.
-		actions := WaypointActions{Heading: WaypointHeadingAction{Heading: int16(h)}}
+		// given at the departure end still run at 400', with the turn.
+		overrideGroups = slices.Clone(overrideGroups)
+		first := &overrideGroups[0]
 		for _, g := range departureEndGroups {
 			g.Actions.Heading = WaypointHeadingAction{}
-			actions.merge(g.Actions)
+			first.Actions.merge(g.Actions)
 		}
-		groups = append(groups, WaypointActionGroup{Actions: actions})
+		groups = append(groups, overrideGroups...)
 	} else {
 		groups = append(groups, departureEndGroups...)
+		groups = append(groups, overrideGroups...)
 	}
 	midWp.InitExtra().ActionGroups = groups
 	// The departure end waypoints' restrictions apply from here on out.

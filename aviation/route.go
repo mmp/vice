@@ -425,6 +425,13 @@ func (wp Waypoint) HasTransferCommsAction() bool {
 	return slices.ContainsFunc(wp.ActionGroups(),
 		func(group WaypointActionGroup) bool { return group.Actions.TransferComms })
 }
+
+// AssignsHeading reports whether any of the waypoint's actions assigns a
+// heading to fly.
+func (wp Waypoint) AssignsHeading() bool {
+	return slices.ContainsFunc(wp.ActionGroups(),
+		func(group WaypointActionGroup) bool { return group.Actions.Heading.IsSet() })
+}
 func (wp Waypoint) HasHumanHandoff() bool {
 	return slices.ContainsFunc(wp.ActionGroups(),
 		func(group WaypointActionGroup) bool { return group.Actions.HumanHandoff })
