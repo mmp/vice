@@ -695,26 +695,51 @@ func TestDepartureExitTakesTheFirstAlongTheRoute(t *testing.T) {
 	}
 }
 
-// A route names the SID that reaches an exit as often as the exit fix itself.
-// JFK to Las Vegas is the real case: the scenario models the DEEZZ exit and the
-// route names DEEZZ6, the SID that gets there. A stale revision in the filed
-// route--DEEZZ5 against the scenario's DEEZZ6--matches all the same.
-func TestDepartureExitMatchesTheSID(t *testing.T) {
-	departures := []av.Departure{{Exit: "DEEZZ"}}
-	exitRoutes := map[av.ExitID]*av.ExitRoute{"DEEZZ": {SID: "DEEZZ6"}}
-	candidates := []candidateDeparture{{exitRoutes: exitRoutes, dep: &departures[0]}}
+// A route often names no modeled exit at all. JFK to Las Vegas is the real
+// case: the scenario models the DEEZZ exit and filings resume at CANDR,
+// which lies past DEEZZ on the DEEZZ6's charted path. The exit comes from
+// walking that path back from the route's first fix--never from the filed
+// SID token, which may not be the SID the scenario flies for the gate--so a
+// stale revision on either side matches all the same.
+func TestDepartureExitJoinsTheSIDPath(t *testing.T) {
+	av.InitDB()
 
-	for _, route := range []string{
-		"KJFK DEEZZ6 CANDR J60 DJB CPONE JOT J60 HVE GGAPP CHOWW4 KLAS",
-		"KJFK DEEZZ5 CANDR J60 DJB CPONE JOT J60 HVE GGAPP CHOWW4 KLAS",
-	} {
-		c, ok := departureExit(route, "KJFK", "KLAS", "CANDR", candidates)
-		if !ok {
-			t.Fatalf("%s: departureExit didn't match the SID", route)
+	for _, sid := range []string{"DEEZZ6", "DEEZZ5" /* stale in the scenario */} {
+		departures := []av.Departure{{Exit: "DEEZZ"}}
+		exitRoutes := map[av.ExitID]*av.ExitRoute{"DEEZZ": {SID: sid}}
+		candidates := []candidateDeparture{{exitRoutes: exitRoutes, dep: &departures[0]}}
+
+		for _, route := range []string{
+			"KJFK DEEZZ6 CANDR J60 DJB CPONE JOT J60 HVE GGAPP CHOWW4 KLAS",
+			"KJFK DEEZZ5 CANDR J60 DJB CPONE JOT J60 HVE GGAPP CHOWW4 KLAS", // stale in the filing
+		} {
+			c, ok := departureExit(route, "KJFK", "KLAS", "CANDR", candidates)
+			if !ok {
+				t.Fatalf("sid %s: %s: departureExit found no exit", sid, route)
+			}
+			if c.dep.Exit != "DEEZZ" {
+				t.Errorf("sid %s: %s: left through %q, expected DEEZZ", sid, route, c.dep.Exit)
+			}
 		}
-		if c.dep.Exit != "DEEZZ" {
-			t.Errorf("%s: left through %q, expected DEEZZ", route, c.dep.Exit)
+
+		// A first fix on no charted path of the SID matches nothing.
+		if _, ok := departureExit("KJFK DEEZZ6 SLT J70 KLAS", "KJFK", "KLAS", "", candidates); ok {
+			t.Errorf("sid %s: matched an exit for a route that never joins the SID", sid)
 		}
+	}
+
+	// A route that leaves the SID before reaching any modeled exit takes the
+	// exit ahead of it: with CANDR the exit, a filing resuming at HEERO
+	// still goes out through the CANDR gate.
+	departures := []av.Departure{{Exit: "CANDR"}}
+	exitRoutes := map[av.ExitID]*av.ExitRoute{"CANDR": {SID: "DEEZZ6"}}
+	candidates := []candidateDeparture{{exitRoutes: exitRoutes, dep: &departures[0]}}
+	c, ok := departureExit("KJFK DEEZZ6 HEERO V489 SAX KMMU", "KJFK", "KMMU", "", candidates)
+	if !ok {
+		t.Fatal("departureExit found no exit ahead of HEERO")
+	}
+	if c.dep.Exit != "CANDR" {
+		t.Errorf("left through %q, expected CANDR", c.dep.Exit)
 	}
 }
 

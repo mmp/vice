@@ -4,6 +4,7 @@
 - "At FIX intercept the localizer" is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing
 - Added: `IFIX/RADIAL`: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
 - Departures are now automatically held when a recent departure from another runway is flying an initial route that crosses their departure path
+- Real-world traffic's departure gate is now found from where its filed route joins the charted SIDs that the scenario's exits fly, rather than from the filed SID's name; routes that resume mid-SID (with or without a SID in the filing) now find their gate
 - Fixed bugs in checks for whether called traffic is in sight
 - Fixed bug with aircraft turning away from the localizer
 - Improved drawing of complex routes (SIDs/STARs/approaches/...)

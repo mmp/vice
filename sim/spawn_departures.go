@@ -1176,12 +1176,16 @@ func eligibleAirportPairRoutes(routes []av.AirportPairRoute, engineType string) 
 	return ordered
 }
 
-// departureExit finds the compatible departure whose exit a filed route leaves
-// through: the first of the route's fixes the scenario models, since that is
-// the one the flight actually goes out over. A route may instead name the SID
-// that reaches the exit--JFK to Las Vegas files "KJFK DEEZZ6 CANDR J60...",
-// where DEEZZ6 is the SID for the DEEZZ exit--and where it names neither, a
-// coded departure route's own departure fix is the last thing to go on.
+// departureExit finds the compatible departure whose exit a filed route
+// leaves through: the first of the route's fixes the scenario models, since
+// that is the one the flight actually goes out over. Failing that, the
+// route's first fix tells where the flight rejoins its own navigation on a
+// SID the exits fly, and the exit behind that fix on the charted path is the
+// gate it goes out over--JFK to Las Vegas files "KJFK DEEZZ6 CANDR J60...",
+// resuming at CANDR with the DEEZZ exit behind it. When the route leaves the
+// SID before reaching any exit, the exit ahead stands in. A coded departure
+// route's own departure fix is the last thing to go on. The filed SID's name
+// is never consulted: it may not be the SID the scenario flies for the gate.
 func departureExit(route string, departureAirport, destination av.ICAOAirportCode, departureFix string,
 	candidates []candidateDeparture) (candidateDeparture, bool) {
 	fields := av.TrimDepartureAirportTokens(strings.Fields(route), departureAirport)
@@ -1198,44 +1202,98 @@ func departureExit(route string, departureAirport, destination av.ICAOAirportCod
 		}
 	}
 
-	// No exit fix on the route; go by the SIDs that reach the exits,
-	// tolerating a stale revision in the filed route.
-	sidMatches := util.FilterSlice(candidates, func(c candidateDeparture) bool {
-		exitRoute, ok := c.exitRoutes[c.dep.Exit]
-		return ok && exitRoute.SID != "" && slices.ContainsFunc(fields, func(f string) bool {
-			return av.ProcedureBase(f) == av.ProcedureBase(exitRoute.SID)
-		})
-	})
-	if len(sidMatches) == 0 {
+	// No exit fix on the route; find where its first fix joins the SIDs the
+	// exits fly.
+	first := ""
+	for _, f := range fields {
+		if _, airway := av.DB.Airways[f]; airway || av.TokenNamesProcedure(f) {
+			continue
+		}
+		first = f
+		break
+	}
+	if first == "" {
 		return candidateDeparture{}, false
 	}
-	if len(sidMatches) == 1 {
-		return sidMatches[0], true
+
+	exitCandidates := make(map[string]candidateDeparture)
+	for _, c := range candidates {
+		if _, ok := exitCandidates[c.dep.Exit.Base()]; !ok {
+			exitCandidates[c.dep.Exit.Base()] = c
+		}
 	}
 
-	// Several exits share the SID; the one nearest the route's first
-	// locatable fix is the one the route leaves through.
-	for _, f := range fields {
-		routeFix, ok := av.DB.LookupWaypoint(f)
+	var behind, ahead []string
+	seenSIDs := make(map[string]bool)
+	for _, c := range candidates {
+		exitRoute, ok := c.exitRoutes[c.dep.Exit]
+		if !ok || exitRoute.SID == "" {
+			continue
+		}
+		name, _, _ := strings.Cut(exitRoute.SID, ".")
+		if seenSIDs[name] {
+			continue
+		}
+		seenSIDs[name] = true
+		s, ok := av.LookupSID(departureAirport, name)
 		if !ok {
 			continue
 		}
-		best, bestDistance := -1, float32(0)
-		for i, c := range sidMatches {
-			exit, ok := av.DB.LookupWaypoint(c.dep.Exit.Base())
+		for _, path := range av.ChartedSIDPaths(s) {
+			i := slices.Index(path, first)
+			if i == -1 {
+				continue
+			}
+			foundBehind := false
+			for j := i - 1; j >= 0; j-- {
+				if _, ok := exitCandidates[path[j]]; ok {
+					if !slices.Contains(behind, path[j]) {
+						behind = append(behind, path[j])
+					}
+					foundBehind = true
+					break
+				}
+			}
+			if foundBehind {
+				continue
+			}
+			for j := i + 1; j < len(path); j++ {
+				if _, ok := exitCandidates[path[j]]; ok {
+					if !slices.Contains(ahead, path[j]) {
+						ahead = append(ahead, path[j])
+					}
+					break
+				}
+			}
+		}
+	}
+
+	matches := util.Select(len(behind) > 0, behind, ahead)
+	if len(matches) == 0 {
+		return candidateDeparture{}, false
+	}
+	if len(matches) == 1 {
+		return exitCandidates[matches[0]], true
+	}
+
+	// Several paths' exits could stand in; the one nearest where the route
+	// joins the SID is the one the flight leaves through.
+	if routeFix, ok := av.DB.LookupWaypoint(first); ok {
+		best, bestDistance := "", float32(0)
+		for _, m := range matches {
+			exit, ok := av.DB.LookupWaypoint(m)
 			if !ok {
 				continue
 			}
-			if d := math.NMDistance2LL(exit, routeFix); best == -1 || d < bestDistance {
-				best, bestDistance = i, d
+			if d := math.NMDistance2LL(exit, routeFix); best == "" || d < bestDistance {
+				best, bestDistance = m, d
 			}
 		}
-		if best != -1 {
-			return sidMatches[best], true
+		if best != "" {
+			return exitCandidates[best], true
 		}
-		break
 	}
-	return sidMatches[0], true
+	return exitCandidates[matches[0]], true
 }
 
 func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport av.ICAOAirportCode,

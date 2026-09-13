@@ -1007,6 +1007,50 @@ func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, ex
 	return wps.Clone(), nil
 }
 
+// ChartedSIDPaths returns the named fixes, in order, of each path through
+// the SID: the common route and each enroute transition, on their own and
+// spliced onto each runway transition.
+func ChartedSIDPaths(s SID) [][]string {
+	bodies := []WaypointArray{s.Common}
+	for tr := range util.SortedMapValues(s.EnrouteTransitions) {
+		bodies = append(bodies, tr)
+	}
+
+	var paths [][]string
+	add := func(wps WaypointArray) {
+		names := util.FilterSlice(util.MapSlice(wps, func(wp Waypoint) string { return wp.Fix }), IsNamedFix)
+		if len(names) > 0 {
+			paths = append(paths, names)
+		}
+	}
+	for _, body := range bodies {
+		add(body)
+		for rt := range util.SortedMapValues(s.RunwayTransitions) {
+			add(spliceSIDTransition(rt, body))
+		}
+	}
+	return paths
+}
+
+// LookupSID returns the airport's CIFP SID with the given name, tolerating a
+// stale revision number: DEEZZ5 finds DEEZZ6 when that is what the CIFP has.
+func LookupSID(icao ICAOAirportCode, name string) (SID, bool) {
+	ap, ok := DB.Airports[icao]
+	if !ok {
+		return SID{}, false
+	}
+	if s, ok := ap.SIDs[name]; ok {
+		return s, true
+	}
+	base := ProcedureBase(name)
+	for _, n := range util.SortedMapKeys(ap.SIDs) {
+		if ProcedureBase(n) == base {
+			return ap.SIDs[n], true
+		}
+	}
+	return SID{}, false
+}
+
 // parseDepartureOverride parses the route's "departure_override" waypoint
 // options--actions, triggers, and altitude/speed restrictions--into the
 // waypoint that carries them.
