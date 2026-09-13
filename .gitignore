@@ -6,14 +6,19 @@
 /bundleresources
 /cdocs
 /crc2vice
+/crc2vice.exe
 /dat2vice
+/dat2vice.exe
 /importflights
+/importflights.exe
 /manifest.json
 /sttreview
 /sttsim
 /stttest
 /vice
+/vice.exe
 /viceserver
+/viceserver.exe
 /wxingest
 /wxpackage
 /wxscrape
@@ -26,7 +31,6 @@ cmd/wxingest/cloudrun/facilities.json
 dump*.txt
 ext/
 icon.icns
-icon.iconset/
 installer.wixobj
 libonnxruntime.so
 libsherpa-onnx-c-api.so
@@ -34,7 +38,6 @@ libsherpa-onnx-cxx-api.so
 notarize.out
 osx/Vice*.dmg
 osx/Vice.app/
-osx/icon.iconset/
 osx/vice
 osx/vice_amd64
 osx/vice_arm64
@@ -48,7 +51,6 @@ scraperoutes
 slog
 util/manifest.json
 vice-logs/
-vice.exe
-vice.slog
-vice.zip
+/vice.slog
+/vice.zip
 windows/*.dll

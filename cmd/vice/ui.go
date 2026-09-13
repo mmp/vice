@@ -90,7 +90,7 @@ var (
 		testPTTLevelIdx int
 	}
 
-	//go:embed icons/tower-256x256.png
+	//go:embed icons/generic/vice-icon-256.png
 	iconPNG string
 )
 

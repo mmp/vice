@@ -2,11 +2,13 @@
   "RT_GROUP_ICON": {
     "APP": {
       "0000": [
-        "../cmd/vice/icons/tower-256x256.png",
-        "../cmd/vice/icons/tower-64x64.png",
-        "../cmd/vice/icons/tower-48x48.png",
-        "../cmd/vice/icons/tower-32x32.png",
-        "../cmd/vice/icons/tower-16x16.png"
+        "../cmd/vice/icons/windows/vice-icon-256.png",
+        "../cmd/vice/icons/windows/vice-icon-128.png",
+        "../cmd/vice/icons/windows/vice-icon-64.png",
+        "../cmd/vice/icons/windows/vice-icon-48.png",
+        "../cmd/vice/icons/windows/vice-icon-32.png",
+        "../cmd/vice/icons/windows/vice-icon-24.png",
+        "../cmd/vice/icons/windows/vice-icon-16.png"
       ]
     }
   },

@@ -1,7 +1,7 @@
 vice
 ====
 
-![dall-e 2 tower](https://github.com/mmp/vice/blob/d7a85cf1388816b74f686e7eb231cf0077d01b10/cmd/vice/icons/tower-256x256.png?raw=true)
+![vice icon](https://github.com/mmp/vice/blob/master/cmd/vice/icons/generic/vice-icon-256.png?raw=true)
 
 *A fun folly writing an ATC simulator*. See the [vice
 website](https://pharr.org/vice) for more information and documentation

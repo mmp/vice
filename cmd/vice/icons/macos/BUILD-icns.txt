@@ -1,0 +1,30 @@
+Building the .icns
+------------------
+On a Mac, from this directory:
+
+    iconutil -c icns vice-icon.iconset
+
+That produces vice-icon.icns. (iconutil is macOS-only, which is why the
+.iconset folder is shipped rather than a finished .icns; osx/make-vice-app.sh
+runs iconutil on it at build time.)
+
+Geometry
+--------
+Apple's Big Sur+ template: the artwork tile is 824x824 centred on a 1024x1024
+canvas (80.5%), with transparent margins, and the corner is a continuous
+(superelliptical) curve of radius 185.4 - not a circular arc. macOS does not
+mask app icons, so the shape has to be baked into the artwork; that is done
+here.
+
+The 16, 32 and 64 px slots use hand-drawn pixel tiles (12, 26 and 52 px)
+composited onto a transparent canvas rather than downsampled vector art.
+26/32 and 52/64 hit the template ratio exactly. The 16 px slot wants a 12.88 px
+tile; 12 is used so the margin stays symmetric, which makes it ~6% small.
+
+macOS 26 (Tahoe)
+----------------
+Tahoe icons are built in Icon Composer from layered artwork, and the system
+applies the mask and its rendering modes (default / dark / clear / tinted).
+This .icns remains the correct fallback for Sequoia and earlier; for a Tahoe
+build, import the master SVG into Icon Composer as the foreground/background
+layers and ship the resulting .icon alongside.

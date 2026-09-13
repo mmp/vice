@@ -32,20 +32,7 @@ for tool in crc2vice dat2vice viceserver; do
 done
 
 echo "=== Creating icons ==="
-mkdir -p icon.iconset
-cp cmd/vice/icons/tower-rounded-inset-16x16.png icon.iconset/icon_16x16.png
-cp cmd/vice/icons/tower-rounded-inset-32x32.png icon.iconset/icon_16x16@2.png
-cp cmd/vice/icons/tower-rounded-inset-32x32.png icon.iconset/icon_32x32.png
-cp cmd/vice/icons/tower-rounded-inset-64x64.png icon.iconset/icon_32x32@2.png
-cp cmd/vice/icons/tower-rounded-inset-64x64.png icon.iconset/icon_64x64.png
-cp cmd/vice/icons/tower-rounded-inset-128x128.png icon.iconset/icon_64x64@2.png
-cp cmd/vice/icons/tower-rounded-inset-128x128.png icon.iconset/icon_128x128.png
-cp cmd/vice/icons/tower-rounded-inset-256x256.png icon.iconset/icon_128x128@2.png
-cp cmd/vice/icons/tower-rounded-inset-256x256.png icon.iconset/icon_256x256.png
-cp cmd/vice/icons/tower-rounded-inset-512x512.png icon.iconset/icon_256x256@2.png
-cp cmd/vice/icons/tower-rounded-inset-512x512.png icon.iconset/icon_512x512.png
-cp cmd/vice/icons/tower-rounded-inset-1024x1024.png icon.iconset/icon_512x512@2.png
-iconutil -c icns icon.iconset
+iconutil -c icns -o icon.icns cmd/vice/icons/macos/vice-icon.iconset
 
 echo "=== Creating Vice.app bundle ==="
 rm -rf Vice.app
