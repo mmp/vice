@@ -1,20 +1,24 @@
 - New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn)
-- Scenario updates: PCT SHD (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt), CLT (Gus Agostinho)
-- Fixed bug where aircraft were not automatically cleared for the approach at a /clearapp fix
-- "At FIX intercept the localizer" is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing
-- Added: `IFIX/RADIAL`: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
-- Departures are now automatically held when a recent departure from another runway is flying an initial route that crosses their departure path
-- Real-world traffic's departure gate is now found from where its filed route joins the charted SIDs that the scenario's exits fly, rather than from the filed SID's name; routes that resume mid-SID (with or without a SID in the filing) now find their gate
-- Fixed bugs in checks for whether called traffic is in sight
-- Fixed bug with aircraft turning away from the localizer
-- Improved drawing of complex routes (SIDs/STARs/approaches/...)
-- More accurately model departures' 400' AGL rollout
-- Fixed multiple data bugs in historical flight data
+- Scenario updates: PCT SHD, HCF, SCT (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt), CLT (Gus Agostinho), STL (Ryan H), MSP (Logan S, Shane)
+- Flight model improvements
+  - "At FIX intercept the localizer" is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing
+  - Added: `IFIX/RADIAL`: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
+  - Departures are now automatically held when a recent departure from another runway is flying an initial route that crosses their departure path
+  - More accurately model departures' 400' AGL rollout
+  - Improved drawing of complex routes (SIDs/STARs/approaches/...)
+- Bug fixes
+  - Fixed bugs in checks for whether called traffic is in sight
+  - Fixed bug with aircraft turning away from the localizer
+  - Fixed multiple data bugs in historical flight data
+  - Fixed aircraft turning away from the localizer instead of joining it
+  - Fixed bug with real-world traffic routes including the departure airport
+  - Fixed a few bugs with joining visual approaches
 - ERAM
   - Fixed bug with cutoff "8" characters in datablocks
 - STARS
   - Fixed bug where saving prefs handled the pref set name incorrectly 
 - Facility engineering
+  - Fixed bug where aircraft were not automatically cleared for the approach at a /clearapp fix
   - Updated route trigger syntax to be more readable: `FIX/h050@a4000/l270` -> `FIX/h050/a4000/l270`
   - Added `@t` to route specifiers to allow specifying a track to fly inbound to the next fix
   - Added `@crs` to route specifiers to join a course inbound a fix; @crsNAVAID-Rradial gives a leg that runs along a navaid's radial
@@ -29,13 +33,7 @@
   - Added "initial_heading" for tower-assigned headings for SIDs that aren't charted to start with headings
   - Added "waypoint_actions" for SIDs so that actions can be added at waypoints without needing to respecify them
   - Added "departure_override" for SIDs taken from the CIFP: actions and triggers (e.g. "h280/tc") that apply where departures turn on course 400' above the field, generalizing "initial_heading"
-
-- Scenario updates: HCF (Ketan K), STL (Ryan H)
-- Fixed aircraft turning away from the localizer instead of joining it
-- Fixed bug with real-world traffic routes including the departure airport
-- Fixed a few bugs with joining visual approaches
-- Fixed bug where vice would ask to revert local edits to scenarios, configs, etc.
-- Facility engineering
+  - Fixed bug where vice would ask to revert local edits to scenarios, configs, etc.
   - Require "star" to be specified if "waypoints" match a published STAR
   - Fixed bug that prohibited runway thresholds below sea level
   - Route triggers now sequence `/delete`, `/land` and `/intercept` like any other action

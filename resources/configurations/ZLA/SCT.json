@@ -282,13 +282,13 @@
       "B1": {
         "inbound_assignments": {
           "FERN7/SBAQ3": "1M",
-          "JANNY5/GUERA2/BOGET2": "1F",
           "LADYJ4": "1M",
           "ROKKR3/IVINS2/BONJO3": "1M",
           "SANQ16R/SANQ14R": "1W",
           "SBAQ2": "1W",
           "THRNE4": "1X",
-          "WEESL1": "1F"
+          "WEESL1": "1F",
+          "JANNY5/GUERA2/BOGET2/LYNXX8": "1F"
         },
         "departure_assignments": {
           "KVNY/CANOG3": "1W",
@@ -311,13 +311,13 @@
       "B3": {
         "inbound_assignments": {
           "FERN7/SBAQ3": "1M",
-          "JANNY5/GUERA2/BOGET2": "1F",
           "LADYJ4": "1M",
           "ROKKR3/IVINS2/BONJO3": "1M",
           "SANQ16R/SANQ14R.34": "1W",
           "SBAQ2": "1W",
           "THRNE4": "1X",
-          "WEESL1": "1F"
+          "WEESL1": "1F",
+          "JANNY5/GUERA2/BOGET2/LYNXX8": "1F"
         },
         "departure_assignments": {
           "KBUR": "1F",
@@ -339,12 +339,12 @@
       "B6": {
         "inbound_assignments": {
           "FERN7/SBAQ3": "1M",
-          "JANNY5/GUERA2/BOGET2": "1F",
           "ROKKR3/IVINS2/BONJO3": "1M",
           "SANQ18R": "1X",
           "SBAQ2": "1W",
           "THRNE4": "1J",
-          "WEESL1": "1F"
+          "WEESL1": "1F",
+          "JANNY5/GUERA2/BOGET2/LYNXX8": "1F"
         },
         "departure_assignments": {
           "KBUR": "1F",
@@ -366,12 +366,12 @@
       "B8": {
         "inbound_assignments": {
           "FERN7/SBAQ3": "1M",
-          "JANNY5/GUERA2/BOGET2": "1F",
           "ROKKR3/IVINS2/BONJO3": "1M",
           "SANQ18R": "1X",
           "SBAQ2": "1W",
           "THRNE4": "1J",
-          "WEESL1": "1F"
+          "WEESL1": "1F",
+          "JANNY5/GUERA2/BOGET2/LYNXX8": "1F"
         },
         "departure_assignments": {
           "KVNY/CANOG3": "1W",
@@ -421,7 +421,8 @@
           "KLGB/HAWWC3": "6L",
           "KLGB/RV VTU": "6L",
           "KSNA": "4Y",
-          "KSMO": "6N"
+          "KSMO": "6N",
+          "KTOA": "6L"
         },
         "default_consolidation": {
           "6S": ["6L", "6N", "6X"],
@@ -457,7 +458,8 @@
           "KLGB/HAWWC3": "6L",
           "KLGB/RV VTU": "6L",
           "KSNA": "4Y",
-          "KSMO": "6N"
+          "KSMO": "6N",
+          "KTOA": "6L"
         },
         "default_consolidation": {
           "6S": ["6L", "6N", "6X"],
@@ -2683,54 +2685,70 @@
       "ssa": { "system_altimeter": "KLAX" },
       "coordination": [
         {
-          "name": "HAWTHORNE",
           "id": "65",
-          "airports": ["KHHR"]
+          "name": "HAWTHORNE",
+          "airports": ["KHHR"],
+          "yellow_entries": true
         },
         {
-          "name": "SANTA MONICA",
           "id": "64",
-          "airports": ["KSMO"]
+          "name": "SANTA MONICA",
+          "airports": ["KSMO"],
+          "yellow_entries": true
         },
         {
-          "name": "LONG BEACH",
           "id": "42",
-          "airports": ["KLGB"]
+          "name": "LONG BEACH",
+          "airports": ["KLGB"],
+          "yellow_entries": true
         },
         {
-          "name": "VAN NUYS",
+          "id": "63",
+          "name": "TORRANCE",
+          "airports": ["KTOA"],
+          "yellow_entries": true
+        },
+        {
           "id": "12",
-          "airports": ["KVNY"]
+          "name": "VAN NUYS",
+          "airports": ["KVNY"],
+          "yellow_entries": true
         },
         {
-          "name": "PALM SPRINGS",
           "id": "32",
-          "airports": ["KPSP"]
+          "name": "PALM SPRINGS",
+          "airports": ["KPSP"],
+          "yellow_entries": true
         },
         {
-          "name": "PALOMAR",
           "id": "52",
-          "airports": ["KCRQ"]
+          "name": "PALOMAR",
+          "airports": ["KCRQ"],
+          "yellow_entries": true
         },
         {
-          "name": "GILLESPIE",
           "id": "53",
-          "airports": ["KSEE"]
+          "name": "GILLESPIE",
+          "airports": ["KSEE"],
+          "yellow_entries": true
         },
         {
-          "name": "BROWN",
           "id": "54",
-          "airports": ["KSDM"]
+          "name": "BROWN",
+          "airports": ["KSDM"],
+          "yellow_entries": true
         },
         {
-          "name": "MONTGOMERY",
           "id": "55",
-          "airports": ["KMYF"]
+          "name": "MONTGOMERY",
+          "airports": ["KMYF"],
+          "yellow_entries": true
         },
         {
-          "name": "MIRAMAR",
           "id": "56",
-          "airports": ["KNKX"]
+          "name": "MIRAMAR",
+          "airports": ["KNKX"],
+          "yellow_entries": true
         }
       ]
     },

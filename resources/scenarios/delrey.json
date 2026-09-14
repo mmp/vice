@@ -36,7 +36,33 @@
         "R1L": {
           "cifp_id": "R11L"
         }
-      }
+      },
+      "departure_routes": {
+        "29R": {
+          "LIMBO": {
+            "cleared_altitude": 3000,
+            "waypoints": "KTOA-11L/ph/@d4.0/tLAX-R174/@SMO-D14.0+/ld LIMBO"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            },
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "destination": "KCRQ",
+          "exit": "LIMBO",
+          "scratchpad": "CRQ",
+          "route": "LIMBO V64 WOKRO V363 DANAH V23 OCN"
+        }
+      ]
     },
     "KLAX": {
       "departure_runways_as_one": ["25L,25R", "24L,24R"],
@@ -2651,12 +2677,12 @@
           "VTU": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-30/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC VTU"
+            "waypoints": "KLGB-30/h121/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-30/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "KLGB-30/h121/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
           },
           "AVRRY": {
             "cleared_altitude": 3000,
@@ -2677,14 +2703,14 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h301/@a1500+/l180/c7000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoints": "KLGB-30/h121/@a1500+/l180/c7000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h301/@a1500+/l180/c7000/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-30/h121/@a1500+/l180/c7000/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         },
         "12.E": {
@@ -2698,12 +2724,12 @@
           "VTU": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-30/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC VTU"
+            "waypoints": "KLGB-30/h121/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC VTU"
           },
           "SXC": {
             "assigned_altitude": 3000,
             "departure_controller": "4B",
-            "waypoints": "KLGB-30/h301/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
+            "waypoints": "KLGB-30/h121/@a400+/ho4R/h200/@a3000+/ld/ho6K SXC GOATZ MALIT ROSIN FICKY"
           },
           "AVRRY": {
             "cleared_altitude": 3000,
@@ -2724,14 +2750,14 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h301/@a1500+/r200/c8000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoints": "KLGB-30/h121/@a1500+/r200/c8000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h301/@a1500+/r200/c8000/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-30/h121/@a1500+/r200/c8000/ho6X CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         }
       },
@@ -3096,7 +3122,7 @@
             "handoff_controller": "6X",
             "sid": "FINZZ3",
             "is_rnav": true,
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/ho DOLLF/a8000- FINZZ/a10000+ CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS"
+            "waypoints": "KSNA-2L/h196/@crs175 STREL/a5000-/ho DOLLF/a8000- FINZZ/a10000+ CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS"
           },
           "IKAYE": {
             "cleared_altitude": 14000,
@@ -3104,7 +3130,9 @@
             "handoff_controller": "6X",
             "sid": "HHERO3",
             "is_rnav": true,
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/ho DOLLF/a8000- MIKAA SNYPR HHERO FAYHE/a20000+ IKAYE RIZIN"
+            "waypoint_actions": {
+              "STREL": "ho"
+            }
           },
           "OROSZ": {
             "cleared_altitude": 14000,
@@ -3112,7 +3140,9 @@
             "handoff_controller": "6X",
             "sid": "HHERO3",
             "is_rnav": true,
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/ho DOLLF/a8000- MIKAA SNYPR HHERO CMINO/a20000+ RIDDL TWINE OROSZ"
+            "waypoint_actions": {
+              "STREL": "ho"
+            }
           },
           "EHF": {
             "cleared_altitude": 14000,
@@ -3120,7 +3150,9 @@
             "handoff_controller": "6X",
             "sid": "HHERO3",
             "is_rnav": true,
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/ho DOLLF/a8000- MIKAA SNYPR HHERO CMINO/a20000+ RIDDL LANDO EHF"
+            "waypoint_actions": {
+              "STREL": "ho"
+            }
           }
         },
         "2L": {
@@ -3362,15 +3394,48 @@
       },
       "departure_routes": {
         "21": {
-          "STOKD,SCTRR,CSTRO,COREZ,MISEN,LAS,HEC": {
+          "STOKD,SCTRR": {
             "cleared_altitude": 3000,
             "sid": "CTRUS4",
             "is_rnav": true
           },
-          "CLEEE,CNERY,TCATE,OTAYY": {
+          "IKAYE": {
+            "cleared_altitude": 3000,
+            "aircraft": ["turboprop"],
+            "sid": "CTRUS4",
+            "is_rnav": true
+          },
+          "CSTRO,COREZ": {
+            "cleared_altitude": 3000,
+            "sid": "CTRUS4",
+            "is_rnav": true
+          },
+          "MISEN,LAS,HEC": {
+            "cleared_altitude": 3000,
+            "aircraft": ["jet"],
+            "sid": "CTRUS4",
+            "is_rnav": true
+          },
+          "DAG.T,HEC.T": {
+            "cleared_altitude": 3000,
+            "aircraft": ["turboprop"],
+            "sid": "SMO3",
+            "is_rnav": true
+          },
+          "CLEEE,CNERY": {
             "cleared_altitude": 3000,
             "sid": "PEVEE6",
             "is_rnav": true
+          },
+          "TCATE,OTAYY": {
+            "cleared_altitude": 3000,
+            "sid": "PEVEE6",
+            "is_rnav": true
+          },
+          "SMO": {
+            "cleared_altitude": 3000,
+            "is_rnav": true,
+            "waypoints": "KSMO-3/h213/@LAX-R320/h260"
           }
         }
       },
@@ -3453,6 +3518,38 @@
           "exit": "OTAYY",
           "scratchpad": "PDT",
           "route": "PEVEE6 OTAYY TIJ J1 SQN UL312 SJD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            },
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "destination": "KCMA",
+          "exit": "SMO",
+          "scratchpad": "CMA",
+          "route": "SMO GINNA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            },
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "destination": "KOXR",
+          "exit": "SMO",
+          "scratchpad": "OXR",
+          "route": "SMO GINNA"
         }
       ],
       "exit_categories": {
@@ -3506,8 +3603,11 @@
             }
           ],
           "initial_altitude": 16000,
+          "assigned_altitude": 16000,
           "initial_controller": "C28",
           "initial_speed": 280,
+          "scratchpad": "ONT",
+          "secondary_scratchpad": "KRB",
           "waypoints": "N033.07.45.023,W118.44.33.962 GOATZ/a16000/s280/ho DIRBY PHUNN/a14000- SHHOW/a12000-  OLLLY/a9000+ KARLB/a8000- POXKU/a7000/s220 PDZ/a7000/delete"
         }
       ],
@@ -3517,6 +3617,7 @@
           "star": "GOATZ2",
           "is_rnav": true,
           "initial_altitude": 16000,
+          "cleared_altitude": 16000,
           "initial_controller": "C28",
           "initial_speed": 280,
           "airports": ["KLAX"],
@@ -6704,7 +6805,7 @@
         },
         {
           "boundaries": ["LAKER SECTOR AREA O"],
-          "lower": 8000,
+          "lower": 0,
           "upper": 13000
         },
         {
@@ -7332,6 +7433,11 @@
           "airport": "KSMO",
           "rate": 3,
           "runway": "21"
+        },
+        {
+          "airport": "KTOA",
+          "rate": 2,
+          "runway": "29R"
         }
       ],
       "wind": {
@@ -7431,6 +7537,11 @@
           "airport": "KSMO",
           "rate": 3,
           "runway": "21"
+        },
+        {
+          "airport": "KTOA",
+          "rate": 2,
+          "runway": "29R"
         }
       ],
       "wind": {

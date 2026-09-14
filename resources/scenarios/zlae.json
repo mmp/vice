@@ -2399,12 +2399,12 @@
           "AVRRY,MTBAL": {
             "cleared_altitude": 13000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000-/ho12 ARRDY/a13000+ PEELR MTBAL"
+            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/ho12 ARRDY/a13000+ PEELR MTBAL"
           },
           "OTAYY": {
             "cleared_altitude": 13000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000-/ho12 JUMPA RORBE OTAYY"
+            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/ho12 JUMPA RORBE OTAYY"
           },
           "COREZ": {
             "cleared_altitude": 14000,
@@ -2445,12 +2445,12 @@
           "AVRRY,MTBAL": {
             "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000-/ho12 ARRDY/a13000+ PEELR MTBAL"
+            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/ho12 ARRDY/a13000+ PEELR MTBAL"
           },
           "OTAYY": {
             "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000-/ho12 JUMPA RORBE OTAYY"
+            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/ho12 JUMPA RORBE OTAYY"
           },
           "GMN": {
             "cleared_altitude": 14000,
@@ -3234,25 +3234,25 @@
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/c7000/h180/@a5000+/ld/c17000 FRITR/a5000+/ho12/c13000 DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/ho21 DOTSS AREAE PEELR MTBAL AVRRY"
           },
           "CNERY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/c7000/h180/@a5000+/ld/c17000 FRITR/a5000+/ho12/c13000 DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/ho21 DOTSS WIILD BLCKD CSTWY CNERY"
           },
           "TCATE": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/c7000/h180/@a5000+/ld/c17000 FRITR/a5000+/ho12/c13000 DOTSS WIILD TCATE"
+            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/ho21 DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "assigned_altitude": 3000,
             "sid": "ZOOMM3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/c7000/h180/@a5000+/ld/c17000/ho21 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/ho21/@a7000+/ld CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           }
         },
         "12": {
@@ -3869,6 +3869,245 @@
           "route": "IKAYE TESEA SCTRR TROXX SILCN6"
         }
       ]
+    },
+    "KSBD": {
+      "approaches": {
+        "IZ6": {
+          "cifp_id": "I6"
+        },
+        "RY6": {
+          "cifp_id": "RY6"
+        },
+        "RX6": {
+          "cifp_id": "RX6"
+        },
+        "R24": {
+          "full_name": "RNAV Runway 24",
+          "runway": "24",
+          "type": "RNAV",
+          "waypoints": [
+            "PDZ/iaf ROLIE/if/a6000+ XONIA/a4500+/arc3.5CFXDC ADOVE/a4200+/arc3.5CFXDC/faf MAJRU/a3300+/arc3.5CFXDC MASPV/a1800",
+            "WELDR PESLE/iaf ROLIE/if/a6000+ XONIA/a4500+/arc3.5CFXDC ADOVE/a4200+/arc3.5CFXDC/faf MAJRU/a3300+/arc3.5CFXDC MASPV/a1800",
+            "ZIGGY PESLE/iaf ROLIE/if/a6000+ XONIA/a4500+/arc3.5CFXDC ADOVE/a4200+/arc3.5CFXDC/faf MAJRU/a3300+/arc3.5CFXDC MASPV/a1800",
+            "BANDS/iaf ELICA SENIK/arc4.0CFWWH ROLIE/if/a6000+ XONIA/a4500+/arc3.5CFXDC ADOVE/a4200+/arc3.5CFXDC/faf MAJRU/a3300+/arc3.5CFXDC MASPV/a1800"
+          ]
+        }
+      },
+      "departure_controller": "T3V",
+      "departure_routes": {
+        "6": {
+          "MTBAL": {
+            "cleared_altitude": 7000,
+            "sid": "JADKO2",
+            "waypoints": "KSBD-24/h057/@a2100+/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA/ho12 JADKO ARRDY/a13000+ PEELR MTBAL",
+            "is_rnav": true,
+            "aircraft": ["jet", "turboprop"]
+          },
+          "AVRRY": {
+            "cleared_altitude": 7000,
+            "sid": "JADKO2",
+            "waypoints": "KSBD-24/h057/@a2100+/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA/ho12 JADKO ARRDY/a13000+ PEELR MTBAL AVRRY",
+            "is_rnav": true,
+            "aircraft": ["jet", "turboprop"]
+          },
+          "SXC": {
+            "cleared_altitude": 7000,
+            "sid": "JADKO2",
+            "waypoints": "KSBD-24/h057/@a2100+/rd LOSOM/a5500+ STRKS/a6100-6900 ELICA/ho12 JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC",
+            "is_rnav": true,
+            "aircraft": ["jet", "turboprop"]
+          },
+          "POM": {
+            "assigned_altitude": 6000,
+            "sid": "Obstacle",
+            "waypoints": "KSBD-24/h057/@a1500+/rd PDZ POM"
+          }
+        },
+        "24": {
+          "MTBAL": {
+            "assigned_altitude": 4300,
+            "sid": "JADKO2",
+            "waypoints": "KSBD-6/h236/@crs153 PESLE ROLIE ELICA/ho12 JADKO ARRDY/a13000+ PEELR MTBAL",
+            "is_rnav": true,
+            "aircraft": ["jet", "turboprop"]
+          },
+          "AVRRY": {
+            "assigned_altitude": 4300,
+            "sid": "JADKO2",
+            "waypoints": "KSBD-6/h236/@crs153 PESLE ROLIE ELICA/ho12 JADKO ARRDY/a13000+ PEELR MTBAL AVRRY",
+            "is_rnav": true,
+            "aircraft": ["jet", "turboprop"]
+          },
+          "SXC": {
+            "assigned_altitude": 4300,
+            "sid": "JADKO2",
+            "waypoints": "KSBD-6/h236/@crs153 PESLE ROLIE ELICA/ho12 JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC",
+            "is_rnav": true,
+            "aircraft": ["jet", "turboprop"]
+          },
+          "POM": {
+            "assigned_altitude": 4300,
+            "sid": "Obstacle",
+            "waypoints": "KSBD-6/h237/@a1500+/ld PDZ POM"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "MXY",
+              "fleet": "long"
+            }
+          ],
+          "destination": "KSFO",
+          "exit": "POM",
+          "route": "POM GMN COREZ MAKRS SERFR SERFR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY",
+              "fleet": "long"
+            }
+          ],
+          "destination": "KPVU",
+          "exit": "AVRRY",
+          "route": "AVRRY CADEZ HAKMN Q73 WINEN JAMMN TAYTR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ATN"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "MTBAL",
+          "route": "MTBAL CNERY BLH SALOM J169 KOFFA J65 PXR KA21Q KA24U KF24A SPS TXK VLKNN THRSR BESTT JONZE7"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            }
+          ],
+          "destination": "KCVG",
+          "exit": "AVRRY",
+          "route": "AVRRY LANCY DRK CIM GCK BUM DAAVE SARGO4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            }
+          ],
+          "destination": "KSDF",
+          "exit": "AVRRY",
+          "route": "AVRRY LANCY J134 GUP BUM IMOUT MBELL5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ATN"
+            }
+          ],
+          "destination": "KSEA",
+          "exit": "POM",
+          "route": "POM GMN EHF SHIMR LKV HAWKZ8"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            }
+          ],
+          "destination": "PHNL",
+          "exit": "POM",
+          "route": "POM GMN COREZ MAKRS LIBBO BEBOP R464 BAART R464 BITTA MAGGI3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "POM",
+          "route": "POM GMN LIN RBL MACHU TMBRS4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            }
+          ],
+          "destination": "KIAH",
+          "exit": "MTBAL",
+          "route": "MTBAL CNERY BLH SPTFR Q4 FUSCO DIESL GUSHR3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FDX",
+              "fleet": "b763"
+            }
+          ],
+          "destination": "KMEM",
+          "exit": "AVRRY",
+          "route": "AVRRY LANCY DRK KA27Q KA27U KA27W KF27A KF27C KF27E PYRMD LITTR HOBRK4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SCX",
+              "fleet": "cargo"
+            }
+          ],
+          "destination": "KBOI",
+          "exit": "POM",
+          "route": "POM GMN EHF J5 SONNY RYANN NEERO SADYL4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SCX",
+              "fleet": "cargo"
+            }
+          ],
+          "destination": "KGEG",
+          "exit": "POM",
+          "route": "POM GMN EHF J5 FMG J7 GASSI EVANT ALW GEG"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SCX",
+              "fleet": "cargo"
+            }
+          ],
+          "destination": "KAUS",
+          "exit": "MTBAL",
+          "route": "MTBAL CNERY BLH SPTFR SSO PEQ Q4 FUSCO DILLO LAIKS4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SCX",
+              "fleet": "cargo"
+            }
+          ],
+          "destination": "KABQ",
+          "exit": "MTBAL",
+          "route": "MTBAL CNERY BLH ANGRY PXR TMALE BRRTO1"
+        }
+      ],
+      "hold_for_release": true,
+      "tower_list": 1
     }
   },
   "inbound_flows": {
@@ -5076,7 +5315,7 @@
     "LEGOZ4.ZIPRR": {
       "arrivals": [
         {
-          "waypoints": "YYUNG ZIPRR WURLL TCUPS/ho14 RUKKI SCANN/po21/hoT6K BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "YYUNG ZIPRR WURLL TCUPS/ho14 RUKKI/po21 SCANN/hoT6K BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "YYUNG ZIPRR LEGOZ4",
           "initial_controller": "25",
@@ -5667,6 +5906,11 @@
           "runway": "26R"
         },
         {
+          "airport": "KSBD",
+          "rate": 2,
+          "runway": "24"
+        },
+        {
           "airport": "KSNA",
           "rate": 12,
           "runway": "20R"
@@ -5801,6 +6045,11 @@
           "airport": "KONT",
           "rate": 7,
           "runway": "26R"
+        },
+        {
+          "airport": "KSBD",
+          "rate": 2,
+          "runway": "24"
         },
         {
           "airport": "KSNA",

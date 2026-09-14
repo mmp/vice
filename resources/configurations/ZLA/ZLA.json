@@ -190,13 +190,13 @@
     "configurations": {
       "14": {
         "inbound_assignments": {
-          "HUULL2": "14",
-          "RUKKI1/BAUBB3/LEGOZ4.ZIPRR": "14",
           "RYDRR2.ELKEY": "14",
           "RYDRR2.SNAXX": "14",
           "PITBL2": "14",
-          "SBP FIM.CNDOR ARR": "14",
-          "IRNMN2.14 & LEGOZ4.BURGL/REBRG": "14"
+          "IRNMN2.14 & LEGOZ4.BURGL/REBRG": "14",
+          "HUULL2 (14)": "14",
+          "RUKKI1/BAUBB3/LEGOZ4.ZIPRR (14)": "14",
+          "SBP FIM.CNDOR ARR (14)": "14"
         },
         "default_consolidation": {
           "14": []
@@ -249,6 +249,95 @@
         },
         "default_consolidation": {
           "21": ["22"]
+        }
+      },
+      "13": {
+        "inbound_assignments": {
+          "BURGL/REBRG STARS (13)": "13",
+          "ROKKR3/IVINS2/BONJO3": "13"
+        },
+        "default_consolidation": {
+          "13": []
+        }
+      },
+      "15": {
+        "inbound_assignments": {
+          "HUULL2 (15)": "15",
+          "RUKKI1/BAUBB3/LEGOZ4.ZIPRR (13/15)": "15",
+          "SBP FIM.CNDOR ARR (15)": "15",
+          "SBA YYUNG.GVO ARR": "15",
+          "SBA AVE.GVO ARR": "15",
+          "SBA REBRG.GVO ARR": "15"
+        },
+        "default_consolidation": {
+          "15": []
+        }
+      },
+      "3@5": {
+        "inbound_assignments": {
+          "BURGL/REBRG STARS (13)": "13",
+          "ROKKR3/IVINS2/BONJO3": "13",
+          "HUULL2 (15)": "15",
+          "RUKKI1/BAUBB3/LEGOZ4.ZIPRR (13/15)": "15",
+          "SBP FIM.CNDOR ARR (15)": "15",
+          "SBA YYUNG.GVO ARR": "15",
+          "SBA AVE.GVO ARR": "15",
+          "SBA REBRG.GVO ARR": "15"
+        },
+        "default_consolidation": {
+          "15": ["13"]
+        }
+      },
+      "04": {
+        "inbound_assignments": {
+          "LEGOZ4.LANDO": "04",
+          "WAYVE1.WRING": "04",
+          "WAYVE1.EHF": "04",
+          "WAYVE1.LHS": "04",
+          "WEESL1": "04"
+        },
+        "default_consolidation": {
+          "04": []
+        }
+      },
+      "17": {
+        "inbound_assignments": {
+          "JANNY5/GUERA2/BOGET2.PURSE": "17",
+          "JANNY5/GUERA2/BOGET2.WELUM": "17",
+          "JANNY5/GUERA2/BOGET2.KREME": "17",
+          "JANNY5/GUERA2/BOGET2.EED": "17",
+          "ZIGGY8.PMD": "17",
+          "ZIGGY8.HEC": "17",
+          "JCKIE2.MARUE": "17",
+          "JCKIE2.NATEE": "17",
+          "SIZLR4.CLASN": "17",
+          "SIZLR4.OYVEY": "17",
+          "LYNXX8.HEC": "17",
+          "FASTO2 (N)": "17",
+          "FASTO2 (E)": "17"
+        },
+        "default_consolidation": {
+          "17": []
+        }
+      },
+      "7@8": {
+        "inbound_assignments": {
+          "JANNY5/GUERA2/BOGET2.PURSE": "17",
+          "JANNY5/GUERA2/BOGET2.WELUM": "17",
+          "JANNY5/GUERA2/BOGET2.KREME": "17",
+          "JANNY5/GUERA2/BOGET2.EED": "17",
+          "ZIGGY8.PMD": "17",
+          "ZIGGY8.HEC": "17",
+          "JCKIE2.MARUE": "17",
+          "JCKIE2.NATEE": "17",
+          "SIZLR4.CLASN": "17",
+          "SIZLR4.OYVEY": "17",
+          "LYNXX8.HEC": "17",
+          "FASTO2 (N)": "17",
+          "FASTO2 (E)": "17"
+        },
+        "default_consolidation": {
+          "18": ["17"]
         }
       }
     },

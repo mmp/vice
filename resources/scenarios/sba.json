@@ -362,7 +362,7 @@
         "12": {
           "MQO": {
             "cleared_altitude": 5000,
-            "waypoints": "KSMX-30 N034.52.55.268,W120.25.57.751/arc0.78 N034.53.16.911,W120.25.32.098/h320"
+            "waypoints": "KSMX-30/h121/@a700+/h320"
           },
           "GVO": {
             "cleared_altitude": 5000,
@@ -388,7 +388,7 @@
         "30": {
           "MQO": {
             "cleared_altitude": 5000,
-            "waypoints": "KSMX-12/h302"
+            "waypoints": "KSMX-12/h301/@a700+/h302"
           },
           "GVO": {
             "cleared_altitude": 5000,
