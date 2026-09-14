@@ -1,5 +1,5 @@
 - New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn)
-- Scenario updates: PCT SHD, HCF, SCT, L30 (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt), CLT (Gus Agostinho), STL (Ryan H), MSP (Logan S, Shane)
+- Scenario updates: PCT SHD, HCF, SCT, L30 (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt), CLT (Gus Agostinho), STL (Ryan H), MSP (Logan S, Shane), ANC (Mike Fries)
 - Flight model improvements
   - "At FIX intercept the localizer" is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing
   - Added: `IFIX/RADIAL`: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)

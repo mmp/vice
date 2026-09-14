@@ -599,13 +599,14 @@
     }
   },
   "inbound_flows": {
-    "PTERS3": {
+    "PTERS": {
       "arrivals": [
         {
-          "waypoints": "PTERS/a16000+/ho SKENS/a13000-15000 MMMAT/a10000+ BBELL/a8000+ DDOUG/a8000 LMPEE/flyover/h329",
+          "spawn": "JOH",
+          "waypoint_actions": { "PTERS": "ho" },
           "star": "PTERS3",
           "initial_controller": "C07",
-          "initial_altitude": 20000,
+          "initial_altitude": 30000,
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["PANC"],
@@ -753,16 +754,16 @@
         }
       ]
     },
-    "KROTO5.ROHHN": {
+    "KROTO.15": {
       "arrivals": [
         {
-          "spawn": "ROHHN",
+          "spawn": "FFITZ@.715",
           "waypoint_actions": { "ROHHN": "ho" },
           "star": "KROTO5",
           "initial_controller": "C06",
-          "initial_altitude": 16000,
+          "initial_altitude": 22000,
           "initial_speed": 300,
-          "expect_approach": null,
+          "expect_approach": "I15",
           "airports": ["PANC"],
           "airlines": {
             "PANC": [
@@ -785,11 +786,7 @@
               }
             ]
           }
-        }
-      ]
-    },
-    "KROTO5.TKA": {
-      "arrivals": [
+        },
         {
           "spawn": "TKA",
           "waypoint_actions": { "TKA": "ho" },
@@ -797,7 +794,7 @@
           "initial_controller": "C06",
           "initial_altitude": 22000,
           "initial_speed": 300,
-          "expect_approach": null,
+          "expect_approach": "I15",
           "airports": ["PANC"],
           "airlines": {
             "PANC": [
@@ -819,17 +816,79 @@
         }
       ]
     },
-    "NEELL7": {
+    "KROTO.7": {
       "arrivals": [
         {
-          "spawn": "SNAAG",
-          "waypoint_actions": { "SNAAG": "ho" },
+          "spawn": "FFITZ@.715",
+          "waypoint_actions": { "ROHHN": "ho" },
+          "star": "KROTO5",
+          "initial_controller": "C06",
+          "initial_altitude": 22000,
+          "initial_speed": 300,
+          "expect_approach": "I7R",
+          "airports": ["PANC"],
+          "airlines": {
+            "PANC": [
+              {
+                "icao": "ASA",
+                "airport": "PAOT"
+              },
+              {
+                "icao": "QXE",
+                "fleet": "long",
+                "airport": "PAOT"
+              },
+              {
+                "icao": "ASA",
+                "airport": "PADG"
+              },
+              {
+                "icao": "ASA",
+                "airport": "PAOM"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "TKA",
+          "waypoint_actions": { "TKA": "ho" },
+          "star": "KROTO5",
+          "initial_controller": "C06",
+          "initial_altitude": 22000,
+          "initial_speed": 300,
+          "expect_approach": "I7R",
+          "airports": ["PANC"],
+          "airlines": {
+            "PANC": [
+              {
+                "icao": "ASA",
+                "airport": "PASC"
+              },
+              {
+                "icao": "QXE",
+                "fleet": "long",
+                "airport": "PAFA"
+              },
+              {
+                "icao": "ASA",
+                "airport": "PABR"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "NEELL.15": {
+      "arrivals": [
+        {
+          "spawn": "BTWEN",
+          "waypoint_actions": { "CKING": "ho" },
           "star": "NEELL7",
           "initial_controller": "C05",
-          "initial_altitude": 12000,
-          "assigned_altitude": 9000,
+          "initial_altitude": 28000,
+          "cleared_altitude": 5000,
           "initial_speed": 300,
-          "expect_approach": null,
+          "expect_approach": "I15",
           "airports": ["PANC"],
           "airlines": {
             "PANC": [
@@ -913,15 +972,110 @@
         }
       ]
     },
-    "WITTI5": {
+    "NEELL.7": {
       "arrivals": [
         {
-          "waypoints": "WITTI/a16000+/ho GAYLL/a12000-15000 HOPER/a8000+ SILTY/a5700+ ANDDI/a5000/s210",
-          "star": "WITTI5",
-          "initial_controller": "C07",
-          "initial_altitude": 22000,
+          "spawn": "BTWEN",
+          "waypoint_actions": { "SNAAG": "ho" },
+          "star": "NEELL7",
+          "initial_controller": "C05",
+          "initial_altitude": 24000,
+          "cleared_altitude": 2000,
           "initial_speed": 300,
-          "expect_approach": null,
+          "expect_approach": "I7R",
+          "airports": ["PANC"],
+          "airlines": {
+            "PANC": [
+              {
+                "icao": "ASA",
+                "airport": "PADK"
+              },
+              {
+                "icao": "CPA",
+                "fleet": "cargo",
+                "airport": "VHHH"
+              },
+              {
+                "icao": "UPS",
+                "fleet": "b747",
+                "airport": "VHHH"
+              },
+              {
+                "icao": "UPS",
+                "fleet": "b747",
+                "airport": "ZSPD"
+              },
+              {
+                "icao": "UPS",
+                "fleet": "b747",
+                "airport": "ZGSZ"
+              },
+              {
+                "icao": "FDX",
+                "fleet": "md11",
+                "airport": "RJBB"
+              },
+              {
+                "icao": "FDX",
+                "fleet": "md11",
+                "airport": "ZSPD"
+              },
+              {
+                "icao": "FDX",
+                "fleet": "b77l",
+                "airport": "RJBB"
+              },
+              {
+                "icao": "FDX",
+                "fleet": "b77l",
+                "airport": "ZSPD"
+              },
+              {
+                "icao": "FDX",
+                "fleet": "b77l",
+                "airport": "WSSS"
+              },
+              {
+                "icao": "CSN",
+                "fleet": "cargo",
+                "airport": "ZBAA"
+              },
+              {
+                "icao": "CAL",
+                "fleet": "cargo",
+                "airport": "RCTP"
+              },
+              {
+                "icao": "CAO",
+                "airport": "ZSPD"
+              },
+              {
+                "icao": "GTI",
+                "airport": "ZSPD"
+              },
+              {
+                "icao": "GTI",
+                "airport": "VHHH"
+              },
+              {
+                "icao": "GTI",
+                "airport": "RJAA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "WITTI": {
+      "arrivals": [
+        {
+          "spawn": "JOH@.5",
+          "star": "WITTI5",
+          "waypoint_actions": { "WITTI": "ho" },
+          "initial_controller": "C07",
+          "initial_altitude": 30000,
+          "initial_speed": 300,
+          "expect_approach": "I7R",
           "airports": ["PANC"],
           "airlines": {
             "PANC": [
@@ -1083,16 +1237,13 @@
         }
       ],
       "inbound_rates": {
-        "KROTO5.ROHHN": {
-          "PANC": 5
+        "KROTO.7": {
+          "PANC": 10
         },
-        "KROTO5.TKA": {
-          "PANC": 5
-        },
-        "NEELL7": {
+        "NEELL.7": {
           "PANC": 15
         },
-        "WITTI5": {
+        "WITTI": {
           "PANC": 10
         }
       },
@@ -1121,19 +1272,13 @@
         }
       ],
       "inbound_rates": {
-        "PTERS3": {
+        "KROTO.7": {
           "PANC": 10
         },
-        "KROTO5.ROHHN": {
-          "PANC": 5
-        },
-        "KROTO5.TKA": {
-          "PANC": 5
-        },
-        "NEELL7": {
+        "NEELL.7": {
           "PANC": 15
         },
-        "WITTI5": {
+        "WITTI": {
           "PANC": 10
         }
       },
@@ -1163,16 +1308,13 @@
         }
       ],
       "inbound_rates": {
-        "PTERS3": {
+        "PTERS": {
           "PANC": 20
         },
-        "KROTO5.ROHHN": {
-          "PANC": 5
+        "KROTO.15": {
+          "PANC": 10
         },
-        "KROTO5.TKA": {
-          "PANC": 5
-        },
-        "NEELL7": {
+        "NEELL.15": {
           "PANC": 15
         }
       },
@@ -1197,19 +1339,16 @@
         }
       ],
       "inbound_rates": {
-        "PTERS3": {
+        "PTERS": {
           "PANC": 10
         },
-        "KROTO5.ROHHN": {
-          "PANC": 5
+        "KROTO.15": {
+          "PANC": 10
         },
-        "KROTO5.TKA": {
-          "PANC": 5
-        },
-        "NEELL7": {
+        "NEELL.15": {
           "PANC": 15
         },
-        "WITTI5": {
+        "WITTI": {
           "PANC": 10
         }
       },

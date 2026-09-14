@@ -26,11 +26,12 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "KROTO5.ROHHN": "1N",
-          "KROTO5.TKA": "1N",
-          "NEELL7": "1S",
-          "PTERS3": "1N",
-          "WITTI5": "1S"
+          "KROTO.7": "1N",
+          "KROTO.15": "1N",
+          "NEELL.15": "1S",
+          "NEELL.7": "1S",
+          "PTERS": "1N",
+          "WITTI": "1S"
         },
         "departure_assignments": {
           "PANC": "1N",
