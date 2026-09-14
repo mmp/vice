@@ -4,7 +4,7 @@
     "KBVU": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 10
         }
       }
     },
@@ -185,7 +185,8 @@
         "26R": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -193,29 +194,39 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3"
+            "sid": "RATPK3",
+            "aircraft": "jet"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         },
         "26L": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -223,29 +234,47 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3"
+            "sid": "RATPK3",
+            "aircraft": "jet"
+          },
+          "MLF,DVC,BAVPE,DRK": {
+            "assigned_altitude": 7000,
+            "sid": "HOOVR8"
+          },
+          "HEC.M,TNP": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         },
         "8R": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -253,29 +282,47 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3"
+            "sid": "RATPK3",
+            "aircraft": "jet"
+          },
+          "MLF,DVC,BAVPE,DRK": {
+            "assigned_altitude": 7000,
+            "sid": "HOOVR8"
+          },
+          "HEC.M,TNP": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         },
         "8L": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -283,29 +330,47 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3"
+            "sid": "RATPK3",
+            "aircraft": "jet"
+          },
+          "MLF,DVC,BAVPE,DRK": {
+            "assigned_altitude": 7000,
+            "sid": "HOOVR8"
+          },
+          "HEC.M,TNP": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         },
         "8L.CFG2": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -313,29 +378,47 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK.8": {
             "cleared_altitude": 19000,
-            "sid": "FRNCK1"
+            "sid": "FRNCK1",
+            "aircraft": "jet"
+          },
+          "MLF,DVC,BAVPE,DRK": {
+            "assigned_altitude": 7000,
+            "sid": "HOOVR8"
+          },
+          "HEC.M,TNP": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         },
         "1R": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -343,29 +426,47 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3"
+            "sid": "RATPK3",
+            "aircraft": "jet"
+          },
+          "MLF,DVC,BAVPE,DRK": {
+            "assigned_altitude": 7000,
+            "sid": "HOOVR8"
+          },
+          "HEC.M,TNP": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         },
         "1L": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -373,59 +474,96 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3"
+            "sid": "RATPK3",
+            "aircraft": "jet"
+          },
+          "MLF,DVC,BAVPE,DRK": {
+            "assigned_altitude": 7000,
+            "sid": "HOOVR8"
+          },
+          "HEC.M,TNP": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         },
         "19R": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
-            "sid": "JOHKR5"
+            "sid": "JOHKR5",
+            "aircraft": "jet"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3"
+            "sid": "RATPK3",
+            "aircraft": "jet"
+          },
+          "MLF,DVC,BAVPE,DRK": {
+            "assigned_altitude": 7000,
+            "sid": "HOOVR8"
+          },
+          "HEC.M,TNP": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         },
         "19L": {
           "VERKN,TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT4"
+            "sid": "GIDGT4",
+            "aircraft": "jet"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -433,23 +571,40 @@
           },
           "JAYSN": {
             "cleared_altitude": 14000,
-            "sid": "LOHLA3"
+            "sid": "LOHLA3",
+            "aircraft": "jet"
           },
           "HOCEE,SSKEE": {
             "cleared_altitude": 19000,
-            "sid": "NIITZ4"
+            "sid": "NIITZ4",
+            "aircraft": "jet"
           },
           "HEC,SLVRR,LVELL,BLAQQ": {
             "cleared_altitude": 19000,
-            "sid": "RADYR2"
+            "sid": "RADYR2",
+            "aircraft": "jet"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
-            "sid": "RASLR3"
+            "sid": "RASLR3",
+            "aircraft": "jet"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
-            "sid": "RATPK3"
+            "sid": "RATPK3",
+            "aircraft": "jet"
+          },
+          "MLF,DVC,BAVPE,DRK": {
+            "assigned_altitude": 7000,
+            "sid": "HOOVR8"
+          },
+          "HEC.M,TNP": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
+          },
+          "LIDAT": {
+            "assigned_altitude": 7000,
+            "sid": "MCCRN8"
           }
         }
       },
@@ -1226,7 +1381,7 @@
     "KHND": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "rate": 10
         }
       },
       "approaches": {
@@ -1266,23 +1421,35 @@
       },
       "departure_routes": {
         "35L": {
-          "KENNO,SLVRR,JOTNU,BLH,BOJAC": {
+          "HEC,SLVRR,LVELL,BLH,BOJAC,BLAQQ": {
+            "cleared_altitude": 7000,
+            "sid": "OYODA2",
+            "aircraft": "jet"
+          },
+          "KENNO": {
             "cleared_altitude": 7000,
             "sid": "OYODA2"
           },
-          "RATPK,GEEOO,NICLE,PGA,HOCEE,IWANS,ZAYNE": {
+          "FRNCK,VERKN,TUKRR,PGA,HOCEE,SSKEE,ZAYNE": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4"
+            "sid": "SCAMR4",
+            "aircraft": "jet"
           }
         },
         "17R": {
-          "KENNO,SLVRR,JOTNU,BLH,BOJAC": {
+          "HEC,SLVRR,LVELL,BLH,BOJAC,BLAQQ": {
+            "cleared_altitude": 7000,
+            "sid": "OYODA2",
+            "aircraft": "jet"
+          },
+          "KENNO": {
             "cleared_altitude": 7000,
             "sid": "OYODA2"
           },
-          "RATPK,GEEOO,NICLE,PGA,HOCEE,IWANS,ZAYNE": {
+          "FRNCK,VERKN,TUKRR,PGA,HOCEE,SSKEE,ZAYNE": {
             "cleared_altitude": 7000,
-            "sid": "SCAMR4"
+            "sid": "SCAMR4",
+            "aircraft": "jet"
           }
         }
       },
@@ -1320,8 +1487,8 @@
           ],
           "altitude": 33000,
           "destination": "KTEB",
-          "route": "NICLE TUKRR",
-          "exit": "NICLE"
+          "route": "TUKRR",
+          "exit": "TUKRR"
         },
         {
           "airlines": [
@@ -1332,8 +1499,8 @@
           ],
           "altitude": 33000,
           "destination": "KFLL",
-          "route": "IWANS SSKEE",
-          "exit": "IWANS"
+          "route": "SSKEE",
+          "exit": "SSKEE"
         },
         {
           "airlines": [
@@ -1348,13 +1515,6 @@
           "exit": "ZAYNE"
         }
       ],
-      "exit_categories": {
-        "KENNO": "North",
-        "NICLE": "Northeast",
-        "ZAYNE": "South",
-        "IWANS": "East",
-        "SLVRR": "West"
-      },
       "tower_list": 1,
       "hold_for_release": true
     },
@@ -1369,7 +1529,7 @@
       },
       "vfr": {
         "random_routes": {
-          "rate": 10
+          "rate": 15
         },
         "routes": [
           {
@@ -1385,8 +1545,7 @@
         "7": {
           "LAS": {
             "cleared_altitude": 7000,
-            "sid": "NOTWN5",
-            "waypoints": "N036.12.49.303,W115.10.48.165/flyover N036.12.20.547,W115.15.23.400.a3700+ RUZCO/a5000+/flyover/arc4.5 N036.15.19.555,W115.15.35.870 LAS"
+            "sid": "NOTWN5"
           },
           "BLD": {
             "cleared_altitude": 7000,
@@ -1525,7 +1684,7 @@
           "initial_controller": "C07",
           "initial_altitude": 15000,
           "initial_speed": 250,
-          "scratchpad": "BOG",
+          "secondary_scratchpad": "BOG",
           "expect_approach": null,
           "airports": ["KHND"],
           "airlines": {
@@ -1854,6 +2013,7 @@
           "initial_controller": "C16",
           "initial_altitude": 14000,
           "initial_speed": 250,
+          "scratchpad": "GAM",
           "expect_approach": null,
           "airports": ["KVGT"],
           "airlines": {
@@ -1907,6 +2067,7 @@
           "initial_controller": "C16",
           "initial_altitude": 17000,
           "initial_speed": 280,
+          "scratchpad": "GAM",
           "expect_approach": null,
           "airports": ["KHND"],
           "airlines": {
@@ -1957,6 +2118,7 @@
           "initial_controller": "11L",
           "initial_altitude": 15000,
           "initial_speed": 280,
+          "scratchpad": "JSN",
           "expect_approach": null,
           "airports": ["KLAS"],
           "airlines": {
@@ -1995,6 +2157,7 @@
           "waypoints": "BYRDY JAYSN/a19000- WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 ROAMN/a8000/s210",
           "cruise_altitude": 19000,
           "star": "JAYSN3",
+          "scratchpad": "JSN",
           "initial_controller": "11L",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -2039,6 +2202,7 @@
           "initial_controller": "11L",
           "initial_altitude": 15000,
           "initial_speed": 280,
+          "scratchpad": "JSN",
           "expect_approach": "RY9R",
           "airports": ["KLAS"],
           "airlines": {
@@ -2080,6 +2244,7 @@
           "initial_controller": "11L",
           "initial_altitude": 15000,
           "initial_speed": 280,
+          "scratchpad": "JSN",
           "expect_approach": null,
           "airports": ["KLAS"],
           "airlines": {
@@ -2102,7 +2267,7 @@
           "initial_controller": "C08",
           "initial_altitude": 15000,
           "initial_speed": 280,
-          "scratchpad": "NTN",
+          "secondary_scratchpad": "NTN",
           "expect_approach": null,
           "airports": ["KVGT"],
           "airlines": {
@@ -2131,6 +2296,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
+          "secondary_scratchpad": "NTN",
           "airports": ["KHND"],
           "airlines": {
             "KHND": [
@@ -2249,6 +2415,7 @@
           "initial_controller": "C08",
           "initial_altitude": 25000,
           "initial_speed": 280,
+          "scratchpad": "RKS",
           "expect_approach": null,
           "airports": ["KLAS"],
           "airlines": {
@@ -2366,6 +2533,7 @@
           "initial_controller": "C06",
           "initial_altitude": 22000,
           "initial_speed": 280,
+          "scratchpad": "RDZ",
           "expect_approach": null,
           "airports": ["KLAS"],
           "airlines": {
@@ -4828,24 +4996,21 @@
         "WYLND1": {
           "KVGT": 1
         },
-        "FLCHR1": {
-          "KVGT": 1
-        },
         "BOEGY2": {
           "KHND": 1
         }
       },
       "configuration": "1XX",
-      "default_maps": ["281 BM1M L30", "059 LSV L30"],
+      "default_maps": ["281 BM1M L30", "427 DPWP_B1 L30"],
       "departure_runways": [
         {
           "airport": "KLAS",
-          "rate": 10,
+          "rate": 20,
           "runway": "26R"
         },
         {
           "airport": "KLAS",
-          "rate": 10,
+          "rate": 5,
           "runway": "19L"
         },
         {
@@ -4938,24 +5103,21 @@
         "WYLND1": {
           "KVGT": 1
         },
-        "FLCHR1": {
-          "KVGT": 1
-        },
         "BOEGY2": {
           "KHND": 1
         }
       },
       "configuration": "2XX",
-      "default_maps": ["282 BM2M L30", "059 LSV L30"],
+      "default_maps": ["282 BM2M L30", "427 DPWP_B1 L30"],
       "departure_runways": [
         {
           "airport": "KLAS",
-          "rate": 15,
+          "rate": 20,
           "runway": "8L.CFG2"
         },
         {
           "airport": "KLAS",
-          "rate": 10,
+          "rate": 5,
           "runway": "1R"
         },
         {
@@ -5033,15 +5195,12 @@
         "WYLND1": {
           "KVGT": 1
         },
-        "FLCHR1": {
-          "KVGT": 1
-        },
         "BOEGY2": {
           "KHND": 1
         }
       },
       "configuration": "3XX",
-      "default_maps": ["283 BM3M L30", "059 LSV L30"],
+      "default_maps": ["283 BM3M L30", "427 DPWP_B1 L30"],
       "departure_runways": [
         {
           "airport": "KLAS",
@@ -5137,19 +5296,16 @@
         "WYLND1": {
           "KVGT": 1
         },
-        "FLCHR1": {
-          "KVGT": 1
-        },
         "BOEGY2": {
           "KHND": 1
         }
       },
       "configuration": "4XX",
-      "default_maps": ["284 BM4M L30", "059 LSV L30"],
+      "default_maps": ["284 BM4M L30", "427 DPWP_B1 L30"],
       "departure_runways": [
         {
           "airport": "KLAS",
-          "rate": 12,
+          "rate": 20,
           "runway": "8L"
         },
         {

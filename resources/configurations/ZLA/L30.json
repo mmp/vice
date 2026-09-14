@@ -63,7 +63,6 @@
           "BOEGY2": "1L",
           "CHOWW4": "1L",
           "COKTL4": "1G",
-          "FLCHR1": "1G",
           "GAMES2": "1G",
           "JAYSN3.19": "1T",
           "NTNDO1": "1Y",
@@ -80,11 +79,15 @@
           "KLAS/RADYR2": "1D",
           "KLAS/RASLR3": "1D",
           "KLAS/RATPK3": "1M",
+          "KLAS/HOOVR8": "1D",
+          "KLAS/MCCRN8": "1D",
           "KVGT": "1M"
         },
         "default_consolidation": {
-          "1D": ["1M", "1Y"],
-          "1F": ["1D", "1G", "1L", "1T"],
+          "1F": ["1D"],
+          "1D": ["1M", "1Y", "1G"],
+          "1G": ["1T"],
+          "1M": ["1L"],
           "1L": ["1K"]
         }
       },
@@ -93,7 +96,6 @@
           "BOEGY2": "1M",
           "CHOWW4": "1L",
           "COKTL4": "1G",
-          "FLCHR1": "1G",
           "GAMES2": "1G",
           "JAYSN3.1": "1G",
           "NTNDO1": "1Y",
@@ -111,12 +113,14 @@
           "KLAS/RADYR2": "1D",
           "KLAS/RASLR3": "1M",
           "KLAS/RATPK3": "1M",
+          "KLAS/HOOVR8": "1M",
+          "KLAS/MCCRN8": "1D",
           "KVGT": "1M"
         },
         "default_consolidation": {
-          "1D": ["1M", "1Y"],
-          "1F": ["1D", "1G", "1L", "1T"],
-          "1L": ["1K"]
+          "1F": ["1D"],
+          "1D": ["1M", "1Y", "1G"],
+          "1M": ["1K", "1T", "1L"]
         }
       },
       "3XX": {
@@ -124,7 +128,6 @@
           "BOEGY2": "1L",
           "CHOWW4": "1K",
           "COKTL4": "1G",
-          "FLCHR1": "1G",
           "GAMES2": "1G",
           "JAYSN3.1": "1G",
           "NTNDO1": "1Y",
@@ -134,12 +137,23 @@
         },
         "departure_assignments": {
           "KHND": "1Y",
-          "KLAS": "1D",
+          "KLAS/RADYR2": "1D",
+          "KLAS/JOHKR5": "1D",
+          "KLAS/MCCRN8": "1D",
+          "KLAS/LOHLA3": "1D",
+          "KLAS/RATPK3": "1M",
+          "KLAS/GIDGT4": "1M",
+          "KLAS/NIITZ4": "1M",
+          "KLAS/RASLR3": "1M",
+          "KLAS/HOOVR8": "1M",
           "KVGT": "1D"
         },
         "default_consolidation": {
-          "1D": ["1M"],
-          "1F": ["1D", "1G", "1K", "1L", "1T", "1Y"]
+          "1F": ["1D"],
+          "1D": ["1M", "1Y", "1G"],
+          "1M": ["1L"],
+          "1G": ["1T"],
+          "1L": ["1K"]
         }
       },
       "4XX": {
@@ -147,7 +161,6 @@
           "BOEGY2": "1L",
           "CHOWW4": "1L",
           "COKTL4": "1G",
-          "FLCHR1": "1G",
           "GAMES2": "1G",
           "JAYSN3.19": "1T",
           "NTNDO1": "1Y",
@@ -157,12 +170,23 @@
         },
         "departure_assignments": {
           "KHND": "1Y",
-          "KLAS": "1D",
+          "KLAS/RATPK3": "1D",
+          "KLAS/RADYR2": "1D",
+          "KLAS/JOHKR5": "1D",
+          "KLAS/LOHLA3": "1D",
+          "KLAS/MCCRN8": "1D",
+          "KLAS/GIDGT4": "1M",
+          "KLAS/NIITZ4": "1M",
+          "KLAS/RASLR3": "1M",
+          "KLAS/HOOVR8": "1M",
           "KVGT": "1D"
         },
         "default_consolidation": {
-          "1D": ["1M"],
-          "1F": ["1D", "1G", "1K", "1L", "1T", "1Y"]
+          "1F": ["1D"],
+          "1D": ["1M", "1Y", "1G"],
+          "1M": ["1L"],
+          "1G": ["1T"],
+          "1L": ["1K"]
         }
       }
     },
@@ -242,7 +266,14 @@
       "ZAYNE": "RSL",
       "FRNCK": "RAT",
       "LAS": "LAS",
-      "BLD": "BLD"
+      "BLD": "BLD",
+      "DVC": "HVG",
+      "BAVPE": "HVC",
+      "DRK": "HVS",
+      "MLF": "HVR",
+      "HEC.M": "MCH",
+      "LIDAT": "MCJ",
+      "TNP": "MCG"
     },
     "significant_points": {
       "BLH": {},
@@ -264,7 +295,7 @@
       "VERKN": {},
       "ZAYNE": {}
     },
-    "video_map_file": "videomaps/ZLA-stars.mappack",
+    "video_map_file": "videomaps/ZLA-L30.mappack",
     "airspace_awareness": [
       {
         "fixes": ["FRNCK", "TUKRR", "VERKN"],
