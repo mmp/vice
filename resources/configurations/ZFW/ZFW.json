@@ -404,6 +404,24 @@
           "LIT-WADAT": "50",
           "CRUSR-MEMFS": "50"
         }
+      },
+      "C48": {
+        "default_consolidation": {
+          "48": []
+        },
+        "inbound_assignments": {
+          "West-East 1": "48",
+          "West-East 2": "48",
+          "East-West 1": "48",
+          "East-West 2": "48",
+          "South-North 1": "48",
+          "South-North 2": "48",
+          "AKUNA9-MLC": "48",
+          "BLECO8-TUL": "48",
+          "GRABE8-EAKER": "48",
+          "LOWGN8-ROLLS": "48",
+          "BLECO8-TSDEL3": "48"
+        }
       }
     },
     "center": "N033.06.15.595,W097.23.57.808",
