@@ -1,78 +1,190 @@
 {
   "control_positions": {
     "2J": {
-      "callsign": "SEA_TWR",
+      "callsign": "SEA Local Control West",
       "frequency": 119900,
-      "radio_name": "Seattle West Tower"
+      "radio_name": "Seattle Tower"
     },
     "2A": {
-      "callsign": "SEA_1_TWR",
+      "callsign": "SEA Local Control East",
       "frequency": 119900,
-      "radio_name": "Seattle East Tower",
+      "radio_name": "Seattle Tower",
       "scope_char": "T"
     },
+    "2T": {
+      "callsign": "PAE Local Control",
+      "frequency": 132950,
+      "radio_name": "Paine Tower"
+    },
     "2B": {
-      "callsign": "BFI_TWR",
+      "callsign": "BFI Local Control",
       "frequency": 118300,
-      "radio_name": "Boeing Field Tower"
+      "radio_name": "Boeing Tower"
     },
     "1W": {
-      "callsign": "SEA_W_APP",
+      "callsign": "Arrival West (Feeder)",
       "frequency": 125600,
       "radio_name": "Seattle Approach"
     },
     "1E": {
-      "callsign": "SEA_E_APP",
+      "callsign": "Arrival East (Feeder)",
       "frequency": 123900,
       "radio_name": "Seattle Approach"
     },
     "1F": {
-      "callsign": "SEA_F_APP",
+      "callsign": "Final",
       "frequency": 133650,
       "radio_name": "Seattle Approach"
     },
     "1Y": {
-      "callsign": "SEA_Y_APP",
+      "callsign": "Departure West",
       "frequency": 120400,
       "radio_name": "Seattle Approach"
     },
+    "1N": {
+      "callsign": "Satellite McChord (TCM)",
+      "frequency": 126500,
+      "radio_name": "Seattle Approach"
+    },
     "1A": {
-      "callsign": "SEA_A_APP",
-      "frequency": 126150,
+      "callsign": "Departure East",
+      "frequency": 119200,
+      "radio_name": "Seattle Approach"
+    },
+    "1P": {
+      "callsign": "Satellite Paine (PAE)",
+      "frequency": 128500,
+      "radio_name": "Seattle Approach"
+    },
+    "1O": {
+      "callsign": "Arrival O Boeing (BFI) North Flow",
+      "frequency": 125900,
+      "radio_name": "Seattle Approach"
+    },
+    "1D": {
+      "callsign": "Arrival D Boeing (BFI) South Flow",
+      "frequency": 125900,
+      "radio_name": "Seattle Approach"
+    },
+    "1K": {
+      "callsign": "Satellite Bremerton (PWT)",
+      "frequency": 127100,
       "radio_name": "Seattle Approach"
     }
   },
   "facility_adaptations": {
-    "lists": { "ssa": { "system_altimeter": "KSEA" } },
+    "airspace_awareness": [
+      {
+        "fixes": ["MCKEN", "OZEYO", "CETRA", "TONNO", "LACEE", "ARVAD"],
+        "receiving_controller": "S04"
+      },
+      {
+        "fixes": ["SUMMA", "BUWZO"],
+        "receiving_controller": "S32"
+      },
+      {
+        "fixes": ["BANGR", "ARRIE", "PANGL"],
+        "receiving_controller": "S03"
+      },
+      {
+        "fixes": ["ELMAA", "HAROB"],
+        "receiving_controller": "S02"
+      },
+      {
+        "fixes": ["CASHS", "STEVS", "ZELAK", "NORMY"],
+        "receiving_controller": "S31"
+      },
+      {
+        "fixes": ["BANDR"],
+        "receiving_controller": "S01"
+      },
+      {
+        "fixes": ["ALPSE", "PAE"],
+        "receiving_controller": "S12"
+      }
+    ],
     "configurations": {
-      "STD": {
+      "1": {
         "inbound_assignments": {
-          "CHINS5North": "1W",
-          "CHINS5South": "1W",
-          "GLASR2North": "1W",
-          "GLASR2South": "1W",
-          "HAWKZ7North": "1E",
-          "HAWKZ7South": "1E",
-          "JAWBN6North": "1E",
-          "JAWBN6South": "1E",
-          "MARNR7North": "1E",
-          "MARNR7South": "1E",
-          "OLM2North": "1E",
-          "OLM2South": "1E",
-          "SKYKO1North": "1W",
-          "SKYKO1South": "1W"
+          "CHINS.S": "1E",
+          "CVV": "1D",
+          "GLASR.S": "1E",
+          "HAWKZ/OLM.S": "1W",
+          "MARNR/JAWBN.S": "1W",
+          "SKYKO": "1E",
+          "Props NW": "1W",
+          "DEVYN": "1E"
         },
         "departure_assignments": {
-          "KSEA": "1W"
+          "KBFI": "1A",
+          "KRNT": "1A",
+          "KSEA": "1Y",
+          "KPAE": "1P"
+        },
+        "go_around_assignments": {
+          "KSEA": "1Y"
         },
         "default_consolidation": {
-          "1W": ["1E"]
+          "1N": ["1W", "1Y", "1K"],
+          "1W": ["1E", "1F", "1D"],
+          "1Y": ["1A", "1P"],
+          "1E": ["1O"]
+        }
+      },
+      "2": {
+        "inbound_assignments": {
+          "CHINS.N": "1E",
+          "CVV": "1Y",
+          "GLASR.N": "1E",
+          "HAWKZ/OLM.N": "1W",
+          "MARNR/JAWBN.N": "1W",
+          "SKYKO": "1E",
+          "Props NW": "1W",
+          "DEVYN": "1E"
+        },
+        "departure_assignments": {
+          "KBFI": "1Y",
+          "KRNT": "1A",
+          "KSEA": "1Y",
+          "KPAE": "1P"
+        },
+        "go_around_assignments": {
+          "KSEA": "1Y"
+        },
+        "default_consolidation": {
+          "1N": ["1W", "1Y", "1K"],
+          "1W": ["1E", "1F", "1D"],
+          "1Y": ["1A", "1P"],
+          "1E": ["1O"]
+        }
+      },
+      "3": {
+        "inbound_assignments": {
+          "CHINS.N": "1E",
+          "CVV": "1W",
+          "GLASR.N": "1E",
+          "HAWKZ/OLM.N": "1W",
+          "MARNR/JAWBN.N": "1W",
+          "SKYKO": "1E"
+        },
+        "departure_assignments": {
+          "KSEA": "1Y",
+          "KBFI": "1Y"
+        },
+        "go_around_assignments": {
+          "KSEA": "1Y"
+        },
+        "default_consolidation": {
+          "1N": ["1W", "1Y", "1K"],
+          "1W": ["1E", "1F", "1D"],
+          "1Y": ["1A", "1P"],
+          "1E": ["1O"]
         }
       }
     },
     "center": "KSEA",
     "radar_sites": {
-      "SEA": {
+      "S46": {
         "char": "R",
         "position": "47.45133,-122.32273",
         "elevation": 654,
@@ -81,7 +193,7 @@
         "silence_angle": 15,
         "slope_angle": 0.3
       },
-      "SEA2": {
+      "SEA": {
         "char": "S",
         "position": "47.65766,-122.41305",
         "elevation": 577,
@@ -100,44 +212,308 @@
         "slope_angle": 0.3
       }
     },
-    "scratchpads": {
-      "HQM": "HQM",
-      "YYJ": "YYJ",
-      "CVO": "CVO",
-      "YDC": "YDC",
-      "PAE": "PAE",
-      "EPH": "EPH",
-      "GEG": "GEG",
-      "MLP": "MLP",
-      "MWH": "MWH",
-      "ELN": "ELN",
-      "SEA": "SEA",
-      "OLM": "OLM",
-      "EUG": "EUG",
-      "BTG": "BTG",
-      "UGB": "UGB",
-      "AST": "AST",
-      "TOU": "TOU",
-      "YVR": "YVR",
-      "HUH": "HUH",
-      "PDT": "PDT",
-      "LTJ": "LTJ",
-      "BKE": "BKE",
-      "LKV": "LKV",
-      "SUMMA": "SMA",
-      "BANGR": "BGR",
-      "HAROB": "HRB",
-      "ELMAA": "ELM",
-      "MONTN": "MTN",
-      "ISBRG": "IBG",
-      "JEFPO": "JFO",
-      "OZWLD": "OWD",
-      "ARRIE": "ARE"
+    "datablocks": {
+      "scratchpad1": {
+        "display_exit_gate": true
+      }
+    },
+    "filters": {
+      "fdam": [
+        {
+          "id": "FDAMSE1",
+          "description": "CHINS LDR",
+          "type": "circle",
+          "center": "KSEA",
+          "radius": 60,
+          "floor": 0,
+          "ceiling": 60000,
+          "entry_fix": "HUM",
+          "owning_tcp": "1E,1N",
+          "new_owner_leader_direction": "E"
+        },
+        {
+          "id": "FDAMNE1",
+          "description": "GLASR LDR",
+          "type": "circle",
+          "center": "KSEA",
+          "radius": 60,
+          "floor": 0,
+          "ceiling": 60000,
+          "entry_fix": "GLA",
+          "owning_tcp": "1E,1N",
+          "new_owner_leader_direction": "E"
+        },
+        {
+          "id": "FDAMSW1",
+          "description": "HAWKZ LDR",
+          "type": "circle",
+          "center": "KSEA",
+          "radius": 60,
+          "floor": 0,
+          "ceiling": 60000,
+          "secondary_scratchpad": "HWK,MRN",
+          "owning_tcp": "1W,1N",
+          "new_owner_leader_direction": "W"
+        }
+      ]
+    },
+    "airports": {
+      "SEA": {},
+      "BFI": {},
+      "RNT": {}
+    },
+    "automatic_scratchpad_assignment": [
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "CAS",
+        "altitude": "*",
+        "scratchpad1": "NOC",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "BGR",
+        "altitude": "*",
+        "scratchpad1": "YFM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "HAR",
+        "altitude": "*",
+        "scratchpad1": "ZFM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "STE",
+        "altitude": "*",
+        "scratchpad1": "NOS",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "ZEL",
+        "altitude": "*",
+        "scratchpad1": "ZAD",
+        "flight_type": "P"
+      }
+    ],
+    "fix_pair_configuration": {
+      "plans": {
+        "2": "SEAN",
+        "1": "SEAS"
+      },
+      "fix_pair_assignments": {
+        "arrival": [],
+        "departure": [
+          {
+            "fix_pair": ["SEA", "ARR"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "PAN"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "ERA"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "FEP"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "HIS"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "YYJ"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "HQM"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "CVO"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "GEG"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "MLP"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "MWH"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "MOD"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "CAS"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "NOR"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "ZEL"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "BAN"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "PAE"],
+            "tcp": {
+              "2": "1A",
+              "1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "ALP"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "EPH"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "YDC"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "YVR"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "TOU"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "AST"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "BTG"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "UBG"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "YKM"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "EUG"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "ELN"],
+            "tcp": {
+              "2,1": "1A"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "BUW"],
+            "tcp": {
+              "2,1": "1Y"
+            }
+          },
+          {
+            "fix_pair": ["SEA", "SUM"],
+            "tcp": {
+              "1": "1Y",
+              "2": "1A"
+            }
+          }
+        ],
+        "overflight": []
+      }
     },
     "significant_points": {
-      "ARRIE": {
-        "short_name": "ARE"
+      "ALPSE": {
+        "abbreviation": "J"
       },
+      "ARRIE": {
+        "abbreviation": "Y"
+      },
+      "MARNR": {},
+      "JAWBN": {},
+      "RADDY": {},
+      "TONNO": {
+        "abbreviation": "L"
+      },
+      "KRIEG": {},
+      "JAKSN": {},
+      "SKYKO": {},
       "AST": {},
       "BANGR": {
         "short_name": "BGR"
@@ -145,134 +521,94 @@
       "BKE": {},
       "BTG": {},
       "CVO": {},
-      "ELMAA": {},
+      "PANGL": {},
+      "PERLL": {
+        "abbreviation": "Y"
+      },
+      "BUWZO": {
+        "abbreviation": "Q"
+      },
+      "ELMAA": {
+        "abbreviation": "Z"
+      },
       "ELN": {},
       "EPH": {},
       "EUG": {},
+      "FEPOT": {},
       "GEG": {},
-      "HAROB": {
-        "short_name": "HRB"
-      },
+      "GLASR": {},
+      "HUMPP": {},
+      "LIINE": {},
+      "HUVUS": {},
+      "LACEE": {},
+      "ALDER": {},
+      "DIGGN": {},
+      "HAROB": {},
       "HQM": {},
-      "HUH": {},
-      "ISBRG": {
-        "short_name": "IBG"
-      },
-      "JEFPO": {
-        "short_name": "JFO"
-      },
+      "HISKU": {},
+      "ISBRG": {},
+      "JEFPO": {},
       "LKV": {},
       "LTJ": {},
       "MLP": {},
       "MWH": {},
+      "ERAVE": {},
+      "ZELAK": {},
+      "MODDA": {},
+      "STEVS": {},
+      "CASHS": {},
       "OLM": {},
-      "OZWLD": {
-        "short_name": "OWD"
-      },
+      "OZWLD": {},
       "PAE": {},
       "PDT": {},
-      "SEA": {},
+      "MCKEN": {
+        "abbreviation": "F"
+      },
+      "NORMY": {
+        "abbreviation": "T"
+      },
       "SUMMA": {
-        "short_name": "SMA"
+        "abbreviation": "A"
       },
       "TOU": {},
+      "BANDR": {
+        "abbreviation": "M"
+      },
+      "UBG": {},
+      "YKM": {},
       "YDC": {},
       "YVR": {},
-      "YYJ": {}
+      "YYJ": {},
+      "OZEYO": {
+        "abbreviation": "I"
+      },
+      "CETRA": {
+        "abbreviation": "U"
+      }
     },
     "video_map_file": "videomaps/ZSE-S46.mappack",
-    "coordination_fixes": {
-      "HUMPP": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "GLASR": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "LIINE": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "DIGGN": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "MARNR": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "LACEE": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "HUVUS": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ]
-    },
     "areas": {
       "1": {
         "video_maps": [
-          "S46 EOVM",
-          "GPS",
+          "SFLOW",
+          "NFLOW",
           "CLASS B",
+          "S46 EOVM",
+          "",
           "MVA FUS 3NM",
-          "S46 AIRWAYS",
-          "ZSE BOUNDARIES",
-          "VISUAL SOUTH",
-          "SF _AY",
-          "SF _PD",
-          "SF EWF",
-          "SF _F",
-          "SF _NK",
-          "SF _K",
-          "RNP SOUTH NO NAMES",
+          "BASE MAP 1",
+          "BASE MAP 2",
           "16R",
+          "16C",
           "16L",
-          "BNDRY",
-          "BFI 14R FINAL",
-          "BFI RNAV 14",
-          "P51",
-          "SOUTH SHORELINE",
-          "VISUAL NORTH",
-          "NF AY",
-          "NF _P",
-          "NF EWD",
-          "NF _F",
-          "NF _NK",
-          "NF _K",
-          "RNP NORTH NO NAMES",
           "34L",
-          "34R",
-          "SAT FINALS",
-          "BFI 32L FINAL",
-          "BFI RNAV 32",
-          "S46 Class D",
-          "NORTH SHORELINE"
+          "34C",
+          "34R"
         ]
       }
+    },
+    "lists": {
+      "ssa": { "system_altimeter": "KSEA", "altimeters": ["KSEA"] }
     }
   },
   "handoff_ids": [
@@ -282,7 +618,7 @@
     },
     {
       "id": "ZSE",
-      "prefix": "C"
+      "prefix": "S"
     }
   ]
 }
