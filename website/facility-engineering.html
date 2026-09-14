@@ -4674,13 +4674,7 @@
                       climb no higher than the altitude given.</td>
                   </tr>
                   <tr>
-                    <td>"departure_controller"</td>
-                    <td>String</td>
-                    <td>(<i>Optional</i>) A string indicating which controller should initially control the aircraft. Controller must be
-                      a virtual controller.</td>
-                  </tr>
-                  <tr>
-                    <td>"departure_override"</td>
+                    <td>"climbout_actions"</td>
                     <td>String</td>
                     <td>(<i>Optional</i>) With a route taken from the CIFP, actions and triggers that apply once the
                       aircraft is 400' above the field, where it turns on course, written as waypoint options without
@@ -4688,6 +4682,12 @@
                       handoff to 2J after flying one mile; note that the heading is respecified after the trigger, since a
                       triggered group's heading ends with it and the aircraft would otherwise resume its route). A bare
                       heading given here is equivalent to one given with "initial_heading"; see below.</td>
+                  </tr>
+                  <tr>
+                    <td>"departure_controller"</td>
+                    <td>String</td>
+                    <td>(<i>Optional</i>) A string indicating which controller should initially control the aircraft. Controller must be
+                      a virtual controller.</td>
                   </tr>
                   <tr>
                     <td>"description"</td>
@@ -4762,7 +4762,7 @@
                 If no enroute transition includes the exit, the route follows the SID's common route to its end
                 and the aircraft then proceeds along the departure's "route" from there. It is an error to omit
                 "waypoints" if the SID isn't in the CIFP for the airport or if the CIFP gives no runway transition
-                for the departure runway (unless "initial_heading" or a "departure_override" heading is given;
+                for the departure runway (unless "initial_heading" or a "climbout_actions" heading is given;
                 see below).
                 Here is a KLGA runway 13 route that takes the TNNIS6 from the CIFP. Its charted
                 initial legs&mdash;heading 134 until intercepting the course to JUTES&mdash;are flown once the
@@ -4794,11 +4794,11 @@
                 departure end of the runway, though any "waypoint_actions" added there still run at 400',
                 along with the turn.</p>
               <p>
-                Second, "departure_override" generalizes "initial_heading" for takeoffs that
+                Second, "climbout_actions" generalizes "initial_heading" for takeoffs that
                 have more than a tower-assigned heading: it gives <a href="#fe-route-actions">actions</a> and
                 <a href="#fe-route-triggers">triggers</a>, written like a waypoint's options but with no
                 fix in front, that apply at the point 400' above the field where the aircraft turns on
-                course. <code>"departure_override": "h280"</code> is exactly
+                course. <code>"climbout_actions": "h280"</code> is exactly
                 <code>"initial_heading": 280</code> (and it is an error to give both); adding to that,
                 <code>"h280/@d1.0/h280/tc"</code> has the aircraft contact departure only once it has flown a mile from the turn. A heading given
                 here supersedes the SID's charted legs at the departure end of the runway the same way
@@ -4829,7 +4829,7 @@
                 as the aircraft climbs through 400' above the field and takes up the leg
                 (<code>KSFO-10L/h284/hoC35/@a513+</code>), while <code>"KSFO-10L/@a513+": "hoC35"</code> hands
                 off once it has climbed through 513' (<code>KSFO-10L/h284/@a513+/hoC35</code>).</p>
-              <p>None of "initial_heading", "departure_override", and "waypoint_actions" may be given
+              <p>None of "initial_heading", "climbout_actions", and "waypoint_actions" may be given
                 together with "waypoints". (As everything they do can be specified directly with the waypoint fixes.) 
               </p>
               <p>The other part of specifying departures is the array of objects stored in "departures". Each one describes a departure

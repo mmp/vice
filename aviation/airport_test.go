@@ -251,7 +251,7 @@ func TestExitCategory(t *testing.T) {
 // initializeTestExitRoute runs er.initialize for a departure off a 2nm
 // east-facing KXXX runway 9. route, if non-empty, gives the route's
 // waypoints, located out ahead of the runway (except the departure end,
-// KXXX-27); the route's DepartureOverride, if any, is parsed and applied.
+// KXXX-27); the route's ClimboutActions, if any, is parsed and applied.
 // DB must already map KXXX.
 func initializeTestExitRoute(t *testing.T, er ExitRoute, route string) ExitRoute {
 	t.Helper()
@@ -278,9 +278,9 @@ func initializeTestExitRoute(t *testing.T, er ExitRoute, route string) ExitRoute
 		er.Waypoints = wps
 	}
 	var override Waypoint
-	if er.DepartureOverride != "" {
+	if er.ClimboutActions != "" {
 		var err error
-		if override, err = er.parseDepartureOverride(); err != nil {
+		if override, err = er.parseClimboutActions(); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -357,7 +357,7 @@ func TestInitialHeading(t *testing.T) {
 	}
 }
 
-func TestDepartureOverride(t *testing.T) {
+func TestClimboutActions(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{
 		Airways:  make(map[string][]Airway),
@@ -372,7 +372,7 @@ func TestDepartureOverride(t *testing.T) {
 
 	// A bare heading is equivalent to "initial_heading": it supersedes the
 	// SID's own legs from the departure end.
-	er := ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h345"}
+	er := ExitRoute{ClearedAltitude: 5000, ClimboutActions: "h345"}
 	if got, want := initialized(t, er, "KXXX-27/h011/@a820+/h011 RIGNZ/a3000+ JCOBY"),
 		"9/sid 9-mid/t090/@a713+/h345/sid RIGNZ/a3000+/sid JCOBY/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
@@ -381,14 +381,14 @@ func TestDepartureOverride(t *testing.T) {
 		"9/sid 9-mid/t090/@a713+/h345/sid BUTRZ/a3000+/sid CLTCH/sid KERRK/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
-	if got, want := initialized(t, ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h345"}, ""),
+	if got, want := initialized(t, ExitRoute{ClearedAltitude: 5000, ClimboutActions: "h345"}, ""),
 		"9/sid 9-mid/t090/@a713+/h345/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
 
 	// Further actions come along with the turn, and a /tc marks the route as
 	// waiting to contact departure.
-	ir := initializeTestExitRoute(t, ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h280/tc"}, "")
+	ir := initializeTestExitRoute(t, ExitRoute{ClearedAltitude: 5000, ClimboutActions: "h280/tc"}, "")
 	if got, want := ir.Waypoints.Encode(), "9/sid 9-mid/t090/@a713+/h280/tc/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
@@ -400,7 +400,7 @@ func TestDepartureOverride(t *testing.T) {
 	// only contact departure a mile from the turn. The heading is
 	// respecified after the trigger, since a triggered group's heading ends
 	// with it.
-	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h170/@d1.0/h170/tc"}
+	er = ExitRoute{ClearedAltitude: 5000, ClimboutActions: "h170/@d1.0/h170/tc"}
 	if got, want := initialized(t, er, ""),
 		"9/sid 9-mid/t090/@a713+/h170/@d1.0/h170/tc/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
@@ -408,7 +408,7 @@ func TestDepartureOverride(t *testing.T) {
 
 	// Sim actions at the departure end run at 400' with the turn, merged
 	// into the override's first group; the charted legs are superseded.
-	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h345/tc"}
+	er = ExitRoute{ClearedAltitude: 5000, ClimboutActions: "h345/tc"}
 	if got, want := initialized(t, er, "KXXX-27/h011/@a820+/hoC35 RIGNZ/a3000+ JCOBY"),
 		"9/sid 9-mid/t090/@a713+/h345/hoC35/tc/sid RIGNZ/a3000+/sid JCOBY/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
@@ -416,7 +416,7 @@ func TestDepartureOverride(t *testing.T) {
 
 	// An override without a heading leaves the charted legs alone and its
 	// actions follow them.
-	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "tc"}
+	er = ExitRoute{ClearedAltitude: 5000, ClimboutActions: "tc"}
 	if got, want := initialized(t, er, "KXXX-27/h284/@a513+ GNNRR/a2500+"),
 		"9/sid 9-mid/t090/@a713+/h284/@a513+/tc/sid GNNRR/a2500+/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
@@ -424,20 +424,20 @@ func TestDepartureOverride(t *testing.T) {
 
 	// The override's restrictions apply at the midpoint, superseding any
 	// from departure-end waypoints.
-	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h345/s210"}
+	er = ExitRoute{ClearedAltitude: 5000, ClimboutActions: "h345/s210"}
 	if got, want := initialized(t, er, "KXXX-27/a1500-/h284 GNNRR/a2500+"),
 		"9/sid 9-mid/a1500-/s210/t090/@a713+/h345/sid GNNRR/a2500+/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
 
 	// Options must be a single /-separated set.
-	er = ExitRoute{DepartureOverride: "h345 tc"}
-	if _, err := er.parseDepartureOverride(); err == nil {
-		t.Errorf("no error for override with multiple waypoints")
+	er = ExitRoute{ClimboutActions: "h345 tc"}
+	if _, err := er.parseClimboutActions(); err == nil {
+		t.Errorf("no error for climbout actions with multiple waypoints")
 	}
-	er = ExitRoute{DepartureOverride: "h999"}
-	if _, err := er.parseDepartureOverride(); err == nil {
-		t.Errorf("no error for override with invalid heading")
+	er = ExitRoute{ClimboutActions: "h999"}
+	if _, err := er.parseClimboutActions(); err == nil {
+		t.Errorf("no error for climbout actions with invalid heading")
 	}
 }
 

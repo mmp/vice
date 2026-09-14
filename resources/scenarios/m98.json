@@ -287,37 +287,37 @@
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           },
           "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           },
           "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           },
           "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["heavy"],
-            "departure_override": "h140/@d3.8/h140/tc"
+            "climbout_actions": "h140/@d3.8/h140/tc"
           },
           "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["heavy"],
-            "departure_override": "h160/@d3.8/h160/tc"
+            "climbout_actions": "h160/@d3.8/h160/tc"
           },
           "RXANN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "departure_override": "h170/@d3.8/h170/tc"
+            "climbout_actions": "h170/@d3.8/h170/tc"
           },
           "LSE.JET": {
             "assigned_altitude": 7000,
@@ -359,73 +359,73 @@
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "departure_override": "h170/@d3.8/h170/tc"
+            "climbout_actions": "h170/@d3.8/h170/tc"
           },
           "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
             "aircraft": ["turboprop"],
-            "departure_override": "h170/@d3.8/h170/tc"
+            "climbout_actions": "h170/@d3.8/h170/tc"
           },
           "RXANN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
             "aircraft": ["prop"],
-            "departure_override": "h170/@d3.8/h170/tc"
+            "climbout_actions": "h170/@d3.8/h170/tc"
           },
           "ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "departure_override": "h170/@d3.8/h170/tc"
+            "climbout_actions": "h170/@d3.8/h170/tc"
           },
           "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
             "aircraft": ["turboprop"],
-            "departure_override": "h170/@d3.8/h170/tc"
+            "climbout_actions": "h170/@d3.8/h170/tc"
           },
           "ONTIJ.PISTON,ORSKY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
             "aircraft": ["prop"],
-            "departure_override": "h170/@d3.8/h170/tc"
+            "climbout_actions": "h170/@d3.8/h170/tc"
           },
           "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["nonheavy"],
-            "departure_override": "h160/@d3.8/h160/tc"
+            "climbout_actions": "h160/@d3.8/h160/tc"
           },
           "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
             "aircraft": ["turboprop"],
-            "departure_override": "h160/@d3.8/h160/tc"
+            "climbout_actions": "h160/@d3.8/h160/tc"
           },
           "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
             "aircraft": ["prop"],
-            "departure_override": "h160/@d3.8/h160/tc"
+            "climbout_actions": "h160/@d3.8/h160/tc"
           },
           "ODI.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h140/@d3.8/h140/tc"
+            "climbout_actions": "h140/@d3.8/h140/tc"
           },
           "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
             "aircraft": ["turboprop"],
-            "departure_override": "h140/@d3.8/h140/tc"
+            "climbout_actions": "h140/@d3.8/h140/tc"
           },
           "ODI.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
             "aircraft": ["prop"],
-            "departure_override": "h140/@d3.8/h140/tc"
+            "climbout_actions": "h140/@d3.8/h140/tc"
           }
         },
         "12R_17": {
@@ -439,37 +439,37 @@
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           },
           "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           },
           "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           },
           "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           },
           "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           },
           "RXANN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "departure_override": "h121/@d1.4/h121/tc"
+            "climbout_actions": "h121/@d1.4/h121/tc"
           }
         },
         "12L": {
@@ -495,91 +495,91 @@
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["nonheavy"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "KBREW.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "KBREW2",
             "aircraft": ["turboprop"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "FAR.PISTON,KBREW.PISTON": {
             "assigned_altitude": 4000,
             "sid": "KBREW2",
             "aircraft": ["prop"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "SMERF.JET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "SMERF.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SMERF7",
             "aircraft": ["turboprop"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "SMERF.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SMERF7",
             "aircraft": ["prop"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "LEINY.JET": {
             "assigned_altitude": 7000,
             "sid": "LEINY6",
             "aircraft": ["nonheavy"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "LEINY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "LEINY6",
             "aircraft": ["turboprop"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "LEINY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "LEINY6",
             "aircraft": ["prop"],
-            "departure_override": "h070/@d3.6/h070/tc"
+            "climbout_actions": "h070/@d3.6/h070/tc"
           },
           "DLL.JET": {
             "assigned_altitude": 7000,
             "sid": "COULT7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h110/@d3.7/h110/tc"
+            "climbout_actions": "h110/@d3.7/h110/tc"
           },
           "DLL.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "COULT7",
             "aircraft": ["turboprop"],
-            "departure_override": "h110/@d3.7/h110/tc"
+            "climbout_actions": "h110/@d3.7/h110/tc"
           },
           "DLL.PISTON": {
             "assigned_altitude": 4000,
             "sid": "COULT7",
             "aircraft": ["prop"],
-            "departure_override": "h110/@d3.7/h110/tc"
+            "climbout_actions": "h110/@d3.7/h110/tc"
           },
           "GRB.JET,WLSTN.JET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h040/@d3.7/h040/tc"
+            "climbout_actions": "h040/@d3.7/h040/tc"
           },
           "GRB.TURBOPROP,WLSTN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "WLSTN7",
             "aircraft": ["turboprop"],
-            "departure_override": "h040/@d3.7/h040/tc"
+            "climbout_actions": "h040/@d3.7/h040/tc"
           },
           "GRB.PISTON,WLSTN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "WLSTN7",
             "aircraft": ["prop"],
-            "departure_override": "h040/@d3.7/h040/tc"
+            "climbout_actions": "h040/@d3.7/h040/tc"
           }
         },
         "30L": {
@@ -593,37 +593,37 @@
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["heavy"],
-            "departure_override": "h301/@d1.4/h301/tc"
+            "climbout_actions": "h301/@d1.4/h301/tc"
           },
           "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["heavy"],
-            "departure_override": "h301/@d1.4/h301/tc"
+            "climbout_actions": "h301/@d1.4/h301/tc"
           },
           "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["heavy"],
-            "departure_override": "h301/@d1.4/h301/tc"
+            "climbout_actions": "h301/@d1.4/h301/tc"
           },
           "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["heavy"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["heavy"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "RXANN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "departure_override": "h280/@d1.4/h280/tc"
+            "climbout_actions": "h280/@d1.4/h280/tc"
           },
           "LSE.JET,FGT.JET": {
             "assigned_altitude": 7000,
@@ -647,73 +647,73 @@
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "departure_override": "h280/@d1.6/h280/tc"
+            "climbout_actions": "h280/@d1.6/h280/tc"
           },
           "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
             "aircraft": ["turboprop"],
-            "departure_override": "h280/@d1.6/h280/tc"
+            "climbout_actions": "h280/@d1.6/h280/tc"
           },
           "RXANN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
             "aircraft": ["prop"],
-            "departure_override": "h280/@d1.6/h280/tc"
+            "climbout_actions": "h280/@d1.6/h280/tc"
           },
           "ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
             "aircraft": ["turboprop"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ONTIJ.PISTON,ORSKY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
             "aircraft": ["prop"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["nonheavy"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
             "aircraft": ["turboprop"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
             "aircraft": ["prop"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ODI.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
             "aircraft": ["turboprop"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           },
           "ODI.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
             "aircraft": ["prop"],
-            "departure_override": "h260/@d1.4/h260/tc"
+            "climbout_actions": "h260/@d1.4/h260/tc"
           }
         },
         "30L_17": {
@@ -727,37 +727,37 @@
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["heavy"],
-            "departure_override": "h301/@d1.4/h301/tc"
+            "climbout_actions": "h301/@d1.4/h301/tc"
           },
           "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["heavy"],
-            "departure_override": "h301/@d1.4/h301/tc"
+            "climbout_actions": "h301/@d1.4/h301/tc"
           },
           "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["heavy"],
-            "departure_override": "h301/@d1.4/h301/tc"
+            "climbout_actions": "h301/@d1.4/h301/tc"
           },
           "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["heavy"],
-            "departure_override": "h230/@d1.4/h230/tc"
+            "climbout_actions": "h230/@d1.4/h230/tc"
           },
           "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["heavy"],
-            "departure_override": "h230/@d1.4/h230/tc"
+            "climbout_actions": "h230/@d1.4/h230/tc"
           },
           "RXANN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "departure_override": "h230/@d1.4/h230/tc"
+            "climbout_actions": "h230/@d1.4/h230/tc"
           }
         },
         "30R": {
@@ -783,91 +783,91 @@
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["nonheavy"],
-            "departure_override": "h320/@d1.4/h320/tc"
+            "climbout_actions": "h320/@d1.4/h320/tc"
           },
           "KBREW.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "KBREW2",
             "aircraft": ["turboprop"],
-            "departure_override": "h320/@d1.4/h320/tc"
+            "climbout_actions": "h320/@d1.4/h320/tc"
           },
           "FAR.PISTON,KBREW.PISTON": {
             "assigned_altitude": 4000,
             "sid": "KBREW2",
             "aircraft": ["prop"],
-            "departure_override": "h320/@d1.4/h320/tc"
+            "climbout_actions": "h320/@d1.4/h320/tc"
           },
           "SMERF.JET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h301/@d1.1/h301/tc"
+            "climbout_actions": "h301/@d1.1/h301/tc"
           },
           "SMERF.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SMERF7",
             "aircraft": ["turboprop"],
-            "departure_override": "h301/@d1.1/h301/tc"
+            "climbout_actions": "h301/@d1.1/h301/tc"
           },
           "SMERF.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SMERF7",
             "aircraft": ["prop"],
-            "departure_override": "h301/@d1.1/h301/tc"
+            "climbout_actions": "h301/@d1.1/h301/tc"
           },
           "LEINY.JET": {
             "assigned_altitude": 7000,
             "sid": "LEINY6",
             "aircraft": ["nonheavy"],
-            "departure_override": "h301/@d1.1/h301/tc"
+            "climbout_actions": "h301/@d1.1/h301/tc"
           },
           "LEINY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "LEINY6",
             "aircraft": ["turboprop"],
-            "departure_override": "h301/@d1.1/h301/tc"
+            "climbout_actions": "h301/@d1.1/h301/tc"
           },
           "LEINY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "LEINY6",
             "aircraft": ["prop"],
-            "departure_override": "h301/@d1.1/h301/tc"
+            "climbout_actions": "h301/@d1.1/h301/tc"
           },
           "DLL.JET": {
             "assigned_altitude": 7000,
             "sid": "COULT7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h360/@d1.0/h360/tc"
+            "climbout_actions": "h360/@d1.0/h360/tc"
           },
           "DLL.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "COULT7",
             "aircraft": ["turboprop"],
-            "departure_override": "h360/@d1.0/h360/tc"
+            "climbout_actions": "h360/@d1.0/h360/tc"
           },
           "DLL.PISTON": {
             "assigned_altitude": 4000,
             "sid": "COULT7",
             "aircraft": ["prop"],
-            "departure_override": "h360/@d1.0/h360/tc"
+            "climbout_actions": "h360/@d1.0/h360/tc"
           },
           "GRB.JET,WLSTN.JET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h340/@d1.1/h340/tc"
+            "climbout_actions": "h340/@d1.1/h340/tc"
           },
           "GRB.TURBOPROP,WLSTN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "WLSTN7",
             "aircraft": ["turboprop"],
-            "departure_override": "h340/@d1.1/h340/tc"
+            "climbout_actions": "h340/@d1.1/h340/tc"
           },
           "GRB.PISTON,WLSTN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "WLSTN7",
             "aircraft": ["prop"],
-            "departure_override": "h340/@d1.1/h340/tc"
+            "climbout_actions": "h340/@d1.1/h340/tc"
           }
         },
         "17_12s": {
@@ -911,73 +911,73 @@
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "departure_override": "h215/@d3.7/h215/tc"
+            "climbout_actions": "h215/@d3.7/h215/tc"
           },
           "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
             "aircraft": ["turboprop"],
-            "departure_override": "h215/@d3.7/h215/tc"
+            "climbout_actions": "h215/@d3.7/h215/tc"
           },
           "RXANN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
             "aircraft": ["prop"],
-            "departure_override": "h215/@d3.7/h215/tc"
+            "climbout_actions": "h215/@d3.7/h215/tc"
           },
           "ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "departure_override": "h215/@d3.7/h215/tc"
+            "climbout_actions": "h215/@d3.7/h215/tc"
           },
           "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
             "aircraft": ["turboprop"],
-            "departure_override": "h215/@d3.7/h215/tc"
+            "climbout_actions": "h215/@d3.7/h215/tc"
           },
           "ONTIJ.PISTON,ORSKY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
             "aircraft": ["prop"],
-            "departure_override": "h215/@d3.7/h215/tc"
+            "climbout_actions": "h215/@d3.7/h215/tc"
           },
           "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["nonheavy"],
-            "departure_override": "h140/@d1.2/h140/tc"
+            "climbout_actions": "h140/@d1.2/h140/tc"
           },
           "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
             "aircraft": ["turboprop"],
-            "departure_override": "h140/@d1.2/h140/tc"
+            "climbout_actions": "h140/@d1.2/h140/tc"
           },
           "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
             "aircraft": ["prop"],
-            "departure_override": "h140/@d1.2/h140/tc"
+            "climbout_actions": "h140/@d1.2/h140/tc"
           },
           "ODI.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h140/@d1.3/h140/tc"
+            "climbout_actions": "h140/@d1.3/h140/tc"
           },
           "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
             "aircraft": ["turboprop"],
-            "departure_override": "h140/@d1.3/h140/tc"
+            "climbout_actions": "h140/@d1.3/h140/tc"
           },
           "ODI.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
             "aircraft": ["prop"],
-            "departure_override": "h140/@d1.3/h140/tc"
+            "climbout_actions": "h140/@d1.3/h140/tc"
           }
         },
         "17_30s": {
@@ -1003,73 +1003,73 @@
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "departure_override": "h230/@d2.5/h230/tc"
+            "climbout_actions": "h230/@d2.5/h230/tc"
           },
           "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
             "aircraft": ["turboprop"],
-            "departure_override": "h230/@d2.5/h230/tc"
+            "climbout_actions": "h230/@d2.5/h230/tc"
           },
           "RXANN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
             "aircraft": ["prop"],
-            "departure_override": "h230/@d2.5/h230/tc"
+            "climbout_actions": "h230/@d2.5/h230/tc"
           },
           "ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "departure_override": "h210/@d2.5/h210/tc"
+            "climbout_actions": "h210/@d2.5/h210/tc"
           },
           "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
             "aircraft": ["turboprop"],
-            "departure_override": "h210/@d2.5/h210/tc"
+            "climbout_actions": "h210/@d2.5/h210/tc"
           },
           "ONTIJ.PISTON,ORSKY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
             "aircraft": ["prop"],
-            "departure_override": "h210/@d2.5/h210/tc"
+            "climbout_actions": "h210/@d2.5/h210/tc"
           },
           "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["nonheavy"],
-            "departure_override": "h170/@d1.2/h170/tc"
+            "climbout_actions": "h170/@d1.2/h170/tc"
           },
           "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
             "aircraft": ["turboprop"],
-            "departure_override": "h170/@d1.2/h170/tc"
+            "climbout_actions": "h170/@d1.2/h170/tc"
           },
           "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
             "aircraft": ["prop"],
-            "departure_override": "h170/@d1.2/h170/tc"
+            "climbout_actions": "h170/@d1.2/h170/tc"
           },
           "ODI.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["nonheavy"],
-            "departure_override": "h170/@d1.2/h170/tc"
+            "climbout_actions": "h170/@d1.2/h170/tc"
           },
           "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
             "aircraft": ["turboprop"],
-            "departure_override": "h170/@d1.2/h170/tc"
+            "climbout_actions": "h170/@d1.2/h170/tc"
           },
           "ODI.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
             "aircraft": ["prop"],
-            "departure_override": "h170/@d1.2/h170/tc"
+            "climbout_actions": "h170/@d1.2/h170/tc"
           }
         }
       },
@@ -4695,12 +4695,12 @@
           "GRB.PROP,WLSTN.PROP": {
             "assigned_altitude": 2500,
             "sid": "WLSTN7",
-            "departure_override": "r300"
+            "climbout_actions": "r300"
           },
           "FAR.PROP,KBREW.PROP": {
             "assigned_altitude": 2500,
             "sid": "KBREW2",
-            "departure_override": "r300"
+            "climbout_actions": "r300"
           },
           "INUNE.PROP": {
             "assigned_altitude": 2500,
@@ -4752,12 +4752,12 @@
           "GRB.PROP,WLSTN.PROP,GRB.JET,WLSTN.JET": {
             "assigned_altitude": 2500,
             "sid": "WLSTN7",
-            "departure_override": "r300"
+            "climbout_actions": "r300"
           },
           "FAR.PROP,KBREW.PROP,FAR.JET,KBREW.JET": {
             "assigned_altitude": 2500,
             "sid": "KBREW2",
-            "departure_override": "r300"
+            "climbout_actions": "r300"
           },
           "INUNE.PROP,INUNE.JET": {
             "assigned_altitude": 2500,
@@ -7645,7 +7645,7 @@
           "RXANN": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
-            "departure_override": "l270"
+            "climbout_actions": "l270"
           },
           "ODI": {
             "assigned_altitude": 3000,
@@ -7663,7 +7663,7 @@
           "ONTIJ,ORSKY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
-            "departure_override": "l270"
+            "climbout_actions": "l270"
           },
           "WLSTN": {
             "assigned_altitude": 3000,
@@ -7705,17 +7705,17 @@
           "ODI": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
-            "departure_override": "r090"
+            "climbout_actions": "r090"
           },
           "TAXEE,DLL": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
-            "departure_override": "r090"
+            "climbout_actions": "r090"
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "departure_override": "r090"
+            "climbout_actions": "r090"
           },
           "ONTIJ,ORSKY": {
             "assigned_altitude": 3000,
@@ -7725,7 +7725,7 @@
           "WLSTN": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
-            "departure_override": "r080"
+            "climbout_actions": "r080"
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
@@ -7766,17 +7766,17 @@
           "ODI": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
-            "departure_override": "r090"
+            "climbout_actions": "r090"
           },
           "TAXEE,DLL": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
-            "departure_override": "r090"
+            "climbout_actions": "r090"
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "departure_override": "r090"
+            "climbout_actions": "r090"
           },
           "ONTIJ,ORSKY": {
             "assigned_altitude": 3000,
@@ -7786,7 +7786,7 @@
           "WLSTN": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
-            "departure_override": "r080"
+            "climbout_actions": "r080"
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,

@@ -443,8 +443,8 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 					if route.InitialHeading != 0 {
 						e.ErrorString(`"initial_heading" applies only to a route taken from the CIFP; put the heading in "waypoints"`)
 					}
-					if route.DepartureOverride != "" {
-						e.ErrorString(`"departure_override" applies only to a route taken from the CIFP; put the actions in "waypoints"`)
+					if route.ClimboutActions != "" {
+						e.ErrorString(`"climbout_actions" applies only to a route taken from the CIFP; put the actions in "waypoints"`)
 					}
 					if len(route.WaypointActions) > 0 {
 						e.ErrorString(`"waypoint_actions" applies only to a route taken from the CIFP; put the actions in "waypoints"`)
@@ -469,12 +469,12 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 					route.SID, transition, _ = strings.Cut(route.SID, ".")
 
 					var override Waypoint
-					if route.DepartureOverride != "" {
+					if route.ClimboutActions != "" {
 						if route.InitialHeading != 0 {
-							e.ErrorString(`cannot give both "initial_heading" and "departure_override"; put the heading in "departure_override"`)
+							e.ErrorString(`cannot give both "initial_heading" and "climbout_actions"; put the heading in "climbout_actions"`)
 						}
-						if ovr, err := route.parseDepartureOverride(); err != nil {
-							e.ErrorString(`"departure_override": %v`, err)
+						if ovr, err := route.parseClimboutActions(); err != nil {
+							e.ErrorString(`"climbout_actions": %v`, err)
 						} else {
 							override = ovr
 							WaypointArray{override}.checkBasics(e, controlPositions, checkScratchpad)
@@ -909,16 +909,16 @@ func (ap Airport) VFRRateSum() float32 {
 }
 
 type ExitRoute struct {
-	SID               string            `json:"sid"`
-	AssignedAltitude  int               `json:"assigned_altitude"`
-	ClearedAltitude   int               `json:"cleared_altitude"`
-	Waypoints         WaypointArray     `json:"waypoints"`
-	Description       string            `json:"description"`
-	IsRNAV            bool              `json:"is_rnav"`
-	HoldForRelease    bool              `json:"hold_for_release"`
-	InitialHeading    int               `json:"initial_heading"`    // tower-assigned
-	DepartureOverride string            `json:"departure_override"` // generalizes InitialHeading
-	WaypointActions   map[string]string `json:"waypoint_actions"`
+	SID              string            `json:"sid"`
+	AssignedAltitude int               `json:"assigned_altitude"`
+	ClearedAltitude  int               `json:"cleared_altitude"`
+	Waypoints        WaypointArray     `json:"waypoints"`
+	Description      string            `json:"description"`
+	IsRNAV           bool              `json:"is_rnav"`
+	HoldForRelease   bool              `json:"hold_for_release"`
+	InitialHeading   int               `json:"initial_heading"`  // tower-assigned
+	ClimboutActions  string            `json:"climbout_actions"` // generalizes InitialHeading
+	WaypointActions  map[string]string `json:"waypoint_actions"`
 	// optional, control position to handoff to at a /ho
 	HandoffController ControlPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.
@@ -989,7 +989,7 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 // legs from the departure end, initialize supersedes those when the route
 // assigns its own heading. Only when the CIFP has no transition for the
 // runway does an assigned heading--"initial_heading" or a
-// "departure_override" heading--stand in for one, with the route starting
+// "climbout_actions" heading--stand in for one, with the route starting
 // from the SID's common portion.
 func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, exit ExitID,
 	assignedHeading bool) (WaypointArray, error) {
@@ -1105,7 +1105,7 @@ func (ap *Airport) checkDepartureRouteAlongSID(icao ICAOAirportCode, dep *Depart
 	if best > 1 {
 		newExit := after[best-1]
 		e.ErrorString(`route follows the %s SID past the exit to %s; make %s the exit and start the route there, `+
-			`with "sid" flying the SID from the CIFP and "departure_override" giving any tower-assigned heading `+
+			`with "sid" flying the SID from the CIFP and "climbout_actions" giving any tower-assigned heading `+
 			`or actions in place of hand-written "waypoints"`, bestSID, newExit, newExit)
 	}
 }
@@ -1187,16 +1187,16 @@ func LookupSID(icao ICAOAirportCode, name string) (SID, bool) {
 	return SID{}, false
 }
 
-// parseDepartureOverride parses the route's "departure_override" waypoint
+// parseClimboutActions parses the route's "climbout_actions" waypoint
 // options--actions, triggers, and altitude/speed restrictions--into the
 // waypoint that carries them.
-func (er *ExitRoute) parseDepartureOverride() (Waypoint, error) {
-	wps, err := parseWaypoints("departure_override/" + er.DepartureOverride)
+func (er *ExitRoute) parseClimboutActions() (Waypoint, error) {
+	wps, err := parseWaypoints("climbout_actions/" + er.ClimboutActions)
 	if err != nil {
 		return Waypoint{}, err
 	}
 	if len(wps) != 1 {
-		return Waypoint{}, fmt.Errorf("%s: must be a single set of /-separated options", er.DepartureOverride)
+		return Waypoint{}, fmt.Errorf("%s: must be a single set of /-separated options", er.ClimboutActions)
 	}
 	return wps[0], nil
 }
@@ -1345,7 +1345,7 @@ func atDepartureEnd(wp Waypoint, r, rend Runway, nmPerLongitude float32) bool {
 // threshold and then its midpoint, from which the aircraft tracks the runway
 // centerline until it is 400' above the field and only then flies the
 // route--and checks the route's other members against them. override carries
-// the route's parsed "departure_override": actions and restrictions that
+// the route's parsed "climbout_actions": actions and restrictions that
 // apply at the midpoint, once the aircraft is 400' up.
 func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runway, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[ControlPosition]*Controller, override Waypoint,
@@ -1411,7 +1411,7 @@ func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runw
 		},
 	}
 	// The tower-applied actions from the takeoff clearance:
-	// "departure_override" gives them in full, while "initial_heading" is
+	// "climbout_actions" gives them in full, while "initial_heading" is
 	// the common case of a bare assigned heading.
 	overrideGroups := override.ActionGroups()
 	assignsHeading := override.AssignsHeading()

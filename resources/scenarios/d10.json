@@ -2445,12 +2445,12 @@
           "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
-            "departure_override": "a1223+/h155/@d2.1/h155"
+            "climbout_actions": "a1223+/h155/@d2.1/h155"
           },
           "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
-            "departure_override": "a1223+/h155/@d2.1/h155"
+            "climbout_actions": "a1223+/h155/@d2.1/h155"
           },
           "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
@@ -2904,22 +2904,22 @@
           "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 2000,
             "sid": "DALL4",
-            "departure_override": "h050/@d1.6/h050"
+            "climbout_actions": "h050/@d1.6/h050"
           },
           "TORNN,CLL,JASPA,SAT,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 2000,
             "sid": "JPOOL8",
-            "departure_override": "h050/@d1.6/h050"
+            "climbout_actions": "h050/@d1.6/h050"
           },
           "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 2000,
             "sid": "KUSSO3",
-            "departure_override": "h050/@d1.6/h050"
+            "climbout_actions": "h050/@d1.6/h050"
           },
           "LOWGN,IRW,OKM,MLC": {
             "cleared_altitude": 2000,
             "sid": "NANDR4",
-            "departure_override": "h050/@d1.6/h050"
+            "climbout_actions": "h050/@d1.6/h050"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 2000,
@@ -2934,7 +2934,7 @@
           "FERRA,ABI,SLOTT,CEOLA,FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 2000,
             "sid": "KING5",
-            "departure_override": "h050/@d1.6/h050"
+            "climbout_actions": "h050/@d1.6/h050"
           }
         },
         "34": {
@@ -3458,22 +3458,22 @@
           "NOBLY,TXK,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
-            "departure_override": "h180/@d2.7/h180"
+            "climbout_actions": "h180/@d2.7/h180"
           },
           "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
-            "departure_override": "h180/@d2.7/h180"
+            "climbout_actions": "h180/@d2.7/h180"
           },
           "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
-            "departure_override": "h180/@d2.7/h180"
+            "climbout_actions": "h180/@d2.7/h180"
           },
           "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
-            "departure_override": "h180/@d2.7/h180"
+            "climbout_actions": "h180/@d2.7/h180"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
@@ -3488,7 +3488,7 @@
           "FERRA,ABI,FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
-            "departure_override": "h180/@d2.7/h180"
+            "climbout_actions": "h180/@d2.7/h180"
           }
         },
         "36": {
@@ -4548,7 +4548,7 @@
           "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
-            "departure_override": "a1600+/h085/@d2.5/h085"
+            "climbout_actions": "a1600+/h085/@d2.5/h085"
           },
           "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
@@ -4580,7 +4580,7 @@
           "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
-            "departure_override": "a1210+/h092/@d2.7/h092"
+            "climbout_actions": "a1210+/h092/@d2.7/h092"
           },
           "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
@@ -5031,7 +5031,7 @@
           "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
-            "departure_override": "a1143+/h180/@d1.7/h180"
+            "climbout_actions": "a1143+/h180/@d1.7/h180"
           },
           "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
@@ -6126,7 +6126,7 @@
           "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 2000,
             "sid": "BOTCH2",
-            "departure_override": "a1400+/h313/@d2.0/h313"
+            "climbout_actions": "a1400+/h313/@d2.0/h313"
           },
           "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 2000,
