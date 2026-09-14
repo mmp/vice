@@ -440,7 +440,19 @@ func (w *routeWalker) flyGroup(g av.WaypointActionGroup, next *av.WaypointAction
 	// the turn onto its heading.
 	t, mark, ok := w.triggerDistance(until, dir)
 	if !ok || t > 0 {
-		w.turnTo(dir, g.Actions.Heading.Turn)
+		if until.Type == av.WaypointActionDistance && w.pen.p == w.pen.groupStart {
+			// The turn onto the heading may itself carry the aircraft the
+			// trigger's distance from where the group took effect, meeting it
+			// before the heading is established.
+			if w.turnToDistance(dir, g.Actions.Heading.Turn, until.Distance) {
+				w.tick(w.pen.p, w.pen.dir)
+				w.labels = append(w.labels, routeLabel{p: w.pen.p, offset: w.labelSide(w.pen.dir, next),
+					text: triggerLabel(until, next, true)})
+				return true
+			}
+		} else {
+			w.turnTo(dir, g.Actions.Heading.Turn)
+		}
 		t, mark, ok = w.triggerDistance(until, dir)
 	}
 	if mark.kind == markCourse && w.missesCourse(ok, dir, mark.dir) {
@@ -456,14 +468,10 @@ func (w *routeWalker) flyGroup(g av.WaypointActionGroup, next *av.WaypointAction
 			t, ok = 0, true
 		}
 	}
-	text := until.Encoded()
 	if !ok {
-		t, text = indeterminateLegLength, text+"?"
+		t = indeterminateLegLength
 	}
-	if next != nil {
-		text += next.Actions.Encoded()
-	}
-	text = strings.TrimPrefix(text, "/")
+	text := triggerLabel(until, next, ok)
 
 	crossing := math.Add2f(w.pen.p, math.Scale2f(dir, t))
 	end := crossing
@@ -499,6 +507,19 @@ func (w *routeWalker) flyGroup(g av.WaypointActionGroup, next *av.WaypointAction
 		w.turnTo(mark.dir, av.TurnClosest)
 	}
 	return true
+}
+
+// triggerLabel returns a trigger point's label: the trigger, the actions of
+// the group that follows it, and a "?" if the point couldn't be placed.
+func triggerLabel(until av.WaypointActionTermination, next *av.WaypointActionGroup, placed bool) string {
+	text := until.Encoded()
+	if !placed {
+		text += "?"
+	}
+	if next != nil {
+		text += next.Actions.Encoded()
+	}
+	return strings.TrimPrefix(text, "/")
 }
 
 // labelSide returns which side of a leg its trigger's label goes on: the
@@ -830,12 +851,10 @@ func (w *routeWalker) straightTo(q [2]float32, withArrow bool) {
 	w.pen.atFix = false
 }
 
-// turnTo draws a standard-rate turn from the pen's direction to dir,
-// turning the given way or the shorter one for TurnClosest, and leaves the
-// pen at its end.
-func (w *routeWalker) turnTo(dir [2]float32, turn av.TurnDirection) {
-	h0 := math.Atan2(w.pen.dir[0], w.pen.dir[1])
-	angle := signedTurn(w.pen.dir, dir)
+// turnAngle returns the signed degrees of the turn from one direction to
+// another, forced the given way.
+func turnAngle(from, to [2]float32, turn av.TurnDirection) float32 {
+	angle := signedTurn(from, to)
 	switch turn {
 	case av.TurnLeft:
 		if angle > 0 {
@@ -846,6 +865,33 @@ func (w *routeWalker) turnTo(dir [2]float32, turn av.TurnDirection) {
 			angle += 360
 		}
 	}
+	return angle
+}
+
+// turnToDistance draws the turn from the pen's direction to dir, stopping
+// where the straight-line distance from the turn's start reaches dist, as a
+// distance trigger measures it. It reports whether the turn was cut short;
+// if the turn never gets that far from its start, the whole turn is drawn.
+func (w *routeWalker) turnToDistance(dir [2]float32, turn av.TurnDirection, dist float32) bool {
+	angle := turnAngle(w.pen.dir, dir, turn)
+	// The distance from the turn's start is the chord 2r sin(theta/2), which
+	// grows until the turn has come 180 degrees around.
+	r := w.pen.profile.TurnRadius()
+	if dist >= 2*r*math.Sin(math.Radians(min(math.Abs(angle), 180)/2)) {
+		w.turnTo(dir, turn)
+		return false
+	}
+	theta := 2 * math.Degrees(float32(gomath.Asin(float64(dist/(2*r)))))
+	w.turnTo(rotate(w.pen.dir, math.Copysign(theta, angle)), turn)
+	return true
+}
+
+// turnTo draws a standard-rate turn from the pen's direction to dir,
+// turning the given way or the shorter one for TurnClosest, and leaves the
+// pen at its end.
+func (w *routeWalker) turnTo(dir [2]float32, turn av.TurnDirection) {
+	h0 := math.Atan2(w.pen.dir[0], w.pen.dir[1])
+	angle := turnAngle(w.pen.dir, dir, turn)
 	if math.Abs(angle) < 3 {
 		w.pen.dir = dir
 		return

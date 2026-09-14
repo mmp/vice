@@ -71,6 +71,61 @@ func TestDistanceTrigger(t *testing.T) {
 	expectNear(t, "pen", w.pen.p, [2]float32{20, 0}, 0.05)
 }
 
+// distanceAfterTurn walks A/h090/@d5/h<hdg>/@d<dist>/tc and returns the
+// walker, for a trigger whose distance is measured from the turn's start.
+func distanceAfterTurn(hdg int16, dist float32) *routeWalker {
+	w := testWalker(RouteDrawContext{})
+	w.walk([]av.Waypoint{
+		fixAt("A", 0, 0,
+			av.WaypointActionGroup{Actions: heading(90),
+				Until: av.WaypointActionTermination{Type: av.WaypointActionDistance, Distance: 5}},
+			av.WaypointActionGroup{Actions: heading(hdg),
+				Until: av.WaypointActionTermination{Type: av.WaypointActionDistance, Distance: dist}},
+			av.WaypointActionGroup{Actions: av.WaypointActions{TransferComms: true}}),
+	})
+	return w
+}
+
+// expectDistanceFromTurn checks that the label is the given distance from
+// (5, 0), where the turn onto the second heading starts.
+func expectDistanceFromTurn(t *testing.T, w *routeWalker, text string, dist float32) [2]float32 {
+	t.Helper()
+	p := labelAt(t, w, text)
+	if d := math.Distance2f(p, [2]float32{5, 0}); math.Abs(d-dist) > 0.05 {
+		t.Errorf("%s: %v is %.2fnm from the turn's start, want %.2f", text, p, d, dist)
+	}
+	return p
+}
+
+func TestDistanceTriggerMidTurn(t *testing.T) {
+	// The 110 degree turn to 200 carries the aircraft 0.5nm from where it
+	// started well before it rolls out, so the trigger is met on the turn.
+	w := distanceAfterTurn(200, 0.5)
+	expectNear(t, "@d5.0/h200", labelAt(t, w, "@d5.0/h200"), [2]float32{5, 0}, 0.05)
+	p := expectDistanceFromTurn(t, w, "@d0.5/tc", 0.5)
+	if p[1] >= 0 {
+		t.Errorf("@d0.5/tc: %v is not right of the eastbound leg", p)
+	}
+}
+
+func TestDistanceTriggerMidTurnLeft(t *testing.T) {
+	w := distanceAfterTurn(340, 0.5)
+	p := expectDistanceFromTurn(t, w, "@d0.5/tc", 0.5)
+	if p[1] <= 0 {
+		t.Errorf("@d0.5/tc: %v is not left of the eastbound leg", p)
+	}
+}
+
+func TestDistanceTriggerBeyondTurn(t *testing.T) {
+	// 2.5nm is farther than the turn's 1.6nm chord, so the aircraft rolls
+	// out on 200 and the trigger is met on the leg that follows.
+	w := distanceAfterTurn(200, 2.5)
+	expectDistanceFromTurn(t, w, "@d2.5/tc", 2.5)
+	if d := math.Abs(signedTurn(w.pen.dir, w.headingVector(200))); d > 1 {
+		t.Errorf("pen heading is %.1f degrees off 200", d)
+	}
+}
+
 func TestDMETrigger(t *testing.T) {
 	dme := func(d float32, atOrAbove bool) av.WaypointActionTermination {
 		return av.WaypointActionTermination{Type: av.WaypointActionDME, DMEFix: "FIX", DMEDistance: d,
