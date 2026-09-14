@@ -147,112 +147,439 @@
     }
   },
   "facility_adaptations": {
-    "coordination_fixes": {
-      "HHOOD": [
-        {
-          "type": "route",
-          "to": "P80",
-          "from": "ZSE"
-        }
-      ],
-      "KRATR": [
-        {
-          "type": "route",
-          "to": "P80",
-          "from": "ZSE"
-        }
-      ],
-      "VANTZ": [
-        {
-          "type": "route",
-          "to": "P80",
-          "from": "ZSE"
-        }
-      ],
-      "YORKY": [
-        {
-          "type": "route",
-          "to": "P80",
-          "from": "ZSE"
-        }
-      ],
-      "VOODU": [
-        {
-          "type": "route",
-          "to": "P80",
-          "from": "ZSE"
-        }
-      ],
-      "SSSUN": [
-        {
-          "type": "route",
-          "to": "P80",
-          "from": "ZSE"
-        }
-      ],
-      "FLOWR": [
-        {
-          "type": "route",
-          "to": "P80",
-          "from": "ZSE"
-        }
-      ],
-      "MYCRO": [
-        {
-          "type": "route",
-          "to": "P80",
-          "from": "ZSE"
-        }
-      ],
-      "HUMPP": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "GLASR": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "LIINE": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "DIGGN": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "MARNR": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "LACEE": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ],
-      "HUVUS": [
-        {
-          "type": "route",
-          "to": "S46",
-          "from": "ZSE"
-        }
-      ]
+    "arts_coordination": {
+      "SSS": {
+        "route_based": [
+          {
+            "type": "star",
+            "id": "MARNR8",
+            "fixes": [],
+            "default_fix": "MARNR"
+          },
+          {
+            "type": "star",
+            "id": "GLASR3",
+            "fixes": [],
+            "default_fix": "GLASR"
+          },
+          {
+            "type": "star",
+            "id": "CHINS5",
+            "fixes": [],
+            "default_fix": "HUMPP"
+          },
+          {
+            "type": "star",
+            "id": "HAWKZ8",
+            "fixes": [],
+            "default_fix": "LIINE"
+          },
+          {
+            "type": "star",
+            "id": "SKYKO1",
+            "fixes": [],
+            "default_fix": "HUVUS"
+          },
+          {
+            "type": "star",
+            "id": "OLM2",
+            "fixes": [],
+            "default_fix": "LACEE"
+          },
+          {
+            "type": "star",
+            "id": "JAWBN7",
+            "fixes": [],
+            "default_fix": "DIGGN"
+          },
+          {
+            "type": "sid",
+            "id": "BANGR9",
+            "fixes": [],
+            "default_fix": "BANGR"
+          },
+          {
+            "type": "sid",
+            "id": "HAROB6",
+            "fixes": [],
+            "default_fix": "HAROB"
+          },
+          {
+            "type": "sid",
+            "id": "ELMAA5",
+            "fixes": [],
+            "default_fix": "ELMAA"
+          },
+          {
+            "type": "sid",
+            "id": "OZWLD1",
+            "fixes": [],
+            "default_fix": "OZWLD"
+          },
+          {
+            "type": "sid",
+            "id": "JEFPO1",
+            "fixes": [],
+            "default_fix": "JEFPO"
+          },
+          {
+            "type": "sid",
+            "id": "ISBRG1",
+            "fixes": [],
+            "default_fix": "ISBRG"
+          },
+          {
+            "type": "string",
+            "id": "NORMY MODDA CASHS",
+            "fixes": [],
+            "default_fix": "CASHS"
+          },
+          {
+            "type": "string",
+            "id": "NORMY MODDA STEVS",
+            "fixes": [],
+            "default_fix": "STEVS"
+          },
+          {
+            "type": "string",
+            "id": "ZADON ZELAK ZIRAN",
+            "fixes": [],
+            "default_fix": "ZELAK"
+          },
+          {
+            "type": "string",
+            "id": "ALPSE",
+            "fixes": [],
+            "default_fix": "ALPSE"
+          },
+          {
+            "type": "string",
+            "id": "SUMMA",
+            "fixes": [],
+            "default_fix": "SUMMA"
+          },
+          {
+            "type": "string",
+            "id": "JAWBN",
+            "fixes": [],
+            "default_fix": "DIGGN"
+          },
+          {
+            "type": "string",
+            "id": "MARNR",
+            "fixes": [],
+            "default_fix": "MARNR"
+          },
+          {
+            "type": "string",
+            "id": "BUHNR",
+            "fixes": [],
+            "default_fix": "MARNR"
+          },
+          {
+            "type": "string",
+            "id": "ROESH",
+            "fixes": [],
+            "default_fix": "MARNR"
+          },
+          {
+            "type": "string",
+            "id": "JIGEB",
+            "fixes": [],
+            "default_fix": "MARNR"
+          },
+          {
+            "type": "string",
+            "id": "GLASR",
+            "fixes": [],
+            "default_fix": "GLASR"
+          },
+          {
+            "type": "string",
+            "id": "WOODI",
+            "fixes": [],
+            "default_fix": "GLASR"
+          },
+          {
+            "type": "string",
+            "id": "RADDY",
+            "fixes": [],
+            "default_fix": "HUMPP"
+          },
+          {
+            "type": "string",
+            "id": "CHINS",
+            "fixes": [],
+            "default_fix": "HUMPP"
+          },
+          {
+            "type": "string",
+            "id": "HAWKZ",
+            "fixes": [],
+            "default_fix": "LIINE"
+          },
+          {
+            "type": "string",
+            "id": "KRIEG",
+            "fixes": [],
+            "default_fix": "LIINE"
+          },
+          {
+            "type": "string",
+            "id": "PTERA",
+            "fixes": [],
+            "default_fix": "LIINE"
+          },
+          {
+            "type": "string",
+            "id": "SKYKO",
+            "fixes": [],
+            "default_fix": "HUVUS"
+          },
+          {
+            "type": "string",
+            "id": "HUVUS",
+            "fixes": [],
+            "default_fix": "HUVUS"
+          },
+          {
+            "type": "string",
+            "id": "LACEE",
+            "fixes": [],
+            "default_fix": "LACEE"
+          },
+          {
+            "type": "string",
+            "id": "ARVAD",
+            "fixes": [],
+            "default_fix": "LACEE"
+          },
+          {
+            "type": "string",
+            "id": "TONNO",
+            "fixes": [],
+            "default_fix": "TONNO"
+          },
+          {
+            "type": "airway",
+            "id": "J12",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "NORMY"
+          },
+          {
+            "type": "airway",
+            "id": "J70",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "NORMY"
+          },
+          {
+            "type": "airway",
+            "id": "J90",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "NORMY"
+          },
+          {
+            "type": "airway",
+            "id": "V2",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "BANDR"
+          },
+          {
+            "type": "airway",
+            "id": "V298",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "BANDR"
+          },
+          {
+            "type": "airway",
+            "id": "J5",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "SUMMA"
+          },
+          {
+            "type": "airway",
+            "id": "J1",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "ALDER"
+          },
+          {
+            "type": "airway",
+            "id": "V495",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "ALDER"
+          },
+          {
+            "type": "airway",
+            "id": "J523",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "ARRIE"
+          },
+          {
+            "type": "airway",
+            "id": "V23",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "PAE"
+          },
+          {
+            "type": "airway",
+            "id": "V204",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "LACEE"
+          },
+          {
+            "type": "airway",
+            "id": "V187",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "OZEYO"
+          },
+          {
+            "type": "airway",
+            "id": "V165",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "CETRA"
+          }
+        ],
+        "zone_based": [
+          {
+            "area_id": "S46",
+            "center": "SEA",
+            "arrival": [
+              {
+                "bearings": "020,055",
+                "fixes": [],
+                "default_fix": "HUVUS"
+              },
+              {
+                "bearings": "055,090",
+                "fixes": [],
+                "default_fix": "GLASR"
+              },
+              {
+                "bearings": "090,165",
+                "fixes": [],
+                "default_fix": "HUMPP"
+              },
+              {
+                "bearings": "165,211",
+                "fixes": [],
+                "default_fix": "LIINE"
+              },
+              {
+                "bearings": "211,250",
+                "fixes": [],
+                "default_fix": "LACEE"
+              },
+              {
+                "bearings": "250,020",
+                "fixes": [],
+                "default_fix": "MARNR"
+              }
+            ],
+            "departure": [
+              {
+                "bearings": "009,042",
+                "fixes": [],
+                "default_fix": "ALPSE"
+              },
+              {
+                "bearings": "88,125",
+                "fixes": [
+                  {
+                    "fix": "BANDR",
+                    "altitude": [8000, 23000]
+                  }
+                ],
+                "default_fix": "BANDR"
+              },
+              {
+                "bearings": "106,173",
+                "fixes": [
+                  {
+                    "fix": "SUMMA",
+                    "altitude": [23000, 60000]
+                  }
+                ],
+                "default_fix": "SUMMA"
+              },
+              {
+                "bearings": "174,193",
+                "fixes": [
+                  {
+                    "fix": "BUWZO",
+                    "altitude": [100, 600],
+                    "dest_airport": ["KPDX"]
+                  },
+                  {
+                    "fix": "ALDER",
+                    "altitude": [100, 230]
+                  }
+                ],
+                "default_fix": "SUMMA"
+              },
+              {
+                "bearings": "194,250",
+                "fixes": [
+                  {
+                    "fix": "ELMAA",
+                    "altitude": [240, 600]
+                  }
+                ],
+                "default_fix": "ELMAA"
+              },
+              {
+                "bearings": "251,336",
+                "fixes": [
+                  {
+                    "fix": "BANGR",
+                    "altitude": [150, 600]
+                  }
+                ],
+                "default_fix": "ARRIE"
+              },
+              {
+                "bearings": "324,010",
+                "fixes": [],
+                "default_fix": "PAE"
+              }
+            ],
+            "overflight": [
+              {
+                "bearings": "020,090",
+                "fixes": [],
+                "default_fix": "GLASR"
+              },
+              {
+                "bearings": "090,165",
+                "fixes": [],
+                "default_fix": "HUMPP"
+              },
+              {
+                "bearings": "165,250",
+                "fixes": [],
+                "default_fix": "LACEE"
+              },
+              {
+                "bearings": "250,020",
+                "fixes": [],
+                "default_fix": "MARNR"
+              }
+            ]
+          }
+        ]
+      }
     },
     "configurations": {}
   },

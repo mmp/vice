@@ -43,7 +43,7 @@
   },
   "facility_adaptations": {
     "configurations": {
-      "KPD": {
+      "1": {
         "go_around_assignments": {
           "KPDX/28R": "1N",
           "KPDX/10L": "1N",
@@ -51,15 +51,14 @@
           "KPDX/10R": "1D"
         },
         "inbound_assignments": {
-          "HELNS": "1N",
-          "HHOODEast": "1N",
+          "HHOOD East Flow": "1N",
           "Hawaii": "1D",
-          "KRATREast": "1N",
-          "OCITYEast": "1D",
-          "TMBRSEast": "1D",
+          "North": "1N",
+          "South Jets": "1D",
           "TOU": "1N",
           "V112.W": "1N",
-          "V165.S": "1N"
+          "North Props": "1N",
+          "South Props": "1D"
         },
         "departure_assignments": {
           "KHIO": "1V",
@@ -71,33 +70,33 @@
           "1N": ["1F"]
         }
       },
-      "KP1": {
+      "F10": {
         "go_around_assignments": {
           "KPDX": "1F"
         },
         "inbound_assignments": {
-          "HHOODEast_Final": "1F",
-          "KRATREast_Final": "1F",
-          "TMBRSEast_Final": "1F"
+          "HHOOD Final 10": "1F",
+          "North Final 10": "1F",
+          "South Final 10": "1F"
         },
         "default_consolidation": {
           "1F": []
         }
       },
-      "KP2": {
+      "F28": {
         "go_around_assignments": {
           "KPDX": "1F"
         },
         "inbound_assignments": {
-          "HHOODWest_Final": "1F",
-          "KRATRWest_Final": "1F",
-          "TMBRSWest_Final": "1F"
+          "HHOOD Final 28": "1F",
+          "North Final 28": "1F",
+          "South Final 28": "1F"
         },
         "default_consolidation": {
           "1F": []
         }
       },
-      "KP3": {
+      "2": {
         "go_around_assignments": {
           "KPDX/28R": "1N",
           "KPDX/10L": "1N",
@@ -105,19 +104,18 @@
           "KPDX/10R": "1D"
         },
         "inbound_assignments": {
-          "HELNS": "1N",
-          "HHOODWest": "1N",
+          "HHOOD West Flow": "1N",
           "Hawaii": "1D",
-          "KRATRWest": "1N",
-          "OCITYWest": "1D",
-          "TMBRSWest": "1D",
+          "North": "1N",
+          "South Jets": "1D",
           "TOU": "1N",
           "V112.W": "1N",
-          "V165.S": "1N"
+          "North Props": "1N",
+          "South Props": "1D"
         },
         "departure_assignments": {
           "KHIO": "1V",
-          "KPDX": "1N",
+          "KPDX": "1D",
           "KSLE": "1D"
         },
         "default_consolidation": {
@@ -127,6 +125,118 @@
       }
     },
     "center": "KPDX",
+    "airports": {
+      "PDX": {},
+      "HIO": {}
+    },
+    "automatic_scratchpad_assignment": [
+      {
+        "config_plan": "*",
+        "entry_fix": "HIO",
+        "exit_fix": "IMB",
+        "altitude": "*",
+        "scratchpad1": "CSM",
+        "flight_type": "P"
+      }
+    ],
+    "significant_points": {
+      "LAVAA": {},
+      "COUGA": {
+        "short_name": "COU"
+      },
+      "SUNED": {},
+      "WHAMY": {
+        "short_name": "WMY"
+      },
+      "PDT": {},
+      "YKM": {},
+      "OLM": {},
+      "SEA": {},
+      "AST": {},
+      "LTJ": {},
+      "ARRIE": {
+        "short_name": "ARR"
+      },
+      "BTG": {}
+    },
+    "fix_pair_configuration": {
+      "plans": {
+        "2": "RWY28",
+        "1": "RWY10"
+      },
+      "fix_pair_assignments": {
+        "arrival": [],
+        "departure": [
+          {
+            "fix_pair": ["PDX", "BTG"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "ARR"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "LTJ"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "AST"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "SEA"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "OLM"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "YKM"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "COU"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "PDT"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "SUN"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          },
+          {
+            "fix_pair": ["PDX", "LAV"],
+            "tcp": {
+              "2,1": "1N"
+            }
+          }
+        ],
+        "overflight": []
+      }
+    },
     "filters": {
       "inhibit_ca": [
         {
@@ -184,10 +294,10 @@
       "JUDAH": "CSM",
       "HRMNS": "HRM",
       "HYJOE": "HRM",
-      "MINNE": "MNE",
-      "EASON": "MNE",
-      "FAMUK": "MNE",
-      "HISKU": "MNE",
+      "MINNE": "MIN",
+      "EASON": "MIN",
+      "FAMUK": "MIN",
+      "HISKU": "MIN",
       "EASON.H": "BER",
       "EUG.H": "BER",
       "FAMUK.H": "BER",
@@ -197,27 +307,28 @@
     "airspace_awareness": [
       {
         "fixes": ["LAVAA", "YKM", "PDT", "SUNED"],
-        "receiving_controller": "C34"
+        "receiving_controller": "S34"
       },
       {
-        "fixes": ["MINNE", "FAMUK", "EASON", "HISKU", "ONP", "UBG", "EUG", "OED"],
-        "receiving_controller": "C06"
+        "fixes": ["MINNE", "FAMUK", "EASON", "HISKU", "ONP", "UBG", "EUG", "HARPR", "OED"],
+        "receiving_controller": "S06"
       },
       {
-        "fixes": ["COUGA", "AST", "TOU"],
-        "receiving_controller": "C32"
+        "fixes": ["COUGA", "AST", "TOU", "ALDER"],
+        "receiving_controller": "S32"
       },
       {
         "fixes": ["ARRIE", "OLM"],
-        "receiving_controller": "C02"
+        "receiving_controller": "S02"
       },
       {
-        "fixes": ["HRMNS", "CHISM", "DSD", "WHAMY", "SYNKR", "PUHTS", "JUDAH", "IMB", "KOATA", "TIMEE"],
-        "receiving_controller": "C05"
+        "fixes": ["HRMNS", "HYJOE", "CHISM", "DSD", "WHAMY", "SYNKR", "PUHTS", "JUDAH", "IMB", "KOATA", "TIMEE"],
+        "receiving_controller": "S05"
       }
     ],
     "areas": {
       "1": {
+        "range": 55,
         "video_maps": [
           "P80 EOVM",
           "ALL FIXES (P80)",
@@ -265,7 +376,7 @@
   "handoff_ids": [
     {
       "id": "ZSE",
-      "prefix": "C"
+      "prefix": "S"
     }
   ]
 }
