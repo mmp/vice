@@ -621,6 +621,8 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 			e.ErrorString("exit %q not found in departure route", depExit)
 		}
 
+		ap.checkDepartureRouteAlongSID(icao, &ap.Departures[i], e)
+
 		// The slop above lets a route name places the database doesn't have,
 		// which an enroute route legitimately does. The fixes up to the exit
 		// are inside the facility, so those it has to know.
@@ -1030,6 +1032,140 @@ func ChartedSIDPaths(s SID) [][]string {
 		}
 	}
 	return paths
+}
+
+// exitSIDs returns the base names of the SIDs that the airport's departure
+// routes fly for the given exit, in sorted order.
+func (ap *Airport) exitSIDs(exit string) []string {
+	sids := make(map[string]bool)
+	for _, exitRoutes := range ap.DepartureRoutes {
+		for exitID, routes := range exitRoutes {
+			if exitID.Base() != exit {
+				continue
+			}
+			for _, er := range routes {
+				if base, _, _ := strings.Cut(er.SID, "."); base != "" {
+					sids[base] = true
+				}
+			}
+		}
+	}
+	return util.SortedMapKeys(sids)
+}
+
+// commonPrefixLen returns how many leading elements the two slices share.
+func commonPrefixLen(a, b []string) int {
+	n := 0
+	for n < len(a) && n < len(b) && a[n] == b[n] {
+		n++
+	}
+	return n
+}
+
+// checkDepartureRouteAlongSID flags a departure whose route includes charted
+// fixes of its exit's SID between the exit and the fix where the route
+// leaves the SID: these hinder matching up routes from real-world flights.
+func (ap *Airport) checkDepartureRouteAlongSID(icao ICAOAirportCode, dep *Departure, e *util.ErrorLogger) {
+	exit := dep.Exit.Base()
+	fixes := util.MapSlice(dep.RouteWaypoints, func(wp Waypoint) string { return wp.Fix })
+	exitIdx := slices.Index(fixes, exit)
+	if exitIdx == -1 || exitIdx+1 == len(fixes) {
+		return
+	}
+	after := fixes[exitIdx+1:]
+
+	// fixesFollowed is how many of the route's fixes past the exit the path
+	// charts in order, starting where it reaches the first of them. A path
+	// that reaches that fix behind the exit follows none of them: the route
+	// joins the SID there rather than carrying on along it.
+	fixesFollowed := func(path []string) int {
+		start := slices.Index(path, after[0])
+		if start == -1 {
+			return 0
+		}
+		if exitAt := slices.Index(path, exit); exitAt != -1 && start <= exitAt {
+			return 0
+		}
+		return commonPrefixLen(after, path[start:])
+	}
+
+	best, bestSID := 0, ""
+	for _, sid := range ap.exitSIDs(exit) {
+		s, ok := LookupSID(icao, sid)
+		if !ok {
+			continue
+		}
+		for _, path := range ChartedSIDPaths(s) {
+			if n := fixesFollowed(path); n > best {
+				best, bestSID = n, sid
+			}
+		}
+	}
+
+	if best > 1 {
+		newExit := after[best-1]
+		e.ErrorString(`route follows the %s SID past the exit to %s; make %s the exit and start the route there, `+
+			`with "sid" flying the SID from the CIFP and "departure_override" giving any tower-assigned heading `+
+			`or actions in place of hand-written "waypoints"`, bestSID, newExit, newExit)
+	}
+}
+
+// appendUnique adds fix to fixes unless it is empty or already there.
+func appendUnique(fixes []string, fix string) []string {
+	if fix == "" || slices.Contains(fixes, fix) {
+		return fixes
+	}
+	return append(fixes, fix)
+}
+
+// SIDPathExits returns the exits a route implies by where its first fix
+// joins a charted path of the named SIDs: the exits behind the fix on those
+// paths and, for paths with none behind, the exits ahead of it. wps is the
+// route's parsed waypoints, already trimmed of airport ids; exits holds the
+// exit base names to look for. SID names tolerate a stale revision.
+func SIDPathExits(icao ICAOAirportCode, wps WaypointArray, exits map[string]bool,
+	sids []string) (behind, ahead []string) {
+	i := slices.IndexFunc(wps, func(wp Waypoint) bool { return IsNamedFix(wp.Fix) })
+	if i == -1 {
+		return
+	}
+	first := wps[i].Fix
+
+	exitBefore := func(path []string, at int) string {
+		for _, fix := range slices.Backward(path[:at]) {
+			if exits[fix] {
+				return fix
+			}
+		}
+		return ""
+	}
+	exitAfter := func(path []string, at int) string {
+		for _, fix := range path[at+1:] {
+			if exits[fix] {
+				return fix
+			}
+		}
+		return ""
+	}
+
+	for _, name := range sids {
+		s, ok := LookupSID(icao, name)
+		if !ok {
+			continue
+		}
+		for _, path := range ChartedSIDPaths(s) {
+			j := slices.Index(path, first)
+			if j == -1 {
+				continue
+			}
+			if exit := exitBefore(path, j); exit != "" {
+				behind = appendUnique(behind, exit)
+			} else {
+				ahead = appendUnique(ahead, exitAfter(path, j))
+			}
+		}
+	}
+	return
 }
 
 // LookupSID returns the airport's CIFP SID with the given name, tolerating a
@@ -1481,28 +1617,31 @@ func (ap *Airport) checkExits(loc Locator, e *util.ErrorLogger) {
 	}
 }
 
-// routeReachesExit reports whether a departure route out of the airport flies
-// over one of its exits or files a SID that leads to one.
+// routeReachesExit reports whether a departure route out of the airport
+// flies over one of its exits or joins a charted path of the exits' SIDs
+// that reaches one, mirroring how departureExit places published flights: a
+// route that merely names a SID without touching one of its charted fixes
+// reaches nothing.
 func (ap *Airport) routeReachesExit(route string, icao ICAOAirportCode) bool {
-	fields := strings.Fields(route)
-	if len(fields) > 0 && TokenNamesAirport(fields[0], icao) {
-		fields = fields[1:]
-	}
+	wps := TrimDepartureAirportWaypoints(RouteWaypoints(route), icao)
+
+	exits := make(map[string]bool)
+	var sids []string
 	for _, exitRoutes := range ap.DepartureRoutes {
 		for exit, routes := range exitRoutes {
-			if slices.Contains(fields, exit.Base()) {
-				return true
-			}
+			exits[exit.Base()] = true
 			for _, er := range routes {
-				if er.SID != "" && slices.ContainsFunc(fields, func(f string) bool {
-					return ProcedureBase(f) == ProcedureBase(er.SID)
-				}) {
-					return true
-				}
+				name, _, _ := strings.Cut(er.SID, ".")
+				sids = appendUnique(sids, name)
 			}
 		}
 	}
-	return false
+
+	if slices.ContainsFunc(wps, func(wp Waypoint) bool { return exits[wp.Fix] }) {
+		return true
+	}
+	behind, ahead := SIDPathExits(icao, wps, exits, sids)
+	return len(behind) > 0 || len(ahead) > 0
 }
 
 type ApproachType int

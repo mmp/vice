@@ -1188,15 +1188,15 @@ func eligibleAirportPairRoutes(routes []av.AirportPairRoute, engineType string) 
 // is never consulted: it may not be the SID the scenario flies for the gate.
 func departureExit(route string, departureAirport, destination av.ICAOAirportCode, departureFix string,
 	candidates []candidateDeparture) (candidateDeparture, bool) {
-	fields := av.TrimDepartureAirportTokens(strings.Fields(route), departureAirport)
-	fields = av.TrimDestinationAirportTokens(fields, destination)
+	wps := av.TrimDepartureAirportWaypoints(av.RouteWaypoints(route), departureAirport)
+	wps = av.TrimDestinationAirportWaypoints(wps, destination)
 	if departureFix != "" {
-		fields = append(fields, departureFix)
+		wps = append(wps, av.Waypoint{Fix: departureFix})
 	}
 
-	for _, fix := range fields {
+	for _, wp := range wps {
 		if i := slices.IndexFunc(candidates, func(c candidateDeparture) bool {
-			return c.dep.Exit.Base() == fix
+			return c.dep.Exit.Base() == wp.Fix
 		}); i != -1 {
 			return candidates[i], true
 		}
@@ -1204,70 +1204,24 @@ func departureExit(route string, departureAirport, destination av.ICAOAirportCod
 
 	// No exit fix on the route; find where its first fix joins the SIDs the
 	// exits fly.
-	first := ""
-	for _, f := range fields {
-		if _, airway := av.DB.Airways[f]; airway || av.TokenNamesProcedure(f) {
-			continue
-		}
-		first = f
-		break
-	}
-	if first == "" {
-		return candidateDeparture{}, false
-	}
-
 	exitCandidates := make(map[string]candidateDeparture)
+	exitBases := make(map[string]bool)
+	var sids []string
 	for _, c := range candidates {
-		if _, ok := exitCandidates[c.dep.Exit.Base()]; !ok {
-			exitCandidates[c.dep.Exit.Base()] = c
+		base := c.dep.Exit.Base()
+		if _, ok := exitCandidates[base]; !ok {
+			exitCandidates[base] = c
+			exitBases[base] = true
 		}
-	}
-
-	var behind, ahead []string
-	seenSIDs := make(map[string]bool)
-	for _, c := range candidates {
-		exitRoute, ok := c.exitRoutes[c.dep.Exit]
-		if !ok || exitRoute.SID == "" {
-			continue
-		}
-		name, _, _ := strings.Cut(exitRoute.SID, ".")
-		if seenSIDs[name] {
-			continue
-		}
-		seenSIDs[name] = true
-		s, ok := av.LookupSID(departureAirport, name)
-		if !ok {
-			continue
-		}
-		for _, path := range av.ChartedSIDPaths(s) {
-			i := slices.Index(path, first)
-			if i == -1 {
-				continue
-			}
-			foundBehind := false
-			for j := i - 1; j >= 0; j-- {
-				if _, ok := exitCandidates[path[j]]; ok {
-					if !slices.Contains(behind, path[j]) {
-						behind = append(behind, path[j])
-					}
-					foundBehind = true
-					break
-				}
-			}
-			if foundBehind {
-				continue
-			}
-			for j := i + 1; j < len(path); j++ {
-				if _, ok := exitCandidates[path[j]]; ok {
-					if !slices.Contains(ahead, path[j]) {
-						ahead = append(ahead, path[j])
-					}
-					break
-				}
+		if exitRoute, ok := c.exitRoutes[c.dep.Exit]; ok && exitRoute.SID != "" {
+			name, _, _ := strings.Cut(exitRoute.SID, ".")
+			if !slices.Contains(sids, name) {
+				sids = append(sids, name)
 			}
 		}
 	}
 
+	behind, ahead := av.SIDPathExits(departureAirport, wps, exitBases, sids)
 	matches := util.Select(len(behind) > 0, behind, ahead)
 	if len(matches) == 0 {
 		return candidateDeparture{}, false
@@ -1276,9 +1230,13 @@ func departureExit(route string, departureAirport, destination av.ICAOAirportCod
 		return exitCandidates[matches[0]], true
 	}
 
-	// Several paths' exits could stand in; the one nearest where the route
-	// joins the SID is the one the flight leaves through.
-	if routeFix, ok := av.DB.LookupWaypoint(first); ok {
+	// Several paths' exits could stand in; the one nearest the route's
+	// first locatable fix is the one the flight leaves through.
+	for _, wp := range wps {
+		routeFix, ok := av.DB.LookupWaypoint(wp.Fix)
+		if !ok {
+			continue
+		}
 		best, bestDistance := "", float32(0)
 		for _, m := range matches {
 			exit, ok := av.DB.LookupWaypoint(m)
@@ -1292,6 +1250,7 @@ func departureExit(route string, departureAirport, destination av.ICAOAirportCod
 		if best != "" {
 			return exitCandidates[best], true
 		}
+		break
 	}
 	return exitCandidates[matches[0]], true
 }

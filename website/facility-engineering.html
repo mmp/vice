@@ -4681,7 +4681,10 @@
                     <td>String</td>
                     <td>(<i>Optional</i>) With a route taken from the CIFP, actions and triggers that apply once the
                       aircraft is 400' above the field, where it turns on course, written as waypoint options without
-                      a fix (e.g., <code>"h280/@d1.0/ho2J"</code> gives an initial heading of 280 and then initiates a handoff to 2J after flying one mile). A bare heading given here is equivalent to one given with "initial_heading"; see below.</td>
+                      a fix (e.g., <code>"h280/@d1.0/h280/ho2J"</code> gives an initial heading of 280 and then initiates a
+                      handoff to 2J after flying one mile; note that the heading is respecified after the trigger, since a
+                      triggered group's heading ends with it and the aircraft would otherwise resume its route). A bare
+                      heading given here is equivalent to one given with "initial_heading"; see below.</td>
                   </tr>
                   <tr>
                     <td>"description"</td>
@@ -4794,7 +4797,7 @@
                 fix in front, that apply at the point 400' above the field where the aircraft turns on
                 course. <code>"departure_override": "h280"</code> is exactly
                 <code>"initial_heading": 280</code> (and it is an error to give both); adding to that,
-                <code>"h280/@d1.0/tc"</code> has the aircraft contact departure only once it has flown a mile from the turn. A heading given
+                <code>"h280/@d1.0/h280/tc"</code> has the aircraft contact departure only once it has flown a mile from the turn. A heading given
                 here supersedes the SID's charted legs at the departure end of the runway the same way
                 "initial_heading" does; altitude and speed restrictions (e.g., <code>/s210</code>) apply
                 from the turn as well.</p>
@@ -4881,7 +4884,11 @@
                     <td>"route"</td>
                     <td>String</td>
                     <td>The aircraft's route to the destination. This is mostly used so that flight strips have plausible routes, though
-                      <i>vice</i> does its best to have the aircraft follow the given route after it reaches the exit fix.</td>
+                      <i>vice</i> does its best to have the aircraft follow the given route after it reaches the exit fix.
+                      It is an error for the route to spell out the exit's SID fixes between the exit and where the route
+                      leaves the SID: real-world filings name such fixes with the SID and a transition rather than spelling
+                      them out, so they would be lost for real-traffic flights. The exit belongs at the last of the SID's
+                      fixes the route follows, with "sid" flying the aircraft there as the CIFP charts it.</td>
                   </tr>
                   <tr>
                     <td>"scratchpad"</td>

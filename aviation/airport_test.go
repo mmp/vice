@@ -133,6 +133,24 @@ func TestExitRoutesCheckJSONErrors(t *testing.T) {
 }
 
 func TestRouteReachesExit(t *testing.T) {
+	wps := func(fixes ...string) WaypointArray {
+		return util.MapSlice(fixes, func(f string) Waypoint { return Waypoint{Fix: f} })
+	}
+
+	oldDB := DB
+	DB = &StaticDatabase{
+		Airways: make(map[string][]Airway),
+		Airports: map[ICAOAirportCode]FAAAirport{
+			"KEWR": {SIDs: map[string]SID{
+				"CUTTN3": { // the scenario declares the stale CUTTN2
+					Common:             wps("ZORRO", "HANKO"),
+					EnrouteTransitions: map[string]WaypointArray{"MGM": wps("ZORRO", "HANKO", "CUTTN", "MGM")},
+				},
+			}},
+		},
+	}
+	t.Cleanup(func() { DB = oldDB })
+
 	ap := &Airport{
 		DepartureRoutes: map[RunwayID]map[ExitID]ExitRoutes{
 			"22R": {
@@ -149,8 +167,11 @@ func TestRouteReachesExit(t *testing.T) {
 		want  bool
 	}{
 		{"KEWR ELVAE NECCK WHITE Q409 CRPLR", true}, // exit fix mid-route
-		{"CUTTN2 MGM MEI", true},                    // SID reaching an exit
-		{"CUTTN1 MGM MEI", true},                    // stale SID revision
+		{"CUTTN2 CUTTN MGM MEI", true},              // resumes past the exit on the SID's path
+		{"KEWR CUTTN J75 MGM", true},                // same, with no SID token at all
+		{"CUTTN2 KEWR CUTTN MGM MEI", true},         // the airport's id behind the SID token
+		{"CUTTN2 ZORRO V1 MGM", true},               // leaves the SID before the exit; it lies ahead
+		{"CUTTN2 IGB MEI", false},                   // names the SID but never touches its charted path
 		{"OCN V23 LAX", true},                       // suffixed exit id
 		{"KEWR DIALO V276 SIE", false},              // no exit anywhere
 		{"KATL PENCL2 BNA J75 IGB", true},           // SID and exit both named
@@ -376,10 +397,12 @@ func TestDepartureOverride(t *testing.T) {
 	}
 
 	// A trigger splits the actions into ordered groups: fly heading 170 and
-	// only contact departure a mile from the turn.
-	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h170/@d1.0/tc"}
+	// only contact departure a mile from the turn. The heading is
+	// respecified after the trigger, since a triggered group's heading ends
+	// with it.
+	er = ExitRoute{ClearedAltitude: 5000, DepartureOverride: "h170/@d1.0/h170/tc"}
 	if got, want := initialized(t, er, ""),
-		"9/sid 9-mid/t090/@a713+/h170/@d1.0/tc/sid"; got != want {
+		"9/sid 9-mid/t090/@a713+/h170/@d1.0/h170/tc/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
 
@@ -415,6 +438,98 @@ func TestDepartureOverride(t *testing.T) {
 	er = ExitRoute{DepartureOverride: "h999"}
 	if _, err := er.parseDepartureOverride(); err == nil {
 		t.Errorf("no error for override with invalid heading")
+	}
+}
+
+// TestDepartureRouteAlongSID covers the check that a departure's route not
+// continue along its exit's SID past the exit fix.
+func TestDepartureRouteAlongSID(t *testing.T) {
+	wps := func(fixes ...string) WaypointArray {
+		return util.MapSlice(fixes, func(f string) Waypoint { return Waypoint{Fix: f} })
+	}
+
+	oldDB := DB
+	DB = &StaticDatabase{
+		Airports: map[ICAOAirportCode]FAAAirport{
+			"KXXX": {SIDs: map[string]SID{
+				// An MSP SCHEP1-style SID: vectors to the first fix, so no
+				// runway transitions.
+				"AAAAA1": {
+					Common:             wps("HUGIR", "MCONL", "SCHEP"),
+					EnrouteTransitions: map[string]WaypointArray{"RXANN": wps("HUGIR", "MCONL", "SCHEP", "RXANN")},
+				},
+				// An MSP COULT7-style SID whose vectored portion overflies a
+				// fix (TAXEE) the CIFP doesn't chart.
+				"BBBBB2": {
+					Common:             wps("COULT"),
+					EnrouteTransitions: map[string]WaypointArray{"DLL": wps("COULT", "LMFRY", "DLL")},
+				},
+				// An MSP WLSTN7-style SID whose fixes are all in its runway
+				// transitions.
+				"CCCCC3": {
+					RunwayTransitions:  map[string]WaypointArray{"9": wps("KXXX-27", "SNINE", "DWIYT", "WLSTN")},
+					EnrouteTransitions: map[string]WaypointArray{"GRB": wps("WLSTN", "GRB")},
+				},
+			}},
+		},
+	}
+	t.Cleanup(func() { DB = oldDB })
+
+	ap := &Airport{
+		DepartureRoutes: map[RunwayID]map[ExitID]ExitRoutes{
+			"9": {
+				"HUGIR.JET": ExitRoutes{&ExitRoute{SID: "AAAAA1"}},
+				"RXANN.JET": ExitRoutes{&ExitRoute{SID: "AAAAA1"}},
+				"TAXEE":     ExitRoutes{&ExitRoute{SID: "BBBBB2"}},
+				"SNINE":     ExitRoutes{&ExitRoute{SID: "CCCCC3"}},
+				"NOSID":     ExitRoutes{&ExitRoute{}},
+			},
+		},
+	}
+
+	for _, tc := range []struct {
+		name  string
+		exit  ExitID
+		route string
+		want  string // expected new exit in the error, "" for no error
+	}{
+		{name: "SID fixes spelled past the exit", exit: "HUGIR.JET",
+			route: "HUGIR MCONL SCHEP RXANN TEYOU LLUKY", want: "RXANN"},
+		{name: "route leaves the SID at the exit", exit: "RXANN.JET",
+			route: "RXANN TEYOU LLUKY", want: ""},
+		{name: "restrictions on the route's fixes", exit: "HUGIR.JET",
+			route: "HUGIR MCONL/a9000+ SCHEP RXANN TEYOU", want: "RXANN"},
+		{name: "leaving the SID at the next charted fix is fine", exit: "HUGIR.JET",
+			route: "HUGIR MCONL DIRCT", want: ""},
+		{name: "two charted fixes past the exit", exit: "HUGIR.JET",
+			route: "HUGIR MCONL SCHEP DIRCT", want: "SCHEP"},
+		{name: "an exit the CIFP doesn't chart", exit: "TAXEE",
+			route: "TAXEE COULT LMFRY DLL DABJU", want: "DLL"},
+		{name: "fixes from the runway transition", exit: "SNINE",
+			route: "SNINE DWIYT WLSTN GRB", want: "GRB"},
+		{name: "an exit whose route names no SID", exit: "NOSID",
+			route: "NOSID MCONL SCHEP", want: ""},
+		{name: "an off-SID fix right after the exit", exit: "HUGIR.JET",
+			route: "HUGIR DIRCT SCHEP", want: ""},
+		{name: "the exit ends the route", exit: "HUGIR.JET",
+			route: "TONCE HUGIR", want: ""},
+	} {
+		var e util.ErrorLogger
+		dep := Departure{Exit: tc.exit, Route: tc.route}
+		var err error
+		if dep.RouteWaypoints, err = parseWaypoints(tc.route); err != nil {
+			t.Fatalf("%s: %v", tc.route, err)
+		}
+		ap.checkDepartureRouteAlongSID("KXXX", &dep, &e)
+		if tc.want == "" {
+			if e.HaveErrors() {
+				t.Errorf("%s: unexpected error: %s", tc.name, e.String())
+			}
+		} else if !e.HaveErrors() {
+			t.Errorf("%s: no error returned", tc.name)
+		} else if s := e.String(); !strings.Contains(s, "make "+tc.want+" the exit") {
+			t.Errorf("%s: error doesn't advise exit %s: %s", tc.name, tc.want, s)
+		}
 	}
 }
 

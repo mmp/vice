@@ -1266,21 +1266,21 @@
       },
       "departure_routes": {
         "35L": {
-          "JOHKR,SLVRR,JOTNU,BLH,BOJAC": {
+          "KENNO,SLVRR,JOTNU,BLH,BOJAC": {
             "cleared_altitude": 7000,
             "sid": "OYODA2"
           },
-          "RATPK,GEEOO,NICLE,PGA,HOCEE,IWANS,RASLR": {
+          "RATPK,GEEOO,NICLE,PGA,HOCEE,IWANS,ZAYNE": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4"
           }
         },
         "17R": {
-          "JOHKR,SLVRR,JOTNU,BLH,BOJAC": {
+          "KENNO,SLVRR,JOTNU,BLH,BOJAC": {
             "cleared_altitude": 7000,
             "sid": "OYODA2"
           },
-          "RATPK,GEEOO,NICLE,PGA,HOCEE,IWANS,RASLR": {
+          "RATPK,GEEOO,NICLE,PGA,HOCEE,IWANS,ZAYNE": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4"
           }
@@ -1308,8 +1308,8 @@
           ],
           "altitude": 32000,
           "destination": "KSFO",
-          "route": "JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO RUSME DYAMD5",
-          "exit": "JOHKR"
+          "route": "KENNO RUSME DYAMD5",
+          "exit": "KENNO"
         },
         {
           "airlines": [
@@ -1344,14 +1344,14 @@
           ],
           "altitude": 32000,
           "destination": "KSDL",
-          "route": "RASLR ROHCK ZAYNE WOTRO",
-          "exit": "RASLR"
+          "route": "ZAYNE WOTRO",
+          "exit": "ZAYNE"
         }
       ],
       "exit_categories": {
-        "JOHKR": "North",
+        "KENNO": "North",
         "NICLE": "Northeast",
-        "RASLR": "South",
+        "ZAYNE": "South",
         "IWANS": "East",
         "SLVRR": "West"
       },

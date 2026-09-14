@@ -138,7 +138,7 @@
             "cleared_altitude": 8000,
             "sid": "BEAVY8"
           },
-          "TNSLY,BOBZY,BNA": {
+          "TNSLY,BOBZY,REWET,BNA": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
@@ -226,7 +226,7 @@
             "cleared_altitude": 8000,
             "sid": "BEAVY8"
           },
-          "TNSLY,BOBZY,BNA": {
+          "TNSLY,BOBZY,REWET,BNA": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
@@ -293,6 +293,11 @@
             "cleared_altitude": 8000,
             "sid": "BOBZY7",
             "waypoints": "_CLT_19L_183_2/h240 LACHN YNGUN"
+          },
+          "REWET": {
+            "cleared_altitude": 8000,
+            "sid": "BOBZY7",
+            "waypoints": "_CLT_19L_183_2/h240 LACHN YNGUN BRAYN REWET"
           },
           "BNA": {
             "cleared_altitude": 8000,
@@ -371,6 +376,11 @@
             "sid": "BOBZY7",
             "waypoints": "N035.10.01.240,W080.56.52.902/ho1W N035.08.04.909,W081.00.05.795 N035.06.52.715,W081.08.41.163/a8000- YNGUN/a12000+/hoC43"
           },
+          "REWET": {
+            "cleared_altitude": 8000,
+            "sid": "BOBZY7",
+            "waypoints": "N035.10.01.240,W080.56.52.902/ho1W N035.08.04.909,W081.00.05.795 N035.06.52.715,W081.08.41.163/a8000- YNGUN/a12000+/hoC43 BRAYN REWET"
+          },
           "BNA": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7",
@@ -427,7 +437,7 @@
             "cleared_altitude": 8000,
             "sid": "BEAVY8"
           },
-          "TNSLY,BOBZY,BNA": {
+          "TNSLY,BOBZY,REWET,BNA": {
             "cleared_altitude": 8000,
             "sid": "BOBZY7"
           },
@@ -488,6 +498,11 @@
             "cleared_altitude": 8000,
             "sid": "BOBZY7",
             "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- YNGUN/a12000+/hoC43"
+          },
+          "REWET": {
+            "cleared_altitude": 8000,
+            "sid": "BOBZY7",
+            "waypoints": "KCLT-19L/ho1W N035.17.04.722,W081.00.22.906 N035.16.19.541,W081.08.47.618/a8000- YNGUN/a12000+/hoC43 BRAYN REWET"
           },
           "BNA": {
             "cleared_altitude": 8000,
@@ -614,8 +629,8 @@
             }
           ],
           "destination": "KMSL",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET GQO HUPOK",
+          "exit": "REWET",
+          "route": "REWET GQO HUPOK",
           "altitude": 26000
         },
         {
@@ -626,8 +641,8 @@
             }
           ],
           "destination": "KPAH",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET",
+          "exit": "REWET",
+          "route": "REWET",
           "altitude": 26000
         },
         {
@@ -770,8 +785,8 @@
             }
           ],
           "destination": "KDFW",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET JALAR MEM MEEOW FEWWW BRDJE5",
+          "exit": "REWET",
+          "route": "REWET JALAR MEM MEEOW FEWWW BRDJE5",
           "altitude": 36000
         },
         {
@@ -890,8 +905,8 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET VXV WUDYA SIDAE DIRTT LMN DRABS BRWRY LAWGR3",
+          "exit": "REWET",
+          "route": "REWET VXV WUDYA SIDAE DIRTT LMN DRABS BRWRY LAWGR3",
           "altitude": 40000
         },
         {
@@ -902,8 +917,8 @@
             }
           ],
           "destination": "KBNA",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET VXV SWFFT2",
+          "exit": "REWET",
+          "route": "REWET VXV SWFFT2",
           "altitude": 28000
         },
         {
@@ -926,8 +941,8 @@
             }
           ],
           "destination": "KDFW",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET JALAR MEM MEEOW FEWWW BRDJE5",
+          "exit": "REWET",
+          "route": "REWET JALAR MEM MEEOW FEWWW BRDJE5",
           "altitude": 36000
         },
         {
@@ -1046,8 +1061,8 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET GQO KM33M WLDER KM39I SPOKE KK45E WRIGL KYLER J28 GCK KIISS CLASH4",
+          "exit": "REWET",
+          "route": "REWET GQO KM33M WLDER KM39I SPOKE KK45E WRIGL KYLER J28 GCK KIISS CLASH4",
           "altitude": 28000
         },
         {
@@ -1758,8 +1773,8 @@
             }
           ],
           "destination": "KBNA",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET VXV SWFFT2",
+          "exit": "REWET",
+          "route": "REWET VXV SWFFT2",
           "altitude": 20000
         },
         {
@@ -2770,8 +2785,8 @@
             }
           ],
           "destination": "KTYS",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET VXV",
+          "exit": "REWET",
+          "route": "REWET VXV",
           "altitude": 22000
         },
         {
@@ -2946,8 +2961,8 @@
             }
           ],
           "destination": "KBNA",
-          "exit": "BOBZY",
-          "route": "BOBZY BRAYN REWET VXV SWFFT2",
+          "exit": "REWET",
+          "route": "REWET VXV SWFFT2",
           "altitude": 34000
         },
         {
@@ -3287,6 +3302,7 @@
         "JENDO": "WEST",
         "GANDT": "WEST",
         "BOBZY": "WEST",
+        "REWET": "WEST",
         "TNSLY": "WEST",
         "BNA": "WEST",
         "IPTAY": "WEST",

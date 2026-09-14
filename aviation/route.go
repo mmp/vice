@@ -917,6 +917,8 @@ func (wa WaypointArray) Clone() WaypointArray {
 	return wps
 }
 
+// RouteString renders the waypoints back to a route string. A run of them
+// sharing an airway collapses to its two ends.
 func (wa WaypointArray) RouteString() string {
 	var r []string
 	airway := ""
@@ -2393,6 +2395,13 @@ func TokenNamesProcedure(token string) bool {
 // leading procedure token, since filings render the SID ahead of them. A
 // token leading onto an airway that reaches a further fix stays: it is the
 // airway's entry, the airport's id doubling as its VOR's.
+//
+// This and TrimDestinationAirportTokens are for normalizing a published route
+// that stays as text; code that goes on to match the route's fixes wants the
+// WaypointArray pair below. The two pairs carry the same rules and have to
+// stay in step: waypoints parsed by RouteWaypoints can't be rendered back to
+// a route string (see RouteString), so neither pair can be written in terms
+// of the other.
 func TrimDepartureAirportTokens(fields []string, icao ICAOAirportCode) []string {
 	i, skippedProcedure := 0, false
 	for i < len(fields) {
@@ -2441,6 +2450,51 @@ func TrimDestinationAirportTokens(fields []string, icao ICAOAirportCode) []strin
 		last--
 	}
 	return fields
+}
+
+// TrimDepartureAirportWaypoints removes the leading waypoints that name the
+// departure airport, as TrimDepartureAirportTokens does for a route that is
+// still text; this is the form for code that matches the route's fixes.
+func TrimDepartureAirportWaypoints(wps WaypointArray, icao ICAOAirportCode) WaypointArray {
+	i, skippedProcedure := 0, false
+	for i < len(wps) {
+		if TokenNamesAirport(wps[i].Fix, icao) {
+			if wps[i].Airway() != "" && i+1 < len(wps) {
+				break
+			}
+			wps = slices.Delete(wps, i, i+1)
+			continue
+		}
+		if skippedProcedure || !TokenNamesProcedure(wps[i].Fix) {
+			break
+		}
+		skippedProcedure = true
+		i++
+	}
+	return wps
+}
+
+// TrimDestinationAirportWaypoints removes the trailing waypoints that name
+// the destination airport: TrimDepartureAirportWaypoints's mirror, and the
+// WaypointArray form of TrimDestinationAirportTokens.
+func TrimDestinationAirportWaypoints(wps WaypointArray, icao ICAOAirportCode) WaypointArray {
+	last, skippedProcedure := len(wps)-1, false
+	for last >= 0 {
+		if TokenNamesAirport(wps[last].Fix, icao) {
+			if last >= 1 && wps[last-1].Airway() != "" {
+				break
+			}
+			wps = slices.Delete(wps, last, last+1)
+			last--
+			continue
+		}
+		if skippedProcedure || !TokenNamesProcedure(wps[last].Fix) {
+			break
+		}
+		skippedProcedure = true
+		last--
+	}
+	return wps
 }
 
 // routeProcedureToken returns the last token of a route into or out of the

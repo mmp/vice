@@ -283,41 +283,41 @@
             "aircraft": ["heavy"],
             "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
           },
-          "HRBEK.HEAVYJET": {
+          "FAR.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           },
-          "ZOGAP.HEAVYJET": {
+          "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           },
-          "SNINE.HEAVYJET": {
+          "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           },
-          "JEDET.HEAVYJET": {
+          "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h140/tc"
+            "departure_override": "h140/@d3.8/h140/tc"
           },
-          "FOBUG.HEAVYJET": {
+          "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["heavy"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h160/tc"
+            "departure_override": "h160/@d3.8/h160/tc"
           },
-          "HUGIR.HEAVYJET": {
+          "RXANN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h170/tc"
+            "departure_override": "h170/@d3.8/h170/tc"
           },
           "LSE.JET": {
             "assigned_altitude": 7000,
@@ -355,77 +355,77 @@
             "aircraft": ["prop"],
             "waypoints": "N044.50.50.093,W093.08.28.941/h170/tc"
           },
-          "HUGIR.JET": {
+          "RXANN.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h170/tc"
+            "departure_override": "h170/@d3.8/h170/tc"
           },
-          "HUGIR.TURBOPROP": {
+          "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h170/tc"
+            "departure_override": "h170/@d3.8/h170/tc"
           },
-          "HUGIR.PISTON": {
+          "RXANN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
             "aircraft": ["prop"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h170/tc"
+            "departure_override": "h170/@d3.8/h170/tc"
           },
-          "JURNY.JET": {
+          "ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h170/tc"
+            "departure_override": "h170/@d3.8/h170/tc"
           },
-          "JURNY.TURBOPROP": {
+          "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h170/tc"
+            "departure_override": "h170/@d3.8/h170/tc"
           },
-          "JURNY.PISTON": {
+          "ONTIJ.PISTON,ORSKY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
             "aircraft": ["prop"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h170/tc"
+            "departure_override": "h170/@d3.8/h170/tc"
           },
-          "FOBUG.JET": {
+          "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h160/tc"
+            "departure_override": "h160/@d3.8/h160/tc"
           },
-          "FOBUG.TURBOPROP": {
+          "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h160/tc"
+            "departure_override": "h160/@d3.8/h160/tc"
           },
-          "FOBUG.PISTON": {
+          "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
             "aircraft": ["prop"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h160/tc"
+            "departure_override": "h160/@d3.8/h160/tc"
           },
-          "JEDET.JET": {
+          "ODI.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h140/tc"
+            "departure_override": "h140/@d3.8/h140/tc"
           },
-          "JEDET.TURBOPROP": {
+          "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h140/tc"
+            "departure_override": "h140/@d3.8/h140/tc"
           },
-          "JEDET.PISTON": {
+          "ODI.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
             "aircraft": ["prop"],
-            "waypoints": "N044.50.50.093,W093.08.28.941/h140/tc"
+            "departure_override": "h140/@d3.8/h140/tc"
           }
         },
         "12R_17": {
@@ -435,41 +435,41 @@
             "aircraft": ["heavy"],
             "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
           },
-          "HRBEK.HEAVYJET": {
+          "FAR.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           },
-          "ZOGAP.HEAVYJET": {
+          "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           },
-          "SNINE.HEAVYJET": {
+          "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           },
-          "JEDET.HEAVYJET": {
+          "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           },
-          "FOBUG.HEAVYJET": {
+          "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           },
-          "HUGIR.HEAVYJET": {
+          "RXANN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "waypoints": "N044.52.07.272,W093.11.21.701/h121/tc"
+            "departure_override": "h121/@d1.4/h121/tc"
           }
         },
         "12L": {
@@ -491,95 +491,95 @@
             "aircraft": ["prop"],
             "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
           },
-          "HRBEK.JET": {
+          "FAR.JET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "HRBEK.TURBOPROP": {
+          "KBREW.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "KBREW2",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "HRBEK.PISTON": {
+          "FAR.PISTON,KBREW.PISTON": {
             "assigned_altitude": 4000,
             "sid": "KBREW2",
             "aircraft": ["prop"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "ZOGAP.JET": {
+          "SMERF.JET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "ZOGAP.TURBOPROP": {
+          "SMERF.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SMERF7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "ZOGAP.PISTON": {
+          "SMERF.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SMERF7",
             "aircraft": ["prop"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "TONCA.JET": {
+          "LEINY.JET": {
             "assigned_altitude": 7000,
             "sid": "LEINY6",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "TONCA.TURBOPROP": {
+          "LEINY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "LEINY6",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "TONCA.PISTON": {
+          "LEINY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "LEINY6",
             "aircraft": ["prop"],
-            "waypoints": "N044.52.52.673,W093.07.22.337/h070/tc"
+            "departure_override": "h070/@d3.6/h070/tc"
           },
-          "TAXEE.JET": {
+          "DLL.JET": {
             "assigned_altitude": 7000,
             "sid": "COULT7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.52.06.145,W093.07.30.961/h110/tc"
+            "departure_override": "h110/@d3.7/h110/tc"
           },
-          "TAXEE.TURBOPROP": {
+          "DLL.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "COULT7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.52.06.145,W093.07.30.961/h110/tc"
+            "departure_override": "h110/@d3.7/h110/tc"
           },
-          "TAXEE.PISTON": {
+          "DLL.PISTON": {
             "assigned_altitude": 4000,
             "sid": "COULT7",
             "aircraft": ["prop"],
-            "waypoints": "N044.52.06.145,W093.07.30.961/h110/tc"
+            "departure_override": "h110/@d3.7/h110/tc"
           },
-          "SNINE.JET": {
+          "GRB.JET,WLSTN.JET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.52.06.145,W093.07.30.961/h040/tc"
+            "departure_override": "h040/@d3.7/h040/tc"
           },
-          "SNINE.TURBOPROP": {
+          "GRB.TURBOPROP,WLSTN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "WLSTN7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.52.06.145,W093.07.30.961/h040/tc"
+            "departure_override": "h040/@d3.7/h040/tc"
           },
-          "SNINE.PISTON": {
+          "GRB.PISTON,WLSTN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "WLSTN7",
             "aircraft": ["prop"],
-            "waypoints": "N044.52.06.145,W093.07.30.961/h040/tc"
+            "departure_override": "h040/@d3.7/h040/tc"
           }
         },
         "30L": {
@@ -589,41 +589,41 @@
             "aircraft": ["heavy"],
             "waypoints": "N044.53.34.489,W093.14.44.729/h301/tc"
           },
-          "HRBEK.HEAVYJET": {
+          "FAR.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h301/tc"
+            "departure_override": "h301/@d1.4/h301/tc"
           },
-          "ZOGAP.HEAVYJET": {
+          "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h301/tc"
+            "departure_override": "h301/@d1.4/h301/tc"
           },
-          "SNINE.HEAVYJET": {
+          "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h301/tc"
+            "departure_override": "h301/@d1.4/h301/tc"
           },
-          "JEDET.HEAVYJET": {
+          "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "FOBUG.HEAVYJET": {
+          "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "HUGIR.HEAVYJET": {
+          "RXANN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h280/tc"
+            "departure_override": "h280/@d1.4/h280/tc"
           },
           "LSE.JET,FGT.JET": {
             "assigned_altitude": 7000,
@@ -643,77 +643,77 @@
             "aircraft": ["prop"],
             "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
           },
-          "HUGIR.JET": {
+          "RXANN.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.53.25.206,W093.15.14.117/h280/tc"
+            "departure_override": "h280/@d1.6/h280/tc"
           },
-          "HUGIR.TURBOPROP": {
+          "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.53.25.206,W093.15.14.117/h280/tc"
+            "departure_override": "h280/@d1.6/h280/tc"
           },
-          "HUGIR.PISTON": {
+          "RXANN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
             "aircraft": ["prop"],
-            "waypoints": "N044.53.25.206,W093.15.14.117/h280/tc"
+            "departure_override": "h280/@d1.6/h280/tc"
           },
-          "JURNY.JET": {
+          "ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "JURNY.TURBOPROP": {
+          "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "JURNY.PISTON": {
+          "ONTIJ.PISTON,ORSKY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
             "aircraft": ["prop"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "FOBUG.JET": {
+          "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "FOBUG.TURBOPROP": {
+          "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "FOBUG.PISTON": {
+          "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
             "aircraft": ["prop"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "JEDET.JET": {
+          "ODI.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "JEDET.TURBOPROP": {
+          "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           },
-          "JEDET.PISTON": {
+          "ODI.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
             "aircraft": ["prop"],
-            "waypoints": "N044.53.09.015,W093.14.56.127/h260/tc"
+            "departure_override": "h260/@d1.4/h260/tc"
           }
         },
         "30L_17": {
@@ -723,41 +723,41 @@
             "aircraft": ["heavy"],
             "waypoints": "N044.53.34.489,W093.14.44.729/h301/tc"
           },
-          "HRBEK.HEAVYJET": {
+          "FAR.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h301/tc"
+            "departure_override": "h301/@d1.4/h301/tc"
           },
-          "ZOGAP.HEAVYJET": {
+          "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h301/tc"
+            "departure_override": "h301/@d1.4/h301/tc"
           },
-          "SNINE.HEAVYJET": {
+          "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h301/tc"
+            "departure_override": "h301/@d1.4/h301/tc"
           },
-          "JEDET.HEAVYJET": {
+          "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h230/tc"
+            "departure_override": "h230/@d1.4/h230/tc"
           },
-          "FOBUG.HEAVYJET": {
+          "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h230/tc"
+            "departure_override": "h230/@d1.4/h230/tc"
           },
-          "HUGIR.HEAVYJET": {
+          "RXANN.HEAVYJET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "waypoints": "N044.53.34.489,W093.14.44.729/h230/tc"
+            "departure_override": "h230/@d1.4/h230/tc"
           }
         },
         "30R": {
@@ -779,95 +779,95 @@
             "aircraft": ["prop"],
             "waypoints": "N044.54.04.647,W093.13.30.433/h340/tc"
           },
-          "HRBEK.JET": {
+          "FAR.JET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.54.08.107,W093.13.54.933/h320/tc"
+            "departure_override": "h320/@d1.4/h320/tc"
           },
-          "HRBEK.TURBOPROP": {
+          "KBREW.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "KBREW2",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.54.08.107,W093.13.54.933/h320/tc"
+            "departure_override": "h320/@d1.4/h320/tc"
           },
-          "HRBEK.PISTON": {
+          "FAR.PISTON,KBREW.PISTON": {
             "assigned_altitude": 4000,
             "sid": "KBREW2",
             "aircraft": ["prop"],
-            "waypoints": "N044.54.08.107,W093.13.54.933/h320/tc"
+            "departure_override": "h320/@d1.4/h320/tc"
           },
-          "ZOGAP.JET": {
+          "SMERF.JET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.53.49.582,W093.13.50.841/h301/tc"
+            "departure_override": "h301/@d1.1/h301/tc"
           },
-          "ZOGAP.TURBOPROP": {
+          "SMERF.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SMERF7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.53.49.582,W093.13.50.841/h301/tc"
+            "departure_override": "h301/@d1.1/h301/tc"
           },
-          "ZOGAP.PISTON": {
+          "SMERF.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SMERF7",
             "aircraft": ["prop"],
-            "waypoints": "N044.53.49.582,W093.13.50.841/h301/tc"
+            "departure_override": "h301/@d1.1/h301/tc"
           },
-          "TONCA.JET": {
+          "LEINY.JET": {
             "assigned_altitude": 7000,
             "sid": "LEINY6",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.53.49.582,W093.13.50.841/h301/tc"
+            "departure_override": "h301/@d1.1/h301/tc"
           },
-          "TONCA.TURBOPROP": {
+          "LEINY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "LEINY6",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.53.49.582,W093.13.50.841/h301/tc"
+            "departure_override": "h301/@d1.1/h301/tc"
           },
-          "TONCA.PISTON": {
+          "LEINY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "LEINY6",
             "aircraft": ["prop"],
-            "waypoints": "N044.53.49.582,W093.13.50.841/h301/tc"
+            "departure_override": "h301/@d1.1/h301/tc"
           },
-          "TAXEE.JET": {
+          "DLL.JET": {
             "assigned_altitude": 7000,
             "sid": "COULT7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.54.07.558,W093.13.14.915/h360/tc"
+            "departure_override": "h360/@d1.0/h360/tc"
           },
-          "TAXEE.TURBOPROP": {
+          "DLL.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "COULT7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.54.07.558,W093.13.14.915/h360/tc"
+            "departure_override": "h360/@d1.0/h360/tc"
           },
-          "TAXEE.PISTON": {
+          "DLL.PISTON": {
             "assigned_altitude": 4000,
             "sid": "COULT7",
             "aircraft": ["prop"],
-            "waypoints": "N044.54.07.558,W093.13.14.915/h360/tc"
+            "departure_override": "h360/@d1.0/h360/tc"
           },
-          "SNINE.JET": {
+          "GRB.JET,WLSTN.JET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.54.04.647,W093.13.30.433/h340/tc"
+            "departure_override": "h340/@d1.1/h340/tc"
           },
-          "SNINE.TURBOPROP": {
+          "GRB.TURBOPROP,WLSTN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "WLSTN7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.54.04.647,W093.13.30.433/h340/tc"
+            "departure_override": "h340/@d1.1/h340/tc"
           },
-          "SNINE.PISTON": {
+          "GRB.PISTON,WLSTN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "WLSTN7",
             "aircraft": ["prop"],
-            "waypoints": "N044.54.04.647,W093.13.30.433/h340/tc"
+            "departure_override": "h340/@d1.1/h340/tc"
           }
         },
         "17_12s": {
@@ -907,77 +907,77 @@
             "aircraft": ["prop"],
             "waypoints": "N044.51.27.336,W093.14.03.777/h170/tc"
           },
-          "HUGIR.JET": {
+          "RXANN.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.49.00.449,W093.13.27.247/h215/tc"
+            "departure_override": "h215/@d3.7/h215/tc"
           },
-          "HUGIR.TURBOPROP": {
+          "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.49.00.449,W093.13.27.247/h215/tc"
+            "departure_override": "h215/@d3.7/h215/tc"
           },
-          "HUGIR.PISTON": {
+          "RXANN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
             "aircraft": ["prop"],
-            "waypoints": "N044.49.00.449,W093.13.27.247/h215/tc"
+            "departure_override": "h215/@d3.7/h215/tc"
           },
-          "JURNY.JET": {
+          "ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.49.00.449,W093.13.27.247/h215/tc"
+            "departure_override": "h215/@d3.7/h215/tc"
           },
-          "JURNY.TURBOPROP": {
+          "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.49.00.449,W093.13.27.247/h215/tc"
+            "departure_override": "h215/@d3.7/h215/tc"
           },
-          "JURNY.PISTON": {
+          "ONTIJ.PISTON,ORSKY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
             "aircraft": ["prop"],
-            "waypoints": "N044.49.00.449,W093.13.27.247/h215/tc"
+            "departure_override": "h215/@d3.7/h215/tc"
           },
-          "FOBUG.JET": {
+          "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.51.29.671,W093.13.37.630/h140/tc"
+            "departure_override": "h140/@d1.2/h140/tc"
           },
-          "FOBUG.TURBOPROP": {
+          "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.51.29.671,W093.13.37.630/h140/tc"
+            "departure_override": "h140/@d1.2/h140/tc"
           },
-          "FOBUG.PISTON": {
+          "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
             "aircraft": ["prop"],
-            "waypoints": "N044.51.29.671,W093.13.37.630/h140/tc"
+            "departure_override": "h140/@d1.2/h140/tc"
           },
-          "JEDET.JET": {
+          "ODI.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.51.36.057,W093.13.15.602/h140/tc"
+            "departure_override": "h140/@d1.3/h140/tc"
           },
-          "JEDET.TURBOPROP": {
+          "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.51.36.057,W093.13.15.602/h140/tc"
+            "departure_override": "h140/@d1.3/h140/tc"
           },
-          "JEDET.PISTON": {
+          "ODI.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
             "aircraft": ["prop"],
-            "waypoints": "N044.51.36.057,W093.13.15.602/h140/tc"
+            "departure_override": "h140/@d1.3/h140/tc"
           }
         },
         "17_30s": {
@@ -999,77 +999,77 @@
             "aircraft": ["prop"],
             "waypoints": "N044.51.27.336,W093.14.03.777/h170/tc"
           },
-          "HUGIR.JET": {
+          "RXANN.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.50.12.107,W093.13.44.853/h230/tc"
+            "departure_override": "h230/@d2.5/h230/tc"
           },
-          "HUGIR.TURBOPROP": {
+          "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.50.12.107,W093.13.44.853/h230/tc"
+            "departure_override": "h230/@d2.5/h230/tc"
           },
-          "HUGIR.PISTON": {
+          "RXANN.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
             "aircraft": ["prop"],
-            "waypoints": "N044.50.12.107,W093.13.44.853/h230/tc"
+            "departure_override": "h230/@d2.5/h230/tc"
           },
-          "JURNY.JET": {
+          "ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.50.12.107,W093.13.44.853/h210/tc"
+            "departure_override": "h210/@d2.5/h210/tc"
           },
-          "JURNY.TURBOPROP": {
+          "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.50.12.107,W093.13.44.853/h210/tc"
+            "departure_override": "h210/@d2.5/h210/tc"
           },
-          "JURNY.PISTON": {
+          "ONTIJ.PISTON,ORSKY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
             "aircraft": ["prop"],
-            "waypoints": "N044.50.12.107,W093.13.44.853/h210/tc"
+            "departure_override": "h210/@d2.5/h210/tc"
           },
-          "FOBUG.JET": {
+          "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.51.27.336,W093.14.03.777/h170/tc"
+            "departure_override": "h170/@d1.2/h170/tc"
           },
-          "FOBUG.TURBOPROP": {
+          "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.51.27.336,W093.14.03.777/h170/tc"
+            "departure_override": "h170/@d1.2/h170/tc"
           },
-          "FOBUG.PISTON": {
+          "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
             "aircraft": ["prop"],
-            "waypoints": "N044.51.27.336,W093.14.03.777/h170/tc"
+            "departure_override": "h170/@d1.2/h170/tc"
           },
-          "JEDET.JET": {
+          "ODI.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
             "aircraft": ["nonheavy"],
-            "waypoints": "N044.51.27.336,W093.14.03.777/h170/tc"
+            "departure_override": "h170/@d1.2/h170/tc"
           },
-          "JEDET.TURBOPROP": {
+          "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
             "aircraft": ["turboprop"],
-            "waypoints": "N044.51.27.336,W093.14.03.777/h170/tc"
+            "departure_override": "h170/@d1.2/h170/tc"
           },
-          "JEDET.PISTON": {
+          "ODI.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
             "aircraft": ["prop"],
-            "waypoints": "N044.51.27.336,W093.14.03.777/h170/tc"
+            "departure_override": "h170/@d1.2/h170/tc"
           }
         }
       },
@@ -1097,8 +1097,8 @@
             }
           ],
           "destination": "CYEG",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR WHIST REFEX CAMRA IGSOX3"
+          "exit": "FAR.JET",
+          "route": "FAR WHIST REFEX CAMRA IGSOX3"
         },
         {
           "airlines": [
@@ -1108,8 +1108,8 @@
             }
           ],
           "destination": "CYQR",
-          "exit": "HRBEK.TURBOPROP",
-          "route": "HRBEK HOMUR KBREW MOT GORAK GORAK2"
+          "exit": "KBREW.TURBOPROP",
+          "route": "KBREW MOT GORAK GORAK2"
         },
         {
           "airlines": [
@@ -1123,8 +1123,8 @@
             }
           ],
           "destination": "CYUL",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN SSM OXASA BEMOG LFLER7"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN SSM OXASA BEMOG LFLER7"
         },
         {
           "airlines": [
@@ -1146,8 +1146,8 @@
             }
           ],
           "destination": "CYVR",
-          "exit": "ZOGAP.JET",
-          "route": "ZOGAP PAGOZ SMERF Q146 KIXCO Q142 METOW GRIZZ7"
+          "exit": "SMERF.JET",
+          "route": "SMERF Q146 KIXCO Q142 METOW GRIZZ7"
         },
         {
           "airlines": [
@@ -1180,8 +1180,8 @@
             }
           ],
           "destination": "CYXE",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR KEMKA AMUNA DUNEM6"
+          "exit": "FAR.JET",
+          "route": "FAR KEMKA AMUNA DUNEM6"
         },
         {
           "airlines": [
@@ -1199,8 +1199,8 @@
             }
           ],
           "destination": "CYYC",
-          "exit": "ZOGAP.JET",
-          "route": "ZOGAP PAGOZ SMERF WILTN BEVEL VESDO EBGAL EBGAL7"
+          "exit": "SMERF.JET",
+          "route": "SMERF WILTN BEVEL VESDO EBGAL EBGAL7"
         },
         {
           "airlines": [
@@ -1226,8 +1226,8 @@
             }
           ],
           "destination": "CYYZ",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB YZEMN NUBER6"
+          "exit": "GRB.JET",
+          "route": "GRB YZEMN NUBER6"
         },
         {
           "airlines": [
@@ -1248,8 +1248,8 @@
             }
           ],
           "destination": "EGLL",
-          "exit": "SNINE.HEAVYJET",
-          "route": "SNINE DWIYT WLSTN SSM DASUG YVO Q820 IGSAS ANCER N701A NEEKO 5400N/05000W 5500N/04000W 5500N/03000W 5500N/02000W RESNO NETKI REVNU BOFUM Q37 MALUD Q38 NUGRA NUGR2H"
+          "exit": "WLSTN.HEAVYJET",
+          "route": "WLSTN SSM DASUG YVO Q820 IGSAS ANCER N701A NEEKO 5400N/05000W 5500N/04000W 5500N/03000W 5500N/02000W RESNO NETKI REVNU BOFUM Q37 MALUD Q38 NUGRA NUGR2H"
         },
         {
           "airlines": [
@@ -1271,8 +1271,8 @@
             }
           ],
           "destination": "EHAM",
-          "exit": "SNINE.HEAVYJET",
-          "route": "SNINE DWIYT WLSTN KP06K KP12M VETRO ROUND HOIST 5600N/05000W 5700N/04000W 5700N/03000W 5700N/02000W SUNOT KESIX MIMKU BELOX L603 LAMSO"
+          "exit": "WLSTN.HEAVYJET",
+          "route": "WLSTN KP06K KP12M VETRO ROUND HOIST 5600N/05000W 5700N/04000W 5700N/03000W 5700N/02000W SUNOT KESIX MIMKU BELOX L603 LAMSO"
         },
         {
           "airlines": [
@@ -1323,8 +1323,8 @@
             }
           ],
           "destination": "KABQ",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY LBF PUB ALS DATME SNDIA4"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY LBF PUB ALS DATME SNDIA4"
         },
         {
           "airlines": [
@@ -1338,8 +1338,8 @@
             }
           ],
           "destination": "KABR",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY ABR"
+          "exit": "LEINY.JET",
+          "route": "LEINY ABR"
         },
         {
           "airlines": [
@@ -1349,8 +1349,8 @@
             }
           ],
           "destination": "KAFW",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ J21 IRW FAWNT WESAT2"
+          "exit": "ONTIJ.JET",
+          "route": "ONTIJ J21 IRW FAWNT WESAT2"
         },
         {
           "airlines": [
@@ -1396,8 +1396,8 @@
             }
           ],
           "destination": "KATL",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE BDF ENL PLESS J45 BNA NEWBB IHAVE MTHEW CHPPR1"
+          "exit": "ODI.JET",
+          "route": "ODI J30 BRIBE BDF ENL PLESS J45 BNA NEWBB IHAVE MTHEW CHPPR1"
         },
         {
           "airlines": [
@@ -1415,8 +1415,8 @@
             }
           ],
           "destination": "KATW",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB"
+          "exit": "GRB.JET",
+          "route": "GRB"
         },
         {
           "airlines": [
@@ -1442,8 +1442,8 @@
             }
           ],
           "destination": "KAUS",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY FOD DSM EOS RRNET RRONY OUTLN OILLL MNURE WLEEE7"
+          "exit": "ORSKY.JET",
+          "route": "ORSKY FOD DSM EOS RRNET RRONY OUTLN OILLL MNURE WLEEE7"
         },
         {
           "airlines": [
@@ -1453,8 +1453,8 @@
             }
           ],
           "destination": "KAVL",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE J30 JOT BVT J89 IIU SOT"
+          "exit": "ODI.JET",
+          "route": "ODI J30 BRIBE J30 JOT BVT J89 IIU SOT"
         },
         {
           "airlines": [
@@ -1476,8 +1476,8 @@
             }
           ],
           "destination": "KBDL",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL DABJU MONEE Q935 OMRAK AGDOX KELTI AUDIL STELA1"
+          "exit": "DLL.JET",
+          "route": "DLL DABJU MONEE Q935 OMRAK AGDOX KELTI AUDIL STELA1"
         },
         {
           "airlines": [
@@ -1487,8 +1487,8 @@
             }
           ],
           "destination": "KBIL",
-          "exit": "ZOGAP.JET",
-          "route": "ZOGAP PAGOZ SMERF SWTHN CONUK KUSTR3"
+          "exit": "SMERF.JET",
+          "route": "SMERF SWTHN CONUK KUSTR3"
         },
         {
           "airlines": [
@@ -1514,8 +1514,8 @@
             }
           ],
           "destination": "KBIS",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR BIS"
+          "exit": "FAR.JET",
+          "route": "FAR BIS"
         },
         {
           "airlines": [
@@ -1583,8 +1583,8 @@
             }
           ],
           "destination": "KBNA",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT TTH GUMMA RYYMN2"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT TTH GUMMA RYYMN2"
         },
         {
           "airlines": [
@@ -1602,8 +1602,8 @@
             }
           ],
           "destination": "KBOI",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY RAP JITIP BOY REAPS KOURT4"
+          "exit": "LEINY.JET",
+          "route": "LEINY RAP JITIP BOY REAPS KOURT4"
         },
         {
           "airlines": [
@@ -1637,8 +1637,8 @@
             }
           ],
           "destination": "KBOS",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN WODEV KP03Q NOTAP TANGI IGSEB TULEG Q937 WAYGO PONCT JFUND2"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN WODEV KP03Q NOTAP TANGI IGSEB TULEG Q937 WAYGO PONCT JFUND2"
         },
         {
           "airlines": [
@@ -1678,8 +1678,8 @@
             }
           ],
           "destination": "KBTV",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN FASUX VUKFI PLN WILRD BTV"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN FASUX VUKFI PLN WILRD BTV"
         },
         {
           "airlines": [
@@ -1693,8 +1693,8 @@
             }
           ],
           "destination": "KBUF",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL GAYLE SLLAP OMRAK Q935 WOZEE"
+          "exit": "DLL.JET",
+          "route": "DLL GAYLE SLLAP OMRAK Q935 WOZEE"
         },
         {
           "airlines": [
@@ -1724,8 +1724,8 @@
             }
           ],
           "destination": "KBWI",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 BAE J34 DJB NUSMM ANTHM5"
+          "exit": "DLL.JET",
+          "route": "DLL J34 BAE J34 DJB NUSMM ANTHM5"
         },
         {
           "airlines": [
@@ -1743,8 +1743,8 @@
             }
           ],
           "destination": "KBZN",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY KU03W BIL SUBKY1"
+          "exit": "LEINY.JET",
+          "route": "LEINY KU03W BIL SUBKY1"
         },
         {
           "airlines": [
@@ -1754,8 +1754,8 @@
             }
           ],
           "destination": "KCHS",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT IIU J99 IRQ OSPRI7"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT IIU J99 IRQ OSPRI7"
         },
         {
           "airlines": [
@@ -1773,8 +1773,8 @@
             }
           ],
           "destination": "KCID",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO CID"
+          "exit": "ALO.JET",
+          "route": "ALO CID"
         },
         {
           "airlines": [
@@ -1784,8 +1784,8 @@
             }
           ],
           "destination": "KCIU",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN IMT SSM"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN IMT SSM"
         },
         {
           "airlines": [
@@ -1807,8 +1807,8 @@
             }
           ],
           "destination": "KCLE",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 BAE OLYEE BRWNZ4"
+          "exit": "DLL.JET",
+          "route": "DLL J34 BAE OLYEE BRWNZ4"
         },
         {
           "airlines": [
@@ -1850,8 +1850,8 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT LCOLN VHP J24 FLM TAFTT PARQR4"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT LCOLN VHP J24 FLM TAFTT PARQR4"
         },
         {
           "airlines": [
@@ -1881,8 +1881,8 @@
             }
           ],
           "destination": "KCMH",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 WHETT BRYEN DUBLN1"
+          "exit": "ODI.JET",
+          "route": "ODI J30 WHETT BRYEN DUBLN1"
         },
         {
           "airlines": [
@@ -1892,8 +1892,8 @@
             }
           ],
           "destination": "KCOS",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ISTIQ GLD OZZZY5"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU ISTIQ GLD OZZZY5"
         },
         {
           "airlines": [
@@ -1919,8 +1919,8 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 COTON ZABNU CEGRM7"
+          "exit": "ODI.JET",
+          "route": "ODI J30 COTON ZABNU CEGRM7"
         },
         {
           "airlines": [
@@ -1934,8 +1934,8 @@
             }
           ],
           "destination": "KCWA",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN HEVAV"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN HEVAV"
         },
         {
           "airlines": [
@@ -1973,8 +1973,8 @@
             }
           ],
           "destination": "KDCA",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 BUCKO FRDMM6"
+          "exit": "DLL.JET",
+          "route": "DLL J34 BUCKO FRDMM6"
         },
         {
           "airlines": [
@@ -2060,8 +2060,8 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY PORDR AALLE4"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY PORDR AALLE4"
         },
         {
           "airlines": [
@@ -2111,8 +2111,8 @@
             }
           ],
           "destination": "KDFW",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ OVR J21 IRW IBAKE VKTRY2"
+          "exit": "ONTIJ.JET",
+          "route": "ONTIJ OVR J21 IRW IBAKE VKTRY2"
         },
         {
           "airlines": [
@@ -2184,8 +2184,8 @@
             }
           ],
           "destination": "KDSM",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY FOD DSM"
+          "exit": "ORSKY.JET",
+          "route": "ORSKY FOD DSM"
         },
         {
           "airlines": [
@@ -2219,8 +2219,8 @@
             }
           ],
           "destination": "KDTW",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL PORZL RKCTY2"
+          "exit": "DLL.JET",
+          "route": "DLL PORZL RKCTY2"
         },
         {
           "airlines": [
@@ -2230,8 +2230,8 @@
             }
           ],
           "destination": "KESC",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB ESC"
+          "exit": "GRB.JET",
+          "route": "GRB ESC"
         },
         {
           "airlines": [
@@ -2265,8 +2265,8 @@
             }
           ],
           "destination": "KEWR",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI KG78K KG72M EVOTE NELLS KEEHO J584 SLT FQM3"
+          "exit": "ODI.JET",
+          "route": "ODI KG78K KG72M EVOTE NELLS KEEHO J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -2296,8 +2296,8 @@
             }
           ],
           "destination": "KFAR",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR"
+          "exit": "FAR.JET",
+          "route": "FAR"
         },
         {
           "airlines": [
@@ -2307,8 +2307,8 @@
             }
           ],
           "destination": "KFLL",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO IRK STL Q19 HITMN ACORI TEEKY3"
+          "exit": "ALO.JET",
+          "route": "ALO IRK STL Q19 HITMN ACORI TEEKY3"
         },
         {
           "airlines": [
@@ -2334,8 +2334,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN FSD"
+          "exit": "RXANN.JET",
+          "route": "RXANN FSD"
         },
         {
           "airlines": [
@@ -2345,8 +2345,8 @@
             }
           ],
           "destination": "KFWA",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL OBK GSH"
+          "exit": "DLL.JET",
+          "route": "DLL OBK GSH"
         },
         {
           "airlines": [
@@ -2364,8 +2364,8 @@
             }
           ],
           "destination": "KGEG",
-          "exit": "ZOGAP.JET",
-          "route": "ZOGAP PAGOZ SMERF Q146 ZERZO MLP HILIE3"
+          "exit": "SMERF.JET",
+          "route": "SMERF Q146 ZERZO MLP HILIE3"
         },
         {
           "airlines": [
@@ -2402,8 +2402,8 @@
             }
           ],
           "destination": "KGPI",
-          "exit": "ZOGAP.JET",
-          "route": "ZOGAP PAGOZ SMERF BIS GGW FCA"
+          "exit": "SMERF.JET",
+          "route": "SMERF BIS GGW FCA"
         },
         {
           "airlines": [
@@ -2432,8 +2432,8 @@
             }
           ],
           "destination": "KGRB",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB"
+          "exit": "GRB.JET",
+          "route": "GRB"
         },
         {
           "airlines": [
@@ -2459,8 +2459,8 @@
             }
           ],
           "destination": "KGRR",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 VIO"
+          "exit": "DLL.JET",
+          "route": "DLL J34 VIO"
         },
         {
           "airlines": [
@@ -2504,8 +2504,8 @@
             }
           ],
           "destination": "KHOU",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO J233 IRK LIT SWEUP WAPPL7"
+          "exit": "ALO.JET",
+          "route": "ALO J233 IRK LIT SWEUP WAPPL7"
         },
         {
           "airlines": [
@@ -2515,8 +2515,8 @@
             }
           ],
           "destination": "KHPN",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB DAYYY RUBKI SIKBO AHPAH HANKK EXTOL DANZI VALRE1"
+          "exit": "GRB.JET",
+          "route": "GRB DAYYY RUBKI SIKBO AHPAH HANKK EXTOL DANZI VALRE1"
         },
         {
           "airlines": [
@@ -2546,8 +2546,8 @@
             }
           ],
           "destination": "KIAD",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ5"
+          "exit": "DLL.JET",
+          "route": "DLL J34 DJB MGW GIBBZ5"
         },
         {
           "airlines": [
@@ -2581,8 +2581,8 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ EMP CVE DRLLR5"
+          "exit": "ONTIJ.JET",
+          "route": "ONTIJ EMP CVE DRLLR5"
         },
         {
           "airlines": [
@@ -2596,8 +2596,8 @@
             }
           ],
           "destination": "KICT",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ CASSO ICT"
+          "exit": "ONTIJ.JET",
+          "route": "ONTIJ CASSO ICT"
         },
         {
           "airlines": [
@@ -2611,8 +2611,8 @@
             }
           ],
           "destination": "KILM",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT FLM BZM FLO OKNEE Q172 RAPZZ"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT FLM BZM FLO OKNEE Q172 RAPZZ"
         },
         {
           "airlines": [
@@ -2622,8 +2622,8 @@
             }
           ],
           "destination": "KIMT",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB IMT"
+          "exit": "GRB.JET",
+          "route": "GRB IMT"
         },
         {
           "airlines": [
@@ -2649,8 +2649,8 @@
             }
           ],
           "destination": "KIND",
-          "exit": "JEDET.HEAVYJET",
-          "route": "JEDET ZMBRO ODI BRBIE JAKKS2"
+          "exit": "ODI.HEAVYJET",
+          "route": "ODI BRBIE JAKKS2"
         },
         {
           "airlines": [
@@ -2676,8 +2676,8 @@
             }
           ],
           "destination": "KIND",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI BRBIE JAKKS2"
+          "exit": "ODI.JET",
+          "route": "ODI BRBIE JAKKS2"
         },
         {
           "airlines": [
@@ -2702,8 +2702,8 @@
             }
           ],
           "destination": "KIWD",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN IWD"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN IWD"
         },
         {
           "airlines": [
@@ -2713,8 +2713,8 @@
             }
           ],
           "destination": "KJAC",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY VKING CZI DNW"
+          "exit": "LEINY.JET",
+          "route": "LEINY VKING CZI DNW"
         },
         {
           "airlines": [
@@ -2728,8 +2728,8 @@
             }
           ],
           "destination": "KJAX",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI RBS TTH FORKS RESPE Q79 WUDEE THRSR DUCHY OHDEA2"
+          "exit": "ODI.JET",
+          "route": "ODI RBS TTH FORKS RESPE Q79 WUDEE THRSR DUCHY OHDEA2"
         },
         {
           "airlines": [
@@ -2751,8 +2751,8 @@
             }
           ],
           "destination": "KJFK",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL HASTE DAFLU J70 STENT J70 MAGIO J70 LVZ LENDY8"
+          "exit": "DLL.JET",
+          "route": "DLL HASTE DAFLU J70 STENT J70 MAGIO J70 LVZ LENDY8"
         },
         {
           "airlines": [
@@ -2786,8 +2786,8 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY KD66Y DVC DICEE TYEGR CHOWW3"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY KD66Y DVC DICEE TYEGR CHOWW3"
         },
         {
           "airlines": [
@@ -2833,8 +2833,8 @@
             }
           ],
           "destination": "KLAX",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU KD66Y KD45Q EEEZY Q98 HAKMN ANJLL4"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU KD66Y KD45Q EEEZY Q98 HAKMN ANJLL4"
         },
         {
           "airlines": [
@@ -2860,8 +2860,8 @@
             }
           ],
           "destination": "KLGA",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 WOOST ETG MIP4"
+          "exit": "DLL.JET",
+          "route": "DLL J34 WOOST ETG MIP4"
         },
         {
           "airlines": [
@@ -2898,8 +2898,8 @@
             }
           ],
           "destination": "KMCI",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ HANKU ASIIX JSONN4"
+          "exit": "ONTIJ.JET",
+          "route": "ONTIJ HANKU ASIIX JSONN4"
         },
         {
           "airlines": [
@@ -2933,8 +2933,8 @@
             }
           ],
           "destination": "KMCO",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO ENL TINGS J45 BNA RMG ZJAYX GRNCH5"
+          "exit": "ALO.JET",
+          "route": "ALO ENL TINGS J45 BNA RMG ZJAYX GRNCH5"
         },
         {
           "airlines": [
@@ -2972,8 +2972,8 @@
             }
           ],
           "destination": "KMDW",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST OHHMY ENDEE7"
+          "exit": "RST.JET",
+          "route": "RST OHHMY ENDEE7"
         },
         {
           "airlines": [
@@ -2991,8 +2991,8 @@
             }
           ],
           "destination": "KMEM",
-          "exit": "FOBUG.HEAVYJET",
-          "route": "FOBUG DOKTR CORDY RST ALO KK60I WHOLL BRBBQ3"
+          "exit": "ALO.HEAVYJET",
+          "route": "ALO KK60I WHOLL BRBBQ3"
         },
         {
           "airlines": [
@@ -3010,8 +3010,8 @@
             }
           ],
           "destination": "KMEM",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO KK60I WHOLL BRBBQ3"
+          "exit": "ALO.JET",
+          "route": "ALO KK60I WHOLL BRBBQ3"
         },
         {
           "airlines": [
@@ -3029,8 +3029,8 @@
             }
           ],
           "destination": "KMIA",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI DBQ AXC PXV J73 LGC HONID FROGZ4"
+          "exit": "ODI.JET",
+          "route": "ODI DBQ AXC PXV J73 LGC HONID FROGZ4"
         },
         {
           "airlines": [
@@ -3060,8 +3060,8 @@
             }
           ],
           "destination": "KMKE",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 BAE"
+          "exit": "DLL.JET",
+          "route": "DLL J34 BAE"
         },
         {
           "airlines": [
@@ -3083,8 +3083,8 @@
             }
           ],
           "destination": "KMOT",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR MOT"
+          "exit": "FAR.JET",
+          "route": "FAR MOT"
         },
         {
           "airlines": [
@@ -3110,8 +3110,8 @@
             }
           ],
           "destination": "KMSN",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.JET",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -3125,8 +3125,8 @@
             }
           ],
           "destination": "KMSO",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY SWTHN HLN"
+          "exit": "LEINY.JET",
+          "route": "LEINY SWTHN HLN"
         },
         {
           "airlines": [
@@ -3136,8 +3136,8 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO KK60I ARG MCB TRSSH1"
+          "exit": "ALO.JET",
+          "route": "ALO KK60I ARG MCB TRSSH1"
         },
         {
           "airlines": [
@@ -3147,8 +3147,8 @@
             }
           ],
           "destination": "KMYR",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI JOT ERECO IIU RYANS VXV QUIWE"
+          "exit": "ODI.JET",
+          "route": "ODI JOT ERECO IIU RYANS VXV QUIWE"
         },
         {
           "airlines": [
@@ -3162,8 +3162,8 @@
             }
           ],
           "destination": "KOKC",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ KK57E PER GULLI3"
+          "exit": "ONTIJ.JET",
+          "route": "ONTIJ KK57E PER GULLI3"
         },
         {
           "airlines": [
@@ -3189,8 +3189,8 @@
             }
           ],
           "destination": "KOMA",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY DABOY LANTK2"
+          "exit": "ORSKY.JET",
+          "route": "ORSKY DABOY LANTK2"
         },
         {
           "airlines": [
@@ -3276,8 +3276,8 @@
             }
           ],
           "destination": "KORD",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ZZIPR FYTTE7"
+          "exit": "RST.JET",
+          "route": "RST ZZIPR FYTTE7"
         },
         {
           "airlines": [
@@ -3287,8 +3287,8 @@
             }
           ],
           "destination": "KORF",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT BVT VHP J24 MOL TERKS2"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT BVT VHP J24 MOL TERKS2"
         },
         {
           "airlines": [
@@ -3322,8 +3322,8 @@
             }
           ],
           "destination": "KPDX",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY DPR J16 PDT JKNOX HHOOD5"
+          "exit": "LEINY.JET",
+          "route": "LEINY DPR J16 PDT JKNOX HHOOD5"
         },
         {
           "airlines": [
@@ -3361,8 +3361,8 @@
             }
           ],
           "destination": "KPHL",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 CRL CXR PSB BOJID4"
+          "exit": "DLL.JET",
+          "route": "DLL J34 CRL CXR PSB BOJID4"
         },
         {
           "airlines": [
@@ -3400,8 +3400,8 @@
             }
           ],
           "destination": "KPHX",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL SNY FQF LOPEC KD42S GUP EAGUL6"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU ONL SNY FQF LOPEC KD42S GUP EAGUL6"
         },
         {
           "airlines": [
@@ -3423,8 +3423,8 @@
             }
           ],
           "destination": "KPIT",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 DJB GRIVY JESEY5"
+          "exit": "DLL.JET",
+          "route": "DLL J34 DJB GRIVY JESEY5"
         },
         {
           "airlines": [
@@ -3434,8 +3434,8 @@
             }
           ],
           "destination": "KPSC",
-          "exit": "ZOGAP.JET",
-          "route": "ZOGAP PAGOZ SMERF DIK J36 MLP PSC"
+          "exit": "SMERF.JET",
+          "route": "SMERF DIK J36 MLP PSC"
         },
         {
           "airlines": [
@@ -3449,8 +3449,8 @@
             }
           ],
           "destination": "KPVD",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL HASTE DAFLU J70 JHW Q82 MEMMS HINGZ WIPOR3"
+          "exit": "DLL.JET",
+          "route": "DLL HASTE DAFLU J70 JHW Q82 MEMMS HINGZ WIPOR3"
         },
         {
           "airlines": [
@@ -3464,8 +3464,8 @@
             }
           ],
           "destination": "KPWM",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB DAYYY Q140 HANKK Q935 PONCT CAM CDOGG4"
+          "exit": "GRB.JET",
+          "route": "GRB DAYYY Q140 HANKK Q935 PONCT CAM CDOGG4"
         },
         {
           "airlines": [
@@ -3491,8 +3491,8 @@
             }
           ],
           "destination": "KRAP",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY RAP"
+          "exit": "LEINY.JET",
+          "route": "LEINY RAP"
         },
         {
           "airlines": [
@@ -3518,8 +3518,8 @@
             }
           ],
           "destination": "KRDU",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI JVL CGT BONNT DQN HNN FRIKY ALDAN4"
+          "exit": "ODI.JET",
+          "route": "ODI JVL CGT BONNT DQN HNN FRIKY ALDAN4"
         },
         {
           "airlines": [
@@ -3533,8 +3533,8 @@
             }
           ],
           "destination": "KRFD",
-          "exit": "JEDET.HEAVYJET",
-          "route": "JEDET ZMBRO ODI KINZI ALEXS1"
+          "exit": "ODI.HEAVYJET",
+          "route": "ODI KINZI ALEXS1"
         },
         {
           "airlines": [
@@ -3548,8 +3548,8 @@
             }
           ],
           "destination": "KRHI",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN RHI"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN RHI"
         },
         {
           "airlines": [
@@ -3567,8 +3567,8 @@
             }
           ],
           "destination": "KRIC",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL J34 BAE FWA J149 GEFFS MOL SPIDR5"
+          "exit": "DLL.JET",
+          "route": "DLL J34 BAE FWA J149 GEFFS MOL SPIDR5"
         },
         {
           "airlines": [
@@ -3578,8 +3578,8 @@
             }
           ],
           "destination": "KRNO",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY MOTLY Q138 PUHGI MYBAD WINRZ1"
+          "exit": "LEINY.JET",
+          "route": "LEINY MOTLY Q138 PUHGI MYBAD WINRZ1"
         },
         {
           "airlines": [
@@ -3631,8 +3631,8 @@
             }
           ],
           "destination": "KRSW",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO SPI PXV J73 BNA J73 LGC WYATT BULZI NICKI PLYER TYNEE4"
+          "exit": "ALO.JET",
+          "route": "ALO SPI PXV J73 BNA J73 LGC WYATT BULZI NICKI PLYER TYNEE4"
         },
         {
           "airlines": [
@@ -3658,8 +3658,8 @@
             }
           ],
           "destination": "KSAN",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY KD66Y DVC TBC PLNDL Q86 TTRUE LUCKI1"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY KD66Y DVC TBC PLNDL Q86 TTRUE LUCKI1"
         },
         {
           "airlines": [
@@ -3681,8 +3681,8 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY SAANT STJ OKM URH WINDU QERVO1"
+          "exit": "ORSKY.JET",
+          "route": "ORSKY SAANT STJ OKM URH WINDU QERVO1"
         },
         {
           "airlines": [
@@ -3692,8 +3692,8 @@
             }
           ],
           "destination": "KSAV",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT IIU J99 IRQ"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT IIU J99 IRQ"
         },
         {
           "airlines": [
@@ -3703,8 +3703,8 @@
             }
           ],
           "destination": "KSAW",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN SAW"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN SAW"
         },
         {
           "airlines": [
@@ -3714,8 +3714,8 @@
             }
           ],
           "destination": "KSBD",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY SNY ZAKRY Q88 LAKRR HEC ZIGGY8"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY SNY ZAKRY Q88 LAKRR HEC ZIGGY8"
         },
         {
           "airlines": [
@@ -3725,8 +3725,8 @@
             }
           ],
           "destination": "KSBN",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL GIJ"
+          "exit": "DLL.JET",
+          "route": "DLL GIJ"
         },
         {
           "airlines": [
@@ -3748,8 +3748,8 @@
             }
           ],
           "destination": "KSDF",
-          "exit": "JEDET.HEAVYJET",
-          "route": "JEDET ZMBRO ODI J30 JOT CYBIL JMONY2"
+          "exit": "ODI.HEAVYJET",
+          "route": "ODI J30 JOT CYBIL JMONY2"
         },
         {
           "airlines": [
@@ -3771,8 +3771,8 @@
             }
           ],
           "destination": "KSDF",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT CYBIL JMONY2"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT CYBIL JMONY2"
         },
         {
           "airlines": [
@@ -3826,8 +3826,8 @@
             }
           ],
           "destination": "KSEA",
-          "exit": "ZOGAP.JET",
-          "route": "ZOGAP PAGOZ SMERF DIK J36 MLP GLASR3"
+          "exit": "SMERF.JET",
+          "route": "SMERF DIK J36 MLP GLASR3"
         },
         {
           "airlines": [
@@ -3869,8 +3869,8 @@
             }
           ],
           "destination": "KSFO",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY CYS J148 OAL INYOE DYAMD5"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY CYS J148 OAL INYOE DYAMD5"
         },
         {
           "airlines": [
@@ -3884,8 +3884,8 @@
             }
           ],
           "destination": "KSJC",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY ANW HANKI KD66U KU60Q GAROT Q126 INSLO MVA STUBL RAZRR5"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY ANW HANKI KD66U KU60Q GAROT Q126 INSLO MVA STUBL RAZRR5"
         },
         {
           "airlines": [
@@ -3915,8 +3915,8 @@
             }
           ],
           "destination": "KSLC",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY RAP DDY CARTR1"
+          "exit": "LEINY.JET",
+          "route": "LEINY RAP DDY CARTR1"
         },
         {
           "airlines": [
@@ -3930,8 +3930,8 @@
             }
           ],
           "destination": "KSMF",
-          "exit": "TONCA.JET",
-          "route": "TONCA BOTNE KUUGL LEINY VKING CZI J32 LLC ANAHO SLMMR5"
+          "exit": "LEINY.JET",
+          "route": "LEINY VKING CZI J32 LLC ANAHO SLMMR5"
         },
         {
           "airlines": [
@@ -3945,8 +3945,8 @@
             }
           ],
           "destination": "KSNA",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LBF J10 FQF J10 HBU J146 DVC TOADD Q78 MARUE DSNEE6"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LBF J10 FQF J10 HBU J146 DVC TOADD Q78 MARUE DSNEE6"
         },
         {
           "airlines": [
@@ -3980,8 +3980,8 @@
             }
           ],
           "destination": "KSTL",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO GUZIK LORLE3"
+          "exit": "ALO.JET",
+          "route": "ALO GUZIK LORLE3"
         },
         {
           "airlines": [
@@ -3991,8 +3991,8 @@
             }
           ],
           "destination": "KSYR",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL HASTE DAFLU J70 BEWEL DKK"
+          "exit": "DLL.JET",
+          "route": "DLL HASTE DAFLU J70 BEWEL DKK"
         },
         {
           "airlines": [
@@ -4018,8 +4018,8 @@
             }
           ],
           "destination": "KTPA",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO STL DITZL VLKNN ACORI MAATY5"
+          "exit": "ALO.JET",
+          "route": "ALO STL DITZL VLKNN ACORI MAATY5"
         },
         {
           "airlines": [
@@ -4037,8 +4037,8 @@
             }
           ],
           "destination": "KTVC",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB TVC"
+          "exit": "GRB.JET",
+          "route": "GRB TVC"
         },
         {
           "airlines": [
@@ -4090,8 +4090,8 @@
             }
           ],
           "destination": "KTYS",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT BVT J89 IIU J99 VXV"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT BVT J89 IIU J99 VXV"
         },
         {
           "airlines": [
@@ -4101,8 +4101,8 @@
             }
           ],
           "destination": "KVPS",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO IOW STL VISQA J151 VUZ ARNNY"
+          "exit": "ALO.JET",
+          "route": "ALO IOW STL VISQA J151 VUZ ARNNY"
         },
         {
           "airlines": [
@@ -4116,8 +4116,8 @@
             }
           ],
           "destination": "KXNA",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ MCI BUM EOS"
+          "exit": "ONTIJ.JET",
+          "route": "ONTIJ MCI BUM EOS"
         },
         {
           "airlines": [
@@ -4135,8 +4135,8 @@
             }
           ],
           "destination": "KXWA",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR ISN"
+          "exit": "FAR.JET",
+          "route": "FAR ISN"
         },
         {
           "airlines": [
@@ -4150,8 +4150,8 @@
             }
           ],
           "destination": "LFPG",
-          "exit": "SNINE.HEAVYJET",
-          "route": "SNINE DWIYT WLSTN SSM DASUG YVO Q820 IGSAS ANCER N701A NEEKO NATR RESNO NATR NETKI MORAG NUCHU L18 NUBRI L18 NIGIT L18 MID Y803 SFD UM605 BIBAX"
+          "exit": "WLSTN.HEAVYJET",
+          "route": "WLSTN SSM DASUG YVO Q820 IGSAS ANCER N701A NEEKO NATR RESNO NATR NETKI MORAG NUCHU L18 NUBRI L18 NIGIT L18 MID Y803 SFD UM605 BIBAX"
         },
         {
           "airlines": [
@@ -4161,8 +4161,8 @@
             }
           ],
           "destination": "LIRF",
-          "exit": "SNINE.HEAVYJET",
-          "route": "SNINE DWIYT WLSTN SSM BAREE N581A TUDEP NATV MALOT NATV GISTI LESLU LIZAD JSY ARSUK RESMI UL612 OGULO OKASI OKEKO MOU MADIV MOKIP TUFTA KOGAS MEDAM NITAM MOGBO ELB ELKAP"
+          "exit": "WLSTN.HEAVYJET",
+          "route": "WLSTN SSM BAREE N581A TUDEP NATV MALOT NATV GISTI LESLU LIZAD JSY ARSUK RESMI UL612 OGULO OKASI OKEKO MOU MADIV MOKIP TUFTA KOGAS MEDAM NITAM MOGBO ELB ELKAP"
         },
         {
           "airlines": [
@@ -4172,8 +4172,8 @@
             }
           ],
           "destination": "MMMX",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO J233 IRK RZC UIM IAH PSX J177 TAM UT100 ENAGA ENAG3A"
+          "exit": "ALO.JET",
+          "route": "ALO J233 IRK RZC UIM IAH PSX J177 TAM UT100 ENAGA ENAG3A"
         },
         {
           "airlines": [
@@ -4183,8 +4183,8 @@
             }
           ],
           "destination": "MMUN",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO WELTS CARIN MCB J35 LEV A770 KEHLI UA770 BETAS VOMAR VOMA1A"
+          "exit": "ALO.JET",
+          "route": "ALO WELTS CARIN MCB J35 LEV A770 KEHLI UA770 BETAS VOMAR VOMA1A"
         },
         {
           "airlines": [
@@ -4194,8 +4194,8 @@
             }
           ],
           "destination": "PAFA",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR 5000N/10000W 5500N/10400W 5900N/11000W 6000N/11300W 6200N/12000W 6400N/13000W 6400N/14100W HRDNG J502 FAI"
+          "exit": "FAR.JET",
+          "route": "FAR 5000N/10000W 5500N/10400W 5900N/11000W 6000N/11300W 6200N/12000W 6400N/13000W 6400N/14100W HRDNG J502 FAI"
         },
         {
           "airlines": [
@@ -4221,8 +4221,8 @@
             }
           ],
           "destination": "PANC",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR CAREW 4900N/10100W TAGOT CACHO YYE J515 YXY NCA13 TMSON PTERS3"
+          "exit": "FAR.JET",
+          "route": "FAR CAREW 4900N/10100W TAGOT CACHO YYE J515 YXY NCA13 TMSON PTERS3"
         },
         {
           "airlines": [
@@ -4232,8 +4232,8 @@
             }
           ],
           "destination": "PHNL",
-          "exit": "HUGIR.HEAVYJET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY MBW OCS TCH KU63K MDOWS FMG PYE BEBOP R464 BITTA MAGGI3"
+          "exit": "RXANN.HEAVYJET",
+          "route": "RXANN TEYOU LLUKY MBW OCS TCH KU63K MDOWS FMG PYE BEBOP R464 BITTA MAGGI3"
         },
         {
           "airlines": [
@@ -4254,8 +4254,8 @@
             }
           ],
           "destination": "RKSI",
-          "exit": "HRBEK.HEAVYJET",
-          "route": "HRBEK HOMUR KBREW FAR MOT 5000N/10500W 5300N/11000W 5500N/11400W 5800N/12000W 6100N/13000W TOVAD Q811 GKN TKA NOSHO R220 NATES R220 NUBDA R220 NODAN R217 ASTER R217 GTC Y142 SAMON Y14 SUGNO Y16 SAPRA G585 GUKDO GUKD2E"
+          "exit": "FAR.HEAVYJET",
+          "route": "FAR MOT 5000N/10500W 5300N/11000W 5500N/11400W 5800N/12000W 6100N/13000W TOVAD Q811 GKN TKA NOSHO R220 NATES R220 NUBDA R220 NODAN R217 ASTER R217 GTC Y142 SAMON Y14 SUGNO Y16 SAPRA G585 GUKDO GUKD2E"
         },
         {
           "airlines": [
@@ -4265,26 +4265,30 @@
             }
           ],
           "destination": "TJSJ",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO SPI PXV J73 BNA THRSR SHRKS Q89 MANLE Y185 RENAH Y355 PLING RTE7 SJU"
+          "exit": "ALO.JET",
+          "route": "ALO SPI PXV J73 BNA THRSR SHRKS Q89 MANLE Y185 RENAH Y355 PLING RTE7 SJU"
         }
       ],
       "exit_categories": {
-        "HRBEK": "KBREW",
-        "ZOGAP": "SMERF",
-        "TONCA": "LEINY",
-        "HUGIR": "SCHEP",
-        "JURNY": "ORSKY",
-        "FOBUG": "RST",
-        "JEDET": "ZMBRO",
-        "TAXEE": "COULT",
-        "SNINE": "WLSTN",
         "STILS": "STILS",
         "DLH": "DLH",
         "BRNRD": "BRNRD",
         "LSE": "LSE",
         "FGT": "FGT",
-        "GEP": "GEP"
+        "GEP": "GEP",
+        "ALO": "RST",
+        "RST": "RST",
+        "FAR": "KBREW",
+        "KBREW": "KBREW",
+        "RXANN": "SCHEP",
+        "ODI": "ZMBRO",
+        "ONTIJ": "ORSKY",
+        "ORSKY": "ORSKY",
+        "GRB": "WLSTN",
+        "WLSTN": "WLSTN",
+        "DLL": "COULT",
+        "LEINY": "LEINY",
+        "SMERF": "SMERF"
       },
       "atpa_volumes": {
         "30R": {
@@ -4663,40 +4667,40 @@
       },
       "departure_routes": {
         "10L": {
-          "HUGIR.PROP": {
+          "RXANN.PROP": {
             "assigned_altitude": 2500,
             "sid": "SCHEP1",
             "initial_heading": 230
           },
-          "JEDET.PROP": {
+          "ODI.PROP": {
             "assigned_altitude": 2500,
             "sid": "ZMBRO7",
             "initial_heading": 180
           },
-          "TAXEE.PROP": {
+          "TAXEE.PROP,DLL.PROP": {
             "assigned_altitude": 2500,
             "sid": "COULT7",
             "initial_heading": 180
           },
-          "FOBUG.PROP": {
+          "ALO.PROP,RST.PROP": {
             "assigned_altitude": 2500,
             "sid": "RST1",
             "initial_heading": 180
           },
-          "JURNY.PROP": {
+          "ONTIJ.PROP,ORSKY.PROP": {
             "assigned_altitude": 2500,
             "sid": "ORSKY3",
             "initial_heading": 200
           },
-          "SNINE.PROP": {
+          "GRB.PROP,WLSTN.PROP": {
             "assigned_altitude": 2500,
             "sid": "WLSTN7",
-            "waypoints": "KFCM-28R/flyover/r300"
+            "departure_override": "r300"
           },
-          "HRBEK.PROP": {
+          "FAR.PROP,KBREW.PROP": {
             "assigned_altitude": 2500,
             "sid": "KBREW2",
-            "waypoints": "KFCM-28R/flyover/r300"
+            "departure_override": "r300"
           },
           "INUNE.PROP": {
             "assigned_altitude": 2500,
@@ -4720,40 +4724,40 @@
           }
         },
         "10R": {
-          "HUGIR.PROP,HUGIR.JET": {
+          "RXANN.PROP,RXANN.JET": {
             "assigned_altitude": 2500,
             "sid": "SCHEP1",
             "initial_heading": 230
           },
-          "JEDET.PROP,JEDET.JET": {
+          "ODI.PROP,ODI.JET": {
             "assigned_altitude": 2500,
             "sid": "ZMBRO7",
             "initial_heading": 180
           },
-          "TAXEE.PROP,TAXEE.JET": {
+          "TAXEE.PROP,DLL.PROP,TAXEE.JET,DLL.JET": {
             "assigned_altitude": 2500,
             "sid": "COULT7",
             "initial_heading": 180
           },
-          "FOBUG.PROP,FOBUG.JET": {
+          "ALO.PROP,RST.PROP,ALO.JET,RST.JET": {
             "assigned_altitude": 2500,
             "sid": "RST1",
             "initial_heading": 180
           },
-          "JURNY.PROP,JURNY.JET": {
+          "ONTIJ.PROP,ORSKY.PROP,ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 2500,
             "sid": "ORSKY3",
             "initial_heading": 200
           },
-          "SNINE.PROP,SNINE.JET": {
+          "GRB.PROP,WLSTN.PROP,GRB.JET,WLSTN.JET": {
             "assigned_altitude": 2500,
             "sid": "WLSTN7",
-            "waypoints": "KFCM-28L/flyover/r300"
+            "departure_override": "r300"
           },
-          "HRBEK.PROP,HRBEK.JET": {
+          "FAR.PROP,KBREW.PROP,FAR.JET,KBREW.JET": {
             "assigned_altitude": 2500,
             "sid": "KBREW2",
-            "waypoints": "KFCM-28L/flyover/r300"
+            "departure_override": "r300"
           },
           "INUNE.PROP,INUNE.JET": {
             "assigned_altitude": 2500,
@@ -4777,37 +4781,37 @@
           }
         },
         "28L": {
-          "HUGIR.PROP,HUGIR.JET": {
+          "RXANN.PROP,RXANN.JET": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
             "initial_heading": 230
           },
-          "JEDET.PROP,JEDET.JET": {
+          "ODI.PROP,ODI.JET": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
             "initial_heading": 180
           },
-          "TAXEE.PROP,TAXEE.JET": {
+          "TAXEE.PROP,DLL.PROP,TAXEE.JET,DLL.JET": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
             "initial_heading": 180
           },
-          "FOBUG.PROP,FOBUG.JET": {
+          "ALO.PROP,RST.PROP,ALO.JET,RST.JET": {
             "assigned_altitude": 3000,
             "sid": "RST1",
             "initial_heading": 180
           },
-          "JURNY.PROP,JURNY.JET": {
+          "ONTIJ.PROP,ORSKY.PROP,ONTIJ.JET,ORSKY.JET": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
             "initial_heading": 200
           },
-          "SNINE.PROP,SNINE.JET": {
+          "GRB.PROP,WLSTN.PROP,GRB.JET,WLSTN.JET": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
             "initial_heading": 300
           },
-          "HRBEK.PROP,HRBEK.JET": {
+          "FAR.PROP,KBREW.PROP,FAR.JET,KBREW.JET": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
             "initial_heading": 300
@@ -4834,37 +4838,37 @@
           }
         },
         "28R": {
-          "HUGIR.PROP": {
+          "RXANN.PROP": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
             "initial_heading": 230
           },
-          "JEDET.PROP": {
+          "ODI.PROP": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
             "initial_heading": 180
           },
-          "TAXEE.PROP": {
+          "TAXEE.PROP,DLL.PROP": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
             "initial_heading": 180
           },
-          "FOBUG.PROP": {
+          "ALO.PROP,RST.PROP": {
             "assigned_altitude": 3000,
             "sid": "RST1",
             "initial_heading": 180
           },
-          "JURNY.PROP": {
+          "ONTIJ.PROP,ORSKY.PROP": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
             "initial_heading": 200
           },
-          "SNINE.PROP": {
+          "GRB.PROP,WLSTN.PROP": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
             "initial_heading": 300
           },
-          "HRBEK.PROP": {
+          "FAR.PROP,KBREW.PROP": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
             "initial_heading": 300
@@ -4900,8 +4904,8 @@
             }
           ],
           "destination": "KPHX",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY GUP EAGUL6"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU LLUKY GUP EAGUL6"
         },
         {
           "airlines": [
@@ -4911,8 +4915,8 @@
             }
           ],
           "destination": "KPHX",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY GUP EAGUL6"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY GUP EAGUL6"
         },
         {
           "airlines": [
@@ -4922,8 +4926,8 @@
             }
           ],
           "destination": "KSLC",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY OCS"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU LLUKY OCS"
         },
         {
           "airlines": [
@@ -4936,8 +4940,8 @@
             }
           ],
           "destination": "KSLC",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY OCS"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY OCS"
         },
         {
           "airlines": [
@@ -4947,8 +4951,8 @@
             }
           ],
           "destination": "KPSP",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL J114 YANKI LEWOY POWDR DVC JASSE YORRK RDBUL1"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU ONL J114 YANKI LEWOY POWDR DVC JASSE YORRK RDBUL1"
         },
         {
           "airlines": [
@@ -4958,8 +4962,8 @@
             }
           ],
           "destination": "KPSP",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL J114 YANKI LEWOY POWDR DVC JASSE YORRK RDBUL1"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU ONL J114 YANKI LEWOY POWDR DVC JASSE YORRK RDBUL1"
         },
         {
           "airlines": [
@@ -4969,8 +4973,8 @@
             }
           ],
           "destination": "KSDL",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY LJAYY DSERT2"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU LLUKY LJAYY DSERT2"
         },
         {
           "airlines": [
@@ -4990,8 +4994,8 @@
             }
           ],
           "destination": "KSDL",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY LJAYY DSERT2"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY LJAYY DSERT2"
         },
         {
           "airlines": [
@@ -5001,8 +5005,8 @@
             }
           ],
           "destination": "KOGD",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL J94 OCS"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU ONL J94 OCS"
         },
         {
           "airlines": [
@@ -5012,8 +5016,8 @@
             }
           ],
           "destination": "KOGD",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL J94 OCS"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU ONL J94 OCS"
         },
         {
           "airlines": [
@@ -5023,8 +5027,8 @@
             }
           ],
           "destination": "KRIL",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU LLUKY"
         },
         {
           "airlines": [
@@ -5037,8 +5041,8 @@
             }
           ],
           "destination": "KRIL",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY"
         },
         {
           "airlines": [
@@ -5051,8 +5055,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN FSD"
+          "exit": "RXANN.PROP",
+          "route": "RXANN FSD"
         },
         {
           "airlines": [
@@ -5062,8 +5066,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN FSD"
+          "exit": "RXANN.JET",
+          "route": "RXANN FSD"
         },
         {
           "airlines": [
@@ -5073,8 +5077,8 @@
             }
           ],
           "destination": "KFFZ",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY DSERT SHOCK BUSTD YOLOW CACTY"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU LLUKY DSERT SHOCK BUSTD YOLOW CACTY"
         },
         {
           "airlines": [
@@ -5084,8 +5088,8 @@
             }
           ],
           "destination": "KFFZ",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY DSERT SHOCK BUSTD YOLOW CACTY"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY DSERT SHOCK BUSTD YOLOW CACTY"
         },
         {
           "airlines": [
@@ -5095,8 +5099,8 @@
             }
           ],
           "destination": "KDVT",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL INW DSERT2"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU ONL INW DSERT2"
         },
         {
           "airlines": [
@@ -5106,8 +5110,8 @@
             }
           ],
           "destination": "KDVT",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL INW DSERT2"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU ONL INW DSERT2"
         },
         {
           "airlines": [
@@ -5117,8 +5121,8 @@
             }
           ],
           "destination": "KHDN",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY BFF LAR"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU LLUKY BFF LAR"
         },
         {
           "airlines": [
@@ -5131,8 +5135,8 @@
             }
           ],
           "destination": "KHDN",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY BFF LAR"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY BFF LAR"
         },
         {
           "airlines": [
@@ -5142,8 +5146,8 @@
             }
           ],
           "destination": "KSBS",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU LLUKY"
         },
         {
           "airlines": [
@@ -5153,8 +5157,8 @@
             }
           ],
           "destination": "KSBS",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU LLUKY"
         },
         {
           "airlines": [
@@ -5164,8 +5168,8 @@
             }
           ],
           "destination": "KSUX",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN"
+          "exit": "RXANN.PROP",
+          "route": "RXANN"
         },
         {
           "airlines": [
@@ -5175,8 +5179,8 @@
             }
           ],
           "destination": "KSUX",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN"
+          "exit": "RXANN.JET",
+          "route": "RXANN"
         },
         {
           "airlines": [
@@ -5186,8 +5190,8 @@
             }
           ],
           "destination": "KMDS",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU"
         },
         {
           "airlines": [
@@ -5197,8 +5201,8 @@
             }
           ],
           "destination": "KMDS",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU"
         },
         {
           "airlines": [
@@ -5211,8 +5215,8 @@
             }
           ],
           "destination": "KAPA",
-          "exit": "HUGIR.PROP",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL AKO"
+          "exit": "RXANN.PROP",
+          "route": "RXANN TEYOU ONL AKO"
         },
         {
           "airlines": [
@@ -5222,8 +5226,8 @@
             }
           ],
           "destination": "KAPA",
-          "exit": "HUGIR.JET",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL AKO"
+          "exit": "RXANN.JET",
+          "route": "RXANN TEYOU ONL AKO"
         },
         {
           "airlines": [
@@ -5233,8 +5237,8 @@
             }
           ],
           "destination": "KPIA",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI.PROP",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -5244,8 +5248,8 @@
             }
           ],
           "destination": "KPIA",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI.JET",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -5255,8 +5259,8 @@
             }
           ],
           "destination": "KLUK",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI.PROP",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -5269,8 +5273,8 @@
             }
           ],
           "destination": "KLUK",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI.JET",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -5280,8 +5284,8 @@
             }
           ],
           "destination": "KOCF",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI.PROP",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -5291,8 +5295,8 @@
             }
           ],
           "destination": "KOCF",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI.JET",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -5302,8 +5306,8 @@
             }
           ],
           "destination": "KMQJ",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI.PROP",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -5313,8 +5317,8 @@
             }
           ],
           "destination": "KMQJ",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI.JET",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -5328,8 +5332,8 @@
             }
           ],
           "destination": "KGSP",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI.PROP",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -5343,8 +5347,8 @@
             }
           ],
           "destination": "KGSP",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI.JET",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -5354,8 +5358,8 @@
             }
           ],
           "destination": "KTRI",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI VHP"
+          "exit": "ODI.PROP",
+          "route": "ODI VHP"
         },
         {
           "airlines": [
@@ -5365,8 +5369,8 @@
             }
           ],
           "destination": "KTRI",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI VHP"
+          "exit": "ODI.JET",
+          "route": "ODI VHP"
         },
         {
           "airlines": [
@@ -5376,8 +5380,8 @@
             }
           ],
           "destination": "KCHS",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI J30 JOT BVT FLM SPA DEFFN OSPRI7"
+          "exit": "ODI.PROP",
+          "route": "ODI J30 JOT BVT FLM SPA DEFFN OSPRI7"
         },
         {
           "airlines": [
@@ -5390,8 +5394,8 @@
             }
           ],
           "destination": "KCHS",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI J30 JOT BVT FLM SPA DEFFN OSPRI7"
+          "exit": "ODI.JET",
+          "route": "ODI J30 JOT BVT FLM SPA DEFFN OSPRI7"
         },
         {
           "airlines": [
@@ -5401,8 +5405,8 @@
             }
           ],
           "destination": "KDLZ",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI.PROP",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -5415,8 +5419,8 @@
             }
           ],
           "destination": "KDLZ",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI.JET",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -5426,8 +5430,8 @@
             }
           ],
           "destination": "KDPA",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI DLL199032 LYSEN SIMMN JOT"
+          "exit": "ODI.PROP",
+          "route": "ODI DLL199032 LYSEN SIMMN JOT"
         },
         {
           "airlines": [
@@ -5443,8 +5447,8 @@
             }
           ],
           "destination": "KDPA",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI DLL199032 LYSEN SIMMN JOT"
+          "exit": "ODI.JET",
+          "route": "ODI DLL199032 LYSEN SIMMN JOT"
         },
         {
           "airlines": [
@@ -5454,8 +5458,8 @@
             }
           ],
           "destination": "KDLL",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI.PROP",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -5465,8 +5469,8 @@
             }
           ],
           "destination": "KDLL",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI.JET",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -5476,8 +5480,8 @@
             }
           ],
           "destination": "KTYQ",
-          "exit": "JEDET.PROP",
-          "route": "JEDET ZMBRO ODI KELSI BVT BVT129020 JAKKS VHP"
+          "exit": "ODI.PROP",
+          "route": "ODI KELSI BVT BVT129020 JAKKS VHP"
         },
         {
           "airlines": [
@@ -5487,8 +5491,8 @@
             }
           ],
           "destination": "KTYQ",
-          "exit": "JEDET.JET",
-          "route": "JEDET ZMBRO ODI KELSI BVT BVT129020 JAKKS VHP"
+          "exit": "ODI.JET",
+          "route": "ODI KELSI BVT BVT129020 JAKKS VHP"
         },
         {
           "airlines": [
@@ -5498,8 +5502,8 @@
             }
           ],
           "destination": "KLNS",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL DJB HAR"
+          "exit": "DLL.PROP",
+          "route": "DLL DJB HAR"
         },
         {
           "airlines": [
@@ -5512,8 +5516,8 @@
             }
           ],
           "destination": "KLNS",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL DJB HAR"
+          "exit": "DLL.JET",
+          "route": "DLL DJB HAR"
         },
         {
           "airlines": [
@@ -5523,8 +5527,8 @@
             }
           ],
           "destination": "KRIC",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL MOL SPIDR5"
+          "exit": "DLL.PROP",
+          "route": "DLL MOL SPIDR5"
         },
         {
           "airlines": [
@@ -5534,8 +5538,8 @@
             }
           ],
           "destination": "KRIC",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL MOL SPIDR5"
+          "exit": "DLL.JET",
+          "route": "DLL MOL SPIDR5"
         },
         {
           "airlines": [
@@ -5545,8 +5549,8 @@
             }
           ],
           "destination": "KLNN",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.PROP",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -5556,8 +5560,8 @@
             }
           ],
           "destination": "KLNN",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.JET",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -5567,8 +5571,8 @@
             }
           ],
           "destination": "KTEB",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL HASTE JHW LVZ5"
+          "exit": "DLL.PROP",
+          "route": "DLL HASTE JHW LVZ5"
         },
         {
           "airlines": [
@@ -5581,8 +5585,8 @@
             }
           ],
           "destination": "KTEB",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL HASTE JHW LVZ5"
+          "exit": "DLL.JET",
+          "route": "DLL HASTE JHW LVZ5"
         },
         {
           "airlines": [
@@ -5592,8 +5596,8 @@
             }
           ],
           "destination": "KMKE",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL BAE"
+          "exit": "DLL.PROP",
+          "route": "DLL BAE"
         },
         {
           "airlines": [
@@ -5609,8 +5613,8 @@
             }
           ],
           "destination": "KMKE",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL BAE"
+          "exit": "DLL.JET",
+          "route": "DLL BAE"
         },
         {
           "airlines": [
@@ -5620,8 +5624,8 @@
             }
           ],
           "destination": "KIAD",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ5"
+          "exit": "DLL.PROP",
+          "route": "DLL MGW GIBBZ5"
         },
         {
           "airlines": [
@@ -5631,8 +5635,8 @@
             }
           ],
           "destination": "KIAD",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL MGW GIBBZ5"
+          "exit": "DLL.JET",
+          "route": "DLL MGW GIBBZ5"
         },
         {
           "airlines": [
@@ -5642,8 +5646,8 @@
             }
           ],
           "destination": "KBTL",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.PROP",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -5653,8 +5657,8 @@
             }
           ],
           "destination": "KBTL",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.JET",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -5664,8 +5668,8 @@
             }
           ],
           "destination": "KCMH",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL BRYEN DUBLN1"
+          "exit": "DLL.PROP",
+          "route": "DLL BRYEN DUBLN1"
         },
         {
           "airlines": [
@@ -5678,8 +5682,8 @@
             }
           ],
           "destination": "KCMH",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL BRYEN DUBLN1"
+          "exit": "DLL.JET",
+          "route": "DLL BRYEN DUBLN1"
         },
         {
           "airlines": [
@@ -5733,8 +5737,8 @@
             }
           ],
           "destination": "KOSH",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.PROP",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -5744,8 +5748,8 @@
             }
           ],
           "destination": "KOSH",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.JET",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -5755,8 +5759,8 @@
             }
           ],
           "destination": "KMSN",
-          "exit": "TAXEE.PROP",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.PROP",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -5766,8 +5770,8 @@
             }
           ],
           "destination": "KMSN",
-          "exit": "TAXEE.JET",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL.JET",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -5780,8 +5784,8 @@
             }
           ],
           "destination": "KPIB",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST ALO J233 CAPPR UIN FTZ J187 MEM WINAP"
+          "exit": "ALO.PROP",
+          "route": "ALO J233 CAPPR UIN FTZ J187 MEM WINAP"
         },
         {
           "airlines": [
@@ -5791,8 +5795,8 @@
             }
           ],
           "destination": "KPIB",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO J233 CAPPR UIN FTZ J187 MEM WINAP"
+          "exit": "ALO.JET",
+          "route": "ALO J233 CAPPR UIN FTZ J187 MEM WINAP"
         },
         {
           "airlines": [
@@ -5802,8 +5806,8 @@
             }
           ],
           "destination": "KALO",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST"
+          "exit": "RST.PROP",
+          "route": "RST"
         },
         {
           "airlines": [
@@ -5813,8 +5817,8 @@
             }
           ],
           "destination": "KALO",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST"
+          "exit": "RST.JET",
+          "route": "RST"
         },
         {
           "airlines": [
@@ -5828,8 +5832,8 @@
             }
           ],
           "destination": "KPKV",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST ALO"
+          "exit": "ALO.PROP",
+          "route": "ALO"
         },
         {
           "airlines": [
@@ -5843,8 +5847,8 @@
             }
           ],
           "destination": "KPKV",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO"
+          "exit": "ALO.JET",
+          "route": "ALO"
         },
         {
           "airlines": [
@@ -5858,8 +5862,8 @@
             }
           ],
           "destination": "KAPF",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST PLYER PIKKR7"
+          "exit": "RST.PROP",
+          "route": "RST PLYER PIKKR7"
         },
         {
           "airlines": [
@@ -5873,8 +5877,8 @@
             }
           ],
           "destination": "KAPF",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST PLYER PIKKR7"
+          "exit": "RST.JET",
+          "route": "RST PLYER PIKKR7"
         },
         {
           "airlines": [
@@ -5884,8 +5888,8 @@
             }
           ],
           "destination": "KCHA",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST"
+          "exit": "RST.PROP",
+          "route": "RST"
         },
         {
           "airlines": [
@@ -5895,8 +5899,8 @@
             }
           ],
           "destination": "KCHA",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST"
+          "exit": "RST.JET",
+          "route": "RST"
         },
         {
           "airlines": [
@@ -5906,8 +5910,8 @@
             }
           ],
           "destination": "KEVV",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST EWITT OFEND PXV"
+          "exit": "RST.PROP",
+          "route": "RST EWITT OFEND PXV"
         },
         {
           "airlines": [
@@ -5917,8 +5921,8 @@
             }
           ],
           "destination": "KEVV",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST EWITT OFEND PXV"
+          "exit": "RST.JET",
+          "route": "RST EWITT OFEND PXV"
         },
         {
           "airlines": [
@@ -5928,8 +5932,8 @@
             }
           ],
           "destination": "KJEF",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST ALO"
+          "exit": "ALO.PROP",
+          "route": "ALO"
         },
         {
           "airlines": [
@@ -5939,8 +5943,8 @@
             }
           ],
           "destination": "KJEF",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO"
+          "exit": "ALO.JET",
+          "route": "ALO"
         },
         {
           "airlines": [
@@ -5950,8 +5954,8 @@
             }
           ],
           "destination": "KFMY",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST PLYER TYNEE4"
+          "exit": "RST.PROP",
+          "route": "RST PLYER TYNEE4"
         },
         {
           "airlines": [
@@ -5961,8 +5965,8 @@
             }
           ],
           "destination": "KFMY",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST PLYER TYNEE4"
+          "exit": "RST.JET",
+          "route": "RST PLYER TYNEE4"
         },
         {
           "airlines": [
@@ -5972,8 +5976,8 @@
             }
           ],
           "destination": "KMDW",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST OHHMY ENDEE8"
+          "exit": "RST.PROP",
+          "route": "RST OHHMY ENDEE8"
         },
         {
           "airlines": [
@@ -5986,8 +5990,8 @@
             }
           ],
           "destination": "KMDW",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST OHHMY ENDEE8"
+          "exit": "RST.JET",
+          "route": "RST OHHMY ENDEE8"
         },
         {
           "airlines": [
@@ -5997,8 +6001,8 @@
             }
           ],
           "destination": "KSUA",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST ALO HITMN THRSR ZPLEN LEESE ORL TUXXI"
+          "exit": "ALO.PROP",
+          "route": "ALO HITMN THRSR ZPLEN LEESE ORL TUXXI"
         },
         {
           "airlines": [
@@ -6011,8 +6015,8 @@
             }
           ],
           "destination": "KSUA",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ALO HITMN THRSR ZPLEN LEESE ORL TUXXI"
+          "exit": "ALO.JET",
+          "route": "ALO HITMN THRSR ZPLEN LEESE ORL TUXXI"
         },
         {
           "airlines": [
@@ -6022,8 +6026,8 @@
             }
           ],
           "destination": "KORD",
-          "exit": "FOBUG.PROP",
-          "route": "FOBUG DOKTR CORDY RST ZZIPR FYTTE7"
+          "exit": "RST.PROP",
+          "route": "RST ZZIPR FYTTE7"
         },
         {
           "airlines": [
@@ -6036,8 +6040,8 @@
             }
           ],
           "destination": "KORD",
-          "exit": "FOBUG.JET",
-          "route": "FOBUG DOKTR CORDY RST ZZIPR FYTTE7"
+          "exit": "RST.JET",
+          "route": "RST ZZIPR FYTTE7"
         },
         {
           "airlines": [
@@ -6047,8 +6051,8 @@
             }
           ],
           "destination": "KDAL",
-          "exit": "JURNY.PROP",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ"
+          "exit": "ONTIJ.PROP",
+          "route": "ONTIJ"
         },
         {
           "airlines": [
@@ -6062,8 +6066,8 @@
             }
           ],
           "destination": "KDAL",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ"
+          "exit": "ONTIJ.JET",
+          "route": "ONTIJ"
         },
         {
           "airlines": [
@@ -6073,8 +6077,8 @@
             }
           ],
           "destination": "KIKV",
-          "exit": "JURNY.PROP",
-          "route": "JURNY RUMLE PEDLN ORSKY FOD DSM"
+          "exit": "ORSKY.PROP",
+          "route": "ORSKY FOD DSM"
         },
         {
           "airlines": [
@@ -6084,8 +6088,8 @@
             }
           ],
           "destination": "KIKV",
-          "exit": "JURNY.JET",
-          "route": "JURNY RUMLE PEDLN ORSKY FOD DSM"
+          "exit": "ORSKY.JET",
+          "route": "ORSKY FOD DSM"
         },
         {
           "airlines": [
@@ -6095,8 +6099,8 @@
             }
           ],
           "destination": "KBED",
-          "exit": "SNINE.PROP",
-          "route": "SNINE DWIYT WLSTN PONCT EEGUL ZELKA2"
+          "exit": "WLSTN.PROP",
+          "route": "WLSTN PONCT EEGUL ZELKA2"
         },
         {
           "airlines": [
@@ -6106,8 +6110,8 @@
             }
           ],
           "destination": "KBED",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN PONCT EEGUL ZELKA2"
+          "exit": "WLSTN.JET",
+          "route": "WLSTN PONCT EEGUL ZELKA2"
         },
         {
           "airlines": [
@@ -6117,8 +6121,8 @@
             }
           ],
           "destination": "KGRB",
-          "exit": "SNINE.PROP",
-          "route": "SNINE DWIYT WLSTN GRB"
+          "exit": "GRB.PROP",
+          "route": "GRB"
         },
         {
           "airlines": [
@@ -6131,8 +6135,8 @@
             }
           ],
           "destination": "KGRB",
-          "exit": "SNINE.JET",
-          "route": "SNINE DWIYT WLSTN GRB"
+          "exit": "GRB.JET",
+          "route": "GRB"
         },
         {
           "airlines": [
@@ -6142,8 +6146,8 @@
             }
           ],
           "destination": "KPAE",
-          "exit": "HRBEK.PROP",
-          "route": "HRBEK HOMUR KBREW FAR J36 MLP J136 HILIE FRZBY DEVYN2"
+          "exit": "FAR.PROP",
+          "route": "FAR J36 MLP J136 HILIE FRZBY DEVYN2"
         },
         {
           "airlines": [
@@ -6153,8 +6157,8 @@
             }
           ],
           "destination": "KPAE",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR J36 MLP J136 HILIE FRZBY DEVYN2"
+          "exit": "FAR.JET",
+          "route": "FAR J36 MLP J136 HILIE FRZBY DEVYN2"
         },
         {
           "airlines": [
@@ -6168,8 +6172,8 @@
             }
           ],
           "destination": "KFAR",
-          "exit": "HRBEK.PROP",
-          "route": "HRBEK HOMUR KBREW FAR"
+          "exit": "FAR.PROP",
+          "route": "FAR"
         },
         {
           "airlines": [
@@ -6186,8 +6190,8 @@
             }
           ],
           "destination": "KFAR",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW FAR"
+          "exit": "FAR.JET",
+          "route": "FAR"
         },
         {
           "airlines": [
@@ -6197,8 +6201,8 @@
             }
           ],
           "destination": "KGFK",
-          "exit": "HRBEK.PROP",
-          "route": "HRBEK HOMUR KBREW"
+          "exit": "KBREW.PROP",
+          "route": "KBREW"
         },
         {
           "airlines": [
@@ -6208,8 +6212,8 @@
             }
           ],
           "destination": "KGFK",
-          "exit": "HRBEK.JET",
-          "route": "HRBEK HOMUR KBREW"
+          "exit": "KBREW.JET",
+          "route": "KBREW"
         },
         {
           "airlines": [
@@ -6668,18 +6672,23 @@
         }
       ],
       "exit_categories": {
-        "HRBEK": "KBREW",
-        "HUGIR": "SCHEP",
-        "JURNY": "ORSKY",
-        "FOBUG": "RST",
-        "JEDET": "ZMBRO",
         "TAXEE": "COULT",
-        "SNINE": "WLSTN",
         "INUNE": "INUNE",
         "MKT": "MKT",
         "GEP": "GEP",
         "FGT": "FGT",
-        "RIXIE": "RIXIE"
+        "RIXIE": "RIXIE",
+        "ALO": "RST",
+        "RST": "RST",
+        "FAR": "KBREW",
+        "KBREW": "KBREW",
+        "RXANN": "SCHEP",
+        "ODI": "ZMBRO",
+        "ONTIJ": "ORSKY",
+        "ORSKY": "ORSKY",
+        "GRB": "WLSTN",
+        "WLSTN": "WLSTN",
+        "DLL": "COULT"
       },
       "tower_list": 3,
       "departure_runways_as_one": ["10L,10R", "28L,28R"],
@@ -6707,32 +6716,32 @@
       },
       "departure_routes": {
         "14": {
-          "HUGIR": {
+          "RXANN,SCHEP": {
             "assigned_altitude": 2500,
             "sid": "SCHEP1",
             "initial_heading": 80
           },
-          "JEDET": {
+          "ODI": {
             "assigned_altitude": 2500,
             "sid": "ZMBRO7",
             "initial_heading": 80
           },
-          "TAXEE": {
+          "TAXEE,DLL": {
             "assigned_altitude": 2500,
             "sid": "COULT7",
             "initial_heading": 80
           },
-          "FOBUG": {
+          "ALO,RST": {
             "assigned_altitude": 2500,
             "sid": "RST1",
             "initial_heading": 80
           },
-          "JURNY": {
+          "ONTIJ,ORSKY": {
             "assigned_altitude": 2500,
             "sid": "ORSKY3",
             "initial_heading": 80
           },
-          "HRBEK": {
+          "FAR,KBREW": {
             "assigned_altitude": 2500,
             "sid": "KBREW2",
             "initial_heading": 10
@@ -6755,32 +6764,32 @@
           }
         },
         "32": {
-          "HUGIR": {
+          "RXANN,SCHEP": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
             "initial_heading": 30
           },
-          "JEDET": {
+          "ODI": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
             "initial_heading": 45
           },
-          "TAXEE": {
+          "TAXEE,DLL": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
             "initial_heading": 45
           },
-          "FOBUG": {
+          "ALO,RST": {
             "assigned_altitude": 3000,
             "sid": "RST1",
             "initial_heading": 45
           },
-          "JURNY": {
+          "ONTIJ,ORSKY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
             "initial_heading": 45
           },
-          "HRBEK": {
+          "FAR,KBREW": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
             "initial_heading": 30
@@ -6807,8 +6816,8 @@
             }
           ],
           "destination": "KCOS",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY"
         },
         {
           "airlines": [
@@ -6817,8 +6826,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN FSD"
+          "exit": "RXANN",
+          "route": "RXANN FSD"
         },
         {
           "airlines": [
@@ -6827,8 +6836,8 @@
             }
           ],
           "destination": "KHSI",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ISTIQ"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU ISTIQ"
         },
         {
           "airlines": [
@@ -6837,8 +6846,8 @@
             }
           ],
           "destination": "KPSP",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY YORRK RDBUL1"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY YORRK RDBUL1"
         },
         {
           "airlines": [
@@ -6847,8 +6856,8 @@
             }
           ],
           "destination": "KOTG",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP OTG"
+          "exit": "SCHEP",
+          "route": "SCHEP OTG"
         },
         {
           "airlines": [
@@ -6857,8 +6866,8 @@
             }
           ],
           "destination": "KSUX",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN"
+          "exit": "RXANN",
+          "route": "RXANN"
         },
         {
           "airlines": [
@@ -6870,8 +6879,8 @@
             }
           ],
           "destination": "KAPA",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY SNY LANDR3"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY SNY LANDR3"
         },
         {
           "airlines": [
@@ -6883,8 +6892,8 @@
             }
           ],
           "destination": "KBUR",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY SHRPE LANDR MROON LUDOH GUNTR WELUM JANNY5"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY SHRPE LANDR MROON LUDOH GUNTR WELUM JANNY5"
         },
         {
           "airlines": [
@@ -6899,8 +6908,8 @@
             }
           ],
           "destination": "KSDL",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY LJAYY DSERT2"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY LJAYY DSERT2"
         },
         {
           "airlines": [
@@ -6912,8 +6921,8 @@
             }
           ],
           "destination": "KBJC",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY SHRPE BRNKO4"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY SHRPE BRNKO4"
         },
         {
           "airlines": [
@@ -6922,8 +6931,8 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL SNY DBL TYEGR CHOWW4"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU ONL SNY DBL TYEGR CHOWW4"
         },
         {
           "airlines": [
@@ -6932,8 +6941,8 @@
             }
           ],
           "destination": "KAHN",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI BIXBY BUMKN JODAS"
+          "exit": "ODI",
+          "route": "ODI BIXBY BUMKN JODAS"
         },
         {
           "airlines": [
@@ -6945,8 +6954,8 @@
             }
           ],
           "destination": "KCEU",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI J30 SIBER J30 BRIBE IIU"
+          "exit": "ODI",
+          "route": "ODI J30 SIBER J30 BRIBE IIU"
         },
         {
           "airlines": [
@@ -6958,8 +6967,8 @@
             }
           ],
           "destination": "KSAV",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI J30 JOT IRQ SAV"
+          "exit": "ODI",
+          "route": "ODI J30 JOT IRQ SAV"
         },
         {
           "airlines": [
@@ -6968,8 +6977,8 @@
             }
           ],
           "destination": "KFTY",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE RIZZZ BUKHD3"
+          "exit": "ODI",
+          "route": "ODI J30 BRIBE RIZZZ BUKHD3"
         },
         {
           "airlines": [
@@ -6978,8 +6987,8 @@
             }
           ],
           "destination": "KTYQ",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI JAKKS VHP"
+          "exit": "ODI",
+          "route": "ODI JAKKS VHP"
         },
         {
           "airlines": [
@@ -6991,8 +7000,8 @@
             }
           ],
           "destination": "KJQF",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI J30 JOT VHP J24 FLM TAFTT BZM"
+          "exit": "ODI",
+          "route": "ODI J30 JOT VHP J24 FLM TAFTT BZM"
         },
         {
           "airlines": [
@@ -7001,8 +7010,8 @@
             }
           ],
           "destination": "KIND",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE BVT155020 JAKKS JAKKS2"
+          "exit": "ODI",
+          "route": "ODI J30 BRIBE BVT155020 JAKKS JAKKS2"
         },
         {
           "airlines": [
@@ -7014,8 +7023,8 @@
             }
           ],
           "destination": "KILM",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI EARND ELANR ROYYZ FLM CEGMA CEGAL GSO FAY V296 URRIE"
+          "exit": "ODI",
+          "route": "ODI EARND ELANR ROYYZ FLM CEGMA CEGAL GSO FAY V296 URRIE"
         },
         {
           "airlines": [
@@ -7027,8 +7036,8 @@
             }
           ],
           "destination": "KBWI",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -7040,8 +7049,8 @@
             }
           ],
           "destination": "KATW",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -7053,8 +7062,8 @@
             }
           ],
           "destination": "KPWK",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL MSN JVL KRENA"
+          "exit": "DLL",
+          "route": "DLL MSN JVL KRENA"
         },
         {
           "airlines": [
@@ -7063,8 +7072,8 @@
             }
           ],
           "destination": "KDET",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -7073,8 +7082,8 @@
             }
           ],
           "destination": "KYIP",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL WEBOR RRALF3"
+          "exit": "DLL",
+          "route": "DLL WEBOR RRALF3"
         },
         {
           "airlines": [
@@ -7086,8 +7095,8 @@
             }
           ],
           "destination": "KTEB",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL JHW LVZ5"
+          "exit": "DLL",
+          "route": "DLL JHW LVZ5"
         },
         {
           "airlines": [
@@ -7096,8 +7105,8 @@
             }
           ],
           "destination": "KOSU",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL FBC DUBLN1"
+          "exit": "DLL",
+          "route": "DLL FBC DUBLN1"
         },
         {
           "airlines": [
@@ -7106,8 +7115,8 @@
             }
           ],
           "destination": "KGYH",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL BRBIE WWODD YOCKY DAJPI RCTOR3"
+          "exit": "DLL",
+          "route": "DLL BRBIE WWODD YOCKY DAJPI RCTOR3"
         },
         {
           "airlines": [
@@ -7119,8 +7128,8 @@
             }
           ],
           "destination": "KRAC",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL BAE"
+          "exit": "DLL",
+          "route": "DLL BAE"
         },
         {
           "airlines": [
@@ -7139,8 +7148,8 @@
             }
           ],
           "destination": "KSBM",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL BJB"
+          "exit": "DLL",
+          "route": "DLL BJB"
         },
         {
           "airlines": [
@@ -7149,8 +7158,8 @@
             }
           ],
           "destination": "KPTK",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL WEBOR RRALF3"
+          "exit": "DLL",
+          "route": "DLL WEBOR RRALF3"
         },
         {
           "airlines": [
@@ -7162,8 +7171,8 @@
             }
           ],
           "destination": "KDJT",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO IRK J45 STL J45 DENNI Q19 HITMN ACORI VUUDU1"
+          "exit": "ALO",
+          "route": "ALO IRK J45 STL J45 DENNI Q19 HITMN ACORI VUUDU1"
         },
         {
           "airlines": [
@@ -7172,8 +7181,8 @@
             }
           ],
           "destination": "KMOB",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO RIVRS HUMBO CBM"
+          "exit": "ALO",
+          "route": "ALO RIVRS HUMBO CBM"
         },
         {
           "airlines": [
@@ -7182,8 +7191,8 @@
             }
           ],
           "destination": "KPIA",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST MZV"
+          "exit": "RST",
+          "route": "RST MZV"
         },
         {
           "airlines": [
@@ -7195,8 +7204,8 @@
             }
           ],
           "destination": "KUIN",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO IOW"
+          "exit": "ALO",
+          "route": "ALO IOW"
         },
         {
           "airlines": [
@@ -7214,8 +7223,8 @@
             }
           ],
           "destination": "KAPF",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO STL SZW PLYER PIKKR7"
+          "exit": "ALO",
+          "route": "ALO STL SZW PLYER PIKKR7"
         },
         {
           "airlines": [
@@ -7224,8 +7233,8 @@
             }
           ],
           "destination": "KCXO",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST CVE RIICE1"
+          "exit": "RST",
+          "route": "RST CVE RIICE1"
         },
         {
           "airlines": [
@@ -7237,8 +7246,8 @@
             }
           ],
           "destination": "KSUS",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO DIRTT DIRTT2"
+          "exit": "ALO",
+          "route": "ALO DIRTT DIRTT2"
         },
         {
           "airlines": [
@@ -7247,8 +7256,8 @@
             }
           ],
           "destination": "KRAW",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO IRK J87 DRIVL"
+          "exit": "ALO",
+          "route": "ALO IRK J87 DRIVL"
         },
         {
           "airlines": [
@@ -7263,8 +7272,8 @@
             }
           ],
           "destination": "KRST",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST"
+          "exit": "RST",
+          "route": "RST"
         },
         {
           "airlines": [
@@ -7273,8 +7282,8 @@
             }
           ],
           "destination": "KFOE",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY OZAKI"
+          "exit": "ORSKY",
+          "route": "ORSKY OZAKI"
         },
         {
           "airlines": [
@@ -7283,8 +7292,8 @@
             }
           ],
           "destination": "KIXD",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY HANKU ASIIX JSONN BOWLR MCI"
+          "exit": "ORSKY",
+          "route": "ORSKY HANKU ASIIX JSONN BOWLR MCI"
         },
         {
           "airlines": [
@@ -7299,8 +7308,8 @@
             }
           ],
           "destination": "KPWA",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ BELMN JUDDG2"
+          "exit": "ONTIJ",
+          "route": "ONTIJ BELMN JUDDG2"
         },
         {
           "airlines": [
@@ -7309,8 +7318,8 @@
             }
           ],
           "destination": "KOMA",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY DABOY LANTK2"
+          "exit": "ORSKY",
+          "route": "ORSKY DABOY LANTK2"
         },
         {
           "airlines": [
@@ -7325,8 +7334,8 @@
             }
           ],
           "destination": "KXNA",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ DABOY MCI BUM EOS"
+          "exit": "ONTIJ",
+          "route": "ONTIJ DABOY MCI BUM EOS"
         },
         {
           "airlines": [
@@ -7338,8 +7347,8 @@
             }
           ],
           "destination": "KMCI",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ ASIIX JSONN4"
+          "exit": "ONTIJ",
+          "route": "ONTIJ ASIIX JSONN4"
         },
         {
           "airlines": [
@@ -7351,8 +7360,8 @@
             }
           ],
           "destination": "KDSM",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY FOD DSM"
+          "exit": "ORSKY",
+          "route": "ORSKY FOD DSM"
         },
         {
           "airlines": [
@@ -7367,8 +7376,8 @@
             }
           ],
           "destination": "KFAR",
-          "exit": "HRBEK",
-          "route": "HRBEK HOMUR KBREW FAR"
+          "exit": "FAR",
+          "route": "FAR"
         },
         {
           "airlines": [
@@ -7377,8 +7386,8 @@
             }
           ],
           "destination": "KFFM",
-          "exit": "HRBEK",
-          "route": "HRBEK HOMUR KBREW"
+          "exit": "KBREW",
+          "route": "KBREW"
         },
         {
           "airlines": [
@@ -7387,8 +7396,8 @@
             }
           ],
           "destination": "KMOT",
-          "exit": "HRBEK",
-          "route": "HRBEK HOMUR KBREW FAR HEKTA"
+          "exit": "FAR",
+          "route": "FAR HEKTA"
         },
         {
           "airlines": [
@@ -7400,8 +7409,8 @@
             }
           ],
           "destination": "KBTN",
-          "exit": "HRBEK",
-          "route": "HRBEK HOMUR KBREW"
+          "exit": "KBREW",
+          "route": "KBREW"
         },
         {
           "airlines": [
@@ -7594,14 +7603,19 @@
         }
       ],
       "exit_categories": {
-        "HRBEK": "KBREW",
-        "HUGIR": "SCHEP",
-        "JURNY": "ORSKY",
-        "FOBUG": "RST",
-        "JEDET": "ZMBRO",
         "TAXEE": "COULT",
         "FGT": "FGT",
-        "GEP": "GEP"
+        "GEP": "GEP",
+        "ALO": "RST",
+        "RST": "RST",
+        "FAR": "KBREW",
+        "KBREW": "KBREW",
+        "RXANN": "SCHEP",
+        "SCHEP": "SCHEP",
+        "ODI": "ZMBRO",
+        "ONTIJ": "ORSKY",
+        "ORSKY": "ORSKY",
+        "DLL": "COULT"
       },
       "tower_list": 2,
       "hold_for_release": true
@@ -7628,35 +7642,35 @@
       },
       "departure_routes": {
         "9": {
-          "HUGIR": {
+          "RXANN": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
-            "waypoints": "KANE-27/flyover/l270"
+            "departure_override": "l270"
           },
-          "JEDET": {
+          "ODI": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7"
           },
-          "TAXEE": {
+          "TAXEE,DLL": {
             "assigned_altitude": 3000,
             "sid": "COULT7"
           },
-          "FOBUG": {
+          "ALO,RST": {
             "assigned_altitude": 3000,
             "sid": "RST1",
             "initial_heading": 90
           },
-          "JURNY": {
+          "ONTIJ,ORSKY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
-            "waypoints": "KANE-27/flyover/l270"
+            "departure_override": "l270"
           },
-          "SNINE": {
+          "WLSTN": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
             "initial_heading": 70
           },
-          "HRBEK": {
+          "FAR,KBREW": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
             "initial_heading": 290
@@ -7683,37 +7697,37 @@
           }
         },
         "18": {
-          "HUGIR": {
+          "RXANN": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
             "initial_heading": 270
           },
-          "JEDET": {
+          "ODI": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
-            "waypoints": "KANE-36/flyover/r090"
+            "departure_override": "r090"
           },
-          "TAXEE": {
+          "TAXEE,DLL": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
-            "waypoints": "KANE-36/flyover/r090"
+            "departure_override": "r090"
           },
-          "FOBUG": {
+          "ALO,RST": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "waypoints": "KANE-36/flyover/r090"
+            "departure_override": "r090"
           },
-          "JURNY": {
+          "ONTIJ,ORSKY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
             "initial_heading": 270
           },
-          "SNINE": {
+          "WLSTN": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
-            "waypoints": "KANE-36/flyover/r080"
+            "departure_override": "r080"
           },
-          "HRBEK": {
+          "FAR,KBREW": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
             "initial_heading": 290
@@ -7744,37 +7758,37 @@
           }
         },
         "27": {
-          "HUGIR": {
+          "RXANN": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
             "initial_heading": 270
           },
-          "JEDET": {
+          "ODI": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
-            "waypoints": "KANE-9/flyover/r090"
+            "departure_override": "r090"
           },
-          "TAXEE": {
+          "TAXEE,DLL": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
-            "waypoints": "KANE-9/flyover/r090"
+            "departure_override": "r090"
           },
-          "FOBUG": {
+          "ALO,RST": {
             "assigned_altitude": 3000,
             "sid": "RST1",
-            "waypoints": "KANE-9/flyover/r090"
+            "departure_override": "r090"
           },
-          "JURNY": {
+          "ONTIJ,ORSKY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
             "initial_heading": 270
           },
-          "SNINE": {
+          "WLSTN": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
-            "waypoints": "KANE-9/flyover/r080"
+            "departure_override": "r080"
           },
-          "HRBEK": {
+          "FAR,KBREW": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
             "initial_heading": 290
@@ -7801,37 +7815,37 @@
           }
         },
         "36": {
-          "HUGIR": {
+          "RXANN": {
             "assigned_altitude": 3000,
             "sid": "SCHEP1",
             "initial_heading": 270
           },
-          "JEDET": {
+          "ODI": {
             "assigned_altitude": 3000,
             "sid": "ZMBRO7",
             "initial_heading": 90
           },
-          "TAXEE": {
+          "TAXEE,DLL": {
             "assigned_altitude": 3000,
             "sid": "COULT7",
             "initial_heading": 90
           },
-          "FOBUG": {
+          "ALO,RST": {
             "assigned_altitude": 3000,
             "sid": "RST1",
             "initial_heading": 90
           },
-          "JURNY": {
+          "ONTIJ,ORSKY": {
             "assigned_altitude": 3000,
             "sid": "ORSKY3",
             "initial_heading": 270
           },
-          "SNINE": {
+          "WLSTN": {
             "assigned_altitude": 3000,
             "sid": "WLSTN7",
             "initial_heading": 80
           },
-          "HRBEK": {
+          "FAR,KBREW": {
             "assigned_altitude": 3000,
             "sid": "KBREW2",
             "initial_heading": 290
@@ -7870,8 +7884,8 @@
             }
           ],
           "destination": "KIMT",
-          "exit": "SNINE",
-          "route": "SNINE DWIYT WLSTN"
+          "exit": "WLSTN",
+          "route": "WLSTN"
         },
         {
           "airlines": [
@@ -7880,8 +7894,8 @@
             }
           ],
           "destination": "KMFI",
-          "exit": "SNINE",
-          "route": "SNINE DWIYT WLSTN"
+          "exit": "WLSTN",
+          "route": "WLSTN"
         },
         {
           "airlines": [
@@ -7890,8 +7904,8 @@
             }
           ],
           "destination": "KCMX",
-          "exit": "SNINE",
-          "route": "SNINE DWIYT WLSTN"
+          "exit": "WLSTN",
+          "route": "WLSTN"
         },
         {
           "airlines": [
@@ -7900,8 +7914,8 @@
             }
           ],
           "destination": "KEGV",
-          "exit": "SNINE",
-          "route": "SNINE DWIYT WLSTN"
+          "exit": "WLSTN",
+          "route": "WLSTN"
         },
         {
           "airlines": [
@@ -7910,8 +7924,8 @@
             }
           ],
           "destination": "KSAW",
-          "exit": "SNINE",
-          "route": "SNINE DWIYT WLSTN"
+          "exit": "WLSTN",
+          "route": "WLSTN"
         },
         {
           "airlines": [
@@ -7920,8 +7934,8 @@
             }
           ],
           "destination": "KLUM",
-          "exit": "SNINE",
-          "route": "SNINE DWIYT WLSTN"
+          "exit": "WLSTN",
+          "route": "WLSTN"
         },
         {
           "airlines": [
@@ -7930,8 +7944,8 @@
             }
           ],
           "destination": "KIWD",
-          "exit": "SNINE",
-          "route": "SNINE DWIYT WLSTN"
+          "exit": "WLSTN",
+          "route": "WLSTN"
         },
         {
           "airlines": [
@@ -7940,8 +7954,8 @@
             }
           ],
           "destination": "KSGF",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO"
+          "exit": "ALO",
+          "route": "ALO"
         },
         {
           "airlines": [
@@ -7950,8 +7964,8 @@
             }
           ],
           "destination": "KCPS",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO"
+          "exit": "ALO",
+          "route": "ALO"
         },
         {
           "airlines": [
@@ -7960,8 +7974,8 @@
             }
           ],
           "destination": "KOCF",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST"
+          "exit": "RST",
+          "route": "RST"
         },
         {
           "airlines": [
@@ -7970,8 +7984,8 @@
             }
           ],
           "destination": "KUOX",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO"
+          "exit": "ALO",
+          "route": "ALO"
         },
         {
           "airlines": [
@@ -7983,8 +7997,8 @@
             }
           ],
           "destination": "KOLV",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST ALO UIN WHYNR"
+          "exit": "ALO",
+          "route": "ALO UIN WHYNR"
         },
         {
           "airlines": [
@@ -7996,8 +8010,8 @@
             }
           ],
           "destination": "KAPF",
-          "exit": "FOBUG",
-          "route": "FOBUG DOKTR CORDY RST PLYER PIKKR7"
+          "exit": "RST",
+          "route": "RST PLYER PIKKR7"
         },
         {
           "airlines": [
@@ -8009,8 +8023,8 @@
             }
           ],
           "destination": "KSBN",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -8019,8 +8033,8 @@
             }
           ],
           "destination": "KMKE",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -8032,8 +8046,8 @@
             }
           ],
           "destination": "KIAD",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL J34 DJB MGW GIBBZ5"
+          "exit": "DLL",
+          "route": "DLL J34 DJB MGW GIBBZ5"
         },
         {
           "airlines": [
@@ -8045,8 +8059,8 @@
             }
           ],
           "destination": "KOSH",
-          "exit": "TAXEE",
-          "route": "TAXEE COULT LMFRY DLL"
+          "exit": "DLL",
+          "route": "DLL"
         },
         {
           "airlines": [
@@ -8068,8 +8082,8 @@
             }
           ],
           "destination": "KDPA",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -8078,8 +8092,8 @@
             }
           ],
           "destination": "KRYY",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -8088,8 +8102,8 @@
             }
           ],
           "destination": "KLAL",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -8098,8 +8112,8 @@
             }
           ],
           "destination": "KJVL",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -8111,8 +8125,8 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI"
+          "exit": "ODI",
+          "route": "ODI"
         },
         {
           "airlines": [
@@ -8121,8 +8135,8 @@
             }
           ],
           "destination": "KFMY",
-          "exit": "JEDET",
-          "route": "JEDET ZMBRO ODI J30 BRIBE"
+          "exit": "ODI",
+          "route": "ODI J30 BRIBE"
         },
         {
           "airlines": [
@@ -8134,8 +8148,8 @@
             }
           ],
           "destination": "KBIS",
-          "exit": "HRBEK",
-          "route": "HRBEK HOMUR KBREW FAR"
+          "exit": "FAR",
+          "route": "FAR"
         },
         {
           "airlines": [
@@ -8144,8 +8158,8 @@
             }
           ],
           "destination": "KDTL",
-          "exit": "HRBEK",
-          "route": "HRBEK HOMUR KBREW"
+          "exit": "KBREW",
+          "route": "KBREW"
         },
         {
           "airlines": [
@@ -8160,8 +8174,8 @@
             }
           ],
           "destination": "KFAR",
-          "exit": "HRBEK",
-          "route": "HRBEK HOMUR KBREW FAR"
+          "exit": "FAR",
+          "route": "FAR"
         },
         {
           "airlines": [
@@ -8170,8 +8184,8 @@
             }
           ],
           "destination": "KSKX",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY ZOTOS OQUDI"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY ZOTOS OQUDI"
         },
         {
           "airlines": [
@@ -8183,8 +8197,8 @@
             }
           ],
           "destination": "KSDL",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ONL J114 YANKI GOORE VIMPY RSK J44 INW DSERT2"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU ONL J114 YANKI GOORE VIMPY RSK J44 INW DSERT2"
         },
         {
           "airlines": [
@@ -8193,8 +8207,8 @@
             }
           ],
           "destination": "KHYS",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU ISTIQ"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU ISTIQ"
         },
         {
           "airlines": [
@@ -8203,8 +8217,8 @@
             }
           ],
           "destination": "KLBF",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY"
         },
         {
           "airlines": [
@@ -8213,8 +8227,8 @@
             }
           ],
           "destination": "KSBD",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY DBL HEC ZIGGY8"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY DBL HEC ZIGGY8"
         },
         {
           "airlines": [
@@ -8226,8 +8240,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN FSD"
+          "exit": "RXANN",
+          "route": "RXANN FSD"
         },
         {
           "airlines": [
@@ -8239,8 +8253,8 @@
             }
           ],
           "destination": "KSLC",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY ZAPER OCS"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY ZAPER OCS"
         },
         {
           "airlines": [
@@ -8249,8 +8263,8 @@
             }
           ],
           "destination": "KHCR",
-          "exit": "HUGIR",
-          "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY ZANGY"
+          "exit": "RXANN",
+          "route": "RXANN TEYOU LLUKY ZANGY"
         },
         {
           "airlines": [
@@ -8259,8 +8273,8 @@
             }
           ],
           "destination": "KFOE",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY"
+          "exit": "ORSKY",
+          "route": "ORSKY"
         },
         {
           "airlines": [
@@ -8269,8 +8283,8 @@
             }
           ],
           "destination": "KIXD",
-          "exit": "JURNY",
-          "route": "JURNY RUMLE PEDLN ORSKY ONTIJ DABOY"
+          "exit": "ONTIJ",
+          "route": "ONTIJ DABOY"
         },
         {
           "airlines": [
@@ -8466,20 +8480,24 @@
         }
       ],
       "exit_categories": {
-        "HRBEK": "KBREW",
-        "HUGIR": "SCHEP",
-        "JURNY": "ORSKY",
-        "FOBUG": "RST",
-        "JEDET": "ZMBRO",
         "TAXEE": "COULT",
-        "SNINE": "WLSTN",
         "INUNE": "INUNE",
         "GEP": "GEP",
         "JALEP": "JALEP",
         "HIREL": "HIREL",
         "DESTE": "DESTE",
         "EAU": "EAU",
-        "DLH": "DLH"
+        "DLH": "DLH",
+        "ALO": "RST",
+        "RST": "RST",
+        "FAR": "KBREW",
+        "KBREW": "KBREW",
+        "RXANN": "SCHEP",
+        "ODI": "ZMBRO",
+        "ONTIJ": "ORSKY",
+        "ORSKY": "ORSKY",
+        "WLSTN": "WLSTN",
+        "DLL": "COULT"
       },
       "hold_for_release": true
     },

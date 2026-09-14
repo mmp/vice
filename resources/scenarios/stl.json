@@ -1485,11 +1485,6 @@
       },
       "departure_routes": {
         "26L": {
-          "BIB": {
-            "cleared_altitude": 3000,
-            "sid": "GATWY1",
-            "waypoints": "KSUS-8R/h259 STL TWILA BIB"
-          },
           "VHP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
@@ -1541,11 +1536,6 @@
           }
         },
         "26R": {
-          "BIB": {
-            "cleared_altitude": 3000,
-            "sid": "GATWY1",
-            "waypoints": "KSUS-8L/h259 STL TWILA BIB"
-          },
           "VHP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
@@ -1597,11 +1587,6 @@
           }
         },
         "8L": {
-          "BIB": {
-            "cleared_altitude": 3000,
-            "sid": "GATWY1",
-            "waypoints": "KSUS-26R/h079 STL TWILA BIB"
-          },
           "VHP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
@@ -1653,11 +1638,6 @@
           }
         },
         "8R": {
-          "BIB": {
-            "cleared_altitude": 3000,
-            "sid": "GATWY1",
-            "waypoints": "KSUS-26L/h079 STL TWILA BIB"
-          },
           "VHP": {
             "cleared_altitude": 3000,
             "sid": "GATWY1",
@@ -1812,10 +1792,10 @@
           ]
         },
         {
-          "exit": "BIB",
+          "exit": "VHP",
           "destination": "KMWO",
           "altitude": 18000,
-          "route": "GATWY1 BIB KELLY V11 VHP V50 MOTTS",
+          "route": "VHP V50 MOTTS",
           "airlines": [
             {
               "icao": "WUP",
@@ -1913,7 +1893,6 @@
         }
       ],
       "exit_categories": {
-        "BIB": "SOUTH",
         "JIGSY": "SOUTH",
         "ROD": "SOUTH",
         "LIT": "NORTH",

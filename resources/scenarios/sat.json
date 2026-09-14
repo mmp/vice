@@ -41,7 +41,7 @@
             "sid": "TJANO2",
             "initial_heading": 128
           },
-          "WHAEL": {
+          "WHAEL,MOLLR": {
             "cleared_altitude": 5000,
             "sid": "SNIDR2",
             "initial_heading": 128
@@ -68,7 +68,7 @@
           }
         },
         "4": {
-          "WHAEL": {
+          "WHAEL,MOLLR": {
             "cleared_altitude": 5000,
             "sid": "SNIDR2",
             "initial_heading": 37
@@ -105,6 +105,11 @@
             "sid": "SNIDR2",
             "waypoints": "KSAT-13R/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
           },
+          "MOLLR": {
+            "cleared_altitude": 5000,
+            "sid": "SNIDR2",
+            "waypoints": "KSAT-13R/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL BLUMS BALIO MOLLR"
+          },
           "CRP": {
             "cleared_altitude": 5000,
             "sid": "BOWIE8",
@@ -131,6 +136,11 @@
             "cleared_altitude": 5000,
             "sid": "SNIDR2",
             "waypoints": "KSAT-13L/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+          },
+          "MOLLR": {
+            "cleared_altitude": 5000,
+            "sid": "SNIDR2",
+            "waypoints": "KSAT-13L/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL BLUMS BALIO MOLLR"
           },
           "KLNGR": {
             "cleared_altitude": 5000,
@@ -197,8 +207,8 @@
             }
           ],
           "destination": "KATL",
-          "exit": "WHAEL",
-          "route": "WHAEL Q24 PAYTN SHYRE HOBTT2"
+          "exit": "MOLLR",
+          "route": "MOLLR Q24 PAYTN SHYRE HOBTT2"
         },
         {
           "airlines": [
@@ -308,6 +318,7 @@
         "BRENI": "Southeast",
         "ZANNI": "Southwest",
         "WHAEL": "East",
+        "MOLLR": "East",
         "KLNGR": "Northeast",
         "ALISS": "Northwest",
         "CRP": "Southeast",

@@ -174,7 +174,7 @@
             "cleared_altitude": 10000,
             "sid": "DARTZ9"
           },
-          "HANUH": {
+          "FORCK": {
             "cleared_altitude": 10000,
             "sid": "FORCK3"
           },
@@ -244,7 +244,7 @@
             "cleared_altitude": 10000,
             "sid": "DARTZ9"
           },
-          "HANUH": {
+          "FORCK": {
             "cleared_altitude": 10000,
             "sid": "FORCK3"
           },
@@ -314,7 +314,7 @@
             "cleared_altitude": 5000,
             "sid": "DARTZ9"
           },
-          "HANUH": {
+          "FORCK": {
             "cleared_altitude": 5000,
             "sid": "FORCK3"
           },
@@ -392,7 +392,7 @@
             "cleared_altitude": 10000,
             "sid": "DARTZ9"
           },
-          "HANUH": {
+          "FORCK": {
             "cleared_altitude": 10000,
             "sid": "FORCK3"
           },
@@ -462,7 +462,7 @@
             "cleared_altitude": 10000,
             "sid": "DARTZ9"
           },
-          "HANUH": {
+          "FORCK": {
             "cleared_altitude": 10000,
             "sid": "FORCK3"
           },
@@ -842,10 +842,10 @@
           ]
         },
         {
-          "exit": "HANUH",
+          "exit": "FORCK",
           "destination": "KMEM",
           "altitude": 33000,
-          "route": "FORCK3 HANUH LYING FORCK ELD HOBRK3",
+          "route": "FORCK ELD HOBRK3",
           "airlines": [
             {
               "icao": "AAL",
@@ -962,10 +962,10 @@
           ]
         },
         {
-          "exit": "HANUH",
+          "exit": "FORCK",
           "destination": "KBHM",
           "altitude": 37000,
-          "route": "FORCK3 HANUH LYING FORCK ELD IGB NESTS",
+          "route": "FORCK ELD IGB NESTS",
           "airlines": [
             {
               "icao": "SKW",
@@ -986,10 +986,10 @@
           ]
         },
         {
-          "exit": "HANUH",
+          "exit": "FORCK",
           "destination": "KEWR",
           "altitude": 37000,
-          "route": "FORCK3 HANUH LYING FORCK ELD IZAAC Q30 VLKNN THRSR TWOUP Q22 MASHI Q22 UMBRE QUART PHLBO4",
+          "route": "FORCK ELD IZAAC Q30 VLKNN THRSR TWOUP Q22 MASHI Q22 UMBRE QUART PHLBO4",
           "airlines": [
             {
               "icao": "UPS",
@@ -1074,10 +1074,10 @@
           ]
         },
         {
-          "exit": "HANUH",
+          "exit": "FORCK",
           "destination": "LEMD",
           "altitude": 35000,
-          "route": "FORCK3 HANUH LYING FORCK SUTTN BAKRE HRTUN ZANZA GQO SUG LIB ORF AR9 ZIBUT LARGE JOBOC 4100N/06000W 4300N/05000W 4400N/04000W 4400N/03000W 4300N/02000W ARMED EPOPO ADORO ZMR",
+          "route": "FORCK SUTTN BAKRE HRTUN ZANZA GQO SUG LIB ORF AR9 ZIBUT LARGE JOBOC 4100N/06000W 4300N/05000W 4400N/04000W 4400N/03000W 4300N/02000W ARMED EPOPO ADORO ZMR",
           "airlines": [
             {
               "icao": "AAL",
@@ -1246,10 +1246,10 @@
           ]
         },
         {
-          "exit": "HANUH",
+          "exit": "FORCK",
           "destination": "KHSV",
           "altitude": 37000,
-          "route": "FORCK3 HANUH LYING FORCK ELD SQS DCU",
+          "route": "FORCK ELD SQS DCU",
           "airlines": [
             {
               "icao": "SKW",
@@ -1322,10 +1322,10 @@
           ]
         },
         {
-          "exit": "HANUH",
+          "exit": "FORCK",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "FORCK3 HANUH LYING FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE7",
+          "route": "FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE7",
           "airlines": [
             {
               "icao": "AAL",
@@ -1454,7 +1454,7 @@
         "IRW": "West",
         "TORNN": "East",
         "TNV": "East",
-        "HANUH": "East",
+        "FORCK": "East",
         "EAKER": "East",
         "OKM": "East",
         "GRABE": "East",
@@ -1729,7 +1729,7 @@
           }
         },
         "13L": {
-          "BSKAT,LOOSE,HANUH,MRSSH,ZALEA,BDDAY": {
+          "BSKAT,LOOSE,FORCK,MRSSH,ZALEA,BDDAY": {
             "cleared_altitude": 8000,
             "sid": "LNDRE5"
           },
@@ -1759,7 +1759,7 @@
           }
         },
         "31R": {
-          "BSKAT,LOOSE,HANUH,MRSSH,ZALEA,BDDAY": {
+          "BSKAT,LOOSE,FORCK,MRSSH,ZALEA,BDDAY": {
             "cleared_altitude": 6000,
             "sid": "EMMTT4"
           },
@@ -1933,11 +1933,11 @@
             "departure_controller": "1L",
             "waypoints": "32.8565,-96.8560/a100- BARYY/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ TRRCH/a17000+ JAYXX TRYTN"
           },
-          "HANUH": {
+          "FORCK": {
             "cleared_altitude": 25000,
             "sid": "EMMTT4",
             "departure_controller": "1L",
-            "waypoints": "32.8565,-96.8560/a100- BARYY/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ HANUH/a17000+ LYING"
+            "waypoints": "32.8565,-96.8560/a100- BARYY/a3000+/s230 WIGIS/a4000+/s240 EMMTT/a6000+ HANUH/a17000+ LYING FORCK"
           },
           "MRSSH": {
             "cleared_altitude": 25000,
@@ -2093,9 +2093,9 @@
             }
           ],
           "destination": "KATL",
-          "exit": "HANUH",
+          "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "HANUH LYING FORCK ELD MERDN DUUCK ORRKK HOBTT2"
+          "route": "FORCK ELD MERDN DUUCK ORRKK HOBTT2"
         },
         {
           "airlines": [
@@ -2306,7 +2306,7 @@
         "TNV": "ALL",
         "BSKAT": "ALL",
         "LOOSE": "ALL",
-        "HANUH": "ALL",
+        "FORCK": "ALL",
         "MRSSH": "ALL",
         "ZALEA": "ALL",
         "BDDAY": "ALL",
@@ -2395,64 +2395,64 @@
       },
       "departure_routes": {
         "16L": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 169
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "GARL6",
             "initial_heading": 169
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 153
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 166
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 166
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 166
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 166
           }
         },
         "34R": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 345
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "GARL6",
             "initial_heading": 345
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
-            "waypoints": "33.0242,-97.3254/a1223+/h155"
+            "departure_override": "a1223+/h155/@d2.1/h155"
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
-            "waypoints": "33.0242,-97.3254/a1223+/h155"
+            "departure_override": "a1223+/h155/@d2.1/h155"
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 346
@@ -2462,7 +2462,7 @@
             "sid": "TEX5",
             "initial_heading": 346
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 345
@@ -2500,9 +2500,9 @@
             }
           ],
           "destination": "KONT",
-          "exit": "ROOOO",
+          "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "DEMII/a5000+ BOTCH/a13000- ROOOO RUFFS KATZZ BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -2514,9 +2514,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "PGLET",
+          "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "DEMII/a5000+ BOTCH/a13000- PGLET MUTEE HUDAD TXO ABQ J72 GUP LAS"
+          "route": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -2528,9 +2528,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RBBIT",
+          "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "DEMII/a5000+ BOTCH/a13000- RBBIT FUMED ALIAN TXO ABQ J72 GUP LAS"
+          "route": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -2539,9 +2539,9 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "ZERLU",
+          "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH BSKAT LIT"
+          "route": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -2553,9 +2553,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "TRRCH",
+          "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE CLT"
+          "route": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -2564,9 +2564,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "HANUH",
+          "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "SALVE KUSSO HANUH LYING FORCK CLT"
+          "route": "FORCK CLT"
         },
         {
           "airlines": [
@@ -2578,9 +2578,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "THHOR",
+          "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA IAH"
+          "route": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -2589,9 +2589,9 @@
             }
           ],
           "destination": "KMSP",
-          "exit": "LOWGN",
+          "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "CUZNO/a3000+ NANDR/a13000- LOWGN ADM MRMAC ROLLS MSP"
+          "route": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -2600,9 +2600,9 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BLECO",
+          "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "CUZNO/a3000+ NANDR/a13000- BLECO ZEMMA IRW DEN"
+          "route": "IRW DEN"
         },
         {
           "airlines": [
@@ -2611,9 +2611,9 @@
             }
           ],
           "destination": "KORD",
-          "exit": "GRABE",
+          "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "CUZNO/a3000+ NANDR/a13000- GRABE EAKER OKM ORD"
+          "route": "OKM ORD"
         },
         {
           "airlines": [
@@ -2622,9 +2622,9 @@
             }
           ],
           "destination": "KPHL",
-          "exit": "AKUNA",
+          "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS MLC PHL"
+          "route": "MLC PHL"
         },
         {
           "airlines": [
@@ -2636,9 +2636,9 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "NELYN",
+          "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "TTT NELYN ACT HOARY SAT"
+          "route": "SAT"
         },
         {
           "airlines": [
@@ -2661,9 +2661,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "ARDIA",
+          "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "TTT ARDIA ELLVR CLL IAH"
+          "route": "CLL IAH"
         },
         {
           "airlines": [
@@ -2672,9 +2672,9 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "DARTZ",
+          "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TTT DARTZ BRDEN TORNN BILEE TNV MSY"
+          "route": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -2697,8 +2697,8 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
         },
@@ -2827,8 +2827,8 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
         }
@@ -2841,34 +2841,34 @@
       },
       "exit_categories": {
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK.PROP": "EAST.PROP",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
+        "BSKAT": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
         "NELYN.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
+        "TORNN": "SOUTH",
         "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
-        "AKUNA.PROP": "NORTH.PROP",
-        "PGLET": "WEST",
+        "MLC": "NORTH",
+        "MLC.PROP": "NORTH.PROP",
+        "HUDAD": "WEST",
         "TYGGR": "WEST",
-        "ROOOO": "WEST",
-        "RBBIT": "WEST",
+        "BRHMA": "WEST",
+        "ALIAN": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP",
+        "ABI.PROP": "WEST.PROP",
         "BRDEN": "ALL",
         "BRDEN.PROP": "ALL",
         "CEOLA.PROP": "ALL",
@@ -2901,25 +2901,25 @@
       },
       "departure_routes": {
         "16": {
-          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 2000,
             "sid": "DALL4",
-            "waypoints": "_ADS_16/h050"
+            "departure_override": "h050/@d1.6/h050"
           },
-          "DARTZ,ARDIA,JASPA,NELYN,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
+          "TORNN,CLL,JASPA,SAT,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 2000,
             "sid": "JPOOL8",
-            "waypoints": "_ADS_16/h050"
+            "departure_override": "h050/@d1.6/h050"
           },
-          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
+          "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 2000,
             "sid": "KUSSO3",
-            "waypoints": "_ADS_16/h050"
+            "departure_override": "h050/@d1.6/h050"
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "LOWGN,IRW,OKM,MLC": {
             "cleared_altitude": 2000,
             "sid": "NANDR4",
-            "waypoints": "_ADS_16/h050"
+            "departure_override": "h050/@d1.6/h050"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 2000,
@@ -2931,29 +2931,29 @@
             "sid": "SWABR1",
             "waypoints": "_ADS_16/h050"
           },
-          "FERRA,PODDE,SLOTT,CEOLA,FERRA.PROP,PODDE.PROP": {
+          "FERRA,ABI,SLOTT,CEOLA,FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 2000,
             "sid": "KING5",
-            "waypoints": "_ADS_16/h050"
+            "departure_override": "h050/@d1.6/h050"
           }
         },
         "34": {
-          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
             "initial_heading": 337
           },
-          "DARTZ,ARDIA,JASPA,NELYN,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
+          "TORNN,CLL,JASPA,SAT,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 337
           },
-          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
+          "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 337
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "LOWGN,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 337
@@ -2968,7 +2968,7 @@
             "sid": "SWABR1",
             "waypoints": "KADS-16/h337"
           },
-          "FERRA,PODDE,FERRA.PROP,PODDE.PROP": {
+          "FERRA,ABI,FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 337
@@ -3011,8 +3011,8 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
         },
@@ -3071,8 +3071,8 @@
             }
           ],
           "destination": "KIND",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH",
-          "exit": "ZERLU",
+          "route": "ZACHH",
+          "exit": "ZACHH",
           "scratchpad": "ZER"
         },
         {
@@ -3085,8 +3085,8 @@
             }
           ],
           "destination": "KIND",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE",
-          "exit": "TRRCH",
+          "route": "LOOSE",
+          "exit": "LOOSE",
           "scratchpad": "TCH"
         },
         {
@@ -3099,8 +3099,8 @@
             }
           ],
           "destination": "KCLT",
-          "route": "SALVE KUSSO HANUH LYING FORCK",
-          "exit": "HANUH",
+          "route": "FORCK",
+          "exit": "FORCK",
           "scratchpad": "HAN"
         },
         {
@@ -3113,8 +3113,8 @@
             }
           ],
           "destination": "KFLL",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA",
-          "exit": "THHOR",
+          "route": "ZALEA",
+          "exit": "ZALEA",
           "scratchpad": "THO"
         },
         {
@@ -3127,8 +3127,8 @@
             }
           ],
           "destination": "KSAT",
-          "route": "NELYN ACT HOARY SAT KSAT",
-          "exit": "NELYN",
+          "route": "SAT KSAT",
+          "exit": "SAT",
           "scratchpad": "NEL"
         },
         {
@@ -3181,8 +3181,8 @@
             }
           ],
           "destination": "KIAH",
-          "route": "ARDIA ELLVR CLL KIAH",
-          "exit": "ARDIA",
+          "route": "CLL KIAH",
+          "exit": "CLL",
           "scratchpad": "RDA"
         },
         {
@@ -3208,8 +3208,8 @@
             }
           ],
           "destination": "KIAH",
-          "route": "DARTZ BRDEN TORNN BILEE TNV KIAH",
-          "exit": "DARTZ",
+          "route": "TORNN BILEE TNV KIAH",
+          "exit": "TORNN",
           "scratchpad": "DAR"
         },
         {
@@ -3248,8 +3248,8 @@
             }
           ],
           "destination": "KTUL",
-          "route": "CUZNO NANDR BLECO ZEMMA IRW TUL KTUL",
-          "exit": "BLECO",
+          "route": "IRW TUL KTUL",
+          "exit": "IRW",
           "scratchpad": "BLE"
         },
         {
@@ -3275,8 +3275,8 @@
             }
           ],
           "destination": "KMCI",
-          "route": "CUZNO NANDR GRABE EAKER OKM KMCI",
-          "exit": "GRABE",
+          "route": "OKM KMCI",
+          "exit": "OKM",
           "scratchpad": "GRA"
         },
         {
@@ -3302,8 +3302,8 @@
             }
           ],
           "destination": "KSTL",
-          "route": "CUZNO NANDR AKUNA TIKYS MLC KSTL",
-          "exit": "AKUNA",
+          "route": "MLC KSTL",
+          "exit": "MLC",
           "scratchpad": "AKU"
         },
         {
@@ -3396,8 +3396,8 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
         }
@@ -3406,39 +3406,39 @@
         "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
         "TRISS": "EAST",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK.PROP": "EAST.PROP",
         "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
+        "ZACHH": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
         "NELYN.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
+        "TORNN": "SOUTH",
         "DARTZ.PROP": "SOUTH.PROP",
         "LOWGN": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
+        "MLC": "NORTH",
         "AKUNA.PROP": "NORTH.PROP",
         "PGLET": "WEST",
         "TYGGR": "WEST",
         "ROOOO": "WEST",
         "RBBIT": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP",
+        "ABI.PROP": "WEST.PROP",
         "CEOLA": "ALL",
         "FERRA": "ALL",
         "JJANE": "ALL",
-        "PODDE": "ALL",
+        "ABI": "ALL",
         "SLOTT": "ALL",
         "SOLDO": "ALL",
         "SOLDO.PROP": "ALL"
@@ -3455,25 +3455,25 @@
       "hold_for_release": true,
       "departure_routes": {
         "18": {
-          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY,TXK,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
-            "waypoints": "_TKI_18/h180"
+            "departure_override": "h180/@d2.7/h180"
           },
-          "DARTZ,ARDIA,JASPA,NELYN,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
+          "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
-            "waypoints": "_TKI_18/h180"
+            "departure_override": "h180/@d2.7/h180"
           },
-          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
+          "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
-            "waypoints": "_TKI_18/h180"
+            "departure_override": "h180/@d2.7/h180"
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
-            "waypoints": "_TKI_18/h180"
+            "departure_override": "h180/@d2.7/h180"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
@@ -3485,29 +3485,29 @@
             "sid": "SWABR1",
             "waypoints": "_TKI_18/h180"
           },
-          "FERRA,PODDE,FERRA.PROP,PODDE.PROP": {
+          "FERRA,ABI,FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
-            "waypoints": "_TKI_18/h180"
+            "departure_override": "h180/@d2.7/h180"
           }
         },
         "36": {
-          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY,TXK,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
             "initial_heading": 360
           },
-          "DARTZ,ARDIA,JASPA,NELYN,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
+          "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 360
           },
-          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
+          "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 360
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 360
@@ -3522,7 +3522,7 @@
             "sid": "SWABR1",
             "waypoints": "KTKI-18/h360"
           },
-          "FERRA,PODDE,FERRA.PROP,PODDE.PROP": {
+          "FERRA,ABI,FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 360
@@ -3562,8 +3562,8 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 5500, 7000, 7500, 9000]
         },
@@ -3574,8 +3574,8 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS",
+          "route": "TXK KTXK",
+          "exit": "TXK",
           "scratchpad": "TXK"
         },
         {
@@ -3613,8 +3613,8 @@
             }
           ],
           "destination": "KIND",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH",
-          "exit": "ZERLU",
+          "route": "ZACHH",
+          "exit": "ZACHH",
           "scratchpad": "ZER"
         },
         {
@@ -3624,8 +3624,8 @@
             }
           ],
           "destination": "KIND",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE",
-          "exit": "TRRCH",
+          "route": "LOOSE",
+          "exit": "LOOSE",
           "scratchpad": "TCH"
         },
         {
@@ -3635,8 +3635,8 @@
             }
           ],
           "destination": "KCLT",
-          "route": "SALVE KUSSO HANUH LYING FORCK",
-          "exit": "HANUH",
+          "route": "FORCK",
+          "exit": "FORCK",
           "scratchpad": "HAN"
         },
         {
@@ -3646,8 +3646,8 @@
             }
           ],
           "destination": "KFLL",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA",
-          "exit": "THHOR",
+          "route": "ZALEA",
+          "exit": "ZALEA",
           "scratchpad": "THO"
         },
         {
@@ -3657,8 +3657,8 @@
             }
           ],
           "destination": "KSAT",
-          "route": "NELYN ACT HOARY SAT KSAT",
-          "exit": "NELYN",
+          "route": "SAT KSAT",
+          "exit": "SAT",
           "scratchpad": "NEL"
         },
         {
@@ -3669,8 +3669,8 @@
             }
           ],
           "destination": "KSAT",
-          "route": "NELYN ACT HOARY SAT KSAT",
-          "exit": "NELYN.PROP",
+          "route": "SAT KSAT",
+          "exit": "SAT.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 6000, 8000, 10000]
         },
@@ -3719,8 +3719,8 @@
             }
           ],
           "destination": "KCLL",
-          "route": "ARDIA ELLVR CLL KCLL",
-          "exit": "ARDIA.PROP",
+          "route": "CLL KCLL",
+          "exit": "CLL.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000]
         },
@@ -3731,8 +3731,8 @@
             }
           ],
           "destination": "KIAH",
-          "route": "DARTZ BRDEN TORNN BILEE TNV KIAH",
-          "exit": "DARTZ",
+          "route": "TORNN BILEE TNV KIAH",
+          "exit": "TORNN",
           "scratchpad": "DAR"
         },
         {
@@ -3743,8 +3743,8 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN TORNN KCLL",
-          "exit": "DARTZ.PROP",
+          "route": "TORNN KCLL",
+          "exit": "TORNN.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 6000, 8000]
         },
@@ -3755,8 +3755,8 @@
             }
           ],
           "destination": "KDEN",
-          "route": "CUZNO NANDR LOWGN ADM MRMAC ROLLS KDEN",
-          "exit": "LOWGN",
+          "route": "ROLLS KDEN",
+          "exit": "ROLLS",
           "scratchpad": "LOW"
         },
         {
@@ -3779,8 +3779,8 @@
             }
           ],
           "destination": "KTUL",
-          "route": "CUZNO NANDR BLECO ZEMMA IRW TUL KTUL",
-          "exit": "BLECO",
+          "route": "IRW TUL KTUL",
+          "exit": "IRW",
           "scratchpad": "BLE"
         },
         {
@@ -3803,8 +3803,8 @@
             }
           ],
           "destination": "KMCI",
-          "route": "CUZNO NANDR GRABE EAKER OKM KMCI",
-          "exit": "GRABE",
+          "route": "OKM KMCI",
+          "exit": "OKM",
           "scratchpad": "GRA"
         },
         {
@@ -3827,8 +3827,8 @@
             }
           ],
           "destination": "KSTL",
-          "route": "CUZNO NANDR AKUNA TIKYS MLC KSTL",
-          "exit": "AKUNA",
+          "route": "MLC KSTL",
+          "exit": "MLC",
           "scratchpad": "AKU"
         },
         {
@@ -3908,8 +3908,8 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 6000, 8000]
         }
@@ -3918,39 +3918,40 @@
       "exit_categories": {
         "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK": "EAST",
+        "TXK.PROP": "EAST.PROP",
         "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
-        "NELYN.PROP": "SOUTH.PROP",
+        "ZACHH": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
+        "SAT.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
-        "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "CLL.PROP": "SOUTH.PROP",
+        "TORNN": "SOUTH",
+        "TORNN.PROP": "SOUTH.PROP",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
+        "MLC": "NORTH",
         "AKUNA.PROP": "NORTH.PROP",
         "PGLET": "WEST",
         "TYGGR": "WEST",
         "ROOOO": "WEST",
         "RBBIT": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP",
+        "ABI.PROP": "WEST.PROP",
         "FERRA": "ALL",
         "JJANE": "ALL",
-        "PODDE": "ALL",
+        "ABI": "ALL",
         "SOLDO": "ALL",
         "SOLDO.PROP": "ALL"
       },
@@ -4039,8 +4040,8 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 5500, 7000, 7500, 9000]
         },
@@ -4051,8 +4052,8 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS",
+          "route": "TXK KTXK",
+          "exit": "TXK",
           "scratchpad": "TXK"
         },
         {
@@ -4090,8 +4091,8 @@
             }
           ],
           "destination": "KIND",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH",
-          "exit": "ZERLU",
+          "route": "ZACHH",
+          "exit": "ZACHH",
           "scratchpad": "ZER"
         },
         {
@@ -4101,8 +4102,8 @@
             }
           ],
           "destination": "KIND",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE",
-          "exit": "TRRCH",
+          "route": "LOOSE",
+          "exit": "LOOSE",
           "scratchpad": "TCH"
         },
         {
@@ -4112,8 +4113,8 @@
             }
           ],
           "destination": "KCLT",
-          "route": "SALVE KUSSO HANUH LYING FORCK",
-          "exit": "HANUH",
+          "route": "FORCK",
+          "exit": "FORCK",
           "scratchpad": "HAN"
         },
         {
@@ -4123,8 +4124,8 @@
             }
           ],
           "destination": "KFLL",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA",
-          "exit": "THHOR",
+          "route": "ZALEA",
+          "exit": "ZALEA",
           "scratchpad": "THO"
         },
         {
@@ -4134,8 +4135,8 @@
             }
           ],
           "destination": "KSAT",
-          "route": "NELYN ACT HOARY SAT KSAT",
-          "exit": "NELYN",
+          "route": "SAT KSAT",
+          "exit": "SAT",
           "scratchpad": "NEL"
         },
         {
@@ -4146,8 +4147,8 @@
             }
           ],
           "destination": "KSAT",
-          "route": "NELYN ACT HOARY SAT KSAT",
-          "exit": "NELYN.PROP",
+          "route": "SAT KSAT",
+          "exit": "SAT.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 6000, 8000, 10000]
         },
@@ -4196,8 +4197,8 @@
             }
           ],
           "destination": "KCLL",
-          "route": "ARDIA ELLVR CLL KCLL",
-          "exit": "ARDIA.PROP",
+          "route": "CLL KCLL",
+          "exit": "CLL.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000]
         },
@@ -4208,8 +4209,8 @@
             }
           ],
           "destination": "KIAH",
-          "route": "DARTZ BRDEN TORNN BILEE TNV KIAH",
-          "exit": "DARTZ",
+          "route": "TORNN BILEE TNV KIAH",
+          "exit": "TORNN",
           "scratchpad": "DAR"
         },
         {
@@ -4220,8 +4221,8 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN TORNN KCLL",
-          "exit": "DARTZ.PROP",
+          "route": "TORNN KCLL",
+          "exit": "TORNN.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 6000, 8000]
         },
@@ -4232,8 +4233,8 @@
             }
           ],
           "destination": "KDEN",
-          "route": "CUZNO NANDR LOWGN ADM MRMAC ROLLS KDEN",
-          "exit": "LOWGN",
+          "route": "ROLLS KDEN",
+          "exit": "ROLLS",
           "scratchpad": "LOW"
         },
         {
@@ -4256,8 +4257,8 @@
             }
           ],
           "destination": "KTUL",
-          "route": "CUZNO NANDR BLECO ZEMMA IRW TUL KTUL",
-          "exit": "BLECO",
+          "route": "IRW TUL KTUL",
+          "exit": "IRW",
           "scratchpad": "BLE"
         },
         {
@@ -4280,8 +4281,8 @@
             }
           ],
           "destination": "KMCI",
-          "route": "CUZNO NANDR GRABE EAKER OKM KMCI",
-          "exit": "GRABE",
+          "route": "OKM KMCI",
+          "exit": "OKM",
           "scratchpad": "GRA"
         },
         {
@@ -4304,8 +4305,8 @@
             }
           ],
           "destination": "KSTL",
-          "route": "CUZNO NANDR AKUNA TIKYS MLC KSTL",
-          "exit": "AKUNA",
+          "route": "MLC KSTL",
+          "exit": "MLC",
           "scratchpad": "AKU"
         },
         {
@@ -4327,8 +4328,8 @@
             }
           ],
           "destination": "KDEN",
-          "route": "BOTCH SWABR PGLET MUTEE HUDAD KDEN",
-          "exit": "PGLET",
+          "route": "HUDAD KDEN",
+          "exit": "HUDAD",
           "scratchpad": "PGL"
         },
         {
@@ -4338,8 +4339,8 @@
             }
           ],
           "destination": "KSLC",
-          "route": "BOTCH SWABR TYGGR DBLSS HRPER HULZE KSLC",
-          "exit": "TYGGR",
+          "route": "HULZE KSLC",
+          "exit": "HULZE",
           "scratchpad": "TGR"
         },
         {
@@ -4349,8 +4350,8 @@
             }
           ],
           "destination": "KLAX",
-          "route": "BOTCH SWABR ROOOO RUFFS KATZZ BRHMA KLAX",
-          "exit": "ROOOO",
+          "route": "BRHMA KLAX",
+          "exit": "BRHMA",
           "scratchpad": "ROO"
         },
         {
@@ -4385,8 +4386,8 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 6000, 8000]
         }
@@ -4394,60 +4395,61 @@
       "exit_categories": {
         "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK": "EAST",
+        "TXK.PROP": "EAST.PROP",
         "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
-        "NELYN.PROP": "SOUTH.PROP",
+        "ZACHH": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
+        "SAT.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
-        "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "CLL.PROP": "SOUTH.PROP",
+        "TORNN": "SOUTH",
+        "TORNN.PROP": "SOUTH.PROP",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
+        "MLC": "NORTH",
         "AKUNA.PROP": "NORTH.PROP",
-        "PGLET": "WEST",
-        "TYGGR": "WEST",
-        "ROOOO": "WEST",
+        "HUDAD": "WEST",
+        "HULZE": "WEST",
+        "BRHMA": "WEST",
         "RBBIT": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP",
+        "ABI.PROP": "WEST.PROP",
         "FERRA": "ALL",
         "JJANE": "ALL",
-        "PODDE": "ALL",
+        "ABI": "ALL",
         "SOLDO": "ALL",
         "SOLDO.PROP": "ALL"
       },
       "departure_routes": {
         "13": {
-          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY,TXK,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
             "initial_heading": 129
           },
-          "DARTZ,ARDIA,JASPA,NELYN,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
+          "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 129
           },
-          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
+          "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 132
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 129
@@ -4457,34 +4459,34 @@
             "sid": "TEX5",
             "initial_heading": 129
           },
-          "FERRA,PODDE": {
+          "FERRA,ABI": {
             "cleared_altitude": 3000,
             "sid": "WORTH1",
             "initial_heading": 129
           },
-          "FERRA.PROP,PODDE.PROP": {
+          "FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 129
           }
         },
         "31": {
-          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY,TXK,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
             "initial_heading": 120
           },
-          "DARTZ,ARDIA,JASPA,NELYN,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
+          "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 120
           },
-          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
+          "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 120
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 120
@@ -4494,17 +4496,17 @@
             "sid": "TEX5",
             "initial_heading": 120
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,HULZE,BRHMA,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 120
           },
-          "FERRA,PODDE": {
+          "FERRA,ABI": {
             "cleared_altitude": 3000,
             "sid": "WORTH1",
             "initial_heading": 120
           },
-          "FERRA.PROP,PODDE.PROP": {
+          "FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 120
@@ -4533,69 +4535,69 @@
       },
       "departure_routes": {
         "16": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 167
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "GARL6",
             "initial_heading": 165
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
-            "waypoints": "32.7792,-97.3528/a1600+/h085"
+            "departure_override": "a1600+/h085/@d2.5/h085"
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 164
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 164
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 166
           },
-          "NELYN,JASPA,ARDIA,BRDEN,DARTZ": {
+          "SAT,JASPA,CLL,BRDEN,TORNN": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 164
           }
         },
         "34": {
-          "ZERLU,TRRCH,HANUH,THHOR,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "BSKAT,LOOSE,FORCK,ZALEA,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 345
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
-            "waypoints": "32.8639,-97.3742/a1210+/h092"
+            "departure_override": "a1210+/h092/@d2.7/h092"
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 345
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 344
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 344
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 344
@@ -4623,9 +4625,9 @@
             }
           ],
           "destination": "KONT",
-          "exit": "ROOOO",
+          "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "DEMII/a5000+ BOTCH/a13000- ROOOO RUFFS KATZZ BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -4635,9 +4637,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "PGLET",
+          "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "DEMII/a5000+ BOTCH/a13000- PGLET MUTEE HUDAD TXO ABQ J72 GUP LAS"
+          "route": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -4647,9 +4649,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RBBIT",
+          "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "DEMII/a5000+ BOTCH/a13000- RBBIT FUMED ALIAN TXO ABQ J72 GUP LAS"
+          "route": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -4659,9 +4661,9 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "ZERLU",
+          "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH BSKAT LIT"
+          "route": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -4671,9 +4673,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "TRRCH",
+          "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE CLT"
+          "route": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -4683,9 +4685,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "HANUH",
+          "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "SALVE KUSSO HANUH LYING FORCK CLT"
+          "route": "FORCK CLT"
         },
         {
           "airlines": [
@@ -4695,9 +4697,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "THHOR",
+          "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA IAH"
+          "route": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -4707,9 +4709,9 @@
             }
           ],
           "destination": "KMSP",
-          "exit": "LOWGN",
+          "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "CUZNO/a3000+ NANDR/a13000- LOWGN ADM MRMAC ROLLS MSP"
+          "route": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -4719,9 +4721,9 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BLECO",
+          "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "CUZNO/a3000+ NANDR/a13000- BLECO ZEMMA IRW DEN"
+          "route": "IRW DEN"
         },
         {
           "airlines": [
@@ -4731,9 +4733,9 @@
             }
           ],
           "destination": "KORD",
-          "exit": "GRABE",
+          "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "CUZNO/a3000+ NANDR/a13000- GRABE EAKER OKM ORD"
+          "route": "OKM ORD"
         },
         {
           "airlines": [
@@ -4743,9 +4745,9 @@
             }
           ],
           "destination": "KPHL",
-          "exit": "AKUNA",
+          "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS MLC PHL"
+          "route": "MLC PHL"
         },
         {
           "airlines": [
@@ -4755,9 +4757,9 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "NELYN",
+          "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "TTT NELYN ACT HOARY SAT"
+          "route": "SAT"
         },
         {
           "airlines": [
@@ -4779,9 +4781,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "ARDIA",
+          "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "TTT ARDIA ELLVR CLL IAH"
+          "route": "CLL IAH"
         },
         {
           "airlines": [
@@ -4791,9 +4793,9 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "DARTZ",
+          "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TTT DARTZ BRDEN TORNN BILEE TNV MSY"
+          "route": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -4816,8 +4818,8 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
         },
@@ -4946,42 +4948,42 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
         }
       ],
       "exit_categories": {
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK.PROP": "EAST.PROP",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
+        "BSKAT": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
         "NELYN.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
+        "TORNN": "SOUTH",
         "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
-        "AKUNA.PROP": "NORTH.PROP",
-        "PGLET": "WEST",
+        "MLC": "NORTH",
+        "MLC.PROP": "NORTH.PROP",
+        "HUDAD": "WEST",
         "TYGGR": "WEST",
-        "ROOOO": "WEST",
-        "RBBIT": "WEST",
+        "BRHMA": "WEST",
+        "ALIAN": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP",
+        "ABI.PROP": "WEST.PROP",
         "BRDEN": "ALL",
         "BRDEN.PROP": "ALL",
         "CEOLA.PROP": "ALL",
@@ -5016,64 +5018,64 @@
       },
       "departure_routes": {
         "36R": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 5
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "GARL6",
             "initial_heading": 5
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
-            "waypoints": "33.2307,-97.2007/a1143+/h180"
+            "departure_override": "a1143+/h180/@d1.7/h180"
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 355
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 357
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 357
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 357
           }
         },
         "18L": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 177
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 177
           },
-          "PGLET,TYGGR,ROOOO,RBBIT,FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "HUDAD,TYGGR,BRHMA,ALIAN,FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 180
           },
-          "LOWGN,BLECO,GRABE,AKUNA,LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "ROLLS,IRW,OKM,MLC,LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 177
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 177
@@ -5101,9 +5103,9 @@
             }
           ],
           "destination": "KONT",
-          "exit": "ROOOO",
+          "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "DEMII/a5000+ BOTCH/a13000- ROOOO RUFFS KATZZ BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -5113,9 +5115,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "PGLET",
+          "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "DEMII/a5000+ BOTCH/a13000- PGLET MUTEE HUDAD TXO ABQ J72 GUP LAS"
+          "route": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -5125,9 +5127,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RBBIT",
+          "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "DEMII/a5000+ BOTCH/a13000- RBBIT FUMED ALIAN TXO ABQ J72 GUP LAS"
+          "route": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -5137,9 +5139,9 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "ZERLU",
+          "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH BSKAT LIT"
+          "route": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -5149,9 +5151,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "TRRCH",
+          "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE CLT"
+          "route": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -5161,9 +5163,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "HANUH",
+          "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "SALVE KUSSO HANUH LYING FORCK CLT"
+          "route": "FORCK CLT"
         },
         {
           "airlines": [
@@ -5173,9 +5175,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "THHOR",
+          "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA IAH"
+          "route": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -5185,9 +5187,9 @@
             }
           ],
           "destination": "KMSP",
-          "exit": "LOWGN",
+          "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "CUZNO/a3000+ NANDR/a13000- LOWGN ADM MRMAC ROLLS MSP"
+          "route": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -5197,9 +5199,9 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BLECO",
+          "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "CUZNO/a3000+ NANDR/a13000- BLECO ZEMMA IRW DEN"
+          "route": "IRW DEN"
         },
         {
           "airlines": [
@@ -5209,9 +5211,9 @@
             }
           ],
           "destination": "KORD",
-          "exit": "GRABE",
+          "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "CUZNO/a3000+ NANDR/a13000- GRABE EAKER OKM ORD"
+          "route": "OKM ORD"
         },
         {
           "airlines": [
@@ -5221,9 +5223,9 @@
             }
           ],
           "destination": "KPHL",
-          "exit": "AKUNA",
+          "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS MLC PHL"
+          "route": "MLC PHL"
         },
         {
           "airlines": [
@@ -5233,9 +5235,9 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "NELYN",
+          "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "TTT NELYN ACT HOARY SAT"
+          "route": "SAT"
         },
         {
           "airlines": [
@@ -5257,9 +5259,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "ARDIA",
+          "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "TTT ARDIA ELLVR CLL IAH"
+          "route": "CLL IAH"
         },
         {
           "airlines": [
@@ -5269,9 +5271,9 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "DARTZ",
+          "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TTT DARTZ BRDEN TORNN BILEE TNV MSY"
+          "route": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -5294,8 +5296,8 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
         },
@@ -5424,41 +5426,41 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
         }
       ],
       "exit_categories": {
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK.PROP": "EAST.PROP",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
+        "BSKAT": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
         "NELYN.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
+        "TORNN": "SOUTH",
         "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
-        "PGLET": "WEST",
+        "MLC": "NORTH",
+        "HUDAD": "WEST",
         "TYGGR": "WEST",
-        "ROOOO": "WEST",
-        "RBBIT": "WEST",
+        "BRHMA": "WEST",
+        "ALIAN": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP"
+        "ABI.PROP": "WEST.PROP"
       },
       "vfr": {
         "random_routes": {
@@ -5507,8 +5509,8 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 5500, 7000, 7500, 9000]
         },
@@ -5519,8 +5521,8 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS",
+          "route": "TXK KTXK",
+          "exit": "TXK",
           "scratchpad": "TXK"
         },
         {
@@ -5558,8 +5560,8 @@
             }
           ],
           "destination": "KIND",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH",
-          "exit": "ZERLU",
+          "route": "ZACHH",
+          "exit": "ZACHH",
           "scratchpad": "ZER"
         },
         {
@@ -5569,8 +5571,8 @@
             }
           ],
           "destination": "KIND",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE",
-          "exit": "TRRCH",
+          "route": "LOOSE",
+          "exit": "LOOSE",
           "scratchpad": "TCH"
         },
         {
@@ -5580,8 +5582,8 @@
             }
           ],
           "destination": "KCLT",
-          "route": "SALVE KUSSO HANUH LYING FORCK",
-          "exit": "HANUH",
+          "route": "FORCK",
+          "exit": "FORCK",
           "scratchpad": "HAN"
         },
         {
@@ -5591,8 +5593,8 @@
             }
           ],
           "destination": "KFLL",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA",
-          "exit": "THHOR",
+          "route": "ZALEA",
+          "exit": "ZALEA",
           "scratchpad": "THO"
         },
         {
@@ -5602,8 +5604,8 @@
             }
           ],
           "destination": "KSAT",
-          "route": "NELYN ACT HOARY SAT KSAT",
-          "exit": "NELYN",
+          "route": "SAT KSAT",
+          "exit": "SAT",
           "scratchpad": "NEL"
         },
         {
@@ -5614,8 +5616,8 @@
             }
           ],
           "destination": "KSAT",
-          "route": "NELYN ACT HOARY SAT KSAT",
-          "exit": "NELYN.PROP",
+          "route": "SAT KSAT",
+          "exit": "SAT.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 6000, 8000, 10000]
         },
@@ -5664,8 +5666,8 @@
             }
           ],
           "destination": "KCLL",
-          "route": "ARDIA ELLVR CLL KCLL",
-          "exit": "ARDIA.PROP",
+          "route": "CLL KCLL",
+          "exit": "CLL.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000]
         },
@@ -5676,8 +5678,8 @@
             }
           ],
           "destination": "KIAH",
-          "route": "DARTZ BRDEN TORNN BILEE TNV KIAH",
-          "exit": "DARTZ",
+          "route": "TORNN BILEE TNV KIAH",
+          "exit": "TORNN",
           "scratchpad": "DAR"
         },
         {
@@ -5688,8 +5690,8 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN TORNN KCLL",
-          "exit": "DARTZ.PROP",
+          "route": "TORNN KCLL",
+          "exit": "TORNN.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 6000, 8000]
         },
@@ -5700,8 +5702,8 @@
             }
           ],
           "destination": "KDEN",
-          "route": "CUZNO NANDR LOWGN ADM MRMAC ROLLS KDEN",
-          "exit": "LOWGN",
+          "route": "ROLLS KDEN",
+          "exit": "ROLLS",
           "scratchpad": "LOW"
         },
         {
@@ -5724,8 +5726,8 @@
             }
           ],
           "destination": "KTUL",
-          "route": "CUZNO NANDR BLECO ZEMMA IRW TUL KTUL",
-          "exit": "BLECO",
+          "route": "IRW TUL KTUL",
+          "exit": "IRW",
           "scratchpad": "BLE"
         },
         {
@@ -5748,8 +5750,8 @@
             }
           ],
           "destination": "KMCI",
-          "route": "CUZNO NANDR GRABE EAKER OKM KMCI",
-          "exit": "GRABE",
+          "route": "OKM KMCI",
+          "exit": "OKM",
           "scratchpad": "GRA"
         },
         {
@@ -5772,8 +5774,8 @@
             }
           ],
           "destination": "KSTL",
-          "route": "CUZNO NANDR AKUNA TIKYS MLC KSTL",
-          "exit": "AKUNA",
+          "route": "MLC KSTL",
+          "exit": "MLC",
           "scratchpad": "AKU"
         },
         {
@@ -5853,8 +5855,8 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 6000, 8000]
         }
@@ -5862,55 +5864,56 @@
       "exit_categories": {
         "NOBLY": "EAST",
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS": "EAST",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK": "EAST",
+        "TXK.PROP": "EAST.PROP",
         "CLARE": "EAST",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
-        "NELYN.PROP": "SOUTH.PROP",
+        "ZACHH": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
+        "SAT.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
-        "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "CLL.PROP": "SOUTH.PROP",
+        "TORNN": "SOUTH",
+        "TORNN.PROP": "SOUTH.PROP",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
+        "MLC": "NORTH",
         "AKUNA.PROP": "NORTH.PROP",
         "PGLET": "WEST",
         "TYGGR": "WEST",
         "ROOOO": "WEST",
         "RBBIT": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP"
+        "ABI.PROP": "WEST.PROP"
       },
       "departure_routes": {
         "13": {
-          "NOBLY,TRISS,SOLDO,CLARE,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY,TXK,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
             "initial_heading": 134
           },
-          "DARTZ,ARDIA,JASPA,NELYN,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
+          "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 134
           },
-          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
+          "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 134
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 134
@@ -5925,39 +5928,39 @@
             "sid": "SWABR1",
             "waypoints": "_LNC_13/h134"
           },
-          "FERRA,PODDE": {
+          "FERRA,ABI": {
             "cleared_altitude": 3000,
             "sid": "WORTH1",
             "initial_heading": 134
           },
-          "FERRA.PROP,PODDE.PROP": {
+          "FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 134
           }
         },
         "31": {
-          "NOBLY,TRISS,SOLDO,CLARE": {
+          "NOBLY,TXK,SOLDO,CLARE": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
             "initial_heading": 30
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
             "initial_heading": 40
           },
-          "DARTZ,ARDIA,JASPA,NELYN,DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
+          "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 120
           },
-          "ZERLU,TRRCH,HANUH,JJANE,THHOR": {
+          "ZACHH,LOOSE,FORCK,JJANE,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 30
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 30
@@ -5972,12 +5975,12 @@
             "sid": "SWABR1",
             "waypoints": "KLNC-13/h180"
           },
-          "FERRA,PODDE": {
+          "FERRA,ABI": {
             "cleared_altitude": 3000,
             "sid": "WORTH1",
             "initial_heading": 180
           },
-          "FERRA.PROP,PODDE.PROP": {
+          "FERRA.PROP,ABI.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 180
@@ -6078,69 +6081,69 @@
       },
       "departure_routes": {
         "16": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 165
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "GARL6",
             "initial_heading": 162
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 316
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 162
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 162
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 162
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 162
           }
         },
         "34": {
-          "ZERLU,TRRCH,HANUH,THHOR,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "BSKAT,LOOSE,FORCK,ZALEA,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 2000,
             "sid": "KUSSO3",
             "initial_heading": 345
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 2000,
             "sid": "BOTCH2",
-            "waypoints": "32.6963,-97.1025/a1400+/h313"
+            "departure_override": "a1400+/h313/@d2.0/h313"
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 2000,
             "sid": "KING5",
             "initial_heading": 342
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 2000,
             "sid": "NANDR4",
             "initial_heading": 342
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 2000,
             "sid": "TEX5",
             "initial_heading": 342
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 2000,
             "sid": "JPOOL8",
             "initial_heading": 342
@@ -6168,9 +6171,9 @@
             }
           ],
           "destination": "KONT",
-          "exit": "ROOOO",
+          "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "DEMII/a5000+ BOTCH/a13000- ROOOO RUFFS KATZZ BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -6180,9 +6183,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "PGLET",
+          "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "DEMII/a5000+ BOTCH/a13000- PGLET MUTEE HUDAD TXO ABQ J72 GUP LAS"
+          "route": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6192,9 +6195,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RBBIT",
+          "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "DEMII/a5000+ BOTCH/a13000- RBBIT FUMED ALIAN TXO ABQ J72 GUP LAS"
+          "route": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6204,9 +6207,9 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "ZERLU",
+          "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH BSKAT LIT"
+          "route": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -6216,9 +6219,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "TRRCH",
+          "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE CLT"
+          "route": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -6228,9 +6231,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "HANUH",
+          "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "SALVE KUSSO HANUH LYING FORCK CLT"
+          "route": "FORCK CLT"
         },
         {
           "airlines": [
@@ -6240,9 +6243,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "THHOR",
+          "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA IAH"
+          "route": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -6252,9 +6255,9 @@
             }
           ],
           "destination": "KMSP",
-          "exit": "LOWGN",
+          "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "CUZNO/a3000+ NANDR/a13000- LOWGN ADM MRMAC ROLLS MSP"
+          "route": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -6264,9 +6267,9 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BLECO",
+          "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "CUZNO/a3000+ NANDR/a13000- BLECO ZEMMA IRW DEN"
+          "route": "IRW DEN"
         },
         {
           "airlines": [
@@ -6276,9 +6279,9 @@
             }
           ],
           "destination": "KORD",
-          "exit": "GRABE",
+          "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "CUZNO/a3000+ NANDR/a13000- GRABE EAKER OKM ORD"
+          "route": "OKM ORD"
         },
         {
           "airlines": [
@@ -6288,9 +6291,9 @@
             }
           ],
           "destination": "KPHL",
-          "exit": "AKUNA",
+          "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS MLC PHL"
+          "route": "MLC PHL"
         },
         {
           "airlines": [
@@ -6300,9 +6303,9 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "NELYN",
+          "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "TTT NELYN ACT HOARY SAT"
+          "route": "SAT"
         },
         {
           "airlines": [
@@ -6324,9 +6327,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "ARDIA",
+          "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "TTT ARDIA ELLVR CLL IAH"
+          "route": "CLL IAH"
         },
         {
           "airlines": [
@@ -6336,9 +6339,9 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "DARTZ",
+          "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TTT DARTZ BRDEN TORNN BILEE TNV MSY"
+          "route": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -6361,8 +6364,8 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
         },
@@ -6491,42 +6494,42 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
         }
       ],
       "exit_categories": {
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK.PROP": "EAST.PROP",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
+        "BSKAT": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
         "NELYN.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
+        "TORNN": "SOUTH",
         "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
-        "AKUNA.PROP": "NORTH.PROP",
-        "PGLET": "WEST",
+        "MLC": "NORTH",
+        "MLC.PROP": "NORTH.PROP",
+        "HUDAD": "WEST",
         "TYGGR": "WEST",
-        "ROOOO": "WEST",
-        "RBBIT": "WEST",
+        "BRHMA": "WEST",
+        "ALIAN": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP"
+        "ABI.PROP": "WEST.PROP"
       },
       "vfr": {
         "random_routes": {
@@ -6544,69 +6547,69 @@
       },
       "departure_routes": {
         "18": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 192
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "GARL6",
             "initial_heading": 192
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 192
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 192
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 192
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 192
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 192
           }
         },
         "36": {
-          "ZERLU,TRRCH,HANUH,THHOR,NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "BSKAT,LOOSE,FORCK,ZALEA,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 2000,
             "sid": "KUSSO3",
             "initial_heading": 300
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 2000,
             "sid": "BOTCH2",
             "initial_heading": 300
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 2000,
             "sid": "KING5",
             "initial_heading": 300
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 2000,
             "sid": "NANDR4",
             "initial_heading": 300
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 2000,
             "sid": "TEX5",
             "initial_heading": 300
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 2000,
             "sid": "JPOOL8",
             "initial_heading": 300
@@ -6634,9 +6637,9 @@
             }
           ],
           "destination": "KONT",
-          "exit": "ROOOO",
+          "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "DEMII/a5000+ BOTCH/a13000- ROOOO RUFFS KATZZ BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -6646,9 +6649,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "PGLET",
+          "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "DEMII/a5000+ BOTCH/a13000- PGLET MUTEE HUDAD TXO ABQ J72 GUP LAS"
+          "route": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6658,9 +6661,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RBBIT",
+          "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "DEMII/a5000+ BOTCH/a13000- RBBIT FUMED ALIAN TXO ABQ J72 GUP LAS"
+          "route": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6670,9 +6673,9 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "ZERLU",
+          "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH BSKAT LIT"
+          "route": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -6682,9 +6685,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "TRRCH",
+          "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE CLT"
+          "route": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -6694,9 +6697,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "HANUH",
+          "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "SALVE KUSSO HANUH LYING FORCK CLT"
+          "route": "FORCK CLT"
         },
         {
           "airlines": [
@@ -6706,9 +6709,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "THHOR",
+          "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA IAH"
+          "route": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -6718,9 +6721,9 @@
             }
           ],
           "destination": "KMSP",
-          "exit": "LOWGN",
+          "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "CUZNO/a3000+ NANDR/a13000- LOWGN ADM MRMAC ROLLS MSP"
+          "route": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -6730,9 +6733,9 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BLECO",
+          "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "CUZNO/a3000+ NANDR/a13000- BLECO ZEMMA IRW DEN"
+          "route": "IRW DEN"
         },
         {
           "airlines": [
@@ -6742,9 +6745,9 @@
             }
           ],
           "destination": "KORD",
-          "exit": "GRABE",
+          "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "CUZNO/a3000+ NANDR/a13000- GRABE EAKER OKM ORD"
+          "route": "OKM ORD"
         },
         {
           "airlines": [
@@ -6754,9 +6757,9 @@
             }
           ],
           "destination": "KPHL",
-          "exit": "AKUNA",
+          "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS MLC PHL"
+          "route": "MLC PHL"
         },
         {
           "airlines": [
@@ -6766,9 +6769,9 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "NELYN",
+          "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "TTT NELYN ACT HOARY SAT"
+          "route": "SAT"
         },
         {
           "airlines": [
@@ -6790,9 +6793,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "ARDIA",
+          "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "TTT ARDIA ELLVR CLL IAH"
+          "route": "CLL IAH"
         },
         {
           "airlines": [
@@ -6802,9 +6805,9 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "DARTZ",
+          "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TTT DARTZ BRDEN TORNN BILEE TNV MSY"
+          "route": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -6827,8 +6830,8 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
         },
@@ -6957,42 +6960,42 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
         }
       ],
       "exit_categories": {
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK.PROP": "EAST.PROP",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
+        "BSKAT": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
         "NELYN.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
+        "TORNN": "SOUTH",
         "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
-        "AKUNA.PROP": "NORTH.PROP",
-        "PGLET": "WEST",
+        "MLC": "NORTH",
+        "MLC.PROP": "NORTH.PROP",
+        "HUDAD": "WEST",
         "TYGGR": "WEST",
-        "ROOOO": "WEST",
-        "RBBIT": "WEST",
+        "BRHMA": "WEST",
+        "ALIAN": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP"
+        "ABI.PROP": "WEST.PROP"
       },
       "vfr": {
         "random_routes": {
@@ -7035,9 +7038,9 @@
             }
           ],
           "destination": "KONT",
-          "exit": "ROOOO",
+          "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "DEMII/a5000+ BOTCH/a13000- ROOOO RUFFS KATZZ BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -7047,9 +7050,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "PGLET",
+          "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "DEMII/a5000+ BOTCH/a13000- PGLET MUTEE HUDAD TXO ABQ J72 GUP LAS"
+          "route": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -7059,9 +7062,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RBBIT",
+          "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "DEMII/a5000+ BOTCH/a13000- RBBIT FUMED ALIAN TXO ABQ J72 GUP LAS"
+          "route": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -7071,9 +7074,9 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "ZERLU",
+          "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH BSKAT LIT"
+          "route": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -7083,9 +7086,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "TRRCH",
+          "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE CLT"
+          "route": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -7095,9 +7098,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "HANUH",
+          "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "SALVE KUSSO HANUH LYING FORCK CLT"
+          "route": "FORCK CLT"
         },
         {
           "airlines": [
@@ -7107,9 +7110,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "THHOR",
+          "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA IAH"
+          "route": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -7119,9 +7122,9 @@
             }
           ],
           "destination": "KMSP",
-          "exit": "LOWGN",
+          "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "CUZNO/a3000+ NANDR/a13000- LOWGN ADM MRMAC ROLLS MSP"
+          "route": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -7131,9 +7134,9 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BLECO",
+          "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "CUZNO/a3000+ NANDR/a13000- BLECO ZEMMA IRW DEN"
+          "route": "IRW DEN"
         },
         {
           "airlines": [
@@ -7143,9 +7146,9 @@
             }
           ],
           "destination": "KORD",
-          "exit": "GRABE",
+          "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "CUZNO/a3000+ NANDR/a13000- GRABE EAKER OKM ORD"
+          "route": "OKM ORD"
         },
         {
           "airlines": [
@@ -7155,9 +7158,9 @@
             }
           ],
           "destination": "KPHL",
-          "exit": "AKUNA",
+          "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS MLC PHL"
+          "route": "MLC PHL"
         },
         {
           "airlines": [
@@ -7167,9 +7170,9 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "NELYN",
+          "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "TTT NELYN ACT HOARY SAT"
+          "route": "SAT"
         },
         {
           "airlines": [
@@ -7191,9 +7194,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "ARDIA",
+          "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "TTT ARDIA ELLVR CLL IAH"
+          "route": "CLL IAH"
         },
         {
           "airlines": [
@@ -7203,9 +7206,9 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "DARTZ",
+          "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TTT DARTZ BRDEN TORNN BILEE TNV MSY"
+          "route": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -7228,8 +7231,8 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TRISS SHERO TXK KTXK",
-          "exit": "TRISS.PROP",
+          "route": "TXK KTXK",
+          "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
         },
@@ -7358,82 +7361,82 @@
             }
           ],
           "destination": "KABI",
-          "route": "PODDE MQP ABI KABI",
-          "exit": "PODDE.PROP",
+          "route": "ABI KABI",
+          "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
         }
       ],
       "departure_routes": {
         "36L": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 360
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 360
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 13
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 360
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 357
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 357
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 357
           }
         },
         "18R": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 177
           },
-          "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "GARL6",
             "initial_heading": 177
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 177
           },
-          "FERRA.PROP,PODDE.PROP,SLOTT.PROP,CEOLA.PROP": {
+          "FERRA.PROP,ABI.PROP,SLOTT.PROP,CEOLA.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING5",
             "initial_heading": 177
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 177
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
             "initial_heading": 177
           },
-          "NELYN,JASPA,ARDIA,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,DARTZ,DARTZ.PROP": {
+          "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 177
@@ -7442,34 +7445,34 @@
       },
       "exit_categories": {
         "NOBLY.PROP": "EAST.PROP",
-        "TRISS.PROP": "EAST.PROP",
+        "TXK.PROP": "EAST.PROP",
         "CLARE.PROP": "EAST.PROP",
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
+        "BSKAT": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
         "NELYN.PROP": "SOUTH.PROP",
         "JASPA": "SOUTH",
         "JASPA.PROP": "SOUTH.PROP",
-        "ARDIA": "SOUTH",
+        "CLL": "SOUTH",
         "ARDIA.PROP": "SOUTH.PROP",
-        "DARTZ": "SOUTH",
+        "TORNN": "SOUTH",
         "DARTZ.PROP": "SOUTH.PROP",
-        "LOWGN": "NORTH",
+        "ROLLS": "NORTH",
         "LOWGN.PROP": "NORTH.PROP",
-        "BLECO": "NORTH",
+        "IRW": "NORTH",
         "BLECO.PROP": "NORTH.PROP",
-        "GRABE": "NORTH",
+        "OKM": "NORTH",
         "GRABE.PROP": "NORTH.PROP",
-        "AKUNA": "NORTH",
-        "AKUNA.PROP": "NORTH.PROP",
-        "PGLET": "WEST",
+        "MLC": "NORTH",
+        "MLC.PROP": "NORTH.PROP",
+        "HUDAD": "WEST",
         "TYGGR": "WEST",
-        "ROOOO": "WEST",
-        "RBBIT": "WEST",
+        "BRHMA": "WEST",
+        "ALIAN": "WEST",
         "FERRA.PROP": "WEST.PROP",
-        "PODDE.PROP": "WEST.PROP"
+        "ABI.PROP": "WEST.PROP"
       },
       "vfr": {
         "random_routes": {
@@ -7513,9 +7516,9 @@
             }
           ],
           "destination": "KONT",
-          "exit": "ROOOO",
+          "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "DEMII/a5000+ BOTCH/a13000- ROOOO RUFFS KATZZ BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -7524,9 +7527,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "PGLET",
+          "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "DEMII/a5000+ BOTCH/a13000- PGLET MUTEE HUDAD TXO ABQ J72 GUP LAS"
+          "route": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -7535,9 +7538,9 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RBBIT",
+          "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "DEMII/a5000+ BOTCH/a13000- RBBIT FUMED ALIAN TXO ABQ J72 GUP LAS"
+          "route": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -7546,9 +7549,9 @@
             }
           ],
           "destination": "KCVG",
-          "exit": "ZERLU",
+          "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "SALVE KUSSO ZERLU SWDIA ZACHH BSKAT LIT"
+          "route": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -7557,9 +7560,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "TRRCH",
+          "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "SALVE KUSSO TRRCH JAYXX TRYTN LOOSE CLT"
+          "route": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -7568,9 +7571,9 @@
             }
           ],
           "destination": "KCLT",
-          "exit": "HANUH",
+          "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "SALVE KUSSO HANUH LYING FORCK CLT"
+          "route": "FORCK CLT"
         },
         {
           "airlines": [
@@ -7579,9 +7582,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "THHOR",
+          "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "SALVE KUSSO THHOR JJANE MRSSH ZALEA IAH"
+          "route": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -7590,9 +7593,9 @@
             }
           ],
           "destination": "KMSP",
-          "exit": "LOWGN",
+          "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "CUZNO/a3000+ NANDR/a13000- LOWGN ADM MRMAC ROLLS MSP"
+          "route": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -7601,9 +7604,9 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "BLECO",
+          "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "CUZNO/a3000+ NANDR/a13000- BLECO ZEMMA IRW DEN"
+          "route": "IRW DEN"
         },
         {
           "airlines": [
@@ -7612,9 +7615,9 @@
             }
           ],
           "destination": "KORD",
-          "exit": "GRABE",
+          "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "CUZNO/a3000+ NANDR/a13000- GRABE EAKER OKM ORD"
+          "route": "OKM ORD"
         },
         {
           "airlines": [
@@ -7623,9 +7626,9 @@
             }
           ],
           "destination": "KPHL",
-          "exit": "AKUNA",
+          "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "CUZNO/a3000+ NANDR/a13000- AKUNA TIKYS MLC PHL"
+          "route": "MLC PHL"
         },
         {
           "airlines": [
@@ -7634,9 +7637,9 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "NELYN",
+          "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "TTT NELYN ACT HOARY SAT"
+          "route": "SAT"
         },
         {
           "airlines": [
@@ -7656,9 +7659,9 @@
             }
           ],
           "destination": "KIAH",
-          "exit": "ARDIA",
+          "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "TTT ARDIA ELLVR CLL IAH"
+          "route": "CLL IAH"
         },
         {
           "airlines": [
@@ -7667,51 +7670,51 @@
             }
           ],
           "destination": "KMSY",
-          "exit": "DARTZ",
+          "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TTT DARTZ BRDEN TORNN BILEE TNV MSY"
+          "route": "TORNN BILEE TNV MSY"
         }
       ],
       "departure_routes": {
         "18": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 180
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 180
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 180
           },
-          "NELYN,JASPA,ARDIA,BRDEN,DARTZ": {
+          "SAT,JASPA,CLL,BRDEN,TORNN": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 180
           }
         },
         "36": {
-          "ZERLU,TRRCH,HANUH,THHOR": {
+          "BSKAT,LOOSE,FORCK,ZALEA": {
             "cleared_altitude": 3000,
             "sid": "KUSSO3",
             "initial_heading": 360
           },
-          "PGLET,TYGGR,ROOOO,RBBIT": {
+          "HUDAD,TYGGR,BRHMA,ALIAN": {
             "cleared_altitude": 3000,
             "sid": "BOTCH2",
             "initial_heading": 360
           },
-          "LOWGN,BLECO,GRABE,AKUNA": {
+          "ROLLS,IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 360
           },
-          "NELYN,JASPA,ARDIA,BRDEN,DARTZ": {
+          "SAT,JASPA,CLL,BRDEN,TORNN": {
             "cleared_altitude": 3000,
             "sid": "JPOOL8",
             "initial_heading": 360
@@ -7719,22 +7722,22 @@
         }
       },
       "exit_categories": {
-        "ZERLU": "EAST",
-        "TRRCH": "EAST",
-        "HANUH": "EAST",
-        "THHOR": "EAST",
-        "NELYN": "SOUTH",
+        "BSKAT": "EAST",
+        "LOOSE": "EAST",
+        "FORCK": "EAST",
+        "ZALEA": "EAST",
+        "SAT": "SOUTH",
         "JASPA": "SOUTH",
-        "ARDIA": "SOUTH",
-        "DARTZ": "SOUTH",
-        "LOWGN": "NORTH",
-        "BLECO": "NORTH",
-        "GRABE": "NORTH",
-        "AKUNA": "NORTH",
-        "PGLET": "WEST",
+        "CLL": "SOUTH",
+        "TORNN": "SOUTH",
+        "ROLLS": "NORTH",
+        "IRW": "NORTH",
+        "OKM": "NORTH",
+        "MLC": "NORTH",
+        "HUDAD": "WEST",
         "TYGGR": "WEST",
-        "ROOOO": "WEST",
-        "RBBIT": "WEST"
+        "BRHMA": "WEST",
+        "ALIAN": "WEST"
       }
     },
     "KTRL": {
