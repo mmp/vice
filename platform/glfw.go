@@ -30,6 +30,9 @@ import (
 // glfwPlatform implements the Platform interface using GLFW.
 type glfwPlatform struct {
 	audioEngine
+	// noAudio records Config.NoAudio: with it set, audioEngine was never
+	// initialized and must not be closed.
+	noAudio bool
 
 	imguiIO *imgui.IO
 
@@ -70,31 +73,42 @@ type Config struct {
 
 	StartInFullScreen bool
 	FullScreenMonitor int
+
+	// NoAudio skips initializing audio playback and asking for microphone
+	// permission. It is for tools that draw but never make a sound, which
+	// would otherwise put a microphone prompt in front of the user for
+	// nothing.
+	NoAudio bool
 }
 
 // New returns a new instance of a Platform implemented with a window
 // of the specified size open at the specified position on the screen.
 func New(config *Config, lg *log.Logger) (Platform, error) {
-	// Request microphone permission early, before SDL audio is initialized.
-	// This avoids potential conflicts between AVFoundation and CoreAudio.
-	micStatus := GetMicrophoneAuthorizationStatus()
-	lg.Infof("Microphone authorization status: %s", micStatus)
-	if micStatus == MicAuthNotDetermined {
-		lg.Info("Requesting microphone permission (dialog will appear)...")
-		RequestMicrophoneAccess()
-	} else if micStatus == MicAuthDenied {
-		lg.Warn("Microphone access denied - enable in System Settings > Privacy & Security > Microphone")
-	} else if micStatus == MicAuthRestricted {
-		lg.Warn("Microphone access restricted by system policy")
+	if !config.NoAudio {
+		// Request microphone permission early, before SDL audio is initialized.
+		// This avoids potential conflicts between AVFoundation and CoreAudio.
+		micStatus := GetMicrophoneAuthorizationStatus()
+		lg.Infof("Microphone authorization status: %s", micStatus)
+		if micStatus == MicAuthNotDetermined {
+			lg.Info("Requesting microphone permission (dialog will appear)...")
+			RequestMicrophoneAccess()
+		} else if micStatus == MicAuthDenied {
+			lg.Warn("Microphone access denied - enable in System Settings > Privacy & Security > Microphone")
+		} else if micStatus == MicAuthRestricted {
+			lg.Warn("Microphone access restricted by system policy")
+		}
 	}
 
 	// Audio (SDL) init is independent of GLFW/OpenGL and can run on a
 	// background goroutine while the main thread does the window setup.
 	// Microphone authorization above must complete first.
-	platformDraft := &glfwPlatform{audioRecorder: NewAudioRecorder(lg)}
+	platformDraft := &glfwPlatform{noAudio: config.NoAudio, audioRecorder: NewAudioRecorder(lg)}
 	audioDone := make(chan struct{})
 	go func() {
 		defer close(audioDone)
+		if config.NoAudio {
+			return
+		}
 		if err := platformDraft.audioEngine.Initialize(lg); err != nil {
 			platformDraft.audioErr = err
 			lg.Errorf("Audio playback unavailable: %v", err)
@@ -259,7 +273,9 @@ func (g *glfwPlatform) Dispose() {
 	if g.audioRecorder != nil {
 		g.audioRecorder.Close()
 	}
-	g.audioEngine.Close()
+	if !g.noAudio {
+		g.audioEngine.Close()
+	}
 
 	// Shut down viewport backends before destroying the window.
 	imgui.DestroyPlatformWindows()
