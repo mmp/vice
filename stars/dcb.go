@@ -201,10 +201,10 @@ func (sp *STARSPane) dcbCurrentMenu() dcbMenuID {
 	return dcbMenuID{aux: sp.dcbShowAux, submenu: sub}
 }
 
-func (sp *STARSPane) videoMapCategories() ([VideoMapNumCategories]bool, int) {
-	var haveCategory [VideoMapNumCategories]bool
+func (sp *STARSPane) videoMapCategories() ([radar.VideoMapNumCategories]bool, int) {
+	var haveCategory [radar.VideoMapNumCategories]bool
 	for _, vm := range sp.allVideoMaps {
-		if vm.Category != VideoMapNoCategory {
+		if vm.Category != radar.VideoMapNoCategory {
 			haveCategory[vm.Category] = true
 		}
 	}
@@ -481,17 +481,17 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			drawVideoMapButton(videoMapButtonIndex(6, mapsSubmenuMapColumns, i), false)
 		}
 
-		mapLabels := [VideoMapNumCategories]string{
-			VideoMapGeographicMaps:     "GEO\nMAPS",
-			VideoMapControlledAirspace: "CONTROL",
-			VideoMapRunwayExtensions:   "RUNWAYS",
-			VideoMapDangerAreas:        "DANGER\nAREAS",
-			VideoMapAerodromes:         "AIRPORT",
-			VideoMapGeneralAviation:    "GENERAL\nAV",
-			VideoMapSIDsSTARs:          "SID\nSTAR",
-			VideoMapMilitary:           "MIL",
-			VideoMapGeographicPoints:   "GEO\nPOINTS",
-			VideoMapProcessingAreas:    "SYS\nPROC",
+		mapLabels := [radar.VideoMapNumCategories]string{
+			radar.VideoMapGeographicMaps:     "GEO\nMAPS",
+			radar.VideoMapControlledAirspace: "CONTROL",
+			radar.VideoMapRunwayExtensions:   "RUNWAYS",
+			radar.VideoMapDangerAreas:        "DANGER\nAREAS",
+			radar.VideoMapAerodromes:         "AIRPORT",
+			radar.VideoMapGeneralAviation:    "GENERAL\nAV",
+			radar.VideoMapSIDsSTARs:          "SID\nSTAR",
+			radar.VideoMapMilitary:           "MIL",
+			radar.VideoMapGeographicPoints:   "GEO\nPOINTS",
+			radar.VideoMapProcessingAreas:    "SYS\nPROC",
 		}
 		for cat, b := range haveCategory {
 			if b {
@@ -508,9 +508,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			sp.toggleButton(ctx, "", &off, buttonHalfVertical, buttonScale)
 		}
 
-		currentMapsSelected := ps.VideoMapsList.Selection == VideoMapCurrent && ps.VideoMapsList.Visible
+		currentMapsSelected := ps.VideoMapsList.Selection == radar.VideoMapCurrent && ps.VideoMapsList.Visible
 		if sp.toggleButton(ctx, "CURRENT", &currentMapsSelected, buttonHalfVertical, buttonScale) {
-			ps.VideoMapsList.Selection = VideoMapCurrent
+			ps.VideoMapsList.Selection = radar.VideoMapCurrent
 			ps.VideoMapsList.Visible = currentMapsSelected
 		}
 

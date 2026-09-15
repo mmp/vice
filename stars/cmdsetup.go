@@ -14,6 +14,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -122,7 +123,7 @@ func registerSetupCommands() {
 		if idx <= 0 {
 			return ErrSTARSIllegalMap
 		}
-		if !slices.ContainsFunc(sp.allVideoMaps, func(v clientMap) bool { return v.Id == idx }) {
+		if !slices.ContainsFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Id == idx }) {
 			return ErrSTARSIllegalMap
 		}
 
@@ -138,7 +139,7 @@ func registerSetupCommands() {
 		if idx <= 0 {
 			return ErrSTARSIllegalMap
 		}
-		if !slices.ContainsFunc(sp.allVideoMaps, func(v clientMap) bool { return v.Id == idx }) {
+		if !slices.ContainsFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Id == idx }) {
 			return ErrSTARSIllegalMap
 		}
 		ps.VideoMapVisible[idx] = nil
@@ -148,7 +149,7 @@ func registerSetupCommands() {
 		if idx <= 0 {
 			return ErrSTARSIllegalMap
 		}
-		if !slices.ContainsFunc(sp.allVideoMaps, func(v clientMap) bool { return v.Id == idx }) {
+		if !slices.ContainsFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Id == idx }) {
 			return ErrSTARSIllegalMap
 		}
 		delete(ps.VideoMapVisible, idx)

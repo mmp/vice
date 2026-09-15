@@ -6,8 +6,86 @@ package radar
 
 import (
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/util"
 )
+
+// Map extends av.STARSMap with client-side rendering state. The
+// CommandBuffer holds commands to draw the solid-line geometry; dashed
+// lines, symbols, and labels are kept on the embedded STARSMap and drawn
+// separately at draw time so their stipple pattern / glyph / text can
+// account for scope scale and display DPI.
+type Map struct {
+	av.STARSMap
+	CommandBuffer renderer.CommandBuffer
+}
+
+// BuildMaps converts []av.STARSMap to Maps, generating CommandBuffers for
+// the solid-line portion.
+func BuildMaps(maps []av.STARSMap) []Map {
+	if len(maps) == 0 {
+		return nil
+	}
+
+	out := make([]Map, len(maps))
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	for i, m := range maps {
+		out[i] = Map{STARSMap: m}
+
+		ld.Reset()
+		hasSolid := false
+		for _, line := range m.Lines {
+			if line.Style != av.LineStyleSolid {
+				continue // dashed lines drawn separately at draw time
+			}
+			fl := util.MapSlice(line.Points, func(p math.Point2LL) [2]float32 { return p })
+			ld.AddLineStrip(fl)
+			hasSolid = true
+		}
+		if hasSolid {
+			ld.GenerateCommands(&out[i].CommandBuffer)
+		}
+	}
+
+	return out
+}
+
+// Video map categories, as stored in av.STARSMap.Category. VideoMapCurrent
+// is not a category a map carries; it selects the maps currently displayed.
+const (
+	VideoMapNoCategory = iota - 1
+	VideoMapGeographicMaps
+	VideoMapControlledAirspace
+	VideoMapRunwayExtensions
+	VideoMapDangerAreas
+	VideoMapAerodromes
+	VideoMapGeneralAviation
+	VideoMapSIDsSTARs
+	VideoMapMilitary
+	VideoMapGeographicPoints
+	VideoMapProcessingAreas
+	VideoMapCurrent
+	VideoMapNumCategories
+)
+
+// VideoMapCategoryNames gives the full name of each category, as the STARS
+// MAPS list displays it.
+var VideoMapCategoryNames = [VideoMapNumCategories]string{
+	VideoMapGeographicMaps:     "GEOGRAPHIC MAPS",
+	VideoMapControlledAirspace: "CONTROLLED AIRSPACE",
+	VideoMapRunwayExtensions:   "RUNWAY EXTENSIONS",
+	VideoMapDangerAreas:        "DANGER AREAS",
+	VideoMapAerodromes:         "AERODROMES",
+	VideoMapGeneralAviation:    "GENERAL AVIATION",
+	VideoMapSIDsSTARs:          "SIDS/STARS",
+	VideoMapMilitary:           "MILITARY",
+	VideoMapGeographicPoints:   "GEOGRAPHIC POINTS",
+	VideoMapProcessingAreas:    "PROCESSING AREAS",
+	VideoMapCurrent:            "MAPS",
+}
 
 // MapFonts supplies the fonts used to draw a video map's symbols and
 // labels. Both are selected by the size byte the map carries for each

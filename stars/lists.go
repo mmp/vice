@@ -1128,24 +1128,10 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, paneExtent math.Extent2D, 
 		text.WriteString(strings.ToUpper(m.Name) + "\n")
 	}
 
-	mapTitles := [VideoMapNumCategories]string{
-		VideoMapGeographicMaps:     "GEOGRAPHIC MAPS",
-		VideoMapControlledAirspace: "CONTROLLED AIRSPACE",
-		VideoMapRunwayExtensions:   "RUNWAY EXTENSIONS",
-		VideoMapDangerAreas:        "DANGER AREAS",
-		VideoMapAerodromes:         "AERODROMES",
-		VideoMapGeneralAviation:    "GENERAL AVIATION",
-		VideoMapSIDsSTARs:          "SIDS/STARS",
-		VideoMapMilitary:           "MILITARY",
-		VideoMapGeographicPoints:   "GEOGRAPHIC POINTS",
-		VideoMapProcessingAreas:    "PROCESSING AREAS",
-		VideoMapCurrent:            "MAPS",
-	}
-
-	text.WriteString(mapTitles[ps.VideoMapsList.Selection])
+	text.WriteString(radar.VideoMapCategoryNames[ps.VideoMapsList.Selection])
 	text.WriteByte('\n')
 	var m []av.STARSMap
-	if ps.VideoMapsList.Selection == VideoMapCurrent {
+	if ps.VideoMapsList.Selection == radar.VideoMapCurrent {
 		for _, vm := range sp.allVideoMaps {
 			if _, ok := ps.VideoMapVisible[vm.Id]; ok {
 				m = append(m, vm.STARSMap)

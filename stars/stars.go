@@ -57,8 +57,8 @@ type STARSPane struct {
 	OldPrefsSelectedPreferenceSet *int          `json:"SelectedPreferenceSet,omitempty"`
 	OldPrefsPreferenceSets        []Preferences `json:"PreferenceSets,omitempty"`
 
-	allVideoMaps []clientMap
-	dcbVideoMaps []*clientMap
+	allVideoMaps []radar.Map
+	dcbVideoMaps []*radar.Map
 
 	weatherRadar radar.WeatherRadar
 
@@ -375,23 +375,9 @@ func (c *STARSCRDAPair) getRegionsString() string {
 	return c.SourceRegion + "/" + c.GhostRegion
 }
 
+// VideoMapsGroup is the category of video maps the MAPS list is showing;
+// its values are the radar.VideoMap* category constants.
 type VideoMapsGroup int
-
-const (
-	VideoMapNoCategory = iota - 1
-	VideoMapGeographicMaps
-	VideoMapControlledAirspace
-	VideoMapRunwayExtensions
-	VideoMapDangerAreas
-	VideoMapAerodromes
-	VideoMapGeneralAviation
-	VideoMapSIDsSTARs
-	VideoMapMilitary
-	VideoMapGeographicPoints
-	VideoMapProcessingAreas
-	VideoMapCurrent
-	VideoMapNumCategories
-)
 
 type DwellMode int
 
@@ -914,58 +900,16 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 	sp.scopeDraw.holds = nil
 }
 
-// clientMap extends av.STARSMap with client-side rendering state. The
-// CommandBuffer holds commands to draw the solid-line geometry; dashed
-// lines, symbols, and labels are kept on the embedded STARSMap and drawn
-// separately at draw time so their stipple pattern / glyph / text can
-// account for scope scale and display DPI.
-type clientMap struct {
-	av.STARSMap
-	CommandBuffer renderer.CommandBuffer
-}
-
-// buildClientMaps converts []av.STARSMap to clientMaps, generating
-// CommandBuffers for the solid-line portion.
-func buildClientMaps(maps []av.STARSMap) []clientMap {
-	if len(maps) == 0 {
-		return nil
-	}
-
-	out := make([]clientMap, len(maps))
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-
-	for i, m := range maps {
-		out[i] = clientMap{STARSMap: m}
-
-		ld.Reset()
-		hasSolid := false
-		for _, line := range m.Lines {
-			if line.Style != av.LineStyleSolid {
-				continue // dashed lines drawn separately at draw time
-			}
-			fl := util.MapSlice(line.Points, func(p math.Point2LL) [2]float32 { return p })
-			ld.AddLineStrip(fl)
-			hasSolid = true
-		}
-		if hasSolid {
-			ld.GenerateCommands(&out[i].CommandBuffer)
-		}
-	}
-
-	return out
-}
-
 func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	sp.allVideoMaps = nil
 	usedIds := make(map[int]any)
 
-	// addMap inserts a clientMap into allVideoMaps, probing forward
+	// addMap inserts a radar.Map into allVideoMaps, probing forward
 	// through STARS Id space [1, 1000) for a free slot starting at the
 	// map's Id. Maps with Id == 0 are appended without claiming
 	// a slot (they have no DCB Id and are unreachable via the [NUM]
 	// command; they still show up in the MAPS list if they carry a label).
-	addMap := func(vm clientMap) {
+	addMap := func(vm radar.Map) {
 		if vm.Id == 0 {
 			sp.allVideoMaps = append(sp.allVideoMaps, vm)
 			return
@@ -1001,7 +945,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 			addedNames[name] = true
 		}
 	}
-	for _, vm := range buildClientMaps(dcbMaps) {
+	for _, vm := range radar.BuildMaps(dcbMaps) {
 		addMap(vm)
 	}
 
@@ -1016,247 +960,26 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 			additionalMaps = append(additionalMaps, vm)
 		}
 	}
-	for _, vm := range buildClientMaps(additionalMaps) {
+	for _, vm := range radar.BuildMaps(additionalMaps) {
 		addMap(vm)
 	}
 
-	drawAirspace := func(a av.AirspaceVolume, cb *renderer.CommandBuffer) {
-		ld := renderer.GetLinesDrawBuilder()
-
-		switch a.Type {
-		case av.AirspaceVolumePolygon:
-			var v [][2]float32
-			for _, vtx := range a.Vertices {
-				v = append(v, [2]float32(vtx))
-			}
-			ld.AddLineLoop(v)
-
-			for _, h := range a.Holes {
-				var v [][2]float32
-				for _, vtx := range h {
-					v = append(v, [2]float32(vtx))
-				}
-				ld.AddLineLoop(v)
-			}
-		case av.AirspaceVolumeCircle:
-			ld.AddLatLongCircle(a.Center, ss.NmPerLongitude, a.Radius, 360)
-		default:
-			panic("unhandled AirspaceVolume type")
-		}
-
-		ld.GenerateCommands(cb)
-		renderer.ReturnLinesDrawBuilder(ld)
-	}
-
-	// Make automatic built-in system maps
-	asIdx := 700
-	addAirspaceVolumes := func(label string, name string, filt sim.FilterRegions) {
-		if len(filt) == 0 {
-			return
-		}
-
-		// Add a map with all of them
-		vm := clientMap{
-			STARSMap: av.STARSMap{
-				Label:    label,
-				Name:     name,
-				Id:       asIdx,
-				Category: VideoMapProcessingAreas,
-			},
-		}
-		asIdx++
-		for _, f := range filt {
-			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
-		}
+	for _, vm := range radar.SystemMaps(radar.SystemMapSpec{
+		Facility:          ss.Facility,
+		Center:            ss.Center,
+		NmPerLongitude:    ss.NmPerLongitude,
+		MagneticVariation: ss.MagneticVariation,
+		Adaptation:        &ss.FacilityAdaptation,
+		Airports:          ss.Airports,
+		ArrivalAirports:   ss.ArrivalAirports,
+	}) {
 		addMap(vm)
-
-		for _, f := range filt {
-			vm := clientMap{
-				STARSMap: av.STARSMap{
-					Label:    strings.ToUpper(f.Id),
-					Name:     strings.ToUpper(f.Description),
-					Id:       asIdx,
-					Category: VideoMapProcessingAreas,
-				},
-			}
-			asIdx++
-			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
-			addMap(vm)
-		}
-	}
-	addAirspaceVolumes("CASU", "CA SUPPRESSION AREA ALL", ss.FacilityAdaptation.Filters.InhibitCA)
-	addAirspaceVolumes("MSAWSU", "MSAW SUPPRESSION AREA ALL", ss.FacilityAdaptation.Filters.InhibitMSAW)
-	addAirspaceVolumes("AUTOACQ", "AUTO ACQUISITION AREA ALL", ss.FacilityAdaptation.Filters.AutoAcquisition)
-	addAirspaceVolumes("ARRDEP", "ARRIVAL DROP AREA ALL", ss.FacilityAdaptation.Filters.ArrivalDrop)
-	addAirspaceVolumes("DEP", "DEPARTURE AREA ALL", ss.FacilityAdaptation.Filters.Departure)
-	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.FacilityAdaptation.Filters.SecondaryDrop)
-	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.FacilityAdaptation.Filters.SurfaceTracking)
-	// Quicklook regions have a different type; extract their airspace volumes.
-	if ql := ss.FacilityAdaptation.Filters.Quicklook; len(ql) > 0 {
-		vm := clientMap{
-			STARSMap: av.STARSMap{
-				Label:    "QLRGNS",
-				Name:     "QUICKLOOK REGIONS ALL",
-				Id:       asIdx,
-				Category: VideoMapProcessingAreas,
-			},
-		}
-		asIdx++
-		for _, f := range ql {
-			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
-		}
-		addMap(vm)
-
-		for _, f := range ql {
-			vm := clientMap{
-				STARSMap: av.STARSMap{
-					Label:    strings.ToUpper(f.Id),
-					Name:     strings.ToUpper(f.Description),
-					Id:       asIdx,
-					Category: VideoMapProcessingAreas,
-				},
-			}
-			asIdx++
-			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
-			addMap(vm)
-		}
-	}
-
-	// FDAM regions
-	if fdam := ss.FacilityAdaptation.Filters.FDAM; len(fdam) > 0 {
-		vm := clientMap{
-			STARSMap: av.STARSMap{
-				Label:    "FDAMRGNS",
-				Name:     "FDAM REGIONS ALL",
-				Id:       asIdx,
-				Category: VideoMapProcessingAreas,
-			},
-		}
-		asIdx++
-		for _, f := range fdam {
-			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
-		}
-		addMap(vm)
-
-		for _, f := range fdam {
-			vm := clientMap{
-				STARSMap: av.STARSMap{
-					Label:    strings.ToUpper(f.Id),
-					Name:     strings.ToUpper(f.Description),
-					Id:       asIdx,
-					Category: VideoMapProcessingAreas,
-				},
-			}
-			asIdx++
-			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
-			addMap(vm)
-		}
-	}
-
-	// MVAs
-	mvas := clientMap{
-		STARSMap: av.STARSMap{
-			Label:    ss.Facility + " MVA",
-			Name:     "ALL MINIMUM VECTORING ALTITUDES",
-			Id:       asIdx,
-			Category: VideoMapProcessingAreas,
-		},
-	}
-	ld := renderer.GetLinesDrawBuilder()
-	for _, mva := range av.DB.MVAs[ss.Facility] {
-		ld.AddLineLoop(mva.ExteriorRing)
-		p := math.Extent2DFromPoints(mva.ExteriorRing).Center()
-		ld.AddNumber(p, 0.005, fmt.Sprintf("%d", mva.MinimumLimit/100))
-	}
-	ld.GenerateCommands(&mvas.CommandBuffer)
-	renderer.ReturnLinesDrawBuilder(ld)
-	asIdx++
-	addMap(mvas)
-
-	// Nearby airspace definitions
-	addAirspace := func(airspace map[string][]av.AirspaceVolume, class string) {
-		// Sorted so the ids these maps land on are the same from run to run.
-		for name, airspace := range util.SortedMap(airspace) {
-			if math.NMDistance2LL(airspace[0].PolygonBounds.ClosestPointInBox(ss.Center), ss.Center) > 75 {
-				continue
-			}
-
-			amap := clientMap{
-				STARSMap: av.STARSMap{
-					Label:    name,
-					Name:     name + " CLASS " + class,
-					Id:       asIdx,
-					Category: VideoMapProcessingAreas,
-				},
-			}
-			for _, asp := range airspace {
-				drawAirspace(asp, &amap.CommandBuffer)
-			}
-
-			addMap(amap)
-			asIdx++
-		}
-	}
-	addAirspace(av.DB.BravoAirspace, "B")
-	addAirspace(av.DB.CharlieAirspace, "C")
-
-	// Radar maps
-	radarIndex := 801
-	for name, site := range util.SortedMap(ss.FacilityAdaptation.RadarSites) {
-		sm := clientMap{
-			STARSMap: av.STARSMap{
-				Label:    name + "RCM",
-				Name:     name + " RADAR COVERAGE MAP",
-				Id:       radarIndex,
-				Category: VideoMapProcessingAreas,
-			},
-		}
-
-		ld := renderer.GetLinesDrawBuilder()
-		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.PrimaryRange), 360)
-		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.SecondaryRange), 360)
-		ld.GenerateCommands(&sm.CommandBuffer)
-		addMap(sm)
-
-		radarIndex++
-		renderer.ReturnLinesDrawBuilder(ld)
-	}
-
-	// ATPA approach volumes
-	atpaIndex := 901
-	for _, name := range util.SortedMapKeys(ss.ArrivalAirports) {
-		ap := ss.Airports[name]
-		for rwy, vol := range util.SortedMap(ap.ATPAVolumes) {
-			label := "A" + av.AirportDisplayId(name) + rwy
-			if len(label) > 7 {
-				label = label[:7]
-			}
-			sm := clientMap{
-				STARSMap: av.STARSMap{
-					Label:    label,
-					Name:     string(name) + rwy + " ATPA APPROACH VOLUME",
-					Id:       atpaIndex,
-					Category: VideoMapProcessingAreas,
-				},
-			}
-
-			ld := renderer.GetLinesDrawBuilder()
-			rect := vol.GetRect(ss.NmPerLongitude, ss.MagneticVariation)
-			for i := range rect {
-				ld.AddLine(rect[i], rect[(i+1)%len(rect)])
-			}
-			ld.GenerateCommands(&sm.CommandBuffer)
-
-			addMap(sm)
-			atpaIndex++
-			renderer.ReturnLinesDrawBuilder(ld)
-		}
 	}
 
 	// Start with the video maps associated with the Sim.
 	sp.dcbVideoMaps = nil
 	for _, name := range client.State.ControllerVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v clientMap) bool { return v.Name == name }); idx != -1 && name != "" {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Name == name }); idx != -1 && name != "" {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
 		} else {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
@@ -1469,13 +1192,13 @@ func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTra
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	var draw []clientMap
+	var draw []radar.Map
 	for _, vm := range sp.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
 			draw = append(draw, vm)
 		}
 	}
-	slices.SortFunc(draw, func(a, b clientMap) int { return a.Id - b.Id })
+	slices.SortFunc(draw, func(a, b radar.Map) int { return a.Id - b.Id })
 
 	for _, vm := range draw {
 		if vm.Group == 0 {
