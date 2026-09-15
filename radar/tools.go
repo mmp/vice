@@ -2,7 +2,6 @@ package radar
 
 import (
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/renderer"
 )
 
@@ -149,15 +148,15 @@ func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]fl
 	return offset
 }
 
-func GenerateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms ScopeTransformations, ctx *panes.Context,
+func GenerateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms ScopeTransformations, dpiScale float32,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(1, ctx.DPIScale)
+	cb.LineWidth(1, dpiScale)
 	ld.GenerateCommands(cb)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	pd.GenerateCommands(cb)
 	td.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.DPIScale)
+	cb.LineWidth(1, dpiScale)
 	ldr.GenerateCommands(cb)
 }

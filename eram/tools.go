@@ -36,12 +36,12 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms rad
 					continue
 				}
 
-				radar.DrawWaypoints(ctx, arr.Waypoints, radar.ArrivalRouteContext(arr), drawn, transforms, td, style, ld, pd, ldr, color)
+				radar.DrawWaypoints(ctx.NmPerLongitude, ctx.MagneticVariation, arr.Waypoints, radar.ArrivalRouteContext(arr), drawn, transforms, td, style, ld, pd, ldr, color)
 
 				// Draw runway-specific waypoints
 				for rwyWps := range util.SortedMapValues(arr.RunwayWaypoints) {
 					for rwy, wp := range util.SortedMap(rwyWps) {
-						radar.DrawWaypoints(ctx, wp, radar.ArrivalRouteContext(arr), drawn, transforms, td, style, ld, pd, ldr, color)
+						radar.DrawWaypoints(ctx.NmPerLongitude, ctx.MagneticVariation, wp, radar.ArrivalRouteContext(arr), drawn, transforms, td, style, ld, pd, ldr, color)
 
 						if len(wp) > 1 {
 							// Draw the runway number in the middle of the line
@@ -63,7 +63,7 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms rad
 			}
 		}
 	}
-	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
 func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
@@ -86,14 +86,14 @@ func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ra
 			for name, appr := range util.SortedMap(ap.Approaches) {
 				if appr.Runway == rwy.Runway.Base() && ep.scopeDraw.Approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
-						radar.DrawWaypoints(ctx, wp, radar.ApproachRouteContext(appr), drawn, transforms, td, style, ld, pd, ldr, color)
+						radar.DrawWaypoints(ctx.NmPerLongitude, ctx.MagneticVariation, wp, radar.ApproachRouteContext(appr), drawn, transforms, td, style, ld, pd, ldr, color)
 					}
 				}
 			}
 		}
 	}
 
-	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
 func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
@@ -115,11 +115,11 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms r
 			if !ep.scopeDraw.Departures[icao][dr.Group] {
 				continue
 			}
-			radar.DrawWaypoints(ctx, dr.Route.Waypoints, radar.DepartureRouteContext(icao, dr.Route), drawn, transforms,
-				td, style, ld, pd, ldr, color)
+			radar.DrawWaypoints(ctx.NmPerLongitude, ctx.MagneticVariation, dr.Route.Waypoints,
+				radar.DepartureRouteContext(icao, dr.Route), drawn, transforms, td, style, ld, pd, ldr, color)
 		}
 	}
-	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
 func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
@@ -144,11 +144,11 @@ func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms 
 					continue
 				}
 
-				radar.DrawWaypoints(ctx, of.Waypoints, radar.OverflightRouteContext(of), drawn, transforms, td, style, ld, pd, ldr, color)
+				radar.DrawWaypoints(ctx.NmPerLongitude, ctx.MagneticVariation, of.Waypoints, radar.OverflightRouteContext(of), drawn, transforms, td, style, ld, pd, ldr, color)
 			}
 		}
 	}
-	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
 func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
@@ -184,7 +184,7 @@ func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ra
 			}
 		}
 	}
-	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
 func (ep *ERAMPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {

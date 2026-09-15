@@ -13,7 +13,6 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 )
@@ -170,10 +169,10 @@ func (d *DrawnRoutes) Label(td *renderer.TextDrawBuilder, style renderer.TextSty
 // the fixes' names and restrictions. Lines go to ld in lat-long
 // coordinates; text and the fix markers go to td, pd, and ldr in window
 // coordinates.
-func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, rc RouteDrawContext, drawn *DrawnRoutes,
+func DrawWaypoints(nmPerLongitude, magneticVariation float32, waypoints []av.Waypoint, rc RouteDrawContext, drawn *DrawnRoutes,
 	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder, color renderer.RGB) {
-	w := newRouteWalker(ctx.NmPerLongitude, ctx.MagneticVariation, rc, ld, color, drawn)
+	w := newRouteWalker(nmPerLongitude, magneticVariation, rc, ld, color, drawn)
 	w.walk(waypoints)
 	w.drawLabels(waypoints, transforms, td, style, pd, ldr)
 }
