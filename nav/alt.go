@@ -210,7 +210,7 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 		// to ensure aircraft can meet the runway altitude restriction. Cleared
 		// visuals run the same exact-geometric descent from clearance time and
 		// need the same freedom to set rate.
-		if nav.Approach.PassedFAF || nav.clearedForUnchartedVisualApproach() {
+		if nav.Approach.PassedFAF || nav.clearedForVisualApproach() {
 			maxRateChange = math.Abs(-descent - nav.FlightState.AltitudeRate)
 		}
 
@@ -327,7 +327,7 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 			if ok && eta > 0 {
 				geometricRate := (nav.FlightState.Altitude - target.altitude) / eta * 60
 
-				if nav.Approach.PassedFAF || nav.clearedForUnchartedVisualApproach() {
+				if nav.Approach.PassedFAF || nav.clearedForVisualApproach() {
 					return target.altitude, geometricRate, true // exact glideslope
 				}
 

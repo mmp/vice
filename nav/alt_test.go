@@ -950,6 +950,187 @@ func TestClearedVisualDescendsContinuously(t *testing.T) {
 	f.Run()
 }
 
+// chartedVisual is a Mill-Visual-shaped test procedure for KJFK 22L: a
+// crossing altitude 9 nm from the threshold, an unrestricted fix at 5 nm, and
+// the threshold waypoint that Approach.InitializeWaypoints appends.
+type chartedVisual struct {
+	airport      *av.Airport
+	inbound      math.TrueHeading // true final approach course
+	thresholdAlt float32
+	// at returns the point the given distance from the threshold along the
+	// extended centerline.
+	at func(nm float32) math.Point2LL
+}
+
+func setupChartedVisual(f *FlightTest) chartedVisual {
+	f.t.Helper()
+
+	rwy, ok := av.LookupRunway("KJFK", "22L")
+	if !ok {
+		f.t.Fatal("unknown runway KJFK/22L")
+	}
+
+	nmPerLong := f.nav.FlightState.NmPerLongitude
+	inbound := math.MagneticToTrue(rwy.Heading, f.nav.FlightState.MagneticVariation)
+	at := func(nm float32) math.Point2LL {
+		return math.Offset2LL(rwy.Threshold, math.NormalizeHeading(inbound+180), nm, nmPerLong)
+	}
+
+	crossing := av.Waypoint{Fix: "MILLO", Location: at(9)}
+	crossing.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(3000))
+	bend := av.Waypoint{Fix: "MILLI", Location: at(5)}
+	threshold := av.Waypoint{Fix: "_22L_THRESHOLD", Location: rwy.Threshold}
+	threshold.SetFlyOver(true)
+	threshold.MergeActions(av.WaypointActions{Land: true})
+	thresholdAlt := float32(rwy.Elevation + rwy.ThresholdCrossingHeight)
+	threshold.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(thresholdAlt))
+
+	route := av.WaypointArray{crossing, bend, threshold}
+	for i := range route {
+		route[i].SetOnApproach(true)
+	}
+
+	airport := &av.Airport{
+		Approaches: map[string]*av.Approach{
+			"MV22L": {
+				Id:        "MV22L",
+				FullName:  "Mill Visual Runway 22L",
+				Type:      av.ChartedVisualApproach,
+				Runway:    "22L",
+				Threshold: rwy.Threshold,
+				Waypoints: []av.WaypointArray{route},
+			},
+		},
+	}
+
+	return chartedVisual{airport: airport, inbound: inbound, thresholdAlt: thresholdAlt, at: at}
+}
+
+// clearChartedVisual issues the expect and the clearance, failing the test if
+// the pilot won't take it.
+func (f *FlightTest) clearChartedVisual(cv chartedVisual) {
+	f.t.Helper()
+	if intent := f.nav.ExpectApproach(cv.airport, "MV22L", nil); intent == nil {
+		f.t.Fatal("no intent from expect approach")
+	}
+	if intent, unable := f.nav.ClearedApproach("MV22L", nil, f.simTime, false, "").(av.UnableIntent); unable {
+		f.t.Fatalf("unable to clear the charted visual: %v", intent)
+	}
+	if !f.nav.Approach.Cleared {
+		f.t.Fatal("not cleared for the approach")
+	}
+}
+
+func newChartedVisualFlight(t *testing.T) *FlightTest {
+	t.Helper()
+	return NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "E75L",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+}
+
+// TestChartedVisualDescendsFromAssignedAltitude covers the KPDX Mill Visual
+// 28R report: an aircraft vectored onto a charted visual while level at an
+// assigned 5000 flew the whole procedure level. Two things have to happen for
+// it to come down. The clearance has to release the assigned altitude, and the
+// descent has to be the continuous geometric one a visual gets rather than the
+// generic top-of-descent gate, which waits for roughly half the aircraft's max
+// descent rate and so never fires on a procedure this short.
+//
+// The aircraft joins past the chart's crossing altitude, as it did in the
+// report, so the descent target is the runway threshold.
+func TestChartedVisualDescendsFromAssignedAltitude(t *testing.T) {
+	f := newChartedVisualFlight(t)
+	cv := setupChartedVisual(f)
+
+	// Vectored in from 10 nm right of the course abeam the 18 nm point,
+	// converging at 45°, so the aircraft joins 8 nm out — past MILLO. That
+	// leaves 22 nm of track miles to lose 5000 ft, well short of the rate the
+	// top-of-descent gate waits for.
+	nmPerLong := f.nav.FlightState.NmPerLongitude
+	f.nav.FlightState.Position = math.Offset2LL(cv.at(18), math.NormalizeHeading(cv.inbound+90), 10, nmPerLong)
+	intercept := math.TrueToMagnetic(math.NormalizeHeading(cv.inbound-45), f.nav.FlightState.MagneticVariation)
+	f.nav.FlightState.Heading = intercept
+	f.nav.Heading = NavHeading{Assigned: &intercept}
+	f.nav.Waypoints = []av.Waypoint{f.nav.FlightState.ArrivalAirport}
+
+	f.clearChartedVisual(cv)
+
+	if fixes := routeFixes(f); slices.Contains(fixes, "MILLO") {
+		// The join is past MILLO, so its 3000 is gone and the threshold is
+		// the only altitude left; the test would otherwise prove less.
+		t.Fatalf("expected to join past MILLO, got %v", fixes)
+	}
+	if f.nav.Altitude.Assigned != nil || f.nav.Altitude.ActiveAssigned != nil {
+		t.Errorf("the clearance should have released the assigned altitude: %+v", f.nav.Altitude)
+	}
+	// MVAs have to stop applying as well, or the descent this licenses sets
+	// off MSAW the whole way down the profile.
+	if !f.nav.OnApproach(true) {
+		t.Error("expected the cleared charted visual to count as being on the approach")
+	}
+
+	alt, rate, geometric := f.nav.TargetAltitude()
+	if !geometric {
+		t.Error("expected a geometric descent on the cleared charted visual")
+	}
+	if alt != cv.thresholdAlt {
+		t.Errorf("target altitude = %.0f, want %.0f (threshold restriction)", alt, cv.thresholdAlt)
+	}
+	if rate <= 0 {
+		t.Errorf("descent rate = %.0f, want positive", rate)
+	}
+
+	f.AfterTicks(15, func(f *FlightTest) {
+		f.AssertDescending()
+	})
+	f.AfterTicks(180, func(f *FlightTest) {
+		f.AssertAltitudeBelow(4500)
+		f.AssertDescending()
+	})
+
+	f.Run()
+}
+
+// TestChartedVisualJoinedAtFixKeepsCrossingAltitude is the other half: an
+// aircraft sent direct to the chart's first fix joins there rather than past
+// it, so it has to cross the fix at the charted altitude. The join used to
+// substitute a bare intercept point for the fix, which threw the restriction
+// away and left the runway threshold as the only altitude on the procedure.
+func TestChartedVisualJoinedAtFixKeepsCrossingAltitude(t *testing.T) {
+	f := newChartedVisualFlight(t)
+	cv := setupChartedVisual(f)
+
+	// Direct MILLO from 6 nm outside it, on the final approach course.
+	f.nav.FlightState.Position = cv.at(15)
+	f.nav.FlightState.Heading = math.TrueToMagnetic(cv.inbound, f.nav.FlightState.MagneticVariation)
+	f.nav.Waypoints = []av.Waypoint{{Fix: "MILLO", Location: cv.at(9)}, f.nav.FlightState.ArrivalAirport}
+
+	f.clearChartedVisual(cv)
+
+	if fixes := routeFixes(f); fixes[0] != "MILLO" {
+		t.Fatalf("expected to join the chart at MILLO, got %v", fixes)
+	}
+	alt, _, geometric := f.nav.TargetAltitude()
+	if !geometric {
+		t.Error("expected a geometric descent on the cleared charted visual")
+	}
+	if alt != 3000 {
+		t.Errorf("target altitude = %.0f, want 3000 (MILLO's charted crossing altitude)", alt)
+	}
+
+	f.AtFix("MILLO", func(f *FlightTest) {
+		f.AssertAltitudeNear(3000, 150)
+	})
+
+	f.Run()
+}
+
 // TestVectorOffSTARHoldsAltitude verifies that vectoring an arrival off a
 // STAR with a heading does not cause the aircraft to subsequently climb back
 // to its altitude at command-issue time. Earlier code snapshotted Altitude.Cleared

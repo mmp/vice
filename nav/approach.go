@@ -666,7 +666,15 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	// charted, so a pilot who isn't pointed at it answers unable.
 	var wi []av.Waypoint
 	if join := nav.visualJoinFromInstructions(routes); join != nil {
-		wi = append([]av.Waypoint{{Fix: "intercept", Location: join.location}}, join.route[join.segment+1:]...)
+		if join.segmentFraction == 0 {
+			// The join is the charted fix that starts the segment, or is
+			// upstream of it; fly the fix itself so that its altitude and
+			// speed restrictions come along rather than being displaced by a
+			// bare intercept point.
+			wi = util.DuplicateSlice(join.route[join.segment:])
+		} else {
+			wi = append([]av.Waypoint{{Fix: "intercept", Location: join.location}}, join.route[join.segment+1:]...)
+		}
 	} else {
 		// No intercept. Fall back to the first waypoint whose bearing is
 		// within 30° of the instructed heading — lets a pilot already
@@ -690,6 +698,7 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
 	nav.Heading = NavHeading{}
 	nav.DeferredNavHeading = nil
+	nav.Approach.PassedApproachFix = true // allow descent
 	return nil
 }
 

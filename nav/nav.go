@@ -275,16 +275,10 @@ func (na *NavApproach) HasLocalizer() bool {
 	return false
 }
 
-// clearedForUnchartedVisualApproach reports whether the aircraft has been
-// cleared for a synthesized (non-charted) visual approach.
-func (nav *Nav) clearedForUnchartedVisualApproach() bool {
-	return nav.Approach.Cleared && nav.Approach.Assigned != nil &&
-		nav.Approach.Assigned.Type == av.VisualApproach
-}
-
-// clearedForAnyVisualApproach reports whether the aircraft has been cleared
-// for either a synthesized visual or a charted visual approach.
-func (nav *Nav) clearedForAnyVisualApproach() bool {
+// clearedForVisualApproach reports whether the aircraft has been cleared for
+// a visual approach, either one charted as a procedure or one synthesized for
+// the runway.
+func (nav *Nav) clearedForVisualApproach() bool {
 	if !nav.Approach.Cleared || nav.Approach.Assigned == nil {
 		return false
 	}

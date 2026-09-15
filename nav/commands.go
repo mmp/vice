@@ -1128,7 +1128,7 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 		return av.MakeUnableIntent("unable, that distance is out of range")
 	}
 
-	if !nav.clearedForAnyVisualApproach() {
+	if !nav.clearedForVisualApproach() {
 		return av.MakeUnableIntent("unable, we're not cleared for a visual approach")
 	}
 	ap := nav.Approach.Assigned
