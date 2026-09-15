@@ -133,16 +133,19 @@ func (m *Model) updateAtmos(ar AtmosResult) {
 		m.times[1] = ar.Time
 		m.nextFetch = ar.NextTime
 
+		m.ch = nil
 		if m.grids[0] == nil {
 			// We just got the very first one; copy it into [0] for now so
 			// code elsewhere can assume that either none or both are
 			// present.
 			m.grids[0], m.times[0] = m.grids[1], m.times[1]
 
-			// And get started on fetching the next one.
-			m.ch = m.fetchAtmos(m.nextFetch)
-		} else {
-			m.ch = nil
+			// And get started on fetching the next one, when the series has
+			// one: a time past the end of it comes back with no next time,
+			// and fetching that would ask for the zero time and fail.
+			if !m.nextFetch.IsZero() {
+				m.ch = m.fetchAtmos(m.nextFetch)
+			}
 		}
 	}
 }
