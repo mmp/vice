@@ -28,6 +28,20 @@ type LaunchFlight struct {
 	Runway    av.RunwayID
 	Day       uint16
 	Minute    int
+
+	// AircraftTypeOverride replaces the aircraft type the slot's pending
+	// flight was sampled with. It is empty for ordinary launches; facility
+	// engineering sets it to fly a procedure with a particular aircraft's
+	// performance. The type still has to have a route to the flight's exit,
+	// so an override the departure can't be flown with is an error.
+	AircraftTypeOverride string
+
+	// ImmediateTakeoff starts a departure rolling the moment it is launched,
+	// with none of the wait at the gate, the hold for release, or the
+	// departure sequence it would otherwise spend minutes in. Facility
+	// engineering launches one aircraft at a time to watch it fly a
+	// procedure, where all of that is beside the point.
+	ImmediateTakeoff bool
 }
 
 // DepartureLaunchSlot is one departure slot in the launch control window,
@@ -332,11 +346,13 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 		for key, e := range s.PendingDepartures {
 			if av.ADSBCallsign(e.Callsign) == flight.Callsign {
 				delete(s.PendingDepartures, key)
-				ac, err := s.createScenarioIFRDeparture(*e)
+				dep := *e
+				applyTypeOverride(&dep.ScheduledFlight, flight)
+				ac, err := s.createScenarioIFRDeparture(dep)
 				if err != nil {
 					return err
 				}
-				s.launchDeparture(ac, e.Runway)
+				s.launchDeparture(ac, e.Runway, flight)
 				return nil
 			}
 		}
@@ -356,7 +372,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 				return err
 			}
 			s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
-			s.launchDeparture(ac, flight.Runway)
+			s.launchDeparture(ac, flight.Runway, flight)
 			return nil
 		}
 
@@ -366,7 +382,9 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 	for key, e := range s.PendingArrivals {
 		if av.ADSBCallsign(e.Callsign) == flight.Callsign {
 			delete(s.PendingArrivals, key)
-			ac, err := s.createScheduledArrival(*e)
+			arr := *e
+			applyTypeOverride(&arr.ScheduledFlight, flight)
+			ac, err := s.createScheduledArrival(arr)
 			if err != nil {
 				return err
 			}
@@ -378,7 +396,9 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 	for key, e := range s.PendingOverflights {
 		if av.ADSBCallsign(e.Callsign) == flight.Callsign {
 			delete(s.PendingOverflights, key)
-			ac, err := s.createScheduledOverflight(*e)
+			of := *e
+			applyTypeOverride(&of.ScheduledFlight, flight)
+			ac, err := s.createScheduledOverflight(of)
 			if err != nil {
 				return err
 			}
@@ -401,7 +421,19 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 	return ErrNoMatchingFlight
 }
 
-func (s *Sim) launchDeparture(ac *Aircraft, runway av.RunwayID) {
+func applyTypeOverride(f *ScheduledFlight, flight LaunchFlight) {
+	if flight.AircraftTypeOverride != "" {
+		f.AircraftType = flight.AircraftTypeOverride
+	}
+}
+
+func (s *Sim) launchDeparture(ac *Aircraft, runway av.RunwayID, flight LaunchFlight) {
+	if flight.ImmediateTakeoff {
+		// Clearing the flag rather than releasing the aircraft is what keeps
+		// it out of the release lists and the rest of the machinery a held
+		// departure goes through; from here on it is an ordinary departure.
+		ac.HoldForRelease = false
+	}
 	if ac.HoldForRelease {
 		// Clicking the launch slot stands in for the wait at the gate.
 		s.addDepartureToPool(ac, runway, 0)
