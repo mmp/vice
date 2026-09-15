@@ -5,7 +5,7 @@ On a Mac, from this directory:
     iconutil -c icns vice-icon.iconset
 
 That produces vice-icon.icns. (iconutil is macOS-only, which is why the
-.iconset folder is shipped rather than a finished .icns; osx/make-vice-app.sh
+.iconset folder is shipped rather than a finished .icns; osx/make-apps.sh
 runs iconutil on it at build time.)
 
 Geometry

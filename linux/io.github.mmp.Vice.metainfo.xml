@@ -18,6 +18,9 @@
   </developer>
 
   <launchable type="desktop-id">io.github.mmp.Vice.desktop</launchable>
+  <!-- backshop, the facility engineering tool, ships in the same flatpak;
+       it is for developing scenarios rather than for flying them. -->
+  <launchable type="desktop-id">io.github.mmp.Vice.Backshop.desktop</launchable>
 
   <url type="homepage">https://pharr.org/vice/</url>
   <url type="vcs-browser">https://github.com/mmp/vice</url>

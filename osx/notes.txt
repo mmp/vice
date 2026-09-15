@@ -2,7 +2,7 @@
 
 # dmg, maybe someday
 ~/create-dmg/create-dmg --volname "Vice-${VERSION}" \
-           --volicon icon.icns \
+           --volicon Vice.app/Contents/Resources/icon.icns \
            --icon-size 100 \
            --icon "Vice.app" 10 180 \
            --app-drop-link 350 180 \

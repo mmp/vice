@@ -159,6 +159,9 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
           <Component Id="ViceExe" Guid='A10E3C66-BA55-406A-B4E2-586D7108D622'>
             <File KeyPath="yes" Name="Vice.exe" Source="Vice.exe"></File>
           </Component>
+          <Component Id="BackshopExe" Guid='5f6e7d8c-9b0a-4c1d-8e2f-3a4b5c6d7e8f'>
+            <File KeyPath="yes" Name="backshop.exe" Source="backshop.exe"></File>
+          </Component>
           <Component Id="Crc2viceExe" Guid='c1d2e3f4-a5b6-4789-9c0d-1e2f3a4b5c6d'>
             <File KeyPath="yes" Name="crc2vice.exe" Source="crc2vice.exe"></File>
           </Component>
@@ -237,9 +240,14 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
       <DialogRef Id="FilesInUse" />
       <DialogRef Id="FatalError" />
       <DialogRef Id="UserExit" />
+      <DialogRef Id="CustomizeDlg" />
 
+      <!-- Welcome, then the feature tree so that backshop can be selected,
+           then straight to installing: no license or directory pages. -->
       <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
-      <Publish Dialog="WelcomeDlg" Control="Next" Event="EndDialog" Value="Return" Order="2"></Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg" Order="2">1</Publish>
+      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="1">1</Publish>
+      <Publish Dialog="CustomizeDlg" Control="Next" Event="EndDialog" Value="Return" Order="2">1</Publish>
 
     </UI>
     <UIRef Id="WixUI_Common" />
@@ -256,9 +264,19 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
         <RegistryValue Root="HKCU" Key="Software\Matt Pharr\Vice" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
       </Component>
+      <Component Id="BackshopShortcut" Guid='6a7b8c9d-0e1f-4a2b-9c3d-4e5f6a7b8c9d'>
+        <Shortcut Id="BackshopStartMenuShortcut"
+                  Name="Backshop"
+                  Description="vice facility engineering tool"
+                  Target="[#backshop.exe]"
+                  WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="BackshopProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Matt Pharr\Vice" Name="backshop" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
     </DirectoryRef>
 
-    <Feature Id="MyFeature">
+    <Feature Id="MyFeature" Title="Vice" Description="The vice ATC simulator and its map conversion tools."
+             Level="1" Absent="disallow" AllowAdvertise="no">
       <ComponentRef Id="ViceExe" />
       <ComponentRef Id="Crc2viceExe" />
       <ComponentRef Id="Dat2viceExe" />
@@ -273,6 +291,15 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
       <ComponentRef Id="FontsId" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
+    </Feature>
+
+    <!-- Level 2 keeps backshop unselected by default; it is for people
+         developing scenarios rather than for people flying them. -->
+    <Feature Id="Backshop" Title="Facility engineering tool"
+             Description="backshop, for developing scenarios, facility configurations, and video maps."
+             Level="2" AllowAdvertise="no">
+      <ComponentRef Id="BackshopExe" />
+      <ComponentRef Id="BackshopShortcut" />
     </Feature>
   </Product>
 </Wix>

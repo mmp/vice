@@ -265,6 +265,29 @@ def update_website(tag, old_tag, items):
     print(f"  Updated {path}")
 
 
+def update_facility_engineering(tag, old_tag):
+    """Update website/facility-engineering.html: the Backshop.app download link."""
+    path = "website/facility-engineering.html"
+    with open(path) as f:
+        content = f.read()
+
+    def replace(old, new):
+        nonlocal content
+        if old not in content:
+            print(f"Error: could not find {old!r} in {path}")
+            sys.exit(1)
+        content = content.replace(old, new)
+
+    replace(f'releases/download/{old_tag}/Backshop-{old_tag}-osx.zip',
+            f'releases/download/{tag}/Backshop-{tag}-osx.zip')
+    replace(f'Download Backshop {old_tag} for Mac',
+            f'Download Backshop {tag} for Mac')
+
+    with open(path, 'w') as f:
+        f.write(content)
+    print(f"  Updated {path}")
+
+
 def escape_html(text):
     """Escape special HTML characters, but preserve backtick-code as <code>."""
     text = text.replace('&', '&amp;')
@@ -284,6 +307,7 @@ def wait_for_approval():
     print("  - cmd/vice/whatsnew.go")
     print("  - linux/io.github.mmp.Vice.metainfo.xml")
     print("  - website/index.html")
+    print("  - website/facility-engineering.html")
     print()
     print("Make any manual edits now.")
     print("=" * 60)
@@ -304,7 +328,8 @@ def commit_and_tag(tag):
         print(contents)
     with open("whatsnew.md", 'w') as f:
         pass
-    run("git add cmd/vice/whatsnew.go linux/io.github.mmp.Vice.metainfo.xml website/index.html whatsnew.md")
+    run("git add cmd/vice/whatsnew.go linux/io.github.mmp.Vice.metainfo.xml website/index.html "
+        "website/facility-engineering.html whatsnew.md")
     run(f'git commit -m "Release {version}"')
     run(f'git tag {tag}')
     print(f"  Committed and tagged {tag}")
@@ -446,6 +471,7 @@ def main():
     update_whatsnew_go(flat_items)
     update_metainfo_xml(tag, flat_items)
     update_website(tag, old_tag, structured_items)
+    update_facility_engineering(tag, old_tag)
 
     # Pause for review
     wait_for_approval()

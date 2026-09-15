@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Backshop
+Comment=Vice facility engineering tool
+Exec=backshop
+Type=Application
+Icon=io.github.mmp.Vice
+Categories=Game;Development;

@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# Creates Vice.app bundle from the built vice binary.
+# Creates the Vice.app and Backshop.app bundles from the built binaries.
 # Optionally signs and notarizes if Apple credentials are provided.
 #
-# Usage: ./osx/make-vice-app.sh
+# Usage: ./osx/make-apps.sh
 #
 # Required:
-#   - vice binary must exist in current directory
+#   - vice and backshop binaries must exist in current directory
 #   - fonts/*.zst must exist
 #
 # Optional environment variables for signing/notarization:
@@ -19,10 +19,12 @@
 
 set -e
 
-if [ ! -f "vice" ]; then
-    echo "Error: vice binary not found in current directory"
-    exit 1
-fi
+for gui in vice backshop; do
+    if [ ! -f "$gui" ]; then
+        echo "Error: $gui binary not found in current directory"
+        exit 1
+    fi
+done
 
 for tool in crc2vice dat2vice viceserver; do
     if [ ! -f "$tool" ]; then
@@ -31,23 +33,29 @@ for tool in crc2vice dat2vice viceserver; do
     fi
 done
 
-echo "=== Creating icons ==="
-iconutil -c icns -o icon.icns cmd/vice/icons/macos/vice-icon.iconset
+# make_app <bundle> <executable> <Info.plist> <iconset>. Each bundle gets its
+# own copy of fonts/, since renderer/font.go looks for them next to the
+# executable (Contents/Resources on macOS), and its own icon.icns, the name
+# both Info.plist files give for CFBundleIconFile.
+make_app() {
+    local bundle="$1" exe="$2" plist="$3" iconset="$4"
+    echo "=== Creating $bundle bundle ==="
+    rm -rf "$bundle"
+    mkdir -p "$bundle/Contents/MacOS"
+    cp "$exe" "$bundle/Contents/MacOS/"
+    cp "$plist" "$bundle/Contents/Info.plist"
+    mkdir -p "$bundle/Contents/Resources/fonts"
+    iconutil -c icns -o "$bundle/Contents/Resources/icon.icns" "$iconset"
+    cp fonts/*zst "$bundle/Contents/Resources/fonts/"
+}
 
-echo "=== Creating Vice.app bundle ==="
-rm -rf Vice.app
-mkdir -p Vice.app/Contents/MacOS
-cp vice Vice.app/Contents/MacOS/
-cp osx/Info.plist Vice.app/Contents/
-mkdir -p Vice.app/Contents/Resources
-cp icon.icns Vice.app/Contents/Resources
-mkdir -p Vice.app/Contents/Resources/fonts
-cp fonts/*zst Vice.app/Contents/Resources/fonts/
+make_app Vice.app vice osx/Info.plist cmd/vice/icons/macos/vice-icon.iconset
+make_app Backshop.app backshop osx/Info-backshop.plist cmd/backshop/icons/macos/backshop-icon.iconset
 
 # Check if signing credentials are available
 if [ -z "$APPLE_DEVELOPER_ID_APPLICATION" ]; then
     echo "=== Skipping signing (no APPLE_DEVELOPER_ID_APPLICATION) ==="
-    echo "Vice.app created successfully (unsigned)"
+    echo "Vice.app and Backshop.app created successfully (unsigned)"
     exit 0
 fi
 
@@ -65,6 +73,10 @@ rm cert.p12
 echo "=== Signing Vice.app ==="
 codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime --entitlements osx/vice.entitlements Vice.app
 
+# backshop needs no entitlements: it never records audio.
+echo "=== Signing Backshop.app ==="
+codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime Backshop.app
+
 echo "=== Signing crc2vice, dat2vice, viceserver ==="
 for tool in crc2vice dat2vice viceserver; do
     codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime "$tool"
@@ -73,12 +85,12 @@ done
 # Check if notarization credentials are available
 if [ -z "$APPLE_CODESIGN_ID" ] || [ -z "$APPLE_CODESIGN_PASSWORD" ] || [ -z "$APPLE_TEAMID" ]; then
     echo "=== Skipping notarization (missing credentials) ==="
-    echo "Vice.app and helper tools created and signed successfully (not notarized)"
+    echo "Vice.app, Backshop.app, and helper tools created and signed successfully (not notarized)"
     exit 0
 fi
 
-echo "=== Notarizing Vice.app and helper tools ==="
-zip -rv vice-notarize.zip Vice.app crc2vice dat2vice viceserver
+echo "=== Notarizing the app bundles and helper tools ==="
+zip -rv vice-notarize.zip Vice.app Backshop.app crc2vice dat2vice viceserver
 xcrun notarytool submit \
     --wait \
     --apple-id "${APPLE_CODESIGN_ID}" \
@@ -93,5 +105,6 @@ echo "=== Stapling notarization ==="
 # can't be stapled, but their notarization tickets are looked up online by
 # Gatekeeper when first run.
 xcrun stapler staple Vice.app
+xcrun stapler staple Backshop.app
 
-echo "Vice.app and helper tools created, signed, and notarized successfully"
+echo "Vice.app, Backshop.app, and helper tools created, signed, and notarized successfully"
