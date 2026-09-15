@@ -233,7 +233,7 @@ func (s *Sim) generateScenarioDepartures(from, until Time) {
 
 func (s *Sim) sampleScenarioDeparture(airport av.ICAOAirportCode, runway av.RunwayID, category string,
 	t Time) (ScheduledDeparture, bool) {
-	ap, rwy, exitRoutes, err := s.departureConfiguration(airport, runway, category)
+	ap, rwy, exitRoutes, err := s.State.departureConfiguration(airport, runway, category)
 	if err != nil {
 		return ScheduledDeparture{}, false
 	}
@@ -620,7 +620,7 @@ func (s *Sim) schedulePublishedFlights(flights []av.Flight, departureSpawnLead t
 		}
 
 		sf.DepartureAirport, sf.ArrivalAirport = flight.Other, flight.Airport
-		placement, err := s.placeArrival(flight.Airport, flight.Other, flight.AircraftType, routed)
+		placement, err := s.State.placeArrival(flight.Airport, flight.Other, flight.AircraftType, routed)
 		entry := ScheduledArrival{
 			ScheduledFlight: sf,
 			Group:           placement.group,
@@ -751,7 +751,8 @@ func (s *Sim) spawnScheduledDepartures() {
 			continue
 		}
 
-		runway, categories, choice, err := s.resolvePublishedDepartureRunway(&e)
+		runway, categories, choice, err := s.State.resolvePublishedDepartureRunway(&e, s.routedPairsIndex(),
+			s.DepartureState[e.DepartureAirport])
 		if err != nil {
 			if errors.Is(err, errNoDepartureRunwayEnabled) {
 				// Nothing is launching from this airport right now; leave the
@@ -905,11 +906,13 @@ func (f runwayFit) share() float32 {
 // resolvePublishedDepartureRunway finds the runway a published departure leaves from, along with
 // the exit and route it flies there: of the runways the scenario is launching, the one whose gates
 // suit the flight best. Runways that suit it equally well share it out in proportion to their
-// rates, so that the airport's whole flow doesn't go out the first of them.
-func (s *Sim) resolvePublishedDepartureRunway(e *ScheduledDeparture) (av.RunwayID, []string,
-	departureChoice, error) {
-	lc := &s.State.LaunchConfig
+// rates, so that the airport's whole flow doesn't go out the first of them; depState is the launch
+// state of the airport's runways, which a caller with no sim running doesn't have.
+func (ss *CommonState) resolvePublishedDepartureRunway(e *ScheduledDeparture, routed routedPairs,
+	depState map[av.RunwayID]*RunwayLaunchState) (av.RunwayID, []string, departureChoice, error) {
+	lc := &ss.LaunchConfig
 	var fits []runwayFit
+	var fitChoice departureChoice
 	var fitErr error
 	launching := false
 	for _, runway := range util.SortedMapKeys(lc.DepartureEnabled[e.DepartureAirport]) {
@@ -918,17 +921,17 @@ func (s *Sim) resolvePublishedDepartureRunway(e *ScheduledDeparture) (av.RunwayI
 			continue
 		}
 		launching = true
-		choice, err := s.findPublishedDeparture(e.DepartureAirport, runway, categories,
-			e.ArrivalAirport, e.AircraftType, s.routedPairsIndex().destinationsByOrigin)
+		choice, err := ss.findPublishedDeparture(e.DepartureAirport, runway, categories,
+			e.ArrivalAirport, e.AircraftType, routed.destinationsByOrigin)
 		if err != nil {
-			fitErr = err
+			fitErr, fitChoice = err, choice
 			continue
 		}
 		category := choice.candidate.rwy.Category
 		f := runwayFit{runway: runway, categories: categories, choice: choice,
 			rate: lc.DepartureRates[e.DepartureAirport][runway][category]}
-		if depState := s.DepartureState[e.DepartureAirport][runway]; depState != nil {
-			f.taken = depState.PublishedDepartures[category]
+		if st := depState[runway]; st != nil {
+			f.taken = st.PublishedDepartures[category]
 		}
 		fits = append(fits, f)
 	}
@@ -937,7 +940,7 @@ func (s *Sim) resolvePublishedDepartureRunway(e *ScheduledDeparture) (av.RunwayI
 		if !launching {
 			return "", nil, departureChoice{}, errNoDepartureRunwayEnabled
 		}
-		return "", nil, departureChoice{}, fitErr
+		return "", nil, fitChoice, fitErr
 	}
 
 	bestFit := slices.MinFunc(fits, func(a, b runwayFit) int { return cmp.Compare(a.choice.fit, b.choice.fit) })
@@ -1206,7 +1209,7 @@ func (s *Sim) updatePublishedArrivalPlacements() {
 		if e.Source == TrafficSourceScenario {
 			continue
 		}
-		placement, err := s.placeArrival(e.ArrivalAirport, e.DepartureAirport, e.AircraftType,
+		placement, err := s.State.placeArrival(e.ArrivalAirport, e.DepartureAirport, e.AircraftType,
 			s.routedPairsIndex())
 		e.Group, e.Index = placement.group, placement.index
 		e.FiledRoute, e.Substitute, e.How = placement.filedRoute, placement.substitute, placement.how
@@ -1244,19 +1247,26 @@ func shiftScheduledLater[T any](entries []T, flight func(*T) *ScheduledFlight,
 // readHistoricalFlights gathers the flights a scenario using historical
 // traffic flies: those at its airports over the window starting at the
 // selected time. Both ends reach as far as the fastest rate scale reads
-// through the data, since the scale can be raised while the sim runs and this
-// is the only place the flights are gathered.
+// through the data, since the scale can be raised while the sim runs and the
+// schedule is built only once.
 func (s *Sim) readHistoricalFlights() []av.Flight {
-	departureAirports, arrivalAirports := s.State.LaunchConfig.IFRAirports()
+	start := s.StartTime.Time()
+	flights, err := s.State.historicalFlights(start.Add(-MaxPublishedRateScale*PrespawnDuration),
+		start.Add(MaxPublishedRateScale*HistoricalFlightWindow))
+	if err != nil {
+		s.lg.Errorf("%v", err)
+	}
+	return flights
+}
+
+// historicalFlights returns the recorded flights at the scenario's airports
+// between two times.
+func (ss *CommonState) historicalFlights(from, until time.Time) ([]av.Flight, error) {
+	departureAirports, arrivalAirports := ss.LaunchConfig.IFRAirports()
 	flights, err := av.ReadFlightDataCells(util.GetResourcesFS(),
 		av.FlightDataCells(departureAirports, arrivalAirports))
 	if err != nil {
-		s.lg.Errorf("%s historical flight data: %v", s.State.Facility, err)
-		return nil
+		return nil, fmt.Errorf("%s historical flight data: %w", ss.Facility, err)
 	}
-
-	start := s.StartTime.Time()
-	return av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
-		start.Add(-MaxPublishedRateScale*PrespawnDuration),
-		start.Add(MaxPublishedRateScale*historicalFlightWindow))
+	return av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines, from, until), nil
 }

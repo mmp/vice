@@ -1197,11 +1197,11 @@ func (s *Sim) step(elapsed time.Duration) bool {
 
 // cullDistance is how far from the facility's center an aircraft flies before
 // the sim lets it go; there is no point in carrying route waypoints past it.
-func (s *Sim) cullDistance() float32 {
-	if s.State.FacilityAdaptation.MaxDistance > 0 {
-		return s.State.FacilityAdaptation.MaxDistance
+func (ss *CommonState) cullDistance() float32 {
+	if ss.FacilityAdaptation.MaxDistance > 0 {
+		return ss.FacilityAdaptation.MaxDistance
 	}
-	return util.Select(av.DB.IsARTCC(s.State.Facility), float32(400), float32(200))
+	return util.Select(av.DB.IsARTCC(ss.Facility), float32(400), float32(200))
 }
 
 // Distance from the runway threshold at which a pilot who still hasn't been
@@ -1475,7 +1475,7 @@ func (s *Sim) updateState() {
 			}
 
 			// Cull far-away aircraft
-			if math.NMDistance2LL(ac.Position(), s.State.Center) > s.cullDistance() {
+			if math.NMDistance2LL(ac.Position(), s.State.Center) > s.State.cullDistance() {
 				s.lg.Debug("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
 				s.deleteAircraft(ac)
 			}

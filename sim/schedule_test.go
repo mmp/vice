@@ -423,10 +423,12 @@ func TestScheduledDeparturesResolveTheirRunway(t *testing.T) {
 	toKORD := testScheduledDeparture("DAL1", "KMSP", "KORD", start)
 	toKDEN := testScheduledDeparture("DAL2", "KMSP", "KDEN", start.Add(time.Minute))
 
-	if runway, _, _, err := s.resolvePublishedDepartureRunway(&toKORD); err != nil || runway != "12L" {
+	if runway, _, _, err := s.State.resolvePublishedDepartureRunway(&toKORD, s.routedPairsIndex(),
+		s.DepartureState["KMSP"]); err != nil || runway != "12L" {
 		t.Errorf("KORD departure resolves to %q (%v), want 12L", runway, err)
 	}
-	if runway, _, _, err := s.resolvePublishedDepartureRunway(&toKDEN); err != nil || runway != "30R" {
+	if runway, _, _, err := s.State.resolvePublishedDepartureRunway(&toKDEN, s.routedPairsIndex(),
+		s.DepartureState["KMSP"]); err != nil || runway != "30R" {
 		t.Errorf("KDEN departure resolves to %q (%v), want 30R", runway, err)
 	}
 }
@@ -465,7 +467,8 @@ func TestScheduledDeparturesPreferTheRunwayThatFliesTheirRoute(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
 	e := testScheduledDeparture("DAL1", "KORG", "KTGT", start)
 	e.AircraftType = "B738"
-	runway, _, choice, err := s.resolvePublishedDepartureRunway(&e)
+	runway, _, choice, err := s.State.resolvePublishedDepartureRunway(&e, s.routedPairsIndex(),
+		s.DepartureState["KORG"])
 	if err != nil {
 		t.Fatalf("resolvePublishedDepartureRunway: %v", err)
 	}

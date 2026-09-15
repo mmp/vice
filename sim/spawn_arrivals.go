@@ -136,23 +136,25 @@ func arrivalWithinCeiling(arr *av.Arrival, perf av.AircraftPerformance) bool {
 
 // matchArrivalRoutes matches each route in turn against the candidates,
 // returning the first one of them can fly. The first route's failure is the
-// one reported: it is the preferred way the pair is flown.
+// one reported, along with the route it failed on: it is the preferred way the
+// pair is flown, and it is what says why the flight can't be flown.
 func matchArrivalRoutes(candidates []candidateArrival, aircraftType string, routes []string,
 	arrivalAirport, origin av.ICAOAirportCode) (candidateArrival, string, error) {
 	var firstErr error
+	var firstRoute string
 	for _, route := range routes {
 		c, err := matchArrivalRoute(candidates, aircraftType, route, arrivalAirport, origin)
 		if err == nil {
 			return c, route, nil
 		}
 		if firstErr == nil {
-			firstErr = err
+			firstErr, firstRoute = err, route
 		}
 	}
 	if firstErr == nil {
 		firstErr = errNoPlausibleArrival
 	}
-	return candidateArrival{}, "", firstErr
+	return candidateArrival{}, firstRoute, firstErr
 }
 
 // matchArrivalRoute finds the candidate arrival a filed route into the airport

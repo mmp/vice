@@ -206,7 +206,8 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 						if e.Source == TrafficSourceScenario || e.DepartureAirport != airport {
 							continue
 						}
-						rwy, _, choice, err := s.resolvePublishedDepartureRunway(e)
+						rwy, _, choice, err := s.State.resolvePublishedDepartureRunway(e,
+							s.routedPairsIndex(), s.DepartureState[airport])
 						if err != nil || rwy != runway {
 							continue
 						}
@@ -452,7 +453,8 @@ func (s *Sim) RecycleLaunchAircraft(tcw TCW, flight LaunchFlight) error {
 					// The runway is no longer launching; treat the airport as one flow.
 					return true
 				}
-				rwy, _, _, ferr := s.resolvePublishedDepartureRunway(o)
+				rwy, _, _, ferr := s.State.resolvePublishedDepartureRunway(o, s.routedPairsIndex(),
+					s.DepartureState[o.DepartureAirport])
 				return ferr == nil && rwy == flight.Runway
 			}
 			s.Schedule.Departures = removeScheduledAndShift(s.Schedule.Departures, i,

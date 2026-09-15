@@ -29,10 +29,10 @@ const (
 	// about when it really did.
 	flightTaxiAllowance = 5 * time.Minute
 
-	// historicalFlightWindow is how much of the sim's clock a sim is launched
+	// HistoricalFlightWindow is how much of the sim's clock a sim is launched
 	// with flight data for. A sim running longer than this runs out of
 	// historical traffic.
-	historicalFlightWindow = 8 * time.Hour
+	HistoricalFlightWindow = 8 * time.Hour
 
 	// intraFacilityLegWindow bounds how long after a departure its arrival at
 	// another of the facility's airports may be, so that a callsign flown twice
@@ -145,15 +145,15 @@ type candidateArrival struct {
 
 // candidateArrivals gathers them in sorted flow order, so that a choice between
 // equally good ones doesn't vary between runs.
-func (s *Sim) candidateArrivals(arrivalAirport av.ICAOAirportCode) []candidateArrival {
+func (ss *CommonState) candidateArrivals(arrivalAirport av.ICAOAirportCode) []candidateArrival {
 	arrivalAirport = normalizeAirportCode(arrivalAirport)
 
 	var candidates []candidateArrival
-	for _, group := range util.SortedMapKeys(s.State.InboundFlows) {
-		if !s.State.LaunchConfig.InboundFlowEnabled[group][string(arrivalAirport)] {
+	for _, group := range util.SortedMapKeys(ss.InboundFlows) {
+		if !ss.LaunchConfig.InboundFlowEnabled[group][string(arrivalAirport)] {
 			continue
 		}
-		arrivals := s.State.InboundFlows[group].Arrivals
+		arrivals := ss.InboundFlows[group].Arrivals
 		for i := range arrivals {
 			if slices.Contains(arrivals[i].Airports, arrivalAirport) {
 				candidates = append(candidates, candidateArrival{group, i, &arrivals[i]})
@@ -612,12 +612,12 @@ func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
 // is flown: the inbound flow and arrival that carry it, the route it files, and
 // the airport standing in for its origin when neither the scenario nor the
 // route database covers where it really came from.
-func (s *Sim) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftType string,
+func (ss *CommonState) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftType string,
 	routed routedPairs) (arrivalPlacement, error) {
 	arrivalAirport = normalizeAirportCode(arrivalAirport)
 	origin = normalizeAirportCode(origin)
 
-	candidates := s.candidateArrivals(arrivalAirport)
+	candidates := ss.candidateArrivals(arrivalAirport)
 	if len(candidates) == 0 {
 		return arrivalPlacement{}, errNoPlausibleArrival
 	}
@@ -625,9 +625,9 @@ func (s *Sim) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftTy
 		return arrivalPlacement{}, errNoSuitableArrival
 	}
 
-	hour, hourKnown := s.localHour(arrivalAirport)
+	hour, hourKnown := ss.localHour(arrivalAirport)
 	scenarioRoutes := func(from av.ICAOAirportCode) []string {
-		if ap, ok := s.State.Airports[arrivalAirport]; ok {
+		if ap, ok := ss.Airports[arrivalAirport]; ok {
 			return ap.TrafficRoutes.Arrivals[from].Routes(aircraftType)
 		}
 		return nil
@@ -655,7 +655,9 @@ func (s *Sim) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftTy
 	if routes := scenarioRoutes(origin); len(routes) > 0 {
 		c, route, err := matchArrivalRoutes(candidates, aircraftType, routes, arrivalAirport, origin)
 		if err != nil {
-			return arrivalPlacement{}, err
+			// The route comes back with the error: it is what says why the
+			// scenario has no way to fly the flight.
+			return arrivalPlacement{filedRoute: route}, err
 		}
 		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, nil),
 			"scenario route"), nil
@@ -665,7 +667,7 @@ func (s *Sim) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftTy
 		c, route, err := matchArrivalRoutes(candidates, aircraftType,
 			slices.Concat(names, faa), arrivalAirport, origin)
 		if err != nil {
-			return arrivalPlacement{}, err
+			return arrivalPlacement{filedRoute: route}, err
 		}
 		how := util.Select(slices.Contains(names, route), "scraped route", "faa route")
 		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, scraped),
@@ -679,7 +681,7 @@ func (s *Sim) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftTy
 	// flight files its own route rather than the substitute's, which starts
 	// somewhere it has never been.
 	pool := slices.Clone(routed.originsByDestination[arrivalAirport])
-	if ap, ok := s.State.Airports[arrivalAirport]; ok {
+	if ap, ok := ss.Airports[arrivalAirport]; ok {
 		for _, from := range util.SortedMapKeys(ap.TrafficRoutes.Arrivals) {
 			if len(scenarioRoutes(from)) > 0 {
 				pool = append(pool, from)
@@ -803,12 +805,12 @@ func makeRoutedPairs() routedPairs {
 
 // localHour returns the hour of day at the airport at the sim's current time,
 // if the airport's time zone is known.
-func (s *Sim) localHour(airport av.ICAOAirportCode) (int, bool) {
+func (ss *CommonState) localHour(airport av.ICAOAirportCode) (int, bool) {
 	loc, ok := av.DB.AirportTimeZone(airport)
 	if !ok {
 		return 0, false
 	}
-	return s.State.SimTime.Time().In(loc).Hour(), true
+	return ss.SimTime.Time().In(loc).Hour(), true
 }
 
 // orderScrapedRoutes sorts a pair's scraped routes for one flight: first

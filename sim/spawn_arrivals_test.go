@@ -46,7 +46,7 @@ func TestPlaceArrivalFilesTheRealRoute(t *testing.T) {
 	}
 	s := placeArrivalTestSim("KJFK", arrivals, nil)
 
-	placement, err := s.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	placement, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
 	if err != nil {
 		t.Fatalf("placeArrival found no way to fly KORF->KJFK: %v", err)
 	}
@@ -71,7 +71,7 @@ func TestPlaceArrivalDropsInactiveSTAR(t *testing.T) {
 
 	// KORF to KJFK really arrives on the CAMRN, which this scenario doesn't
 	// work.
-	_, err := s.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	_, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
 	if !errors.Is(err, errArrivalSTARInactive) {
 		t.Errorf("placeArrival = %v, expected the flight dropped for its inactive STAR", err)
 	}
@@ -90,7 +90,7 @@ func TestPlaceArrivalTakesSTARFeeds(t *testing.T) {
 	s := placeArrivalTestSim("KJFK", arrivals, nil)
 
 	// KORF to KJFK really arrives on the CAMRN.
-	placement, err := s.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	placement, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
 	if err != nil {
 		t.Fatalf("placeArrival found no way to fly KORF->KJFK: %v", err)
 	}
@@ -109,7 +109,7 @@ func TestPlaceArrivalDropsUnfedSTAR(t *testing.T) {
 	}
 	s := placeArrivalTestSim("KJFK", arrivals, nil)
 
-	_, err := s.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	_, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
 	if !errors.Is(err, errArrivalSTARInactive) {
 		t.Errorf("placeArrival = %v, expected the flight dropped for its unfed STAR", err)
 	}
@@ -132,7 +132,7 @@ func TestPlaceArrivalPrefersScenarioRoute(t *testing.T) {
 	}}
 	s := placeArrivalTestSim("KJFK", arrivals, ap)
 
-	placement, err := s.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	placement, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
 	if err != nil {
 		t.Fatalf("placeArrival found no way to fly KORF->KJFK: %v", err)
 	}
@@ -159,7 +159,7 @@ func TestPlaceArrivalSubstitutesANearbyRoutedOrigin(t *testing.T) {
 	}
 	s := placeArrivalTestSim("KJFK", arrivals, nil)
 
-	placement, err := s.placeArrival("KJFK", "KFFA", "B738", makeRoutedPairs())
+	placement, err := s.State.placeArrival("KJFK", "KFFA", "B738", makeRoutedPairs())
 	if err != nil {
 		t.Fatalf("placeArrival found no way to fly KFFA->KJFK: %v", err)
 	}
@@ -178,7 +178,7 @@ func TestPlaceArrivalSubstitutesANearbyRoutedOrigin(t *testing.T) {
 	// Zurich's nearest airport with a JFK route is Bangor, which is no neighbor
 	// of it and no statement of how traffic from Europe arrives. That falls
 	// through to the great-circle geometry, with no origin standing in.
-	placement, err = s.placeArrival("KJFK", "LSZH", "B738", makeRoutedPairs())
+	placement, err = s.State.placeArrival("KJFK", "LSZH", "B738", makeRoutedPairs())
 	if err == nil && placement.substitute != "" {
 		t.Errorf("substituted %q for Zurich, expected no stand-in that far off",
 			placement.substitute)
@@ -205,7 +205,7 @@ func TestPlaceArrivalUsesTheGreatCircleGate(t *testing.T) {
 	}
 	s := placeArrivalTestSim("KTST", arrivals, nil)
 
-	placement, err := s.placeArrival("KTST", "KFAR", "B738", routedPairs{})
+	placement, err := s.State.placeArrival("KTST", "KFAR", "B738", routedPairs{})
 	if err != nil {
 		t.Fatalf("placeArrival found no way to fly KFAR->KTST: %v", err)
 	}
@@ -218,7 +218,7 @@ func TestPlaceArrivalUsesTheGreatCircleGate(t *testing.T) {
 
 	// Nothing comes in from the south, so a southern flight is dropped rather
 	// than handed to whichever gate happens to be least wrong.
-	if _, err := s.placeArrival("KTST", "KSTH", "B738", routedPairs{}); !errors.Is(err, errNoPlausibleArrival) {
+	if _, err := s.State.placeArrival("KTST", "KSTH", "B738", routedPairs{}); !errors.Is(err, errNoPlausibleArrival) {
 		t.Errorf("placeArrival from the south = %v, expected the flight dropped", err)
 	}
 }
@@ -383,7 +383,7 @@ func TestPlaceArrivalCarriesCruiseLimits(t *testing.T) {
 	t.Cleanup(func() { av.DB = oldDB })
 
 	s := placeArrivalTestSim("KTST", []av.Arrival{{STAR: "TSTR4", Airports: []av.ICAOAirportCode{"KTST"}}}, nil)
-	placement, err := s.placeArrival("KTST", "KFAR", "B738", routedPairs{})
+	placement, err := s.State.placeArrival("KTST", "KFAR", "B738", routedPairs{})
 	if err != nil {
 		t.Fatalf("placeArrival found no way to fly KFAR->KTST: %v", err)
 	}

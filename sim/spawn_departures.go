@@ -723,7 +723,7 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 // all sampled when the entry was generated. All resource allocation--squawk,
 // flight strip, flight plan, list index--happens here.
 func (s *Sim) createScenarioIFRDeparture(e ScheduledDeparture) (*Aircraft, error) {
-	ap, rwy, exitRoutes, err := s.departureConfiguration(e.DepartureAirport, e.Runway, e.Category)
+	ap, rwy, exitRoutes, err := s.State.departureConfiguration(e.DepartureAirport, e.Runway, e.Category)
 	if err != nil {
 		return nil, err
 	}
@@ -780,7 +780,7 @@ func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.Runway
 		)
 	}
 
-	placement, err := s.resolvePublishedDeparture(e.DepartureAirport, runway, categories,
+	placement, err := s.State.resolvePublishedDeparture(e.DepartureAirport, runway, categories,
 		e.ArrivalAirport, e.AircraftType, s.routedPairsIndex().destinationsByOrigin)
 	if err != nil {
 		return nil, err
@@ -799,21 +799,21 @@ func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.Runway
 		placement.cruise, placement.exitRoutes)
 }
 
-func (s *Sim) departureConfiguration(departureAirport av.ICAOAirportCode, runway av.RunwayID,
+func (ss *CommonState) departureConfiguration(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	category string) (*av.Airport, *DepartureRunway, map[av.ExitID]av.ExitRoutes, error) {
-	ap := s.State.Airports[departureAirport]
+	ap := ss.Airports[departureAirport]
 	if ap == nil {
 		return nil, nil, nil, av.ErrUnknownAirport
 	}
 
-	idx := slices.IndexFunc(s.State.DepartureRunways,
+	idx := slices.IndexFunc(ss.DepartureRunways,
 		func(r DepartureRunway) bool {
 			return r.Airport == departureAirport && r.Runway == runway && r.Category == category
 		})
 	if idx == -1 {
 		return nil, nil, nil, av.ErrUnknownRunway
 	}
-	rwy := &s.State.DepartureRunways[idx]
+	rwy := &ss.DepartureRunways[idx]
 	return ap, rwy, ap.DepartureRoutes[rwy.Runway], nil
 }
 
@@ -850,11 +850,11 @@ type candidateDeparture struct {
 // brings its own destination, and the routes say which exit it really leaves
 // through. The scenario's "departures" have no say here; they belong to its
 // own generator.
-func (s *Sim) compatibleDepartures(departureAirport av.ICAOAirportCode, runway av.RunwayID,
+func (ss *CommonState) compatibleDepartures(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, aircraftType string) []candidateDeparture {
 	var candidates []candidateDeparture
 	for _, category := range categories {
-		ap, rwy, allRoutes, err := s.departureConfiguration(departureAirport, runway, category)
+		ap, rwy, allRoutes, err := ss.departureConfiguration(departureAirport, runway, category)
 		if err != nil {
 			continue
 		}
@@ -892,7 +892,8 @@ const (
 // route that found it if one did, how well the runway's gates fit the flight,
 // and how the choice was made, for reporting. Finding it costs only database
 // lookups, so a runway can ask whether it works a flight without paying to turn
-// the route into waypoints.
+// the route into waypoints. A choice that comes back with an error carries only
+// the route the flight would have filed, so that the failure can be read.
 type departureChoice struct {
 	candidate candidateDeparture
 	route     string
@@ -918,7 +919,7 @@ type departurePlacement struct {
 // with no route falls back to flying to its exit fix, since without that its
 // route ends with the scenario's vector off the runway and it would head
 // straight for its destination from wherever that leaves it.
-func (s *Sim) placement(choice departureChoice, departureAirport, destination av.ICAOAirportCode) departurePlacement {
+func (ss *CommonState) placement(choice departureChoice, departureAirport, destination av.ICAOAirportCode) departurePlacement {
 	c := choice.candidate
 	p := departurePlacement{ap: c.ap, rwy: c.rwy, exitRoutes: c.exitRoutes, dep: *c.dep,
 		cruise: choice.cruise, how: choice.how}
@@ -929,11 +930,11 @@ func (s *Sim) placement(choice departureChoice, departureAirport, destination av
 	exitRoute := c.exitRoutes[c.dep.Exit]
 	if choice.route != "" {
 		p.dep.Route = departureRoute(choice.route, departureAirport, c.dep.Exit, exitRoute)
-		p.dep.RouteWaypoints = dropFlownPrefix(s.departureRouteWaypoints(p.dep.Route),
+		p.dep.RouteWaypoints = dropFlownPrefix(ss.departureRouteWaypoints(p.dep.Route),
 			exitRoute.Waypoints)
 	} else {
 		p.dep.Route = string(c.dep.Exit.Base())
-		p.dep.RouteWaypoints = s.departureRouteWaypoints(p.dep.Route)
+		p.dep.RouteWaypoints = ss.departureRouteWaypoints(p.dep.Route)
 	}
 	return p
 }
@@ -981,13 +982,13 @@ func dropFlownPrefix(routeWps, exitWps av.WaypointArray) av.WaypointArray {
 // stopping at the point where the sim lets the aircraft go: the fixes past
 // there are never flown and every one of them is sent to the clients on every
 // update. Fixes it can't place--SID and STAR names, radial/DME fixes--drop out.
-func (s *Sim) departureRouteWaypoints(route string) av.WaypointArray {
-	wps := av.RouteWaypoints(route).InitializeLocations(s.State, s.State.NmPerLongitude,
-		s.State.MagneticVariation, true /* allowSlop */, nil)
+func (ss *CommonState) departureRouteWaypoints(route string) av.WaypointArray {
+	wps := av.RouteWaypoints(route).InitializeLocations(ss, ss.NmPerLongitude,
+		ss.MagneticVariation, true /* allowSlop */, nil)
 
-	cull := s.cullDistance()
+	cull := ss.cullDistance()
 	if i := slices.IndexFunc(wps, func(wp av.Waypoint) bool {
-		return math.NMDistance2LL(wp.Location, s.State.Center) > cull
+		return math.NMDistance2LL(wp.Location, ss.Center) > cull
 	}); i != -1 {
 		wps = wps[:i+1] // keep the first one past it so the aircraft flies out on course
 	}
@@ -996,16 +997,16 @@ func (s *Sim) departureRouteWaypoints(route string) av.WaypointArray {
 
 // resolvePublishedDeparture finds the departure a published flight flies off a
 // runway, ready to be handed to the aircraft.
-func (s *Sim) resolvePublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
+func (ss *CommonState) resolvePublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, destination av.ICAOAirportCode, aircraftType string,
 	routedDestinations map[av.ICAOAirportCode][]av.ICAOAirportCode) (departurePlacement, error) {
 	departureAirport = normalizeAirportCode(departureAirport)
-	choice, err := s.findPublishedDeparture(departureAirport, runway, categories, destination,
+	choice, err := ss.findPublishedDeparture(departureAirport, runway, categories, destination,
 		aircraftType, routedDestinations)
 	if err != nil {
 		return departurePlacement{}, err
 	}
-	return s.placement(choice, departureAirport, destination), nil
+	return ss.placement(choice, departureAirport, destination), nil
 }
 
 // findPublishedDeparture finds the scenario exit and route a published
@@ -1019,33 +1020,45 @@ func (s *Sim) resolvePublishedDeparture(departureAirport av.ICAOAirportCode, run
 // the direction it is going. If nothing is in the right direction at all the
 // runway doesn't work this flight and errNoScenarioRoute says not to launch it
 // from here.
-func (s *Sim) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
+func (ss *CommonState) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, destination av.ICAOAirportCode, aircraftType string,
 	routedDestinations map[av.ICAOAirportCode][]av.ICAOAirportCode) (departureChoice, error) {
 	departureAirport = normalizeAirportCode(departureAirport)
 	destination = normalizeAirportCode(destination)
 
-	candidates := s.compatibleDepartures(departureAirport, runway, categories, aircraftType)
+	candidates := ss.compatibleDepartures(departureAirport, runway, categories, aircraftType)
 	if len(candidates) == 0 {
 		return departureChoice{}, fmt.Errorf("no compatible departure route for runway %s and a %s",
 			runway, aircraftType)
 	}
 
 	scenarioRoutes := func(to av.ICAOAirportCode) []string {
-		if ap, ok := s.State.Airports[departureAirport]; ok {
+		if ap, ok := ss.Airports[departureAirport]; ok {
 			return ap.TrafficRoutes.Departures[to].Routes(aircraftType)
 		}
 		return nil
 	}
-	hour, hourKnown := s.localHour(departureAirport)
+	hour, hourKnown := ss.localHour(departureAirport)
 
-	for _, route := range scenarioRoutes(destination) {
+	scenario := scenarioRoutes(destination)
+	real := realDepartureRoutes(departureAirport, destination, aircraftType, hour, hourKnown)
+	// The route the flight would file, kept aside so that a flight no runway
+	// can work still reports the route that couldn't be fitted: that is what
+	// says why it couldn't be.
+	filed := ""
+	if len(scenario) > 0 {
+		filed = scenario[0]
+	} else if len(real) > 0 {
+		filed = real[0].route
+	}
+
+	for _, route := range scenario {
 		if c, ok := departureExit(route, departureAirport, destination, "", candidates); ok {
 			return departureChoice{candidate: c, route: route, fit: fitScenarioRoute,
 				how: "scenario route via " + c.dep.Exit.Base()}, nil
 		}
 	}
-	for _, r := range realDepartureRoutes(departureAirport, destination, aircraftType, hour, hourKnown) {
+	for _, r := range real {
 		if c, ok := departureExit(r.route, departureAirport, destination, r.departureFix, candidates); ok {
 			// The scraped filings say what altitudes the route is really
 			// flown at; file within them when the aircraft can.
@@ -1065,7 +1078,7 @@ func (s *Sim) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway
 	// gate plausibility--a route the scenario models in some other direction
 	// entirely is no way to leave, however close its destination.
 	pool := slices.Clone(routedDestinations[departureAirport])
-	if ap, ok := s.State.Airports[departureAirport]; ok {
+	if ap, ok := ss.Airports[departureAirport]; ok {
 		for _, to := range util.SortedMapKeys(ap.TrafficRoutes.Departures) {
 			if len(scenarioRoutes(to)) > 0 {
 				pool = append(pool, to)
@@ -1076,8 +1089,8 @@ func (s *Sim) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway
 	origin, originOK := av.DB.Airports[departureAirport]
 	trueAirport, trueOK := av.DB.Airports[destination]
 	if !originOK || !trueOK {
-		return departureChoice{}, fmt.Errorf("no route to %s and airport coordinates are unavailable",
-			destination)
+		return departureChoice{route: filed}, fmt.Errorf(
+			"no route to %s and airport coordinates are unavailable", destination)
 	}
 	trueHeading := math.GreatCircleHeading(origin.Location, trueAirport.Location)
 
@@ -1086,7 +1099,7 @@ func (s *Sim) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway
 	// Birmingham stands in for Atlanta from Minneapolis, yet one of its routes
 	// sets off up the northeast gate.
 	towardDestination := func(c candidateDeparture) bool {
-		difference, ok := exitHeadingDifference(c, origin.Location, trueHeading, s.State.NmPerLongitude)
+		difference, ok := exitHeadingDifference(c, origin.Location, trueHeading, ss.NmPerLongitude)
 		return !ok || difference <= publishedSubstituteMaxExitHeadingDifference
 	}
 	for _, substitute := range substituteAirports(departureAirport, destination, pool,
@@ -1110,10 +1123,10 @@ func (s *Sim) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway
 	// Nothing is routed anywhere near where this flight is going; the exits
 	// themselves say which way each one leaves.
 	if c, ok := exitTowardDestination(candidates, origin.Location, trueHeading,
-		s.State.NmPerLongitude); ok {
+		ss.NmPerLongitude); ok {
 		return departureChoice{candidate: c, fit: fitNearestGate, how: "nearest gate"}, nil
 	}
-	return departureChoice{}, fmt.Errorf("%w: no modeled departure heads toward %s",
+	return departureChoice{route: filed}, fmt.Errorf("%w: no modeled departure heads toward %s",
 		errNoScenarioRoute, destination)
 }
 

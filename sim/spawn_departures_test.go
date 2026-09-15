@@ -658,7 +658,7 @@ func TestResolvePublishedDepartureScenarioRoute(t *testing.T) {
 		},
 	}
 
-	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
@@ -684,7 +684,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
 		{Route: "KORG NORTH J111 KTGT", Type: "H"},
 	})
-	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
@@ -702,7 +702,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
 		{Route: "KORG ZZZZZ J111 KTGT", DepartureFix: "NORTH", Type: "CDR"},
 	})
-	placement, err = s.resolvePublishedDeparture("KORG", "30L",
+	placement, err = s.State.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
@@ -719,7 +719,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
 		{Route: "KORG WSSST J22 KTGT", Type: "H"},
 	})
-	placement, err = s.resolvePublishedDeparture("KORG", "30L",
+	placement, err = s.State.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("unmodeled exits: %v", err)
@@ -743,7 +743,7 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 		{Route: "KORG NORTH J111 KTGT", Type: "H", RNAVRequired: true},
 	})
 
-	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture for a jet: %v", err)
@@ -753,7 +753,7 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 			placement.dep.Exit, placement.dep.Route)
 	}
 
-	placement, err = s.resolvePublishedDeparture("KORG", "30L",
+	placement, err = s.State.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "C172", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture for a piston: %v", err)
@@ -789,7 +789,7 @@ func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
 
 	// Water is listed first and carries the larger rate; neither should matter:
 	// the real KJFK->KATL routes leave over RBV.
-	placement, err := s.resolvePublishedDeparture("KJFK", "22R",
+	placement, err := s.State.resolvePublishedDeparture("KJFK", "22R",
 		[]string{"Water", "Southwest"}, "KATL", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
@@ -830,7 +830,7 @@ func seedTestExits(t *testing.T) {
 func TestCompatibleDeparturesSynthesizesPerExit(t *testing.T) {
 	s := publishedDepartureSim()
 
-	candidates := s.compatibleDepartures("KORG", "30L", []string{"jet"}, "B738")
+	candidates := s.State.compatibleDepartures("KORG", "30L", []string{"jet"}, "B738")
 	if len(candidates) != 2 {
 		t.Fatalf("got %d candidates, want one per exit off the runway", len(candidates))
 	}
@@ -865,7 +865,7 @@ func TestCompatibleDeparturesMindsAircraftClasses(t *testing.T) {
 		{"C172", []av.ExitID{"NORTH", "EAST"}},
 		{"B738", []av.ExitID{"EAST"}}, // only the catch-all route takes jets
 	} {
-		candidates := s.compatibleDepartures("KORG", "30L", []string{"jet"}, tc.aircraftType)
+		candidates := s.State.compatibleDepartures("KORG", "30L", []string{"jet"}, tc.aircraftType)
 		exits := util.MapSlice(candidates, func(c candidateDeparture) av.ExitID { return c.dep.Exit })
 		slices.Sort(exits)
 		want := slices.Sorted(slices.Values(tc.exits))
@@ -886,7 +886,7 @@ func TestResolvePublishedDepartureByExitDirection(t *testing.T) {
 		destination av.ICAOAirportCode
 		exit        av.ExitID
 	}{{"KTGT", "EAST"}, {"KNOR", "NORTH"}} {
-		placement, err := s.resolvePublishedDeparture("KORG", "30L",
+		placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
 			[]string{"jet"}, tc.destination, "B738", nil)
 		if err != nil {
 			t.Fatalf("resolvePublishedDeparture to %s: %v", tc.destination, err)
@@ -901,7 +901,7 @@ func TestResolvePublishedDepartureByExitDirection(t *testing.T) {
 	}
 
 	// Nothing heads south, so a southbound flight isn't launched at all.
-	_, err := s.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, "KSOU", "B738", nil)
+	_, err := s.State.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, "KSOU", "B738", nil)
 	if !errors.Is(err, errNoScenarioRoute) {
 		t.Errorf("resolvePublishedDeparture to KSOU: err = %v, want errNoScenarioRoute", err)
 	}
@@ -1024,7 +1024,7 @@ func TestResolvePublishedDepartureSubstitutesANearbyDestination(t *testing.T) {
 		{Airport: "KJFK", Runway: "22R", Category: "North"},
 	}
 
-	placement, err := s.resolvePublishedDeparture("KJFK", "22R", []string{"Water", "North"},
+	placement, err := s.State.resolvePublishedDeparture("KJFK", "22R", []string{"Water", "North"},
 		"KVRB", "B738", makeRoutedPairs().destinationsByOrigin)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture to KVRB: %v", err)
@@ -1054,7 +1054,7 @@ func TestResolvePublishedDepartureRefusesABorrowedWrongWayGate(t *testing.T) {
 	seedTestRoutes(t, "KSOS", []av.AirportPairRoute{{Route: "KORG NORTH J1 KSOS", Type: "H"}})
 	s := publishedDepartureSim()
 
-	_, err := s.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, "KSOU", "B738",
+	_, err := s.State.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, "KSOU", "B738",
 		makeRoutedPairs().destinationsByOrigin)
 	if !errors.Is(err, errNoScenarioRoute) {
 		t.Errorf("resolvePublishedDeparture to KSOU: err = %v, want errNoScenarioRoute", err)
@@ -1069,7 +1069,7 @@ func TestResolvePublishedDepartureLocatesRouteWaypoints(t *testing.T) {
 	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{{Route: "KORG NORTH J1 KTGT", Type: "H"}})
 	s := publishedDepartureSim()
 
-	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
@@ -1284,7 +1284,7 @@ func TestDepartureRouteWaypointsStopAtTheCullDistance(t *testing.T) {
 	s := publishedDepartureSim()
 
 	// KFAR is 300nm out, past the 200nm at which a TRACON's aircraft are culled.
-	wps := s.departureRouteWaypoints("NORTH EAST KTGT KFAR")
+	wps := s.State.departureRouteWaypoints("NORTH EAST KTGT KFAR")
 
 	var got []string
 	for _, wp := range wps {
@@ -1299,7 +1299,7 @@ func TestDepartureRouteWaypointsStopAtTheCullDistance(t *testing.T) {
 		Location: math.NM2LL([2]float32{500, 0}, testNmPerLongitude)}
 	t.Cleanup(func() { delete(av.DB.Airports, "KOUT") })
 
-	wps = s.departureRouteWaypoints("NORTH KFAR KOUT")
+	wps = s.State.departureRouteWaypoints("NORTH KFAR KOUT")
 	got = nil
 	for _, wp := range wps {
 		got = append(got, wp.Fix)
@@ -1402,7 +1402,7 @@ func TestResolvePublishedDepartureCruiseLimits(t *testing.T) {
 	av.DB.Airports["KTGT"] = target
 
 	s := publishedDepartureSim()
-	placement, err := s.resolvePublishedDeparture("KORG", "30L",
+	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
 		[]string{"jet"}, "KTGT", "B738", nil)
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
@@ -1445,7 +1445,8 @@ func TestResolveScheduledDepartureRunwaySplitsByRate(t *testing.T) {
 	for range 12 {
 		e := ScheduledDeparture{ScheduledFlight: ScheduledFlight{
 			DepartureAirport: "KORG", ArrivalAirport: "KNOR", AircraftType: "B738"}}
-		runway, _, choice, err := s.resolvePublishedDepartureRunway(&e)
+		runway, _, choice, err := s.State.resolvePublishedDepartureRunway(&e, s.routedPairsIndex(),
+			s.DepartureState["KORG"])
 		if err != nil {
 			t.Fatalf("resolvePublishedDepartureRunway: %v", err)
 		}
@@ -1501,7 +1502,8 @@ func TestResolveScheduledDepartureRunwaySplitsByCategory(t *testing.T) {
 		}
 		e := ScheduledDeparture{ScheduledFlight: ScheduledFlight{
 			DepartureAirport: "KORG", ArrivalAirport: destination, AircraftType: "B738"}}
-		runway, _, choice, err := s.resolvePublishedDepartureRunway(&e)
+		runway, _, choice, err := s.State.resolvePublishedDepartureRunway(&e, s.routedPairsIndex(),
+			s.DepartureState["KORG"])
 		if err != nil {
 			t.Fatalf("resolvePublishedDepartureRunway to %s: %v", destination, err)
 		}
