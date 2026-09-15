@@ -359,6 +359,8 @@ if %DO_ICONS%==1 (
     if errorlevel 1 exit /b 1
     go-winres make --in windows\winres.json --out cmd\vice\rsrc
     if errorlevel 1 exit /b 1
+    go-winres make --in windows\winres-backshop.json --out cmd\backshop\rsrc
+    if errorlevel 1 exit /b 1
     echo Icon resources prepared.
 )
 
@@ -401,10 +403,19 @@ if !VULKAN_AVAILABLE!==1 set BUILD_TAGS=!BUILD_TAGS!,vulkan
 go build -tags !BUILD_TAGS! -ldflags="-s -w -H=windowsgui" -o vice.exe .\cmd\vice
 if errorlevel 1 exit /b 1
 
+REM backshop is a GUI binary like vice and takes the same build tags; in
+REM particular it must be built with downloadresources for a release, or it
+REM looks for resources\ relative to the working directory.
+go build -tags !BUILD_TAGS! -ldflags="-s -w -H=windowsgui" -o backshop.exe .\cmd\backshop
+if errorlevel 1 exit /b 1
+
 powershell -NoProfile -ExecutionPolicy Bypass -File windows\check-imports.ps1
 if errorlevel 1 exit /b 1
 
-echo Build complete: vice.exe
+powershell -NoProfile -ExecutionPolicy Bypass -File windows\check-imports.ps1 -Exe backshop.exe
+if errorlevel 1 exit /b 1
+
+echo Build complete: vice.exe, backshop.exe
 
 REM Build tools. -extldflags=-static bakes the MinGW C/C++ runtime (libgcc,
 REM libstdc++, libwinpthread) into the .exe so users can run the tools from

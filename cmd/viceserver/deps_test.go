@@ -12,9 +12,11 @@ import (
 )
 
 func TestNoUIDeps(t *testing.T) {
-	// vice is the only cmd that's allowed to pull in UI packages.
+	// vice and backshop are the GUI binaries and so are the only cmds
+	// allowed to pull in UI packages.
 	uiCmds := map[string]bool{
-		"github.com/mmp/vice/cmd/vice": true,
+		"github.com/mmp/vice/cmd/vice":     true,
+		"github.com/mmp/vice/cmd/backshop": true,
 	}
 
 	forbidden := []string{

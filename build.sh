@@ -440,14 +440,21 @@ build_vice() {
         export CGO_CFLAGS='-mmacosx-version-min=13.4'
         export CGO_LDFLAGS='-mmacosx-version-min=13.4'
 
+        # backshop is a GUI binary like vice, so it takes the same build
+        # tags; in particular it must be built with downloadresources for a
+        # release, or it looks for resources/ relative to the CWD.
         if [ "$DO_UNIVERSAL" = true ]; then
-            echo "Building universal binary..."
-            CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o vice_amd64 ./cmd/vice
-            CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o vice_arm64 ./cmd/vice
-            lipo -create -output vice vice_amd64 vice_arm64
-            rm vice_amd64 vice_arm64
+            echo "Building universal binaries..."
+            for gui in vice backshop; do
+                CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o ${gui}_amd64 ./cmd/${gui}
+                CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o ${gui}_arm64 ./cmd/${gui}
+                lipo -create -output ${gui} ${gui}_amd64 ${gui}_arm64
+                rm ${gui}_amd64 ${gui}_arm64
+            done
         else
-            CGO_ENABLED=1 GOOS=darwin go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o vice ./cmd/vice
+            for gui in vice backshop; do
+                CGO_ENABLED=1 GOOS=darwin go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o ${gui} ./cmd/${gui}
+            done
         fi
 
         # The tools don't link the GUI, but in release builds viceserver and
@@ -478,9 +485,10 @@ build_vice() {
         fi
 
         go build -tags "$BUILD_TAGS" -o vice ./cmd/vice
+        go build -tags "$BUILD_TAGS" -o backshop ./cmd/backshop
     fi
 
-    echo "Build complete: ./vice"
+    echo "Build complete: ./vice ./backshop"
 }
 
 # Run tests
