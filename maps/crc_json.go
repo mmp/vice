@@ -1,8 +1,8 @@
-// cmd/crc2vice/structs.go
+// maps/crc_json.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package maps
 
 import (
 	"encoding/json"
@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-// ARTCC is the trimmed schema needed for both STARS and ERAM video map
+// artcc is the trimmed schema needed for both STARS and ERAM video map
 // import. Only the fields we actually consume are listed; everything
 // else in the CRC ARTCC JSON is ignored.
-type ARTCC struct {
+type artcc struct {
 	Facility struct {
 		ID              string `json:"id"`
 		Name            string `json:"name"`
@@ -23,21 +23,21 @@ type ARTCC struct {
 			Name               string `json:"name"`
 			StarsConfiguration struct {
 				VideoMapIds []string   `json:"videoMapIds"`
-				MapGroups   []MapGroup `json:"mapGroups"`
+				MapGroups   []mapGroup `json:"mapGroups"`
 			} `json:"starsConfiguration"`
 		} `json:"childFacilities"`
 		ERAMConfiguration struct {
-			GeoMaps []ARTCCGeoMap `json:"geoMaps"`
+			GeoMaps []artccGeoMap `json:"geoMaps"`
 		} `json:"eramConfiguration"`
 	} `json:"facility"`
-	VideoMaps []ARTCCVideoMap `json:"videoMaps"`
+	VideoMaps []artccVideoMap `json:"videoMaps"`
 }
 
-// ARTCCGeoMap is one entry under facility.eramConfiguration.geoMaps. The
+// artccGeoMap is one entry under facility.eramConfiguration.geoMaps. The
 // FilterMenu drives ERAMMap creation (one per non-empty entry); BCGMenu
 // is aligned to filter-menu index and supplies BCG names; VideoMapIds
 // lists the source .geojson files contributing features.
-type ARTCCGeoMap struct {
+type artccGeoMap struct {
 	ID         string `json:"id"`
 	Name       string `json:"name"`
 	LabelLine1 string `json:"labelLine1"`
@@ -51,18 +51,18 @@ type ARTCCGeoMap struct {
 	VideoMapIds []string `json:"videoMapIds"`
 }
 
-// MapGroup is one DCB button layout in a TRACON's starsConfiguration.
+// mapGroup is one DCB button layout in a TRACON's starsConfiguration.
 // Tcps lists the position codes (e.g. "1A", "1D") that share this
 // layout; MapIds is the per-slot button assignment, with nil entries
 // for empty slots.
-type MapGroup struct {
+type mapGroup struct {
 	MapIds []*int   `json:"mapIds"`
 	Tcps   []string `json:"tcps"`
 }
 
-// ARTCCVideoMap is one entry in the top-level videoMaps catalog —
+// artccVideoMap is one entry in the top-level videoMaps catalog —
 // metadata only; the geometry lives in VideoMaps/<artcc>/<id>.geojson.
-type ARTCCVideoMap struct {
+type artccVideoMap struct {
 	ID                      string `json:"id"`
 	Name                    string `json:"name"`
 	ShortName               string `json:"shortName"`
@@ -70,27 +70,27 @@ type ARTCCVideoMap struct {
 	StarsID                 int    `json:"starsId"` // 0 == null in source == no DCB id
 }
 
-// GeoJSON is the top-level structure of a CRC video-map .geojson.
-type GeoJSON struct {
+// geoJSON is the top-level structure of a CRC video-map .geojson.
+type geoJSON struct {
 	Type     string           `json:"type"`
-	Features []GeoJSONFeature `json:"features"`
+	Features []geoJSONFeature `json:"features"`
 }
 
-type GeoJSONFeature struct {
+type geoJSONFeature struct {
 	Type     string `json:"type"`
 	Geometry struct {
 		Type        string          `json:"type"`
 		Coordinates json.RawMessage `json:"coordinates"`
 	} `json:"geometry"`
-	Properties *GeoJSONProperties `json:"properties"`
+	Properties *geoJSONProperties `json:"properties"`
 }
 
-// GeoJSONProperties mirrors the per-feature properties used by CRC video
+// geoJSONProperties mirrors the per-feature properties used by CRC video
 // maps. CRC's encoding is "defaults-sentinel + bare features": each
 // .geojson carries up to three sentinel Points marked IsLineDefaults /
 // IsSymbolDefaults / IsTextDefaults that supply the file's defaults;
 // every other feature inherits fields it doesn't set.
-type GeoJSONProperties struct {
+type geoJSONProperties struct {
 	IsLineDefaults   bool `json:"isLineDefaults"`
 	IsTextDefaults   bool `json:"isTextDefaults"`
 	IsSymbolDefaults bool `json:"isSymbolDefaults"`
@@ -112,7 +112,7 @@ type GeoJSONProperties struct {
 
 // UnmarshalJSON tolerates the few places CRC's JSON gives numeric fields
 // as quoted strings (e.g. "bcg": "13").
-func (p *GeoJSONProperties) UnmarshalJSON(data []byte) error {
+func (p *geoJSONProperties) UnmarshalJSON(data []byte) error {
 	var raw map[string]json.RawMessage
 	if err := json.Unmarshal(data, &raw); err != nil {
 		return err

@@ -1,15 +1,14 @@
-// cmd/crc2vice/eram.go
+// maps/crc_eram.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 //
 // ERAM-mode import: walks facility.eramConfiguration.geoMaps and emits
 // <ARTCC>.mappack.
 
-package main
+package maps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"slices"
@@ -19,12 +18,12 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
-	geoMaps := artcc.Facility.ERAMConfiguration.GeoMaps
+func (c *converter) convertERAM(a *artcc) error {
+	geoMaps := a.Facility.ERAMConfiguration.GeoMaps
 	if len(geoMaps) == 0 {
 		return nil
 	}
-	log.Printf("found %d geomaps in eramConfiguration", len(geoMaps))
+	c.reportf("found %d geomaps in eramConfiguration", len(geoMaps))
 
 	lib := &av.MapLibrary{
 		ERAMMapGroups: make(map[string]av.ERAMMapGroup, len(geoMaps)),
@@ -32,7 +31,7 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 	var totalMaps, totalLines, totalSymbols, totalLabels int
 
 	for gi, geoMap := range geoMaps {
-		log.Printf("ERAM [%d/%d] geomap %q  (%d filterMenu, %d bcgMenu, %d videoMaps)",
+		c.reportf("ERAM [%d/%d] geomap %q  (%d filterMenu, %d bcgMenu, %d videoMaps)",
 			gi+1, len(geoMaps), geoMap.Name, len(geoMap.FilterMenu), len(geoMap.BCGMenu),
 			len(geoMap.VideoMapIds))
 
@@ -51,7 +50,7 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 
 		// Single pass per source: decode each feature once, then dispatch
 		// to every matching filter bucket.
-		sources, err := loadERAMSources(cwd, inputARTCC, geoMap.VideoMapIds)
+		sources, err := c.loadERAMSources(geoMap.VideoMapIds)
 		if err != nil {
 			return err
 		}
@@ -61,9 +60,9 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 
 		drops := map[int]int{}
 		for si := range sources {
-			dispatchERAMFeatures(&sources[si], filterMaps, &baseMap, geoMap.BCGMenu, drops)
+			c.dispatchERAMFeatures(&sources[si], filterMaps, &baseMap, geoMap.BCGMenu, drops)
 		}
-		warnBCGDrops(geoMap.Name, geoMap.BCGMenu, drops)
+		c.warnBCGDrops(geoMap.Name, geoMap.BCGMenu, drops)
 
 		// Materialize per-filter ERAMMaps onto the group in filter-menu
 		// order. The geoMap's bcgMenu rides through as the group's
@@ -100,7 +99,7 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 			totalLabels += len(m.Labels)
 		}
 		if !baseMap.IsEmpty() {
-			log.Printf("ERAM geomap %q: base map (always displayed): %d lines, %d symbols, %d labels",
+			c.reportf("ERAM geomap %q: base map (always displayed): %d lines, %d symbols, %d labels",
 				geoMap.Name, len(baseMap.Lines), len(baseMap.Symbols), len(baseMap.Labels))
 			totalLines += len(baseMap.Lines)
 			totalSymbols += len(baseMap.Symbols)
@@ -109,8 +108,8 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 		lib.ERAMMapGroups[geoMap.Name] = group
 	}
 
-	outPath := filepath.Join(outDir, inputARTCC+".mappack")
-	log.Printf("ERAM: %d maps, %d lines, %d symbols, %d labels across %d groups -> %s",
+	outPath := filepath.Join(c.outDir, c.artccID+".mappack")
+	c.reportf("ERAM: %d maps, %d lines, %d symbols, %d labels across %d groups -> %s",
 		totalMaps, totalLines, totalSymbols, totalLabels, len(lib.ERAMMapGroups), outPath)
 	if f, err := os.Create(outPath); err != nil {
 		return err
@@ -122,7 +121,7 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 	}
 }
 
-func loadERAMSources(cwd, artcc string, ids []string) ([]loadedSource, error) {
+func (c *converter) loadERAMSources(ids []string) ([]loadedSource, error) {
 	srcs := make([]loadedSource, len(ids))
 
 	var eg errgroup.Group
@@ -130,9 +129,8 @@ func loadERAMSources(cwd, artcc string, ids []string) ([]loadedSource, error) {
 
 	for i, id := range ids {
 		eg.Go(func() error {
-			path := filepath.Join(cwd, "VideoMaps", artcc, id+".geojson")
 			var err error
-			srcs[i], err = loadGeoJSON(path)
+			srcs[i], err = loadGeoJSON(c.videoMapPath(id))
 			return err
 		})
 	}
@@ -151,7 +149,7 @@ func loadERAMSources(cwd, artcc string, ids []string) ([]loadedSource, error) {
 // slots are never populated), so we drop them entirely here and tally one count per dropped
 // source feature (not per filter placement) in drops, keyed by the raw effective BCG value so
 // out-of-range originals like 300 are reported as 300 rather than the post-clamp 255.
-func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, baseMap *av.ERAMMap,
+func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, baseMap *av.ERAMMap,
 	bcgMenu []string, drops map[int]int) {
 	clampPositive := func(v, dflt int) int {
 		switch {
@@ -260,7 +258,7 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, baseMap *
 				style, known := parseSymbolStyle(eff.Style)
 				if !known {
 					if eff.Style != "" {
-						warnUnknownStyle(src.path, eff.Style)
+						c.warnUnknownStyle(src.path, eff.Style)
 					}
 					style = av.SymbolStyleVOR
 				}
@@ -283,10 +281,10 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, baseMap *
 	}
 }
 
-// warnBCGDrops prints one summary line per (geomap, raw BCG value) with dropped source features.
+// warnBCGDrops reports one summary line per (geomap, raw BCG value) with dropped source features.
 // Keys are the raw eff.BCG values (not clamped) so out-of-range or unset BCGs are reported as the
 // upstream source said them.
-func warnBCGDrops(geomapName string, bcgMenu []string, drops map[int]int) {
+func (c *converter) warnBCGDrops(geomapName string, bcgMenu []string, drops map[int]int) {
 	if len(drops) == 0 {
 		return
 	}
@@ -305,7 +303,7 @@ func warnBCGDrops(geomapName string, bcgMenu []string, drops map[int]int) {
 		default:
 			reason = "empty slot name"
 		}
-		log.Printf("WARN: ERAM geomap %q: dropped %d features referencing BCG slot %d (%s)",
+		c.reportf("WARN: ERAM geomap %q: dropped %d features referencing BCG slot %d (%s)",
 			geomapName, drops[b], b, reason)
 	}
 }

@@ -1,13 +1,12 @@
-// cmd/crc2vice/stars.go
+// maps/crc_stars.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package main
+package maps
 
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -18,22 +17,21 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func runSTARS(cwd, outDir, inputARTCC string, artcc *ARTCC, eg *errgroup.Group) error {
+func (c *converter) convertSTARS(a *artcc, eg *errgroup.Group) error {
 	// Index the top-level videoMaps catalog by ULID for fast per-facility
 	// lookup.
-	catalog := make(map[string]*ARTCCVideoMap, len(artcc.VideoMaps))
-	for i := range artcc.VideoMaps {
-		catalog[artcc.VideoMaps[i].ID] = &artcc.VideoMaps[i]
+	catalog := make(map[string]*artccVideoMap, len(a.VideoMaps))
+	for i := range a.VideoMaps {
+		catalog[a.VideoMaps[i].ID] = &a.VideoMaps[i]
 	}
 
 	// Walk every STARS-equipped child facility under the ARTCC.
-	for _, child := range artcc.Facility.ChildFacilities {
+	for _, child := range a.Facility.ChildFacilities {
 		if len(child.StarsConfiguration.VideoMapIds) > 0 {
 			eg.Go(func() error {
-				if err := writeFacility(cwd, outDir, inputARTCC, child.ID,
-					child.StarsConfiguration.VideoMapIds, child.StarsConfiguration.MapGroups,
-					catalog); err != nil {
-					return fmt.Errorf("%s/%s: %v", inputARTCC, child.ID, err)
+				if err := c.writeFacility(child.ID, child.StarsConfiguration.VideoMapIds,
+					child.StarsConfiguration.MapGroups, catalog); err != nil {
+					return fmt.Errorf("%s/%s: %w", c.artccID, child.ID, err)
 				}
 				return nil
 			})
@@ -43,8 +41,8 @@ func runSTARS(cwd, outDir, inputARTCC string, artcc *ARTCC, eg *errgroup.Group) 
 	return nil
 }
 
-func writeFacility(cwd, outDir, artccID, childID string, ids []string, mapGroups []MapGroup,
-	catalog map[string]*ARTCCVideoMap) error {
+func (c *converter) writeFacility(childID string, ids []string, mapGroups []mapGroup,
+	catalog map[string]*artccVideoMap) error {
 	lib := &av.MapLibrary{Maps: make(map[string]av.STARSMap, len(ids))}
 
 	var eg errgroup.Group
@@ -64,7 +62,7 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, mapGroups
 				Id:    meta.StarsID,
 				Group: util.Select(meta.StarsBrightnessCategory == "A", 0, 1),
 			}
-			if err := loadMapGeometry(cwd, artccID, ulid, &vm); err != nil {
+			if err := c.loadMapGeometry(ulid, &vm); err != nil {
 				return err
 			}
 
@@ -96,19 +94,19 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, mapGroups
 		orig := m.Id
 		for claimed[m.Id] {
 			if m.Id = m.Id%999 + 1; m.Id == orig {
-				return fmt.Errorf("%s/%s: no free starsId for %q", artccID, childID, name)
+				return fmt.Errorf("%s/%s: no free starsId for %q", c.artccID, childID, name)
 			}
 		}
 		if m.Id != orig {
-			log.Printf("STARS [%s/%s] remapping starsId of %q due to duplication: %d -> %d",
-				artccID, childID, name, orig, m.Id)
+			c.reportf("STARS [%s/%s] remapping starsId of %q due to duplication: %d -> %d",
+				c.artccID, childID, name, orig, m.Id)
 		}
 		claimed[m.Id] = true
 		lib.Maps[name] = m
 	}
 
-	outPath := filepath.Join(outDir, fmt.Sprintf("%s-%s.mappack", artccID, childID))
-	log.Printf("STARS [%s/%s] %d video maps -> %s", artccID, childID, len(ids), outPath)
+	outPath := filepath.Join(c.outDir, fmt.Sprintf("%s-%s.mappack", c.artccID, childID))
+	c.reportf("STARS [%s/%s] %d video maps -> %s", c.artccID, childID, len(ids), outPath)
 	f, err := os.Create(outPath)
 	if err != nil {
 		return err
@@ -121,7 +119,7 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, mapGroups
 		return err
 	}
 
-	return writeMapConfig(outDir, artccID, childID, mapGroups, lib)
+	return c.writeMapConfig(childID, mapGroups, lib)
 }
 
 // DCB layout: main bar has 3 columns × 2 rows of map buttons; the MAPS submenu has 15 × 2.
@@ -136,7 +134,7 @@ const (
 // writeMapConfig emits a per-TRACON sidecar JSON describing each mapGroup (the DCB-button layouts a
 // controller sees). The output is wrapped in a "controllers" object so it can be pasted directly
 // into a vice facility_adaptations block. Keys are the comma-joined TCP list (e.g. "1A,1D,1E").
-func writeMapConfig(outDir, artccID, childID string, mapGroups []MapGroup, lib *av.MapLibrary) error {
+func (c *converter) writeMapConfig(childID string, mapGroups []mapGroup, lib *av.MapLibrary) error {
 	if len(mapGroups) == 0 {
 		return nil
 	}
@@ -169,8 +167,8 @@ func writeMapConfig(outDir, artccID, childID string, mapGroups []MapGroup, lib *
 			if name, ok := byStarsID[*idp]; ok {
 				raw[i] = name
 			} else {
-				log.Printf("STARS [%s/%s] mapGroup [%s]: unresolved starsId %d",
-					artccID, childID, key, *idp)
+				c.reportf("STARS [%s/%s] mapGroup [%s]: unresolved starsId %d",
+					c.artccID, childID, key, *idp)
 			}
 		}
 		// Transpose each section into vice's row-major layout. Main DCB is slots 0..5; MAPS
@@ -182,12 +180,12 @@ func writeMapConfig(outDir, artccID, childID string, mapGroups []MapGroup, lib *
 		controllers[key] = groupEntry{VideoMaps: names}
 	}
 
-	outPath := filepath.Join(outDir, fmt.Sprintf("%s-%s-maps.json", artccID, childID))
+	outPath := filepath.Join(c.outDir, fmt.Sprintf("%s-%s-maps.json", c.artccID, childID))
 	data, err := json.MarshalIndent(map[string]any{"controllers": controllers}, "", "  ")
 	if err != nil {
 		return err
 	}
-	log.Printf("STARS [%s/%s] %d mapGroups -> %s", artccID, childID, len(mapGroups), outPath)
+	c.reportf("STARS [%s/%s] %d mapGroups -> %s", c.artccID, childID, len(mapGroups), outPath)
 	return os.WriteFile(outPath, data, 0644)
 }
 
@@ -210,39 +208,38 @@ func transposeColumnMajor(in []string, base, cols int) []string {
 
 // loadMapGeometry parses a single .geojson into the given VideoMap's
 // Lines/Symbols/Labels.
-func loadMapGeometry(cwd, artccID, ulid string, vm *av.STARSMap) error {
-	path := filepath.Join(cwd, "VideoMaps", artccID, ulid+".geojson")
-	src, err := loadGeoJSON(path)
+func (c *converter) loadMapGeometry(ulid string, vm *av.STARSMap) error {
+	src, err := loadGeoJSON(c.videoMapPath(ulid))
 	if err != nil {
 		return err
 	}
-	appendFeatures(&src, featureSink{
+	c.appendFeatures(&src, featureSink{
 		Lines:   &vm.Lines,
 		Symbols: &vm.Symbols,
 		Labels:  &vm.Labels,
-	}, nil, nil)
-	warnSTARSUnrenderable(artccID, vm)
+	})
+	c.warnSTARSUnrenderable(vm)
 	return nil
 }
 
-// warnSTARSUnrenderable logs warnings for STARS map features that have no
+// warnSTARSUnrenderable reports STARS map features that have no
 // rendering path yet (symbols, labels, non-solid lines). The features are
 // kept on the map so the .mappack carries the full data — STARS just won't
 // draw them today. When STARS rendering catches up to ERAM these maps will
 // "wake up" automatically.
-func warnSTARSUnrenderable(artccID string, vm *av.STARSMap) {
+func (c *converter) warnSTARSUnrenderable(vm *av.STARSMap) {
 	if n := len(vm.Symbols); n > 0 {
-		log.Printf("STARS [%s] %q: %d symbols present; STARS symbol rendering not implemented",
-			artccID, vm.Name, n)
+		c.reportf("STARS [%s] %q: %d symbols present; STARS symbol rendering not implemented",
+			c.artccID, vm.Name, n)
 	}
 	if n := len(vm.Labels); n > 0 {
-		log.Printf("STARS [%s] %q: %d labels present; STARS label rendering not implemented",
-			artccID, vm.Name, n)
+		c.reportf("STARS [%s] %q: %d labels present; STARS label rendering not implemented",
+			c.artccID, vm.Name, n)
 	}
 	for i, l := range vm.Lines {
 		if l.Style != av.LineStyleSolid {
-			log.Printf("STARS [%s] %q line %d: non-solid style %s; STARS dashed-line rendering not implemented",
-				artccID, vm.Name, i, l.Style)
+			c.reportf("STARS [%s] %q line %d: non-solid style %s; STARS dashed-line rendering not implemented",
+				c.artccID, vm.Name, i, l.Style)
 			break
 		}
 	}
