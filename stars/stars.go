@@ -1175,7 +1175,8 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 
 	// Nearby airspace definitions
 	addAirspace := func(airspace map[string][]av.AirspaceVolume, class string) {
-		for name, airspace := range airspace {
+		// Sorted so the ids these maps land on are the same from run to run.
+		for name, airspace := range util.SortedMap(airspace) {
 			if math.NMDistance2LL(airspace[0].PolygonBounds.ClosestPointInBox(ss.Center), ss.Center) > 75 {
 				continue
 			}
