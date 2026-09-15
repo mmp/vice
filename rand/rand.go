@@ -12,6 +12,7 @@ import (
 	mrand "math/rand/v2"
 	"slices"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/vmihailenco/msgpack/v5"
@@ -33,8 +34,33 @@ type Rand struct {
 func Make() *Rand {
 	r := &Rand{pcg: mrand.NewPCG(0, 0)}
 	r.r = mrand.New(r.pcg)
-	r.Seed(uint64(time.Now().UnixNano()))
+	r.Seed(makeSeed())
 	return r
+}
+
+// makeSeeder, once SetMakeSeed has been called, hands out the seeds that Make
+// gives the generators it returns; without it they are seeded from the clock.
+var (
+	makeMu     sync.Mutex
+	makeSeeder *mrand.PCG
+)
+
+// SetMakeSeed makes the generators returned by Make take their seeds from a
+// deterministic sequence rather than from the clock, so that a run that draws
+// its generators in the same order gets the same random numbers every time.
+func SetMakeSeed(s uint64) {
+	makeMu.Lock()
+	defer makeMu.Unlock()
+	makeSeeder = mrand.NewPCG(s, 0)
+}
+
+func makeSeed() uint64 {
+	makeMu.Lock()
+	defer makeMu.Unlock()
+	if makeSeeder == nil {
+		return uint64(time.Now().UnixNano())
+	}
+	return makeSeeder.Uint64()
 }
 
 func (r *Rand) Seed(s uint64) {

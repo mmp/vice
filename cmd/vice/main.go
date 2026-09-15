@@ -64,6 +64,7 @@ var (
 	listMaps              = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
 	listScenarios         = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
 	runSim                = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
+	simSeed               = flag.Uint64("simseed", 0, "random number generator `seed` for -runsim; a nonzero value gives a repeatable run")
 	navLog                = flag.Bool("navlog", false, "enable navigation logging")
 	navLogCategories      = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
 	navLogCallsign        = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
@@ -253,6 +254,10 @@ func runListScenarios(lg *log.Logger) error {
 func runSimulation(lg *log.Logger) error {
 	if err := cliInit(); err != nil {
 		return err
+	}
+
+	if *simSeed != 0 {
+		rand.SetMakeSeed(*simSeed)
 	}
 
 	parts := strings.SplitN(*runSim, "/", 2)
