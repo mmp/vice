@@ -25,6 +25,9 @@ type ConnectionManager struct {
 	remoteSimServerChan     chan *serverConnection
 
 	serverRPCVersionMismatch bool
+	// localOnly suppresses connecting to the public vice server; the
+	// facility engineering tool works only against local scenarios.
+	localOnly bool
 
 	lastRunningSimsUpdate  time.Time
 	updateRunningSimsCall  *pendingCall
@@ -52,8 +55,28 @@ func MakeServerManager(serverAddress string, overrides server.OverrideFiles, tts
 		onNewClient:             onNewClient,
 		onError:                 onError,
 	}
+	errorLogger, overrideErrors := cm.launchLocalServer(serverAddress, overrides, lg)
+	return cm, errorLogger, overrideErrors
+}
 
-	// Launch local server
+// MakeLocalServerManager is MakeServerManager without the connection to the
+// public vice server: the facility engineering tool works entirely against
+// the scenarios on the local disk, so attempting (and periodically retrying)
+// a network connection would be pure noise.
+func MakeLocalServerManager(overrides server.OverrideFiles, ttsEnabled func() bool, lg *log.Logger,
+	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
+	cm := &ConnectionManager{
+		localOnly:   true,
+		ttsEnabled:  ttsEnabled,
+		onNewClient: onNewClient,
+		onError:     onError,
+	}
+	errorLogger, overrideErrors := cm.launchLocalServer("", overrides, lg)
+	return cm, errorLogger, overrideErrors
+}
+
+func (cm *ConnectionManager) launchLocalServer(serverAddress string, overrides server.OverrideFiles,
+	lg *log.Logger) (util.ErrorLogger, string) {
 	rpcPort, errorLogger, overrideErrors := server.LaunchServerAsync(server.ServerLaunchConfig{
 		Overrides:     overrides,
 		ServerAddress: serverAddress,
@@ -80,7 +103,7 @@ func MakeServerManager(serverAddress string, overrides server.OverrideFiles, tts
 		}
 	}
 
-	return cm, errorLogger, overrideErrors
+	return errorLogger, overrideErrors
 }
 
 // dropRemoteServer closes the remote server connection and forgets it, so the
@@ -261,7 +284,7 @@ func (cm *ConnectionManager) Update(p platform.Platform, lg *log.Logger) {
 	default:
 	}
 
-	if cm.RemoteServer == nil && time.Since(cm.lastRemoteServerAttempt) > 10*time.Second && !cm.serverRPCVersionMismatch {
+	if cm.RemoteServer == nil && !cm.localOnly && time.Since(cm.lastRemoteServerAttempt) > 10*time.Second && !cm.serverRPCVersionMismatch {
 		cm.lastRemoteServerAttempt = time.Now()
 		cm.remoteSimServerChan = TryConnectRemoteServer(cm.serverAddress, lg)
 	}
