@@ -3,6 +3,8 @@
 *.pprof
 *.prof
 .DS_Store
+/backshop
+/backshop.exe
 /bundleresources
 /cdocs
 /crc2vice
@@ -25,12 +27,12 @@
 AGENTS.md
 CLAUDE.md
 SDL2.dll
+Backshop.app/
 Vice.App/
 __debug_*
 cmd/wxingest/cloudrun/facilities.json
 dump*.txt
 ext/
-icon.icns
 installer.wixobj
 libonnxruntime.so
 libsherpa-onnx-c-api.so
