@@ -865,6 +865,16 @@ func uiAudioInputDevices(p platform.Platform) []string {
 	return ui.micDevices
 }
 
+// selectFile puts up the system's file dialog, returning an empty path if
+// the user canceled it; canceling is not an error.
+func selectFile(title string, filters zenity.FileFilters) (string, error) {
+	path, err := zenity.SelectFile(zenity.Title(title), filters)
+	if err == zenity.ErrCanceled {
+		return "", nil
+	}
+	return path, err
+}
+
 func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) {
 	if !ui.showSettings {
 		return
@@ -1161,8 +1171,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		imgui.Text(fmt.Sprintf("Scenario: %s", util.Select(config.ScenarioFile != "", config.ScenarioFile, "None Selected")))
 		imgui.SameLine()
 		if imgui.Button("Select##scenario") {
-			path, err := zenity.SelectFile(
-				zenity.Title("Select Scenario JSON File"),
+			path, err := selectFile("Select Scenario JSON File",
 				zenity.FileFilters{
 					{
 						Name:     "JSON Files",
@@ -1172,7 +1181,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			)
 			if err != nil {
 				fmt.Printf("Error selecting scenario file: %v\n", err)
-			} else {
+			} else if path != "" {
 				config.ScenarioFile = path
 			}
 		}
@@ -1186,18 +1195,17 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		imgui.Text(fmt.Sprintf("Video Map: %s", util.Select(config.VideoMapFile != "", config.VideoMapFile, "None Selected")))
 		imgui.SameLine()
 		if imgui.Button("Select##videoMap") {
-			path, err := zenity.SelectFile(
-				zenity.Title("Select Video Map JSON File"),
+			path, err := selectFile("Select Video Map Library File",
 				zenity.FileFilters{
 					{
-						Name:     "Video Map JSON Files",
-						Patterns: []string{"*.json"},
+						Name:     "Video Map Libraries",
+						Patterns: []string{"*.mappack"},
 					},
 				},
 			)
 			if err != nil {
 				fmt.Printf("Error selecting video map file: %v\n", err)
-			} else {
+			} else if path != "" {
 				config.VideoMapFile = path
 			}
 		}
@@ -1211,8 +1219,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		imgui.Text(fmt.Sprintf("Scenario Brief: %s", util.Select(config.ScenarioBriefFile != "", config.ScenarioBriefFile, "None Selected")))
 		imgui.SameLine()
 		if imgui.Button("Select##scenarioBrief") {
-			path, err := zenity.SelectFile(
-				zenity.Title("Select Scenario Brief Markdown File"),
+			path, err := selectFile("Select Scenario Brief Markdown File",
 				zenity.FileFilters{
 					{
 						Name:     "Markdown Files",
@@ -1222,7 +1229,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			)
 			if err != nil {
 				fmt.Printf("Error selecting scenario brief file: %v\n", err)
-			} else {
+			} else if path != "" {
 				config.ScenarioBriefFile = path
 			}
 		}
@@ -1253,8 +1260,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			imgui.Text("Facility Configuration: None Selected")
 			imgui.SameLine()
 			if imgui.Button("Select##facilityConfig") {
-				path, err := zenity.SelectFile(
-					zenity.Title("Select Facility Configuration JSON File"),
+				path, err := selectFile("Select Facility Configuration JSON File",
 					zenity.FileFilters{
 						{
 							Name:     "JSON Files",
@@ -1264,7 +1270,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 				)
 				if err != nil {
 					fmt.Printf("Error selecting facility configuration file: %v\n", err)
-				} else {
+				} else if path != "" {
 					config.FacilityConfigFiles = append(config.FacilityConfigFiles, path)
 				}
 			}
