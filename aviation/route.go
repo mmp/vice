@@ -2781,13 +2781,32 @@ func MakeSTAR() *STAR {
 
 const routePrintFormat = "%-13s: %s\n"
 
-func (s STAR) Print(name string) {
-	for tr, wps := range util.SortedMap(s.Transitions) {
-		fmt.Printf(routePrintFormat, name+"."+tr, wps.Encode())
-	}
+// CIFPRoute is one coded route of a procedure: the name it is flown under,
+// its encoded waypoints, and the waypoints themselves. The waypoints hold no
+// locations: they come from the CIFP, which names its fixes rather than
+// placing them, so a caller that draws them must run InitializeLocations on
+// a copy first.
+type CIFPRoute struct {
+	Name      string
+	Route     string
+	Waypoints WaypointArray
+}
 
+// Routes returns the STAR's transitions and runway routes.
+func (s STAR) Routes(name string) []CIFPRoute {
+	var routes []CIFPRoute
+	for tr, wps := range util.SortedMap(s.Transitions) {
+		routes = append(routes, CIFPRoute{Name: name + "." + tr, Route: wps.Encode(), Waypoints: wps})
+	}
 	for rwy, wps := range util.SortedMap(s.RunwayWaypoints) {
-		fmt.Printf(routePrintFormat, name+".RWY"+rwy, wps.Encode())
+		routes = append(routes, CIFPRoute{Name: name + ".RWY" + rwy, Route: wps.Encode(), Waypoints: wps})
+	}
+	return routes
+}
+
+func (s STAR) Print(name string) {
+	for _, r := range s.Routes(name) {
+		fmt.Printf(routePrintFormat, r.Name, r.Route)
 	}
 }
 
@@ -2893,17 +2912,26 @@ func spliceSIDTransition(base, tr WaypointArray) WaypointArray {
 	return append(route[:idx+1], tr[1:]...)
 }
 
-// Print writes the SID's runway transitions, common route, and enroute
-// transitions in the scenario waypoint syntax.
-func (s SID) Print(name string) {
+// Routes returns the SID's runway transitions, common route, and enroute
+// transitions.
+func (s SID) Routes(name string) []CIFPRoute {
+	var routes []CIFPRoute
 	for rwy, wps := range util.SortedMap(s.RunwayTransitions) {
-		fmt.Printf(routePrintFormat, name+".RWY"+rwy, wps.Encode())
+		routes = append(routes, CIFPRoute{Name: name + ".RWY" + rwy, Route: wps.Encode(), Waypoints: wps})
 	}
 	if len(s.Common) > 0 {
-		fmt.Printf(routePrintFormat, name, s.Common.Encode())
+		routes = append(routes, CIFPRoute{Name: name, Route: s.Common.Encode(), Waypoints: s.Common})
 	}
 	for tr, wps := range util.SortedMap(s.EnrouteTransitions) {
-		fmt.Printf(routePrintFormat, name+"."+tr, wps.Encode())
+		routes = append(routes, CIFPRoute{Name: name + "." + tr, Route: wps.Encode(), Waypoints: wps})
+	}
+	return routes
+}
+
+// Print writes the SID's routes in the scenario waypoint syntax.
+func (s SID) Print(name string) {
+	for _, r := range s.Routes(name) {
+		fmt.Printf(routePrintFormat, r.Name, r.Route)
 	}
 }
 
