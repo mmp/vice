@@ -14,6 +14,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
@@ -92,7 +93,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 
 	imgui.SameLine()
 	if imgui.Button(renderer.FontAwesomeIconTrash + " Delete All") {
-		uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
+		uiShowModalDialog(gui.NewModalDialog(&YesOrNoModalClient{
 			title: "Are you sure?",
 			query: "All aircraft will be deleted. Go ahead?",
 			ok: func() {

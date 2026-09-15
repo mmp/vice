@@ -13,24 +13,23 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"runtime"
 	"runtime/debug"
 	"strings"
 	"time"
 
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
-	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/pkg/browser"
 )
 
 var (
-	activeModalDialogs []*ModalDialogBox
+	activeModalDialogs []*gui.ModalDialog
 	sadTowerTextureID  uint32
 
 	//go:embed icons/sad-tower-alpha-128x128.png
@@ -49,9 +48,9 @@ func dialogsInit(r renderer.Renderer, lg *log.Logger) {
 	}
 }
 
-func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
+func uiShowModalDialog(d *gui.ModalDialog, atFront bool) {
 	if atFront {
-		activeModalDialogs = append([]*ModalDialogBox{d}, activeModalDialogs...)
+		activeModalDialogs = append([]*gui.ModalDialog{d}, activeModalDialogs...)
 	} else {
 		activeModalDialogs = append(activeModalDialogs, d)
 	}
@@ -65,22 +64,22 @@ func uiShowConnectDialog(mgr *client.ConnectionManager, allowCancel bool, config
 		platform:    p,
 		config:      config,
 	}
-	uiShowModalDialog(NewModalDialogBox(client, p), false)
+	uiShowModalDialog(gui.NewModalDialog(client, p), false)
 }
 
 func uiShowDiscordOptInDialog(p platform.Platform, config *Config) {
-	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{config: config}, p), true)
+	uiShowModalDialog(gui.NewModalDialog(&DiscordOptInModalClient{config: config}, p), true)
 }
 
 func uiShowTargetGenCommandModeDialog(p platform.Platform, config *Config) {
 	client := &NotifyTargetGenModalClient{notifiedNew: &config.NotifiedTargetGenMode}
-	uiShowModalDialog(NewModalDialogBox(client, p), true)
+	uiShowModalDialog(gui.NewModalDialog(client, p), true)
 }
 
 func drawActiveDialogBoxes() {
 	for len(activeModalDialogs) > 0 {
 		d := activeModalDialogs[0]
-		if !d.closed {
+		if !d.Closed() {
 			d.Draw()
 			break
 		} else {
@@ -90,145 +89,6 @@ func drawActiveDialogBoxes() {
 
 	if ui.showAboutDialog {
 		showAboutDialog()
-	}
-}
-
-func setCursorForRightButtons(text []string) {
-	style := imgui.CurrentStyle()
-	width := float32(0)
-
-	for i, t := range text {
-		width += imgui.CalcTextSize(t).X + 2*style.FramePadding().X
-		if i > 0 {
-			// space between buttons
-			width += style.ItemSpacing().X
-		}
-	}
-	offset := imgui.ContentRegionAvail().X - width
-	imgui.SetCursorPos(imgui.Vec2{offset, imgui.CursorPosY()})
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-type ModalDialogBox struct {
-	closed, isOpen bool
-	client         ModalDialogClient
-	platform       platform.Platform
-}
-
-type ModalDialogButton struct {
-	text     string
-	disabled bool
-	action   func() bool
-}
-
-type ModalDialogClient interface {
-	Title() string
-	Opening()
-	Buttons() []ModalDialogButton
-	// Draw returns the index of an equivalently-clicked button (out of range if
-	// none). For dialogs with no buttons, returning a non-negative value closes
-	// the dialog.
-	Draw() int
-}
-
-// FixedSizeDialogClient is an optional interface that dialog clients can implement
-// to specify a fixed window size instead of auto-resizing based on content.
-type FixedSizeDialogClient interface {
-	FixedSize() [2]float32 // Returns [width, height] in pixels (before DPI scaling)
-}
-
-func NewModalDialogBox(c ModalDialogClient, p platform.Platform) *ModalDialogBox {
-	return &ModalDialogBox{client: c, platform: p}
-}
-
-func (m *ModalDialogBox) Draw() {
-	if m.closed {
-		return
-	}
-
-	title := fmt.Sprintf("%s##%p", m.client.Title(), m)
-	imgui.OpenPopupStr(title)
-
-	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
-
-	// Use the main viewport for positioning and sizing so that dialogs
-	// are centered correctly when multi-viewport is enabled (imgui uses
-	// screen-space coordinates with viewports).
-	mainVP := imgui.MainViewport()
-	vpPos := mainVP.Pos()
-	vpSize := mainVP.Size()
-
-	// Check if client wants a fixed size window
-	var flags imgui.WindowFlags
-	if fixedSize, ok := m.client.(FixedSizeDialogClient); ok {
-		// Fixed size dialog - don't auto-resize
-		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsNoSavedSettings | imgui.WindowFlagsNoScrollbar
-		size := fixedSize.FixedSize()
-		imgui.SetNextWindowSize(imgui.Vec2{dpiScale * size[0], dpiScale * size[1]})
-	} else {
-		// Auto-resize dialog with constraints
-		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
-		maxHeight := vpSize.Y * 19 / 20
-		imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 850, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
-	}
-
-	// Center the dialog on the main viewport, near the top.
-	topMargin := vpSize.Y * 0.05
-	imgui.SetNextWindowPosV(imgui.Vec2{vpPos.X + vpSize.X/2, vpPos.Y + topMargin}, imgui.CondAlways, imgui.Vec2{0.5, 0})
-
-	// Force the modal into the main viewport so it doesn't become a
-	// separate OS window (which can end up behind the main window when
-	// ConfigViewportsNoAutoMerge is enabled).
-	imgui.SetNextWindowViewport(mainVP.ID())
-
-	if imgui.BeginPopupModalV(title, nil, flags) {
-		if !m.isOpen {
-			imgui.SetKeyboardFocusHere()
-			m.client.Opening()
-			m.isOpen = true
-		}
-
-		selIndex := m.client.Draw()
-		imgui.Text("\n") // spacing
-
-		buttons := m.client.Buttons()
-
-		// Only position buttons if we have any
-		if len(buttons) > 0 {
-			// First, figure out where to start drawing so the buttons end up right-justified.
-			// https://github.com/ocornut/imgui/discussions/3862
-			var allButtonText []string
-			for _, b := range buttons {
-				allButtonText = append(allButtonText, b.text)
-			}
-			setCursorForRightButtons(allButtonText)
-		}
-
-		for i, b := range buttons {
-			if b.disabled {
-				imgui.BeginDisabled()
-			}
-			if i > 0 {
-				imgui.SameLine()
-			}
-			if (imgui.Button(b.text) || i == selIndex) && !b.disabled {
-				if b.action == nil || b.action() {
-					imgui.CloseCurrentPopup()
-					m.closed = true
-					m.isOpen = false
-				}
-			}
-			if b.disabled {
-				imgui.EndDisabled()
-			}
-		}
-		if len(buttons) == 0 && selIndex >= 0 {
-			imgui.CloseCurrentPopup()
-			m.closed = true
-			m.isOpen = false
-		}
-		imgui.EndPopup()
 	}
 }
 
@@ -250,16 +110,16 @@ func (c *ScenarioSelectionModalClient) Opening() {
 	}
 }
 
-func (c *ScenarioSelectionModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
+func (c *ScenarioSelectionModalClient) Buttons() []gui.DialogButton {
+	var b []gui.DialogButton
 	if c.allowCancel {
-		b = append(b, ModalDialogButton{text: "Cancel"})
+		b = append(b, gui.DialogButton{Text: "Cancel"})
 	}
 
-	next := ModalDialogButton{
-		text:     c.simConfig.UIButtonText(),
-		disabled: c.simConfig.ScenarioSelectionDisabled(c.config),
-		action: func() bool {
+	next := gui.DialogButton{
+		Text:     c.simConfig.UIButtonText(),
+		Disabled: c.simConfig.ScenarioSelectionDisabled(c.config),
+		Action: func() bool {
 			if c.simConfig.ShowConfigurationWindow() {
 				// Go to configuration screen for create flows
 				client := &ConfigurationModalClient{
@@ -270,7 +130,7 @@ func (c *ScenarioSelectionModalClient) Buttons() []ModalDialogButton {
 					config:      c.config,
 					mgr:         c.mgr,
 				}
-				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
+				uiShowModalDialog(gui.NewModalDialog(client, c.platform), false)
 				return true
 			} else {
 				// Join flow - start directly
@@ -306,13 +166,13 @@ func (c *ConfigurationModalClient) Title() string {
 
 func (c *ConfigurationModalClient) Opening() {}
 
-func (c *ConfigurationModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
+func (c *ConfigurationModalClient) Buttons() []gui.DialogButton {
+	var b []gui.DialogButton
 
 	// Previous button - go back to scenario selection
-	prev := ModalDialogButton{
-		text: "Previous",
-		action: func() bool {
+	prev := gui.DialogButton{
+		Text: "Previous",
+		Action: func() bool {
 			client := &ScenarioSelectionModalClient{
 				mgr:         c.mgr,
 				lg:          c.lg,
@@ -321,21 +181,21 @@ func (c *ConfigurationModalClient) Buttons() []ModalDialogButton {
 				platform:    c.platform,
 				config:      c.config,
 			}
-			uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
+			uiShowModalDialog(gui.NewModalDialog(client, c.platform), false)
 			return true
 		},
 	}
 	b = append(b, prev)
 
 	if c.allowCancel {
-		b = append(b, ModalDialogButton{text: "Cancel"})
+		b = append(b, gui.DialogButton{Text: "Cancel"})
 	}
 
 	// Create button
-	create := ModalDialogButton{
-		text:     "Create",
-		disabled: c.simConfig.ConfigurationDisabled(c.config),
-		action: func() bool {
+	create := gui.DialogButton{
+		Text:     "Create",
+		Disabled: c.simConfig.ConfigurationDisabled(c.config),
+		Action: func() bool {
 			c.simConfig.displayError = c.simConfig.Start(c.config)
 			return c.simConfig.displayError == nil
 		},
@@ -361,15 +221,15 @@ func (yn *YesOrNoModalClient) Title() string { return yn.title }
 
 func (yn *YesOrNoModalClient) Opening() {}
 
-func (yn *YesOrNoModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "No", action: func() bool {
+func (yn *YesOrNoModalClient) Buttons() []gui.DialogButton {
+	var b []gui.DialogButton
+	b = append(b, gui.DialogButton{Text: "No", Action: func() bool {
 		if yn.notok != nil {
 			yn.notok()
 		}
 		return true
 	}})
-	b = append(b, ModalDialogButton{text: "Yes", action: func() bool {
+	b = append(b, gui.DialogButton{Text: "Yes", Action: func() bool {
 		if yn.ok != nil {
 			yn.ok()
 		}
@@ -468,17 +328,17 @@ func (nr *NewReleaseModalClient) Title() string {
 }
 func (nr *NewReleaseModalClient) Opening() {}
 
-func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
+func (nr *NewReleaseModalClient) Buttons() []gui.DialogButton {
+	return []gui.DialogButton{
 		{
-			text: "Quit and update",
-			action: func() bool {
+			Text: "Quit and update",
+			Action: func() bool {
 				browser.OpenURL("https://pharr.org/vice/index.html#section-installation")
 				os.Exit(0)
 				return true
 			},
 		},
-		{text: "Update later"}}
+		{Text: "Update later"}}
 }
 
 func (nr *NewReleaseModalClient) Draw() int {
@@ -497,18 +357,18 @@ func (wn *WhatsNewModalClient) Title() string {
 
 func (wn *WhatsNewModalClient) Opening() {}
 
-func (wn *WhatsNewModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
+func (wn *WhatsNewModalClient) Buttons() []gui.DialogButton {
+	return []gui.DialogButton{
 		{
-			text: "View Release Notes",
-			action: func() bool {
+			Text: "View Release Notes",
+			Action: func() bool {
 				browser.OpenURL("https://pharr.org/vice/index.html#releases")
 				return false
 			},
 		},
 		{
-			text: "Ok",
-			action: func() bool {
+			Text: "Ok",
+			Action: func() bool {
 				wn.config.WhatsNewIndex = len(whatsNew)
 				return true
 			},
@@ -533,11 +393,11 @@ func (b *BroadcastModalDialog) Title() string {
 
 func (b *BroadcastModalDialog) Opening() {}
 
-func (b *BroadcastModalDialog) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
+func (b *BroadcastModalDialog) Buttons() []gui.DialogButton {
+	return []gui.DialogButton{
 		{
-			text: "Ok",
-			action: func() bool {
+			Text: "Ok",
+			Action: func() bool {
 				return true
 			},
 		},
@@ -559,11 +419,11 @@ func (d *DiscordOptInModalClient) Title() string {
 
 func (d *DiscordOptInModalClient) Opening() {}
 
-func (d *DiscordOptInModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
+func (d *DiscordOptInModalClient) Buttons() []gui.DialogButton {
+	return []gui.DialogButton{
 		{
-			text: "Ok",
-			action: func() bool {
+			Text: "Ok",
+			Action: func() bool {
 				d.config.AskedDiscordOptIn = true
 				return true
 			},
@@ -604,11 +464,11 @@ func (ns *NotifyTargetGenModalClient) Title() string {
 
 func (ns *NotifyTargetGenModalClient) Opening() {}
 
-func (ns *NotifyTargetGenModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
+func (ns *NotifyTargetGenModalClient) Buttons() []gui.DialogButton {
+	return []gui.DialogButton{
 		{
-			text: "Ok",
-			action: func() bool {
+			Text: "Ok",
+			Action: func() bool {
 				*ns.notifiedNew = true
 				return true
 			},
@@ -642,8 +502,8 @@ type MessageModalClient struct {
 func (m *MessageModalClient) Title() string { return m.title }
 func (m *MessageModalClient) Opening()      {}
 
-func (m *MessageModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{{text: "Ok", action: func() bool { return true }}}
+func (m *MessageModalClient) Buttons() []gui.DialogButton {
+	return []gui.DialogButton{{Text: "Ok", Action: func() bool { return true }}}
 }
 
 func (m *MessageModalClient) Draw() int {
@@ -662,9 +522,9 @@ type ErrorModalClient struct {
 func (e *ErrorModalClient) Title() string { return "Vice Error" }
 func (e *ErrorModalClient) Opening()      {}
 
-func (e *ErrorModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Ok", action: func() bool {
+func (e *ErrorModalClient) Buttons() []gui.DialogButton {
+	var b []gui.DialogButton
+	b = append(b, gui.DialogButton{Text: "Ok", Action: func() bool {
 		return true
 	}})
 	return b
@@ -692,41 +552,10 @@ func (e *ErrorModalClient) Draw() int {
 }
 
 func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...any) {
-	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
+	d := gui.NewModalDialog(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 	uiShowModalDialog(d, true)
 
 	lg.Errorf(s, args...)
-}
-
-// runModalEventLoop runs a blocking event loop that renders the given dialog
-// each frame until done() returns true. All pre-main-loop modal dialogs
-// (fatal errors, resource warnings, whisper benchmark, etc.) use this to
-// avoid duplicating the imgui frame/render boilerplate.
-func runModalEventLoop(p platform.Platform, d *ModalDialogBox, done func() bool) {
-	for !done() {
-		drawModalFrame(p, d)
-	}
-}
-
-// drawModalFrame renders a single frame with the given dialog box drawn in it.
-func drawModalFrame(p platform.Platform, d *ModalDialogBox) {
-	p.ProcessEvents()
-	p.NewFrame()
-	imgui.NewFrame()
-	ui.font.ImguiPush()
-	d.Draw()
-	imgui.PopFont()
-
-	imgui.Render()
-	implogl3.RenderDrawData(imgui.CurrentDrawData())
-
-	if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
-		imgui.UpdatePlatformWindows()
-		imgui.RenderPlatformWindowsDefault()
-		p.MakeContextCurrent()
-	}
-
-	p.PostRender()
 }
 
 func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...any) {
@@ -734,8 +563,8 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 		lg.Errorf(s, args...)
 	}
 
-	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
-	runModalEventLoop(p, d, func() bool { return d.closed })
+	d := gui.NewModalDialog(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
+	gui.RunDialogEventLoop(p, ui.font, d, func() bool { return d.Closed() })
 	os.Exit(1)
 }
 
@@ -747,13 +576,13 @@ type clearOverridesModalClient struct {
 	clearRequested bool
 }
 
-func (c *clearOverridesModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
-		{text: "Clear Facility Engineering Files and Exit", action: func() bool {
+func (c *clearOverridesModalClient) Buttons() []gui.DialogButton {
+	return []gui.DialogButton{
+		{Text: "Clear Facility Engineering Files and Exit", Action: func() bool {
 			c.clearRequested = true
 			return true
 		}},
-		{text: "Exit", action: func() bool { return true }},
+		{Text: "Exit", Action: func() bool { return true }},
 	}
 }
 
@@ -768,8 +597,8 @@ func ShowFatalErrorOverridesDialog(r renderer.Renderer, p platform.Platform, con
 		"they may be the cause of these errors. You can clear them and then relaunch vice."
 
 	mc := &clearOverridesModalClient{ErrorModalClient: ErrorModalClient{message: msg}}
-	d := NewModalDialogBox(mc, p)
-	runModalEventLoop(p, d, func() bool { return d.closed })
+	d := gui.NewModalDialog(mc, p)
+	gui.RunDialogEventLoop(p, ui.font, d, func() bool { return d.Closed() })
 
 	if mc.clearRequested {
 		config.clearFacilityEngineeringFiles()
@@ -797,7 +626,7 @@ func (w *WhisperBenchmarkModalClient) Title() string {
 
 func (w *WhisperBenchmarkModalClient) Opening() {}
 
-func (w *WhisperBenchmarkModalClient) Buttons() []ModalDialogButton {
+func (w *WhisperBenchmarkModalClient) Buttons() []gui.DialogButton {
 	// No buttons - dialog auto-closes when benchmark completes
 	return nil
 }
@@ -836,7 +665,7 @@ func uiShowConnectOrBenchmarkDialog(mgr *client.ConnectionManager, allowCancel b
 			platform:    p,
 			config:      config,
 		}
-		uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+		uiShowModalDialog(gui.NewModalDialog(benchClient, p), false)
 	} else {
 		// Not benchmarking, show connect dialog directly
 		uiShowConnectDialog(mgr, allowCancel, config, p, lg)
@@ -855,7 +684,7 @@ func (r *rebenchmarkModalClient) Title() string {
 
 func (r *rebenchmarkModalClient) Opening() {}
 
-func (r *rebenchmarkModalClient) Buttons() []ModalDialogButton {
+func (r *rebenchmarkModalClient) Buttons() []gui.DialogButton {
 	return nil
 }
 

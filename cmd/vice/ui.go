@@ -11,14 +11,13 @@ import (
 	"image/png"
 	gomath "math"
 	"runtime"
-	"slices"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/mmp/vice/brief"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -29,9 +28,7 @@ import (
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
-	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
-	"github.com/yuin/goldmark/ast"
 )
 
 var (
@@ -58,16 +55,7 @@ var (
 		showMessages      bool
 		showFlightStrips  bool
 
-		brief struct {
-			markdown             string
-			selectedConfigs      map[string]string // group name -> currently-selected option name
-			closedHeadings       map[string]struct{}
-			disabledAirspaceTCPs map[string]map[string]bool // map label -> TCPs the user has toggled off
-			videoMapCache        *videoMapCache
-			parsed               *brief.ParsedMarkdown // cached parse output; nil ⇒ re-parse next frame
-			parseGen             int                   // state.GenerationIndex at last parse; re-parse when state advances
-			inlineTokensCache    map[ast.Node]inlineRender
-		}
+		brief gui.Brief
 
 		// STT state
 		pttRecording              bool
@@ -149,7 +137,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Lo
 	go checkForNewRelease(ui.newReleaseDialogChan, config, lg)
 
 	if config.WhatsNewIndex < len(whatsNew) {
-		uiShowModalDialog(NewModalDialogBox(&WhatsNewModalClient{config: config}, p), false)
+		uiShowModalDialog(gui.NewModalDialog(&WhatsNewModalClient{config: config}, p), false)
 	}
 
 	if !config.AskedDiscordOptIn {
@@ -172,9 +160,9 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	controlClient *client.ControlClient, activeRadarPane panes.Pane, events []sim.Event, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
-		case dialog, ok := <-ui.newReleaseDialogChan:
+		case release, ok := <-ui.newReleaseDialogChan:
 			if ok {
-				uiShowModalDialog(NewModalDialogBox(dialog, p), false)
+				uiShowModalDialog(gui.NewModalDialog(release, p), false)
 			} else {
 				// channel was closed
 				ui.newReleaseDialogChan = nil
@@ -379,7 +367,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 	for _, event := range events {
 		if event.Type == sim.ServerBroadcastMessageEvent {
-			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.WrittenText}, p), false)
+			uiShowModalDialog(gui.NewModalDialog(&BroadcastModalDialog{Message: event.WrittenText}, p), false)
 		}
 	}
 
@@ -865,16 +853,6 @@ func uiAudioInputDevices(p platform.Platform) []string {
 	return ui.micDevices
 }
 
-// selectFile puts up the system's file dialog, returning an empty path if
-// the user canceled it; canceling is not an error.
-func selectFile(title string, filters zenity.FileFilters) (string, error) {
-	path, err := zenity.SelectFile(zenity.Title(title), filters)
-	if err == zenity.ErrCanceled {
-		return "", nil
-	}
-	return path, err
-}
-
 func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) {
 	if !ui.showSettings {
 		return
@@ -917,7 +895,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 
 	if imgui.CollapsingHeaderBoolPtr("Display", nil) {
 		if imgui.Checkbox("Enable anti-aliasing", &config.EnableMSAA) {
-			uiShowModalDialog(NewModalDialogBox(
+			uiShowModalDialog(gui.NewModalDialog(
 				&MessageModalClient{
 					title: "Alert",
 					message: "You must restart vice for changes to the anti-aliasing " +
@@ -1124,7 +1102,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 					config.WhisperGPUDisabled = gpuDisabled
 				})
 				benchClient := &rebenchmarkModalClient{config: config, lg: lg}
-				uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+				uiShowModalDialog(gui.NewModalDialog(benchClient, p), false)
 			}
 			imgui.Separator()
 			// Individual model options
@@ -1163,119 +1141,21 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	}
 
 	if imgui.CollapsingHeaderBoolPtr("Facility Engineering", nil) {
-		imgui.BeginGroup()
 		imgui.Text("For testing new scenarios, additional scenario, video map, scenario brief, and/or facility")
 		imgui.Text("configuration files can be specified.")
 		imgui.Text("Note that vice must be restarted to reload these after they are changed.")
 		imgui.Separator()
-		imgui.Text(fmt.Sprintf("Scenario: %s", util.Select(config.ScenarioFile != "", config.ScenarioFile, "None Selected")))
-		imgui.SameLine()
-		if imgui.Button("Select##scenario") {
-			path, err := selectFile("Select Scenario JSON File",
-				zenity.FileFilters{
-					{
-						Name:     "JSON Files",
-						Patterns: []string{"*.json"},
-					},
-				},
-			)
-			if err != nil {
-				fmt.Printf("Error selecting scenario file: %v\n", err)
-			} else if path != "" {
-				config.ScenarioFile = path
-			}
-		}
-		imgui.SameLine()
-		if imgui.Button("Clear##scenario") {
-			config.ScenarioFile = ""
-		}
-		imgui.EndGroup()
 
-		imgui.BeginGroup()
-		imgui.Text(fmt.Sprintf("Video Map: %s", util.Select(config.VideoMapFile != "", config.VideoMapFile, "None Selected")))
-		imgui.SameLine()
-		if imgui.Button("Select##videoMap") {
-			path, err := selectFile("Select Video Map Library File",
-				zenity.FileFilters{
-					{
-						Name:     "Video Map Libraries",
-						Patterns: []string{"*.mappack"},
-					},
-				},
-			)
+		report := func(_ bool, err error) {
 			if err != nil {
-				fmt.Printf("Error selecting video map file: %v\n", err)
-			} else if path != "" {
-				config.VideoMapFile = path
+				fmt.Printf("Error selecting file: %v\n", err)
 			}
 		}
-		imgui.SameLine()
-		if imgui.Button("Clear##videoMap") {
-			config.VideoMapFile = ""
-		}
-		imgui.EndGroup()
-
-		imgui.BeginGroup()
-		imgui.Text(fmt.Sprintf("Scenario Brief: %s", util.Select(config.ScenarioBriefFile != "", config.ScenarioBriefFile, "None Selected")))
-		imgui.SameLine()
-		if imgui.Button("Select##scenarioBrief") {
-			path, err := selectFile("Select Scenario Brief Markdown File",
-				zenity.FileFilters{
-					{
-						Name:     "Markdown Files",
-						Patterns: []string{"*.md"},
-					},
-				},
-			)
-			if err != nil {
-				fmt.Printf("Error selecting scenario brief file: %v\n", err)
-			} else if path != "" {
-				config.ScenarioBriefFile = path
-			}
-		}
-		imgui.SameLine()
-		if imgui.Button("Clear##scenarioBrief") {
-			config.ScenarioBriefFile = ""
-		}
-		imgui.EndGroup()
-
-		// Two facility configurations may be overridden at once (e.g., both
-		// a TRACON's and its ARTCC's).
-		deleteFacilityConfig := -1
-		for i, file := range config.FacilityConfigFiles {
-			imgui.BeginGroup()
-			imgui.Text(fmt.Sprintf("Facility Configuration: %s", file))
-			imgui.SameLine()
-			if imgui.Button(fmt.Sprintf("Clear##facilityConfig%d", i)) {
-				deleteFacilityConfig = i
-			}
-			imgui.EndGroup()
-		}
-		if deleteFacilityConfig != -1 {
-			config.FacilityConfigFiles = slices.Delete(config.FacilityConfigFiles,
-				deleteFacilityConfig, deleteFacilityConfig+1)
-		}
-		if len(config.FacilityConfigFiles) < 2 {
-			imgui.BeginGroup()
-			imgui.Text("Facility Configuration: None Selected")
-			imgui.SameLine()
-			if imgui.Button("Select##facilityConfig") {
-				path, err := selectFile("Select Facility Configuration JSON File",
-					zenity.FileFilters{
-						{
-							Name:     "JSON Files",
-							Patterns: []string{"*.json"},
-						},
-					},
-				)
-				if err != nil {
-					fmt.Printf("Error selecting facility configuration file: %v\n", err)
-				} else if path != "" {
-					config.FacilityConfigFiles = append(config.FacilityConfigFiles, path)
-				}
-			}
-			imgui.EndGroup()
-		}
+		report(gui.DrawFilePicker("Scenario", "scenario", &config.ScenarioFile, []string{"*.json"}))
+		report(gui.DrawFilePicker("Video map", "videoMap", &config.VideoMapFile, []string{"*.mappack"}))
+		report(gui.DrawFilePicker("Scenario brief", "scenarioBrief", &config.ScenarioBriefFile, []string{"*.md"}))
+		report(gui.DrawFileListPicker("Facility configuration", "facilityConfig",
+			&config.FacilityConfigFiles, []string{"*.json"}, 2))
 
 		imgui.Separator()
 		imgui.Checkbox("Display simulation logging", &config.DisplaySimLogs)

@@ -27,6 +27,7 @@ import (
 	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/panes"
@@ -191,11 +192,25 @@ func overrideFiles() server.OverrideFiles {
 // cliInit performs initialization for CLI (non-GUI) modes: syncing
 // resources and initializing the aviation database.
 func cliInit() error {
-	if err := SyncResources(nil); err != nil {
+	if err := syncResources(&util.TextSyncUI{}); err != nil {
 		return fmt.Errorf("SyncResources: %w", err)
 	}
 	av.InitDB()
 	wx.Init()
+	return nil
+}
+
+// syncResources brings the resource files up to date with the manifest this
+// build was made with, presenting the sync with ui. Choosing to quit rather
+// than overwrite locally-modified files is the user's decision and not an
+// error, so vice exits then and there without further complaint.
+func syncResources(ui util.SyncUI) error {
+	if err := util.SyncResources(ui); err != nil {
+		if errors.Is(err, util.ErrSyncCanceled) {
+			os.Exit(0)
+		}
+		return err
+	}
 	return nil
 }
 
@@ -660,7 +675,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	uiInit(render, plat, config, lg)
 
-	if err := SyncResources(plat); err != nil {
+	if err := syncResources(gui.NewSyncUI(plat, ui.font)); err != nil {
 		ShowFatalErrorDialog(render, plat, lg, "Error syncing resources: %v", err)
 	}
 	close(syncDone)

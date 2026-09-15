@@ -21,6 +21,7 @@ func TestNoUIDeps(t *testing.T) {
 		"github.com/mmp/vice/renderer",
 		"github.com/mmp/vice/platform",
 		"github.com/mmp/vice/panes",
+		"github.com/mmp/vice/gui",
 		"github.com/mmp/vice/stars",
 		"github.com/mmp/vice/eram",
 		"github.com/mmp/vice/client",
