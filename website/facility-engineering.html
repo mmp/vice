@@ -4738,8 +4738,8 @@
                     <td>Object</td>
                     <td>(<i>Optional</i>) With a route taken from the CIFP, actions to take at its fixes, such as
                       handoffs and point outs for virtually-controlled aircraft.
-                      Each member's name is a fix on the route and its value is a comma-separated list of actions;
-                      see below.</td>
+                      Each member's name is a fix on the route&mdash;optionally with an offset along the leg
+                      after it&mdash;and its value is a comma-separated list of actions; see below.</td>
                   </tr>
                   <tr>
                     <td>"waypoints"</td>
@@ -4829,6 +4829,14 @@
                 as the aircraft climbs through 400' above the field and takes up the leg
                 (<code>KSFO-10L/h284/hoC35/@a513+</code>), while <code>"KSFO-10L/@a513+": "hoC35"</code> hands
                 off once it has climbed through 513' (<code>KSFO-10L/h284/@a513+/hoC35</code>).</p>
+              <p>
+                The actions may also be taken partway along the leg that follows a fix rather than at the fix
+                itself. In that case, the member name is the fix followed by an offset, written the same way an
+                arrival's <a href="#fe-arrivals-section">"spawn"</a> gives one but greater than 0. In the GNNRR3
+                above, <code>"GNNRR@.75": "hoC35"</code> hands off three quarters of the way from GNNRR to BEBOP.
+                The fix must have another after it on the route, and an offset cannot be given along with a
+                trigger.
+              </p>
               <p>None of "initial_heading", "climbout_actions", and "waypoint_actions" may be given
                 together with "waypoints". (As everything they do can be specified directly with the waypoint fixes.) 
               </p>
@@ -5167,19 +5175,22 @@
                     <td>String</td>
                     <td>The name of the waypoint in the STAR at which new arrivals should start.
                       A point between two waypoints in the STAR can be specified using an "@" symbol
-                      and a number between 0 and 1 that represents the fraction of distance between
-                      the waypoint and the next. For example, "STW@0.6" specifies that aircraft should
-                      spawn 0.6 of the way between STW and the following waypoint.
-                      Aircraft will then be handed off from the center controller halfway between the
-                      first two waypoints of the route, unless "waypoint_actions" hands them off itself.
+                      and a number that represents the fraction of distance between the waypoint and
+                      the next: at least 0 and less than 1. For example, "STW@0.6" specifies that
+                      aircraft should spawn 0.6 of the way between STW and the following waypoint.
+                      Aircraft keep the altitude and speed restrictions charted at the waypoint they
+                      spawn after. They will then be handed off from the external controller halfway
+                      between where they spawn and the next fix of the route, unless "waypoint_actions"
+                      has a handoff action.
                     </td>
                   </tr>
                   <tr>
                     <td>"waypoint_actions"</td>
                     <td>Object</td>
                     <td>(<i>Optional</i>) Actions to take at the fixes of the STAR's route, such as handoffs and
-                      point outs for virtually-controlled aircraft. Each member's name is a fix on the route and its
-                      value is a comma-separated list of actions; see below.</td>
+                      point outs for virtually-controlled aircraft. Each member's name is a fix on the
+                      route&mdash;optionally with an offset along the leg after it&mdash;and its value is a
+                      comma-separated list of actions; see below.</td>
                   </tr>
                 </tbody>
               </table>
@@ -5201,8 +5212,21 @@
                 fix where the two meet is taken on each of them. If a fix has <a href="#fe-route-triggers">triggers</a>,
                 the actions may instead be taken when one of them is met: the member's name is then the fix followed by
                 its triggers, up to and including the one to wait for.</p>
+              <p>
+                The actions may also be taken partway along the leg that follows a fix rather than at the
+                fix itself. The member name is then the fix followed by an offset, written the same way
+                "spawn" above gives one but greater than 0: given the APPLE3, <code>"BRAND@.75": "ho"</code>
+                hands off three quarters of the way from BRAND to KORRY. An offset cannot be given along
+                with a trigger. The leg must also be a straight one: there is no point partway along a DME
+                arc that lies between the two fixes.</p>
+              <p>An offset at the fix where the arrival's own route meets the STAR's runway transitions is
+                measured along each transition separately, since they run on to different fixes, and so is
+                only flown once an approach has been expected or assigned. The fix must have another after
+                it: one that ends the arrival's route and every runway transition it is on has nothing to
+                measure the offset to.</p>
               <p>A handoff anywhere in "waypoint_actions" replaces the handoff <i>vice</i> would otherwise make halfway
-                between the first two waypoints&mdash;including a <code>/ho</code><i>position</i> to another virtual
+                from where the aircraft spawns to the next fix of the route&mdash;including a
+                <code>/ho</code><i>position</i> to another virtual
                 controller, so that an arrival worked entirely by virtual controllers never reaches a human.</p>
               <p>"waypoint_actions" may not be given together with "waypoints"; a route written out by hand carries its
                 actions in the route itself.</p>

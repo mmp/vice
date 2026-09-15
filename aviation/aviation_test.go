@@ -980,6 +980,112 @@ func TestArrivalWaypointActions(t *testing.T) {
 			actions: map[string]string{"KRANN": "hoZZZ"},
 			err:     "No controller found with id",
 		},
+		{
+			name:    "an offset along a leg",
+			actions: map[string]string{"BEUTY@0.5": "ho"},
+			want:    "MIPP/star LIZZI/star BEUTY/star _BEUTY-APPLE@0.5/ho/star APPLE/star PROUD/star",
+		},
+		{
+			name:    "an offset past the runway split",
+			actions: map[string]string{"KRANN@0.5": "h090"},
+			want13:  "PROUD/star KRANN/star _KRANN-ETHYN@0.5/h090/star ETHYN/star",
+		},
+		{
+			// The arrival's own route ends at PROUD, so the point is only on
+			// the transitions--and in a different place on each, since they
+			// run to different fixes. It is still the arrival's handoff, so
+			// the automatic one goes away.
+			name:    "an offset where the runway transitions branch off",
+			actions: map[string]string{"PROUD@0.5": "ho"},
+			want:    "MIPP/star LIZZI/star BEUTY/star APPLE/star PROUD/star",
+			want13:  "PROUD/star _PROUD-KRANN@0.5/ho/star KRANN/star ETHYN/star",
+			want31:  "PROUD/star _PROUD-SNEDE@0.5/ho/star SNEDE/star",
+		},
+		{
+			// The same for a handoff at a fix only one of the transitions has.
+			name:    "a handoff on a runway transition alone",
+			actions: map[string]string{"KRANN": "hoC35"},
+			want:    "MIPP/star LIZZI/star BEUTY/star APPLE/star PROUD/star",
+			want13:  "PROUD/star KRANN/hoC35/star ETHYN/star",
+		},
+		{
+			// The handoff would go exactly where the offset puts its point, so
+			// that point takes it rather than the route carrying two waypoints
+			// in one place.
+			name:    "an offset halfway along the first leg takes the handoff",
+			actions: map[string]string{"MIPP@0.5": "spspABC"},
+			want: "MIPP/star _MIPP-LIZZI@0.5/ho/spspABC/star LIZZI/star BEUTY/star " +
+				"APPLE/star PROUD/star",
+		},
+		{
+			name:    "an offset on the first leg keeps the handoff ahead of it",
+			actions: map[string]string{"MIPP@0.6": "spspABC"},
+			want: "MIPP/star _handoff/ho/star _MIPP-LIZZI@0.6/spspABC/star LIZZI/star BEUTY/star " +
+				"APPLE/star PROUD/star",
+		},
+		{
+			// Halfway from the spawn point to LIZZI is 0.66 of MIPP's leg, but
+			// float32 makes it 0.65999997; the offset still takes the handoff
+			// rather than the two landing a foot apart.
+			name:    "an offset at the midpoint the spawn offset can't name exactly",
+			spawn:   "MIPP@0.32",
+			actions: map[string]string{"MIPP@0.66": "spspABC"},
+			want: "_MIPP/star _MIPP-LIZZI@0.66/ho/spspABC/star LIZZI/star BEUTY/star " +
+				"APPLE/star PROUD/star",
+		},
+		{
+			name:    "an offset at a fix that ends every route it is on",
+			spawn:   "KRANN",
+			actions: map[string]string{"ETHYN@0.5": "ho"},
+			err:     "no following fix to measure the offset to",
+		},
+		{
+			name:    "an offset at a fix on no route at all",
+			actions: map[string]string{"NOPE@0.5": "ho"},
+			err:     "NOPE is not in the route",
+		},
+		{
+			// The points put along a runway transition are checked along with
+			// the fixes the CIFP gives it.
+			name:    "a handoff at an offset to an unknown controller",
+			actions: map[string]string{"KRANN@0.5": "hoZZZ"},
+			err:     "No controller found with id",
+		},
+		{
+			name:    "an offset whose actions don't parse",
+			actions: map[string]string{"BEUTY@0.5": "zzz"},
+			err:     "unknown action",
+		},
+		{
+			name:    "an offset that isn't a number",
+			actions: map[string]string{"BEUTY@nan": "ho"},
+			err:     "must be greater than 0 and less than 1",
+		},
+		{
+			// The offset is measured along the leg the CIFP charts, not along
+			// what is left of it after the arrival spawns partway down it.
+			name:    "an offset at the fix the arrival spawns along",
+			spawn:   "MIPP@0.3",
+			actions: map[string]string{"MIPP@0.6": "ho"},
+			want:    "_MIPP/star _MIPP-LIZZI@0.6/ho/star LIZZI/star BEUTY/star APPLE/star PROUD/star",
+		},
+		{
+			name:    "an offset behind the point the arrival spawns at",
+			spawn:   "MIPP@0.6",
+			actions: map[string]string{"MIPP@0.3": "ho"},
+			err:     "never reaches this point",
+		},
+		{
+			name:    "an offset at the point the arrival spawns at",
+			spawn:   "MIPP@0.6",
+			actions: map[string]string{"MIPP@0.6": "ho"},
+			err:     "the arrival spawns at this point",
+		},
+		{
+			name:  "a spawn offset out of range",
+			spawn: "MIPP@1.5",
+			err:   `"spawn" offset "1.5": must be at least 0 and less than 1`,
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var e util.ErrorLogger
@@ -1043,6 +1149,111 @@ func TestArrivalWaypointActions(t *testing.T) {
 			if h.FixVariation != 11 {
 				t.Errorf("%s: radial variation %v, want the station's 11", fix, h.FixVariation)
 			}
+		}
+	})
+
+	t.Run("an offset point is interpolated along the leg", func(t *testing.T) {
+		var e util.ErrorLogger
+		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
+			WaypointActions:   map[string]string{"BEUTY@0.25": "ho"},
+			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
+		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			func(string) bool { return true }, &e)
+		if e.HaveErrors() {
+			t.Fatalf("unexpected errors: %s", e.String())
+		}
+
+		i := slices.IndexFunc(arr.Waypoints, func(wp Waypoint) bool { return wp.Fix == "_BEUTY-APPLE@0.25" })
+		if i == -1 {
+			t.Fatalf("no offset point in %s", arr.Waypoints.Encode())
+		}
+		want := math.Lerp2f(0.25, loc.testLocator["BEUTY"], loc.testLocator["APPLE"])
+		if got := arr.Waypoints[i].Location; got != math.Point2LL(want) {
+			t.Errorf("location %s, want %s", got.DDString(), math.Point2LL(want).DDString())
+		}
+	})
+
+	// The automatic handoff is made halfway along the first charted leg; a
+	// point put on that leg by "waypoint_actions" mustn't draw it in.
+	t.Run("the automatic handoff ignores points put on the first leg", func(t *testing.T) {
+		var e util.ErrorLogger
+		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
+			WaypointActions:   map[string]string{"MIPP@0.1": "spspABC"},
+			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
+		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			func(string) bool { return true }, &e)
+		if e.HaveErrors() {
+			t.Fatalf("unexpected errors: %s", e.String())
+		}
+
+		i := slices.IndexFunc(arr.Waypoints, func(wp Waypoint) bool { return wp.Fix == "_handoff" })
+		if i == -1 {
+			t.Fatalf("no handoff point in %s", arr.Waypoints.Encode())
+		}
+		want := math.Lerp2f(0.5, loc.testLocator["MIPP"], loc.testLocator["LIZZI"])
+		if got := arr.Waypoints[i].Location; got != math.Point2LL(want) {
+			t.Errorf("handoff at %s, want %s", got.DDString(), math.Point2LL(want).DDString())
+		}
+	})
+
+	// No point between the fixes of a DME arc is on it, so there is nowhere
+	// along the first leg to put the handoff; it is made where the arrival
+	// spawns instead.
+	t.Run("the arrival joins the STAR on a DME arc", func(t *testing.T) {
+		old := DB.Airports["KTST"].STARs["MIPP4"]
+		DB.Airports["KTST"].STARs["MIPP4"] = STAR{
+			Transitions:     map[string]WaypointArray{"ALL": route("MIPP/larc80XYZ LIZZI BEUTY APPLE PROUD")},
+			RunwayWaypoints: mipp4.RunwayWaypoints,
+		}
+		t.Cleanup(func() { DB.Airports["KTST"].STARs["MIPP4"] = old })
+
+		var e util.ErrorLogger
+		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
+			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
+		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			func(string) bool { return true }, &e)
+		if e.HaveErrors() {
+			t.Fatalf("unexpected errors: %s", e.String())
+		}
+
+		want := "MIPP/larc80XYZ/ho/star LIZZI/star BEUTY/star APPLE/star PROUD/star"
+		if got := arr.Waypoints.Encode(); got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+	})
+
+	// The spawn point keeps the fix's altitude and speed restrictions: the
+	// aircraft is put on the leg past the fix, not given a clean slate.
+	t.Run("a spawn offset keeps the fix's restrictions", func(t *testing.T) {
+		old := DB.Airports["KTST"].STARs["MIPP4"]
+		DB.Airports["KTST"].STARs["MIPP4"] = STAR{
+			Transitions:     map[string]WaypointArray{"ALL": route("MIPP/a11000+/s250 LIZZI BEUTY APPLE PROUD")},
+			RunwayWaypoints: mipp4.RunwayWaypoints,
+		}
+		t.Cleanup(func() { DB.Airports["KTST"].STARs["MIPP4"] = old })
+
+		var e util.ErrorLogger
+		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP@0.4",
+			InitialController: "1T", InitialAltitudes: []int{11000}, InitialSpeed: MakeIAS(250)}
+		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			func(string) bool { return true }, &e)
+		if e.HaveErrors() {
+			t.Fatalf("unexpected errors: %s", e.String())
+		}
+
+		spawn := arr.Waypoints[0]
+		if spawn.Fix != "_MIPP" {
+			t.Fatalf("spawn point is %q in %s", spawn.Fix, arr.Waypoints.Encode())
+		}
+		if ar := spawn.AltitudeRestriction(); ar == nil || ar.Range[0] != 11000 {
+			t.Errorf("spawn altitude restriction %v, want 11000+", ar)
+		}
+		if sr := spawn.SpeedRestriction(); sr == nil || sr.Range[1] != 250 {
+			t.Errorf("spawn speed restriction %v, want 250", sr)
+		}
+		want := math.Lerp2f(0.4, loc.testLocator["MIPP"], loc.testLocator["LIZZI"])
+		if got := spawn.Location; got != math.Point2LL(want) {
+			t.Errorf("spawn at %s, want %s", got.DDString(), math.Point2LL(want).DDString())
 		}
 	})
 

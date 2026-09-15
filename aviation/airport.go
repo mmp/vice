@@ -492,11 +492,6 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 						} else {
 							wps = route.amendSIDWaypoints(wps, e)
 							exitRoute.Waypoints = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, true, e)
-							for _, wp := range exitRoute.Waypoints {
-								if wp.Location.IsZero() {
-									e.ErrorString("%s: unable to locate SID waypoint", wp.Fix)
-								}
-							}
 							exitRoute.Waypoints.checkBasics(e, controlPositions, checkScratchpad)
 							exitRoute.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, override, e)
 							splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], &exitRoute)
@@ -1208,9 +1203,17 @@ func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, e *util.ErrorLogger) W
 		e.ErrorString(`"initial_heading" %d: must be between 1 and 360`, h)
 	}
 	for _, key := range util.SortedMapKeys(er.WaypointActions) {
-		if err := wps.addActions(key, er.WaypointActions[key]); err != nil {
+		fix, offset, triggers, err := parseWaypointActionKey(key)
+		if err != nil {
 			e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
+			continue
 		}
+		amended, err := wps.addActions(fix, offset, triggers, er.WaypointActions[key])
+		if err != nil {
+			e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
+			continue
+		}
+		wps = amended
 	}
 	return wps
 }
@@ -1361,6 +1364,10 @@ func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runw
 	var departureEndSpeed *SpeedRestriction
 	for len(er.Waypoints) > 0 && atDepartureEnd(er.Waypoints[0], r, rend, nmPerLongitude) {
 		wp := er.Waypoints[0]
+		if wp.AlongLeg() {
+			e.ErrorString(`"waypoint_actions" %s: the point is at the departure end of the runway, `+
+				`before the route begins; "climbout_actions" gives actions that run there`, wp.Fix)
+		}
 		departureEndGroups = append(departureEndGroups, wp.ActionGroups()...)
 		if ar := wp.AltitudeRestriction(); ar != nil {
 			departureEndAltitude = ar

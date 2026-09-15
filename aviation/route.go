@@ -325,6 +325,7 @@ type WaypointExtra struct {
 	Airway         string
 	Radius         float32
 	Shift          float32
+	LegOffset      float32
 	AirworkRadius  int8
 	AirworkMinutes int8
 }
@@ -579,6 +580,21 @@ func (wp Waypoint) Shift() float32 {
 	}
 	return 0
 }
+
+// LegOffset returns how far along the leg after the preceding charted fix the
+// waypoint was synthesized, as a fraction of the way to the fix at its end. It
+// is 0 for the route's own fixes.
+func (wp Waypoint) LegOffset() float32 {
+	if wp.Extra != nil {
+		return wp.Extra.LegOffset
+	}
+	return 0
+}
+
+// AlongLeg reports whether the waypoint was synthesized at a point partway
+// along the leg after a charted fix rather than being a fix of the route.
+func (wp Waypoint) AlongLeg() bool { return wp.LegOffset() != 0 }
+
 func (wp Waypoint) AirworkRadius() int {
 	if wp.Extra != nil {
 		return int(wp.Extra.AirworkRadius)
@@ -1677,48 +1693,65 @@ func parseRadial(s string) (fix string, radial int16, err error) {
 	return fix, radial, nil
 }
 
-// parseWaypointActionKey parses a "waypoint_actions" key: a fix, followed
-// by the fix's triggers up to and including the one after which the actions
-// run, e.g. "KSFO-10L/@a513+".
-func parseWaypointActionKey(key string) (string, []WaypointActionTermination, error) {
+// parseWaypointActionKey parses a "waypoint_actions" key: a fix, either
+// followed by an offset along the leg after it ("CKING@.75") or by the fix's
+// triggers up to and including the one after which the actions run, e.g.
+// "KSFO-10L/@a513+". The offset is 0 if the key gives none.
+func parseWaypointActionKey(key string) (string, float32, []WaypointActionTermination, error) {
 	parts := strings.Split(key, "/")
-	fix := parts[0]
+	fix, offsetString, haveOffset := strings.Cut(parts[0], "@")
 	if fix == "" {
-		return "", nil, fmt.Errorf("no fix given")
+		return "", 0, nil, fmt.Errorf("no fix given")
+	}
+	var offset float32
+	if haveOffset {
+		t, err := strconv.ParseFloat(offsetString, 32)
+		if err != nil {
+			return "", 0, nil, fmt.Errorf("invalid offset %q: %w", offsetString, err)
+		}
+		// Written so that a NaN, which ParseFloat returns without an error, is
+		// rejected along with the out-of-range values.
+		if !(t > 0 && t < 1) {
+			return "", 0, nil, fmt.Errorf("offset %q: must be greater than 0 and less than 1", offsetString)
+		}
+		offset = float32(t)
 	}
 	var triggers []WaypointActionTermination
 	for _, f := range parts[1:] {
 		cond, ok := strings.CutPrefix(f, "@")
 		if !ok {
-			return "", nil, fmt.Errorf("/%s: only triggers may follow the fix", f)
+			return "", 0, nil, fmt.Errorf("/%s: only triggers may follow the fix", f)
 		}
 		until, err := parseWaypointActionTermination(cond)
 		if err != nil {
-			return "", nil, fmt.Errorf("invalid trigger /%s: %w", f, err)
+			return "", 0, nil, fmt.Errorf("invalid trigger /%s: %w", f, err)
 		}
 		triggers = append(triggers, until)
 	}
-	return fix, triggers, nil
+	if haveOffset && len(triggers) > 0 {
+		return "", 0, nil, fmt.Errorf("triggers pick out one of the fix's own action groups, " +
+			"so they can't be given along with an offset")
+	}
+	return fix, offset, triggers, nil
 }
 
 // addActions adds actions given in route syntax, comma separated and without
-// their leading slashes ("hoC35,po5J"), to the fix named by key. The actions
-// run on passing the fix, or, if the key follows the fix with its triggers
-// ("KSFO-10L/@a513+"), once the last of them is met.
-func (wa WaypointArray) addActions(key, actions string) error {
-	fix, triggers, err := parseWaypointActionKey(key)
-	if err != nil {
-		return err
-	}
+// their leading slashes ("hoC35,po5J"), to the fix. The actions run on passing
+// it, or, if the "waypoint_actions" key followed the fix with its triggers
+// ("KSFO-10L/@a513+"), once the last of them is met. An offset puts them on a
+// point synthesized partway along the leg after the fix instead, which the
+// returned route carries; its location waits for InitializeLocations.
+func (wa WaypointArray) addActions(fix string, offset float32, triggers []WaypointActionTermination,
+	actions string) (WaypointArray, error) {
 	i := slices.IndexFunc(wa, func(wp Waypoint) bool { return wp.Fix == fix })
 	if i == -1 {
-		return fmt.Errorf("%s: not in the route %s", fix, wa.RouteString())
+		return wa, fmt.Errorf("%s: not in the route %s", fix, wa.RouteString())
 	}
 	wp := &wa[i]
 	groups := wp.ActionGroups()
 	for k, t := range triggers {
 		if k >= len(groups) || groups[k].Until.Encoded() != t.Encoded() {
-			return fmt.Errorf("%s: no trigger %s at the fix, which is flown as %s", fix, t.Encoded(),
+			return wa, fmt.Errorf("%s: no trigger %s at the fix, which is flown as %s", fix, t.Encoded(),
 				WaypointArray{*wp}.Encode())
 		}
 	}
@@ -1727,28 +1760,103 @@ func (wa WaypointArray) addActions(key, actions string) error {
 	for a := range strings.SplitSeq(actions, ",") {
 		a = strings.TrimSpace(a)
 		if a == "" {
-			return fmt.Errorf("%q: empty action", actions)
+			return wa, fmt.Errorf("%q: empty action", actions)
 		}
 		act, ok, err := parseWaypointActionModifier(a)
 		if err != nil {
-			return fmt.Errorf("invalid action /%s: %w", a, err)
+			return wa, fmt.Errorf("invalid action /%s: %w", a, err)
 		}
 		if !ok {
-			return fmt.Errorf("/%s: unknown action", a)
+			return wa, fmt.Errorf("/%s: unknown action", a)
 		}
 		if err := mergeWaypointActions(&acts, act); err != nil {
-			return fmt.Errorf("/%s: %w", a, err)
+			return wa, fmt.Errorf("/%s: %w", a, err)
 		}
+	}
+
+	if offset != 0 {
+		return wa.insertOffsetActions(i, offset, acts)
 	}
 
 	if k := len(triggers); k < len(groups) {
 		if err := mergeWaypointActions(&groups[k].Actions, acts); err != nil {
-			return fmt.Errorf("%s: %w", fix, err)
+			return wa, fmt.Errorf("%s: %w", fix, err)
 		}
 	} else {
 		wp.InitExtra().ActionGroups = append(groups, WaypointActionGroup{Actions: acts})
 	}
-	return nil
+	return wa, nil
+}
+
+// formatOffset renders a fraction of the way along a leg the shortest way that
+// reads back as the same number.
+func formatOffset(t float32) string {
+	return strconv.FormatFloat(float64(t), 'g', -1, 32)
+}
+
+// nextChartedFix returns the index of the first waypoint after i that is a fix
+// of the route rather than a point synthesized along the leg, or len(wa) if
+// the leg after i runs off the end of the route.
+func (wa WaypointArray) nextChartedFix(i int) int {
+	for j := i + 1; j < len(wa); j++ {
+		if !wa[j].AlongLeg() {
+			return j
+		}
+	}
+	return len(wa)
+}
+
+// hasOffsetLeg reports whether the fix is in the route with another fix after
+// it, so that a point partway along the leg it starts can be measured.
+func (wa WaypointArray) hasOffsetLeg(fix string) bool {
+	i := slices.IndexFunc(wa, func(wp Waypoint) bool { return wp.Fix == fix })
+	return i != -1 && wa.nextChartedFix(i) != len(wa)
+}
+
+// insertAlongLeg inserts a waypoint at the given fraction of the way along the
+// leg after the fix at index i, keeping the points on the leg in the order
+// they are flown. Its location is left for InitializeLocations, which takes it
+// from the fixes on either side.
+func (wa WaypointArray) insertAlongLeg(i int, offset float32, wp Waypoint) WaypointArray {
+	wp.InitExtra().LegOffset = offset
+
+	j := i + 1
+	for j < len(wa) && wa[j].AlongLeg() && wa[j].LegOffset() < offset {
+		j++
+	}
+	return slices.Insert(wa, j, wp)
+}
+
+// insertOffsetActions inserts a waypoint carrying the actions at the point
+// offset of the way from the fix at index i to the next charted fix after it,
+// named for the leg it sits on ("_CKING-DRIFT@0.75"). The name has the leg's
+// far end in it because one "waypoint_actions" key may reach several routes
+// that diverge at the fix: two points are then named the same only when they
+// are in the same place.
+func (wa WaypointArray) insertOffsetActions(i int, offset float32, acts WaypointActions) (WaypointArray, error) {
+	fix := wa[i].Fix
+	if wa[i].Arc() != nil {
+		return wa, fmt.Errorf("%s: the leg after it is a DME arc, which a point between the two fixes isn't on", fix)
+	}
+	if aw := wa[i].Airway(); aw != "" {
+		return wa, fmt.Errorf("%s: %s follows it, so the fix the offset would be measured to isn't the next one "+
+			"in the route", fix, aw)
+	}
+	next := wa.nextChartedFix(i)
+	if next == len(wa) {
+		return wa, fmt.Errorf("%s: ends the route %s, so there is no following fix to measure the offset to",
+			fix, wa.RouteString())
+	}
+	if slices.ContainsFunc(wa[i+1:next], func(w Waypoint) bool { return w.LegOffset() == offset }) {
+		return wa, fmt.Errorf("%s: another key already puts a point there", fix)
+	}
+
+	// No flags to carry over: the routes this runs on are marked as being on a
+	// SID or STAR later, over all of their waypoints at once.
+	return wa.insertAlongLeg(i, offset, Waypoint{
+		Fix:   fmt.Sprintf("_%s-%s@%s", fix, wa[next].Fix, formatOffset(offset)),
+		Extra: &WaypointExtra{ActionGroups: []WaypointActionGroup{{Actions: acts}}},
+	}), nil
 }
 
 // ResolveActionControllers returns a "waypoint_actions" value with the
@@ -2166,7 +2274,11 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 	}
 
 	// Get the locations of all waypoints and cull the route after 250nm if cullFar is true.
+	// prev is the last waypoint located, which points along a leg are not, so
+	// the distance check below spans one charted leg however many of them sit
+	// on it.
 	var prev math.Point2LL
+	prevIdx, nLocated := -1, 0
 	dmeLocator, canLocateDME := loc.(DMELocator)
 	for i, wp := range wa {
 		if e != nil {
@@ -2217,7 +2329,9 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 			}
 		}
 
-		if pos, ok := loc.Locate(wp.Fix); !ok {
+		if wp.AlongLeg() {
+			// Placed below, once the fixes on either side have been located.
+		} else if pos, ok := loc.Locate(wp.Fix); !ok {
 			if e != nil && !allowSlop {
 				var errstr strings.Builder
 				errstr.WriteString("unable to locate waypoint.")
@@ -2249,16 +2363,38 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 		} else {
 			wa[i].Location = pos
 
+			// A leg longer than this is almost always a typo in a
+			// hand-written route; the longest the CIFP charts run about 220nm,
+			// out to an exit fix at the edge of a wide TRACON.
+			const suspiciousLegLength = 250
+
 			d := math.NMDistance2LL(prev, wa[i].Location)
-			if i > 1 && d > 200 && e != nil && !allowSlop && wa[i-1].Airway() == "" {
+			if nLocated > 1 && d > suspiciousLegLength && e != nil && !allowSlop && wa[prevIdx].Airway() == "" {
 				e.ErrorString("waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
-					wa[i].Location.DDString(), wa[i-1].Fix, wa[i-1].Location.DDString(), d)
+					wa[i].Location.DDString(), wa[prevIdx].Fix, wa[prevIdx].Location.DDString(), d)
 			}
-			prev = wa[i].Location
+			prev, prevIdx = wa[i].Location, i
+			nLocated++
 		}
 
 		if e != nil {
 			e.Pop()
+		}
+	}
+
+	// Points partway along a leg take their location from the charted fixes on
+	// either side, so they are placed once those have been located. Lerping
+	// lat-longs rather than following the great circle, as "spawn" does; the
+	// difference over a leg is nothing. A point beside a fix that couldn't be
+	// located keeps a zero location, the same as the fix itself.
+	for i, fix := 0, 0; i < len(wa); i++ {
+		if !wa[i].AlongLeg() {
+			fix = i
+			continue
+		}
+		if next := wa.nextChartedFix(i); next < len(wa) &&
+			!wa[fix].Location.IsZero() && !wa[next].Location.IsZero() {
+			wa[i].Location = math.Lerp2f(wa[i].LegOffset(), wa[fix].Location, wa[next].Location)
 		}
 	}
 

@@ -96,7 +96,8 @@ import (
 // 85: pregenerated FlightSchedule replaced the traffic providers; launch control rework: server-side launch slots, LaunchFlight-keyed launch/recycle RPCs, Create*/DeleteAircraft RPCs and LaunchConfig.Controller removed
 // 86: airports gained print_departure_strips/print_arrival_strips
 // 87: /delete, /land and /intercept moved from Waypoint.Flags into WaypointActions, renumbering the remaining flags
-const ViceSerializeVersion = 87
+// 88: WaypointExtra gained LegOffset, how far along its leg a synthesized waypoint sits
+const ViceSerializeVersion = 88
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

@@ -1344,33 +1344,156 @@ func (ar *Arrival) routes() []WaypointArray {
 }
 
 // addWaypointActions applies "waypoint_actions" to the routes taken from the
-// CIFP. A fix may be on the arrival's own route, on the runway transitions
-// off the end of it, or--where the two meet--on both, so the actions go onto
-// every route that passes over it.
-func (ar *Arrival) addWaypointActions(e *util.ErrorLogger) {
+// CIFP. A fix may be on the arrival's own route, on the runway transitions off
+// the end of it, or--where the two meet--on both, so the actions go onto every
+// route that passes over it. An offset at the fix where the arrival's own
+// route ends therefore goes onto the transitions alone, a different point on
+// each, as they run on to different fixes.
+//
+// The offsets are measured along the STAR's legs as charted, so spawnT is only
+// used to reject a point the arrival spawns past; applySpawnOffset moves the
+// first waypoint afterwards.
+func (ar *Arrival) addWaypointActions(spawnPoint string, spawnT float32, e *util.ErrorLogger) {
 	for _, key := range util.SortedMapKeys(ar.WaypointActions) {
-		fix, _, err := parseWaypointActionKey(key)
+		fix, offset, triggers, err := parseWaypointActionKey(key)
 		if err != nil {
 			e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
 			continue
 		}
 
-		routes := util.FilterSlice(ar.routes(), func(wps WaypointArray) bool { return wps.containsFix(fix) })
-		if len(routes) == 0 {
+		// A route carries the actions if it passes over the fix, and, for an
+		// offset, if it has a fix after it to measure the offset to.
+		carries := func(wps WaypointArray) bool {
+			return wps.containsFix(fix) && (offset == 0 || wps.hasOffsetLeg(fix))
+		}
+		routes := ar.routes()
+		if !slices.ContainsFunc(routes, func(wps WaypointArray) bool { return wps.containsFix(fix) }) {
 			e.ErrorString(`"waypoint_actions" %q: %s is not in the route %s or in any of the STAR's `+
 				`runway transitions`, key, fix, ar.Waypoints.RouteString())
 			continue
 		}
+		if !slices.ContainsFunc(routes, carries) {
+			e.ErrorString(`"waypoint_actions" %q: %s ends the route and every one of the STAR's runway `+
+				`transitions it is on, so there is no following fix to measure the offset to`, key, fix)
+			continue
+		}
+		if offset != 0 && fix == spawnPoint && offset <= spawnT {
+			if offset == spawnT {
+				e.ErrorString(`"waypoint_actions" %q: the arrival spawns at this point; %q takes the `+
+					`actions where it spawns`, key, fix)
+			} else {
+				e.ErrorString(`"waypoint_actions" %q: the arrival spawns %s of the way along %s's leg `+
+					`and never reaches this point; %q takes the actions where it spawns`,
+					key, formatOffset(spawnT), fix, fix)
+			}
+			continue
+		}
 
-		for _, wps := range routes {
-			if err := wps.addActions(key, ar.WaypointActions[key]); err != nil {
+		reported := false
+		ar.eachRoute(e, func(wps WaypointArray) WaypointArray {
+			if !carries(wps) {
+				return wps
+			}
+			amended, err := wps.addActions(fix, offset, triggers, ar.WaypointActions[key])
+			if err != nil {
 				// The routes differ only in what follows the fix, so an error
 				// at it is the same for each; report it once.
-				e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
-				break
+				if !reported {
+					e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
+					reported = true
+				}
+				return wps
 			}
-		}
+			return amended
+		})
 	}
+}
+
+// handedOff reports whether the arrival's route or one of its runway
+// transitions says where the track goes, so that vice need not add a handoff
+// to a human of its own.
+func (ar *Arrival) handedOff() bool {
+	return slices.ContainsFunc(ar.routes(), func(wps WaypointArray) bool {
+		return wps.HasHumanHandoff() || len(wps.HandoffControllers()) > 0
+	})
+}
+
+// addAutomaticHandoff hands the aircraft to a human halfway from where it
+// spawns to the next fix of the route, unless "waypoint_actions" already says
+// where the track goes, as a fully-virtual arrival does when it only hands off
+// between virtual controllers. The halfway point is measured along the charted
+// leg like any other offset, so it accounts for the "spawn" offset that
+// applySpawnOffset applies later.
+func (ar *Arrival) addAutomaticHandoff(spawnT float32) {
+	if ar.handedOff() {
+		return
+	}
+
+	handoff := WaypointActions{HumanHandoff: true}
+	next := ar.Waypoints.nextChartedFix(0)
+	// An arrival that joins the STAR at the end of a route, or on a DME arc--no
+	// point between whose fixes is on it--is handed off where it spawns.
+	if next == len(ar.Waypoints) || ar.Waypoints[0].Arc() != nil {
+		// empty string -> to human
+		ar.Waypoints[0].MergeActions(handoff)
+		return
+	}
+
+	t := (1 + spawnT) / 2
+	// A fraction this close to the handoff's is the same place on the leg--a
+	// foot or so along the longest of them--and the two are not bit-identical
+	// in any case: "spawn" 0.32 gives a midpoint of 0.65999997 where the key
+	// "@0.66" parses to 0.66.
+	const samePoint = 1e-5
+	if i := slices.IndexFunc(ar.Waypoints[1:next],
+		func(wp Waypoint) bool { return math.Abs(wp.LegOffset()-t) < samePoint }); i != -1 {
+		// A "waypoint_actions" offset already puts a point there, which takes
+		// the handoff rather than the route carrying two waypoints in one
+		// place.
+		ar.Waypoints[1+i].MergeActions(handoff)
+		return
+	}
+
+	ar.Waypoints = ar.Waypoints.insertAlongLeg(0, t, Waypoint{
+		Fix:   "_handoff",
+		Extra: &WaypointExtra{ActionGroups: []WaypointActionGroup{{Actions: handoff}}},
+	})
+}
+
+// eachRoute replaces the arrival's own route and each of the STAR's runway
+// transitions with what f makes of it.
+func (ar *Arrival) eachRoute(e *util.ErrorLogger, f func(wps WaypointArray) WaypointArray) {
+	ar.Waypoints = f(ar.Waypoints)
+	ar.eachRunwayTransition(e, f)
+}
+
+// eachRunwayTransition replaces each of the STAR's runway transitions with
+// what f makes of it, with the error logger scoped to the airport and runway
+// the transition serves.
+func (ar *Arrival) eachRunwayTransition(e *util.ErrorLogger, f func(wps WaypointArray) WaypointArray) {
+	for _, icao := range util.SortedMapKeys(ar.RunwayWaypoints) {
+		e.Push("Airport " + string(icao))
+		for _, rwy := range util.SortedMapKeys(ar.RunwayWaypoints[icao]) {
+			e.Push("Runway " + rwy)
+			ar.RunwayWaypoints[icao][rwy] = f(ar.RunwayWaypoints[icao][rwy])
+			e.Pop()
+		}
+		e.Pop()
+	}
+}
+
+// applySpawnOffset moves the arrival's first waypoint the given fraction of
+// the way along the leg after it, where "spawn" says the aircraft appears. The
+// waypoint is moved rather than replaced so that it keeps the fix's altitude
+// and speed restrictions, and its name takes the prefix synthesized waypoints
+// have, since the aircraft no longer crosses the fix the CIFP charts.
+func (ar *Arrival) applySpawnOffset(t float32) {
+	next := ar.Waypoints.nextChartedFix(0)
+	if t == 0 || next == len(ar.Waypoints) {
+		return
+	}
+	ar.Waypoints[0].Location = math.Lerp2f(t, ar.Waypoints[0].Location, ar.Waypoints[next].Location)
+	ar.Waypoints[0].Fix = "_" + ar.Waypoints[0].Fix
 }
 
 // sameRunwayTransitions reports whether the two sets of runway transitions
@@ -1393,7 +1516,7 @@ func (ar *Arrival) chartedSTARRoute(loc Locator, nmPerLongitude float32,
 	}
 	// Without a handoff of its own, the arrival would pick up the one vice
 	// adds partway along the first leg of a route taken from the CIFP.
-	if !ar.Waypoints.HasHumanHandoff() && len(ar.Waypoints.HandoffControllers()) == 0 {
+	if !ar.handedOff() {
 		return nil, false
 	}
 
@@ -1406,12 +1529,7 @@ func (ar *Arrival) chartedSTARRoute(loc Locator, nmPerLongitude float32,
 	locate := func(wps WaypointArray) WaypointArray {
 		return wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, &scratch)
 	}
-	charted.Waypoints = locate(charted.Waypoints)
-	for _, icao := range util.SortedMapKeys(charted.RunwayWaypoints) {
-		for _, rwy := range util.SortedMapKeys(charted.RunwayWaypoints[icao]) {
-			charted.RunwayWaypoints[icao][rwy] = locate(charted.RunwayWaypoints[icao][rwy])
-		}
-	}
+	charted.eachRoute(&scratch, locate)
 	if scratch.HaveErrors() {
 		return nil, false
 	}
@@ -1436,7 +1554,9 @@ func (ar *Arrival) chartedSTARRoute(loc Locator, nmPerLongitude float32,
 	// exactly, not just closely: one entry adds its actions to every route
 	// the fix is on, which is not always what the waypoints say.
 	charted.WaypointActions = actions
-	charted.addWaypointActions(&scratch)
+	// No spawn point to give: addedActions derives its keys from waypoints the
+	// route flies over, so none of them carries an offset.
+	charted.addWaypointActions("", 0, &scratch)
 	if scratch.HaveErrors() || !ar.Waypoints.sameRoute(charted.Waypoints) ||
 		!sameRunwayTransitions(ar.RunwayWaypoints, charted.RunwayWaypoints, WaypointArray.sameRoute) {
 		return nil, false
@@ -1546,9 +1666,15 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		spawnPoint, spawnTString, ok := strings.Cut(ar.SpawnWaypoint, "@")
 		spawnT := float32(0)
 		if ok {
-			if st, err := strconv.ParseFloat(spawnTString, 32); err != nil {
-				e.ErrorString("error parsing spawn offset %q: %s", spawnTString, err)
-			} else {
+			st, err := strconv.ParseFloat(spawnTString, 32)
+			switch {
+			case err != nil:
+				e.ErrorString(`"spawn" offset %q: %v`, spawnTString, err)
+			// Written so that a NaN, which ParseFloat returns without an
+			// error, is rejected along with the out-of-range values.
+			case !(st >= 0 && st < 1):
+				e.ErrorString(`"spawn" offset %q: must be at least 0 and less than 1`, spawnTString)
+			default:
 				spawnT = float32(st)
 			}
 		}
@@ -1559,50 +1685,22 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			return
 		}
 
-		ar.addWaypointActions(e)
+		// Before the handoff, so that one given at an offset counts as the
+		// arrival's own.
+		ar.addWaypointActions(spawnPoint, spawnT, e)
+		ar.addAutomaticHandoff(spawnT)
 
 		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
-		for _, icao := range util.SortedMapKeys(ar.RunwayWaypoints) {
-			e.Push("Airport " + string(icao))
-			for _, rwy := range util.SortedMapKeys(ar.RunwayWaypoints[icao]) {
-				e.Push("Runway " + rwy)
-				wps := ar.RunwayWaypoints[icao][rwy].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
-				wps.checkBasics(e, controlPositions, checkScratchpad)
-				for i := range wps {
-					wps[i].SetOnSTAR(true)
-				}
-				ar.RunwayWaypoints[icao][rwy] = wps
-				e.Pop()
+		ar.eachRunwayTransition(e, func(wps WaypointArray) WaypointArray {
+			wps = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+			for i := range wps {
+				wps[i].SetOnSTAR(true)
 			}
-			e.Pop()
-		}
+			wps.checkBasics(e, controlPositions, checkScratchpad)
+			return wps
+		})
 
-		if spawnT != 0 && len(ar.Waypoints) >= 2 {
-			ar.Waypoints[0].Location = math.Lerp2f(spawnT, ar.Waypoints[0].Location, ar.Waypoints[1].Location)
-			ar.Waypoints[0].Fix = "_" + ar.Waypoints[0].Fix
-		}
-
-		// Aircraft are handed off to a human partway along the first leg
-		// unless "waypoint_actions" says where the track goes itself, as a
-		// fully-virtual arrival does when it only hands off between virtual
-		// controllers.
-		if !ar.Waypoints.HasHumanHandoff() && len(ar.Waypoints.HandoffControllers()) == 0 {
-			if len(ar.Waypoints) == 1 {
-				// empty string -> to human
-				ar.Waypoints[0].MergeActions(WaypointActions{HumanHandoff: true})
-			} else {
-				mid := Waypoint{
-					Fix: "_handoff",
-					// FIXME: it's a little sketchy to lerp Point2ll coordinates
-					// but probably ok over short distances here...
-					Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
-					Extra: &WaypointExtra{
-						ActionGroups: []WaypointActionGroup{{Actions: WaypointActions{HumanHandoff: true}}},
-					},
-				}
-				ar.Waypoints = slices.Insert(ar.Waypoints, 1, mid)
-			}
-		}
+		ar.applySpawnOffset(spawnT)
 	} else {
 		if len(ar.WaypointActions) > 0 {
 			e.ErrorString(`"waypoint_actions" applies only to a route taken from the CIFP; ` +

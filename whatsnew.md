@@ -40,3 +40,4 @@
   - Added "waypoint_actions" to arrivals
   - An arrival's "spawn" may now name a fix on one of the STAR's runway transitions
   - An arrival whose "waypoints" fly a different STAR than it names in "star" is now an error
+  - A "waypoint_actions" fix may be given an offset, e.g. "CKING@.75", to take the actions partway to the next fix (as "spawn" allows)

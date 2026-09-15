@@ -660,6 +660,119 @@ func TestChartedSIDRoute(t *testing.T) {
 	}
 }
 
+// TestSIDOffsetActions covers "waypoint_actions" that place their actions at
+// a point along one of the SID's legs.
+func TestSIDOffsetActions(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	const nmPerLongitude = 60
+	at := func(p [2]float32) math.Point2LL {
+		return math.NM2LL([2]float32{100 + p[0], 100 + p[1]}, nmPerLongitude)
+	}
+	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
+
+	route := func(s string) WaypointArray {
+		wps, err := parseWaypoints(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return wps
+	}
+	butrz4 := SID{
+		RunwayTransitions:  map[string]WaypointArray{"9": route("KXXX-27/h011/@a820+")},
+		Common:             route("BUTRZ/a3000+"),
+		EnrouteTransitions: map[string]WaypointArray{"CLTCH": route("BUTRZ/a3000+ CLTCH")},
+	}
+	DB.Airports = map[ICAOAirportCode]FAAAirport{
+		"KXXX": {Elevation: 313, SIDs: map[string]SID{"BUTRZ4": butrz4}},
+	}
+	loc := testLocator{"KXXX-27": rend.Threshold, "BUTRZ": at([2]float32{6, 0}),
+		"CLTCH": at([2]float32{10, 0})}
+
+	amended := func(t *testing.T, actions map[string]string, e *util.ErrorLogger) WaypointArray {
+		t.Helper()
+		er := ExitRoute{SID: "BUTRZ4", ClearedAltitude: 5000, WaypointActions: actions}
+		wps, err := sidWaypoints("KXXX", "BUTRZ4", "CLTCH", "9", "CLTCH", false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		wps = er.amendSIDWaypoints(wps, e)
+		return wps.InitializeLocations(loc, nmPerLongitude, 0, true, e)
+	}
+
+	t.Run("a point along a leg", func(t *testing.T) {
+		var e util.ErrorLogger
+		wps := amended(t, map[string]string{"BUTRZ@0.25": "hoC35"}, &e)
+		if e.HaveErrors() {
+			t.Fatal(e.String())
+		}
+		want := "KXXX-27/h011/@a820+ BUTRZ/a3000+ _BUTRZ-CLTCH@0.25/hoC35 CLTCH"
+		if got := wps.Encode(); got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+		if got, want := wps[2].Location, at([2]float32{7, 0}); got != want {
+			t.Errorf("location %s, want %s", got.DDString(), want.DDString())
+		}
+	})
+
+	// The departure end waypoint is stripped once the aircraft is flying the
+	// runway centerline to 400', but a point out along its leg is a fix of the
+	// route like any other.
+	t.Run("a point along the leg off the runway", func(t *testing.T) {
+		var e util.ErrorLogger
+		er := ExitRoute{SID: "BUTRZ4", ClearedAltitude: 5000}
+		er.Waypoints = amended(t, map[string]string{"KXXX-27@0.5": "hoC35"}, &e)
+		if e.HaveErrors() {
+			t.Fatal(e.String())
+		}
+		r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
+		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
+		if e.HaveErrors() {
+			t.Fatal(e.String())
+		}
+		want := "9/sid 9-mid/t090/@a713+/h011/@a820+/sid _KXXX-27-BUTRZ@0.5/hoC35/sid BUTRZ/a3000+/sid CLTCH/sid"
+		if got := er.Waypoints.Encode(); got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+	})
+
+	// A point that lands in the window the departure end of the runway claims
+	// would be stripped with it rather than flown where it was asked for.
+	t.Run("a point at the departure end of the runway", func(t *testing.T) {
+		var e util.ErrorLogger
+		er := ExitRoute{SID: "BUTRZ4", ClearedAltitude: 5000}
+		er.Waypoints = amended(t, map[string]string{"KXXX-27@0.05": "hoC35"}, &e)
+		if e.HaveErrors() {
+			t.Fatal(e.String())
+		}
+		r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
+		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
+		if !strings.Contains(e.String(), "departure end of the runway") {
+			t.Errorf("didn't get the expected error; got: %s", e.String())
+		}
+	})
+
+	t.Run("a point along the leg after the exit", func(t *testing.T) {
+		var e util.ErrorLogger
+		amended(t, map[string]string{"CLTCH@0.5": "hoC35"}, &e)
+		if !strings.Contains(e.String(), "ends the route") {
+			t.Errorf("didn't get the expected error; got: %s", e.String())
+		}
+	})
+
+	// A SID's own fixes are resolved with slop; a fix an action names is no
+	// different at an offset than at the fix itself.
+	t.Run("a fix the actions name is resolved with the same slop as the route", func(t *testing.T) {
+		var e util.ErrorLogger
+		amended(t, map[string]string{"BUTRZ@0.5": "tNOPE-R090"}, &e)
+		if e.HaveErrors() {
+			t.Errorf("unexpected errors: %s", e.String())
+		}
+	})
+}
+
 func TestExitRouteFirstFixBehindRunway(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}}}

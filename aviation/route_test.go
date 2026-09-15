@@ -1272,12 +1272,27 @@ func TestAddActions(t *testing.T) {
 		{key: "GNNRR", actions: "c123", errContains: "invalid action"},
 		{key: "GNNRR", actions: "c7000,d3000", errContains: "cannot specify both"},
 		{key: "KSFO-10L", actions: "h090", errContains: "multiple heading"},
+		// Offsets get their own test below; only their keys are checked here.
+		{key: "GNNRR@0", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@1", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@-0.5", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@1.5", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@abc", actions: "hoC35", errContains: "invalid offset"},
+		// ParseFloat takes these without complaint.
+		{key: "GNNRR@nan", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@inf", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@", actions: "hoC35", errContains: "invalid offset"},
+		{key: "@0.5", actions: "hoC35", errContains: "no fix"},
+		{key: "FIXXX@0.5/@a500+", actions: "tc", errContains: "can't be given along with an offset"},
 	} {
 		wps, err := parseWaypoints(route)
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = wps.addActions(tc.key, tc.actions)
+		fix, offset, triggers, err := parseWaypointActionKey(tc.key)
+		if err == nil {
+			wps, err = wps.addActions(fix, offset, triggers, tc.actions)
+		}
 		if tc.errContains != "" {
 			if err == nil || !strings.Contains(err.Error(), tc.errContains) {
 				t.Errorf("%q %q: expected error containing %q, got %v", tc.key, tc.actions, tc.errContains, err)
@@ -1289,6 +1304,152 @@ func TestAddActions(t *testing.T) {
 		} else if got := wps.Encode(); got != tc.want {
 			t.Errorf("%q %q: got %q, want %q", tc.key, tc.actions, got, tc.want)
 		}
+	}
+}
+
+// TestInsertOffsetActions covers "waypoint_actions" keys that place their
+// actions at a point along the leg after their fix.
+func TestInsertOffsetActions(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	// The fixes run east along a line so that the interpolated points fall
+	// where arithmetic says they do.
+	const nmPerLongitude = 60
+	at := func(x float32) math.Point2LL { return math.NM2LL([2]float32{x, 0}, nmPerLongitude) }
+	loc := declinationLocator{
+		testLocator{"BLARK": at(0), "CKING": at(10), "DRIFT": at(30), "HLN": at(5)},
+		map[string]float32{"HLN": 11},
+	}
+
+	route := func(t *testing.T, s string) WaypointArray {
+		t.Helper()
+		wps, err := parseWaypoints(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var e util.ErrorLogger
+		wps = wps.InitializeLocations(loc, nmPerLongitude, 0, false, &e)
+		if e.HaveErrors() {
+			t.Fatal(e.String())
+		}
+		return wps
+	}
+
+	// offset does with a key what the SID and arrival paths do: parse it,
+	// insert the point, and then place it along with the rest of the route.
+	offset := func(wps WaypointArray, key, actions string, e *util.ErrorLogger) (WaypointArray, error) {
+		fix, off, triggers, err := parseWaypointActionKey(key)
+		if err != nil {
+			return wps, err
+		}
+		if wps, err = wps.addActions(fix, off, triggers, actions); err != nil {
+			return wps, err
+		}
+		return wps.InitializeLocations(loc, nmPerLongitude, 0, false, e), nil
+	}
+
+	insert := func(t *testing.T, wps WaypointArray, key, actions string) WaypointArray {
+		t.Helper()
+		var e util.ErrorLogger
+		wps, err := offset(wps, key, actions, &e)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e.HaveErrors() {
+			t.Fatal(e.String())
+		}
+		return wps
+	}
+
+	t.Run("the point goes where the offset says", func(t *testing.T) {
+		wps := insert(t, route(t, "BLARK CKING DRIFT"), "CKING@.75", "hoC35")
+		if got, want := wps.Encode(), "BLARK CKING _CKING-DRIFT@0.75/hoC35 DRIFT"; got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+		if got, want := wps[2].Location, at(25); got != want {
+			t.Errorf("location %s, want %s", got.DDString(), want.DDString())
+		}
+	})
+
+	t.Run("several on a leg are flown in order", func(t *testing.T) {
+		// The keys sort the other way round: '.' comes before '0'.
+		wps := insert(t, route(t, "BLARK CKING DRIFT"), "CKING@.7", "ho")
+		wps = insert(t, wps, "CKING@0.5", "spspAB")
+		want := "BLARK CKING _CKING-DRIFT@0.5/spspAB _CKING-DRIFT@0.7/ho DRIFT"
+		if got := wps.Encode(); got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+	})
+
+	t.Run("an action's own fix is located", func(t *testing.T) {
+		wps := insert(t, route(t, "BLARK CKING DRIFT"), "CKING@.5", "tHLN-R090")
+		h := wps[2].ActionGroups()[0].Actions.Heading
+		if h.FixLocation != at(5) || h.FixVariation != 11 {
+			t.Errorf("heading fix at %s variation %f", h.FixLocation.DDString(), h.FixVariation)
+		}
+	})
+
+	// Every fix of every charted SID and STAR does locate, so this is the
+	// defensive case: were one ever to go missing where slop keeps the route,
+	// interpolating toward its zero location would put the point an ocean away
+	// and, since that location isn't zero, keep it when the fix is dropped.
+	t.Run("the far end of the leg is missing", func(t *testing.T) {
+		away := func(x float32) math.Point2LL { return math.NM2LL([2]float32{600 + x, 2400}, nmPerLongitude) }
+		slop := declinationLocator{testLocator{"BLARK": away(0), "CKING": away(10)}, nil}
+
+		wps, err := parseWaypoints("BLARK CKING DRIFT")
+		if err != nil {
+			t.Fatal(err)
+		}
+		fix, off, triggers, err := parseWaypointActionKey("CKING@0.5")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if wps, err = wps.addActions(fix, off, triggers, "hoC35"); err != nil {
+			t.Fatal(err)
+		}
+		var e util.ErrorLogger
+		wps = wps.InitializeLocations(slop, nmPerLongitude, 0, true, &e)
+		if got, want := wps.Encode(), "BLARK CKING"; got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+	})
+
+	for _, tc := range []struct {
+		name, key, errContains string
+		arc                    bool
+		airway                 string
+		already                string
+	}{
+		{name: "no fix after it", key: "DRIFT@0.5", errContains: "ends the route"},
+		{name: "not on the route", key: "NOPE@0.5", errContains: "not in the route"},
+		{name: "along a DME arc", key: "CKING@0.5", arc: true, errContains: "DME arc"},
+		// The airway's fixes come between the two, so the offset would not be
+		// measured to the fix the key's author sees next in the route.
+		{name: "along an airway", key: "CKING@0.5", airway: "V23", errContains: "V23 follows it"},
+		// Distinct keys, but they name the same fraction of the same leg.
+		{name: "two keys on the same point", key: "CKING@0.50", already: "CKING@.5",
+			errContains: "another key already puts a point there"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			wps := route(t, "BLARK CKING DRIFT")
+			if tc.arc {
+				wps[1].InitExtra().Arc = &DMEArc{Fix: "HLN", Radius: 5}
+			}
+			if tc.airway != "" {
+				wps[1].InitExtra().Airway = tc.airway
+			}
+			if tc.already != "" {
+				wps = insert(t, wps, tc.already, "ho")
+			}
+			var e util.ErrorLogger
+			if _, err := offset(wps, tc.key, "ho", &e); err == nil ||
+				!strings.Contains(err.Error(), tc.errContains) {
+				t.Errorf("expected error containing %q, got %v", tc.errContains, err)
+			}
+		})
 	}
 }
 
