@@ -336,6 +336,14 @@ func (c *ControlClient) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.A
 	return state, err
 }
 
+// RecordFlights runs the sim through the rest of every flight it is currently
+// flying and returns where each aircraft was at each second of it.
+func (c *ControlClient) RecordFlights(callback func(sim.FlightRecordings, error)) {
+	var recordings sim.FlightRecordings
+	c.addCall(makeRPCCall(c.client.Go(server.RecordFlightsRPC, c.controllerToken, &recordings, nil),
+		func(err error) { callback(recordings, err) }))
+}
+
 func (c *ControlClient) GetSerializeSimJSON() ([]byte, error) {
 	var b []byte
 	err := c.client.CallWithTimeout(server.GetSerializeSimJSONRPC, c.controllerToken, &b)

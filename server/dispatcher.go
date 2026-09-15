@@ -1064,3 +1064,16 @@ func (sd *dispatcher) AnnotateFlightStrip(args *AnnotateFlightStripArgs, _ *stru
 	}
 	return c.sim.AnnotateFlightStrip(c.tcw, args.ACID, args.Annotations)
 }
+
+const RecordFlightsRPC = "Sim.RecordFlights"
+
+func (sd *dispatcher) RecordFlights(token string, recordings *sim.FlightRecordings) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(token)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	*recordings = c.sim.RecordFlights()
+	return nil
+}
