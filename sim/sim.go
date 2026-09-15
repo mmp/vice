@@ -64,6 +64,11 @@ type Sim struct {
 
 	// Airport -> runway -> state
 	DepartureState map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState
+	// LastExitLaunch records when a departure last left each airport over
+	// each of its exits. Going out a gate is a property of the airport, not
+	// of one runway: two departures over the same fix must be spaced
+	// whichever runways they use.
+	LastExitLaunch map[av.ICAOAirportCode]map[av.ExitID]Time
 	// Airport -> pattern state
 	PatternState   map[av.ICAOAirportCode]*PatternState
 	NextVFFRequest Time
@@ -247,6 +252,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
 
 		DepartureState: make(map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState),
+		LastExitLaunch: make(map[av.ICAOAirportCode]map[av.ExitID]Time),
 		PatternState:   make(map[av.ICAOAirportCode]*PatternState),
 
 		ControlPositions:     config.ControlPositions,

@@ -39,19 +39,26 @@ type RunwayLaunchState struct {
 	NextVFRSpawn Time
 
 	// Aircraft follow the following flows:
-	// VFR: ReleasedVFR -> Sequenced
-	// IFR no release: Gate -> ReleasedIFR -> Sequenced
-	// IFR release required: Gate -> Held -> ReleasedIFR -> Sequenced
+	// VFR: ReleasedVFR -> launched
+	// IFR no release: Gate -> ReleasedIFR -> launched
+	// IFR release required: Gate -> Held -> ReleasedIFR -> launched
 
 	// At the gate, flight plan filed (if IFR), not yet ready to go
 	Gate []DepartureAircraft
 	// Ready to go, in hold for release purgatory.
 	Held []DepartureAircraft
-	// Ready to go.
+	// Holding short, waiting their turn; the next to launch is chosen from
+	// these each time the runway is free.
 	ReleasedIFR []DepartureAircraft
 	ReleasedVFR []DepartureAircraft
-	// Sequenced departures, pulled from Released. These are launched in-order.
-	Sequenced []DepartureAircraft
+
+	// PublishedDepartures counts the published flights sent to this runway,
+	// by the category they go out in, so that runways whose gates suit a
+	// flight equally well split it in proportion to their rates for that
+	// category. The counts are cleared whenever the rates or the runways
+	// launching change, since a share only means something against the
+	// rates that produced it.
+	PublishedDepartures map[string]int
 
 	LastDeparture          *DepartureAircraft
 	LastArrivalLandingTime Time           // when the last arrival landed on this runway
@@ -76,6 +83,7 @@ type DepartureAircraft struct {
 	AirborneDistance float32
 	LaunchPath       []math.Point2LL // position at 1s intervals after the takeoff roll starts
 	SpawnTime        Time            // when it was first spawned
+	QueuedTime       Time            // when it joined the runway's queue of departures holding short
 	LaunchTime       Time            // when it was actually launched; used for wake turbulence separation, etc.
 
 	// When they're ready to leave the gate
@@ -526,8 +534,8 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 	return nil
 }
 
-func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch bool, source TrafficSource) {
-	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel, source, s.Rand)
+func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, gateDelay time.Duration) {
+	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel, gateDelay)
 
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)
@@ -535,14 +543,12 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch 
 	// The journey begins...
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
-		if manualLaunch {
-			depac.ReadyDepartGateTime = depac.SpawnTime
-		}
 		// IFRs spend some time at the gate to give them a chance to appear
 		// in the FLIGHT PLAN list.
 		depState.Gate = append(depState.Gate, depac)
 	} else {
 		// VFRs can go straight to the queue.
+		depac.QueuedTime = s.State.SimTime
 		depState.ReleasedVFR = append(depState.ReleasedVFR, depac)
 	}
 }
@@ -665,7 +671,8 @@ func (s *Sim) initDepartureState(now Time) {
 		if runwayRates, ok := s.State.LaunchConfig.DepartureRates[name]; ok {
 			for rwy, rate := range runwayRates {
 				s.DepartureState[name][rwy] = &RunwayLaunchState{
-					IFRSpawnRate: sumRateMap(rate, s.State.LaunchConfig.DepartureRateScale),
+					IFRSpawnRate:        sumRateMap(rate, s.State.LaunchConfig.DepartureRateScale),
+					PublishedDepartures: make(map[string]int),
 				}
 			}
 		}
@@ -675,7 +682,7 @@ func (s *Sim) initDepartureState(now Time) {
 			rwy := s.State.VFRRunways[name]
 			state, ok := s.DepartureState[name][av.RunwayID(rwy.Id)]
 			if !ok {
-				state = &RunwayLaunchState{}
+				state = &RunwayLaunchState{PublishedDepartures: make(map[string]int)}
 				s.DepartureState[name][av.RunwayID(rwy.Id)] = state
 			}
 			state.VFRSpawnRate = scaleRate(vfrRate, s.State.LaunchConfig.VFRDepartureRateScale)
@@ -743,7 +750,7 @@ func (s *Sim) spawnAircraft() {
 	if !s.prespawn || s.prespawnPatternEligible {
 		s.spawnPatternAircraft()
 	}
-	s.updateDepartureSequence()
+	s.updateDepartureQueues()
 }
 
 func getAircraftTime(now Time, r *rand.Rand) Time {

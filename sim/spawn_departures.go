@@ -87,7 +87,7 @@ func (s *Sim) spawnVFRDepartures() {
 				ac, err := s.makeNewVFRDeparture(airport, runway)
 				launched := ac != nil && err == nil
 				if launched {
-					s.addDepartureToPool(ac, runway, false /* not manual launch */, TrafficSourceScenario)
+					s.addDepartureToPool(ac, runway, 0 /* no wait at the gate */)
 				}
 				// Also skip the slot if there was nowhere to send the
 				// aircraft; otherwise we'd try again every second for as
@@ -100,7 +100,7 @@ func (s *Sim) spawnVFRDepartures() {
 	}
 }
 
-func (s *Sim) updateDepartureSequence() {
+func (s *Sim) updateDepartureQueues() {
 	now := s.State.SimTime
 
 	for airport, runways := range util.SortedMap(s.DepartureState) {
@@ -108,11 +108,20 @@ func (s *Sim) updateDepartureSequence() {
 			depState.filterDeleted(s.Aircraft)
 			s.processGateDepartures(depState, now)
 			s.processHeldDepartures(depState, now)
-			s.sequenceReleasedDepartures(depState, now)
-			s.launchSequencedDeparture(depState, airport, depRunway, now)
+			s.launchNextDeparture(depState, airport, depRunway, now)
 		}
 	}
 }
+
+// maxHoldingShort bounds how many departures wait for the runway at a time;
+// the rest stay at the gate. A controller sequences the handful of aircraft
+// holding short, not the whole morning's departures.
+const maxHoldingShort = 8
+
+// maxGateDepartures bounds how many departures wait at an airport's gates
+// for a runway. Past it the schedule holds its entries back rather than
+// filling the field with aircraft that will not get out.
+const maxGateDepartures = 10
 
 func (s *Sim) processGateDepartures(depState *RunwayLaunchState, now Time) {
 	for i, dep := range depState.Gate {
@@ -126,7 +135,9 @@ func (s *Sim) processGateDepartures(depState *RunwayLaunchState, now Time) {
 			s.STARSComputer.AddHeldDeparture(ac)
 			depState.Held = append(depState.Held, depState.Gate[i])
 			depState.Gate = append(depState.Gate[:i], depState.Gate[i+1:]...)
-		} else if s.State.LaunchConfig.DepartureMode == LaunchAutomatic {
+		} else if s.State.LaunchConfig.DepartureMode == LaunchAutomatic &&
+			len(depState.ReleasedIFR) < maxHoldingShort {
+			depState.Gate[i].QueuedTime = now
 			depState.ReleasedIFR = append(depState.ReleasedIFR, depState.Gate[i])
 			depState.Gate = append(depState.Gate[:i], depState.Gate[i+1:]...)
 		}
@@ -157,74 +168,78 @@ func (s *Sim) processHeldDepartures(depState *RunwayLaunchState, now Time) {
 		dep := depState.Held[0]
 		ac := s.Aircraft[dep.ADSBCallsign]
 		if ac.Released && now.After(ac.ReleaseTime.Add(dep.ReleaseDelay)) {
+			depState.Held[0].QueuedTime = now
 			depState.ReleasedIFR = append(depState.ReleasedIFR, depState.Held[0])
 			depState.Held = depState.Held[1:]
 		}
 	}
 }
 
-func (s *Sim) sequenceReleasedDepartures(depState *RunwayLaunchState, now Time) {
-	wait := func(dep DepartureAircraft) time.Duration {
-		ac := s.Aircraft[dep.ADSBCallsign]
-		return now.Sub(ac.ReleaseTime)
-	}
+// departureQueuePriority is how long a departure can hold short before it
+// goes next whether or not it fits behind the ones already gone; a gate in
+// constant use would otherwise strand it.
+const departureQueuePriority = 5 * time.Minute
 
-	// Priority: IFRs waiting > 5 minutes
-	longWait := util.FilterSeq2(slices.All(depState.ReleasedIFR),
-		func(idx int, dep DepartureAircraft) bool { return wait(dep) > 5*time.Minute })
-	if idx, ok := util.SeqMaxIndexFunc(longWait,
-		func(idx int, dep DepartureAircraft) time.Duration { return wait(dep) }); ok {
-		depState.Sequenced = append(depState.Sequenced, depState.ReleasedIFR[idx])
-		depState.ReleasedIFR = append(depState.ReleasedIFR[:idx], depState.ReleasedIFR[idx+1:]...)
+// launchNextDeparture launches one of the departures holding short of the
+// runway, if any of them can go. Leaving the choice until the runway is
+// free lets it account for what the airport's other runways have just
+// launched: a departure over a gate one of them has just used waits, and
+// one going out a different gate goes ahead of it.
+func (s *Sim) launchNextDeparture(depState *RunwayLaunchState, airport av.ICAOAirportCode,
+	depRunway av.RunwayID, now Time) {
+	// IFRs go first; VFRs wait for a gap in them.
+	queue, rules := &depState.ReleasedIFR, av.FlightRulesIFR
+	if len(*queue) == 0 {
+		queue, rules = &depState.ReleasedVFR, av.FlightRulesVFR
+	}
+	if len(*queue) == 0 || !s.runwayAvailable(depState, airport, depRunway, rules) {
 		return
 	}
 
-	if len(depState.Sequenced) == 0 || len(depState.ReleasedIFR) > 3 {
-		if len(depState.ReleasedIFR) > 0 {
-			if idx, ok := util.SeqMinIndexFunc(slices.All(depState.ReleasedIFR),
-				func(idx int, dep DepartureAircraft) time.Duration {
-					prevDep := depState.LastDeparture
-					if prevDep == nil && len(depState.Sequenced) > 0 {
-						prevDep = &depState.Sequenced[len(depState.Sequenced)-1]
-					}
-					if prevDep == nil {
-						return time.Duration(0)
-					}
-					return s.launchInterval(*prevDep, dep, true)
-				}); !ok {
-				s.lg.Errorf("No IFR found by SeqMinIndexFunc!")
-			} else {
-				depState.Sequenced = append(depState.Sequenced, depState.ReleasedIFR[idx])
-				depState.ReleasedIFR = append(depState.ReleasedIFR[:idx], depState.ReleasedIFR[idx+1:]...)
-			}
-		} else if len(depState.ReleasedVFR) > 0 {
-			depState.Sequenced = append(depState.Sequenced, depState.ReleasedVFR[0])
-			depState.ReleasedVFR = depState.ReleasedVFR[1:]
-		}
-	}
-}
-
-func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport av.ICAOAirportCode, depRunway av.RunwayID, now Time) {
-	if len(depState.Sequenced) == 0 {
+	idx, ok := s.nextDeparture(*queue, depState, airport, depRunway, now)
+	if !ok {
 		return
 	}
 
-	considerExit := len(depState.Sequenced) == 1
-	if !s.canLaunch(depState, depState.Sequenced[0], considerExit, airport, depRunway) {
-		return
-	}
+	dep := (*queue)[idx]
+	*queue = util.DeleteSliceElement(*queue, idx)
 
-	dep := depState.Sequenced[0]
 	ac := s.Aircraft[dep.ADSBCallsign]
-
 	ac.WaitingForLaunch = false
 	dep.LaunchTime = now
 	depState.LastDeparture = &dep
-	depState.Sequenced = depState.Sequenced[1:]
 
 	for _, state := range s.samePavementRunways(airport, depRunway) {
 		state.LastDeparture = &dep
 	}
+	if exit := ac.FlightPlan.Exit; exit != "" {
+		if s.LastExitLaunch[airport] == nil {
+			s.LastExitLaunch[airport] = make(map[av.ExitID]Time)
+		}
+		s.LastExitLaunch[airport][exit] = now
+	}
+}
+
+// nextDeparture returns the index in queue of the departure to launch now.
+// The one that has been holding short longest and is clear of the
+// departures already gone goes; one that has waited past
+// departureQueuePriority is next regardless, the runway holding for it
+// rather than passing it over again.
+func (s *Sim) nextDeparture(queue []DepartureAircraft, depState *RunwayLaunchState,
+	airport av.ICAOAirportCode, depRunway av.RunwayID, now Time) (int, bool) {
+	held := func(_ int, dep DepartureAircraft) time.Duration { return now.Sub(dep.QueuedTime) }
+
+	waited := util.FilterSeq2(slices.All(queue), func(idx int, dep DepartureAircraft) bool {
+		return held(idx, dep) > departureQueuePriority
+	})
+	if idx, ok := util.SeqMaxIndexFunc(waited, held); ok {
+		return idx, s.departureSpaced(depState, queue[idx], airport, depRunway)
+	}
+
+	ready := util.FilterSeq2(slices.All(queue), func(_ int, dep DepartureAircraft) bool {
+		return s.departureSpaced(depState, dep, airport, depRunway)
+	})
+	return util.SeqMaxIndexFunc(ready, held)
 }
 
 // samePavementRunways returns an iterator over all of the runways that
@@ -233,7 +248,7 @@ func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport av.I
 // dotted suffixes; we want to treat 4 and 4.AutoWest as one, for example.
 // Note that the iterator will return the provided runway and may return the
 // same runway multiple times. Merely-intersecting runways are not included;
-// they are handled geometrically in canLaunch.
+// they are handled geometrically in departureSpaced.
 func (s *Sim) samePavementRunways(airport av.ICAOAirportCode, depRwy av.RunwayID) iter.Seq2[av.RunwayID, *RunwayLaunchState] {
 	depRwyBase := depRwy.Base()
 	runwayState := s.DepartureState[airport]
@@ -264,19 +279,70 @@ func (s *Sim) samePavementRunways(airport av.ICAOAirportCode, depRwy av.RunwayID
 	}
 }
 
-// canLaunch checks whether we can go ahead and launch dep.
-func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, airport av.ICAOAirportCode, runway av.RunwayID) bool {
+// runwayAvailable reports whether the runway can take a departure now,
+// whichever one goes: no hold after a go-around, no arrival that has just
+// landed or is about to, and no pattern traffic in the way. rules are those
+// of the departure that would go.
+func (s *Sim) runwayAvailable(depState *RunwayLaunchState, airport av.ICAOAirportCode,
+	runway av.RunwayID, rules av.FlightRules) bool {
 	// Check if departures are held due to a go-around
 	if s.State.SimTime.Before(depState.GoAroundHoldUntil) {
 		return false
 	}
 
-	// Check if enough time has passed since the last departure
-	if depState.LastDeparture != nil {
-		elapsed := s.State.SimTime.Sub(depState.LastDeparture.LaunchTime)
-		if elapsed < s.launchInterval(*depState.LastDeparture, dep, considerExit) {
+	// Check if we need to wait after a recent arrival's landing to
+	// simulate its deceleration and vacating the runway (though skip this
+	// check if both the last arrival and the departing aircraft are VFR.)
+	if rules == av.FlightRulesIFR || depState.LastArrivalFlightRules == av.FlightRulesIFR {
+		if elapsed := s.State.SimTime.Sub(depState.LastArrivalLandingTime); elapsed <= time.Minute {
 			return false
 		}
+	}
+
+	// Check for imminent arrivals on this runway
+	// Skip this check if both arriving and departing aircraft are VFR
+	for _, ac := range s.Aircraft {
+		if ac.Nav.Approach.Assigned != nil && ac.Nav.Approach.Assigned.Runway == runway.Base() {
+			// Skip if both aircraft are VFR
+			if ac.FlightPlan.Rules == av.FlightRulesVFR && rules == av.FlightRulesVFR {
+				continue
+			}
+
+			if dist, err := ac.Nav.DistanceToEndOfApproach(); err == nil && dist < 2.0 {
+				// Hold departure; the arrival's too close
+				return false
+			}
+		}
+	}
+
+	// Don't launch yet if a pattern aircraft is about to land or just departed.
+	return !s.patternConflictsWithLaunch(airport)
+}
+
+// sameExitSeparation is how long after a departure has gone out over an
+// exit the next one out the same exit may start its takeoff roll.
+const sameExitSeparation = 90 * time.Second
+
+// departureSpaced reports whether dep is clear of the departures that have
+// already gone: the interval behind the last one off its own runway, the
+// gate it goes out over, and the runways that cross its own.
+func (s *Sim) departureSpaced(depState *RunwayLaunchState, dep DepartureAircraft,
+	airport av.ICAOAirportCode, runway av.RunwayID) bool {
+	now := s.State.SimTime
+
+	// Going out a gate is a property of the airport, so this holds a
+	// departure behind an earlier one over the same exit whichever runway
+	// flew it.
+	if ac, ok := s.Aircraft[dep.ADSBCallsign]; ok && ac.FlightPlan.Exit != "" {
+		if t, ok := s.LastExitLaunch[airport][ac.FlightPlan.Exit]; ok && now.Sub(t) < sameExitSeparation {
+			return false
+		}
+	}
+
+	// Check if enough time has passed since the last departure
+	if depState.LastDeparture != nil &&
+		now.Sub(depState.LastDeparture.LaunchTime) < s.launchInterval(*depState.LastDeparture, dep) {
+		return false
 	}
 
 	// Check for conflicts with the last departure from each other runway,
@@ -288,7 +354,7 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 		}
 		prev := *otherState.LastDeparture
 		if pt, ok := av.RunwayIntersectionPoint(airport, runway, otherRwy, s.State.NmPerLongitude, 1); ok {
-			if s.holdForRunwayIntersection(prev, dep, considerExit, pt, airport, runway, otherRwy) {
+			if s.holdForRunwayIntersection(prev, dep, pt, airport, runway, otherRwy) {
 				return false
 			}
 		} else if (depState.LastDeparture == nil || prev.ADSBCallsign != depState.LastDeparture.ADSBCallsign) &&
@@ -300,39 +366,6 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 		}
 	}
 
-	// Check if we need to wait after a recent arrival's landing to
-	// simulate its deceleration and vacating the runway (though skip this
-	// check if both the last arrival and the departing aircraft are VFR.)
-	depAc := s.Aircraft[dep.ADSBCallsign]
-	if depAc.FlightPlan.Rules == av.FlightRulesIFR || depState.LastArrivalFlightRules == av.FlightRulesIFR {
-		if elapsed := s.State.SimTime.Sub(depState.LastArrivalLandingTime); elapsed <= time.Minute {
-			//fmt.Printf("holding %s due to recent arrival\n", dep.ADSBCallsign)
-			return false
-		}
-	}
-
-	// Check for imminent arrivals on this runway
-	// Skip this check if both arriving and departing aircraft are VFR
-	for _, ac := range s.Aircraft {
-		if ac.Nav.Approach.Assigned != nil && ac.Nav.Approach.Assigned.Runway == runway.Base() {
-			// Skip if both aircraft are VFR
-			if ac.FlightPlan.Rules == av.FlightRulesVFR && depAc.FlightPlan.Rules == av.FlightRulesVFR {
-				continue
-			}
-
-			if dist, err := ac.Nav.DistanceToEndOfApproach(); err == nil && dist < 2.0 {
-				// Hold departure; the arrival's too close
-				//fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
-				return false
-			}
-		}
-	}
-
-	// Don't launch yet if a pattern aircraft is about to land or just departed.
-	if s.patternConflictsWithLaunch(airport) {
-		return false
-	}
-
 	return true
 }
 
@@ -341,9 +374,9 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 // full launch interval is only needed if both aircraft are airborne before
 // the intersection point; otherwise it's enough for the previous departure
 // to have passed it.
-func (s *Sim) holdForRunwayIntersection(prev, dep DepartureAircraft, considerExit bool, pt math.Point2LL,
+func (s *Sim) holdForRunwayIntersection(prev, dep DepartureAircraft, pt math.Point2LL,
 	airport av.ICAOAirportCode, runway, otherRwy av.RunwayID) bool {
-	if s.State.SimTime.Sub(prev.LaunchTime) >= s.launchInterval(prev, dep, considerExit) {
+	if s.State.SimTime.Sub(prev.LaunchTime) >= s.launchInterval(prev, dep) {
 		return false // full separation is satisfied regardless
 	}
 	bothAirborne := s.airborneBeforeIntersection(prev, airport, otherRwy, pt) &&
@@ -425,8 +458,10 @@ func (s *Sim) departureHasPassedPoint(dep DepartureAircraft, airport av.ICAOAirp
 }
 
 // launchInterval returns the amount of time we must wait before launching
-// cur, if prev was the last aircraft launched.
-func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) time.Duration {
+// cur, if prev was the last aircraft launched from the same pavement.
+// Spacing for the gate cur goes out over is handled separately, in
+// departureSpaced: it doesn't depend on which runway flew prev.
+func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 	cac, cok := s.Aircraft[cur.ADSBCallsign]
 	pac, pok := s.Aircraft[prev.ADSBCallsign]
 
@@ -440,12 +475,6 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 
 	// Start with 6,000' and airborne for the launch delay.
 	wait := prev.MinSeparation
-
-	// When sequencing, penalize same-exit repeats. But when we have a
-	// sequence and are launching, we'll let it roll.
-	if considerExit && cac.FlightPlan.Exit == pac.FlightPlan.Exit {
-		wait = max(wait, 3*time.Minute/2)
-	}
 
 	// Check for wake turbulence separation.
 	wtDist := av.CWTDirectlyBehindSeparation(pac.CWT(), cac.CWT())
@@ -475,7 +504,7 @@ func (s *Sim) vfrDestinationWeight(ap av.ICAOAirportCode) float32 {
 
 func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID) (ac *Aircraft, err error) {
 	depState := s.DepartureState[depart][runway]
-	if len(depState.ReleasedVFR) >= 5 || len(depState.Sequenced) >= 5 {
+	if len(depState.ReleasedVFR) >= 5 || len(depState.ReleasedIFR) >= maxHoldingShort {
 		// There's a backup; hold off on more.
 		return
 	}
@@ -574,7 +603,6 @@ func (rls *RunwayLaunchState) cullDepartures(s *Sim) {
 	rls.Held = s.cullDepartures(keep, rls.Held)
 	rls.ReleasedIFR = s.cullDepartures(keep, rls.ReleasedIFR)
 	rls.ReleasedVFR = s.cullDepartures(keep, rls.ReleasedVFR)
-	rls.Sequenced = s.cullDepartures(keep, rls.Sequenced)
 }
 
 func (rls *RunwayLaunchState) filterDeleted(aircraft map[av.ADSBCallsign]*Aircraft) {
@@ -586,7 +614,6 @@ func (rls *RunwayLaunchState) filterDeleted(aircraft map[av.ADSBCallsign]*Aircra
 	rls.Held = util.FilterSliceInPlace(rls.Held, haveAc)
 	rls.ReleasedIFR = util.FilterSliceInPlace(rls.ReleasedIFR, haveAc)
 	rls.ReleasedVFR = util.FilterSliceInPlace(rls.ReleasedVFR, haveAc)
-	rls.Sequenced = util.FilterSliceInPlace(rls.Sequenced, haveAc)
 }
 
 func (rls *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
@@ -610,12 +637,11 @@ func (rls RunwayLaunchState) Dump(airport av.ICAOAirportCode, runway av.RunwayID
 	callsign := func(dep DepartureAircraft) string {
 		return string(dep.ADSBCallsign)
 	}
-	fmt.Printf("%s/%s: Gate %s Held %s Released IFR %s Released VFR %s Sequence %s\n", airport, runway,
+	fmt.Printf("%s/%s: Gate %s Held %s Released IFR %s Released VFR %s\n", airport, runway,
 		strings.Join(util.MapSlice(rls.Gate, callsign), ", "),
 		strings.Join(util.MapSlice(rls.Held, callsign), ", "),
 		strings.Join(util.MapSlice(rls.ReleasedIFR, callsign), ", "),
-		strings.Join(util.MapSlice(rls.ReleasedVFR, callsign), ", "),
-		strings.Join(util.MapSlice(rls.Sequenced, callsign), ", "))
+		strings.Join(util.MapSlice(rls.ReleasedVFR, callsign), ", "))
 	if rls.IFRSpawnRate > 0 {
 		fmt.Printf("    IFR rate %f\n", rls.IFRSpawnRate)
 	}
@@ -676,11 +702,11 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 	nasFp.InboundHandoffController = pos
 }
 
-// createScheduledIFRDeparture creates the scenario IFR departure a schedule
+// createScenarioIFRDeparture creates the scenario IFR departure a schedule
 // entry describes; the runway, category, departure route, and identity were
 // all sampled when the entry was generated. All resource allocation--squawk,
 // flight strip, flight plan, list index--happens here.
-func (s *Sim) createScheduledIFRDeparture(e ScheduledDeparture) (*Aircraft, error) {
+func (s *Sim) createScenarioIFRDeparture(e ScheduledDeparture) (*Aircraft, error) {
 	ap, rwy, exitRoutes, err := s.departureConfiguration(e.DepartureAirport, e.Runway, e.Category)
 	if err != nil {
 		return nil, err
@@ -1360,32 +1386,11 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 	return ac, err
 }
 
-func departureGateDelay(ac *Aircraft, trafficSource TrafficSource, r *rand.Rand) time.Duration {
-	if ac.FlightPlan.Rules != av.FlightRulesIFR {
-		return 0
-	}
-
-	if trafficSource == TrafficSourceHistorical {
-		// Historical departures are spawned flightSpawnLead ahead of the time
-		// they actually took off, so the wait at the gate is what is left of
-		// that after allowing for the taxi out.
-		return flightSpawnLead - flightTaxiAllowance
-	}
-
-	if trafficSource == TrafficSourceTimetable {
-		// A timetable's published departure times are pushback; taxi out takes a
-		// while longer.
-		return r.DurationRange(10*time.Minute, 21*time.Minute)
-	}
-
-	return 5 * time.Minute
-}
-
-func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, trafficSource TrafficSource, r *rand.Rand) DepartureAircraft {
+func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, gateDelay time.Duration) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign:        ac.ADSBCallsign,
 		SpawnTime:           simTime,
-		ReadyDepartGateTime: simTime.Add(departureGateDelay(ac, trafficSource, r)),
+		ReadyDepartGateTime: simTime.Add(gateDelay),
 	}
 
 	// Simulate out the takeoff roll and initial climb to figure out when

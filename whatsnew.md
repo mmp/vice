@@ -4,6 +4,9 @@
   - "At FIX intercept the localizer" is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing
   - Added: `IFIX/RADIAL`: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
   - Departures are now automatically held when a recent departure from another runway is flying an initial route that crosses their departure path
+  - Two departures going out over the same fix are now spaced from each other whichever runways they leave from
+  - The next departure to go is chosen when the runway is free rather than sequenced ahead of time, so it takes account of what the airport's other runways have just launched
+  - Published traffic is split across the runways that can fly it in proportion to the scenario's departure rates
   - More accurately model departures' 400' AGL rollout
   - Improved drawing of complex routes (SIDs/STARs/approaches/...)
 - Bug fixes
@@ -13,6 +16,8 @@
   - Fixed aircraft turning away from the localizer instead of joining it
   - Fixed bug with real-world traffic routes including the departure airport
   - Fixed a few bugs with joining visual approaches
+  - Fixed departures out the same gate being launched with only a mile or two between them
+  - Fixed published traffic launching all of an airport's departures from a single runway when several could fly them
   - Fixed bug where only one of the two MVA charts was loaded for the BOI, D01, and GEG TRACONs
 - ERAM
   - Fixed bug with cutoff "8" characters in datablocks

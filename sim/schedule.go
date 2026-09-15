@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"maps"
@@ -691,6 +692,27 @@ func (s *Sim) spawnScheduledFlights() {
 	s.spawnScheduledOverflights()
 }
 
+// departureGateDelay is how long a departure waits at the gate before it is
+// ready to taxi. Each traffic source's times mean something different, so this
+// is where the source is turned into a wait and stops mattering.
+func departureGateDelay(source TrafficSource, r *rand.Rand) time.Duration {
+	switch source {
+	case TrafficSourceHistorical:
+		// Historical departures are spawned flightSpawnLead ahead of the time
+		// they actually took off, so the wait at the gate is what is left of
+		// that after allowing for the taxi out.
+		return flightSpawnLead - flightTaxiAllowance
+
+	case TrafficSourceTimetable:
+		// A timetable's published departure times are pushback; taxi out takes a
+		// while longer.
+		return r.DurationRange(10*time.Minute, 21*time.Minute)
+
+	default:
+		return 5 * time.Minute
+	}
+}
+
 func (s *Sim) spawnScheduledDepartures() {
 	if s.State.LaunchConfig.DepartureMode != LaunchAutomatic {
 		return
@@ -713,24 +735,23 @@ func (s *Sim) spawnScheduledDepartures() {
 			}
 			// A backed-up gate defers the entry rather than losing it; it
 			// spawns once the queue drains.
-			if spawned[key] || len(depState.Gate) >= 10 {
+			if spawned[key] || len(depState.Gate) >= maxGateDepartures {
 				i++
 				continue
 			}
-			ac, err := s.createScheduledIFRDeparture(e)
+			ac, err := s.createScenarioIFRDeparture(e)
 			if err != nil {
 				s.lg.Warnf("%s: unable to create IFR departure: %v", e.Callsign, err)
 				s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
 				continue
 			}
-			ac.ReleaseTime = util.Select(ac.HoldForRelease, ac.ReleaseTime, now)
-			s.addDepartureToPool(ac, e.Runway, false, e.Source)
+			s.addDepartureToPool(ac, e.Runway, departureGateDelay(e.Source, s.Rand))
 			spawned[key] = true
 			s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
 			continue
 		}
 
-		runway, categories, _, err := s.resolveScheduledDepartureRunway(&e)
+		runway, categories, choice, err := s.resolvePublishedDepartureRunway(&e)
 		if err != nil {
 			if errors.Is(err, errNoDepartureRunwayEnabled) {
 				// Nothing is launching from this airport right now; leave the
@@ -746,7 +767,10 @@ func (s *Sim) spawnScheduledDepartures() {
 			continue
 		}
 		key := string(e.DepartureAirport) + "/" + string(runway)
-		if spawned[key] {
+		depState := s.DepartureState[e.DepartureAirport][runway]
+		// A backed-up gate defers the entry rather than losing it, as for
+		// scenario traffic.
+		if spawned[key] || depState == nil || len(depState.Gate) >= maxGateDepartures {
 			i++
 			continue
 		}
@@ -757,7 +781,8 @@ func (s *Sim) spawnScheduledDepartures() {
 		} else if err != nil {
 			s.lg.Warnf("%s: unable to create published departure: %v", e.Callsign, err)
 		} else {
-			s.addDepartureToPool(ac, runway, false, e.Source)
+			s.addDepartureToPool(ac, runway, departureGateDelay(e.Source, s.Rand))
+			depState.PublishedDepartures[choice.candidate.rwy.Category]++
 			spawned[key] = true
 		}
 		s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
@@ -856,15 +881,35 @@ func (s *Sim) spawnScheduledOverflights() {
 // dropped.
 var errNoDepartureRunwayEnabled = errors.New("no departure runway is enabled")
 
-// resolveScheduledDepartureRunway finds the runway a published departure leaves from, along with
+// runwayFit is a runway a published departure could leave from, with the
+// exit and route it would fly there and what the scenario asks the runway to
+// launch.
+type runwayFit struct {
+	runway     av.RunwayID
+	categories []string
+	choice     departureChoice
+	rate       float32 // the scenario's rate for the category the flight goes out in
+	taken      int     // published departures already sent to this runway in that category
+}
+
+// share returns how far along its portion of the airport's published
+// departures the runway already is. The smallest share goes next, so runways
+// that suit a flight equally well fill in proportion to their rates.
+func (f runwayFit) share() float32 {
+	if f.rate == 0 {
+		return float32(f.taken)
+	}
+	return float32(f.taken) / f.rate
+}
+
+// resolvePublishedDepartureRunway finds the runway a published departure leaves from, along with
 // the exit and route it flies there: of the runways the scenario is launching, the one whose gates
-// suit the flight best, ties going to the first in sorted order.
-func (s *Sim) resolveScheduledDepartureRunway(e *ScheduledDeparture) (av.RunwayID, []string,
+// suit the flight best. Runways that suit it equally well share it out in proportion to their
+// rates, so that the airport's whole flow doesn't go out the first of them.
+func (s *Sim) resolvePublishedDepartureRunway(e *ScheduledDeparture) (av.RunwayID, []string,
 	departureChoice, error) {
 	lc := &s.State.LaunchConfig
-	var best av.RunwayID
-	var bestCategories []string
-	var bestChoice departureChoice
+	var fits []runwayFit
 	var fitErr error
 	launching := false
 	for _, runway := range util.SortedMapKeys(lc.DepartureEnabled[e.DepartureAirport]) {
@@ -879,17 +924,32 @@ func (s *Sim) resolveScheduledDepartureRunway(e *ScheduledDeparture) (av.RunwayI
 			fitErr = err
 			continue
 		}
-		if best == "" || choice.fit < bestChoice.fit {
-			best, bestCategories, bestChoice = runway, categories, choice
+		category := choice.candidate.rwy.Category
+		f := runwayFit{runway: runway, categories: categories, choice: choice,
+			rate: lc.DepartureRates[e.DepartureAirport][runway][category]}
+		if depState := s.DepartureState[e.DepartureAirport][runway]; depState != nil {
+			f.taken = depState.PublishedDepartures[category]
 		}
+		fits = append(fits, f)
 	}
-	if best != "" {
-		return best, bestCategories, bestChoice, nil
+
+	if len(fits) == 0 {
+		if !launching {
+			return "", nil, departureChoice{}, errNoDepartureRunwayEnabled
+		}
+		return "", nil, departureChoice{}, fitErr
 	}
-	if !launching {
-		return "", nil, departureChoice{}, errNoDepartureRunwayEnabled
+
+	bestFit := slices.MinFunc(fits, func(a, b runwayFit) int { return cmp.Compare(a.choice.fit, b.choice.fit) })
+	fits = util.FilterSlice(fits, func(f runwayFit) bool { return f.choice.fit == bestFit.choice.fit })
+	if rated := util.FilterSlice(fits, func(f runwayFit) bool { return f.rate > 0 }); len(rated) > 0 {
+		fits = rated
 	}
-	return "", nil, departureChoice{}, fitErr
+
+	// MinFunc keeps the first of equal elements, so ties fall to the first
+	// runway in sorted order.
+	f := slices.MinFunc(fits, func(a, b runwayFit) int { return cmp.Compare(a.share(), b.share()) })
+	return f.runway, f.categories, f.choice, nil
 }
 
 // noteCallsignClash reports a published flight discarded because its callsign
@@ -947,12 +1007,8 @@ func (s *Sim) applyScheduleConfigChanges(old *LaunchConfig) {
 		s.clearPendingLaunches()
 	} else {
 		scenario := lc.TrafficSource == TrafficSourceScenario
-		departureRatesChanged := lc.DepartureRateScale != old.DepartureRateScale ||
-			!maps.EqualFunc(lc.DepartureRates, old.DepartureRates,
-				func(a, b map[av.RunwayID]map[string]float32) bool {
-					return maps.EqualFunc(a, b, maps.Equal)
-				})
-		if scenario && departureRatesChanged {
+		ratesChanged := departureRatesChanged(lc, old)
+		if scenario && ratesChanged {
 			s.regenerateScenarioDepartures()
 		}
 
@@ -974,10 +1030,26 @@ func (s *Sim) applyScheduleConfigChanges(old *LaunchConfig) {
 		}
 
 		// Arrival placements bake in which flows are enabled, so toggling one
-		// refits the queued published arrivals. Departures need nothing here:
-		// their runway is resolved when they spawn.
+		// refits the queued published arrivals. A published departure's
+		// runway is resolved when it spawns and so needs nothing here, but
+		// the shares that decide it do: see below.
 		if !scenario && !maps.EqualFunc(lc.InboundFlowEnabled, old.InboundFlowEnabled, maps.Equal) {
 			s.updatePublishedArrivalPlacements()
+		}
+	}
+
+	// How far along its share of the published departures a runway is only
+	// means anything against the rates that produced it, so any change to
+	// the rates or to which runways are launching starts the split over.
+	// Otherwise a runway newly enabled alongside one that has been working
+	// all morning would take every flight until its count caught up.
+	if departureRatesChanged(lc, old) ||
+		!maps.EqualFunc(lc.DepartureEnabled, old.DepartureEnabled,
+			func(a, b map[av.RunwayID]map[string]bool) bool { return maps.EqualFunc(a, b, maps.Equal) }) {
+		for _, runways := range s.DepartureState {
+			for _, depState := range runways {
+				clear(depState.PublishedDepartures)
+			}
 		}
 	}
 
@@ -1025,6 +1097,16 @@ func (s *Sim) applyScheduleConfigChanges(old *LaunchConfig) {
 
 	// A kind newly switched to manual fills its slots in this same update.
 	s.refillPendingLaunches()
+}
+
+// departureRatesChanged reports whether the scenario's departure rates or
+// the scale applied to them differ between the two launch configurations.
+func departureRatesChanged(lc, old *LaunchConfig) bool {
+	return lc.DepartureRateScale != old.DepartureRateScale ||
+		!maps.EqualFunc(lc.DepartureRates, old.DepartureRates,
+			func(a, b map[av.RunwayID]map[string]float32) bool {
+				return maps.EqualFunc(a, b, maps.Equal)
+			})
 }
 
 func (s *Sim) regenerateScenarioDepartures() {

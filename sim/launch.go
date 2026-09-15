@@ -206,7 +206,7 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 						if e.Source == TrafficSourceScenario || e.DepartureAirport != airport {
 							continue
 						}
-						rwy, _, choice, err := s.resolveScheduledDepartureRunway(e)
+						rwy, _, choice, err := s.resolvePublishedDepartureRunway(e)
 						if err != nil || rwy != runway {
 							continue
 						}
@@ -331,11 +331,11 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 		for key, e := range s.PendingDepartures {
 			if av.ADSBCallsign(e.Callsign) == flight.Callsign {
 				delete(s.PendingDepartures, key)
-				ac, err := s.createScheduledIFRDeparture(*e)
+				ac, err := s.createScenarioIFRDeparture(*e)
 				if err != nil {
 					return err
 				}
-				s.launchDeparture(ac, e.Runway, e.Source)
+				s.launchDeparture(ac, e.Runway)
 				return nil
 			}
 		}
@@ -355,7 +355,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 				return err
 			}
 			s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
-			s.launchDeparture(ac, flight.Runway, e.Source)
+			s.launchDeparture(ac, flight.Runway)
 			return nil
 		}
 
@@ -400,9 +400,10 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 	return ErrNoMatchingFlight
 }
 
-func (s *Sim) launchDeparture(ac *Aircraft, runway av.RunwayID, source TrafficSource) {
+func (s *Sim) launchDeparture(ac *Aircraft, runway av.RunwayID) {
 	if ac.HoldForRelease {
-		s.addDepartureToPool(ac, runway, true /* manual launch */, source)
+		// Clicking the launch slot stands in for the wait at the gate.
+		s.addDepartureToPool(ac, runway, 0)
 	} else {
 		s.addAircraftNoLock(*ac)
 	}
@@ -451,7 +452,7 @@ func (s *Sim) RecycleLaunchAircraft(tcw TCW, flight LaunchFlight) error {
 					// The runway is no longer launching; treat the airport as one flow.
 					return true
 				}
-				rwy, _, _, ferr := s.resolveScheduledDepartureRunway(o)
+				rwy, _, _, ferr := s.resolvePublishedDepartureRunway(o)
 				return ferr == nil && rwy == flight.Runway
 			}
 			s.Schedule.Departures = removeScheduledAndShift(s.Schedule.Departures, i,

@@ -47,6 +47,7 @@ func NewTestSim(lg *log.Logger) *Sim {
 		},
 		Aircraft:            map[av.ADSBCallsign]*Aircraft{},
 		DepartureState:      make(map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState),
+		LastExitLaunch:      make(map[av.ICAOAirportCode]map[av.ExitID]Time),
 		PatternState:        make(map[av.ICAOAirportCode]*PatternState),
 		lastSTTCommands:     make(map[TCW]*lastSTTCommand),
 		Handoffs:            make(map[ACID]Handoff),

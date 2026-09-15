@@ -148,7 +148,7 @@ func TestDepartureIntersectionHelpers(t *testing.T) {
 	}
 }
 
-func TestCanLaunchIntersectingRunways(t *testing.T) {
+func TestDepartureSpacedIntersectingRunways(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 
 	now := NewSimTime(time.Now())
@@ -176,42 +176,42 @@ func TestCanLaunchIntersectingRunways(t *testing.T) {
 	dep := DepartureAircraft{ADSBCallsign: "DEP1", MinSeparation: time.Minute, AirborneDistance: 0.5}
 
 	s.State.SimTime = now.Add(10 * time.Second)
-	if s.canLaunch(rwy36, dep, false, "XTST", "36") {
-		t.Error("canLaunch: leader hasn't passed the intersection yet")
+	if s.departureSpaced(rwy36, dep, "XTST", "36") {
+		t.Error("departureSpaced: leader hasn't passed the intersection yet")
 	}
 
 	// Once the leader is past the intersection, the departure may go even
 	// though the full interval hasn't elapsed.
 	prevAc.Nav.FlightState.Position = math.NM2LL([2]float32{1.2, 0}, testNmPerLongitude)
-	if !s.canLaunch(rwy36, dep, false, "XTST", "36") {
-		t.Error("canLaunch: leader passed the intersection on the ground")
+	if !s.departureSpaced(rwy36, dep, "XTST", "36") {
+		t.Error("departureSpaced: leader passed the intersection on the ground")
 	}
 
 	// If both aircraft are airborne before the intersection, the full
 	// interval applies even after the leader has passed it.
 	prev.AirborneDistance = 0.5
-	if s.canLaunch(rwy36, dep, false, "XTST", "36") {
-		t.Error("canLaunch: both airborne before the intersection; full interval required")
+	if s.departureSpaced(rwy36, dep, "XTST", "36") {
+		t.Error("departureSpaced: both airborne before the intersection; full interval required")
 	}
 	s.State.SimTime = now.Add(5*time.Minute + time.Second)
-	if !s.canLaunch(rwy36, dep, false, "XTST", "36") {
-		t.Error("canLaunch: full interval has elapsed")
+	if !s.departureSpaced(rwy36, dep, "XTST", "36") {
+		t.Error("departureSpaced: full interval has elapsed")
 	}
 
 	// Departures on the parallel runway aren't coupled at all.
 	rwy9.LastDeparture = nil
 	rwy8.LastDeparture = &DepartureAircraft{ADSBCallsign: "PRV1", LaunchTime: s.State.SimTime,
 		MinSeparation: 5 * time.Minute, AirborneDistance: 1.5}
-	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
-		t.Error("canLaunch: departure on a parallel runway shouldn't couple")
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: departure on a parallel runway shouldn't couple")
 	}
 
 	// Nor are they coupled when both fly straight out, with launch paths
 	// recorded.
 	rwy8.LastDeparture.LaunchPath = makeTestLaunchPath(0, 5, 0.1, 0, 120)
 	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.1, 0, 120)
-	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
-		t.Error("canLaunch: straight-out departure on a parallel runway shouldn't couple")
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: straight-out departure on a parallel runway shouldn't couple")
 	}
 }
 
@@ -254,14 +254,14 @@ func TestHoldForCrossingDeparture(t *testing.T) {
 
 	// They would reach the crossing point 10 seconds apart.
 	s.State.SimTime = now.Add(10 * time.Second)
-	if s.canLaunch(rwy9, dep, false, "XTST", "9") {
-		t.Error("canLaunch: crossing departure from the parallel runway is too close in time")
+	if s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: crossing departure from the parallel runway is too close in time")
 	}
 
 	// 40 seconds apart is more than crossingSeparation.
 	s.State.SimTime = now.Add(40 * time.Second)
-	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
-		t.Error("canLaunch: crossing departure from the parallel runway is well ahead")
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: crossing departure from the parallel runway is well ahead")
 	}
 
 	// The window is symmetric: if the new departure will be through the
@@ -269,15 +269,15 @@ func TestHoldForCrossingDeparture(t *testing.T) {
 	s.State.SimTime = now.Add(10 * time.Second)
 	prev.LaunchPath = makeTestLaunchPath(0, 5, 0.05, -0.05, 120) // crosses at 100 seconds
 	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.25, 0, 120)      // crosses at 20 seconds
-	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
-		t.Error("canLaunch: departure crosses well ahead of the earlier one's arrival")
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: departure crosses well ahead of the earlier one's arrival")
 	}
 
 	// Straight-out paths from parallel runways don't cross.
 	prev.LaunchPath = makeTestLaunchPath(0, 5, 0.1, 0, 120)
 	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.1, 0, 120)
-	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
-		t.Error("canLaunch: straight-out parallel departures shouldn't couple")
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: straight-out parallel departures shouldn't couple")
 	}
 
 	// A deleted leader is long gone.
@@ -295,12 +295,12 @@ func TestHoldForCrossingDeparture(t *testing.T) {
 	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.15, 0, 120)      // crosses at ~33 seconds
 	s.State.SimTime = now.Add(80 * time.Second)                  // past MinSeparation; within crossingSeparation at the crossing
 	rwy9.LastDeparture = &prev
-	if !s.canLaunch(rwy9, dep, false, "XTST", "9") {
-		t.Error("canLaunch: shared last departure shouldn't be held for crossing paths")
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: shared last departure shouldn't be held for crossing paths")
 	}
 	rwy9.LastDeparture = nil
-	if s.canLaunch(rwy9, dep, false, "XTST", "9") {
-		t.Error("canLaunch: the same geometry should hold when the last departure isn't shared")
+	if s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: the same geometry should hold when the last departure isn't shared")
 	}
 }
 
@@ -331,6 +331,184 @@ func TestSamePavementRunways(t *testing.T) {
 	// Intersecting runways no longer share the same-pavement group.
 	if slices.Contains(got, av.RunwayID("36")) {
 		t.Errorf("samePavementRunways = %v, shouldn't include intersecting runway 36", got)
+	}
+}
+
+// departureQueueSim returns a sim with the synthetic XTST airport's runways
+// 9 and 8 ready to launch departures.
+func departureQueueSim(now Time) (*Sim, *RunwayLaunchState, *RunwayLaunchState) {
+	s := NewTestSim(testLogger())
+	s.State.NmPerLongitude = testNmPerLongitude
+	s.State.SimTime = now
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"XTST": {}}
+
+	rwy9, rwy8 := &RunwayLaunchState{}, &RunwayLaunchState{}
+	s.DepartureState = map[av.ICAOAirportCode]map[av.RunwayID]*RunwayLaunchState{
+		"XTST": {"9": rwy9, "8": rwy8},
+	}
+	return s, rwy9, rwy8
+}
+
+// stageDeparture registers an IFR departure going out over exit with the sim
+// and returns the queue entry for it, holding short since queued.
+func stageDeparture(s *Sim, callsign av.ADSBCallsign, exit av.ExitID, queued Time) DepartureAircraft {
+	s.Aircraft[callsign] = &Aircraft{
+		ADSBCallsign: callsign,
+		FlightPlan:   av.FlightPlan{AircraftType: "B738", Rules: av.FlightRulesIFR, Exit: exit},
+	}
+	return DepartureAircraft{ADSBCallsign: callsign, QueuedTime: queued, MinSeparation: time.Minute}
+}
+
+func TestDepartureSpacedByExit(t *testing.T) {
+	installIntersectingRunwayFixture(t)
+
+	now := NewSimTime(time.Now())
+	s, rwy9, rwy8 := departureQueueSim(now)
+
+	// Runway 8 launched a FOO 30 seconds ago and a BAR since, so its last
+	// departure says nothing about the gate; the airport's record of it
+	// does.
+	s.LastExitLaunch["XTST"] = map[av.ExitID]Time{"FOO": now.Add(-30 * time.Second)}
+	rwy8.LastDeparture = &DepartureAircraft{ADSBCallsign: "BAR0", LaunchTime: now}
+
+	dep := stageDeparture(s, "FOO1", "FOO", now)
+	if s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: another runway has just used the gate")
+	}
+	if other := stageDeparture(s, "BAZ1", "BAZ", now); !s.departureSpaced(rwy9, other, "XTST", "9") {
+		t.Error("departureSpaced: a different gate is clear")
+	}
+
+	s.State.SimTime = now.Add(sameExitSeparation)
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: the gate is clear again")
+	}
+
+	// The interval behind the runway's own last departure still applies
+	// when it is longer than the gate's.
+	prev := stageDeparture(s, "PRV1", "BAZ", now)
+	prev.LaunchTime = s.State.SimTime
+	prev.MinSeparation = 3 * time.Minute
+	rwy9.LastDeparture = &prev
+	if s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: the launch interval behind the last departure hasn't elapsed")
+	}
+	s.State.SimTime = s.State.SimTime.Add(3 * time.Minute)
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: the launch interval has elapsed")
+	}
+}
+
+func TestNextDepartureSpreadsGates(t *testing.T) {
+	installIntersectingRunwayFixture(t)
+
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+
+	// A departure has just gone out over FOO, so the FOO holding short waits
+	// and the BAR behind it goes first even though it has waited less.
+	s.LastExitLaunch["XTST"] = map[av.ExitID]Time{"FOO": now}
+	queue := []DepartureAircraft{
+		stageDeparture(s, "FOO1", "FOO", now.Add(-time.Minute)),
+		stageDeparture(s, "BAR1", "BAR", now.Add(-30*time.Second)),
+	}
+
+	if idx, ok := s.nextDeparture(queue, rwy9, "XTST", "9", now); !ok || idx != 1 {
+		t.Errorf("nextDeparture = %d, %v; want the BAR departure at index 1", idx, ok)
+	}
+
+	// Once the gate is clear the FOO goes, having held short longer.
+	s.State.SimTime = now.Add(sameExitSeparation)
+	if idx, ok := s.nextDeparture(queue, rwy9, "XTST", "9", s.State.SimTime); !ok || idx != 0 {
+		t.Errorf("nextDeparture = %d, %v; want the FOO departure at index 0", idx, ok)
+	}
+}
+
+func TestNextDepartureHoldsForALongWait(t *testing.T) {
+	installIntersectingRunwayFixture(t)
+
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+
+	s.LastExitLaunch["XTST"] = map[av.ExitID]Time{"FOO": now}
+	queue := []DepartureAircraft{
+		stageDeparture(s, "FOO1", "FOO", now.Add(-departureQueuePriority-time.Minute)),
+		stageDeparture(s, "BAR1", "BAR", now),
+	}
+
+	// FOO1 has held short past the priority, so the runway waits for its
+	// gate rather than passing it over again.
+	if _, ok := s.nextDeparture(queue, rwy9, "XTST", "9", now); ok {
+		t.Error("nextDeparture: a departure past the priority should go next, not be passed over")
+	}
+
+	// Under the priority, the departure that can go goes.
+	queue[0].QueuedTime = now.Add(-time.Minute)
+	if idx, ok := s.nextDeparture(queue, rwy9, "XTST", "9", now); !ok || idx != 1 {
+		t.Errorf("nextDeparture = %d, %v; want the BAR departure at index 1", idx, ok)
+	}
+}
+
+func TestLaunchNextDeparture(t *testing.T) {
+	installIntersectingRunwayFixture(t)
+
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+
+	s.LastExitLaunch["XTST"] = map[av.ExitID]Time{"FOO": now}
+	rwy9.ReleasedIFR = []DepartureAircraft{
+		stageDeparture(s, "FOO1", "FOO", now.Add(-time.Minute)),
+		stageDeparture(s, "BAR1", "BAR", now),
+	}
+
+	s.launchNextDeparture(rwy9, "XTST", "9", now)
+
+	if len(rwy9.ReleasedIFR) != 1 || rwy9.ReleasedIFR[0].ADSBCallsign != "FOO1" {
+		t.Errorf("ReleasedIFR = %v, want the held FOO departure alone", rwy9.ReleasedIFR)
+	}
+	if rwy9.LastDeparture == nil || rwy9.LastDeparture.ADSBCallsign != "BAR1" {
+		t.Errorf("LastDeparture = %v, want BAR1", rwy9.LastDeparture)
+	}
+	if rwy9.LastDeparture != nil && rwy9.LastDeparture.LaunchTime != now {
+		t.Error("launchNextDeparture: didn't record the launch time")
+	}
+	if s.LastExitLaunch["XTST"]["BAR"] != now {
+		t.Error("launchNextDeparture: didn't record the gate it went out over")
+	}
+	if s.Aircraft["BAR1"].WaitingForLaunch {
+		t.Error("launchNextDeparture: the launched aircraft is still waiting")
+	}
+
+	// The gate FOO1 goes out over is still in use, so nothing launches.
+	s.launchNextDeparture(rwy9, "XTST", "9", now.Add(time.Second))
+	if len(rwy9.ReleasedIFR) != 1 {
+		t.Error("launchNextDeparture: launched a departure out a gate just used")
+	}
+}
+
+func TestProcessGateDeparturesBoundsTheQueue(t *testing.T) {
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+
+	for i := range maxHoldingShort {
+		cs := av.ADSBCallsign("HLD" + string(rune('A'+i)))
+		rwy9.ReleasedIFR = append(rwy9.ReleasedIFR, stageDeparture(s, cs, "FOO", now))
+	}
+	rwy9.Gate = []DepartureAircraft{stageDeparture(s, "GAT1", "BAR", Time{})}
+
+	s.processGateDepartures(rwy9, now)
+	if len(rwy9.Gate) != 1 {
+		t.Error("processGateDepartures: a full queue should leave the departure at the gate")
+	}
+
+	rwy9.ReleasedIFR = rwy9.ReleasedIFR[:maxHoldingShort-1]
+	s.processGateDepartures(rwy9, now)
+	if len(rwy9.Gate) != 0 || len(rwy9.ReleasedIFR) != maxHoldingShort {
+		t.Errorf("processGateDepartures: gate %d, queue %d; want 0 and %d",
+			len(rwy9.Gate), len(rwy9.ReleasedIFR), maxHoldingShort)
+	}
+	if rwy9.ReleasedIFR[maxHoldingShort-1].QueuedTime != now {
+		t.Error("processGateDepartures: didn't record when the departure joined the queue")
 	}
 }
 
@@ -1187,5 +1365,136 @@ func TestResolvePublishedDepartureCruiseLimits(t *testing.T) {
 	if placement.dep.Altitudes != nil {
 		t.Errorf("altitudes = %v, want the limits to decide rather than a menu",
 			placement.dep.Altitudes)
+	}
+}
+
+func TestResolveScheduledDepartureRunwaySplitsByRate(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	s := publishedDepartureSim()
+
+	// A second runway flies the same gates, so every flight fits both; the
+	// scenario launches five times as many departures off 30L as off 30R.
+	s.State.Airports["KORG"].DepartureRoutes["30R"] = map[av.ExitID]av.ExitRoutes{"NORTH": {{}}, "EAST": {{}}}
+	s.State.DepartureRunways = append(s.State.DepartureRunways,
+		DepartureRunway{Airport: "KORG", Runway: "30R", Category: "jet"})
+	lc := &s.State.LaunchConfig
+	lc.DepartureEnabled = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
+		"KORG": {"30L": {"jet": true}, "30R": {"jet": true}},
+	}
+	lc.DepartureRates = map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{
+		"KORG": {"30L": {"jet": 10}, "30R": {"jet": 2}},
+	}
+	s.DepartureState["KORG"] = map[av.RunwayID]*RunwayLaunchState{
+		"30L": {PublishedDepartures: make(map[string]int)},
+		"30R": {PublishedDepartures: make(map[string]int)},
+	}
+
+	counts := make(map[av.RunwayID]int)
+	for range 12 {
+		e := ScheduledDeparture{ScheduledFlight: ScheduledFlight{
+			DepartureAirport: "KORG", ArrivalAirport: "KNOR", AircraftType: "B738"}}
+		runway, _, choice, err := s.resolvePublishedDepartureRunway(&e)
+		if err != nil {
+			t.Fatalf("resolvePublishedDepartureRunway: %v", err)
+		}
+		counts[runway]++
+		s.DepartureState["KORG"][runway].PublishedDepartures[choice.candidate.rwy.Category]++
+	}
+
+	if counts["30L"] != 10 || counts["30R"] != 2 {
+		t.Errorf("runway split = %v, want 10 off 30L and 2 off 30R", counts)
+	}
+}
+
+func TestResolveScheduledDepartureRunwaySplitsByCategory(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+
+	// 30L launches only the north gate; 30R launches both, at the same rate
+	// north as 30L. The south flights it has to take shouldn't cost it its
+	// half of the north ones.
+	s := NewTestSim(testLogger())
+	s.State.NmPerLongitude = testNmPerLongitude
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{
+		"KORG": {
+			ExitCategories: map[av.ExitID]string{"NORTH": "north", "EAST": "south"},
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"30L": {"NORTH": {{}}},
+				"30R": {"NORTH": {{}}, "EAST": {{}}},
+			},
+		},
+	}
+	s.State.DepartureRunways = []DepartureRunway{
+		{Airport: "KORG", Runway: "30L", Category: "north"},
+		{Airport: "KORG", Runway: "30R", Category: "north"},
+		{Airport: "KORG", Runway: "30R", Category: "south"},
+	}
+	lc := &s.State.LaunchConfig
+	lc.DepartureEnabled = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
+		"KORG": {"30L": {"north": true}, "30R": {"north": true, "south": true}},
+	}
+	lc.DepartureRates = map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{
+		"KORG": {"30L": {"north": 10}, "30R": {"north": 10, "south": 10}},
+	}
+	s.DepartureState["KORG"] = map[av.RunwayID]*RunwayLaunchState{
+		"30L": {PublishedDepartures: make(map[string]int)},
+		"30R": {PublishedDepartures: make(map[string]int)},
+	}
+
+	counts := make(map[av.RunwayID]map[string]int)
+	for i := range 16 {
+		destination := av.ICAOAirportCode("KNOR")
+		if i%2 == 1 {
+			destination = "KTGT"
+		}
+		e := ScheduledDeparture{ScheduledFlight: ScheduledFlight{
+			DepartureAirport: "KORG", ArrivalAirport: destination, AircraftType: "B738"}}
+		runway, _, choice, err := s.resolvePublishedDepartureRunway(&e)
+		if err != nil {
+			t.Fatalf("resolvePublishedDepartureRunway to %s: %v", destination, err)
+		}
+		category := choice.candidate.rwy.Category
+		if counts[runway] == nil {
+			counts[runway] = make(map[string]int)
+		}
+		counts[runway][category]++
+		s.DepartureState["KORG"][runway].PublishedDepartures[category]++
+	}
+
+	if counts["30L"]["north"] != 4 || counts["30R"]["north"] != 4 {
+		t.Errorf("north split = %d off 30L, %d off 30R; want 4 each",
+			counts["30L"]["north"], counts["30R"]["north"])
+	}
+	if counts["30R"]["south"] != 8 || counts["30L"]["south"] != 0 {
+		t.Errorf("south split = %d off 30L, %d off 30R; want all 8 off 30R",
+			counts["30L"]["south"], counts["30R"]["south"])
+	}
+}
+
+func TestDepartureSplitRestartsOnConfigChange(t *testing.T) {
+	s := NewTestSim(testLogger())
+	s.DepartureState["KORG"] = map[av.RunwayID]*RunwayLaunchState{
+		"30L": {PublishedDepartures: map[string]int{"jet": 120}},
+		"30R": {PublishedDepartures: make(map[string]int)},
+	}
+	s.State.LaunchConfig.TrafficSource = TrafficSourceHistorical
+	s.State.LaunchConfig.DepartureEnabled = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
+		"KORG": {"30L": {"jet": true}},
+	}
+
+	old := s.State.LaunchConfig
+	if s.applyScheduleConfigChanges(&old); s.DepartureState["KORG"]["30L"].PublishedDepartures["jet"] != 120 {
+		t.Error("applyScheduleConfigChanges: an unchanged config shouldn't restart the split")
+	}
+
+	// 30R starts launching too. Without a restart every flight would go to
+	// it until its count caught up with 30L's morning of departures.
+	s.State.LaunchConfig.DepartureEnabled = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
+		"KORG": {"30L": {"jet": true}, "30R": {"jet": true}},
+	}
+	s.applyScheduleConfigChanges(&old)
+	if n := s.DepartureState["KORG"]["30L"].PublishedDepartures["jet"]; n != 0 {
+		t.Errorf("30L has taken %d published departures, want the count restarted at 0", n)
 	}
 }
