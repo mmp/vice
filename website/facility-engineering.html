@@ -237,6 +237,81 @@
                   or via the UI.
                 </p>
 
+            <section class="docs-section" id="fe-backshop">
+              <h2 class="section-heading" data-nav-title="backshop">backshop</h2>
+                <p>
+                  <i>backshop</i> is a separate application for facility engineering. It opens a scenario, draws its
+                  geometry on a plain map with no STARS or ERAM interface in the way, and gives access to everything
+                  <i>vice</i> knows about the scenario and about the aviation database behind it. Everything it shows
+                  can be copied to the clipboard, since it is all destined for hand-written JSON.
+                </p>
+                <p>
+                  <i>backshop</i> takes no command-line arguments; everything is set in the window and remembered
+                  between runs. Work-in-progress scenario, video map, and brief files are chosen under "Additional
+                  files" in the Scenario tab, which is where <i>vice</i>'s <code>-scenario</code>,
+                  <code>-videomap</code>, and <code>-scenariobrief</code> arguments would otherwise be used.
+                </p>
+                <p>
+                  Most importantly, it reloads edited scenario JSON in place: pressing <code>[Control][R]</code> re-reads
+                  the scenario and facility configuration files from disk and restarts the sim on them, taking well
+                  under a second, so there is no need to quit and relaunch after every edit. Picking a different
+                  additional file reloads too, so that takes no restart either. If the edited files don't validate, the
+                  errors are listed in the Scenario tab and the previously loaded scenario keeps running.
+                </p>
+                <p>The map itself supports:</p>
+                <ul>
+                  <li>Dragging to pan and the scroll wheel to zoom.</li>
+                  <li>Control-shift-click to copy a position to the clipboard, as in <i>vice</i>. The position under the
+                    cursor is also always shown in the menu bar and can be copied by clicking it.</li>
+                  <li>A route-drawing mode equivalent to <code>.DRAWROUTE</code>: click a series of points and they are
+                    kept on the clipboard as a space-separated list. <code>[Backspace]</code> removes the last point and
+                    <code>[Escape]</code> leaves the mode.</li>
+                  <li>A measuring mode: click two points for the distance and magnetic bearing between them.</li>
+                </ul>
+                <p>The inspector window alongside it has a tab for each kind of thing worth looking at:</p>
+                <table class="table">
+                  <thead>
+                    <tr><th style="width: 20%;">Tab</th><th>Contents</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Scenario</td><td>Which facility, scenario group, and scenario to open; reloading; the errors
+                      from the last load; and a summary of the scenario.</td></tr>
+                    <tr><td>Maps</td><td>Every video map in the facility's library along with the ones <i>vice</i>
+                      generates from the facility configuration&mdash;the filter regions, minimum vectoring altitudes,
+                      nearby class B and C airspace, radar coverage, and ATPA volumes&mdash;each with a checkbox to draw
+                      it.</td></tr>
+                    <tr><td>Routes</td><td>Draw the geometry of arrivals, approaches, departures, overflights,
+                      controller airspace, and charted holds, each in a color of your choosing. Departures can be listed
+                      a SID at a time or an exit at a time, since a SID serving twenty exits is unreadable drawn all at
+                      once.</td></tr>
+                    <tr><td>Filters</td><td>Every adapted filter region with its shape and altitudes, plus TFRs, ATPA
+                      volumes, and radar coverage. Each has a checkbox that draws its extent on the map.</td></tr>
+                    <tr><td>Database</td><td>Airports, navaids, fixes, airways, aircraft types, airlines, and
+                      facilities from <i>vice</i>'s aviation database. Airports, navaids, fixes, and facilities can be
+                      drawn on the map individually or all at once, labelled.</td></tr>
+                    <tr><td>CIFP</td><td>The SIDs, STARs, and approaches the FAA CIFP codes for an airport, in the
+                      encoded form that goes into a scenario's JSON&mdash;the same thing <code>vice -routes</code>
+                      prints, with a copy button on each row.</td></tr>
+                    <tr><td>Brief</td><td>A live preview of the facility's scenario brief, annotated video maps
+                      included.</td></tr>
+                    <tr><td>Traffic</td><td>Launch aircraft and control the clock: pause, a playback rate, and
+                      buttons to jump forward. Automatic traffic starts switched off so the scope is empty; an aircraft
+                      type can be given to fly a procedure with a particular aircraft's performance rather than whatever
+                      the scenario sampled. There is no rewind&mdash;the sim only runs forward&mdash;so to see something
+                      again, launch the aircraft again.</td></tr>
+                    <tr><td>Tools</td><td>The map drawing modes, and a listing of any video map library's contents.</td></tr>
+                  </tbody>
+                </table>
+                <p>
+                  On Windows, <i>backshop</i> is an option in the installer; tick "Facility engineering tool" when
+                  installing <i>vice</i>. On macOS it is a separate <code>Backshop.app</code>, downloaded below;
+                  after opening the <i>zip</i> file, drag <i>Backshop.app</i> to your <i>Applications</i> folder to
+                  install it. It reads the resource files <i>vice</i> installs, so <i>vice</i> must have been
+                  run at least once before it will start.
+                </p>
+                <a href="https://github.com/mmp/vice/releases/download/v0.15.0/Backshop-v0.15.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Backshop v0.15.0 for Mac</a>
+            </section>
+
             <section class="docs-section" id="fe-faq">
               <h2 class="section-heading" data-nav-title="FAQ">Facility Engineering FAQ</h2>
               <table class="table">
@@ -309,8 +384,9 @@
 
                   <tr>
                     <td>How can I get the lat/long coordinates of a point on a map?</td>
-                    <td>Pressing <code>[Control][Shift]</code> and clicking a point on the map will copy the
-                      coordinates of where you clicked into the clipboard. Alternatively, you can enter
+                    <td><i>backshop</i> shows the position under the cursor in its menu bar; clicking it copies it.
+                      In <i>vice</i>, pressing <code>[Control][Shift]</code> and clicking a point on the map will copy
+                      the coordinates of where you clicked into the clipboard. Alternatively, you can enter
                       <code>.DRAWROUTE[Enter]</code> in STARS and click a series of points. All of the
                       points in the route will be copied to the clipboard. If you make a mistake, pressing
                       <code>[Backspace]</code> will delete the last point in the route. Press <code>[Escape]</code>
@@ -419,7 +495,9 @@
                     Each new instance can connect to the simulation created by the first controller. You'll be able to perform handoffs and coordinate between the different controller positions by switching between the <i>vice</i> windows.
                   </li>
                 </ol>
-                <p><strong>Restarting after scenario changes:</strong> If you modify your scenario files, you must restart the server to load the changes:</p>
+                <p><strong>Restarting after scenario changes:</strong> If you modify your scenario files, you must restart the server to load the changes.
+                  (<a href="#fe-backshop"><i>backshop</i></a> reloads scenario edits in place without restarting, but it runs a
+                  single-user sim of its own; a multi-controller server still has to be restarted.)</p>
                 <ol>
                   <li>Close all <i>vice</i> client windows</li>
                   <li>In the Command Prompt window running <code>viceserver.exe</code>, press <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop the server</li>
