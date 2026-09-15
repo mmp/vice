@@ -218,6 +218,7 @@ var (
 	FontAwesomeIconArrowLeft           = faUsedIcons["ArrowLeft"]
 	FontAwesomeIconArrowRight          = faUsedIcons["ArrowRight"]
 	FontAwesomeIconArrowUp             = faUsedIcons["ArrowUp"]
+	FontAwesomeIconArrowsAlt           = faUsedIcons["ArrowsAlt"]
 	FontAwesomeIconBolt                = faUsedIcons["Bolt"]
 	FontAwesomeIconBook                = faUsedIcons["Book"]
 	FontAwesomeIconBug                 = faUsedIcons["Bug"]
@@ -234,6 +235,7 @@ var (
 	FontAwesomeIconCompressAlt         = faUsedIcons["CompressAlt"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
 	FontAwesomeIconDiscord             = faBrandsUsedIcons["Discord"]
+	FontAwesomeIconDrawPolygon         = faUsedIcons["DrawPolygon"]
 	FontAwesomeIconExclamationTriangle = faUsedIcons["ExclamationTriangle"]
 	FontAwesomeIconExpandAlt           = faUsedIcons["ExpandAlt"]
 	FontAwesomeIconFastForward         = faUsedIcons["FastForward"]
@@ -253,6 +255,7 @@ var (
 	FontAwesomeIconQuestionCircle      = faUsedIcons["QuestionCircle"]
 	FontAwesomeIconPlaneDeparture      = faUsedIcons["PlaneDeparture"]
 	FontAwesomeIconRedo                = faUsedIcons["Redo"]
+	FontAwesomeIconRuler               = faUsedIcons["Ruler"]
 	FontAwesomeIconSmog                = faUsedIcons["Smog"]
 	FontAwesomeIconSnowflake           = faUsedIcons["Snowflake"]
 	FontAwesomeIconSquare              = faUsedIcons["Square"]
@@ -274,6 +277,7 @@ var (
 		"ArrowLeft":           FontAwesomeString("ArrowLeft"),
 		"ArrowRight":          FontAwesomeString("ArrowRight"),
 		"ArrowUp":             FontAwesomeString("ArrowUp"),
+		"ArrowsAlt":           FontAwesomeString("ArrowsAlt"),
 		"Bolt":                FontAwesomeString("Bolt"),
 		"Book":                FontAwesomeString("Book"),
 		"Bug":                 FontAwesomeString("Bug"),
@@ -289,6 +293,7 @@ var (
 		"CompressAlt":         FontAwesomeString("CompressAlt"),
 		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),
+		"DrawPolygon":         FontAwesomeString("DrawPolygon"),
 		"ExclamationTriangle": FontAwesomeString("ExclamationTriangle"),
 		"ExpandAlt":           FontAwesomeString("ExpandAlt"),
 		"FastForward":         FontAwesomeString("FastForward"),
@@ -307,6 +312,7 @@ var (
 		"QuestionCircle":      FontAwesomeString("QuestionCircle"),
 		"PlaneDeparture":      FontAwesomeString("PlaneDeparture"),
 		"Redo":                FontAwesomeString("Redo"),
+		"Ruler":               FontAwesomeString("Ruler"),
 		"Smog":                FontAwesomeString("Smog"),
 		"Snowflake":           FontAwesomeString("Snowflake"),
 		"Square":              FontAwesomeString("Square"),
