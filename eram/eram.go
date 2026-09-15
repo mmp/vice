@@ -1055,116 +1055,18 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 
 	// The current group's base map is always drawn; it has no filter-menu
 	// button for the controller to turn off.
-	ep.drawVideoMapFeatures(ep.baseVideoMap, &bcgRGB, transforms, ld, td, &solidLineBuf)
+	bm := ep.baseVideoMap
+	radar.DrawMapFeatures(bm.Lines, bm.Symbols, bm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
 
 	for _, vm := range ep.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2, " ")]; !ok {
 			continue
 		}
-		ep.drawVideoMapFeatures(vm, &bcgRGB, transforms, ld, td, &solidLineBuf)
+		radar.DrawMapFeatures(vm.Lines, vm.Symbols, vm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
 	}
 
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
-}
-
-func (ep *ERAMPane) drawVideoMapFeatures(vm av.ERAMMap, bcgRGB *[256]renderer.RGB, transforms radar.ScopeTransformations,
-	ld *renderer.ColoredLinesDrawBuilder, td *renderer.TextDrawBuilder, solidLineBuf *[][2]float32) {
-	for _, line := range vm.Lines {
-		color := bcgRGB[line.BCGIndex]
-		if line.Style == av.LineStyleSolid {
-			*solidLineBuf = (*solidLineBuf)[:0]
-			for _, p := range line.Points {
-				*solidLineBuf = append(*solidLineBuf, transforms.WindowFromLatLongP(p))
-			}
-			ld.AddLineStrip(*solidLineBuf, color)
-		} else {
-			pattern := dashPatternPixels(line.Style)
-			if pattern == nil {
-				continue
-			}
-			for i := 0; i+1 < len(line.Points); i++ {
-				p0 := transforms.WindowFromLatLongP(line.Points[i])
-				p1 := transforms.WindowFromLatLongP(line.Points[i+1])
-				ld.AddDashPattern(p0, p1, pattern, color)
-			}
-		}
-	}
-
-	for _, s := range vm.Symbols {
-		if font := ep.ERAMGeomapFont(int(s.Size)); font != nil {
-			color := bcgRGB[s.BCGIndex]
-			pw := transforms.WindowFromLatLongP(s.P)
-			td.AddTextCentered(string(symbolGlyphIndex[s.Style]), pw,
-				renderer.TextStyle{Font: font, Color: color})
-		}
-	}
-
-	for _, l := range vm.Labels {
-		if font := ep.ERAMFont(int(l.Size)); font != nil {
-			color := bcgRGB[l.BCGIndex]
-			pw := transforms.WindowFromLatLongP(l.P)
-			pw[0] += float32(l.XOffset)
-			pw[1] += float32(l.YOffset)
-			style := renderer.TextStyle{Font: font, Color: color}
-			if l.Opaque {
-				style.DrawBackground = true
-				style.BackgroundColor = renderer.RGB{}
-			}
-			td.AddText(l.Text, pw, style)
-			if l.Underline {
-				ext := font.LayoutBounds(l.Text, 0)
-				// In window space y grows upward; AddText takes the upper-left corner, so the
-				// baseline is at pw[1] - h.  Drop one more pixel so the underline sits just
-				// below.
-				y := pw[1] - ext.Height() - 1
-				ld.AddLine([2]float32{pw[0], y}, [2]float32{pw[0] + ext.Width(), y}, color)
-			}
-		}
-	}
-}
-
-// Dash patterns in window-space pixels.
-var (
-	shortDashedPattern       = []float32{10, 14}
-	longDashedPattern        = []float32{24, 24}
-	longDashShortDashPattern = []float32{24, 11, 12, 12}
-)
-
-func dashPatternPixels(s av.LineStyle) []float32 {
-	switch s {
-	case av.LineStyleShortDashed:
-		return shortDashedPattern
-	case av.LineStyleLongDashed:
-		return longDashedPattern
-	case av.LineStyleLongDashShortDash:
-		return longDashShortDashPattern
-	default:
-		return nil
-	}
-}
-
-// symbolGlyphIndex maps each SymbolStyle to the unicode codepoint of its
-// glyph in the EramGeomap-{16,18,20}.pcf bitmap fonts.
-var symbolGlyphIndex = map[av.SymbolStyle]rune{
-	av.SymbolStyleVOR:                 0x0B,
-	av.SymbolStyleNDB:                 0x0B,
-	av.SymbolStyleTACAN:               0x0F,
-	av.SymbolStyleVOR_TACAN:           0x00,
-	av.SymbolStyleDME:                 0x04,
-	av.SymbolStyleRNAV:                0x09,
-	av.SymbolStyleRNAVOnlyWaypoint:    0x07,
-	av.SymbolStyleAirport:             0x0D,
-	av.SymbolStyleSatelliteAirport:    0x02,
-	av.SymbolStyleEmergencyAirport:    0x04,
-	av.SymbolStyleHeliport:            0x0B,
-	av.SymbolStyleOtherWaypoints:      0x0C,
-	av.SymbolStyleAirwayIntersections: 0x09,
-	av.SymbolStyleIAF:                 0x0D,
-	av.SymbolStyleObstruction1:        0x00,
-	av.SymbolStyleObstruction2:        0x06,
-	av.SymbolStyleNuclear:             0x03,
-	av.SymbolStyleRadar:               0x05,
 }
 
 func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {

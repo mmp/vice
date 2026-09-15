@@ -1,4 +1,4 @@
-package eram
+package radar
 
 import "testing"
 
@@ -9,7 +9,7 @@ import "testing"
 // pixels too narrow, which made data block lines ending in 8 look truncated.
 // 1 is excluded since it is legitimately narrow in every size.
 func TestBitmapFontDigitWidths(t *testing.T) {
-	for name, bf := range eramFonts {
+	for name, bf := range eramBitmapFonts {
 		widths := make(map[int][]string)
 		for ch := '0'; ch <= '9'; ch++ {
 			if ch != '1' && int(ch) < len(bf.Glyphs) && bf.Glyphs[ch].StepX != 0 {

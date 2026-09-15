@@ -1,13 +1,11 @@
 package eram
 
 import (
-	"maps"
 	"runtime"
-	"slices"
-	"strconv"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 )
 
@@ -37,13 +35,9 @@ func (ep *ERAMPane) ERAMInputFont() *renderer.Font {
 }
 
 func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
-	fonts := createFontAtlas(r, p)
+	fonts := radar.CreateERAMFonts(r, p)
 	get := func(name string, size int) *renderer.Font {
-		idx := slices.IndexFunc(fonts, func(f *renderer.Font) bool { return f.Id.Name == name && f.Id.Size == size })
-		if idx == -1 {
-			panic(name + " size " + strconv.Itoa(size) + " not found in ERAM fonts")
-		}
-		return fonts[idx]
+		return radar.FindERAMFont(fonts, name, size)
 	}
 
 	// TODO: Find the fifth ERAM text size.
@@ -77,6 +71,8 @@ func (ep *ERAMPane) ERAMGeomapFont(size int) *renderer.Font {
 	}
 }
 
-func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font {
-	return renderer.CreateBitmapFontAtlas(r, p, maps.All(eramFonts))
-}
+// MapSymbolFont and MapLabelFont implement radar.MapFonts so that video map
+// features are drawn with the ERAM scope's own fonts.
+func (ep *ERAMPane) MapSymbolFont(size int) *renderer.Font { return ep.ERAMGeomapFont(size) }
+
+func (ep *ERAMPane) MapLabelFont(size int) *renderer.Font { return ep.ERAMFont(size) }

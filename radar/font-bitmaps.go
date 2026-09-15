@@ -1,10 +1,10 @@
 // Automatically generated from ERAM PCF font files using util/pcg2go.cc
 
-package eram
+package radar
 
 import "github.com/mmp/vice/renderer"
 
-var eramFonts map[string]renderer.BitmapFont = map[string]renderer.BitmapFont{
+var eramBitmapFonts map[string]renderer.BitmapFont = map[string]renderer.BitmapFont{
 	"EramText-8.pcf": {
 		PointSize: 8,
 		Width:     6,
