@@ -1155,7 +1155,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		report(gui.DrawFilePicker("Video map", "videoMap", &config.VideoMapFile, []string{"*.mappack"}))
 		report(gui.DrawFilePicker("Scenario brief", "scenarioBrief", &config.ScenarioBriefFile, []string{"*.md"}))
 		report(gui.DrawFileListPicker("Facility configuration", "facilityConfig",
-			&config.FacilityConfigFiles, []string{"*.json"}, 2))
+			&config.FacilityConfigFiles, []string{"*.json"}))
 
 		imgui.Separator()
 		imgui.Checkbox("Display simulation logging", &config.DisplaySimLogs)

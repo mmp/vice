@@ -44,9 +44,8 @@ func DrawFilePicker(label, id string, path *string, patterns []string) (bool, er
 
 // DrawFileListPicker is DrawFilePicker for a kind of file that may be given
 // more than once, as facility configurations are: a TRACON's and its ARTCC's
-// may both be overridden at the same time. max bounds how many of them may
-// be chosen.
-func DrawFileListPicker(label, id string, paths *[]string, patterns []string, max int) (bool, error) {
+// may both be overridden at the same time.
+func DrawFileListPicker(label, id string, paths *[]string, patterns []string) (bool, error) {
 	if len(*paths) == 0 {
 		imgui.Text(label + ": none")
 	}
@@ -64,7 +63,7 @@ func DrawFileListPicker(label, id string, paths *[]string, patterns []string, ma
 		return true, nil
 	}
 
-	if len(*paths) < max && imgui.Button("Add##"+id) {
+	if imgui.Button("Add##" + id) {
 		p, err := selectFile(label, patterns)
 		if err != nil || p == "" {
 			return false, err
