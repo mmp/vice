@@ -1178,12 +1178,14 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		uncovered(fa.Filters.SurfaceTracking, allAirports), nmPerLongitude, e)
 
 	// Validate the newly created airport filters (the config's own are
-	// validated inside fa.PostDeserialize) and add them to the adapted ones.
+	// validated inside fa.PostDeserialize), mark them as vice's rather than the
+	// adaptation's, and add them to the adapted ones.
 	addAirportFilters := func(regions, created sim.FilterRegions) sim.FilterRegions {
 		for i := range created {
 			e.Push(created[i].Description)
 			created[i].AirspaceVolume.PostDeserialize(sg, e)
 			e.Pop()
+			created[i].Default = true
 		}
 		return append(regions, created...)
 	}

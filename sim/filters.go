@@ -17,6 +17,11 @@ import (
 type FilterRegion struct {
 	av.AirspaceVolume
 	InvertTest bool
+	// Default marks a region vice supplied rather than one the facility's
+	// adaptation gave: an airport the adaptation leaves uncovered gets default
+	// filters drawn around its runways so that the field works at all. It is
+	// set when the scenarios are loaded, not authored.
+	Default bool
 }
 
 type FilterRegions []FilterRegion
