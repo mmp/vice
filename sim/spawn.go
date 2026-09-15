@@ -697,10 +697,14 @@ func scaleRate(rate, scale float32) float32 {
 	return rate * scale
 }
 
+// sumRateMap totals the scaled rates. The keys are taken in order because
+// float addition is not associative: summing them as the map hands them out
+// gives a total whose last bits vary from run to run, and the spawn times
+// drawn from it vary with them.
 func sumRateMap(rates map[string]float32, scale float32) float32 {
 	var sum float32
-	for _, rate := range rates {
-		sum += scaleRate(rate, scale)
+	for _, key := range util.SortedMapKeys(rates) {
+		sum += scaleRate(rates[key], scale)
 	}
 	return sum
 }

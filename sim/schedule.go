@@ -491,10 +491,7 @@ func sampleScheduledAircraft[T any](s *Sim, airlines []T, specifier func(T) av.A
 // generation is reproducible for a given random-number stream. It returns the
 // scaled rate sum; the key is empty when the sum is zero.
 func pickWeighted(rates map[string]float32, scale float32, r *rand.Rand) (string, float32) {
-	var sum float32
-	for _, rate := range rates {
-		sum += scaleRate(rate, scale)
-	}
+	sum := sumRateMap(rates, scale)
 	if sum == 0 {
 		return "", 0
 	}
