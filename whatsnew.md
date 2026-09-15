@@ -13,6 +13,7 @@
   - Fixed aircraft turning away from the localizer instead of joining it
   - Fixed bug with real-world traffic routes including the departure airport
   - Fixed a few bugs with joining visual approaches
+  - Fixed bug where only one of the two MVA charts was loaded for the BOI, D01, and GEG TRACONs
 - ERAM
   - Fixed bug with cutoff "8" characters in datablocks
 - STARS

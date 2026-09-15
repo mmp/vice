@@ -1139,12 +1139,13 @@ func parseMVAs() map[string][]MVA {
 		TRACON string
 		MVAs   []MVA
 	}
-	mvaChan := make(chan mvaTracon, len(zr.File))
+	parsed := make([]mvaTracon, len(zr.File))
 
-	for _, f := range zr.File {
+	var wg sync.WaitGroup
+	for i, f := range zr.File {
 		// Launch a goroutine for each one so that we load them in
 		// parallel.
-		go func(f *zip.File) {
+		wg.Go(func() {
 			r, err := f.Open()
 			if err != nil {
 				// Errors are panics since this all happens at startup time
@@ -1221,14 +1222,17 @@ func parseMVAs() map[string][]MVA {
 
 			r.Close()
 
-			mvaChan <- mvaTracon{TRACON: tracon, MVAs: mvas}
-		}(f)
+			parsed[i] = mvaTracon{TRACON: tracon, MVAs: mvas}
+		})
 	}
+	wg.Wait()
 
+	// Gathered in the zip's order rather than as the goroutines finish: a
+	// TRACON with more than one MVA chart (D01 has Denver's and Grand
+	// Junction's) takes the volumes of both, always in the same order.
 	mvas := make(map[string][]MVA)
-	for range zr.File {
-		m := <-mvaChan
-		mvas[m.TRACON] = m.MVAs
+	for _, m := range parsed {
+		mvas[m.TRACON] = append(mvas[m.TRACON], m.MVAs...)
 	}
 
 	return mvas
