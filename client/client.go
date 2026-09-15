@@ -706,3 +706,45 @@ func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty
 	}
 	c.transmissions.SetContactRequested(false)
 }
+
+// ScenarioReload is an in-flight request for the server to re-read the
+// scenario and facility configuration files from disk. Loading them takes
+// long enough to be worth not blocking a frame on, so the caller starts one
+// with Server.ReloadScenarios and polls Done until it can take the Result.
+type ScenarioReload struct {
+	srv    *Server
+	call   *rpc.Call
+	result server.ReloadScenariosResult
+}
+
+// ReloadScenarios starts a scenario reload, loading the given additional
+// files alongside the built-in scenarios. Sims that are already running keep
+// the scenario they were created with; the reloaded scenarios apply to sims
+// created afterward.
+func (s *Server) ReloadScenarios(args server.ReloadScenariosArgs) *ScenarioReload {
+	r := &ScenarioReload{srv: s}
+	r.call = s.Go(server.ReloadScenariosRPC, &args, &r.result, nil)
+	return r
+}
+
+func (r *ScenarioReload) Done() bool {
+	select {
+	case <-r.call.Done:
+		return true
+	default:
+		return false
+	}
+}
+
+// Result returns the outcome of a finished reload, adopting the reloaded
+// scenario list if it validated. A non-empty Errors in the result means
+// nothing changed on the server.
+func (r *ScenarioReload) Result() (server.ReloadScenariosResult, error) {
+	if err := r.call.Error; err != nil {
+		return r.result, server.TryDecodeError(err)
+	}
+	if len(r.result.Errors) == 0 && r.result.Catalogs != nil {
+		r.srv.catalogs = r.result.Catalogs
+	}
+	return r.result, nil
+}

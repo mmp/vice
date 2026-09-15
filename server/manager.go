@@ -1154,3 +1154,49 @@ func (sm *SimManager) ReportSTTLog(args *STTLogArgs, _ *struct{}) error {
 
 	return nil
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Reloading scenarios
+
+// ReloadScenariosArgs names the override files to load alongside the
+// built-in ones. They replace whatever the server was launched with, so
+// that a tool offering a file picker doesn't have to be restarted for the
+// choice to take effect.
+type ReloadScenariosArgs struct {
+	Overrides OverrideFiles
+}
+
+type ReloadScenariosResult struct {
+	// Errors holds the validation errors from the attempted load. When it
+	// is non-empty nothing was replaced and the scenarios in use are
+	// unchanged.
+	Errors []string
+	// OverrideErrors are the errors from the override files, which are
+	// non-fatal: the rest of the scenarios are reloaded without them.
+	OverrideErrors string
+	// Catalogs is the reloaded set, so a caller can refresh its scenario
+	// list without a second round trip.
+	Catalogs map[string]map[string]*ScenarioCatalog
+}
+
+const ReloadScenariosRPC = "SimManager.ReloadScenarios"
+
+// ReloadScenarios re-reads the scenario and facility configuration files
+// from disk and, if they all validate, swaps them in for subsequent sims.
+// Sims that are already running keep the scenario they were created with.
+func (sm *SimManager) ReloadScenarios(args *ReloadScenariosArgs, result *ReloadScenariosResult) error {
+	var e util.ErrorLogger
+	groups, catalogs, mapSpecs, briefs, overrideErrors := LoadScenarioGroups(args.Overrides, &e, sm.lg)
+
+	if e.HaveErrors() {
+		result.Errors = slices.Collect(e.Errors())
+		return nil
+	}
+
+	sm.scenarios.Store(makeScenarioTables(groups, catalogs, mapSpecs, briefs))
+
+	result.OverrideErrors = overrideErrors
+	result.Catalogs = catalogs
+	sm.lg.Infof("Reloaded scenarios")
+	return nil
+}
