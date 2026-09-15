@@ -1449,21 +1449,17 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			text.WriteString("     ")
 			if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
 				func(fp *sim.NASFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
-				fmt.Fprintf(&text, " %-10s NO FP", string(dep.ADSBCallsign))
+				fmt.Fprintf(&text, " %-10s NO FP\n", string(dep.ADSBCallsign))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
-				formattedEntry := sp.formatListEntry(ctx, cl.Format, fp, map[string]func() string{
+				text.WriteString(sp.formatListEntry(ctx, cl.Format, fp, map[string]func() string{
 					"ACKED": func() string { return util.Select(dep.Released, "+", " ") },
-				})
-				text.WriteString(formattedEntry)
+				}))
 				text.WriteString("\n")
-				if !dep.Released && blinkDim {
-					pw = td.AddText(rewriteDelta(text.String()), pw, dimStyle)
-				} else {
-					pw = td.AddText(rewriteDelta(text.String()), pw, listStyle)
-				}
-				maxX = max(maxX, pw[0])
 			}
+			style := util.Select(!dep.Released && blinkDim, dimStyle, listStyle)
+			pw = td.AddText(rewriteDelta(text.String()), pw, style)
+			maxX = max(maxX, pw[0])
 		}
 
 		bounds := math.Extent2D{
