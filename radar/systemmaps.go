@@ -48,6 +48,9 @@ func SystemMaps(spec SystemMapSpec) []Map {
 		util.MapSlice(fa.Filters.Quicklook, func(r sim.QuicklookRegion) av.AirspaceVolume { return r.AirspaceVolume }))
 	g.addRegions("FDAMRGNS", "FDAM REGIONS ALL",
 		util.MapSlice(fa.Filters.FDAM, func(r sim.FDAMRegion) av.AirspaceVolume { return r.AirspaceVolume }))
+	g.addRegions("VFRINH", "VFR INHIBIT AREA ALL", filterVolumes(fa.Filters.VFRInhibit))
+	g.addRegions("HORGNS", "HANDOFF REGIONS ALL",
+		util.MapSlice(fa.Filters.Handoff, func(r sim.HandoffFilterRegion) av.AirspaceVolume { return r.AirspaceVolume }))
 
 	g.addMVAs()
 	g.addClassAirspace(av.DB.BravoAirspace, "B")

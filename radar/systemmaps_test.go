@@ -42,6 +42,7 @@ func TestSystemMaps(t *testing.T) {
 		region("noca1", "kjfk noca", center),
 		region("noca2", "klga noca", math.Point2LL{-73.8726, 40.7772}),
 	}
+	fa.Filters.VFRInhibit = sim.FilterRegions{region("vfri", "vfr inhibit", center)}
 	fa.RadarSites = map[string]*av.RadarSite{
 		"JFK": {Position: center, PrimaryRange: 60, SecondaryRange: 120},
 	}
@@ -68,7 +69,7 @@ func TestSystemMaps(t *testing.T) {
 	}
 
 	// An "all" map plus one per region, in that order and with consecutive ids.
-	for _, want := range []string{"CASU", "NOCA1", "NOCA2"} {
+	for _, want := range []string{"CASU", "NOCA1", "NOCA2", "VFRINH", "VFRI"} {
 		if _, ok := byLabel[want]; !ok {
 			t.Errorf("%s: expected system map not generated", want)
 		}
