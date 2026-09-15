@@ -146,19 +146,17 @@ func (s *Sim) processGateDepartures(depState *RunwayLaunchState, now Time) {
 }
 
 func (s *Sim) processHeldDepartures(depState *RunwayLaunchState, now Time) {
+	if s.prespawnUncontrolledOnly {
+		s.cullHeldDepartures(depState, now)
+		return
+	}
+
 	for i, held := range depState.Held {
 		if now.Before(held.RequestReleaseTime) {
 			break // FIFO
 		}
 
 		if !held.ReleaseRequested {
-			if s.prespawnUncontrolledOnly {
-				// Auto-release during prespawn - aircraft will be culled
-				// when it reaches DepartureContactAltitude in updateState.
-				ac := s.Aircraft[held.ADSBCallsign]
-				ac.Released = true
-				ac.ReleaseTime = now
-			}
 			depState.Held[i].ReleaseRequested = true
 			depState.Held[i].ReleaseDelay = s.Rand.DurationRange(20*time.Second, 120*time.Second)
 		}
@@ -172,6 +170,24 @@ func (s *Sim) processHeldDepartures(depState *RunwayLaunchState, now Time) {
 			depState.ReleasedIFR = append(depState.ReleasedIFR, depState.Held[0])
 			depState.Held = depState.Held[1:]
 		}
+	}
+}
+
+// cullHeldDepartures deletes the departures that have reached the point of
+// asking for a release while the sim is warming itself up. There is nobody
+// to ask, and a release handed out here would still be in force when the
+// user takes over, so they go the way of a handoff to a human who hasn't
+// signed on yet. Nothing is lost by it: a departure that still holds for
+// release has a human departure controller, so updateState deletes it a few
+// hundred feet after takeoff regardless.
+func (s *Sim) cullHeldDepartures(depState *RunwayLaunchState, now Time) {
+	for len(depState.Held) > 0 {
+		dep := depState.Held[0]
+		if now.Before(dep.RequestReleaseTime) {
+			break // FIFO
+		}
+		s.deleteAircraft(s.Aircraft[dep.ADSBCallsign])
+		depState.Held = depState.Held[1:]
 	}
 }
 

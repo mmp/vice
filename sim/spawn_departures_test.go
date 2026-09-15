@@ -512,6 +512,57 @@ func TestProcessGateDeparturesBoundsTheQueue(t *testing.T) {
 	}
 }
 
+func TestProcessHeldDeparturesCullsDuringPrespawn(t *testing.T) {
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+	s.STARSComputer = makeSTARSComputer("TEST")
+
+	hold := func(callsign av.ADSBCallsign, request Time) DepartureAircraft {
+		dep := stageDeparture(s, callsign, "FOO", Time{})
+		dep.RequestReleaseTime = request
+		ac := s.Aircraft[callsign]
+		ac.HoldForRelease = true
+		s.STARSComputer.AddHeldDeparture(ac)
+		return dep
+	}
+
+	// HLD1 is ready to ask for its release; HLD2 won't be for another minute.
+	rwy9.Held = []DepartureAircraft{hold("HLD1", now), hold("HLD2", now.Add(time.Minute))}
+
+	s.prespawnUncontrolledOnly = true
+	s.processHeldDepartures(rwy9, now)
+
+	if len(rwy9.Held) != 1 || rwy9.Held[0].ADSBCallsign != "HLD2" {
+		t.Errorf("processHeldDepartures: held %v; want HLD2 alone",
+			util.MapSlice(rwy9.Held, func(dep DepartureAircraft) av.ADSBCallsign { return dep.ADSBCallsign }))
+	}
+	if _, ok := s.Aircraft["HLD1"]; ok {
+		t.Error("processHeldDepartures: didn't delete the departure with nobody to release it")
+	}
+	if len(s.STARSComputer.HoldForRelease) != 1 {
+		t.Errorf("processHeldDepartures: %d in the release list; want 1",
+			len(s.STARSComputer.HoldForRelease))
+	}
+
+	// Once the user is in charge, a departure waits for a release rather
+	// than getting one from the sim.
+	s.prespawnUncontrolledOnly = false
+	now = now.Add(time.Minute)
+	s.State.SimTime = now
+	s.processHeldDepartures(rwy9, now)
+
+	if len(rwy9.Held) != 1 || len(rwy9.ReleasedIFR) != 0 {
+		t.Errorf("processHeldDepartures: held %d, holding short %d; want 1 and 0",
+			len(rwy9.Held), len(rwy9.ReleasedIFR))
+	}
+	if !rwy9.Held[0].ReleaseRequested {
+		t.Error("processHeldDepartures: didn't ask for a release")
+	}
+	if s.Aircraft["HLD2"].Released {
+		t.Error("processHeldDepartures: released a departure the controller didn't")
+	}
+}
+
 // publishedDepartureSim builds a Sim whose test airport KORG has the NORTH and
 // EAST exits off runway 30L in the "jet" category.
 func publishedDepartureSim() *Sim {
