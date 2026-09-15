@@ -225,7 +225,7 @@ func (s *Sim) popReadyMatching(positions []TCP, match func(PendingTransmissionTy
 // via PopReadyContact/GenerateContactTransmission, but virtual controllers
 // have no client, so we process their contacts here in the update loop.
 func (s *Sim) processVirtualControllerContacts() {
-	for tcp, contacts := range s.PendingContacts {
+	for tcp, contacts := range util.SortedMap(s.PendingContacts) {
 		if !s.isVirtualController(tcp) {
 			continue
 		}

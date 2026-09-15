@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/util"
 
 	"github.com/goforj/godump"
 )
@@ -658,7 +659,7 @@ func (s *Sim) initDepartureState(now Time) {
 		return now.Add(time.Duration(delta * float32(time.Second)))
 	}
 
-	for name := range s.State.DepartureAirports {
+	for _, name := range util.SortedMapKeys(s.State.DepartureAirports) {
 		s.DepartureState[name] = make(map[av.RunwayID]*RunwayLaunchState)
 
 		if runwayRates, ok := s.State.LaunchConfig.DepartureRates[name]; ok {

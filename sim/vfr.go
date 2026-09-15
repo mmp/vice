@@ -5,7 +5,6 @@
 package sim
 
 import (
-	"maps"
 	"slices"
 	"strconv"
 	"time"
@@ -13,6 +12,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/util"
 )
 
 // processInterfacilityVFR handles auto-association of interfacility VFR
@@ -86,9 +86,9 @@ func (s *Sim) TriggerEmergency(name string) {
 }
 
 func (s *Sim) requestRandomFlightFollowing() error {
-	candidates := make(map[*Aircraft]TCP)
+	candidates := make(map[av.ADSBCallsign]TCP)
 
-	for _, ac := range s.Aircraft {
+	for ac := range util.SortedMapValues(s.Aircraft) {
 		if ac.IsAssociated() || ac.FlightPlan.Rules != av.FlightRulesVFR || ac.RequestedFlightFollowing || !ac.IsAirborne() {
 			continue
 		}
@@ -109,14 +109,14 @@ func (s *Sim) requestRandomFlightFollowing() error {
 			continue
 		}
 
-		for tcpStr, cc := range s.State.FacilityAdaptation.Controllers {
+		for tcpStr, cc := range util.SortedMap(s.State.FacilityAdaptation.Controllers) {
 			tcp := s.State.ResolveController(TCP(tcpStr))
 			if s.isVirtualController(tcp) {
 				continue
 			}
 			for _, vol := range cc.FlightFollowingAirspace {
 				if vol.Inside(ac.Position(), int(ac.Altitude())) {
-					candidates[ac] = tcp // first come, first served
+					candidates[ac.ADSBCallsign] = tcp // first come, first served
 					break
 				}
 			}
@@ -127,12 +127,12 @@ func (s *Sim) requestRandomFlightFollowing() error {
 		return ErrNoVFRAircraftForFlightFollowing
 	}
 
-	ac, ok := rand.SampleSeq(s.Rand, maps.Keys(candidates))
+	cs, ok := rand.SampleSeq(s.Rand, slices.Values(util.SortedMapKeys(candidates)))
 	if !ok {
 		return ErrNoVFRAircraftForFlightFollowing
 	}
 
-	s.requestFlightFollowing(ac, candidates[ac])
+	s.requestFlightFollowing(s.Aircraft[cs], candidates[cs])
 
 	return nil
 }

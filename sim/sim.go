@@ -1227,7 +1227,7 @@ func shouldAskAboutTowerSwitch(ac *Aircraft) bool {
 func (s *Sim) updateState() {
 	now := s.State.SimTime
 
-	for acid, ho := range s.Handoffs {
+	for acid, ho := range util.SortedMap(s.Handoffs) {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
 			continue
 		}
@@ -1284,7 +1284,7 @@ func (s *Sim) updateState() {
 		}
 	}
 
-	for acid, pos := range s.PointOuts {
+	for acid, pos := range util.SortedMap(s.PointOuts) {
 		fp, _, _ := s.getFlightPlanForACID(acid)
 		s.PointOuts[acid] = util.FilterSlice(pos, func(po PointOut) bool {
 			if now.After(po.AcceptTime) && fp != nil && s.isVirtualController(po.ToController) {
@@ -1313,7 +1313,13 @@ func (s *Sim) updateState() {
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
 
-		for callsign, ac := range s.Aircraft {
+		for _, callsign := range util.SortedMapKeys(s.Aircraft) {
+			ac, ok := s.Aircraft[callsign]
+			if !ok {
+				// Gone already: a scripted control command run for an
+				// aircraft earlier in the order can delete another one.
+				continue
+			}
 			if ac.HoldForRelease && !ac.Released {
 				// nvm...
 				continue

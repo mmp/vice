@@ -14,6 +14,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/util"
 )
 
 // PatternPhase identifies which leg of the traffic pattern an aircraft is on.
@@ -154,7 +155,7 @@ func generatePatternLap(rwy, opp av.Runway, elevation int, nmPerLongitude, magne
 func (s *Sim) spawnPatternAircraft() {
 	now := s.State.SimTime
 
-	for name, ps := range s.PatternState {
+	for name, ps := range util.SortedMap(s.PatternState) {
 		if len(ps.Aircraft) >= 2 {
 			continue
 		}

@@ -5,7 +5,6 @@
 package sim
 
 import (
-	"maps"
 	"slices"
 	"strings"
 	"time"
@@ -185,7 +184,7 @@ func (s *Sim) triggerEmergency(idx int) bool {
 	em := &s.State.Emergencies[idx]
 
 	// Sample aircraft with weight 0 for virtual-controlled or existing emergencies
-	ac, ok := rand.SampleWeightedSeq(s.Rand, maps.Values(s.Aircraft), func(ac *Aircraft) float32 {
+	ac, ok := rand.SampleWeightedSeq(s.Rand, util.SortedMapValues(s.Aircraft), func(ac *Aircraft) float32 {
 		if ac.EmergencyState != nil {
 			return 0
 		}

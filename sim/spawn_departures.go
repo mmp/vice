@@ -81,8 +81,8 @@ func (s *Sim) spawnVFRDepartures() {
 	}
 	now := s.State.SimTime
 
-	for airport, runways := range s.DepartureState {
-		for runway, depState := range runways {
+	for airport, runways := range util.SortedMap(s.DepartureState) {
+		for runway, depState := range util.SortedMap(runways) {
 			if now.After(depState.NextVFRSpawn) {
 				ac, err := s.makeNewVFRDeparture(airport, runway)
 				launched := ac != nil && err == nil
@@ -103,8 +103,8 @@ func (s *Sim) spawnVFRDepartures() {
 func (s *Sim) updateDepartureSequence() {
 	now := s.State.SimTime
 
-	for airport, runways := range s.DepartureState {
-		for depRunway, depState := range runways {
+	for airport, runways := range util.SortedMap(s.DepartureState) {
+		for depRunway, depState := range util.SortedMap(runways) {
 			depState.filterDeleted(s.Aircraft)
 			s.processGateDepartures(depState, now)
 			s.processHeldDepartures(depState, now)
@@ -526,7 +526,7 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 			var routeWps []av.Waypoint
 			if sampledRandoms != nil {
 				// Sample destination airport: may be where we started from.
-				dest, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
+				dest, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(util.SortedMapKeys(s.State.DepartureAirports)),
 					s.vfrDestinationWeight)
 				if !ok {
 					// Arrivals are backed up at every airport that takes
@@ -1338,12 +1338,12 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 // trouble finding a route.
 func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft, error) {
 	// Sample destination airport: may be where we started from.
-	arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
+	arrive, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(util.SortedMapKeys(s.State.DepartureAirports)),
 		s.vfrDestinationWeight)
 	if !ok {
 		// Arrivals are backed up everywhere, but a controller asked for this
 		// aircraft, so send it somewhere anyway.
-		arrive, ok = rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
+		arrive, ok = rand.SampleWeightedSeq(s.Rand, slices.Values(util.SortedMapKeys(s.State.DepartureAirports)),
 			func(ap av.ICAOAirportCode) float32 { return s.State.Airports[ap].VFRRateSum() })
 		if !ok {
 			return nil, nil
