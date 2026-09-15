@@ -163,6 +163,19 @@ func (s *Sim) candidateArrivals(arrivalAirport av.ICAOAirportCode) []candidateAr
 	return candidates
 }
 
+// TimetableStartMinute is a start time as a local clock time at the timetable's
+// airport, which is how a timetable's own times are expressed. The start time
+// is chosen in UTC, as times are everywhere else; a timetable just needs it in
+// local terms.
+func TimetableStartMinute(start time.Time, airport av.ICAOAirportCode) (int, error) {
+	location, ok := av.DB.AirportTimeZone(airport)
+	if !ok {
+		return 0, fmt.Errorf("no time zone is known for %s", airport)
+	}
+	local := start.In(location)
+	return local.Hour()*60 + local.Minute(), nil
+}
+
 // timetableFlights anchors a timetable's daily cycle to the sim's start time,
 // giving each flight it will fly a date and a time like the historical data has.
 // The times are the timetable's own; the rate scale draws them in when the

@@ -15,7 +15,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	// timetableStartTimeUTC needs the airport database to find time zones.
+	// TimetableStartMinute needs the airport database to find time zones.
 	av.InitDB()
 	os.Exit(m.Run())
 }
@@ -113,40 +113,40 @@ func TestNormalizeTrafficSourceConfigWithoutScenarioTraffic(t *testing.T) {
 // time at its airport. KMSP is America/Chicago.
 func TestTimetableStartMinuteSummer(t *testing.T) {
 	// 19:00Z on July 14 is 14:00 CDT.
-	got, err := timetableStartMinute(time.Date(2026, time.July, 14, 19, 0, 0, 0, time.UTC), "KMSP")
+	got, err := sim.TimetableStartMinute(time.Date(2026, time.July, 14, 19, 0, 0, 0, time.UTC), "KMSP")
 	if err != nil {
-		t.Fatalf("timetableStartMinute: %v", err)
+		t.Fatalf("TimetableStartMinute: %v", err)
 	}
 	if want := 14 * 60; got != want {
-		t.Fatalf("timetableStartMinute = %d, want %d", got, want)
+		t.Fatalf("TimetableStartMinute = %d, want %d", got, want)
 	}
 }
 
 func TestTimetableStartMinuteWinter(t *testing.T) {
 	// 20:00Z on January 14 is 14:00 CST; the same local time is an hour later
 	// in UTC than it is in summer.
-	got, err := timetableStartMinute(time.Date(2026, time.January, 14, 20, 0, 0, 0, time.UTC), "KMSP")
+	got, err := sim.TimetableStartMinute(time.Date(2026, time.January, 14, 20, 0, 0, 0, time.UTC), "KMSP")
 	if err != nil {
-		t.Fatalf("timetableStartMinute: %v", err)
+		t.Fatalf("TimetableStartMinute: %v", err)
 	}
 	if want := 14 * 60; got != want {
-		t.Fatalf("timetableStartMinute = %d, want %d", got, want)
+		t.Fatalf("TimetableStartMinute = %d, want %d", got, want)
 	}
 }
 
 func TestTimetableStartMinuteAcrossLocalMidnight(t *testing.T) {
 	// 04:00Z on July 16 is still 23:00 CDT on July 15.
-	got, err := timetableStartMinute(time.Date(2026, time.July, 16, 4, 0, 0, 0, time.UTC), "KMSP")
+	got, err := sim.TimetableStartMinute(time.Date(2026, time.July, 16, 4, 0, 0, 0, time.UTC), "KMSP")
 	if err != nil {
-		t.Fatalf("timetableStartMinute: %v", err)
+		t.Fatalf("TimetableStartMinute: %v", err)
 	}
 	if want := 23 * 60; got != want {
-		t.Fatalf("timetableStartMinute = %d, want %d", got, want)
+		t.Fatalf("TimetableStartMinute = %d, want %d", got, want)
 	}
 }
 
 func TestTimetableStartMinuteRejectsUnknownAirport(t *testing.T) {
-	if _, err := timetableStartMinute(time.Date(2026, time.July, 14, 0, 0, 0, 0, time.UTC),
+	if _, err := sim.TimetableStartMinute(time.Date(2026, time.July, 14, 0, 0, 0, 0, time.UTC),
 		"XXXX"); err == nil {
 		t.Fatal("expected unknown-airport error")
 	}

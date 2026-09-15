@@ -224,18 +224,6 @@ func timetableLabel(spec *server.ScenarioSpec, timetable sim.TimetableSummary) s
 	return timetable.Name
 }
 
-// timetableStartMinute is the sim start time as a local clock time at the
-// timetable's airport, which is how a timetable's own times are expressed. The
-// start time is chosen once, above; a timetable just needs it in local terms.
-func timetableStartMinute(start time.Time, airport av.ICAOAirportCode) (int, error) {
-	location, ok := av.DB.AirportTimeZone(airport)
-	if !ok {
-		return 0, fmt.Errorf("no time zone is known for %s", airport)
-	}
-	local := start.In(location)
-	return local.Hour()*60 + local.Minute(), nil
-}
-
 func (c *NewSimConfiguration) trafficSourceTooltip(source sim.TrafficSource, spec *server.ScenarioSpec) string {
 	switch source {
 	case sim.TrafficSourceScenario:
@@ -580,7 +568,7 @@ func (c *NewSimConfiguration) updateTrafficPreview(spec *server.ScenarioSpec) {
 	if spec.LaunchConfig.TrafficSource == sim.TrafficSourceTimetable {
 		// Where a timetable's day starts, worked out the same way Start() works
 		// it out, so that the preview and the sim it previews agree.
-		minutes, err := timetableStartMinute(c.NewSimRequest.StartTime, spec.LaunchConfig.TimetableAirport)
+		minutes, err := sim.TimetableStartMinute(c.NewSimRequest.StartTime, spec.LaunchConfig.TimetableAirport)
 		if err != nil {
 			c.trafficPreviewKey, c.trafficPreviewError = key, err
 			c.trafficPreviewRetryAt = time.Now().Add(trafficPreviewRetryDelay)
@@ -1935,7 +1923,7 @@ func (c *NewSimConfiguration) Start(config *Config) error {
 	c.ScenarioSpec.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
 
 	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceTimetable {
-		minutes, err := timetableStartMinute(c.NewSimRequest.StartTime, c.ScenarioSpec.LaunchConfig.TimetableAirport)
+		minutes, err := sim.TimetableStartMinute(c.NewSimRequest.StartTime, c.ScenarioSpec.LaunchConfig.TimetableAirport)
 		if err != nil {
 			return err
 		}
