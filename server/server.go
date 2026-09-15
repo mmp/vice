@@ -171,7 +171,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	serverFunc := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, scenarioCatalogs, mapSpecs, briefs, config.ServerAddress, config.IsLocal, lg)
+		sm := NewSimManager(config, scenarioGroups, scenarioCatalogs, mapSpecs, briefs, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)

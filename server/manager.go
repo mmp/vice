@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -64,11 +65,34 @@ func (r *briefRegistry) register(facility string, hashes map[string][]byte, path
 	}
 }
 
+// scenarioTables is the result of loading and validating the scenario and
+// facility configuration files.
+type scenarioTables struct {
+	groups      map[string]map[string]*scenarioGroup
+	catalogs    map[string]map[string]*ScenarioCatalog
+	mapSpecs    map[string]*av.MapLibrarySpec
+	briefs      *briefRegistry
+	emergencies []sim.Emergency
+}
+
+func makeScenarioTables(groups map[string]map[string]*scenarioGroup, catalogs map[string]map[string]*ScenarioCatalog,
+	mapSpecs map[string]*av.MapLibrarySpec, briefs *briefRegistry) *scenarioTables {
+	return &scenarioTables{
+		groups:   groups,
+		catalogs: catalogs,
+		mapSpecs: mapSpecs,
+		briefs:   briefs,
+		// LoadScenarioGroups already validated emergencies.json; re-parse to hand the list to sim sessions.
+		emergencies: loadEmergencies(nil),
+	}
+}
+
 type SimManager struct {
-	scenarioGroups   map[string]map[string]*scenarioGroup
-	scenarioCatalogs map[string]map[string]*ScenarioCatalog
-	briefs           *briefRegistry
-	emergencies      []sim.Emergency
+	// scenarios is everything LoadScenarioGroups produced, swapped as a
+	// unit by ReloadScenarios. It is held atomically rather than under
+	// sm.mu so that readers, which run concurrently with RPC service,
+	// never see a half-replaced set and don't have to lock to look at it.
+	scenarios atomic.Pointer[scenarioTables]
 
 	// Active sessions
 	sessionsByName  map[string]*simSession
@@ -77,7 +101,6 @@ type SimManager struct {
 	// Helpers and such
 	wxProvider     *wx.Provider
 	providersReady chan struct{}
-	mapSpecs       map[string]*av.MapLibrarySpec
 	lg             *log.Logger
 
 	// flightData holds historical flights for the traffic preview, keyed by cell and the day
@@ -141,10 +164,11 @@ func (s *ScenarioSpec) AllAirports() []av.ICAOAirportCode {
 // briefs/<ARTCC>/<facility>.md resource. Reads only init-immutable maps,
 // so does not acquire sm.mu.
 func (sm *SimManager) loadBrief(facility string) (string, error) {
-	if _, ok := sm.briefs.facilities[facility]; !ok {
+	briefs := sm.scenarios.Load().briefs
+	if _, ok := briefs.facilities[facility]; !ok {
 		return "", nil
 	}
-	if p, ok := sm.briefs.pathOverrides[facility]; ok {
+	if p, ok := briefs.pathOverrides[facility]; ok {
 		b, err := os.ReadFile(p)
 		return string(b), err
 	}
@@ -158,32 +182,27 @@ func (sm *SimManager) loadBrief(facility string) (string, error) {
 ///////////////////////////////////////////////////////////////////////////
 // Constructor and Initialization
 
-func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenarioCatalogs map[string]map[string]*ScenarioCatalog,
-	mapSpecs map[string]*av.MapLibrarySpec, briefs *briefRegistry,
-	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
+func NewSimManager(config ServerLaunchConfig, scenarioGroups map[string]map[string]*scenarioGroup,
+	scenarioCatalogs map[string]map[string]*ScenarioCatalog, mapSpecs map[string]*av.MapLibrarySpec,
+	briefs *briefRegistry, lg *log.Logger) *SimManager {
 	sm := &SimManager{
-		scenarioGroups:   scenarioGroups,
-		scenarioCatalogs: scenarioCatalogs,
-		sessionsByName:   make(map[string]*simSession),
-		sessionsByToken:  make(map[string]*simSession),
-		mapSpecs:         mapSpecs,
-		briefs:           briefs,
-		// LoadScenarioGroups already validated emergencies.json; re-parse to hand the list to sim sessions.
-		emergencies:    loadEmergencies(nil),
-		startTime:      time.Now(),
-		local:          isLocal,
-		providersReady: make(chan struct{}),
-		lg:             lg,
+		sessionsByName:  make(map[string]*simSession),
+		sessionsByToken: make(map[string]*simSession),
+		startTime:       time.Now(),
+		local:           config.IsLocal,
+		providersReady:  make(chan struct{}),
+		lg:              lg,
 		flightData: expirable.NewLRU[string, []av.Flight](flightDataCacheEntries, nil,
 			flightDataCacheTTL),
 	}
+	sm.scenarios.Store(makeScenarioTables(scenarioGroups, scenarioCatalogs, mapSpecs, briefs))
 
 	// Initialize WX provider asynchronously so the server can start
 	// accepting connections immediately. Callers that need providers will
 	// block in getProviders() until initialization completes or times out.
 	go func() {
 		defer close(sm.providersReady)
-		sm.wxProvider = wx.MakeProvider(serverAddress, lg)
+		sm.wxProvider = wx.MakeProvider(config.ServerAddress, lg)
 	}()
 
 	sm.launchHTTPServer()
@@ -277,7 +296,7 @@ func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 // makeSimConfiguration only accesses read-only SimManager members that are set at
 // construction time; no mutex necessary.
 func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (*sim.NewSimConfiguration, error) {
-	facility, ok := sm.scenarioGroups[req.Facility]
+	facility, ok := sm.scenarios.Load().groups[req.Facility]
 	if !ok {
 		lg.Errorf("%s: unknown facility", req.Facility)
 		return nil, ErrInvalidSimConfiguration
@@ -296,7 +315,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 	// The traffic sources a scenario can be flown with are the server's to
 	// decide: it is the one that knows which airline lists, timetables, and
 	// flight data are there. Don't take the client's word for it.
-	spec := sm.scenarioCatalogs[req.Facility][req.GroupName].Scenarios[req.ScenarioName]
+	spec := sm.scenarios.Load().catalogs[req.Facility][req.GroupName].Scenarios[req.ScenarioName]
 	if !slices.Contains(spec.TrafficSources, req.ScenarioSpec.LaunchConfig.TrafficSource) {
 		lg.Errorf("%s/%s: requested %s traffic, which this scenario doesn't offer",
 			req.Facility, req.ScenarioName, req.ScenarioSpec.LaunchConfig.TrafficSource)
@@ -343,7 +362,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 		ControllerConfiguration:     &sc.ControllerConfiguration,
 		ConfigurationId:             sc.ConfigurationString,
 		WXProvider:                  wxp,
-		Emergencies:                 sm.emergencies,
+		Emergencies:                 sm.scenarios.Load().emergencies,
 		StartTime:                   req.StartTime,
 		HandoffIDs:                  sg.FacilityConfig.HandoffIDs,
 		ERAMCoordination:            sg.ERAMCoordination,
@@ -467,9 +486,10 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 	// Collect hashes for every video map file the client may need: the
 	// controller's primary file plus any referenced by the scenario brief.
 	hashes := make(map[string][]byte)
-	maps.Copy(hashes, sm.briefs.videoMapHashes[session.sim.Facility()])
+	tables := sm.scenarios.Load()
+	maps.Copy(hashes, tables.briefs.videoMapHashes[session.sim.Facility()])
 	if _, present := hashes[vmFile]; !present && vmFile != "" {
-		if spec, ok := sm.mapSpecs[vmFile]; ok {
+		if spec, ok := tables.mapSpecs[vmFile]; ok {
 			if h, err := spec.Hash(); err == nil {
 				hashes[vmFile] = h
 			}
@@ -702,7 +722,7 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
-	result.ScenarioCatalogs = sm.scenarioCatalogs
+	result.ScenarioCatalogs = sm.scenarios.Load().catalogs
 
 	return nil
 }
@@ -920,7 +940,7 @@ func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficC
 // don't take the client's word for it here any more than makeSimConfiguration does. The catalogs
 // are init-immutable, so no mutex.
 func (sm *SimManager) checkPreviewScenario(args *TrafficCountsArgs) error {
-	catalog, ok := sm.scenarioCatalogs[args.Facility][args.GroupName]
+	catalog, ok := sm.scenarios.Load().catalogs[args.Facility][args.GroupName]
 	if !ok {
 		return ErrInvalidSimConfiguration
 	}
