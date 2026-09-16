@@ -712,7 +712,7 @@ func TestSIDOffsetActions(t *testing.T) {
 		if got := wps.Encode(); got != want {
 			t.Errorf("got %q, want %q", got, want)
 		}
-		if got, want := wps[2].Location, at([2]float32{7, 0}); got != want {
+		if got, want := wps[2].Location, at([2]float32{7, 0}); !samePosition(got, want) {
 			t.Errorf("location %s, want %s", got.DDString(), want.DDString())
 		}
 	})

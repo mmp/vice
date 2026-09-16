@@ -45,6 +45,15 @@ func (tl testLocator) LocateDME(fix string) (math.Point2LL, int, bool) {
 	return p, 33, ok
 }
 
+// samePosition reports whether two lat-longs are the same point to within a
+// hundredth of a mile. Comparing them exactly is hostage to the compiler's
+// freedom to fuse a multiply into the following add, which it takes on arm64
+// but not on amd64: a point interpolated along a leg then lands an ulp or two
+// from the same point computed any other way.
+func samePosition(a, b math.Point2LL) bool {
+	return math.NMDistance2LL(a, b) < 0.01
+}
+
 func TestHoldEntry(t *testing.T) {
 	for _, tc := range []struct {
 		name         string

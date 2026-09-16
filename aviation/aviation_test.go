@@ -1171,9 +1171,9 @@ func TestArrivalWaypointActions(t *testing.T) {
 		if i == -1 {
 			t.Fatalf("no offset point in %s", arr.Waypoints.Encode())
 		}
-		want := math.Lerp2f(0.25, loc.testLocator["BEUTY"], loc.testLocator["APPLE"])
-		if got := arr.Waypoints[i].Location; got != math.Point2LL(want) {
-			t.Errorf("location %s, want %s", got.DDString(), math.Point2LL(want).DDString())
+		want := math.Point2LL(math.Lerp2f(0.25, loc.testLocator["BEUTY"], loc.testLocator["APPLE"]))
+		if got := arr.Waypoints[i].Location; !samePosition(got, want) {
+			t.Errorf("location %s, want %s", got.DDString(), want.DDString())
 		}
 	})
 
@@ -1194,9 +1194,9 @@ func TestArrivalWaypointActions(t *testing.T) {
 		if i == -1 {
 			t.Fatalf("no handoff point in %s", arr.Waypoints.Encode())
 		}
-		want := math.Lerp2f(0.5, loc.testLocator["MIPP"], loc.testLocator["LIZZI"])
-		if got := arr.Waypoints[i].Location; got != math.Point2LL(want) {
-			t.Errorf("handoff at %s, want %s", got.DDString(), math.Point2LL(want).DDString())
+		want := math.Point2LL(math.Lerp2f(0.5, loc.testLocator["MIPP"], loc.testLocator["LIZZI"]))
+		if got := arr.Waypoints[i].Location; !samePosition(got, want) {
+			t.Errorf("handoff at %s, want %s", got.DDString(), want.DDString())
 		}
 	})
 
@@ -1255,9 +1255,9 @@ func TestArrivalWaypointActions(t *testing.T) {
 		if sr := spawn.SpeedRestriction(); sr == nil || sr.Range[1] != 250 {
 			t.Errorf("spawn speed restriction %v, want 250", sr)
 		}
-		want := math.Lerp2f(0.4, loc.testLocator["MIPP"], loc.testLocator["LIZZI"])
-		if got := spawn.Location; got != math.Point2LL(want) {
-			t.Errorf("spawn at %s, want %s", got.DDString(), math.Point2LL(want).DDString())
+		want := math.Point2LL(math.Lerp2f(0.4, loc.testLocator["MIPP"], loc.testLocator["LIZZI"]))
+		if got := spawn.Location; !samePosition(got, want) {
+			t.Errorf("spawn at %s, want %s", got.DDString(), want.DDString())
 		}
 	})
 
