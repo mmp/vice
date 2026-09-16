@@ -213,55 +213,35 @@
 
                 <p>When developing scenarios, you might make a copy of an existing scenario's JSON file and modify it in order to add more configurations,
                   or you or might specify completely new scenario and video map files if you're working on support for a new TRACON.
-                  One way to try out your work is to open the "Settings" menu (shown by clicking the <i class="fas fa-cog"></i> icon in the menu bar)
-                  and selecting "Facility Engineering". There, you can specify the locations of additional scenario, video map, and/or facility configuration files to load when <i>vice</i> is launched.</p>
-                <div class="text-center">
-                  <img src="fe-scenario-videomap-ui.png" srcset="fe-scenario-videomap-ui-2x.png 2x" width="550" height="128">
-                </div>
-                <br>
-                <p>
-                  Alternatively, if you're comfortable with the command line, you can specify additional files with command-line arguments.
-                  On Windows, open up a command prompt and set the directory to the folder with the <i>vice</i> executable (generally,
-                  <code>C:\Program Files (x86)\Vice</code>. Then, run
-                  <code>vice.exe -scenario path_to_scenario_file -videomap path_to_videomap_file</code>. On MacOs,
-                  it's very similar: change the directory in the terminal to where Vice.app is located (often, <code>/Applications/Vice.app</code>,
-                  depending on where you installed it. Then, run <code>./Vice.app/Contents/MacOs/vice -scenario path_to_scenario_file -videomap path_to_videomap_file</code>.
-                </p>
-                <p>
-                  If you're editing an existing scenario, you may want to make a copy of it to a folder outside of <code>resources/scenarios</code>
-                  to edit it there. In that case, if the scenario given via the UI or command line has the same <code>"name"</code>
-                  value as an existing scenario, it will be used in place of the existing one.
-                </p>
-                <p>When you're working on a new scenario, you may omit the "video_map_file" specifier in its JSON file.
-                  In this case, <i>vice</i> will automatically use the video map file you specified via <code>-videomap</code>
-                  or via the UI.
+                  As part of this you may also need to modify the configuration file for the facility.
+                  As you work, you can use <a href="#fe-backshop">backshop</a> to check your work; it's a stand-alone tool for scenario development in <i>vice</i>.
+                  Alternatively, you can have <i>vice</i> load your updated files when it launches and run the scenarios as a user would there; 
                 </p>
 
             <section class="docs-section" id="fe-backshop">
-              <h2 class="section-heading" data-nav-title="backshop">backshop</h2>
+              <h2 class="section-heading" data-nav-title="Backshop">Backshop</h2>
                 <p>
-                  <i>backshop</i> is a separate application for facility engineering. It opens a scenario, draws its
-                  geometry on a plain map with no STARS or ERAM interface in the way, and gives access to everything
-                  <i>vice</i> knows about the scenario and about the aviation database behind it. Everything it shows
+                  <i>backshop</i> is a stand-alone application for facility engineering: you can provide it with updated scenario / config files (or use it to explore the built-in ones) and it provides comprehensive information about the structure of scenarios, their routes, maps, etc.
+                  Everything it shows
                   can be copied to the clipboard, since it is all destined for hand-written JSON.
                 </p>
                 <p>
-                  <i>backshop</i> takes no command-line arguments; everything is set in the window and remembered
-                  between runs. Work-in-progress scenario, video map, brief, and facility configuration files are
-                  chosen under "Additional files" in the Scenario tab, which is where <i>vice</i>'s
-                  <code>-scenario</code>, <code>-videomap</code>, <code>-scenariobrief</code>, and
-                  <code>-facilityconfig</code> arguments would otherwise be used.
+                  Work-in-progress scenario, video map, brief, and facility configuration files can be specified
+                  under "Additional files" in the Scenario tab.
                 </p>
                 <p>
-                  Most importantly, it reloads edited scenario JSON in place: pressing <code>[Control][R]</code>
-                  (<code>[Command][R]</code> on macOS) re-reads the scenario and facility configuration files from disk,
+                  Most importantly, it reloads edited scenario JSON in place: pressing <code>[Control-R]</code>
+                  (<code>[Command R]</code> on macOS) re-reads the scenario and facility configuration files from disk,
                   along with the aviation database and the pronunciation files behind it, and restarts the sim on them,
-                  taking well under a second, so there is no need to quit and relaunch after every edit. Picking a
-                  different additional file reloads too, so that takes no restart either. If the edited files don't
+                  so there is no need to quit and relaunch after every edit (as is the case when checking scenarios with <i>vice</i>
+                  If the edited files don't
                   validate, the errors are listed in the Scenario tab and the previously loaded scenario keeps
                   running.
                 </p>
-                <p>The map itself supports:</p>
+                <div class="text-center">
+<img src="backshop.png" srcset="backshop-2x.png 2x" width="1512" height="944" class="img-fluid">
+                </div><br>
+                <p><i>backshop</i> displays two windows: a map window and an inspector. The map supports:</p>
                 <ul>
                   <li>Dragging to pan and the scroll wheel to zoom.</li>
                   <li>Control-shift-click to copy a position to the clipboard, as in <i>vice</i>. The position under the
@@ -272,7 +252,7 @@
                   <li>A measuring mode, alongside it: click two points for the distance and magnetic bearing between
                     them.</li>
                 </ul>
-                <p>The inspector window alongside it has a tab for each kind of thing worth looking at:</p>
+                <p>The inspector window alongside it has a tab for each general category of information that can be examined:</p>
                 <table class="table">
                   <thead>
                     <tr><th style="width: 20%;">Tab</th><th>Contents</th></tr>
@@ -330,98 +310,40 @@
                 </table>
                 <p>
                   On Windows, <i>backshop</i> is an option in the installer; tick "Facility engineering tool" when
-                  installing <i>vice</i>. On macOS it is a separate <code>Backshop.app</code>, downloaded below;
+                  installing <i>vice</i>. On macOS it is a separate <code>Backshop.app</code>, which can be downloaded below;
                   after opening the <i>zip</i> file, drag <i>Backshop.app</i> to your <i>Applications</i> folder to
-                  install it. It reads the resource files <i>vice</i> installs, so <i>vice</i> must have been
-                  run at least once before it will start.
+                  install it.
                 </p>
                 <a href="https://github.com/mmp/vice/releases/download/v0.15.0/Backshop-v0.15.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Backshop v0.15.0 for Mac</a>
             </section>
 
-            <section class="docs-section" id="fe-faq">
-              <h2 class="section-heading" data-nav-title="FAQ">Facility Engineering FAQ</h2>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 30%;">Question</th>
-                    <th>Answer</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>How do I get started?</td>
-                    <td>To get started creating a facility configuration file for <i>vice</i>, first read through the
-                      documentation provided below. (For starters, at least skim it to get the lay of the land.)
-                      Next you might look at a few existing scenarios: pick a scenario that you're familiar with as a user
-                      and look its scenario and facility code, cross referencing it with the documentation.
-                      As a first step, you could try making smaller changes to an existing scenario before you try
-                      developing a new scenario from scratch.
-                    </td>
-                  </tr>
+            <section class="docs-section" id="fe-testing-in-vice">
+              <h2 class="section-heading" data-nav-title="Testing in Vice">Testing in Vice</h2>
+              <p>
+                Another way way to try out your work is to open the "Settings" menu in <i>vice</i> (shown by clicking the <i class="fas fa-cog"></i> icon in the menu bar)
+                  and selecting "Facility Engineering". There, you can specify the locations of additional scenario, video map, and/or facility configuration files to load when <i>vice</i> is launched.</p>
+                <div class="text-center">
+                  <img src="fe-scenario-videomap-ui.png" srcset="fe-scenario-videomap-ui-2x.png 2x" width="539" height="227">
+                </div>
+                <br>
+                <p>
+                  Alternatively, if you're comfortable with the command line, you can specify additional files with command-line arguments.
+                  On Windows, open up a command prompt and set the directory to the folder with the <i>vice</i> executable (generally,
+                  <code>C:\Program Files (x86)\Vice</code>. Then, run
+                  <code>vice.exe -scenario path_to_scenario_file -videomap path_to_videomap_file</code>. On MacOs,
+                  it's very similar: change the directory in the terminal to where Vice.app is located (often, <code>/Applications/Vice.app</code>,
+                  depending on where you installed it. Then, run <code>./Vice.app/Contents/MacOs/vice -scenario path_to_scenario_file -videomap path_to_videomap_file</code>.
+                </p>
+                <p>
+                  If you're editing an existing scenario, you may want to make a copy of it to a folder outside of <code>resources/scenarios</code>
+                  to edit it there. In that case, if the scenario given via the UI or command line has the same <code>"name"</code>
+                  value as an existing scenario, it will be used in place of the existing one.
+                </p>
+                <p>When you're working on a new scenario, you may omit the "video_map_file" specifier in its JSON file.
+                  In this case, <i>vice</i> will automatically use the video map file you specified via <code>-videomap</code>
+                  or via the UI.
+                </p>
 
-                  <tr>
-                    <td>What's the difference between a scenario and a facility configuration?</td>
-                    <td>
-                      A scenario is a specific configuration of airports, active runways, and departure and arrival flows
-                      in a given facility (TRACON or ARTCC).
-                      Each scenario file may define one or more scenarios in a single facility and there may be multiple
-                      scenario files for a facility. (Especially for big and complex facilities, it is often useful to
-                      break all of their airports into multiple scenario files.)
-                      A facility configuration specifies information that applies to all airports in a facility and
-                      doesn't vary across scenarios (for example, the control positions, the assignments of controllers
-                      to departure and arrivals flows, etc.)
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>How do I see the installed scenarios and facility configuration files?</td>
-                    <td>First:
-                      <ul>
-                        <li>On Windows, open a file explorer and enter <code>%APPDATA%</code> for the folder to open.
-                          Then select <code>Vice</code> and then <code>resources</code>.</li>
-                        <li>On Mac, go to the Finder and select "Go To Folder..." in the "Go" menu.
-                          Enter <code>~/Library/Application Support/Vice/resources</code>.</li>
-                        <li>On Linux, navigate to <code>$HOME/.config/Vice</code>.</li>
-                      </ul>
-                      Then, scenarios are found under <code>scenarios</code> and facility configurations under <code>configurations</code>.
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>Why am I getting an error like "The entry "departure_routes" is not an expected JSON object"?
-                      I see "departure_routes" in the documentation!
-                    </td>
-                    <td>
-                      Most likely, you have an error in the nesting of the <code>{</code> / <code>}</code> braces in your JSON file&mdash;in
-                      other words, you're missing a closing brace or have an extra closing brace somewhere such that the entry it's complaining
-                      about is inside a different object than it's supposed to be.
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>How can I submit one of my scenarios?</td>
-                    <td>
-                      The easiest way is to post it in the <i>scenario-updates</i> channel in the <a href="https://discord.gg/y993vgQxhY"><i>vice</i> Discord</a>.
-                      If you're comfortable with GitHub, you're welcome to fork the <a href="https://github.com/mmp/vice"><i>vice</i> repository</a>
-                      and make a pull request.
-                      Don't forget to include any updates to facility configuration files or video maps!
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>How can I get the lat/long coordinates of a point on a map?</td>
-                    <td><i>backshop</i> shows the position under the cursor in its menu bar; clicking it copies it.
-                      In <i>vice</i>, pressing <code>[Control][Shift]</code> and clicking a point on the map will copy
-                      the coordinates of where you clicked into the clipboard. Alternatively, you can enter
-                      <code>.DRAWROUTE[Enter]</code> in STARS and click a series of points. All of the
-                      points in the route will be copied to the clipboard. If you make a mistake, pressing
-                      <code>[Backspace]</code> will delete the last point in the route. Press <code>[Escape]</code>
-                      to exit this mode.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
 
             <section class="docs-section" id="fe-locations">
               <h2 class="section-heading">Specifying Locations</h2>
@@ -1244,6 +1166,7 @@
     ]
 }</code></pre>
             </section><!--//section-->
+
             <section class="docs-section" id="fe-speech">
               <h2 class="section-heading">Speech</h2>
               <p><i>vice</i> includes JSON files that map aviation terms to spoken pronunciations.
@@ -1295,7 +1218,93 @@
               <p>Files with array values (airports, aircraft types) allow random selection among variants
                 for more natural-sounding speech. Files with single string values have one canonical pronunciation.</p>
             </section><!--//section-->
+
+            <section class="docs-section" id="fe-faq">
+              <h2 class="section-heading" data-nav-title="FAQ">Facility Engineering FAQ</h2>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 30%;">Question</th>
+                    <th>Answer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>How do I get started?</td>
+                    <td>To get started creating a facility configuration file for <i>vice</i>, first read through the
+                      documentation provided below. (For starters, at least skim it to get the lay of the land.)
+                      Next you might look at a few existing scenarios: pick a scenario that you're familiar with as a user
+                      and look its scenario and facility code, cross referencing it with the documentation.
+                      As a first step, you could try making smaller changes to an existing scenario before you try
+                      developing a new scenario from scratch.
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>What's the difference between a scenario and a facility configuration?</td>
+                    <td>
+                      A scenario is a specific configuration of airports, active runways, and departure and arrival flows
+                      in a given facility (TRACON or ARTCC).
+                      Each scenario file may define one or more scenarios in a single facility and there may be multiple
+                      scenario files for a facility. (Especially for big and complex facilities, it is often useful to
+                      break all of their airports into multiple scenario files.)
+                      A facility configuration specifies information that applies to all airports in a facility and
+                      doesn't vary across scenarios (for example, the control positions, the assignments of controllers
+                      to departure and arrivals flows, etc.)
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>How do I see the installed scenarios and facility configuration files?</td>
+                    <td>First:
+                      <ul>
+                        <li>On Windows, open a file explorer and enter <code>%APPDATA%</code> for the folder to open.
+                          Then select <code>Vice</code> and then <code>resources</code>.</li>
+                        <li>On Mac, go to the Finder and select "Go To Folder..." in the "Go" menu.
+                          Enter <code>~/Library/Application Support/Vice/resources</code>.</li>
+                        <li>On Linux, navigate to <code>$HOME/.config/Vice</code>.</li>
+                      </ul>
+                      Then, scenarios are found under <code>scenarios</code> and facility configurations under <code>configurations</code>.
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Why am I getting an error like "The entry "departure_routes" is not an expected JSON object"?
+                      I see "departure_routes" in the documentation!
+                    </td>
+                    <td>
+                      Most likely, you have an error in the nesting of the <code>{</code> / <code>}</code> braces in your JSON file&mdash;in
+                      other words, you're missing a closing brace or have an extra closing brace somewhere such that the entry it's complaining
+                      about is inside a different object than it's supposed to be.
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>How can I submit one of my scenarios?</td>
+                    <td>
+                      The easiest way is to post it in the <i>scenario-updates</i> channel in the <a href="https://discord.gg/y993vgQxhY"><i>vice</i> Discord</a>.
+                      If you're comfortable with GitHub, you're welcome to fork the <a href="https://github.com/mmp/vice"><i>vice</i> repository</a>
+                      and make a pull request.
+                      Don't forget to include any updates to facility configuration files or video maps!
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>How can I get the lat/long coordinates of a point on a map?</td>
+                    <td><i>backshop</i> shows the position under the cursor in its menu bar; clicking it copies it.
+                      In <i>vice</i>, pressing <code>[Control][Shift]</code> and clicking a point on the map will copy
+                      the coordinates of where you clicked into the clipboard. Alternatively, you can enter
+                      <code>.DRAWROUTE[Enter]</code> in STARS and click a series of points. All of the
+                      points in the route will be copied to the clipboard. If you make a mistake, pressing
+                      <code>[Backspace]</code> will delete the last point in the route. Press <code>[Escape]</code>
+                      to exit this mode.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
           </article>
+
           <article class="docs-article" id="section-facility-config" data-nav-icon="fas fa-wrench">
             <header class="docs-header">
               <h1 class="docs-heading">Facility Configuration</h1>
