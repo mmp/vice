@@ -8,63 +8,47 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"regexp"
 	"slices"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
 
-// These all store a mapping from written text to phonetic pronunciations that work better with
-// voice synthesis. For the ones with arrays as map values, one of the items is randomly
-// selected when one is needed.
-var (
-	sayAirportMap map[string][]string
-	sayACTypeMap  map[string][]string
-	sayFixMap     map[string]string
-	sayAirlineMap map[string]string
-	saySIDMap     map[string]string
-	saySTARMap    map[string]string
+// pronunciations maps written text to the phonetic spellings that work
+// better with voice synthesis. Where a slice is stored, one of its items is
+// chosen at random when one is needed.
+type pronunciations struct {
+	airports map[string][]string
+	acTypes  map[string][]string
+	fixes    map[string]string
+	airlines map[string]string
+	sids     map[string]string
+	stars    map[string]string
+}
 
-	pronunciationsOnce sync.Once
-)
+// parsePronunciations reads the say*.json files; it is called as part of
+// loading the aviation database, so editing one of them takes effect on a
+// reload along with the rest of it.
+func parsePronunciations() pronunciations {
+	var say pronunciations
+	load := func(file string, m any) {
+		if err := json.Unmarshal(util.LoadResourceBytes(file), m); err != nil {
+			panic(fmt.Sprintf("%s: %v", file, err))
+		}
+	}
 
-func loadPronunciationsIfNeeded() {
-	pronunciationsOnce.Do(func() {
-		n := 0
-		report := func(file string, err error) {
-			fmt.Fprintf(os.Stderr, "%s: %v\n", file, err)
-			n++
-		}
+	load("sayactype.json", &say.acTypes)
+	load("sayairport.json", &say.airports)
+	load("sayairline.json", &say.airlines)
+	load("sayfix.json", &say.fixes)
+	load("saysid.json", &say.sids)
+	load("saystar.json", &say.stars)
 
-		if err := json.Unmarshal(util.LoadResourceBytes("sayactype.json"), &sayACTypeMap); err != nil {
-			report("sayactype.json", err)
-		}
-		if err := json.Unmarshal(util.LoadResourceBytes("sayairport.json"), &sayAirportMap); err != nil {
-			report("sayairport.json", err)
-		}
-		if err := json.Unmarshal(util.LoadResourceBytes("sayairline.json"), &sayAirlineMap); err != nil {
-			report("sayairline.json", err)
-		}
-		if err := json.Unmarshal(util.LoadResourceBytes("sayfix.json"), &sayFixMap); err != nil {
-			report("sayfix.json", err)
-		}
-		if err := json.Unmarshal(util.LoadResourceBytes("saysid.json"), &saySIDMap); err != nil {
-			report("saysid.json", err)
-		}
-		if err := json.Unmarshal(util.LoadResourceBytes("saystar.json"), &saySTARMap); err != nil {
-			report("saystar.json", err)
-		}
-
-		if n > 0 {
-			os.Exit(1)
-		}
-	})
+	return say
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -622,12 +606,11 @@ func (AirportSnippetFormatter) Written(arg any) (string, error) {
 var trailingParenRe = regexp.MustCompile(`^(.*) \([^)]+\)$`)
 
 func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
-	loadPronunciationsIfNeeded()
 	icao, err := airportArg(arg)
 	if err != nil {
 		return "", err
 	}
-	if opts, ok := sayAirportMap[string(icao)]; ok && len(opts) > 0 {
+	if opts, ok := DB.say.airports[string(icao)]; ok && len(opts) > 0 {
 		ap, _ := rand.SampleSeq(r, slices.Values(opts))
 		return ap, nil
 	} else if ap, ok := DB.Airports[icao]; ok && ap.Name != "" {
@@ -899,8 +882,7 @@ func (BasicNumberSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error)
 // For example, "C172" might return ["skyhawk", "cessna one seventy-two"].
 // Returns nil if the type is not found in sayactype.json.
 func GetACTypePronunciations(acType string) []string {
-	loadPronunciationsIfNeeded()
-	if variants, ok := sayACTypeMap[acType]; ok {
+	if variants, ok := DB.say.acTypes[acType]; ok {
 		return variants
 	}
 	return nil
@@ -949,7 +931,7 @@ func SplitCallsign(callsign string) (prefix, number string) {
 // GetCallsignSpoken returns the spoken telephony string for a callsign, formatted as it would be
 // pronounced. It is the speech-to-text spelling: it feeds the whisper initial prompt and keys the
 // command parser's aircraft context, so it uses the plain telephony name rather than
-// sayAirlineMap's voice-synthesis respellings.
+// the pronunciation files' voice-synthesis respellings.
 // Example: "JBU520" → "jetblue five 20", "BAW22J" → "speedbird 22 juliet"
 func GetCallsignSpoken(callsign string, cwtCategory string) string {
 	prefix, fnum := SplitCallsign(callsign)
@@ -995,8 +977,6 @@ func GetCallsignSpoken(callsign string, cwtCategory string) string {
 // It uses pronunciations from sayfix.json when available, falls back to database
 // lookups for navaids/airports, and uses StopShouting for other fixes.
 func GetFixTelephony(fix string) string {
-	loadPronunciationsIfNeeded()
-
 	if strings.HasPrefix(fix, "_") {
 		if namedFix, dist, dir, ok := ParseSyntheticCrossingFix(fix); ok {
 			return fmt.Sprintf("%d miles %s of %s", dist, math.Compass(dir.Heading()), GetFixTelephony(namedFix))
@@ -1019,7 +999,7 @@ func GetFixTelephony(fix string) string {
 	}
 
 	// Check sayfix.json for pronunciation
-	if say, ok := sayFixMap[fix]; ok {
+	if say, ok := DB.say.fixes[fix]; ok {
 		return say
 	}
 
@@ -1032,10 +1012,8 @@ func GetFixTelephony(fix string) string {
 // Returns all variants from sayairport.json if available, otherwise returns
 // a slice with just the database name (if available), or nil if not found.
 func GetAirportTelephonyVariants(icao string) []string {
-	loadPronunciationsIfNeeded()
-
 	// First check sayairport.json for custom variants
-	if variants, ok := sayAirportMap[icao]; ok && len(variants) > 0 {
+	if variants, ok := DB.say.airports[icao]; ok && len(variants) > 0 {
 		return variants
 	}
 
@@ -1057,9 +1035,8 @@ func GetAirportTelephonyVariants(icao string) []string {
 // GetSIDTelephony returns the spoken form of a SID name.
 // For example, "MERIT5" becomes "merit five".
 func GetSIDTelephony(sid string) string {
-	loadPronunciationsIfNeeded()
 	name, num := trimNumber(sid)
-	if say, ok := saySIDMap[name]; ok {
+	if say, ok := DB.say.sids[name]; ok {
 		name = say
 	}
 	if num > 0 {
@@ -1071,9 +1048,8 @@ func GetSIDTelephony(sid string) string {
 // GetSTARTelephony returns the spoken form of a STAR name.
 // For example, "CAMRN4" becomes "cameron four".
 func GetSTARTelephony(star string) string {
-	loadPronunciationsIfNeeded()
 	name, num := trimNumber(star)
-	if say, ok := saySTARMap[name]; ok {
+	if say, ok := DB.say.stars[name]; ok {
 		name = say
 	}
 	if num > 0 {
@@ -1224,8 +1200,6 @@ func (CallsignSnippetFormatter) Written(arg any) (string, error) {
 }
 
 func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
-	loadPronunciationsIfNeeded()
-
 	var callsign string
 	var isEmergency bool
 	var alwaysFullCallsign bool
@@ -1252,7 +1226,7 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 	if icao == "N" {
 		// For GA callsigns with type form, use aircraft type + trailing 3
 		if useTypeForm && acType != "" {
-			typeVariants := sayACTypeMap[acType]
+			typeVariants := DB.say.acTypes[acType]
 			if len(typeVariants) > 0 {
 				// Filter out variants with numbers to avoid callsign confusion
 				var filtered []string
@@ -1293,7 +1267,7 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 
 	// figure out the telephony
 	tel := DB.Callsigns[icao]
-	if tel2, ok := sayAirlineMap[tel]; ok { // overrides
+	if tel2, ok := DB.say.airlines[tel]; ok { // overrides
 		tel = tel2
 	}
 
@@ -1384,13 +1358,12 @@ func (s SIDSnippetFormatter) Written(arg any) (string, error) {
 }
 
 func (SIDSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
-	loadPronunciationsIfNeeded()
 	name, err := stringArg(arg)
 	if err != nil {
 		return "", err
 	}
 	sid, num := trimNumber(name)
-	if say, ok := saySIDMap[sid]; ok {
+	if say, ok := DB.say.sids[sid]; ok {
 		return say + " " + sayDigit(num), nil
 	}
 	return sid + " " + sayDigit(num), nil
@@ -1413,13 +1386,12 @@ func (s STARSnippetFormatter) Written(arg any) (string, error) {
 }
 
 func (STARSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
-	loadPronunciationsIfNeeded()
 	name, err := stringArg(arg)
 	if err != nil {
 		return "", err
 	}
 	star, num := trimNumber(name)
-	if say, ok := saySTARMap[star]; ok {
+	if say, ok := DB.say.stars[star]; ok {
 		return say + " " + sayDigit(num), nil
 	}
 	return star + " " + sayDigit(num), nil
@@ -1572,12 +1544,11 @@ func (AircraftTypeSnippetFormatter) Written(arg any) (string, error) {
 }
 
 func (AircraftTypeSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
-	loadPronunciationsIfNeeded()
 	ac, err := stringArg(arg)
 	if err != nil {
 		return "", err
 	}
-	if say, ok := sayACTypeMap[ac]; ok && len(say) > 0 {
+	if say, ok := DB.say.acTypes[ac]; ok && len(say) > 0 {
 		s, _ := rand.SampleSeq(r, slices.Values(say))
 		return s, nil
 	}

@@ -57,6 +57,7 @@ type StaticDatabase struct {
 	BravoAirspace       map[string][]AirspaceVolume
 	CharlieAirspace     map[string][]AirspaceVolume
 	DeltaAirspace       map[string][]AirspaceVolume
+	say                 pronunciations
 }
 
 type FAAAirport struct {
@@ -527,6 +528,7 @@ func doInitDB() {
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
 	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
+	wg.Go(func() { db.say = parsePronunciations() })
 	wg.Go(func() { db.AirportPairRoutes = parseAirportPairRoutes() })
 	wg.Go(func() { db.ScrapedRoutes = parseScrapedRoutes() })
 	wg.Go(func() {
