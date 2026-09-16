@@ -139,7 +139,8 @@
           },
           "ENI,RBL,LIN": {
             "cleared_altitude": 19000,
-            "sid": "SLNT3"
+            "sid": "SLNT3",
+            "climbout_actions": "l270/@SFO-R360"
           }
         },
         "30.N": {
@@ -165,7 +166,8 @@
           },
           "ENI,RBL,LIN": {
             "cleared_altitude": 19000,
-            "sid": "SLNT3"
+            "sid": "SLNT3",
+            "climbout_actions": "l270/@SFO-R360"
           },
           "SUNNE": {
             "cleared_altitude": 5000,
