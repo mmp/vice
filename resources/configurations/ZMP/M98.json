@@ -626,15 +626,18 @@
       }
     },
     "scratchpads": {
-      "HRBEK": "FAR",
-      "ZOGAP": "SME",
-      "TONCA": "LEI",
-      "HUGIR": "ONL",
-      "JURNY": "FOD",
-      "FOBUG": "RST",
-      "JEDET": "ODI",
-      "TAXEE": "DLL",
-      "SNINE": "GRB",
+      "FAR": "FAR",
+      "SMERF": "SME",
+      "LEINY": "LEI",
+      "RXANN": "ONL",
+      "ONTIJ": "FOD",
+      "ORSKY": "FOD",
+      "ALO": "RST",
+      "RST": "RST",
+      "ODI": "ODI",
+      "DLL": "DLL",
+      "GRB": "GRB",
+      "WLSTN": "GRB",
       "DLH": "DLH",
       "BRNRD": "BRD",
       "LSE": "LSE",
@@ -672,31 +675,31 @@
     "video_map_file": "videomaps/ZMP-stars.mappack",
     "airspace_awareness": [
       {
-        "fixes": ["SNINE", "LSE", "STILS", "TAXEE", "JEDET", "EAU"],
+        "fixes": ["WLSTN", "GRB", "LSE", "STILS", "DLL", "ODI", "EAU"],
         "altitude_range": [0, 7000],
         "receiving_controller": "C05"
       },
       {
-        "fixes": ["LSE", "TAXEE", "JEDET"],
+        "fixes": ["LSE", "DLL", "ODI"],
         "altitude_range": [8000, 99999],
         "receiving_controller": "C05"
       },
       {
-        "fixes": ["SNINE", "STILS", "EAU"],
+        "fixes": ["WLSTN", "GRB", "STILS", "EAU"],
         "altitude_range": [8000, 99999],
         "receiving_controller": "C06"
       },
       {
-        "fixes": ["FGT", "FOBUG"],
+        "fixes": ["FGT", "RST", "ALO"],
         "altitude_range": [10000, 99999],
         "receiving_controller": "C07"
       },
       {
-        "fixes": ["ABR", "JURNY", "HUGIR", "TONCA", "ZOGAP"],
+        "fixes": ["ABR", "ORSKY", "ONTIJ", "RXANN", "LEINY", "SMERF", "INUNE"],
         "receiving_controller": "C09"
       },
       {
-        "fixes": ["BRNRD", "DLH", "GEP", "HRBEK"],
+        "fixes": ["BRNRD", "DLH", "GEP", "FAR"],
         "receiving_controller": "C10"
       }
     ],

@@ -317,7 +317,7 @@
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "climbout_actions": "h120/@d2.1/h230/@d0.5/tc/h230"
+            "climbout_actions": "h120/@d0.5/tc/h120"
           },
           "LSE.JET": {
             "assigned_altitude": 7000,
@@ -359,7 +359,7 @@
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["nonheavy"],
-            "climbout_actions": "h120/@d2.1/h230/@d0.5/tc/h230"
+            "climbout_actions": "h120/@d0.5/tc/h120"
           },
           "RXANN.TURBOPROP": {
             "assigned_altitude": 5000,
@@ -377,7 +377,7 @@
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
             "aircraft": ["nonheavy"],
-            "climbout_actions": "h120/@d2.1/h230/@d0.5/tc/h230"
+            "climbout_actions": "h120/@d0.5/tc/h120"
           },
           "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
             "assigned_altitude": 5000,
@@ -469,7 +469,7 @@
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
             "aircraft": ["heavy"],
-            "climbout_actions": "h120/@d2.1/h230/@d0.5/tc/h230"
+            "climbout_actions": "h120/@d0.5/tc/h120"
           }
         },
         "12L": {
