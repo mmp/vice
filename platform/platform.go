@@ -159,6 +159,11 @@ type Platform interface {
 	// playing; it simply appends to the existing queue.
 	AppendSpeechPCM(pcm []int16)
 
+	// StopSpeech discards any speech audio that is queued or playing, so
+	// that the next thing enqueued is heard immediately. The callback given
+	// to TryEnqueueSpeechPCM is not called for the canceled audio.
+	StopSpeech()
+
 	// SetSpeechGarbled enables or disables garbling of speech audio.
 	// When enabled, speech is ducked and static noise is added.
 	SetSpeechGarbled(garbled bool)

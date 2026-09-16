@@ -147,6 +147,12 @@ func (a *audioEngine) AppendSpeechPCM(pcm []int16) {
 	a.speechq = append(a.speechq, pcm...)
 }
 
+func (a *audioEngine) StopSpeech() {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	a.speechq, a.speechcb = nil, nil
+}
+
 func (a *audioEngine) SetAudioVolume(vol int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
