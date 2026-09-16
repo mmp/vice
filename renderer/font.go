@@ -259,6 +259,7 @@ var (
 	FontAwesomeIconSmog                = faUsedIcons["Smog"]
 	FontAwesomeIconSnowflake           = faUsedIcons["Snowflake"]
 	FontAwesomeIconSquare              = faUsedIcons["Square"]
+	FontAwesomeIconStopCircle          = faUsedIcons["StopCircle"]
 	FontAwesomeIconSun                 = faUsedIcons["Sun"]
 	FontAwesomeIconThumbtack           = faUsedIcons["Thumbtack"]
 	FontAwesomeIconTrash               = faUsedIcons["Trash"]
@@ -316,6 +317,7 @@ var (
 		"Smog":                FontAwesomeString("Smog"),
 		"Snowflake":           FontAwesomeString("Snowflake"),
 		"Square":              FontAwesomeString("Square"),
+		"StopCircle":          FontAwesomeString("StopCircle"),
 		"Sun":                 FontAwesomeString("Sun"),
 		"Thumbtack":           FontAwesomeString("Thumbtack"),
 		"Trash":               FontAwesomeString("Trash"),

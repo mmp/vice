@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/mmp/vice/log"
@@ -81,6 +82,10 @@ func runSelfTest(config *Config, lg *log.Logger) error {
 		return fmt.Errorf("%s: no maps loaded", ss.ControllerVideoMapFile)
 	}
 
+	sections := util.MapSlice(a.scope.mapSections(ss.ScenarioDefaultVideoGroup),
+		func(sec mapSection) string { return fmt.Sprintf("%s (%d)", sec.name, len(sec.maps)) })
+	fmt.Printf("map sections: %s\n", strings.Join(sections, ", "))
+
 	fmt.Printf("%d airports, %d controllers, %d inbound flows, %d airspace positions\n",
 		len(ss.Airports), len(ss.Controllers), len(ss.InboundFlows), len(ss.Airspace))
 	fmt.Printf("departure airports: %v\n", util.SortedMapKeys(ss.DepartureAirports))
@@ -92,6 +97,7 @@ func runSelfTest(config *Config, lg *log.Logger) error {
 	if err := selfTestRecording(a); err != nil {
 		return err
 	}
+	selfTestPronunciations(a)
 
 	if a.reload = a.mgr.LocalServer.ReloadScenarios(a.reloadArgs()); a.reload != nil {
 		start := time.Now()
@@ -159,6 +165,25 @@ func selfTestReports(a *app) error {
 	}
 	fmt.Printf("%s: %d routes\n", r.pair, len(r.routes.Routes))
 	return nil
+}
+
+// selfTestPronunciations builds what the TTS tab lists: the airports'
+// procedures and the fixes they are flown over, each with the way it is
+// spoken. Saying any of it needs a sound card, but everything up to that
+// point is what an edit to the pronunciation files can break.
+func selfTestPronunciations(a *app) {
+	t := &a.inspector.tts
+	t.build(ifrAirports(&a.cc.State))
+
+	procedures, words := 0, 0
+	for _, procs := range t.procedures {
+		procedures += len(procs)
+		for _, p := range procs {
+			words += len(p.script())
+		}
+	}
+	fmt.Printf("%d procedures at %d airports, %d words to speak\n",
+		procedures, len(t.procedures), words)
 }
 
 // pumpUntil runs the app's own update until outstanding work has come back:

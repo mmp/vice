@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 	"time"
 
@@ -81,11 +82,11 @@ func newApp(config *Config, plat platform.Platform, render renderer.Renderer, lg
 		a.reloadErrors = strings.Split(strings.TrimSpace(overrideErrors), "\n")
 	}
 
-	a.scope.init(config.ScopeFontSize)
+	a.scope.init()
 	if render != nil {
 		a.scope.initFonts(render, plat)
 	}
-	a.inspector.init()
+	a.inspector.init(config)
 
 	// Held aside because startSim writes the facility it actually opened
 	// back to the config.
@@ -270,9 +271,23 @@ func (a *app) reloadArgs() server.ReloadScenariosArgs {
 	return server.ReloadScenariosArgs{Overrides: a.config.overrideFiles()}
 }
 
-func (a *app) draw() {
+// reloadShortcut is how the reload key is written in the UI. Control-R
+// works everywhere; on a Mac so does Command-R, which is the one a Mac user
+// reaches for.
+var reloadShortcut = util.Select(runtime.GOOS == "darwin", "Cmd+R", "Ctrl+R")
+
+// reloadKeyPressed reports whether the user just asked for a reload from
+// the keyboard.
+func reloadKeyPressed() bool {
 	io := imgui.CurrentIO()
-	if io.KeyCtrl() && imgui.IsKeyPressedBool(imgui.KeyR) && !io.WantCaptureKeyboard() {
+	if io.WantCaptureKeyboard() || !imgui.IsKeyPressedBool(imgui.KeyR) {
+		return false
+	}
+	return io.KeyCtrl() || (runtime.GOOS == "darwin" && io.KeySuper())
+}
+
+func (a *app) draw() {
+	if reloadKeyPressed() {
 		a.reloadScenarios()
 	}
 
@@ -294,7 +309,7 @@ func (a *app) drawMenuBar() {
 	}
 
 	if imgui.BeginMenu("File") {
-		if imgui.MenuItemBoolV("Reload scenarios", "Ctrl+R", false, a.reload == nil) {
+		if imgui.MenuItemBoolV("Reload scenarios", reloadShortcut, false, a.reload == nil) {
 			a.reloadScenarios()
 		}
 		imgui.EndMenu()

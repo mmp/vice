@@ -67,6 +67,11 @@ func (t tool) help() string {
 // which arrives as a prebuilt command buffer.
 type scopeMap struct {
 	radar.Map
+	// group is the ERAM map group the map belongs to; a STARS library map
+	// and a system map have none. base marks a group's base map, which ERAM
+	// draws whenever the group is loaded and gives no way to turn off.
+	group   string
+	base    bool
 	system  bool
 	visible bool
 }
@@ -91,7 +96,6 @@ type scope struct {
 	symbolFont [3]*renderer.Font
 	mapFont    [4]*renderer.Font
 	textFont   *renderer.Font
-	fontSize   int
 
 	// zoomTarget is where the wheel has asked the range to go; rangeNM
 	// eases toward it. zoomAnchor is the position the zoom keeps under
@@ -110,10 +114,9 @@ type scope struct {
 	transforms radar.ScopeTransformations
 }
 
-func (s *scope) init(fontSize int) {
+func (s *scope) init() {
 	s.rangeNM = 50
 	s.zoomTarget = s.rangeNM
-	s.fontSize = fontSize
 }
 
 // setTool switches what a click on the map does, dropping what the tool
@@ -136,6 +139,11 @@ func (s *scope) haveToolPoints() bool {
 	return len(s.routePoints) > 0 || len(s.measure) > 0
 }
 
+// scopeFontSize is the size of the text backshop draws on the scope: route
+// annotations, datablocks, and its own labels. Small, since a busy departure
+// procedure puts a lot of it on the map at once.
+const scopeFontSize = 12
+
 // initFonts bakes the bitmap fonts video maps are drawn with. It needs a
 // live renderer, so it happens separately from init.
 func (s *scope) initFonts(r renderer.Renderer, p platform.Platform) {
@@ -151,19 +159,7 @@ func (s *scope) initFonts(r renderer.Renderer, p platform.Platform) {
 		radar.FindERAMFont(fonts, "EramText-14.pcf", 17),
 		radar.FindERAMFont(fonts, "EramText-16.pcf", 18),
 	}
-	s.setFontSize(s.fontSize)
-}
-
-// scopeFontSizes are the sizes offered for the text backshop draws on the
-// scope; they are the Roboto sizes the font atlas holds.
-var scopeFontSizes = []int{6, 7, 8, 9, 10, 11, 12, 14}
-
-func (s *scope) setFontSize(size int) {
-	if !slices.Contains(scopeFontSizes, size) {
-		size = defaultScopeFontSize
-	}
-	s.fontSize = size
-	s.textFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: size})
+	s.textFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: scopeFontSize})
 }
 
 // MapSymbolFont and MapLabelFont implement radar.MapFonts.
@@ -220,23 +216,40 @@ func (s *scope) rebuildMaps(c *client.ControlClient, keepVisible bool) {
 	if lib, err := c.LoadVideoMapLibrary(ss.ControllerVideoMapFile); err != nil {
 		s.mapLibrary += " (" + err.Error() + ")"
 	} else {
+		// radar.BuildMaps takes one flat list, so where each ERAM map came
+		// from is carried alongside it and put back afterwards.
+		type origin struct {
+			group string
+			base  bool
+		}
 		var library []av.STARSMap
-		for _, m := range util.SortedMap(lib.Maps) {
+		var origins []origin
+		add := func(m av.STARSMap, o origin) {
 			library = append(library, m)
+			origins = append(origins, o)
+		}
+
+		for _, m := range util.SortedMap(lib.Maps) {
+			add(m, origin{})
 		}
 		// An ARTCC's library holds ERAM map groups rather than STARS maps.
 		// They carry the same geometry, so flatten them into the same list
 		// with the group they came from in their names.
 		for name, group := range util.SortedMap(lib.ERAMMapGroups) {
 			if !group.BaseMap.IsEmpty() {
-				library = append(library, eramMap(name, "BASE", group.BaseMap))
+				add(eramMap(name, "BASE", group.BaseMap), origin{group: name, base: true})
 			}
 			for _, m := range group.Maps {
-				library = append(library, eramMap(name, "", m))
+				// A group's filter menu has twenty slots whether or not the
+				// facility filled them all; an empty one has nothing to
+				// draw and no name to list it under.
+				if !m.IsEmpty() {
+					add(eramMap(name, "", m), origin{group: name})
+				}
 			}
 		}
-		for _, m := range radar.BuildMaps(library) {
-			s.maps = append(s.maps, scopeMap{Map: m})
+		for i, m := range radar.BuildMaps(library) {
+			s.maps = append(s.maps, scopeMap{Map: m, group: origins[i].group, base: origins[i].base})
 		}
 	}
 
@@ -268,7 +281,7 @@ func (s *scope) rebuildMaps(c *client.ControlClient, keepVisible bool) {
 // its group when the map itself carries no label, as the base map doesn't.
 func eramMap(group, label string, m av.ERAMMap) av.STARSMap {
 	if label == "" {
-		label = strings.TrimSpace(m.LabelLine1 + " " + m.LabelLine2)
+		label = m.Label()
 	}
 	return av.STARSMap{
 		Name:     strings.TrimSpace(group + " " + label),
@@ -280,11 +293,81 @@ func eramMap(group, label string, m av.ERAMMap) av.STARSMap {
 	}
 }
 
+// defaultMapName is what a scenario's "default_maps" would name the map by.
+// An ARTCC's maps are named within their own group, so the group prefix that
+// keeps the tool's single list unambiguous is not part of it.
+func (m scopeMap) defaultMapName() string {
+	if m.group != "" {
+		return m.Label
+	}
+	return m.Name
+}
+
+// matches reports whether the map is one the Maps tab's filter is looking
+// for; an empty filter takes everything.
+func (m scopeMap) matches(filter string) bool {
+	return filter == "" || strings.Contains(strings.ToUpper(m.Name), filter) ||
+		strings.Contains(strings.ToUpper(m.Label), filter)
+}
+
+// mapSection is a run of the scope's maps that the Maps tab draws under one
+// header: an ERAM map group, the facility's video map library, or the maps
+// vice synthesizes from the facility adaptation.
+type mapSection struct {
+	name string
+	// open is whether the section starts out expanded; the group the
+	// scenario opens with is the one worth seeing first.
+	open bool
+	// maps indexes the scope's maps.
+	maps []int
+}
+
+const (
+	librarySectionName = "Video map library"
+	systemSectionName  = "System maps"
+)
+
+// mapSections groups the scope's maps for display. An ARTCC's library is a
+// set of map groups of which the display loads one at a time, so each gets a
+// section of its own with the scenario's group first.
+func (s *scope) mapSections(defaultGroup string) []mapSection {
+	var sections []mapSection
+	add := func(name string, open bool, i int) {
+		if j := slices.IndexFunc(sections, func(sec mapSection) bool { return sec.name == name }); j != -1 {
+			sections[j].maps = append(sections[j].maps, i)
+			return
+		}
+		sections = append(sections, mapSection{name: name, open: open, maps: []int{i}})
+	}
+
+	for i, m := range s.maps {
+		switch {
+		case m.system:
+			add(systemSectionName, true, i)
+		case m.group != "":
+			add(m.group, m.group == defaultGroup, i)
+		default:
+			add(librarySectionName, true, i)
+		}
+	}
+
+	if i := slices.IndexFunc(sections, func(sec mapSection) bool { return sec.name == defaultGroup }); i > 0 {
+		ordered := append([]mapSection{sections[i]}, sections[:i]...)
+		sections = append(ordered, sections[i+1:]...)
+	}
+	return sections
+}
+
 // showScenarioDefaultMaps makes visible exactly the maps the scenario puts
 // up for the primary consolidated position. A facility that adapts video
 // maps per controller may leave that controller's default list empty and
-// give the defaults on the scenario instead, so fall back to those. For an
-// ARTCC the defaults are its default map group, whose maps are named for it.
+// give the defaults on the scenario instead, so fall back to those.
+//
+// An ARTCC names its maps within a map group rather than across the whole
+// library, so for one of those the defaults are found among the scenario's
+// group: its base map, which ERAM draws whenever the group is loaded, plus
+// whichever of the group's maps the defaults name. The other groups are
+// loadable but nothing in them is up to start with.
 func (s *scope) showScenarioDefaultMaps(c *client.ControlClient) {
 	if c == nil {
 		return
@@ -295,15 +378,11 @@ func (s *scope) showScenarioDefaultMaps(c *client.ControlClient) {
 	if len(names) == 0 {
 		names = ss.ScenarioDefaultVideoMaps
 	}
-	defaults := make(map[string]bool)
-	for _, name := range names {
-		defaults[name] = true
-	}
 
 	for i := range s.maps {
 		m := &s.maps[i]
-		m.visible = defaults[m.Name] ||
-			(ss.ScenarioDefaultVideoGroup != "" && strings.HasPrefix(m.Name, ss.ScenarioDefaultVideoGroup+" "))
+		loaded := m.group == "" || m.group == ss.ScenarioDefaultVideoGroup
+		m.visible = loaded && (m.base || slices.Contains(names, m.defaultMapName()))
 	}
 }
 

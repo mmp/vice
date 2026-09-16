@@ -18,11 +18,6 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-// defaultScopeFontSize is the size of the text backshop draws on the scope:
-// route annotations, datablocks, and its own labels. Small, since a busy
-// departure procedure puts a lot of it on the map at once.
-const defaultScopeFontSize = 9
-
 // Config is what backshop remembers between runs: where its window was,
 // what it was last looking at, and imgui's own window layout.
 type Config struct {
@@ -30,11 +25,13 @@ type Config struct {
 
 	ImGuiSettings string
 	UIFontSize    int
-	ScopeFontSize int
 
 	LastFacility string
 	LastGroup    string
 	LastScenario string
+
+	// TTSVoice is the Kokoro voice the TTS tab speaks with.
+	TTSVoice string
 
 	ScenarioFile        string
 	VideoMapFile        string
@@ -83,8 +80,7 @@ func defaultConfig() *Config {
 			// asking for a microphone.
 			NoMicrophone: true,
 		},
-		UIFontSize:    14,
-		ScopeFontSize: defaultScopeFontSize,
+		UIFontSize: 14,
 	}
 }
 
@@ -105,10 +101,7 @@ func loadConfig(lg *log.Logger) *Config {
 	if c.UIFontSize == 0 {
 		c.UIFontSize = defaultConfig().UIFontSize
 	}
-	if c.ScopeFontSize == 0 {
-		c.ScopeFontSize = defaultScopeFontSize
-	}
-	c.NoAudio = true
+	c.NoMicrophone = true
 	return c
 }
 

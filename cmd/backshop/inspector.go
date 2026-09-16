@@ -58,6 +58,7 @@ type inspector struct {
 	cifp       cifpTab
 	brief      gui.Brief
 	videoMaps  videoMapsTab
+	tts        ttsTab
 
 	overlays overlays
 
@@ -65,13 +66,14 @@ type inspector struct {
 	launchType string
 }
 
-func (in *inspector) init() {
+func (in *inspector) init(config *Config) {
 	in.airports.init()
 	in.routes.init()
 	in.playback.init()
 	in.db.init()
 	in.cifp.init()
 	in.overlays.init()
+	in.tts.init(config)
 }
 
 func (in *inspector) resetSim() {
@@ -88,6 +90,7 @@ func (in *inspector) resetSim() {
 	clear(in.overlays.volumes)
 	clear(in.overlays.points)
 	clear(in.cifp.draw)
+	in.tts.reset()
 }
 
 func (in *inspector) draw(a *app) {
@@ -104,6 +107,10 @@ func (in *inspector) draw(a *app) {
 		return
 	}
 
+	// Everything here describes the scenario a reload is in the middle of
+	// replacing, and the sim it is running in goes away with it, so while
+	// one is under way the inspector is shown but can't be acted on.
+	imgui.BeginDisabledV(a.reload != nil)
 	if imgui.BeginTabBar("tabs") {
 		in.drawScenarioTab(a)
 		in.drawAirportsTab(a)
@@ -114,12 +121,13 @@ func (in *inspector) draw(a *app) {
 		in.drawFiltersTab(a)
 		in.drawDatabaseTab(a)
 		in.drawCIFPTab(a)
+		in.drawTTSTab(a)
 		in.drawBriefTab(a)
 		in.drawLaunchTab(a)
 		in.drawVideoMapsTab(a)
-		in.drawSettingsTab(a)
 		imgui.EndTabBar()
 	}
+	imgui.EndDisabled()
 
 	imgui.End()
 }
@@ -195,7 +203,7 @@ func (in *inspector) drawScenarioTab(a *app) {
 		a.startSim()
 	}
 	imgui.SameLine()
-	imgui.Text("Ctrl+R reloads")
+	imgui.Text(reloadShortcut + " reloads")
 
 	imgui.Separator()
 	in.drawExtraFilesUI(a)
@@ -339,10 +347,44 @@ func (in *inspector) drawMapsTab(a *app) {
 		s.showScenarioDefaultMaps(a.cc)
 	}
 
-	filter := strings.ToUpper(s.mapFilter)
-	if !imgui.BeginTableV("maps", 5, scrollingTableFlags, imgui.Vec2{}, 0) {
+	// The sections are drawn in a child of their own so that the library
+	// name, the filter, and the buttons stay put while they scroll.
+	if !imgui.BeginChildStrV("mapsections", imgui.Vec2{}, 0, 0) {
+		imgui.EndChild()
 		return
 	}
+	defer imgui.EndChild()
+
+	filter := strings.ToUpper(s.mapFilter)
+	for _, section := range s.mapSections(a.cc.State.ScenarioDefaultVideoGroup) {
+		shown := util.FilterSlice(section.maps, func(i int) bool { return s.maps[i].matches(filter) })
+		if len(shown) == 0 {
+			continue
+		}
+		drawn := len(util.FilterSlice(shown, func(i int) bool { return s.maps[i].visible }))
+
+		flags := imgui.TreeNodeFlags(0)
+		if section.open {
+			flags = imgui.TreeNodeFlagsDefaultOpen
+		}
+		// The count in the header changes as maps are turned on and off, so
+		// the section's id is given explicitly rather than taken from it.
+		title := fmt.Sprintf("%s: %d of %d drawn###%s", section.name, drawn, len(shown), section.name)
+		if imgui.CollapsingHeaderTreeNodeFlagsV(title, flags) {
+			in.drawMapSection(a, section.name, shown)
+		}
+	}
+}
+
+// drawMapSection lists one section's maps, each with the checkbox that draws
+// it.
+func (in *inspector) drawMapSection(a *app, id string, maps []int) {
+	s := &a.scope
+	if !imgui.BeginTableV("maps"+id, 5, tableFlags, imgui.Vec2{}, 0) {
+		return
+	}
+	defer imgui.EndTable()
+
 	setupDrawColumn()
 	imgui.TableSetupColumnV("Id", imgui.TableColumnFlagsWidthFixed, 40, 0)
 	imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 80, 0)
@@ -350,13 +392,8 @@ func (in *inspector) drawMapsTab(a *app) {
 	imgui.TableSetupColumn("Name")
 	imgui.TableHeadersRow()
 
-	for i := range s.maps {
+	for _, i := range maps {
 		m := &s.maps[i]
-		if filter != "" && !strings.Contains(strings.ToUpper(m.Name), filter) &&
-			!strings.Contains(strings.ToUpper(m.Label), filter) {
-			continue
-		}
-
 		imgui.PushIDInt(int32(i))
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
@@ -371,15 +408,15 @@ func (in *inspector) drawMapsTab(a *app) {
 		imgui.Text(categoryName(m.Category, m.system))
 		imgui.TableNextColumn()
 		if imgui.SelectableBool(m.Name) {
-			a.plat.GetClipboard().SetClipboard(m.Name)
-			a.status = "copied " + m.Name
+			name := m.defaultMapName()
+			a.plat.GetClipboard().SetClipboard(name)
+			a.status = "copied " + name
 		}
 		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Click to copy the map name")
+			imgui.SetTooltip("Click to copy the name a scenario names the map by")
 		}
 		imgui.PopID()
 	}
-	imgui.EndTable()
 }
 
 func categoryName(category int, system bool) string {
@@ -392,30 +429,6 @@ func categoryName(category int, system bool) string {
 		}
 	}
 	return ""
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Tools and settings
-
-// drawSettingsTab holds the tool's own preferences, which are saved with the
-// rest of its configuration.
-func (in *inspector) drawSettingsTab(a *app) {
-	if !imgui.BeginTabItem("Settings") {
-		return
-	}
-	defer imgui.EndTabItem()
-
-	s := &a.scope
-	imgui.SetNextItemWidth(120)
-	if imgui.BeginCombo("Scope text size", fmt.Sprint(s.fontSize)) {
-		for _, size := range scopeFontSizes {
-			if imgui.SelectableBool(fmt.Sprint(size)) {
-				s.setFontSize(size)
-				a.config.ScopeFontSize = size
-			}
-		}
-		imgui.EndCombo()
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -253,11 +253,13 @@
                   <code>-facilityconfig</code> arguments would otherwise be used.
                 </p>
                 <p>
-                  Most importantly, it reloads edited scenario JSON in place: pressing <code>[Control][R]</code> re-reads
-                  the scenario and facility configuration files from disk and restarts the sim on them, taking well
-                  under a second, so there is no need to quit and relaunch after every edit. Picking a different
-                  additional file reloads too, so that takes no restart either. If the edited files don't validate, the
-                  errors are listed in the Scenario tab and the previously loaded scenario keeps running.
+                  Most importantly, it reloads edited scenario JSON in place: pressing <code>[Control][R]</code>
+                  (<code>[Command][R]</code> on macOS) re-reads the scenario and facility configuration files from disk,
+                  along with the aviation database and the pronunciation files behind it, and restarts the sim on them,
+                  taking well under a second, so there is no need to quit and relaunch after every edit. Picking a
+                  different additional file reloads too, so that takes no restart either. If the edited files don't
+                  validate, the errors are listed in the Scenario tab and the previously loaded scenario keeps
+                  running.
                 </p>
                 <p>The map itself supports:</p>
                 <ul>
@@ -286,7 +288,8 @@
                     <tr><td>Maps</td><td>Every video map in the facility's library along with the ones <i>vice</i>
                       generates from the facility configuration&mdash;the filter regions, minimum vectoring altitudes,
                       nearby class B and C airspace, radar coverage, and ATPA volumes&mdash;each with a checkbox to draw
-                      it.</td></tr>
+                      it. An ARTCC's library is a set of map groups of which the display loads one at a time, so each
+                      gets a collapsible section of its own, the scenario's group first and open.</td></tr>
                     <tr><td>Procedures</td><td>Draw the geometry of the scenario's arrivals, approaches, departures,
                       overflights, controller airspace, and charted holds, each in a color of your choosing. Departures
                       can be listed a SID at a time or an exit at a time, since a SID serving twenty exits is unreadable
@@ -307,6 +310,12 @@
                     <tr><td>CIFP</td><td>The SIDs, STARs, and approaches the FAA CIFP codes for an airport, in the
                       encoded form that goes into a scenario's JSON&mdash;the same thing <code>vice -routes</code>
                       prints, with a copy button on each row.</td></tr>
+                    <tr><td>TTS</td><td>How <i>vice</i> says the names at the scenario's airports. Every SID, STAR,
+                      and approach is listed with the fixes it is flown over, each named once however many of its
+                      transitions go by it; a play button reads a procedure and its fixes in turn, lighting up each
+                      name as it is spoken, and clicking any one of them says just it. A SID, STAR, or fix name can
+                      also be typed in to hear it. It is how to check an entry in <i>resources/sayfix.json</i> and the
+                      other pronunciation files, which a reload picks up.</td></tr>
                     <tr><td>Brief</td><td>A live preview of the facility's scenario brief, annotated video maps
                       included.</td></tr>
                     <tr><td>Launch</td><td>Fly one aircraft at a time down a chosen procedure and watch it. Automatic
@@ -317,7 +326,6 @@
                     <tr><td>Video maps</td><td>Converts a CRC installation's video maps to <i>.mappack</i> files, one
                       per STARS facility of each selected ARTCC plus one for the ARTCC's ERAM maps, and lists what a
                       map library holds so that one can be inspected without a scenario that refers to it.</td></tr>
-                    <tr><td>Settings</td><td><i>backshop</i>'s own preferences, remembered between runs.</td></tr>
                   </tbody>
                 </table>
                 <p>

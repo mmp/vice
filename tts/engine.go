@@ -171,11 +171,13 @@ func CheckTTSLoadError() (error, bool) {
 	}
 }
 
-// synthesize generates radio-effected PCM for text. kind identifies the
-// caller ("readback" or "contact") in the timing log; that log breaks the
-// latency down by phase since a slow readback may be waiting on the model
-// load or queued behind another synthesis rather than generating slowly.
-func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, kind, text, voice string, radioSeed uint32) ([]int16, error) {
+// synthesize generates PCM for text, put through the radio effect unless
+// radio is false. kind identifies the caller ("readback", "contact", or
+// "plain") in the timing log; that log breaks the latency down by phase
+// since a slow readback may be waiting on the model load or queued behind
+// another synthesis rather than generating slowly.
+func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, kind, text, voice string, radioSeed uint32,
+	radio bool) ([]int16, error) {
 	start := time.Now()
 	<-t.done
 	loadWait := time.Since(start)
@@ -203,21 +205,23 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, kind, text,
 
 	pcm := t.convertAndResample(audio.Samples, audio.SampleRate)
 
-	// Prepend silence to simulate the pilot pressing the transmit key
-	// before speaking. addRadioEffect fills this with radio static and
-	// engine noise as the squelch gate opens, matching real radio
-	// transmissions and keeping the audio stream active for Bluetooth
-	// devices that suspend during silence.
-	prerollSamples := t.targetSampleRate * 20 / 1000 // 20ms
-	pcm = append(make([]int16, prerollSamples), pcm...)
+	if radio {
+		// Prepend silence to simulate the pilot pressing the transmit key
+		// before speaking. addRadioEffect fills this with radio static and
+		// engine noise as the squelch gate opens, matching real radio
+		// transmissions and keeping the audio stream active for Bluetooth
+		// devices that suspend during silence.
+		prerollSamples := t.targetSampleRate * 20 / 1000 // 20ms
+		pcm = append(make([]int16, prerollSamples), pcm...)
 
-	// Append silence to simulate the pilot holding the transmit key
-	// briefly after finishing speaking. addRadioEffect fills this with
-	// noise and engine rumble before the squelch tail fades it out.
-	tailSamples := t.targetSampleRate * 20 / 1000 // 20ms
-	pcm = append(pcm, make([]int16, tailSamples)...)
+		// Append silence to simulate the pilot holding the transmit key
+		// briefly after finishing speaking. addRadioEffect fills this with
+		// noise and engine rumble before the squelch tail fades it out.
+		tailSamples := t.targetSampleRate * 20 / 1000 // 20ms
+		pcm = append(pcm, make([]int16, tailSamples)...)
 
-	addRadioEffect(pcm, t.targetSampleRate, radioSeed, 1)
+		addRadioEffect(pcm, t.targetSampleRate, radioSeed, 1)
+	}
 
 	t.lg.Infof("TTS %s: %q (%s) in %s: model wait %s, queue wait %s, generate %s",
 		kind, text, voice, time.Since(start), loadWait, queueWait, generate)
@@ -227,12 +231,18 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, kind, text,
 
 // synthesizeReadback generates speech using the high-priority TTS instance.
 func (t *localTTS) synthesizeReadback(text, voice string, radioSeed uint32) ([]int16, error) {
-	return t.synthesize(&t.readbackMu, t.readbackTTS, "readback", text, voice, radioSeed)
+	return t.synthesize(&t.readbackMu, t.readbackTTS, "readback", text, voice, radioSeed, true)
 }
 
 // synthesizeContact generates speech using the low-priority TTS instance.
 func (t *localTTS) synthesizeContact(text, voice string, radioSeed uint32) ([]int16, error) {
-	return t.synthesize(&t.contactMu, t.contactTTS, "contact", text, voice, radioSeed)
+	return t.synthesize(&t.contactMu, t.contactTTS, "contact", text, voice, radioSeed, true)
+}
+
+// synthesizePlain generates speech with no radio effect using the
+// high-priority TTS instance.
+func (t *localTTS) synthesizePlain(text, voice string) ([]int16, error) {
+	return t.synthesize(&t.readbackMu, t.readbackTTS, "plain", text, voice, 0, false)
 }
 
 // SynthesizeReadbackTTS generates PCM audio for a readback using the
@@ -247,6 +257,13 @@ func SynthesizeReadbackTTS(text, voice string, radioSeed uint32) ([]int16, error
 // characteristics so the same aircraft has a consistent sound.
 func SynthesizeContactTTS(text, voice string, radioSeed uint32) ([]int16, error) {
 	return globalTTS.synthesizeContact(text, voice, radioSeed)
+}
+
+// SynthesizePlainTTS generates PCM audio for text without the radio effect,
+// using the high-priority TTS instance. It is for hearing how something is
+// pronounced rather than how it sounds over the air.
+func SynthesizePlainTTS(text, voice string) ([]int16, error) {
+	return globalTTS.synthesizePlain(text, voice)
 }
 
 // voiceSpeed returns the TTS speed multiplier for the given voice name,
