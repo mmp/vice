@@ -247,9 +247,10 @@
                 </p>
                 <p>
                   <i>backshop</i> takes no command-line arguments; everything is set in the window and remembered
-                  between runs. Work-in-progress scenario, video map, and brief files are chosen under "Additional
-                  files" in the Scenario tab, which is where <i>vice</i>'s <code>-scenario</code>,
-                  <code>-videomap</code>, and <code>-scenariobrief</code> arguments would otherwise be used.
+                  between runs. Work-in-progress scenario, video map, brief, and facility configuration files are
+                  chosen under "Additional files" in the Scenario tab, which is where <i>vice</i>'s
+                  <code>-scenario</code>, <code>-videomap</code>, <code>-scenariobrief</code>, and
+                  <code>-facilityconfig</code> arguments would otherwise be used.
                 </p>
                 <p>
                   Most importantly, it reloads edited scenario JSON in place: pressing <code>[Control][R]</code> re-reads
@@ -263,10 +264,11 @@
                   <li>Dragging to pan and the scroll wheel to zoom.</li>
                   <li>Control-shift-click to copy a position to the clipboard, as in <i>vice</i>. The position under the
                     cursor is also always shown in the menu bar and can be copied by clicking it.</li>
-                  <li>A route-drawing mode equivalent to <code>.DRAWROUTE</code>: click a series of points and they are
-                    kept on the clipboard as a space-separated list. <code>[Backspace]</code> removes the last point and
-                    <code>[Escape]</code> leaves the mode.</li>
-                  <li>A measuring mode: click two points for the distance and magnetic bearing between them.</li>
+                  <li>A route-drawing mode equivalent to <code>.DRAWROUTE</code>, switched on from the buttons in the
+                    menu bar: click a series of points and they are kept on the clipboard as a space-separated list.
+                    <code>[Backspace]</code> removes the last point and <code>[Escape]</code> leaves the mode.</li>
+                  <li>A measuring mode, alongside it: click two points for the distance and magnetic bearing between
+                    them.</li>
                 </ul>
                 <p>The inspector window alongside it has a tab for each kind of thing worth looking at:</p>
                 <table class="table">
@@ -276,14 +278,27 @@
                   <tbody>
                     <tr><td>Scenario</td><td>Which facility, scenario group, and scenario to open; reloading; the errors
                       from the last load; and a summary of the scenario.</td></tr>
+                    <tr><td>Airports</td><td>The scenario's airports, each of which expands to how it is set
+                      up: its settings and traffic rates, the runways the scenario is working, the approaches to the
+                      ones it is landing on, the exits departures leave by, the arrivals that bring traffic in, and the
+                      SIDs and STARs the FAA CIFP charts there. The routes are all shown in the encoded form that goes
+                      into a scenario's JSON, with a copy button and a checkbox that draws each one.</td></tr>
                     <tr><td>Maps</td><td>Every video map in the facility's library along with the ones <i>vice</i>
                       generates from the facility configuration&mdash;the filter regions, minimum vectoring altitudes,
                       nearby class B and C airspace, radar coverage, and ATPA volumes&mdash;each with a checkbox to draw
                       it.</td></tr>
-                    <tr><td>Routes</td><td>Draw the geometry of arrivals, approaches, departures, overflights,
-                      controller airspace, and charted holds, each in a color of your choosing. Departures can be listed
-                      a SID at a time or an exit at a time, since a SID serving twenty exits is unreadable drawn all at
-                      once.</td></tr>
+                    <tr><td>Procedures</td><td>Draw the geometry of the scenario's arrivals, approaches, departures,
+                      overflights, controller airspace, and charted holds, each in a color of your choosing. Departures
+                      can be listed a SID at a time or an exit at a time, since a SID serving twenty exits is unreadable
+                      drawn all at once.</td></tr>
+                    <tr><td>Routes</td><td>The ways a city pair is really flown&mdash;from the scenario's own
+                      <code>traffic_routes</code>, the recently filed routes, and the FAA route databases&mdash;and what
+                      this scenario would do with each of them: which exit or arrival it would fly, or why it can't fly
+                      the route at all.</td></tr>
+                    <tr><td>Traffic</td><td>The real-world traffic the scenario's airports see, from a timetable or from
+                      recorded flights, and what the scenario would do with each flight. It is a report, not a
+                      simulation: nothing here changes the running sim. It is how to find the exits and arrivals a
+                      scenario is missing.</td></tr>
                     <tr><td>Filters</td><td>Every adapted filter region with its shape and altitudes, plus TFRs, ATPA
                       volumes, and radar coverage. Each has a checkbox that draws its extent on the map.</td></tr>
                     <tr><td>Database</td><td>Airports, navaids, fixes, airways, aircraft types, airlines, and
@@ -294,12 +309,15 @@
                       prints, with a copy button on each row.</td></tr>
                     <tr><td>Brief</td><td>A live preview of the facility's scenario brief, annotated video maps
                       included.</td></tr>
-                    <tr><td>Traffic</td><td>Launch aircraft and control the clock: pause, a playback rate, and
-                      buttons to jump forward. Automatic traffic starts switched off so the scope is empty; an aircraft
-                      type can be given to fly a procedure with a particular aircraft's performance rather than whatever
-                      the scenario sampled. There is no rewind&mdash;the sim only runs forward&mdash;so to see something
-                      again, launch the aircraft again.</td></tr>
-                    <tr><td>Tools</td><td>The map drawing modes, and a listing of any video map library's contents.</td></tr>
+                    <tr><td>Launch</td><td>Fly one aircraft at a time down a chosen procedure and watch it. Automatic
+                      traffic starts switched off so the scope is empty; launching an aircraft flies it from the runway
+                      or the gate to wherever the sim lets it go, all at once, and plays the flight back with a scrubber
+                      that goes both ways. An ICAO type can be given to fly the procedure with a particular aircraft's
+                      performance rather than whatever the scenario sampled.</td></tr>
+                    <tr><td>Video maps</td><td>Converts a CRC installation's video maps to <i>.mappack</i> files, one
+                      per STARS facility of each selected ARTCC plus one for the ARTCC's ERAM maps, and lists what a
+                      map library holds so that one can be inspected without a scenario that refers to it.</td></tr>
+                    <tr><td>Settings</td><td><i>backshop</i>'s own preferences, remembered between runs.</td></tr>
                   </tbody>
                 </table>
                 <p>

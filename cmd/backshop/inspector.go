@@ -49,6 +49,7 @@ var warningColor = imgui.Vec4{X: 1, Y: 0.35, Z: 0.35, W: 1}
 // scenario is chosen and everything vice knows about it can be read and
 // copied.
 type inspector struct {
+	airports   airportsTab
 	routes     routeDraw
 	pairRoutes routesTab
 	traffic    trafficTab
@@ -65,6 +66,7 @@ type inspector struct {
 }
 
 func (in *inspector) init() {
+	in.airports.init()
 	in.routes.init()
 	in.playback.init()
 	in.db.init()
@@ -73,6 +75,7 @@ func (in *inspector) init() {
 }
 
 func (in *inspector) resetSim() {
+	in.airports.reset()
 	in.routes.reset()
 	in.traffic.reset()
 	in.pairRoutes.reset()
@@ -103,6 +106,7 @@ func (in *inspector) draw(a *app) {
 
 	if imgui.BeginTabBar("tabs") {
 		in.drawScenarioTab(a)
+		in.drawAirportsTab(a)
 		in.drawMapsTab(a)
 		in.drawProceduresTab(a)
 		in.drawRoutesTab(a)
@@ -216,7 +220,6 @@ func (in *inspector) drawScenarioTab(a *app) {
 	imgui.Separator()
 	in.drawScenarioSummary(a)
 	imgui.Separator()
-	in.drawScenarioAirports(a)
 	in.drawScenarioControllers(a)
 }
 
@@ -252,43 +255,6 @@ func (in *inspector) drawScenarioSummary(a *app) {
 	row("Controllers", fmt.Sprint(len(ss.Controllers)))
 	row("Inbound flows", fmt.Sprint(len(ss.InboundFlows)))
 	row("TFRs", fmt.Sprint(len(ss.TFRs)))
-	imgui.EndTable()
-}
-
-func (in *inspector) drawScenarioAirports(a *app) {
-	if !imgui.CollapsingHeaderBoolPtr("Airports", nil) {
-		return
-	}
-
-	ss := &a.cc.State
-	flags, size := tableSize(len(ss.Airports), 12)
-	if !imgui.BeginTableV("apts", 5, flags, size, 0) {
-		return
-	}
-	imgui.TableSetupColumn("Airport")
-	imgui.TableSetupColumn("Departures")
-	imgui.TableSetupColumn("Arrivals")
-	imgui.TableSetupColumn("Elevation")
-	imgui.TableSetupColumn("Runways")
-	imgui.TableHeadersRow()
-	for _, name := range util.SortedMapKeys(ss.Airports) {
-		_, arr := ss.ArrivalAirports[name]
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text(string(name))
-		imgui.TableNextColumn()
-		imgui.Text(departureKinds(ss, name))
-		imgui.TableNextColumn()
-		imgui.Text(util.Select(arr, "yes", ""))
-		imgui.TableNextColumn()
-		if ap, ok := av.DB.Airports[name]; ok {
-			imgui.Text(fmt.Sprint(ap.Elevation))
-			imgui.TableNextColumn()
-			imgui.Text(ap.ValidRunways())
-		} else {
-			imgui.TableNextColumn()
-		}
-	}
 	imgui.EndTable()
 }
 
