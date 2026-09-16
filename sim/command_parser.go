@@ -247,7 +247,14 @@ func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents [
 				rt.Merge(suffix)
 			}
 		}
-		return rt.Spoken(s.Rand)
+		// postReadbackTransmission has already reported any formatting
+		// failure; this only costs the controller the spoken form.
+		spoken, err := rt.Spoken(s.Rand)
+		if err != nil {
+			s.lg.Errorf("%s: %v", callsign, err)
+			return ""
+		}
+		return spoken
 	}
 	return ""
 }

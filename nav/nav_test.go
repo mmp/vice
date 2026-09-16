@@ -25,6 +25,19 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
+// writtenForTest renders a transmission, failing the test if one of its
+// arguments can't be formatted; that would otherwise render as "" and fail the
+// assertions below without saying why.
+func writtenForTest(t *testing.T, rt *av.RadioTransmission, r *rand.Rand) string {
+	t.Helper()
+
+	s, err := rt.Written(r)
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+	return s
+}
+
 // FlightTest orchestrates a simulated flight with events and assertions.
 type FlightTest struct {
 	t        testing.TB
@@ -196,7 +209,7 @@ func TestContactMessageIncludesCrossFixAltitude(t *testing.T) {
 	ar := av.MakeAtAltitudeRestriction(8000)
 	f.nav.CrossFixAt("DETGY", &ar, nil)
 
-	written := strings.ToLower(f.nav.ContactMessage("", "", false, false).Written(f.nav.Rand))
+	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
 	if !strings.Contains(written, "cross") || !strings.Contains(written, "detgy") || !strings.Contains(written, "8,000") {
 		t.Fatalf("contact message missing cross-fix altitude restriction: %q", written)
 	}
@@ -215,7 +228,7 @@ func TestContactMessageIncludesCrossFixSpeed(t *testing.T) {
 	sr := av.MakeAtSpeedRestriction(230)
 	f.nav.CrossFixAt("DETGY", nil, &sr)
 
-	written := strings.ToLower(f.nav.ContactMessage("", "", false, false).Written(f.nav.Rand))
+	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
 	if !strings.Contains(written, "cross") || !strings.Contains(written, "detgy") || !strings.Contains(written, "230 knots") {
 		t.Fatalf("contact message missing cross-fix speed restriction: %q", written)
 	}
@@ -227,7 +240,7 @@ func TestContactMessageIncludesCrossDMEAltitude(t *testing.T) {
 	ar := av.MakeAtAltitudeRestriction(3000)
 	f.nav.CrossDMEAt(5, &ar, nil)
 
-	written := strings.ToLower(f.nav.ContactMessage("", "", false, false).Written(f.nav.Rand))
+	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
 	if !strings.Contains(written, "cross") || !strings.Contains(written, "5 d m e") ||
 		!strings.Contains(written, "3,000") {
 		t.Fatalf("contact message missing cross-DME restriction: %q", written)
@@ -256,7 +269,7 @@ func TestContactMessageIncludesCrossDistanceAltitudeAndSpeed(t *testing.T) {
 	sr := av.MakeAtSpeedRestriction(230)
 	f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, &sr)
 
-	written := strings.ToLower(f.nav.ContactMessage("", "", false, false).Written(f.nav.Rand))
+	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
 	if !strings.Contains(written, "cross") || !strings.Contains(written, "detgy") ||
 		!strings.Contains(written, "8,000") || !strings.Contains(written, "230 knots") {
 		t.Fatalf("contact message missing cross-distance restriction: %q", written)

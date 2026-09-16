@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -738,8 +739,18 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 			} else {
 				tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
 			}
-			events[i].WrittenText = tr.Written(s.Rand) + ", " + e.WrittenText
-			events[i].SpokenText = strings.TrimSuffix(tr.Spoken(s.Rand), ".") + ", " + e.SpokenText
+			w, werr := tr.Written(s.Rand)
+			sp, serr := tr.Spoken(s.Rand)
+			if err := cmp.Or(werr, serr); err != nil {
+				// This runs once per destination TCW as events are
+				// delivered, so posting here would repeat the message;
+				// the transmission itself still goes out, just without
+				// the controller and callsign in front of it.
+				s.lg.Errorf("%s: %v", ac.ADSBCallsign, err)
+			} else {
+				events[i].WrittenText = w + ", " + e.WrittenText
+				events[i].SpokenText = strings.TrimSuffix(sp, ".") + ", " + e.SpokenText
+			}
 		case av.RadioTransmissionMixUp:
 			// No additional formatting for mix-up transmissions; the callsign is already in there.
 		case av.RadioTransmissionNoId:
@@ -750,8 +761,14 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 				IsEmergency: ac.EmergencyState != nil,
 			}
 			tr := av.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
-			events[i].WrittenText = e.WrittenText + ", " + tr.Written(s.Rand)
-			events[i].SpokenText = strings.TrimSuffix(e.SpokenText, ".") + ", " + tr.Spoken(s.Rand)
+			w, werr := tr.Written(s.Rand)
+			sp, serr := tr.Spoken(s.Rand)
+			if err := cmp.Or(werr, serr); err != nil {
+				s.lg.Errorf("%s: %v", ac.ADSBCallsign, err)
+			} else {
+				events[i].WrittenText = e.WrittenText + ", " + w
+				events[i].SpokenText = strings.TrimSuffix(e.SpokenText, ".") + ", " + sp
+			}
 		}
 	}
 

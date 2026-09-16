@@ -916,7 +916,11 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 			line := "Cross " + fix + " "
 			if nfa.Arrive.Altitude != nil {
 				ar := av.MakeReadbackTransmission("{altrest}", nfa.Arrive.Altitude)
-				line += ar.Written(nav.Rand) + " "
+				if s, err := ar.Written(nav.Rand); err != nil {
+					lg.Errorf("%v", err)
+				} else {
+					line += s + " "
+				}
 			}
 			if nfa.Arrive.Speed != nil {
 				if nfa.Arrive.Speed.IsMach {

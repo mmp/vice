@@ -53,7 +53,11 @@ func TestFrequencySpoken(t *testing.T) {
 		var got []string
 		for seed := range 100 {
 			r.Seed(uint64(seed))
-			if s := (FrequencySnippetFormatter{}).Spoken(r, fs.f); !slices.Contains(got, s) {
+			s, err := (FrequencySnippetFormatter{}).Spoken(r, fs.f)
+			if err != nil {
+				t.Fatalf("%v: %v", fs.f, err)
+			}
+			if !slices.Contains(got, s) {
 				got = append(got, s)
 			}
 		}

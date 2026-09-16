@@ -389,7 +389,7 @@ func TestInterceptRadialUnreachable(t *testing.T) {
 	}
 	// The refusal has to be scoped to the intercept; a bare "unable" after the
 	// turn reads as refusing the turn itself.
-	readback := av.RenderIntents([]av.CommandIntent{heading, intent}, f.nav.Rand).Written(f.nav.Rand)
+	readback := writtenForTest(t, av.RenderIntents([]av.CommandIntent{heading, intent}, f.nav.Rand), f.nav.Rand)
 	if want := "turn left 180, unable to intercept the Robbinsville 045 radial"; readback != want {
 		t.Errorf("readback %q, want %q", readback, want)
 	}

@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"cmp"
 	"slices"
 	"time"
 
@@ -12,25 +13,50 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+// reportTransmissionFailure surfaces a transmission that couldn't be
+// formatted. The pilot says nothing at all in that case, which to the
+// controller is indistinguishable from an aircraft ignoring them, so the
+// phrase that failed goes to the messages pane along with the callsign.
+// Only the places that would have posted the transmission report it; the
+// paths that re-render it for speech synthesis just log, so that a single
+// failure doesn't produce a run of identical messages.
+func (s *Sim) reportTransmissionFailure(callsign av.ADSBCallsign, tcp ControlPosition, err error) {
+	s.lg.Errorf("%s: %v", callsign, err)
+	s.eventStream.Post(Event{
+		Type:         ErrorMessageEvent,
+		ADSBCallsign: callsign,
+		ToController: tcp,
+		WrittenText:  string(callsign) + ": unable to format radio transmission " + err.Error(),
+	})
+}
+
 // postReadbackTransmission posts a radio event for a pilot responding to a command.
 // DestinationTCW is the specific TCW that issued the command.
 // Use this for readbacks, where the response must go to the issuing controller
 // regardless of any consolidation changes.
 func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmission, tcw TCW) {
-	tr.Validate(s.lg)
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+	written, werr := tr.Written(s.Rand)
+	spoken, serr := tr.Spoken(s.Rand)
+	if err := cmp.Or(werr, serr); err != nil {
+		s.reportTransmissionFailure(from, tcp, err)
+		return
+	}
+	if written == "" && spoken == "" {
+		return
+	}
 
 	if ac, ok := s.Aircraft[from]; ok {
 		ac.LastRadioTransmission = s.State.SimTime
 	}
 
-	tcp := s.State.PrimaryPositionForTCW(tcw)
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
 		ToController:          tcp,
 		DestinationTCW:        tcw,
-		WrittenText:           tr.Written(s.Rand),
-		SpokenText:            tr.Spoken(s.Rand),
+		WrittenText:           written,
+		SpokenText:            spoken,
 		RadioTransmissionType: tr.Type,
 	})
 }
@@ -589,8 +615,15 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	// Get the base (unprefixed) text for the event stream.
 	// prepareRadioTransmissions will add the prefix when delivering to clients.
-	baseSpoken := rt.Spoken(s.Rand)
-	baseWritten := rt.Written(s.Rand)
+	baseSpoken, serr := rt.Spoken(s.Rand)
+	baseWritten, werr := rt.Written(s.Rand)
+	if err := cmp.Or(serr, werr); err != nil {
+		s.reportTransmissionFailure(pc.ADSBCallsign, pc.TCP, err)
+		return "", ""
+	}
+	if baseSpoken == "" && baseWritten == "" {
+		return "", ""
+	}
 
 	// Post the radio event with unprefixed text
 	s.eventStream.Post(Event{
@@ -637,8 +670,12 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	}
 
 	prefix.Merge(rt)
-	spokenText = prefix.Spoken(s.Rand)
-	writtenText = prefix.Written(s.Rand)
+	spokenText, serr = prefix.Spoken(s.Rand)
+	writtenText, werr = prefix.Written(s.Rand)
+	if err := cmp.Or(serr, werr); err != nil {
+		s.reportTransmissionFailure(pc.ADSBCallsign, pc.TCP, err)
+		return "", ""
+	}
 	return spokenText, writtenText
 }
 

@@ -737,7 +737,13 @@ func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, stri
 	if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
 		tr.Merge(suffix)
 	}
-	return callsign, tr.Spoken(s.Rand), nil
+	// postReadbackTransmission has already reported any formatting failure;
+	// this only costs the controller the spoken form.
+	spoken, err := tr.Spoken(s.Rand)
+	if err != nil {
+		s.lg.Errorf("%s: %v", callsign, err)
+	}
+	return callsign, spoken, nil
 }
 
 // SayNotCleared is called when the controller issues "contact tower" to an arrival
@@ -754,7 +760,13 @@ func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign,
 	if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
 		tr.Merge(suffix)
 	}
-	return callsign, tr.Spoken(s.Rand), nil
+	// postReadbackTransmission has already reported any formatting failure;
+	// this only costs the controller the spoken form.
+	spoken, err := tr.Spoken(s.Rand)
+	if err != nil {
+		s.lg.Errorf("%s: %v", callsign, err)
+	}
+	return callsign, spoken, nil
 }
 
 // sayAgainIntent returns an intent for when STT partially parsed a command but

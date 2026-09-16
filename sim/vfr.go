@@ -168,9 +168,12 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 // generateFlightFollowingMessage creates the full flight following request message.
 // This is called on-demand to use current aircraft state.
 func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission {
-	closestReportingPoint := func(ac *Aircraft) (string, string, float32, bool) {
+	// Returns the departure airport if the aircraft is still closer to it than
+	// to any reporting point, and otherwise the closest reporting point's
+	// description; exactly one of ap and desc is set.
+	closestReportingPoint := func(ac *Aircraft) (ap av.ICAOAirportCode, desc, dir string, dist float32) {
 		var closest *av.VFRReportingPoint
-		dist := float32(1000000)
+		dist = float32(1000000)
 		var center math.Point2LL
 		for _, rp := range s.VFRReportingPoints {
 			d := math.NMDistance2LL(ac.Position(), rp.Location)
@@ -188,23 +191,23 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 			// the TRACON.
 			if d := math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()); d < dist {
 				hdg := math.Heading2LL(ac.DepartureAirportLocation(), ac.Position(), s.State.NmPerLongitude)
-				return string(ac.FlightPlan.DepartureAirport), math.Compass(hdg), d, true
+				return ac.FlightPlan.DepartureAirport, "", math.Compass(hdg), d
 			} else {
 				hdg := math.Heading2LL(center, ac.Position(), s.State.NmPerLongitude)
-				return closest.Description, math.Compass(hdg), dist, false
+				return "", closest.Description, math.Compass(hdg), dist
 			}
 		}
-		return "", "", 0, false
+		return "", "", "", 0
 	}
 
 	rt := av.MakeContactTransmission("[we're a|] {actype}", ac.FlightPlan.AircraftType)
 
-	rpdesc, rpdir, dist, isap := closestReportingPoint(ac)
+	rpap, rpdesc, rpdir, dist := closestReportingPoint(ac)
 	if math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 2 {
 		rt.Add("departing {airport}", ac.FlightPlan.DepartureAirport)
 	} else if dist < 1 {
-		if isap {
-			rt.Add("overhead {airport}", rpdesc)
+		if rpap != "" {
+			rt.Add("overhead {airport}", rpap)
 		} else {
 			rt.Add("overhead " + rpdesc)
 		}
@@ -216,8 +219,8 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 		} else {
 			loc = strconv.Itoa(int(dist+0.5)) + " miles " + rpdir
 		}
-		if isap {
-			rt.Add(loc+" of {airport}", rpdesc)
+		if rpap != "" {
+			rt.Add(loc+" of {airport}", rpap)
 		} else {
 			rt.Add(loc + " of " + rpdesc)
 		}

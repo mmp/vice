@@ -1,6 +1,9 @@
 package sim
 
 import (
+	"encoding/json"
+	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -409,5 +412,80 @@ func TestWaypointClimbActionUnderHumanControl(t *testing.T) {
 	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{ClimbAltitude: 7000}})
 	if assigned() != 5000 {
 		t.Errorf("route changed the altitude of an aircraft a human is working: %.0f", assigned())
+	}
+}
+
+// An emergency transmission is built when the stage fires but spoken later, so
+// it is the one transmission that can be saved to the user's config and read
+// back. Its arguments are typed, and JSON erases those types unless
+// RadioTransmission carries them along.
+func TestEmergencyTransmissionSurvivesSaving(t *testing.T) {
+	lg := testLogger()
+	s := NewTestSim(lg)
+	ac := MakeTestAircraft("AAL123", "22L")
+	ac.FlightPlan.DepartureAirport = "KFRG"
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	tcp := TCP("125.0")
+	rt := av.MakeContactTransmission(
+		"declaring an emergency, [we have|] {num} souls, request return to {airport}, level at {alt}",
+		112, ac.FlightPlan.DepartureAirport, 4000)
+	s.enqueueEmergencyTransmission(ac.ADSBCallsign, tcp, rt)
+	for i := range s.PendingContacts[tcp] {
+		s.PendingContacts[tcp][i].ReadyTime = s.State.SimTime.Add(-time.Second)
+	}
+
+	b, err := json.Marshal(s.PendingContacts)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	clear(s.PendingContacts)
+	if err := json.Unmarshal(b, &s.PendingContacts); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	pc := s.popReadyContact([]TCP{tcp})
+	if pc == nil {
+		t.Fatal("no pending contact after saving and reloading")
+	}
+	spoken, written := s.GenerateContactTransmission(pc)
+	if spoken == "" || written == "" {
+		t.Fatalf("emergency transmission rendered nothing after saving: %q / %q", spoken, written)
+	}
+	if !strings.Contains(written, "KFRG") || !strings.Contains(written, "112") ||
+		!strings.Contains(written, "4,000") {
+		t.Errorf("emergency transmission lost arguments after saving: %q", written)
+	}
+}
+
+// A transmission with an argument the formatter can't handle leaves the pilot
+// silent, which to the controller looks like an aircraft ignoring them. The
+// failure has to reach the messages pane rather than only the log.
+func TestUnformattableTransmissionIsReported(t *testing.T) {
+	s := NewTestSim(testLogger())
+	ac := MakeTestAircraft("AAL123", "22L")
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	sub := s.eventStream.Subscribe()
+	defer sub.Unsubscribe()
+
+	rt := av.MakeReadbackTransmission("departing {airport}", "KFRG") // want an ICAOAirportCode
+	s.postReadbackTransmission(ac.ADSBCallsign, *rt, TCW("TEST"))
+
+	events := sub.Get()
+	if slices.ContainsFunc(events, func(e Event) bool { return e.Type == RadioTransmissionEvent }) {
+		t.Error("posted a transmission that couldn't be formatted")
+	}
+
+	i := slices.IndexFunc(events, func(e Event) bool { return e.Type == ErrorMessageEvent })
+	if i == -1 {
+		t.Fatalf("nothing reported the failed transmission: %+v", events)
+	}
+	if msg := events[i].WrittenText; !strings.Contains(msg, "AAL123") ||
+		!strings.Contains(msg, "departing {airport}") {
+		t.Errorf("report %q names neither the aircraft nor the phrase that failed", msg)
+	}
+	if to := events[i].ToController; to != TCP("125.0") {
+		t.Errorf("report went to %q, want the controller the readback was for", to)
 	}
 }

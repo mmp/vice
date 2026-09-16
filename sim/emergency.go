@@ -434,7 +434,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	}
 
 	if stage.RequestReturn && ac.IsDeparture() {
-		transmit("[request|request immediate|we'd like to] return to {airport}", string(ac.FlightPlan.DepartureAirport))
+		transmit("[request|request immediate|we'd like to] return to {airport}", ac.FlightPlan.DepartureAirport)
 		ac.DivertToAirport(ac.FlightPlan.DepartureAirport)
 	}
 

@@ -11,7 +11,9 @@ import (
 	"github.com/mmp/vice/rand"
 )
 
-func renderIntentForTest(intent CommandIntent, seed uint64) string {
+func renderIntentForTest(t *testing.T, intent CommandIntent, seed uint64) string {
+	t.Helper()
+
 	if DB == nil {
 		DB = &StaticDatabase{
 			Navaids:  map[string]Navaid{},
@@ -21,7 +23,11 @@ func renderIntentForTest(intent CommandIntent, seed uint64) string {
 
 	r := rand.Make()
 	r.Seed(seed)
-	return strings.ToLower(RenderIntents([]CommandIntent{intent}, r).Written(r))
+	written, err := RenderIntents([]CommandIntent{intent}, r).Written(r)
+	if err != nil {
+		t.Fatalf("seed %d: %v", seed, err)
+	}
+	return strings.ToLower(written)
 }
 
 func assertContainsAny(t *testing.T, readback string, values ...string) {
@@ -74,7 +80,7 @@ func TestSpeedRestrictionReadbackIncludesQualifier(t *testing.T) {
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			for seed := uint64(1); seed <= 20; seed++ {
-				readback := renderIntentForTest(test.intent, seed)
+				readback := renderIntentForTest(t, test.intent, seed)
 				assertContainsAny(t, readback, test.qualifiers...)
 				if !strings.Contains(readback, "knots") {
 					t.Fatalf("speed readback missing speed: %q", readback)
@@ -115,7 +121,7 @@ func TestSpeedUntilFinalDirection(t *testing.T) {
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			for seed := uint64(1); seed <= 20; seed++ {
-				readback := renderIntentForTest(test.intent, seed)
+				readback := renderIntentForTest(t, test.intent, seed)
 				assertContainsAny(t, readback, test.contains...)
 				for _, bad := range test.notContains {
 					if strings.Contains(readback, bad) {
@@ -130,7 +136,7 @@ func TestSpeedUntilFinalDirection(t *testing.T) {
 func TestContactTowerReadback(t *testing.T) {
 	// No frequency — readback is bare "tower" with no digits.
 	for seed := uint64(1); seed <= 20; seed++ {
-		readback := renderIntentForTest(ContactTowerIntent{}, seed)
+		readback := renderIntentForTest(t, ContactTowerIntent{}, seed)
 		if !strings.Contains(readback, "tower") {
 			t.Fatalf("bare contact-tower readback missing 'tower': %q", readback)
 		}
@@ -145,10 +151,13 @@ func TestContactTowerReadback(t *testing.T) {
 	freq := NewFrequency(118.9)
 	// Readback uses the FrequencySnippetFormatter's Written form (2 decimal
 	// places), not Frequency.String()'s 3-decimal form.
-	expected := FrequencySnippetFormatter{}.Written(freq)
+	expected, err := FrequencySnippetFormatter{}.Written(freq)
+	if err != nil {
+		t.Fatal(err)
+	}
 	withFreq, withoutFreq := 0, 0
 	for seed := uint64(1); seed <= 60; seed++ {
-		readback := renderIntentForTest(ContactTowerIntent{Frequency: freq}, seed)
+		readback := renderIntentForTest(t, ContactTowerIntent{Frequency: freq}, seed)
 		if !strings.Contains(readback, "tower") {
 			t.Fatalf("contact-tower readback missing 'tower': %q", readback)
 		}
@@ -179,7 +188,7 @@ func TestCompoundSpeedReadbackIncludesQualifiers(t *testing.T) {
 	}
 
 	for seed := uint64(1); seed <= 20; seed++ {
-		readback := renderIntentForTest(intent, seed)
+		readback := renderIntentForTest(t, intent, seed)
 		assertContainsAny(t, readback, "or greater")
 		assertContainsAny(t, readback, "or less")
 		if !strings.Contains(readback, "rosly") {

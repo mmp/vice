@@ -216,6 +216,14 @@ func (mp *MessagesPane) ProcessEvents(playSound, showSimLogging bool, events []s
 			}
 
 		case sim.ErrorMessageEvent:
+			// If ToController is set, only show to that controller (or privileged)
+			if event.ToController != "" {
+				toUs := c.State.UserControlsPosition(event.ToController)
+				if !toUs && !c.State.TCWIsPrivileged(c.State.UserTCW) {
+					break
+				}
+			}
+
 			mp.messages = append(mp.messages,
 				Message{
 					contents: event.WrittenText,
