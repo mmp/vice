@@ -1059,7 +1059,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	radar.DrawMapFeatures(bm.Lines, bm.Symbols, bm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
 
 	for _, vm := range ep.allVideoMaps {
-		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2, " ")]; !ok {
+		if _, ok := ps.VideoMapVisible[vm.Label()]; !ok {
 			continue
 		}
 		radar.DrawMapFeatures(vm.Lines, vm.Symbols, vm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
@@ -1081,7 +1081,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	ep.setVideoMapGroup(vmf, ps.VideoMapGroup)
 
 	for _, name := range ss.ControllerDefaultVideoMaps {
-		if slices.ContainsFunc(ep.allVideoMaps, func(v av.ERAMMap) bool { return combine(v.LabelLine1, v.LabelLine2, " ") == name }) {
+		if slices.ContainsFunc(ep.allVideoMaps, func(v av.ERAMMap) bool { return v.Label() == name }) {
 			ps.VideoMapVisible[name] = nil
 		}
 	}

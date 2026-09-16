@@ -262,7 +262,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 				vm = ep.allVideoMaps[i]
 			}
 			label := vm.LabelLine1 + "\n" + vm.LabelLine2
-			key := combine(vm.LabelLine1, vm.LabelLine2, " ")
+			key := vm.Label()
 			_, vis := ps.VideoMapVisible[key]
 			nextRow := false
 			if (i == 10 && !second) || (i == 30 && second) {
@@ -2197,11 +2197,7 @@ func (ep *ERAMPane) videoMapKeyForButton(name string) (string, bool) {
 			}
 		}
 		if display == label {
-			key := combine(line1, line2, " ")
-			if key == "" {
-				return "", false
-			}
-			return key, true
+			return vm.Label(), true
 		}
 	}
 	return "", false

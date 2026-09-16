@@ -63,6 +63,14 @@ type ERAMMapGroup struct {
 	BaseMap ERAMMap
 }
 
+// Label is what the map is called: its two label lines joined with a space,
+// each trimmed and an empty one left out. It is the name the filter menu
+// shows, the one a scenario's default map list gives, and the key the
+// display's per-map state is kept under.
+func (m ERAMMap) Label() string {
+	return combineLabels(m.LabelLine1, m.LabelLine2)
+}
+
 // IsEmpty reports whether m holds no geometry at all.
 func (m ERAMMap) IsEmpty() bool {
 	return len(m.Lines) == 0 && len(m.Symbols) == 0 && len(m.Labels) == 0
@@ -678,7 +686,7 @@ func PrintMapLibrary(path string, e *util.ErrorLogger) {
 					len(g.BaseMap.Lines), len(g.BaseMap.Symbols), len(g.BaseMap.Labels))
 			}
 			for i, m := range g.Maps {
-				fmt.Printf("    %2d  %s\n", i+1, combineLabels(m.LabelLine1, m.LabelLine2))
+				fmt.Printf("    %2d  %s\n", i+1, m.Label())
 			}
 			fmt.Printf("\n")
 		}
