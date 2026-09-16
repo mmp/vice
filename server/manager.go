@@ -1185,6 +1185,8 @@ const ReloadScenariosRPC = "SimManager.ReloadScenarios"
 // from disk and, if they all validate, swaps them in for subsequent sims.
 // Sims that are already running keep the scenario they were created with.
 func (sm *SimManager) ReloadScenarios(args *ReloadScenariosArgs, result *ReloadScenariosResult) error {
+	av.ReloadDB()
+
 	var e util.ErrorLogger
 	groups, catalogs, mapSpecs, briefs, overrideErrors := LoadScenarioGroups(args.Overrides, &e, sm.lg)
 

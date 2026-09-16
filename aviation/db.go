@@ -505,6 +505,13 @@ func StartInitDB() {
 	})
 }
 
+func ReloadDB() {
+	// An initial load that is still running would otherwise finish after
+	// this one and put the old contents back.
+	InitDB()
+	doInitDB()
+}
+
 func doInitDB() {
 	db := &StaticDatabase{}
 
