@@ -441,8 +441,8 @@ build_vice() {
         export CGO_LDFLAGS='-mmacosx-version-min=13.4'
 
         # backshop is a GUI binary like vice, so it takes the same build
-        # tags; in particular it must be built with downloadresources for a
-        # release, or it looks for resources/ relative to the CWD.
+        # tags; in particular the release tag, without which it looks for
+        # resources/ relative to the CWD rather than downloading them.
         if [ "$DO_UNIVERSAL" = true ]; then
             echo "Building universal binaries..."
             for gui in vice backshop; do

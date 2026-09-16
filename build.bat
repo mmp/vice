@@ -404,8 +404,8 @@ go build -tags !BUILD_TAGS! -ldflags="-s -w -H=windowsgui" -o vice.exe .\cmd\vic
 if errorlevel 1 exit /b 1
 
 REM backshop is a GUI binary like vice and takes the same build tags; in
-REM particular it must be built with downloadresources for a release, or it
-REM looks for resources\ relative to the working directory.
+REM particular the release tag, without which it looks for resources\
+REM relative to the working directory rather than downloading them.
 go build -tags !BUILD_TAGS! -ldflags="-s -w -H=windowsgui" -o backshop.exe .\cmd\backshop
 if errorlevel 1 exit /b 1
 
