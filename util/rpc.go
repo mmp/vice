@@ -58,11 +58,13 @@ func (c *mpServerCodec) WriteResponse(r *rpc.Response, body any) (err error) {
 		if p := recover(); p != nil {
 			c.lg.Errorf("rpc: panic encoding %s reply of type %T: %v\n%s",
 				r.ServiceMethod, body, p, debug.Stack())
-			// The reply was half written, so the stream's framing is gone;
-			// close the connection rather than serve the client garbage from
-			// here on. net/rpc only logs a WriteResponse error and keeps going.
-			_ = c.Close()
 			err = fmt.Errorf("rpc: panic encoding %s reply: %v", r.ServiceMethod, p)
+		}
+		if err != nil {
+			// However the reply died, it was half written and the stream's
+			// framing is gone; close the connection rather than serve the
+			// client garbage from here on.
+			_ = c.Close()
 		}
 	}()
 
@@ -242,10 +244,14 @@ func (c *CompressedConn) Read(b []byte) (n int, err error) {
 	return
 }
 
-func (c *CompressedConn) Write(b []byte) (n int, err error) {
-	n, err = c.w.Write(b)
-	c.w.Flush()
-	return
+func (c *CompressedConn) Write(b []byte) (int, error) {
+	n, err := c.w.Write(b)
+	if err != nil {
+		return n, err
+	}
+	// Write only buffers into the compressor, so a failing connection usually
+	// surfaces on Flush() instead.
+	return n, c.w.Flush()
 }
 
 func (c *CompressedConn) Close() error {
