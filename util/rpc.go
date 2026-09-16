@@ -13,6 +13,7 @@ import (
 	"log/slog"
 	"net"
 	"net/rpc"
+	"os"
 	"reflect"
 	"runtime/debug"
 	"sync"
@@ -253,26 +254,43 @@ func (c *CompressedConn) Close() error {
 	return c.Conn.Close()
 }
 
-// IdleTimeoutConn drops a connection whose peer has stopped sending. Every
-// read arms a fresh deadline, so the connection fails only after the timeout
-// elapses with no bytes arriving. It reclaims RPC connections that were
-// abandoned without being closed -- a client that dropped off the network, or
-// one that discarded its client without calling Close and left the socket open
-// -- which net/rpc's ServeCodec would otherwise wait on forever.
-type IdleTimeoutConn struct {
+// TimeoutConn drops a connection whose peer has stopped keeping up. Every read
+// arms a fresh idle deadline and every write a fresh write deadline, so the
+// connection fails once the peer stops sending or stops draining its socket.
+// It reclaims RPC connections that were abandoned without being closed -- a
+// client that dropped off the network, or one that discarded its client
+// without calling Close and left the socket open -- which net/rpc's ServeCodec
+// would otherwise wait on forever.
+type TimeoutConn struct {
 	net.Conn
-	timeout time.Duration
+	idleTimeout  time.Duration
+	writeTimeout time.Duration
 }
 
-func MakeIdleTimeoutConn(c net.Conn, timeout time.Duration) *IdleTimeoutConn {
-	return &IdleTimeoutConn{Conn: c, timeout: timeout}
+func MakeTimeoutConn(c net.Conn, idleTimeout, writeTimeout time.Duration) *TimeoutConn {
+	return &TimeoutConn{Conn: c, idleTimeout: idleTimeout, writeTimeout: writeTimeout}
 }
 
-func (c *IdleTimeoutConn) Read(b []byte) (int, error) {
-	if err := c.Conn.SetReadDeadline(time.Now().Add(c.timeout)); err != nil {
+func (c *TimeoutConn) Read(b []byte) (int, error) {
+	if err := c.Conn.SetReadDeadline(time.Now().Add(c.idleTimeout)); err != nil {
 		return 0, err
 	}
-	return c.Conn.Read(b)
+	n, err := c.Conn.Read(b)
+	if errors.Is(err, os.ErrDeadlineExceeded) {
+		// ServeCodec waits for its in-flight handlers to return before it
+		// closes the codec, so a handler stuck writing to this peer would keep
+		// the connection alive indefinitely. Drop the socket here instead,
+		// which fails that write too.
+		c.Conn.Close()
+	}
+	return n, err
+}
+
+func (c *TimeoutConn) Write(b []byte) (int, error) {
+	if err := c.Conn.SetWriteDeadline(time.Now().Add(c.writeTimeout)); err != nil {
+		return 0, err
+	}
+	return c.Conn.Write(b)
 }
 
 var RXTotal, TXTotal int64

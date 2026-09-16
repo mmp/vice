@@ -155,7 +155,7 @@ func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
 					if slices.Min(history) > float64(limit) {
 						lg.Warnf("Last %d ticks over %d utilization: %#v. Dumping", nhist, limit, history)
 
-						writeProfile("mutex", lg)
+						writeProfile("mutex", 0, lg)
 						dumpFlightRecorder(lg)
 
 						filename := fmt.Sprintf("dump%d.txt", time.Now().Unix())
@@ -201,18 +201,29 @@ func MonitorMemoryUsage(triggerMB int, incMB int, lg *log.Logger) {
 			if heapAlloc > threshold {
 				threshold += delta
 				lg.Warnf("Writing heap profile: heapAlloc=%d MB", heapAlloc/(1024*1024))
-				writeProfile("heap", lg)
+				writeProfile("heap", 0, lg)
+				// The heap profile says what the memory is; the goroutine dump
+				// says who is holding it, which is what a leak investigation
+				// actually needs.
+				writeProfile("goroutine", 2, lg)
 			}
 		}
 	}()
 }
 
-func writeProfile(ptype string, lg *log.Logger) {
-	filename := fmt.Sprintf("%s_%d.pprof", ptype, time.Now().Unix())
+// writeProfile dumps the named profile to a file. A non-zero debug level
+// writes pprof's human-readable form, which is what makes a goroutine dump
+// worth having: the stacks are right there without needing the binary.
+func writeProfile(ptype string, debug int, lg *log.Logger) {
+	ext := "pprof"
+	if debug > 0 {
+		ext = "txt"
+	}
+	filename := fmt.Sprintf("%s_%d.%s", ptype, time.Now().Unix(), ext)
 	if f, err := os.Create(filename); err != nil {
 		lg.Errorf("failed to create %q profile file: %v", ptype, err)
 	} else {
-		if err := pprof.Lookup(ptype).WriteTo(f, 0); err != nil {
+		if err := pprof.Lookup(ptype).WriteTo(f, debug); err != nil {
 			lg.Errorf("failed to write %q profile: %v", ptype, err)
 		} else {
 			lg.Warnf("%q profile written to %s", ptype, filename)

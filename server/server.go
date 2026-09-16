@@ -110,6 +110,12 @@ const ViceHTTPServerPort = 6502
 // updates continuously, so a connection quiet this long has been abandoned.
 const rpcConnIdleTimeout = 10 * time.Minute
 
+// rpcConnWriteTimeout bounds how long a reply may block on a peer that has
+// stopped reading its socket. Without it the write waits forever, pinning the
+// handler's goroutine and the connection's compression buffers, and net/rpc
+// never closes a codec whose handlers haven't returned.
+const rpcConnWriteTimeout = time.Minute
+
 type ServerLaunchConfig struct {
 	Port          int // if 0, finds an open one
 	Overrides     OverrideFiles
@@ -191,15 +197,16 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 			}
 			lg.Infof("%s: new connection", conn.RemoteAddr())
 
-			// The public server drops connections that go idle: a client
-			// that crashed or dropped off the network leaves its socket open,
-			// and ServeCodec would otherwise hold the connection (and its
-			// decompression buffers) until an EOF that never comes. Local
-			// servers accept only their own client, which may sit idle on the
-			// scenario-selection screen, so they are left untimed.
+			// The public server drops connections whose peer has stopped
+			// sending or stopped reading: a client that crashed or dropped off
+			// the network leaves its socket open, and ServeCodec would
+			// otherwise hold the connection (and its compression buffers) until
+			// an EOF that never comes. Local servers accept only their own
+			// client, which may sit idle on the scenario-selection screen, so
+			// they are left untimed.
 			c := net.Conn(conn)
 			if !config.IsLocal {
-				c = util.MakeIdleTimeoutConn(conn, rpcConnIdleTimeout)
+				c = util.MakeTimeoutConn(conn, rpcConnIdleTimeout, rpcConnWriteTimeout)
 			}
 
 			if cc, err := util.MakeCompressedConn(util.MakeLoggingConn(c, lg)); err != nil {
