@@ -362,14 +362,7 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 			if appr.Type == ChartedVisualApproach {
 				e.ErrorString(`Must provide "full_name" for charted visual approach`)
 			} else {
-				appr.FullName = appr.Type.String() + " "
-				if len(appr.Id) >= 3 && appr.Id[1] >= 'W' && appr.Id[1] <= 'Z' {
-					appr.FullName += string(appr.Id[1]) + " "
-				}
-				if len(appr.Id) >= 3 && appr.Id[0] == 'G' {
-					appr.FullName += "GPS "
-				}
-				appr.FullName += "Runway " + appr.Runway
+				appr.FullName = appr.DefaultFullName()
 			}
 		} else if !strings.Contains(appr.FullName, "runway") && !strings.Contains(appr.FullName, "Runway") {
 			e.ErrorString(`Must have "runway" in approach's "full_name"`)
@@ -1733,6 +1726,19 @@ type Approach struct {
 	// Set in Airport PostDeserialize()
 	Threshold         math.Point2LL
 	OppositeThreshold math.Point2LL
+}
+
+// DefaultFullName is the approach's name as it is charted, worked out from
+// its CIFP identifier: RZ22L is "RNAV Z Runway 22L".
+func (ap Approach) DefaultFullName() string {
+	name := ap.Type.String() + " "
+	if len(ap.Id) >= 3 && ap.Id[1] >= 'W' && ap.Id[1] <= 'Z' {
+		name += string(ap.Id[1]) + " "
+	}
+	if len(ap.Id) >= 3 && ap.Id[0] == 'G' {
+		name += "GPS "
+	}
+	return name + "Runway " + ap.Runway
 }
 
 // InitializeWaypoints resolves waypoint locations and adds the runway
