@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
@@ -51,6 +52,15 @@ type app struct {
 	reload       *client.ScenarioReload
 	reloadErrors []string
 	status       string
+
+	// Modal dialogs waiting to be shown, and the pending check for a newer
+	// release, which puts one up if it finds one.
+	dialogs        []*gui.ModalDialog
+	newReleaseChan chan *util.Release
+
+	// quit is set when the user asks to quit from a dialog; the main loop
+	// exits at the end of the frame so that the config is still saved.
+	quit bool
 
 	menuBarHeight float32
 }
@@ -102,6 +112,17 @@ func newApp(config *Config, plat platform.Platform, render renderer.Renderer, lg
 		// startSim, which clears the status line on success.
 		a.status = fmt.Sprintf("no facility %q; opened %s instead", wantFacility, a.sel.facility)
 		lg.Warnf("%s", a.status)
+	}
+
+	// Neither of these has anywhere to put a dialog under -selftest, which
+	// runs without a window.
+	if plat != nil {
+		a.newReleaseChan = make(chan *util.Release)
+		go checkForNewRelease(a.newReleaseChan, lg)
+
+		if config.WhatsNewIndex < len(whatsNew) {
+			a.showDialog(&whatsNewDialog{config: config})
+		}
 	}
 
 	return a, nil
@@ -226,6 +247,8 @@ func (a *app) setControlClient(c *client.ControlClient) {
 func (a *app) update() {
 	a.mgr.Update(a.plat, a.lg)
 
+	a.pollNewRelease()
+
 	a.inspector.videoMaps.pollCRC(a)
 	a.inspector.traffic.poll()
 	// Playback runs off the wall clock, so it has to be stepped every frame
@@ -301,6 +324,8 @@ func (a *app) draw() {
 
 	a.scope.draw(a, a.menuBarHeight)
 	a.inspector.draw(a)
+
+	a.drawDialogs()
 }
 
 func (a *app) drawMenuBar() {

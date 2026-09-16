@@ -25,6 +25,7 @@ type Config struct {
 
 	ImGuiSettings string
 	UIFontSize    int
+	WhatsNewIndex int
 
 	LastFacility string
 	LastGroup    string
@@ -81,6 +82,9 @@ func defaultConfig() *Config {
 			NoMicrophone: true,
 		},
 		UIFontSize: 14,
+		// Someone running backshop for the first time doesn't need to be
+		// told what changed in past releases.
+		WhatsNewIndex: len(whatsNew),
 	}
 }
 

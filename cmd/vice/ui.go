@@ -134,7 +134,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Lo
 	// Do this asynchronously since it involves network traffic and may
 	// take some time (or may even time out, etc.)
 	ui.newReleaseDialogChan = make(chan *NewReleaseModalClient)
-	go checkForNewRelease(ui.newReleaseDialogChan, config, lg)
+	go checkForNewRelease(ui.newReleaseDialogChan, lg)
 
 	if config.WhatsNewIndex < len(whatsNew) {
 		uiShowModalDialog(gui.NewModalDialog(&WhatsNewModalClient{config: config}, p), false)

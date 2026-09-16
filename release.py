@@ -123,46 +123,51 @@ def flatten_items(items):
     return flat
 
 
-def update_whatsnew_go(items):
-    """Rewrite whatsnew.go with the new items."""
-    path = "cmd/vice/whatsnew.go"
+def is_backshop(item):
+    """Return whether a changelog item is one of backshop's."""
+    return re.match(r'^Backshop:', item) is not None
+
+
+def go_string_literal(item):
+    """Return a changelog item as a Go string literal."""
+    if '`' in item:
+        # Backticks in the item rule out a raw string, so escape it instead.
+        escaped = item.replace('\\', '\\\\').replace('"', '\\"')
+        return f'\t"{escaped}",'
+    return f'\t`{item}`,'
+
+
+def append_whatsnew_go(path, items):
+    """Add the given items to the end of a whatsnew.go's list of strings."""
     with open(path) as f:
         content = f.read()
 
-    # Build the new entries as Go string literals, excluding facility engineering items
-    go_strings = []
-    for item in items:
-        if re.match(r'^Facility [Ee]ngineering:', item):
-            continue
-        # Escape backticks by switching to double-quoted strings
-        if '`' in item:
-            # Use double-quoted Go string; escape backslashes and double quotes
-            escaped = item.replace('\\', '\\\\').replace('"', '\\"')
-            go_strings.append(f'\t"{escaped}",')
-        elif '"' in item:
-            # Use backtick-quoted Go string (already no backticks)
-            go_strings.append(f'\t`{item}`,')
-        else:
-            # Either works; prefer backticks for readability
-            go_strings.append(f'\t`{item}`,')
-
-    new_entries = '\n'.join(go_strings)
-
-    # Append new entries before the closing }
-    # Find the last entry line and insert after it
-    closing = '\n}'
-    idx = content.rfind(closing)
+    idx = content.rfind('}')
     if idx == -1:
-        print("Warning: whatsnew.go was not modified (closing brace not found)")
+        print(f"Warning: {path} was not modified (closing brace not found)")
         return
 
-    new_content = content[:idx] + '\n' + new_entries + closing
+    entries = '\n'.join(go_string_literal(item) for item in items)
+    content = content[:idx].rstrip() + '\n' + entries + '\n}' + content[idx + 1:]
     with open(path, 'w') as f:
-        f.write(new_content)
+        f.write(content)
 
-    # Run gofmt
     subprocess.run(['gofmt', '-w', path], check=True)
     print(f"  Updated {path}")
+
+
+def update_whatsnew_go(items):
+    """Add the items that are about vice itself to its whatsnew.go."""
+    items = [item for item in items
+             if not re.match(r'^Facility [Ee]ngineering:', item) and not is_backshop(item)]
+    append_whatsnew_go("cmd/vice/whatsnew.go", items)
+
+
+def update_backshop_whatsnew_go(items):
+    """Add the backshop items to backshop's whatsnew.go."""
+    items = [re.sub(r'^Backshop:\s*', '', item) for item in items if is_backshop(item)]
+    if items:
+        append_whatsnew_go("cmd/backshop/whatsnew.go", items)
 
 
 def update_metainfo_xml(tag, items):
@@ -305,6 +310,7 @@ def wait_for_approval():
     print("=" * 60)
     print("Files have been updated. Please review the changes:")
     print("  - cmd/vice/whatsnew.go")
+    print("  - cmd/backshop/whatsnew.go")
     print("  - linux/io.github.mmp.Vice.metainfo.xml")
     print("  - website/index.html")
     print("  - website/facility-engineering.html")
@@ -328,7 +334,8 @@ def commit_and_tag(tag):
         print(contents)
     with open("whatsnew.md", 'w') as f:
         pass
-    run("git add cmd/vice/whatsnew.go linux/io.github.mmp.Vice.metainfo.xml website/index.html "
+    run("git add cmd/vice/whatsnew.go cmd/backshop/whatsnew.go "
+        "linux/io.github.mmp.Vice.metainfo.xml website/index.html "
         "website/facility-engineering.html whatsnew.md")
     run(f'git commit -m "Release {version}"')
     run(f'git tag {tag}')
@@ -469,6 +476,7 @@ def main():
     # Update files
     print("Updating files...")
     update_whatsnew_go(flat_items)
+    update_backshop_whatsnew_go(flat_items)
     update_metainfo_xml(tag, flat_items)
     update_website(tag, old_tag, structured_items)
     update_facility_engineering(tag, old_tag)

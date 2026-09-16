@@ -150,7 +150,7 @@ func run(config *Config, lg *log.Logger) error {
 
 		plat.PostRender()
 
-		if plat.ShouldStop() {
+		if plat.ShouldStop() || app.quit {
 			break
 		}
 	}

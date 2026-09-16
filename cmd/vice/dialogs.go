@@ -7,14 +7,9 @@ package main
 import (
 	"bytes"
 	_ "embed"
-	"encoding/json"
 	"fmt"
 	"image/png"
-	"log/slog"
-	"net/http"
 	"os"
-	"runtime/debug"
-	"strings"
 	"time"
 
 	"github.com/mmp/vice/client"
@@ -243,78 +238,11 @@ func (yn *YesOrNoModalClient) Draw() int {
 	return -1
 }
 
-func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, config *Config, lg *log.Logger) {
+func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, lg *log.Logger) {
 	defer close(newReleaseDialogChan)
 
-	url := "https://api.github.com/repos/mmp/vice/releases"
-
-	resp, err := http.Get(url)
-	if err != nil {
-		lg.Warn("new release GET error", slog.String("url", url), slog.Any("error", err))
-		return
-	}
-	defer resp.Body.Close()
-
-	type Release struct {
-		TagName string    `json:"tag_name"`
-		Created time.Time `json:"created_at"`
-	}
-
-	decoder := json.NewDecoder(resp.Body)
-	var releases []Release
-	if err := decoder.Decode(&releases); err != nil {
-		lg.Errorf("JSON decode error: %v", err)
-		return
-	}
-	if len(releases) == 0 {
-		return
-	}
-
-	var newestRelease *Release
-	for i := range releases {
-		if strings.Contains(releases[i].TagName, "-beta") {
-			continue
-		}
-		if newestRelease == nil || releases[i].Created.After(newestRelease.Created) {
-			newestRelease = &releases[i]
-		}
-	}
-	if newestRelease == nil {
-		lg.Warnf("No vice releases found?")
-		return
-	}
-
-	lg.Infof("newest release found: %v", newestRelease)
-
-	buildTime := ""
-	if bi, ok := debug.ReadBuildInfo(); !ok {
-		lg.Errorf("unable to read build info")
-		return
-	} else {
-		for _, setting := range bi.Settings {
-			if setting.Key == "vcs.time" {
-				buildTime = setting.Value
-				break
-			}
-		}
-
-		if buildTime == "" {
-			lg.Errorf("build time unavailable in BuildInfo.Settings")
-			return
-		}
-	}
-
-	if bt, err := time.Parse(time.RFC3339, buildTime); err != nil {
-		lg.Errorf(`error parsing build time "%s": %v`, buildTime, err)
-	} else if newestRelease.Created.UTC().After(bt.UTC()) {
-		lg.Infof("build time %s newest release %s -> release is newer",
-			bt.UTC().String(), newestRelease.Created.UTC().String())
-		newReleaseDialogChan <- &NewReleaseModalClient{
-			version: newestRelease.TagName,
-			date:    newestRelease.Created}
-	} else {
-		lg.Infof("build time %s newest release %s -> build is newer",
-			bt.UTC().String(), newestRelease.Created.UTC().String())
+	if release := util.NewerRelease(lg); release != nil {
+		newReleaseDialogChan <- &NewReleaseModalClient{version: release.TagName, date: release.Created}
 	}
 }
 
