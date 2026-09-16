@@ -79,9 +79,9 @@ func defaultConfig() *Config {
 		Config: platform.Config{
 			InitialWindowSize:     [2]int{1400, 900},
 			InitialWindowPosition: [2]int{100, 100},
-			// backshop never plays a sound, so it has no business asking
-			// for a microphone.
-			NoAudio: true,
+			// backshop speaks but never listens, so it has no business
+			// asking for a microphone.
+			NoMicrophone: true,
 		},
 		UIFontSize:    14,
 		ScopeFontSize: defaultScopeFontSize,
