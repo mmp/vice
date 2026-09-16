@@ -2254,14 +2254,11 @@ type DMELocator interface {
 	LocateDME(fix string) (math.Point2LL, int, bool)
 }
 
-func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	allowSlop bool, e *util.ErrorLogger) WaypointArray {
-	if len(wa) == 0 {
-		return wa
-	}
-
-	defer e.CheckDepth(e.CurrentDepth())
-
+// initializeActionLocations resolves the fixes the waypoint's action groups
+// refer to: the navaids that DME distances and radials are measured from and
+// the fixes whose radials are flown.
+func (wp *Waypoint) initializeActionLocations(loc Locator, magneticVariation float32, allowSlop bool,
+	e *util.ErrorLogger) {
 	// radialVariation returns the variation a radial of fix is referenced
 	// to. A VHF navaid's radials are fixed to its station declination,
 	// which the local variation has usually drifted from since the station
@@ -2272,6 +2269,61 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 		}
 		return magneticVariation
 	}
+	dmeLocator, canLocateDME := loc.(DMELocator)
+
+	for j, group := range wp.ActionGroups() {
+		if group.Until.Type == WaypointActionDME {
+			if !canLocateDME {
+				if e != nil && !allowSlop {
+					e.ErrorString("%s: unable to locate DME station %q for waypoint action group %q",
+						wp.Fix, group.Until.DMEFix, group.Encoded())
+				}
+			} else if pos, elevation, ok := dmeLocator.LocateDME(group.Until.DMEFix); ok {
+				until := &wp.InitExtra().ActionGroups[j].Until
+				until.DMEFixLocation, until.DMEFixElevation = pos, elevation
+			} else if e != nil && !allowSlop {
+				e.ErrorString("%s: unable to locate DME station %q with elevation for waypoint action group %q",
+					wp.Fix, group.Until.DMEFix, group.Encoded())
+			}
+		}
+		if group.Until.Type == WaypointActionRadial {
+			if pos, ok := loc.Locate(group.Until.RadialFix); ok {
+				until := &wp.InitExtra().ActionGroups[j].Until
+				until.RadialFixLocation, until.RadialFixVariation = pos, radialVariation(group.Until.RadialFix)
+			} else if e != nil && !allowSlop {
+				e.ErrorString("%s: unable to locate %q for waypoint action group %q",
+					wp.Fix, group.Until.RadialFix, group.Encoded())
+			}
+		}
+		// The course's line runs through the next fix, so the navaid it
+		// is a radial of supplies only the variation, not a location.
+		if fix := group.Until.CourseFix; fix != "" {
+			if _, ok := loc.Locate(fix); ok {
+				wp.InitExtra().ActionGroups[j].Until.CourseFixVariation = radialVariation(fix)
+			} else if e != nil && !allowSlop {
+				e.ErrorString("%s: unable to locate %q for waypoint action group %q",
+					wp.Fix, fix, group.Encoded())
+			}
+		}
+		if fix := group.Actions.Heading.Fix; fix != "" {
+			if pos, ok := loc.Locate(fix); ok {
+				heading := &wp.InitExtra().ActionGroups[j].Actions.Heading
+				heading.FixLocation, heading.FixVariation = pos, radialVariation(fix)
+			} else if e != nil && !allowSlop {
+				e.ErrorString("%s: unable to locate %q for waypoint action group %q",
+					wp.Fix, fix, group.Encoded())
+			}
+		}
+	}
+}
+
+func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32, magneticVariation float32,
+	allowSlop bool, e *util.ErrorLogger) WaypointArray {
+	if len(wa) == 0 {
+		return wa
+	}
+
+	defer e.CheckDepth(e.CurrentDepth())
 
 	// Get the locations of all waypoints and cull the route after 250nm if cullFar is true.
 	// prev is the last waypoint located, which points along a leg are not, so
@@ -2279,55 +2331,11 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 	// on it.
 	var prev math.Point2LL
 	prevIdx, nLocated := -1, 0
-	dmeLocator, canLocateDME := loc.(DMELocator)
 	for i, wp := range wa {
 		if e != nil {
 			e.Push("Fix " + wp.Fix)
 		}
-		for j, group := range wa[i].ActionGroups() {
-			if group.Until.Type == WaypointActionDME {
-				if !canLocateDME {
-					if e != nil && !allowSlop {
-						e.ErrorString("%s: unable to locate DME station %q for waypoint action group %q",
-							wp.Fix, group.Until.DMEFix, group.Encoded())
-					}
-				} else if pos, elevation, ok := dmeLocator.LocateDME(group.Until.DMEFix); ok {
-					wa[i].InitExtra().ActionGroups[j].Until.DMEFixLocation = pos
-					wa[i].InitExtra().ActionGroups[j].Until.DMEFixElevation = elevation
-				} else if e != nil && !allowSlop {
-					e.ErrorString("%s: unable to locate DME station %q with elevation for waypoint action group %q",
-						wp.Fix, group.Until.DMEFix, group.Encoded())
-				}
-			}
-			if group.Until.Type == WaypointActionRadial {
-				if pos, ok := loc.Locate(group.Until.RadialFix); ok {
-					until := &wa[i].InitExtra().ActionGroups[j].Until
-					until.RadialFixLocation, until.RadialFixVariation = pos, radialVariation(group.Until.RadialFix)
-				} else if e != nil && !allowSlop {
-					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
-						wp.Fix, group.Until.RadialFix, group.Encoded())
-				}
-			}
-			// The course's line runs through the next fix, so the navaid it
-			// is a radial of supplies only the variation, not a location.
-			if fix := group.Until.CourseFix; fix != "" {
-				if _, ok := loc.Locate(fix); ok {
-					wa[i].InitExtra().ActionGroups[j].Until.CourseFixVariation = radialVariation(fix)
-				} else if e != nil && !allowSlop {
-					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
-						wp.Fix, fix, group.Encoded())
-				}
-			}
-			if fix := group.Actions.Heading.Fix; fix != "" {
-				if pos, ok := loc.Locate(fix); ok {
-					heading := &wa[i].Extra.ActionGroups[j].Actions.Heading
-					heading.FixLocation, heading.FixVariation = pos, radialVariation(fix)
-				} else if e != nil && !allowSlop {
-					e.ErrorString("%s: unable to locate %q for waypoint action group %q",
-						wp.Fix, fix, group.Encoded())
-				}
-			}
-		}
+		wa[i].initializeActionLocations(loc, magneticVariation, allowSlop, e)
 
 		if wp.AlongLeg() {
 			// Placed below, once the fixes on either side have been located.

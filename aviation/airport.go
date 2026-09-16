@@ -470,6 +470,7 @@ func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongi
 							e.ErrorString(`"climbout_actions": %v`, err)
 						} else {
 							override = ovr
+							override.initializeActionLocations(loc, magneticVariation, false, e)
 							WaypointArray{override}.checkBasics(e, controlPositions, checkScratchpad)
 						}
 					}
