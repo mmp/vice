@@ -3373,7 +3373,7 @@
         }
       ]
     },
-    "BANGZ3": {
+    "BANGZ2": {
       "arrivals": [
         {
           "airports": ["KPIE", "KSRQ", "KVNC"],
@@ -4361,7 +4361,7 @@
           "KLAL": 0,
           "KVNC": 1
         },
-        "BANGZ3": {
+        "BANGZ2": {
           "KSRQ": 2,
           "KPIE": 1,
           "KVNC": 0.5
@@ -4659,7 +4659,7 @@
           "KLAL": 0,
           "KVNC": 1
         },
-        "BANGZ3": {
+        "BANGZ2": {
           "KSRQ": 2,
           "KPIE": 1,
           "KVNC": 0.5

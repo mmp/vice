@@ -395,7 +395,6 @@
           "FINAL.NE GATE.GESNR2&SKNRD5": "1A",
           "FINAL.NW GATE.DRLLR5&MSCOT4": "1A",
           "FINAL.DOOBI3": "1I",
-          "FINAL.DRLLR5": "1A",
           "FINAL.GESNR2": "1A",
           "FINAL.GUSHR3": "1I",
           "FINAL.HTOWN3": "1O",
@@ -404,7 +403,6 @@
           "FINAL.MSCOT4": "1A",
           "FINAL.NNCEE2": "1O",
           "FINAL.NNCEE2.8R": "1O",
-          "FINAL.SKNRD5": "1I",
           "FINAL.TEJAS5": "1O",
           "FINAL.TEJAS5.26L": "1O",
           "FINAL.TTORO3": "1I",
@@ -468,12 +466,7 @@
           "TKNIQ3": "1X",
           "TSHRT2": "1X",
           "TTORO3.AUTO": "1N",
-          "WAPPL7": "1D",
-          "FINAL.BAYYY5": "1G",
-          "FINAL.BELLR6": "1X",
-          "FINAL.KIDDZ5": "1X",
-          "FINAL.PUCKS4": "1G",
-          "FINAL.WAPPL7": "1D"
+          "WAPPL7": "1D"
         },
         "departure_assignments": {
           "KCXO": "1R",

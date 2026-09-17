@@ -337,11 +337,8 @@
       },
       "78X": {
         "inbound_assignments": {
-          "FV.27.JFUND.27/22": "1F",
-          "FV.27.OOSHN.27/22": "1F",
           "FV.27.ROBUC3.27/22": "1F",
           "FV.22L.RD.27/22": "1I",
-          "FV.22L.JFUND.27/22": "1I",
           "FV.22L.LWRNC.27/22": "1I",
           "FV.27.FREDO.27/22": "1F",
           "FV.22L.FL.JFUND2.27/22": "1I"

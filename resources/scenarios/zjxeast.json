@@ -966,7 +966,7 @@
         }
       ]
     },
-    "50_LUBBR3": {
+    "50_LUBBR4": {
       "arrivals": [
         {
           "waypoints": "FISHO/ho Q75 TEUFL KYYUU WNWUD/d27000 SSPAZ/delete",
@@ -1075,7 +1075,7 @@
         "50_CAMJO": {
           "overflights": 20
         },
-        "50_LUBBR3": {
+        "50_LUBBR4": {
           "KSRQ": 8
         },
         "50_BAGGY3": {
@@ -1148,7 +1148,7 @@
         "50_CAMJO": {
           "overflights": 20
         },
-        "50_LUBBR3": {
+        "50_LUBBR4": {
           "KSRQ": 8
         },
         "50_BAGGY3": {

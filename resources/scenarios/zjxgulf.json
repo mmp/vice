@@ -2255,7 +2255,7 @@
         }
       ]
     },
-    "LUBBR3": {
+    "LUBBR4": {
       "arrivals": [
         {
           "waypoints": "KYYUU/a32000 WNWUD/a30000/ho SSPAZ/a27000 BATTN LUBBR ZEBON RUNNE BREKR WUDDY LYFIE MURDO/a3000+ KSRQ-32/a44/delete",
@@ -2533,7 +2533,7 @@
         }
       ]
     },
-    "MAATY4": {
+    "MAATY6": {
       "arrivals": [
         {
           "waypoints": "HEVVN LEGGT/a27000/ho88 GOJOE AAHOY MAATY/a11000 ROOKR BLOUT CBASS TOOTH/a5000/s210 HICAY PJMAL/s190 ANAZE/a2400 ZELTO/a1300 KTPA-1R/a25/delete",
@@ -2998,7 +2998,7 @@
         "TEBOW2": {
           "overflights": 5
         },
-        "LUBBR3": {
+        "LUBBR4": {
           "KSRQ": 10,
           "KLAL": 3,
           "KPGD": 3,
@@ -3012,7 +3012,7 @@
         "SNFLD3": {
           "KMCO": 10
         },
-        "MAATY4": {
+        "MAATY6": {
           "KTPA": 10
         }
       },

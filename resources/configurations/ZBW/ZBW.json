@@ -170,9 +170,7 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "JFUND2-PONCT": "36",
-          "FORME": "36",
-          "CTR": "36"
+          "JFUND2-PONCT": "36"
         },
         "departure_assignments": {
           "KMHT": "46"

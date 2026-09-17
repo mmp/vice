@@ -272,9 +272,7 @@
     },
     "configurations": {
       "C25": {
-        "inbound_assignments": {
-          "WYNDE3": "25"
-        },
+        "inbound_assignments": {},
         "default_consolidation": { "25": ["26"] }
       },
       "B35": {
@@ -294,27 +292,20 @@
         "default_consolidation": { "44": ["46"] }
       },
       "C52": {
-        "inbound_assignments": {
-          "BENKY6": "52",
-          "TRTLL6": "52"
-        },
+        "inbound_assignments": {},
         "default_consolidation": { "52": ["51", "55"] }
       },
       "C60": {
         "departure_assignments": {
           "KORD": "60"
         },
-        "inbound_assignments": {
-          "KKILR4": "60",
-          "KKILR4.S": "60"
-        },
+        "inbound_assignments": {},
         "default_consolidation": { "60": ["62", "63", "64"] }
       },
       "C75": {
         "inbound_assignments": {
           "FYTTE7": "75",
           "FYTTE7.N": "75",
-          "BLUEM5": "75",
           "BLUEM5.E": "75",
           "BLUEM5.W": "75",
           "BLUEM5.S": "75"

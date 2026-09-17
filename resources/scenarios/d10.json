@@ -9509,7 +9509,7 @@
         }
       ]
     },
-    "FINGR9.PROP": {
+    "FINGR1.PROP": {
       "arrivals": [
         {
           "waypoints": "HAKIN MONTE/a7000/ho ANDYA FINGR/s250/h230",
@@ -9631,7 +9631,7 @@
         }
       ]
     },
-    "HERBZ1": {
+    "HERBZ2": {
       "arrivals": [
         {
           "spawn": "MASTY",
@@ -9698,7 +9698,7 @@
         }
       ]
     },
-    "HERBZ1.AUTO": {
+    "HERBZ2.AUTO": {
       "arrivals": [
         {
           "waypoints": "MASTY/a16000+/ho1S GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240 FUNKY WEGUL/a4000 QUYNN/a3000/s190 FACIA/clearapp BOKLE/delete",
@@ -9748,7 +9748,7 @@
         }
       ]
     },
-    "HERBZ1.DN_NF": {
+    "HERBZ2.DN_NF": {
       "arrivals": [
         {
           "waypoints": "JABEV/ho1D MASTY/a16000 GREGS/a10000-11000/s250 GUUCH/a6000-8000/ho HERBZ/a6000/s240/tc CROEW/a5000/s240/h113",
@@ -9815,7 +9815,7 @@
         }
       ]
     },
-    "HERBZ1.DS_NF": {
+    "HERBZ2.DS_NF": {
       "arrivals": [
         {
           "waypoints": "JTROE/a16000+/ho1N MASTY/a16000+ GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/ho HIBIL/a4000 HUDIL/h190/tc",
@@ -10368,7 +10368,7 @@
         }
       ]
     },
-    "LIKES3_N": {
+    "LIKES4_N": {
       "arrivals": [
         {
           "waypoints": "BRRUS/ho SLUGG/a6000 LIKES/h44",
@@ -10435,7 +10435,7 @@
         }
       ]
     },
-    "LIKES3_M_NORTH_NF": {
+    "LIKES4_M_NORTH_NF": {
       "arrivals": [
         {
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a6000/ho LIKES/h044",
@@ -10503,7 +10503,7 @@
         }
       ]
     },
-    "LIKES3_M_NORTH_SF": {
+    "LIKES4_M_NORTH_SF": {
       "arrivals": [
         {
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a7000/ho LIKES/h005/tc",
@@ -10571,7 +10571,7 @@
         }
       ]
     },
-    "LIKES3_S": {
+    "LIKES4_S": {
       "arrivals": [
         {
           "waypoints": "BRRUS/ho SLUGG/a8000 LIKES/h44",
@@ -12696,7 +12696,7 @@
         }
       ]
     },
-    "TRUUK2_NF": {
+    "TRUUK3_NF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho CAINE SASIE/a10000 BLECO TRUUK/h190",
@@ -12772,7 +12772,7 @@
         }
       ]
     },
-    "TRUUK2_M_NORTH_NF": {
+    "TRUUK3_M_NORTH_NF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a10000/ho GRABE/a6000 BLECO TRUUK/h190",
@@ -12833,7 +12833,7 @@
         }
       ]
     },
-    "TRUUK2_M_NORTH_SF": {
+    "TRUUK3_M_NORTH_SF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a4000 BLECO TRUUK/h190",
@@ -12903,7 +12903,7 @@
         }
       ]
     },
-    "TRUUK2_S_NORTH_NF": {
+    "TRUUK3_S_NORTH_NF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1D CAINE SASIE/a10000 GRABE/a6000 BLECO TRUUK N033.14.17.482,W097.20.45.327 N033.05.56.986,W097.25.03.616/a4000/s210 N032.42.24.873,W097.20.54.666 N032.42.56.582,W097.17.21.860/s190 UCCOL/clearapp",
@@ -12947,7 +12947,7 @@
         }
       ]
     },
-    "TRUUK2_SF": {
+    "TRUUK3_SF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho CAINE SASIE/a11000 BLECO TRUUK/h190",
@@ -13256,7 +13256,7 @@
         }
       ]
     },
-    "WESAT2": {
+    "WESAT3": {
       "arrivals": [
         {
           "waypoints": "WURDZ/ho GREKE MOTZA/a8000 WESAT/h130",
@@ -13399,7 +13399,7 @@
         }
       ]
     },
-    "WESAT2_MS_NF": {
+    "WESAT3_MS_NF": {
       "arrivals": [
         {
           "waypoints": "WURDZ/ho1D GREKE MOTZA/a8000 WESAT N033.06.32.692,W097.33.21.791 N032.59.02.225,W097.31.17.453/a5000/h170/s210/ho",
@@ -14051,7 +14051,7 @@
           "KRBD": 1,
           "KLNC": 1
         },
-        "LIKES3_S": {
+        "LIKES4_S": {
           "KAFW": 2,
           "KFTW": 1,
           "KDTO": 1,
@@ -14073,7 +14073,7 @@
         "SEEVR4": {
           "KDFW": 5
         },
-        "TRUUK2_SF": {
+        "TRUUK3_SF": {
           "KAFW": 2,
           "KDTO": 1,
           "KGPM": 1,
@@ -14082,7 +14082,7 @@
           "KNFW": 1,
           "KFWS": 1
         },
-        "WESAT2": {
+        "WESAT3": {
           "KAFW": 1,
           "KFTW": 1,
           "KGKY": 1,
@@ -14278,13 +14278,13 @@
         "DRYYE2": {
           "KDAL": 5
         },
-        "HERBZ1": {
+        "HERBZ2": {
           "KDAL": 5
         },
         "JOVEM6": {
           "KDFW": 5
         },
-        "LIKES3_N": {
+        "LIKES4_N": {
           "KAFW": 2,
           "KFTW": 2,
           "KDTO": 2,
@@ -14306,7 +14306,7 @@
         "SOCKK4": {
           "KDFW": 5
         },
-        "TRUUK2_NF": {
+        "TRUUK3_NF": {
           "KAFW": 2,
           "KDTO": 1,
           "KGPM": 1,
@@ -14315,7 +14315,7 @@
           "KNFW": 1,
           "KFWS": 1
         },
-        "WESAT2": {
+        "WESAT3": {
           "KAFW": 1,
           "KFTW": 1,
           "KGKY": 1,
@@ -14477,7 +14477,7 @@
         "JFRYE5": {
           "KDAL": 5
         },
-        "LIKES3_S": {
+        "LIKES4_S": {
           "KAFW": 2
         },
         "REDDN4": {
@@ -14489,10 +14489,10 @@
         "SEEVR4": {
           "KDFW": 5
         },
-        "TRUUK2_SF": {
+        "TRUUK3_SF": {
           "KAFW": 2
         },
-        "WESAT2": {
+        "WESAT3": {
           "KAFW": 1
         },
         "VKTRY2": {
@@ -14592,13 +14592,13 @@
         "DRYYE2": {
           "KDAL": 5
         },
-        "HERBZ1": {
+        "HERBZ2": {
           "KDAL": 5
         },
         "JOVEM6": {
           "KDFW": 5
         },
-        "LIKES3_N": {
+        "LIKES4_N": {
           "KAFW": 2
         },
         "MNNDO4": {
@@ -14610,10 +14610,10 @@
         "SOCKK4": {
           "KDFW": 5
         },
-        "TRUUK2_NF": {
+        "TRUUK3_NF": {
           "KAFW": 2
         },
-        "WESAT2": {
+        "WESAT3": {
           "KAFW": 1
         },
         "WHINY4": {
@@ -15144,7 +15144,7 @@
         "WHINY4.AUTO": {
           "KDFW": 15
         },
-        "HERBZ1.AUTO": {
+        "HERBZ2.AUTO": {
           "KDAL": 10
         },
         "INSTRUCTOR": {
@@ -15286,24 +15286,24 @@
         }
       ],
       "inbound_rates": {
-        "HERBZ1": {
+        "HERBZ2": {
           "KDAL": 5,
           "KDTO": 2
         },
         "JOVEM6.AUTO": {
           "KDFW": 15
         },
-        "LIKES3_M_NORTH_NF": {
+        "LIKES4_M_NORTH_NF": {
           "KAFW": 10,
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_M_NORTH_NF": {
+        "TRUUK3_M_NORTH_NF": {
           "KAFW": 8,
           "KFTW": 4,
           "KDTO": 2
         },
-        "WESAT2": {
+        "WESAT3": {
           "KAFW": 10,
           "KFTW": 5,
           "KNFW": 2,
@@ -15424,17 +15424,17 @@
         "VKTRY2.AUTO": {
           "KDFW": 15
         },
-        "LIKES3_M_NORTH_SF": {
+        "LIKES4_M_NORTH_SF": {
           "KAFW": 10,
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_M_NORTH_SF": {
+        "TRUUK3_M_NORTH_SF": {
           "KAFW": 8,
           "KFTW": 4,
           "KDTO": 2
         },
-        "WESAT2": {
+        "WESAT3": {
           "KAFW": 10,
           "KFTW": 5,
           "KNFW": 2,
@@ -15563,16 +15563,16 @@
         "SOCKK4.AUTO": {
           "KDFW": 15
         },
-        "LIKES3_N": {
+        "LIKES4_N": {
           "KAFW": 5,
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_S_NORTH_NF": {
+        "TRUUK3_S_NORTH_NF": {
           "KAFW": 4,
           "KFTW": 6
         },
-        "WESAT2_MS_NF": {
+        "WESAT3_MS_NF": {
           "KFTW": 5,
           "KNFW": 2,
           "KGKY": 2
@@ -15711,7 +15711,7 @@
         }
       ],
       "inbound_rates": {
-        "HERBZ1": {
+        "HERBZ2": {
           "KDAL": 5,
           "KDTO": 2
         },
@@ -15721,17 +15721,17 @@
         "JOVEM6.AUTO": {
           "KDFW": 15
         },
-        "LIKES3_N": {
+        "LIKES4_N": {
           "KAFW": 10,
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_M_NORTH_NF": {
+        "TRUUK3_M_NORTH_NF": {
           "KAFW": 8,
           "KFTW": 4,
           "KDTO": 2
         },
-        "WESAT2": {
+        "WESAT3": {
           "KAFW": 10,
           "KFTW": 5,
           "KNFW": 2,
@@ -15873,17 +15873,17 @@
         "VKTRY2.AUTO": {
           "KDFW": 15
         },
-        "LIKES3_S": {
+        "LIKES4_S": {
           "KAFW": 5,
           "KFTW": 4,
           "KDTO": 3
         },
-        "TRUUK2_M_NORTH_SF": {
+        "TRUUK3_M_NORTH_SF": {
           "KAFW": 8,
           "KFTW": 2,
           "KDTO": 1
         },
-        "WESAT2": {
+        "WESAT3": {
           "KAFW": 8,
           "KFTW": 2,
           "KNFW": 2,
@@ -16017,14 +16017,14 @@
           "KADS": 2,
           "KTKI": 1
         },
-        "FINGR9.PROP": {
+        "FINGR1.PROP": {
           "KDFW": 0
         },
         "SWVAY4_DN_SF_PROP": {
           "KADS": 2,
           "KTKI": 1
         },
-        "TRUUK2_SF": {
+        "TRUUK3_SF": {
           "KAFW": 2
         },
         "GREGS1_DN_SF_JET": {
@@ -16200,13 +16200,13 @@
         "EESAT4_DN_NF": {
           "KADS": 1
         },
-        "FINGR9.PROP": {
+        "FINGR1.PROP": {
           "KDFW": 0
         },
         "GREGS1_DN_NF_JET": {
           "KDAL": 0
         },
-        "HERBZ1.DN_NF": {
+        "HERBZ2.DN_NF": {
           "KADS": 2,
           "KDAL": 8,
           "KTKI": 1
@@ -16218,7 +16218,7 @@
           "KADS": 1,
           "KTKI": 1
         },
-        "TRUUK2_NF": {
+        "TRUUK3_NF": {
           "KAFW": 3
         },
         "WHINY4.AUTO": {
@@ -16411,7 +16411,7 @@
         "DRYYE2_DS_NF": {
           "KDAL": 15
         },
-        "HERBZ1.DS_NF": {
+        "HERBZ2.DS_NF": {
           "KDAL": 15,
           "KRBD": 3,
           "KLNC": 3
@@ -16526,13 +16526,13 @@
         "EESAT4_DS_NF": {
           "KADS": 1
         },
-        "FINGR9.PROP": {
+        "FINGR1.PROP": {
           "KDFW": 0
         },
         "GREGS1_DN_NF_JET": {
           "KDAL": 0
         },
-        "HERBZ1.DN_NF": {
+        "HERBZ2.DN_NF": {
           "KADS": 2,
           "KDAL": 8,
           "KTKI": 1
@@ -16548,7 +16548,7 @@
           "KADS": 1,
           "KTKI": 1
         },
-        "TRUUK2_NF": {
+        "TRUUK3_NF": {
           "KAFW": 3,
           "KNFW": 1
         },
@@ -16685,7 +16685,7 @@
           "KADS": 2,
           "KTKI": 1
         },
-        "FINGR9.PROP": {
+        "FINGR1.PROP": {
           "KDFW": 0
         },
         "SWVAY4_DS_SF_PROP": {
@@ -16693,7 +16693,7 @@
           "KTKI": 1,
           "KRBD": 1
         },
-        "TRUUK2_SF": {
+        "TRUUK3_SF": {
           "KAFW": 2
         },
         "REEKO3": {

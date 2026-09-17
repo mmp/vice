@@ -9573,7 +9573,7 @@
         }
       ]
     },
-    "LVZ4": {
+    "LVZ5": {
       "arrivals": [
         {
           "waypoints": "LVZ/a18000/ho HARTY MUGZY/a6000 STW/h125",
@@ -21889,7 +21889,7 @@
           "KMMU": 1,
           "KCDW": 1
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 1,
           "KMMU": 1,
           "KCDW": 1
@@ -22345,7 +22345,7 @@
           "KMMU": 1,
           "KCDW": 1
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 1,
           "KMMU": 1,
           "KCDW": 1
@@ -22811,7 +22811,7 @@
           "KMMU": 1,
           "KCDW": 1
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 1,
           "KMMU": 1,
           "KCDW": 1
@@ -23277,7 +23277,7 @@
           "KMMU": 1,
           "KCDW": 1
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 1,
           "KMMU": 1,
           "KCDW": 1
@@ -23628,7 +23628,7 @@
         "FQM3": {
           "KEWR": 8
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 5,
           "KMMU": 2,
           "KCDW": 2
@@ -23760,7 +23760,7 @@
         "FQM3": {
           "KEWR": 10
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 5,
           "KMMU": 2,
           "KCDW": 2
@@ -24079,7 +24079,7 @@
           "KTEB": 10,
           "KMMU": 1
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 10,
           "KMMU": 2
         },
@@ -24172,7 +24172,7 @@
           "KTEB": 7,
           "KMMU": 2
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 7,
           "KMMU": 2
         },
@@ -24653,7 +24653,7 @@
           "KTEB": 5,
           "KMMU": 0
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 5,
           "KMMU": 2
         },
@@ -25100,7 +25100,7 @@
         "FQM3": {
           "KEWR": 8
         },
-        "LVZ4": {
+        "LVZ5": {
           "KTEB": 5,
           "KMMU": 2
         },

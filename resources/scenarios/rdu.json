@@ -1535,7 +1535,7 @@
         }
       ]
     },
-    "TAQLE2": {
+    "TAQLE3": {
       "arrivals": [
         {
           "waypoints": "DUFFI/ho TAQLE/a10000-17000 KAROO/a12000-",
@@ -1648,7 +1648,7 @@
         "BLOGS3": {
           "KRDU": 10
         },
-        "TAQLE2": {
+        "TAQLE3": {
           "KRDU": 10
         },
         "DMSTR2": {
@@ -1693,7 +1693,7 @@
         "BLOGS3": {
           "KRDU": 10
         },
-        "TAQLE2": {
+        "TAQLE3": {
           "KRDU": 10
         },
         "DMSTR2": {

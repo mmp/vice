@@ -26,9 +26,9 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "JUNNR3": "1E",
+          "JUNNR4": "1E",
           "MCHLN2": "1S",
-          "RCTOR2": "1W",
+          "RCTOR3": "1W",
           "WORXS2": "1W"
         },
         "departure_assignments": {

@@ -23,13 +23,10 @@
         "inbound_assignments": {
           "NW FAR ARR HIGH": "1A",
           "N FAR ARR LOW": "1A",
-          "NE FAR ARR": "1A",
           "E FAR ARR LOW": "1A",
           "E FAR ARR HIGH": "1A",
           "SE FAR ARR LOW": "1A",
           "SE FAR ARR HIGH": "1A",
-          "S FAR ARR LOW": "1A",
-          "S FAR ARR HIGH": "1A",
           "SW FAR ARR HIGH": "1A",
           "W FAR ARR LOW": "1A",
           "W FAR ARR HIGH": "1A"
@@ -45,13 +42,10 @@
         "inbound_assignments": {
           "NW FAR ARR HIGH": "1A",
           "N FAR ARR LOW": "1A",
-          "NE FAR ARR": "1A",
           "E FAR ARR LOW": "1A",
           "E FAR ARR HIGH": "1A",
           "SE FAR ARR LOW": "1A",
           "SE FAR ARR HIGH": "1A",
-          "S FAR ARR LOW": "1A",
-          "S FAR ARR HIGH": "1A",
           "SW FAR ARR HIGH": "1A",
           "W FAR ARR LOW": "1A",
           "W FAR ARR HIGH": "1A"

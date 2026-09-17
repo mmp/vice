@@ -130,7 +130,7 @@
       },
       "NOP": {
         "inbound_assignments": {
-          "BANGZ3": "1W",
+          "BANGZ2": "1W",
           "BLFRG3": "1G",
           "DADES2": "1E",
           "LUBBR4": "1E",
@@ -187,7 +187,7 @@
       },
       "SOP": {
         "inbound_assignments": {
-          "BANGZ3": "1W",
+          "BANGZ2": "1W",
           "BLFRG3": "1G",
           "DADES2": "1E",
           "LUBBR4": "1E",

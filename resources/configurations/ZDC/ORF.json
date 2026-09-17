@@ -56,7 +56,6 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "KOHLS1.RDU": "1S",
           "KOHLS1.NUTZE": "1S",
           "KOHLS1.RREGG": "1S",
           "OUTLA1.MAULS": "1W",

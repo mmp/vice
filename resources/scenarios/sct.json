@@ -9803,7 +9803,7 @@
         }
       ]
     },
-    "EMMLN1": {
+    "EMMLN3": {
       "arrivals": [
         {
           "spawn": "DAG",
@@ -10603,7 +10603,7 @@
         }
       ]
     },
-    "LEGOZ3": {
+    "LEGOZ4": {
       "arrivals": [
         {
           "waypoints": "LANDO/a23000- NUGEE LAX KRAGL/a16000- LEGOZ/a15000/ho BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/h110",
@@ -13035,14 +13035,14 @@
           "KSDM": 1,
           "KSEE": 1
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "KCRQ": 1
         },
         "CHASR2": {
           "KNZY": 1,
           "KSDM": 1
         },
-        "EMMLN1": {
+        "EMMLN3": {
           "KFUL": 1
         },
         "SETER5": {
@@ -13345,13 +13345,13 @@
           "KSDM": 1,
           "KSEE": 1
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "KCRQ": 1
         },
         "CHASR2": {
           "KNZY": 1
         },
-        "EMMLN1": {
+        "EMMLN3": {
           "KFUL": 1
         },
         "SETER5": {

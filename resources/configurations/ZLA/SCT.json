@@ -397,8 +397,6 @@
           "LEGOZ4": "6K",
           "OHSEA3/PCIFC3.N": "6K",
           "RUKKI1/BAUBB3.N": "6K",
-          "TOPMM5": "6L",
-          "ZOOMM3/FRITR3.N": "6X",
           "CWARD2/SANQ4R": "6L",
           "V23 NORTH": "6L"
         },
@@ -435,7 +433,6 @@
           "LEGOZ4": "6K",
           "OHSEA3/PCIFC3": "6K",
           "RUKKI1/BAUBB3": "6K",
-          "ZOOMM3/FRITR3": "6X",
           "CWARD2/SANQ4R": "6L",
           "V23 NORTH": "6L"
         },
@@ -473,8 +470,6 @@
           "OHSEA3/PCIFC3.N": "6K",
           "OCEAN3": "6K",
           "RUKKI1/BAUBB3.N": "6K",
-          "TOPMM5": "6X",
-          "ZOOMM3/FRITR3.N": "6X",
           "CWARD2/SANQ4R.E": "6S",
           "V23 NORTH.E": "6S"
         },
@@ -501,8 +496,6 @@
           "OHSEA3/PCIFC3.12": "6K",
           "OCEAN3": "6K",
           "RUKKI1/BAUBB3.12": "6K",
-          "TOPMM5": "6X",
-          "ZOOMM3/FRITR3.N": "6X",
           "CWARD2/SANQ4R.E": "6S",
           "V23 NORTH.E": "6S"
         },
@@ -811,14 +804,14 @@
           "DSNEE6.LRSON": "3N",
           "EAST SAN SAT ARR": "5D",
           "EDWP4": "1M",
-          "EMMLN1": "3N",
+          "EMMLN3": "3N",
           "FERN7": "1M",
           "HLYWD1": "2F",
           "IRNMN2": "2Z",
           "JANNY5/GUERA2": "1M",
           "JCKIE2": "3N",
           "KARLB3/GOATZ2": "6X",
-          "LEGOZ3": "6X",
+          "LEGOZ4": "6X",
           "LUCKI1.HEELX": "5E",
           "LUCKI1.MOMAR": "5E",
           "OHSEA3/PCIFC3": "6X",
@@ -949,7 +942,7 @@
         "inbound_assignments": {
           "BIGBR3": "2F",
           "BRUEN2": "2F",
-          "EMMLN1": "2F",
+          "EMMLN3": "2F",
           "ZUUMA4": "2Z"
         },
         "default_consolidation": {
@@ -1029,7 +1022,7 @@
       },
       "M6R": {
         "inbound_assignments": {
-          "EMMLN1": "2F",
+          "EMMLN3": "2F",
           "MDNYT2.ANJLL": "2F",
           "MDNYT2.HLYWD": "2F",
           "MDNYT2.SNSTT": "2F",
@@ -1409,12 +1402,12 @@
           "COMIX2": "5N",
           "EAST SAN SAT ARR": "5D",
           "EDWP4": "1M",
-          "EMMLN1": "3N",
+          "EMMLN3": "3N",
           "FERN7": "1M",
           "JANNY5/GUERA2": "1M",
           "JCKIE2": "3N",
           "KARLB3/GOATZ2": "6X",
-          "LEGOZ3": "6X",
+          "LEGOZ4": "6X",
           "LUCKI1.HEELX": "5E",
           "LUCKI1.MOMAR": "5E",
           "OHSEA3/PCIFC3": "6X",

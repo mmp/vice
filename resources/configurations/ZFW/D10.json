@@ -159,14 +159,14 @@
           "BRDJE5": "1E",
           "CRIKT1": "1U",
           "DRYYE2": "1D",
-          "HERBZ1": "1B",
+          "HERBZ2": "1B",
           "JOVEM6": "1W",
-          "LIKES3_N": "1D",
+          "LIKES4_N": "1D",
           "MNNDO4": "1S",
           "REEKO3": "1S",
           "SOCKK4": "1Y",
-          "TRUUK2_NF": "1N",
-          "WESAT2": "1P",
+          "TRUUK3_NF": "1N",
+          "WESAT3": "1P",
           "WHINY4": "1A"
         },
         "departure_assignments": {
@@ -192,14 +192,14 @@
           "BRDJE5": "1E",
           "CRIKT1": "1U",
           "DRYYE2": "1D",
-          "HERBZ1": "1B",
+          "HERBZ2": "1B",
           "JOVEM6": "1W",
-          "LIKES3_N": "1D",
+          "LIKES4_N": "1D",
           "MNNDO4": "1S",
           "REEKO3": "1S",
           "SOCKK4": "1Y",
-          "TRUUK2_NF": "1N",
-          "WESAT2": "1P",
+          "TRUUK3_NF": "1N",
+          "WESAT3": "1P",
           "WHINY4": "1A"
         },
         "departure_assignments": {
@@ -236,13 +236,13 @@
           "BOOVE7": "1Y",
           "HIBIL3": "1N",
           "JFRYE5": "1B",
-          "LIKES3_S": "1P",
+          "LIKES4_S": "1P",
           "REDDN4": "1S",
           "REEKO3": "1S",
           "SEEVR4": "1E",
-          "TRUUK2_SF": "1N",
+          "TRUUK3_SF": "1N",
           "VKTRY2": "1W",
-          "WESAT2": "1M"
+          "WESAT3": "1M"
         },
         "departure_assignments": {
           "KADS": "1L",
@@ -266,11 +266,11 @@
         "inbound_assignments": {
           "CRIKT1": "1N",
           "EESAT4_DN_NF": "1S",
-          "FINGR9.PROP": "1N",
+          "FINGR1.PROP": "1N",
           "GREGS1_DN_NF_JET": "1D",
-          "HERBZ1.DN_NF": "1D",
+          "HERBZ2.DN_NF": "1D",
           "SWVAY4_DN_NF_PROP": "1S",
-          "TRUUK2_NF": "1N",
+          "TRUUK3_NF": "1N",
           "YEAGR4_DN_NF_JET": "1S",
           "YEAGR4_DN_NF_PROP": "1S"
         },
@@ -287,7 +287,7 @@
       "DAW": {
         "inbound_assignments": {
           "BACHR4_DN_SF": "1S",
-          "FINGR9.PROP": "1N",
+          "FINGR1.PROP": "1N",
           "GREGS1_DN_SF_JET": "1D",
           "HIBIL3": "1N",
           "LOADS4_DN_SF": "1N",
@@ -295,7 +295,7 @@
           "SLANT3.JET": "1N",
           "SLANT3.PROP": "1N",
           "SWVAY4_DN_SF_PROP": "1S",
-          "TRUUK2_SF": "1N"
+          "TRUUK3_SF": "1N"
         },
         "departure_assignments": {
           "KADS": "1N",
@@ -312,7 +312,7 @@
           "CRIKT1.DS_NF": "1N",
           "DRYYE2_DS_NF": "1S",
           "EESAT4_DS_NF": "1S",
-          "HERBZ1.DS_NF": "1N",
+          "HERBZ2.DS_NF": "1N",
           "MNNDO4": "1S",
           "REEKO3": "1S",
           "SLANT3.DS_NF_PROP": "1N",
@@ -427,13 +427,13 @@
           "CRIKT1": "1N",
           "DRYYE2_DS_NF": "1S",
           "EESAT4_DS_NF": "1S",
-          "FINGR9.PROP": "1N",
+          "FINGR1.PROP": "1N",
           "GREGS1_DN_NF_JET": "1D",
-          "HERBZ1.DN_NF": "1D",
+          "HERBZ2.DN_NF": "1D",
           "MNNDO4": "1S",
           "REEKO3": "1S",
           "SWVAY4_DS_NF_PROP": "1S",
-          "TRUUK2_NF": "1N",
+          "TRUUK3_NF": "1N",
           "YEAGR4_NF_JET": "1S",
           "YEAGR4_NF_PROP": "1S"
         },
@@ -452,7 +452,7 @@
       "EA1": {
         "inbound_assignments": {
           "BACHR4_DS_SF": "1S",
-          "FINGR9.PROP": "1N",
+          "FINGR1.PROP": "1N",
           "GREGS1_DN_SF_JET": "1N",
           "HIBIL3": "1N",
           "LOADS4": "1N",
@@ -461,7 +461,7 @@
           "SLANT3.JET": "1N",
           "SLANT3.PROP": "1N",
           "SWVAY4_DS_SF_PROP": "1S",
-          "TRUUK2_SF": "1N"
+          "TRUUK3_SF": "1N"
         },
         "departure_assignments": {
           "KADS": "1N",
@@ -478,12 +478,12 @@
       "MEA": {
         "inbound_assignments": {
           "DRYYE2": "1M",
-          "HERBZ1": "1D",
-          "LIKES3_N": "1M",
+          "HERBZ2": "1D",
+          "LIKES4_N": "1M",
           "REEKO3_MS_NF": "1M",
           "SWVAY4_MS_NF_PROP": "1M",
-          "TRUUK2_M_NORTH_NF": "1D",
-          "WESAT2": "1D"
+          "TRUUK3_M_NORTH_NF": "1D",
+          "WESAT3": "1D"
         },
         "departure_assignments": {
           "KAFW": "1D",
@@ -502,11 +502,11 @@
         "inbound_assignments": {
           "BACHR4_MS_SF": "1M",
           "JFRYE5": "1D",
-          "LIKES3_S": "1M",
+          "LIKES4_S": "1M",
           "REEKO3_MS_SF": "1M",
           "SWVAY4_MS_SF_PROP": "1M",
-          "TRUUK2_M_NORTH_SF": "1D",
-          "WESAT2": "1D"
+          "TRUUK3_M_NORTH_SF": "1D",
+          "WESAT3": "1D"
         },
         "departure_assignments": {
           "KAFW": "1M",
@@ -523,11 +523,11 @@
       },
       "ME2": {
         "inbound_assignments": {
-          "HERBZ1": "1D",
-          "LIKES3_M_NORTH_NF": "1M",
+          "HERBZ2": "1D",
+          "LIKES4_M_NORTH_NF": "1M",
           "REEKO3_MN_NF": "1M",
-          "TRUUK2_M_NORTH_NF": "1D",
-          "WESAT2": "1D"
+          "TRUUK3_M_NORTH_NF": "1D",
+          "WESAT3": "1D"
         },
         "departure_assignments": {
           "KAFW": "1D",
@@ -541,10 +541,10 @@
       "ME3": {
         "inbound_assignments": {
           "JFRYE5": "1D",
-          "LIKES3_M_NORTH_SF": "1M",
+          "LIKES4_M_NORTH_SF": "1M",
           "REEKO3_MN_SF": "1M",
-          "TRUUK2_M_NORTH_SF": "1D",
-          "WESAT2": "1D"
+          "TRUUK3_M_NORTH_SF": "1D",
+          "WESAT3": "1D"
         },
         "departure_assignments": {
           "KAFW": "1M",
@@ -558,11 +558,11 @@
       "ME4": {
         "inbound_assignments": {
           "DRYYE2": "1M",
-          "LIKES3_N": "1M",
+          "LIKES4_N": "1M",
           "REEKO3_MS_NF": "1M",
           "SWVAY4_MS_NF_PROP": "1M",
-          "TRUUK2_S_NORTH_NF": "1D",
-          "WESAT2_MS_NF": "1D"
+          "TRUUK3_S_NORTH_NF": "1D",
+          "WESAT3_MS_NF": "1D"
         },
         "departure_assignments": {
           "KFTW": "1M",
@@ -582,13 +582,13 @@
           "BOOVE7": "1Y",
           "HIBIL3": "1N",
           "JFRYE5": "1B",
-          "LIKES3_S": "1P",
+          "LIKES4_S": "1P",
           "REDDN4": "1S",
           "REEKO3": "1S",
           "SEEVR4": "1E",
-          "TRUUK2_SF": "1N",
+          "TRUUK3_SF": "1N",
           "VKTRY2": "1W",
-          "WESAT2": "1M"
+          "WESAT3": "1M"
         },
         "departure_assignments": {
           "KADS": "1N",

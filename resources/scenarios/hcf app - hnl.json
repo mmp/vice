@@ -2071,7 +2071,7 @@
         }
       ]
     },
-    "KAENA3": {
+    "KAENA5": {
       "arrivals": [
         {
           "waypoints": "HAWYN/a17000-19000/hoC02 OPAHH/a8000+/ho KAENA/a6000-8000 SELIC/a4000/s220",
@@ -2935,7 +2935,7 @@
         "V12 ARR": {
           "PHNL": 3
         },
-        "KAENA3": {
+        "KAENA5": {
           "PHNL": 0
         },
         "V15 ARR": {
@@ -2987,7 +2987,7 @@
         "MAGGI3.W": {
           "PHNL": 6
         },
-        "KAENA3": {
+        "KAENA5": {
           "PHNL": 0
         },
         "OPACA4.W": {

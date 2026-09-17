@@ -15644,7 +15644,7 @@
         }
       ]
     },
-    "GLAVN1": {
+    "GLAVN2": {
       "arrivals": [
         {
           "waypoints": "N034.12.16.427,W085.39.17.473 MADDX/ho GLAVN/a14000 STHRN",
@@ -15737,7 +15737,7 @@
         }
       ]
     },
-    "GLAVN1 EAST": {
+    "GLAVN2 EAST": {
       "arrivals": [
         {
           "waypoints": "MADDX/ho GLAVN/a12000/s250 STHRN",
@@ -15829,7 +15829,7 @@
         }
       ]
     },
-    "GLAVN1_EFINALD": {
+    "GLAVN2_EFINALD": {
       "arrivals": [
         {
           "waypoints": "STHRN/ho YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95",
@@ -15908,7 +15908,7 @@
         }
       ]
     },
-    "GNDLF2": {
+    "GNDLF3": {
       "arrivals": [
         {
           "spawn": "SMAWG",
@@ -15975,7 +15975,7 @@
         }
       ]
     },
-    "GNDLF2_EFINALD": {
+    "GNDLF3_EFINALD": {
       "arrivals": [
         {
           "spawn": "SHULR",
@@ -16044,7 +16044,7 @@
         }
       ]
     },
-    "GNDLF2_EFINALT": {
+    "GNDLF3_EFINALT": {
       "arrivals": [
         {
           "spawn": "SHULR",
@@ -16113,7 +16113,7 @@
         }
       ]
     },
-    "HOBTT2": {
+    "HOBTT3": {
       "arrivals": [
         {
           "waypoints": "N032.52.29.423,W085.29.04.189 N032.57.10.879,W085.20.50.930/ho SMAWG/a17000 HOBTT/a14000 ENSLL/a12000",
@@ -16240,7 +16240,7 @@
         }
       ]
     },
-    "HOBTT2_AFINALD": {
+    "HOBTT3_AFINALD": {
       "arrivals": [
         {
           "spawn": "SHURT",
@@ -16363,7 +16363,7 @@
         }
       ]
     },
-    "HOBTT2_AFINALT": {
+    "HOBTT3_AFINALT": {
       "arrivals": [
         {
           "spawn": "SHURT",
@@ -16486,7 +16486,7 @@
         }
       ]
     },
-    "JJEDI3": {
+    "JJEDI4": {
       "arrivals": [
         {
           "waypoints": "N032.48.59.790,W083.26.05.551 DTSTR/a14000/s280/ho WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII/a8000 GRHAM POOBA/h4",
@@ -16614,7 +16614,7 @@
         }
       ]
     },
-    "JJEDI3_FINALD": {
+    "JJEDI4_FINALD": {
       "arrivals": [
         {
           "spawn": "GRHAM",
@@ -16747,7 +16747,7 @@
         }
       ]
     },
-    "JJEDI3_FINALT": {
+    "JJEDI4_FINALT": {
       "arrivals": [
         {
           "spawn": "GRHAM",
@@ -17448,7 +17448,7 @@
         }
       ]
     },
-    "OZZZI1": {
+    "OZZZI2": {
       "arrivals": [
         {
           "waypoints": "N034.27.32.453,W083.25.42.370 N034.20.13.233,W083.34.19.277/ho WINNG OZZZI/a12000/s250 HAARY",
@@ -17690,7 +17690,7 @@
         }
       ]
     },
-    "OZZZI1 EAST": {
+    "OZZZI2 EAST": {
       "arrivals": [
         {
           "waypoints": "WINNG/ho OZZZI/a14000 HAARY",
@@ -17932,7 +17932,7 @@
         }
       ]
     },
-    "OZZZI1_FINALWT": {
+    "OZZZI2_FINALWT": {
       "arrivals": [
         {
           "waypoints": "CALLA/ho POSEY SLVAA ROMMM/h275",
@@ -18163,7 +18163,7 @@
         }
       ]
     },
-    "SITTH2": {
+    "SITTH3": {
       "arrivals": [
         {
           "spawn": "FORCC",
@@ -18293,7 +18293,7 @@
         }
       ]
     },
-    "SITTH2_EFINALD": {
+    "SITTH3_EFINALD": {
       "arrivals": [
         {
           "spawn": "FRYES",
@@ -18426,7 +18426,7 @@
         }
       ]
     },
-    "SITTH2_EFINALT": {
+    "SITTH3_EFINALT": {
       "arrivals": [
         {
           "spawn": "FRYES",
@@ -42178,19 +42178,19 @@
           "KPUJ": 0,
           "KVPC": 0
         },
-        "GLAVN1": {
+        "GLAVN2": {
           "KATL": 15
         },
-        "HOBTT2": {
+        "HOBTT3": {
           "KATL": 15
         },
-        "JJEDI3": {
+        "JJEDI4": {
           "KATL": 15
         },
         "ONDRE1": {
           "KATL": 15
         },
-        "OZZZI1": {
+        "OZZZI2": {
           "KATL": 15
         },
         "AHN Inbounds": {
@@ -42775,19 +42775,19 @@
           "KPUJ": 0,
           "KVPC": 0
         },
-        "GLAVN1": {
+        "GLAVN2": {
           "KATL": 15
         },
-        "HOBTT2": {
+        "HOBTT3": {
           "KATL": 15
         },
-        "JJEDI3": {
+        "JJEDI4": {
           "KATL": 15
         },
         "ONDRE1": {
           "KATL": 15
         },
-        "OZZZI1": {
+        "OZZZI2": {
           "KATL": 15
         },
         "AHN Inbounds": {
@@ -43261,19 +43261,19 @@
           "KHMP": 0,
           "KCTJ": 0
         },
-        "GLAVN1": {
+        "GLAVN2": {
           "KATL": 10
         },
-        "HOBTT2": {
+        "HOBTT3": {
           "KATL": 10
         },
-        "JJEDI3": {
+        "JJEDI4": {
           "KATL": 10
         },
         "ONDRE1": {
           "KATL": 10
         },
-        "OZZZI1": {
+        "OZZZI2": {
           "KATL": 10
         }
       },
@@ -43532,19 +43532,19 @@
         "CHPPR1 EAST": {
           "KATL": 10
         },
-        "GLAVN1 EAST": {
+        "GLAVN2 EAST": {
           "KATL": 10
         },
-        "GNDLF2": {
+        "GNDLF3": {
           "KATL": 10
         },
-        "SITTH2": {
+        "SITTH3": {
           "KATL": 10
         },
         "ONDRE1 EAST": {
           "KATL": 10
         },
-        "OZZZI1 EAST": {
+        "OZZZI2 EAST": {
           "KATL": 10
         }
       },
@@ -43679,13 +43679,13 @@
         "NE_FINALTRIPS": {
           "KATL": 20
         },
-        "SITTH2_EFINALD": {
+        "SITTH3_EFINALD": {
           "KATL": 11
         },
-        "GNDLF2_EFINALD": {
+        "GNDLF3_EFINALD": {
           "KATL": 9
         },
-        "GLAVN1_EFINALD": {
+        "GLAVN2_EFINALD": {
           "KATL": 8
         },
         "CHPPR1_EFINALD": {
@@ -43716,13 +43716,13 @@
         "NE_FINALTRIPS": {
           "KATL": 34
         },
-        "SITTH2_EFINALT": {
+        "SITTH3_EFINALT": {
           "KATL": 7
         },
-        "GNDLF2_EFINALT": {
+        "GNDLF3_EFINALT": {
           "KATL": 18
         },
-        "GLAVN1_EFINALD": {
+        "GLAVN2_EFINALD": {
           "KATL": 9
         },
         "CHPPR1_EFINALT": {
@@ -43756,16 +43756,16 @@
         "NW_FINALTRIPS": {
           "KATL": 30
         },
-        "HOBTT2_AFINALT": {
+        "HOBTT3_AFINALT": {
           "KATL": 15
         },
-        "JJEDI3_FINALT": {
+        "JJEDI4_FINALT": {
           "KATL": 25
         },
         "ONDRE1_FINALWT": {
           "KATL": 10
         },
-        "OZZZI1_FINALWT": {
+        "OZZZI2_FINALWT": {
           "KATL": 25
         }
       },
@@ -43792,16 +43792,16 @@
         "NW_FINALTRIPS": {
           "KATL": 15
         },
-        "HOBTT2_AFINALD": {
+        "HOBTT3_AFINALD": {
           "KATL": 8
         },
-        "JJEDI3_FINALD": {
+        "JJEDI4_FINALD": {
           "KATL": 15
         },
         "ONDRE1_FINALWT": {
           "KATL": 8
         },
-        "OZZZI1_FINALWT": {
+        "OZZZI2_FINALWT": {
           "KATL": 13
         }
       },

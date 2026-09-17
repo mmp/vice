@@ -249,7 +249,7 @@
     }
   },
   "inbound_flows": {
-    "JUNNR3": {
+    "JUNNR4": {
       "arrivals": [
         {
           "waypoints": "KWOOD/ho TANCE/a10000 SPA/h264",
@@ -315,7 +315,7 @@
         }
       ]
     },
-    "RCTOR2": {
+    "RCTOR3": {
       "arrivals": [
         {
           "waypoints": "LUVTT/a11000/s250/ho RCTOR/a7000 UNMAN/h181",
@@ -414,10 +414,10 @@
         }
       ],
       "inbound_rates": {
-        "JUNNR3": {
+        "JUNNR4": {
           "KGSP": 6
         },
-        "RCTOR2": {
+        "RCTOR3": {
           "KGSP": 8
         },
         "MCHLN2": {
@@ -453,10 +453,10 @@
         }
       ],
       "inbound_rates": {
-        "JUNNR3": {
+        "JUNNR4": {
           "KGSP": 6
         },
-        "RCTOR2": {
+        "RCTOR3": {
           "KGSP": 8
         },
         "MCHLN2": {

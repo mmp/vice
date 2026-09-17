@@ -772,7 +772,7 @@
         }
       ]
     },
-    "LAIKS3N": {
+    "LAIKS4N": {
       "arrivals": [
         {
           "waypoints": "SZAGI LAIKS/a12000/ho BOYZZ/a8000 TRVSS/a8000 RATTT/a5000/s220 LAIDY/a5000/s210/h180",
@@ -840,7 +840,7 @@
         }
       ]
     },
-    "LAIKS3S": {
+    "LAIKS4S": {
       "arrivals": [
         {
           "waypoints": "SZAGI LAIKS/a12000/ho BOYZZ/a8000 CRLOS/a5000 HOUKM/a5000/s210/h142",
@@ -1390,7 +1390,7 @@
         "DXEEE3S": {
           "KAUS": 6
         },
-        "LAIKS3S": {
+        "LAIKS4S": {
           "KAUS": 8
         },
         "WLEEE7S": {
@@ -1494,7 +1494,7 @@
         "DXEEE3N": {
           "KAUS": 6
         },
-        "LAIKS3N": {
+        "LAIKS4N": {
           "KAUS": 8
         },
         "WLEEE7N": {

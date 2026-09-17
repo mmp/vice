@@ -499,7 +499,7 @@
         }
       ]
     },
-    "PITTT1.E": {
+    "PITTT2.E": {
       "arrivals": [
         {
           "waypoints": "SPANE/a19000/s280/ho LEEHY  FFU/a17000+ DRYVE/a15000+ PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
@@ -592,7 +592,7 @@
         }
       ]
     },
-    "PITTT1.S": {
+    "PITTT2.S": {
       "arrivals": [
         {
           "waypoints": "JAMMN/a17000/s250/ho DRAPR/a14000-15000 SPIEK/a13000-14000 HEIRY PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
@@ -918,7 +918,7 @@
         }
       ]
     },
-    "YUTES1.N": {
+    "YUTES2.N": {
       "arrivals": [
         {
           "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES GOGGL BUSHH/a12000 SURYP/a11000/h164",
@@ -1008,7 +1008,7 @@
         }
       ]
     },
-    "YUTES1.S": {
+    "YUTES2.S": {
       "arrivals": [
         {
           "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES DUGGY JAXXX/a12000 MAGNE LAWVA/a11000/h344",
@@ -1127,7 +1127,7 @@
         "QWENN7.MLF": {
           "KSLC": 5
         },
-        "YUTES1.N": {
+        "YUTES2.N": {
           "KSLC": 10
         },
         "CARTR1.N": {
@@ -1168,13 +1168,13 @@
         }
       ],
       "inbound_rates": {
-        "PITTT1.E": {
+        "PITTT2.E": {
           "KSLC": 10
         },
-        "PITTT1.S": {
+        "PITTT2.S": {
           "KSLC": 10
         },
-        "YUTES1.S": {
+        "YUTES2.S": {
           "KSLC": 10
         },
         "CARTR1.S": {

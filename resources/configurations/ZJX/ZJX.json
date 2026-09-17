@@ -216,7 +216,6 @@
       "ZJX": {
         "inbound_assignments": {
           "Overflights": "30",
-          "PRICY4": "30",
           "GRNCH5": "30",
           "SNFLD3": "66",
           "MARQO3": "30",
@@ -240,7 +239,7 @@
           "DADES2": "15",
           "KTLH": "14",
           "TEBOW2": "14",
-          "LUBBR3": "15",
+          "LUBBR4": "15",
           "SHREK2": "15"
         },
         "default_consolidation": {
@@ -334,19 +333,16 @@
       },
       "J50": {
         "inbound_assignments": {
-          "BAGGY3": "50",
-          "CAMJO": "50",
           "DADES2": "50",
           "GRNCH5": "50",
-          "LUBBR3": "50",
+          "LUBBR4": "50",
           "OHDEA2": "50",
-          "SHRKS": "50",
           "TTHOR3": "50",
           "50_BAGGY3": "50",
           "50_CAMJO": "50",
           "50_DADES2": "50",
           "50_GRNCH5": "50",
-          "50_LUBBR3": "50",
+          "50_LUBBR4": "50",
           "50_OHDEA2": "50",
           "50_SHRKS": "50",
           "50_TTHOR3": "50"
@@ -367,7 +363,7 @@
           "50_CAMJO": "66",
           "50_DADES2": "66",
           "50_GRNCH5": "66",
-          "50_LUBBR3": "66",
+          "50_LUBBR4": "66",
           "50_OHDEA2": "66",
           "50_SHRKS": "66",
           "50_TTHOR3": "66",

@@ -56,10 +56,10 @@
     "configurations": {
       "KIN": {
         "inbound_assignments": {
-          "GIIBS3": "1D",
+          "GIIBS4": "1D",
           "JAKKS2": "1B",
           "KOLTS2": "1B",
-          "SMUKE2": "1B",
+          "SMUKE3": "1B",
           "SNKPT2": "1D"
         },
         "departure_assignments": {
@@ -74,10 +74,10 @@
       },
       "KI1": {
         "inbound_assignments": {
-          "GIIBS3": "1D",
+          "GIIBS4": "1D",
           "JAKKS2": "1B",
           "KOLTS2": "1B",
-          "SMUKE2": "1B",
+          "SMUKE3": "1B",
           "SNKPT2": "1D"
         },
         "departure_assignments": {

@@ -70,16 +70,16 @@
         },
         "inbound_assignments": {
           "ARBAS RID MEEKR": "1N",
-          "CEGRM7": "1N",
+          "CEGRM8": "1N",
           "FLM": "1L",
-          "GAVNN7": "1S",
+          "GAVNN8": "1S",
           "HEDEE1": "1N",
-          "JAKIE6": "1S",
+          "JAKIE7": "1S",
           "JIMUR": "1N",
           "JIMUR DLAMP": "1N",
           "LODLL HICKS FIITZ": "1S",
           "MXQ": "1N",
-          "SARGO4": "1S",
+          "SARGO5": "1S",
           "SARGO ROYYZ": "1S",
           "TIGRR4": "1N"
         },
@@ -101,16 +101,16 @@
       "NAR": {
         "inbound_assignments": {
           "ARBAS RID MEEKR": "1N",
-          "CEGRM7": "1N",
+          "CEGRM8": "1N",
           "FLM": "1N",
-          "GAVNN7": "1N",
+          "GAVNN8": "1N",
           "HEDEE1": "1N",
-          "JAKIE6": "1N",
+          "JAKIE7": "1N",
           "JIMUR": "1N",
           "JIMUR DLAMP": "1N",
           "LODLL HICKS FIITZ": "1N",
           "MXQ": "1N",
-          "SARGO4": "1N",
+          "SARGO5": "1N",
           "SARGO ROYYZ": "1N",
           "TIGRR4": "1N"
         },
@@ -121,16 +121,16 @@
       "SAR": {
         "inbound_assignments": {
           "ARBAS RID MEEKR": "1S",
-          "CEGRM7": "1S",
+          "CEGRM8": "1S",
           "FLM": "1S",
-          "GAVNN7": "1S",
+          "GAVNN8": "1S",
           "HEDEE1": "1S",
-          "JAKIE6": "1S",
+          "JAKIE7": "1S",
           "JIMUR": "1S",
           "JIMUR DLAMP": "1S",
           "LODLL HICKS FIITZ": "1S",
           "MXQ": "1S",
-          "SARGO4": "1S",
+          "SARGO5": "1S",
           "SARGO ROYYZ": "1S",
           "TIGRR4": "1S"
         },
@@ -140,10 +140,10 @@
       },
       "NF": {
         "inbound_assignments": {
-          "CEGRM7.NFINAL": "1F",
-          "GAVNN7.NFINAL": "1F",
-          "JAKIE6.NFINAL": "1F",
-          "SARGO4.NFINAL": "1F",
+          "CEGRM8.NFINAL": "1F",
+          "GAVNN8.NFINAL": "1F",
+          "JAKIE7.NFINAL": "1F",
+          "SARGO5.NFINAL": "1F",
           "TIGRR4.NFINAL": "1F"
         },
         "default_consolidation": {
@@ -152,10 +152,10 @@
       },
       "SF": {
         "inbound_assignments": {
-          "CEGRM7.SFINAL": "1F",
-          "GAVNN7.SFINAL": "1F",
-          "JAKIE6.SFINAL": "1F",
-          "SARGO4.SFINAL": "1F",
+          "CEGRM8.SFINAL": "1F",
+          "GAVNN8.SFINAL": "1F",
+          "JAKIE7.SFINAL": "1F",
+          "SARGO5.SFINAL": "1F",
           "TIGRR4.SFINAL": "1F"
         },
         "default_consolidation": {
@@ -170,16 +170,16 @@
         },
         "inbound_assignments": {
           "ARBAS RID MEEKR": "1N",
-          "CEGRM7": "1N",
+          "CEGRM8": "1N",
           "FLM": "1L",
-          "GAVNN7": "1S",
+          "GAVNN8": "1S",
           "HEDEE1": "1N",
-          "JAKIE6": "1S",
+          "JAKIE7": "1S",
           "JIMUR": "1N",
           "JIMUR DLAMP": "1N",
           "LODLL HICKS FIITZ": "1S",
           "MXQ": "1N",
-          "SARGO4": "1S",
+          "SARGO5": "1S",
           "SARGO ROYYZ": "1S",
           "TIGRR4": "1N"
         },

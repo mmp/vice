@@ -214,9 +214,7 @@
           "MIP4-ETG": "72",
           "MIP4-PSB": "72",
           "MIP4-SFK": "72",
-          "NABOR": "72",
           "TRISH4": "72",
-          "WLKES": "72",
           "SPUDS7 - CFB": "51",
           "SPUDS7 - DNY": "51",
           "STUBN": "50",
@@ -228,7 +226,6 @@
           "HAR5 (27)": "26",
           "Overflights": "26",
           "BOJID4 - JST (27)": "26",
-          "BOJID - PSB (27)": "26",
           "HAR (27)": "26",
           "SKILS5 (27)": "26",
           "PRIVO3 (27)": "26",
@@ -318,9 +315,7 @@
           "MIP4-ETG": "72",
           "MIP4-PSB": "72",
           "MIP4-SFK": "72",
-          "NABOR": "72",
-          "TRISH4": "72",
-          "WLKES": "72"
+          "TRISH4": "72"
         },
         "default_consolidation": {
           "72": []
@@ -332,9 +327,7 @@
           "MIP4-ETG": "72",
           "MIP4-PSB": "72",
           "MIP4-SFK": "72",
-          "NABOR": "72",
           "TRISH4": "72",
-          "WLKES": "72",
           "SPUDS7": "72"
         },
         "default_consolidation": {
@@ -597,7 +590,6 @@
           "TRISH4 (27)": "26",
           "Overflights": "26",
           "BOJID4 - JST (27)": "26",
-          "BOJID - PSB (27)": "26",
           "HAR (27)": "26",
           "SKILS5 (27)": "26",
           "PRIVO3 (27)": "26"
@@ -612,7 +604,6 @@
       },
       "N34": {
         "inbound_assignments": {
-          "PUCKY1-HOXIE": "34",
           "LVZ5": "34",
           "HNK": "34",
           "Overflights (34)": "34"

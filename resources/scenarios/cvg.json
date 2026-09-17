@@ -4221,7 +4221,7 @@
     }
   },
   "inbound_flows": {
-    "CEGRM7": {
+    "CEGRM8": {
       "arrivals": [
         {
           "waypoints": "ARIVR/a14000+/ho CEGRM/a11000-19000 BCATT EGONE",
@@ -4352,7 +4352,7 @@
         }
       ]
     },
-    "CEGRM7.NFINAL": {
+    "CEGRM8.NFINAL": {
       "arrivals": [
         {
           "waypoints": "FRING/a8000-10000/s210/ho BAMGE BBURG BRCAT/a6000/s210 EXAMS/s210/a4500+ BEPEE/a4000+/s210 ROPRR/a2500+ JIMUR/a1440+",
@@ -4471,7 +4471,7 @@
         }
       ]
     },
-    "CEGRM7.SFINAL": {
+    "CEGRM8.SFINAL": {
       "arrivals": [
         {
           "waypoints": "BYRAN/a8000/ho SERBE/a4700+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
@@ -4590,7 +4590,7 @@
         }
       ]
     },
-    "GAVNN7": {
+    "GAVNN8": {
       "arrivals": [
         {
           "waypoints": "ICKEY/ho GAVNN/a17000- KNEDY UDEYS/a9000+",
@@ -4641,7 +4641,7 @@
         }
       ]
     },
-    "GAVNN7.NFINAL": {
+    "GAVNN8.NFINAL": {
       "arrivals": [
         {
           "waypoints": "DAWGY/a8000/ho SWINK/a3600+ CIMRU/s210/a3000+ JITEV/a2500+ TABBO/a1360+",
@@ -4680,7 +4680,7 @@
         }
       ]
     },
-    "GAVNN7.SFINAL": {
+    "GAVNN8.SFINAL": {
       "arrivals": [
         {
           "waypoints": "KEYTO/a8000+/s210/ho AAJAY IGOCO NXHAL/s210/a6000 DOSKE/a4500+ KLEPR/a4000+ WUTVU/a2500+ FIMAN/a1560+",
@@ -4753,7 +4753,7 @@
         }
       ]
     },
-    "JAKIE6": {
+    "JAKIE7": {
       "arrivals": [
         {
           "waypoints": "HRMBE/a16000-21000/ho JAKIE/a14000+ NAVPE/a10000+ OPAVE/a8000-12000",
@@ -4962,7 +4962,7 @@
         }
       ]
     },
-    "JAKIE6.NFINAL": {
+    "JAKIE7.NFINAL": {
       "arrivals": [
         {
           "waypoints": "OPAVE/a8000-12000/ho SPOOD/a8000 KURGE/a3600+ CIMRU/a3000+ JITEV/a2500+ TABBO/a1360+",
@@ -5160,7 +5160,7 @@
         }
       ]
     },
-    "JAKIE6.SFINAL": {
+    "JAKIE7.SFINAL": {
       "arrivals": [
         {
           "waypoints": "OPAVE/a8000-12000/ho FIDEK/a8000+/s210 UBEDE LEWIN/a6000/s210 GOSEC/a4500+/s210 OPHUS/a4000+/s210 KRTHY/a2500+/s210",
@@ -5358,7 +5358,7 @@
         }
       ]
     },
-    "SARGO4": {
+    "SARGO5": {
       "arrivals": [
         {
           "spawn": "FREZE",
@@ -5551,7 +5551,7 @@
         }
       ]
     },
-    "SARGO4.NFINAL": {
+    "SARGO5.NFINAL": {
       "arrivals": [
         {
           "waypoints": "FECTA/a8000/ho CHEKO/a4600+ BEPEE/a4000+ ROPRR/a2500+ JIMUR/a1440+",
@@ -5743,7 +5743,7 @@
         }
       ]
     },
-    "SARGO4.SFINAL": {
+    "SARGO5.SFINAL": {
       "arrivals": [
         {
           "waypoints": "AZONS/a8000+/s210/ho FIDEK UBEDE LEWIN/a6000/s210 GOSEC/s210/a4500+ OPHUS/a4000+ KRTHY/a2500+",
@@ -6556,17 +6556,17 @@
         "ARBAS RID MEEKR": {
           "KCVG": 7
         },
-        "CEGRM7": {
+        "CEGRM8": {
           "KCVG": 7
         },
         "FLM": {
           "KLUK": 7,
           "overflights": 5
         },
-        "GAVNN7": {
+        "GAVNN8": {
           "KCVG": 7
         },
-        "JAKIE6": {
+        "JAKIE7": {
           "KCVG": 7
         },
         "JIMUR": {
@@ -6584,7 +6584,7 @@
         "SARGO ROYYZ": {
           "overflights": 5
         },
-        "SARGO4": {
+        "SARGO5": {
           "KCVG": 7
         },
         "TIGRR4": {
@@ -6721,17 +6721,17 @@
         "ARBAS RID MEEKR": {
           "KCVG": 7
         },
-        "CEGRM7": {
+        "CEGRM8": {
           "KCVG": 7
         },
         "FLM": {
           "KLUK": 7,
           "overflights": 5
         },
-        "GAVNN7": {
+        "GAVNN8": {
           "KCVG": 7
         },
-        "JAKIE6": {
+        "JAKIE7": {
           "KCVG": 7
         },
         "JIMUR": {
@@ -6749,7 +6749,7 @@
         "SARGO ROYYZ": {
           "overflights": 5
         },
-        "SARGO4": {
+        "SARGO5": {
           "KCVG": 7
         },
         "TIGRR4": {
@@ -7075,17 +7075,17 @@
         "ARBAS RID MEEKR": {
           "KCVG": 7
         },
-        "CEGRM7": {
+        "CEGRM8": {
           "KCVG": 7
         },
         "FLM": {
           "KLUK": 7,
           "overflights": 5
         },
-        "GAVNN7": {
+        "GAVNN8": {
           "KCVG": 7
         },
-        "JAKIE6": {
+        "JAKIE7": {
           "KCVG": 7
         },
         "JIMUR": {
@@ -7103,7 +7103,7 @@
         "SARGO ROYYZ": {
           "overflights": 5
         },
-        "SARGO4": {
+        "SARGO5": {
           "KCVG": 7
         },
         "TIGRR4": {
@@ -7147,17 +7147,17 @@
         "ARBAS RID MEEKR": {
           "KCVG": 7
         },
-        "CEGRM7": {
+        "CEGRM8": {
           "KCVG": 7
         },
         "FLM": {
           "KLUK": 7,
           "overflights": 5
         },
-        "GAVNN7": {
+        "GAVNN8": {
           "KCVG": 7
         },
-        "JAKIE6": {
+        "JAKIE7": {
           "KCVG": 7
         },
         "JIMUR": {
@@ -7175,7 +7175,7 @@
         "SARGO ROYYZ": {
           "overflights": 5
         },
-        "SARGO4": {
+        "SARGO5": {
           "KCVG": 7
         },
         "TIGRR4": {
@@ -7211,16 +7211,16 @@
       "configuration": "NF",
       "default_maps": ["North Base"],
       "inbound_rates": {
-        "CEGRM7.NFINAL": {
+        "CEGRM8.NFINAL": {
           "KCVG": 7
         },
-        "GAVNN7.NFINAL": {
+        "GAVNN8.NFINAL": {
           "KCVG": 7
         },
-        "JAKIE6.NFINAL": {
+        "JAKIE7.NFINAL": {
           "KCVG": 7
         },
-        "SARGO4.NFINAL": {
+        "SARGO5.NFINAL": {
           "KCVG": 7
         },
         "TIGRR4.NFINAL": {
@@ -7246,16 +7246,16 @@
       "configuration": "SF",
       "default_maps": ["South Base"],
       "inbound_rates": {
-        "CEGRM7.SFINAL": {
+        "CEGRM8.SFINAL": {
           "KCVG": 7
         },
-        "GAVNN7.SFINAL": {
+        "GAVNN8.SFINAL": {
           "KCVG": 7
         },
-        "JAKIE6.SFINAL": {
+        "JAKIE7.SFINAL": {
           "KCVG": 7
         },
-        "SARGO4.SFINAL": {
+        "SARGO5.SFINAL": {
           "KCVG": 7
         },
         "TIGRR4.SFINAL": {

@@ -20,6 +20,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/brief"
@@ -1382,6 +1383,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		if len(flow.Arrivals) == 0 && len(flow.Overflights) == 0 {
 			e.ErrorString("no arrivals or overflights in inbound flow group")
 		}
+		checkFlowNameRevisions(name, sg.Airports, e)
 
 		for i := range flow.Arrivals {
 			flow.Arrivals[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
@@ -2161,6 +2163,46 @@ func haveFlightDataCells(scenario *ScenarioSpec) bool {
 	return slices.ContainsFunc(av.FlightDataCells(departures, arrivals), func(cell string) bool {
 		return util.ResourceExists(av.FlightDataPath(cell))
 	})
+}
+
+// checkInboundAssignments reports an "inbound_assignments" entry in a facility
+// config that names no inbound flow. An assignment a single scenario doesn't
+// use is fine--the config covers every flow in the facility--but one that no
+// scenario group of the facility defines at all is left over from a renamed
+// flow and quietly assigns nothing.
+func checkInboundAssignments(scenarioGroups map[string]map[string]*scenarioGroup, e *util.ErrorLogger) {
+	for facility, groups := range util.SortedMap(scenarioGroups) {
+		flows := make(map[string]struct{})
+		for _, sg := range groups {
+			for name := range sg.InboundFlows {
+				flows[name] = struct{}{}
+			}
+		}
+
+		// The groups of a facility carry copies of the same config, so
+		// gather the dead names before reporting any of them.
+		dead := make(map[string]map[string]struct{}) // configuration id -> flow names
+		for _, sg := range groups {
+			for id, config := range sg.FacilityConfig.FacilityAdaptation.Configurations {
+				for flow := range config.InboundAssignments {
+					if _, ok := flows[flow]; ok {
+						continue
+					}
+					if dead[id] == nil {
+						dead[id] = make(map[string]struct{})
+					}
+					dead[id][flow] = struct{}{}
+				}
+			}
+		}
+
+		for _, id := range util.SortedMapKeys(dead) {
+			for _, flow := range util.SortedMapKeys(dead[id]) {
+				e.ErrorString(`%s: configurations: %s: inbound_assignments: %q names no inbound flow`,
+					facility, id, flow)
+			}
+		}
+	}
 }
 
 // finalizeTrafficSources settles which source each scenario starts on, once
@@ -3108,6 +3150,7 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 	}
 	attachHistoricalFlightIntervals(catalogs, lg)
 	finalizeTrafficSources(catalogs, scenarioGroups, e)
+	checkInboundAssignments(scenarioGroups, e)
 
 	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))
 	return scenarioGroups, catalogs, mapSpecs, briefs, overrideErrors
@@ -3280,6 +3323,55 @@ func checkArrivalSpawnAltitude(arr av.Arrival, e *util.ErrorLogger) {
 			break
 		}
 	}
+}
+
+// checkFlowNameRevisions reports an inbound flow whose name carries a STAR
+// revision the FAA CIFP doesn't chart. The name is only a label--the arrivals'
+// "star" is what they fly and is validated exactly--so nothing else notices it
+// going stale, and it is what the arrivals list shows the controller.
+func checkFlowNameRevisions(name string, airports map[av.ICAOAirportCode]*av.Airport, e *util.ErrorLogger) {
+	for _, token := range strings.FieldsFunc(name, func(r rune) bool {
+		return !unicode.IsLetter(r) && !unicode.IsDigit(r)
+	}) {
+		proc, ok := leadingProcedureName(token)
+		if !ok {
+			continue
+		}
+
+		charted := make(map[string]struct{})
+		for icao := range airports {
+			for star := range av.DB.Airports[icao].STARs {
+				if av.ProcedureBase(star) == av.ProcedureBase(proc) {
+					charted[star] = struct{}{}
+				}
+			}
+		}
+		if len(charted) == 0 {
+			// Nothing of that name is charted at any of the scenario's
+			// airports, so the token isn't a procedure name at all.
+			continue
+		}
+		if _, ok := charted[proc]; ok {
+			continue
+		}
+
+		e.ErrorString("%s in the name isn't a STAR the FAA CIFP charts; the current revision is %s",
+			proc, strings.Join(util.SortedMapKeys(charted), ", "))
+	}
+}
+
+// leadingProcedureName returns the SID or STAR name at the start of a token:
+// two to five letters and the revision number after them, as in the LAIKS3 of
+// an inbound flow named LAIKS3S.
+func leadingProcedureName(token string) (string, bool) {
+	n := 0
+	for n < len(token) && token[n] >= 'A' && token[n] <= 'Z' {
+		n++
+	}
+	if n < 2 || n > 5 || n == len(token) || token[n] < '0' || token[n] > '9' {
+		return "", false
+	}
+	return token[:n+1], true
 }
 
 // loadEmergencies loads and validates the emergencies.json resource file.

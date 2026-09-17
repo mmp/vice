@@ -2248,7 +2248,7 @@
         }
       ]
     },
-    "EMMLN1": {
+    "EMMLN3": {
       "arrivals": [
         {
           "waypoints": "EMMLN N034.20.14.854,W117.16.35.031/ho CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 RNDAL/a6000/h250",
@@ -4266,7 +4266,7 @@
         "ZUUMA4": {
           "KLAX": 10
         },
-        "EMMLN1": {
+        "EMMLN3": {
           "KHHR": 4
         }
       },
@@ -4372,7 +4372,7 @@
         "ZUUMA4": {
           "KLAX": 5
         },
-        "EMMLN1": {
+        "EMMLN3": {
           "KHHR": 3
         }
       },

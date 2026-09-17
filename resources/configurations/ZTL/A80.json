@@ -198,13 +198,13 @@
           "CSG Inbounds": "1R",
           "CSG Overflights": "1R",
           "DEHAN3": "1P",
-          "GLAVN1": "1D",
-          "HOBTT2": "1Y",
-          "JJEDI3": "1H",
+          "GLAVN2": "1D",
+          "HOBTT3": "1Y",
+          "JJEDI4": "1H",
           "MCN Inbounds": "1W",
           "MCN Overflights": "1W",
           "ONDRE1": "1L",
-          "OZZZI1": "1L",
+          "OZZZI2": "1L",
           "SWTEE2": "1F",
           "WRGNZ3": "1G"
         },
@@ -289,13 +289,13 @@
           "CSG Inbounds": "1R",
           "CSG Overflights": "1R",
           "DEHAN3": "1P",
-          "GLAVN1": "1D",
-          "HOBTT2": "1Y",
-          "JJEDI3": "1H",
+          "GLAVN2": "1D",
+          "HOBTT3": "1Y",
+          "JJEDI4": "1H",
           "MCN Inbounds": "1W",
           "MCN Overflights": "1W",
           "ONDRE1": "1L",
-          "OZZZI1": "1L",
+          "OZZZI2": "1L",
           "SWTEE2": "1F",
           "WRGNZ3": "1G"
         },
@@ -376,11 +376,11 @@
           "BUKHD3": "1F",
           "CHPPR1 EAST": "1D",
           "DEHAN3": "1P",
-          "GLAVN1 EAST": "1D",
-          "GNDLF2": "1Y",
+          "GLAVN2 EAST": "1D",
+          "GNDLF3": "1Y",
           "ONDRE1 EAST": "1L",
-          "OZZZI1 EAST": "1L",
-          "SITTH2": "1H",
+          "OZZZI2 EAST": "1L",
+          "SITTH3": "1H",
           "SWTEE2": "1F",
           "WRGNZ3": "1G"
         },
@@ -414,10 +414,10 @@
       "KA1": {
         "inbound_assignments": {
           "CHPPR1_EFINALD": "1O",
-          "GLAVN1_EFINALD": "1O",
-          "GNDLF2_EFINALD": "1O",
+          "GLAVN2_EFINALD": "1O",
+          "GNDLF3_EFINALD": "1O",
           "NE_FINALTRIPS": "1O",
-          "SITTH2_EFINALD": "1O"
+          "SITTH3_EFINALD": "1O"
         },
         "default_consolidation": {
           "1O": []
@@ -426,10 +426,10 @@
       "KA2": {
         "inbound_assignments": {
           "CHPPR1_EFINALT": "1O",
-          "GLAVN1_EFINALD": "1O",
-          "GNDLF2_EFINALT": "1O",
+          "GLAVN2_EFINALD": "1O",
+          "GNDLF3_EFINALT": "1O",
           "NE_FINALTRIPS": "1O",
-          "SITTH2_EFINALT": "1O"
+          "SITTH3_EFINALT": "1O"
         },
         "default_consolidation": {
           "1O": []
@@ -441,11 +441,11 @@
           "BUKHD3": "1F",
           "CHPPR1": "1D",
           "DEHAN3": "1P",
-          "GLAVN1": "1D",
-          "HOBTT2": "1Y",
-          "JJEDI3": "1H",
+          "GLAVN2": "1D",
+          "HOBTT3": "1Y",
+          "JJEDI4": "1H",
           "ONDRE1": "1L",
-          "OZZZI1": "1L",
+          "OZZZI2": "1L",
           "SWTEE2": "1F",
           "WRGNZ3": "1G"
         },
@@ -478,11 +478,11 @@
       },
       "KA4": {
         "inbound_assignments": {
-          "HOBTT2_AFINALD": "1O",
-          "JJEDI3_FINALD": "1O",
+          "HOBTT3_AFINALD": "1O",
+          "JJEDI4_FINALD": "1O",
           "NW_FINALTRIPS": "1O",
           "ONDRE1_FINALWT": "1O",
-          "OZZZI1_FINALWT": "1O"
+          "OZZZI2_FINALWT": "1O"
         },
         "default_consolidation": {
           "1O": []
@@ -490,11 +490,11 @@
       },
       "KA5": {
         "inbound_assignments": {
-          "HOBTT2_AFINALT": "1O",
-          "JJEDI3_FINALT": "1O",
+          "HOBTT3_AFINALT": "1O",
+          "JJEDI4_FINALT": "1O",
           "NW_FINALTRIPS": "1O",
           "ONDRE1_FINALWT": "1O",
-          "OZZZI1_FINALWT": "1O"
+          "OZZZI2_FINALWT": "1O"
         },
         "default_consolidation": {
           "1O": []

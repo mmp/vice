@@ -13985,7 +13985,7 @@
         }
       ]
     },
-    "LUCIT2": {
+    "LUCIT3": {
       "arrivals": [
         {
           "airports": ["KGYY"],
@@ -14666,7 +14666,7 @@
         "VEECK5": {
           "KORD": 10
         },
-        "LUCIT2": {
+        "LUCIT3": {
           "KGYY": 3
         },
         "GSH9": {
@@ -14908,7 +14908,7 @@
         "VEECK5": {
           "KORD": 10
         },
-        "LUCIT2": {
+        "LUCIT3": {
           "KGYY": 3
         },
         "GSH9": {
@@ -15673,7 +15673,7 @@
         "MOTIF": {
           "KLOT": 3
         },
-        "LUCIT2": {
+        "LUCIT3": {
           "KGYY": 3
         },
         "GSH9": {
@@ -16181,7 +16181,7 @@
           "KARR": 3,
           "KLOT": 3
         },
-        "LUCIT2": {
+        "LUCIT3": {
           "KGYY": 3
         },
         "GSH9": {
@@ -16751,7 +16751,7 @@
         "VEECK5": {
           "KORD": 10
         },
-        "LUCIT2": {
+        "LUCIT3": {
           "KGYY": 3
         },
         "GSH9": {
@@ -16979,7 +16979,7 @@
         "TRTLL6": {
           "KORD": 10
         },
-        "LUCIT2": {
+        "LUCIT3": {
           "KGYY": 3
         },
         "GSH9": {
