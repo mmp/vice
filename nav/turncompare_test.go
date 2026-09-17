@@ -758,7 +758,7 @@ func BenchmarkShouldTurnForOutbound(b *testing.B) {
 	wxs := f.weather(f.nav.FlightState.Altitude)
 	b.ResetTimer()
 	for range b.N {
-		f.nav.shouldTurnForOutbound(pB, hdg, av.TurnClosest, wxs)
+		f.nav.shouldTurnForOutbound(pB, hdg, av.TurnClosest, true, wxs)
 	}
 }
 

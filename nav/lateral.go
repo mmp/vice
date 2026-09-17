@@ -385,9 +385,12 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	NavLog(callsign, simTime, NavLogWaypoint, "next=%s dist=%.2fnm alt=%.0f", wp.Fix, dist, nav.FlightState.Altitude)
 
 	// Are we nearly at the fix and is it time to turn for the outbound heading?
-	// First, figure out the outbound heading and which way to turn onto it.
+	// First, figure out the outbound heading and which way to turn onto it,
+	// and whether it is a ground course or a heading that drifts with the
+	// wind.
 	var hdg math.MagneticHeading
 	turn := av.TurnClosest
+	track := true
 	if len(nav.Approach.AtFixClearedRoute) > 1 &&
 		nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
 		hdg = math.TrueToMagnetic(math.Heading2LL(wp.Location, nav.Approach.AtFixClearedRoute[1].Location,
@@ -395,6 +398,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 		// controller assigned heading at the fix.
 		hdg = *nfa.Depart.Heading
+		track = false
 		if nfa.Depart.Turn != nil {
 			turn = *nfa.Depart.Turn
 		}
@@ -413,6 +417,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			hdg = math.MagneticHeading(h.Heading)
 		}
 		turn = h.Turn
+		track = h.Track
 	} else if wp.Arc() != nil {
 		// Joining a DME arc after the heading
 		hdg = wp.Arc().InitialHeading
@@ -433,7 +438,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		// fly-by turns don't matter before the sim starts.
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
-		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, turn, wxs)
+		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, turn, track, wxs)
 	}
 
 	if passedWaypoint {
@@ -941,7 +946,9 @@ const maxFlyByAngle = 100
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
 // radial: when the turn's path, predicted in closed form, would cross it.
-func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) bool {
+// track indicates the outbound is a ground course rather than a heading
+// that drifts with the wind.
+func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading, turn av.TurnDirection, track bool, wxs wx.Sample) bool {
 	eta := nav.ETA(p)
 
 	// Always start the turn if we've almost passed the fix.
@@ -971,10 +978,15 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 	hdgTrue := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
 	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdgTrue)))
 
-	// The radial is a ground course, so predict a turn to the heading that
-	// holds it as a track; the aircraft's post-turn steering to the next
-	// fix is wind-corrected the same way.
-	tp := nav.predictTurnPath(nav.headingForTrack(hdg, wxs), nav.resolveTurnDirection(hdg, turn), wxs)
+	// For a ground course, predict a turn to the heading that holds it as
+	// a track; the aircraft's post-turn steering to the next fix is
+	// wind-corrected the same way. A plain heading is flown as is and
+	// drifts with the wind, and so does the predicted path.
+	predHdg := hdg
+	if track {
+		predHdg = nav.headingForTrack(hdg, wxs)
+	}
+	tp := nav.predictTurnPath(predHdg, nav.resolveTurnDirection(hdg, turn), wxs)
 
 	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position,
 		nav.FlightState.NmPerLongitude), p0, p1)
