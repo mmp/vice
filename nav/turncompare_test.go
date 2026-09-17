@@ -162,6 +162,7 @@ type outboundMetrics struct {
 	fireTick   int     // tick the turn fix was sequenced
 	distAtFire float32 // distance from the fix when the turn started, nm
 	gsAtFire   float32 // ground speed when the turn started, kts
+	tasAtFire  float32 // true airspeed when the turn started, kts
 	overshoot  float32 // max distance past the outbound course on the far side, nm
 	settleTime int     // ticks from fireTick until within 0.1nm of the course for 10 consecutive ticks
 	endOffset  float32 // |cross-track| at the end of the measurement window, nm
@@ -226,6 +227,7 @@ func runOutboundCase(t *testing.T, c outboundCase) outboundMetrics {
 			m.fireTick = f.tick
 			m.distAtFire = math.NMDistance2LLFast(f.nav.FlightState.Position, pB, nmPerLong)
 			m.gsAtFire = f.nav.FlightState.GS
+			m.tasAtFire = f.nav.TAS(f.weather(f.nav.FlightState.Altitude).Temperature())
 			break
 		}
 	}
@@ -312,8 +314,21 @@ func TestOutboundTurnSweep(t *testing.T) {
 			// fix. Course changes past 100 degrees are exempt: their fly-by
 			// anticipation is capped (see shouldTurnForOutbound), and in
 			// strong winds the crossing may only be found near the fix.
-			if a := math.Abs(c.turnDeg); a >= 30 && a <= 100 && m.distAtFire < 2.5*m.gsAtFire/3600 {
+			if a := math.Abs(c.turnDeg); a >= 30 && a <= maxFlyByAngle && m.distAtFire < 2.5*m.gsAtFire/3600 {
 				t.Errorf("sequenced only %.2fnm from the fix at %.0fkt", m.distAtFire, m.gsAtFire)
+			}
+
+			// Past the fly-by cap the anticipation is clamped: the fix must
+			// be sequenced no farther out than the capped tangency distance,
+			// recomputed here from the state when the turn started.
+			if math.Abs(c.turnDeg) > maxFlyByAngle {
+				perf := av.DB.AircraftPerformance[c.acType]
+				omega := min(StandardTurnRate, math.Degrees(9.81*math.Tan(math.Radians(perf.Turn.MaxBankAngle))/(m.tasAtFire*0.514444)))
+				radius := m.tasAtFire / 3600 / math.Radians(omega)
+				bound := radius*math.Tan(math.Radians(float32(maxFlyByAngle)/2)) + 10*m.gsAtFire/3600
+				if m.distAtFire > bound+0.5 {
+					t.Errorf("sequenced %.2fnm from the fix; capped anticipation is %.2fnm", m.distAtFire, bound)
+				}
 			}
 
 			// Up to the 100 degree anticipation cap a fly-by should roll
@@ -321,7 +336,7 @@ func TestOutboundTurnSweep(t *testing.T) {
 			// changes necessarily loop past it. Speed and altitude changes
 			// during the turn get extra slack since the turn radius is
 			// predicted from the state at its start.
-			if math.Abs(c.turnDeg) <= 100 {
+			if math.Abs(c.turnDeg) <= maxFlyByAngle {
 				limit := float32(0.2)
 				if c.slowTo != 0 || c.climbTo != 0 {
 					limit = 0.6

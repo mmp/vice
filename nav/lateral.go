@@ -929,6 +929,15 @@ const (
 
 type turnToInterceptResult int
 
+// maxFlyByAngle is the largest course change flown as a pure fly-by. The
+// fly-by tangency distance radius*tan(turnAngle/2) diverges as the course
+// change approaches 180 degrees--no single turn rolls out on a reciprocal
+// course--and past 100 degrees it carries the turn miles from the fix.
+// Capping the angle caps the anticipation at tan(50) ~ 1.19 turn radii,
+// equivalently capping how far inside the corner the path passes at
+// sec(50)-1 ~ 0.56 radii.
+const maxFlyByAngle = 100
+
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
 // radial: when the turn's path, predicted in closed form, would cross it.
@@ -940,22 +949,20 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 		return true
 	}
 
-	// Alternatively, if we're far away w.r.t. the needed turn, don't even
-	// consider it. This is both for performance but also so that we don't
-	// make tiny turns miles away from fixes in some cases.
-	// The bound is turnAngle/2 seconds of travel, widened where the
-	// aircraft's actual turn radius needs more anticipation than that: the
-	// radius grows with the square of TAS, and a fast jet's 90 degree
-	// fly-by begins more than 6nm out. The widening caps the course change
-	// at 100 degrees since beyond that the fly-by anticipation distance
-	// grows without bound and the turn would cut miles inside the fix.
+	// Don't run the path prediction when the aircraft is clearly too far
+	// out for the turn to begin: the fly-by tangency distance for the
+	// turn, with the course change capped at maxFlyByAngle, plus ten
+	// seconds of travel for rolling into and out of the bank. Below the
+	// cap this only bounds when the prediction is worth running--the
+	// prediction sets the turn point. Above it the prediction fires as
+	// soon as the aircraft is inside the bound, so the bound itself sets
+	// the turn point, keeping the turn near the fix.
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
 	tas := nav.TAS(wxs.Temperature())
-	omega := min(3, math.Degrees(9.81*math.Tan(math.Radians(nav.Perf.Turn.MaxBankAngle))/(tas*0.514444)))
+	omega := min(StandardTurnRate, math.Degrees(9.81*math.Tan(math.Radians(nav.Perf.Turn.MaxBankAngle))/(tas*0.514444)))
 	radius := tas / 3600 / math.Radians(omega)
-	lead := max(radius*math.Tan(math.Radians(min(turnAngle, 100)/2))+10*nav.FlightState.GS/3600,
-		turnAngle/2*nav.FlightState.GS/3600)
-	if math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude) > lead {
+	anticipation := radius*math.Tan(math.Radians(min(turnAngle, maxFlyByAngle)/2)) + 10*nav.FlightState.GS/3600
+	if math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude) > anticipation {
 		return false
 	}
 
