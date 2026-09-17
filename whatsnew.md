@@ -1,11 +1,10 @@
 - New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn)
-- Scenario updates: PCT SHD, HCF, SCT, L30 (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZFW (Asian Evxn), ZME (Noah Hunt), CLT (Gus Agostinho), STL (Ryan H), MSP (Logan S, Shane), ANC, P80, S46 (Mike Fries)
+- Scenario updates: PCT SHD, HCF, SCT, L30 (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZME (Noah Hunt), CLT (Gus Agostinho), STL (Ryan H), M98 (Logan S, Shane), ANC, P80, S46 (Mike Fries)
 - Flight model improvements
   - "At FIX intercept the localizer" is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing
   - Added: `IFIX/RADIAL`: intercept a fix's radial; also available by voice ("intercept the WAVEY 050 radial inbound", etc.)
   - Departures are now automatically held when a recent departure from another runway is flying an initial route that crosses their departure path
   - Two departures going out over the same fix are now spaced from each other whichever runways they leave from
-  - The next departure to go is chosen when the runway is free rather than sequenced ahead of time, so it takes account of what the airport's other runways have just launched
   - Published traffic is split across the runways that can fly it in proportion to the scenario's departure rates
   - More accurately model departures' 400' AGL rollout
   - Improved drawing of complex routes (SIDs/STARs/approaches/...)
@@ -19,11 +18,14 @@
   - Fixed departures out the same gate being launched with only a mile or two between them
   - Fixed published traffic launching all of an airport's departures from a single runway when several could fly them
   - Fixed bug where only one of the two MVA charts was loaded for the BOI, D01, and GEG TRACONs
+  - Fixed bugs with departure sequencing unnecessarily launching multiple a/c to the same exit
+  - Fixed bugs with aircraft cleared for charted visual approaches not descending
 - ERAM
   - Fixed bug with cutoff "8" characters in datablocks
 - STARS
   - Fixed bug where saving prefs handled the pref set name incorrectly 
 - Facility engineering
+  - Added backshop, a new standalone tool for facility engineering: 
   - Fixed bug where aircraft were not automatically cleared for the approach at a /clearapp fix
   - Updated route trigger syntax to be more readable: `FIX/h050@a4000/l270` -> `FIX/h050/a4000/l270`
   - Added `@t` to route specifiers to allow specifying a track to fly inbound to the next fix
@@ -38,7 +40,7 @@
   - Fixed bugs with `/clearapp` and `/intercept` in routes
   - Added "initial_heading" for tower-assigned headings for SIDs that aren't charted to start with headings
   - Added "waypoint_actions" for SIDs so that actions can be added at waypoints without needing to respecify them
-  - Added "departure_override" for SIDs taken from the CIFP: actions and triggers (e.g. "h280/tc") that apply where departures turn on course 400' above the field, generalizing "initial_heading"
+  - Added "climbout_actions" for SIDs taken from the CIFP: actions and triggers (e.g. "h280/tc") that apply where departures turn on course 400' above the field, generalizing "initial_heading"
   - Fixed bug where vice would ask to revert local edits to scenarios, configs, etc.
   - Require "star" to be specified if "waypoints" match a published STAR
   - Fixed bug that prohibited runway thresholds below sea level
