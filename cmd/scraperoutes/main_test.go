@@ -82,6 +82,15 @@ func TestCullRareRoutes(t *testing.T) {
 	}
 }
 
+// A pair whose whole sample is a filing or two says nothing: the relative rule
+// has one lone route to measure against itself, and keeps it.
+func TestCullRareRoutesFloor(t *testing.T) {
+	routes := []av.ScrapedRoute{{Route: "A", Count: 2}, {Route: "B", Count: 1}}
+	if kept := cullRareRoutes(routes); len(kept) != 0 {
+		t.Errorf("kept %v, want nothing", kept)
+	}
+}
+
 func TestParseAltitude(t *testing.T) {
 	for s, want := range map[string]int{
 		"FL340": 34000, "10,000": 10000, "350": 35000, "8000": 8000, "": 0, "junk": 0,
@@ -170,6 +179,88 @@ func TestCleanRouteAirportTokens(t *testing.T) {
 	} {
 		if got := cleanRoute(tc.route, av.ICAOAirportCode(tc.from), av.ICAOAirportCode(tc.to)); got != tc.want {
 			t.Errorf("cleanRoute(%q, %s, %s) = %q, want %q", tc.route, tc.from, tc.to, got, tc.want)
+		}
+	}
+}
+
+func TestFilesIFR(t *testing.T) {
+	av.InitDB()
+
+	for _, tc := range []struct {
+		callsign, aircraftType string
+		want                   bool
+	}{
+		{"AAL1133", "B738", true}, // an airline, in a jet
+		{"KAP402", "C402", true},  // Cape Air, in a piston twin that goes places
+		{"KMK15", "C208", true},   // Kamaka Air, in a turboprop
+		{"N500QS", "C750", true},  // a registration, in a jet
+		{"N77RF", "BE20", true},   // a registration, in a turboprop
+
+		{"CXK118", "C172", false},    // a flight school, under an operator's callsign
+		{"N9018Q", "C172", false},    // the same trainer, under a registration
+		{"RN512", "TEX2", false},     // a Navy squadron callsign: neither shape
+		{"WHISKEY01", "BE20", false}, // nor is a tactical one
+		{"BTZ44", "A139", false},     // an operator, in a helicopter
+		{"N911GC", "R44", false},     // and under a registration
+		{"N2246W", "SLG4", false},    // a light sport aircraft stops at the floor
+		{"N4567", "", false},         // no type at all
+	} {
+		if got := filesIFR(tc.callsign, tc.aircraftType); got != tc.want {
+			t.Errorf("%s/%s: filesIFR is %v, want %v", tc.callsign, tc.aircraftType, got, tc.want)
+		}
+	}
+}
+
+func TestFAACoverage(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		routes []av.AirportPairRoute
+		want   coverage
+	}{
+		{"none at all", nil, coverage{}},
+		{
+			// KSFO-KLAX: one low-altitude route down the Victor airways, which
+			// is the whole of what its jets have to file.
+			"low altitude only", []av.AirportPairRoute{{Type: "L"}}, coverage{props: true},
+		},
+		{
+			"tower en route only", []av.AirportPairRoute{{Type: "TEC"}, {Type: "TEC"}},
+			coverage{props: true},
+		},
+		{
+			// The mirror of it: a pair with nothing for the props that fly it.
+			"high altitude only", []av.AirportPairRoute{{Type: "H"}, {Type: "CDR"}},
+			coverage{jets: true},
+		},
+		{
+			"one of each", []av.AirportPairRoute{{Type: "L"}, {Type: "H"}},
+			coverage{jets: true, props: true},
+		},
+		{
+			"each class restricted away from its own structure",
+			[]av.AirportPairRoute{{Type: "L", Aircraft: "jet"}, {Type: "H", Aircraft: "prop"}},
+			coverage{},
+		},
+	} {
+		if got := faaCoverage(tc.routes); got != tc.want {
+			t.Errorf("%s: faaCoverage is %+v, want %+v", tc.name, got, tc.want)
+		}
+	}
+}
+
+func TestCoverageUnrouted(t *testing.T) {
+	f := filings{jets: 40, props: 7}
+	for _, tc := range []struct {
+		c    coverage
+		want int
+	}{
+		{coverage{jets: true, props: true}, 0},
+		{coverage{props: true}, 40},
+		{coverage{jets: true}, 7},
+		{coverage{}, 47},
+	} {
+		if got := tc.c.unrouted(f); got != tc.want {
+			t.Errorf("%+v: unrouted is %d, want %d", tc.c, got, tc.want)
 		}
 	}
 }
