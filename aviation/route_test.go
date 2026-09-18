@@ -1278,6 +1278,10 @@ func TestApplyActions(t *testing.T) {
 		{key: "GNNRR", value: "a5000/s210", want: "KSFO-10L/h284/@a513+ GNNRR/a5000/s210 FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
 		// A value with no actions or triggers leaves the charted groups alone.
 		{key: "FIXXX", value: "a5000", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/a5000/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		// /ld and /rd give the turn at the fix onto the leg that follows; the
+		// flag lands on the next fix, which encodes it on the fix before it.
+		{key: "GNNRR", value: "ld", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/ld FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "GNNRR", value: "ho/rd", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/ho/rd FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
 		{key: "NOPE", value: "hoC35", errContains: "not in the route"},
 		{key: "GNNRR/@a513+", value: "hoC35", errContains: "triggers go in the value"},
 		{key: "GNNRR/h090", value: "hoC35", errContains: "triggers go in the value"},
@@ -1299,11 +1303,12 @@ func TestApplyActions(t *testing.T) {
 		{key: "GNNRR", value: "arc10HLN", errContains: "only actions"},
 		{key: "GNNRR", value: "airwayV23", errContains: "only actions"},
 		{key: "GNNRR", value: "radius2", errContains: "only actions"},
-		{key: "GNNRR", value: "ho/ld", errContains: "only actions"},
+		{key: "BEBOP", value: "ld", errContains: "no following fix to turn to"},
 		// Offsets get their own test below; only their keys and the options
 		// their values may carry are checked here.
-		{key: "GNNRR@0.5", value: "flyover/ho", errContains: "not a point along the leg"},
-		{key: "GNNRR@0.5", value: "a5000", errContains: "not a point along the leg"},
+		{key: "GNNRR@0.5", value: "flyover/ho", errContains: `/flyover may not be specified at an "@" offset fix`},
+		{key: "GNNRR@0.5", value: "a5000", errContains: `restrictions may not be specified at an "@" offset fix`},
+		{key: "GNNRR@0.5", value: "ld/ho", errContains: `/ld and /rd may not be specified at an "@" offset fix`},
 		{key: "GNNRR@0", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
 		{key: "GNNRR@1", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
 		{key: "GNNRR@-0.5", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
@@ -1452,6 +1457,7 @@ func TestInsertOffsetActions(t *testing.T) {
 		name, key, errContains string
 		arc                    bool
 		airway                 string
+		turn                   bool
 		already                string
 	}{
 		{name: "no fix after it", key: "DRIFT@0.5", errContains: "ends the route"},
@@ -1460,6 +1466,10 @@ func TestInsertOffsetActions(t *testing.T) {
 		// The airway's fixes come between the two, so the offset would not be
 		// measured to the fix the key's author sees next in the route.
 		{name: "along an airway", key: "CKING@0.5", airway: "V23", errContains: "V23 follows it"},
+		// The turn at CKING is made toward the point, so the direction on the
+		// far fix would never be consulted.
+		{name: "a turn direction on the leg", key: "CKING@0.5", turn: true,
+			errContains: "a point partway along it would defeat"},
 		// Distinct keys, but they name the same fraction of the same leg.
 		{name: "two keys on the same point", key: "CKING@0.50", already: "CKING@.5",
 			errContains: "another key already puts a point there"},
@@ -1471,6 +1481,9 @@ func TestInsertOffsetActions(t *testing.T) {
 			}
 			if tc.airway != "" {
 				wps[1].InitExtra().Airway = tc.airway
+			}
+			if tc.turn {
+				wps[2].SetTurn(TurnLeft)
 			}
 			if tc.already != "" {
 				wps = insert(t, wps, tc.already, "ho")

@@ -255,6 +255,17 @@ func TestExitCategory(t *testing.T) {
 // DB must already map KXXX.
 func initializeTestExitRoute(t *testing.T, er ExitRoute, route string) ExitRoute {
 	t.Helper()
+	er, e := tryInitializeTestExitRoute(t, er, route)
+	if e.HaveErrors() {
+		t.Fatal(e.String())
+	}
+	return er
+}
+
+// tryInitializeTestExitRoute is initializeTestExitRoute for cases that expect
+// initialize to report errors; failures before it still stop the test.
+func tryInitializeTestExitRoute(t *testing.T, er ExitRoute, route string) (ExitRoute, *util.ErrorLogger) {
+	t.Helper()
 
 	const nmPerLongitude = 60
 	at := func(p [2]float32) math.Point2LL {
@@ -286,10 +297,7 @@ func initializeTestExitRoute(t *testing.T, er ExitRoute, route string) ExitRoute
 	}
 	var e util.ErrorLogger
 	er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, override, &e)
-	if e.HaveErrors() {
-		t.Fatal(e.String())
-	}
-	return er
+	return er, &e
 }
 
 func TestInitialHeading(t *testing.T) {
@@ -428,6 +436,21 @@ func TestClimboutActions(t *testing.T) {
 	if got, want := initialized(t, er, "KXXX-27/a1500-/h284 GNNRR/a2500+"),
 		"9/sid 9-mid/a1500-/s210/t090/@a713+/h345/sid GNNRR/a2500+/sid"; got != want {
 		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// A /ld or /rd gives the turn made turning on course at the end of the
+	// climbout; its flag lands on the first fix of the route, which encodes
+	// it on the midpoint waypoint before it.
+	er = ExitRoute{ClearedAltitude: 5000, ClimboutActions: "h345/ld"}
+	if got, want := initialized(t, er, "BUTRZ/a3000+ CLTCH KERRK"),
+		"9/sid 9-mid/t090/@a713+/h345/sid/ld BUTRZ/a3000+/sid CLTCH/sid KERRK/sid"; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+
+	// With no route waypoints there is no fix to turn to.
+	_, e := tryInitializeTestExitRoute(t, ExitRoute{ClearedAltitude: 5000, ClimboutActions: "h345/ld"}, "")
+	if s := e.String(); !strings.Contains(s, "no fix of the route to turn to") {
+		t.Errorf("expected an error for /ld with no route; got: %s", s)
 	}
 
 	// Options must be a single /-separated set.

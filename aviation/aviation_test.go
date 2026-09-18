@@ -1006,6 +1006,21 @@ func TestArrivalWaypointActions(t *testing.T) {
 			want:    "MIPP/star _handoff/ho/star LIZZI/star BEUTY/flyover/star APPLE/star PROUD/star",
 		},
 		{
+			name:    "/ld turns at the fix, so its flag lands on the next one",
+			actions: map[string]string{"BEUTY": "ld"},
+			want:    "MIPP/star _handoff/ho/star LIZZI/star BEUTY/star/ld APPLE/star PROUD/star",
+		},
+		{
+			name:    "a turn past the runway split",
+			actions: map[string]string{"KRANN": "rd"},
+			want13:  "PROUD/star KRANN/star/rd ETHYN/star",
+		},
+		{
+			name:    "a turn at a fix that ends the route",
+			actions: map[string]string{"PROUD": "ld"},
+			err:     "no following fix to turn to",
+		},
+		{
 			name:    "a property the CIFP route owns",
 			actions: map[string]string{"BEUTY": "iaf"},
 			err:     "only actions",

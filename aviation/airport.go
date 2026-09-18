@@ -1177,16 +1177,20 @@ func LookupSID(icao ICAOAirportCode, name string) (SID, bool) {
 }
 
 // parseClimboutActions parses the route's "climbout_actions" waypoint
-// options--actions, triggers, and altitude/speed restrictions--into the
-// waypoint that carries them.
+// options--actions, triggers, altitude/speed restrictions, and a /ld or /rd
+// turn direction--into the waypoint that carries them.
 func (er *ExitRoute) parseClimboutActions() (Waypoint, error) {
-	wp, err := parseWaypointActionValue(er.ClimboutActions)
+	wp, turn, err := parseWaypointActionValue(er.ClimboutActions)
 	if err != nil {
 		return Waypoint{}, err
 	}
 	if wp.FlyOver() {
 		return Waypoint{}, fmt.Errorf("/flyover: the climbout point is not a fix the route turns at")
 	}
+	// A /ld or /rd gives the turn made turning on course at the end of the
+	// climbout; carry it on the waypoint for initialize to put on the first
+	// fix of the route.
+	wp.SetTurn(turn)
 	// The name labels errors from the checks the waypoint goes through.
 	wp.Fix = "climbout_actions"
 	return wp, nil
@@ -1453,6 +1457,17 @@ func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runw
 			Location: r.Threshold,
 		},
 		midWp}, er.Waypoints...)
+
+	// A "climbout_actions" /ld or /rd gives the turn made turning on course
+	// at the end of the climbout, so its flag goes on the first fix of the
+	// route, past the runway threshold and midpoint.
+	if t := override.Turn(); t != TurnClosest {
+		if len(er.Waypoints) <= 2 {
+			e.ErrorString(`"climbout_actions": /ld or /rd has no fix of the route to turn to`)
+		} else {
+			er.Waypoints[2].SetTurn(t)
+		}
+	}
 
 	for i := range er.Waypoints {
 		er.Waypoints[i].SetOnSID(true)

@@ -4916,13 +4916,15 @@
                 <code>"h280/@d1.0/h280/tc"</code> has the aircraft contact departure only once it has flown a mile from the turn. A heading given
                 here supersedes the SID's charted legs at the departure end of the runway the same way
                 "initial_heading" does; altitude and speed restrictions (e.g., <code>/s210</code>) apply
-                from the turn as well.</p>
+                from the turn as well, and <code>/ld</code> or <code>/rd</code> gives the direction of the
+                turn onto the course to the route's first fix.</p>
               <p>Third, "waypoint_actions" gives the SID's fixes options of its own, written the same way a
                 fix's options are written in "waypoints"&mdash;separated by slashes, but with no leading
                 slash. A value may give <a href="#fe-route-actions">actions</a> (handoffs, point outs,
                 scratchpad settings, and altitudes for virtually-controlled aircraft described above),
-                <a href="#fe-route-triggers">triggers</a>, altitude and speed restrictions, and
-                <code>/flyover</code>. It is an object where each member's name is a fix on the route and its
+                <a href="#fe-route-triggers">triggers</a>, altitude and speed restrictions,
+                <code>/flyover</code>, and a <code>/ld</code> or <code>/rd</code> turn direction. It is an
+                object where each member's name is a fix on the route and its
                 value is applied at that fix. For example given the route
                 <code>KSFO-10L/h284/@a513+ GNNRR/a2500+ BEBOP</code>, if we want to initiate a handoff to C35
                 at GNNRR, we could specify:
@@ -4941,7 +4943,9 @@
                 A value's action groups replace any the CIFP charts at the fix, so it is necessary to restate any charted ones that are to be kept
                 (though a value that gives no actions or triggers at all leaves the charted groups as they are);
                 however, an altitude or speed restriction replaces the charted restriction of its
-                kind, and <code>/flyover</code> marks the fix as flown directly over. In the GNNRR3 above,
+                kind, and <code>/flyover</code> marks the fix as flown directly over. <code>/ld</code> or
+                <code>/rd</code> gives the direction of the turn made at the fix onto the leg that follows,
+                superseding any the CIFP charts; the fix must have another after it on the route. In the GNNRR3 above,
                 KSFO-10L's charted leg is heading 284 until 513': <code>"KSFO-10L": "h284/hoC35/@a513+"</code>
                 hands off as the aircraft climbs through 400' above the field and takes up the leg,
                 <code>"KSFO-10L": "h284/@a513+/hoC35"</code> hands off once it has climbed through 513', and
@@ -5317,7 +5321,8 @@
                 handed off. It is an object where each member's name is a fix on the route and its value gives
                 the fix's options the same way "waypoints" writes them&mdash;separated by slashes, but with no
                 leading slash: <a href="#fe-route-actions">actions</a>, <a href="#fe-route-triggers">triggers</a>,
-                altitude and speed restrictions, and <code>/flyover</code>. Given the APPLE3 above, to hand off
+                altitude and speed restrictions, <code>/flyover</code>, and a <code>/ld</code> or
+                <code>/rd</code> turn direction. Given the APPLE3 above, to hand off
                 at BRAND and set the scratchpad at KORRY:</p>
               <pre>
 "APPLE3": {
@@ -5334,7 +5339,9 @@
                 vectors keeps them only if the value restates them&mdash;while a value of restrictions or
                 <code>/flyover</code> alone leaves the charted groups as they are. An altitude or speed
                 restriction replaces the charted restriction of its kind and <code>/flyover</code> marks the
-                fix as flown directly over.</p>
+                fix as flown directly over. <code>/ld</code> or <code>/rd</code> gives the direction of the
+                turn made at the fix onto the leg that follows, superseding any the CIFP charts; the fix must
+                have another after it on the route.</p>
               <p>
                 The actions may also be taken partway along the leg that follows a fix rather than at the
                 fix itself. The member name is then the fix followed by an offset, written the same way

@@ -1788,35 +1788,38 @@ func parseWaypointActionKey(key string) (string, float32, error) {
 // parseWaypointActionValue parses a "waypoint_actions" value--a fix's options
 // in route syntax, without their leading slash ("h284/hoC35/@a513+")--into a
 // waypoint carrying what it gives: action groups, altitude and speed
-// restrictions, and /flyover. The other options a waypoint can carry describe
+// restrictions, and /flyover. A /ld or /rd comes back separately: it gives
+// the turn made at the fix onto the leg that follows, so its flag belongs on
+// the route's next fix. The other options a waypoint can carry describe
 // route structure or approach coding that a route taken from the CIFP owns,
 // so they are rejected.
-func parseWaypointActionValue(value string) (Waypoint, error) {
+func parseWaypointActionValue(value string) (Waypoint, TurnDirection, error) {
 	if value == "" {
-		return Waypoint{}, fmt.Errorf("empty value")
+		return Waypoint{}, TurnClosest, fmt.Errorf("empty value")
 	}
 	if strings.Contains(value, ",") {
-		return Waypoint{}, fmt.Errorf("%s: options are separated by slashes, not commas", value)
+		return Waypoint{}, TurnClosest, fmt.Errorf("%s: options are separated by slashes, not commas", value)
 	}
 	var wp Waypoint
 	turn, err := parseWaypointModifiers(&wp, value, strings.Split(value, "/"))
 	if err != nil {
-		return Waypoint{}, err
+		return Waypoint{}, TurnClosest, err
 	}
-	if turn != TurnClosest || wp.NoPT() || wp.IAF() || wp.IF() || wp.FAF() ||
+	if wp.NoPT() || wp.IAF() || wp.IF() || wp.FAF() ||
 		wp.OnSID() || wp.OnSTAR() || wp.OnApproach() || wp.ProcedureTurn() != nil ||
 		wp.Arc() != nil || wp.Airway() != "" || wp.AirworkRadius() != 0 ||
 		wp.Radius() != 0 || wp.Shift() != 0 {
-		return Waypoint{}, fmt.Errorf("%s: only actions, triggers, /a and /s restrictions, and /flyover may be given", value)
+		return Waypoint{}, TurnClosest, fmt.Errorf("%s: only actions, triggers, /a and /s restrictions, /flyover, and /ld or /rd may be given", value)
 	}
-	return wp, nil
+	return wp, turn, nil
 }
 
 // applyActions applies a "waypoint_actions" value to the fix. The value's
 // action groups replace the ones charted at the fix--a value with no actions
 // or triggers leaves the charted groups as they are--its altitude or speed
-// restriction replaces the charted restriction of its kind, and /flyover
-// marks the fix as flown over. An offset puts the value's actions on a point
+// restriction replaces the charted restriction of its kind, /flyover marks
+// the fix as flown over, and /ld or /rd gives the turn made at the fix onto
+// the leg that follows. An offset puts the value's actions on a point
 // synthesized partway along the leg after the fix instead, which the
 // returned route carries; its location waits for InitializeLocations.
 func (wa WaypointArray) applyActions(fix string, offset float32, value string) (WaypointArray, error) {
@@ -1824,14 +1827,20 @@ func (wa WaypointArray) applyActions(fix string, offset float32, value string) (
 	if i == -1 {
 		return wa, fmt.Errorf("%s: not in the route %s", fix, wa.RouteString())
 	}
-	o, err := parseWaypointActionValue(value)
+	o, turn, err := parseWaypointActionValue(value)
 	if err != nil {
 		return wa, err
 	}
 
 	if offset != 0 {
-		if o.HasAltitudeRestriction() || o.HasSpeedRestriction() || o.FlyOver() {
-			return wa, fmt.Errorf("%s: restrictions and /flyover describe the fix itself, not a point along the leg after it", value)
+		if o.HasAltitudeRestriction() || o.HasSpeedRestriction() {
+			return wa, fmt.Errorf(`%s: restrictions may not be specified at an "@" offset fix`, value)
+		}
+		if o.FlyOver() {
+			return wa, fmt.Errorf(`/flyover may not be specified at an "@" offset fix`)
+		}
+		if turn != TurnClosest {
+			return wa, fmt.Errorf(`%s: /ld and /rd may not be specified at an "@" offset fix`, value)
 		}
 		return wa.insertOffsetActions(i, offset, o.ActionGroups())
 	}
@@ -1839,6 +1848,14 @@ func (wa WaypointArray) applyActions(fix string, offset float32, value string) (
 	groups := o.ActionGroups()
 	if n := len(groups); n > 0 && groups[n-1].Until.Type == WaypointActionCourse && i == len(wa)-1 {
 		return wa, fmt.Errorf("%s: /@crs has no following fix to give a course to; %s ends the route", value, fix)
+	}
+	if turn != TurnClosest {
+		next := wa.nextChartedFix(i)
+		if next == len(wa) {
+			return wa, fmt.Errorf("%s: /ld or /rd has no following fix to turn to; %s ends the route", value, fix)
+		}
+		// The turn direction to the next fix is carried on that fix.
+		wa[next].SetTurn(turn)
 	}
 	wp := &wa[i]
 	if len(groups) > 0 {
@@ -1914,6 +1931,13 @@ func (wa WaypointArray) insertOffsetActions(i int, offset float32, groups []Wayp
 	if next == len(wa) {
 		return wa, fmt.Errorf("%s: ends the route %s, so there is no following fix to measure the offset to",
 			fix, wa.RouteString())
+	}
+	// The turn is made toward the first waypoint on the leg, so a point
+	// partway along it would leave the turn's direction behind at the far
+	// fix, never to be consulted.
+	if wa[next].Turn() != TurnClosest {
+		return wa, fmt.Errorf("%s: the leg to %s carries a turn direction, which a point partway along it would defeat",
+			fix, wa[next].Fix)
 	}
 	if slices.ContainsFunc(wa[i+1:next], func(w Waypoint) bool { return w.LegOffset() == offset }) {
 		return wa, fmt.Errorf("%s: another key already puts a point there", fix)
