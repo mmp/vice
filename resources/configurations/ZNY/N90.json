@@ -324,7 +324,10 @@
           "PHL": "4P",
           "PHLBO4": "4P",
           "WRI": "4P",
-          "WRISATS": "4H"
+          "WRISATS": "4H",
+          "South.prop": "4A",
+          "CMK.EWR": "4A",
+          "CMKSATS": "4U"
         },
         "departure_assignments": {
           "KCDW": "4N",
@@ -350,6 +353,9 @@
           "PHLBO4": "4P",
           "WRI": "4P",
           "WRISATS": "4H",
+          "South.prop": "4A",
+          "CMK.EWR": "4A",
+          "CMKSATS": "4U",
           "JAIKE4 MUGZY NE": "4U",
           "MAZIE MUGZY NE": "4U",
           "South 22 background": "4P",
@@ -383,6 +389,9 @@
           "PHLBO4": "4P",
           "WRI": "4P",
           "WRISATS": "4H",
+          "South.prop": "4A",
+          "CMK.EWR": "4A",
+          "CMKSATS": "4U",
           "JAIKE4 MUGZY NE": "4U",
           "MAZIE MUGZY NE": "4U",
           "South 22 background": "4P",
@@ -416,6 +425,9 @@
           "PHLBO4": "4P",
           "WRI": "4P",
           "WRISATS": "4H",
+          "South.prop": "4A",
+          "CMK.EWR": "4A",
+          "CMKSATS": "4U",
           "JAIKE4 MUGZY NE": "4U",
           "MAZIE MUGZY NE": "4U",
           "South 22 background": "4P",
@@ -468,6 +480,9 @@
           "PHLBO4": "4P",
           "WRI": "4P",
           "WRISATS": "4H",
+          "South.prop": "4A",
+          "CMK.EWR": "4A",
+          "CMKSATS": "4U",
           "PHL Prop": "4P",
           "MIP4 LGA background 22/13": "1D",
           "MIP4 LGA background 22/31": "1D",
@@ -483,6 +498,31 @@
           "4P": ["4H", "4M"]
         }
       },
+      "EPS": {
+        "inbound_assignments": {
+          "FQM3": "4W",
+          "JAIKE4": "4H",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P",
+          "WRISATS": "4H",
+          "CMK.EWR": "4A",
+          "PHL Prop": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "North": "4P"
+        },
+        "departure_assignments": {
+          "KEWR": "4N",
+          "KTEB": "4N",
+          "KLGA": "1L"
+        },
+        "default_consolidation": {
+          "4P": ["4H", "4M", "4W"]
+        }
+      },
       "EWA": {
         "inbound_assignments": {
           "COATE": "4S",
@@ -496,6 +536,8 @@
           "MIP4 LGA background 22/31": "1D",
           "South": "4A",
           "South29": "4A",
+          "South.prop": "4A",
+          "CMK.EWR": "4A",
           "COATE TEB SW": "4P"
         },
         "departure_assignments": {
@@ -505,6 +547,32 @@
         },
         "default_consolidation": {
           "4A": []
+        }
+      },
+      "EWN": {
+        "inbound_assignments": {
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "LVZ5": "4S",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "South": "4A",
+          "South29": "4A",
+          "South.prop": "4A",
+          "CMK.EWR": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KEWR": "4N",
+          "KTEB": "4N",
+          "KLGA": "1L"
+        },
+        "default_consolidation": {
+          "4A": ["4W"]
         }
       },
       "EWF": {
@@ -520,6 +588,9 @@
           "MIP4 LGA background 22/31": "1D",
           "South": "4A",
           "South29": "4A",
+          "South.prop": "4A",
+          "CMK.EWR": "4A",
+          "CMKSATS": "4U",
           "COATE TEB SW": "4P"
         },
         "departure_assignments": {
