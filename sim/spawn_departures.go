@@ -967,11 +967,14 @@ func departureRoute(route string, departureAirport av.ICAOAirportCode, exit av.E
 // dropFlownPrefix removes the leading route waypoints the exit route already
 // flies: the route resumes after the last fix they share, so an exit route
 // that ends at the exit fix doesn't send the aircraft back to a fix behind it.
+// The fix the exit route ends at is the exception: the route keeps its own
+// copy, which av.SpliceRoutes merges into the exit route's, so that the airway
+// the flight leaves the fix on comes along.
 func dropFlownPrefix(routeWps, exitWps av.WaypointArray) av.WaypointArray {
-	for _, exitWp := range slices.Backward(exitWps) {
+	for i, exitWp := range slices.Backward(exitWps) {
 		for j, routeWp := range slices.Backward(routeWps) {
 			if routeWp.Fix == exitWp.Fix {
-				return routeWps[j+1:]
+				return routeWps[j+util.Select(i == len(exitWps)-1, 0, 1):]
 			}
 		}
 	}

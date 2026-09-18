@@ -1616,3 +1616,73 @@ func TestCheckSpeedRange(t *testing.T) {
 		t.Errorf("expected Mach 85 to be rejected, got %q", errs)
 	}
 }
+
+func TestSpliceRoutes(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: map[string][]Airway{"Q167": nil}}
+	t.Cleanup(func() { DB = oldDB })
+
+	parse := func(route string) WaypointArray {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Fatalf("%s: %v", route, err)
+		}
+		return wps
+	}
+	fixes := func(wps WaypointArray) string {
+		return strings.Join(util.MapSlice(wps, func(wp Waypoint) string { return wp.Fix }), " ")
+	}
+
+	// Routes that don't meet at a fix are joined as they are.
+	if got := fixes(SpliceRoutes(parse("BUCYK JSTER SSOXS"), parse("BUZRD SEY"))); got != "BUCYK JSTER SSOXS BUZRD SEY" {
+		t.Errorf("unexpected spliced route %q", got)
+	}
+
+	// The fix they share becomes one waypoint that keeps the exit route's
+	// restriction and the airway the departure's route leaves it on.
+	base, next := parse("BUCYK JSTER SSOXS/a10000-/flyover"), parse("SSOXS Q167 RIFLE")
+	wps := SpliceRoutes(base, next)
+	if got := fixes(wps); got != "BUCYK JSTER SSOXS RIFLE" {
+		t.Errorf("unexpected spliced route %q", got)
+	}
+	if ssoxs := wps[2]; ssoxs.Airway() != "Q167" {
+		t.Errorf("expected the merged fix to keep airway Q167, got %q", ssoxs.Airway())
+	} else if ar := ssoxs.AltitudeRestriction(); ar == nil || ar.Range != [2]float32{0, 10000} {
+		t.Errorf("unexpected merged altitude restriction %+v", ar)
+	} else if !ssoxs.FlyOver() {
+		t.Error("expected the merged fix to still be a flyover")
+	}
+	if base[2].Airway() != "" || next[0].Fix != "SSOXS" {
+		t.Error("expected the routes being spliced to be left alone")
+	}
+
+	// Restrictions both of them give become the range that satisfies each,
+	// unless there is no such range, where the exit route's governs.
+	wps = SpliceRoutes(parse("JSTER SSOXS/a5000+/s250-"), parse("SSOXS/a13000-/s280- BUZRD"))
+	if ar := wps[1].AltitudeRestriction(); ar == nil || ar.Range != [2]float32{5000, 13000} {
+		t.Errorf("unexpected merged altitude restriction %+v", ar)
+	}
+	if sr := wps[1].SpeedRestriction(); sr == nil || sr.Range != [2]float32{0, 250} {
+		t.Errorf("unexpected merged speed restriction %+v", sr)
+	}
+	wps = SpliceRoutes(parse("JSTER SSOXS/a15000+"), parse("SSOXS/a13000- BUZRD"))
+	if ar := wps[1].AltitudeRestriction(); ar == nil || ar.Range != [2]float32{15000, MaxAltitude} {
+		t.Errorf("unexpected merged altitude restriction %+v", ar)
+	}
+
+	// The departure route's actions run after the exit route's own.
+	wps = SpliceRoutes(parse("JSTER SSOXS/h090/@a5000+/ho2J"), parse("SSOXS/ho5W BUZRD"))
+	groups := wps[1].ActionGroups()
+	if len(groups) != 3 {
+		t.Fatalf("expected 3 action groups, got %+v", groups)
+	}
+	if groups[0].Until.Altitude != 5000 || groups[1].Actions.HandoffController != "2J" ||
+		groups[2].Actions.HandoffController != "5W" {
+		t.Errorf("unexpected merged action groups %+v", groups)
+	}
+
+	// A route that names the shared fix more than once collapses into it too.
+	if got := fixes(SpliceRoutes(parse("JSTER SPLNT"), parse("SPLNT SPLNT STOKD"))); got != "JSTER SPLNT STOKD" {
+		t.Errorf("unexpected spliced route %q", got)
+	}
+}

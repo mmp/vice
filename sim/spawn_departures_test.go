@@ -1248,19 +1248,28 @@ func TestDropFlownPrefix(t *testing.T) {
 		},
 		{
 			// An exit route ending at the exit fix must not send the aircraft
-			// back to a fix behind it.
+			// back to a fix behind it. The exit fix itself stays: the splice
+			// merges the two copies of it.
 			name:  "exit route ends at the exit",
 			route: []string{"ELVAE", "NECCK", "WHITE", "CRPLR"},
 			exit:  []string{"KEWR-4L", "NECCK", "WHITE"},
-			want:  []string{"CRPLR"},
+			want:  []string{"WHITE", "CRPLR"},
 		},
 		{
 			// "ATL CUTTN HANKO ..." names the fix the exit route already ends
-			// at; the route resumes past it.
+			// at, so the route keeps it and the two are merged.
 			name:  "route repeats the exit route's last fix",
 			route: []string{"CUTTN", "HANKO", "MEM"},
 			exit:  []string{"KATL-26L", "BDODD", "CUTTN"},
-			want:  []string{"HANKO", "MEM"},
+			want:  []string{"CUTTN", "HANKO", "MEM"},
+		},
+		{
+			// An exit route that carries on past the exit fix has nothing to
+			// merge at its end, so the route resumes past the fix they share.
+			name:  "exit route flies past the exit",
+			route: []string{"WHITE", "CRPLR"},
+			exit:  []string{"KEWR-4L", "NECCK", "WHITE", "PANZE"},
+			want:  []string{"CRPLR"},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

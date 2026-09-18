@@ -383,6 +383,76 @@ func (wp Waypoint) CarryOverActions(prev Waypoint) Waypoint {
 	return wp
 }
 
+// MergeWith returns the one waypoint that stands in for wp and next, which
+// name the same fix, when the route that ends at wp is spliced onto the one
+// that starts at next. It carries what each of them gives: wp's geometry,
+// restrictions, and flags, next's where wp has none, and both of their
+// actions, next's after wp's own. Restrictions the two both give become the
+// range that satisfies each.
+func (wp Waypoint) MergeWith(next Waypoint) Waypoint {
+	wp = wp.Clone()
+	wp.Location = util.Select(wp.Location.IsZero(), next.Location, wp.Location)
+	// The turn is the one onto the leg that reaches the fix, which is wp's.
+	wp.SetTurn(util.Select(wp.Turn() == TurnClosest, next.Turn(), wp.Turn()))
+	wp.Flags |= next.Flags &^ (WaypointFlagTurnLeft | WaypointFlagTurnRight |
+		WaypointFlagHasAltRestriction | WaypointFlagHasSpeedRestriction)
+	wp.VFRPhase = util.Select(wp.VFRPhase == VFRPhaseNone, next.VFRPhase, wp.VFRPhase)
+
+	if ar := next.AltitudeRestriction(); ar != nil {
+		if mine := wp.AltitudeRestriction(); mine == nil {
+			wp.SetAltitudeRestriction(*ar)
+		} else if rng, ok := mine.ClampRange(ar.Range); ok {
+			wp.SetAltitudeRestriction(AltitudeRestriction{NavigationRestriction{Range: rng}})
+		}
+	}
+	if sr := next.SpeedRestriction(); sr != nil {
+		if mine := wp.SpeedRestriction(); mine == nil {
+			wp.SetSpeedRestriction(*sr)
+		} else if rng, ok := mine.ClampRange(sr.Range); ok && mine.IsMach == sr.IsMach {
+			wp.SetSpeedRestriction(SpeedRestriction{NavigationRestriction: NavigationRestriction{Range: rng},
+				IsMach: sr.IsMach})
+		}
+	}
+
+	if next.Extra == nil {
+		return wp
+	}
+
+	x, nx := wp.InitExtra(), next.Extra
+	if x.ProcedureTurn == nil && nx.ProcedureTurn != nil {
+		pt := *nx.ProcedureTurn
+		x.ProcedureTurn = &pt
+	}
+	if x.Arc == nil && nx.Arc != nil {
+		arc := *nx.Arc
+		x.Arc = &arc
+	}
+	x.Airway = util.Select(x.Airway == "", nx.Airway, x.Airway)
+	x.Radius = util.Select(x.Radius == 0, nx.Radius, x.Radius)
+	x.Shift = util.Select(x.Shift == 0, nx.Shift, x.Shift)
+	x.LegOffset = util.Select(x.LegOffset == 0, nx.LegOffset, x.LegOffset)
+	x.AirworkRadius = util.Select(x.AirworkRadius == 0, nx.AirworkRadius, x.AirworkRadius)
+	x.AirworkMinutes = util.Select(x.AirworkMinutes == 0, nx.AirworkMinutes, x.AirworkMinutes)
+	x.ActionGroups = append(x.ActionGroups, nx.ActionGroups...)
+	return wp
+}
+
+// SpliceRoutes joins next onto the end of base, merging the waypoints where
+// they meet--a run of them, if next starts with the same fix more than once.
+// Two waypoints at one fix would leave a zero-length leg between them: the
+// heading out of the first is taken toward the second, which is in the same
+// place, so it comes out north rather than on course and the aircraft turns
+// off the leg that reaches the fix at the wrong point.
+func SpliceRoutes(base, next WaypointArray) WaypointArray {
+	wps := util.DuplicateSlice(base)
+	n := len(wps)
+	for n > 0 && len(next) > 0 && wps[n-1].Fix == next[0].Fix {
+		wps[n-1] = wps[n-1].MergeWith(next[0])
+		next = next[1:]
+	}
+	return append(wps, next...)
+}
+
 // Flag readers (value receiver)
 func (wp Waypoint) NoPT() bool       { return wp.Flags&WaypointFlagNoPT != 0 }
 func (wp Waypoint) FlyOver() bool    { return wp.Flags&WaypointFlagFlyOver != 0 }
