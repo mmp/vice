@@ -98,7 +98,8 @@ import (
 // 87: /delete, /land and /intercept moved from Waypoint.Flags into WaypointActions, renumbering the remaining flags
 // 88: WaypointExtra gained LegOffset, how far along its leg a synthesized waypoint sits
 // 89: departures are chosen when the runway is free rather than sequenced ahead: RunwayLaunchState lost Sequenced and gained PublishedDepartures, DepartureAircraft gained QueuedTime, Sim gained LastExitLaunch
-const ViceSerializeVersion = 89
+// 90: DepartureAircraft gained AirborneTime, when its takeoff-roll simulation lifts off
+const ViceSerializeVersion = 90
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion

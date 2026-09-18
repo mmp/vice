@@ -245,7 +245,7 @@ func (s *Sim) spawnPatternAircraft() {
 		s.addAircraftNoLock(*ac)
 
 		// Record as a departure for sequencing
-		depac := makeDepartureAircraft(ac, now, s.wxModel, 0 /* no wait at the gate */)
+		depac := makeDepartureAircraft(ac, now, 0 /* no wait at the gate */)
 		depac.LaunchTime = now
 		for rwyID, depState := range s.DepartureState[name] {
 			if rwyID.Base() == rwy.Id {

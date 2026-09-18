@@ -304,6 +304,170 @@ func TestHoldForCrossingDeparture(t *testing.T) {
 	}
 }
 
+func TestSameRunwaySameCourseHold(t *testing.T) {
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+
+	// PRV1 and DEP1 both fly straight out east at 0.05 nm/s (180 knots),
+	// lifting off 20 seconds after brake release, 1 nm down the runway.
+	prev := stageDeparture(s, "PRV1", "ODI", now)
+	prev.LaunchTime = now
+	prev.MinSeparation = 30 * time.Second
+	prev.LaunchPath = makeTestLaunchPath(0, 0, 0.05, 0, 121)
+	prev.AirborneTime = 20 * time.Second
+
+	dep := stageDeparture(s, "DEP1", "ALO", now)
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.05, 0, 121)
+	dep.AirborneTime = 20 * time.Second
+
+	// PRV1 is 3 nm from DEP1's liftoff point (1, 0) once it reaches (4, 0),
+	// 80 seconds in, so DEP1 must wait 60 seconds to lift off 20 seconds
+	// after starting its roll.
+	want := 60 * time.Second
+	if base := s.launchInterval(prev, dep); base >= want {
+		t.Fatalf("launchInterval = %v; must be under %v for the test to be meaningful", base, want)
+	}
+	interval := s.sameRunwayLaunchInterval(prev, dep)
+	if interval < want || interval > want+time.Second {
+		t.Errorf("sameRunwayLaunchInterval = %v, want ~%v", interval, want)
+	}
+
+	rwy9.LastDeparture = &prev
+	s.State.SimTime = now.Add(interval - time.Second)
+	if s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: same-course departure released before 3 nm existed")
+	}
+	s.State.SimTime = now.Add(interval)
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: same-course departure held past the required interval")
+	}
+}
+
+func TestSameRunwayDivergingCoursesExempt(t *testing.T) {
+	now := NewSimTime(time.Now())
+	s, _, _ := departureQueueSim(now)
+
+	prev := stageDeparture(s, "PRV1", "ODI", now)
+	prev.LaunchTime = now
+	prev.LaunchPath = makeTestLaunchPath(0, 0, 0.05, 0, 121) // due east
+	prev.AirborneTime = 20 * time.Second
+
+	// DEP1 climbs out about 30 degrees left of PRV1's course.
+	dep := stageDeparture(s, "DEP1", "ALO", now)
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.05, 0.03, 121)
+	dep.AirborneTime = 20 * time.Second
+
+	if got, want := s.sameRunwayLaunchInterval(prev, dep), s.launchInterval(prev, dep); got != want {
+		t.Errorf("sameRunwayLaunchInterval = %v for diverging courses, want the base interval %v", got, want)
+	}
+}
+
+func TestSameRunwayWakeAlwaysApplies(t *testing.T) {
+	now := NewSimTime(time.Now())
+	s, _, _ := departureQueueSim(now)
+
+	// A heavy leader, with both aircraft fast enough that the 3 nm delay is
+	// small compared to the wake turbulence interval.
+	prev := stageDeparture(s, "PRV1", "ODI", now)
+	s.Aircraft["PRV1"].FlightPlan.AircraftType = "B744"
+	prev.LaunchTime = now
+	prev.MinSeparation = 10 * time.Second
+	prev.LaunchPath = makeTestLaunchPath(0, 0, 0.1, 0, 121)
+	prev.AirborneTime = 10 * time.Second
+
+	dep := stageDeparture(s, "DEP1", "ALO", now)
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.1, 0, 121)
+	dep.AirborneTime = 10 * time.Second
+
+	wtDist := av.CWTDirectlyBehindSeparation(s.Aircraft["PRV1"].CWT(), s.Aircraft["DEP1"].CWT())
+	if wtDist == 0 {
+		t.Fatal("expected wake turbulence separation behind a B744")
+	}
+	want := time.Duration(wtDist / 3.5 * float32(time.Minute))
+	if got := s.sameRunwayLaunchInterval(prev, dep); got != want {
+		t.Errorf("sameRunwayLaunchInterval = %v, want the wake interval %v", got, want)
+	}
+
+	// Diverging courses don't waive wake separation.
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.1, 0.06, 121)
+	if got := s.sameRunwayLaunchInterval(prev, dep); got != want {
+		t.Errorf("sameRunwayLaunchInterval = %v for diverging courses, want the wake interval %v", got, want)
+	}
+}
+
+func TestSameRunwayLaunchIntervalGuards(t *testing.T) {
+	now := NewSimTime(time.Now())
+	s, _, _ := departureQueueSim(now)
+
+	prev := stageDeparture(s, "PRV1", "ODI", now)
+	prev.LaunchTime = now
+	prev.LaunchPath = makeTestLaunchPath(0, 0, 0.05, 0, 121)
+	prev.AirborneTime = 20 * time.Second
+
+	dep := stageDeparture(s, "DEP1", "ALO", now)
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.05, 0, 121)
+	dep.AirborneTime = 20 * time.Second
+
+	base := s.launchInterval(prev, dep)
+
+	// Liftoff time unknown for the follower.
+	noLiftoff := dep
+	noLiftoff.AirborneTime = 0
+	if got := s.sameRunwayLaunchInterval(prev, noLiftoff); got != base {
+		t.Errorf("sameRunwayLaunchInterval = %v with unknown liftoff time, want %v", got, base)
+	}
+
+	// No launch path for the leader.
+	noPath := prev
+	noPath.LaunchPath = nil
+	if got := s.sameRunwayLaunchInterval(noPath, dep); got != base {
+		t.Errorf("sameRunwayLaunchInterval = %v with no leader path, want %v", got, base)
+	}
+
+	// A pair involving a VFR is separated visually.
+	s.Aircraft["PRV1"].FlightPlan.Rules = av.FlightRulesVFR
+	if got := s.sameRunwayLaunchInterval(prev, dep); got != base {
+		t.Errorf("sameRunwayLaunchInterval = %v with a VFR leader, want %v", got, base)
+	}
+}
+
+func TestSameRunwaySlowLeaderExtrapolates(t *testing.T) {
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+
+	// A slow leader at 0.02 nm/s ends its 120 second path 2.4 nm out, only
+	// 2 nm from the follower's liftoff point at (0.4, 0), so the delay
+	// comes from extrapolating at its final speed: 3 nm exist 170 seconds
+	// in, and the follower lifts off 20 seconds after starting to roll.
+	prev := stageDeparture(s, "PRV1", "ODI", now)
+	prev.LaunchTime = now
+	prev.LaunchPath = makeTestLaunchPath(0, 0, 0.02, 0, 121)
+	prev.AirborneTime = 20 * time.Second
+
+	dep := stageDeparture(s, "DEP1", "ALO", now)
+	dep.LaunchPath = makeTestLaunchPath(0, 0, 0.02, 0, 121)
+	dep.AirborneTime = 20 * time.Second
+
+	want := 150 * time.Second
+	if base := s.launchInterval(prev, dep); base >= want {
+		t.Fatalf("launchInterval = %v; must be under %v for the test to be meaningful", base, want)
+	}
+	interval := s.sameRunwayLaunchInterval(prev, dep)
+	if interval < want-time.Second || interval > want+time.Second {
+		t.Errorf("sameRunwayLaunchInterval = %v, want ~%v", interval, want)
+	}
+
+	rwy9.LastDeparture = &prev
+	s.State.SimTime = now.Add(interval - time.Second)
+	if s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: released before the extrapolated 3 nm exists")
+	}
+	s.State.SimTime = now.Add(interval)
+	if !s.departureSpaced(rwy9, dep, "XTST", "9") {
+		t.Error("departureSpaced: held past the extrapolated interval")
+	}
+}
+
 func TestSamePavementRunways(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 

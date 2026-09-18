@@ -34,6 +34,12 @@ type AtmosResult struct {
 	Err      error
 }
 
+// MakeCalmModel returns a Model with no weather data, so all lookups return
+// the standard atmosphere with no wind.
+func MakeCalmModel() *Model {
+	return &Model{}
+}
+
 func MakeModel(provider *Provider, facility string, station string, startTime time.Time, lg *log.Logger) *Model {
 	m := &Model{
 		provider: provider,

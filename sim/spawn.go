@@ -81,10 +81,14 @@ type DepartureAircraft struct {
 	// point at which the aircraft lifts off; negative if it wasn't airborne
 	// within the horizon of the takeoff-roll simulation.
 	AirborneDistance float32
-	LaunchPath       []math.Point2LL // position at 1s intervals after the takeoff roll starts
-	SpawnTime        Time            // when it was first spawned
-	QueuedTime       Time            // when it joined the runway's queue of departures holding short
-	LaunchTime       Time            // when it was actually launched; used for wake turbulence separation, etc.
+	// AirborneTime is the estimated time after the start of the takeoff
+	// roll at which the aircraft lifts off; zero if it wasn't airborne
+	// within the horizon of the takeoff-roll simulation.
+	AirborneTime time.Duration
+	LaunchPath   []math.Point2LL // position at 1s intervals after the takeoff roll starts
+	SpawnTime    Time            // when it was first spawned
+	QueuedTime   Time            // when it joined the runway's queue of departures holding short
+	LaunchTime   Time            // when it was actually launched; used for wake turbulence separation, etc.
 
 	// When they're ready to leave the gate
 	ReadyDepartGateTime Time
@@ -535,7 +539,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 }
 
 func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, gateDelay time.Duration) {
-	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel, gateDelay)
+	depac := makeDepartureAircraft(ac, s.State.SimTime, gateDelay)
 
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)

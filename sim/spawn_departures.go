@@ -357,7 +357,7 @@ func (s *Sim) departureSpaced(depState *RunwayLaunchState, dep DepartureAircraft
 
 	// Check if enough time has passed since the last departure
 	if depState.LastDeparture != nil &&
-		now.Sub(depState.LastDeparture.LaunchTime) < s.launchInterval(*depState.LastDeparture, dep) {
+		now.Sub(depState.LastDeparture.LaunchTime) < s.sameRunwayLaunchInterval(*depState.LastDeparture, dep) {
 		return false
 	}
 
@@ -473,8 +473,10 @@ func (s *Sim) departureHasPassedPoint(dep DepartureAircraft, airport av.ICAOAirp
 	return d > buffer
 }
 
-// launchInterval returns the amount of time we must wait before launching
-// cur, if prev was the last aircraft launched from the same pavement.
+// launchInterval returns the base amount of time--runway occupancy plus
+// wake turbulence--we must wait before launching cur, if prev was the last
+// aircraft launched from the same pavement. Same-course in-trail separation
+// for same-pavement pairs is layered on in sameRunwayLaunchInterval.
 // Spacing for the gate cur goes out over is handled separately, in
 // departureSpaced: it doesn't depend on which runway flew prev.
 func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
@@ -500,6 +502,99 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft) time.Duration {
 	}
 
 	return wait
+}
+
+// sameCourseSeparation is the separation that must exist between successive
+// departures off the same pavement at the moment the trailing one lifts off
+// when their climbout courses do not diverge (7110.65 5-8-3).
+const sameCourseSeparation = 3.0 // nm
+
+// minDivergentCourseAngle is the angle by which successive departures'
+// climbout courses must differ to count as diverging (7110.65 5-8-3),
+// exempting the trailing one from in-trail separation at liftoff. The
+// regulation says 15 degrees; measuring courses from the simulated paths
+// can blur a charted split by a degree, so a little slop keeps procedures
+// designed with exactly 15 degrees of divergence from being
+// mischaracterized.
+const minDivergentCourseAngle = 14 // degrees
+
+// climboutCourseDelay is how long after liftoff the climbout course is
+// measured from, allowing the initial turn off runway heading to finish.
+const climboutCourseDelay = 45 * time.Second
+
+// sameRunwayLaunchInterval returns how long after prev began its takeoff
+// roll cur may begin its own when prev was the last departure off cur's
+// pavement: the basic launch interval, extended for an IFR pair whose
+// climbout courses don't diverge so that sameCourseSeparation will exist
+// between them when cur lifts off.
+func (s *Sim) sameRunwayLaunchInterval(prev, cur DepartureAircraft) time.Duration {
+	wait := s.launchInterval(prev, cur)
+
+	pac, pok := s.Aircraft[prev.ADSBCallsign]
+	cac, cok := s.Aircraft[cur.ADSBCallsign]
+	if !pok || !cok || pac.FlightPlan.Rules != av.FlightRulesIFR || cac.FlightPlan.Rules != av.FlightRulesIFR {
+		return wait // visual separation covers a pair involving a VFR
+	}
+	if climboutCoursesDiverge(prev, cur, s.State.NmPerLongitude) {
+		return wait
+	}
+	if delay, ok := sameCourseLaunchDelay(prev, cur); ok {
+		wait = max(wait, delay)
+	}
+	return wait
+}
+
+// climboutCourse returns the departure's ground track once established on
+// its climbout, measured from shortly after liftoff--past the initial turn
+// off runway heading--to the end of its precomputed launch path; ok is
+// false if the path is too short past liftoff to measure it.
+func climboutCourse(dep DepartureAircraft, nmPerLongitude float32) (math.TrueHeading, bool) {
+	i0 := int((dep.AirborneTime + climboutCourseDelay) / time.Second)
+	i1 := len(dep.LaunchPath) - 1
+	if dep.AirborneTime == 0 || i1-i0 < 15 {
+		return 0, false
+	}
+	return math.Heading2LL(dep.LaunchPath[i0], dep.LaunchPath[i1], nmPerLongitude), true
+}
+
+// climboutCoursesDiverge reports whether the two departures' climbout
+// courses diverge by at least minDivergentCourseAngle; if either course
+// can't be measured it conservatively reports false.
+func climboutCoursesDiverge(prev, cur DepartureAircraft, nmPerLongitude float32) bool {
+	ph, pok := climboutCourse(prev, nmPerLongitude)
+	ch, cok := climboutCourse(cur, nmPerLongitude)
+	return pok && cok && math.HeadingDifference(ph, ch) >= minDivergentCourseAngle
+}
+
+// sameCourseLaunchDelay returns how long after prev began its takeoff roll
+// cur must wait to begin its own so that prev will be sameCourseSeparation
+// away at the moment cur lifts off. Launch path samples are at one-second
+// intervals from the start of the takeoff roll, so index k is prev's
+// position k seconds after prev's LaunchTime.
+func sameCourseLaunchDelay(prev, cur DepartureAircraft) (time.Duration, bool) {
+	ja := int(cur.AirborneTime / time.Second)
+	if cur.AirborneTime == 0 || ja >= len(cur.LaunchPath) || len(prev.LaunchPath) < 2 {
+		return 0, false
+	}
+	liftoff := cur.LaunchPath[ja]
+
+	if k := slices.IndexFunc(prev.LaunchPath, func(p math.Point2LL) bool {
+		return math.NMDistance2LL(p, liftoff) >= sameCourseSeparation
+	}); k != -1 {
+		return time.Duration(max(0, k-ja)) * time.Second, true
+	}
+
+	// prev doesn't open sameCourseSeparation within its path's horizon;
+	// extrapolate at its final groundspeed. Since the pair is in trail,
+	// prev is flying essentially straight away from cur's liftoff point.
+	n := len(prev.LaunchPath)
+	step := math.NMDistance2LL(prev.LaunchPath[n-2], prev.LaunchPath[n-1]) // nm per second
+	if step == 0 {
+		return 0, false
+	}
+	short := sameCourseSeparation - math.NMDistance2LL(prev.LaunchPath[n-1], liftoff)
+	reach := float32(n-1) + short/step
+	return time.Duration(math.Ceil(reach-float32(ja))) * time.Second, true
 }
 
 // errNoVFRDestination is returned when arrivals are backed up at every
@@ -1418,7 +1513,7 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 	return ac, err
 }
 
-func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, gateDelay time.Duration) DepartureAircraft {
+func makeDepartureAircraft(ac *Aircraft, simTime Time, gateDelay time.Duration) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign:        ac.ADSBCallsign,
 		SpawnTime:           simTime,
@@ -1427,7 +1522,12 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, gateDela
 
 	// Simulate out the takeoff roll and initial climb to figure out when
 	// we'll have sufficient separation to launch the next aircraft and to
-	// record the aircraft's initial flight path.
+	// record the aircraft's initial flight path. The simulation uses calm
+	// wind so that the courses measured from the paths reflect the charted
+	// departure procedures: controllers judge divergence from what's
+	// charted, and wind drift varying with each aircraft's spawn time and
+	// speed would otherwise blur it.
+	model := wx.MakeCalmModel()
 	simAc := *ac
 	start := ac.Position()
 	const nsteps = 120
@@ -1441,6 +1541,7 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, gateDela
 		d.LaunchPath = append(d.LaunchPath, simAc.Position())
 		if d.AirborneDistance < 0 && simAc.IsAirborne() {
 			d.AirborneDistance = math.NMDistance2LL(start, simAc.Position())
+			d.AirborneTime = time.Duration(i+1) * time.Second
 		}
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if !minSepSet && simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
