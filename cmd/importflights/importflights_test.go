@@ -54,10 +54,17 @@ func TestParseRoute(t *testing.T) {
 	}
 }
 
-// at and over are the two ways an end of a track comes out: the aircraft was at
-// the airport, or the airport was merely the nearest of several candidates.
-func at(airport av.ICAOAirportCode) endpoint   { return endpoint{airport: airport, atAirport: true} }
-func over(airport av.ICAOAirportCode) endpoint { return endpoint{airport: airport} }
+// The three ways an end of a track comes out. at is the aircraft operating at
+// the airport.
+func at(airport av.ICAOAirportCode) endpoint { return endpoint{airport: airport, atAirport: true} }
+
+// near is an end the flight didn't operate at but began or finished beside, so
+// it still says where the far end of someone else's flight was; crossing is one
+// the track was only passing, which says nothing at all.
+func near(airport av.ICAOAirportCode) endpoint { return endpoint{airport: airport} }
+func crossing(airport av.ICAOAirportCode) endpoint {
+	return endpoint{airport: airport, enroute: true}
+}
 
 func TestResolveEndpoints(t *testing.T) {
 	for _, tc := range []struct {
@@ -126,7 +133,7 @@ func TestResolveEndpoints(t *testing.T) {
 			// flight.
 			name:   "clustered origin, at altitude",
 			origin: aloft(vanNuys, 6000, "KBUR", "KVNY", "KWHP"), destination: noTrack("KMSP"),
-			from: over("KVNY"), to: at("KMSP"),
+			from: near("KVNY"), to: at("KMSP"),
 		},
 		{
 			// Without the itinerary coming first this would resolve to Van
@@ -152,12 +159,28 @@ func TestResolveEndpoints(t *testing.T) {
 			// be at a height something operating there could be at.
 			name:   "lone candidate at cruise",
 			origin: aloft(vanNuys, 37000, "KVNY"), destination: noTrack("KMSP"),
-			from: over("KVNY"), to: at("KMSP"),
+			from: crossing("KVNY"), to: at("KMSP"),
 		},
 		{
 			name:   "lone candidate climbing out",
 			origin: aloft(vanNuys, 5000, "KVNY"), destination: noTrack("KMSP"),
 			from: at("KVNY"), to: at("KMSP"),
+		},
+		{
+			// Low enough not to be enroute, but far enough away that the track
+			// stopped somewhere else entirely. Minneapolis is the only airport
+			// the source found, and the flight never reached it.
+			name:   "lone candidate a long way off",
+			origin: onGround(vanNuys, "KVNY"), destination: aloft(offMinneapolis, 10000, "KMSP"),
+			from: at("KVNY"), to: crossing("KMSP"),
+		},
+		{
+			// Los Angeles to Mexico City, whose track fades over Sonora with
+			// Guaymas the one airport underneath. The itinerary knows where it
+			// was going and the track has nothing to say against it.
+			name:   "the far end faded mid-flight",
+			origin: onGround(vanNuys, "KVNY"), destination: aloft(minneapolis, 35000, "KMSP"),
+			route: []av.ICAOAirportCode{"KVNY", "KLAS"}, from: at("KVNY"), to: at("KLAS"),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -343,6 +366,9 @@ var testAirports = map[av.ICAOAirportCode]av.FAAAirport{
 var (
 	vanNuys     = testAirports["KVNY"].Location
 	minneapolis = testAirports["KMSP"].Location
+	// Half a degree of latitude north of Minneapolis: thirty miles, far enough
+	// that a track ending there ended somewhere else.
+	offMinneapolis = math.Point2LL{minneapolis[0], minneapolis[1] + 0.5}
 )
 
 // onGround builds a track end for an aircraft the source data saw on the ground
@@ -617,7 +643,8 @@ func TestSkipCounters(t *testing.T) {
 	}
 
 	// The aircraft was crossing over the airport at altitude, so nothing
-	// happened there to record; where it landed is unaffected.
+	// happened there to record--and nothing says where the flight that landed
+	// at Chicago came from either, since the track began in the middle of it.
 	imp = makeTestImporter(t)
 	row = base
 	blank(&row)
@@ -633,8 +660,25 @@ func TestSkipCounters(t *testing.T) {
 	if n := len(imp.buckets[bucket{cell: cellOf("KMSP"), departure: true}]); n != 0 {
 		t.Errorf("KMSP has %d departures, expected none", n)
 	}
-	if n := len(imp.buckets[bucket{cell: cellOf("KORD")}]); n != 1 {
-		t.Errorf("KORD has %d arrivals, expected 1", n)
+	if imp.noFarEndpoint != 1 {
+		t.Errorf("noFarEndpoint = %d, expected 1", imp.noFarEndpoint)
+	}
+	if n := len(imp.buckets[bucket{cell: cellOf("KORD")}]); n != 0 {
+		t.Errorf("KORD has %d arrivals, expected none: Minneapolis is not where it came from", n)
+	}
+
+	// The same flight with its callsign's itinerary to go on keeps the arrival:
+	// a track that began at altitude contradicts nothing about where the flight
+	// was really going between.
+	imp = makeTestImporter(t)
+	row.Route = "KLAS-KORD"
+	imp.processRow(&row)
+	arrivals := imp.buckets[bucket{cell: cellOf("KORD")}]
+	if len(arrivals) != 1 {
+		t.Fatalf("KORD has %d arrivals, expected 1", len(arrivals))
+	}
+	if got := imp.symbols.string(arrivals[0].other); got != "KLAS" {
+		t.Errorf("arrived from %q, expected KLAS", got)
 	}
 }
 

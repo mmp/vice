@@ -302,12 +302,12 @@ func (imp *importer) processRow(row *flightRow) {
 	}
 
 	// A record is filed at an airport only if the track says the aircraft was
-	// really there. The airport at the other end only has to be in the right
-	// direction, since all a sim does with it is pick a departure gate or the
-	// flow an arrival comes in on, so a flight whose far end is merely the
-	// nearest of several candidates is still worth having.
-	departure := atOrigin && from.atAirport && to.known()
-	arrival := atDestination && to.atAirport && from.known()
+	// really there, and only if the other end is somewhere it went: a flight
+	// whose far end is merely the nearest of several candidates is still worth
+	// having, but one whose far end is an airport it crossed at altitude is a
+	// city pair that never happened.
+	departure := atOrigin && from.atAirport && to.usable()
+	arrival := atDestination && to.atAirport && from.usable()
 	if atOrigin && !departure {
 		imp.countUnfiled(from, origin)
 	}

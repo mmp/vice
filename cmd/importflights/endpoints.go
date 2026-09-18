@@ -11,7 +11,6 @@ package main
 
 import (
 	gomath "math"
-	"slices"
 	"strconv"
 	"strings"
 
@@ -35,15 +34,26 @@ type trackEnd struct {
 	onGround    bool
 }
 
-// endpoint is where one end of a track has been placed: the airport, and
-// whether the aircraft was there rather than merely passing over it. An empty
-// airport means there was nothing to place it with at all.
+// endpoint is where one end of a track has been placed: the airport, whether
+// the aircraft was there rather than merely passing over it, and whether the
+// track was only crossing the area at all. An empty airport means there was
+// nothing to place it with at all.
 type endpoint struct {
 	airport   av.ICAOAirportCode
 	atAirport bool
+	enroute   bool
 }
 
 func (e endpoint) known() bool { return e.airport != "" }
+
+// usable reports whether the endpoint is somewhere to record as the far end of
+// a flight. The far end need not be pinned down to the right one of a cluster,
+// since all a sim does with it is pick a departure gate or the flow an arrival
+// comes in on; a departure climbing out of the San Fernando Valley came from
+// near enough to Van Nuys whichever of the three fields it used. What it cannot
+// be is an airport the track was only crossing, which is nowhere the flight
+// went.
+func (e endpoint) usable() bool { return e.known() && !e.enroute }
 
 // parseTrackEnd gathers what the source data says about one end of a track.
 func parseTrackEnd(airports, latitude, longitude, altitude string) trackEnd {
@@ -139,6 +149,23 @@ func (e trackEnd) overflying(ap av.FAAAirport) bool {
 	return e.hasHeight && e.height > float32(ap.Elevation)+maxOverflightHeight
 }
 
+// endedAt reports whether the track ended somewhere the flight plausibly began
+// or finished rather than at a point it was crossing. It asks less than at()
+// does: which field of a cluster hardly matters for the far end of someone
+// else's flight, and an aircraft already climbing away has still just left. But
+// a track that simply stopped has to be told from one that arrived, and how far
+// off the airport was is what tells them apart--without it, Los Angeles to
+// Mexico City fades over Sonora and lands at Guaymas.
+func (e trackEnd) endedAt(ap av.FAAAirport) bool {
+	if e.overflying(ap) {
+		return false
+	}
+	if !e.hasPosition {
+		return true // nothing to judge the distance by, so its word is all there is
+	}
+	return math.NMDistance2LL(e.position, ap.Location) <= maxGroundDistance
+}
+
 // resolveEndpoint places one end of a track from the track alone: the candidate
 // airport nearest the point the aircraft was seen at, and whether it was
 // plausibly there.
@@ -152,27 +179,45 @@ func resolveEndpoint(e trackEnd, airports map[av.ICAOAirportCode]av.FAAAirport) 
 	if len(e.candidates) == 1 {
 		icao := e.candidates[0]
 		ap, ok := airports[icao]
-		return endpoint{airport: icao, atAirport: !ok || !e.overflying(ap)}
+		if !ok {
+			return endpoint{airport: icao, atAirport: true}
+		}
+		ended := e.endedAt(ap)
+		return endpoint{airport: icao, atAirport: ended, enroute: !ended}
 	}
 
 	icao, ap, distance, ok := e.nearest(airports)
 	if !ok {
 		return endpoint{}
 	}
-	return endpoint{airport: icao, atAirport: e.at(ap, distance)}
+	return endpoint{airport: icao, atAirport: e.at(ap, distance), enroute: !e.endedAt(ap)}
+}
+
+// settles is the airport the track on its own places this end at, and whether
+// it places the aircraft at one rather than over it. Only an end that does has
+// anything to say about the itinerary: one that faded at altitude names
+// whatever happened to be underneath, which is no reason to disbelieve where
+// the flight was going.
+func (e trackEnd) settles(airports map[av.ICAOAirportCode]av.FAAAirport) (av.ICAOAirportCode, bool) {
+	placed := resolveEndpoint(e, airports)
+	return placed.airport, placed.known() && placed.atAirport
 }
 
 // routeEndpoints places whichever ends the itinerary agrees on, considering the
-// legs that fit the airports the track itself suggests. A round trip leaves the
+// legs that fit the airports the track itself settles. A round trip leaves the
 // end it returns to undecided while still deciding the other one.
-func routeEndpoints(route, origins, destinations []av.ICAOAirportCode) (from, to endpoint) {
+func routeEndpoints(route []av.ICAOAirportCode, origin, destination trackEnd,
+	airports map[av.ICAOAirportCode]av.FAAAirport) (from, to endpoint) {
+	settledFrom, fromSettled := origin.settles(airports)
+	settledTo, toSettled := destination.settles(airports)
+
 	matched := false
 	for i := 0; i+1 < len(route); i++ {
 		f, t := route[i], route[i+1]
-		if len(origins) > 0 && !slices.Contains(origins, f) {
+		if fromSettled && f != settledFrom {
 			continue
 		}
-		if len(destinations) > 0 && !slices.Contains(destinations, t) {
+		if toSettled && t != settledTo {
 			continue
 		}
 		if !matched {
@@ -200,7 +245,7 @@ func routeEndpoints(route, origins, destinations []av.ICAOAirportCode) (from, to
 // outright.
 func resolveEndpoints(origin, destination trackEnd, route []av.ICAOAirportCode,
 	airports map[av.ICAOAirportCode]av.FAAAirport) (from, to endpoint) {
-	from, to = routeEndpoints(route, origin.candidates, destination.candidates)
+	from, to = routeEndpoints(route, origin, destination, airports)
 	if !from.known() {
 		from = resolveEndpoint(origin, airports)
 	}

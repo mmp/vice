@@ -60,7 +60,7 @@ func makeCalibration() *calibration {
 // resolveEndpoints consults it, so that what is measured is what would be used.
 func (c *calibration) observe(origin, destination trackEnd, route []av.ICAOAirportCode,
 	airports map[av.ICAOAirportCode]av.FAAAirport) {
-	from, to := routeEndpoints(route, origin.candidates, destination.candidates)
+	from, to := routeEndpoints(route, origin, destination, airports)
 	c.observeEnd(origin, from, airports)
 	c.observeEnd(destination, to, airports)
 }
