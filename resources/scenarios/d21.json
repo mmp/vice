@@ -2366,7 +2366,7 @@
       "arrivals": [
         {
           "spawn": "COLTS",
-          "waypoint_actions": { "OKLND": "ho" },
+          "waypoint_actions": { "OKLND": "t272/ho" },
           "star": "OKLND1",
           "initial_controller": "C48",
           "initial_altitude": 26000,

@@ -4849,10 +4849,10 @@
                   <tr>
                     <td>"waypoint_actions"</td>
                     <td>Object</td>
-                    <td>(<i>Optional</i>) With a route taken from the CIFP, actions to take at its fixes, such as
+                    <td>(<i>Optional</i>) With a route taken from the CIFP, options to apply at its fixes, such as
                       handoffs and point outs for virtually-controlled aircraft.
                       Each member's name is a fix on the route&mdash;optionally with an offset along the leg
-                      after it&mdash;and its value is a comma-separated list of actions; see below.</td>
+                      after it&mdash;and its value gives the fix's options in route syntax; see below.</td>
                   </tr>
                   <tr>
                     <td>"waypoints"</td>
@@ -4917,11 +4917,13 @@
                 here supersedes the SID's charted legs at the departure end of the runway the same way
                 "initial_heading" does; altitude and speed restrictions (e.g., <code>/s210</code>) apply
                 from the turn as well.</p>
-              <p>Third, "waypoint_actions" adds <a href="#fe-route-actions">actions</a> to the SID's fixes:
-                  handoffs, point outs, scratchpad settings, and altitudes for virtually-controlled aircraft
-                  described above. It is an object where member's name is a fix on the route and its value
-                  is a string that lists the actions to take on passing the fix, separated by commas and without the slashes they
-                would have in "waypoints". For example given the route
+              <p>Third, "waypoint_actions" gives the SID's fixes options of its own, written the same way a
+                fix's options are written in "waypoints"&mdash;separated by slashes, but with no leading
+                slash. A value may give <a href="#fe-route-actions">actions</a> (handoffs, point outs,
+                scratchpad settings, and altitudes for virtually-controlled aircraft described above),
+                <a href="#fe-route-triggers">triggers</a>, altitude and speed restrictions, and
+                <code>/flyover</code>. It is an object where each member's name is a fix on the route and its
+                value is applied at that fix. For example given the route
                 <code>KSFO-10L/h284/@a513+ GNNRR/a2500+ BEBOP</code>, if we want to initiate a handoff to C35
                 at GNNRR, we could specify:
               </p>
@@ -4936,19 +4938,22 @@
     ...
               </pre>
               <p>
-                If a fix has <a href="#fe-route-triggers">triggers</a>, the actions may instead be taken when
-                one of them is met: the "waypoint_actions" member name is then the fix followed by its triggers, up to and
-                including the one to wait for. In the GNNRR3 above, <code>"KSFO-10L": "hoC35"</code> hands off
-                as the aircraft climbs through 400' above the field and takes up the leg
-                (<code>KSFO-10L/h284/hoC35/@a513+</code>), while <code>"KSFO-10L/@a513+": "hoC35"</code> hands
-                off once it has climbed through 513' (<code>KSFO-10L/h284/@a513+/hoC35</code>).</p>
+                A value's action groups replace any the CIFP charts at the fix, so it is necessary to restate any charted ones that are to be kept
+                (though a value that gives no actions or triggers at all leaves the charted groups as they are);
+                however, an altitude or speed restriction replaces the charted restriction of its
+                kind, and <code>/flyover</code> marks the fix as flown directly over. In the GNNRR3 above,
+                KSFO-10L's charted leg is heading 284 until 513': <code>"KSFO-10L": "h284/hoC35/@a513+"</code>
+                hands off as the aircraft climbs through 400' above the field and takes up the leg,
+                <code>"KSFO-10L": "h284/@a513+/hoC35"</code> hands off once it has climbed through 513', and
+                <code>"KSFO-10L": "hoC35"</code> replaces the charted leg entirely: the aircraft turns on
+                course at 400' and hands off there.</p>
               <p>
                 The actions may also be taken partway along the leg that follows a fix rather than at the fix
                 itself. In that case, the member name is the fix followed by an offset, written the same way an
                 arrival's <a href="#fe-arrivals-section">"spawn"</a> gives one but greater than 0. In the GNNRR3
                 above, <code>"GNNRR@.75": "hoC35"</code> hands off three quarters of the way from GNNRR to BEBOP.
-                The fix must have another after it on the route, and an offset cannot be given along with a
-                trigger.
+                The fix must have another after it on the route, and the value may then give only actions and
+                triggers.
               </p>
               <p>None of "initial_heading", "climbout_actions", and "waypoint_actions" may be given
                 together with "waypoints". (As everything they do can be specified directly with the waypoint fixes.) 
@@ -5300,18 +5305,20 @@
                   <tr>
                     <td>"waypoint_actions"</td>
                     <td>Object</td>
-                    <td>(<i>Optional</i>) Actions to take at the fixes of the STAR's route, such as handoffs and
+                    <td>(<i>Optional</i>) Options to apply at the fixes of the STAR's route, such as handoffs and
                       point outs for virtually-controlled aircraft. Each member's name is a fix on the
-                      route&mdash;optionally with an offset along the leg after it&mdash;and its value is a
-                      comma-separated list of actions; see below.</td>
+                      route&mdash;optionally with an offset along the leg after it&mdash;and its value gives
+                      the fix's options in route syntax; see below.</td>
                   </tr>
                 </tbody>
               </table>
-              <p>"waypoint_actions" adds <a href="#fe-route-actions">actions</a> to the fixes of the route the CIFP
-                gives, so that a STAR flown as charted doesn't have to be written out by hand just to say where the
-                aircraft is handed off. It is an object where each member's name is a fix on the route and its value
-                lists the actions to take on passing the fix, separated by commas and without the slashes they would
-                have in "waypoints". Given the APPLE3 above, to hand off at BRAND and set the scratchpad at KORRY:</p>
+              <p>"waypoint_actions" gives the fixes of the route taken from the CIFP options of its own, so that
+                a STAR flown as charted doesn't have to be written out by hand just to say where the aircraft is
+                handed off. It is an object where each member's name is a fix on the route and its value gives
+                the fix's options the same way "waypoints" writes them&mdash;separated by slashes, but with no
+                leading slash: <a href="#fe-route-actions">actions</a>, <a href="#fe-route-triggers">triggers</a>,
+                altitude and speed restrictions, and <code>/flyover</code>. Given the APPLE3 above, to hand off
+                at BRAND and set the scratchpad at KORRY:</p>
               <pre>
 "APPLE3": {
   "arrivals": [
@@ -5321,17 +5328,20 @@
       "waypoint_actions": { "BRAND": "ho", "KORRY": "spspAPP" },
       ...
               </pre>
-              <p>A fix may be on the arrival's own route or on one of the STAR's runway transitions; an action at the
-                fix where the two meet is taken on each of them. If a fix has <a href="#fe-route-triggers">triggers</a>,
-                the actions may instead be taken when one of them is met: the member's name is then the fix followed by
-                its triggers, up to and including the one to wait for.</p>
+              <p>A fix may be on the arrival's own route or on one of the STAR's runway transitions; a value at the
+                fix where the two meet applies on each of them. If a value gives any actions or triggers, its
+                action groups replace the ones the CIFP charts at the fix&mdash;a STAR that ends in charted
+                vectors keeps them only if the value restates them&mdash;while a value of restrictions or
+                <code>/flyover</code> alone leaves the charted groups as they are. An altitude or speed
+                restriction replaces the charted restriction of its kind and <code>/flyover</code> marks the
+                fix as flown directly over.</p>
               <p>
                 The actions may also be taken partway along the leg that follows a fix rather than at the
                 fix itself. The member name is then the fix followed by an offset, written the same way
                 "spawn" above gives one but greater than 0: given the APPLE3, <code>"BRAND@.75": "ho"</code>
-                hands off three quarters of the way from BRAND to KORRY. An offset cannot be given along
-                with a trigger. The leg must also be a straight one: there is no point partway along a DME
-                arc that lies between the two fixes.</p>
+                hands off three quarters of the way from BRAND to KORRY. The value may then give only actions
+                and triggers. The leg must also be a straight one: there is no point partway along a DME arc
+                that lies between the two fixes.</p>
               <p>An offset at the fix where the arrival's own route meets the STAR's runway transitions is
                 measured along each transition separately, since they run on to different fixes, and so is
                 only flown once an approach has been expected or assigned. The fix must have another after

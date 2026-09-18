@@ -2332,7 +2332,7 @@
       "arrivals": [
         {
           "spawn": "NUGGY",
-          "waypoint_actions": { "CAVDI": "delete", "NAYES": "delete", "TROYZ": "ho" },
+          "waypoint_actions": { "CAVDI": "h187/delete", "NAYES": "h327/delete", "TROYZ": "ho" },
           "star": "CLIPR3",
           "initial_controller": "N26",
           "initial_altitude": 17000,

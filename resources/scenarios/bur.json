@@ -1570,7 +1570,7 @@
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
             "departure_controller": "6N",
-            "waypoints": "KSMO-3/h213/c8000/@crs260 WRASH/ho1M CTRUS/a5000+ DZINE/s250- OROSZ SHORS MDWAY COREZ"
+            "waypoint_actions": { "KSMO-3": "h213/c8000/@crs260", "WRASH": "ho1M" }
           },
           "CSTRO": {
             "cleared_altitude": 3000,
@@ -1578,7 +1578,7 @@
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"],
             "departure_controller": "6N",
-            "waypoints": "KSMO-3/h213/c8000/@crs260 WRASH/ho1M CTRUS/a5000+ DZINE/s250- OROSZ HEYJO CSTRO"
+            "waypoint_actions": { "KSMO-3": "h213/c8000/@crs260", "WRASH": "ho1M" }
           },
           "HEC,MISEN,LAS": {
             "cleared_altitude": 3000,

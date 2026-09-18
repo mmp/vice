@@ -3180,7 +3180,7 @@
       "arrivals": [
         {
           "spawn": "KAELA",
-          "waypoint_actions": { "FOOLZ": "ho", "RAAAF": "delete" },
+          "waypoint_actions": { "FOOLZ": "ho", "RAAAF": "h303/delete" },
           "star": "BMBER1",
           "initial_controller": "C15",
           "initial_altitude": 26000,
@@ -3214,7 +3214,7 @@
       "arrivals": [
         {
           "spawn": "OAKES",
-          "waypoint_actions": { "OAKES": "ho", "RAAAF": "delete" },
+          "waypoint_actions": { "OAKES": "ho", "RAAAF": "h303/delete" },
           "star": "BMBER1",
           "initial_controller": "C15",
           "initial_altitude": 22000,
@@ -4389,7 +4389,7 @@
       "arrivals": [
         {
           "spawn": "KAELA",
-          "waypoint_actions": { "FOOLZ": "ho", "MYNRR": "delete", "OVOME": "delete" },
+          "waypoint_actions": { "FOOLZ": "ho", "MYNRR": "t299/delete", "OVOME": "t348/delete" },
           "star": "SUUTR4",
           "initial_controller": "C15",
           "initial_altitude": 28000,

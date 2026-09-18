@@ -3927,21 +3927,21 @@
           "MTBAL": {
             "assigned_altitude": 4300,
             "sid": "JADKO2",
-            "waypoints": "KSBD-6/h236/@crs153 PESLE ROLIE ELICA/ho12 JADKO ARRDY/a13000+ PEELR MTBAL",
+            "waypoint_actions": { "KSBD-6": "h236/@crs153", "ELICA": "ho12" },
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"]
           },
           "AVRRY": {
             "assigned_altitude": 4300,
             "sid": "JADKO2",
-            "waypoints": "KSBD-6/h236/@crs153 PESLE ROLIE ELICA/ho12 JADKO ARRDY/a13000+ PEELR MTBAL AVRRY",
+            "waypoint_actions": { "KSBD-6": "h236/@crs153", "ELICA": "ho12" },
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"]
           },
           "SXC": {
             "assigned_altitude": 4300,
             "sid": "JADKO2",
-            "waypoints": "KSBD-6/h236/@crs153 PESLE ROLIE ELICA/ho12 JADKO ROHRS/a15000+ DEGLE COMIX PADRZ SXC",
+            "waypoint_actions": { "KSBD-6": "h236/@crs153", "ELICA": "ho12" },
             "is_rnav": true,
             "aircraft": ["jet", "turboprop"]
           },
@@ -4272,7 +4272,7 @@
         },
         {
           "spawn": "AMMOR",
-          "waypoint_actions": { "NNEDD": "delete", "RNCHO": "d24000,ho" },
+          "waypoint_actions": { "NNEDD": "t253/delete", "RNCHO": "d24000/ho" },
           "star": "THRNE4",
           "is_rnav": true,
           "initial_controller": "31",
@@ -4421,7 +4421,7 @@
       "arrivals": [
         {
           "spawn": "LVELL",
-          "waypoint_actions": { "CABIC": "d24000,ho", "LYNDI": "clearapp" },
+          "waypoint_actions": { "CABIC": "d24000/ho", "LYNDI": "clearapp" },
           "star": "LUCKI1",
           "is_rnav": true,
           "initial_controller": "40",
@@ -4470,7 +4470,7 @@
         },
         {
           "spawn": "SRRFR",
-          "waypoint_actions": { "LYNDI": "clearapp", "SHADI": "ho,d24000" },
+          "waypoint_actions": { "LYNDI": "clearapp", "SHADI": "ho/d24000" },
           "star": "LUCKI1",
           "is_rnav": true,
           "initial_controller": "40",
@@ -4647,7 +4647,7 @@
         },
         {
           "spawn": "LNDON",
-          "waypoint_actions": { "LYNDI": "clearapp", "SHADI": "ho,d24000" },
+          "waypoint_actions": { "LYNDI": "clearapp", "SHADI": "ho/d24000" },
           "star": "LUCKI1",
           "is_rnav": true,
           "initial_controller": "40",
@@ -4828,7 +4828,7 @@
       "arrivals": [
         {
           "spawn": "CBOLA",
-          "waypoint_actions": { "KRMAA": "d24000,ho", "LYNDI": "clearapp" },
+          "waypoint_actions": { "KRMAA": "d24000/ho", "LYNDI": "clearapp" },
           "star": "LUCKI1",
           "is_rnav": true,
           "initial_controller": "31",

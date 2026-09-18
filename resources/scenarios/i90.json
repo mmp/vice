@@ -4528,32 +4528,32 @@
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoint_actions": { "BOTLL": "c16000", "PPALE": "hoC43,c23000", "TTAPS": "c5000" }
+            "waypoint_actions": { "BOTLL": "c16000", "PPALE": "hoC43/c23000", "TTAPS": "c5000" }
           },
           "LCH": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoint_actions": { "BOTLL": "c16000", "MMALT": "hoC36,c23000", "TTAPS": "c4000" }
+            "waypoint_actions": { "BOTLL": "c16000", "MMALT": "hoC36/c23000", "TTAPS": "c4000" }
           },
           "GUSTI": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoint_actions": { "BOTLL": "c16000", "HHOPS": "hoC36,c23000", "TTAPS": "c4000" }
+            "waypoint_actions": { "BOTLL": "c16000", "HHOPS": "hoC36/c23000", "TTAPS": "c4000" }
           },
           "LLA": {
             "cleared_altitude": 4000,
             "sid": "MMUGS4",
-            "waypoint_actions": { "BOTLL": "c16000", "GRAYN": "hoC36,c23000", "TTAPS": "c4000" }
+            "waypoint_actions": { "BOTLL": "c16000", "GRAYN": "hoC36/c23000", "TTAPS": "c4000" }
           },
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c4000", "WINEO": "hoC87,c23000" }
+            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c4000", "WINEO": "hoC87/c23000" }
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c4000", "WINEO": "hoC87,c23000" }
+            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c4000", "WINEO": "hoC87/c23000" }
           }
         },
         "15R.IAHWEST.AUTO": {
@@ -4565,22 +4565,22 @@
           "CRGER,PSTUR": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
+            "waypoint_actions": { "BNDTO": "hoC80/c23000", "KIAH-33L": "h149/c4000/@a600+", "SCAMM": "c16000" }
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
+            "waypoint_actions": { "BNDTO": "hoC80/c23000", "KIAH-33L": "h149/c4000/@a600+", "SCAMM": "c16000" }
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
+            "waypoint_actions": { "BNDTO": "hoC80/c23000", "KIAH-33L": "h149/c4000/@a600+", "SCAMM": "c16000" }
           },
           "WAILN,WEEED": {
             "cleared_altitude": 4000,
             "sid": "BNDTO6",
-            "waypoint_actions": { "BNDTO": "hoC80,c23000", "KIAH-33L": "c4000", "SCAMM": "c16000" }
+            "waypoint_actions": { "BNDTO": "hoC80/c23000", "KIAH-33L": "h149/c4000/@a600+", "SCAMM": "c16000" }
           },
           "TPAKK": {
             "cleared_altitude": 4000,
@@ -4622,17 +4622,17 @@
           "LCH,BLING": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
+            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36/c23000" }
           },
           "GUSTI,SPINY": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
+            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36/c23000" }
           },
           "LLA,SBI": {
             "cleared_altitude": 4000,
             "sid": "GUMBY3",
-            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36,c23000" }
+            "waypoint_actions": { "DWSUN": "c5000", "GUMBY": "hoC36/c23000" }
           },
           "TPAKK": {
             "cleared_altitude": 4000,
@@ -4647,12 +4647,12 @@
           "CRP": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c5000", "WINEO": "hoC87,c23000" }
+            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c5000", "WINEO": "hoC87/c23000" }
           },
           "NGP,WWREN": {
             "cleared_altitude": 4000,
             "sid": "RITAA7",
-            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c5000", "WINEO": "hoC87,c23000" }
+            "waypoint_actions": { "BOTLL": "c16000", "TTAPS": "c5000", "WINEO": "hoC87/c23000" }
           },
           "DPATY,JBULL": {
             "cleared_altitude": 4000,
@@ -4679,27 +4679,27 @@
           "MUSYL,ANKRR,KELPP": {
             "cleared_altitude": 4000,
             "sid": "FLYZA5",
-            "waypoint_actions": { "BOTLL": "c16000", "FLYZA": "hoC43,c23000", "TTAPS": "c5000" }
+            "waypoint_actions": { "BOTLL": "c16000", "FLYZA": "hoC43/c23000", "TTAPS": "c5000" }
           },
           "CRGER": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80,c23000" }
+            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80/c23000" }
           },
           "SAT": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80,c23000" }
+            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80/c23000" }
           },
           "MNURE": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80,c23000" }
+            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80/c23000" }
           },
           "WAILN": {
             "cleared_altitude": 4000,
             "sid": "PITZZ5",
-            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80,c23000" }
+            "waypoint_actions": { "JAYLO": "c16000", "PITZZ": "hoC80/c23000" }
           }
         },
         "8L": {
@@ -14476,7 +14476,7 @@
       "arrivals": [
         {
           "spawn": "BEANE",
-          "waypoint_actions": { "JJACK": "ho1N", "SUUNR": "ho1O,spspI8R", "TTORO": "clearapp" },
+          "waypoint_actions": { "JJACK": "ho1N", "SUUNR": "ho1O/spspI8R", "TTORO": "clearapp" },
           "star": "TTORO3",
           "initial_controller": "C83",
           "initial_altitude": 21000,

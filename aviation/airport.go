@@ -1180,14 +1180,16 @@ func LookupSID(icao ICAOAirportCode, name string) (SID, bool) {
 // options--actions, triggers, and altitude/speed restrictions--into the
 // waypoint that carries them.
 func (er *ExitRoute) parseClimboutActions() (Waypoint, error) {
-	wps, err := parseWaypoints("climbout_actions/" + er.ClimboutActions)
+	wp, err := parseWaypointActionValue(er.ClimboutActions)
 	if err != nil {
 		return Waypoint{}, err
 	}
-	if len(wps) != 1 {
-		return Waypoint{}, fmt.Errorf("%s: must be a single set of /-separated options", er.ClimboutActions)
+	if wp.FlyOver() {
+		return Waypoint{}, fmt.Errorf("/flyover: the climbout point is not a fix the route turns at")
 	}
-	return wps[0], nil
+	// The name labels errors from the checks the waypoint goes through.
+	wp.Fix = "climbout_actions"
+	return wp, nil
 }
 
 // amendSIDWaypoints applies the route's "initial_heading" and
@@ -1197,12 +1199,12 @@ func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, e *util.ErrorLogger) W
 		e.ErrorString(`"initial_heading" %d: must be between 1 and 360`, h)
 	}
 	for _, key := range util.SortedMapKeys(er.WaypointActions) {
-		fix, offset, triggers, err := parseWaypointActionKey(key)
+		fix, offset, err := parseWaypointActionKey(key)
 		if err != nil {
 			e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
 			continue
 		}
-		amended, err := wps.addActions(fix, offset, triggers, er.WaypointActions[key])
+		amended, err := wps.applyActions(fix, offset, er.WaypointActions[key])
 		if err != nil {
 			e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
 			continue
@@ -1215,8 +1217,8 @@ func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, e *util.ErrorLogger) W
 // chartedSIDRoute reports whether the route's hand-written waypoints fly the
 // CIFP's SID off the runway to the exit, and if so returns what stands in for
 // them: the tower-assigned heading the route leaves the runway on in place of
-// the SID's runway transition, if any, and the "waypoint_actions" that add
-// its own actions to the SID's fixes.
+// the SID's runway transition, if any, and the "waypoint_actions" that give
+// its own actions at the SID's fixes.
 func (er *ExitRoute) chartedSIDRoute(icao ICAOAirportCode, rwy RunwayID, exit ExitID, r, rend Runway,
 	loc Locator, nmPerLongitude float32, magneticVariation float32) (int, map[string]string, bool) {
 	sid, transition, _ := strings.Cut(er.SID, ".")

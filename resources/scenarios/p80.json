@@ -166,18 +166,18 @@
             "aircraft": "turboprop",
             "cleared_altitude": 6000,
             "sid": "PTLD2",
-            "waypoints": "KPDX-28R/h085"
+            "waypoint_actions": { "KPDX-28R": "h085" }
           },
           "ALDER,EUG.J,ONP,OTH,OED,LMT,LKV,TIMEE,CUKIS,JJETT,MRTEN": {
             "cleared_altitude": 6000,
             "sid": "PTLD2",
-            "waypoints": "KPDX-28R/h085"
+            "waypoint_actions": { "KPDX-28R": "h085" }
           },
           "BTG.PN,OLM.P,PDT.P,YKM.P": {
             "aircraft": "prop",
             "cleared_altitude": 3000,
             "sid": "PTLD2",
-            "waypoints": "KPDX-28R/h010"
+            "waypoint_actions": { "KPDX-28R": "h010" }
           },
           "KOATA,RIELY,IMB": {
             "cleared_altitude": 7000,
@@ -193,7 +193,7 @@
             "aircraft": "prop",
             "cleared_altitude": 3000,
             "sid": "PTLD2",
-            "waypoints": "KPDX-28L/h150"
+            "waypoint_actions": { "KPDX-28L": "h150" }
           }
         },
         "28R": {
@@ -217,20 +217,20 @@
               "aircraft": ["jet", "turboprop"],
               "cleared_altitude": 6000,
               "sid": "PTLD2",
-              "waypoints": "KPDX-10L/h280"
+              "waypoint_actions": { "KPDX-10L": "h280" }
             },
             {
               "aircraft": "prop",
               "cleared_altitude": 3000,
               "sid": "PTLD2",
-              "waypoints": "KPDX-10L/h330"
+              "waypoint_actions": { "KPDX-10L": "h330" }
             }
           ],
           "BTG.PN,OLM.P": {
             "aircraft": "prop",
             "cleared_altitude": 3000,
             "sid": "PTLD2",
-            "waypoints": "KPDX-10L/h330"
+            "waypoint_actions": { "KPDX-10L": "h330" }
           },
           "IMB,KOATA,RIELY": {
             "aircraft": "jet",
@@ -248,7 +248,7 @@
             "aircraft": "prop",
             "cleared_altitude": 3000,
             "sid": "PTLD2",
-            "waypoints": "KPDX-10R/h170"
+            "waypoint_actions": { "KPDX-10R": "h170" }
           }
         }
       },

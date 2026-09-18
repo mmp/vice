@@ -188,10 +188,14 @@ func (wa WaypointActions) Encoded() string {
 	return s
 }
 
-// EncodedList returns the actions in the form a "waypoint_actions" value
-// takes them: comma separated and without their leading slashes.
-func (wa WaypointActions) EncodedList() string {
-	return strings.ReplaceAll(strings.TrimPrefix(wa.Encoded(), "/"), "/", ",")
+// encodeActionGroups returns the groups in the form a "waypoint_actions"
+// value takes them: route syntax without the leading slash.
+func encodeActionGroups(groups []WaypointActionGroup) string {
+	var sb strings.Builder
+	for _, g := range groups {
+		sb.WriteString(g.Encoded())
+	}
+	return strings.TrimPrefix(sb.String(), "/")
 }
 
 type WaypointActionGroup struct {
@@ -749,30 +753,21 @@ func (wa WaypointArray) sameRoute(o WaypointArray) bool {
 	})
 }
 
-// addedActions puts into actions the "waypoint_actions" entries that add wa's
-// own actions to the charted route, which must fly the same course. It
-// returns false if any of them can't be expressed that way: an action group
-// goes after the ones the CIFP charts at a fix, never in place of one.
-// Several routes accumulate into the same map, as the fixes of an arrival's
-// route and of its runway transitions do.
+// addedActions puts into actions the "waypoint_actions" entries that give
+// wa's own actions at the charted route's fixes, which must fly the same
+// course. A value's action groups replace the ones the CIFP charts at its
+// fix, so the only difference addedActions can't express is dropping the
+// charted groups without giving any in their place.
 func (wa WaypointArray) addedActions(charted WaypointArray, actions map[string]string) bool {
 	for i, wp := range wa {
-		mine, chartedGroups := wp.ActionGroups(), charted[i].ActionGroups()
-		if slices.Equal(mine, chartedGroups) {
+		mine := wp.ActionGroups()
+		if slices.Equal(mine, charted[i].ActionGroups()) {
 			continue
 		}
-		added := len(chartedGroups)
-		if len(mine) != added+1 || !slices.Equal(mine[:added], chartedGroups) ||
-			mine[added].Until.Type != WaypointActionNoTermination {
+		if len(mine) == 0 {
 			return false
 		}
-
-		var key strings.Builder
-		key.WriteString(wp.Fix)
-		for _, group := range chartedGroups {
-			key.WriteString(group.Until.Encoded())
-		}
-		actions[key.String()] = mine[added].Actions.EncodedList()
+		actions[wp.Fix] = encodeActionGroups(mine)
 	}
 	return true
 }
@@ -1763,97 +1758,100 @@ func parseRadial(s string) (fix string, radial int16, err error) {
 	return fix, radial, nil
 }
 
-// parseWaypointActionKey parses a "waypoint_actions" key: a fix, either
-// followed by an offset along the leg after it ("CKING@.75") or by the fix's
-// triggers up to and including the one after which the actions run, e.g.
-// "KSFO-10L/@a513+". The offset is 0 if the key gives none.
-func parseWaypointActionKey(key string) (string, float32, []WaypointActionTermination, error) {
-	parts := strings.Split(key, "/")
-	fix, offsetString, haveOffset := strings.Cut(parts[0], "@")
+// parseWaypointActionKey parses a "waypoint_actions" key: a fix, optionally
+// followed by an offset along the leg after it ("CKING@.75"). The offset is 0
+// if the key gives none.
+func parseWaypointActionKey(key string) (string, float32, error) {
+	if strings.Contains(key, "/") {
+		return "", 0, fmt.Errorf("the key gives a fix, optionally with an offset; triggers go in the value")
+	}
+	fix, offsetString, haveOffset := strings.Cut(key, "@")
 	if fix == "" {
-		return "", 0, nil, fmt.Errorf("no fix given")
+		return "", 0, fmt.Errorf("no fix given")
 	}
 	var offset float32
 	if haveOffset {
 		t, err := strconv.ParseFloat(offsetString, 32)
 		if err != nil {
-			return "", 0, nil, fmt.Errorf("invalid offset %q: %w", offsetString, err)
+			return "", 0, fmt.Errorf("invalid offset %q: %w", offsetString, err)
 		}
 		// Written so that a NaN, which ParseFloat returns without an error, is
 		// rejected along with the out-of-range values.
 		if !(t > 0 && t < 1) {
-			return "", 0, nil, fmt.Errorf("offset %q: must be greater than 0 and less than 1", offsetString)
+			return "", 0, fmt.Errorf("offset %q: must be greater than 0 and less than 1", offsetString)
 		}
 		offset = float32(t)
 	}
-	var triggers []WaypointActionTermination
-	for _, f := range parts[1:] {
-		cond, ok := strings.CutPrefix(f, "@")
-		if !ok {
-			return "", 0, nil, fmt.Errorf("/%s: only triggers may follow the fix", f)
-		}
-		until, err := parseWaypointActionTermination(cond)
-		if err != nil {
-			return "", 0, nil, fmt.Errorf("invalid trigger /%s: %w", f, err)
-		}
-		triggers = append(triggers, until)
-	}
-	if haveOffset && len(triggers) > 0 {
-		return "", 0, nil, fmt.Errorf("triggers pick out one of the fix's own action groups, " +
-			"so they can't be given along with an offset")
-	}
-	return fix, offset, triggers, nil
+	return fix, offset, nil
 }
 
-// addActions adds actions given in route syntax, comma separated and without
-// their leading slashes ("hoC35,po5J"), to the fix. The actions run on passing
-// it, or, if the "waypoint_actions" key followed the fix with its triggers
-// ("KSFO-10L/@a513+"), once the last of them is met. An offset puts them on a
-// point synthesized partway along the leg after the fix instead, which the
+// parseWaypointActionValue parses a "waypoint_actions" value--a fix's options
+// in route syntax, without their leading slash ("h284/hoC35/@a513+")--into a
+// waypoint carrying what it gives: action groups, altitude and speed
+// restrictions, and /flyover. The other options a waypoint can carry describe
+// route structure or approach coding that a route taken from the CIFP owns,
+// so they are rejected.
+func parseWaypointActionValue(value string) (Waypoint, error) {
+	if value == "" {
+		return Waypoint{}, fmt.Errorf("empty value")
+	}
+	if strings.Contains(value, ",") {
+		return Waypoint{}, fmt.Errorf("%s: options are separated by slashes, not commas", value)
+	}
+	var wp Waypoint
+	turn, err := parseWaypointModifiers(&wp, value, strings.Split(value, "/"))
+	if err != nil {
+		return Waypoint{}, err
+	}
+	if turn != TurnClosest || wp.NoPT() || wp.IAF() || wp.IF() || wp.FAF() ||
+		wp.OnSID() || wp.OnSTAR() || wp.OnApproach() || wp.ProcedureTurn() != nil ||
+		wp.Arc() != nil || wp.Airway() != "" || wp.AirworkRadius() != 0 ||
+		wp.Radius() != 0 || wp.Shift() != 0 {
+		return Waypoint{}, fmt.Errorf("%s: only actions, triggers, /a and /s restrictions, and /flyover may be given", value)
+	}
+	return wp, nil
+}
+
+// applyActions applies a "waypoint_actions" value to the fix. The value's
+// action groups replace the ones charted at the fix--a value with no actions
+// or triggers leaves the charted groups as they are--its altitude or speed
+// restriction replaces the charted restriction of its kind, and /flyover
+// marks the fix as flown over. An offset puts the value's actions on a point
+// synthesized partway along the leg after the fix instead, which the
 // returned route carries; its location waits for InitializeLocations.
-func (wa WaypointArray) addActions(fix string, offset float32, triggers []WaypointActionTermination,
-	actions string) (WaypointArray, error) {
+func (wa WaypointArray) applyActions(fix string, offset float32, value string) (WaypointArray, error) {
 	i := slices.IndexFunc(wa, func(wp Waypoint) bool { return wp.Fix == fix })
 	if i == -1 {
 		return wa, fmt.Errorf("%s: not in the route %s", fix, wa.RouteString())
 	}
-	wp := &wa[i]
-	groups := wp.ActionGroups()
-	for k, t := range triggers {
-		if k >= len(groups) || groups[k].Until.Encoded() != t.Encoded() {
-			return wa, fmt.Errorf("%s: no trigger %s at the fix, which is flown as %s", fix, t.Encoded(),
-				WaypointArray{*wp}.Encode())
-		}
-	}
-
-	var acts WaypointActions
-	for a := range strings.SplitSeq(actions, ",") {
-		a = strings.TrimSpace(a)
-		if a == "" {
-			return wa, fmt.Errorf("%q: empty action", actions)
-		}
-		act, ok, err := parseWaypointActionModifier(a)
-		if err != nil {
-			return wa, fmt.Errorf("invalid action /%s: %w", a, err)
-		}
-		if !ok {
-			return wa, fmt.Errorf("/%s: unknown action", a)
-		}
-		if err := mergeWaypointActions(&acts, act); err != nil {
-			return wa, fmt.Errorf("/%s: %w", a, err)
-		}
+	o, err := parseWaypointActionValue(value)
+	if err != nil {
+		return wa, err
 	}
 
 	if offset != 0 {
-		return wa.insertOffsetActions(i, offset, acts)
+		if o.HasAltitudeRestriction() || o.HasSpeedRestriction() || o.FlyOver() {
+			return wa, fmt.Errorf("%s: restrictions and /flyover describe the fix itself, not a point along the leg after it", value)
+		}
+		return wa.insertOffsetActions(i, offset, o.ActionGroups())
 	}
 
-	if k := len(triggers); k < len(groups) {
-		if err := mergeWaypointActions(&groups[k].Actions, acts); err != nil {
-			return wa, fmt.Errorf("%s: %w", fix, err)
-		}
-	} else {
-		wp.InitExtra().ActionGroups = append(groups, WaypointActionGroup{Actions: acts})
+	groups := o.ActionGroups()
+	if n := len(groups); n > 0 && groups[n-1].Until.Type == WaypointActionCourse && i == len(wa)-1 {
+		return wa, fmt.Errorf("%s: /@crs has no following fix to give a course to; %s ends the route", value, fix)
+	}
+	wp := &wa[i]
+	if len(groups) > 0 {
+		wp.InitExtra().ActionGroups = groups
+	}
+	if ar := o.AltitudeRestriction(); ar != nil {
+		wp.SetAltitudeRestriction(*ar)
+	}
+	if sr := o.SpeedRestriction(); sr != nil {
+		wp.SetSpeedRestriction(*sr)
+	}
+	if o.FlyOver() {
+		wp.SetFlyOver(true)
 	}
 	return wa, nil
 }
@@ -1897,13 +1895,13 @@ func (wa WaypointArray) insertAlongLeg(i int, offset float32, wp Waypoint) Waypo
 	return slices.Insert(wa, j, wp)
 }
 
-// insertOffsetActions inserts a waypoint carrying the actions at the point
-// offset of the way from the fix at index i to the next charted fix after it,
-// named for the leg it sits on ("_CKING-DRIFT@0.75"). The name has the leg's
-// far end in it because one "waypoint_actions" key may reach several routes
-// that diverge at the fix: two points are then named the same only when they
-// are in the same place.
-func (wa WaypointArray) insertOffsetActions(i int, offset float32, acts WaypointActions) (WaypointArray, error) {
+// insertOffsetActions inserts a waypoint carrying the action groups at the
+// point offset of the way from the fix at index i to the next charted fix
+// after it, named for the leg it sits on ("_CKING-DRIFT@0.75"). The name has
+// the leg's far end in it because one "waypoint_actions" key may reach
+// several routes that diverge at the fix: two points are then named the same
+// only when they are in the same place.
+func (wa WaypointArray) insertOffsetActions(i int, offset float32, groups []WaypointActionGroup) (WaypointArray, error) {
 	fix := wa[i].Fix
 	if wa[i].Arc() != nil {
 		return wa, fmt.Errorf("%s: the leg after it is a DME arc, which a point between the two fixes isn't on", fix)
@@ -1925,17 +1923,18 @@ func (wa WaypointArray) insertOffsetActions(i int, offset float32, acts Waypoint
 	// SID or STAR later, over all of their waypoints at once.
 	return wa.insertAlongLeg(i, offset, Waypoint{
 		Fix:   fmt.Sprintf("_%s-%s@%s", fix, wa[next].Fix, formatOffset(offset)),
-		Extra: &WaypointExtra{ActionGroups: []WaypointActionGroup{{Actions: acts}}},
+		Extra: &WaypointExtra{ActionGroups: groups},
 	}), nil
 }
 
 // ResolveActionControllers returns a "waypoint_actions" value with the
 // control positions of its handoffs and point outs passed through resolve.
-// Actions that don't parse are left as they are for validation to report.
+// Parts that aren't such actions--triggers, properties, anything that doesn't
+// parse--are left as they are for validation to report.
 func ResolveActionControllers(actions string, resolve func(ControlPosition) ControlPosition) string {
-	parts := strings.Split(actions, ",")
+	parts := strings.Split(actions, "/")
 	for i, a := range parts {
-		acts, ok, err := parseWaypointActionModifier(strings.TrimSpace(a))
+		acts, ok, err := parseWaypointActionModifier(a)
 		if !ok || err != nil {
 			continue
 		}
@@ -1947,7 +1946,241 @@ func ResolveActionControllers(actions string, resolve func(ControlPosition) Cont
 		}
 		parts[i] = strings.TrimPrefix(acts.Encoded(), "/")
 	}
-	return strings.Join(parts, ",")
+	return strings.Join(parts, "/")
+}
+
+// parseWaypointModifiers applies a waypoint's /-separated options--actions,
+// triggers, and properties--to wp; field names the full option string in
+// error messages. It returns the turn direction that a /ld or /rd gives,
+// which applies at the route's next waypoint.
+func parseWaypointModifiers(wp *Waypoint, field string, mods []string) (TurnDirection, error) {
+	nextWaypointTurn := TurnClosest
+	for _, f := range mods {
+		if len(f) == 0 {
+			return TurnClosest, fmt.Errorf("no command found after / in %q", field)
+		}
+
+		// A trigger ends the group of the actions before it; the
+		// actions after it start when it is met.
+		if cond, isTrigger := strings.CutPrefix(f, "@"); isTrigger {
+			groups := wp.ActionGroups()
+			if n := len(groups); n == 0 || groups[n-1].Until.Type != WaypointActionNoTermination {
+				return TurnClosest, fmt.Errorf("%s: trigger /%s must follow an action; use /ph to fly present heading",
+					field, f)
+			}
+			until, err := parseWaypointActionTermination(cond)
+			if err != nil {
+				return TurnClosest, fmt.Errorf("%s: invalid trigger /%s: %w", field, f, err)
+			}
+			groups[len(groups)-1].Until = until
+			continue
+		}
+
+		actions, ok, err := parseWaypointActionModifier(f)
+		if err != nil {
+			return TurnClosest, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
+		}
+		if ok {
+			if err := wp.MergeActions(actions); err != nil {
+				return TurnClosest, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
+			}
+			continue
+		}
+
+		if f == "flyover" {
+			wp.SetFlyOver(true)
+		} else if f == "iaf" {
+			wp.SetIAF(true)
+		} else if f == "if" {
+			wp.SetIF(true)
+		} else if f == "faf" {
+			wp.SetFAF(true)
+		} else if f == "sid" {
+			wp.SetOnSID(true)
+		} else if f == "star" {
+			wp.SetOnSTAR(true)
+		} else if f == "appr" {
+			wp.SetOnApproach(true)
+		} else if strings.HasPrefix(f, "airwork") {
+			a := f[7:]
+			radius, minutes := 7, 15
+			i := 0
+			for len(a) > 0 {
+				if a[i] >= '0' && a[i] <= '9' {
+					i++
+				} else if n, err := strconv.Atoi(a[:i]); err != nil {
+					return TurnClosest, fmt.Errorf("%v: parsing %q", f, a[:i])
+				} else if a[i] == 'm' {
+					minutes = n
+					a = a[i+1:]
+					i = 0
+				} else if a[i] == 'n' && len(a) > i+1 && a[i+1] == 'm' {
+					radius = n
+					a = a[i+2:]
+					i = 0
+				} else {
+					return TurnClosest, fmt.Errorf("unexpected suffix %q after %q in %q", a[i:], a[:i], f)
+				}
+			}
+			if i > 0 {
+				return TurnClosest, fmt.Errorf("unexpected numbers %q after %q", a, f)
+			}
+			e := wp.InitExtra()
+			e.AirworkRadius = int8(radius)
+			e.AirworkMinutes = int8(minutes)
+		} else if strings.HasPrefix(f, "radius") {
+			rstr := f[6:]
+			if rad, err := strconv.ParseFloat(rstr, 32); err != nil {
+				return TurnClosest, err
+			} else {
+				wp.InitExtra().Radius = float32(rad)
+			}
+		} else if strings.HasPrefix(f, "shift") {
+			sstr := f[5:]
+			if shift, err := strconv.ParseFloat(sstr, 32); err != nil {
+				return TurnClosest, err
+			} else {
+				wp.InitExtra().Shift = float32(shift)
+			}
+		} else if (len(f) >= 4 && f[:4] == "pt45") || (len(f) >= 5 && f[:5] == "lpt45") {
+			pt := wp.InitExtra()
+			if pt.ProcedureTurn == nil {
+				pt.ProcedureTurn = &ProcedureTurn{}
+			}
+			pt.ProcedureTurn.Type = PTStandard45
+			pt.ProcedureTurn.RightTurns = f[0] == 'p'
+			wp.SetFlyOver(true)
+
+			extent := f[4:]
+			if !pt.ProcedureTurn.RightTurns {
+				extent = extent[1:]
+			}
+			if err := parsePTExtent(pt.ProcedureTurn, extent); err != nil {
+				return TurnClosest, err
+			}
+		} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
+			pt := wp.InitExtra()
+			if pt.ProcedureTurn == nil {
+				pt.ProcedureTurn = &ProcedureTurn{}
+			}
+			pt.ProcedureTurn.Type = PTRacetrack
+			pt.ProcedureTurn.RightTurns = f[0] == 'h'
+			wp.SetFlyOver(true)
+
+			extent := f[5:]
+			if !pt.ProcedureTurn.RightTurns {
+				extent = extent[1:]
+			}
+			if err := parsePTExtent(pt.ProcedureTurn, extent); err != nil {
+				return TurnClosest, err
+			}
+		} else if len(f) >= 4 && f[:3] == "pta" {
+			pt := wp.InitExtra()
+			if pt.ProcedureTurn == nil {
+				pt.ProcedureTurn = &ProcedureTurn{}
+			}
+
+			alt, err := strconv.Atoi(f[3:])
+			if err != nil {
+				return TurnClosest, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
+			}
+			if alt < 0 || alt > 60000 {
+				return TurnClosest, fmt.Errorf("%s: procedure turn exit altitude must be between 0 and 60000 feet", f)
+			}
+			pt.ProcedureTurn.ExitAltitude = alt
+		} else if f == "nopt" {
+			wp.SetNoPT(true)
+		} else if f == "nopt180" {
+			pt := wp.InitExtra()
+			if pt.ProcedureTurn == nil {
+				pt.ProcedureTurn = &ProcedureTurn{}
+			}
+			pt.ProcedureTurn.Entry180NoPT = true
+		} else if len(f) >= 4 && (f[:3] == "arc" || f[:4] == "larc" || f[:4] == "rarc") {
+			// The direction is inferred from the surrounding fixes
+			// unless given: /larc turns left (counterclockwise),
+			// /rarc right.
+			direction := DMEArcDirectionUnset
+			spec := f[3:]
+			if f[0] == 'l' {
+				direction, spec = DMEArcDirectionCounterClockwise, f[4:]
+			} else if f[0] == 'r' {
+				direction, spec = DMEArcDirectionClockwise, f[4:]
+			}
+			rend := 0
+			for rend < len(spec) &&
+				((spec[rend] >= '0' && spec[rend] <= '9') || spec[rend] == '.') {
+				rend++
+			}
+			if rend == 0 {
+				return TurnClosest, fmt.Errorf("%s: radius not found after /arc", f)
+			}
+
+			v, err := strconv.ParseFloat(spec[:rend], 32)
+			if err != nil {
+				return TurnClosest, fmt.Errorf("%s: invalid arc radius/length: %w", f, err)
+			}
+
+			if rend == len(spec) {
+				// no fix given, so interpret it as an arc length
+				wp.InitExtra().Arc = &DMEArc{
+					Length:    float32(v),
+					Direction: direction,
+				}
+			} else {
+				wp.InitExtra().Arc = &DMEArc{
+					Fix:       spec[rend:],
+					Radius:    float32(v),
+					Direction: direction,
+				}
+			}
+		} else if len(f) >= 7 && f[:6] == "airway" {
+			wp.InitExtra().Airway = f[6:]
+
+			// Do these last since they only match the first character...
+		} else if f[0] == 'a' {
+			if wp.HasAltitudeRestriction() {
+				return TurnClosest, fmt.Errorf("%s: multiple altitude restrictions given; use a range (e.g. /a8000-10000) instead",
+					field)
+			}
+			ar, err := ParseAltitudeRestriction(f[1:])
+			if err != nil {
+				return TurnClosest, err
+			}
+			wp.SetAltitudeRestriction(*ar)
+		} else if f[0] == 's' {
+			if wp.HasSpeedRestriction() {
+				return TurnClosest, fmt.Errorf("%s: multiple speed restrictions given; use a range (e.g. /s180-210) instead",
+					field)
+			}
+			sr, err := ParseSpeedRestriction(f[1:])
+			if err != nil {
+				return TurnClosest, fmt.Errorf("%s: error parsing speed restriction: %v", f[1:], err)
+			}
+			wp.SetSpeedRestriction(*sr)
+		} else if f == "ld" {
+			nextWaypointTurn = TurnLeft
+		} else if f == "rd" {
+			nextWaypointTurn = TurnRight
+		} else {
+			return TurnClosest, fmt.Errorf("%s: unknown fix modifier: %s", field, f)
+		}
+	}
+
+	if pt := wp.ProcedureTurn(); pt != nil && pt.Type == PTUndefined {
+		return TurnClosest, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
+	}
+
+	// /@crs ends with the aircraft going direct to the next fix, so a
+	// following action group would immediately preempt it.
+	if groups := wp.ActionGroups(); len(groups) > 1 &&
+		slices.ContainsFunc(groups[:len(groups)-1], func(g WaypointActionGroup) bool {
+			return g.Until.Type == WaypointActionCourse
+		}) {
+		return TurnClosest, fmt.Errorf("%s: /@crs must be the last trigger at a fix", wp.Fix)
+	}
+
+	return nextWaypointTurn, nil
 }
 
 func parseWaypoints(str string) (WaypointArray, error) {
@@ -2002,239 +2235,15 @@ func parseWaypoints(str string) (WaypointArray, error) {
 			}
 		}
 
-		wp := Waypoint{}
+		wp := Waypoint{Fix: components[0]}
 		if nextWaypointTurn != TurnClosest {
 			wp.SetTurn(nextWaypointTurn)
-			nextWaypointTurn = TurnClosest
 		}
-		for i, f := range components {
-			if i == 0 {
-				wp.Fix = f
-				continue
-			}
-			if len(f) == 0 {
-				return nil, fmt.Errorf("no command found after / in %q", field)
-			}
-
-			// A trigger ends the group of the actions before it; the
-			// actions after it start when it is met.
-			if cond, isTrigger := strings.CutPrefix(f, "@"); isTrigger {
-				groups := wp.ActionGroups()
-				if n := len(groups); n == 0 || groups[n-1].Until.Type != WaypointActionNoTermination {
-					return nil, fmt.Errorf("%s: trigger /%s must follow an action; use /ph to fly present heading",
-						field, f)
-				}
-				until, err := parseWaypointActionTermination(cond)
-				if err != nil {
-					return nil, fmt.Errorf("%s: invalid trigger /%s: %w", field, f, err)
-				}
-				groups[len(groups)-1].Until = until
-				continue
-			}
-
-			actions, ok, err := parseWaypointActionModifier(f)
-			if err != nil {
-				return nil, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
-			}
-			if ok {
-				if err := wp.MergeActions(actions); err != nil {
-					return nil, fmt.Errorf("%s: invalid waypoint action /%s: %w", field, f, err)
-				}
-				continue
-			}
-
-			if f == "flyover" {
-				wp.SetFlyOver(true)
-			} else if f == "iaf" {
-				wp.SetIAF(true)
-			} else if f == "if" {
-				wp.SetIF(true)
-			} else if f == "faf" {
-				wp.SetFAF(true)
-			} else if f == "sid" {
-				wp.SetOnSID(true)
-			} else if f == "star" {
-				wp.SetOnSTAR(true)
-			} else if f == "appr" {
-				wp.SetOnApproach(true)
-			} else if strings.HasPrefix(f, "airwork") {
-				a := f[7:]
-				radius, minutes := 7, 15
-				i := 0
-				for len(a) > 0 {
-					if a[i] >= '0' && a[i] <= '9' {
-						i++
-					} else if n, err := strconv.Atoi(a[:i]); err != nil {
-						return nil, fmt.Errorf("%v: parsing %q", f, a[:i])
-					} else if a[i] == 'm' {
-						minutes = n
-						a = a[i+1:]
-						i = 0
-					} else if a[i] == 'n' && len(a) > i+1 && a[i+1] == 'm' {
-						radius = n
-						a = a[i+2:]
-						i = 0
-					} else {
-						return nil, fmt.Errorf("unexpected suffix %q after %q in %q", a[i:], a[:i], f)
-					}
-				}
-				if i > 0 {
-					return nil, fmt.Errorf("unexpected numbers %q after %q", a, f)
-				}
-				e := wp.InitExtra()
-				e.AirworkRadius = int8(radius)
-				e.AirworkMinutes = int8(minutes)
-			} else if strings.HasPrefix(f, "radius") {
-				rstr := f[6:]
-				if rad, err := strconv.ParseFloat(rstr, 32); err != nil {
-					return nil, err
-				} else {
-					wp.InitExtra().Radius = float32(rad)
-				}
-			} else if strings.HasPrefix(f, "shift") {
-				sstr := f[5:]
-				if shift, err := strconv.ParseFloat(sstr, 32); err != nil {
-					return nil, err
-				} else {
-					wp.InitExtra().Shift = float32(shift)
-				}
-			} else if (len(f) >= 4 && f[:4] == "pt45") || (len(f) >= 5 && f[:5] == "lpt45") {
-				pt := wp.InitExtra()
-				if pt.ProcedureTurn == nil {
-					pt.ProcedureTurn = &ProcedureTurn{}
-				}
-				pt.ProcedureTurn.Type = PTStandard45
-				pt.ProcedureTurn.RightTurns = f[0] == 'p'
-				wp.SetFlyOver(true)
-
-				extent := f[4:]
-				if !pt.ProcedureTurn.RightTurns {
-					extent = extent[1:]
-				}
-				if err := parsePTExtent(pt.ProcedureTurn, extent); err != nil {
-					return nil, err
-				}
-			} else if (len(f) >= 5 && f[:5] == "hilpt") || (len(f) >= 6 && f[:6] == "lhilpt") {
-				pt := wp.InitExtra()
-				if pt.ProcedureTurn == nil {
-					pt.ProcedureTurn = &ProcedureTurn{}
-				}
-				pt.ProcedureTurn.Type = PTRacetrack
-				pt.ProcedureTurn.RightTurns = f[0] == 'h'
-				wp.SetFlyOver(true)
-
-				extent := f[5:]
-				if !pt.ProcedureTurn.RightTurns {
-					extent = extent[1:]
-				}
-				if err := parsePTExtent(pt.ProcedureTurn, extent); err != nil {
-					return nil, err
-				}
-			} else if len(f) >= 4 && f[:3] == "pta" {
-				pt := wp.InitExtra()
-				if pt.ProcedureTurn == nil {
-					pt.ProcedureTurn = &ProcedureTurn{}
-				}
-
-				alt, err := strconv.Atoi(f[3:])
-				if err != nil {
-					return nil, fmt.Errorf("%s: error parsing procedure turn exit altitude: %v", f[3:], err)
-				}
-				if alt < 0 || alt > 60000 {
-					return nil, fmt.Errorf("%s: procedure turn exit altitude must be between 0 and 60000 feet", f)
-				}
-				pt.ProcedureTurn.ExitAltitude = alt
-			} else if f == "nopt" {
-				wp.SetNoPT(true)
-			} else if f == "nopt180" {
-				pt := wp.InitExtra()
-				if pt.ProcedureTurn == nil {
-					pt.ProcedureTurn = &ProcedureTurn{}
-				}
-				pt.ProcedureTurn.Entry180NoPT = true
-			} else if len(f) >= 4 && (f[:3] == "arc" || f[:4] == "larc" || f[:4] == "rarc") {
-				// The direction is inferred from the surrounding fixes
-				// unless given: /larc turns left (counterclockwise),
-				// /rarc right.
-				direction := DMEArcDirectionUnset
-				spec := f[3:]
-				if f[0] == 'l' {
-					direction, spec = DMEArcDirectionCounterClockwise, f[4:]
-				} else if f[0] == 'r' {
-					direction, spec = DMEArcDirectionClockwise, f[4:]
-				}
-				rend := 0
-				for rend < len(spec) &&
-					((spec[rend] >= '0' && spec[rend] <= '9') || spec[rend] == '.') {
-					rend++
-				}
-				if rend == 0 {
-					return nil, fmt.Errorf("%s: radius not found after /arc", f)
-				}
-
-				v, err := strconv.ParseFloat(spec[:rend], 32)
-				if err != nil {
-					return nil, fmt.Errorf("%s: invalid arc radius/length: %w", f, err)
-				}
-
-				if rend == len(spec) {
-					// no fix given, so interpret it as an arc length
-					wp.InitExtra().Arc = &DMEArc{
-						Length:    float32(v),
-						Direction: direction,
-					}
-				} else {
-					wp.InitExtra().Arc = &DMEArc{
-						Fix:       spec[rend:],
-						Radius:    float32(v),
-						Direction: direction,
-					}
-				}
-			} else if len(f) >= 7 && f[:6] == "airway" {
-				wp.InitExtra().Airway = f[6:]
-
-				// Do these last since they only match the first character...
-			} else if f[0] == 'a' {
-				if wp.HasAltitudeRestriction() {
-					return nil, fmt.Errorf("%s: multiple altitude restrictions given; use a range (e.g. /a8000-10000) instead",
-						field)
-				}
-				ar, err := ParseAltitudeRestriction(f[1:])
-				if err != nil {
-					return nil, err
-				}
-				wp.SetAltitudeRestriction(*ar)
-			} else if f[0] == 's' {
-				if wp.HasSpeedRestriction() {
-					return nil, fmt.Errorf("%s: multiple speed restrictions given; use a range (e.g. /s180-210) instead",
-						field)
-				}
-				sr, err := ParseSpeedRestriction(f[1:])
-				if err != nil {
-					return nil, fmt.Errorf("%s: error parsing speed restriction: %v", f[1:], err)
-				}
-				wp.SetSpeedRestriction(*sr)
-			} else if f == "ld" {
-				nextWaypointTurn = TurnLeft
-			} else if f == "rd" {
-				nextWaypointTurn = TurnRight
-			} else {
-				return nil, fmt.Errorf("%s: unknown fix modifier: %s", field, f)
-			}
+		turn, err := parseWaypointModifiers(&wp, field, components[1:])
+		if err != nil {
+			return nil, err
 		}
-
-		if pt := wp.ProcedureTurn(); pt != nil && pt.Type == PTUndefined {
-			return nil, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
-		}
-
-		// /@crs ends with the aircraft going direct to the next fix, so a
-		// following action group would immediately preempt it.
-		if groups := wp.ActionGroups(); len(groups) > 1 &&
-			slices.ContainsFunc(groups[:len(groups)-1], func(g WaypointActionGroup) bool {
-				return g.Until.Type == WaypointActionCourse
-			}) {
-			return nil, fmt.Errorf("%s: /@crs must be the last trigger at a fix", wp.Fix)
-		}
+		nextWaypointTurn = turn
 
 		waypoints = append(waypoints, wp)
 	}

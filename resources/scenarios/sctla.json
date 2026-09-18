@@ -1385,7 +1385,7 @@
       "arrivals": [
         {
           "spawn": "BOYEL",
-          "waypoint_actions": { "CRCUS": "ho,clearapp" },
+          "waypoint_actions": { "CRCUS": "ho/clearapp" },
           "route": "ANJLL4",
           "star": "ANJLL4",
           "initial_controller": "2F",
@@ -1556,7 +1556,7 @@
         },
         {
           "spawn": "NEILE",
-          "waypoint_actions": { "SEAVU": "ho,clearapp" },
+          "waypoint_actions": { "SEAVU": "ho/clearapp" },
           "route": "HLYWD1",
           "star": "HLYWD1",
           "initial_controller": "2F",

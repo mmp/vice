@@ -1246,72 +1246,94 @@ func TestRouteAltitudeFloor(t *testing.T) {
 	}
 }
 
-func TestAddActions(t *testing.T) {
+func TestApplyActions(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
 	const route = "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"
 	for _, tc := range []struct {
-		key, actions string
-		want         string // encoded route, or "" if an error is expected
-		errContains  string
+		key, value  string
+		want        string // encoded route, or "" if an error is expected
+		errContains string
 	}{
-		{key: "GNNRR", actions: "hoC35", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/hoC35 FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
-		{key: "GNNRR", actions: "hoC35, po5J", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/hoC35/po5J FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
-		{key: "KSFO-10L", actions: "hoC35", want: "KSFO-10L/h284/hoC35/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
-		{key: "KSFO-10L/@a513+", actions: "hoC35", want: "KSFO-10L/h284/@a513+/hoC35 GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
-		{key: "FIXXX/@a500+", actions: "tc", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/tc/@a1000+/h012 BEBOP"},
-		{key: "FIXXX/@a500+/@a1000+", actions: "c7000", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012/c7000 BEBOP"},
-		{key: "BEBOP", actions: "h090", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/h090"},
-		{key: "BEBOP", actions: "delete", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/delete"},
-		{key: "BEBOP", actions: "land", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/land"},
-		{key: "GNNRR", actions: "intercept", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/intercept FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
-		{key: "FIXXX/@a500+/@a1000+", actions: "delete", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012/delete BEBOP"},
-		{key: "NOPE", actions: "hoC35", errContains: "not in the route"},
-		{key: "GNNRR/@a513+", actions: "hoC35", errContains: "no trigger /@a513+"},
-		{key: "KSFO-10L/@a600+", actions: "hoC35", errContains: "no trigger /@a600+"},
-		{key: "FIXXX/@a500+/@a1000+/@a2000+", actions: "tc", errContains: "no trigger /@a2000+"},
-		{key: "GNNRR/h090", actions: "hoC35", errContains: "only triggers may follow"},
-		{key: "GNNRR/@a", actions: "hoC35", errContains: "invalid trigger"},
-		{key: "", actions: "hoC35", errContains: "no fix"},
-		{key: "GNNRR", actions: "", errContains: "empty action"},
-		{key: "GNNRR", actions: "hoC35,", errContains: "empty action"},
-		{key: "GNNRR", actions: "flyover", errContains: "unknown action"},
-		{key: "GNNRR", actions: "c123", errContains: "invalid action"},
-		{key: "GNNRR", actions: "c7000,d3000", errContains: "cannot specify both"},
-		{key: "KSFO-10L", actions: "h090", errContains: "multiple heading"},
-		// Offsets get their own test below; only their keys are checked here.
-		{key: "GNNRR@0", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
-		{key: "GNNRR@1", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
-		{key: "GNNRR@-0.5", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
-		{key: "GNNRR@1.5", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
-		{key: "GNNRR@abc", actions: "hoC35", errContains: "invalid offset"},
+		{key: "GNNRR", value: "hoC35", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/hoC35 FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "GNNRR", value: "hoC35/po5J", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/hoC35/po5J FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		// The value's groups replace the ones charted at the fix, so keeping
+		// the charted climb means restating it.
+		{key: "KSFO-10L", value: "hoC35", want: "KSFO-10L/hoC35 GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "KSFO-10L", value: "h284/hoC35/@a513+", want: "KSFO-10L/h284/hoC35/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "KSFO-10L", value: "h284/@a513+/hoC35", want: "KSFO-10L/h284/@a513+/hoC35 GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "FIXXX", value: "h123/@a500+/h234/tc/@a1000+/h012", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/tc/@a1000+/h012 BEBOP"},
+		{key: "BEBOP", value: "h090", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/h090"},
+		{key: "BEBOP", value: "delete", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/delete"},
+		{key: "BEBOP", value: "land", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP/land"},
+		{key: "GNNRR", value: "intercept", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/intercept FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "GNNRR", value: "h180/@d2.5/tc", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/h180/@d2.5/tc FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		// /@crs may end a value when a fix follows on the route.
+		{key: "GNNRR", value: "h200/@crs220", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/h200/@crs220 FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		// Properties: /flyover is set, and a restriction replaces the charted
+		// restriction of its kind.
+		{key: "GNNRR", value: "flyover/ho", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+/flyover/ho FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "GNNRR", value: "a5000/s210", want: "KSFO-10L/h284/@a513+ GNNRR/a5000/s210 FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		// A value with no actions or triggers leaves the charted groups alone.
+		{key: "FIXXX", value: "a5000", want: "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/a5000/h123/@a500+/h234/@a1000+/h012 BEBOP"},
+		{key: "NOPE", value: "hoC35", errContains: "not in the route"},
+		{key: "GNNRR/@a513+", value: "hoC35", errContains: "triggers go in the value"},
+		{key: "GNNRR/h090", value: "hoC35", errContains: "triggers go in the value"},
+		{key: "", value: "hoC35", errContains: "no fix"},
+		{key: "GNNRR", value: "", errContains: "empty value"},
+		{key: "GNNRR", value: "hoC35/", errContains: "no command found after /"},
+		{key: "GNNRR", value: "hoC35,po5J", errContains: "not commas"},
+		{key: "GNNRR", value: "@a500+", errContains: "must follow an action"},
+		{key: "GNNRR", value: "@a", errContains: "must follow an action"},
+		{key: "GNNRR", value: "c123", errContains: "invalid waypoint action /c123"},
+		{key: "GNNRR", value: "c7000/d3000", errContains: "cannot specify both"},
+		{key: "KSFO-10L", value: "h090/h100", errContains: "multiple heading"},
+		{key: "GNNRR", value: "bogus", errContains: "unknown fix modifier"},
+		{key: "BEBOP", value: "h200/@crs220", errContains: "no following fix"},
+		// Waypoint options that describe route structure or approach coding
+		// aren't for "waypoint_actions" to give.
+		{key: "GNNRR", value: "iaf", errContains: "only actions"},
+		{key: "GNNRR", value: "nopt", errContains: "only actions"},
+		{key: "GNNRR", value: "arc10HLN", errContains: "only actions"},
+		{key: "GNNRR", value: "airwayV23", errContains: "only actions"},
+		{key: "GNNRR", value: "radius2", errContains: "only actions"},
+		{key: "GNNRR", value: "ho/ld", errContains: "only actions"},
+		// Offsets get their own test below; only their keys and the options
+		// their values may carry are checked here.
+		{key: "GNNRR@0.5", value: "flyover/ho", errContains: "not a point along the leg"},
+		{key: "GNNRR@0.5", value: "a5000", errContains: "not a point along the leg"},
+		{key: "GNNRR@0", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@1", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@-0.5", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@1.5", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@abc", value: "hoC35", errContains: "invalid offset"},
 		// ParseFloat takes these without complaint.
-		{key: "GNNRR@nan", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
-		{key: "GNNRR@inf", actions: "hoC35", errContains: "must be greater than 0 and less than 1"},
-		{key: "GNNRR@", actions: "hoC35", errContains: "invalid offset"},
-		{key: "@0.5", actions: "hoC35", errContains: "no fix"},
-		{key: "FIXXX@0.5/@a500+", actions: "tc", errContains: "can't be given along with an offset"},
+		{key: "GNNRR@nan", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@inf", value: "hoC35", errContains: "must be greater than 0 and less than 1"},
+		{key: "GNNRR@", value: "hoC35", errContains: "invalid offset"},
+		{key: "@0.5", value: "hoC35", errContains: "no fix"},
+		{key: "FIXXX@0.5/@a500+", value: "tc", errContains: "triggers go in the value"},
 	} {
 		wps, err := parseWaypoints(route)
 		if err != nil {
 			t.Fatal(err)
 		}
-		fix, offset, triggers, err := parseWaypointActionKey(tc.key)
+		fix, offset, err := parseWaypointActionKey(tc.key)
 		if err == nil {
-			wps, err = wps.addActions(fix, offset, triggers, tc.actions)
+			wps, err = wps.applyActions(fix, offset, tc.value)
 		}
 		if tc.errContains != "" {
 			if err == nil || !strings.Contains(err.Error(), tc.errContains) {
-				t.Errorf("%q %q: expected error containing %q, got %v", tc.key, tc.actions, tc.errContains, err)
+				t.Errorf("%q %q: expected error containing %q, got %v", tc.key, tc.value, tc.errContains, err)
 			}
 			continue
 		}
 		if err != nil {
-			t.Errorf("%q %q: %v", tc.key, tc.actions, err)
+			t.Errorf("%q %q: %v", tc.key, tc.value, err)
 		} else if got := wps.Encode(); got != tc.want {
-			t.Errorf("%q %q: got %q, want %q", tc.key, tc.actions, got, tc.want)
+			t.Errorf("%q %q: got %q, want %q", tc.key, tc.value, got, tc.want)
 		}
 	}
 }
@@ -1349,11 +1371,11 @@ func TestInsertOffsetActions(t *testing.T) {
 	// offset does with a key what the SID and arrival paths do: parse it,
 	// insert the point, and then place it along with the rest of the route.
 	offset := func(wps WaypointArray, key, actions string, e *util.ErrorLogger) (WaypointArray, error) {
-		fix, off, triggers, err := parseWaypointActionKey(key)
+		fix, off, err := parseWaypointActionKey(key)
 		if err != nil {
 			return wps, err
 		}
-		if wps, err = wps.addActions(fix, off, triggers, actions); err != nil {
+		if wps, err = wps.applyActions(fix, off, actions); err != nil {
 			return wps, err
 		}
 		return wps.InitializeLocations(loc, nmPerLongitude, 0, false, e), nil
@@ -1412,11 +1434,11 @@ func TestInsertOffsetActions(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		fix, off, triggers, err := parseWaypointActionKey("CKING@0.5")
+		fix, off, err := parseWaypointActionKey("CKING@0.5")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if wps, err = wps.addActions(fix, off, triggers, "hoC35"); err != nil {
+		if wps, err = wps.applyActions(fix, off, "hoC35"); err != nil {
 			t.Fatal(err)
 		}
 		var e util.ErrorLogger
@@ -1471,9 +1493,12 @@ func TestResolveActionControllers(t *testing.T) {
 	}
 	for _, tc := range []struct{ in, want string }{
 		{"hoC35", "hoNCT_C35"},
-		{"hoC35, po5J", "hoNCT_C35,po5J"},
-		{"tc,poC35,h090", "tc,poNCT_C35,h090"},
-		{"bogus,hoC35", "bogus,hoNCT_C35"},
+		{"hoC35/po5J", "hoNCT_C35/po5J"},
+		{"tc/poC35/h090", "tc/poNCT_C35/h090"},
+		{"bogus/hoC35", "bogus/hoNCT_C35"},
+		// Triggers and properties pass through untouched.
+		{"h284/hoC35/@a513+", "h284/hoNCT_C35/@a513+"},
+		{"flyover/poC35", "flyover/poNCT_C35"},
 	} {
 		if got := ResolveActionControllers(tc.in, resolve); got != tc.want {
 			t.Errorf("%q: got %q, want %q", tc.in, got, tc.want)

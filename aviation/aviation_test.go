@@ -862,8 +862,46 @@ func TestChartedSTARRoute(t *testing.T) {
 				if e.HaveErrors() {
 					t.Errorf("unexpected error: %s", e.String())
 				}
-			} else if !strings.Contains(e.String(), tc.want) {
-				t.Errorf("expected advice %q; got: %s", tc.want, e.String())
+				return
+			}
+			advice := e.String()
+			if !strings.Contains(advice, tc.want) {
+				t.Errorf("expected advice %q; got: %s", tc.want, advice)
+				return
+			}
+
+			// Following the advice must fly the hand-written routes: take the
+			// STAR from the CIFP at the advised spawn, apply the advised
+			// "waypoint_actions", and compare.
+			_, after, ok := strings.Cut(advice, `"spawn": "`)
+			if !ok {
+				t.Fatalf("no spawn in the advice: %s", advice)
+			}
+			spawn := after[:strings.Index(after, `"`)]
+			actions := make(map[string]string)
+			if _, after, ok := strings.Cut(advice, `"waypoint_actions": `); ok {
+				obj := after[:strings.Index(after, "}")+1]
+				if err := json.Unmarshal([]byte(obj), &actions); err != nil {
+					t.Fatalf("%s: %v", obj, err)
+				}
+			}
+
+			var scratch util.ErrorLogger
+			charted := Arrival{STAR: tc.star, Airports: ar.Airports, WaypointActions: actions}
+			charted.takeSTARWaypoints(spawn, &scratch)
+			charted.eachRoute(&scratch, func(wps WaypointArray) WaypointArray {
+				return wps.InitializeLocations(loc, 45, 0, false, &scratch)
+			})
+			charted.addWaypointActions(spawn, 0, &scratch)
+			if scratch.HaveErrors() {
+				t.Fatal(scratch.String())
+			}
+			if !charted.Waypoints.sameRoute(ar.Waypoints) {
+				t.Errorf("the advice flies %q, not the route's %q",
+					charted.Waypoints.Encode(), ar.Waypoints.Encode())
+			}
+			if !sameRunwayTransitions(ar.RunwayWaypoints, charted.RunwayWaypoints, WaypointArray.sameRoute) {
+				t.Errorf("the advice's runway transitions differ from \"runway_waypoints\"")
 			}
 		})
 	}
@@ -930,8 +968,13 @@ func TestArrivalWaypointActions(t *testing.T) {
 		},
 		{
 			name:    "several actions at a fix",
-			actions: map[string]string{"BEUTY": "ho,spspABC"},
+			actions: map[string]string{"BEUTY": "ho/spspABC"},
 			want:    "MIPP/star LIZZI/star BEUTY/ho/spspABC/star APPLE/star PROUD/star",
+		},
+		{
+			name:    "comma-separated actions are rejected",
+			actions: map[string]string{"BEUTY": "ho,spspABC"},
+			err:     "not commas",
 		},
 		{
 			name:    "an action on a fix past the runway split",
@@ -958,9 +1001,14 @@ func TestArrivalWaypointActions(t *testing.T) {
 			err:     "NOPE is not in the route",
 		},
 		{
-			name:    "a property is not an action",
+			name:    "/flyover marks the fix flown over",
 			actions: map[string]string{"BEUTY": "flyover"},
-			err:     "unknown action",
+			want:    "MIPP/star _handoff/ho/star LIZZI/star BEUTY/flyover/star APPLE/star PROUD/star",
+		},
+		{
+			name:    "a property the CIFP route owns",
+			actions: map[string]string{"BEUTY": "iaf"},
+			err:     "only actions",
 		},
 		{
 			name:    "/delete is",
@@ -970,9 +1018,9 @@ func TestArrivalWaypointActions(t *testing.T) {
 			want31:  "PROUD/delete/star SNEDE/star",
 		},
 		{
-			name:    "a trigger the fix hasn't got",
+			name:    "a key with a trigger",
 			actions: map[string]string{"BEUTY/@a5000+": "ho"},
-			err:     "no trigger /@a5000+",
+			err:     "triggers go in the value",
 		},
 		{
 			name:    "an unknown controller on the arrival's own route",
@@ -1058,7 +1106,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 		{
 			name:    "an offset whose actions don't parse",
 			actions: map[string]string{"BEUTY@0.5": "zzz"},
-			err:     "unknown action",
+			err:     "unknown fix modifier",
 		},
 		{
 			name:    "an offset that isn't a number",

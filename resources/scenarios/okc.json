@@ -964,15 +964,8 @@
     "GHOST3": {
       "arrivals": [
         {
-          "waypoints": "BROMA/a13000+/s280/ho GHOST/a10000-15000/s250 CCASH",
-          "runway_waypoints": {
-            "KOKC": {
-              "17L": "CCASH DIGHT/a8000+ WALLS/a7000+ WWILL/a6000/s210 ADWOW/flyover/h356",
-              "17R": "CCASH DIGHT/a8000+ WALLS/a7000+ WWILL/a6000/s210 ADWOW/flyover/h356",
-              "35L": "CCASH ODOUR/a6000+ LEVEE/a4000/s210",
-              "35R": "CCASH ODOUR/a6000+ LEVEE/a4000/s210"
-            }
-          },
+          "spawn": "BROMA",
+          "waypoint_actions": { "BROMA": "ho", "ADWOW": "h356" },
           "star": "GHOST3",
           "initial_controller": "C35",
           "initial_altitude": 14000,
@@ -1078,15 +1071,8 @@
     "TSDEL3": {
       "arrivals": [
         {
-          "waypoints": "FIGET/a11000-17000/s280/ho TSDEL/a10000-15000/s250 WAYMN",
-          "runway_waypoints": {
-            "KOKC": {
-              "17L": "WAYMN BAISS/a8000+ DIGSE/a7000+/s220 PALMR/a6000/s210 ISAKE/flyover/h356",
-              "17R": "WAYMN BAISS/a8000+ DIGSE/a7000+/s220 PALMR/a6000/s210 ISAKE/flyover/h356",
-              "35L": "WAYMN YUKKY/a9000- NUTRE/a4000+/s210",
-              "35R": "WAYMN YUKKY/a9000- CROPE/a4000+/s210"
-            }
-          },
+          "spawn": "FIGET",
+          "waypoint_actions": { "FIGET": "ho", "ISAKE": "h356" },
           "star": "TSDEL3",
           "initial_controller": "C53",
           "initial_altitude": 15000,
@@ -1145,15 +1131,8 @@
     "YUCKS3": {
       "arrivals": [
         {
-          "waypoints": "FOYER/ho YUCKS SAGIE/a8000+ BASTS",
-          "runway_waypoints": {
-            "KOKC": {
-              "17L": "BASTS GEVNE/a8000+ WALLS/a7000+/s220 WWILL/a6000/s210 ADWOW/flyover/h356",
-              "17R": "BASTS GEVNE/a8000+ WALLS/a7000+/s220 WWILL/a6000/s210 ADWOW/flyover/h356",
-              "35L": "BASTS SPAMS/a5000+ NUTRE/a4000+/s210",
-              "35R": "BASTS SPAMS/a5000+ CROPE/a4000+/s210"
-            }
-          },
+          "spawn": "FOYER",
+          "waypoint_actions": { "FOYER": "ho", "ADWOW": "h356" },
           "star": "YUCKS3",
           "initial_controller": "C35",
           "initial_altitude": 15000,

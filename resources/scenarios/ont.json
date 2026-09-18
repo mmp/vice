@@ -1292,7 +1292,7 @@
       "arrivals": [
         {
           "spawn": "CHURO",
-          "waypoint_actions": { "FYTRR": "clearapp", "ROADE": "ho" },
+          "waypoint_actions": { "FYTRR": "h242/clearapp", "ROADE": "ho" },
           "star": "ROOBY3",
           "is_rnav": true,
           "initial_controller": "C12",
@@ -2263,7 +2263,7 @@
       "arrivals": [
         {
           "spawn": "SALYY",
-          "waypoint_actions": { "ANJLL": "ho2F", "CAANN": "spspI4R", "CRCUS": "ho2D,clearapp", "GLESN": "hoC20" },
+          "waypoint_actions": { "ANJLL": "ho2F", "CAANN": "spspI4R", "CRCUS": "ho2D/clearapp", "GLESN": "hoC20" },
           "star": "ANJLL4",
           "initial_controller": "C37",
           "initial_altitude": 32000,
@@ -2436,7 +2436,7 @@
       "arrivals": [
         {
           "spawn": "HLYWD",
-          "waypoint_actions": { "AVATR": "ho2F", "BRUEN": "hoC20", "DAAAY": "spspI5L", "SEAVU": "ho2U,clearapp" },
+          "waypoint_actions": { "AVATR": "ho2F", "BRUEN": "hoC20", "DAAAY": "spspI5L", "SEAVU": "ho2U/clearapp" },
           "star": "HLYWD1",
           "initial_controller": "C39",
           "initial_altitude": 32000,

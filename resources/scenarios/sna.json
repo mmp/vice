@@ -981,13 +981,13 @@
             "cleared_altitude": 2000,
             "sid": "ANAHM2",
             "aircraft": ["prop"],
-            "waypoints": "KLGB-8R/h256/@a800+/l180 SLI WILMA LAX SADDE VTU"
+            "waypoint_actions": { "KLGB-8R": "h256/@a800+/l180" }
           },
           "LHS": {
             "cleared_altitude": 2000,
             "sid": "ANAHM2",
             "aircraft": ["prop"],
-            "waypoints": "KLGB-8R/h256/@a800+/l180 SLI POXKU BAYJY DARTS LHS"
+            "waypoint_actions": { "KLGB-8R": "h256/@a800+/l180" }
           },
           "HEC": {
             "cleared_altitude": 2000,
@@ -1078,7 +1078,7 @@
             "is_rnav": true,
             "departure_controller": "4B",
             "aircraft": ["jet"],
-            "waypoint_actions": { "KLGB-30": "ho4R", "PLTAA": "ho6L,c6000" }
+            "waypoint_actions": { "KLGB-30": "h121/ho4R/@a560+", "PLTAA": "ho6L/c6000" }
           },
           "VTU": {
             "assigned_altitude": 3000,
@@ -2188,7 +2188,7 @@
         },
         {
           "spawn": "GOATZ",
-          "waypoint_actions": { "DIRBY": "ho", "PDZ": "delete" },
+          "waypoint_actions": { "DIRBY": "ho", "PDZ": "h049/delete" },
           "cruise_altitude": 40000,
           "star": "KARLB3",
           "is_rnav": true,

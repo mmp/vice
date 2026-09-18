@@ -2642,21 +2642,21 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301/@a1500+/l180/c7000/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoint_actions": { "KLGB-12": "h301/@a1500+/l180/c7000/ho6X" }
           },
           "CNERY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301/@a1500+/l180/c7000/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoint_actions": { "KLGB-12": "h301/@a1500+/l180/c7000/ho6X" }
           },
           "TCATE": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-12/h301/@a1500+/l180/c7000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoint_actions": { "KLGB-12": "h301/@a1500+/l180/c7000/ho6X" }
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
@@ -2672,7 +2672,7 @@
             "sid": "TOPMM5",
             "is_rnav": true,
             "departure_controller": "4B",
-            "waypoint_actions": { "KLGB-30": "ho4R", "PLTAA": "ho6L,c6000" }
+            "waypoint_actions": { "KLGB-30": "h121/ho4R/@a560+", "PLTAA": "ho6L/c6000" }
           },
           "VTU": {
             "assigned_altitude": 3000,
@@ -2689,21 +2689,21 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121/@a600+/r190/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoint_actions": { "KLGB-30": "h121/@a600+/r190/ho6X" }
           },
           "CNERY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121/@a600+/r190/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoint_actions": { "KLGB-30": "h121/@a600+/r190/ho6X" }
           },
           "TCATE": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121/@a1500+/l180/c7000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoint_actions": { "KLGB-30": "h121/@a1500+/l180/c7000/ho6X" }
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
@@ -2719,7 +2719,7 @@
             "sid": "TOPMM5",
             "is_rnav": true,
             "departure_controller": "4B",
-            "waypoint_actions": { "KLGB-30": "ho4R", "PLTAA": "ho6X,c8000" }
+            "waypoint_actions": { "KLGB-30": "h121/ho4R/@a560+", "PLTAA": "ho6X/c8000" }
           },
           "VTU": {
             "assigned_altitude": 3000,
@@ -2736,21 +2736,21 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121/@a600+/r200/c8000/ho6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoint_actions": { "KLGB-30": "h121/@a600+/r200/c8000/ho6X" }
           },
           "CNERY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121/@a600+/r200/c8000/ho6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoint_actions": { "KLGB-30": "h121/@a600+/r200/c8000/ho6X" }
           },
           "TCATE": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "4R",
-            "waypoints": "KLGB-30/h121/@a1500+/r200/c8000/ho6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoint_actions": { "KLGB-30": "h121/@a1500+/r200/c8000/ho6X" }
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,

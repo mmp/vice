@@ -139,9 +139,7 @@ type Arrival struct {
 	CruiseAltitudes util.SingleOrArray[int]                      `json:"cruise_altitude"`
 	STAR            string                                       `json:"star"`
 
-	// WaypointActions adds actions to the fixes of a route taken from the
-	// CIFP. Each member's name is a fix on the route, optionally followed by
-	// its triggers, and its value lists the actions in route syntax.
+	// WaypointActions amends the fixes of a route taken from the CIFP.
 	WaypointActions map[string]string `json:"waypoint_actions"`
 
 	// STARFeeds are the STARs whose traffic the arrival takes; this is useful e.g. for getting
@@ -1355,7 +1353,7 @@ func (ar *Arrival) routes() []WaypointArray {
 // first waypoint afterwards.
 func (ar *Arrival) addWaypointActions(spawnPoint string, spawnT float32, e *util.ErrorLogger) {
 	for _, key := range util.SortedMapKeys(ar.WaypointActions) {
-		fix, offset, triggers, err := parseWaypointActionKey(key)
+		fix, offset, err := parseWaypointActionKey(key)
 		if err != nil {
 			e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
 			continue
@@ -1394,10 +1392,10 @@ func (ar *Arrival) addWaypointActions(spawnPoint string, spawnT float32, e *util
 			if !carries(wps) {
 				return wps
 			}
-			amended, err := wps.addActions(fix, offset, triggers, ar.WaypointActions[key])
+			amended, err := wps.applyActions(fix, offset, ar.WaypointActions[key])
 			if err != nil {
 				// The routes differ only in what follows the fix, so an error
-				// at it is the same for each; report it once.
+				// at it is generally the same for each; report the first.
 				if !reported {
 					e.ErrorString(`"waypoint_actions" %q: %v`, key, err)
 					reported = true
@@ -1508,7 +1506,7 @@ func sameRunwayTransitions(a, b map[ICAOAirportCode]map[string]WaypointArray,
 // chartedSTARRoute reports whether the arrival's hand-written route and
 // runway transitions are the CIFP's STAR as charted, so that naming the STAR
 // and where it joins would fly it the same way, and returns the
-// "waypoint_actions" that add its own actions to the STAR's fixes.
+// "waypoint_actions" that give its own actions at the STAR's fixes.
 func (ar *Arrival) chartedSTARRoute(loc Locator, nmPerLongitude float32,
 	magneticVariation float32) (map[string]string, bool) {
 	if ar.STAR == "" || len(ar.Waypoints) == 0 {

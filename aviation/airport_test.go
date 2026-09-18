@@ -439,6 +439,19 @@ func TestClimboutActions(t *testing.T) {
 	if _, err := er.parseClimboutActions(); err == nil {
 		t.Errorf("no error for climbout actions with invalid heading")
 	}
+
+	// The parsed waypoint is named so that errors from the checks it goes
+	// through carry the "climbout_actions" label.
+	er = ExitRoute{ClimboutActions: "hoZZZ"}
+	if wp, err := er.parseClimboutActions(); err != nil {
+		t.Fatal(err)
+	} else {
+		var e util.ErrorLogger
+		WaypointArray{wp}.checkBasics(&e, nil, func(string) bool { return true })
+		if s := e.String(); !strings.Contains(s, "climbout_actions") {
+			t.Errorf("expected the error to name climbout_actions: %s", s)
+		}
+	}
 }
 
 // TestDepartureRouteAlongSID covers the check that a departure's route not
@@ -611,9 +624,12 @@ func TestChartedSIDRoute(t *testing.T) {
 			want:  `drop them and give "initial_heading": 345 and "waypoint_actions": {"GNNRR":"hoC35"}`,
 		},
 		{
-			name:  "a tower heading over a charted runway transition is the route's own",
+			// "initial_heading" only stands in for an uncharted transition,
+			// but a "waypoint_actions" value can replace the charted legs.
+			name:  "a tower heading over a charted runway transition",
 			sid:   "BUTRZ4",
 			route: "KXXX-27/h345 BUTRZ/a3000+ CLTCH",
+			want:  `drop them and give "waypoint_actions": {"KXXX-27":"h345"}`,
 		},
 		{
 			name:  "a restriction the CIFP hasn't got",
@@ -653,8 +669,44 @@ func TestChartedSIDRoute(t *testing.T) {
 				if e.HaveErrors() {
 					t.Errorf("unexpected error: %s", e.String())
 				}
-			} else if !strings.Contains(e.String(), tc.want) {
-				t.Errorf("expected advice %q; got: %s", tc.want, e.String())
+				return
+			}
+			advice := e.String()
+			if !strings.Contains(advice, tc.want) {
+				t.Errorf("expected advice %q; got: %s", tc.want, advice)
+				return
+			}
+
+			// Following the advice must fly the hand-written route: apply its
+			// "waypoint_actions" to the SID from the CIFP and compare, past
+			// any departure-end waypoints an "initial_heading" stands in for.
+			actions := make(map[string]string)
+			if _, after, ok := strings.Cut(advice, `"waypoint_actions": `); ok {
+				obj := after[:strings.Index(after, "}")+1]
+				if err := json.Unmarshal([]byte(obj), &actions); err != nil {
+					t.Fatalf("%s: %v", obj, err)
+				}
+			}
+			initialHeading := strings.Contains(advice, `"initial_heading": `)
+
+			sid, transition, _ := strings.Cut(tc.sid, ".")
+			charted, err := sidWaypoints("KXXX", sid, transition, "9", "CLTCH", initialHeading)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var scratch util.ErrorLogger
+			amend := ExitRoute{WaypointActions: actions}
+			amended := amend.amendSIDWaypoints(charted, &scratch)
+			amended = amended.InitializeLocations(loc, nmPerLongitude, 0, true, &scratch)
+			if scratch.HaveErrors() {
+				t.Fatal(scratch.String())
+			}
+			hand := er.Waypoints
+			for initialHeading && len(hand) > 0 && atDepartureEnd(hand[0], r, rend, nmPerLongitude) {
+				hand = hand[1:]
+			}
+			if !amended.sameRoute(hand) {
+				t.Errorf("the advice flies %q, not the route's %q", amended.Encode(), hand.Encode())
 			}
 		})
 	}

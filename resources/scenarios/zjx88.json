@@ -1172,7 +1172,7 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "spawn": "HEVVN",
-          "waypoint_actions": { "BOLTS": "delete", "HEVVN": "ho" },
+          "waypoint_actions": { "BOLTS": "t090/delete", "HEVVN": "ho" },
           "route": "BANGZ2",
           "star": "BANGZ2"
         },
@@ -1286,7 +1286,7 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "spawn": "PLYER",
-          "waypoint_actions": { "GUSEC": "delete", "PLYER": "ho" },
+          "waypoint_actions": { "GUSEC": "h118/delete", "PLYER": "ho" },
           "route": "PLYER PIKKR7",
           "star": "PIKKR7"
         }

@@ -2407,21 +2407,21 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "T4R",
-            "waypoints": "KLGB-30/h121/@a600+/r190/hoT6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoint_actions": { "KLGB-30": "h121/@a600+/r190/hoT6X" }
           },
           "CNERY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "T4R",
-            "waypoints": "KLGB-30/h121/@a600+/r190/hoT6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoint_actions": { "KLGB-30": "h121/@a600+/r190/hoT6X" }
           },
           "TCATE": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "T4R",
-            "waypoints": "KLGB-30/h121/@a1500+/l180/c7000/hoT6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoint_actions": { "KLGB-30": "h121/@a1500+/l180/c7000/hoT6X" }
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
@@ -2461,21 +2461,21 @@
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "T4R",
-            "waypoints": "KLGB-30/h121/@a600+/r200/c8000/hoT6X FRITR/a5000+ DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoint_actions": { "KLGB-30": "h121/@a600+/r200/c8000/hoT6X" }
           },
           "CNERY": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "T4R",
-            "waypoints": "KLGB-30/h121/@a600+/r200/c8000/hoT6X FRITR/a5000+ DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoint_actions": { "KLGB-30": "h121/@a600+/r200/c8000/hoT6X" }
           },
           "TCATE": {
             "cleared_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
             "departure_controller": "T4R",
-            "waypoints": "KLGB-30/h121/@a1500+/r200/c8000/hoT6X FRITR/a5000+ DOTSS WIILD TCATE"
+            "waypoint_actions": { "KLGB-30": "h121/@a1500+/r200/c8000/hoT6X" }
           },
           "BEALE,MISEN": {
             "cleared_altitude": 3000,
@@ -2901,7 +2901,7 @@
           "FIM": {
             "cleared_altitude": 4000,
             "sid": "VNY4",
-            "waypoints": "KBUR-8/h293 VNY IPIHO SUANA FIM"
+            "waypoint_actions": { "KBUR-8": "h293" }
           },
           "GMN,AVE": {
             "cleared_altitude": 4000,
@@ -3131,7 +3131,7 @@
           "FIM": {
             "cleared_altitude": 4000,
             "sid": "VNY4",
-            "waypoints": "KBUR-15/h273 VNY IPIHO SUANA FIM"
+            "waypoint_actions": { "KBUR-15": "h273" }
           },
           "GMN,AVE": {
             "cleared_altitude": 4000,

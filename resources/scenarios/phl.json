@@ -4374,7 +4374,7 @@
           "airports": ["KEWR"],
           "star": "BRAND1",
           "spawn": "BACKY",
-          "waypoint_actions": { "DQO": "ho", "WATJA": "delete", "WNDYL": "ho14P" },
+          "waypoint_actions": { "DQO": "ho", "WATJA": "t061/delete", "WNDYL": "ho14P" },
           "initial_altitude": 18000,
           "initial_speed": 300,
           "description": "KEWR BRAND1 arrivals",

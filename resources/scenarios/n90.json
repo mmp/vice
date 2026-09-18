@@ -4422,7 +4422,7 @@
             "sid": "SKORR6.RNGRR",
             "handoff_controller": "5S",
             "departure_controller": "2J",
-            "waypoint_actions": { "KJFK-13R": "ho", "RNGRR": "h223,tc" }
+            "waypoint_actions": { "KJFK-13R": "h314/ho/@a520+", "RNGRR": "h223/tc" }
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
@@ -4450,7 +4450,7 @@
             "sid": "SKORR6.RNGRR",
             "handoff_controller": "5S",
             "departure_controller": "2J",
-            "waypoint_actions": { "KJFK-13R": "ho", "RNGRR": "h223,tc" }
+            "waypoint_actions": { "KJFK-13R": "h314/ho/@a520+", "RNGRR": "h223/tc" }
           }
         },
         "4L.Coney": {
@@ -11208,7 +11208,7 @@
       "arrivals": [
         {
           "spawn": "PLUME",
-          "waypoint_actions": { "DUNEE": "ho3H,d7000", "UPTWN": "ho" },
+          "waypoint_actions": { "DUNEE": "ho3H/d7000", "UPTWN": "ho" },
           "cruise_altitude": 31000,
           "star": "SARDI1",
           "initial_controller": "B17",
