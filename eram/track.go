@@ -429,18 +429,13 @@ func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) *math
 // leaderLineVector returns a vector in window coordinates representing a leader
 // line of a fixed length in the given direction.
 func (ep *ERAMPane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
-	angle := dir.Heading()
-	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
-	return math.Scale2f(v, 60)
+	return math.Scale2f(dir.UnitVector(), 60)
 }
 
 // leaderLineVectorWithLength returns a vector in window coordinates representing a leader
 // line with the length determined by the lengthMode parameter.
 // lengthMode: 0 = no line, 1 = normal (60), 2 = 2x (120), 3 = 3x (180)
 func (ep *ERAMPane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection, lengthMode int) [2]float32 {
-	angle := dir.Heading()
-	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
-
 	scale := float32(60)
 	switch lengthMode {
 	case 0:
@@ -455,14 +450,12 @@ func (ep *ERAMPane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection
 		scale = 60 // Default to normal
 	}
 
-	return math.Scale2f(v, scale)
+	return math.Scale2f(dir.UnitVector(), scale)
 }
 
 // For LDBs
 func (ep *ERAMPane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]float32 {
-	angle := dir.Heading()
-	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
-	return math.Scale2f(v, 8)
+	return math.Scale2f(dir.UnitVector(), 8)
 }
 
 // datablockVisible reports whether a datablock should be drawn. Design.

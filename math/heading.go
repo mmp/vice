@@ -50,6 +50,16 @@ func (co CardinalOrdinalDirection) Heading() float32 {
 	return float32(co) * 45
 }
 
+// UnitVector returns the direction as a unit vector.  The axis-aligned
+// directions are exactly 0 and +/-1 here; taking the sine and cosine of
+// Heading() instead leaves ~1e-8 of error in them, which is enough to flip a
+// pixel-rounding decision for whatever is placed along the vector.
+func (co CardinalOrdinalDirection) UnitVector() [2]float32 {
+	const d = 0.70710678
+	return [...][2]float32{{0, 1}, {d, d}, {1, 0}, {d, -d},
+		{0, -1}, {-d, -d}, {-1, 0}, {-d, d}}[co]
+}
+
 func (co CardinalOrdinalDirection) ShortString() string {
 	switch co {
 	case North:

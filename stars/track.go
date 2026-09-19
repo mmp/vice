@@ -1584,12 +1584,10 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 }
 
 func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOrdinalDirection) [2]float32 {
-	angle := dir.Heading()
-	v := math.SinCos(math.Radians(angle))
 	ps := sp.currentPrefs()
 	pxLengths := []float32{0, 17, 32, 47, 62, 77, 114, 152}
 	idx := min(ps.LeaderLineLength, len(pxLengths)-1)
-	return math.Scale2f(v, pxLengths[idx])
+	return math.Scale2f(dir.UnitVector(), pxLengths[idx])
 }
 
 func (sp *STARSPane) radarVisibility(radarSites map[string]*av.RadarSite, pos math.Point2LL, alt int) (primary, secondary bool, distance float32) {
