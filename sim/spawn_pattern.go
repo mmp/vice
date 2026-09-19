@@ -464,7 +464,17 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 
 	if isHoldingArrival(ac) {
 		// Already orbiting; keep flying the current orbit and recheck at
-		// its next waypoint.
+		// its next waypoint. A lap's worth of waypoints runs out at the end
+		// of it, though, and an aircraft that reaches the last one is left
+		// on a fixed heading by updateWaypoints -- flying away from the
+		// field at cruise altitude for as long as the pattern stays busy.
+		// Send it around again instead.
+		if len(ac.Nav.Waypoints) <= 1 {
+			if wps := s.generateOrbitWaypoints(airport); len(wps) > 0 {
+				ac.Nav.Waypoints = wps
+				ac.Nav.Heading = nav.NavHeading{}
+			}
+		}
 		return
 	}
 
