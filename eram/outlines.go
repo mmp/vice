@@ -35,10 +35,10 @@ type DatablockFieldSpec struct {
 
 // DatablockLayout captures the layout metrics for a rendered datablock.
 type DatablockLayout struct {
-	Anchor      [2]float32
-	CharWidth   float32
-	LineHeight  float32
-	LineSpacing float32
+	Anchor     [2]float32
+	CharWidth  float32
+	LineHeight float32
+	LinePitch  float32
 }
 
 func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -149,7 +149,7 @@ func (l DatablockLayout) FieldExtent(spec DatablockFieldSpec) math.Extent2D {
 }
 
 func (l DatablockLayout) lineTop(line int) float32 {
-	return l.Anchor[1] + l.LineHeight - float32(line)*l.LineHeight*l.LineSpacing
+	return l.Anchor[1] + l.LineHeight - float32(line)*l.LinePitch
 }
 
 func (l DatablockLayout) lineShift(line, col int) float32 {
@@ -185,6 +185,14 @@ const (
 	dbInkHeight       = 0.85
 	dbLeaderInkInset  = 0.2
 )
+
+// dbLinePitch returns the vertical distance between the tops of successive
+// datablock lines.  It is rounded to a whole pixel so that the lines are
+// evenly spaced and so that they all share the same sub-pixel offset, which
+// in turn keeps the spacing exact once the text is snapped to whole pixels.
+func dbLinePitch(font *renderer.Font) float32 {
+	return math.Round(dbLineSpacing * float32(font.Size))
+}
 
 // dbFieldSpan returns the column span [start, start+n) of the visible
 // (non-space) characters in the field, relative to the field's first
@@ -250,10 +258,10 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 	}
 
 	layout := DatablockLayout{
-		Anchor:      [2]float32{anchor[0], anchor[1] + dbOutlineYOffset},
-		CharWidth:   dbCharWidth(font),
-		LineHeight:  float32(font.Size),
-		LineSpacing: dbLineSpacing,
+		Anchor:     [2]float32{anchor[0], anchor[1] + dbOutlineYOffset},
+		CharWidth:  dbCharWidth(font),
+		LineHeight: float32(font.Size),
+		LinePitch:  dbLinePitch(font),
 	}
 
 	outlines := DatablockOutlines{

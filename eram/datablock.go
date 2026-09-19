@@ -112,7 +112,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 		} else {
 			dbDrawLine(line, td, pt, font, sb, brightness, halfSeconds)
 		}
-		pt[1] -= float32(font.Size) * dbLineSpacing
+		pt[1] -= dbLinePitch(font)
 	}
 }
 
@@ -682,7 +682,7 @@ func (ep *ERAMPane) datablockAnchor(ctx *panes.Context, trk sim.Track, db databl
 
 func datablockLeaderConnectOffset(dir math.CardinalOrdinalDirection, font *renderer.Font) float32 {
 	inkTop := func(line float32) float32 {
-		return (line*dbLineSpacing - 1 + dbLeaderInkInset) * float32(font.Size)
+		return line*dbLinePitch(font) + (dbLeaderInkInset-1)*float32(font.Size)
 	}
 	switch dir {
 	case math.South, math.SouthEast, math.SouthWest:

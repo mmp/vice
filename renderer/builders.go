@@ -630,8 +630,12 @@ func (td *TextDrawBuilder) AddText(s string, p [2]float32, style TextStyle) [2]f
 // the first block of text starting at the specified point p.  Subsequent
 // blocks begin immediately after the end of the previous block.
 func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []TextStyle) [2]float32 {
-	// Current cursor position
-	px, py := p[0], p[1]
+	// Current cursor position, snapped to a whole pixel: a glyph's quad is a
+	// whole number of pixels in size, so a fractional origin puts its edges
+	// exactly on pixel centers, where the rasterizer's tie-break drops a row
+	// of the glyph.
+	px, py := math.Floor(p[0]+0.5), math.Floor(p[1]+0.5)
+	x0 := px
 
 	for i := range text {
 		style := styles[i]
@@ -684,7 +688,7 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 				}
 
 				// Update the cursor to go to the next line.
-				px = p[0]
+				px = x0
 				py -= dy
 
 				// Reset the upper line box corner for the start of the
