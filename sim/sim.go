@@ -167,6 +167,7 @@ type Sim struct {
 	bravoAirspace   *av.AirspaceGrid
 	charlieAirspace *av.AirspaceGrid
 	mvaGrid         *av.MVAGrid
+	vfrTerminalAlts map[av.ICAOAirportCode]int
 
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
 	waypointCommands map[TCP]map[string]string // tcp -> fix -> commands

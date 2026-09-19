@@ -84,16 +84,23 @@ type patternBuilder struct {
 	threshold       math.Point2LL
 	depHdg, leftHdg math.TrueHeading
 	elevation       int
+	ceiling         int
 	nmPerLongitude  float32
 }
 
-func newPatternBuilder(rwy av.Runway, elevation int, nmPerLongitude, magneticVariation float32) patternBuilder {
+// newPatternBuilder makes a builder for the pattern at a runway. ceiling is
+// the highest altitude the pattern may use, which at a field under a Class B
+// or C shelf squeezes its upper legs down rather than putting them in the
+// airspace.
+func newPatternBuilder(rwy av.Runway, elevation, ceiling int, nmPerLongitude,
+	magneticVariation float32) patternBuilder {
 	depHdg := math.MagneticToTrue(rwy.Heading, magneticVariation)
 	return patternBuilder{
 		threshold:      rwy.Threshold,
 		depHdg:         depHdg,
 		leftHdg:        math.NormalizeHeading(depHdg - 90),
 		elevation:      elevation,
+		ceiling:        ceiling,
 		nmPerLongitude: nmPerLongitude,
 	}
 }
@@ -103,7 +110,7 @@ func (b patternBuilder) waypoint(name string, along, lateral, deltaAlt float32, 
 	if lateral != 0 {
 		p = math.Offset2LL(p, b.leftHdg, lateral, b.nmPerLongitude)
 	}
-	alt := float32(b.elevation) + deltaAlt
+	alt := min(float32(b.elevation)+deltaAlt, float32(b.ceiling))
 	wp := av.Waypoint{
 		Fix:      name,
 		Location: p,
@@ -123,8 +130,8 @@ func (b patternBuilder) waypoint(name string, along, lateral, deltaAlt float32, 
 //
 // All distances are fixed in nautical miles so the pattern has a realistic
 // size regardless of runway length. Standard left traffic.
-func generatePatternLap(rwy, opp av.Runway, elevation int, nmPerLongitude, magneticVariation float32) []av.Waypoint {
-	b := newPatternBuilder(rwy, elevation, nmPerLongitude, magneticVariation)
+func generatePatternLap(rwy, opp av.Runway, elevation, ceiling int, nmPerLongitude, magneticVariation float32) []av.Waypoint {
+	b := newPatternBuilder(rwy, elevation, ceiling, nmPerLongitude, magneticVariation)
 	rwyLen := math.NMDistance2LL(rwy.Threshold, opp.Threshold)
 
 	// Fixed pattern dimensions (nm).
@@ -191,6 +198,13 @@ func (s *Sim) spawnPatternAircraft() {
 			continue
 		}
 
+		// A field with Class B or C airspace down over its pattern has
+		// nowhere to fly one.
+		patternCeiling, ok := s.vfrTerminalCeiling(faaAP)
+		if !ok {
+			continue
+		}
+
 		// Use current wind for runway selection.
 		rwy, opp, ok := s.currentVFRRunway(name)
 		if !ok {
@@ -233,7 +247,8 @@ func (s *Sim) spawnPatternAircraft() {
 		touchAndGos := s.Rand.IntRange(2, 5)      // 2-5 total laps
 		ac.TouchAndGosRemaining = touchAndGos - 1 // first lap is in progress, remaining are after
 
-		wps := generatePatternLap(rwy, opp, faaAP.Elevation, s.State.NmPerLongitude, s.State.MagneticVariation)
+		wps := generatePatternLap(rwy, opp, faaAP.Elevation, patternCeiling, s.State.NmPerLongitude,
+			s.State.MagneticVariation)
 
 		err := ac.InitializeVFRDeparture(ap, wps, false, s.State.NmPerLongitude,
 			s.State.MagneticVariation, s.wxModel, now, s.lg)
@@ -414,7 +429,9 @@ func (s *Sim) resetPatternLap(ac *Aircraft) {
 		return
 	}
 
-	wps := generatePatternLap(rwy, opp, faaAP.Elevation, s.State.NmPerLongitude, s.State.MagneticVariation)
+	ceiling, _ := s.vfrTerminalCeiling(faaAP)
+	wps := generatePatternLap(rwy, opp, faaAP.Elevation, ceiling, s.State.NmPerLongitude,
+		s.State.MagneticVariation)
 	ac.Nav.Waypoints = wps
 
 	// Clear nav heading state so the aircraft follows waypoints rather
@@ -506,15 +523,16 @@ func (s *Sim) enterPattern(ac *Aircraft, airport av.ICAOAirportCode) {
 		return
 	}
 
+	ceiling, _ := s.vfrTerminalCeiling(faaAP)
 	hdgToRwy := math.Heading2LL(ac.Position(), rwy.Threshold, s.State.NmPerLongitude)
 	if math.HeadingDifference(hdgToRwy, math.MagneticToTrue(rwy.Heading, s.State.MagneticVariation)) <= 60 && s.finalClear(airport) {
-		ac.Nav.Waypoints = generateStraightInWaypoints(rwy, faaAP.Elevation,
+		ac.Nav.Waypoints = generateStraightInWaypoints(rwy, faaAP.Elevation, ceiling,
 			s.State.NmPerLongitude, s.State.MagneticVariation)
 		s.lg.Info("VFR arrival straight-in",
 			slog.String("callsign", string(ac.ADSBCallsign)),
 			slog.String("airport", string(airport)))
 	} else {
-		ac.Nav.Waypoints = generatePatternEntryWaypoints(rwy, opp, faaAP.Elevation,
+		ac.Nav.Waypoints = generatePatternEntryWaypoints(rwy, opp, faaAP.Elevation, ceiling,
 			s.State.NmPerLongitude, s.State.MagneticVariation)
 		s.lg.Info("VFR arrival 45-to-downwind",
 			slog.String("callsign", string(ac.ADSBCallsign)),
@@ -686,8 +704,12 @@ func (s *Sim) generateOrbitWaypoints(airport av.ICAOAirportCode) []av.Waypoint {
 		return nil
 	}
 
-	// Randomize altitude ±200ft around TPA.
-	tpa := float32(faaAP.Elevation+1000) + float32(s.Rand.Intn(401)-200)
+	// Randomize altitude ±200ft around TPA, staying under any Class B or C
+	// airspace over the field.
+	tpa := float32(faaAP.Elevation+vfrPatternAltitude) + float32(s.Rand.Intn(401)-200)
+	if ceiling, ok := s.vfrTerminalCeiling(faaAP); ok {
+		tpa = min(tpa, float32(ceiling))
+	}
 
 	depHdg := math.MagneticToTrue(rwy.Heading, s.State.MagneticVariation)
 	// Right of runway (opposite the left-traffic pattern side).
@@ -725,9 +747,9 @@ func (s *Sim) generateOrbitWaypoints(airport av.ICAOAirportCode) []av.Waypoint {
 // generatePatternEntryWaypoints returns waypoints for a standard 45-degree
 // entry to downwind, using the same fixed-nm offsets as generatePatternLap.
 // The last waypoint has the Delete flag set.
-func generatePatternEntryWaypoints(rwy, opp av.Runway, elevation int,
+func generatePatternEntryWaypoints(rwy, opp av.Runway, elevation, ceiling int,
 	nmPerLongitude, magneticVariation float32) []av.Waypoint {
-	b := newPatternBuilder(rwy, elevation, nmPerLongitude, magneticVariation)
+	b := newPatternBuilder(rwy, elevation, ceiling, nmPerLongitude, magneticVariation)
 	rwyLen := math.NMDistance2LL(rwy.Threshold, opp.Threshold)
 
 	pdist := float32(0.75)
@@ -751,9 +773,9 @@ func generatePatternEntryWaypoints(rwy, opp av.Runway, elevation int,
 // generateStraightInWaypoints returns waypoints for a straight-in approach:
 // a lineup point 2nm out at 300' AGL, the threshold, and a runway end point.
 // The last waypoint has the Delete flag set.
-func generateStraightInWaypoints(rwy av.Runway, elevation int,
+func generateStraightInWaypoints(rwy av.Runway, elevation, ceiling int,
 	nmPerLongitude, magneticVariation float32) []av.Waypoint {
-	b := newPatternBuilder(rwy, elevation, nmPerLongitude, magneticVariation)
+	b := newPatternBuilder(rwy, elevation, ceiling, nmPerLongitude, magneticVariation)
 
 	wps := make([]av.Waypoint, 0, 3)
 	wps = append(wps, b.waypoint("_pat_lineup", -2, 0, 300, 70, av.VFRPhaseStraightIn))

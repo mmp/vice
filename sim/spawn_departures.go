@@ -1607,6 +1607,13 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		return nil, "", fmt.Errorf("%s: unable to find current VFR runway", depart)
 	}
 
+	// Nothing else about the candidate matters if there is no room to get
+	// into the pattern at the far end without entering the airspace over it.
+	terminalCeiling, ok := s.vfrTerminalCeiling(arrap)
+	if !ok {
+		return nil, "", ErrViolatedAirspace
+	}
+
 	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, callsigns, s.lg)
 	if ac == nil {
 		return nil, "", fmt.Errorf("unable to sample a valid aircraft")
@@ -1672,12 +1679,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		wps = append(wps, rg.Waypoint("_dep_downwind3", -2*k, side*vfrDownwindOffset))
 	}
 
-	// The grids answer both the cruise ceiling below and the MVA pass further
-	// down, so they have to be up before either.
-	if s.bravoAirspace == nil || s.charlieAirspace == nil || s.mvaGrid == nil {
-		s.initializeAirspaceGrids()
-	}
-
 	// A flight leaving a field under a Class B or C shelf scud runs beneath
 	// it rather than climbing into airspace it has no clearance for, so the
 	// airspace over the route bounds the cruise altitude before the route's
@@ -1723,14 +1724,19 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 			if i < nsteps/2 {
 				// At or above for the first half, even if unattainable so that they climb
 				ar = av.MakeAtOrAboveAltitudeRestriction(alt)
+			} else if i < nsteps-2 {
+				// at or below to be able to start descending
+				ar = av.MakeAtOrBelowAltitudeRestriction(alt)
 			} else {
-				if i < nsteps-1 {
-					// at or below to be able to start descending
-					ar = av.MakeAtOrBelowAltitudeRestriction(alt)
-				} else {
-					// Last one--get down to the field
-					ar = av.MakeRangeAltitudeRestriction(float32(arrap.Elevation)+1500, float32(arrap.Elevation)+2000)
-				}
+				// Last one: down to circuit height and under anything over
+				// the field, so that the arrival maneuvering that follows --
+				// the pattern entry, or an orbit if the pattern is full --
+				// happens below the airspace rather than descending through
+				// it. Those waypoints are built when the aircraft gets here,
+				// long after this route was checked, so this is what keeps
+				// them clear.
+				high := float32(min(arrap.Elevation+2000, terminalCeiling))
+				ar = av.MakeRangeAltitudeRestriction(min(float32(arrap.Elevation+1500), high), high)
 			}
 
 			wp := av.Waypoint{
@@ -1914,7 +1920,62 @@ func (s *Sim) vfrCruiseCeiling(path []math.Point2LL, depap, arrap av.FAAAirport)
 	return ceiling, true
 }
 
+// vfrTerminalRadius bounds where a VFR arrival maneuvers at its destination.
+// The traffic pattern, the 45-degree entry to it, and the orbit it holds in
+// when the pattern is full all fall within it.
+const vfrTerminalRadius = 5
+
+// vfrPatternAltitude is how far above the field a VFR aircraft flies the
+// pattern. vfrPatternMinRoom is the least room it can be squeezed into: below
+// that the airspace is down around the base and final legs and there is no
+// pattern left to fly.
+const vfrPatternAltitude = 1000
+const vfrPatternMinRoom = 500
+
+// vfrTerminalCeiling returns the highest altitude a VFR arrival can use while
+// maneuvering at ap and stay clear of Class B and C airspace. It reports
+// false where there is no room above the pattern to do that: entering such a
+// field means entering the airspace, which is not something we fly, so no VFR
+// is sent there. The answer depends only on the airspace and the field, so it
+// is worked out once per airport.
+func (s *Sim) vfrTerminalCeiling(ap av.FAAAirport) (int, bool) {
+	s.ensureAirspaceGrids()
+	if alt, ok := s.vfrTerminalAlts[ap.Id]; ok {
+		return alt, alt > 0
+	}
+
+	ceiling := maxVFRAltitude
+	sample := func(p math.Point2LL) {
+		for _, grid := range []*av.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
+			if floor, covered := grid.ShelfFloor(p); covered {
+				ceiling = min(ceiling, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
+			}
+		}
+	}
+
+	sample(ap.Location)
+	for r := 1; r <= vfrTerminalRadius; r++ {
+		for hdg := 0; hdg < 360; hdg += 30 {
+			sample(math.Offset2LL(ap.Location, math.TrueHeading(float32(hdg)), float32(r),
+				s.State.NmPerLongitude))
+		}
+	}
+
+	if ceiling < ap.Elevation+vfrPatternMinRoom {
+		ceiling = 0
+	}
+	s.vfrTerminalAlts[ap.Id] = ceiling
+	return ceiling, ceiling > 0
+}
+
+func (s *Sim) ensureAirspaceGrids() {
+	if s.bravoAirspace == nil || s.charlieAirspace == nil || s.mvaGrid == nil {
+		s.initializeAirspaceGrids()
+	}
+}
+
 func (s *Sim) initializeAirspaceGrids() {
+	s.vfrTerminalAlts = make(map[av.ICAOAirportCode]int)
 	initAirspace := func(a map[string][]av.AirspaceVolume) *av.AirspaceGrid {
 		var vols []*av.AirspaceVolume
 		for volslice := range maps.Values(a) {
