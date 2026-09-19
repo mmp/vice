@@ -193,19 +193,30 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callb
 		Call:      call,
 		IssueTime: time.Now(),
 		Callback: func(c *ControlClient, err error) {
-			if err == nil {
-				update.Apply(&c.State.SimState)
-				for _, e := range update.Events {
-					c.PostEvent(e)
-				}
-			} else {
+			if err != nil {
+				// The call didn't complete, so there is no result to give
+				// whoever issued it; a request the sim refused comes back
+				// in the reply, not here.
 				c.PostEvent(sim.Event{
 					Type:        sim.ErrorMessageEvent,
 					WrittenText: "Server state update failed: " + err.Error(),
 				})
+				return
 			}
+
+			if update.SimErrorMessage != "" {
+				err = server.DecodeErrorMessage(update.SimErrorMessage)
+			} else {
+				update.Apply(&c.State.SimState)
+				for _, e := range update.Events {
+					c.PostEvent(e)
+				}
+			}
+
 			if callback != nil {
 				callback(err)
+			} else if err != nil {
+				c.lg.Warnf("%s: %v", call.ServiceMethod, err)
 			}
 		},
 	}

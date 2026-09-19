@@ -1380,10 +1380,10 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 				WhisperModel:      whisperModelName,
 				AircraftContext:   aircraftCtx,
 				STTDebugLogs:      debugLogs,
-			}, func(message string, remainingInput string) {
+			}, func(err error, remainingInput string) {
 				c.transmissions.Unhold()
-				if message != "" {
-					lg.Infof("STT command result: %s", message)
+				if err != nil {
+					lg.Infof("STT command result: %v", err)
 				}
 			})
 		}

@@ -12,7 +12,6 @@ import (
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
-	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 )
 
@@ -191,13 +190,9 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 	ctx.Client.RunAircraftCommands(client.AircraftCommandRequest{
 		Callsign: callsign,
 		Commands: cmds,
-	}, func(errStr string, remaining string) {
-		if errStr != "" {
-			if err := server.TryDecodeErrorString(errStr); err != nil {
-				ep.displayError(err, ctx)
-			} else {
-				ep.displayError(ErrCommandFormat, ctx)
-			}
+	}, func(err error, remaining string) {
+		if err != nil {
+			ep.displayError(err, ctx)
 		}
 	})
 }

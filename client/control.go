@@ -427,7 +427,7 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 }
 
 func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
-	handleResult func(message string, remainingInput string)) {
+	handleResult func(err error, remainingInput string)) {
 	// Determine if TTS is enabled for this command
 	enableTTS := c.ttsEnabled() && req.Commands != "P" && req.Commands != "X"
 
@@ -477,7 +477,11 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 			}
 
 			if handleResult != nil {
-				handleResult(result.ErrorMessage, result.RemainingInput)
+				var cmdErr error
+				if result.ErrorMessage != "" {
+					cmdErr = server.DecodeErrorMessage(result.ErrorMessage)
+				}
+				handleResult(cmdErr, result.RemainingInput)
 			}
 			if err != nil {
 				c.lg.Errorf("%s: %v", req.Callsign, err)

@@ -39,6 +39,7 @@ var errorStringToError = map[string]error{
 	av.ErrNoCoordinationFix.Error():          av.ErrNoCoordinationFix,
 	av.ErrNoERAMFacility.Error():             av.ErrNoERAMFacility,
 	av.ErrNoFlightPlan.Error():               av.ErrNoFlightPlan,
+	av.ErrNoMatchingFix.Error():              av.ErrNoMatchingFix,
 	av.ErrNoMoreAvailableSquawkCodes.Error(): av.ErrNoMoreAvailableSquawkCodes,
 	av.ErrNoSTARSFacility.Error():            av.ErrNoSTARSFacility,
 	av.ErrNoValidArrivalFound.Error():        av.ErrNoValidArrivalFound,
@@ -75,6 +76,7 @@ var errorStringToError = map[string]error{
 	sim.ErrIllegalBeaconCode.Error():               sim.ErrIllegalBeaconCode,
 	sim.ErrIllegalFunction.Error():                 sim.ErrIllegalFunction,
 	sim.ErrIllegalLine.Error():                     sim.ErrIllegalLine,
+	sim.ErrIllegalPosition.Error():                 sim.ErrIllegalPosition,
 	sim.ErrIllegalTrackLocalFP.Error():             sim.ErrIllegalTrackLocalFP,
 	sim.ErrIllegalScratchpad.Error():               sim.ErrIllegalScratchpad,
 	sim.ErrInvalidAbbreviatedFP.Error():            sim.ErrInvalidAbbreviatedFP,
@@ -131,9 +133,11 @@ func TryDecodeError(e error) error {
 	return e
 }
 
-func TryDecodeErrorString(s string) error {
-	if err, ok := errorStringToError[s]; ok {
+// DecodeErrorMessage turns an error message carried in an RPC reply back into
+// an error, recovering the original value when it is one we know about.
+func DecodeErrorMessage(msg string) error {
+	if err, ok := errorStringToError[msg]; ok {
 		return err
 	}
-	return nil
+	return errors.New(msg)
 }

@@ -18,7 +18,6 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -494,16 +493,11 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCal
 		Commands:     cmds,
 		Multiple:     multiple,
 		ClickedTrack: clickedTrack,
-	}, func(errStr string, remaining string) {
-		if errStr != "" {
+	}, func(err error, remaining string) {
+		if err != nil {
 			sp.commandMode = prevMode // CommandModeTargetGen or TargetGenLock
 			sp.previewAreaInput = remaining
-			if err := server.TryDecodeErrorString(errStr); err != nil {
-				err = GetSTARSError(err, ctx.Lg)
-				sp.displayError(err, ctx, "")
-			} else {
-				sp.displayError(ErrSTARSCommandFormat, ctx, "")
-			}
+			sp.displayError(err, ctx, "")
 		}
 	})
 }
@@ -836,9 +830,10 @@ func (sp *STARSPane) installCommandHandlers(handlers []userCommand) {
 func (sp *STARSPane) displayError(err error, ctx *panes.Context, acid sim.ACID) {
 	if err != nil { // it should be, but...
 		sp.playOnce(ctx.Platform, AudioCommandError)
-		sp.previewAreaOutput = GetSTARSError(err, ctx.Lg).Error()
+		se := GetSTARSError(err, ctx.Lg)
+		sp.previewAreaOutput = se.Error()
 
-		if err == ErrSTARSDuplicateACID {
+		if se == ErrSTARSDuplicateACID {
 			sp.previewAreaOutput += " " + string(acid)
 			if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok && trk.IsAssociated() {
 				sp.previewAreaOutput += "\nFLIGHT ACTIVE AT " + string(trk.FlightPlan.TrackingController)

@@ -808,6 +808,10 @@ type SimStateUpdate struct {
 
 	ActiveTCWs []sim.TCW
 	Events     []sim.Event
+
+	// Error from the sim, generally in response to a user command;
+	// reserve the RPC error return value for legit RPC/network errors.
+	SimErrorMessage string
 }
 
 // Apply applies the update to the state, including server-specific fields.
