@@ -205,7 +205,8 @@ func (s *Sim) spawnPatternAircraft() {
 		var ac *Aircraft
 		var acType string
 		for range 20 {
-			ac, acType = s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: ap.VFR.Randoms.Fleet}, name, name, s.lg)
+			ac, acType = s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: ap.VFR.Randoms.Fleet}, name, name,
+				s.currentCallsigns(), s.lg)
 			if ac == nil {
 				continue
 			}

@@ -602,15 +602,26 @@ func sameCourseLaunchDelay(prev, cur DepartureAircraft) (time.Duration, bool) {
 // at the moment.
 var errNoVFRDestination = errors.New("no VFR destination airport is accepting arrivals")
 
-// vfrDestinationWeight returns the weight for sampling ap as the
-// destination of a random VFR departure. Airports where arrivals are
-// already backed up waiting to land are excluded so that we don't keep
-// adding to the pile.
-func (s *Sim) vfrDestinationWeight(ap av.ICAOAirportCode) float32 {
-	if s.orbitingArrivals(ap) > 0 {
-		return 0
+// vfrDestinationWeights gives the weight for sampling each airport as the
+// destination of a random VFR departure. Airports where arrivals are already
+// backed up waiting to land weigh nothing, so that we don't keep adding to
+// the pile. Which those are takes a pass over every aircraft in the sim, so
+// they are counted once for all the airports rather than once per airport.
+func (s *Sim) vfrDestinationWeights() map[av.ICAOAirportCode]float32 {
+	orbiting := make(map[av.ICAOAirportCode]int)
+	for _, ac := range s.Aircraft {
+		if isHoldingArrival(ac) {
+			orbiting[ac.FlightPlan.ArrivalAirport]++
+		}
 	}
-	return s.State.Airports[ap].VFRRateSum()
+
+	weights := make(map[av.ICAOAirportCode]float32, len(s.State.DepartureAirports))
+	for ap := range s.State.DepartureAirports {
+		if orbiting[ap] == 0 {
+			weights[ap] = s.State.Airports[ap].VFRRateSum()
+		}
+	}
+	return weights
 }
 
 func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID) (ac *Aircraft, err error) {
@@ -660,14 +671,25 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 			return nil, errNoVFRDestination
 		}
 
+		// The candidates a destination is sampled from don't change over the
+		// attempts below: a failed one leaves no trace in the sim and a
+		// successful one returns before another sample is drawn.
+		var destinations []av.ICAOAirportCode
+		var destinationWeights map[av.ICAOAirportCode]float32
+		if sampledRandoms != nil {
+			destinations = util.SortedMapKeys(s.State.DepartureAirports)
+			destinationWeights = s.vfrDestinationWeights()
+		}
+		callsigns := s.currentCallsigns()
+
 		for range 5 {
 			var arrive av.ICAOAirportCode
 			var fleet string
 			var routeWps []av.Waypoint
 			if sampledRandoms != nil {
 				// Sample destination airport: may be where we started from.
-				dest, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(util.SortedMapKeys(s.State.DepartureAirports)),
-					s.vfrDestinationWeight)
+				dest, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(destinations),
+					func(ap av.ICAOAirportCode) float32 { return destinationWeights[ap] })
 				if !ok {
 					// Arrivals are backed up at every airport that takes
 					// VFR traffic; wait for one of them to clear.
@@ -682,7 +704,7 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 			// route; the circuit breaker above is about routes that can't
 			// be found, not about destinations being busy.
 			depState.VFRAttempts++
-			ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, s.State.SimTime)
+			ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, callsigns, s.State.SimTime)
 
 			if err == nil && ac != nil {
 				ac.ReleaseTime = s.State.SimTime
@@ -1491,8 +1513,9 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 // trouble finding a route.
 func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft, error) {
 	// Sample destination airport: may be where we started from.
+	weights := s.vfrDestinationWeights()
 	arrive, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(util.SortedMapKeys(s.State.DepartureAirports)),
-		s.vfrDestinationWeight)
+		func(ap av.ICAOAirportCode) float32 { return weights[ap] })
 	if !ok {
 		// Arrivals are backed up everywhere, but a controller asked for this
 		// aircraft, so send it somewhere anyway.
@@ -1509,7 +1532,8 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 		return nil, nil
 	}
 
-	ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.State.SimTime)
+	ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil,
+		s.currentCallsigns(), s.State.SimTime)
 	return ac, err
 }
 
@@ -1553,14 +1577,15 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, gateDelay time.Duration) 
 	return d
 }
 
-func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, fleet string, routeWps []av.Waypoint, simTime Time) (*Aircraft, string, error) {
+func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, fleet string, routeWps []av.Waypoint,
+	callsigns []av.ADSBCallsign, simTime Time) (*Aircraft, string, error) {
 	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
 	rwy, _, ok := s.currentVFRRunway(depart)
 	if !ok {
 		return nil, "", fmt.Errorf("%s: unable to find current VFR runway", depart)
 	}
 
-	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, s.lg)
+	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, callsigns, s.lg)
 	if ac == nil {
 		return nil, "", fmt.Errorf("unable to sample a valid aircraft")
 	}

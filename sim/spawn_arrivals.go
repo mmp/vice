@@ -435,10 +435,11 @@ func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	return callsigns
 }
 
-func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport av.ICAOAirportCode, lg *log.Logger) (*Aircraft, string) {
-	// Collect all currently in-use or soon-to-be in-use callsigns.
-	callsigns := s.currentCallsigns()
-
+// sampleAircraft draws an aircraft type and an unused callsign. callsigns is
+// what is already in use or soon to be; callers that sample repeatedly gather
+// it once rather than walking the sim for each draw.
+func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport av.ICAOAirportCode,
+	callsigns []av.ADSBCallsign, lg *log.Logger) (*Aircraft, string) {
 	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, s.EnforceUniqueCallsignSuffix, departureAirport, arrivalAirport, lg)
 
 	if actype == "" {
