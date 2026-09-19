@@ -66,14 +66,9 @@ func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
 	}
 }
 
-// Inside reports whether the given point and altitude are within the volume.
-// The floor is inclusive, so an aircraft on the ground at a field is inside a
-// volume that starts at the field elevation; Below covers everything under it.
-func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
-	if alt < a.Floor || alt > a.Ceiling {
-		return false
-	}
-
+// covers reports whether the volume lies over the given point, whatever the
+// altitude: inside its lateral bounds and outside any of its holes.
+func (a *AirspaceVolume) covers(p math.Point2LL) bool {
 	switch a.Type {
 	case AirspaceVolumePolygon:
 		if a.PolygonBounds != nil && !a.PolygonBounds.Inside(p) {
@@ -92,27 +87,15 @@ func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
 	}
 }
 
-func (a *AirspaceVolume) Below(p math.Point2LL, alt int) bool {
-	if alt >= a.Floor {
-		return false
-	}
+// Inside reports whether the given point and altitude are within the volume.
+// The floor is inclusive, so an aircraft on the ground at a field is inside a
+// volume that starts at the field elevation; Below covers everything under it.
+func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
+	return alt >= a.Floor && alt <= a.Ceiling && a.covers(p)
+}
 
-	switch a.Type {
-	case AirspaceVolumePolygon:
-		if a.PolygonBounds != nil && !a.PolygonBounds.Inside(p) {
-			return false
-		}
-		if !math.PointInPolygon2LL(p, a.Vertices) {
-			return false
-		}
-		return !util.SeqContainsFunc(slices.Values(a.Holes), func(hole []math.Point2LL) bool {
-			return math.PointInPolygon2LL(p, hole)
-		})
-	case AirspaceVolumeCircle:
-		return math.NMDistance2LL(p, a.Center) < a.Radius
-	default:
-		panic("unhandled AirspaceVolume type")
-	}
+func (a *AirspaceVolume) Below(p math.Point2LL, alt int) bool {
+	return alt < a.Floor && a.covers(p)
 }
 
 func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {

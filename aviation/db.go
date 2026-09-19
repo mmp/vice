@@ -1822,6 +1822,19 @@ func (g *AirspaceGrid) Below(p math.Point2LL, alt int) bool {
 	return false
 }
 
+// ShelfFloor returns the lowest floor of the volumes lying over p, and whether
+// any lies over it at all. Flying below the floor keeps clear of all of them;
+// a floor at the surface leaves nowhere to fly under.
+func (g *AirspaceGrid) ShelfFloor(p math.Point2LL) (int, bool) {
+	floor, covered := 0, false
+	for _, vol := range g.getEntries(p) {
+		if vol.covers(p) && (!covered || vol.Floor < floor) {
+			floor, covered = vol.Floor, true
+		}
+	}
+	return floor, covered
+}
+
 // MVAGrid organizes MVA definitions and provides efficient lookups via a
 // grid in lat-long space that records which MVAs overlap grid cells. Grid
 // cells are initialized on demand rather than upfront.
