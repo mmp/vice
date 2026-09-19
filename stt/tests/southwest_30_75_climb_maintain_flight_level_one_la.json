@@ -1,0 +1,164 @@
+{
+  "time": "2026-09-16T17:08:17.0621394-04:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:711:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:586:reflect.Value.call",
+    "value.go:369:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1771:runtime.goexit"
+  ],
+  "transcript": "Southwest 30 75 climb maintain flight level one landing zero",
+  "whisper_prompt": "landing the parallel, maintain visual separation, caution wake turbulence, the airport is at your, the field is at your, visual approach, airport in sight, field in sight, maintain mach, say mach, mach, expect further clearance, right turns, left turns, minute legs, radial inbound, as published, hold, good rate, expedite descent, expedite climb, arrival, descend via, climb via, cleared straight-in, niner, flight level, on the localizer, until established, cleared, established, miles from, reduce to final approach speed, radar contact, altimieter, ident, squawk, vectors, expect, contact tower, maintain maximum forward speed, reduce speed to, expect the, proceed direct, fly heading, turn right, turn left, cleared direct, direct, maintain, descend and maintain, climb and maintain, x-ray, victor, tango, romeo, november, mike, lima, india, hotel, echo, charlie, bravo, alpha, information, Gunner three, Candle five, Southwest 30 75, Southwest 12 40, SkyWest seven 22 november, Singapore 31 heavy, ExecJet 29 17, ExecJet 23 34, Young, Libbo, Orca, Burden, Foil, Dee, Vineyard, Port, candel, Charles M. Schulz Sonoma County Airport, Alcoa, Bmrng, Oakland",
+  "whisper_duration_ms": 592.22,
+  "audio_duration_ms": 4424,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Laptop GPU (5996MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA3075",
+  "command": "SAYAGAIN/ALTITUDE",
+  "stt_aircraft": {
+    "ExecJet 23 34": {
+      "Callsign": "EJA2334",
+      "LastAddressed": true,
+      "AircraftType": "C560",
+      "Fixes": {
+        "Burden": "BURDE",
+        "Napa County": "KAPC",
+        "Oakland": "OAK",
+        "Vineyard": "VNYRD"
+      },
+      "Route": [
+        "OAK",
+        "VNYRD",
+        "BURDE",
+        "KAPC"
+      ],
+      "Altitude": 20000,
+      "Heading": 299,
+      "Speed": 320,
+      "AssignedSpeed": 250,
+      "State": "arrival",
+      "ControllerFrequency": "4Q",
+      "TrackingController": "4Q"
+    },
+    "ExecJet 29 17": {
+      "Callsign": "EJA2917",
+      "AircraftType": "CL35",
+      "Fixes": {
+        "Bmrng": "BMRNG",
+        "Dee": "DEEII",
+        "Mineta San Jose": "KSJC",
+        "Orca": "ORRCA"
+      },
+      "Route": [
+        "BMRNG",
+        "DEEII",
+        "ORRCA",
+        "KJAC"
+      ],
+      "Altitude": 19000,
+      "Heading": 336,
+      "Speed": 271,
+      "State": "overflight",
+      "ControllerFrequency": "4U",
+      "TrackingController": "C29"
+    },
+    "Singapore 31 heavy": {
+      "Callsign": "SIA31",
+      "AircraftType": "A359",
+      "Fixes": {
+        "Alcoa": "ALCOA",
+        "San Francisco": "KSFO"
+      },
+      "SID": "GNNRR3",
+      "Route": [
+        "ALCOA",
+        "BUTEN",
+        "WSSS"
+      ],
+      "Altitude": 5687,
+      "Heading": 262,
+      "Speed": 257,
+      "State": "departure",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U"
+    },
+    "SkyWest seven 22 november": {
+      "Callsign": "SKW722N",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Burden": "BURDE",
+        "Charles M. Schulz Sonoma County": "KSTS",
+        "Oakland": "OAK",
+        "Vineyard": "VNYRD"
+      },
+      "Route": [
+        "OAK",
+        "VNYRD",
+        "BURDE",
+        "KSTS"
+      ],
+      "Altitude": 12926,
+      "Heading": 289,
+      "Speed": 339,
+      "State": "overflight",
+      "ControllerFrequency": "4Q",
+      "TrackingController": "4Q"
+    },
+    "Southwest 12 40": {
+      "Callsign": "SWA1240",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Foil": "FFOIL",
+        "Libbo": "LIBBO",
+        "Oakland San Francisco Bay": "KOAK",
+        "Port": "PORTE",
+        "Young": "YYUNG",
+        "candel": "CNDEL"
+      },
+      "SID": "CNDEL5",
+      "Route": [
+        "CNDEL",
+        "PORTE",
+        "FFOIL",
+        "LIBBO",
+        "YYUNG",
+        "TILLT",
+        "KSNA"
+      ],
+      "Altitude": 2638,
+      "Heading": 298,
+      "Speed": 264,
+      "State": "departure",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U"
+    },
+    "Southwest 30 75": {
+      "Callsign": "SWA3075",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Foil": "FFOIL",
+        "Libbo": "LIBBO",
+        "Oakland San Francisco Bay": "KOAK",
+        "Port": "PORTE",
+        "Young": "YYUNG"
+      },
+      "SID": "CNDEL5",
+      "Route": [
+        "PORTE",
+        "FFOIL",
+        "LIBBO",
+        "YYUNG",
+        "LAX",
+        "KSAN"
+      ],
+      "Altitude": 9311,
+      "Heading": 177,
+      "Speed": 319,
+      "State": "departure",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U"
+    }
+  }
+}

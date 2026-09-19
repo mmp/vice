@@ -224,6 +224,14 @@ var confusionTable = map[string][]confusion{
 	// recognized garbled digit beats assuming the trailing word is noise.
 	"fine": {{"five", 0.92}},
 	"once": {{"one", 0.92}},
+	// Whisper's renderings of "niner", none of which letter or phonetic
+	// similarity can reach ("minor" scores 0.63 against "nine"; metaphone
+	// MNR against NN shares no prefix or suffix): "climb maintain flight
+	// level one minor zero" for "... one niner zero".
+	"minor":  {{"nine", 0.92}},
+	"manner": {{"nine", 0.92}},
+	"miner":  {{"nine", 0.92}},
+	"niners": {{"nine", 0.92}},
 	// Garbled command keywords, migrated from the retired normalization
 	// rewrite table.
 	"decent":  {{"descend", 0.85}},

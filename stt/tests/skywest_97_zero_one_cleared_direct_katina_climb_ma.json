@@ -1,0 +1,183 @@
+{
+  "time": "2026-09-18T16:29:55.3509565-04:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:711:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:586:reflect.Value.call",
+    "value.go:369:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1771:runtime.goexit"
+  ],
+  "transcript": "SkyWest 97 zero one cleared direct Katina climb maintain flight level one minor zero",
+  "whisper_prompt": "landing the parallel, maintain visual separation, caution wake turbulence, the airport is at your, the field is at your, visual approach, airport in sight, field in sight, maintain mach, say mach, mach, expect further clearance, right turns, left turns, minute legs, radial inbound, as published, hold, good rate, expedite descent, expedite climb, arrival, descend via, climb via, cleared straight-in, niner, flight level, on the localizer, until established, cleared, established, miles from, reduce to final approach speed, radar contact, altimieter, ident, squawk, vectors, expect, contact tower, maintain maximum forward speed, reduce speed to, expect the, proceed direct, fly heading, turn right, turn left, cleared direct, direct, maintain, descend and maintain, climb and maintain, zulu, x-ray, victor, romeo, mike, kilo, india, golf, foxtrot, echo, charlie, bravo, alpha, information, Truckin two, Stick five, Gunner three, United eight, United six 42 heavy, SkyWest 97 zero one, SkyWest five 21 charlie, ExecJet 28 12, Dynasty two 52 heavy, Elkoe, Burden, Isyoh, Vineyard, Amaker, K-X, Tipre, Sisko, Concord, Oakland, Stins, Port, Cosmic, Katina, Trucken, Mison, Giner",
+  "whisper_duration_ms": 674.046,
+  "audio_duration_ms": 5704,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Laptop GPU (5996MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SKW9701",
+  "command": "DKTINA C190",
+  "stt_aircraft": {
+    "Dynasty two 52 heavy": {
+      "Callsign": "CAL252",
+      "LastAddressed": true,
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Amaker": "AMAKR",
+        "Giner": "GNNRR",
+        "San Francisco": "KSFO",
+        "Stins": "STINS"
+      },
+      "SID": "GNNRR3",
+      "Route": [
+        "GNNRR",
+        "STINS",
+        "AMAKR",
+        "AMAKR",
+        "BOXER",
+        "KYLLE",
+        "FASEL",
+        "RCTP"
+      ],
+      "Altitude": 2338,
+      "Heading": 283,
+      "Speed": 216,
+      "State": "departure",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U"
+    },
+    "ExecJet 28 12": {
+      "Callsign": "EJA2812",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Burden": "BURDE",
+        "Mison": "MISON",
+        "Napa County": "KAPC",
+        "Oakland": "OAK",
+        "Vineyard": "VNYRD"
+      },
+      "Route": [
+        "MISON",
+        "OAK",
+        "VNYRD",
+        "BURDE",
+        "KAPC"
+      ],
+      "Altitude": 20331,
+      "Heading": 287,
+      "Speed": 414,
+      "State": "arrival",
+      "ControllerFrequency": "4Q",
+      "TrackingController": "4Q"
+    },
+    "SkyWest 97 zero one": {
+      "Callsign": "SKW9701",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Katina": "KTINA",
+        "San Francisco": "KSFO",
+        "Sisko": "CISKO"
+      },
+      "SID": "SSTIK5",
+      "Route": [
+        "KTINA",
+        "KTINA",
+        "CISKO",
+        "RDHOT",
+        "KBUR"
+      ],
+      "Altitude": 10258,
+      "Heading": 162,
+      "Speed": 331,
+      "State": "departure",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U"
+    },
+    "SkyWest five 21 charlie": {
+      "Callsign": "SKW521C",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Concord": "CCR",
+        "Elkoe": "ELKOE",
+        "Isyoh": "ISYOH",
+        "Sacramento": "KSMF",
+        "San Francisco": "KSFO",
+        "Trucken": "TRUKN"
+      },
+      "SID": "TRUKN2",
+      "Route": [
+        "TRUKN",
+        "TRUKN",
+        "CCR",
+        "ISYOH",
+        "ELKOE",
+        "KSMF"
+      ],
+      "Altitude": 5776,
+      "Heading": 44,
+      "Speed": 267,
+      "State": "departure",
+      "ControllerFrequency": "4R",
+      "TrackingController": "4R"
+    },
+    "United eight": {
+      "Callsign": "UAL8",
+      "AircraftType": "A319",
+      "Fixes": {
+        "K-X": "KAYEX",
+        "Port": "PORTE",
+        "San Francisco": "KSFO"
+      },
+      "SID": "SSTIK5",
+      "Route": [
+        "PORTE",
+        "KAYEX",
+        "KAYEX",
+        "LOSHN",
+        "BOILE",
+        "BLH",
+        "KPHX"
+      ],
+      "Altitude": 5242,
+      "Heading": 232,
+      "Speed": 235,
+      "State": "departure",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U"
+    },
+    "United six 42 heavy": {
+      "Callsign": "UAL642",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Cosmic": "COSMC",
+        "San Francisco": "KSFO",
+        "Tipre": "TIPRE"
+      },
+      "SID": "TRUKN2",
+      "Route": [
+        "COSMC",
+        "TIPRE",
+        "TIPRE",
+        "RALEY",
+        "INSLO",
+        "CHUKR",
+        "TTOES",
+        "GAROT",
+        "KREYK",
+        "DRRSI",
+        "LBATO",
+        "BASNN",
+        "BRAFF",
+        "LEFAM",
+        "IRK",
+        "KORD"
+      ],
+      "Altitude": 8634,
+      "Heading": 44,
+      "Speed": 297,
+      "State": "departure",
+      "ControllerFrequency": "4R",
+      "TrackingController": "C29"
+    }
+  }
+}
