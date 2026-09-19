@@ -161,39 +161,65 @@ func Tokenize(words []string) []Token {
 	return tokens
 }
 
-// parseFlightLevel parses digits after "flight level".
-// Returns the FL value and number of words consumed.
+// parseFlightLevel parses the digits after "flight level", returning the
+// flight level and the number of words consumed. A garbled word flanked by
+// spoken digits is read as a digit ("one minor zero" for "one niner zero").
+// Only a complete, in-range flight level is reported: whisper routinely
+// drops or garbles a digit here, and reporting a partial read would turn an
+// unintelligible clearance into a plausible one, which validateDescend has
+// no floor to catch. Consuming nothing leaves the words to the number
+// decoder, which reads them against the aircraft's altitude, and failing
+// that the altitude slot asks for the level again.
 func parseFlightLevel(words []string) (int, int) {
-	if len(words) == 0 {
-		return 0, 0
+	accept := func(fl, consumed int) (int, int) {
+		if fl < 10 || fl > 600 { // FL600 = 60,000 ft, the ceiling assumed throughout
+			return 0, 0
+		}
+		return fl, consumed
 	}
 
-	fl := 0
-	consumed := 0
-	for consumed < len(words) && consumed < 3 {
-		w := words[consumed]
+	fl, digits := 0, 0
+	for i := range words {
+		w := words[i]
 		if IsDigit(w) {
 			fl = fl*10 + ParseDigit(w)
-			consumed++
+			digits++
+			if digits == 3 {
+				return accept(fl, i+1)
+			}
 			continue
 		}
 		if IsNumber(w) {
-			n, _ := strconv.Atoi(w)
-			if consumed == 0 {
-				// Single-word number like "350"
-				return n, 1
+			if digits == 0 {
+				// The whole level in one token: "350".
+				return accept(ParseNumber(w), 1)
 			}
-			// Combine accumulated hundreds with tens, e.g., "one ninety"
-			// ("1" "90") -> 190, "three fifty" ("3" "50") -> 350.
-			if n < 100 {
-				fl = fl*100 + n
-				consumed++
+			// Hundreds digit plus tens: "one ninety" ("1" "90") -> 190,
+			// "three fifty" ("3" "50") -> 350. Only from a single
+			// hundreds digit: "one nine fifty" is not FL1950.
+			if n := ParseNumber(w); digits == 1 && n < 100 {
+				return accept(fl*100+n, i+1)
 			}
+			return 0, 0
 		}
-		break
+		// A garbled word with spoken digits on both sides is one of the
+		// flight level's own digits; the digits on either side are what
+		// make it safe to read.
+		if digits == 0 || i+1 >= len(words) || !IsDigit(words[i+1]) {
+			return 0, 0
+		}
+		d, _ := fuzzyDigit(w)
+		if d == "" {
+			return 0, 0
+		}
+		fl = fl*10 + ParseDigit(d)
+		digits++
+		if digits == 3 {
+			return accept(fl, i+1)
+		}
 	}
 
-	return fl, consumed
+	return 0, 0
 }
 
 // parseAltitudePattern parses patterns like:

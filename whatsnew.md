@@ -1,4 +1,4 @@
-- New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn)
+- New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn), ZME (Noah Hunt)
 - Scenario updates: PCT SHD, HCF, SCT, L30 (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZME (Noah Hunt), CLT (Gus Agostinho), STL (Ryan H), M98 (Logan S, Shane), ANC, P80, S46 (Mike Fries), N90 (FlyingHigh)
 - Flight model improvements
   - "At FIX intercept the localizer" is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing

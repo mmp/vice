@@ -1,0 +1,145 @@
+{
+  "time": "2026-09-18T02:08:26.9656175-04:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:711:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:586:reflect.Value.call",
+    "value.go:369:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1771:runtime.goexit"
+  ],
+  "transcript": "Southwest six seventy three climb maintain flight level one niners around",
+  "whisper_prompt": "landing the parallel, maintain visual separation, caution wake turbulence, the airport is at your, the field is at your, visual approach, airport in sight, field in sight, maintain mach, say mach, mach, expect further clearance, right turns, left turns, minute legs, radial inbound, as published, hold, good rate, expedite descent, expedite climb, arrival, descend via, climb via, cleared straight-in, niner, flight level, on the localizer, until established, cleared, established, miles from, reduce to final approach speed, radar contact, altimieter, ident, squawk, vectors, expect, contact tower, maintain maximum forward speed, reduce speed to, expect the, proceed direct, fly heading, turn right, turn left, cleared direct, direct, maintain, descend and maintain, climb and maintain, zulu, yankee, uniform, sierra, romeo, papa, november, juliet, hotel, delta, charlie, information, Truckin two, Santana two, Candle five, United six heavy, Southwest six 73, Southwest three zero niner, SkyWest 45 36, Delta six 43, Sir-ah, Tipre, Burden, Santana, Kess, Vineyard, Red Bluff, carlos, Bmrng, K-X, Oakland, Dead Head, King, San Jose, Port, Charles M. Schulz Sonoma County Airport, Trucken",
+  "whisper_duration_ms": 544.158,
+  "audio_duration_ms": 4296,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Laptop GPU (5996MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA673",
+  "command": "C190",
+  "stt_aircraft": {
+    "Delta six 43": {
+      "Callsign": "DAL643",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Dead Head": "DEDHD",
+        "Red Bluff": "RBL",
+        "San Francisco": "KSFO",
+        "Trucken": "TRUKN"
+      },
+      "SID": "TRUKN2",
+      "Route": [
+        "TRUKN",
+        "DEDHD",
+        "DEDHD",
+        "RBL",
+        "LMT",
+        "KSEA"
+      ],
+      "Altitude": 6286,
+      "Heading": 51,
+      "Speed": 225,
+      "State": "departure",
+      "ControllerFrequency": "4R",
+      "TrackingController": "4R"
+    },
+    "SkyWest 45 36": {
+      "Callsign": "SKW4536",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Burden": "BURDE",
+        "Charles M. Schulz Sonoma County": "KSTS",
+        "Oakland": "OAK",
+        "Vineyard": "VNYRD"
+      },
+      "Route": [
+        "OAK",
+        "VNYRD",
+        "BURDE",
+        "KSTS"
+      ],
+      "Altitude": 15569,
+      "Heading": 295,
+      "Speed": 392,
+      "State": "arrival",
+      "ControllerFrequency": "4Q",
+      "TrackingController": "4Q"
+    },
+    "Southwest six 73": {
+      "Callsign": "SWA673",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Bmrng": "BMRNG",
+        "Kess": "KAESS",
+        "Mineta San Jose": "KSJC",
+        "San Jose": "SJC",
+        "Tipre": "TIPRE"
+      },
+      "Route": [
+        "SJC",
+        "BMRNG",
+        "KAESS",
+        "TIPRE",
+        "KDEN"
+      ],
+      "Altitude": 8339,
+      "Heading": 228,
+      "Speed": 262,
+      "State": "overflight",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4Q"
+    },
+    "Southwest three zero niner": {
+      "Callsign": "SWA309",
+      "LastAddressed": true,
+      "AircraftType": "B737",
+      "Fixes": {
+        "K-X": "KAYEX",
+        "Oakland San Francisco Bay": "KOAK"
+      },
+      "SID": "CNDEL5",
+      "Route": [
+        "KAYEX",
+        "KAYEX",
+        "LOSHN",
+        "CLASN",
+        "KPSP"
+      ],
+      "Altitude": 10441,
+      "Heading": 179,
+      "Speed": 313,
+      "State": "departure",
+      "ControllerFrequency": "4U",
+      "TrackingController": "C11"
+    },
+    "United six heavy": {
+      "Callsign": "UAL6",
+      "AircraftType": "B772",
+      "Fixes": {
+        "King": "KYNNG",
+        "San Francisco": "KSFO",
+        "Santana": "SNTNA",
+        "Sir-ah": "SYRAH",
+        "carlos": "KRLOS"
+      },
+      "SID": "SNTNA2",
+      "Route": [
+        "KYNNG",
+        "KRLOS",
+        "SNTNA",
+        "SYRAH",
+        "SYRAH",
+        "JSICA",
+        "LUDOH",
+        "BUMMP",
+        "KDEN"
+      ],
+      "Altitude": 3463,
+      "Heading": 283,
+      "Speed": 227,
+      "State": "departure",
+      "ControllerFrequency": "4R",
+      "TrackingController": "4R"
+    }
+  }
+}

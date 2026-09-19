@@ -58,6 +58,33 @@ func TestBasicAltitudeCommands(t *testing.T) {
 			expected: "UAL452 C230",
 		},
 		{
+			name:       "garbled niner in a flight level",
+			transcript: "United 452 climb and maintain flight level one minor zero",
+			aircraft: map[string]Aircraft{
+				"United 452": {Callsign: "UAL452", Altitude: 10000, State: "departure"},
+			},
+			expected: "UAL452 C190",
+		},
+		{
+			// An unreadable flight level must not become a clearance:
+			// validateDescend has no floor, so a truncated "FL2" would
+			// descend the aircraft to 200 ft without complaint.
+			name:       "unreadable flight level asks for a repeat",
+			transcript: "United 452 descend and maintain flight level two landing zero",
+			aircraft: map[string]Aircraft{
+				"United 452": {Callsign: "UAL452", Altitude: 35000, State: "overflight"},
+			},
+			expected: "UAL452 SAYAGAIN/ALTITUDE",
+		},
+		{
+			name:       "flight level spoken as hundreds",
+			transcript: "United 452 climb and maintain flight level two hundred",
+			aircraft: map[string]Aircraft{
+				"United 452": {Callsign: "UAL452", Altitude: 10000, State: "departure"},
+			},
+			expected: "UAL452 C200",
+		},
+		{
 			name:       "radar contact climb",
 			transcript: "Delta 88 radar contact climb and maintain niner thousand",
 			aircraft: map[string]Aircraft{
@@ -1872,6 +1899,16 @@ func TestSTTErrorRecovery(t *testing.T) {
 			expected: "N355UC C100",
 		},
 		{
+			// "niner" garbles the same way outside a flight level, where
+			// the confusion entry is the only thing that recovers it.
+			name:       "minor instead of niner in a heading (STT error)",
+			transcript: "Frontier 5165 turn right heading two minor zero",
+			aircraft: map[string]Aircraft{
+				"Frontier 5165": {Callsign: "FFT5165", Altitude: 15000, State: "overflight"},
+			},
+			expected: "FFT5165 R290",
+		},
+		{
 			name:       "con instead of climb (STT error)",
 			transcript: "Frontier 5165 con and maintain flight level two one zero",
 			aircraft: map[string]Aircraft{
@@ -2263,9 +2300,11 @@ func TestTokenize(t *testing.T) {
 		numToks  int
 		firstVal int
 	}{
-		{[]string{"8", "thousand"}, 1, 80},                   // altitude
-		{[]string{"flight", "level", "3", "5", "0"}, 1, 350}, // FL
-		{[]string{"2", "7", "0"}, 1, 270},                    // heading
+		{[]string{"8", "thousand"}, 1, 80},                        // altitude
+		{[]string{"flight", "level", "3", "5", "0"}, 1, 350},      // FL
+		{[]string{"flight", "level", "1", "minor", "0"}, 1, 190},  // FL, garbled niner
+		{[]string{"flight", "level", "1", "landing", "0"}, 5, -1}, // FL too garbled to read
+		{[]string{"2", "7", "0"}, 1, 270},                         // heading
 	}
 
 	for _, tt := range tests {

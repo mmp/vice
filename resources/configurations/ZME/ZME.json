@@ -313,6 +313,21 @@
           "SOUTH UH GA": "20"
         }
       },
+      "C21": {
+        "default_consolidation": {
+          "21": ["44", "15", "67"]
+        },
+        "inbound_assignments": {
+          "MEM - FEWWW 32000": "21",
+          "MEM - FEWWW 26000": "21",
+          "IBUFY - PROWD": "21",
+          "IBUFY - PROWD 28000": "21",
+          "PXV - PROWD": "21",
+          "FSM - SQS": "21",
+          "DHART - EOS": "44",
+          "HOBRK4.LITTR": "21"
+        }
+      },
       "C31": {
         "default_consolidation": {
           "31": ["30", "32", "13", "12", "14", "42"]

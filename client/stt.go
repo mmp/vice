@@ -1145,12 +1145,10 @@ func makeWhisperPrompt(state SimState) string {
 		promptParts = append(promptParts, av.GetSTARTelephony(star))
 	}
 
-	// Add ATIS letters so whisper recognizes "information <letter>". The prompt biases whisper
-	// via the presence of words, so there's no reason to repeat any of them: dedupe the letters
-	// across airports and include "information" itself just once.
+	// Add ATIS letters, but only for the airports that on-frequency aircraft are landing at.
 	atisLetters := make(map[string]struct{})
-	for _, letter := range state.ATISLetter {
-		if nato, ok := av.NATOPhonetic[letter]; ok {
+	for _, trk := range onFrequencyTracks {
+		if nato, ok := av.NATOPhonetic[state.ATISLetter[trk.ArrivalAirport]]; ok {
 			atisLetters[nato] = struct{}{}
 		}
 	}
@@ -1163,12 +1161,15 @@ func makeWhisperPrompt(state SimState) string {
 	// so these mostly serve as a gentle bias and are the first to go if the prompt is over the
 	// token limit.
 	promptParts = append(promptParts,
+		// "niner" leads: whisper renders it as words that sound nothing like a digit
+		// ("minor", "manner"), which the decoder cannot recover without priming.
+		"niner",
 		"climb and maintain", "descend and maintain", "maintain", "direct", "cleared direct",
 		"turn left", "turn right", "fly heading", "proceed direct", "expect the",
 		"reduce speed to", "maintain maximum forward speed", "contact tower",
-		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
+		"expect", "vectors", "squawk", "ident", "altimeter", "radar contact",
 		"reduce to final approach speed", "miles from", "established", "cleared",
-		"until established", "on the localizer", "flight level", "niner",
+		"until established", "on the localizer", "flight level",
 		"cleared straight-in", "climb via", "descend via", "arrival",
 		"expedite climb", "expedite descent", "good rate",
 		"hold", "as published", "radial inbound", "minute legs", "left turns", "right turns",

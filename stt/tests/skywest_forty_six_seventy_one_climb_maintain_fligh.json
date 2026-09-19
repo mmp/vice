@@ -1,0 +1,155 @@
+{
+  "time": "2026-09-16T16:44:42.1350384-04:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:711:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:586:reflect.Value.call",
+    "value.go:369:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1771:runtime.goexit"
+  ],
+  "transcript": "SkyWest Forty Six Seventy One climb maintain flight level one manner zero",
+  "whisper_prompt": "landing the parallel, maintain visual separation, caution wake turbulence, the airport is at your, the field is at your, visual approach, airport in sight, field in sight, maintain mach, say mach, mach, expect further clearance, right turns, left turns, minute legs, radial inbound, as published, hold, good rate, expedite descent, expedite climb, arrival, descend via, climb via, cleared straight-in, niner, flight level, on the localizer, until established, cleared, established, miles from, reduce to final approach speed, radar contact, altimieter, ident, squawk, vectors, expect, contact tower, maintain maximum forward speed, reduce speed to, expect the, proceed direct, fly heading, turn right, turn left, cleared direct, direct, maintain, descend and maintain, climb and maintain, zulu, whiskey, uniform, sierra, romeo, mike, lima, kilo, hotel, golf, delta, bravo, alpha, information, Truckin two, Seagull one, Southwest three 24, SkyWest 46 71, Alaska six 56, Mo-gy, Ax, Young, Bmrng, Cyprus, Red Bluff, San Jose, Seagull, Dead Head",
+  "whisper_duration_ms": 612.041,
+  "audio_duration_ms": 4424,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Laptop GPU (5996MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SKW4671",
+  "command": "C190",
+  "stt_aircraft": {
+    "Alaska six 56": {
+      "Callsign": "ASA656",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Dead Head": "DEDHD",
+        "Red Bluff": "RBL",
+        "San Francisco": "KSFO"
+      },
+      "SID": "TRUKN2",
+      "Route": [
+        "DEDHD",
+        "RBL",
+        "LMT",
+        "KSEA"
+      ],
+      "Altitude": 9669,
+      "Heading": 353,
+      "Speed": 278,
+      "State": "departure",
+      "ControllerFrequency": "4R",
+      "TrackingController": "C29"
+    },
+    "SkyWest 46 71": {
+      "Callsign": "SKW4671",
+      "LastAddressed": true,
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Cyprus": "CYPRS",
+        "San Francisco": "KSFO",
+        "Seagull": "SEGUL",
+        "Young": "YYUNG"
+      },
+      "SID": "SEGUL1",
+      "Route": [
+        "SEGUL",
+        "CYPRS",
+        "YYUNG",
+        "GVO",
+        "KBFL"
+      ],
+      "Altitude": 9294,
+      "Heading": 204,
+      "Speed": 315,
+      "State": "departure",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U"
+    },
+    "Southwest three 24": {
+      "Callsign": "SWA324",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ax": "AXXXX",
+        "Bmrng": "BMRNG",
+        "Mineta San Jose": "KSJC",
+        "Mo-gy": "MOGEE",
+        "San Jose": "SJC"
+      },
+      "Route": [
+        "SJC",
+        "BMRNG",
+        "AXXXX",
+        "MOGEE",
+        "KDEN"
+      ],
+      "Altitude": 11162,
+      "Heading": 315,
+      "Speed": 258,
+      "State": "overflight",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4Q"
+    },
+    "cessna one seventy-two niner uniform lima": {
+      "Callsign": "N739UL/T",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Oakland San Francisco Bay": "KOAK",
+        "Sir-ah": "SYRAH",
+        "Stockton Metropolitan": "KSCK"
+      },
+      "SID": "OAK6",
+      "Route": [
+        "SYRAH",
+        "KSCK"
+      ],
+      "Altitude": 768,
+      "Heading": 290,
+      "Speed": 93,
+      "State": "departure",
+      "ControllerFrequency": "4R",
+      "TrackingController": "4R",
+      "AddressingForm": 1
+    },
+    "november seven three niner uniform lima": {
+      "Callsign": "N739UL",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Oakland San Francisco Bay": "KOAK",
+        "Sir-ah": "SYRAH",
+        "Stockton Metropolitan": "KSCK"
+      },
+      "SID": "OAK6",
+      "Route": [
+        "SYRAH",
+        "KSCK"
+      ],
+      "Altitude": 768,
+      "Heading": 290,
+      "Speed": 93,
+      "State": "departure",
+      "ControllerFrequency": "4R",
+      "TrackingController": "4R"
+    },
+    "skyhawk niner uniform lima": {
+      "Callsign": "N739UL/T",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Oakland San Francisco Bay": "KOAK",
+        "Sir-ah": "SYRAH",
+        "Stockton Metropolitan": "KSCK"
+      },
+      "SID": "OAK6",
+      "Route": [
+        "SYRAH",
+        "KSCK"
+      ],
+      "Altitude": 768,
+      "Heading": 290,
+      "Speed": 93,
+      "State": "departure",
+      "ControllerFrequency": "4R",
+      "TrackingController": "4R",
+      "AddressingForm": 1
+    }
+  }
+}

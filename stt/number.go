@@ -488,8 +488,18 @@ func altitudeCandidates(tokens []Token, pos int, ctx NumberContext) []NumberCand
 		}
 	}
 
-	// A bare single digit means thousands ("descend five" -> 5,000 ft).
+	// A bare single digit means thousands ("descend five" -> 5,000 ft),
+	// but not directly after "flight level": there it is the one digit
+	// parseFlightLevel could read of a garbled flight level, and taking it
+	// as thousands would turn an unintelligible clearance into a plausible
+	// one ("descend flight level two <garble> zero" from FL350 would read
+	// as 2,000 ft).
 	if v >= 1 && v <= 9 {
+		if pos > 0 {
+			if prev := strings.ToLower(tokens[pos-1].Text); prev == "level" || prev == "fl" {
+				return nil
+			}
+		}
 		return []NumberCandidate{{Value: v * 10, Consumed: 1, Score: numScorePreferredMul}}
 	}
 
