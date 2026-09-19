@@ -27,16 +27,6 @@ import (
 	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
-	"github.com/hashicorp/golang-lru/v2/expirable"
-)
-
-const (
-	// flightDataCacheEntries and flightDataCacheTTL bound the flight data the
-	// traffic preview holds on to; see SimManager.flightData.
-	// A scenario's airports usually fall in one cell but can be spread over
-	// several, so this is well above the number of scenarios a client previews.
-	flightDataCacheEntries = 64
-	flightDataCacheTTL     = 15 * time.Minute
 )
 
 // briefRegistry holds the per-facility brief metadata gathered at
@@ -102,11 +92,6 @@ type SimManager struct {
 	wxProvider     *wx.Provider
 	providersReady chan struct{}
 	lg             *log.Logger
-
-	// flightData holds historical flights for the traffic preview, keyed by cell and the day
-	// previewed. An entry runs to a couple of megabytes at the busiest cells, so this many of
-	// them is tens of megabytes at most.
-	flightData *expirable.LRU[string, []av.Flight]
 
 	// Stats and internal details
 	mu        util.LoggingMutex
@@ -192,8 +177,6 @@ func NewSimManager(config ServerLaunchConfig, scenarioGroups map[string]map[stri
 		local:           config.IsLocal,
 		providersReady:  make(chan struct{}),
 		lg:              lg,
-		flightData: expirable.NewLRU[string, []av.Flight](flightDataCacheEntries, nil,
-			flightDataCacheTTL),
 	}
 	sm.scenarios.Store(makeScenarioTables(scenarioGroups, scenarioCatalogs, mapSpecs, briefs))
 
@@ -929,7 +912,9 @@ func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficC
 	var historical []av.Flight
 	var err error
 	if args.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
-		if historical, err = sm.scenarioFlights(&args.LaunchConfig, args.StartTime); err != nil {
+		historical, err = av.ReadFlightDataCellsAround(util.GetResourcesFS(),
+			av.FlightDataCells(args.LaunchConfig.IFRAirports()), args.StartTime)
+		if err != nil {
 			return err
 		}
 	}
@@ -956,50 +941,6 @@ func (sm *SimManager) checkPreviewScenario(args *TrafficCountsArgs) error {
 		return ErrInvalidTrafficSource
 	}
 	return nil
-}
-
-// cellFlights returns the flights a cell recorded on and around the day a preview starts on, which
-// is as far as a window starting on it can reach in either direction. Only the day is kept, as the
-// busiest cells decode to over a million flights and >200 MB.
-func (sm *SimManager) cellFlights(cell string, day time.Time) ([]av.Flight, error) {
-	key := cell + "/" + day.UTC().Format(time.DateOnly)
-	if flights, ok := sm.flightData.Get(key); ok {
-		return flights, nil
-	}
-
-	data, err := av.ReadFlightData(util.GetResourcesFS(), cell)
-	if err != nil {
-		return nil, err
-	}
-	var days []av.Flight
-	if data != nil {
-		flights, err := av.DecodeFlights(data)
-		if err != nil {
-			return nil, err
-		}
-		first := av.FlightDataDayNumber(day.Add(-24 * time.Hour))
-		last := av.FlightDataDayNumber(day.Add(24 * time.Hour))
-		for _, flight := range flights {
-			if flight.Day >= first && flight.Day <= last {
-				days = append(days, flight)
-			}
-		}
-	}
-	sm.flightData.Add(key, days)
-	return days, nil
-}
-
-// scenarioFlights gathers cellFlights over every cell a scenario's airports fall in.
-func (sm *SimManager) scenarioFlights(lc *sim.LaunchConfig, day time.Time) ([]av.Flight, error) {
-	var flights []av.Flight
-	for _, cell := range av.FlightDataCells(lc.IFRAirports()) {
-		cellFlights, err := sm.cellFlights(cell, day)
-		if err != nil {
-			return nil, err
-		}
-		flights = append(flights, cellFlights...)
-	}
-	return flights, nil
 }
 
 const ReloadScenarioBriefRPC = "SimManager.ReloadScenarioBrief"

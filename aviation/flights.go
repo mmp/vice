@@ -22,6 +22,8 @@ import (
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
+
+	"github.com/hashicorp/golang-lru/v2/expirable"
 )
 
 // Flight is one real-world flight at one of a facility's airports. Times are
@@ -664,7 +666,10 @@ func ReadFlightData(resources fs.FS, cell string) ([]byte, error) {
 }
 
 // ReadFlightDataCells decodes the flight data for each of the given cells and
-// returns all of it together. Cells with no data contribute nothing.
+// returns all of it together. Cells with no data contribute nothing. The
+// busiest cells hold over a million flights and decode to hundreds of
+// megabytes, so callers that only want a day or two of it should go through
+// ReadFlightDataCellsAround.
 func ReadFlightDataCells(resources fs.FS, cells []string) ([]Flight, error) {
 	var flights []Flight
 	for _, cell := range cells {
@@ -682,6 +687,74 @@ func ReadFlightDataCells(resources fs.FS, cells []string) ([]Flight, error) {
 		flights = append(flights, cellFlights...)
 	}
 	return flights, nil
+}
+
+const (
+	// flightCellCacheEntries and flightCellCacheTTL bound what the decoded-cell
+	// cache holds on to. A scenario's airports usually fall in one cell but can
+	// be spread over several, so this is well above the number of scenarios a
+	// server runs or a client previews at once.
+	flightCellCacheEntries = 64
+	flightCellCacheTTL     = 15 * time.Minute
+
+	// FlightCellSpan is how far to either side of the requested day
+	// ReadFlightDataCellsAround keeps flights. A sim reads as far as the
+	// fastest published rate scale takes it, which from a start late in the
+	// day lands two days out.
+	FlightCellSpan = 2 * 24 * time.Hour
+)
+
+// flightCells caches decoded cells, keyed by cell and day. The data is
+// immutable resource data that every sim at a facility wants and that the
+// traffic preview asks for again the moment before a sim is created, so
+// decoding it once and holding it briefly saves repeating the most expensive
+// part of creating a sim.
+var flightCells = expirable.NewLRU[string, []Flight](flightCellCacheEntries, nil, flightCellCacheTTL)
+
+// ReadFlightDataCellsAround decodes the given cells and returns the flights
+// they recorded within a few days of day. Callers narrow the result further
+// with SelectFlights; the days are only how much of a cell is worth keeping
+// around, since a whole one runs to hundreds of megabytes.
+func ReadFlightDataCellsAround(resources fs.FS, cells []string, day time.Time) ([]Flight, error) {
+	var flights []Flight
+	for _, cell := range cells {
+		cellFlights, err := flightDataCellAround(resources, cell, day)
+		if err != nil {
+			return nil, err
+		}
+		flights = append(flights, cellFlights...)
+	}
+	return flights, nil
+}
+
+func flightDataCellAround(resources fs.FS, cell string, day time.Time) ([]Flight, error) {
+	key := cell + "/" + day.UTC().Format(time.DateOnly)
+	if flights, ok := flightCells.Get(key); ok {
+		return flights, nil
+	}
+
+	data, err := ReadFlightData(resources, cell)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", cell, err)
+	}
+
+	var days []Flight
+	if data != nil {
+		flights, err := DecodeFlights(data)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", cell, err)
+		}
+		first := FlightDataDayNumber(day.Add(-FlightCellSpan))
+		last := FlightDataDayNumber(day.Add(FlightCellSpan))
+		for _, flight := range flights {
+			if flight.Day >= first && flight.Day <= last {
+				days = append(days, flight)
+			}
+		}
+	}
+
+	flightCells.Add(key, days)
+	return days, nil
 }
 
 // FlightDataIntervals returns the stretches of time the flight data covers; it

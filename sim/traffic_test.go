@@ -801,3 +801,17 @@ func TestMarkBackgroundInboundLeavesUnservedAirportAlone(t *testing.T) {
 		t.Error("a flow with no arrival serving KTST was called background there")
 	}
 }
+
+// TestHistoricalWindowFitsFlightCells checks that the stretch of recorded time
+// a sim reads through stays inside what ReadFlightDataCellsAround keeps. The
+// cache holds a few days around the start rather than a whole cell, which runs
+// to over a million flights; a sim that reached past them would silently fly
+// less traffic than the data holds.
+func TestHistoricalWindowFitsFlightCells(t *testing.T) {
+	if w := MaxPublishedRateScale * HistoricalFlightWindow; w > av.FlightCellSpan {
+		t.Errorf("sim reads %v past its start but flight cells keep only %v", w, av.FlightCellSpan)
+	}
+	if w := MaxPublishedRateScale * PrespawnDuration; w > av.FlightCellSpan {
+		t.Errorf("sim reads %v before its start but flight cells keep only %v", w, av.FlightCellSpan)
+	}
+}

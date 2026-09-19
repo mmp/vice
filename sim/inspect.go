@@ -273,7 +273,7 @@ func (ss *CommonState) PublishedTrafficReport(q TrafficQuery) (PublishedTraffic,
 	case TrafficSourceHistorical:
 		report.End = q.Start.Add(HistoricalFlightWindow)
 		var err error
-		if flights, err = ss.historicalFlights(q.Start.Add(-PrespawnDuration), report.End); err != nil {
+		if flights, err = ss.historicalFlights(q.Start, 1); err != nil {
 			return PublishedTraffic{}, err
 		}
 

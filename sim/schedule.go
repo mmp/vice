@@ -1246,13 +1246,11 @@ func shiftScheduledLater[T any](entries []T, flight func(*T) *ScheduledFlight,
 
 // readHistoricalFlights gathers the flights a scenario using historical
 // traffic flies: those at its airports over the window starting at the
-// selected time. Both ends reach as far as the fastest rate scale reads
-// through the data, since the scale can be raised while the sim runs and the
-// schedule is built only once.
+// selected time. It asks for the most the sim could ever reach, since the
+// rate scale can be raised while the sim runs and the schedule is built only
+// once.
 func (s *Sim) readHistoricalFlights() []av.Flight {
-	start := s.StartTime.Time()
-	flights, err := s.State.historicalFlights(start.Add(-MaxPublishedRateScale*PrespawnDuration),
-		start.Add(MaxPublishedRateScale*HistoricalFlightWindow))
+	flights, err := s.State.historicalFlights(s.StartTime.Time(), MaxPublishedRateScale)
 	if err != nil {
 		s.lg.Errorf("%v", err)
 	}
@@ -1260,13 +1258,17 @@ func (s *Sim) readHistoricalFlights() []av.Flight {
 }
 
 // historicalFlights returns the recorded flights at the scenario's airports
-// between two times.
-func (ss *CommonState) historicalFlights(from, until time.Time) ([]av.Flight, error) {
+// over the window a sim starting at start reads through at the given rate
+// scale. start also keys the decoded-cell cache, so the traffic preview and
+// the sim the user launches from it share one decode of the data.
+func (ss *CommonState) historicalFlights(start time.Time, scale int) ([]av.Flight, error) {
 	departureAirports, arrivalAirports := ss.LaunchConfig.IFRAirports()
-	flights, err := av.ReadFlightDataCells(util.GetResourcesFS(),
-		av.FlightDataCells(departureAirports, arrivalAirports))
+	flights, err := av.ReadFlightDataCellsAround(util.GetResourcesFS(),
+		av.FlightDataCells(departureAirports, arrivalAirports), start)
 	if err != nil {
 		return nil, fmt.Errorf("%s historical flight data: %w", ss.Facility, err)
 	}
-	return av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines, from, until), nil
+	return av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
+		start.Add(-time.Duration(scale)*PrespawnDuration),
+		start.Add(time.Duration(scale)*HistoricalFlightWindow)), nil
 }
