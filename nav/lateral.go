@@ -966,8 +966,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 	// the turn point, keeping the turn near the fix.
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
 	tas := nav.TAS(wxs.Temperature())
-	omega := min(StandardTurnRate, math.Degrees(9.81*math.Tan(math.Radians(nav.Perf.Turn.MaxBankAngle))/(tas*0.514444)))
-	radius := tas / 3600 / math.Radians(omega)
+	radius := TurnRadius(nav.Perf, tas)
 	anticipation := radius*math.Tan(math.Radians(min(turnAngle, maxFlyByAngle)/2)) + 10*nav.FlightState.GS/3600
 	if math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude) > anticipation {
 		return false
@@ -1097,6 +1096,15 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 ///////////////////////////////////////////////////////////////////////////
 
 const StandardTurnRate = 3
+
+// TurnRadius returns the radius in nautical miles of a turn flown at the given
+// true airspeed: a standard rate turn, or a wider one where holding that rate
+// would take more bank than the type allows.
+func TurnRadius(perf av.AircraftPerformance, tas float32) float32 {
+	omega := min(StandardTurnRate,
+		math.Degrees(9.81*math.Tan(math.Radians(perf.Turn.MaxBankAngle))/(tas*0.514444)))
+	return tas / 3600 / math.Radians(omega)
+}
 
 func TurnAngle(from, to math.MagneticHeading, turn av.TurnDirection) float32 {
 	switch turn {
