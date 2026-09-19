@@ -1721,15 +1721,19 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		s.initializeAirspaceGrids()
 	}
 
-	// Adjust route for MVA requirements
-	wps = s.adjustRouteForMVA(string(ac.ADSBCallsign), wps)
-
 	wps[len(wps)-1].SetSequenceVFRLanding(true)
 
 	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, simTime, s.lg); err != nil {
 		return nil, "", err
 	}
+
+	// Only now is the route the one the aircraft will fly: building the Nav
+	// scatters the waypoints within their radii. The MVA legs have to be
+	// sampled along that route rather than the one they were planned on,
+	// both so the terrain they clear is the terrain overflown and so they
+	// land on the legs they divide rather than off to one side of them.
+	ac.Nav.Waypoints = s.adjustRouteForMVA(string(ac.ADSBCallsign), ac.Nav.Waypoints)
 
 	// Deep-copy only Nav (not the full Aircraft) to avoid copying
 	// maps, pointers, and fields unused during route validation.
