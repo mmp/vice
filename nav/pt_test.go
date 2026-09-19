@@ -11,7 +11,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
-	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
@@ -52,7 +51,7 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 		Type:     av.RNAVApproach,
 		Runway:   "15R",
 		Waypoints: []av.WaypointArray{
-			util.DuplicateSlice(wps),
+			wps.Clone(),
 		},
 	}
 

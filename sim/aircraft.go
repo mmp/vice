@@ -763,8 +763,6 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model,
 	simTime Time, lg *log.Logger) error {
-	wp := util.DuplicateSlice(wps)
-
 	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
@@ -774,7 +772,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 	ac.TypeOfFlight = av.FlightTypeDeparture
 
 	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, 0, /* assigned alt */
-		ac.FlightPlan.Altitude /* cleared alt */, wp,
+		ac.FlightPlan.Altitude /* cleared alt */, wps,
 		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")

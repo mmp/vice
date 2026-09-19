@@ -334,6 +334,26 @@ type WaypointExtra struct {
 	AirworkMinutes int8
 }
 
+// Clone returns a copy of we that shares nothing with the original, so that
+// modifying the copy leaves the original untouched. A nil receiver gives a
+// nil result.
+func (we *WaypointExtra) Clone() *WaypointExtra {
+	if we == nil {
+		return nil
+	}
+	x := *we
+	x.ActionGroups = util.DuplicateSlice(we.ActionGroups)
+	if we.Arc != nil {
+		arc := *we.Arc
+		x.Arc = &arc
+	}
+	if we.ProcedureTurn != nil {
+		pt := *we.ProcedureTurn
+		x.ProcedureTurn = &pt
+	}
+	return &x
+}
+
 // InitExtra allocates Extra if nil and returns it.
 func (wp *Waypoint) InitExtra() *WaypointExtra {
 	if wp.Extra == nil {
@@ -345,20 +365,7 @@ func (wp *Waypoint) InitExtra() *WaypointExtra {
 // Clone returns a copy of wp that shares nothing with the original, so that
 // modifying the copy leaves the original untouched.
 func (wp Waypoint) Clone() Waypoint {
-	if wp.Extra == nil {
-		return wp
-	}
-	extra := *wp.Extra
-	extra.ActionGroups = util.DuplicateSlice(extra.ActionGroups)
-	if extra.Arc != nil {
-		arc := *extra.Arc
-		extra.Arc = &arc
-	}
-	if extra.ProcedureTurn != nil {
-		pt := *extra.ProcedureTurn
-		extra.ProcedureTurn = &pt
-	}
-	wp.Extra = &extra
+	wp.Extra = wp.Extra.Clone()
 	return wp
 }
 
@@ -448,13 +455,13 @@ func (wp Waypoint) MergeWith(next Waypoint) Waypoint {
 // place, so it comes out north rather than on course and the aircraft turns
 // off the leg that reaches the fix at the wrong point.
 func SpliceRoutes(base, next WaypointArray) WaypointArray {
-	wps := util.DuplicateSlice(base)
+	wps := base.Clone()
 	n := len(wps)
 	for n > 0 && len(next) > 0 && wps[n-1].Fix == next[0].Fix {
 		wps[n-1] = wps[n-1].MergeWith(next[0])
 		next = next[1:]
 	}
-	return append(wps, next...)
+	return append(wps, next.Clone()...)
 }
 
 // Flag readers (value receiver)
@@ -2999,14 +3006,14 @@ func (s SID) Waypoints(runway, transition, exit string) (WaypointArray, error) {
 // first fix is found in base the route continues from there, keeping the
 // transition's restrictions at the junction where base has none.
 func spliceSIDTransition(base, tr WaypointArray) WaypointArray {
-	route := util.DuplicateSlice(base)
+	route := base.Clone()
 	if len(tr) == 0 {
 		return route
 	}
 
 	idx := slices.IndexFunc(route, func(wp Waypoint) bool { return wp.Fix == tr[0].Fix })
 	if idx == -1 {
-		return append(route, tr...)
+		return append(route, tr.Clone()...)
 	}
 
 	junction := &route[idx]
@@ -3020,7 +3027,7 @@ func spliceSIDTransition(base, tr WaypointArray) WaypointArray {
 			junction.SetSpeedRestriction(*sr)
 		}
 	}
-	return append(route[:idx+1], tr[1:]...)
+	return append(route[:idx+1], tr[1:].Clone()...)
 }
 
 // Routes returns the SID's runway transitions, common route, and enroute

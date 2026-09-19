@@ -594,7 +594,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 
 	// Check the approach (if any).
 	if route, idx := approachRouteThrough(nav.Approach.Assigned, fix); route != nil {
-		return slices.Concat(route[idx:], []av.Waypoint{nav.FlightState.ArrivalAirport}),
+		return slices.Concat(route[idx:].Clone(), av.WaypointArray{nav.FlightState.ArrivalAirport}),
 			waypointSourceApproach, nil
 	}
 

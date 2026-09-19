@@ -1086,7 +1086,7 @@ func parseSID(recs []ssaRecord, icao ICAOAirportCode, runways []Runway, navaids 
 		switch {
 		case runwayTransition:
 			for _, rwy := range sidTransitionRunways(transition, runways) {
-				r := util.DuplicateSlice(wps)
+				r := wps.Clone()
 				if r[0].Fix == "" {
 					r[0].Fix = string(icao) + "-" + OppositeRunwayId(rwy)
 				}

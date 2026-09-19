@@ -25,7 +25,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 	// Determine the course and line to intercept.
 	var courseTrue math.TrueHeading
 	var courseLine [2]math.Point2LL
-	var interceptWaypoints []av.Waypoint // waypoints from intercept point forward
+	var interceptWaypoints av.WaypointArray // waypoints from intercept point forward
 	if hasLocalizer {
 		courseTrue = ap.RunwayHeading(nav.FlightState.NmPerLongitude)
 		courseLine = ap.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
@@ -177,9 +177,9 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 			for idx < len(wps)-1 && !ahead(wps[idx]) {
 				idx++
 			}
-			nav.Waypoints = append(util.DuplicateSlice(wps[idx:]), nav.FlightState.ArrivalAirport)
+			nav.Waypoints = append(wps[idx:].Clone(), nav.FlightState.ArrivalAirport)
 		} else {
-			nav.Waypoints = append(util.DuplicateSlice(interceptWaypoints),
+			nav.Waypoints = append(interceptWaypoints.Clone(),
 				nav.FlightState.ArrivalAirport)
 		}
 
@@ -361,7 +361,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 			// Nothing left on our route; this shouldn't ever happen but
 			// just in case patch the runway waypoints in there and hope it
 			// works out.
-			nav.Waypoints = append(util.DuplicateSlice(waypoints[1:]), nav.FlightState.ArrivalAirport)
+			nav.Waypoints = append(waypoints[1:].Clone(), nav.FlightState.ArrivalAirport)
 		} else {
 			// Try to splice the runway-specific waypoints in with the
 			// aircraft's current waypoints. This overwrites the deferred
@@ -389,7 +389,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 				// send them direct somewhere reasonable... A pending direct
 				// is newer than these waypoints, though, so when there is
 				// one it is kept instead.
-				nav.Waypoints = append(util.DuplicateSlice(waypoints), nav.FlightState.ArrivalAirport)
+				nav.Waypoints = append(waypoints.Clone(), nav.FlightState.ArrivalAirport)
 
 				if _, ok := nav.AssignedHeading(); !ok {
 					hdg := nav.FlightState.Heading
@@ -507,7 +507,7 @@ func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.D
 	if !nav.routeDirectIfNeeded(fix, simTime, delayReduction) {
 		return av.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
-	nav.Approach.AtFixClearedRoute = util.DuplicateSlice(route[idx:])
+	nav.Approach.AtFixClearedRoute = route[idx:].Clone()
 	if straightIn && len(nav.Approach.AtFixClearedRoute) > 0 {
 		nav.Approach.AtFixClearedRoute[0].SetNoPT(true)
 	}
@@ -582,10 +582,10 @@ func approachRouteThrough(ap *av.Approach, fix string) (av.WaypointArray, int) {
 // spliceApproachRoute returns the route that follows navwps up to navwps[idx],
 // where it joins apwps, which starts at that same fix, and then continues to
 // the arrival airport. The approach's waypoint takes over at the shared fix
-// but keeps the route's own actions there. The result shares nothing with
-// either input.
-func (nav *Nav) spliceApproachRoute(navwps []av.Waypoint, idx int, apwps []av.Waypoint) []av.Waypoint {
-	wps := slices.Concat(navwps[:idx], apwps, []av.Waypoint{nav.FlightState.ArrivalAirport})
+// but keeps the route's own actions there. The result shares nothing with the
+// approach, which the aircraft does not own.
+func (nav *Nav) spliceApproachRoute(navwps []av.Waypoint, idx int, apwps av.WaypointArray) av.WaypointArray {
+	wps := slices.Concat(navwps[:idx], apwps.Clone(), av.WaypointArray{nav.FlightState.ArrivalAirport})
 	wps[idx] = apwps[0].CarryOverActions(navwps[idx])
 	return wps
 }
@@ -598,7 +598,8 @@ func (nav *Nav) joinApproach(joinFix string) bool {
 	ap := nav.Approach.Assigned
 
 	if route, idx := approachRouteThrough(ap, joinFix); route != nil {
-		nav.setAssignedWaypoints(slices.Concat(route[idx+1:], []av.Waypoint{nav.FlightState.ArrivalAirport}))
+		nav.setAssignedWaypoints(slices.Concat(route[idx+1:].Clone(),
+			av.WaypointArray{nav.FlightState.ArrivalAirport}))
 		// Having crossed the fix counts as passing an approach fix, which
 		// lets a clearance start the descent right away.
 		nav.Approach.PassedApproachFix = true
@@ -664,16 +665,17 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	// meet the chart. Unlike an uncharted visual there is no projection
 	// fallback past that: the published track has to be joined where it is
 	// charted, so a pilot who isn't pointed at it answers unable.
-	var wi []av.Waypoint
+	var wi av.WaypointArray
 	if join := nav.visualJoinFromInstructions(routes); join != nil {
 		if join.segmentFraction == 0 {
 			// The join is the charted fix that starts the segment, or is
 			// upstream of it; fly the fix itself so that its altitude and
 			// speed restrictions come along rather than being displaced by a
 			// bare intercept point.
-			wi = util.DuplicateSlice(join.route[join.segment:])
+			wi = join.route[join.segment:].Clone()
 		} else {
-			wi = append([]av.Waypoint{{Fix: "intercept", Location: join.location}}, join.route[join.segment+1:]...)
+			wi = append(av.WaypointArray{{Fix: "intercept", Location: join.location}},
+				join.route[join.segment+1:].Clone()...)
 		}
 	} else {
 		// No intercept. Fall back to the first waypoint whose bearing is
@@ -685,7 +687,7 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 				return math.HeadingDifference(math.Heading2LL(pos, wp.Location, nmPerLong), hdg) < 30
 			})
 			if i != -1 {
-				wi = util.DuplicateSlice(route[i:])
+				wi = route[i:].Clone()
 				break
 			}
 		}
@@ -924,14 +926,11 @@ func selectVisualReferences(airport *av.Airport, runway string) []*av.Approach {
 // synthesized non-charted visual: a procedure turn would otherwise propagate
 // into prepareForApproach / flyProcedureTurnIfNecessary.
 func stripProcedureTurns(route av.WaypointArray) av.WaypointArray {
-	out := make(av.WaypointArray, len(route))
-	for i, wp := range route {
-		if wp.Extra != nil && wp.Extra.ProcedureTurn != nil {
-			extra := *wp.Extra
-			extra.ProcedureTurn = nil
-			wp.Extra = &extra
+	out := route.Clone()
+	for i := range out {
+		if out[i].Extra != nil {
+			out[i].Extra.ProcedureTurn = nil
 		}
-		out[i] = wp
 	}
 	return out
 }
@@ -972,7 +971,7 @@ func (nav *Nav) visualApproachRouteFollowingTraffic(runway string, trafficPositi
 	}
 	join.SetOnApproach(true)
 
-	return append([]av.Waypoint{join}, trafficRoute...)
+	return append(av.WaypointArray{join}, trafficRoute.Clone()...)
 }
 
 // applyClearedApproachState performs the nav-state reset common to every
@@ -993,7 +992,7 @@ func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
 }
 
 type visualApproachJoinPoint struct {
-	route               []av.Waypoint
+	route               av.WaypointArray
 	segment             int
 	segmentFraction     float32
 	location            math.Point2LL
@@ -1294,7 +1293,7 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 			if lo >= hi {
 				return nil
 			}
-			copied := util.DuplicateSlice(joinPoint.route[lo:hi])
+			copied := joinPoint.route[lo:hi].Clone()
 			for i := range copied {
 				copied[i].SetFAF(false)
 			}
@@ -1314,17 +1313,14 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 	}
 
 	if start < len(joinPoint.route) {
-		wps = append(wps, util.DuplicateSlice(joinPoint.route[start:])...)
+		wps = append(wps, joinPoint.route[start:].Clone()...)
 	}
 
 	if len(wps) == 0 {
 		return nil
 	}
 
-	// A few things at the last waypoint. It is cloned first: the route was
-	// copied from the reference approach a waypoint at a time, so its actions
-	// are still the scenario's until they are.
-	wps[len(wps)-1] = wps[len(wps)-1].Clone()
+	// A few things at the last waypoint.
 	last := &wps[len(wps)-1]
 	last.SetOnApproach(true)
 	last.MergeActions(av.WaypointActions{Land: true})

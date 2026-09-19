@@ -1802,7 +1802,7 @@ func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, loc Locator, nmPer
 }
 
 // Find the FAF: return the corresponding waypoint array and the index of the FAF within it.
-func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Waypoint, int) {
+func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) (WaypointArray, int) {
 	// For approaches with multiple segments, want the segment that is most
 	// closely aligned with the runway.
 	rwyHdg := ap.RunwayHeading(nmPerLongitude)

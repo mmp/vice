@@ -368,7 +368,7 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 }
 
 func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance,
-	assignedAlt, clearedAlt int, wp []av.Waypoint, randomizeAltitudeRange bool,
+	assignedAlt, clearedAlt int, wp av.WaypointArray, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) *Nav {
 	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
 		lg); nav != nil {
@@ -416,7 +416,7 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.Flight
 	return nil
 }
 
-func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance, wp []av.Waypoint,
+func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance, wp av.WaypointArray,
 	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32,
 	lg *log.Logger) *Nav {
 	nav := &Nav{
@@ -426,10 +426,9 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 		Rand:           rand.Make(),
 	}
 
-	// Copy the provided waypoints so that any local modifications we make don't pollute the
+	// Clone the provided waypoints so that any local modifications we make don't pollute the
 	// waypoints stored for the scenario. Add a small buffer for the destination airport waypoint.
-	nav.Waypoints = make([]av.Waypoint, len(wp)+1)
-	copy(nav.Waypoints, wp)
+	nav.Waypoints = append(wp.Clone(), av.Waypoint{})
 
 	av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, lg)

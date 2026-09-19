@@ -611,7 +611,7 @@ func (f *FlightTest) makeAirport() *av.Airport {
 		// Deep-copy waypoint slices so we don't mutate the database.
 		a.Waypoints = make([]av.WaypointArray, len(appr.Waypoints))
 		for i, route := range appr.Waypoints {
-			a.Waypoints[i] = util.DuplicateSlice(route)
+			a.Waypoints[i] = route.Clone()
 		}
 
 		// Resolve fix names to lat/lon coordinates.
@@ -840,7 +840,7 @@ func LookupApproachGeometry(t testing.TB, airport av.ICAOAirportCode, approachID
 	a.Waypoints = make([]av.WaypointArray, len(appr.Waypoints))
 	e := &util.ErrorLogger{}
 	for i, route := range appr.Waypoints {
-		a.Waypoints[i] = util.DuplicateSlice(route)
+		a.Waypoints[i] = route.Clone()
 		a.Waypoints[i] = a.Waypoints[i].InitializeLocations(dbLocator{}, nmPerLong, magVar, true, e)
 	}
 	if e.HaveErrors() {
