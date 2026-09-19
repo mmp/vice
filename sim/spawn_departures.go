@@ -27,6 +27,18 @@ import (
 // How low below the MVA a VFR can be
 const vfrMVABuffer = 1000
 
+// A VFR flight under Class B or C airspace stays vfrShelfBuffer below its
+// floor and then drops to the next vfrShelfIncrement, which under the usual
+// 1200' and 3000' shelves gives 1000' and 2500' -- what pilots fly there.
+// Scud running under a shelf is ordinary VFR practice; brushing its floor is
+// not, and neither is squeezing through less than minVFRShelfRoom of air
+// between the departure field and the airspace over it.
+const (
+	vfrShelfBuffer    = 200
+	vfrShelfIncrement = 500
+	minVFRShelfRoom   = 500
+)
+
 // Max altitude for VFR aircraft (below Class A airspace at 18,000')
 const maxVFRAltitude = 17500
 
@@ -1616,9 +1628,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
 
-	ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, CruiseLimits{},
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.Rand)
-
 	mid := math.Mid2f(depap.Location, arrap.Location)
 	if arrive == depart {
 		dist := float32(s.Rand.IntRange(10, 30))
@@ -1662,6 +1671,23 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		wps = append(wps, rg.Waypoint("_dep_downwind2", 0, side*vfrDownwindOffset))
 		wps = append(wps, rg.Waypoint("_dep_downwind3", -2*k, side*vfrDownwindOffset))
 	}
+
+	// The grids answer both the cruise ceiling below and the MVA pass further
+	// down, so they have to be up before either.
+	if s.bravoAirspace == nil || s.charlieAirspace == nil || s.mvaGrid == nil {
+		s.initializeAirspaceGrids()
+	}
+
+	// A flight leaving a field under a Class B or C shelf scud runs beneath
+	// it rather than climbing into airspace it has no clearance for, so the
+	// airspace over the route bounds the cruise altitude before the route's
+	// restrictions are built from it.
+	ceiling, ok := s.vfrCruiseCeiling(vfrRoutePath(wps, mid, routeWps, arrap.Location), depap, arrap)
+	if !ok {
+		return nil, "", ErrViolatedAirspace
+	}
+	ac.FlightPlan.Altitude = min(FiledCruiseAltitude(ac.FlightPlan, perf, CruiseLimits{},
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.Rand), ceiling)
 
 	var randomizeAltitudeRange bool
 	if len(routeWps) > 0 {
@@ -1724,11 +1750,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				w.AltRestriction.Range[1] = min(w.AltRestriction.Range[1]+2000, maxVFRAltitude)
 			}
 		}
-	}
-
-	// Initialize grids if needed (must be done before adjustRouteForMVA)
-	if s.bravoAirspace == nil || s.charlieAirspace == nil || s.mvaGrid == nil {
-		s.initializeAirspaceGrids()
 	}
 
 	wps[len(wps)-1].SetSequenceVFRLanding(true)
@@ -1831,6 +1852,66 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	//s.lg.Infof("%s: %s/%s aircraft not finished after 3 hours of sim time",		ac.ADSBCallsign, depart, arrive)
 
 	return nil, "", ErrVFRSimTookTooLong
+}
+
+// vfrRoutePath is the ground track a generated VFR route follows: the
+// departure legs built so far, then either the route it was given or the
+// midpoint its random legs bend around, and finally the arrival field.
+func vfrRoutePath(departure []av.Waypoint, mid math.Point2LL, routeWps []av.Waypoint,
+	arrival math.Point2LL) []math.Point2LL {
+	path := util.MapSlice(departure, func(wp av.Waypoint) math.Point2LL { return wp.Location })
+	if len(routeWps) > 0 {
+		path = append(path, util.MapSlice(routeWps,
+			func(wp av.Waypoint) math.Point2LL { return wp.Location })...)
+	} else {
+		path = append(path, mid)
+	}
+	return append(path, arrival)
+}
+
+// vfrCruiseCeiling returns the highest altitude a VFR flight can hold along
+// path and stay clear of the Class B and C airspace over it. It reports false
+// where there is no room to fly under that airspace at all: either the ground
+// is too close or the MVA is above it, so the flight has to go somewhere else.
+// The MVA is left out near either field, as it is during the route's
+// validation flight, since an aircraft is below it on departure and arrival.
+func (s *Sim) vfrCruiseCeiling(path []math.Point2LL, depap, arrap av.FAAAirport) (int, bool) {
+	ceiling := maxVFRAltitude
+	roomAt := func(p math.Point2LL) bool {
+		for _, grid := range []*av.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
+			if floor, covered := grid.ShelfFloor(p); covered {
+				under := (floor - vfrShelfBuffer) / vfrShelfIncrement * vfrShelfIncrement
+				ceiling = min(ceiling, under)
+			}
+		}
+		if ceiling < depap.Elevation+minVFRShelfRoom {
+			return false
+		}
+		if math.NMDistance2LL(p, depap.Location) > 3 && math.NMDistance2LL(p, arrap.Location) > 5 {
+			if mva := s.mvaGrid.GetMVA(p); mva > 0 && ceiling < mva-vfrMVABuffer {
+				return false
+			}
+		}
+		return true
+	}
+
+	for i, p := range path {
+		if i > 0 {
+			prev := path[i-1]
+			nSamples := max(1, int(math.NMDistance2LL(prev, p)+0.5))
+			for j := range nSamples {
+				t := float32(j+1) / float32(nSamples+1)
+				if !roomAt(math.Lerp2f(t, prev, p)) {
+					return 0, false
+				}
+			}
+		}
+		if !roomAt(p) {
+			return 0, false
+		}
+	}
+
+	return ceiling, true
 }
 
 func (s *Sim) initializeAirspaceGrids() {
