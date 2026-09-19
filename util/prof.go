@@ -1,5 +1,5 @@
-// pkg/util/prof.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// util/prof.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package util
@@ -7,12 +7,14 @@ package util
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/pprof"
 	"runtime/trace"
 	"slices"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/mmp/vice/log"
@@ -24,8 +26,14 @@ type Profiler struct {
 	mu       sync.Mutex
 }
 
-func CreateProfiler(cpu, mem string) (Profiler, error) {
-	p := Profiler{}
+// CreateProfiler launches CPU and/or memory profiles, saving them to the given
+// filenames. If both are "", (nil, nil) is returned and no profiling is done.
+func CreateProfiler(cpu, mem string) (*Profiler, error) {
+	if cpu == "" && mem == "" {
+		return nil, nil
+	}
+
+	p := &Profiler{}
 
 	// If the path is non-absolute, convert it to an absolute path
 	// w.r.t. the current directory.  (This is to work around that vice
@@ -46,20 +54,37 @@ func CreateProfiler(cpu, mem string) (Profiler, error) {
 	var err error
 	if cpu != "" {
 		if p.cpu, err = os.Create(cpu); err != nil {
-			return Profiler{}, fmt.Errorf("%s: unable to create CPU profile file: %v", cpu, err)
+			return nil, fmt.Errorf("%s: unable to create CPU profile file: %v", cpu, err)
 		} else if err = pprof.StartCPUProfile(p.cpu); err != nil {
 			p.cpu.Close()
-			return Profiler{}, fmt.Errorf("unable to start CPU profile: %v", err)
+			return nil, fmt.Errorf("unable to start CPU profile: %v", err)
 		}
 	}
 
 	if mem != "" {
 		if p.mem, err = os.Create(mem); err != nil {
-			return Profiler{}, fmt.Errorf("%s: unable to create memory profile file: %v", mem, err)
+			p.Cleanup()
+			return nil, fmt.Errorf("%s: unable to create memory profile file: %v", mem, err)
 		}
 	}
 
 	return p, nil
+}
+
+// RegisterSignalCleanup registers a SIGINT/SIGTERM handler that calls p.Cleanup().
+// It should be called if such a signal handler isn't otherwise being installed by the app;
+// otherwise the user should call p.Cleanup() in their own signal handler.
+func (p *Profiler) RegisterSignalCleanup() {
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-sigCh
+		fmt.Fprintln(os.Stderr, "Caught signal, cleaning up...")
+		p.Cleanup()
+		fmt.Fprintln(os.Stderr, "Cleanup complete, exiting")
+		os.Exit(0)
+	}()
 }
 
 func (p *Profiler) Cleanup() {
@@ -76,6 +101,7 @@ func (p *Profiler) Cleanup() {
 			fmt.Fprintf(os.Stderr, "unable to write memory profile file: %v", err)
 		}
 		p.mem.Close()
+		p.mem = nil
 	}
 }
 

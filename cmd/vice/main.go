@@ -14,13 +14,11 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"os/signal"
 	"runtime"
 	"runtime/debug"
 	"slices"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/goforj/godump"
@@ -77,19 +75,6 @@ var (
 	facilityConfigFilenames []string
 )
 
-func setupSignalHandler(profiler *util.Profiler) {
-	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
-
-	go func() {
-		<-sigCh
-		fmt.Fprintln(os.Stderr, "Caught signal, cleaning up...")
-		profiler.Cleanup()
-		fmt.Fprintln(os.Stderr, "Cleanup complete, exiting")
-		os.Exit(0)
-	}()
-}
-
 func init() {
 	// OpenGL and friends require that all calls be made from the primary
 	// application thread, while by default, go allows the main thread to
@@ -107,7 +92,7 @@ func init() {
 // initCommon performs early initialization common to all modes: flag
 // parsing, console fixup, logging, CPU info, profiler setup, and
 // server address normalization.
-func initCommon() (*log.Logger, *util.Profiler) {
+func initCommon() (*log.Logger, *util.Profiler, error) {
 	// Attach to the parent console (if any) before flag.Parse so that
 	// flag's usage/error output on an unknown flag is visible when vice
 	// is launched from cmd.exe or PowerShell.
@@ -142,18 +127,17 @@ func initCommon() (*log.Logger, *util.Profiler) {
 
 	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
 	if err != nil {
-		lg.Errorf("%v", err)
+		return lg, nil, err
 	}
-
-	if *cpuprofile != "" || *memprofile != "" {
-		setupSignalHandler(&profiler)
+	if profiler != nil {
+		profiler.RegisterSignalCleanup()
 	}
 
 	if *serverAddress != "" && !strings.Contains(*serverAddress, ":") {
 		*serverAddress = net.JoinHostPort(*serverAddress, strconv.Itoa(server.ViceServerPort))
 	}
 
-	return lg, &profiler
+	return lg, profiler, nil
 }
 
 // loadConfig initializes the imgui context, loads user configuration,
@@ -854,8 +838,15 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 }
 
 func main() {
-	lg, profiler := initCommon()
-	defer profiler.Cleanup()
+	lg, profiler, err := initCommon()
+	if err != nil {
+		lg.Errorf("%v", err)
+		log.RemoveCurrentCrashStderrFile()
+		os.Exit(1)
+	}
+	if profiler != nil {
+		defer profiler.Cleanup()
+	}
 
 	// Only remove this run's crash-stderr file on a known clean exit.
 	// In particular, do *not* remove it during panic unwinding: a panic
@@ -873,7 +864,6 @@ func main() {
 
 	config, configErr := loadConfig(lg)
 
-	var err error
 	switch {
 	case *lintScenarios:
 		err = runLint(lg)
@@ -896,7 +886,9 @@ func main() {
 	}
 	if err != nil {
 		lg.Errorf("%v", err)
-		profiler.Cleanup() // defers don't run with exit
+		if profiler != nil {
+			profiler.Cleanup() // defers don't run with exit
+		}
 		// Controlled failure: remove this run's crash-stderr file so
 		// the next run doesn't upload the lg.Errorf output above as a
 		// fake "Crashed (stderr capture from prior run)" report.

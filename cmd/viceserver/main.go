@@ -27,6 +27,8 @@ import (
 )
 
 var (
+	cpuprofile            = flag.String("cpuprofile", "", "write CPU profile to `file`")
+	memprofile            = flag.String("memprofile", "", "write memory profile to `file`")
 	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
 	logDir                = flag.String("logdir", "", "log file `directory`")
 	serverPort            = flag.Int("port", server.ViceServerPort, "`port` to listen on")
@@ -78,6 +80,22 @@ func main() {
 	resolvedLogDir := log.DefaultLogDir(true, *logDir)
 	lg := log.New(true, *logLevel, resolvedLogDir)
 
+	if err := run(lg); err != nil {
+		lg.Errorf("%v", err)
+		os.Exit(1)
+	}
+}
+
+func run(lg *log.Logger) error {
+	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
+	if err != nil {
+		return err
+	}
+	if profiler != nil {
+		profiler.RegisterSignalCleanup()
+		defer profiler.Cleanup()
+	}
+
 	if *serverAddress != "" && !strings.Contains(*serverAddress, ":") {
 		*serverAddress = net.JoinHostPort(*serverAddress, strconv.Itoa(server.ViceServerPort))
 	}
@@ -86,20 +104,14 @@ func main() {
 	// A canceled sync means the server didn't start, so it exits non-zero like
 	// any other startup failure.
 	if err := util.SyncResources(&util.TextSyncUI{}); err != nil {
-		lg.Errorf("Unable to sync resources: %v", err)
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("Unable to sync resources: %v", err)
 	}
 
 	av.InitDB()
 	wx.Init()
 
 	if *wxFacilities != "" {
-		if err := writeWXFacilities(*wxFacilities, lg); err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
-			os.Exit(1)
-		}
-		return
+		return writeWXFacilities(*wxFacilities, lg)
 	}
 
 	nav.InitNavLog(*navLogEnabled, *navLogCategories, *navLogCallsign)
@@ -117,14 +129,11 @@ func main() {
 	}
 
 	if *smoketest > 0 {
-		if err := runSmoketest(config, *smoketest, lg); err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
-			os.Exit(1)
-		}
-		return
+		return runSmoketest(config, *smoketest, lg)
 	}
 
 	server.LaunchServer(config, lg)
+	return nil
 }
 
 // runSmoketest loads the scenarios, starts a sim, and polls it for state
