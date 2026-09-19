@@ -433,9 +433,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	}
 
 	passedWaypoint := false
-	if wp.FlyOver() || nav.Prespawn {
-		// We treat all wps as flyover during the prespawn phase; precise
-		// fly-by turns don't matter before the sim starts.
+	if wp.FlyOver() {
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
 		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, turn, track, wxs)
@@ -970,6 +968,14 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 	anticipation := radius*math.Tan(math.Radians(min(turnAngle, maxFlyByAngle)/2)) + 10*nav.FlightState.GS/3600
 	if math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude) > anticipation {
 		return false
+	}
+
+	// Prespawn stops at that bound rather than paying for the prediction:
+	// it runs 1800 steps per aircraft before anyone sees the scope, and the
+	// bound is the same closed-form turn geometry the prediction refines --
+	// above maxFlyByAngle it is already what sets the turn point.
+	if nav.Prespawn {
+		return true
 	}
 
 	// Get two points that give the line of the outbound course.
