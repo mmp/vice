@@ -377,49 +377,95 @@ func MakeMETARSOA(recs []METAR) (METARSOA, error) {
 	return soa, nil
 }
 
+// records yields the airport's reports in time order, undoing the delta
+// encoding as it goes rather than expanding every column up front. Ending the
+// iteration early leaves the rest of the history undecoded.
+func (soa METARSOA) records(icao string) iter.Seq[METAR] {
+	return func(yield func(METAR) bool) {
+		var reportTime []byte
+		var temp, dewp, alt, dir, speed, gust int16
+
+		for i := range soa.ReportTime {
+			reportTime = util.DeltaDecodeBytes(reportTime, soa.ReportTime[i])
+			temp += soa.Temperature[i]
+			dewp += soa.Dewpoint[i]
+			alt += soa.Altimeter[i]
+			dir += soa.WindDir[i]
+			speed += soa.WindSpeed[i]
+			gust += soa.WindGust[i]
+
+			cm := METAR{
+				ICAO:        icao,
+				ReportTime:  string(reportTime),
+				Temperature: av.MakeTemperatureFromCelsius(float32(temp) / 10),
+				Dewpoint:    av.MakeTemperatureFromCelsius(float32(dewp) / 10),
+				Altimeter:   float32(alt) / 10,
+				WindSpeed:   int(speed),
+				Raw:         soa.Raw[i],
+			}
+
+			var err error
+			cm.Time, err = parseMETARTime(cm.ReportTime)
+			if err != nil {
+				panic(err)
+			}
+
+			if dir != -1 {
+				d := int(dir)
+				cm.WindDir = &d
+			}
+
+			// Always set gust on decode, even if it was nil in the original.
+			g := int(gust)
+			cm.WindGust = &g
+
+			if !yield(cm) {
+				return
+			}
+		}
+	}
+}
+
 func (soa METARSOA) Decode(icao string) []METAR {
-	var m []METAR
-
-	reportTime := util.DeltaDecodeBytesSlice(soa.ReportTime)
-	temp := util.DeltaDecode(soa.Temperature)
-	dewp := util.DeltaDecode(soa.Dewpoint)
-	alt := util.DeltaDecode(soa.Altimeter)
-	dir := util.DeltaDecode(soa.WindDir)
-	speed := util.DeltaDecode(soa.WindSpeed)
-	gust := util.DeltaDecode(soa.WindGust)
-
-	for i := range soa.ReportTime {
-		cm := METAR{
-			ICAO:        icao,
-			ReportTime:  string(reportTime[i]),
-			Temperature: av.MakeTemperatureFromCelsius(float32(temp[i]) / 10),
-			Dewpoint:    av.MakeTemperatureFromCelsius(float32(dewp[i]) / 10),
-			Altimeter:   float32(alt[i]) / 10,
-			WindSpeed:   int(speed[i]),
-			Raw:         soa.Raw[i],
-		}
-
-		var err error
-		cm.Time, err = parseMETARTime(cm.ReportTime)
-		if err != nil {
-			panic(err)
-		}
-
-		if dir[i] == -1 {
-			cm.WindDir = nil
-		} else {
-			d := int(dir[i])
-			cm.WindDir = &d
-		}
-
-		// Always set gust on decode, even if it was nil in the original.
-		g := int(gust[i])
-		cm.WindGust = &g
-
-		m = append(m, cm)
+	if len(soa.ReportTime) == 0 {
+		return nil
 	}
 
+	m := make([]METAR, 0, len(soa.ReportTime))
+	for cm := range soa.records(icao) {
+		m = append(m, cm)
+	}
 	return m
+}
+
+// DecodeWindow returns the reports covering the d-long window that opens at
+// start: the last report at or before start, then each later one within d of
+// it. It stops walking at the end of the window, so a caller that wants a day
+// of weather does not pay for an airport's entire history the way Decode does.
+func (soa METARSOA) DecodeWindow(icao string, start time.Time, d time.Duration) []METAR {
+	var window []METAR
+	var preceding METAR
+	havePreceding := false
+
+	for cm := range soa.records(icao) {
+		if cm.Time.Before(start) {
+			preceding, havePreceding = cm, true
+			continue
+		}
+		if cm.Time.Sub(start) >= d {
+			break
+		}
+		if len(window) == 0 && havePreceding && cm.Time.After(start) {
+			window = append(window, preceding)
+		}
+		window = append(window, cm)
+	}
+
+	if len(window) == 0 && havePreceding {
+		window = append(window, preceding)
+	}
+
+	return window
 }
 
 func (soa METARSOA) Check(icao string, orig []METAR) error {

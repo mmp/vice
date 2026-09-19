@@ -1578,27 +1578,13 @@ func (s *Sim) AddMETARAirport(icao av.ICAOAirportCode) error {
 // the first entry of the window (used to seed s.State.METAR) and whether
 // any entries were loaded. Caller is responsible for synchronization.
 func (s *Sim) loadMETARWindow(icao av.ICAOAirportCode, msoa wx.METARSOA, startTime time.Time) (wx.METAR, bool) {
-	metar := msoa.Decode(string(icao))
+	metar := msoa.DecodeWindow(string(icao), startTime, 24*time.Hour)
 	if len(metar) == 0 {
 		return wx.METAR{}, false
 	}
-	idx, ok := slices.BinarySearchFunc(metar, startTime, func(m wx.METAR, t time.Time) int {
-		return m.Time.Compare(t)
-	})
-	if !ok && idx > 0 {
-		// METAR <= the start time
-		idx--
-	}
-	if idx >= len(metar) {
-		return wx.METAR{}, false
-	}
-	s.ATISChangedTime[icao] = NewSimTime(metar[idx].Time)
-	first := metar[idx]
-	for idx < len(metar) && metar[idx].Time.Sub(startTime) < 24*time.Hour {
-		s.METAR[icao] = append(s.METAR[icao], metar[idx])
-		idx++
-	}
-	return first, true
+	s.ATISChangedTime[icao] = NewSimTime(metar[0].Time)
+	s.METAR[icao] = append(s.METAR[icao], metar...)
+	return metar[0], true
 }
 
 func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {

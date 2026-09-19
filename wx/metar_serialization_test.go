@@ -10,6 +10,75 @@ import (
 	"github.com/vmihailenco/msgpack/v5"
 )
 
+func TestMETARSOADecodeWindow(t *testing.T) {
+	start := time.Date(2024, time.January, 15, 12, 0, 0, 0, time.UTC)
+	for _, tt := range []struct {
+		name    string
+		reports []time.Duration
+		want    []time.Duration
+	}{
+		{name: "empty"},
+		{
+			name:    "all reports precede start",
+			reports: []time.Duration{-2 * time.Hour, -time.Hour},
+			want:    []time.Duration{-time.Hour},
+		},
+		{
+			name:    "next report at window end",
+			reports: []time.Duration{-2 * time.Hour, -time.Hour, time.Hour},
+			want:    []time.Duration{-time.Hour},
+		},
+		{
+			name:    "next report after window end",
+			reports: []time.Duration{-2 * time.Hour, -time.Hour, 2 * time.Hour},
+			want:    []time.Duration{-time.Hour},
+		},
+		{
+			name:    "preceding and in-window reports",
+			reports: []time.Duration{-2 * time.Hour, -time.Hour, 30 * time.Minute, time.Hour},
+			want:    []time.Duration{-time.Hour, 30 * time.Minute},
+		},
+		{
+			name:    "report at start replaces preceding",
+			reports: []time.Duration{-time.Hour, 0, 30 * time.Minute, time.Hour},
+			want:    []time.Duration{0, 30 * time.Minute},
+		},
+		{
+			name:    "only reports outside window",
+			reports: []time.Duration{time.Hour, 2 * time.Hour},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			var reports []METAR
+			for _, offset := range tt.reports {
+				reportTime := start.Add(offset)
+				reports = append(reports, METAR{
+					ICAO:       "KJFK",
+					Time:       reportTime,
+					ReportTime: reportTime.Format(time.RFC3339),
+				})
+			}
+			var soa METARSOA
+			if len(reports) > 0 {
+				var err error
+				soa, err = MakeMETARSOA(reports)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			got := soa.DecodeWindow("KJFK", start, time.Hour)
+			if len(got) != len(tt.want) {
+				t.Fatalf("got %d reports, want %d", len(got), len(tt.want))
+			}
+			for i, offset := range tt.want {
+				if want := start.Add(offset); !got[i].Time.Equal(want) {
+					t.Errorf("report %d time = %v, want %v", i, got[i].Time, want)
+				}
+			}
+		})
+	}
+}
+
 func TestCompressedMETARMsgpackSerialization(t *testing.T) {
 	// Create test METAR data
 	testTime, _ := time.Parse(time.RFC3339, "2024-01-15T12:00:00Z")
