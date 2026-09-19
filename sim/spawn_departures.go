@@ -30,6 +30,16 @@ const vfrMVABuffer = 1000
 // Max altitude for VFR aircraft (below Class A airspace at 18,000')
 const maxVFRAltitude = 17500
 
+// vfrDownwindOffset is how far to the side of the runway a departure's
+// downwind runs for a light aircraft; faster types fly it proportionally
+// wider. vfrClimboutSpeed is the speed the turn onto it is flown at, which
+// below 10,000' is the 250 knot limit for anything that can reach it.
+const vfrDownwindOffset = 1.5
+
+func vfrClimboutSpeed(perf av.AircraftPerformance) float32 {
+	return min(250, perf.Speed.CruiseTAS)
+}
+
 // exitRoutesHaveVariedHeadings returns true if the given exit routes have
 // different final headings. This is used to determine whether departures
 // should report their heading when checking in with departure control.
@@ -1641,16 +1651,16 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		hdg = math.Heading2LL(opp, mid, s.State.NmPerLongitude)
 	}
 	turn := math.HeadingSignedTurn(math.MagneticToTrue(rwy.Heading, s.State.MagneticVariation), hdg)
-	if turn < -120 {
-		// left downwind
-		wps = append(wps, rg.Waypoint("_dep_downwind1", 1, 1.5))
-		wps = append(wps, rg.Waypoint("_dep_downwind2", 0, 1.5))
-		wps = append(wps, rg.Waypoint("_dep_downwind3", -2, 1.5))
-	} else if turn > 120 {
-		// right downwind
-		wps = append(wps, rg.Waypoint("_dep_downwind1", 1, -1.5))
-		wps = append(wps, rg.Waypoint("_dep_downwind2", 0, -1.5))
-		wps = append(wps, rg.Waypoint("_dep_downwind3", -2, -1.5))
+	if turn < -120 || turn > 120 {
+		// Reversing onto a downwind takes twice the turn radius of lateral
+		// room, which the light-aircraft spacing below doesn't give a fast
+		// one: it would circle the downwind fix without ever reaching it.
+		// Widen the whole leg for those rather than narrow it for everyone.
+		k := max(1, 2*nav.TurnRadius(perf, vfrClimboutSpeed(perf))/vfrDownwindOffset)
+		side := util.Select(turn < 0, k, -k)
+		wps = append(wps, rg.Waypoint("_dep_downwind1", k, side*vfrDownwindOffset))
+		wps = append(wps, rg.Waypoint("_dep_downwind2", 0, side*vfrDownwindOffset))
+		wps = append(wps, rg.Waypoint("_dep_downwind3", -2*k, side*vfrDownwindOffset))
 	}
 
 	var randomizeAltitudeRange bool
