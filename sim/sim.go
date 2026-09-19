@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"log/slog"
 	"maps"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -829,18 +828,6 @@ func (s *Sim) snapshot(tcw TCW) StateUpdate {
 		DynamicState:     s.State.DynamicState,
 		DerivedState:     makeDerivedState(s),
 		FlightStripACIDs: s.flightStripACIDsForTCW(tcw),
-	}
-
-	if util.SizeOf(update, os.Stderr, false, 1024*1024) > 256*1024*1024 {
-		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
-		f, err := os.Create(fn)
-		if err != nil {
-			s.lg.Errorf("%s: unable to create: %v", fn, err)
-		} else {
-			util.SizeOf(update, f, true, 1024)
-			godump.Fdump(f, update)
-		}
-		panic("too big")
 	}
 
 	// While it seemed that this could be skipped, this is actually necessary
