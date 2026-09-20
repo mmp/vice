@@ -144,7 +144,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials 
 	var result server.NewSimResult
 
 	if err := srv.CallWithTimeout(server.NewSimRPC, config, &result); err != nil {
-		err = server.TryDecodeError(err)
+		err = TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
 			// loop try to reconnect.
@@ -241,7 +241,7 @@ func (cm *ConnectionManager) UpdateRunningSims() error {
 func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials string, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 	if err := srv.CallWithTimeout(server.ConnectToSimRPC, config, &result); err != nil {
-		err = server.TryDecodeError(err)
+		err = TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
 			// loop try to reconnect.

@@ -23,9 +23,8 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -198,7 +197,7 @@ func NewFuzzController(sp *STARSPane, cfg FuzzConfig, lg *log.Logger) *FuzzContr
 }
 
 // ExecuteRandomCommand generates and executes a random command.
-func (fc *FuzzController) ExecuteRandomCommand(ctx *panes.Context) {
+func (fc *FuzzController) ExecuteRandomCommand(ctx *scope.Context) {
 	fc.commandsTried++
 
 	// Build generator context with current state
@@ -272,7 +271,7 @@ func (fc *FuzzController) ExecuteRandomCommand(ctx *panes.Context) {
 	if ps.UseUserCenter {
 		ctr = ps.UserCenter
 	}
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
+	transforms := scope.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
 		ctr, float32(ps.Range), ctx.MagneticVariation)
 
 	// Execute command
@@ -365,7 +364,7 @@ func (fc *FuzzController) PrintStatistics() {
 // ExecuteFrame runs one frame of fuzz testing. It handles initialization
 // on the first frame and executes the configured number of commands.
 // Returns true if testing should continue.
-func (fc *FuzzController) ExecuteFrame(ctx *panes.Context, c *client.ControlClient) bool {
+func (fc *FuzzController) ExecuteFrame(ctx *scope.Context, c *client.ControlClient) bool {
 	if !fc.initialized {
 		c.SetSimRate(DefaultFuzzSimRate)
 		fuzzLog("[FUZZ] Set sim rate to %dx\n", DefaultFuzzSimRate)

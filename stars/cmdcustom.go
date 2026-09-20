@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/wx"
 
@@ -23,7 +23,7 @@ func registerCustomCommands() {
 	registerCommand(CommandModeNone, ".BOUNDS", func(sp *STARSPane) { sp.showTRACONBoundary = !sp.showTRACONBoundary })
 
 	// Mode-switching commands
-	registerCommand(CommandModeNone, ".DRAWROUTE", func(sp *STARSPane, ctx *panes.Context) CommandStatus {
+	registerCommand(CommandModeNone, ".DRAWROUTE", func(sp *STARSPane, ctx *scope.Context) CommandStatus {
 		sp.setCommandMode(ctx, CommandModeDrawRoute)
 		return CommandStatus{Clear: ClearInput}
 	})
@@ -39,7 +39,7 @@ func registerCustomCommands() {
 	registerCommand(CommandModeNone, ".VFR", func(sp *STARSPane) { sp.showVFRAirports = !sp.showVFRAirports })
 
 	// .WIND: Enter wind drawing mode
-	registerCommand(CommandModeNone, ".WIND", func(sp *STARSPane, ctx *panes.Context) CommandStatus {
+	registerCommand(CommandModeNone, ".WIND", func(sp *STARSPane, ctx *scope.Context) CommandStatus {
 		sp.setCommandMode(ctx, CommandModeDrawWind)
 		if sp.atmosGrid == nil {
 			ctx.Client.GetAtmosGrid(ctx.InterpolatedSimTime.Time(),
@@ -57,7 +57,7 @@ func registerCustomCommands() {
 	})
 
 	// ?: print aircraft state
-	registerCommand(CommandModeNone, "?[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) {
+	registerCommand(CommandModeNone, "?[SLEW]", func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) {
 		ads, err := ctx.Client.GetAircraftDisplayState(trk.ADSBCallsign)
 		if err != nil {
 			ctx.Lg.Error("print aircraft", slog.String("callsign", string(trk.ADSBCallsign)),
@@ -117,7 +117,7 @@ func registerCustomCommands() {
 	registerCommand(CommandModeTargetGen, "", func() {})
 
 	// P: Toggle sim pause
-	registerCommand(CommandModeTargetGen, "P", func(ctx *panes.Context) {
+	registerCommand(CommandModeTargetGen, "P", func(ctx *scope.Context) {
 		ctx.Client.ToggleSimPause()
 	})
 
@@ -126,20 +126,20 @@ func registerCustomCommands() {
 	registerCommand(CommandModeTargetGen, "[ALL_TEXT][SLEW]", targetGenClickCommand)
 
 	registerCommand(CommandModeTargetGenLock, "", func() {})
-	registerCommand(CommandModeTargetGenLock, "P", func(ctx *panes.Context) {
+	registerCommand(CommandModeTargetGenLock, "P", func(ctx *scope.Context) {
 		ctx.Client.ToggleSimPause()
 	})
 	registerCommand(CommandModeTargetGenLock, "[ALL_TEXT]", targetGenAircraftCommand)
 	registerCommand(CommandModeTargetGenLock, "[ALL_TEXT][SLEW]", targetGenClickCommand)
 
-	targetGenSendMessage := func(ctx *panes.Context, text string) {
+	targetGenSendMessage := func(ctx *scope.Context, text string) {
 		ctx.Client.SendGlobalMessage(text)
 	}
 	registerCommand(CommandModeTargetGen, "/[ALL_TEXT]", targetGenSendMessage)
 	registerCommand(CommandModeTargetGenLock, "/[ALL_TEXT]", targetGenSendMessage)
 
 	// .DRAWROUTE
-	registerCommand(CommandModeDrawRoute, "[POS]", func(sp *STARSPane, ctx *panes.Context, pos math.Point2LL) CommandStatus {
+	registerCommand(CommandModeDrawRoute, "[POS]", func(sp *STARSPane, ctx *scope.Context, pos math.Point2LL) CommandStatus {
 		sp.drawRoutePoints = append(sp.drawRoutePoints, pos)
 		var cb []string
 		for _, p := range sp.drawRoutePoints {
@@ -152,7 +152,7 @@ func registerCustomCommands() {
 
 // targetGenAircraftCommand handles aircraft commands in target gen mode.
 // Parses the input to extract callsign suffix and commands, then runs them.
-func targetGenAircraftCommand(sp *STARSPane, ctx *panes.Context, input string) (CommandStatus, error) {
+func targetGenAircraftCommand(sp *STARSPane, ctx *scope.Context, input string) (CommandStatus, error) {
 	if input == "" {
 		return CommandStatus{}, ErrSTARSCommandFormat
 	}
@@ -192,7 +192,7 @@ func targetGenAircraftCommand(sp *STARSPane, ctx *panes.Context, input string) (
 }
 
 // targetGenClickCommand runs commands on clicked aircraft in target gen mode.
-func targetGenClickCommand(sp *STARSPane, ctx *panes.Context, cmd string, trk *sim.Track) (CommandStatus, error) {
+func targetGenClickCommand(sp *STARSPane, ctx *scope.Context, cmd string, trk *sim.Track) (CommandStatus, error) {
 	if ctx.Client.RadioIsActive() && !ctx.TCWIsPrivileged(ctx.UserTCW) && cmd != "X" {
 		// Don't allow issuing commands during pilot transmissions unless
 		// it's an instructor/RPO or the command is "X" to delete an aircraft.

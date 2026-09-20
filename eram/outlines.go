@@ -2,10 +2,9 @@ package eram
 
 import (
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
 
@@ -41,7 +40,7 @@ type DatablockLayout struct {
 	LinePitch  float32
 }
 
-func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) datablockInteractions(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	mouse := ctx.Mouse
@@ -236,8 +235,8 @@ func dbFieldRuns(f []dbChar) [][2]int {
 // FullDatablockOutlines returns outlines for the ERAM full datablock fields.
 // Field extents are derived from the datablock's actual contents so they
 // track what is drawn rather than each field's maximum width.
-func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
-	transforms radar.ScopeTransformations) (DatablockOutlines, bool) {
+func (ep *ERAMPane) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
+	transforms scope.ScopeTransformations) (DatablockOutlines, bool) {
 	if ep.datablockType(ctx, trk) != FullDatablock {
 		return DatablockOutlines{}, false
 	}
@@ -351,8 +350,8 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 	return outlines, true
 }
 
-func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track, db *fullDatablock,
-	transforms radar.ScopeTransformations) ([2]float32, bool) {
+func (ep *ERAMPane) fullDatablockAnchor(ctx *scope.Context, trk sim.Track, db *fullDatablock,
+	transforms scope.ScopeTransformations) ([2]float32, bool) {
 	if ep.TrackState[trk.ADSBCallsign] == nil {
 		return [2]float32{}, false
 	}
@@ -362,7 +361,7 @@ func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track, db *f
 
 // buildFullDatablock formats the track's full datablock so extents can be
 // derived from its actual contents.
-func (ep *ERAMPane) buildFullDatablock(ctx *panes.Context, trk sim.Track) *fullDatablock {
+func (ep *ERAMPane) buildFullDatablock(ctx *scope.Context, trk sim.Track) *fullDatablock {
 	ps := ep.currentPrefs()
 	color := ps.Brightness.FDB.ScaleRGB(colors.yellow)
 	db := ep.getDatablock(ctx, trk, FullDatablock, color)

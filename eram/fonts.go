@@ -5,8 +5,8 @@ import (
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 )
 
 func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
@@ -35,9 +35,9 @@ func (ep *ERAMPane) ERAMInputFont() *renderer.Font {
 }
 
 func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
-	fonts := radar.CreateERAMFonts(r, p.DPIScale())
+	fonts := scope.CreateERAMFonts(r, p.DPIScale())
 	get := func(name string, size int) *renderer.Font {
-		return radar.FindERAMFont(fonts, name, size)
+		return scope.FindERAMFont(fonts, name, size)
 	}
 
 	// TODO: Find the fifth ERAM text size.
@@ -71,7 +71,7 @@ func (ep *ERAMPane) ERAMGeomapFont(size int) *renderer.Font {
 	}
 }
 
-// MapSymbolFont and MapLabelFont implement radar.MapFonts so that video map
+// MapSymbolFont and MapLabelFont implement scope.MapFonts so that video map
 // features are drawn with the ERAM scope's own fonts.
 func (ep *ERAMPane) MapSymbolFont(size int) *renderer.Font { return ep.ERAMGeomapFont(size) }
 

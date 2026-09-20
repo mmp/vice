@@ -14,8 +14,8 @@ import (
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -67,7 +67,7 @@ func (t tool) help() string {
 // full geometry is drawn every frame, or a system map that vice synthesizes,
 // which arrives as a prebuilt command buffer.
 type scopeMap struct {
-	radar.Map
+	scope.Map
 	// group is the ERAM map group the map belongs to; a STARS library map
 	// and a system map have none. base marks a group's base map, which ERAM
 	// draws whenever the group is loaded and gives no way to turn off.
@@ -77,7 +77,7 @@ type scopeMap struct {
 	visible bool
 }
 
-type scope struct {
+type scopeView struct {
 	center  math.Point2LL
 	rangeNM float32
 
@@ -111,10 +111,10 @@ type scope struct {
 	cursorLatLong     math.Point2LL
 	haveCursorLatLong bool
 
-	transforms radar.ScopeTransformations
+	transforms scope.ScopeTransformations
 }
 
-func (s *scope) init() {
+func (s *scopeView) init() {
 	s.rangeNM = 50
 	s.zoomTarget = s.rangeNM
 }
@@ -122,7 +122,7 @@ func (s *scope) init() {
 // setTool switches what a click on the map does, dropping what the tool
 // being left behind drew: a route or a measurement belongs to the mode it
 // was made in, and leaving it up only clutters the map.
-func (s *scope) setTool(t tool) {
+func (s *scopeView) setTool(t tool) {
 	if t != s.activeTool {
 		s.clearTool()
 		s.activeTool = t
@@ -130,29 +130,29 @@ func (s *scope) setTool(t tool) {
 }
 
 // clearTool drops the points the active tool has collected.
-func (s *scope) clearTool() {
+func (s *scopeView) clearTool() {
 	s.routePoints = nil
 	s.measure = nil
 }
 
-func (s *scope) haveToolPoints() bool {
+func (s *scopeView) haveToolPoints() bool {
 	return len(s.routePoints) > 0 || len(s.measure) > 0
 }
 
 // initFonts bakes the bitmap fonts video maps are drawn with. It needs a
 // live renderer, so it happens separately from init.
-func (s *scope) initFonts(r renderer.Renderer, p platform.Platform) {
-	fonts := radar.CreateERAMFonts(r, p.DPIScale())
+func (s *scopeView) initFonts(r renderer.Renderer, p platform.Platform) {
+	fonts := scope.CreateERAMFonts(r, p.DPIScale())
 	s.symbolFont = [3]*renderer.Font{
-		radar.FindERAMFont(fonts, "EramGeomap-16.pcf", 15),
-		radar.FindERAMFont(fonts, "EramGeomap-18.pcf", 17),
-		radar.FindERAMFont(fonts, "EramGeomap-20.pcf", 19),
+		scope.FindERAMFont(fonts, "EramGeomap-16.pcf", 15),
+		scope.FindERAMFont(fonts, "EramGeomap-18.pcf", 17),
+		scope.FindERAMFont(fonts, "EramGeomap-20.pcf", 19),
 	}
 	s.mapFont = [4]*renderer.Font{
-		radar.FindERAMFont(fonts, "EramText-9.pcf", 11),
-		radar.FindERAMFont(fonts, "EramText-11.pcf", 13),
-		radar.FindERAMFont(fonts, "EramText-14.pcf", 17),
-		radar.FindERAMFont(fonts, "EramText-16.pcf", 18),
+		scope.FindERAMFont(fonts, "EramText-9.pcf", 11),
+		scope.FindERAMFont(fonts, "EramText-11.pcf", 13),
+		scope.FindERAMFont(fonts, "EramText-14.pcf", 17),
+		scope.FindERAMFont(fonts, "EramText-16.pcf", 18),
 	}
 	// Route annotations, datablocks and backshop's own labels are drawn
 	// into the same command buffer as the maps, so they use the same
@@ -161,19 +161,19 @@ func (s *scope) initFonts(r renderer.Renderer, p platform.Platform) {
 	s.textFont = s.mapFont[0]
 }
 
-// MapSymbolFont and MapLabelFont implement radar.MapFonts.
-func (s *scope) MapSymbolFont(size int) *renderer.Font {
+// MapSymbolFont and MapLabelFont implement scope.MapFonts.
+func (s *scopeView) MapSymbolFont(size int) *renderer.Font {
 	return s.symbolFont[math.Clamp(size, 1, 3)-1]
 }
 
-func (s *scope) MapLabelFont(size int) *renderer.Font {
+func (s *scopeView) MapLabelFont(size int) *renderer.Font {
 	return s.mapFont[math.Clamp(size, 1, 4)-1]
 }
 
 // resetSim points the scope at a new sim. scenario identifies which one, so
 // that reloading the scenario being edited keeps the maps the user turned
 // on, while switching to a different one starts from its own defaults.
-func (s *scope) resetSim(c *client.ControlClient, scenario string) {
+func (s *scopeView) resetSim(c *client.ControlClient, scenario string) {
 	s.resetView(c)
 	s.clearTool()
 
@@ -182,7 +182,7 @@ func (s *scope) resetSim(c *client.ControlClient, scenario string) {
 	s.rebuildMaps(c, keep)
 }
 
-func (s *scope) resetView(c *client.ControlClient) {
+func (s *scopeView) resetView(c *client.ControlClient) {
 	if c == nil {
 		return
 	}
@@ -197,7 +197,7 @@ func (s *scope) resetView(c *client.ControlClient) {
 // rebuildMaps collects everything drawable for the current sim: the maps in
 // the facility's library plus the ones vice synthesizes from its adaptation.
 // The maps the scenario puts on the DCB start out visible.
-func (s *scope) rebuildMaps(c *client.ControlClient, keepVisible bool) {
+func (s *scopeView) rebuildMaps(c *client.ControlClient, keepVisible bool) {
 	prev := make(map[string]bool)
 	if keepVisible {
 		for _, m := range s.maps {
@@ -215,7 +215,7 @@ func (s *scope) rebuildMaps(c *client.ControlClient, keepVisible bool) {
 	if lib, err := c.LoadVideoMapLibrary(ss.ControllerVideoMapFile); err != nil {
 		s.mapLibrary += " (" + err.Error() + ")"
 	} else {
-		// radar.BuildMaps takes one flat list, so where each ERAM map came
+		// scope.BuildMaps takes one flat list, so where each ERAM map came
 		// from is carried alongside it and put back afterwards.
 		type origin struct {
 			group string
@@ -247,12 +247,12 @@ func (s *scope) rebuildMaps(c *client.ControlClient, keepVisible bool) {
 				}
 			}
 		}
-		for i, m := range radar.BuildMaps(library) {
+		for i, m := range scope.BuildMaps(library) {
 			s.maps = append(s.maps, scopeMap{Map: m, group: origins[i].group, base: origins[i].base})
 		}
 	}
 
-	for _, m := range radar.SystemMaps(radar.SystemMapSpec{
+	for _, m := range scope.SystemMaps(scope.SystemMapSpec{
 		Facility:          ss.Facility,
 		Center:            ss.Center,
 		NmPerLongitude:    ss.NmPerLongitude,
@@ -285,7 +285,7 @@ func eramMap(group, label string, m av.ERAMMap) av.STARSMap {
 	return av.STARSMap{
 		Name:     strings.TrimSpace(group + " " + label),
 		Label:    label,
-		Category: radar.VideoMapNoCategory,
+		Category: scope.VideoMapNoCategory,
 		Lines:    m.Lines,
 		Symbols:  m.Symbols,
 		Labels:   m.Labels,
@@ -329,7 +329,7 @@ const (
 // mapSections groups the scope's maps for display. An ARTCC's library is a
 // set of map groups of which the display loads one at a time, so each gets a
 // section of its own with the scenario's group first.
-func (s *scope) mapSections(defaultGroup string) []mapSection {
+func (s *scopeView) mapSections(defaultGroup string) []mapSection {
 	var sections []mapSection
 	add := func(name string, open bool, i int) {
 		if j := slices.IndexFunc(sections, func(sec mapSection) bool { return sec.name == name }); j != -1 {
@@ -367,7 +367,7 @@ func (s *scope) mapSections(defaultGroup string) []mapSection {
 // group: its base map, which ERAM draws whenever the group is loaded, plus
 // whichever of the group's maps the defaults name. The other groups are
 // loadable but nothing in them is up to start with.
-func (s *scope) showScenarioDefaultMaps(c *client.ControlClient) {
+func (s *scopeView) showScenarioDefaultMaps(c *client.ControlClient) {
 	if c == nil {
 		return
 	}
@@ -398,7 +398,7 @@ const (
 
 // updateZoom eases the range toward what the wheel has asked for, holding
 // the position the zoom is anchored on under the same pixel throughout.
-func (s *scope) updateZoom(extent math.Extent2D, ss *client.SimState) {
+func (s *scopeView) updateZoom(extent math.Extent2D, ss *client.SimState) {
 	if s.zoomTarget == 0 {
 		s.zoomTarget = s.rangeNM
 	}
@@ -420,7 +420,7 @@ func (s *scope) updateZoom(extent math.Extent2D, ss *client.SimState) {
 
 	// Put the anchor back under the pixel it was grabbed at.
 	if s.zoomAnchorWindow != [2]float32{} {
-		tr := radar.GetScopeTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
+		tr := scope.GetScopeTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
 			scopeRotation(ss))
 		s.center = math.Add2LL(s.center, math.Sub2LL(s.zoomAnchor, tr.LatLongFromWindowP(s.zoomAnchorWindow)))
 	}
@@ -442,7 +442,7 @@ var (
 	aircraftColor   = renderer.RGB{R: 0.9, G: 0.9, B: 0.9}
 )
 
-func (s *scope) draw(a *app, menuBarHeight float32) {
+func (s *scopeView) draw(a *app, menuBarHeight float32) {
 	displaySize := a.plat.DisplaySize()
 	extent := math.Extent2D{P1: [2]float32{displaySize[0], displaySize[1] - menuBarHeight}}
 
@@ -457,7 +457,7 @@ func (s *scope) draw(a *app, menuBarHeight float32) {
 
 	ss := &a.cc.State
 	s.updateZoom(extent, ss)
-	s.transforms = radar.GetScopeTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
+	s.transforms = scope.GetScopeTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
 		scopeRotation(ss))
 
 	s.handleMouse(a, extent, displaySize)
@@ -474,7 +474,7 @@ func (s *scope) draw(a *app, menuBarHeight float32) {
 	a.render.RenderCommandBuffer(cb)
 }
 
-func (s *scope) drawMaps(a *app, cb *renderer.CommandBuffer) {
+func (s *scopeView) drawMaps(a *app, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	td := renderer.GetTextDrawBuilder()
@@ -505,7 +505,7 @@ func (s *scope) drawMaps(a *app, cb *renderer.CommandBuffer) {
 	cb.LineWidth(1, a.plat.DPIScale())
 	for _, m := range s.maps {
 		if m.visible && !m.system {
-			radar.DrawMapFeatures(m.Lines, m.Symbols, m.Labels, &libraryRGB, s, s.transforms, ld, td, &lineBuf)
+			scope.DrawMapFeatures(m.Lines, m.Symbols, m.Labels, &libraryRGB, s, s.transforms, ld, td, &lineBuf)
 		}
 	}
 	ld.GenerateCommands(cb)
@@ -515,7 +515,7 @@ func (s *scope) drawMaps(a *app, cb *renderer.CommandBuffer) {
 // drawAircraft draws the recorded flights at the moment the Launch tab's
 // scrubber is sitting on. Nothing live is drawn: the sim has already flown
 // every aircraft to its deletion by the time a recording exists.
-func (s *scope) drawAircraft(a *app, cb *renderer.CommandBuffer) {
+func (s *scopeView) drawAircraft(a *app, cb *renderer.CommandBuffer) {
 	p := &a.inspector.playback
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
@@ -558,7 +558,7 @@ func (s *scope) drawAircraft(a *app, cb *renderer.CommandBuffer) {
 	td.GenerateCommands(cb)
 }
 
-func (s *scope) drawTools(a *app, cb *renderer.CommandBuffer) {
+func (s *scopeView) drawTools(a *app, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	td := renderer.GetTextDrawBuilder()
@@ -601,7 +601,7 @@ func (s *scope) drawTools(a *app, cb *renderer.CommandBuffer) {
 	td.GenerateCommands(cb)
 }
 
-func (s *scope) handleMouse(a *app, extent math.Extent2D, displaySize [2]float32) {
+func (s *scopeView) handleMouse(a *app, extent math.Extent2D, displaySize [2]float32) {
 	io := imgui.CurrentIO()
 	s.haveCursorLatLong = false
 	if io.WantCaptureMouse() {
@@ -668,12 +668,12 @@ func (s *scope) handleMouse(a *app, extent math.Extent2D, displaySize [2]float32
 	}
 }
 
-func (s *scope) copyRoutePoints(a *app) {
+func (s *scopeView) copyRoutePoints(a *app) {
 	a.plat.GetClipboard().SetClipboard(s.routePointsString())
 	a.status = fmt.Sprintf("%d points", len(s.routePoints))
 }
 
-func (s *scope) routePointsString() string {
+func (s *scopeView) routePointsString() string {
 	var pts []string
 	for _, p := range s.routePoints {
 		pts = append(pts, strings.ReplaceAll(p.DMSString(), " ", ""))

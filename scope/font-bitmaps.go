@@ -1,6 +1,6 @@
 // Automatically generated from ERAM PCF font files using util/pcg2go.cc
 
-package radar
+package scope
 
 import "github.com/mmp/vice/renderer"
 

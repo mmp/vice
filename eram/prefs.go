@@ -3,7 +3,7 @@ package eram
 import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/scope"
 )
 
 type Preferences struct {
@@ -40,7 +40,7 @@ type Preferences struct {
 	OutageSize  int
 	CursorSize  int
 
-	VideoMapBrightness map[string]radar.Brightness
+	VideoMapBrightness map[string]scope.Brightness
 	HistoryLength      int
 
 	UseRightClick bool
@@ -53,9 +53,9 @@ type Preferences struct {
 		ShowBorder    bool
 		Lines         int
 		Font          int
-		Bright        radar.Brightness
+		Bright        scope.Brightness
 		SelectedColor CRRColor
-		ColorBright   map[CRRColor]radar.Brightness
+		ColorBright   map[CRRColor]scope.Brightness
 		Position      [2]float32
 		DisplayFixes  bool // ATC TOOLS overlay of CRR fixes
 	}
@@ -70,7 +70,7 @@ type Preferences struct {
 		Lines          int
 		Col            int              // 1-4 columns
 		Font           int              // 1-3
-		Bright         radar.Brightness // 0-100
+		Bright         scope.Brightness // 0-100
 	}
 
 	// WX view preferences
@@ -82,7 +82,7 @@ type Preferences struct {
 		ShowIndicators bool
 		Lines          int
 		Font           int              // 1-3
-		Bright         radar.Brightness // 0-100
+		Bright         scope.Brightness // 0-100
 	}
 
 	// MCA (Message Composition Area) preferences
@@ -91,7 +91,7 @@ type Preferences struct {
 		PALines  int              // max number of preview/feedback area lines
 		Width    int              // chars per line
 		Font     int              // 1-3
-		Bright   radar.Brightness // 0-100
+		Bright   scope.Brightness // 0-100
 	}
 
 	// RA (Response Area) preferences
@@ -99,7 +99,7 @@ type Preferences struct {
 		Position [2]float32
 		Width    int              // chars per line
 		Font     int              // 1-3
-		Bright   radar.Brightness // 0-100
+		Bright   scope.Brightness // 0-100
 	}
 
 	// TimeView (clock) preferences
@@ -108,7 +108,7 @@ type Preferences struct {
 		Opaque     bool
 		ShowBorder bool
 		Font       int              // 1-3
-		Bright     radar.Brightness // 0-100
+		Bright     scope.Brightness // 0-100
 	}
 
 	BeaconCodeView struct {
@@ -119,7 +119,7 @@ type Preferences struct {
 		Lines      int
 		Col        int
 		Font       int
-		Bright     radar.Brightness
+		Bright     scope.Brightness
 		SortManual bool
 	}
 
@@ -133,8 +133,8 @@ type Preferences struct {
 		ShowBorder bool
 		Lines      int
 		Font       int
-		Highlight  radar.Brightness
-		Text       radar.Brightness
+		Highlight  scope.Brightness
+		Text       scope.Brightness
 	}
 }
 
@@ -159,32 +159,32 @@ type CommonPreferences struct {
 		Portal  int // Same here...
 	}
 	Brightness struct {
-		Background radar.Brightness
-		Cursor     radar.Brightness
-		Text       radar.Brightness
-		PRTGT      radar.Brightness
-		UNPTGT     radar.Brightness
-		PRHST      radar.Brightness
-		UNPHST     radar.Brightness
-		LDB        radar.Brightness
-		SLDB       radar.Brightness
-		WX         radar.Brightness
-		NEXRAD     radar.Brightness
-		Backlight  radar.Brightness
-		Button     radar.Brightness
-		Border     radar.Brightness
-		Toolbar    radar.Brightness
-		TBBRDR     radar.Brightness
-		ABBRDR     radar.Brightness
-		FDB        radar.Brightness
-		Portal     radar.Brightness
-		Satcomm    radar.Brightness
-		ONFREQ     radar.Brightness
-		Line4      radar.Brightness
-		Dwell      radar.Brightness
-		Fence      radar.Brightness
-		DBFEL      radar.Brightness
-		Outage     radar.Brightness
+		Background scope.Brightness
+		Cursor     scope.Brightness
+		Text       scope.Brightness
+		PRTGT      scope.Brightness
+		UNPTGT     scope.Brightness
+		PRHST      scope.Brightness
+		UNPHST     scope.Brightness
+		LDB        scope.Brightness
+		SLDB       scope.Brightness
+		WX         scope.Brightness
+		NEXRAD     scope.Brightness
+		Backlight  scope.Brightness
+		Button     scope.Brightness
+		Border     scope.Brightness
+		Toolbar    scope.Brightness
+		TBBRDR     scope.Brightness
+		ABBRDR     scope.Brightness
+		FDB        scope.Brightness
+		Portal     scope.Brightness
+		Satcomm    scope.Brightness
+		ONFREQ     scope.Brightness
+		Line4      scope.Brightness
+		Dwell      scope.Brightness
+		Fence      scope.Brightness
+		DBFEL      scope.Brightness
+		Outage     scope.Brightness
 	}
 
 	Line4Type    int
@@ -276,7 +276,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.FDBLdrLength = 1 // Default to normal mode
 
 	prefs.VideoMapVisible = make(map[string]any)
-	prefs.VideoMapBrightness = make(map[string]radar.Brightness)
+	prefs.VideoMapBrightness = make(map[string]scope.Brightness)
 
 	// CRR defaults
 	prefs.CRR.Visible = true
@@ -287,7 +287,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.CRR.Font = 2
 	prefs.CRR.Bright = 90
 	prefs.CRR.SelectedColor = CRRGreen
-	prefs.CRR.ColorBright = map[CRRColor]radar.Brightness{
+	prefs.CRR.ColorBright = map[CRRColor]scope.Brightness{
 		CRRGreen:   90,
 		CRRYellow:  90,
 		CRRMagenta: 90,

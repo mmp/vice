@@ -1,8 +1,8 @@
-// panes/messages.go
+// cmd/vice/messages.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package panes
+package main
 
 import (
 	"fmt"
@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -34,7 +35,7 @@ var audioAlerts map[string]string = map[string]string{
 	"Radio Static":      "fm-radio-static-82334_2.mp3",
 }
 
-type MessagesPane struct {
+type MessagesWindow struct {
 	FontIdentifier             gui.FontIdentifier
 	AudioAlertSelection        string
 	ContactTransmissionsAlert  bool
@@ -46,13 +47,13 @@ type MessagesPane struct {
 	shouldAutoScroll bool
 }
 
-func NewMessagesPane() *MessagesPane {
-	return &MessagesPane{
+func NewMessagesWindow() *MessagesWindow {
+	return &MessagesWindow{
 		FontIdentifier: gui.FontIdentifier{Name: gui.Fonts.RobotoRegular, Size: 16},
 	}
 }
 
-func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
+func (mp *MessagesWindow) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
 	if mp.font = gui.GetFont(mp.FontIdentifier.Name, mp.FontIdentifier.Size); mp.font == nil {
 		mp.font = gui.GetDefaultFont()
 		mp.FontIdentifier = mp.font.Id
@@ -73,15 +74,15 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, lg *l
 	}
 }
 
-func (mp *MessagesPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+func (mp *MessagesWindow) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	mp.messages = nil
 }
 
-var _ UIDrawer = (*MessagesPane)(nil)
+var _ scope.UIDrawer = (*MessagesWindow)(nil)
 
-func (mp *MessagesPane) DisplayName() string { return "Messages" }
+func (mp *MessagesWindow) DisplayName() string { return "Messages" }
 
-func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
+func (mp *MessagesWindow) DrawUI(p platform.Platform, config *platform.Config) {
 	if newFont, changed := gui.DrawFontSizeSelector(&mp.FontIdentifier); changed {
 		mp.font = newFont
 	}
@@ -116,7 +117,7 @@ func (msg *Message) ImguiColor() imgui.Vec4 {
 	return imgui.Vec4{X: c.R, Y: c.G, Z: c.B, W: 1}
 }
 
-func (mp *MessagesPane) DrawWindow(show *bool, p platform.Platform, unpinnedWindows map[string]struct{}) {
+func (mp *MessagesWindow) DrawWindow(show *bool, p platform.Platform, unpinnedWindows map[string]struct{}) {
 	if !*show {
 		return
 	}
@@ -126,7 +127,7 @@ func (mp *MessagesPane) DrawWindow(show *bool, p platform.Platform, unpinnedWind
 		gui.PushFont(mp.font)
 	}
 	imgui.BeginV("Messages", show, 0)
-	DrawPinButton("Messages", unpinnedWindows, p)
+	drawPinButton("Messages", unpinnedWindows, p)
 	if imgui.BeginChildStrV("##messages_scroll", imgui.Vec2{}, 0, 0) {
 		for _, msg := range mp.messages {
 			color := msg.ImguiColor()
@@ -150,7 +151,7 @@ func (mp *MessagesPane) DrawWindow(show *bool, p platform.Platform, unpinnedWind
 
 }
 
-func (mp *MessagesPane) ProcessEvents(playSound, showSimLogging bool, events []sim.Event, c *client.ControlClient,
+func (mp *MessagesWindow) ProcessEvents(playSound, showSimLogging bool, events []sim.Event, c *client.ControlClient,
 	p platform.Platform, lg *log.Logger) {
 	for _, event := range events {
 		switch event.Type {

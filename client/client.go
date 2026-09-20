@@ -40,7 +40,7 @@ type ControlClient struct {
 	// Events accumulated since the last DrainEvents call. Includes events
 	// from server state updates and events posted by client-side code (RPC
 	// errors, STT, etc). The main loop drains these once per frame and
-	// distributes them to consumers via panes.Context.Events and uiDraw.
+	// distributes them to consumers via scope.Context.Events and uiDraw.
 	pendingEvents   []sim.Event
 	pendingEventsMu sync.Mutex
 
@@ -205,7 +205,7 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callb
 			}
 
 			if update.SimErrorMessage != "" {
-				err = server.DecodeErrorMessage(update.SimErrorMessage)
+				err = DecodeErrorMessage(update.SimErrorMessage)
 			} else {
 				update.Apply(&c.State.SimState)
 				for _, e := range update.Events {
@@ -752,7 +752,7 @@ func (r *ScenarioReload) Done() bool {
 // nothing changed on the server.
 func (r *ScenarioReload) Result() (server.ReloadScenariosResult, error) {
 	if err := r.call.Error; err != nil {
-		return r.result, server.TryDecodeError(err)
+		return r.result, TryDecodeError(err)
 	}
 	if len(r.result.Errors) == 0 && r.result.Catalogs != nil {
 		r.srv.catalogs = r.result.Catalogs

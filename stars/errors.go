@@ -9,9 +9,9 @@ import (
 	"net/rpc"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
-	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 )
 
@@ -147,8 +147,6 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrFDAMProcessingOff:               ErrSTARSIllegalFunctionProcOff,
 	sim.ErrVolumeDisabled:                  ErrSTARSIllegalFunction,
 	sim.ErrVolumeNot25nm:                   ErrSTARSIllegalFunction,
-
-	server.ErrInvalidCommandSyntax: ErrSTARSCommandFormat,
 }
 
 func GetSTARSError(e error, lg *log.Logger) *STARSError {
@@ -157,7 +155,7 @@ func GetSTARSError(e error, lg *log.Logger) *STARSError {
 	}
 
 	if _, ok := e.(rpc.ServerError); ok {
-		e = server.TryDecodeError(e)
+		e = client.TryDecodeError(e)
 	}
 
 	if se, ok := starsErrorRemap[e]; ok {

@@ -13,8 +13,8 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -112,7 +112,7 @@ func rgb(c [3]float32) renderer.RGB { return renderer.RGB{R: c[0], G: c[1], B: c
 // drawRoutes draws every procedure the Routes tab has enabled. Waypoints
 // shared by several routes are drawn once and their labels stacked, which
 // is what DrawnRoutes tracks.
-func (in *inspector) drawRoutes(a *app, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (in *inspector) drawRoutes(a *app, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	r := &in.routes
 	if a.cc == nil || !r.anyEnabled() {
 		return
@@ -132,7 +132,7 @@ func (in *inspector) drawRoutes(a *app, transforms radar.ScopeTransformations, c
 	ldr := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ldr)
 
-	drawn := radar.NewDrawnRoutes()
+	drawn := scope.NewDrawnRoutes()
 	drawnHolds := make(map[string]any)
 
 	style := func(c [3]float32) renderer.TextStyle {
@@ -146,26 +146,26 @@ func (in *inspector) drawRoutes(a *app, transforms radar.ScopeTransformations, c
 			if !r.arrivals[name][i] {
 				continue
 			}
-			radar.DrawWaypoints(nm, magvar, arr.Waypoints, radar.ArrivalRouteContext(arr), drawn, transforms,
+			scope.DrawWaypoints(nm, magvar, arr.Waypoints, scope.ArrivalRouteContext(arr), drawn, transforms,
 				td, arrStyle, ld, pd, ldr, arrColor)
-			radar.SkipProcedureTurnHolds(arr.Waypoints, drawnHolds)
+			scope.SkipProcedureTurnHolds(arr.Waypoints, drawnHolds)
 
 			if arr.STAR != "" {
 				for airport := range arr.RunwayWaypoints {
 					for _, holds := range av.DB.TerminalHolds[airport] {
 						for _, h := range holds {
 							if h.Procedure == arr.STAR {
-								radar.DrawHoldPattern(nm, magvar, transforms, h, arrColor, td, ld, arrStyle, drawn, drawnHolds)
+								scope.DrawHoldPattern(nm, magvar, transforms, h, arrColor, td, ld, arrStyle, drawn, drawnHolds)
 							}
 						}
 					}
 				}
-				radar.DrawEnrouteHolds(nm, magvar, transforms, arr.Waypoints, arr.STAR, arrColor, ld, td, arrStyle, drawn, drawnHolds)
+				scope.DrawEnrouteHolds(nm, magvar, transforms, arr.Waypoints, arr.STAR, arrColor, ld, td, arrStyle, drawn, drawnHolds)
 			}
 
 			for _, rwys := range util.SortedMap(arr.RunwayWaypoints) {
 				for rwy, wp := range util.SortedMap(rwys) {
-					radar.DrawWaypoints(nm, magvar, wp, radar.ArrivalRouteContext(arr), drawn, transforms,
+					scope.DrawWaypoints(nm, magvar, wp, scope.ArrivalRouteContext(arr), drawn, transforms,
 						td, arrStyle, ld, pd, ldr, arrColor)
 					if len(wp) > 1 {
 						pmid := math.Mid2LL(wp[0].Location, wp[1].Location)
@@ -192,22 +192,22 @@ func (in *inspector) drawRoutes(a *app, transforms radar.ScopeTransformations, c
 				continue
 			}
 			for _, wp := range appr.Waypoints {
-				radar.DrawWaypoints(nm, magvar, wp, radar.ApproachRouteContext(appr), drawn, transforms,
+				scope.DrawWaypoints(nm, magvar, wp, scope.ApproachRouteContext(appr), drawn, transforms,
 					td, apprStyle, ld, pd, ldr, apprColor)
-				radar.SkipProcedureTurnHolds(wp, drawnHolds)
+				scope.SkipProcedureTurnHolds(wp, drawnHolds)
 			}
 			for _, holds := range av.DB.TerminalHolds[rwy.Airport] {
 				for _, h := range holds {
 					if h.Procedure != name {
 						continue
 					}
-					radar.DrawHoldPattern(nm, magvar, transforms, h, apprColor, td, ld, apprStyle, drawn, drawnHolds)
+					scope.DrawHoldPattern(nm, magvar, transforms, h, apprColor, td, ld, apprStyle, drawn, drawnHolds)
 					pMissed, _ := av.DB.LookupWaypoint(h.Fix)
 					ld.AddDashedLine(av.DB.Airports[rwy.Airport].Location, pMissed, .005, .0075, apprColor)
 				}
 			}
 			for _, wp := range appr.Waypoints {
-				radar.DrawEnrouteHolds(nm, magvar, transforms, wp, name, apprColor, ld, td, apprStyle, drawn, drawnHolds)
+				scope.DrawEnrouteHolds(nm, magvar, transforms, wp, name, apprColor, ld, td, apprStyle, drawn, drawnHolds)
 			}
 		}
 	}
@@ -227,7 +227,7 @@ func (in *inspector) drawRoutes(a *app, transforms radar.ScopeTransformations, c
 					continue
 				}
 				for _, exitRoute := range routes {
-					radar.DrawWaypoints(nm, magvar, exitRoute.Waypoints, radar.DepartureRouteContext(name, exitRoute),
+					scope.DrawWaypoints(nm, magvar, exitRoute.Waypoints, scope.DepartureRouteContext(name, exitRoute),
 						drawn, transforms, td, depStyle, ld, pd, ldr, depColor)
 				}
 			}
@@ -241,7 +241,7 @@ func (in *inspector) drawRoutes(a *app, transforms radar.ScopeTransformations, c
 			if !r.overflights[name][i] {
 				continue
 			}
-			radar.DrawWaypoints(nm, magvar, of.Waypoints, radar.OverflightRouteContext(of), drawn, transforms,
+			scope.DrawWaypoints(nm, magvar, of.Waypoints, scope.OverflightRouteContext(of), drawn, transforms,
 				td, ofStyle, ld, pd, ldr, ofColor)
 		}
 	}
@@ -267,10 +267,10 @@ func (in *inspector) drawRoutes(a *app, transforms radar.ScopeTransformations, c
 	// Charted holds selected on their own
 	holdColor, holdStyle := rgb(r.holdsColor), style(r.holdsColor)
 	for _, hold := range util.SortedMap(r.holds) {
-		radar.DrawHoldPattern(nm, magvar, transforms, hold, holdColor, td, ld, holdStyle, drawn, drawnHolds)
+		scope.DrawHoldPattern(nm, magvar, transforms, hold, holdColor, td, ld, holdStyle, drawn, drawnHolds)
 	}
 
-	radar.GenerateRouteDrawingCommands(cb, transforms, dpi, ld, pd, td, ldr)
+	scope.GenerateRouteDrawingCommands(cb, transforms, dpi, ld, pd, td, ldr)
 }
 
 ///////////////////////////////////////////////////////////////////////////

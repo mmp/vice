@@ -13,9 +13,8 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -38,7 +37,7 @@ type datablock interface {
 	// clockPhase is the current clock phase (1-4) for timeshared field selection.
 	// halfSeconds is used for the 500ms blink cycle.
 	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-		brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int,
+		brightness scope.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int,
 		halfSeconds int64)
 }
 
@@ -79,7 +78,7 @@ func (db *fullDatablock) hasAlertInField0(a, b rune) bool {
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
+	brightness scope.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
 	idx := clockPhase - 1
 	var lines [4]dbLine
 	lines[0] = dbMakeLine(db.field0[:])
@@ -104,7 +103,7 @@ type partialDatablock struct {
 }
 
 func (db partialDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
+	brightness scope.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
 	f3 := db.field3Primary[:]
 	if clockPhase == 2 && !fieldEmpty(db.field3Alternate[:]) {
 		f3 = db.field3Alternate[:]
@@ -136,7 +135,7 @@ type limitedDatablock struct {
 }
 
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
+	brightness scope.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
 	var lines [4]dbLine
 	lines[0] = dbMakeLine(db.field0[:])
 	lines[1] = dbMakeLine(db.field1[:], db.field2[:])
@@ -155,7 +154,7 @@ type suspendedDatablock struct {
 }
 
 func (db suspendedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
+	brightness scope.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
 	var lines [4]dbLine
 	lines[0] = dbMakeLine(db.field0[:])
 	dbDrawLines(&lines, 1, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
@@ -173,7 +172,7 @@ type ghostDatablock struct {
 }
 
 func (db ghostDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
+	brightness scope.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
 	var lines [4]dbLine
 	lines[0] = dbMakeLine(db.field0[:])
 	lines[1] = dbMakeLine(db.field1[:])
@@ -230,7 +229,7 @@ func dbChopTrailing(f []dbChar) []dbChar {
 }
 
 func dbDrawLines(lines *[4]dbLine, n int, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	brightness scope.Brightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	rightJustify := leaderLineDirection >= math.South
 	glyph := font.LookupGlyph(' ')
 	fontWidth := glyph.AdvanceX
@@ -249,7 +248,7 @@ func dbDrawLines(lines *[4]dbLine, n int, td *renderer.TextDrawBuilder, pt [2]fl
 }
 
 func dbDrawLine(line *dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, str *strings.Builder,
-	brightness radar.Brightness, halfSeconds int64) {
+	brightness scope.Brightness, halfSeconds int64) {
 	// We will batch characters to be drawn up into str and flush them out
 	// in a call to TextDrawBuider AddText() only when the color
 	// changes. (This is some effort to minimize the number of AddText()
@@ -297,7 +296,7 @@ func fieldEmpty(f []dbChar) bool {
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (sp *STARSPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockType {
+func (sp *STARSPane) datablockType(ctx *scope.Context, trk sim.Track) DatablockType {
 	if trk.IsUnassociated() {
 		// Must be limited, regardless of anything else.
 		return LimitedDatablock
@@ -391,7 +390,7 @@ func formatDBText(field []dbChar, s string, c renderer.RGB, flashing bool) int {
 	return len(s)
 }
 
-func (sp *STARSPane) getAllDatablocks(ctx *panes.Context) map[av.ADSBCallsign]datablock {
+func (sp *STARSPane) getAllDatablocks(ctx *scope.Context) map[av.ADSBCallsign]datablock {
 	sp.fdbArena.Reset()
 	sp.pdbArena.Reset()
 	sp.ldbArena.Reset()
@@ -410,8 +409,8 @@ func (sp *STARSPane) getAllDatablocks(ctx *panes.Context) map[av.ADSBCallsign]da
 	return sp.datablocks
 }
 
-func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NASFlightPlan,
-	color renderer.RGB, brightness radar.Brightness) datablock {
+func (sp *STARSPane) getDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan,
+	color renderer.RGB, brightness scope.Brightness) datablock {
 	state := sp.TrackState[trk.ADSBCallsign]
 	if state != nil && !sp.datablockVisible(ctx, trk) {
 		return nil
@@ -475,7 +474,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 	return nil
 }
 
-func (sp *STARSPane) resolveHandoff(ctx *panes.Context, sfp *sim.NASFlightPlan,
+func (sp *STARSPane) resolveHandoff(ctx *scope.Context, sfp *sim.NASFlightPlan,
 	state *TrackState) (handoffId, handoffTCP string) {
 	handoffId = " "
 	if sfp != nil {
@@ -539,7 +538,7 @@ func (sp *STARSPane) resolveHandoff(ctx *panes.Context, sfp *sim.NASFlightPlan,
 // corresponding field shows just the handoff receiver (Figure 2-22, p. 2-69).
 // Tracks whose owner has AHOP inhibited outright don't show it (STARS 4.3 /
 // 8.8).
-func ahopInhibitIndicator(ctx *panes.Context, sfp *sim.NASFlightPlan, handoffId string) string {
+func ahopInhibitIndicator(ctx *scope.Context, sfp *sim.NASFlightPlan, handoffId string) string {
 	if handoffId == " " && sfp != nil && sfp.AutoHandoffInhibited &&
 		!ctx.Client.State.IsExternalController(sfp.TrackingController) &&
 		!ctx.Client.State.AutoHandoffInhibitedForTCW(sfp.OwningTCW) {
@@ -578,7 +577,7 @@ func formatAltitude(trk sim.Track, sfp *sim.NASFlightPlan, unreasonableModeC boo
 	return "   ", false
 }
 
-func (sp *STARSPane) resolveScratchpad1(ctx *panes.Context, trk sim.Track,
+func (sp *STARSPane) resolveScratchpad1(ctx *scope.Context, trk sim.Track,
 	sfp *sim.NASFlightPlan, state *TrackState) string {
 	if sfp == nil {
 		return ""
@@ -673,8 +672,8 @@ func flightRulesIndicator(sfp *sim.NASFlightPlan) string {
 	return " "
 }
 
-func (sp *STARSPane) buildLimitedDatablock(ctx *panes.Context, trk sim.Track,
-	color renderer.RGB, brightness radar.Brightness,
+func (sp *STARSPane) buildLimitedDatablock(ctx *scope.Context, trk sim.Track,
+	color renderer.RGB, brightness scope.Brightness,
 	beaconator, displayBeaconCode bool, groundspeed string) *limitedDatablock {
 	state := sp.TrackState[trk.ADSBCallsign]
 	db := sp.ldbArena.AllocClear()
@@ -750,7 +749,7 @@ func (sp *STARSPane) buildLimitedDatablock(ctx *panes.Context, trk sim.Track,
 	return db
 }
 
-func (sp *STARSPane) buildPartialDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NASFlightPlan,
+func (sp *STARSPane) buildPartialDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan,
 	color renderer.RGB, altitude, sp1, groundspeed, handoffId, actype string, pilotReportedAltitude bool) *partialDatablock {
 	fa := ctx.FacilityAdaptation
 	db := sp.pdbArena.AllocClear()
@@ -823,8 +822,8 @@ func (sp *STARSPane) buildPartialDatablock(ctx *panes.Context, trk sim.Track, sf
 	return db
 }
 
-func (sp *STARSPane) buildFullDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NASFlightPlan, color renderer.RGB,
-	brightness radar.Brightness, altitude, sp1, groundspeed, handoffId, handoffTCP, actype string,
+func (sp *STARSPane) buildFullDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan, color renderer.RGB,
+	brightness scope.Brightness, altitude, sp1, groundspeed, handoffId, handoffTCP, actype string,
 	pilotReportedAltitude, beaconator, beaconMismatch, displayBeaconCode bool) *fullDatablock {
 	fa := ctx.FacilityAdaptation
 	state := sp.TrackState[trk.ADSBCallsign]
@@ -949,7 +948,7 @@ func (sp *STARSPane) buildFullDatablock(ctx *panes.Context, trk sim.Track, sfp *
 	return db
 }
 
-func (sp *STARSPane) fillFDBField5(ctx *panes.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
+func (sp *STARSPane) fillFDBField5(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
 	color renderer.RGB, groundspeed, actype string) {
 	state := sp.TrackState[trk.ADSBCallsign]
 	rulesCategory := flightRulesIndicator(sfp)
@@ -1044,8 +1043,8 @@ func (sp *STARSPane) fillFDBField5(ctx *panes.Context, trk sim.Track, sfp *sim.N
 	copy(db.field5[3][:], db.field5[1][:])
 }
 
-func (sp *STARSPane) fillFDBField6(ctx *panes.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
-	color renderer.RGB, brightness radar.Brightness, beaconMismatch, displayBeaconCode bool) {
+func (sp *STARSPane) fillFDBField6(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
+	color renderer.RGB, brightness scope.Brightness, beaconMismatch, displayBeaconCode bool) {
 	if trk.IsUnsupportedDB() {
 		return
 	}
@@ -1109,7 +1108,7 @@ func (sp *STARSPane) fillFDBField6(ctx *panes.Context, trk sim.Track, sfp *sim.N
 	// Phase 4: blank
 }
 
-func (sp *STARSPane) fillFDBField7(ctx *panes.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
+func (sp *STARSPane) fillFDBField7(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
 	color renderer.RGB, beaconMismatch bool) {
 	leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
 	altSet := sfp.AssignedAltitude != 0
@@ -1209,7 +1208,7 @@ func (sp *STARSPane) fillFDBField7(ctx *panes.Context, trk sim.Track, sfp *sim.N
 	}
 }
 
-func (sp *STARSPane) getGhostDatablock(ctx *panes.Context, ghost *av.GhostTrack, color renderer.RGB) ghostDatablock {
+func (sp *STARSPane) getGhostDatablock(ctx *scope.Context, ghost *av.GhostTrack, color renderer.RGB) ghostDatablock {
 	var db ghostDatablock
 
 	state := sp.TrackState[ghost.ADSBCallsign]
@@ -1231,7 +1230,7 @@ func (sp *STARSPane) getGhostDatablock(ctx *panes.Context, ghost *av.GhostTrack,
 	return db
 }
 
-func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.Track) (color renderer.RGB, dbBrightness, posBrightness radar.Brightness) {
+func (sp *STARSPane) trackDatablockColorBrightness(ctx *scope.Context, trk sim.Track) (color renderer.RGB, dbBrightness, posBrightness scope.Brightness) {
 	ps := sp.currentPrefs()
 	dt := sp.datablockType(ctx, trk)
 	state := sp.TrackState[trk.ADSBCallsign]
@@ -1251,8 +1250,8 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 
 	// Figure out the datablock and position symbol brightness first
 	if trk.ADSBCallsign == sp.dwellAircraft { // dwell overrides everything as far as brightness
-		dbBrightness = radar.Brightness(100)
-		posBrightness = radar.Brightness(100)
+		dbBrightness = scope.Brightness(100)
+		posBrightness = scope.Brightness(100)
 	} else if forceFDB || state.OutboundHandoffAccepted {
 		dbBrightness = ps.Brightness.FullDatablocks
 		posBrightness = ps.Brightness.Positions
@@ -1325,7 +1324,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 	return
 }
 
-func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
+func (sp *STARSPane) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
 	state := sp.TrackState[trk.ADSBCallsign]
 
 	af := sp.currentPrefs().AltitudeFilters
@@ -1396,7 +1395,7 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 	}
 }
 
-func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *panes.Context, transforms radar.ScopeTransformations,
+func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *scope.Context, transforms scope.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -1502,7 +1501,7 @@ func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *pane
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, trk sim.Track) bool {
+func (sp *STARSPane) haveActiveWarnings(ctx *scope.Context, trk sim.Track) bool {
 	ps := sp.currentPrefs()
 	state := sp.TrackState[trk.ADSBCallsign]
 
@@ -1543,7 +1542,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, trk sim.Track) bool 
 	return false
 }
 
-func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtype DatablockType) []dbChar {
+func (sp *STARSPane) getDatablockAlerts(ctx *scope.Context, trk sim.Track, dbtype DatablockType) []dbChar {
 	if trk.IsUnsupportedDB() {
 		return nil
 	}

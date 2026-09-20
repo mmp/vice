@@ -15,7 +15,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -41,7 +41,7 @@ import (
 //
 // 1. Initial Arguments (optional, any order):
 //   - *ERAMPane: The ERAM pane instance
-//   - *panes.Context: The rendering/input context
+//   - *scope.Context: The rendering/input context
 //   - *PrefrenceSet: Current ERAM user preferences (via ep.currentPrefs())
 //
 // 2. Typed Arguments (must match command spec types, any order):
@@ -237,7 +237,7 @@ func (c matchCandidate) advance(m matcher, r matchResult) matchCandidate {
 
 // tryExecuteUserCommand attempts to execute a command using the registered commands
 // for the current command mode.
-func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, mousePositions []math.Point2LL,
+func (ep *ERAMPane) tryExecuteUserCommand(ctx *scope.Context, cmd string, mousePositions []math.Point2LL,
 	trackCallsigns []av.ADSBCallsign) (CommandStatus, error, bool) {
 	// Get commands for current mode
 	cmds, ok := userCommands[ep.commandMode]
@@ -257,7 +257,7 @@ func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, mouseP
 // dispatchCommand is the main command dispatch function using greedy matching.
 // It matches commands step-by-step, committing to the highest priority match at each step.
 // Returns (status, error, handled) where handled indicates if any command matched.
-func (ep *ERAMPane) dispatchCommand(ctx *panes.Context, cmds []userCommand, input *CommandInput) (CommandStatus, error, bool) {
+func (ep *ERAMPane) dispatchCommand(ctx *scope.Context, cmds []userCommand, input *CommandInput) (CommandStatus, error, bool) {
 	candidates := util.MapSlice(cmds, func(cmd userCommand) matchCandidate {
 		return matchCandidate{
 			cmd:       &cmd,
@@ -280,7 +280,7 @@ func (ep *ERAMPane) dispatchCommand(ctx *panes.Context, cmds []userCommand, inpu
 
 // greedyMatchCommands recursively matches commands using greedy priority-based selection.
 // Returns (status, error, handled) where handled indicates if any command matched and executed.
-func (ep *ERAMPane) greedyMatchCommands(ctx *panes.Context, input *CommandInput, candidates []matchCandidate,
+func (ep *ERAMPane) greedyMatchCommands(ctx *scope.Context, input *CommandInput, candidates []matchCandidate,
 	firstErr *error) (CommandStatus, error, bool) {
 	// Try complete candidates
 	for _, c := range util.FilterSlice(candidates, func(mc matchCandidate) bool {
@@ -360,7 +360,7 @@ type matchResult struct {
 type matcher interface {
 	// match attempts to match at the current position.
 	// Returns nil if no match, or a matchResult with the match details.
-	match(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (*matchResult, error)
+	match(ep *ERAMPane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error)
 
 	// validate checks that type handlers exist and constraints are met.
 	validate() error
@@ -518,7 +518,7 @@ type literalMatcher struct {
 	text string
 }
 
-func (lm literalMatcher) match(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (*matchResult, error) {
+func (lm literalMatcher) match(ep *ERAMPane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
 	if !strings.HasPrefix(text, lm.text) {
 		return nil, nil
 	}
@@ -542,7 +542,7 @@ type singleTypedMatcher struct {
 	charCount int // For [:N] - exact character count (0 means no limit)
 }
 
-func (sm singleTypedMatcher) match(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (*matchResult, error) {
+func (sm singleTypedMatcher) match(ep *ERAMPane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
 	handler := getTypeParser(sm.typeName)
 
 	var value any
@@ -639,7 +639,7 @@ type alternativeMatcher struct {
 	inner    []matcher
 }
 
-func (am alternativeMatcher) match(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (*matchResult, error) {
+func (am alternativeMatcher) match(ep *ERAMPane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
 	// Try alternatives, return best match by priority.
 	// All alternatives return the same Go type (enforced by validate()).
 	var bestResult *matchResult
@@ -712,7 +712,7 @@ type greedyMatcher struct {
 	inner matcher
 }
 
-func (gm greedyMatcher) match(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (*matchResult, error) {
+func (gm greedyMatcher) match(ep *ERAMPane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
 	var values []any
 	var priority int
 	firstMatch := true
@@ -868,7 +868,7 @@ func validateReturnTypes(funcType reflect.Type) error {
 // initialArgTypes lists the allowed initial argument types for command handlers.
 var initialArgTypes = []reflect.Type{
 	reflect.TypeFor[*ERAMPane](),
-	reflect.TypeFor[*panes.Context](),
+	reflect.TypeFor[*scope.Context](),
 	reflect.TypeFor[*PrefrenceSet](),
 }
 
@@ -942,15 +942,15 @@ func (cmd userCommand) bindArgs(ep *ERAMPane, extractedArgs []any) []any {
 }
 
 // initialArgProviders maps initial arg types to functions that provide their values.
-var initialArgProviders = map[reflect.Type]func(ep *ERAMPane, ctx *panes.Context) reflect.Value{
-	reflect.TypeFor[*ERAMPane]():      func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep) },
-	reflect.TypeFor[*panes.Context](): func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ctx) },
-	reflect.TypeFor[*PrefrenceSet]():  func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep.currentPrefs()) },
+var initialArgProviders = map[reflect.Type]func(ep *ERAMPane, ctx *scope.Context) reflect.Value{
+	reflect.TypeFor[*ERAMPane]():      func(ep *ERAMPane, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ep) },
+	reflect.TypeFor[*scope.Context](): func(ep *ERAMPane, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ctx) },
+	reflect.TypeFor[*PrefrenceSet]():  func(ep *ERAMPane, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ep.currentPrefs()) },
 }
 
 // call invokes the command handler function with the provided arguments.
 // Handlers may return: (), error, CommandStatus, or (CommandStatus, error).
-func (cmd userCommand) call(ep *ERAMPane, ctx *panes.Context, args []any) (CommandStatus, error) {
+func (cmd userCommand) call(ep *ERAMPane, ctx *scope.Context, args []any) (CommandStatus, error) {
 	funcValue := reflect.ValueOf(cmd.handlerFunc)
 	funcType := funcValue.Type()
 

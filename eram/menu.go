@@ -5,10 +5,9 @@ import (
 	"time"
 
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
 )
 
@@ -18,7 +17,7 @@ import (
 // holds at most one (in ep.popup); opening a new pop-up replaces whatever was
 // there.
 type popup interface {
-	draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer)
+	draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer)
 }
 
 // popupAnchorSide identifies which edge of the host view is pinned by an
@@ -68,7 +67,7 @@ const (
 // using OpenPopupAt and wrap its placement into a typed popup. rowCount is
 // the number of content rows below the title bar — the helper adds 1 for
 // the title bar and multiplies by viewPopupItemH to get the popup height.
-func (ep *ERAMPane) makeViewMenu(ctx *panes.Context, viewID string, rowCount int, wrap func(popupBase) popup) func(host math.Extent2D) popup {
+func (ep *ERAMPane) makeViewMenu(ctx *scope.Context, viewID string, rowCount int, wrap func(popupBase) popup) func(host math.Extent2D) popup {
 	return func(host math.Extent2D) popup {
 		if vap, ok := ep.popup.(viewAnchoredPopup); ok {
 			if id, _, _ := vap.viewAnchor(); id == viewID {
@@ -110,7 +109,7 @@ type viewAnchoredPopup interface {
 // if it consumed the input.
 type keyboardPopup interface {
 	popup
-	handleKeyboard(ep *ERAMPane, ctx *panes.Context) bool
+	handleKeyboard(ep *ERAMPane, ctx *scope.Context) bool
 }
 
 // ERAMMenuClickType distinguishes primary from tertiary clicks.
@@ -233,7 +232,7 @@ func (ep *ERAMPane) makeToggleMenuItem(v *bool, label string) ERAMMenuItem {
 // makeIntMenuItem builds an int-adjustment row labeled "<label> <value>" with a
 // green background. Primary click decrements, tertiary click increments by step,
 // clamped to [min, max]. Generic over any int-kinded type so callers can pass
-// e.g. *radar.Brightness directly. Free-standing because Go methods cannot have
+// e.g. *scope.Brightness directly. Free-standing because Go methods cannot have
 // their own type parameters.
 func makeIntMenuItem[T ~int](ep *ERAMPane, v *T, label string, min, max, step int) ERAMMenuItem {
 	return ERAMMenuItem{
@@ -275,7 +274,7 @@ type ERAMMenuConfig struct {
 // clamped origin plus the anchor side and pinned X that DrawView uses to
 // keep the host view's pinned edge flush with the pop-up as the view
 // resizes.
-func (ep *ERAMPane) OpenPopupAt(ctx *panes.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) viewPopupPlacement {
+func (ep *ERAMPane) OpenPopupAt(ctx *scope.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) viewPopupPlacement {
 	pe := ctx.PaneExtent
 	origin := originGuess
 	anchor := popupAnchorRight
@@ -324,7 +323,7 @@ type ERAMMenuResult struct {
 }
 
 // DrawERAMMenu renders a floating popup menu and handles clicks.
-func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTransformations,
+func (ep *ERAMPane) DrawERAMMenu(ctx *scope.Context, transforms scope.ScopeTransformations,
 	cb *renderer.CommandBuffer, origin [2]float32, cfg ERAMMenuConfig) ERAMMenuResult {
 
 	var result ERAMMenuResult

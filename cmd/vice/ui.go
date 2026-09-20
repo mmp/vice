@@ -19,10 +19,10 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
@@ -157,7 +157,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Lo
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, activeRadarPane panes.Pane, events []sim.Event, lg *log.Logger) renderer.Stats {
+	controlClient *client.ControlClient, activeRadarPane scope.Pane, events []sim.Event, lg *log.Logger) renderer.Stats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case release, ok := <-ui.newReleaseDialogChan:
@@ -336,7 +336,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	activeModal := hasActiveModalDialogs()
 	if controlClient != nil {
 		// Keep the Messages pane current even when modal dialogs suppress normal window drawing.
-		config.MessagesPane.ProcessEvents(ui.showMessages && !activeModal, config.DisplaySimLogs,
+		config.MessagesWindow.ProcessEvents(ui.showMessages && !activeModal, config.DisplaySimLogs,
 			events, controlClient, p, lg)
 	}
 
@@ -357,11 +357,11 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if ui.showMessages {
 			applyPinWindowClass("Messages", config, p)
 		}
-		config.MessagesPane.DrawWindow(&ui.showMessages, p, config.UnpinnedWindows)
+		config.MessagesWindow.DrawWindow(&ui.showMessages, p, config.UnpinnedWindows)
 
 		if ui.showFlightStrips {
 			applyPinWindowClass("Flight Strips", config, p)
-			config.FlightStripPane.DrawWindow(&ui.showFlightStrips, controlClient, p, config.UnpinnedWindows, lg)
+			config.FlightStripWindow.DrawWindow(&ui.showFlightStrips, controlClient, p, config.UnpinnedWindows, lg)
 		}
 	}
 
@@ -557,7 +557,7 @@ func uiDrawKeyboardWindow(c *client.ControlClient, config *Config, platform plat
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 300}, imgui.Vec2{-1, float32(platform.WindowSize()[1]) * 19 / 20})
 	applyPinWindowClass("Keyboard Command Reference", config, platform)
 	imgui.BeginV("Keyboard Command Reference", &keyboardWindowVisible, imgui.WindowFlagsAlwaysAutoResize)
-	drawPinButton("Keyboard Command Reference", config, platform)
+	drawPinButton("Keyboard Command Reference", config.UnpinnedWindows, platform)
 
 	style := imgui.CurrentStyle()
 
@@ -821,9 +821,61 @@ func applyPinWindowClass(windowTitle string, config *Config, p platform.Platform
 }
 
 // drawPinButton draws a thumbtack toggle in the title bar of the current
-// window. Call immediately after imgui.BeginV().
-func drawPinButton(windowTitle string, config *Config, p platform.Platform) {
-	panes.DrawPinButton(windowTitle, config.UnpinnedWindows, p)
+// window. Uses the draw list so it doesn't affect auto-resize layout.
+// Call immediately after imgui.BeginV().
+func drawPinButton(windowTitle string, unpinnedWindows map[string]struct{}, p platform.Platform) {
+
+	_, unpinned := unpinnedWindows[windowTitle]
+	pinned := !unpinned
+
+	icon := gui.Icons.Thumbtack
+	iconSize := imgui.CalcTextSize(icon)
+
+	style := imgui.CurrentStyle()
+	windowPos := imgui.WindowPos()
+	windowW := imgui.WindowWidth()
+	titleBarH := imgui.FrameHeight() + style.FramePadding().Y
+
+	// Position to the left of the close button. The close button occupies
+	// roughly titleBarH from the right edge.
+	btnX := windowPos.X + windowW - titleBarH - iconSize.X - style.FramePadding().X
+	btnY := windowPos.Y + (titleBarH-iconSize.Y)*0.5
+
+	var color imgui.Vec4
+	if pinned {
+		color = style.Colors()[imgui.ColText]
+	} else {
+		color = imgui.Vec4{X: 0.5, Y: 0.5, Z: 0.5, W: 1}
+	}
+
+	dl := imgui.ForegroundDrawListViewportPtr()
+	dl.AddTextVec2(imgui.Vec2{X: btnX, Y: btnY}, imgui.ColorU32Vec4(color), icon)
+
+	// Hit-test for click and tooltip.
+	pad := float32(2)
+	btnMin := imgui.Vec2{X: btnX - pad, Y: btnY - pad}
+	btnMax := imgui.Vec2{X: btnX + iconSize.X + pad, Y: btnY + iconSize.Y + pad}
+	mouse := imgui.MousePos()
+	if mouse.X >= btnMin.X && mouse.X <= btnMax.X &&
+		mouse.Y >= btnMin.Y && mouse.Y <= btnMax.Y {
+		if imgui.IsMouseClickedBool(0) && !imgui.IsPopupOpenStr("") {
+			if pinned {
+				unpinnedWindows[windowTitle] = struct{}{}
+			} else {
+				delete(unpinnedWindows, windowTitle)
+			}
+		}
+		imgui.SetTooltip(util.Select(pinned, "Unpin window (allow behind main window)", "Pin window (always on top)"))
+	}
+
+	// Sync the OS-level floating attribute for this window's viewport.
+	// Only applies to secondary viewports (windows dragged outside main).
+	vp := imgui.WindowViewport()
+	mainVP := imgui.MainViewport()
+	if vp != nil && vp.ID() != mainVP.ID() {
+		appFocused := p.IsAppFocused()
+		p.SetViewportFloating(vp.PlatformHandle(), pinned && appFocused)
+	}
 }
 
 // uiAudioInputDevices returns the available microphones, re-enumerating them
@@ -838,14 +890,14 @@ func uiAudioInputDevices(p platform.Platform) []string {
 	return ui.micDevices
 }
 
-func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) {
+func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane scope.Pane, p platform.Platform, lg *log.Logger) {
 	if !ui.showSettings {
 		return
 	}
 
 	applyPinWindowClass("Settings", config, p)
 	imgui.BeginV("Settings", &ui.showSettings, imgui.WindowFlagsAlwaysAutoResize)
-	drawPinButton("Settings", config, p)
+	drawPinButton("Settings", config.UnpinnedWindows, p)
 
 	if imgui.SliderFloatV("Simulation speed", &c.State.SimRate, 1, 20, "%.1f", 0) {
 		c.SetSimRate(c.State.SimRate)
@@ -917,8 +969,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	}
 
 	// Draw settings only for the panes that are actually displayed.
-	for _, pane := range []any{config.MessagesPane, config.FlightStripPane, activeRadarPane} {
-		if draw, ok := pane.(panes.UIDrawer); ok {
+	for _, pane := range []any{config.MessagesWindow, config.FlightStripWindow, activeRadarPane} {
+		if draw, ok := pane.(scope.UIDrawer); ok {
 			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
 				draw.DrawUI(p, &config.Config)
 			}

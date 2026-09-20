@@ -6,7 +6,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
 
@@ -165,7 +165,7 @@ func (ep *ERAMPane) inConflictAlert(callsign av.ADSBCallsign) bool {
 // Note: the caller passes ep.visibleTracks; today that is effectively all
 // tracks, but if display filtering (e.g. radar holes) is ever added there,
 // conflict detection coverage would narrow with it.
-func (ep *ERAMPane) updateConflictAlerts(ctx *panes.Context, tracks []sim.Track) {
+func (ep *ERAMPane) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 	now := ctx.Client.State.SimTime
 	if now.Time().Sub(ep.lastConflictUpdate) < caUpdateInterval {
 		return

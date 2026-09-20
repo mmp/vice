@@ -13,15 +13,14 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
 
 func registerSetupCommands() {
 	// 4.1.3 Apply preference set
-	registerCommand(CommandModePref, "[NUM]", func(sp *STARSPane, ctx *panes.Context, idx int) error {
+	registerCommand(CommandModePref, "[NUM]", func(sp *STARSPane, ctx *scope.Context, idx int) error {
 		if idx <= 0 || idx > numSavedPreferenceSets {
 			return ErrSTARSCommandFormat
 		}
@@ -36,7 +35,7 @@ func registerSetupCommands() {
 		sp.setCommandMode(ctx, CommandModeNone)
 		return nil
 	})
-	registerCommand(CommandModePref, "[ALL_TEXT]", func(sp *STARSPane, ctx *panes.Context, name string) (CommandStatus, error) {
+	registerCommand(CommandModePref, "[ALL_TEXT]", func(sp *STARSPane, ctx *scope.Context, name string) (CommandStatus, error) {
 		idx := slices.IndexFunc(sp.prefSet.Saved[:], func(p *Preferences) bool { return p != nil && p.Name == name })
 		if idx == -1 {
 			return CommandStatus{}, ErrSTARSIllegalPrefset
@@ -49,13 +48,13 @@ func registerSetupCommands() {
 	})
 
 	// 4.1.4 Create new preference set [sic]
-	registerCommand(CommandModeSavePrefAs, "", func(sp *STARSPane, ctx *panes.Context) CommandStatus {
+	registerCommand(CommandModeSavePrefAs, "", func(sp *STARSPane, ctx *scope.Context) CommandStatus {
 		return CommandStatus{Clear: ClearNone}
 	})
 	registerCommand(CommandModeSavePrefAs, "[ALL_TEXT]", savePreferences)
 
 	// 4.1.10 Reconfigure TCW/TDW to default display characteristics (p. 4-21)
-	registerCommand(CommandModeMultiFunc, "K", func(sp *STARSPane, ctx *panes.Context) {
+	registerCommand(CommandModeMultiFunc, "K", func(sp *STARSPane, ctx *scope.Context) {
 		sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
 	})
 
@@ -63,7 +62,7 @@ func registerSetupCommands() {
 	registerCommand(CommandModeSite, "+", func(sp *STARSPane) {
 		sp.setRadarModeFused()
 	})
-	registerCommand(CommandModeSite, "[NUM]", func(ctx *panes.Context, ps *Preferences, idx int) error {
+	registerCommand(CommandModeSite, "[NUM]", func(ctx *scope.Context, ps *Preferences, idx int) error {
 		radarSites := ctx.FacilityAdaptation.RadarSites
 		idx-- // Convert to 0-based
 		if idx < 0 || idx >= len(radarSites) {
@@ -73,7 +72,7 @@ func registerSetupCommands() {
 		ps.RadarSiteSelected = util.SortedMapKeys(radarSites)[idx]
 		return nil
 	})
-	registerCommand(CommandModeSite, "[FIELD:1]", func(ctx *panes.Context, ps *Preferences, char string) error {
+	registerCommand(CommandModeSite, "[FIELD:1]", func(ctx *scope.Context, ps *Preferences, char string) error {
 		if id, _, ok := util.MapLookupFunc(ctx.FacilityAdaptation.RadarSites,
 			func(id string, site *av.RadarSite) bool { return site.Char == char }); ok {
 			ps.RadarSiteSelected = id
@@ -98,22 +97,22 @@ func registerSetupCommands() {
 	})
 
 	// 4.3 Enable / inhibit automatic handoff processing for entering TCP (p. 4-30)
-	registerCommand(CommandModeHandOff, "CE", func(sp *STARSPane, ctx *panes.Context) error {
+	registerCommand(CommandModeHandOff, "CE", func(sp *STARSPane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPBoth, true)
 	})
-	registerCommand(CommandModeHandOff, "CI", func(sp *STARSPane, ctx *panes.Context) error {
+	registerCommand(CommandModeHandOff, "CI", func(sp *STARSPane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPBoth, false)
 	})
-	registerCommand(CommandModeHandOff, "CTE", func(sp *STARSPane, ctx *panes.Context) error {
+	registerCommand(CommandModeHandOff, "CTE", func(sp *STARSPane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPIntrafacility, true)
 	})
-	registerCommand(CommandModeHandOff, "CTI", func(sp *STARSPane, ctx *panes.Context) error {
+	registerCommand(CommandModeHandOff, "CTI", func(sp *STARSPane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPIntrafacility, false)
 	})
-	registerCommand(CommandModeHandOff, "CXE", func(sp *STARSPane, ctx *panes.Context) error {
+	registerCommand(CommandModeHandOff, "CXE", func(sp *STARSPane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPInterfacility, true)
 	})
-	registerCommand(CommandModeHandOff, "CXI", func(sp *STARSPane, ctx *panes.Context) error {
+	registerCommand(CommandModeHandOff, "CXI", func(sp *STARSPane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPInterfacility, false)
 	})
 
@@ -123,7 +122,7 @@ func registerSetupCommands() {
 		if idx <= 0 {
 			return ErrSTARSIllegalMap
 		}
-		if !slices.ContainsFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Id == idx }) {
+		if !slices.ContainsFunc(sp.allVideoMaps, func(v scope.Map) bool { return v.Id == idx }) {
 			return ErrSTARSIllegalMap
 		}
 
@@ -139,7 +138,7 @@ func registerSetupCommands() {
 		if idx <= 0 {
 			return ErrSTARSIllegalMap
 		}
-		if !slices.ContainsFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Id == idx }) {
+		if !slices.ContainsFunc(sp.allVideoMaps, func(v scope.Map) bool { return v.Id == idx }) {
 			return ErrSTARSIllegalMap
 		}
 		ps.VideoMapVisible[idx] = nil
@@ -149,7 +148,7 @@ func registerSetupCommands() {
 		if idx <= 0 {
 			return ErrSTARSIllegalMap
 		}
-		if !slices.ContainsFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Id == idx }) {
+		if !slices.ContainsFunc(sp.allVideoMaps, func(v scope.Map) bool { return v.Id == idx }) {
 			return ErrSTARSIllegalMap
 		}
 		delete(ps.VideoMapVisible, idx)
@@ -419,7 +418,7 @@ func registerSetupCommands() {
 	//(CommandModeMultiFunc, "ZDI", unimplementedCommand),
 
 	// 4.13.1 Test audio alarm (p. 4-96)
-	registerCommand(CommandModeMultiFunc, "ZA", func(sp *STARSPane, ctx *panes.Context) {
+	registerCommand(CommandModeMultiFunc, "ZA", func(sp *STARSPane, ctx *scope.Context) {
 		sp.testAudioEndTime = time.Now().Add(5 * time.Second)
 		ctx.Platform.StartPlayAudioContinuous(sp.audioEffects[AudioTest])
 	})
@@ -475,7 +474,7 @@ func registerSetupCommands() {
 
 	// 4.14.7 Specify data block position for a specified owner (p. 4-107)
 	registerCommand(CommandModeMultiFunc, "L[TCP2][#]|L[TCP1] [#]",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcp string, direction int) error {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, tcp string, direction int) error {
 			ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().Position)
 			if ctrl == nil {
 				return ErrSTARSIllegalPosition
@@ -559,7 +558,7 @@ func registerSetupCommands() {
 	// registerCommand(CommandModeRestrictionArea, "[FIELD:1]I", unimplemented)
 
 	// 4.19 Enable / inhibit Flight data auto-modify (FDAM) region (p. 4-123)
-	configureFDAM := func(sp *STARSPane, ctx *panes.Context, op sim.FDAMConfigOp, regionId string) error {
+	configureFDAM := func(sp *STARSPane, ctx *scope.Context, op sim.FDAMConfigOp, regionId string) error {
 		ctx.Client.ConfigureFDAM(op, regionId,
 			func(output string, err error) {
 				if err != nil {
@@ -571,27 +570,27 @@ func registerSetupCommands() {
 		return nil
 	}
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION]",
-		func(sp *STARSPane, ctx *panes.Context, regionID string) error {
+		func(sp *STARSPane, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMToggleRegion, regionID)
 		})
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION] I",
-		func(sp *STARSPane, ctx *panes.Context, regionID string) error {
+		func(sp *STARSPane, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMInhibitRegion, regionID)
 		})
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION] E",
-		func(sp *STARSPane, ctx *panes.Context, regionID string) error {
+		func(sp *STARSPane, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMEnableRegion, regionID)
 		})
 
 	// 4.20 Display status of all Flight data auto-modify (FDAM) regions (p. 4-125)
 	registerCommand(CommandModeMultiFunc, "2XS",
-		func(sp *STARSPane, ctx *panes.Context) error {
+		func(sp *STARSPane, ctx *scope.Context) error {
 			return configureFDAM(sp, ctx, sim.FDAMQueryStatus, "")
 		})
 }
 
 // savePreferences saves current preferences with the given name.
-func savePreferences(sp *STARSPane, ctx *panes.Context, name string) error {
+func savePreferences(sp *STARSPane, ctx *scope.Context, name string) error {
 	if len(name) > 7 {
 		return ErrSTARSCommandFormat
 	}

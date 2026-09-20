@@ -7,7 +7,7 @@ package eram
 import (
 	"testing"
 
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/client"
 )
 
 // Every error ERAM has a code for is one a controller can provoke, so it must
@@ -18,7 +18,7 @@ func TestERAMErrorsRoundTripOverRPC(t *testing.T) {
 		t.Fatal("no errors to check")
 	}
 	for err := range eramErrorRemap {
-		if decoded := server.DecodeErrorMessage(err.Error()); decoded != err {
+		if decoded := client.DecodeErrorMessage(err.Error()); decoded != err {
 			t.Errorf("%q: decoded to %v, not the original error", err, decoded)
 		}
 	}

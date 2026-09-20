@@ -14,7 +14,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -26,14 +26,14 @@ func registerToolsCommands() {
 	// All done in dcb.go
 
 	// 6.2 Display weather history
-	registerCommand(CommandModeMultiFunc, "W"+STARSTriangleCharacter, func(sp *STARSPane, ctx *panes.Context) CommandStatus {
+	registerCommand(CommandModeMultiFunc, "W"+STARSTriangleCharacter, func(sp *STARSPane, ctx *scope.Context) CommandStatus {
 		sp.wxHistoryDraw = 2
 		sp.wxNextHistoryStepTime = ctx.InterpolatedSimTime.Add(5 * time.Second)
 		return CommandStatus{Output: "IN PROGRESS"}
 	})
 
 	// 6.3.1 Toggle Predicted track line on/off for a single track (p. 6-13)
-	registerCommand(CommandModeMultiFunc, "R[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
+	registerCommand(CommandModeMultiFunc, "R[SLEW]", func(sp *STARSPane, ctx *scope.Context, ps *Preferences, trk *sim.Track) error {
 		if ps.PTLAll || (ps.PTLOwn && trk.IsAssociated() && ctx.UserOwnsFlightPlan(trk.FlightPlan)) {
 			return ErrSTARSIllegalTrack
 		}
@@ -78,7 +78,7 @@ func registerToolsCommands() {
 	})
 
 	// 6.5.2 Toggle display of ghost data blocks for specified runway pair
-	toggleCRDAGhostsForRunwayPair := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap av.FAAAirportCode, idx int) error {
+	toggleCRDAGhostsForRunwayPair := func(sp *STARSPane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int) error {
 		if len(sp.CRDAPairs) == 0 {
 			return ErrSTARSIllegalFunction
 		}
@@ -92,7 +92,7 @@ func registerToolsCommands() {
 	}
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]", toggleCRDAGhostsForRunwayPair)
 	registerCommand(CommandModeMultiFunc, "NP[NUM]",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) error {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, idx int) error {
 			// Use default airport from area config
 			ctrl := ctx.UserController()
 			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
@@ -132,7 +132,7 @@ func registerToolsCommands() {
 		})
 
 	// 6.5.4 Toggle display of a single ghost data block at this TCW/TDW
-	registerCommand(CommandModeMultiFunc, "N[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	registerCommand(CommandModeMultiFunc, "N[SLEW]", func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) CommandStatus {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if trk.IsUnassociated() || !trackInCRDARegion(sp, ctx, trk) || state.Ghost.State != GhostStateSuppressed {
 			return CommandStatus{Output: "ILL TRK"} // informational
@@ -140,7 +140,7 @@ func registerToolsCommands() {
 		state.Ghost.State = GhostStateRegular
 		return CommandStatus{}
 	})
-	registerCommand(CommandModeMultiFunc, "N[GHOST_SLEW]", func(sp *STARSPane, ctx *panes.Context, ghost *av.GhostTrack) error {
+	registerCommand(CommandModeMultiFunc, "N[GHOST_SLEW]", func(sp *STARSPane, ctx *scope.Context, ghost *av.GhostTrack) error {
 		if state, ok := sp.TrackState[ghost.ADSBCallsign]; !ok {
 			return ErrSTARSIllegalTrack
 		} else {
@@ -160,7 +160,7 @@ func registerToolsCommands() {
 	})
 
 	// 6.5.6 Display ghost data block parent track information
-	registerCommand(CommandModeMultiFunc, "N*[GHOST_SLEW]", func(sp *STARSPane, ctx *panes.Context, ghost *av.GhostTrack) (CommandStatus, error) {
+	registerCommand(CommandModeMultiFunc, "N*[GHOST_SLEW]", func(sp *STARSPane, ctx *scope.Context, ghost *av.GhostTrack) (CommandStatus, error) {
 		if trk, ok := ctx.GetTrackByCallsign(ghost.ADSBCallsign); ok && trk.IsAssociated() {
 			return CommandStatus{Output: formatFlightPlan(sp, ctx, trk.FlightPlan, trk)}, nil
 		}
@@ -204,7 +204,7 @@ func registerToolsCommands() {
 	})
 
 	// 6.6.1 Create and display restriction area text
-	createRestrictionArea := func(sp *STARSPane, ctx *panes.Context, ra av.RestrictionArea) {
+	createRestrictionArea := func(sp *STARSPane, ctx *scope.Context, ra av.RestrictionArea) {
 		ctx.Client.CreateRestrictionArea(ra, func(idx int, err error) {
 			if err == nil {
 				ps := sp.currentPrefs()
@@ -215,7 +215,7 @@ func registerToolsCommands() {
 		})
 	}
 	registerCommand(CommandModeRestrictionArea, "G[RA_TEXT_AND_LOCATION]",
-		func(sp *STARSPane, ctx *panes.Context, parsed RAText) {
+		func(sp *STARSPane, ctx *scope.Context, parsed RAText) {
 			ra := av.RestrictionArea{
 				Text:         parsed.text,
 				TextPosition: parsed.pos,
@@ -224,7 +224,7 @@ func registerToolsCommands() {
 			createRestrictionArea(sp, ctx, ra)
 		})
 	registerCommand(CommandModeRestrictionArea, "G[RA_TEXT][POS]",
-		func(sp *STARSPane, ctx *panes.Context, parsed RAText, pos math.Point2LL) {
+		func(sp *STARSPane, ctx *scope.Context, parsed RAText, pos math.Point2LL) {
 			ra := av.RestrictionArea{
 				Text:         parsed.text,
 				TextPosition: pos,
@@ -234,7 +234,7 @@ func registerToolsCommands() {
 		})
 
 	// 6.6.2 Create and display restriction area circle and text (p. 6-38)
-	startRACircle := func(sp *STARSPane, ctx *panes.Context, radius float32, parsed RAText, pos math.Point2LL) (CommandStatus, error) {
+	startRACircle := func(sp *STARSPane, ctx *scope.Context, radius float32, parsed RAText, pos math.Point2LL) (CommandStatus, error) {
 		if radius < 1 || radius > 125 {
 			return CommandStatus{}, ErrSTARSIllegalRange
 		}
@@ -250,13 +250,13 @@ func registerToolsCommands() {
 		return CommandStatus{
 			Clear: ClearInput,
 			CommandHandlers: makeCommandHandlers(
-				"", func(sp *STARSPane, ctx *panes.Context) {
+				"", func(sp *STARSPane, ctx *scope.Context) {
 					ra := sp.wipRestrictionArea
 					ra.TextPosition = ra.CircleCenter
 					createRestrictionArea(sp, ctx, *ra)
 					sp.wipRestrictionArea = nil
 				},
-				"[POS]", func(sp *STARSPane, ctx *panes.Context, p math.Point2LL) {
+				"[POS]", func(sp *STARSPane, ctx *scope.Context, p math.Point2LL) {
 					ra := sp.wipRestrictionArea
 					ra.TextPosition = p
 					createRestrictionArea(sp, ctx, *ra)
@@ -267,12 +267,12 @@ func registerToolsCommands() {
 	}
 	registerCommand(CommandModeRestrictionArea, "C[FLOAT][RA_CLOSED_TEXT][POS]", startRACircle)
 	registerCommand(CommandModeRestrictionArea, "C[FLOAT][RA_CLOSED_TEXT_AND_LOCATION]",
-		func(sp *STARSPane, ctx *panes.Context, radius float32, parsed RAText) (CommandStatus, error) {
+		func(sp *STARSPane, ctx *scope.Context, radius float32, parsed RAText) (CommandStatus, error) {
 			return startRACircle(sp, ctx, radius, parsed, parsed.pos)
 		})
 
 	// 6.6.3 Create and display restriction area closed polygon and text
-	startRAPolygon := func(sp *STARSPane, ctx *panes.Context, pos math.Point2LL, closed bool) CommandStatus {
+	startRAPolygon := func(sp *STARSPane, ctx *scope.Context, pos math.Point2LL, closed bool) CommandStatus {
 		sp.wipRestrictionArea = &av.RestrictionArea{
 			Closed:   closed,
 			Vertices: [][]math.Point2LL{{pos}},
@@ -287,14 +287,14 @@ func registerToolsCommands() {
 		return CommandStatus{
 			Clear: ClearInput,
 			CommandHandlers: makeCommandHandlers(
-				"[POS]|[RA_LOCATION]", func(sp *STARSPane, ctx *panes.Context, p math.Point2LL) CommandStatus {
+				"[POS]|[RA_LOCATION]", func(sp *STARSPane, ctx *scope.Context, p math.Point2LL) CommandStatus {
 					ra := sp.wipRestrictionArea
 					ra.Vertices[0] = append(ra.Vertices[0], p)
 					sp.wipRestrictionAreaMousePos = ctx.Mouse.Pos
 					sp.wipRestrictionAreaMouseMoved = false
 					return CommandStatus{Clear: ClearInput}
 				},
-				"[RA_CLOSED_TEXT][POS]", func(sp *STARSPane, ctx *panes.Context, parsed RAText, p math.Point2LL) CommandStatus {
+				"[RA_CLOSED_TEXT][POS]", func(sp *STARSPane, ctx *scope.Context, parsed RAText, p math.Point2LL) CommandStatus {
 					ra := sp.wipRestrictionArea
 					ra.Text = parsed.text
 					ra.TextPosition = p
@@ -320,18 +320,18 @@ func registerToolsCommands() {
 		}
 	}
 	registerCommand(CommandModeRestrictionArea, "P[POS]|P[RA_LOCATION]",
-		func(sp *STARSPane, ctx *panes.Context, pos math.Point2LL) CommandStatus {
+		func(sp *STARSPane, ctx *scope.Context, pos math.Point2LL) CommandStatus {
 			return startRAPolygon(sp, ctx, pos, true)
 		})
 
 	// 6.6.4 Create and display restriction area open polygon and text
 	registerCommand(CommandModeRestrictionArea, "A[POS]|A[RA_LOCATION]",
-		func(sp *STARSPane, ctx *panes.Context, pos math.Point2LL) CommandStatus {
+		func(sp *STARSPane, ctx *scope.Context, pos math.Point2LL) CommandStatus {
 			return startRAPolygon(sp, ctx, pos, false)
 		})
 
 	// 6.6.5 Move restriction area
-	updateRestrictionArea := func(sp *STARSPane, ctx *panes.Context, idx int, ra av.RestrictionArea) {
+	updateRestrictionArea := func(sp *STARSPane, ctx *scope.Context, idx int, ra av.RestrictionArea) {
 		ctx.Client.UpdateRestrictionArea(idx, ra, func(err error) {
 			if err == nil {
 				ps := sp.currentPrefs()
@@ -347,14 +347,14 @@ func registerToolsCommands() {
 	}
 	registerCommand(CommandModeRestrictionArea, "[USER_RA_INDEX]*"+STARSTriangleCharacter+"[RA_LOCATION]|"+
 		"[USER_RA_INDEX]*"+STARSTriangleCharacter+"[POS]",
-		func(sp *STARSPane, ctx *panes.Context, idx int, pos math.Point2LL) {
+		func(sp *STARSPane, ctx *scope.Context, idx int, pos math.Point2LL) {
 			ra, _ := sp.getRestrictionArea(ctx, idx, true)
 			ra.MoveTo(pos)
 			ra.BlinkingText = true
 			updateRestrictionArea(sp, ctx, idx, ra)
 		})
 	registerCommand(CommandModeRestrictionArea, "[USER_RA_INDEX]*[RA_LOCATION]|[USER_RA_INDEX]*[POS]",
-		func(sp *STARSPane, ctx *panes.Context, idx int, pos math.Point2LL) {
+		func(sp *STARSPane, ctx *scope.Context, idx int, pos math.Point2LL) {
 			ra, _ := sp.getRestrictionArea(ctx, idx, true)
 			ra.MoveTo(pos)
 			ra.BlinkingText = true
@@ -363,14 +363,14 @@ func registerToolsCommands() {
 
 	// 6.6.6 Delete restriction area
 	registerCommand(CommandModeRestrictionArea, "[USER_RA_INDEX]DEL",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, idx int) {
 			delete(ps.RestrictionAreaSettings, idx)
 			ctx.Client.DeleteRestrictionArea(idx, func(err error) { sp.displayError(err, ctx, "") })
 		})
 
 	// 6.6.7 Change restriction area text
 	registerCommand(CommandModeRestrictionArea, "[USER_RA_INDEX]T[RA_TEXT]",
-		func(sp *STARSPane, ctx *panes.Context, idx int, parsed RAText) {
+		func(sp *STARSPane, ctx *scope.Context, idx int, parsed RAText) {
 			ra, _ := sp.getRestrictionArea(ctx, idx, true)
 			ra.Text = parsed.text
 			ra.BlinkingText = parsed.blink
@@ -404,7 +404,7 @@ func registerToolsCommands() {
 
 	// 6.6.9 Hide / show restriction area and text, or stop blinking text
 	registerCommand(CommandModeRestrictionArea, "[RA_INDEX]",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, idx int) {
 			settings, ok := ps.RestrictionAreaSettings[idx]
 			if !ok {
 				settings = &RestrictionAreaSettings{}
@@ -466,7 +466,7 @@ func registerToolsCommands() {
 				sp.RangeBearingLines = append(sp.RangeBearingLines, *rbl)
 				sp.wipRBL = nil
 			},
-			"*T[FIELD]", func(sp *STARSPane, ctx *panes.Context, fixBeaconOrACID string) error {
+			"*T[FIELD]", func(sp *STARSPane, ctx *scope.Context, fixBeaconOrACID string) error {
 				if func() bool {
 					// Fix takes priority over ACID in the unlikely chance that there are both of the same name.
 					if p, ok := av.DB.LookupWaypoint(fixBeaconOrACID); ok {
@@ -573,7 +573,7 @@ func registerToolsCommands() {
 	// 6.12.1 Initiate intrafacility pointout (implied)
 	// 6.12.7 Initiate interfacility pointout (implied)
 	registerCommand(CommandModeNone, "[TCP1]*[SLEW]|[TCP2]*[SLEW]|[TCP_TRI]*[SLEW]|[ARTCC]*[SLEW]",
-		func(sp *STARSPane, ctx *panes.Context, tcp string, trk *sim.Track) error {
+		func(sp *STARSPane, ctx *scope.Context, tcp string, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrSTARSIllegalTrack
 			}
@@ -588,7 +588,7 @@ func registerToolsCommands() {
 		})
 
 	// 6.12.3 Reject intrafacility pointout (implied)
-	registerCommand(CommandModeNone, "UN[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+	registerCommand(CommandModeNone, "UN[SLEW]", func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) error {
 		if trk.IsUnassociated() {
 			return ErrSTARSIllegalTrack
 		}
@@ -597,7 +597,7 @@ func registerToolsCommands() {
 	})
 
 	// 6.12.6 Force quicklook for single track at one or more TCPs
-	forceQL := func(sp *STARSPane, ctx *panes.Context, trk *sim.Track, tcps string) error {
+	forceQL := func(sp *STARSPane, ctx *scope.Context, trk *sim.Track, tcps string) error {
 		if trk.IsUnassociated() || trk.FlightPlan.Suspended {
 			return ErrSTARSIllegalTrack
 		}
@@ -647,7 +647,7 @@ func registerToolsCommands() {
 	}
 	registerCommand(CommandModeNone, "**[TRK_ACID] [ALL_TEXT]|**[TRK_BCN] [ALL_TEXT]|**[TRK_INDEX] [ALL_TEXT]", forceQL)
 	registerCommand(CommandModeNone, "**[ALL_TEXT][SLEW]", forceQL)
-	forceQLToSelf := func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+	forceQLToSelf := func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) error {
 		// Force QL to self
 		if trk.IsUnassociated() {
 			return ErrSTARSIllegalTrack
@@ -660,7 +660,7 @@ func registerToolsCommands() {
 		return nil
 	}
 	registerCommand(CommandModeNone, "**[TRK_ACID]|**[TRK_BCN]|**[TRK_INDEX]", forceQLToSelf)
-	registerCommand(CommandModeNone, "**[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+	registerCommand(CommandModeNone, "**[SLEW]", func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) error {
 		if trk.IsUnassociated() {
 			return ErrSTARSIllegalTrack
 		}
@@ -677,7 +677,7 @@ func registerToolsCommands() {
 
 	// 6.12.11 Display pointout accept history for a single track
 	registerCommand(CommandModeMultiFunc, "O[TRK_ACID]|O[TRK_BCN]|O[TRK_INDEX]|O[SLEW]",
-		func(ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
+		func(ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 			if trk.IsUnassociated() {
 				return CommandStatus{}, ErrSTARSIllegalTrack
 			}
@@ -692,7 +692,7 @@ func registerToolsCommands() {
 
 	// 6.12.12 Clear pointout accept history and count for single track
 	registerCommand(CommandModeMultiFunc, "O* [TRK_ACID]|O* [TRK_BCN]|O* [TRK_INDEX]|O* [SLEW]",
-		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+		func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() || (!ctx.UserOwnsFlightPlan(trk.FlightPlan) && !ctx.TCWIsPrivileged(ctx.UserTCW)) {
 				return ErrSTARSIllegalTrack
 			}
@@ -721,7 +721,7 @@ func registerToolsCommands() {
 
 	// 6.13.5 Toggle quick look for another owner's tracks (implied)
 	// 6.13.6 Display quick looked TCPs and quicklook regions
-	toggleQL := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcp string) error {
+	toggleQL := func(sp *STARSPane, ctx *scope.Context, ps *Preferences, tcp string) error {
 		plus := strings.HasSuffix(tcp, "+")
 		tcp = strings.TrimSuffix(tcp, "+")
 
@@ -744,7 +744,7 @@ func registerToolsCommands() {
 		return nil
 	}
 	registerCommand(CommandModeNone, "[TCP1]|[TCP2]",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcp string) (CommandStatus, error) {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, tcp string) (CommandStatus, error) {
 			if ctx.UserControlsPosition(sim.ControlPosition(tcp)) { // Display quick looked TCPs and quicklook regions
 				return displayQLStatus(sp, ctx), nil
 			} else { // Toggle quick look for another owner's tracks
@@ -756,7 +756,7 @@ func registerToolsCommands() {
 			}
 		})
 	registerCommand(CommandModeNone, "[TCP1]+|[TCP2]+",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcp string) (CommandStatus, error) {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, tcp string) (CommandStatus, error) {
 			if err := toggleQL(sp, ctx, ps, tcp+"+"); err != nil {
 				return CommandStatus{}, err
 			} else {
@@ -817,7 +817,7 @@ func registerToolsCommands() {
 	// 6.13.13 Toggle quicklook for another owner's tracks
 	// 6.13.16 Display quick looked TCPs and quicklook regions
 	registerCommand(CommandModeMultiFunc, "Q[QL_POSITIONS]",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcps []string) (CommandStatus, error) {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, tcps []string) (CommandStatus, error) {
 			if len(tcps) == 1 && ctx.UserControlsPosition(sim.ControlPosition(tcps[0])) { // Display quick looked TCPs and quicklook regions
 				return displayQLStatus(sp, ctx), nil
 			} else {
@@ -871,7 +871,7 @@ func registerToolsCommands() {
 
 	// 6.13.18 Globally data block position for a single track
 	registerCommand(CommandModeMultiFunc, "L[NUM:2] [TRK_ACID]|L[NUM:2][SLEW]",
-		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track, direction int) error {
+		func(sp *STARSPane, ctx *scope.Context, trk *sim.Track, direction int) error {
 			if direction/10 != direction%10 { // digits don't match
 				return ErrSTARSCommandFormat
 			} else if trk.IsUnassociated() || !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
@@ -886,7 +886,7 @@ func registerToolsCommands() {
 
 	// 6.13.19 Toggle display of aircraft type in a full data block
 	registerCommand(CommandModeFlightData, "[SLEW]",
-		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+		func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() || trk.FlightPlan.Suspended {
 				return ErrSTARSIllegalTrack
 			}
@@ -928,7 +928,7 @@ func registerToolsCommands() {
 
 	// 6.13.21 Enable / disable quicklook region
 	registerCommand(CommandModeMultiFunc, "Q[QL_REGION]",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, regionID string) error {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, regionID string) error {
 			if !ctx.FacilityAdaptation.Filters.Quicklook.HaveId(regionID) {
 				return ErrSTARSIllegalFunction
 			}
@@ -946,7 +946,7 @@ func registerToolsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] I",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, regionID string) error {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, regionID string) error {
 			if !ctx.FacilityAdaptation.Filters.Quicklook.HaveId(regionID) {
 				return ErrSTARSIllegalFunction
 			}
@@ -958,7 +958,7 @@ func registerToolsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] E",
-		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, regionID string) error {
+		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, regionID string) error {
 			if !ctx.FacilityAdaptation.Filters.Quicklook.HaveId(regionID) {
 				return ErrSTARSIllegalFunction
 			}
@@ -968,7 +968,7 @@ func registerToolsCommands() {
 		})
 
 	// 6.13.22 Disable all quicklook regions
-	registerCommand(CommandModeMultiFunc, "Q*", func(sp *STARSPane, ctx *panes.Context) {
+	registerCommand(CommandModeMultiFunc, "Q*", func(sp *STARSPane, ctx *scope.Context) {
 		ps := sp.currentPrefs()
 		if ps.DisabledQLRegions == nil {
 			ps.DisabledQLRegions = make(map[string]any)
@@ -980,7 +980,7 @@ func registerToolsCommands() {
 	})
 
 	// 6.13.23 Toggle display of requested altitude for all FDBs
-	registerCommand(CommandModeMultiFunc, "RA", func(sp *STARSPane, ctx *panes.Context) {
+	registerCommand(CommandModeMultiFunc, "RA", func(sp *STARSPane, ctx *scope.Context) {
 		b := !sp.displayRequestedAltitude(ctx)
 		sp.OverrideDisplayRequestedAltitude = &b
 	})
@@ -995,7 +995,7 @@ func registerToolsCommands() {
 
 	// 6.13.24 Toggle display of requested altitude for a single Full data block
 	registerCommand(CommandModeMultiFunc, "RAE[SLEW]",
-		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+		func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() || trk.FlightPlan.Suspended || sp.datablockType(ctx, *trk) != FullDatablock {
 				return ErrSTARSIllegalTrack
 			}
@@ -1007,7 +1007,7 @@ func registerToolsCommands() {
 			state.DisplayRequestedAltitude = &b
 			return nil
 		})
-	registerCommand(CommandModeMultiFunc, "RAI[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+	registerCommand(CommandModeMultiFunc, "RAI[SLEW]", func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) error {
 		if trk.IsUnassociated() || trk.FlightPlan.Suspended || sp.datablockType(ctx, *trk) != FullDatablock {
 			return ErrSTARSIllegalTrack
 		}
@@ -1020,7 +1020,7 @@ func registerToolsCommands() {
 		return nil
 	})
 	registerCommand(CommandModeMultiFunc, "RA[SLEW]",
-		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+		func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() || trk.FlightPlan.Suspended || sp.datablockType(ctx, *trk) != FullDatablock {
 				return ErrSTARSIllegalTrack
 			}
@@ -1043,7 +1043,7 @@ func registerToolsCommands() {
 
 	// 6.13.28 Selected beacon code display
 	registerCommand(CommandModeNone, "**[BCN]",
-		func(sp *STARSPane, ctx *panes.Context, beacon av.Squawk) error {
+		func(sp *STARSPane, ctx *scope.Context, beacon av.Squawk) error {
 			if !slices.ContainsFunc(sp.visibleTracks, func(trk sim.Track) bool { return trk.Squawk == beacon }) {
 				return ErrSTARSNoTrack
 			}
@@ -1066,7 +1066,7 @@ func registerToolsCommands() {
 	// 6.17 Military operations area (MOA) commands
 
 	// 6.18 Display bearing / range and readout data for a significant point (implied)
-	registerCommand(CommandModeNone, "*F[POS]", func(sp *STARSPane, ctx *panes.Context, pos math.Point2LL) CommandStatus {
+	registerCommand(CommandModeNone, "*F[POS]", func(sp *STARSPane, ctx *scope.Context, pos math.Point2LL) CommandStatus {
 		sp.previewAreaInput += " " // if the fix is entered via keyboard, it appears on the next line
 		return CommandStatus{
 			Clear: ClearNone,
@@ -1210,7 +1210,7 @@ func registerToolsCommands() {
 	})
 
 	// 6.21.14 Enable / inhibit ATPA Monitor Cone for single track (Implied command)
-	setATPAMonitorState := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track, value bool) error {
+	setATPAMonitorState := func(sp *STARSPane, ctx *scope.Context, ps *Preferences, trk *sim.Track, value bool) error {
 		if !ps.DisplayATPAWarningAlertCones {
 			return ErrSTARSIllegalFunction
 		}
@@ -1222,10 +1222,10 @@ func registerToolsCommands() {
 		state.DisplayATPAMonitor = &value
 		return nil
 	}
-	registerCommand(CommandModeNone, "*BE[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
+	registerCommand(CommandModeNone, "*BE[SLEW]", func(sp *STARSPane, ctx *scope.Context, ps *Preferences, trk *sim.Track) error {
 		return setATPAMonitorState(sp, ctx, ps, trk, true)
 	})
-	registerCommand(CommandModeNone, "*BI[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
+	registerCommand(CommandModeNone, "*BI[SLEW]", func(sp *STARSPane, ctx *scope.Context, ps *Preferences, trk *sim.Track) error {
 		return setATPAMonitorState(sp, ctx, ps, trk, false)
 	})
 
@@ -1292,7 +1292,7 @@ func registerToolsCommands() {
 }
 
 // trackInCRDARegion checks if a track is inside any enabled CRDA region.
-func trackInCRDARegion(sp *STARSPane, ctx *panes.Context, trk *sim.Track) bool {
+func trackInCRDARegion(sp *STARSPane, ctx *scope.Context, trk *sim.Track) bool {
 	ps := sp.currentPrefs()
 	state := sp.TrackState[trk.ADSBCallsign]
 
@@ -1320,7 +1320,7 @@ func trackInCRDARegion(sp *STARSPane, ctx *panes.Context, trk *sim.Track) bool {
 	return false
 }
 
-func displayQLStatus(sp *STARSPane, ctx *panes.Context) CommandStatus {
+func displayQLStatus(sp *STARSPane, ctx *scope.Context) CommandStatus {
 	ps := sp.currentPrefs()
 	var output string
 	if ps.QuickLookAll {

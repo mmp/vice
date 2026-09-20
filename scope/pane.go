@@ -1,17 +1,12 @@
-// panes/display.go
-// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
+// scope/pane.go
+// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-// This file handles rendering the main radar scope pane. The main window
-// is dedicated to the radar scope (STARS or ERAM); Messages and Flight
-// Strips are rendered in their own floating imgui windows.
-
-package panes
+package scope
 
 import (
 	"runtime"
 
-	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -19,7 +14,46 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
+
+// Pane is a radar scope display--STARS or ERAM. It operates in window
+// coordinates: (0,0) is lower left, just in its own pane, oblivious to the
+// full window size.
+type Pane interface {
+	// Activate is called once at startup time; it should do general,
+	// Sim-independent initialization.
+	Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger)
+
+	// LoadedSim is called when vice is restarted and a Sim is loaded from disk.
+	LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
+
+	// ResetSim is called when a brand new Sim is launched
+	ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
+
+	CanTakeKeyboardFocus() bool
+	Draw(ctx *Context, cb *renderer.CommandBuffer)
+}
+
+// UIDrawer is implemented by displays that contribute a section to the
+// settings window.
+type UIDrawer interface {
+	DisplayName() string
+	DrawUI(p platform.Platform, config *platform.Config)
+}
+
+// InfoWindowDrawer is implemented by displays that add to the scenario
+// info window.
+type InfoWindowDrawer interface {
+	DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger)
+}
+
+// PaneUpgrader is implemented by displays that must migrate saved
+// preferences when the config version changes.
+type PaneUpgrader interface {
+	Upgrade(prev, current int)
+}
 
 var (
 	wm struct {
@@ -30,8 +64,6 @@ var (
 		mouseConsumerOverride Pane
 
 		focus KeyboardFocus
-
-		lastAircraftResponse string
 	}
 )
 
@@ -51,9 +83,10 @@ func (f *KeyboardFocus) Current() any {
 	return f.current
 }
 
-// DrawPanes renders a single radar pane that fills the entire display area
-// below the menu bar.
-func DrawPanes(pane Pane, p platform.Platform, r renderer.Renderer,
+// DrawPane renders the radar scope, which fills the entire display area
+// below the menu bar. Messages and flight strips are drawn separately, in
+// their own floating imgui windows.
+func DrawPane(pane Pane, p platform.Platform, r renderer.Renderer,
 	controlClient *client.ControlClient, menuBarHeight float32, events []sim.Event, lg *log.Logger) renderer.Stats {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer(lg)

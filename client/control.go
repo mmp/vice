@@ -479,7 +479,7 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 			if handleResult != nil {
 				var cmdErr error
 				if result.ErrorMessage != "" {
-					cmdErr = server.DecodeErrorMessage(result.ErrorMessage)
+					cmdErr = DecodeErrorMessage(result.ErrorMessage)
 				}
 				handleResult(cmdErr, result.RemainingInput)
 			}

@@ -21,9 +21,9 @@ import (
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -2405,7 +2405,7 @@ func controlPositionsForGroup(server *client.Server, groupName string) map[sim.T
 
 var acknowledgedATIS = make(map[av.ICAOAirportCode]string)
 
-func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *client.ControlClient, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) bool {
+func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *client.ControlClient, activeRadarPane scope.Pane, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
@@ -2413,7 +2413,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 	show := true
 	applyPinWindowClass("ScenarioInfo", config, p)
 	imgui.BeginV(c.State.SimDescription+"###ScenarioInfo", &show, imgui.WindowFlagsAlwaysAutoResize)
-	drawPinButton("ScenarioInfo", config, p)
+	drawPinButton("ScenarioInfo", config.UnpinnedWindows, p)
 
 	if imgui.CollapsingHeaderBoolPtr("Controllers", nil) {
 		// Make big(ish) tables somewhat more legible
@@ -2640,7 +2640,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 		}
 	}
 
-	if draw, ok := activeRadarPane.(panes.InfoWindowDrawer); ok {
+	if draw, ok := activeRadarPane.(scope.InfoWindowDrawer); ok {
 		draw.DrawInfo(c, p, lg)
 	}
 	imgui.End()

@@ -16,9 +16,9 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/eram"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stars"
@@ -50,10 +50,10 @@ type ConfigNoSim struct {
 	UIFontSize    int
 
 	// Store individual pane instances
-	STARSPane       *stars.STARSPane
-	ERAMPane        *eram.ERAMPane
-	MessagesPane    *panes.MessagesPane
-	FlightStripPane *panes.FlightStripPane
+	STARSPane         *stars.STARSPane
+	ERAMPane          *eram.ERAMPane
+	MessagesWindow    *MessagesWindow
+	FlightStripWindow *FlightStripWindow
 
 	// Whether the floating windows are visible
 	ShowMessages     bool
@@ -75,7 +75,7 @@ type ConfigNoSim struct {
 	FacilityConfigFiles []string
 
 	// DisplaySimLogs enables logging of basic information about a Sim's execution (notably, things
-	// likely to be useful for facility engineering) in the MessagesPane.
+	// likely to be useful for facility engineering) in the MessagesWindow.
 	DisplaySimLogs bool
 
 	NoBriefAtScenarioStart bool
@@ -223,7 +223,7 @@ func (c *Config) clearFacilityEngineeringFiles() {
 }
 
 // ActiveRadarPane returns the STARS or ERAM pane based on the sim type.
-func (c *Config) ActiveRadarPane(isSTARSSim bool) panes.Pane {
+func (c *Config) ActiveRadarPane(isSTARSSim bool) scope.Pane {
 	if isSTARSSim {
 		return c.STARSPane
 	}
@@ -242,8 +242,8 @@ func getDefaultConfig() *Config {
 			UserPTTKey:            imgui.KeySemicolon,
 			STARSPane:             stars.NewSTARSPane(),
 			ERAMPane:              eram.NewERAMPane(),
-			MessagesPane:          panes.NewMessagesPane(),
-			FlightStripPane:       panes.NewFlightStripPane(),
+			MessagesWindow:        NewMessagesWindow(),
+			FlightStripWindow:     NewFlightStripWindow(),
 			ShowMessages:          true,
 			ShowFlightStrips:      true,
 		},
@@ -287,17 +287,17 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 		if config.ERAMPane == nil {
 			config.ERAMPane = eram.NewERAMPane()
 		}
-		if config.MessagesPane == nil {
-			config.MessagesPane = panes.NewMessagesPane()
+		if config.MessagesWindow == nil {
+			config.MessagesWindow = NewMessagesWindow()
 		}
-		if config.FlightStripPane == nil {
-			config.FlightStripPane = panes.NewFlightStripPane()
+		if config.FlightStripWindow == nil {
+			config.FlightStripWindow = NewFlightStripWindow()
 		}
 
 		if config.Version < server.ViceSerializeVersion {
 			// Upgrade panes
 			for _, pane := range []any{config.STARSPane, config.ERAMPane} {
-				if up, ok := pane.(panes.PaneUpgrader); ok && pane != nil {
+				if up, ok := pane.(scope.PaneUpgrader); ok && pane != nil {
 					up.Upgrade(config.Version, server.ViceSerializeVersion)
 				}
 			}
@@ -333,6 +333,6 @@ func (c *Config) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logg
 	// Activate all panes
 	c.STARSPane.Activate(r, p, lg)
 	c.ERAMPane.Activate(r, p, lg)
-	c.MessagesPane.Activate(r, p, lg)
-	c.FlightStripPane.Activate(r, p, lg)
+	c.MessagesWindow.Activate(r, p, lg)
+	c.FlightStripWindow.Activate(r, p, lg)
 }

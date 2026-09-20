@@ -14,10 +14,9 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -200,7 +199,7 @@ type CommandStatus struct {
 	CommandHandlers []userCommand
 }
 
-func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
+func (sp *STARSPane) processKeyboardInput(ctx *scope.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
 	}
@@ -273,9 +272,9 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			} else if len(sp.transientCommandHandlers) > 0 {
 				// Check if transient command handlers should intercept this input
 				status, err = sp.executeTransientCommandHandlers(ctx, sp.previewAreaInput,
-					nil, false, [2]float32{}, nil, radar.ScopeTransformations{})
+					nil, false, [2]float32{}, nil, scope.ScopeTransformations{})
 			} else if s, e, matched := sp.tryExecuteMacro(ctx, sp.previewAreaInput, false,
-				[2]float32{}, nil, radar.ScopeTransformations{}); matched {
+				[2]float32{}, nil, scope.ScopeTransformations{}); matched {
 				status, err = s, e
 			} else {
 				status, err = sp.executeSTARSCommand(ctx, sp.previewAreaInput)
@@ -445,7 +444,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 // minWindDrawAltitudeIndex is the lowest wind-grid altitude worth drawing:
 // the first at or above the lowest of the scenario's airports, since nothing
 // below the ground is of any use.
-func (sp *STARSPane) minWindDrawAltitudeIndex(ctx *panes.Context) int {
+func (sp *STARSPane) minWindDrawAltitudeIndex(ctx *scope.Context) int {
 	if sp.atmosGrid == nil {
 		return 0
 	}
@@ -468,14 +467,14 @@ func (sp *STARSPane) minWindDrawAltitudeIndex(ctx *panes.Context) int {
 	return 0
 }
 
-func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string) (CommandStatus, error) {
-	if status, err, ok := sp.tryExecuteUserCommand(ctx, cmd, nil, false, [2]float32{}, radar.ScopeTransformations{}, nil, nil); ok {
+func (sp *STARSPane) executeSTARSCommand(ctx *scope.Context, cmd string) (CommandStatus, error) {
+	if status, err, ok := sp.tryExecuteUserCommand(ctx, cmd, nil, false, [2]float32{}, scope.ScopeTransformations{}, nil, nil); ok {
 		return status, err
 	}
 	return CommandStatus{}, ErrSTARSCommandFormat
 }
 
-func (sp *STARSPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
+func (sp *STARSPane) tgtGenDefaultCallsign(ctx *scope.Context) av.ADSBCallsign {
 	if cs := ctx.Client.LastTTSCallsign(); cs != "" {
 		// If TTS is active, return the last TTS transmitter.
 		return cs
@@ -484,7 +483,7 @@ func (sp *STARSPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 	return sp.targetGenLastCallsign
 }
 
-func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool) {
+func (sp *STARSPane) runAircraftCommands(ctx *scope.Context, callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool) {
 	sp.targetGenLastCallsign = callsign
 	prevMode := sp.commandMode
 
@@ -502,7 +501,7 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCal
 	})
 }
 
-func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
+func (sp *STARSPane) autoReleaseDepartures(ctx *scope.Context) {
 	if sp.ReleaseRequests == nil {
 		sp.ReleaseRequests = make(map[av.ADSBCallsign]any)
 	}
@@ -547,8 +546,8 @@ func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, mousePosition [2]float32,
-	ghosts []*av.GhostTrack, transforms radar.ScopeTransformations) (CommandStatus, error) {
+func (sp *STARSPane) executeSTARSClickedCommand(ctx *scope.Context, cmd string, mousePosition [2]float32,
+	ghosts []*av.GhostTrack, transforms scope.ScopeTransformations) (CommandStatus, error) {
 	trk, clickedGhost := sp.findClickedTrackAndGhost(ctx, mousePosition, transforms, ghosts)
 
 	if status, err, ok := sp.tryExecuteUserCommand(ctx, cmd, trk, true, mousePosition, transforms, clickedGhost, ghosts); ok {
@@ -561,9 +560,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 // executeTransientCommandHandlers processes transient command handlers for either
 // keyboard input (Enter press) or scope click.
-func (sp *STARSPane) executeTransientCommandHandlers(ctx *panes.Context, text string,
+func (sp *STARSPane) executeTransientCommandHandlers(ctx *scope.Context, text string,
 	clickedTrack *sim.Track, hasClick bool, mousePosition [2]float32,
-	ghosts []*av.GhostTrack, transforms radar.ScopeTransformations) (CommandStatus, error) {
+	ghosts []*av.GhostTrack, transforms scope.ScopeTransformations) (CommandStatus, error) {
 
 	// For click input, find what was clicked
 	var trk *sim.Track
@@ -595,7 +594,7 @@ func (sp *STARSPane) executeTransientCommandHandlers(ctx *panes.Context, text st
 	return status, err
 }
 
-func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTrack, transforms radar.ScopeTransformations,
+func (sp *STARSPane) consumeMouseEvents(ctx *scope.Context, ghosts []*av.GhostTrack, transforms scope.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	if ctx.Mouse == nil {
 		return
@@ -794,7 +793,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 	}
 }
 
-func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
+func (sp *STARSPane) setCommandMode(ctx *scope.Context, mode CommandMode) {
 	sp.resetInputState(ctx.Platform)
 	sp.commandMode = mode
 
@@ -827,7 +826,7 @@ func (sp *STARSPane) installCommandHandlers(handlers []userCommand) {
 	sp.transientCommandHandlers = handlers
 }
 
-func (sp *STARSPane) displayError(err error, ctx *panes.Context, acid sim.ACID) {
+func (sp *STARSPane) displayError(err error, ctx *scope.Context, acid sim.ACID) {
 	if err != nil { // it should be, but...
 		sp.playOnce(ctx.Platform, AudioCommandError)
 		se := GetSTARSError(err, ctx.Lg)
@@ -850,7 +849,7 @@ func (sp *STARSPane) displayError(err error, ctx *panes.Context, acid sim.ACID) 
 	}
 }
 
-func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
+func (sp *STARSPane) maybeAutoHomeCursor(ctx *scope.Context) {
 	ps := sp.currentPrefs()
 	if ps.AutoCursorHome {
 		sp.hideMouseCursor = true
@@ -868,7 +867,7 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 
 // returns the controller responsible for the aircraft given its altitude
 // and route.
-func calculateAirspace(ctx *panes.Context, trk *sim.Track) (string, error) {
+func calculateAirspace(ctx *scope.Context, trk *sim.Track) (string, error) {
 	area := ctx.UserController().Area
 	if tcp, ok := ctx.FacilityAdaptation.AirspaceAwarenessController(area, trk.FlightPlan); ok {
 		return tcp, nil
@@ -936,7 +935,7 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 // lookupControllerWithAirspace resolves a TCP identifier to a controller,
 // with support for ARTCC airspace awareness ("C" identifier).
 // Use this when the TCP might be "C" and you have an aircraft context.
-func lookupControllerWithAirspace(ctx *panes.Context, id string, trk *sim.Track) *av.Controller {
+func lookupControllerWithAirspace(ctx *scope.Context, id string, trk *sim.Track) *av.Controller {
 	if id == "C" {
 		tcp, err := calculateAirspace(ctx, trk)
 		if err != nil {
@@ -951,7 +950,7 @@ func lookupControllerWithAirspace(ctx *panes.Context, id string, trk *sim.Track)
 	return lookupControllerByTCP(ctx.Client.State.Controllers, id, ctx.UserController().Position)
 }
 
-func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations) (*sim.Track, float32) {
+func (sp *STARSPane) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32, transforms scope.ScopeTransformations) (*sim.Track, float32) {
 	var trk *sim.Track
 	distance := float32(20) // in pixels; don't consider anything farther away
 
@@ -968,7 +967,7 @@ func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]flo
 	return trk, distance
 }
 
-func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [2]float32, transforms radar.ScopeTransformations) (*av.GhostTrack, float32) {
+func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [2]float32, transforms scope.ScopeTransformations) (*av.GhostTrack, float32) {
 	var ghost *av.GhostTrack
 	distance := float32(20) // in pixels; don't consider anything farther away
 
@@ -986,8 +985,8 @@ func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [
 
 // findClickedTrackAndGhost finds the closest track and ghost to the mouse position,
 // returning the track and the ghost if it's closer than the track.
-func (sp *STARSPane) findClickedTrackAndGhost(ctx *panes.Context, mousePosition [2]float32,
-	transforms radar.ScopeTransformations, ghosts []*av.GhostTrack) (*sim.Track, *av.GhostTrack) {
+func (sp *STARSPane) findClickedTrackAndGhost(ctx *scope.Context, mousePosition [2]float32,
+	transforms scope.ScopeTransformations, ghosts []*av.GhostTrack) (*sim.Track, *av.GhostTrack) {
 	trk, trkDistance := sp.tryGetClosestTrack(ctx, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
 
@@ -1040,8 +1039,8 @@ func init() {
 	}
 }
 
-func (sp *STARSPane) executeMacro(ctx *panes.Context, macro *sim.STARSMacro, inputIsSlew bool, args []string,
-	mousePosition [2]float32, ghosts []*av.GhostTrack, transforms radar.ScopeTransformations) (CommandStatus, error) {
+func (sp *STARSPane) executeMacro(ctx *scope.Context, macro *sim.STARSMacro, inputIsSlew bool, args []string,
+	mousePosition [2]float32, ghosts []*av.GhostTrack, transforms scope.ScopeTransformations) (CommandStatus, error) {
 
 	for _, cmd := range macro.Commands {
 		// Parse optional [MODE] prefix; if absent, use CommandModeNone.
@@ -1104,8 +1103,8 @@ func (sp *STARSPane) executeMacro(ctx *panes.Context, macro *sim.STARSMacro, inp
 // Two-pass matching: exact-name macros take priority (pass 1), then
 // parameterized catch-all macros (empty name + uses $1) act as a
 // fallback (pass 2).
-func (sp *STARSPane) tryExecuteMacro(ctx *panes.Context, input string, isSlew bool, mousePosition [2]float32,
-	ghosts []*av.GhostTrack, transforms radar.ScopeTransformations) (CommandStatus, error, bool) {
+func (sp *STARSPane) tryExecuteMacro(ctx *scope.Context, input string, isSlew bool, mousePosition [2]float32,
+	ghosts []*av.GhostTrack, transforms scope.ScopeTransformations) (CommandStatus, error, bool) {
 	fields := strings.Fields(input)
 	var inputName string
 	var args []string

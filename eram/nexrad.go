@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 )
 
 // ERAM NEXRAD has three real levels (Moderate / Heavy / Extreme). Heavy
@@ -19,7 +18,7 @@ const (
 	nexradLevelExtreme
 )
 
-var nexradScheme = radar.WxScheme{
+var nexradScheme = scope.WxScheme{
 	// Moderate: dBZ 25-35, Heavy: 35-45, Extreme: 45+.
 	Thresholds: []byte{25, 35, 45},
 }
@@ -67,7 +66,7 @@ type nexradCBs struct {
 	generation               int
 }
 
-func (ep *ERAMPane) drawWeatherRadar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawWeatherRadar(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	precip, gen := ep.weatherRadar.LatestPrecip(ctx)
 	if precip == nil {
 		return

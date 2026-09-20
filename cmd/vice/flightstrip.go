@@ -1,8 +1,8 @@
-// panes/flightstrip.go
+// cmd/vice/flightstrip.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package panes
+package main
 
 import (
 	"fmt"
@@ -16,13 +16,14 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-type FlightStripPane struct {
+type FlightStripWindow struct {
 	FontSize int
 	font     *gui.Font
 
@@ -44,13 +45,13 @@ type FlightStripPane struct {
 	tabConsumedThisFrame bool
 }
 
-func NewFlightStripPane() *FlightStripPane {
-	return &FlightStripPane{
+func NewFlightStripWindow() *FlightStripWindow {
+	return &FlightStripWindow{
 		FontSize: 12,
 	}
 }
 
-func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripWindow) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
@@ -59,7 +60,7 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, l
 	}
 }
 
-func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripWindow) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	fsp.ACIDDisplayOrder = nil
 	fsp.editingACID = ""
 	fsp.draggingACID = ""
@@ -68,7 +69,7 @@ func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, pl platform.P
 // reconcileOrder syncs localOrder with the server's strip ACID list:
 // new ACIDs are appended, removed ones are pruned. There's a bunch of O(n^2)
 // over ACIDs here, but it should be fine(tm).
-func (fsp *FlightStripPane) reconcileOrder(stripACIDs []sim.ACID) {
+func (fsp *FlightStripWindow) reconcileOrder(stripACIDs []sim.ACID) {
 	// Remove ACIDs from localOrder that no longer exist.
 	fsp.ACIDDisplayOrder = util.FilterSlice(fsp.ACIDDisplayOrder, func(acid sim.ACID) bool {
 		return slices.Contains(stripACIDs, acid)
@@ -93,18 +94,18 @@ func (fsp *FlightStripPane) reconcileOrder(stripACIDs []sim.ACID) {
 // commitAnnotations sends the current annotation edits to the server and
 // also writes them to the local flight plan for immediate display, avoiding
 // a flicker while waiting for the server's next state update.
-func (fsp *FlightStripPane) commitAnnotations(c *client.ControlClient) {
+func (fsp *FlightStripWindow) commitAnnotations(c *client.ControlClient) {
 	if sfp := c.State.GetFlightPlanForACID(fsp.editingACID); sfp != nil {
 		sfp.StripAnnotations = fsp.editingAnnotations
 	}
 	c.AnnotateFlightStrip(fsp.editingACID, fsp.editingAnnotations)
 }
 
-var _ UIDrawer = (*FlightStripPane)(nil)
+var _ scope.UIDrawer = (*FlightStripWindow)(nil)
 
-func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
+func (fsp *FlightStripWindow) DisplayName() string { return "Flight Strips" }
 
-func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config) {
+func (fsp *FlightStripWindow) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Night mode", &fsp.DarkMode)
 	imgui.Checkbox("Hide aircraft not on my frequency", &fsp.HideOffFrequency)
 
@@ -171,14 +172,14 @@ func formatRoute(route string, fw, width float32, nlines int) []string {
 // DrawWindow renders the flight strip pane as a floating imgui window
 // using imgui tables for layout.
 
-func (fsp *FlightStripPane) DrawWindow(show *bool, c *client.ControlClient,
+func (fsp *FlightStripWindow) DrawWindow(show *bool, c *client.ControlClient,
 	p platform.Platform, unpinnedWindows map[string]struct{}, lg *log.Logger) {
 
 	fsp.reconcileOrder(c.State.FlightStripACIDs)
 
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{X: 400, Y: 200}, imgui.Vec2{X: 4096, Y: 4096})
 	imgui.BeginV("Flight Strips", show, 0)
-	DrawPinButton("Flight Strips", unpinnedWindows, p)
+	drawPinButton("Flight Strips", unpinnedWindows, p)
 	if fsp.font != nil {
 		gui.PushFont(fsp.font)
 	}
@@ -287,7 +288,7 @@ func (fsp *FlightStripPane) DrawWindow(show *bool, c *client.ControlClient,
 // 7 columns (callsign, squawk/time, airport, route, ann0, ann1, ann2)
 // and 3 rows. It returns the table's screen-space bounding rect for
 // drag-reorder hit testing (zero if the table was not rendered).
-func (fsp *FlightStripPane) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPlan,
+func (fsp *FlightStripWindow) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPlan,
 	track *sim.Track, c *client.ControlClient, fw float32) (tableMin, tableMax imgui.Vec2) {
 
 	tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsSizingFixedFit |

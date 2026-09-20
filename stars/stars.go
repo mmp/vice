@@ -21,10 +21,9 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -57,10 +56,10 @@ type STARSPane struct {
 	OldPrefsSelectedPreferenceSet *int          `json:"SelectedPreferenceSet,omitempty"`
 	OldPrefsPreferenceSets        []Preferences `json:"PreferenceSets,omitempty"`
 
-	allVideoMaps []radar.Map
-	dcbVideoMaps []*radar.Map
+	allVideoMaps []scope.Map
+	dcbVideoMaps []*scope.Map
 
-	weatherRadar radar.WeatherRadar
+	weatherRadar scope.WeatherRadar
 
 	targetGenLastCallsign av.ADSBCallsign
 
@@ -240,7 +239,7 @@ type STARSPane struct {
 	showVFRAirports    bool
 	showTRACONBoundary bool
 	scopeDraw          struct {
-		radar.RouteDrawer
+		scope.RouteDrawer
 		holds    map[string]av.Hold // fix name -> Hold
 		allHolds bool
 	}
@@ -269,7 +268,7 @@ type STARSPane struct {
 	datablocks map[av.ADSBCallsign]datablock
 }
 
-func (sp *STARSPane) notePendingATISGITextUpdate(ctx *panes.Context, line int, atis, text *string) {
+func (sp *STARSPane) notePendingATISGITextUpdate(ctx *scope.Context, line int, atis, text *string) {
 	update := &sp.pendingATISGITextUpdate[line]
 	update.ExpectedATIS = ctx.Client.State.ATIS[line]
 	update.ExpectedGIText = ctx.Client.State.GIText[line]
@@ -376,7 +375,7 @@ func (c *STARSCRDAPair) getRegionsString() string {
 }
 
 // VideoMapsGroup is the category of video maps the MAPS list is showing;
-// its values are the radar.VideoMap* category constants.
+// its values are the scope.VideoMap* category constants.
 type VideoMapsGroup int
 
 type DwellMode int
@@ -444,9 +443,9 @@ type MonitorColors struct {
 	RestrictionAreaGeom [8]renderer.RGB
 
 	// WX
-	WX             [radar.NumWxLevels]renderer.RGB
+	WX             [scope.NumWxLevels]renderer.RGB
 	WXStipple      renderer.RGB
-	WXLevelStipple [radar.NumWxLevels]int // 0=none, 1=light, 2=dense
+	WXLevelStipple [scope.NumWxLevels]int // 0=none, 1=light, 2=dense
 
 	// DCB
 	DCBButton            renderer.RGB
@@ -529,7 +528,7 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(50, 205, 50),
 		},
 
-		WX: [radar.NumWxLevels]renderer.RGB{
+		WX: [scope.NumWxLevels]renderer.RGB{
 			renderer.RGBFromUInt8(38, 77, 77),
 			renderer.RGBFromUInt8(38, 77, 77),
 			renderer.RGBFromUInt8(38, 77, 77),
@@ -537,7 +536,7 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(100, 100, 51),
 			renderer.RGBFromUInt8(100, 100, 51),
 		},
-		WXLevelStipple: [radar.NumWxLevels]int{0, 1, 2, 0, 1, 2},
+		WXLevelStipple: [scope.NumWxLevels]int{0, 1, 2, 0, 1, 2},
 		WXStipple:      renderer.RGBFromUInt8(255, 255, 255),
 
 		DCBButton:            renderer.RGBFromUInt8(0, 44, 0),
@@ -618,7 +617,7 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(102, 208, 85),
 		},
 
-		WX: [radar.NumWxLevels]renderer.RGB{
+		WX: [scope.NumWxLevels]renderer.RGB{
 			renderer.RGBFromUInt8(57, 73, 51),
 			renderer.RGBFromUInt8(57, 73, 51),
 			renderer.RGBFromUInt8(107, 86, 19),
@@ -626,7 +625,7 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(107, 67, 84),
 			renderer.RGBFromUInt8(107, 67, 84),
 		},
-		WXLevelStipple: [radar.NumWxLevels]int{0, 2, 0, 2, 0, 2},
+		WXLevelStipple: [scope.NumWxLevels]int{0, 2, 0, 2, 0, 2},
 		WXStipple:      renderer.RGBFromUInt8(185, 172, 147),
 
 		DCBButton:            renderer.RGBFromUInt8(19, 47, 0),
@@ -707,7 +706,7 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(39, 187, 44),
 		},
 
-		WX: [radar.NumWxLevels]renderer.RGB{
+		WX: [scope.NumWxLevels]renderer.RGB{
 			renderer.RGBFromUInt8(57, 73, 51),
 			renderer.RGBFromUInt8(57, 73, 51),
 			renderer.RGBFromUInt8(107, 86, 19),
@@ -715,7 +714,7 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(107, 67, 84),
 			renderer.RGBFromUInt8(107, 67, 84),
 		},
-		WXLevelStipple: [radar.NumWxLevels]int{0, 2, 0, 2, 0, 2},
+		WXLevelStipple: [scope.NumWxLevels]int{0, 2, 0, 2, 0, 2},
 		WXStipple:      renderer.RGBFromUInt8(153, 144, 89),
 
 		DCBButton:            renderer.RGBFromUInt8(2, 20, 4),
@@ -806,7 +805,7 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.
 // displayRequestedAltitude returns whether requested altitude should be
 // displayed in full data blocks, honoring the controller's override of the
 // adapted setting if they have made one.
-func (sp *STARSPane) displayRequestedAltitude(ctx *panes.Context) bool {
+func (sp *STARSPane) displayRequestedAltitude(ctx *scope.Context) bool {
 	if sp.OverrideDisplayRequestedAltitude != nil {
 		return *sp.OverrideDisplayRequestedAltitude
 	}
@@ -904,12 +903,12 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	sp.allVideoMaps = nil
 	usedIds := make(map[int]any)
 
-	// addMap inserts a radar.Map into allVideoMaps, probing forward
+	// addMap inserts a scope.Map into allVideoMaps, probing forward
 	// through STARS Id space [1, 1000) for a free slot starting at the
 	// map's Id. Maps with Id == 0 are appended without claiming
 	// a slot (they have no DCB Id and are unreachable via the [NUM]
 	// command; they still show up in the MAPS list if they carry a label).
-	addMap := func(vm radar.Map) {
+	addMap := func(vm scope.Map) {
 		if vm.Id == 0 {
 			sp.allVideoMaps = append(sp.allVideoMaps, vm)
 			return
@@ -945,7 +944,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 			addedNames[name] = true
 		}
 	}
-	for _, vm := range radar.BuildMaps(dcbMaps) {
+	for _, vm := range scope.BuildMaps(dcbMaps) {
 		addMap(vm)
 	}
 
@@ -960,11 +959,11 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 			additionalMaps = append(additionalMaps, vm)
 		}
 	}
-	for _, vm := range radar.BuildMaps(additionalMaps) {
+	for _, vm := range scope.BuildMaps(additionalMaps) {
 		addMap(vm)
 	}
 
-	for _, vm := range radar.SystemMaps(radar.SystemMapSpec{
+	for _, vm := range scope.SystemMaps(scope.SystemMapSpec{
 		Facility:          ss.Facility,
 		Center:            ss.Center,
 		NmPerLongitude:    ss.NmPerLongitude,
@@ -979,7 +978,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	// Start with the video maps associated with the Sim.
 	sp.dcbVideoMaps = nil
 	for _, name := range client.State.ControllerVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Name == name }); idx != -1 && name != "" {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v scope.Map) bool { return v.Name == name }); idx != -1 && name != "" {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
 		} else {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
@@ -1004,7 +1003,7 @@ func (sp *STARSPane) Upgrade(from, to int) {
 	}
 }
 
-func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx)
 	sp.updateVisibleTracks(ctx)
 
@@ -1019,7 +1018,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processKeyboardInput(ctx)
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude, ctr, float32(ps.Range),
+	transforms := scope.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude, ctr, float32(ps.Range),
 		ctx.MagneticVariation)
 
 	scopeExtent := ctx.PaneExtent
@@ -1100,7 +1099,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawPauseOverlay(ctx, cb)
 }
 
-func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	if !ctx.Client.State.Paused {
 		return
 	}
@@ -1137,13 +1136,13 @@ func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBu
 	})
 
 	// Apply transformations and draw
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
+	transforms := scope.GetScopeTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawWX(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawWX(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	if !sp.wxNextHistoryStepTime.IsZero() && ctx.InterpolatedSimTime.After(sp.wxNextHistoryStepTime) {
@@ -1164,7 +1163,7 @@ func (sp *STARSPane) drawWX(ctx *panes.Context, transforms radar.ScopeTransforma
 		sp.Colors.WXLevelStipple, ps.DisplayWeatherLevel, transforms, cb)
 }
 
-func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawTRACONBoundary(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if !sp.showTRACONBoundary {
 		return
 	}
@@ -1186,19 +1185,19 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.Sco
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawVideoMaps(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	var draw []radar.Map
+	var draw []scope.Map
 	for _, vm := range sp.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
 			draw = append(draw, vm)
 		}
 	}
-	slices.SortFunc(draw, func(a, b radar.Map) int { return a.Id - b.Id })
+	slices.SortFunc(draw, func(a, b scope.Map) int { return a.Id - b.Id })
 
 	for _, vm := range draw {
 		if vm.Group == 0 {
@@ -1284,7 +1283,7 @@ var restrictionAreaHighDPIStipple [32]uint32 = [32]uint32{
 	0,
 }
 
-func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawWIPRestrictionArea(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ra := sp.wipRestrictionArea
 	if ra == nil {
 		return
@@ -1331,7 +1330,7 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms radar
 	}
 }
 
-func (sp *STARSPane) getRestrictionArea(ctx *panes.Context, idx int, userOnly bool) (av.RestrictionArea, bool) {
+func (sp *STARSPane) getRestrictionArea(ctx *scope.Context, idx int, userOnly bool) (av.RestrictionArea, bool) {
 	if userOnly && idx > av.MaxRestrictionAreas {
 		return av.RestrictionArea{}, false
 	}
@@ -1339,7 +1338,7 @@ func (sp *STARSPane) getRestrictionArea(ctx *panes.Context, idx int, userOnly bo
 	return ra, ok
 }
 
-func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRestrictionAreas(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	sp.drawWIPRestrictionArea(ctx, transforms, cb)
 
 	ps := sp.currentPrefs()
@@ -1449,7 +1448,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.S
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawCRDARegions(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	ps := sp.currentPrefs()
@@ -1487,9 +1486,9 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 	}
 }
 
-func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool) {
+func (sp *STARSPane) drawMouseCursor(ctx *scope.Context, mouseOverDCB bool) {
 	if mouseOverDCB {
-		// panes/display.go already called ClearCursorOverride this frame, so
+		// scope/pane.go already called ClearCursorOverride this frame, so
 		// the OS will draw imgui's standard arrow.
 		return
 	}
@@ -1671,7 +1670,7 @@ func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
 	}
 }
 
-func (sp *STARSPane) updateVisibleTracks(ctx *panes.Context) {
+func (sp *STARSPane) updateVisibleTracks(ctx *scope.Context) {
 	sp.visibleTracks = sp.visibleTracks[:0]
 
 	ps := sp.currentPrefs()
@@ -1811,7 +1810,7 @@ func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
 
 const AlertAudioDuration = 5 * time.Second
 
-func (sp *STARSPane) updateAudio(ctx *panes.Context) {
+func (sp *STARSPane) updateAudio(ctx *scope.Context) {
 	ps := sp.currentPrefs()
 
 	if !sp.testAudioEndTime.IsZero() && time.Now().After(sp.testAudioEndTime) {
@@ -1888,7 +1887,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 	updateContinuous(playSPCSound, AudioSquawkSPC)
 }
 
-func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) handleCapture(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if !sp.capture.enabled {
 		return
 	}

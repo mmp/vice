@@ -1,4 +1,4 @@
-package radar
+package scope
 
 import (
 	"fmt"
@@ -9,7 +9,6 @@ import (
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -35,7 +34,7 @@ type WeatherRadar struct {
 // recent decoded precipitation blob (may be nil) along with a generation
 // counter that bumps each time the blob changes. Callers that build their
 // own command buffers should rebuild only when the counter changes.
-func (w *WeatherRadar) LatestPrecip(ctx *panes.Context) (*wx.Precip, int) {
+func (w *WeatherRadar) LatestPrecip(ctx *Context) (*wx.Precip, int) {
 	w.mu.Lock(ctx.Lg)
 	defer w.mu.Unlock(ctx.Lg)
 	w.tick(ctx)
@@ -59,7 +58,7 @@ func (w *WeatherRadar) Reset(lg *log.Logger) {
 
 // tick performs the per-frame fetch maintenance shared by Draw and
 // LatestPrecip. Caller must hold w.mu.
-func (w *WeatherRadar) tick(ctx *panes.Context) {
+func (w *WeatherRadar) tick(ctx *Context) {
 	select {
 	case err := <-w.errCh:
 		ctx.Lg.Warnf("%v", err)
@@ -84,7 +83,7 @@ const numWxHistory = 3
 const NumWxLevels = 6
 
 // fetchPrecipitation fetches precipitation data from GCS via RPC
-func (w *WeatherRadar) fetchPrecipitation(ctx *panes.Context) {
+func (w *WeatherRadar) fetchPrecipitation(ctx *Context) {
 	w.fetchInProgress = true
 	if w.precipCh == nil {
 		w.precipCh = make(chan *wx.Precip)
@@ -313,7 +312,7 @@ func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
 }
 
 // Draw draws the current weather radar data, if available.
-func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32,
+func (w *WeatherRadar) Draw(ctx *Context, hist int, intensity float32,
 	wxColors [NumWxLevels]renderer.RGB, wxStippleColor renderer.RGB, wxLevelStipple [NumWxLevels]int,
 	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	w.mu.Lock(ctx.Lg)

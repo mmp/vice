@@ -11,7 +11,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/gui"
-	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -423,8 +423,8 @@ func categoryName(category int, system bool) string {
 	if system {
 		return "SYSTEM"
 	}
-	if category >= 0 && category < len(radar.VideoMapCategoryNames) {
-		if n := radar.VideoMapCategoryNames[category]; n != "" {
+	if category >= 0 && category < len(scope.VideoMapCategoryNames) {
+		if n := scope.VideoMapCategoryNames[category]; n != "" {
 			return n
 		}
 	}

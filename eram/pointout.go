@@ -4,9 +4,8 @@ import (
 	"slices"
 
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
 
@@ -32,7 +31,7 @@ func (ep *ERAMPane) pointOutIndicatorActive(trk *sim.Track) bool {
 // indicator, or zero rune if nothing should be drawn. Yellow "P" is shown if any inbound or any
 // unacked outbound entry exists; white "A" if outbound is non-empty and every entry is already
 // acked.
-func (ep *ERAMPane) pointOutIndicatorGlyph(trk *sim.Track, fdbBrightness radar.Brightness) (rune, renderer.RGB, bool) {
+func (ep *ERAMPane) pointOutIndicatorGlyph(trk *sim.Track, fdbBrightness scope.Brightness) (rune, renderer.RGB, bool) {
 	if trk.FlightPlan == nil {
 		return 0, renderer.RGB{}, false
 	}
@@ -59,7 +58,7 @@ func (ep *ERAMPane) pointOutIndicatorGlyph(trk *sim.Track, fdbBrightness radar.B
 // pending and direct-dismiss if every outbound entry is already acked (the "A" case). dbMain is
 // the main datablock extent; the menu is anchored at its top-right corner so it sits immediately
 // to the right of the datablock.
-func (ep *ERAMPane) handlePointOutIndicatorClick(ctx *panes.Context, trk sim.Track, dbMain math.Extent2D) {
+func (ep *ERAMPane) handlePointOutIndicatorClick(ctx *scope.Context, trk sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -97,7 +96,7 @@ type pointOutPopup struct {
 // and a click acknowledges every inbound p/o at once. The originator view
 // lists each receiver, yellow-boxed for not-yet-acked and white-plain for
 // already-acked; click on an acked row dismisses it locally.
-func (po *pointOutPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (po *pointOutPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	acid := po.acid
 
 	label := func(p sim.ControlPosition) string {

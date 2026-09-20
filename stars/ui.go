@@ -13,16 +13,15 @@ import (
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-var _ panes.UIDrawer = (*STARSPane)(nil)
+var _ scope.UIDrawer = (*STARSPane)(nil)
 
 func (sp *STARSPane) DisplayName() string { return "STARS" }
 
@@ -84,8 +83,8 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 	sp.scopeDraw.DrawDeparturesUI(c, sp.IFPHelpers.DeparturesColor)
 	sp.scopeDraw.DrawOverflightsUI(c, sp.IFPHelpers.OverflightsColor)
 	sp.scopeDraw.DrawAirspaceUI(c, sp.IFPHelpers.AirspaceColor)
-	radar.DrawTowerListsUI(c)
-	radar.DrawAirspaceAwarenessUI(c)
+	scope.DrawTowerListsUI(c)
+	scope.DrawAirspaceAwarenessUI(c)
 
 	if macros := c.State.FacilityAdaptation.STARSMacros; len(macros) > 0 {
 		if imgui.CollapsingHeaderBoolPtr("STARS Macros", nil) {
@@ -97,7 +96,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 			})
 
 			fixedFont := gui.GetFont(gui.Fonts.RobotoMono, gui.FixedFontSize(int(imgui.FontSize())))
-			if imgui.BeginTableV("macros", 5, radar.TableFlags, imgui.Vec2{}, 0) {
+			if imgui.BeginTableV("macros", 5, scope.TableFlags, imgui.Vec2{}, 0) {
 				imgui.TableSetupColumn("Mode")
 				imgui.TableSetupColumn("Input")
 				imgui.TableSetupColumn("Activation")
@@ -173,7 +172,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		}
 
 		const ncol = 4
-		if imgui.BeginTableV("holds", ncol, radar.TableFlags, imgui.Vec2{}, 0) {
+		if imgui.BeginTableV("holds", ncol, scope.TableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.holds == nil {
 				sp.scopeDraw.holds = make(map[string]av.Hold)
 			}

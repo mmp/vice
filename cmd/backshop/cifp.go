@@ -12,8 +12,8 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/enroute"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -40,7 +40,7 @@ func (c *cifpTab) init() {
 // drawCIFPProcedures draws the procedures checked in the CIFP tab. They are
 // drawn separately from the scenario's own routes: the point of showing them
 // is to compare the two.
-func (in *inspector) drawCIFPProcedures(a *app, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (in *inspector) drawCIFPProcedures(a *app, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	c := &in.cifp
 	if len(c.draw) == 0 {
 		return
@@ -58,13 +58,13 @@ func (in *inspector) drawCIFPProcedures(a *app, transforms radar.ScopeTransforma
 
 	color := rgb(c.color)
 	style := renderer.TextStyle{Font: a.scope.textFont, Color: color, DrawBackground: true}
-	drawn := radar.NewDrawnRoutes()
+	drawn := scope.NewDrawnRoutes()
 	for _, wps := range util.SortedMap(c.draw) {
-		radar.DrawWaypoints(ss.NmPerLongitude, ss.MagneticVariation, wps, radar.RouteDrawContext{}, drawn,
+		scope.DrawWaypoints(ss.NmPerLongitude, ss.MagneticVariation, wps, scope.RouteDrawContext{}, drawn,
 			transforms, td, style, ld, pd, ldr, color)
 	}
 
-	radar.GenerateRouteDrawingCommands(cb, transforms, a.plat.DPIScale(), ld, pd, td, ldr)
+	scope.GenerateRouteDrawingCommands(cb, transforms, a.plat.DPIScale(), ld, pd, td, ldr)
 }
 
 // locateRoute returns a copy of a procedure's waypoints with their positions

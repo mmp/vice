@@ -9,10 +9,9 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -55,7 +54,7 @@ func (c CRRColor) BaseRGB() renderer.RGB {
 }
 
 // BrightRGB applies an ERAM brightness to the base color.
-func (c CRRColor) BrightRGB(b radar.Brightness) renderer.RGB {
+func (c CRRColor) BrightRGB(b scope.Brightness) renderer.RGB {
 	return b.ScaleRGB(c.BaseRGB())
 }
 
@@ -93,7 +92,7 @@ func tryExtractLocation(it inputText) (math.Point2LL, bool) {
 
 // parseLocation parses location tokens used by LF: //FIX, //FRD,
 // //lat/long. Returns true if a location was resolved.
-func parseLocation(ctx *panes.Context, token string) (math.Point2LL, bool) {
+func parseLocation(ctx *scope.Context, token string) (math.Point2LL, bool) {
 	s := strings.TrimPrefix(strings.ToUpper(token), "//")
 	// FRD?
 	if m := reFRD.FindStringSubmatch(s); len(m) == 4 {
@@ -115,7 +114,7 @@ func parseLocation(ctx *panes.Context, token string) (math.Point2LL, bool) {
 }
 
 // drawCRRView renders the Continuous Range Readout view.
-func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.CRR.Visible {
 		return
@@ -329,7 +328,7 @@ type crrPopup struct {
 	popupBase
 }
 
-func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (c *crrPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	origin := c.origin
 	const width = viewPopupWidth
@@ -487,7 +486,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 }
 
 // drawCRRFixes draws clickable CRR fix labels when enabled under ATC TOOLS.
-func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawCRRFixes(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.CRR.DisplayFixes {
 		return
@@ -544,7 +543,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 // drawCRRDistances draws CRR distance values next to aircraft tags for aircraft
 // that are members of CRR groups. The distance is displayed in the color of the
 // CRR group the aircraft belongs to.
-func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if ep.CRRGroups == nil || len(ep.CRRGroups) == 0 {
 		return

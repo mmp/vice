@@ -1,8 +1,8 @@
-// radar/route_cifp_test.go
+// scope/route_cifp_test.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package radar
+package scope
 
 import (
 	gomath "math"

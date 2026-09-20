@@ -11,7 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
-	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -380,7 +380,7 @@ func (in *inspector) drawAirportExits(a *app, icao av.ICAOAirportCode, ap *av.Ai
 	ss := &a.cc.State
 	r := &in.routes
 
-	routes := slices.Collect(radar.ScenarioDepartureRoutes(ap, ss.LaunchConfig.DepartureRates[icao]))
+	routes := slices.Collect(scope.ScenarioDepartureRoutes(ap, ss.LaunchConfig.DepartureRates[icao]))
 	if len(routes) == 0 {
 		imgui.Text("The scenario flies no departures from this airport.")
 		return
@@ -655,7 +655,7 @@ func flownProcedures(ss *client.SimState, icao av.ICAOAirportCode, ap *av.Airpor
 // exitTooltip is the rest of what a departure route says: the settings that
 // are set rarely enough that a column for each would leave the table mostly
 // empty.
-func exitTooltip(ss *client.SimState, icao av.ICAOAirportCode, ap *av.Airport, dr radar.DepartureRoute) string {
+func exitTooltip(ss *client.SimState, icao av.ICAOAirportCode, ap *av.Airport, dr scope.DepartureRoute) string {
 	var lines []string
 	add := func(k, v string) {
 		if v != "" {

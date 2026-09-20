@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 )
 
 func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
@@ -58,7 +58,7 @@ func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	sp.dcbFontB[2] = get("sddCharFontSetBSize2", 15)
 }
 
-func (sp *STARSPane) systemFont(ctx *panes.Context, idx int) *renderer.Font {
+func (sp *STARSPane) systemFont(ctx *scope.Context, idx int) *renderer.Font {
 	if sp.FontSelection == fontLegacy {
 		return sp.systemFontA[idx]
 	} else if sp.FontSelection == fontARTS {
@@ -70,7 +70,7 @@ func (sp *STARSPane) systemFont(ctx *panes.Context, idx int) *renderer.Font {
 	}
 }
 
-func (sp *STARSPane) systemOutlineFont(ctx *panes.Context, idx int) *renderer.Font {
+func (sp *STARSPane) systemOutlineFont(ctx *scope.Context, idx int) *renderer.Font {
 	if sp.FontSelection == fontLegacy {
 		return sp.systemOutlineFontA[idx]
 	} else if sp.FontSelection == fontARTS {
@@ -82,7 +82,7 @@ func (sp *STARSPane) systemOutlineFont(ctx *panes.Context, idx int) *renderer.Fo
 	}
 }
 
-func (sp *STARSPane) dcbFont(ctx *panes.Context, idx int) *renderer.Font {
+func (sp *STARSPane) dcbFont(ctx *scope.Context, idx int) *renderer.Font {
 	if sp.FontSelection == fontLegacy {
 		return sp.dcbFontA[idx]
 	} else if sp.FontSelection == fontARTS {

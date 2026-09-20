@@ -9,12 +9,11 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/scope"
 )
 
-var _ panes.UIDrawer = (*ERAMPane)(nil)
+var _ scope.UIDrawer = (*ERAMPane)(nil)
 
 func (ep *ERAMPane) DisplayName() string { return "ERAM" }
 
@@ -35,7 +34,7 @@ func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 
 	if imgui.CollapsingHeaderBoolPtr("Preferences", nil) {
-		if imgui.BeginTableV("Saved Preferences", 4, radar.TableFlags, imgui.Vec2{}, 0) {
+		if imgui.BeginTableV("Saved Preferences", 4, scope.TableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("Name")
 			imgui.TableSetupColumn("Save ")
 			imgui.TableSetupColumn("Load ")
@@ -107,8 +106,8 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 	ep.scopeDraw.DrawDeparturesUI(c, ep.IFPHelpers.DeparturesColor)
 	ep.scopeDraw.DrawOverflightsUI(c, ep.IFPHelpers.OverflightsColor)
 	ep.scopeDraw.DrawAirspaceUI(c, ep.IFPHelpers.AirspaceColor)
-	radar.DrawTowerListsUI(c)
-	radar.DrawAirspaceAwarenessUI(c)
+	scope.DrawTowerListsUI(c)
+	scope.DrawAirspaceAwarenessUI(c)
 }
 
 // drawSymbolGlyphDebugUI exposes a +/- table for tweaking which
@@ -118,7 +117,7 @@ func drawSymbolGlyphDebugUI(tableFlags imgui.TableFlags) {
 	if !imgui.CollapsingHeaderBoolPtr("Symbol Glyphs (debug)", nil) {
 		return
 	}
-	if !imgui.BeginTableV("symbolglyphs", 4, radar.TableFlags, imgui.Vec2{}, 0) {
+	if !imgui.BeginTableV("symbolglyphs", 4, scope.TableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	defer imgui.EndTable()
@@ -161,19 +160,19 @@ func drawSymbolGlyphDebugUI(tableFlags imgui.TableFlags) {
 		imgui.Text(style.String())
 
 		imgui.TableNextColumn()
-		imgui.Text(fmt.Sprintf("0x%02X", int(radar.SymbolGlyphIndex[style])))
+		imgui.Text(fmt.Sprintf("0x%02X", int(scope.SymbolGlyphIndex[style])))
 
 		imgui.TableNextColumn()
 		if imgui.Button("-##dec") {
-			idx := (int(radar.SymbolGlyphIndex[style]) - 1 + numEramGeomapGlyphs) % numEramGeomapGlyphs
-			radar.SymbolGlyphIndex[style] = rune(idx)
+			idx := (int(scope.SymbolGlyphIndex[style]) - 1 + numEramGeomapGlyphs) % numEramGeomapGlyphs
+			scope.SymbolGlyphIndex[style] = rune(idx)
 			changed = true
 		}
 
 		imgui.TableNextColumn()
 		if imgui.Button("+##inc") {
-			idx := (int(radar.SymbolGlyphIndex[style]) + 1) % numEramGeomapGlyphs
-			radar.SymbolGlyphIndex[style] = rune(idx)
+			idx := (int(scope.SymbolGlyphIndex[style]) + 1) % numEramGeomapGlyphs
+			scope.SymbolGlyphIndex[style] = rune(idx)
 			changed = true
 		}
 
@@ -185,7 +184,7 @@ func drawSymbolGlyphDebugUI(tableFlags imgui.TableFlags) {
 		b.WriteString("var SymbolGlyphIndex = map[av.SymbolStyle]rune{\n")
 		for _, style := range symbolStyleOrder {
 			fmt.Fprintf(&b, "\tav.SymbolStyle%-20s 0x%02X,\n",
-				style.String()+":", int(radar.SymbolGlyphIndex[style]))
+				style.String()+":", int(scope.SymbolGlyphIndex[style]))
 		}
 		b.WriteString("}\n")
 		fmt.Println(b.String())
@@ -207,17 +206,17 @@ func drawDashPatternDebugUI(tableFlags imgui.TableFlags) {
 		idx       int
 	}
 	slots := []slot{
-		{"ShortDashed", "dash", &radar.ShortDashedPattern, 0},
-		{"ShortDashed", "gap", &radar.ShortDashedPattern, 1},
-		{"LongDashed", "dash", &radar.LongDashedPattern, 0},
-		{"LongDashed", "gap", &radar.LongDashedPattern, 1},
-		{"LongDashShortDash", "longDash", &radar.LongDashShortDashPattern, 0},
-		{"LongDashShortDash", "gap1", &radar.LongDashShortDashPattern, 1},
-		{"LongDashShortDash", "shortDash", &radar.LongDashShortDashPattern, 2},
-		{"LongDashShortDash", "gap2", &radar.LongDashShortDashPattern, 3},
+		{"ShortDashed", "dash", &scope.ShortDashedPattern, 0},
+		{"ShortDashed", "gap", &scope.ShortDashedPattern, 1},
+		{"LongDashed", "dash", &scope.LongDashedPattern, 0},
+		{"LongDashed", "gap", &scope.LongDashedPattern, 1},
+		{"LongDashShortDash", "longDash", &scope.LongDashShortDashPattern, 0},
+		{"LongDashShortDash", "gap1", &scope.LongDashShortDashPattern, 1},
+		{"LongDashShortDash", "shortDash", &scope.LongDashShortDashPattern, 2},
+		{"LongDashShortDash", "gap2", &scope.LongDashShortDashPattern, 3},
 	}
 
-	if !imgui.BeginTableV("dashpatterns", 5, radar.TableFlags, imgui.Vec2{}, 0) {
+	if !imgui.BeginTableV("dashpatterns", 5, scope.TableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	imgui.TableSetupColumn("Style")
@@ -254,8 +253,8 @@ func drawDashPatternDebugUI(tableFlags imgui.TableFlags) {
 	imgui.EndTable()
 
 	if changed {
-		fmt.Printf("ShortDashedPattern       = %#v\n", radar.ShortDashedPattern)
-		fmt.Printf("LongDashedPattern        = %#v\n", radar.LongDashedPattern)
-		fmt.Printf("LongDashShortDashPattern = %#v\n\n", radar.LongDashShortDashPattern)
+		fmt.Printf("ShortDashedPattern       = %#v\n", scope.ShortDashedPattern)
+		fmt.Printf("LongDashedPattern        = %#v\n", scope.LongDashedPattern)
+		fmt.Printf("LongDashShortDashPattern = %#v\n\n", scope.LongDashShortDashPattern)
 	}
 }

@@ -1,4 +1,4 @@
-// pkg/panes/stars/flightplan.go
+// eram/flightplan.go
 // Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -11,7 +11,7 @@ import (
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -519,7 +519,7 @@ func isVFRFlightPlan(text string) bool {
 	return err == nil
 }
 
-func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied bool) error {
+func checkScratchpad(ctx *scope.Context, contents string, isSecondary, isImplied bool) error {
 	lc := len([]rune(contents))
 	fac := ctx.FacilityAdaptation
 
@@ -551,7 +551,7 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 
 // TODO Make for ERAM
 
-// func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.NASFlightPlan, trk *sim.Track) string {
+// func (sp *STARSPane) formatFlightPlan(ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) string {
 // 	if fp == nil { // shouldn't happen...
 // 		return "NO PLAN"
 // 	}

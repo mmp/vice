@@ -11,7 +11,7 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
 
 	"github.com/brunoga/deep"
@@ -164,8 +164,8 @@ type CommonPreferences struct {
 
 	AudioEffectEnabled []bool
 
-	DisplayWeatherLevel     [radar.NumWxLevels]bool
-	LastDisplayWeatherLevel [radar.NumWxLevels]bool
+	DisplayWeatherLevel     [scope.NumWxLevels]bool
+	LastDisplayWeatherLevel [scope.NumWxLevels]bool
 
 	// For aircraft tracked by the user.
 	LeaderLineDirection math.CardinalOrdinalDirection
@@ -190,25 +190,25 @@ type CommonPreferences struct {
 	DisplaySuspendedTrackAltitude bool
 
 	Brightness struct {
-		DCB                radar.Brightness
-		BackgroundContrast radar.Brightness
-		VideoGroupA        radar.Brightness
-		VideoGroupB        radar.Brightness
-		FullDatablocks     radar.Brightness
-		Lists              radar.Brightness
-		Positions          radar.Brightness
-		LimitedDatablocks  radar.Brightness
-		OtherTracks        radar.Brightness
-		Lines              radar.Brightness
-		RangeRings         radar.Brightness
-		Compass            radar.Brightness
-		BeaconSymbols      radar.Brightness
-		PrimarySymbols     radar.Brightness
-		History            radar.Brightness
-		Weather            radar.Brightness
-		WxContrast         radar.Brightness
-		TPA                radar.Brightness
-		ATPA               radar.Brightness
+		DCB                scope.Brightness
+		BackgroundContrast scope.Brightness
+		VideoGroupA        scope.Brightness
+		VideoGroupB        scope.Brightness
+		FullDatablocks     scope.Brightness
+		Lists              scope.Brightness
+		Positions          scope.Brightness
+		LimitedDatablocks  scope.Brightness
+		OtherTracks        scope.Brightness
+		Lines              scope.Brightness
+		RangeRings         scope.Brightness
+		Compass            scope.Brightness
+		BeaconSymbols      scope.Brightness
+		PrimarySymbols     scope.Brightness
+		History            scope.Brightness
+		Weather            scope.Brightness
+		WxContrast         scope.Brightness
+		TPA                scope.Brightness
+		ATPA               scope.Brightness
 	}
 
 	CharSize struct {
@@ -325,7 +325,7 @@ func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 	p.VideoMapVisible = make(map[int]any)
 
 	for _, dm := range ss.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.Map) bool { return v.Name == dm }); idx != -1 {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v scope.Map) bool { return v.Name == dm }); idx != -1 {
 			p.VideoMapVisible[sp.allVideoMaps[idx].Id] = nil
 		} else {
 			// This should have been validated at load time.
@@ -484,8 +484,8 @@ func (p *Preferences) Upgrade(from, to int) {
 		p.CharSize.DCB = 1
 	}
 	if from < 9 {
-		remap := func(b *radar.Brightness) {
-			*b = radar.Brightness(min(*b*2, 100))
+		remap := func(b *scope.Brightness) {
+			*b = scope.Brightness(min(*b*2, 100))
 		}
 		remap(&p.Brightness.VideoGroupA)
 		remap(&p.Brightness.VideoGroupB)
@@ -561,7 +561,7 @@ func (p *Preferences) Upgrade(from, to int) {
 		}
 
 		// Brightness goes in steps of 5 (similarly not enforced previously...)
-		remapBrightness := func(b *radar.Brightness) {
+		remapBrightness := func(b *scope.Brightness) {
 			*b = (*b + 2) / 5 * 5
 			*b = math.Clamp(*b, 0, 100)
 		}

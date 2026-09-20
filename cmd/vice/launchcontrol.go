@@ -75,7 +75,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(p.WindowSize()[1]) * 19 / 20})
 	applyPinWindowClass("Launch Control", config, p)
 	imgui.BeginV("Launch Control", &showLaunchControls, imgui.WindowFlagsAlwaysAutoResize)
-	drawPinButton("Launch Control", config, p)
+	drawPinButton("Launch Control", config.UnpinnedWindows, p)
 
 	// Simulation controls row
 	if lc.client != nil && lc.client.Connected() {

@@ -7,10 +7,10 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
 
@@ -106,8 +106,6 @@ var eramErrorRemap = map[error]*ERAMError{
 	sim.ErrFDAMProcessingOff:               ErrIllegalUserAction,
 	sim.ErrVolumeDisabled:                  ErrIllegalUserAction,
 	sim.ErrVolumeNot25nm:                   ErrIllegalUserAction,
-
-	server.ErrInvalidCommandSyntax: ErrCommandFormat,
 }
 
 func GetERAMError(e error, lg *log.Logger) *ERAMError {
@@ -116,7 +114,7 @@ func GetERAMError(e error, lg *log.Logger) *ERAMError {
 	}
 
 	if _, ok := e.(rpc.ServerError); ok {
-		e = server.TryDecodeError(e)
+		e = client.TryDecodeError(e)
 	}
 
 	if se, ok := eramErrorRemap[e]; ok {
@@ -127,7 +125,7 @@ func GetERAMError(e error, lg *log.Logger) *ERAMError {
 	return ErrCommandFormat
 }
 
-func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
+func (ep *ERAMPane) displayError(err error, ctx *scope.Context) {
 	if err != nil {
 		ep.feedbackArea.Error(GetERAMError(err, ctx.Lg))
 	}
@@ -136,7 +134,7 @@ func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
 // applyCommandStatus routes a CommandStatus to the feedback/response areas:
 // an error overrides everything; otherwise non-empty feedback and response
 // lines are joined with newlines and shown.
-func (ep *ERAMPane) applyCommandStatus(ctx *panes.Context, status CommandStatus, err error) {
+func (ep *ERAMPane) applyCommandStatus(ctx *scope.Context, status CommandStatus, err error) {
 	if err != nil {
 		ep.displayError(err, ctx)
 		return

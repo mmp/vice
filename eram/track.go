@@ -6,9 +6,8 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -103,7 +102,7 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) math.TrueHeading {
 	return math.Heading2LL(ts.PreviousTrack.Location, ts.Track.Location, nmPerLongitude)
 }
 
-func (ep *ERAMPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*TrackState, bool) {
+func (ep *ERAMPane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackState, bool) {
 	// Figure out the ADSB callsign for this ACID.
 	for _, trk := range ctx.Client.State.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
@@ -114,7 +113,7 @@ func (ep *ERAMPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*Track
 	return nil, false
 }
 
-func (ep *ERAMPane) processEvents(ctx *panes.Context) {
+func (ep *ERAMPane) processEvents(ctx *scope.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		if _, ok := ep.TrackState[trk.ADSBCallsign]; !ok {
 			sa := &TrackState{
@@ -211,7 +210,7 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 	}
 }
 
-func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
+func (ep *ERAMPane) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
 	// Update the track states based on the current radar tracks.
 	nowInterp := ctx.InterpolatedSimTime.Time()
 	nowApplied := ctx.Client.State.SimTime.Time()
@@ -274,7 +273,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 }
 
-func (ep *ERAMPane) drawTargets(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
+func (ep *ERAMPane) drawTargets(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -300,8 +299,8 @@ func (ep *ERAMPane) drawTargets(ctx *panes.Context, tracks []sim.Track, transfor
 	td.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Context,
-	transforms radar.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
+func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *scope.Context,
+	transforms scope.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
 	cb *renderer.CommandBuffer) {
 	pos := state.Track.Location
@@ -315,7 +314,7 @@ func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Co
 	ld.GenerateCommands(cb) // why does this need to be here?
 }
 
-func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
+func (ep *ERAMPane) drawTracks(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -330,8 +329,8 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 }
 
 // TODO: Store tracks in ERAMComputer and have them associate to targets
-func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Context,
-	td *renderer.TextDrawBuilder, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
+	td *renderer.TextDrawBuilder, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	pos := state.Track.Location
 	// TODO: free tracks, frozen tracks, and coast tracks
 	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
@@ -370,7 +369,7 @@ func (ep *ERAMPane) getTarget(trk sim.Track, state *TrackState) string {
 	return symbol
 }
 
-func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, color renderer.RGB,
+func drawDiamond(ctx *scope.Context, transforms scope.ScopeTransformations, color renderer.RGB,
 	pos [2]float32, ld *renderer.ColoredLinesDrawBuilder, cb *renderer.CommandBuffer) {
 	cb.LineWidth(2, ctx.DPIScale)
 	pt := transforms.WindowFromLatLongP(pos)
@@ -391,7 +390,7 @@ func (ep *ERAMPane) trackColor() renderer.RGB {
 	return bright.ScaleRGB(colors.yellow)
 }
 
-func (ep *ERAMPane) updateVisibleTracks(ctx *panes.Context) { // When radar holes are added
+func (ep *ERAMPane) updateVisibleTracks(ctx *scope.Context) { // When radar holes are added
 	// Get the visible tracks based on the current range and center.
 	ep.visibleTracks = ep.visibleTracks[:0]
 	for _, trk := range ctx.Client.State.Tracks {
@@ -405,7 +404,7 @@ func (ep *ERAMPane) updateVisibleTracks(ctx *panes.Context) { // When radar hole
 
 // datablockBrightness returns the configured brightness for the given track's
 // datablock type.
-func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.Brightness {
+func (ep *ERAMPane) datablockBrightness(state *TrackState) scope.Brightness {
 	ps := ep.currentPrefs()
 	if state.DatablockType == FullDatablock {
 		return ps.Brightness.FDB
@@ -415,7 +414,7 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.Brightness {
 
 // leaderLineDirection returns the direction in which a datablock's leader line
 // should be drawn. The initial implementation always points northeast.
-func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) *math.CardinalOrdinalDirection {
+func (ep *ERAMPane) leaderLineDirection(ctx *scope.Context, trk sim.Track) *math.CardinalOrdinalDirection {
 	state := ep.TrackState[trk.ADSBCallsign]
 	dir := state.LeaderLineDirection
 	if dir == nil {
@@ -459,13 +458,13 @@ func (ep *ERAMPane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) 
 }
 
 // datablockVisible reports whether a datablock should be drawn. Design.
-func (ep *ERAMPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
+func (ep *ERAMPane) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
 	// design
 	return true
 }
 
 // datablockType chooses which datablock format to display. Design.
-func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockType {
+func (ep *ERAMPane) datablockType(ctx *scope.Context, trk sim.Track) DatablockType {
 	if trk.IsUnassociated() {
 		return LimitedDatablock
 	} else {
@@ -501,7 +500,7 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 }
 
 // trackDatablockColorBrightness returns the track color and datablock brightness. Design.
-func (ep *ERAMPane) trackDatablockColor(ctx *panes.Context, trk sim.Track) renderer.RGB {
+func (ep *ERAMPane) trackDatablockColor(ctx *scope.Context, trk sim.Track) renderer.RGB {
 	dType := ep.datablockType(ctx, trk)
 	ps := ep.currentPrefs()
 	brite := util.Select(dType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
@@ -509,8 +508,8 @@ func (ep *ERAMPane) trackDatablockColor(ctx *panes.Context, trk sim.Track) rende
 }
 
 // drawLeaderLines draws leader lines for visible datablocks.
-func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
+	transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	cb.LineWidth(2, ctx.DPIScale)
@@ -571,7 +570,7 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 	cb.LineWidth(1, ctx.DPIScale)
 }
 
-func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
+func (ep *ERAMPane) drawPTLs(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	cb.LineWidth(2, ctx.DPIScale) // tweak this
@@ -608,8 +607,8 @@ type historyTrack struct {
 
 // drawHistoryTracks draws small position symbols representing the last few
 // positions of each track.
-func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
+	transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -626,7 +625,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 		}
 
 		// Determine brightness based on association
-		var bright radar.Brightness
+		var bright scope.Brightness
 		// TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
 		if trk.IsAssociated() {
 			bright = ps.Brightness.PRHST
@@ -665,8 +664,8 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	ctd.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawJRings(ctx *scope.Context, tracks []sim.Track,
+	transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	// Draw J-Rings for tracks that have them enabled.
 	jr := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(jr)
@@ -698,7 +697,7 @@ func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
 	jr.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawQULines(ctx *panes.Context, transforms radar.ScopeTransformations,
+func (ep *ERAMPane) drawQULines(ctx *scope.Context, transforms scope.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)

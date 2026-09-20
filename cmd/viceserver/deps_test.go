@@ -23,7 +23,7 @@ func TestNoUIDeps(t *testing.T) {
 		"github.com/mmp/vice/renderer",
 		"github.com/mmp/vice/platform/glfw",
 		"github.com/mmp/vice/platform/sdl2",
-		"github.com/mmp/vice/panes",
+		"github.com/mmp/vice/scope",
 		"github.com/mmp/vice/gui",
 		"github.com/mmp/vice/stars",
 		"github.com/mmp/vice/eram",

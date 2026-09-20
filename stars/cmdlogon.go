@@ -10,7 +10,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -18,7 +18,7 @@ import (
 func registerLogonCommands() {
 	// 3.11.1 Basic consolidation of inactive and future flights (p. 3-22)
 	// C[receiver][sender] - Basic consolidation
-	consolidate := func(sp *STARSPane, ctx *panes.Context, receiver sim.TCW, sender string, ty sim.ConsolidationType) {
+	consolidate := func(sp *STARSPane, ctx *scope.Context, receiver sim.TCW, sender string, ty sim.ConsolidationType) {
 		if len(receiver) == 1 {
 			receiver = ctx.UserTCW[:1] + receiver
 		}
@@ -29,11 +29,11 @@ func registerLogonCommands() {
 			func(err error) { sp.displayError(err, ctx, "") })
 	}
 	registerCommand(CommandModeMultiFunc, "C"+STARSTriangleCharacter+"[TCP1]|C"+STARSTriangleCharacter+"[TCP2]",
-		func(sp *STARSPane, ctx *panes.Context, sender string) {
+		func(sp *STARSPane, ctx *scope.Context, sender string) {
 			consolidate(sp, ctx, ctx.UserTCW, sender, sim.ConsolidationBasic)
 		})
 	registerCommand(CommandModeMultiFunc, "C[TCW][TCP1]|C[TCW][TCP2]",
-		func(sp *STARSPane, ctx *panes.Context, receiver sim.TCW, sender string) {
+		func(sp *STARSPane, ctx *scope.Context, receiver sim.TCW, sender string) {
 			consolidate(sp, ctx, receiver, sender, sim.ConsolidationBasic)
 		})
 
@@ -44,23 +44,23 @@ func registerLogonCommands() {
 	// 3.11.3 Full consolidation of active, inactive, and future flights (p. 3-28)
 	// C[receiver][sender]+ - Full consolidation
 	registerCommand(CommandModeMultiFunc, "C"+STARSTriangleCharacter+"[TCP1]+|C"+STARSTriangleCharacter+"[TCP2]+",
-		func(sp *STARSPane, ctx *panes.Context, sender string) {
+		func(sp *STARSPane, ctx *scope.Context, sender string) {
 			consolidate(sp, ctx, ctx.UserTCW, sender, sim.ConsolidationFull)
 		})
 	registerCommand(CommandModeMultiFunc, "C[TCW][TCP1]+|C[TCW][TCP2]+",
-		func(sp *STARSPane, ctx *panes.Context, receiver sim.TCW, sender string) {
+		func(sp *STARSPane, ctx *scope.Context, receiver sim.TCW, sender string) {
 			consolidate(sp, ctx, receiver, sender, sim.ConsolidationFull)
 		})
 
 	// 3.11.4 Deconsolidate inactive and future flights (p. 3-32)
 	// C - Deconsolidate user's own TCP back to their keyboard
 	registerCommand(CommandModeMultiFunc, "C",
-		func(sp *STARSPane, ctx *panes.Context) {
+		func(sp *STARSPane, ctx *scope.Context) {
 			ctx.Client.DeconsolidateTCP(sim.TCP(ctx.UserTCW), func(err error) { sp.displayError(err, ctx, "") })
 		})
 	// C[tcp] - Deconsolidate specified TCP
 	registerCommand(CommandModeMultiFunc, "C[TCP2]",
-		func(sp *STARSPane, ctx *panes.Context, tcp string) {
+		func(sp *STARSPane, ctx *scope.Context, tcp string) {
 			ctx.Client.DeconsolidateTCP(sim.TCP(tcp), func(err error) { sp.displayError(err, ctx, "") })
 		})
 
@@ -80,7 +80,7 @@ func registerLogonCommands() {
 
 	// 3.11.9 Display consolidated positions in Preview area (p. 3-43)
 	registerCommand(CommandModeMultiFunc, "D+",
-		func(sp *STARSPane, ctx *panes.Context) CommandStatus {
+		func(sp *STARSPane, ctx *scope.Context) CommandStatus {
 			configId := ctx.Client.State.ConfigurationId
 			var parts []string
 

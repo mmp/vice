@@ -28,7 +28,6 @@ import (
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/platform/glfw"
@@ -36,6 +35,7 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/renderer/ogl21"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stars"
@@ -494,7 +494,7 @@ func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log
 // config. Returns the control client and active radar pane if
 // successful, or nil for both if loading fails or there is no saved sim.
 func loadSavedSim(mgr *client.ConnectionManager, config *Config,
-	plat platform.Platform, lg *log.Logger) (*client.ControlClient, panes.Pane) {
+	plat platform.Platform, lg *log.Logger) (*client.ControlClient, scope.Pane) {
 
 	if *resetSim || *starsRandoms {
 		return nil, nil
@@ -596,7 +596,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	// inter-dependencies in the following; the order is carefully crafted.
 
 	var controlClient *client.ControlClient
-	var activeRadarPane panes.Pane
+	var activeRadarPane scope.Pane
 
 	// Kick off the heavy non-OpenGL initialization (aviation database,
 	// weather, scenario loading, local server) in a goroutine so it runs
@@ -632,8 +632,8 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 					// Reset each pane for the new sim
 					activeRadarPane.ResetSim(c, plat, lg)
-					config.MessagesPane.ResetSim(c, plat, lg)
-					config.FlightStripPane.ResetSim(c, plat, lg)
+					config.MessagesWindow.ResetSim(c, plat, lg)
+					config.FlightStripWindow.ResetSim(c, plat, lg)
 
 					// Apply waypoint commands if specified via command line (only for new clients)
 					if *waypointCommands != "" {
@@ -800,12 +800,12 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		imgui.NewFrame()
 
 		// Generate and render vice draw lists
-		stats.drawPanes = panes.DrawPanes(activeRadarPane, plat, render, controlClient,
+		stats.drawPanes = scope.DrawPane(activeRadarPane, plat, render, controlClient,
 			ui.menuBarHeight, frameEvents, lg)
 
 		// Execute fuzz commands if in fuzz testing mode
 		if fuzzController != nil && controlClient != nil {
-			ctx := panes.NewFuzzContext(plat, render, controlClient, lg)
+			ctx := scope.NewFuzzContext(plat, render, controlClient, lg)
 			fuzzController.ExecuteFrame(ctx, controlClient)
 		}
 

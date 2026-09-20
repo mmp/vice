@@ -11,10 +11,9 @@ import (
 	"strings"
 
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
 
 	"github.com/brunoga/deep"
@@ -92,7 +91,7 @@ type dcbSpinner interface {
 // main axis exactly — the scale uses the maximum slot count so the bar's
 // cross-axis thickness doesn't change when switching between menus of
 // different widths.
-func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
+func (sp *STARSPane) dcbButtonScale(ctx *scope.Context) float32 {
 	if !sp.DCBScaleToFit {
 		return ctx.DrawPixelScale
 	}
@@ -133,7 +132,7 @@ func (sp *STARSPane) mapsSubmenuCategoryColumns() int {
 // DCB bar occupies for the current preference's DCB position. The scroll
 // offset does not shift the bar itself — only the buttons inside it — so
 // this always returns the full, non-scrolled rectangle.
-func (sp *STARSPane) dcbBarExtent(ctx *panes.Context) math.Extent2D {
+func (sp *STARSPane) dcbBarExtent(ctx *scope.Context) math.Extent2D {
 	ps := sp.currentPrefs()
 	bs := float32(int(sp.dcbButtonScale(ctx)*dcbButtonSize + 0.5))
 	w, h := ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
@@ -155,7 +154,7 @@ func (sp *STARSPane) dcbBarExtent(ctx *panes.Context) math.Extent2D {
 // content size measured by the previous frame's draw so submenus with
 // fewer slots don't allow scrolling past their last button into empty
 // bar area.
-func (sp *STARSPane) dcbMaxScroll(ctx *panes.Context) float32 {
+func (sp *STARSPane) dcbMaxScroll(ctx *scope.Context) float32 {
 	ps := sp.currentPrefs()
 	var visible float32
 	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
@@ -201,10 +200,10 @@ func (sp *STARSPane) dcbCurrentMenu() dcbMenuID {
 	return dcbMenuID{aux: sp.dcbShowAux, submenu: sub}
 }
 
-func (sp *STARSPane) videoMapCategories() ([radar.VideoMapNumCategories]bool, int) {
-	var haveCategory [radar.VideoMapNumCategories]bool
+func (sp *STARSPane) videoMapCategories() ([scope.VideoMapNumCategories]bool, int) {
+	var haveCategory [scope.VideoMapNumCategories]bool
 	for _, vm := range sp.allVideoMaps {
-		if vm.Category != radar.VideoMapNoCategory {
+		if vm.Category != scope.VideoMapNoCategory {
 			haveCategory[vm.Category] = true
 		}
 	}
@@ -222,7 +221,7 @@ func videoMapButtonIndex(base, columns, i int) int {
 	return base + util.Select(i&1 == 0, i/2, columns+i/2)
 }
 
-func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
+func (sp *STARSPane) drawDCB(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
 	ps := sp.currentPrefs()
 
 	buttonScale := sp.dcbButtonScale(ctx)
@@ -481,17 +480,17 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			drawVideoMapButton(videoMapButtonIndex(6, mapsSubmenuMapColumns, i), false)
 		}
 
-		mapLabels := [radar.VideoMapNumCategories]string{
-			radar.VideoMapGeographicMaps:     "GEO\nMAPS",
-			radar.VideoMapControlledAirspace: "CONTROL",
-			radar.VideoMapRunwayExtensions:   "RUNWAYS",
-			radar.VideoMapDangerAreas:        "DANGER\nAREAS",
-			radar.VideoMapAerodromes:         "AIRPORT",
-			radar.VideoMapGeneralAviation:    "GENERAL\nAV",
-			radar.VideoMapSIDsSTARs:          "SID\nSTAR",
-			radar.VideoMapMilitary:           "MIL",
-			radar.VideoMapGeographicPoints:   "GEO\nPOINTS",
-			radar.VideoMapProcessingAreas:    "SYS\nPROC",
+		mapLabels := [scope.VideoMapNumCategories]string{
+			scope.VideoMapGeographicMaps:     "GEO\nMAPS",
+			scope.VideoMapControlledAirspace: "CONTROL",
+			scope.VideoMapRunwayExtensions:   "RUNWAYS",
+			scope.VideoMapDangerAreas:        "DANGER\nAREAS",
+			scope.VideoMapAerodromes:         "AIRPORT",
+			scope.VideoMapGeneralAviation:    "GENERAL\nAV",
+			scope.VideoMapSIDsSTARs:          "SID\nSTAR",
+			scope.VideoMapMilitary:           "MIL",
+			scope.VideoMapGeographicPoints:   "GEO\nPOINTS",
+			scope.VideoMapProcessingAreas:    "SYS\nPROC",
 		}
 		for cat, b := range haveCategory {
 			if b {
@@ -508,9 +507,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			sp.toggleButton(ctx, "", &off, buttonHalfVertical, buttonScale)
 		}
 
-		currentMapsSelected := ps.VideoMapsList.Selection == radar.VideoMapCurrent && ps.VideoMapsList.Visible
+		currentMapsSelected := ps.VideoMapsList.Selection == scope.VideoMapCurrent && ps.VideoMapsList.Visible
 		if sp.toggleButton(ctx, "CURRENT", &currentMapsSelected, buttonHalfVertical, buttonScale) {
-			ps.VideoMapsList.Selection = radar.VideoMapCurrent
+			ps.VideoMapsList.Selection = scope.VideoMapCurrent
 			ps.VideoMapsList.Visible = currentMapsSelected
 		}
 
@@ -905,7 +904,7 @@ var dcbDrawState struct {
 	cursor       [2]float32
 	drawStartPos [2]float32
 	style        renderer.TextStyle
-	brightness   radar.Brightness
+	brightness   scope.Brightness
 	position     int
 	// barExtent is the DCB bar rectangle in pane-local coordinates. Per-button
 	// scissors are intersected with this so buttons scrolled past the edge
@@ -917,7 +916,7 @@ var dcbDrawState struct {
 	contentMain float32
 }
 
-func (sp *STARSPane) startDrawDCB(ctx *panes.Context, transforms radar.ScopeTransformations,
+func (sp *STARSPane) startDrawDCB(ctx *scope.Context, transforms scope.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.Mouse
@@ -985,7 +984,7 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, transforms radar.ScopeTran
 // drawDCBScrollIndicators draws small triangles near the bar edges when
 // there is content scrolled past either edge, pointing toward the
 // off-screen direction. Skipped under scale-to-fit (no overflow).
-func (sp *STARSPane) drawDCBScrollIndicators(ctx *panes.Context, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawDCBScrollIndicators(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	if sp.DCBScaleToFit {
 		return
 	}
@@ -1096,7 +1095,7 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 	}
 }
 
-func (sp *STARSPane) drawDCBButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
+func (sp *STARSPane) drawDCBButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -1275,7 +1274,7 @@ func rewindDCBCursor(delta int, buttonScale float32) {
 	}
 }
 
-func moveDCBCursor(flags dcbFlags, sz [2]float32, ctx *panes.Context) {
+func moveDCBCursor(flags dcbFlags, sz [2]float32, ctx *scope.Context) {
 	if dcbDrawState.position == dcbPositionTop || dcbDrawState.position == dcbPositionBottom {
 		// Drawing left to right
 		if (flags&buttonFull) != 0 || (flags&buttonHalfHorizontal) != 0 {
@@ -1319,7 +1318,7 @@ func moveDCBCursor(flags dcbFlags, sz [2]float32, ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) toggleButton(ctx *panes.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
+func (sp *STARSPane) toggleButton(ctx *scope.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
 	if sp.drawDCBButton(ctx, text, flags, buttonScale, *state) {
 		*state = !*state
 		return true
@@ -1333,7 +1332,7 @@ func dcbStartCaptureMouseRegion() {
 	dcbCaptureMouseP0 = dcbDrawState.cursor
 }
 
-func dcbCaptureMouseFromRegion(ctx *panes.Context, buttonScale float32) {
+func dcbCaptureMouseFromRegion(ctx *scope.Context, buttonScale float32) {
 	p1 := dcbDrawState.cursor
 	sz := buttonSize(buttonFull, buttonScale)
 	if dcbDrawState.position == dcbPositionTop || dcbDrawState.position == dcbPositionBottom {
@@ -1351,7 +1350,7 @@ func dcbCaptureMouseFromRegion(ctx *panes.Context, buttonScale float32) {
 	dcbCaptureMouse(ctx, clipped)
 }
 
-func dcbCaptureMouse(ctx *panes.Context, bounds math.Extent2D) {
+func dcbCaptureMouse(ctx *scope.Context, bounds math.Extent2D) {
 	// This is horrific and one of many ugly things about capturing the
 	// mouse, but most of Panes' work is in the simplified space of a
 	// pane coordinate system; here we need something in terms of
@@ -1363,7 +1362,7 @@ func dcbCaptureMouse(ctx *panes.Context, bounds math.Extent2D) {
 	ctx.Platform.StartCaptureMouse(bounds)
 }
 
-func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, commandMode CommandMode, flags dcbFlags,
+func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *scope.Context, text string, commandMode CommandMode, flags dcbFlags,
 	buttonScale float32, start func(), update func([2]float32)) {
 	active := sp.commandMode == commandMode
 	if sp.drawDCBButton(ctx, text, flags, buttonScale, active) && !active {
@@ -1372,7 +1371,7 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 		ctx.Platform.StartMouseDeltaMode()
 
 		sp.installCommandHandlers(makeCommandHandlers(
-			"[POS]", func(sp *STARSPane, ctx *panes.Context, _ math.Point2LL) {
+			"[POS]", func(sp *STARSPane, ctx *scope.Context, _ math.Point2LL) {
 				sp.resetInputState(ctx.Platform)
 				ctx.Platform.StopMouseDeltaMode()
 				ctx.SetMousePosition(savedMousePosition)
@@ -1391,7 +1390,7 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 // drawDCBSpinner draws the provided spinner at the current location in the
 // DCB. It handles mouse capture (and release) and passing mouse wheel
 // events to the spinner.
-func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
+func (sp *STARSPane) drawDCBSpinner(ctx *scope.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
 	active := sp.activeSpinner != nil && sp.activeSpinner.Equals(spinner)
 	// Slightly tricky: if the user has selected a command mode via the
 	// keyboard and that command mode has a single associated spinner, then
@@ -1426,7 +1425,7 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 
 		modeAfter := spinner.ModeAfter()
 		sp.installCommandHandlers(makeCommandHandlers(
-			"[POS]", func(sp *STARSPane, ctx *panes.Context, _ math.Point2LL) CommandStatus {
+			"[POS]", func(sp *STARSPane, ctx *scope.Context, _ math.Point2LL) CommandStatus {
 				if modeAfter == CommandModeNone {
 					sp.resetInputState(ctx.Platform)
 					return CommandStatus{}
@@ -1875,12 +1874,12 @@ func (s *dcbRangeRingRadiusSpinner) ModeAfter() CommandMode {
 // dcbBrightnessSpinner handles spinners in the BRITE menu
 type dcbBrightnessSpinner struct {
 	text     string
-	b        *radar.Brightness
-	min      radar.Brightness
+	b        *scope.Brightness
+	min      scope.Brightness
 	allowOff bool
 }
 
-func makeBrightnessSpinner(t string, b *radar.Brightness, min radar.Brightness, allowOff bool) dcbSpinner {
+func makeBrightnessSpinner(t string, b *scope.Brightness, min scope.Brightness, allowOff bool) dcbSpinner {
 	return &dcbBrightnessSpinner{text: t, b: b, min: min, allowOff: allowOff}
 }
 
@@ -1894,11 +1893,11 @@ func (s *dcbBrightnessSpinner) Equals(other dcbSpinner) bool {
 }
 
 func (s *dcbBrightnessSpinner) Delta(delta int) {
-	*s.b -= radar.Brightness(5 * delta)
+	*s.b -= scope.Brightness(5 * delta)
 	if *s.b < s.min && s.allowOff {
-		*s.b = radar.Brightness(0)
+		*s.b = scope.Brightness(0)
 	} else {
-		*s.b = radar.Brightness(math.Clamp(*s.b, s.min, 100))
+		*s.b = scope.Brightness(math.Clamp(*s.b, s.min, 100))
 	}
 }
 
@@ -1912,7 +1911,7 @@ func (s *dcbBrightnessSpinner) KeyboardInput(text string) (CommandMode, error) {
 	} else if v > 100 || (v < int(s.min) && !(v == 0 && s.allowOff)) {
 		return CommandModeNone, ErrSTARSIllegalValue
 	} else {
-		*s.b = radar.Brightness(v)
+		*s.b = scope.Brightness(v)
 		return CommandModeBrite, nil
 	}
 }
@@ -1945,14 +1944,14 @@ func (s *dcbCharSizeSpinner) ModeAfter() CommandMode {
 	return CommandModeCharSize
 }
 
-func (sp *STARSPane) selectButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) bool {
+func (sp *STARSPane) selectButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) bool {
 	return sp.drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0)
 }
 
-func (sp *STARSPane) disabledButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) {
+func (sp *STARSPane) disabledButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
 	sp.drawDCBButton(ctx, text, flags|buttonDisabled, buttonScale, false)
 }
 
-func (sp *STARSPane) unsupportedButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) {
+func (sp *STARSPane) unsupportedButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
 	sp.drawDCBButton(ctx, text, flags|buttonUnsupported, buttonScale, false)
 }

@@ -11,14 +11,14 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
 
 func registerSlewCommands() {
 	registerCommand(CommandModeNone, "[SLEW]",
-		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+		func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) CommandStatus {
 			state := sp.TrackState[trk.ADSBCallsign]
 
 			// This is all (hopefully) following the command precedence list in 2.10

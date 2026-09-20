@@ -14,9 +14,8 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
@@ -25,7 +24,7 @@ import (
 // ALTIM SET
 
 // drawAltimSetView renders the ALTIM SET floating window.
-func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawAltimSetView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.AltimSet.Visible {
 		return
@@ -74,7 +73,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 // the standard 29.92 inHg. The badge column and row color are filled in by
 // the View; this function just constructs the row text and the AfterDraw
 // underline (which captures `color` for the line).
-func altimRow(ctx *panes.Context, icao av.ICAOAirportCode, color renderer.RGB,
+func altimRow(ctx *scope.Context, icao av.ICAOAirportCode, color renderer.RGB,
 	font *renderer.Font, textWidth func(string) float32) Row {
 
 	displayID := av.AirportDisplayId(icao)
@@ -129,7 +128,7 @@ type altimSetPopup struct {
 	popupBase
 }
 
-func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (a *altimSetPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
@@ -162,7 +161,7 @@ func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 ///////////////////////////////////////////////////////////////////////////
 // CODE
 
-func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawBeaconCodeView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.BeaconCodeView.Visible {
 		return
@@ -198,7 +197,7 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 // manually-added codes (with trailing ".") plus the codes of aircraft whose
 // tracks we own, in the order dictated by SortManual. Row.Color is left zero
 // — the View fills in the default text color.
-func beaconCodeRows(ctx *panes.Context, ep *ERAMPane, ps *Preferences) []Row {
+func beaconCodeRows(ctx *scope.Context, ep *ERAMPane, ps *Preferences) []Row {
 	// Codes of aircraft whose tracks we own.
 	var owned []av.Squawk
 	for _, trk := range ctx.Client.State.Tracks {
@@ -248,7 +247,7 @@ type beaconCodeViewPopup struct {
 	popupBase
 }
 
-func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
@@ -274,10 +273,10 @@ func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms 
 ///////////////////////////////////////////////////////////////////////////
 // MCA - Message Composition Area
 
-func (ep *ERAMPane) drawCommandInput(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawCommandInput(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 }
 
-func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) startDrawCommandInput(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        ep.ERAMInputFont(),
 		Color:       colors.toolbar.text,
@@ -294,7 +293,7 @@ func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.S
 // boxes share black bg and a white border; the seam between them is drawn by
 // View as part of the outer border (and a separator line in the body). Width
 // fits ps.MCA.Width characters of the selected font plus 2px side padding.
-func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawMessageCompositionArea(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	font := ep.ERAMFont(ps.MCA.Font)
@@ -374,7 +373,7 @@ type mcaPopup struct {
 	popupBase
 }
 
-func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (m *mcaPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
@@ -399,7 +398,7 @@ func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 // drawResponseArea renders the RA: a single box with the wrapped
 // response-area text. Width fits ps.RA.Width characters of the selected font
 // plus 2px side padding.
-func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawResponseArea(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	const height = 77
@@ -434,7 +433,7 @@ type raPopup struct {
 	popupBase
 }
 
-func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (r *raPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
@@ -459,7 +458,7 @@ func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 ///////////////////////////////////////////////////////////////////////////
 // Time
 
-func (ep *ERAMPane) drawTimeView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawTimeView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	if ps.TimeView.Position == [2]float32{} {
@@ -499,7 +498,7 @@ type timeViewPopup struct {
 	popupBase
 }
 
-func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (t *timeViewPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
@@ -522,7 +521,7 @@ func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 // WX View
 
 // drawWXView renders the WX floating window.
-func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawWXView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.WX.Visible {
 		return
@@ -564,7 +563,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 // wxMetarBody returns the row body text for a station: the wrappable METAR
 // text (HHMM + remaining fields) when METAR data is available, or "-M-" as
 // a status placeholder otherwise.
-func wxMetarBody(ctx *panes.Context, icao av.ICAOAirportCode) string {
+func wxMetarBody(ctx *scope.Context, icao av.ICAOAirportCode) string {
 	metar, ok := ctx.Client.State.METAR[icao]
 	if !ok || metar.Raw == "" {
 		return "-M-"
@@ -608,7 +607,7 @@ type wxPopup struct {
 	popupBase
 }
 
-func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (w *wxPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
@@ -675,7 +674,7 @@ var checkListItems = map[int][]string{
 // drawCheckListView renders the active check list (POS CHECK or EMERG CHECK).
 // Rows are click-toggleable; the toggled state lives on ERAMPane and persists
 // across switches between the two lists.
-func (ep *ERAMPane) drawCheckListView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawCheckListView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if ps.CheckList.Visible == checkListHidden {
 		return
@@ -730,7 +729,7 @@ type checkListPopup struct {
 	popupBase
 }
 
-func (c *checkListPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (c *checkListPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{

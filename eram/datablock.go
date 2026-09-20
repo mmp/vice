@@ -8,9 +8,8 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -36,7 +35,7 @@ const (
 // leader line.
 type datablock interface {
 	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
-		sb *strings.Builder, brightness radar.Brightness,
+		sb *strings.Builder, brightness scope.Brightness,
 		dir math.CardinalOrdinalDirection, halfSeconds int64)
 	// dim scales every populated character's color; used for the conflict
 	// alert brightness-cycle flash.
@@ -96,7 +95,7 @@ func dbChopTrailing(f []dbChar) []dbChar {
 // dbDrawLines renders the given datablock lines.  The leader line direction is
 // used only to determine justification.
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
+	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
 	glyph := font.LookupGlyph(' ')
 	fontWidth := glyph.AdvanceX * dbLineOffsetScale
@@ -132,7 +131,7 @@ func dbSplitLine(l dbLine, n int) (dbLine, dbLine) {
 
 // dbDrawLine renders a single datablock line.
 func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
+	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
 	halfSeconds int64) {
 
 	style := renderer.TextStyle{Font: font}
@@ -195,7 +194,7 @@ type limitedDatablock struct {
 }
 
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
+	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
 	dir = math.East // Always east or west for LDBs (west not simulated)
 	lines := []dbLine{
@@ -221,7 +220,7 @@ type fullDatablock struct {
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
+	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
 
 	lines := []dbLine{
@@ -317,7 +316,7 @@ func (db *limitedDatablock) dim(factor float32) {
 	dimChars(db.line2[:], factor)
 }
 
-func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
+func (ep *ERAMPane) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
 	ep.fdbArena.Reset()
 	ep.ldbArena.Reset()
 
@@ -345,7 +344,7 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 	return dbs
 }
 
-func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
+func (ep *ERAMPane) getDatablock(ctx *scope.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
 	state := ep.TrackState[trk.ADSBCallsign]
 	ps := ep.currentPrefs()
 	switch dbType {
@@ -578,7 +577,7 @@ func getInterimAltitudeType(track sim.Track) string {
 }
 
 func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
-	ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
@@ -639,8 +638,8 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 // datablockAnchor returns the window-space anchor point used by both the
 // datablock renderer and the hover-outline computation. It also returns the
 // (possibly adjusted) direction the datablock was placed in.
-func (ep *ERAMPane) datablockAnchor(ctx *panes.Context, trk sim.Track, db datablock, dbType DatablockType,
-	transforms radar.ScopeTransformations) ([2]float32, math.CardinalOrdinalDirection) {
+func (ep *ERAMPane) datablockAnchor(ctx *scope.Context, trk sim.Track, db datablock, dbType DatablockType,
+	transforms scope.ScopeTransformations) ([2]float32, math.CardinalOrdinalDirection) {
 	state := ep.TrackState[trk.ADSBCallsign]
 	start := transforms.WindowFromLatLongP(state.Track.Location)
 	dir := ep.leaderLineDirection(ctx, trk)

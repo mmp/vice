@@ -42,7 +42,7 @@ type app struct {
 	mgr *client.ConnectionManager
 	cc  *client.ControlClient
 
-	scope     scope
+	scope     scopeView
 	inspector inspector
 
 	// Which scenario is selected in the picker, which may differ from the

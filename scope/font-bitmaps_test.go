@@ -1,4 +1,4 @@
-package radar
+package scope
 
 import "testing"
 

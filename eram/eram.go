@@ -14,10 +14,9 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -289,7 +288,7 @@ type ERAMPane struct {
 
 	prefrencesVisible bool `json:"-"`
 
-	scopeDraw radar.RouteDrawer
+	scopeDraw scope.RouteDrawer
 
 	IFPHelpers struct {
 		ArrivalsColor    *[3]float32
@@ -329,7 +328,7 @@ type ERAMPane struct {
 	posCheckToggled   []bool `json:"-"`
 	emergCheckToggled []bool `json:"-"`
 
-	weatherRadar radar.WeatherRadar `json:"-"`
+	weatherRadar scope.WeatherRadar `json:"-"`
 	nexrad       nexradCBs          `json:"-"`
 
 	commandMode       CommandMode     `json:"-"`
@@ -460,7 +459,7 @@ func (ep *ERAMPane) loadCursors(pl platform.Platform) {
 // The cursor is the temporary override (if any), else the base cursor chosen
 // in the CURSOR menu. When a timed override expires, the rollback cursor (if
 // set) becomes the new override; otherwise we fall back to the base cursor.
-func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
+func (ep *ERAMPane) updateCursorOverride(ctx *scope.Context) {
 	if ep.prefSet == nil || ctx.Mouse == nil {
 		return
 	}
@@ -522,7 +521,7 @@ func (ep *ERAMPane) ClearTemporaryCursor() {
 	ep.cursorRollbackSelection = ""
 }
 
-func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
 	ep.updateCursorOverride(ctx)
 
@@ -540,7 +539,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// ps.Range is the vertical extent of the scope in NM (matching the
 	// real-ERAM RANGE label); GetScopeTransformations wants the half-height.
 	// ERAM scopes are always true north up, hence no rotation.
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
+	transforms := scope.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range)/2, 0)
 
 	// Following are the draw functions. They are listed in the best of my ability
@@ -669,7 +668,7 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 		ep.prefSet.Current.VideoMapVisible = make(map[string]any)
 	}
 	if ep.prefSet.Current.VideoMapBrightness == nil {
-		ep.prefSet.Current.VideoMapBrightness = make(map[string]radar.Brightness)
+		ep.prefSet.Current.VideoMapBrightness = make(map[string]scope.Brightness)
 	}
 
 	// Update sim-dependent fields if they aren't set
@@ -858,7 +857,7 @@ func (m *feedbackMessage) Clear() {
 }
 
 // AFAIK, you can only type white, regular characters in the input (apart from the location symbols)
-func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
+func (ep *ERAMPane) processKeyboardInput(ctx *scope.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
 	}
@@ -994,7 +993,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	}
 }
 
-func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	if !ctx.Client.State.Paused {
 		return
 	}
@@ -1031,13 +1030,13 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 	})
 
 	// Apply transformations and draw
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
+	transforms := scope.GetScopeTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawVideoMaps(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	// Precompute a BCGIndex → RGB lookup table once per frame so the hot
@@ -1065,13 +1064,13 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	// The current group's base map is always drawn; it has no filter-menu
 	// button for the controller to turn off.
 	bm := ep.baseVideoMap
-	radar.DrawMapFeatures(bm.Lines, bm.Symbols, bm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
+	scope.DrawMapFeatures(bm.Lines, bm.Symbols, bm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
 
 	for _, vm := range ep.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[vm.Label()]; !ok {
 			continue
 		}
-		radar.DrawMapFeatures(vm.Lines, vm.Symbols, vm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
+		scope.DrawMapFeatures(vm.Lines, vm.Symbols, vm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
 	}
 
 	ld.GenerateCommands(cb)

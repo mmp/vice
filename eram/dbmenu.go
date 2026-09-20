@@ -10,9 +10,8 @@ import (
 	"strings"
 
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -28,7 +27,7 @@ type dbMenuBase struct {
 
 // resolveTrack looks the menu's flight up fresh each frame; if it is gone
 // (or has no flight plan) the menu closes and nil is returned.
-func (m *dbMenuBase) resolveTrack(ep *ERAMPane, ctx *panes.Context) *sim.Track {
+func (m *dbMenuBase) resolveTrack(ep *ERAMPane, ctx *scope.Context) *sim.Track {
 	trk, ok := ctx.GetTrackByACID(m.acid)
 	if !ok || trk.FlightPlan == nil {
 		ep.popup = nil
@@ -39,7 +38,7 @@ func (m *dbMenuBase) resolveTrack(ep *ERAMPane, ctx *panes.Context) *sim.Track {
 
 // openDatablockMenu clamps a new menu's placement (flipping to the left of
 // the datablock if it would run off the pane edge) and returns its origin.
-func (ep *ERAMPane) openDatablockMenu(ctx *panes.Context, dbMain math.Extent2D, width, height float32) [2]float32 {
+func (ep *ERAMPane) openDatablockMenu(ctx *scope.Context, dbMain math.Extent2D, width, height float32) [2]float32 {
 	pl := ep.OpenPopupAt(ctx, [2]float32{dbMain.P1[0], dbMain.P1[1]}, width, height, ep.ERAMFont(2), dbMain)
 	return pl.Origin
 }
@@ -81,7 +80,7 @@ var altitudeMenuAlts = func() []int {
 	return alts
 }()
 
-func (ep *ERAMPane) openAltitudeMenu(ctx *panes.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *ERAMPane) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -105,7 +104,7 @@ func (ep *ERAMPane) openAltitudeMenu(ctx *panes.Context, trk *sim.Track, dbMain 
 	}
 }
 
-func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -252,7 +251,7 @@ type headingMenuPopup struct {
 	initialized bool
 }
 
-func (ep *ERAMPane) openHeadingMenu(ctx *panes.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *ERAMPane) openHeadingMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -301,7 +300,7 @@ func headingMenuRows(lt, rt bool) [][2]string {
 	return rows
 }
 
-func (p *headingMenuPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (p *headingMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -404,7 +403,7 @@ type speedMenuPopup struct {
 	initialized bool
 }
 
-func (ep *ERAMPane) openSpeedMenu(ctx *panes.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *ERAMPane) openSpeedMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -428,7 +427,7 @@ func (ep *ERAMPane) openSpeedMenu(ctx *panes.Context, trk *sim.Track, dbMain mat
 	ep.popup = p
 }
 
-func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -560,7 +559,7 @@ type freeTextMenuPopup struct {
 	buf string
 }
 
-func (ep *ERAMPane) openFreeTextMenu(ctx *panes.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *ERAMPane) openFreeTextMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	fp := trk.FlightPlan
 	if fp == nil {
 		return
@@ -583,7 +582,7 @@ func (ep *ERAMPane) openFreeTextMenu(ctx *panes.Context, trk *sim.Track, dbMain 
 
 // handleKeyboard consumes all keyboard input while the menu is open: typed
 // characters edit the buffer, Enter saves it, Escape closes the menu.
-func (p *freeTextMenuPopup) handleKeyboard(ep *ERAMPane, ctx *panes.Context) bool {
+func (p *freeTextMenuPopup) handleKeyboard(ep *ERAMPane, ctx *scope.Context) bool {
 	for _, r := range strings.ToUpper(ctx.Keyboard.Input) {
 		if r <= ' ' || r > '~' || r == '`' {
 			continue
@@ -614,7 +613,7 @@ func (p *freeTextMenuPopup) handleKeyboard(ep *ERAMPane, ctx *panes.Context) boo
 	return true
 }
 
-func (p *freeTextMenuPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (p *freeTextMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return

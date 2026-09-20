@@ -1,8 +1,8 @@
-// pkg/panes/panes.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// scope/context.go
+// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package panes
+package scope
 
 import (
 	"maps"
@@ -11,110 +11,17 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
-	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
-
-	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-// Panes (should) mostly operate in window coordinates: (0,0) is lower
-// left, just in their own pane, oblivious to the full window size.  Higher
-// level code will handle positioning the panes in the main window.
-type Pane interface {
-	// Activate is called once at startup time; it should do general,
-	// Sim-independent initialization.
-	Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger)
-
-	// LoadedSim is called when vice is restarted and a Sim is loaded from disk.
-	LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
-
-	// ResetSim is called when a brand new Sim is launched
-	ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
-
-	CanTakeKeyboardFocus() bool
-	Draw(ctx *Context, cb *renderer.CommandBuffer)
-}
-
-type UIDrawer interface {
-	DisplayName() string
-	DrawUI(p platform.Platform, config *platform.Config)
-}
-
-type InfoWindowDrawer interface {
-	DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger)
-}
-
-type PaneUpgrader interface {
-	Upgrade(prev, current int)
-}
-
-var UICautionColor renderer.RGB = renderer.RGBFromHex(0xB7B513)
-var UITextColor renderer.RGB = renderer.RGB{R: 0.85, G: 0.85, B: 0.85}
-var UITextHighlightColor renderer.RGB = renderer.RGBFromHex(0xB2B338)
-var UIErrorColor renderer.RGB = renderer.RGBFromHex(0xE94242)
-
-// DrawPinButton draws a thumbtack toggle in the title bar of the current
-// imgui window. Uses the draw list so it doesn't affect auto-resize layout.
-// Call immediately after imgui.BeginV().
-func DrawPinButton(windowTitle string, unpinnedWindows map[string]struct{}, p platform.Platform) {
-	_, unpinned := unpinnedWindows[windowTitle]
-	pinned := !unpinned
-
-	icon := gui.Icons.Thumbtack
-	iconSize := imgui.CalcTextSize(icon)
-
-	style := imgui.CurrentStyle()
-	windowPos := imgui.WindowPos()
-	windowW := imgui.WindowWidth()
-	titleBarH := imgui.FrameHeight() + style.FramePadding().Y
-
-	// Position to the left of the close button. The close button occupies
-	// roughly titleBarH from the right edge.
-	btnX := windowPos.X + windowW - titleBarH - iconSize.X - style.FramePadding().X
-	btnY := windowPos.Y + (titleBarH-iconSize.Y)*0.5
-
-	var color imgui.Vec4
-	if pinned {
-		color = style.Colors()[imgui.ColText]
-	} else {
-		color = imgui.Vec4{X: 0.5, Y: 0.5, Z: 0.5, W: 1}
-	}
-
-	dl := imgui.ForegroundDrawListViewportPtr()
-	dl.AddTextVec2(imgui.Vec2{X: btnX, Y: btnY}, imgui.ColorU32Vec4(color), icon)
-
-	// Hit-test for click and tooltip.
-	pad := float32(2)
-	btnMin := imgui.Vec2{X: btnX - pad, Y: btnY - pad}
-	btnMax := imgui.Vec2{X: btnX + iconSize.X + pad, Y: btnY + iconSize.Y + pad}
-	mouse := imgui.MousePos()
-	if mouse.X >= btnMin.X && mouse.X <= btnMax.X &&
-		mouse.Y >= btnMin.Y && mouse.Y <= btnMax.Y {
-		if imgui.IsMouseClickedBool(0) && !imgui.IsPopupOpenStr("") {
-			if pinned {
-				unpinnedWindows[windowTitle] = struct{}{}
-			} else {
-				delete(unpinnedWindows, windowTitle)
-			}
-		}
-		imgui.SetTooltip(util.Select(pinned, "Unpin window (allow behind main window)", "Pin window (always on top)"))
-	}
-
-	// Sync the OS-level floating attribute for this window's viewport.
-	// Only applies to secondary viewports (windows dragged outside main).
-	vp := imgui.WindowViewport()
-	mainVP := imgui.MainViewport()
-	if vp != nil && vp.ID() != mainVP.ID() {
-		appFocused := p.IsAppFocused()
-		p.SetViewportFloating(vp.PlatformHandle(), pinned && appFocused)
-	}
-}
-
+// Context carries the per-frame state a radar scope needs in order to draw
+// itself and to handle input: where it is on screen, the renderer and
+// input devices, and the client connection it is displaying.
 type Context struct {
 	PaneExtent       math.Extent2D
 	ParentPaneExtent math.Extent2D

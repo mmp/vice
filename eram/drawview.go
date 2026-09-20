@@ -10,10 +10,9 @@ import (
 	"time"
 
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 )
 
 // DrawView renders ERAM floating windows (ALTIM SET, WX REPORT, MCA, RA, Clock,
@@ -117,7 +116,7 @@ type View struct {
 
 	Opaque     bool
 	ShowBorder bool
-	Brightness radar.Brightness
+	Brightness scope.Brightness
 
 	// OpaqueOnlyBg controls how the body background reacts to Opaque. When
 	// false (default), the body background is always drawn black — used by
@@ -302,7 +301,7 @@ func addQuad(trid *renderer.ColoredTrianglesDrawBuilder, ex math.Extent2D, color
 // clampViewPos clamps a view top-left so the whole window stays inside the
 // pane, leaving the top-toolbar buffer free when the toolbar is visible.
 // pos is the view's top-left in pane-local coords (y up).
-func (ep *ERAMPane) clampViewPos(ctx *panes.Context, pos [2]float32, width, totalH float32) [2]float32 {
+func (ep *ERAMPane) clampViewPos(ctx *scope.Context, pos [2]float32, width, totalH float32) [2]float32 {
 	paneW := ctx.PaneExtent.Width()
 	paneH := ctx.PaneExtent.Height()
 	toolbarH := float32(0)
@@ -379,7 +378,7 @@ func scrollReserveWidth(v View, titleFont *renderer.Font) float32 {
 
 // viewTextColor returns the standard list-view text color scaled by the
 // given Brightness.
-func (ep *ERAMPane) viewTextColor(b radar.Brightness) renderer.RGB {
+func (ep *ERAMPane) viewTextColor(b scope.Brightness) renderer.RGB {
 	return b.ScaleRGB(colors.view.text)
 }
 
@@ -473,7 +472,7 @@ func drawScrollArrow(ld *renderer.ColoredLinesDrawBuilder, centerX, tipY float32
 // scroll bar → title-bar buttons → title-bar drag → body-tertiary menu →
 // body-primary drag → finalize in-progress drag. Each handler consumes its
 // click so Body sees only fall-through events.
-func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer, v View) {
+func (ep *ERAMPane) DrawView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer, v View) {
 	mouse := ctx.Mouse
 
 	titleFont := ep.ERAMFont(2)
@@ -1331,7 +1330,7 @@ type deleteEntryPopup struct {
 // openDeleteEntryPopup positions a deleteEntryPopup adjacent to the clicked
 // row, flipping left if it would otherwise overflow the pane, and warps the
 // cursor to its center so the user can confirm without moving the mouse.
-func (ep *ERAMPane) openDeleteEntryPopup(ctx *panes.Context, item ViewSelectableItem,
+func (ep *ERAMPane) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem,
 	sel *ViewSelectable, font *renderer.Font) *deleteEntryPopup {
 
 	label := ""
@@ -1370,7 +1369,7 @@ func (ep *ERAMPane) openDeleteEntryPopup(ctx *panes.Context, item ViewSelectable
 	}
 }
 
-func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	mouse := ctx.Mouse
 	ps := ep.currentPrefs()
 

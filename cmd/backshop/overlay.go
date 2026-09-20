@@ -7,8 +7,8 @@ package main
 import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -57,7 +57,7 @@ func drawToggle[T any](set map[string]T, id string, value func() T) {
 	}
 }
 
-func (in *inspector) drawOverlays(a *app, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (in *inspector) drawOverlays(a *app, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
 	o := &in.overlays
 	if len(o.volumes) == 0 && len(o.points) == 0 {
 		return
