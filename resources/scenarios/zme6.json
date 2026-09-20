@@ -19,7 +19,6 @@
     }
   },
   "default_scenario": "ZME Area 6",
-  "magnetic_adjustment": -2.0,
   "scenarios": {
     "ZME Area 6": {
       "configuration": "C31",

@@ -19,7 +19,6 @@
     }
   },
   "default_scenario": "ZFW 42 - Decod-High",
-  "magnetic_adjustment": 3.0,
   "scenarios": {
     "ZFW 42 - Decod-High": {
       "configuration": "C42",

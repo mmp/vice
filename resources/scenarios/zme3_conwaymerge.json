@@ -19,7 +19,6 @@
     }
   },
   "default_scenario": "ZME Conway + Pine Bluff Merge onto SEEVR",
-  "magnetic_adjustment": -2.0,
   "scenarios": {
     "ZME Conway + Pine Bluff Merge onto SEEVR": {
       "configuration": "C21",

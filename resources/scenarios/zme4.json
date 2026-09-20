@@ -12,7 +12,6 @@
     }
   },
   "default_scenario": "ZME Area 4",
-  "magnetic_adjustment": -2.0,
   "scenarios": {
     "ZME Area 4": {
       "configuration": "C46",

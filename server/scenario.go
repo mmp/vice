@@ -1319,12 +1319,20 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			sg.MagneticAdjustment, maxMagneticAdjustment)
 	}
 
-	// One facility, one magnetic variation: it is sampled at the facility's
-	// published center, so groups covering different parts of the same
-	// facility agree on it.
-	if fac, ok := av.DB.LookupFacility(sg.facility()); !ok {
-		e.ErrorString("%s: facility unknown", sg.facility())
-	} else if mvar, err := av.DB.MagneticGrid.Lookup(fac.Center()); err != nil {
+	// One facility, one magnetic variation: it is sampled at a single point
+	// for the facility, so groups covering different parts of the same
+	// facility agree on it. ERAM samples at the ARTCC's adaptation center,
+	// the same point NmPerLongitude comes from; STARS at the TRACON's
+	// published center.
+	center := sg.FacilityConfig.FacilityAdaptation.Center
+	if sg.ARTCC == "" {
+		if fac, ok := av.DB.LookupFacility(sg.facility()); !ok {
+			e.ErrorString("%s: facility unknown", sg.facility())
+		} else {
+			center = fac.Center()
+		}
+	}
+	if mvar, err := av.DB.MagneticGrid.Lookup(center); err != nil {
 		e.ErrorString("%s: unable to find magnetic declination: %v", sg.facility(), err)
 	} else {
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment

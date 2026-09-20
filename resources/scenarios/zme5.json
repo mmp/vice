@@ -87,7 +87,6 @@
     }
   },
   "default_scenario": "ZME Area 5 Consolidated",
-  "magnetic_adjustment": -3.0,
   "scenarios": {
     "ZME 61 Clarksville Ultra-High": {
       "configuration": "C61",

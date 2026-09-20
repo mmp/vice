@@ -12,7 +12,6 @@
     }
   },
   "default_scenario": "ZFW 25 Union Ultra-Hi",
-  "magnetic_adjustment": 3.0,
   "scenarios": {
     "ZFW 25 Union Ultra-Hi": {
       "configuration": "C25",
