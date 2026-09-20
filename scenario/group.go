@@ -19,6 +19,10 @@ import (
 )
 
 type Group struct {
+	// The published aeronautical data a scenario is checked against; Locate
+	// below takes precedence for fixes the scenario defines itself.
+	enroute.DBLocator
+
 	ARTCC              string                             `json:"artcc"`
 	Area               string                             `json:"area"`
 	TRACON             string                             `json:"tracon"`

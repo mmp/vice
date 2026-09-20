@@ -97,12 +97,12 @@ func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[Exit
 // runway does an assigned heading--"initial_heading" or a
 // "climbout_actions" heading--stand in for one, with the route starting
 // from the SID's common portion.
-func sidWaypoints(icao ICAOAirportCode, sid, transition string, rwy RunwayID, exit ExitID,
+func sidWaypoints(db Database, icao ICAOAirportCode, sid, transition string, rwy RunwayID, exit ExitID,
 	assignedHeading bool) (WaypointArray, error) {
-	s, ok := DB.Airports[icao].SIDs[sid]
+	s, ok := db.AirportSIDs(icao)[sid]
 	if !ok {
 		return nil, fmt.Errorf("SID %q isn't in the FAA CIFP for %s. Options: %s",
-			sid, icao, strings.Join(util.SortedMapKeys(DB.Airports[icao].SIDs), ", "))
+			sid, icao, strings.Join(util.SortedMapKeys(db.AirportSIDs(icao)), ", "))
 	}
 	runway := rwy.Base()
 	if _, ok := s.RunwayTransitions[runway]; !ok && assignedHeading {
@@ -142,7 +142,7 @@ func ChartedSIDPaths(s SID) [][]string {
 
 // exitSIDs returns the base names of the SIDs that the airport's departure
 // routes fly for the given exit, in sorted order.
-func (ap *Airport) exitSIDs(exit string) []string {
+func (ap *Airport) exitSIDs(db Database, exit string) []string {
 	sids := make(map[string]bool)
 	for _, exitRoutes := range ap.DepartureRoutes {
 		for exitID, routes := range exitRoutes {
@@ -171,7 +171,7 @@ func commonPrefixLen(a, b []string) int {
 // checkDepartureRouteAlongSID flags a departure whose route includes charted
 // fixes of its exit's SID between the exit and the fix where the route
 // leaves the SID: these hinder matching up routes from real-world flights.
-func (ap *Airport) checkDepartureRouteAlongSID(icao ICAOAirportCode, dep *Departure, e *util.ErrorLogger) {
+func (ap *Airport) checkDepartureRouteAlongSID(db Database, icao ICAOAirportCode, dep *Departure, e *util.ErrorLogger) {
 	exit := dep.Exit.Base()
 	fixes := util.MapSlice(dep.RouteWaypoints, func(wp Waypoint) string { return wp.Fix })
 	exitIdx := slices.Index(fixes, exit)
@@ -196,8 +196,8 @@ func (ap *Airport) checkDepartureRouteAlongSID(icao ICAOAirportCode, dep *Depart
 	}
 
 	best, bestSID := 0, ""
-	for _, sid := range ap.exitSIDs(exit) {
-		s, ok := LookupSID(icao, sid)
+	for _, sid := range ap.exitSIDs(db, exit) {
+		s, ok := LookupSID(db, icao, sid)
 		if !ok {
 			continue
 		}
@@ -229,7 +229,7 @@ func appendUnique(fixes []string, fix string) []string {
 // paths and, for paths with none behind, the exits ahead of it. wps is the
 // route's parsed waypoints, already trimmed of airport ids; exits holds the
 // exit base names to look for. SID names tolerate a stale revision.
-func SIDPathExits(icao ICAOAirportCode, wps WaypointArray, exits map[string]bool,
+func SIDPathExits(db Database, icao ICAOAirportCode, wps WaypointArray, exits map[string]bool,
 	sids []string) (behind, ahead []string) {
 	i := slices.IndexFunc(wps, func(wp Waypoint) bool { return IsNamedFix(wp.Fix) })
 	if i == -1 {
@@ -255,7 +255,7 @@ func SIDPathExits(icao ICAOAirportCode, wps WaypointArray, exits map[string]bool
 	}
 
 	for _, name := range sids {
-		s, ok := LookupSID(icao, name)
+		s, ok := LookupSID(db, icao, name)
 		if !ok {
 			continue
 		}
@@ -276,18 +276,18 @@ func SIDPathExits(icao ICAOAirportCode, wps WaypointArray, exits map[string]bool
 
 // LookupSID returns the airport's CIFP SID with the given name, tolerating a
 // stale revision number: DEEZZ5 finds DEEZZ6 when that is what the CIFP has.
-func LookupSID(icao ICAOAirportCode, name string) (SID, bool) {
-	ap, ok := DB.Airports[icao]
-	if !ok {
+func LookupSID(db Database, icao ICAOAirportCode, name string) (SID, bool) {
+	sids := db.AirportSIDs(icao)
+	if len(sids) == 0 {
 		return SID{}, false
 	}
-	if s, ok := ap.SIDs[name]; ok {
+	if s, ok := sids[name]; ok {
 		return s, true
 	}
 	base := ProcedureBase(name)
-	for _, n := range util.SortedMapKeys(ap.SIDs) {
+	for _, n := range util.SortedMapKeys(sids) {
 		if ProcedureBase(n) == base {
-			return ap.SIDs[n], true
+			return sids[n], true
 		}
 	}
 	return SID{}, false
@@ -340,12 +340,12 @@ func (er *ExitRoute) amendSIDWaypoints(wps WaypointArray, e *util.ErrorLogger) W
 // them: the tower-assigned heading the route leaves the runway on in place of
 // the SID's runway transition, if any, and the "waypoint_actions" that give
 // its own actions at the SID's fixes.
-func (er *ExitRoute) chartedSIDRoute(icao ICAOAirportCode, rwy RunwayID, exit ExitID, r, rend Runway,
+func (er *ExitRoute) chartedSIDRoute(db Database, icao ICAOAirportCode, rwy RunwayID, exit ExitID, r, rend Runway,
 	loc Locator, nmPerLongitude float32, magneticVariation float32) (int, map[string]string, bool) {
 	sid, transition, _ := strings.Cut(er.SID, ".")
 
 	flies := func(wps WaypointArray, initialHeading bool) (map[string]string, bool) {
-		charted, err := sidWaypoints(icao, sid, transition, rwy, exit, initialHeading)
+		charted, err := sidWaypoints(db, icao, sid, transition, rwy, exit, initialHeading)
 		if err != nil {
 			return nil, false
 		}
@@ -378,7 +378,7 @@ func (er *ExitRoute) chartedSIDRoute(icao ICAOAirportCode, rwy RunwayID, exit Ex
 	// none; a route that overrides a charted transition is its own.
 	// Restrictions or sim actions at the departure end have nowhere to go in
 	// this form either.
-	if _, charted := DB.Airports[icao].SIDs[sid].RunwayTransitions[rwy.Base()]; charted {
+	if _, charted := db.AirportSIDs(icao)[sid].RunwayTransitions[rwy.Base()]; charted {
 		return 0, nil, false
 	}
 	heading, wps := 0, er.Waypoints
@@ -411,7 +411,7 @@ func (er *ExitRoute) chartedSIDRoute(icao ICAOAirportCode, rwy RunwayID, exit Ex
 // checkChartedSIDRoute reports a hand-written route that spells out the SID it
 // names as the CIFP charts it. One set of waypoints serves every exit in the
 // route's key, so it is only redundant if they are the SID's to each of them.
-func (er *ExitRoute) checkChartedSIDRoute(icao ICAOAirportCode, rwy RunwayID, exits []ExitID, r, rend Runway,
+func (er *ExitRoute) checkChartedSIDRoute(db Database, icao ICAOAirportCode, rwy RunwayID, exits []ExitID, r, rend Runway,
 	loc Locator, nmPerLongitude float32, magneticVariation float32, e *util.ErrorLogger) {
 	if er.SID == "" || len(exits) == 0 {
 		return
@@ -420,7 +420,7 @@ func (er *ExitRoute) checkChartedSIDRoute(icao ICAOAirportCode, rwy RunwayID, ex
 	var heading int
 	var actions map[string]string
 	for _, exit := range exits {
-		h, a, ok := er.chartedSIDRoute(icao, rwy, exit, r, rend, loc, nmPerLongitude, magneticVariation)
+		h, a, ok := er.chartedSIDRoute(db, icao, rwy, exit, r, rend, loc, nmPerLongitude, magneticVariation)
 		if !ok {
 			return
 		}
@@ -467,7 +467,7 @@ func atDepartureEnd(wp Waypoint, r, rend Runway, nmPerLongitude float32) bool {
 // route--and checks the route's other members against them. override carries
 // the route's parsed "climbout_actions": actions and restrictions that
 // apply at the midpoint, once the aircraft is 400' up.
-func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runway, nmPerLongitude float32,
+func (er *ExitRoute) initialize(db Database, icao ICAOAirportCode, rwy RunwayID, r, rend Runway, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[ControlPosition]*Controller, override Waypoint,
 	e *util.ErrorLogger) {
 	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, rend.Threshold, nmPerLongitude), magneticVariation)
@@ -529,7 +529,7 @@ func (er *ExitRoute) initialize(icao ICAOAirportCode, rwy RunwayID, r, rend Runw
 			Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: track, Track: true}},
 			Until: WaypointActionTermination{
 				Type:      WaypointActionAltitude,
-				Altitude:  DB.Airports[icao].Elevation + 400,
+				Altitude:  db.AirportElevation(icao) + 400,
 				AtOrAbove: true,
 			},
 		},
@@ -703,7 +703,7 @@ func (ap *Airport) ExitCategory(exit ExitID) string {
 
 // checkExits validates the three places exits are named against each other:
 // "departure_routes", "departures", and "exit_categories".
-func (ap *Airport) checkExits(loc Locator, e *util.ErrorLogger) {
+func (ap *Airport) checkExits(db Database, e *util.ErrorLogger) {
 	// Names an "exit_categories" entry may go by: an exit id, or the base fix
 	// of one, which ExitCategory takes as covering all of the gate's variants.
 	named := make(map[ExitID]any)
@@ -746,7 +746,7 @@ func (ap *Airport) checkExits(loc Locator, e *util.ErrorLogger) {
 		if flown || ap.ExitCategory(exit) != "" {
 			continue
 		}
-		if _, ok := loc.Locate(exit.Base()); !ok {
+		if _, ok := db.Locate(exit.Base()); !ok {
 			e.ErrorString(`"departure_routes" exit %q names no fix and nothing else uses it`, exit)
 		}
 	}
@@ -757,7 +757,7 @@ func (ap *Airport) checkExits(loc Locator, e *util.ErrorLogger) {
 // that reaches one, mirroring how departureExit places published flights: a
 // route that merely names a SID without touching one of its charted fixes
 // reaches nothing.
-func (ap *Airport) routeReachesExit(route string, icao ICAOAirportCode) bool {
+func (ap *Airport) routeReachesExit(db Database, route string, icao ICAOAirportCode) bool {
 	wps := TrimDepartureAirportWaypoints(RouteWaypoints(route), icao)
 
 	exits := make(map[string]bool)
@@ -775,6 +775,6 @@ func (ap *Airport) routeReachesExit(route string, icao ICAOAirportCode) bool {
 	if slices.ContainsFunc(wps, func(wp Waypoint) bool { return exits[wp.Fix] }) {
 		return true
 	}
-	behind, ahead := SIDPathExits(icao, wps, exits, sids)
+	behind, ahead := SIDPathExits(db, icao, wps, exits, sids)
 	return len(behind) > 0 || len(ahead) > 0
 }

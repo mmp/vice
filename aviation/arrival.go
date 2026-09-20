@@ -125,10 +125,10 @@ func (ar Arrival) ServedSTARs() []string {
 // the named STAR for, in sorted order. A STAR serving several airports is
 // recorded once under each of them, so the ones whose entry has it are the ones
 // it is charted for.
-func starAirports(star string, airports map[ICAOAirportCode]*Airport) []ICAOAirportCode {
+func starAirports(db Database, star string, airports map[ICAOAirportCode]*Airport) []ICAOAirportCode {
 	var icaos []ICAOAirportCode
 	for icao := range airports {
-		if _, ok := DB.Airports[icao].STARs[star]; ok {
+		if _, ok := db.AirportSTARs(icao)[star]; ok {
 			icaos = append(icaos, icao)
 		}
 	}
@@ -153,7 +153,7 @@ const starRunMargin = 2
 // The name comes back empty if the waypoints follow no STAR, or follow two of
 // them equally: this is a heuristic and the STARs into an airport share their
 // last fixes.
-func (ar *Arrival) followedSTAR() (best string, bestRun, namedRun int) {
+func (ar *Arrival) followedSTAR(db Database) (best string, bestRun, namedRun int) {
 	var fixes []string
 	for _, wp := range ar.Waypoints {
 		// Waypoints synthesized during deserialization are no part of a STAR.
@@ -167,11 +167,7 @@ func (ar *Arrival) followedSTAR() (best string, bestRun, namedRun int) {
 
 	tied := false
 	for _, icao := range ar.Airports {
-		ap, ok := DB.Airports[icao]
-		if !ok {
-			continue
-		}
-		for _, name := range util.SortedMapKeys(ap.STARs) {
+		for _, name := range util.SortedMapKeys(db.AirportSTARs(icao)) {
 			run, shared := 0, 0
 			score := func(wps WaypointArray) {
 				run = max(run, sharedRun(fixes, wps))
@@ -179,7 +175,7 @@ func (ar *Arrival) followedSTAR() (best string, bestRun, namedRun int) {
 			}
 			// The runway transitions count as much as the transitions in: an
 			// arrival that starts inside the facility flies only those.
-			star := ap.STARs[name]
+			star := db.AirportSTARs(icao)[name]
 			for _, wps := range star.Transitions {
 				score(wps)
 			}
@@ -311,18 +307,17 @@ func starRunwayWaypoints(star STAR, rwy string) (WaypointArray, bool) {
 // airports it serves. The waypoints come back as the CIFP has them: their
 // locations are resolved once "waypoint_actions" have been added, since an
 // action may name a fix of its own to locate.
-func (ar *Arrival) takeSTARWaypoints(spawnPoint string, e *util.ErrorLogger) {
+func (ar *Arrival) takeSTARWaypoints(db Database, spawnPoint string, e *util.ErrorLogger) {
 	for _, icao := range ar.Airports {
-		airport, ok := DB.Airports[icao]
-		if !ok {
+		if !db.IsPublishedAirport(icao) {
 			e.ErrorString("airport %q not found in database", icao)
 			continue
 		}
 
-		star, ok := airport.STARs[ar.STAR]
+		star, ok := db.AirportSTARs(icao)[ar.STAR]
 		if !ok {
 			e.ErrorString("STAR %q not available for %s. Options: %s", ar.STAR, icao,
-				strings.Join(util.SortedMapKeys(airport.STARs), ", "))
+				strings.Join(util.SortedMapKeys(db.AirportSTARs(icao)), ", "))
 			continue
 		}
 
@@ -332,7 +327,7 @@ func (ar *Arrival) takeSTARWaypoints(spawnPoint string, e *util.ErrorLogger) {
 			ar.Waypoints = starWaypointsFrom(star, spawnPoint, e)
 		}
 
-		for _, rwy := range airport.Runways {
+		for _, rwy := range db.AirportRunways(icao) {
 			wps, ok := starRunwayWaypoints(star, rwy.Id)
 			if !ok {
 				continue
@@ -526,7 +521,7 @@ func sameRunwayTransitions(a, b map[ICAOAirportCode]map[string]WaypointArray,
 // runway transitions are the CIFP's STAR as charted, so that naming the STAR
 // and where it joins would fly it the same way, and returns the
 // "waypoint_actions" that give its own actions at the STAR's fixes.
-func (ar *Arrival) chartedSTARRoute(loc Locator, nmPerLongitude float32,
+func (ar *Arrival) chartedSTARRoute(db Database, nmPerLongitude float32,
 	magneticVariation float32) (map[string]string, bool) {
 	if ar.STAR == "" || len(ar.Waypoints) == 0 {
 		return nil, false
@@ -539,12 +534,12 @@ func (ar *Arrival) chartedSTARRoute(loc Locator, nmPerLongitude float32,
 
 	var scratch util.ErrorLogger
 	charted := Arrival{STAR: ar.STAR, Airports: ar.Airports}
-	charted.takeSTARWaypoints(ar.Waypoints[0].Fix, &scratch)
+	charted.takeSTARWaypoints(db, ar.Waypoints[0].Fix, &scratch)
 	if scratch.HaveErrors() || len(charted.Waypoints) == 0 {
 		return nil, false
 	}
 	locate := func(wps WaypointArray) WaypointArray {
-		return wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, &scratch)
+		return wps.InitializeLocations(db, nmPerLongitude, magneticVariation, false, &scratch)
 	}
 	charted.eachRoute(&scratch, locate)
 	if scratch.HaveErrors() {
@@ -583,9 +578,9 @@ func (ar *Arrival) chartedSTARRoute(loc Locator, nmPerLongitude float32,
 
 // checkChartedSTARRoute reports an arrival that spells out the STAR it names
 // as the CIFP charts it; it should say where it joins the STAR instead.
-func (ar *Arrival) checkChartedSTARRoute(loc Locator, nmPerLongitude float32, magneticVariation float32,
+func (ar *Arrival) checkChartedSTARRoute(db Database, nmPerLongitude float32, magneticVariation float32,
 	e *util.ErrorLogger) {
-	actions, ok := ar.chartedSTARRoute(loc, nmPerLongitude, magneticVariation)
+	actions, ok := ar.chartedSTARRoute(db, nmPerLongitude, magneticVariation)
 	if !ok {
 		return
 	}
@@ -603,7 +598,7 @@ func (ar *Arrival) checkChartedSTARRoute(loc Locator, nmPerLongitude float32, ma
 		spelled, ar.STAR, strings.Join(give, " and "))
 }
 
-func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariation float32,
+func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariation float32,
 	airports map[ICAOAirportCode]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
@@ -634,7 +629,7 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 			e.ErrorString(`must name the airports the arrival serves in "airports"`)
 			return
 		}
-		ar.Airports = starAirports(ar.STAR, airports)
+		ar.Airports = starAirports(db, ar.STAR, airports)
 		if len(ar.Airports) == 0 {
 			e.ErrorString("STAR %q isn't charted for any of the scenario's airports; "+
 				`name the airports it serves in "airports"`, ar.STAR)
@@ -659,7 +654,7 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 
 	if ar.STAR != "" && len(ar.Waypoints) > 0 {
 		if !slices.ContainsFunc(ar.Airports, func(icao ICAOAirportCode) bool {
-			_, ok := DB.Airports[icao].STARs[ar.STAR]
+			_, ok := db.AirportSTARs(icao)[ar.STAR]
 			return ok
 		}) {
 			e.ErrorString(`"star" %q isn't charted for any of the airports the arrival serves: %s`,
@@ -696,7 +691,7 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 			}
 		}
 
-		ar.takeSTARWaypoints(spawnPoint, e)
+		ar.takeSTARWaypoints(db, spawnPoint, e)
 		if len(ar.Waypoints) == 0 {
 			e.ErrorString("Couldn't find waypoint %s in any of the STAR routes", spawnPoint)
 			return
@@ -707,9 +702,9 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 		ar.addWaypointActions(spawnPoint, spawnT, e)
 		ar.addAutomaticHandoff(spawnT)
 
-		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+		ar.Waypoints = ar.Waypoints.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
 		ar.eachRunwayTransition(e, func(wps WaypointArray) WaypointArray {
-			wps = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+			wps = wps.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
 			for i := range wps {
 				wps[i].SetOnSTAR(true)
 			}
@@ -734,7 +729,7 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 			return
 		}
 
-		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+		ar.Waypoints = ar.Waypoints.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
 
 		for ap, rwywp := range ar.RunwayWaypoints {
 			e.Push("Airport " + string(ap))
@@ -749,10 +744,10 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 				e.Push("Runway " + rwy)
 
 				if _, ok := LookupRunway(ap, rwy); !ok {
-					e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[ap].ValidRunways())
+					e.ErrorString("runway %q is unknown. Options: %s", rwy, db.ValidRunways(ap))
 				}
 
-				wp = wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+				wp = wp.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
 
 				for i := range wp {
 					wp[i].SetOnSTAR(true)
@@ -778,7 +773,7 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 			e.Pop()
 		}
 
-		ar.checkChartedSTARRoute(loc, nmPerLongitude, magneticVariation, e)
+		ar.checkChartedSTARRoute(db, nmPerLongitude, magneticVariation, e)
 	}
 
 	for i := range ar.Waypoints {
@@ -787,7 +782,7 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 
 	// Which STAR the waypoints fly: one the arrival doesn't name it should,
 	// and one it does name should be the one they fly.
-	star, run, namedRun := ar.followedSTAR()
+	star, run, namedRun := ar.followedSTAR(db)
 	switch {
 	case ar.STAR == "" && star != "":
 		// An arrival that gives "star_feeds" takes traffic from several STARs
@@ -804,11 +799,7 @@ func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariati
 
 	for _, star := range ar.STARFeeds {
 		if !slices.ContainsFunc(ar.Airports, func(icao ICAOAirportCode) bool {
-			ap, ok := DB.Airports[icao]
-			if !ok {
-				return false
-			}
-			_, ok = ap.STARs[star]
+			_, ok := db.AirportSTARs(icao)[star]
 			return ok
 		}) {
 			e.ErrorString(`"star_feeds" %q isn't charted for any of the airports the arrival serves: %s`,

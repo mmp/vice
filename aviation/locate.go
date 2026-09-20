@@ -37,6 +37,41 @@ type Locator interface {
 	Airways(name string) ([]Airway, bool)
 }
 
+// Database is what finalizing a scenario needs to read from the published
+// aeronautical data: what the charts say about the airports the scenario
+// configures, so that its own configuration can be checked against them.
+// It is an interface so that the data can live in a package below this one
+// without this one having to depend on it.
+type Database interface {
+	Locator
+
+	// AirportLocation gives the airport's position; the bool reports whether
+	// the airport is in the published data at all.
+	AirportLocation(icao ICAOAirportCode) (math.Point2LL, bool)
+
+	// IsPublishedAirport reports whether the airport is in the published data.
+	IsPublishedAirport(icao ICAOAirportCode) bool
+
+	AirportElevation(icao ICAOAirportCode) int
+	AirportRunways(icao ICAOAirportCode) []Runway
+	AirportApproaches(icao ICAOAirportCode) map[string]Approach
+	AirportSIDs(icao ICAOAirportCode) map[string]SID
+	AirportSTARs(icao ICAOAirportCode) map[string]STAR
+
+	// ValidRunways gives the airport's runways for an error message that
+	// offers the alternatives to one that wasn't found.
+	ValidRunways(icao ICAOAirportCode) string
+
+	// IsGAFleet reports whether the named general aviation fleet exists;
+	// GAFleetNames gives them all, to offer in an error message.
+	IsGAFleet(name string) bool
+	GAFleetNames() []string
+
+	// InClassBOrC reports whether the point lies inside class B or C
+	// airspace at the given altitude.
+	InClassBOrC(p math.Point2LL, alt int) bool
+}
+
 type DMELocator interface {
 	LocateDME(fix string) (math.Point2LL, int, bool)
 }

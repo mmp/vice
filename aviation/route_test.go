@@ -6,6 +6,7 @@ package aviation
 
 import (
 	"encoding/json"
+	"maps"
 	"slices"
 	"strings"
 	"testing"
@@ -36,6 +37,85 @@ func (tl testLocator) Airways(name string) ([]Airway, bool) {
 	}
 	aw, ok := DB.Airways[name]
 	return aw, ok
+}
+
+// The published-data lookups come from the database when a test has loaded
+// it; tests that haven't get empty results.
+func (tl testLocator) AirportLocation(icao ICAOAirportCode) (math.Point2LL, bool) {
+	if DB == nil {
+		return math.Point2LL{}, false
+	}
+	ap, ok := DB.Airports[icao]
+	return ap.Location, ok
+}
+
+func (tl testLocator) IsPublishedAirport(icao ICAOAirportCode) bool {
+	if DB == nil {
+		return false
+	}
+	_, ok := DB.Airports[icao]
+	return ok
+}
+
+func (tl testLocator) AirportElevation(icao ICAOAirportCode) int {
+	if DB == nil {
+		return 0
+	}
+	return DB.Airports[icao].Elevation
+}
+
+func (tl testLocator) AirportRunways(icao ICAOAirportCode) []Runway {
+	if DB == nil {
+		return nil
+	}
+	return DB.Airports[icao].Runways
+}
+
+func (tl testLocator) AirportApproaches(icao ICAOAirportCode) map[string]Approach {
+	if DB == nil {
+		return nil
+	}
+	return DB.Airports[icao].Approaches
+}
+
+func (tl testLocator) AirportSIDs(icao ICAOAirportCode) map[string]SID {
+	if DB == nil {
+		return nil
+	}
+	return DB.Airports[icao].SIDs
+}
+
+func (tl testLocator) AirportSTARs(icao ICAOAirportCode) map[string]STAR {
+	if DB == nil {
+		return nil
+	}
+	return DB.Airports[icao].STARs
+}
+
+func (tl testLocator) ValidRunways(icao ICAOAirportCode) string {
+	if DB == nil {
+		return ""
+	}
+	return DB.Airports[icao].ValidRunways()
+}
+
+func (tl testLocator) IsGAFleet(name string) bool {
+	if DB == nil {
+		return false
+	}
+	_, ok := DB.Airlines["N"].Fleets[name]
+	return ok
+}
+
+func (tl testLocator) GAFleetNames() []string {
+	if DB == nil {
+		return nil
+	}
+	return slices.Collect(maps.Keys(DB.Airlines["N"].Fleets))
+}
+
+func (tl testLocator) InClassBOrC(p math.Point2LL, alt int) bool {
+	return false
 }
 
 // declinationLocator is a testLocator whose navaids have station declinations.

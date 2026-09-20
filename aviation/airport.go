@@ -6,8 +6,6 @@ package aviation
 
 import (
 	"fmt"
-	"iter"
-	"maps"
 	"slices"
 	"strings"
 
@@ -117,17 +115,17 @@ type VFRRouteSpec struct {
 // have ghost data blocks plotted on GhostRegion's centerline; to ghost in
 // both directions, define two pairs with the roles swapped.
 
-func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude float32,
+func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[ControlPosition]*Controller, scratchpads map[string]string,
 	facilityAirports map[ICAOAirportCode]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	if info, ok := DB.Airports[icao]; !ok {
+	if p, ok := db.AirportLocation(icao); !ok {
 		e.ErrorString("airport %q not found in airport database", icao)
 	} else {
-		ap.Location = info.Location
+		ap.Location = p
 
-		if len(info.Runways) == 0 {
+		if len(db.AirportRunways(icao)) == 0 {
 			e.ErrorString("no runways found at %q", icao)
 		}
 	}
@@ -144,9 +142,9 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 		}
 
 		if appr.Id != "" {
-			if dbAppr, ok := DB.Airports[icao].Approaches[appr.Id]; !ok {
+			if dbAppr, ok := db.AirportApproaches(icao)[appr.Id]; !ok {
 				e.ErrorString("Approach %q not in database. Options: %s", appr.Id,
-					strings.Join(util.SortedMapKeys(DB.Airports[icao].Approaches), ", "))
+					strings.Join(util.SortedMapKeys(db.AirportApproaches(icao)), ", "))
 				e.Pop()
 				continue
 			} else {
@@ -189,7 +187,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 				e.ErrorString(`Must specify "waypoints"`)
 			}
 		}
-		appr.InitializeWaypoints(icao, loc, nmPerLongitude, magneticVariation, e)
+		appr.InitializeWaypoints(icao, db, nmPerLongitude, magneticVariation, e)
 
 		for i := range appr.Waypoints {
 			n := len(appr.Waypoints[i])
@@ -251,7 +249,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 
 		r, ok := LookupRunway(icao, rwy.Base())
 		if !ok {
-			e.ErrorString("unknown runway for airport. Options: %s", DB.Airports[icao].ValidRunways())
+			e.ErrorString("unknown runway for airport. Options: %s", db.ValidRunways(icao))
 		}
 		rend, ok := LookupOppositeRunway(icao, rwy.Base())
 		if !ok {
@@ -299,10 +297,10 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 					if len(route.WaypointActions) > 0 {
 						e.ErrorString(`"waypoint_actions" applies only to a route taken from the CIFP; put the actions in "waypoints"`)
 					}
-					route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
-					route.Waypoints.CheckDeparture(e, DB.Airports[icao].Elevation, controlPositions, checkScratchpad)
-					route.checkChartedSIDRoute(icao, rwy, exits, r, rend, loc, nmPerLongitude, magneticVariation, e)
-					route.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, Waypoint{}, e)
+					route.Waypoints = route.Waypoints.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
+					route.Waypoints.CheckDeparture(e, db.AirportElevation(icao), controlPositions, checkScratchpad)
+					route.checkChartedSIDRoute(db, icao, rwy, exits, r, rend, db, nmPerLongitude, magneticVariation, e)
+					route.initialize(db, icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, Waypoint{}, e)
 					for _, exit := range exits {
 						splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], route)
 					}
@@ -327,7 +325,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 							e.ErrorString(`"climbout_actions": %v`, err)
 						} else {
 							override = ovr
-							override.initializeActionLocations(loc, magneticVariation, false, e)
+							override.initializeActionLocations(db, magneticVariation, false, e)
 							WaypointArray{override}.checkBasics(e, controlPositions, checkScratchpad)
 						}
 					}
@@ -337,14 +335,14 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 							e.Push("Exit " + string(exit))
 						}
 						exitRoute := *route
-						if wps, err := sidWaypoints(icao, route.SID, transition, rwy, exit,
+						if wps, err := sidWaypoints(db, icao, route.SID, transition, rwy, exit,
 							route.InitialHeading != 0 || override.AssignsHeading()); err != nil {
 							e.ErrorString(`must specify "waypoints": %v`, err)
 						} else {
 							wps = route.amendSIDWaypoints(wps, e)
-							exitRoute.Waypoints = wps.InitializeLocations(loc, nmPerLongitude, magneticVariation, true, e)
+							exitRoute.Waypoints = wps.InitializeLocations(db, nmPerLongitude, magneticVariation, true, e)
 							exitRoute.Waypoints.checkBasics(e, controlPositions, checkScratchpad)
-							exitRoute.initialize(icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, override, e)
+							exitRoute.initialize(db, icao, rwy, r, rend, nmPerLongitude, magneticVariation, controlPositions, override, e)
 							splitDepartureRoutes[rwy][exit] = append(splitDepartureRoutes[rwy][exit], &exitRoute)
 						}
 						if len(exits) > 1 {
@@ -363,7 +361,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 	}
 	ap.DepartureRoutes = splitDepartureRoutes
 
-	ap.checkExits(loc, e)
+	ap.checkExits(db, e)
 
 	e.Push(`"traffic_routes"`)
 	checkTrafficRouteAirports := func(routes map[ICAOAirportCode]TrafficRouteSet) map[ICAOAirportCode]TrafficRouteSet {
@@ -393,7 +391,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 			e.ErrorString("route may not be empty")
 			return false
 		}
-		wps := RouteWaypoints(r.Route).InitializeLocations(loc, nmPerLongitude, magneticVariation,
+		wps := RouteWaypoints(r.Route).InitializeLocations(db, nmPerLongitude, magneticVariation,
 			true /* allowSlop */, e)
 		if !slices.ContainsFunc(wps, func(wp Waypoint) bool { return !wp.Location.IsZero() }) {
 			e.ErrorString("%s: no locatable fixes in route", r.Route)
@@ -404,7 +402,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 	for _, other := range util.SortedMapKeys(ap.TrafficRoutes.Departures) {
 		e.Push("Departure " + string(other))
 		for _, r := range ap.TrafficRoutes.Departures[other] {
-			if checkTrafficRoute(r) && !ap.routeReachesExit(r.Route, icao) {
+			if checkTrafficRoute(r) && !ap.routeReachesExit(db, r.Route, icao) {
 				e.ErrorString(`%s: route reaches no exit in "departure_routes"`, r.Route)
 			}
 		}
@@ -459,7 +457,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 
 		_, intraFacility := facilityAirports[dep.Destination]
 		allowSlop := !intraFacility // Make sure that the full route is valid for intra-facility.
-		wp = wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, allowSlop, e)
+		wp = wp.InitializeLocations(db, nmPerLongitude, magneticVariation, allowSlop, e)
 		ap.Departures[i].RouteWaypoints = wp
 
 		if !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
@@ -467,7 +465,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 			e.ErrorString("exit %q not found in departure route", depExit)
 		}
 
-		ap.checkDepartureRouteAlongSID(icao, &ap.Departures[i], e)
+		ap.checkDepartureRouteAlongSID(db, icao, &ap.Departures[i], e)
 
 		// The slop above lets a route name places the database doesn't have,
 		// which an enroute route legitimately does. The fixes up to the exit
@@ -489,14 +487,13 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 		e.Pop()
 	}
 
-	ga := DB.Airlines["N"]
-	checkFleet := func(fleet, loc string) {
+	checkFleet := func(fleet, where string) {
 		if fleet == "" {
 			return
 		}
-		if _, ok := ga.Fleets[fleet]; !ok {
+		if !db.IsGAFleet(fleet) {
 			e.ErrorString("Fleet %q in %q is not a valid GA aircraft fleet. Options: %s",
-				fleet, loc, strings.Join(slices.Collect(maps.Keys(ga.Fleets)), ", "))
+				fleet, where, strings.Join(db.GAFleetNames(), ", "))
 		}
 	}
 	e.Push(`"vfr"`)
@@ -508,7 +505,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 	}
 	for i := range ap.VFR.Routes {
 		ap.VFR.Routes[i].Waypoints =
-			ap.VFR.Routes[i].Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+			ap.VFR.Routes[i].Waypoints.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
 
 		spec := &ap.VFR.Routes[i]
 		e.Push("routes " + spec.Name)
@@ -544,15 +541,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 
 	// Check if airport has VFR departures but is in class B or C airspace
 	if ap.VFR.Randoms.Rate > 0 || len(ap.VFR.Routes) > 0 {
-		elevation := DB.Airports[icao].Elevation
-		checkAllVolumes := func(volsIter iter.Seq[[]AirspaceVolume]) bool {
-			return util.SeqContainsFunc(volsIter, func(vols []AirspaceVolume) bool {
-				return slices.ContainsFunc(vols, func(vol AirspaceVolume) bool {
-					return vol.Inside(ap.Location, elevation)
-				})
-			})
-		}
-		if checkAllVolumes(maps.Values(DB.BravoAirspace)) || checkAllVolumes(maps.Values(DB.CharlieAirspace)) {
+		if db.InClassBOrC(ap.Location, db.AirportElevation(icao)) {
 			e.ErrorString("Airport has VFR departures specified but is located in class B or C airspace")
 		}
 	}
@@ -572,7 +561,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 		for _, rwy := range runways {
 			rwy = strings.TrimSpace(rwy)
 			if _, ok := LookupRunway(icao, rwy); !ok {
-				e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
+				e.ErrorString("runway %q is unknown. Options: %s", rwy, db.ValidRunways(icao))
 			}
 			if seenRunways[rwy] {
 				e.ErrorString("runway %q appears in multiple groups", rwy)
@@ -587,7 +576,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 		def.Name = name
 
 		if def.ReferencePoint.IsZero() && def.ReferencePointStr != "" {
-			if p, ok := loc.Locate(def.ReferencePointStr); !ok {
+			if p, ok := db.Locate(def.ReferencePointStr); !ok {
 				e.ErrorString(`unknown point %q in "reference_point"`, def.ReferencePointStr)
 			} else {
 				def.ReferencePoint = p
@@ -605,7 +594,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 			if def.RegionLength != 0 {
 				e.ErrorString(`"region_length" must not be specified with "reference_route"`)
 			}
-			routePoints := parseCRDARoute(def.ReferenceRoute, loc, nmPerLongitude, magneticVariation, e)
+			routePoints := parseCRDARoute(def.ReferenceRoute, db, nmPerLongitude, magneticVariation, e)
 			def.Path = PathFromRoutePoints(routePoints, nmPerLongitude)
 			def.RegionLength = def.Path.Length - def.NearDistance
 		} else {
@@ -678,7 +667,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 	if ap.ATPAVolumes == nil {
 		ap.ATPAVolumes = make(map[string]*ATPAVolume)
 	}
-	for _, rwy := range DB.Airports[icao].Runways {
+	for _, rwy := range db.AirportRunways(icao) {
 		if _, ok := ap.ATPAVolumes[rwy.Id]; !ok {
 			// Make a default volume
 			ap.ATPAVolumes[rwy.Id] = &ATPAVolume{
@@ -697,12 +686,12 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 		}
 
 		if r, ok := LookupRunway(icao, rwy); !ok {
-			e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
+			e.ErrorString("runway %q is unknown. Options: %s", rwy, db.ValidRunways(icao))
 		} else {
 			if vol.Threshold.IsZero() {
 				if vol.ThresholdString != "" {
 					var ok bool
-					if vol.Threshold, ok = loc.Locate(vol.ThresholdString); !ok {
+					if vol.Threshold, ok = db.Locate(vol.ThresholdString); !ok {
 						e.ErrorString(`%q unknown for "runway_threshold".`, vol.ThresholdString)
 					}
 				} else {
@@ -719,10 +708,10 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 			vol.MaxHeadingDeviation = 90
 		}
 		if vol.Floor == 0 {
-			vol.Floor = float32(DB.Airports[icao].Elevation + 100)
+			vol.Floor = float32(db.AirportElevation(icao) + 100)
 		}
 		if vol.Ceiling == 0 {
-			vol.Ceiling = float32(DB.Airports[icao].Elevation + 5000)
+			vol.Ceiling = float32(db.AirportElevation(icao) + 5000)
 		}
 		if vol.Length == 0 {
 			vol.Length = 15

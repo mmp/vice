@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
@@ -496,7 +497,7 @@ func departureExit(route string, departureAirport, destination av.ICAOAirportCod
 		}
 	}
 
-	behind, ahead := av.SIDPathExits(departureAirport, wps, exitBases, sids)
+	behind, ahead := av.SIDPathExits(enroute.DBLocator{}, departureAirport, wps, exitBases, sids)
 	matches := util.Select(len(behind) > 0, behind, ahead)
 	if len(matches) == 0 {
 		return candidateDeparture{}, false

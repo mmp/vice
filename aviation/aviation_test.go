@@ -433,7 +433,7 @@ func TestFollowedSTAR(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			if got, _, _ := tc.arr.followedSTAR(); got != tc.want {
+			if got, _, _ := tc.arr.followedSTAR(testLocator{}); got != tc.want {
 				t.Errorf("followedSTAR = %q, want %q", got, tc.want)
 			}
 		})
@@ -463,7 +463,7 @@ func TestFollowedSTAR(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ar := arrival("KTST", tc.fixes...)
 			ar.STAR = tc.star
-			_, run, named := ar.followedSTAR()
+			_, run, named := ar.followedSTAR(testLocator{})
 			if run != tc.bestRun || named != tc.namedRun {
 				t.Errorf("runs = (%d, %d), want (%d, %d)", run, named, tc.bestRun, tc.namedRun)
 			}
@@ -850,7 +850,7 @@ func TestChartedSTARRoute(t *testing.T) {
 
 			var scratch util.ErrorLogger
 			charted := Arrival{STAR: tc.star, Airports: ar.Airports, WaypointActions: actions}
-			charted.takeSTARWaypoints(spawn, &scratch)
+			charted.takeSTARWaypoints(testLocator{}, spawn, &scratch)
 			charted.eachRoute(&scratch, func(wps WaypointArray) WaypointArray {
 				return wps.InitializeLocations(loc, 45, 0, false, &scratch)
 			})

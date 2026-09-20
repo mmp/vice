@@ -15,6 +15,7 @@ package enroute
 
 import (
 	"fmt"
+	"iter"
 	"maps"
 	"slices"
 	"strconv"
@@ -146,6 +147,58 @@ func (DBLocator) Locate(s string) (math.Point2LL, bool) {
 func (DBLocator) Airways(name string) ([]av.Airway, bool) {
 	aw, ok := av.DB.Airways[name]
 	return aw, ok
+}
+
+func (DBLocator) AirportLocation(icao av.ICAOAirportCode) (math.Point2LL, bool) {
+	ap, ok := av.DB.Airports[icao]
+	return ap.Location, ok
+}
+
+func (DBLocator) IsPublishedAirport(icao av.ICAOAirportCode) bool {
+	_, ok := av.DB.Airports[icao]
+	return ok
+}
+
+func (DBLocator) AirportElevation(icao av.ICAOAirportCode) int {
+	return av.DB.Airports[icao].Elevation
+}
+
+func (DBLocator) AirportRunways(icao av.ICAOAirportCode) []av.Runway {
+	return av.DB.Airports[icao].Runways
+}
+
+func (DBLocator) AirportApproaches(icao av.ICAOAirportCode) map[string]av.Approach {
+	return av.DB.Airports[icao].Approaches
+}
+
+func (DBLocator) AirportSIDs(icao av.ICAOAirportCode) map[string]av.SID {
+	return av.DB.Airports[icao].SIDs
+}
+
+func (DBLocator) AirportSTARs(icao av.ICAOAirportCode) map[string]av.STAR {
+	return av.DB.Airports[icao].STARs
+}
+
+func (DBLocator) ValidRunways(icao av.ICAOAirportCode) string {
+	return av.DB.Airports[icao].ValidRunways()
+}
+
+func (DBLocator) IsGAFleet(name string) bool {
+	_, ok := av.DB.Airlines["N"].Fleets[name]
+	return ok
+}
+
+func (DBLocator) GAFleetNames() []string {
+	return slices.Collect(maps.Keys(av.DB.Airlines["N"].Fleets))
+}
+
+func (DBLocator) InClassBOrC(p math.Point2LL, alt int) bool {
+	inside := func(vols iter.Seq[[]av.AirspaceVolume]) bool {
+		return util.SeqContainsFunc(vols, func(vs []av.AirspaceVolume) bool {
+			return slices.ContainsFunc(vs, func(v av.AirspaceVolume) bool { return v.Inside(p, alt) })
+		})
+	}
+	return inside(maps.Values(av.DB.BravoAirspace)) || inside(maps.Values(av.DB.CharlieAirspace))
 }
 
 // parseBoundary parses a space-separated list of "lat,long" vertices.

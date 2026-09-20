@@ -176,7 +176,7 @@ func TestRouteReachesExit(t *testing.T) {
 		{"KEWR DIALO V276 SIE", false},              // no exit anywhere
 		{"KATL PENCL2 BNA J75 IGB", true},           // SID and exit both named
 	} {
-		if got := ap.routeReachesExit(tc.route, "KEWR"); got != tc.want {
+		if got := ap.routeReachesExit(testLocator{}, tc.route, "KEWR"); got != tc.want {
 			t.Errorf("routeReachesExit(%q) = %v, want %v", tc.route, got, tc.want)
 		}
 	}
@@ -296,7 +296,7 @@ func tryInitializeTestExitRoute(t *testing.T, er ExitRoute, route string) (ExitR
 		}
 	}
 	var e util.ErrorLogger
-	er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, override, &e)
+	er.initialize(testLocator{}, "KXXX", "9", r, rend, nmPerLongitude, 0, nil, override, &e)
 	return er, &e
 }
 
@@ -556,7 +556,7 @@ func TestDepartureRouteAlongSID(t *testing.T) {
 		if dep.RouteWaypoints, err = parseWaypoints(tc.route); err != nil {
 			t.Fatalf("%s: %v", tc.route, err)
 		}
-		ap.checkDepartureRouteAlongSID("KXXX", &dep, &e)
+		ap.checkDepartureRouteAlongSID(testLocator{}, "KXXX", &dep, &e)
 		if tc.want == "" {
 			if e.HaveErrors() {
 				t.Errorf("%s: unexpected error: %s", tc.name, e.String())
@@ -686,7 +686,7 @@ func TestChartedSIDRoute(t *testing.T) {
 			if e.HaveErrors() {
 				t.Fatal(e.String())
 			}
-			er.checkChartedSIDRoute("KXXX", "9", []ExitID{"CLTCH"}, r, rend, loc, nmPerLongitude, 0, &e)
+			er.checkChartedSIDRoute(loc, "KXXX", "9", []ExitID{"CLTCH"}, r, rend, loc, nmPerLongitude, 0, &e)
 
 			if tc.want == "" {
 				if e.HaveErrors() {
@@ -713,7 +713,7 @@ func TestChartedSIDRoute(t *testing.T) {
 			initialHeading := strings.Contains(advice, `"initial_heading": `)
 
 			sid, transition, _ := strings.Cut(tc.sid, ".")
-			charted, err := sidWaypoints("KXXX", sid, transition, "9", "CLTCH", initialHeading)
+			charted, err := sidWaypoints(loc, "KXXX", sid, transition, "9", "CLTCH", initialHeading)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -769,7 +769,7 @@ func TestSIDOffsetActions(t *testing.T) {
 	amended := func(t *testing.T, actions map[string]string, e *util.ErrorLogger) WaypointArray {
 		t.Helper()
 		er := ExitRoute{SID: "BUTRZ4", ClearedAltitude: 5000, WaypointActions: actions}
-		wps, err := sidWaypoints("KXXX", "BUTRZ4", "CLTCH", "9", "CLTCH", false)
+		wps, err := sidWaypoints(loc, "KXXX", "BUTRZ4", "CLTCH", "9", "CLTCH", false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -803,7 +803,7 @@ func TestSIDOffsetActions(t *testing.T) {
 			t.Fatal(e.String())
 		}
 		r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
-		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
+		er.initialize(loc, "KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
 		if e.HaveErrors() {
 			t.Fatal(e.String())
 		}
@@ -823,7 +823,7 @@ func TestSIDOffsetActions(t *testing.T) {
 			t.Fatal(e.String())
 		}
 		r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
-		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
+		er.initialize(loc, "KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
 		if !strings.Contains(e.String(), "departure end of the runway") {
 			t.Errorf("didn't get the expected error; got: %s", e.String())
 		}
@@ -876,7 +876,7 @@ func TestExitRouteFirstFixBehindRunway(t *testing.T) {
 	} {
 		var e util.ErrorLogger
 		er := ExitRoute{ClearedAltitude: 5000, Waypoints: WaypointArray{{Fix: "FIRST", Location: at(tc.at)}}}
-		er.initialize("KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
+		er.initialize(testLocator{}, "KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
 		if e.HaveErrors() != tc.bad {
 			t.Errorf("%s: errors %v, want error %v", tc.name, e.String(), tc.bad)
 		}

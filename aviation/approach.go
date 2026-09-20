@@ -112,12 +112,12 @@ func (ap Approach) DefaultFullName() string {
 // InitializeWaypoints resolves waypoint locations and adds the runway
 // threshold waypoint to each route. It also sets the OnApproach flag,
 // Threshold, and OppositeThreshold fields.
-func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, loc Locator, nmPerLongitude float32,
+func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, db Database, nmPerLongitude float32,
 	magneticVariation float32, e *util.ErrorLogger) {
 	rwy, ok := LookupRunway(icao, ap.Runway)
 	if !ok {
 		e.ErrorString(`"runway" %q is unknown. Options: %s`, ap.Runway,
-			DB.Airports[icao].ValidRunways())
+			db.ValidRunways(icao))
 	}
 	ap.Threshold = rwy.Threshold
 
@@ -129,7 +129,7 @@ func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, loc Locator, nmPer
 
 	for i := range ap.Waypoints {
 		ap.Waypoints[i] =
-			ap.Waypoints[i].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+			ap.Waypoints[i].InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
 
 		// Add the final fix at the runway threshold.
 		alt := rwy.Elevation + rwy.ThresholdCrossingHeight
