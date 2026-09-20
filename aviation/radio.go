@@ -989,6 +989,10 @@ func GetFixTelephony(fix string) string {
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
 
+	if say, ok := DB.say.fixes[fix]; ok {
+		return say
+	}
+
 	// For 3-char fixes or 4-char ICAO codes (VORs, airports), use the full name
 	if len(fix) == 3 || len(fix) == 4 {
 		if aid, ok := DB.Navaids[fix]; ok {
@@ -996,11 +1000,6 @@ func GetFixTelephony(fix string) string {
 		} else if ap, ok := DB.Airports[ICAOAirportCode(fix)]; ok {
 			return ap.Name
 		}
-	}
-
-	// Check sayfix.json for pronunciation
-	if say, ok := DB.say.fixes[fix]; ok {
-		return say
 	}
 
 	// Fall back to StopShouting for readability

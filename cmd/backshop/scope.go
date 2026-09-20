@@ -78,9 +78,8 @@ type scopeMap struct {
 }
 
 type scope struct {
-	center   math.Point2LL
-	rangeNM  float32
-	rotation float32
+	center  math.Point2LL
+	rangeNM float32
 
 	maps       []scopeMap
 	mapFilter  string
@@ -421,10 +420,19 @@ func (s *scope) updateZoom(extent math.Extent2D, ss *client.SimState) {
 
 	// Put the anchor back under the pixel it was grabbed at.
 	if s.zoomAnchorWindow != [2]float32{} {
-		tr := radar.GetScopeTransformations(extent, ss.MagneticVariation, ss.NmPerLongitude,
-			s.center, s.rangeNM, s.rotation)
+		tr := radar.GetScopeTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
+			scopeRotation(ss))
 		s.center = math.Add2LL(s.center, math.Sub2LL(s.zoomAnchor, tr.LatLongFromWindowP(s.zoomAnchorWindow)))
 	}
+}
+
+// scopeRotation returns the scope's up direction, following the radar system
+// the facility runs: ERAM is true north up, STARS is magnetic north up.
+func scopeRotation(ss *client.SimState) float32 {
+	if av.DB.IsARTCC(ss.Facility) {
+		return 0
+	}
+	return ss.MagneticVariation
 }
 
 var (
@@ -449,8 +457,8 @@ func (s *scope) draw(a *app, menuBarHeight float32) {
 
 	ss := &a.cc.State
 	s.updateZoom(extent, ss)
-	s.transforms = radar.GetScopeTransformations(extent, ss.MagneticVariation, ss.NmPerLongitude,
-		s.center, s.rangeNM, s.rotation)
+	s.transforms = radar.GetScopeTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
+		scopeRotation(ss))
 
 	s.handleMouse(a, extent, displaySize)
 

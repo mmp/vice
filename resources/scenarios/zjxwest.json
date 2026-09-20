@@ -1517,7 +1517,6 @@
     }
   },
   "default_scenario": "ZJX West Area Combined",
-  "magnetic_adjustment": -3.6,
   "scenarios": {
     "ZJX West Area Combined": {
       "configuration": "ZJW",

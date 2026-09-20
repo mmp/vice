@@ -544,7 +544,6 @@
     }
   },
   "default_scenario": "BEARZ Sectors 35+36",
-  "magnetic_adjustment": -2.8,
   "scenarios": {
     "BEARZ Sectors 35+36": {
       "configuration": "B35",

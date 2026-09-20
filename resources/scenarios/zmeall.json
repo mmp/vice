@@ -356,7 +356,6 @@
     }
   },
   "default_scenario": "ZME Consolidated",
-  "magnetic_adjustment": -3.0,
   "scenarios": {
     "ZME Consolidated": {
       "configuration": "C22",

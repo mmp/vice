@@ -1019,8 +1019,8 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processKeyboardInput(ctx)
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
-		ctr, float32(ps.Range), 0)
+	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude, ctr, float32(ps.Range),
+		ctx.MagneticVariation)
 
 	scopeExtent := ctx.PaneExtent
 	if ps.DisplayDCB {
@@ -1137,7 +1137,7 @@ func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBu
 	})
 
 	// Apply transformations and draw
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, 0, 0, [2]float32{}, 0, 0)
+	transforms := radar.GetScopeTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)

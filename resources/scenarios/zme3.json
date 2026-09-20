@@ -12,7 +12,6 @@
     }
   },
   "default_scenario": "ZME Area 3",
-  "magnetic_adjustment": -2.0,
   "scenarios": {
     "ZME Area 3": {
       "configuration": "C20",

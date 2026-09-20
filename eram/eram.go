@@ -538,8 +538,9 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.processKeyboardInput(ctx)
 	// ctr := UserCenter
 	// ps.Range is the vertical extent of the scope in NM (matching the
-	// real-ERAM RANGE label); GetScopeTransformations wants the half-width.
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
+	// real-ERAM RANGE label); GetScopeTransformations wants the half-height.
+	// ERAM scopes are always true north up, hence no rotation.
+	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range)/2, 0)
 
 	// Following are the draw functions. They are listed in the best of my ability
@@ -1030,7 +1031,7 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 	})
 
 	// Apply transformations and draw
-	transforms := radar.GetScopeTransformations(ctx.PaneExtent, 0, 0, [2]float32{}, 0, 0)
+	transforms := radar.GetScopeTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)
