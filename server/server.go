@@ -100,7 +100,8 @@ import (
 // 88: WaypointExtra gained LegOffset, how far along its leg a synthesized waypoint sits
 // 89: departures are chosen when the runway is free rather than sequenced ahead: RunwayLaunchState lost Sequenced and gained PublishedDepartures, DepartureAircraft gained QueuedTime, Sim gained LastExitLaunch
 // 90: DepartureAircraft gained AirborneTime, when its takeoff-roll simulation lifts off
-const ViceSerializeVersion = 90
+// 91: phrase arguments are tagged with their Go type name, and the callsign ones moved from aviation to speech
+const ViceSerializeVersion = 91
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion

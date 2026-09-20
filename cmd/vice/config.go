@@ -49,11 +49,13 @@ type ConfigNoSim struct {
 	LastTRACON    string
 	UIFontSize    int
 
-	// Store individual pane instances
+	// Store individual pane instances. The messages and flight strip windows
+	// give their JSON names explicitly so that settings saved when they were
+	// called panes are still read.
 	STARSPane         *stars.Pane
 	ERAMPane          *eram.Pane
-	MessagesWindow    *MessagesWindow
-	FlightStripWindow *FlightStripWindow
+	MessagesWindow    *MessagesWindow    `json:"MessagesPane"`
+	FlightStripWindow *FlightStripWindow `json:"FlightStripPane"`
 
 	// Whether the floating windows are visible
 	ShowMessages     bool
