@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -560,4 +561,38 @@ func (rp *VFRReportingPoint) PostDeserialize(loc Locator, controllers map[Contro
 	if rp.Location.IsZero() {
 		e.ErrorString(`must specify "location" with reporting point`)
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// TFRs
+
+// TFR represents an FAA-issued temporary flight restriction.
+type TFR struct {
+	ARTCC      string
+	Type       string // VIP, SECURITY, EVENT, etc.
+	LocalName  string // Short string summarizing it.
+	Effective  time.Time
+	Expire     time.Time
+	Points     [][]math.Point2LL // One or more line loops defining its extent.
+	Regulation string            // Raw FAR code, e.g. "91.137(a)(2)"
+	City       string
+	State      string
+	AltDescr   string // Pre-formatted altitude description, e.g. "SFC - 2500 ft AGL"
+	Purpose    string // May be empty; not all TFR types include it.
+}
+
+// ActiveAt reports whether the TFR is active at time t.
+func (tfr TFR) ActiveAt(t time.Time) bool {
+	return t.After(tfr.Effective) && t.Before(tfr.Expire)
+}
+
+// NearPoint reports whether any vertex of the TFR is within rangeNm of center.
+func (tfr TFR) NearPoint(center math.Point2LL, rangeNm float32) bool {
+	for _, loop := range tfr.Points {
+		if slices.ContainsFunc(loop,
+			func(p math.Point2LL) bool { return math.NMDistance2LL(p, center) <= rangeNm }) {
+			return true
+		}
+	}
+	return false
 }

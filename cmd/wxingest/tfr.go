@@ -120,7 +120,7 @@ func loadAllTFRs(sb StorageBackend, lg *log.Logger) ([]av.TFR, []toArchive, erro
 
 // decodeTFRFromXML parses a TFR XML and returns nil if the TFR has no polygon points.
 func decodeTFRFromXML(path string, b []byte, lg *log.Logger) (*av.TFR, error) {
-	tfr, err := av.DecodeTFRXML(path, bytes.NewReader(b), lg)
+	tfr, err := decodeTFRXML(path, bytes.NewReader(b), lg)
 	if err != nil {
 		return nil, err
 	}
