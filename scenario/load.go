@@ -24,6 +24,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 	"github.com/mmp/vice/wx"
 	"golang.org/x/sync/errgroup"
 
@@ -369,7 +370,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	}
 
 	// Load video map specs (header-only) for validation.
-	mapSpecs := make(map[string]*av.MapLibrarySpec)
+	mapSpecs := make(map[string]*videomaps.LibrarySpec)
 	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
@@ -381,7 +382,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 		}
 
 		if strings.HasSuffix(path, ".mappack") {
-			mapSpecs[path], err = av.LoadMapLibrarySpec(path)
+			mapSpecs[path], err = videomaps.LoadLibrarySpec(path)
 		}
 
 		return err
@@ -393,7 +394,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 
 	// Load the video map specified on the command line, if any.
 	if overrides.VideoMap != "" {
-		mapSpecs[overrides.VideoMap], err = av.LoadMapLibrarySpec(overrides.VideoMap)
+		mapSpecs[overrides.VideoMap], err = videomaps.LoadLibrarySpec(overrides.VideoMap)
 		if err != nil {
 			lg.Errorf("%s: %v", overrides.VideoMap, err)
 			os.Exit(1)
@@ -615,7 +616,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	type phase3Task struct {
 		tname, groupName string
 		sgroup           *Group
-		mapSpec          *av.MapLibrarySpec
+		mapSpec          *videomaps.LibrarySpec
 		vfErr            string // pre-validation error, if any
 		localCatalogs    map[string]map[string]*Catalog
 		localE           util.ErrorLogger

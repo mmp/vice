@@ -1,8 +1,8 @@
-// maps/crc.go
+// videomaps/crc/crc.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package maps
+package crc
 
 import (
 	"bytes"
@@ -15,9 +15,9 @@ import (
 	"strings"
 	"sync"
 
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -33,10 +33,10 @@ const (
 // called from several goroutines at once and must be safe for concurrent use.
 type Report func(line string)
 
-// DefaultCRCDirectory returns where CRC keeps its working files, or "" if that
+// DefaultDirectory returns where CRC keeps its working files, or "" if that
 // can't be determined. CRC has no Linux build, so there the result is just a
 // plausible starting point for the user to correct.
-func DefaultCRCDirectory() string {
+func DefaultDirectory() string {
 	// On Windows CRC stores its files under %LOCALAPPDATA%, which is what
 	// UserCacheDir returns there; UserConfigDir would give the roaming
 	// %APPDATA% instead. Elsewhere UserConfigDir gives macOS's
@@ -51,9 +51,9 @@ func DefaultCRCDirectory() string {
 	return filepath.Join(dir, "CRC")
 }
 
-// ListCRCARTCCs returns the sorted ids of the ARTCCs available in a CRC
+// ListARTCCs returns the sorted ids of the ARTCCs available in a CRC
 // directory: the names of the JSON files it has ARTCC definitions in.
-func ListCRCARTCCs(crcDir string) ([]string, error) {
+func ListARTCCs(crcDir string) ([]string, error) {
 	dir := filepath.Join(crcDir, artccSubdir)
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -70,9 +70,9 @@ func ListCRCARTCCs(crcDir string) ([]string, error) {
 	return ids, nil
 }
 
-// ConvertCRC reads the given ARTCC from a CRC directory and writes the video
+// Convert reads the given ARTCC from a CRC directory and writes the video
 // map libraries for it into outDir. report may be nil.
-func ConvertCRC(crcDir, artccID, outDir string, report Report) error {
+func Convert(crcDir, artccID, outDir string, report Report) error {
 	c := &converter{
 		crcDir:       crcDir,
 		artccID:      artccID,
@@ -174,9 +174,9 @@ func loadGeoJSON(path string) (loadedSource, error) {
 // featureSink is the trio of slices that both STARS VideoMap and
 // ERAMMap expose; appendFeatures pushes into them via the pointers.
 type featureSink struct {
-	Lines   *[]av.MapLine
-	Symbols *[]av.MapSymbol
-	Labels  *[]av.MapLabel
+	Lines   *[]videomaps.Line
+	Symbols *[]videomaps.Symbol
+	Labels  *[]videomaps.Label
 }
 
 // appendFeatures emits src.features into sink.
@@ -207,7 +207,7 @@ func (c *converter) appendFeatures(src *loadedSource, sink featureSink) {
 				if len(pts) < 2 {
 					continue
 				}
-				*sink.Lines = append(*sink.Lines, av.MapLine{
+				*sink.Lines = append(*sink.Lines, videomaps.Line{
 					Points:    pts,
 					Style:     style,
 					Thickness: thickness,
@@ -223,7 +223,7 @@ func (c *converter) appendFeatures(src *loadedSource, sink featureSink) {
 			if f.Properties != nil && len(f.Properties.Text) > 0 {
 				eff := mergeDefaults(f.Properties, &src.textDefaults)
 				// Join multi-line labels into a single MapLabel.
-				*sink.Labels = append(*sink.Labels, av.MapLabel{
+				*sink.Labels = append(*sink.Labels, videomaps.Label{
 					P:         p,
 					Text:      strings.Join(f.Properties.Text, "\n"),
 					Size:      uint8(clampPositive(eff.Size, 1)),
@@ -240,9 +240,9 @@ func (c *converter) appendFeatures(src *loadedSource, sink featureSink) {
 					if eff.Style != "" {
 						c.warnUnknownStyle(src.path, eff.Style)
 					}
-					style = av.SymbolStyleVOR
+					style = videomaps.SymbolStyleVOR
 				}
-				*sink.Symbols = append(*sink.Symbols, av.MapSymbol{
+				*sink.Symbols = append(*sink.Symbols, videomaps.Symbol{
 					P:        p,
 					Style:    style,
 					Size:     uint8(clampPositive(eff.Size, 1)),
@@ -334,60 +334,60 @@ func decodePolylines(geomType string, raw json.RawMessage) [][]math.Point2LL {
 // parseLineStyle accepts CRC's case-inconsistent line-style strings
 // ("Solid", "solid", "ShortDashed", "LongDashShortDash", …). Unknown
 // strings fall back to LineStyleSolid.
-func parseLineStyle(s string) av.LineStyle {
+func parseLineStyle(s string) videomaps.LineStyle {
 	switch strings.ToLower(strings.ReplaceAll(s, "_", "")) {
 	case "shortdashed", "shortdash", "dashed":
-		return av.LineStyleShortDashed
+		return videomaps.LineStyleShortDashed
 	case "longdashed", "longdash":
-		return av.LineStyleLongDashed
+		return videomaps.LineStyleLongDashed
 	case "longdashshortdash", "longshortdash":
-		return av.LineStyleLongDashShortDash
+		return videomaps.LineStyleLongDashShortDash
 	default:
-		return av.LineStyleSolid
+		return videomaps.LineStyleSolid
 	}
 }
 
 // parseSymbolStyle accepts CRC's case-inconsistent symbol-style strings
 // ("Vor", "vor", "OtherWaypoints", "Ndb", …). Returns ok=false for
 // unrecognized styles; callers may log and fall back to a default.
-func parseSymbolStyle(s string) (av.SymbolStyle, bool) {
+func parseSymbolStyle(s string) (videomaps.SymbolStyle, bool) {
 	switch strings.ToLower(strings.ReplaceAll(s, "_", "")) {
 	case "vor":
-		return av.SymbolStyleVOR, true
+		return videomaps.SymbolStyleVOR, true
 	case "ndb":
-		return av.SymbolStyleNDB, true
+		return videomaps.SymbolStyleNDB, true
 	case "tacan":
-		return av.SymbolStyleTACAN, true
+		return videomaps.SymbolStyleTACAN, true
 	case "vortacan":
-		return av.SymbolStyleVOR_TACAN, true
+		return videomaps.SymbolStyleVOR_TACAN, true
 	case "dme":
-		return av.SymbolStyleDME, true
+		return videomaps.SymbolStyleDME, true
 	case "rnav":
-		return av.SymbolStyleRNAV, true
+		return videomaps.SymbolStyleRNAV, true
 	case "rnavonlywaypoint", "rnavonlywp":
-		return av.SymbolStyleRNAVOnlyWaypoint, true
+		return videomaps.SymbolStyleRNAVOnlyWaypoint, true
 	case "airport":
-		return av.SymbolStyleAirport, true
+		return videomaps.SymbolStyleAirport, true
 	case "satelliteairport", "satelliteaiport": // CRC has a misspelled variant in the wild
-		return av.SymbolStyleSatelliteAirport, true
+		return videomaps.SymbolStyleSatelliteAirport, true
 	case "emergencyairport":
-		return av.SymbolStyleEmergencyAirport, true
+		return videomaps.SymbolStyleEmergencyAirport, true
 	case "heliport":
-		return av.SymbolStyleHeliport, true
+		return videomaps.SymbolStyleHeliport, true
 	case "otherwaypoints", "otherwaypoint", "waypoint":
-		return av.SymbolStyleOtherWaypoints, true
+		return videomaps.SymbolStyleOtherWaypoints, true
 	case "airwayintersections", "airwayintersection":
-		return av.SymbolStyleAirwayIntersections, true
+		return videomaps.SymbolStyleAirwayIntersections, true
 	case "iaf":
-		return av.SymbolStyleIAF, true
+		return videomaps.SymbolStyleIAF, true
 	case "obstruction1", "obstruction":
-		return av.SymbolStyleObstruction1, true
+		return videomaps.SymbolStyleObstruction1, true
 	case "obstruction2":
-		return av.SymbolStyleObstruction2, true
+		return videomaps.SymbolStyleObstruction2, true
 	case "nuclear":
-		return av.SymbolStyleNuclear, true
+		return videomaps.SymbolStyleNuclear, true
 	case "radar":
-		return av.SymbolStyleRadar, true
+		return videomaps.SymbolStyleRadar, true
 	}
 	return 0, false
 }

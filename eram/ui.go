@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/AllenDang/cimgui-go/imgui"
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/scope"
+	"github.com/mmp/vice/videomaps"
 )
 
 var _ scope.UIDrawer = (*ERAMPane)(nil)
@@ -130,25 +130,25 @@ func drawSymbolGlyphDebugUI(tableFlags imgui.TableFlags) {
 
 	const numEramGeomapGlyphs = 16
 
-	var symbolStyleOrder = []av.SymbolStyle{
-		av.SymbolStyleVOR,
-		av.SymbolStyleNDB,
-		av.SymbolStyleTACAN,
-		av.SymbolStyleVOR_TACAN,
-		av.SymbolStyleDME,
-		av.SymbolStyleRNAV,
-		av.SymbolStyleRNAVOnlyWaypoint,
-		av.SymbolStyleAirport,
-		av.SymbolStyleSatelliteAirport,
-		av.SymbolStyleEmergencyAirport,
-		av.SymbolStyleHeliport,
-		av.SymbolStyleOtherWaypoints,
-		av.SymbolStyleAirwayIntersections,
-		av.SymbolStyleIAF,
-		av.SymbolStyleObstruction1,
-		av.SymbolStyleObstruction2,
-		av.SymbolStyleNuclear,
-		av.SymbolStyleRadar,
+	var symbolStyleOrder = []videomaps.SymbolStyle{
+		videomaps.SymbolStyleVOR,
+		videomaps.SymbolStyleNDB,
+		videomaps.SymbolStyleTACAN,
+		videomaps.SymbolStyleVOR_TACAN,
+		videomaps.SymbolStyleDME,
+		videomaps.SymbolStyleRNAV,
+		videomaps.SymbolStyleRNAVOnlyWaypoint,
+		videomaps.SymbolStyleAirport,
+		videomaps.SymbolStyleSatelliteAirport,
+		videomaps.SymbolStyleEmergencyAirport,
+		videomaps.SymbolStyleHeliport,
+		videomaps.SymbolStyleOtherWaypoints,
+		videomaps.SymbolStyleAirwayIntersections,
+		videomaps.SymbolStyleIAF,
+		videomaps.SymbolStyleObstruction1,
+		videomaps.SymbolStyleObstruction2,
+		videomaps.SymbolStyleNuclear,
+		videomaps.SymbolStyleRadar,
 	}
 
 	changed := false
@@ -181,7 +181,7 @@ func drawSymbolGlyphDebugUI(tableFlags imgui.TableFlags) {
 
 	if changed {
 		var b strings.Builder
-		b.WriteString("var SymbolGlyphIndex = map[av.SymbolStyle]rune{\n")
+		b.WriteString("var SymbolGlyphIndex = map[videomaps.SymbolStyle]rune{\n")
 		for _, style := range symbolStyleOrder {
 			fmt.Fprintf(&b, "\tav.SymbolStyle%-20s 0x%02X,\n",
 				style.String()+":", int(scope.SymbolGlyphIndex[style]))

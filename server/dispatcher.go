@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
 type dispatcher struct {
@@ -705,10 +706,10 @@ type MapLibraryArgs struct {
 
 const GetMapLibraryRPC = "Sim.GetMapLibrary"
 
-func (sd *dispatcher) GetMapLibrary(vm *MapLibraryArgs, vmf *av.MapLibrary) error {
+func (sd *dispatcher) GetMapLibrary(vm *MapLibraryArgs, vmf *videomaps.Library) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if v, err := av.LoadMapLibrary(vm.Filename); err == nil {
+	if v, err := videomaps.LoadLibrary(vm.Filename); err == nil {
 		*vmf = *v
 		return nil
 	} else {

@@ -9,9 +9,9 @@ import (
 	"strings"
 	"sync"
 
-	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/maps"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
+	"github.com/mmp/vice/videomaps/crc"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/ncruces/zenity"
@@ -64,7 +64,7 @@ func (in *inspector) drawVideoMapsTab(a *app) {
 func (v *videoMapsTab) listMappack() {
 	v.mappack, v.mappackErr = "", ""
 
-	lib, err := av.LoadMapLibrary(strings.TrimSpace(v.mappackPath))
+	lib, err := videomaps.LoadLibrary(strings.TrimSpace(v.mappackPath))
 	if err != nil {
 		v.mappackErr = err.Error()
 		return
@@ -114,7 +114,7 @@ func (c *crcConversion) scan(crcDir string) {
 	c.scanned = crcDir
 	c.artccs, c.scanErr, c.selected = nil, "", make(map[string]bool)
 
-	artccs, err := maps.ListCRCARTCCs(crcDir)
+	artccs, err := crc.ListARTCCs(crcDir)
 	if err != nil {
 		c.scanErr = err.Error()
 		return
@@ -136,7 +136,7 @@ func (v *videoMapsTab) pollCRC(a *app) {
 // libraries: what running crc2vice does, without leaving the tool.
 func (v *videoMapsTab) drawCRCUI(a *app) {
 	if a.config.CRCDir == "" {
-		a.config.CRCDir = maps.DefaultCRCDirectory()
+		a.config.CRCDir = crc.DefaultDirectory()
 	}
 
 	imgui.TextWrapped("Converts a CRC installation's video maps: one .mappack per STARS facility " +
@@ -240,7 +240,7 @@ func startCRCConversion(crcDir, outDir string, artccs []string) *crcRun {
 	go func() {
 		defer close(r.done)
 		for _, id := range artccs {
-			if err := maps.ConvertCRC(crcDir, id, outDir, r.addLine); err != nil {
+			if err := crc.Convert(crcDir, id, outDir, r.addLine); err != nil {
 				r.addError(id, err)
 			}
 		}
@@ -249,8 +249,8 @@ func startCRCConversion(crcDir, outDir string, artccs []string) *crcRun {
 	return r
 }
 
-// addLine is the maps.Report the conversion is given, so it is called from
-// the goroutines maps.ConvertCRC runs its work in as well as from the one above.
+// addLine is the crc.Report the conversion is given, so it is called from
+// the goroutines crc.ConvertCRC runs its work in as well as from the one above.
 func (r *crcRun) addLine(line string) {
 	r.mu.Lock()
 	defer r.mu.Unlock()

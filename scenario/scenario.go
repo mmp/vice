@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
@@ -69,7 +70,7 @@ func (s *Scenario) center(sg *Group) math.Point2LL {
 	return util.Select(s.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center, s.Center)
 }
 
-func (s *Scenario) PostDeserialize(sg *Group, e *util.ErrorLogger, mapSpec *av.MapLibrarySpec) {
+func (s *Scenario) PostDeserialize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Validate wind specifier if present

@@ -26,6 +26,7 @@ import (
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -936,7 +937,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 
 	// First grab the video maps needed for the DCB
-	var dcbMaps []av.STARSMap
+	var dcbMaps []videomaps.STARSMap
 	addedNames := make(map[string]bool)
 	for _, name := range client.State.ControllerVideoMaps {
 		if m, ok := vmf.Maps[name]; ok && !addedNames[name] {
@@ -953,7 +954,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	// visible in the MAPS list. Iterate by sorted name so the warning
 	// (and the choice of which map keeps a collided Id) is deterministic
 	// across runs.
-	var additionalMaps []av.STARSMap
+	var additionalMaps []videomaps.STARSMap
 	for name, vm := range util.SortedMap(vmf.Maps) {
 		if !addedNames[name] {
 			additionalMaps = append(additionalMaps, vm)

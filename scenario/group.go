@@ -18,6 +18,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
 type Group struct {
@@ -262,7 +263,7 @@ func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
 // 7-character limit on airspace volume ids; a 4-character airport identifier
 
 func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*Catalog,
-	mapSpec *av.MapLibrarySpec, mapSpecs map[string]*av.MapLibrarySpec) {
+	mapSpec *videomaps.LibrarySpec, mapSpecs map[string]*videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Rewrite legacy files to be TCP-based.

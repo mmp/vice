@@ -1,8 +1,8 @@
-// maps/crc_json.go
+// videomaps/crc/crc_json.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package maps
+package crc
 
 import (
 	"encoding/json"

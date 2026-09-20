@@ -1,11 +1,11 @@
-// maps/crc_eram.go
+// videomaps/crc/crc_eram.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 //
 // ERAM-mode import: walks facility.eramConfiguration.geoMaps and emits
 // <ARTCC>.mappack.
 
-package maps
+package crc
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ import (
 	"slices"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/videomaps"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -25,8 +25,8 @@ func (c *converter) convertERAM(a *artcc) error {
 	}
 	c.reportf("found %d geomaps in eramConfiguration", len(geoMaps))
 
-	lib := &av.MapLibrary{
-		ERAMMapGroups: make(map[string]av.ERAMMapGroup, len(geoMaps)),
+	lib := &videomaps.Library{
+		ERAMMapGroups: make(map[string]videomaps.ERAMMapGroup, len(geoMaps)),
 	}
 	var totalMaps, totalLines, totalSymbols, totalLabels int
 
@@ -37,12 +37,12 @@ func (c *converter) convertERAM(a *artcc) error {
 
 		// Build a per-filter-menu sink. filterMaps[fi] == nil means the
 		// filter has empty labels and is skipped.
-		filterMaps := make([]*av.ERAMMap, len(geoMap.FilterMenu))
+		filterMaps := make([]*videomaps.ERAMMap, len(geoMap.FilterMenu))
 		for fi, fm := range geoMap.FilterMenu {
 			if fm.LabelLine1 == "" && fm.LabelLine2 == "" {
 				continue
 			}
-			filterMaps[fi] = &av.ERAMMap{
+			filterMaps[fi] = &videomaps.ERAMMap{
 				LabelLine1: fm.LabelLine1,
 				LabelLine2: fm.LabelLine2,
 			}
@@ -56,7 +56,7 @@ func (c *converter) convertERAM(a *artcc) error {
 		}
 		// CRC filter index 0 means "always displayed"; those features all
 		// land in the group's single base map.
-		var baseMap av.ERAMMap
+		var baseMap videomaps.ERAMMap
 
 		drops := map[int]int{}
 		for si := range sources {
@@ -68,7 +68,7 @@ func (c *converter) convertERAM(a *artcc) error {
 		// order. The geoMap's bcgMenu rides through as the group's
 		// BCGNames; per-feature BCGIndex (1-based) addresses into it at
 		// draw time.
-		group := av.ERAMMapGroup{
+		group := videomaps.ERAMMapGroup{
 			Name:       geoMap.Name,
 			LabelLine1: geoMap.LabelLine1,
 			LabelLine2: geoMap.LabelLine2,
@@ -89,7 +89,7 @@ func (c *converter) convertERAM(a *artcc) error {
 		for fi := 0; fi <= last; fi++ {
 			m := filterMaps[fi]
 			if m == nil {
-				group.Maps = append(group.Maps, av.ERAMMap{})
+				group.Maps = append(group.Maps, videomaps.ERAMMap{})
 				continue
 			}
 			group.Maps = append(group.Maps, *m)
@@ -113,7 +113,7 @@ func (c *converter) convertERAM(a *artcc) error {
 		totalMaps, totalLines, totalSymbols, totalLabels, len(lib.ERAMMapGroups), outPath)
 	if f, err := os.Create(outPath); err != nil {
 		return err
-	} else if err := av.SaveMapLibrary(f, lib); err != nil {
+	} else if err := videomaps.SaveLibrary(f, lib); err != nil {
 		f.Close()
 		return err
 	} else {
@@ -149,7 +149,7 @@ func (c *converter) loadERAMSources(ids []string) ([]loadedSource, error) {
 // slots are never populated), so we drop them entirely here and tally one count per dropped
 // source feature (not per filter placement) in drops, keyed by the raw effective BCG value so
 // out-of-range originals like 300 are reported as 300 rather than the post-clamp 255.
-func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, baseMap *av.ERAMMap,
+func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*videomaps.ERAMMap, baseMap *videomaps.ERAMMap,
 	bcgMenu []string, drops map[int]int) {
 	clampPositive := func(v, dflt int) int {
 		switch {
@@ -171,7 +171,7 @@ func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERA
 	// filter state has bits for filters 1-40 only, so index 0 has nothing to toggle: it is
 	// CRC's "always displayed" sentinel and its geometry goes to the group's base map rather
 	// than to a filter-menu slot. nil means the feature is dropped.
-	target := func(filterIdx int) *av.ERAMMap {
+	target := func(filterIdx int) *videomaps.ERAMMap {
 		if filterIdx == 0 {
 			return baseMap
 		}
@@ -207,7 +207,7 @@ func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERA
 					if len(pts) < 2 {
 						continue
 					}
-					dst.Lines = append(dst.Lines, av.MapLine{
+					dst.Lines = append(dst.Lines, videomaps.Line{
 						Points:    pts,
 						Style:     style,
 						Thickness: thickness,
@@ -238,7 +238,7 @@ func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERA
 					if dst == nil {
 						continue
 					}
-					dst.Labels = append(dst.Labels, av.MapLabel{
+					dst.Labels = append(dst.Labels, videomaps.Label{
 						P:         p,
 						Text:      text,
 						Size:      size,
@@ -260,7 +260,7 @@ func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERA
 					if eff.Style != "" {
 						c.warnUnknownStyle(src.path, eff.Style)
 					}
-					style = av.SymbolStyleVOR
+					style = videomaps.SymbolStyleVOR
 				}
 				size := uint8(clampPositive(eff.Size, 1))
 				bcg := uint8(eff.BCG)
@@ -269,7 +269,7 @@ func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERA
 					if dst == nil {
 						continue
 					}
-					dst.Symbols = append(dst.Symbols, av.MapSymbol{
+					dst.Symbols = append(dst.Symbols, videomaps.Symbol{
 						P:        p,
 						Style:    style,
 						Size:     size,

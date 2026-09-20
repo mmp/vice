@@ -1,8 +1,8 @@
-// maps/crc_stars.go
+// videomaps/crc/crc_stars.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package maps
+package crc
 
 import (
 	"encoding/json"
@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -43,7 +43,7 @@ func (c *converter) convertSTARS(a *artcc, eg *errgroup.Group) error {
 
 func (c *converter) writeFacility(childID string, ids []string, mapGroups []mapGroup,
 	catalog map[string]*artccVideoMap) error {
-	lib := &av.MapLibrary{Maps: make(map[string]av.STARSMap, len(ids))}
+	lib := &videomaps.Library{Maps: make(map[string]videomaps.STARSMap, len(ids))}
 
 	var eg errgroup.Group
 	eg.SetLimit(16)
@@ -56,7 +56,7 @@ func (c *converter) writeFacility(childID string, ids []string, mapGroups []mapG
 				return fmt.Errorf("video map %q referenced by %q but not in catalog; skipping", ulid, childID)
 			}
 
-			vm := av.STARSMap{
+			vm := videomaps.STARSMap{
 				Name:  meta.Name,
 				Label: meta.ShortName,
 				Id:    meta.StarsID,
@@ -111,7 +111,7 @@ func (c *converter) writeFacility(childID string, ids []string, mapGroups []mapG
 	if err != nil {
 		return err
 	}
-	if err := av.SaveMapLibrary(f, lib); err != nil {
+	if err := videomaps.SaveLibrary(f, lib); err != nil {
 		f.Close()
 		return err
 	}
@@ -134,7 +134,7 @@ const (
 // writeMapConfig emits a per-TRACON sidecar JSON describing each mapGroup (the DCB-button layouts a
 // controller sees). The output is wrapped in a "controllers" object so it can be pasted directly
 // into a vice facility_adaptations block. Keys are the comma-joined TCP list (e.g. "1A,1D,1E").
-func (c *converter) writeMapConfig(childID string, mapGroups []mapGroup, lib *av.MapLibrary) error {
+func (c *converter) writeMapConfig(childID string, mapGroups []mapGroup, lib *videomaps.Library) error {
 	if len(mapGroups) == 0 {
 		return nil
 	}
@@ -208,7 +208,7 @@ func transposeColumnMajor(in []string, base, cols int) []string {
 
 // loadMapGeometry parses a single .geojson into the given VideoMap's
 // Lines/Symbols/Labels.
-func (c *converter) loadMapGeometry(ulid string, vm *av.STARSMap) error {
+func (c *converter) loadMapGeometry(ulid string, vm *videomaps.STARSMap) error {
 	src, err := loadGeoJSON(c.videoMapPath(ulid))
 	if err != nil {
 		return err
@@ -227,7 +227,7 @@ func (c *converter) loadMapGeometry(ulid string, vm *av.STARSMap) error {
 // kept on the map so the .mappack carries the full data — STARS just won't
 // draw them today. When STARS rendering catches up to ERAM these maps will
 // "wake up" automatically.
-func (c *converter) warnSTARSUnrenderable(vm *av.STARSMap) {
+func (c *converter) warnSTARSUnrenderable(vm *videomaps.STARSMap) {
 	if n := len(vm.Symbols); n > 0 {
 		c.reportf("STARS [%s] %q: %d symbols present; STARS symbol rendering not implemented",
 			c.artccID, vm.Name, n)
@@ -237,7 +237,7 @@ func (c *converter) warnSTARSUnrenderable(vm *av.STARSMap) {
 			c.artccID, vm.Name, n)
 	}
 	for i, l := range vm.Lines {
-		if l.Style != av.LineStyleSolid {
+		if l.Style != videomaps.LineStyleSolid {
 			c.reportf("STARS [%s] %q line %d: non-solid style %s; STARS dashed-line rendering not implemented",
 				c.artccID, vm.Name, i, l.Style)
 			break

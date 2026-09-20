@@ -17,7 +17,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/mmp/vice/maps"
+	"github.com/mmp/vice/videomaps/crc"
 )
 
 func main() {
@@ -36,7 +36,7 @@ func main() {
 		log.Fatalf("%v", err)
 	}
 
-	if err := maps.ConvertCRC(cwd, artcc, outDir, func(line string) { log.Print(line) }); err != nil {
+	if err := crc.Convert(cwd, artcc, outDir, func(line string) { log.Print(line) }); err != nil {
 		log.Fatalf("%v", err)
 	}
 }

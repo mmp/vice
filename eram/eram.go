@@ -19,6 +19,7 @@ import (
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -224,12 +225,12 @@ type ERAMPane struct {
 
 	systemFont [11]*renderer.Font `json:"-"`
 
-	allVideoMaps  []av.ERAMMap `json:"-"`
-	bcgNames      []string     `json:"-"` // current group's bcgMenu; index-stable, may include empty slots
-	videoMapLabel string       `json:"-"`
+	allVideoMaps  []videomaps.ERAMMap `json:"-"`
+	bcgNames      []string            `json:"-"` // current group's bcgMenu; index-stable, may include empty slots
+	videoMapLabel string              `json:"-"`
 	// baseVideoMap is the current group's own always-displayed geometry.
-	baseVideoMap    av.ERAMMap `json:"-"`
-	currentFacility string     `json:"-"`
+	baseVideoMap    videomaps.ERAMMap `json:"-"`
+	currentFacility string            `json:"-"`
 
 	eramCursors map[string]platform.Cursor `json:"-"` // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
 
@@ -1089,7 +1090,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	ep.setVideoMapGroup(vmf, ps.VideoMapGroup)
 
 	for _, name := range ss.ControllerDefaultVideoMaps {
-		if slices.ContainsFunc(ep.allVideoMaps, func(v av.ERAMMap) bool { return v.Label() == name }) {
+		if slices.ContainsFunc(ep.allVideoMaps, func(v videomaps.ERAMMap) bool { return v.Label() == name }) {
 			ps.VideoMapVisible[name] = nil
 		}
 	}
@@ -1098,7 +1099,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 // setVideoMapGroup makes the named geomap group the current one: it fills in
 // the filter menu and gives any BCG that doesn't have a brightness yet the
 // default one.
-func (ep *ERAMPane) setVideoMapGroup(vmf *av.MapLibrary, group string) {
+func (ep *ERAMPane) setVideoMapGroup(vmf *videomaps.Library, group string) {
 	ps := ep.currentPrefs()
 	maps := vmf.ERAMMapGroups[group]
 

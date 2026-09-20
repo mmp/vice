@@ -19,6 +19,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/yuin/goldmark/ast"
@@ -764,12 +765,12 @@ func drawCenteredLabel(label string, width, initialCursorX float32, font *Font) 
 // findVideoMapsFromLibrary extracts the requested video maps by name from a library.
 // The returned slice carries VideoMap by value; the struct's heavy payload
 // (Lines/Symbols/Labels) is slice-backed and shared with the library, so the copy is cheap.
-func findVideoMapsFromLibrary(library *av.MapLibrary, mapNames []string) ([]av.STARSMap, []error) {
+func findVideoMapsFromLibrary(library *videomaps.Library, mapNames []string) ([]videomaps.STARSMap, []error) {
 	if library == nil {
 		return nil, nil
 	}
 
-	videoMaps := make([]av.STARSMap, 0, len(mapNames))
+	videoMaps := make([]videomaps.STARSMap, 0, len(mapNames))
 	var errs []error
 	for _, mapName := range mapNames {
 		if m, ok := library.Maps[mapName]; ok {
@@ -783,14 +784,14 @@ func findVideoMapsFromLibrary(library *av.MapLibrary, mapNames []string) ([]av.S
 
 // videoMapCache holds cached video map libraries to avoid reloading on every frame.
 type videoMapCache struct {
-	libraries map[string]*av.MapLibrary // file path -> loaded library
-	errors    map[string]error          // file path -> load error
+	libraries map[string]*videomaps.Library // file path -> loaded library
+	errors    map[string]error              // file path -> load error
 }
 
 // newVideoMapCache creates a new empty video map cache.
 func newVideoMapCache() *videoMapCache {
 	return &videoMapCache{
-		libraries: make(map[string]*av.MapLibrary),
+		libraries: make(map[string]*videomaps.Library),
 		errors:    make(map[string]error),
 	}
 }
@@ -799,7 +800,7 @@ func newVideoMapCache() *videoMapCache {
 // only does the local-load / RPC dance once per file per session. Returns a
 // nil library (without error) if the brief block has no file or no map names.
 func loadVideoMapLibrary(briefMap *brief.VideoMapBlock, cache *videoMapCache,
-	controlClient *client.ControlClient) (*av.MapLibrary, error) {
+	controlClient *client.ControlClient) (*videomaps.Library, error) {
 	if briefMap.File == "" || len(briefMap.Maps) == 0 {
 		return nil, nil
 	}
@@ -1209,7 +1210,7 @@ func (p briefMapProjection) rotNmToLatLon(rotX, rotY float32) math.Point2LL {
 // explicit lat/lon rectangle (rotated bounding box). Otherwise the
 // projection is fit to the content (annotations + airspace, falling back
 // to video map lines), padded, and aspect-capped.
-func calculateMapProjection(briefMap *brief.VideoMapBlock, videoMaps []av.STARSMap, state *client.SimState) (briefMapProjection, error) {
+func calculateMapProjection(briefMap *brief.VideoMapBlock, videoMaps []videomaps.STARSMap, state *client.SimState) (briefMapProjection, error) {
 	useExplicitExtent := briefMap.Extent != [2]math.Point2LL{}
 
 	center := state.GetInitialCenter()
@@ -1483,7 +1484,7 @@ func drawArrowhead(drawList *imgui.DrawList, p1, p2 imgui.Vec2, color uint32) {
 // into drawList in screen coordinates. Airspace draws were previously split
 // out (back when the rest was baked into a cached imgui.DrawList); now that
 // everything is rebuilt every frame there's no benefit to keeping them apart.
-func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, videoMaps []av.STARSMap,
+func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, videoMaps []videomaps.STARSMap,
 	state *client.SimState, disabledTCPs map[string]bool, cursorOverCanvas bool, cursorLatLon math.Point2LL, latLonToScreen func(math.Point2LL) imgui.Vec2) []error {
 	videoMapColorU32 := imgui.ColorU32Vec4(videoMapColor)
 	annotationColorU32 := imgui.ColorU32Vec4(annotationColor)

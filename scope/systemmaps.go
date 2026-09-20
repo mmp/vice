@@ -13,6 +13,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
 // SystemMapSpec describes the facility whose system maps are to be generated.
@@ -81,7 +82,7 @@ type systemMapGen struct {
 
 func (g *systemMapGen) add(label, name string, draw func(cb *renderer.CommandBuffer)) {
 	m := Map{
-		STARSMap: av.STARSMap{
+		STARSMap: videomaps.STARSMap{
 			Label:    label,
 			Name:     name,
 			Id:       g.id,

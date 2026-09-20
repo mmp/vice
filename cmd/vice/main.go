@@ -42,6 +42,7 @@ import (
 	"github.com/mmp/vice/stars"
 	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -378,7 +379,7 @@ func runListMaps(lg *log.Logger) error {
 	}
 
 	var e util.ErrorLogger
-	av.PrintMapLibrary(*listMaps, &e)
+	videomaps.PrintLibrary(*listMaps, &e)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return fmt.Errorf("video map listing found errors")

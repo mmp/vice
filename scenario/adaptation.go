@@ -17,17 +17,18 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
 func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Group,
-	mapSpec *av.MapLibrarySpec, mapSpecs map[string]*av.MapLibrarySpec) {
+	mapSpec *videomaps.LibrarySpec, mapSpecs map[string]*videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	e.Push("facility_adaptations")
 
 	// specForArea returns the effective spec for an area: the area's
 	// own mapSpec if it has a video_map_file, otherwise the facility-level one.
-	specForArea := func(ac *sim.STARSArea) *av.MapLibrarySpec {
+	specForArea := func(ac *sim.STARSArea) *videomaps.LibrarySpec {
 		if ac.VideoMapFile != "" {
 			if m, ok := mapSpecs[ac.VideoMapFile]; ok {
 				return m

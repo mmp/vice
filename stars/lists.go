@@ -21,6 +21,7 @@ import (
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
 // Most system lists are drawn via drawSystemList / ListFormatter, which
@@ -1108,7 +1109,7 @@ func (sp *STARSPane) drawMapsList(ctx *scope.Context, paneExtent math.Extent2D, 
 	}
 
 	var text strings.Builder
-	format := func(m av.STARSMap) {
+	format := func(m videomaps.STARSMap) {
 		if m.Label == "" {
 			return
 		}
@@ -1129,7 +1130,7 @@ func (sp *STARSPane) drawMapsList(ctx *scope.Context, paneExtent math.Extent2D, 
 
 	text.WriteString(scope.VideoMapCategoryNames[ps.VideoMapsList.Selection])
 	text.WriteByte('\n')
-	var m []av.STARSMap
+	var m []videomaps.STARSMap
 	if ps.VideoMapsList.Selection == scope.VideoMapCurrent {
 		for _, vm := range sp.allVideoMaps {
 			if _, ok := ps.VideoMapVisible[vm.Id]; ok {
@@ -1145,7 +1146,7 @@ func (sp *STARSPane) drawMapsList(ctx *scope.Context, paneExtent math.Extent2D, 
 	}
 
 	// Sort by number
-	slices.SortFunc(m, func(a, b av.STARSMap) int { return a.Id - b.Id })
+	slices.SortFunc(m, func(a, b videomaps.STARSMap) int { return a.Id - b.Id })
 
 	// If more than 50, only display the first 50.
 	if len(m) > 50 {

@@ -1,8 +1,8 @@
-// aviation/maps_test.go
+// videomaps/videomaps_test.go
 // Copyright(c) 2025-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package videomaps
 
 import (
 	"bytes"
@@ -17,8 +17,8 @@ import (
 // kinds: STARS maps with lines (solid + a dashed style), symbols, and
 // labels; an ERAM group with two distinct maps; and a separate ERAM
 // group exercising the duplicate-(L1,L2) case (e.g. ZLA's MVA collision).
-func buildSyntheticLibrary() *MapLibrary {
-	return &MapLibrary{
+func buildSyntheticLibrary() *Library {
+	return &Library{
 		Maps: map[string]STARSMap{
 			"BASE": {
 				Name:     "BASE",
@@ -27,7 +27,7 @@ func buildSyntheticLibrary() *MapLibrary {
 				Group:    0,
 				Category: 1,
 				Color:    3,
-				Lines: []MapLine{
+				Lines: []Line{
 					{
 						Points: []math.Point2LL{
 							{-73.78, 40.64},
@@ -54,7 +54,7 @@ func buildSyntheticLibrary() *MapLibrary {
 				Label: "VOR",
 				Id:    101,
 				Group: 1,
-				Symbols: []MapSymbol{
+				Symbols: []Symbol{
 					{P: math.Point2LL{-73.5, 40.5}, Style: SymbolStyleVOR, Size: 1, BCGIndex: 3},
 					{P: math.Point2LL{-73.6, 40.6}, Style: SymbolStyleNDB, Size: 1, BCGIndex: 0},
 				},
@@ -63,7 +63,7 @@ func buildSyntheticLibrary() *MapLibrary {
 				Name:  "LABELS",
 				Label: "LBL",
 				Id:    202,
-				Labels: []MapLabel{
+				Labels: []Label{
 					{
 						P:         math.Point2LL{-74.0, 40.7},
 						Text:      "KJFK",
@@ -84,13 +84,13 @@ func buildSyntheticLibrary() *MapLibrary {
 				BCGNames:   []string{"BASE", "HI SEC", "", "SPARE"},
 				// Always-displayed geometry: no label, no filter-menu slot.
 				BaseMap: ERAMMap{
-					Lines: []MapLine{{
+					Lines: []Line{{
 						Points:    []math.Point2LL{{-75.0, 39.0}, {-75.1, 39.1}, {-75.2, 39.0}},
 						Style:     LineStyleLongDashed,
 						Thickness: 2,
 						BCGIndex:  1,
 					}},
-					Symbols: []MapSymbol{{
+					Symbols: []Symbol{{
 						P: math.Point2LL{-75.05, 39.05}, Style: SymbolStyleNDB, Size: 2, BCGIndex: 1,
 					}},
 				},
@@ -98,7 +98,7 @@ func buildSyntheticLibrary() *MapLibrary {
 					{
 						LabelLine1: "BASE",
 						LabelLine2: "MAP",
-						Lines: []MapLine{{
+						Lines: []Line{{
 							Points: []math.Point2LL{
 								{-74.0, 40.7}, {-74.1, 40.8},
 							},
@@ -108,7 +108,7 @@ func buildSyntheticLibrary() *MapLibrary {
 					{
 						LabelLine1: "HIGH",
 						LabelLine2: "SECTOR",
-						Symbols: []MapSymbol{{
+						Symbols: []Symbol{{
 							P: math.Point2LL{-73.5, 40.5}, Style: SymbolStyleVOR, Size: 1,
 						}},
 					},
@@ -126,14 +126,14 @@ func buildSyntheticLibrary() *MapLibrary {
 				Maps: []ERAMMap{
 					{
 						LabelLine1: "MVA",
-						Lines: []MapLine{{
+						Lines: []Line{{
 							Points: []math.Point2LL{{-118.0, 34.0}, {-118.1, 34.1}},
 							Style:  LineStyleSolid,
 						}},
 					},
 					{
 						LabelLine1: "MVA", // duplicate on (L1,L2) — by design
-						Lines: []MapLine{{
+						Lines: []Line{{
 							Points: []math.Point2LL{{-117.0, 33.0}, {-117.1, 33.1}},
 							Style:  LineStyleSolid,
 						}},
@@ -148,7 +148,7 @@ func TestMapLibraryRoundtrip(t *testing.T) {
 	orig := buildSyntheticLibrary()
 
 	var buf bytes.Buffer
-	if err := SaveMapLibrary(&buf, orig); err != nil {
+	if err := SaveLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 
@@ -197,7 +197,7 @@ func TestMapLibraryRoundtrip(t *testing.T) {
 func TestSpecFastPath(t *testing.T) {
 	orig := buildSyntheticLibrary()
 	var buf bytes.Buffer
-	if err := SaveMapLibrary(&buf, orig); err != nil {
+	if err := SaveLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 	data := buf.Bytes()
@@ -221,7 +221,7 @@ func TestSpecFastPath(t *testing.T) {
 			len(hdr.ERAMGroups), len(orig.ERAMMapGroups))
 	}
 
-	spec := &MapLibrarySpec{header: hdr}
+	spec := &LibrarySpec{header: hdr}
 	for name := range orig.Maps {
 		if !spec.HasMap(name) {
 			t.Errorf("spec missing STARS map %q", name)
@@ -243,7 +243,7 @@ func TestSpecFastPath(t *testing.T) {
 func TestDuplicateERAMLabels(t *testing.T) {
 	orig := buildSyntheticLibrary()
 	var buf bytes.Buffer
-	if err := SaveMapLibrary(&buf, orig); err != nil {
+	if err := SaveLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 	got, err := decodeFromBytes(buf.Bytes())
@@ -270,7 +270,7 @@ func TestDuplicateERAMLabels(t *testing.T) {
 func TestERAMBaseMap(t *testing.T) {
 	orig := buildSyntheticLibrary()
 	var buf bytes.Buffer
-	if err := SaveMapLibrary(&buf, orig); err != nil {
+	if err := SaveLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 	got, err := decodeFromBytes(buf.Bytes())
@@ -306,7 +306,7 @@ func TestERAMBaseMap(t *testing.T) {
 	// ZNYMAP also carries an unlabeled placeholder in Maps, holding an empty
 	// filter-menu slot's position. Neither it nor the base map may be
 	// nameable, or an empty "default_maps" entry would validate.
-	spec := &MapLibrarySpec{header: hdr}
+	spec := &LibrarySpec{header: hdr}
 	if spec.HasMap("") {
 		t.Error(`HasMap("") is true; unlabeled placeholders must not be nameable`)
 	}
@@ -317,7 +317,7 @@ func TestERAMBaseMap(t *testing.T) {
 func TestLineStylePreserved(t *testing.T) {
 	orig := buildSyntheticLibrary()
 	var buf bytes.Buffer
-	if err := SaveMapLibrary(&buf, orig); err != nil {
+	if err := SaveLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 	got, err := decodeFromBytes(buf.Bytes())
@@ -355,6 +355,6 @@ func TestWrongMagic(t *testing.T) {
 // decodeFromBytes parses a serialized library from an in-memory buffer. It
 // runs the loader's own decode path rather than a copy of it, so a field
 // added to the wire format can't be silently untested here.
-func decodeFromBytes(data []byte) (*MapLibrary, error) {
+func decodeFromBytes(data []byte) (*Library, error) {
 	return decodeMapLibrary(data, "<memory>")
 }

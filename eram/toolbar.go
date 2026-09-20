@@ -11,12 +11,12 @@ import (
 	"strings"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
 // Find out how to get these correctly
@@ -256,7 +256,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *scope.Context, scale float32) {
 			if second && i == 0 {
 				i = 20
 			}
-			var vm av.ERAMMap
+			var vm videomaps.ERAMMap
 			if i < len(ep.allVideoMaps) {
 				vm = ep.allVideoMaps[i]
 			}

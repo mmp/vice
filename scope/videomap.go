@@ -5,25 +5,25 @@
 package scope
 
 import (
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
-// Map extends av.STARSMap with client-side rendering state. The
+// Map extends videomaps.STARSMap with client-side rendering state. The
 // CommandBuffer holds commands to draw the solid-line geometry; dashed
 // lines, symbols, and labels are kept on the embedded STARSMap and drawn
 // separately at draw time so their stipple pattern / glyph / text can
 // account for scope scale and display DPI.
 type Map struct {
-	av.STARSMap
+	videomaps.STARSMap
 	CommandBuffer renderer.CommandBuffer
 }
 
-// BuildMaps converts []av.STARSMap to Maps, generating CommandBuffers for
+// BuildMaps converts []videomaps.STARSMap to Maps, generating CommandBuffers for
 // the solid-line portion.
-func BuildMaps(maps []av.STARSMap) []Map {
+func BuildMaps(maps []videomaps.STARSMap) []Map {
 	if len(maps) == 0 {
 		return nil
 	}
@@ -38,7 +38,7 @@ func BuildMaps(maps []av.STARSMap) []Map {
 		ld.Reset()
 		hasSolid := false
 		for _, line := range m.Lines {
-			if line.Style != av.LineStyleSolid {
+			if line.Style != videomaps.LineStyleSolid {
 				continue // dashed lines drawn separately at draw time
 			}
 			fl := util.MapSlice(line.Points, func(p math.Point2LL) [2]float32 { return p })
@@ -53,7 +53,7 @@ func BuildMaps(maps []av.STARSMap) []Map {
 	return out
 }
 
-// Video map categories, as stored in av.STARSMap.Category. VideoMapCurrent
+// Video map categories, as stored in videomaps.STARSMap.Category. VideoMapCurrent
 // is not a category a map carries; it selects the maps currently displayed.
 const (
 	VideoMapNoCategory = iota - 1
@@ -101,12 +101,12 @@ type MapFonts interface {
 // index without an adapted BCG stay black and so draw nothing. solidLineBuf
 // is scratch space the caller keeps across maps to avoid reallocating it
 // for every line.
-func DrawMapFeatures(lines []av.MapLine, symbols []av.MapSymbol, labels []av.MapLabel,
+func DrawMapFeatures(lines []videomaps.Line, symbols []videomaps.Symbol, labels []videomaps.Label,
 	bcgRGB *[256]renderer.RGB, fonts MapFonts, transforms ScopeTransformations,
 	ld *renderer.ColoredLinesDrawBuilder, td *renderer.TextDrawBuilder, solidLineBuf *[][2]float32) {
 	for _, line := range lines {
 		color := bcgRGB[line.BCGIndex]
-		if line.Style == av.LineStyleSolid {
+		if line.Style == videomaps.LineStyleSolid {
 			*solidLineBuf = (*solidLineBuf)[:0]
 			for _, p := range line.Points {
 				*solidLineBuf = append(*solidLineBuf, transforms.WindowFromLatLongP(p))
@@ -167,13 +167,13 @@ var (
 	LongDashShortDashPattern = []float32{24, 11, 12, 12}
 )
 
-func dashPatternPixels(s av.LineStyle) []float32 {
+func dashPatternPixels(s videomaps.LineStyle) []float32 {
 	switch s {
-	case av.LineStyleShortDashed:
+	case videomaps.LineStyleShortDashed:
 		return ShortDashedPattern
-	case av.LineStyleLongDashed:
+	case videomaps.LineStyleLongDashed:
 		return LongDashedPattern
-	case av.LineStyleLongDashShortDash:
+	case videomaps.LineStyleLongDashShortDash:
 		return LongDashShortDashPattern
 	default:
 		return nil
@@ -182,23 +182,23 @@ func dashPatternPixels(s av.LineStyle) []float32 {
 
 // SymbolGlyphIndex maps each SymbolStyle to the unicode codepoint of its
 // glyph in the EramGeomap-{16,18,20}.pcf bitmap fonts.
-var SymbolGlyphIndex = map[av.SymbolStyle]rune{
-	av.SymbolStyleVOR:                 0x0B,
-	av.SymbolStyleNDB:                 0x0B,
-	av.SymbolStyleTACAN:               0x0F,
-	av.SymbolStyleVOR_TACAN:           0x00,
-	av.SymbolStyleDME:                 0x04,
-	av.SymbolStyleRNAV:                0x09,
-	av.SymbolStyleRNAVOnlyWaypoint:    0x07,
-	av.SymbolStyleAirport:             0x0D,
-	av.SymbolStyleSatelliteAirport:    0x02,
-	av.SymbolStyleEmergencyAirport:    0x04,
-	av.SymbolStyleHeliport:            0x0B,
-	av.SymbolStyleOtherWaypoints:      0x0C,
-	av.SymbolStyleAirwayIntersections: 0x09,
-	av.SymbolStyleIAF:                 0x0D,
-	av.SymbolStyleObstruction1:        0x00,
-	av.SymbolStyleObstruction2:        0x06,
-	av.SymbolStyleNuclear:             0x03,
-	av.SymbolStyleRadar:               0x05,
+var SymbolGlyphIndex = map[videomaps.SymbolStyle]rune{
+	videomaps.SymbolStyleVOR:                 0x0B,
+	videomaps.SymbolStyleNDB:                 0x0B,
+	videomaps.SymbolStyleTACAN:               0x0F,
+	videomaps.SymbolStyleVOR_TACAN:           0x00,
+	videomaps.SymbolStyleDME:                 0x04,
+	videomaps.SymbolStyleRNAV:                0x09,
+	videomaps.SymbolStyleRNAVOnlyWaypoint:    0x07,
+	videomaps.SymbolStyleAirport:             0x0D,
+	videomaps.SymbolStyleSatelliteAirport:    0x02,
+	videomaps.SymbolStyleEmergencyAirport:    0x04,
+	videomaps.SymbolStyleHeliport:            0x0B,
+	videomaps.SymbolStyleOtherWaypoints:      0x0C,
+	videomaps.SymbolStyleAirwayIntersections: 0x09,
+	videomaps.SymbolStyleIAF:                 0x0D,
+	videomaps.SymbolStyleObstruction1:        0x00,
+	videomaps.SymbolStyleObstruction2:        0x06,
+	videomaps.SymbolStyleNuclear:             0x03,
+	videomaps.SymbolStyleRadar:               0x05,
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/videomaps"
 )
 
 // AircraftCommandRequest contains parameters for RunAircraftCommands.
@@ -299,13 +300,13 @@ func (c *ControlClient) DeleteRestrictionArea(idx int, callback func(error)) {
 // tries to load from local resources, verifying against the hash advertised
 // by the server in SimState.VideoMapLibraryHashes; on hash mismatch, missing
 // file, or absent hash it falls back to fetching the full library over RPC.
-func (c *ControlClient) LoadVideoMapLibrary(filename string) (*av.MapLibrary, error) {
+func (c *ControlClient) LoadVideoMapLibrary(filename string) (*videomaps.Library, error) {
 	if hash, ok := c.State.VideoMapLibraryHashes[filename]; ok {
-		if lib, err := av.HashCheckLoadMapLibrary(filename, hash); err == nil {
+		if lib, err := videomaps.HashCheckLoadLibrary(filename, hash); err == nil {
 			return lib, nil
 		}
 	}
-	var vmf av.MapLibrary
+	var vmf videomaps.Library
 	err := c.client.CallWithTimeout(server.GetMapLibraryRPC, &server.MapLibraryArgs{
 		Filename: filename,
 	}, &vmf)

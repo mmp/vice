@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 	"github.com/mmp/vice/wx"
 )
 
@@ -76,13 +77,13 @@ func (r *BriefRegistry) LoadBrief(facility string) (string, error) {
 type Tables struct {
 	Groups      map[string]map[string]*Group
 	Catalogs    map[string]map[string]*Catalog
-	MapSpecs    map[string]*av.MapLibrarySpec
+	MapSpecs    map[string]*videomaps.LibrarySpec
 	Briefs      *BriefRegistry
 	Emergencies []sim.Emergency
 }
 
 func MakeTables(groups map[string]map[string]*Group, catalogs map[string]map[string]*Catalog,
-	mapSpecs map[string]*av.MapLibrarySpec, briefs *BriefRegistry) *Tables {
+	mapSpecs map[string]*videomaps.LibrarySpec, briefs *BriefRegistry) *Tables {
 	return &Tables{
 		Groups:   groups,
 		Catalogs: catalogs,

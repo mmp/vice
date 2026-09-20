@@ -1,8 +1,8 @@
-// aviation/maps.go
+// videomaps/videomaps.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package videomaps
 
 import (
 	"bytes"
@@ -33,9 +33,9 @@ type STARSMap struct {
 	Category int    // -1..9
 	Color    int    // 0..8
 
-	Lines   []MapLine
-	Symbols []MapSymbol
-	Labels  []MapLabel
+	Lines   []Line
+	Symbols []Symbol
+	Labels  []Label
 }
 
 // ERAMMap is the runtime representation of a single map within an ERAM
@@ -46,9 +46,9 @@ type ERAMMap struct {
 	LabelLine1 string
 	LabelLine2 string
 
-	Lines   []MapLine
-	Symbols []MapSymbol
-	Labels  []MapLabel
+	Lines   []Line
+	Symbols []Symbol
+	Labels  []Label
 }
 
 type ERAMMapGroup struct {
@@ -90,7 +90,7 @@ func (m ERAMMap) Bounds() math.Extent2D {
 	return featureBounds(m.Lines, m.Symbols, m.Labels)
 }
 
-func featureBounds(lines []MapLine, symbols []MapSymbol, labels []MapLabel) math.Extent2D {
+func featureBounds(lines []Line, symbols []Symbol, labels []Label) math.Extent2D {
 	e := math.EmptyExtent2D()
 	for _, l := range lines {
 		for _, p := range l.Points {
@@ -106,31 +106,31 @@ func featureBounds(lines []MapLine, symbols []MapSymbol, labels []MapLabel) math
 	return e
 }
 
-// MapLibrary is the full in-memory representation of a video map
+// Library is the full in-memory representation of a video map
 // file. STARS maps are keyed by Name (which is unique within a file);
 // ERAM groups are keyed by group name.
-type MapLibrary struct {
+type Library struct {
 	Maps          map[string]STARSMap
 	ERAMMapGroups map[string]ERAMMapGroup
 }
 
 // ---------- per-feature types -------------------------------------------
 
-type MapLine struct {
+type Line struct {
 	Points    []math.Point2LL
 	Style     LineStyle
 	Thickness uint8
 	BCGIndex  uint8 // 0 = use the map's group BCG
 }
 
-type MapSymbol struct {
+type Symbol struct {
 	P        math.Point2LL
 	Style    SymbolStyle
 	Size     uint8
 	BCGIndex uint8 // 0 = use the map's group BCG
 }
 
-type MapLabel struct {
+type Label struct {
 	P         math.Point2LL
 	Text      string
 	Size      uint8
@@ -280,10 +280,10 @@ type wireERAMEntry struct {
 
 // ---------- MapLibrarySpec: metadata-only loader --------------------------
 
-// MapLibrarySpec carries everything server startup needs to validate
+// LibrarySpec carries everything server startup needs to validate
 // scenario references without touching the geometry region. It also
 // remembers the underlying file so callers can compute Hash() lazily.
-type MapLibrarySpec struct {
+type LibrarySpec struct {
 	header     *wireFileHeader
 	filesystem fs.FS
 	filename   string
@@ -293,7 +293,7 @@ type MapLibrarySpec struct {
 // the combined label of any ERAM map within any group. An empty name
 // never matches, so the unlabeled placeholders that hold empty
 // filter-menu slots' positions stay invisible to name lookup.
-func (s *MapLibrarySpec) HasMap(name string) bool {
+func (s *LibrarySpec) HasMap(name string) bool {
 	if s == nil || s.header == nil || name == "" {
 		return false
 	}
@@ -315,7 +315,7 @@ func (s *MapLibrarySpec) HasMap(name string) bool {
 // STARSMapId returns the STARS DCB Id for the named map. Returns 0 if
 // the name is unknown or the map has no DCB Id assigned (0 is the
 // sentinel for "no Id" since STARS commands reject Id 0 anyway).
-func (s *MapLibrarySpec) STARSMapId(name string) int {
+func (s *LibrarySpec) STARSMapId(name string) int {
 	if s == nil || s.header == nil {
 		return 0
 	}
@@ -328,7 +328,7 @@ func (s *MapLibrarySpec) STARSMapId(name string) int {
 }
 
 // HasMapGroup returns true if name matches an ERAM group's name.
-func (s *MapLibrarySpec) HasMapGroup(name string) bool {
+func (s *LibrarySpec) HasMapGroup(name string) bool {
 	if s == nil || s.header == nil {
 		return false
 	}
@@ -341,7 +341,7 @@ func (s *MapLibrarySpec) HasMapGroup(name string) bool {
 }
 
 // Hash returns a hash of the underlying video map file.
-func (s *MapLibrarySpec) Hash() ([]byte, error) {
+func (s *LibrarySpec) Hash() ([]byte, error) {
 	if s == nil {
 		return nil, errors.New("nil MapLibrarySpec")
 	}
@@ -353,9 +353,9 @@ func (s *MapLibrarySpec) Hash() ([]byte, error) {
 	return util.Hash(f)
 }
 
-// LoadMapLibrarySpec opens a video map file and decodes only the metadata
+// LoadLibrarySpec opens a video map file and decodes only the metadata
 // header, leaving the flate-compressed geometry region untouched.
-func LoadMapLibrarySpec(path string) (*MapLibrarySpec, error) {
+func LoadLibrarySpec(path string) (*LibrarySpec, error) {
 	filesystem := mapLibraryFS(path)
 	f, err := filesystem.Open(path)
 	if err != nil {
@@ -368,7 +368,7 @@ func LoadMapLibrarySpec(path string) (*MapLibrarySpec, error) {
 		return nil, err
 	}
 
-	return &MapLibrarySpec{
+	return &LibrarySpec{
 		header:     hdr,
 		filesystem: filesystem,
 		filename:   path,
@@ -403,7 +403,7 @@ func readMapLibraryHeaderOnly(f fs.File) (*wireFileHeader, error) {
 
 // ---------- LoadMapLibrary: full load ------------------------------
 
-func LoadMapLibrary(path string) (*MapLibrary, error) {
+func LoadLibrary(path string) (*Library, error) {
 	filesystem := mapLibraryFS(path)
 	f, err := filesystem.Open(path)
 	if err != nil {
@@ -422,7 +422,7 @@ func LoadMapLibrary(path string) (*MapLibrary, error) {
 // of LoadMapLibrary so tests can decode from memory through exactly the same
 // code the loader uses rather than a parallel copy of it. path is only used in
 // error messages.
-func decodeMapLibrary(contents []byte, path string) (*MapLibrary, error) {
+func decodeMapLibrary(contents []byte, path string) (*Library, error) {
 	hdr, body, err := parseMapLibraryHeader(contents)
 	if err != nil {
 		return nil, err
@@ -436,7 +436,7 @@ func decodeMapLibrary(contents []byte, path string) (*MapLibrary, error) {
 		return nil, fmt.Errorf("video map %s: geometry decompress: %w", path, err)
 	}
 
-	lib := &MapLibrary{
+	lib := &Library{
 		Maps:          make(map[string]STARSMap, len(hdr.STARSMaps)),
 		ERAMMapGroups: make(map[string]ERAMMapGroup, len(hdr.ERAMGroups)),
 	}
@@ -494,8 +494,8 @@ func decodeMapLibrary(contents []byte, path string) (*MapLibrary, error) {
 	return lib, nil
 }
 
-// HashCheckLoadMapLibrary loads the file only if its hash matches.
-func HashCheckLoadMapLibrary(path string, wantHash []byte) (*MapLibrary, error) {
+// HashCheckLoadLibrary loads the file only if its hash matches.
+func HashCheckLoadLibrary(path string, wantHash []byte) (*Library, error) {
 	filesystem := mapLibraryFS(path)
 	f, err := filesystem.Open(path)
 	if err != nil {
@@ -509,7 +509,7 @@ func HashCheckLoadMapLibrary(path string, wantHash []byte) (*MapLibrary, error) 
 	if !bytesEqual(gotHash, wantHash) {
 		return nil, errors.New("hash mismatch")
 	}
-	return LoadMapLibrary(path)
+	return LoadLibrary(path)
 }
 
 // parseMapLibraryHeader runs the magic/length/msgpack validation against
@@ -538,10 +538,10 @@ func parseMapLibraryHeader(contents []byte) (*wireFileHeader, []byte, error) {
 
 // ---------- SaveMapLibrary: write path -----------------------------
 
-// SaveMapLibrary encodes a library to the wire format and writes it
+// SaveLibrary encodes a library to the wire format and writes it
 // to w. Iteration order over the input maps is deterministic (sorted by
 // name) so files re-import bit-stable across runs.
-func SaveMapLibrary(w io.Writer, lib *MapLibrary) error {
+func SaveLibrary(w io.Writer, lib *Library) error {
 	// First pass: assemble the geometry blob region, recording offsets.
 	var geom bytes.Buffer
 
@@ -661,9 +661,9 @@ func bytesEqual(a, b []byte) bool {
 	return true
 }
 
-// PrintMapLibrary prints a table of the maps in the given file.
-func PrintMapLibrary(path string, e *util.ErrorLogger) {
-	vmf, err := LoadMapLibrary(path)
+// PrintLibrary prints a table of the maps in the given file.
+func PrintLibrary(path string, e *util.ErrorLogger) {
+	vmf, err := LoadLibrary(path)
 	if err != nil {
 		e.Error(err)
 		return
@@ -720,7 +720,7 @@ func PrintMapLibrary(path string, e *util.ErrorLogger) {
 
 // encodeGeometry serializes a single map's features to a self-contained
 // payload (no flate; the caller wraps the whole geometry region).
-func encodeGeometry(lines []MapLine, symbols []MapSymbol, labels []MapLabel) []byte {
+func encodeGeometry(lines []Line, symbols []Symbol, labels []Label) []byte {
 	var b []byte
 
 	// All line preambles first, then a single chained path stream.
@@ -767,7 +767,7 @@ func encodeGeometry(lines []MapLine, symbols []MapSymbol, labels []MapLabel) []b
 
 // decodeGeometry parses one map's payload out of the shared decompressed
 // geometry region. (offset, length) come from the wire header.
-func decodeGeometry(region []byte, offset, length uint32) ([]MapLine, []MapSymbol, []MapLabel, error) {
+func decodeGeometry(region []byte, offset, length uint32) ([]Line, []Symbol, []Label, error) {
 	if uint64(offset)+uint64(length) > uint64(len(region)) {
 		return nil, nil, nil, fmt.Errorf("geometry slice out of bounds: offset=%d len=%d region=%d",
 			offset, length, len(region))
@@ -786,9 +786,9 @@ func decodeGeometry(region []byte, offset, length uint32) ([]MapLine, []MapSymbo
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("num symbols: %w", err)
 	}
-	var symbols []MapSymbol
+	var symbols []Symbol
 	if numSymbols > 0 {
-		symbols = make([]MapSymbol, numSymbols)
+		symbols = make([]Symbol, numSymbols)
 	}
 	for i := range symbols {
 		x, err := d.float32()
@@ -803,7 +803,7 @@ func decodeGeometry(region []byte, offset, length uint32) ([]MapLine, []MapSymbo
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("symbol %d: attrs: %w", i, err)
 		}
-		symbols[i] = MapSymbol{
+		symbols[i] = Symbol{
 			P:        math.Point2LL{x, y},
 			Style:    SymbolStyle(attrs[0]),
 			Size:     attrs[1],
@@ -815,9 +815,9 @@ func decodeGeometry(region []byte, offset, length uint32) ([]MapLine, []MapSymbo
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("num labels: %w", err)
 	}
-	var labels []MapLabel
+	var labels []Label
 	if numLabels > 0 {
-		labels = make([]MapLabel, numLabels)
+		labels = make([]Label, numLabels)
 	}
 	for i := range labels {
 		x, err := d.float32()
@@ -840,7 +840,7 @@ func decodeGeometry(region []byte, offset, length uint32) ([]MapLine, []MapSymbo
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("label %d: text: %w", i, err)
 		}
-		labels[i] = MapLabel{
+		labels[i] = Label{
 			P:         math.Point2LL{x, y},
 			Size:      attrs[0],
 			Underline: attrs[1]&0x01 != 0,
@@ -857,7 +857,7 @@ func decodeGeometry(region []byte, offset, length uint32) ([]MapLine, []MapSymbo
 
 // decodeLines reads the line-block: all preambles first, then a single
 // chained path stream covering every line's points.
-func decodeLines(d *payloadReader) ([]MapLine, error) {
+func decodeLines(d *payloadReader) ([]Line, error) {
 	numLines, err := d.uvarint()
 	if err != nil {
 		return nil, fmt.Errorf("num lines: %w", err)
@@ -865,7 +865,7 @@ func decodeLines(d *payloadReader) ([]MapLine, error) {
 	if numLines == 0 {
 		return nil, nil
 	}
-	lines := make([]MapLine, numLines)
+	lines := make([]Line, numLines)
 	counts := make([]int, numLines)
 	totalPts := 0
 	for i := range lines {
@@ -877,7 +877,7 @@ func decodeLines(d *payloadReader) ([]MapLine, error) {
 		if err != nil {
 			return nil, fmt.Errorf("line %d: header: %w", i, err)
 		}
-		lines[i] = MapLine{
+		lines[i] = Line{
 			Style:     LineStyle(style[0]),
 			Thickness: style[1],
 			BCGIndex:  style[2],

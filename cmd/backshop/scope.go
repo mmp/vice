@@ -18,6 +18,7 @@ import (
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -221,9 +222,9 @@ func (s *scopeView) rebuildMaps(c *client.ControlClient, keepVisible bool) {
 			group string
 			base  bool
 		}
-		var library []av.STARSMap
+		var library []videomaps.STARSMap
 		var origins []origin
-		add := func(m av.STARSMap, o origin) {
+		add := func(m videomaps.STARSMap, o origin) {
 			library = append(library, m)
 			origins = append(origins, o)
 		}
@@ -278,11 +279,11 @@ func (s *scopeView) rebuildMaps(c *client.ControlClient, keepVisible bool) {
 // eramMap presents one map from an ERAM group as a STARSMap so that
 // everything drawable can live in a single list. label names the map within
 // its group when the map itself carries no label, as the base map doesn't.
-func eramMap(group, label string, m av.ERAMMap) av.STARSMap {
+func eramMap(group, label string, m videomaps.ERAMMap) videomaps.STARSMap {
 	if label == "" {
 		label = m.Label()
 	}
-	return av.STARSMap{
+	return videomaps.STARSMap{
 		Name:     strings.TrimSpace(group + " " + label),
 		Label:    label,
 		Category: scope.VideoMapNoCategory,
