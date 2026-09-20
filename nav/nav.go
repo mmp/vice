@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -914,7 +915,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 		if nfa.Arrive.Altitude != nil || nfa.Arrive.Speed != nil {
 			line := "Cross " + fix + " "
 			if nfa.Arrive.Altitude != nil {
-				ar := av.MakeReadbackTransmission("{altrest}", nfa.Arrive.Altitude)
+				ar := speech.MakeReadbackTransmission("{altrest}", nfa.Arrive.Altitude)
 				if s, err := ar.Written(nav.Rand); err != nil {
 					lg.Errorf("%v", err)
 				} else {
@@ -997,7 +998,7 @@ func (nav *Nav) procedureHasAltRestrictions(checkSID bool) bool {
 
 // addAltitudePhrasing appends realistic altitude reporting to the
 // transmission based on the aircraft's current flight state.
-func (nav *Nav) addAltitudePhrasing(rt *av.RadioTransmission, targetAlt float32) {
+func (nav *Nav) addAltitudePhrasing(rt *speech.RadioTransmission, targetAlt float32) {
 	cur := nav.FlightState.Altitude
 	diff := targetAlt - cur
 
@@ -1016,8 +1017,8 @@ func (nav *Nav) addAltitudePhrasing(rt *av.RadioTransmission, targetAlt float32)
 	}
 }
 
-func (nav *Nav) DepartureMessage(sid string, reportHeading bool) *av.RadioTransmission {
-	rt := &av.RadioTransmission{Type: av.RadioTransmissionContact}
+func (nav *Nav) DepartureMessage(sid string, reportHeading bool) *speech.RadioTransmission {
+	rt := &speech.RadioTransmission{Type: speech.RadioTransmissionContact}
 
 	target := util.Select(nav.Altitude.Assigned != nil, nav.Altitude.Assigned, nav.Altitude.Cleared)
 	climbing := target != nil && *target-nav.FlightState.Altitude > 200
@@ -1064,8 +1065,8 @@ func (nav *Nav) DepartureMessage(sid string, reportHeading bool) *av.RadioTransm
 }
 
 func (nav *Nav) ContactMessage(star string, runway string, reportHeading bool,
-	isDeparture bool) *av.RadioTransmission {
-	var resp av.RadioTransmission
+	isDeparture bool) *speech.RadioTransmission {
+	var resp speech.RadioTransmission
 
 	// Find the first applicable fix assignment for reporting
 	crossing := nav.firstCrossingRestriction()
@@ -1141,7 +1142,7 @@ func (nav *Nav) firstCrossingRestriction() *contactCrossingRestriction {
 }
 
 // addStarAltitude adds combined STAR + altitude phraseology.
-func (nav *Nav) addStarAltitude(rt *av.RadioTransmission, star string, crossing *contactCrossingRestriction) {
+func (nav *Nav) addStarAltitude(rt *speech.RadioTransmission, star string, crossing *contactCrossingRestriction) {
 	hasAltRestrictions := nav.procedureHasAltRestrictions(false)
 	cur := nav.FlightState.Altitude
 	descending := nav.Altitude.Assigned == nil && hasAltRestrictions
@@ -1169,7 +1170,7 @@ func (nav *Nav) addStarAltitude(rt *av.RadioTransmission, star string, crossing 
 }
 
 // addContactAltitude adds altitude phraseology for non-STAR contexts (vectored, departures, etc.).
-func (nav *Nav) addContactAltitude(rt *av.RadioTransmission, star string, crossing *contactCrossingRestriction) {
+func (nav *Nav) addContactAltitude(rt *speech.RadioTransmission, star string, crossing *contactCrossingRestriction) {
 	cur := nav.FlightState.Altitude
 
 	if crossing != nil && crossing.AltRestriction != nil && star == "" {

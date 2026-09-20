@@ -1,13 +1,14 @@
-// pkg/aviation/radio.go
+// speech/radio.go
 // Copyright(c) 2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package speech
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	av "github.com/mmp/vice/aviation"
 	"regexp"
 	"slices"
 	"strconv"
@@ -18,37 +19,32 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// pronunciations maps written text to the phonetic spellings that work
-// better with voice synthesis. Where a slice is stored, one of its items is
-// chosen at random when one is needed.
-type pronunciations struct {
-	airports map[string][]string
-	acTypes  map[string][]string
-	fixes    map[string]string
-	airlines map[string]string
-	sids     map[string]string
-	stars    map[string]string
-}
+type RadioTransmissionType int
 
-// parsePronunciations reads the say*.json files; it is called as part of
-// loading the aviation database, so editing one of them takes effect on a
-// reload along with the rest of it.
-func parsePronunciations() pronunciations {
-	var say pronunciations
-	load := func(file string, m any) {
-		if err := json.Unmarshal(util.LoadResourceBytes(file), m); err != nil {
-			panic(fmt.Sprintf("%s: %v", file, err))
-		}
+const (
+	RadioTransmissionUnknown    = iota
+	RadioTransmissionContact    // Messages initiated by the pilot
+	RadioTransmissionReadback   // Reading back an instruction
+	RadioTransmissionUnexpected // Something urgent or unusual
+	RadioTransmissionMixUp      // Pilot confused about who was being addressed
+	RadioTransmissionNoId       // No callsign included (e.g. to say "blocked")
+)
+
+func (r RadioTransmissionType) String() string {
+	switch r {
+	case RadioTransmissionContact:
+		return "contact"
+	case RadioTransmissionReadback:
+		return "readback"
+	case RadioTransmissionUnexpected:
+		return "urgent"
+	case RadioTransmissionMixUp:
+		return "mixup"
+	case RadioTransmissionNoId:
+		return "noid"
+	default:
+		return "(unhandled type)"
 	}
-
-	load("sayactype.json", &say.acTypes)
-	load("sayairport.json", &say.airports)
-	load("sayairline.json", &say.airlines)
-	load("sayfix.json", &say.fixes)
-	load("saysid.json", &say.sids)
-	load("saystar.json", &say.stars)
-
-	return say
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -96,15 +92,15 @@ var phraseArgTypes = map[string]func(json.RawMessage) (any, error){
 	"int":                           decodeArg[int],
 	"float32":                       decodeArg[float32],
 	"string":                        decodeArg[string],
-	"aviation.ICAOAirportCode":      decodeArg[ICAOAirportCode],
-	"aviation.FAAAirportCode":       decodeArg[FAAAirportCode],
-	"aviation.Squawk":               decodeArg[Squawk],
-	"aviation.Frequency":            decodeArg[Frequency],
-	"aviation.CallsignArg":          decodeArg[CallsignArg],
-	"aviation.GACallsignArg":        decodeArg[GACallsignArg],
-	"aviation.AltitudeRestriction":  decodeArg[AltitudeRestriction],
-	"*aviation.AltitudeRestriction": decodeArg[*AltitudeRestriction],
-	"*aviation.Controller":          decodeArg[*Controller],
+	"aviation.ICAOAirportCode":      decodeArg[av.ICAOAirportCode],
+	"aviation.FAAAirportCode":       decodeArg[av.FAAAirportCode],
+	"aviation.Squawk":               decodeArg[av.Squawk],
+	"aviation.Frequency":            decodeArg[av.Frequency],
+	"speech.CallsignArg":            decodeArg[CallsignArg],
+	"speech.GACallsignArg":          decodeArg[GACallsignArg],
+	"aviation.AltitudeRestriction":  decodeArg[av.AltitudeRestriction],
+	"*aviation.AltitudeRestriction": decodeArg[*av.AltitudeRestriction],
+	"*aviation.Controller":          decodeArg[*av.Controller],
 	"math.MagneticHeading":          decodeArg[math.MagneticHeading],
 }
 
@@ -492,7 +488,7 @@ func (a *AltSnippetFormatter) Written(arg any) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return FormatAltitude(float32(alt)), nil
+	return av.FormatAltitude(float32(alt)), nil
 }
 
 func (a *AltSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
@@ -581,17 +577,17 @@ type AirportSnippetFormatter struct{}
 
 // airportArg converts an airport argument to the id the aviation database
 // keys airports by; FAA local identifiers are looked up.
-func airportArg(arg any) (ICAOAirportCode, error) {
+func airportArg(arg any) (av.ICAOAirportCode, error) {
 	switch v := arg.(type) {
-	case ICAOAirportCode:
+	case av.ICAOAirportCode:
 		return v, nil
-	case FAAAirportCode:
-		if icao, ok := FAAAirportToICAO(v); ok {
+	case av.FAAAirportCode:
+		if icao, ok := av.FAAAirportToICAO(v); ok {
 			return icao, nil
 		}
-		return ICAOAirportCode(v), nil
+		return av.ICAOAirportCode(v), nil
 	default:
-		return "", fmt.Errorf("expected ICAOAirportCode/FAAAirportCode arg, got %T", arg)
+		return "", fmt.Errorf("expected av.ICAOAirportCode/av.FAAAirportCode arg, got %T", arg)
 	}
 }
 
@@ -610,10 +606,10 @@ func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if opts, ok := DB.say.airports[string(icao)]; ok && len(opts) > 0 {
+	if opts, ok := av.DB.Say.Airports[string(icao)]; ok && len(opts) > 0 {
 		ap, _ := rand.SampleSeq(r, slices.Values(opts))
 		return ap, nil
-	} else if ap, ok := DB.Airports[icao]; ok && ap.Name != "" {
+	} else if ap, ok := av.DB.Airports[icao]; ok && ap.Name != "" {
 		name := ap.Name
 
 		// If it's multiple things separated by a slash, pick one at random.
@@ -676,13 +672,13 @@ type ControllerSnippetFormatter struct {
 	From, To string
 }
 
-func controllerArg(arg any) (*Controller, error) {
-	ctrl, ok := arg.(*Controller)
+func controllerArg(arg any) (*av.Controller, error) {
+	ctrl, ok := arg.(*av.Controller)
 	if !ok {
-		return nil, fmt.Errorf("expected *Controller arg, got %T", arg)
+		return nil, fmt.Errorf("expected *av.Controller arg, got %T", arg)
 	}
 	if ctrl == nil {
-		return nil, errors.New("nil *Controller arg")
+		return nil, errors.New("nil *av.Controller arg")
 	}
 	return ctrl, nil
 }
@@ -789,10 +785,10 @@ func (FixSnippetFormatter) Written(arg any) (string, error) {
 	}
 
 	if strings.HasPrefix(fix, "_") {
-		if namedFix, dist, dir, ok := ParseSyntheticCrossingFix(fix); ok {
+		if namedFix, dist, dir, ok := av.ParseSyntheticCrossingFix(fix); ok {
 			return fmt.Sprintf("%d miles %s of %s", dist, math.Compass(dir.Heading()), namedFix), nil
 		}
-		if _, dist, ok := ParseSyntheticDMEFix(fix); ok {
+		if _, dist, ok := av.ParseSyntheticDMEFix(fix); ok {
 			return fmt.Sprintf("%d D M E", dist), nil
 		}
 	}
@@ -800,9 +796,9 @@ func (FixSnippetFormatter) Written(arg any) (string, error) {
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
 
-	if aid, ok := DB.Navaids[fix]; ok {
+	if aid, ok := av.DB.Navaids[fix]; ok {
 		return util.StopShouting(aid.Name), nil
-	} else if ap, ok := DB.Airports[ICAOAirportCode(fix)]; ok {
+	} else if ap, ok := av.DB.Airports[av.ICAOAirportCode(fix)]; ok {
 		return ap.Name, nil
 	}
 	return fix, nil
@@ -882,7 +878,7 @@ func (BasicNumberSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error)
 // For example, "C172" might return ["skyhawk", "cessna one seventy-two"].
 // Returns nil if the type is not found in sayactype.json.
 func GetACTypePronunciations(acType string) []string {
-	if variants, ok := DB.say.acTypes[acType]; ok {
+	if variants, ok := av.DB.Say.ACTypes[acType]; ok {
 		return variants
 	}
 	return nil
@@ -919,22 +915,13 @@ func GetTrailing3Spoken(callsign string) string {
 	return strings.Join(parts, " ")
 }
 
-// SplitCallsign splits a callsign into ICAO prefix and flight number.
-// For "UAL123" returns ("UAL", "123"). For "N12345" returns ("N", "12345").
-func SplitCallsign(callsign string) (prefix, number string) {
-	if idx := strings.IndexAny(callsign, "0123456789"); idx != -1 {
-		return callsign[:idx], callsign[idx:]
-	}
-	return callsign, ""
-}
-
 // GetCallsignSpoken returns the spoken telephony string for a callsign, formatted as it would be
 // pronounced. It is the speech-to-text spelling: it feeds the whisper initial prompt and keys the
 // command parser's aircraft context, so it uses the plain telephony name rather than
 // the pronunciation files' voice-synthesis respellings.
 // Example: "JBU520" → "jetblue five 20", "BAW22J" → "speedbird 22 juliet"
 func GetCallsignSpoken(callsign string, cwtCategory string) string {
-	prefix, fnum := SplitCallsign(callsign)
+	prefix, fnum := av.SplitCallsign(callsign)
 
 	// GA N-numbers: spell out character by character
 	if prefix == "N" {
@@ -958,7 +945,7 @@ func GetCallsignSpoken(callsign string, cwtCategory string) string {
 		fnum = fnum[:suffixIdx]
 	}
 
-	tel := DB.Callsigns[prefix]
+	tel := av.DB.Callsigns[prefix]
 
 	// Build result with spoken flight number
 	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix.String())
@@ -978,10 +965,10 @@ func GetCallsignSpoken(callsign string, cwtCategory string) string {
 // lookups for navaids/airports, and uses StopShouting for other fixes.
 func GetFixTelephony(fix string) string {
 	if strings.HasPrefix(fix, "_") {
-		if namedFix, dist, dir, ok := ParseSyntheticCrossingFix(fix); ok {
+		if namedFix, dist, dir, ok := av.ParseSyntheticCrossingFix(fix); ok {
 			return fmt.Sprintf("%d miles %s of %s", dist, math.Compass(dir.Heading()), GetFixTelephony(namedFix))
 		}
-		if _, dist, ok := ParseSyntheticDMEFix(fix); ok {
+		if _, dist, ok := av.ParseSyntheticDMEFix(fix); ok {
 			return fmt.Sprintf("%d D M E", dist)
 		}
 	}
@@ -989,15 +976,15 @@ func GetFixTelephony(fix string) string {
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
 
-	if say, ok := DB.say.fixes[fix]; ok {
+	if say, ok := av.DB.Say.Fixes[fix]; ok {
 		return say
 	}
 
 	// For 3-char fixes or 4-char ICAO codes (VORs, airports), use the full name
 	if len(fix) == 3 || len(fix) == 4 {
-		if aid, ok := DB.Navaids[fix]; ok {
+		if aid, ok := av.DB.Navaids[fix]; ok {
 			return util.StopShouting(aid.Name)
-		} else if ap, ok := DB.Airports[ICAOAirportCode(fix)]; ok {
+		} else if ap, ok := av.DB.Airports[av.ICAOAirportCode(fix)]; ok {
 			return ap.Name
 		}
 	}
@@ -1012,12 +999,12 @@ func GetFixTelephony(fix string) string {
 // a slice with just the database name (if available), or nil if not found.
 func GetAirportTelephonyVariants(icao string) []string {
 	// First check sayairport.json for custom variants
-	if variants, ok := DB.say.airports[icao]; ok && len(variants) > 0 {
+	if variants, ok := av.DB.Say.Airports[icao]; ok && len(variants) > 0 {
 		return variants
 	}
 
 	// Fall back to database name
-	if ap, ok := DB.Airports[ICAOAirportCode(icao)]; ok && ap.Name != "" {
+	if ap, ok := av.DB.Airports[av.ICAOAirportCode(icao)]; ok && ap.Name != "" {
 		// Strip common suffixes that wouldn't typically be said
 		name := ap.Name
 		for _, extra := range []string{"Airport", "Air Field", "Field", "Strip", "Airstrip", "International", "Regional"} {
@@ -1035,7 +1022,7 @@ func GetAirportTelephonyVariants(icao string) []string {
 // For example, "MERIT5" becomes "merit five".
 func GetSIDTelephony(sid string) string {
 	name, num := trimNumber(sid)
-	if say, ok := DB.say.sids[name]; ok {
+	if say, ok := av.DB.Say.SIDs[name]; ok {
 		name = say
 	}
 	if num > 0 {
@@ -1048,7 +1035,7 @@ func GetSIDTelephony(sid string) string {
 // For example, "CAMRN4" becomes "cameron four".
 func GetSTARTelephony(star string) string {
 	name, num := trimNumber(star)
-	if say, ok := DB.say.stars[name]; ok {
+	if say, ok := av.DB.Say.STARs[name]; ok {
 		name = say
 	}
 	if num > 0 {
@@ -1133,7 +1120,7 @@ type CallsignSnippetFormatter struct{}
 
 // CallsignArg provides additional context for formatting callsigns.
 type CallsignArg struct {
-	Callsign           ADSBCallsign
+	Callsign           av.ADSBCallsign
 	IsEmergency        bool
 	AlwaysFullCallsign bool
 }
@@ -1142,7 +1129,7 @@ type CallsignArg struct {
 // When UseTypeForm is true, the callsign is spoken as "aircraft type + trailing 3"
 // (e.g., "skyhawk 3 alpha bravo" instead of "november 1 2 3 alpha bravo").
 type GACallsignArg struct {
-	Callsign     ADSBCallsign
+	Callsign     av.ADSBCallsign
 	AircraftType string // e.g., "C172"
 	UseTypeForm  bool   // If true, use type+trailing3 form
 	IsEmergency  bool
@@ -1167,11 +1154,11 @@ func (CallsignSnippetFormatter) Written(arg any) (string, error) {
 		return "", fmt.Errorf("expected CallsignArg/GACallsignArg arg, got %T", arg)
 	}
 
-	icao, fnum := SplitCallsign(callsign)
+	icao, fnum := av.SplitCallsign(callsign)
 	if icao == "N" {
 		// For GA callsigns with type form, show abbreviated version
 		if useTypeForm && acType != "" {
-			acAlias := DB.AircraftTypeAliases[acType]
+			acAlias := av.DB.AircraftTypeAliases[acType]
 			if acAlias == "" {
 				acAlias = acType
 			}
@@ -1189,7 +1176,7 @@ func (CallsignSnippetFormatter) Written(arg any) (string, error) {
 		return callsign, nil
 	}
 
-	cs := DB.Callsigns[icao] + " " + fnum
+	cs := av.DB.Callsigns[icao] + " " + fnum
 
 	if isEmergency {
 		cs += " (emergency)"
@@ -1220,12 +1207,12 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 		return "", fmt.Errorf("expected CallsignArg/GACallsignArg arg, got %T", arg)
 	}
 
-	icao, fnum := SplitCallsign(callsign)
+	icao, fnum := av.SplitCallsign(callsign)
 
 	if icao == "N" {
 		// For GA callsigns with type form, use aircraft type + trailing 3
 		if useTypeForm && acType != "" {
-			typeVariants := DB.say.acTypes[acType]
+			typeVariants := av.DB.Say.ACTypes[acType]
 			if len(typeVariants) > 0 {
 				// Filter out variants with numbers to avoid callsign confusion
 				var filtered []string
@@ -1265,8 +1252,8 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 	}
 
 	// figure out the telephony
-	tel := DB.Callsigns[icao]
-	if tel2, ok := DB.say.airlines[tel]; ok { // overrides
+	tel := av.DB.Callsigns[icao]
+	if tel2, ok := av.DB.Say.Airlines[tel]; ok { // overrides
 		tel = tel2
 	}
 
@@ -1362,7 +1349,7 @@ func (SIDSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 		return "", err
 	}
 	sid, num := trimNumber(name)
-	if say, ok := DB.say.sids[sid]; ok {
+	if say, ok := av.DB.Say.SIDs[sid]; ok {
 		return say + " " + sayDigit(num), nil
 	}
 	return sid + " " + sayDigit(num), nil
@@ -1390,7 +1377,7 @@ func (STARSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 		return "", err
 	}
 	star, num := trimNumber(name)
-	if say, ok := DB.say.stars[star]; ok {
+	if say, ok := av.DB.Say.STARs[star]; ok {
 		return say + " " + sayDigit(num), nil
 	}
 	return star + " " + sayDigit(num), nil
@@ -1401,11 +1388,11 @@ func (STARSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 
 type FrequencySnippetFormatter struct{}
 
-func frequencyArg(arg any) (Frequency, error) {
-	if f, ok := arg.(Frequency); ok {
+func frequencyArg(arg any) (av.Frequency, error) {
+	if f, ok := arg.(av.Frequency); ok {
 		return f, nil
 	}
-	return 0, fmt.Errorf("expected Frequency arg, got %T", arg)
+	return 0, fmt.Errorf("expected av.Frequency arg, got %T", arg)
 }
 
 func (FrequencySnippetFormatter) Written(arg any) (string, error) {
@@ -1501,11 +1488,11 @@ func (GroupFormSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 
 type BeaconCodeSnippetFormatter struct{}
 
-func squawkArg(arg any) (Squawk, error) {
-	if sq, ok := arg.(Squawk); ok {
+func squawkArg(arg any) (av.Squawk, error) {
+	if sq, ok := arg.(av.Squawk); ok {
 		return sq, nil
 	}
-	return 0, fmt.Errorf("expected Squawk arg, got %T", arg)
+	return 0, fmt.Errorf("expected av.Squawk arg, got %T", arg)
 }
 
 func (BeaconCodeSnippetFormatter) Written(arg any) (string, error) {
@@ -1539,7 +1526,7 @@ func (AircraftTypeSnippetFormatter) Written(arg any) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return DB.AircraftTypeAliases[ac] + "(" + ac + ")", nil
+	return av.DB.AircraftTypeAliases[ac] + "(" + ac + ")", nil
 }
 
 func (AircraftTypeSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
@@ -1547,11 +1534,11 @@ func (AircraftTypeSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error
 	if err != nil {
 		return "", err
 	}
-	if say, ok := DB.say.acTypes[ac]; ok && len(say) > 0 {
+	if say, ok := av.DB.Say.ACTypes[ac]; ok && len(say) > 0 {
 		s, _ := rand.SampleSeq(r, slices.Values(say))
 		return s, nil
 	}
-	return DB.AircraftTypeAliases[ac], nil
+	return av.DB.AircraftTypeAliases[ac], nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1559,14 +1546,14 @@ func (AircraftTypeSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error
 
 type AltRestrictionSnippetFormatter struct{}
 
-func altRestrictionArg(arg any) (AltitudeRestriction, error) {
+func altRestrictionArg(arg any) (av.AltitudeRestriction, error) {
 	switch v := arg.(type) {
-	case AltitudeRestriction:
+	case av.AltitudeRestriction:
 		return v, nil
-	case *AltitudeRestriction:
+	case *av.AltitudeRestriction:
 		return *v, nil
 	default:
-		return AltitudeRestriction{}, fmt.Errorf("expected [*]AltitudeRestriction arg, got %T", arg)
+		return av.AltitudeRestriction{}, fmt.Errorf("expected [*]av.AltitudeRestriction arg, got %T", arg)
 	}
 }
 
@@ -1578,13 +1565,13 @@ func (AltRestrictionSnippetFormatter) Written(arg any) (string, error) {
 
 	if ar.Range[0] != 0 {
 		if ar.Range[1] == ar.Range[0] {
-			return "at " + FormatAltitude(ar.Range[0]), nil
-		} else if ar.Range[1] != MaxAltitude {
-			return "between " + FormatAltitude(ar.Range[0]) + " and " + FormatAltitude(ar.Range[1]), nil
+			return "at " + av.FormatAltitude(ar.Range[0]), nil
+		} else if ar.Range[1] != av.MaxAltitude {
+			return "between " + av.FormatAltitude(ar.Range[0]) + " and " + av.FormatAltitude(ar.Range[1]), nil
 		}
-		return "at or above " + FormatAltitude(ar.Range[0]), nil
-	} else if ar.Range[1] != 0 && ar.Range[1] != MaxAltitude {
-		return "at or below " + FormatAltitude(ar.Range[1]), nil
+		return "at or above " + av.FormatAltitude(ar.Range[0]), nil
+	} else if ar.Range[1] != 0 && ar.Range[1] != av.MaxAltitude {
+		return "at or below " + av.FormatAltitude(ar.Range[1]), nil
 	}
 	return "", nil
 }
@@ -1598,11 +1585,11 @@ func (AltRestrictionSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, err
 	if ar.Range[0] != 0 {
 		if ar.Range[1] == ar.Range[0] {
 			return "at " + sayAltitude(int(ar.Range[0]), r), nil
-		} else if ar.Range[1] != MaxAltitude {
+		} else if ar.Range[1] != av.MaxAltitude {
 			return "between " + sayAltitude(int(ar.Range[0]), r) + " and " + sayAltitude(int(ar.Range[1]), r), nil
 		}
 		return "at or above " + sayAltitude(int(ar.Range[0]), r), nil
-	} else if ar.Range[1] != 0 && ar.Range[1] != MaxAltitude {
+	} else if ar.Range[1] != 0 && ar.Range[1] != av.MaxAltitude {
 		return "at or below " + sayAltitude(int(ar.Range[1]), r), nil
 	}
 	return "", nil

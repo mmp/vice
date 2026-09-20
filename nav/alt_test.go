@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/wx"
 )
 
@@ -121,14 +122,14 @@ func TestSayAltitudeReportsPendingAssignedAltitude(t *testing.T) {
 	})
 
 	f.AssignAltitude(3000)
-	intent, ok := f.nav.SayAltitude().(av.ReportAltitudeIntent)
+	intent, ok := f.nav.SayAltitude().(speech.ReportAltitudeIntent)
 	if !ok {
 		t.Fatalf("expected ReportAltitudeIntent, got %T", intent)
 	}
 	if intent.Assigned == nil || *intent.Assigned != 3000 {
 		t.Fatalf("expected say altitude to report Assigned=3000, got %v", intent.Assigned)
 	}
-	if intent.Direction != av.AltitudeDescend {
+	if intent.Direction != speech.AltitudeDescend {
 		t.Fatalf("expected descent direction, got %v", intent.Direction)
 	}
 }
@@ -145,7 +146,7 @@ func TestExpediteDuringAssignedAltitudeDelay(t *testing.T) {
 
 	f.AssignAltitude(3000)
 	intent := f.nav.ExpediteDescent()
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("expected expedite to apply to pending assigned altitude, got unable: %v", intent)
 	}
 	if f.nav.Altitude.Rate != RateExpedite {
@@ -374,7 +375,7 @@ func TestAltitudeTargetStopsAtQueuedHold(t *testing.T) {
 
 	hold := altitudeTargetTestHold("DETGY")
 	if intent := f.nav.HoldAtFix(f.callsign, "DETGY", &hold); intent != nil {
-		if _, ok := intent.(av.UnableIntent); ok {
+		if _, ok := intent.(speech.UnableIntent); ok {
 			t.Fatalf("unexpected unable intent: %v", intent)
 		}
 	}
@@ -399,7 +400,7 @@ func TestAltitudeTargetStopsAtActiveHold(t *testing.T) {
 
 	hold := altitudeTargetTestHold("DETGY")
 	if intent := f.nav.HoldAtFix(f.callsign, "DETGY", &hold); intent != nil {
-		if _, ok := intent.(av.UnableIntent); ok {
+		if _, ok := intent.(speech.UnableIntent); ok {
 			t.Fatalf("unexpected unable intent: %v", intent)
 		}
 	}
@@ -424,7 +425,7 @@ func TestAltitudeTargetIncludesHoldingFixRestriction(t *testing.T) {
 
 	hold := altitudeTargetTestHold("DETGY")
 	if intent := f.nav.HoldAtFix(f.callsign, "DETGY", &hold); intent != nil {
-		if _, ok := intent.(av.UnableIntent); ok {
+		if _, ok := intent.(speech.UnableIntent); ok {
 			t.Fatalf("unexpected unable intent: %v", intent)
 		}
 	}
@@ -498,7 +499,7 @@ func TestCrossDistanceFromFixAtAltitude(t *testing.T) {
 	// "Cross 5 miles [dir] of DETGY at 8000"
 	ar := av.MakeAtAltitudeRestriction(8000)
 	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
 
@@ -542,7 +543,7 @@ func TestCrossDistanceFromApproachFixAtAltitudeBeforeClearance(t *testing.T) {
 
 	ar := av.MakeAtAltitudeRestriction(3000)
 	intent := f.nav.CrossDistanceFromFixAt("ROSLY", 5, dir, &ar, nil)
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
 
@@ -681,7 +682,7 @@ func TestAltitudeAfterSpeedDelaysAfterSpeedReached(t *testing.T) {
 	})
 	f.AssignSpeed(180)
 	intent := f.nav.AssignAltitude(3000, true, f.simTime, 0)
-	if altIntent, ok := intent.(av.AltitudeIntent); !ok || altIntent.AfterSpeed == nil || *altIntent.AfterSpeed != 180 {
+	if altIntent, ok := intent.(speech.AltitudeIntent); !ok || altIntent.AfterSpeed == nil || *altIntent.AfterSpeed != 180 {
 		t.Fatalf("expected altitude after speed intent, got %T: %v", intent, intent)
 	}
 
@@ -877,7 +878,7 @@ func TestCrossDMEAtAltitude(t *testing.T) {
 	f.nav.FlightState.Altitude = 4000
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	if _, ok := f.nav.CrossDMEAt(5, &ar, nil).(av.UnableIntent); ok {
+	if _, ok := f.nav.CrossDMEAt(5, &ar, nil).(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable")
 	}
 
@@ -1013,7 +1014,7 @@ func (f *FlightTest) clearChartedVisual(cv chartedVisual) {
 	if intent := f.nav.ExpectApproach(cv.airport, "MV22L", nil); intent == nil {
 		f.t.Fatal("no intent from expect approach")
 	}
-	if intent, unable := f.nav.ClearedApproach("MV22L", nil, f.simTime, false, "").(av.UnableIntent); unable {
+	if intent, unable := f.nav.ClearedApproach("MV22L", nil, f.simTime, false, "").(speech.UnableIntent); unable {
 		f.t.Fatalf("unable to clear the charted visual: %v", intent)
 	}
 	if !f.nav.Approach.Cleared {

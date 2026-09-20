@@ -12,6 +12,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -133,7 +134,7 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 		}()
 	}
 
-	var intents []av.CommandIntent
+	var intents []speech.CommandIntent
 	var cmdErr error
 	var remaining string
 
@@ -238,11 +239,11 @@ func (s *Sim) clearAircraftSTTCommands(callsign av.ADSBCallsign) {
 // The tcw ensures the readback goes to the controller who issued the command,
 // regardless of any consolidation changes.
 // Returns the spoken text for TTS synthesis, including the callsign suffix.
-func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) string {
-	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
+func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []speech.CommandIntent) string {
+	if rt := speech.RenderIntents(intents, s.Rand); rt != nil {
 		s.postReadbackTransmission(callsign, *rt, tcw)
 		// MixUp transmissions already include the callsign in the message
-		if rt.Type != av.RadioTransmissionMixUp {
+		if rt.Type != speech.RadioTransmissionMixUp {
 			if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
 				rt.Merge(suffix)
 			}
@@ -261,7 +262,7 @@ func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents [
 
 // readbackCallsignSuffix generates a RadioTransmission for the callsign suffix in readbacks.
 // This is used both for synchronous TTS and matches what prepareRadioTransmissions does for events.
-func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *av.RadioTransmission {
+func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *speech.RadioTransmission {
 	ac, ok := s.Aircraft[callsign]
 	if !ok {
 		return nil
@@ -284,19 +285,19 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *av.Radi
 	// Use GACallsignArg for GA aircraft when addressed with type+trailing3 form
 	var csArg any
 	if strings.HasPrefix(string(callsign), "N") && ac.LastAddressingForm == AddressingFormTypeTrailing3 {
-		csArg = av.GACallsignArg{
+		csArg = speech.GACallsignArg{
 			Callsign:     ac.ADSBCallsign,
 			AircraftType: ac.FlightPlan.AircraftType,
 			UseTypeForm:  true,
 			IsEmergency:  ac.EmergencyState != nil,
 		}
 	} else {
-		csArg = av.CallsignArg{
+		csArg = speech.CallsignArg{
 			Callsign:    ac.ADSBCallsign,
 			IsEmergency: ac.EmergencyState != nil,
 		}
 	}
-	return av.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
+	return speech.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
 }
 
 // parseSpeedUntil parses the "until" specification from a speed command.
@@ -304,30 +305,30 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *av.Radi
 //   - "ROSLY" -> fix name
 //   - "5DME"  -> 5 DME
 //   - "6"     -> 6 mile final
-func parseSpeedUntil(untilStr string) *av.SpeedUntil {
+func parseSpeedUntil(untilStr string) *speech.SpeedUntil {
 	untilStr = strings.ToUpper(untilStr)
 
 	// Check for DME pattern: digits followed by DME
 	if before, ok := strings.CutSuffix(untilStr, "DME"); ok {
 		numStr := before
 		if n, err := strconv.Atoi(numStr); err == nil && n > 0 {
-			return &av.SpeedUntil{DME: n}
+			return &speech.SpeedUntil{DME: n}
 		}
 	}
 
 	// Check for pure number (mile final)
 	if n, err := strconv.Atoi(untilStr); err == nil && n > 0 {
-		return &av.SpeedUntil{MileFinal: n}
+		return &speech.SpeedUntil{MileFinal: n}
 	}
 
 	// Otherwise it's a fix name
-	return &av.SpeedUntil{Fix: untilStr}
+	return &speech.SpeedUntil{Fix: untilStr}
 }
 
 // parseCompoundSpeed parses a compound speed command string like
 // "250+/UFIX1/210-/UFIX2/180+" into CompoundSpeedSegments.
 // The input is the part after 'S' (e.g., "250+/UFIX1/210-/UFIX2/180+").
-func parseCompoundSpeed(s string) ([]av.CompoundSpeedSegment, error) {
+func parseCompoundSpeed(s string) ([]speech.CompoundSpeedSegment, error) {
 	// Split on "/U" to get alternating speed/fix pairs.
 	// First element is the first speed, then alternating fix+speed pairs.
 	parts := strings.Split(s, "/U")
@@ -335,7 +336,7 @@ func parseCompoundSpeed(s string) ([]av.CompoundSpeedSegment, error) {
 		return nil, ErrInvalidCommandSyntax
 	}
 
-	var segments []av.CompoundSpeedSegment
+	var segments []speech.CompoundSpeedSegment
 
 	// First part is just the first speed.
 	sr, err := av.ParseSpeedRestriction(parts[0])
@@ -355,7 +356,7 @@ func parseCompoundSpeed(s string) ([]av.CompoundSpeedSegment, error) {
 		}
 
 		// Close out the previous segment with this fix.
-		segments = append(segments, av.CompoundSpeedSegment{
+		segments = append(segments, speech.CompoundSpeedSegment{
 			Speed:    sr,
 			UntilFix: fix,
 		})
@@ -376,7 +377,7 @@ func parseCompoundSpeed(s string) ([]av.CompoundSpeedSegment, error) {
 	}
 
 	// Add the final open-ended segment (no UntilFix).
-	segments = append(segments, av.CompoundSpeedSegment{
+	segments = append(segments, speech.CompoundSpeedSegment{
 		Speed: sr,
 	})
 
@@ -507,7 +508,7 @@ func parseHold(command string) (string, *av.Hold, bool) {
 // Returns the intent generated by the command (if any) for batching.
 // delayReduction is subtracted from the pilot-reaction delay on deferred
 // Nav commands (heading, direct-fix, altitude), floored at zero.
-func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command string, delayReduction time.Duration) (av.CommandIntent, error) {
+func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command string, delayReduction time.Duration) (speech.CommandIntent, error) {
 	if len(command) == 0 {
 		return nil, ErrInvalidCommandSyntax
 	}
@@ -753,7 +754,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			if ac, ok := s.Aircraft[callsign]; ok && ac.Nav.Approach.AssignedId != "" {
 				return s.ExpectApproach(tcw, callsign, ac.Nav.Approach.AssignedId)
 			}
-			return av.MakeUnableIntent("unable. We haven't been told to expect an approach"), nil
+			return speech.MakeUnableIntent("unable. We haven't been told to expect an approach"), nil
 		} else {
 			return nil, ErrInvalidCommandSyntax
 		}

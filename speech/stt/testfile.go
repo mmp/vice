@@ -12,7 +12,7 @@ import (
 
 // TestFile is the on-disk record for one STT transmission: the shape of
 // the "STT command" entries in the vice slog, of the corpus files in
-// stt/tests/ and stt/failing_tests/, and of the entries in cmd/sttreview's
+// speech/stt/tests/ and stt/failing_tests/, and of the entries in cmd/sttreview's
 // review queue. Callsign and Command hold the expected decoder output
 // (both empty means the expected output is silence).
 type TestFile struct {

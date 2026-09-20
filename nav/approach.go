@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
@@ -321,27 +322,27 @@ func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av
 	return nil, nil, ErrUnknownApproach
 }
 
-func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypoints map[string]av.WaypointArray) av.CommandIntent {
+func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypoints map[string]av.WaypointArray) speech.CommandIntent {
 	id, lahsoRunway, _ := strings.Cut(approach, "/LAHSO")
 
 	if lahsoRunway != "" {
 		if _, ok := av.LookupRunway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), lahsoRunway); !ok {
-			return av.MakeUnableIntent("unable, we don't know that hold-short runway")
+			return speech.MakeUnableIntent("unable, we don't know that hold-short runway")
 		}
 	}
 
 	ap, refs, err := nav.getApproach(airport, id)
 	if err != nil {
 		if rwy, visual := strings.CutPrefix(id, "_VIS"); visual {
-			return av.MakeUnableIntent("unable, we don't know runway " + rwy)
+			return speech.MakeUnableIntent("unable, we don't know runway " + rwy)
 		}
-		return av.MakeUnableIntent("unable. We don't know the {appr} approach.", id)
+		return speech.MakeUnableIntent("unable. We don't know the {appr} approach.", id)
 	}
 
 	if id == nav.Approach.AssignedId && nav.Approach.Assigned != nil {
 		nav.Approach.StandbyApproach = true
-		return av.ApproachIntent{
-			Type:         av.ApproachExpect,
+		return speech.ApproachIntent{
+			Type:         speech.ApproachExpect,
 			ApproachName: ap.FullName,
 			LAHSORunway:  lahsoRunway,
 		}
@@ -400,14 +401,14 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 		}
 	}
 
-	return av.ApproachIntent{
-		Type:         av.ApproachExpect,
+	return speech.ApproachIntent{
+		Type:         speech.ApproachExpect,
 		ApproachName: ap.FullName,
 		LAHSORunway:  lahsoRunway,
 	}
 }
 
-func (nav *Nav) InterceptApproach(joinFix string) av.CommandIntent {
+func (nav *Nav) InterceptApproach(joinFix string) speech.CommandIntent {
 	if intent := nav.prepareForApproach(false, joinFix); intent != nil {
 		return intent
 	}
@@ -424,14 +425,14 @@ func (nav *Nav) InterceptApproach(joinFix string) av.CommandIntent {
 		}
 	}
 	if nav.Approach.HasLocalizer() {
-		return av.ApproachIntent{
-			Type:         av.ApproachIntercept,
+		return speech.ApproachIntent{
+			Type:         speech.ApproachIntercept,
 			ApproachName: ap.FullName,
 			HasLocalizer: true,
 		}
 	}
-	return av.ApproachIntent{
-		Type:         av.ApproachJoin,
+	return speech.ApproachIntent{
+		Type:         speech.ApproachJoin,
 		ApproachName: ap.FullName,
 	}
 }
@@ -484,67 +485,67 @@ func (nav *Nav) visualReferenceForFix(fix string) *av.Approach {
 	return nil
 }
 
-func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.Duration, straightIn bool) av.CommandIntent {
+func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.Duration, straightIn bool) speech.CommandIntent {
 	if nav.Approach.AssignedId == "" {
-		return av.MakeUnableIntent("unable. you never told us to expect an approach")
+		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return av.MakeUnableIntent("unable. We were never told to expect an approach")
+		return speech.MakeUnableIntent("unable. We were never told to expect an approach")
 	}
 	if id != "" && nav.Approach.AssignedId != id {
-		return av.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName)
+		return speech.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName)
 	}
 
 	// Check this before routing direct: an unable reply shouldn't change
 	// the flight path.
 	route, idx := approachRouteThrough(ap, fix)
 	if route == nil {
-		return av.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
+		return speech.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
 	}
 
 	if !nav.routeDirectIfNeeded(fix, simTime, delayReduction) {
-		return av.MakeUnableIntent("unable. {fix} is not in our route", fix)
+		return speech.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
 	nav.Approach.AtFixClearedRoute = route[idx:].Clone()
 	if straightIn && len(nav.Approach.AtFixClearedRoute) > 0 {
 		nav.Approach.AtFixClearedRoute[0].SetNoPT(true)
 	}
 
-	return av.ApproachIntent{
-		Type:         av.ApproachAtFixCleared,
+	return speech.ApproachIntent{
+		Type:         speech.ApproachAtFixCleared,
 		ApproachName: ap.FullName,
 		Fix:          fix,
 		StraightIn:   straightIn,
 	}
 }
 
-func (nav *Nav) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration) av.CommandIntent {
+func (nav *Nav) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	if nav.Approach.AssignedId == "" {
-		return av.MakeUnableIntent("unable. you never told us to expect an approach")
+		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return av.MakeUnableIntent("unable. We were never told to expect an approach")
+		return speech.MakeUnableIntent("unable. We were never told to expect an approach")
 	}
 
 	// Check this before routing direct: if the fix isn't on the approach,
 	// there will be nothing to join when we get there.
 	if route, _ := approachRouteThrough(ap, fix); route == nil {
-		return av.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
+		return speech.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
 	}
 
 	if !nav.routeDirectIfNeeded(fix, simTime, delayReduction) {
-		return av.MakeUnableIntent("unable. {fix} is not in our route", fix)
+		return speech.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
 
 	// Store the fix where the aircraft should intercept
 	nav.Approach.AtFixInterceptFix = fix
 
-	return av.ApproachIntent{
-		Type:         av.ApproachAtFixIntercept,
+	return speech.ApproachIntent{
+		Type:         speech.ApproachAtFixIntercept,
 		ApproachName: ap.FullName,
 		Fix:          fix,
 		HasLocalizer: nav.Approach.HasLocalizer(),
@@ -619,9 +620,9 @@ func (nav *Nav) joinApproach(joinFix string) bool {
 // prepareForApproach sets up the aircraft to fly the assigned approach, either
 // by splicing it into the route or by leaving the aircraft on a heading to
 // intercept. joinFix has the same meaning as in joinApproach.
-func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) av.CommandIntent {
+func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) speech.CommandIntent {
 	if nav.Approach.AssignedId == "" {
-		return av.MakeUnableIntent("unable. you never told us to expect an approach")
+		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 
 	ap := nav.Approach.Assigned
@@ -644,7 +645,7 @@ func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) av.CommandIn
 	} else if assignedHeading {
 		nav.Approach.InterceptState = InitialHeading
 	} else {
-		return av.MakeUnableIntent("unable. We need either direct or a heading to intercept")
+		return speech.MakeUnableIntent("unable. We need either direct or a heading to intercept")
 	}
 	// If the aircraft is on a heading, there's nothing more to do for
 	// now; keep flying the heading and after we intercept we'll add
@@ -656,7 +657,7 @@ func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) av.CommandIn
 	return nil
 }
 
-func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
+func (nav *Nav) prepareForChartedVisual() speech.CommandIntent {
 	routes := nav.Approach.Assigned.Waypoints
 	pos := nav.FlightState.Position
 	nmPerLong := nav.FlightState.NmPerLongitude
@@ -694,7 +695,7 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	}
 
 	if wi == nil {
-		return av.MakeUnableIntent("unable. We are not on course to intercept the approach")
+		return speech.MakeUnableIntent("unable. We are not on course to intercept the approach")
 	}
 
 	nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
@@ -714,15 +715,15 @@ type FollowTraffic struct {
 
 // ClearedApproach issues an approach clearance. joinFix has the same meaning
 // as in joinApproach and is empty for a controller-issued clearance.
-func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime Time, straightIn bool, joinFix string) av.CommandIntent {
+func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime Time, straightIn bool, joinFix string) speech.CommandIntent {
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return av.MakeUnableIntent("unable. We haven't been told to expect an approach")
+		return speech.MakeUnableIntent("unable. We haven't been told to expect an approach")
 	}
 
 	id, lahsoRunway, _ := strings.Cut(approach, "/LAHSO")
 	if id != "" && nav.Approach.AssignedId != id {
-		return av.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName)
+		return speech.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName)
 	}
 
 	if ap.Type == av.VisualApproach {
@@ -734,7 +735,7 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 		if straightIn {
 			nav.Approach.NoPT = true
 		}
-		return av.ClearedApproachIntent{
+		return speech.ClearedApproachIntent{
 			Approach:    ap.FullName,
 			StraightIn:  straightIn,
 			CancelHold:  cancelHold,
@@ -765,7 +766,7 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 
 	nav.flyProcedureTurnIfNecessary()
 
-	return av.ClearedApproachIntent{
+	return speech.ClearedApproachIntent{
 		Approach:    ap.FullName,
 		StraightIn:  straightIn,
 		CancelHold:  cancelHold,
@@ -785,10 +786,10 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 //     in-trail sequencing along that route is attempted first.
 //   - Otherwise, a synthetic descent profile (TOD/_3NM_FINAL anchors) is
 //     constructed from the visual references.
-func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string) av.CommandIntent {
+func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string) speech.CommandIntent {
 	ap := nav.Approach.Assigned
 	if ap == nil || ap.Type != av.VisualApproach {
-		return av.MakeUnableIntent("unable. We haven't been told to expect a visual approach")
+		return speech.MakeUnableIntent("unable. We haven't been told to expect a visual approach")
 	}
 	runway := ap.Runway
 
@@ -796,7 +797,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 	// don't recompute the route or altitude profile.
 	if nav.Approach.Cleared {
 		cancelHold := nav.applyClearedApproachState()
-		return av.ClearedApproachIntent{
+		return speech.ClearedApproachIntent{
 			Approach:    ap.FullName,
 			CancelHold:  cancelHold,
 			LAHSORunway: lahsoRunway,
@@ -827,7 +828,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 				nav.Approach.NoPT = true
 			}
 		}
-		return av.ClearedApproachIntent{
+		return speech.ClearedApproachIntent{
 			Approach:    ap.FullName,
 			CancelHold:  cancelHold,
 			LAHSORunway: lahsoRunway,
@@ -848,7 +849,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 		wps = nav.visualApproachRouteFromReferences(runway, joinPos, nav.Approach.VisualReferences)
 	}
 	if wps == nil {
-		return av.MakeUnableIntent("unable, we don't know runway " + runway)
+		return speech.MakeUnableIntent("unable, we don't know runway " + runway)
 	}
 
 	// The synthesized route is built from raw reference / leader waypoints,
@@ -882,7 +883,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 	}
 	nav.Altitude = preserved
 
-	return av.ClearedApproachIntent{
+	return speech.ClearedApproachIntent{
 		Approach:    ap.FullName,
 		CancelHold:  cancelHold,
 		LAHSORunway: lahsoRunway,

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -34,7 +35,7 @@ func (s *Sim) reportTransmissionFailure(callsign av.ADSBCallsign, tcp ControlPos
 // DestinationTCW is the specific TCW that issued the command.
 // Use this for readbacks, where the response must go to the issuing controller
 // regardless of any consolidation changes.
-func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmission, tcw TCW) {
+func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr speech.RadioTransmission, tcw TCW) {
 	tcp := s.State.PrimaryPositionForTCW(tcw)
 	written, werr := tr.Written(s.Rand)
 	spoken, serr := tr.Spoken(s.Rand)
@@ -98,12 +99,12 @@ type FutureFrequencyChange struct {
 type PendingContact struct {
 	ADSBCallsign           av.ADSBCallsign
 	TCP                    TCP
-	ReadyTime              Time                    // When pilot is ready to transmit
-	Type                   PendingTransmissionType // What kind of transmission
-	ReportDepartureHeading bool                    // For departures: include assigned heading
-	HasQueuedEmergency     bool                    // For departures: trigger emergency after contact
-	PrebuiltTransmission   *av.RadioTransmission   // For emergency transmissions: pre-built message
-	FirstInFacility        bool                    // First contact with a controller in this facility
+	ReadyTime              Time                      // When pilot is ready to transmit
+	Type                   PendingTransmissionType   // What kind of transmission
+	ReportDepartureHeading bool                      // For departures: include assigned heading
+	HasQueuedEmergency     bool                      // For departures: trigger emergency after contact
+	PrebuiltTransmission   *speech.RadioTransmission // For emergency transmissions: pre-built message
+	FirstInFacility        bool                      // First contact with a controller in this facility
 }
 
 // hasPendingCheckIn reports whether the aircraft has a pending arrival or
@@ -407,7 +408,7 @@ func (s *Sim) enqueuePilotTransmission(callsign av.ADSBCallsign, tcp TCP, txType
 
 // enqueueEmergencyTransmission adds an emergency transmission to the pending queue.
 // Emergency transmissions have a pre-built message since they're generated at trigger time.
-func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt *av.RadioTransmission) {
+func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt *speech.RadioTransmission) {
 	s.addPendingContact(PendingContact{
 		ADSBCallsign:         callsign,
 		TCP:                  tcp,
@@ -447,7 +448,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		return "", ""
 	}
 
-	var rt *av.RadioTransmission
+	var rt *speech.RadioTransmission
 
 	switch pc.Type {
 	case PendingTransmissionDeparture:
@@ -476,7 +477,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			return "", ""
 		}
 		rt = ac.ContactMessage()
-		rt.Type = av.RadioTransmissionContact
+		rt.Type = speech.RadioTransmissionContact
 
 		// Pilots only give the ATIS when they first contact a TRACON controller in a facility.
 		if pc.FirstInFacility && s.isTRACONController(pc.TCP) && !ac.IsOverflight() {
@@ -507,7 +508,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		}
 
 	case PendingTransmissionTrafficInSight:
-		rt = av.MakeContactTransmission("[we've got the traffic|we have the traffic in sight|traffic in sight now]")
+		rt = speech.MakeContactTransmission("[we've got the traffic|we have the traffic in sight|traffic in sight now]")
 
 	case PendingTransmissionFieldInSight, PendingTransmissionSpontaneousFieldInSight:
 		// An unprompted call is moot if the aircraft was cleared for an
@@ -516,19 +517,19 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if pc.Type == PendingTransmissionSpontaneousFieldInSight && ac.Nav.Approach.EffectivelyCleared() {
 			return "", ""
 		}
-		rt = av.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
+		rt = speech.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
 
 	case PendingTransmissionFieldNegativeContact:
-		rt = av.MakeContactTransmission("[negative field|field not in sight|no joy on the field]")
+		rt = speech.MakeContactTransmission("[negative field|field not in sight|no joy on the field]")
 
 	case PendingTransmissionFlightFollowingReq:
-		rt = av.MakeContactTransmission("[VFR request|with a VFR request]")
+		rt = speech.MakeContactTransmission("[VFR request|with a VFR request]")
 
 	case PendingTransmissionFlightFollowingFull:
 		rt = s.generateFlightFollowingMessage(ac)
 
 	case PendingTransmissionGoAround:
-		rt = av.MakeContactTransmission("[going around|on the go]")
+		rt = speech.MakeContactTransmission("[going around|on the go]")
 		targetAlt, _, _ := ac.Nav.TargetAltitude()
 		currentAlt := ac.Altitude()
 		if currentAlt < targetAlt {
@@ -545,7 +546,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			rt.Add("[tower sent us around for spacing|we were sent around for spacing]")
 			ac.SentAroundForSpacing = false
 		}
-		rt.Type = av.RadioTransmissionUnexpected
+		rt.Type = speech.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestApproachClearance:
 		// Drop the request if it went moot between enqueue and dispatch: the
@@ -554,20 +555,20 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if ac.Nav.Approach.EffectivelyCleared() || !ac.Nav.InterceptedButNotCleared() {
 			return "", ""
 		}
-		rt = av.MakeContactTransmission("[are we cleared for the approach|looking for the approach|we're going to need the approach here shortly]")
-		rt.Type = av.RadioTransmissionUnexpected
+		rt = speech.MakeContactTransmission("[are we cleared for the approach|looking for the approach|we're going to need the approach here shortly]")
+		rt.Type = speech.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestVectors:
 		if ac.Nav.Approach.HasLocalizer() {
-			rt = av.MakeContactTransmission("[we're going to overshoot the localizer, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss the localizer, request vectors]")
+			rt = speech.MakeContactTransmission("[we're going to overshoot the localizer, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss the localizer, request vectors]")
 		} else {
-			rt = av.MakeContactTransmission("[we're going to overshoot the final approach course, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss final, request vectors]")
+			rt = speech.MakeContactTransmission("[we're going to overshoot the final approach course, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss final, request vectors]")
 		}
-		rt.Type = av.RadioTransmissionUnexpected
+		rt.Type = speech.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestAltitude:
-		rt = av.MakeContactTransmission("[what altitude should we maintain|what altitude do you want us at]")
-		rt.Type = av.RadioTransmissionUnexpected
+		rt = speech.MakeContactTransmission("[what altitude should we maintain|what altitude do you want us at]")
+		rt.Type = speech.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestTowerSwitch:
 		// Drop the question if it went moot between enqueue and dispatch: the
@@ -576,15 +577,15 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if ac.GotContactTower || !ac.Nav.Approach.Cleared {
 			return "", ""
 		}
-		rt = av.MakeContactTransmission("[should we switch to tower|do you want us with tower|should we contact tower]")
-		rt.Type = av.RadioTransmissionUnexpected
+		rt = speech.MakeContactTransmission("[should we switch to tower|do you want us with tower|should we contact tower]")
+		rt.Type = speech.RadioTransmissionUnexpected
 
 	case PendingTransmissionEmergency:
 		if pc.PrebuiltTransmission == nil {
 			return "", ""
 		}
 		rt = pc.PrebuiltTransmission
-		rt.Type = av.RadioTransmissionUnexpected // Mark as urgent for display
+		rt.Type = speech.RadioTransmissionUnexpected // Mark as urgent for display
 
 	case PendingTransmissionRequestVisual:
 		// If the aircraft was cleared for an approach between enqueue and
@@ -601,7 +602,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		// Pilot just reports field in sight and requests "the visual" —
 		// it's the controller's decision whether to clear a plain visual
 		// (CVA) or a charted visual procedure (C).
-		rt = av.MakeContactTransmission(
+		rt = speech.MakeContactTransmission(
 			"[field in sight|we have the airport in sight], [request visual|requesting the visual|can we get the visual] [approach |]runway {rwy}",
 			runway)
 
@@ -656,17 +657,17 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		heavySuper += " emergency aircraft"
 	}
 
-	csArg := av.CallsignArg{
+	csArg := speech.CallsignArg{
 		Callsign:           ac.ADSBCallsign,
 		IsEmergency:        ac.EmergencyState != nil,
 		AlwaysFullCallsign: true,
 	}
 
-	var prefix *av.RadioTransmission
+	var prefix *speech.RadioTransmission
 	if ac.TypeOfFlight == av.FlightTypeDeparture {
-		prefix = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
+		prefix = speech.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
 	} else {
-		prefix = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
+		prefix = speech.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
 	}
 
 	prefix.Merge(rt)
@@ -708,7 +709,7 @@ func (s *Sim) processFutureSquawkChanges() {
 
 type PilotSpeech struct {
 	Callsign av.ADSBCallsign
-	Type     av.RadioTransmissionType
+	Type     speech.RadioTransmissionType
 	Text     string
 	SimTime  Time // Virtual simulation time when transmission was made
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/videomaps"
 )
 

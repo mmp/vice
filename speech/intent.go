@@ -1,10 +1,11 @@
-// aviation/intent.go
+// speech/intent.go
 // Copyright(c) 2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package speech
 
 import (
+	av "github.com/mmp/vice/aviation"
 	"reflect"
 	"slices"
 	"strings"
@@ -364,7 +365,7 @@ func (s SpeedIntent) renderMach(rt *RadioTransmission, r *rand.Rand) {
 
 // CompoundSpeedSegment represents one segment of a compound speed assignment.
 type CompoundSpeedSegment struct {
-	Speed    *SpeedRestriction
+	Speed    *av.SpeedRestriction
 	UntilFix string // empty for last (open-ended) segment
 }
 
@@ -384,7 +385,7 @@ func (c CompoundSpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			}
 		}
 
-		isAbove := !exact && seg.Speed.Range[0] > 0 && seg.Speed.Range[1] == MaxRestrictionSpeed
+		isAbove := !exact && seg.Speed.Range[0] > 0 && seg.Speed.Range[1] == av.MaxRestrictionSpeed
 		isBelow := !exact && seg.Speed.Range[0] == 0
 
 		suffix := ""
@@ -597,11 +598,11 @@ type NavigationIntent struct {
 	Heading          math.MagneticHeading          // for DepartFixHeading
 	Radial           math.MagneticHeading          // for NavInterceptRadial
 	Outbound         bool                          // for NavInterceptRadial
-	Turn             TurnDirection                 // for NavDirectFix / NavDirectFixFromHold
+	Turn             av.TurnDirection              // for NavDirectFix / NavDirectFixFromHold
 	HoldDirection    string                        // "left" or "right" for holds
 	HoldLegLength    string                        // e.g., "2 mile" or "1 minute"
-	AltRestriction   *AltitudeRestriction          // for Cross{FixAt,DistanceFromFixAt,DME}
-	SpeedRestriction *SpeedRestriction             // for Cross{FixAt,DistanceFromFixAt,DME}
+	AltRestriction   *av.AltitudeRestriction       // for Cross{FixAt,DistanceFromFixAt,DME}
+	SpeedRestriction *av.SpeedRestriction          // for Cross{FixAt,DistanceFromFixAt,DME}
 	Distance         float32                       // for Cross{DistanceFromFixAt,DME}
 	Direction        math.CardinalOrdinalDirection // for CrossDistanceFromFixAt
 }
@@ -610,9 +611,9 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	switch n.Type {
 	case NavDirectFix:
 		switch n.Turn {
-		case TurnLeft:
+		case av.TurnLeft:
 			rt.Add("[turn] left direct {fix}", n.Fix)
-		case TurnRight:
+		case av.TurnRight:
 			rt.Add("[turn] right direct {fix}", n.Fix)
 		default:
 			rt.Add("direct {fix}", n.Fix)
@@ -811,8 +812,8 @@ const (
 // ContactIntent represents contact/handoff commands
 type ContactIntent struct {
 	Type         ContactType
-	ToController *Controller // the controller being contacted
-	Frequency    Frequency
+	ToController *av.Controller // the controller being contacted
+	Frequency    av.Frequency
 	IsDeparture  bool // affects rendering (departure vs approach controller)
 }
 
@@ -838,8 +839,8 @@ type TransponderType int
 
 // TransponderIntent represents squawk/ident/mode commands
 type TransponderIntent struct {
-	Code  *Squawk
-	Mode  *TransponderMode
+	Code  *av.Squawk
+	Mode  *av.TransponderMode
 	Ident bool
 }
 
@@ -872,7 +873,7 @@ func (t TransponderIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 // Frequency is optional (zero means "not given"); when set, the pilot
 // readback sometimes includes the tower frequency.
 type ContactTowerIntent struct {
-	Frequency Frequency
+	Frequency av.Frequency
 }
 
 func (c ContactTowerIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -1010,7 +1011,7 @@ func (s SayAgainIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 
 // MixUpIntent represents pilot confusion about who was addressed
 type MixUpIntent struct {
-	Callsign    ADSBCallsign
+	Callsign    av.ADSBCallsign
 	IsEmergency bool
 }
 

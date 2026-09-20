@@ -24,7 +24,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/tts"
+	"github.com/mmp/vice/speech/tts"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"

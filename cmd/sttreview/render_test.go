@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech/stt"
 )
 
 // TestRenderNarrowWidths drives render across a range of terminal widths,

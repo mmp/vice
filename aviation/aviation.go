@@ -2345,34 +2345,6 @@ func (p *LocalSquawkCodePool) Return(sq Squawk) error {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type RadioTransmissionType int
-
-const (
-	RadioTransmissionUnknown    = iota
-	RadioTransmissionContact    // Messages initiated by the pilot
-	RadioTransmissionReadback   // Reading back an instruction
-	RadioTransmissionUnexpected // Something urgent or unusual
-	RadioTransmissionMixUp      // Pilot confused about who was being addressed
-	RadioTransmissionNoId       // No callsign included (e.g. to say "blocked")
-)
-
-func (r RadioTransmissionType) String() string {
-	switch r {
-	case RadioTransmissionContact:
-		return "contact"
-	case RadioTransmissionReadback:
-		return "readback"
-	case RadioTransmissionUnexpected:
-		return "urgent"
-	case RadioTransmissionMixUp:
-		return "mixup"
-	case RadioTransmissionNoId:
-		return "noid"
-	default:
-		return "(unhandled type)"
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // CWT functions
 
@@ -2572,4 +2544,13 @@ func (c AircraftClass) MarshalJSON() ([]byte, error) {
 // unmarshaling.
 func (c *AircraftClass) CheckJSON(json any) bool {
 	return util.TypeCheckJSON[string](json) || util.TypeCheckJSON[[]string](json)
+}
+
+// SplitCallsign splits a callsign into ICAO prefix and flight number.
+// For "UAL123" returns ("UAL", "123"). For "N12345" returns ("N", "12345").
+func SplitCallsign(callsign string) (prefix, number string) {
+	if idx := strings.IndexAny(callsign, "0123456789"); idx != -1 {
+		return callsign[:idx], callsign[idx:]
+	}
+	return callsign, ""
 }

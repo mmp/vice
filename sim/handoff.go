@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -176,7 +177,7 @@ func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
 	}
 }
 
-func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (av.CommandIntent, error) {
+func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -190,12 +191,12 @@ func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (av.CommandIntent, e
 			}
 			return nil
 		},
-		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, sfp.TrackingController)
 		})
 }
 
-func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (av.CommandIntent, error) {
+func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -209,32 +210,32 @@ func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (av.CommandIntent
 			}
 			return nil
 		},
-		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			if s.State.TCWControlsPosition(tcw, toTCP) {
-				return av.MakeUnableIntent("Unable, we are already on your frequency")
+				return speech.MakeUnableIntent("Unable, we are already on your frequency")
 			} else {
 				return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, toTCP)
 			}
 		})
 }
 
-func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, toTCP TCP) av.CommandIntent {
+func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, toTCP TCP) speech.CommandIntent {
 	// Immediately respond to the current controller that we're
 	// changing frequency.
-	var intent av.ContactIntent
+	var intent speech.ContactIntent
 	if octrl, ok := s.State.Controllers[toTCP]; ok {
 		if toTCP == fromTCP {
-			return av.MakeUnableIntent("Unable, we are already on {freq}", octrl.Frequency)
+			return speech.MakeUnableIntent("Unable, we are already on {freq}", octrl.Frequency)
 		}
-		intent = av.ContactIntent{
-			Type:         av.ContactController,
+		intent = speech.ContactIntent{
+			Type:         speech.ContactController,
 			ToController: octrl,
 			Frequency:    octrl.Frequency,
 			IsDeparture:  ac.TypeOfFlight == av.FlightTypeDeparture,
 		}
 	} else {
-		intent = av.ContactIntent{
-			Type: av.ContactGoodbye,
+		intent = speech.ContactIntent{
+			Type: speech.ContactGoodbye,
 		}
 	}
 
@@ -276,7 +277,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			}
 			return av.ErrNotBeingHandedOffToMe
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			// The new tracking controller should be the HandoffTrackController (the target TCP),
 			// not the acceptor's primary TCP. This preserves correct ownership when accepting
 			// handoffs to consolidated secondary positions.
@@ -366,7 +367,7 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 			octrl := s.State.Controllers[controller]
 			rh := &fp.RedirectedHandoff
@@ -407,7 +408,7 @@ func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 			// recall.
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			rh := &fp.RedirectedHandoff
 			if s.State.TCWControlsPosition(tcw, rh.RedirectedTo) { // Accept
 				s.acceptRedirectedHandoff(fp, ac, tcw)
@@ -484,7 +485,7 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			octrl := s.State.Controllers[controller]
 			s.eventStream.Post(Event{
 				Type:           ForceQLEvent,
@@ -593,7 +594,7 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			for _, po := range acked {
 				// As with auto accepts, "to" and "from" are swapped in
 				// the event since they are w.r.t. the original point out.
@@ -668,7 +669,7 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			for _, po := range rejected {
 				// As with auto accepts, "to" and "from" are swapped in
 				// the event since they are w.r.t. the original point out.

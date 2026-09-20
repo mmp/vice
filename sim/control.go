@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/speech"
 )
 
 // callsignAudioOffset is the approximate time taken by the callsign at the
@@ -48,7 +49,7 @@ func (s *Sim) TCWCanModifyFlightPlan(tcw TCW, fp *NASFlightPlan) bool {
 }
 
 func (s *Sim) dispatchAircraftCommand(tcw TCW, callsign av.ADSBCallsign, check func(tcw TCW, ac *Aircraft) error,
-	cmd func(tcw TCW, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
+	cmd func(tcw TCW, ac *Aircraft) speech.CommandIntent) (speech.CommandIntent, error) {
 	s.lastControlCommandTime = time.Now()
 
 	if ac, ok := s.Aircraft[callsign]; !ok {
@@ -76,7 +77,7 @@ func (s *Sim) dispatchAircraftCommand(tcw TCW, callsign av.ADSBCallsign, check f
 // dispatchControlledAircraftCommand dispatches a command to an aircraft if the
 // TCW controls the position whose frequency the aircraft is tuned to.
 func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsign,
-	cmd func(tcw TCW, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
+	cmd func(tcw TCW, ac *Aircraft) speech.CommandIntent) (speech.CommandIntent, error) {
 	intent, err := s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error {
 			if !s.TCWCanCommandAircraft(tcw, ac) {
@@ -98,7 +99,7 @@ func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsig
 
 // Note that ac may be nil, but flight plan will not be!
 func (s *Sim) dispatchFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error,
-	cmd func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
+	cmd func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent) (speech.CommandIntent, error) {
 	s.lastControlCommandTime = time.Now()
 
 	fp, ac, _ := s.getFlightPlanForACID(acid)
@@ -139,7 +140,7 @@ func (s *Sim) dispatchTrackedFlightPlanCommand(tcw TCW, acid ACID, check func(tc
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
 			cmd(tcw, fp, ac)
 			// No radio transmissions for these
 			return nil
@@ -153,7 +154,7 @@ func (s *Sim) DeleteAircraft(tcw TCW, callsign av.ADSBCallsign) error {
 
 	_, err := s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error { return nil },
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			s.eventStream.Post(Event{
 				Type:        StatusMessageEvent,
 				WrittenText: fmt.Sprintf("%s deleted %s", tcw, ac.ADSBCallsign),
@@ -320,11 +321,11 @@ func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) (string, error) {
 	defer s.mu.Unlock(s.lg)
 
 	intent, err := s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.PilotMixUp()
 		})
 	if err == nil && intent != nil {
-		spokenText := s.renderAndPostReadback(callsign, tcw, []av.CommandIntent{intent})
+		spokenText := s.renderAndPostReadback(callsign, tcw, []speech.CommandIntent{intent})
 		s.publish()
 		return spokenText, nil
 	}

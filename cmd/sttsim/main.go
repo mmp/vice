@@ -22,7 +22,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech/stt"
 )
 
 func main() {

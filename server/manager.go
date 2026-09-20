@@ -22,7 +22,7 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )

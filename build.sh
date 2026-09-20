@@ -335,7 +335,7 @@ fi
 
 SHERPA_CMAKE_ARGS=(
     -DBUILD_SHARED_LIBS=OFF
-    # tts/tts.go links sherpa-onnx's downloaded onnxruntime archive by path.
+    # speech/tts/tts.go links sherpa-onnx's downloaded onnxruntime archive by path.
     # Left at its default, sherpa-onnx prefers a system-installed onnxruntime
     # whenever it finds one -- Arch and friends ship it -- nothing is
     # downloaded, and the vice link fails on the missing archive.
@@ -532,7 +532,7 @@ if needs_sherpa_build || dep_args_changed sherpa-onnx/build_go "${SHERPA_CMAKE_A
 
     if [ ! -f "$SHERPA_ONNXRUNTIME_LIB" ]; then
         echo "Error: sherpa-onnx did not produce $SHERPA_ONNXRUNTIME_LIB"
-        echo "It linked a system-installed onnxruntime instead; tts/tts.go needs its own."
+        echo "It linked a system-installed onnxruntime instead; speech/tts/tts.go needs its own."
         exit 1
     fi
 fi

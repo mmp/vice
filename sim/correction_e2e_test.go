@@ -11,7 +11,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech/stt"
 )
 
 // correctionRunner decodes transcripts and dispatches them the way the client does,

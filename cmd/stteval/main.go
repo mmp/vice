@@ -3,7 +3,7 @@
 // entries (current output agrees with the stored output and passes
 // consistency checks), suspects (disagreement or a failed check), and
 // unusable records; selects the trusted entries that add statement
-// coverage over the existing stt/tests corpus; and stages new test files
+// coverage over the existing speech/stt/tests corpus; and stages new test files
 // and a suspects review queue for human sign-off.
 //
 // Phases (run in order; each reads the earlier phases' outputs from
@@ -12,10 +12,10 @@
 //	-phase decode    decode every queued entry, write report.jsonl
 //	-phase coverage  per-entry coverage novelty + greedy selection
 //	                 (requires a binary built with
-//	                 go build -cover -covermode=atomic -coverpkg=github.com/mmp/vice/stt)
+//	                 go build -cover -covermode=atomic -coverpkg=github.com/mmp/vice/speech/stt)
 //	-phase emit      write staged-tests/, staged-index.json, suspects.json
 //	-phase apply     -accepted <file>: install accepted staged tests in
-//	                 stt/tests/, divert the rest to suspects.json, mark
+//	                 speech/stt/tests/, divert the rest to suspects.json, mark
 //	                 all processed entries Seen in the main state
 package main
 
@@ -34,7 +34,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech/stt"
 )
 
 type reportRow struct {
@@ -73,7 +73,7 @@ func main() {
 	phase := flag.String("phase", "", "decode | coverage | emit | apply")
 	statePath := flag.String("state", "~/.sttreview/state.json", "review state file")
 	evalDir := flag.String("evaldir", "~/.sttreview/eval", "directory for evaluation outputs")
-	testsDir := flag.String("tests", "stt/tests", "existing corpus directory")
+	testsDir := flag.String("tests", "speech/stt/tests", "existing corpus directory")
 	acceptedPath := flag.String("accepted", "", "file listing accepted staged-test filenames (apply phase)")
 	diagnosesPath := flag.String("diagnoses", "", "JSON object {transcript: {suggestion, reason}} to annotate suspect reviews (apply phase)")
 	flag.Parse()
@@ -408,7 +408,7 @@ func digitRuns(s string) []string {
 func phaseCoverage(statePath, evalDir, testsDir string) error {
 	// Verify this binary is instrumented before doing any work.
 	if err := coverage.ClearCounters(); err != nil {
-		return fmt.Errorf("not a coverage-instrumented build (rebuild with go build -cover -covermode=atomic -coverpkg=github.com/mmp/vice/stt): %v", err)
+		return fmt.Errorf("not a coverage-instrumented build (rebuild with go build -cover -covermode=atomic -coverpkg=github.com/mmp/vice/speech/stt): %v", err)
 	}
 
 	rows, err := readReport(evalDir)
@@ -554,7 +554,7 @@ func snapshotCovered(scratch, name string) (map[string]bool, error) {
 		// Format: file.go:12.34,56.78 nstmts count. The instrumented build
 		// also covers this package itself (the coverage runtime requires
 		// the main package instrumented); only decoder statements count.
-		if !strings.HasPrefix(line, "github.com/mmp/vice/stt/") {
+		if !strings.HasPrefix(line, "github.com/mmp/vice/speech/stt/") {
 			continue
 		}
 		i := strings.LastIndexByte(line, ' ')

@@ -21,7 +21,8 @@ import (
 	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/util"
 	"golang.org/x/sys/cpu"
 )
@@ -49,7 +50,7 @@ type TransmissionManager struct {
 // queuedTransmission holds a transmission ready for playback with pre-decoded PCM audio.
 type queuedTransmission struct {
 	Callsign       av.ADSBCallsign
-	Type           av.RadioTransmissionType
+	Type           speech.RadioTransmissionType
 	PCM            []int16 // Pre-decoded PCM audio
 	PTTReleaseTime time.Time
 }
@@ -62,7 +63,7 @@ func NewTransmissionManager(lg *log.Logger) *TransmissionManager {
 }
 
 // EnqueueReadbackPCM adds a readback with pre-decoded PCM to the front of the queue (high priority).
-func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty av.RadioTransmissionType, pcm []int16) {
+func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty speech.RadioTransmissionType, pcm []int16) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
@@ -84,7 +85,7 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty a
 	// Drop any pending initial contact for this aircraft; the controller
 	// has already talked to them so the check-in is stale.
 	tm.queue = slices.DeleteFunc(tm.queue, func(qt queuedTransmission) bool {
-		return qt.Callsign == callsign && qt.Type == av.RadioTransmissionContact
+		return qt.Callsign == callsign && qt.Type == speech.RadioTransmissionContact
 	})
 
 	qt := queuedTransmission{
@@ -97,7 +98,7 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty a
 }
 
 // EnqueueTransmissionPCM adds a pilot transmission with pre-decoded PCM to the queue.
-func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, ty av.RadioTransmissionType, pcm []int16) {
+func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, ty speech.RadioTransmissionType, pcm []int16) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
@@ -145,7 +146,7 @@ func (tm *TransmissionManager) Update(p audio.Engine, paused, sttActive bool) {
 	tm.queue = tm.queue[1:]
 
 	// Track whether this is a contact (vs readback)
-	isContact := qt.Type == av.RadioTransmissionContact
+	isContact := qt.Type == speech.RadioTransmissionContact
 
 	// Compute audio duration: PCM is 44.1kHz mono int16.
 	durationMs := int64(len(qt.PCM)) * 1000 / audio.SampleRate
@@ -962,7 +963,7 @@ func makeWhisperPrompt(state SimState) string {
 	addFix := func(fix string) {
 		if _, ok := seenFixes[fix]; !ok {
 			seenFixes[fix] = struct{}{}
-			promptParts = append(promptParts, av.GetFixTelephony(fix))
+			promptParts = append(promptParts, speech.GetFixTelephony(fix))
 		}
 	}
 
@@ -1041,14 +1042,14 @@ func makeWhisperPrompt(state SimState) string {
 
 	for _, trk := range util.SortedMap(onFrequencyTracks) {
 		callsign := string(trk.ADSBCallsign)
-		tele := av.GetCallsignSpoken(callsign, trk.CWTCategory)
+		tele := speech.GetCallsignSpoken(callsign, trk.CWTCategory)
 		promptParts = append(promptParts, tele)
 
 		// For GA callsigns (N-prefix), also add type+trailing3 variants
 		if strings.HasPrefix(callsign, "N") && trk.FlightPlan != nil && trk.FlightPlan.AircraftType != "" {
-			typePronunciations := av.GetACTypePronunciations(trk.FlightPlan.AircraftType)
+			typePronunciations := speech.GetACTypePronunciations(trk.FlightPlan.AircraftType)
 			if len(typePronunciations) > 0 {
-				trailing3 := av.GetTrailing3Spoken(callsign)
+				trailing3 := speech.GetTrailing3Spoken(callsign)
 				if trailing3 != "" {
 					// Only use pronunciations without numbers to avoid callsign confusion
 					for _, typeSpoken := range typePronunciations {
@@ -1067,7 +1068,7 @@ func makeWhisperPrompt(state SimState) string {
 	seenApprComponent := make(map[string]struct{})
 	var apprTypes, apprRunways []string
 	addApproachComponents := func(name string) {
-		types, runway := av.ApproachTelephonyComponents(name)
+		types, runway := speech.ApproachTelephonyComponents(name)
 		for _, ty := range types {
 			if _, ok := seenApprComponent[ty]; !ok {
 				seenApprComponent[ty] = struct{}{}
@@ -1139,16 +1140,16 @@ func makeWhisperPrompt(state SimState) string {
 		}
 	}
 	for _, sid := range util.SortedMapKeys(activeSIDs) {
-		promptParts = append(promptParts, av.GetSIDTelephony(sid))
+		promptParts = append(promptParts, speech.GetSIDTelephony(sid))
 	}
 	for _, star := range util.SortedMapKeys(activeSTARs) {
-		promptParts = append(promptParts, av.GetSTARTelephony(star))
+		promptParts = append(promptParts, speech.GetSTARTelephony(star))
 	}
 
 	// Add ATIS letters, but only for the airports that on-frequency aircraft are landing at.
 	atisLetters := make(map[string]struct{})
 	for _, trk := range onFrequencyTracks {
-		if nato, ok := av.NATOPhonetic[state.ATISLetter[trk.ArrivalAirport]]; ok {
+		if nato, ok := speech.NATOPhonetic[state.ATISLetter[trk.ArrivalAirport]]; ok {
 			atisLetters[nato] = struct{}{}
 		}
 	}

@@ -10,6 +10,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/speech"
 )
 
 // Transcriber converts speech transcripts to aircraft control commands using
@@ -627,14 +628,14 @@ func (p *Transcriber) BuildAircraftContext(
 			// are typically VORs, not airports. This avoids collisions where a 3-letter VOR
 			// identifier matches a foreign airport ICAO code.
 			if len(fix) == 4 {
-				if variants := av.GetAirportTelephonyVariants(fix); len(variants) > 0 {
+				if variants := speech.GetAirportTelephonyVariants(fix); len(variants) > 0 {
 					for _, variant := range variants {
 						sttAc.Fixes[variant] = fix
 					}
 					continue
 				}
 			}
-			sttAc.Fixes[av.GetFixTelephony(fix)] = fix
+			sttAc.Fixes[speech.GetFixTelephony(fix)] = fix
 		}
 
 		// Determine state and set SID/STAR
@@ -687,7 +688,7 @@ func (p *Transcriber) BuildAircraftContext(
 							for _, wps := range appr.Waypoints {
 								for _, wp := range wps {
 									if av.IsNamedFix(wp.Fix) {
-										approachFixes[av.GetFixTelephony(wp.Fix)] = wp.Fix
+										approachFixes[speech.GetFixTelephony(wp.Fix)] = wp.Fix
 									}
 								}
 							}
@@ -709,7 +710,7 @@ func (p *Transcriber) BuildAircraftContext(
 		// Key by telephony (spoken callsign). Use the true CWT category
 		// from the aircraft performance DB rather than the NAS flight plan,
 		// since the user may have changed the flight plan's aircraft type.
-		telephony := av.GetCallsignSpoken(string(trk.ADSBCallsign), trk.CWTCategory)
+		telephony := speech.GetCallsignSpoken(string(trk.ADSBCallsign), trk.CWTCategory)
 
 		// Default addressing form is full callsign
 		sttAc.AddressingForm = sim.AddressingFormFull
@@ -718,9 +719,9 @@ func (p *Transcriber) BuildAircraftContext(
 		// For GA callsigns (N-prefix), also add type-based addressing variants
 		callsign := string(trk.ADSBCallsign)
 		if strings.HasPrefix(callsign, "N") && sttAc.AircraftType != "" {
-			typePronunciations := av.GetACTypePronunciations(sttAc.AircraftType)
+			typePronunciations := speech.GetACTypePronunciations(sttAc.AircraftType)
 			if len(typePronunciations) > 0 {
-				trailing3 := av.GetTrailing3Spoken(callsign)
+				trailing3 := speech.GetTrailing3Spoken(callsign)
 				if trailing3 != "" {
 					// Create a copy with TypeTrailing3 addressing form.
 					// Bake /T into the callsign so downstream code gets it automatically.

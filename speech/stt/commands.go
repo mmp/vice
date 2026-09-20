@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 )
 
 // CommandMatch represents a matched command.
@@ -158,7 +158,7 @@ func extractSID(tokens []Token, sid string) int {
 	}
 
 	// Get the telephony for this SID
-	sidTelephony := av.GetSIDTelephony(sid)
+	sidTelephony := speech.GetSIDTelephony(sid)
 	logLocalStt("  extractSID: looking for SID=%q telephony=%q", sid, sidTelephony)
 
 	// Build candidate phrases (1-4 words for SID names)
@@ -221,7 +221,7 @@ func extractSTAR(tokens []Token, star string) int {
 	}
 
 	// Get the telephony for this STAR
-	starTelephony := av.GetSTARTelephony(star)
+	starTelephony := speech.GetSTARTelephony(star)
 	logLocalStt("  extractSTAR: looking for STAR=%q telephony=%q", star, starTelephony)
 
 	// Words that should not be consumed as part of a STAR name - these are

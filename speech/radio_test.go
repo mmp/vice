@@ -1,15 +1,17 @@
-// aviation/radio_test.go
+// speech/radio_test.go
 // Copyright(c) 2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package speech
 
 import (
 	"encoding/json"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 )
@@ -18,20 +20,20 @@ import (
 // argument type must survive JSON with its type intact; Args is []any, which
 // would otherwise return numbers as float64 and named string types as strings.
 func TestTransmissionArgsRoundTrip(t *testing.T) {
-	DB = &StaticDatabase{
-		Airports:  map[ICAOAirportCode]FAAAirport{"KJFK": {Name: "John F Kennedy International"}},
-		Navaids:   map[string]Navaid{"MERIT": {Name: "MERIT"}},
+	av.DB = &av.StaticDatabase{
+		Airports:  map[av.ICAOAirportCode]av.FAAAirport{"KJFK": {Name: "John F Kennedy International"}},
+		Navaids:   map[string]av.Navaid{"MERIT": {Name: "MERIT"}},
 		Callsigns: map[string]string{"AAL": "American"},
 	}
 
-	ar := MakeAtAltitudeRestriction(8000)
+	ar := av.MakeAtAltitudeRestriction(8000)
 	rt := RadioTransmission{
 		Strings: []PhraseFormatString{"{alt} {num} {spd} {hdg} {gf} {mach}", "{airport} {fix} {ch}",
 			"{beacon} {freq} {callsign} {altrest}"},
 		Args: [][]any{
 			{3000, 5, float32(210), math.MagneticHeading(90), 12, float32(0.75)},
-			{ICAOAirportCode("KJFK"), "MERIT", "B"},
-			{Squawk(0o1234), NewFrequency(118.9), CallsignArg{Callsign: "AAL123"}, &ar},
+			{av.ICAOAirportCode("KJFK"), "MERIT", "B"},
+			{av.Squawk(0o1234), av.NewFrequency(118.9), CallsignArg{Callsign: "AAL123"}, &ar},
 		},
 		Type: RadioTransmissionContact,
 	}
@@ -87,7 +89,7 @@ func TestTransmissionUnsaveableArg(t *testing.T) {
 // the formatter's type assertion. The error names the phrase that failed, which
 // is what the sim shows the controller in place of the lost transmission.
 func TestMistypedArgReported(t *testing.T) {
-	rt := MakeContactTransmission("departing {airport}", "KFRG") // want an ICAOAirportCode
+	rt := MakeContactTransmission("departing {airport}", "KFRG") // want an av.ICAOAirportCode
 	r := rand.Make()
 
 	s, err := rt.Spoken(r)
@@ -122,7 +124,7 @@ func TestControllerPositionRenaming(t *testing.T) {
 		{"{actrl}", "boston departure", "boston approach"},
 		{"{actrl}", "New York Approach", "New York Approach"},
 	} {
-		rt := MakeContactTransmission(test.phrase, &Controller{RadioName: test.radioName})
+		rt := MakeContactTransmission(test.phrase, &av.Controller{RadioName: test.radioName})
 		got, err := rt.Written(rand.Make())
 		if err != nil {
 			t.Errorf("%s with %q: %v", test.phrase, test.radioName, err)
@@ -134,8 +136,46 @@ func TestControllerPositionRenaming(t *testing.T) {
 
 // A nil controller is reported rather than panicking in the formatter.
 func TestNilControllerArgReported(t *testing.T) {
-	rt := MakeContactTransmission("{actrl}", (*Controller)(nil))
+	rt := MakeContactTransmission("{actrl}", (*av.Controller)(nil))
 	if s, err := rt.Written(rand.Make()); s != "" || err == nil {
 		t.Errorf("Written with a nil controller = %q, %v; want \"\" and an error", s, err)
+	}
+}
+
+func TestFrequencySpoken(t *testing.T) {
+	// Each frequency should give exactly these spoken forms, in particular
+	// keeping the leading zero of fractions below .10.
+	for _, fs := range []struct {
+		f       av.Frequency
+		spokens []string
+	}{
+		{f: av.Frequency(127050), spokens: []string{"27 zero five", "one 27 point zero five",
+			"27 point zero five", "one two seven point zero five"}},
+		{f: av.Frequency(118075), spokens: []string{"18 zero seven", "one 18 point zero seven",
+			"18 point zero seven", "one one eight point zero seven"}},
+		{f: av.Frequency(121900), spokens: []string{"21 90", "one 21 point 9", "21 point 9",
+			"one two one point niner"}},
+		{f: av.Frequency(133450), spokens: []string{"33 45", "one 33 point 45", "33 point 45",
+			"one three three point four five"}},
+		{f: av.Frequency(128000), spokens: []string{"28 zero", "one 28 point zero", "28 point zero",
+			"one two eight point zero"}},
+	} {
+		r := rand.Make()
+		var got []string
+		for seed := range 100 {
+			r.Seed(uint64(seed))
+			s, err := (FrequencySnippetFormatter{}).Spoken(r, fs.f)
+			if err != nil {
+				t.Fatalf("%v: %v", fs.f, err)
+			}
+			if !slices.Contains(got, s) {
+				got = append(got, s)
+			}
+		}
+		slices.Sort(got)
+		want := slices.Sorted(slices.Values(fs.spokens))
+		if !slices.Equal(got, want) {
+			t.Errorf("av.Frequency %s spoken forms %q; expected %q", fs.f, got, want)
+		}
 	}
 }

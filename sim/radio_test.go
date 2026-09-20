@@ -10,6 +10,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 )
 
 // TestPopReadyContactPrioritizesResponses verifies that a pilot's response or
@@ -427,7 +428,7 @@ func TestEmergencyTransmissionSurvivesSaving(t *testing.T) {
 	s.Aircraft[ac.ADSBCallsign] = ac
 
 	tcp := TCP("125.0")
-	rt := av.MakeContactTransmission(
+	rt := speech.MakeContactTransmission(
 		"declaring an emergency, [we have|] {num} souls, request return to {airport}, level at {alt}",
 		112, ac.FlightPlan.DepartureAirport, 4000)
 	s.enqueueEmergencyTransmission(ac.ADSBCallsign, tcp, rt)
@@ -469,7 +470,7 @@ func TestUnformattableTransmissionIsReported(t *testing.T) {
 	sub := s.eventStream.Subscribe()
 	defer sub.Unsubscribe()
 
-	rt := av.MakeReadbackTransmission("departing {airport}", "KFRG") // want an ICAOAirportCode
+	rt := speech.MakeReadbackTransmission("departing {airport}", "KFRG") // want an ICAOAirportCode
 	s.postReadbackTransmission(ac.ADSBCallsign, *rt, TCW("TEST"))
 
 	events := sub.Get()

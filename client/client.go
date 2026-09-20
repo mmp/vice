@@ -19,8 +19,9 @@ import (
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/stt"
-	"github.com/mmp/vice/tts"
+	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/speech/stt"
+	"github.com/mmp/vice/speech/tts"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
@@ -700,14 +701,14 @@ func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, t
 	} else {
 		durationMs := int64(len(pcm)) * 1000 / audio.SampleRate
 		c.lg.Infof("SPEECH queued readback: %s (%dms audio) %q", callsign, durationMs, text)
-		c.transmissions.EnqueueReadbackPCM(callsign, av.RadioTransmissionReadback, pcm)
+		c.transmissions.EnqueueReadbackPCM(callsign, speech.RadioTransmissionReadback, pcm)
 	}
 }
 
 // synthesizeAndEnqueueContact synthesizes text and enqueues it as a contact transmission.
 // Called from a goroutine. Unlike readbacks, no Hold() is acquired before requesting
 // contacts, so no Unhold() is needed on failure.
-func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty av.RadioTransmissionType, text, voice string) {
+func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty speech.RadioTransmissionType, text, voice string) {
 	radioSeed := uint32(util.HashString64(string(callsign)))
 	if pcm, err := tts.SynthesizeContactTTS(text, voice, radioSeed); err != nil {
 		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)

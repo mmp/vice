@@ -1,23 +1,24 @@
-// aviation/intent_test.go
+// speech/intent_test.go
 // Copyright(c) 2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package speech
 
 import (
 	"strings"
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/rand"
 )
 
 func renderIntentForTest(t *testing.T, intent CommandIntent, seed uint64) string {
 	t.Helper()
 
-	if DB == nil {
-		DB = &StaticDatabase{
-			Navaids:  map[string]Navaid{},
-			Airports: map[ICAOAirportCode]FAAAirport{},
+	if av.DB == nil {
+		av.DB = &av.StaticDatabase{
+			Navaids:  map[string]av.Navaid{},
+			Airports: map[av.ICAOAirportCode]av.FAAAirport{},
 		}
 	}
 
@@ -148,7 +149,7 @@ func TestContactTowerReadback(t *testing.T) {
 	// With frequency — across seeds, the readback sometimes includes the
 	// frequency and sometimes does not. When present it must match the
 	// canonical Frequency formatting.
-	freq := NewFrequency(118.9)
+	freq := av.NewFrequency(118.9)
 	// Readback uses the FrequencySnippetFormatter's Written form (2 decimal
 	// places), not Frequency.String()'s 3-decimal form.
 	expected, err := FrequencySnippetFormatter{}.Written(freq)
@@ -178,8 +179,8 @@ func TestContactTowerReadback(t *testing.T) {
 }
 
 func TestCompoundSpeedReadbackIncludesQualifiers(t *testing.T) {
-	above := MakeAtOrAboveSpeedRestriction(250)
-	below := MakeAtOrBelowSpeedRestriction(210)
+	above := av.MakeAtOrAboveSpeedRestriction(250)
+	below := av.MakeAtOrBelowSpeedRestriction(210)
 	intent := CompoundSpeedIntent{
 		Segments: []CompoundSpeedSegment{
 			{Speed: &above, UntilFix: "ROSLY"},

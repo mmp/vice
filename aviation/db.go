@@ -9,6 +9,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -57,7 +58,7 @@ type StaticDatabase struct {
 	BravoAirspace       map[string][]AirspaceVolume
 	CharlieAirspace     map[string][]AirspaceVolume
 	DeltaAirspace       map[string][]AirspaceVolume
-	say                 pronunciations
+	Say                 Pronunciations
 }
 
 type FAAAirport struct {
@@ -535,7 +536,7 @@ func doInitDB() {
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
 	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
-	wg.Go(func() { db.say = parsePronunciations() })
+	wg.Go(func() { db.Say = parsePronunciations() })
 	wg.Go(func() { db.AirportPairRoutes = parseAirportPairRoutes() })
 	wg.Go(func() { db.ScrapedRoutes = parseScrapedRoutes() })
 	wg.Go(func() {
@@ -1878,4 +1879,37 @@ func (g *MVAGrid) GetMVA(p [2]float32) int {
 		}
 	}
 	return 0
+}
+
+// Pronunciations maps written text to the phonetic spellings that work
+// better with voice synthesis. Where a slice is stored, one of its items is
+// chosen at random when one is needed.
+type Pronunciations struct {
+	Airports map[string][]string
+	ACTypes  map[string][]string
+	Fixes    map[string]string
+	Airlines map[string]string
+	SIDs     map[string]string
+	STARs    map[string]string
+}
+
+// parsePronunciations reads the say*.json files; it is called as part of
+// loading the aviation database, so editing one of them takes effect on a
+// reload along with the rest of it.
+func parsePronunciations() Pronunciations {
+	var say Pronunciations
+	load := func(file string, m any) {
+		if err := json.Unmarshal(util.LoadResourceBytes(file), m); err != nil {
+			panic(fmt.Sprintf("%s: %v", file, err))
+		}
+	}
+
+	load("sayactype.json", &say.ACTypes)
+	load("sayairport.json", &say.Airports)
+	load("sayairline.json", &say.Airlines)
+	load("sayfix.json", &say.Fixes)
+	load("saysid.json", &say.SIDs)
+	load("saystar.json", &say.STARs)
+
+	return say
 }

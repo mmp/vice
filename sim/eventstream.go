@@ -16,6 +16,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 )
 
 type EventSubscriberId int
@@ -282,7 +283,7 @@ type Event struct {
 	DestinationTCW        TCW               // The TCW that should receive this transmission's TTS
 	WrittenText           string
 	SpokenText            string
-	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
+	RadioTransmissionType speech.RadioTransmissionType   // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent, FDAMLeaderLineEvent
 	WaypointInfo          []math.Point2LL
 	STTTranscript         string

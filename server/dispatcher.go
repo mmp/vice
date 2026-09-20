@@ -12,7 +12,8 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/videomaps"
 )
@@ -840,7 +841,7 @@ type RequestContactResult struct {
 	ContactText      string          // Text to synthesize
 	ContactVoiceName string          // Voice name for synthesis (e.g., "am_adam")
 	ContactCallsign  av.ADSBCallsign // Callsign of the aircraft
-	ContactType      av.RadioTransmissionType
+	ContactType      speech.RadioTransmissionType
 }
 
 const RequestContactTransmissionRPC = "Sim.RequestContactTransmission"

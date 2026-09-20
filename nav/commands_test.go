@@ -10,6 +10,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 )
 
 // TestCommandValidation verifies that invalid commands produce UnableIntents.
@@ -309,7 +310,7 @@ func TestCrossDistanceFromFixAtInsertsWaypoint(t *testing.T) {
 	wpsBefore := len(f.nav.Waypoints)
 	ar := av.MakeAtAltitudeRestriction(5000)
 	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
 
@@ -361,7 +362,7 @@ func TestCrossDistanceFromFixAtUsesDeferredWaypoints(t *testing.T) {
 
 	ar := av.MakeAtAltitudeRestriction(5000)
 	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
 
@@ -411,7 +412,7 @@ func TestCrossDistanceFromFixAtIgnoresEmptyDeferredRoute(t *testing.T) {
 
 	ar := av.MakeAtAltitudeRestriction(5000)
 	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
 
@@ -563,7 +564,7 @@ func TestCrossDistanceFromFixAtUsesUnderscoreNamedPriorWaypoint(t *testing.T) {
 
 	ar := av.MakeAtAltitudeRestriction(5000)
 	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
 
@@ -702,7 +703,7 @@ func TestCrossDMEAtInsertsWaypoint(t *testing.T) {
 
 	ar := av.MakeAtAltitudeRestriction(3000)
 	intent := f.nav.CrossDMEAt(5, &ar, nil)
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
 
@@ -739,7 +740,7 @@ func TestCrossDMEAtExtrapolates(t *testing.T) {
 
 	ar := av.MakeAtAltitudeRestriction(4000)
 	intent := f.nav.CrossDMEAt(15, &ar, nil)
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
 
@@ -810,7 +811,7 @@ func TestCrossDMEAtShortRouteAfterDeletion(t *testing.T) {
 	f := setupClearedVisual(t, "22L")
 
 	ar1 := av.MakeAtAltitudeRestriction(3000)
-	if _, ok := f.nav.CrossDMEAt(5, &ar1, nil).(av.UnableIntent); ok {
+	if _, ok := f.nav.CrossDMEAt(5, &ar1, nil).(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable on first CDME")
 	}
 
@@ -842,7 +843,7 @@ func TestCrossDMEAtUsesDeferredWaypoints(t *testing.T) {
 	f.nav.DeferredNavHeading = &DeferredNavHeading{Waypoints: deferred}
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	if _, ok := f.nav.CrossDMEAt(5, &ar, nil).(av.UnableIntent); ok {
+	if _, ok := f.nav.CrossDMEAt(5, &ar, nil).(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable")
 	}
 

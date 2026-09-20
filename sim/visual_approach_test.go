@@ -12,6 +12,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/wx"
 )
 
@@ -116,7 +117,7 @@ func (vs *VisualScenario) SetAltitude(alt float32) {
 }
 
 // AirportAdvisory issues an AP command and returns the intent.
-func (vs *VisualScenario) AirportAdvisory(oclock, miles int) av.CommandIntent {
+func (vs *VisualScenario) AirportAdvisory(oclock, miles int) speech.CommandIntent {
 	vs.t.Helper()
 	intent, err := vs.Sim.AirportAdvisory(vs.tcw, vs.callsign, oclock, miles)
 	if err != nil {
@@ -129,7 +130,7 @@ func (vs *VisualScenario) AirportAdvisory(oclock, miles int) av.CommandIntent {
 // ExpectApproach for the synthesized visual first if the aircraft has not
 // already been told to expect this visual, since the new clearance flow
 // requires Assigned/VisualReferences to be set up.
-func (vs *VisualScenario) ClearedVisual(runway string) (av.CommandIntent, error) {
+func (vs *VisualScenario) ClearedVisual(runway string) (speech.CommandIntent, error) {
 	vs.t.Helper()
 	id := "_VIS" + runway
 	if vs.AC.Nav.Approach.AssignedId != id {
@@ -188,37 +189,37 @@ func requireSeenTraffic(t *testing.T, ac *Aircraft, callsign av.ADSBCallsign) *S
 }
 
 // ExpectFieldInSight asserts the intent is LookForFieldFound.
-func (vs *VisualScenario) ExpectFieldInSight(intent av.CommandIntent) {
+func (vs *VisualScenario) ExpectFieldInSight(intent speech.CommandIntent) {
 	vs.t.Helper()
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		vs.t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
-	if fi != av.LookForFieldFound {
+	if fi != speech.LookForFieldFound {
 		vs.t.Errorf("expected LookForFieldFound, got %v", fi)
 	}
 }
 
 // ExpectLooking asserts the intent is LookForFieldLooking.
-func (vs *VisualScenario) ExpectLooking(intent av.CommandIntent) {
+func (vs *VisualScenario) ExpectLooking(intent speech.CommandIntent) {
 	vs.t.Helper()
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		vs.t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
-	if fi != av.LookForFieldLooking {
+	if fi != speech.LookForFieldLooking {
 		vs.t.Errorf("expected LookForFieldLooking, got %v", fi)
 	}
 }
 
 // ExpectIMC asserts the intent is LookForFieldLookingIMC.
-func (vs *VisualScenario) ExpectIMC(intent av.CommandIntent) {
+func (vs *VisualScenario) ExpectIMC(intent speech.CommandIntent) {
 	vs.t.Helper()
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		vs.t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
-	if fi != av.LookForFieldLookingIMC {
+	if fi != speech.LookForFieldLookingIMC {
 		vs.t.Errorf("expected LookForFieldLookingIMC, got %v", fi)
 	}
 }
@@ -688,12 +689,12 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			n.Approach.VisualReferences = []*av.Approach{reference}
 			intent := n.ClearedVisualApproach(nil, "")
 			if tt.wantNil {
-				if _, unable := intent.(av.UnableIntent); !unable {
+				if _, unable := intent.(speech.UnableIntent); !unable {
 					t.Fatalf("expected UnableIntent, got %T: %v", intent, intent)
 				}
 				return
 			}
-			if _, unable := intent.(av.UnableIntent); unable {
+			if _, unable := intent.(speech.UnableIntent); unable {
 				t.Fatalf("unexpected UnableIntent: %v", intent)
 			}
 
@@ -867,7 +868,7 @@ func TestVisualApproachBelowNaturalTODUsesFAFOn3NMFinal(t *testing.T) {
 	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
 	n.Approach.VisualReferences = []*av.Approach{reference}
 	intent := n.ClearedVisualApproach(nil, "")
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
@@ -934,7 +935,7 @@ func TestVisualApproachPreservesAssignedDescent(t *testing.T) {
 	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
 	n.Approach.VisualReferences = []*av.Approach{reference}
 	intent := n.ClearedVisualApproach(nil, "")
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
@@ -985,7 +986,7 @@ func TestVisualApproachJoinIsFAFWhenPastNaturalTOD(t *testing.T) {
 	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
 	n.Approach.VisualReferences = []*av.Approach{reference}
 	intent := n.ClearedVisualApproach(nil, "")
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
@@ -1058,7 +1059,7 @@ func TestVisualApproachDropsNonDescentAssignment(t *testing.T) {
 	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
 	n.Approach.VisualReferences = []*av.Approach{reference}
 	intent := n.ClearedVisualApproach(nil, "")
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
@@ -1117,7 +1118,7 @@ func TestVisualApproachPreservesPendingDescent(t *testing.T) {
 	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
 	n.Approach.VisualReferences = []*av.Approach{reference}
 	intent := n.ClearedVisualApproach(nil, "")
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
@@ -1173,7 +1174,7 @@ func TestVisualApproachDropsAssignedDescentBelowProfile(t *testing.T) {
 	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
 	n.Approach.VisualReferences = []*av.Approach{reference}
 	intent := n.ClearedVisualApproach(nil, "")
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
@@ -1232,7 +1233,7 @@ func TestVisualApproachLowAircraftKeepsFAFOn3NMFinal(t *testing.T) {
 	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
 	n.Approach.VisualReferences = []*av.Approach{reference}
 	intent := n.ClearedVisualApproach(nil, "")
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
@@ -1356,7 +1357,7 @@ func TestScenarioCVARestatedWhileFollowingTraffic(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ClearedVisual error: %v", err)
 	}
-	if _, ok := intent.(av.ClearedApproachIntent); !ok {
+	if _, ok := intent.(speech.ClearedApproachIntent); !ok {
 		t.Fatalf("expected ClearedApproachIntent, got %T", intent)
 	}
 	if !requireSeenTraffic(t, vs.AC, traffic.ADSBCallsign).FollowingOnVisualApproach {
@@ -1372,7 +1373,7 @@ func TestScenarioCVARestatedWhileFollowingTraffic(t *testing.T) {
 	if err != nil {
 		t.Fatalf("restated ClearedVisual error: %v", err)
 	}
-	if u, unable := intent.(av.UnableIntent); unable {
+	if u, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("restated CVA refused: %s", u.Message)
 	}
 }
@@ -1418,7 +1419,7 @@ func TestScenarioCVAFollowTrafficUsesTrafficRoute(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ClearedVisual error: %v", err)
 	}
-	if _, ok := intent.(av.ClearedApproachIntent); !ok {
+	if _, ok := intent.(speech.ClearedApproachIntent); !ok {
 		t.Fatalf("expected ClearedApproachIntent, got %T", intent)
 	}
 	if len(vs.AC.Nav.Waypoints) == 0 || vs.AC.Nav.Waypoints[0].Fix != "_36_FOLLOW_TRAFFIC" {
@@ -1495,7 +1496,7 @@ func TestVisualApproachFollowingTrafficRejectsNearThresholdLeader(t *testing.T) 
 	intent := n.ClearedVisualApproach(
 		&nav.FollowTraffic{Position: trafficPos, Route: av.WaypointArray{threshold, n.FlightState.ArrivalAirport}},
 		"")
-	if _, ok := intent.(av.UnableIntent); !ok {
+	if _, ok := intent.(speech.UnableIntent); !ok {
 		t.Fatalf("expected UnableIntent when leader is inside 0.5nm of threshold, got %T", intent)
 	}
 }
@@ -1538,13 +1539,13 @@ func TestAirportAdvisoryAccuracyCheck(t *testing.T) {
 			ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180) // 5nm north heading south
 
 			intent := sim.handleAirportAdvisory(ac, tt.oclock, tt.miles)
-			fi, ok := intent.(av.LookForFieldIntent)
+			fi, ok := intent.(speech.LookForFieldIntent)
 			if !ok {
 				t.Fatalf("expected LookForFieldIntent, got %T", intent)
 			}
 
 			if tt.wantLooking {
-				if fi != av.LookForFieldLooking {
+				if fi != speech.LookForFieldLooking {
 					t.Errorf("expected LookForFieldLooking for bad direction, got %v", fi)
 				}
 			}
@@ -1560,11 +1561,11 @@ func TestAirportAdvisoryIMC(t *testing.T) {
 
 	ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180)
 	intent := sim.handleAirportAdvisory(ac, 6, 5)
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
-	if fi != av.LookForFieldLookingIMC {
+	if fi != speech.LookForFieldLookingIMC {
 		t.Errorf("expected LookForFieldLookingIMC, got %v", fi)
 	}
 }
@@ -1578,11 +1579,11 @@ func TestAirportAdvisoryTooFar(t *testing.T) {
 	// so we isolate the distance check from the bearing error check.
 	ac := makeVisualTestAircraft(math.Point2LL{0, 30.0 / 60}, 180)
 	intent := sim.handleAirportAdvisory(ac, 12, 30)
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
-	if fi != av.LookForFieldLooking {
+	if fi != speech.LookForFieldLooking {
 		t.Errorf("expected LookForFieldLooking for too-far airport, got %v", fi)
 	}
 }
@@ -1596,11 +1597,11 @@ func TestAirportAdvisoryAboveCeiling(t *testing.T) {
 	// Aircraft at 4000ft, above ceiling (elev 0 + 3000 = 3000).
 	ac := makeVisualTestAircraftAlt(math.Point2LL{0, 5.0 / 60}, 180, 4000)
 	intent := sim.handleAirportAdvisory(ac, 12, 5)
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
-	if fi != av.LookForFieldLookingIMC {
+	if fi != speech.LookForFieldLookingIMC {
 		t.Errorf("expected LookForFieldLookingIMC for aircraft above ceiling, got %v", fi)
 	}
 }
@@ -1615,11 +1616,11 @@ func TestAirportAdvisoryLowVisibility(t *testing.T) {
 	// (reduced surface vis alone without an obscuration phenomenon is "too far", not "obscured").
 	ac := makeVisualTestAircraft(math.Point2LL{0, 8.0 / 60}, 180)
 	intent := sim.handleAirportAdvisory(ac, 12, 8)
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
-	if fi != av.LookForFieldLooking {
+	if fi != speech.LookForFieldLooking {
 		t.Errorf("expected LookForFieldLooking for aircraft beyond visibility range, got %v", fi)
 	}
 }
@@ -1636,11 +1637,11 @@ func TestAirportAdvisoryObscuration(t *testing.T) {
 	ac.Nav.FlightState.Position = math.Point2LL{0, distanceNM / 60}
 
 	intent := sim.handleAirportAdvisory(ac, 12, int(distanceNM+0.5))
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
-	if fi != av.LookForFieldLookingObscured {
+	if fi != speech.LookForFieldLookingObscured {
 		t.Errorf("expected LookForFieldLookingObscured for obscured field, got %v", fi)
 	}
 }
@@ -1904,11 +1905,11 @@ func TestTrafficAdvisoryClearsOfferedStateButKeepsSightingHistory(t *testing.T) 
 	if err != nil {
 		t.Fatalf("TrafficAdvisory returned error: %v", err)
 	}
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseLooking {
+	if ti.Response != speech.TrafficResponseLooking {
 		t.Fatalf("expected looking response, got %v", ti.Response)
 	}
 	if len(vs.AC.SeenTraffic) != 1 {
@@ -2001,10 +2002,10 @@ func TestScenarioCVAAcceptedLongAfterTrafficReport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ClearedVisual error: %v", err)
 	}
-	if u, unable := intent.(av.UnableIntent); unable {
+	if u, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("CVA refused long after the traffic report: %s", u.Message)
 	}
-	if _, ok := intent.(av.ClearedApproachIntent); !ok {
+	if _, ok := intent.(speech.ClearedApproachIntent); !ok {
 		t.Fatalf("expected ClearedApproachIntent, got %T", intent)
 	}
 }
@@ -2055,7 +2056,7 @@ func TestScenarioCVATooCloseIsUnable(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if _, ok := intent.(av.UnableIntent); !ok {
+	if _, ok := intent.(speech.UnableIntent); !ok {
 		t.Fatalf("expected UnableIntent for too-close CVA, got %T", intent)
 	}
 	if vs.AC.WentAround {
@@ -2073,12 +2074,12 @@ func TestScenarioAPThenClearedVisual(t *testing.T) {
 
 	// Issue AP: 12 o'clock, 5 miles. Should get field in sight or looking.
 	intent := vs.AirportAdvisory(12, 5)
-	fi, ok := intent.(av.LookForFieldIntent)
+	fi, ok := intent.(speech.LookForFieldIntent)
 	if !ok {
 		t.Fatalf("expected LookForFieldIntent, got %T", intent)
 	}
 
-	if fi == av.LookForFieldFound {
+	if fi == speech.LookForFieldFound {
 		// Great — pilot sees the field. Should accept CVA now.
 		intent, err := vs.ClearedVisual("36")
 		if err != nil {
@@ -2087,7 +2088,7 @@ func TestScenarioAPThenClearedVisual(t *testing.T) {
 		if intent == nil {
 			t.Fatal("expected non-nil intent from CVA")
 		}
-	} else if fi == av.LookForFieldLooking {
+	} else if fi == speech.LookForFieldLooking {
 		// Pilot is looking — advance time and check delayed callback.
 		vs.AdvanceTime(25 * time.Second)
 		vs.CheckDelayedFieldInSight()
@@ -2115,11 +2116,11 @@ func TestScenarioAPWhileClearedForApproach(t *testing.T) {
 	vs := NewVisualScenario(t, airportLoc, "36", math.Point2LL{0, -5.0 / 60}, 360)
 	vs.AC.Nav.Approach.Cleared = true
 
-	fi, ok := vs.AirportAdvisory(12, 5).(av.LookForFieldIntent)
+	fi, ok := vs.AirportAdvisory(12, 5).(speech.LookForFieldIntent)
 	if !ok {
 		t.Fatal("expected a LookForFieldIntent")
 	}
-	if fi != av.LookForFieldFound {
+	if fi != speech.LookForFieldFound {
 		return // the pilot didn't pick it up this time; nothing more to check
 	}
 	if !vs.AC.FieldInSight {
@@ -2130,7 +2131,7 @@ func TestScenarioAPWhileClearedForApproach(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ClearedVisual error: %v", err)
 	}
-	if u, unable := intent.(av.UnableIntent); unable {
+	if u, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("CVA refused after the pilot reported the field: %s", u.Message)
 	}
 }
@@ -2144,7 +2145,7 @@ func TestScenarioAPWhileClearedForApproachInIMC(t *testing.T) {
 	vs.AC.Nav.Approach.Cleared = true
 	vs.SetMETAR("KJFK 1/4SM OVC002")
 
-	if fi, ok := vs.AirportAdvisory(12, 5).(av.LookForFieldIntent); !ok || fi != av.LookForFieldLookingIMC {
+	if fi, ok := vs.AirportAdvisory(12, 5).(speech.LookForFieldIntent); !ok || fi != speech.LookForFieldLookingIMC {
 		t.Fatalf("expected LookForFieldLookingIMC, got %#v", fi)
 	}
 	if vs.AC.FieldInSight {
@@ -2158,7 +2159,7 @@ func TestScenarioAPWhileClearedForApproachInIMC(t *testing.T) {
 func requireLookingFieldCheck(t *testing.T, vs *VisualScenario) *FutureFieldCheck {
 	t.Helper()
 	for range 100 {
-		if fi, ok := vs.AirportAdvisory(12, 5).(av.LookForFieldIntent); !ok || fi == av.LookForFieldFound {
+		if fi, ok := vs.AirportAdvisory(12, 5).(speech.LookForFieldIntent); !ok || fi == speech.LookForFieldFound {
 			t.Fatalf("expected the pilot to be looking, got %#v", fi)
 		}
 		if check, ok := vs.Sim.FutureFieldChecks[vs.callsign]; ok {
@@ -2236,7 +2237,7 @@ func TestScenarioCVARefusedWithoutFieldInSight(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if _, ok := intent.(av.UnableIntent); !ok {
+	if _, ok := intent.(speech.UnableIntent); !ok {
 		t.Errorf("expected UnableIntent without field in sight, got %T", intent)
 	}
 }
@@ -2252,7 +2253,7 @@ func TestScenarioCVAInvalidRunwayDoesNotGoAround(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expected nil error (unable is an intent, not an error), got %v", err)
 	}
-	if _, ok := intent.(av.UnableIntent); !ok {
+	if _, ok := intent.(speech.UnableIntent); !ok {
 		t.Fatalf("expected UnableIntent on invalid runway, got %T", intent)
 	}
 	if vs.AC.WentAround {
@@ -2531,7 +2532,7 @@ func TestAirportVisibilityAirportNotInScenario(t *testing.T) {
 		t.Errorf("Distance = %f, want 5", elig.Distance)
 	}
 
-	if _, ok := vs.AirportAdvisory(12, 5).(av.LookForFieldIntent); !ok {
+	if _, ok := vs.AirportAdvisory(12, 5).(speech.LookForFieldIntent); !ok {
 		t.Error("AP should yield a LookForFieldIntent")
 	}
 }
@@ -2573,7 +2574,7 @@ func TestAirportAdvisoryUnableForNonArrival(t *testing.T) {
 			vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
 			vs.AC.TypeOfFlight = tc.ft
 
-			if _, ok := vs.AirportAdvisory(12, 5).(av.UnableIntent); !ok {
+			if _, ok := vs.AirportAdvisory(12, 5).(speech.UnableIntent); !ok {
 				t.Error("AP advisory should be unable for a non-arrival")
 			}
 
@@ -2581,7 +2582,7 @@ func TestAirportAdvisoryUnableForNonArrival(t *testing.T) {
 			if err != nil {
 				t.Fatalf("AirportInSightInquiry error: %v", err)
 			}
-			if _, ok := intent.(av.UnableIntent); !ok {
+			if _, ok := intent.(speech.UnableIntent); !ok {
 				t.Error("bare AP should be unable for a non-arrival")
 			}
 
@@ -2629,11 +2630,11 @@ func TestTrafficInSightInquiryQueuedTrafficVisible(t *testing.T) {
 	}
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseTrafficSeen {
+	if ti.Response != speech.TrafficResponseTrafficSeen {
 		t.Errorf("expected TrafficResponseTrafficSeen, got %v", ti.Response)
 	}
 	if len(sim.FutureTrafficChecks) != 0 {
@@ -2654,11 +2655,11 @@ func TestTrafficInSightInquiryQueuedTrafficNotVisible(t *testing.T) {
 	sim.FutureTrafficChecks = map[av.ADSBCallsign]*FutureTrafficCheck{ac.ADSBCallsign: queued}
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseLooking {
+	if ti.Response != speech.TrafficResponseLooking {
 		t.Errorf("expected TrafficResponseLooking, got %v", ti.Response)
 	}
 	if len(sim.FutureTrafficChecks) != 1 {
@@ -2677,11 +2678,11 @@ func TestTrafficInSightInquiryQueuedTrafficGoneFallsThrough(t *testing.T) {
 	}
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseWhereWasIt {
+	if ti.Response != speech.TrafficResponseWhereWasIt {
 		t.Errorf("expected TrafficResponseWhereWasIt, got %v", ti.Response)
 	}
 	if len(sim.FutureTrafficChecks) != 0 {
@@ -2694,11 +2695,11 @@ func TestTrafficInSightInquirySingleNearbyTraffic(t *testing.T) {
 	addTraffic(sim, ac, "DAL456", -1, 0, 0) // 1 NM south, same altitude → in front
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseTrafficSeen {
+	if ti.Response != speech.TrafficResponseTrafficSeen {
 		t.Errorf("expected TrafficResponseTrafficSeen, got %v", ti.Response)
 	}
 	requireSeenTraffic(t, ac, "DAL456")
@@ -2708,11 +2709,11 @@ func TestTrafficInSightInquiryNoNearbyTraffic(t *testing.T) {
 	sim, ac := makeTrafficInSightSim(t)
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseWhereWasIt {
+	if ti.Response != speech.TrafficResponseWhereWasIt {
 		t.Errorf("expected TrafficResponseWhereWasIt, got %v", ti.Response)
 	}
 }
@@ -2726,11 +2727,11 @@ func TestTrafficInSightInquiryInTrailCandidatesArentAmbiguous(t *testing.T) {
 	// All three are within 30 degrees of each other, which is one target as far as the
 	// pilot is concerned; they report the nearest.
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseTrafficSeen {
+	if ti.Response != speech.TrafficResponseTrafficSeen {
 		t.Fatalf("expected TrafficResponseTrafficSeen for in-trail candidates, got %v", ti.Response)
 	}
 	requireSeenTraffic(t, ac, "DAL456")
@@ -2742,11 +2743,11 @@ func TestTrafficInSightInquiryAmbiguousWhenSpreadApart(t *testing.T) {
 	addTraffic(sim, ac, "UAL789", -1, 1.5, 0) // 1 NM south, 1.5 NM east: ~56 degrees away
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseWhereWasIt {
+	if ti.Response != speech.TrafficResponseWhereWasIt {
 		t.Errorf("expected TrafficResponseWhereWasIt for candidates in different directions, got %v",
 			ti.Response)
 	}
@@ -2759,11 +2760,11 @@ func TestTrafficInSightInquiryReaffirmationRespectsIMC(t *testing.T) {
 	sim.State.METAR["KJFK"] = wx.METAR{ICAO: "KJFK", Raw: "KJFK 1/4SM BR OVC003"}
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseIMC {
+	if ti.Response != speech.TrafficResponseIMC {
 		t.Errorf("expected TrafficResponseIMC, got %v", ti.Response)
 	}
 }
@@ -2776,11 +2777,11 @@ func TestTrafficInSightInquiryReaffirmsRecentSighting(t *testing.T) {
 	ac.RecordSighting("DAL456", sim.State.SimTime.Add(-3*time.Minute))
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseTrafficSeen {
+	if ti.Response != speech.TrafficResponseTrafficSeen {
 		t.Fatalf("expected TrafficResponseTrafficSeen, got %v", ti.Response)
 	}
 	if n := len(ac.SeenTraffic); n != 1 {
@@ -2799,11 +2800,11 @@ func TestTrafficInSightInquiryRejectsBehind(t *testing.T) {
 	addTraffic(sim, ac, "DAL456", 1, 0, 0)
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseWhereWasIt {
+	if ti.Response != speech.TrafficResponseWhereWasIt {
 		t.Errorf("expected TrafficResponseWhereWasIt for traffic behind, got %v", ti.Response)
 	}
 }
@@ -2813,11 +2814,11 @@ func TestTrafficInSightInquiryRejectsAltitudeOutOfBand(t *testing.T) {
 	addTraffic(sim, ac, "DAL456", -1, 0, 1500) // 1500 ft above → outside ±1000
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseWhereWasIt {
+	if ti.Response != speech.TrafficResponseWhereWasIt {
 		t.Errorf("expected TrafficResponseWhereWasIt for altitude out of band, got %v", ti.Response)
 	}
 }
@@ -2827,11 +2828,11 @@ func TestTrafficInSightInquiryRejectsTooFar(t *testing.T) {
 	addTraffic(sim, ac, "DAL456", -4, 0, 0) // 4 NM south → outside 3 NM
 
 	intent := sim.handleTrafficInSightInquiry(ac)
-	ti, ok := intent.(av.TrafficAdvisoryIntent)
+	ti, ok := intent.(speech.TrafficAdvisoryIntent)
 	if !ok {
 		t.Fatalf("expected TrafficAdvisoryIntent, got %T", intent)
 	}
-	if ti.Response != av.TrafficResponseWhereWasIt {
+	if ti.Response != speech.TrafficResponseWhereWasIt {
 		t.Errorf("expected TrafficResponseWhereWasIt for traffic too far, got %v", ti.Response)
 	}
 }

@@ -14,7 +14,7 @@ import (
 	"unicode"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/util"
 )
 
@@ -76,7 +76,7 @@ const (
 const stateDir = "~/.sttreview"
 
 func main() {
-	outputDir := flag.String("output", "stt/failing_tests", "output directory for saved tests")
+	outputDir := flag.String("output", "speech/stt/failing_tests", "output directory for saved tests")
 	ingestMode := flag.Bool("ingest", false, "ingest entries only, don't start review UI")
 	showStatus := flag.Bool("status", false, "show queue status and exit")
 	lifoMode := flag.Bool("lifo", false, "order entries by time, most recent first")

@@ -21,6 +21,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -722,22 +723,22 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 		}
 
 		switch e.RadioTransmissionType {
-		case av.RadioTransmissionContact:
+		case speech.RadioTransmissionContact:
 			// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
 			// Only on initial contact, not subsequent transmissions.
 			if ac.EmergencyState != nil && s.Rand.Bool() {
 				heavySuper += " emergency aircraft"
 			}
-			csArg := av.CallsignArg{
+			csArg := speech.CallsignArg{
 				Callsign:           ac.ADSBCallsign,
 				IsEmergency:        ac.EmergencyState != nil,
 				AlwaysFullCallsign: true,
 			}
-			var tr *av.RadioTransmission
+			var tr *speech.RadioTransmission
 			if ac.TypeOfFlight == av.FlightTypeDeparture {
-				tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
+				tr = speech.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
 			} else {
-				tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
+				tr = speech.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
 			}
 			w, werr := tr.Written(s.Rand)
 			sp, serr := tr.Spoken(s.Rand)
@@ -751,16 +752,16 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 				events[i].WrittenText = w + ", " + e.WrittenText
 				events[i].SpokenText = strings.TrimSuffix(sp, ".") + ", " + e.SpokenText
 			}
-		case av.RadioTransmissionMixUp:
+		case speech.RadioTransmissionMixUp:
 			// No additional formatting for mix-up transmissions; the callsign is already in there.
-		case av.RadioTransmissionNoId:
+		case speech.RadioTransmissionNoId:
 			// No callsign formatting for NoId transmissions (e.g., "blocked").
 		default:
-			csArg := av.CallsignArg{
+			csArg := speech.CallsignArg{
 				Callsign:    ac.ADSBCallsign,
 				IsEmergency: ac.EmergencyState != nil,
 			}
-			tr := av.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
+			tr := speech.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
 			w, werr := tr.Written(s.Rand)
 			sp, serr := tr.Spoken(s.Rand)
 			if err := cmp.Or(werr, serr); err != nil {

@@ -15,7 +15,8 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/tts"
+	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/speech/tts"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -52,7 +53,7 @@ type ttsTab struct {
 	// from.
 	words int
 
-	speech speech
+	speech speechPlayer
 
 	// preloaded records that the TTS model has been asked for. Loading it
 	// costs time and memory, so it waits until the tab is opened rather
@@ -201,9 +202,9 @@ func (t *ttsTab) drawEntries(a *app) {
 		t.drawWord(a, word)
 	}
 
-	row("SID", &t.sid, av.GetSIDTelephony)
-	row("STAR", &t.star, av.GetSTARTelephony)
-	row("Fix", &t.fix, av.GetFixTelephony)
+	row("SID", &t.sid, speech.GetSIDTelephony)
+	row("STAR", &t.star, speech.GetSTARTelephony)
+	row("Fix", &t.fix, speech.GetFixTelephony)
 }
 
 // drawProcedures lists what the scenario's airports fly, an airport to a
@@ -305,16 +306,16 @@ func (t *ttsTab) build(airports []av.ICAOAirportCode) {
 			routes = append(routes, sid.Common)
 			routes = append(routes, transitionRoutes(sid.EnrouteTransitions)...)
 			procedures = append(procedures, procedure{kind: "SID",
-				name: t.word(name, av.GetSIDTelephony(name)), fixes: t.routeWords(routes)})
+				name: t.word(name, speech.GetSIDTelephony(name)), fixes: t.routeWords(routes)})
 		}
 		for name, star := range util.SortedMap(ap.STARs) {
 			routes := append(transitionRoutes(star.Transitions), transitionRoutes(star.RunwayWaypoints)...)
 			procedures = append(procedures, procedure{kind: "STAR",
-				name: t.word(name, av.GetSTARTelephony(name)), fixes: t.routeWords(routes)})
+				name: t.word(name, speech.GetSTARTelephony(name)), fixes: t.routeWords(routes)})
 		}
 		for name, appr := range util.SortedMap(ap.Approaches) {
 			procedures = append(procedures, procedure{kind: "APPR",
-				name:  t.word(name, av.GetApproachTelephony(appr.DefaultFullName())),
+				name:  t.word(name, speech.GetApproachTelephony(appr.DefaultFullName())),
 				fixes: t.routeWords(appr.Waypoints)})
 		}
 
@@ -355,7 +356,7 @@ func (t *ttsTab) routeWords(routes []av.WaypointArray) []spokenWord {
 		}
 	}
 	return util.MapSlice(fixes, func(fix string) spokenWord {
-		return t.word(fix, av.GetFixTelephony(fix))
+		return t.word(fix, speech.GetFixTelephony(fix))
 	})
 }
 
@@ -364,7 +365,7 @@ func (t *ttsTab) routeWords(routes []av.WaypointArray) []spokenWord {
 
 // speech reads a sequence of words, one after the next, and tracks which of
 // them is being said so that it can be shown.
-type speech struct {
+type speechPlayer struct {
 	mu sync.Mutex
 	// seq is the sequence being read; it is closed to stop it, and a
 	// goroutine that finds it replaced knows it has been superseded.
@@ -381,7 +382,7 @@ type synthesized struct {
 	err  error
 }
 
-func (s *speech) play(plat platform.Platform, voice string, radio bool, words []spokenWord) {
+func (s *speechPlayer) play(plat platform.Platform, voice string, radio bool, words []spokenWord) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -395,7 +396,7 @@ func (s *speech) play(plat platform.Platform, voice string, radio bool, words []
 	go s.read(plat, voice, radio, words, seq)
 }
 
-func (s *speech) stop(plat platform.Platform) {
+func (s *speechPlayer) stop(plat platform.Platform) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.cancelLocked()
@@ -404,13 +405,13 @@ func (s *speech) stop(plat platform.Platform) {
 
 // cancel ends the sequence being read but lets the word that is already
 // playing finish, for when there is no platform at hand to stop it.
-func (s *speech) cancel() {
+func (s *speechPlayer) cancel() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.cancelLocked()
 }
 
-func (s *speech) cancelLocked() {
+func (s *speechPlayer) cancelLocked() {
 	if s.seq != nil {
 		close(s.seq)
 		s.seq = nil
@@ -418,25 +419,25 @@ func (s *speech) cancelLocked() {
 	s.current = ""
 }
 
-func (s *speech) playing() bool {
+func (s *speechPlayer) playing() bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.seq != nil
 }
 
-func (s *speech) speaking(id string) bool {
+func (s *speechPlayer) speaking(id string) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.current == id
 }
 
-func (s *speech) error() string {
+func (s *speechPlayer) error() string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.err
 }
 
-func (s *speech) read(plat platform.Platform, voice string, radio bool, words []spokenWord, seq chan struct{}) {
+func (s *speechPlayer) read(plat platform.Platform, voice string, radio bool, words []spokenWord, seq chan struct{}) {
 	defer s.finish(seq)
 
 	// Generating a word takes long enough to hear, so the ones to come are
@@ -469,7 +470,7 @@ func (s *speech) read(plat platform.Platform, voice string, radio bool, words []
 
 // speak starts one word if its sequence is still the one being read,
 // returning a channel that is closed once it has been said.
-func (s *speech) speak(plat platform.Platform, seq chan struct{}, a synthesized) (<-chan struct{}, bool) {
+func (s *speechPlayer) speak(plat platform.Platform, seq chan struct{}, a synthesized) (<-chan struct{}, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -490,7 +491,7 @@ func (s *speech) speak(plat platform.Platform, seq chan struct{}, a synthesized)
 	return done, true
 }
 
-func (s *speech) finish(seq chan struct{}) {
+func (s *speechPlayer) finish(seq chan struct{}) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.seq == seq {

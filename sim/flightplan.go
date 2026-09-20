@@ -14,6 +14,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -823,7 +824,7 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 
 			return nil
 		},
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			// Either the flight plan was passed in or fp was initialized  in the validation function.
 			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
 

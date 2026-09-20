@@ -14,30 +14,31 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
 // notLandingHere is the response to an airport advisory for an aircraft that
 // isn't landing in the sim's airspace; asking a departure or an overflight to
 // look for its destination is meaningless.
-var notLandingHere = av.MakeUnableIntent("unable, we're not landing here")
+var notLandingHere = speech.MakeUnableIntent("unable, we're not landing here")
 
 // AirportInSightInquiry handles the bare "AP" command. The controller asks
 // "do you have the field in sight?" without specifying a direction; the
 // pilot's response depends on weather, ceiling, and distance to the airport —
 // no o'clock/bearing validation is performed.
-func (s *Sim) AirportInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+func (s *Sim) AirportInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if !ac.IsArrival() {
 				return notLandingHere
 			}
 			if ac.FieldInSight || ac.RequestedVisualApproach {
 				s.cancelFutureFieldCheck(ac.ADSBCallsign)
-				return av.LookForFieldFound
+				return speech.LookForFieldFound
 			}
 			return s.handleAirportAdvisory(ac, 0, 0)
 		})
@@ -49,19 +50,19 @@ func (s *Sim) AirportInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (av.Comma
 // that target immediately. Otherwise the pilot looks for a single nearby
 // aircraft in front and within tight tolerances; if exactly one matches, the
 // pilot reports it in sight, otherwise the pilot asks where the traffic was.
-func (s *Sim) TrafficInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+func (s *Sim) TrafficInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return s.handleTrafficInSightInquiry(ac)
 		})
 }
 
 // handleTrafficInSightInquiry implements the bare TRAFFIC inquiry resolution.
 // Caller must hold the sim mutex.
-func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) av.CommandIntent {
+func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) speech.CommandIntent {
 	// If there is a queued FutureTrafficCheck for this aircraft, re-evaluate
 	// visibility.
 	if f, ok := s.FutureTrafficChecks[ac.ADSBCallsign]; ok {
@@ -73,16 +74,16 @@ func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) av.CommandIntent {
 		} else if s.trafficIsVisible(ac, traffic) {
 			ac.RecordSighting(f.TrafficCallsign, s.State.SimTime)
 			delete(s.FutureTrafficChecks, ac.ADSBCallsign)
-			return av.TrafficAdvisoryIntent{Response: av.TrafficResponseTrafficSeen}
+			return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseTrafficSeen}
 		} else {
-			return av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking}
+			return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseLooking}
 		}
 	}
 
 	// Neither the reaffirmation nor the geometric fallback below rolls for visibility,
 	// so gate both: in IMC the pilot can't possibly see anything out there.
 	if metar, _ := s.nearestMETAR(ac.Position()); metar.ICAO != "" && !metar.IsVMC() {
-		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseIMC}
+		return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseIMC}
 	}
 
 	// "Do you still have him?" — the pilot already called something in sight and can
@@ -91,7 +92,7 @@ func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) av.CommandIntent {
 	if seen := ac.RecentSighting(); seen != nil {
 		if traffic, ok := s.Aircraft[seen.Callsign]; ok && ac.canSeeTraffic(traffic) {
 			seen.SightedTime = s.State.SimTime
-			return av.TrafficAdvisoryIntent{Response: av.TrafficResponseTrafficSeen}
+			return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseTrafficSeen}
 		}
 	}
 
@@ -108,7 +109,7 @@ func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) av.CommandIntent {
 			math.HeadingDifference(ac.Heading(), bearingTo(candidate)) < trafficInquiryMaxBearingOff
 	}))
 	if len(matches) == 0 {
-		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseWhereWasIt}
+		return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseWhereWasIt}
 	}
 
 	nearest := slices.MinFunc(matches, func(a, b *Aircraft) int {
@@ -123,22 +124,22 @@ func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) av.CommandIntent {
 	if slices.ContainsFunc(matches, func(candidate *Aircraft) bool {
 		return math.HeadingDifference(nearestBearing, bearingTo(candidate)) > trafficInquiryDistinctBearing
 	}) {
-		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseWhereWasIt}
+		return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseWhereWasIt}
 	}
 
 	ac.RecordSighting(nearest.ADSBCallsign, s.State.SimTime)
-	return av.TrafficAdvisoryIntent{Response: av.TrafficResponseTrafficSeen}
+	return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseTrafficSeen}
 }
 
 // AirportAdvisory handles the AP/{oclock}/{miles} command. The controller tells the
 // pilot where to look for the airport: "airport, {oclock} o'clock, {miles} miles".
 // The pilot responds with "field in sight", "looking", or an IMC indication.
-func (s *Sim) AirportAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles int) (av.CommandIntent, error) {
+func (s *Sim) AirportAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles int) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if !ac.IsArrival() {
 				return notLandingHere
 			}
@@ -148,7 +149,7 @@ func (s *Sim) AirportAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles i
 			// ILS in the soup can't see the field, and answering otherwise
 			// would leave FieldInSight unset and a later CVA refused.
 			if ac.FieldInSight || ac.RequestedVisualApproach {
-				return av.LookForFieldFound
+				return speech.LookForFieldFound
 			}
 
 			return s.handleAirportAdvisory(ac, oclock, miles)
@@ -159,7 +160,7 @@ func (s *Sim) AirportAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles i
 // It reuses checkAirportVisibility for METAR/VMC/ceiling/distance/bearing
 // checks, then layers on AP-specific logic (o'clock validation, probability,
 // looking delay).
-func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.CommandIntent {
+func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) speech.CommandIntent {
 	// A fresh AP call supersedes any earlier "looking" event still queued
 	// for this aircraft; the enqueue helper will re-add one if appropriate.
 	s.cancelFutureFieldCheck(ac.ADSBCallsign)
@@ -168,13 +169,13 @@ func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.Comm
 	elig := s.checkAirportVisibility(ac)
 	if !elig.FieldInSight {
 		if elig.Reason == visualEligibilityIMC {
-			return av.LookForFieldLookingIMC
+			return speech.LookForFieldLookingIMC
 		}
 		s.enqueueFutureFieldCheck(ac)
 		if elig.Reason == visualEligibilityObscured {
-			return av.LookForFieldLookingObscured
+			return speech.LookForFieldLookingObscured
 		}
-		return av.LookForFieldLooking
+		return speech.LookForFieldLooking
 	}
 
 	// Validate the controller's o'clock direction against the actual bearing.
@@ -186,7 +187,7 @@ func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.Comm
 		bearingError := math.HeadingDifference(reportedBearing, elig.BearingToAirport)
 		if bearingError > 30 {
 			s.enqueueFutureFieldCheck(ac)
-			return av.LookForFieldLooking
+			return speech.LookForFieldLooking
 		}
 	}
 
@@ -194,12 +195,12 @@ func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.Comm
 	s.lg.Infof("%s: airport visibility check r=%f, p=%f", ac.ADSBCallsign, r, p)
 	if r < p {
 		ac.FieldInSight = true
-		return av.LookForFieldFound
+		return speech.LookForFieldFound
 	}
 
 	// "Looking" — schedule possible delayed field-in-sight call.
 	s.enqueueFutureFieldCheck(ac)
-	return av.LookForFieldLooking
+	return speech.LookForFieldLooking
 }
 
 // samplePilotLookFireTime samples a future time at which a "looking" pilot
@@ -239,7 +240,7 @@ func (s *Sim) cancelFutureTrafficCheck(callsign av.ADSBCallsign) {
 	delete(s.FutureTrafficChecks, callsign)
 }
 
-func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) (av.CommandIntent, error) {
+func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -252,17 +253,17 @@ func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string)
 	}
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.ExpectApproach(approach, ap)
 		})
 }
 
-func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string, straightIn bool) (av.CommandIntent, error) {
+func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string, straightIn bool) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			var following *nav.FollowTraffic
 			if id, visual := strings.CutPrefix(approach, "_VIS"); visual {
 				rwy, _, _ := strings.Cut(id, "/LAHSO")
@@ -275,7 +276,7 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 						Route:    traffic.Nav.Waypoints,
 					}
 				} else if !ac.FieldInSight && !ac.RequestedVisualApproach {
-					return av.MakeUnableIntent("unable, we don't have the field in sight")
+					return speech.MakeUnableIntent("unable, we don't have the field in sight")
 				}
 
 				// Spontaneous "field in sight" / requested-visual / approach-traffic-
@@ -285,10 +286,10 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 				if ac.Nav.Approach.AssignedId != approach {
 					ap := s.State.Airports[ac.FlightPlan.ArrivalAirport]
 					if ap == nil {
-						return av.MakeUnableIntent("unable, we can't accept a visual approach there")
+						return speech.MakeUnableIntent("unable, we can't accept a visual approach there")
 					}
 					if intent := ac.ExpectApproach(approach, ap); intent != nil {
-						if _, unable := intent.(av.UnableIntent); unable {
+						if _, unable := intent.(speech.UnableIntent); unable {
 							return intent
 						}
 					}
@@ -303,22 +304,22 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 		})
 }
 
-func (s *Sim) InterceptApproach(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+func (s *Sim) InterceptApproach(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.InterceptApproach()
 		})
 }
 
-func (s *Sim) CancelApproachClearance(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+func (s *Sim) CancelApproachClearance(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.CancelApproachClearance()
 		})
 }

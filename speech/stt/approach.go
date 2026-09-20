@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -37,7 +37,7 @@ func candidateApproaches(approaches map[string]string) []CandidateApproach {
 		cands = append(cands, CandidateApproach{
 			Id:       id,
 			FullName: fullName,
-			Spoken:   av.GetApproachTelephony(fullName),
+			Spoken:   speech.GetApproachTelephony(fullName),
 		})
 	}
 	slices.SortFunc(cands, func(a, b CandidateApproach) int { return strings.Compare(a.Id, b.Id) })

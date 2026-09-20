@@ -11,6 +11,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/speech"
 )
 
 func TestParseHold(t *testing.T) {
@@ -373,11 +374,11 @@ func TestRunOneControlCommandInterceptRadial(t *testing.T) {
 			if err != nil {
 				t.Fatalf("runOneControlCommand() returned error: %v", err)
 			}
-			navIntent, ok := intent.(av.NavigationIntent)
+			navIntent, ok := intent.(speech.NavigationIntent)
 			if !ok {
-				t.Fatalf("runOneControlCommand() returned %T, want av.NavigationIntent", intent)
+				t.Fatalf("runOneControlCommand() returned %T, want speech.NavigationIntent", intent)
 			}
-			if navIntent.Type != av.NavInterceptRadial || navIntent.Fix != "WAVEY" ||
+			if navIntent.Type != speech.NavInterceptRadial || navIntent.Fix != "WAVEY" ||
 				navIntent.Radial != tc.wantRadial || navIntent.Outbound != tc.wantOutbound {
 				t.Errorf("got %+v, want intercept of the WAVEY %v radial, outbound %v",
 					navIntent, tc.wantRadial, tc.wantOutbound)
@@ -423,12 +424,12 @@ func TestRunOneControlCommandAtFixClearedStraightInApproach(t *testing.T) {
 		t.Fatalf("runOneControlCommand() returned error: %v", err)
 	}
 
-	approachIntent, ok := intent.(av.ApproachIntent)
+	approachIntent, ok := intent.(speech.ApproachIntent)
 	if !ok {
-		t.Fatalf("runOneControlCommand() returned %T, want av.ApproachIntent", intent)
+		t.Fatalf("runOneControlCommand() returned %T, want speech.ApproachIntent", intent)
 	}
-	if approachIntent.Type != av.ApproachAtFixCleared {
-		t.Fatalf("runOneControlCommand() intent type = %v, want %v", approachIntent.Type, av.ApproachAtFixCleared)
+	if approachIntent.Type != speech.ApproachAtFixCleared {
+		t.Fatalf("runOneControlCommand() intent type = %v, want %v", approachIntent.Type, speech.ApproachAtFixCleared)
 	}
 	if !approachIntent.StraightIn {
 		t.Fatal("runOneControlCommand() did not preserve straight-in clearance")

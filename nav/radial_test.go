@@ -9,6 +9,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 )
 
 // radialFlight sets up an arrival at SKORR heading direct to WAVEY, along
@@ -33,11 +34,11 @@ func distanceToFix(f *FlightTest, fix string) float32 {
 	return math.NMDistance2LL(f.nav.FlightState.Position, p)
 }
 
-func assertNotUnable(t *testing.T, intent av.CommandIntent) {
+func assertNotUnable(t *testing.T, intent speech.CommandIntent) {
 	t.Helper()
 	if intent == nil {
 		t.Fatal("no intent returned")
-	} else if _, unable := intent.(av.UnableIntent); unable {
+	} else if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unable: %v", intent)
 	}
 }
@@ -389,7 +390,7 @@ func TestInterceptRadialUnreachable(t *testing.T) {
 	}
 	// The refusal has to be scoped to the intercept; a bare "unable" after the
 	// turn reads as refusing the turn itself.
-	readback := writtenForTest(t, av.RenderIntents([]av.CommandIntent{heading, intent}, f.nav.Rand), f.nav.Rand)
+	readback := writtenForTest(t, speech.RenderIntents([]speech.CommandIntent{heading, intent}, f.nav.Rand), f.nav.Rand)
 	if want := "turn left 180, unable to intercept the Robbinsville 045 radial"; readback != want {
 		t.Errorf("readback %q, want %q", readback, want)
 	}

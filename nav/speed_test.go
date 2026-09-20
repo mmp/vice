@@ -9,6 +9,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 )
 
 // TestSTARSpeedRestrictions verifies that STAR speed restrictions are
@@ -99,23 +100,23 @@ func TestAssignSpeedUntilPreservesRangeRestriction(t *testing.T) {
 		OnSTAR:           true,
 	})
 
-	until := &av.SpeedUntil{Fix: "DETGY"}
+	until := &speech.SpeedUntil{Fix: "DETGY"}
 
 	above := av.MakeAtOrAboveSpeedRestriction(250)
-	aboveIntent, ok := f.nav.AssignSpeedUntil(&above, until).(av.SpeedIntent)
+	aboveIntent, ok := f.nav.AssignSpeedUntil(&above, until).(speech.SpeedIntent)
 	if !ok {
 		t.Fatalf("expected SpeedIntent for at-or-above speed until, got %T", aboveIntent)
 	}
-	if aboveIntent.Type != av.SpeedAtOrAbove || aboveIntent.Until != until {
+	if aboveIntent.Type != speech.SpeedAtOrAbove || aboveIntent.Until != until {
 		t.Fatalf("expected at-or-above speed until intent, got %+v", aboveIntent)
 	}
 
 	below := av.MakeAtOrBelowSpeedRestriction(210)
-	belowIntent, ok := f.nav.AssignSpeedUntil(&below, until).(av.SpeedIntent)
+	belowIntent, ok := f.nav.AssignSpeedUntil(&below, until).(speech.SpeedIntent)
 	if !ok {
 		t.Fatalf("expected SpeedIntent for at-or-below speed until, got %T", belowIntent)
 	}
-	if belowIntent.Type != av.SpeedAtOrBelow || belowIntent.Until != until {
+	if belowIntent.Type != speech.SpeedAtOrBelow || belowIntent.Until != until {
 		t.Fatalf("expected at-or-below speed until intent, got %+v", belowIntent)
 	}
 }
@@ -191,7 +192,7 @@ func TestVisualApproachSpeedUntilFiveMileFinal(t *testing.T) {
 	}
 
 	sr := av.MakeAtSpeedRestriction(210)
-	f.nav.AssignSpeedUntil(&sr, &av.SpeedUntil{MileFinal: 5})
+	f.nav.AssignSpeedUntil(&sr, &speech.SpeedUntil{MileFinal: 5})
 	if f.nav.Speed.Assigned == nil {
 		t.Fatal("AssignSpeedUntil should store the speed restriction")
 	}
@@ -270,7 +271,7 @@ func TestCompoundSpeed(t *testing.T) {
 	sr250 := av.MakeAtSpeedRestriction(250)
 	sr210 := av.MakeAtSpeedRestriction(210)
 	sr180 := av.MakeAtSpeedRestriction(180)
-	f.CompoundSpeed([]av.CompoundSpeedSegment{
+	f.CompoundSpeed([]speech.CompoundSpeedSegment{
 		{Speed: &sr250, UntilFix: "DETGY"},
 		{Speed: &sr210, UntilFix: "HAUPT"},
 		{Speed: &sr180},

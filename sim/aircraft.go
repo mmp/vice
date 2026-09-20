@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
@@ -415,233 +416,233 @@ func (ac *Aircraft) Update(model *wx.Model, simTime Time, arrivalMETAR *wx.METAR
 	return navUpdate
 }
 
-func (ac *Aircraft) PilotMixUp() av.CommandIntent {
-	return av.MixUpIntent{
+func (ac *Aircraft) PilotMixUp() speech.CommandIntent {
+	return speech.MixUpIntent{
 		Callsign:    ac.ADSBCallsign,
 		IsEmergency: ac.EmergencyState != nil,
 	}
 }
 
-func (ac *Aircraft) Ident(now Time) av.CommandIntent {
+func (ac *Aircraft) Ident(now Time) speech.CommandIntent {
 	ac.IdentStartTime = now.Add(ac.Nav.Rand.DurationRange(2*time.Second, 5*time.Second)) // delay the start a bit
 	ac.IdentEndTime = ac.IdentStartTime.Add(10 * time.Second)
-	return av.TransponderIntent{Ident: true}
+	return speech.TransponderIntent{Ident: true}
 }
 
-func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool, simTime Time, delayReduction time.Duration) av.CommandIntent {
+func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	return ac.Nav.AssignAltitude(float32(altitude), afterSpeed, simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) AssignMach(mach float32, afterAltitude bool, temp av.Temperature) av.CommandIntent {
+func (ac *Aircraft) AssignMach(mach float32, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
 	return ac.Nav.AssignMach(mach, afterAltitude, temp)
 }
 
-func (ac *Aircraft) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) av.CommandIntent {
+func (ac *Aircraft) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.CommandIntent {
 	return ac.Nav.AssignSpeed(sr, afterAltitude)
 }
 
-func (ac *Aircraft) AssignSpeedUntil(sr *av.SpeedRestriction, until *av.SpeedUntil) av.CommandIntent {
+func (ac *Aircraft) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil) speech.CommandIntent {
 	return ac.Nav.AssignSpeedUntil(sr, until)
 }
 
-func (ac *Aircraft) MaintainSlowestPractical() av.CommandIntent {
+func (ac *Aircraft) MaintainSlowestPractical() speech.CommandIntent {
 	return ac.Nav.MaintainSlowestPractical()
 }
 
-func (ac *Aircraft) MaintainMaximumForward() av.CommandIntent {
+func (ac *Aircraft) MaintainMaximumForward() speech.CommandIntent {
 	return ac.Nav.MaintainMaximumForward()
 }
 
-func (ac *Aircraft) MaintainPresentSpeed() av.CommandIntent {
+func (ac *Aircraft) MaintainPresentSpeed() speech.CommandIntent {
 	return ac.Nav.MaintainPresentSpeed()
 }
 
-func (ac *Aircraft) SaySpeed(temp av.Temperature) av.CommandIntent {
+func (ac *Aircraft) SaySpeed(temp av.Temperature) speech.CommandIntent {
 	return ac.Nav.SaySpeed(temp)
 }
 
-func (ac *Aircraft) SayIndicatedSpeed() av.CommandIntent {
+func (ac *Aircraft) SayIndicatedSpeed() speech.CommandIntent {
 	return ac.Nav.SayIndicatedSpeed()
 }
 
-func (ac *Aircraft) SayMach(temp av.Temperature) av.CommandIntent {
+func (ac *Aircraft) SayMach(temp av.Temperature) speech.CommandIntent {
 	return ac.Nav.SayMach(temp)
 }
 
-func (ac *Aircraft) SayHeading() av.CommandIntent {
+func (ac *Aircraft) SayHeading() speech.CommandIntent {
 	return ac.Nav.SayHeading()
 }
 
-func (ac *Aircraft) SayAltitude() av.CommandIntent {
+func (ac *Aircraft) SayAltitude() speech.CommandIntent {
 	return ac.Nav.SayAltitude()
 }
 
-func (ac *Aircraft) ExpediteDescent() av.CommandIntent {
+func (ac *Aircraft) ExpediteDescent() speech.CommandIntent {
 	return ac.Nav.ExpediteDescent()
 }
 
-func (ac *Aircraft) ExpediteClimb() av.CommandIntent {
+func (ac *Aircraft) ExpediteClimb() speech.CommandIntent {
 	return ac.Nav.ExpediteClimb()
 }
 
-func (ac *Aircraft) ExpediteDescentThrough(alt float32) av.CommandIntent {
+func (ac *Aircraft) ExpediteDescentThrough(alt float32) speech.CommandIntent {
 	return ac.Nav.ExpediteDescentThrough(alt)
 }
 
-func (ac *Aircraft) ExpediteClimbThrough(alt float32) av.CommandIntent {
+func (ac *Aircraft) ExpediteClimbThrough(alt float32) speech.CommandIntent {
 	return ac.Nav.ExpediteClimbThrough(alt)
 }
 
-func (ac *Aircraft) GoodRateDescent() av.CommandIntent {
+func (ac *Aircraft) GoodRateDescent() speech.CommandIntent {
 	return ac.Nav.GoodRateDescent()
 }
 
-func (ac *Aircraft) GoodRateClimb() av.CommandIntent {
+func (ac *Aircraft) GoodRateClimb() speech.CommandIntent {
 	return ac.Nav.GoodRateClimb()
 }
 
-func (ac *Aircraft) GoodRateThrough(alt float32) av.CommandIntent {
+func (ac *Aircraft) GoodRateThrough(alt float32) speech.CommandIntent {
 	return ac.Nav.GoodRateThrough(alt)
 }
 
-func (ac *Aircraft) AssignHeading(heading int, turn av.TurnDirection, simTime Time, delayReduction time.Duration) av.CommandIntent {
+func (ac *Aircraft) AssignHeading(heading int, turn av.TurnDirection, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	return ac.Nav.AssignHeading(math.MagneticHeading(heading), turn, simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) TurnLeft(deg int, simTime Time, delayReduction time.Duration) av.CommandIntent {
+func (ac *Aircraft) TurnLeft(deg int, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	hdg := math.OffsetHeading(ac.Nav.FlightState.Heading, -deg)
 	ac.Nav.AssignHeading(hdg, av.TurnLeft, simTime.NavTime(), delayReduction)
-	return av.HeadingIntent{
-		Type:    av.HeadingTurnLeft,
+	return speech.HeadingIntent{
+		Type:    speech.HeadingTurnLeft,
 		Heading: hdg,
 		Degrees: deg,
 	}
 }
 
-func (ac *Aircraft) TurnRight(deg int, simTime Time, delayReduction time.Duration) av.CommandIntent {
+func (ac *Aircraft) TurnRight(deg int, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	hdg := math.OffsetHeading(ac.Nav.FlightState.Heading, deg)
 	ac.Nav.AssignHeading(hdg, av.TurnRight, simTime.NavTime(), delayReduction)
-	return av.HeadingIntent{
-		Type:    av.HeadingTurnRight,
+	return speech.HeadingIntent{
+		Type:    speech.HeadingTurnRight,
 		Heading: hdg,
 		Degrees: deg,
 	}
 }
 
-func (ac *Aircraft) FlyPresentHeading(simTime Time, delayReduction time.Duration) av.CommandIntent {
+func (ac *Aircraft) FlyPresentHeading(simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	return ac.Nav.FlyPresentHeading(simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) ExpectDirect(fix string) av.CommandIntent {
+func (ac *Aircraft) ExpectDirect(fix string) speech.CommandIntent {
 	return ac.Nav.ExpectDirect(strings.ToUpper(fix))
 }
 
-func (ac *Aircraft) DirectFix(fix string, turn av.TurnDirection, simTime Time, delayReduction time.Duration) av.CommandIntent {
+func (ac *Aircraft) DirectFix(fix string, turn av.TurnDirection, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	return ac.Nav.DirectFix(strings.ToUpper(fix), turn, simTime.NavTime(), delayReduction)
 }
 
 func (ac *Aircraft) InterceptRadial(fix string, radial int, outbound bool, simTime Time,
-	delayReduction time.Duration) av.CommandIntent {
+	delayReduction time.Duration) speech.CommandIntent {
 	return ac.Nav.InterceptRadial(strings.ToUpper(fix), math.MagneticHeading(radial), outbound,
 		simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) HoldAtFix(fix string, hold *av.Hold) av.CommandIntent {
+func (ac *Aircraft) HoldAtFix(fix string, hold *av.Hold) speech.CommandIntent {
 	return ac.Nav.HoldAtFix(string(ac.ADSBCallsign), strings.ToUpper(fix), hold)
 }
 
-func (ac *Aircraft) DepartFixHeading(fix string, hdg int) av.CommandIntent {
+func (ac *Aircraft) DepartFixHeading(fix string, hdg int) speech.CommandIntent {
 	return ac.Nav.DepartFixHeading(strings.ToUpper(fix), math.MagneticHeading(hdg))
 }
 
-func (ac *Aircraft) DepartFixDirect(fixa, fixb string) av.CommandIntent {
+func (ac *Aircraft) DepartFixDirect(fixa, fixb string) speech.CommandIntent {
 	return ac.Nav.DepartFixDirect(strings.ToUpper(fixa), strings.ToUpper(fixb))
 }
 
-func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) av.CommandIntent {
+func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
 	return ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, sr)
 }
 
 func (ac *Aircraft) CrossDistanceFromFixAt(fix string, dist float32, dir math.CardinalOrdinalDirection,
-	ar *av.AltitudeRestriction, sr *av.SpeedRestriction) av.CommandIntent {
+	ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
 	return ac.Nav.CrossDistanceFromFixAt(strings.ToUpper(fix), dist, dir, ar, sr)
 }
 
-func (ac *Aircraft) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) av.CommandIntent {
+func (ac *Aircraft) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
 	return ac.Nav.CrossDMEAt(dist, ar, sr)
 }
 
-func (ac *Aircraft) AfterFixSpeed(fix string, sr *av.SpeedRestriction) av.CommandIntent {
+func (ac *Aircraft) AfterFixSpeed(fix string, sr *av.SpeedRestriction) speech.CommandIntent {
 	return ac.Nav.AfterFixSpeed(strings.ToUpper(fix), sr)
 }
 
-func (ac *Aircraft) AssignCompoundSpeed(segments []av.CompoundSpeedSegment) av.CommandIntent {
+func (ac *Aircraft) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment) speech.CommandIntent {
 	for i := range segments {
 		segments[i].UntilFix = strings.ToUpper(segments[i].UntilFix)
 	}
 	return ac.Nav.AssignCompoundSpeed(segments)
 }
 
-func (ac *Aircraft) AfterFixAltitude(fix string, alt float32) av.CommandIntent {
+func (ac *Aircraft) AfterFixAltitude(fix string, alt float32) speech.CommandIntent {
 	return ac.Nav.AfterFixAltitude(strings.ToUpper(fix), alt)
 }
 
-func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport) av.CommandIntent {
+func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport) speech.CommandIntent {
 	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints)
 }
 
-func (ac *Aircraft) AtFixCleared(fix, approach string, simTime Time, delayReduction time.Duration, straightIn bool) av.CommandIntent {
+func (ac *Aircraft) AtFixCleared(fix, approach string, simTime Time, delayReduction time.Duration, straightIn bool) speech.CommandIntent {
 	return ac.Nav.AtFixCleared(fix, approach, simTime.NavTime(), delayReduction, straightIn)
 }
 
-func (ac *Aircraft) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration) av.CommandIntent {
+func (ac *Aircraft) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	return ac.Nav.AtFixIntercept(fix, simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) ClearedApproach(id string, simTime Time, follow *nav.FollowTraffic) av.CommandIntent {
+func (ac *Aircraft) ClearedApproach(id string, simTime Time, follow *nav.FollowTraffic) speech.CommandIntent {
 	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), false, "")
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string, simTime Time, follow *nav.FollowTraffic) av.CommandIntent {
+func (ac *Aircraft) ClearedStraightInApproach(id string, simTime Time, follow *nav.FollowTraffic) speech.CommandIntent {
 	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), true, "")
 }
 
 // ClearedApproachAtPassedFix issues the approach clearance a /clearapp route
 // action calls for at fix. The aircraft has already crossed fix and dropped it
 // from its route, so the approach is joined there rather than at a fix ahead.
-func (ac *Aircraft) ClearedApproachAtPassedFix(fix string, simTime Time) av.CommandIntent {
+func (ac *Aircraft) ClearedApproachAtPassedFix(fix string, simTime Time) speech.CommandIntent {
 	return ac.Nav.ClearedApproach(ac.Nav.Approach.AssignedId, nil, simTime.NavTime(), false, fix)
 }
 
-func (ac *Aircraft) CancelApproachClearance() av.CommandIntent {
+func (ac *Aircraft) CancelApproachClearance() speech.CommandIntent {
 	return ac.Nav.CancelApproachClearance()
 }
 
-func (ac *Aircraft) ClimbViaSID(simTime Time) av.CommandIntent {
+func (ac *Aircraft) ClimbViaSID(simTime Time) speech.CommandIntent {
 	return ac.Nav.ClimbViaSID(simTime.NavTime())
 }
 
-func (ac *Aircraft) DescendViaSTAR(simTime Time) av.CommandIntent {
+func (ac *Aircraft) DescendViaSTAR(simTime Time) speech.CommandIntent {
 	return ac.Nav.DescendViaSTAR(simTime.NavTime())
 }
 
-func (ac *Aircraft) ResumeOwnNavigation() av.CommandIntent {
+func (ac *Aircraft) ResumeOwnNavigation() speech.CommandIntent {
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
-		return av.MakeUnableIntent("unable. We're IFR")
+		return speech.MakeUnableIntent("unable. We're IFR")
 	} else {
 		return ac.Nav.ResumeOwnNavigation()
 	}
 }
 
-func (ac *Aircraft) AltitudeOurDiscretion() av.CommandIntent {
+func (ac *Aircraft) AltitudeOurDiscretion() speech.CommandIntent {
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
-		return av.MakeUnableIntent("unable. We're IFR")
+		return speech.MakeUnableIntent("unable. We're IFR")
 	} else {
 		return ac.Nav.AltitudeOurDiscretion()
 	}
 }
 
-func (ac *Aircraft) ContactTower(lg *log.Logger, freq av.Frequency) (av.CommandIntent, bool) {
+func (ac *Aircraft) ContactTower(lg *log.Logger, freq av.Frequency) (speech.CommandIntent, bool) {
 	if ac.GotContactTower {
 		// No response; they're not on our frequency any more.
 		return nil, false
@@ -649,24 +650,24 @@ func (ac *Aircraft) ContactTower(lg *log.Logger, freq av.Frequency) (av.CommandI
 		// VFR aircraft on flight following can be told to contact tower
 		// without needing an approach assignment.
 		ac.GotContactTower = true
-		return av.ContactTowerIntent{Frequency: freq}, true
+		return speech.ContactTowerIntent{Frequency: freq}, true
 	} else if ac.Nav.Approach.Assigned == nil {
-		return av.MakeUnableIntent("unable. We haven't been given an approach."), false
+		return speech.MakeUnableIntent("unable. We haven't been given an approach."), false
 	} else if !ac.Nav.Approach.Cleared {
-		return av.MakeUnableIntent("unable. We haven't been cleared for the approach."), false
+		return speech.MakeUnableIntent("unable. We haven't been cleared for the approach."), false
 	} else {
 		ac.GotContactTower = true
-		return av.ContactTowerIntent{Frequency: freq}, true
+		return speech.ContactTowerIntent{Frequency: freq}, true
 	}
 }
 
-func (ac *Aircraft) InterceptApproach() av.CommandIntent {
+func (ac *Aircraft) InterceptApproach() speech.CommandIntent {
 	return ac.Nav.InterceptApproach("")
 }
 
 // InterceptApproachAtPassedFix carries out an /intercept route action at fix,
 // which the aircraft has already crossed.
-func (ac *Aircraft) InterceptApproachAtPassedFix(fix string) av.CommandIntent {
+func (ac *Aircraft) InterceptApproachAtPassedFix(fix string) speech.CommandIntent {
 	return ac.Nav.InterceptApproach(fix)
 }
 
@@ -816,7 +817,7 @@ func (ac *Aircraft) NavSummary(model *wx.Model, simTime Time, lg *log.Logger) st
 	return ac.Nav.Summary(ac.FlightPlan, model, simTime.NavTime(), lg)
 }
 
-func (ac *Aircraft) ContactMessage() *av.RadioTransmission {
+func (ac *Aircraft) ContactMessage() *speech.RadioTransmission {
 	// For departures, only report heading if the runway has varied exit headings.
 	// For arrivals (and others), always report heading if assigned.
 	reportHeading := !ac.IsDeparture() || ac.ReportDepartureHeading

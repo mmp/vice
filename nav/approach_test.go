@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -292,7 +293,7 @@ func TestPrepareForChartedVisualSkipsBehindSegmentIntercept(t *testing.T) {
 	}
 
 	intent := n.prepareForChartedVisual()
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected unable intent: %v", intent)
 	}
 	if len(n.Waypoints) < 2 {
@@ -337,7 +338,7 @@ func TestPrepareForChartedVisualUsesAssignedHeading(t *testing.T) {
 	}
 
 	intent := n.prepareForChartedVisual()
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected unable intent: %v", intent)
 	}
 	if len(n.Waypoints) < 2 || n.Waypoints[0].Fix != "intercept" {
@@ -460,7 +461,7 @@ func TestAtFixInterceptFixNotOnApproach(t *testing.T) {
 	f.ExpectApproach("I22L")
 	if intent := f.AtFixIntercept("CAMRN"); intent == nil {
 		t.Fatal("AtFixIntercept at a fix not on the approach did not return unable")
-	} else if _, ok := intent.(av.UnableIntent); !ok {
+	} else if _, ok := intent.(speech.UnableIntent); !ok {
 		t.Fatalf("AtFixIntercept returned %+v, want unable", intent)
 	}
 	if f.nav.Approach.AtFixInterceptFix != "" {
@@ -486,7 +487,7 @@ func TestAtFixInterceptApproachOnlyFix(t *testing.T) {
 
 	f.ExpectApproach("I22L")
 	intent := f.AtFixIntercept("ROSLY")
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("AtFixIntercept returned unable: %+v", intent)
 	}
 
@@ -1281,7 +1282,7 @@ func TestExpectVisualApproachSynthesizesAssigned(t *testing.T) {
 	})
 
 	intent := f.ExpectVisualApproach("22L")
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("ExpectVisualApproach returned unable: %+v", intent)
 	}
 
@@ -1389,7 +1390,7 @@ func TestAtFixInterceptILSAfterEVA(t *testing.T) {
 
 	f.ExpectVisualApproach("22L")
 	intent := f.AtFixIntercept("ROSLY")
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("AtFixIntercept returned unable: %+v", intent)
 	}
 
@@ -1421,7 +1422,7 @@ func TestClearedVisualAlongILSUsesILSGeometry(t *testing.T) {
 	f.ExpectVisualApproach("22L")
 	f.DirectFix("ROSLY") // commits to the I22L route
 	intent := f.ClearedVisualApproach("22L")
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("ClearedVisualApproach returned unable: %+v", intent)
 	}
 
@@ -1484,7 +1485,7 @@ func TestClearedVisualAlongILSAfterVectorArmsIntercept(t *testing.T) {
 	}
 
 	intent := f.ClearedVisualApproach("22L")
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("ClearedVisualApproach returned unable: %+v", intent)
 	}
 
@@ -1519,7 +1520,7 @@ func TestClearedVisualAlongILSAfterAtFixInterceptArmsIntercept(t *testing.T) {
 
 	f.ExpectVisualApproach("22L")
 	intent := f.AtFixIntercept("ROSLY")
-	if _, ok := intent.(av.UnableIntent); ok {
+	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("AtFixIntercept returned unable: %+v", intent)
 	}
 	if f.nav.Approach.InterceptedReference == nil {
@@ -1532,7 +1533,7 @@ func TestClearedVisualAlongILSAfterAtFixInterceptArmsIntercept(t *testing.T) {
 
 	if cvaIntent := f.ClearedVisualApproach("22L"); cvaIntent == nil {
 		t.Fatal("ClearedVisualApproach returned nil intent")
-	} else if _, ok := cvaIntent.(av.UnableIntent); ok {
+	} else if _, ok := cvaIntent.(speech.UnableIntent); ok {
 		t.Fatalf("ClearedVisualApproach returned unable: %+v", cvaIntent)
 	}
 
@@ -1566,7 +1567,7 @@ func TestDirectFixToVisualReferenceAfterClearance(t *testing.T) {
 	})
 
 	f.ExpectVisualApproach("22L")
-	if intent, unable := f.ClearedVisualApproach("22L").(av.UnableIntent); unable {
+	if intent, unable := f.ClearedVisualApproach("22L").(speech.UnableIntent); unable {
 		t.Fatalf("ClearedVisualApproach returned unable: %v", intent)
 	}
 
@@ -1614,7 +1615,7 @@ func TestClearedVisualWithPendingDirect(t *testing.T) {
 	if f.nav.Approach.InterceptedReference != nil {
 		t.Fatal("CAPIT should not commit the aircraft to an ILS/Localizer reference")
 	}
-	if intent, unable := f.ClearedVisualApproach("22L").(av.UnableIntent); unable {
+	if intent, unable := f.ClearedVisualApproach("22L").(speech.UnableIntent); unable {
 		t.Fatalf("ClearedVisualApproach returned unable: %v", intent)
 	}
 
@@ -1653,12 +1654,12 @@ func TestCrossFixAtVisualReferenceAfterClearance(t *testing.T) {
 	})
 
 	f.ExpectVisualApproach("22L")
-	if intent, unable := f.ClearedVisualApproach("22L").(av.UnableIntent); unable {
+	if intent, unable := f.ClearedVisualApproach("22L").(speech.UnableIntent); unable {
 		t.Fatalf("ClearedVisualApproach returned unable: %v", intent)
 	}
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	if intent, unable := f.nav.CrossFixAt("ZOSDO", &ar, nil).(av.UnableIntent); unable {
+	if intent, unable := f.nav.CrossFixAt("ZOSDO", &ar, nil).(speech.UnableIntent); unable {
 		t.Fatalf("CrossFixAt(ZOSDO) returned unable: %v", intent)
 	}
 }
@@ -1697,7 +1698,7 @@ func TestClearedVisualApproachDoesNotMutateApproach(t *testing.T) {
 		},
 	}
 
-	if intent, unable := n.ClearedVisualApproach(nil, "").(av.UnableIntent); unable {
+	if intent, unable := n.ClearedVisualApproach(nil, "").(speech.UnableIntent); unable {
 		t.Fatalf("ClearedVisualApproach returned unable: %v", intent)
 	}
 
@@ -1801,11 +1802,11 @@ func TestInterceptApproachUnderEVAOnHeadingCommitsToLocalizer(t *testing.T) {
 	f.AssignHeading(250, av.TurnLeft)
 
 	intent := f.InterceptApproach()
-	ai, ok := intent.(av.ApproachIntent)
+	ai, ok := intent.(speech.ApproachIntent)
 	if !ok {
 		t.Fatalf("InterceptApproach returned %T, want ApproachIntent", intent)
 	}
-	if ai.Type != av.ApproachIntercept {
+	if ai.Type != speech.ApproachIntercept {
 		t.Errorf("Type = %v, want ApproachIntercept", ai.Type)
 	}
 	if !ai.HasLocalizer {
@@ -2178,7 +2179,7 @@ func TestInterceptJoinsApproachFixFurtherAlongRoute(t *testing.T) {
 	f.ExpectApproach("I22L")
 
 	intent := f.InterceptApproach()
-	if _, unable := intent.(av.UnableIntent); unable {
+	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("intercept refused with CAMRN still ahead of the approach: %+v", intent)
 	}
 

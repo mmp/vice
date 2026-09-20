@@ -12,6 +12,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -458,7 +459,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	}
 
 	// Queue the radio transmission (TTS will be synthesized when client requests it)
-	rt := av.MakeContactTransmission(strings.Join(transmission, ", "), args...)
+	rt := speech.MakeContactTransmission(strings.Join(transmission, ", "), args...)
 	s.enqueueEmergencyTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), rt)
 
 	// Schedule next stage based on current stage's duration

@@ -16,6 +16,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
@@ -28,7 +29,7 @@ func TestMain(m *testing.M) {
 // writtenForTest renders a transmission, failing the test if one of its
 // arguments can't be formatted; that would otherwise render as "" and fail the
 // assertions below without saying why.
-func writtenForTest(t *testing.T, rt *av.RadioTransmission, r *rand.Rand) string {
+func writtenForTest(t *testing.T, rt *speech.RadioTransmission, r *rand.Rand) string {
 	t.Helper()
 
 	s, err := rt.Written(r)
@@ -546,9 +547,9 @@ func (f *FlightTest) SignedCenterlineDistance() float32 {
 }
 
 // AssertUnable checks that the given CommandIntent is an UnableIntent.
-func AssertUnable(t *testing.T, intent av.CommandIntent) {
+func AssertUnable(t *testing.T, intent speech.CommandIntent) {
 	t.Helper()
-	if _, ok := intent.(av.UnableIntent); !ok {
+	if _, ok := intent.(speech.UnableIntent); !ok {
 		t.Errorf("expected UnableIntent, got %T: %v", intent, intent)
 	}
 }
@@ -580,13 +581,13 @@ func (f *FlightTest) ExpectApproach(id string) {
 	f.nav.ExpectApproach(airport, id, nil)
 }
 
-func (f *FlightTest) ExpectVisualApproach(runway string) av.CommandIntent {
+func (f *FlightTest) ExpectVisualApproach(runway string) speech.CommandIntent {
 	f.t.Helper()
 	airport := f.makeAirport()
 	return f.nav.ExpectApproach(airport, "_VIS"+runway, nil)
 }
 
-func (f *FlightTest) ClearedVisualApproach(runway string) av.CommandIntent {
+func (f *FlightTest) ClearedVisualApproach(runway string) speech.CommandIntent {
 	f.t.Helper()
 	return f.nav.ClearedApproach("_VIS"+runway, nil, f.simTime, false, "")
 }
@@ -665,7 +666,7 @@ func (f *FlightTest) ClearedStraightInApproach(id string) {
 
 // ClearedApproachAtPassedFix issues the clearance a /clearapp route action at
 // fix calls for, as the sim does after nav has dropped the fix from the route.
-func (f *FlightTest) ClearedApproachAtPassedFix(id, fix string) av.CommandIntent {
+func (f *FlightTest) ClearedApproachAtPassedFix(id, fix string) speech.CommandIntent {
 	f.t.Helper()
 	return f.nav.ClearedApproach(id, nil, f.simTime, false, fix)
 }
@@ -716,7 +717,7 @@ func (f *FlightTest) AfterFixAltitude(fix string, alt float32) {
 	f.nav.AfterFixAltitude(fix, alt)
 }
 
-func (f *FlightTest) CompoundSpeed(segments []av.CompoundSpeedSegment) {
+func (f *FlightTest) CompoundSpeed(segments []speech.CompoundSpeedSegment) {
 	f.t.Helper()
 	f.nav.AssignCompoundSpeed(segments)
 }
@@ -726,17 +727,17 @@ func (f *FlightTest) AtFixCleared(fix, approach string, straightIn bool) {
 	f.nav.AtFixCleared(fix, approach, f.simTime, 0, straightIn)
 }
 
-func (f *FlightTest) AtFixIntercept(fix string) av.CommandIntent {
+func (f *FlightTest) AtFixIntercept(fix string) speech.CommandIntent {
 	f.t.Helper()
 	return f.nav.AtFixIntercept(fix, f.simTime, 0)
 }
 
-func (f *FlightTest) InterceptRadial(fix string, radial int, outbound bool) av.CommandIntent {
+func (f *FlightTest) InterceptRadial(fix string, radial int, outbound bool) speech.CommandIntent {
 	f.t.Helper()
 	return f.nav.InterceptRadial(fix, math.MagneticHeading(radial), outbound, f.simTime, 0)
 }
 
-func (f *FlightTest) InterceptApproach() av.CommandIntent {
+func (f *FlightTest) InterceptApproach() speech.CommandIntent {
 	f.t.Helper()
 	return f.nav.InterceptApproach("")
 }

@@ -12,6 +12,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -167,7 +168,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 
 // generateFlightFollowingMessage creates the full flight following request message.
 // This is called on-demand to use current aircraft state.
-func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission {
+func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *speech.RadioTransmission {
 	// Returns the departure airport if the aircraft is still closer to it than
 	// to any reporting point, and otherwise the closest reporting point's
 	// description; exactly one of ap and desc is set.
@@ -200,7 +201,7 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 		return "", "", "", 0
 	}
 
-	rt := av.MakeContactTransmission("[we're a|] {actype}", ac.FlightPlan.AircraftType)
+	rt := speech.MakeContactTransmission("[we're a|] {actype}", ac.FlightPlan.AircraftType)
 
 	rpap, rpdesc, rpdir, dist := closestReportingPoint(ac)
 	if math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 2 {
@@ -226,7 +227,7 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 		}
 	}
 
-	var alt *av.RadioTransmission
+	var alt *speech.RadioTransmission
 	// Get the aircraft's target altitude from the navigation system
 	targetAlt, _, _ := ac.Nav.TargetAltitude()
 	currentAlt := ac.Altitude()
@@ -234,10 +235,10 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 	// Check if we're in a climb or descent (more than 100 feet difference)
 	if currentAlt < targetAlt {
 		// Report current altitude and target altitude when climbing or descending
-		alt = av.MakeContactTransmission("[at|] {alt} for {alt}", currentAlt, targetAlt)
+		alt = speech.MakeContactTransmission("[at|] {alt} for {alt}", currentAlt, targetAlt)
 	} else {
 		// Just report current altitude if we're level
-		alt = av.MakeContactTransmission("at {alt}", currentAlt)
+		alt = speech.MakeContactTransmission("at {alt}", currentAlt)
 	}
 	earlyAlt := s.Rand.Bool()
 	if earlyAlt {
@@ -256,50 +257,50 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 		rt.Merge(alt)
 	}
 
-	rt.Type = av.RadioTransmissionContact
+	rt.Type = speech.RadioTransmissionContact
 	return rt
 }
 
-func (s *Sim) ChangeSquawk(tcw TCW, callsign av.ADSBCallsign, sq av.Squawk) (av.CommandIntent, error) {
+func (s *Sim) ChangeSquawk(tcw TCW, callsign av.ADSBCallsign, sq av.Squawk) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
 
-			return av.TransponderIntent{Code: &sq}
+			return speech.TransponderIntent{Code: &sq}
 		})
 }
 
-func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.TransponderMode) (av.CommandIntent, error) {
+func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.TransponderMode) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode)
 
-			return av.TransponderIntent{Mode: &mode}
+			return speech.TransponderIntent{Mode: &mode}
 		})
 }
 
-func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.Ident(s.State.SimTime)
 		})
 }
 
-func (s *Sim) ResumeOwnNavigation(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+func (s *Sim) ResumeOwnNavigation(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.ResumeOwnNavigation()
 		})
 }
