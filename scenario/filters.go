@@ -13,6 +13,9 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+// airportVolumeId names a default airport filter region within the
+// 7-character limit on airspace volume ids; a 4-character airport identifier
+// with a 4-character suffix runs over and is truncated.
 func airportVolumeId(airport, suffix string) string {
 	id := airport + suffix
 	if len(id) > 7 {

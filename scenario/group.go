@@ -776,9 +776,10 @@ func (sg *Group) rewriteControllers(e *util.ErrorLogger) {
 	sg.FacilityConfig.ControlPositions = pos
 }
 
-// PostDeserializeFacilityAdaptation validates FacilityAdaptation fields that
-// require the scenario group's Locator, mapSpec, or airport data. Self-contained
-
+// checkArrivalSpawnAltitude flags an arrival whose initial altitude is
+// too high to meet its first "at or below" restriction given the distance
+// to that waypoint. Assumes 2500 fpm descent at 250 kts ground speed. If
+// multiple spawn altitudes are configured, each is checked.
 func checkArrivalSpawnAltitude(arr av.Arrival, e *util.ErrorLogger) {
 	if arr.AssignedAltitude > 0 {
 		return

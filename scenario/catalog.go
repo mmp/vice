@@ -389,6 +389,8 @@ func airportsWithoutSTARArrivals(sg *Group, lc *sim.LaunchConfig) []string {
 	return util.FilterSlice(util.SortedMapKeys(served), func(airport string) bool { return !served[airport] })
 }
 
+// loadEmergencies loads and validates the emergencies.json resource file.
+// Errors are reported via the ErrorLogger.
 func loadEmergencies(e *util.ErrorLogger) []sim.Emergency {
 	e.Push("File emergencies.json")
 	defer e.Pop()

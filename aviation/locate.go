@@ -13,6 +13,11 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+// Locator is a simple interface to abstract looking up the location of a
+// named thing (e.g. a fix).  This is mostly present so that the route code
+// can call back into the ScenarioGroup to resolve locations accounting for
+// fixes defined in a scenario, without exposing Scenario-related types to
+// the aviation package.
 type Locator interface {
 	// Locate returns the lat-long coordinates of the named point if they
 	// are available; the bool indicates whether the point was known.

@@ -578,6 +578,7 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 ///////////////////////////////////////////////////////////////////////////
 // Airport-pair Routes
 
+// AirportPair keys the city-pair route database by ICAO airport codes.
 type AirportPair struct {
 	From, To ICAOAirportCode
 }

@@ -65,7 +65,7 @@ type Scenario struct {
 }
 
 // center is where the scenario's radar display is centered: the scenario's own
-
+// center if it gives one, otherwise the facility's.
 func (s *Scenario) center(sg *Group) math.Point2LL {
 	return util.Select(s.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center, s.Center)
 }

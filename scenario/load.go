@@ -208,7 +208,7 @@ func loadNeighborControllers(filesystem fs.FS, sg *Group, neighbor string,
 // OverrideFiles holds paths to user-provided files that replace or add to
 // the contents of the resources directory, for testing facilities under
 // development. They come from the command line or the "Facility
-
+// Engineering" section of the settings window.
 type OverrideFiles struct {
 	Scenario      string
 	VideoMap      string
@@ -794,6 +794,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	return MakeTables(scenarioGroups, catalogs, mapSpecs, briefs), overrideErrors
 }
 
+// ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
 func ListAllScenarios(overrides OverrideFiles, lg *log.Logger) ([]string, error) {
 	var e util.ErrorLogger
 	tables, _ := Load(overrides, &e, lg)

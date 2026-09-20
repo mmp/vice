@@ -20,6 +20,9 @@ import (
 	"github.com/mmp/vice/videomaps"
 )
 
+// PostDeserializeFacilityAdaptation validates FacilityAdaptation fields that
+// require the scenario group's Locator, mapSpec, or airport data. Self-contained
+// validation is done earlier in FacilityAdaptation.ValidateConfig.
 func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Group,
 	mapSpec *videomaps.LibrarySpec, mapSpecs map[string]*videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
@@ -398,6 +401,15 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	e.Pop() // config
 }
 
+// resolveERAMCoordination returns this TRACON's pseudo-ERAM coordination
+// adaptation from its parent ARTCC host config, keyed by the TRACON's STARS
+// computer id (its stars_id in the ARTCC's handoff_ids). configs holds all
+// the facility configs, loaded — with any coordination geometry parsed and
+// validated — before scenario groups are processed; the result is shared
+// read-only. An ARTCC-primary scenario self-hosts: its own config's
+// arts_coordination entry keyed by the ARTCC's id covers flights inbound
+// from adjacent centers. Returns nil for facilities whose host adapts no
+// coordination for them.
 func resolveERAMCoordination(sg *Group, configs map[string]*sim.FacilityConfig) *enroute.Coordination {
 	if sg.TRACON == "" {
 		// ARTCC-primary: the center's coordination is adapted in its own
@@ -493,6 +505,9 @@ func validateCoordinationFixes(ec *enroute.Coordination, fa *sim.FacilityAdaptat
 	}
 }
 
+// loadFacilityConfig loads and unmarshals a facility configuration file.
+// Results are cached so that a facility several scenario groups share is only
+// loaded once. Call PostDeserialize separately for semantic validation.
 func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim.FacilityConfig {
 	facilityConfigCacheMu.Lock()
 	fc, ok := facilityConfigCache[path]

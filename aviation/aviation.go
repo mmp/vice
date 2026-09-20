@@ -114,6 +114,10 @@ type FlightPlan struct {
 	Remarks          string
 }
 
+// FormatAltitude returns an altitude in feet rounded down to the next
+// hundred and written the way a controller says it: a flight level at and
+// above 18,000', otherwise thousands and hundreds. Altitudes below sea level
+// are written with a leading minus sign.
 func FormatAltitude(falt float32) string {
 	alt := 100 * int(math.Floor(falt/100))
 	if alt >= 18000 {

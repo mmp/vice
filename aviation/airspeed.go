@@ -12,6 +12,8 @@ import (
 	"github.com/mmp/vice/math"
 )
 
+// returns the ratio of air density at the given altitude (in feet) to the
+// air density at sea level, subject to assuming the standard atmosphere.
 func DensityRatioAtAltitude(alt float32) float32 {
 	altm := alt * 0.3048 // altitude in meters
 
