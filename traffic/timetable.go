@@ -1,8 +1,8 @@
-// sim/timetable.go
+// traffic/timetable.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package traffic
 
 import (
 	"encoding/csv"
@@ -46,9 +46,9 @@ const (
 // supplied airport. A flight whose origin and destination both match (or
 // neither matches) is not usable for that airport.
 func (f TimetableFlight) OperationAt(airport av.ICAOAirportCode) TimetableOperation {
-	airport = normalizeAirportCode(airport)
-	originMatches := normalizeAirportCode(f.Origin) == airport
-	destinationMatches := normalizeAirportCode(f.Destination) == airport
+	airport = NormalizeAirportCode(airport)
+	originMatches := NormalizeAirportCode(f.Origin) == airport
+	destinationMatches := NormalizeAirportCode(f.Destination) == airport
 
 	switch {
 	case originMatches && !destinationMatches:
@@ -164,8 +164,8 @@ func parseTimetableFlight(record []string, columns map[timetableCSVColumn]int) (
 
 	flight := TimetableFlight{
 		Callsign:     strings.ToUpper(value(timetableCSVCallsign)),
-		Origin:       normalizeAirportCode(av.ICAOAirportCode(value(timetableCSVOrigin))),
-		Destination:  normalizeAirportCode(av.ICAOAirportCode(value(timetableCSVDestination))),
+		Origin:       NormalizeAirportCode(av.ICAOAirportCode(value(timetableCSVOrigin))),
+		Destination:  NormalizeAirportCode(av.ICAOAirportCode(value(timetableCSVDestination))),
 		AircraftType: strings.ToUpper(value(timetableCSVAircraftType)),
 	}
 
@@ -232,4 +232,11 @@ func timetableCSVRecordEmpty(record []string) bool {
 		}
 	}
 	return true
+}
+
+// NormalizeAirportCode cleans up the airport identifiers that arrive with a
+// published flight. Both traffic sources need it: a timetable's come from
+// hand-edited CSV and historical ones from an outside dataset.
+func NormalizeAirportCode(value av.ICAOAirportCode) av.ICAOAirportCode {
+	return av.ICAOAirportCode(strings.ToUpper(strings.TrimSpace(string(value))))
 }

@@ -24,7 +24,7 @@
 //
 // The FAA Academy scenarios fly made-up airports that the source data knows
 // nothing about; each one borrows a real airport's traffic, per
-// av.FlightDataSubstitutes.
+// traffic.FlightDataSubstitutes.
 //
 // Must be run from the top of a Vice checkout so that the resources are found.
 //

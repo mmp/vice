@@ -18,6 +18,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -1142,7 +1143,7 @@ func (ss *CommonState) departureRouteWaypoints(route string) av.WaypointArray {
 func (ss *CommonState) resolvePublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, destination av.ICAOAirportCode, aircraftType string,
 	routedDestinations map[av.ICAOAirportCode][]av.ICAOAirportCode) (departurePlacement, error) {
-	departureAirport = normalizeAirportCode(departureAirport)
+	departureAirport = traffic.NormalizeAirportCode(departureAirport)
 	choice, err := ss.findPublishedDeparture(departureAirport, runway, categories, destination,
 		aircraftType, routedDestinations)
 	if err != nil {
@@ -1165,8 +1166,8 @@ func (ss *CommonState) resolvePublishedDeparture(departureAirport av.ICAOAirport
 func (ss *CommonState) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, destination av.ICAOAirportCode, aircraftType string,
 	routedDestinations map[av.ICAOAirportCode][]av.ICAOAirportCode) (departureChoice, error) {
-	departureAirport = normalizeAirportCode(departureAirport)
-	destination = normalizeAirportCode(destination)
+	departureAirport = traffic.NormalizeAirportCode(departureAirport)
+	destination = traffic.NormalizeAirportCode(destination)
 
 	candidates := ss.compatibleDepartures(departureAirport, runway, categories, aircraftType)
 	if len(candidates) == 0 {

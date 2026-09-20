@@ -1,8 +1,8 @@
-// sim/timetable_test.go
+// traffic/timetable_test.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package traffic
 
 import (
 	"strings"

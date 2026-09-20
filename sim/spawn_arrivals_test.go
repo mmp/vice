@@ -9,6 +9,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/traffic"
 )
 
 // testCandidates makes the arrivals into candidates the way candidateArrivals
@@ -317,7 +318,7 @@ func TestSuitableArrivals(t *testing.T) {
 // arrivals behind it: the queue is shared across every airport a facility
 // works, so one stuck at the head would stall all of them.
 func TestZeroRateArrivalsDoNotBlock(t *testing.T) {
-	day := av.FlightDataDayNumber(time.Date(2026, time.April, 15, 0, 0, 0, 0, time.UTC))
+	day := traffic.FlightDataDayNumber(time.Date(2026, time.April, 15, 0, 0, 0, 0, time.UTC))
 	spawn := NewSimTime(time.Date(2026, time.April, 15, 8, 0, 0, 0, time.UTC))
 	arrival := func(airport av.ICAOAirportCode, callsign, group string) ScheduledArrival {
 		return ScheduledArrival{

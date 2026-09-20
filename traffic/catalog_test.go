@@ -1,16 +1,22 @@
-// sim/timetable_catalog_test.go
+// traffic/catalog_test.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package traffic
 
 import (
+	"os"
 	"strings"
 	"testing"
 	"testing/fstest"
 
 	av "github.com/mmp/vice/aviation"
 )
+
+func TestMain(m *testing.M) {
+	av.InitDB()
+	os.Exit(m.Run())
+}
 
 const validTimetableCSV = "callsign,origin,destination,aircraft_type,time,cargo\n" +
 	"DAL1045,KMSP,KATL,A321,14:05,false\n" +

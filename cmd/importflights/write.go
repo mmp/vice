@@ -17,6 +17,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 )
 
@@ -40,11 +41,11 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 	}
 
 	for _, cell := range cells(imp.buckets) {
-		var flights []av.Flight
+		var flights []traffic.Flight
 		for _, departure := range []bool{true, false} {
 			key := bucket{cell: cell, departure: departure}
 			for _, r := range imp.buckets[key] {
-				flights = append(flights, av.Flight{
+				flights = append(flights, traffic.Flight{
 					Airport:      av.ICAOAirportCode(imp.symbols.string(r.airport)),
 					Callsign:     imp.symbols.string(r.callsign),
 					Other:        av.ICAOAirportCode(imp.symbols.string(r.other)),
@@ -59,7 +60,7 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 			delete(imp.buckets, key)
 		}
 
-		av.SortFlights(flights)
+		traffic.SortFlights(flights)
 		// Sorting puts the flights that appear in more than one source file
 		// next to each other.
 		flights = slices.Compact(flights)
@@ -72,9 +73,9 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 			continue
 		}
 		noteBalance(balances, flights)
-		intervals = append(intervals, av.FlightIntervals(flights)...)
+		intervals = append(intervals, traffic.FlightIntervals(flights)...)
 
-		encoded, err := av.EncodeFlights(flights)
+		encoded, err := traffic.EncodeFlights(flights)
 		if err != nil {
 			return fmt.Errorf("%s: %w", cell, err)
 		}
@@ -92,7 +93,7 @@ func writeFlightData(dir string, imp *importer, minCoverage float64, dryRun bool
 		bytes += len(encoded)
 	}
 
-	intervals = av.MergeFlightIntervals(intervals)
+	intervals = traffic.MergeFlightIntervals(intervals)
 	if !dryRun {
 		if err := writeMetadata(dir, intervals); err != nil {
 			return err
@@ -132,11 +133,11 @@ func cells(buckets map[bucket][]record) []string {
 
 // writeMetadata records what the cells have in common.
 func writeMetadata(dir string, intervals []util.TimeInterval) error {
-	encoded, err := av.EncodeFlightDataMetadata(intervals)
+	encoded, err := traffic.EncodeFlightDataMetadata(intervals)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(dir, av.FlightDataMetadataName), append(encoded, '\n'), 0o644)
+	return os.WriteFile(filepath.Join(dir, traffic.FlightDataMetadataName), append(encoded, '\n'), 0o644)
 }
 
 // removeStaleFiles deletes the flight data files this run didn't write, which
@@ -148,7 +149,7 @@ func removeStaleFiles(dir string, written map[string]bool) error {
 	}
 	for _, entry := range entries {
 		name := entry.Name()
-		if filepath.Ext(name) != av.FlightDataExtension || written[name] {
+		if filepath.Ext(name) != traffic.FlightDataExtension || written[name] {
 			continue
 		}
 		if err := os.Remove(filepath.Join(dir, name)); err != nil {
@@ -162,7 +163,7 @@ func removeStaleFiles(dir string, written map[string]bool) error {
 // balance is how many departures and arrivals an airport ended up with.
 type balance struct{ departures, arrivals int }
 
-func noteBalance(balances map[av.ICAOAirportCode]balance, flights []av.Flight) {
+func noteBalance(balances map[av.ICAOAirportCode]balance, flights []traffic.Flight) {
 	for _, f := range flights {
 		b := balances[f.Airport]
 		if f.Departure {
@@ -233,7 +234,7 @@ func reportFlightGaps(intervals []util.TimeInterval) {
 
 // flightDataFilename returns the name of a cell's flight data file.
 func flightDataFilename(cell string) string {
-	return cell + av.FlightDataExtension
+	return cell + traffic.FlightDataExtension
 }
 
 // coveredMonths returns the months the source data covers well enough to be
@@ -257,7 +258,7 @@ func monthCoverage(daysPresent map[string]map[string]bool, month string) float64
 // dropSparseFlights removes the flights that fall in months the source data
 // barely covers, so that a file isn't replaced by one holding a couple of
 // stray days either side of a quarter boundary.
-func dropSparseFlights(flights []av.Flight, covered map[string]bool) (kept []av.Flight,
+func dropSparseFlights(flights []traffic.Flight, covered map[string]bool) (kept []traffic.Flight,
 	dropped map[string]int) {
 	dropped = make(map[string]int)
 	kept = flights[:0]

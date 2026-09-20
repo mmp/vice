@@ -1,11 +1,12 @@
-// aviation/flights_test.go
+// traffic/flights_test.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package traffic
 
 import (
 	"bytes"
+	av "github.com/mmp/vice/aviation"
 	"path"
 	"slices"
 	"testing"
@@ -26,9 +27,9 @@ func TestSplitCallsign(t *testing.T) {
 		{"ABC", "ABC", ""},
 		{"", "", ""},
 	} {
-		base, number := SplitCallsign(tc.callsign)
+		base, number := av.SplitCallsign(tc.callsign)
 		if base != tc.base || number != tc.number {
-			t.Errorf("SplitCallsign(%q) = %q, %q; expected %q, %q",
+			t.Errorf("av.SplitCallsign(%q) = %q, %q; expected %q, %q",
 				tc.callsign, base, number, tc.base, tc.number)
 		}
 	}
@@ -65,7 +66,7 @@ func TestFlightTime(t *testing.T) {
 func testFlights() []Flight {
 	var flights []Flight
 	base := FlightDataDayNumber(time.Date(2025, time.July, 1, 0, 0, 0, 0, time.UTC))
-	add := func(airport, other ICAOAirportCode, callsign, acType string, day uint16, minute int, departure bool) {
+	add := func(airport, other av.ICAOAirportCode, callsign, acType string, day uint16, minute int, departure bool) {
 		flights = append(flights, Flight{Airport: airport, Callsign: callsign, Other: other,
 			AircraftType: acType, Day: base + day, Minute: minute, Departure: departure})
 	}
@@ -373,8 +374,8 @@ func TestSelectFlights(t *testing.T) {
 	SortFlights(flights)
 
 	start := FlightDataDate(day).Add(8 * time.Hour)
-	msp := map[ICAOAirportCode]bool{"KMSP": true}
-	airlines := map[string]Airline{"DAL": {}}
+	msp := map[av.ICAOAirportCode]bool{"KMSP": true}
+	airlines := map[string]av.Airline{"DAL": {}}
 	callsignsIn := func(window []Flight) []string {
 		var callsigns []string
 		for _, f := range window {

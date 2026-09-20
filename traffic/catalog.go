@@ -1,8 +1,8 @@
-// sim/timetable_catalog.go
+// traffic/catalog.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package traffic
 
 import (
 	"fmt"
@@ -34,7 +34,7 @@ type TimetableCatalog struct {
 
 // Find returns a built-in timetable by airport and ID.
 func (c TimetableCatalog) Find(airport av.ICAOAirportCode, id string) (Timetable, bool) {
-	airport = normalizeAirportCode(airport)
+	airport = NormalizeAirportCode(airport)
 	id = strings.TrimSpace(id)
 	for _, timetable := range c.Timetables {
 		if timetable.Airport == airport && timetable.ID == id {
@@ -77,7 +77,7 @@ func (c TimetableCatalog) SummariesForAirport(airport av.ICAOAirportCode) []Time
 // ForAirport returns timetables published for airport. The returned slice is a
 // copy and may be modified by the caller.
 func (c TimetableCatalog) ForAirport(airport av.ICAOAirportCode) []Timetable {
-	airport = normalizeAirportCode(airport)
+	airport = NormalizeAirportCode(airport)
 	var timetables []Timetable
 	for _, timetable := range c.Timetables {
 		if timetable.Airport == airport {
@@ -108,10 +108,10 @@ func LoadAirportTimetables(airport av.ICAOAirportCode) (TimetableCatalog, error)
 // parsing every airport's CSVs to find it would come to. An airport with no
 // directory of its own has no timetables, which is not an error.
 func LoadTimetableCatalogForAirport(filesystem fs.FS, root string, airport av.ICAOAirportCode) (TimetableCatalog, error) {
-	if normalizeAirportCode(airport) == "" {
+	if NormalizeAirportCode(airport) == "" {
 		return TimetableCatalog{}, nil
 	}
-	return loadTimetables(filesystem, root, normalizeAirportCode(airport))
+	return loadTimetables(filesystem, root, NormalizeAirportCode(airport))
 }
 
 // LoadTimetableCatalog discovers CSV files in airport directories
@@ -139,7 +139,7 @@ func loadTimetables(filesystem fs.FS, root string, onlyAirport av.ICAOAirportCod
 		if !directory.IsDir() {
 			continue
 		}
-		airport := normalizeAirportCode(av.ICAOAirportCode(directory.Name()))
+		airport := NormalizeAirportCode(av.ICAOAirportCode(directory.Name()))
 		if onlyAirport != "" && airport != onlyAirport {
 			continue
 		}
@@ -166,7 +166,7 @@ func loadTimetables(filesystem fs.FS, root string, onlyAirport av.ICAOAirportCod
 // loadAirportTimetables reads the CSV files directly inside one airport's
 // directory. Nested files are intentionally ignored.
 func loadAirportTimetables(filesystem fs.FS, root, directory string) ([]Timetable, error) {
-	airport := normalizeAirportCode(av.ICAOAirportCode(directory))
+	airport := NormalizeAirportCode(av.ICAOAirportCode(directory))
 	if airport == "" {
 		return nil, fmt.Errorf("%s: unable to determine airport from directory", path.Join(root, directory))
 	}

@@ -12,6 +12,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/traffic"
 )
 
 func TestMain(m *testing.M) {
@@ -22,7 +23,7 @@ func TestMain(m *testing.M) {
 
 func TestNormalizeTrafficSourceConfig(t *testing.T) {
 	spec := &scenario.Spec{
-		Timetables: []sim.TimetableSummary{
+		Timetables: []traffic.TimetableSummary{
 			{ID: "development-test", Name: "Development Test", Airport: "KMSP"},
 		},
 		TrafficSources: []sim.TrafficSource{sim.TrafficSourceScenario, sim.TrafficSourceTimetable},

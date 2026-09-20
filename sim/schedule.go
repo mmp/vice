@@ -16,6 +16,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 )
 
@@ -536,14 +537,14 @@ func (s *Sim) generatePublishedFlights() {
 		s.schedulePublishedFlights(flights, flightSpawnLead)
 
 	case TrafficSourceTimetable:
-		catalog, err := LoadAirportTimetables(lc.TimetableAirport)
+		catalog, err := traffic.LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
-			s.log("Timetable traffic: %v", err)
+			s.log("traffic.Timetable traffic: %v", err)
 			return
 		}
 		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
 		if !ok {
-			s.log("Timetable traffic: timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
+			s.log("traffic.Timetable traffic: timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
 			return
 		}
 		s.log("Traffic source: timetable %q for %s", timetable.Name, timetable.Airport)
@@ -558,7 +559,7 @@ func (s *Sim) generatePublishedFlights() {
 // flightSpawnLead ahead of theirs. Arrivals the scenario has no way to fly
 // stay in the queue with the reason, to be reported when their spawn times
 // come around.
-func (s *Sim) schedulePublishedFlights(flights []av.Flight, departureSpawnLead time.Duration) {
+func (s *Sim) schedulePublishedFlights(flights []traffic.Flight, departureSpawnLead time.Duration) {
 	routed := makeRoutedPairs()
 
 	flights, rotorcraft := dropRotorcraft(flights)
@@ -1163,7 +1164,7 @@ func (s *Sim) rewritePublishedSpawnTimes() {
 			f.SpawnTime = now.Add(parkedSpawnDelay)
 			return true
 		}
-		published := av.Flight{Day: f.Day, Minute: f.Minute}.Time()
+		published := traffic.Flight{Day: f.Day, Minute: f.Minute}.Time()
 		spawn := NewSimTime(publishedTrafficTime(published, start, scale).Add(-lead)).Add(f.SpawnOffset)
 		if automatic && spawn.Before(now) {
 			missed++
@@ -1249,7 +1250,7 @@ func shiftScheduledLater[T any](entries []T, flight func(*T) *ScheduledFlight,
 // selected time. It asks for the most the sim could ever reach, since the
 // rate scale can be raised while the sim runs and the schedule is built only
 // once.
-func (s *Sim) readHistoricalFlights() []av.Flight {
+func (s *Sim) readHistoricalFlights() []traffic.Flight {
 	flights, err := s.State.historicalFlights(s.StartTime.Time(), MaxPublishedRateScale)
 	if err != nil {
 		s.lg.Errorf("%v", err)
@@ -1261,14 +1262,14 @@ func (s *Sim) readHistoricalFlights() []av.Flight {
 // over the window a sim starting at start reads through at the given rate
 // scale. start also keys the decoded-cell cache, so the traffic preview and
 // the sim the user launches from it share one decode of the data.
-func (ss *CommonState) historicalFlights(start time.Time, scale int) ([]av.Flight, error) {
+func (ss *CommonState) historicalFlights(start time.Time, scale int) ([]traffic.Flight, error) {
 	departureAirports, arrivalAirports := ss.LaunchConfig.IFRAirports()
-	flights, err := av.ReadFlightDataCellsAround(util.GetResourcesFS(),
-		av.FlightDataCells(departureAirports, arrivalAirports), start)
+	flights, err := traffic.ReadFlightDataCellsAround(util.GetResourcesFS(),
+		traffic.FlightDataCells(departureAirports, arrivalAirports), start)
 	if err != nil {
 		return nil, fmt.Errorf("%s historical flight data: %w", ss.Facility, err)
 	}
-	return av.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
+	return traffic.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
 		start.Add(-time.Duration(scale)*PrespawnDuration),
 		start.Add(time.Duration(scale)*HistoricalFlightWindow)), nil
 }

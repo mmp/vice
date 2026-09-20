@@ -27,6 +27,7 @@ import (
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -203,20 +204,20 @@ func normalizeTrafficSourceConfig(spec *scenario.Spec) {
 
 // A scenario may offer timetables for more than one of its airports, so it
 // takes both the id and the airport to name one.
-func selectedTimetableSummary(spec *scenario.Spec) (sim.TimetableSummary, bool) {
+func selectedTimetableSummary(spec *scenario.Spec) (traffic.TimetableSummary, bool) {
 	for _, timetable := range spec.Timetables {
 		if timetable.ID == spec.LaunchConfig.TimetableID &&
 			timetable.Airport == spec.LaunchConfig.TimetableAirport {
 			return timetable, true
 		}
 	}
-	return sim.TimetableSummary{}, false
+	return traffic.TimetableSummary{}, false
 }
 
 // timetableLabel names a timetable in the picker. Timetables at different
 // airports may share a name, so the airport goes in the label when the
 // scenario offers more than one airport's.
-func timetableLabel(spec *scenario.Spec, timetable sim.TimetableSummary) string {
+func timetableLabel(spec *scenario.Spec, timetable traffic.TimetableSummary) string {
 	for _, other := range spec.Timetables {
 		if other.Airport != timetable.Airport {
 			return av.AirportDisplayId(timetable.Airport) + " " + timetable.Name

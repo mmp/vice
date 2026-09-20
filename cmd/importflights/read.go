@@ -19,6 +19,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/traffic"
 	"github.com/parquet-go/parquet-go"
 )
 
@@ -225,14 +226,14 @@ type importer struct {
 
 func makeImporter(airports map[av.ICAOAirportCode]av.FAAAirport, performance map[string]av.AircraftPerformance,
 	airlines map[string]av.Airline) (*importer, error) {
-	donors := make(map[av.ICAOAirportCode]substitute, len(av.FlightDataSubstitutes))
-	for fictional, donor := range av.FlightDataSubstitutes {
+	donors := make(map[av.ICAOAirportCode]substitute, len(traffic.FlightDataSubstitutes))
+	for fictional, donor := range traffic.FlightDataSubstitutes {
 		ap, ok := airports[fictional]
 		if !ok {
 			return nil, fmt.Errorf("%s: made-up airport isn't in custom_airports.json, "+
 				"so there is nowhere to file the traffic it borrows from %s", fictional, donor)
 		}
-		donors[donor] = substitute{airport: fictional, cell: av.FlightDataCell(ap.Location)}
+		donors[donor] = substitute{airport: fictional, cell: traffic.FlightDataCell(ap.Location)}
 	}
 
 	return &importer{
@@ -260,7 +261,7 @@ func (imp *importer) cellFor(icao av.ICAOAirportCode) (string, bool) {
 
 	var c airportCell
 	if ap, ok := imp.airports[icao]; ok && ap.FAAControlled() {
-		c = airportCell{cell: av.FlightDataCell(ap.Location), keep: true}
+		c = airportCell{cell: traffic.FlightDataCell(ap.Location), keep: true}
 	}
 	imp.cells[av.ICAOAirportCode(strings.Clone(string(icao)))] = c
 	return c.cell, c.keep
@@ -422,7 +423,7 @@ func (imp *importer) file(cell string, airport, other av.ICAOAirportCode, callsi
 		other:    imp.symbols.id(string(other)),
 		acType:   imp.symbols.id(aircraftType),
 		minute:   uint16(utc.Hour()*60 + utc.Minute()),
-		day:      av.FlightDataDayNumber(utc),
+		day:      traffic.FlightDataDayNumber(utc),
 	})
 	imp.recordsEmitted++
 }

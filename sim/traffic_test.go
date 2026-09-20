@@ -13,6 +13,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/traffic"
 )
 
 // publishedProviderTestSim builds the minimal Sim the published-traffic provider needs:
@@ -92,19 +93,19 @@ func publishedProviderTestSim(t *testing.T, start Time) *Sim {
 // testFlight is one published flight on a fixed day, named the way the flight
 // data names them: the facility airport it operates at and the airport at the
 // other end.
-func testFlight(callsign string, airport, other av.ICAOAirportCode, departure bool, hour, minute int) av.Flight {
-	return av.Flight{
+func testFlight(callsign string, airport, other av.ICAOAirportCode, departure bool, hour, minute int) traffic.Flight {
+	return traffic.Flight{
 		Airport:      airport,
 		Callsign:     callsign,
 		Other:        other,
 		AircraftType: "C560",
-		Day:          av.FlightDataDayNumber(time.Date(2026, time.July, 14, 0, 0, 0, 0, time.UTC)),
+		Day:          traffic.FlightDataDayNumber(time.Date(2026, time.July, 14, 0, 0, 0, 0, time.UTC)),
 		Minute:       hour*60 + minute,
 		Departure:    departure,
 	}
 }
 
-func flightNames(flights []av.Flight) []string {
+func flightNames(flights []traffic.Flight) []string {
 	names := make([]string, len(flights))
 	for i, f := range flights {
 		direction := "arrives"
@@ -121,12 +122,12 @@ func flightNames(flights []av.Flight) []string {
 func TestDropRepeatedRecords(t *testing.T) {
 	for _, test := range []struct {
 		name    string
-		flights []av.Flight
+		flights []traffic.Flight
 		want    []string
 	}{
 		{
 			name: "the same departure recorded twice a minute apart",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("JTL881", "KORD", "KBMG", true, 11, 33),
 				testFlight("JTL881", "KORD", "KBMG", true, 11, 34),
 			},
@@ -134,7 +135,7 @@ func TestDropRepeatedRecords(t *testing.T) {
 		},
 		{
 			name: "repeats that disagree about the other airport are still one flight",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("UAL219", "KORD", "PHNL", true, 14, 55),
 				testFlight("UAL219", "KORD", "KHAF", true, 14, 55),
 			},
@@ -142,7 +143,7 @@ func TestDropRepeatedRecords(t *testing.T) {
 		},
 		{
 			name: "a turnaround is two operations, not a repeat",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("AAL2151", "KMSP", "KCLT", false, 17, 7),
 				testFlight("AAL2151", "KMSP", "KCLT", true, 17, 47),
 			},
@@ -150,7 +151,7 @@ func TestDropRepeatedRecords(t *testing.T) {
 		},
 		{
 			name: "the same operation hours later is a second flight",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("N435FG", "KMDW", "KJAX", true, 8, 0),
 				testFlight("N435FG", "KMDW", "KJAX", true, 18, 6),
 			},
@@ -175,12 +176,12 @@ func TestDropRepeatedRecords(t *testing.T) {
 func TestDropReturnedLegs(t *testing.T) {
 	for _, test := range []struct {
 		name    string
-		flights []av.Flight
+		flights []traffic.Flight
 		want    []string
 	}{
 		{
 			name: "leg recorded at both ends flies as its departure",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("N5367H", "KARR", "KDPA", true, 20, 43),
 				testFlight("N5367H", "KDPA", "KARR", false, 20, 50),
 			},
@@ -188,14 +189,14 @@ func TestDropReturnedLegs(t *testing.T) {
 		},
 		{
 			name: "arrival from outside the facility is untouched",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("DAL1", "KMSP", "KATL", false, 14, 12),
 			},
 			want: []string{"DAL1 arrives KMSP"},
 		},
 		{
 			name: "each leg of a round trip is recognized on its own",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("N37RD", "KLOT", "KARR", true, 16, 33),
 				testFlight("N37RD", "KARR", "KLOT", false, 16, 45),
 				testFlight("N37RD", "KARR", "KLOT", true, 17, 21),
@@ -205,7 +206,7 @@ func TestDropReturnedLegs(t *testing.T) {
 		},
 		{
 			name: "the same callsign flown again hours later is a separate flight",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("JLG426", "KMDW", "KDPA", true, 10, 0),
 				testFlight("JLG426", "KDPA", "KMDW", false, 16, 0),
 			},
@@ -213,7 +214,7 @@ func TestDropReturnedLegs(t *testing.T) {
 		},
 		{
 			name: "a departure elsewhere doesn't stand in for the arrival's own",
-			flights: []av.Flight{
+			flights: []traffic.Flight{
 				testFlight("EJA610", "KORD", "KMDW", true, 2, 28),
 				testFlight("EJA610", "KDPA", "KARR", false, 2, 44),
 			},
@@ -289,7 +290,7 @@ func lastCountedMinute(counts []uint16) int {
 
 func TestTrafficCountsBinsOperationsByMinute(t *testing.T) {
 	pad := int(TrafficCountsPad / time.Minute)
-	flights := []av.Flight{
+	flights := []traffic.Flight{
 		testFlight("DAL1", "KMSP", "KJFK", true, 12, 0),  // before the preview reaches back
 		testFlight("DAL2", "KMSP", "KATL", true, 13, 45), // in the pad ahead of the start
 		testFlight("DAL3", "KMSP", "KORD", true, 14, 0),  // at the start
@@ -316,7 +317,7 @@ func TestTrafficCountsBinsOperationsByMinute(t *testing.T) {
 // The preview has to leave out what the sim will: an airport with all of its
 // flows switched off flies nothing, whatever the data says it did.
 func TestTrafficCountsSkipsDisabledFlows(t *testing.T) {
-	flights := []av.Flight{
+	flights := []traffic.Flight{
 		testFlight("DAL1", "KMSP", "KORD", true, 14, 10),
 		testFlight("DAL2", "KMSP", "KDEN", false, 14, 20),
 	}
@@ -352,7 +353,7 @@ func TestTrafficCountsSkipsDisabledFlows(t *testing.T) {
 // of the sim's clock. So the preview counts the same operations either way, and
 // scaling up is visible in how far into the window the last one falls.
 func TestTrafficCountsHonorsPublishedRateScales(t *testing.T) {
-	var flights []av.Flight
+	var flights []traffic.Flight
 	for i := range 40 {
 		flights = append(flights, testFlight(fmt.Sprintf("DAL%d", i), "KMSP", "KORD", true, 14, 2*i))
 		flights = append(flights, testFlight(fmt.Sprintf("AAL%d", i), "KMSP", "KDEN", false, 14, 2*i+1))
@@ -407,7 +408,7 @@ func TestTrafficCountsHonorsPublishedRateScales(t *testing.T) {
 // The dedup the provider does has to happen here too, or the preview promises
 // traffic the sim then merges away.
 func TestTrafficCountsMergesRepeatedRecords(t *testing.T) {
-	flights := []av.Flight{
+	flights := []traffic.Flight{
 		testFlight("DAL1", "KMSP", "KATL", true, 14, 10),
 		testFlight("DAL1", "KMSP", "KORD", true, 14, 12),
 	}
@@ -434,7 +435,7 @@ func TestTrafficCountsRejectsScenarioTraffic(t *testing.T) {
 // Traffic the scenario flies only for realism is not the user's to work, so a
 // preview of what a start time brings them leaves it out.
 func TestTrafficCountsSkipsBackgroundTraffic(t *testing.T) {
-	flights := []av.Flight{
+	flights := []traffic.Flight{
 		testFlight("DAL1", "KMSP", "KORD", true, 14, 10),
 		testFlight("DAL2", "KMSP", "KDEN", false, 14, 20),
 	}
@@ -479,7 +480,7 @@ func TestTrafficCountsAirportOperations(t *testing.T) {
 		"KSTP": {"32": {"": true}},
 	}
 
-	flights := []av.Flight{
+	flights := []traffic.Flight{
 		testFlight("DAL1", "KMSP", "KORD", true, 14, 10),
 		testFlight("DAL2", "KMSP", "KDEN", false, 14, 20),
 		testFlight("DAL3", "KMSP", "KATL", false, 14, 30),
@@ -507,7 +508,7 @@ func TestTrafficCountsKeepsAirportsWithOneWorkedFlow(t *testing.T) {
 	lc.InboundFlowBackground = map[string]map[string]bool{"QUIET": {"KMSP": true}}
 
 	_, arrivals, _, err := TrafficCounts(lc, previewStart,
-		[]av.Flight{testFlight("DAL2", "KMSP", "KDEN", false, 14, 20)})
+		[]traffic.Flight{testFlight("DAL2", "KMSP", "KDEN", false, 14, 20)})
 	if err != nil {
 		t.Fatalf("TrafficCounts: %v", err)
 	}
@@ -808,10 +809,10 @@ func TestMarkBackgroundInboundLeavesUnservedAirportAlone(t *testing.T) {
 // to over a million flights; a sim that reached past them would silently fly
 // less traffic than the data holds.
 func TestHistoricalWindowFitsFlightCells(t *testing.T) {
-	if w := MaxPublishedRateScale * HistoricalFlightWindow; w > av.FlightCellSpan {
-		t.Errorf("sim reads %v past its start but flight cells keep only %v", w, av.FlightCellSpan)
+	if w := MaxPublishedRateScale * HistoricalFlightWindow; w > traffic.FlightCellSpan {
+		t.Errorf("sim reads %v past its start but flight cells keep only %v", w, traffic.FlightCellSpan)
 	}
-	if w := MaxPublishedRateScale * PrespawnDuration; w > av.FlightCellSpan {
-		t.Errorf("sim reads %v before its start but flight cells keep only %v", w, av.FlightCellSpan)
+	if w := MaxPublishedRateScale * PrespawnDuration; w > traffic.FlightCellSpan {
+		t.Errorf("sim reads %v before its start but flight cells keep only %v", w, traffic.FlightCellSpan)
 	}
 }

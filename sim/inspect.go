@@ -12,6 +12,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 )
 
@@ -71,7 +72,7 @@ type PairRoutes struct {
 // RoutesForPair returns the ways a directed airport pair is really flown and
 // what the scenario does with each of them.
 func (ss *CommonState) RoutesForPair(from, to av.ICAOAirportCode) PairRoutes {
-	from, to = normalizeAirportCode(from), normalizeAirportCode(to)
+	from, to = traffic.NormalizeAirportCode(from), traffic.NormalizeAirportCode(to)
 	pr := PairRoutes{From: from, To: to}
 
 	// A pair the scenario flies an end of still needs something to fly the
@@ -268,7 +269,7 @@ type PublishedTraffic struct {
 // data off disk is the slow part; it takes a fraction of a second.
 func (ss *CommonState) PublishedTrafficReport(q TrafficQuery) (PublishedTraffic, error) {
 	report := PublishedTraffic{Source: q.Source, Start: q.Start}
-	var flights []av.Flight
+	var flights []traffic.Flight
 	switch q.Source {
 	case TrafficSourceHistorical:
 		report.End = q.Start.Add(HistoricalFlightWindow)
@@ -278,7 +279,7 @@ func (ss *CommonState) PublishedTrafficReport(q TrafficQuery) (PublishedTraffic,
 		}
 
 	case TrafficSourceTimetable:
-		catalog, err := LoadAirportTimetables(q.TimetableAirport)
+		catalog, err := traffic.LoadAirportTimetables(q.TimetableAirport)
 		if err != nil {
 			return PublishedTraffic{}, err
 		}

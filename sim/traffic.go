@@ -14,6 +14,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 )
 
@@ -92,13 +93,6 @@ func publishedTrafficTime(t, start time.Time, scale float32) time.Time {
 	return start.Add(time.Duration(float64(t.Sub(start)) / float64(scale)))
 }
 
-// normalizeAirportCode cleans up the airport identifiers that arrive with a
-// published flight. Both traffic sources need it: a timetable's come from
-// hand-edited CSV and historical ones from an outside dataset.
-func normalizeAirportCode(value av.ICAOAirportCode) av.ICAOAirportCode {
-	return av.ICAOAirportCode(strings.ToUpper(strings.TrimSpace(string(value))))
-}
-
 // enrouteFixes returns the fixes a real route names between its endpoints. A
 // route reads "ORIGIN ...fixes... DESTINATION", so its two ends are airport
 // identifiers rather than points to match a scenario's exits or arrivals
@@ -146,7 +140,7 @@ type candidateArrival struct {
 // candidateArrivals gathers them in sorted flow order, so that a choice between
 // equally good ones doesn't vary between runs.
 func (ss *CommonState) candidateArrivals(arrivalAirport av.ICAOAirportCode) []candidateArrival {
-	arrivalAirport = normalizeAirportCode(arrivalAirport)
+	arrivalAirport = traffic.NormalizeAirportCode(arrivalAirport)
 
 	var candidates []candidateArrival
 	for _, group := range util.SortedMapKeys(ss.InboundFlows) {
@@ -181,26 +175,26 @@ func TimetableStartMinute(start time.Time, airport av.ICAOAirportCode) (int, err
 // The times are the timetable's own; the rate scale draws them in when the
 // flights are queued, so it only comes in here to say how much of the cycle's
 // tail wraps around into the prespawn window.
-func timetableFlights(startTime Time, timetable Timetable, lc *LaunchConfig) []av.Flight {
+func timetableFlights(startTime Time, timetable traffic.Timetable, lc *LaunchConfig) []traffic.Flight {
 	const prespawnMinutes = initialSimSeconds / 60
 	departureScale := math.Clamp(lc.PublishedDepartureRateScale, 0, MaxPublishedRateScale)
 	arrivalScale := math.Clamp(lc.PublishedArrivalRateScale, 0, MaxPublishedRateScale)
 
-	var flights []av.Flight
+	var flights []traffic.Flight
 	for _, flight := range timetable.Flights {
 		operation := flight.OperationAt(timetable.Airport)
-		if operation == TimetableOperationUnknown {
+		if operation == traffic.TimetableOperationUnknown {
 			continue
 		}
-		departure := operation == TimetableOperationDeparture
+		departure := operation == traffic.TimetableOperationDeparture
 		scale := arrivalScale
 		if departure {
 			scale = departureScale
 		}
 
-		minutes := (flight.PublishedMinute - lc.TimetableStartMinute + minutesPerTimetableDay) % minutesPerTimetableDay
-		if minutes >= minutesPerTimetableDay-int(prespawnMinutes*scale) {
-			minutes -= minutesPerTimetableDay
+		minutes := (flight.PublishedMinute - lc.TimetableStartMinute + traffic.MinutesPerTimetableDay) % traffic.MinutesPerTimetableDay
+		if minutes >= traffic.MinutesPerTimetableDay-int(prespawnMinutes*scale) {
+			minutes -= traffic.MinutesPerTimetableDay
 		}
 		published := startTime.Add(time.Duration(minutes) * time.Minute).Time().UTC()
 
@@ -208,18 +202,18 @@ func timetableFlights(startTime Time, timetable Timetable, lc *LaunchConfig) []a
 		if !departure {
 			other = flight.Origin
 		}
-		flights = append(flights, av.Flight{
+		flights = append(flights, traffic.Flight{
 			Airport:      timetable.Airport,
 			Callsign:     flight.Callsign,
 			Other:        other,
 			AircraftType: flight.AircraftType,
-			Day:          av.FlightDataDayNumber(published),
+			Day:          traffic.FlightDataDayNumber(published),
 			Minute:       published.Hour()*60 + published.Minute(),
 			Departure:    departure,
 		})
 	}
 
-	slices.SortStableFunc(flights, func(a, b av.Flight) int {
+	slices.SortStableFunc(flights, func(a, b traffic.Flight) int {
 		if c := a.Time().Compare(b.Time()); c != 0 {
 			return c
 		}
@@ -267,16 +261,16 @@ func trafficCountsSpan(start time.Time) (first, last time.Time) {
 // historical is the facility's flights on and around the day previewed, however much of them the
 // caller has on hand; the window and the scenario's airports are selected from it here.
 func TrafficCounts(lc *LaunchConfig, start time.Time,
-	historical []av.Flight) (departures, arrivals []uint16, operations map[av.ICAOAirportCode]int, err error) {
+	historical []traffic.Flight) (departures, arrivals []uint16, operations map[av.ICAOAirportCode]int, err error) {
 	first, last := trafficCountsSpan(start)
 	start = first.Add(TrafficCountsPad)
 	departureScale := math.Clamp(lc.PublishedDepartureRateScale, 0, MaxPublishedRateScale)
 	arrivalScale := math.Clamp(lc.PublishedArrivalRateScale, 0, MaxPublishedRateScale)
 
-	var flights []av.Flight
+	var flights []traffic.Flight
 	switch lc.TrafficSource {
 	case TrafficSourceTimetable:
-		catalog, err := LoadAirportTimetables(lc.TimetableAirport)
+		catalog, err := traffic.LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
 			return nil, nil, nil, err
 		}
@@ -292,7 +286,7 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 		// cleanup filters that follow all work from the times in the data.
 		scale := max(departureScale, arrivalScale)
 		departureAirports, arrivalAirports := lc.IFRAirports()
-		flights = av.SelectFlights(historical, departureAirports, arrivalAirports, av.DB.Airlines,
+		flights = traffic.SelectFlights(historical, departureAirports, arrivalAirports, av.DB.Airlines,
 			start.Add(time.Duration(float64(first.Sub(start))*float64(scale))),
 			start.Add(time.Duration(float64(last.Sub(start))*float64(scale))))
 
@@ -517,8 +511,8 @@ func (bc backgroundClassifier) inboundIsBackground(flow *av.InboundFlow, airport
 // fair share of the traffic at some facilities and the data records them like
 // anything else, but everything Vice flies is flown as a fixed-wing aircraft,
 // so they are left on the ground rather than flown as one.
-func dropRotorcraft(flights []av.Flight) ([]av.Flight, int) {
-	kept := make([]av.Flight, 0, len(flights))
+func dropRotorcraft(flights []traffic.Flight) ([]traffic.Flight, int) {
+	kept := make([]traffic.Flight, 0, len(flights))
 	dropped := 0
 	for _, flight := range flights {
 		if engineTypeFor(flight.AircraftType) == "H" {
@@ -536,7 +530,7 @@ func dropRotorcraft(flights []av.Flight) ([]av.Flight, int) {
 // disagreeing about the airport at the other end. Only identical records are
 // merged when the data is written, so the rest arrive here and would otherwise
 // spawn as several aircraft sharing a callsign.
-func dropRepeatedRecords(flights []av.Flight) ([]av.Flight, int) {
+func dropRepeatedRecords(flights []traffic.Flight) ([]traffic.Flight, int) {
 	// operation identifies what a record says the aircraft did, without the time
 	// or the far-end airport: those are what the repeats disagree about.
 	type operation struct {
@@ -546,7 +540,7 @@ func dropRepeatedRecords(flights []av.Flight) ([]av.Flight, int) {
 	}
 
 	last := make(map[operation]time.Time)
-	kept := make([]av.Flight, 0, len(flights))
+	kept := make([]traffic.Flight, 0, len(flights))
 	dropped := 0
 	for _, flight := range flights {
 		key := operation{flight.Callsign, flight.Airport, flight.Departure}
@@ -572,7 +566,7 @@ func dropRepeatedRecords(flights []av.Flight) ([]av.Flight, int) {
 // A departure is matched at most once, so an aircraft that flies from one of the
 // facility's airports to another and back has each of its legs recognized rather
 // than the first departure standing for both.
-func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
+func dropReturnedLegs(flights []traffic.Flight) ([]traffic.Flight, int) {
 	// leg identifies a flight by callsign and where it flew between, so that an
 	// arrival can find the departure that recorded the same leg at its far end.
 	type leg struct {
@@ -588,7 +582,7 @@ func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
 		}
 	}
 
-	kept := make([]av.Flight, 0, len(flights))
+	kept := make([]traffic.Flight, 0, len(flights))
 	dropped := 0
 	for _, flight := range flights {
 		if !flight.Departure {
@@ -614,8 +608,8 @@ func dropReturnedLegs(flights []av.Flight) ([]av.Flight, int) {
 // route database covers where it really came from.
 func (ss *CommonState) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftType string,
 	routed routedPairs) (arrivalPlacement, error) {
-	arrivalAirport = normalizeAirportCode(arrivalAirport)
-	origin = normalizeAirportCode(origin)
+	arrivalAirport = traffic.NormalizeAirportCode(arrivalAirport)
+	origin = traffic.NormalizeAirportCode(origin)
 
 	candidates := ss.candidateArrivals(arrivalAirport)
 	if len(candidates) == 0 {
@@ -790,7 +784,7 @@ func makeRoutedPairs() routedPairs {
 		destinationsByOrigin: make(map[av.ICAOAirportCode][]av.ICAOAirportCode),
 	}
 	add := func(pair av.AirportPair) {
-		from, to := normalizeAirportCode(pair.From), normalizeAirportCode(pair.To)
+		from, to := traffic.NormalizeAirportCode(pair.From), traffic.NormalizeAirportCode(pair.To)
 		routed.originsByDestination[to] = append(routed.originsByDestination[to], from)
 		routed.destinationsByOrigin[from] = append(routed.destinationsByOrigin[from], to)
 	}

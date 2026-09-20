@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/speech/stt"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
@@ -759,11 +760,11 @@ func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficC
 		return err
 	}
 
-	var historical []av.Flight
+	var historical []traffic.Flight
 	var err error
 	if args.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
-		historical, err = av.ReadFlightDataCellsAround(util.GetResourcesFS(),
-			av.FlightDataCells(args.LaunchConfig.IFRAirports()), args.StartTime)
+		historical, err = traffic.ReadFlightDataCellsAround(util.GetResourcesFS(),
+			traffic.FlightDataCells(args.LaunchConfig.IFRAirports()), args.StartTime)
 		if err != nil {
 			return err
 		}

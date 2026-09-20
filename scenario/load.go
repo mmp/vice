@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/videomaps"
 	"github.com/mmp/vice/wx"
@@ -779,7 +780,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 
 	loadEmergencies(e)
 
-	timetableCatalog, err := sim.LoadBuiltinTimetables()
+	timetableCatalog, err := traffic.LoadBuiltinTimetables()
 	if err != nil {
 		e.Error(err)
 	} else {

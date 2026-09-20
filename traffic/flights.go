@@ -1,8 +1,8 @@
-// aviation/flights.go
+// traffic/flights.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package traffic
 
 import (
 	"bytes"
@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	av "github.com/mmp/vice/aviation"
 	"io"
 	"io/fs"
 	"path"
@@ -30,9 +31,9 @@ import (
 // UTC, as they are everywhere else in Vice; the local time at an airport is a
 // matter for the UI, which is the only place a controller wants to see it.
 type Flight struct {
-	Airport      ICAOAirportCode // the facility airport it departs from or arrives at
+	Airport      av.ICAOAirportCode // the facility airport it departs from or arrives at
 	Callsign     string
-	Other        ICAOAirportCode // the airport at the other end
+	Other        av.ICAOAirportCode // the airport at the other end
 	AircraftType string
 	Day          uint16 // UTC date, in days from 1970-01-01
 	Minute       int    // minutes after UTC midnight
@@ -44,7 +45,7 @@ type Flight struct {
 // source data knows nothing about, so each one stands on the flights of a real
 // airport with the traffic rate and character it wants. Donors must be
 // four-character ICAO codes: that is all the source data's airport lists hold.
-var FlightDataSubstitutes = map[ICAOAirportCode]ICAOAirportCode{
+var FlightDataSubstitutes = map[av.ICAOAirportCode]av.ICAOAirportCode{
 	"KAAC": "KEWR", // Academy: Newark
 	"KBRT": "KBED", // Bartles: Hanscom Field, Boston's business jet reliever
 	"KJKE": "KWRI", // Jeske: McGuire AFB, for the military traffic
@@ -346,7 +347,7 @@ func EncodeFlights(flights []Flight) ([]byte, error) {
 	}
 
 	for i, f := range flights {
-		base, number := SplitCallsign(f.Callsign)
+		base, number := av.SplitCallsign(f.Callsign)
 		baseIndices[i] = bases.index(base)
 		// Only store the flight number as a number when that reproduces it
 		// exactly; "0123" would otherwise come back as "123".
@@ -589,9 +590,9 @@ func DecodeFlights(data []byte) ([]Flight, error) {
 			return nil, fmt.Errorf("dictionary index out of range")
 		}
 		flights[i] = Flight{
-			Airport:      ICAOAirportCode(ownAirports[ownAirportIndices[i]]),
+			Airport:      av.ICAOAirportCode(ownAirports[ownAirportIndices[i]]),
 			Callsign:     callsigns[i],
-			Other:        ICAOAirportCode(airports[airportIndices[i]]),
+			Other:        av.ICAOAirportCode(airports[airportIndices[i]]),
 			AircraftType: aircraftTypes[aircraftTypeIndices[i]],
 			Day:          h.firstDay + uint16(days[i]),
 			Minute:       int(minutes[i]),
@@ -632,11 +633,11 @@ func floorDegrees(v float32) int {
 // FlightDataCells returns the cells holding the given airports' flights, with
 // no repeats. Airports the database doesn't know are left out: there can be no
 // flight data for an airport with no position.
-func FlightDataCells(airports ...map[ICAOAirportCode]bool) []string {
+func FlightDataCells(airports ...map[av.ICAOAirportCode]bool) []string {
 	var cells []string
 	for _, set := range airports {
 		for icao := range set {
-			ap, ok := DB.Airports[icao]
+			ap, ok := av.DB.Airports[icao]
 			if !ok {
 				continue
 			}
@@ -831,8 +832,8 @@ func MergeFlightIntervals(intervals []util.TimeInterval) []util.TimeInterval {
 // Decoding a cell costs enough that anything asking about several windows of
 // it--the New Sim dialog previews a fresh one each time the start time
 // moves--wants to do it once and select from the result.
-func SelectFlights(flights []Flight, departureAirports, arrivalAirports map[ICAOAirportCode]bool,
-	airlines map[string]Airline, start, end time.Time) []Flight {
+func SelectFlights(flights []Flight, departureAirports, arrivalAirports map[av.ICAOAirportCode]bool,
+	airlines map[string]av.Airline, start, end time.Time) []Flight {
 	// The window can only hold flights on the days it touches.
 	firstDay := FlightDataDayNumber(start)
 	lastDay := FlightDataDayNumber(end)
@@ -848,7 +849,7 @@ func SelectFlights(flights []Flight, departureAirports, arrivalAirports map[ICAO
 		} else if !arrivalAirports[f.Airport] {
 			continue
 		}
-		base, _ := SplitCallsign(f.Callsign)
+		base, _ := av.SplitCallsign(f.Callsign)
 		if _, ok := airlines[base]; !ok {
 			continue
 		}

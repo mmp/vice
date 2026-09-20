@@ -15,6 +15,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 )
 
@@ -166,7 +167,7 @@ func matchArrivalRoutes(candidates []candidateArrival, aircraftType string, rout
 // an inactive STAR apart from active arrivals that don't admit the aircraft.
 func matchArrivalRoute(candidates []candidateArrival, aircraftType, route string, arrivalAirport,
 	origin av.ICAOAirportCode) (candidateArrival, error) {
-	star, entry := av.RouteSTAR(route, normalizeAirportCode(arrivalAirport))
+	star, entry := av.RouteSTAR(route, traffic.NormalizeAirportCode(arrivalAirport))
 	if star == "" {
 		suitable := suitableArrivals(candidates, aircraftType)
 		if len(suitable) == 0 {
@@ -200,7 +201,7 @@ func matchArrivalRoute(candidates []candidateArrival, aircraftType, route string
 	// enters through says which of them the flight reaches, the one joined
 	// soonest after the entry fix winning: that is the gate, while a later
 	// join is a feeder it would only pass on the way in.
-	cifp := av.DB.Airports[normalizeAirportCode(arrivalAirport)].STARs[star]
+	cifp := av.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)].STARs[star]
 	if entry != "" {
 		best, bestJoin := -1, 0
 		for _, name := range util.SortedMapKeys(cifp.Transitions) {
@@ -266,8 +267,8 @@ func arrivalWaypointFixes(arr *av.Arrival) map[string]bool {
 // pointing somewhere else entirely.
 func nearestSpawnToOrigin(candidates []candidateArrival, arrivalAirport,
 	origin av.ICAOAirportCode) (candidateArrival, bool) {
-	ap, apOK := av.DB.Airports[normalizeAirportCode(arrivalAirport)]
-	from, fromOK := av.DB.Airports[normalizeAirportCode(origin)]
+	ap, apOK := av.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)]
+	from, fromOK := av.DB.Airports[traffic.NormalizeAirportCode(origin)]
 	if !apOK || !fromOK {
 		return candidateArrival{}, false
 	}
@@ -299,8 +300,8 @@ func nearestSpawnToOrigin(candidates []candidateArrival, arrivalAirport,
 // active a bare minimum-distance pick would take any flight from anywhere.
 func arrivalNearestArc(candidates []candidateArrival, arrivalAirport,
 	origin av.ICAOAirportCode) (candidateArrival, bool) {
-	ap, apOK := av.DB.Airports[normalizeAirportCode(arrivalAirport)]
-	from, fromOK := av.DB.Airports[normalizeAirportCode(origin)]
+	ap, apOK := av.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)]
+	from, fromOK := av.DB.Airports[traffic.NormalizeAirportCode(origin)]
 	if !apOK || !fromOK {
 		return candidateArrival{}, false
 	}
@@ -364,8 +365,8 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 	ac.InitializeFlightPlan(
 		av.FlightRulesIFR,
 		e.AircraftType,
-		normalizeAirportCode(e.DepartureAirport),
-		normalizeAirportCode(e.ArrivalAirport),
+		traffic.NormalizeAirportCode(e.DepartureAirport),
+		traffic.NormalizeAirportCode(e.ArrivalAirport),
 	)
 
 	if err := ac.InitializeArrival(s.State.Airports[e.ArrivalAirport], arr, e.Cruise,

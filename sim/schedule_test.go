@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/traffic"
 )
 
 // scenarioScheduleTestSim builds the minimal Sim scenario schedule generation
@@ -87,9 +88,9 @@ func checkSortedSchedule(t *testing.T, fs *FlightSchedule) {
 
 func TestScheduleOrdersPublishedDeparturesFromSelectedStartTime(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
-	timetable := Timetable{
+	timetable := traffic.Timetable{
 		Airport: "KMSP",
-		Flights: []TimetableFlight{
+		Flights: []traffic.TimetableFlight{
 			{Callsign: "DAL2", Origin: "KMSP", Destination: "KATL", PublishedMinute: 14*60 + 10},
 			{Callsign: "DAL1", Origin: "KMSP", Destination: "KORD", PublishedMinute: 14*60 + 2},
 			{Callsign: "DAL0", Origin: "KMSP", Destination: "KDEN", PublishedMinute: 13*60 + 55},
@@ -124,16 +125,16 @@ func TestScheduleOrdersPublishedDeparturesFromSelectedStartTime(t *testing.T) {
 				got.SpawnTime.Time(), expected.callsign, expected.spawn.Time())
 		}
 		if got.Source != TrafficSourceTimetable {
-			t.Errorf("departure %d source = %s, want Timetable", i, got.Source)
+			t.Errorf("departure %d source = %s, want traffic.Timetable", i, got.Source)
 		}
 	}
 }
 
 func TestScheduleOrdersPublishedArrivalsFromSelectedStartTime(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
-	timetable := Timetable{
+	timetable := traffic.Timetable{
 		Airport: "KMSP",
-		Flights: []TimetableFlight{
+		Flights: []traffic.TimetableFlight{
 			{Callsign: "DAL102", Origin: "KATL", Destination: "KMSP", PublishedMinute: 14*60 + 12},
 			{Callsign: "DAL101", Origin: "KORD", Destination: "KMSP", PublishedMinute: 14*60 + 3},
 			{Callsign: "DAL100", Origin: "KDEN", Destination: "KMSP", PublishedMinute: 13*60 + 50},
@@ -185,7 +186,7 @@ func TestScheduleScalesPublishedRates(t *testing.T) {
 	s := publishedProviderTestSim(t, start)
 	s.State.LaunchConfig.PublishedDepartureRateScale = 2
 
-	s.schedulePublishedFlights([]av.Flight{
+	s.schedulePublishedFlights([]traffic.Flight{
 		testFlight("DAL1", "KMSP", "KORD", true, 14, 20),
 		testFlight("DAL2", "KMSP", "KATL", true, 14, 40),
 		testFlight("DAL3", "KMSP", "KDEN", false, 14, 30),
@@ -515,7 +516,7 @@ func TestZeroRateScaleParksPublishedFlights(t *testing.T) {
 	s.State.LaunchConfig.TrafficSource = TrafficSourceTimetable
 	s.State.LaunchConfig.PublishedDepartureRateScale = 0
 
-	s.schedulePublishedFlights([]av.Flight{
+	s.schedulePublishedFlights([]traffic.Flight{
 		testFlight("DAL1", "KMSP", "KORD", true, 14, 20),
 		testFlight("DAL2", "KMSP", "KATL", false, 14, 30),
 	}, 0)
@@ -578,7 +579,7 @@ func TestFlowEnableTogglesRefitArrivals(t *testing.T) {
 	s := publishedProviderTestSim(t, start)
 	s.State.SimTime = start
 	s.State.LaunchConfig.TrafficSource = TrafficSourceTimetable
-	s.schedulePublishedFlights([]av.Flight{
+	s.schedulePublishedFlights([]traffic.Flight{
 		testFlight("DAL1", "KMSP", "KATL", false, 14, 30),
 	}, 0)
 	if len(s.Schedule.Arrivals) != 1 || s.Schedule.Arrivals[0].DropReason != "" {

@@ -36,6 +36,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 )
 
@@ -218,7 +219,7 @@ type filings struct{ jets, props int }
 // what the two give.
 func gatherFilings(onlyCell string) map[av.AirportPair]filings {
 	resources := util.GetResourcesFS()
-	files, err := fs.Glob(resources, av.FlightDataDirectory+"/*"+av.FlightDataExtension)
+	files, err := fs.Glob(resources, traffic.FlightDataDirectory+"/*"+traffic.FlightDataExtension)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
@@ -226,16 +227,16 @@ func gatherFilings(onlyCell string) map[av.AirportPair]filings {
 
 	counts := make(map[av.AirportPair]filings)
 	for _, file := range files {
-		cell := strings.TrimSuffix(path.Base(file), av.FlightDataExtension)
+		cell := strings.TrimSuffix(path.Base(file), traffic.FlightDataExtension)
 		if onlyCell != "" && !strings.EqualFold(cell, onlyCell) {
 			continue
 		}
 
-		data, err := av.ReadFlightData(resources, cell)
+		data, err := traffic.ReadFlightData(resources, cell)
 		if err != nil || data == nil {
 			continue
 		}
-		flights, err := av.DecodeFlights(data)
+		flights, err := traffic.DecodeFlights(data)
 		if err != nil {
 			fmt.Printf("%s: %v\n", file, err)
 			continue
@@ -366,7 +367,7 @@ func (c coverage) unrouted(f filings) int {
 // they turn up in the flight data at all, but no real route was ever filed to
 // one and the Academy is not to be flown on real-world routes regardless.
 func madeUpAirport(icao av.ICAOAirportCode) bool {
-	_, ok := av.FlightDataSubstitutes[icao]
+	_, ok := traffic.FlightDataSubstitutes[icao]
 	return ok
 }
 

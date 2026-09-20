@@ -16,6 +16,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/traffic"
 )
 
 func TestParseAirportList(t *testing.T) {
@@ -405,7 +406,7 @@ func performanceWithEngine(class string) av.AircraftPerformance {
 
 // cellOf is where testAirports puts an airport's flights.
 func cellOf(airport av.ICAOAirportCode) string {
-	return av.FlightDataCell(testAirports[airport].Location)
+	return traffic.FlightDataCell(testAirports[airport].Location)
 }
 
 // makeTestImporter builds an importer over testAirports, with no resource
@@ -476,7 +477,7 @@ func TestRecordTime(t *testing.T) {
 			if len(records) != 1 {
 				t.Fatalf("expected one record in %v, got %d (buckets %v)", key, len(records), imp.buckets)
 			}
-			if got := av.FlightDataDate(records[0].day).Format("2006-01-02"); got != tc.date {
+			if got := traffic.FlightDataDate(records[0].day).Format("2006-01-02"); got != tc.date {
 				t.Errorf("got date %s, expected %s", got, tc.date)
 			}
 			if records[0].minute != tc.expected {
@@ -719,7 +720,7 @@ func TestWriteFlightData(t *testing.T) {
 	imp := makeTestImporter(t)
 	sym := imp.symbols
 
-	april10 := av.FlightDataDayNumber(time.Date(2026, time.April, 10, 0, 0, 0, 0, time.UTC))
+	april10 := traffic.FlightDataDayNumber(time.Date(2026, time.April, 10, 0, 0, 0, 0, time.UTC))
 	duplicate := record{airport: sym.id("KMSP"), callsign: sym.id("DAL1234"), other: sym.id("KSFO"),
 		acType: sym.id("B737"), day: april10, minute: 6*60 + 30}
 	arrival := record{airport: sym.id("KMSP"), callsign: sym.id("UAL99"), other: sym.id("KSFO"),
@@ -731,7 +732,7 @@ func TestWriteFlightData(t *testing.T) {
 	// with nothing and so no file at all.
 	sparse := record{airport: sym.id("KORD"), callsign: sym.id("AAL1"), other: sym.id("KSFO"),
 		acType: sym.id("B737"), minute: 6 * 60,
-		day: av.FlightDataDayNumber(time.Date(2026, time.March, 31, 0, 0, 0, 0, time.UTC))}
+		day: traffic.FlightDataDayNumber(time.Date(2026, time.March, 31, 0, 0, 0, 0, time.UTC))}
 	imp.buckets[bucket{cell: cellOf("KORD"), departure: true}] = []record{sparse}
 
 	imp.daysPresent["2026-03"] = map[string]bool{"2026-03-31": true}
@@ -742,7 +743,7 @@ func TestWriteFlightData(t *testing.T) {
 
 	// A file left over from an earlier import that this one has nothing for.
 	dir := t.TempDir()
-	stale := filepath.Join(dir, "N90"+av.FlightDataExtension)
+	stale := filepath.Join(dir, "N90"+traffic.FlightDataExtension)
 	if err := os.WriteFile(stale, []byte("old"), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -753,21 +754,21 @@ func TestWriteFlightData(t *testing.T) {
 	if _, err := os.Stat(stale); !os.IsNotExist(err) {
 		t.Errorf("a file this import has no flights for was left behind")
 	}
-	if _, err := os.Stat(filepath.Join(dir, cellOf("KORD")+av.FlightDataExtension)); !os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(dir, cellOf("KORD")+traffic.FlightDataExtension)); !os.IsNotExist(err) {
 		t.Errorf("wrote a file for a cell whose only flights were dropped")
 	}
 
-	data, err := os.ReadFile(filepath.Join(dir, cellOf("KMSP")+av.FlightDataExtension))
+	data, err := os.ReadFile(filepath.Join(dir, cellOf("KMSP")+traffic.FlightDataExtension))
 	if err != nil {
 		t.Fatalf("read: %v", err)
 	}
-	flights, err := av.DecodeFlights(data)
+	flights, err := traffic.DecodeFlights(data)
 	if err != nil {
 		t.Fatalf("DecodeFlights: %v", err)
 	}
 
 	// One departure, with its duplicate dropped, and one arrival.
-	expected := []av.Flight{
+	expected := []traffic.Flight{
 		{Airport: "KMSP", Callsign: "DAL1234", Other: "KSFO", AircraftType: "B737",
 			Day: april10, Minute: 6*60 + 30, Departure: true},
 		{Airport: "KMSP", Callsign: "UAL99", Other: "KSFO", AircraftType: "B737",
@@ -777,7 +778,7 @@ func TestWriteFlightData(t *testing.T) {
 		t.Errorf("got %+v, expected %+v", flights, expected)
 	}
 
-	metadata, err := os.ReadFile(filepath.Join(dir, av.FlightDataMetadataName))
+	metadata, err := os.ReadFile(filepath.Join(dir, traffic.FlightDataMetadataName))
 	if err != nil {
 		t.Fatalf("read: %v", err)
 	}
@@ -787,10 +788,10 @@ func TestWriteFlightData(t *testing.T) {
 }
 
 func TestDropSparseFlights(t *testing.T) {
-	flights := []av.Flight{
-		{Callsign: "DAL1", Day: av.FlightDataDayNumber(
+	flights := []traffic.Flight{
+		{Callsign: "DAL1", Day: traffic.FlightDataDayNumber(
 			time.Date(2026, time.March, 31, 0, 0, 0, 0, time.UTC))},
-		{Callsign: "DAL2", Day: av.FlightDataDayNumber(
+		{Callsign: "DAL2", Day: traffic.FlightDataDayNumber(
 			time.Date(2026, time.April, 10, 0, 0, 0, 0, time.UTC))},
 	}
 

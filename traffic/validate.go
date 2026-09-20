@@ -1,8 +1,8 @@
-// sim/timetable_validate.go
+// traffic/validate.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package traffic
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 const (
 	timetableDepartureActiveMinutes = 45
 	timetableArrivalActiveMinutes   = 45
-	minutesPerTimetableDay          = 24 * 60
+	MinutesPerTimetableDay          = 24 * 60
 )
 
 type timetableCallsignUse struct {
@@ -112,9 +112,9 @@ func validateTimetable(timetable Timetable) error {
 
 				overlaps := false
 				for _, dayOffset := range []int{
-					-minutesPerTimetableDay,
+					-MinutesPerTimetableDay,
 					0,
-					minutesPerTimetableDay,
+					MinutesPerTimetableDay,
 				} {
 					if timetableWindowsOverlap(
 						first.start,

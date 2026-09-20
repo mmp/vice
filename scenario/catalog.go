@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/videomaps"
 	"github.com/mmp/vice/wx"
@@ -109,7 +110,7 @@ type Spec struct {
 	ControllerConfiguration *sim.ControllerConfiguration
 	MagneticVariation       float32
 	WindSpecifier           *wx.WindSpecifier
-	Timetables              []sim.TimetableSummary
+	Timetables              []traffic.TimetableSummary
 	// TrafficSources are the sources this scenario can be flown with, in the
 	// order they should be offered. A scenario that gives no airlines can't
 	// generate its own traffic, so it offers only the published sources.
@@ -231,7 +232,7 @@ func canGenerateScenarioTraffic(sg *Group, lc *sim.LaunchConfig) bool {
 	return true
 }
 
-func attachTimetables(catalogs map[string]map[string]*Catalog, timetables sim.TimetableCatalog) {
+func attachTimetables(catalogs map[string]map[string]*Catalog, timetables traffic.TimetableCatalog) {
 	for _, facilityCatalogs := range catalogs {
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
@@ -254,7 +255,7 @@ func attachTimetables(catalogs map[string]map[string]*Catalog, timetables sim.Ti
 // it is whether the cells its airports are in hold anything.
 func attachHistoricalFlightIntervals(catalogs map[string]map[string]*Catalog, lg *log.Logger) {
 	resources := util.GetResourcesFS()
-	intervals, err := av.FlightDataIntervals(resources)
+	intervals, err := traffic.FlightDataIntervals(resources)
 	if err != nil {
 		lg.Errorf("historical flight data: %v", err)
 		return
@@ -280,8 +281,8 @@ func attachHistoricalFlightIntervals(catalogs map[string]map[string]*Catalog, lg
 // airports has flight data at all.
 func haveFlightDataCells(scenario *Spec) bool {
 	departures, arrivals := scenario.LaunchConfig.IFRAirports()
-	return slices.ContainsFunc(av.FlightDataCells(departures, arrivals), func(cell string) bool {
-		return util.ResourceExists(av.FlightDataPath(cell))
+	return slices.ContainsFunc(traffic.FlightDataCells(departures, arrivals), func(cell string) bool {
+		return util.ResourceExists(traffic.FlightDataPath(cell))
 	})
 }
 
