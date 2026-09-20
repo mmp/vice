@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
@@ -36,7 +37,7 @@ import (
 type NewSimConfiguration struct {
 	server.NewSimRequest
 
-	selectedFacilityCatalogs map[string]*server.ScenarioCatalog
+	selectedFacilityCatalogs map[string]*scenario.Catalog
 
 	displayError error
 
@@ -131,7 +132,7 @@ func (c *NewSimConfiguration) SetFacility(name string) {
 		c.selectedFacilityCatalogs = catalogs[name]
 	}
 	c.Facility = name
-	var scenarioCatalog *server.ScenarioCatalog
+	var scenarioCatalog *scenario.Catalog
 	c.GroupName, scenarioCatalog = util.FirstSortedMapEntry(c.selectedFacilityCatalogs)
 
 	c.SetScenario(c.GroupName, scenarioCatalog.DefaultScenario)
@@ -139,7 +140,7 @@ func (c *NewSimConfiguration) SetFacility(name string) {
 
 func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var ok bool
-	var scenarioCatalog *server.ScenarioCatalog
+	var scenarioCatalog *scenario.Catalog
 	if scenarioCatalog, ok = c.selectedFacilityCatalogs[groupName]; !ok {
 		c.lg.Errorf("%s: group not found in TRACON %s", groupName, c.Facility)
 		groupName, scenarioCatalog = util.FirstSortedMapEntry(c.selectedFacilityCatalogs)
@@ -175,7 +176,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	go c.fetchMETAR(seq, facility, airports, spec)
 }
 
-func normalizeTrafficSourceConfig(spec *server.ScenarioSpec) {
+func normalizeTrafficSourceConfig(spec *scenario.Spec) {
 	lc := &spec.LaunchConfig
 	lc.TimetableStartMinute = min(max(lc.TimetableStartMinute, 0), 24*60-1)
 	lc.PublishedArrivalRateScale = math.Clamp(lc.PublishedArrivalRateScale, 0, sim.MaxPublishedRateScale)
@@ -202,7 +203,7 @@ func normalizeTrafficSourceConfig(spec *server.ScenarioSpec) {
 
 // A scenario may offer timetables for more than one of its airports, so it
 // takes both the id and the airport to name one.
-func selectedTimetableSummary(spec *server.ScenarioSpec) (sim.TimetableSummary, bool) {
+func selectedTimetableSummary(spec *scenario.Spec) (sim.TimetableSummary, bool) {
 	for _, timetable := range spec.Timetables {
 		if timetable.ID == spec.LaunchConfig.TimetableID &&
 			timetable.Airport == spec.LaunchConfig.TimetableAirport {
@@ -215,7 +216,7 @@ func selectedTimetableSummary(spec *server.ScenarioSpec) (sim.TimetableSummary, 
 // timetableLabel names a timetable in the picker. Timetables at different
 // airports may share a name, so the airport goes in the label when the
 // scenario offers more than one airport's.
-func timetableLabel(spec *server.ScenarioSpec, timetable sim.TimetableSummary) string {
+func timetableLabel(spec *scenario.Spec, timetable sim.TimetableSummary) string {
 	for _, other := range spec.Timetables {
 		if other.Airport != timetable.Airport {
 			return av.AirportDisplayId(timetable.Airport) + " " + timetable.Name
@@ -224,7 +225,7 @@ func timetableLabel(spec *server.ScenarioSpec, timetable sim.TimetableSummary) s
 	return timetable.Name
 }
 
-func (c *NewSimConfiguration) trafficSourceTooltip(source sim.TrafficSource, spec *server.ScenarioSpec) string {
+func (c *NewSimConfiguration) trafficSourceTooltip(source sim.TrafficSource, spec *scenario.Spec) string {
 	switch source {
 	case sim.TrafficSourceScenario:
 		return "Traffic generated from the scenario's own definitions, at the arrival\n" +
@@ -240,7 +241,7 @@ func (c *NewSimConfiguration) trafficSourceTooltip(source sim.TrafficSource, spe
 	}
 }
 
-func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec, p platform.Platform) {
+func (c *NewSimConfiguration) drawTrafficSourceUI(spec *scenario.Spec, p platform.Platform) {
 	lc := &spec.LaunchConfig
 
 	// Only the sources the server says it will run this scenario with are
@@ -335,7 +336,7 @@ var (
 // the local clock along the bottom. Only published traffic has a shape to plot,
 // and the counts behind it come from the server, which is the one with the
 // flight data and the one that will fly it.
-func (c *NewSimConfiguration) drawTrafficPlot(spec *server.ScenarioSpec, p platform.Platform) {
+func (c *NewSimConfiguration) drawTrafficPlot(spec *scenario.Spec, p platform.Platform) {
 	c.updateTrafficPreview(spec)
 
 	if c.trafficPreviewError != nil {
@@ -457,7 +458,7 @@ func (c *NewSimConfiguration) drawTrafficPlot(spec *server.ScenarioSpec, p platf
 
 // drawTrafficPlotAxes draws the half-hour gridlines with the local clock time at
 // each, and marks the top of the vertical axis with the rate it stands for.
-func (c *NewSimConfiguration) drawTrafficPlotAxes(drawList *imgui.DrawList, spec *server.ScenarioSpec,
+func (c *NewSimConfiguration) drawTrafficPlotAxes(drawList *imgui.DrawList, spec *scenario.Spec,
 	p0, p1, size imgui.Vec2, window int, maxRate float32) {
 	gridColor := imgui.ColorU32Vec4(imgui.Vec4{1, 1, 1, .25})
 	labelColor := imgui.ColorU32Vec4(imgui.Vec4{1, 1, 1, .5})
@@ -484,7 +485,7 @@ func (c *NewSimConfiguration) drawTrafficPlotAxes(drawList *imgui.DrawList, spec
 	drawList.AddTextVec2(imgui.Vec2{X: p1.X - imgui.CalcTextSize(label).X - 3, Y: p0.Y + 1}, labelColor, label)
 }
 
-func (c *NewSimConfiguration) trafficPlotTime(spec *server.ScenarioSpec, minute int) string {
+func (c *NewSimConfiguration) trafficPlotTime(spec *scenario.Spec, minute int) string {
 	t := c.NewSimRequest.StartTime.Truncate(time.Minute).Add(time.Duration(minute) * time.Minute)
 	return makeScenarioClock(spec).format(t, "15:04")
 }
@@ -546,7 +547,7 @@ func smoothTrafficCounts(counts []uint16) []float32 {
 // the order they were asked for anyway. A failed answer stands only until
 // trafficPreviewRetryAt, so a passing failure doesn't leave the error up for
 // good.
-func (c *NewSimConfiguration) updateTrafficPreview(spec *server.ScenarioSpec) {
+func (c *NewSimConfiguration) updateTrafficPreview(spec *scenario.Spec) {
 	if c.trafficPreviewPending != "" {
 		return
 	}
@@ -617,7 +618,7 @@ func (c *NewSimConfiguration) fetchTrafficPreview(srv *client.Server, key string
 // trafficPreviewKey gathers everything the server's answer depends on, so that
 // the preview is asked for again exactly when one of them changes. Start times
 // are keyed to the minute since that is as fine as the counts go.
-func trafficPreviewKey(req *server.NewSimRequest, spec *server.ScenarioSpec) string {
+func trafficPreviewKey(req *server.NewSimRequest, spec *scenario.Spec) string {
 	lc := &spec.LaunchConfig
 
 	var b strings.Builder
@@ -710,7 +711,7 @@ func (c *NewSimConfiguration) initDefaultWindDirection() {
 // detected via the fetchSeq snapshot. The slow wx.GetMETAR / wx.GetAtmosByTime
 // calls happen without c.mu held so the UI thread (which also takes c.mu in the
 // dialog draw) doesn't stall for several seconds while we read from resources.
-func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports []av.ICAOAirportCode, spec *server.ScenarioSpec) {
+func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports []av.ICAOAirportCode, spec *scenario.Spec) {
 	c.mu.Lock(c.lg)
 	if c.fetchSeq != seq {
 		c.mu.Unlock(c.lg)
@@ -884,7 +885,7 @@ func (c *NewSimConfiguration) ConfigurationDisabled(config *Config) bool {
 }
 
 // getARTCCForFacility returns the ARTCC code for a given facility.
-func getARTCCForFacility(facility string, catalog *server.ScenarioCatalog) string {
+func getARTCCForFacility(facility string, catalog *scenario.Catalog) string {
 	if catalog != nil && catalog.ARTCC != "" {
 		return catalog.ARTCC
 	}
@@ -928,7 +929,7 @@ func formatFacilityLabel(facility string) string {
 
 // getAreaKey returns the area identifier for grouping scenarios.
 // For TRACONs, returns the groupName; for ARTCCs, returns the trimmed Area field.
-func getAreaKey(facility, groupName string, catalog *server.ScenarioCatalog) string {
+func getAreaKey(facility, groupName string, catalog *scenario.Catalog) string {
 	if av.DB.IsTRACON(facility) {
 		return groupName
 	}
@@ -1018,7 +1019,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 	type scenarioInfo struct {
 		groupName    string
 		scenarioName string
-		spec         *server.ScenarioSpec
+		spec         *scenario.Spec
 	}
 
 	if c.newSimType == NewSimCreateLocal || c.newSimType == NewSimCreateRemote {
@@ -1047,19 +1048,19 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		}
 
 		// Helper to check if a catalog has matching airports
-		catalogHasMatchingAirport := func(catalog *server.ScenarioCatalog) bool {
+		catalogHasMatchingAirport := func(catalog *scenario.Catalog) bool {
 			return filterLower == "" || util.SeqContainsFunc(slices.Values(catalog.Airports),
 				func(ap av.ICAOAirportCode) bool { return strings.Contains(strings.ToLower(string(ap)), filterLower) })
 		}
 
 		// Helper to check if a catalog has matching scenario names
-		catalogHasMatchingScenario := func(catalog *server.ScenarioCatalog) bool {
+		catalogHasMatchingScenario := func(catalog *scenario.Catalog) bool {
 			return filterLower == "" || util.SeqContainsFunc(maps.Keys(catalog.Scenarios),
 				func(scenarioName string) bool { return strings.Contains(strings.ToLower(scenarioName), filterLower) })
 		}
 
 		// Helper to check if a catalog matches the filter (name, facility, airports, or scenarios)
-		catalogMatchesFilter := func(catalog *server.ScenarioCatalog) bool {
+		catalogMatchesFilter := func(catalog *scenario.Catalog) bool {
 			if filterLower == "" {
 				return true
 			}
@@ -1079,7 +1080,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		}
 
 		// Helper to check if any catalog in a facility matches
-		facilityMatchesFilter := func(facility string, catalogs map[string]*server.ScenarioCatalog) bool {
+		facilityMatchesFilter := func(facility string, catalogs map[string]*scenario.Catalog) bool {
 			if filterLower == "" {
 				return true
 			}
@@ -1108,7 +1109,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			// Build facility data structures
 			catalogsByFacility := c.selectedServer.GetScenarioCatalogs()
 			allFacilities := util.SortedMapKeys(catalogsByFacility)
-			facilityCatalogs := make(map[string]*server.ScenarioCatalog, len(catalogsByFacility))
+			facilityCatalogs := make(map[string]*scenario.Catalog, len(catalogsByFacility))
 			for facility, catalogs := range catalogsByFacility {
 				for _, cfg := range catalogs {
 					facilityCatalogs[facility] = cfg
@@ -1338,7 +1339,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					// Collect all scenarios from groups with the same area
 					type scenarioWithCatalog struct {
 						scenarioInfo
-						catalog *server.ScenarioCatalog
+						catalog *scenario.Catalog
 					}
 					var allScenarios []scenarioWithCatalog
 					for groupName, group := range c.selectedFacilityCatalogs {
@@ -2906,7 +2907,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 // data with at least a day left to fly, so that a sim started near the end of
 // a stretch still has traffic to work. A stretch with less than that in it is
 // no use to anyone and drops out.
-func (c *NewSimConfiguration) validStartDays(spec *server.ScenarioSpec) []time.Time {
+func (c *NewSimConfiguration) validStartDays(spec *scenario.Spec) []time.Time {
 	if spec == nil {
 		return nil
 	}
@@ -2933,7 +2934,7 @@ func (c *NewSimConfiguration) validStartDays(spec *server.ScenarioSpec) []time.T
 // traffic. Historical counts arrive by RPC, so until the first answer lands
 // the order isn't known: the airports come back alphabetical, as before, and
 // ok is false. Called with c.mu held.
-func (c *NewSimConfiguration) metarAirportsByTraffic(spec *server.ScenarioSpec) (airports []av.ICAOAirportCode, ok bool) {
+func (c *NewSimConfiguration) metarAirportsByTraffic(spec *scenario.Spec) (airports []av.ICAOAirportCode, ok bool) {
 	airports = util.SortedMapKeys(c.airportMETAR)
 
 	var score func(ap av.ICAOAirportCode) float32
@@ -2967,7 +2968,7 @@ const (
 	defaultStartLocalHourMax = 19 // 7pm
 )
 
-func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpec) {
+func (c *NewSimConfiguration) updateStartTimeForRunways(spec *scenario.Spec) {
 	c.weatherFilterError = ""
 
 	if spec == nil || c.airportMETAR == nil {

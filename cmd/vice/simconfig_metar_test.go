@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/wx"
 )
@@ -27,7 +27,7 @@ func metarConfig(airports ...av.ICAOAirportCode) *NewSimConfiguration {
 func TestMetarAirportsByTraffic(t *testing.T) {
 	// KZZZ is the busy airport in every case below, so alphabetical order--the
 	// old behavior, and the tie-break--is the order the ranking has to undo.
-	scenarioSpec := &server.ScenarioSpec{
+	scenarioSpec := &scenario.Spec{
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource:      sim.TrafficSourceScenario,
 			DepartureRateScale: 1,
@@ -37,19 +37,19 @@ func TestMetarAirportsByTraffic(t *testing.T) {
 			},
 		},
 	}
-	timetableSpec := &server.ScenarioSpec{
+	timetableSpec := &scenario.Spec{
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource:    sim.TrafficSourceTimetable,
 			TimetableAirport: "KZZZ",
 		},
 	}
-	historicalSpec := &server.ScenarioSpec{
+	historicalSpec := &scenario.Spec{
 		LaunchConfig: sim.LaunchConfig{TrafficSource: sim.TrafficSourceHistorical},
 	}
 
 	for _, tc := range []struct {
 		name       string
-		spec       *server.ScenarioSpec
+		spec       *scenario.Spec
 		operations map[av.ICAOAirportCode]int
 		want       []av.ICAOAirportCode
 		wantOK     bool

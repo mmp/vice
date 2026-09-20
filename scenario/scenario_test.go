@@ -1,8 +1,8 @@
-// server/scenario_test.go
+// scenario/scenario_test.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package server
+package scenario
 
 import (
 	"slices"

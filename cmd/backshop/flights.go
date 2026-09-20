@@ -12,7 +12,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/gui"
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -147,13 +147,13 @@ func (in *inspector) drawTrafficTab(a *app) {
 
 // publishedSources are the traffic sources with flights to browse; a
 // scenario's own rate-based traffic publishes no flight list.
-func publishedSources(spec *server.ScenarioSpec) []sim.TrafficSource {
+func publishedSources(spec *scenario.Spec) []sim.TrafficSource {
 	return util.FilterSlice(spec.TrafficSources, func(s sim.TrafficSource) bool {
 		return s != sim.TrafficSourceScenario
 	})
 }
 
-func (t *trafficTab) drawQueryUI(a *app, spec *server.ScenarioSpec, sources []sim.TrafficSource) {
+func (t *trafficTab) drawQueryUI(a *app, spec *scenario.Spec, sources []sim.TrafficSource) {
 	// A scenario the user has just switched to may not fly the source or the
 	// timetable the last one did.
 	if !slices.Contains(sources, t.query.Source) || (t.query.Source == sim.TrafficSourceTimetable &&
@@ -210,7 +210,7 @@ func (t *trafficTab) drawQueryUI(a *app, spec *server.ScenarioSpec, sources []si
 
 // defaultQuery picks a start time and timetable the selected source actually
 // has data for, so that the first fetch of a scenario returns something.
-func (t *trafficTab) defaultQuery(spec *server.ScenarioSpec) {
+func (t *trafficTab) defaultQuery(spec *scenario.Spec) {
 	switch t.query.Source {
 	case sim.TrafficSourceTimetable:
 		if len(spec.Timetables) > 0 {
@@ -231,7 +231,7 @@ func (t *trafficTab) defaultQuery(spec *server.ScenarioSpec) {
 	t.start = t.query.Start.Format(startTimeFormat)
 }
 
-func (t *trafficTab) timetableLabel(spec *server.ScenarioSpec) string {
+func (t *trafficTab) timetableLabel(spec *scenario.Spec) string {
 	for _, timetable := range spec.Timetables {
 		if timetable.Airport == t.query.TimetableAirport && timetable.ID == t.query.TimetableID {
 			return string(timetable.Airport) + " " + timetable.Name

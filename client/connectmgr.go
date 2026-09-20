@@ -14,6 +14,7 @@ import (
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform/audio"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -45,7 +46,7 @@ type ConnectionManager struct {
 	onError     func(error)
 }
 
-func MakeServerManager(serverAddress string, overrides server.OverrideFiles, ttsEnabled func() bool, lg *log.Logger,
+func MakeServerManager(serverAddress string, overrides scenario.OverrideFiles, ttsEnabled func() bool, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
@@ -63,7 +64,7 @@ func MakeServerManager(serverAddress string, overrides server.OverrideFiles, tts
 // public vice server: the facility engineering tool works entirely against
 // the scenarios on the local disk, so attempting (and periodically retrying)
 // a network connection would be pure noise.
-func MakeLocalServerManager(overrides server.OverrideFiles, ttsEnabled func() bool, lg *log.Logger,
+func MakeLocalServerManager(overrides scenario.OverrideFiles, ttsEnabled func() bool, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		localOnly:   true,
@@ -75,7 +76,7 @@ func MakeLocalServerManager(overrides server.OverrideFiles, ttsEnabled func() bo
 	return cm, errorLogger, overrideErrors
 }
 
-func (cm *ConnectionManager) launchLocalServer(serverAddress string, overrides server.OverrideFiles,
+func (cm *ConnectionManager) launchLocalServer(serverAddress string, overrides scenario.OverrideFiles,
 	lg *log.Logger) (util.ErrorLogger, string) {
 	rpcPort, errorLogger, overrideErrors := server.LaunchServerAsync(server.ServerLaunchConfig{
 		Overrides:     overrides,

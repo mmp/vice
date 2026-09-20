@@ -1,8 +1,8 @@
-// pkg/server/scenario.go
+// scenario/scenario.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package server
+package scenario
 
 import (
 	"encoding/json"
@@ -39,7 +39,7 @@ import (
 // may specify, in degrees.
 const maxMagneticAdjustment float32 = 4
 
-type scenarioGroup struct {
+type Group struct {
 	ARTCC              string                             `json:"artcc"`
 	Area               string                             `json:"area"`
 	TRACON             string                             `json:"tracon"`
@@ -47,7 +47,7 @@ type scenarioGroup struct {
 	Airports           map[av.ICAOAirportCode]*av.Airport `json:"airports"`
 	Fixes              map[string]math.Point2LL           `json:"-"`
 	FixesStrings       util.OrderedMap                    `json:"fixes"`
-	Scenarios          map[string]*scenario               `json:"scenarios"`
+	Scenarios          map[string]*Scenario               `json:"scenarios"`
 	DefaultScenario    string                             `json:"default_scenario"`
 	Airspace           av.Airspace                        `json:"airspace"`
 	InboundFlows       map[string]*av.InboundFlow         `json:"inbound_flows"`
@@ -72,7 +72,7 @@ type scenarioGroup struct {
 	SourceFile string // path of the JSON file this was loaded from
 }
 
-type scenario struct {
+type Scenario struct {
 	// ConfigurationString holds the plain configuration ID string from JSON
 	// (e.g. "STD"). It references a key in facility_adaptations.configurations.
 	ConfigurationString string `json:"configuration"`
@@ -113,11 +113,11 @@ type scenario struct {
 
 // center is where the scenario's radar display is centered: the scenario's own
 // center if it gives one, otherwise the facility's.
-func (s *scenario) center(sg *scenarioGroup) math.Point2LL {
+func (s *Scenario) center(sg *Group) math.Point2LL {
 	return util.Select(s.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center, s.Center)
 }
 
-func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSpec *av.MapLibrarySpec) {
+func (s *Scenario) PostDeserialize(sg *Group, e *util.ErrorLogger, mapSpec *av.MapLibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Validate wind specifier if present
@@ -672,11 +672,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 
 // facility is the radar facility the group is flown at: its TRACON for STARS
 // scenarios, its ARTCC for ERAM ones.
-func (sg *scenarioGroup) facility() string {
+func (sg *Group) facility() string {
 	return util.Select(sg.TRACON == "", sg.ARTCC, sg.TRACON)
 }
 
-func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
+func (sg *Group) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
 	if p, ok := sg.Fixes[s]; ok {
@@ -686,11 +686,11 @@ func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
 	return enroute.DBLocator{}.Locate(s)
 }
 
-func (sg *scenarioGroup) LocateDME(s string) (math.Point2LL, int, bool) {
+func (sg *Group) LocateDME(s string) (math.Point2LL, int, bool) {
 	return av.DB.LookupDME(s)
 }
 
-func (sg *scenarioGroup) Declination(s string) (float32, bool) {
+func (sg *Group) Declination(s string) (float32, bool) {
 	return av.DB.Declination(s)
 }
 
@@ -698,7 +698,7 @@ func (sg *scenarioGroup) Declination(s string) (float32, bool) {
 // "N2K") to the canonical long-prefix form (e.g. "NNN2K") stored in
 // ControlPositions.  If tcp is already present or no expansion matches,
 // it is returned unchanged.
-func (sg *scenarioGroup) resolveController(tcp sim.TCP) sim.TCP {
+func (sg *Group) resolveController(tcp sim.TCP) sim.TCP {
 	if _, ok := sg.FacilityConfig.ControlPositions[tcp]; ok {
 		return tcp
 	}
@@ -731,7 +731,7 @@ func (sg *scenarioGroup) resolveController(tcp sim.TCP) sim.TCP {
 // short-prefix controller references to their canonical (longest-prefix)
 // form in place. This must be called before airport/flow PostDeserialize
 // so that validation in the aviation package finds the controllers.
-func (sg *scenarioGroup) resolveControllerRefs() {
+func (sg *Group) resolveControllerRefs() {
 	resolve := func(cp av.ControlPosition) av.ControlPosition {
 		return av.ControlPosition(sg.resolveController(sim.TCP(cp)))
 	}
@@ -801,7 +801,7 @@ func (sg *scenarioGroup) resolveControllerRefs() {
 	}
 }
 
-func (sg *scenarioGroup) Similar(fix string) []string {
+func (sg *Group) Similar(fix string) []string {
 	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(sg.Fixes), nil, nil)
 	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), d1, d2)
 	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
@@ -970,7 +970,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 	return regions
 }
 
-// pruneAirportFilters removes the filter regions for airports the scenario
+// PruneAirportFilters removes the filter regions for airports the scenario
 // doesn't use. A facility's adaptation covers all of its airports but a
 // scenario generally uses only a few of them; the rest are just clutter in
 // the processing areas list. A region that doesn't cover any of the
@@ -984,7 +984,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 // taxiing aircraft on the scope. Filters that aren't tied to an airport at
 // all--secondary drop and VFR inhibit, which restrict airspace--are left
 // alone.
-func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCode, dep []sim.DepartureRunway,
+func PruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCode, dep []sim.DepartureRunway,
 	arr []sim.ArrivalRunway, vfrRates map[av.ICAOAirportCode]float32) {
 	ifr := make(map[av.ICAOAirportCode]bool)
 	for _, rwy := range dep {
@@ -1035,7 +1035,7 @@ func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCo
 // arts_coordination entry keyed by the ARTCC's id covers flights inbound
 // from adjacent centers. Returns nil for facilities whose host adapts no
 // coordination for them.
-func resolveERAMCoordination(sg *scenarioGroup, configs map[string]*sim.FacilityConfig) *enroute.Coordination {
+func resolveERAMCoordination(sg *Group, configs map[string]*sim.FacilityConfig) *enroute.Coordination {
 	if sg.TRACON == "" {
 		// ARTCC-primary: the center's coordination is adapted in its own
 		// config under its own facility id.
@@ -1130,7 +1130,7 @@ func validateCoordinationFixes(ec *enroute.Coordination, fa *sim.FacilityAdaptat
 	}
 }
 
-func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*ScenarioCatalog,
+func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*Catalog,
 	mapSpec *av.MapLibrarySpec, mapSpecs map[string]*av.MapLibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -1423,7 +1423,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	initializeSimConfigurations(sg, catalogs, e)
 }
 
-func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
+func (sg *Group) rewriteControllers(e *util.ErrorLogger) {
 	// Set Position from map key and derive area for controllers that
 	// don't already have them set (neighbor controllers have Position
 	// set by loadNeighborControllers).
@@ -1647,7 +1647,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 // PostDeserializeFacilityAdaptation validates FacilityAdaptation fields that
 // require the scenario group's Locator, mapSpec, or airport data. Self-contained
 // validation is done earlier in FacilityAdaptation.ValidateConfig.
-func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *scenarioGroup,
+func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Group,
 	mapSpec *av.MapLibrarySpec, mapSpecs map[string]*av.MapLibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -2025,15 +2025,15 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	e.Pop() // config
 }
 
-func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[string]*ScenarioCatalog, e *util.ErrorLogger) {
+func initializeSimConfigurations(sg *Group, catalogs map[string]map[string]*Catalog, e *util.ErrorLogger) {
 	facility := sg.facility()
 	artcc := sg.ARTCC
 	if artcc == "" {
 		artcc = av.DB.ARTCCForFacility(facility)
 	}
 
-	catalog := &ScenarioCatalog{
-		Scenarios:        make(map[string]*ScenarioSpec),
+	catalog := &Catalog{
+		Scenarios:        make(map[string]*Spec),
 		ControlPositions: sg.FacilityConfig.ControlPositions,
 		DefaultScenario:  sg.DefaultScenario,
 		Facility:         facility,
@@ -2059,7 +2059,7 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 		sim.MarkBackgroundTraffic(sg.Airports, sg.InboundFlows, &scenario.ControllerConfiguration,
 			sg.FacilityConfig.ControlPositions, &lc)
 
-		spec := &ScenarioSpec{
+		spec := &Spec{
 			ControllerConfiguration: &scenario.ControllerConfiguration,
 			LaunchConfig:            lc,
 			Description:             scenario.Description,
@@ -2078,7 +2078,7 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 
 	if len(catalog.Scenarios) > 0 {
 		if catalogs[facility] == nil {
-			catalogs[facility] = make(map[string]*ScenarioCatalog)
+			catalogs[facility] = make(map[string]*Catalog)
 		}
 		catalogs[facility][sg.Name] = catalog
 	}
@@ -2088,7 +2088,7 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 // its own traffic generator samples from. They are optional; without them the
 // scenario can only be flown from a timetable or historical data, which bring
 // their own callsigns and aircraft types.
-func canGenerateScenarioTraffic(sg *scenarioGroup, lc *sim.LaunchConfig) bool {
+func canGenerateScenarioTraffic(sg *Group, lc *sim.LaunchConfig) bool {
 	for airport := range lc.DepartureRates {
 		ap, ok := sg.Airports[airport]
 		if !ok {
@@ -2119,7 +2119,7 @@ func canGenerateScenarioTraffic(sg *scenarioGroup, lc *sim.LaunchConfig) bool {
 	return true
 }
 
-func attachTimetables(catalogs map[string]map[string]*ScenarioCatalog, timetables sim.TimetableCatalog) {
+func attachTimetables(catalogs map[string]map[string]*Catalog, timetables sim.TimetableCatalog) {
 	for _, facilityCatalogs := range catalogs {
 		for _, catalog := range facilityCatalogs {
 			for _, scenario := range catalog.Scenarios {
@@ -2140,7 +2140,7 @@ func attachTimetables(catalogs map[string]map[string]*ScenarioCatalog, timetable
 // actually covers. The stretches are the same everywhere--the source goes down
 // for all of it at once--so what decides whether a scenario can be flown from
 // it is whether the cells its airports are in hold anything.
-func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCatalog, lg *log.Logger) {
+func attachHistoricalFlightIntervals(catalogs map[string]map[string]*Catalog, lg *log.Logger) {
 	resources := util.GetResourcesFS()
 	intervals, err := av.FlightDataIntervals(resources)
 	if err != nil {
@@ -2166,7 +2166,7 @@ func attachHistoricalFlightIntervals(catalogs map[string]map[string]*ScenarioCat
 
 // haveFlightDataCells reports whether any of the cells covering a scenario's
 // airports has flight data at all.
-func haveFlightDataCells(scenario *ScenarioSpec) bool {
+func haveFlightDataCells(scenario *Spec) bool {
 	departures, arrivals := scenario.LaunchConfig.IFRAirports()
 	return slices.ContainsFunc(av.FlightDataCells(departures, arrivals), func(cell string) bool {
 		return util.ResourceExists(av.FlightDataPath(cell))
@@ -2178,7 +2178,7 @@ func haveFlightDataCells(scenario *ScenarioSpec) bool {
 // use is fine--the config covers every flow in the facility--but one that no
 // scenario group of the facility defines at all is left over from a renamed
 // flow and quietly assigns nothing.
-func checkInboundAssignments(scenarioGroups map[string]map[string]*scenarioGroup, e *util.ErrorLogger) {
+func checkInboundAssignments(scenarioGroups map[string]map[string]*Group, e *util.ErrorLogger) {
 	for facility, groups := range util.SortedMap(scenarioGroups) {
 		flows := make(map[string]struct{})
 		for _, sg := range groups {
@@ -2216,8 +2216,8 @@ func checkInboundAssignments(scenarioGroups map[string]map[string]*scenarioGroup
 // finalizeTrafficSources settles which source each scenario starts on, once
 // every source has had its say. A scenario with nothing at all to fly is a
 // scenario file that needs fixing.
-func finalizeTrafficSources(catalogs map[string]map[string]*ScenarioCatalog,
-	scenarioGroups map[string]map[string]*scenarioGroup, e *util.ErrorLogger) {
+func finalizeTrafficSources(catalogs map[string]map[string]*Catalog,
+	scenarioGroups map[string]map[string]*Group, e *util.ErrorLogger) {
 	for facility, facilityCatalogs := range catalogs {
 		for name, catalog := range facilityCatalogs {
 			for scenarioName, scenario := range catalog.Scenarios {
@@ -2257,7 +2257,7 @@ func finalizeTrafficSources(catalogs map[string]map[string]*ScenarioCatalog,
 // airportsWithoutSTARArrivals returns the airports the scenario lands traffic
 // at that no active arrival takes STAR traffic into, in sorted order. Those
 // lose every flight that files a STAR, which is all of the airline traffic.
-func airportsWithoutSTARArrivals(sg *scenarioGroup, lc *sim.LaunchConfig) []string {
+func airportsWithoutSTARArrivals(sg *Group, lc *sim.LaunchConfig) []string {
 	served := make(map[string]bool)
 	for flow, airports := range lc.InboundFlowRates {
 		inboundFlow, ok := sg.InboundFlows[flow]
@@ -2277,9 +2277,9 @@ func airportsWithoutSTARArrivals(sg *scenarioGroup, lc *sim.LaunchConfig) []stri
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// LoadScenarioGroups
+// Load
 
-func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scenarioGroup {
+func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Group {
 	e.Push("File " + path)
 	defer e.Pop()
 
@@ -2310,12 +2310,12 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 		}
 	}
 
-	util.CheckJSON[scenarioGroup](contents, e)
+	util.CheckJSON[Group](contents, e)
 	if e.HaveErrors() {
 		return nil
 	}
 
-	var s scenarioGroup
+	var s Group
 	if err := util.UnmarshalJSONBytes(contents, &s); err != nil {
 		e.Error(err)
 		return nil
@@ -2335,7 +2335,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 // facilityConfigPath derives the path to the facility configuration file
 // from the scenario group's TRACON/ARTCC fields. The convention is:
 // configurations/<ARTCC>/<facility>.json.
-func facilityConfigPath(sg *scenarioGroup) string {
+func facilityConfigPath(sg *Group) string {
 	artcc := sg.ARTCC
 	if artcc == "" {
 		artcc = av.DB.ARTCCForFacility(sg.TRACON)
@@ -2494,9 +2494,9 @@ func facilityConfigOverridePath(filename string) (string, error) {
 	return match, nil
 }
 
-// isARTCC returns true if the facility code looks like an ARTCC
+// IsARTCC returns true if the facility code looks like an ARTCC
 // (starts with "Z" and is 3 characters long, e.g., "ZDC", "ZNY").
-func isARTCC(facility string) bool {
+func IsARTCC(facility string) bool {
 	return len(facility) == 3 && strings.HasPrefix(facility, "Z")
 }
 
@@ -2525,7 +2525,7 @@ func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
 	return ""
 }
 
-func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor string,
+func loadNeighborControllers(filesystem fs.FS, sg *Group, neighbor string,
 	handoffIDs []sim.HandoffID, e *util.ErrorLogger) {
 	prefix := neighborPrefix(neighbor, handoffIDs)
 	if prefix == "" {
@@ -2557,7 +2557,7 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 	// Add neighbor controllers under the full prefix only.
 	// Shorter references are resolved at lookup time via resolveController.
 	// Don't overwrite existing positions (the primary facility takes precedence).
-	neighborIsARTCC := isARTCC(neighbor)
+	neighborIsARTCC := IsARTCC(neighbor)
 	for position, ctrl := range fc.ControlPositions {
 		ctrlCopy := deep.MustCopy(ctrl)
 		ctrlCopy.FacilityIdentifier = prefix
@@ -2586,7 +2586,7 @@ type OverrideFiles struct {
 	FacilityConfigs []string
 }
 
-// LoadScenarioGroups loads all of the available scenarios, both from the
+// Load loads all of the available scenarios, both from the
 // scenarios/ directory in the source code distribution as well as,
 // optionally, files provided on the command line, and runs the
 // full startup validation pass: video map references, arrival spawn
@@ -2596,11 +2596,9 @@ type OverrideFiles struct {
 // exit if there are any.  We'd rather force any errors due to invalid
 // scenario definitions to be fixed...
 //
-// Returns: scenarioGroups, simConfigurations, mapSpecs, scenarioBriefs, overrideErrors
 // If an override file has errors, they are returned in overrideErrors and it
 // is not loaded, but execution continues.
-func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup,
-	map[string]map[string]*ScenarioCatalog, map[string]*av.MapLibrarySpec, *briefRegistry, string) {
+func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables, string) {
 	start := time.Now()
 
 	var overrideErrors string
@@ -2623,9 +2621,9 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 	}
 
 	// First load the scenarios.
-	scenarioGroups := make(map[string]map[string]*scenarioGroup)
-	briefs := newBriefRegistry()
-	catalogs := make(map[string]map[string]*ScenarioCatalog)
+	scenarioGroups := make(map[string]map[string]*Group)
+	briefs := NewBriefRegistry()
+	catalogs := make(map[string]map[string]*Catalog)
 
 	type scenarioWalkItem struct {
 		filesystem fs.FS
@@ -2645,7 +2643,7 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 	})
 
 	type scenarioWalkResult struct {
-		s    *scenarioGroup
+		s    *Group
 		errs util.ErrorLogger
 	}
 	scenarioResults := make([]scenarioWalkResult, len(scenarioItems))
@@ -2670,7 +2668,7 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 			e.ErrorString("%s / %s: scenario redefined", facility, s.Name)
 		} else {
 			if scenarioGroups[facility] == nil {
-				scenarioGroups[facility] = make(map[string]*scenarioGroup)
+				scenarioGroups[facility] = make(map[string]*Group)
 			}
 			scenarioGroups[facility][s.Name] = s
 		}
@@ -2680,12 +2678,12 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 	}
 	if e.HaveErrors() {
 		// Don't keep going since we'll likely crash in the following
-		return nil, nil, nil, nil, ""
+		return nil, ""
 	}
 
 	// Load the scenario specified on command line, if any.
 	// Store it separately so we can validate it with a separate error logger
-	var extraScenario *scenarioGroup
+	var extraScenario *Group
 	var extraScenarioFacility string
 	if overrides.Scenario != "" {
 		var extraE util.ErrorLogger
@@ -2986,10 +2984,10 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 	// PostDeserialize is the dominant cost here; do them in parallel.
 	type phase3Task struct {
 		tname, groupName string
-		sgroup           *scenarioGroup
+		sgroup           *Group
 		mapSpec          *av.MapLibrarySpec
 		vfErr            string // pre-validation error, if any
-		localCatalogs    map[string]map[string]*ScenarioCatalog
+		localCatalogs    map[string]map[string]*Catalog
 		localE           util.ErrorLogger
 	}
 	var phase3Tasks []*phase3Task
@@ -3036,7 +3034,7 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 			t.localE.ErrorString("%s", t.vfErr)
 			continue
 		}
-		t.localCatalogs = make(map[string]map[string]*ScenarioCatalog)
+		t.localCatalogs = make(map[string]map[string]*Catalog)
 
 		eg.Go(func() error {
 			t.sgroup.PostDeserialize(&t.localE, t.localCatalogs, t.mapSpec, mapSpecs)
@@ -3050,7 +3048,7 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 		e.MergeFrom(&t.localE)
 		for facility, m := range t.localCatalogs {
 			if catalogs[facility] == nil {
-				catalogs[facility] = make(map[string]*ScenarioCatalog)
+				catalogs[facility] = make(map[string]*Catalog)
 			}
 			maps.Copy(catalogs[facility], m)
 		}
@@ -3064,7 +3062,7 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 		extraE.Push("TRACON " + extraScenarioFacility)
 		extraE.Push("Scenario group " + extraScenario.Name)
 
-		localCatalogs := make(map[string]map[string]*ScenarioCatalog)
+		localCatalogs := make(map[string]map[string]*Catalog)
 
 		// Make sure we have what we need in terms of video maps
 		fa := &extraScenario.FacilityConfig.FacilityAdaptation
@@ -3090,12 +3088,12 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 			// Merge the local catalogs into the shared one only on success.
 			for facility, m := range localCatalogs {
 				if catalogs[facility] == nil {
-					catalogs[facility] = make(map[string]*ScenarioCatalog)
+					catalogs[facility] = make(map[string]*Catalog)
 				}
 				maps.Copy(catalogs[facility], m)
 			}
 			if scenarioGroups[extraScenarioFacility] == nil {
-				scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
+				scenarioGroups[extraScenarioFacility] = make(map[string]*Group)
 			}
 			scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
 		}
@@ -3160,20 +3158,20 @@ func LoadScenarioGroups(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Lo
 	finalizeTrafficSources(catalogs, scenarioGroups, e)
 	checkInboundAssignments(scenarioGroups, e)
 
-	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))
-	return scenarioGroups, catalogs, mapSpecs, briefs, overrideErrors
+	lg.Infof("scenario.Load total: %s", time.Since(start))
+	return MakeTables(scenarioGroups, catalogs, mapSpecs, briefs), overrideErrors
 }
 
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
 func ListAllScenarios(overrides OverrideFiles, lg *log.Logger) ([]string, error) {
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _, _ := LoadScenarioGroups(overrides, &e, lg)
+	tables, _ := Load(overrides, &e, lg)
 	if e.HaveErrors() {
 		return nil, fmt.Errorf("failed to load scenarios")
 	}
 
 	var scenarios []string
-	for tracon, groups := range scenarioGroups {
+	for tracon, groups := range tables.Groups {
 		for _, group := range groups {
 			for scenarioName := range group.Scenarios {
 				scenarios = append(scenarios, tracon+"/"+scenarioName)
@@ -3191,14 +3189,14 @@ func ListAllScenarios(overrides OverrideFiles, lg *log.Logger) ([]string, error)
 // have scenarios, so only their airports are of interest here.)
 func WXFacilities(lg *log.Logger) (wx.Facilities, error) {
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _, _ := LoadScenarioGroups(OverrideFiles{}, &e, lg)
+	tables, _ := Load(OverrideFiles{}, &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return wx.Facilities{}, fmt.Errorf("failed to load scenarios")
 	}
 
 	var airports, tracons []string
-	for _, groups := range scenarioGroups {
+	for _, groups := range tables.Groups {
 		for _, sg := range groups {
 			for name := range sg.Airports {
 				airports = append(airports, string(name))
@@ -3210,75 +3208,6 @@ func WXFacilities(lg *log.Logger) (wx.Facilities, error) {
 	}
 
 	return wx.MakeFacilities(airports, tracons), nil
-}
-
-// LookupScenario finds a scenario configuration by TRACON/scenario name
-func LookupScenario(tracon, scenarioName string, scenarioGroups map[string]map[string]*scenarioGroup, catalogs map[string]map[string]*ScenarioCatalog) (*ScenarioCatalog, *scenarioGroup, error) {
-	if groups, ok := scenarioGroups[tracon]; ok {
-		for _, group := range groups {
-			if _, ok := group.Scenarios[scenarioName]; ok {
-				if facilityCatalogs, ok := catalogs[tracon]; ok {
-					for _, catalog := range facilityCatalogs {
-						if catalog.Scenarios[scenarioName] != nil {
-							return catalog, group, nil
-						}
-					}
-				}
-			}
-		}
-	}
-	return nil, nil, fmt.Errorf("scenario not found: %s/%s", tracon, scenarioName)
-}
-
-// CreateNewSimConfiguration creates a NewSimConfiguration from scenario components
-func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenarioGroup, scenarioName string) (*sim.NewSimConfiguration, error) {
-	scenario, ok := scenarioGroup.Scenarios[scenarioName]
-	if !ok {
-		return nil, fmt.Errorf("scenario %s not found in group", scenarioName)
-	}
-
-	simConfig := catalog.Scenarios[scenarioName]
-	if simConfig == nil {
-		return nil, fmt.Errorf("scenario configuration %s not found", scenarioName)
-	}
-
-	newSimConfig := &sim.NewSimConfiguration{
-		Facility:                scenarioGroup.facility(),
-		Description:             scenarioName,
-		LaunchConfig:            simConfig.LaunchConfig,
-		DepartureRunways:        simConfig.DepartureRunways,
-		ArrivalRunways:          simConfig.ArrivalRunways,
-		Airports:                scenarioGroup.Airports,
-		Fixes:                   scenarioGroup.Fixes,
-		VFRReportingPoints:      scenarioGroup.VFRReportingPoints,
-		ControlPositions:        scenarioGroup.FacilityConfig.ControlPositions,
-		ControllerConfiguration: &scenario.ControllerConfiguration,
-		ConfigurationId:         scenario.ConfigurationString,
-		InboundFlows:            scenarioGroup.InboundFlows,
-		FacilityAdaptation:      deep.MustCopy(scenarioGroup.FacilityConfig.FacilityAdaptation),
-		MagneticVariation:       scenarioGroup.MagneticVariation,
-		NmPerLongitude:          scenarioGroup.NmPerLongitude,
-		WindSpecifier:           scenario.WindSpecifier,
-		Center:                  scenario.center(scenarioGroup),
-		Range:                   util.Select(scenario.Range == 0, scenarioGroup.FacilityConfig.FacilityAdaptation.Range, scenario.Range),
-		ScenarioCenter:          scenario.Center,
-		ScenarioRange:           scenario.Range,
-		DefaultMaps:             scenario.DefaultMaps,
-		DefaultMapGroup:         scenario.DefaultMapGroup,
-		Airspace:                scenarioGroup.Airspace,
-		ControllerAirspace:      scenario.Airspace,
-		VirtualControllers:      scenario.VirtualControllers,
-		HandoffIDs:              scenarioGroup.FacilityConfig.HandoffIDs,
-		ERAMCoordination:        scenarioGroup.ERAMCoordination,
-	}
-
-	pruneAirportFilters(&newSimConfig.FacilityAdaptation, util.SortedMapKeys(scenarioGroup.Airports),
-		simConfig.DepartureRunways, simConfig.ArrivalRunways, simConfig.LaunchConfig.VFRAirportRates)
-
-	// LoadScenarioGroups already validated emergencies.json; re-parse to hand the list to the sim.
-	newSimConfig.Emergencies = loadEmergencies(nil)
-
-	return newSimConfig, nil
 }
 
 // checkArrivalSpawnAltitude flags an arrival whose initial altitude is

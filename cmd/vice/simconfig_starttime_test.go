@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -102,7 +102,7 @@ func TestValidStartDays(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			c := &NewSimConfiguration{availableWXIntervals: tc.wx}
-			spec := &server.ScenarioSpec{Center: jfk, HistoricalFlightIntervals: tc.flights}
+			spec := &scenario.Spec{Center: jfk, HistoricalFlightIntervals: tc.flights}
 			spec.LaunchConfig.TrafficSource = tc.source
 
 			got := c.validStartDays(spec)

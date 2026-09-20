@@ -12,7 +12,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/util"
 )
 
@@ -35,7 +35,7 @@ func main() {
 
 	var e util.ErrorLogger
 	lg := log.New(false, "warn", "")
-	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups(server.OverrideFiles{}, &e, lg)
+	tables, _ := scenario.Load(scenario.OverrideFiles{}, &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)
@@ -47,7 +47,7 @@ func main() {
 	stars := make(map[string]*ProcedureInfo)
 
 	// Extract from scenario groups
-	for _, scenarios := range scenarioGroups {
+	for _, scenarios := range tables.Groups {
 		for _, sg := range scenarios {
 			ExtractFromAirports(sg.Airports, fixes, sids)
 			ExtractFromInboundFlows(sg.InboundFlows, fixes, stars)

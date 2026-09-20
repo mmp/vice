@@ -13,7 +13,7 @@ import (
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/scenario"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -48,8 +48,8 @@ type Config struct {
 
 // overrideFiles returns the files the user has picked to replace or add to
 // the ones in the resources directory.
-func (c *Config) overrideFiles() server.OverrideFiles {
-	return server.OverrideFiles{
+func (c *Config) overrideFiles() scenario.OverrideFiles {
+	return scenario.OverrideFiles{
 		Scenario:        c.ScenarioFile,
 		VideoMap:        c.VideoMapFile,
 		ScenarioBrief:   c.ScenarioBriefFile,

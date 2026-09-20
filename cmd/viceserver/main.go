@@ -21,6 +21,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -58,7 +59,7 @@ func init() {
 // load the scenarios itself, since doing so validates their video maps against
 // the .mappack files.
 func writeWXFacilities(path string, lg *log.Logger) error {
-	fac, err := server.WXFacilities(lg)
+	fac, err := scenario.WXFacilities(lg)
 	if err != nil {
 		return err
 	}
@@ -118,7 +119,7 @@ func run(lg *log.Logger) error {
 
 	config := server.ServerLaunchConfig{
 		Port: *serverPort,
-		Overrides: server.OverrideFiles{
+		Overrides: scenario.OverrideFiles{
 			Scenario:        *scenarioFilename,
 			VideoMap:        *videoMapFilename,
 			ScenarioBrief:   *scenarioBriefFilename,
@@ -186,7 +187,7 @@ func runSmoketest(config server.ServerLaunchConfig, d time.Duration, lg *log.Log
 		req.Facility = util.SortedMapKeys(connect.ScenarioCatalogs)[0]
 	}
 
-	var catalog *server.ScenarioCatalog
+	var catalog *scenario.Catalog
 	req.GroupName, catalog = util.FirstSortedMapEntry(connect.ScenarioCatalogs[req.Facility])
 	req.ScenarioName = catalog.DefaultScenario
 	req.ScenarioSpec = catalog.Scenarios[req.ScenarioName]

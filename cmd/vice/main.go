@@ -35,6 +35,7 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/renderer/ogl21"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
@@ -168,8 +169,8 @@ func loadConfig(lg *log.Logger) (*Config, error) {
 
 // overrideFiles returns the resource files the user has provided to replace
 // or add to the ones in the resources directory.
-func overrideFiles() server.OverrideFiles {
-	return server.OverrideFiles{
+func overrideFiles() scenario.OverrideFiles {
+	return scenario.OverrideFiles{
 		Scenario:        *scenarioFilename,
 		VideoMap:        *videoMapFilename,
 		ScenarioBrief:   *scenarioBriefFilename,
@@ -208,7 +209,7 @@ func runLint(lg *log.Logger) error {
 	}
 
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _, overrideErrors := server.LoadScenarioGroups(overrideFiles(), &e, lg)
+	tables, overrideErrors := scenario.Load(overrideFiles(), &e, lg)
 
 	if e.HaveErrors() {
 		e.PrintErrors(nil)
@@ -220,7 +221,7 @@ func runLint(lg *log.Logger) error {
 	}
 
 	scenarioAirports := make(map[string]map[av.ICAOAirportCode]any)
-	for tracon, scenarios := range scenarioGroups {
+	for tracon, scenarios := range tables.Groups {
 		if scenarioAirports[tracon] == nil {
 			scenarioAirports[tracon] = make(map[av.ICAOAirportCode]any)
 		}
@@ -243,7 +244,7 @@ func runListScenarios(lg *log.Logger) error {
 		return err
 	}
 
-	scenarios, err := server.ListAllScenarios(overrideFiles(), lg)
+	scenarios, err := scenario.ListAllScenarios(overrideFiles(), lg)
 	if err != nil {
 		return fmt.Errorf("failed to list scenarios: %w", err)
 	}
@@ -270,16 +271,10 @@ func runSimulation(lg *log.Logger) error {
 	tracon, scenarioName := parts[0], parts[1]
 
 	var e util.ErrorLogger
-	scenarioGroups, configs, _, _, _ := server.LoadScenarioGroups(overrideFiles(), &e, lg)
+	tables, _ := scenario.Load(overrideFiles(), &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return fmt.Errorf("scenario loading failed")
-	}
-
-	// Find the matching scenario
-	config, scenarioGroup, err := server.LookupScenario(tracon, scenarioName, scenarioGroups, configs)
-	if err != nil {
-		return err
 	}
 
 	fmt.Printf("Running scenario: %s\n", *runSim)
@@ -287,7 +282,7 @@ func runSimulation(lg *log.Logger) error {
 	// Initialize navigation logging if requested
 	nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 
-	newSimConfig, err := server.CreateNewSimConfiguration(config, scenarioGroup, scenarioName)
+	newSimConfig, err := tables.NewSimConfigurationForScenario(tracon, scenarioName)
 	if err != nil {
 		return fmt.Errorf("failed to create simulation configuration: %w", err)
 	}

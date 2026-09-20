@@ -16,6 +16,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform/audio"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
@@ -75,7 +76,7 @@ type Server struct {
 	AvailableWXByFacility map[string][]util.TimeInterval
 
 	name        string
-	catalogs    map[string]map[string]*server.ScenarioCatalog
+	catalogs    map[string]map[string]*scenario.Catalog
 	runningSims map[string]*server.RunningSim
 }
 
@@ -573,7 +574,7 @@ func (s *Server) Close() error {
 	return s.RPCClient.Close()
 }
 
-func (s *Server) GetScenarioCatalogs() map[string]map[string]*server.ScenarioCatalog {
+func (s *Server) GetScenarioCatalogs() map[string]map[string]*scenario.Catalog {
 	return s.catalogs
 }
 

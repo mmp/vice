@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/util"
 )
 
@@ -119,7 +120,7 @@ const rpcConnWriteTimeout = time.Minute
 
 type ServerLaunchConfig struct {
 	Port          int // if 0, finds an open one
-	Overrides     OverrideFiles
+	Overrides     scenario.OverrideFiles
 	ServerAddress string // address to use for remote TTS provider
 	IsLocal       bool
 }
@@ -169,8 +170,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		return 0, nil, errorLogger, ""
 	}
 
-	scenarioGroups, scenarioCatalogs, mapSpecs, briefs, overrideErrors :=
-		LoadScenarioGroups(config.Overrides, &errorLogger, lg)
+	tables, overrideErrors := scenario.Load(config.Overrides, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
 		return 0, nil, errorLogger, ""
 	}
@@ -178,7 +178,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	serverFunc := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(config, scenarioGroups, scenarioCatalogs, mapSpecs, briefs, lg)
+		sm := NewSimManager(config, tables, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
 )
 
@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestNormalizeTrafficSourceConfig(t *testing.T) {
-	spec := &server.ScenarioSpec{
+	spec := &scenario.Spec{
 		Timetables: []sim.TimetableSummary{
 			{ID: "development-test", Name: "Development Test", Airport: "KMSP"},
 		},
@@ -56,7 +56,7 @@ func TestNormalizeTrafficSourceConfig(t *testing.T) {
 }
 
 func TestNormalizeTrafficSourceConfigWithoutTimetables(t *testing.T) {
-	spec := &server.ScenarioSpec{
+	spec := &scenario.Spec{
 		TrafficSources: []sim.TrafficSource{sim.TrafficSourceScenario},
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource: sim.TrafficSourceTimetable,
@@ -78,7 +78,7 @@ func TestNormalizeTrafficSourceConfigWithoutTimetables(t *testing.T) {
 }
 
 func TestNormalizeTrafficSourceConfigWithoutHistoricalFlights(t *testing.T) {
-	spec := &server.ScenarioSpec{
+	spec := &scenario.Spec{
 		TrafficSources: []sim.TrafficSource{sim.TrafficSourceScenario},
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource: sim.TrafficSourceHistorical,
@@ -95,7 +95,7 @@ func TestNormalizeTrafficSourceConfigWithoutHistoricalFlights(t *testing.T) {
 // A scenario with no airlines of its own can't be flown from the scenario
 // source, so the client must start on one the server actually offers.
 func TestNormalizeTrafficSourceConfigWithoutScenarioTraffic(t *testing.T) {
-	spec := &server.ScenarioSpec{
+	spec := &scenario.Spec{
 		TrafficSources: []sim.TrafficSource{sim.TrafficSourceHistorical},
 		LaunchConfig: sim.LaunchConfig{
 			TrafficSource: sim.TrafficSourceScenario,

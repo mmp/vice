@@ -15,7 +15,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -57,7 +57,7 @@ type airportClock struct {
 // comes from where the scenario is centered rather than from any one of them.
 // An ARTCC can be centered out over water, though (ZJX's center is in the Gulf),
 // and then its airports are all there is to go on.
-func makeScenarioClock(spec *server.ScenarioSpec) airportClock {
+func makeScenarioClock(spec *scenario.Spec) airportClock {
 	if loc, ok := util.TimeZoneAt(spec.Center.Latitude(), spec.Center.Longitude()); ok {
 		return airportClock{loc: loc, local: true}
 	}

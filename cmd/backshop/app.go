@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -128,7 +129,7 @@ func newApp(config *Config, plat platform.Platform, render renderer.Renderer, lg
 	return a, nil
 }
 
-func (a *app) catalogs() map[string]map[string]*server.ScenarioCatalog {
+func (a *app) catalogs() map[string]map[string]*scenario.Catalog {
 	if a.mgr == nil || a.mgr.LocalServer == nil {
 		return nil
 	}
@@ -176,7 +177,7 @@ func (a *app) normalizeSelection() {
 	}
 }
 
-func hasScenario(catalog *server.ScenarioCatalog, scenario string) bool {
+func hasScenario(catalog *scenario.Catalog, scenario string) bool {
 	if catalog == nil {
 		return false
 	}
@@ -184,7 +185,7 @@ func hasScenario(catalog *server.ScenarioCatalog, scenario string) bool {
 	return ok
 }
 
-func (a *app) selectedSpec() *server.ScenarioSpec {
+func (a *app) selectedSpec() *scenario.Spec {
 	catalogs := a.catalogs()
 	if catalog, ok := catalogs[a.sel.facility][a.sel.group]; ok {
 		return catalog.Scenarios[a.sel.scenario]

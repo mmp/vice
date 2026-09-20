@@ -24,6 +24,7 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
@@ -52,7 +53,7 @@ func SelectRandomScenario(srv *client.Server) (server.NewSimRequest, error) {
 		tracon       string
 		groupName    string
 		scenarioName string
-		spec         *server.ScenarioSpec
+		spec         *scenario.Spec
 	}
 
 	var choices []scenarioChoice
