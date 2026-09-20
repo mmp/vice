@@ -20,9 +20,12 @@ type ScopeTransformations struct {
 }
 
 // GetScopeTransformations returns a ScopeTransformations object
-// corresponding to the specified radar scope center, range, and rotation
-// angle.
-func GetScopeTransformations(paneExtent math.Extent2D, magneticVariation float32, nmPerLongitude float32,
+// corresponding to the specified radar scope center, range, and rotation.
+// rotationAngle is the angle from true north to the direction that points up
+// on the scope: STARS scopes are magnetic north up, so the STARS pane passes
+// the facility's magnetic variation, while ERAM scopes are always true north
+// up.
+func GetScopeTransformations(paneExtent math.Extent2D, nmPerLongitude float32,
 	center math.Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
 	width, height := paneExtent.Width(), paneExtent.Height()
 	aspect := width / height
@@ -30,8 +33,8 @@ func GetScopeTransformations(paneExtent math.Extent2D, magneticVariation float32
 		// Final orthographic projection including the effect of the
 		// window's aspect ratio.
 		Ortho(-aspect, aspect, -1, 1).
-		// Account for magnetic variation and any user-specified rotation
-		Rotate(-math.Radians(rotationAngle+magneticVariation)).
+		// Orient the scope's up direction
+		Rotate(-math.Radians(rotationAngle)).
 		// Scale based on range and nm per latitude / longitude
 		Scale(nmPerLongitude/rangenm, math.NMPerLatitude/rangenm).
 		// Translate to center point
