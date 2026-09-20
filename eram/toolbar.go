@@ -107,7 +107,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ep.activeToolbarMenu = toolbarATCTools
 		}
 		ep.drawToolbarFullButton(ctx, "AB\nSETTING", 0, scale, false, false)
-		var val = ep.currentPrefs().Range
+		var val = ep.currentPrefs().Range / 2
 		var rangeStr string
 		if val >= 2 {
 			rangeStr = fmt.Sprintf("RANGE\n%d", int(val))
