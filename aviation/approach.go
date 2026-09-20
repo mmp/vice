@@ -91,7 +91,7 @@ type Approach struct {
 	Runway    string          `json:"runway"`
 	Waypoints []WaypointArray `json:"waypoints"`
 
-	// Set in Airport PostDeserialize()
+	// Set in Airport Finalize()
 	Threshold         math.Point2LL
 	OppositeThreshold math.Point2LL
 }

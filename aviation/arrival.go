@@ -603,7 +603,7 @@ func (ar *Arrival) checkChartedSTARRoute(loc Locator, nmPerLongitude float32, ma
 		spelled, ar.STAR, strings.Join(give, " and "))
 }
 
-func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
+func (ar *Arrival) Finalize(loc Locator, nmPerLongitude float32, magneticVariation float32,
 	airports map[ICAOAirportCode]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())

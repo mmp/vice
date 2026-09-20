@@ -283,7 +283,7 @@ func parseCodeRanges(ranges []string, e *util.ErrorLogger) [][2]Squawk {
 	return result
 }
 
-func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
+func (s *LocalSquawkCodePoolSpecifier) Finalize(e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if len(s.Pools) == 0 {

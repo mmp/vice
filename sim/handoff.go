@@ -990,7 +990,7 @@ type HandoffFilterRegion struct {
 type HandoffFilterRegions []HandoffFilterRegion
 
 func (r *HandoffFilterRegion) ValidateTCPs(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
-	r.FilterQualifiers.PostDeserialize(controlPositions, e)
+	r.FilterQualifiers.Finalize(controlPositions, e)
 	if r.TCPsString != "" {
 		e.ErrorString(`"tcps" is not supported for handoff filter regions; use "owning_tcp"`)
 	}
@@ -1052,8 +1052,8 @@ func (r *HandoffFilterRegion) ValidateTCPs(controlPositions map[TCP]*av.Controll
 	r.ACTypeClass = strings.ToUpper(strings.TrimSpace(r.ACTypeClass))
 }
 
-func (r *HandoffFilterRegion) PostDeserialize(loc av.Locator, e *util.ErrorLogger) {
-	r.AirspaceVolume.PostDeserialize(loc, e)
+func (r *HandoffFilterRegion) Finalize(loc av.Locator, e *util.ErrorLogger) {
+	r.AirspaceVolume.Finalize(loc, e)
 }
 
 // engineClass returns the adaptation engine vocabulary for an aircraft type.

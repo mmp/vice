@@ -93,7 +93,7 @@ func restoreControllerFields(controllers map[TCP]*av.Controller) {
 
 		// Note: Area is not restored here because it has a proper JSON tag
 		// and survives serialization. It's auto-derived (for TRACON) or
-		// manually specified (for ERAM) in PostDeserialize/rewriteControllers.
+		// manually specified (for ERAM) in Finalize/rewriteControllers.
 	}
 }
 

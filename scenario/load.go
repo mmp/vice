@@ -334,7 +334,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 			extraResourcesFS := util.GetResourcesFS()
 			fc := loadFacilityConfig(extraResourcesFS, facilityConfigPath(s), &extraE)
 			if fc != nil {
-				fc.PostDeserialize(facilityConfigPath(s), &extraE)
+				fc.Finalize(facilityConfigPath(s), &extraE)
 			}
 			if fc != nil && !extraE.HaveErrors() {
 				s.FacilityConfig = *deep.MustCopy(fc)
@@ -470,7 +470,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 
 	// Phase 1: Load and validate all facility configs by walking the
 	// configurations/ directory. Every .json file is loaded and validated
-	// via PostDeserialize, regardless of whether a scenario references it.
+	// via Finalize, regardless of whether a scenario references it.
 	resourcesFS := util.GetResourcesFS()
 	type configWalkItem struct {
 		filesystem fs.FS
@@ -497,7 +497,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 		eg.Go(func() error {
 			fc := loadFacilityConfig(it.filesystem, it.path, &configErrs[i])
 			if fc != nil {
-				fc.PostDeserialize(it.path, &configErrs[i])
+				fc.Finalize(it.path, &configErrs[i])
 			}
 			loadedConfigs[i] = fc
 			return nil
@@ -613,7 +613,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	}
 
 	// Final tidying before we return the loaded scenarios. Per-scenario
-	// PostDeserialize is the dominant cost here; do them in parallel.
+	// Finalize is the dominant cost here; do them in parallel.
 	type phase3Task struct {
 		tname, groupName string
 		sgroup           *Group
@@ -669,7 +669,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 		t.localCatalogs = make(map[string]map[string]*Catalog)
 
 		eg.Go(func() error {
-			t.sgroup.PostDeserialize(&t.localE, t.localCatalogs, t.mapSpec, mapSpecs)
+			t.sgroup.Finalize(&t.localE, t.localCatalogs, t.mapSpec, mapSpecs)
 			return nil
 		})
 	}
@@ -706,7 +706,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 		} else {
 			extraScenario.ERAMCoordination = resolveERAMCoordination(extraScenario, facilityConfigs)
 			validateCoordinationFixes(extraScenario.ERAMCoordination, fa, extraScenario.facility(), &extraE)
-			extraScenario.PostDeserialize(&extraE, localCatalogs, mapSpec, mapSpecs)
+			extraScenario.Finalize(&extraE, localCatalogs, mapSpec, mapSpecs)
 		}
 
 		extraE.Pop() // Scenario group

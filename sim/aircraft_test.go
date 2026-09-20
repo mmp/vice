@@ -38,7 +38,7 @@ func makeAircraftForSTTFixes(wps []av.Waypoint) *Aircraft {
 }
 
 // sidWp returns a waypoint flagged as being on a SID, as
-// Airport.PostDeserialize does for departure exit route waypoints.
+// Airport.Finalize does for departure exit route waypoints.
 func sidWp(fix string, latDeg float32) av.Waypoint {
 	w := wp(fix, latDeg)
 	w.SetOnSID(true)

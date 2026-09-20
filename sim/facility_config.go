@@ -42,10 +42,10 @@ type HandoffID struct {
 	FieldELetter      string `json:"field_e_letter,omitempty"`
 }
 
-// PostDeserialize validates the facility config right after JSON
+// Finalize validates the facility config right after JSON
 // deserialization. configPath is the relative path to the config file
 // (e.g. "configurations/ZBW/A90.json"). Errors are accumulated in e.
-func (fc *FacilityConfig) PostDeserialize(configPath string, e *util.ErrorLogger) {
+func (fc *FacilityConfig) Finalize(configPath string, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Derive the facility name from the config path.
@@ -121,7 +121,7 @@ func (fc *FacilityConfig) PostDeserialize(configPath string, e *util.ErrorLogger
 	}
 
 	// Note: Area auto-derivation for TRACON controllers is done in
-	// rewriteControllers, not here. PostDeserialize may be called
+	// rewriteControllers, not here. Finalize may be called
 	// multiple times on cached configs, so it must not mutate.
 
 	// Validate handoff IDs.

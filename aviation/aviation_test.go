@@ -265,7 +265,7 @@ func TestLocalSquawkCodePool(t *testing.T) {
 	}
 
 	var e util.ErrorLogger
-	spec.PostDeserialize(&e)
+	spec.Finalize(&e)
 	if e.HaveErrors() {
 		t.Fatalf("Validation errors: %s", e.String())
 	}
@@ -567,7 +567,7 @@ func TestArrivalAirports(t *testing.T) {
 			arr.InitialController = "1T"
 			arr.InitialAltitudes = []int{10000}
 			arr.InitialSpeed = MakeIAS(250)
-			arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 				func(string) bool { return true }, &e)
 
 			if tc.err != "" {
@@ -587,7 +587,7 @@ func TestArrivalAirports(t *testing.T) {
 		var e util.ErrorLogger
 		arr := Arrival{STAR: "NOPE1", SpawnWaypoint: "MIPP", InitialController: "1T",
 			InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
-		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+		arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 			func(string) bool { return true }, &e)
 
 		if !strings.Contains(e.String(), `STAR "NOPE1" isn't charted`) {
@@ -1121,7 +1121,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 			arr := Arrival{STAR: "MIPP4", SpawnWaypoint: util.Select(tc.spawn == "", "MIPP", tc.spawn),
 				WaypointActions:   tc.actions,
 				InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
-			arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+			arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 				func(string) bool { return true }, &e)
 
 			if tc.err != "" {
@@ -1157,7 +1157,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
 			WaypointActions:   map[string]string{"APPLE": "tXYZ-R090", "KRANN": "tXYZ-R090"},
 			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
-		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+		arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 			func(string) bool { return true }, &e)
 		if e.HaveErrors() {
 			t.Fatalf("unexpected errors: %s", e.String())
@@ -1186,7 +1186,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
 			WaypointActions:   map[string]string{"BEUTY@0.25": "ho"},
 			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
-		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+		arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 			func(string) bool { return true }, &e)
 		if e.HaveErrors() {
 			t.Fatalf("unexpected errors: %s", e.String())
@@ -1209,7 +1209,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
 			WaypointActions:   map[string]string{"MIPP@0.1": "spspABC"},
 			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
-		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+		arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 			func(string) bool { return true }, &e)
 		if e.HaveErrors() {
 			t.Fatalf("unexpected errors: %s", e.String())
@@ -1239,7 +1239,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 		var e util.ErrorLogger
 		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
 			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
-		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+		arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 			func(string) bool { return true }, &e)
 		if e.HaveErrors() {
 			t.Fatalf("unexpected errors: %s", e.String())
@@ -1264,7 +1264,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 		var e util.ErrorLogger
 		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP@0.4",
 			InitialController: "1T", InitialAltitudes: []int{11000}, InitialSpeed: MakeIAS(250)}
-		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+		arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 			func(string) bool { return true }, &e)
 		if e.HaveErrors() {
 			t.Fatalf("unexpected errors: %s", e.String())
@@ -1305,7 +1305,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 		arr := Arrival{STAR: "MIPP4", Waypoints: route("MIPP LIZZI BEUTY APPLE PROUD"),
 			Airports: []ICAOAirportCode{"KTST"}, WaypointActions: map[string]string{"BEUTY": "ho"},
 			InitialController: "1T", InitialAltitudes: []int{10000}, InitialSpeed: MakeIAS(250)}
-		arr.PostDeserialize(loc, 45, 0, scenarioAirports, controlPositions,
+		arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
 			func(string) bool { return true }, &e)
 
 		if !strings.Contains(e.String(), "applies only to a route taken from the CIFP") {

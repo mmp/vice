@@ -43,7 +43,7 @@ type OverflightAirline struct {
 	ArrivalAirport   ICAOAirportCode `json:"arrival_airport"`
 }
 
-func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
+func (of *Overflight) Finalize(loc Locator, nmPerLongitude float32, magneticVariation float32,
 	airports map[ICAOAirportCode]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())

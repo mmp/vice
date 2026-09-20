@@ -117,7 +117,7 @@ type VFRRouteSpec struct {
 // have ghost data blocks plotted on GhostRegion's centerline; to ghost in
 // both directions, define two pairs with the roles swapped.
 
-func (ap *Airport) PostDeserialize(icao ICAOAirportCode, loc Locator, nmPerLongitude float32,
+func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[ControlPosition]*Controller, scratchpads map[string]string,
 	facilityAirports map[ICAOAirportCode]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())

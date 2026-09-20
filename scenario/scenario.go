@@ -31,7 +31,7 @@ type Scenario struct {
 	ConfigurationString string `json:"configuration"`
 
 	// ControllerConfiguration is the runtime-resolved configuration data,
-	// populated during PostDeserialize from ConfigurationString.
+	// populated during Finalize from ConfigurationString.
 	ControllerConfiguration sim.ControllerConfiguration `json:"-"`
 
 	// DefaultConsolidation optionally overrides the referenced facility
@@ -70,7 +70,7 @@ func (s *Scenario) center(sg *Group) math.Point2LL {
 	return util.Select(s.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center, s.Center)
 }
 
-func (s *Scenario) PostDeserialize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.LibrarySpec) {
+func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Validate wind specifier if present

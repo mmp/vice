@@ -99,7 +99,7 @@ func (a *AirspaceVolume) Below(p math.Point2LL, alt int) bool {
 	return alt < a.Floor && a.covers(p)
 }
 
-func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
+func (a *AirspaceVolume) Finalize(loc Locator, e *util.ErrorLogger) {
 	if a.Id == "" {
 		e.ErrorString(`must provide "id" with airspace volume`)
 	}
@@ -179,7 +179,7 @@ type CRDARegion struct {
 
 	ScratchpadPatterns []string `json:"scratchpad_patterns"`
 
-	// Computed during PostDeserialize
+	// Computed during Finalize
 	Path              Path
 	DistToConvergence float32 // distance from path end to convergence point
 }
@@ -554,7 +554,7 @@ type VFRReportingPoint struct {
 	Location    math.Point2LL `json:"location"`
 }
 
-func (rp *VFRReportingPoint) PostDeserialize(loc Locator, controllers map[ControlPosition]*Controller, e *util.ErrorLogger) {
+func (rp *VFRReportingPoint) Finalize(loc Locator, controllers map[ControlPosition]*Controller, e *util.ErrorLogger) {
 	if rp.Description == "" {
 		e.ErrorString(`must specify "description" with reporting point`)
 	}

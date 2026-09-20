@@ -116,7 +116,7 @@ func (sg *Group) resolveController(tcp sim.TCP) sim.TCP {
 
 // resolveControllerRefs walks all airports and inbound flows, resolving
 // short-prefix controller references to their canonical (longest-prefix)
-// form in place. This must be called before airport/flow PostDeserialize
+// form in place. This must be called before airport/flow Finalize
 // so that validation in the aviation package finds the controllers.
 func (sg *Group) resolveControllerRefs() {
 	resolve := func(cp av.ControlPosition) av.ControlPosition {
@@ -262,7 +262,7 @@ func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
 // airportVolumeId names a default airport filter region within the
 // 7-character limit on airspace volume ids; a 4-character airport identifier
 
-func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*Catalog,
+func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*Catalog,
 	mapSpec *videomaps.LibrarySpec, mapSpecs map[string]*videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -273,7 +273,7 @@ func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[st
 	// Center (and thence NmPerLongitude) ASAP.
 
 	e.Push("Facility config " + facilityConfigPath(sg))
-	sg.FacilityConfig.FacilityAdaptation.PostDeserialize(sg, e)
+	sg.FacilityConfig.FacilityAdaptation.Finalize(sg, e)
 	e.Pop()
 
 	sg.NmPerLatitude = 60
@@ -311,12 +311,12 @@ func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[st
 		uncovered(fa.Filters.SurfaceTracking, allAirports), nmPerLongitude, e)
 
 	// Validate the newly created airport filters (the config's own are
-	// validated inside fa.PostDeserialize), mark them as vice's rather than the
+	// validated inside fa.Finalize), mark them as vice's rather than the
 	// adaptation's, and add them to the adapted ones.
 	addAirportFilters := func(regions, created sim.FilterRegions) sim.FilterRegions {
 		for i := range created {
 			e.Push(created[i].Description)
-			created[i].AirspaceVolume.PostDeserialize(sg, e)
+			created[i].AirspaceVolume.Finalize(sg, e)
 			e.Pop()
 			created[i].Default = true
 		}
@@ -404,7 +404,7 @@ func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[st
 	}
 
 	e.Push("Facility config " + facilityConfigPath(sg))
-	PostDeserializeFacilityAdaptation(&sg.FacilityConfig.FacilityAdaptation, e, sg, mapSpec, mapSpecs)
+	FinalizeFacilityAdaptation(&sg.FacilityConfig.FacilityAdaptation, e, sg, mapSpec, mapSpecs)
 	e.Pop()
 
 	for name, volumes := range sg.Airspace.Volumes {
@@ -479,7 +479,7 @@ func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[st
 	}
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + string(name))
-		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
+		ap.Finalize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
 			sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.Scratchpads, sg.Airports,
 			sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
 		e.Pop()
@@ -507,7 +507,7 @@ func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[st
 	}
 
 	// Check that neighbor controllers loaded at runtime have facility_id set.
-	// (Core controller validation happens in FacilityConfig.PostDeserialize.)
+	// (Core controller validation happens in FacilityConfig.Finalize.)
 	for position, ctrl := range sg.FacilityConfig.ControlPositions {
 		if ctrl.ERAMFacility && sg.ARTCC == "" {
 			if ctrl.FacilityIdentifier == "" {
@@ -526,12 +526,12 @@ func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[st
 		checkFlowNameRevisions(name, sg.Airports, e)
 
 		for i := range flow.Arrivals {
-			flow.Arrivals[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
+			flow.Arrivals[i].Finalize(sg, sg.NmPerLongitude, sg.MagneticVariation,
 				sg.Airports, sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
 			checkArrivalSpawnAltitude(flow.Arrivals[i], e)
 		}
 		for i := range flow.Overflights {
-			flow.Overflights[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
+			flow.Overflights[i].Finalize(sg, sg.NmPerLongitude, sg.MagneticVariation,
 				sg.Airports, sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
 		}
 
@@ -539,7 +539,7 @@ func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[st
 	}
 
 	for i := range sg.VFRReportingPoints {
-		sg.VFRReportingPoints[i].PostDeserialize(sg, sg.FacilityConfig.ControlPositions, e)
+		sg.VFRReportingPoints[i].Finalize(sg, sg.FacilityConfig.ControlPositions, e)
 	}
 
 	// Do after airports!
@@ -548,7 +548,7 @@ func (sg *Group) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[st
 	}
 	for name, s := range sg.Scenarios {
 		e.Push("Scenario " + name)
-		s.PostDeserialize(sg, e, mapSpec)
+		s.Finalize(sg, e, mapSpec)
 		e.Pop()
 	}
 

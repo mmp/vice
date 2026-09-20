@@ -1083,7 +1083,7 @@ func validateConfig(path string, contents []byte) []string {
 	if err := json.Unmarshal(contents, &fc); err != nil {
 		e.Error(err)
 	} else {
-		fc.PostDeserialize(path, &e)
+		fc.Finalize(path, &e)
 	}
 	if !e.HaveErrors() {
 		return nil

@@ -29,7 +29,7 @@ type FacilityConfiguration struct {
 	// ScratchpadLeaderLineDirectionStrings is the JSON-facing map from
 	// primary scratchpad values to cardinal/ordinal direction strings
 	// (e.g. "N", "NE", "SW"). Resolved into ScratchpadLeaderLineDirections
-	// during PostDeserialize.
+	// during Finalize.
 	ScratchpadLeaderLineDirectionStrings map[string]string `json:"scratchpad_leader_line_directions"`
 	// ScratchpadLeaderLineDirections is the resolved map from primary
 	// scratchpad values to leader line directions.
@@ -468,7 +468,7 @@ type AirspaceAwareness struct {
 	AircraftType        []string `json:"aircraft_type"`
 }
 
-func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogger) {
+func (fa *FacilityAdaptation) Finalize(loc av.Locator, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ctr := fa.CenterString; ctr == "" {
@@ -521,7 +521,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		}
 
 		for i := range config.FlightFollowingAirspace {
-			config.FlightFollowingAirspace[i].PostDeserialize(loc, e)
+			config.FlightFollowingAirspace[i].Finalize(loc, e)
 		}
 
 		e.Pop()
@@ -546,7 +546,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		ids := make(map[string]any)
 		for i, filt := range f {
 			e.Push(filt.Description)
-			f[i].AirspaceVolume.PostDeserialize(loc, e)
+			f[i].AirspaceVolume.Finalize(loc, e)
 
 			if _, ok := ids[filt.Id]; ok {
 				e.ErrorString(`filter "id"s must be unique: %q was repeated`, filt.Id)
@@ -568,7 +568,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		ids := make(map[string]any)
 		for i, filt := range fa.Filters.Quicklook {
 			e.Push(filt.Description)
-			fa.Filters.Quicklook[i].PostDeserialize(loc, e)
+			fa.Filters.Quicklook[i].Finalize(loc, e)
 
 			if _, ok := ids[filt.Id]; ok {
 				e.ErrorString(`quicklook filter "id"s must be unique: %q was repeated`, filt.Id)
@@ -583,7 +583,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		ids := make(map[string]any)
 		for i, filt := range fa.Filters.FDAM {
 			e.Push(filt.Description)
-			fa.Filters.FDAM[i].PostDeserialize(loc, e)
+			fa.Filters.FDAM[i].Finalize(loc, e)
 
 			if _, ok := ids[filt.Id]; ok {
 				e.ErrorString(`FDAM filter "id"s must be unique: %q was repeated`, filt.Id)
@@ -598,7 +598,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		ids := make(map[string]any)
 		for i, filt := range fa.Filters.Handoff {
 			e.Push(filt.Description)
-			fa.Filters.Handoff[i].PostDeserialize(loc, e)
+			fa.Filters.Handoff[i].Finalize(loc, e)
 
 			if _, ok := ids[filt.Id]; ok {
 				e.ErrorString(`handoff filter "id"s must be unique: %q was repeated`, filt.Id)

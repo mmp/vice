@@ -595,7 +595,7 @@ func (f *FlightTest) ClearedVisualApproach(runway string) speech.CommandIntent {
 
 // makeAirport constructs an *av.Airport from the FAAAirport in av.DB,
 // resolving approach waypoint locations and adding runway threshold
-// waypoints — mirroring the essential parts of Airport.PostDeserialize.
+// waypoints — mirroring the essential parts of Airport.Finalize.
 func (f *FlightTest) makeAirport() *av.Airport {
 	icao := f.fp.ArrivalAirport
 	faa, ok := av.DB.Airports[icao]

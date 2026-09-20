@@ -20,10 +20,10 @@ import (
 	"github.com/mmp/vice/videomaps"
 )
 
-// PostDeserializeFacilityAdaptation validates FacilityAdaptation fields that
+// FinalizeFacilityAdaptation validates FacilityAdaptation fields that
 // require the scenario group's Locator, mapSpec, or airport data. Self-contained
 // validation is done earlier in FacilityAdaptation.ValidateConfig.
-func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Group,
+func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Group,
 	mapSpec *videomaps.LibrarySpec, mapSpecs map[string]*videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -507,7 +507,7 @@ func validateCoordinationFixes(ec *enroute.Coordination, fa *sim.FacilityAdaptat
 
 // loadFacilityConfig loads and unmarshals a facility configuration file.
 // Results are cached so that a facility several scenario groups share is only
-// loaded once. Call PostDeserialize separately for semantic validation.
+// loaded once. Call Finalize separately for semantic validation.
 func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim.FacilityConfig {
 	facilityConfigCacheMu.Lock()
 	fc, ok := facilityConfigCache[path]
@@ -599,9 +599,9 @@ func loadFacilityConfigOverride(filename string, e *util.ErrorLogger) {
 		return
 	}
 
-	// Validate it as the file it replaces: PostDeserialize takes the
+	// Validate it as the file it replaces: Finalize takes the
 	// facility and whether it is an ARTCC from the path.
-	fc.PostDeserialize(path, e)
+	fc.Finalize(path, e)
 	if !e.HaveErrors() {
 		cacheFacilityConfig(path, fc)
 	}

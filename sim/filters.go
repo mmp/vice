@@ -53,7 +53,7 @@ type FilterQualifiers struct {
 	RequestedAltitudes   [][2]int          `json:"-"`
 }
 
-func (r *FilterQualifiers) PostDeserialize(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
+func (r *FilterQualifiers) Finalize(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
 	parseCSV := func(s string) []string {
 		if s == "" {
 			return nil
@@ -286,11 +286,11 @@ type QuicklookRegion struct {
 type QuicklookRegions []QuicklookRegion
 
 func (r *QuicklookRegion) ValidateTCPs(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
-	r.FilterQualifiers.PostDeserialize(controlPositions, e)
+	r.FilterQualifiers.Finalize(controlPositions, e)
 }
 
-func (r *QuicklookRegion) PostDeserialize(loc av.Locator, e *util.ErrorLogger) {
-	r.AirspaceVolume.PostDeserialize(loc, e)
+func (r *QuicklookRegion) Finalize(loc av.Locator, e *util.ErrorLogger) {
+	r.AirspaceVolume.Finalize(loc, e)
 }
 
 // exitFixDisplayName returns the name that would be displayed as the
@@ -373,7 +373,7 @@ type FDAMTrackState struct {
 }
 
 func (r *FDAMRegion) ValidateTCPs(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
-	r.FilterQualifiers.PostDeserialize(controlPositions, e)
+	r.FilterQualifiers.Finalize(controlPositions, e)
 
 	if r.TCPsString != "" {
 		e.ErrorString(`"tcps" is not supported for FDAM regions`)
@@ -410,8 +410,8 @@ func (r *FDAMRegion) ValidateTCPs(controlPositions map[TCP]*av.Controller, e *ut
 	}
 }
 
-func (r *FDAMRegion) PostDeserialize(loc av.Locator, e *util.ErrorLogger) {
-	r.AirspaceVolume.PostDeserialize(loc, e)
+func (r *FDAMRegion) Finalize(loc av.Locator, e *util.ErrorLogger) {
+	r.AirspaceVolume.Finalize(loc, e)
 
 	parseDirection := func(s, field string) *math.CardinalOrdinalDirection {
 		s = strings.ToUpper(strings.TrimSpace(s))
