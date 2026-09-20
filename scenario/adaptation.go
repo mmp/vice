@@ -199,8 +199,11 @@ func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, 
 				e.ErrorString(`"short_name" cannot be more than 3 characters.`)
 			}
 			if sp.Location.IsZero() {
-				if p, ok := sg.Locate(name); !ok {
-					e.ErrorString("unable to find location of %q", name)
+				// An explicit "location" wins; otherwise the point is
+				// located by its own name.
+				where := util.Select(sp.LocationStr != "", sp.LocationStr, name)
+				if p, ok := sg.Locate(where); !ok {
+					e.ErrorString("unable to find location of %q", where)
 				} else {
 					sp.Location = p
 				}

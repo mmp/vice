@@ -558,21 +558,6 @@ func doInitDB() {
 
 	DB = db
 
-	math.SetLocationResolver(&dbResolver{})
-}
-
-type dbResolver struct{}
-
-func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
-	if n, ok := DB.Navaids[s]; ok {
-		return n.Location, nil
-	} else if n, ok := DB.Airports[ICAOAirportCode(s)]; ok {
-		return n.Location, nil
-	} else if f, ok := DB.Fixes[s]; ok {
-		return f.Location, nil
-	} else {
-		return math.Point2LL{}, fmt.Errorf("%s: unknown fix", s)
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

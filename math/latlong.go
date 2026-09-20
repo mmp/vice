@@ -440,23 +440,8 @@ func (p *Point2LL) UnmarshalJSON(b []byte) error {
 			return nil
 		}
 
-		if locr == nil {
-			return fmt.Errorf("%s: unable to parse latlong and no location resolver available", string(b))
-		}
-
-		*p, err = locr.Resolve(string(b))
-		return err
+		return fmt.Errorf("%s: unable to parse as a latitude/longitude", string(b))
 	}
-}
-
-var locr LocationResolver
-
-type LocationResolver interface {
-	Resolve(s string) (Point2LL, error)
-}
-
-func SetLocationResolver(r LocationResolver) {
-	locr = r
 }
 
 func BoundLatLongCircle(c Point2LL, r float32) Extent2D {

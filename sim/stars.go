@@ -454,11 +454,12 @@ func validateListFormat(format string, extra ...string) error {
 }
 
 type SignificantPoint struct {
-	Name         string        // JSON comes in as a map from name to SignificantPoint; we set this.
-	ShortName    string        `json:"short_name"`
-	Abbreviation string        `json:"abbreviation"`
-	Description  string        `json:"description"`
-	Location     math.Point2LL `json:"location"`
+	Name         string // JSON comes in as a map from name to SignificantPoint; we set this.
+	ShortName    string `json:"short_name"`
+	Abbreviation string `json:"abbreviation"`
+	Description  string `json:"description"`
+	LocationStr  string `json:"location"`
+	Location     math.Point2LL
 }
 
 type AirspaceAwareness struct {

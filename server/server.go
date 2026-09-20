@@ -101,7 +101,10 @@ import (
 // 89: departures are chosen when the runway is free rather than sequenced ahead: RunwayLaunchState lost Sequenced and gained PublishedDepartures, DepartureAircraft gained QueuedTime, Sim gained LastExitLaunch
 // 90: DepartureAircraft gained AirborneTime, when its takeoff-roll simulation lifts off
 // 91: phrase arguments are tagged with their Go type name, and the callsign ones moved from aviation to speech
-const ViceSerializeVersion = 91
+// 92: airspace volume centers, CRDA reference points, VFR reporting points and significant points keep the
+//
+//	text they were written as and resolve it when finalized, so the resolved point serializes under its own name
+const ViceSerializeVersion = 92
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion

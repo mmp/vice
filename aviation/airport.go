@@ -586,6 +586,14 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, loc Locator, nmPerLongitude fl
 		e.Push(name + " CRDA region")
 		def.Name = name
 
+		if def.ReferencePoint.IsZero() && def.ReferencePointStr != "" {
+			if p, ok := loc.Locate(def.ReferencePointStr); !ok {
+				e.ErrorString(`unknown point %q in "reference_point"`, def.ReferencePointStr)
+			} else {
+				def.ReferencePoint = p
+			}
+		}
+
 		hasRefLine := !def.ReferencePoint.IsZero() || def.ReferenceLineHeading != 0 || def.ReferenceLineLength != 0
 		hasRefRoute := def.ReferenceRoute != ""
 

@@ -31,8 +31,9 @@ type AirspaceVolume struct {
 	Vertices      []math.Point2LL
 	Holes         [][]math.Point2LL `json:"holes"`
 	// Circle
-	Center math.Point2LL `json:"center"`
-	Radius float32       `json:"radius"`
+	CenterStr string `json:"center"`
+	Center    math.Point2LL
+	Radius    float32 `json:"radius"`
 }
 
 type AirspaceVolumeType int
@@ -147,7 +148,13 @@ func (a *AirspaceVolume) Finalize(loc Locator, e *util.ErrorLogger) {
 			e.ErrorString(`must provide "radius" with "circle" airspace volume`)
 		}
 		if a.Center.IsZero() {
-			e.ErrorString(`must provide "center" with "circle" airspace volume`)
+			if a.CenterStr == "" {
+				e.ErrorString(`must provide "center" with "circle" airspace volume`)
+			} else if p, ok := loc.Locate(a.CenterStr); !ok {
+				e.ErrorString(`unknown point %q in "center"`, a.CenterStr)
+			} else {
+				a.Center = p
+			}
 		}
 	}
 }
@@ -160,7 +167,8 @@ type CRDARegion struct {
 	ReferenceLineHeading   math.MagneticHeading `json:"reference_heading"`
 	ReferenceLineLength    float32              `json:"reference_length"`
 	ReferencePointAltitude float32              `json:"reference_altitude"`
-	ReferencePoint         math.Point2LL        `json:"reference_point"`
+	ReferencePointStr      string               `json:"reference_point"`
+	ReferencePoint         math.Point2LL
 
 	// Route-based reference (mutually exclusive with straight-line fields)
 	ReferenceRoute string `json:"reference_route"`
@@ -550,8 +558,9 @@ func (ra *RestrictionArea) MoveTo(p math.Point2LL) {
 // VFRReportingPoint
 
 type VFRReportingPoint struct {
-	Description string        `json:"description"`
-	Location    math.Point2LL `json:"location"`
+	Description string `json:"description"`
+	LocationStr string `json:"location"`
+	Location    math.Point2LL
 }
 
 func (rp *VFRReportingPoint) Finalize(loc Locator, controllers map[ControlPosition]*Controller, e *util.ErrorLogger) {
@@ -559,7 +568,13 @@ func (rp *VFRReportingPoint) Finalize(loc Locator, controllers map[ControlPositi
 		e.ErrorString(`must specify "description" with reporting point`)
 	}
 	if rp.Location.IsZero() {
-		e.ErrorString(`must specify "location" with reporting point`)
+		if rp.LocationStr == "" {
+			e.ErrorString(`must specify "location" with reporting point`)
+		} else if p, ok := loc.Locate(rp.LocationStr); !ok {
+			e.ErrorString(`unknown point %q in "location"`, rp.LocationStr)
+		} else {
+			rp.Location = p
+		}
 	}
 }
 
